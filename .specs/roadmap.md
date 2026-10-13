@@ -9,7 +9,7 @@
 <!-- roadmap:mvp:start -->
 > Program order (user request 2026-10-12): specify 001 → 010 in list order; ship 008 first (shared settings CLI foundation), then the others. Delivery dependencies are noted per item.
 
-- [x] **Settings CLI** (008) — Persistent configuration CLI with JSON output and validation shared with the UI; foundation shipped first. → [008-settings-cli](features/008-settings-cli/spec.md)
+- [x] **Settings CLI** (008) — Persistent configuration CLI with JSON output and validation shared with the UI; foundation shipped first. → [008-settings-cli](features/008-settings-cli/spec.md) — merged into `dev` 2026-10-13 (full-lane delivery review passed); release evidence pending: M1 release latency, Windows/Linux native runs, human UI checks.
 - [x] **Microphone priority** (001) — Ordered, reorderable microphone list with availability fallback. Depends on 008. → [001-microphone-priority](features/001-microphone-priority/spec.md)
 - [x] **Word replacements** (002) — Explicit recognized → replacement rules with bulk paste/import/export. Depends on 008. → [002-word-replacements](features/002-word-replacements/spec.md)
 - [x] **Recognition vocabulary** (003) — Keywords and proper nouns passed to local engines that support recognition context. Depends on 008. → [003-recognition-vocabulary](features/003-recognition-vocabulary/spec.md)
