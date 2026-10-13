@@ -139,3 +139,22 @@ AppKit caching and delayed AX mutation counterexamples remain explicit: callback
 - **AC impacted:** None (evidence harness only)
 - **Author:** Claude Opus 5.5 (implementation agent, orchestrated run)
 - **Notes:** The opt-in AppKit test polled Bun without reading its stdout/stderr; Bun busy-loops when a pipe fills, so the test hit its 120 s deadline. Both pipes are now drained concurrently; the AppKit receipt was regenerated.
+
+## 2026-10-13 — [Spec Update]: Concealed or transient clipboard content is never restored
+
+- **Type:** Spec Update
+- **Spec modified:** Yes (AC-009 wording, Story 1 Gherkin scenario and flowchart, Edge Cases, Clarifications; requirement IDs preserved)
+- **Code modified:** None in this entry (see the next entry)
+- **AC impacted:** AC-009 (decision recorded with `persist_clarification_decision`, key `decision:ac-009:concealed-or-transient-content-not-restored`); AC-012/AC-013 known copy-mode limitation listed in Clarifications, to confirm with Julien
+- **Decision:** Julien, 2026-10-13: content marked `org.nspasteboard.ConcealedType` or `TransientType` is not restored after a dictation; other content is restored, always current-host-only. Reason: a dictation changes `changeCount`, so a password manager's automatic clearing no longer fires
+- **Review:** the spec changed after review; the dependent spec review is stale and the final delivery review covers it. `spec-refine` refuses specs In Progress; this edit was made on explicit instruction with the same discipline (decision ledger, preserved IDs, changelogs)
+- **Author:** Claude Opus 5.5 (implementation agent, fix round 1)
+
+## 2026-10-13 — Bugfix: Fix round 1 after the two independent audits
+
+- **Type:** Bugfix
+- **Spec modified:** No (see the previous entry)
+- **Code modified:** src-tauri/src/smart_paste/{actor,actor_tests,coordinator,coordinator_chord,direct,macos_pasteboard,macos_snapshot_stream,mod,pasteboard_port,pasteboard_types,pending,snapshot,snapshot_helper,snapshot_helper_tests,snapshot_protocol,warm_helper}.rs, src-tauri/src/{clipboard,settings}.rs, src-tauri/tests/smart_paste{.rs,/*}, src-tauri/tests/smart_paste_native_pasteboard{.rs,/*}
+- **AC impacted:** AC-008, AC-009, AC-012, AC-013, AC-017 (implemented, certification pending)
+- **Author:** Claude Opus 5.5 (implementation agent, fix round 1)
+- **Evidence:** [fix-round proofs](proofs/claude-fix1/), regenerated [pasteboard](evidence/native-pasteboard-adapter.json) and [AX](evidence/native-ax-adapter.json) receipts with run-time binary hashes. Per-finding dispositions are in [the implementation map](implementation.md#independent-audit-fix-round-1-2026-10-13). Release blockers R-1/R-2, unauthenticated receipts and late AX writes stay open.
