@@ -7,6 +7,9 @@ use std::time::{Duration, Instant};
 use handy_app_lib::smart_paste::ax_port::{AxError, AxField, AxTextPort, Utf16Range};
 use handy_app_lib::smart_paste::clock::{Clock, ManualClock};
 use handy_app_lib::smart_paste::direct::expected_value;
+use handy_app_lib::smart_paste::keyboard::{
+    InputSourceInfo, InputSourceKind, InputSourcePort, KeyboardError,
+};
 
 /// How a scripted field reacts to `AXSelectedText`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -202,4 +205,67 @@ pub fn utf16(text: &str) -> Vec<u16> {
 /// Elapsed virtual time since `start`.
 pub fn elapsed_since(clock: &ManualClock, start: Instant) -> Duration {
     clock.now() - start
+}
+
+/// Scripted Text Input Sources: a current source and the identifiers that
+/// can be selected; every selection is recorded with its virtual instant.
+#[derive(Debug, Clone)]
+pub struct FakeInputSources {
+    clock: ManualClock,
+    state: Arc<Mutex<InputSourcesState>>,
+}
+
+/// Mutable state of [`FakeInputSources`].
+#[derive(Debug)]
+pub struct InputSourcesState {
+    pub current: Option<InputSourceInfo>,
+    pub selectable: Vec<String>,
+    pub selections: Vec<(String, Instant)>,
+}
+
+impl FakeInputSources {
+    /// Creates sources whose current one is `id` of `kind`.
+    pub fn new(clock: &ManualClock, id: &str, kind: InputSourceKind, selectable: &[&str]) -> Self {
+        let state = InputSourcesState {
+            current: Some(InputSourceInfo {
+                id: id.to_string(),
+                kind,
+            }),
+            selectable: selectable.iter().map(|id| id.to_string()).collect(),
+            selections: Vec::new(),
+        };
+        Self {
+            clock: clock.clone(),
+            state: Arc::new(Mutex::new(state)),
+        }
+    }
+
+    /// Locks the scripted state for setup or assertions.
+    pub fn state(&self) -> MutexGuard<'_, InputSourcesState> {
+        self.state.lock().unwrap_or_else(PoisonError::into_inner)
+    }
+}
+
+impl InputSourcePort for FakeInputSources {
+    fn current_source(&mut self) -> Result<InputSourceInfo, KeyboardError> {
+        self.state()
+            .current
+            .clone()
+            .ok_or(KeyboardError::SourceUnavailable)
+    }
+
+    fn select_source(&mut self, id: &str) -> Result<(), KeyboardError> {
+        let now = self.clock.now();
+        let mut state = self.state();
+        if !state.selectable.iter().any(|selectable| selectable == id) {
+            return Err(KeyboardError::SelectFailed);
+        }
+        state.selections.push((id.to_string(), now));
+        let kind = InputSourceKind::KeyboardLayout;
+        state.current = Some(InputSourceInfo {
+            id: id.to_string(),
+            kind,
+        });
+        Ok(())
+    }
 }

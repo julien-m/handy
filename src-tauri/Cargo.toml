@@ -198,6 +198,11 @@ tao-macros = { git = "https://github.com/cjpais/tao", rev = "c3bee28c1d446d95f08
 name = "smart_paste_native_pasteboard"
 harness = false
 
+# Text Input Sources also require the main thread.
+[[test]]
+name = "smart_paste_native_keyboard"
+harness = false
+
 [dev-dependencies]
 tempfile = "3"
 # Test-only tokio features for the local socket servers exercising the

@@ -103,3 +103,12 @@ AppKit caching and delayed AX mutation counterexamples remain explicit: callback
 - **AC impacted:** AC-008, AC-009, AC-013 (adapter implemented, certification pending)
 - **Author:** Claude Opus 5.5 (implementation agent, orchestrated run)
 - **Evidence:** [native pasteboard receipt](evidence/native-pasteboard-adapter.json) on an isolated named pasteboard. Findings: AppKit lists derived types whose conversion needs the owner process (saved as read, they consume part of the 200 ms budget); the first execution of a newly written binary costs seconds, so the first helper spawn of an installed Handy.app is pending release evidence.
+
+## 2026-10-13 — Feature: Step 6 per-application strategy and keyboard handling
+
+- **Type:** Feature
+- **Spec modified:** No
+- **Code modified:** src-tauri/Cargo.toml, src-tauri/src/input.rs, src-tauri/src/smart_paste/{strategy,keyboard,key_events,macos_keyboard,macos_cf,macos_ax,mod}.rs, src-tauri/tests/smart_paste/{keyboard,fakes}.rs, src-tauri/tests/smart_paste_native_keyboard.rs
+- **AC impacted:** AC-010, AC-011 (implemented, certification pending)
+- **Author:** Claude Opus 5.5 (implementation agent, orchestrated run)
+- **Evidence:** [read-only keyboard receipt](evidence/native-keyboard-adapter.json); selection, key posting and remote applications pending release evidence. Step 6 is committed before step 5 so the coordinator composes finished ports.

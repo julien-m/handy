@@ -11,7 +11,9 @@
 //! - bounded multi-type snapshot and on-demand publication: [`snapshot`],
 //!   [`snapshot_protocol`], [`pasteboard_port`], and on macOS the
 //!   `snapshot_helper` process (reading through `macos_snapshot_stream`),
-//!   `macos_pasteboard` and `main_thread`.
+//!   `macos_pasteboard` and `main_thread`;
+//! - per-application strategy and keyboard: [`strategy`], [`keyboard`],
+//!   [`key_events`], and the macOS adapters in `macos_keyboard`.
 //!
 //! Native effects (pasteboard, accessibility, keyboard) stay behind
 //! injectable ports so the production decision code is exercised by tests
@@ -22,9 +24,15 @@ pub mod ax_port;
 pub mod clock;
 pub mod direct;
 pub mod ids;
+pub mod key_events;
+pub mod keyboard;
 pub mod lifecycle;
 #[cfg(target_os = "macos")]
 pub mod macos_ax;
+#[cfg(target_os = "macos")]
+mod macos_cf;
+#[cfg(target_os = "macos")]
+pub mod macos_keyboard;
 #[cfg(target_os = "macos")]
 pub mod macos_pasteboard;
 #[cfg(target_os = "macos")]
@@ -38,4 +46,5 @@ pub mod snapshot;
 #[cfg(target_os = "macos")]
 pub mod snapshot_helper;
 pub mod snapshot_protocol;
+pub mod strategy;
 pub mod timing;

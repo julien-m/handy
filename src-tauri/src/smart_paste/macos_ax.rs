@@ -10,9 +10,7 @@ use std::ptr;
 use std::time::Duration;
 
 use super::ax_port::{AxError, AxField, AxTextPort, Utf16Range};
-
-type CfTypeRef = *const c_void;
-type CfIndex = isize;
+use super::macos_cf::{string_units, type_id, CfOwned, CfRange, CfStringError, CfTypeRef};
 
 // AXError codes from HIServices/AXError.h.
 const AX_SUCCESS: i32 = 0;
@@ -24,13 +22,6 @@ const AX_ERROR_NO_VALUE: i32 = -25212;
 // kAXValueTypeCFRange from HIServices/AXValue.h.
 const AX_VALUE_CF_RANGE_TYPE: u32 = 4;
 const SECURE_TEXT_FIELD: &str = "AXSecureTextField";
-
-#[repr(C)]
-#[derive(Debug, Default, Clone, Copy)]
-struct CfRange {
-    location: CfIndex,
-    length: CfIndex,
-}
 
 #[link(name = "ApplicationServices", kind = "framework")]
 unsafe extern "C" {
@@ -52,53 +43,8 @@ unsafe extern "C" {
     fn AXValueGetValue(value: CfTypeRef, value_type: u32, value_ptr: *mut c_void) -> u8;
 }
 
-#[link(name = "CoreFoundation", kind = "framework")]
-unsafe extern "C" {
-    fn CFRelease(value: CfTypeRef);
-    fn CFGetTypeID(value: CfTypeRef) -> usize;
-    fn CFStringGetTypeID() -> usize;
-    fn CFStringGetLength(string: CfTypeRef) -> CfIndex;
-    fn CFStringGetCharacters(string: CfTypeRef, range: CfRange, buffer: *mut u16);
-    fn CFStringCreateWithCharacters(
-        allocator: *const c_void,
-        characters: *const u16,
-        count: CfIndex,
-    ) -> CfTypeRef;
-}
-
-/// Owned (+1) CoreFoundation reference, released on drop.
-struct CfOwned(CfTypeRef);
-
-// SAFETY: CoreFoundation retain/release are thread-safe and AX elements may
-// be messaged from any thread; the reference is only used by its owner.
-unsafe impl Send for CfOwned {}
-
-impl CfOwned {
-    fn from_create_rule(reference: CfTypeRef) -> Option<Self> {
-        (!reference.is_null()).then_some(Self(reference))
-    }
-
-    fn utf16_string(units: &[u16]) -> Result<Self, AxError> {
-        let count = CfIndex::try_from(units.len()).map_err(|_| AxError::TooLarge {
-            utf16_units: units.len(),
-        })?;
-        // SAFETY: `units` is a valid buffer of `count` UTF-16 code units for
-        // the duration of the call; the result follows the Create Rule.
-        let string = unsafe { CFStringCreateWithCharacters(ptr::null(), units.as_ptr(), count) };
-        Self::from_create_rule(string).ok_or(AxError::Failed(AX_ERROR_CANNOT_COMPLETE))
-    }
-
-    fn attribute_name(name: &str) -> Result<Self, AxError> {
-        Self::utf16_string(&name.encode_utf16().collect::<Vec<_>>())
-    }
-}
-
-impl Drop for CfOwned {
-    fn drop(&mut self) {
-        // SAFETY: the reference was obtained under the Create/Copy Rule and
-        // is released exactly once here.
-        unsafe { CFRelease(self.0) };
-    }
+fn attribute_name(name: &str) -> Result<CfOwned, AxError> {
+    CfOwned::from_text(name).ok_or(AxError::Failed(AX_ERROR_CANNOT_COMPLETE))
 }
 
 fn ax_result(code: i32) -> Result<(), AxError> {
@@ -114,50 +60,38 @@ fn ax_result(code: i32) -> Result<(), AxError> {
 
 fn set_messaging_timeout(element: &CfOwned, timeout: Duration) -> Result<(), AxError> {
     // SAFETY: `element` is a live AXUIElement owned by the caller.
-    ax_result(unsafe { AXUIElementSetMessagingTimeout(element.0, timeout.as_secs_f32()) })
+    ax_result(unsafe { AXUIElementSetMessagingTimeout(element.as_ptr(), timeout.as_secs_f32()) })
 }
 
 fn copy_attribute(element: &CfOwned, name: &str, timeout: Duration) -> Result<CfOwned, AxError> {
     set_messaging_timeout(element, timeout)?;
-    let attribute = CfOwned::attribute_name(name)?;
+    let attribute = attribute_name(name)?;
     let mut value: CfTypeRef = ptr::null();
     // SAFETY: element and attribute are live CF objects; `value` receives a
     // +1 reference (Copy Rule) owned by the returned CfOwned.
-    ax_result(unsafe { AXUIElementCopyAttributeValue(element.0, attribute.0, &mut value) })?;
+    ax_result(unsafe {
+        AXUIElementCopyAttributeValue(element.as_ptr(), attribute.as_ptr(), &mut value)
+    })?;
     CfOwned::from_create_rule(value).ok_or(AxError::NoValue)
 }
 
 fn string_utf16(value: &CfOwned, max_units: usize) -> Result<Vec<u16>, AxError> {
-    // SAFETY: `value` is a live CF object; type checks precede string calls.
-    if unsafe { CFGetTypeID(value.0) != CFStringGetTypeID() } {
-        return Err(AxError::UnexpectedType);
-    }
-    // SAFETY: `value` is a live CFString.
-    let length = unsafe { CFStringGetLength(value.0) };
-    let units = usize::try_from(length).map_err(|_| AxError::UnexpectedType)?;
-    if units > max_units {
-        return Err(AxError::TooLarge { utf16_units: units });
-    }
-    let mut buffer = vec![0_u16; units];
-    let range = CfRange {
-        location: 0,
-        length,
-    };
-    // SAFETY: `buffer` holds exactly `length` units, the full string range.
-    unsafe { CFStringGetCharacters(value.0, range, buffer.as_mut_ptr()) };
-    Ok(buffer)
+    string_units(value.as_ptr(), max_units).map_err(|error| match error {
+        CfStringError::TooLarge(utf16_units) => AxError::TooLarge { utf16_units },
+        CfStringError::NotAString => AxError::UnexpectedType,
+    })
 }
 
 fn range_value(value: &CfOwned) -> Result<Utf16Range, AxError> {
     // SAFETY: `value` is a live CF object; its type is checked first.
-    if unsafe { CFGetTypeID(value.0) != AXValueGetTypeID() } {
+    if type_id(value.as_ptr()) != unsafe { AXValueGetTypeID() } {
         return Err(AxError::UnexpectedType);
     }
     let mut range = CfRange::default();
     // SAFETY: `range` is a CFRange, the type requested from the AXValue.
     let is_range = unsafe {
         AXValueGetValue(
-            value.0,
+            value.as_ptr(),
             AX_VALUE_CF_RANGE_TYPE,
             (&mut range as *mut CfRange).cast(),
         )
@@ -210,7 +144,7 @@ impl AxField for MacAxField {
     fn pid(&mut self) -> Result<i32, AxError> {
         let mut pid = 0;
         // SAFETY: element is live; `pid` is a valid out pointer.
-        ax_result(unsafe { AXUIElementGetPid(self.element.0, &mut pid) })?;
+        ax_result(unsafe { AXUIElementGetPid(self.element.as_ptr(), &mut pid) })?;
         Ok(pid)
     }
 
@@ -244,9 +178,13 @@ impl AxField for MacAxField {
 
     fn set_selected_text(&mut self, text: &[u16], timeout: Duration) -> Result<(), AxError> {
         set_messaging_timeout(&self.element, timeout)?;
-        let attribute = CfOwned::attribute_name("AXSelectedText")?;
-        let value = CfOwned::utf16_string(text)?;
+        let attribute = attribute_name("AXSelectedText")?;
+        let value = CfOwned::string(text).ok_or(AxError::TooLarge {
+            utf16_units: text.len(),
+        })?;
         // SAFETY: element, attribute and value are live CF objects.
-        ax_result(unsafe { AXUIElementSetAttributeValue(self.element.0, attribute.0, value.0) })
+        ax_result(unsafe {
+            AXUIElementSetAttributeValue(self.element.as_ptr(), attribute.as_ptr(), value.as_ptr())
+        })
     }
 }

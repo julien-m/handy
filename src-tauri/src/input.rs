@@ -74,7 +74,7 @@ mod macos {
     ///
     /// TIS APIs must run on the main thread. Handy's paste path already enters
     /// through `AppHandle::run_on_main_thread` before reaching this function.
-    fn resolve_command_v_keycode() -> Result<u16, String> {
+    pub(super) fn resolve_command_v_keycode() -> Result<u16, String> {
         // SAFETY: This function is called on the macOS main thread. The returned
         // source follows the Create Rule and is released by InputSource::drop.
         let source = InputSource(unsafe { TISCopyCurrentKeyboardLayoutInputSource() });
@@ -144,6 +144,13 @@ mod macos {
             }
         }
     }
+}
+
+/// Resolves the key code that macOS interprets as `v` with Command in the
+/// active keyboard layout. Must run on the main thread (Text Input Sources).
+#[cfg(target_os = "macos")]
+pub(crate) fn resolve_macos_command_v_keycode() -> Result<u16, String> {
+    macos::resolve_command_v_keycode()
 }
 
 /// Wrapper for Enigo to store in Tauri's managed state.
