@@ -1,0 +1,6 @@
+total 0
+drwxr-xr-x 5 julienm 160 Oct 13 21:51 .
+drwxr-xr-x 3 julienm  96 Oct 13 21:51 ..
+-rw------- 1 julienm   0 Oct 13 21:51 settings.instance.lock
+-rw------- 1 julienm   0 Oct 13 21:51 settings.lock
+lrwxr-xr-x 1 julienm 132 Oct 13 21:51 settings_store.json -> <scratchpad>/ro-home/dotfiles-settings.json

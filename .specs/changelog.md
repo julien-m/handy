@@ -29,6 +29,10 @@
 
 `## Quality Engineering` added from the existing QE Analysis: criticality High, blast radius Shared, primary risk Data; `livespec delivery lane` reads it (full). No AC, FR or SC changed; the spec review is stale until an independent reviewer refreshes it.
 
+## 2026-10-13 — 008-settings-cli: Step 7 macOS native proof (debug build) Done; release evidence pending
+
+Native harness (macOS 26.5.2, M4 Pro, debug proof binary, isolated HOME): 18/18 checks — older Handy refusal, offline/live reads and writes, start-hidden without Dock icon, routed live effect, no app registration by the CLI, endpoint reclamation, read-only startup. Full `cargo test` 474 passed/0 failed/17 ignored. Pending: M1 release latency, settings window refresh and shortcut re-registration (human), Windows/Linux/second account. Feature not Implemented. Inspect [the checkpoint](features/008-settings-cli/progress.md#current-step-7-checkpoint--macos-native-proof-debug-build).
+
 ## 2026-10-13 — 008-settings-cli: Step 6 domain framework and output domain Done
 
 `handy settings output get|set` (with `--dry-run`) over the existing output settings, on a domain framework shared by later features (aliases, dry run through the commit validation, atomic commit, live-only refusal, bounded UTF-8 file/stdin input). README documents the CLI and its recovery rules. Targeted tests and conventions PASS/new 0. Commit `462a5a5`; Step 7 in progress; no AC certified. Inspect [the checkpoint](features/008-settings-cli/progress.md#current-step-6-checkpoint--domain-framework-and-output-domain).

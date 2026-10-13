@@ -319,3 +319,15 @@ Inspect [the correction checkpoint](progress.md#current-step-4-correction-checkp
 - **Execution evidence:** targeted Rust tests (lib 57, settings targets incl. domains 8) and frontend checks exit 0; strict clippy; conventions PASS/new 0. Commit `462a5a5`.
 
 Inspect [the Step 6 checkpoint](progress.md#current-step-6-checkpoint--domain-framework-and-output-domain).
+
+## 2026-10-13 — Feature: Step 7 macOS native proof (debug build) and acceptance coverage
+
+- **Type:** Feature
+- **Spec modified:** No.
+- **Code modified:** scripts/settings-native-proof.ts and scripts/macos-window-list.swift (new); no application code.
+- **AC impacted:** AC-001, AC-005 (native macOS evidence, partial); no AC certified complete.
+- **Author:** Claude Code (implementation agent, orchestrator-supervised)
+- **Action:** native harness on macOS 26.5.2 / M4 Pro with a debug proof binary and an isolated HOME: older Handy refusal, offline and live reads/writes, start-hidden activation policy, routed live effect, no app registration by the CLI, endpoint reclamation, read-only startup on a linked store; full `cargo test`.
+- **Execution evidence:** harness 18/18 checks, full suite 474 passed/0 failed/17 ignored, all gates exit 0, conventions PASS/new 0. Pending release evidence: M1 release latency, settings window refresh and shortcut re-registration (human), normal-quit endpoint removal, Windows/Linux/second account.
+
+Inspect [the Step 7 checkpoint](progress.md#current-step-7-checkpoint--macos-native-proof-debug-build).

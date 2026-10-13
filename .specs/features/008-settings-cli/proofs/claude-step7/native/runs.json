@@ -1,0 +1,1194 @@
+[
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 5,
+    "ms": 71.3,
+    "pid": 50500,
+    "stdout": "{\"error\":{\"code\":\"unavailable\",\"details\":{},\"message\":\"Settings operation is unavailable.\"},\"ok\":false}\n",
+    "stderr": "Error: Settings operation is unavailable.\n"
+  },
+  {
+    "args": [
+      "settings",
+      "set",
+      "paste_method",
+      "direct",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 5,
+    "ms": 9.2,
+    "pid": 50501,
+    "stdout": "{\"error\":{\"code\":\"unavailable\",\"details\":{},\"message\":\"Settings operation is unavailable.\"},\"ok\":false}\n",
+    "stderr": "Error: Settings operation is unavailable.\n"
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 20.2,
+    "pid": 50505,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 11.8,
+    "pid": 50506,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 12.3,
+    "pid": 50507,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 11.7,
+    "pid": 50508,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 12.1,
+    "pid": 50509,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 12.6,
+    "pid": 50510,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 12.2,
+    "pid": 50511,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 12.7,
+    "pid": 50512,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 12.1,
+    "pid": 50513,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 12.1,
+    "pid": 50514,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 11.5,
+    "pid": 50515,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 11.7,
+    "pid": 50516,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 12.2,
+    "pid": 50517,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 11.8,
+    "pid": 50518,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 12,
+    "pid": 50519,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 12,
+    "pid": 50520,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 12.6,
+    "pid": 50521,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 12.3,
+    "pid": 50522,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 12.9,
+    "pid": 50523,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 12.6,
+    "pid": 50524,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 12.7,
+    "pid": 50525,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 12.9,
+    "pid": 50526,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 13.5,
+    "pid": 50527,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 13,
+    "pid": 50528,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 13.8,
+    "pid": 50529,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 12.7,
+    "pid": 50530,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 15,
+    "pid": 50531,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 13.8,
+    "pid": 50532,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 11.5,
+    "pid": 50533,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 11.7,
+    "pid": 50534,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "set",
+      "start_hidden",
+      "true",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 61.5,
+    "pid": 50535,
+    "stdout": "{\"data\":{\"start_hidden\":true},\"ok\":true,\"revision\":1}\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "set",
+      "show_tray_icon",
+      "true",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 21.5,
+    "pid": 50538,
+    "stdout": "{\"data\":{\"show_tray_icon\":true},\"ok\":true,\"revision\":1}\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "start_hidden",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 5,
+    "ms": 15.6,
+    "pid": 50540,
+    "stdout": "{\"error\":{\"code\":\"unavailable\",\"details\":{},\"message\":\"Settings operation is unavailable.\"},\"ok\":false}\n",
+    "stderr": "Error: Settings operation is unavailable.\n"
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "start_hidden",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 5,
+    "ms": 14.6,
+    "pid": 50541,
+    "stdout": "{\"error\":{\"code\":\"unavailable\",\"details\":{},\"message\":\"Settings operation is unavailable.\"},\"ok\":false}\n",
+    "stderr": "Error: Settings operation is unavailable.\n"
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "start_hidden",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 5,
+    "ms": 11.5,
+    "pid": 50542,
+    "stdout": "{\"error\":{\"code\":\"unavailable\",\"details\":{},\"message\":\"Settings operation is unavailable.\"},\"ok\":false}\n",
+    "stderr": "Error: Settings operation is unavailable.\n"
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "start_hidden",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 5,
+    "ms": 9,
+    "pid": 50543,
+    "stdout": "{\"error\":{\"code\":\"unavailable\",\"details\":{},\"message\":\"Settings operation is unavailable.\"},\"ok\":false}\n",
+    "stderr": "Error: Settings operation is unavailable.\n"
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "start_hidden",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 5,
+    "ms": 10.1,
+    "pid": 50544,
+    "stdout": "{\"error\":{\"code\":\"unavailable\",\"details\":{},\"message\":\"Settings operation is unavailable.\"},\"ok\":false}\n",
+    "stderr": "Error: Settings operation is unavailable.\n"
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "start_hidden",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 5,
+    "ms": 9.4,
+    "pid": 50545,
+    "stdout": "{\"error\":{\"code\":\"unavailable\",\"details\":{},\"message\":\"Settings operation is unavailable.\"},\"ok\":false}\n",
+    "stderr": "Error: Settings operation is unavailable.\n"
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "start_hidden",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 5,
+    "ms": 8.3,
+    "pid": 50546,
+    "stdout": "{\"error\":{\"code\":\"unavailable\",\"details\":{},\"message\":\"Settings operation is unavailable.\"},\"ok\":false}\n",
+    "stderr": "Error: Settings operation is unavailable.\n"
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "start_hidden",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 5,
+    "ms": 12.3,
+    "pid": 50547,
+    "stdout": "{\"error\":{\"code\":\"unavailable\",\"details\":{},\"message\":\"Settings operation is unavailable.\"},\"ok\":false}\n",
+    "stderr": "Error: Settings operation is unavailable.\n"
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "start_hidden",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 5,
+    "ms": 41,
+    "pid": 50548,
+    "stdout": "{\"error\":{\"code\":\"unavailable\",\"details\":{},\"message\":\"Settings operation is unavailable.\"},\"ok\":false}\n",
+    "stderr": "Error: Settings operation is unavailable.\n"
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "start_hidden",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 5,
+    "ms": 46,
+    "pid": 50549,
+    "stdout": "{\"error\":{\"code\":\"unavailable\",\"details\":{},\"message\":\"Settings operation is unavailable.\"},\"ok\":false}\n",
+    "stderr": "Error: Settings operation is unavailable.\n"
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "start_hidden",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 5,
+    "ms": 19,
+    "pid": 50550,
+    "stdout": "{\"error\":{\"code\":\"unavailable\",\"details\":{},\"message\":\"Settings operation is unavailable.\"},\"ok\":false}\n",
+    "stderr": "Error: Settings operation is unavailable.\n"
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "start_hidden",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 43.2,
+    "pid": 50551,
+    "stdout": "{\"data\":{\"start_hidden\":true},\"ok\":true,\"revision\":1}\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 11.9,
+    "pid": 50556,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 11.9,
+    "pid": 50557,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 11.7,
+    "pid": 50558,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 13.1,
+    "pid": 50560,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 11.4,
+    "pid": 50563,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 85.6,
+    "pid": 50564,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 38.4,
+    "pid": 50565,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 14.9,
+    "pid": 50566,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 12.6,
+    "pid": 50567,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 12.5,
+    "pid": 50568,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 10.4,
+    "pid": 50569,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 10.5,
+    "pid": 50570,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 10.3,
+    "pid": 50571,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 11.1,
+    "pid": 50572,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 10.6,
+    "pid": 50573,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 11.8,
+    "pid": 50574,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 11,
+    "pid": 50575,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 10.8,
+    "pid": 50576,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 10.3,
+    "pid": 50577,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 10.7,
+    "pid": 50578,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 10.8,
+    "pid": 50579,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 10.9,
+    "pid": 50580,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 9.9,
+    "pid": 50581,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 10.1,
+    "pid": 50582,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 10.6,
+    "pid": 50583,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 10.5,
+    "pid": 50584,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 10.8,
+    "pid": 50585,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 11.1,
+    "pid": 50586,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 10.4,
+    "pid": 50587,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 10.6,
+    "pid": 50588,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":false,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"cur…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "set",
+      "paste_delay_ms",
+      "120",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 25.5,
+    "pid": 50589,
+    "stdout": "{\"data\":{\"paste_delay_ms\":120},\"ok\":true,\"revision\":2}\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "output",
+      "set",
+      "auto_submit",
+      "true",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 24.3,
+    "pid": 50590,
+    "stdout": "{\"data\":{\"auto_submit\":true},\"ok\":true,\"revision\":3}\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "output",
+      "get",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 10.6,
+    "pid": 50591,
+    "stdout": "{\"data\":{\"append_trailing_space\":false,\"auto_submit\":true,\"auto_submit_key\":\"enter\",\"clipboard_handling\":\"dont_modify\",\"external_script_path\":null,\"paste_delay_after_ms\":60,\"paste_delay_ms\":120,\"paste_method\":\"ctrl_v\",\"reliable_paste\":false…",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "set",
+      "show_tray_icon",
+      "false",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 2419.8,
+    "pid": 50592,
+    "stdout": "{\"data\":{\"show_tray_icon\":false},\"ok\":true,\"revision\":4}\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "set",
+      "show_tray_icon",
+      "true",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 57.1,
+    "pid": 50596,
+    "stdout": "{\"data\":{\"show_tray_icon\":true},\"ok\":true,\"revision\":5}\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "start_hidden",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 5,
+    "ms": 14.4,
+    "pid": 50612,
+    "stdout": "{\"error\":{\"code\":\"unavailable\",\"details\":{},\"message\":\"Settings operation is unavailable.\"},\"ok\":false}\n",
+    "stderr": "Error: Settings operation is unavailable.\n"
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "start_hidden",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 5,
+    "ms": 12,
+    "pid": 50613,
+    "stdout": "{\"error\":{\"code\":\"unavailable\",\"details\":{},\"message\":\"Settings operation is unavailable.\"},\"ok\":false}\n",
+    "stderr": "Error: Settings operation is unavailable.\n"
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "start_hidden",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 5,
+    "ms": 11.4,
+    "pid": 50614,
+    "stdout": "{\"error\":{\"code\":\"unavailable\",\"details\":{},\"message\":\"Settings operation is unavailable.\"},\"ok\":false}\n",
+    "stderr": "Error: Settings operation is unavailable.\n"
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "start_hidden",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 5,
+    "ms": 9.1,
+    "pid": 50615,
+    "stdout": "{\"error\":{\"code\":\"unavailable\",\"details\":{},\"message\":\"Settings operation is unavailable.\"},\"ok\":false}\n",
+    "stderr": "Error: Settings operation is unavailable.\n"
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "start_hidden",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 5,
+    "ms": 9.7,
+    "pid": 50616,
+    "stdout": "{\"error\":{\"code\":\"unavailable\",\"details\":{},\"message\":\"Settings operation is unavailable.\"},\"ok\":false}\n",
+    "stderr": "Error: Settings operation is unavailable.\n"
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "start_hidden",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 5,
+    "ms": 9.2,
+    "pid": 50617,
+    "stdout": "{\"error\":{\"code\":\"unavailable\",\"details\":{},\"message\":\"Settings operation is unavailable.\"},\"ok\":false}\n",
+    "stderr": "Error: Settings operation is unavailable.\n"
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "start_hidden",
+      "--json"
+    ],
+    "env": "HOME",
+    "code": 0,
+    "ms": 65,
+    "pid": 50618,
+    "stdout": "{\"data\":{\"start_hidden\":true},\"ok\":true,\"revision\":5}\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "settings",
+      "get",
+      "--json"
+    ],
+    "env": "HOME, HANDY_SETTINGS_TEST_LEGACY_SOCKET",
+    "code": 0,
+    "ms": 14.1,
+    "pid": 50625,
+    "stdout": "{\"data\":{\"always_on_microphone\":false,\"app_language\":\"fr-FR\",\"append_trailing_space\":false,\"audio_feedback\":false,\"audio_feedback_volume\":1.0,\"auto_submit\":true,\"auto_submit_key\":\"enter\",\"autostart_enabled\":false,\"bindings\":{\"cancel\":{\"curr…",
+    "stderr": ""
+  }
+]
