@@ -189,9 +189,20 @@ fn every_nullable_scalar_preserves_strings_and_accepts_null_clear(
         "selected_output_device",
     ] {
         for sentinel in ["default", "Default"] {
+            let cleared = validate_cli(key, "null", &context)?;
+            assert_eq!(validate_ui(key, json!(sentinel), &context)?, cleared);
+            // Same intention, same stored value: the CLI maps the UI's sentinels to null too.
+            assert_eq!(validate_cli(key, sentinel, &context)?, cleared);
+        }
+        // Any other name is a device name on both surfaces, kept byte for byte.
+        for name in ["DEFAULT", "USB Microphone", " default"] {
             assert_eq!(
-                validate_ui(key, json!(sentinel), &context)?,
-                validate_cli(key, "null", &context)?
+                validate_ui(key, json!(name), &context)?,
+                validate_cli(key, name, &context)?
+            );
+            assert_eq!(
+                serde_json::to_value(validate_cli(key, name, &context)?.value())?,
+                json!(name)
             );
         }
     }
