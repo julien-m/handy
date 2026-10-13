@@ -5,6 +5,14 @@
 
 ---
 
+## 2026-10-13 — 008-settings-cli: Step 3 audit corrections applied, pending independent audit
+
+Blocker fixed by detection (parent and read-store identities rechecked before replacement), three majors and 8 minors/nit fixed, 3 Windows function-size minors dispositioned. Full suite 356 passed/0 failed/17 ignored; conventions PASS. Code commit `1ae5d84`; Steps 4–7 Todo; no AC certified. Inspect [the checkpoint](features/008-settings-cli/progress.md#current-step-3-checkpoint--audit-corrections-applied-pending-independent-audit).
+
+## 2026-10-13 — 008-settings-cli: Step 3 Blocked by platform refusal; feature delivery incomplete
+
+Supervisor received `This content was flagged for possible cybersecurity risk...` during required Step 3 audit corrections and interrupted workers/reviewer. Historical local21 passed/0 failed/1 ignored and scoped PASS do not close final audit1 blocker/3 major/11 minor/1 nit; no corrective version is certified. Earlier `input_too_large` was mitigated and is not this blocker. Steps 4–7 remain Todo. Prior verified commits:Step1 `50fdd044`, Step2 `0a7a433`, documentary refinement `e3bc314`; no feature delivery. Inspect [the authoritative stop](features/008-settings-cli/progress.md#current-step-3-stop--platform-refusal-blocks-required-corrections). No corrective retry/source action, new commit/archive or alternate method by documenter.
+
 ## 2026-10-13 — 008-settings-cli: Step3 pure repository resumes; app adoption moved into Step4 all-writer cutover
 
 Root authorized the bounded sequencing refinement after an independent source-backed snapshot-intent finding. Step3 keeps pure Repository/Locator/normalization; Step4 atomically migrates all writers and app/settings-file plugin ownership, with startup/cache evidence then. Seven steps/FR/AC/business/native/output scope unchanged; direct already-locked dirs6 matches Tauri resolver, fs2 retained. Initial isolated reads RED0/3→GREEN3/0 only; Step3 In Progress, no app activation/full AC/runtime-loss claim. Inspect [finding](features/008-settings-cli/proofs/current-run-step3/ordering-finding.json) and [refined plan](features/008-settings-cli/plan.md#step-3--build-atomic-repository-revision-and-locking).

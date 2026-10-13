@@ -1,0 +1,4 @@
+{
+  "owned_generated_target_moved_to": "/var/folders/l_/t1s_zytx2fqb0dkzz40d3v7m0000gn/T/handy-windows-check-cache-jeccr3am/target",
+  "reason": "Retain only source/check receipts inside proof directory; generated Cargo cache is not feature commit content."
+}

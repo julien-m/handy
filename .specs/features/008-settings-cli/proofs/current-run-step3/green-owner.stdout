@@ -1,0 +1,13 @@
+
+running 8 tests
+test reads::broken_json_read_recovers_defaults_without_overwriting ... ok
+test reads::missing_store_returns_defaults_without_creating_parent_or_store ... ok
+test transactions::stale_compare_and_set_refuses_without_changing_bytes ... ok
+test reads::salvage_keeps_valid_revision_valid_fields_and_store_bytes ... ok
+test ownership::native_owner_appearing_after_temp_sync_refuses_before_replace ... ok
+test transactions::changed_patch_is_durable_increments_once_and_preserves_unknowns_and_secrets ... ok
+test transactions::corrupt_or_overflow_revision_and_broken_json_refuse_write ... ok
+test transactions::semantic_noop_does_not_rewrite_or_increment_and_first_change_is_one ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+

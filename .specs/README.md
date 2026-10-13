@@ -68,6 +68,8 @@
 <!-- readme:activity:start -->
 | Date | Type | Description |
 |---|---|---|
+| 2026-10-13 | Bugfix | 008-settings-cli: Step 3 audit corrections applied; Done pending independent audit |
+| 2026-10-13 | Feature | 008-settings-cli: Step 3 Blocked by platform refusal; feature delivery incomplete |
 | 2026-10-13 | Feature | 008-settings-cli: Step3 pure repository resumes; app adoption moved into Step4 all-writer cutover |
 | 2026-10-13 | Feature | 008-settings-cli: Step 2 pure foundation Done;21 tests pass, whole acceptance remains partial |
 | 2026-10-13 | Feature | 008-settings-cli: Step 1 primitive gate Done; 22 tests pass, complete acceptance remains partial |
@@ -76,8 +78,6 @@
 | 2026-10-13 | Feature | 008-settings-cli: Root corrects whole-AC step-block interpretation; Step 1 audit pending |
 | 2026-10-13 | Feature | 008-settings-cli: Superseded whole-AC step-block interpretation |
 | 2026-10-13 | Feature | 008-settings-cli: Step 1 local parser/console tests 17/17; mandatory audit Blocked without verdict; Steps 2–7 Todo, all ACs uncertified |
-| 2026-10-13 | Feature | 008-settings-cli: private socket correction; implementation blocked by native execution runner |
-| 2026-10-13 | Feature | 008-settings-cli: Native primitives narrowed |
 <!-- readme:activity:end -->
 
 ---

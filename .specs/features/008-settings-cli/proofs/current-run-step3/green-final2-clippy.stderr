@@ -1,0 +1,16 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+    Checking handy v0.9.8 (/Users/julienm/projects/handy/src-tauri)
+error: this expression creates a reference which is immediately dereferenced by the compiler
+  --> src/settings_service/atomic.rs:85:13
+   |
+85 |     replace(&temporary, path).map_err(|_| persistence_failed())?;
+   |             ^^^^^^^^^^ help: change this to: `temporary`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#needless_borrow
+   = note: `-D clippy::needless-borrow` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::needless_borrow)]`
+
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+error: could not compile `handy` (lib) due to 1 previous error

@@ -1,0 +1,5 @@
+RED emulation for audit major atomic.rs:112 (temp name reuse after PID reuse).
+Command: cargo test --manifest-path src-tauri/Cargo.toml --lib settings_service::atomic
+Run with TEMP_NAME_ATTEMPTS temporarily set to 1, which reproduces the previous behaviour
+(first AlreadyExists collision returned persistence_failed). The constant was restored to 64
+immediately after this run; GREEN results are in the full-suite transcript.

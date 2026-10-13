@@ -255,3 +255,31 @@ Inspect [current summary](proofs/current-run-step2/corrective-summary.json), [sc
 - **Failure handling:** Block app/service adoption until all-writer closure; preserve existing history and complete AC/native evidence requirements.
 
 Inspect [actual ordering finding](proofs/current-run-step3/ordering-finding.json), [refined plan](plan.md#step-3--build-atomic-repository-revision-and-locking) and [initial read GREEN](proofs/current-run-step3/green-reads.stdout).
+
+## 2026-10-13 — Documentation: Step 3 blocked after platform refusal during audit corrections
+
+- **Type:** Spec Update
+- **Spec modified:** No; no plan/source edits.
+- **Code modified:** None by the documenter; supervisor verifies final source state separately.
+- **AC impacted:** No complete criterion certified; feature remains undelivered.
+- **Author:** Codex
+- **Prerequisite:** Final Step 3 audit corrections were required despite historical local/scoped review passes.
+- **Required inputs:** Supervisor-reported historical21/0/1, final audit1 blocker/3 major/11 minor/1 nit and exact platform refusal prefix.
+- **Action:** Mark Step 3 Blocked, Steps 4–7 Todo; preserve all proof/history and stop the affected corrective action.
+- **Execution evidence:** Historical scoped PASS does not close the final audit. `input_too_large` mitigation is no longer blocking; supervisor instead received `This content was flagged for possible cybersecurity risk...` and interrupted corrective workers/reviewer.
+- **Success criteria:** Not met; no corrected version or full feature certified. Verified prior commits:Step1 `50fdd0446809211a73d970c56df9750ea7272fa8`, Step2 `0a7a433`, documentary refinement `e3bc314`.
+- **Failure handling:** No source analysis/correction, retry, alternate agent/tool, Git/history or phase archive by documenter. Supervisor owns final state verification and its BLOCKED archive.
+
+Inspect [the authoritative stop](progress.md#current-step-3-stop--platform-refusal-blocks-required-corrections) and existing [execution history](logs/2026-10-13.md); historical proofs remain preserved.
+
+## 2026-10-13 — Feature: Step 3 audit corrections applied, pending independent audit
+
+- **Type:** Bugfix
+- **Spec modified:** No.
+- **Code modified:** settings_service atomic.rs, locator.rs, store.rs, transaction.rs, raw_merge.rs (new), ownership.rs, instance_probe.rs, mod.rs; settings.rs (docs); tests/settings_transactions (substitution.rs new, faults.rs, ownership.rs, driver.rs). Committed with the rest of Step 3 as `1ae5d84`.
+- **AC impacted:** AC-004 (partial, isolated repository only); no AC certified.
+- **Author:** Claude Code (implementation agent, orchestrator-supervised)
+- **Action:** Fixed the ABA blocker by detection (parent and read-store identities rechecked before replacement), the symlink-alias, temp-name and array-merge majors, 8 minors and the nit; dispositioned 3 Windows function-size minors.
+- **Execution evidence:** RED 4 integration failures plus temp-collision emulation; GREEN full suite 356 passed/0 failed/17 ignored; strict clippy on settings targets, fmt, lint, format check and repository conventions PASS; `--all-targets -D warnings` blocked only by 5 warnings identical at HEAD.
+
+Inspect [the Step 3 checkpoint](progress.md#current-step-3-checkpoint--audit-corrections-applied-pending-independent-audit) and [audit dispositions](implementation.md#step-3-audit-dispositions).
