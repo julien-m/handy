@@ -1,0 +1,290 @@
+{
+  "schema_version": "1",
+  "policy_version": "078.1",
+  "context_hash": "937652a54f5b387338e1c94c1f89f0e871b13fe01abf6020f8c2706386cf5f41",
+  "source_hashes": {
+    ".specs/constitution.md": "2c1b8d9ab4024fb07ad588e883da39abeffe0f3db3bfc9afe3beb29df66659e9",
+    ".specs/features/004-multiple-dictation-shortcuts/spec.md": "ae2151a09b830e81358d5c3b9e33db4ea9fb42344464ab57ca987145b191b20d",
+    ".specs/project.md": "cd935573446ed94fa43256de0a4d14b9474c4356fa66623f3c8c32a80572b699",
+    ".specs/stacks/_default.md": "2207c3a9a96bf3d08186d2f3f18e94db8ba120adaf2748b07fa61b609e906e4e",
+    ".specs/testing/strategy.md": "bfe0dd480a9d3cf2575cba8407a984add02dcbdad2a17fcb4fc560def9058934"
+  },
+  "reviewer_model": "gpt-6",
+  "complete": true,
+  "ready": true,
+  "errors": [],
+  "conclusions": [
+    {
+      "requirement_id": "004-multiple-dictation-shortcuts:AC-001",
+      "disposition": "covered",
+      "rationale": "The criterion fixes both transcription actions, the 1–4 bounds, recorder reuse, UI controls and restart registration. Stories exercise add/remove and both limits; no unresolved choice prevents planning.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/004-multiple-dictation-shortcuts/spec.md:L169-L173",
+          "excerpt": "The dictation action and the dictation-with-post-processing action each keep 1 to 4 shortcuts"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "004-multiple-dictation-shortcuts:AC-002",
+      "disposition": "covered",
+      "rationale": "Migration, downgrade compatibility through the original first binding, reset and preservation of unrelated bindings are observable. Legacy conflict behavior is expressly approved; that exception applies to existing assignments rather than new edits.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/004-multiple-dictation-shortcuts/spec.md:L174-L178",
+          "excerpt": "Upgrading keeps each existing shortcut as the first shortcut of its action, stored where earlier versions read it"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "004-multiple-dictation-shortcuts:AC-003",
+      "disposition": "covered",
+      "rationale": "The activation semantics distinguish action identity from physical shortcut ownership, including held versus locked phases, pending presses, debounce and deferred releases. This is sufficiently explicit for a coordinator state-machine plan.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/004-multiple-dictation-shortcuts/spec.md:L179-L183",
+          "excerpt": "In push-to-talk and in the held phase of hold-or-toggle, only the release of the shortcut that started the session ends it"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "004-multiple-dictation-shortcuts:AC-004",
+      "disposition": "covered",
+      "rationale": "Equality and modifier-subset overlap have concrete rejection rules across all actions; left/right normalization follows each backend. OS registration responsibility explicitly differs between Tauri and HandyKeys, avoiding an impossible universal OS detection guarantee.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/004-multiple-dictation-shortcuts/spec.md:L184-L188",
+          "excerpt": "With the Tauri implementation, an OS registration failure rejects the change with the OS reason; the HandyKeys implementation performs no OS registration and relies on these checks."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "004-multiple-dictation-shortcuts:AC-005",
+      "disposition": "covered",
+      "rationale": "The minimum of one shortcut and preservation of cancel dynamic registration/platform limitations are explicit. Combined with AC-001, removal restrictions are testable without inventing behavior for other actions.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/004-multiple-dictation-shortcuts/spec.md:L189-L193",
+          "excerpt": "No action can be left without a shortcut."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "004-multiple-dictation-shortcuts:AC-006",
+      "disposition": "covered",
+      "rationale": "CLI operations, active implementation syntax, live application and named error codes are specified and reuse 008. The details of transactional integration belong in the plan rather than a new business decision.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/004-multiple-dictation-shortcuts/spec.md:L194-L198",
+          "excerpt": "removing the last shortcut is refused with `validation_failed`"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "004-multiple-dictation-shortcuts:FR-001",
+      "disposition": "covered",
+      "rationale": "An ordered bounded collection, migration and backend registration are fully specified and backed by AC-001/002. Existing storage remains the compatibility authority for the primary shortcut.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/004-multiple-dictation-shortcuts/spec.md:L285-L289",
+          "excerpt": "Store an ordered list of 1–4 shortcuts per transcription action, migrate each existing single shortcut, and register every shortcut with the active keyboard implementation."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "004-multiple-dictation-shortcuts:FR-002",
+      "disposition": "covered",
+      "rationale": "Action routing with hold-mode identity, debounce and pending-press preservation is coherent with the detailed activation criterion and stories.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/004-multiple-dictation-shortcuts/spec.md:L290-L294",
+          "excerpt": "Route every shortcut of an action to that action while preserving activation-mode semantics"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "004-multiple-dictation-shortcuts:FR-003",
+      "disposition": "covered",
+      "rationale": "One shared checker supplies UI/CLI parity, equality/overlap rules and backend OS result handling. Future feature 005 consumes the checker; it does not require 005 to ship before 004.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/004-multiple-dictation-shortcuts/spec.md:L295-L299",
+          "excerpt": "Provide one shared conflict checker over all shortcuts of all actions"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "004-multiple-dictation-shortcuts:FR-004",
+      "disposition": "covered",
+      "rationale": "Last-removal prohibition and four-shortcut cap are specified. AC-005 covers the minimum and AC-001 explicitly supplies maximum feedback, despite the compact reference listing only AC-005.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/004-multiple-dictation-shortcuts/spec.md:L300-L304",
+          "excerpt": "Allow removing any shortcut except the last one of an action, and enforce the four-shortcut limit."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "004-multiple-dictation-shortcuts:FR-005",
+      "disposition": "covered",
+      "rationale": "List/add/remove/reset and live registration with stable errors are explicit and grounded in AC-006. The settings framework dependency is acknowledged by program ordering.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/004-multiple-dictation-shortcuts/spec.md:L305-L309",
+          "excerpt": "Expose shortcut list, add, remove and reset through the settings CLI"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "004-multiple-dictation-shortcuts:SC-001",
+      "disposition": "covered",
+      "rationale": "All activation modes with two shortcuts and unchanged existing single-shortcut expectations give a meaningful regression gate; native proof remains separately required by QE.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/004-multiple-dictation-shortcuts/spec.md:L359-L362",
+          "excerpt": "Coordinator tests cover all three activation modes with two shortcuts"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "004-multiple-dictation-shortcuts:SC-002",
+      "disposition": "covered",
+      "rationale": "The equality and reordering test gate is measurable. It addresses rejection by the checker for candidate edits, while the explicitly approved migration exception preserves pre-existing conflicts.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/004-multiple-dictation-shortcuts/spec.md:L363-L366",
+          "excerpt": "The conflict checker rejects 100% of equal combinations across all actions in table tests, including modifier reordering."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "004-multiple-dictation-shortcuts:SC-003",
+      "disposition": "covered",
+      "rationale": "Migration success includes conflict-bearing stores and unmodified legacy behavior, consistent with the accepted legacy decision; this requires a baseline fixture/runtime comparison during implementation.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/004-multiple-dictation-shortcuts/spec.md:L367-L369",
+          "excerpt": "with every legacy shortcut behaving as before the upgrade."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    }
+  ],
+  "ambiguities": [],
+  "extra_scope": [],
+  "findings": [
+    {
+      "category": "transactional_registration",
+      "severity": "warning",
+      "description": "The specification demands unchanged saved state after rejection and live registration, but native side-effect rollback and persistence ordering remain implementation risks, especially partial multi-registration failure.",
+      "suggestion": "In the plan, reuse the 008 transaction service and define prepare/apply/rollback registration, runtime rollback after save failure, and restart convergence tests.",
+      "citations": [
+        {
+          "section_id": ".specs/features/004-multiple-dictation-shortcuts/spec.md:L184-L188",
+          "excerpt": "Rejections leave saved shortcuts unchanged."
+        },
+        {
+          "section_id": ".specs/features/004-multiple-dictation-shortcuts/spec.md:L194-L198",
+          "excerpt": "A running instance applies the change without restart."
+        }
+      ]
+    },
+    {
+      "category": "activation_regression",
+      "severity": "warning",
+      "description": "The short story scenarios do not enumerate threshold boundaries, deferred release, processing-state replay or simultaneous alternative presses, while AC-003 and edge cases explicitly require them.",
+      "suggestion": "Plan a deterministic injected clock/backend seam and a matrix for threshold-minus/equal/plus, A/B release ownership, pending press/release, simultaneous presses and unchanged legacy tests.",
+      "citations": [
+        {
+          "section_id": ".specs/features/004-multiple-dictation-shortcuts/spec.md:L179-L183",
+          "excerpt": "Debounce, the deferred release and the remembered press while processing keep their current behavior."
+        },
+        {
+          "section_id": ".specs/features/004-multiple-dictation-shortcuts/spec.md:L350-L356",
+          "excerpt": "Two shortcuts pressed simultaneously: debounce and session ownership prevent a double start."
+        }
+      ]
+    },
+    {
+      "category": "migration_downgrade",
+      "severity": "warning",
+      "description": "Keeping the original storage field protects downgrade use, but a downgraded binary may edit that field while supplemental shortcuts remain stored. Future re-upgrade reconciliation and legacy conflict provenance need a concrete data policy.",
+      "suggestion": "Document a compatibility representation and migration provenance; plan fixtures for downgrade changing the first shortcut, re-upgrade, reset, switch-backend invalid alternatives and grandfathered conflicts without silently deregistering legacy bindings.",
+      "citations": [
+        {
+          "section_id": ".specs/features/004-multiple-dictation-shortcuts/spec.md:L174-L178",
+          "excerpt": "so that a downgrade keeps that first shortcut working and ignores the additional ones"
+        },
+        {
+          "section_id": ".specs/features/004-multiple-dictation-shortcuts/spec.md:L350-L356",
+          "excerpt": "only that shortcut is reset or removed and reported"
+        }
+      ]
+    },
+    {
+      "category": "native_test_evidence",
+      "severity": "warning",
+      "description": "The referenced project strategy records only keyboard JavaScript and Playwright commands. Those commands cannot by themselves prove Rust coordinator semantics or native keyboard registration.",
+      "suggestion": "Resolve cargo test commands in the plan, identify unit/integration seams, and require separate native macOS evidence for both keyboard implementations and existing Linux/Windows limitations.",
+      "citations": [
+        {
+          "section_id": ".specs/testing/strategy.md:L7-L12",
+          "excerpt": "- `bun src/lib/utils/keyboard.test.ts`\n- `playwright test`\n- `playwright test --ui`"
+        },
+        {
+          "section_id": ".specs/features/004-multiple-dictation-shortcuts/spec.md:L328-L337",
+          "excerpt": "Native manual test on macOS with both keyboard implementations"
+        }
+      ]
+    },
+    {
+      "category": "requirement_traceability",
+      "severity": "info",
+      "description": "FR-004 names only AC-005 in its AC References although its four-shortcut cap is explicitly covered by AC-001. This does not lose normative coverage but a literal mapping consumer could miss the cap.",
+      "suggestion": "The plan should map FR-004 to both AC-001 and AC-005 without changing spec identifiers.",
+      "citations": [
+        {
+          "section_id": ".specs/features/004-multiple-dictation-shortcuts/spec.md:L300-L304",
+          "excerpt": "**AC References:** AC-005"
+        },
+        {
+          "section_id": ".specs/features/004-multiple-dictation-shortcuts/spec.md:L169-L173",
+          "excerpt": "adding is unavailable at four, with an explanation."
+        }
+      ]
+    }
+  ],
+  "confidence": 4,
+  "raw_results": [
+    "{\"batch_id\": \"batch-001\", \"reviewed_section_ids\": [\".specs/constitution.md:L1-L2\", \".specs/constitution.md:L3-L17\", \".specs/constitution.md:L18-L26\", \".specs/constitution.md:L27-L29\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L1-L9\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L10-L11\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L12-L20\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L21-L22\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L23-L61\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L62-L98\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L99-L140\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L141-L166\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L167-L168\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L169-L173\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L174-L178\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L179-L183\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L184-L188\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L189-L193\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L194-L198\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L199-L202\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L203-L227\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L228-L248\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L249-L264\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L265-L282\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L283-L284\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L285-L289\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L290-L294\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L295-L299\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L300-L304\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L305-L309\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L310-L317\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L318-L327\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L328-L337\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L338-L345\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L346-L349\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L350-L356\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L357-L358\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L359-L362\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L363-L366\", \".specs/features/004-multiple-dictation-shortcuts/spec.md:L367-L369\", \".specs/project.md:L1-L2\", \".specs/project.md:L3-L7\", \".specs/project.md:L8-L16\", \".specs/project.md:L17-L20\", \".specs/project.md:L21-L24\", \".specs/project.md:L25-L28\", \".specs/project.md:L29-L36\", \".specs/stacks/_default.md:L1-L4\", \".specs/stacks/_default.md:L5-L6\", \".specs/stacks/_default.md:L7-L20\", \".specs/stacks/_default.md:L21-L30\", \".specs/testing/strategy.md:L1-L2\", \".specs/testing/strategy.md:L3-L6\", \".specs/testing/strategy.md:L7-L12\", \".specs/testing/strategy.md:L13-L16\"], \"conclusions\": [{\"requirement_id\": \"004-multiple-dictation-shortcuts:AC-001\", \"disposition\": \"covered\", \"rationale\": \"The criterion fixes both transcription actions, the 1–4 bounds, recorder reuse, UI controls and restart registration. Stories exercise add/remove and both limits; no unresolved choice prevents planning.\", \"source_citations\": [{\"section_id\": \".specs/features/004-multiple-dictation-shortcuts/spec.md:L169-L173\", \"excerpt\": \"The dictation action and the dictation-with-post-processing action each keep 1 to 4 shortcuts\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"004-multiple-dictation-shortcuts:AC-002\", \"disposition\": \"covered\", \"rationale\": \"Migration, downgrade compatibility through the original first binding, reset and preservation of unrelated bindings are observable. Legacy conflict behavior is expressly approved; that exception applies to existing assignments rather than new edits.\", \"source_citations\": [{\"section_id\": \".specs/features/004-multiple-dictation-shortcuts/spec.md:L174-L178\", \"excerpt\": \"Upgrading keeps each existing shortcut as the first shortcut of its action, stored where earlier versions read it\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"004-multiple-dictation-shortcuts:AC-003\", \"disposition\": \"covered\", \"rationale\": \"The activation semantics distinguish action identity from physical shortcut ownership, including held versus locked phases, pending presses, debounce and deferred releases. This is sufficiently explicit for a coordinator state-machine plan.\", \"source_citations\": [{\"section_id\": \".specs/features/004-multiple-dictation-shortcuts/spec.md:L179-L183\", \"excerpt\": \"In push-to-talk and in the held phase of hold-or-toggle, only the release of the shortcut that started the session ends it\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"004-multiple-dictation-shortcuts:AC-004\", \"disposition\": \"covered\", \"rationale\": \"Equality and modifier-subset overlap have concrete rejection rules across all actions; left/right normalization follows each backend. OS registration responsibility explicitly differs between Tauri and HandyKeys, avoiding an impossible universal OS detection guarantee.\", \"source_citations\": [{\"section_id\": \".specs/features/004-multiple-dictation-shortcuts/spec.md:L184-L188\", \"excerpt\": \"With the Tauri implementation, an OS registration failure rejects the change with the OS reason; the HandyKeys implementation performs no OS registration and relies on these checks.\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"004-multiple-dictation-shortcuts:AC-005\", \"disposition\": \"covered\", \"rationale\": \"The minimum of one shortcut and preservation of cancel dynamic registration/platform limitations are explicit. Combined with AC-001, removal restrictions are testable without inventing behavior for other actions.\", \"source_citations\": [{\"section_id\": \".specs/features/004-multiple-dictation-shortcuts/spec.md:L189-L193\", \"excerpt\": \"No action can be left without a shortcut.\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"004-multiple-dictation-shortcuts:AC-006\", \"disposition\": \"covered\", \"rationale\": \"CLI operations, active implementation syntax, live application and named error codes are specified and reuse 008. The details of transactional integration belong in the plan rather than a new business decision.\", \"source_citations\": [{\"section_id\": \".specs/features/004-multiple-dictation-shortcuts/spec.md:L194-L198\", \"excerpt\": \"removing the last shortcut is refused with `validation_failed`\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"004-multiple-dictation-shortcuts:FR-001\", \"disposition\": \"covered\", \"rationale\": \"An ordered bounded collection, migration and backend registration are fully specified and backed by AC-001/002. Existing storage remains the compatibility authority for the primary shortcut.\", \"source_citations\": [{\"section_id\": \".specs/features/004-multiple-dictation-shortcuts/spec.md:L285-L289\", \"excerpt\": \"Store an ordered list of 1–4 shortcuts per transcription action, migrate each existing single shortcut, and register every shortcut with the active keyboard implementation.\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"004-multiple-dictation-shortcuts:FR-002\", \"disposition\": \"covered\", \"rationale\": \"Action routing with hold-mode identity, debounce and pending-press preservation is coherent with the detailed activation criterion and stories.\", \"source_citations\": [{\"section_id\": \".specs/features/004-multiple-dictation-shortcuts/spec.md:L290-L294\", \"excerpt\": \"Route every shortcut of an action to that action while preserving activation-mode semantics\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"004-multiple-dictation-shortcuts:FR-003\", \"disposition\": \"covered\", \"rationale\": \"One shared checker supplies UI/CLI parity, equality/overlap rules and backend OS result handling. Future feature 005 consumes the checker; it does not require 005 to ship before 004.\", \"source_citations\": [{\"section_id\": \".specs/features/004-multiple-dictation-shortcuts/spec.md:L295-L299\", \"excerpt\": \"Provide one shared conflict checker over all shortcuts of all actions\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"004-multiple-dictation-shortcuts:FR-004\", \"disposition\": \"covered\", \"rationale\": \"Last-removal prohibition and four-shortcut cap are specified. AC-005 covers the minimum and AC-001 explicitly supplies maximum feedback, despite the compact reference listing only AC-005.\", \"source_citations\": [{\"section_id\": \".specs/features/004-multiple-dictation-shortcuts/spec.md:L300-L304\", \"excerpt\": \"Allow removing any shortcut except the last one of an action, and enforce the four-shortcut limit.\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"004-multiple-dictation-shortcuts:FR-005\", \"disposition\": \"covered\", \"rationale\": \"List/add/remove/reset and live registration with stable errors are explicit and grounded in AC-006. The settings framework dependency is acknowledged by program ordering.\", \"source_citations\": [{\"section_id\": \".specs/features/004-multiple-dictation-shortcuts/spec.md:L305-L309\", \"excerpt\": \"Expose shortcut list, add, remove and reset through the settings CLI\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"004-multiple-dictation-shortcuts:SC-001\", \"disposition\": \"covered\", \"rationale\": \"All activation modes with two shortcuts and unchanged existing single-shortcut expectations give a meaningful regression gate; native proof remains separately required by QE.\", \"source_citations\": [{\"section_id\": \".specs/features/004-multiple-dictation-shortcuts/spec.md:L359-L362\", \"excerpt\": \"Coordinator tests cover all three activation modes with two shortcuts\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"004-multiple-dictation-shortcuts:SC-002\", \"disposition\": \"covered\", \"rationale\": \"The equality and reordering test gate is measurable. It addresses rejection by the checker for candidate edits, while the explicitly approved migration exception preserves pre-existing conflicts.\", \"source_citations\": [{\"section_id\": \".specs/features/004-multiple-dictation-shortcuts/spec.md:L363-L366\", \"excerpt\": \"The conflict checker rejects 100% of equal combinations across all actions in table tests, including modifier reordering.\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"004-multiple-dictation-shortcuts:SC-003\", \"disposition\": \"covered\", \"rationale\": \"Migration success includes conflict-bearing stores and unmodified legacy behavior, consistent with the accepted legacy decision; this requires a baseline fixture/runtime comparison during implementation.\", \"source_citations\": [{\"section_id\": \".specs/features/004-multiple-dictation-shortcuts/spec.md:L367-L369\", \"excerpt\": \"with every legacy shortcut behaving as before the upgrade.\"}], \"plan_citations\": [], \"searched_plan_sections\": []}], \"ambiguities\": [], \"extra_scope\": [], \"findings\": [{\"category\": \"transactional_registration\", \"severity\": \"warning\", \"description\": \"The specification demands unchanged saved state after rejection and live registration, but native side-effect rollback and persistence ordering remain implementation risks, especially partial multi-registration failure.\", \"suggestion\": \"In the plan, reuse the 008 transaction service and define prepare/apply/rollback registration, runtime rollback after save failure, and restart convergence tests.\", \"citations\": [{\"section_id\": \".specs/features/004-multiple-dictation-shortcuts/spec.md:L184-L188\", \"excerpt\": \"Rejections leave saved shortcuts unchanged.\"}, {\"section_id\": \".specs/features/004-multiple-dictation-shortcuts/spec.md:L194-L198\", \"excerpt\": \"A running instance applies the change without restart.\"}]}, {\"category\": \"activation_regression\", \"severity\": \"warning\", \"description\": \"The short story scenarios do not enumerate threshold boundaries, deferred release, processing-state replay or simultaneous alternative presses, while AC-003 and edge cases explicitly require them.\", \"suggestion\": \"Plan a deterministic injected clock/backend seam and a matrix for threshold-minus/equal/plus, A/B release ownership, pending press/release, simultaneous presses and unchanged legacy tests.\", \"citations\": [{\"section_id\": \".specs/features/004-multiple-dictation-shortcuts/spec.md:L179-L183\", \"excerpt\": \"Debounce, the deferred release and the remembered press while processing keep their current behavior.\"}, {\"section_id\": \".specs/features/004-multiple-dictation-shortcuts/spec.md:L350-L356\", \"excerpt\": \"Two shortcuts pressed simultaneously: debounce and session ownership prevent a double start.\"}]}, {\"category\": \"migration_downgrade\", \"severity\": \"warning\", \"description\": \"Keeping the original storage field protects downgrade use, but a downgraded binary may edit that field while supplemental shortcuts remain stored. Future re-upgrade reconciliation and legacy conflict provenance need a concrete data policy.\", \"suggestion\": \"Document a compatibility representation and migration provenance; plan fixtures for downgrade changing the first shortcut, re-upgrade, reset, switch-backend invalid alternatives and grandfathered conflicts without silently deregistering legacy bindings.\", \"citations\": [{\"section_id\": \".specs/features/004-multiple-dictation-shortcuts/spec.md:L174-L178\", \"excerpt\": \"so that a downgrade keeps that first shortcut working and ignores the additional ones\"}, {\"section_id\": \".specs/features/004-multiple-dictation-shortcuts/spec.md:L350-L356\", \"excerpt\": \"only that shortcut is reset or removed and reported\"}]}, {\"category\": \"native_test_evidence\", \"severity\": \"warning\", \"description\": \"The referenced project strategy records only keyboard JavaScript and Playwright commands. Those commands cannot by themselves prove Rust coordinator semantics or native keyboard registration.\", \"suggestion\": \"Resolve cargo test commands in the plan, identify unit/integration seams, and require separate native macOS evidence for both keyboard implementations and existing Linux/Windows limitations.\", \"citations\": [{\"section_id\": \".specs/testing/strategy.md:L7-L12\", \"excerpt\": \"- `bun src/lib/utils/keyboard.test.ts`\\n- `playwright test`\\n- `playwright test --ui`\"}, {\"section_id\": \".specs/features/004-multiple-dictation-shortcuts/spec.md:L328-L337\", \"excerpt\": \"Native manual test on macOS with both keyboard implementations\"}]}, {\"category\": \"requirement_traceability\", \"severity\": \"info\", \"description\": \"FR-004 names only AC-005 in its AC References although its four-shortcut cap is explicitly covered by AC-001. This does not lose normative coverage but a literal mapping consumer could miss the cap.\", \"suggestion\": \"The plan should map FR-004 to both AC-001 and AC-005 without changing spec identifiers.\", \"citations\": [{\"section_id\": \".specs/features/004-multiple-dictation-shortcuts/spec.md:L300-L304\", \"excerpt\": \"**AC References:** AC-005\"}, {\"section_id\": \".specs/features/004-multiple-dictation-shortcuts/spec.md:L169-L173\", \"excerpt\": \"adding is unavailable at four, with an explanation.\"}]}], \"confidence\": 4, \"synthesized_batch_ids\": [], \"resolutions\": []}"
+  ],
+  "synthesis": null,
+  "synthesis_transport_version": null
+}

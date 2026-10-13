@@ -1,0 +1,40 @@
+{
+  "command": "spec-specify",
+  "created_at": "2026-10-12T17:08:07.445410+00:00",
+  "feature_slug": "001-microphone-priority",
+  "files": [
+    {
+      "path": ".specs/features/001-microphone-priority/changelog.md",
+      "sha256": "4279fe9b41780b0786e3c5e5729d349857388e740be16e2064a14340748e58d6"
+    },
+    {
+      "path": ".specs/changelog.md",
+      "sha256": "74a96637998013194bbe93f778b7ae28189ff563a0b5d9716b393449d51287e2"
+    },
+    {
+      "path": ".specs/README.md",
+      "sha256": "c30e5e64fee52b27fb214a681911aaa0268c59cd221a23066a78d963ac8e4d60"
+    },
+    {
+      "path": ".specs/features/001-microphone-priority/spec.md",
+      "sha256": "a624a389ba71346bfa51d1f9b4ab132e091345f60f1b876959be939946d8636b"
+    },
+    {
+      "path": ".specs/roadmap.md",
+      "sha256": "375f4c15c9adcae84785f19cc1f3fea9e74e53733f37266bdc582117e78aa586"
+    }
+  ],
+  "oracle": "livespec-finalize-evidence",
+  "oracle_version": "1",
+  "outcome": "verified",
+  "payload_hash": "ed04569aa6489a1b61f323abecf82e10ca97f665afcd6e1efc660698242bfde7",
+  "receipt_hash": "c6d76aedb2574a2e87ce8a60dd9311af255dbeca43f07b0dc954c64797d70c7b",
+  "schema_version": "1",
+  "verdict": "FAIL",
+  "violations": [
+    {
+      "message": "Feature '001-microphone-priority' is not referenced in any roadmap item",
+      "rule_id": "R1.2"
+    }
+  ]
+}

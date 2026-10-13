@@ -1,0 +1,1114 @@
+{
+  "schema_version": "1",
+  "policy_version": "078.1",
+  "context_hash": "6017a437616e9c1640c08f56c174e952baef709e79401df582b82ef6779a9eef",
+  "source_hashes": {
+    ".specs/constitution.md": "2c1b8d9ab4024fb07ad588e883da39abeffe0f3db3bfc9afe3beb29df66659e9",
+    ".specs/features/007-smart-paste/plan.md": "96227027ced723de96809c9d87f55b70b2477dec23fda3a5302f767d09d4bf18",
+    ".specs/features/007-smart-paste/spec.md": "446394146232eed100d240a80dcb0fbe66d320d5f9f8f50ee60035cf185c0d65",
+    ".specs/features/008-settings-cli/plan.md": "f95b8b53075ed8a3619f5843b3ac626efc03f9a6cb3806d9b29980ed4ca0356d",
+    ".specs/project.md": "cd935573446ed94fa43256de0a4d14b9474c4356fa66623f3c8c32a80572b699",
+    ".specs/stacks/_default.md": "4df92d16eef38a57c8c2bf1fff8425852b86a41e86c6b7c16423ec166ddfc0f8",
+    ".specs/testing/strategy.md": "bfe0dd480a9d3cf2575cba8407a984add02dcbdad2a17fcb4fc560def9058934"
+  },
+  "reviewer_model": "gpt-6.1-sol",
+  "complete": true,
+  "ready": true,
+  "errors": [],
+  "conclusions": [
+    {
+      "requirement_id": "007-smart-paste:AC-001",
+      "disposition": "covered",
+      "rationale": "Identifiant historique retiré : le plan ne réutilise aucun critère de la fenêtre de récupération et ne prévoit pas cette fenêtre.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L246-L249",
+          "excerpt": "AC-001 to AC-007 belonged to the retired clipboard recovery window scope and are not reused (see Clarifications)."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L19-L26",
+          "excerpt": "Retired FR-001–FR-004, AC-001–AC-007 and SC-001–SC-003 stay retired; no clipboard recovery window is delivered."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-007",
+      "disposition": "covered",
+      "rationale": "Identifiant historique retiré : le plan ne réutilise aucun critère de la fenêtre de récupération et ne prévoit pas cette fenêtre.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L246-L249",
+          "excerpt": "AC-001 to AC-007 belonged to the retired clipboard recovery window scope and are not reused (see Clarifications)."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L19-L26",
+          "excerpt": "Retired FR-001–FR-004, AC-001–AC-007 and SC-001–SC-003 stay retired; no clipboard recovery window is delivered."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-008",
+      "disposition": "covered",
+      "rationale": "Le plan définit snapshot ordonné brut, budget agrégé 200 ms/50 MB avec omissions explicites, publication lazy marquée current-host-only et provider maintenu disponible sur main. Le timestamp avant premier key-down distingue prélecture et lecture pendant maintien ; délais et résolution de V restent hors main. Les steps 1/4 et tests aux limites vérifient ces mécanismes, sans certifier actuellement les callbacks AppKit.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L250-L254",
+          "excerpt": "The data provider supplies the full transcript on every request and reports the first request after the paste keystroke exactly once."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L250-L254",
+          "excerpt": "Saving the previous content is bounded to 200 ms and 50 MB; a type that cannot be saved within those bounds is skipped, and \"exactly\" in AC-009 applies to the saved types."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L91-L98",
+          "excerpt": "Preserve all saved types exactly; no text/image decoding or normalization. Saved payload total ≤**50,000,000 bytes**, capture deadline **200 ms** including helper startup/IPC; do not restart the budget per type."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L123-L133",
+          "excerpt": "| Lazy local clipboard paste, including Jump Desktop | Yes | Keep all three existing markers, eager empty marker data; only text request counts | AC-008 requires host-only/transient; preserve ConcealedType privacy defense |"
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L73-L80",
+          "excerpt": "AppKit serves during chord hold; first-key-down timestamp is recorded immediately before posting the first key event. Requests while the chord is held qualify."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L398-L407",
+          "excerpt": "provider serves full text on every real request and count/lifetime behavior verified."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-009",
+      "disposition": "covered",
+      "rationale": "Le reducer décrit first/last read, quiet 300 ms ou Jump 1,5 s, décision 800 ms ou 3 s et cap fixe 8 s depuis première lecture. Sans lecture, snapshot immédiatement détruit, terminal inchangé et transcript servi tardivement. Toutes écritures de nettoyage sont protégées par changeCount/identité ; restauration reconstruit les seuls types sauvegardés. Les sorties et dictations successives appliquent la priorité AC-009 autorisée.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L255-L259",
+          "excerpt": "Restoration requires a read observed after the paste keystroke."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L255-L259",
+          "excerpt": "the saved snapshot is discarded and the previous content is never restored for that dictation: the transcript stays on the clipboard until the user or another application replaces it."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L255-L259",
+          "excerpt": "only when the pasteboard `changeCount` still equals the value recorded at publication; otherwise it does nothing."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L99-L114",
+          "excerpt": "Restore deadline = min(last_read + per-app quiet, first_read + 8 s); callbacks reschedule quiet while cap stays fixed."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L99-L114",
+          "excerpt": "At no-read deadline, discard snapshot immediately, publish terminal not read once, keep transcript provider serviceable; never restore for that dictation, even after late reads."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L99-L114",
+          "excerpt": "All cleanup writes (restore, copy-mode plain rewrite, normal-exit materialization, final-guard cleanup) require current changeCount equals publication count, with transaction/generation identity current."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L115-L122",
+          "excerpt": "An old not-read transaction has already discarded it: snapshot the current transcript/types for the second dictation, **never resurrect the pre-first snapshot** (AC-009 wins over the generic Edge Cases wording)."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-010",
+      "disposition": "covered",
+      "rationale": "Le dispatch identifie exactement les trois apps dédiées et leur stratégie. AX-first puis clipboard couvre les autres, dont Jump avec timing spécial. Unicode ne touche pas le clipboard en dont_modify ; le mode copy matérialise le texte. Screen Sharing est eager sans chord/restauration ; permissions s’appliquent aux opérations AX/key et non à la remise seule. Step 6 et matrice native sont explicites.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L260-L264",
+          "excerpt": "`com.apple.ScreenContinuity` (iPhone Mirroring) and `com.microsoft.rdc.macos` (Windows App) receive the transcript as Unicode key events without clipboard use; `com.apple.ScreenSharing` receives a clipboard write of the transcript without a paste keystroke and keeps it until the user copies something else; every other application uses direct insertion (AC-017) and then the clipboard paste of AC-008/AC-009."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L99-L114",
+          "excerpt": "| iPhone Mirroring `com.apple.ScreenContinuity` | Unicode events | N/A | No restoration | N/A |"
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L99-L114",
+          "excerpt": "| Windows App `com.microsoft.rdc.macos` | Unicode events | N/A | No restoration | N/A |"
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L99-L114",
+          "excerpt": "| Screen Sharing `com.apple.ScreenSharing` | Eager plain-text hand-over, no keys | N/A | No restoration | N/A |"
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L418-L427",
+          "excerpt": "Unicode dont_modify doesn't touch clipboard; Screen Sharing has no keystroke/restore; V resolved after switch; owned layout restored even after error/exit, no stale cleanup overriding next transaction."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-011",
+      "disposition": "covered",
+      "rationale": "Les ports TIS/key et Step 6 prévoient ABC puis US, settle 50 ms, V résolu après changement et restauration 100 ms après dernier key-up, même erreur/cancel/exit. Les cas IME et échec des deux layouts gardent la source ; les tests distinguent ces transitions et la coordination évite cleanup obsolète.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L265-L269",
+          "excerpt": "Handy selects `com.apple.keylayout.ABC`, or `com.apple.keylayout.US` when ABC cannot be selected, waits 50 ms for the switch to apply, sends Cmd+V, and restores the previous input source 100 ms after the last key of the chord is released."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L265-L269",
+          "excerpt": "When the current input source is an input method, or neither layout can be selected, Handy sends Cmd+V without changing it."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L418-L427",
+          "excerpt": "Implement dedicated Unicode and Screen Sharing hand-over, ABC/US fallback with 50 ms settle and 100 ms cleanup after last key-up, layout/input-method unchanged cases and error/cancel cleanup."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L481-L498",
+          "excerpt": "ABC→US fallback, failed both/input-method unchanged, 50 ms switch and 100 ms after last key-up even failure/cancel"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-012",
+      "disposition": "covered",
+      "rationale": "Le contrat distingue huit terminaux et un diagnostic tardif idempotent avec dictation/transaction/destination IDs. Enter et recovery ont des prédicats explicites et attendent le terminal, Jump 3 s inclus. Permission est vérifiée avant effet clipboard même en copy ; hand-over est neutre et traduit. Step 7 bypass le bloc auto-submit historique ; 010 reçoit le diagnostic pour actualiser sa bulle lors de son implémentation, sans transformer not_read en succès. La portée programme est correctement séparée.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L270-L274",
+          "excerpt": "Smart paste reports one outcome per dictation:"
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L270-L274",
+          "excerpt": "Only \"inserted, verified\", \"insertion attempted, read observed\" and \"typed\" count as a successful insertion for automatic Enter (009)."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L270-L274",
+          "excerpt": "If a read arrives after \"not read\" was declared, the transcript (still on the clipboard) is served, the outcome stays \"not read\" for automatic Enter, and the recovery bubble states that the text may have been pasted after all."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L134-L150",
+          "excerpt": "`PasteOutcome {dictation_id, transaction_id, destination_generation, strategy, kind}` is terminal exactly once."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L134-L150",
+          "excerpt": "A late read after not read serves text but leaves not read/Enter ineligible; 010 updates the existing correlated bubble to translated “may have been pasted after all”, without creating a duplicate bubble or recopying automatically."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L81-L90",
+          "excerpt": "For other apps, check AX permission before touching the clipboard, even in copy mode."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L428-L437",
+          "excerpt": "Ensure legacy auto-submit block is bypassed for smart paste so the typed eligibility gate owns one submission."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-013",
+      "disposition": "covered",
+      "rationale": "Le mode copy remplace restore par matérialisation plain-text protégée et élimination du snapshot, y compris après AX vérifié/Unicode. Il n’entretient pas de snapshot après not_read. Le plan garde l’historique existant WAV-gated et ne modifie ni l’entrée ni sa politique de sauvegarde ; l’exception copy à clipboard untouched est explicite.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L275-L279",
+          "excerpt": "smart paste replaces the restoration by leaving the transcript on the clipboard as plain text, as the current paths do; after a verified direct insertion it also writes the transcript to the clipboard as plain text."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L275-L279",
+          "excerpt": "The history entry is never modified by smart paste."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L99-L114",
+          "excerpt": "For lazy clipboard paste, serve receipts normally, then guarded materialize plain text and discard snapshot instead of restoration; on not read retain plain transcript without reviving the snapshot."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L99-L114",
+          "excerpt": "after verified AX insertion, Unicode typing or hand-over, deliberately put plain text on clipboard as required by AC-013/AC-010."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L115-L122",
+          "excerpt": "007 does not change history, add unconditional persistence, or promise crash recovery for every dictation."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-014",
+      "disposition": "covered",
+      "rationale": "Le service 008 applique default macOS et migration atomique des CtrlV beta true/false une fois, préserve autres méthodes et selections ultérieures, supprime la clé beta du payload/UI macOS. Marqueur read-only et CAS protègent replay/écritures concurrentes ; Windows et Linux sont maintenus et ont des régressions prévues.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L280-L284",
+          "excerpt": "Smart paste is a paste method available on macOS and is the default there for new installations."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L280-L284",
+          "excerpt": "users whose paste method is Cmd+V move to smart paste, whether or not the beta switch was on; users with any other method keep it and the beta switch is dropped."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L151-L158",
+          "excerpt": "New macOS installation defaults smart_paste with marker; upgraded macOS without marker migrates **CtrlV whether reliable_paste was true or false**, preserves every other method, drops reliable_paste from its public settings/UI and persisted payload, and writes marker in the same atomic transaction."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L151-L158",
+          "excerpt": "A later user selection of CtrlV remains on every reload."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L438-L447",
+          "excerpt": "unsupported platform no mutation; Windows beta and Linux unchanged."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-015",
+      "disposition": "covered",
+      "rationale": "Descriptor/validation/output Domain et commit_mutation de 008 sont réutilisés sans service concurrent. Les commandes output/generic sont définies, validator UI/CLI refuse non-mac sans revision/effet, l’enveloppe JSON et exit 2 sont conservés. Tests planifiés sur vrais adapters/service, parity et channel stdout. 008 demeure dépendance de livraison, pas obligations supplémentaires de 007.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L285-L289",
+          "excerpt": "The settings CLI (008) reads and sets the paste method including `smart_paste`, with the UI validation (`smart_paste` refused outside macOS with `validation_failed`). With `--json`, stdout contains only the JSON envelope."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L151-L158",
+          "excerpt": "same validator for UI/CLI refuses it outside macOS (`validation_failed`, exit 2), no persisted change/revision/effect."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L151-L158",
+          "excerpt": "Output reads support `handy settings output get paste_method`; sets support `handy settings output set paste_method smart_paste --json`, plus generic get/set per 008."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L151-L158",
+          "excerpt": "No stdout pollution: one `{ok:true,revision:N,data:...}` or `{ok:false,error:{code,message,details:{...}}}` newline; existing exit mapping 0 success, 1 persistence/internal, 2 usage/validation, 3 revision conflict, 4 not found, 5 unavailable."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-016",
+      "disposition": "covered",
+      "rationale": "Le Step 9 et matrice définissent apps/layouts requis, dix essais par paire/path, seuils 9/10, observation du champ plutôt que seuls événements, et fallback lorsque AX non vérifié. La matrice disponible/non-vérifié est complète et la livraison requiert TextEdit/Notes/ChatGPT/Comet sur les trois layouts ; aucun vieux contenu/transcript n’est dispensé. Spikes et preuves restent à produire : cela couvre le plan de vérification avant release, pas une compatibilité actuelle.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L300-L304",
+          "excerpt": "TextEdit, Notes, ChatGPT and Comet must pass with AZERTY, US and Dvorak before release, and no run of any application may deliver a previous clipboard content or a previous transcript; failures elsewhere are listed as known incompatibilities."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L481-L498",
+          "excerpt": "Native matrix: TextEdit, Notes, ChatGPT, Comet and one Chromium app × AZERTY, US, Dvorak; include IME exploratory check."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L481-L498",
+          "excerpt": "Each app/layout/path gets ten trials: direct exactly once and verified ≥9/10, clipboard transcript inserted + prior clipboard restored ≥9/10, Unicode correct ≥9/10, Screen Sharing remote availability ≥9/10."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L448-L457",
+          "excerpt": "Any stale content or duplicate is release-blocking regardless of app."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L481-L498",
+          "excerpt": "Human/independent native field observation supplements harness: posted events and callback logs alone cannot prove insertion."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-017",
+      "disposition": "covered",
+      "rationale": "Le worker vérifie permission/PID/role/value/range UTF-16, skip secure/unreadable/prewrite invalid, écrit AXSelectedText une fois, puis compare au remplacement attendu jusqu’à 150 ms. Setter success/failure ne vaut pas preuve ; inchangé permet fallback, mutation partielle/lecture inconnue devient uncertain. Final guard protège les mutations tardives détectables sans prétendre les annuler. Les cases 149/150/151 et gates duplicate natifs couvrent le risque restant.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L290-L294",
+          "excerpt": "The attempt is verified when the new value equals the old value with the selected range replaced by the transcript; the outcome is then \"inserted, verified\" and the clipboard is never touched."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L290-L294",
+          "excerpt": "if the value is still unchanged at the end of the read-back window (whether setting reported success or failure), smart paste falls back to the clipboard paste (AC-008/AC-009)."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L81-L90",
+          "excerpt": "Find the focused element, verify `AXUIElementGetPid` equals destination PID, classify role, read AXValue and AXSelectedTextRange. Skip secure fields and unreadable values."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L81-L90",
+          "excerpt": "Set AXSelectedText exactly once. Poll value with deadline, including immediate read and end-of-window read: exact expected → inserted verified; changed differently → uncertain with no fallback; unchanged at the deadline → clipboard fallback per AC-017, regardless of setter's reported result."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L81-L90",
+          "excerpt": "If readback becomes unreadable/times out after a possible write, emit uncertain, never blindly retry or paste."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L388-L397",
+          "excerpt": "failed setter/late setter, 149/150/151 ms and total-budget tests; real hanging/large field measurements."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-018",
+      "disposition": "covered",
+      "rationale": "La chaîne AX → clipboard → recovery et erreurs sont typées, Steps 3/7 testent l’ordre. L’allocation totale monotonic 250 ms dont 150 ms readback, timeouts proxy≤20 ms/remaining et worker évitent de confondre async timeout avec arrêt natif. Le spike doit vérifier la borne effective avant adapter wiring. Les gates n’inventent aucune borne runtime déjà observée.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L295-L299",
+          "excerpt": "The insertion chain is: direct accessibility insertion (AC-017), then clipboard paste, then recovery bubble (010) for the outcomes \"not read\", \"permission missing\", \"uncertain\" and \"insertion failed\"."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L295-L299",
+          "excerpt": "Direct insertion, including the read-back window, adds at most 250 ms before the fallback starts."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L81-L90",
+          "excerpt": "An AX attempt has one **250 ms total monotonic budget**, including readback."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L81-L90",
+          "excerpt": "Set `AXUIElementSetMessagingTimeout` on every messaged application/element proxy before each call, at most **20 ms** and never beyond remaining budget."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L81-L90",
+          "excerpt": "Native timing spike verifies effective bounds; an outer async timeout alone cannot stop a blocking AX request or cancel a delivered write."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L428-L437",
+          "excerpt": "Full chain AX → clipboard → recovery; only verified/read_observed/typed eligible; hand-over neither failure nor Enter; events contain IDs/outcome only, text remains private in memory."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:FR-001",
+      "disposition": "covered",
+      "rationale": "FR historique retiré : le plan interdit sa réutilisation et aucun comportement de fenêtre de récupération n’est ajouté.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L341-L344",
+          "excerpt": "FR-001 to FR-004 belonged to the retired scope and are not reused."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L19-L26",
+          "excerpt": "Retired FR-001–FR-004, AC-001–AC-007 and SC-001–SC-003 stay retired; no clipboard recovery window is delivered."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:FR-004",
+      "disposition": "covered",
+      "rationale": "FR historique retiré : le plan interdit sa réutilisation et aucun comportement de fenêtre de récupération n’est ajouté.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L341-L344",
+          "excerpt": "FR-001 to FR-004 belonged to the retired scope and are not reused."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L19-L26",
+          "excerpt": "Retired FR-001–FR-004, AC-001–AC-007 and SC-001–SC-003 stay retired; no clipboard recovery window is delivered."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:FR-005",
+      "disposition": "covered",
+      "rationale": "Steps 1/2/4 matérialisent le contrat natif et état pur : sauvegarde all-types bornée, fresh item/provider avec markers obligatoires, premier read item-scoped après keydown, tests réentrance/lifetime/cache. Le budget/omissions et plateformes dédiées sont ceux des AC.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L345-L349",
+          "excerpt": "Save all pasteboard items and types, publish the transcript as an on-demand item on a current-host-only, transient-marked pasteboard, and detect the first read after the paste keystroke once."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L398-L407",
+          "excerpt": "Implement helper kill/reap, progressive saved types, no disk storage, reconstruction of fresh items, lifetime-held NSPasteboardItemDataProvider and marker policies."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L378-L387",
+          "excerpt": "Add inline Rust tests for timers, one terminal outcome, first-read latch, late diagnostic and all ownership transitions."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L123-L133",
+          "excerpt": "| Lazy local clipboard paste, including Jump Desktop | Yes | Keep all three existing markers, eager empty marker data; only text request counts | AC-008 requires host-only/transient; preserve ConcealedType privacy defense |"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:FR-006",
+      "disposition": "covered",
+      "rationale": "Le reducer/restorer Step 5 joint receipt après key-down, quiet per-app/cap first-read et ownership count. Sans receipt snapshot perdu et jamais ressuscité ; writes user/other-app/010 Copy préservés. Les cas copy, exit et concurrence sont testés contre ce reducer de production.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L350-L354",
+          "excerpt": "Restore the saved pasteboard only after a read confirmed after the keystroke, once reads have been quiet for the per-application delay after the last read (cap 8 s), only when `changeCount` is unchanged; never restore when no read occurred."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L99-L114",
+          "excerpt": "Pre-key reads receive the whole transcript but never start first/last qualifying read. Every qualifying read before settlement updates last_read; first_read is latched once."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L99-L114",
+          "excerpt": "At no-read deadline, discard snapshot immediately, publish terminal not read once, keep transcript provider serviceable; never restore for that dictation, even after late reads."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L408-L417",
+          "excerpt": "No intermediate restoration; not-read snapshot never resurrected; exit never bypasses quiet/cap; late old callbacks can't mutate new transaction; normal exit leaves provider-independent text when not due."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:FR-007",
+      "disposition": "covered",
+      "rationale": "Bundle dispatch et input-source port constituent un module séparé. Les modes Unicode, hand-over et AX+clipboard, ABC/US puis nettoyage 100 ms sont précis. Step 6, les tests de source/cancel et mesures native timing garantissent que l’obligation sera jugée sur effets observés.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L355-L359",
+          "excerpt": "Choose the insertion strategy from the destination bundle identifier and the current input source, including the ABC/US layout switch and its restoration."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L418-L427",
+          "excerpt": "New `smart_paste/{strategy.rs,macos_keyboard.rs}`; modify `input.rs` to expose bounded event posting without hold sleeps on main."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L418-L427",
+          "excerpt": "Implement dedicated Unicode and Screen Sharing hand-over, ABC/US fallback with 50 ms settle and 100 ms cleanup after last key-up, layout/input-method unchanged cases and error/cancel cleanup."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:FR-008",
+      "disposition": "covered",
+      "rationale": "La table des huit outcomes, les prédicats consommés et diagnostic séparé préservent distinction field-verified/read/posted/unconsumed. Pipeline Step 7 attend et bypass ancienne soumission ; 009/010 possèdent leur UI et delivery combinée ne peut se déduire du seul contrat 007.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L360-L364",
+          "excerpt": "Report truthful outcomes consumed by automatic Enter (009) and recovery (010)."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L134-L150",
+          "excerpt": "Expose `is_auto_submit_eligible` and `requires_recovery` on this type so consumers do not guess from Result<(), String>."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L134-L150",
+          "excerpt": "Send Enter at most once after terminal resolution, only while destination/generation remains valid per 009."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L428-L437",
+          "excerpt": "No success log from Result<(), String> enqueued result; missing downstream UI proof remains assigned to 010 and blocks combined-program delivery."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:FR-009",
+      "disposition": "covered",
+      "rationale": "Le plan respecte migration/default macOS, Windows beta conservée, Linux stable, settings CLI/UI par service 008 unique et specta/i18n existants. Le sélecteur garde valeur backend et accès clavier ; son gate Penflow est explicitement reporté avant UI/spec-ship comme autorisé.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L365-L369",
+          "excerpt": "Expose smart paste as a macOS paste method with migration from the macOS beta reliable paste (the Windows switch is kept), in settings UI and settings CLI."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L151-L158",
+          "excerpt": "Windows retains reliable_paste field/switch/path; Linux methods/defaults unchanged."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L151-L158",
+          "excerpt": "Selector uses backend settings snapshot instead of hardcoded CtrlV while loading; smart paste option macOS only."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L151-L158",
+          "excerpt": "Keyboard arrow/Enter selection, visible Tab focus and accessible selected value tested."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L438-L447",
+          "excerpt": "008 transaction/Domain framework delivered; shared Penflow design gate PASS before UI coding."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:FR-010",
+      "disposition": "covered",
+      "rationale": "Le Step 9 décrit harness release, artifacts datés/hash/version, field observation indépendante, path et restored clipboard, full available/unavailable matrix et seuils. Les proof gates avant release empêchent qu’un diagnostic tool ou mock navigateur serve de compatibilité.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L370-L374",
+          "excerpt": "Record native compatibility evidence per application and layout before release."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L448-L457",
+          "excerpt": "Capture release-run app field/clipboard/layout observations; record fallback path explicitly."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L448-L457",
+          "excerpt": "Current binary hashes, timestamped command/native receipts, assertion mappings, observations and complete available/unavailable app matrix."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L481-L498",
+          "excerpt": "Also test available iPhone Mirroring, Windows App, Screen Sharing and Jump Desktop; unavailable applications are explicitly not verified, never inferred supported."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:FR-011",
+      "disposition": "covered",
+      "rationale": "AX-first vérifié et règles unchanged/changed/unknown sont codés Step 3 puis chain Step 7. Late write safety a final check et tests mais absence d’annulation garantie est reconnue ; aucune blacklist ni suppression fallback sans décision. Zero duplicate est un gate natif strict de wiring/release, pas un succès déclaré.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L375-L379",
+          "excerpt": "Try verified direct insertion through the accessibility API before the clipboard paste, with a fallback rule that never inserts the text twice."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L81-L90",
+          "excerpt": "Before fallback key-down, perform one bounded final value/PID/element check: expected or other changed content cancels the chord;"
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L81-L90",
+          "excerpt": "**SC-007 is a release blocker for any duplicate**; do not certify a universal exactly-once mechanism from the guard."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L388-L397",
+          "excerpt": "duplicates or unbounded calls block SC-007/release and require approved remediation."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:SC-001",
+      "disposition": "covered",
+      "rationale": "Success criterion historique retiré : le plan conserve les IDs et ne restaure pas les garanties de l’ancien périmètre.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L390-L406",
+          "excerpt": "Requirement IDs of the retired scope (AC-001–AC-007, FR-001–FR-004, SC-001–SC-003) are not reused."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L19-L26",
+          "excerpt": "Retired FR-001–FR-004, AC-001–AC-007 and SC-001–SC-003 stay retired; no clipboard recovery window is delivered."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:SC-003",
+      "disposition": "covered",
+      "rationale": "Success criterion historique retiré : le plan conserve les IDs et ne restaure pas les garanties de l’ancien périmètre.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L390-L406",
+          "excerpt": "Requirement IDs of the retired scope (AC-001–AC-007, FR-001–FR-004, SC-001–SC-003) are not reused."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L19-L26",
+          "excerpt": "Retired FR-001–FR-004, AC-001–AC-007 and SC-001–SC-003 stay retired; no clipboard recovery window is delivered."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:SC-004",
+      "disposition": "covered",
+      "rationale": "Tests state/coordinator production avec injected ports couvrent Stories 1/2/4 : receipt, no-read, quiet/cap, toutes issues, user text/image/010 Copy et count changes. P0 bloque toute écriture sans ownership ; l’assertion zero overwrite inclut traces événementielles et n’est pas réduite aux références.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L438-L441",
+          "excerpt": "Fake-pasteboard tests covering every scenario of Stories 1, 2 and 4 pass, with zero cases overwriting content copied after publication."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L481-L498",
+          "excerpt": "changeCount race/user image/010 Copy, copy mode, read then quit before/after due, no-read late read, overlapping generations"
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L408-L417",
+          "excerpt": "New `src-tauri/tests/smart_paste_transactions.rs` exercises production actor with injected native ports, not a mock coordinator."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L408-L417",
+          "excerpt": "no-write assertions after changeCount changes, quit/no-read/second-dictation tests."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:SC-005",
+      "disposition": "covered",
+      "rationale": "La matrice impose séparément dix restaurations consécutives exactes de rich text/image/multi-item pour TextEdit et Notes, au-delà du seuil général 9/10. Raw-byte identity et type-order tests excluent une comparaison text-only ; fixtures partiellement sauvegardées ne seront pas certifiées intactes.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L442-L445",
+          "excerpt": "Native checks restore rich text, image and multi-item clipboard content identically in TextEdit and Notes in 10 consecutive runs each."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L481-L498",
+          "excerpt": "SC-005 requires ten consecutive exact rich text/image/multi-item restores each for TextEdit and Notes."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L398-L407",
+          "excerpt": "Bytewise rich/image/multi-item comparisons, exact limits and skipped metadata, source-count races, helper process cleanup, provider reentrancy/no-content log checks."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:SC-006",
+      "disposition": "covered",
+      "rationale": "Le harness prévoit outcome/text/layout pour chaque app disponible de l’inventaire et not_verified explicite ailleurs ; version/binary/path/clipboard/time identifiers empêchent de confondre publication et insertion. Rien ne dispense les apps requises avant release.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L454-L456",
+          "excerpt": "AC-016 compatibility records exist for every listed application available on the test machine, each with outcome, inserted text and layout."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L481-L498",
+          "excerpt": "SC-006 records all available listed apps;"
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L481-L498",
+          "excerpt": "Each run records OS/build/app version, binary SHA-256, app bundle/PID, layout before/during/after, fixture ID, path, outcome, first-key/first-read/last-read/restore timestamps, clipboard saved/skipped types and before/after bytes hashes, inserted synthetic text and multiplicity, permission, manager configuration, remote availability and observed main-loop responsiveness."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:SC-007",
+      "disposition": "covered",
+      "rationale": "Le plan conserve zero duplicate/clipboard untouched dont_modify comme critères stricts, la règle copy étant l’exception AC-013. Délais AX tardifs, final-check races et snapshots/layout delays font partie du spike et des native runs ; toute duplication bloque release et impose approved correction. Ce gate constitue la couverture planifiée sans certifier universalité ni runtime.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L450-L453",
+          "excerpt": "In native checks, direct insertion never inserts the transcript twice: in 100% of runs each application shows the transcript exactly once, and every application where direct insertion is verified leaves the clipboard unchanged."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L481-L498",
+          "excerpt": "SC-007 demands zero duplicates and unchanged clipboard for verified direct dont_modify runs; copy mode is the explicit AC-013 exception."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L81-L90",
+          "excerpt": "Test 149/150/151 ms and delayed applications during snapshot/layout/paste_delay_ms."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L448-L457",
+          "excerpt": "Any stale content or duplicate is release-blocking regardless of app."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-smart-paste:SC-008",
+      "disposition": "covered",
+      "rationale": "Les tests actor incluent late reads, probe reads, deux générations et quit avec no-write/read-ID assertions ; AC-009 discard empêche résurrection du snapshot. Le plan mesure aussi les contre-exemples OS et après quiet/cap, et exige zero stale delivery sans exemptions. Les risques intrinsèques du global clipboard sont reconnus et bloquent release en cas observé ; ils ne sont pas prétendus éliminés par transaction ID.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L446-L449",
+          "excerpt": "In fake-pasteboard tests (late reads, probe-then-read, consecutive dictations, quit), zero cases deliver a previous clipboard content or a previous transcript to the target."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L115-L122",
+          "excerpt": "Native overlapping-dictation testing is mandatory; any old transcript/content delivered to a target blocks SC-008/AC-016 release."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L516-L538",
+          "excerpt": "Current policy cannot guarantee infinite late reads; any observed old-content/transcript delivery blocks AC-016/SC-008 release even for optional apps."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L481-L498",
+          "excerpt": "SC-004/008 retain zero-overwrite/stale-delivery assertions and failing counterexamples."
+        }
+      ],
+      "searched_plan_sections": []
+    }
+  ],
+  "ambiguities": [
+    {
+      "requirement_id": "007-smart-paste:AC-009",
+      "decision_key": "no_read_snapshot_vs_successive_dictation_edge_case",
+      "question": "Le snapshot antérieur peut-il survivre à not_read puis être reporté sur une deuxième dictation ?",
+      "critical": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L427-L435",
+          "excerpt": "if `changeCount` is unchanged since the first publication, the first snapshot stays the content to restore after the second dictation"
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L255-L259",
+          "excerpt": "the saved snapshot is discarded and the previous content is never restored for that dictation"
+        }
+      ],
+      "resolution": "Non. La décision AC-009 autorisée prévaut ; seule une transaction encore éligible peut transmettre son snapshot. Une transaction not_read a détruit le sien, donc la nouvelle sauvegarde prend le transcript courant. Le plan applique et teste explicitement cette priorité.",
+      "resolution_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L255-L259",
+          "excerpt": "the saved snapshot is discarded and the previous content is never restored for that dictation"
+        }
+      ]
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-009",
+      "decision_key": "normal_exit_quiet_window",
+      "question": "Une lecture suffit-elle à restaurer à la fermeture avant quiet/cap ?",
+      "critical": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L427-L435",
+          "excerpt": "the pending restoration runs before exit only when a read was observed and `changeCount` is unchanged"
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L255-L259",
+          "excerpt": "It runs once no new read has occurred for 300 ms after the last read, and at the latest 8 s after the first read if reads keep coming"
+        }
+      ],
+      "resolution": "Non. AC-009 et FR-006 imposent aussi le temps dû. Le plan applique le reducer commun et matérialise eager le transcript si quiet/cap ne sont pas dus, avec ownership guard.",
+      "resolution_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L255-L259",
+          "excerpt": "It runs once no new read has occurred for 300 ms after the last read, and at the latest 8 s after the first read if reads keep coming"
+        }
+      ]
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-012",
+      "decision_key": "jump_terminal_decision_delay",
+      "question": "Le délai de résultat 800 ms décrit génériquement dans AC-012 tronque-t-il Jump à 800 ms ?",
+      "critical": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L270-L274",
+          "excerpt": "The outcome is known only after the read or the 800 ms decision delay"
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L255-L259",
+          "excerpt": "within 800 ms after the keystroke (3 s for Jump Desktop)"
+        }
+      ],
+      "resolution": "Non. AC-009 donne le délai spécialisé Jump de 3 s ; le timing source unique du plan le conserve pour résultat, Enter et recovery.",
+      "resolution_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L255-L259",
+          "excerpt": "within 800 ms after the keystroke (3 s for Jump Desktop)"
+        }
+      ]
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-017",
+      "decision_key": "verified_direct_copy_mode_exception",
+      "question": "La règle clipboard jamais touché d’AX vérifié empêche-t-elle le choix copy_to_clipboard ?",
+      "critical": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L290-L294",
+          "excerpt": "the outcome is then \"inserted, verified\" and the clipboard is never touched."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L275-L279",
+          "excerpt": "after a verified direct insertion it also writes the transcript to the clipboard as plain text."
+        }
+      ],
+      "resolution": "Le réglage copy_to_clipboard constitue l’exception explicitement approuvée par AC-013 ; dont_modify conserve clipboard untouched. Plan et native matrix distinguent ces modes.",
+      "resolution_citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L275-L279",
+          "excerpt": "after a verified direct insertion it also writes the transcript to the clipboard as plain text."
+        }
+      ]
+    }
+  ],
+  "extra_scope": [
+    {
+      "description": "Helper natif privé du même executable pour isoler les promesses externes potentiellement bloquantes.",
+      "justification": "Nécessité technique du budget AC-008 200 ms/50 MB et du main loop disponible : pipe hérité authentifié, lecture seule, framing borné, kill/reap et aucune surface publique ou persistence clipboard ; la viabilité native est un gate préalable.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L250-L254",
+          "excerpt": "Waiting and posting the chord never block the serving of pasteboard reads."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L250-L254",
+          "excerpt": "Saving the previous content is bounded to 200 ms and 50 MB"
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L91-L98",
+          "excerpt": "A private read-only snapshot helper of the same installed executable isolates potentially blocking external pasteboard promises."
+        }
+      ]
+    },
+    {
+      "description": "Marqueur interne read-only smart_paste_migration_version: 1 et suppression explicite de reliable_paste macOS des unknown fields.",
+      "justification": "Nécessité technique de la migration AC-014 une seule fois sans remigrer un CtrlV choisi ensuite ; utilise la transaction startup/CAS existante de 008 et préserve les autres plateformes, sans nouvelle préférence métier.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L280-L284",
+          "excerpt": "users whose paste method is Cmd+V move to smart paste, whether or not the beta switch was on; users with any other method keep it and the beta switch is dropped."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L151-L158",
+          "excerpt": "Persist internal `smart_paste_migration_version: 1` via 008 startup migration commit, read-only in descriptors."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L151-L158",
+          "excerpt": "Explicitly remove the key from unknown-field preservation on macOS so it cannot reappear."
+        }
+      ]
+    },
+    {
+      "description": "Garde AX avant écriture d’un million de UTF-16 units et timeouts proxy bornés.",
+      "justification": "Nécessité technique pour respecter AC-018≤250 ms et limiter copies/mémoire avant mutation ; les grandes valeurs déclenchent le fallback existant, sans réduire la longueur du transcript ni créer une nouvelle stratégie. La borne effective doit être mesurée au spike avant wiring.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L295-L299",
+          "excerpt": "Direct insertion, including the read-back window, adds at most 250 ms before the fallback starts."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L81-L90",
+          "excerpt": "values larger than **1,000,000 UTF-16 code units** (technical memory/time guard, not a new product limit); then use clipboard fallback."
+        }
+      ]
+    },
+    {
+      "description": "Conservation de ConcealedType/AutoGeneratedType aux côtés du TransientType requis, sur la seule publication temporaire lazy.",
+      "justification": "Défense privacy existante documentée dans les Clarifications et préservée dans le nouveau chemin ; aucune promesse de confidentialité absolue ni modification des user-restored types. Screen Sharing et deliberate copy restent des publications plain normales selon leurs AC.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L390-L406",
+          "excerpt": "marks transient/concealed types"
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L123-L133",
+          "excerpt": "Keep all three existing markers, eager empty marker data; only text request counts"
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L123-L133",
+          "excerpt": "Marker behavior is convention-based, not a privacy guarantee."
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "category": "native-feasibility",
+      "severity": "warning",
+      "description": "La sémantique est couverte au niveau plan, mais cache AppKit après prélecture et bounds effectifs helper/AX restent inconnus. Une callback observée n’authentifie pas l’application consommatrice. Le plan traite cette incertitude comme gate natif et ne déclare pas de compatibilité présente.",
+      "suggestion": "Exécuter Step 1 sur binary release/fixtures réelles ; bloquer l’adapter concerné si callback répété, cancellation/helper ou borne AX sont impossibles. Conserver faussement not_read de manière honnête, sans générer receipt fictif.",
+      "citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L390-L406",
+          "excerpt": "To verify natively: whether AppKit calls the data provider again after a clipboard manager read it before the keystroke; a missing second call would produce a false \"not read\"."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L368-L377",
+          "excerpt": "No production dispatch switch until viable evidence."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L368-L377",
+          "excerpt": "Timeout/duplication infeasibility blocks adapter implementation; report exact failure, no silent classic fallback."
+        }
+      ]
+    },
+    {
+      "category": "late-write-concurrency",
+      "severity": "warning",
+      "description": "Le final AX guard ne peut annuler une écriture déjà livrée ou éliminer la fenêtre entre relecture et key-down. De même changeCount check/write n’est pas CAS interprocess et un vieux chord peut consommer le clipboard global récent. Les gates stricts sont adéquats pour ce plan conditionnel ; aucune garantie runtime de exactly-once ou attribution cible n’en découle.",
+      "suggestion": "Conserver les contre-exemples delayed-AX/copy/overlap, mesurer les courses, arrêter wiring/release affectés et obtenir une correction de stratégie/spec si un double ou ancien contenu est observé. Ne pas traiter ≥9/10 comme waiver data-integrity.",
+      "citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L81-L90",
+          "excerpt": "This check narrows, but does not eliminate, the race between final read and key-down or application after key-down."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L91-L98",
+          "excerpt": "AppKit cannot provide an atomic CAS against other processes between guard and write: measure this residual race and record any overwritten newer copy as P0."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L115-L122",
+          "excerpt": "transaction IDs cannot authenticate the consuming application or prevent that OS race."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L448-L457",
+          "excerpt": "Any stale content or duplicate is release-blocking regardless of app."
+        }
+      ]
+    },
+    {
+      "category": "restoration-after-quiet",
+      "severity": "warning",
+      "description": "La restauration quiet/cap implique qu’une nouvelle lecture après settlement peut recevoir le contenu restauré. Cette limite est héritée et explicitement reconnue ; elle demeure risque natif mesuré sous AC-016/SC-008, sans modification silencieuse des délais approuvés.",
+      "suggestion": "Tester des relectures après quiet et cap, maintenir les traces même si incompatibilité optionnelle, et bloquer release pour tout old-content/transcript delivery observé. Une stratégie alternative requiert décision approuvée.",
+      "citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L390-L406",
+          "excerpt": "an application that reads again more than 300 ms after its last read (or after the 8 s cap) receives the restored content"
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L516-L538",
+          "excerpt": "Current policy cannot guarantee infinite late reads; any observed old-content/transcript delivery blocks AC-016/SC-008 release even for optional apps."
+        }
+      ]
+    },
+    {
+      "category": "snapshot-data-integrity",
+      "severity": "warning",
+      "description": "Sauvegarde partielle bornée ne promet pas l’intégrité des types omis, et un clipboard nonempty sans type sauvable fait échouer le départ. Cette défense est technique et ne doit pas être confondue avec réussite native SC-005.",
+      "suggestion": "Mesurer peak memory/IPC et raw-byte identity ; exposer diagnostics type/counters uniquement, garder exact content evidence sur fixtures entièrement sauvées et démontrer all-skipped refusal sans mutation.",
+      "citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L250-L254",
+          "excerpt": "a type that cannot be saved within those bounds is skipped, and \"exactly\" in AC-009 applies to the saved types."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L91-L98",
+          "excerpt": "If a nonempty clipboard has no savable types, refuse transaction start before publication (insertion failed), leaving original content intact"
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L398-L407",
+          "excerpt": "Partial snapshot loss is explicit, not certified intact."
+        }
+      ]
+    },
+    {
+      "category": "privacy-remote-compatibility",
+      "severity": "warning",
+      "description": "La politique host-only/transient/concealed de Jump reste celle imposée à lazy paste et peut gêner la sync remote. Screen Sharing suit la remise dédiée eager ; aucune relaxation des markers Jump n’est autorisée par le plan.",
+      "suggestion": "Mesurer remote sync et clipboard managers installés/non installés dans Step 1/9 ; garder incompatible/non-verified le résultat si nécessaire et demander décision fonctionnelle avant tout assouplissement.",
+      "citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L123-L133",
+          "excerpt": "If Jump's current-host/transient policy blocks remote operation, list not verified/incompatible with evidence; any relaxation of AC-008 needs an approved spec decision, not a plan exception."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L123-L133",
+          "excerpt": "| Screen Sharing hand-over | No | None | Dedicated eager hand-over must be available for remote sync and stay until next copy; not the AC-008 temporary path |"
+        }
+      ]
+    },
+    {
+      "category": "ui-evidence-boundary",
+      "severity": "info",
+      "description": "Le plan est visuel mais les contrats/test IDs/mockups/code IR et C51 sont reportés à la passe commune avant UI/spec-ship, conformément à la décision normative. Cette revue sémantique ne remplace ni approval Penflow ni visual certification.",
+      "suggestion": "Honorer le prerequisite Step 8 et produire forward chain/snapshot/review-result et actual design-profile receipt courant avant code UI ; préserver union des procédures des autres features.",
+      "citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L423-L426",
+          "excerpt": "the Penflow flow/screen contract, semantic and test IDs and the Pencil mockup are produced in one pass for all program features before `spec-ship`"
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L159-L170",
+          "excerpt": "This plan remains visual; no current input authority or design PASS is claimed."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L159-L170",
+          "excerpt": "This design gate is separate from semantic implementation progression."
+        }
+      ]
+    },
+    {
+      "category": "dependency-consumer-boundary",
+      "severity": "info",
+      "description": "008 est inspecté uniquement comme foundation integration context ; son ancienne table six-outcome ne redéfinit pas la spec 007 courante. 009/010 possèdent Enter/bubble UI et leur preuve finale ; 007 fournit les types et fixtures consommateurs sans prétendre livrer toute cette UI maintenant.",
+      "suggestion": "Livrer 008 avant settings wiring, conserver huit outcomes à l’intégration, et exiger preuve combinée avec 009/010 pour la livraison programme.",
+      "citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L19-L26",
+          "excerpt": "it is dependency context, not additional 007 acceptance scope."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L19-L26",
+          "excerpt": "008's older six-outcome description is historical integration context and must not truncate the 007 outcome type."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L428-L437",
+          "excerpt": "010 bubble code is implemented by 010, not this step."
+        }
+      ]
+    },
+    {
+      "category": "crash-history-boundary",
+      "severity": "warning",
+      "description": "Le texte générique edge-case history keeps transcript ne doit pas devenir une nouvelle garantie persistence : actions history est WAV-gated et un crash perd memory/provider non persistés. Le plan ne modifie pas l’historique et documente correctement ce fait.",
+      "suggestion": "Vérifier les régressions history existantes et décrire seulement les entrées effectivement sauvegardées ; garder normal exit guarded eager distinct de crash recovery.",
+      "citations": [
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L427-L435",
+          "excerpt": "after a crash the item can no longer be served and the history keeps the transcript."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/spec.md:L275-L279",
+          "excerpt": "The history entry is never modified by smart paste."
+        },
+        {
+          "section_id": ".specs/features/007-smart-paste/plan.md:L115-L122",
+          "excerpt": "Keep immutable transcript in memory for 010 until its bounded recovery lifetime; crash loses unsaved memory. Document existing stored-history availability honestly."
+        }
+      ]
+    }
+  ],
+  "confidence": 4,
+  "raw_results": [
+    "{\n  \"batch_id\": \"batch-001\",\n  \"reviewed_section_ids\": [\n    \".specs/constitution.md:L1-L2\",\n    \".specs/constitution.md:L3-L17\",\n    \".specs/constitution.md:L18-L26\",\n    \".specs/constitution.md:L27-L29\",\n    \".specs/features/007-smart-paste/plan.md:L1-L16\",\n    \".specs/features/007-smart-paste/plan.md:L17-L18\",\n    \".specs/features/007-smart-paste/plan.md:L19-L26\",\n    \".specs/features/007-smart-paste/plan.md:L27-L43\",\n    \".specs/features/007-smart-paste/plan.md:L44-L56\",\n    \".specs/features/007-smart-paste/plan.md:L57-L70\",\n    \".specs/features/007-smart-paste/plan.md:L71-L72\",\n    \".specs/features/007-smart-paste/plan.md:L73-L80\",\n    \".specs/features/007-smart-paste/plan.md:L81-L90\",\n    \".specs/features/007-smart-paste/plan.md:L91-L98\",\n    \".specs/features/007-smart-paste/plan.md:L99-L114\",\n    \".specs/features/007-smart-paste/plan.md:L115-L122\",\n    \".specs/features/007-smart-paste/plan.md:L123-L133\",\n    \".specs/features/007-smart-paste/plan.md:L134-L150\",\n    \".specs/features/007-smart-paste/plan.md:L151-L158\",\n    \".specs/features/007-smart-paste/plan.md:L159-L170\",\n    \".specs/features/007-smart-paste/plan.md:L171-L262\",\n    \".specs/features/007-smart-paste/plan.md:L263-L316\",\n    \".specs/features/007-smart-paste/plan.md:L317-L363\",\n    \".specs/features/007-smart-paste/plan.md:L364-L367\",\n    \".specs/features/007-smart-paste/plan.md:L368-L377\",\n    \".specs/features/007-smart-paste/plan.md:L378-L387\",\n    \".specs/features/007-smart-paste/plan.md:L388-L397\",\n    \".specs/features/007-smart-paste/plan.md:L398-L407\",\n    \".specs/features/007-smart-paste/plan.md:L408-L417\",\n    \".specs/features/007-smart-paste/plan.md:L418-L427\",\n    \".specs/features/007-smart-paste/plan.md:L428-L437\",\n    \".specs/features/007-smart-paste/plan.md:L438-L447\",\n    \".specs/features/007-smart-paste/plan.md:L448-L457\",\n    \".specs/features/007-smart-paste/plan.md:L458-L480\",\n    \".specs/features/007-smart-paste/plan.md:L481-L498\",\n    \".specs/features/007-smart-paste/plan.md:L499-L515\",\n    \".specs/features/007-smart-paste/plan.md:L516-L538\",\n    \".specs/features/007-smart-paste/plan.md:L539-L542\",\n    \".specs/features/007-smart-paste/plan.md:L543-L545\",\n    \".specs/features/007-smart-paste/spec.md:L1-L9\",\n    \".specs/features/007-smart-paste/spec.md:L10-L11\",\n    \".specs/features/007-smart-paste/spec.md:L12-L20\",\n    \".specs/features/007-smart-paste/spec.md:L21-L22\",\n    \".specs/features/007-smart-paste/spec.md:L23-L67\",\n    \".specs/features/007-smart-paste/spec.md:L68-L95\",\n    \".specs/features/007-smart-paste/spec.md:L96-L141\",\n    \".specs/features/007-smart-paste/spec.md:L142-L176\",\n    \".specs/features/007-smart-paste/spec.md:L177-L201\",\n    \".specs/features/007-smart-paste/spec.md:L202-L245\",\n    \".specs/features/007-smart-paste/spec.md:L246-L249\",\n    \".specs/features/007-smart-paste/spec.md:L250-L254\",\n    \".specs/features/007-smart-paste/spec.md:L255-L259\",\n    \".specs/features/007-smart-paste/spec.md:L260-L264\",\n    \".specs/features/007-smart-paste/spec.md:L265-L269\",\n    \".specs/features/007-smart-paste/spec.md:L270-L274\",\n    \".specs/features/007-smart-paste/spec.md:L275-L279\",\n    \".specs/features/007-smart-paste/spec.md:L280-L284\",\n    \".specs/features/007-smart-paste/spec.md:L285-L289\",\n    \".specs/features/007-smart-paste/spec.md:L290-L294\",\n    \".specs/features/007-smart-paste/spec.md:L295-L299\",\n    \".specs/features/007-smart-paste/spec.md:L300-L304\",\n    \".specs/features/007-smart-paste/spec.md:L305-L308\",\n    \".specs/features/007-smart-paste/spec.md:L309-L324\",\n    \".specs/features/007-smart-paste/spec.md:L325-L340\",\n    \".specs/features/007-smart-paste/spec.md:L341-L344\",\n    \".specs/features/007-smart-paste/spec.md:L345-L349\",\n    \".specs/features/007-smart-paste/spec.md:L350-L354\",\n    \".specs/features/007-smart-paste/spec.md:L355-L359\",\n    \".specs/features/007-smart-paste/spec.md:L360-L364\",\n    \".specs/features/007-smart-paste/spec.md:L365-L369\",\n    \".specs/features/007-smart-paste/spec.md:L370-L374\",\n    \".specs/features/007-smart-paste/spec.md:L375-L379\",\n    \".specs/features/007-smart-paste/spec.md:L380-L389\",\n    \".specs/features/007-smart-paste/spec.md:L390-L406\",\n    \".specs/features/007-smart-paste/spec.md:L407-L416\",\n    \".specs/features/007-smart-paste/spec.md:L417-L422\",\n    \".specs/features/007-smart-paste/spec.md:L423-L426\",\n    \".specs/features/007-smart-paste/spec.md:L427-L435\",\n    \".specs/features/007-smart-paste/spec.md:L436-L437\",\n    \".specs/features/007-smart-paste/spec.md:L438-L441\",\n    \".specs/features/007-smart-paste/spec.md:L442-L445\",\n    \".specs/features/007-smart-paste/spec.md:L446-L449\",\n    \".specs/features/007-smart-paste/spec.md:L450-L453\",\n    \".specs/features/007-smart-paste/spec.md:L454-L456\",\n    \".specs/features/008-settings-cli/plan.md:L1-L9\",\n    \".specs/features/008-settings-cli/plan.md:L10-L11\",\n    \".specs/features/008-settings-cli/plan.md:L12-L17\",\n    \".specs/features/008-settings-cli/plan.md:L18-L34\",\n    \".specs/features/008-settings-cli/plan.md:L35-L46\",\n    \".specs/features/008-settings-cli/plan.md:L47-L59\",\n    \".specs/features/008-settings-cli/plan.md:L60-L61\",\n    \".specs/features/008-settings-cli/plan.md:L62-L67\",\n    \".specs/features/008-settings-cli/plan.md:L68-L75\",\n    \".specs/features/008-settings-cli/plan.md:L76-L81\",\n    \".specs/features/008-settings-cli/plan.md:L82-L102\",\n    \".specs/features/008-settings-cli/plan.md:L103-L123\",\n    \".specs/features/008-settings-cli/plan.md:L124-L211\",\n    \".specs/features/008-settings-cli/plan.md:L212-L249\",\n    \".specs/features/008-settings-cli/plan.md:L250-L289\",\n    \".specs/features/008-settings-cli/plan.md:L290-L291\",\n    \".specs/features/008-settings-cli/plan.md:L292-L301\",\n    \".specs/features/008-settings-cli/plan.md:L302-L311\",\n    \".specs/features/008-settings-cli/plan.md:L312-L321\",\n    \".specs/features/008-settings-cli/plan.md:L322-L331\",\n    \".specs/features/008-settings-cli/plan.md:L332-L341\",\n    \".specs/features/008-settings-cli/plan.md:L342-L351\",\n    \".specs/features/008-settings-cli/plan.md:L352-L361\",\n    \".specs/features/008-settings-cli/plan.md:L362-L383\",\n    \".specs/features/008-settings-cli/plan.md:L384-L400\",\n    \".specs/features/008-settings-cli/plan.md:L401-L415\",\n    \".specs/features/008-settings-cli/plan.md:L416-L438\",\n    \".specs/features/008-settings-cli/plan.md:L439-L441\",\n    \".specs/project.md:L1-L2\",\n    \".specs/project.md:L3-L7\",\n    \".specs/project.md:L8-L16\",\n    \".specs/project.md:L17-L20\",\n    \".specs/project.md:L21-L24\",\n    \".specs/project.md:L25-L28\",\n    \".specs/project.md:L29-L36\",\n    \".specs/stacks/_default.md:L1-L5\",\n    \".specs/stacks/_default.md:L6-L7\",\n    \".specs/stacks/_default.md:L8-L21\",\n    \".specs/stacks/_default.md:L22-L31\",\n    \".specs/testing/strategy.md:L1-L2\",\n    \".specs/testing/strategy.md:L3-L6\",\n    \".specs/testing/strategy.md:L7-L12\",\n    \".specs/testing/strategy.md:L13-L16\"\n  ],\n  \"conclusions\": [\n    {\n      \"requirement_id\": \"007-smart-paste:AC-001\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Identifiant historique retiré : le plan ne réutilise aucun critère de la fenêtre de récupération et ne prévoit pas cette fenêtre.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L246-L249\",\n          \"excerpt\": \"AC-001 to AC-007 belonged to the retired clipboard recovery window scope and are not reused (see Clarifications).\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L19-L26\",\n          \"excerpt\": \"Retired FR-001–FR-004, AC-001–AC-007 and SC-001–SC-003 stay retired; no clipboard recovery window is delivered.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:AC-007\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Identifiant historique retiré : le plan ne réutilise aucun critère de la fenêtre de récupération et ne prévoit pas cette fenêtre.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L246-L249\",\n          \"excerpt\": \"AC-001 to AC-007 belonged to the retired clipboard recovery window scope and are not reused (see Clarifications).\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L19-L26\",\n          \"excerpt\": \"Retired FR-001–FR-004, AC-001–AC-007 and SC-001–SC-003 stay retired; no clipboard recovery window is delivered.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:AC-008\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Le plan définit snapshot ordonné brut, budget agrégé 200 ms/50 MB avec omissions explicites, publication lazy marquée current-host-only et provider maintenu disponible sur main. Le timestamp avant premier key-down distingue prélecture et lecture pendant maintien ; délais et résolution de V restent hors main. Les steps 1/4 et tests aux limites vérifient ces mécanismes, sans certifier actuellement les callbacks AppKit.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L250-L254\",\n          \"excerpt\": \"The data provider supplies the full transcript on every request and reports the first request after the paste keystroke exactly once.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L250-L254\",\n          \"excerpt\": \"Saving the previous content is bounded to 200 ms and 50 MB; a type that cannot be saved within those bounds is skipped, and \\\"exactly\\\" in AC-009 applies to the saved types.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L91-L98\",\n          \"excerpt\": \"Preserve all saved types exactly; no text/image decoding or normalization. Saved payload total ≤**50,000,000 bytes**, capture deadline **200 ms** including helper startup/IPC; do not restart the budget per type.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L123-L133\",\n          \"excerpt\": \"| Lazy local clipboard paste, including Jump Desktop | Yes | Keep all three existing markers, eager empty marker data; only text request counts | AC-008 requires host-only/transient; preserve ConcealedType privacy defense |\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L73-L80\",\n          \"excerpt\": \"AppKit serves during chord hold; first-key-down timestamp is recorded immediately before posting the first key event. Requests while the chord is held qualify.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L398-L407\",\n          \"excerpt\": \"provider serves full text on every real request and count/lifetime behavior verified.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:AC-009\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Le reducer décrit first/last read, quiet 300 ms ou Jump 1,5 s, décision 800 ms ou 3 s et cap fixe 8 s depuis première lecture. Sans lecture, snapshot immédiatement détruit, terminal inchangé et transcript servi tardivement. Toutes écritures de nettoyage sont protégées par changeCount/identité ; restauration reconstruit les seuls types sauvegardés. Les sorties et dictations successives appliquent la priorité AC-009 autorisée.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L255-L259\",\n          \"excerpt\": \"Restoration requires a read observed after the paste keystroke.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L255-L259\",\n          \"excerpt\": \"the saved snapshot is discarded and the previous content is never restored for that dictation: the transcript stays on the clipboard until the user or another application replaces it.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L255-L259\",\n          \"excerpt\": \"only when the pasteboard `changeCount` still equals the value recorded at publication; otherwise it does nothing.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L99-L114\",\n          \"excerpt\": \"Restore deadline = min(last_read + per-app quiet, first_read + 8 s); callbacks reschedule quiet while cap stays fixed.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L99-L114\",\n          \"excerpt\": \"At no-read deadline, discard snapshot immediately, publish terminal not read once, keep transcript provider serviceable; never restore for that dictation, even after late reads.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L99-L114\",\n          \"excerpt\": \"All cleanup writes (restore, copy-mode plain rewrite, normal-exit materialization, final-guard cleanup) require current changeCount equals publication count, with transaction/generation identity current.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L115-L122\",\n          \"excerpt\": \"An old not-read transaction has already discarded it: snapshot the current transcript/types for the second dictation, **never resurrect the pre-first snapshot** (AC-009 wins over the generic Edge Cases wording).\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:AC-010\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Le dispatch identifie exactement les trois apps dédiées et leur stratégie. AX-first puis clipboard couvre les autres, dont Jump avec timing spécial. Unicode ne touche pas le clipboard en dont_modify ; le mode copy matérialise le texte. Screen Sharing est eager sans chord/restauration ; permissions s’appliquent aux opérations AX/key et non à la remise seule. Step 6 et matrice native sont explicites.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L260-L264\",\n          \"excerpt\": \"`com.apple.ScreenContinuity` (iPhone Mirroring) and `com.microsoft.rdc.macos` (Windows App) receive the transcript as Unicode key events without clipboard use; `com.apple.ScreenSharing` receives a clipboard write of the transcript without a paste keystroke and keeps it until the user copies something else; every other application uses direct insertion (AC-017) and then the clipboard paste of AC-008/AC-009.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L99-L114\",\n          \"excerpt\": \"| iPhone Mirroring `com.apple.ScreenContinuity` | Unicode events | N/A | No restoration | N/A |\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L99-L114\",\n          \"excerpt\": \"| Windows App `com.microsoft.rdc.macos` | Unicode events | N/A | No restoration | N/A |\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L99-L114\",\n          \"excerpt\": \"| Screen Sharing `com.apple.ScreenSharing` | Eager plain-text hand-over, no keys | N/A | No restoration | N/A |\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L418-L427\",\n          \"excerpt\": \"Unicode dont_modify doesn't touch clipboard; Screen Sharing has no keystroke/restore; V resolved after switch; owned layout restored even after error/exit, no stale cleanup overriding next transaction.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:AC-011\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Les ports TIS/key et Step 6 prévoient ABC puis US, settle 50 ms, V résolu après changement et restauration 100 ms après dernier key-up, même erreur/cancel/exit. Les cas IME et échec des deux layouts gardent la source ; les tests distinguent ces transitions et la coordination évite cleanup obsolète.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L265-L269\",\n          \"excerpt\": \"Handy selects `com.apple.keylayout.ABC`, or `com.apple.keylayout.US` when ABC cannot be selected, waits 50 ms for the switch to apply, sends Cmd+V, and restores the previous input source 100 ms after the last key of the chord is released.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L265-L269\",\n          \"excerpt\": \"When the current input source is an input method, or neither layout can be selected, Handy sends Cmd+V without changing it.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L418-L427\",\n          \"excerpt\": \"Implement dedicated Unicode and Screen Sharing hand-over, ABC/US fallback with 50 ms settle and 100 ms cleanup after last key-up, layout/input-method unchanged cases and error/cancel cleanup.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L481-L498\",\n          \"excerpt\": \"ABC→US fallback, failed both/input-method unchanged, 50 ms switch and 100 ms after last key-up even failure/cancel\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:AC-012\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Le contrat distingue huit terminaux et un diagnostic tardif idempotent avec dictation/transaction/destination IDs. Enter et recovery ont des prédicats explicites et attendent le terminal, Jump 3 s inclus. Permission est vérifiée avant effet clipboard même en copy ; hand-over est neutre et traduit. Step 7 bypass le bloc auto-submit historique ; 010 reçoit le diagnostic pour actualiser sa bulle lors de son implémentation, sans transformer not_read en succès. La portée programme est correctement séparée.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L270-L274\",\n          \"excerpt\": \"Smart paste reports one outcome per dictation:\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L270-L274\",\n          \"excerpt\": \"Only \\\"inserted, verified\\\", \\\"insertion attempted, read observed\\\" and \\\"typed\\\" count as a successful insertion for automatic Enter (009).\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L270-L274\",\n          \"excerpt\": \"If a read arrives after \\\"not read\\\" was declared, the transcript (still on the clipboard) is served, the outcome stays \\\"not read\\\" for automatic Enter, and the recovery bubble states that the text may have been pasted after all.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L134-L150\",\n          \"excerpt\": \"`PasteOutcome {dictation_id, transaction_id, destination_generation, strategy, kind}` is terminal exactly once.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L134-L150\",\n          \"excerpt\": \"A late read after not read serves text but leaves not read/Enter ineligible; 010 updates the existing correlated bubble to translated “may have been pasted after all”, without creating a duplicate bubble or recopying automatically.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L81-L90\",\n          \"excerpt\": \"For other apps, check AX permission before touching the clipboard, even in copy mode.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L428-L437\",\n          \"excerpt\": \"Ensure legacy auto-submit block is bypassed for smart paste so the typed eligibility gate owns one submission.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:AC-013\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Le mode copy remplace restore par matérialisation plain-text protégée et élimination du snapshot, y compris après AX vérifié/Unicode. Il n’entretient pas de snapshot après not_read. Le plan garde l’historique existant WAV-gated et ne modifie ni l’entrée ni sa politique de sauvegarde ; l’exception copy à clipboard untouched est explicite.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L275-L279\",\n          \"excerpt\": \"smart paste replaces the restoration by leaving the transcript on the clipboard as plain text, as the current paths do; after a verified direct insertion it also writes the transcript to the clipboard as plain text.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L275-L279\",\n          \"excerpt\": \"The history entry is never modified by smart paste.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L99-L114\",\n          \"excerpt\": \"For lazy clipboard paste, serve receipts normally, then guarded materialize plain text and discard snapshot instead of restoration; on not read retain plain transcript without reviving the snapshot.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L99-L114\",\n          \"excerpt\": \"after verified AX insertion, Unicode typing or hand-over, deliberately put plain text on clipboard as required by AC-013/AC-010.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L115-L122\",\n          \"excerpt\": \"007 does not change history, add unconditional persistence, or promise crash recovery for every dictation.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:AC-014\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Le service 008 applique default macOS et migration atomique des CtrlV beta true/false une fois, préserve autres méthodes et selections ultérieures, supprime la clé beta du payload/UI macOS. Marqueur read-only et CAS protègent replay/écritures concurrentes ; Windows et Linux sont maintenus et ont des régressions prévues.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L280-L284\",\n          \"excerpt\": \"Smart paste is a paste method available on macOS and is the default there for new installations.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L280-L284\",\n          \"excerpt\": \"users whose paste method is Cmd+V move to smart paste, whether or not the beta switch was on; users with any other method keep it and the beta switch is dropped.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L151-L158\",\n          \"excerpt\": \"New macOS installation defaults smart_paste with marker; upgraded macOS without marker migrates **CtrlV whether reliable_paste was true or false**, preserves every other method, drops reliable_paste from its public settings/UI and persisted payload, and writes marker in the same atomic transaction.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L151-L158\",\n          \"excerpt\": \"A later user selection of CtrlV remains on every reload.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L438-L447\",\n          \"excerpt\": \"unsupported platform no mutation; Windows beta and Linux unchanged.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:AC-015\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Descriptor/validation/output Domain et commit_mutation de 008 sont réutilisés sans service concurrent. Les commandes output/generic sont définies, validator UI/CLI refuse non-mac sans revision/effet, l’enveloppe JSON et exit 2 sont conservés. Tests planifiés sur vrais adapters/service, parity et channel stdout. 008 demeure dépendance de livraison, pas obligations supplémentaires de 007.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L285-L289\",\n          \"excerpt\": \"The settings CLI (008) reads and sets the paste method including `smart_paste`, with the UI validation (`smart_paste` refused outside macOS with `validation_failed`). With `--json`, stdout contains only the JSON envelope.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L151-L158\",\n          \"excerpt\": \"same validator for UI/CLI refuses it outside macOS (`validation_failed`, exit 2), no persisted change/revision/effect.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L151-L158\",\n          \"excerpt\": \"Output reads support `handy settings output get paste_method`; sets support `handy settings output set paste_method smart_paste --json`, plus generic get/set per 008.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L151-L158\",\n          \"excerpt\": \"No stdout pollution: one `{ok:true,revision:N,data:...}` or `{ok:false,error:{code,message,details:{...}}}` newline; existing exit mapping 0 success, 1 persistence/internal, 2 usage/validation, 3 revision conflict, 4 not found, 5 unavailable.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:AC-016\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Le Step 9 et matrice définissent apps/layouts requis, dix essais par paire/path, seuils 9/10, observation du champ plutôt que seuls événements, et fallback lorsque AX non vérifié. La matrice disponible/non-vérifié est complète et la livraison requiert TextEdit/Notes/ChatGPT/Comet sur les trois layouts ; aucun vieux contenu/transcript n’est dispensé. Spikes et preuves restent à produire : cela couvre le plan de vérification avant release, pas une compatibilité actuelle.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L300-L304\",\n          \"excerpt\": \"TextEdit, Notes, ChatGPT and Comet must pass with AZERTY, US and Dvorak before release, and no run of any application may deliver a previous clipboard content or a previous transcript; failures elsewhere are listed as known incompatibilities.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L481-L498\",\n          \"excerpt\": \"Native matrix: TextEdit, Notes, ChatGPT, Comet and one Chromium app × AZERTY, US, Dvorak; include IME exploratory check.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L481-L498\",\n          \"excerpt\": \"Each app/layout/path gets ten trials: direct exactly once and verified ≥9/10, clipboard transcript inserted + prior clipboard restored ≥9/10, Unicode correct ≥9/10, Screen Sharing remote availability ≥9/10.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L448-L457\",\n          \"excerpt\": \"Any stale content or duplicate is release-blocking regardless of app.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L481-L498\",\n          \"excerpt\": \"Human/independent native field observation supplements harness: posted events and callback logs alone cannot prove insertion.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:AC-017\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Le worker vérifie permission/PID/role/value/range UTF-16, skip secure/unreadable/prewrite invalid, écrit AXSelectedText une fois, puis compare au remplacement attendu jusqu’à 150 ms. Setter success/failure ne vaut pas preuve ; inchangé permet fallback, mutation partielle/lecture inconnue devient uncertain. Final guard protège les mutations tardives détectables sans prétendre les annuler. Les cases 149/150/151 et gates duplicate natifs couvrent le risque restant.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L290-L294\",\n          \"excerpt\": \"The attempt is verified when the new value equals the old value with the selected range replaced by the transcript; the outcome is then \\\"inserted, verified\\\" and the clipboard is never touched.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L290-L294\",\n          \"excerpt\": \"if the value is still unchanged at the end of the read-back window (whether setting reported success or failure), smart paste falls back to the clipboard paste (AC-008/AC-009).\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L81-L90\",\n          \"excerpt\": \"Find the focused element, verify `AXUIElementGetPid` equals destination PID, classify role, read AXValue and AXSelectedTextRange. Skip secure fields and unreadable values.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L81-L90\",\n          \"excerpt\": \"Set AXSelectedText exactly once. Poll value with deadline, including immediate read and end-of-window read: exact expected → inserted verified; changed differently → uncertain with no fallback; unchanged at the deadline → clipboard fallback per AC-017, regardless of setter's reported result.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L81-L90\",\n          \"excerpt\": \"If readback becomes unreadable/times out after a possible write, emit uncertain, never blindly retry or paste.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L388-L397\",\n          \"excerpt\": \"failed setter/late setter, 149/150/151 ms and total-budget tests; real hanging/large field measurements.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:AC-018\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"La chaîne AX → clipboard → recovery et erreurs sont typées, Steps 3/7 testent l’ordre. L’allocation totale monotonic 250 ms dont 150 ms readback, timeouts proxy≤20 ms/remaining et worker évitent de confondre async timeout avec arrêt natif. Le spike doit vérifier la borne effective avant adapter wiring. Les gates n’inventent aucune borne runtime déjà observée.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L295-L299\",\n          \"excerpt\": \"The insertion chain is: direct accessibility insertion (AC-017), then clipboard paste, then recovery bubble (010) for the outcomes \\\"not read\\\", \\\"permission missing\\\", \\\"uncertain\\\" and \\\"insertion failed\\\".\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L295-L299\",\n          \"excerpt\": \"Direct insertion, including the read-back window, adds at most 250 ms before the fallback starts.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L81-L90\",\n          \"excerpt\": \"An AX attempt has one **250 ms total monotonic budget**, including readback.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L81-L90\",\n          \"excerpt\": \"Set `AXUIElementSetMessagingTimeout` on every messaged application/element proxy before each call, at most **20 ms** and never beyond remaining budget.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L81-L90\",\n          \"excerpt\": \"Native timing spike verifies effective bounds; an outer async timeout alone cannot stop a blocking AX request or cancel a delivered write.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L428-L437\",\n          \"excerpt\": \"Full chain AX → clipboard → recovery; only verified/read_observed/typed eligible; hand-over neither failure nor Enter; events contain IDs/outcome only, text remains private in memory.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:FR-001\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"FR historique retiré : le plan interdit sa réutilisation et aucun comportement de fenêtre de récupération n’est ajouté.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L341-L344\",\n          \"excerpt\": \"FR-001 to FR-004 belonged to the retired scope and are not reused.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L19-L26\",\n          \"excerpt\": \"Retired FR-001–FR-004, AC-001–AC-007 and SC-001–SC-003 stay retired; no clipboard recovery window is delivered.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:FR-004\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"FR historique retiré : le plan interdit sa réutilisation et aucun comportement de fenêtre de récupération n’est ajouté.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L341-L344\",\n          \"excerpt\": \"FR-001 to FR-004 belonged to the retired scope and are not reused.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L19-L26\",\n          \"excerpt\": \"Retired FR-001–FR-004, AC-001–AC-007 and SC-001–SC-003 stay retired; no clipboard recovery window is delivered.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:FR-005\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Steps 1/2/4 matérialisent le contrat natif et état pur : sauvegarde all-types bornée, fresh item/provider avec markers obligatoires, premier read item-scoped après keydown, tests réentrance/lifetime/cache. Le budget/omissions et plateformes dédiées sont ceux des AC.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L345-L349\",\n          \"excerpt\": \"Save all pasteboard items and types, publish the transcript as an on-demand item on a current-host-only, transient-marked pasteboard, and detect the first read after the paste keystroke once.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L398-L407\",\n          \"excerpt\": \"Implement helper kill/reap, progressive saved types, no disk storage, reconstruction of fresh items, lifetime-held NSPasteboardItemDataProvider and marker policies.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L378-L387\",\n          \"excerpt\": \"Add inline Rust tests for timers, one terminal outcome, first-read latch, late diagnostic and all ownership transitions.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L123-L133\",\n          \"excerpt\": \"| Lazy local clipboard paste, including Jump Desktop | Yes | Keep all three existing markers, eager empty marker data; only text request counts | AC-008 requires host-only/transient; preserve ConcealedType privacy defense |\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:FR-006\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Le reducer/restorer Step 5 joint receipt après key-down, quiet per-app/cap first-read et ownership count. Sans receipt snapshot perdu et jamais ressuscité ; writes user/other-app/010 Copy préservés. Les cas copy, exit et concurrence sont testés contre ce reducer de production.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L350-L354\",\n          \"excerpt\": \"Restore the saved pasteboard only after a read confirmed after the keystroke, once reads have been quiet for the per-application delay after the last read (cap 8 s), only when `changeCount` is unchanged; never restore when no read occurred.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L99-L114\",\n          \"excerpt\": \"Pre-key reads receive the whole transcript but never start first/last qualifying read. Every qualifying read before settlement updates last_read; first_read is latched once.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L99-L114\",\n          \"excerpt\": \"At no-read deadline, discard snapshot immediately, publish terminal not read once, keep transcript provider serviceable; never restore for that dictation, even after late reads.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L408-L417\",\n          \"excerpt\": \"No intermediate restoration; not-read snapshot never resurrected; exit never bypasses quiet/cap; late old callbacks can't mutate new transaction; normal exit leaves provider-independent text when not due.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:FR-007\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Bundle dispatch et input-source port constituent un module séparé. Les modes Unicode, hand-over et AX+clipboard, ABC/US puis nettoyage 100 ms sont précis. Step 6, les tests de source/cancel et mesures native timing garantissent que l’obligation sera jugée sur effets observés.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L355-L359\",\n          \"excerpt\": \"Choose the insertion strategy from the destination bundle identifier and the current input source, including the ABC/US layout switch and its restoration.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L418-L427\",\n          \"excerpt\": \"New `smart_paste/{strategy.rs,macos_keyboard.rs}`; modify `input.rs` to expose bounded event posting without hold sleeps on main.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L418-L427\",\n          \"excerpt\": \"Implement dedicated Unicode and Screen Sharing hand-over, ABC/US fallback with 50 ms settle and 100 ms cleanup after last key-up, layout/input-method unchanged cases and error/cancel cleanup.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:FR-008\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"La table des huit outcomes, les prédicats consommés et diagnostic séparé préservent distinction field-verified/read/posted/unconsumed. Pipeline Step 7 attend et bypass ancienne soumission ; 009/010 possèdent leur UI et delivery combinée ne peut se déduire du seul contrat 007.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L360-L364\",\n          \"excerpt\": \"Report truthful outcomes consumed by automatic Enter (009) and recovery (010).\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L134-L150\",\n          \"excerpt\": \"Expose `is_auto_submit_eligible` and `requires_recovery` on this type so consumers do not guess from Result<(), String>.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L134-L150\",\n          \"excerpt\": \"Send Enter at most once after terminal resolution, only while destination/generation remains valid per 009.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L428-L437\",\n          \"excerpt\": \"No success log from Result<(), String> enqueued result; missing downstream UI proof remains assigned to 010 and blocks combined-program delivery.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:FR-009\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Le plan respecte migration/default macOS, Windows beta conservée, Linux stable, settings CLI/UI par service 008 unique et specta/i18n existants. Le sélecteur garde valeur backend et accès clavier ; son gate Penflow est explicitement reporté avant UI/spec-ship comme autorisé.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L365-L369\",\n          \"excerpt\": \"Expose smart paste as a macOS paste method with migration from the macOS beta reliable paste (the Windows switch is kept), in settings UI and settings CLI.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L151-L158\",\n          \"excerpt\": \"Windows retains reliable_paste field/switch/path; Linux methods/defaults unchanged.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L151-L158\",\n          \"excerpt\": \"Selector uses backend settings snapshot instead of hardcoded CtrlV while loading; smart paste option macOS only.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L151-L158\",\n          \"excerpt\": \"Keyboard arrow/Enter selection, visible Tab focus and accessible selected value tested.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L438-L447\",\n          \"excerpt\": \"008 transaction/Domain framework delivered; shared Penflow design gate PASS before UI coding.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:FR-010\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Le Step 9 décrit harness release, artifacts datés/hash/version, field observation indépendante, path et restored clipboard, full available/unavailable matrix et seuils. Les proof gates avant release empêchent qu’un diagnostic tool ou mock navigateur serve de compatibilité.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L370-L374\",\n          \"excerpt\": \"Record native compatibility evidence per application and layout before release.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L448-L457\",\n          \"excerpt\": \"Capture release-run app field/clipboard/layout observations; record fallback path explicitly.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L448-L457\",\n          \"excerpt\": \"Current binary hashes, timestamped command/native receipts, assertion mappings, observations and complete available/unavailable app matrix.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L481-L498\",\n          \"excerpt\": \"Also test available iPhone Mirroring, Windows App, Screen Sharing and Jump Desktop; unavailable applications are explicitly not verified, never inferred supported.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:FR-011\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"AX-first vérifié et règles unchanged/changed/unknown sont codés Step 3 puis chain Step 7. Late write safety a final check et tests mais absence d’annulation garantie est reconnue ; aucune blacklist ni suppression fallback sans décision. Zero duplicate est un gate natif strict de wiring/release, pas un succès déclaré.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L375-L379\",\n          \"excerpt\": \"Try verified direct insertion through the accessibility API before the clipboard paste, with a fallback rule that never inserts the text twice.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L81-L90\",\n          \"excerpt\": \"Before fallback key-down, perform one bounded final value/PID/element check: expected or other changed content cancels the chord;\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L81-L90\",\n          \"excerpt\": \"**SC-007 is a release blocker for any duplicate**; do not certify a universal exactly-once mechanism from the guard.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L388-L397\",\n          \"excerpt\": \"duplicates or unbounded calls block SC-007/release and require approved remediation.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:SC-001\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Success criterion historique retiré : le plan conserve les IDs et ne restaure pas les garanties de l’ancien périmètre.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L390-L406\",\n          \"excerpt\": \"Requirement IDs of the retired scope (AC-001–AC-007, FR-001–FR-004, SC-001–SC-003) are not reused.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L19-L26\",\n          \"excerpt\": \"Retired FR-001–FR-004, AC-001–AC-007 and SC-001–SC-003 stay retired; no clipboard recovery window is delivered.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:SC-003\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Success criterion historique retiré : le plan conserve les IDs et ne restaure pas les garanties de l’ancien périmètre.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L390-L406\",\n          \"excerpt\": \"Requirement IDs of the retired scope (AC-001–AC-007, FR-001–FR-004, SC-001–SC-003) are not reused.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L19-L26\",\n          \"excerpt\": \"Retired FR-001–FR-004, AC-001–AC-007 and SC-001–SC-003 stay retired; no clipboard recovery window is delivered.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:SC-004\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Tests state/coordinator production avec injected ports couvrent Stories 1/2/4 : receipt, no-read, quiet/cap, toutes issues, user text/image/010 Copy et count changes. P0 bloque toute écriture sans ownership ; l’assertion zero overwrite inclut traces événementielles et n’est pas réduite aux références.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L438-L441\",\n          \"excerpt\": \"Fake-pasteboard tests covering every scenario of Stories 1, 2 and 4 pass, with zero cases overwriting content copied after publication.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L481-L498\",\n          \"excerpt\": \"changeCount race/user image/010 Copy, copy mode, read then quit before/after due, no-read late read, overlapping generations\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L408-L417\",\n          \"excerpt\": \"New `src-tauri/tests/smart_paste_transactions.rs` exercises production actor with injected native ports, not a mock coordinator.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L408-L417\",\n          \"excerpt\": \"no-write assertions after changeCount changes, quit/no-read/second-dictation tests.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:SC-005\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"La matrice impose séparément dix restaurations consécutives exactes de rich text/image/multi-item pour TextEdit et Notes, au-delà du seuil général 9/10. Raw-byte identity et type-order tests excluent une comparaison text-only ; fixtures partiellement sauvegardées ne seront pas certifiées intactes.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L442-L445\",\n          \"excerpt\": \"Native checks restore rich text, image and multi-item clipboard content identically in TextEdit and Notes in 10 consecutive runs each.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L481-L498\",\n          \"excerpt\": \"SC-005 requires ten consecutive exact rich text/image/multi-item restores each for TextEdit and Notes.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L398-L407\",\n          \"excerpt\": \"Bytewise rich/image/multi-item comparisons, exact limits and skipped metadata, source-count races, helper process cleanup, provider reentrancy/no-content log checks.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:SC-006\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Le harness prévoit outcome/text/layout pour chaque app disponible de l’inventaire et not_verified explicite ailleurs ; version/binary/path/clipboard/time identifiers empêchent de confondre publication et insertion. Rien ne dispense les apps requises avant release.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L454-L456\",\n          \"excerpt\": \"AC-016 compatibility records exist for every listed application available on the test machine, each with outcome, inserted text and layout.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L481-L498\",\n          \"excerpt\": \"SC-006 records all available listed apps;\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L481-L498\",\n          \"excerpt\": \"Each run records OS/build/app version, binary SHA-256, app bundle/PID, layout before/during/after, fixture ID, path, outcome, first-key/first-read/last-read/restore timestamps, clipboard saved/skipped types and before/after bytes hashes, inserted synthetic text and multiplicity, permission, manager configuration, remote availability and observed main-loop responsiveness.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:SC-007\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Le plan conserve zero duplicate/clipboard untouched dont_modify comme critères stricts, la règle copy étant l’exception AC-013. Délais AX tardifs, final-check races et snapshots/layout delays font partie du spike et des native runs ; toute duplication bloque release et impose approved correction. Ce gate constitue la couverture planifiée sans certifier universalité ni runtime.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L450-L453\",\n          \"excerpt\": \"In native checks, direct insertion never inserts the transcript twice: in 100% of runs each application shows the transcript exactly once, and every application where direct insertion is verified leaves the clipboard unchanged.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L481-L498\",\n          \"excerpt\": \"SC-007 demands zero duplicates and unchanged clipboard for verified direct dont_modify runs; copy mode is the explicit AC-013 exception.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L81-L90\",\n          \"excerpt\": \"Test 149/150/151 ms and delayed applications during snapshot/layout/paste_delay_ms.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L448-L457\",\n          \"excerpt\": \"Any stale content or duplicate is release-blocking regardless of app.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:SC-008\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Les tests actor incluent late reads, probe reads, deux générations et quit avec no-write/read-ID assertions ; AC-009 discard empêche résurrection du snapshot. Le plan mesure aussi les contre-exemples OS et après quiet/cap, et exige zero stale delivery sans exemptions. Les risques intrinsèques du global clipboard sont reconnus et bloquent release en cas observé ; ils ne sont pas prétendus éliminés par transaction ID.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L446-L449\",\n          \"excerpt\": \"In fake-pasteboard tests (late reads, probe-then-read, consecutive dictations, quit), zero cases deliver a previous clipboard content or a previous transcript to the target.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L115-L122\",\n          \"excerpt\": \"Native overlapping-dictation testing is mandatory; any old transcript/content delivered to a target blocks SC-008/AC-016 release.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L516-L538\",\n          \"excerpt\": \"Current policy cannot guarantee infinite late reads; any observed old-content/transcript delivery blocks AC-016/SC-008 release even for optional apps.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L481-L498\",\n          \"excerpt\": \"SC-004/008 retain zero-overwrite/stale-delivery assertions and failing counterexamples.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    }\n  ],\n  \"ambiguities\": [\n    {\n      \"requirement_id\": \"007-smart-paste:AC-009\",\n      \"decision_key\": \"no_read_snapshot_vs_successive_dictation_edge_case\",\n      \"question\": \"Le snapshot antérieur peut-il survivre à not_read puis être reporté sur une deuxième dictation ?\",\n      \"critical\": true,\n      \"citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L427-L435\",\n          \"excerpt\": \"if `changeCount` is unchanged since the first publication, the first snapshot stays the content to restore after the second dictation\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L255-L259\",\n          \"excerpt\": \"the saved snapshot is discarded and the previous content is never restored for that dictation\"\n        }\n      ],\n      \"resolution\": \"Non. La décision AC-009 autorisée prévaut ; seule une transaction encore éligible peut transmettre son snapshot. Une transaction not_read a détruit le sien, donc la nouvelle sauvegarde prend le transcript courant. Le plan applique et teste explicitement cette priorité.\",\n      \"resolution_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L255-L259\",\n          \"excerpt\": \"the saved snapshot is discarded and the previous content is never restored for that dictation\"\n        }\n      ]\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:AC-009\",\n      \"decision_key\": \"normal_exit_quiet_window\",\n      \"question\": \"Une lecture suffit-elle à restaurer à la fermeture avant quiet/cap ?\",\n      \"critical\": true,\n      \"citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L427-L435\",\n          \"excerpt\": \"the pending restoration runs before exit only when a read was observed and `changeCount` is unchanged\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L255-L259\",\n          \"excerpt\": \"It runs once no new read has occurred for 300 ms after the last read, and at the latest 8 s after the first read if reads keep coming\"\n        }\n      ],\n      \"resolution\": \"Non. AC-009 et FR-006 imposent aussi le temps dû. Le plan applique le reducer commun et matérialise eager le transcript si quiet/cap ne sont pas dus, avec ownership guard.\",\n      \"resolution_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L255-L259\",\n          \"excerpt\": \"It runs once no new read has occurred for 300 ms after the last read, and at the latest 8 s after the first read if reads keep coming\"\n        }\n      ]\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:AC-012\",\n      \"decision_key\": \"jump_terminal_decision_delay\",\n      \"question\": \"Le délai de résultat 800 ms décrit génériquement dans AC-012 tronque-t-il Jump à 800 ms ?\",\n      \"critical\": true,\n      \"citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L270-L274\",\n          \"excerpt\": \"The outcome is known only after the read or the 800 ms decision delay\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L255-L259\",\n          \"excerpt\": \"within 800 ms after the keystroke (3 s for Jump Desktop)\"\n        }\n      ],\n      \"resolution\": \"Non. AC-009 donne le délai spécialisé Jump de 3 s ; le timing source unique du plan le conserve pour résultat, Enter et recovery.\",\n      \"resolution_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L255-L259\",\n          \"excerpt\": \"within 800 ms after the keystroke (3 s for Jump Desktop)\"\n        }\n      ]\n    },\n    {\n      \"requirement_id\": \"007-smart-paste:AC-017\",\n      \"decision_key\": \"verified_direct_copy_mode_exception\",\n      \"question\": \"La règle clipboard jamais touché d’AX vérifié empêche-t-elle le choix copy_to_clipboard ?\",\n      \"critical\": true,\n      \"citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L290-L294\",\n          \"excerpt\": \"the outcome is then \\\"inserted, verified\\\" and the clipboard is never touched.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L275-L279\",\n          \"excerpt\": \"after a verified direct insertion it also writes the transcript to the clipboard as plain text.\"\n        }\n      ],\n      \"resolution\": \"Le réglage copy_to_clipboard constitue l’exception explicitement approuvée par AC-013 ; dont_modify conserve clipboard untouched. Plan et native matrix distinguent ces modes.\",\n      \"resolution_citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L275-L279\",\n          \"excerpt\": \"after a verified direct insertion it also writes the transcript to the clipboard as plain text.\"\n        }\n      ]\n    }\n  ],\n  \"extra_scope\": [\n    {\n      \"description\": \"Helper natif privé du même executable pour isoler les promesses externes potentiellement bloquantes.\",\n      \"justification\": \"Nécessité technique du budget AC-008 200 ms/50 MB et du main loop disponible : pipe hérité authentifié, lecture seule, framing borné, kill/reap et aucune surface publique ou persistence clipboard ; la viabilité native est un gate préalable.\",\n      \"approved\": true,\n      \"citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L250-L254\",\n          \"excerpt\": \"Waiting and posting the chord never block the serving of pasteboard reads.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L250-L254\",\n          \"excerpt\": \"Saving the previous content is bounded to 200 ms and 50 MB\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L91-L98\",\n          \"excerpt\": \"A private read-only snapshot helper of the same installed executable isolates potentially blocking external pasteboard promises.\"\n        }\n      ]\n    },\n    {\n      \"description\": \"Marqueur interne read-only smart_paste_migration_version: 1 et suppression explicite de reliable_paste macOS des unknown fields.\",\n      \"justification\": \"Nécessité technique de la migration AC-014 une seule fois sans remigrer un CtrlV choisi ensuite ; utilise la transaction startup/CAS existante de 008 et préserve les autres plateformes, sans nouvelle préférence métier.\",\n      \"approved\": true,\n      \"citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L280-L284\",\n          \"excerpt\": \"users whose paste method is Cmd+V move to smart paste, whether or not the beta switch was on; users with any other method keep it and the beta switch is dropped.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L151-L158\",\n          \"excerpt\": \"Persist internal `smart_paste_migration_version: 1` via 008 startup migration commit, read-only in descriptors.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L151-L158\",\n          \"excerpt\": \"Explicitly remove the key from unknown-field preservation on macOS so it cannot reappear.\"\n        }\n      ]\n    },\n    {\n      \"description\": \"Garde AX avant écriture d’un million de UTF-16 units et timeouts proxy bornés.\",\n      \"justification\": \"Nécessité technique pour respecter AC-018≤250 ms et limiter copies/mémoire avant mutation ; les grandes valeurs déclenchent le fallback existant, sans réduire la longueur du transcript ni créer une nouvelle stratégie. La borne effective doit être mesurée au spike avant wiring.\",\n      \"approved\": true,\n      \"citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L295-L299\",\n          \"excerpt\": \"Direct insertion, including the read-back window, adds at most 250 ms before the fallback starts.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L81-L90\",\n          \"excerpt\": \"values larger than **1,000,000 UTF-16 code units** (technical memory/time guard, not a new product limit); then use clipboard fallback.\"\n        }\n      ]\n    },\n    {\n      \"description\": \"Conservation de ConcealedType/AutoGeneratedType aux côtés du TransientType requis, sur la seule publication temporaire lazy.\",\n      \"justification\": \"Défense privacy existante documentée dans les Clarifications et préservée dans le nouveau chemin ; aucune promesse de confidentialité absolue ni modification des user-restored types. Screen Sharing et deliberate copy restent des publications plain normales selon leurs AC.\",\n      \"approved\": true,\n      \"citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L390-L406\",\n          \"excerpt\": \"marks transient/concealed types\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L123-L133\",\n          \"excerpt\": \"Keep all three existing markers, eager empty marker data; only text request counts\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L123-L133\",\n          \"excerpt\": \"Marker behavior is convention-based, not a privacy guarantee.\"\n        }\n      ]\n    }\n  ],\n  \"findings\": [\n    {\n      \"category\": \"native-feasibility\",\n      \"severity\": \"warning\",\n      \"description\": \"La sémantique est couverte au niveau plan, mais cache AppKit après prélecture et bounds effectifs helper/AX restent inconnus. Une callback observée n’authentifie pas l’application consommatrice. Le plan traite cette incertitude comme gate natif et ne déclare pas de compatibilité présente.\",\n      \"suggestion\": \"Exécuter Step 1 sur binary release/fixtures réelles ; bloquer l’adapter concerné si callback répété, cancellation/helper ou borne AX sont impossibles. Conserver faussement not_read de manière honnête, sans générer receipt fictif.\",\n      \"citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L390-L406\",\n          \"excerpt\": \"To verify natively: whether AppKit calls the data provider again after a clipboard manager read it before the keystroke; a missing second call would produce a false \\\"not read\\\".\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L368-L377\",\n          \"excerpt\": \"No production dispatch switch until viable evidence.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L368-L377\",\n          \"excerpt\": \"Timeout/duplication infeasibility blocks adapter implementation; report exact failure, no silent classic fallback.\"\n        }\n      ]\n    },\n    {\n      \"category\": \"late-write-concurrency\",\n      \"severity\": \"warning\",\n      \"description\": \"Le final AX guard ne peut annuler une écriture déjà livrée ou éliminer la fenêtre entre relecture et key-down. De même changeCount check/write n’est pas CAS interprocess et un vieux chord peut consommer le clipboard global récent. Les gates stricts sont adéquats pour ce plan conditionnel ; aucune garantie runtime de exactly-once ou attribution cible n’en découle.\",\n      \"suggestion\": \"Conserver les contre-exemples delayed-AX/copy/overlap, mesurer les courses, arrêter wiring/release affectés et obtenir une correction de stratégie/spec si un double ou ancien contenu est observé. Ne pas traiter ≥9/10 comme waiver data-integrity.\",\n      \"citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L81-L90\",\n          \"excerpt\": \"This check narrows, but does not eliminate, the race between final read and key-down or application after key-down.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L91-L98\",\n          \"excerpt\": \"AppKit cannot provide an atomic CAS against other processes between guard and write: measure this residual race and record any overwritten newer copy as P0.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L115-L122\",\n          \"excerpt\": \"transaction IDs cannot authenticate the consuming application or prevent that OS race.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L448-L457\",\n          \"excerpt\": \"Any stale content or duplicate is release-blocking regardless of app.\"\n        }\n      ]\n    },\n    {\n      \"category\": \"restoration-after-quiet\",\n      \"severity\": \"warning\",\n      \"description\": \"La restauration quiet/cap implique qu’une nouvelle lecture après settlement peut recevoir le contenu restauré. Cette limite est héritée et explicitement reconnue ; elle demeure risque natif mesuré sous AC-016/SC-008, sans modification silencieuse des délais approuvés.\",\n      \"suggestion\": \"Tester des relectures après quiet et cap, maintenir les traces même si incompatibilité optionnelle, et bloquer release pour tout old-content/transcript delivery observé. Une stratégie alternative requiert décision approuvée.\",\n      \"citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L390-L406\",\n          \"excerpt\": \"an application that reads again more than 300 ms after its last read (or after the 8 s cap) receives the restored content\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L516-L538\",\n          \"excerpt\": \"Current policy cannot guarantee infinite late reads; any observed old-content/transcript delivery blocks AC-016/SC-008 release even for optional apps.\"\n        }\n      ]\n    },\n    {\n      \"category\": \"snapshot-data-integrity\",\n      \"severity\": \"warning\",\n      \"description\": \"Sauvegarde partielle bornée ne promet pas l’intégrité des types omis, et un clipboard nonempty sans type sauvable fait échouer le départ. Cette défense est technique et ne doit pas être confondue avec réussite native SC-005.\",\n      \"suggestion\": \"Mesurer peak memory/IPC et raw-byte identity ; exposer diagnostics type/counters uniquement, garder exact content evidence sur fixtures entièrement sauvées et démontrer all-skipped refusal sans mutation.\",\n      \"citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L250-L254\",\n          \"excerpt\": \"a type that cannot be saved within those bounds is skipped, and \\\"exactly\\\" in AC-009 applies to the saved types.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L91-L98\",\n          \"excerpt\": \"If a nonempty clipboard has no savable types, refuse transaction start before publication (insertion failed), leaving original content intact\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L398-L407\",\n          \"excerpt\": \"Partial snapshot loss is explicit, not certified intact.\"\n        }\n      ]\n    },\n    {\n      \"category\": \"privacy-remote-compatibility\",\n      \"severity\": \"warning\",\n      \"description\": \"La politique host-only/transient/concealed de Jump reste celle imposée à lazy paste et peut gêner la sync remote. Screen Sharing suit la remise dédiée eager ; aucune relaxation des markers Jump n’est autorisée par le plan.\",\n      \"suggestion\": \"Mesurer remote sync et clipboard managers installés/non installés dans Step 1/9 ; garder incompatible/non-verified le résultat si nécessaire et demander décision fonctionnelle avant tout assouplissement.\",\n      \"citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L123-L133\",\n          \"excerpt\": \"If Jump's current-host/transient policy blocks remote operation, list not verified/incompatible with evidence; any relaxation of AC-008 needs an approved spec decision, not a plan exception.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L123-L133\",\n          \"excerpt\": \"| Screen Sharing hand-over | No | None | Dedicated eager hand-over must be available for remote sync and stay until next copy; not the AC-008 temporary path |\"\n        }\n      ]\n    },\n    {\n      \"category\": \"ui-evidence-boundary\",\n      \"severity\": \"info\",\n      \"description\": \"Le plan est visuel mais les contrats/test IDs/mockups/code IR et C51 sont reportés à la passe commune avant UI/spec-ship, conformément à la décision normative. Cette revue sémantique ne remplace ni approval Penflow ni visual certification.\",\n      \"suggestion\": \"Honorer le prerequisite Step 8 et produire forward chain/snapshot/review-result et actual design-profile receipt courant avant code UI ; préserver union des procédures des autres features.\",\n      \"citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L423-L426\",\n          \"excerpt\": \"the Penflow flow/screen contract, semantic and test IDs and the Pencil mockup are produced in one pass for all program features before `spec-ship`\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L159-L170\",\n          \"excerpt\": \"This plan remains visual; no current input authority or design PASS is claimed.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L159-L170\",\n          \"excerpt\": \"This design gate is separate from semantic implementation progression.\"\n        }\n      ]\n    },\n    {\n      \"category\": \"dependency-consumer-boundary\",\n      \"severity\": \"info\",\n      \"description\": \"008 est inspecté uniquement comme foundation integration context ; son ancienne table six-outcome ne redéfinit pas la spec 007 courante. 009/010 possèdent Enter/bubble UI et leur preuve finale ; 007 fournit les types et fixtures consommateurs sans prétendre livrer toute cette UI maintenant.\",\n      \"suggestion\": \"Livrer 008 avant settings wiring, conserver huit outcomes à l’intégration, et exiger preuve combinée avec 009/010 pour la livraison programme.\",\n      \"citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L19-L26\",\n          \"excerpt\": \"it is dependency context, not additional 007 acceptance scope.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L19-L26\",\n          \"excerpt\": \"008's older six-outcome description is historical integration context and must not truncate the 007 outcome type.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L428-L437\",\n          \"excerpt\": \"010 bubble code is implemented by 010, not this step.\"\n        }\n      ]\n    },\n    {\n      \"category\": \"crash-history-boundary\",\n      \"severity\": \"warning\",\n      \"description\": \"Le texte générique edge-case history keeps transcript ne doit pas devenir une nouvelle garantie persistence : actions history est WAV-gated et un crash perd memory/provider non persistés. Le plan ne modifie pas l’historique et documente correctement ce fait.\",\n      \"suggestion\": \"Vérifier les régressions history existantes et décrire seulement les entrées effectivement sauvegardées ; garder normal exit guarded eager distinct de crash recovery.\",\n      \"citations\": [\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L427-L435\",\n          \"excerpt\": \"after a crash the item can no longer be served and the history keeps the transcript.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/spec.md:L275-L279\",\n          \"excerpt\": \"The history entry is never modified by smart paste.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-smart-paste/plan.md:L115-L122\",\n          \"excerpt\": \"Keep immutable transcript in memory for 010 until its bounded recovery lifetime; crash loses unsaved memory. Document existing stored-history availability honestly.\"\n        }\n      ]\n    }\n  ],\n  \"confidence\": 4,\n  \"synthesized_batch_ids\": [],\n  \"resolutions\": []\n}"
+  ],
+  "synthesis": null,
+  "synthesis_transport_version": null
+}

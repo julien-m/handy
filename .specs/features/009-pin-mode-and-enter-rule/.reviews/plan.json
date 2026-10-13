@@ -1,0 +1,452 @@
+{
+  "schema_version": "1",
+  "policy_version": "078.1",
+  "context_hash": "16fa010ef267b6e37b559113a144e58a9ca3acda8469add31214daaa650a1f5d",
+  "source_hashes": {
+    ".specs/constitution.md": "2c1b8d9ab4024fb07ad588e883da39abeffe0f3db3bfc9afe3beb29df66659e9",
+    ".specs/features/006-destination-application/plan.md": "06b6535d01e8e37c6362c9e80eae282bf38f43d9bf55aacc9ea686861196d282",
+    ".specs/features/006-destination-application/spec.md": "20fb58454e631234f8e8a26e1c2d7246455596d805257cad4a918ecc15e715f4",
+    ".specs/features/007-smart-paste/spec.md": "446394146232eed100d240a80dcb0fbe66d320d5f9f8f50ee60035cf185c0d65",
+    ".specs/features/008-settings-cli/plan.md": "f95b8b53075ed8a3619f5843b3ac626efc03f9a6cb3806d9b29980ed4ca0356d",
+    ".specs/features/009-pin-mode-and-enter-rule/plan.md": "edac341429a01b8325d434bf125e9f2960fb95acb1064fa9a1a1e45364d5c286",
+    ".specs/features/009-pin-mode-and-enter-rule/spec.md": "0f9482621a4ac1ab74691defc349dab3e4967f48ced7804b65e6cbf41ea54338",
+    ".specs/features/010-recovery-bubble/spec.md": "97c326c63da5e15410423ba837057bfcf289b79d32fb3ed2995b6c5f0d9184fc",
+    ".specs/project.md": "cd935573446ed94fa43256de0a4d14b9474c4356fa66623f3c8c32a80572b699",
+    ".specs/stacks/_default.md": "4df92d16eef38a57c8c2bf1fff8425852b86a41e86c6b7c16423ec166ddfc0f8",
+    ".specs/testing/strategy.md": "bfe0dd480a9d3cf2575cba8407a984add02dcbdad2a17fcb4fc560def9058934"
+  },
+  "reviewer_model": "gpt-6",
+  "complete": true,
+  "ready": true,
+  "errors": [],
+  "conclusions": [
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-001",
+      "disposition": "covered",
+      "rationale": "La couverture documentaire est complète: PinState volatile dans le manager006, pin applicable au courant avant gel et aux dictations suivantes, excluant Handy et effacé à la sortie. Les entrées de badge et leur nom accessible exact sont assignés à l’étape6, y compris Return off; native focus et rendu restent à prouver.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L214-L218",
+          "excerpt": "**Criterion:** The badge menu of feature 006 offers \"Pin <destination>\" when nothing or another app is pinned and \"Unpin\" when an app is pinned. Pinning stores the destination's identity and makes it the destination of the current dictation and of every following dictation, whatever application is frontmost at their start, until unpinned or until Handy quits. The badge shows a pin mark and the accessible name \"Destination: <name>, pinned\"."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L85-L96",
+          "excerpt": "No pin is persisted, exported as a setting, or restored after quit/crash/restart."
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L85-L96",
+          "excerpt": "Pinning while Recording/Processing sets the current route and future pin in one manager transition."
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L426-L435",
+          "excerpt": "**Success criteria:** Pin/Unpin above list; no duplicate legacy control; exact pinned accessible name; selection saved/announced, selectors focus in reading order; none/unsupported behavior exact."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-002",
+      "disposition": "covered",
+      "rationale": "Le plan distingue clairement PinState futur et source courante: choix autre app et croix006 gardent le pin mais deviennent badge, donc zéro Enter pin_only. La capture unique au démarrage réel sert à Unpin avant Inserting; après gel les changements touchent seulement le futur. Activation du pin malgré Return off, races/no-op et visibilité ont des tests identifiés.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L219-L223",
+          "excerpt": "**Criterion:** While an app is pinned, choosing another application in the badge menu changes the destination of the current dictation only; the pin is unchanged. Unpinning before insertion begins makes the current dictation's destination the application captured at its start as in 006 (source \"captured\", so \"Only in PIN mode\" sends no Enter for it); the next dictation captures the frontmost application as in 006. Pinning is an explicit choice: a pinned destination is activated even when the 006 \"Return to the dictation's application\" setting is off."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L85-L96",
+          "excerpt": "Choosing another app is a current-session badge choice only; it keeps PinState and gives source `badge`, so pin_only is false."
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L85-L96",
+          "excerpt": "Unpin before freeze clears PinState and restores captured-at-start source `captured` for the current session, including after a badge override."
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L85-L96",
+          "excerpt": "With `pin_only`, this overridden dictation sends no Enter;"
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L97-L104",
+          "excerpt": "Freeze a pin route independently of return_enabled; activate its identity even when return is off."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-003",
+      "disposition": "covered",
+      "rationale": "Fermeture et activation non confirmée sont traitées avant toute méthode/Enter, sans fallback ni relancement, avec pin conservé et identité stable résolue à la réouverture. La conservation utilise006 indépendamment du WAV et ne prétend histoire durable qu’après save réel. Étapes2/5/7 et matrice de faults prouvent ces branches lors de l’implémentation; bubble010 reste future.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L224-L228",
+          "excerpt": "**Criterion:** When the pinned application is not running, or cannot be activated within the 006 limit, no text is inserted anywhere, the transcript is preserved as specified by 006 with the reason \"pinned app unavailable\", and the pin remains. When an application with the pinned identity runs again, following dictations go to it."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L97-L104",
+          "excerpt": "Closed/activation-timeout pin is a terminal destination failure with reason `pinned app unavailable`, as AC-003. No current-frontmost fallback, no app launch, no method attempt and no Enter. Keep the pin."
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L85-L96",
+          "excerpt": "Reopening resolves the same identity using WorkspacePort, not an old PID/display name or an automatic launch;"
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L97-L104",
+          "excerpt": "Test WAV disabled, save failure and saved history reread."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-004",
+      "disposition": "covered",
+      "rationale": "Une politique persistante unique remplace le booléen et préserve la clé. Migration bool×clé, priorité du champ nouveau valide, invalid/no-op/CAS et retrait de chaque ancien contrôle/emitter sont prévus à partir du service008. L’unique jeton consommé par session/outcome rend vérifiable le maximum d’un Enter sans imposer une nouvelle store.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L229-L233",
+          "excerpt": "**Criterion:** A single setting \"Automatic Enter\" with values Never, Always and Only in PIN mode replaces the existing auto-submit switch; the existing key choice (Enter, Ctrl+Enter, Cmd+Enter) is kept as the key to press. Upgrade maps auto-submit off to Never and on to Always and keeps the key. No other automatic Enter or auto-submit control remains, so at most one Enter press is sent per dictation."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L105-L112",
+          "excerpt": "a missing new field maps legacy auto_submit false/missing→Never, true→Always while preserving each key."
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L105-L112",
+          "excerpt": "Remove legacy auto_submit from runtime decisions, editable descriptors, UI, CLI help and command routing in the 009 build."
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130",
+          "excerpt": "One atomic `Pending → Consumed` transition keyed by session/outcome controls every emitter."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-005",
+      "disposition": "covered",
+      "rationale": "Après relecture du nouveau007, la conjonction est couverte: cible réelle/frontmost, génération, succès, policy/source, no recovery et no none; huit résultats classés avec seulement AXverified/readobserved/typed éligibles. Le plan préserve l’AX du PID destination, unchanged150ms quelle que soit la valeur de retour du setter, uncertain sans fallback, permission avantclipboard et not-read définitif avec snapshot jeté. La lecture et la réussite réelle du chord sont latched puis rendez-vous Windows; AXverified/typed n’attendent aucun clipboard read. Enter a son t0 terminal et ≤100ms, indépendant du switch50ms, restorelayout100ms aprèsrelease et restauration007 LAST-read300ms/cap8s/no-read800ms. Des tests de véritable adapter, races/flush/focus/cancel assurent le maximumun; capacités natives non certifiées.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L234-L238",
+          "excerpt": "**Criterion:** The Enter press is sent at most once, after the insertion step, only when: the dictation has a destination and it is still frontmost immediately before the Enter press, or the dictation has no destination (insertion targets the frontmost application as today); the insertion method reported success; with smart paste (007), its outcome was \"inserted, verified\", \"insertion attempted, read observed\" or \"typed\"; with the Windows reliable paste, the target's read was confirmed, and when it fell back to the classic paste, the classic paste reported success; no recovery display (010) replaced the insertion; and the paste method is not \"none\". \"Only in PIN mode\" additionally requires that the dictation's destination came from the pin. Otherwise no Enter is sent."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130",
+          "excerpt": "Eligibility is the conjunction: active generation; method not none; nonempty completed insertion; method success; no recovery-instead; resolved target still frontmost immediately before emission when present; policy Always or PinOnly with frozen source pin. Never is always false."
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130",
+          "excerpt": "only \"inserted, verified\", \"insertion attempted, read observed\" (`read observed`) and \"typed\" satisfy smart-paste success."
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130",
+          "excerpt": "unreadable/secure fields skip AX, and value still unchanged at the end of the 150 ms readback window falls back once regardless of the write return status;"
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130",
+          "excerpt": "009 preserves the publication-time not-read decision even if the retained transcript is read later; 007 discards that saved snapshot,"
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130",
+          "excerpt": "Windows reliable readiness remains a rendezvous between two independently recorded signals: successful chord/transfer completion and the first qualifying target-read receipt at or after injection start."
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130",
+          "excerpt": "For every eligible dispatched Enter, measure the actual native key attempt within 100 ms of t0, including scheduling/input access and the immediate frontmost check."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-006",
+      "disposition": "covered",
+      "rationale": "Le domaine destination réutilise le Domain008 et le manager006: pin stable/current, Unpin et status live-only, unavailable sans instance, not_found sur lookup et validation support/enum avant mutation. Le cas terminal courant est explicitement expliqué. Politique/clé ont la même validation UI et unique commit/revision/renderer008, tandis que le pin ne persiste ni n’avance Revision; tests service/process isolés et JSON/exits sont planifiés.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L239-L243",
+          "excerpt": "**Criterion:** The settings CLI (008) offers `destination pin <identifier|current>` (`current` pins the destination of the dictation in progress, or the frontmost application other than Handy when idle; an identifier must belong to a running application, otherwise `not_found`), `destination unpin` and `destination status` (pinned app or none) against a running instance, returning `unavailable` without one, and reads and sets the Automatic Enter option and key with the UI validation (`never`, `always`, `pin_only`). With `--json`, stdout contains only the JSON envelope."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L131-L150",
+          "excerpt": "Register `destination` operations through 008's domain trait in `settings_service/domains/destination.rs`; extend its existing output domain, not its IPC or renderer."
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L131-L150",
+          "excerpt": "Output setting works offline; all three destination operations are live-only and cannot launch Handy or fall back offline."
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L131-L150",
+          "excerpt": "Shared envelope is exactly `{ok:true,revision:N,data:...}` or `{ok:false,error:{code,message,details:{...}}}` and one newline; diagnostics stderr."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:FR-001",
+      "disposition": "covered",
+      "rationale": "Le pin est une extension006 avec capture de repli indépendante et priorité pin à la résolution de la route; cette capture sert AC002 et ne remplace pas un pin sans choix. Versions, phases et gel protègent badge/CLI et callbacks; aucune persistance/reconstitution au restart. Étapes2/3/6 et tests manager/service ciblent les règles courantes/futures et croix current-only.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L282-L286",
+          "excerpt": "**Requirement:** Store a session pin (application identity) set and cleared from the badge menu or CLI, and resolve each dictation's destination from the pin before the frontmost-app capture of 006."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L85-L96",
+          "excerpt": "resolve pin precedence before selecting the captured route. Capture the fallback once, not at unpin time."
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L386-L395",
+          "excerpt": "add PinState, frozen source pin, saved captured_at_start, atomic current/future transitions and typed pinned-unavailable reason. Reuse native adapters; register no second manager."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:FR-002",
+      "disposition": "covered",
+      "rationale": "Indisponibilité du pin conserve PinState et texte006 mais interdit méthode/Enter/fallback. Identité stable autorise les prochaines dictations après réouverture, sans autolaunch. Faults fermeture/timeout et résultats histoire saved/failed/not_saved ont vrais tests de transition et conservation prévus.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L287-L291",
+          "excerpt": "**Requirement:** Treat an unavailable pinned application as an unavailable destination without clearing the pin."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L97-L104",
+          "excerpt": "No current-frontmost fallback, no app launch, no method attempt and no Enter. Keep the pin."
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L386-L395",
+          "excerpt": "**Success criteria:** Pin wins despite return off; override affects current only; unpin restores capture with source captured; unavailable never falls back or clears pin; restart Handy resets it."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:FR-003",
+      "disposition": "covered",
+      "rationale": "Enum never/always/pin_only et AutoSubmitKey sont les seuls champs runtime correspondants; legacy bool reste entrée de migration non éditable. Migration idempotente via008, reads nonmutants, UI unique, descripteurs/CLI et tous les callers ont des étapes concrètes et preuves indépendantes. Aucun résultat d’upgrade n’est allégué.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L292-L296",
+          "excerpt": "**Requirement:** Replace the auto-submit switch by one three-value Automatic Enter setting with migration and a retained key choice."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L105-L112",
+          "excerpt": "Introduce `AutomaticEnterPolicy {Never, Always, PinOnly}` with serde values `never`, `always`, `pin_only`; retain `AutoSubmitKey` and `auto_submit_key` wire values `enter`, `ctrl_enter`, `cmd_enter`."
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L105-L112",
+          "excerpt": "In-memory reads migrate without writing; startup persists one real migration via commit_mutation and increments once. Repeated migration is a no-op; persistence failure leaves old durable generation."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:FR-004",
+      "disposition": "covered",
+      "rationale": "evaluate_enter et EnterTransaction détiennent les conditions figées et un claim atomique partagé par classiques,007terminal et Windowssettle/flush. Succès terminal, suppression de chacun des cinq outcomes inéligibles, recovery/cancellation/frontmost et no retry sur delivery unknown sont explicites. Les ajustements007 sont consommés sans écrire AX ni clipboard dans009; les tests prouvent absence de second key quelle que soit l’ordre des signaux.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L297-L301",
+          "excerpt": "**Requirement:** Send at most one Enter press per dictation, gated by the insertion outcome contract and the option value."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130",
+          "excerpt": "One atomic `Pending → Consumed` transition keyed by session/outcome controls every emitter."
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130",
+          "excerpt": "If focus, input availability or key injection fails, record Suppressed/EmissionFailed and do not retry, even when OS delivery is unknown."
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L406-L415",
+          "excerpt": "**Success criteria:** Exactly expected 0/1 for 100% of enumerated matrix (SC-001); stale/cancel/recovery/not read/permission missing/uncertain/clipboard handed over/insertion failed/none/focus/never prevent key; inserted, verified and typed need no clipboard receipt; source badge/captured never qualifies pin_only."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:SC-001",
+      "disposition": "covered",
+      "rationale": "Le plan expose une matrice indépendante option×source×huitoutcomes×Windows×clé, avec chaque prédicat faux, tests vrais gate/adapter et barrières concurrentes. Les exemples Gherkin et états donnent exactement0/1, dont AXverified/typed sans read et uncertain sans fallback. Les nouveaux cas unchanged malgré setter successful, PID étranger, chord fail après read et late not-read préservent cette obligation100%.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L350-L353",
+          "excerpt": "Across the full option × pin × outcome matrix in automated tests, the number of Enter presses equals the expected value (0 or 1) in 100% of cases."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L406-L415",
+          "excerpt": "Inline table/property-style exhaustive tests cover all option × source × outcome branches, false predicates individually and combined, all keys and duplicate concurrent callbacks."
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L466-L483",
+          "excerpt": "unchanged AX value at 150 ms falling back once even after successful write return, foreign-process focused element excluded from AX,"
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L406-L415",
+          "excerpt": "**Execution evidence:** Independent expected decision matrix, claim-race barriers, ready-at/send-at timestamps and failure reason assertions."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:SC-002",
+      "disposition": "covered",
+      "rationale": "automatic_enter_migration.rs vérifie les six bool×clé existants et priorité/new-invalid/missing, conservation unknown/secrets et erreurs de persistance/CAS/concurrence contre réel008. Les raw generations et no-op/read hashes rendent le résultat inspectable; il s’agit de couverture d’un futur test, pas d’un upgrade actuellement passé.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L354-L357",
+          "excerpt": "Upgrade tests map every existing auto-submit combination to the documented Automatic Enter value with the same key."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L466-L483",
+          "excerpt": "automatic_enter_migration.rs: 2 bool × 3 key combos, missing/new fields, new precedence/invalid, unknown fields/secrets, repeated migration/no-op, startup failure/CAS/races against genuine 008 service"
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L396-L405",
+          "excerpt": "**Execution evidence:** Each legacy bool × key migration, new/old precedence, no-op/read hashes, failure/CAS/concurrency transcripts, JSON/exit fixtures and binding caller inventory."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:SC-003",
+      "disposition": "covered",
+      "rationale": "Le harness natif et étape7 demandent précisément cinq dictations consécutives démarrées de trois applications différentes et reçues par ChatGPT pinned. Build/OS/app, texte reçu, provenance/cible, timelinefocus et comptekeys constituent les preuves; browser mocks et retour de méthode ne suffisent pas. La vérification native est à venir.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L358-L360",
+          "excerpt": "In native checks, a pinned ChatGPT receives five consecutive dictations started from three other applications."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L436-L445",
+          "excerpt": "capture ChatGPT five consecutive dictations from three other apps (SC-003),"
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L436-L445",
+          "excerpt": "**Execution evidence:** Build hash, commands/exits/raw test reports, per-app text and native Enter counts, every timing sample, screenshots/export and AC/SC matrix."
+        }
+      ],
+      "searched_plan_sections": []
+    }
+  ],
+  "ambiguities": [],
+  "extra_scope": [
+    {
+      "description": "Pin versions, context immuable, atomic claim et scheduler Enter distinct sont des nécessités techniques de concurrence.",
+      "justification": "Ils satisfont current-only/unpin AC002 et at-most-one/outcome AC004/005/SC001, sans nouvelle destination manager ni store, sans action de pin automatique ni reprise sur résultat inconnu.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L85-L96",
+          "excerpt": "Use 006 session_id/version/phase/cancel_generation for every mutation and atomically freeze at Inserting."
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130",
+          "excerpt": "One atomic `Pending → Consumed` transition keyed by session/outcome controls every emitter."
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "category": "native-confirmation",
+      "severity": "warning",
+      "description": "Le contrat Windows target-read et la latence≤100ms restent non prouvés; les changements007 ne dispensent pas cette preuve. Le plan bloque explicitement la livraison de ce chemin en l’absence de rendez-vous réel/read attribution.",
+      "suggestion": "Exécuter spike Windows, signaux dans deuxordres, pre-injection/third-party reads, failures malgré outerOk et preuve key/focus/timestamps sur binaire natif; ne pas remplacer par observerread ou navigateur.",
+      "citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130",
+          "excerpt": "an unconfirmed Windows path sends no Enter and remains a release blocker."
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L376-L385",
+          "excerpt": "**Failure handling:** Native feasibility or attribution failure blocks affected release path;"
+        }
+      ]
+    },
+    {
+      "category": "residual-focus-race",
+      "severity": "warning",
+      "description": "PIDAX destination améliore la qualification de l’écriture007 mais n’atomicise pas la consommation de l’Enter après contrôlefrontmost. Le plan déclare honnêtement la course OS, partial text et limite des méthodes classiques/scripts.",
+      "suggestion": "Conserver tests natifs de switch aprèscheck, reçus texte/keys réels et reporting de compatibilité; no retry ni deuxième activation en cas d’incertitude.",
+      "citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130",
+          "excerpt": "The final focus check cannot atomically bind OS input consumption to a process. Document the residual switch-after-check race; no second activation to force Enter and no retry after uncertainty."
+        }
+      ]
+    },
+    {
+      "category": "future-visual-and-recovery-evidence",
+      "severity": "warning",
+      "description": "Penflow cumulative/bound-result reste différé conformément à la décision humaine; intégration010 réelle vient après009. Ce plan ne certifie ni UI nonactivante ni recovery disponible style-none avant010, et le slot006 ne survit pas au process sans historysaved.",
+      "suggestion": "Fermer les gates design avant UI, rejouer bubble/Copy010 après sa livraison et préserver limitation volatile/style-none dans les preuves de livraison.",
+      "citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L73-L82",
+          "excerpt": "Then require design-profile PASS/certified=true before UI code. Today's semantic review does not substitute for that bound review."
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L436-L445",
+          "excerpt": "Test 010 recovery instead and stale delivery through injected RecoveryPort before 010 ships; rerun actual 010 bubble/Copy integration after delivery."
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L97-L104",
+          "excerpt": "Retention is volatile until superseded by a later final outcome, explicit consumer release or process exit; only an actual history save is durable."
+        }
+      ]
+    },
+    {
+      "category": "current-owner-contract",
+      "severity": "info",
+      "description": "Après lecture complète, la qualification PIDAX, permissionbeforeclipboard, discardednot-read snapshot et layout50ms/100msafterrelease du007 courant sont répercutées dans009. Les anciennes illustrations sixoutcomes008 et diagramme Story4 ne remplacent pas l’AC005 actuelle; le gate009 reste basé sur les huit terminaloutcomes.",
+      "suggestion": "Utiliser les contrats007/009 actuels pour l’implémentation et tests, garder la responsabilité des effets clipboard/layout chez007, et éviter toute certification fondée sur descriptions historiques006/008.",
+      "citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130",
+          "excerpt": "Its permission check precedes clipboard effects."
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130",
+          "excerpt": "007's 50 ms input-source switch wait and independent restoration 100 ms after the chord's last key release,"
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/plan.md:L501-L529",
+          "excerpt": "Current AC-005 is authoritative; plan scenario table and state diagram enumerate all eight outcomes, including AX verified and typed without read;"
+        }
+      ]
+    }
+  ],
+  "confidence": 4,
+  "raw_results": [
+    "{\"batch_id\":\"batch-001\",\"reviewed_section_ids\":[\".specs/constitution.md:L1-L2\",\".specs/constitution.md:L3-L17\",\".specs/constitution.md:L18-L26\",\".specs/constitution.md:L27-L29\",\".specs/features/006-destination-application/plan.md:L1-L16\",\".specs/features/006-destination-application/plan.md:L17-L18\",\".specs/features/006-destination-application/plan.md:L19-L24\",\".specs/features/006-destination-application/plan.md:L25-L41\",\".specs/features/006-destination-application/plan.md:L42-L53\",\".specs/features/006-destination-application/plan.md:L54-L66\",\".specs/features/006-destination-application/plan.md:L67-L73\",\".specs/features/006-destination-application/plan.md:L74-L83\",\".specs/features/006-destination-application/plan.md:L84-L85\",\".specs/features/006-destination-application/plan.md:L86-L95\",\".specs/features/006-destination-application/plan.md:L96-L103\",\".specs/features/006-destination-application/plan.md:L104-L115\",\".specs/features/006-destination-application/plan.md:L116-L127\",\".specs/features/006-destination-application/plan.md:L128-L135\",\".specs/features/006-destination-application/plan.md:L136-L233\",\".specs/features/006-destination-application/plan.md:L234-L272\",\".specs/features/006-destination-application/plan.md:L273-L316\",\".specs/features/006-destination-application/plan.md:L317-L351\",\".specs/features/006-destination-application/plan.md:L352-L353\",\".specs/features/006-destination-application/plan.md:L354-L363\",\".specs/features/006-destination-application/plan.md:L364-L373\",\".specs/features/006-destination-application/plan.md:L374-L383\",\".specs/features/006-destination-application/plan.md:L384-L393\",\".specs/features/006-destination-application/plan.md:L394-L404\",\".specs/features/006-destination-application/plan.md:L405-L414\",\".specs/features/006-destination-application/plan.md:L415-L424\",\".specs/features/006-destination-application/plan.md:L425-L446\",\".specs/features/006-destination-application/plan.md:L447-L464\",\".specs/features/006-destination-application/plan.md:L465-L481\",\".specs/features/006-destination-application/plan.md:L482-L501\",\".specs/features/006-destination-application/plan.md:L502-L504\",\".specs/features/006-destination-application/spec.md:L1-L9\",\".specs/features/006-destination-application/spec.md:L10-L11\",\".specs/features/006-destination-application/spec.md:L12-L20\",\".specs/features/006-destination-application/spec.md:L21-L22\",\".specs/features/006-destination-application/spec.md:L23-L61\",\".specs/features/006-destination-application/spec.md:L62-L93\",\".specs/features/006-destination-application/spec.md:L94-L133\",\".specs/features/006-destination-application/spec.md:L134-L174\",\".specs/features/006-destination-application/spec.md:L175-L200\",\".specs/features/006-destination-application/spec.md:L201-L202\",\".specs/features/006-destination-application/spec.md:L203-L207\",\".specs/features/006-destination-application/spec.md:L208-L212\",\".specs/features/006-destination-application/spec.md:L213-L217\",\".specs/features/006-destination-application/spec.md:L218-L222\",\".specs/features/006-destination-application/spec.md:L223-L227\",\".specs/features/006-destination-application/spec.md:L228-L232\",\".specs/features/006-destination-application/spec.md:L233-L237\",\".specs/features/006-destination-application/spec.md:L238-L242\",\".specs/features/006-destination-application/spec.md:L243-L246\",\".specs/features/006-destination-application/spec.md:L247-L262\",\".specs/features/006-destination-application/spec.md:L263-L280\",\".specs/features/006-destination-application/spec.md:L281-L296\",\".specs/features/006-destination-application/spec.md:L297-L298\",\".specs/features/006-destination-application/spec.md:L299-L303\",\".specs/features/006-destination-application/spec.md:L304-L308\",\".specs/features/006-destination-application/spec.md:L309-L313\",\".specs/features/006-destination-application/spec.md:L314-L318\",\".specs/features/006-destination-application/spec.md:L319-L323\",\".specs/features/006-destination-application/spec.md:L324-L328\",\".specs/features/006-destination-application/spec.md:L329-L336\",\".specs/features/006-destination-application/spec.md:L337-L350\",\".specs/features/006-destination-application/spec.md:L351-L360\",\".specs/features/006-destination-application/spec.md:L361-L367\",\".specs/features/006-destination-application/spec.md:L368-L371\",\".specs/features/006-destination-application/spec.md:L372-L379\",\".specs/features/006-destination-application/spec.md:L380-L381\",\".specs/features/006-destination-application/spec.md:L382-L385\",\".specs/features/006-destination-application/spec.md:L386-L389\",\".specs/features/006-destination-application/spec.md:L390-L392\",\".specs/features/007-smart-paste/spec.md:L1-L9\",\".specs/features/007-smart-paste/spec.md:L10-L11\",\".specs/features/007-smart-paste/spec.md:L12-L20\",\".specs/features/007-smart-paste/spec.md:L21-L22\",\".specs/features/007-smart-paste/spec.md:L23-L67\",\".specs/features/007-smart-paste/spec.md:L68-L95\",\".specs/features/007-smart-paste/spec.md:L96-L141\",\".specs/features/007-smart-paste/spec.md:L142-L176\",\".specs/features/007-smart-paste/spec.md:L177-L201\",\".specs/features/007-smart-paste/spec.md:L202-L245\",\".specs/features/007-smart-paste/spec.md:L246-L249\",\".specs/features/007-smart-paste/spec.md:L250-L254\",\".specs/features/007-smart-paste/spec.md:L255-L259\",\".specs/features/007-smart-paste/spec.md:L260-L264\",\".specs/features/007-smart-paste/spec.md:L265-L269\",\".specs/features/007-smart-paste/spec.md:L270-L274\",\".specs/features/007-smart-paste/spec.md:L275-L279\",\".specs/features/007-smart-paste/spec.md:L280-L284\",\".specs/features/007-smart-paste/spec.md:L285-L289\",\".specs/features/007-smart-paste/spec.md:L290-L294\",\".specs/features/007-smart-paste/spec.md:L295-L299\",\".specs/features/007-smart-paste/spec.md:L300-L304\",\".specs/features/007-smart-paste/spec.md:L305-L308\",\".specs/features/007-smart-paste/spec.md:L309-L324\",\".specs/features/007-smart-paste/spec.md:L325-L340\",\".specs/features/007-smart-paste/spec.md:L341-L344\",\".specs/features/007-smart-paste/spec.md:L345-L349\",\".specs/features/007-smart-paste/spec.md:L350-L354\",\".specs/features/007-smart-paste/spec.md:L355-L359\",\".specs/features/007-smart-paste/spec.md:L360-L364\",\".specs/features/007-smart-paste/spec.md:L365-L369\",\".specs/features/007-smart-paste/spec.md:L370-L374\",\".specs/features/007-smart-paste/spec.md:L375-L379\",\".specs/features/007-smart-paste/spec.md:L380-L389\",\".specs/features/007-smart-paste/spec.md:L390-L406\",\".specs/features/007-smart-paste/spec.md:L407-L416\",\".specs/features/007-smart-paste/spec.md:L417-L422\",\".specs/features/007-smart-paste/spec.md:L423-L426\",\".specs/features/007-smart-paste/spec.md:L427-L435\",\".specs/features/007-smart-paste/spec.md:L436-L437\",\".specs/features/007-smart-paste/spec.md:L438-L441\",\".specs/features/007-smart-paste/spec.md:L442-L445\",\".specs/features/007-smart-paste/spec.md:L446-L449\",\".specs/features/007-smart-paste/spec.md:L450-L453\",\".specs/features/007-smart-paste/spec.md:L454-L456\",\".specs/features/008-settings-cli/plan.md:L1-L9\",\".specs/features/008-settings-cli/plan.md:L10-L11\",\".specs/features/008-settings-cli/plan.md:L12-L17\",\".specs/features/008-settings-cli/plan.md:L18-L34\",\".specs/features/008-settings-cli/plan.md:L35-L46\",\".specs/features/008-settings-cli/plan.md:L47-L59\",\".specs/features/008-settings-cli/plan.md:L60-L61\",\".specs/features/008-settings-cli/plan.md:L62-L67\",\".specs/features/008-settings-cli/plan.md:L68-L75\",\".specs/features/008-settings-cli/plan.md:L76-L81\",\".specs/features/008-settings-cli/plan.md:L82-L102\",\".specs/features/008-settings-cli/plan.md:L103-L123\",\".specs/features/008-settings-cli/plan.md:L124-L211\",\".specs/features/008-settings-cli/plan.md:L212-L249\",\".specs/features/008-settings-cli/plan.md:L250-L289\",\".specs/features/008-settings-cli/plan.md:L290-L291\",\".specs/features/008-settings-cli/plan.md:L292-L301\",\".specs/features/008-settings-cli/plan.md:L302-L311\",\".specs/features/008-settings-cli/plan.md:L312-L321\",\".specs/features/008-settings-cli/plan.md:L322-L331\",\".specs/features/008-settings-cli/plan.md:L332-L341\",\".specs/features/008-settings-cli/plan.md:L342-L351\",\".specs/features/008-settings-cli/plan.md:L352-L361\",\".specs/features/008-settings-cli/plan.md:L362-L383\",\".specs/features/008-settings-cli/plan.md:L384-L400\",\".specs/features/008-settings-cli/plan.md:L401-L415\",\".specs/features/008-settings-cli/plan.md:L416-L438\",\".specs/features/008-settings-cli/plan.md:L439-L441\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L1-L16\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L17-L18\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L19-L28\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L29-L42\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L43-L54\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L55-L65\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L66-L72\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L73-L82\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L83-L84\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L85-L96\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L97-L104\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L105-L112\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L131-L150\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L151-L240\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L241-L328\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L329-L373\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L374-L375\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L376-L385\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L386-L395\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L396-L405\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L406-L415\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L416-L425\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L426-L435\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L436-L445\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L446-L465\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L466-L483\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L484-L500\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L501-L529\",\".specs/features/009-pin-mode-and-enter-rule/plan.md:L530-L532\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L1-L9\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L10-L11\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L12-L20\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L21-L22\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L23-L62\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L63-L90\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L91-L136\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L137-L180\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L181-L211\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L212-L213\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L214-L218\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L219-L223\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L224-L228\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L229-L233\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L234-L238\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L239-L243\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L244-L247\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L248-L263\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L264-L279\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L280-L281\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L282-L286\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L287-L291\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L292-L296\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L297-L301\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L302-L309\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L310-L319\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L320-L329\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L330-L336\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L337-L340\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L341-L347\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L348-L349\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L350-L353\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L354-L357\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L358-L360\",\".specs/features/010-recovery-bubble/spec.md:L1-L9\",\".specs/features/010-recovery-bubble/spec.md:L10-L11\",\".specs/features/010-recovery-bubble/spec.md:L12-L20\",\".specs/features/010-recovery-bubble/spec.md:L21-L22\",\".specs/features/010-recovery-bubble/spec.md:L23-L58\",\".specs/features/010-recovery-bubble/spec.md:L59-L95\",\".specs/features/010-recovery-bubble/spec.md:L96-L130\",\".specs/features/010-recovery-bubble/spec.md:L131-L167\",\".specs/features/010-recovery-bubble/spec.md:L168-L194\",\".specs/features/010-recovery-bubble/spec.md:L195-L196\",\".specs/features/010-recovery-bubble/spec.md:L197-L201\",\".specs/features/010-recovery-bubble/spec.md:L202-L206\",\".specs/features/010-recovery-bubble/spec.md:L207-L211\",\".specs/features/010-recovery-bubble/spec.md:L212-L216\",\".specs/features/010-recovery-bubble/spec.md:L217-L221\",\".specs/features/010-recovery-bubble/spec.md:L222-L226\",\".specs/features/010-recovery-bubble/spec.md:L227-L231\",\".specs/features/010-recovery-bubble/spec.md:L232-L235\",\".specs/features/010-recovery-bubble/spec.md:L236-L253\",\".specs/features/010-recovery-bubble/spec.md:L254-L272\",\".specs/features/010-recovery-bubble/spec.md:L273-L288\",\".specs/features/010-recovery-bubble/spec.md:L289-L304\",\".specs/features/010-recovery-bubble/spec.md:L305-L306\",\".specs/features/010-recovery-bubble/spec.md:L307-L311\",\".specs/features/010-recovery-bubble/spec.md:L312-L316\",\".specs/features/010-recovery-bubble/spec.md:L317-L321\",\".specs/features/010-recovery-bubble/spec.md:L322-L326\",\".specs/features/010-recovery-bubble/spec.md:L327-L331\",\".specs/features/010-recovery-bubble/spec.md:L332-L339\",\".specs/features/010-recovery-bubble/spec.md:L340-L350\",\".specs/features/010-recovery-bubble/spec.md:L351-L360\",\".specs/features/010-recovery-bubble/spec.md:L361-L367\",\".specs/features/010-recovery-bubble/spec.md:L368-L371\",\".specs/features/010-recovery-bubble/spec.md:L372-L378\",\".specs/features/010-recovery-bubble/spec.md:L379-L380\",\".specs/features/010-recovery-bubble/spec.md:L381-L384\",\".specs/features/010-recovery-bubble/spec.md:L385-L388\",\".specs/features/010-recovery-bubble/spec.md:L389-L391\",\".specs/project.md:L1-L2\",\".specs/project.md:L3-L7\",\".specs/project.md:L8-L16\",\".specs/project.md:L17-L20\",\".specs/project.md:L21-L24\",\".specs/project.md:L25-L28\",\".specs/project.md:L29-L36\",\".specs/stacks/_default.md:L1-L5\",\".specs/stacks/_default.md:L6-L7\",\".specs/stacks/_default.md:L8-L21\",\".specs/stacks/_default.md:L22-L31\",\".specs/testing/strategy.md:L1-L2\",\".specs/testing/strategy.md:L3-L6\",\".specs/testing/strategy.md:L7-L12\",\".specs/testing/strategy.md:L13-L16\"],\"conclusions\":[{\"requirement_id\":\"009-pin-mode-and-enter-rule:AC-001\",\"disposition\":\"covered\",\"rationale\":\"La couverture documentaire est complète: PinState volatile dans le manager006, pin applicable au courant avant gel et aux dictations suivantes, excluant Handy et effacé à la sortie. Les entrées de badge et leur nom accessible exact sont assignés à l’étape6, y compris Return off; native focus et rendu restent à prouver.\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L214-L218\",\"excerpt\":\"**Criterion:** The badge menu of feature 006 offers \\\"Pin <destination>\\\" when nothing or another app is pinned and \\\"Unpin\\\" when an app is pinned. Pinning stores the destination's identity and makes it the destination of the current dictation and of every following dictation, whatever application is frontmost at their start, until unpinned or until Handy quits. The badge shows a pin mark and the accessible name \\\"Destination: <name>, pinned\\\".\"}],\"plan_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L85-L96\",\"excerpt\":\"No pin is persisted, exported as a setting, or restored after quit/crash/restart.\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L85-L96\",\"excerpt\":\"Pinning while Recording/Processing sets the current route and future pin in one manager transition.\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L426-L435\",\"excerpt\":\"**Success criteria:** Pin/Unpin above list; no duplicate legacy control; exact pinned accessible name; selection saved/announced, selectors focus in reading order; none/unsupported behavior exact.\"}],\"searched_plan_sections\":[]},{\"requirement_id\":\"009-pin-mode-and-enter-rule:AC-002\",\"disposition\":\"covered\",\"rationale\":\"Le plan distingue clairement PinState futur et source courante: choix autre app et croix006 gardent le pin mais deviennent badge, donc zéro Enter pin_only. La capture unique au démarrage réel sert à Unpin avant Inserting; après gel les changements touchent seulement le futur. Activation du pin malgré Return off, races/no-op et visibilité ont des tests identifiés.\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L219-L223\",\"excerpt\":\"**Criterion:** While an app is pinned, choosing another application in the badge menu changes the destination of the current dictation only; the pin is unchanged. Unpinning before insertion begins makes the current dictation's destination the application captured at its start as in 006 (source \\\"captured\\\", so \\\"Only in PIN mode\\\" sends no Enter for it); the next dictation captures the frontmost application as in 006. Pinning is an explicit choice: a pinned destination is activated even when the 006 \\\"Return to the dictation's application\\\" setting is off.\"}],\"plan_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L85-L96\",\"excerpt\":\"Choosing another app is a current-session badge choice only; it keeps PinState and gives source `badge`, so pin_only is false.\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L85-L96\",\"excerpt\":\"Unpin before freeze clears PinState and restores captured-at-start source `captured` for the current session, including after a badge override.\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L85-L96\",\"excerpt\":\"With `pin_only`, this overridden dictation sends no Enter;\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L97-L104\",\"excerpt\":\"Freeze a pin route independently of return_enabled; activate its identity even when return is off.\"}],\"searched_plan_sections\":[]},{\"requirement_id\":\"009-pin-mode-and-enter-rule:AC-003\",\"disposition\":\"covered\",\"rationale\":\"Fermeture et activation non confirmée sont traitées avant toute méthode/Enter, sans fallback ni relancement, avec pin conservé et identité stable résolue à la réouverture. La conservation utilise006 indépendamment du WAV et ne prétend histoire durable qu’après save réel. Étapes2/5/7 et matrice de faults prouvent ces branches lors de l’implémentation; bubble010 reste future.\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L224-L228\",\"excerpt\":\"**Criterion:** When the pinned application is not running, or cannot be activated within the 006 limit, no text is inserted anywhere, the transcript is preserved as specified by 006 with the reason \\\"pinned app unavailable\\\", and the pin remains. When an application with the pinned identity runs again, following dictations go to it.\"}],\"plan_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L97-L104\",\"excerpt\":\"Closed/activation-timeout pin is a terminal destination failure with reason `pinned app unavailable`, as AC-003. No current-frontmost fallback, no app launch, no method attempt and no Enter. Keep the pin.\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L85-L96\",\"excerpt\":\"Reopening resolves the same identity using WorkspacePort, not an old PID/display name or an automatic launch;\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L97-L104\",\"excerpt\":\"Test WAV disabled, save failure and saved history reread.\"}],\"searched_plan_sections\":[]},{\"requirement_id\":\"009-pin-mode-and-enter-rule:AC-004\",\"disposition\":\"covered\",\"rationale\":\"Une politique persistante unique remplace le booléen et préserve la clé. Migration bool×clé, priorité du champ nouveau valide, invalid/no-op/CAS et retrait de chaque ancien contrôle/emitter sont prévus à partir du service008. L’unique jeton consommé par session/outcome rend vérifiable le maximum d’un Enter sans imposer une nouvelle store.\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L229-L233\",\"excerpt\":\"**Criterion:** A single setting \\\"Automatic Enter\\\" with values Never, Always and Only in PIN mode replaces the existing auto-submit switch; the existing key choice (Enter, Ctrl+Enter, Cmd+Enter) is kept as the key to press. Upgrade maps auto-submit off to Never and on to Always and keeps the key. No other automatic Enter or auto-submit control remains, so at most one Enter press is sent per dictation.\"}],\"plan_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L105-L112\",\"excerpt\":\"a missing new field maps legacy auto_submit false/missing→Never, true→Always while preserving each key.\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L105-L112\",\"excerpt\":\"Remove legacy auto_submit from runtime decisions, editable descriptors, UI, CLI help and command routing in the 009 build.\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130\",\"excerpt\":\"One atomic `Pending → Consumed` transition keyed by session/outcome controls every emitter.\"}],\"searched_plan_sections\":[]},{\"requirement_id\":\"009-pin-mode-and-enter-rule:AC-005\",\"disposition\":\"covered\",\"rationale\":\"Après relecture du nouveau007, la conjonction est couverte: cible réelle/frontmost, génération, succès, policy/source, no recovery et no none; huit résultats classés avec seulement AXverified/readobserved/typed éligibles. Le plan préserve l’AX du PID destination, unchanged150ms quelle que soit la valeur de retour du setter, uncertain sans fallback, permission avantclipboard et not-read définitif avec snapshot jeté. La lecture et la réussite réelle du chord sont latched puis rendez-vous Windows; AXverified/typed n’attendent aucun clipboard read. Enter a son t0 terminal et ≤100ms, indépendant du switch50ms, restorelayout100ms aprèsrelease et restauration007 LAST-read300ms/cap8s/no-read800ms. Des tests de véritable adapter, races/flush/focus/cancel assurent le maximumun; capacités natives non certifiées.\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L234-L238\",\"excerpt\":\"**Criterion:** The Enter press is sent at most once, after the insertion step, only when: the dictation has a destination and it is still frontmost immediately before the Enter press, or the dictation has no destination (insertion targets the frontmost application as today); the insertion method reported success; with smart paste (007), its outcome was \\\"inserted, verified\\\", \\\"insertion attempted, read observed\\\" or \\\"typed\\\"; with the Windows reliable paste, the target's read was confirmed, and when it fell back to the classic paste, the classic paste reported success; no recovery display (010) replaced the insertion; and the paste method is not \\\"none\\\". \\\"Only in PIN mode\\\" additionally requires that the dictation's destination came from the pin. Otherwise no Enter is sent.\"}],\"plan_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130\",\"excerpt\":\"Eligibility is the conjunction: active generation; method not none; nonempty completed insertion; method success; no recovery-instead; resolved target still frontmost immediately before emission when present; policy Always or PinOnly with frozen source pin. Never is always false.\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130\",\"excerpt\":\"only \\\"inserted, verified\\\", \\\"insertion attempted, read observed\\\" (`read observed`) and \\\"typed\\\" satisfy smart-paste success.\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130\",\"excerpt\":\"unreadable/secure fields skip AX, and value still unchanged at the end of the 150 ms readback window falls back once regardless of the write return status;\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130\",\"excerpt\":\"009 preserves the publication-time not-read decision even if the retained transcript is read later; 007 discards that saved snapshot,\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130\",\"excerpt\":\"Windows reliable readiness remains a rendezvous between two independently recorded signals: successful chord/transfer completion and the first qualifying target-read receipt at or after injection start.\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130\",\"excerpt\":\"For every eligible dispatched Enter, measure the actual native key attempt within 100 ms of t0, including scheduling/input access and the immediate frontmost check.\"}],\"searched_plan_sections\":[]},{\"requirement_id\":\"009-pin-mode-and-enter-rule:AC-006\",\"disposition\":\"covered\",\"rationale\":\"Le domaine destination réutilise le Domain008 et le manager006: pin stable/current, Unpin et status live-only, unavailable sans instance, not_found sur lookup et validation support/enum avant mutation. Le cas terminal courant est explicitement expliqué. Politique/clé ont la même validation UI et unique commit/revision/renderer008, tandis que le pin ne persiste ni n’avance Revision; tests service/process isolés et JSON/exits sont planifiés.\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L239-L243\",\"excerpt\":\"**Criterion:** The settings CLI (008) offers `destination pin <identifier|current>` (`current` pins the destination of the dictation in progress, or the frontmost application other than Handy when idle; an identifier must belong to a running application, otherwise `not_found`), `destination unpin` and `destination status` (pinned app or none) against a running instance, returning `unavailable` without one, and reads and sets the Automatic Enter option and key with the UI validation (`never`, `always`, `pin_only`). With `--json`, stdout contains only the JSON envelope.\"}],\"plan_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L131-L150\",\"excerpt\":\"Register `destination` operations through 008's domain trait in `settings_service/domains/destination.rs`; extend its existing output domain, not its IPC or renderer.\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L131-L150\",\"excerpt\":\"Output setting works offline; all three destination operations are live-only and cannot launch Handy or fall back offline.\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L131-L150\",\"excerpt\":\"Shared envelope is exactly `{ok:true,revision:N,data:...}` or `{ok:false,error:{code,message,details:{...}}}` and one newline; diagnostics stderr.\"}],\"searched_plan_sections\":[]},{\"requirement_id\":\"009-pin-mode-and-enter-rule:FR-001\",\"disposition\":\"covered\",\"rationale\":\"Le pin est une extension006 avec capture de repli indépendante et priorité pin à la résolution de la route; cette capture sert AC002 et ne remplace pas un pin sans choix. Versions, phases et gel protègent badge/CLI et callbacks; aucune persistance/reconstitution au restart. Étapes2/3/6 et tests manager/service ciblent les règles courantes/futures et croix current-only.\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L282-L286\",\"excerpt\":\"**Requirement:** Store a session pin (application identity) set and cleared from the badge menu or CLI, and resolve each dictation's destination from the pin before the frontmost-app capture of 006.\"}],\"plan_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L85-L96\",\"excerpt\":\"resolve pin precedence before selecting the captured route. Capture the fallback once, not at unpin time.\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L386-L395\",\"excerpt\":\"add PinState, frozen source pin, saved captured_at_start, atomic current/future transitions and typed pinned-unavailable reason. Reuse native adapters; register no second manager.\"}],\"searched_plan_sections\":[]},{\"requirement_id\":\"009-pin-mode-and-enter-rule:FR-002\",\"disposition\":\"covered\",\"rationale\":\"Indisponibilité du pin conserve PinState et texte006 mais interdit méthode/Enter/fallback. Identité stable autorise les prochaines dictations après réouverture, sans autolaunch. Faults fermeture/timeout et résultats histoire saved/failed/not_saved ont vrais tests de transition et conservation prévus.\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L287-L291\",\"excerpt\":\"**Requirement:** Treat an unavailable pinned application as an unavailable destination without clearing the pin.\"}],\"plan_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L97-L104\",\"excerpt\":\"No current-frontmost fallback, no app launch, no method attempt and no Enter. Keep the pin.\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L386-L395\",\"excerpt\":\"**Success criteria:** Pin wins despite return off; override affects current only; unpin restores capture with source captured; unavailable never falls back or clears pin; restart Handy resets it.\"}],\"searched_plan_sections\":[]},{\"requirement_id\":\"009-pin-mode-and-enter-rule:FR-003\",\"disposition\":\"covered\",\"rationale\":\"Enum never/always/pin_only et AutoSubmitKey sont les seuls champs runtime correspondants; legacy bool reste entrée de migration non éditable. Migration idempotente via008, reads nonmutants, UI unique, descripteurs/CLI et tous les callers ont des étapes concrètes et preuves indépendantes. Aucun résultat d’upgrade n’est allégué.\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L292-L296\",\"excerpt\":\"**Requirement:** Replace the auto-submit switch by one three-value Automatic Enter setting with migration and a retained key choice.\"}],\"plan_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L105-L112\",\"excerpt\":\"Introduce `AutomaticEnterPolicy {Never, Always, PinOnly}` with serde values `never`, `always`, `pin_only`; retain `AutoSubmitKey` and `auto_submit_key` wire values `enter`, `ctrl_enter`, `cmd_enter`.\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L105-L112\",\"excerpt\":\"In-memory reads migrate without writing; startup persists one real migration via commit_mutation and increments once. Repeated migration is a no-op; persistence failure leaves old durable generation.\"}],\"searched_plan_sections\":[]},{\"requirement_id\":\"009-pin-mode-and-enter-rule:FR-004\",\"disposition\":\"covered\",\"rationale\":\"evaluate_enter et EnterTransaction détiennent les conditions figées et un claim atomique partagé par classiques,007terminal et Windowssettle/flush. Succès terminal, suppression de chacun des cinq outcomes inéligibles, recovery/cancellation/frontmost et no retry sur delivery unknown sont explicites. Les ajustements007 sont consommés sans écrire AX ni clipboard dans009; les tests prouvent absence de second key quelle que soit l’ordre des signaux.\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L297-L301\",\"excerpt\":\"**Requirement:** Send at most one Enter press per dictation, gated by the insertion outcome contract and the option value.\"}],\"plan_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130\",\"excerpt\":\"One atomic `Pending → Consumed` transition keyed by session/outcome controls every emitter.\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130\",\"excerpt\":\"If focus, input availability or key injection fails, record Suppressed/EmissionFailed and do not retry, even when OS delivery is unknown.\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L406-L415\",\"excerpt\":\"**Success criteria:** Exactly expected 0/1 for 100% of enumerated matrix (SC-001); stale/cancel/recovery/not read/permission missing/uncertain/clipboard handed over/insertion failed/none/focus/never prevent key; inserted, verified and typed need no clipboard receipt; source badge/captured never qualifies pin_only.\"}],\"searched_plan_sections\":[]},{\"requirement_id\":\"009-pin-mode-and-enter-rule:SC-001\",\"disposition\":\"covered\",\"rationale\":\"Le plan expose une matrice indépendante option×source×huitoutcomes×Windows×clé, avec chaque prédicat faux, tests vrais gate/adapter et barrières concurrentes. Les exemples Gherkin et états donnent exactement0/1, dont AXverified/typed sans read et uncertain sans fallback. Les nouveaux cas unchanged malgré setter successful, PID étranger, chord fail après read et late not-read préservent cette obligation100%.\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L350-L353\",\"excerpt\":\"Across the full option × pin × outcome matrix in automated tests, the number of Enter presses equals the expected value (0 or 1) in 100% of cases.\"}],\"plan_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L406-L415\",\"excerpt\":\"Inline table/property-style exhaustive tests cover all option × source × outcome branches, false predicates individually and combined, all keys and duplicate concurrent callbacks.\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L466-L483\",\"excerpt\":\"unchanged AX value at 150 ms falling back once even after successful write return, foreign-process focused element excluded from AX,\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L406-L415\",\"excerpt\":\"**Execution evidence:** Independent expected decision matrix, claim-race barriers, ready-at/send-at timestamps and failure reason assertions.\"}],\"searched_plan_sections\":[]},{\"requirement_id\":\"009-pin-mode-and-enter-rule:SC-002\",\"disposition\":\"covered\",\"rationale\":\"automatic_enter_migration.rs vérifie les six bool×clé existants et priorité/new-invalid/missing, conservation unknown/secrets et erreurs de persistance/CAS/concurrence contre réel008. Les raw generations et no-op/read hashes rendent le résultat inspectable; il s’agit de couverture d’un futur test, pas d’un upgrade actuellement passé.\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L354-L357\",\"excerpt\":\"Upgrade tests map every existing auto-submit combination to the documented Automatic Enter value with the same key.\"}],\"plan_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L466-L483\",\"excerpt\":\"automatic_enter_migration.rs: 2 bool × 3 key combos, missing/new fields, new precedence/invalid, unknown fields/secrets, repeated migration/no-op, startup failure/CAS/races against genuine 008 service\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L396-L405\",\"excerpt\":\"**Execution evidence:** Each legacy bool × key migration, new/old precedence, no-op/read hashes, failure/CAS/concurrency transcripts, JSON/exit fixtures and binding caller inventory.\"}],\"searched_plan_sections\":[]},{\"requirement_id\":\"009-pin-mode-and-enter-rule:SC-003\",\"disposition\":\"covered\",\"rationale\":\"Le harness natif et étape7 demandent précisément cinq dictations consécutives démarrées de trois applications différentes et reçues par ChatGPT pinned. Build/OS/app, texte reçu, provenance/cible, timelinefocus et comptekeys constituent les preuves; browser mocks et retour de méthode ne suffisent pas. La vérification native est à venir.\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L358-L360\",\"excerpt\":\"In native checks, a pinned ChatGPT receives five consecutive dictations started from three other applications.\"}],\"plan_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L436-L445\",\"excerpt\":\"capture ChatGPT five consecutive dictations from three other apps (SC-003),\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L436-L445\",\"excerpt\":\"**Execution evidence:** Build hash, commands/exits/raw test reports, per-app text and native Enter counts, every timing sample, screenshots/export and AC/SC matrix.\"}],\"searched_plan_sections\":[]}],\"ambiguities\":[],\"extra_scope\":[{\"description\":\"Pin versions, context immuable, atomic claim et scheduler Enter distinct sont des nécessités techniques de concurrence.\",\"justification\":\"Ils satisfont current-only/unpin AC002 et at-most-one/outcome AC004/005/SC001, sans nouvelle destination manager ni store, sans action de pin automatique ni reprise sur résultat inconnu.\",\"approved\":true,\"citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L85-L96\",\"excerpt\":\"Use 006 session_id/version/phase/cancel_generation for every mutation and atomically freeze at Inserting.\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130\",\"excerpt\":\"One atomic `Pending → Consumed` transition keyed by session/outcome controls every emitter.\"}]}],\"findings\":[{\"category\":\"native-confirmation\",\"severity\":\"warning\",\"description\":\"Le contrat Windows target-read et la latence≤100ms restent non prouvés; les changements007 ne dispensent pas cette preuve. Le plan bloque explicitement la livraison de ce chemin en l’absence de rendez-vous réel/read attribution.\",\"suggestion\":\"Exécuter spike Windows, signaux dans deuxordres, pre-injection/third-party reads, failures malgré outerOk et preuve key/focus/timestamps sur binaire natif; ne pas remplacer par observerread ou navigateur.\",\"citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130\",\"excerpt\":\"an unconfirmed Windows path sends no Enter and remains a release blocker.\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L376-L385\",\"excerpt\":\"**Failure handling:** Native feasibility or attribution failure blocks affected release path;\"}]},{\"category\":\"residual-focus-race\",\"severity\":\"warning\",\"description\":\"PIDAX destination améliore la qualification de l’écriture007 mais n’atomicise pas la consommation de l’Enter après contrôlefrontmost. Le plan déclare honnêtement la course OS, partial text et limite des méthodes classiques/scripts.\",\"suggestion\":\"Conserver tests natifs de switch aprèscheck, reçus texte/keys réels et reporting de compatibilité; no retry ni deuxième activation en cas d’incertitude.\",\"citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130\",\"excerpt\":\"The final focus check cannot atomically bind OS input consumption to a process. Document the residual switch-after-check race; no second activation to force Enter and no retry after uncertainty.\"}]},{\"category\":\"future-visual-and-recovery-evidence\",\"severity\":\"warning\",\"description\":\"Penflow cumulative/bound-result reste différé conformément à la décision humaine; intégration010 réelle vient après009. Ce plan ne certifie ni UI nonactivante ni recovery disponible style-none avant010, et le slot006 ne survit pas au process sans historysaved.\",\"suggestion\":\"Fermer les gates design avant UI, rejouer bubble/Copy010 après sa livraison et préserver limitation volatile/style-none dans les preuves de livraison.\",\"citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L73-L82\",\"excerpt\":\"Then require design-profile PASS/certified=true before UI code. Today's semantic review does not substitute for that bound review.\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L436-L445\",\"excerpt\":\"Test 010 recovery instead and stale delivery through injected RecoveryPort before 010 ships; rerun actual 010 bubble/Copy integration after delivery.\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L97-L104\",\"excerpt\":\"Retention is volatile until superseded by a later final outcome, explicit consumer release or process exit; only an actual history save is durable.\"}]},{\"category\":\"current-owner-contract\",\"severity\":\"info\",\"description\":\"Après lecture complète, la qualification PIDAX, permissionbeforeclipboard, discardednot-read snapshot et layout50ms/100msafterrelease du007 courant sont répercutées dans009. Les anciennes illustrations sixoutcomes008 et diagramme Story4 ne remplacent pas l’AC005 actuelle; le gate009 reste basé sur les huit terminaloutcomes.\",\"suggestion\":\"Utiliser les contrats007/009 actuels pour l’implémentation et tests, garder la responsabilité des effets clipboard/layout chez007, et éviter toute certification fondée sur descriptions historiques006/008.\",\"citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130\",\"excerpt\":\"Its permission check precedes clipboard effects.\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L113-L130\",\"excerpt\":\"007's 50 ms input-source switch wait and independent restoration 100 ms after the chord's last key release,\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/plan.md:L501-L529\",\"excerpt\":\"Current AC-005 is authoritative; plan scenario table and state diagram enumerate all eight outcomes, including AX verified and typed without read;\"}]}],\"confidence\":4,\"synthesized_batch_ids\":[],\"resolutions\":[]}"
+  ],
+  "synthesis": null,
+  "synthesis_transport_version": null
+}

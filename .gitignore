@@ -45,3 +45,25 @@ result
 
 # Python bytecode (scripts/)
 __pycache__/
+
+# LiveSpec local files (personal, not committed)
+.specs/hooks/*.local.md
+.agents/skills/spec-*
+.agents/skills/source-command-cli
+.claude/skills/spec-*
+.claude/skills/source-command-cli
+.claude/rules/*.md
+.claude/rules/livespec/
+.codex/agents/livespec-*.toml
+.specs/.livespec-path
+.specs/preflight-report.md
+.specs/.runs/
+.livespec-backups/
+
+# LiveSpec verify-output --preview/--save output (feature 040)
+.specs/.previews/
+# >>> Penflow managed temporary artifacts v1 >>>
+.penflow-tmp/
+.penflow-run/
+.mockup-validation/
+# <<< Penflow managed temporary artifacts v1 <<<

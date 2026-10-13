@@ -1,0 +1,101 @@
+{
+  "documents": {
+    ".conventions/index.md": "7c017244b01dfd3ae3fcb4d73e166b4ff89422a695a5208d44efb3c7181e5226",
+    ".conventions/manifest.yaml": "625351baee360f95576cde001236591f5ede0359178d3aa506dec2d74ab391a8",
+    ".git/hooks/pre-commit": "6d904859038c81146a5fc4c81b7f88970a756e86221176baafe3866242e3ef0b",
+    ".gitignore": "3b5cba1fd451137b2a930d01de5e47951172b2f6802a0e752f212a683be7c671",
+    ".specs/.livespec-path": "2c8fc9fd1a475dbdb4b7c2b8c5c66be10dea71206e54137e41cdc910603b3dce",
+    ".specs/README.md": "a7dc51de0eef2075d50caf336a0c5fedfb06e4f1b332fb9280e4173985fb63b0",
+    ".specs/bootstrap-recap.md": "930f79d57f9ff7abe70571cacd0c94a5cfa684a598f7b227c7b19a93a52339a9",
+    ".specs/constitution.md": "2c1b8d9ab4024fb07ad588e883da39abeffe0f3db3bfc9afe3beb29df66659e9",
+    ".specs/livespec-version": "6e2ae11dad0616f66bbb2b6e6556f580bb987fd911d7132aa6bee2bfc7cc7b52",
+    ".specs/preflight-report.md": "bbf959c425d0bb616f5420862ab965154f9ed10a755214f6f5ed8fdb79d6e28e",
+    ".specs/preflight.md": "887c3e96c4c16bd402e572e62f8b63ffe1e92646761c2a0ae8272f2510c42767",
+    ".specs/project.md": "cd935573446ed94fa43256de0a4d14b9474c4356fa66623f3c8c32a80572b699",
+    ".specs/spec-system.md": "4f7ed66b7211358a589022d5c8a6b09c66b92cb34f1bb46a4c0ec64d402ea9f1",
+    ".specs/stacks/_default.md": "2207c3a9a96bf3d08186d2f3f18e94db8ba120adaf2748b07fa61b609e906e4e",
+    ".specs/stacks/decisions/ADR-bootstrap-f36751c3f59c.md": "d53ab2b09bbe38e87f91e47d20ea44116df69a00740453f9ea3117b8c7c4a05c",
+    ".specs/testing/strategy.md": "bfe0dd480a9d3cf2575cba8407a984add02dcbdad2a17fcb4fc560def9058934",
+    "AGENTS.md": "4555376bdd89202880c20828d1b13b4a33087e485a802b8bf1ac51cd8730723e",
+    "CLAUDE.md": "c48ebf7c8579bad5644675d7d0f4ee0fbb3eadc7ae2c87c25cedb65a908ed10f"
+  },
+  "profile": {
+    "facts": [
+      {
+        "evidence": "package.json",
+        "name": "JavaScript",
+        "version": "Unknown"
+      },
+      {
+        "evidence": "package.json",
+        "name": "React",
+        "version": "^18.3.1"
+      },
+      {
+        "evidence": "package.json",
+        "name": "Vite",
+        "version": "^6.4.1"
+      },
+      {
+        "evidence": "package.json",
+        "name": "TypeScript",
+        "version": "~5.6.3"
+      },
+      {
+        "evidence": "src-tauri/Cargo.toml",
+        "name": "Rust",
+        "version": "Unknown"
+      },
+      {
+        "evidence": "src-tauri/Cargo.toml",
+        "name": "Tauri",
+        "version": "2.11.5"
+      }
+    ],
+    "package_manager": "bun",
+    "product_name": "Handy",
+    "sources": [
+      {
+        "path": "package.json",
+        "sha256": "57e2d995b4befa2ede85f3dcbd97f39882676fced5f4d2e45635cdc6a14d66a0"
+      },
+      {
+        "path": "tsconfig.json",
+        "sha256": "67f732bc0344617a7fa67ad42b43630f58c8801a068d4d998183ebcf22725bfe"
+      },
+      {
+        "path": "src-tauri/Cargo.toml",
+        "sha256": "4cefc00baf898171bf3259b864cb5a8301ec036db30729e33dc67e404052281c"
+      },
+      {
+        "path": "src-tauri/Cargo.lock",
+        "sha256": "afcb8ee29689665d845b77c5f4881ac831ef89b8c1fb3b3322f71ff9aec26c1f"
+      },
+      {
+        "path": "src-tauri/tauri.conf.json",
+        "sha256": "f890ebccf812ebec1d0675fb01d96b130834141120bdb3d07c16d8237a56bb8e"
+      },
+      {
+        "path": "bun.lock",
+        "sha256": "c4601e59afc1fec4f8c832060aee149fa1e3a278123a288a260724740dd5c92e"
+      }
+    ],
+    "technical_names": [
+      "handy-app",
+      "handy"
+    ],
+    "test_commands": [
+      "bun src/lib/utils/keyboard.test.ts",
+      "playwright test",
+      "playwright test --ui"
+    ],
+    "testing_tools": [
+      "@playwright/test"
+    ],
+    "tools": [
+      "bun",
+      "cargo"
+    ]
+  },
+  "schema_version": 1
+}

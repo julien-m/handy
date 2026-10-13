@@ -1,0 +1,31 @@
+{
+  "command": "spec-plan",
+  "created_at": "2026-10-12T18:39:13.346501+00:00",
+  "feature_slug": "007-clipboard-recovery-window",
+  "files": [
+    {
+      "path": ".specs/features/007-clipboard-recovery-window/changelog.md",
+      "sha256": "eee1a38b9f1f9466305ab07082f92eb28f24997bfeed0b7594a2f280ae6078b2"
+    },
+    {
+      "path": ".specs/changelog.md",
+      "sha256": "6ebeb2f0dcbcfed4f6c3d080de1d29ccafafdf950c8c840a9d3180bafe58790a"
+    },
+    {
+      "path": ".specs/README.md",
+      "sha256": "a7523d7048c1fe4a1f5c57a2e1b8a9fe7e8fecb6da21ef65d38cc357d7b885a1"
+    },
+    {
+      "path": ".specs/features/007-clipboard-recovery-window/spec.md",
+      "sha256": "73153a68d2e4cfb498ecab60045084cf5e5f7318619006edaf35982a723a7bd1"
+    }
+  ],
+  "oracle": "livespec-finalize-evidence",
+  "oracle_version": "1",
+  "outcome": "applied",
+  "payload_hash": "1f19f822d287b3be39e79fd41ac46ad86035a5ac49d7e12b1dd693a4a7b4900f",
+  "receipt_hash": "235f80ec42889c24d11c6cf1eb97421baec23a02e8e3bd5f1548dbb0d4f9f4bc",
+  "schema_version": "1",
+  "verdict": "PASS",
+  "violations": []
+}

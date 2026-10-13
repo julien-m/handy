@@ -1,0 +1,452 @@
+{
+  "flows": [
+    {
+      "entry_screen": "microphone-settings",
+      "id": "microphone-priority",
+      "source_map": {
+        "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+        "contract_path": "$.flows[0]"
+      },
+      "steps": [
+        {
+          "id": "microphone-priority-entry",
+          "intent": "microphone-priority",
+          "screen_id": "microphone-settings"
+        }
+      ],
+      "title": "microphone-priority",
+      "transitions": [
+        {
+          "action": "save",
+          "causal": {
+            "action_visibility": "user-visible",
+            "fanout": {
+              "group": "save",
+              "policy": "exclusive"
+            },
+            "outcome": "priority-saved",
+            "version": 1
+          },
+          "condition": "valid-choice",
+          "from": "microphone-settings",
+          "guard": "valid-choice",
+          "id": "save-complete",
+          "kind": "state",
+          "label": "Save the complete priority list",
+          "to": "microphone-settings",
+          "trigger": "save"
+        },
+        {
+          "action": "move-up",
+          "causal": {
+            "action_visibility": "user-visible",
+            "fanout": {
+              "group": "move-up",
+              "policy": "exclusive"
+            },
+            "outcome": "move-up-complete",
+            "version": 1
+          },
+          "condition": "valid-choice",
+          "from": "microphone-settings",
+          "guard": "valid-choice",
+          "id": "move-up-complete",
+          "kind": "state",
+          "label": "Draft order after move-up",
+          "to": "microphone-settings",
+          "trigger": "move-up"
+        },
+        {
+          "action": "move-down",
+          "causal": {
+            "action_visibility": "user-visible",
+            "fanout": {
+              "group": "move-down",
+              "policy": "exclusive"
+            },
+            "outcome": "move-down-complete",
+            "version": 1
+          },
+          "condition": "valid-choice",
+          "from": "microphone-settings",
+          "guard": "valid-choice",
+          "id": "move-down-complete",
+          "kind": "state",
+          "label": "Draft order after move-down",
+          "to": "microphone-settings",
+          "trigger": "move-down"
+        },
+        {
+          "action": "remove",
+          "causal": {
+            "action_visibility": "user-visible",
+            "fanout": {
+              "group": "remove",
+              "policy": "exclusive"
+            },
+            "outcome": "remove-complete",
+            "version": 1
+          },
+          "condition": "valid-choice",
+          "from": "microphone-settings",
+          "guard": "valid-choice",
+          "id": "remove-complete",
+          "kind": "state",
+          "label": "Draft order after remove",
+          "to": "microphone-settings",
+          "trigger": "remove"
+        }
+      ]
+    }
+  ],
+  "kind": "semantic-ui-tree",
+  "screens": [
+    {
+      "flow_id": "microphone-priority",
+      "id": "microphone-settings",
+      "root": {
+        "children": [
+          {
+            "children": [
+              {
+                "role": "text",
+                "semantic_id": "microphone-title",
+                "source_map": {
+                  "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                  "contract_path": "$.nodes[2]"
+                },
+                "test_id": "microphone-title",
+                "text": "Microphone priority"
+              },
+              {
+                "role": "text",
+                "semantic_id": "microphone-description",
+                "source_map": {
+                  "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                  "contract_path": "$.nodes[3]"
+                },
+                "test_id": "microphone-description",
+                "text": "Handy uses the first available microphone. Unavailable choices stay in this list."
+              }
+            ],
+            "role": "container",
+            "semantic_id": "microphone-header",
+            "source_map": {
+              "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+              "contract_path": "$.nodes[1]"
+            },
+            "test_id": "microphone-header"
+          },
+          {
+            "children": [
+              {
+                "role": "text",
+                "semantic_id": "microphone-priority-label",
+                "source_map": {
+                  "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                  "contract_path": "$.nodes[5]"
+                },
+                "test_id": "microphone-priority-label",
+                "text": "Configured order"
+              },
+              {
+                "binding": "microphone.priority",
+                "children": [
+                  {
+                    "role": "text",
+                    "semantic_id": "microphone-example-first",
+                    "source_map": {
+                      "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                      "contract_path": "$.nodes[7]"
+                    },
+                    "test_id": "microphone-example-first",
+                    "text": "1  USB headset \u00b7 Unavailable \u2014 sample data"
+                  },
+                  {
+                    "role": "text",
+                    "semantic_id": "microphone-example-second",
+                    "source_map": {
+                      "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                      "contract_path": "$.nodes[8]"
+                    },
+                    "test_id": "microphone-example-second",
+                    "text": "2  MacBook microphone \u00b7 Available \u2014 sample data"
+                  }
+                ],
+                "entity": "microphone",
+                "repeat": "identity in microphone.priority",
+                "role": "list",
+                "semantic_id": "microphone-priority-list",
+                "source_map": {
+                  "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                  "contract_path": "$.nodes[6]"
+                },
+                "test_id": "microphone-priority-list"
+              }
+            ],
+            "role": "container",
+            "semantic_id": "microphone-priority-section",
+            "source_map": {
+              "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+              "contract_path": "$.nodes[4]"
+            },
+            "test_id": "microphone-priority-section"
+          },
+          {
+            "children": [
+              {
+                "binding": "microphone.effective",
+                "entity": "microphone",
+                "role": "text",
+                "semantic_id": "microphone-effective",
+                "source_map": {
+                  "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                  "contract_path": "$.nodes[10]"
+                },
+                "test_id": "microphone-effective",
+                "text": "Next input: MacBook microphone \u00b7 Fallback from unavailable first choice"
+              },
+              {
+                "role": "text",
+                "semantic_id": "microphone-clamshell",
+                "source_map": {
+                  "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                  "contract_path": "$.nodes[11]"
+                },
+                "test_id": "microphone-clamshell",
+                "text": "Closed-lid override is tried first. Your configured order remains unchanged."
+              }
+            ],
+            "role": "container",
+            "semantic_id": "microphone-effective-section",
+            "source_map": {
+              "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+              "contract_path": "$.nodes[9]"
+            },
+            "test_id": "microphone-effective-section"
+          },
+          {
+            "children": [
+              {
+                "actions": [
+                  {
+                    "binding_ref": {
+                      "access": "write",
+                      "entity": "microphone",
+                      "field": "new_choice"
+                    },
+                    "event": "change",
+                    "id": "choose-microphone",
+                    "kind": "state_change",
+                    "node": "microphone-choose",
+                    "trigger": "change"
+                  }
+                ],
+                "binding": "microphone.new_choice",
+                "entity": "microphone",
+                "intent": "choose-microphone",
+                "role": "select",
+                "semantic_id": "microphone-choose",
+                "source_map": {
+                  "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                  "contract_path": "$.nodes[13]"
+                },
+                "test_id": "microphone-choose",
+                "text": "Add microphone"
+              },
+              {
+                "actions": [
+                  {
+                    "event": "submit",
+                    "guard": "valid-choice",
+                    "id": "move-up",
+                    "kind": "state_change",
+                    "node": "microphone-move-up",
+                    "success_transition": "move-up-complete",
+                    "trigger": "click"
+                  }
+                ],
+                "intent": "move-up",
+                "role": "button",
+                "semantic_id": "microphone-move-up",
+                "source_map": {
+                  "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                  "contract_path": "$.nodes[14]"
+                },
+                "test_id": "microphone-move-up",
+                "text": "Move up"
+              },
+              {
+                "actions": [
+                  {
+                    "event": "submit",
+                    "guard": "valid-choice",
+                    "id": "move-down",
+                    "kind": "state_change",
+                    "node": "microphone-move-down",
+                    "success_transition": "move-down-complete",
+                    "trigger": "click"
+                  }
+                ],
+                "intent": "move-down",
+                "role": "button",
+                "semantic_id": "microphone-move-down",
+                "source_map": {
+                  "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                  "contract_path": "$.nodes[15]"
+                },
+                "test_id": "microphone-move-down",
+                "text": "Move down"
+              },
+              {
+                "actions": [
+                  {
+                    "event": "submit",
+                    "guard": "valid-choice",
+                    "id": "remove",
+                    "kind": "state_change",
+                    "node": "microphone-remove",
+                    "success_transition": "remove-complete",
+                    "trigger": "click"
+                  }
+                ],
+                "intent": "remove",
+                "role": "button",
+                "semantic_id": "microphone-remove",
+                "source_map": {
+                  "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                  "contract_path": "$.nodes[16]"
+                },
+                "test_id": "microphone-remove",
+                "text": "Remove"
+              },
+              {
+                "actions": [
+                  {
+                    "event": "submit",
+                    "guard": "valid-choice",
+                    "id": "save",
+                    "kind": "state_change",
+                    "node": "microphone-save",
+                    "success_transition": "save-complete",
+                    "trigger": "click"
+                  }
+                ],
+                "intent": "save",
+                "role": "button",
+                "semantic_id": "microphone-save",
+                "source_map": {
+                  "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                  "contract_path": "$.nodes[17]"
+                },
+                "test_id": "microphone-save",
+                "text": "Save"
+              }
+            ],
+            "role": "container",
+            "semantic_id": "microphone-controls",
+            "source_map": {
+              "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+              "contract_path": "$.nodes[12]"
+            },
+            "test_id": "microphone-controls"
+          }
+        ],
+        "role": "screen",
+        "semantic_id": "microphone-settings",
+        "source_map": {
+          "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+          "contract_path": "$.nodes[0]"
+        },
+        "test_id": "microphone-settings"
+      },
+      "side_effects": [],
+      "source_map": {
+        "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+        "contract_path": "$.screens[0]"
+      },
+      "states": [
+        {
+          "name": "editing"
+        },
+        {
+          "name": "saving"
+        },
+        {
+          "name": "saved"
+        },
+        {
+          "name": "error"
+        },
+        {
+          "name": "move-up-complete"
+        },
+        {
+          "name": "move-down-complete"
+        },
+        {
+          "name": "remove-complete"
+        }
+      ],
+      "surface": "web",
+      "validations": [
+        {
+          "id": "valid-choice",
+          "kind": "guard",
+          "source": {
+            "id": "valid-choice",
+            "operator": "equals",
+            "source": "user_input",
+            "value": "true",
+            "variable": "microphone.draft_valid"
+          }
+        },
+        {
+          "id": "valid-choice",
+          "kind": "guard",
+          "source": {
+            "id": "valid-choice",
+            "operator": "equals",
+            "source": "user_input",
+            "value": "true",
+            "variable": "microphone.draft_valid"
+          }
+        },
+        {
+          "id": "valid-choice",
+          "kind": "guard",
+          "source": {
+            "id": "valid-choice",
+            "operator": "equals",
+            "source": "user_input",
+            "value": "true",
+            "variable": "microphone.draft_valid"
+          }
+        },
+        {
+          "id": "valid-choice",
+          "kind": "guard",
+          "source": {
+            "id": "valid-choice",
+            "operator": "equals",
+            "source": "user_input",
+            "value": "true",
+            "variable": "microphone.draft_valid"
+          }
+        }
+      ],
+      "viewport": {
+        "height": 680,
+        "width": 900
+      }
+    }
+  ],
+  "source": {
+    "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+    "notes": [
+      "Generated deterministically from v2 contract.json."
+    ]
+  },
+  "tree_id": "handy-microphone-priority",
+  "version": 1
+}

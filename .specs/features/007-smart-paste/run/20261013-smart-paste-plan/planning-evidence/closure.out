@@ -1,0 +1,54 @@
+Plan generated: /Users/julienm/projects/handy/.specs/features/007-smart-paste/plan.md
+Plan Review: complete=true, ready=true; reviewer gpt-6.1-sol
+mermaid diagrams: 2 sequence, 1 state, 1 transient ER; 9 implementation steps
+Penflow contract: incomplete, certified=false; shared UI contracts/code IR/mockups deferred by explicit user until pre-spec-ship pass. No design certification claimed.
+Progression implement: READY; Analyze exit=0. Native/runtime proofs are pending implementation gates.
+Next action: $spec-implement 007-smart-paste --model=gpt-6.1-sol after 008 and required native/design gates.
+## Specification Analysis Report
+
+Semantic readiness: covered
+
+### Findings
+_No findings._
+
+### Structural Reference Coverage Matrix
+| Requirement Key | Has Plan Task? | Task IDs | Notes |
+|-----------------|----------------|----------|-------|
+| 007-smart-paste:AC-010 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:AC-012 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:AC-001 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:AC-007 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:AC-008 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:AC-011 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:AC-009 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:AC-017 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:AC-013 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:AC-014 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:AC-015 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:AC-018 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:AC-016 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:FR-001 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:FR-004 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:FR-005 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:FR-006 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:FR-007 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:FR-008 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:FR-009 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:FR-010 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:FR-011 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:SC-001 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:SC-003 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:SC-004 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:SC-005 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:SC-008 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:SC-007 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:SC-006 | yes | plan.md | structural reference present; semantic compliance is separate |
+
+### Metrics
+- total_requirements: 29
+- covered_requirements: 29
+- coverage_percent: 100.0
+- critical_count: 0
+- high_count: 0
+- implementation_present: 0
+

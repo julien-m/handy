@@ -1,0 +1,28 @@
+{
+  "command": "spec-plan",
+  "feature": "004-multiple-dictation-shortcuts",
+  "model": "gpt-6.1-sol",
+  "review_max_chars": 180000,
+  "plan_path": ".specs/features/004-multiple-dictation-shortcuts/plan.md",
+  "structural_validation": "PASS 100/100",
+  "structural_coverage": "14/14",
+  "plan_review": {
+    "complete": true,
+    "ready": false,
+    "receipt_path": ".specs/features/004-multiple-dictation-shortcuts/.reviews/plan.json"
+  },
+  "progression_implement": "BLOCKED: analyze_not_ready:blocked",
+  "blocking_decision": "legacy_conflict_activation_policy",
+  "affected_requirements": [
+    "AC-001",
+    "FR-001",
+    "SC-003"
+  ],
+  "human_decision": "pending, no authorization inferred",
+  "spec_modified": "lifecycle status/updated only by finalize",
+  "application_files_changed": [],
+  "finalize_verify": "PASS",
+  "archive_path": ".specs/.runs/spec-plan-2026-10-12T18-24-40.491179-bd0d40e9-policy2.json",
+  "goal_complete": false,
+  "session_ledger_write": "MCP tool call requires approval, but approval policy is never"
+}

@@ -1,0 +1,10 @@
+{
+  "goal_contract": "/var/folders/l_/t1s_zytx2fqb0dkzz40d3v7m0000gn/T/livespec-goals/goal-spec-plan-d92eb168.contract.json",
+  "goal_state": "/var/folders/l_/t1s_zytx2fqb0dkzz40d3v7m0000gn/T/livespec-goals/goal-spec-plan-d92eb168.state.json",
+  "model": "gpt-6.1-sol",
+  "review_max_chars": 200000,
+  "superseded_contract": "goal-spec-plan-1e616e75.contract.json",
+  "application_diff_paths": [],
+  "scope": "Plan only, no commit/push. Official finalize changed only selected spec lifecycle metadata. UI preparation deferred by explicit human decision; no design certification.",
+  "ledger": "Read-only snapshot available. classify mutation denied: MCP tool call requires approval, but approval policy is never; no alternate mutation attempted."
+}

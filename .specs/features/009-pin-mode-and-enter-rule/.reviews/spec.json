@@ -1,0 +1,257 @@
+{
+  "schema_version": "1",
+  "policy_version": "078.1",
+  "context_hash": "ce7661878df39356e6e430136a0e7929532fd5bfe96e4dc390b8c4a7392a7e66",
+  "source_hashes": {
+    ".specs/constitution.md": "2c1b8d9ab4024fb07ad588e883da39abeffe0f3db3bfc9afe3beb29df66659e9",
+    ".specs/features/009-pin-mode-and-enter-rule/spec.md": "0f9482621a4ac1ab74691defc349dab3e4967f48ced7804b65e6cbf41ea54338",
+    ".specs/project.md": "cd935573446ed94fa43256de0a4d14b9474c4356fa66623f3c8c32a80572b699",
+    ".specs/stacks/_default.md": "4df92d16eef38a57c8c2bf1fff8425852b86a41e86c6b7c16423ec166ddfc0f8",
+    ".specs/testing/strategy.md": "bfe0dd480a9d3cf2575cba8407a984add02dcbdad2a17fcb4fc560def9058934"
+  },
+  "reviewer_model": "gpt-6",
+  "complete": true,
+  "ready": true,
+  "errors": [],
+  "conclusions": [
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-001",
+      "disposition": "covered",
+      "rationale": "Pin origin, current and later dictations, menu visibility, accessible name, and session lifetime are explicitly specified; no persistence across Handy restart is promised.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L214-L218",
+          "excerpt": "Pinning stores the destination's identity and makes it the destination of the current dictation and of every following dictation"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-002",
+      "disposition": "covered",
+      "rationale": "The explicit destination source distinguishes one-dictation overrides and unpin-before-insertion from session pin state; pinned activation overrides the 006 setting without altering that setting.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L219-L223",
+          "excerpt": "Unpinning before insertion begins makes the current dictation's destination the application captured at its start as in 006"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-003",
+      "disposition": "covered",
+      "rationale": "Closed or unactivatable targets prohibit any insertion, preserve the transcript through the referenced 006 behavior and retain identity for reopening. Concrete integration preservation evidence belongs in planning and execution.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L224-L228",
+          "excerpt": "no text is inserted anywhere, the transcript is preserved as specified by 006 with the reason \"pinned app unavailable\", and the pin remains"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-004",
+      "disposition": "covered",
+      "rationale": "Migration is fully specified for both boolean values and each retained key; replacing all legacy controls prevents a second independent submission mechanism.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L229-L233",
+          "excerpt": "Upgrade maps auto-submit off to Never and on to Always and keeps the key."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-005",
+      "disposition": "covered",
+      "rationale": "The current detailed criterion gives a conjunctive destination, outcome, recovery and option gate. Its three allowed 007 outcomes include inserted verified, which is eligible without a clipboard read; not read and uncertain are excluded. The full current stack remains React/TypeScript/Tauri/Rust, unchanged in behavior by its title/date update. The abbreviated story graph must not narrow AC-005.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L234-L238",
+          "excerpt": "with smart paste (007), its outcome was \"inserted, verified\", \"insertion attempted, read observed\" or \"typed\""
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-006",
+      "disposition": "covered",
+      "rationale": "CLI commands, running-instance boundary, current resolution while recording versus idle, missing application rejection, option values and JSON-only output are observable and specified. Foundation transport details are appropriately delegated to 008.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L239-L243",
+          "excerpt": "`destination pin <identifier|current>` (`current` pins the destination of the dictation in progress, or the frontmost application other than Handy when idle; an identifier must belong to a running application, otherwise `not_found`)"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:FR-001",
+      "disposition": "covered",
+      "rationale": "The requirement binds the session pin manager and priority over captured origin to AC-001, AC-002 and AC-006; their detailed timing semantics provide the required behavior.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L282-L286",
+          "excerpt": "Store a session pin (application identity) set and cleared from the badge menu or CLI"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:FR-002",
+      "disposition": "covered",
+      "rationale": "Unavailable pin behavior explicitly preserves the pin and is anchored to AC-003, including reopen recovery and no insertion to another application.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L287-L291",
+          "excerpt": "Treat an unavailable pinned application as an unavailable destination without clearing the pin."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:FR-003",
+      "disposition": "covered",
+      "rationale": "The single replacement setting, migration and key retention are specified and linked to UI and CLI acceptance, so no independent legacy control is required.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L292-L296",
+          "excerpt": "Replace the auto-submit switch by one three-value Automatic Enter setting with migration and a retained key choice."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:FR-004",
+      "disposition": "covered",
+      "rationale": "The single Enter action and outcome-option gate are specified through AC-005, whose destination and recovery checks define observable suppression behavior.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L297-L301",
+          "excerpt": "Send at most one Enter press per dictation, gated by the insertion outcome contract and the option value."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:SC-001",
+      "disposition": "covered",
+      "rationale": "An exhaustive option by pin by insertion-outcome test matrix and an exact 0-or-1 expected key count provide measurable correctness; planning must include the new verified/uncertain outcomes.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L350-L353",
+          "excerpt": "the number of Enter presses equals the expected value (0 or 1) in 100% of cases."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:SC-002",
+      "disposition": "covered",
+      "rationale": "Migration coverage is finite and measurable: every existing boolean/key combination maps to the documented setting without changing its key.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L354-L357",
+          "excerpt": "Upgrade tests map every existing auto-submit combination to the documented Automatic Enter value with the same key."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:SC-003",
+      "disposition": "covered",
+      "rationale": "The native acceptance sequence specifies five successive dictations from three applications into pinned ChatGPT; it is a future native proof requirement, not a claimed result.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L358-L360",
+          "excerpt": "a pinned ChatGPT receives five consecutive dictations started from three other applications."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    }
+  ],
+  "ambiguities": [],
+  "extra_scope": [],
+  "findings": [
+    {
+      "category": "outcome-contract-diagram",
+      "severity": "warning",
+      "description": "Story 4 uses a compact read-confirmation gate while AC-005 now explicitly admits AX inserted verified and typed. The exact AC is decisive; blindly translating the simplified graph could suppress valid Enter.",
+      "suggestion": "In the plan, enumerate inserted verified, insertion attempted read observed and typed as eligible; reject not read, uncertain, none, failures and recovery. Make state/sequence diagrams and tests use that same predicate.",
+      "citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L137-L180",
+          "excerpt": "D{Smart paste read observed, or Windows reliable paste read confirmed, if used?}"
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L234-L238",
+          "excerpt": "its outcome was \"inserted, verified\", \"insertion attempted, read observed\" or \"typed\""
+        }
+      ]
+    },
+    {
+      "category": "native-testing",
+      "severity": "warning",
+      "description": "The project testing strategy lists frontend tools and commands, while the feature changes native routing, session state and key injection. These recorded commands alone cannot prove pin or Enter behavior.",
+      "suggestion": "The plan must explicitly resolve cargo test commands, inject workspace/activation and key-emission seams, test clocks and native manual proof with observed text destination and key counts.",
+      "citations": [
+        {
+          "section_id": ".specs/testing/strategy.md:L7-L12",
+          "excerpt": "- `bun src/lib/utils/keyboard.test.ts`\n- `playwright test`\n- `playwright test --ui`"
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L320-L329",
+          "excerpt": "Native checks pinning ChatGPT and Comet with application switches; Enter count measured by a test field; CLI pin operations against a running instance."
+        }
+      ]
+    },
+    {
+      "category": "timing-and-races",
+      "severity": "warning",
+      "description": "The 100 ms deadline and immediately-before-Enter destination recheck combine native focus races with strict at-most-once behavior; runtime success is not established by this review.",
+      "suggestion": "The plan must bind the deadline to the eligible insertion outcome event, avoid blocking UI while activation waits, exercise duplicate callbacks and focus/unpin races with an injectable clock, then require native evidence.",
+      "citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L320-L329",
+          "excerpt": "Enter sent within 100 ms after a successful insertion step"
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L234-L238",
+          "excerpt": "it is still frontmost immediately before the Enter press"
+        }
+      ]
+    },
+    {
+      "category": "ui-evidence",
+      "severity": "info",
+      "description": "The current source explicitly defers Penflow/Pencil production to the agreed single pass before spec-ship; specification semantic readiness does not certify those UI artifacts.",
+      "suggestion": "Keep the authoritative planned flow and screen IDs in the plan, preserve the deferred design gate and do not claim visual certification.",
+      "citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L337-L340",
+          "excerpt": "the Penflow flow/screen contract, semantic and test IDs and the Pencil mockups are produced in one pass for all program features before `spec-ship`"
+        }
+      ]
+    }
+  ],
+  "confidence": 4,
+  "raw_results": [
+    "{\"batch_id\": \"batch-001\", \"reviewed_section_ids\": [\".specs/constitution.md:L1-L2\", \".specs/constitution.md:L3-L17\", \".specs/constitution.md:L18-L26\", \".specs/constitution.md:L27-L29\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L1-L9\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L10-L11\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L12-L20\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L21-L22\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L23-L62\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L63-L90\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L91-L136\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L137-L180\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L181-L211\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L212-L213\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L214-L218\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L219-L223\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L224-L228\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L229-L233\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L234-L238\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L239-L243\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L244-L247\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L248-L263\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L264-L279\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L280-L281\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L282-L286\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L287-L291\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L292-L296\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L297-L301\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L302-L309\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L310-L319\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L320-L329\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L330-L336\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L337-L340\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L341-L347\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L348-L349\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L350-L353\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L354-L357\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L358-L360\", \".specs/project.md:L1-L2\", \".specs/project.md:L3-L7\", \".specs/project.md:L8-L16\", \".specs/project.md:L17-L20\", \".specs/project.md:L21-L24\", \".specs/project.md:L25-L28\", \".specs/project.md:L29-L36\", \".specs/stacks/_default.md:L1-L5\", \".specs/stacks/_default.md:L6-L7\", \".specs/stacks/_default.md:L8-L21\", \".specs/stacks/_default.md:L22-L31\", \".specs/testing/strategy.md:L1-L2\", \".specs/testing/strategy.md:L3-L6\", \".specs/testing/strategy.md:L7-L12\", \".specs/testing/strategy.md:L13-L16\"], \"conclusions\": [{\"requirement_id\": \"009-pin-mode-and-enter-rule:AC-001\", \"disposition\": \"covered\", \"rationale\": \"Pin origin, current and later dictations, menu visibility, accessible name, and session lifetime are explicitly specified; no persistence across Handy restart is promised.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L214-L218\", \"excerpt\": \"Pinning stores the destination's identity and makes it the destination of the current dictation and of every following dictation\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"009-pin-mode-and-enter-rule:AC-002\", \"disposition\": \"covered\", \"rationale\": \"The explicit destination source distinguishes one-dictation overrides and unpin-before-insertion from session pin state; pinned activation overrides the 006 setting without altering that setting.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L219-L223\", \"excerpt\": \"Unpinning before insertion begins makes the current dictation's destination the application captured at its start as in 006\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"009-pin-mode-and-enter-rule:AC-003\", \"disposition\": \"covered\", \"rationale\": \"Closed or unactivatable targets prohibit any insertion, preserve the transcript through the referenced 006 behavior and retain identity for reopening. Concrete integration preservation evidence belongs in planning and execution.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L224-L228\", \"excerpt\": \"no text is inserted anywhere, the transcript is preserved as specified by 006 with the reason \\\"pinned app unavailable\\\", and the pin remains\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"009-pin-mode-and-enter-rule:AC-004\", \"disposition\": \"covered\", \"rationale\": \"Migration is fully specified for both boolean values and each retained key; replacing all legacy controls prevents a second independent submission mechanism.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L229-L233\", \"excerpt\": \"Upgrade maps auto-submit off to Never and on to Always and keeps the key.\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"009-pin-mode-and-enter-rule:AC-005\", \"disposition\": \"covered\", \"rationale\": \"The current detailed criterion gives a conjunctive destination, outcome, recovery and option gate. Its three allowed 007 outcomes include inserted verified, which is eligible without a clipboard read; not read and uncertain are excluded. The full current stack remains React/TypeScript/Tauri/Rust, unchanged in behavior by its title/date update. The abbreviated story graph must not narrow AC-005.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L234-L238\", \"excerpt\": \"with smart paste (007), its outcome was \\\"inserted, verified\\\", \\\"insertion attempted, read observed\\\" or \\\"typed\\\"\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"009-pin-mode-and-enter-rule:AC-006\", \"disposition\": \"covered\", \"rationale\": \"CLI commands, running-instance boundary, current resolution while recording versus idle, missing application rejection, option values and JSON-only output are observable and specified. Foundation transport details are appropriately delegated to 008.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L239-L243\", \"excerpt\": \"`destination pin <identifier|current>` (`current` pins the destination of the dictation in progress, or the frontmost application other than Handy when idle; an identifier must belong to a running application, otherwise `not_found`)\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"009-pin-mode-and-enter-rule:FR-001\", \"disposition\": \"covered\", \"rationale\": \"The requirement binds the session pin manager and priority over captured origin to AC-001, AC-002 and AC-006; their detailed timing semantics provide the required behavior.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L282-L286\", \"excerpt\": \"Store a session pin (application identity) set and cleared from the badge menu or CLI\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"009-pin-mode-and-enter-rule:FR-002\", \"disposition\": \"covered\", \"rationale\": \"Unavailable pin behavior explicitly preserves the pin and is anchored to AC-003, including reopen recovery and no insertion to another application.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L287-L291\", \"excerpt\": \"Treat an unavailable pinned application as an unavailable destination without clearing the pin.\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"009-pin-mode-and-enter-rule:FR-003\", \"disposition\": \"covered\", \"rationale\": \"The single replacement setting, migration and key retention are specified and linked to UI and CLI acceptance, so no independent legacy control is required.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L292-L296\", \"excerpt\": \"Replace the auto-submit switch by one three-value Automatic Enter setting with migration and a retained key choice.\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"009-pin-mode-and-enter-rule:FR-004\", \"disposition\": \"covered\", \"rationale\": \"The single Enter action and outcome-option gate are specified through AC-005, whose destination and recovery checks define observable suppression behavior.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L297-L301\", \"excerpt\": \"Send at most one Enter press per dictation, gated by the insertion outcome contract and the option value.\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"009-pin-mode-and-enter-rule:SC-001\", \"disposition\": \"covered\", \"rationale\": \"An exhaustive option by pin by insertion-outcome test matrix and an exact 0-or-1 expected key count provide measurable correctness; planning must include the new verified/uncertain outcomes.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L350-L353\", \"excerpt\": \"the number of Enter presses equals the expected value (0 or 1) in 100% of cases.\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"009-pin-mode-and-enter-rule:SC-002\", \"disposition\": \"covered\", \"rationale\": \"Migration coverage is finite and measurable: every existing boolean/key combination maps to the documented setting without changing its key.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L354-L357\", \"excerpt\": \"Upgrade tests map every existing auto-submit combination to the documented Automatic Enter value with the same key.\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"009-pin-mode-and-enter-rule:SC-003\", \"disposition\": \"covered\", \"rationale\": \"The native acceptance sequence specifies five successive dictations from three applications into pinned ChatGPT; it is a future native proof requirement, not a claimed result.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L358-L360\", \"excerpt\": \"a pinned ChatGPT receives five consecutive dictations started from three other applications.\"}], \"plan_citations\": [], \"searched_plan_sections\": []}], \"ambiguities\": [], \"extra_scope\": [], \"findings\": [{\"category\": \"outcome-contract-diagram\", \"severity\": \"warning\", \"description\": \"Story 4 uses a compact read-confirmation gate while AC-005 now explicitly admits AX inserted verified and typed. The exact AC is decisive; blindly translating the simplified graph could suppress valid Enter.\", \"suggestion\": \"In the plan, enumerate inserted verified, insertion attempted read observed and typed as eligible; reject not read, uncertain, none, failures and recovery. Make state/sequence diagrams and tests use that same predicate.\", \"citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L137-L180\", \"excerpt\": \"D{Smart paste read observed, or Windows reliable paste read confirmed, if used?}\"}, {\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L234-L238\", \"excerpt\": \"its outcome was \\\"inserted, verified\\\", \\\"insertion attempted, read observed\\\" or \\\"typed\\\"\"}]}, {\"category\": \"native-testing\", \"severity\": \"warning\", \"description\": \"The project testing strategy lists frontend tools and commands, while the feature changes native routing, session state and key injection. These recorded commands alone cannot prove pin or Enter behavior.\", \"suggestion\": \"The plan must explicitly resolve cargo test commands, inject workspace/activation and key-emission seams, test clocks and native manual proof with observed text destination and key counts.\", \"citations\": [{\"section_id\": \".specs/testing/strategy.md:L7-L12\", \"excerpt\": \"- `bun src/lib/utils/keyboard.test.ts`\\n- `playwright test`\\n- `playwright test --ui`\"}, {\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L320-L329\", \"excerpt\": \"Native checks pinning ChatGPT and Comet with application switches; Enter count measured by a test field; CLI pin operations against a running instance.\"}]}, {\"category\": \"timing-and-races\", \"severity\": \"warning\", \"description\": \"The 100 ms deadline and immediately-before-Enter destination recheck combine native focus races with strict at-most-once behavior; runtime success is not established by this review.\", \"suggestion\": \"The plan must bind the deadline to the eligible insertion outcome event, avoid blocking UI while activation waits, exercise duplicate callbacks and focus/unpin races with an injectable clock, then require native evidence.\", \"citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L320-L329\", \"excerpt\": \"Enter sent within 100 ms after a successful insertion step\"}, {\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L234-L238\", \"excerpt\": \"it is still frontmost immediately before the Enter press\"}]}, {\"category\": \"ui-evidence\", \"severity\": \"info\", \"description\": \"The current source explicitly defers Penflow/Pencil production to the agreed single pass before spec-ship; specification semantic readiness does not certify those UI artifacts.\", \"suggestion\": \"Keep the authoritative planned flow and screen IDs in the plan, preserve the deferred design gate and do not claim visual certification.\", \"citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L337-L340\", \"excerpt\": \"the Penflow flow/screen contract, semantic and test IDs and the Pencil mockups are produced in one pass for all program features before `spec-ship`\"}]}], \"confidence\": 4, \"synthesized_batch_ids\": [], \"resolutions\": []}"
+  ],
+  "synthesis": null,
+  "synthesis_transport_version": null
+}

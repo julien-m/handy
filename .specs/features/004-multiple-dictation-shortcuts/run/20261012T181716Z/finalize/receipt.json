@@ -1,0 +1,31 @@
+{
+  "command": "spec-plan",
+  "created_at": "2026-10-12T18:17:16.645895+00:00",
+  "feature_slug": "004-multiple-dictation-shortcuts",
+  "files": [
+    {
+      "path": ".specs/features/004-multiple-dictation-shortcuts/changelog.md",
+      "sha256": "edc5f36dd9ef65646f34b72ebe53482eeaac8528ebaac577379a747b814f5667"
+    },
+    {
+      "path": ".specs/changelog.md",
+      "sha256": "8e129ad57e368b1344f7807a307f14d8e565117efcc5427c8eb2967a742b3610"
+    },
+    {
+      "path": ".specs/README.md",
+      "sha256": "d5c611c74fe3445db0c1dc9368b000e27c0509774d9f801aafadbc81ef3ddf37"
+    },
+    {
+      "path": ".specs/features/004-multiple-dictation-shortcuts/spec.md",
+      "sha256": "bffdae01f90cb75afc4595e1518d5f42752b78c405274471121ff881c9b7996f"
+    }
+  ],
+  "oracle": "livespec-finalize-evidence",
+  "oracle_version": "1",
+  "outcome": "applied",
+  "payload_hash": "218e2fcdf6371b99c7198163d9925401b596d4ab850bb9f0473043a5348cf5c1",
+  "receipt_hash": "6aab46f7cadd2b3df3318f9c87e8c85bea58cbdd0f2e1dde857de76680938b86",
+  "schema_version": "1",
+  "verdict": "PASS",
+  "violations": []
+}

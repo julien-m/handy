@@ -1,0 +1,35 @@
+{
+  "command": "spec-plan",
+  "created_at": "2026-10-12T19:35:50.411538+00:00",
+  "feature_slug": "007-smart-paste",
+  "files": [
+    {
+      "path": ".specs/features/007-smart-paste/changelog.md",
+      "sha256": "2cfdeb38d907981882a88e2b0a3d22a40bb2743462554fe83968bf74773a4741"
+    },
+    {
+      "path": ".specs/changelog.md",
+      "sha256": "a1d18139a18df0f1b1d95bd5afaf972664c017655344cbb8309b79a78e6a526a"
+    },
+    {
+      "path": ".specs/README.md",
+      "sha256": "ac7d4de4710a7f9f83bd00afea78ff8c3be108373401343b8f060f8b66553c94"
+    },
+    {
+      "path": ".specs/features/007-smart-paste/spec.md",
+      "sha256": "dce6ff95248de10fce89b5a04d3d074e4894b357568ff1f76f0cf7e598e149de"
+    },
+    {
+      "path": ".specs/roadmap.md",
+      "sha256": "a6f373fa171b025fc418e6484661b90c052ea6344c1f09c9ad2019480fd4555d"
+    }
+  ],
+  "oracle": "livespec-finalize-evidence",
+  "oracle_version": "1",
+  "outcome": "verified",
+  "payload_hash": "19f3012785ef8bee0352d4033d9893b178c2ec16b3d20c6da395f66e2e8a9b92",
+  "receipt_hash": "677c7272a7fa580c4a538511247bf53be2e78806983e67a2db905de69102b21f",
+  "schema_version": "1",
+  "verdict": "PASS",
+  "violations": []
+}

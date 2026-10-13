@@ -1,0 +1,20 @@
+{
+  "contract": {
+    "path": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+    "sha256": "2b8686ef842db8057e21dfc789dafd0b38ab4c9b28d3038acc99860b7370391f"
+  },
+  "files": [
+    {
+      "path": "flows/microphone-priority.md",
+      "sha256": "97eba42af71e0984dbccb8ffef214ada567e649c25a4243c108994939ccbc880"
+    },
+    {
+      "path": "screens/microphone-settings.md",
+      "sha256": "b9e2c52af4925bc04ebade6e16d26ad2a89170b6a2dfc4c984d88c446d93f6f5"
+    }
+  ],
+  "generator": "penflow.flow-docs/1",
+  "kind": "penflow-generated-docs",
+  "status": "PASS",
+  "version": 1
+}

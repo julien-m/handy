@@ -1,0 +1,451 @@
+{
+  "receipt_path": "/Users/julienm/projects/handy/.specs/features/007-clipboard-recovery-window/.reviews/plan.json",
+  "schema_version": "1",
+  "policy_version": "078.1",
+  "context_hash": "180b06da53834215c89c24166350271569a982726ca8592119465b677ec7cb69",
+  "source_hashes": {
+    ".specs/constitution.md": "2c1b8d9ab4024fb07ad588e883da39abeffe0f3db3bfc9afe3beb29df66659e9",
+    ".specs/features/007-clipboard-recovery-window/plan.md": "d376dcfa95fd8596724cf1a5ec495e6157af5ce416b7dc54302592fc08243865",
+    ".specs/features/007-clipboard-recovery-window/spec.md": "73153a68d2e4cfb498ecab60045084cf5e5f7318619006edaf35982a723a7bd1",
+    ".specs/features/008-settings-cli/plan.md": "2a6499f2d69d1bffe3825c049295e0a91598c64787ce4e5237a38bf6cdc247e3",
+    ".specs/project.md": "cd935573446ed94fa43256de0a4d14b9474c4356fa66623f3c8c32a80572b699",
+    ".specs/stacks/_default.md": "2207c3a9a96bf3d08186d2f3f18e94db8ba120adaf2748b07fa61b609e906e4e",
+    ".specs/testing/strategy.md": "bfe0dd480a9d3cf2575cba8407a984add02dcbdad2a17fcb4fc560def9058934"
+  },
+  "reviewer_model": "gpt-6",
+  "complete": true,
+  "ready": false,
+  "errors": [],
+  "conclusions": [
+    {
+      "requirement_id": "007-clipboard-recovery-window:AC-001",
+      "disposition": "covered",
+      "rationale": "Exact final text/trailing-space normalization, all insertion outcomes and dispatch/publication errors are explicit. Reliable settlement transfers restoration ownership and starts the full duration from the eager write, rather than from initial publication; Steps 2/3/7 include the output/timing matrix. Clipboard publication failure is reported honestly, not counted as successful recovery.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L167-L171",
+          "excerpt": "every dictation that produces a non-empty final text places that text on the clipboard as plain text at the end of the insertion step, whatever the insertion method and whether insertion succeeded, failed or was skipped."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L100-L109",
+          "excerpt": "After the existing insertion attempt settles (including key-injection failure), publish an eager plain-text recovery write and record its token/time."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L100-L109",
+          "excerpt": "Direct typing and ExternalScript use the same finally/handoff on success or failure; None and unavailable/skipped destination still reach it."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L110-L121",
+          "excerpt": "Timer uses deadline = continuous monotonic write time + captured duration."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:AC-002",
+      "disposition": "covered",
+      "rationale": "Ordered items/native representations are captured into owned data before the first write; empty is distinct from failed capture. Platform adapters, full-fidelity tests and explicit all-or-nothing fallback cover the behavior. macOS ownership-preserving replacement/clear remains a real Step 1 prerequisite/release blocker, not certified by this plan.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L172-L176",
+          "excerpt": "Before Handy first writes the clipboard for a dictation, it saves every representation of the previous clipboard content that the platform exposes"
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L80-L87",
+          "excerpt": "Capture before the first Handy clipboard write of a non-cancelled non-empty output, including reliable promise publication."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L80-L87",
+          "excerpt": "Any inaccessible advertised representation, unsupported handle, incomplete enumeration, size overflow or unstable capture fails the **entire** recovery snapshot; never silently drop formats and call it full fidelity."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L80-L87",
+          "excerpt": "A failed fresh capture opens no recovery window and invokes the specified existing insertion behavior; no partial snapshot or long timer survives."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L260-L269",
+          "excerpt": "If public APIs cannot satisfy AC-003 race safety, block affected native implementation and request a scoped spec decision rather than inventing atomicity."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:AC-003",
+      "disposition": "covered",
+      "rationale": "Both ownership-token and exact-text fallback guards are planned at the actual final mutation boundary, with native two-process interference plus deterministic barriers. Same-text Linux re-copy limitation is explicitly retained from the source fallback; unresolved macOS TOCTOU blocks affected delivery rather than silently weakening the guarantee.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L177-L181",
+          "excerpt": "If the change counter differs at the end of the window (any copy by the user or another application), Handy leaves the clipboard untouched."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L88-L99",
+          "excerpt": "Step 1 must establish an ownership-preserving restore primitive for multi-item replacement/clear, not just checkCount then clearContents."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L88-L99",
+          "excerpt": "Restore under the same OpenClipboard critical section after rechecking sequence"
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L88-L99",
+          "excerpt": "Restore only if exact UTF-8 transcript comparison succeeds; include current selection-owner token where exposed"
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L353-L371",
+          "excerpt": "Invariant guards cover a copy inserted immediately before native mutation; manual demonstrations of copy at 3 s alone cannot prove race safety."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:AC-004",
+      "disposition": "ambiguous",
+      "rationale": "Consecutive outputs/original-baseline transfer, external-copy recapture and orderly exit are covered. Cancellation after new publication is not: the second publication replaces the previous native ownership token, making the stated conditional reinstatement normally impossible even with no external copy and an unexpired original window. The state diagram allows Inserting to Idle on abort, discarding that window. The plan needs an explicit cancellation/output linearization rule or guarded rollback preserving the old generation, transcript and deadline; tests cannot establish the ambiguous invariant without that design decision.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L182-L186",
+          "excerpt": "Cancelling a dictation does not open a window and leaves an already open window running unchanged."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L110-L121",
+          "excerpt": "Cancellation **before any output write** must not consume/cancel the currently open generation or its original deadline."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L110-L121",
+          "excerpt": "If an already published insertion is aborted, settle it without opening a new recovery generation and reinstate the previous open generation only while its token/deadline is still valid; otherwise guarded cleanup, never restoration over a newer copy."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L186-L231",
+          "excerpt": "Inserting --> Idle: abort or recovery write fails"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:AC-005",
+      "disposition": "covered",
+      "rationale": "History is outside the recovery module and tests assert existing count/content across every lifecycle event. WAV-gated history creation is qualified, not fabricated. Permanent CopyToClipboard bypasses recovery and closes old restoration ownership before its permanent output.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L187-L191",
+          "excerpt": "The window never deletes or modifies history entries."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L110-L121",
+          "excerpt": "HistoryManager is not injected into restoration logic."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L110-L121",
+          "excerpt": "Switching to permanent mode on the next output closes old recovery without restoration before leaving that new transcript permanent."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L110-L121",
+          "excerpt": "SC-003 tests preexisting count **and contents**; native checks seed a successfully saved WAV entry before dictation/expiry/quit/crash proof."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:AC-006",
+      "disposition": "covered",
+      "rationale": "Shared descriptors and typed UI mutations enforce inclusive integer bounds and persisted defaults; immutable per-output capture defers changed policy to the next transcript. Step 6 includes translated explanation/retry and all async/validation states. Deferred common Penflow work is authorized by the source and explicitly gates UI code; this review does not certify that missing design input.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L192-L196",
+          "excerpt": "The output settings expose \"Clipboard recovery window\" (on/off) and its duration as an integer number of seconds from 10 to 15."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L122-L129",
+          "excerpt": "Fields: `clipboard_recovery_enabled: bool` default true; `clipboard_recovery_seconds: u64` default 12, integer range 10\u201315 inclusive."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L122-L129",
+          "excerpt": "Invalid UI/CLI values leave saved data/revision and active-window state untouched."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L310-L319",
+          "excerpt": "Keep duration draft string until valid integer commit; blur/Enter validates, empty restores committed value with explanation."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:AC-007",
+      "disposition": "covered",
+      "rationale": "The plan correctly extends 008 output Domain and reuses SettingDescriptor, SettingsMutation, SettingsSnapshot, Revision, PublicSettings, OperationRequest, SettingsError, read_snapshot/commit_mutation and LiveSettingsEffects without inventing a new service. Validator/envelope/exit/revision/no-op/CAS and submitted-live timeout rules match full 008 context; real CLI subprocess tests prove parity.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L197-L201",
+          "excerpt": "The settings CLI (008) reads and sets the recovery window state and duration with the same validation."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L122-L129",
+          "excerpt": "Extend existing `handy settings output get [KEY]` and `output set KEY VALUE`; generic list/get/set expose the same two descriptors."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L122-L129",
+          "excerpt": "Invalid 20/noninteger/negative/overflow/null \u2192 `validation_failed`, exit 2, details field/range 10\u201315."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L122-L129",
+          "excerpt": "Success `{ok:true,revision:N,data:...}`; error `{ok:false,error:{code,message,details:{...}}}`; newline once, stdout JSON only, diagnostics stderr."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L300-L309",
+          "excerpt": "New `src-tauri/tests/clipboard_settings.rs` uses actual 008 service/CLI framework, isolated stores, native effects port and subprocess JSON assertions."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:FR-001",
+      "disposition": "covered",
+      "rationale": "Sequential FR-001 subtasks map final-output policy, all-method integration, permanent/history conservation and acceptance to concrete native modules/tests. One restoration owner prevents premature legacy restoration; explicit failed-capture/disabled exceptions preserve source behavior.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L251-L255",
+          "excerpt": "Place each final transcript on the clipboard for the configured window when permanent clipboard keeping is off, independently of the insertion method and result."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L280-L289",
+          "excerpt": "Modify clipboard.rs and actions.rs to produce one typed final-output/settlement lifecycle and shared snapshot handoff on attempted/failed/skipped outcomes, including dispatch failure."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L280-L289",
+          "excerpt": "suppress legacy restore only for eligible successful capture, preserve disabled/permanent behavior."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:FR-002",
+      "disposition": "covered",
+      "rationale": "Four FR-002 subtasks cover native owned snapshots, guarded coordinator decisions, pre-write capture and race/fidelity proof. OS handle cleanup, unknown tokens, empty clearing, unstable/oversized snapshot fallback and no partial success are specified. Native feasibility remains gated separately from semantic plan coverage.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L256-L260",
+          "excerpt": "Save all exposed representations of the previous clipboard content and restore them at the end of the window only when the clipboard is unchanged since Handy's write."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L260-L269",
+          "excerpt": "New `src-tauri/src/clipboard_recovery/{mod.rs,port.rs,macos.rs,windows.rs,linux.rs}` isolates native capture/guard operations."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L260-L269",
+          "excerpt": "Every exposed representation is captured/restored or entire capture explicitly fails"
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L320-L329",
+          "excerpt": "FR-002.4: Fidelity ownership and race proof"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:FR-003",
+      "disposition": "ambiguous",
+      "rationale": "Generation IDs, baseline transfer, external copies, internal ExplicitCopy operation and asynchronous orderly exit are planned with dedicated tests. However the cancellation rollback contract cannot guarantee an old window survives a new published transaction because its prior native token has been replaced; its possible transition to Idle contradicts the required unchanged-window invariant. Fix the publication/cancellation linearization and state model before implement readiness.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L261-L265",
+          "excerpt": "Manage the window lifecycle across consecutive dictations, user copies between dictations, cancellation and application exit"
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L110-L121",
+          "excerpt": "If an already published insertion is aborted, settle it without opening a new recovery generation and reinstate the previous open generation only while its token/deadline is still valid; otherwise guarded cleanup, never restoration over a newer copy."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L270-L279",
+          "excerpt": "implements begin/transfer/settle/expire, cancellation rollback, settings capture and cancel_open_without_restore."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:FR-004",
+      "disposition": "covered",
+      "rationale": "008 sole-writer service, descriptor migration/defaults, output Domain and revision-aware UI adapter are explicitly reused. FR-004.1/.2/.3 map service, UI and parity/visual acceptance; UI remains blocked pending authorized common contract preparation.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L266-L270",
+          "excerpt": "Persist and validate the window state and duration (10\u201315 seconds) in settings UI and settings CLI."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L300-L309",
+          "excerpt": "extend `settings_service/{descriptor.rs,validation.rs,live.rs,domains/output.rs}` from 008's Step 2 interface."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L310-L319",
+          "excerpt": "Toggle/number load/save/error/success feedback uses service result; failure retains previous value and retry, respects permanent-mode bypass."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:SC-001",
+      "disposition": "covered",
+      "rationale": "Concrete actual-coordinator tests, all nine source scenarios, ordering/property schedules and adversarial native boundaries measure zero overwrites. This success criterion is planned; runtime proof and unresolved cancellation invariant are not certified by the coverage judgment.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L318-L321",
+          "excerpt": "zero cases overwrite content copied after Handy's write."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L270-L279",
+          "excerpt": "Zero newer-copy overwrites in SC-001 matrix; no stale callback mutation"
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L353-L371",
+          "excerpt": "All nine Stories 1\u20133 scenarios; transfer original vs X, timer generations, same/different copies, cancelling pre-write, exact deadline boundaries/resume"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:SC-002",
+      "disposition": "covered",
+      "rationale": "The native protocol defines run counts, ordered items/type sets/owned byte equality, token stability and excluded interfered runs. Pixel equality is narrowly qualified to OS-normalized bitmaps while rich-text bytes stay exact. Binary/OS identities and native rather than browser/fake acceptance make the planned 100% oracle meaningful.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L322-L325",
+          "excerpt": "Native checks on macOS restore text, image and rich text previous content identically after the window in 100% of runs without interference."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L353-L371",
+          "excerpt": "Native macOS SC-002 protocol: **20 runs each** for empty, plain text, image, rich text (plain+RTF+HTML) and multi-item mixed content, at 12 s, plus **10 runs each** at 10 and 15 s."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L353-L371",
+          "excerpt": "Require all valid runs equal; zero tolerance for missing formats/items."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:SC-003",
+      "disposition": "covered",
+      "rationale": "Automated lifecycle/history tests seed a real saved-WAV entry and assert count plus contents through expiry, copies, cancellation, new output and orderly exit; crash observations stay platform-qualified. Recovery neither deletes nor creates history records.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L326-L328",
+          "excerpt": "History entry count is unchanged by any window lifecycle event in automated tests."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L353-L371",
+          "excerpt": "real seeded history count/content; clipboard_lifecycle.rs"
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L290-L299",
+          "excerpt": "No HistoryManager mutation is added."
+        }
+      ],
+      "searched_plan_sections": []
+    }
+  ],
+  "ambiguities": [],
+  "extra_scope": [
+    {
+      "description": "Bound full-format snapshot memory at 64 MiB per representation and 128 MiB total; reject an incomplete snapshot rather than silently truncate it.",
+      "justification": "A technical resource-safety implementation detail supported by the source oversized-content edge and its explicit capture-failure fallback; no new user-visible configuration or broadened business behavior.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L80-L87",
+          "excerpt": "Limits proposed for the spike: 64 MiB per representation and 128 MiB aggregate"
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L309-L315",
+          "excerpt": "Previous content larger than memory limits of the platform API: saving fails, no window opens, existing behavior applies."
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "category": "cancellation_linearization",
+      "severity": "blocking",
+      "description": "AC-004 cancellation preservation is underspecified after publication. During an existing open window, a second reliable/legacy publication changes clipboard ownership. The plan reinstates the old window only if its old token is still valid and otherwise permits guarded cleanup/Inserting\u2192Idle. Without external copy and before the old deadline, this can discard the old window solely because the cancelled second insertion replaced its token. The old transcript, original snapshot and original deadline are not guaranteed to survive.",
+      "suggestion": "Define one serialized cancellation/publication commit boundary and the accepted-cancellation invariant. Either cancellation is irrevocably admitted only before first clipboard mutation, with later requests defined as cancellation of a completed output, or implement explicit guarded rollback using the new transaction token to republish the prior transcript and rebind the prior generation while retaining its original baseline/deadline; never revive it over an external copy. Align Gherkin/state diagram and add barrier schedules for cancel versus first write/receipt/settlement/expiry. Explicitly state how pending reliable work is invalidated by 010 Copy so it cannot later open a new window over permanent Copy.",
+      "citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L182-L186",
+          "excerpt": "Cancelling a dictation does not open a window and leaves an already open window running unchanged."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L110-L121",
+          "excerpt": "If an already published insertion is aborted, settle it without opening a new recovery generation and reinstate the previous open generation only while its token/deadline is still valid; otherwise guarded cleanup, never restoration over a newer copy."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L186-L231",
+          "excerpt": "Inserting --> Idle: abort or recovery write fails"
+        }
+      ]
+    },
+    {
+      "category": "native_feasibility",
+      "severity": "warning",
+      "description": "All-format macOS ownership-preserving replacement and empty clear are still unproven. A changeCount check followed by clear/write would not alone establish interprocess race safety. The plan appropriately treats this as a Step 1 native release blocker rather than claiming atomicity.",
+      "suggestion": "Keep Step 1 before production integration and preserve the gate if a safe public-API primitive cannot be demonstrated; native two-process mutation-boundary evidence is required, not only fake-port tests.",
+      "citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L88-L99",
+          "excerpt": "Any unresolved TOCTOU path blocks native release; no private API or silent weakening of AC-003"
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L260-L269",
+          "excerpt": "unresolved macOS CAS/clear safety is a release blocker. No claim from fake port alone."
+        }
+      ]
+    },
+    {
+      "category": "design_authority",
+      "severity": "info",
+      "description": "The common UI contract is deliberately deferred under the approved 2026-10-12 decision. Current semantic tree is another feature and Code IR is absent, so semantic plan review is not Penflow/UI certification.",
+      "suggestion": "Preserve clipboard-recovery-window/output-settings identities and complete the shared bound source review/design gate before Step 6; continue reporting its current BLOCKED inspection independently.",
+      "citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L305-L308",
+          "excerpt": "the Penflow flow/screen contract, semantic and test IDs and the Pencil mockup are produced in one pass for all program features before `spec-ship`"
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/plan.md:L70-L77",
+          "excerpt": "Native/core planning and semantic review can proceed; UI implementation remains gated."
+        }
+      ]
+    }
+  ],
+  "confidence": 4,
+  "raw_results": [
+    "{\n  \"batch_id\": \"batch-001\",\n  \"reviewed_section_ids\": [\n    \".specs/constitution.md:L1-L2\",\n    \".specs/constitution.md:L3-L17\",\n    \".specs/constitution.md:L18-L26\",\n    \".specs/constitution.md:L27-L29\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L1-L9\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L10-L11\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L12-L19\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L20-L34\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L35-L47\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L48-L61\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L62-L69\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L70-L77\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L78-L79\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L80-L87\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L88-L99\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L100-L109\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L110-L121\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L122-L129\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L130-L185\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L186-L231\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L232-L257\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L258-L259\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L260-L269\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L270-L279\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L280-L289\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L290-L299\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L300-L309\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L310-L319\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L320-L329\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L330-L352\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L353-L371\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L372-L387\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L388-L402\",\n    \".specs/features/007-clipboard-recovery-window/plan.md:L403-L405\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L1-L9\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L10-L11\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L12-L20\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L21-L22\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L23-L61\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L62-L90\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L91-L135\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L136-L164\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L165-L166\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L167-L171\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L172-L176\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L177-L181\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L182-L186\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L187-L191\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L192-L196\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L197-L201\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L202-L205\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L206-L228\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L229-L248\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L249-L250\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L251-L255\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L256-L260\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L261-L265\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L266-L270\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L271-L277\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L278-L288\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L289-L298\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L299-L304\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L305-L308\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L309-L315\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L316-L317\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L318-L321\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L322-L325\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L326-L328\",\n    \".specs/features/008-settings-cli/plan.md:L1-L9\",\n    \".specs/features/008-settings-cli/plan.md:L10-L11\",\n    \".specs/features/008-settings-cli/plan.md:L12-L17\",\n    \".specs/features/008-settings-cli/plan.md:L18-L34\",\n    \".specs/features/008-settings-cli/plan.md:L35-L46\",\n    \".specs/features/008-settings-cli/plan.md:L47-L59\",\n    \".specs/features/008-settings-cli/plan.md:L60-L61\",\n    \".specs/features/008-settings-cli/plan.md:L62-L67\",\n    \".specs/features/008-settings-cli/plan.md:L68-L75\",\n    \".specs/features/008-settings-cli/plan.md:L76-L81\",\n    \".specs/features/008-settings-cli/plan.md:L82-L102\",\n    \".specs/features/008-settings-cli/plan.md:L103-L123\",\n    \".specs/features/008-settings-cli/plan.md:L124-L211\",\n    \".specs/features/008-settings-cli/plan.md:L212-L249\",\n    \".specs/features/008-settings-cli/plan.md:L250-L289\",\n    \".specs/features/008-settings-cli/plan.md:L290-L291\",\n    \".specs/features/008-settings-cli/plan.md:L292-L301\",\n    \".specs/features/008-settings-cli/plan.md:L302-L311\",\n    \".specs/features/008-settings-cli/plan.md:L312-L321\",\n    \".specs/features/008-settings-cli/plan.md:L322-L331\",\n    \".specs/features/008-settings-cli/plan.md:L332-L341\",\n    \".specs/features/008-settings-cli/plan.md:L342-L351\",\n    \".specs/features/008-settings-cli/plan.md:L352-L361\",\n    \".specs/features/008-settings-cli/plan.md:L362-L383\",\n    \".specs/features/008-settings-cli/plan.md:L384-L400\",\n    \".specs/features/008-settings-cli/plan.md:L401-L415\",\n    \".specs/features/008-settings-cli/plan.md:L416-L438\",\n    \".specs/features/008-settings-cli/plan.md:L439-L441\",\n    \".specs/project.md:L1-L2\",\n    \".specs/project.md:L3-L7\",\n    \".specs/project.md:L8-L16\",\n    \".specs/project.md:L17-L20\",\n    \".specs/project.md:L21-L24\",\n    \".specs/project.md:L25-L28\",\n    \".specs/project.md:L29-L36\",\n    \".specs/stacks/_default.md:L1-L4\",\n    \".specs/stacks/_default.md:L5-L6\",\n    \".specs/stacks/_default.md:L7-L20\",\n    \".specs/stacks/_default.md:L21-L30\",\n    \".specs/testing/strategy.md:L1-L2\",\n    \".specs/testing/strategy.md:L3-L6\",\n    \".specs/testing/strategy.md:L7-L12\",\n    \".specs/testing/strategy.md:L13-L16\"\n  ],\n  \"conclusions\": [\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:AC-001\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Exact final text/trailing-space normalization, all insertion outcomes and dispatch/publication errors are explicit. Reliable settlement transfers restoration ownership and starts the full duration from the eager write, rather than from initial publication; Steps 2/3/7 include the output/timing matrix. Clipboard publication failure is reported honestly, not counted as successful recovery.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L167-L171\",\n          \"excerpt\": \"every dictation that produces a non-empty final text places that text on the clipboard as plain text at the end of the insertion step, whatever the insertion method and whether insertion succeeded, failed or was skipped.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L100-L109\",\n          \"excerpt\": \"After the existing insertion attempt settles (including key-injection failure), publish an eager plain-text recovery write and record its token/time.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L100-L109\",\n          \"excerpt\": \"Direct typing and ExternalScript use the same finally/handoff on success or failure; None and unavailable/skipped destination still reach it.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L110-L121\",\n          \"excerpt\": \"Timer uses deadline = continuous monotonic write time + captured duration.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:AC-002\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Ordered items/native representations are captured into owned data before the first write; empty is distinct from failed capture. Platform adapters, full-fidelity tests and explicit all-or-nothing fallback cover the behavior. macOS ownership-preserving replacement/clear remains a real Step 1 prerequisite/release blocker, not certified by this plan.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L172-L176\",\n          \"excerpt\": \"Before Handy first writes the clipboard for a dictation, it saves every representation of the previous clipboard content that the platform exposes\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L80-L87\",\n          \"excerpt\": \"Capture before the first Handy clipboard write of a non-cancelled non-empty output, including reliable promise publication.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L80-L87\",\n          \"excerpt\": \"Any inaccessible advertised representation, unsupported handle, incomplete enumeration, size overflow or unstable capture fails the **entire** recovery snapshot; never silently drop formats and call it full fidelity.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L80-L87\",\n          \"excerpt\": \"A failed fresh capture opens no recovery window and invokes the specified existing insertion behavior; no partial snapshot or long timer survives.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L260-L269\",\n          \"excerpt\": \"If public APIs cannot satisfy AC-003 race safety, block affected native implementation and request a scoped spec decision rather than inventing atomicity.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:AC-003\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Both ownership-token and exact-text fallback guards are planned at the actual final mutation boundary, with native two-process interference plus deterministic barriers. Same-text Linux re-copy limitation is explicitly retained from the source fallback; unresolved macOS TOCTOU blocks affected delivery rather than silently weakening the guarantee.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L177-L181\",\n          \"excerpt\": \"If the change counter differs at the end of the window (any copy by the user or another application), Handy leaves the clipboard untouched.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L88-L99\",\n          \"excerpt\": \"Step 1 must establish an ownership-preserving restore primitive for multi-item replacement/clear, not just checkCount then clearContents.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L88-L99\",\n          \"excerpt\": \"Restore under the same OpenClipboard critical section after rechecking sequence\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L88-L99\",\n          \"excerpt\": \"Restore only if exact UTF-8 transcript comparison succeeds; include current selection-owner token where exposed\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L353-L371\",\n          \"excerpt\": \"Invariant guards cover a copy inserted immediately before native mutation; manual demonstrations of copy at 3 s alone cannot prove race safety.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:AC-004\",\n      \"disposition\": \"ambiguous\",\n      \"rationale\": \"Consecutive outputs/original-baseline transfer, external-copy recapture and orderly exit are covered. Cancellation after new publication is not: the second publication replaces the previous native ownership token, making the stated conditional reinstatement normally impossible even with no external copy and an unexpired original window. The state diagram allows Inserting to Idle on abort, discarding that window. The plan needs an explicit cancellation/output linearization rule or guarded rollback preserving the old generation, transcript and deadline; tests cannot establish the ambiguous invariant without that design decision.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L182-L186\",\n          \"excerpt\": \"Cancelling a dictation does not open a window and leaves an already open window running unchanged.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L110-L121\",\n          \"excerpt\": \"Cancellation **before any output write** must not consume/cancel the currently open generation or its original deadline.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L110-L121\",\n          \"excerpt\": \"If an already published insertion is aborted, settle it without opening a new recovery generation and reinstate the previous open generation only while its token/deadline is still valid; otherwise guarded cleanup, never restoration over a newer copy.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L186-L231\",\n          \"excerpt\": \"Inserting --> Idle: abort or recovery write fails\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:AC-005\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"History is outside the recovery module and tests assert existing count/content across every lifecycle event. WAV-gated history creation is qualified, not fabricated. Permanent CopyToClipboard bypasses recovery and closes old restoration ownership before its permanent output.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L187-L191\",\n          \"excerpt\": \"The window never deletes or modifies history entries.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L110-L121\",\n          \"excerpt\": \"HistoryManager is not injected into restoration logic.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L110-L121\",\n          \"excerpt\": \"Switching to permanent mode on the next output closes old recovery without restoration before leaving that new transcript permanent.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L110-L121\",\n          \"excerpt\": \"SC-003 tests preexisting count **and contents**; native checks seed a successfully saved WAV entry before dictation/expiry/quit/crash proof.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:AC-006\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Shared descriptors and typed UI mutations enforce inclusive integer bounds and persisted defaults; immutable per-output capture defers changed policy to the next transcript. Step 6 includes translated explanation/retry and all async/validation states. Deferred common Penflow work is authorized by the source and explicitly gates UI code; this review does not certify that missing design input.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L192-L196\",\n          \"excerpt\": \"The output settings expose \\\"Clipboard recovery window\\\" (on/off) and its duration as an integer number of seconds from 10 to 15.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L122-L129\",\n          \"excerpt\": \"Fields: `clipboard_recovery_enabled: bool` default true; `clipboard_recovery_seconds: u64` default 12, integer range 10\u201315 inclusive.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L122-L129\",\n          \"excerpt\": \"Invalid UI/CLI values leave saved data/revision and active-window state untouched.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L310-L319\",\n          \"excerpt\": \"Keep duration draft string until valid integer commit; blur/Enter validates, empty restores committed value with explanation.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:AC-007\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"The plan correctly extends 008 output Domain and reuses SettingDescriptor, SettingsMutation, SettingsSnapshot, Revision, PublicSettings, OperationRequest, SettingsError, read_snapshot/commit_mutation and LiveSettingsEffects without inventing a new service. Validator/envelope/exit/revision/no-op/CAS and submitted-live timeout rules match full 008 context; real CLI subprocess tests prove parity.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L197-L201\",\n          \"excerpt\": \"The settings CLI (008) reads and sets the recovery window state and duration with the same validation.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L122-L129\",\n          \"excerpt\": \"Extend existing `handy settings output get [KEY]` and `output set KEY VALUE`; generic list/get/set expose the same two descriptors.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L122-L129\",\n          \"excerpt\": \"Invalid 20/noninteger/negative/overflow/null \u2192 `validation_failed`, exit 2, details field/range 10\u201315.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L122-L129\",\n          \"excerpt\": \"Success `{ok:true,revision:N,data:...}`; error `{ok:false,error:{code,message,details:{...}}}`; newline once, stdout JSON only, diagnostics stderr.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L300-L309\",\n          \"excerpt\": \"New `src-tauri/tests/clipboard_settings.rs` uses actual 008 service/CLI framework, isolated stores, native effects port and subprocess JSON assertions.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:FR-001\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Sequential FR-001 subtasks map final-output policy, all-method integration, permanent/history conservation and acceptance to concrete native modules/tests. One restoration owner prevents premature legacy restoration; explicit failed-capture/disabled exceptions preserve source behavior.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L251-L255\",\n          \"excerpt\": \"Place each final transcript on the clipboard for the configured window when permanent clipboard keeping is off, independently of the insertion method and result.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L280-L289\",\n          \"excerpt\": \"Modify clipboard.rs and actions.rs to produce one typed final-output/settlement lifecycle and shared snapshot handoff on attempted/failed/skipped outcomes, including dispatch failure.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L280-L289\",\n          \"excerpt\": \"suppress legacy restore only for eligible successful capture, preserve disabled/permanent behavior.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:FR-002\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Four FR-002 subtasks cover native owned snapshots, guarded coordinator decisions, pre-write capture and race/fidelity proof. OS handle cleanup, unknown tokens, empty clearing, unstable/oversized snapshot fallback and no partial success are specified. Native feasibility remains gated separately from semantic plan coverage.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L256-L260\",\n          \"excerpt\": \"Save all exposed representations of the previous clipboard content and restore them at the end of the window only when the clipboard is unchanged since Handy's write.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L260-L269\",\n          \"excerpt\": \"New `src-tauri/src/clipboard_recovery/{mod.rs,port.rs,macos.rs,windows.rs,linux.rs}` isolates native capture/guard operations.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L260-L269\",\n          \"excerpt\": \"Every exposed representation is captured/restored or entire capture explicitly fails\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L320-L329\",\n          \"excerpt\": \"FR-002.4: Fidelity ownership and race proof\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:FR-003\",\n      \"disposition\": \"ambiguous\",\n      \"rationale\": \"Generation IDs, baseline transfer, external copies, internal ExplicitCopy operation and asynchronous orderly exit are planned with dedicated tests. However the cancellation rollback contract cannot guarantee an old window survives a new published transaction because its prior native token has been replaced; its possible transition to Idle contradicts the required unchanged-window invariant. Fix the publication/cancellation linearization and state model before implement readiness.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L261-L265\",\n          \"excerpt\": \"Manage the window lifecycle across consecutive dictations, user copies between dictations, cancellation and application exit\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L110-L121\",\n          \"excerpt\": \"If an already published insertion is aborted, settle it without opening a new recovery generation and reinstate the previous open generation only while its token/deadline is still valid; otherwise guarded cleanup, never restoration over a newer copy.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L270-L279\",\n          \"excerpt\": \"implements begin/transfer/settle/expire, cancellation rollback, settings capture and cancel_open_without_restore.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:FR-004\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"008 sole-writer service, descriptor migration/defaults, output Domain and revision-aware UI adapter are explicitly reused. FR-004.1/.2/.3 map service, UI and parity/visual acceptance; UI remains blocked pending authorized common contract preparation.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L266-L270\",\n          \"excerpt\": \"Persist and validate the window state and duration (10\u201315 seconds) in settings UI and settings CLI.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L300-L309\",\n          \"excerpt\": \"extend `settings_service/{descriptor.rs,validation.rs,live.rs,domains/output.rs}` from 008's Step 2 interface.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L310-L319\",\n          \"excerpt\": \"Toggle/number load/save/error/success feedback uses service result; failure retains previous value and retry, respects permanent-mode bypass.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:SC-001\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Concrete actual-coordinator tests, all nine source scenarios, ordering/property schedules and adversarial native boundaries measure zero overwrites. This success criterion is planned; runtime proof and unresolved cancellation invariant are not certified by the coverage judgment.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L318-L321\",\n          \"excerpt\": \"zero cases overwrite content copied after Handy's write.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L270-L279\",\n          \"excerpt\": \"Zero newer-copy overwrites in SC-001 matrix; no stale callback mutation\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L353-L371\",\n          \"excerpt\": \"All nine Stories 1\u20133 scenarios; transfer original vs X, timer generations, same/different copies, cancelling pre-write, exact deadline boundaries/resume\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:SC-002\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"The native protocol defines run counts, ordered items/type sets/owned byte equality, token stability and excluded interfered runs. Pixel equality is narrowly qualified to OS-normalized bitmaps while rich-text bytes stay exact. Binary/OS identities and native rather than browser/fake acceptance make the planned 100% oracle meaningful.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L322-L325\",\n          \"excerpt\": \"Native checks on macOS restore text, image and rich text previous content identically after the window in 100% of runs without interference.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L353-L371\",\n          \"excerpt\": \"Native macOS SC-002 protocol: **20 runs each** for empty, plain text, image, rich text (plain+RTF+HTML) and multi-item mixed content, at 12 s, plus **10 runs each** at 10 and 15 s.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L353-L371\",\n          \"excerpt\": \"Require all valid runs equal; zero tolerance for missing formats/items.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:SC-003\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Automated lifecycle/history tests seed a real saved-WAV entry and assert count plus contents through expiry, copies, cancellation, new output and orderly exit; crash observations stay platform-qualified. Recovery neither deletes nor creates history records.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L326-L328\",\n          \"excerpt\": \"History entry count is unchanged by any window lifecycle event in automated tests.\"\n        }\n      ],\n      \"plan_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L353-L371\",\n          \"excerpt\": \"real seeded history count/content; clipboard_lifecycle.rs\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L290-L299\",\n          \"excerpt\": \"No HistoryManager mutation is added.\"\n        }\n      ],\n      \"searched_plan_sections\": []\n    }\n  ],\n  \"ambiguities\": [],\n  \"extra_scope\": [\n    {\n      \"description\": \"Bound full-format snapshot memory at 64 MiB per representation and 128 MiB total; reject an incomplete snapshot rather than silently truncate it.\",\n      \"justification\": \"A technical resource-safety implementation detail supported by the source oversized-content edge and its explicit capture-failure fallback; no new user-visible configuration or broadened business behavior.\",\n      \"approved\": true,\n      \"citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L80-L87\",\n          \"excerpt\": \"Limits proposed for the spike: 64 MiB per representation and 128 MiB aggregate\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L309-L315\",\n          \"excerpt\": \"Previous content larger than memory limits of the platform API: saving fails, no window opens, existing behavior applies.\"\n        }\n      ]\n    }\n  ],\n  \"findings\": [\n    {\n      \"category\": \"cancellation_linearization\",\n      \"severity\": \"blocking\",\n      \"description\": \"AC-004 cancellation preservation is underspecified after publication. During an existing open window, a second reliable/legacy publication changes clipboard ownership. The plan reinstates the old window only if its old token is still valid and otherwise permits guarded cleanup/Inserting\u2192Idle. Without external copy and before the old deadline, this can discard the old window solely because the cancelled second insertion replaced its token. The old transcript, original snapshot and original deadline are not guaranteed to survive.\",\n      \"suggestion\": \"Define one serialized cancellation/publication commit boundary and the accepted-cancellation invariant. Either cancellation is irrevocably admitted only before first clipboard mutation, with later requests defined as cancellation of a completed output, or implement explicit guarded rollback using the new transaction token to republish the prior transcript and rebind the prior generation while retaining its original baseline/deadline; never revive it over an external copy. Align Gherkin/state diagram and add barrier schedules for cancel versus first write/receipt/settlement/expiry. Explicitly state how pending reliable work is invalidated by 010 Copy so it cannot later open a new window over permanent Copy.\",\n      \"citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L182-L186\",\n          \"excerpt\": \"Cancelling a dictation does not open a window and leaves an already open window running unchanged.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L110-L121\",\n          \"excerpt\": \"If an already published insertion is aborted, settle it without opening a new recovery generation and reinstate the previous open generation only while its token/deadline is still valid; otherwise guarded cleanup, never restoration over a newer copy.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L186-L231\",\n          \"excerpt\": \"Inserting --> Idle: abort or recovery write fails\"\n        }\n      ]\n    },\n    {\n      \"category\": \"native_feasibility\",\n      \"severity\": \"warning\",\n      \"description\": \"All-format macOS ownership-preserving replacement and empty clear are still unproven. A changeCount check followed by clear/write would not alone establish interprocess race safety. The plan appropriately treats this as a Step 1 native release blocker rather than claiming atomicity.\",\n      \"suggestion\": \"Keep Step 1 before production integration and preserve the gate if a safe public-API primitive cannot be demonstrated; native two-process mutation-boundary evidence is required, not only fake-port tests.\",\n      \"citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L88-L99\",\n          \"excerpt\": \"Any unresolved TOCTOU path blocks native release; no private API or silent weakening of AC-003\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L260-L269\",\n          \"excerpt\": \"unresolved macOS CAS/clear safety is a release blocker. No claim from fake port alone.\"\n        }\n      ]\n    },\n    {\n      \"category\": \"design_authority\",\n      \"severity\": \"info\",\n      \"description\": \"The common UI contract is deliberately deferred under the approved 2026-10-12 decision. Current semantic tree is another feature and Code IR is absent, so semantic plan review is not Penflow/UI certification.\",\n      \"suggestion\": \"Preserve clipboard-recovery-window/output-settings identities and complete the shared bound source review/design gate before Step 6; continue reporting its current BLOCKED inspection independently.\",\n      \"citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L305-L308\",\n          \"excerpt\": \"the Penflow flow/screen contract, semantic and test IDs and the Pencil mockup are produced in one pass for all program features before `spec-ship`\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/plan.md:L70-L77\",\n          \"excerpt\": \"Native/core planning and semantic review can proceed; UI implementation remains gated.\"\n        }\n      ]\n    }\n  ],\n  \"confidence\": 4,\n  \"synthesized_batch_ids\": [],\n  \"resolutions\": []\n}"
+  ],
+  "synthesis": null,
+  "synthesis_transport_version": null
+}

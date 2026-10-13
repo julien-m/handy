@@ -1,0 +1,373 @@
+{
+  "batch_id": "batch-001",
+  "reviewed_section_ids": [
+    ".specs/constitution.md:L1-L2",
+    ".specs/constitution.md:L3-L17",
+    ".specs/constitution.md:L18-L26",
+    ".specs/constitution.md:L27-L29",
+    ".specs/features/006-destination-application/spec.md:L1-L9",
+    ".specs/features/006-destination-application/spec.md:L10-L11",
+    ".specs/features/006-destination-application/spec.md:L12-L20",
+    ".specs/features/006-destination-application/spec.md:L21-L22",
+    ".specs/features/006-destination-application/spec.md:L23-L61",
+    ".specs/features/006-destination-application/spec.md:L62-L93",
+    ".specs/features/006-destination-application/spec.md:L94-L128",
+    ".specs/features/006-destination-application/spec.md:L129-L169",
+    ".specs/features/006-destination-application/spec.md:L170-L195",
+    ".specs/features/006-destination-application/spec.md:L196-L197",
+    ".specs/features/006-destination-application/spec.md:L198-L202",
+    ".specs/features/006-destination-application/spec.md:L203-L207",
+    ".specs/features/006-destination-application/spec.md:L208-L212",
+    ".specs/features/006-destination-application/spec.md:L213-L217",
+    ".specs/features/006-destination-application/spec.md:L218-L222",
+    ".specs/features/006-destination-application/spec.md:L223-L227",
+    ".specs/features/006-destination-application/spec.md:L228-L232",
+    ".specs/features/006-destination-application/spec.md:L233-L237",
+    ".specs/features/006-destination-application/spec.md:L238-L241",
+    ".specs/features/006-destination-application/spec.md:L242-L257",
+    ".specs/features/006-destination-application/spec.md:L258-L275",
+    ".specs/features/006-destination-application/spec.md:L276-L291",
+    ".specs/features/006-destination-application/spec.md:L292-L293",
+    ".specs/features/006-destination-application/spec.md:L294-L298",
+    ".specs/features/006-destination-application/spec.md:L299-L303",
+    ".specs/features/006-destination-application/spec.md:L304-L308",
+    ".specs/features/006-destination-application/spec.md:L309-L313",
+    ".specs/features/006-destination-application/spec.md:L314-L318",
+    ".specs/features/006-destination-application/spec.md:L319-L323",
+    ".specs/features/006-destination-application/spec.md:L324-L331",
+    ".specs/features/006-destination-application/spec.md:L332-L344",
+    ".specs/features/006-destination-application/spec.md:L345-L354",
+    ".specs/features/006-destination-application/spec.md:L355-L361",
+    ".specs/features/006-destination-application/spec.md:L362-L365",
+    ".specs/features/006-destination-application/spec.md:L366-L373",
+    ".specs/features/006-destination-application/spec.md:L374-L375",
+    ".specs/features/006-destination-application/spec.md:L376-L379",
+    ".specs/features/006-destination-application/spec.md:L380-L383",
+    ".specs/features/006-destination-application/spec.md:L384-L386",
+    ".specs/project.md:L1-L2",
+    ".specs/project.md:L3-L7",
+    ".specs/project.md:L8-L16",
+    ".specs/project.md:L17-L20",
+    ".specs/project.md:L21-L24",
+    ".specs/project.md:L25-L28",
+    ".specs/project.md:L29-L36",
+    ".specs/stacks/_default.md:L1-L4",
+    ".specs/stacks/_default.md:L5-L6",
+    ".specs/stacks/_default.md:L7-L20",
+    ".specs/stacks/_default.md:L21-L30",
+    ".specs/testing/strategy.md:L1-L2",
+    ".specs/testing/strategy.md:L3-L6",
+    ".specs/testing/strategy.md:L7-L12",
+    ".specs/testing/strategy.md:L13-L16"
+  ],
+  "conclusions": [
+    {
+      "requirement_id": "006-destination-application:AC-001",
+      "disposition": "covered",
+      "rationale": "The capture tuple, Handy exclusion and lifetime through processing/AI are explicit; restart identity handling is covered by Edge Cases. Native capture feasibility remains a planning and runtime evidence obligation, not an unresolved business choice.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L198-L202",
+          "excerpt": "**Criterion:** When a dictation starts and the frontmost application is not Handy, Handy records its identity (bundle identifier on macOS; application user model ID on Windows when available, otherwise executable path), display name, icon and process id. Application switches during the recording, processing and AI step do not change it. When Handy is frontmost, no destination is recorded."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:AC-002",
+      "disposition": "covered",
+      "rationale": "Activation has a measurable one-second bound, UI responsiveness, a final frontmost check and a no-retry failure rule. None/off/absent-destination exceptions and unchanged insertion method are explicit. Implementation must account for any existing delay between this check and actual input.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L203-L207",
+          "excerpt": "**Criterion:** With \"Return to the dictation's application\" on (default on where supported), before insertion Handy activates the destination and waits until it is frontmost, for at most 1 second and without freezing Handy's interface, re-checks that it is still frontmost immediately before inserting (a failed re-check counts as an activation failure, without retry), then runs the configured insertion method unchanged. With the paste method \"none\" no application is activated. With the setting off, or without a destination, insertion targets the frontmost application as today."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:AC-003",
+      "disposition": "covered",
+      "rationale": "Badge content, accessible name and suppression for disabled, unsupported or none overlay states are observable and consistent with Story 2.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L208-L212",
+          "excerpt": "**Criterion:** While the indicator is visible and \"Return to the dictation's application\" is on and supported, a badge next to it shows the destination icon and name, or \"Frontmost app\" without a destination. The badge has the accessible name \"Destination: <name>\". When the setting is off or unsupported, no badge is shown. With the overlay style set to none, no badge is shown and the destination behavior still applies."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:AC-004",
+      "disposition": "covered",
+      "rationale": "Menu content, current-dictation-only changes, 200 ms update, dismissal and insertion cutoff are defined. Pointer operation without keyboard capture is deliberately resolved in Clarifications; it does not imply keyboard traversal of the overlay menu.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L213-L217",
+          "excerpt": "**Criterion:** Until insertion begins, clicking the badge opens a menu listing the application frontmost now first (Handy excluded), then other running applications that have windows, each with icon and name, and \"Frontmost app at the end\". Choosing an entry changes the destination of the current dictation only and updates the badge within 200 ms; dismissing keeps it. When insertion begins, an open menu closes and later choices are ignored. Opening and using the menu does not take keyboard focus from the user's application."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:AC-005",
+      "disposition": "covered",
+      "rationale": "Failure causes, fail-closed targeting, reason duration and available recovery consumers are explicit. History preservation is conditional on the existing save succeeding, matching SC-002; Story 4 illustrates the successful-history-save case rather than introducing a new unconditional storage guarantee.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L218-L222",
+          "excerpt": "**Criterion:** If the destination is no longer running, is not frontmost within 1 second of activation, or the insertion method reports failure, no text is sent to any other application; the transcript stays in history whenever history saving succeeds as today, the indicator displays the reason (app closed, activation failed, insertion failed) for at least 4 seconds (with the overlay style none, the recovery bubble of 010 carries the reason), and the transcript is handed to the recovery features available (clipboard recovery window 007, recovery bubble 010)."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:AC-006",
+      "disposition": "covered",
+      "rationale": "The destination boundary is explicit, including attempted rather than field-verified output and separate insertion/clipboard responsibilities; 007, 009 and 010 integration ownership is named.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L223-L227",
+          "excerpt": "**Criterion:** Destination, insertion method and clipboard handling are separate settings and steps: this feature decides only which application is activated. Handy reports the outcome to the recovery features (007, 010) and to automatic Enter (009) as \"insertion attempted\" when the method reports success, and never reports that text was verified in a field."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:AC-007",
+      "disposition": "covered",
+      "rationale": "Supported platforms and unreadable-frontmost fallback are explicit and testable. Native Windows and macOS verification is required before claiming support; Linux retains current behavior.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L228-L232",
+          "excerpt": "**Criterion:** Support is macOS and Windows. On Linux, and wherever the frontmost application cannot be read, the setting is shown as unavailable on this system with the reason, and insertion behaves as today."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:AC-008",
+      "disposition": "covered",
+      "rationale": "UI/CLI validation parity, unsupported-platform refusal and JSON-only stdout are explicit. The 008 dependency owns the concrete transactional CLI contract, which must be reused during planning.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L233-L237",
+          "excerpt": "**Criterion:** The settings CLI (008) reads and sets \"Return to the dictation's application\" with the same validation as the UI, including the unsupported-platform refusal. With `--json`, stdout contains only the JSON envelope."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:FR-001",
+      "disposition": "covered",
+      "rationale": "FR-001 maps to explicit AC-001 capture and AC-004 deliberate mutation; the dictation-scoped stability rule is coherent with cancellation and restart edge cases.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L294-L298",
+          "excerpt": "**Requirement:** Capture the destination application at dictation start, excluding Handy, and keep it stable for the whole dictation unless changed from the badge."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:FR-002",
+      "disposition": "covered",
+      "rationale": "FR-002 maps to AC-002 bounded responsive activation and AC-006 unchanged method/outcome separation; none/off/no-destination exceptions are detailed in AC-002.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L299-L303",
+          "excerpt": "**Requirement:** Activate the destination before insertion with a 1-second bounded wait, then delegate to the configured insertion method without changing it."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:FR-003",
+      "disposition": "covered",
+      "rationale": "FR-003 maps to AC-003 rendering/accessibility and AC-004 pointer-operated non-activating selection; the screen/flow identities and deferred visual production are expressly documented.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L304-L308",
+          "excerpt": "**Requirement:** Show a destination badge with icon, name and accessible label next to the indicator, and a non-activating menu to change the destination for the current dictation."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:FR-004",
+      "disposition": "covered",
+      "rationale": "FR-004 maps to AC-005 fail-closed handling, conditional existing-history preservation and recovery handoff. It does not promise detecting a missing field; that ownership is explicitly delegated to 010.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L309-L313",
+          "excerpt": "**Requirement:** Never insert into another application when the destination is unavailable; preserve the transcript, report the reason and hand it to the recovery features."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:FR-005",
+      "disposition": "covered",
+      "rationale": "FR-005 maps to AC-006, preventing verified-field claims and preserving insertion/clipboard separation. The security guarantee requires fail-closed checks around actual input dispatch.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L314-L318",
+          "excerpt": "**Requirement:** Report insertion outcomes as attempted, not verified, and keep destination, insertion method and clipboard handling separate."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:FR-006",
+      "disposition": "covered",
+      "rationale": "FR-006 maps to AC-007 platform availability and AC-008 UI/CLI parity, including refusal on unsupported systems; no speculative cloud infrastructure is introduced.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L319-L323",
+          "excerpt": "**Requirement:** Detect platform support and expose the setting through UI and settings CLI."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:SC-001",
+      "disposition": "covered",
+      "rationale": "The success criterion specifies at least four macOS applications, explicitly including ChatGPT and Comet, records results per app, and measures stable targeting. Current compatibility is explicitly unverified.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L376-L379",
+          "excerpt": "In native checks with at least four macOS applications including ChatGPT and Comet, switching applications during recording never redirects the text; results are recorded per application."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:SC-002",
+      "disposition": "covered",
+      "rationale": "The fault set and zero wrong-application characters are measurable. History retention is expressly conditional on history-save success and therefore is consistent with AC-005 without silently extending existing storage guarantees.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L380-L383",
+          "excerpt": "In fault-injection tests (app closed, activation timeout, insertion failure), zero characters reach another application and every transcript whose history save succeeds remains in history."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:SC-003",
+      "disposition": "covered",
+      "rationale": "The exact ChatGPT-to-Comet deliberate selection example provides an observable native end-to-end outcome and matches AC-004 and Story 3.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L384-L386",
+          "excerpt": "The badge menu changes the destination in the ChatGPT → Comet scenario and the text is inserted in Comet."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    }
+  ],
+  "ambiguities": [],
+  "extra_scope": [],
+  "findings": [
+    {
+      "category": "native-feasibility",
+      "severity": "warning",
+      "description": "The plan must prove that activation waiting and the non-activating overlay menu can coexist with the native main-thread insertion boundary; frontend tests alone cannot establish this.",
+      "suggestion": "Place an early macOS/Windows native spike before UI integration and design injected workspace/activation plus monotonic clock seams; wait off the UI thread while scheduling only short native operations on it. Record platform evidence separately.",
+      "citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L203-L207",
+          "excerpt": "for at most 1 second and without freezing Handy's interface"
+        },
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L213-L217",
+          "excerpt": "Opening and using the menu does not take keyboard focus from the user's application."
+        }
+      ]
+    },
+    {
+      "category": "history-boundary",
+      "severity": "warning",
+      "description": "History preservation is deliberately conditional on existing history-save success. The plan must not silently promise durable transcript storage on WAV/save failure or use the simplified Story 4 as an unconditional guarantee.",
+      "suggestion": "Inspect the audio/history persistence path, map successful WAV/history save and failed-save evidence separately, and specify the in-memory handoff to installed recovery consumers without asserting verified durable storage.",
+      "citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L218-L222",
+          "excerpt": "the transcript stays in history whenever history saving succeeds as today"
+        },
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L380-L383",
+          "excerpt": "every transcript whose history save succeeds remains in history."
+        }
+      ]
+    },
+    {
+      "category": "recovery-ownership",
+      "severity": "warning",
+      "description": "006 reason display and optional recovery consumers must be composed with later 010 delivery, including overlay none; an available future consumer is not evidence that recovery already exists.",
+      "suggestion": "Define a recovery result event/adapter with capability-aware consumers, retain the four-second 006 indicator presentation until 010 owns the reason, and delegate the reason to 010 when delivered. Document overlay-none absence before 010 honestly.",
+      "citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L218-L222",
+          "excerpt": "the indicator displays the reason (app closed, activation failed, insertion failed) for at least 4 seconds"
+        },
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L218-L222",
+          "excerpt": "the transcript is handed to the recovery features available (clipboard recovery window 007, recovery bubble 010)."
+        }
+      ]
+    },
+    {
+      "category": "input-dispatch-race",
+      "severity": "warning",
+      "description": "A frontmost re-check only before entering an insertion routine is insufficient if that routine later sleeps before sending input. The destination check must be tied to actual dispatch while preserving configured insertion semantics and reporting attempted only.",
+      "suggestion": "Inspect all insertion paths and place an injected foreground guard immediately before each actual dispatch after existing paste delays; include focus-loss fault tests and explicitly retain the unavoidable OS race as a residual risk.",
+      "citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L203-L207",
+          "excerpt": "re-checks that it is still frontmost immediately before inserting"
+        },
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L223-L227",
+          "excerpt": "never reports that text was verified in a field."
+        }
+      ]
+    },
+    {
+      "category": "test-infrastructure",
+      "severity": "warning",
+      "description": "The shared strategy observes JavaScript and Playwright commands but does not define native Rust tests; destination failure guarantees need deterministic native seams and genuine platform evidence.",
+      "suggestion": "Resolve cargo test commands and concrete Rust test locations in the plan; inject workspace/activation, running-app enumeration and clock interfaces, and separate fake-adapter results from macOS/Windows native checks.",
+      "citations": [
+        {
+          "section_id": ".specs/testing/strategy.md:L7-L12",
+          "excerpt": "- `bun src/lib/utils/keyboard.test.ts`\n- `playwright test`\n- `playwright test --ui`"
+        },
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L345-L354",
+          "excerpt": "**P1 gates/evidence:** Native macOS checks with TextEdit, Notes, ChatGPT desktop and Comet (start in one, switch, choose from badge); Windows check with two applications; non-activating menu check; screen-reader label check."
+        }
+      ]
+    }
+  ],
+  "confidence": 4,
+  "synthesized_batch_ids": [],
+  "resolutions": []
+}

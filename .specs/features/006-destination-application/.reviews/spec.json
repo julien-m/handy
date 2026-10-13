@@ -1,0 +1,353 @@
+{
+  "schema_version": "1",
+  "policy_version": "078.1",
+  "context_hash": "f4563dce4d1c10e90860f7758fbb584dcba5280d296a3670edbd717ff068c9f4",
+  "source_hashes": {
+    ".specs/constitution.md": "2c1b8d9ab4024fb07ad588e883da39abeffe0f3db3bfc9afe3beb29df66659e9",
+    ".specs/features/006-destination-application/spec.md": "20fb58454e631234f8e8a26e1c2d7246455596d805257cad4a918ecc15e715f4",
+    ".specs/project.md": "cd935573446ed94fa43256de0a4d14b9474c4356fa66623f3c8c32a80572b699",
+    ".specs/stacks/_default.md": "4df92d16eef38a57c8c2bf1fff8425852b86a41e86c6b7c16423ec166ddfc0f8",
+    ".specs/testing/strategy.md": "bfe0dd480a9d3cf2575cba8407a984add02dcbdad2a17fcb4fc560def9058934"
+  },
+  "reviewer_model": "gpt-6",
+  "complete": true,
+  "ready": true,
+  "errors": [],
+  "conclusions": [
+    {
+      "requirement_id": "006-destination-application:AC-001",
+      "disposition": "covered",
+      "rationale": "Covered: native application identity fields and exclusion of Handy are explicit; the invariant extends across recording, processing and AI, and can be checked by state tests and native application switching.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L203-L207",
+          "excerpt": "Application switches during the recording, processing and AI step do not change it."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:AC-002",
+      "disposition": "covered",
+      "rationale": "Covered: activation has a one-second maximum, nonblocking UI, immediate frontmost recheck and no retry after failed recheck. The none insertion method skips activation; disabled setting and absent destination preserve the existing frontmost behavior.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L208-L212",
+          "excerpt": "for at most 1 second and without freezing Handy's interface"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:AC-003",
+      "disposition": "covered",
+      "rationale": "Covered: name/icon and absent-destination fallback are observable, accessibility label is specified, and off, unsupported and hidden overlay branches are explicitly defined.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L213-L217",
+          "excerpt": "The badge has the accessible name \"Destination: <name>\"."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:AC-004",
+      "disposition": "covered",
+      "rationale": "Covered: the new cross has a specific one-click removal effect and accessible name; the current-dictation scope, menu ordering, 200ms badge update, dismissal, insertion cutoff and nonactivating focus behavior are explicit. The plan must distinguish cross clicks from badge menu clicks and test the cutoff race.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L218-L222",
+          "excerpt": "one click on it removes the destination of the current dictation"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:AC-005",
+      "disposition": "covered",
+      "rationale": "Covered: app closure, activation deadline and insertion-method failure have explicit no-other-application behavior, conditional history conservation, reason duration and recovery handoff. Native evidence must verify the wrong-window guard and history-save failure rather than assuming a WAV was saved.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L223-L227",
+          "excerpt": "the transcript stays in history whenever history saving succeeds as today"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:AC-006",
+      "disposition": "covered",
+      "rationale": "Covered: 006 owns activation and preserves insertion-method outcome provenance for 009/010. Its own successful dispatch remains insertion attempted. The newly explicit exception permits reporting verified text only when 007 itself reread the field and returned inserted, verified; it never promotes unobserved clipboard reads or command dispatch to verified field evidence.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L228-L232",
+          "excerpt": "Handy passes the insertion method's outcome (for smart paste, the outcomes of 007) to the recovery bubble (010) and to automatic Enter (009)"
+        },
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L228-L232",
+          "excerpt": "except when the method itself verified it (the smart paste outcome \"inserted, verified\" of 007, based on reading the field back)"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:AC-007",
+      "disposition": "covered",
+      "rationale": "Covered: macOS and Windows support, Linux exclusion and runtime capability failure are observable and include a reason and legacy insertion fallback.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L233-L237",
+          "excerpt": "On Linux, and wherever the frontmost application cannot be read, the setting is shown as unavailable on this system with the reason"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:AC-008",
+      "disposition": "covered",
+      "rationale": "Covered: CLI and UI share validation, unsupported platforms refuse mutation and JSON stdout is envelope-only. These are testable domain-integration requirements; the 008 foundation provides the envelope and transactional framework outside this feature.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L238-L242",
+          "excerpt": "with the same validation as the UI, including the unsupported-platform refusal"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:FR-001",
+      "disposition": "covered",
+      "rationale": "Covered: capture/exclusion and stability are defined and linked to AC-001/004, including deliberate badge changes and the new cross removal.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L299-L303",
+          "excerpt": "keep it stable for the whole dictation unless changed from the badge."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:FR-002",
+      "disposition": "covered",
+      "rationale": "Covered: bounded activation and unchanged insertion-method delegation align with AC-002/006; AC-002 adds UI responsiveness, final recheck, cancellation of activation for none and absence of destination.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L304-L308",
+          "excerpt": "with a 1-second bounded wait"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:FR-003",
+      "disposition": "covered",
+      "rationale": "Covered: icon/name/accessibility and nonactivating current-dictation menu have explicit AC-003/004 behavior. AC-004 also normatively supplies the removal cross even though the FR summary does not repeat it.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L309-L313",
+          "excerpt": "a non-activating menu to change the destination for the current dictation."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:FR-004",
+      "disposition": "covered",
+      "rationale": "Covered: failure handling, conservation, reason and recovery delegation map to AC-005. Preservation means conditional durable history plus recovery, not an assertion that every transcript has already been persisted.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L314-L318",
+          "excerpt": "Never insert into another application when the destination is unavailable"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:FR-005",
+      "disposition": "covered",
+      "rationale": "Covered: the FR summary limits destination-level claims to attempted and separates clipboard/insertion responsibilities. Its normative AC-006 now explicitly permits forwarding method-owned inserted, verified evidence based on a field reread. These are different evidence layers; neither permits 006 to invent verification or discard a method result.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L319-L323",
+          "excerpt": "keep destination, insertion method and clipboard handling separate."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:FR-006",
+      "disposition": "covered",
+      "rationale": "Covered: AC-007/008 resolve supported platforms, unavailable reasons, old-behavior fallback and shared validation with JSON output.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L324-L328",
+          "excerpt": "Detect platform support and expose the setting through UI and settings CLI."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:SC-001",
+      "disposition": "covered",
+      "rationale": "Covered: criterion names a minimum application count and two mandatory apps, requires per-application recorded native results and forbids redirection after switching. Compatibility remains unverified until the evidence is actually run.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L382-L385",
+          "excerpt": "at least four macOS applications including ChatGPT and Comet"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:SC-002",
+      "disposition": "covered",
+      "rationale": "Covered: app closure, activation timeout and insertion failure are named fault-injection cases, zero wrong-app characters is measurable, and durable conservation is correctly conditional on save success.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L386-L389",
+          "excerpt": "every transcript whose history save succeeds remains in history."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "006-destination-application:SC-003",
+      "disposition": "covered",
+      "rationale": "Covered: the intended cross-application scenario has an observable destination change and insertion location. This requires native verification rather than treating a paste command dispatch as verified text.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L390-L392",
+          "excerpt": "The badge menu changes the destination in the ChatGPT → Comet scenario"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    }
+  ],
+  "ambiguities": [],
+  "extra_scope": [],
+  "findings": [
+    {
+      "category": "CrossControl",
+      "severity": "warning",
+      "description": "The cross is a normative addition in AC-004 and the Gherkin story, but the Story 3 flowchart currently shows only menu choices. Implementation planning must explicitly model cross removal, event propagation and the insertion cutoff; clicking the cross must not open the menu.",
+      "suggestion": "Include a separate cross transition, accessible Remove destination control, current-dictation-only reset and race tests for cross/removal versus insertion start.",
+      "citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L218-L222",
+          "excerpt": "the cross has the accessible name \"Remove destination\""
+        },
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L94-L133",
+          "excerpt": "A[User opens badge menu] --> B[List frontmost now, running apps, Frontmost app at the end]"
+        }
+      ]
+    },
+    {
+      "category": "MethodOutcomeProvenance",
+      "severity": "warning",
+      "description": "AC-006 now explicitly permits method-owned verification based on the 007 field reread, while the destination-level successful dispatch remains insertion attempted. A flattened enum would still risk losing this provenance and changing 009/010 behavior.",
+      "suggestion": "Keep separate destination dispatch and insertion-method evidence. Forward inserted, verified only with method-owned reread provenance, keep other 007 outcomes unchanged and test automatic Enter and uncertainty recovery consumers.",
+      "citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L228-L232",
+          "excerpt": "Handy passes the insertion method's outcome (for smart paste, the outcomes of 007) to the recovery bubble (010) and to automatic Enter (009)"
+        },
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L319-L323",
+          "excerpt": "Report insertion outcomes as attempted, not verified"
+        },
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L228-L232",
+          "excerpt": "except when the method itself verified it (the smart paste outcome \"inserted, verified\" of 007, based on reading the field back)"
+        }
+      ]
+    },
+    {
+      "category": "NativeFocusSafety",
+      "severity": "warning",
+      "description": "The immediate frontmost recheck and non-freezing one-second activation wait are mandatory, but native focus behavior is unverified. Nonactivating cross/menu surfaces and application focus races require native evidence; frontend unit tests cannot certify them.",
+      "suggestion": "Plan an early native macOS surface spike and injectable workspace/activation/clock seams; test failed final recheck with zero insertion and record TextEdit, Notes, ChatGPT and Comet observations.",
+      "citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L208-L212",
+          "excerpt": "re-checks that it is still frontmost immediately before inserting"
+        },
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L351-L360",
+          "excerpt": "real compatibility with ChatGPT and Comet unverified"
+        }
+      ]
+    },
+    {
+      "category": "ConditionalConservation",
+      "severity": "warning",
+      "description": "The Story 4 simplified Gherkin says the transcript is in history without a condition, while authoritative AC-005 and SC-002 condition history on save success. A plan must use the explicit conditional guarantee and still preserve an in-memory recovery handoff on save failure.",
+      "suggestion": "Test WAV/history save success and failure separately, retain the transcript for recovery on failure and never claim durable conservation without a successful save.",
+      "citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L134-L174",
+          "excerpt": "And the transcript is in history"
+        },
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L223-L227",
+          "excerpt": "whenever history saving succeeds as today"
+        },
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L386-L389",
+          "excerpt": "every transcript whose history save succeeds remains in history."
+        }
+      ]
+    },
+    {
+      "category": "RecoveryPresentationOwnership",
+      "severity": "warning",
+      "description": "AC-005 requires the indicator reason for at least four seconds and explicitly names 010 for overlay none. The plan should stage the current reason presentation and the later 010 handoff so this feature does not maintain duplicate competing reason surfaces when 010 ships.",
+      "suggestion": "Document the pre-010 indicator duration and post-010 delegated reason presenter with retained reason payload and handoff tests; no 010 implementation in this plan.",
+      "citations": [
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L223-L227",
+          "excerpt": "the indicator displays the reason (app closed, activation failed, insertion failed) for at least 4 seconds (with the overlay style none, the recovery bubble of 010 carries the reason)"
+        }
+      ]
+    },
+    {
+      "category": "TestingCommands",
+      "severity": "warning",
+      "description": "The inherited testing strategy lists only frontend/Playwright commands; native destination safety needs explicit Rust unit/integration commands, injected seams and manual native proof in the plan.",
+      "suggestion": "Resolve cargo test commands for destination state/activation/capability/setting domain behavior, frontend badge tests and native focus/permission/history evidence without treating build availability as observed runtime success.",
+      "citations": [
+        {
+          "section_id": ".specs/testing/strategy.md:L7-L12",
+          "excerpt": "- `playwright test`"
+        },
+        {
+          "section_id": ".specs/features/006-destination-application/spec.md:L351-L360",
+          "excerpt": "tests proving no insertion occurs when the destination is closed or not frontmost in time"
+        }
+      ]
+    }
+  ],
+  "confidence": 4,
+  "raw_results": [
+    "{\"batch_id\":\"batch-001\",\"reviewed_section_ids\":[\".specs/constitution.md:L1-L2\",\".specs/constitution.md:L3-L17\",\".specs/constitution.md:L18-L26\",\".specs/constitution.md:L27-L29\",\".specs/features/006-destination-application/spec.md:L1-L9\",\".specs/features/006-destination-application/spec.md:L10-L11\",\".specs/features/006-destination-application/spec.md:L12-L20\",\".specs/features/006-destination-application/spec.md:L21-L22\",\".specs/features/006-destination-application/spec.md:L23-L61\",\".specs/features/006-destination-application/spec.md:L62-L93\",\".specs/features/006-destination-application/spec.md:L94-L133\",\".specs/features/006-destination-application/spec.md:L134-L174\",\".specs/features/006-destination-application/spec.md:L175-L200\",\".specs/features/006-destination-application/spec.md:L201-L202\",\".specs/features/006-destination-application/spec.md:L203-L207\",\".specs/features/006-destination-application/spec.md:L208-L212\",\".specs/features/006-destination-application/spec.md:L213-L217\",\".specs/features/006-destination-application/spec.md:L218-L222\",\".specs/features/006-destination-application/spec.md:L223-L227\",\".specs/features/006-destination-application/spec.md:L228-L232\",\".specs/features/006-destination-application/spec.md:L233-L237\",\".specs/features/006-destination-application/spec.md:L238-L242\",\".specs/features/006-destination-application/spec.md:L243-L246\",\".specs/features/006-destination-application/spec.md:L247-L262\",\".specs/features/006-destination-application/spec.md:L263-L280\",\".specs/features/006-destination-application/spec.md:L281-L296\",\".specs/features/006-destination-application/spec.md:L297-L298\",\".specs/features/006-destination-application/spec.md:L299-L303\",\".specs/features/006-destination-application/spec.md:L304-L308\",\".specs/features/006-destination-application/spec.md:L309-L313\",\".specs/features/006-destination-application/spec.md:L314-L318\",\".specs/features/006-destination-application/spec.md:L319-L323\",\".specs/features/006-destination-application/spec.md:L324-L328\",\".specs/features/006-destination-application/spec.md:L329-L336\",\".specs/features/006-destination-application/spec.md:L337-L350\",\".specs/features/006-destination-application/spec.md:L351-L360\",\".specs/features/006-destination-application/spec.md:L361-L367\",\".specs/features/006-destination-application/spec.md:L368-L371\",\".specs/features/006-destination-application/spec.md:L372-L379\",\".specs/features/006-destination-application/spec.md:L380-L381\",\".specs/features/006-destination-application/spec.md:L382-L385\",\".specs/features/006-destination-application/spec.md:L386-L389\",\".specs/features/006-destination-application/spec.md:L390-L392\",\".specs/project.md:L1-L2\",\".specs/project.md:L3-L7\",\".specs/project.md:L8-L16\",\".specs/project.md:L17-L20\",\".specs/project.md:L21-L24\",\".specs/project.md:L25-L28\",\".specs/project.md:L29-L36\",\".specs/stacks/_default.md:L1-L5\",\".specs/stacks/_default.md:L6-L7\",\".specs/stacks/_default.md:L8-L21\",\".specs/stacks/_default.md:L22-L31\",\".specs/testing/strategy.md:L1-L2\",\".specs/testing/strategy.md:L3-L6\",\".specs/testing/strategy.md:L7-L12\",\".specs/testing/strategy.md:L13-L16\"],\"conclusions\":[{\"requirement_id\":\"006-destination-application:AC-001\",\"disposition\":\"covered\",\"rationale\":\"Covered: native application identity fields and exclusion of Handy are explicit; the invariant extends across recording, processing and AI, and can be checked by state tests and native application switching.\",\"source_citations\":[{\"section_id\":\".specs/features/006-destination-application/spec.md:L203-L207\",\"excerpt\":\"Application switches during the recording, processing and AI step do not change it.\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"006-destination-application:AC-002\",\"disposition\":\"covered\",\"rationale\":\"Covered: activation has a one-second maximum, nonblocking UI, immediate frontmost recheck and no retry after failed recheck. The none insertion method skips activation; disabled setting and absent destination preserve the existing frontmost behavior.\",\"source_citations\":[{\"section_id\":\".specs/features/006-destination-application/spec.md:L208-L212\",\"excerpt\":\"for at most 1 second and without freezing Handy's interface\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"006-destination-application:AC-003\",\"disposition\":\"covered\",\"rationale\":\"Covered: name/icon and absent-destination fallback are observable, accessibility label is specified, and off, unsupported and hidden overlay branches are explicitly defined.\",\"source_citations\":[{\"section_id\":\".specs/features/006-destination-application/spec.md:L213-L217\",\"excerpt\":\"The badge has the accessible name \\\"Destination: <name>\\\".\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"006-destination-application:AC-004\",\"disposition\":\"covered\",\"rationale\":\"Covered: the new cross has a specific one-click removal effect and accessible name; the current-dictation scope, menu ordering, 200ms badge update, dismissal, insertion cutoff and nonactivating focus behavior are explicit. The plan must distinguish cross clicks from badge menu clicks and test the cutoff race.\",\"source_citations\":[{\"section_id\":\".specs/features/006-destination-application/spec.md:L218-L222\",\"excerpt\":\"one click on it removes the destination of the current dictation\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"006-destination-application:AC-005\",\"disposition\":\"covered\",\"rationale\":\"Covered: app closure, activation deadline and insertion-method failure have explicit no-other-application behavior, conditional history conservation, reason duration and recovery handoff. Native evidence must verify the wrong-window guard and history-save failure rather than assuming a WAV was saved.\",\"source_citations\":[{\"section_id\":\".specs/features/006-destination-application/spec.md:L223-L227\",\"excerpt\":\"the transcript stays in history whenever history saving succeeds as today\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"006-destination-application:AC-006\",\"disposition\":\"covered\",\"rationale\":\"Covered: 006 owns activation and preserves insertion-method outcome provenance for 009/010. Its own successful dispatch remains insertion attempted. The newly explicit exception permits reporting verified text only when 007 itself reread the field and returned inserted, verified; it never promotes unobserved clipboard reads or command dispatch to verified field evidence.\",\"source_citations\":[{\"section_id\":\".specs/features/006-destination-application/spec.md:L228-L232\",\"excerpt\":\"Handy passes the insertion method's outcome (for smart paste, the outcomes of 007) to the recovery bubble (010) and to automatic Enter (009)\"},{\"section_id\":\".specs/features/006-destination-application/spec.md:L228-L232\",\"excerpt\":\"except when the method itself verified it (the smart paste outcome \\\"inserted, verified\\\" of 007, based on reading the field back)\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"006-destination-application:AC-007\",\"disposition\":\"covered\",\"rationale\":\"Covered: macOS and Windows support, Linux exclusion and runtime capability failure are observable and include a reason and legacy insertion fallback.\",\"source_citations\":[{\"section_id\":\".specs/features/006-destination-application/spec.md:L233-L237\",\"excerpt\":\"On Linux, and wherever the frontmost application cannot be read, the setting is shown as unavailable on this system with the reason\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"006-destination-application:AC-008\",\"disposition\":\"covered\",\"rationale\":\"Covered: CLI and UI share validation, unsupported platforms refuse mutation and JSON stdout is envelope-only. These are testable domain-integration requirements; the 008 foundation provides the envelope and transactional framework outside this feature.\",\"source_citations\":[{\"section_id\":\".specs/features/006-destination-application/spec.md:L238-L242\",\"excerpt\":\"with the same validation as the UI, including the unsupported-platform refusal\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"006-destination-application:FR-001\",\"disposition\":\"covered\",\"rationale\":\"Covered: capture/exclusion and stability are defined and linked to AC-001/004, including deliberate badge changes and the new cross removal.\",\"source_citations\":[{\"section_id\":\".specs/features/006-destination-application/spec.md:L299-L303\",\"excerpt\":\"keep it stable for the whole dictation unless changed from the badge.\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"006-destination-application:FR-002\",\"disposition\":\"covered\",\"rationale\":\"Covered: bounded activation and unchanged insertion-method delegation align with AC-002/006; AC-002 adds UI responsiveness, final recheck, cancellation of activation for none and absence of destination.\",\"source_citations\":[{\"section_id\":\".specs/features/006-destination-application/spec.md:L304-L308\",\"excerpt\":\"with a 1-second bounded wait\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"006-destination-application:FR-003\",\"disposition\":\"covered\",\"rationale\":\"Covered: icon/name/accessibility and nonactivating current-dictation menu have explicit AC-003/004 behavior. AC-004 also normatively supplies the removal cross even though the FR summary does not repeat it.\",\"source_citations\":[{\"section_id\":\".specs/features/006-destination-application/spec.md:L309-L313\",\"excerpt\":\"a non-activating menu to change the destination for the current dictation.\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"006-destination-application:FR-004\",\"disposition\":\"covered\",\"rationale\":\"Covered: failure handling, conservation, reason and recovery delegation map to AC-005. Preservation means conditional durable history plus recovery, not an assertion that every transcript has already been persisted.\",\"source_citations\":[{\"section_id\":\".specs/features/006-destination-application/spec.md:L314-L318\",\"excerpt\":\"Never insert into another application when the destination is unavailable\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"006-destination-application:FR-005\",\"disposition\":\"covered\",\"rationale\":\"Covered: the FR summary limits destination-level claims to attempted and separates clipboard/insertion responsibilities. Its normative AC-006 now explicitly permits forwarding method-owned inserted, verified evidence based on a field reread. These are different evidence layers; neither permits 006 to invent verification or discard a method result.\",\"source_citations\":[{\"section_id\":\".specs/features/006-destination-application/spec.md:L319-L323\",\"excerpt\":\"keep destination, insertion method and clipboard handling separate.\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"006-destination-application:FR-006\",\"disposition\":\"covered\",\"rationale\":\"Covered: AC-007/008 resolve supported platforms, unavailable reasons, old-behavior fallback and shared validation with JSON output.\",\"source_citations\":[{\"section_id\":\".specs/features/006-destination-application/spec.md:L324-L328\",\"excerpt\":\"Detect platform support and expose the setting through UI and settings CLI.\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"006-destination-application:SC-001\",\"disposition\":\"covered\",\"rationale\":\"Covered: criterion names a minimum application count and two mandatory apps, requires per-application recorded native results and forbids redirection after switching. Compatibility remains unverified until the evidence is actually run.\",\"source_citations\":[{\"section_id\":\".specs/features/006-destination-application/spec.md:L382-L385\",\"excerpt\":\"at least four macOS applications including ChatGPT and Comet\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"006-destination-application:SC-002\",\"disposition\":\"covered\",\"rationale\":\"Covered: app closure, activation timeout and insertion failure are named fault-injection cases, zero wrong-app characters is measurable, and durable conservation is correctly conditional on save success.\",\"source_citations\":[{\"section_id\":\".specs/features/006-destination-application/spec.md:L386-L389\",\"excerpt\":\"every transcript whose history save succeeds remains in history.\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"006-destination-application:SC-003\",\"disposition\":\"covered\",\"rationale\":\"Covered: the intended cross-application scenario has an observable destination change and insertion location. This requires native verification rather than treating a paste command dispatch as verified text.\",\"source_citations\":[{\"section_id\":\".specs/features/006-destination-application/spec.md:L390-L392\",\"excerpt\":\"The badge menu changes the destination in the ChatGPT → Comet scenario\"}],\"plan_citations\":[],\"searched_plan_sections\":[]}],\"ambiguities\":[],\"extra_scope\":[],\"findings\":[{\"category\":\"CrossControl\",\"severity\":\"warning\",\"description\":\"The cross is a normative addition in AC-004 and the Gherkin story, but the Story 3 flowchart currently shows only menu choices. Implementation planning must explicitly model cross removal, event propagation and the insertion cutoff; clicking the cross must not open the menu.\",\"suggestion\":\"Include a separate cross transition, accessible Remove destination control, current-dictation-only reset and race tests for cross/removal versus insertion start.\",\"citations\":[{\"section_id\":\".specs/features/006-destination-application/spec.md:L218-L222\",\"excerpt\":\"the cross has the accessible name \\\"Remove destination\\\"\"},{\"section_id\":\".specs/features/006-destination-application/spec.md:L94-L133\",\"excerpt\":\"A[User opens badge menu] --> B[List frontmost now, running apps, Frontmost app at the end]\"}]},{\"category\":\"MethodOutcomeProvenance\",\"severity\":\"warning\",\"description\":\"AC-006 now explicitly permits method-owned verification based on the 007 field reread, while the destination-level successful dispatch remains insertion attempted. A flattened enum would still risk losing this provenance and changing 009/010 behavior.\",\"suggestion\":\"Keep separate destination dispatch and insertion-method evidence. Forward inserted, verified only with method-owned reread provenance, keep other 007 outcomes unchanged and test automatic Enter and uncertainty recovery consumers.\",\"citations\":[{\"section_id\":\".specs/features/006-destination-application/spec.md:L228-L232\",\"excerpt\":\"Handy passes the insertion method's outcome (for smart paste, the outcomes of 007) to the recovery bubble (010) and to automatic Enter (009)\"},{\"section_id\":\".specs/features/006-destination-application/spec.md:L319-L323\",\"excerpt\":\"Report insertion outcomes as attempted, not verified\"},{\"section_id\":\".specs/features/006-destination-application/spec.md:L228-L232\",\"excerpt\":\"except when the method itself verified it (the smart paste outcome \\\"inserted, verified\\\" of 007, based on reading the field back)\"}]},{\"category\":\"NativeFocusSafety\",\"severity\":\"warning\",\"description\":\"The immediate frontmost recheck and non-freezing one-second activation wait are mandatory, but native focus behavior is unverified. Nonactivating cross/menu surfaces and application focus races require native evidence; frontend unit tests cannot certify them.\",\"suggestion\":\"Plan an early native macOS surface spike and injectable workspace/activation/clock seams; test failed final recheck with zero insertion and record TextEdit, Notes, ChatGPT and Comet observations.\",\"citations\":[{\"section_id\":\".specs/features/006-destination-application/spec.md:L208-L212\",\"excerpt\":\"re-checks that it is still frontmost immediately before inserting\"},{\"section_id\":\".specs/features/006-destination-application/spec.md:L351-L360\",\"excerpt\":\"real compatibility with ChatGPT and Comet unverified\"}]},{\"category\":\"ConditionalConservation\",\"severity\":\"warning\",\"description\":\"The Story 4 simplified Gherkin says the transcript is in history without a condition, while authoritative AC-005 and SC-002 condition history on save success. A plan must use the explicit conditional guarantee and still preserve an in-memory recovery handoff on save failure.\",\"suggestion\":\"Test WAV/history save success and failure separately, retain the transcript for recovery on failure and never claim durable conservation without a successful save.\",\"citations\":[{\"section_id\":\".specs/features/006-destination-application/spec.md:L134-L174\",\"excerpt\":\"And the transcript is in history\"},{\"section_id\":\".specs/features/006-destination-application/spec.md:L223-L227\",\"excerpt\":\"whenever history saving succeeds as today\"},{\"section_id\":\".specs/features/006-destination-application/spec.md:L386-L389\",\"excerpt\":\"every transcript whose history save succeeds remains in history.\"}]},{\"category\":\"RecoveryPresentationOwnership\",\"severity\":\"warning\",\"description\":\"AC-005 requires the indicator reason for at least four seconds and explicitly names 010 for overlay none. The plan should stage the current reason presentation and the later 010 handoff so this feature does not maintain duplicate competing reason surfaces when 010 ships.\",\"suggestion\":\"Document the pre-010 indicator duration and post-010 delegated reason presenter with retained reason payload and handoff tests; no 010 implementation in this plan.\",\"citations\":[{\"section_id\":\".specs/features/006-destination-application/spec.md:L223-L227\",\"excerpt\":\"the indicator displays the reason (app closed, activation failed, insertion failed) for at least 4 seconds (with the overlay style none, the recovery bubble of 010 carries the reason)\"}]},{\"category\":\"TestingCommands\",\"severity\":\"warning\",\"description\":\"The inherited testing strategy lists only frontend/Playwright commands; native destination safety needs explicit Rust unit/integration commands, injected seams and manual native proof in the plan.\",\"suggestion\":\"Resolve cargo test commands for destination state/activation/capability/setting domain behavior, frontend badge tests and native focus/permission/history evidence without treating build availability as observed runtime success.\",\"citations\":[{\"section_id\":\".specs/testing/strategy.md:L7-L12\",\"excerpt\":\"- `playwright test`\"},{\"section_id\":\".specs/features/006-destination-application/spec.md:L351-L360\",\"excerpt\":\"tests proving no insertion occurs when the destination is closed or not frontmost in time\"}]}],\"confidence\":4,\"synthesized_batch_ids\":[],\"resolutions\":[]}"
+  ],
+  "synthesis": null,
+  "synthesis_transport_version": null
+}

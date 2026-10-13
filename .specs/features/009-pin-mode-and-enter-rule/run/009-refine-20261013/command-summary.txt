@@ -1,0 +1,5 @@
+Plan refined: .specs/features/009-pin-mode-and-enter-rule/plan.md — 7 steps, 4 mermaid diagrams.
+Plan Review: complete=True, ready=True; model=gpt-6; budget=400000.
+Penflow contract: BLOCKED; reason=required_contract_artifacts_missing; certified=False; artifacts deferred by explicit user decision until the program one-pass UI gate before spec-ship.
+Next action: $spec-implement 009-pin-mode-and-enter-rule after prior delivery and deferred UI gates; not executed here.
+retry_hypothesis=missing command summary marker and concurrent global changelog invalidated old finalize receipt; retry_evidence=current finalize verify receipt and source-derived Penflow summary; retry_result=pending archive verification.

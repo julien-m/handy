@@ -1,0 +1,35 @@
+{
+  "command": "spec-plan",
+  "created_at": "2026-10-12T18:52:58.161539+00:00",
+  "feature_slug": "010-recovery-bubble",
+  "files": [
+    {
+      "path": ".specs/features/010-recovery-bubble/changelog.md",
+      "sha256": "1f776018ffdfb7818c27c63672485f59a850d8f693815ec07bb23600529faa46"
+    },
+    {
+      "path": ".specs/changelog.md",
+      "sha256": "34bb3c1b98206fa913427c3ca58f4eb057b65afa638428d40db8c2a151f044f6"
+    },
+    {
+      "path": ".specs/README.md",
+      "sha256": "7209e24de0f675d2e567529a9964dc41eec5b1c727a5ed42ab7dcbda5772dfe2"
+    },
+    {
+      "path": ".specs/features/010-recovery-bubble/spec.md",
+      "sha256": "6f48a668ed2a5fb6cad18d500f8600e6a11919e8cce52dc44c4d7669a4b63fd4"
+    },
+    {
+      "path": ".specs/roadmap.md",
+      "sha256": "b47c510a2e59741053e6de5a064c6ae0019081dc6dab6b8875170382c9adeef1"
+    }
+  ],
+  "oracle": "livespec-finalize-evidence",
+  "oracle_version": "1",
+  "outcome": "verified",
+  "payload_hash": "f0dae4f05f170fd0f792beedc1672afd81268639ff289ef4ac489ff35d4e847d",
+  "receipt_hash": "85a25d116acd61f67940559a369c3b41b77a0e5f1185be3320aacefeaed6a047",
+  "schema_version": "1",
+  "verdict": "PASS",
+  "violations": []
+}

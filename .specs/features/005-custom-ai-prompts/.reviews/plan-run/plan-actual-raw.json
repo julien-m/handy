@@ -1,0 +1,532 @@
+{
+  "batch_id": "batch-001",
+  "reviewed_section_ids": [
+    ".specs/constitution.md:L1-L2",
+    ".specs/constitution.md:L3-L17",
+    ".specs/constitution.md:L18-L26",
+    ".specs/constitution.md:L27-L29",
+    ".specs/features/005-custom-ai-prompts/plan.md:L1-L16",
+    ".specs/features/005-custom-ai-prompts/plan.md:L17-L18",
+    ".specs/features/005-custom-ai-prompts/plan.md:L19-L24",
+    ".specs/features/005-custom-ai-prompts/plan.md:L25-L40",
+    ".specs/features/005-custom-ai-prompts/plan.md:L41-L52",
+    ".specs/features/005-custom-ai-prompts/plan.md:L53-L65",
+    ".specs/features/005-custom-ai-prompts/plan.md:L66-L76",
+    ".specs/features/005-custom-ai-prompts/plan.md:L77-L82",
+    ".specs/features/005-custom-ai-prompts/plan.md:L83-L84",
+    ".specs/features/005-custom-ai-prompts/plan.md:L85-L92",
+    ".specs/features/005-custom-ai-prompts/plan.md:L93-L105",
+    ".specs/features/005-custom-ai-prompts/plan.md:L106-L113",
+    ".specs/features/005-custom-ai-prompts/plan.md:L114-L119",
+    ".specs/features/005-custom-ai-prompts/plan.md:L120-L127",
+    ".specs/features/005-custom-ai-prompts/plan.md:L128-L137",
+    ".specs/features/005-custom-ai-prompts/plan.md:L138-L216",
+    ".specs/features/005-custom-ai-prompts/plan.md:L217-L253",
+    ".specs/features/005-custom-ai-prompts/plan.md:L254-L292",
+    ".specs/features/005-custom-ai-prompts/plan.md:L293-L296",
+    ".specs/features/005-custom-ai-prompts/plan.md:L297-L306",
+    ".specs/features/005-custom-ai-prompts/plan.md:L307-L316",
+    ".specs/features/005-custom-ai-prompts/plan.md:L317-L326",
+    ".specs/features/005-custom-ai-prompts/plan.md:L327-L336",
+    ".specs/features/005-custom-ai-prompts/plan.md:L337-L346",
+    ".specs/features/005-custom-ai-prompts/plan.md:L347-L356",
+    ".specs/features/005-custom-ai-prompts/plan.md:L357-L366",
+    ".specs/features/005-custom-ai-prompts/plan.md:L367-L376",
+    ".specs/features/005-custom-ai-prompts/plan.md:L377-L396",
+    ".specs/features/005-custom-ai-prompts/plan.md:L397-L414",
+    ".specs/features/005-custom-ai-prompts/plan.md:L415-L430",
+    ".specs/features/005-custom-ai-prompts/plan.md:L431-L451",
+    ".specs/features/005-custom-ai-prompts/plan.md:L452-L454",
+    ".specs/features/005-custom-ai-prompts/spec.md:L1-L9",
+    ".specs/features/005-custom-ai-prompts/spec.md:L10-L11",
+    ".specs/features/005-custom-ai-prompts/spec.md:L12-L20",
+    ".specs/features/005-custom-ai-prompts/spec.md:L21-L22",
+    ".specs/features/005-custom-ai-prompts/spec.md:L23-L63",
+    ".specs/features/005-custom-ai-prompts/spec.md:L64-L107",
+    ".specs/features/005-custom-ai-prompts/spec.md:L108-L141",
+    ".specs/features/005-custom-ai-prompts/spec.md:L142-L178",
+    ".specs/features/005-custom-ai-prompts/spec.md:L179-L209",
+    ".specs/features/005-custom-ai-prompts/spec.md:L210-L236",
+    ".specs/features/005-custom-ai-prompts/spec.md:L237-L238",
+    ".specs/features/005-custom-ai-prompts/spec.md:L239-L243",
+    ".specs/features/005-custom-ai-prompts/spec.md:L244-L248",
+    ".specs/features/005-custom-ai-prompts/spec.md:L249-L253",
+    ".specs/features/005-custom-ai-prompts/spec.md:L254-L258",
+    ".specs/features/005-custom-ai-prompts/spec.md:L259-L263",
+    ".specs/features/005-custom-ai-prompts/spec.md:L264-L268",
+    ".specs/features/005-custom-ai-prompts/spec.md:L269-L273",
+    ".specs/features/005-custom-ai-prompts/spec.md:L274-L278",
+    ".specs/features/005-custom-ai-prompts/spec.md:L279-L282",
+    ".specs/features/005-custom-ai-prompts/spec.md:L283-L307",
+    ".specs/features/005-custom-ai-prompts/spec.md:L308-L323",
+    ".specs/features/005-custom-ai-prompts/spec.md:L324-L344",
+    ".specs/features/005-custom-ai-prompts/spec.md:L345-L360",
+    ".specs/features/005-custom-ai-prompts/spec.md:L361-L378",
+    ".specs/features/005-custom-ai-prompts/spec.md:L379-L380",
+    ".specs/features/005-custom-ai-prompts/spec.md:L381-L385",
+    ".specs/features/005-custom-ai-prompts/spec.md:L386-L390",
+    ".specs/features/005-custom-ai-prompts/spec.md:L391-L395",
+    ".specs/features/005-custom-ai-prompts/spec.md:L396-L400",
+    ".specs/features/005-custom-ai-prompts/spec.md:L401-L405",
+    ".specs/features/005-custom-ai-prompts/spec.md:L406-L410",
+    ".specs/features/005-custom-ai-prompts/spec.md:L411-L419",
+    ".specs/features/005-custom-ai-prompts/spec.md:L420-L431",
+    ".specs/features/005-custom-ai-prompts/spec.md:L432-L441",
+    ".specs/features/005-custom-ai-prompts/spec.md:L442-L448",
+    ".specs/features/005-custom-ai-prompts/spec.md:L449-L452",
+    ".specs/features/005-custom-ai-prompts/spec.md:L453-L460",
+    ".specs/features/005-custom-ai-prompts/spec.md:L461-L462",
+    ".specs/features/005-custom-ai-prompts/spec.md:L463-L466",
+    ".specs/features/005-custom-ai-prompts/spec.md:L467-L470",
+    ".specs/features/005-custom-ai-prompts/spec.md:L471-L473",
+    ".specs/features/008-settings-cli/plan.md:L1-L9",
+    ".specs/features/008-settings-cli/plan.md:L10-L11",
+    ".specs/features/008-settings-cli/plan.md:L12-L17",
+    ".specs/features/008-settings-cli/plan.md:L18-L34",
+    ".specs/features/008-settings-cli/plan.md:L35-L46",
+    ".specs/features/008-settings-cli/plan.md:L47-L59",
+    ".specs/features/008-settings-cli/plan.md:L60-L61",
+    ".specs/features/008-settings-cli/plan.md:L62-L67",
+    ".specs/features/008-settings-cli/plan.md:L68-L75",
+    ".specs/features/008-settings-cli/plan.md:L76-L81",
+    ".specs/features/008-settings-cli/plan.md:L82-L102",
+    ".specs/features/008-settings-cli/plan.md:L103-L123",
+    ".specs/features/008-settings-cli/plan.md:L124-L211",
+    ".specs/features/008-settings-cli/plan.md:L212-L249",
+    ".specs/features/008-settings-cli/plan.md:L250-L289",
+    ".specs/features/008-settings-cli/plan.md:L290-L291",
+    ".specs/features/008-settings-cli/plan.md:L292-L301",
+    ".specs/features/008-settings-cli/plan.md:L302-L311",
+    ".specs/features/008-settings-cli/plan.md:L312-L321",
+    ".specs/features/008-settings-cli/plan.md:L322-L331",
+    ".specs/features/008-settings-cli/plan.md:L332-L341",
+    ".specs/features/008-settings-cli/plan.md:L342-L351",
+    ".specs/features/008-settings-cli/plan.md:L352-L361",
+    ".specs/features/008-settings-cli/plan.md:L362-L383",
+    ".specs/features/008-settings-cli/plan.md:L384-L400",
+    ".specs/features/008-settings-cli/plan.md:L401-L415",
+    ".specs/features/008-settings-cli/plan.md:L416-L438",
+    ".specs/features/008-settings-cli/plan.md:L439-L441",
+    ".specs/project.md:L1-L2",
+    ".specs/project.md:L3-L7",
+    ".specs/project.md:L8-L16",
+    ".specs/project.md:L17-L20",
+    ".specs/project.md:L21-L24",
+    ".specs/project.md:L25-L28",
+    ".specs/project.md:L29-L36",
+    ".specs/stacks/_default.md:L1-L4",
+    ".specs/stacks/_default.md:L5-L6",
+    ".specs/stacks/_default.md:L7-L20",
+    ".specs/stacks/_default.md:L21-L30",
+    ".specs/testing/strategy.md:L1-L2",
+    ".specs/testing/strategy.md:L3-L6",
+    ".specs/testing/strategy.md:L7-L12",
+    ".specs/testing/strategy.md:L13-L16"
+  ],
+  "conclusions": [
+    {
+      "requirement_id": "005-custom-ai-prompts:AC-001",
+      "disposition": "covered",
+      "rationale": "Shared validated patches, stable ids and public views support CRUD/restart; Step6 includes library/editor rows, deletion confirmation and keyboard validation with concrete tests.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/spec.md:L239-L243",
+          "excerpt": "**Criterion:** The settings UI lists prompts with name, provider (default or override) and shortcut, and supports create, edit and delete with confirmation. A prompt is valid when its trimmed name has 1–60 characters and is unique case-insensitively, and its text has 1–8000 characters. The library holds at most 50 prompts. Changes persist across restarts."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L85-L92",
+          "excerpt": "Name validation trims before storage, counts Unicode scalar characters (not UTF-8 bytes), enforces 1–60 and deterministic Unicode lowercase uniqueness."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:AC-002",
+      "disposition": "covered",
+      "rationale": "The locked marker and fixed ordered exact starter texts preserve byte-identical legacy values/selection, flag invalid items and enforce capacity; restart/crash fixtures prevent resurrection.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/spec.md:L244-L248",
+          "excerpt": "**Criterion:** On upgrade, existing prompts and the existing selected prompt are kept unchanged, and the starter prompts Minimal correction, Friendly rephrasing, Clarify, Shorten, Notes and Translate to English are added once when absent by name; they are editable and deletable. Starter prompts are added only while the library has room under its limit. Existing prompts that break the new validation rules are kept, flagged invalid and cannot be used until edited."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L85-L92",
+          "excerpt": "One startup migration, through 008's locked commit, preserves every old ID/name/text and selected ID byte-for-byte, even invalid or dangling selection."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:AC-003",
+      "disposition": "covered",
+      "rationale": "Session-owned trigger snapshots, master switch precedence and serialized stop/choice satisfy selection semantics; early native host spike has explicit every-platform focus/200 ms gates and deferred UI authority.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/spec.md:L249-L253",
+          "excerpt": "**Criterion:** The existing \"AI post-processing\" switch keeps its meaning: when off, no dictation is processed, prompt shortcuts are unregistered and the indicator menu is hidden. When on, settings define one default prompt or \"None\". The plain dictation shortcut starts with \"None\", the post-processing shortcut with the default prompt, and a prompt shortcut with its prompt. While a dictation is recording, the indicator shows the prompt for this dictation and offers a menu listing \"None\" and every prompt; a choice applies to this dictation only and does not change the default. The menu opens within 200 ms without taking keyboard focus from the user's application, on every platform where the indicator is shown."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L114-L119",
+          "excerpt": "Start plain => None; post-processing => default; prompt shortcut => its prompt. Master switch off wins over all triggers, unregisters prompt shortcuts and hides menu."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:AC-004",
+      "disposition": "covered",
+      "rationale": "Revision-consistent routing snapshots and explicit metadata/native readiness cover inheritance and overrides, including optional custom keys and Apple conditional availability without forced network model identity.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/spec.md:L254-L258",
+          "excerpt": "**Criterion:** Each prompt uses the default provider and model unless it defines a provider and model override. Providers are the existing ones, including the local custom OpenAI-compatible endpoint and, where available, Apple Intelligence. A prompt whose provider lacks a required endpoint, model or API key is shown as not ready with the missing item; processing with it skips the AI step."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L114-L119",
+          "excerpt": "Default resolution and overrides never mix fields from different revisions."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:AC-005",
+      "disposition": "covered",
+      "rationale": "The corrected execution graph puts real text-only history before output integration. Deadline/fallback/notification are planned and cancellation before/during/after commit is explicit without fictional rollback. Literal insertion wording is preserved as an acceptance gate when runtime verification is absent.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/spec.md:L259-L263",
+          "excerpt": "**Criterion:** When the AI step fails (provider or HTTP error, empty or whitespace-only result, provider not ready) or the whole step, including any internal retry or fallback request, exceeds 30 seconds, the initial transcript is inserted, the indicator states for at least 4 seconds that processing failed and the original was inserted, and the history keeps the initial transcript, the prompt name and the failure reason. Cancelling during processing inserts nothing; history behaves as today for cancelled dictations."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L128-L137",
+          "excerpt": "Cancellation observed before starting the history write suppresses a new row; cancellation after a durable history commit keeps that row, matching today's save-before-paste path, but suppresses insertion and any late callback."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:AC-006",
+      "disposition": "covered",
+      "rationale": "PromptShortcutRegistry is a named 005 adapter to 004, with 0–2 target limits, global activation and prepared removal/compensation. Actual 004 API names remain an explicit integration prerequisite.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/spec.md:L264-L268",
+          "excerpt": "**Criterion:** A prompt may have 0–2 shortcuts. A prompt shortcut starts a dictation processed with that prompt and follows the global activation mode. Prompt shortcuts use the shared conflict checker of feature 004 against every other shortcut. Deleting a prompt removes its shortcuts after confirmation."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L106-L113",
+          "excerpt": "It delegates to 004's one conflict checker, native registration and activation state machine, never implements another conflict algorithm."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:AC-007",
+      "disposition": "covered",
+      "rationale": "Separate editor/test generation and processor dependencies exclude history/insertion structurally; latest raw sample is editable, metadata/errors are rendered and total duration/late completions tested.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/spec.md:L269-L273",
+          "excerpt": "**Criterion:** The test panel runs a prompt on editable sample text (prefilled with the last transcript when one exists) and shows the result, provider, model and duration, or the error, within the 30-second limit. A test never inserts text into another application and never writes history."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L120-L127",
+          "excerpt": "It calls the same processor but has no insertion/history ports in its dependencies."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:AC-008",
+      "disposition": "covered",
+      "rationale": "The exact command matrix, override clear and unchanged renderer/errors are reused from informative 008 source; shortcut mutations use 004 only and process redaction assertions cover all channels.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/spec.md:L274-L278",
+          "excerpt": "**Criterion:** The settings CLI (008) offers prompt list, create, update, delete, set-default and set-provider-override (provider id and model, or `--clear` to return to the default provider); prompt shortcuts are managed with the shortcut operations of feature 004. Outputs never contain API keys, in stdout, stderr or logs; provider readiness is reported as ready or the missing item. With `--json`, stdout contains only the JSON envelope; errors use stable codes."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L106-L113",
+          "excerpt": "Use 008's exact success `{ok:true,revision:N,data:...}` and failure `{ok:false,error:{code,message,details:{...}}}` renderer."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:FR-001",
+      "disposition": "covered",
+      "rationale": "Steps2/3/6/8 supply library types/migration, shared assignments and UI with mapped tests; versioned seed marker preserves deliberate deletion and no extra business entity is introduced.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/spec.md:L381-L385",
+          "excerpt": "**Requirement:** Persist a validated prompt library with stable ids, names, texts, optional provider/model override and 0–2 shortcuts; migrate existing prompts and add starter prompts once."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L307-L316",
+          "excerpt": "New `src-tauri/src/prompts/{mod.rs,library.rs,migration.rs,types.rs}` holds pure validation, public projection and migration patch."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:FR-002",
+      "disposition": "covered",
+      "rationale": "Step5 freezes one acknowledged choice at stop and rejects stale clicks/callbacks; default is never changed by recording menus and all trigger cases have race tests.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/spec.md:L386-L390",
+          "excerpt": "**Requirement:** Resolve the prompt of each dictation from its trigger (plain, post-processing or prompt shortcut) and from a per-dictation choice made on the indicator, without changing the default."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L114-L119",
+          "excerpt": "Serialize select and stop through one session mutex: the choice shown at the stop linearization point freezes for processing, late clicks are rejected."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:FR-003",
+      "disposition": "covered",
+      "rationale": "One processor deadline includes every attempt/readiness/parser branch, and nonkillable Apple work retains a bounded busy slot with late-result discard. HTTP and native gates are separate.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/spec.md:L391-L395",
+          "excerpt": "**Requirement:** Run the AI step with the prompt's resolved provider and model, report provider readiness, and bound the whole step, including internal retries and fallback requests, to 30 seconds."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L120-L127",
+          "excerpt": "All attempts, structured-output retry without reasoning, schema-to-legacy fallback and response parsing share the same remaining budget; none starts its own 30 s timer."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:FR-004",
+      "disposition": "covered",
+      "rationale": "Corrected Step4 types and Step7 schema precede Step5 output; raw decision and failure fields persist independently of WAV, cancellation checks prevent output and tests compare existing history semantics.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/spec.md:L396-L400",
+          "excerpt": "**Requirement:** Insert the initial transcript and record the failure whenever the AI step does not produce a valid result; respect cancellation."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L293-L296",
+          "excerpt": "Execution dependency order is **1 → 2 → 3 → 4 → 7 → 5 → 6 → 8**: history migration/real persistence (Step 7) must be ready before the session integration (Step 5) enables the new history path."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:FR-005",
+      "disposition": "covered",
+      "rationale": "Processor reuses native formatting but editor command excludes output/history ports; Step6 state matrix and Step8 side-effect tests cover every result/error/cancel branch.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/spec.md:L401-L405",
+          "excerpt": "**Requirement:** Provide a test operation that never inserts text or writes history."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L327-L336",
+          "excerpt": "New `src-tauri/src/commands/prompts.rs` exposes async editor test returning typed public result;"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:FR-006",
+      "disposition": "covered",
+      "rationale": "The prompts production domain uses shared patch/revision/ownership/input/render and no credential serializable DTO, with binary tests for every verb/exit and sentinel leaks.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/spec.md:L406-L410",
+          "excerpt": "**Requirement:** Expose prompt read and modify operations, including setting and clearing the per-prompt provider/model override, through the settings CLI without ever outputting API keys."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L106-L113",
+          "excerpt": "Register `settings_service/domains/prompts.rs` with 008's production domain trait and descriptors."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:SC-001",
+      "disposition": "covered",
+      "rationale": "Fault fixtures, WAV-independent real SQLite retention and raw target comparison supply a concrete eventual proof strategy; DB storage and insertion verification are honest delivery gaps, not claimed runtime success.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/spec.md:L463-L466",
+          "excerpt": "In fault-injection tests (provider error, HTTP error, timeout of the whole step, empty result, not ready), 100% of dictations insert the initial transcript and record the failure."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L367-L376",
+          "excerpt": "history and raw-target comparison prove SC-001,"
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:SC-002",
+      "disposition": "covered",
+      "rationale": "Public DTOs/Debug/events never carry keys and process-level sentinels include error bodies/query URLs/logs; the plan defines zero-leak acceptance at all levels.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/spec.md:L467-L470",
+          "excerpt": "Secret scanning of CLI outputs and logs across all prompt operations finds zero API key occurrences."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L317-L326",
+          "excerpt": "every stdout/stderr/log scanned with secret sentinels including URL/query credentials and error bodies."
+        }
+      ],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:SC-003",
+      "disposition": "covered",
+      "rationale": "Actual migration fixtures compare before/after fields exactly, restart/repeat/crash behavior and invalid legacy selection without normalizing it away.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/spec.md:L471-L473",
+          "excerpt": "Upgrading a store with custom prompts keeps all prompts, texts and the selected prompt unchanged."
+        }
+      ],
+      "plan_citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L307-L316",
+          "excerpt": "before/after field comparison, restart/idempotency, crash injection, partial/full capacity and Unicode limits."
+        }
+      ],
+      "searched_plan_sections": []
+    }
+  ],
+  "ambiguities": [],
+  "extra_scope": [
+    {
+      "description": "Nullable-audio processing history and once-only migration marker",
+      "justification": "Necessary for existing raw retention and one-time migration acceptance criteria; no second history store or user workflow.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L128-L137",
+          "excerpt": "Text-only entry has file_name NULL and audio_available false;"
+        },
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L85-L92",
+          "excerpt": "Persist a versioned `prompt_starters_migration_version` internal marker in the same transaction."
+        }
+      ]
+    },
+    {
+      "description": "Native Apple worker capacity and late-result generation protection",
+      "justification": "Needed to enforce a total deadline with nonkillable synchronous FFI without resource leaks or late side effects.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L120-L127",
+          "excerpt": "A running native call is not killable by dropping its future."
+        },
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L120-L127",
+          "excerpt": "subsequent requests fail immediately with provider_busy until available."
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "category": "dependency-contract",
+      "severity": "warning",
+      "description": "The delivered 004 owner API identities remain an integration prerequisite; adapter declaration does not establish compatibility or native registration.",
+      "suggestion": "Pin actual types/operations and 0–2 target constraints with owner integration tests before Step3 passes.",
+      "citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L106-L113",
+          "excerpt": "pin the actual 004 type/command names at integration after its plan is ready, with this adapter insulating 005 from naming changes."
+        }
+      ]
+    },
+    {
+      "category": "visual-authority",
+      "severity": "warning",
+      "description": "Current Penflow authority is blocked and this semantic review cannot certify it or authorize UI implementation.",
+      "suggestion": "Preserve reviewed_verification_policy_mismatch and run genuine bound review/design gate in the human-authorized common pass.",
+      "citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L77-L82",
+          "excerpt": "The current bound snapshot attempt reports `reviewed_verification_policy_mismatch`; no immutable accepted visual review result can be supplied from this workspace."
+        }
+      ]
+    },
+    {
+      "category": "insertion-evidence",
+      "severity": "warning",
+      "description": "The plan correctly distinguishes attempted and verified output, but literal AC-005 delivery needs actual runtime verifier or an approved requirement resolution. Manual target comparison is acceptance evidence rather than a per-operation verifier.",
+      "suggestion": "Keep acceptance BLOCKED where only dispatch exists; do not claim inserted text from a port spy or native call result.",
+      "citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L128-L137",
+          "excerpt": "If literal spec wording cannot coexist with an unverified insertion method, preserve that exact evidence gap as BLOCKED rather than certifying an attempted paste as insertion."
+        }
+      ]
+    },
+    {
+      "category": "ordering",
+      "severity": "info",
+      "description": "The prior history ordering issue is resolved: real schema/persistence tests now explicitly precede session output integration, with OutputDecision produced in Step4.",
+      "suggestion": "Execute the stated dependency graph rather than numeric order.",
+      "citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L293-L296",
+          "excerpt": "Execution dependency order is **1 → 2 → 3 → 4 → 7 → 5 → 6 → 8**: history migration/real persistence (Step 7) must be ready before the session integration (Step 5) enables the new history path."
+        }
+      ]
+    },
+    {
+      "category": "cancellation-integrity",
+      "severity": "info",
+      "description": "The prior history/output race ambiguity is resolved with a before-write suppression rule, durable row retention after commit and zero late insertion. The current behavior assertion still needs implementation regression fixtures as planned.",
+      "suggestion": "Run the three explicit cancellation barrier cases against baseline code before acceptance.",
+      "citations": [
+        {
+          "section_id": ".specs/features/005-custom-ai-prompts/plan.md:L128-L137",
+          "excerpt": "Test cancellation before write, during commit and before main-thread dispatch independently against today's behavior."
+        }
+      ]
+    }
+  ],
+  "confidence": 4,
+  "synthesized_batch_ids": [],
+  "resolutions": []
+}

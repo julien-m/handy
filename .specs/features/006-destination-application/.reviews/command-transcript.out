@@ -1,0 +1,44 @@
+Plan generated: .specs/features/006-destination-application/plan.md
+006-destination-application: 7 implementation steps, 4 mermaid diagrams
+Plan Review: complete=True ready=True confidence=4/5
+Penflow contract: BLOCKED; certified=False; preparation deferred by explicit user decision before spec-ship
+Progression: READY (actual gate output below)
+Progression: READY
+
+## Specification Analysis Report
+
+Semantic readiness: covered
+
+### Findings
+_No findings._
+
+### Structural Reference Coverage Matrix
+| Requirement Key | Has Plan Task? | Task IDs | Notes |
+|-----------------|----------------|----------|-------|
+| 006-destination-application:AC-001 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 006-destination-application:AC-002 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 006-destination-application:AC-003 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 006-destination-application:AC-004 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 006-destination-application:AC-005 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 006-destination-application:AC-006 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 006-destination-application:AC-007 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 006-destination-application:AC-008 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 006-destination-application:FR-001 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 006-destination-application:FR-002 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 006-destination-application:FR-003 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 006-destination-application:FR-004 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 006-destination-application:FR-005 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 006-destination-application:FR-006 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 006-destination-application:SC-001 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 006-destination-application:SC-002 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 006-destination-application:SC-003 | yes | plan.md | structural reference present; semantic compliance is separate |
+
+### Metrics
+- total_requirements: 17
+- covered_requirements: 17
+- coverage_percent: 100.0
+- critical_count: 0
+- high_count: 0
+- implementation_present: 0
+
+

@@ -1,0 +1,306 @@
+{
+  "schema_version": "1",
+  "policy_version": "078.1",
+  "context_hash": "06006206ab8c6820832668fd7bbfebd8164c9f3966ee0a8d678b73dcaa006158",
+  "source_hashes": {
+    ".specs/constitution.md": "2c1b8d9ab4024fb07ad588e883da39abeffe0f3db3bfc9afe3beb29df66659e9",
+    ".specs/features/007-clipboard-recovery-window/spec.md": "f98c55cbb4270197e5bb4bdae797ac00e0a744979cc0fb250ff6c2064624b252",
+    ".specs/project.md": "cd935573446ed94fa43256de0a4d14b9474c4356fa66623f3c8c32a80572b699",
+    ".specs/stacks/_default.md": "2207c3a9a96bf3d08186d2f3f18e94db8ba120adaf2748b07fa61b609e906e4e",
+    ".specs/testing/strategy.md": "bfe0dd480a9d3cf2575cba8407a984add02dcbdad2a17fcb4fc560def9058934"
+  },
+  "reviewer_model": "gpt-6",
+  "complete": true,
+  "ready": true,
+  "errors": [],
+  "conclusions": [
+    {
+      "requirement_id": "007-clipboard-recovery-window:AC-001",
+      "disposition": "covered",
+      "rationale": "Covered specification: the activation predicate, non-empty final-text boundary, insertion outcomes, plain-text write, default and write-based duration are explicit. This establishes a testable temporary-copy contract without treating attempted insertion as verified delivery.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L167-L171",
+          "excerpt": "**Criterion:** When clipboard handling is \"don't modify the clipboard\" and the recovery window is on (default on, 12 seconds), every dictation that produces a non-empty final text places that text on the clipboard as plain text at the end of the insertion step, whatever the insertion method and whether insertion succeeded, failed or was skipped. It stays there for the configured duration, measured from that write."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:AC-002",
+      "disposition": "covered",
+      "rationale": "Covered specification: snapshot precedes the first Handy write, includes every exposed representation, and unchanged ownership restores the snapshot or emptiness. Snapshot failure explicitly prevents opening the window; native multi-format feasibility remains a planning and execution gate.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L172-L176",
+          "excerpt": "**Criterion:** Before Handy first writes the clipboard for a dictation, it saves every representation of the previous clipboard content that the platform exposes (at least text and image, as today). At the end of the window, if the clipboard change counter equals the value recorded right after Handy's last write, Handy restores the saved content, or clears the clipboard if it was empty. If saving the previous content fails, no recovery window opens and the existing behavior applies."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:AC-003",
+      "disposition": "covered",
+      "rationale": "Covered specification: changed native counters prevent all restoration, while platforms lacking counters have an explicit exact-text fallback. The fallback is a weaker observation mechanism, and its identical-copy limitation must be documented and tested rather than represented as a native generation counter.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L177-L181",
+          "excerpt": "**Criterion:** If the change counter differs at the end of the window (any copy by the user or another application), Handy leaves the clipboard untouched. On platforms without a change counter, Handy restores only when the clipboard still holds exactly the transcript text it wrote."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:AC-004",
+      "disposition": "covered",
+      "rationale": "Covered specification: successive unchanged dictations retain the original snapshot; intervening copies replace the restore target; cancellation preserves an existing window; clean exit conditionally restores. These observable transitions are sufficiently precise for a stateful service and timer-generation tests.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L182-L186",
+          "excerpt": "**Criterion:** A new dictation output during an open window replaces the transcript and starts a new full window. If the clipboard is unchanged since Handy's last write, the originally saved content stays the content to restore; otherwise the old window closes without restoring and the current clipboard content is saved as the content to restore. Cancelling a dictation does not open a window and leaves an already open window running unchanged. Quitting Handy during an open window restores the saved content first if the clipboard is unchanged."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:AC-005",
+      "disposition": "covered",
+      "rationale": "Covered specification: recovery lifecycle has no history mutations and permanent clipboard keeping bypasses the window. Preservation of existing history entries is testable; this does not require introducing a new history write pipeline.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L187-L191",
+          "excerpt": "**Criterion:** The window never deletes or modifies history entries. When clipboard handling is \"copy to clipboard\" (permanent), the window does not apply and the transcript stays on the clipboard as today."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:AC-006",
+      "disposition": "covered",
+      "rationale": "Covered specification: the UI exposes enablement and integer duration with the closed 10–15 range, explanatory rejection, and application only to subsequent transcripts. Behavioral scenarios additionally specify asynchronous save and empty/invalid/valid states.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L192-L196",
+          "excerpt": "**Criterion:** The output settings expose \"Clipboard recovery window\" (on/off) and its duration as an integer number of seconds from 10 to 15. Out-of-range values are rejected with an explanation. Changes apply from the next transcript."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:AC-007",
+      "disposition": "covered",
+      "rationale": "Covered specification: the CLI foundation is explicitly 008, UI/CLI validation must match, machine stdout is a single envelope and invalid duration has the named validation_failed code. Concrete domain registration and envelope implementation belong in the plan using 008.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L197-L201",
+          "excerpt": "**Criterion:** The settings CLI (008) reads and sets the recovery window state and duration with the same validation. With `--json`, stdout contains only the JSON envelope and an out-of-range duration returns `validation_failed`."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:FR-001",
+      "disposition": "covered",
+      "rationale": "Covered specification: AC-001 defines the enabled-window predicate and empty-text exclusion; AC-005 defines permanent-copy bypass; Story 4 defines disabled legacy behavior. Within that declared applicability, insertion method and result do not disable the emergency copy.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L251-L255",
+          "excerpt": "**Requirement:** Place each final transcript on the clipboard for the configured window when permanent clipboard keeping is off, independently of the insertion method and result."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:FR-002",
+      "disposition": "covered",
+      "rationale": "Covered specification: the representation snapshot and conditional restore are tied to AC-002 and AC-003, including empty clipboard and failed snapshot cases. Native fidelity and safe ownership checks require technical proof, but the functional outcome is stated.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L256-L260",
+          "excerpt": "**Requirement:** Save all exposed representations of the previous clipboard content and restore them at the end of the window only when the clipboard is unchanged since Handy's write."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:FR-003",
+      "disposition": "covered",
+      "rationale": "Covered specification: AC-004 and Story 3 prescribe all named lifecycle cases with unambiguous restore targets. The stated no-overwrite intent must be realized using the platform-specific ownership mechanisms and their disclosed limitations.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L261-L265",
+          "excerpt": "**Requirement:** Manage the window lifecycle across consecutive dictations, user copies between dictations, cancellation and application exit without ever restoring over content copied after Handy's last write."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:FR-004",
+      "disposition": "covered",
+      "rationale": "Covered specification: the persisted enablement and integer duration, shared closed-range validation and UI/CLI parity are explicit. AC-006 defines next-transcript application and AC-007 the machine interface.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L266-L270",
+          "excerpt": "**Requirement:** Persist and validate the window state and duration (10–15 seconds) in settings UI and settings CLI."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:SC-001",
+      "disposition": "covered",
+      "rationale": "Covered measurable criterion: zero newer-copy overwrites across the nine Gherkin scenarios in Stories 1–3 is an objective fake-clipboard assertion. Planning should extend the cases to timer races and identical-copy platform limitations without weakening the named scenarios.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L318-L321",
+          "excerpt": "In fake-clipboard tests covering the nine scenarios of Stories 1–3, zero cases overwrite content copied after Handy's write."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:SC-002",
+      "disposition": "covered",
+      "rationale": "Covered measurable criterion: macOS native restoration must be identical for text, image and rich text, with no interference and a 100 percent pass rate across recorded runs. A concrete repetition count and fidelity comparator can be established by the test plan.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L322-L325",
+          "excerpt": "Native checks on macOS restore text, image and rich text previous content identically after the window in 100% of runs without interference."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "007-clipboard-recovery-window:SC-003",
+      "disposition": "covered",
+      "rationale": "Covered measurable criterion: automated history entry counts remain unchanged for every window lifecycle event. The count must be scoped to lifecycle events after any ordinary transcription history save, so it verifies non-mutation rather than claiming universal transcript persistence.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L326-L328",
+          "excerpt": "History entry count is unchanged by any window lifecycle event in automated tests."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    }
+  ],
+  "ambiguities": [],
+  "extra_scope": [],
+  "findings": [
+    {
+      "category": "platform_observability",
+      "severity": "warning",
+      "description": "Exact text equality without a native change counter cannot distinguish an untouched transcript from a later user copy of the same text. The Linux fallback therefore has weaker interference detection than the absolute no-overwrite intent; a model clipboard test alone must not certify universal native behavior.",
+      "suggestion": "Document this limitation in the plan, add identical-text-copy cases, investigate an ownership/change notification seam where available, and retain an explicit native evidence boundary for counter-less platforms.",
+      "citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L177-L181",
+          "excerpt": "On platforms without a change counter, Handy restores only when the clipboard still holds exactly the transcript text it wrote."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L261-L265",
+          "excerpt": "without ever restoring over content copied after Handy's last write."
+        }
+      ]
+    },
+    {
+      "category": "clipboard_concurrency",
+      "severity": "warning",
+      "description": "The check-then-restore behavior exposes a potential interleaving between a successful ownership check and the actual clipboard write. Application serialization alone cannot exclude a concurrent external application copy.",
+      "suggestion": "Plan a platform clipboard seam for guarded restore, minimize the check/write critical interval, inject a copy during the restore operation, and use an early native spike to establish the actual platform guarantee. If the guarantee cannot be established, report the implementation gate explicitly instead of relying only on deterministic timer tests.",
+      "citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L172-L176",
+          "excerpt": "if the clipboard change counter equals the value recorded right after Handy's last write, Handy restores the saved content"
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L177-L181",
+          "excerpt": "Handy leaves the clipboard untouched."
+        }
+      ]
+    },
+    {
+      "category": "restore_fidelity",
+      "severity": "warning",
+      "description": "Saving every exposed representation and restoring rich or multi-type clipboard data is materially broader than saving either text or an image. The spec itself acknowledges that native fidelity is unverified.",
+      "suggestion": "Introduce a representation-preserving snapshot adapter and an early macOS/Windows/Linux capability matrix; gate restoration on a complete snapshot and verify byte/type fidelity natively for the promised exposed types. Keep unsupported or failed snapshot behavior explicit.",
+      "citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L172-L176",
+          "excerpt": "it saves every representation of the previous clipboard content that the platform exposes (at least text and image, as today)."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L289-L298",
+          "excerpt": "restore fidelity for rich multi-type content unverified"
+        }
+      ]
+    },
+    {
+      "category": "history_boundary",
+      "severity": "warning",
+      "description": "The recovery window never mutates history, while the crash edge and history scenario additionally assume that a history entry already exists. Those are different guarantees; this review does not certify transcript persistence for outputs that the existing history pipeline did not record.",
+      "suggestion": "Scope history tests to an already recorded entry, preserve the existing history save boundary, and document the WAV-save precondition from the producer context. Do not add unrelated unconditional history persistence as hidden scope.",
+      "citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L187-L191",
+          "excerpt": "The window never deletes or modifies history entries."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L309-L315",
+          "excerpt": "Handy crashes during the window: the transcript stays on the clipboard; history still holds it."
+        }
+      ]
+    },
+    {
+      "category": "snapshot_failure_fallback",
+      "severity": "warning",
+      "description": "The explicit failed-snapshot exception prevents a recovery window and returns to existing behavior, which currently includes an unguarded short-delay restore in the legacy paste path. This is an exception to recovery availability and is not proof of clipboard safety in the old path.",
+      "suggestion": "Plan the failure branch and verify it creates no window, owns no long-lived timer and leaves no partial snapshot; retain and document the existing behavior exception without claiming new safety coverage for disabled or failed-snapshot legacy paths.",
+      "citations": [
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L172-L176",
+          "excerpt": "If saving the previous content fails, no recovery window opens and the existing behavior applies."
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L278-L288",
+          "excerpt": "restores after `paste_delay_after_ms` (60 ms) without any change-counter check."
+        }
+      ]
+    },
+    {
+      "category": "test_infrastructure",
+      "severity": "warning",
+      "description": "The observed testing strategy lists browser/keyboard commands but no Rust or native clipboard harness. It cannot on its own execute the P0 native manager, timing and fidelity evidence required by this feature.",
+      "suggestion": "Resolve cargo test commands and an injectable clock/clipboard service in the plan, separate fake-clipboard tests from manual native fidelity and history-manager checks, and report which commands are available versus actually executed.",
+      "citations": [
+        {
+          "section_id": ".specs/testing/strategy.md:L7-L12",
+          "excerpt": "- `bun src/lib/utils/keyboard.test.ts`\n- `playwright test`\n- `playwright test --ui`"
+        },
+        {
+          "section_id": ".specs/features/007-clipboard-recovery-window/spec.md:L289-L298",
+          "excerpt": "Timer and change-counter tests with a fake clipboard"
+        }
+      ]
+    }
+  ],
+  "confidence": 4,
+  "raw_results": [
+    "{\n  \"batch_id\": \"batch-001\",\n  \"reviewed_section_ids\": [\n    \".specs/constitution.md:L1-L2\",\n    \".specs/constitution.md:L3-L17\",\n    \".specs/constitution.md:L18-L26\",\n    \".specs/constitution.md:L27-L29\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L1-L9\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L10-L11\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L12-L20\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L21-L22\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L23-L61\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L62-L90\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L91-L135\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L136-L164\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L165-L166\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L167-L171\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L172-L176\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L177-L181\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L182-L186\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L187-L191\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L192-L196\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L197-L201\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L202-L205\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L206-L228\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L229-L248\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L249-L250\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L251-L255\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L256-L260\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L261-L265\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L266-L270\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L271-L277\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L278-L288\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L289-L298\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L299-L304\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L305-L308\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L309-L315\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L316-L317\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L318-L321\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L322-L325\",\n    \".specs/features/007-clipboard-recovery-window/spec.md:L326-L328\",\n    \".specs/project.md:L1-L2\",\n    \".specs/project.md:L3-L7\",\n    \".specs/project.md:L8-L16\",\n    \".specs/project.md:L17-L20\",\n    \".specs/project.md:L21-L24\",\n    \".specs/project.md:L25-L28\",\n    \".specs/project.md:L29-L36\",\n    \".specs/stacks/_default.md:L1-L4\",\n    \".specs/stacks/_default.md:L5-L6\",\n    \".specs/stacks/_default.md:L7-L20\",\n    \".specs/stacks/_default.md:L21-L30\",\n    \".specs/testing/strategy.md:L1-L2\",\n    \".specs/testing/strategy.md:L3-L6\",\n    \".specs/testing/strategy.md:L7-L12\",\n    \".specs/testing/strategy.md:L13-L16\"\n  ],\n  \"conclusions\": [\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:AC-001\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Covered specification: the activation predicate, non-empty final-text boundary, insertion outcomes, plain-text write, default and write-based duration are explicit. This establishes a testable temporary-copy contract without treating attempted insertion as verified delivery.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L167-L171\",\n          \"excerpt\": \"**Criterion:** When clipboard handling is \\\"don't modify the clipboard\\\" and the recovery window is on (default on, 12 seconds), every dictation that produces a non-empty final text places that text on the clipboard as plain text at the end of the insertion step, whatever the insertion method and whether insertion succeeded, failed or was skipped. It stays there for the configured duration, measured from that write.\"\n        }\n      ],\n      \"plan_citations\": [],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:AC-002\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Covered specification: snapshot precedes the first Handy write, includes every exposed representation, and unchanged ownership restores the snapshot or emptiness. Snapshot failure explicitly prevents opening the window; native multi-format feasibility remains a planning and execution gate.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L172-L176\",\n          \"excerpt\": \"**Criterion:** Before Handy first writes the clipboard for a dictation, it saves every representation of the previous clipboard content that the platform exposes (at least text and image, as today). At the end of the window, if the clipboard change counter equals the value recorded right after Handy's last write, Handy restores the saved content, or clears the clipboard if it was empty. If saving the previous content fails, no recovery window opens and the existing behavior applies.\"\n        }\n      ],\n      \"plan_citations\": [],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:AC-003\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Covered specification: changed native counters prevent all restoration, while platforms lacking counters have an explicit exact-text fallback. The fallback is a weaker observation mechanism, and its identical-copy limitation must be documented and tested rather than represented as a native generation counter.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L177-L181\",\n          \"excerpt\": \"**Criterion:** If the change counter differs at the end of the window (any copy by the user or another application), Handy leaves the clipboard untouched. On platforms without a change counter, Handy restores only when the clipboard still holds exactly the transcript text it wrote.\"\n        }\n      ],\n      \"plan_citations\": [],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:AC-004\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Covered specification: successive unchanged dictations retain the original snapshot; intervening copies replace the restore target; cancellation preserves an existing window; clean exit conditionally restores. These observable transitions are sufficiently precise for a stateful service and timer-generation tests.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L182-L186\",\n          \"excerpt\": \"**Criterion:** A new dictation output during an open window replaces the transcript and starts a new full window. If the clipboard is unchanged since Handy's last write, the originally saved content stays the content to restore; otherwise the old window closes without restoring and the current clipboard content is saved as the content to restore. Cancelling a dictation does not open a window and leaves an already open window running unchanged. Quitting Handy during an open window restores the saved content first if the clipboard is unchanged.\"\n        }\n      ],\n      \"plan_citations\": [],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:AC-005\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Covered specification: recovery lifecycle has no history mutations and permanent clipboard keeping bypasses the window. Preservation of existing history entries is testable; this does not require introducing a new history write pipeline.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L187-L191\",\n          \"excerpt\": \"**Criterion:** The window never deletes or modifies history entries. When clipboard handling is \\\"copy to clipboard\\\" (permanent), the window does not apply and the transcript stays on the clipboard as today.\"\n        }\n      ],\n      \"plan_citations\": [],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:AC-006\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Covered specification: the UI exposes enablement and integer duration with the closed 10–15 range, explanatory rejection, and application only to subsequent transcripts. Behavioral scenarios additionally specify asynchronous save and empty/invalid/valid states.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L192-L196\",\n          \"excerpt\": \"**Criterion:** The output settings expose \\\"Clipboard recovery window\\\" (on/off) and its duration as an integer number of seconds from 10 to 15. Out-of-range values are rejected with an explanation. Changes apply from the next transcript.\"\n        }\n      ],\n      \"plan_citations\": [],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:AC-007\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Covered specification: the CLI foundation is explicitly 008, UI/CLI validation must match, machine stdout is a single envelope and invalid duration has the named validation_failed code. Concrete domain registration and envelope implementation belong in the plan using 008.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L197-L201\",\n          \"excerpt\": \"**Criterion:** The settings CLI (008) reads and sets the recovery window state and duration with the same validation. With `--json`, stdout contains only the JSON envelope and an out-of-range duration returns `validation_failed`.\"\n        }\n      ],\n      \"plan_citations\": [],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:FR-001\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Covered specification: AC-001 defines the enabled-window predicate and empty-text exclusion; AC-005 defines permanent-copy bypass; Story 4 defines disabled legacy behavior. Within that declared applicability, insertion method and result do not disable the emergency copy.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L251-L255\",\n          \"excerpt\": \"**Requirement:** Place each final transcript on the clipboard for the configured window when permanent clipboard keeping is off, independently of the insertion method and result.\"\n        }\n      ],\n      \"plan_citations\": [],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:FR-002\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Covered specification: the representation snapshot and conditional restore are tied to AC-002 and AC-003, including empty clipboard and failed snapshot cases. Native fidelity and safe ownership checks require technical proof, but the functional outcome is stated.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L256-L260\",\n          \"excerpt\": \"**Requirement:** Save all exposed representations of the previous clipboard content and restore them at the end of the window only when the clipboard is unchanged since Handy's write.\"\n        }\n      ],\n      \"plan_citations\": [],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:FR-003\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Covered specification: AC-004 and Story 3 prescribe all named lifecycle cases with unambiguous restore targets. The stated no-overwrite intent must be realized using the platform-specific ownership mechanisms and their disclosed limitations.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L261-L265\",\n          \"excerpt\": \"**Requirement:** Manage the window lifecycle across consecutive dictations, user copies between dictations, cancellation and application exit without ever restoring over content copied after Handy's last write.\"\n        }\n      ],\n      \"plan_citations\": [],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:FR-004\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Covered specification: the persisted enablement and integer duration, shared closed-range validation and UI/CLI parity are explicit. AC-006 defines next-transcript application and AC-007 the machine interface.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L266-L270\",\n          \"excerpt\": \"**Requirement:** Persist and validate the window state and duration (10–15 seconds) in settings UI and settings CLI.\"\n        }\n      ],\n      \"plan_citations\": [],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:SC-001\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Covered measurable criterion: zero newer-copy overwrites across the nine Gherkin scenarios in Stories 1–3 is an objective fake-clipboard assertion. Planning should extend the cases to timer races and identical-copy platform limitations without weakening the named scenarios.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L318-L321\",\n          \"excerpt\": \"In fake-clipboard tests covering the nine scenarios of Stories 1–3, zero cases overwrite content copied after Handy's write.\"\n        }\n      ],\n      \"plan_citations\": [],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:SC-002\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Covered measurable criterion: macOS native restoration must be identical for text, image and rich text, with no interference and a 100 percent pass rate across recorded runs. A concrete repetition count and fidelity comparator can be established by the test plan.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L322-L325\",\n          \"excerpt\": \"Native checks on macOS restore text, image and rich text previous content identically after the window in 100% of runs without interference.\"\n        }\n      ],\n      \"plan_citations\": [],\n      \"searched_plan_sections\": []\n    },\n    {\n      \"requirement_id\": \"007-clipboard-recovery-window:SC-003\",\n      \"disposition\": \"covered\",\n      \"rationale\": \"Covered measurable criterion: automated history entry counts remain unchanged for every window lifecycle event. The count must be scoped to lifecycle events after any ordinary transcription history save, so it verifies non-mutation rather than claiming universal transcript persistence.\",\n      \"source_citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L326-L328\",\n          \"excerpt\": \"History entry count is unchanged by any window lifecycle event in automated tests.\"\n        }\n      ],\n      \"plan_citations\": [],\n      \"searched_plan_sections\": []\n    }\n  ],\n  \"ambiguities\": [],\n  \"extra_scope\": [],\n  \"findings\": [\n    {\n      \"category\": \"platform_observability\",\n      \"severity\": \"warning\",\n      \"description\": \"Exact text equality without a native change counter cannot distinguish an untouched transcript from a later user copy of the same text. The Linux fallback therefore has weaker interference detection than the absolute no-overwrite intent; a model clipboard test alone must not certify universal native behavior.\",\n      \"suggestion\": \"Document this limitation in the plan, add identical-text-copy cases, investigate an ownership/change notification seam where available, and retain an explicit native evidence boundary for counter-less platforms.\",\n      \"citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L177-L181\",\n          \"excerpt\": \"On platforms without a change counter, Handy restores only when the clipboard still holds exactly the transcript text it wrote.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L261-L265\",\n          \"excerpt\": \"without ever restoring over content copied after Handy's last write.\"\n        }\n      ]\n    },\n    {\n      \"category\": \"clipboard_concurrency\",\n      \"severity\": \"warning\",\n      \"description\": \"The check-then-restore behavior exposes a potential interleaving between a successful ownership check and the actual clipboard write. Application serialization alone cannot exclude a concurrent external application copy.\",\n      \"suggestion\": \"Plan a platform clipboard seam for guarded restore, minimize the check/write critical interval, inject a copy during the restore operation, and use an early native spike to establish the actual platform guarantee. If the guarantee cannot be established, report the implementation gate explicitly instead of relying only on deterministic timer tests.\",\n      \"citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L172-L176\",\n          \"excerpt\": \"if the clipboard change counter equals the value recorded right after Handy's last write, Handy restores the saved content\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L177-L181\",\n          \"excerpt\": \"Handy leaves the clipboard untouched.\"\n        }\n      ]\n    },\n    {\n      \"category\": \"restore_fidelity\",\n      \"severity\": \"warning\",\n      \"description\": \"Saving every exposed representation and restoring rich or multi-type clipboard data is materially broader than saving either text or an image. The spec itself acknowledges that native fidelity is unverified.\",\n      \"suggestion\": \"Introduce a representation-preserving snapshot adapter and an early macOS/Windows/Linux capability matrix; gate restoration on a complete snapshot and verify byte/type fidelity natively for the promised exposed types. Keep unsupported or failed snapshot behavior explicit.\",\n      \"citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L172-L176\",\n          \"excerpt\": \"it saves every representation of the previous clipboard content that the platform exposes (at least text and image, as today).\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L289-L298\",\n          \"excerpt\": \"restore fidelity for rich multi-type content unverified\"\n        }\n      ]\n    },\n    {\n      \"category\": \"history_boundary\",\n      \"severity\": \"warning\",\n      \"description\": \"The recovery window never mutates history, while the crash edge and history scenario additionally assume that a history entry already exists. Those are different guarantees; this review does not certify transcript persistence for outputs that the existing history pipeline did not record.\",\n      \"suggestion\": \"Scope history tests to an already recorded entry, preserve the existing history save boundary, and document the WAV-save precondition from the producer context. Do not add unrelated unconditional history persistence as hidden scope.\",\n      \"citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L187-L191\",\n          \"excerpt\": \"The window never deletes or modifies history entries.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L309-L315\",\n          \"excerpt\": \"Handy crashes during the window: the transcript stays on the clipboard; history still holds it.\"\n        }\n      ]\n    },\n    {\n      \"category\": \"snapshot_failure_fallback\",\n      \"severity\": \"warning\",\n      \"description\": \"The explicit failed-snapshot exception prevents a recovery window and returns to existing behavior, which currently includes an unguarded short-delay restore in the legacy paste path. This is an exception to recovery availability and is not proof of clipboard safety in the old path.\",\n      \"suggestion\": \"Plan the failure branch and verify it creates no window, owns no long-lived timer and leaves no partial snapshot; retain and document the existing behavior exception without claiming new safety coverage for disabled or failed-snapshot legacy paths.\",\n      \"citations\": [\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L172-L176\",\n          \"excerpt\": \"If saving the previous content fails, no recovery window opens and the existing behavior applies.\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L278-L288\",\n          \"excerpt\": \"restores after `paste_delay_after_ms` (60 ms) without any change-counter check.\"\n        }\n      ]\n    },\n    {\n      \"category\": \"test_infrastructure\",\n      \"severity\": \"warning\",\n      \"description\": \"The observed testing strategy lists browser/keyboard commands but no Rust or native clipboard harness. It cannot on its own execute the P0 native manager, timing and fidelity evidence required by this feature.\",\n      \"suggestion\": \"Resolve cargo test commands and an injectable clock/clipboard service in the plan, separate fake-clipboard tests from manual native fidelity and history-manager checks, and report which commands are available versus actually executed.\",\n      \"citations\": [\n        {\n          \"section_id\": \".specs/testing/strategy.md:L7-L12\",\n          \"excerpt\": \"- `bun src/lib/utils/keyboard.test.ts`\\n- `playwright test`\\n- `playwright test --ui`\"\n        },\n        {\n          \"section_id\": \".specs/features/007-clipboard-recovery-window/spec.md:L289-L298\",\n          \"excerpt\": \"Timer and change-counter tests with a fake clipboard\"\n        }\n      ]\n    }\n  ],\n  \"confidence\": 4,\n  \"synthesized_batch_ids\": [],\n  \"resolutions\": []\n}"
+  ],
+  "synthesis": null,
+  "synthesis_transport_version": null
+}

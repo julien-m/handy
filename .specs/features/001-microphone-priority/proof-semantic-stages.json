@@ -1,0 +1,22 @@
+[
+  {
+    "argv": [
+      "livespec",
+      "goal",
+      "prove",
+      "--contract",
+      "/var/folders/l_/t1s_zytx2fqb0dkzz40d3v7m0000gn/T/livespec-goals/goal-spec-specify-5cd4c9d1.contract.json",
+      "--state",
+      "/var/folders/l_/t1s_zytx2fqb0dkzz40d3v7m0000gn/T/livespec-goals/goal-spec-specify-5cd4c9d1.state.json",
+      "--task",
+      "task.019.run_llm_spec_review_unless_no_review_retry_on_bl",
+      "--evidence",
+      "{\"convention_domains_recorded\": [\"code\"], \"convention_sources_read\": [\"$AIRESOURCES/code-conventions/general.md\", \"$AIRESOURCES/code-conventions/python.md\", \"$AIRESOURCES/code-conventions/javascript.md\", \"$AIRESOURCES/code-conventions/cli.md\", \"$AIRESOURCES/code-conventions/stack-commands.md\"], \"conventions_applied_to_output\": true, \"review_receipt_path\": \"/Users/julienm/projects/handy/.specs/features/001-microphone-priority/.reviews/spec.json\"}"
+    ],
+    "cwd": "/Users/julienm/projects/handy",
+    "timeout": 90,
+    "exit_code": 1,
+    "stdout": "{\n  \"task_id\": \"task.019.run_llm_spec_review_unless_no_review_retry_on_bl\",\n  \"status\": \"REJECTED_NEEDS_ACTION\",\n  \"accepted\": false,\n  \"missing_evidence\": [\n    \"review_receipt_incomplete_or_stale\"\n  ],\n  \"invalid_substitutes\": [],\n  \"required_actions\": [\n    \"Run the described task and capture concrete evidence before proving it.\",\n    \"If the task cannot run, emit a canonical BLOCKED line with the exact reason.\",\n    \"Read and apply conventions before retrying: domains=code; sources=$AIRESOURCES/code-conventions/general.md, $AIRESOURCES/code-conventions/python.md, $AIRESOURCES/code-conventions/javascript.md, $AIRESOURCES/code-conventions/cli.md, $AIRESOURCES/code-conventions/stack-commands.md.\"\n  ]\n}\n",
+    "stderr": ""
+  }
+]

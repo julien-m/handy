@@ -1,0 +1,9 @@
+:root {
+ --background: #FAFAF9;
+ --foreground: #1A1A1A;
+ --muted-foreground: #57534E;
+ --primary: #D97706;
+ --border: #D6D3D1;
+ --font-family: Inter;
+ --radius: 8px;
+}
