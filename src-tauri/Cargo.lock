@@ -2569,7 +2569,9 @@ dependencies = [
  "webview2-com",
  "whatlang",
  "windows 0.61.3",
+ "windows-sys 0.60.2",
  "winreg 0.55.0",
+ "zbus",
 ]
 
 [[package]]

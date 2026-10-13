@@ -5,6 +5,75 @@
 
 ---
 
+## 2026-10-13 — 008-settings-cli: Step 1 primitive gate Done; 22 tests pass, complete acceptance remains partial
+
+Root accepted scoped final review and audit dispositions: assertion RED101/GREEN22/0/0, actual Swift bridge, strict clippy/Cargo fmt0 and prior unchanged-frontend types/lint/format0. Audit exit0 reported0 blocker/2 major/7 minor/2 nit; pipe major corrected, FreeConsole false positive and remaining observations explicitly dispositioned. Step2 Todo; feature In Progress, no complete AC/SC certified. Inspect [final summary](features/008-settings-cli/proofs/current-run-step1/minimal-final2-summary.json), [scoped review](features/008-settings-cli/proofs/current-run-step1/minimal-final2-review.json) and [checkpoint](features/008-settings-cli/progress.md). Client authentication/reclamation remainStep5, full macOS settings/native proofStep7; foreign checks pending release evidence.
+
+## 2026-10-13 — 008-settings-cli: Bounded Unix mechanism refined; current-source proof pending
+
+- **Prerequisite:** Root-approved correction of actual process-mask finding and independent mechanism decision.
+- **Required inputs:** Current plan, kernel peer-UID/directory contract, informative OS references and exact restoration evidence.
+- **Action:** CurrentUID directory0700 and pinned guards plus both-side kernel UID before bytes replace socket-mode prescription; no umask/pathchmod/bootstrap permission framework. Step5 retains lease-proven reclamation.
+- **Execution evidence:** Native fd-fchmod EINVAL and pinned-open EOPNOTSUPP; own incomplete bootstrap hunks surgically restored, no successful compile/RED/PASS claim. Earlier tests remain historical snapshots.
+- **Success criteria:** FR/AC IDs, seven steps, business/release scope unchanged; Step1 In Progress, fresh implementation/tests/reviews/audit and official plan refresh pending.
+- **Failure handling:** Read [mechanism review](features/008-settings-cli/proofs/current-run-step1/minimal-channel-review.json) and [restoration](features/008-settings-cli/proofs/current-run-step1/bootstrap-surgical-restore.json). No Step2 or current-source certification before accepted gates.
+
+## 2026-10-13 — 008-settings-cli: Registry activity refreshed; socket failure-path retention recorded
+
+- **Prerequisite:** Renewed audit found stale Recent Activity; Step 1 source corrections remain In Progress.
+- **Required inputs:** Global changelog order, registry markers, socket ownership/failure and retention tests.
+- **Action:** Refresh latest ten entries newest first; preserve feature statuses/metadata. Retain socket failure paths fail-closed, avoiding same-UID check/unlink races; lease-proven reclamation belongs to Step 5.
+- **Execution evidence:** Documentary/source inspection only; prior 20/20 and quality PASS bind the earlier source snapshot. Fresh worker-source checks/review/audit are pending.
+- **Success criteria:** Current activity summary; no Step 1 Done, Step 2 start or certified AC.
+- **Failure handling:** Read [the ongoing correction disposition](features/008-settings-cli/implementation.md#ongoing-step-1-corrections-and-socket-failure-path-disposition) and [checkpoint](features/008-settings-cli/progress.md). Preserve existing history and foreign pending evidence; no endpoint-deletion shortcut or false fresh PASS.
+
+## 2026-10-13 — 008-settings-cli: Root corrects whole-AC step-block interpretation; Step 1 audit pending
+
+- **Prerequisite:** Root verified the actual Step Gate.
+- **Required inputs:** Scoped/transverse checks, independent reviews, checkpoint and renewed audit including untracked files.
+- **Action:** Step 1 In Progress, Steps 2–7 Todo; earlier report superseded, history preserved; root owns pipeline/spec metadata.
+- **Execution evidence:** Existing actual-bridge 20/20, clippy/types/lint/format exit 0, partial-scope source review PASS; whole-AC mapping complete but not ready, ingest exit 1, no capture attempted.
+- **Success criteria:** Renewed audit pending; no Step 1 Done or certified AC. Generic goal execution proof is aggregate after Step 7; final whole-AC certification remains mandatory.
+- **Failure handling:** Read [the authoritative checkpoint](features/008-settings-cli/progress.md) and [corrected historical report](tool-defects/2026-10-13-step-execution-proof-requires-whole-acceptance-criterion-bef.md). No runtime bug established, no criterion weakening, fabricated proof or Git history.
+
+## 2026-10-13 — 008-settings-cli: Superseded whole-AC step-block interpretation
+
+Historical only; read the later root correction and authoritative checkpoint. No runtime defect was established.
+
+- **Prerequisite:** Approved minimal Step 1 scope and native evidence policy.
+- **Required inputs:** Current source/tests, actual Swift bridge, independently reviewed mapping and trusted runtime.
+- **Action:** Preserve Step 1 changes and partial mappings; Steps 2–7 stay Todo, no Git history.
+- **Execution evidence:** 20 passed/0 failed/0 ignored; clippy/types/lint/format exit 0; partial-scope source review PASS; mapping ingest exit 1, complete=true/ready=false/errors=[] with AC-005 missing.
+- **Success criteria:** Local primitive checks pass; no AC/SC certified, no Step 1 Done. After-step audit NOT RUN.
+- **Failure handling:** Read [the tool granularity defect](tool-defects/2026-10-13-step-execution-proof-requires-whole-acceptance-criterion-bef.md) and [authoritative checkpoint](features/008-settings-cli/progress.md). Whole-AC gates remain valid; no fake coverage or criterion rewrite. Old audit failure is historical; foreign native checks remain pending release evidence.
+
+## 2026-10-13 — 008-settings-cli: Step 1 local parser/console tests 17/17; mandatory audit Blocked without verdict; Steps 2–7 Todo, all ACs uncertified
+
+Inspect [the current checkpoint](features/008-settings-cli/progress.md) for scope and pending release evidence.
+
+## 2026-10-13 — 008-settings-cli: private socket correction; implementation blocked by native execution runner
+
+Native primitive tests passed 13/13; complete CLI acceptance remains unimplemented. Read [the recorded LiveSpec defect](tool-defects/2026-10-13-cargo-runner-lacks-native-execution-certification.md).
+
+## 2026-10-13 — 008-settings-cli: Native primitives narrowed
+
+Local 10/10 pass; official typed capture blocked by tool. Read [the current checkpoint](features/008-settings-cli/progress.md).
+
+## 2026-10-13 — Plan validation: normalize partial implementation map frontmatter and AC heading; no mapping or code changes
+<!-- finalize:spec-plan:2026-10-13:1953f656 -->
+
+## 2026-10-13 — Plan refined: partial spike reuse, minimal passive legacy refusal without replay, simple Windows console compilation checks, macOS required and exact pending release evidence
+<!-- finalize:spec-plan:2026-10-13:ff08720c -->
+
+## 2026-10-13 — [Feature 008] - **Type:** Refactor
+<!-- finalize:spec-implement:2026-10-13:9b1995bc -->
+
+## 2026-10-13 — 008-settings-cli: partial isolated startup spike; native and conventions gates blocked
+<!-- finalize:spec-implement:2026-10-13:61bf0cb4 -->
+
+## 2026-10-13 — Settings CLI plan resumed; independent semantic review refreshed without rewriting canonical requirements
+<!-- finalize:spec-plan:2026-10-13:e428ba3d -->
+
 ## 2026-10-13 — [Feature 007] Smart paste plan rewritten from 2026-10-13 spec — 9 steps, 4 diagrams; AX-first and receipt-only restoration; native/design release gates
 <!-- finalize:spec-plan:2026-10-13:17322c07 -->
 

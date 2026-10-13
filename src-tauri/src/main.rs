@@ -1,8 +1,12 @@
-// Prevents additional console window on Windows in release, DO NOT REMOVE!!
-#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+// Settings/headless invocations keep inherited console handles in release too.
+#![cfg_attr(target_os = "windows", windows_subsystem = "console")]
 
 use clap::Parser;
 use handy_app_lib::CliArgs;
+
+#[cfg(target_os = "windows")]
+#[path = "settings_service/console_windows.rs"]
+mod console_windows;
 
 fn main() {
     #[cfg(target_os = "linux")]
@@ -31,5 +35,15 @@ fn main() {
     }
 
     let cli_args = CliArgs::parse();
+    // @spec FR-001: Keep CLI handles, detach GUI console — .specs/features/008-settings-cli/spec.md#fr-001
+    #[cfg(target_os = "windows")]
+    if cli_args.should_detach_console() {
+        if let Err(error) = console_windows::detach_console() {
+            // Startup must not continue with an unexpectedly attached GUI console.
+            // This diagnostic contains only the operation and OS error, never argv.
+            eprintln!("Handy GUI startup failed: {error}");
+            std::process::exit(1);
+        }
+    }
     handy_app_lib::run(cli_args)
 }

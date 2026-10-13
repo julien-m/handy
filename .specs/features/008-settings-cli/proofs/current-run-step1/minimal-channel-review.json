@@ -1,0 +1,96 @@
+{
+  "reviewer_model": "gpt-6.1-sol",
+  "scope": "Independent minimal Unix channel mechanism decision against AC-005 and audit2; no application edits or build claim",
+  "verdict": "CONDITIONALLY RECOMMENDED mechanism refinement; not feature PASS",
+  "decision": "Replace the plan-only socket-0600 mechanism with a current-UID canonical 0700 runtime directory, retained pathname/owner/inode checks, and enforced kernel peer-UID authentication in both directions before application bytes. Do not mutate process umask or chmod a socket pathname. Socket mode is diagnostic, not the portable authorization boundary.",
+  "functional_source": {
+    "path": ".specs/features/008-settings-cli/spec.md",
+    "criterion": "AC-005",
+    "excerpt": "local channel accessible only to that user",
+    "unchanged_scope": "Same-user local settings requests, no TCP listener or MCP; live/offline/deadline obligations remain unchanged."
+  },
+  "plan_change_required": {
+    "path": ".specs/features/008-settings-cli/plan.md",
+    "current_rule": "macOS owner-only runtime directory (0700), socket 0600; verify peer effective UID with getpeereid",
+    "bounded_change": "Revise only the Unix socket-mode mechanism and affected exact tests/proofs through the official plan review/progression protocol. Preserve directory owner/mode/inode and peer authentication obligations. No spec AC relaxation needed. A code-only change contradicting the reviewed 0600 plan is not authorized by this reviewer."
+  },
+  "primary_sources": [
+    {
+      "url": "https://man7.org/linux/man-pages/man7/unix.7.html",
+      "section": "Pathname socket ownership and permissions; SO_PEERCRED",
+      "excerpt": "Portable programs should not rely on this feature for security.",
+      "support": "Linux honors pathname-directory permissions. Socket-file permission effects are not specified by POSIX, so portable authorization must not depend on socket mode. SO_PEERCRED supplies kernel credentials for a connected local stream.",
+      "inference": "Directory restriction combined with mandatory peer authorization can replace the literal 0600 socket assertion without expanding the settings feature."
+    },
+    {
+      "url": "https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/connect.2.html",
+      "section": "UNIX-domain EACCES",
+      "excerpt": "Search permission is denied for a component of the path prefix.",
+      "support": "Darwin pathname connection enforces path traversal access.",
+      "limitation": "Archived Apple manual, not runtime evidence for this current OS."
+    },
+    {
+      "url": "https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man3/getpeereid.3.html",
+      "section": "Description",
+      "excerpt": "Likewise, the client can verify the credentials of the server.",
+      "support": "Darwin returns peer effective UID/GID established by connect/listen; both peers can authenticate their counterpart.",
+      "limitation": "The API does not authenticate an executable identity or an entire session; expected UID must be checked before application I/O."
+    },
+    {
+      "url": "https://developer.apple.com/library/archive/documentation/Security/Conceptual/AuthenticationAndAuthorizationGuide/Permissions/Permissions.html",
+      "section": "File System Security Policy",
+      "excerpt": "If an access control entry exists on the file, it is evaluated and used to determine access rights.",
+      "support": "macOS ACLs participate in access decisions before ordinary mode bits.",
+      "limitation": "A metadata mode of 0700 alone must not be claimed as exhaustive directory-access proof. Mandatory kernel peer-UID checks remain the data-access boundary even when ACLs permit connection attempts."
+    }
+  ],
+  "required_contract": [
+    "Use pathname AF_UNIX SOCK_STREAM beneath the existing canonical, current-euid-owned directory; retain 0700, no alias and pinned directory identity validation before/after bind and before accept/connect.",
+    "Create the socket without process-global umask changes or pathname chmod; retain socket type, owner, device/inode and single-link checks. Do not claim or test literal socket0600 as the portable security guarantee.",
+    "Authenticate accepted client UID before handing a usable stream to request parsing or response rendering; caller convention alone is insufficient. Authenticate the connected server UID before the CLI sends any operation or reads any settings response. Failure/UID mismatch closes/refuses, with no application bytes or mutation.",
+    "getpeereid on Darwin and checked SO_PEERCRED on Linux must be kernel-sourced; never trust a UID/PID supplied inside the protocol. Same UID is the AC authorization identity; binary-signature/process-census security is not requested by this mechanism.",
+    "Directory/socket revalidation rejects identity changes and hostile aliases, without chmod or deleting a substitute. Same-user directory renames/replacements may cause fail-closed unavailability; no atomic race-free pathname assertion is claimed.",
+    "Retain failed or closed socket path instead of a racy stat-then-unlink cleanup; Step5 must implement reviewed lease-proven reclamation/lifecycle so normal restart does not stay permanently unavailable. The legacy singleton path is never removed."
+  ],
+  "audit_dispositions": {
+    "process_umask_major": "Valid actual concurrency issue: module mutex does not guard unrelated threads. Removing umask entirely removes the need to prove a single-thread bootstrap lifecycle.",
+    "failed_bind_cleanup_major": "Retained path is a deliberate fail-closed result. Reject the proposed conditional stat/unlink guard as a race-free guarantee; another same-UID process can replace the pathname between check and unlink. Availability/reclamation remains an explicit Step5 obligation.",
+    "bootstrap_files": "The socket-permission motivation for thread-count/entrypoint/bootstrap permit modules disappears with this refinement. No twelve-file bootstrap framework is required for AC-005. Root/worker must identify and roll back only their owned incomplete changes, preserving unrelated tested modules; this review neither deletes files nor certifies a rollback."
+  },
+  "source_observed": {
+    "resources_path": "src-tauri/src/settings_service/platform_unix/resources.rs",
+    "resources_sha256": "e4ebf85a50d120c61e72d5f78f7ae01f1ec0694a215b8b20e97d0e3d55e53a83",
+    "resources_contract": "PrivateDirectory checks absolute/canonical path, no-follow open, directory type/current euid/0700, captured inode/device and revalidation.",
+    "last_tested_socket_sha256": "ad0320ade96edbeb2f9a48ec0b3aac3b529bdcd89c6cd158fabcc67153edad03",
+    "last_tested_socket_review_path": ".specs/features/008-settings-cli/proofs/current-run-step1/final-review.json",
+    "authentication_gap": "Last-tested accept() returned raw UnixStream; verify_peer() was a separate helper. Last tests established helper UID behavior, not enforced authentication before application I/O. Refinement requires an enforced accept/client boundary, not an annotation.",
+    "current_tree": "Observed incomplete SocketBootstrapPermit changes under HOLD. Not built, not reviewed as implemented, no current-tree PASS."
+  },
+  "native_experiments_observed": [
+    {
+      "path": ".specs/features/008-settings-cli/proofs/current-run-step1/native-socket-fchmod.stdout",
+      "result": "Darwin25.5 arm64 listener-fd fchmod0600 returned EINVAL; pathname mode stayed0755; inode unchanged. No Linux or production claim."
+    },
+    {
+      "path": ".specs/features/008-settings-cli/proofs/current-run-step1/native-socket-pinned-fchmod.stdout",
+      "result": "Darwin25.5 arm64 O_EVTONLY/no-follow open of socket pathname returned EOPNOTSUPP; no pinned-fd permission mechanism established."
+    }
+  ],
+  "required_macos_new_evidence": [
+    "After rollback/refinement, fresh real-Apple-Intelligence Cargo target builds/tests and current source hash receipts; previous anchor-test20/20 is historical only.",
+    "Native private-directory0700/currentUID proof, real pathname socket connect/accept, both-side getpeereid expected UID and injected wrong-UID rejection before any application bytes/store changes.",
+    "No global umask/chmod operation in the channel source; multithreaded bind fixture plus unrelated file creation keeps preexisting permission behavior; tests do not inspect umask by changing process state in parallel.",
+    "Hostile directory, symlink, socket and regular-file replacement tests retain substitute bytes/mode/inode and refuse; failed bind retains pathname and no legacy callback/deletion.",
+    "Full settings new-app/macOS latency/window/tray/model/live-effects evidence remains Step7. No partial primitive test certifies AC-005."
+  ],
+  "pending_release_evidence": [
+    "Windows native protected-logon pipe peer token/ACL, remote rejection and console interactive/piped/redirected behavior; source/macOS tests cannot pass these.",
+    "Linux native X11/Wayland DBus/pathname routing and SO_PEERCRED authentication before bytes, directory restriction and cross-session ownership uncertainty.",
+    "Real second-user/session attempt against isolated endpoint: denied/unavailable, no application data/secret response, no store/revision change; injected UID mismatch is not a real foreign-account test.",
+    "Real older Handy instance: unavailable with no activation/callback/store change. No replay or compatibility listener."
+  ],
+  "certified_acs": [],
+  "feature_pass": false,
+  "tests_run_by_reviewer": false,
+  "application_source_modified_by_reviewer": false
+}

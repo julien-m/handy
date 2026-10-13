@@ -2,9 +2,9 @@
 feature: settings-cli
 title: Settings CLI
 priority: P1
-status: Planned
+status: In Progress
 created: 2026-10-12
-updated: 2026-10-12
+updated: 2026-10-13
 ---
 
 # Feature Spec: Settings CLI
@@ -12,9 +12,9 @@ updated: 2026-10-12
 ## Header
 
 - **Feature:** Settings CLI
-- **Branch:** None — specification only (program specified before `spec-ship`)
+- **Branch:** `feature/008-settings-cli`
 - **Date:** 2026-10-12
-- **Status:** Planned
+- **Status:** In Progress
 - **Input:** Program item 8: the CLI must be available from the first version of these changes, even though it is eighth in the list. It reads and modifies persistent settings: microphones, shortcuts, vocabulary, prompts, destination/PIN and output behaviors. It also manages bulk replacements: add, edit, delete, import and export. Share validation with the graphical interface and offer JSON outputs usable by agents. The current recording-control flags are not this configuration CLI. The CLI was chosen; no MCP development is requested. Program guidance: prepare the CLI foundation before delivering the first features.
 - **Feature Number:** 008
 

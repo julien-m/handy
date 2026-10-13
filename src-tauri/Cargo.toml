@@ -105,6 +105,7 @@ tauri-plugin-single-instance = "2.3.2"
 tauri-plugin-updater = "2.10.1"
 
 [target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.60.2", features = ["Win32_Foundation", "Win32_Security", "Win32_Security_Authorization", "Win32_System_Threading", "Win32_System_Pipes", "Win32_Storage_FileSystem", "Win32_System_Console", "Win32_System_IO", "Win32_UI_WindowsAndMessaging"] }
 # Used to reach ICoreWebView2Settings3 through the webview's controller
 # (disabling browser accelerator keys in the main window). Must match the
 # version wry links against so the COM types are identical.
@@ -165,6 +166,7 @@ objc2-app-kit = "0.3"
 objc2-service-management = "0.3.2"
 
 [target.'cfg(target_os = "linux")'.dependencies]
+zbus = { version = "5", features = ["blocking-api"] }
 gtk-layer-shell = { version = "0.8", features = ["v0_6"] }
 gtk = "0.18"
 transcribe-cpp = { version = "0.3.1", default-features = false, features = [

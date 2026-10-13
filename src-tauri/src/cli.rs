@@ -1,3 +1,5 @@
+//! Parse Handy startup, recording-control and headless transcription arguments.
+
 use clap::Parser;
 use std::path::PathBuf;
 
@@ -60,4 +62,12 @@ pub struct CliArgs {
     /// Emit --transcribe-file results as JSON.
     #[arg(long)]
     pub json: bool,
+}
+
+impl CliArgs {
+    /// Return whether the GUI startup path may detach its inherited Windows console.
+    // @spec FR-001: Preserve headless console output — .specs/features/008-settings-cli/spec.md#fr-001
+    pub fn should_detach_console(&self) -> bool {
+        self.transcribe_file.is_none() && !self.list_devices && !self.list_models
+    }
 }

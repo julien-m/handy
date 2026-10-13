@@ -41,7 +41,7 @@
 | 005 | Custom AI Prompts | Planned | 2026-10-12 | 2026-10-12 | [spec](features/005-custom-ai-prompts/spec.md) |
 | 006 | Destination Application | Planned | 2026-10-12 | 2026-10-13 | [spec](features/006-destination-application/spec.md) |
 | 007 | Smart Paste | Planned | 2026-10-12 | 2026-10-13 | [spec](features/007-smart-paste/spec.md) |
-| 008 | Settings CLI | Planned | 2026-10-12 | 2026-10-12 | [spec](features/008-settings-cli/spec.md) |
+| 008 | Settings CLI | In Progress | 2026-10-12 | 2026-10-13 | [spec](features/008-settings-cli/spec.md) |
 | 009 | PIN Mode and Enter Rule | Planned | 2026-10-12 | 2026-10-13 | [spec](features/009-pin-mode-and-enter-rule/spec.md) |
 | 010 | Recovery Bubble | Planned | 2026-10-12 | 2026-10-13 | [spec](features/010-recovery-bubble/spec.md) |
 <!-- readme:features:end -->
@@ -68,16 +68,16 @@
 <!-- readme:activity:start -->
 | Date | Type | Description |
 |---|---|---|
-| 2026-10-13 | Feature | [Feature 007] Smart paste plan rewritten from 2026-10-13 spec — 9 steps, 4 diagrams; AX-first and receipt-only restoration; native/design release gates |
-| 2026-10-13 | Feature | [Feature 010] Plan refined: current 007 AX/readback contract and explicit AC-006 native acceptance |
-| 2026-10-13 | Feature | [Feature 009] Plan refined: verified AX success for Enter, uncertain suppression, LAST-read restoration and current-only destination cross — plan only |
-| 2026-10-13 | Feature | [Feature 006] Plan refined: one-click destination removal, eight smart-paste outcomes and owner-bound restoration tests |
-| 2026-10-13 | Feature | [Feature 010] Plan refined: uncertain recovery, direct AX verified handoff, read-confirmed last-read restoration and Copy guard |
-| 2026-10-12 | Feature | Plan refined: Recovery Bubble — smart paste outcomes and deliberate Copy/changeCount guard replace retired clipboard-window integration; Windows reliable paste retained |
-| 2026-10-12 | Feature | [Feature 009] Plan refined: align Enter with smart paste outcomes, shared output smart_paste configuration and changeCount restoration guard; preserve Windows reliable paste |
-| 2026-10-12 | Feature | Smart Paste — 9 implementation steps, 4 diagrams, 008 output domain, bounded snapshots and truthful outcomes |
-| 2026-10-12 | Feature | [Feature 006] Plan refined: smart-paste terminal results replace retired clipboard-window integration; Windows reliable paste preserved |
-| 2026-10-12 | Feature | [Feature 008] Plan refined: replace retired clipboard-window dependencies with smart paste integration; preserve transactional service and domain framework. |
+| 2026-10-13 | Feature | 008-settings-cli: Step 1 primitive gate Done; 22 tests pass, complete acceptance remains partial |
+| 2026-10-13 | Feature | 008-settings-cli: Bounded Unix mechanism refined; current-source proof pending |
+| 2026-10-13 | Feature | 008-settings-cli: Registry activity refreshed; socket failure-path retention recorded |
+| 2026-10-13 | Feature | 008-settings-cli: Root corrects whole-AC step-block interpretation; Step 1 audit pending |
+| 2026-10-13 | Feature | 008-settings-cli: Superseded whole-AC step-block interpretation |
+| 2026-10-13 | Feature | 008-settings-cli: Step 1 local parser/console tests 17/17; mandatory audit Blocked without verdict; Steps 2–7 Todo, all ACs uncertified |
+| 2026-10-13 | Feature | 008-settings-cli: private socket correction; implementation blocked by native execution runner |
+| 2026-10-13 | Feature | 008-settings-cli: Native primitives narrowed |
+| 2026-10-13 | Feature | Plan validation: normalize partial implementation map frontmatter and AC heading; no mapping or code changes |
+| 2026-10-13 | Feature | Plan refined: partial spike reuse, minimal passive legacy refusal without replay, simple Windows console compilation checks, macOS required and exact pending release evidence |
 <!-- readme:activity:end -->
 
 ---
@@ -151,3 +151,13 @@
 <!-- finalize:spec-plan:2026-10-13:09d4dd98 -->
 
 <!-- finalize:spec-plan:2026-10-13:17322c07 -->
+
+<!-- finalize:spec-plan:2026-10-13:e428ba3d -->
+
+<!-- finalize:spec-implement:2026-10-13:61bf0cb4 -->
+
+<!-- finalize:spec-implement:2026-10-13:9b1995bc -->
+
+<!-- finalize:spec-plan:2026-10-13:ff08720c -->
+
+<!-- finalize:spec-plan:2026-10-13:1953f656 -->
