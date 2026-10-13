@@ -29,6 +29,10 @@
 
 `## Quality Engineering` added from the existing QE Analysis: criticality High, blast radius Shared, primary risk Data; `livespec delivery lane` reads it (full). No AC, FR or SC changed; the spec review is stale until an independent reviewer refreshes it.
 
+## 2026-10-13 — 008-settings-cli: final delivery review correction round 1 Done
+
+Both blocking findings fixed (Windows offline write under decision 008; endpoint thread without busy loop) with the audit and review warnings of the same area: bounded endpoint close and republication, Windows pipe instances and deadlines, GUI subsystem with terminal attachment, requests refused before sending when too large, routed VAD/channel writes prepared like the UI, stdin tests, docs. Full `cargo test` 490 passed/0 failed/18 ignored; conventions PASS/new 0. Next: a fresh independent delivery review. Inspect [the checkpoint](features/008-settings-cli/progress.md#current-delivery-review-checkpoint--correction-round-1).
+
 ## 2026-10-13 — 008-settings-cli: Step 7 macOS native proof (debug build) Done; release evidence pending
 
 Native harness (macOS 26.5.2, M4 Pro, debug proof binary, isolated HOME): 18/18 checks — older Handy refusal, offline/live reads and writes, start-hidden without Dock icon, routed live effect, no app registration by the CLI, endpoint reclamation, read-only startup. Full `cargo test` 474 passed/0 failed/17 ignored. Pending: M1 release latency, settings window refresh and shortcut re-registration (human), Windows/Linux/second account. Feature not Implemented. Inspect [the checkpoint](features/008-settings-cli/progress.md#current-step-7-checkpoint--macos-native-proof-debug-build).

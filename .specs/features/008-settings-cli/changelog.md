@@ -331,3 +331,15 @@ Inspect [the Step 6 checkpoint](progress.md#current-step-6-checkpoint--domain-fr
 - **Execution evidence:** harness 18/18 checks, full suite 474 passed/0 failed/17 ignored, all gates exit 0, conventions PASS/new 0. Pending release evidence: M1 release latency, settings window refresh and shortcut re-registration (human), normal-quit endpoint removal, Windows/Linux/second account.
 
 Inspect [the Step 7 checkpoint](progress.md#current-step-7-checkpoint--macos-native-proof-debug-build).
+
+## 2026-10-13 — Fix: final delivery review, correction round 1
+
+- **Type:** Fix
+- **Spec modified:** No (the plan's Windows console-subsystem decision is superseded by the GUI subsystem plus `AttachConsole`, recorded in implementation.md and progress.md).
+- **Code modified:** settings_service/{instance_probe, platform_windows, endpoint_windows, endpoint_unix, ipc, ipc_tests, route, sequence, sequence_tests, sequence_race_tests, tauri_adapter, console_windows, input, mod, platform_unix, platform_unix/socket, platform_unix/tests, domains/fixture_tests}.rs; new ipc_server.rs, ipc_server_tests.rs, pipe_server_windows.rs, native_changes.rs, sequence_parity_tests.rs, domains/fixture_stdin_tests.rs; main.rs, lib.rs (doc comments), shortcut/mod.rs, commands/audio.rs; tests settings_platform/{windows, unix, cli_console}.rs; README.md, AGENTS.md.
+- **AC impacted:** AC-001, AC-003, AC-005, AC-006, AC-008 (partial; no AC certified).
+- **Author:** Claude Code (implementation agent, orchestrator-supervised)
+- **Action:** Windows offline write under decision 008; endpoint thread without busy loop, with a bounded close and republication of a lost name; Windows pipe server with several instances and I/O deadlines; GUI subsystem restored with terminal attachment for command-line runs; oversized requests refused before sending; routed VAD/channel writes prepared like the UI; stdin tests; stale docs fixed; follow-ups recorded.
+- **Execution evidence:** RED parity on the previous routed path; full `cargo test` 490 passed/0 failed/18 ignored; strict clippy, fmt, lint, format check, tsc exit 0; Windows compile harness and clippy exit 0; conventions PASS/new 0. Commit `853bfeb`.
+
+Inspect [the round 1 checkpoint](progress.md#current-delivery-review-checkpoint--correction-round-1) and [the dispositions](implementation.md#delivery-review-correction-round-1).
