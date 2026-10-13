@@ -130,3 +130,12 @@ AppKit caching and delayed AX mutation counterexamples remain explicit: callback
 - **AC impacted:** AC-014, AC-015 (still waiting for 008: migration, default, CLI domain, validation, UI)
 - **Author:** Claude Opus 5.5 (implementation agent, orchestrated run)
 - **Notes:** The value is not a default and cannot be selected from the UI yet; the pipeline refuses it explicitly instead of falling back to the classic fixed-delay paste. Progress and implementation maps list what waits for 006 and 008 and the exact pending release checks.
+
+## 2026-10-13 — Bugfix: step-1 native test drains the Bun pipes
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** src-tauri/tests/smart_paste_native.rs
+- **AC impacted:** None (evidence harness only)
+- **Author:** Claude Opus 5.5 (implementation agent, orchestrated run)
+- **Notes:** The opt-in AppKit test polled Bun without reading its stdout/stderr; Bun busy-loops when a pipe fills, so the test hit its 120 s deadline. Both pipes are now drained concurrently; the AppKit receipt was regenerated.

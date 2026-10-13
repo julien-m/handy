@@ -78,6 +78,8 @@ Never claimed passed. Each check runs on a release build of Handy.app with acces
 
 Raw command outputs for every checkpoint are kept under [proofs/claude](proofs/claude/) as `<step>-<gate>.{out,err,exit}`.
 
+- Final (HEAD after all steps): full `cargo test` 319 lib + 86 smart paste integration tests, 0 failed ([stdout](proofs/claude/final-cargo-test.out)); the four opt-in native targets PASS ([AppKit](proofs/claude/final-smart_paste_native.out), [AX](proofs/claude/final-smart_paste_native_ax.out), [pasteboard](proofs/claude/final-smart_paste_native_pasteboard.out), [keyboard](proofs/claude/final-smart_paste_native_keyboard.out)); clippy `--all-targets` 5 pre-existing warnings, 0 new; fmt, lint, format and repo conventions PASS. The step-1 AppKit test first timed out ([failed rerun](proofs/claude/final-smart_paste_native-rerun.err)): it never drained Bun's pipes and Bun spins on a full pipe; it now drains both while waiting, and [the AppKit receipt](evidence/native-spike.json) was regenerated.
+
 - Settings value: `--lib settings` 27/0 (2 new) within the full suite ([stdout](proofs/claude/settings-cargo-test.out)), `tsc --noEmit` exit 0; clippy unchanged; fmt, lint, format and conventions PASS.
 - Step 5: `--test smart_paste` 86/0 including real-time actor and log-privacy tests ([stdout](proofs/claude/step-5-cargo-test.out)); clippy unchanged; fmt, lint, format and conventions PASS.
 - Step 6: `--test smart_paste` 50/0 and the read-only native keyboard check ([stdout](proofs/claude/step-6-native-keyboard.out)); clippy unchanged; fmt, lint, format and conventions PASS.
