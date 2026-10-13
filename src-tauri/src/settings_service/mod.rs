@@ -18,6 +18,7 @@ pub mod input;
 pub mod ipc;
 pub mod live;
 pub mod locator;
+mod native_changes;
 mod normalization;
 pub mod operations;
 pub mod ownership;

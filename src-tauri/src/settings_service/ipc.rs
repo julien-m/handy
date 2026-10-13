@@ -2,9 +2,9 @@
 //! length-prefixed frames bounded to 1 MiB, peers authenticated by the platform endpoint before
 //! any application byte, and a total 5 s deadline after which the outcome is unknown.
 #[cfg(unix)]
-use super::endpoint_unix::{Endpoint, Listener};
+use super::endpoint_unix::Endpoint;
 #[cfg(windows)]
-use super::endpoint_windows::{Endpoint, Listener};
+use super::endpoint_windows::Endpoint;
 use super::{
     errors::{SettingsError, SettingsErrorCode},
     operations::{execute, Reply, SettingsBackend},
@@ -15,8 +15,12 @@ use serde_json::Value;
 use sha2::{Digest, Sha256};
 use std::io::{self, Read, Write};
 use std::path::Path;
-use std::sync::{atomic::AtomicBool, atomic::Ordering, mpsc, Arc};
+use std::sync::mpsc;
 use std::time::{Duration, Instant};
+
+#[path = "ipc_server.rs"]
+mod server;
+pub use server::{serve, EndpointHandle};
 
 /// Total answer deadline of the specification, including lock, persistence and transport waits.
 pub const DEADLINE: Duration = Duration::from_secs(5);
@@ -36,6 +40,43 @@ pub(crate) enum Connection {
     NotListening,
     /// Something answered but failed authentication or privacy checks: never write to it.
     Refused,
+}
+/// What one bounded wait on the listener produced.
+pub(crate) enum Incoming {
+    /// An authenticated peer, ready for one request.
+    Peer(Box<dyn Duplex>),
+    /// A peer failed authentication and was closed before any byte.
+    Refused,
+    /// Nobody connected during the wait.
+    Idle,
+}
+/// Serving side of a published endpoint: the platform listener, or a test double.
+pub(crate) trait Accept: Send {
+    /// Wait at most `wait` for one connection.
+    ///
+    /// # Errors
+    /// The listener, or the name it published, failed; the server backs off before retrying.
+    fn accept(&mut self, wait: Duration) -> io::Result<Incoming>;
+    /// False once the published name no longer belongs to this listener (removed or replaced).
+    fn published(&self) -> bool;
+    /// Stop listening and remove the name while it is still this listener's.
+    ///
+    /// # Errors
+    /// The name was already gone or replaced; nothing else is removed.
+    fn close(self: Box<Self>) -> io::Result<()>;
+}
+/// Publishes the endpoint's listener, again when a published name was lost.
+pub(crate) trait Publish: Send + Sync {
+    /// Publish a new listener under the endpoint lease.
+    ///
+    /// # Errors
+    /// The runtime directory, the lease or the name cannot be taken.
+    fn publish(&self) -> io::Result<Box<dyn Accept>>;
+}
+/// A request serialized within the frame bound, with the id its reply must carry.
+pub(crate) struct EncodedRequest {
+    request_id: String,
+    frame: Vec<u8>,
 }
 /// Instance answer: the envelope, with the request it answers.
 #[derive(Serialize, Deserialize)]
@@ -91,17 +132,33 @@ pub fn endpoint_path(store: &Path) -> Result<std::path::PathBuf, SettingsError> 
     Ok(endpoint(&store_identity(store)?)?.path())
 }
 
-/// Send one request and wait until `deadline`. Once bytes may have left, every failure (timeout,
-/// broken or malformed reply) is `unavailable` with outcome `unknown`: no fallback, no replay.
+/// Serialize `request` before any connection, so an oversized one is refused while nothing has
+/// been sent (never an unknown outcome).
+///
+/// # Errors
+/// `limit_exceeded` when the request, input escaped and wrapped, exceeds `MAX_FRAME_BYTES`;
+/// `internal_error` if it cannot be serialized.
+pub(crate) fn encode(request: &OperationRequest) -> Result<EncodedRequest, SettingsError> {
+    let frame = serde_json::to_vec(request)
+        .map_err(|_| SettingsError::new(SettingsErrorCode::InternalError))?;
+    if frame.len() > MAX_FRAME_BYTES {
+        return Err(SettingsError::new(SettingsErrorCode::LimitExceeded));
+    }
+    Ok(EncodedRequest {
+        request_id: request.request_id.clone(),
+        frame,
+    })
+}
+/// Send one encoded request and wait until `deadline`. Once bytes may have left, every failure
+/// (timeout, broken or malformed reply) is `unavailable` with outcome `unknown`: no fallback, no
+/// replay.
 pub(crate) fn exchange(
     mut stream: Box<dyn Duplex>,
-    request: &OperationRequest,
+    request: &EncodedRequest,
     deadline: Instant,
 ) -> Reply {
-    let Ok(frame) = serde_json::to_vec(request) else {
-        return Reply::failure(SettingsError::new(SettingsErrorCode::InternalError));
-    };
     let (sender, receiver) = mpsc::channel();
+    let frame = request.frame.clone();
     // The worker owns the stream; after the deadline it is abandoned with this process.
     std::thread::spawn(move || {
         let answer = write_frame(&mut stream, &frame).and_then(|()| read_frame(&mut stream));
@@ -154,65 +211,6 @@ pub(crate) fn read_frame(stream: &mut impl Read) -> io::Result<Vec<u8>> {
     Ok(frame)
 }
 
-/// Published endpoint of a running instance; `close` removes it.
-pub struct EndpointHandle {
-    stop: Arc<AtomicBool>,
-    endpoint: Endpoint,
-    worker: Option<std::thread::JoinHandle<()>>,
-}
-/// Publish the endpoint of `store` and answer each authenticated connection with `backend`.
-///
-/// # Errors
-/// `unavailable` when the endpoint cannot be published (for example a live foreign listener).
-// @spec FR-004: Authenticated live routing endpoint — .specs/features/008-settings-cli/spec.md#fr-004
-pub fn serve(
-    store: &Path,
-    backend: Arc<dyn SettingsBackend + Send + Sync>,
-) -> Result<EndpointHandle, SettingsError> {
-    let identity = store_identity(store)?;
-    let endpoint = endpoint(&identity)?;
-    let listener = endpoint.listen().map_err(|_| unavailable())?;
-    let stop = Arc::new(AtomicBool::new(false));
-    let flag = Arc::clone(&stop);
-    let worker = std::thread::spawn(move || accept_loop(listener, &flag, &identity, &backend));
-    Ok(EndpointHandle {
-        stop,
-        endpoint,
-        worker: Some(worker),
-    })
-}
-impl EndpointHandle {
-    /// Stop accepting, then remove the endpoint name while its lease is still held.
-    pub fn close(mut self) {
-        self.stop.store(true, Ordering::SeqCst);
-        // Wake the blocking accept; the loop sees the flag and closes the listener.
-        drop(self.endpoint.connect());
-        if let Some(worker) = self.worker.take() {
-            let _ = worker.join();
-        }
-    }
-}
-fn accept_loop(
-    listener: Listener,
-    stop: &AtomicBool,
-    identity: &str,
-    backend: &Arc<dyn SettingsBackend + Send + Sync>,
-) {
-    while !stop.load(Ordering::SeqCst) {
-        // Refused peers and transient accept errors only skip that connection.
-        let Ok(stream) = listener.accept() else {
-            continue;
-        };
-        if stop.load(Ordering::SeqCst) {
-            break;
-        }
-        let (identity, backend) = (identity.to_owned(), Arc::clone(backend));
-        std::thread::spawn(move || answer_connection(stream, &identity, backend.as_ref()));
-    }
-    if let Err(error) = listener.close() {
-        log::warn!("Settings CLI endpoint could not be removed: {error}");
-    }
-}
 /// Read one request, answer it, close. Malformed input gets a fixed error, never an echo.
 pub(crate) fn answer_connection(
     mut stream: Box<dyn Duplex>,

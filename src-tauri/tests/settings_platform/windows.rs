@@ -23,12 +23,37 @@ fn uncertainty_does_not_authorize_offline_operation() {
 }
 
 #[test]
-fn session_negative_cannot_prove_other_sessions_absent() {
+fn session_negative_alone_cannot_prove_other_sessions_absent() {
     use instance_probe::{classify_owner, LegacyState, ProbeScope};
     assert_eq!(
         classify_owner(Ok(false), ProbeScope::CurrentSession),
         LegacyState::Uncertain
     );
+}
+
+/// Decision 008 on Windows: without the old plugin's mutex and window, the 008 instance lease is
+/// the authority, so the offline write is allowed; any found resource is an older Handy and a
+/// probe error stays refused.
+#[test]
+fn windows_missing_mutex_and_window_is_absence_and_probe_errors_stay_refused() {
+    use instance_probe::{classify_windows_legacy, LegacyState, MutexObservation};
+    let failure = || MutexObservation::Failed(std::io::Error::from_raw_os_error(5));
+    let cases = [
+        (MutexObservation::NotFound, false, LegacyState::Absent),
+        (MutexObservation::NotFound, true, LegacyState::Occupied),
+        (MutexObservation::Open, false, LegacyState::Occupied),
+        (MutexObservation::Open, true, LegacyState::Occupied),
+        (failure(), true, LegacyState::Occupied),
+        (failure(), false, LegacyState::Unavailable),
+    ];
+    for (mutex, window_found, expected) in cases {
+        let label = format!("{mutex:?} window={window_found}");
+        assert_eq!(
+            classify_windows_legacy(mutex, window_found),
+            expected,
+            "{label}"
+        );
+    }
 }
 
 /// Linux decision 008: the session bus only detects an older Handy; the instance lease is the

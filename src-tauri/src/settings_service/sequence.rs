@@ -145,8 +145,8 @@ pub(crate) fn write_edit(
         commit_and_apply(live, port, &SettingsEdit::Apply(edit), None)
     })
 }
-/// Scalar write whose fallible native change is prepared from the current settings before the
-/// commit (skipped for a no-op), then compensated if the commit is refused.
+/// Settings-UI scalar write whose fallible native change is prepared from the current settings
+/// before the commit (skipped for a no-op), then compensated if the commit is refused.
 ///
 /// # Errors
 /// The preparation's refusal (nothing committed), otherwise same as `write_value`.
@@ -159,35 +159,60 @@ pub(crate) fn write_prepared(
 ) -> Result<LiveCommit, SettingsError> {
     ordered(live, port, || {
         let mutation = live.validate_ui_value(key, value)?;
-        let before = live.settings();
-        let edit = SettingsEdit::Scalar(mutation);
-        if !changes_key(&before, &edit, key)? {
-            return commit_and_apply(live, port, &edit, None);
-        }
-        (native.prepare)(&before)?;
-        commit_prepared(live, port, key, &edit, &before, || {
-            (native.compensate)(&before)
-        })
+        prepare_and_commit(live, port, mutation, None, native)
     })
 }
-/// Native preparation from the settings published when the ordered write started.
-pub(crate) type Prepare<'a> = Box<dyn FnOnce(&AppSettings) -> Result<(), SettingsError> + 'a>;
+/// CLI scalar routed to the instance for a key the settings UI prepares: the same preparation,
+/// refusal and compensation as `write_prepared`, so both reach the same decision.
+///
+/// # Errors
+/// Same as `write_prepared`, plus `revision_conflict` (checked before any native change).
+pub(crate) fn write_scalar_prepared(
+    live: &LiveSettings,
+    port: &dyn LiveEffectsPort,
+    mutation: SettingsMutation,
+    expected: Option<Revision>,
+    native: PreparedChange<'_>,
+) -> Result<LiveCommit, SettingsError> {
+    ordered(live, port, || {
+        prepare_and_commit(live, port, mutation, expected, native)
+    })
+}
+/// Prepare the native change of `mutation` from the current settings toward its candidate, then
+/// commit it; a no-op skips the preparation and a stale `expected` revision prepares nothing.
+fn prepare_and_commit(
+    live: &LiveSettings,
+    port: &dyn LiveEffectsPort,
+    mutation: SettingsMutation,
+    expected: Option<Revision>,
+    native: PreparedChange<'_>,
+) -> Result<LiveCommit, SettingsError> {
+    let key = mutation.key();
+    let before = live.settings();
+    let edit = SettingsEdit::Scalar(mutation);
+    let candidate = super::edit::edited_settings(&before, &edit)?;
+    if !key_differs(&before, &candidate, key) {
+        return commit_and_apply(live, port, &edit, expected);
+    }
+    let current = live.snapshot().revision;
+    if expected.is_some_and(|expected| expected != current) {
+        return Err(SettingsError::revision_conflict(current));
+    }
+    (native.prepare)(&before, &candidate)?;
+    commit_prepared_at(live, port, key, &edit, &before, expected, || {
+        (native.compensate)(&before)
+    })
+}
+/// Native preparation from the settings published when the ordered write started (first) toward
+/// the requested settings (second).
+pub(crate) type Prepare<'a> =
+    Box<dyn FnOnce(&AppSettings, &AppSettings) -> Result<(), SettingsError> + 'a>;
 /// Undo of a preparation, from the same settings.
 pub(crate) type Compensate<'a> = Box<dyn FnOnce(&AppSettings) + 'a>;
 /// A reversible native change: applied before the commit, undone if the commit is refused.
 pub(crate) struct PreparedChange<'a> {
     pub prepare: Prepare<'a>,
     pub compensate: Compensate<'a>,
-}
-/// True when `edit` would change `key` of `settings` (the edit is pure, so it may be evaluated
-/// here and again under the transaction lock).
-fn changes_key(
-    settings: &AppSettings,
-    edit: &SettingsEdit<'_>,
-    key: &str,
-) -> Result<bool, SettingsError> {
-    let candidate = super::edit::edited_settings(settings, edit)?;
-    Ok(key_differs(settings, &candidate, key))
 }
 fn key_differs(before: &AppSettings, after: &AppSettings, key: &str) -> bool {
     let value = |settings: &AppSettings| {
@@ -227,7 +252,19 @@ pub(crate) fn commit_prepared(
     before: &AppSettings,
     compensate: impl FnOnce(),
 ) -> Result<LiveCommit, SettingsError> {
-    match live.commit(edit, None) {
+    commit_prepared_at(live, port, key, edit, before, None, compensate)
+}
+/// `commit_prepared` with the compare-and-set revision of a routed CLI write.
+fn commit_prepared_at(
+    live: &LiveSettings,
+    port: &dyn LiveEffectsPort,
+    key: &'static str,
+    edit: &SettingsEdit<'_>,
+    before: &AppSettings,
+    expected: Option<Revision>,
+    compensate: impl FnOnce(),
+) -> Result<LiveCommit, SettingsError> {
+    match live.commit(edit, expected) {
         Ok(commit) => finish(live, port, &commit, &[key]).map(|()| commit),
         Err(error) => {
             // Business rule: the store is authoritative. Without an unknown outcome nothing was

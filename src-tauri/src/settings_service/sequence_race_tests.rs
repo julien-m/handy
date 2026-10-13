@@ -60,8 +60,8 @@ fn concurrent_prepared_writes_of_one_key_leave_native_state_equal_to_disk() -> T
         |gate| {
             let mut change = mirrored(&port, "selected_channel", json!(1));
             let prepare = change.prepare;
-            change.prepare = Box::new(move |before| {
-                prepare(before)?;
+            change.prepare = Box::new(move |before, requested| {
+                prepare(before, requested)?;
                 gate.pause();
                 Ok(())
             });

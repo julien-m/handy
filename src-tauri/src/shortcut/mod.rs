@@ -1101,37 +1101,17 @@ pub async fn change_vad_enabled_setting(app: AppHandle, enabled: UiValue<bool>) 
 }
 
 /// Swap the VAD detector (and reopen the microphone when needed) before committing, off the
-/// webview thread; a refused commit restores the backend published when the write started.
+/// webview thread; a refused commit restores the backend published when the write started. The
+/// preparation is shared with routed CLI writes (`settings_service::native_changes`).
 #[tauri::command]
 #[specta::specta]
 pub async fn change_vad_backend_setting(
     app: AppHandle,
     backend: UiValue<VadBackend>,
 ) -> SettingsResult {
-    let manager = app
-        .state::<std::sync::Arc<crate::managers::audio::AudioRecordingManager>>()
-        .inner()
-        .clone();
     let backend = backend.into_json();
     live_settings::blocking(move || {
-        // Prepared only after the shared validator accepted the raw value, so it parses.
-        let requested = serde_json::from_value::<VadBackend>(backend.clone());
-        live_settings::set_prepared(
-            &app,
-            "vad_backend",
-            backend,
-            |_| {
-                manager
-                    .update_vad_backend(requested.map_err(|e| e.to_string())?)
-                    .map_err(|e| e.to_string())
-            },
-            |before| {
-                if let Err(error) = manager.update_vad_backend(before.vad_backend) {
-                    error!("Failed to restore the previous VAD backend: {}", error);
-                }
-            },
-        )
-        .map(|_| ())
+        live_settings::set_prepared(&app, "vad_backend", backend).map(|_| ())
     })
     .await
 }

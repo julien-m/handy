@@ -173,6 +173,65 @@ fn detach_failure_retains_error_kind_and_safe_operation_context() {
 }
 
 #[test]
+fn inherited_handles_and_redirections_never_attach_a_console() -> std::io::Result<()> {
+    let calls = std::cell::Cell::new(0);
+    console_windows::attach_parent_console_with(
+        [false; 3],
+        || {
+            calls.set(calls.get() + 1);
+            Ok(())
+        },
+        |_| {
+            calls.set(calls.get() + 1);
+            Ok(())
+        },
+    )?;
+    assert_eq!(calls.get(), 0);
+    Ok(())
+}
+
+#[test]
+fn only_missing_handles_are_opened_on_the_parent_console() -> std::io::Result<()> {
+    let attached = std::cell::Cell::new(0);
+    let mut reopened = Vec::new();
+    // stdout redirected to a file or a pipe (inherited); stdin and stderr missing.
+    console_windows::attach_parent_console_with(
+        [true, false, true],
+        || {
+            attached.set(attached.get() + 1);
+            Ok(())
+        },
+        |index| {
+            assert_eq!(attached.get(), 1, "attach precedes every reopen");
+            reopened.push(index);
+            Ok(())
+        },
+    )?;
+    assert_eq!(reopened, [0, 2]);
+    Ok(())
+}
+
+#[test]
+fn without_a_parent_console_nothing_is_reopened_and_the_error_is_reported() {
+    let mut reopened = 0;
+    let result = console_windows::attach_parent_console_with(
+        [false, true, true],
+        || Err(std::io::Error::from(std::io::ErrorKind::NotFound)),
+        |_| {
+            reopened += 1;
+            Ok(())
+        },
+    );
+    let error = result.err();
+    assert_eq!(
+        error.as_ref().map(std::io::Error::kind),
+        Some(std::io::ErrorKind::NotFound)
+    );
+    assert!(error.is_some_and(|error| error.to_string().contains("attach parent console")));
+    assert_eq!(reopened, 0);
+}
+
+#[test]
 fn historical_invocations_parse_without_a_subcommand() -> Result<(), clap::Error> {
     for args in [
         vec!["handy"],

@@ -1,9 +1,9 @@
 //! Unix endpoint of the private settings channel: a socket in a current-user 0700 runtime
 //! directory, named after the store identity and guarded by a lease beside it. Both ends check
 //! the peer's kernel UID before any application byte; no network listener exists.
-use super::ipc::{Connection, Duplex};
+use super::ipc::{Accept, Connection, Duplex, Incoming, Publish};
 use super::platform_unix::{
-    current_uid, verify_peer_uid, PrivateDirectory, PrivateSocket, StartupFence,
+    current_uid, verify_peer_uid, Accepted, PrivateDirectory, PrivateSocket, StartupFence,
 };
 use std::io;
 use std::os::unix::net::UnixStream;
@@ -44,6 +44,17 @@ impl Endpoint {
             name: name.to_owned(),
         })
     }
+    /// Endpoint of `identity` in an injected runtime directory (lifecycle tests).
+    #[cfg(test)]
+    pub(crate) fn in_directory(directory: PathBuf, identity: &str) -> io::Result<Self> {
+        let name = identity
+            .get(..NAME_HEX_DIGITS)
+            .ok_or_else(|| io::Error::from(io::ErrorKind::InvalidInput))?;
+        Ok(Self {
+            directory,
+            name: name.to_owned(),
+        })
+    }
     /// Connect and authenticate the listener as the current user before returning it.
     pub(crate) fn connect(&self) -> Connection {
         self.connect_as(current_uid())
@@ -72,6 +83,7 @@ impl Endpoint {
         let lease = StartupFence::acquire(&directory, &format!("{}.lease", self.name))?;
         let socket =
             PrivateSocket::bind_reclaiming(&directory, &self.name, || lease.validate_current())?;
+        socket.set_nonblocking(true)?;
         Ok(Listener { socket, lease })
     }
     /// Pathname of the socket, for lifecycle tests.
@@ -79,12 +91,29 @@ impl Endpoint {
         self.directory.join(&self.name)
     }
 }
-impl Listener {
-    /// Next authenticated connection; a peer of another user is closed before any byte.
-    pub(crate) fn accept(&self) -> io::Result<Box<dyn Duplex>> {
-        let (stream, _) = self.socket.accept()?;
-        Ok(Box::new(stream))
+impl Publish for Endpoint {
+    fn publish(&self) -> io::Result<Box<dyn Accept>> {
+        Ok(Box::new(self.listen()?))
     }
+}
+impl Accept for Listener {
+    /// Next connection within `wait`; a peer of another user is closed before any byte. An error
+    /// means the listener, its directory or its published name failed.
+    fn accept(&mut self, wait: Duration) -> io::Result<Incoming> {
+        Ok(match self.socket.accept_within(wait, current_uid())? {
+            Accepted::Peer(stream) => Incoming::Peer(Box::new(stream)),
+            Accepted::Refused => Incoming::Refused,
+            Accepted::Idle => Incoming::Idle,
+        })
+    }
+    fn published(&self) -> bool {
+        self.socket.validate_published().is_ok()
+    }
+    fn close(self: Box<Self>) -> io::Result<()> {
+        Listener::close(*self)
+    }
+}
+impl Listener {
     /// Stop listening and remove the name while the lease is still held.
     pub(crate) fn close(mut self) -> io::Result<()> {
         let lease = &self.lease;

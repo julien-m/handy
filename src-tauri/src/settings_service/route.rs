@@ -33,15 +33,17 @@ pub fn route(operation: &SettingsOperation) -> Reply {
 }
 /// Strategy: an authenticated instance endpoint always wins; without one, a held startup lease
 /// means an instance is starting or busy, so the endpoint is retried until the deadline and the
-/// store is never written behind it; only a free lease allows the offline path.
+/// store is never written behind it; only a free lease allows the offline path. The request is
+/// encoded first, so one too large for a frame is refused (`limit_exceeded`) whatever the route,
+/// before anything is sent or written.
 fn route_store(store: &Path, operation: &SettingsOperation) -> Result<Reply, SettingsError> {
     let identity = ipc::store_identity(store)?;
+    let request = ipc::encode(&ipc::request(&identity, operation.clone()))?;
     let endpoint = ipc::endpoint(&identity)?;
     let deadline = Instant::now() + ipc::DEADLINE;
     loop {
         match endpoint.connect() {
             Connection::Connected(stream) => {
-                let request = ipc::request(&identity, operation.clone());
                 return Ok(ipc::exchange(stream, &request, deadline));
             }
             Connection::Refused => return Err(unavailable()),
@@ -140,5 +142,32 @@ impl SettingsBackend for OfflineBackend {
     ) -> Result<SettingsRead, SettingsError> {
         self.repository
             .commit_edit_with_probe(&change.edit(), expected, &self.probe)
+    }
+}
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn an_oversized_request_is_refused_before_any_route() -> Result<(), Box<dyn std::error::Error>>
+    {
+        let directory = tempfile::tempdir()?;
+        let store = directory.path().join("settings_store.json");
+        let operation = SettingsOperation::Domain {
+            domain: "output".into(),
+            action: "set".into(),
+            arguments: vec!["paste_method".into(), "direct".into()],
+            input: Some("\u{1}".repeat(ipc::MAX_FRAME_BYTES / 3)),
+            dry_run: false,
+            expected_revision: None,
+        };
+        let refused = route_store(&store, &operation)
+            .err()
+            .ok_or("oversized request routed")?;
+        assert_eq!(
+            (refused.code(), refused.outcome()),
+            (SettingsErrorCode::LimitExceeded, None)
+        );
+        Ok(())
     }
 }

@@ -7,6 +7,17 @@ use std::os::fd::AsRawFd;
 use std::os::unix::fs::{FileTypeExt, MetadataExt};
 use std::os::unix::net::{UnixListener, UnixStream};
 use std::path::{Path, PathBuf};
+use std::time::Duration;
+
+/// One connection taken from the listener within a bounded wait.
+pub(crate) enum Accepted {
+    /// A peer of the expected user, not yet read from.
+    Peer(UnixStream),
+    /// A peer of another user, closed before any byte was read.
+    Refused,
+    /// Nobody connected during the wait.
+    Idle,
+}
 
 /// New settings endpoint; never bind the historical singleton address.
 /// Cleanup is explicit and refuses resources whose inode/owner changed.
@@ -61,30 +72,12 @@ impl PrivateSocket {
         &self.path
     }
 
-    /// Set nonblocking mode (boundary tests; the endpoint accepts on a dedicated blocking thread).
-    #[cfg(test)]
+    /// Set nonblocking mode; the endpoint waits with `accept_within`, which needs it.
     pub(crate) fn set_nonblocking(&self, nonblocking: bool) -> io::Result<()> {
         self.listener
             .as_ref()
             .ok_or_else(unavailable)?
             .set_nonblocking(nonblocking)
-    }
-
-    /// Authenticate an accepted peer before returning its stream; no frame is consumed.
-    pub(crate) fn accept(&self) -> io::Result<(UnixStream, std::os::unix::net::SocketAddr)> {
-        self.accept_for_uid(current_uid())
-    }
-
-    /// Share the native owner boundary with deterministic identity-mismatch tests.
-    pub(super) fn accept_for_uid(
-        &self,
-        expected_uid: u32,
-    ) -> io::Result<(UnixStream, std::os::unix::net::SocketAddr)> {
-        self.directory.validate_current()?;
-        let (stream, address) = self.listener.as_ref().ok_or_else(unavailable)?.accept()?;
-        // Authenticate kernel identity before publishing a stream or reading any frame.
-        verify_peer_uid(&stream, expected_uid)?;
-        Ok((stream, address))
     }
 
     /// Bind like `bind`, reclaiming a stale name only with lease proof: `prove_lease` must show
@@ -128,6 +121,14 @@ impl PrivateSocket {
     /// No stat/unlink pair can atomically exclude same-UID pathname replacement.
     /// Routing must prove the lease is dead before reclaiming a stale endpoint.
     pub(crate) fn close_owned_listener(&mut self) -> io::Result<()> {
+        self.validate_published()?;
+        self.listener.take();
+        Ok(())
+    }
+
+    /// Fail once the private directory or the published name is no longer this listener's
+    /// (removed, replaced or with changed ownership or mode).
+    pub(crate) fn validate_published(&self) -> io::Result<()> {
         self.directory.validate_current()?;
         let metadata = fs::symlink_metadata(&self.path)?;
         if !metadata.file_type().is_socket()
@@ -135,8 +136,53 @@ impl PrivateSocket {
         {
             return Err(unavailable());
         }
-        self.listener.take();
         Ok(())
+    }
+
+    /// Wait at most `wait` for one connection on the nonblocking listener, then authenticate its
+    /// kernel identity; no frame is consumed. An error means the listener or its published name failed.
+    pub(crate) fn accept_within(&self, wait: Duration, expected_uid: u32) -> io::Result<Accepted> {
+        self.validate_published()?;
+        let listener = self.listener.as_ref().ok_or_else(unavailable)?;
+        if !readable(listener, wait)? {
+            return Ok(Accepted::Idle);
+        }
+        let stream = match listener.accept() {
+            Ok((stream, _)) => stream,
+            // The pending connection went away between the wait and the accept.
+            Err(error) if error.kind() == io::ErrorKind::WouldBlock => return Ok(Accepted::Idle),
+            Err(error) => return Err(error),
+        };
+        // macOS accepted sockets inherit the listener's nonblocking mode; requests use timeouts.
+        let blocking = stream.set_nonblocking(false);
+        // Authenticate kernel identity before publishing a stream or reading any frame.
+        match blocking.and_then(|()| verify_peer_uid(&stream, expected_uid)) {
+            Ok(()) => Ok(Accepted::Peer(stream)),
+            Err(_) => Ok(Accepted::Refused),
+        }
+    }
+}
+
+/// poll(2) for one readable listener: true when a connection is pending, false after `wait` or
+/// an interrupted wait (the caller simply waits again).
+fn readable(listener: &UnixListener, wait: Duration) -> io::Result<bool> {
+    let mut entry = libc::pollfd {
+        fd: listener.as_raw_fd(),
+        events: libc::POLLIN,
+        revents: 0,
+    };
+    let timeout = libc::c_int::try_from(wait.as_millis()).unwrap_or(libc::c_int::MAX);
+    // SAFETY: one initialized pollfd for a descriptor owned by the live listener.
+    match unsafe { libc::poll(&mut entry, 1, timeout) } {
+        0 => Ok(false),
+        ready if ready > 0 => Ok(true),
+        _ => {
+            let error = io::Error::last_os_error();
+            match error.kind() {
+                io::ErrorKind::Interrupted => Ok(false),
+                _ => Err(error),
+            }
+        }
     }
 }
 

@@ -21,13 +21,11 @@ pub enum LegacyState {
 pub(crate) enum ProbeScope {
     SameUser,
     CurrentSession,
-    /// Linux session bus (decision 008, 2026-10-13): Handy 008 and later instances hold the
-    /// store's instance lease, which every offline writer must take under the transaction lock,
-    /// whatever their session; the bus only detects an older Handy in the current session. Its
-    /// absence there is accepted as absence; an older Handy in another session of the same user
-    /// is the accepted residual risk.
-    // Constructed only by the Linux probe and the platform tests.
-    #[cfg_attr(not(target_os = "linux"), allow(dead_code))]
+    /// Linux session bus and Windows session objects (decision 008, 2026-10-13): Handy 008 and
+    /// later instances hold the store's instance lease, which every offline writer must take
+    /// under the transaction lock, whatever their session; the session probe only detects an
+    /// older Handy in the current session. Its absence there is accepted as absence; an older
+    /// Handy in another session of the same user is the accepted residual risk.
     LeaseBackedSession,
 }
 
@@ -78,38 +76,68 @@ pub(crate) fn classify_owner(owner: std::io::Result<bool>, scope: ProbeScope) ->
     }
 }
 
+/// What the passive Windows probe saw of the original plugin's named mutex.
+#[derive(Debug)]
+// Built by the Windows probe; the platform tests build it everywhere.
+#[cfg_attr(not(windows), allow(dead_code))]
+pub(crate) enum MutexObservation {
+    /// The mutex exists: an older Handy runs in this session.
+    Open,
+    /// `OpenMutexW` failed with `ERROR_FILE_NOT_FOUND`: no such mutex in this session.
+    NotFound,
+    /// Any other failure: the observation is not trustworthy.
+    Failed(std::io::Error),
+}
+
+/// Decision 008 applied to Windows (same rule as the Linux bus): the unprefixed mutex and
+/// `FindWindowW` cover only the current session, and the instance lease of Handy 008 and later
+/// covers every session (the offline writer must take it under the transaction lock), so a missing
+/// mutex and window is absence; any found resource is an older Handy; a probe error stays
+/// refused. An older Handy in another session of the same user is the accepted residual risk.
+#[cfg_attr(not(windows), allow(dead_code))]
+pub(crate) fn classify_windows_legacy(mutex: MutexObservation, window_found: bool) -> LegacyState {
+    let owner = match mutex {
+        MutexObservation::Open => Ok(true),
+        _ if window_found => Ok(true),
+        MutexObservation::NotFound => Ok(false),
+        MutexObservation::Failed(error) => Err(error),
+    };
+    classify_owner(owner, ProbeScope::LeaseBackedSession)
+}
+
 /// Inspect the original plugin's local mutex/window without messaging or reserving it.
+// @spec FR-004: Passive Windows legacy detection — .specs/features/008-settings-cli/spec.md#fr-004
 #[cfg(windows)]
 pub(crate) fn inspect_legacy_windows() -> LegacyState {
+    use windows_sys::Win32::UI::WindowsAndMessaging::FindWindowW;
+    // Original tauri-plugin-single-instance 2.4 resources, looked up in the current session.
+    let wide = |text: &str| text.encode_utf16().chain(Some(0)).collect::<Vec<_>>();
+    let (class, window) = (wide("com.pais.handy-sic"), wide("com.pais.handy-siw"));
+    let observation = observe_mutex(&wide("com.pais.handy-sim"));
+    // SAFETY: terminated names; FindWindowW only observes an existing class/window identity.
+    let window_found = !unsafe { FindWindowW(class.as_ptr(), window.as_ptr()) }.is_null();
+    classify_windows_legacy(observation, window_found)
+}
+/// Open the named mutex `name` (terminated UTF-16) only to learn whether it exists.
+#[cfg(windows)]
+fn observe_mutex(name: &[u16]) -> MutexObservation {
     use windows_sys::Win32::{
         Foundation::{CloseHandle, GetLastError, ERROR_FILE_NOT_FOUND},
         System::Threading::{OpenMutexW, SYNCHRONIZATION_SYNCHRONIZE},
-        UI::WindowsAndMessaging::FindWindowW,
     };
-    // Original tauri-plugin-single-instance 2.4 resources; absence covers only the current session.
-    let wide = |text: &str| text.encode_utf16().chain(Some(0)).collect::<Vec<_>>();
-    let mutex = wide("com.pais.handy-sim");
-    let class = wide("com.pais.handy-sic");
-    let window = wide("com.pais.handy-siw");
-    // SAFETY: names are terminated, permissions only query existing ownership; no resource is created.
-    let handle = unsafe { OpenMutexW(SYNCHRONIZATION_SYNCHRONIZE, 0, mutex.as_ptr()) };
-    if !handle.is_null() {
-        // SAFETY: this owned successful OpenMutex handle is released exactly once.
-        unsafe { CloseHandle(handle) };
-        return LegacyState::Occupied;
-    }
-    // SAFETY: GetLastError snapshots the preceding failed call; FindWindow only observes existing identity.
-    let error = unsafe { GetLastError() };
-    let target = unsafe { FindWindowW(class.as_ptr(), window.as_ptr()) };
-    if !target.is_null() {
-        return LegacyState::Occupied;
-    }
-    classify_owner(
+    // SAFETY: terminated name; SYNCHRONIZE only opens an existing mutex (no wait, no creation),
+    // GetLastError snapshots that call before any other OS call, and an opened handle is
+    // closed exactly once.
+    unsafe {
+        let handle = OpenMutexW(SYNCHRONIZATION_SYNCHRONIZE, 0, name.as_ptr());
+        let error = GetLastError();
+        if !handle.is_null() {
+            CloseHandle(handle);
+            return MutexObservation::Open;
+        }
         if error == ERROR_FILE_NOT_FOUND {
-            Ok(false)
-        } else {
-            Err(std::io::Error::from_raw_os_error(error as i32))
-        },
-        ProbeScope::CurrentSession,
-    )
+            return MutexObservation::NotFound;
+        }
+        MutexObservation::Failed(std::io::Error::from_raw_os_error(error as i32))
+    }
 }

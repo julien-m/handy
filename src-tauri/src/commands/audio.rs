@@ -336,34 +336,17 @@ pub async fn get_microphone_channels(device_name: String) -> Result<u16, String>
 
 /// Restarting cpal can block, so the channel change runs off the webview/main run loop. The
 /// runtime change is prepared before committing, so a rejected active-recording change is never
-/// stored; a refused commit restores the channel published when the ordered write started.
+/// stored; a refused commit restores the channel published when the ordered write started. The
+/// preparation is shared with routed CLI writes (`settings_service::native_changes`).
 #[tauri::command]
 #[specta::specta]
 pub async fn set_selected_channel(
     app: AppHandle,
     channel: UiValue<Option<u16>>,
 ) -> Result<(), SettingsCommandError> {
-    let manager = app.state::<Arc<AudioRecordingManager>>().inner().clone();
     let channel = channel.into_json();
     tauri_adapter::blocking(move || {
-        // Prepared only after the shared validator accepted the raw value, so it parses.
-        let requested = serde_json::from_value::<Option<u16>>(channel.clone());
-        tauri_adapter::set_prepared(
-            &app,
-            "selected_channel",
-            channel,
-            |_| {
-                manager
-                    .update_selected_channel(requested.map_err(|e| e.to_string())?)
-                    .map_err(|e| e.to_string())
-            },
-            |before| {
-                if let Err(error) = manager.update_selected_channel(before.selected_channel) {
-                    log::error!("Failed to restore the previous channel: {}", error);
-                }
-            },
-        )
-        .map(|_| ())
+        tauri_adapter::set_prepared(&app, "selected_channel", channel).map(|_| ())
     })
     .await
 }

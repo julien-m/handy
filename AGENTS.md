@@ -120,7 +120,7 @@ Handy is a cross-platform desktop speech-to-text application built with Tauri 2.
 
 ### Settings System
 
-Settings live in `settings_store.json`, owned by `src-tauri/src/settings_service/`: every writer (UI command, manager repair) commits through the live service, which validates with the same functions as the CLI, increments a persisted revision, applies live effects and notifies the UI. The store plugin never opens this file. Never write settings directly; use `settings_service::tauri_adapter` (`set_value`, `edit`, `set_prepared`, `repair`).
+Settings live in `settings_store.json`, owned by `src-tauri/src/settings_service/`: every writer (UI command, manager repair) commits through the live service, which validates with the same functions as the CLI, increments a persisted revision, applies live effects and notifies the UI. The store plugin never opens this file. Never write settings directly; use `settings_service::tauri_adapter`: `write` (async UI commands) or `set` (synchronous callers) for one scalar, `edit` for a typed edit, `set_prepared` for a key whose native change is prepared before the commit (its preparation lives in `settings_service::native_changes`, shared with CLI writes routed to the instance), `repair` for internal repairs.
 
 - Keyboard shortcuts (configurable, supports push-to-talk)
 - Audio devices (microphone/output selection)

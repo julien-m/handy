@@ -162,7 +162,7 @@ fn unapplied_effect_is_retried_before_the_next_write_and_on_resubmission() -> Te
 /// Prepared change that mirrors `key` into the spy's native state and restores it on refusal.
 fn mirrored<'a>(port: &'a SpyPort, key: &'static str, value: Value) -> PreparedChange<'a> {
     PreparedChange {
-        prepare: Box::new(move |_| {
+        prepare: Box::new(move |_, _| {
             port.set_native(key, value);
             Ok(())
         }),
@@ -180,7 +180,7 @@ fn refused_preparation_leaves_disk_revision_native_and_ui_unchanged() -> TestRes
     let bytes = std::fs::read(store(&directory))?;
     let revision = live.snapshot().revision;
     let refusal = PreparedChange {
-        prepare: Box::new(|_| Err(SettingsError::live_state_refused("vad_backend"))),
+        prepare: Box::new(|_, _| Err(SettingsError::live_state_refused("vad_backend"))),
         compensate: Box::new(|_| port.record("compensated".into())),
     };
     let error = write_prepared(&live, &port, "vad_backend", json!("earshot"), refusal)
@@ -326,3 +326,6 @@ fn clear_missing(live: &LiveSettings, port: &SpyPort) -> Result<(), SettingsErro
 }
 #[path = "sequence_race_tests.rs"]
 mod races;
+
+#[path = "sequence_parity_tests.rs"]
+mod parity;

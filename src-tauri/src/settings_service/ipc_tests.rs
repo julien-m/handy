@@ -57,12 +57,9 @@ fn a_request_for_another_store_or_a_malformed_frame_gets_a_fixed_refusal() -> Te
 fn silence_or_a_reply_to_another_request_is_an_unknown_outcome() -> TestResult {
     use std::os::unix::net::UnixStream;
     let (client, _silent_server) = UnixStream::pair()?;
-    let request = request("store", SettingsOperation::Keys);
-    let reply = exchange(
-        Box::new(client),
-        &request,
-        Instant::now() + Duration::from_millis(100),
-    );
+    let request = encode(&request("store", SettingsOperation::Keys))?;
+    let soon = Instant::now() + Duration::from_millis(100);
+    let reply = exchange(Box::new(client), &request, soon);
     assert_eq!(
         (
             failure_code(&reply),
@@ -91,11 +88,13 @@ fn the_client_refuses_an_unexpected_server_owner_before_sending_any_byte() -> Te
     let directory = tempfile::tempdir()?;
     let identity = store_identity(&directory.path().join("settings_store.json"))?;
     let endpoint = endpoint(&identity).map_err(|error| error.message())?;
-    let listener = endpoint.listen()?;
+    let mut listener = endpoint.listen()?;
     let refused = endpoint.connect_as(super::super::platform_unix::current_uid().wrapping_add(1));
     assert!(matches!(refused, Connection::Refused));
     drop(refused);
-    let mut accepted = listener.accept()?;
+    let Incoming::Peer(mut accepted) = listener.accept(DEADLINE)? else {
+        return Err("the refused client's connection was not accepted".into());
+    };
     let mut received = Vec::new();
     accepted.read_to_end(&mut received)?;
     assert!(
@@ -104,5 +103,32 @@ fn the_client_refuses_an_unexpected_server_owner_before_sending_any_byte() -> Te
     );
     listener.close()?;
     assert!(!endpoint.path().exists(), "closing removes the name");
+    Ok(())
+}
+
+#[test]
+fn an_oversized_request_is_refused_before_sending_with_limit_exceeded() -> TestResult {
+    // Control characters are escaped as six bytes each: an input that `read_bounded` accepts
+    // (one third of the frame bound) no longer fits in a frame once wrapped.
+    let input = "\u{1}".repeat(MAX_FRAME_BYTES / 3);
+    assert!(super::super::input::read_bounded(input.as_bytes()).is_ok());
+    let operation = SettingsOperation::Domain {
+        domain: "words".into(),
+        action: "import".into(),
+        arguments: vec!["merge".into()],
+        input: Some(input),
+        dry_run: false,
+        expected_revision: None,
+    };
+    let refused = encode(&request("store", operation))
+        .err()
+        .ok_or("oversized request encoded")?;
+    let envelope = Reply::failure(refused).envelope().clone();
+    assert_eq!(envelope["error"]["code"], json!("limit_exceeded"));
+    assert!(
+        envelope["error"]["details"]["outcome"].is_null(),
+        "nothing was sent"
+    );
+    assert!(encode(&request("store", SettingsOperation::Keys)).is_ok());
     Ok(())
 }

@@ -9,10 +9,11 @@ use super::{
     ipc::EndpointHandle,
     live::{ClaimedSingleInstance, LiveCommit, LiveSettings},
     locator::StoreLocator,
+    native_changes,
     operations::SettingsBackend,
     ownership::NativeOwnerProbe,
     protocol::{Revision, SettingsSnapshot},
-    sequence::{self, LiveEffectsPort, PreparedChange},
+    sequence::{self, LiveEffectsPort},
     store::{SettingsRead, SettingsRepository},
     ui_value::UiValue,
     validation::SettingsMutation,
@@ -134,10 +135,6 @@ pub fn set(
         value,
     )?)
 }
-fn to_json(value: impl serde::Serialize) -> Result<serde_json::Value, SettingsCommandError> {
-    serde_json::to_value(value)
-        .map_err(|_| SettingsError::new(SettingsErrorCode::InternalError).into())
-}
 /// Settings UI command: write the raw argument on the blocking pool, never on the main thread
 /// (a durable write and the wait for an ordered write in progress can take time, and live
 /// effects may need the main thread).
@@ -179,27 +176,18 @@ pub fn edit(app: &AppHandle, edit: SettingsEditFn<'_>) -> Result<LiveCommit, Set
 }
 /// Scalar write whose fallible native change is prepared first (from the settings published when
 /// the ordered write starts) and compensated when the commit is refused, so a refusal leaves both
-/// the disk and the live state unchanged.
+/// the disk and the live state unchanged. The preparation of `key` comes from `native_changes`,
+/// shared with routed CLI writes.
 ///
 /// # Errors
 /// `unavailable` naming `key` when preparation fails (nothing committed); otherwise same as `set`.
 pub fn set_prepared(
     app: &AppHandle,
     key: &'static str,
-    value: impl serde::Serialize,
-    prepare: impl FnOnce(&AppSettings) -> Result<(), String>,
-    compensate: impl FnOnce(&AppSettings),
+    value: serde_json::Value,
 ) -> Result<LiveCommit, SettingsCommandError> {
-    let native = PreparedChange {
-        prepare: Box::new(|before: &AppSettings| {
-            prepare(before).map_err(|detail| {
-                log::warn!("Live change of setting '{key}' was refused: {detail}");
-                SettingsError::live_state_refused(key)
-            })
-        }),
-        compensate: Box::new(compensate),
-    };
-    let value = to_json(value)?;
+    let native = native_changes::prepared_change(app, key)
+        .unwrap_or_else(|| Err(SettingsError::new(SettingsErrorCode::InternalError)))?;
     Ok(sequence::write_prepared(
         live(app)?.inner(),
         &TauriEffects(app),
@@ -262,13 +250,21 @@ impl SettingsBackend for RoutedBackend {
     fn read(&self) -> Result<SettingsRead, SettingsError> {
         live(&self.app)?.read()
     }
+    /// A key the settings UI prepares (`native_changes`) is prepared the same way here, so the
+    /// CLI gets the UI's decision (for example `unavailable`, nothing written, during a recording).
     fn commit(
         &self,
         mutation: SettingsMutation,
         expected: Option<Revision>,
     ) -> Result<SettingsRead, SettingsError> {
         let live = live(&self.app)?;
-        let commit = sequence::write_scalar(&live, &TauriEffects(&self.app), mutation, expected)?;
+        let effects = TauriEffects(&self.app);
+        let commit = match native_changes::prepared_change(&self.app, mutation.key()) {
+            Some(native) => {
+                sequence::write_scalar_prepared(&live, &effects, mutation, expected, native?)?
+            }
+            None => sequence::write_scalar(&live, &effects, mutation, expected)?,
+        };
         Ok(routed_read(&live, commit))
     }
     fn commit_change(

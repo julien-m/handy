@@ -2,10 +2,11 @@
 
 use super::{instance_probe, platform_unix};
 use instance_probe::{inspect_legacy_path, LegacyState};
-use platform_unix::{current_uid, PrivateDirectory, PrivateSocket, StartupFence};
+use platform_unix::{current_uid, Accepted, PrivateDirectory, PrivateSocket, StartupFence};
 use std::fs;
 use std::os::unix::fs::{symlink, MetadataExt, PermissionsExt};
 use std::os::unix::net::{UnixListener, UnixStream};
+use std::time::Duration;
 
 fn fixture() -> std::io::Result<(tempfile::TempDir, PrivateDirectory)> {
     let temp = tempfile::tempdir()?;
@@ -112,17 +113,18 @@ fn new_socket_authenticates_peer_and_refuses_replaced_path(
     assert_eq!(fs::symlink_metadata(socket.path())?.uid(), current_uid());
     assert!(PrivateSocket::bind(&directory, "settings.sock").is_err());
     socket.set_nonblocking(true)?;
-    assert_eq!(
-        socket.accept().expect_err("no client yet").kind(),
-        std::io::ErrorKind::WouldBlock
-    );
+    let (wait, uid) = (Duration::from_millis(50), current_uid());
+    assert!(matches!(socket.accept_within(wait, uid)?, Accepted::Idle));
     let client = UnixStream::connect(socket.path())?;
-    let (server, _) = socket.accept()?;
+    let Accepted::Peer(server) = socket.accept_within(Duration::from_secs(1), uid)? else {
+        return Err("the client of the same user was not accepted".into());
+    };
     platform_unix::verify_peer(&server)?;
     assert!(platform_unix::verify_peer_uid(&server, current_uid().wrapping_add(1)).is_err());
     drop(client);
     fs::remove_file(socket.path())?;
     fs::write(socket.path(), b"replacement")?;
+    assert!(socket.accept_within(wait, uid).is_err());
     assert!(socket.close_owned_listener().is_err());
     assert_eq!(fs::read(socket.path())?, b"replacement");
     Ok(())

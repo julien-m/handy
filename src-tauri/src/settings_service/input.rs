@@ -4,7 +4,9 @@ use super::errors::{SettingsError, SettingsErrorCode, ValidationReason};
 use std::io::{IsTerminal, Read};
 
 /// Input bound: the private channel's frame limit, which every domain shares until its owning
-/// feature defines another.
+/// feature defines another. The request carrying the input must also fit in one frame once
+/// escaped and wrapped; a larger one is refused (`limit_exceeded`) before it is routed
+/// (`ipc::encode`).
 pub const MAX_INPUT_BYTES: usize = super::ipc::MAX_FRAME_BYTES;
 
 /// Read the input named by `source`: `-` is the process's stdin, anything else a file path.

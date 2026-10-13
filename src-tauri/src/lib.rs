@@ -129,9 +129,6 @@ fn show_main_window(app: &AppHandle) {
     );
 }
 
-/// Choose the macOS activation policy the process *launches* with.
-///
-/// Must run between `build()` and `run()`: that is the only point where
 /// Install the settings service right after `build()`: by then the single-instance plugin has
 /// exited this process (another Handy, old or new, is alive) or claimed the singleton for it.
 /// The GUI instance takes the startup lease and normalizes once; a store it cannot own leaves it
@@ -151,6 +148,9 @@ fn install_settings_service(app: &tauri::App, headless_mode: bool) {
     }
 }
 
+/// Choose the macOS activation policy the process *launches* with.
+///
+/// Must run between `build()` and `run()`: that is the only point where
 /// `App::set_activation_policy` sets tao's initial policy, which
 /// `applicationDidFinishLaunching` then applies directly. Calling the
 /// `AppHandle` variant from `setup` (which Tauri runs on `RunEvent::Ready`,

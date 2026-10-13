@@ -309,3 +309,5 @@ fn file_input_is_read_by_path_and_a_missing_file_is_a_usage_error() -> TestResul
     assert_eq!(refused.code(), SettingsErrorCode::UsageError);
     Ok(())
 }
+#[path = "fixture_stdin_tests.rs"]
+mod stdin;

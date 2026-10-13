@@ -13,14 +13,17 @@ fn fixture() -> io::Result<(tempfile::TempDir, PrivateDirectory)> {
 
 #[test]
 fn native_peer_identity_mismatch_never_returns_stream() -> io::Result<()> {
+    use std::io::Read;
     let (_temp, directory) = fixture()?;
     let socket = PrivateSocket::bind(&directory, "settings.sock")?;
     socket.set_nonblocking(true)?;
-    let _client = std::os::unix::net::UnixStream::connect(socket.path())?;
-    let error = socket
-        .accept_for_uid(current_uid().wrapping_add(1))
-        .expect_err("a native peer with another expected owner must not be published");
-    assert_eq!(error.kind(), io::ErrorKind::PermissionDenied);
+    let mut client = std::os::unix::net::UnixStream::connect(socket.path())?;
+    let accepted = socket.accept_within(
+        std::time::Duration::from_secs(1),
+        current_uid().wrapping_add(1),
+    )?;
+    assert!(matches!(accepted, Accepted::Refused));
+    assert_eq!(client.read(&mut [0; 1])?, 0, "the refused peer is closed");
     Ok(())
 }
 
