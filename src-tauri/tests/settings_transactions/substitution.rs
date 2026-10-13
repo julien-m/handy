@@ -123,22 +123,105 @@ fn store_file_symlink_is_refused_for_reads_and_writes() -> TestResult {
 }
 #[test]
 #[cfg(unix)]
-fn ancestor_directory_symlink_is_refused_by_locator_and_repository() -> TestResult {
+fn same_user_ancestor_symlink_resolves_to_its_canonical_directory() -> TestResult {
     let directory = tempfile::tempdir()?;
     let real = directory.path().join("real");
     std::fs::create_dir(&real)?;
     let alias = directory.path().join("alias");
     std::os::unix::fs::symlink(&real, &alias)?;
     let executable = directory.path().join("handy");
+    let resolved = StoreLocator::resolve(&executable, &alias.join("nested"))?;
+    assert_eq!(
+        resolved,
+        real.canonicalize()?
+            .join("nested")
+            .join("settings_store.json")
+    );
+    let repository = SettingsRepository::new(alias.join("settings_store.json"));
+    let probe = LegacyPathProbe::new(directory.path().join("absent.sock"));
+    let start_hidden = validate_cli(
+        "start_hidden",
+        "true",
+        &ValidationContext {
+            prompt_ids: &[],
+            updates_allowed: true,
+        },
+    )?;
+    let committed = repository.commit_with_probe(start_hidden, None, &probe, &())?;
+    assert_eq!(committed.snapshot.revision.0, 1);
+    let disk: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(real.join("settings_store.json"))?)?;
+    assert_eq!(disk["settings"]["start_hidden"], true);
+    assert!(real.join("settings.lock").is_file());
+    assert!(std::fs::symlink_metadata(&alias)?.file_type().is_symlink());
+    Ok(())
+}
+#[test]
+#[cfg(unix)]
+fn ancestor_symlink_into_another_users_directory_is_refused() -> TestResult {
+    // SAFETY: geteuid has no pointers and does not mutate Rust memory.
+    if unsafe { libc::geteuid() } == 0 {
+        return Ok(()); // root owns the system target, so no user boundary is crossed.
+    }
+    let directory = tempfile::tempdir()?;
+    let alias = directory.path().join("alias");
+    // `/usr` exists on macOS and Linux and is owned by root, never by the test user.
+    std::os::unix::fs::symlink("/usr", &alias)?;
+    let executable = directory.path().join("handy");
     let resolved = StoreLocator::resolve(&executable, &alias.join("nested"))
         .err()
-        .ok_or("ancestor alias resolved")?;
+        .ok_or("foreign alias resolved")?;
     assert_eq!(resolved.code(), SettingsErrorCode::Unavailable);
     let read = SettingsRepository::new(alias.join("settings_store.json"))
         .read_snapshot()
         .err()
-        .ok_or("ancestor alias read")?;
+        .ok_or("foreign alias read")?;
     assert_eq!(read.code(), SettingsErrorCode::Unavailable);
-    assert!(!real.join("settings.lock").exists());
+    Ok(())
+}
+/// After the locked read, move the store and both locks into a fresh directory at the same path:
+/// every file identity still matches, so only the parent (dev, ino) comparison can refuse.
+struct MoveIntoNewParent<'a>(&'a Swap);
+impl PersistObserver for MoveIntoNewParent<'_> {
+    fn observe(&self, stage: PersistStage) -> std::io::Result<()> {
+        if stage == PersistStage::AfterLoad {
+            std::fs::rename(&self.0.store, &self.0.original)?;
+            std::fs::create_dir(&self.0.store)?;
+            for name in [
+                "settings_store.json",
+                "settings.lock",
+                "settings.instance.lock",
+            ] {
+                std::fs::rename(self.0.original.join(name), self.0.store.join(name))?;
+            }
+        }
+        Ok(())
+    }
+}
+#[test]
+#[cfg(unix)]
+fn store_and_locks_moved_into_a_substituted_parent_are_refused_by_parent_identity() -> TestResult {
+    use std::os::unix::fs::PermissionsExt;
+    let root = tempfile::tempdir()?;
+    let swap = Swap {
+        store: root.path().join("store"),
+        original: root.path().join("original"),
+        substitute: root.path().join("unused"),
+    };
+    std::fs::create_dir(&swap.store)?;
+    std::fs::set_permissions(&swap.store, std::fs::Permissions::from_mode(0o700))?;
+    let path = swap.store.join("settings_store.json");
+    let original =
+        serde_json::to_vec(&json!({"settings_revision":7,"settings":{"audio_feedback":true}}))?;
+    std::fs::write(&path, &original)?;
+    let probe = LegacyPathProbe::new(root.path().join("absent.sock"));
+    let error = SettingsRepository::new(path.clone())
+        .commit_with_probe(disable_feedback()?, None, &probe, &MoveIntoNewParent(&swap))
+        .err()
+        .ok_or("commit accepted in a substituted parent")?;
+    assert_eq!(error.code(), SettingsErrorCode::PersistenceFailed);
+    assert_eq!(std::fs::read(&path)?, original);
+    assert!(super::faults::temporary_files(&swap.store)?.is_empty());
+    assert!(super::faults::temporary_files(&swap.original)?.is_empty());
     Ok(())
 }

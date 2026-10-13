@@ -1,7 +1,10 @@
 //! Native path-provider parity and portable marker reads never create or upgrade data.
 use handy_app_lib::settings_service::locator::StoreLocator;
+/// Parity with Tauri is not observed here: `StoreLocator::current` and Tauri's desktop path
+/// resolver both call `dirs::data_dir()`, and Cargo.lock resolves a single `dirs 6.0.0` for both.
+/// This test checks that the injected directory gets the identifier/store suffix and is not created.
 #[test]
-fn installed_resolution_uses_the_same_directory_provider_as_tauri(
+fn installed_resolution_appends_identifier_store_without_creating_it(
 ) -> Result<(), Box<dyn std::error::Error>> {
     let directory = tempfile::tempdir()?;
     let executable = directory.path().join("handy");
@@ -69,5 +72,21 @@ fn missing_ancestor_is_canonicalized_and_parent_traversal_is_refused(
     );
     assert!(!root.exists());
     assert!(StoreLocator::resolve(&executable, &directory.path().join("../foreign")).is_err());
+    Ok(())
+}
+#[test]
+fn unreadable_or_non_utf8_legacy_marker_beside_data_selects_portable_like_startup(
+) -> Result<(), Box<dyn std::error::Error>> {
+    let directory = tempfile::tempdir()?;
+    let executable = directory.path().join("handy");
+    let marker = directory.path().join("portable");
+    let installed = directory.path().join("installed");
+    std::fs::write(&marker, [0xff, 0xfe, 0x00])?;
+    assert!(
+        StoreLocator::resolve(&executable, &installed)?.ends_with("installed/settings_store.json")
+    );
+    std::fs::create_dir(directory.path().join("Data"))?;
+    assert!(StoreLocator::resolve(&executable, &installed)?.ends_with("Data/settings_store.json"));
+    assert_eq!(std::fs::read(marker)?, [0xff, 0xfe, 0x00]);
     Ok(())
 }

@@ -5,6 +5,8 @@ mod driver;
 mod faults;
 #[path = "settings_transactions/locator.rs"]
 mod locator;
+#[path = "settings_transactions/normalized_writes.rs"]
+mod normalized_writes;
 #[path = "settings_transactions/ownership.rs"]
 mod ownership;
 #[path = "settings_transactions/processes.rs"]

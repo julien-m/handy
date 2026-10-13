@@ -4,7 +4,7 @@
 mod replace;
 #[path = "windows_store/security.rs"]
 mod security;
-pub(super) use replace::{replace_owned, ReplaceError};
+pub(super) use replace::{discard_owned, replace_owned, ReplaceError};
 use std::{
     ffi::OsStr,
     fs::File,

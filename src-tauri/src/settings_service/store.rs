@@ -3,7 +3,6 @@ use super::{
     errors::{SettingsError, SettingsErrorCode},
     protocol::{Revision, SettingsSnapshot},
 };
-use crate::settings::get_default_settings;
 use serde_json::{json, Value};
 use std::path::PathBuf;
 
@@ -13,7 +12,9 @@ pub struct SettingsRepository {
 }
 /// Recovery warning contains no raw document, field name or parse diagnostics.
 pub struct SettingsRead {
+    /// Normalized typed settings and the stored revision they were read at.
     pub snapshot: SettingsSnapshot,
+    /// True when the stored document was salvaged, unreadable or not writable (read-only recovery).
     pub warning: bool,
 }
 /// Raw documents remain internal: only transactions may replace their generations.
@@ -21,7 +22,6 @@ pub(super) struct Document {
     pub raw: Value,
     pub read: SettingsRead,
     pub writable: bool,
-    pub missing: bool,
     /// Unix (dev, ino) of the store file that was read; `None` when the store was absent.
     #[cfg(unix)]
     pub source: Option<(u64, u64)>,
@@ -43,7 +43,7 @@ impl SettingsRepository {
     pub fn read_snapshot(&self) -> Result<SettingsRead, SettingsError> {
         let path = super::locator::canonical_path(&self.path)?;
         if !path.parent().is_some_and(std::path::Path::exists) {
-            return Ok(fallback(true)?.read);
+            return Ok(fallback(true).read);
         }
         let _lock =
             super::ownership::FileLock::acquire(path.with_file_name("settings.lock"), true)?;
@@ -57,7 +57,7 @@ impl SettingsRepository {
                 .map_err(|_| persistence_failed())?;
         match open_store(path) {
             Ok(file) => read_existing(file),
-            Err(error) if error.kind() == std::io::ErrorKind::NotFound => fallback(true),
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(fallback(true)),
             Err(_) => Err(persistence_failed()),
         }
     }
@@ -94,7 +94,10 @@ fn read_existing(mut file: std::fs::File) -> Result<Document, SettingsError> {
     std::io::Read::read_to_end(&mut file, &mut bytes).map_err(|_| persistence_failed())?;
     let loaded = match serde_json::from_slice::<Value>(&bytes) {
         Ok(value) if value.is_object() => document(value)?,
-        _ => fallback(false)?,
+        // Recovery read only: unreadable JSON yields defaults with a warning and a non-writable
+        // document, so it is never overwritten automatically; no parse diagnostic is exposed
+        // because it could echo raw bytes (secrets).
+        _ => fallback(false),
     };
     #[cfg(unix)]
     let loaded = Document {
@@ -109,8 +112,12 @@ fn document(raw: Value) -> Result<Document, SettingsError> {
     let writable =
         !matches!(valid_revision, Some(None)) && raw.get("settings").is_none_or(Value::is_object);
     let revision = Revision(valid_revision.flatten().unwrap_or(0));
-    let payload = raw.get("settings").cloned().unwrap_or_else(|| json!({}));
-    let (settings, recovered) = super::normalization::normalize(&payload)?;
+    // Business rule (same as the legacy `get_settings`): a store without a `settings` payload is
+    // a fresh install and takes the defaults; only an existing payload is an upgrade to migrate.
+    let (settings, recovered) = match raw.get("settings") {
+        Some(payload) => super::normalization::normalize(payload)?,
+        None => (super::normalization::fresh_install(), false),
+    };
     let warning = recovered || !writable;
     Ok(Document {
         raw,
@@ -119,26 +126,30 @@ fn document(raw: Value) -> Result<Document, SettingsError> {
             warning,
         },
         writable,
-        missing: false,
         #[cfg(unix)]
         source: None,
     })
 }
-fn fallback(missing: bool) -> Result<Document, SettingsError> {
-    Ok(Document {
+/// Fresh-install defaults at revision 0: writable for a missing store, read-only with a warning
+/// for an unreadable one.
+fn fallback(missing: bool) -> Document {
+    Document {
         raw: json!({}),
         read: SettingsRead {
             snapshot: SettingsSnapshot {
-                settings: get_default_settings(),
+                settings: super::normalization::fresh_install(),
                 revision: Revision(0),
             },
             warning: !missing,
         },
         writable: missing,
-        missing,
         #[cfg(unix)]
         source: None,
-    })
+    }
+}
+/// Defaults for a store that does not exist yet: revision 0, no warning, writable.
+pub(super) fn absent_document() -> Document {
+    fallback(true)
 }
 pub(super) fn persistence_failed() -> SettingsError {
     SettingsError::new(SettingsErrorCode::PersistenceFailed)

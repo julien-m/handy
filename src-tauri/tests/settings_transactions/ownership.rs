@@ -54,6 +54,7 @@ fn native_owner_appearing_after_temp_sync_refuses_before_replace(
         .ok_or("native owner ignored at commit")?;
     assert_eq!(error.code(), SettingsErrorCode::Unavailable);
     assert_eq!(std::fs::read(path)?, bytes);
+    assert!(super::faults::temporary_files(directory.path())?.is_empty());
     Ok(())
 }
 #[test]
@@ -157,5 +158,64 @@ fn startup_merge_never_copies_unknown_fields_between_items_with_duplicate_ids(
     assert_eq!(prompts[0]["name"], "First");
     assert_eq!(prompts[1]["name"], "Second");
     assert!(prompts[1].get("extra").is_none());
+    Ok(())
+}
+#[test]
+fn lease_holding_instance_commits_while_offline_writers_stay_refused(
+) -> Result<(), Box<dyn std::error::Error>> {
+    let directory = tempfile::tempdir()?;
+    let path = directory.path().join("settings_store.json");
+    let probe = LegacyPathProbe::new(directory.path().join("absent.sock"));
+    let repository = SettingsRepository::new(path.clone());
+    let (read, lease) = repository.initialize(&probe)?;
+    let start = read.snapshot.revision;
+    let context = ValidationContext {
+        prompt_ids: &[],
+        updates_allowed: true,
+    };
+    let owned = repository.commit_owned(
+        &lease,
+        validate_cli("start_hidden", "true", &context)?,
+        Some(start),
+    )?;
+    assert_eq!(owned.snapshot.revision.0, start.0 + 1);
+    let bytes = std::fs::read(&path)?;
+    let disk: serde_json::Value = serde_json::from_slice(&bytes)?;
+    assert_eq!(disk["settings"]["start_hidden"], true);
+    assert_eq!(disk["settings_revision"], start.0 + 1);
+    let offline = repository
+        .commit_with_probe(
+            validate_cli("audio_feedback", "false", &context)?,
+            None,
+            &probe,
+            &(),
+        )
+        .err()
+        .ok_or("offline writer accepted while the instance holds the lease")?;
+    assert_eq!(offline.code(), SettingsErrorCode::Unavailable);
+    let stale = repository
+        .commit_owned(
+            &lease,
+            validate_cli("start_hidden", "false", &context)?,
+            Some(start),
+        )
+        .err()
+        .ok_or("stale owner CAS accepted")?;
+    assert_eq!(stale.code(), SettingsErrorCode::RevisionConflict);
+    assert_eq!(std::fs::read(&path)?, bytes);
+    let other = tempfile::tempdir()?;
+    let (_, foreign) = SettingsRepository::new(other.path().join("settings_store.json"))
+        .initialize(&LegacyPathProbe::new(other.path().join("absent.sock")))?;
+    let mismatched = repository
+        .commit_owned(
+            &foreign,
+            validate_cli("start_hidden", "false", &context)?,
+            None,
+        )
+        .err()
+        .ok_or("lease of another store accepted")?;
+    assert_eq!(mismatched.code(), SettingsErrorCode::Unavailable);
+    assert_eq!(std::fs::read(&path)?, bytes);
+    drop(lease);
     Ok(())
 }

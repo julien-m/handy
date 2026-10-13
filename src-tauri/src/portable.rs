@@ -115,23 +115,21 @@ pub fn store_path(relative: &str) -> PathBuf {
 }
 
 /// Resolve marker semantics without upgrading it, creating Data or changing environment.
-/// Legacy empty/invalid markers enable portable mode only beside an existing Data directory.
+///
+/// Same rule as `init`: a marker holding the magic string enables portable mode; any other
+/// existing marker (empty, invalid, non-UTF-8 or unreadable legacy v0.8.0 marker) enables it only
+/// beside an existing `Data` directory.
 pub(crate) fn resolve_data_dir(
     marker: &Path,
     data: &Path,
 ) -> Result<Option<PathBuf>, crate::settings_service::errors::SettingsError> {
-    let contents = match std::fs::read_to_string(marker) {
-        Ok(contents) => Some(contents),
-        Err(error) if error.kind() == std::io::ErrorKind::NotFound => None,
-        Err(_) => {
-            return Err(crate::settings_service::errors::SettingsError::new(
-                crate::settings_service::errors::SettingsErrorCode::Unavailable,
-            ))
-        }
+    let has_magic = match std::fs::read(marker) {
+        Ok(bytes) => std::str::from_utf8(&bytes).is_ok_and(has_portable_magic),
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(None),
+        // An existing but unreadable marker is still an existing marker for `init`.
+        Err(_) => false,
     };
-    let enabled = contents
-        .as_ref()
-        .is_some_and(|text| text.trim().starts_with("Handy Portable Mode") || data.is_dir());
+    let enabled = has_magic || data.exists();
     Ok(enabled.then(|| data.to_path_buf()))
 }
 
@@ -139,8 +137,13 @@ pub(crate) fn resolve_data_dir(
 /// Extracted for testability.
 fn is_valid_portable_marker(path: &std::path::Path) -> bool {
     std::fs::read_to_string(path)
-        .map(|s| s.trim().starts_with("Handy Portable Mode"))
+        .map(|s| has_portable_magic(&s))
         .unwrap_or(false)
+}
+
+/// Marker contents that enable portable mode on their own (leading/trailing whitespace allowed).
+fn has_portable_magic(text: &str) -> bool {
+    text.trim().starts_with("Handy Portable Mode")
 }
 
 #[cfg(test)]

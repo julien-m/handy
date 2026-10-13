@@ -116,6 +116,10 @@ impl FileLock {
             }
         }
     }
+    /// Pathname this lock was opened at, used to bind a retained lease to one repository.
+    pub fn path(&self) -> &Path {
+        &self.path
+    }
     /// Compare the held file and current pathname identity; refuse substitutes without deleting them.
     pub fn validate(&self) -> Result<(), SettingsError> {
         let path = std::fs::symlink_metadata(&self.path).map_err(|_| persistence_failed())?;
@@ -184,6 +188,9 @@ fn open_lock(path: PathBuf) -> Result<FileLock, SettingsError> {
     Ok(lock)
 }
 /// Retain startup lease until shutdown; ownership cannot be inferred from a busy lease.
+///
+/// The running instance passes it to `SettingsRepository::commit_owned` to write through the same
+/// locked repository while every offline writer stays refused.
 pub struct StartupLease {
     pub(super) lock: FileLock,
 }

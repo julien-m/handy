@@ -17,6 +17,12 @@ pub(super) fn normalize(payload: &Value) -> Result<(AppSettings, bool), Settings
     settings::ensure_post_process_defaults(&mut settings);
     Ok((settings, recovered))
 }
+/// Fresh-install settings for a store that has no settings payload yet; no migration applies.
+pub(super) fn fresh_install() -> AppSettings {
+    let mut settings = settings::get_default_settings();
+    settings::ensure_post_process_defaults(&mut settings);
+    settings
+}
 fn salvage(payload: &Value) -> Result<AppSettings, SettingsError> {
     let mut merged =
         serde_json::to_value(settings::get_default_settings()).map_err(|_| failed())?;

@@ -18,11 +18,17 @@ const TEMP_NAME_ATTEMPTS: u32 = 64;
 pub enum PersistStage {
     /// After the fresh locked read and before any candidate or temporary file exists.
     AfterLoad,
+    /// The private temp exists and is still empty.
     BeforeWrite,
+    /// The whole generation is written to the temp but not yet synced.
     AfterWrite,
+    /// The temp is synced to disk; replacement has not been authorized yet.
     AfterFileSync,
+    /// Just before the parent/temp revalidation and final authorization that precede replacement.
     BeforeReplace,
+    /// The new generation replaced the store; directory durability is not yet confirmed.
     AfterReplace,
+    /// The parent directory was synced after replacement.
     AfterDirectorySync,
 }
 /// Filesystem fault port; normal production commits use the inert implementation.
@@ -38,31 +44,76 @@ impl PersistObserver for () {
 
 /// Write `value` as a new synchronized generation and atomically replace `path` with it.
 ///
-/// Order matters: pin the parent, write and fsync a private temp, revalidate parent and temp,
-/// run the caller's final authorization, replace, then make the replacement durable.
-/// Failures before replacement leave the old generation (`persistence_failed`); failures after
-/// it report an unknown outcome. Failed private temps are retained, never deleted.
+/// Order matters: pin the parent, run the caller's authorization before any private temp (which
+/// holds the whole document, secrets included) exists, write and fsync the temp, revalidate parent
+/// and temp, authorize again immediately before replacement, replace, then make it durable.
+/// Failures before replacement leave the old generation (`persistence_failed`) and discard this
+/// call's own temp when its identity still matches the held handle; substitutes are never touched.
+/// Failures after replacement report an unknown outcome.
 pub(super) fn persist(
     path: &Path,
     value: &serde_json::Value,
     observer: &impl PersistObserver,
-    authorize_replace: impl FnOnce() -> Result<(), SettingsError>,
+    authorize: impl Fn() -> Result<(), SettingsError>,
 ) -> Result<(), SettingsError> {
     let parent = path.parent().ok_or_else(persistence_failed)?;
     let directory = ParentDirectory::open(parent)?;
+    authorize()?;
     let (temporary, mut file) = private_temp(parent)?;
-    write_generation(&mut file, value, observer)?;
+    let staged = stage_generation(&directory, &temporary, &mut file, value, observer)
+        .and_then(|()| authorize())
+        .and_then(|()| {
+            #[cfg(unix)]
+            let replaced = directory.replace(&temporary, path);
+            #[cfg(windows)]
+            let replaced = directory.replace(&file, path);
+            replaced
+        });
+    if let Err(error) = staged {
+        discard_temp(&temporary, &file);
+        return Err(error);
+    }
+    confirm_durable(&directory, observer)
+}
+/// Write, sync and revalidate the private generation before the final authorization.
+fn stage_generation(
+    directory: &ParentDirectory,
+    temporary: &Path,
+    file: &mut File,
+    value: &serde_json::Value,
+    observer: &impl PersistObserver,
+) -> Result<(), SettingsError> {
+    write_generation(file, value, observer)?;
     observer
         .observe(PersistStage::BeforeReplace)
         .map_err(|_| persistence_failed())?;
     directory.validate()?;
-    validate_temp(&temporary, &file)?;
-    authorize_replace()?;
+    validate_temp(temporary, file)
+}
+/// Remove this call's refused temp so no copy of the secrets is retained.
+///
+/// Unix deletes the pathname only while it still names the held inode (a same-user substitute is
+/// left untouched; the check-then-unlink window is limited to the owner's private directory).
+/// Windows deletes through the held handle itself, so no pathname race exists.
+fn discard_temp(temporary: &Path, held: &File) {
     #[cfg(unix)]
-    directory.replace(&temporary, path)?;
+    {
+        use std::os::unix::fs::MetadataExt;
+        let (Ok(current), Ok(identity)) = (std::fs::symlink_metadata(temporary), held.metadata())
+        else {
+            return;
+        };
+        if (current.dev(), current.ino()) == (identity.dev(), identity.ino()) {
+            // Best effort: the refusal is already reported; a failed unlink only retains the temp.
+            let _ = std::fs::remove_file(temporary);
+        }
+    }
     #[cfg(windows)]
-    directory.replace(&file, path)?;
-    confirm_durable(&directory, observer)
+    {
+        let _ = temporary;
+        // Best effort: the refusal is already reported; a failed delete only retains the temp.
+        let _ = super::windows_store::discard_owned(held);
+    }
 }
 /// After replacement the new generation may already be visible, so every failure is an unknown outcome.
 fn confirm_durable(

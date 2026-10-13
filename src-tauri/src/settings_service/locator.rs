@@ -4,8 +4,9 @@ use super::{
     store::persistence_failed,
 };
 use std::path::{Component, Path, PathBuf};
+/// Tauri bundle identifier (`tauri.conf.json` `identifier`); a unit test keeps them equal.
 const APP_IDENTIFIER: &str = "com.pais.handy";
-const STORE_FILENAME: &str = "settings_store.json";
+const STORE_FILENAME: &str = crate::settings::SETTINGS_STORE_PATH;
 
 /// Side-effect-free installed/portable store resolver; no marker upgrade or Data creation.
 pub struct StoreLocator;
@@ -35,7 +36,8 @@ impl StoreLocator {
 /// Canonicalize the closest existing ancestor and append only normal missing components.
 ///
 /// # Errors
-/// `persistence_failed` for relative or `..` paths; `unavailable` for aliases or foreign owners.
+/// `persistence_failed` for relative or `..` paths; `unavailable` for aliases that cross a user
+/// boundary (or any Windows alias) and for foreign owners.
 pub(super) fn canonical_path(path: &Path) -> Result<PathBuf, SettingsError> {
     if !path.is_absolute()
         || path
@@ -45,6 +47,17 @@ pub(super) fn canonical_path(path: &Path) -> Result<PathBuf, SettingsError> {
         return Err(persistence_failed());
     }
     reject_aliases(path)?;
+    let (ancestor, missing) = nearest_existing_ancestor(path)?;
+    let mut result = validate_canonical_ancestor(&ancestor)?;
+    for component in missing.into_iter().rev() {
+        result.push(component);
+    }
+    Ok(result)
+}
+/// Closest existing ancestor and the missing components below it, deepest first.
+fn nearest_existing_ancestor(
+    path: &Path,
+) -> Result<(PathBuf, Vec<std::ffi::OsString>), SettingsError> {
     let mut ancestor = path.to_path_buf();
     let mut missing = Vec::new();
     while !ancestor.exists() {
@@ -59,11 +72,16 @@ pub(super) fn canonical_path(path: &Path) -> Result<PathBuf, SettingsError> {
             .ok_or_else(persistence_failed)?
             .to_path_buf();
     }
+    Ok((ancestor, missing))
+}
+/// Canonicalize the existing ancestor and require the current user to own it (Windows also
+/// requires a checked, reparse-refusing handle).
+fn validate_canonical_ancestor(ancestor: &Path) -> Result<PathBuf, SettingsError> {
     let canonical = ancestor.canonicalize().map_err(|_| persistence_failed())?;
-    validate_owner(&std::fs::metadata(&canonical).map_err(|_| persistence_failed())?)?;
+    let metadata = std::fs::metadata(&canonical).map_err(|_| persistence_failed())?;
+    validate_owner(&metadata)?;
     #[cfg(windows)]
     {
-        let metadata = std::fs::metadata(&canonical).map_err(|_| persistence_failed())?;
         let kind = if metadata.is_dir() {
             super::windows_store::ResourceKind::Directory
         } else {
@@ -72,14 +90,11 @@ pub(super) fn canonical_path(path: &Path) -> Result<PathBuf, SettingsError> {
         super::windows_store::open_checked(&canonical, kind, false)
             .map_err(|_| persistence_failed())?;
     }
-    let mut result = canonical;
-    for component in missing.into_iter().rev() {
-        result.push(component);
-    }
-    Ok(result)
+    Ok(canonical)
 }
-/// Walk every existing component before canonicalization so no store, parent or ancestor alias is
-/// silently resolved. The walk stops at the first missing component, which creation will add.
+/// Walk every existing component before canonicalization so no alias is resolved silently. The
+/// walk stops at the first missing component, which creation will add. The final component (the
+/// store file itself) must never be a link: atomic replacement would replace the link, not its target.
 fn reject_aliases(path: &Path) -> Result<(), SettingsError> {
     let mut current = PathBuf::new();
     for component in path.components() {
@@ -89,24 +104,36 @@ fn reject_aliases(path: &Path) -> Result<(), SettingsError> {
             Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(()),
             Err(_) => return Err(persistence_failed()),
         };
-        if metadata.file_type().is_symlink() && !is_system_alias(&metadata) {
+        let is_final = current.as_path() == path;
+        if metadata.file_type().is_symlink()
+            && (is_final || !is_permitted_alias(&current, &metadata))
+        {
             return Err(SettingsError::new(SettingsErrorCode::Unavailable));
         }
     }
     Ok(())
 }
-/// Root-owned Unix links such as macOS `/var` -> `/private/var` belong to the operating system and
-/// only an administrator can change them, so they are followed. Any other symlink, and every
-/// Windows symlink or junction (reported as a symlink by the standard library), is refused.
-fn is_system_alias(metadata: &std::fs::Metadata) -> bool {
+/// Plan rule: refuse only aliases that cross a user boundary. Root-owned Unix links (macOS `/var`
+/// -> `/private/var`) belong to the system and are followed; a link owned by the current user is
+/// followed only when its resolved target is a directory owned by the current user too (dotfiles
+/// or relocated data directories). Windows symlinks and junctions are always refused, because
+/// their ownership is ACL-based and is not checked by this resolver.
+fn is_permitted_alias(link: &Path, metadata: &std::fs::Metadata) -> bool {
     #[cfg(unix)]
     {
         use std::os::unix::fs::MetadataExt;
-        metadata.uid() == 0
+        let user = super::ownership::current_uid();
+        match metadata.uid() {
+            0 => true,
+            owner if owner == user => {
+                std::fs::metadata(link).is_ok_and(|target| target.is_dir() && target.uid() == user)
+            }
+            _ => false,
+        }
     }
     #[cfg(not(unix))]
     {
-        let _ = metadata;
+        let _ = (link, metadata);
         false
     }
 }
@@ -129,4 +156,15 @@ pub(super) fn validate_owner(metadata: &std::fs::Metadata) -> Result<(), Setting
         return Err(SettingsError::new(SettingsErrorCode::Unavailable));
     }
     Ok(())
+}
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn app_identifier_matches_the_tauri_bundle_identifier() -> Result<(), Box<dyn std::error::Error>>
+    {
+        let config: serde_json::Value =
+            serde_json::from_str(include_str!("../../tauri.conf.json"))?;
+        assert_eq!(config["identifier"], super::APP_IDENTIFIER);
+        Ok(())
+    }
 }

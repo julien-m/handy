@@ -28,8 +28,10 @@ impl Driver {
         // Contract: re-run this test binary with `--exact --ignored` so only the
         // `repository_subprocess_fixture` entry point runs, in its own process.
         // Protocol on stdin/stdout lines: parent sends the JSON config, child prints READY;
-        // parent sends GO, child commits and prints `RESULT <json>` (startup mode then waits
-        // for RELEASE before dropping its lease), or prints CRASH_READY at the injected stage.
+        // parent sends GO, child prints COMMITTING, commits and prints `RESULT <json>` (startup
+        // mode then waits for RELEASE before dropping its lease), prints CRASH_READY at an
+        // injected crash stage, or (pause_after_load) prints PAUSED holding the transaction
+        // lock and continues after RESUME.
         // A normal run must exit 0 (`finish`). `kill_at_barrier` kills the child at
         // CRASH_READY; on Unix the status must report SIGKILL, so no Rust unwind or Drop ran.
         let mut child = Command::new(std::env::current_exe()?)
@@ -72,15 +74,29 @@ impl Driver {
         self.input.flush()?;
         Ok(())
     }
-    fn receive(&self, prefix: &str) -> TestResult<String> {
-        let deadline = Instant::now() + DEADLINE;
+    pub(super) fn receive(&self, prefix: &str) -> TestResult<String> {
+        self.receive_within(prefix, DEADLINE)?
+            .ok_or_else(|| format!("no {prefix} line before the deadline").into())
+    }
+    /// Wait up to `timeout` for a line starting with `prefix`; `None` when none arrived in time.
+    pub(super) fn receive_within(
+        &self,
+        prefix: &str,
+        timeout: Duration,
+    ) -> TestResult<Option<String>> {
+        let deadline = Instant::now() + timeout;
         loop {
-            let line = self
+            let line = match self
                 .lines
-                .recv_timeout(deadline.saturating_duration_since(Instant::now()))?;
+                .recv_timeout(deadline.saturating_duration_since(Instant::now()))
+            {
+                Ok(line) => line,
+                Err(mpsc::RecvTimeoutError::Timeout) => return Ok(None),
+                Err(error) => return Err(error.into()),
+            };
             if line.starts_with(prefix) {
                 eprintln!("NESTED {} {line}", self.child.id());
-                return Ok(line);
+                return Ok(Some(line));
             }
         }
     }
@@ -170,6 +186,25 @@ fn repository_subprocess_fixture() -> TestResult<()> {
     Ok(())
 }
 
+/// Hold the transaction at `AfterLoad` (lock held, fresh read done) until the parent sends RESUME.
+struct PauseAfterLoad;
+impl handy_app_lib::settings_service::transaction::PersistObserver for PauseAfterLoad {
+    fn observe(
+        &self,
+        stage: handy_app_lib::settings_service::transaction::PersistStage,
+    ) -> std::io::Result<()> {
+        if stage == handy_app_lib::settings_service::transaction::PersistStage::AfterLoad {
+            println!("PAUSED");
+            std::io::stdout().flush()?;
+            let mut line = String::new();
+            std::io::stdin().lock().read_line(&mut line)?;
+            if line.trim() != "RESUME" {
+                return Err(std::io::Error::other("pause released without RESUME"));
+            }
+        }
+        Ok(())
+    }
+}
 struct CrashPause(handy_app_lib::settings_service::transaction::PersistStage);
 impl handy_app_lib::settings_service::transaction::PersistObserver for CrashPause {
     fn observe(
@@ -201,7 +236,12 @@ fn write_fixture(
             updates_allowed: true,
         },
     )?;
+    println!("COMMITTING");
+    std::io::stdout().flush()?;
     let result = match config["mode"].as_str() {
+        Some("pause_after_load") => {
+            repository.commit_with_probe(mutation, None, probe, &PauseAfterLoad)
+        }
         Some("crash_before") => repository.commit_with_probe(
             mutation,
             None,

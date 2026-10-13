@@ -2,7 +2,8 @@
 use super::{security, validate_kind, wide, PinnedDirectory, ResourceKind};
 use std::{ffi::OsStr, fs::File, io, os::windows::io::AsRawHandle};
 use windows_sys::Win32::Storage::FileSystem::{
-    FileRenameInfo, FlushFileBuffers, SetFileInformationByHandle, FILE_RENAME_INFO,
+    FileDispositionInfo, FileRenameInfo, FlushFileBuffers, SetFileInformationByHandle,
+    FILE_DISPOSITION_INFO, FILE_RENAME_INFO,
 };
 
 /// A failed flush after rename must not authorize an automatic retry of a possibly committed write.
@@ -30,6 +31,25 @@ pub(crate) fn replace_owned(
         .map_err(ReplaceError::Before)?;
     rename(file, held, &name).map_err(ReplaceError::Before)?;
     flush(file).map_err(ReplaceError::After)
+}
+
+/// Mark the held temp (opened with DELETE access) for deletion through its own handle, so a
+/// substitute at the same pathname can never be removed; it disappears when the handle closes.
+pub(crate) fn discard_owned(file: &File) -> io::Result<()> {
+    let info = FILE_DISPOSITION_INFO { DeleteFile: true };
+    // SAFETY: live owned handle; the initialized structure matches the declared byte size.
+    if unsafe {
+        SetFileInformationByHandle(
+            file.as_raw_handle(),
+            FileDispositionInfo,
+            (&info as *const FILE_DISPOSITION_INFO).cast(),
+            std::mem::size_of::<FILE_DISPOSITION_INFO>() as u32,
+        )
+    } == 0
+    {
+        return Err(io::Error::last_os_error());
+    }
+    Ok(())
 }
 
 fn replacement_name(name: &OsStr) -> io::Result<Vec<u16>> {

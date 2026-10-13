@@ -62,8 +62,22 @@ fn every_durable_fault_preserves_a_complete_generation_and_reports_uncertainty(
             assert_eq!(disk, original);
         }
         assert_eq!(disk["settings"]["unknown"], "CANARY_KEEP");
+        assert_eq!(
+            temporary_files(directory.path())?,
+            Vec::<std::path::PathBuf>::new()
+        );
     }
     Ok(())
+}
+/// Private generations left in `directory`; a refused commit must not retain one holding secrets.
+pub(super) fn temporary_files(
+    directory: &std::path::Path,
+) -> std::io::Result<Vec<std::path::PathBuf>> {
+    Ok(std::fs::read_dir(directory)?
+        .filter_map(Result::ok)
+        .map(|entry| entry.path())
+        .filter(|path| path.extension().is_some_and(|extension| extension == "tmp"))
+        .collect())
 }
 struct ReplaceTemp {
     directory: std::path::PathBuf,

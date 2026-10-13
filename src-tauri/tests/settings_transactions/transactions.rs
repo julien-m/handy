@@ -159,3 +159,57 @@ fn prompt_mutation_revalidates_membership_against_the_locked_fresh_snapshot(
     assert_eq!(std::fs::read(path)?, bytes);
     Ok(())
 }
+#[test]
+fn refused_or_noop_commit_on_absent_store_creates_no_directory_or_lock(
+) -> Result<(), Box<dyn std::error::Error>> {
+    let directory = tempfile::tempdir()?;
+    let parent = directory.path().join("absent");
+    let repository = SettingsRepository::new(parent.join("settings_store.json"));
+    let defaults = serde_json::to_value(repository.read_snapshot()?.snapshot.public_settings())?;
+    let same = if defaults["audio_feedback"] == true {
+        "true"
+    } else {
+        "false"
+    };
+    let changed = if same == "true" { "false" } else { "true" };
+    let noop = repository.commit_with_probe(
+        mutation("audio_feedback", same)?,
+        None,
+        &probe(&directory),
+        &(),
+    )?;
+    assert_eq!(noop.snapshot.revision, Revision(0));
+    let stale = repository
+        .commit_with_probe(
+            mutation("audio_feedback", changed)?,
+            Some(Revision(3)),
+            &probe(&directory),
+            &(),
+        )
+        .err()
+        .ok_or("stale CAS accepted on absent store")?;
+    assert_eq!(stale.code(), SettingsErrorCode::RevisionConflict);
+    let removed_prompt = validate_cli(
+        "post_process_selected_prompt_id",
+        "removed",
+        &ValidationContext {
+            prompt_ids: &["removed"],
+            updates_allowed: true,
+        },
+    )?;
+    let invalid = repository
+        .commit_with_probe(removed_prompt, None, &probe(&directory), &())
+        .err()
+        .ok_or("removed prompt accepted on absent store")?;
+    assert_eq!(invalid.code(), SettingsErrorCode::ValidationFailed);
+    assert!(!parent.exists());
+    std::fs::create_dir(&parent)?;
+    repository.commit_with_probe(
+        mutation("audio_feedback", same)?,
+        None,
+        &probe(&directory),
+        &(),
+    )?;
+    assert_eq!(std::fs::read_dir(&parent)?.count(), 0);
+    Ok(())
+}
