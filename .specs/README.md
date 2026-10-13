@@ -40,7 +40,7 @@
 | 004 | Multiple Dictation Shortcuts | Planned | 2026-10-12 | 2026-10-12 | [spec](features/004-multiple-dictation-shortcuts/spec.md) |
 | 005 | Custom AI Prompts | Planned | 2026-10-12 | 2026-10-12 | [spec](features/005-custom-ai-prompts/spec.md) |
 | 006 | Destination Application | Planned | 2026-10-12 | 2026-10-13 | [spec](features/006-destination-application/spec.md) |
-| 007 | Smart Paste | Planned | 2026-10-12 | 2026-10-13 | [spec](features/007-smart-paste/spec.md) |
+| 007 | Smart Paste | In Progress | 2026-10-12 | 2026-10-13 | [spec](features/007-smart-paste/spec.md) |
 | 008 | Settings CLI | Planned | 2026-10-12 | 2026-10-12 | [spec](features/008-settings-cli/spec.md) |
 | 009 | PIN Mode and Enter Rule | Planned | 2026-10-12 | 2026-10-13 | [spec](features/009-pin-mode-and-enter-rule/spec.md) |
 | 010 | Recovery Bubble | Planned | 2026-10-12 | 2026-10-13 | [spec](features/010-recovery-bubble/spec.md) |
@@ -68,6 +68,7 @@
 <!-- readme:activity:start -->
 | Date | Type | Description |
 |---|---|---|
+| 2026-10-13 | Feature | Smart Paste: record native feasibility and explicit cache/late-write limits; settings integration awaits 008 |
 | 2026-10-13 | Feature | [Feature 007] Smart paste plan rewritten from 2026-10-13 spec — 9 steps, 4 diagrams; AX-first and receipt-only restoration; native/design release gates |
 | 2026-10-13 | Feature | [Feature 010] Plan refined: current 007 AX/readback contract and explicit AC-006 native acceptance |
 | 2026-10-13 | Feature | [Feature 009] Plan refined: verified AX success for Enter, uncertain suppression, LAST-read restoration and current-only destination cross — plan only |
@@ -77,7 +78,6 @@
 | 2026-10-12 | Feature | [Feature 009] Plan refined: align Enter with smart paste outcomes, shared output smart_paste configuration and changeCount restoration guard; preserve Windows reliable paste |
 | 2026-10-12 | Feature | Smart Paste — 9 implementation steps, 4 diagrams, 008 output domain, bounded snapshots and truthful outcomes |
 | 2026-10-12 | Feature | [Feature 006] Plan refined: smart-paste terminal results replace retired clipboard-window integration; Windows reliable paste preserved |
-| 2026-10-12 | Feature | [Feature 008] Plan refined: replace retired clipboard-window dependencies with smart paste integration; preserve transactional service and domain framework. |
 <!-- readme:activity:end -->
 
 ---
@@ -151,3 +151,5 @@
 <!-- finalize:spec-plan:2026-10-13:09d4dd98 -->
 
 <!-- finalize:spec-plan:2026-10-13:17322c07 -->
+
+<!-- finalize:spec-feature:2026-10-13:72e02927 -->

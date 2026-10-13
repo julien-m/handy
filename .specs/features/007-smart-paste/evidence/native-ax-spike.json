@@ -1,0 +1,266 @@
+{
+  "feature": "007-smart-paste",
+  "captured_at": "2026-10-13T14:07:21.311140+00:00",
+  "exact_command": [
+    "python3",
+    ".specs/features/007-smart-paste/evidence/probes/native_ax_spike.py",
+    "--out",
+    ".specs/features/007-smart-paste/evidence/native-ax-spike.json"
+  ],
+  "source_head": "967eb388047051ac70fb88ed98344383a9e9699f",
+  "worktree_diff_sha256": "0e507e0649087c74edfc56b749aff77a366d7ebb4ec056979f1fd8e5699f61f6",
+  "worktree_hash_scope": [
+    ".specs/features/007-smart-paste/evidence/probes/native_ax_spike.py",
+    ".specs/features/007-smart-paste/evidence/probes/native_ax_probe.py",
+    ".specs/features/007-smart-paste/evidence/probes/native_ax_bindings.py"
+  ],
+  "producer_source_sha256": {
+    ".specs/features/007-smart-paste/evidence/probes/native_ax_spike.py": "ce90697c914ae0e0bb931383c721e2f9af8a245b7fe837325200ab45304515a1",
+    ".specs/features/007-smart-paste/evidence/probes/native_ax_probe.py": "45a00270c271d06e4fbab7d02736a0e4335a6552061bf6c55d4fa49cbe649089",
+    ".specs/features/007-smart-paste/evidence/probes/native_ax_bindings.py": "b89da7a98db506a3295a6ebcd8a680033713b4941806dad9a2b2abb9bd5ef54e"
+  },
+  "receipt_excluded_from_worktree_hash": true,
+  "probe_source_sha256": "ce90697c914ae0e0bb931383c721e2f9af8a245b7fe837325200ab45304515a1",
+  "fixture_source_sha256": "7d8140f9ee93e0f74cd711969b9e7273e83d426610639b2a0ceb2988abb0ddc8",
+  "compiled_binary_sha256": "7c42c1e347591639248864eee12db8d318cc7fa459e973ed15b6819ca5418699",
+  "toolchain": "Apple Swift version 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101)\nTarget: arm64-apple-macosx26.0",
+  "compile_exit_status": 0,
+  "probe_exit_status": 0,
+  "platform": "ProductName:\t\tmacOS\nProductVersion:\t\t26.5.2\nBuildVersion:\t\t25F84",
+  "trusted": true,
+  "requested_proxy_timeout_ms": 20,
+  "discovery_warmup_budget_ms": 1000,
+  "limitations": [
+    "Proxy timeout is requested, not a strict wall-clock guarantee.",
+    "No total-250ms or application compatibility or universal exactly-once claim.",
+    "Late asynchronous writes can remain unchanged after the readback window and apply later.",
+    "No clipboard, activation or key events were used; every fixture was reaped."
+  ],
+  "primary_documentation": {
+    "url": "https://developer.apple.com/documentation/applicationservices/1459345-axuielementsetmessagingtimeout",
+    "sdk_header": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/HIServices.framework/Versions/A/Headers/AXUIElement.h",
+    "lines": "387-402"
+  },
+  "fixtures": [
+    {
+      "mode": "small",
+      "pid": 22298,
+      "field_found": true,
+      "initial_utf16_units": 4,
+      "setter": {
+        "operation": "AXSelectedText",
+        "status": 0,
+        "elapsed_ms": 3.16
+      },
+      "expected_readback_matches": true,
+      "calls": [
+        {
+          "operation": "AXRole",
+          "status": 0,
+          "elapsed_ms": 24.855
+        },
+        {
+          "operation": "AXWindows",
+          "status": 0,
+          "elapsed_ms": 11.948
+        },
+        {
+          "operation": "AXRole",
+          "status": 0,
+          "elapsed_ms": 0.393
+        },
+        {
+          "operation": "AXChildren",
+          "status": 0,
+          "elapsed_ms": 1.039
+        },
+        {
+          "operation": "AXRole",
+          "status": 0,
+          "elapsed_ms": 1.735
+        },
+        {
+          "operation": "AXValue",
+          "status": 0,
+          "elapsed_ms": 0.15
+        },
+        {
+          "operation": "AXValue",
+          "status": 0,
+          "elapsed_ms": 2.207
+        },
+        {
+          "operation": "AXValue",
+          "status": -25204,
+          "elapsed_ms": 20.639
+        },
+        {
+          "operation": "AXValue",
+          "status": -25204,
+          "elapsed_ms": 25.027
+        },
+        {
+          "operation": "AXValue",
+          "status": -25204,
+          "elapsed_ms": 24.97
+        }
+      ],
+      "delayed_readbacks": [
+        [
+          0,
+          5.452,
+          true
+        ]
+      ],
+      "stopped_target_calls": [
+        {
+          "operation": "AXValue",
+          "status": -25204,
+          "elapsed_ms": 20.639
+        },
+        {
+          "operation": "AXValue",
+          "status": -25204,
+          "elapsed_ms": 25.027
+        },
+        {
+          "operation": "AXValue",
+          "status": -25204,
+          "elapsed_ms": 24.97
+        }
+      ],
+      "stopped_target_signal": 17
+    },
+    {
+      "mode": "large",
+      "pid": 22303,
+      "field_found": true,
+      "initial_utf16_units": 1000001,
+      "setter": null,
+      "expected_readback_matches": null,
+      "calls": [
+        {
+          "operation": "AXRole",
+          "status": 0,
+          "elapsed_ms": 13.422
+        },
+        {
+          "operation": "AXWindows",
+          "status": 0,
+          "elapsed_ms": 13.644
+        },
+        {
+          "operation": "AXRole",
+          "status": 0,
+          "elapsed_ms": 0.116
+        },
+        {
+          "operation": "AXChildren",
+          "status": 0,
+          "elapsed_ms": 2.127
+        },
+        {
+          "operation": "AXRole",
+          "status": 0,
+          "elapsed_ms": 0.688
+        },
+        {
+          "operation": "AXValue",
+          "status": 0,
+          "elapsed_ms": 1.261
+        }
+      ],
+      "delayed_readbacks": [],
+      "stopped_target_calls": [],
+      "stopped_target_signal": null
+    },
+    {
+      "mode": "delayed",
+      "pid": 22307,
+      "field_found": true,
+      "initial_utf16_units": 4,
+      "setter": {
+        "operation": "AXSelectedText",
+        "status": 0,
+        "elapsed_ms": 0.05
+      },
+      "expected_readback_matches": true,
+      "calls": [
+        {
+          "operation": "AXRole",
+          "status": 0,
+          "elapsed_ms": 10.469
+        },
+        {
+          "operation": "AXWindows",
+          "status": 0,
+          "elapsed_ms": 9.017
+        },
+        {
+          "operation": "AXRole",
+          "status": 0,
+          "elapsed_ms": 0.043
+        },
+        {
+          "operation": "AXChildren",
+          "status": 0,
+          "elapsed_ms": 0.879
+        },
+        {
+          "operation": "AXRole",
+          "status": 0,
+          "elapsed_ms": 0.06
+        },
+        {
+          "operation": "AXValue",
+          "status": 0,
+          "elapsed_ms": 0.058
+        },
+        {
+          "operation": "AXValue",
+          "status": 0,
+          "elapsed_ms": 0.091
+        },
+        {
+          "operation": "AXValue",
+          "status": 0,
+          "elapsed_ms": 0.038
+        },
+        {
+          "operation": "AXValue",
+          "status": 0,
+          "elapsed_ms": 0.024
+        },
+        {
+          "operation": "AXValue",
+          "status": 0,
+          "elapsed_ms": 0.075
+        }
+      ],
+      "delayed_readbacks": [
+        [
+          149,
+          154.206,
+          false
+        ],
+        [
+          150,
+          154.268,
+          false
+        ],
+        [
+          151,
+          154.303,
+          false
+        ],
+        [
+          180,
+          185.124,
+          true
+        ]
+      ],
+      "stopped_target_calls": [],
+      "stopped_target_signal": null
+    }
+  ]
+}

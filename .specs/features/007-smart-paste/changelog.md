@@ -60,3 +60,20 @@
 - **Evidence boundary:** Independent semantic review and progression recorded separately; native/AppKit/AX late-write/compatibility and shared Penflow UI gates remain mandatory before release. No mockups generated.
 
 <!-- finalize:spec-plan:2026-10-13:17322c07 -->
+
+## 2026-10-13 — [Feature]: Native feasibility checkpoint
+
+Recorded reproducible public macOS AppKit, AX and input-source probes with bounded subprocesses and typed reports. Targeted Cargo integration testing builds the real Apple Intelligence bridge; the probe itself tests Swift/AppKit rather than AI inference.
+
+AppKit caching and delayed AX mutation counterexamples remain explicit: callback-only quiet timing is unproven and affected production clipboard wiring is held. This checkpoint does not certify complete acceptance or application/layout compatibility. Settings service, revisions, CLI, migration and UI integration wait for 008.
+
+<!-- finalize:spec-feature:2026-10-13:72e02927 -->
+
+## 2026-10-13 — Feature: Step 1 native feasibility closed (core-first run)
+
+- **Type:** Feature
+- **Spec modified:** No
+- **Code modified:** src-tauri/tests/smart_paste_native.rs, scripts/smart-paste-native-*.ts, evidence probes
+- **AC impacted:** AC-008, AC-011, AC-016, AC-017 (feasibility only, no acceptance)
+- **Author:** Claude Opus 5.5 (implementation agent, orchestrated run)
+- **Evidence:** AppKit receipt regenerated against the current harness; AX and TIS receipts match their probe hashes. Raw gate outputs in [proofs/claude](proofs/claude/).

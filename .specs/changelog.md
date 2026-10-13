@@ -5,6 +5,9 @@
 
 ---
 
+## 2026-10-13 — Smart Paste: record native feasibility and explicit cache/late-write limits; settings integration awaits 008
+<!-- finalize:spec-feature:2026-10-13:72e02927 -->
+
 ## 2026-10-13 — [Feature 007] Smart paste plan rewritten from 2026-10-13 spec — 9 steps, 4 diagrams; AX-first and receipt-only restoration; native/design release gates
 <!-- finalize:spec-plan:2026-10-13:17322c07 -->
 

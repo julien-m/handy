@@ -1,0 +1,57 @@
+# Smart Paste — implementation map
+
+Inspect [the specification](spec.md) and [the progress checkpoints](progress.md) before resuming. This run implements the native/core scope independent of 008; no complete feature acceptance or native application compatibility is claimed.
+
+## Requirement Mapping
+
+| Requirement | File(s) | @spec Anchor | Status | Last Verified |
+|---|---|---|---|---|
+| [FR-005: Multi-type receipt transaction](spec.md#fr-005) | [Native spike](../../../src-tauri/tests/smart_paste_native.rs), [harness](../../../scripts/smart-paste-native-proof.ts) | FR-005 | Partial — native feasibility; production adapter pending | 2026-10-13 |
+| [FR-006: Guarded restoration](spec.md#fr-006) | None | Pending | Missing | — |
+| [FR-007: App and keyboard strategies](spec.md#fr-007) | [Native keyboard observations](evidence/native-keyboard-spike.json) | Pending | Partial — read-only TIS observations | 2026-10-13 |
+| [FR-008: Truthful outcomes](spec.md#fr-008) | None | Pending | Missing | — |
+| [FR-009: Settings, migration and CLI](spec.md#fr-009) | None | Pending | Waiting for 008 | — |
+| [FR-010: Native evidence](spec.md#fr-010) | [Native spike](../../../src-tauri/tests/smart_paste_native.rs), [harness](../../../scripts/smart-paste-native-proof.ts), [AX observations](evidence/native-ax-spike.json) | FR-010 | Partial — synthetic native observations, release matrix pending | 2026-10-13 |
+| [FR-011: Verified direct insertion](spec.md#fr-011) | [AX observations](evidence/native-ax-spike.json) | Pending | Partial — native mechanism proven with synthetic field | 2026-10-13 |
+
+## Acceptance Criteria Mapping
+
+| AC | Test File | Status |
+|---|---|---|
+| AC-008 | [Native spike](../../../src-tauri/tests/smart_paste_native.rs) | Partial — item provider and byte roundtrip observed; AppKit repeat-read cache limitation |
+| AC-009 | None | Missing — no restoration algorithm yet; real repeat reads not observable after cache fulfillment |
+| AC-010 | None | Missing |
+| AC-011 | [Keyboard observations](evidence/native-keyboard-spike.json) | Partial — current layout resolution only; enabled ABC/US and switching/restoration pending |
+| AC-012 | None | Missing |
+| AC-013 | None | Missing |
+| AC-014 | None | Waiting for 008 — shared startup migration and UI |
+| AC-015 | None | Waiting for 008 — settings service, revisions, CLI parity |
+| AC-016 | [Native spike](../../../src-tauri/tests/smart_paste_native.rs) | Partial — synthetic checks only; real application/layout matrix pending release evidence |
+| AC-017 | [AX observations](evidence/native-ax-spike.json) | Partial — synthetic native UTF-16 replacement verified; production classifier pending |
+| AC-018 | None | Missing — insertion chain and recovery consumer pending |
+| has_dropdown / is_keyboard_navigable | None | Waiting for 008 — UI contract and settings integration |
+
+## Native observations and boundaries
+
+- Targeted native Cargo fixture: one ignored opt-in integration test executed and passed. The Cargo application build compiled the real Apple Intelligence bridge; the fixture exercises Swift/AppKit and does not test Apple Intelligence inference. No general clipboard or user focus was touched.
+- Read [the provider evidence](evidence/native-spike.json): AppKit cached fulfilled text. A pre-key read suppressed a subsequent provider callback, and two post-key readers produced one callback. Callback-controlled mechanics work; quiet timing after every actual consumer read is not certified. A callback is not an authenticated destination acknowledgement.
+- Read [the AX evidence](evidence/native-ax-spike.json): synthetic AXSelectedText replacement and UTF-16 length guard were observed. Requested 20 ms messaging timeouts had measured scheduling overhead; no universal wall-clock timeout or total 250 ms native guarantee is claimed.
+- Read [the TIS evidence](evidence/native-keyboard-spike.json): French source resolves Command-V to keycode 9. ABC, US and Dvorak are installed but disabled; this run does not enable layouts or change system configuration.
+
+## Files Created/Modified
+
+- Read [the native integration test](../../../src-tauri/tests/smart_paste_native.rs) for the opt-in harness assertions.
+- Run [the public native fixture harness](../../../scripts/smart-paste-native-proof.ts) for named pasteboard/AppKit observations.
+- Read [the progress file](progress.md) for the exact resume state and deferred dependencies.
+
+## Reproducible feasibility probes
+
+- Run [the retained AX spike](evidence/probes/native_ax_spike.py) with `--out .specs/features/007-smart-paste/evidence/native-ax-spike.json`; it uses [the bounded synthetic AX adapter](evidence/probes/native_ax_probe.py), owns and reaps every fixture, and records source/binary/toolchain identity.
+- Compile and run [the retained Carbon spike](evidence/probes/native-keyboard-spike.swift) with the exact commands preserved in [its receipt](evidence/native-keyboard-spike.json). It inventories sources and resolves Command-V without selecting layouts or sending keys.
+- Run [the AppKit harness](../../../scripts/smart-paste-native-proof.ts), which validates [the native report schema](../../../scripts/smart-paste-native-report.ts) and uses [bounded subprocess cleanup](../../../scripts/smart-paste-native-process.ts). The current macOS cache counterexamples are characterization witnesses; changed observations require a new feasibility review.
+
+## Quality gate scope
+
+Raw command outputs for every checkpoint are kept under [proofs/claude](proofs/claude/) as `<step>-<gate>.{out,err,exit}`.
+
+- Step 1: the opt-in native fixture passed 1/0 ([stdout](proofs/claude/step-1-native-cargo.out), [exit](proofs/claude/step-1-native-cargo.exit)); full `cargo test` passed ([stdout](proofs/claude/step-1-cargo-test.out)); `cargo clippy --all-targets` reports the same 5 pre-existing warnings in untouched code (`lib.rs`, `managers/transcription.rs`, `engine_supervisor/supervisor.rs`, `managers/gguf_meta.rs`, `portable.rs`) and no new one ([stderr](proofs/claude/step-1-clippy.err)); fmt, lint, format and repo conventions PASS.

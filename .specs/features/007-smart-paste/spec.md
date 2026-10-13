@@ -2,7 +2,7 @@
 feature: smart-paste
 title: Smart Paste
 priority: P1
-status: Planned
+status: In Progress
 created: 2026-10-12
 updated: 2026-10-13
 ---
@@ -14,7 +14,7 @@ updated: 2026-10-13
 - **Feature:** Smart Paste
 - **Branch:** None — specification only (program specified before `spec-ship`)
 - **Date:** 2026-10-12
-- **Status:** Planned
+- **Status:** In Progress
 - **Input:** Program item 7, scope replaced on 2026-10-12 by Julien's decision (relayed from Codex): replace the clipboard recovery window (10–15 seconds) with smart paste inspired by Spokenly; do not plan or implement the recovery window for now; keep number 7. Read the Spokenly smart-paste report (`.investigations/spokenly-smart-paste-2026-10-09/rapport.md`). Adopt its documented principles in Handy: multi-type save of the clipboard; transcript provided on demand by a pasteboard data provider; single first-read callback; current-host-only and transient marking; restoration after the read with a fallback delay and a `changeCount` guard that preserves any newer copy; strategy adapted to the application and the keyboard, selecting the ABC then US layout and restoring the keyboard afterwards. Static Spokenly constants: 300 ms / 800 ms, Jump Desktop 1.5 s / 3 s. Inserting through `AXSelectedText` stays a distinct method (superseded by the decision of 2026-10-13 below); destination and PIN act upstream. Verify real insertion and compatibility, because the reverse-engineering evidence is static. Decisions of 2026-10-13 (Julien): (1) a previous clipboard content or an earlier transcript must never be pasted by mistake: restore only after a read confirmed after the paste keystroke, once reads have been quiet for 300 ms after the last one, and never restore when no read occurred (the transcript stays and recovery is offered); (2) try direct insertion through the accessibility API first, verified by reading the field back, then fall back to the clipboard paste, then to the recovery bubble. Program item 8 requires the settings CLI to read and modify output behaviors.
 - **Feature Number:** 007
 

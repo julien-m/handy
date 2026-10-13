@@ -1,7 +1,7 @@
 schema_version: 2
 generated_from:
   constitution: .specs/constitution.md
-  constitution_sha256: 2c1b8d9ab4024fb07ad588e883da39abeffe0f3db3bfc9afe3beb29df66659e9
+  constitution_sha256: f65acb99e00dfab5f8ce418aae1b5979265f2b2eb3c399666b09c4c2caf82067
   stack: .specs/stacks/_default.md
 commands:
   lint:
