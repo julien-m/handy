@@ -1,7 +1,5 @@
 {
-  "commit": "3c1e6a7765001a52ed42952a5403e5db1fdcea0c",
-  "livespec_version": 21,
-  "mode": "pinned",
-  "runtime_id": "21-3c1e6a776500",
-  "schema": 1
+  "mode": "dev",
+  "schema": 1,
+  "source": "/Users/julienm/projects/livespec"
 }
