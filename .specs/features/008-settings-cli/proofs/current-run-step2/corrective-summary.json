@@ -1,0 +1,180 @@
+{
+  "scope": "Step2 pure foundation only. UI/CLI validation ports share policy; existing Tauri commands are not yet migrated (Step4). No store writer/raw preservation until Step3, liveIPC/CLI reachability Step5, fullAC certification Step7.",
+  "corrections": [
+    "ProtocolVersion always serializes1 and rejects other wire versions with fixed diagnostics.",
+    "OperationRequest exactcommon+pervariant allowlist rejects unknown/crossvariant fields before typed deserialization.",
+    "Public schema requires all63 fields and all17canonical enums; nullableenum support retainsnull. Integer intrinsic Rustbounds only; Number JSONtype deliberately carries no UI mutationbounds.",
+    "Unknown stored fields remain readable and are excluded solely from the public typed projection; this foundation is not a persistence writer.",
+    "All new expects removed; invalidparity tests require two genuine ValidationFailed errors."
+  ],
+  "files": [
+    {
+      "path": "src-tauri/src/lib.rs",
+      "sha256": "8f3466063c69e417a8ce36d82134e4a170c4fa9df0e7790187bbcc686b4f10d1",
+      "lines": 1129
+    },
+    {
+      "path": "src-tauri/src/settings_service/mod.rs",
+      "sha256": "44f31b6525534e0fa15f54707690bb8649ebdc1b9228a549acfca52fcdeaf854",
+      "lines": 9
+    },
+    {
+      "path": "src-tauri/src/settings_service/descriptor.rs",
+      "sha256": "7c5cd43750a7e7758a093a230a7cf33e1c420e4c00ddd6cebd876c781ee92712",
+      "lines": 67
+    },
+    {
+      "path": "src-tauri/src/settings_service/descriptor_data.rs",
+      "sha256": "54646228c99ff334988eeaba64768072375a8d4ee3dd7246da606c8ad9cdc277",
+      "lines": 82
+    },
+    {
+      "path": "src-tauri/src/settings_service/validation.rs",
+      "sha256": "14f8e6a108fb8242c9d9b0d8a438c5d11f8b124f1ecc066c130b109d0ae56621",
+      "lines": 214
+    },
+    {
+      "path": "src-tauri/src/settings_service/protocol.rs",
+      "sha256": "81b82db3115c883ec2e926700f9f6c01b27cff5534006b936a57667dd0dd288e",
+      "lines": 239
+    },
+    {
+      "path": "src-tauri/src/settings_service/errors.rs",
+      "sha256": "29f69563acf36f4bb036dc45231fc9a9e7e248475c4fca7066e7aa3d10d62a40",
+      "lines": 167
+    },
+    {
+      "path": "src-tauri/src/settings_service/public.rs",
+      "sha256": "ea545b480c8e79aca47c27a9d44250b4383697719909259a11bdc33d4ea24592",
+      "lines": 284
+    },
+    {
+      "path": "src-tauri/tests/settings_validation.rs",
+      "sha256": "04149efa5bbd01bc2b3d287124fd1fb32f71544d6d35da9bf9cae06ec900b72a",
+      "lines": 10
+    },
+    {
+      "path": "src-tauri/tests/settings_validation/contracts.rs",
+      "sha256": "8b7b9bec699473d897e5280f43d1477a56c77166b270febd5bac26ef7c3220fc",
+      "lines": 218
+    },
+    {
+      "path": "src-tauri/tests/settings_validation/inventory.rs",
+      "sha256": "012757ffd39c5e48a3ced84a8c1980d3b26b3ee2ce334338fe3f360f6fe8ef43",
+      "lines": 166
+    },
+    {
+      "path": "src-tauri/tests/settings_validation/scalars.rs",
+      "sha256": "706be114dbcfde9a40a6e034f1224a55731c5818445a3a06c064addc3ad95a68",
+      "lines": 300
+    },
+    {
+      "path": ".specs/features/008-settings-cli/contracts/settings-cli.schema.json",
+      "sha256": "5b4f8ba46d8466f46e2cdbc2197bb924617ba9f43903664dc5e709fac2ae4f70",
+      "lines": 1713
+    },
+    {
+      "path": ".specs/features/008-settings-cli/contracts/settings-cli.md",
+      "sha256": "2cc346e1ded89ee7a3df5ecd424d835842a25b9ade01ccdedca8ee1df433c71c",
+      "lines": 31
+    },
+    {
+      "path": "src-tauri/src/settings_service/request.rs",
+      "sha256": "fdd9c2dac6671d46c3b60188ec9c716327d8427bf1c91868e6f32ad25a1eec30",
+      "lines": 119
+    },
+    {
+      "path": "src-tauri/tests/settings_validation/request_contracts.rs",
+      "sha256": "1f23eb165754acfa718f0f41d28859592c577077130afe1f7d0b9d8883df9ac3",
+      "lines": 165
+    }
+  ],
+  "new_paths": [
+    "src-tauri/src/settings_service/mod.rs",
+    "src-tauri/src/settings_service/descriptor.rs",
+    "src-tauri/src/settings_service/descriptor_data.rs",
+    "src-tauri/src/settings_service/validation.rs",
+    "src-tauri/src/settings_service/protocol.rs",
+    "src-tauri/src/settings_service/errors.rs",
+    "src-tauri/src/settings_service/public.rs",
+    "src-tauri/tests/settings_validation.rs",
+    "src-tauri/tests/settings_validation/contracts.rs",
+    "src-tauri/tests/settings_validation/inventory.rs",
+    "src-tauri/tests/settings_validation/scalars.rs",
+    ".specs/features/008-settings-cli/contracts/settings-cli.schema.json",
+    ".specs/features/008-settings-cli/contracts/settings-cli.md",
+    "src-tauri/src/settings_service/request.rs",
+    "src-tauri/tests/settings_validation/request_contracts.rs"
+  ],
+  "commands": [
+    {
+      "command": "cargo test --manifest-path src-tauri/Cargo.toml --test settings_validation contracts",
+      "exit": 101,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step2/corrective-red.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step2/corrective-red.stderr"
+    },
+    {
+      "command": "cargo test --manifest-path src-tauri/Cargo.toml --test settings_validation generated_schema -- --nocapture",
+      "exit": 0,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step2/corrective-generator3.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step2/corrective-generator3.stderr"
+    },
+    {
+      "command": "cargo test --manifest-path src-tauri/Cargo.toml --test settings_validation",
+      "exit": 0,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step2/corrective-final2-test.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step2/corrective-final2-test.stderr"
+    },
+    {
+      "command": "cargo clippy --manifest-path src-tauri/Cargo.toml --test settings_validation -- -D warnings",
+      "exit": 0,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step2/corrective-final2-clippy.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step2/corrective-final2-clippy.stderr"
+    },
+    {
+      "command": "bun run format:check",
+      "exit": 0,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step2/corrective-final2-format.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step2/corrective-final2-format.stderr"
+    }
+  ],
+  "test_ids": [
+    "handy/test/settings_validation::contracts::request_roundtrip_keeps_typed_operation_without_debug_or_secret_diagnostics",
+    "handy/test/settings_validation::contracts::valid_get_keys_set_domain_shapes_roundtrip_with_optional_nulls",
+    "handy/test/settings_validation::inventory::independent_access_inventory_covers_7_readonly_1_secret_4_collections_51_scalars",
+    "handy/test/settings_validation::contracts::all_documented_error_codes_have_fixed_exits_and_object_details",
+    "handy/test/settings_validation::request_contracts::every_operation_refuses_fields_owned_by_other_variants",
+    "handy/test/settings_validation::request_contracts::unsupported_request_versions_and_extra_fields_are_rejected_safely",
+    "handy/test/settings_validation::scalars::all_51_scalar_ports_accept_the_same_typed_values",
+    "handy/test/settings_validation::scalars::cli_rejects_noncanonical_boolean_and_out_of_range_numbers",
+    "handy/test/settings_validation::contracts::generated_schema_matches_wire_shapes_and_descriptor_inventory",
+    "handy/test/settings_validation::scalars::every_nullable_scalar_preserves_strings_and_accepts_null_clear",
+    "handy/test/settings_validation::scalars::numeric_boundaries_and_overflow_have_identical_safe_error_reasons",
+    "handy/test/settings_validation::scalars::legacy_aliases_are_disk_only_and_build_policy_is_shared",
+    "handy/test/settings_validation::contracts::checked_schema_matches_the_actual_dto_generator",
+    "handy/test/settings_validation::scalars::unknown_and_protected_keys_are_refused_without_echoing_input",
+    "handy/test/settings_validation::contracts::operation_schema_requires_the_same_variant_fields_as_serde",
+    "handy/test/settings_validation::request_contracts::request_schema_closes_each_operation_to_its_own_fields",
+    "handy/test/settings_validation::inventory::every_actual_stored_field_has_exactly_one_descriptor",
+    "handy/test/settings_validation::request_contracts::public_schema_requires_all_fields_and_preserves_legacy_numeric_reads",
+    "handy/test/settings_validation::contracts::explicit_projection_reports_secret_presence_without_any_raw_canary",
+    "handy/test/settings_validation::request_contracts::all_canonical_public_enums_and_required_keys_match_independent_inventory",
+    "handy/test/settings_validation::inventory::independent_enum_inventory_accepts_every_current_canonical_variant"
+  ],
+  "test_result": {
+    "passed": 21,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 0
+  },
+  "bridge": {
+    "force_stub": false,
+    "evidence": ".specs/features/008-settings-cli/proofs/current-run-step2/corrective-final2-test.stderr",
+    "observed": "Building with Apple Intelligence support."
+  },
+  "historical_failures": {
+    "corrective-red": "7passed/3failed,exit101 validates prepatch behavior",
+    "corrective-final-test": "20passed/1failed checkedschema due floatbound roundtrip; removed nonrequired float bounds and regenerated honestly; corrective-final2 all21PASS"
+  },
+  "unchanged_gates": "Platform22 and frontendTS/lint previously PASS; no platform/frontend source modified byStep2. Supervisor performs fresh repo conventions verify with unchangedbaseline."
+}

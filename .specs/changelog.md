@@ -5,6 +5,10 @@
 
 ---
 
+## 2026-10-13 — 008-settings-cli: Step 2 pure foundation Done;21 tests pass, whole acceptance remains partial
+
+Root accepted current corrective scoped review: descriptors63/ports51/enums17, explicit public redaction, typed errors/version1/closed DTOs and checked generated schema. Actual-bridge GREEN21/0/0, clippy/full format0; unchanged platform22/frontend gates retained. Raw audit0 blocker/7 major/5 minor dispositioned; repository PASS/new0 after3 expect corrections with unchanged baseline. Step3 Todo; feature In Progress, no whole-AC or actual UI-adapter parity/native PASS. Inspect [summary](features/008-settings-cli/proofs/current-run-step2/corrective-summary.json), [review](features/008-settings-cli/proofs/current-run-step2/corrective-review.json) and [checkpoint](features/008-settings-cli/progress.md).
+
 ## 2026-10-13 — 008-settings-cli: Step 1 primitive gate Done; 22 tests pass, complete acceptance remains partial
 
 Root accepted scoped final review and audit dispositions: assertion RED101/GREEN22/0/0, actual Swift bridge, strict clippy/Cargo fmt0 and prior unchanged-frontend types/lint/format0. Audit exit0 reported0 blocker/2 major/7 minor/2 nit; pipe major corrected, FreeConsole false positive and remaining observations explicitly dispositioned. Step2 Todo; feature In Progress, no complete AC/SC certified. Inspect [final summary](features/008-settings-cli/proofs/current-run-step1/minimal-final2-summary.json), [scoped review](features/008-settings-cli/proofs/current-run-step1/minimal-final2-review.json) and [checkpoint](features/008-settings-cli/progress.md). Client authentication/reclamation remainStep5, full macOS settings/native proofStep7; foreign checks pending release evidence.

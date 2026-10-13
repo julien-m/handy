@@ -68,6 +68,7 @@
 <!-- readme:activity:start -->
 | Date | Type | Description |
 |---|---|---|
+| 2026-10-13 | Feature | 008-settings-cli: Step 2 pure foundation Done;21 tests pass, whole acceptance remains partial |
 | 2026-10-13 | Feature | 008-settings-cli: Step 1 primitive gate Done; 22 tests pass, complete acceptance remains partial |
 | 2026-10-13 | Feature | 008-settings-cli: Bounded Unix mechanism refined; current-source proof pending |
 | 2026-10-13 | Feature | 008-settings-cli: Registry activity refreshed; socket failure-path retention recorded |
@@ -77,7 +78,6 @@
 | 2026-10-13 | Feature | 008-settings-cli: private socket correction; implementation blocked by native execution runner |
 | 2026-10-13 | Feature | 008-settings-cli: Native primitives narrowed |
 | 2026-10-13 | Feature | Plan validation: normalize partial implementation map frontmatter and AC heading; no mapping or code changes |
-| 2026-10-13 | Feature | Plan refined: partial spike reuse, minimal passive legacy refusal without replay, simple Windows console compilation checks, macOS required and exact pending release evidence |
 <!-- readme:activity:end -->
 
 ---

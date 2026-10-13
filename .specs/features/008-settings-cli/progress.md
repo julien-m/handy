@@ -1,18 +1,29 @@
 # Progress — 008-settings-cli
 
-Current checkpoint: 2026-10-13 12:26 CEST. This table determines the resume point. Read [the specification](spec.md) and [the approved plan](plan.md) before continuing.
+Current checkpoint: 2026-10-13 13:37 CEST. This table determines the resume point. Read [the specification](spec.md) and [the approved plan](plan.md) before continuing.
 
 | Step | Status | Files | Tests run | Result | Updated at |
 | --- | --- | --- | --- | --- | --- |
 | 1 — Platform startup and console mechanisms | Done | 14 source/test files bound by final summary/review | Actual-bridge targeted Cargo; strict clippy; Cargo fmt; unchanged-frontend types/lint/global format; scoped source review and audit dispositions | 22 passed, 0 failed, 0 ignored; checks exit 0; final scoped PASS; audit exit 0 with findings dispositioned, not zero findings; no full AC certified | 2026-10-13 12:26 CEST |
-| 2 — Descriptors, validators and DTOs | Todo | Not started | Not run | Next step after supervisor accepts this checkpoint/current progression | 2026-10-13 12:26 CEST |
-| 3 — Atomic repository and revision | Todo | Not started | Not run | Requires Step 2 | 2026-10-13 12:26 CEST |
+| 2 — Descriptors, validators and DTOs | Done | 16 source/contract paths; 63 descriptors/51 scalar ports/17 enum keys, public projection and typed DTOs | Corrective Cargo validation; strict clippy; full format; scoped independent review; repository conventions | 21 passed, 0 failed, 0 ignored; checks exit 0; scoped PASS; unchanged-baseline conventions PASS/new0; no complete AC certified | 2026-10-13 13:37 CEST |
+| 3 — Atomic repository and revision | Todo | Not started | Not run | Next step after supervisor acceptance/commit of Step 2 | 2026-10-13 12:26 CEST |
 | 4 — All app writers and live effects | Todo | Not started | Not run | Requires Step 3; CLI writes disabled | 2026-10-13 12:26 CEST |
 | 5 — Private IPC and early CLI | Todo | Not started | Not run | Includes client authentication before bytes and lease-proven reclamation | 2026-10-13 12:26 CEST |
 | 6 — Output domain and bulk framework | Todo | Not started | Not run | Requires Step 5 | 2026-10-13 12:26 CEST |
 | 7 — Acceptance and regression | Todo | Not started | Not run | Includes mandatory full macOS settings/new-app evidence | 2026-10-13 12:26 CEST |
 
-Resume point: Step 2 after supervisor acceptance and current official progression. Step 1 Done means the planned primitive step was tested/reviewed and its effective audit findings dispositioned. The feature remains In Progress; every complete AC/SC remains unproved. No staging, commit, push or merge was performed by the documenter.
+Resume point: Step 3 Todo after supervisor acceptance/commit of completed Step 2 foundation. Step 1 commit verified by supervisor: `50fdd0446809211a73d970c56df9750ea7272fa8`; no push/merge and index empty at that checkpoint. Step 1 Done means the planned primitive step was tested/reviewed and its effective audit findings dispositioned. The feature remains In Progress; every complete AC/SC remains unproved. No staging, commit, push or merge was performed by the documenter.
+
+## Current Step 2 checkpoint — pure foundation gate accepted
+
+- **Prerequisite:** Supervisor accepted current corrective source review and local gates; actual UI writer migration remains Step 4.
+- **Required inputs:** 16 verified source/contract hashes, actual persisted inventory63, independent scalar-port51/enum17 inventories, explicit nested public projection and generated checked DTO schema.
+- **Action:** Add pure descriptor/validator/error/domain-metadata foundation. Restrict protocol version to1, close requests to common/variant fields, require all63 public keys and canonical enums. Expose secret presence only; keep unknown stored data outside typed public projection without claiming a persistence writer. Numeric read schema uses intrinsic integer bounds, not UI mutation limits, preserving supported legacy reads.
+- **Execution evidence:** Corrective validation21/0/0 with real Apple Intelligence support; strict clippy/full format exit0. Platform22 and frontend types/lint remain applicable to unchanged source. Inspect [current summary](proofs/current-run-step2/corrective-summary.json), [scoped corrective review](proofs/current-run-step2/corrective-review.json), [GREEN](proofs/current-run-step2/corrective-final2-test.stdout), [stderr](proofs/current-run-step2/corrective-final2-test.stderr), [exit](proofs/current-run-step2/corrective-final2-test.exit), [clippy exit](proofs/current-run-step2/corrective-final2-clippy.exit) and [format exit](proofs/current-run-step2/corrective-final2-format.exit). Corrective assertion RED101 is preserved separately.
+- **Success criteria:** Foundation/source gate accepted; audit reported0 blocker/7 major/5 minor, not zero findings. Effective contract/schema/error-assertion findings corrected and independently reviewed; progress NotRun repaired here. Static owner-domain metadata retained as a nonblocking extensible vocabulary. Full corresponding UI adapter parity, persistence, rendering/live reachability/domain orchestration and complete ACs remain unproved.
+- **Failure handling:** Step3 RawDocument must preserve unknown stored fields; Step4 migrates actual writers, Step5 renderer/live routing, Step6 domain orchestration, Step7 full native/AC certification. Keep pending release evidence; no invented whole-AC receipt or baseline change.
+
+Repository conventions retry: hypothesis—three new expect calls caused the initial failure; evidence—those calls removed and current21-test source freeze verified; result—PASS with0 new violations and unchanged baseline hash. Inspect [current repository receipt](../../conventions/runs/20261013T113238Z/receipt.json) and [raw audit](proofs/current-run-step2/audit.stdout). The finite six owner metadata labels do not register future production domains.
 
 ## Current Step 1 checkpoint — local primitive gate accepted
 

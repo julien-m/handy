@@ -20,6 +20,7 @@ mod paste_tx;
 pub mod portable;
 mod secure_input;
 mod settings;
+pub mod settings_service;
 mod shortcut;
 mod signal_handle;
 mod transcription_coordinator;

@@ -1,32 +1,40 @@
 # Implementation — 008-settings-cli
 
-Status: In Progress. Step 1 is Done within its planned primitive scope; Steps 2–7 remain Todo. Read [the functional source](spec.md) and [the technical plan](plan.md); inspect [current progress](progress.md) and [execution history](logs/2026-10-13.md).
+Status: In Progress. Steps 1–2 are Done within their planned primitive/foundation scope; Steps 3–7 remain Todo. Read [the functional source](spec.md) and [the technical plan](plan.md); inspect [current progress](progress.md) and [execution history](logs/2026-10-13.md).
 
 ## Requirement Mapping
 
 | Requirement | File(s) | @spec Anchor | Status | Last Verified |
 | --- | --- | --- | --- | --- |
 | [FR-001: Headless CLI](spec.md#fr-001) | Inspect [entry](../../../src-tauri/src/main.rs), [actual parser](../../../src-tauri/src/cli.rs), [console wrapper](../../../src-tauri/src/settings_service/console_windows.rs) | `@spec FR-001: Keep CLI handles, detach GUI console`; `@spec FR-001: Fallible GUI console detachment` | ⚠️ Partial: historical parser/console path tested; settings subgroup/early path absent | 2026-10-13 |
-| [FR-002: Generic settings](spec.md#fr-002) | None | None | ❌ Missing | 2026-10-13 |
-| [FR-003: Shared validation and revision](spec.md#fr-003) | None | None | ❌ Missing: repository/all-writer migration unstarted | 2026-10-13 |
+| [FR-002: Generic settings](spec.md#fr-002) | Inspect [descriptors](../../../src-tauri/src/settings_service/descriptor.rs) and [public projection](../../../src-tauri/src/settings_service/public.rs) | `@spec FR-002: Discover typed settings keys`; `@spec FR-002: Redacted public settings projection` | ⚠️ Partial: all63 descriptors/public secret-presence projection; actual CLI/noncreating persistence reads absent | 2026-10-13 |
+| [FR-003: Shared validation and revision](spec.md#fr-003) | Inspect [validation ports](../../../src-tauri/src/settings_service/validation.rs) | `@spec FR-003: Shared validation foundation` | ⚠️ Partial:51 pure scalar ports; actual UI writer parity/repository/revision unstarted | 2026-10-13 |
 | [FR-004: Private routing](spec.md#fr-004) | Inspect [passive probe](../../../src-tauri/src/settings_service/instance_probe.rs), [private resources](../../../src-tauri/src/settings_service/platform_unix/resources.rs), [socket](../../../src-tauri/src/settings_service/platform_unix/socket.rs), [lease primitive](../../../src-tauri/src/settings_service/platform_unix/startup_fence.rs), [Windows pipe](../../../src-tauri/src/settings_service/platform_windows.rs) | `@spec FR-004: Owner-only filesystem resources`; `@spec FR-004: Private settings endpoint`; `@spec FR-004: Fence new startup against offline writes`; `@spec FR-004: Current-logon private settings pipe` | ⚠️ Partial: pinned primitives, accepted-peer authentication and pipe ownership boundary; complete routing/client/lease lifecycle absent | 2026-10-13 |
-| [FR-005: Domain framework](spec.md#fr-005) | None | None | ❌ Missing | 2026-10-13 |
-| [FR-006: Output and errors](spec.md#fr-006) | None | None | ❌ Missing | 2026-10-13 |
+| [FR-005: Domain framework](spec.md#fr-005) | Inspect [extension metadata/trait](../../../src-tauri/src/settings_service/protocol.rs) | `@spec FR-005: Typed domain extension foundation` | ⚠️ Partial: typed extension foundation; production domain orchestration/output operations absent | 2026-10-13 |
+| [FR-006: Output and errors](spec.md#fr-006) | Inspect [errors](../../../src-tauri/src/settings_service/errors.rs), [DTO/schema producer](../../../src-tauri/src/settings_service/protocol.rs) and [closed request](../../../src-tauri/src/settings_service/request.rs) | `@spec FR-006: Stable redacted errors`; `@spec FR-006: Exact success/error envelope DTO`; `@spec FR-006: Closed settings request DTO` | ⚠️ Partial: typed exits/errors/envelope/version1/schema; actual stdout/stderr renderer and CLI reachability absent | 2026-10-13 |
 
 ## Acceptance Criteria Mapping
 
 | AC | Test File | Status |
 | --- | --- | --- |
 | [AC-001](spec.md#ac-001) | Inspect [parser/console tests](../../../src-tauri/tests/settings_platform/cli_console.rs) | ⚠️ Partial: historical flags/defaults/values/combinations and dispatch; settings subgroup/M1 native path unimplemented |
-| [AC-002](spec.md#ac-002) | None | ❌ Missing |
-| [AC-003](spec.md#ac-003) | None | ❌ Missing |
+| [AC-002](spec.md#ac-002) | Inspect [inventory](../../../src-tauri/tests/settings_validation/inventory.rs) and [projection contracts](../../../src-tauri/tests/settings_validation/contracts.rs) | ⚠️ Partial:63-field discovery/redaction foundation; actual generic CLI/read preservation unimplemented |
+| [AC-003](spec.md#ac-003) | Inspect [scalar-port tests](../../../src-tauri/tests/settings_validation/scalars.rs) | ⚠️ Partial:51 pure UI/CLI validation ports; corresponding actual Tauri adapters/writes not migrated |
 | [AC-004](spec.md#ac-004) | None | ❌ Missing |
 | [AC-005](spec.md#ac-005) | Inspect [Unix tests](../../../src-tauri/tests/settings_platform/unix.rs), [Unix regressions](../../../src-tauri/src/settings_service/platform_unix/tests.rs), [pipe boundary tests](../../../src-tauri/tests/settings_platform/windows.rs) | ⚠️ Partial: 22-test primitive suite; full live/offline/deadline/client/effects/reclamation absent, no complete criterion certified |
-| [AC-006](spec.md#ac-006) | None | ❌ Missing |
-| [AC-007](spec.md#ac-007) | None | ❌ Missing |
-| [AC-008](spec.md#ac-008) | None | ❌ Missing |
+| [AC-006](spec.md#ac-006) | Inspect [typed contracts](../../../src-tauri/tests/settings_validation/contracts.rs) | ⚠️ Partial:domain extension DTO foundation; output/bulk runtime orchestration absent |
+| [AC-007](spec.md#ac-007) | Inspect [error/envelope tests](../../../src-tauri/tests/settings_validation/contracts.rs) | ⚠️ Partial:typed envelope/error exits; actual process output/channel behavior absent |
+| [AC-008](spec.md#ac-008) | Inspect [request contracts](../../../src-tauri/tests/settings_validation/request_contracts.rs) | ⚠️ Partial:closed operation/version/dry-run DTO only; actual dry-run/import/export behavior absent |
 
 No complete AC/SC is certified. The original partial mapping was correctly not ready and is historical; its source paths/hashes predate current corrections and are not current acceptance evidence. New whole-AC mappings/reviews and trusted policy-078.2 Cargo captures are required when full behavior exists.
+
+## Current Step 2 foundation proof
+
+Inspect [corrective summary](proofs/current-run-step2/corrective-summary.json), [independent corrective scoped review](proofs/current-run-step2/corrective-review.json) and [GREEN21](proofs/current-run-step2/corrective-final2-test.stdout):16 current source/contract hashes match;21 passed/0 failed/0 ignored, real Swift bridge, strict clippy/full format0. Existing platform22 and frontend checks remain applicable to unchanged source. Coverage is63 persisted descriptors,51 pure scalar ports and17 canonical enum keys, explicit nested PublicSettings secret presence, typed errors/version1/closed requests, extension metadata and producer/checked-schema equality.
+
+Audit reported0 blocker/7 major/5 minor. Contract/version/request/public-schema and genuine-error assertions were corrected and independently reviewed; stale progress was repaired at closure. Unknown-field rejection in stored reads was rejected as a persistence false positive: this typed projection is read-only, and Step3 RawDocument retains unknown raw fields. Public numeric schema enforces intrinsic integer/wire types, preserving valid legacy reads rather than applying UI mutation bounds. Current comments explain scalar bounds, sentinels, secret presence and redacted Debug. Static owner-domain metadata remains an explicit nonblocking vocabulary, not future-domain registration. Inspect [raw audit](proofs/current-run-step2/audit.stdout) and [repository conventions PASS](../../conventions/runs/20261013T113238Z/receipt.json): new0, unchanged baseline; three new expects were removed before that retry.
+
+No actual UI commands/writers were migrated (Step4), persistence transaction exists only as later Step3 work, renderer/live CLI is Step5, runtime domains Step6 and full mandatory macOS/whole-AC certification Step7. No complete AC or native release evidence is passed by these pure ports. Inspect [generated schema](contracts/settings-cli.schema.json), [command matrix](contracts/settings-cli.md) and [request source](../../../src-tauri/src/settings_service/request.rs) for the current foundation; older16-test summary is historical context.
 
 ## Current Step 1 proof and audit disposition
 
@@ -39,6 +47,10 @@ Failed/closed socket paths remain intentionally retained, avoiding same-UID chec
 ## Files Created/Modified
 
 The final summary binds 14 existing/current source and test paths. Inspect [entry](../../../src-tauri/src/main.rs), [parser](../../../src-tauri/src/cli.rs), [console wrapper](../../../src-tauri/src/settings_service/console_windows.rs), [passive probe](../../../src-tauri/src/settings_service/instance_probe.rs), [Unix facade](../../../src-tauri/src/settings_service/platform_unix.rs), [resources](../../../src-tauri/src/settings_service/platform_unix/resources.rs), [socket](../../../src-tauri/src/settings_service/platform_unix/socket.rs), [startup fence](../../../src-tauri/src/settings_service/platform_unix/startup_fence.rs), [Unix tests](../../../src-tauri/src/settings_service/platform_unix/tests.rs), [Windows primitives](../../../src-tauri/src/settings_service/platform_windows.rs), [test facade](../../../src-tauri/tests/settings_platform.rs), [parser tests](../../../src-tauri/tests/settings_platform/cli_console.rs), [Unix boundary tests](../../../src-tauri/tests/settings_platform/unix.rs) and [pipe boundary tests](../../../src-tauri/tests/settings_platform/windows.rs).
+
+### Step 2 source/contract inventory
+
+The current summary binds16 paths: existing lib.rs adds only the service module export; new service modules are mod, descriptor/data, validation, protocol, request, errors and public projection; validation test facade plus contract/inventory/scalar/request modules; generated JSON schema and command matrix. Inspect [the summary inventory](proofs/current-run-step2/corrective-summary.json) for exact paths/hashes. No Cargo dependencies or frontend source changed.
 
 ## Historical observations
 

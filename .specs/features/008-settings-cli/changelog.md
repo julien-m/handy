@@ -223,3 +223,19 @@ Read [refined plan](plan.md#routing-startup-fence-and-legacy-compatibility), [ac
 - **Failure handling:** Keep foreign/old-binary/second-account proof pending release evidence; whole-AC mapping/certification mandatory later. Supervisor owns history and next-step progression.
 
 Inspect [final summary](proofs/current-run-step1/minimal-final2-summary.json), [scoped review](proofs/current-run-step1/minimal-final2-review.json), [audit](proofs/current-run-step1/audit3.stdout) and [current checkpoint](progress.md).
+
+## 2026-10-13 — Feature: Step 2 pure settings foundation gate completed
+
+- **Type:** Feature
+- **Spec modified:** No; minimal scope/IDs unchanged.
+- **Code modified:**16 source/contract paths bound by corrective summary/review.
+- **AC impacted:** Foundation subsets only; every complete AC/SC remains unproved.
+- **Author:** Codex
+- **Prerequisite:** Root accepted current corrective scoped review and local gates.
+- **Required inputs:** Inventory63/ports51/enums17, explicit public projection, closed DTOs and generated checked schema;16 current hashes.
+- **Action:** Record Step2 Done/Step3 Todo. Correct version1/request allowlists/public required keys/enums and genuine validation-failure assertions; keep static domain metadata unregistered.
+- **Execution evidence:** Corrective RED101; GREEN21/0/0 with real bridge, strict clippy/full format0; unchanged platform22/frontend gates retained. Repository retry PASS/new0 with unchanged baseline after removing3 new expects. Raw audit0 blocker/7 major/5 minor has explicit correction/false-positive/nonblocking dispositions, not zero findings.
+- **Success criteria:** Pure foundation accepted; actual Tauri writersStep4, renderer/live routingStep5, runtime domainsStep6 and full macOS/AC evidenceStep7 remain. RawDocument preservation isStep3; public numeric reads retain intrinsic wire bounds/legacy compatibility.
+- **Failure handling:** Do not turn pure port parity into corresponding UI-adapter parity or claim whole-AC/native certification. Supervisor owns next commit/progression; no documenter history action.
+
+Inspect [current summary](proofs/current-run-step2/corrective-summary.json), [scoped review](proofs/current-run-step2/corrective-review.json), [raw audit](proofs/current-run-step2/audit.stdout), [repository receipt](../../conventions/runs/20261013T113238Z/receipt.json) and [checkpoint](progress.md).
