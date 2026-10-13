@@ -691,7 +691,18 @@
     "modelLoadFailedUnknown": "bilinmeyen model",
     "pasteFailedTitle": "Metin yapıştırılamadı",
     "pasteFailed": "Metin etkin uygulamaya yapıştırılamadı.",
-    "transcriptionFailedTitle": "Transkripsiyon başarısız oldu"
+    "transcriptionFailedTitle": "Transkripsiyon başarısız oldu",
+    "settings": {
+      "committedNotApplied": "Ayar kaydedildi ancak hemen uygulanamadı.",
+      "gpuDeviceRequired": "GPU hızlandırıcısını seçmeden önce bir GPU aygıtı seçin.",
+      "outOfRange": "Bu değer izin verilen aralığın dışında.",
+      "validationFailed": "Bu değer bu ayar için kabul edilmiyor.",
+      "revisionConflict": "Ayarlar başka bir yerde değiştirildi. Yeniden yükleyip tekrar deneyin.",
+      "unavailable": "Bu ayar şu anda değiştirilemiyor. Daha sonra tekrar deneyin.",
+      "persistenceFailed": "Ayarlar kaydedilemedi.",
+      "generic": "Ayar değiştirilemedi.",
+      "readOnly": "Ayarlar bu oturumda salt okunur: ayar dosyasına güvenli şekilde yazılamıyor, bu nedenle değişiklikler kaydedilmeyecek."
+    }
   },
   "appLanguage": {
     "title": "Uygulama Dili",

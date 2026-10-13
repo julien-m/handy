@@ -1,0 +1,6 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy/src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.85s
+     Running tests/settings_transactions.rs (src-tauri/target/debug/deps/settings_transactions-05314483cc7219f2)
+error: test failed, to rerun pass `--test settings_transactions`

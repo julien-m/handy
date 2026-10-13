@@ -1,0 +1,103 @@
+- `src-tauri/src/settings_service/transaction.rs:34`
+  - rule / convention / check name violated: Atomic transaction identity / Change Intent “identity substitutions must not replace”
+  - severity: blocker
+  - what is wrong: On Unix, the parent directory is not pinned, so an ABA rename-and-restore between locking/loading and replacement can make the transaction derive its candidate from a substituted repository while the final pathname and lock validation still pass.
+  - proposed fix: Open and retain the canonical parent directory before acquiring locks, then perform lock, store, temporary-file, and replacement operations relative to that directory handle (`openat`/`renameat` with `O_NOFOLLOW`); validate the retained directory identity immediately before replacement.
+
+- `src-tauri/src/settings_service/locator.rs:62`
+  - rule / convention / check name violated: Security — refuse filesystem aliases
+  - severity: major
+  - what is wrong: `canonicalize()` resolves existing symlinks before `validate_owner`, so store or ancestor symlinks are accepted even though the validation claims to reject aliases.
+  - proposed fix: Walk every existing path component with `symlink_metadata` and reject any symlink/reparse component before canonicalizing; add tests for store-file and ancestor-directory symlinks.
+
+- `src-tauri/src/settings_service/atomic.rs:112`
+  - rule / convention / check name violated: Idempotent/recoverable persistence
+  - severity: major
+  - what is wrong: Temporary names restart at sequence zero for each process, so a retained temp combined with PID reuse can permanently make future writes fail with `AlreadyExists`.
+  - proposed fix: On `AlreadyExists`, increment `TEMP_SEQUENCE` and retry `create_new` with another name under a documented finite bound, without deleting or altering existing temporary files.
+
+- `src-tauri/src/settings_service/transaction.rs:195`
+  - rule / convention / check name violated: Raw-preserving merge correctness
+  - severity: major
+  - what is wrong: Array items without an `id` all match the first previous item, potentially duplicating that item’s unknown fields across unrelated elements during startup normalization.
+  - proposed fix: Use ID-based preservation only when every typed item has a unique non-null ID; otherwise replace primitive arrays directly and use an explicitly defined positional strategy—or no unknown-field preservation—for object arrays.
+
+- `src-tauri/src/settings.rs:822`
+  - rule / convention / check name violated: General §24 — Public API Documentation
+  - severity: minor
+  - what is wrong: `ensure_post_process_defaults` became `pub(crate)` without documentation of its mutation and Boolean return contract.
+  - proposed fix: Add a doc comment stating which defaults it inserts/synchronizes, that it mutates `AppSettings`, and that the return value indicates whether anything changed.
+
+- `src-tauri/src/settings.rs:1123`
+  - rule / convention / check name violated: General §24 — Public API Documentation
+  - severity: minor
+  - what is wrong: `apply_settings_migrations` became `pub(crate)` without documentation of its inputs, mutations, or return value.
+  - proposed fix: Add a doc comment describing the legacy payload dependency, in-place migrations, and changed-result semantics.
+
+- `src-tauri/src/settings_service/store.rs:31`
+  - rule / convention / check name violated: General §29 — Document Side Effects and Ownership
+  - severity: minor
+  - what is wrong: `read_snapshot` is described as non-creating even though it creates and permanently retains `settings.lock` when the parent already exists.
+  - proposed fix: Amend the documentation to state explicitly that reads never create the data parent or store, but may create and retain the sibling lock inside an existing parent.
+
+- `src-tauri/src/settings_service/atomic.rs:30`
+  - rule / convention / check name violated: General §6 — Small and Focused Functions
+  - severity: minor
+  - what is wrong: `persist` exceeds the 20–30 line limit and combines directory pinning, generation writing, validation, authorization, replacement, and durability handling.
+  - proposed fix: Extract parent pinning/identity validation and post-replacement durability handling into focused functions, leaving `persist` as the orchestration sequence.
+
+- `src-tauri/src/settings_service/transaction.rs:26`
+  - rule / convention / check name violated: General §6 — Small and Focused Functions
+  - severity: minor
+  - what is wrong: `commit_with_probe` exceeds the 20–30 line limit and combines locking, ownership checks, validation, normalization, diffing, revisioning, persistence, and response construction.
+  - proposed fix: Extract locked-document preparation, candidate construction, and guarded persistence into separate typed functions.
+
+- `src-tauri/src/settings_service/transaction.rs:72`
+  - rule / convention / check name violated: General §6 — Small and Focused Functions
+  - severity: minor
+  - what is wrong: `initialize` exceeds the 20–30 line limit and mixes lease acquisition, recovery normalization, merge decisions, persistence, and result construction.
+  - proposed fix: Extract normalized startup-document construction and conditional persistence into focused helpers.
+
+- `src-tauri/src/settings_service/windows_store.rs:74`
+  - rule / convention / check name violated: General §6 — Small and Focused Functions
+  - severity: minor
+  - what is wrong: `pin_directory` exceeds the function-size limit and combines path parsing, component creation, handle acquisition, verification, and result construction.
+  - proposed fix: Extract a `pin_component` operation that opens or creates and verifies one component, leaving `pin_directory` to iterate and assemble handles.
+
+- `src-tauri/src/settings_service/windows_store.rs:139`
+  - rule / convention / check name violated: General §6 — Small and Focused Functions
+  - severity: minor
+  - what is wrong: `open_raw` exceeds the function-size limit and combines option calculation, native invocation, ownership conversion, and resource validation.
+  - proposed fix: Extract access/share/flag calculation and native-handle creation into separate functions.
+
+- `src-tauri/src/settings_service/windows_store/security.rs:139`
+  - rule / convention / check name violated: General §6 — Small and Focused Functions
+  - severity: minor
+  - what is wrong: `verify` exceeds the function-size limit and combines security-descriptor acquisition, lifetime management, owner validation, protection validation, and ACL validation.
+  - proposed fix: Extract descriptor acquisition into a guard-returning helper and owner/DACL validation into a second helper.
+
+- `src-tauri/src/settings_service/atomic.rs:72`
+  - rule / convention / check name violated: General §25.13 — Intentionally Ignored Parameter
+  - severity: minor
+  - what is wrong: Unix and Windows branches suppress unused `file`, `directory`, and `temporary` parameters without explaining why each platform does not use them.
+  - proposed fix: Add a concise comment explaining that Unix replacement is pathname-based while Windows replacement is handle-relative, or split the platform implementations so unused parameters are absent.
+
+- `src-tauri/tests/settings_transactions/driver.rs:27`
+  - rule / convention / check name violated: General §25.11 — System/process interaction
+  - severity: minor
+  - what is wrong: The subprocess invocation lacks an inline contract describing its exact test filter, stdin/stdout barrier protocol, expected exit behavior, and platform-specific termination semantics.
+  - proposed fix: Add a strategy comment immediately before `Command::new` documenting `READY → GO → RESULT/CRASH_READY`, normal exit expectations, and Unix `SIGKILL` verification.
+
+- `src-tauri/src/settings_service/ownership.rs:18`
+  - rule / convention / check name violated: General §25.14 — Arbitrary Threshold/Limit
+  - severity: nit
+  - what is wrong: The two-millisecond lock polling interval has no stated origin or latency/CPU trade-off.
+  - proposed fix: Add a comment explaining why 2 ms was selected, or replace it with a named platform-derived policy constant whose documentation states the trade-off.
+
+Summary: 1 blocker, 3 major, 11 minor, 1 nit.
+⚙ Audit: stack detected — TypeScript + ESLint
+⚙ Audit: no checks found (no ~/.check/ or .check/)
+⚙ Audit: 25 file(s) in scope — .specs/features/008-settings-cli/pipeline.md, src-tauri/Cargo.lock, src-tauri/Cargo.toml, src-tauri/src/portable.rs, src-tauri/src/settings.rs, src-tauri/src/settings_service/atomic.rs, src-tauri/src/settings_service/instance_probe.rs, src-tauri/src/settings_service/locator.rs, src-tauri/src/settings_service/mod.rs, src-tauri/src/settings_service/normalization.rs, src-tauri/src/settings_service/ownership.rs, src-tauri/src/settings_service/store.rs, src-tauri/src/settings_service/transaction.rs, src-tauri/src/settings_service/validation.rs, src-tauri/src/settings_service/windows_store.rs, src-tauri/src/settings_service/windows_store/replace.rs, src-tauri/src/settings_service/windows_store/security.rs, src-tauri/tests/settings_transactions.rs, src-tauri/tests/settings_transactions/driver.rs, src-tauri/tests/settings_transactions/faults.rs, src-tauri/tests/settings_transactions/locator.rs, src-tauri/tests/settings_transactions/ownership.rs, src-tauri/tests/settings_transactions/processes.rs, src-tauri/tests/settings_transactions/reads.rs, src-tauri/tests/settings_transactions/transactions.rs
+⚙ Audit: conventions loaded (33712 chars)
+⚙ Audit: intent loaded (1579 chars)
+✅ Audit: done (read-only — caller decides which findings to fix)

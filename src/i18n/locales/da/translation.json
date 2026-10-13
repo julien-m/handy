@@ -694,7 +694,18 @@
     "modelLoadFailedUnknown": "ukendt model",
     "pasteFailedTitle": "Kunne ikke indsætte tekst",
     "pasteFailed": "Teksten kunne ikke indsættes i det aktive program.",
-    "transcriptionFailedTitle": "Transskription mislykkedes"
+    "transcriptionFailedTitle": "Transskription mislykkedes",
+    "settings": {
+      "committedNotApplied": "Indstillingen blev gemt, men kunne ikke anvendes med det samme.",
+      "gpuDeviceRequired": "Vælg en GPU-enhed, før du vælger GPU-acceleratoren.",
+      "outOfRange": "Værdien ligger uden for det tilladte interval.",
+      "validationFailed": "Værdien accepteres ikke for denne indstilling.",
+      "revisionConflict": "Indstillingerne blev ændret et andet sted. Genindlæs, og prøv igen.",
+      "unavailable": "Denne indstilling kan ikke ændres lige nu. Prøv igen senere.",
+      "persistenceFailed": "Indstillingerne kunne ikke gemmes.",
+      "generic": "Indstillingen kunne ikke ændres.",
+      "readOnly": "Indstillingerne er skrivebeskyttede i denne session: indstillingsfilen kan ikke skrives sikkert, så ændringer gemmes ikke."
+    }
   },
   "appLanguage": {
     "title": "Applikationssprog",

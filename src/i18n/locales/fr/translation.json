@@ -691,7 +691,18 @@
     "modelLoadFailedUnknown": "modèle inconnu",
     "pasteFailedTitle": "Échec du collage du texte",
     "pasteFailed": "Le texte n'a pas pu être collé dans l'application active.",
-    "transcriptionFailedTitle": "Échec de la transcription"
+    "transcriptionFailedTitle": "Échec de la transcription",
+    "settings": {
+      "committedNotApplied": "Le réglage est enregistré, mais n'a pas pu être appliqué immédiatement.",
+      "gpuDeviceRequired": "Choisissez un appareil GPU avant de sélectionner l'accélérateur GPU.",
+      "outOfRange": "Cette valeur est hors de la plage autorisée.",
+      "validationFailed": "Cette valeur n'est pas acceptée pour ce réglage.",
+      "revisionConflict": "Les réglages ont été modifiés ailleurs. Rechargez et réessayez.",
+      "unavailable": "Ce réglage ne peut pas être modifié pour le moment. Réessayez plus tard.",
+      "persistenceFailed": "Les réglages n'ont pas pu être enregistrés.",
+      "generic": "Le réglage n'a pas pu être modifié.",
+      "readOnly": "Les réglages sont en lecture seule pour cette session : le fichier de réglages ne peut pas être écrit en toute sécurité, les modifications ne seront donc pas enregistrées."
+    }
   },
   "appLanguage": {
     "title": "Langue de l'application",

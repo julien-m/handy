@@ -1,12 +1,11 @@
 use crate::utils;
-use log::{debug, warn};
+use log::debug;
 use serde::de::{self, Visitor};
 use serde::{Deserialize, Deserializer, Serialize};
 use specta::Type;
 use std::collections::HashMap;
 use std::fmt;
 use tauri::AppHandle;
-use tauri_plugin_store::StoreExt;
 
 pub const APPLE_INTELLIGENCE_PROVIDER_ID: &str = "apple_intelligence";
 pub const APPLE_INTELLIGENCE_DEFAULT_MODEL_ID: &str = "Apple Intelligence";
@@ -337,9 +336,10 @@ pub enum VadBackend {
     Earshot,
 }
 
+/// Provider API keys: `Debug` is redacted and the public settings projection reports presence only.
 #[derive(Clone, Serialize, Deserialize, Type)]
 #[serde(transparent)]
-pub(crate) struct SecretMap(HashMap<String, String>);
+pub struct SecretMap(HashMap<String, String>);
 
 impl fmt::Debug for SecretMap {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -819,7 +819,12 @@ fn default_typing_tool() -> TypingTool {
     TypingTool::Auto
 }
 
-fn ensure_post_process_defaults(settings: &mut AppSettings) -> bool {
+/// Insert missing default post-processing providers, API-key slots and models, and
+/// resynchronize `supports_structured_output` on existing default providers.
+///
+/// Mutates `settings` in place and never touches user-added providers, existing
+/// keys or non-empty model choices. Returns `true` when anything was changed.
+pub(crate) fn ensure_post_process_defaults(settings: &mut AppSettings) -> bool {
     let mut changed = false;
     for provider in default_post_process_providers() {
         // Use match to do a single lookup - either sync existing or add new
@@ -1025,102 +1030,29 @@ impl AppSettings {
     }
 }
 
-/// Startup entry point. Same load-or-create/salvage/migrate behavior as
-/// `get_settings`; kept as a named alias for call-site clarity, plus a
-/// one-time debug dump of the loaded settings.
+/// Startup entry point: the settings published by the live settings service (normalized and
+/// persisted once at startup), plus a one-time debug dump of the loaded settings.
 pub fn load_or_create_app_settings(app: &AppHandle) -> AppSettings {
     let settings = get_settings(app);
     debug!("Loaded settings: {:?}", settings);
     settings
 }
 
+/// Current settings of this process, as last committed through the live settings service.
+///
+/// Reads never touch the disk: the service published them at startup (after normalization,
+/// salvage and migrations) and after every commit. Writers use `settings_service::tauri_adapter`.
 pub fn get_settings(app: &AppHandle) -> AppSettings {
-    let store = app
-        .store(crate::portable::store_path(SETTINGS_STORE_PATH))
-        .expect("Failed to initialize store");
-
-    // Settings reads also persist one-time migrations. Migration helpers are
-    // idempotent, so this converges after the first read of an older store.
-    let mut settings = if let Some(settings_value) = store.get("settings") {
-        let (mut settings, mut updated) =
-            match serde_json::from_value::<AppSettings>(settings_value.clone()) {
-                Ok(settings) => (settings, false),
-                Err(e) => {
-                    warn!("Failed to parse stored settings ({e}); salvaging valid fields");
-                    (salvage_settings(&settings_value), true)
-                }
-            };
-
-        if apply_settings_migrations(&mut settings, &settings_value) {
-            updated = true;
-        }
-
-        // Merge in any bindings added since this store was written.
-        for (key, value) in get_default_settings().bindings {
-            if let std::collections::hash_map::Entry::Vacant(entry) = settings.bindings.entry(key) {
-                debug!("Adding missing binding: {}", entry.key());
-                entry.insert(value);
-                updated = true;
-            }
-        }
-
-        if updated {
-            store.set("settings", serde_json::to_value(&settings).unwrap());
-        }
-
-        settings
-    } else {
-        let default_settings = get_default_settings();
-        store.set("settings", serde_json::to_value(&default_settings).unwrap());
-        default_settings
-    };
-
-    if ensure_post_process_defaults(&mut settings) {
-        store.set("settings", serde_json::to_value(&settings).unwrap());
-    }
-
-    settings
+    crate::settings_service::tauri_adapter::current(app)
 }
 
-/// Rebuilds settings from a store value that failed to deserialize as a whole.
-/// Every stored field that is individually valid is kept; only broken values
-/// (e.g. an enum variant written by a newer or older version) fall back to
-/// their default. This means one bad field can never reset the rest of the
-/// user's configuration (#1619).
-fn salvage_settings(stored: &serde_json::Value) -> AppSettings {
-    let Some(stored_map) = stored.as_object() else {
-        warn!("Stored settings are not a JSON object; falling back to defaults");
-        return get_default_settings();
-    };
-
-    let mut merged = serde_json::to_value(get_default_settings())
-        .expect("default settings serialize to a JSON object");
-
-    for (key, value) in stored_map {
-        let previous = merged
-            .as_object_mut()
-            .expect("merged settings stay an object")
-            .insert(key.clone(), value.clone());
-        if serde_json::from_value::<AppSettings>(merged.clone()).is_err() {
-            // Log only the key: values may hold secrets (e.g. API keys).
-            warn!("Dropping invalid settings field '{key}', keeping its default");
-            let map = merged
-                .as_object_mut()
-                .expect("merged settings stay an object");
-            match previous {
-                Some(previous) => map.insert(key.clone(), previous),
-                None => map.remove(key),
-            };
-        }
-    }
-
-    serde_json::from_value(merged).unwrap_or_else(|e| {
-        warn!("Failed to reassemble salvaged settings ({e}); falling back to defaults");
-        get_default_settings()
-    })
-}
-
-fn apply_settings_migrations(
+/// Apply one-time legacy migrations to already-decoded `settings`.
+///
+/// `settings_value` is the raw stored payload: migrations inspect it to tell an
+/// absent legacy key (upgrade) from a present one, and read retired fields such as
+/// `push_to_talk`. Mutates `settings` in place, performs no I/O, and returns
+/// `true` when at least one migration changed a value.
+pub(crate) fn apply_settings_migrations(
     settings: &mut AppSettings,
     settings_value: &serde_json::Value,
 ) -> bool {
@@ -1245,14 +1177,6 @@ pub fn update_checks_effectively_enabled(settings: &AppSettings) -> bool {
     settings.update_checks_enabled && !update_checks_forced_disabled()
 }
 
-pub fn write_settings(app: &AppHandle, settings: AppSettings) {
-    let store = app
-        .store(crate::portable::store_path(SETTINGS_STORE_PATH))
-        .expect("Failed to initialize store");
-
-    store.set("settings", serde_json::to_value(&settings).unwrap());
-}
-
 pub fn get_bindings(app: &AppHandle) -> HashMap<String, ShortcutBinding> {
     let settings = get_settings(app);
 
@@ -1297,10 +1221,6 @@ mod tests {
         let result = get_stored_binding(&settings, "unknown");
 
         assert_eq!(result.unwrap_err(), "Binding with id 'unknown' not found");
-    }
-
-    fn default_settings_json() -> serde_json::Value {
-        serde_json::to_value(get_default_settings()).unwrap()
     }
 
     /// Every field must survive a partial store: a missing key must never fail
@@ -1452,101 +1372,6 @@ mod tests {
         // matching legacy mode rather than the new hold-or-toggle default.
         assert_eq!(settings.shortcut_activation, ShortcutActivation::Toggle);
         assert_eq!(settings.transcribe_gpu_device, None);
-    }
-
-    #[test]
-    fn salvage_preserves_valid_fields_when_one_value_is_invalid() {
-        let mut stored = default_settings_json();
-        let map = stored.as_object_mut().unwrap();
-        map.insert(
-            "selected_model".into(),
-            serde_json::json!("parakeet-tdt-0.6b-v3"),
-        );
-        map.insert("onboarding_completed".into(), serde_json::json!(true));
-        // An enum variant this build doesn't know, e.g. written by a newer
-        // version before a downgrade.
-        map.insert("sound_theme".into(), serde_json::json!("theremin"));
-        stored["bindings"]["transcribe"]["current_binding"] = serde_json::json!("f13");
-
-        // Precondition: this is exactly the whole-store parse failure from
-        // #1619 that used to reset everything to defaults.
-        assert!(serde_json::from_value::<AppSettings>(stored.clone()).is_err());
-
-        let salvaged = salvage_settings(&stored);
-        assert_eq!(salvaged.selected_model, "parakeet-tdt-0.6b-v3");
-        assert!(salvaged.onboarding_completed);
-        assert_eq!(salvaged.bindings["transcribe"].current_binding, "f13");
-        assert_eq!(salvaged.sound_theme, default_sound_theme());
-    }
-
-    #[test]
-    fn salvage_drops_only_wrong_typed_fields() {
-        let mut stored = default_settings_json();
-        let map = stored.as_object_mut().unwrap();
-        map.insert("paste_delay_ms".into(), serde_json::json!("sixty"));
-        map.insert("sound_theme".into(), serde_json::json!(42));
-        map.insert("custom_words".into(), serde_json::json!(["handy"]));
-
-        assert!(serde_json::from_value::<AppSettings>(stored.clone()).is_err());
-
-        let salvaged = salvage_settings(&stored);
-        assert_eq!(salvaged.paste_delay_ms, default_paste_delay_ms());
-        assert_eq!(salvaged.sound_theme, default_sound_theme());
-        assert_eq!(salvaged.custom_words, vec!["handy".to_string()]);
-    }
-
-    #[test]
-    fn salvage_of_poisoned_bindings_keeps_other_fields() {
-        let mut stored = default_settings_json();
-        let map = stored.as_object_mut().unwrap();
-        // One malformed entry poisons the whole bindings map, but must not
-        // take the rest of the settings down with it.
-        map.insert(
-            "bindings".into(),
-            serde_json::json!({ "transcribe": { "id": 42 } }),
-        );
-        map.insert("selected_model".into(), serde_json::json!("whisper-small"));
-
-        assert!(serde_json::from_value::<AppSettings>(stored.clone()).is_err());
-
-        let salvaged = salvage_settings(&stored);
-        assert_eq!(salvaged.selected_model, "whisper-small");
-        let defaults = get_default_settings();
-        assert_eq!(
-            salvaged.bindings["transcribe"].current_binding,
-            defaults.bindings["transcribe"].current_binding
-        );
-    }
-
-    #[test]
-    fn salvage_tolerates_unknown_keys() {
-        let mut stored = default_settings_json();
-        let map = stored.as_object_mut().unwrap();
-        map.insert(
-            "field_from_the_future".into(),
-            serde_json::json!({ "nested": true }),
-        );
-        map.insert("selected_model".into(), serde_json::json!("kept"));
-        map.insert("sound_theme".into(), serde_json::json!("theremin"));
-
-        let salvaged = salvage_settings(&stored);
-        assert_eq!(salvaged.selected_model, "kept");
-        assert_eq!(salvaged.sound_theme, default_sound_theme());
-    }
-
-    #[test]
-    fn salvage_of_non_object_store_falls_back_to_defaults() {
-        for stored in [
-            serde_json::json!("corrupt"),
-            serde_json::json!(null),
-            serde_json::json!([1, 2, 3]),
-        ] {
-            let salvaged = salvage_settings(&stored);
-            assert_eq!(
-                serde_json::to_value(&salvaged).unwrap(),
-                default_settings_json()
-            );
-        }
     }
 
     #[test]

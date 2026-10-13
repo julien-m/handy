@@ -5,7 +5,12 @@
 
 
 export const commands = {
-async changeBinding(id: string, binding: string) : Promise<Result<BindingResponse, string>> {
+/**
+ * Change one shortcut as one ordered settings write (see `binding_change`): the native
+ * registration is prepared, the binding committed on the latest settings, and a refused commit
+ * restores the previous registration. Runs on the blocking pool, never on the main thread.
+ */
+async changeBinding(id: string, binding: string) : Promise<Result<BindingResponse, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_binding", { id, binding }) };
 } catch (e) {
@@ -13,7 +18,7 @@ async changeBinding(id: string, binding: string) : Promise<Result<BindingRespons
     else return { status: "error", error: e  as any };
 }
 },
-async resetBinding(id: string) : Promise<Result<BindingResponse, string>> {
+async resetBinding(id: string) : Promise<Result<BindingResponse, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("reset_binding", { id }) };
 } catch (e) {
@@ -21,7 +26,7 @@ async resetBinding(id: string) : Promise<Result<BindingResponse, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async changeShortcutActivationSetting(activation: ShortcutActivation) : Promise<Result<null, string>> {
+async changeShortcutActivationSetting(activation: ShortcutActivation) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_shortcut_activation_setting", { activation }) };
 } catch (e) {
@@ -29,7 +34,7 @@ async changeShortcutActivationSetting(activation: ShortcutActivation) : Promise<
     else return { status: "error", error: e  as any };
 }
 },
-async changeHoldThresholdMsSetting(ms: number) : Promise<Result<null, string>> {
+async changeHoldThresholdMsSetting(ms: number) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_hold_threshold_ms_setting", { ms }) };
 } catch (e) {
@@ -37,7 +42,7 @@ async changeHoldThresholdMsSetting(ms: number) : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async changeAudioFeedbackSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeAudioFeedbackSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_audio_feedback_setting", { enabled }) };
 } catch (e) {
@@ -45,7 +50,7 @@ async changeAudioFeedbackSetting(enabled: boolean) : Promise<Result<null, string
     else return { status: "error", error: e  as any };
 }
 },
-async changeAudioFeedbackVolumeSetting(volume: number) : Promise<Result<null, string>> {
+async changeAudioFeedbackVolumeSetting(volume: number) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_audio_feedback_volume_setting", { volume }) };
 } catch (e) {
@@ -53,7 +58,7 @@ async changeAudioFeedbackVolumeSetting(volume: number) : Promise<Result<null, st
     else return { status: "error", error: e  as any };
 }
 },
-async changeSoundThemeSetting(theme: string) : Promise<Result<null, string>> {
+async changeSoundThemeSetting(theme: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_sound_theme_setting", { theme }) };
 } catch (e) {
@@ -61,7 +66,7 @@ async changeSoundThemeSetting(theme: string) : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async changeThemeSetting(theme: string) : Promise<Result<null, string>> {
+async changeThemeSetting(theme: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_theme_setting", { theme }) };
 } catch (e) {
@@ -69,7 +74,7 @@ async changeThemeSetting(theme: string) : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async changeStartHiddenSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeStartHiddenSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_start_hidden_setting", { enabled }) };
 } catch (e) {
@@ -77,7 +82,7 @@ async changeStartHiddenSetting(enabled: boolean) : Promise<Result<null, string>>
     else return { status: "error", error: e  as any };
 }
 },
-async changeAutostartSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeAutostartSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_autostart_setting", { enabled }) };
 } catch (e) {
@@ -85,7 +90,7 @@ async changeAutostartSetting(enabled: boolean) : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async changeTranslateToEnglishSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeTranslateToEnglishSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_translate_to_english_setting", { enabled }) };
 } catch (e) {
@@ -93,7 +98,7 @@ async changeTranslateToEnglishSetting(enabled: boolean) : Promise<Result<null, s
     else return { status: "error", error: e  as any };
 }
 },
-async changeSelectedLanguageSetting(language: string) : Promise<Result<null, string>> {
+async changeSelectedLanguageSetting(language: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_selected_language_setting", { language }) };
 } catch (e) {
@@ -101,7 +106,7 @@ async changeSelectedLanguageSetting(language: string) : Promise<Result<null, str
     else return { status: "error", error: e  as any };
 }
 },
-async changeOverlayPositionSetting(position: string) : Promise<Result<null, string>> {
+async changeOverlayPositionSetting(position: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_overlay_position_setting", { position }) };
 } catch (e) {
@@ -109,7 +114,7 @@ async changeOverlayPositionSetting(position: string) : Promise<Result<null, stri
     else return { status: "error", error: e  as any };
 }
 },
-async changeOverlayStyleSetting(style: string) : Promise<Result<null, string>> {
+async changeOverlayStyleSetting(style: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_overlay_style_setting", { style }) };
 } catch (e) {
@@ -117,7 +122,7 @@ async changeOverlayStyleSetting(style: string) : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async changeDebugModeSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeDebugModeSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_debug_mode_setting", { enabled }) };
 } catch (e) {
@@ -125,7 +130,7 @@ async changeDebugModeSetting(enabled: boolean) : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async changeWordCorrectionThresholdSetting(threshold: number) : Promise<Result<null, string>> {
+async changeWordCorrectionThresholdSetting(threshold: number) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_word_correction_threshold_setting", { threshold }) };
 } catch (e) {
@@ -133,7 +138,7 @@ async changeWordCorrectionThresholdSetting(threshold: number) : Promise<Result<n
     else return { status: "error", error: e  as any };
 }
 },
-async changeExtraRecordingBufferSetting(ms: number) : Promise<Result<null, string>> {
+async changeExtraRecordingBufferSetting(ms: number) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_extra_recording_buffer_setting", { ms }) };
 } catch (e) {
@@ -141,7 +146,7 @@ async changeExtraRecordingBufferSetting(ms: number) : Promise<Result<null, strin
     else return { status: "error", error: e  as any };
 }
 },
-async changePasteDelayMsSetting(ms: number) : Promise<Result<null, string>> {
+async changePasteDelayMsSetting(ms: number) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_paste_delay_ms_setting", { ms }) };
 } catch (e) {
@@ -149,7 +154,7 @@ async changePasteDelayMsSetting(ms: number) : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async changePasteDelayAfterMsSetting(ms: number) : Promise<Result<null, string>> {
+async changePasteDelayAfterMsSetting(ms: number) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_paste_delay_after_ms_setting", { ms }) };
 } catch (e) {
@@ -157,7 +162,7 @@ async changePasteDelayAfterMsSetting(ms: number) : Promise<Result<null, string>>
     else return { status: "error", error: e  as any };
 }
 },
-async changeReliablePasteSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeReliablePasteSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_reliable_paste_setting", { enabled }) };
 } catch (e) {
@@ -165,7 +170,7 @@ async changeReliablePasteSetting(enabled: boolean) : Promise<Result<null, string
     else return { status: "error", error: e  as any };
 }
 },
-async changePasteMethodSetting(method: string) : Promise<Result<null, string>> {
+async changePasteMethodSetting(method: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_paste_method_setting", { method }) };
 } catch (e) {
@@ -176,7 +181,7 @@ async changePasteMethodSetting(method: string) : Promise<Result<null, string>> {
 async getAvailableTypingTools() : Promise<string[]> {
     return await TAURI_INVOKE("get_available_typing_tools");
 },
-async changeTypingToolSetting(tool: string) : Promise<Result<null, string>> {
+async changeTypingToolSetting(tool: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_typing_tool_setting", { tool }) };
 } catch (e) {
@@ -184,7 +189,7 @@ async changeTypingToolSetting(tool: string) : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async changeExternalScriptPathSetting(path: string | null) : Promise<Result<null, string>> {
+async changeExternalScriptPathSetting(path: string | null) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_external_script_path_setting", { path }) };
 } catch (e) {
@@ -192,7 +197,7 @@ async changeExternalScriptPathSetting(path: string | null) : Promise<Result<null
     else return { status: "error", error: e  as any };
 }
 },
-async changeClipboardHandlingSetting(handling: string) : Promise<Result<null, string>> {
+async changeClipboardHandlingSetting(handling: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_clipboard_handling_setting", { handling }) };
 } catch (e) {
@@ -200,7 +205,7 @@ async changeClipboardHandlingSetting(handling: string) : Promise<Result<null, st
     else return { status: "error", error: e  as any };
 }
 },
-async changeAutoSubmitSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeAutoSubmitSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_auto_submit_setting", { enabled }) };
 } catch (e) {
@@ -208,7 +213,7 @@ async changeAutoSubmitSetting(enabled: boolean) : Promise<Result<null, string>> 
     else return { status: "error", error: e  as any };
 }
 },
-async changeAutoSubmitKeySetting(key: string) : Promise<Result<null, string>> {
+async changeAutoSubmitKeySetting(key: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_auto_submit_key_setting", { key }) };
 } catch (e) {
@@ -216,7 +221,7 @@ async changeAutoSubmitKeySetting(key: string) : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async changePostProcessEnabledSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changePostProcessEnabledSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_post_process_enabled_setting", { enabled }) };
 } catch (e) {
@@ -224,7 +229,7 @@ async changePostProcessEnabledSetting(enabled: boolean) : Promise<Result<null, s
     else return { status: "error", error: e  as any };
 }
 },
-async changeExperimentalEnabledSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeExperimentalEnabledSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_experimental_enabled_setting", { enabled }) };
 } catch (e) {
@@ -232,7 +237,10 @@ async changeExperimentalEnabledSetting(enabled: boolean) : Promise<Result<null, 
     else return { status: "error", error: e  as any };
 }
 },
-async changePostProcessBaseUrlSetting(providerId: string, baseUrl: string) : Promise<Result<null, string>> {
+/**
+ * Only the custom provider's base URL is editable.
+ */
+async changePostProcessBaseUrlSetting(providerId: string, baseUrl: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_post_process_base_url_setting", { providerId, baseUrl }) };
 } catch (e) {
@@ -240,7 +248,10 @@ async changePostProcessBaseUrlSetting(providerId: string, baseUrl: string) : Pro
     else return { status: "error", error: e  as any };
 }
 },
-async changePostProcessApiKeySetting(providerId: string, apiKey: string) : Promise<Result<null, string>> {
+/**
+ * Store a provider API key (secret, UI-only); the provider must exist.
+ */
+async changePostProcessApiKeySetting(providerId: string, apiKey: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_post_process_api_key_setting", { providerId, apiKey }) };
 } catch (e) {
@@ -248,7 +259,10 @@ async changePostProcessApiKeySetting(providerId: string, apiKey: string) : Promi
     else return { status: "error", error: e  as any };
 }
 },
-async changePostProcessModelSetting(providerId: string, model: string) : Promise<Result<null, string>> {
+/**
+ * Store the model chosen for an existing provider.
+ */
+async changePostProcessModelSetting(providerId: string, model: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_post_process_model_setting", { providerId, model }) };
 } catch (e) {
@@ -256,7 +270,10 @@ async changePostProcessModelSetting(providerId: string, model: string) : Promise
     else return { status: "error", error: e  as any };
 }
 },
-async setPostProcessProvider(providerId: string) : Promise<Result<null, string>> {
+/**
+ * Select an existing post-processing provider.
+ */
+async setPostProcessProvider(providerId: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("set_post_process_provider", { providerId }) };
 } catch (e) {
@@ -272,7 +289,10 @@ async fetchPostProcessModels(providerId: string) : Promise<Result<string[], stri
     else return { status: "error", error: e  as any };
 }
 },
-async addPostProcessPrompt(name: string, prompt: string) : Promise<Result<LLMPrompt, string>> {
+/**
+ * Append a prompt; its id is generated once, outside the (re-runnable) edit.
+ */
+async addPostProcessPrompt(name: string, prompt: string) : Promise<Result<LLMPrompt, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("add_post_process_prompt", { name, prompt }) };
 } catch (e) {
@@ -280,7 +300,10 @@ async addPostProcessPrompt(name: string, prompt: string) : Promise<Result<LLMPro
     else return { status: "error", error: e  as any };
 }
 },
-async updatePostProcessPrompt(id: string, name: string, prompt: string) : Promise<Result<null, string>> {
+/**
+ * Rename or rewrite an existing prompt.
+ */
+async updatePostProcessPrompt(id: string, name: string, prompt: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("update_post_process_prompt", { id, name, prompt }) };
 } catch (e) {
@@ -288,7 +311,10 @@ async updatePostProcessPrompt(id: string, name: string, prompt: string) : Promis
     else return { status: "error", error: e  as any };
 }
 },
-async deletePostProcessPrompt(id: string) : Promise<Result<null, string>> {
+/**
+ * Delete a prompt; the last prompt is kept, and a deleted selection moves to the first prompt.
+ */
+async deletePostProcessPrompt(id: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("delete_post_process_prompt", { id }) };
 } catch (e) {
@@ -296,7 +322,7 @@ async deletePostProcessPrompt(id: string) : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async setPostProcessSelectedPrompt(id: string) : Promise<Result<null, string>> {
+async setPostProcessSelectedPrompt(id: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("set_post_process_selected_prompt", { id }) };
 } catch (e) {
@@ -304,7 +330,10 @@ async setPostProcessSelectedPrompt(id: string) : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async updateCustomWords(words: string[]) : Promise<Result<null, string>> {
+/**
+ * Vocabulary list owned by the settings UI until its CLI domain ships.
+ */
+async updateCustomWords(words: string[]) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("update_custom_words", { words }) };
 } catch (e) {
@@ -335,7 +364,7 @@ async resumeAllBindings() : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async changeMuteWhileRecordingSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeMuteWhileRecordingSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_mute_while_recording_setting", { enabled }) };
 } catch (e) {
@@ -343,7 +372,7 @@ async changeMuteWhileRecordingSetting(enabled: boolean) : Promise<Result<null, s
     else return { status: "error", error: e  as any };
 }
 },
-async changeAppendTrailingSpaceSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeAppendTrailingSpaceSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_append_trailing_space_setting", { enabled }) };
 } catch (e) {
@@ -351,7 +380,7 @@ async changeAppendTrailingSpaceSetting(enabled: boolean) : Promise<Result<null, 
     else return { status: "error", error: e  as any };
 }
 },
-async changeLazyStreamCloseSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeLazyStreamCloseSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_lazy_stream_close_setting", { enabled }) };
 } catch (e) {
@@ -359,7 +388,7 @@ async changeLazyStreamCloseSetting(enabled: boolean) : Promise<Result<null, stri
     else return { status: "error", error: e  as any };
 }
 },
-async changeVadEnabledSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeVadEnabledSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_vad_enabled_setting", { enabled }) };
 } catch (e) {
@@ -367,7 +396,11 @@ async changeVadEnabledSetting(enabled: boolean) : Promise<Result<null, string>> 
     else return { status: "error", error: e  as any };
 }
 },
-async changeVadBackendSetting(backend: VadBackend) : Promise<Result<null, string>> {
+/**
+ * Swap the VAD detector (and reopen the microphone when needed) before committing, off the
+ * webview thread; a refused commit restores the backend published when the write started.
+ */
+async changeVadBackendSetting(backend: VadBackend) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_vad_backend_setting", { backend }) };
 } catch (e) {
@@ -375,7 +408,7 @@ async changeVadBackendSetting(backend: VadBackend) : Promise<Result<null, string
     else return { status: "error", error: e  as any };
 }
 },
-async changeFillerWordRemovalEnabledSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeFillerWordRemovalEnabledSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_filler_word_removal_enabled_setting", { enabled }) };
 } catch (e) {
@@ -383,7 +416,7 @@ async changeFillerWordRemovalEnabledSetting(enabled: boolean) : Promise<Result<n
     else return { status: "error", error: e  as any };
 }
 },
-async changeChineseScriptSetting(script: ChineseScript) : Promise<Result<null, string>> {
+async changeChineseScriptSetting(script: ChineseScript) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_chinese_script_setting", { script }) };
 } catch (e) {
@@ -391,7 +424,7 @@ async changeChineseScriptSetting(script: ChineseScript) : Promise<Result<null, s
     else return { status: "error", error: e  as any };
 }
 },
-async changeAppLanguageSetting(language: string) : Promise<Result<null, string>> {
+async changeAppLanguageSetting(language: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_app_language_setting", { language }) };
 } catch (e) {
@@ -399,7 +432,7 @@ async changeAppLanguageSetting(language: string) : Promise<Result<null, string>>
     else return { status: "error", error: e  as any };
 }
 },
-async changeUpdateChecksSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeUpdateChecksSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_update_checks_setting", { enabled }) };
 } catch (e) {
@@ -407,7 +440,7 @@ async changeUpdateChecksSetting(enabled: boolean) : Promise<Result<null, string>
     else return { status: "error", error: e  as any };
 }
 },
-async changeShowWhatsNewOnUpdateSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeShowWhatsNewOnUpdateSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_show_whats_new_on_update_setting", { enabled }) };
 } catch (e) {
@@ -415,7 +448,10 @@ async changeShowWhatsNewOnUpdateSetting(enabled: boolean) : Promise<Result<null,
     else return { status: "error", error: e  as any };
 }
 },
-async changeWhatsNewLastSeenVersionSetting(version: string) : Promise<Result<null, string>> {
+/**
+ * UI-owned marker (read-only for the CLI); the trimmed version is stored as given.
+ */
+async changeWhatsNewLastSeenVersionSetting(version: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_whats_new_last_seen_version_setting", { version }) };
 } catch (e) {
@@ -424,12 +460,12 @@ async changeWhatsNewLastSeenVersionSetting(version: string) : Promise<Result<nul
 }
 },
 /**
- * Change the keyboard implementation with runtime switching.
- * This will unregister all shortcuts from the old implementation,
- * validate shortcuts for the new implementation (resetting invalid ones to defaults),
- * and register them with the new implementation.
+ * Change the keyboard implementation with runtime switching, as one ordered write. The value is
+ * validated and committed like any setting; its live effect (`switch_keyboard_implementation`)
+ * unregisters the old shortcuts, registers them with the new implementation and resets
+ * incompatible ones, so the bindings compared around the commit are exactly those resets.
  */
-async changeKeyboardImplementationSetting(implementation: string) : Promise<Result<ImplementationChangeResult, string>> {
+async changeKeyboardImplementationSetting(implementation: string) : Promise<Result<ImplementationChangeResult, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_keyboard_implementation_setting", { implementation }) };
 } catch (e) {
@@ -443,7 +479,7 @@ async changeKeyboardImplementationSetting(implementation: string) : Promise<Resu
 async getKeyboardImplementation() : Promise<string> {
     return await TAURI_INVOKE("get_keyboard_implementation");
 },
-async changeShowTrayIconSetting(enabled: boolean) : Promise<Result<null, string>> {
+async changeShowTrayIconSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_show_tray_icon_setting", { enabled }) };
 } catch (e) {
@@ -451,7 +487,7 @@ async changeShowTrayIconSetting(enabled: boolean) : Promise<Result<null, string>
     else return { status: "error", error: e  as any };
 }
 },
-async changeTranscribeAcceleratorSetting(accelerator: TranscribeAcceleratorSetting) : Promise<Result<null, string>> {
+async changeTranscribeAcceleratorSetting(accelerator: TranscribeAcceleratorSetting) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_transcribe_accelerator_setting", { accelerator }) };
 } catch (e) {
@@ -459,7 +495,7 @@ async changeTranscribeAcceleratorSetting(accelerator: TranscribeAcceleratorSetti
     else return { status: "error", error: e  as any };
 }
 },
-async changeOrtAcceleratorSetting(accelerator: OrtAcceleratorSetting) : Promise<Result<null, string>> {
+async changeOrtAcceleratorSetting(accelerator: OrtAcceleratorSetting) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_ort_accelerator_setting", { accelerator }) };
 } catch (e) {
@@ -467,7 +503,7 @@ async changeOrtAcceleratorSetting(accelerator: OrtAcceleratorSetting) : Promise<
     else return { status: "error", error: e  as any };
 }
 },
-async changeTranscribeGpuDevice(device: string | null) : Promise<Result<null, string>> {
+async changeTranscribeGpuDevice(device: string | null) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_transcribe_gpu_device", { device }) };
 } catch (e) {
@@ -560,13 +596,11 @@ async getAppSettings() : Promise<Result<AppSettings, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async getDefaultSettings() : Promise<Result<AppSettings, string>> {
-    try {
-    return { status: "ok", data: await TAURI_INVOKE("get_default_settings") };
-} catch (e) {
-    if(e instanceof Error) throw e;
-    else return { status: "error", error: e  as any };
-}
+async getSettingsView() : Promise<SettingsView> {
+    return await TAURI_INVOKE("get_settings_view");
+},
+async getDefaultSettings() : Promise<AppSettings> {
+    return await TAURI_INVOKE("get_default_settings");
 },
 async getLogDirPath() : Promise<Result<string, string>> {
     try {
@@ -576,7 +610,10 @@ async getLogDirPath() : Promise<Result<string, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async setLogLevel(level: LogLevel) : Promise<Result<null, string>> {
+/**
+ * The file log level follows the committed value (live effect of `log_level`).
+ */
+async setLogLevel(level: LogLevel) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("set_log_level", { level }) };
 } catch (e) {
@@ -724,7 +761,11 @@ async rescanLocalModels() : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async updateMicrophoneMode(alwaysOn: boolean) : Promise<Result<null, string>> {
+/**
+ * Commit the microphone mode; its live effect (stopping or starting the cpal stream, blocking
+ * CoreAudio) runs on a blocking thread, never on the webview/main run loop.
+ */
+async updateMicrophoneMode(alwaysOn: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("update_microphone_mode", { alwaysOn }) };
 } catch (e) {
@@ -759,7 +800,11 @@ async getAvailableMicrophones() : Promise<Result<AudioDevice[], string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async setSelectedMicrophone(deviceName: string) : Promise<Result<null, string>> {
+/**
+ * `None` selects the system default device; a name is stored as is, "default" included. The
+ * device restart is the live effect, run off the webview thread.
+ */
+async setSelectedMicrophone(deviceName: string | null) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("set_selected_microphone", { deviceName }) };
 } catch (e) {
@@ -783,7 +828,10 @@ async getAvailableOutputDevices() : Promise<Result<AudioDevice[], string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async setSelectedOutputDevice(deviceName: string) : Promise<Result<null, string>> {
+/**
+ * `None` selects the system default output device; a name is stored as is.
+ */
+async setSelectedOutputDevice(deviceName: string | null) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("set_selected_output_device", { deviceName }) };
 } catch (e) {
@@ -805,7 +853,10 @@ async playTestSound(soundType: string) : Promise<void> {
 async checkCustomSounds() : Promise<CustomSounds> {
     return await TAURI_INVOKE("check_custom_sounds");
 },
-async setClamshellMicrophone(deviceName: string) : Promise<Result<null, string>> {
+/**
+ * `None` selects the system default device while the lid is closed; a name is stored as is.
+ */
+async setClamshellMicrophone(deviceName: string | null) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("set_clamshell_microphone", { deviceName }) };
 } catch (e) {
@@ -832,7 +883,12 @@ async getMicrophoneChannels(deviceName: string) : Promise<Result<number, string>
     else return { status: "error", error: e  as any };
 }
 },
-async setSelectedChannel(channel: number | null) : Promise<Result<null, string>> {
+/**
+ * Restarting cpal can block, so the channel change runs off the webview/main run loop. The
+ * runtime change is prepared before committing, so a rejected active-recording change is never
+ * stored; a refused commit restores the channel published when the ordered write started.
+ */
+async setSelectedChannel(channel: number | null) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("set_selected_channel", { channel }) };
 } catch (e) {
@@ -840,8 +896,13 @@ async setSelectedChannel(channel: number | null) : Promise<Result<null, string>>
     else return { status: "error", error: e  as any };
 }
 },
-async setModelUnloadTimeout(timeout: ModelUnloadTimeout) : Promise<void> {
-    await TAURI_INVOKE("set_model_unload_timeout", { timeout });
+async setModelUnloadTimeout(timeout: ModelUnloadTimeout) : Promise<Result<null, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("set_model_unload_timeout", { timeout }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
 },
 async getModelLoadStatus() : Promise<Result<ModelLoadStatus, string>> {
     try {
@@ -899,7 +960,10 @@ async retryHistoryEntryTranscription(id: number) : Promise<Result<null, string>>
     else return { status: "error", error: e  as any };
 }
 },
-async updateHistoryLimit(limit: number) : Promise<Result<null, string>> {
+/**
+ * The history cleanup is the live effect of `history_limit` (run before success is returned).
+ */
+async updateHistoryLimit(limit: number) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("update_history_limit", { limit }) };
 } catch (e) {
@@ -907,7 +971,10 @@ async updateHistoryLimit(limit: number) : Promise<Result<null, string>> {
     else return { status: "error", error: e  as any };
 }
 },
-async updateRecordingRetentionPeriod(period: string) : Promise<Result<null, string>> {
+/**
+ * The recording cleanup is the live effect of `recording_retention_period`.
+ */
+async updateRecordingRetentionPeriod(period: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("update_recording_retention_period", { period }) };
 } catch (e) {
@@ -1087,6 +1154,18 @@ sha256: string | null } } |
 "Local"
 export type ModelUnloadTimeout = "never" | "immediately" | "min_2" | "min_5" | "min_10" | "min_15" | "hour_1" | "sec_15"
 export type OrtAcceleratorSetting = "auto" | "cpu" | "cuda" | "directml" | "rocm"
+/**
+ * Durable outcome of a failed operation; clients must reread before retrying either one.
+ */
+export type Outcome = 
+/**
+ * A timed-out or unconfirmed operation may or may not have committed.
+ */
+"unknown" | 
+/**
+ * The write is durable, but a live effect failed afterwards and is reconciled later.
+ */
+"committed"
 export type OverlayPosition = "top" | "bottom"
 /**
  * Which recording overlay to display. `Minimal` and `Live` share one base
@@ -1100,6 +1179,9 @@ export type PasteMethod = "ctrl_v" | "direct" | "none" | "shift_insert" | "ctrl_
 export type PermissionAccess = "allowed" | "denied" | "unknown"
 export type PostProcessProvider = { id: string; label: string; base_url: string; allow_base_url_edit?: boolean; models_endpoint?: string | null; supports_structured_output?: boolean }
 export type RecordingRetentionPeriod = "never" | "preserve_limit" | "days_3" | "weeks_2" | "months_3"
+/**
+ * Provider API keys: `Debug` is redacted and the public settings projection reports presence only.
+ */
 export type SecretMap = Partial<{ [key in string]: string }>
 export type SecureInputStatus = { 
 /**
@@ -1133,6 +1215,55 @@ uncovered_bindings: string[];
  * warning banner appears and explains why recording refused.
  */
 recorder_blocked: boolean }
+/**
+ * Error of a settings UI command: the stable code and English message shared with the CLI,
+ * plus the field and typed reason the UI maps to a translation (never free-text parsing).
+ */
+export type SettingsCommandError = { 
+/**
+ * Stable category, identical to the CLI error code.
+ */
+code: SettingsErrorCode; 
+/**
+ * Stable English message, identical to the CLI message.
+ */
+message: string; 
+/**
+ * Recognized setting key the refusal concerns, if any.
+ */
+field: string | null; 
+/**
+ * Typed validation reason, if any.
+ */
+reason: ValidationReason | null; 
+/**
+ * `committed` when the value is stored but a live effect failed; `unknown` when unconfirmed.
+ */
+outcome: Outcome | null; 
+/**
+ * Revision the outcome or conflict refers to.
+ */
+current_revision: number | null }
+/**
+ * Stable wire categories; their fixed exit meanings never depend on input text.
+ */
+export type SettingsErrorCode = "usage_error" | "validation_failed" | "shortcut_conflict" | "limit_exceeded" | "revision_conflict" | "not_found" | "unavailable" | "persistence_failed" | "internal_error"
+/**
+ * Published settings with their revision, so the UI can discard refreshes older than an event.
+ */
+export type SettingsView = { 
+/**
+ * Durable revision of `settings`.
+ */
+revision: number; 
+/**
+ * Settings as every reader of this process sees them.
+ */
+settings: AppSettings; 
+/**
+ * True when this process could not own the settings store: every change is refused.
+ */
+read_only: boolean }
 /**
  * How the transcribe shortcut's key events drive a recording.
  */
@@ -1193,6 +1324,19 @@ export type Theme = "system" | "light" | "dark"
 export type TranscribeAcceleratorSetting = "auto" | "cpu" | "gpu"
 export type TypingTool = "auto" | "wtype" | "kwtype" | "dotool" | "ydotool" | "xdotool"
 export type VadBackend = "silero" | "earshot"
+/**
+ * Closed canonical reasons prevent an arbitrary candidate/error string entering details. The
+ * snake_case name is the stable key the settings UI maps to a translation.
+ */
+export type ValidationReason = "canonical_type" | "canonical_value" | "out_of_range" | "ui_only" | "shortcuts_domain" | "vocabulary_domain" | "prompts_domain" | "unknown_prompt" | "updater_disabled" | "gpu_device_required" | 
+/**
+ * Domain input (file or stdin) is not UTF-8 text; `details.offset` names the first bad byte.
+ */
+"invalid_encoding" | 
+/**
+ * Domain input does not follow the domain's exchange format.
+ */
+"invalid_input"
 export type WindowsMicrophonePermissionStatus = { supported: boolean; overall_access: PermissionAccess; device_access: PermissionAccess; app_access: PermissionAccess; desktop_app_access: PermissionAccess }
 
 /** tauri-specta globals **/

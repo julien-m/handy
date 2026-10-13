@@ -1,0 +1,161 @@
+{
+  "reviewer_model": "gpt-6.1-sol",
+  "scope": "Independent Step2 foundation review only: descriptors, pure scalar validation ports, explicit redacted public projection, typed DTO/errors/domain metadata and producer-generated contracts",
+  "verdict": "SCOPED PASS",
+  "blocking_findings": [],
+  "feature_pass": false,
+  "certified_acs": [],
+  "summary_path": ".specs/features/008-settings-cli/proofs/current-run-step2/summary.json",
+  "summary_sha256": "23b4ee16ee7a20a43f3669ea3b7da9d4ebcb1a8251e47dac11766209a9bb1369",
+  "all14_current_source_contract_hashes_verified": true,
+  "files": [
+    {
+      "path": "src-tauri/src/lib.rs",
+      "lines": 1129,
+      "sha256": "8f3466063c69e417a8ce36d82134e4a170c4fa9df0e7790187bbcc686b4f10d1"
+    },
+    {
+      "path": "src-tauri/src/settings_service/mod.rs",
+      "lines": 8,
+      "sha256": "1c2315312e14b7e877fb4ba7dd051c72c7f5e1e1ad37f094223f0dece4816034"
+    },
+    {
+      "path": "src-tauri/src/settings_service/descriptor.rs",
+      "lines": 67,
+      "sha256": "7c5cd43750a7e7758a093a230a7cf33e1c420e4c00ddd6cebd876c781ee92712"
+    },
+    {
+      "path": "src-tauri/src/settings_service/descriptor_data.rs",
+      "lines": 80,
+      "sha256": "44b8f0b28cc6acad60ba256e2d3120239675dca1d985a176368cf48b86e046ee"
+    },
+    {
+      "path": "src-tauri/src/settings_service/validation.rs",
+      "lines": 211,
+      "sha256": "95ed466cf8273632cfdd65ea7a036a70f5fc9a48290494ddb727e750e3a18563"
+    },
+    {
+      "path": "src-tauri/src/settings_service/protocol.rs",
+      "lines": 221,
+      "sha256": "829eefea2e7c9bbcd3a3ba7e506b94a167fb72756844defe7c20f4d45ea77c13"
+    },
+    {
+      "path": "src-tauri/src/settings_service/errors.rs",
+      "lines": 167,
+      "sha256": "29f69563acf36f4bb036dc45231fc9a9e7e248475c4fca7066e7aa3d10d62a40"
+    },
+    {
+      "path": "src-tauri/src/settings_service/public.rs",
+      "lines": 283,
+      "sha256": "c24b7a43616501b7db354bd2b78ff5e6e0468f7e6b35dc1e88ead295824f4784"
+    },
+    {
+      "path": "src-tauri/tests/settings_validation.rs",
+      "lines": 8,
+      "sha256": "3fd2150ae84979b5b85d6ea3a68b75a4e443833951f0d3b9f51fcdfd412eaf34"
+    },
+    {
+      "path": "src-tauri/tests/settings_validation/contracts.rs",
+      "lines": 218,
+      "sha256": "74985c9706e8cd11ee9fd73c69887aada3a9fe3f718a21d5e8592688c6591894"
+    },
+    {
+      "path": "src-tauri/tests/settings_validation/inventory.rs",
+      "lines": 163,
+      "sha256": "0f9c667b2c42d1d411bc0bed69c49709a4f3fe4f2f617e2be56d961fe9bfcd57"
+    },
+    {
+      "path": "src-tauri/tests/settings_validation/scalars.rs",
+      "lines": 289,
+      "sha256": "52fae220ce4c3aaa6635887134cf66b07b49829ee3d8ee0f9f78c8f58f6af22d"
+    },
+    {
+      "path": ".specs/features/008-settings-cli/contracts/settings-cli.schema.json",
+      "lines": 1499,
+      "sha256": "3581671c51ea3d99665954c24e1308fef76cde109c5c191e564e27586821f28b"
+    },
+    {
+      "path": ".specs/features/008-settings-cli/contracts/settings-cli.md",
+      "lines": 31,
+      "sha256": "2cc346e1ded89ee7a3df5ecd424d835842a25b9ade01ccdedca8ee1df433c71c"
+    }
+  ],
+  "quality": {
+    "new_rust_max_file_lines": 289,
+    "new_rust_max_function_lines": 47,
+    "test_exemptions": [],
+    "existing_entrypoint_exception": "lib.rs1129lines predates this step; actual diff adds only pub mod settings_service, with no altered existing function or unrelated reorganization. Generated1499-line JSON is contract data, not a Rust God file.",
+    "public_docs_and_anchors": "Checked typed public API descriptions and direct FR002 descriptor/public/producer, FR003 mutation validator, FR005 DomainExtension, FR006 DTO/errors/schema anchors."
+  },
+  "checks_observed": {
+    "final3-test": {
+      "exit": 0,
+      "stdout_sha256": "33bc7c32ad7e6d017b408c19daeb4a58577003a57bae71fc1d13e039b35d459d",
+      "stderr_sha256": "52b61b9f7d80366f30cf991d0ecd429ef7ff0012886e1cd8a3b91f443931f0d6"
+    },
+    "final3-clippy": {
+      "exit": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "975007bd3bb758ec4cdca8ac30b41ad423235581a93c7ae142309c79e644247c"
+    },
+    "final3-format": {
+      "exit": 0,
+      "stdout_sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+      "stderr_sha256": "56b8ab91673c31d3b969d25b1e3ca20fb38a11f416855911aa2164233e77afcd"
+    }
+  },
+  "tests": {
+    "passed": 16,
+    "failed": 0,
+    "ignored": 0,
+    "qualified_ids": [
+      "handy/test/settings_validation::scalars::cli_rejects_noncanonical_boolean_and_out_of_range_numbers",
+      "handy/test/settings_validation::contracts::valid_get_keys_set_domain_shapes_roundtrip_with_optional_nulls",
+      "handy/test/settings_validation::contracts::all_documented_error_codes_have_fixed_exits_and_object_details",
+      "handy/test/settings_validation::inventory::independent_access_inventory_covers_7_readonly_1_secret_4_collections_51_scalars",
+      "handy/test/settings_validation::scalars::every_nullable_scalar_preserves_strings_and_accepts_null_clear",
+      "handy/test/settings_validation::contracts::request_roundtrip_keeps_typed_operation_without_debug_or_secret_diagnostics",
+      "handy/test/settings_validation::scalars::legacy_aliases_are_disk_only_and_build_policy_is_shared",
+      "handy/test/settings_validation::scalars::all_51_scalar_ports_accept_the_same_typed_values",
+      "handy/test/settings_validation::scalars::unknown_and_protected_keys_are_refused_without_echoing_input",
+      "handy/test/settings_validation::scalars::numeric_boundaries_and_overflow_have_identical_safe_error_reasons",
+      "handy/test/settings_validation::contracts::operation_schema_requires_the_same_variant_fields_as_serde",
+      "handy/test/settings_validation::contracts::checked_schema_matches_the_actual_dto_generator",
+      "handy/test/settings_validation::contracts::generated_schema_matches_wire_shapes_and_descriptor_inventory",
+      "handy/test/settings_validation::inventory::every_actual_stored_field_has_exactly_one_descriptor",
+      "handy/test/settings_validation::contracts::explicit_projection_reports_secret_presence_without_any_raw_canary",
+      "handy/test/settings_validation::inventory::independent_enum_inventory_accepts_every_current_canonical_variant"
+    ],
+    "platform_regression": "Prior combined settings_validation/settings_platform run observed22platformtests passed,0failed, unchanged platform sources; not rerun by reviewer",
+    "swift_bridge": "Actual final3 test and strict clippy build outputs show Apple Intelligence support"
+  },
+  "independent_judgments": [
+    "Actual AppSettings serialization has63fieldnames; independent access test and authoritative current-source inventory agree on7readonly+1secret+4collections+51scalars. Scalar cases and17enum inventories are explicitly maintained, not selected from production descriptor allowed values.",
+    "CLI and UI pure ports share typed validation after allowed UI device-sentinel normalization.51cases assert typed expected values, preserve meaningful string whitespace, reject object candidates, and cover canonical aliases/nullability/prompt membership/build-policy refusal. Numeric boundaries, overflow, finite checks and canonical enum roundtrip are source-backed and observed passing.",
+    "PublicSettings explicitly flattens typed field groups; provider/prompt/binding children are closed typed DTOs and SecretMap values become per-provider present booleans. No AppSettings/SecretMap wholesale serialization or raw repository Value enters this public projection. Nested/unknown/API/error synthetic canaries are tested.",
+    "Internal SettingsSnapshot has no Serialize; SettingsMutation Debug omits candidate values. Fixed English error categories and closed ValidationReason details admit only recognized canonical fields, never raw unknown key/candidate/serde diagnostics. Object details and all9 documented exit mappings are independently asserted.",
+    "Closed envelope body constructors keep ok true/false consistent. Revision is u64 separate from schema version. OperationRequest is typed; protocol framing/version/auth/deadline checks remain later transport obligations. DomainExtension establishes metadata only, without prematurely registering future domains.",
+    "Schema finding fixed within existing producer: discriminated request variants require Set nonnullkey/value and Domain domain/action/dry_run; Get omission/null and optional revision/input remain allowed. Contrast DTO failures plus explicit schema constraints pass after observed RED101. Checked JSON equality against actual contract_schema producer passes; file was regenerated, not manually asserted as a receipt."
+  ],
+  "schema_finding_disposition": {
+    "status": "resolved",
+    "tests": [
+      "operation_schema_requires_the_same_variant_fields_as_serde",
+      "valid_get_keys_set_domain_shapes_roundtrip_with_optional_nulls",
+      "checked_schema_matches_the_actual_dto_generator"
+    ],
+    "limitation": "Contrast tests inspect schema constraints and actual serde outcomes; they do not claim a separate third-party JSON Schema validator execution."
+  },
+  "remaining_scope": [
+    "Actual corresponding Tauri writer parity, invalid-to-default command migration and native effects are Step4;51pure ports do not certify AC003/SC001 end-to-end.",
+    "Settings get/keys/set executable reachability, persistence/revision/lock/write serialization and live channel transport remain later steps.",
+    "Single-envelope stdout/stderr/error parser rendering remains Step5; JSON DTO serialization alone does not pass AC007/008 executable output.",
+    "Domain registry/help/file-stdin/dryrun/atomic orchestration remains Step6; extension metadata is partial FR005 foundation.",
+    "Full mandatory macOS new-app/M1/read latency/no-window-tray-model/live refresh/shortcuts remains Step7; Windows/Linux/older-binary/second-user exact native checks remain pending release evidence."
+  ],
+  "conventions_context_path": ".specs/features/008-settings-cli/run/supervisor-resume-context.md",
+  "application_source_modified_by_reviewer": false,
+  "tests_run_by_reviewer": false,
+  "acceptance_mapping": "No new partial mapping or whole-AC certification was prepared/claimed for this foundation step.",
+  "audit": "Separate official audit/checkpoint/commit remains supervisor-owned; this source/quality review is not that final audit receipt."
+}

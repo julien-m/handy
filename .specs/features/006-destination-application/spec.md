@@ -4,7 +4,7 @@ title: Destination Application
 priority: P1
 status: Planned
 created: 2026-10-12
-updated: 2026-10-12
+updated: 2026-10-13
 ---
 
 # Feature Spec: Destination Application
@@ -357,6 +357,13 @@ Feature: Keyboard access to destination settings
 - **Non-functional expectations:** Capture at start under 50 ms; activation wait bounded at 1 second; badge update under 200 ms; no window titles or text logged above debug level.
 - **Missing evidence:** No runtime test; real compatibility with ChatGPT and Comet unverified; mockups deferred before `spec-ship`.
 - **Boundary:** QE defines risk and test sufficiency; the independent review judges requirements; Penflow governs UI design evidence; spec-test executes runtime proof.
+
+## Quality Engineering
+
+- **Risk:** High criticality (rated so by the QE Analysis: a transcript can be sent to the wrong application or lost); Shared blast radius (the captured destination decides where every transcript goes, and the output behavior is exposed through the settings CLI); primary risk Functional (wrong destination or lost text), with wrong-window privacy leakage as its consequence.
+- **Applicable dimensions:** functional correctness, security/privacy (wrong-window leakage), reliability, platform compatibility, accessibility, UX.
+- **P0 gates/evidence:** State tests proving application switches do not change the destination; tests proving no insertion occurs when the destination is closed or not frontmost in time; badge change applies to the current dictation only.
+- **Boundary:** QE defines risk and test sufficiency only. The independent spec review judges requirements, Penflow governs UI design evidence, spec-test executes runtime proof and the end-of-feature delivery review looks for defects.
 
 ## Screens
 

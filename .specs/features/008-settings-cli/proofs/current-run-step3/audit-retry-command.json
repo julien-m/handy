@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/opt/homebrew/opt/python@3.14/bin/python3",
+    "/Users/julienm/.claude/skills/audit/scripts/audit_fix.py",
+    "--intent",
+    "008 Step3 pure isolated repository/locator/normalization, fresh raw-preserving atomic settings_revision CAS/no-op/overflow patches under persistent fs2 sibling settings.lock and retained startup lease. Approved bounded plan refinement is officially READY: running-app AppHandle adoption, all writers, settings-file plugin ownership/autosave/exit-save closure remain together in Step4; CLI activation Step5. No global UI parity/whole AC or full Windows/native acceptance claimed. Read creates no store/Data/marker; stable lock infrastructure in existing parent is permitted. Final passive owner probe runs after temp fsync immediately before guarded replacement. Unprovable legacy same-user scope stays fail-closed; no notifying connect, legacy delete, unsafe chmod or global umask. Failed private temporary paths retained deliberately; identity substitutions must not replace store/delete replacement. Windows persistent TokenUser ownership differs from session logon SID IPC; exact x86 Windows SDK/std type check only, not full app/link/native. Actual macOS targeted tests full21pass/0fail/1ignored technical driver run six subprocesses, four normal exits and two SIGKILL at Before/AfterReplace, old/new exact complete bytes plus subsequent lock reuse; final changed crash target1pass/0fail/0ignored. Fresh prompt dependency revalidation uses shared validator. Strict clippy and format pass. Review only actual changed Step3 code/docs, no later domains or temporary full-snapshot adapter. Existing long settings.rs changes are helper visibility only; baseline remains immutable."
+  ],
+  "cwd": "/Users/julienm/projects/handy",
+  "source_tree_sha256": "bdecf5c8aed01f1078ac35f74537c31a32c7bfb47f8f1315c9603745d007dd11",
+  "retry_hypothesis": "cc-hub generic api-key pattern may misclassify non-auth stderr; preserve exact original Codex argv/stdin/stdout/exit while teeing raw stderr.",
+  "retry_evidence": "Root observed codex login status exit0 Logged in using ChatGPT and read generic auth-error patterns in wrapper; root authorized ephemeral diagnostic only.",
+  "temporary_path_prefix": "/var/folders/l_/t1s_zytx2fqb0dkzz40d3v7m0000gn/T/handy-008-audit-stderr-ne8_3w7x",
+  "real_executable": "/opt/homebrew/bin/codex",
+  "raw_stderr": "/Users/julienm/projects/handy/.specs/features/008-settings-cli/proofs/current-run-step3/audit-retry.raw-codex.stderr",
+  "started_at_unix": 1791896015.6474292,
+  "retry_result": "exit=1; exact raw Codex stderr preserved; root interprets cause"
+}

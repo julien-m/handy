@@ -1,0 +1,5 @@
+RED for Step 4 audit B MINOR-1 and the P0 UI event/read ordering tests: the committed
+src/stores/settingsStore.ts of HEAD (before the fix) was put back for this run only and
+`bun test src/stores/settings-store.test.ts` was run: 2 of 4 fail (a committed value is rolled back
+after a newer refresh; a refusal restores a value older than another writer's commit). The fixed
+store was restored right after; GREEN is test-settings-store.stdout (4 pass).

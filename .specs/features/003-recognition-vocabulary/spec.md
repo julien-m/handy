@@ -4,7 +4,7 @@ title: Recognition Vocabulary
 priority: P1
 status: Planned
 created: 2026-10-12
-updated: 2026-10-12
+updated: 2026-10-13
 ---
 
 # Feature Spec: Recognition Vocabulary
@@ -344,6 +344,13 @@ Feature: Commit vocabulary
 - **Non-functional expectations:** Building the context adds under 5 ms per dictation; no model reload on vocabulary change; terms are not logged above debug level.
 - **Missing evidence:** No runtime test; the granite GGUF capability of catalog models is not verified; context budgets per mechanism to be fixed in the plan; mockups deferred before `spec-ship`.
 - **Boundary:** QE defines risk and test sufficiency; the independent review judges requirements; Penflow governs UI design evidence; spec-test executes runtime proof.
+
+## Quality Engineering
+
+- **Risk:** Medium criticality (rated so by the QE Analysis: a wrong status misleads the user about engine support, and the existing Whisper initial prompt can regress); Shared blast radius (the vocabulary reuses the existing custom-words setting, reaches the recognition request of every dictation on supporting engines and is exposed through the settings CLI); primary risk UX (misleading status), followed by Regression.
+- **Applicable dimensions:** functional correctness, compatibility (engine and model capabilities), regression, UX honesty, data migration, performance.
+- **P0 gates/evidence:** Unit tests of the status function for each engine/mode combination; engine-request tests proving terms reach supporting mechanisms and never reach unsupported ones; migration test keeping stored custom words; regression test of the Whisper initial prompt.
+- **Boundary:** QE defines risk and test sufficiency only. The independent spec review judges requirements, Penflow governs UI design evidence, spec-test executes runtime proof and the end-of-feature delivery review looks for defects.
 
 ## Screens
 

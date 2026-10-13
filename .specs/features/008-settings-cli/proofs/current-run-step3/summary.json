@@ -1,0 +1,463 @@
+{
+  "scope": "Step3 pure repository/locator/normalization only. No app adoption, migrated app writers, plugin-store removal, liveIPC, CLI reachability, native effects or wholeAC certification. App cutover/writers remain Step4; CLI Step5.",
+  "source_tree_sha256": "bdecf5c8aed01f1078ac35f74537c31a32c7bfb47f8f1315c9603745d007dd11",
+  "files": [
+    {
+      "path": "src-tauri/Cargo.lock",
+      "sha256": "ea4ca717f423f23f232d03db441eaca09677d2120be71ad6804b9746698ef971",
+      "lines": 9178
+    },
+    {
+      "path": "src-tauri/Cargo.toml",
+      "sha256": "4f95034948e5cb2b1f5811f71c20b970d8105437791fb5e1c8876fed49343ddf",
+      "lines": 209
+    },
+    {
+      "path": "src-tauri/src/portable.rs",
+      "sha256": "4d57accabb9eee7ed1d472e3d8a60412b2925886fc4280478238b1b8e28932ee",
+      "lines": 217
+    },
+    {
+      "path": "src-tauri/src/settings.rs",
+      "sha256": "ed1d0de985ec12f5d3afac24d1b1d22f1b4ce3f9a44240a96613f2a97428ffed",
+      "lines": 1792
+    },
+    {
+      "path": "src-tauri/src/settings_service/atomic.rs",
+      "sha256": "8e0f1646744f6d0f9b4b244311bb2ff3771d9f1395ac68042ac9ebb529b1421b",
+      "lines": 202
+    },
+    {
+      "path": "src-tauri/src/settings_service/instance_probe.rs",
+      "sha256": "fd37a4fe2227441561263edb06d4d49e0b5d1f59215417670b4bec82f127b6d8",
+      "lines": 112
+    },
+    {
+      "path": "src-tauri/src/settings_service/locator.rs",
+      "sha256": "314b8ea3b18a4d606e9643f206f56eced7f95e61c19093b6c41c04d6f591f4d7",
+      "lines": 90
+    },
+    {
+      "path": "src-tauri/src/settings_service/mod.rs",
+      "sha256": "49730227a4dc87a18abfb89ed0eb83cd539d08f7f357c9be9f7b0d3f20f98a3b",
+      "lines": 17
+    },
+    {
+      "path": "src-tauri/src/settings_service/normalization.rs",
+      "sha256": "cc91e0ffa43020ddfc096b3fdd878744842226a497c1784751a7216355782750",
+      "lines": 39
+    },
+    {
+      "path": "src-tauri/src/settings_service/ownership.rs",
+      "sha256": "e59ce5c2e0fad1abdca8f63d530581eb6e82c35541eb8f3485cdf598bd535c52",
+      "lines": 198
+    },
+    {
+      "path": "src-tauri/src/settings_service/store.rs",
+      "sha256": "db8d489ed17c80be9320e166d9623dacfd172f1333fc5f974256807ad09f5cd7",
+      "lines": 126
+    },
+    {
+      "path": "src-tauri/src/settings_service/transaction.rs",
+      "sha256": "dd89649ce20e04b152abb4e8974df5e7ab6541bb09d79c0df0371747ca6adeb0",
+      "lines": 216
+    },
+    {
+      "path": "src-tauri/src/settings_service/validation.rs",
+      "sha256": "e176d840464251c19562c758d10a8dd94219e43a1b8ecc72ac99716fd2d91441",
+      "lines": 215
+    },
+    {
+      "path": "src-tauri/src/settings_service/windows_store.rs",
+      "sha256": "3266621d51845eb72f9ed89ab4d47066e57d81e21fd8812c36507aaab1b568ad",
+      "lines": 258
+    },
+    {
+      "path": "src-tauri/src/settings_service/windows_store/replace.rs",
+      "sha256": "16dd42b9f3e44149457d085b8c0220cc4e885fd92bdbebd6d8b259de2d519f91",
+      "lines": 92
+    },
+    {
+      "path": "src-tauri/src/settings_service/windows_store/security.rs",
+      "sha256": "29e90eefbf5d47ce2e5bc0bf8b935d4413650b14e77fc4f893c70b96cdc7c421",
+      "lines": 243
+    },
+    {
+      "path": "src-tauri/tests/settings_transactions.rs",
+      "sha256": "3f7ab582e4abc0b2bda10ea9361fd04e8900a9a8d0fe6eb62e9c7f0ffa59d4e9",
+      "lines": 15
+    },
+    {
+      "path": "src-tauri/tests/settings_transactions/driver.rs",
+      "sha256": "fa35b46390897b9126d452c23ad533232beb79e5d35369ce7221216839258f47",
+      "lines": 219
+    },
+    {
+      "path": "src-tauri/tests/settings_transactions/faults.rs",
+      "sha256": "132e6c2defcd6bcd3bf92456ff978344364a3777e35879dd3f9640d5c67981b0",
+      "lines": 151
+    },
+    {
+      "path": "src-tauri/tests/settings_transactions/locator.rs",
+      "sha256": "3ff4f69d02acbf849a28c55f02c0fcc5ef7138797c52f606cd8bb51b76b50f22",
+      "lines": 73
+    },
+    {
+      "path": "src-tauri/tests/settings_transactions/ownership.rs",
+      "sha256": "c8e4e88f8027e031bdcdd373452afb1929b9e87ee504879b28b5b4f812c05832",
+      "lines": 141
+    },
+    {
+      "path": "src-tauri/tests/settings_transactions/processes.rs",
+      "sha256": "88bb207395fef38558e1d28393a4af4e9ebc07ebeb4bffd1380cf0643665ace3",
+      "lines": 231
+    },
+    {
+      "path": "src-tauri/tests/settings_transactions/reads.rs",
+      "sha256": "929fb9252da8684f9f900fdfeedf5a86af3a69a6566b0e0b70c934a98408cd20",
+      "lines": 55
+    },
+    {
+      "path": "src-tauri/tests/settings_transactions/transactions.rs",
+      "sha256": "2f1befd8f1e15c478809fab2a64d28481fb5b6935f75c4657f0f90b93810593f",
+      "lines": 161
+    }
+  ],
+  "new_paths": [
+    "src-tauri/src/settings_service/store.rs",
+    "src-tauri/src/settings_service/transaction.rs",
+    "src-tauri/src/settings_service/locator.rs",
+    "src-tauri/src/settings_service/normalization.rs",
+    "src-tauri/src/settings_service/ownership.rs",
+    "src-tauri/src/settings_service/atomic.rs",
+    "src-tauri/src/settings_service/windows_store.rs",
+    "src-tauri/src/settings_service/windows_store/security.rs",
+    "src-tauri/src/settings_service/windows_store/replace.rs",
+    "src-tauri/tests/settings_transactions.rs",
+    "src-tauri/tests/settings_transactions/reads.rs",
+    "src-tauri/tests/settings_transactions/transactions.rs",
+    "src-tauri/tests/settings_transactions/locator.rs",
+    "src-tauri/tests/settings_transactions/ownership.rs",
+    "src-tauri/tests/settings_transactions/faults.rs",
+    "src-tauri/tests/settings_transactions/processes.rs",
+    "src-tauri/tests/settings_transactions/driver.rs"
+  ],
+  "commands": [
+    {
+      "command": "cargo test --manifest-path src-tauri/Cargo.toml --test settings_transactions",
+      "exit": 101,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step3/red-reads.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step3/red-reads.stderr"
+    },
+    {
+      "command": "cargo test --manifest-path src-tauri/Cargo.toml --test settings_transactions transactions",
+      "exit": 101,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step3/red-transactions.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step3/red-transactions.stderr"
+    },
+    {
+      "command": "cargo test --manifest-path src-tauri/Cargo.toml --test settings_transactions native_owner_appearing_after_temp_sync",
+      "exit": 101,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step3/red-owner.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step3/red-owner.stderr"
+    },
+    {
+      "command": "cargo test --manifest-path src-tauri/Cargo.toml --test settings_transactions prompt_mutation_revalidates",
+      "exit": 101,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step3/red-dependencies.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step3/red-dependencies.stderr"
+    },
+    {
+      "command": "cargo test --manifest-path src-tauri/Cargo.toml --test settings_transactions -- --nocapture",
+      "exit": 0,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step3/final-test.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step3/final-test.stderr"
+    },
+    {
+      "command": "cargo clippy --manifest-path src-tauri/Cargo.toml --test settings_transactions -- -D warnings",
+      "exit": 0,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step3/final-clippy.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step3/final-clippy.stderr"
+    },
+    {
+      "command": "bun run format:check",
+      "exit": 0,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step3/final-format.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step3/final-format.stderr"
+    },
+    {
+      "command": "rustup target add x86_64-pc-windows-msvc",
+      "exit": 0,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step3/windows-target-install.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step3/windows-target-install.stderr"
+    },
+    {
+      "command": "cargo check --manifest-path .specs/features/008-settings-cli/proofs/current-run-step3/windows-check/Cargo.toml --target x86_64-pc-windows-msvc",
+      "exit": 0,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step3/windows-check3.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step3/windows-check3.stderr"
+    },
+    {
+      "command": "cargo test --manifest-path src-tauri/Cargo.toml --test settings_transactions forced_process_termination",
+      "exit": 101,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step3/red-crash.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step3/red-crash.stderr"
+    },
+    {
+      "command": "cargo test --manifest-path src-tauri/Cargo.toml --test settings_transactions -- --nocapture",
+      "exit": 0,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step3/post-crash-test.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step3/post-crash-test.stderr"
+    },
+    {
+      "command": "cargo test --manifest-path src-tauri/Cargo.toml --test settings_transactions forced_process_termination -- --nocapture",
+      "exit": 0,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step3/crash-final-test.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step3/crash-final-test.stderr"
+    },
+    {
+      "command": "cargo clippy --manifest-path src-tauri/Cargo.toml --test settings_transactions -- -D warnings",
+      "exit": 0,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step3/crash-final-clippy.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step3/crash-final-clippy.stderr"
+    },
+    {
+      "command": "bun run format:check",
+      "exit": 0,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step3/crash-final-format.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step3/crash-final-format.stderr"
+    },
+    {
+      "command": "cargo check --manifest-path .specs/features/008-settings-cli/proofs/current-run-step3/windows-check/Cargo.toml --target x86_64-pc-windows-msvc (CARGO_TARGET_DIR from windows-check-cache.json)",
+      "exit": 0,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step3/windows-check-final.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step3/windows-check-final.stderr"
+    }
+  ],
+  "test_ids": [
+    "handy/test/settings_transactions::faults::every_durable_fault_preserves_a_complete_generation_and_reports_uncertainty",
+    "handy/test/settings_transactions::faults::replaced_temporary_path_never_replaces_store_or_deletes_substitute",
+    "handy/test/settings_transactions::faults::stable_lock_inode_survives_replacement_and_is_retained_after_release",
+    "handy/test/settings_transactions::locator::installed_resolution_uses_the_same_directory_provider_as_tauri",
+    "handy/test/settings_transactions::locator::missing_ancestor_is_canonicalized_and_parent_traversal_is_refused",
+    "handy/test/settings_transactions::locator::portable_magic_and_legacy_markers_are_read_without_mutation",
+    "handy/test/settings_transactions::ownership::native_owner_appearing_after_temp_sync_refuses_before_replace",
+    "handy/test/settings_transactions::ownership::passive_occupied_socket_refuses_without_connecting_or_deleting",
+    "handy/test/settings_transactions::ownership::startup_normalizes_once_preserves_raw_secrets_and_keeps_offline_fenced",
+    "handy/test/settings_transactions::processes::barrier_started_startup_and_writer_respect_real_lease_ownership",
+    "handy/test/settings_transactions::processes::forced_process_termination_before_and_after_replace_preserves_complete_generations_and_releases_locks",
+    "handy/test/settings_transactions::processes::independent_raw_reader_observes_only_complete_old_or_new_generations",
+    "handy/test/settings_transactions::processes::two_barrier_started_subprocess_writers_preserve_disjoint_fields",
+    "handy/test/settings_transactions::reads::broken_json_read_recovers_defaults_without_overwriting",
+    "handy/test/settings_transactions::reads::missing_store_returns_defaults_without_creating_parent_or_store",
+    "handy/test/settings_transactions::reads::salvage_keeps_valid_revision_valid_fields_and_store_bytes",
+    "handy/test/settings_transactions::transactions::changed_patch_is_durable_increments_once_and_preserves_unknowns_and_secrets",
+    "handy/test/settings_transactions::transactions::corrupt_or_overflow_revision_and_broken_json_refuse_write",
+    "handy/test/settings_transactions::transactions::prompt_mutation_revalidates_membership_against_the_locked_fresh_snapshot",
+    "handy/test/settings_transactions::transactions::semantic_noop_does_not_rewrite_or_increment_and_first_change_is_one",
+    "handy/test/settings_transactions::transactions::stale_compare_and_set_refuses_without_changing_bytes"
+  ],
+  "test_result": {
+    "full_suite": {
+      "passed": 21,
+      "failed": 0,
+      "ignored": 1,
+      "filtered": 0,
+      "evidence": ".specs/features/008-settings-cli/proofs/current-run-step3/post-crash-test.stdout",
+      "source_binding": "Complete suite after SIGKILL test and documentation additions, before behavior-preserving test assertion extraction."
+    },
+    "final_affected_target": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 21,
+      "evidence": ".specs/features/008-settings-cli/proofs/current-run-step3/crash-final-test.stdout",
+      "source_binding": "Current frozen source; only changed crash scenario rerun after helper extraction/borrow correction. Unchanged other20 assertions retain full-suite evidence."
+    },
+    "ignored_fixture": "handy/test/settings_transactions::driver::repository_subprocess_fixture",
+    "nested_driver_invocations_full_suite": 6,
+    "nested_driver_normal_exits": 4,
+    "nested_driver_forced_terminations": 2
+  },
+  "nested_driver_actual_lines": [
+    {
+      "channel": "stdout",
+      "line": "NESTED_EXIT 19546 0"
+    },
+    {
+      "channel": "stdout",
+      "line": "NESTED_EXIT 19547 0"
+    },
+    {
+      "channel": "stdout",
+      "line": "NESTED_EXIT 19549 0"
+    },
+    {
+      "channel": "stdout",
+      "line": "NESTED_EXIT 19551 0"
+    },
+    {
+      "channel": "stderr",
+      "line": "NESTED 19546 READY"
+    },
+    {
+      "channel": "stderr",
+      "line": "NESTED 19545 READY"
+    },
+    {
+      "channel": "stderr",
+      "line": "NESTED 19547 READY"
+    },
+    {
+      "channel": "stderr",
+      "line": "NESTED 19549 READY"
+    },
+    {
+      "channel": "stderr",
+      "line": "NESTED 19551 READY"
+    },
+    {
+      "channel": "stderr",
+      "line": "NESTED 19545 CRASH_READY"
+    },
+    {
+      "channel": "stderr",
+      "line": "NESTED_KILL 19545 None"
+    },
+    {
+      "channel": "stderr",
+      "line": "CRASH_GENERATION crash_before revision=7 fingerprint=7ae727f5f31d700c"
+    },
+    {
+      "channel": "stderr",
+      "line": "NESTED 19552 READY"
+    },
+    {
+      "channel": "stderr",
+      "line": "NESTED 19546 RESULT {\"ok\":true,\"revision\":2}"
+    },
+    {
+      "channel": "stderr",
+      "line": "NESTED 19547 RESULT {\"ok\":true,\"revision\":1}"
+    },
+    {
+      "channel": "stderr",
+      "line": "NESTED 19552 CRASH_READY"
+    },
+    {
+      "channel": "stderr",
+      "line": "NESTED_KILL 19552 None"
+    },
+    {
+      "channel": "stderr",
+      "line": "CRASH_GENERATION crash_after revision=8 fingerprint=251922a1b694eb59"
+    },
+    {
+      "channel": "stderr",
+      "line": "NESTED 19549 RESULT {\"ok\":true,\"revision\":1}"
+    },
+    {
+      "channel": "stderr",
+      "line": "NESTED 19551 RESULT {\"ok\":true,\"revision\":1}"
+    }
+  ],
+  "driver_binary": {
+    "path": "src-tauri/target/debug/deps/settings_transactions-05314483cc7219f2",
+    "sha256": "8be009ffc98c2d2e22232f9e8d562b58703df105c7204aba3e42ea175a8b8aa3"
+  },
+  "bridge": {
+    "force_stub": false,
+    "evidence": ".specs/features/008-settings-cli/proofs/current-run-step3/crash-final-test.stderr",
+    "observed": "Building with Apple Intelligence support."
+  },
+  "native_scope": {
+    "os": "Darwin",
+    "architecture": "arm64",
+    "observed": "Actual macOS files, socket owner metadata, inode locks, atomic rename/fsync, two subprocess writers, startup lease race, independent raw reader. No real user store mutated.",
+    "pending_release": [
+      "Windows/Linux native app and shell integration, full Windows SDK app build/link.",
+      "Older Handy binary activation/callback observation and second-account ownership rejection; isolated native socket absence/occupation tested."
+    ]
+  },
+  "windows_target_scope": {
+    "target": "x86_64-pc-windows-msvc",
+    "exact_sources": [
+      "src-tauri/src/settings_service/windows_store.rs",
+      "src-tauri/src/settings_service/windows_store/security.rs",
+      "src-tauri/src/settings_service/windows_store/replace.rs",
+      "src-tauri/src/settings_service/instance_probe.rs"
+    ],
+    "native_standard_traits": true,
+    "substituted_std_traits": false,
+    "framework_linked": false,
+    "executed": false,
+    "description": "Actual target Rust/Windows SDK type check of exact source imports plus fs2; not full Handy Windows target compile, link or runtime.",
+    "cache_record": ".specs/features/008-settings-cli/proofs/current-run-step3/windows-check-cache.json"
+  },
+  "contracts": [
+    "Raw counter is top-level settings_revision; wire envelopes keep revision.",
+    "Read creates no store, missing Data/parent or marker upgrade; existing parent can receive only stable private lock infrastructure.",
+    "Raw top/payload unknown fields and secrets preserved, current candidate applied under same stable settings.lock with independent retained instance lease.",
+    "Semantic no-op unchanged; CAS/corrupt continuity/overflow refuse; last passive native probe after tempfsync immediately before guarded replace.",
+    "Startup explicitly normalizes once and preserves existing raw secret fields; no app startup adoption yet.",
+    "Changed prompt membership is revalidated with the locked fresh context through the exact shared validator.",
+    "All six injected durable stages observe old/new complete generation; postreplace failures return explicit unknown outcome. Failed private temps retained; substitutes never deleted."
+  ],
+  "unchanged_gates": "Frontend TS/lint, platform22 and Step2 validation21 previous PASS; frontend/platform implementations unchanged except native helper foundation. No rerun claimed.",
+  "known_intermediate_failures": [
+    "windows-check exit101 E0583 custom source import child module paths; explicit producer path attributes corrected.",
+    "early green-core compile failures missing test probe args corrected before runtime GREEN.",
+    "strict intermediate clippy needless_return/needless_borrow corrected; final strict PASS.",
+    "red-crash exit101 child completed rather than pausing at native stage; test-only barrier subsequently added.",
+    "Post-extraction clippy flagged needless generic borrow; one-token correction passed final strict check."
+  ],
+  "final_crash_actual_lines": [
+    {
+      "channel": "stderr",
+      "line": "NESTED 21126 READY"
+    },
+    {
+      "channel": "stderr",
+      "line": "NESTED 21126 CRASH_READY"
+    },
+    {
+      "channel": "stderr",
+      "line": "NESTED_KILL 21126 None"
+    },
+    {
+      "channel": "stderr",
+      "line": "CRASH_GENERATION crash_before revision=7 fingerprint=7ae727f5f31d700c"
+    },
+    {
+      "channel": "stderr",
+      "line": "NESTED 21127 READY"
+    },
+    {
+      "channel": "stderr",
+      "line": "NESTED 21127 CRASH_READY"
+    },
+    {
+      "channel": "stderr",
+      "line": "NESTED_KILL 21127 None"
+    },
+    {
+      "channel": "stderr",
+      "line": "CRASH_GENERATION crash_after revision=8 fingerprint=251922a1b694eb59"
+    }
+  ],
+  "crash_proof": {
+    "actual_process_termination": "Two child.kill()/wait SIGKILL exits asserted against libc::SIGKILL on macOS, without child Rust unwind/Drop.",
+    "stages": [
+      "BeforeReplace after temporary fsync",
+      "AfterReplace before parent directory sync"
+    ],
+    "observations": "Exact JSON and byte equality with old/new expected complete generations; subsequent actual commit succeeds, proving transaction/startup locks released.",
+    "fingerprint": "std DefaultHasher diagnostic only; integrity assertions compare exact bytes, not merely hash equality.",
+    "not_claimed": "No power-loss/hardware crash simulation, no Windows/Linux native termination observation."
+  },
+  "historical_summary": {
+    "path": ".specs/features/008-settings-cli/proofs/current-run-step3/summary-pre-crash.json",
+    "sha256": "2e81e5782e29df4bf26f9287131df329bc8ead06d76b839bc8838cc866e2db63",
+    "scope": "Pre-crash20test checkpoint retained byte-exact; not current final binding."
+  }
+}

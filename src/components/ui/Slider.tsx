@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { SettingContainer } from "./SettingContainer";
 import { ResetButton } from "./ResetButton";
 
 interface SliderProps {
   value: number;
+  /** Called once per gesture, when the user releases the slider (or the key, or leaves it). */
   onChange: (value: number) => void;
   min: number;
   max: number;
@@ -35,8 +36,17 @@ export const Slider: React.FC<SliderProps> = ({
   onReset,
   isResetting = false,
 }) => {
+  // Dragging only moves a local draft; the value is committed once, on release. Each commit is a
+  // durable settings write (and a UI event), so committing every input event would write dozens
+  // of revisions per second.
+  const [draft, setDraft] = useState<number | null>(null);
+  const shown = draft ?? value;
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(parseFloat(e.target.value));
+    setDraft(parseFloat(e.target.value));
+  };
+  const commit = () => {
+    if (draft !== null && draft !== value) onChange(draft);
+    setDraft(null);
   };
 
   return (
@@ -55,21 +65,24 @@ export const Slider: React.FC<SliderProps> = ({
             min={min}
             max={max}
             step={step}
-            value={value}
+            value={shown}
             onChange={handleChange}
+            onPointerUp={commit}
+            onKeyUp={commit}
+            onBlur={commit}
             disabled={disabled}
             className="flex-grow h-2 rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-logo-primary disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
               background: `linear-gradient(to right, var(--color-background-ui) ${
-                ((value - min) / (max - min)) * 100
+                ((shown - min) / (max - min)) * 100
               }%, rgba(128, 128, 128, 0.2) ${
-                ((value - min) / (max - min)) * 100
+                ((shown - min) / (max - min)) * 100
               }%)`,
             }}
           />
           {showValue && (
             <span className="text-sm font-medium text-text/90 w-12 text-end">
-              {formatValue(value)}
+              {formatValue(shown)}
             </span>
           )}
           {onReset && (

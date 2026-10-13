@@ -1,0 +1,20 @@
+{
+  "command": "livespec conventions verify --feature repo --json",
+  "exit": 0,
+  "verdict": "PASS",
+  "feature_slug": "repo",
+  "run_id": "20261013T171001Z",
+  "receipt_path": ".specs/conventions/runs/20261013T171001Z/receipt.json",
+  "baseline": {
+    "baselined_count": 4164,
+    "new_count": 0,
+    "path": ".specs/conventions/baseline.json",
+    "resolved_count": 18,
+    "sha256": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe"
+  },
+  "baseline_sha256_before": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe",
+  "baseline_sha256_after": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe",
+  "blockers": [],
+  "raw_output": "conventions-repo.stdout (kept locally, not committed: large)",
+  "source": "working tree at be94db8f6c1c1a0709160cb1cea7e78574cb86ed"
+}

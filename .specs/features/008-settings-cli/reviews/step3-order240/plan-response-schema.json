@@ -1,0 +1,320 @@
+{
+  "name": "grounded_review",
+  "strict": true,
+  "schema": {
+    "$defs": {
+      "Ambiguity": {
+        "additionalProperties": false,
+        "description": "Consequential business decision, optionally resolved by approved context.",
+        "properties": {
+          "requirement_id": {
+            "title": "Requirement Id",
+            "type": "string"
+          },
+          "decision_key": {
+            "minLength": 1,
+            "title": "Decision Key",
+            "type": "string"
+          },
+          "question": {
+            "minLength": 1,
+            "title": "Question",
+            "type": "string"
+          },
+          "critical": {
+            "title": "Critical",
+            "type": "boolean"
+          },
+          "citations": {
+            "items": {
+              "$ref": "#/$defs/Citation"
+            },
+            "minItems": 1,
+            "title": "Citations",
+            "type": "array"
+          },
+          "resolution": {
+            "default": "",
+            "title": "Resolution",
+            "type": "string"
+          },
+          "resolution_citations": {
+            "items": {
+              "$ref": "#/$defs/Citation"
+            },
+            "title": "Resolution Citations",
+            "type": "array"
+          }
+        },
+        "required": [
+          "requirement_id",
+          "decision_key",
+          "question",
+          "critical",
+          "citations"
+        ],
+        "title": "Ambiguity",
+        "type": "object"
+      },
+      "Citation": {
+        "additionalProperties": false,
+        "description": "An exact excerpt inside an inventoried source section.",
+        "properties": {
+          "section_id": {
+            "title": "Section Id",
+            "type": "string"
+          },
+          "excerpt": {
+            "minLength": 1,
+            "title": "Excerpt",
+            "type": "string"
+          }
+        },
+        "required": [
+          "section_id",
+          "excerpt"
+        ],
+        "title": "Citation",
+        "type": "object"
+      },
+      "GroundedFinding": {
+        "additionalProperties": false,
+        "description": "General reviewer issue with original legacy display fields.",
+        "properties": {
+          "category": {
+            "title": "Category",
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "blocking",
+              "warning",
+              "info"
+            ],
+            "title": "Severity",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "suggestion": {
+            "title": "Suggestion",
+            "type": "string"
+          },
+          "citations": {
+            "items": {
+              "$ref": "#/$defs/Citation"
+            },
+            "minItems": 1,
+            "title": "Citations",
+            "type": "array"
+          }
+        },
+        "required": [
+          "category",
+          "severity",
+          "description",
+          "suggestion",
+          "citations"
+        ],
+        "title": "GroundedFinding",
+        "type": "object"
+      },
+      "IssueResolution": {
+        "additionalProperties": false,
+        "description": "Explicit cross-batch decision bound to an original issue key.",
+        "properties": {
+          "issue_key": {
+            "title": "Issue Key",
+            "type": "string"
+          },
+          "rationale": {
+            "minLength": 1,
+            "title": "Rationale",
+            "type": "string"
+          },
+          "citations": {
+            "items": {
+              "$ref": "#/$defs/Citation"
+            },
+            "minItems": 1,
+            "title": "Citations",
+            "type": "array"
+          }
+        },
+        "required": [
+          "issue_key",
+          "rationale",
+          "citations"
+        ],
+        "title": "IssueResolution",
+        "type": "object"
+      },
+      "RequirementConclusion": {
+        "additionalProperties": false,
+        "description": "Independent semantic judgment with inspectable grounding.",
+        "properties": {
+          "requirement_id": {
+            "title": "Requirement Id",
+            "type": "string"
+          },
+          "disposition": {
+            "enum": [
+              "covered",
+              "contradictory",
+              "missing",
+              "ambiguous"
+            ],
+            "title": "Disposition",
+            "type": "string"
+          },
+          "rationale": {
+            "minLength": 1,
+            "title": "Rationale",
+            "type": "string"
+          },
+          "source_citations": {
+            "items": {
+              "$ref": "#/$defs/Citation"
+            },
+            "minItems": 1,
+            "title": "Source Citations",
+            "type": "array"
+          },
+          "plan_citations": {
+            "items": {
+              "$ref": "#/$defs/Citation"
+            },
+            "title": "Plan Citations",
+            "type": "array"
+          },
+          "searched_plan_sections": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Searched Plan Sections",
+            "type": "array"
+          }
+        },
+        "required": [
+          "requirement_id",
+          "disposition",
+          "rationale",
+          "source_citations"
+        ],
+        "title": "RequirementConclusion",
+        "type": "object"
+      },
+      "ScopeFinding": {
+        "additionalProperties": false,
+        "description": "Additional behavior distinguished from justified technical necessities.",
+        "properties": {
+          "description": {
+            "minLength": 1,
+            "title": "Description",
+            "type": "string"
+          },
+          "justification": {
+            "title": "Justification",
+            "type": "string"
+          },
+          "approved": {
+            "title": "Approved",
+            "type": "boolean"
+          },
+          "citations": {
+            "items": {
+              "$ref": "#/$defs/Citation"
+            },
+            "minItems": 1,
+            "title": "Citations",
+            "type": "array"
+          }
+        },
+        "required": [
+          "description",
+          "justification",
+          "approved",
+          "citations"
+        ],
+        "title": "ScopeFinding",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "description": "One batch or final synthesis, with explicit exhaustive identities.",
+    "properties": {
+      "batch_id": {
+        "title": "Batch Id",
+        "type": "string"
+      },
+      "reviewed_section_ids": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Reviewed Section Ids",
+        "type": "array"
+      },
+      "conclusions": {
+        "items": {
+          "$ref": "#/$defs/RequirementConclusion"
+        },
+        "title": "Conclusions",
+        "type": "array"
+      },
+      "ambiguities": {
+        "items": {
+          "$ref": "#/$defs/Ambiguity"
+        },
+        "title": "Ambiguities",
+        "type": "array"
+      },
+      "extra_scope": {
+        "items": {
+          "$ref": "#/$defs/ScopeFinding"
+        },
+        "title": "Extra Scope",
+        "type": "array"
+      },
+      "findings": {
+        "items": {
+          "$ref": "#/$defs/GroundedFinding"
+        },
+        "title": "Findings",
+        "type": "array"
+      },
+      "confidence": {
+        "maximum": 5,
+        "minimum": 1,
+        "title": "Confidence",
+        "type": "integer"
+      },
+      "synthesized_batch_ids": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Synthesized Batch Ids",
+        "type": "array"
+      },
+      "resolutions": {
+        "items": {
+          "$ref": "#/$defs/IssueResolution"
+        },
+        "title": "Resolutions",
+        "type": "array"
+      }
+    },
+    "required": [
+      "batch_id",
+      "reviewed_section_ids",
+      "conclusions",
+      "ambiguities",
+      "extra_scope",
+      "findings",
+      "confidence"
+    ],
+    "title": "ReviewResponse",
+    "type": "object"
+  }
+}

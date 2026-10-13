@@ -1,0 +1,12 @@
+Output settings: paste method, clipboard handling, automatic submit, delays, typing tool
+
+Usage: handy settings output [OPTIONS] <COMMAND>
+
+Commands:
+  get   Print the output settings, or only KEY
+  set   Change one output setting; with --dry-run, validate and preview without writing
+  help  Print this message or the help of the given subcommand(s)
+
+Options:
+      --json  Print exactly one JSON envelope on stdout (also accepted before `settings`)
+  -h, --help  Print help

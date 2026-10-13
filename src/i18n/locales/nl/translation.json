@@ -694,7 +694,18 @@
     "modelLoadFailedUnknown": "onbekend model",
     "pasteFailedTitle": "Tekst plakken mislukt",
     "pasteFailed": "Tekst kon niet worden geplakt in de actieve applicatie.",
-    "transcriptionFailedTitle": "Transcriptie mislukt"
+    "transcriptionFailedTitle": "Transcriptie mislukt",
+    "settings": {
+      "committedNotApplied": "De instelling is opgeslagen, maar kon niet direct worden toegepast.",
+      "gpuDeviceRequired": "Selecteer een GPU-apparaat voordat u de GPU-versneller kiest.",
+      "outOfRange": "Deze waarde valt buiten het toegestane bereik.",
+      "validationFailed": "Deze waarde wordt niet geaccepteerd voor deze instelling.",
+      "revisionConflict": "De instellingen zijn elders gewijzigd. Laad opnieuw en probeer het nog eens.",
+      "unavailable": "Deze instelling kan nu niet worden gewijzigd. Probeer het later opnieuw.",
+      "persistenceFailed": "De instellingen konden niet worden opgeslagen.",
+      "generic": "De instelling kon niet worden gewijzigd.",
+      "readOnly": "De instellingen zijn in deze sessie alleen-lezen: het instellingenbestand kan niet veilig worden geschreven, dus wijzigingen worden niet opgeslagen."
+    }
   },
   "appLanguage": {
     "title": "Interfacetaal",

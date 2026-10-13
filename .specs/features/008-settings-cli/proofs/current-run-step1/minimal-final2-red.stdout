@@ -1,0 +1,25 @@
+
+running 2 tests
+test windows::rejected_pipe_authentication_never_returns_resource_and_closes_peer ... FAILED
+test windows::successful_pipe_authentication_precedes_resource_transfer ... FAILED
+
+failures:
+
+---- windows::rejected_pipe_authentication_never_returns_resource_and_closes_peer stdout ----
+
+thread 'windows::rejected_pipe_authentication_never_returns_resource_and_closes_peer' (39197689) panicked at tests/settings_platform/windows.rs:58:6:
+authentication refusal must not publish an owned resource: File { fd: 4, read: true, write: true }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- windows::successful_pipe_authentication_precedes_resource_transfer stdout ----
+
+thread 'windows::successful_pipe_authentication_precedes_resource_transfer' (39197690) panicked at tests/settings_platform/windows.rs:73:5:
+assertion failed: verified.get()
+
+
+failures:
+    windows::rejected_pipe_authentication_never_returns_resource_and_closes_peer
+    windows::successful_pipe_authentication_precedes_resource_transfer
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 20 filtered out; finished in 0.00s
+

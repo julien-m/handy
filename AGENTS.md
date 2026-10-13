@@ -96,7 +96,7 @@ Handy is a cross-platform desktop speech-to-text application built with Tauri 2.
 
 **Pipeline Processing:** Audio → VAD → Whisper/Parakeet → Text output → Clipboard/Paste
 
-**State Flow:** Zustand → Tauri Command → Rust State → Persistence (tauri-plugin-store)
+**State Flow:** Zustand → Tauri Command → settings service (shared validation, revisioned atomic commit under a cross-process lock) → `settings_store.json` → live effects → `settings-changed` event (revision + changed keys) → Zustand refresh
 
 ### Technology Stack
 
@@ -120,7 +120,7 @@ Handy is a cross-platform desktop speech-to-text application built with Tauri 2.
 
 ### Settings System
 
-Settings are stored using Tauri's store plugin with reactive updates:
+Settings live in `settings_store.json`, owned by `src-tauri/src/settings_service/`: every writer (UI command, manager repair) commits through the live service, which validates with the same functions as the CLI, increments a persisted revision, applies live effects and notifies the UI. The store plugin never opens this file. Never write settings directly; use `settings_service::tauri_adapter`: `write` (async UI commands) or `set` (synchronous callers) for one scalar, `edit` for a typed edit, `set_prepared` for a key whose native change is prepared before the commit (its preparation lives in `settings_service::native_changes`, shared with CLI writes routed to the instance), `repair` for internal repairs.
 
 - Keyboard shortcuts (configurable, supports push-to-talk)
 - Audio devices (microphone/output selection)
@@ -175,14 +175,15 @@ Handy supports command-line parameters on all platforms for integration with scr
 
 **Implementation:** `cli.rs` (definitions), `main.rs` (parsing), `lib.rs` (applying), `signal_handle.rs` (shared logic)
 
-| Flag                     | Description                                                |
-| ------------------------ | ---------------------------------------------------------- |
-| `--toggle-transcription` | Toggle recording on/off on a running instance              |
-| `--toggle-post-process`  | Toggle recording with post-processing on/off               |
-| `--cancel`               | Cancel the current operation on a running instance         |
-| `--start-hidden`         | Launch without showing the main window (tray icon visible) |
-| `--no-tray`              | Launch without system tray (closing window quits the app)  |
-| `--debug`                | Enable debug mode with verbose (Trace) logging             |
+| Flag                     | Description                                                       |
+| ------------------------ | ----------------------------------------------------------------- |
+| `--toggle-transcription` | Toggle recording on/off on a running instance                     |
+| `--toggle-post-process`  | Toggle recording with post-processing on/off                      |
+| `--cancel`               | Cancel the current operation on a running instance                |
+| `--start-hidden`         | Launch without showing the main window (tray icon visible)        |
+| `--no-tray`              | Launch without system tray (closing window quits the app)         |
+| `--debug`                | Enable debug mode with verbose (Trace) logging                    |
+| `settings …`             | Read/change settings (`get`, `keys`, `set`, `output`); see README |
 
 **Key design decisions:**
 
@@ -369,6 +370,7 @@ Crée, édite, bootstrap, impact-check, liste, inspecte et lance des User Journe
 - `/spec-journey run` — exécution compiled-only
 - `/spec-journey list`
 - `/spec-journey inspect <journey-id>`
+- `/spec-journey visual` — l'agent évalue les contrats visuels LLM, écrit les reçus, puis `livespec journey visual-verify`
 
 ### /spec-plan
 
@@ -532,10 +534,9 @@ Avant toute commande `spec-*`, **Read** `.specs/spec-system.md` (rappel CLAUDE.m
 
 ## Synchronisation
 
-Le check `.checks/livespec-routing-sync.md` (bloquant via `/audit`) garantit la bijection entre `.agent-sync/skills/spec-*` et les entrées de `livespec-commands.md`. Toute désync bloque le commit.
+Le check `.checks/livespec-routing-sync.md` (bloquant via la revue native independante en effort `high`) garantit la bijection entre `.agent-sync/skills/spec-*` et les entrées de `livespec-commands.md`. Toute désync bloque le commit.
 
 <!-- cc-hub:project-rules:end -->
-
 <!-- livespec:start -->
 
 ## LiveSpec

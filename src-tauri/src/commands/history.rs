@@ -106,49 +106,22 @@ pub async fn retry_history_entry_transcription(
         .map_err(|e| e.to_string())
 }
 
+/// The history cleanup is the live effect of `history_limit` (run before success is returned).
 #[tauri::command]
 #[specta::specta]
 pub async fn update_history_limit(
     app: AppHandle,
-    history_manager: State<'_, Arc<HistoryManager>>,
-    limit: usize,
-) -> Result<(), String> {
-    let mut settings = crate::settings::get_settings(&app);
-    settings.history_limit = limit;
-    crate::settings::write_settings(&app, settings);
-
-    history_manager
-        .cleanup_old_entries()
-        .map_err(|e| e.to_string())?;
-
-    Ok(())
+    limit: crate::settings_service::ui_value::UiValue<usize>,
+) -> Result<(), crate::settings_service::command_error::SettingsCommandError> {
+    crate::settings_service::tauri_adapter::write(app, "history_limit", limit).await
 }
 
+/// The recording cleanup is the live effect of `recording_retention_period`.
 #[tauri::command]
 #[specta::specta]
 pub async fn update_recording_retention_period(
     app: AppHandle,
-    history_manager: State<'_, Arc<HistoryManager>>,
-    period: String,
-) -> Result<(), String> {
-    use crate::settings::RecordingRetentionPeriod;
-
-    let retention_period = match period.as_str() {
-        "never" => RecordingRetentionPeriod::Never,
-        "preserve_limit" => RecordingRetentionPeriod::PreserveLimit,
-        "days3" => RecordingRetentionPeriod::Days3,
-        "weeks2" => RecordingRetentionPeriod::Weeks2,
-        "months3" => RecordingRetentionPeriod::Months3,
-        _ => return Err(format!("Invalid retention period: {}", period)),
-    };
-
-    let mut settings = crate::settings::get_settings(&app);
-    settings.recording_retention_period = retention_period;
-    crate::settings::write_settings(&app, settings);
-
-    history_manager
-        .cleanup_old_entries()
-        .map_err(|e| e.to_string())?;
-
-    Ok(())
+    period: crate::settings_service::ui_value::UiValue<String>,
+) -> Result<(), crate::settings_service::command_error::SettingsCommandError> {
+    crate::settings_service::tauri_adapter::write(app, "recording_retention_period", period).await
 }

@@ -4,7 +4,7 @@ title: Custom AI Prompts
 priority: P1
 status: Planned
 created: 2026-10-12
-updated: 2026-10-12
+updated: 2026-10-13
 ---
 
 # Feature Spec: Custom AI Prompts
@@ -438,6 +438,13 @@ Feature: Commit a prompt
 - **Non-functional expectations:** Request limit 30 seconds; the indicator menu opens within 200 ms; no transcript or prompt text in logs above debug level; API keys never logged at any level.
 - **Missing evidence:** No runtime test; starter prompt texts to be written in the plan; mockups deferred before `spec-ship`.
 - **Boundary:** QE defines risk and test sufficiency; the independent review judges requirements; Penflow governs UI design evidence; spec-test executes runtime proof; a security audit of credential storage is separate.
+
+## Quality Engineering
+
+- **Risk:** High criticality (rated so by the QE Analysis: processing can lose or alter the dictated text and expose provider API keys); Shared blast radius (the processing path runs for every processed dictation, holds provider credentials and migrates the existing prompts and selection); primary risk Data (lost or altered text), followed by Security (secret exposure).
+- **Applicable dimensions:** functional correctness, data integrity, security (API keys, local vs remote routing), reliability (timeouts), UX, accessibility, migration.
+- **P0 gates/evidence:** Fallback tests for error, invalid output, empty output, not-ready provider and timeout; prompt resolution tests per trigger and indicator choice; migration test keeping existing prompts and selection; secret-redaction tests over CLI stdout/stderr and logs.
+- **Boundary:** QE defines risk and test sufficiency only. The independent spec review judges requirements, Penflow governs UI design evidence, spec-test executes runtime proof and the end-of-feature delivery review looks for defects; a security audit of credential storage is separate.
 
 ## Screens
 

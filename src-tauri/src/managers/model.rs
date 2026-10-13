@@ -1,7 +1,7 @@
 use super::model_capabilities::{
     CapabilityProbe, CapabilityProber, Compatibility, GgufHeaderProber,
 };
-use crate::settings::{get_settings, write_settings};
+use crate::settings::get_settings;
 use anyhow::Result;
 use flate2::read::GzDecoder;
 use hf_hub::api::tokio::{ApiBuilder, CancellationToken, Progress};
@@ -1558,8 +1558,7 @@ impl ModelManager {
                     "Selected model '{}' is not available on disk; clearing selection",
                     settings.selected_model
                 );
-                settings.selected_model = String::new();
-                write_settings(&self.app_handle, settings.clone());
+                self.clear_missing_selection(std::mem::take(&mut settings.selected_model));
             }
         }
 
@@ -1584,16 +1583,43 @@ impl ModelManager {
                     available_model.id, available_model.name
                 );
 
-                // Update settings with the selected model
-                let mut updated_settings = settings;
-                updated_settings.selected_model = available_model.id.clone();
-                write_settings(&self.app_handle, updated_settings);
-
-                info!("Successfully auto-selected model: {}", available_model.id);
+                self.persist_auto_selection(&available_model.id);
             }
         }
 
         Ok(())
+    }
+
+    /// Clear the stored selection only while it is still the missing model, so a selection made
+    /// concurrently is never overwritten.
+    fn clear_missing_selection(&self, missing: String) {
+        crate::settings_service::tauri_adapter::repair(
+            &self.app_handle,
+            "the cleared model selection",
+            &|stored| {
+                if stored.selected_model == missing {
+                    stored.selected_model = String::new();
+                }
+                Ok(())
+            },
+        );
+    }
+
+    /// Store the auto-selected model only while nothing is selected in the latest settings.
+    fn persist_auto_selection(&self, model_id: &str) {
+        let selected = crate::settings_service::tauri_adapter::repair(
+            &self.app_handle,
+            "the auto-selected model",
+            &|stored| {
+                if stored.selected_model.is_empty() {
+                    stored.selected_model = model_id.to_string();
+                }
+                Ok(())
+            },
+        );
+        if selected {
+            info!("Successfully auto-selected model: {}", model_id);
+        }
     }
 
     /// Discover custom Whisper-family models in the models directory: legacy
