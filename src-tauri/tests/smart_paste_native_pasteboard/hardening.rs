@@ -74,6 +74,8 @@ fn helper_header(name: &str) -> Result<Vec<u8>, String> {
 /// checks it speaks the current protocol before any scenario runs.
 pub fn helper_identity(harness: &mut Harness) -> Result<serde_json::Value, String> {
     let binary = std::fs::read(helper_path()).map_err(|error| error.to_string())?;
+    let test_path = std::env::current_exe().map_err(|error| error.to_string())?;
+    let test_binary = std::fs::read(&test_path).map_err(|error| error.to_string())?;
     let header = helper_header(&harness.name)?;
     let mut expected = MAGIC.to_vec();
     expected.push(VERSION);
@@ -86,6 +88,7 @@ pub fn helper_identity(harness: &mut Harness) -> Result<serde_json::Value, Strin
         "check": "helper_identity",
         "helper_path": helper_path(),
         "helper_sha256": sha256_hex(&binary),
+        "test_executable_sha256": sha256_hex(&test_binary),
         "protocol_version": VERSION,
         "header_without_trigger_only": true,
     }))
