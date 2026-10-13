@@ -295,3 +295,15 @@ Inspect [the Step 3 checkpoint](progress.md#current-step-3-checkpoint--audit-cor
 - **Execution evidence:** Full suite 429 passed/0 failed/17 ignored; strict clippy, fmt, lint, format check, tsc, frontend tests, Windows endpoint compile harness exit 0; conventions PASS/new 0. Commits `49b2736`, `b1839f4`, `1b34412`, `592b7e0`, `be94db8`.
 
 Inspect [the Step 5 checkpoint](progress.md#current-step-5-checkpoint--early-cli-and-private-channel) and [the implementation notes](implementation.md#step-5-early-cli-and-private-channel).
+
+## 2026-10-13 — Fix: Step 4 independent audit corrections (A and B) and Linux probe decision
+
+- **Type:** Fix
+- **Spec modified:** No.
+- **Code modified:** settings_service/{sequence (new), sequence_tests (new), sequence_race_tests (new), ui_value (new), live, live_tests, tauri_adapter, effects, edit, errors, command_error, store, locator, transaction, instance_probe, mod}.rs; shortcut/{mod, binding_change (new), binding_change_tests (new)}.rs; commands/{mod, audio, history, models, transcription}.rs; managers/audio.rs; lib.rs; portable.rs; Cargo.toml/lock and capabilities (store plugin removed); settingsStore.ts, settings-errors.ts, Slider.tsx, AccelerationSelector.tsx, useSettings.ts, bindings.ts, 26 locales; tests settings_live, settings_writers, settings_platform, settings-store.test.ts (new).
+- **AC impacted:** AC-003, AC-004, AC-005 (partial; no AC certified).
+- **Author:** Claude Code (implementation agent, orchestrator-supervised)
+- **Action:** ordered UI and routed CLI writes (preparation, commit, effects, event); service installed before the first startup reader; read-only startup instead of a panic; P0 tests; minors and simple nits; Linux free session bus plus free lease allows the offline write.
+- **Execution evidence:** RED 3 suites; GREEN targeted Rust and frontend tests, strict clippy, fmt, lint, format check, tsc, translations; conventions PASS/new 0. Commit `bc76443`.
+
+Inspect [the correction checkpoint](progress.md#current-step-4-correction-checkpoint--independent-audits-a-and-b) and [the dispositions](implementation.md#step-4-audit-corrections).
