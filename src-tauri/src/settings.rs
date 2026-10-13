@@ -154,6 +154,12 @@ pub enum PasteMethod {
     ShiftInsert,
     CtrlShiftV,
     ExternalScript,
+    /// macOS smart paste (feature 007, `crate::smart_paste`). Persisted value
+    /// only for now: selecting it from the UI or CLI, the macOS default and
+    /// the migration from the beta reliable paste come with the shared
+    /// settings service (008), and the paste pipeline dispatch with the
+    /// destination context (006).
+    SmartPaste,
 }
 
 /// How the transcribe shortcut's key events drive a recording.
@@ -1547,6 +1553,24 @@ mod tests {
                 default_settings_json()
             );
         }
+    }
+
+    // @spec FR-009: Smart paste persisted value — .specs/features/007-smart-paste/spec.md#fr-009
+    #[test]
+    fn smart_paste_round_trips_as_a_persisted_paste_method() -> Result<(), serde_json::Error> {
+        let parsed: PasteMethod = serde_json::from_str("\"smart_paste\"")?;
+        assert_eq!(parsed, PasteMethod::SmartPaste);
+        assert_eq!(
+            serde_json::to_string(&PasteMethod::SmartPaste)?,
+            "\"smart_paste\""
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn smart_paste_is_not_a_default_before_the_settings_migration() {
+        assert_ne!(PasteMethod::default(), PasteMethod::SmartPaste);
+        assert_ne!(get_default_settings().paste_method, PasteMethod::SmartPaste);
     }
 
     #[test]

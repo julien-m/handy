@@ -836,6 +836,13 @@ pub fn paste(text: String, app_handle: AppHandle) -> Result<(), String> {
                 paste_delay_after_ms,
             )?
         }
+        PasteMethod::SmartPaste => {
+            // Never fall back to the classic fixed-delay paste here: it could
+            // paste the previous clipboard, which smart paste exists to avoid.
+            return Err(
+                "Smart paste is not wired into the paste pipeline yet (waiting for the destination context of feature 006)".into(),
+            );
+        }
         PasteMethod::ExternalScript => {
             let script_path = settings
                 .external_script_path

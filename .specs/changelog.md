@@ -5,6 +5,8 @@
 
 ---
 
+## 2026-10-13 — [Feature 007] Smart paste core implemented (steps 1–6): verified AX insertion, bounded multi-type snapshot helper, on-demand provider, serialized coordinator, per-app/keyboard strategies; settings (008) and destination wiring (006) pending; certification pending
+
 ## 2026-10-13 — Smart Paste: record native feasibility and explicit cache/late-write limits; settings integration awaits 008
 <!-- finalize:spec-feature:2026-10-13:72e02927 -->
 

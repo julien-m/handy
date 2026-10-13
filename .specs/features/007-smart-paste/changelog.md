@@ -121,3 +121,12 @@ AppKit caching and delayed AX mutation counterexamples remain explicit: callback
 - **AC impacted:** AC-009, AC-010, AC-012, AC-013, AC-017, AC-018 (composed, certification pending)
 - **Author:** Claude Opus 5.5 (implementation agent, orchestrated run)
 - **Notes:** The actor is not yet owned by the app nor called by the paste pipeline: that wiring consumes the 006 destination context (step 7). The pre-publication AX guard runs after the snapshot so a write applied during the capture is still verified with the clipboard untouched.
+
+## 2026-10-13 — Feature: smart_paste persisted paste-method value (minimal, additive)
+
+- **Type:** Feature
+- **Spec modified:** No
+- **Code modified:** src-tauri/src/settings.rs, src-tauri/src/clipboard.rs, src/bindings.ts
+- **AC impacted:** AC-014, AC-015 (still waiting for 008: migration, default, CLI domain, validation, UI)
+- **Author:** Claude Opus 5.5 (implementation agent, orchestrated run)
+- **Notes:** The value is not a default and cannot be selected from the UI yet; the pipeline refuses it explicitly instead of falling back to the classic fixed-delay paste. Progress and implementation maps list what waits for 006 and 008 and the exact pending release checks.
