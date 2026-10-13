@@ -11,8 +11,8 @@ use super::{
 };
 use std::path::{Path, PathBuf};
 
-const TRANSACTION_LOCK: &str = "settings.lock";
-const INSTANCE_LOCK: &str = "settings.instance.lock";
+pub(super) const TRANSACTION_LOCK: &str = "settings.lock";
+pub(super) const INSTANCE_LOCK: &str = "settings.instance.lock";
 
 /// Who may write: an offline writer proves that no instance owns the store, while the running
 /// instance proves that it still holds the startup lease acquired by `initialize`.
@@ -259,6 +259,9 @@ impl SettingsRepository {
 /// Same authority as a locked commit, without creating anything: the owner's lease must be this
 /// store's valid instance lock; an offline writer needs a passive absence and, when the instance
 /// lock already exists, must be able to take it (an instance running on a deleted store refuses).
+/// Order matters: an offline writer holds the lease only inside the transaction lock, so the
+/// lease is tested under that lock (the parent exists when the lease does); otherwise two
+/// concurrent first writers would each see the other's lease as an instance.
 fn verify_absent_store_authority<P: OwnerProbe>(
     path: &Path,
     authority: &Authority<'_, P>,
@@ -271,6 +274,7 @@ fn verify_absent_store_authority<P: OwnerProbe>(
             require_absent(*probe)?;
             if std::fs::symlink_metadata(&lease_path).is_ok() {
                 // Taken and released at once; a lock file that exists is never created here.
+                let _transaction = FileLock::acquire(path.with_file_name(TRANSACTION_LOCK), true)?;
                 FileLock::acquire(lease_path, false)?;
             }
             Ok(())

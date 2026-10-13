@@ -171,3 +171,66 @@ fn detach_failure_retains_error_kind_and_safe_operation_context() {
     assert_eq!(error.kind(), std::io::ErrorKind::PermissionDenied);
     assert!(error.to_string().contains("detach GUI process console"));
 }
+
+#[test]
+fn historical_invocations_parse_without_a_subcommand() -> Result<(), clap::Error> {
+    for args in [
+        vec!["handy"],
+        vec!["handy", "--start-hidden", "--no-tray"],
+        vec!["handy", "--list-models", "--json"],
+        vec!["handy", "--transcribe-file", "settings", "--json"],
+        vec!["handy", "--model", "settings", "--debug"],
+    ] {
+        assert!(
+            CliArgs::try_parse_from(&args)?.command.is_none(),
+            "{args:?}"
+        );
+    }
+    Ok(())
+}
+
+fn settings_of(args: &[&str]) -> Result<(CliArgs, super::cli::SettingsArgs), clap::Error> {
+    let parsed = CliArgs::try_parse_from(args)?;
+    match parsed.command.clone() {
+        Some(super::cli::CliCommand::Settings(settings)) => Ok((parsed, settings)),
+        None => Err(clap::Error::new(clap::error::ErrorKind::MissingSubcommand)),
+    }
+}
+
+#[test]
+fn settings_set_takes_a_negative_value_and_a_leading_json_flag() -> Result<(), clap::Error> {
+    use super::cli::SettingsCommand;
+    let args = ["handy", "--json", "settings", "set", "paste_delay_ms", "-5"];
+    let (parsed, settings) = settings_of(&args)?;
+    assert!(parsed.json || settings.json);
+    let SettingsCommand::Set { key, value, .. } = settings.operation else {
+        return Err(clap::Error::new(clap::error::ErrorKind::InvalidSubcommand));
+    };
+    assert_eq!((key.as_str(), value.as_str()), ("paste_delay_ms", "-5"));
+    Ok(())
+}
+
+#[test]
+fn settings_set_takes_an_expected_revision_and_a_trailing_json_flag() -> Result<(), clap::Error> {
+    use super::cli::SettingsCommand;
+    let args = [
+        "handy",
+        "settings",
+        "set",
+        "k",
+        "v",
+        "--expected-revision",
+        "4",
+        "--json",
+    ];
+    let (parsed, settings) = settings_of(&args)?;
+    assert!(settings.json || parsed.json);
+    assert!(matches!(
+        settings.operation,
+        SettingsCommand::Set {
+            expected_revision: Some(4),
+            ..
+        }
+    ));
+    Ok(())
+}

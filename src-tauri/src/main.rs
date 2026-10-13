@@ -1,14 +1,14 @@
 // Settings/headless invocations keep inherited console handles in release too.
 #![cfg_attr(target_os = "windows", windows_subsystem = "console")]
 
-use clap::Parser;
-use handy_app_lib::CliArgs;
+use handy_app_lib::settings_service::cli as settings_cli;
 
 #[cfg(target_os = "windows")]
 #[path = "settings_service/console_windows.rs"]
 mod console_windows;
 
-fn main() {
+/// Process-wide environment that every later branch (worker, settings, app) inherits.
+fn configure_environment() {
     #[cfg(target_os = "linux")]
     {
         // DMABUF renderer causes crashes on various GPU/display server configurations
@@ -26,6 +26,10 @@ fn main() {
             std::env::set_var("VK_LOADER_LAYERS_DISABLE", "~implicit~");
         }
     }
+}
+
+fn main() {
+    configure_environment();
 
     // Transcription worker: runs transcribe.cpp in isolation and never touches
     // Tauri, the CLI, or single-instance handling. Checked after the env setup
@@ -34,7 +38,12 @@ fn main() {
         std::process::exit(handy_app_lib::engine_supervisor::run_worker());
     }
 
-    let cli_args = CliArgs::parse();
+    // `handy settings` runs and exits here, before any Tauri, tray, window, model or
+    // single-instance setup; every other invocation keeps its historical parse.
+    let cli_args = match settings_cli::dispatch(std::env::args_os().collect()) {
+        settings_cli::Dispatch::App(cli_args) => cli_args,
+        settings_cli::Dispatch::Exit(code) => std::process::exit(code),
+    };
     // @spec FR-001: Keep CLI handles, detach GUI console — .specs/features/008-settings-cli/spec.md#fr-001
     #[cfg(target_os = "windows")]
     if cli_args.should_detach_console() {

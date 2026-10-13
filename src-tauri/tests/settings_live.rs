@@ -12,7 +12,9 @@ use serde_json::{json, Value};
 use std::{path::PathBuf, sync::Arc};
 type TestResult = Result<(), Box<dyn std::error::Error>>;
 
-/// (key, typed value the UI command serializes, equivalent CLI text): accepted values.
+/// (key, typed value the UI command serializes, equivalent CLI text): accepted values. Device
+/// selectors: the UI "Default" entry (null) and the CLI `null` both mean the system default, and
+/// "default" is a literal device name on both surfaces.
 fn accepted_cases() -> Vec<(&'static str, Value, &'static str)> {
     vec![
         ("paste_method", json!("ctrl_v"), "ctrl_v"),
@@ -31,8 +33,6 @@ fn accepted_cases() -> Vec<(&'static str, Value, &'static str)> {
         ),
         ("external_script_path", Value::Null, "null"),
         ("recording_retention_period", json!("weeks2"), "weeks2"),
-        // Device selectors: the UI "Default" entry and the CLI `null` both mean the system
-        // default; "default" is a literal device name on both surfaces.
         ("selected_microphone", Value::Null, "null"),
         ("clamshell_microphone", Value::Null, "null"),
         ("selected_output_device", Value::Null, "null"),
