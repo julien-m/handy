@@ -283,3 +283,15 @@ Inspect [the authoritative stop](progress.md#current-step-3-stop--platform-refus
 - **Execution evidence:** RED 4 integration failures plus temp-collision emulation; GREEN full suite 356 passed/0 failed/17 ignored; strict clippy on settings targets, fmt, lint, format check and repository conventions PASS; `--all-targets -D warnings` blocked only by 5 warnings identical at HEAD.
 
 Inspect [the Step 3 checkpoint](progress.md#current-step-3-checkpoint--audit-corrections-applied-pending-independent-audit) and [audit dispositions](implementation.md#step-3-audit-dispositions).
+
+## 2026-10-13 — Feature: Step 5 early settings CLI and private channel to the running instance
+
+- **Type:** Feature
+- **Spec modified:** No (contract matrix updated for the device default representation).
+- **Code modified:** cli.rs, main.rs, lib.rs, settings_service/{cli,render,operations,route,ipc,ipc_tests,endpoint_unix,endpoint_windows,live,tauri_adapter,transaction,validation,ownership,request,mod}.rs, platform_unix socket/facade/tests, commands/audio.rs, shortcut/mod.rs (`change_binding` 27 lines), settingsStore.ts, 3 device selectors, bindings.ts; tests settings_cli (contract, offline, routed), settings_platform, settings_live, settings_validation.
+- **AC impacted:** AC-001, AC-002, AC-003, AC-004, AC-005, AC-007, AC-008 (partial; no AC certified).
+- **Author:** Claude Code (implementation agent, orchestrator-supervised)
+- **Action:** `handy settings get|keys|set` runs before any GUI setup with one renderer and stable exits; offline routing under the shared lock and validation; authenticated private channel to the running instance with a 5 s deadline and unknown outcome; lease-proven endpoint reclamation and removal at exit. Device selectors store null for the system default on every surface; "default" is a literal device name.
+- **Execution evidence:** Full suite 429 passed/0 failed/17 ignored; strict clippy, fmt, lint, format check, tsc, frontend tests, Windows endpoint compile harness exit 0; conventions PASS/new 0. Commits `49b2736`, `b1839f4`, `1b34412`, `592b7e0`, `be94db8`.
+
+Inspect [the Step 5 checkpoint](progress.md#current-step-5-checkpoint--early-cli-and-private-channel) and [the implementation notes](implementation.md#step-5-early-cli-and-private-channel).

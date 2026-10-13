@@ -5,6 +5,10 @@
 
 ---
 
+## 2026-10-13 — 008-settings-cli: Step 5 early settings CLI and private channel Done
+
+`handy settings get|keys|set` runs before any GUI setup, offline under the shared lock or routed to the running instance over an authenticated private channel (5 s deadline, unknown outcome, no fallback). The system default device is stored as null on every surface. Full suite 429 passed/0 failed/17 ignored; conventions PASS/new 0. Commits `49b2736`…`be94db8`; Steps 6–7 Todo; no AC certified. Inspect [the checkpoint](features/008-settings-cli/progress.md#current-step-5-checkpoint--early-cli-and-private-channel).
+
 ## 2026-10-13 — 008-settings-cli: Step 3 audit corrections applied, pending independent audit
 
 Blocker fixed by detection (parent and read-store identities rechecked before replacement), three majors and 8 minors/nit fixed, 3 Windows function-size minors dispositioned. Full suite 356 passed/0 failed/17 ignored; conventions PASS. Code commit `1ae5d84`; Steps 4–7 Todo; no AC certified. Inspect [the checkpoint](features/008-settings-cli/progress.md#current-step-3-checkpoint--audit-corrections-applied-pending-independent-audit).
