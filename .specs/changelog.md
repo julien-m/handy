@@ -5,6 +5,8 @@
 
 ---
 
+## 2026-10-13 — [Feature 002] Step 4 core: compiled single-pass replacement matcher (40 fixtures) applied after script conversion with protected spans in both final transcription paths, rules captured at recording start; release benchmark 1.78 ms max on M4 Pro (M1 pending).
+
 ## 2026-10-13 — [Feature 002] Step 2 core: two-column exchange parser/serializer with bounded UTF-8 input and deterministic merge/replace previews; commit and revisions remain Waiting for 008.
 
 ## 2026-10-13 — [Feature 002] Step 1 core: ordered replacement model, pinned Unicode 17 offsets/properties and shared scalar/ID validation; additive empty settings and native-generated bindings. Rust target 20 PASS, regression 306 PASS / 17 ignored, generator boundary tests 6 PASS, Clippy/frontend checks and repository conventions PASS. Complete UI/transactions/CLI remain Waiting for 008; no acceptance certification claimed.

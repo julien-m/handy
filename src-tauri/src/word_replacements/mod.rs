@@ -1,6 +1,8 @@
-//! Deterministic replacement rules, Unicode normalization and validation.
+//! Deterministic replacement rules: validation, exchange, previews and matching.
 
+pub mod dictation;
 pub mod exchange;
+pub mod matcher;
 pub mod materialize;
 pub mod model;
 pub mod preview;
@@ -9,6 +11,8 @@ pub mod validation;
 
 #[cfg(test)]
 mod exchange_tests;
+#[cfg(test)]
+mod matcher_tests;
 #[cfg(test)]
 mod preview_tests;
 

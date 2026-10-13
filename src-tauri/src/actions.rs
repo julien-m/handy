@@ -13,6 +13,7 @@ use crate::tray::{set_tray_state, TrayIconState};
 use crate::utils::{
     self, show_processing_overlay, show_recording_overlay, show_transcribing_overlay,
 };
+use crate::word_replacements::dictation::{compile_for_dictation, DictationRuleCapture};
 use crate::TranscriptionCoordinator;
 use log::{debug, error, warn};
 use once_cell::sync::Lazy;
@@ -56,6 +57,8 @@ pub trait ShortcutAction: Send + Sync {
 // Transcribe Action
 struct TranscribeAction {
     post_process: bool,
+    /// Replacement rules in force when each binding's recording started.
+    rules_at_start: DictationRuleCapture,
 }
 
 /// Field name for structured output JSON schema
@@ -478,6 +481,9 @@ impl ShortcutAction for TranscribeAction {
                     "Recording request accepted in {:?}; waiting for first microphone samples",
                     recording_start_time.elapsed()
                 );
+                // AC-007: this dictation uses the rules committed before it started.
+                self.rules_at_start
+                    .capture(&binding_id, settings.word_replacements.clone());
                 let generation = readiness.generation();
                 let app_clone = app.clone();
                 let rm_clone = Arc::clone(&rm);
@@ -601,6 +607,12 @@ impl ShortcutAction for TranscribeAction {
 
         let binding_id = binding_id.to_string(); // Clone binding_id for the async task
         let post_process = self.post_process;
+        let captured_rules = self.rules_at_start.take(&binding_id).unwrap_or_else(|| {
+            // No capture means the start path did not record (e.g. it failed);
+            // fall back to the rules committed now rather than skipping them.
+            debug!("No replacement rules captured at recording start; using current rules");
+            get_settings(app).word_replacements
+        });
         let cancel_generation = rm.cancel_generation();
 
         tauri::async_runtime::spawn(async move {
@@ -648,14 +660,15 @@ impl ShortcutAction for TranscribeAction {
                     // running, finalize it and use its text (all audio was already
                     // fed to the stream); otherwise batch-transcribe the samples.
                     let transcription_time = Instant::now();
-                    let transcription_result = match tm.finalize_stream() {
+                    let replacements = compile_for_dictation(&captured_rules);
+                    let transcription_result = match tm.finalize_stream(&replacements) {
                         // A finalized stream with usable text wins. An empty result
                         // (no active stream, produced nothing, or the stream failed
                         // or its worker crashed) falls back to a full batch
                         // transcription of the same audio. A cancelled finalize is
                         // surfaced instead, so a cancel never starts a batch run.
                         Ok(Some(text)) if !text.trim().is_empty() => Ok(text),
-                        Ok(_) => tm.transcribe(samples),
+                        Ok(_) => tm.transcribe(samples, &replacements),
                         Err(err) => Err(err),
                     };
 
@@ -863,11 +876,15 @@ pub static ACTION_MAP: Lazy<HashMap<String, Arc<dyn ShortcutAction>>> = Lazy::ne
         "transcribe".to_string(),
         Arc::new(TranscribeAction {
             post_process: false,
+            rules_at_start: DictationRuleCapture::default(),
         }) as Arc<dyn ShortcutAction>,
     );
     map.insert(
         "transcribe_with_post_process".to_string(),
-        Arc::new(TranscribeAction { post_process: true }) as Arc<dyn ShortcutAction>,
+        Arc::new(TranscribeAction {
+            post_process: true,
+            rules_at_start: DictationRuleCapture::default(),
+        }) as Arc<dyn ShortcutAction>,
     );
     map.insert(
         "cancel".to_string(),

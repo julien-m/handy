@@ -1,5 +1,15 @@
 # Changelog - 002-word-replacements
 
+## 2026-10-13 — [Feature]: Replacement matcher and transcription pipeline integration
+
+- **Type:** Feature
+- **Spec modified:** No.
+- **Code modified:** `src-tauri/src/word_replacements/{matcher,dictation,matcher_tests}.rs`, `audio_toolkit/{text,mod}.rs` (approximate correction outside protected spans), `managers/transcription.rs` (replacement step after script conversion, `transcribe`/`finalize_stream` take the dictation snapshot), `actions.rs` (capture at recording start), `commands/history.rs` and `lib.rs` (retry/headless use current rules), `src-tauri/tests/replacement_performance.rs`.
+- **AC impacted:** AC-006 (implemented, certification pending), AC-007 (partial: commit-to-next-dictation through UI/CLI Waiting for 008).
+- **Evidence:** 40 table-driven matching fixtures (SC-001), segment/offset invariants, span-protection and pipeline-order tests; release benchmark max 1.78 ms on Apple M4 Pro (M1 pending release evidence); raw outputs in `proofs/claude/step4-*`.
+- **Deviation:** The plan's port-injected `replacement_pipeline.rs` harness was not built: it would require restructuring `actions.rs` into injectable LLM/history/output ports. Pipeline order is tested at the `post_process_transcription_text` seam; history/output stage proof stays with native acceptance.
+- **Author:** Claude Code (implementation agent, core-first run).
+
 ## 2026-10-13 — [Feature]: Exchange format and deterministic previews
 
 - **Type:** Feature
