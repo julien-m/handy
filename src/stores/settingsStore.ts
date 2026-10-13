@@ -5,6 +5,7 @@ import type {
   AppSettings as Settings,
   AudioDevice,
   ChineseScript,
+  ModelUnloadTimeout,
   TranscribeAcceleratorSetting,
   OrtAcceleratorSetting,
   ShortcutActivation,
@@ -12,9 +13,19 @@ import type {
 } from "@/bindings";
 import { commands } from "@/bindings";
 import { toast } from "sonner";
+import i18n from "@/i18n";
+import {
+  isCurrentRevision,
+  SETTINGS_ERROR_KEYS,
+  SettingsCommandFailure,
+  settingsErrorKey,
+  throwIfSettingsError,
+} from "./settings-errors";
 
 interface SettingsStore {
   settings: Settings | null;
+  // Revision of `settings`; refresh responses older than it are discarded.
+  revision: number | null;
   defaultSettings: Settings | null;
   isLoading: boolean;
   isUpdating: Record<string, boolean>;
@@ -71,6 +82,18 @@ interface SettingsStore {
   setCustomSounds: (sounds: { start: boolean; stop: boolean }) => void;
 }
 
+/**
+ * Show a refused settings command explicitly (translated from its typed code/reason).
+ * @param error error thrown by a settings action
+ */
+const notifySettingsError = (error: unknown): void => {
+  const key =
+    error instanceof SettingsCommandFailure
+      ? settingsErrorKey(error.detail)
+      : SETTINGS_ERROR_KEYS.generic;
+  toast.error(i18n.t(key));
+};
+
 // Note: Default settings are now fetched from Rust via commands.getDefaultSettings()
 // This ensures platform-specific defaults (like overlay_position, shortcuts, paste_method) work correctly
 
@@ -109,14 +132,8 @@ const settingUpdaters: {
         ? "default"
         : (value as string),
     ),
-  selected_channel: async (value) => {
-    const result = await commands.setSelectedChannel(
-      (value as number | null | undefined) ?? null,
-    );
-    if (result.status === "error") {
-      throw new Error(result.error);
-    }
-  },
+  selected_channel: (value) =>
+    commands.setSelectedChannel((value as number | null | undefined) ?? null),
   clamshell_microphone: (value) =>
     commands.setClamshellMicrophone(
       (value as string) === "Default" ? "default" : (value as string),
@@ -172,15 +189,8 @@ const settingUpdaters: {
     commands.changeLazyStreamCloseSetting(value as boolean),
   overlay_style: (value) => commands.changeOverlayStyleSetting(value as string),
   vad_enabled: (value) => commands.changeVadEnabledSetting(value as boolean),
-  vad_backend: async (value) => {
-    const result = await commands.changeVadBackendSetting(value as VadBackend);
-    if (result.status === "error") {
-      // Rejected switches (e.g. mid-recording) roll the dropdown back via the
-      // throw below; the toast tells the user why.
-      toast.error(result.error);
-      throw new Error(result.error);
-    }
-  },
+  // Rejected switches (e.g. mid-recording) roll the dropdown back in updateSetting.
+  vad_backend: (value) => commands.changeVadBackendSetting(value as VadBackend),
   filler_word_removal_enabled: (value) =>
     commands.changeFillerWordRemovalEnabledSetting(value as boolean),
   chinese_script: (value) =>
@@ -197,11 +207,14 @@ const settingUpdaters: {
     commands.changeTranscribeGpuDevice(value as string | null),
   extra_recording_buffer_ms: (value) =>
     commands.changeExtraRecordingBufferSetting(value as number),
+  model_unload_timeout: (value) =>
+    commands.setModelUnloadTimeout(value as ModelUnloadTimeout),
 };
 
 export const useSettingsStore = create<SettingsStore>()(
   subscribeWithSelector((set, get) => ({
     settings: null,
+    revision: null,
     defaultSettings: null,
     isLoading: true,
     isUpdating: {},
@@ -230,22 +243,17 @@ export const useSettingsStore = create<SettingsStore>()(
     // Load settings from store
     refreshSettings: async () => {
       try {
-        const result = await commands.getAppSettings();
-        if (result.status === "ok") {
-          const settings = result.data;
-          const normalizedSettings: Settings = {
-            ...settings,
-            always_on_microphone: settings.always_on_microphone ?? false,
-            selected_microphone: settings.selected_microphone ?? "Default",
-            clamshell_microphone: settings.clamshell_microphone ?? "Default",
-            selected_output_device:
-              settings.selected_output_device ?? "Default",
-          };
-          set({ settings: normalizedSettings, isLoading: false });
-        } else {
-          console.error("Failed to load settings:", result.error);
-          set({ isLoading: false });
-        }
+        const { revision, settings } = await commands.getSettingsView();
+        // An older refresh answering after a newer one must not roll the UI back.
+        if (!isCurrentRevision(revision, get().revision)) return;
+        const normalizedSettings: Settings = {
+          ...settings,
+          always_on_microphone: settings.always_on_microphone ?? false,
+          selected_microphone: settings.selected_microphone ?? "Default",
+          clamshell_microphone: settings.clamshell_microphone ?? "Default",
+          selected_output_device: settings.selected_output_device ?? "Default",
+        };
+        set({ settings: normalizedSettings, revision, isLoading: false });
       } catch (error) {
         console.error("Failed to load settings:", error);
         set({ isLoading: false });
@@ -330,15 +338,19 @@ export const useSettingsStore = create<SettingsStore>()(
 
         const updater = settingUpdaters[key];
         if (updater) {
-          await updater(value);
+          throwIfSettingsError(await updater(value));
         } else if (key !== "bindings" && key !== "selected_model") {
           console.warn(`No handler for setting: ${String(key)}`);
         }
       } catch (error) {
+        // A refused value is shown and rolled back, never kept silently.
         console.error(`Failed to update setting ${String(key)}:`, error);
-        if (settings) {
-          set({ settings: { ...settings, [key]: originalValue } });
-        }
+        notifySettingsError(error);
+        set((state) => ({
+          settings: state.settings
+            ? { ...state.settings, [key]: originalValue }
+            : null,
+        }));
       } finally {
         setUpdating(updateKey, false);
       }
@@ -384,7 +396,7 @@ export const useSettingsStore = create<SettingsStore>()(
 
         // Check if the command executed successfully
         if (result.status === "error") {
-          throw new Error(result.error);
+          throw new Error(i18n.t(settingsErrorKey(result.error)));
         }
 
         // Check if the binding change was successful
@@ -427,10 +439,15 @@ export const useSettingsStore = create<SettingsStore>()(
       setUpdating(updateKey, true);
 
       try {
-        await commands.resetBinding(id);
+        const result = await commands.resetBinding(id);
+        throwIfSettingsError(result);
+        if (result.status === "ok" && !result.data.success) {
+          throw new Error(result.data.error ?? "Failed to reset binding");
+        }
         await refreshSettings();
       } catch (error) {
         console.error(`Failed to reset binding ${id}:`, error);
+        notifySettingsError(error);
       } finally {
         setUpdating(updateKey, false);
       }
@@ -461,10 +478,11 @@ export const useSettingsStore = create<SettingsStore>()(
       setPostProcessModelOptions(providerId, []);
 
       try {
-        await commands.setPostProcessProvider(providerId);
+        throwIfSettingsError(await commands.setPostProcessProvider(providerId));
         await refreshSettings();
       } catch (error) {
         console.error("Failed to set post-process provider:", error);
+        notifySettingsError(error);
         if (previousId !== null) {
           set((state) => ({
             settings: state.settings
@@ -490,11 +508,17 @@ export const useSettingsStore = create<SettingsStore>()(
 
       try {
         if (settingType === "base_url") {
-          await commands.changePostProcessBaseUrlSetting(providerId, value);
+          throwIfSettingsError(
+            await commands.changePostProcessBaseUrlSetting(providerId, value),
+          );
         } else if (settingType === "api_key") {
-          await commands.changePostProcessApiKeySetting(providerId, value);
+          throwIfSettingsError(
+            await commands.changePostProcessApiKeySetting(providerId, value),
+          );
         } else if (settingType === "model") {
-          await commands.changePostProcessModelSetting(providerId, value);
+          throwIfSettingsError(
+            await commands.changePostProcessModelSetting(providerId, value),
+          );
         }
         await refreshSettings();
       } catch (error) {
@@ -502,6 +526,7 @@ export const useSettingsStore = create<SettingsStore>()(
           `Failed to update post-process ${settingType.replace("_", " ")}:`,
           error,
         );
+        notifySettingsError(error);
       } finally {
         setUpdating(updateKey, false);
       }
@@ -521,6 +546,7 @@ export const useSettingsStore = create<SettingsStore>()(
         );
         if (urlResult.status === "error") {
           console.error("Failed to persist base URL:", urlResult.error);
+          notifySettingsError(new SettingsCommandFailure(urlResult.error));
           return;
         }
 
@@ -533,6 +559,7 @@ export const useSettingsStore = create<SettingsStore>()(
         );
         if (modelResult.status === "error") {
           console.error("Failed to reset model setting:", modelResult.error);
+          notifySettingsError(new SettingsCommandFailure(modelResult.error));
           return;
         }
 
@@ -604,12 +631,7 @@ export const useSettingsStore = create<SettingsStore>()(
     // Load default settings from Rust
     loadDefaultSettings: async () => {
       try {
-        const result = await commands.getDefaultSettings();
-        if (result.status === "ok") {
-          set({ defaultSettings: result.data });
-        } else {
-          console.error("Failed to load default settings:", result.error);
-        }
+        set({ defaultSettings: await commands.getDefaultSettings() });
       } catch (error) {
         console.error("Failed to load default settings:", error);
       }
@@ -654,12 +676,17 @@ export const useSettingsStore = create<SettingsStore>()(
       listen("model-state-changed", () => {
         get().refreshSettings();
       });
-      listen<{ setting?: string }>("settings-changed", (event) => {
-        get().refreshSettings();
-        if (event.payload.setting === "selected_microphone") {
-          get().refreshAudioDevices();
-        }
-      });
+      // Every committed write (UI, internal repair, later the CLI) emits its revision and the
+      // changed key names; values are refetched, never carried by the event.
+      listen<{ revision: number; keys: string[] }>(
+        "settings-changed",
+        (event) => {
+          get().refreshSettings();
+          if (event.payload.keys.includes("selected_microphone")) {
+            get().refreshAudioDevices();
+          }
+        },
+      );
     },
   })),
 );

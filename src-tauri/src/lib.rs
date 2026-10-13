@@ -722,6 +722,7 @@ pub fn run(cli_args: CliArgs) {
             commands::is_update_checks_locked,
             commands::get_app_dir_path,
             commands::get_app_settings,
+            commands::get_settings_view,
             commands::get_default_settings,
             commands::get_log_dir_path,
             commands::set_log_level,
@@ -900,6 +901,19 @@ pub fn run(cli_args: CliArgs) {
             );
 
             specta_builder.mount_events(app);
+
+            // The settings service owns settings_store.json before any reader runs: the GUI
+            // instance takes the startup lease (and normalizes once); a headless run is not the
+            // instance and only reads now, writing later as an offline writer.
+            let installed = if headless_mode {
+                settings_service::tauri_adapter::install_offline(app.handle())
+            } else {
+                settings_service::tauri_adapter::install_owned(app.handle())
+            };
+            if let Err(error) = installed {
+                log::error!("Settings service could not start: {}", error);
+                return Err(Box::new(error));
+            }
 
             // Headless one-shot path (`--transcribe-file` / `--list-devices` /
             // `--list-models`): initialize only what transcription needs — the

@@ -11,6 +11,7 @@ use serde::{Deserialize, Serialize};
 pub struct Revision(pub u64);
 
 /// Internal typed store snapshot; it cannot serialize as a public response.
+#[derive(Clone)]
 pub struct SettingsSnapshot {
     pub(crate) settings: AppSettings,
     pub revision: Revision,
@@ -121,7 +122,7 @@ pub fn contract_schema() -> Result<serde_json::Value, SettingsError> {
       "failure":{"type":"object","additionalProperties":false,"required":["ok","error"],"properties":{"ok":{"const":false},"error":{"$ref":"#/$defs/error"}}},
       "revision":{"type":"integer","minimum":0,"maximum":u64::MAX},
       "error":{"type":"object","additionalProperties":false,"required":["code","message","details"],"properties":{"code":{"enum":code_values},"message":{"type":"string"},"details":{"$ref":"#/$defs/error_details"}}},
-      "error_details":{"type":"object","additionalProperties":false,"properties":{"current_revision":{"$ref":"#/$defs/revision"},"outcome":{"enum":["unknown"]},"field":{"enum":keys},"issues":{"type":"array","items":{"type":"object","additionalProperties":false,"required":["field","reason"],"properties":{"field":{"enum":keys},"reason":{"type":"string"}}}}}},
+      "error_details":{"type":"object","additionalProperties":false,"properties":{"current_revision":{"$ref":"#/$defs/revision"},"outcome":{"enum":["unknown","committed"]},"field":{"enum":keys},"issues":{"type":"array","items":{"type":"object","additionalProperties":false,"required":["field","reason"],"properties":{"field":{"enum":keys},"reason":{"type":"string"}}}}}},
       "public_settings":{"type":"object","additionalProperties":false,"required":keys,"properties":properties},
       "provider":public_provider_schema(),"binding":public_binding_schema(),"prompt":public_prompt_schema(),
       "operation_request":operation_request_schema()

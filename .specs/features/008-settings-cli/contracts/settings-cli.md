@@ -15,7 +15,7 @@ The scalar CLI grammar accepts exact booleans `true`/`false`, unsigned integers,
 
 Both pure validation ports use fixed English categories/reasons; the existing Tauri writers are migrated in Step 4. Numeric/channel native availability and prepared runtime effects are checked by their later owning adapters.
 
-Success is `{"ok":true,"revision":N,"data":…}`. Failure is `{"ok":false,"error":{"code":C,"message":M,"details":{…}}}`. Details always remain an object; recognized fields/issues, current revision or unknown outcome are the only admitted details. Unknown key/candidate/parser text never enters errors. Revision is an unsigned 64-bit integer independent of settings schema version.
+Success is `{"ok":true,"revision":N,"data":…}`. Failure is `{"ok":false,"error":{"code":C,"message":M,"details":{…}}}`. Details always remain an object; recognized fields/issues, current revision or an outcome (`unknown` after a timeout or unconfirmed durability, `committed` when a live effect failed after a durable write) are the only admitted details. Unknown key/candidate/parser text never enters errors. Revision is an unsigned 64-bit integer independent of settings schema version.
 
 | Category | Exit |
 | --- | --- |

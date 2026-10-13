@@ -691,7 +691,17 @@
     "modelLoadFailedUnknown": "unbekanntes Modell",
     "pasteFailedTitle": "Text konnte nicht eingefügt werden",
     "pasteFailed": "Der Text konnte nicht in die aktive Anwendung eingefügt werden.",
-    "transcriptionFailedTitle": "Transkription fehlgeschlagen"
+    "transcriptionFailedTitle": "Transkription fehlgeschlagen",
+    "settings": {
+      "committedNotApplied": "Die Einstellung wurde gespeichert, konnte aber nicht sofort angewendet werden.",
+      "gpuDeviceRequired": "Wählen Sie ein GPU-Gerät aus, bevor Sie den GPU-Beschleuniger wählen.",
+      "outOfRange": "Dieser Wert liegt außerhalb des zulässigen Bereichs.",
+      "validationFailed": "Dieser Wert ist für diese Einstellung nicht zulässig.",
+      "revisionConflict": "Die Einstellungen wurden an anderer Stelle geändert. Laden Sie neu und versuchen Sie es erneut.",
+      "unavailable": "Diese Einstellung kann gerade nicht geändert werden. Versuchen Sie es später erneut.",
+      "persistenceFailed": "Die Einstellungen konnten nicht gespeichert werden.",
+      "generic": "Die Einstellung konnte nicht geändert werden."
+    }
   },
   "appLanguage": {
     "title": "Anwendungssprache",

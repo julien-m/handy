@@ -216,7 +216,8 @@
         },
         "outcome": {
           "enum": [
-            "unknown"
+            "unknown",
+            "committed"
           ]
         }
       },

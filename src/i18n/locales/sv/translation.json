@@ -691,7 +691,17 @@
     "noInputDevice": "Ingen ljudenhet hittades. Anslut en mikrofon eller ett headset och försök igen.",
     "pasteFailedTitle": "Det gick inte att klistra in texten",
     "pasteFailed": "Texten kunde inte klistras in i det aktiva programmet.",
-    "transcriptionFailedTitle": "Transkriptionen misslyckades"
+    "transcriptionFailedTitle": "Transkriptionen misslyckades",
+    "settings": {
+      "committedNotApplied": "Inställningen sparades men kunde inte tillämpas direkt.",
+      "gpuDeviceRequired": "Välj en GPU-enhet innan du väljer GPU-acceleratorn.",
+      "outOfRange": "Värdet ligger utanför det tillåtna intervallet.",
+      "validationFailed": "Värdet accepteras inte för den här inställningen.",
+      "revisionConflict": "Inställningarna ändrades någon annanstans. Ladda om och försök igen.",
+      "unavailable": "Den här inställningen kan inte ändras just nu. Försök igen senare.",
+      "persistenceFailed": "Inställningarna kunde inte sparas.",
+      "generic": "Inställningen kunde inte ändras."
+    }
   },
   "appLanguage": {
     "title": "Applikationsspråk",

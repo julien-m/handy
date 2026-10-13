@@ -694,7 +694,17 @@
     "modelLoadFailedUnknown": "अज्ञात मोडेल",
     "pasteFailedTitle": "टेक्स्ट पेस्ट गर्न सकिएन",
     "pasteFailed": "सक्रिय एपमा टेक्स्ट पेस्ट गर्न सकिएन।",
-    "transcriptionFailedTitle": "ट्रान्सक्रिप्सन गर्न सकिएन"
+    "transcriptionFailedTitle": "ट्रान्सक्रिप्सन गर्न सकिएन",
+    "settings": {
+      "committedNotApplied": "सेटिङ सुरक्षित गरियो, तर तुरुन्तै लागू गर्न सकिएन।",
+      "gpuDeviceRequired": "GPU एक्सेलेरेटर छान्नुअघि GPU उपकरण छान्नुहोस्।",
+      "outOfRange": "यो मान अनुमति दिइएको दायराभन्दा बाहिर छ।",
+      "validationFailed": "यो सेटिङका लागि यो मान स्वीकार्य छैन।",
+      "revisionConflict": "सेटिङहरू अन्यत्र परिवर्तन गरिएका छन्। पुनः लोड गरेर फेरि प्रयास गर्नुहोस्।",
+      "unavailable": "यो सेटिङ अहिले परिवर्तन गर्न सकिँदैन। पछि फेरि प्रयास गर्नुहोस्।",
+      "persistenceFailed": "सेटिङहरू सुरक्षित गर्न सकिएन।",
+      "generic": "सेटिङ परिवर्तन गर्न सकिएन।"
+    }
   },
   "appLanguage": {
     "title": "एपको भाषा",

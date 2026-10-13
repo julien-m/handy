@@ -691,7 +691,17 @@
     "modelLoadFailedUnknown": "nieznany model",
     "pasteFailedTitle": "Nie udało się wkleić tekstu",
     "pasteFailed": "Nie można było wkleić tekstu do aktywnej aplikacji.",
-    "transcriptionFailedTitle": "Transkrypcja nie powiodła się"
+    "transcriptionFailedTitle": "Transkrypcja nie powiodła się",
+    "settings": {
+      "committedNotApplied": "Ustawienie zostało zapisane, ale nie można go było od razu zastosować.",
+      "gpuDeviceRequired": "Wybierz urządzenie GPU, zanim wybierzesz akcelerator GPU.",
+      "outOfRange": "Ta wartość jest poza dozwolonym zakresem.",
+      "validationFailed": "Ta wartość nie jest akceptowana dla tego ustawienia.",
+      "revisionConflict": "Ustawienia zostały zmienione gdzie indziej. Odśwież i spróbuj ponownie.",
+      "unavailable": "Tego ustawienia nie można teraz zmienić. Spróbuj ponownie później.",
+      "persistenceFailed": "Nie udało się zapisać ustawień.",
+      "generic": "Nie udało się zmienić ustawienia."
+    }
   },
   "appLanguage": {
     "title": "Język aplikacji",

@@ -694,7 +694,17 @@
     "modelLoadFailedUnknown": "unknown model",
     "pasteFailedTitle": "Failed to Paste Text",
     "pasteFailed": "Text could not be pasted into the active application.",
-    "transcriptionFailedTitle": "Transcription Failed"
+    "transcriptionFailedTitle": "Transcription Failed",
+    "settings": {
+      "committedNotApplied": "The setting was saved, but it could not be applied right away.",
+      "gpuDeviceRequired": "Select a GPU device before choosing the GPU accelerator.",
+      "outOfRange": "This value is outside the allowed range.",
+      "validationFailed": "This value is not accepted for this setting.",
+      "revisionConflict": "Settings were changed elsewhere. Reload and try again.",
+      "unavailable": "This setting cannot be changed right now. Try again later.",
+      "persistenceFailed": "Settings could not be saved.",
+      "generic": "The setting could not be changed."
+    }
   },
   "appLanguage": {
     "title": "Application Language",

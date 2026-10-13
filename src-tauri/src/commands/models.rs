@@ -1,6 +1,7 @@
 use crate::managers::model::{ModelInfo, ModelManager};
 use crate::managers::transcription::{ModelStateEvent, TranscriptionManager};
-use crate::settings::{get_settings, write_settings, ModelUnloadTimeout};
+use crate::settings::{get_settings, ModelUnloadTimeout};
+use crate::settings_service::tauri_adapter;
 use log::error;
 use std::sync::Arc;
 use tauri::{AppHandle, Emitter, Manager, State};
@@ -80,14 +81,30 @@ pub async fn delete_model(
             .map_err(|e| format!("Failed to unload model: {}", e))?
             .map_err(|e| format!("Failed to unload model: {}", e))?;
 
-        let mut settings = get_settings(&app_handle);
-        settings.selected_model = String::new();
-        write_settings(&app_handle, settings);
+        tauri_adapter::edit(&app_handle, &|settings| {
+            settings.selected_model = String::new();
+            Ok(())
+        })
+        .map_err(|error| error.to_string())?;
     }
 
     model_manager
         .delete_model(&model_id)
         .map_err(|e| e.to_string())
+}
+
+/// Commit the selected model and onboarding flag on the latest stored settings.
+fn persist_selection(
+    app: &AppHandle,
+    model_id: &str,
+    onboarding_completed: bool,
+) -> Result<(), crate::settings_service::command_error::SettingsCommandError> {
+    tauri_adapter::edit(app, &|settings| {
+        settings.selected_model = model_id.to_string();
+        settings.onboarding_completed = onboarding_completed;
+        Ok(())
+    })
+    .map(|_| ())
 }
 
 /// Shared logic for switching the active model, used by both the Tauri command
@@ -123,11 +140,7 @@ pub fn switch_active_model(app: &AppHandle, model_id: &str) -> Result<(), String
 
     // Persist the new selection early so the frontend sees the correct model
     // when it reacts to events emitted by load_model.
-    let mut settings = settings;
-    settings.selected_model = model_id.to_string();
-    settings.onboarding_completed = true;
-
-    write_settings(app, settings);
+    persist_selection(app, model_id, true).map_err(|error| error.to_string())?;
 
     // Skip eager loading if unload is set to "Immediately" — the model
     // will be loaded on-demand during the next transcription.
@@ -152,10 +165,10 @@ pub fn switch_active_model(app: &AppHandle, model_id: &str) -> Result<(), String
 
     // Load the model. On failure, revert the persisted selection.
     if let Err(e) = transcription_manager.load_model(model_id) {
-        let mut settings = get_settings(app);
-        settings.selected_model = old_model;
-        settings.onboarding_completed = old_onboarding_completed;
-        write_settings(app, settings);
+        // Compensate the early selection; only these two fields are restored.
+        if let Err(error) = persist_selection(app, &old_model, old_onboarding_completed) {
+            error!("Could not restore the previous model selection: {}", error);
+        }
         return Err(e.to_string());
     }
 

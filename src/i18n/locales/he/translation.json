@@ -691,7 +691,17 @@
     "modelLoadFailedUnknown": "מודל לא ידוע",
     "pasteFailedTitle": "ההדבקה נכשלה",
     "pasteFailed": "לא ניתן היה להדביק את הטקסט ביישום הפעיל.",
-    "transcriptionFailedTitle": "התמלול נכשל"
+    "transcriptionFailedTitle": "התמלול נכשל",
+    "settings": {
+      "committedNotApplied": "ההגדרה נשמרה, אך לא ניתן היה להחיל אותה מיד.",
+      "gpuDeviceRequired": "בחרו התקן GPU לפני בחירת מאיץ ה-GPU.",
+      "outOfRange": "הערך מחוץ לטווח המותר.",
+      "validationFailed": "ערך זה אינו מתקבל עבור הגדרה זו.",
+      "revisionConflict": "ההגדרות שונו במקום אחר. טענו מחדש ונסו שוב.",
+      "unavailable": "לא ניתן לשנות הגדרה זו כרגע. נסו שוב מאוחר יותר.",
+      "persistenceFailed": "לא ניתן היה לשמור את ההגדרות.",
+      "generic": "לא ניתן היה לשנות את ההגדרה."
+    }
   },
   "appLanguage": {
     "title": "שפת האפליקציה",

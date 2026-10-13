@@ -1,14 +1,14 @@
 //! Lock/reload/patch transactions preserve raw fields and independent startup ownership.
 pub use super::atomic::{PersistObserver, PersistStage};
+pub(crate) use super::edit::SettingsEdit;
 use super::{
-    errors::{SettingsError, SettingsErrorCode, ValidationReason},
+    edit::{apply_edit, check_revision, normalize_document},
+    errors::{SettingsError, SettingsErrorCode},
     ownership::{require_absent, FileLock, NativeOwnerProbe, OwnerProbe, StartupLease},
     protocol::{Revision, SettingsSnapshot},
-    raw_merge::{apply_changed_fields, normalized_payload},
     store::{absent_document, persistence_failed, Document, SettingsRead, SettingsRepository},
     validation::SettingsMutation,
 };
-use crate::settings::AppSettings;
 use std::path::{Path, PathBuf};
 
 const TRANSACTION_LOCK: &str = "settings.lock";
@@ -40,10 +40,13 @@ impl<P: OwnerProbe> Fence<'_, P> {
     }
 }
 /// Locks and the fresh generation held for the whole transaction.
+///
+/// Field order is drop order: the lease (`fence`) is released before the transaction lock, so a
+/// waiter that gets the transaction lock never finds an offline writer's lease still held.
 struct LockedDocument<'a, P: OwnerProbe> {
     path: PathBuf,
-    transaction: FileLock,
     fence: Fence<'a, P>,
+    transaction: FileLock,
     /// Parent (dev, ino) recorded right after the transaction lock was acquired.
     #[cfg(unix)]
     parent: (u64, u64),
@@ -77,7 +80,21 @@ impl SettingsRepository {
         probe: &impl OwnerProbe,
         observer: &impl PersistObserver,
     ) -> Result<SettingsRead, SettingsError> {
-        self.commit(mutation, expected, Authority::Offline(probe), observer)
+        let edit = SettingsEdit::Scalar(mutation);
+        self.commit(&edit, expected, Authority::Offline(probe), observer)
+    }
+    /// Offline commit of any typed edit (a process that is not the running instance, such as a
+    /// headless run); same locking, CAS, validation and errors as `commit_with_probe`.
+    ///
+    /// # Errors
+    /// Same as `commit_with_probe`, plus any refusal returned by an `Apply` edit.
+    pub(crate) fn commit_edit_with_probe(
+        &self,
+        edit: &SettingsEdit<'_>,
+        expected: Option<Revision>,
+        probe: &impl OwnerProbe,
+    ) -> Result<SettingsRead, SettingsError> {
+        self.commit(edit, expected, Authority::Offline(probe), &())
     }
     /// Commit as the running instance that holds `lease` from `initialize`, under the same
     /// transaction lock, fresh re-read, CAS and validation as offline writers.
@@ -91,7 +108,19 @@ impl SettingsRepository {
         mutation: SettingsMutation,
         expected: Option<Revision>,
     ) -> Result<SettingsRead, SettingsError> {
-        self.commit::<NativeOwnerProbe>(mutation, expected, Authority::Owner(lease), &())
+        self.commit_owned_edit(lease, &SettingsEdit::Scalar(mutation), expected)
+    }
+    /// Lease-holder commit of any typed edit; the edit runs on the freshly locked settings.
+    ///
+    /// # Errors
+    /// Same as `commit_owned`, plus any refusal returned by an `Apply` edit.
+    pub(crate) fn commit_owned_edit(
+        &self,
+        lease: &StartupLease,
+        edit: &SettingsEdit<'_>,
+        expected: Option<Revision>,
+    ) -> Result<SettingsRead, SettingsError> {
+        self.commit::<NativeOwnerProbe>(edit, expected, Authority::Owner(lease), &())
     }
     /// Startup normalizes explicitly under the transaction lock and retains a separate lease until
     /// shutdown. An unreadable document or malformed revision is returned as a read-only recovery
@@ -116,19 +145,18 @@ impl SettingsRepository {
     }
     fn commit<P: OwnerProbe>(
         &self,
-        mutation: SettingsMutation,
+        edit: &SettingsEdit<'_>,
         expected: Option<Revision>,
         authority: Authority<'_, P>,
         observer: &impl PersistObserver,
     ) -> Result<SettingsRead, SettingsError> {
-        if let Some(read) = self.settle_absent_store(&mutation, expected, &authority)? {
+        if let Some(read) = self.settle_absent_store(edit, expected, &authority)? {
             return Ok(read);
         }
         let path = self.prepare_parent()?;
         let mut locked = self.lock_and_load(path, authority, observer)?;
         check_revision(&locked.document, expected)?;
-        let mutation = revalidate_mutation(&locked.document.read.snapshot.settings, &mutation)?;
-        let Some((settings, revision)) = apply_mutation(&mut locked.document, &mutation)? else {
+        let Some((settings, revision)) = apply_edit(&mut locked.document, edit)? else {
             return Ok(locked.document.read);
         };
         self.persist_locked(&locked, observer)?;
@@ -141,7 +169,7 @@ impl SettingsRepository {
     /// `None` means the commit changes something (or the store exists) and must run locked.
     fn settle_absent_store<P: OwnerProbe>(
         &self,
-        mutation: &SettingsMutation,
+        edit: &SettingsEdit<'_>,
         expected: Option<Revision>,
         authority: &Authority<'_, P>,
     ) -> Result<Option<SettingsRead>, SettingsError> {
@@ -152,8 +180,7 @@ impl SettingsRepository {
         verify_absent_store_authority(&path, authority)?;
         let mut document = absent_document();
         check_revision(&document, expected)?;
-        let mutation = revalidate_mutation(&document.read.snapshot.settings, mutation)?;
-        Ok(match apply_mutation(&mut document, &mutation)? {
+        Ok(match apply_edit(&mut document, edit)? {
             None => Some(document.read),
             Some(_) => None,
         })
@@ -177,8 +204,8 @@ impl SettingsRepository {
             .map_err(|_| persistence_failed())?;
         Ok(LockedDocument {
             path,
-            transaction,
             fence,
+            transaction,
             #[cfg(unix)]
             parent,
             document,
@@ -289,110 +316,4 @@ fn verify_origin<P: OwnerProbe>(locked: &LockedDocument<'_, P>) -> Result<(), Se
         return Err(persistence_failed());
     }
     Ok(())
-}
-fn revalidate_mutation(
-    settings: &AppSettings,
-    mutation: &SettingsMutation,
-) -> Result<SettingsMutation, SettingsError> {
-    let entry = super::descriptor::descriptor(mutation.key()).ok_or_else(persistence_failed)?;
-    let candidate = serde_json::to_value(mutation.value()).map_err(|_| persistence_failed())?;
-    // Membership can change after parsing; use the locked current prompts, not the caller's old context.
-    let prompt_ids = settings
-        .post_process_prompts
-        .iter()
-        .map(|prompt| prompt.id.as_str())
-        .collect::<Vec<_>>();
-    let context = super::validation::ValidationContext {
-        prompt_ids: &prompt_ids,
-        updates_allowed: !crate::settings::update_checks_forced_disabled(),
-    };
-    super::validation::validate_value(entry, candidate, &context)
-}
-/// Apply one scalar to the locked snapshot; `None` means a semantic no-op that must not be written.
-///
-/// The complete normalization is persisted with the change under one revision: writing only the
-/// changed field would leave legacy migration markers stale, and the next read would replay the
-/// migrations over the committed value (lost write or unrequested changes to other fields).
-fn apply_mutation(
-    document: &mut Document,
-    mutation: &SettingsMutation,
-) -> Result<Option<(AppSettings, Revision)>, SettingsError> {
-    let current =
-        serde_json::to_value(&document.read.snapshot.settings).map_err(|_| persistence_failed())?;
-    let mut candidate = current.clone();
-    candidate[mutation.key()] =
-        serde_json::to_value(mutation.value()).map_err(|_| persistence_failed())?;
-    let settings: AppSettings =
-        serde_json::from_value(candidate).map_err(|_| persistence_failed())?;
-    super::validation::validate_dependencies(&document.read.snapshot.settings, &settings)?;
-    let candidate = serde_json::to_value(&settings).map_err(|_| persistence_failed())?;
-    require_stable(&candidate)?;
-    if current == candidate {
-        return Ok(None);
-    }
-    let revision = next_revision(document.read.snapshot.revision)?;
-    let mut payload = normalized_payload(&stored_payload(document), &current);
-    apply_changed_fields(&mut payload, &current, &candidate);
-    document.raw["settings"] = payload;
-    document.raw["settings_revision"] = serde_json::json!(revision.0);
-    Ok(Some((settings, revision)))
-}
-/// The committed candidate must be a fixed point of read normalization; otherwise the next read
-/// would rewrite the accepted value and the returned snapshot would differ from the reread.
-///
-/// # Errors
-/// `validation_failed` naming the first field that normalization would change.
-fn require_stable(candidate: &serde_json::Value) -> Result<(), SettingsError> {
-    let (normalized, _) = super::normalization::normalize(candidate)?;
-    let normalized = serde_json::to_value(&normalized).map_err(|_| persistence_failed())?;
-    match super::descriptor::descriptors()
-        .iter()
-        .find(|entry| candidate.get(entry.key) != normalized.get(entry.key))
-    {
-        Some(entry) => Err(SettingsError::validation(
-            entry.key,
-            ValidationReason::CanonicalValue,
-        )),
-        None => Ok(()),
-    }
-}
-/// Merge startup normalization into the raw payload; `None` when the stored payload is already normal.
-fn normalize_document(document: &mut Document) -> Result<Option<Revision>, SettingsError> {
-    let normalized =
-        serde_json::to_value(&document.read.snapshot.settings).map_err(|_| persistence_failed())?;
-    let previous = stored_payload(document);
-    let preserved = normalized_payload(&previous, &normalized);
-    if preserved == previous {
-        return Ok(None);
-    }
-    let revision = next_revision(document.read.snapshot.revision)?;
-    document.raw["settings"] = preserved;
-    document.raw["settings_revision"] = serde_json::json!(revision.0);
-    Ok(Some(revision))
-}
-/// Stored `settings` payload; an absent store or a store without payload starts from `{}`.
-fn stored_payload(document: &Document) -> serde_json::Value {
-    document
-        .raw
-        .get("settings")
-        .cloned()
-        .unwrap_or_else(|| serde_json::json!({}))
-}
-fn check_revision(document: &Document, expected: Option<Revision>) -> Result<(), SettingsError> {
-    if !document.writable {
-        return Err(persistence_failed());
-    }
-    if expected.is_some_and(|revision| revision != document.read.snapshot.revision) {
-        return Err(SettingsError::revision_conflict(
-            document.read.snapshot.revision,
-        ));
-    }
-    Ok(())
-}
-fn next_revision(current: Revision) -> Result<Revision, SettingsError> {
-    current
-        .0
-        .checked_add(1)
-        .map(Revision)
-        .ok_or_else(persistence_failed)
 }

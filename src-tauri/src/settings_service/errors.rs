@@ -4,7 +4,7 @@ use super::protocol::Revision;
 use serde::{Deserialize, Serialize};
 
 /// Stable wire categories; their fixed exit meanings never depend on input text.
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize, specta::Type)]
 #[serde(rename_all = "snake_case")]
 pub enum SettingsErrorCode {
     UsageError,
@@ -34,11 +34,14 @@ impl SettingsErrorCode {
     }
 }
 
-/// A timed-out operation may have committed; clients must reread before retrying.
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
+/// Durable outcome of a failed operation; clients must reread before retrying either one.
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, specta::Type)]
 #[serde(rename_all = "snake_case")]
 pub enum Outcome {
+    /// A timed-out or unconfirmed operation may or may not have committed.
     Unknown,
+    /// The write is durable, but a live effect failed afterwards and is reconciled later.
+    Committed,
 }
 
 /// A recognized field and a fixed English reason, never the rejected candidate.
@@ -48,8 +51,10 @@ pub struct FieldIssue {
     reason: &'static str,
 }
 
-/// Closed canonical reasons prevent an arbitrary candidate/error string entering details.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+/// Closed canonical reasons prevent an arbitrary candidate/error string entering details. The
+/// snake_case name is the stable key the settings UI maps to a translation.
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, specta::Type)]
+#[serde(rename_all = "snake_case")]
 pub enum ValidationReason {
     CanonicalType,
     CanonicalValue,
@@ -105,6 +110,9 @@ pub struct SettingsError {
     code: SettingsErrorCode,
     message: &'static str,
     details: ErrorDetails,
+    /// Typed reason for the settings UI; the wire form keeps only its English message in `issues`.
+    #[serde(skip)]
+    reason: Option<ValidationReason>,
 }
 
 impl SettingsError {
@@ -133,11 +141,13 @@ impl SettingsError {
             code,
             message,
             details: ErrorDetails::default(),
+            reason: None,
         }
     }
     /// Attach a fixed reason only to a key present in the descriptor allowlist.
     pub fn validation(key: &str, reason: ValidationReason) -> Self {
         let mut error = Self::new(SettingsErrorCode::ValidationFailed);
+        error.reason = Some(reason);
         if let Some(entry) = super::descriptor::descriptor(key) {
             error.details.field = Some(entry.key);
             error.details.issues.push(FieldIssue {
@@ -158,6 +168,35 @@ impl SettingsError {
         let mut error = Self::new(SettingsErrorCode::Unavailable);
         error.details.outcome = Some(Outcome::Unknown);
         error
+    }
+    /// The write at `revision` is durable but the live effect of `key` failed afterwards; the
+    /// committed value stays authoritative (never reported as a validation refusal).
+    pub fn committed_effect_failed(revision: Revision, key: &str) -> Self {
+        let mut error = Self::new(SettingsErrorCode::InternalError);
+        error.details.outcome = Some(Outcome::Committed);
+        error.details.current_revision = Some(revision);
+        error.details.field = super::descriptor::descriptor(key).map(|entry| entry.key);
+        error
+    }
+    /// Fixed English message of this error.
+    pub fn message(&self) -> &'static str {
+        self.message
+    }
+    /// Recognized field named by the error, if any.
+    pub fn field(&self) -> Option<&'static str> {
+        self.details.field
+    }
+    /// Typed validation reason, if this is a validation refusal.
+    pub fn reason(&self) -> Option<ValidationReason> {
+        self.reason
+    }
+    /// Durable outcome reported with an unavailable or internal error.
+    pub fn outcome(&self) -> Option<Outcome> {
+        self.details.outcome
+    }
+    /// Current revision reported by a conflict or a committed outcome.
+    pub fn current_revision(&self) -> Option<Revision> {
+        self.details.current_revision
     }
 }
 

@@ -691,7 +691,17 @@
     "modelLoadFailedUnknown": "未知模型",
     "pasteFailedTitle": "粘贴文本失败",
     "pasteFailed": "无法将文本粘贴到当前活动的应用程序中。",
-    "transcriptionFailedTitle": "转录失败"
+    "transcriptionFailedTitle": "转录失败",
+    "settings": {
+      "committedNotApplied": "设置已保存，但无法立即应用。",
+      "gpuDeviceRequired": "请先选择 GPU 设备，再选择 GPU 加速器。",
+      "outOfRange": "该值超出允许范围。",
+      "validationFailed": "此设置不接受该值。",
+      "revisionConflict": "设置已在其他地方更改。请重新加载后再试。",
+      "unavailable": "目前无法更改此设置，请稍后再试。",
+      "persistenceFailed": "无法保存设置。",
+      "generic": "无法更改设置。"
+    }
   },
   "appLanguage": {
     "title": "应用语言",

@@ -691,7 +691,17 @@
     "modelLoadFailedUnknown": "알 수 없는 모델",
     "pasteFailedTitle": "텍스트 붙여넣기 실패",
     "pasteFailed": "활성 애플리케이션에 텍스트를 붙여넣을 수 없습니다.",
-    "transcriptionFailedTitle": "음성 인식 실패"
+    "transcriptionFailedTitle": "음성 인식 실패",
+    "settings": {
+      "committedNotApplied": "설정이 저장되었지만 바로 적용할 수 없었습니다.",
+      "gpuDeviceRequired": "GPU 가속기를 선택하기 전에 GPU 장치를 선택하세요.",
+      "outOfRange": "이 값은 허용 범위를 벗어났습니다.",
+      "validationFailed": "이 설정에서는 이 값을 사용할 수 없습니다.",
+      "revisionConflict": "설정이 다른 곳에서 변경되었습니다. 새로 고친 후 다시 시도하세요.",
+      "unavailable": "지금은 이 설정을 변경할 수 없습니다. 나중에 다시 시도하세요.",
+      "persistenceFailed": "설정을 저장할 수 없습니다.",
+      "generic": "설정을 변경할 수 없습니다."
+    }
   },
   "appLanguage": {
     "title": "애플리케이션 언어",

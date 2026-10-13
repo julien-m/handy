@@ -691,7 +691,17 @@
     "modelLoadFailedUnknown": "نموذج غير معروف",
     "pasteFailedTitle": "فشل لصق النص",
     "pasteFailed": "تعذر لصق النص في التطبيق النشط.",
-    "transcriptionFailedTitle": "فشل التفريغ النصي"
+    "transcriptionFailedTitle": "فشل التفريغ النصي",
+    "settings": {
+      "committedNotApplied": "تم حفظ الإعداد، لكن تعذّر تطبيقه على الفور.",
+      "gpuDeviceRequired": "اختر جهاز GPU قبل اختيار مسرّع GPU.",
+      "outOfRange": "هذه القيمة خارج النطاق المسموح به.",
+      "validationFailed": "هذه القيمة غير مقبولة لهذا الإعداد.",
+      "revisionConflict": "تم تغيير الإعدادات في مكان آخر. أعد التحميل وحاول مرة أخرى.",
+      "unavailable": "لا يمكن تغيير هذا الإعداد الآن. حاول مرة أخرى لاحقًا.",
+      "persistenceFailed": "تعذّر حفظ الإعدادات.",
+      "generic": "تعذّر تغيير الإعداد."
+    }
   },
   "appLanguage": {
     "title": "لغة التطبيق",

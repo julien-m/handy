@@ -691,7 +691,17 @@
     "modelLoadFailedUnknown": "不明なモデル",
     "pasteFailedTitle": "テキストの貼り付けに失敗しました",
     "pasteFailed": "アクティブなアプリにテキストを貼り付けられませんでした。",
-    "transcriptionFailedTitle": "文字起こしに失敗しました"
+    "transcriptionFailedTitle": "文字起こしに失敗しました",
+    "settings": {
+      "committedNotApplied": "設定は保存されましたが、すぐには適用できませんでした。",
+      "gpuDeviceRequired": "GPU アクセラレータを選択する前に GPU デバイスを選択してください。",
+      "outOfRange": "この値は許可された範囲外です。",
+      "validationFailed": "この値はこの設定では使用できません。",
+      "revisionConflict": "設定が別の場所で変更されました。再読み込みしてもう一度お試しください。",
+      "unavailable": "この設定は現在変更できません。後でもう一度お試しください。",
+      "persistenceFailed": "設定を保存できませんでした。",
+      "generic": "設定を変更できませんでした。"
+    }
   },
   "appLanguage": {
     "title": "アプリの言語",
