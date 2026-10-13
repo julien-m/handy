@@ -1,5 +1,22 @@
 # Changelog - 002-word-replacements
 
+## 2026-10-13 — [Spec Update]: AC-006 joiners and CJK-side marks, AC-004 tab header, AC-005 and AC-007 precision
+
+- **Type:** Spec Update (Clarify decisions recorded with `persist_clarification_decision`, `spec-refine` traceability rules)
+- **Spec modified:** Yes (sections: AC-004, AC-005, AC-006 and AC-007 criteria; Story 4 Gherkin scenario "A zero-width non-joiner belongs to its word"; Edge Cases; Clarifications ledger)
+- **Code modified:** None in this entry (see the following Bugfix entry)
+- **AC impacted:** AC-004, AC-005, AC-006, AC-007 (meaning clarified; IDs preserved, no AC/FR/SC added or renumbered)
+- **Decisions (orchestrator, 2026-10-13, independent re-audit `proofs/claude-fix1/independent-reaudit.md`):**
+  - `002-word-replacements:AC-006` / `decision:ac-006:join-controls-are-word-characters` (N1): ZWNJ U+200C and ZWJ U+200D are word characters.
+  - `002-word-replacements:AC-006` / `decision:ac-006:cjk-exemption-applies-to-base-characters` (N3): a CJK side ignores neighbouring base characters only; an adjacent combining mark still blocks.
+  - `002-word-replacements:AC-006` / `decision:ac-006:emoji-variation-selector-accepted-false-negative` (N4): behavior unchanged, documented in Edge Cases.
+  - `002-word-replacements:AC-005` / `decision:ac-005:one-megabyte-is-decimal-bytes`: 1 MB is 1,000,000 bytes.
+  - `002-word-replacements:AC-004` / `decision:ac-004:header-recognized-with-either-separator`: the header is recognized with tab or `;`.
+  - `002-word-replacements:AC-007` / `decision:ac-007:inserted-text-guarantee-before-ai-post-processing`: the guarantee covers the text handed to AI post-processing, not the AI rewrite.
+- **Plan:** `plan.md` aligned (re-audit N2): boundary rule (Letter, Decimal_Number, Mn/Mc/Me, Join_Control; CJK side rejects adjacent marks), header with either separator, AC-007 guarantee scope, testing rows and risk dispositions. Plan refine ran although `implementation.md` exists, by orchestrator instruction, to remove a plan ↔ spec contradiction; no new scope.
+- **Review:** these normative edits invalidate the spec and plan review receipts. Both independent reviews must be redone by another agent before any progression gate; no prior PASS is retained.
+- **Author:** Claude Code (implementation agent, orchestrator decisions)
+
 ## 2026-10-13 — [Spec Update]: AC-006 word characters include combining marks
 
 - **Type:** Spec Update (Clarify decision, `spec-refine` traceability rules)
