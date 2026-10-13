@@ -700,7 +700,8 @@
       "revisionConflict": "Inställningarna ändrades någon annanstans. Ladda om och försök igen.",
       "unavailable": "Den här inställningen kan inte ändras just nu. Försök igen senare.",
       "persistenceFailed": "Inställningarna kunde inte sparas.",
-      "generic": "Inställningen kunde inte ändras."
+      "generic": "Inställningen kunde inte ändras.",
+      "readOnly": "Inställningarna är skrivskyddade under den här sessionen: inställningsfilen kan inte skrivas säkert, så ändringar sparas inte."
     }
   },
   "appLanguage": {

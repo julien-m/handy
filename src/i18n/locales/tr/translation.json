@@ -700,7 +700,8 @@
       "revisionConflict": "Ayarlar başka bir yerde değiştirildi. Yeniden yükleyip tekrar deneyin.",
       "unavailable": "Bu ayar şu anda değiştirilemiyor. Daha sonra tekrar deneyin.",
       "persistenceFailed": "Ayarlar kaydedilemedi.",
-      "generic": "Ayar değiştirilemedi."
+      "generic": "Ayar değiştirilemedi.",
+      "readOnly": "Ayarlar bu oturumda salt okunur: ayar dosyasına güvenli şekilde yazılamıyor, bu nedenle değişiklikler kaydedilmeyecek."
     }
   },
   "appLanguage": {

@@ -6,7 +6,7 @@ pub mod cli;
 pub mod command_error;
 pub mod descriptor;
 mod descriptor_data;
-mod edit;
+pub(crate) mod edit;
 mod effects;
 #[cfg(unix)]
 mod endpoint_unix;
@@ -29,12 +29,18 @@ mod raw_merge;
 pub mod render;
 mod request;
 pub mod route;
+pub(crate) mod sequence;
 pub mod store;
 pub(crate) mod tauri_adapter;
 pub mod transaction;
+pub mod ui_value;
 pub mod validation;
 #[cfg(windows)]
 mod windows_store;
+/// Apply the runtime logging state of `settings` (startup), honoring a `--debug` launch.
+pub(crate) fn apply_runtime_logging(settings: &crate::settings::AppSettings) {
+    effects::apply_logging(settings);
+}
 // The Windows platform module reaches the passive probe as `settings_service::instance_probe`.
 #[cfg(windows)]
 use ownership::probe as instance_probe;

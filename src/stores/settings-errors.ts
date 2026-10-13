@@ -15,6 +15,7 @@ export const SETTINGS_ERROR_KEYS = {
   unavailable: "errors.settings.unavailable",
   persistenceFailed: "errors.settings.persistenceFailed",
   generic: "errors.settings.generic",
+  readOnly: "errors.settings.readOnly",
 } as const;
 
 export type SettingsErrorKey =
@@ -101,3 +102,27 @@ export const isCurrentRevision = (
   incoming: number,
   current: number | null,
 ): boolean => current === null || incoming >= current;
+
+/** How the settings UI recovers its optimistic value after a failed command. */
+export type FailedCommandRecovery = "rollback" | "refresh";
+
+/**
+ * Recovery after a failed settings command. The store is authoritative: when the value was
+ * committed (a live effect failed afterwards) or may have been (unknown outcome), or when another
+ * writer committed while the command was in flight, the UI rereads instead of restoring a value
+ * captured before; only a refusal with nothing newer applied rolls the optimistic value back.
+ * @param error error thrown by the command
+ * @param revisionAtStart UI revision when the command started
+ * @param currentRevision UI revision now (a refresh may have applied a newer one)
+ * @returns "refresh" or "rollback"
+ */
+export const failedCommandRecovery = (
+  error: unknown,
+  revisionAtStart: number | null,
+  currentRevision: number | null,
+): FailedCommandRecovery => {
+  const outcome =
+    error instanceof SettingsCommandFailure ? error.detail.outcome : null;
+  if (outcome === "committed" || outcome === "unknown") return "refresh";
+  return revisionAtStart === currentRevision ? "rollback" : "refresh";
+};

@@ -700,7 +700,8 @@
       "revisionConflict": "Die Einstellungen wurden an anderer Stelle geändert. Laden Sie neu und versuchen Sie es erneut.",
       "unavailable": "Diese Einstellung kann gerade nicht geändert werden. Versuchen Sie es später erneut.",
       "persistenceFailed": "Die Einstellungen konnten nicht gespeichert werden.",
-      "generic": "Die Einstellung konnte nicht geändert werden."
+      "generic": "Die Einstellung konnte nicht geändert werden.",
+      "readOnly": "Die Einstellungen sind in dieser Sitzung schreibgeschützt: Die Einstellungsdatei kann nicht sicher geschrieben werden, daher werden Änderungen nicht gespeichert."
     }
   },
   "appLanguage": {

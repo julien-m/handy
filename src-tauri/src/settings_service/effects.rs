@@ -1,5 +1,5 @@
 //! Live effects of committed settings, applied after the durable write and before the UI event,
-//! for every surface (settings UI, manager repairs and, from Step 5, routed CLI commands).
+//! in the write order of `sequence`, for the settings UI and routed CLI commands alike.
 use super::live::LiveCommit;
 use crate::managers::audio::AudioRecordingManager;
 use crate::settings::AppSettings;
@@ -52,14 +52,14 @@ fn live_effect(key: &str) -> Option<LiveEffect> {
 }
 
 /// Apply the live effect of every changed key except `skip` (effects a command prepared before
-/// committing). Every key runs even after a failure; the first failing key is returned.
+/// committing). Every key runs even after a failure; the failing keys are returned in order.
 // @spec FR-003: Ordered live effects after the durable commit — .specs/features/008-settings-cli/spec.md#fr-003
 pub(crate) fn apply_changed(
     app: &AppHandle,
     commit: &LiveCommit,
     skip: &[&str],
-) -> Result<(), &'static str> {
-    let mut failed = None;
+) -> Result<(), Vec<&'static str>> {
+    let mut failed = Vec::new();
     for key in commit.changed.iter().copied() {
         // Early exit for this key only: its native change was prepared before the commit.
         if skip.contains(&key) {
@@ -70,10 +70,14 @@ pub(crate) fn apply_changed(
         };
         if let Err(detail) = apply_effect(app, effect, commit) {
             log::error!("Live effect of setting '{key}' failed after commit: {detail}");
-            failed.get_or_insert(key);
+            failed.push(key);
         }
     }
-    failed.map_or(Ok(()), Err)
+    if failed.is_empty() {
+        Ok(())
+    } else {
+        Err(failed)
+    }
 }
 fn apply_effect(app: &AppHandle, effect: LiveEffect, commit: &LiveCommit) -> Result<(), String> {
     let after = &commit.after;
@@ -137,13 +141,25 @@ fn apply_theme(app: &AppHandle, theme: crate::settings::Theme) {
         log::warn!("Could not notify webviews of the theme change: {error}");
     }
 }
-/// Runtime logging state follows the stored settings; the `--debug` override applies only at
-/// startup and is not reapplied here (same as before the settings service).
-fn apply_logging(after: &AppSettings) {
-    let level: tauri_plugin_log::LogLevel = after.log_level.into();
+/// Runtime logging state follows the stored settings, except during a `--debug` run.
+pub(super) fn apply_logging(after: &AppSettings) {
+    let (file_level, streaming) =
+        runtime_logging(after, crate::DEBUG_OVERRIDE.load(Ordering::Relaxed));
+    crate::FILE_LOG_LEVEL.store(file_level as u8, Ordering::Relaxed);
+    crate::WEBVIEW_LOG_STREAMING.store(streaming, Ordering::Relaxed);
+}
+/// File log level and webview streaming for `settings`. Business rule: a `--debug` launch keeps
+/// Trace and streaming for the whole run, whatever `debug_mode` or `log_level` become.
+pub(crate) fn runtime_logging(
+    settings: &AppSettings,
+    debug_launch: bool,
+) -> (log::LevelFilter, bool) {
+    if debug_launch {
+        return (log::LevelFilter::Trace, true);
+    }
+    let level: tauri_plugin_log::LogLevel = settings.log_level.into();
     let level: log::Level = level.into();
-    crate::FILE_LOG_LEVEL.store(level.to_level_filter() as u8, Ordering::Relaxed);
-    crate::WEBVIEW_LOG_STREAMING.store(after.debug_mode, Ordering::Relaxed);
+    (level.to_level_filter(), settings.debug_mode)
 }
 fn apply_tray_visibility(app: &AppHandle, visible: bool) {
     // A headless run has no tray; the stored value applies at the next GUI start.
@@ -202,6 +218,21 @@ mod tests {
             );
             assert!(!(applied && read_at_use), "{} listed twice", entry.key);
         }
+    }
+    #[test]
+    fn a_debug_launch_keeps_trace_and_streaming_after_logging_changes() {
+        use super::runtime_logging;
+        let mut settings = crate::settings::get_default_settings();
+        settings.debug_mode = false;
+        settings.log_level = crate::settings::LogLevel::Warn;
+        assert_eq!(
+            runtime_logging(&settings, true),
+            (log::LevelFilter::Trace, true)
+        );
+        assert_eq!(
+            runtime_logging(&settings, false),
+            (log::LevelFilter::Warn, false)
+        );
     }
     #[test]
     fn every_live_effect_key_is_a_descriptor_key() {

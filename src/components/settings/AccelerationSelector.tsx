@@ -120,11 +120,12 @@ export const AccelerationSelector: FC<AccelerationSelectorProps> = ({
     // The backend refuses the GPU accelerator without a device (it would silently become
     // Auto), so every intermediate state must stay valid: choose the device before switching
     // to GPU, and leave GPU before clearing the device.
+    // The second write runs only if the first one succeeded (one refusal, one message).
     if (accelerator === "gpu") {
-      await updateSetting("transcribe_gpu_device", gpuDevice);
-      await updateSetting("transcribe_accelerator", accelerator);
-    } else {
-      await updateSetting("transcribe_accelerator", accelerator);
+      if (await updateSetting("transcribe_gpu_device", gpuDevice)) {
+        await updateSetting("transcribe_accelerator", accelerator);
+      }
+    } else if (await updateSetting("transcribe_accelerator", accelerator)) {
       await updateSetting("transcribe_gpu_device", gpuDevice);
     }
   };

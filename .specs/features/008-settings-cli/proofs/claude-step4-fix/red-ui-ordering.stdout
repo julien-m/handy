@@ -1,0 +1,99 @@
+bun test v1.3.9 (cf6cdbbb)
+
+src/stores/settings-store.test.ts:
+Failed to update setting always_on_microphone: 84 |     typeof result === "object" &&
+85 |     result !== null &&
+86 |     (result as { status?: unknown }).status === "error"
+87 |   ) {
+88 |     const error = (result as { error?: unknown }).error;
+89 |     if (isSettingsCommandError(error)) throw new SettingsCommandFailure(error);
+                                                  ^
+SettingsCommandFailure: Settings operation failed.
+ detail: {
+  code: "internal_error",
+  message: "Settings operation failed.",
+  field: "always_on_microphone",
+  reason: null,
+  outcome: "committed",
+  current_revision: 5,
+},
+
+      at throwIfSettingsError (/Users/julienm/projects/handy/src/stores/settings-errors.ts:89:46)
+      at <anonymous> (/Users/julienm/projects/handy/src/stores/settingsStore.ts:334:11)
+      at async <anonymous> (/Users/julienm/projects/handy/src/stores/settings-store.test.ts:97:11)
+
+93 |     views = [Promise.resolve(view(5, true)), Promise.resolve(view(5, true))];
+94 |     const update = store().updateSetting("always_on_microphone", true);
+95 |     await store().refreshSettings();
+96 |     reply.resolve(committed);
+97 |     await update;
+98 |     expect(alwaysOn()).toBe(true);
+                            ^
+error: expect(received).toBe(expected)
+
+Expected: true
+Received: false
+
+      at <anonymous> (/Users/julienm/projects/handy/src/stores/settings-store.test.ts:98:24)
+(fail) settings store ordering > a committed value whose effect failed is reread, not rolled back [1.23ms]
+Failed to update setting always_on_microphone: 84 |     typeof result === "object" &&
+85 |     result !== null &&
+86 |     (result as { status?: unknown }).status === "error"
+87 |   ) {
+88 |     const error = (result as { error?: unknown }).error;
+89 |     if (isSettingsCommandError(error)) throw new SettingsCommandFailure(error);
+                                                  ^
+SettingsCommandFailure: Settings operation is unavailable.
+ detail: {
+  code: "unavailable",
+  message: "Settings operation is unavailable.",
+  field: "always_on_microphone",
+  reason: null,
+  outcome: null,
+  current_revision: null,
+},
+
+      at throwIfSettingsError (/Users/julienm/projects/handy/src/stores/settings-errors.ts:89:46)
+      at <anonymous> (/Users/julienm/projects/handy/src/stores/settingsStore.ts:334:11)
+      at async <anonymous> (/Users/julienm/projects/handy/src/stores/settings-store.test.ts:104:19)
+
+Failed to update setting always_on_microphone: 84 |     typeof result === "object" &&
+85 |     result !== null &&
+86 |     (result as { status?: unknown }).status === "error"
+87 |   ) {
+88 |     const error = (result as { error?: unknown }).error;
+89 |     if (isSettingsCommandError(error)) throw new SettingsCommandFailure(error);
+                                                  ^
+SettingsCommandFailure: Settings operation is unavailable.
+ detail: {
+  code: "unavailable",
+  message: "Settings operation is unavailable.",
+  field: "always_on_microphone",
+  reason: null,
+  outcome: null,
+  current_revision: null,
+},
+
+      at throwIfSettingsError (/Users/julienm/projects/handy/src/stores/settings-errors.ts:89:46)
+      at <anonymous> (/Users/julienm/projects/handy/src/stores/settingsStore.ts:334:11)
+      at async <anonymous> (/Users/julienm/projects/handy/src/stores/settings-store.test.ts:117:11)
+
+113 |     views = [Promise.resolve(view(7, true)), Promise.resolve(view(7, true))];
+114 |     const update = store().updateSetting("always_on_microphone", false);
+115 |     await store().refreshSettings();
+116 |     reply.resolve(refused);
+117 |     await update;
+118 |     expect(alwaysOn()).toBe(true);
+                             ^
+error: expect(received).toBe(expected)
+
+Expected: true
+Received: false
+
+      at <anonymous> (/Users/julienm/projects/handy/src/stores/settings-store.test.ts:118:24)
+(fail) settings store ordering > a refusal after another writer committed shows that writer's value [0.19ms]
+
+ 2 pass
+ 2 fail
+ 6 expect() calls
+Ran 4 tests across 1 file. [17.00ms]

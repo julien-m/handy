@@ -103,17 +103,6 @@ pub fn resolve_app_data(app: &tauri::AppHandle, relative: &str) -> Result<PathBu
     Ok(app_data_dir(app)?.join(relative))
 }
 
-/// Get the path to use with `tauri-plugin-store`.
-/// Returns an absolute path in portable mode (so the store plugin writes to
-/// the portable Data dir) or the original relative path otherwise.
-pub fn store_path(relative: &str) -> PathBuf {
-    if let Some(dir) = data_dir() {
-        dir.join(relative)
-    } else {
-        PathBuf::from(relative)
-    }
-}
-
 /// Resolve marker semantics without upgrading it, creating Data or changing environment.
 ///
 /// Same rule as `init`: a marker holding the magic string enables portable mode; any other

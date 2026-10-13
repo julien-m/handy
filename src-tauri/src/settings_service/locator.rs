@@ -22,15 +22,28 @@ impl StoreLocator {
     }
     /// Explicit path inputs support installed/portable parity tests without modifying global configuration.
     pub fn resolve(executable: &Path, installed_data: &Path) -> Result<PathBuf, SettingsError> {
+        canonical_path(&Self::located(executable, installed_data)?)
+    }
+    /// Store pathname before any alias or owner check, for a read-only display of a store that
+    /// cannot be owned (for example a dotfile link). Never used to write.
+    ///
+    /// # Errors
+    /// `persistence_failed` when the executable or the user data directory is unknown.
+    pub fn current_unchecked() -> Result<PathBuf, SettingsError> {
+        let executable = std::env::current_exe().map_err(|_| persistence_failed())?;
+        let installed = dirs::data_dir()
+            .ok_or_else(persistence_failed)?
+            .join(APP_IDENTIFIER);
+        Self::located(&executable, &installed)
+    }
+    fn located(executable: &Path, installed_data: &Path) -> Result<PathBuf, SettingsError> {
         let directory = executable.parent().ok_or_else(persistence_failed)?;
         let data = directory.join("Data");
         let marker = directory.join("portable");
         let portable = crate::portable::resolve_data_dir(&marker, &data)?;
-        canonical_path(
-            &portable
-                .unwrap_or_else(|| installed_data.to_path_buf())
-                .join(STORE_FILENAME),
-        )
+        Ok(portable
+            .unwrap_or_else(|| installed_data.to_path_buf())
+            .join(STORE_FILENAME))
     }
 }
 /// Canonicalize the closest existing ancestor and append only normal missing components.

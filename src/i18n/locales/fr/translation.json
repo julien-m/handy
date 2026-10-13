@@ -700,7 +700,8 @@
       "revisionConflict": "Les réglages ont été modifiés ailleurs. Rechargez et réessayez.",
       "unavailable": "Ce réglage ne peut pas être modifié pour le moment. Réessayez plus tard.",
       "persistenceFailed": "Les réglages n'ont pas pu être enregistrés.",
-      "generic": "Le réglage n'a pas pu être modifié."
+      "generic": "Le réglage n'a pas pu être modifié.",
+      "readOnly": "Les réglages sont en lecture seule pour cette session : le fichier de réglages ne peut pas être écrit en toute sécurité, les modifications ne seront donc pas enregistrées."
     }
   },
   "appLanguage": {

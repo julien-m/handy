@@ -81,8 +81,11 @@ pub async fn delete_model(
             .map_err(|e| format!("Failed to unload model: {}", e))?
             .map_err(|e| format!("Failed to unload model: {}", e))?;
 
+        // Recheck under the lock: a model selected concurrently must not be cleared.
         tauri_adapter::edit(&app_handle, &|settings| {
-            settings.selected_model = String::new();
+            if settings.selected_model == model_id {
+                settings.selected_model = String::new();
+            }
             Ok(())
         })
         .map_err(|error| error.to_string())?;

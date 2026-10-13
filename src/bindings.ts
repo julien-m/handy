@@ -6,9 +6,9 @@
 
 export const commands = {
 /**
- * Change one shortcut. The native registration is prepared first (unregister the old one,
- * validate and register the new one); the binding is then committed on the latest settings,
- * and a refused commit restores the previous registration.
+ * Change one shortcut as one ordered settings write (see `binding_change`): the native
+ * registration is prepared, the binding committed on the latest settings, and a refused commit
+ * restores the previous registration. Runs on the blocking pool, never on the main thread.
  */
 async changeBinding(id: string, binding: string) : Promise<Result<BindingResponse, SettingsCommandError>> {
     try {
@@ -398,7 +398,7 @@ async changeVadEnabledSetting(enabled: boolean) : Promise<Result<null, SettingsC
 },
 /**
  * Swap the VAD detector (and reopen the microphone when needed) before committing, off the
- * webview thread; a refused commit restores the previous backend.
+ * webview thread; a refused commit restores the backend published when the write started.
  */
 async changeVadBackendSetting(backend: VadBackend) : Promise<Result<null, SettingsCommandError>> {
     try {
@@ -460,9 +460,10 @@ async changeWhatsNewLastSeenVersionSetting(version: string) : Promise<Result<nul
 }
 },
 /**
- * Change the keyboard implementation with runtime switching. The value is validated and
- * committed like any setting; its live effect (`switch_keyboard_implementation`) unregisters
- * the old shortcuts, registers them with the new implementation and resets incompatible ones.
+ * Change the keyboard implementation with runtime switching, as one ordered write. The value is
+ * validated and committed like any setting; its live effect (`switch_keyboard_implementation`)
+ * unregisters the old shortcuts, registers them with the new implementation and resets
+ * incompatible ones, so the bindings compared around the commit are exactly those resets.
  */
 async changeKeyboardImplementationSetting(implementation: string) : Promise<Result<ImplementationChangeResult, SettingsCommandError>> {
     try {
@@ -885,7 +886,7 @@ async getMicrophoneChannels(deviceName: string) : Promise<Result<number, string>
 /**
  * Restarting cpal can block, so the channel change runs off the webview/main run loop. The
  * runtime change is prepared before committing, so a rejected active-recording change is never
- * stored; a refused commit restores the previous channel.
+ * stored; a refused commit restores the channel published when the ordered write started.
  */
 async setSelectedChannel(channel: number | null) : Promise<Result<null, SettingsCommandError>> {
     try {
@@ -1255,7 +1256,11 @@ revision: number;
 /**
  * Settings as every reader of this process sees them.
  */
-settings: AppSettings }
+settings: AppSettings; 
+/**
+ * True when this process could not own the settings store: every change is refused.
+ */
+read_only: boolean }
 /**
  * How the transcribe shortcut's key events drive a recording.
  */

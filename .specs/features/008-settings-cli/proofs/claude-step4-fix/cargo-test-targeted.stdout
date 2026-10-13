@@ -1,0 +1,54 @@
+
+running 49 tests
+test settings_service::effects::tests::every_declared_runtime_effect_is_applied_or_read_at_use ... ok
+test settings_service::atomic::tests::temp_is_discarded_only_for_failures_before_replacement ... ok
+test settings_service::effects::tests::every_live_effect_key_is_a_descriptor_key ... ok
+test settings_service::ipc::tests::frames_round_trip_and_oversized_lengths_are_refused_before_allocation ... ok
+test settings_service::cli::tests::only_the_settings_subcommand_position_selects_the_settings_contract ... ok
+test settings_service::atomic::tests::exhausted_temporary_names_fail_closed_without_deleting ... ok
+test settings_service::atomic::tests::occupied_temporary_names_are_skipped_without_modification ... ok
+test settings_service::ipc::tests::the_client_refuses_an_unexpected_server_owner_before_sending_any_byte ... ok
+test settings_service::locator::tests::app_identifier_matches_the_tauri_bundle_identifier ... ok
+test settings_service::ipc::tests::silence_or_a_reply_to_another_request_is_an_unknown_outcome ... ok
+test settings_service::effects::tests::a_debug_launch_keeps_trace_and_streaming_after_logging_changes ... ok
+test settings_service::ipc::tests::a_request_for_another_store_or_a_malformed_frame_gets_a_fixed_refusal ... ok
+test settings_service::normalization::tests::salvage_of_non_object_store_falls_back_to_defaults ... ok
+test settings_service::normalization::tests::salvage_drops_only_wrong_typed_fields ... ok
+test settings_service::normalization::tests::salvage_preserves_valid_fields_when_one_value_is_invalid ... ok
+test settings_service::normalization::tests::salvage_of_poisoned_bindings_keeps_other_fields ... ok
+test settings_service::platform_unix::tests::bind_rejects_regular_replacement_without_changing_permissions ... ok
+test settings_service::platform_unix::tests::native_peer_identity_mismatch_never_returns_stream ... ok
+test settings_service::platform_unix::tests::bind_rejects_socket_replacement_with_matching_owner_and_mode ... ok
+test settings_service::platform_unix::tests::same_user_peers_pass_the_current_user_check_on_both_ends ... ok
+test settings_service::raw_merge::tests::deleted_map_entry_is_removed_while_raw_only_entries_and_unknown_fields_survive ... ok
+test settings_service::raw_merge::tests::unchanged_fields_keep_their_raw_bytes ... ok
+test settings_service::render::tests::json_mode_prints_exactly_one_envelope_line_and_errors_only_on_stderr ... ok
+test settings_service::render::tests::recovered_settings_warn_on_stderr_in_both_modes ... ok
+test settings_service::normalization::tests::salvage_tolerates_unknown_keys ... ok
+test settings_service::live::tests::refused_edit_changes_neither_disk_nor_published_snapshot ... ok
+test settings_service::live::tests::linux_free_session_bus_never_bypasses_a_held_lease_or_a_bus_owner ... ok
+test settings_service::live::tests::gpu_without_device_edit_is_refused_by_the_shared_rule ... ok
+test settings_service::platform_unix::tests::concurrent_socket_binds_preserve_unrelated_file_creation_permissions ... ok
+test settings_service::live::tests::noop_edit_keeps_revision_and_reports_no_change ... ok
+test settings_service::live::tests::offline_authority_is_refused_by_an_owner_and_commits_without_one ... ok
+test settings_service::sequence::tests::refused_commit_compensates_the_prepared_native_change ... ok
+test settings_service::live::tests::owned_edit_commits_once_publishes_and_reports_changed_keys ... ok
+test settings_service::ui_value::tests::any_json_reaches_the_shared_validator ... ok
+test settings_service::ui_value::tests::bindings_keep_the_declared_type ... ok
+test settings_service::sequence::tests::refused_prepared_edit_compensates_and_notifies_nothing ... ok
+test shortcut::binding_change::tests::preparation_swaps_the_registration_and_compensation_restores_it ... ok
+test shortcut::binding_change::tests::refused_registration_or_validation_keeps_the_previous_shortcut ... ok
+test shortcut::binding_change::tests::refused_binding_commit_restores_the_previous_registration ... ok
+test settings_service::sequence::tests::refused_preparation_leaves_disk_revision_native_and_ui_unchanged ... ok
+test settings_service::live::tests::linux_free_session_bus_and_free_lease_allow_the_offline_write ... ok
+test settings_service::sequence::tests::live_effects_run_before_the_ui_event_and_both_before_the_result ... ok
+test settings_service::sequence::tests::failed_effect_after_commit_is_committed_with_revision_field_and_event ... ok
+test settings_service::live::tests::instance_keeps_its_lease_until_it_is_dropped ... ok
+test settings_service::sequence::tests::unapplied_effect_is_retried_before_the_next_write_and_on_resubmission ... ok
+test settings_service::sequence::tests::unknown_outcome_that_landed_keeps_the_preparation_and_notifies_the_reread ... ok
+test settings_service::sequence::tests::races::concurrent_prepared_writes_of_one_key_leave_native_state_equal_to_disk ... ok
+test settings_service::sequence::tests::races::concurrent_effect_writes_of_one_key_leave_native_state_equal_to_disk ... ok
+test settings_service::sequence::tests::concurrent_manager_repair_and_user_selection_lose_no_update ... ok
+
+test result: ok. 49 passed; 0 failed; 0 ignored; 0 measured; 297 filtered out; finished in 1.86s
+

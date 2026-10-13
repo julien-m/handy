@@ -36,7 +36,7 @@ pub(super) fn apply_edit(
     super::validation::validate_dependencies(before, &settings)?;
     let current = serde_json::to_value(before).map_err(|_| persistence_failed())?;
     let candidate = serde_json::to_value(&settings).map_err(|_| persistence_failed())?;
-    require_stable(&candidate)?;
+    require_stable(&current, &candidate)?;
     if current == candidate {
         return Ok(None);
     }
@@ -48,7 +48,7 @@ pub(super) fn apply_edit(
     Ok(Some((settings, revision)))
 }
 /// Candidate settings produced by the edit from the locked `before`.
-fn edited_settings(
+pub(super) fn edited_settings(
     before: &AppSettings,
     edit: &SettingsEdit<'_>,
 ) -> Result<AppSettings, SettingsError> {
@@ -89,13 +89,26 @@ fn revalidate_mutation(
 /// would rewrite the accepted value and the returned snapshot would differ from the reread.
 ///
 /// # Errors
-/// `validation_failed` naming the first field that normalization would change.
-fn require_stable(candidate: &serde_json::Value) -> Result<(), SettingsError> {
+/// `validation_failed` naming the field normalization would change, preferring one this edit
+/// changed (so a multi-field edit names the user's field, not an unrelated one).
+fn require_stable(
+    current: &serde_json::Value,
+    candidate: &serde_json::Value,
+) -> Result<(), SettingsError> {
     let (normalized, _) = super::normalization::normalize(candidate)?;
     let normalized = serde_json::to_value(&normalized).map_err(|_| persistence_failed())?;
-    match super::descriptor::descriptors()
+    let entries = super::descriptor::descriptors();
+    let diverges = |entry: &&super::descriptor::SettingDescriptor| {
+        candidate.get(entry.key) != normalized.get(entry.key)
+    };
+    let edited = |entry: &&super::descriptor::SettingDescriptor| {
+        current.get(entry.key) != candidate.get(entry.key)
+    };
+    match entries
         .iter()
-        .find(|entry| candidate.get(entry.key) != normalized.get(entry.key))
+        .filter(diverges)
+        .find(edited)
+        .or_else(|| entries.iter().find(diverges))
     {
         Some(entry) => Err(SettingsError::validation(
             entry.key,

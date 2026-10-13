@@ -111,9 +111,9 @@ pub async fn retry_history_entry_transcription(
 #[specta::specta]
 pub async fn update_history_limit(
     app: AppHandle,
-    limit: usize,
+    limit: crate::settings_service::ui_value::UiValue<usize>,
 ) -> Result<(), crate::settings_service::command_error::SettingsCommandError> {
-    crate::settings_service::tauri_adapter::set_value(&app, "history_limit", limit)
+    crate::settings_service::tauri_adapter::write(app, "history_limit", limit).await
 }
 
 /// The recording cleanup is the live effect of `recording_retention_period`.
@@ -121,7 +121,7 @@ pub async fn update_history_limit(
 #[specta::specta]
 pub async fn update_recording_retention_period(
     app: AppHandle,
-    period: String,
+    period: crate::settings_service::ui_value::UiValue<String>,
 ) -> Result<(), crate::settings_service::command_error::SettingsCommandError> {
-    crate::settings_service::tauri_adapter::set_value(&app, "recording_retention_period", period)
+    crate::settings_service::tauri_adapter::write(app, "recording_retention_period", period).await
 }

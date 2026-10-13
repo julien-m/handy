@@ -703,7 +703,8 @@
       "revisionConflict": "La configuració s'ha canviat en un altre lloc. Torneu a carregar i torneu-ho a provar.",
       "unavailable": "Aquesta configuració no es pot canviar ara. Torneu-ho a provar més tard.",
       "persistenceFailed": "No s'ha pogut desar la configuració.",
-      "generic": "No s'ha pogut canviar la configuració."
+      "generic": "No s'ha pogut canviar la configuració.",
+      "readOnly": "La configuració és només de lectura en aquesta sessió: el fitxer de configuració no es pot escriure de manera segura, de manera que els canvis no es desaran."
     }
   },
   "appLanguage": {

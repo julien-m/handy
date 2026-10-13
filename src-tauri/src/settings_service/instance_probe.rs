@@ -21,6 +21,14 @@ pub enum LegacyState {
 pub(crate) enum ProbeScope {
     SameUser,
     CurrentSession,
+    /// Linux session bus (decision 008, 2026-10-13): Handy 008 and later instances hold the
+    /// store's instance lease, which every offline writer must take under the transaction lock,
+    /// whatever their session; the bus only detects an older Handy in the current session. Its
+    /// absence there is accepted as absence; an older Handy in another session of the same user
+    /// is the accepted residual risk.
+    // Constructed only by the Linux probe and the platform tests.
+    #[cfg_attr(not(target_os = "linux"), allow(dead_code))]
+    LeaseBackedSession,
 }
 
 /// Inspect owner/type without connecting, invoking a callback or deleting anything.
@@ -52,14 +60,15 @@ pub(crate) fn inspect_legacy_dbus() -> LegacyState {
         let name = zbus::names::BusName::try_from("com.pais.handy.SingleInstance")?;
         Ok(proxy.name_has_owner(name)?)
     };
-    // A session bus cannot rule out the same user's Handy on another session bus.
+    // The bus covers only this session; the instance lease covers the others (see the scope).
     classify_owner(
         query().map_err(std::io::Error::other),
-        ProbeScope::CurrentSession,
+        ProbeScope::LeaseBackedSession,
     )
 }
 
-/// The injected evidence seam preserves uncertainty instead of treating it as absence.
+/// The injected evidence seam preserves uncertainty instead of treating it as absence, except
+/// where another authority covers the unobserved scope (`LeaseBackedSession`).
 pub(crate) fn classify_owner(owner: std::io::Result<bool>, scope: ProbeScope) -> LegacyState {
     match owner {
         Ok(true) => LegacyState::Occupied,

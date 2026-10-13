@@ -218,3 +218,163 @@ fn device_selectors_store_null_for_the_default_and_literal_names_otherwise() -> 
     }
     Ok(())
 }
+
+/// A store the instance cannot own never stops the app: it runs read-only on its best read and
+/// refuses every write, leaving the store bytes untouched.
+#[cfg(unix)]
+mod read_only_startup {
+    use super::*;
+    use handy_app_lib::settings_service::errors::SettingsErrorCode;
+    use std::os::unix::fs::PermissionsExt;
+
+    /// A normal store holding `paste_method = direct`, then released by its instance.
+    fn prepared_store(directory: &tempfile::TempDir) -> TestResult {
+        let live = owned(directory)?;
+        live.commit_ui_value("paste_method", json!("direct"))?;
+        Ok(())
+    }
+    fn start(directory: &tempfile::TempDir) -> Result<LiveSettings, SettingsError> {
+        LiveSettings::start_owned_or_read_only(
+            SettingsRepository::new(store(directory)),
+            &absent(directory),
+        )
+    }
+    /// Starts read-only, shows `paste_method` as `expected`, refuses a write, changes nothing.
+    fn assert_read_only(directory: &tempfile::TempDir, expected: &str) -> TestResult {
+        let bytes = std::fs::read(directory.path().join("real.json")).ok();
+        let live = start(directory)?;
+        assert!(live.read_only() && live.recovered());
+        let public = serde_json::to_value(live.snapshot().public_settings())?;
+        assert_eq!(public["paste_method"], json!(expected));
+        let refused = live
+            .commit_ui_value("paste_method", json!("ctrl_v"))
+            .err()
+            .ok_or("read-only startup accepted a write")?;
+        assert_ne!(refused.code(), SettingsErrorCode::ValidationFailed);
+        assert_eq!(
+            std::fs::read(directory.path().join("real.json")).ok(),
+            bytes
+        );
+        Ok(())
+    }
+    #[test]
+    fn linked_store_starts_read_only_on_its_target() -> TestResult {
+        let directory = tempfile::tempdir()?;
+        prepared_store(&directory)?;
+        std::fs::rename(store(&directory), directory.path().join("real.json"))?;
+        std::os::unix::fs::symlink(directory.path().join("real.json"), store(&directory))?;
+        assert_read_only(&directory, "direct")
+    }
+    #[test]
+    fn hard_linked_store_starts_read_only_on_its_content() -> TestResult {
+        let directory = tempfile::tempdir()?;
+        prepared_store(&directory)?;
+        std::fs::hard_link(store(&directory), directory.path().join("real.json"))?;
+        assert_read_only(&directory, "direct")
+    }
+    #[test]
+    fn unreadable_store_starts_read_only_on_defaults() -> TestResult {
+        let directory = tempfile::tempdir()?;
+        prepared_store(&directory)?;
+        std::fs::set_permissions(store(&directory), std::fs::Permissions::from_mode(0o000))?;
+        let fresh = tempfile::tempdir()?;
+        let default = serde_json::to_value(owned(&fresh)?.snapshot().public_settings())?;
+        let default = default["paste_method"].as_str().ok_or("no default")?;
+        let result = assert_read_only(&directory, default);
+        std::fs::set_permissions(store(&directory), std::fs::Permissions::from_mode(0o600))?;
+        result
+    }
+    #[test]
+    fn shared_lock_permissions_start_read_only_on_the_store_content() -> TestResult {
+        let directory = tempfile::tempdir()?;
+        prepared_store(&directory)?;
+        let lock = directory.path().join("settings.lock");
+        std::fs::set_permissions(&lock, std::fs::Permissions::from_mode(0o644))?;
+        assert_read_only(&directory, "direct")
+    }
+    #[test]
+    fn a_real_lease_conflict_is_the_only_startup_refusal() -> TestResult {
+        let directory = tempfile::tempdir()?;
+        let instance = owned(&directory)?;
+        let refused = start(&directory)
+            .err()
+            .ok_or("a second owner started while the lease is held")?;
+        assert_eq!(refused.code(), SettingsErrorCode::Unavailable);
+        drop(instance);
+        assert!(!start(&directory)?.read_only());
+        Ok(())
+    }
+}
+
+/// SC-001 over every settable scalar key, generated from the descriptors: a valid value, an
+/// out-of-domain value and a wrong type where the CLI can express one, compared between the UI
+/// write path and the CLI path (same decision, code, reason and stored value).
+mod generated_parity {
+    use super::*;
+    use handy_app_lib::settings_service::descriptor::{
+        descriptors, SettingDescriptor, SettingType,
+    };
+
+    /// CLI text that denotes the same JSON value.
+    fn cli_text(value: &Value) -> String {
+        match value {
+            Value::String(text) => text.clone(),
+            other => other.to_string(),
+        }
+    }
+    fn valid(entry: &SettingDescriptor, default: &Value) -> Value {
+        if let Some(choice) = entry.allowed_values.iter().find(|v| default != &json!(v)) {
+            return json!(choice);
+        }
+        match (entry.value_type, entry.range) {
+            (SettingType::Boolean, _) => json!(!default.as_bool().unwrap_or(false)),
+            (SettingType::Integer, Some(range)) => json!(range.max as u64),
+            (SettingType::Number, Some(range)) => json!(range.min),
+            _ if entry.nullable => Value::Null,
+            _ => default.clone(),
+        }
+    }
+    /// Out-of-domain and wrong-type candidates the CLI can also type.
+    fn invalid(entry: &SettingDescriptor) -> Vec<Value> {
+        let mut cases = Vec::new();
+        if !entry.allowed_values.is_empty() {
+            cases.push(json!("not_a_value"));
+        }
+        match (entry.value_type, entry.range) {
+            (SettingType::Integer, Some(range)) => {
+                cases.extend([json!(range.max as u64 + 1), json!(-1)])
+            }
+            (SettingType::Number, Some(range)) => {
+                cases.extend([json!(range.max + 1.0), json!("abc")])
+            }
+            (SettingType::Boolean, _) => cases.push(json!("yes")),
+            _ => {}
+        }
+        cases
+    }
+    fn settable(entry: &&SettingDescriptor) -> bool {
+        !entry.read_only
+            && !entry.secret
+            && !matches!(entry.value_type, SettingType::Array | SettingType::Object)
+    }
+    #[test]
+    fn every_settable_scalar_key_gets_the_same_decision_on_ui_and_cli() -> TestResult {
+        let fresh = tempfile::tempdir()?;
+        let defaults = serde_json::to_value(owned(&fresh)?.snapshot().public_settings())?;
+        let mut covered = 0;
+        for entry in descriptors().iter().filter(settable) {
+            let mut cases = vec![valid(entry, &defaults[entry.key])];
+            cases.extend(invalid(entry));
+            for value in cases {
+                let text = cli_text(&value);
+                let ui = ui_path(entry.key, value)?;
+                let cli = cli_path(entry.key, &text)?;
+                assert_eq!(ui, cli, "UI and CLI diverge for {}={text}", entry.key);
+            }
+            covered += 1;
+        }
+        assert_eq!(covered, descriptors().iter().filter(settable).count());
+        assert!(covered >= 45, "only {covered} settable scalar keys");
+        Ok(())
+    }
+}

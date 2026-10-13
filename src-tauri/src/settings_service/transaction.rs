@@ -120,7 +120,20 @@ impl SettingsRepository {
         edit: &SettingsEdit<'_>,
         expected: Option<Revision>,
     ) -> Result<SettingsRead, SettingsError> {
-        self.commit::<NativeOwnerProbe>(edit, expected, Authority::Owner(lease), &())
+        self.commit_owned_observed(lease, edit, expected, &())
+    }
+    /// `commit_owned_edit` with an injectable durable-stage observer (fault tests).
+    ///
+    /// # Errors
+    /// Same as `commit_owned_edit`, plus the outcome of an injected fault.
+    pub(crate) fn commit_owned_observed(
+        &self,
+        lease: &StartupLease,
+        edit: &SettingsEdit<'_>,
+        expected: Option<Revision>,
+        observer: &impl PersistObserver,
+    ) -> Result<SettingsRead, SettingsError> {
+        self.commit::<NativeOwnerProbe>(edit, expected, Authority::Owner(lease), observer)
     }
     /// Startup normalizes explicitly under the transaction lock and retains a separate lease until
     /// shutdown. An unreadable document or malformed revision is returned as a read-only recovery
@@ -273,7 +286,9 @@ fn verify_absent_store_authority<P: OwnerProbe>(
         Authority::Offline(probe) => {
             require_absent(*probe)?;
             if std::fs::symlink_metadata(&lease_path).is_ok() {
-                // Taken and released at once; a lock file that exists is never created here.
+                // Taken and released at once. Should the lock file vanish between the check and
+                // the acquisition, `acquire` recreates an empty private lock file; the store is
+                // never written here.
                 let _transaction = FileLock::acquire(path.with_file_name(TRANSACTION_LOCK), true)?;
                 FileLock::acquire(lease_path, false)?;
             }

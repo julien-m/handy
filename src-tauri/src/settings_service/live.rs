@@ -2,18 +2,21 @@
 //! snapshot that every in-process reader sees between commits.
 use super::{
     edit::{SettingsEdit, SettingsEditFn},
-    errors::{Outcome, SettingsError},
+    errors::{Outcome, SettingsError, SettingsErrorCode},
     ownership::{OwnerProbe, OwnerState, StartupLease},
     protocol::{Revision, SettingsSnapshot},
+    sequence::WriteSequence,
     store::{SettingsRead, SettingsRepository},
+    transaction::PersistObserver,
     validation::{validate_ui, SettingsMutation, ValidationContext},
 };
 use crate::settings::AppSettings;
 use std::sync::{Mutex, PoisonError, RwLock};
 
-/// Startup probe of the GUI instance. Tauri runs `setup` only after the single-instance plugin has
-/// either exited this process (another Handy, old or new, is alive) or claimed the singleton
-/// resources for it, so the passive legacy probe could only observe this process itself.
+/// Startup probe of the GUI instance. The service is installed right after Tauri's `build()`, which
+/// initializes the single-instance plugin: it has either exited this process (another Handy, old
+/// or new, is alive) or claimed the singleton resources for it, so the passive legacy probe could
+/// only observe this process itself.
 pub struct ClaimedSingleInstance;
 impl OwnerProbe for ClaimedSingleInstance {
     fn inspect(&self) -> OwnerState {
@@ -28,12 +31,23 @@ enum Authority {
     /// A process that is not the instance (headless run): an offline writer whose probe must
     /// observe no owner before every commit.
     Offline(Box<dyn OwnerProbe + Send + Sync>),
+    /// The store could not be owned (link, hard link, unreadable file, unsafe lock permissions):
+    /// the process runs on its best read and refuses every write with this code.
+    ReadOnly(SettingsErrorCode),
 }
 /// Borrowed dynamic probe usable where the repository expects a sized probe.
 struct ProbeRef<'a>(&'a (dyn OwnerProbe + Send + Sync));
 impl OwnerProbe for ProbeRef<'_> {
     fn inspect(&self) -> OwnerState {
         self.0.inspect()
+    }
+}
+
+/// Borrowed dynamic observer usable where the repository expects a sized observer.
+struct ObserverRef<'a>(&'a (dyn PersistObserver + Send + Sync));
+impl PersistObserver for ObserverRef<'_> {
+    fn observe(&self, stage: super::atomic::PersistStage) -> std::io::Result<()> {
+        self.0.observe(stage)
     }
 }
 
@@ -44,6 +58,9 @@ pub struct LiveSettings {
     authority: Authority,
     published: RwLock<SettingsSnapshot>,
     commits: Mutex<()>,
+    sequence: WriteSequence,
+    /// Durable-stage observer of owned commits: inert in production, a fault port in tests.
+    observer: Box<dyn PersistObserver + Send + Sync>,
     recovered: bool,
 }
 
@@ -91,7 +108,44 @@ impl LiveSettings {
             recovered: read.warning,
             published: RwLock::new(read.snapshot),
             commits: Mutex::new(()),
+            sequence: WriteSequence::default(),
+            observer: Box::new(()),
         }
+    }
+    #[cfg(test)]
+    /// Inject a durable-stage fault port into this instance's owned commits.
+    pub(crate) fn with_observer(
+        mut self,
+        observer: Box<dyn PersistObserver + Send + Sync>,
+    ) -> Self {
+        self.observer = observer;
+        self
+    }
+    /// Start as the running instance, or read-only when the store cannot be owned: a startup
+    /// failure must never stop the app, only its writes.
+    ///
+    /// # Errors
+    /// `unavailable` only when another instance holds this store's lease (a real conflict).
+    pub fn start_owned_or_read_only(
+        repository: SettingsRepository,
+        probe: &impl OwnerProbe,
+    ) -> Result<Self, SettingsError> {
+        let path = repository.path.clone();
+        match Self::start_owned(repository, probe) {
+            Ok(live) => Ok(live),
+            Err(error) if super::route::instance_running(&path).unwrap_or(false) => Err(error),
+            Err(error) => Ok(Self::start_read_only(path, error.code())),
+        }
+    }
+    /// Run on the best available read of `path` and refuse every write with `refusal`.
+    pub fn start_read_only(path: std::path::PathBuf, refusal: SettingsErrorCode) -> Self {
+        log::warn!("Settings store cannot be owned ({refusal:?}); settings are read-only");
+        let read = super::store::read_best_effort(&path);
+        Self::with(
+            SettingsRepository::new(path),
+            Authority::ReadOnly(refusal),
+            read,
+        )
     }
     /// Published snapshot (settings and revision) of the last commit or startup read.
     pub fn snapshot(&self) -> SettingsSnapshot {
@@ -107,6 +161,27 @@ impl LiveSettings {
     /// True when startup read a salvaged or unreadable store (writes may then be refused).
     pub fn recovered(&self) -> bool {
         self.recovered
+    }
+    /// True when this process could not own the store and refuses every write.
+    pub fn read_only(&self) -> bool {
+        matches!(self.authority, Authority::ReadOnly(_))
+    }
+    /// Write order of this process (see `sequence`).
+    pub(crate) fn sequence(&self) -> &WriteSequence {
+        &self.sequence
+    }
+    /// Changes between `before` and the published settings, as one commit description.
+    ///
+    /// # Errors
+    /// `internal_error` if the settings cannot be compared.
+    pub(crate) fn changes_since(&self, before: &AppSettings) -> Result<LiveCommit, SettingsError> {
+        let current = self.snapshot();
+        Ok(LiveCommit {
+            changed: changed_keys(before, &current.settings)?,
+            before: before.clone(),
+            after: current.settings,
+            revision: current.revision,
+        })
     }
     /// Validate a settings-UI value with the validator shared with the CLI, against the
     /// published settings (prompt membership) and the build policy.
@@ -167,7 +242,7 @@ impl LiveSettings {
     }
     /// Order matters: serialize in-process commits, take `before` from the published state,
     /// commit durably, then publish, so `before`/`changed` describe exactly this commit.
-    fn commit(
+    pub(crate) fn commit(
         &self,
         edit: &SettingsEdit<'_>,
         expected: Option<Revision>,
@@ -179,10 +254,12 @@ impl LiveSettings {
                 self.refresh();
             }
         })?;
-        let changed = changed_keys(&before, &read.snapshot.settings)?;
         let revision = read.snapshot.revision;
         let after = read.snapshot.settings.clone();
+        // Order matters: the commit is durable, so it is published before anything else can fail.
         self.publish(read.snapshot);
+        let changed = changed_keys(&before, &after)
+            .map_err(|_| SettingsError::committed_effect_failed(revision, ""))?;
         Ok(LiveCommit {
             before,
             after,
@@ -196,11 +273,17 @@ impl LiveSettings {
         expected: Option<Revision>,
     ) -> Result<SettingsRead, SettingsError> {
         match &self.authority {
-            Authority::Owner(lease) => self.repository.commit_owned_edit(lease, edit, expected),
+            Authority::Owner(lease) => self.repository.commit_owned_observed(
+                lease,
+                edit,
+                expected,
+                &ObserverRef(self.observer.as_ref()),
+            ),
             Authority::Offline(probe) => {
                 self.repository
                     .commit_edit_with_probe(edit, expected, &ProbeRef(probe.as_ref()))
             }
+            Authority::ReadOnly(code) => Err(SettingsError::new(*code)),
         }
     }
     /// After an unconfirmed replacement the disk may hold the new generation: reread it. A failed
@@ -226,7 +309,7 @@ fn changed_keys(
     before: &AppSettings,
     after: &AppSettings,
 ) -> Result<Vec<&'static str>, SettingsError> {
-    let internal = || SettingsError::new(super::errors::SettingsErrorCode::InternalError);
+    let internal = || SettingsError::new(SettingsErrorCode::InternalError);
     let before = serde_json::to_value(before).map_err(|_| internal())?;
     let after = serde_json::to_value(after).map_err(|_| internal())?;
     Ok(super::descriptor::descriptors()
@@ -235,8 +318,8 @@ fn changed_keys(
         .map(|entry| entry.key)
         .collect())
 }
-/// The running instance answers routed CLI operations from its published snapshot and commits
-/// them through the same service as the settings UI. Live effects are added by the Tauri adapter.
+/// Backend over the service alone (no live effects, no write order): used by channel tests. The
+/// running app routes CLI operations through the Tauri adapter, which adds both.
 impl super::operations::SettingsBackend for LiveSettings {
     fn read(&self) -> Result<SettingsRead, SettingsError> {
         Ok(SettingsRead {

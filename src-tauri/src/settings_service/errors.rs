@@ -169,6 +169,13 @@ impl SettingsError {
         error.details.outcome = Some(Outcome::Unknown);
         error
     }
+    /// Live state refused the native preparation of `key` (for example a recording in progress);
+    /// nothing was committed.
+    pub fn live_state_refused(key: &str) -> Self {
+        let mut error = Self::new(SettingsErrorCode::Unavailable);
+        error.details.field = super::descriptor::descriptor(key).map(|entry| entry.key);
+        error
+    }
     /// The write at `revision` is durable but the live effect of `key` failed afterwards; the
     /// committed value stays authoritative (never reported as a validation refusal).
     pub fn committed_effect_failed(revision: Revision, key: &str) -> Self {

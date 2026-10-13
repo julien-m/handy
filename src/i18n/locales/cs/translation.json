@@ -700,7 +700,8 @@
       "revisionConflict": "Nastavení bylo změněno jinde. Načtěte je znovu a zkuste to znovu.",
       "unavailable": "Toto nastavení teď nelze změnit. Zkuste to později.",
       "persistenceFailed": "Nastavení se nepodařilo uložit.",
-      "generic": "Nastavení se nepodařilo změnit."
+      "generic": "Nastavení se nepodařilo změnit.",
+      "readOnly": "Nastavení je v této relaci jen pro čtení: soubor nastavení nelze bezpečně zapsat, změny se proto neuloží."
     }
   },
   "appLanguage": {

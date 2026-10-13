@@ -700,7 +700,8 @@
       "revisionConflict": "Ustawienia zostały zmienione gdzie indziej. Odśwież i spróbuj ponownie.",
       "unavailable": "Tego ustawienia nie można teraz zmienić. Spróbuj ponownie później.",
       "persistenceFailed": "Nie udało się zapisać ustawień.",
-      "generic": "Nie udało się zmienić ustawienia."
+      "generic": "Nie udało się zmienić ustawienia.",
+      "readOnly": "Ustawienia są w tej sesji tylko do odczytu: pliku ustawień nie można bezpiecznie zapisać, więc zmiany nie zostaną zachowane."
     }
   },
   "appLanguage": {

@@ -703,7 +703,8 @@
       "revisionConflict": "Pengaturan telah diubah di tempat lain. Muat ulang dan coba lagi.",
       "unavailable": "Pengaturan ini tidak dapat diubah sekarang. Coba lagi nanti.",
       "persistenceFailed": "Pengaturan tidak dapat disimpan.",
-      "generic": "Pengaturan tidak dapat diubah."
+      "generic": "Pengaturan tidak dapat diubah.",
+      "readOnly": "Pengaturan hanya-baca untuk sesi ini: file pengaturan tidak dapat ditulis dengan aman, sehingga perubahan tidak akan disimpan."
     }
   },
   "appLanguage": {

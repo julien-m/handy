@@ -4,7 +4,9 @@ pub mod models;
 pub mod transcription;
 
 use crate::settings::{get_settings, update_checks_forced_disabled, AppSettings, LogLevel};
-use crate::settings_service::{command_error::SettingsCommandError, tauri_adapter};
+use crate::settings_service::{
+    command_error::SettingsCommandError, tauri_adapter, ui_value::UiValue,
+};
 use crate::utils::cancel_current_operation;
 use tauri::{AppHandle, Manager};
 use tauri_plugin_opener::OpenerExt;
@@ -49,6 +51,8 @@ pub struct SettingsView {
     pub revision: u64,
     /// Settings as every reader of this process sees them.
     pub settings: AppSettings,
+    /// True when this process could not own the settings store: every change is refused.
+    pub read_only: bool,
 }
 
 #[tauri::command]
@@ -58,6 +62,7 @@ pub fn get_settings_view(app: AppHandle) -> SettingsView {
     SettingsView {
         revision: revision.0,
         settings,
+        read_only: tauri_adapter::read_only(&app),
     }
 }
 
@@ -79,8 +84,11 @@ pub fn get_log_dir_path(app: AppHandle) -> Result<String, String> {
 /// The file log level follows the committed value (live effect of `log_level`).
 #[specta::specta]
 #[tauri::command]
-pub fn set_log_level(app: AppHandle, level: LogLevel) -> Result<(), SettingsCommandError> {
-    tauri_adapter::set_value(&app, "log_level", level)
+pub async fn set_log_level(
+    app: AppHandle,
+    level: UiValue<LogLevel>,
+) -> Result<(), SettingsCommandError> {
+    tauri_adapter::write(app, "log_level", level).await
 }
 
 #[specta::specta]

@@ -547,7 +547,7 @@ impl AudioRecordingManager {
             }
             Ok(())
         };
-        crate::settings_service::tauri_adapter::repair_without_effects(
+        crate::settings_service::tauri_adapter::repair(
             &self.app_handle,
             "the default microphone fallback",
             &edit,

@@ -62,6 +62,37 @@ impl SettingsRepository {
         }
     }
 }
+/// Bound on the bytes a best-effort read accepts: a settings store holds small JSON (a few KB to
+/// a few hundred KB with long word lists); 16 MiB leaves ample room while refusing runaway files.
+const BEST_EFFORT_MAX_BYTES: u64 = 16 * 1024 * 1024;
+
+/// Best read for a store this process cannot own (see `LiveSettings::start_read_only`): the
+/// checked read when it works, otherwise the bytes at `path` (a link is followed: reading never
+/// changes it) normalized in memory, otherwise the defaults. Always flagged as a recovery read.
+pub fn read_best_effort(path: &std::path::Path) -> SettingsRead {
+    let checked = SettingsRepository::new(path.to_path_buf()).read_snapshot();
+    let read = checked
+        .ok()
+        .or_else(|| read_unchecked(path))
+        .unwrap_or_else(|| fallback(false).read);
+    SettingsRead {
+        warning: true,
+        ..read
+    }
+}
+/// Unchecked read used only for display: no lock, owner or link check, never written back.
+fn read_unchecked(path: &std::path::Path) -> Option<SettingsRead> {
+    use std::io::Read;
+    let file = std::fs::File::open(path).ok()?;
+    let mut bytes = Vec::new();
+    file.take(BEST_EFFORT_MAX_BYTES)
+        .read_to_end(&mut bytes)
+        .ok()?;
+    let raw = serde_json::from_slice::<Value>(&bytes)
+        .ok()
+        .filter(Value::is_object)?;
+    document(raw).ok().map(|loaded| loaded.read)
+}
 /// Open without following a final symlink; Windows uses its checked, reparse-refusing handle.
 fn open_store(path: &std::path::Path) -> std::io::Result<std::fs::File> {
     #[cfg(unix)]

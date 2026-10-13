@@ -31,6 +31,28 @@ fn session_negative_cannot_prove_other_sessions_absent() {
     );
 }
 
+/// Linux decision 008: the session bus only detects an older Handy; the instance lease is the
+/// authority for 008+ instances, so a free bus is absence (the lease is checked separately).
+#[test]
+fn lease_backed_session_bus_absence_is_absence_and_errors_stay_refused() {
+    use instance_probe::{classify_owner, LegacyState, ProbeScope};
+    assert_eq!(
+        classify_owner(Ok(false), ProbeScope::LeaseBackedSession),
+        LegacyState::Absent
+    );
+    assert_eq!(
+        classify_owner(Ok(true), ProbeScope::LeaseBackedSession),
+        LegacyState::Occupied
+    );
+    assert_eq!(
+        classify_owner(
+            Err(std::io::Error::from(std::io::ErrorKind::NotConnected)),
+            ProbeScope::LeaseBackedSession
+        ),
+        LegacyState::Unavailable
+    );
+}
+
 #[test]
 fn pipe_identity_rejects_injection_and_isolates_user_and_store() -> std::io::Result<()> {
     use platform_windows::pipe_name;

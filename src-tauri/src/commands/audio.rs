@@ -2,7 +2,9 @@ use crate::audio_feedback;
 use crate::audio_toolkit::audio::{list_input_devices, list_output_devices, AudioRecorder};
 use crate::managers::audio::AudioRecordingManager;
 use crate::settings::get_settings;
-use crate::settings_service::{command_error::SettingsCommandError, tauri_adapter};
+use crate::settings_service::{
+    command_error::SettingsCommandError, tauri_adapter, ui_value::UiValue,
+};
 use log::warn;
 use serde::{Deserialize, Serialize};
 use specta::Type;
@@ -161,22 +163,9 @@ pub fn open_microphone_privacy_settings() -> Result<(), String> {
 #[specta::specta]
 pub async fn update_microphone_mode(
     app: AppHandle,
-    always_on: bool,
+    always_on: UiValue<bool>,
 ) -> Result<(), SettingsCommandError> {
-    run_settings_write(move || tauri_adapter::set_value(&app, "always_on_microphone", always_on))
-        .await
-}
-
-/// Run a settings write whose live effect may block (device reopen) on the blocking pool.
-async fn run_settings_write(
-    write: impl FnOnce() -> Result<(), SettingsCommandError> + Send + 'static,
-) -> Result<(), SettingsCommandError> {
-    tokio::task::spawn_blocking(write).await.map_err(|error| {
-        log::error!("audio settings task join failed: {}", error);
-        SettingsCommandError::from(crate::settings_service::errors::SettingsError::new(
-            crate::settings_service::errors::SettingsErrorCode::InternalError,
-        ))
-    })?
+    tauri_adapter::write(app, "always_on_microphone", always_on).await
 }
 
 #[tauri::command]
@@ -218,10 +207,9 @@ pub async fn get_available_microphones() -> Result<Vec<AudioDevice>, String> {
 #[specta::specta]
 pub async fn set_selected_microphone(
     app: AppHandle,
-    device_name: Option<String>,
+    device_name: UiValue<Option<String>>,
 ) -> Result<(), SettingsCommandError> {
-    run_settings_write(move || tauri_adapter::set_value(&app, "selected_microphone", device_name))
-        .await
+    tauri_adapter::write(app, "selected_microphone", device_name).await
 }
 
 #[tauri::command]
@@ -262,11 +250,11 @@ pub async fn get_available_output_devices() -> Result<Vec<AudioDevice>, String> 
 /// `None` selects the system default output device; a name is stored as is.
 #[tauri::command]
 #[specta::specta]
-pub fn set_selected_output_device(
+pub async fn set_selected_output_device(
     app: AppHandle,
-    device_name: Option<String>,
+    device_name: UiValue<Option<String>>,
 ) -> Result<(), SettingsCommandError> {
-    tauri_adapter::set_value(&app, "selected_output_device", device_name)
+    tauri_adapter::write(app, "selected_output_device", device_name).await
 }
 
 #[tauri::command]
@@ -295,11 +283,11 @@ pub async fn play_test_sound(app: AppHandle, sound_type: String) {
 /// `None` selects the system default device while the lid is closed; a name is stored as is.
 #[tauri::command]
 #[specta::specta]
-pub fn set_clamshell_microphone(
+pub async fn set_clamshell_microphone(
     app: AppHandle,
-    device_name: Option<String>,
+    device_name: UiValue<Option<String>>,
 ) -> Result<(), SettingsCommandError> {
-    tauri_adapter::set_value(&app, "clamshell_microphone", device_name)
+    tauri_adapter::write(app, "clamshell_microphone", device_name).await
 }
 
 #[tauri::command]
@@ -348,27 +336,29 @@ pub async fn get_microphone_channels(device_name: String) -> Result<u16, String>
 
 /// Restarting cpal can block, so the channel change runs off the webview/main run loop. The
 /// runtime change is prepared before committing, so a rejected active-recording change is never
-/// stored; a refused commit restores the previous channel.
+/// stored; a refused commit restores the channel published when the ordered write started.
 #[tauri::command]
 #[specta::specta]
 pub async fn set_selected_channel(
     app: AppHandle,
-    channel: Option<u16>,
+    channel: UiValue<Option<u16>>,
 ) -> Result<(), SettingsCommandError> {
-    let previous = get_settings(&app).selected_channel;
     let manager = app.state::<Arc<AudioRecordingManager>>().inner().clone();
-    run_settings_write(move || {
+    let channel = channel.into_json();
+    tauri_adapter::blocking(move || {
+        // Prepared only after the shared validator accepted the raw value, so it parses.
+        let requested = serde_json::from_value::<Option<u16>>(channel.clone());
         tauri_adapter::set_prepared(
             &app,
             "selected_channel",
             channel,
-            || {
+            |_| {
                 manager
-                    .update_selected_channel(channel)
+                    .update_selected_channel(requested.map_err(|e| e.to_string())?)
                     .map_err(|e| e.to_string())
             },
-            || {
-                if let Err(error) = manager.update_selected_channel(previous) {
+            |before| {
+                if let Err(error) = manager.update_selected_channel(before.selected_channel) {
                     log::error!("Failed to restore the previous channel: {}", error);
                 }
             },

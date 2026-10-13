@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import type { SettingsCommandError } from "@/bindings";
 import {
+  failedCommandRecovery,
   isCurrentRevision,
   isSettingsCommandError,
   SETTINGS_ERROR_KEYS,
@@ -87,5 +88,23 @@ assert.ok(isCurrentRevision(5, null));
 assert.ok(isCurrentRevision(6, 5));
 assert.ok(isCurrentRevision(5, 5));
 assert.ok(!isCurrentRevision(4, 5));
+
+// Recovery of the optimistic value after a failed command: the store is authoritative.
+const committed = new SettingsCommandFailure(
+  refusal({
+    code: "internal_error",
+    outcome: "committed",
+    current_revision: 5,
+  }),
+);
+const unknown = new SettingsCommandFailure(
+  refusal({ code: "unavailable", outcome: "unknown" }),
+);
+const refused = new SettingsCommandFailure(refusal({}));
+assert.equal(failedCommandRecovery(committed, 4, 4), "refresh");
+assert.equal(failedCommandRecovery(unknown, 4, 4), "refresh");
+assert.equal(failedCommandRecovery(refused, 4, 4), "rollback");
+assert.equal(failedCommandRecovery(refused, 4, 6), "refresh");
+assert.equal(failedCommandRecovery(new Error("ipc"), null, null), "rollback");
 
 console.log("settings-errors: all assertions passed");

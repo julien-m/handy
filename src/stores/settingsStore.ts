@@ -15,6 +15,7 @@ import { commands } from "@/bindings";
 import { toast } from "sonner";
 import i18n from "@/i18n";
 import {
+  failedCommandRecovery,
   isCurrentRevision,
   SETTINGS_ERROR_KEYS,
   SettingsCommandFailure,
@@ -43,7 +44,7 @@ interface SettingsStore {
   updateSetting: <K extends keyof Settings>(
     key: K,
     value: Settings[K],
-  ) => Promise<void>;
+  ) => Promise<boolean>;
   resetSetting: (key: keyof Settings) => Promise<void>;
   refreshSettings: () => Promise<void>;
   refreshAudioDevices: () => Promise<void>;
@@ -93,6 +94,9 @@ const notifySettingsError = (error: unknown): void => {
       : SETTINGS_ERROR_KEYS.generic;
   toast.error(i18n.t(key));
 };
+
+// Shown once per session: every later change is refused with its own message anyway.
+let readOnlyWarned = false;
 
 // Note: Default settings are now fetched from Rust via commands.getDefaultSettings()
 // This ensures platform-specific defaults (like overlay_position, shortcuts, paste_method) work correctly
@@ -240,7 +244,12 @@ export const useSettingsStore = create<SettingsStore>()(
     // Load settings from store
     refreshSettings: async () => {
       try {
-        const { revision, settings } = await commands.getSettingsView();
+        const view = await commands.getSettingsView();
+        const { revision, settings } = view;
+        if (view.read_only && !readOnlyWarned) {
+          readOnlyWarned = true;
+          toast.warning(i18n.t(SETTINGS_ERROR_KEYS.readOnly));
+        }
         // An older refresh answering after a newer one must not roll the UI back.
         if (!isCurrentRevision(revision, get().revision)) return;
         const normalizedSettings: Settings = {
@@ -318,7 +327,7 @@ export const useSettingsStore = create<SettingsStore>()(
       key: K,
       value: Settings[K],
     ) => {
-      const { settings, setUpdating } = get();
+      const { settings, setUpdating, revision: revisionAtStart } = get();
       const updateKey = String(key);
       const originalValue = settings?.[key];
 
@@ -335,15 +344,25 @@ export const useSettingsStore = create<SettingsStore>()(
         } else if (key !== "bindings" && key !== "selected_model") {
           console.warn(`No handler for setting: ${String(key)}`);
         }
+        return true;
       } catch (error) {
-        // A refused value is shown and rolled back, never kept silently.
+        // A failure is always shown. A refusal is rolled back; a committed or possibly committed
+        // value, or one superseded by a newer revision, is reread instead (the store decides).
         console.error(`Failed to update setting ${String(key)}:`, error);
         notifySettingsError(error);
-        set((state) => ({
-          settings: state.settings
-            ? { ...state.settings, [key]: originalValue }
-            : null,
-        }));
+        if (
+          failedCommandRecovery(error, revisionAtStart, get().revision) ===
+          "refresh"
+        ) {
+          await get().refreshSettings();
+        } else {
+          set((state) => ({
+            settings: state.settings
+              ? { ...state.settings, [key]: originalValue }
+              : null,
+          }));
+        }
+        return false;
       } finally {
         setUpdating(updateKey, false);
       }
@@ -362,8 +381,9 @@ export const useSettingsStore = create<SettingsStore>()(
 
     // Update a specific binding
     updateBinding: async (id, binding) => {
-      const { settings, setUpdating } = get();
+      const { settings, setUpdating, revision: revisionAtStart } = get();
       const updateKey = `binding_${id}`;
+      let refusal: SettingsCommandFailure | null = null;
       const originalBinding = settings?.bindings?.[id]?.current_binding;
 
       setUpdating(updateKey, true);
@@ -389,6 +409,7 @@ export const useSettingsStore = create<SettingsStore>()(
 
         // Check if the command executed successfully
         if (result.status === "error") {
+          refusal = new SettingsCommandFailure(result.error);
           throw new Error(i18n.t(settingsErrorKey(result.error)));
         }
 
@@ -399,8 +420,15 @@ export const useSettingsStore = create<SettingsStore>()(
       } catch (error) {
         console.error(`Failed to update binding ${id}:`, error);
 
-        // Rollback on error
-        if (originalBinding && get().settings) {
+        // A committed or possibly committed binding is reread; a refusal is rolled back.
+        const recovery = failedCommandRecovery(
+          refusal ?? error,
+          revisionAtStart,
+          get().revision,
+        );
+        if (recovery === "refresh") {
+          await get().refreshSettings();
+        } else if (originalBinding && get().settings) {
           set((state) => ({
             settings: state.settings
               ? {
@@ -455,6 +483,7 @@ export const useSettingsStore = create<SettingsStore>()(
       } = get();
       const updateKey = "post_process_provider_id";
       const previousId = settings?.post_process_provider_id ?? null;
+      const revisionAtStart = get().revision;
 
       setUpdating(updateKey, true);
 
@@ -476,7 +505,12 @@ export const useSettingsStore = create<SettingsStore>()(
       } catch (error) {
         console.error("Failed to set post-process provider:", error);
         notifySettingsError(error);
-        if (previousId !== null) {
+        if (
+          failedCommandRecovery(error, revisionAtStart, get().revision) ===
+          "refresh"
+        ) {
+          await refreshSettings();
+        } else if (previousId !== null) {
           set((state) => ({
             settings: state.settings
               ? { ...state.settings, post_process_provider_id: previousId }

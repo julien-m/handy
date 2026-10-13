@@ -36,9 +36,7 @@ impl SettingsCommandError {
     /// A native preparation was refused by live state (for example a recording in progress);
     /// nothing was committed. The detail is logged by the caller, never returned.
     pub fn unavailable(key: &str) -> Self {
-        let mut error = Self::from(SettingsError::new(SettingsErrorCode::Unavailable));
-        error.field = super::descriptor::descriptor(key).map(|entry| entry.key.to_owned());
-        error
+        Self::from(SettingsError::live_state_refused(key))
     }
     /// A UI-owned edit refused its input for `key` with a fixed reason.
     pub fn invalid(key: &str, reason: ValidationReason) -> Self {

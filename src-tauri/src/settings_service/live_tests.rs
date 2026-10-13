@@ -129,3 +129,80 @@ fn offline_authority_is_refused_by_an_owner_and_commits_without_one() -> TestRes
     assert_eq!(committed.changed, vec!["start_hidden"]);
     Ok(())
 }
+
+/// Linux probe of decision 008: the session-bus answer classified with the lease-backed scope.
+struct SessionBus(Result<bool, std::io::ErrorKind>);
+impl OwnerProbe for SessionBus {
+    fn inspect(&self) -> OwnerState {
+        use crate::settings_service::ownership::probe::{classify_owner, ProbeScope};
+        classify_owner(
+            self.0.map_err(std::io::Error::from),
+            ProbeScope::LeaseBackedSession,
+        )
+    }
+}
+fn toggle_start_hidden(settings: &mut crate::settings::AppSettings) -> Result<(), SettingsError> {
+    settings.start_hidden = !settings.start_hidden;
+    Ok(())
+}
+/// Offline commit through `bus`; the store bytes before and the result.
+fn offline_through(
+    directory: &tempfile::TempDir,
+    bus: Result<bool, std::io::ErrorKind>,
+) -> Result<Result<(), SettingsError>, Box<dyn std::error::Error>> {
+    let offline = LiveSettings::start_offline(
+        SettingsRepository::new(store(directory)),
+        Box::new(SessionBus(bus)),
+    )?;
+    Ok(offline.commit_edit(&toggle_start_hidden, None).map(|_| ()))
+}
+#[test]
+fn linux_free_session_bus_and_free_lease_allow_the_offline_write() -> TestResult {
+    let directory = tempfile::tempdir()?;
+    drop(owned(&directory)?);
+    let before = std::fs::read(store(&directory))?;
+    offline_through(&directory, Ok(false))??;
+    assert_ne!(std::fs::read(store(&directory))?, before);
+    Ok(())
+}
+#[test]
+fn linux_free_session_bus_never_bypasses_a_held_lease_or_a_bus_owner() -> TestResult {
+    let directory = tempfile::tempdir()?;
+    let instance = owned(&directory)?;
+    let bytes = std::fs::read(store(&directory))?;
+    for bus in [Ok(false), Ok(true), Err(std::io::ErrorKind::NotConnected)] {
+        let refused = offline_through(&directory, bus)?
+            .err()
+            .ok_or("offline write accepted while an instance holds the lease")?;
+        assert_eq!(refused.code(), SettingsErrorCode::Unavailable);
+    }
+    drop(instance);
+    for bus in [Ok(true), Err(std::io::ErrorKind::NotConnected)] {
+        let refused = offline_through(&directory, bus)?
+            .err()
+            .ok_or("offline write accepted while the bus shows an owner or fails")?;
+        assert_eq!(refused.code(), SettingsErrorCode::Unavailable);
+    }
+    assert_eq!(std::fs::read(store(&directory))?, bytes);
+    Ok(())
+}
+/// The lease is the authority of the Linux decision: the instance must hold it for its whole
+/// life, through commits, refusals and reads by other handles, and release it only when dropped.
+#[test]
+fn instance_keeps_its_lease_until_it_is_dropped() -> TestResult {
+    use crate::settings_service::route::instance_running;
+    let directory = tempfile::tempdir()?;
+    let instance = owned(&directory)?;
+    for round in 0..3 {
+        instance.commit_edit(&toggle_start_hidden, None)?;
+        let _ = instance.commit_ui_value("paste_method", serde_json::json!("not_a_method"));
+        SettingsRepository::new(store(&directory)).read_snapshot()?;
+        assert!(
+            instance_running(&store(&directory))?,
+            "lease lost at {round}"
+        );
+    }
+    drop(instance);
+    assert!(!instance_running(&store(&directory))?);
+    Ok(())
+}

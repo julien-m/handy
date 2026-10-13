@@ -703,7 +703,8 @@
       "revisionConflict": "De instellingen zijn elders gewijzigd. Laad opnieuw en probeer het nog eens.",
       "unavailable": "Deze instelling kan nu niet worden gewijzigd. Probeer het later opnieuw.",
       "persistenceFailed": "De instellingen konden niet worden opgeslagen.",
-      "generic": "De instelling kon niet worden gewijzigd."
+      "generic": "De instelling kon niet worden gewijzigd.",
+      "readOnly": "De instellingen zijn in deze sessie alleen-lezen: het instellingenbestand kan niet veilig worden geschreven, dus wijzigingen worden niet opgeslagen."
     }
   },
   "appLanguage": {

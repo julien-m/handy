@@ -700,7 +700,8 @@
       "revisionConflict": "As configurações foram alteradas em outro lugar. Recarregue e tente novamente.",
       "unavailable": "Esta configuração não pode ser alterada agora. Tente novamente mais tarde.",
       "persistenceFailed": "Não foi possível salvar as configurações.",
-      "generic": "Não foi possível alterar a configuração."
+      "generic": "Não foi possível alterar a configuração.",
+      "readOnly": "As configurações estão somente leitura nesta sessão: o arquivo de configurações não pode ser gravado com segurança, então as alterações não serão salvas."
     }
   },
   "appLanguage": {
