@@ -154,11 +154,12 @@ pub enum PasteMethod {
     ShiftInsert,
     CtrlShiftV,
     ExternalScript,
-    /// macOS smart paste (feature 007, `crate::smart_paste`). Persisted value
-    /// only for now: selecting it from the UI or CLI, the macOS default and
-    /// the migration from the beta reliable paste come with the shared
-    /// settings service (008), and the paste pipeline dispatch with the
-    /// destination context (006).
+    // macOS smart paste (feature 007, `crate::smart_paste`). Persisted value
+    // only for now: selecting it from the UI or CLI, the macOS default and
+    // the migration from the beta reliable paste come with the shared
+    // settings service (008), and the paste pipeline dispatch with the
+    // destination context (006). A plain comment, not a doc comment, so
+    // specta's generated `bindings.ts` stays exactly as committed.
     SmartPaste,
 }
 

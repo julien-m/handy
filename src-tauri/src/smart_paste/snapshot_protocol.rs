@@ -3,8 +3,11 @@
 //! Stream layout (integers little-endian):
 //! 1. header: `HSPS`, version byte, 16-byte request nonce echoed back;
 //! 2. `B` begin: source changeCount, then the inventory (types per item);
-//! 3. one `T` (data) or `S` (skipped) frame per inventoried type, in order;
-//! 4. `E` end: changeCount observed after reading.
+//! 3. `O` omitted: items and types left out of the inventory because they
+//!    exceed the structural limits below (counts only);
+//! 4. one `T` (data) or `S` (skipped) frame per inventoried type, declared
+//!    types first and derived types last (see `pasteboard_types`);
+//! 5. `E` end: changeCount observed after reading.
 //!
 //! Frames are progressive so the parent keeps every completed type when it
 //! kills the helper at the deadline. The decoder bounds every length, so a
@@ -16,17 +19,20 @@ use super::snapshot::SkipCause;
 
 /// Stream magic.
 pub const MAGIC: [u8; 4] = *b"HSPS";
-/// Protocol version.
-pub const VERSION: u8 = 1;
+/// Protocol version (2 added the omitted-counts frame).
+pub const VERSION: u8 = 2;
 /// Request nonce length in bytes.
 pub const NONCE_LEN: usize = 16;
 // Structural limits far above real pasteboards (a few items, tens of
 // types); they only stop a malformed stream from forcing large allocations.
+// The helper truncates its inventory to them and reports what it left out.
 /// Longest accepted type identifier; longer names are left out of the
 /// inventory by the helper (no real UTI comes close).
 pub const MAX_UTI_BYTES: usize = 1024;
-const MAX_ITEMS: usize = 10_000;
-const MAX_TYPES_PER_ITEM: usize = 1_000;
+/// Most items inventoried (a Finder copy of more files is truncated).
+pub const MAX_ITEMS: usize = 10_000;
+/// Most types inventoried per item.
+pub const MAX_TYPES_PER_ITEM: usize = 1_000;
 
 /// Request nonce binding a helper response to its request.
 pub type Nonce = [u8; NONCE_LEN];
@@ -49,6 +55,13 @@ pub enum Frame {
         type_index: usize,
         /// Raw bytes.
         data: Vec<u8>,
+    },
+    /// Items and types left out of the inventory (structural limits).
+    Omitted {
+        /// Items beyond [`MAX_ITEMS`].
+        items: usize,
+        /// Types beyond [`MAX_TYPES_PER_ITEM`] or [`MAX_UTI_BYTES`].
+        types: usize,
     },
     /// One inventoried type the helper did not save.
     Skipped {
@@ -115,6 +128,7 @@ pub fn write_frame(writer: &mut impl Write, frame: &Frame) -> io::Result<()> {
             write_index_pair(writer, *item, *type_index)?;
             writer.write_all(&[cause_code(*cause)])
         }
+        Frame::Omitted { items, types } => write_omitted(writer, *items, *types),
         Frame::End { change_count } => {
             writer.write_all(b"E")?;
             writer.write_all(&change_count.to_le_bytes())
@@ -149,6 +163,12 @@ fn write_data(
     write_index_pair(writer, item, type_index)?;
     writer.write_all(&(data.len() as u64).to_le_bytes())?;
     writer.write_all(data)
+}
+
+fn write_omitted(writer: &mut impl Write, items: usize, types: usize) -> io::Result<()> {
+    writer.write_all(b"O")?;
+    writer.write_all(&(items as u64).to_le_bytes())?;
+    writer.write_all(&(types as u64).to_le_bytes())
 }
 
 fn write_index_pair(writer: &mut impl Write, item: usize, type_index: usize) -> io::Result<()> {
@@ -207,6 +227,10 @@ pub fn read_frame(reader: &mut impl Read, max_data: usize) -> Result<Option<Fram
                 cause,
             }
         }
+        b"O" => Frame::Omitted {
+            items: read_count(reader)?,
+            types: read_count(reader)?,
+        },
         b"E" => Frame::End {
             change_count: i64::from_le_bytes(read_array(reader)?),
         },
@@ -266,6 +290,10 @@ fn read_index_pair(reader: &mut impl Read) -> Result<(usize, usize), ProtocolErr
     let item = bounded(read_u32(reader)?, MAX_ITEMS)?;
     let type_index = bounded(read_u32(reader)?, MAX_TYPES_PER_ITEM)?;
     Ok((item, type_index))
+}
+
+fn read_count(reader: &mut impl Read) -> Result<usize, ProtocolError> {
+    usize::try_from(u64::from_le_bytes(read_array(reader)?)).map_err(|_| ProtocolError::Malformed)
 }
 
 fn read_u8(reader: &mut impl Read) -> Result<u8, ProtocolError> {

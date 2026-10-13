@@ -44,6 +44,16 @@ impl fmt::Display for PasteboardError {
 
 impl std::error::Error for PasteboardError {}
 
+/// How an eager transcript is marked when it replaces the on-demand item.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum TranscriptMarking {
+    /// Current-host-only content with the transient, concealed and
+    /// auto-generated markers, like the on-demand item it replaces.
+    Private,
+    /// Ordinary plain text: the deliberate "copy to clipboard" setting.
+    Plain,
+}
+
 /// Result of an ownership-guarded write.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum GuardedWrite {
@@ -57,6 +67,11 @@ pub enum GuardedWrite {
 pub trait PasteboardPort: Send {
     /// Current `changeCount`.
     fn change_count(&mut self) -> Result<i64, PasteboardError>;
+
+    /// Hint that a capture may follow soon: an adapter may start its
+    /// snapshot helper now so its startup stays out of the capture budget.
+    /// Never reads the pasteboard. The default does nothing.
+    fn prepare_capture(&mut self, _budget: SnapshotBudget) {}
 
     /// Captures a bounded snapshot of the current content.
     fn capture_snapshot(
@@ -74,20 +89,22 @@ pub trait PasteboardPort: Send {
         expected_source_count: i64,
     ) -> Result<i64, PasteboardError>;
 
-    /// Puts back the saved items and types (or clears when it was empty),
-    /// only if `changeCount` still equals `publication_count`.
+    /// Puts back the saved items and types (or clears when it was empty) as
+    /// current-host-only content, only if `changeCount` still equals
+    /// `publication_count`.
     fn restore_snapshot(
         &mut self,
         snapshot: Arc<PasteboardSnapshot>,
         publication_count: i64,
     ) -> Result<GuardedWrite, PasteboardError>;
 
-    /// Replaces the on-demand item with eager plain text, only if
-    /// `changeCount` still equals `publication_count`.
+    /// Replaces the on-demand item with eager plain text marked as
+    /// `marking` says, only if `changeCount` still equals `publication_count`.
     fn materialize_transcript(
         &mut self,
         transcript: &Transcript,
         publication_count: i64,
+        marking: TranscriptMarking,
     ) -> Result<GuardedWrite, PasteboardError>;
 
     /// Deliberately writes plain text without markers (Screen Sharing

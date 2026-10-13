@@ -1,5 +1,7 @@
 //! Keystroke, first-read wait and the pending lifecycle of the coordinator.
 
+use std::panic::{catch_unwind, resume_unwind, AssertUnwindSafe};
+
 use super::*;
 
 impl SmartPasteCoordinator {
@@ -9,11 +11,31 @@ impl SmartPasteCoordinator {
         &mut self,
         request: &InsertionRequest,
         transaction: TransactionId,
-        mut guard: Option<FallbackGuard>,
+        guard: Option<FallbackGuard>,
         events: &mut dyn ReadEvents,
     ) -> PasteOutcome {
         let clock = Arc::clone(&self.ports.clock);
         let switch = switch_for_paste(self.ports.input_sources.as_mut(), clock.as_ref());
+        self.layout_to_restore = Some(switch);
+        // A panic in a port must not leave the switched layout selected: the
+        // previous source is restored before the panic carries on.
+        let pasted = catch_unwind(AssertUnwindSafe(|| {
+            self.paste_with_switched_layout(request, transaction, guard, events)
+        }));
+        pasted.unwrap_or_else(|panic| {
+            self.restore_layout(clock.now());
+            resume_unwind(panic)
+        })
+    }
+
+    fn paste_with_switched_layout(
+        &mut self,
+        request: &InsertionRequest,
+        transaction: TransactionId,
+        mut guard: Option<FallbackGuard>,
+        events: &mut dyn ReadEvents,
+    ) -> PasteOutcome {
+        let clock = Arc::clone(&self.ports.clock);
         clock.sleep(request.paste_delay);
         let cancelled = self.cancel_reason(request, guard.as_mut());
         let key = match cancelled {
@@ -21,7 +43,7 @@ impl SmartPasteCoordinator {
             None => self.ports.keys.resolve_paste_key().ok(),
         };
         let Some(key) = key else {
-            self.restore_layout(&switch, clock.now());
+            self.restore_layout(clock.now());
             self.cancel_publication();
             let (path, kind) = cancelled.unwrap_or((
                 InsertionPath::ClipboardPaste,
@@ -29,7 +51,7 @@ impl SmartPasteCoordinator {
             ));
             return outcome(request, Some(transaction), path, kind);
         };
-        self.post_chord(request, transaction, key, &switch, events)
+        self.post_chord(request, transaction, key, events)
     }
 
     fn post_chord(
@@ -37,7 +59,6 @@ impl SmartPasteCoordinator {
         request: &InsertionRequest,
         transaction: TransactionId,
         key: PasteKey,
-        switch: &LayoutSwitch,
         events: &mut dyn ReadEvents,
     ) -> PasteOutcome {
         // The keystroke instant is taken immediately before the first
@@ -47,7 +68,7 @@ impl SmartPasteCoordinator {
             pending.lifecycle.record_key_down(key_down_at);
         }
         let posted = self.ports.keys.post_paste_chord(key, CHORD_HOLD);
-        self.restore_layout(switch, self.ports.clock.now());
+        self.restore_layout(self.ports.clock.now());
         if let Err(error) = posted {
             log::warn!("[smart-paste] paste chord failed: {error}");
             let kind = PasteOutcomeKind::InsertionFailed;
@@ -61,19 +82,27 @@ impl SmartPasteCoordinator {
         self.await_first_read(request, transaction, events)
     }
 
-    /// Reasons not to post the chord: the destination is gone (failure
-    /// before any key effect) or the earlier AX write showed up late (the
-    /// text may already be there: never insert it twice).
+    /// Reasons not to post the chord: the destination is gone or the
+    /// earlier AX write showed up late (the text may already be there:
+    /// never insert it twice).
     fn cancel_reason(
         &mut self,
         request: &InsertionRequest,
         guard: Option<&mut FallbackGuard>,
     ) -> Option<(InsertionPath, PasteOutcomeKind)> {
         if !self.ports.destination.is_current(&request.destination) {
-            return Some((
-                InsertionPath::ClipboardPaste,
-                PasteOutcomeKind::InsertionFailed,
-            ));
+            // Without an AX write the loss happened before any effect; after
+            // one, the write may still apply late, so the result is unknown.
+            return Some(match guard {
+                Some(_) => (
+                    InsertionPath::DirectAccessibility,
+                    PasteOutcomeKind::Uncertain,
+                ),
+                None => (
+                    InsertionPath::ClipboardPaste,
+                    PasteOutcomeKind::InsertionFailed,
+                ),
+            });
         }
         match guard.map(FallbackGuard::check) {
             Some(GuardVerdict::StillUnchanged) | None => None,
@@ -84,10 +113,14 @@ impl SmartPasteCoordinator {
         }
     }
 
-    fn restore_layout(&mut self, switch: &LayoutSwitch, last_key_up: Instant) {
+    /// Restores the layout switched for this chord, at most once.
+    fn restore_layout(&mut self, last_key_up: Instant) {
+        let Some(switch) = self.layout_to_restore.take() else {
+            return;
+        };
         let clock = Arc::clone(&self.ports.clock);
         let input_sources = self.ports.input_sources.as_mut();
-        if let Err(error) = restore_after_chord(input_sources, clock.as_ref(), switch, last_key_up)
+        if let Err(error) = restore_after_chord(input_sources, clock.as_ref(), &switch, last_key_up)
         {
             log::error!("[smart-paste] previous input source could not be restored: {error}");
         }

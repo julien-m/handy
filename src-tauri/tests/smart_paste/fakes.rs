@@ -33,6 +33,9 @@ pub struct FieldState {
     pub setter_result: Result<(), AxError>,
     pub value_error: Option<AxError>,
     pub fail_reads_after_write: bool,
+    /// Reads after the write that time out once each before reads succeed
+    /// again, as a busy application would.
+    pub transient_read_errors: usize,
     pub call_cost: Duration,
     pub writes: usize,
     pub timeouts: Vec<Duration>,
@@ -58,6 +61,7 @@ impl ScriptedField {
             setter_result: Ok(()),
             value_error: None,
             fail_reads_after_write: false,
+            transient_read_errors: 0,
             call_cost: Duration::ZERO,
             writes: 0,
             timeouts: Vec::new(),
@@ -110,11 +114,15 @@ impl AxField for ScriptedField {
     }
 
     fn value_utf16(&mut self, timeout: Duration, max_units: usize) -> Result<Vec<u16>, AxError> {
-        let state = self.begin_call(Some(timeout));
+        let mut state = self.begin_call(Some(timeout));
         if let Some(error) = state.value_error {
             return Err(error);
         }
         if state.fail_reads_after_write && state.writes > 0 {
+            return Err(AxError::Timeout);
+        }
+        if state.transient_read_errors > 0 && state.writes > 0 {
+            state.transient_read_errors -= 1;
             return Err(AxError::Timeout);
         }
         if state.value.len() > max_units {

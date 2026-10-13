@@ -6,9 +6,12 @@ use std::time::Duration;
 
 use handy_app_lib::smart_paste::clock::ManualClock;
 use handy_app_lib::smart_paste::ids::{TransactionId, Transcript};
-use handy_app_lib::smart_paste::pasteboard_port::{GuardedWrite, PasteboardError, PasteboardPort};
+use handy_app_lib::smart_paste::pasteboard_port::{
+    GuardedWrite, PasteboardError, PasteboardPort, TranscriptMarking,
+};
+use handy_app_lib::smart_paste::pasteboard_types::HANDY_PRIVACY_MARKERS;
 use handy_app_lib::smart_paste::snapshot::{
-    PasteboardSnapshot, SnapshotBudget, SnapshotBuilder, PLAIN_TEXT_TYPE,
+    PasteboardSnapshot, SkipCause, SnapshotBudget, SnapshotBuilder, PLAIN_TEXT_TYPE,
 };
 
 /// Raw items: type identifier and bytes per item.
@@ -19,7 +22,10 @@ pub type Items = Vec<Vec<(String, Vec<u8>)>>;
 pub enum Content {
     Items(Items),
     Lazy(TransactionId),
+    /// Ordinary plain text (copy mode, hand-over, a user copy).
     Plain(String),
+    /// Eager transcript, current-host-only with Handy's privacy markers.
+    Private(String),
 }
 
 /// Scripted pasteboard state; every write is logged by kind.
@@ -31,7 +37,10 @@ pub struct PasteboardState {
     pub capture_cost: Duration,
     pub publish_error: Option<PasteboardError>,
     pub unsavable: bool,
+    /// Types the capture reports as unreadable, by name.
+    pub unreadable_types: Vec<String>,
     pub captures: usize,
+    pub prepared_captures: usize,
     pub writes: Vec<&'static str>,
     pub released: Vec<TransactionId>,
 }
@@ -53,7 +62,9 @@ impl FakePasteboard {
             capture_cost: Duration::ZERO,
             publish_error: None,
             unsavable: false,
+            unreadable_types: Vec::new(),
             captures: 0,
+            prepared_captures: 0,
             writes: Vec::new(),
             released: Vec::new(),
         };
@@ -84,12 +95,14 @@ impl FakePasteboard {
     }
 
     fn snapshot_of(state: &PasteboardState) -> Result<PasteboardSnapshot, PasteboardError> {
+        let plain = |text: &str| (PLAIN_TEXT_TYPE.to_string(), text.as_bytes().to_vec());
         let items = match &state.content {
             Content::Items(items) => items.clone(),
-            Content::Plain(text) => vec![vec![(
-                PLAIN_TEXT_TYPE.to_string(),
-                text.as_bytes().to_vec(),
-            )]],
+            Content::Plain(text) => vec![vec![plain(text)]],
+            Content::Private(text) => {
+                let markers = HANDY_PRIVACY_MARKERS.map(|marker| (marker.to_string(), Vec::new()));
+                vec![std::iter::once(plain(text)).chain(markers).collect()]
+            }
             // Capturing Handy's own lazy item would self-trigger its provider.
             Content::Lazy(_) => return Err(PasteboardError::WriteFailed),
         };
@@ -100,8 +113,13 @@ impl FakePasteboard {
         let mut builder =
             SnapshotBuilder::new(SnapshotBudget::default(), state.change_count, &inventory);
         for (index, item) in items.into_iter().enumerate().filter(|_| !state.unsavable) {
-            item.into_iter()
-                .for_each(|(uti, data)| builder.accept(index, &uti, data));
+            for (type_index, (uti, data)) in item.into_iter().enumerate() {
+                if state.unreadable_types.contains(&uti) {
+                    builder.skip(index, type_index, SkipCause::Unreadable);
+                } else {
+                    builder.accept(index, type_index, data);
+                }
+            }
         }
         Ok(builder.finish())
     }
@@ -110,6 +128,10 @@ impl FakePasteboard {
 impl PasteboardPort for FakePasteboard {
     fn change_count(&mut self) -> Result<i64, PasteboardError> {
         Ok(self.state().change_count)
+    }
+
+    fn prepare_capture(&mut self, _budget: SnapshotBudget) {
+        self.state().prepared_captures += 1;
     }
 
     fn capture_snapshot(
@@ -173,13 +195,18 @@ impl PasteboardPort for FakePasteboard {
         &mut self,
         transcript: &Transcript,
         publication_count: i64,
+        marking: TranscriptMarking,
     ) -> Result<GuardedWrite, PasteboardError> {
         let mut state = self.state();
         if state.change_count != publication_count {
             return Ok(GuardedWrite::OwnershipChanged);
         }
         state.change_count += 1;
-        state.content = Content::Plain(transcript.as_str().to_string());
+        let text = transcript.as_str().to_string();
+        state.content = match marking {
+            TranscriptMarking::Private => Content::Private(text),
+            TranscriptMarking::Plain => Content::Plain(text),
+        };
         state.writes.push("materialize");
         Ok(GuardedWrite::Written)
     }

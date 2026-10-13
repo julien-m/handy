@@ -52,6 +52,10 @@ fn rich_clipboard_is_restored_exactly_300_ms_after_the_read() {
     assert_eq!(coordinator.pending_transaction(), None);
 }
 
+/// Reducer logic only: this fake reports every read, while AppKit reports
+/// one per item (it caches the fulfilled data). Natively the quiet period
+/// is therefore measured from the first read (known release risk R-1); see
+/// `with_the_appkit_cache_quiet_is_measured_from_the_first_read`.
 #[test]
 fn probe_then_read_restores_after_the_second_read() {
     let rig = Rig::new();
@@ -88,7 +92,7 @@ fn no_read_is_declared_at_800_ms_and_never_restores() {
     assert!(matches!(rig.pasteboard.state().content, Content::Lazy(_)));
     coordinator.shutdown();
     let state = rig.pasteboard.state();
-    assert_eq!(state.content, Content::Plain("hello world".into()));
+    assert_eq!(state.content, Content::Private("hello world".into()));
     assert!(!state.writes.contains(&"restore"));
 }
 
@@ -223,6 +227,7 @@ fn unsavable_or_failing_snapshot_refuses_to_start_and_keeps_the_clipboard() {
         configure(&rig);
         let (_, outcome, _) = paste(&rig, &[]);
         assert_eq!(outcome.kind, PasteOutcomeKind::InsertionFailed);
+        assert_eq!(outcome.transaction_id, None);
         assert_eq!(rig.pasteboard.state().content, Content::Items(rich_items()));
         assert!(rig.keys.state().chords.is_empty());
     }
@@ -249,7 +254,7 @@ fn destination_lost_before_the_keystroke_fails_without_keys_or_restore() {
     assert_eq!(outcome.kind, PasteOutcomeKind::InsertionFailed);
     assert!(rig.keys.state().chords.is_empty());
     let state = rig.pasteboard.state();
-    assert_eq!(state.content, Content::Plain("hello world".into()));
+    assert_eq!(state.content, Content::Private("hello world".into()));
     assert!(!state.writes.contains(&"restore"));
 }
 
@@ -266,19 +271,19 @@ fn second_dictation_carries_the_original_snapshot_without_intermediate_restore()
     assert_eq!(rig.pasteboard.state().captures, 1);
 }
 
+/// The first transcript item is marked transient and concealed, so it is
+/// not restored either (decision 2026-10-13): the second transcript stays.
 #[test]
-fn after_not_read_the_pre_first_snapshot_never_returns() {
+fn after_not_read_neither_the_pre_first_snapshot_nor_the_first_transcript_returns() {
     let rig = Rig::new();
     let (mut coordinator, _, _) = paste(&rig, &[]);
     let mut reads = ScriptedReads::new(&rig, &[20]);
     coordinator.insert(&request(2, "second", TEXTEDIT, DontModify), &mut reads);
     settle_until(&rig.clock, &mut coordinator, key_down(&rig) + ms(320));
-    let first_transcript = vec![vec![(PLAIN_TEXT_TYPE.to_string(), b"hello world".to_vec())]];
-    assert_eq!(
-        rig.pasteboard.state().content,
-        Content::Items(first_transcript)
-    );
-    assert_eq!(rig.pasteboard.state().captures, 1);
+    let state = rig.pasteboard.state();
+    assert_eq!(state.content, Content::Private("second".into()));
+    assert!(!state.writes.contains(&"restore"));
+    assert_eq!(state.captures, 1);
 }
 
 #[test]
@@ -317,7 +322,7 @@ fn exit_before_quiet_materializes_and_after_quiet_restores() {
     coordinator.shutdown();
     assert_eq!(
         rig.pasteboard.state().content,
-        Content::Plain("hello world".into())
+        Content::Private("hello world".into())
     );
     let rig = Rig::new();
     let (mut coordinator, _, _) = paste(&rig, &[20]);

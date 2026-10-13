@@ -74,6 +74,30 @@ fn run_every_path() {
 }
 
 #[test]
+fn skipped_types_are_logged_by_name_without_their_content() {
+    install_logger();
+    let rig = Rig::new();
+    let promise = "com.example.unreadable-promise";
+    let content = CLIPBOARD_SENTINEL.as_bytes().to_vec();
+    let items = vec![vec![
+        (promise.into(), content.clone()),
+        ("public.rtf".into(), content),
+    ]];
+    rig.pasteboard.state().content = Content::Items(items);
+    rig.pasteboard.state().unreadable_types = vec![promise.into()];
+    let mut reads = ScriptedReads::new(&rig, &[20]);
+    let request = request(9, SENTINEL, None, DontModify);
+    rig.coordinator().insert(&request, &mut reads);
+    let captured = records().lock().map(|lines| lines.clone());
+    let captured = captured.unwrap_or_else(|poisoned| poisoned.into_inner().clone());
+    let is_named = |line: &String| line.contains(promise) && line.contains("Unreadable");
+    assert!(captured.iter().any(is_named));
+    assert!(captured
+        .iter()
+        .all(|line| !line.contains(CLIPBOARD_SENTINEL)));
+}
+
+#[test]
 fn no_log_record_contains_user_content() {
     install_logger();
     run_every_path();

@@ -1,13 +1,15 @@
 //! Scripted pasteboard, keys, destination and read source wired into the
 //! production coordinator (no mock coordinator).
 
-use std::collections::VecDeque;
+use std::collections::{HashSet, VecDeque};
 use std::sync::{Arc, Mutex, MutexGuard, PoisonError};
 use std::time::{Duration, Instant};
 
 use handy_app_lib::smart_paste::clock::{Clock, ManualClock};
 use handy_app_lib::smart_paste::coordinator::{SmartPasteCoordinator, SmartPastePorts};
-use handy_app_lib::smart_paste::ids::{DestinationGeneration, DictationId, Transcript};
+use handy_app_lib::smart_paste::ids::{
+    DestinationGeneration, DictationId, TransactionId, Transcript,
+};
 use handy_app_lib::smart_paste::key_events::{KeyEventPort, PasteKey};
 use handy_app_lib::smart_paste::keyboard::{InputSourceKind, KeyboardError};
 use handy_app_lib::smart_paste::outcome::PasteDiagnostic;
@@ -39,8 +41,11 @@ pub struct KeysState {
     pub chord_fails: bool,
     pub typing_fails: bool,
     pub chords: Vec<Instant>,
+    pub resolved: Vec<Instant>,
     pub typed: Vec<String>,
     pub on_chord: Option<Arc<dyn Fn() + Send + Sync>>,
+    /// Makes the chord unwind, as a panicking native port would.
+    pub chord_unwinds: bool,
 }
 
 impl FakeKeys {
@@ -60,7 +65,9 @@ impl FakeKeys {
 
 impl KeyEventPort for FakeKeys {
     fn resolve_paste_key(&mut self) -> Result<PasteKey, KeyboardError> {
-        if self.state().resolve_fails {
+        let mut state = self.state();
+        state.resolved.push(self.clock.now());
+        if state.resolve_fails {
             return Err(KeyboardError::MainThreadUnavailable);
         }
         Ok(PasteKey(9))
@@ -72,6 +79,10 @@ impl KeyEventPort for FakeKeys {
             state.chords.push(self.clock.now());
             if state.chord_fails {
                 return Err(KeyboardError::PostFailed);
+            }
+            if state.chord_unwinds {
+                drop(state);
+                std::panic::resume_unwind(Box::new("scripted native port failure"));
             }
             state.on_chord.clone()
         };
@@ -115,12 +126,16 @@ impl DiagnosticSink for FakeDiagnostics {
 }
 
 /// Reads scripted relative to the latest chord's key-down, in ms (negative:
-/// served before the keystroke).
+/// served before the keystroke). By default every read is reported, which
+/// tests the reducer; [`ScriptedReads::with_appkit_cache`] reports only the
+/// first read of each item, as AppKit does once it cached the data.
 pub struct ScriptedReads {
     clock: ManualClock,
     keys: FakeKeys,
     pasteboard: FakePasteboard,
     pending: VecDeque<i64>,
+    reports_only_first_read: bool,
+    reported: HashSet<TransactionId>,
 }
 
 impl ScriptedReads {
@@ -131,7 +146,15 @@ impl ScriptedReads {
             keys: rig.keys.clone(),
             pasteboard: rig.pasteboard.clone(),
             pending: offsets.iter().copied().collect(),
+            reports_only_first_read: false,
+            reported: HashSet::new(),
         }
+    }
+
+    /// Reports only the first read of each item, like the native provider.
+    pub fn with_appkit_cache(mut self) -> Self {
+        self.reports_only_first_read = true;
+        self
     }
 
     fn next_at(&self) -> Option<Instant> {
@@ -157,15 +180,22 @@ impl ScriptedReads {
 
 impl ReadEvents for ScriptedReads {
     fn next_read(&mut self, deadline: Instant) -> Option<ReadEvent> {
-        match (self.next_at(), self.pasteboard.published()) {
-            (Some(at), Some(transaction)) if at <= deadline => {
-                self.pending.pop_front();
-                self.clock.advance_to(at);
-                Some(ReadEvent { transaction, at })
-            }
-            _ => {
-                self.clock.advance_to(deadline);
-                None
+        // Each pass serves one scripted read; a read AppKit would answer from
+        // its cache produces no event and the next one is tried.
+        loop {
+            match (self.next_at(), self.pasteboard.published()) {
+                (Some(at), Some(transaction)) if at <= deadline => {
+                    self.pending.pop_front();
+                    self.clock.advance_to(at);
+                    if self.reports_only_first_read && !self.reported.insert(transaction) {
+                        continue;
+                    }
+                    return Some(ReadEvent { transaction, at });
+                }
+                _ => {
+                    self.clock.advance_to(deadline);
+                    return None;
+                }
             }
         }
     }

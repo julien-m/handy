@@ -9,8 +9,9 @@
 //! - verified accessibility insertion: [`ax_port`], [`direct`], and the
 //!   macOS adapter `macos_ax`;
 //! - bounded multi-type snapshot and on-demand publication: [`snapshot`],
-//!   [`snapshot_protocol`], [`pasteboard_port`], and on macOS the
-//!   `snapshot_helper` process (reading through `macos_snapshot_stream`),
+//!   [`snapshot_protocol`], [`pasteboard_types`], [`pasteboard_port`], and
+//!   on macOS the `snapshot_helper` process (reading through
+//!   `macos_snapshot_stream`, kept started ahead by `warm_helper`),
 //!   `macos_pasteboard` and `main_thread`;
 //! - per-application strategy and keyboard: [`strategy`], [`keyboard`],
 //!   [`key_events`], and the macOS adapters in `macos_keyboard`;
@@ -45,6 +46,7 @@ mod macos_snapshot_stream;
 pub mod main_thread;
 pub mod outcome;
 pub mod pasteboard_port;
+pub mod pasteboard_types;
 mod pending;
 pub mod request;
 pub mod settlement;
@@ -54,3 +56,5 @@ pub mod snapshot_helper;
 pub mod snapshot_protocol;
 pub mod strategy;
 pub mod timing;
+#[cfg(target_os = "macos")]
+mod warm_helper;

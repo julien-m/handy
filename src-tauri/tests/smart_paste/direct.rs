@@ -153,6 +153,30 @@ fn unreadable_value_after_the_write_is_uncertain() {
 }
 
 #[test]
+fn a_read_timeout_after_the_write_does_not_hide_a_verified_insertion() {
+    let clock = ManualClock::new();
+    let field = field(&clock, "x");
+    field.state().transient_read_errors = 2;
+    assert!(matches!(
+        attempt(&clock, &field, "hello"),
+        DirectAttempt::Verified
+    ));
+    assert_eq!(field.state().writes, 1);
+}
+
+#[test]
+fn an_unchanged_field_after_a_read_timeout_still_falls_back_with_the_guard() {
+    let clock = ManualClock::new();
+    let field = field(&clock, "x");
+    field.state().behavior = WriteBehavior::Ignore;
+    field.state().transient_read_errors = 1;
+    assert!(matches!(
+        attempt(&clock, &field, "hello"),
+        DirectAttempt::Unchanged(_)
+    ));
+}
+
+#[test]
 fn secure_field_is_skipped_without_writing() {
     let clock = ManualClock::new();
     let field = field(&clock, "");

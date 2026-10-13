@@ -14,7 +14,7 @@ use handy_app_lib::smart_paste::strategy::{
 use handy_app_lib::smart_paste::timing::JUMP_DESKTOP_BUNDLE_ID;
 
 use super::fakes::{FakeInputSources, ScriptedField, WriteBehavior};
-use super::rig::{request, rich_items, Content, Rig, ScriptedReads};
+use super::rig::{request, Content, Rig, ScriptedReads};
 
 // @spec FR-007: Strategy and keyboard composition — .specs/features/007-smart-paste/spec.md#fr-007
 // @spec FR-011: AX then clipboard then recovery — .specs/features/007-smart-paste/spec.md#fr-011
@@ -113,8 +113,23 @@ fn write_applied_before_the_keystroke_cancels_the_chord() {
     assert!(rig.keys.state().chords.is_empty());
     assert_eq!(field.value_text(), "note: hello world");
     let state = rig.pasteboard.state();
-    assert_eq!(state.content, Content::Plain("hello world".into()));
+    assert_eq!(state.content, Content::Private("hello world".into()));
     assert!(!state.writes.contains(&"restore"));
+}
+
+#[test]
+fn destination_lost_after_an_ax_write_is_uncertain_not_a_clean_failure() {
+    let mut rig = Rig::new();
+    with_field(&mut rig, WriteBehavior::Ignore);
+    rig.destination
+        .answers
+        .lock()
+        .map(|mut answers| answers.extend([true, false]))
+        .unwrap_or(());
+    let outcome = insert(&rig, TEXTEDIT, DontModify, &[]);
+    assert_eq!(outcome.kind, PasteOutcomeKind::Uncertain);
+    assert_eq!(outcome.path, InsertionPath::DirectAccessibility);
+    assert!(rig.keys.state().chords.is_empty());
 }
 
 #[test]
@@ -204,7 +219,50 @@ fn azerty_switches_to_abc_before_the_chord_and_restores_after_key_up() {
         rig.pasteboard.state().content,
         Content::Lazy(handy_app_lib::smart_paste::ids::TransactionId(1))
     );
-    let _ = rich_items();
+}
+
+#[test]
+fn the_v_key_is_resolved_after_the_layout_switch() {
+    let mut rig = Rig::new();
+    let french = "com.apple.keylayout.French";
+    rig.sources = FakeInputSources::new(
+        &rig.clock,
+        french,
+        InputSourceKind::KeyboardLayout,
+        &[ABC_LAYOUT_ID, french],
+    );
+    insert(&rig, TEXTEDIT, DontModify, &[20]);
+    let switched_at = rig.sources.state().selections.first().map(|(_, at)| *at);
+    let resolved_at = rig.keys.state().resolved.first().copied();
+    assert!(switched_at.is_some() && resolved_at > switched_at);
+}
+
+#[test]
+fn layout_is_restored_when_a_native_port_panics_during_the_chord() {
+    let mut rig = Rig::new();
+    let french = "com.apple.keylayout.French";
+    rig.sources = FakeInputSources::new(
+        &rig.clock,
+        french,
+        InputSourceKind::KeyboardLayout,
+        &[ABC_LAYOUT_ID, french],
+    );
+    rig.keys.state().chord_unwinds = true;
+    let mut coordinator = rig.coordinator();
+    let mut reads = ScriptedReads::new(&rig, &[]);
+    let request = request(1, "hello world", TEXTEDIT, DontModify);
+    let unwound = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+        coordinator.insert(&request, &mut reads)
+    }));
+    assert!(unwound.is_err());
+    let ids: Vec<_> = rig
+        .sources
+        .state()
+        .selections
+        .iter()
+        .map(|(id, _)| id.clone())
+        .collect();
+    assert_eq!(ids, vec![ABC_LAYOUT_ID.to_string(), french.to_string()]);
 }
 
 #[test]

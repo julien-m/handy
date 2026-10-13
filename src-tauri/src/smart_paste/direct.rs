@@ -237,35 +237,51 @@ fn skip_reason_for_value_error(error: AxError) -> SkipReason {
     }
 }
 
+/// Last observation of the field during the read-back window.
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Observed {
+    Unchanged,
+    Changed,
+    Unreadable,
+}
+
 fn read_back(clock: &dyn Clock, mut prepared: Prepared, window_end: Instant) -> DirectAttempt {
-    let mut is_unchanged = true;
-    // Polls until the window closes: an exact match ends early, an error
-    // after the write is "uncertain" immediately (never retried blindly).
+    let mut last = Observed::Unchanged;
+    // Polls until the window closes: an exact match ends early. A read
+    // error is only remembered, never answered with a second write: the
+    // next read may still show the value (busy or asynchronous fields).
+    // The verdict comes from the last read of the window.
     while let Some(timeout) = readback_timeout(clock, window_end) {
-        match prepared.field.value_utf16(timeout, MAX_FIELD_UTF16_UNITS) {
+        last = match prepared.field.value_utf16(timeout, MAX_FIELD_UTF16_UNITS) {
             Ok(value) if value == prepared.expected => return DirectAttempt::Verified,
-            Ok(value) => is_unchanged = value == prepared.before,
-            Err(_) => return DirectAttempt::Uncertain(UncertainReason::ReadbackUnavailable),
-        }
-        let last_read_start = window_end
-            .checked_sub(MIN_READ_TIMEOUT)
-            .unwrap_or(window_end);
-        let pause =
-            READBACK_POLL_INTERVAL.min(last_read_start.saturating_duration_since(clock.now()));
-        if pause.is_zero() {
+            Ok(value) if value == prepared.before => Observed::Unchanged,
+            Ok(_) => Observed::Changed,
+            Err(_) => Observed::Unreadable,
+        };
+        let Some(pause) = readback_pause(clock, window_end) else {
             break;
-        }
+        };
         clock.sleep(pause);
     }
-    if is_unchanged {
-        DirectAttempt::Unchanged(FallbackGuard {
+    match last {
+        Observed::Unchanged => DirectAttempt::Unchanged(FallbackGuard {
             field: prepared.field,
             before: prepared.before,
             expected: prepared.expected,
-        })
-    } else {
-        DirectAttempt::Uncertain(UncertainReason::ChangedUnexpectedly)
+        }),
+        Observed::Changed => DirectAttempt::Uncertain(UncertainReason::ChangedUnexpectedly),
+        Observed::Unreadable => DirectAttempt::Uncertain(UncertainReason::ReadbackUnavailable),
     }
+}
+
+/// Pause before the next read; `None` once the last read of the window was
+/// taken (a read only starts with [`MIN_READ_TIMEOUT`] left).
+fn readback_pause(clock: &dyn Clock, window_end: Instant) -> Option<Duration> {
+    let last_read_start = window_end
+        .checked_sub(MIN_READ_TIMEOUT)
+        .unwrap_or(window_end);
+    let pause = READBACK_POLL_INTERVAL.min(last_read_start.saturating_duration_since(clock.now()));
+    (!pause.is_zero()).then_some(pause)
 }
 
 fn readback_timeout(clock: &dyn Clock, window_end: Instant) -> Option<Duration> {

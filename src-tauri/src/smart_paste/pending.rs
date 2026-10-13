@@ -6,7 +6,7 @@ use std::sync::Arc;
 
 use super::ids::{DictationId, TransactionId, Transcript};
 use super::lifecycle::ReadLifecycle;
-use super::pasteboard_port::{GuardedWrite, PasteboardError, PasteboardPort};
+use super::pasteboard_port::{GuardedWrite, PasteboardError, PasteboardPort, TranscriptMarking};
 use super::settlement::{
     settlement_action, ClipboardPolicy, PendingClipboardView, SettlementAction, SettlementTrigger,
 };
@@ -30,7 +30,8 @@ pub(super) struct PendingClipboard {
 }
 
 impl PendingClipboard {
-    /// What a new dictation may reuse from this transaction.
+    /// What a new dictation may reuse from this transaction. A withheld
+    /// snapshot is still carried: it keeps withholding the restoration.
     pub(super) fn view(&self, current_count: Result<i64, PasteboardError>) -> PendingClipboardView {
         PendingClipboardView {
             is_still_owned: current_count == Ok(self.publication_count),
@@ -70,7 +71,10 @@ impl PendingClipboard {
         snapshot: Option<Arc<PasteboardSnapshot>>,
         pasteboard: &mut dyn PasteboardPort,
     ) -> SettlementAction {
-        let result = match (action, snapshot) {
+        // Content marked concealed or transient is never restored
+        // (decision 2026-10-13): the transcript stays instead, as eager text.
+        let restorable = snapshot.filter(|snapshot| !snapshot.is_restoration_withheld());
+        let result = match (action, restorable) {
             (SettlementAction::RestoreSnapshot, Some(snapshot)) => {
                 pasteboard.restore_snapshot(snapshot, self.publication_count)
             }
@@ -83,8 +87,15 @@ impl PendingClipboard {
         written_or_left(action, result)
     }
 
+    /// Makes the transcript eager: marked and current-host-only like the
+    /// on-demand item, or ordinary plain text in copy mode (AC-013).
     fn materialize(&self, pasteboard: &mut dyn PasteboardPort) -> SettlementAction {
-        let result = pasteboard.materialize_transcript(&self.transcript, self.publication_count);
+        let marking = match self.policy {
+            ClipboardPolicy::DontModify => TranscriptMarking::Private,
+            ClipboardPolicy::CopyToClipboard => TranscriptMarking::Plain,
+        };
+        let result =
+            pasteboard.materialize_transcript(&self.transcript, self.publication_count, marking);
         written_or_left(SettlementAction::MaterializeTranscript, result)
     }
 }

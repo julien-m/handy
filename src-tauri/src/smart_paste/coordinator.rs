@@ -62,6 +62,8 @@ pub struct SmartPasteCoordinator {
     ports: SmartPastePorts,
     next_transaction: u64,
     pending: Option<PendingClipboard>,
+    /// Layout switched for the chord in progress, restored exactly once.
+    layout_to_restore: Option<LayoutSwitch>,
 }
 
 type SnapshotChoice = (Arc<PasteboardSnapshot>, i64);
@@ -73,6 +75,7 @@ impl SmartPasteCoordinator {
             ports,
             next_transaction: 1,
             pending: None,
+            layout_to_restore: None,
         }
     }
 
@@ -174,6 +177,10 @@ impl SmartPasteCoordinator {
         timings: ClipboardTimings,
         events: &mut dyn ReadEvents,
     ) -> PasteOutcome {
+        // The snapshot helper starts while AX runs; it reads nothing until
+        // a capture is actually needed.
+        let budget = SnapshotBudget::default();
+        self.ports.pasteboard.prepare_capture(budget);
         let transcript = request.transcript.to_utf16();
         let pid = request.destination.pid;
         let clock = Arc::clone(&self.ports.clock);
@@ -181,12 +188,8 @@ impl SmartPasteCoordinator {
             DirectAttempt::Verified => self.verified(request),
             DirectAttempt::Uncertain(reason) => {
                 log::info!("[smart-paste] direct insertion uncertain: {reason:?}");
-                outcome(
-                    request,
-                    None,
-                    InsertionPath::DirectAccessibility,
-                    PasteOutcomeKind::Uncertain,
-                )
+                let path = InsertionPath::DirectAccessibility;
+                outcome(request, None, path, PasteOutcomeKind::Uncertain)
             }
             DirectAttempt::Skipped(reason) => {
                 log::info!("[smart-paste] direct insertion skipped: {reason:?}");
@@ -217,14 +220,11 @@ impl SmartPasteCoordinator {
     ) -> PasteOutcome {
         let transaction = TransactionId(self.next_transaction);
         self.next_transaction += 1;
+        // Nothing was published, so no transaction id is reported.
         let failed = |error: PasteboardError| {
             log::warn!("[smart-paste] clipboard transaction could not start: {error}");
-            outcome(
-                request,
-                Some(transaction),
-                InsertionPath::ClipboardPaste,
-                PasteOutcomeKind::InsertionFailed,
-            )
+            let path = InsertionPath::ClipboardPaste;
+            outcome(request, None, path, PasteOutcomeKind::InsertionFailed)
         };
         let choice = match self.snapshot_for_new_transaction() {
             Ok(choice) => choice,
@@ -299,13 +299,11 @@ impl SmartPasteCoordinator {
             (SnapshotSource::CarryPendingSnapshot, Some(pending), Ok(count)) => {
                 pending.snapshot.clone().map(|snapshot| (snapshot, count))
             }
-            (SnapshotSource::PendingTranscript, Some(pending), Ok(count)) => Some((
-                Arc::new(PasteboardSnapshot::from_plain_text(
-                    pending.transcript.as_str(),
-                    count,
-                )),
-                count,
-            )),
+            // Handy's own earlier transcript item is marked transient and
+            // concealed, so it is never restored either.
+            (SnapshotSource::PendingTranscript, Some(_), Ok(count)) => {
+                Some((Arc::new(PasteboardSnapshot::withheld(count)), count))
+            }
             _ => None,
         };
         if let Some(choice) = reusable {
@@ -315,7 +313,12 @@ impl SmartPasteCoordinator {
             .ports
             .pasteboard
             .capture_snapshot(SnapshotBudget::default())?;
+        log_snapshot(&snapshot);
         let source_count = snapshot.source_change_count();
+        let snapshot = snapshot.withhold_if_privacy_marked();
+        if snapshot.is_restoration_withheld() {
+            log::info!("[smart-paste] previous clipboard is concealed or transient: not restored");
+        }
         Ok((Arc::new(snapshot), source_count))
     }
 
@@ -328,6 +331,28 @@ impl SmartPasteCoordinator {
                 .release_transaction(previous.transaction);
         }
     }
+}
+
+/// Debug-logs what the snapshot could not keep, by type name only (spec
+/// Edge Cases), so a partial restoration is visible without any content.
+fn log_snapshot(snapshot: &PasteboardSnapshot) {
+    for skipped in snapshot.skipped() {
+        log::debug!(
+            "[smart-paste] snapshot skipped type {} of item {}: {:?}",
+            skipped.uti,
+            skipped.item_index,
+            skipped.cause
+        );
+    }
+    let omitted = snapshot.omitted();
+    log::debug!(
+        "[smart-paste] snapshot saved {} types ({} bytes), skipped {}, omitted {} items and {} types beyond limits",
+        snapshot.saved_type_count(),
+        snapshot.saved_bytes(),
+        snapshot.skipped().len(),
+        omitted.items,
+        omitted.types
+    );
 }
 
 fn outcome(

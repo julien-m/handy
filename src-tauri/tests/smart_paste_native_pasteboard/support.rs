@@ -23,6 +23,8 @@ use objc2_foundation::{NSArray, NSData, NSObject, NSString};
 
 /// Argument turning this binary into an external pasteboard reader.
 const READ_FLAG: &str = "--read-named-pasteboard";
+/// Argument turning this binary into an external item counter.
+const COUNT_FLAG: &str = "--count-named-pasteboard";
 /// Safety bound for the whole scenario; real runs take a few seconds.
 const SCENARIO_TIMEOUT: Duration = Duration::from_secs(120);
 /// Run-loop slice: short enough to serve requests promptly.
@@ -46,8 +48,11 @@ pub type TypeBytes = (String, Vec<u8>);
 /// Dispatches between reader mode, opt-out and the scenario.
 pub fn main_with_run_loop(scenario: fn() -> Result<Vec<serde_json::Value>, String>) -> ExitCode {
     let arguments: Vec<String> = std::env::args().collect();
-    if arguments.get(1).map(String::as_str) == Some(READ_FLAG) {
-        return read_named_pasteboard(arguments.get(2).map(String::as_str).unwrap_or_default());
+    let name = arguments.get(2).map(String::as_str).unwrap_or_default();
+    match arguments.get(1).map(String::as_str) {
+        Some(READ_FLAG) => return read_named_pasteboard(name),
+        Some(COUNT_FLAG) => return count_named_pasteboard(name),
+        _ => {}
     }
     if !arguments.iter().any(|argument| argument == "--ignored") {
         println!("smart_paste_native_pasteboard: 1 ignored (opt-in: -- --ignored)");
@@ -97,6 +102,15 @@ fn read_named_pasteboard(name: &str) -> ExitCode {
     ExitCode::SUCCESS
 }
 
+fn count_named_pasteboard(name: &str) -> ExitCode {
+    let pasteboard = NSPasteboard::pasteboardWithName(&NSString::from_str(name));
+    let count = pasteboard
+        .pasteboardItems()
+        .map_or(0, |items| items.count());
+    print!("{count}");
+    ExitCode::SUCCESS
+}
+
 /// Runs the helper binary once and returns the wall time in ms.
 ///
 /// Cargo rewrites the binary before tests; macOS assesses the first
@@ -114,9 +128,23 @@ pub fn helper_first_execution_ms() -> f64 {
 
 /// Launches an external reader of the named pasteboard and returns its text.
 pub fn external_read(name: &str) -> Result<String, String> {
+    run_reader(READ_FLAG, name)
+}
+
+/// Number of items another process sees on the named pasteboard. AppKit
+/// commits a large write to the pasteboard server progressively, so other
+/// processes may briefly see fewer items than were written.
+pub fn external_item_count(name: &str) -> Result<usize, String> {
+    let count = run_reader(COUNT_FLAG, name)?;
+    count
+        .parse()
+        .map_err(|_| format!("unexpected item count {count:?}"))
+}
+
+fn run_reader(flag: &str, name: &str) -> Result<String, String> {
     let executable = std::env::current_exe().map_err(|error| error.to_string())?;
     let mut child = Command::new(executable)
-        .args([READ_FLAG, name])
+        .args([flag, name])
         .stdout(Stdio::piped())
         .spawn()
         .map_err(|error| error.to_string())?;

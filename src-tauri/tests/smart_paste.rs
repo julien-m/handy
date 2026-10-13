@@ -11,6 +11,7 @@ mod smart_paste {
     pub mod keyboard;
     pub mod lifecycle;
     pub mod privacy;
+    pub mod restoration_policy;
     pub mod rig;
     pub mod snapshot;
 }

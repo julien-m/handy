@@ -4,6 +4,13 @@
 //! thread), timers and shutdown all go through one channel, so clipboard
 //! ownership, chords and input-source cleanup are serialized and the UI
 //! thread never waits on smart paste.
+//!
+//! Ordering rules: reads are handled before a timer that they could move
+//! (a read stamped before a deadline but delivered just after it is awaited
+//! for [`READ_DELIVERY_GRACE`]); a due timer before queued requests; a
+//! shutdown before queued insertions, which are then dropped unrun. An
+//! insertion in progress always finishes first, so its outcome stays
+//! truthful: [`shutdown_allowance`] bounds that wait.
 
 use std::collections::VecDeque;
 use std::sync::mpsc::{self, Receiver, RecvTimeoutError, Sender};
@@ -13,11 +20,43 @@ use std::time::{Duration, Instant};
 
 use super::clock::Clock;
 use super::coordinator::{SmartPasteCoordinator, SmartPastePorts};
+use super::direct::TOTAL_DIRECT_BUDGET;
+use super::key_events::CHORD_HOLD;
+use super::keyboard::{LAYOUT_RESTORE_DELAY, LAYOUT_SETTLE_DELAY};
 use super::outcome::PasteOutcome;
 use super::pasteboard_port::{ReadEvent, ReadSink};
 use super::request::{InsertionRequest, ReadEvents};
+use super::snapshot::SNAPSHOT_DEADLINE;
+use super::timing::JUMP_NO_READ_DECISION;
 
 // @spec FR-008: Serialized delivery of terminal outcomes — .specs/features/007-smart-paste/spec.md#fr-008
+
+/// How long a read stamped before a deadline may still take to reach the
+/// actor after that deadline. The provider stamps and sends back to back on
+/// the main thread, so only a scheduler preemption delays delivery; 20 ms
+/// covers that without visibly delaying a "not read" decision.
+pub const READ_DELIVERY_GRACE: Duration = Duration::from_millis(20);
+
+/// One main-thread write (settlement on exit) is bounded by the adapters'
+/// one-second dispatch timeout.
+const SETTLEMENT_ALLOWANCE: Duration = Duration::from_secs(1);
+
+/// Longest a normal exit may wait in [`SmartPasteActor::shutdown`] with a
+/// responsive main thread: an insertion already running finishes first
+/// (direct insertion, snapshot, layout settle, `paste_delay`, chord hold,
+/// layout restore, the longest no-read decision and the read grace), then
+/// the pending transaction is settled with one main-thread write.
+pub fn shutdown_allowance(paste_delay: Duration) -> Duration {
+    TOTAL_DIRECT_BUDGET
+        + SNAPSHOT_DEADLINE
+        + LAYOUT_SETTLE_DELAY
+        + paste_delay
+        + CHORD_HOLD
+        + LAYOUT_RESTORE_DELAY
+        + JUMP_NO_READ_DECISION
+        + READ_DELIVERY_GRACE
+        + SETTLEMENT_ALLOWANCE
+}
 
 enum ActorMessage {
     Insert(Box<InsertionRequest>, Sender<PasteOutcome>),
@@ -29,7 +68,24 @@ enum ActorMessage {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct ActorStopped;
 
-/// Handle to the smart-paste actor thread.
+/// Why [`SmartPasteActor::shutdown`] did not complete.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ShutdownError {
+    /// Called on the macOS main thread: the settlement write needs that
+    /// thread, so it would wait for itself. Call from a worker while the
+    /// main run loop keeps running (for example: prevent the exit, shut down
+    /// from a worker, then exit).
+    OnMainThread,
+    /// The actor had already stopped.
+    Stopped,
+    /// The actor did not finish within the timeout; it keeps running and
+    /// settles on its own.
+    TimedOut,
+}
+
+/// Handle to the smart-paste actor thread. Dropping it without
+/// [`Self::shutdown`] still asks the thread to settle and stop, without
+/// waiting for it.
 pub struct SmartPasteActor {
     sender: Sender<ActorMessage>,
     thread: Option<JoinHandle<()>>,
@@ -60,6 +116,8 @@ impl SmartPasteActor {
     }
 
     /// Queues an insertion; the terminal outcome arrives on the receiver.
+    /// An insertion still queued when the actor shuts down is dropped and
+    /// its receiver disconnects without an outcome.
     ///
     /// # Errors
     /// [`ActorStopped`] once the actor has shut down.
@@ -75,19 +133,39 @@ impl SmartPasteActor {
     }
 
     /// Settles the pending transaction for a normal exit and stops the
-    /// thread. Returns false if the actor did not finish within `timeout`.
-    pub fn shutdown(&mut self, timeout: Duration) -> bool {
+    /// thread, waiting up to `timeout` (see [`shutdown_allowance`]). Must not
+    /// be called on the macOS main thread.
+    ///
+    /// # Errors
+    /// See [`ShutdownError`].
+    pub fn shutdown(&mut self, timeout: Duration) -> Result<(), ShutdownError> {
+        #[cfg(target_os = "macos")]
+        if super::main_thread::is_main_thread() {
+            return Err(ShutdownError::OnMainThread);
+        }
         let (reply, done) = mpsc::channel();
-        if self.sender.send(ActorMessage::Shutdown(reply)).is_err() {
-            return false;
+        self.sender
+            .send(ActorMessage::Shutdown(reply))
+            .map_err(|_| ShutdownError::Stopped)?;
+        done.recv_timeout(timeout).map_err(|error| match error {
+            RecvTimeoutError::Timeout => ShutdownError::TimedOut,
+            RecvTimeoutError::Disconnected => ShutdownError::Stopped,
+        })?;
+        if let Some(thread) = self.thread.take() {
+            let _ = thread.join();
         }
-        let is_done = done.recv_timeout(timeout).is_ok();
-        if is_done {
-            if let Some(thread) = self.thread.take() {
-                let _ = thread.join();
-            }
+        Ok(())
+    }
+}
+
+impl Drop for SmartPasteActor {
+    fn drop(&mut self) {
+        // Not joined: dropping may happen on the main thread, which the
+        // settlement write needs. The thread settles and exits on its own.
+        if self.thread.take().is_some() {
+            let (reply, _) = mpsc::channel();
+            let _ = self.sender.send(ActorMessage::Shutdown(reply));
         }
-        is_done
     }
 }
 
@@ -101,37 +179,89 @@ struct ActorQueue {
     receiver: Receiver<ActorMessage>,
     deferred: VecDeque<ActorMessage>,
     clock: Arc<dyn Clock>,
+    read_grace: Duration,
 }
 
 impl ActorQueue {
+    fn new(receiver: Receiver<ActorMessage>, clock: Arc<dyn Clock>) -> Self {
+        Self {
+            receiver,
+            deferred: VecDeque::new(),
+            clock,
+            read_grace: READ_DELIVERY_GRACE,
+        }
+    }
+
+    /// Next message or timer for the idle actor, in the module's order.
     fn next(&mut self, deadline: Option<Instant>) -> Next {
-        if let Some(message) = self.deferred.pop_front() {
+        while let Ok(message) = self.receiver.try_recv() {
+            self.deferred.push_back(message);
+        }
+        if let Some(read) = self.take_read_by(None) {
+            return Next::Message(ActorMessage::Read(read));
+        }
+        if let Some(due) = deadline.filter(|due| self.clock.now() >= *due) {
+            return self.at_deadline(due);
+        }
+        if let Some(message) = self.take_shutdown_or_first() {
             return Next::Message(message);
         }
-        let received = match deadline {
-            None => self
+        self.wait(deadline)
+    }
+
+    fn wait(&mut self, deadline: Option<Instant>) -> Next {
+        let Some(due) = deadline else {
+            return self
                 .receiver
                 .recv()
-                .map_err(|_| RecvTimeoutError::Disconnected),
-            Some(deadline) => {
-                let remaining = deadline.saturating_duration_since(self.clock.now());
-                self.receiver.recv_timeout(remaining)
-            }
+                .map_or(Next::Disconnected, Next::Message);
         };
-        match received {
+        let remaining = due.saturating_duration_since(self.clock.now());
+        match self.receiver.recv_timeout(remaining) {
             Ok(message) => Next::Message(message),
-            Err(RecvTimeoutError::Timeout) => Next::Deadline,
+            Err(RecvTimeoutError::Timeout) => self.at_deadline(due),
+            // Unreachable while a published item's read sink holds a sender.
             Err(RecvTimeoutError::Disconnected) => Next::Disconnected,
         }
     }
-}
 
-impl ReadEvents for ActorQueue {
-    fn next_read(&mut self, deadline: Instant) -> Option<ReadEvent> {
-        // Commands and reads stamped after the deadline are kept, in order,
-        // for after the current insertion.
+    fn at_deadline(&mut self, due: Instant) -> Next {
+        match self.late_read_by(due) {
+            Some(read) => Next::Message(ActorMessage::Read(read)),
+            None => Next::Deadline,
+        }
+    }
+
+    /// Removes the first deferred read stamped at or before `limit` (any
+    /// read when `limit` is `None`).
+    fn take_read_by(&mut self, limit: Option<Instant>) -> Option<ReadEvent> {
+        let position = self.deferred.iter().position(|message| {
+            matches!(message, ActorMessage::Read(event) if limit.is_none_or(|limit| event.at <= limit))
+        })?;
+        match self.deferred.remove(position) {
+            Some(ActorMessage::Read(event)) => Some(event),
+            _ => None,
+        }
+    }
+
+    fn take_shutdown_or_first(&mut self) -> Option<ActorMessage> {
+        let shutdown = self
+            .deferred
+            .iter()
+            .position(|message| matches!(message, ActorMessage::Shutdown(_)));
+        self.deferred.remove(shutdown.unwrap_or(0))
+    }
+
+    /// After the timer at `deadline` fired: a read stamped by then may still
+    /// be in flight, so it is awaited for the grace period before the timer
+    /// is applied. Other messages are kept for later, in order.
+    fn late_read_by(&mut self, deadline: Instant) -> Option<ReadEvent> {
+        if let Some(read) = self.take_read_by(Some(deadline)) {
+            return Some(read);
+        }
+        let grace_end = self.clock.now() + self.read_grace;
         loop {
-            let remaining = deadline.saturating_duration_since(self.clock.now());
+            let remaining = grace_end.saturating_duration_since(self.clock.now());
             match self.receiver.recv_timeout(remaining) {
                 Ok(ActorMessage::Read(event)) if event.at <= deadline => return Some(event),
                 Ok(other) => self.deferred.push_back(other),
@@ -141,14 +271,28 @@ impl ReadEvents for ActorQueue {
     }
 }
 
+impl ReadEvents for ActorQueue {
+    fn next_read(&mut self, deadline: Instant) -> Option<ReadEvent> {
+        // Commands and reads stamped after the deadline are kept, in order,
+        // for after the current insertion.
+        if let Some(read) = self.take_read_by(Some(deadline)) {
+            return Some(read);
+        }
+        loop {
+            let remaining = deadline.saturating_duration_since(self.clock.now());
+            match self.receiver.recv_timeout(remaining) {
+                Ok(ActorMessage::Read(event)) if event.at <= deadline => return Some(event),
+                Ok(other) => self.deferred.push_back(other),
+                Err(RecvTimeoutError::Timeout) => return self.late_read_by(deadline),
+                Err(RecvTimeoutError::Disconnected) => return None,
+            }
+        }
+    }
+}
+
 fn run(ports: SmartPastePorts, receiver: Receiver<ActorMessage>) {
-    let clock = Arc::clone(&ports.clock);
+    let mut queue = ActorQueue::new(receiver, Arc::clone(&ports.clock));
     let mut coordinator = SmartPasteCoordinator::new(ports);
-    let mut queue = ActorQueue {
-        receiver,
-        deferred: VecDeque::new(),
-        clock,
-    };
     // Serves one message or timer at a time until shutdown (or until every
     // sender is gone, which settles like a normal exit).
     loop {
@@ -165,10 +309,11 @@ fn run(ports: SmartPastePorts, receiver: Receiver<ActorMessage>) {
                 return;
             }
             Next::Deadline => coordinator.handle_deadline(),
-            Next::Disconnected => {
-                coordinator.shutdown();
-                return;
-            }
+            Next::Disconnected => return coordinator.shutdown(),
         }
     }
 }
+
+#[cfg(test)]
+#[path = "actor_tests.rs"]
+mod tests;

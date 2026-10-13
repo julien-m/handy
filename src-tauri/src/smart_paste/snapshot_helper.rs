@@ -11,15 +11,18 @@
 
 use std::collections::hash_map::RandomState;
 use std::hash::{BuildHasher, Hasher};
-use std::io::BufReader;
+use std::io::{BufReader, Write};
 use std::path::PathBuf;
-use std::process::{Child, ChildStdout, Command, Stdio};
+use std::process::{Child, ChildStdin, ChildStdout, Command, Stdio};
 use std::sync::mpsc::{self, Receiver, RecvTimeoutError};
 use std::thread::JoinHandle;
 use std::time::{Instant, SystemTime};
 
 use super::clock::Clock;
-use super::snapshot::{PasteboardSnapshot, SnapshotBudget, SnapshotBuilder, SnapshotError};
+use super::macos_snapshot_stream::START_TRIGGER;
+use super::snapshot::{
+    OmittedTypes, PasteboardSnapshot, SkipCause, SnapshotBudget, SnapshotBuilder, SnapshotError,
+};
 use super::snapshot_protocol::{read_frame, read_header, Frame, Nonce, ProtocolError, NONCE_LEN};
 
 /// Hidden first argument that turns the executable into the helper.
@@ -73,6 +76,9 @@ fn hex(bytes: &[u8]) -> String {
     bytes.iter().map(|byte| format!("{byte:02x}")).collect()
 }
 
+/// Starts the helper without a shell: argv is the hidden flag, the nonce,
+/// the byte budget and the optional pasteboard name. stdin carries the start
+/// trigger; stderr is discarded (the helper never prints content there).
 fn spawn_helper(
     command: &HelperCommand,
     nonce: &Nonce,
@@ -84,7 +90,7 @@ fn spawn_helper(
         .arg(hex(nonce))
         .arg(budget.max_bytes.to_string())
         .args(command.pasteboard_name.iter())
-        .stdin(Stdio::null())
+        .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::null());
     process.spawn().map_err(|_| SnapshotError::Spawn)
@@ -137,7 +143,77 @@ fn forward_frames(
     }
 }
 
-/// Captures a bounded snapshot through the helper process.
+/// A helper started ahead of time. It has (or will have) written its header
+/// and waits for the start trigger before reading the pasteboard, so its
+/// process startup is not paid inside the capture deadline. Dropping it
+/// kills and reaps the process without any pasteboard read.
+pub struct ArmedHelper {
+    process: HelperProcess,
+    stdin: Option<ChildStdin>,
+    frames: Receiver<FrameResult>,
+    budget: SnapshotBudget,
+}
+
+impl ArmedHelper {
+    /// Starts a helper that waits for [`Self::capture`].
+    ///
+    /// # Errors
+    /// [`SnapshotError::Spawn`] if the process or its pipes cannot be set up.
+    pub fn arm(command: &HelperCommand, budget: SnapshotBudget) -> Result<Self, SnapshotError> {
+        let nonce = new_nonce();
+        let mut process = HelperProcess {
+            child: spawn_helper(command, &nonce, budget)?,
+            reader: None,
+        };
+        // On a missing pipe, `process` is dropped here: killed and reaped.
+        let stdin = process.child.stdin.take().ok_or(SnapshotError::Spawn)?;
+        let stdout = process.child.stdout.take().ok_or(SnapshotError::Spawn)?;
+        let (reader, frames) = spawn_reader(stdout, nonce, budget.max_bytes);
+        process.reader = Some(reader);
+        Ok(Self {
+            process,
+            stdin: Some(stdin),
+            frames,
+            budget,
+        })
+    }
+
+    /// Budget the helper was started with.
+    pub fn budget(&self) -> SnapshotBudget {
+        self.budget
+    }
+
+    /// Whether the process is still waiting (not exited or killed).
+    pub fn is_waiting(&mut self) -> bool {
+        matches!(self.process.child.try_wait(), Ok(None))
+    }
+
+    /// Triggers the read and collects the snapshot within the budget
+    /// deadline, measured from now.
+    ///
+    /// # Errors
+    /// See [`SnapshotError`]; on any error the caller must not publish.
+    pub fn capture(self, clock: &dyn Clock) -> Result<PasteboardSnapshot, SnapshotError> {
+        let deadline = clock.now() + self.budget.deadline;
+        self.capture_until(clock, deadline)
+    }
+
+    fn capture_until(
+        mut self,
+        clock: &dyn Clock,
+        deadline: Instant,
+    ) -> Result<PasteboardSnapshot, SnapshotError> {
+        let mut stdin = self.stdin.take().ok_or(SnapshotError::Spawn)?;
+        stdin
+            .write_all(&[START_TRIGGER])
+            .and_then(|()| stdin.flush())
+            .map_err(|_| SnapshotError::Spawn)?;
+        collect_frames(&self.frames, clock, deadline, self.budget)
+    }
+}
+
+/// Captures a bounded snapshot through a freshly started helper; the
+/// deadline includes the helper startup.
 ///
 /// # Errors
 /// See [`SnapshotError`]; on any error the caller must not publish.
@@ -147,20 +223,15 @@ pub fn capture_with_helper(
     clock: &dyn Clock,
 ) -> Result<PasteboardSnapshot, SnapshotError> {
     let deadline = clock.now() + budget.deadline;
-    let nonce = new_nonce();
-    let mut child = spawn_helper(command, &nonce, budget)?;
-    let stdout = child.stdout.take().ok_or(SnapshotError::Spawn)?;
-    let (reader, frames) = spawn_reader(stdout, nonce, budget.max_bytes);
-    let _process = HelperProcess {
-        child,
-        reader: Some(reader),
-    };
-    collect_frames(&frames, clock, deadline, budget)
+    ArmedHelper::arm(command, budget)?.capture_until(clock, deadline)
 }
+
+/// Source `changeCount` at the inventory and the snapshot being built.
+type Inventoried = (i64, SnapshotBuilder);
 
 struct Collector {
     budget: SnapshotBudget,
-    begin: Option<(i64, Vec<Vec<String>>, SnapshotBuilder)>,
+    begin: Option<Inventoried>,
 }
 
 impl Collector {
@@ -171,45 +242,41 @@ impl Collector {
                 inventory,
             } if self.begin.is_none() => {
                 let builder = SnapshotBuilder::new(self.budget, change_count, &inventory);
-                self.begin = Some((change_count, inventory, builder));
+                self.begin = Some((change_count, builder));
                 Ok(None)
             }
+            Frame::Omitted { items, types } => self.with_builder(|builder| {
+                builder.record_omitted(OmittedTypes { items, types });
+            }),
             Frame::Data {
                 item,
                 type_index,
                 data,
-            } => self.with_type(item, type_index, |builder, uti| {
-                builder.accept(item, uti, data)
-            }),
+            } => self.with_builder(|builder| builder.accept(item, type_index, data)),
             Frame::Skipped {
                 item,
                 type_index,
                 cause,
-            } => self.with_type(item, type_index, |builder, uti| {
-                builder.skip(item, uti, cause)
-            }),
+            } => self.with_builder(|builder| builder.skip(item, type_index, cause)),
             Frame::End { change_count } if self.begin.is_some() => {
                 self.finish_complete(change_count)
             }
+            // A second inventory or an end before the inventory.
             _ => Err(SnapshotError::Protocol(ProtocolError::Malformed)),
         }
     }
 
-    /// Applies `update` to the inventoried type; frames before the
-    /// inventory are malformed, unknown indexes are ignored.
-    fn with_type(
+    /// Applies `update` once the inventory is known; frames before it are
+    /// malformed. Unknown indexes are ignored by the builder.
+    fn with_builder(
         &mut self,
-        item: usize,
-        type_index: usize,
-        update: impl FnOnce(&mut SnapshotBuilder, &str),
+        update: impl FnOnce(&mut SnapshotBuilder),
     ) -> Result<Option<PasteboardSnapshot>, SnapshotError> {
-        let (_, inventory, builder) = self
+        let (_, builder) = self
             .begin
             .as_mut()
             .ok_or(SnapshotError::Protocol(ProtocolError::Malformed))?;
-        if let Some(uti) = inventory.get(item).and_then(|types| types.get(type_index)) {
-            update(builder, uti);
-        }
+        update(builder);
         Ok(None)
     }
 
@@ -217,23 +284,30 @@ impl Collector {
         &mut self,
         end_count: i64,
     ) -> Result<Option<PasteboardSnapshot>, SnapshotError> {
-        let (begin_count, _, builder) = self.begin.take().ok_or(SnapshotError::NoInventory)?;
+        let (begin_count, builder) = self.begin.take().ok_or(SnapshotError::NoInventory)?;
         if begin_count != end_count {
             return Err(SnapshotError::SourceChanged);
         }
         Ok(Some(builder.finish()))
     }
 
-    fn finish_at_deadline(self) -> Result<PasteboardSnapshot, SnapshotError> {
-        // Types not received by the deadline are recorded as timed out.
+    /// Partial snapshot when the stream stops early: types not received by
+    /// the deadline time out; after the helper stopped they are unreadable.
+    /// Either way the completed types are kept, as at the deadline.
+    fn finish_partial(self, missing: SkipCause) -> Result<PasteboardSnapshot, SnapshotError> {
         self.begin
-            .map(|(_, _, builder)| builder.finish())
+            .map(|(_, builder)| builder.finish_with_missing_as(missing))
             .ok_or(SnapshotError::NoInventory)
     }
 }
 
+/// Whether `error` only means the stream ended early (helper stopped).
+fn is_early_end(error: &ProtocolError) -> bool {
+    *error == ProtocolError::Io(std::io::ErrorKind::UnexpectedEof)
+}
+
 fn collect_frames(
-    frames: &Receiver<Result<Frame, ProtocolError>>,
+    frames: &Receiver<FrameResult>,
     clock: &dyn Clock,
     deadline: Instant,
     budget: SnapshotBudget,
@@ -243,22 +317,19 @@ fn collect_frames(
         begin: None,
     };
     // Applies frames until the end frame (complete snapshot), a violation
-    // or an early end of stream (rejected), or the deadline (partial).
+    // (rejected), or the deadline or an early end of the stream (partial).
     loop {
         let remaining = deadline.saturating_duration_since(clock.now());
-        match frames.recv_timeout(remaining) {
-            Ok(Ok(frame)) => {
-                if let Some(snapshot) = collector.apply(frame)? {
-                    return Ok(snapshot);
-                }
+        let frame = match frames.recv_timeout(remaining) {
+            Ok(Ok(frame)) => frame,
+            Ok(Err(error)) if !is_early_end(&error) => return Err(SnapshotError::Protocol(error)),
+            Err(RecvTimeoutError::Timeout) => return collector.finish_partial(SkipCause::Timeout),
+            Ok(Err(_)) | Err(RecvTimeoutError::Disconnected) => {
+                return collector.finish_partial(SkipCause::Unreadable)
             }
-            Ok(Err(error)) => return Err(SnapshotError::Protocol(error)),
-            Err(RecvTimeoutError::Timeout) => return collector.finish_at_deadline(),
-            Err(RecvTimeoutError::Disconnected) => {
-                return Err(SnapshotError::Protocol(ProtocolError::Io(
-                    std::io::ErrorKind::UnexpectedEof,
-                )))
-            }
+        };
+        if let Some(snapshot) = collector.apply(frame)? {
+            return Ok(snapshot);
         }
     }
 }
@@ -296,26 +367,19 @@ pub fn run_helper() -> i32 {
     let stdout = std::io::stdout();
     let mut writer = std::io::BufWriter::new(stdout.lock());
     let name = arguments.get(2).map(String::as_str);
-    match super::macos_snapshot_stream::write_snapshot_stream(&mut writer, &nonce, max_bytes, name)
-    {
+    let written = super::macos_snapshot_stream::write_snapshot_stream(
+        &mut writer,
+        super::macos_snapshot_stream::wait_for_trigger,
+        &nonce,
+        max_bytes,
+        name,
+    );
+    match written {
         Ok(()) => 0,
         Err(_) => 1,
     }
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn nonce_round_trips_through_its_hex_argument() {
-        let nonce = new_nonce();
-        assert_eq!(parse_nonce(&hex(&nonce)), Some(nonce));
-        assert_eq!(parse_nonce("zz"), None);
-    }
-
-    #[test]
-    fn two_requests_get_different_nonces() {
-        assert_ne!(new_nonce(), new_nonce());
-    }
-}
+#[path = "snapshot_helper_tests.rs"]
+mod tests;

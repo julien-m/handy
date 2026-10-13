@@ -8,6 +8,12 @@
 //! loop. Run with `cargo test --test smart_paste_native_pasteboard -- --ignored`.
 
 #[cfg(target_os = "macos")]
+#[path = "smart_paste_native_pasteboard/hardening.rs"]
+mod hardening;
+#[cfg(target_os = "macos")]
+#[path = "smart_paste_native_pasteboard/recorder.rs"]
+mod recorder;
+#[cfg(target_os = "macos")]
 #[path = "smart_paste_native_pasteboard/scenario.rs"]
 mod scenario;
 #[cfg(target_os = "macos")]
