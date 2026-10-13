@@ -114,6 +114,27 @@ pub fn store_path(relative: &str) -> PathBuf {
     }
 }
 
+/// Resolve marker semantics without upgrading it, creating Data or changing environment.
+/// Legacy empty/invalid markers enable portable mode only beside an existing Data directory.
+pub(crate) fn resolve_data_dir(
+    marker: &Path,
+    data: &Path,
+) -> Result<Option<PathBuf>, crate::settings_service::errors::SettingsError> {
+    let contents = match std::fs::read_to_string(marker) {
+        Ok(contents) => Some(contents),
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => None,
+        Err(_) => {
+            return Err(crate::settings_service::errors::SettingsError::new(
+                crate::settings_service::errors::SettingsErrorCode::Unavailable,
+            ))
+        }
+    };
+    let enabled = contents
+        .as_ref()
+        .is_some_and(|text| text.trim().starts_with("Handy Portable Mode") || data.is_dir());
+    Ok(enabled.then(|| data.to_path_buf()))
+}
+
 /// Check if a marker file path contains the portable magic string.
 /// Extracted for testability.
 fn is_valid_portable_marker(path: &std::path::Path) -> bool {

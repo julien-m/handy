@@ -819,7 +819,12 @@ fn default_typing_tool() -> TypingTool {
     TypingTool::Auto
 }
 
-fn ensure_post_process_defaults(settings: &mut AppSettings) -> bool {
+/// Insert missing default post-processing providers, API-key slots and models, and
+/// resynchronize `supports_structured_output` on existing default providers.
+///
+/// Mutates `settings` in place and never touches user-added providers, existing
+/// keys or non-empty model choices. Returns `true` when anything was changed.
+pub(crate) fn ensure_post_process_defaults(settings: &mut AppSettings) -> bool {
     let mut changed = false;
     for provider in default_post_process_providers() {
         // Use match to do a single lookup - either sync existing or add new
@@ -1120,7 +1125,13 @@ fn salvage_settings(stored: &serde_json::Value) -> AppSettings {
     })
 }
 
-fn apply_settings_migrations(
+/// Apply one-time legacy migrations to already-decoded `settings`.
+///
+/// `settings_value` is the raw stored payload: migrations inspect it to tell an
+/// absent legacy key (upgrade) from a present one, and read retired fields such as
+/// `push_to_talk`. Mutates `settings` in place, performs no I/O, and returns
+/// `true` when at least one migration changed a value.
+pub(crate) fn apply_settings_migrations(
     settings: &mut AppSettings,
     settings_value: &serde_json::Value,
 ) -> bool {

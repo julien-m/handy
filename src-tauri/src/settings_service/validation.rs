@@ -133,7 +133,8 @@ fn parse_cli(
     }
 }
 
-fn validate_value(
+/// Revalidate one canonical value against fresh membership/build context without I/O.
+pub(super) fn validate_value(
     entry: &'static super::descriptor::SettingDescriptor,
     candidate: serde_json::Value,
     context: &ValidationContext<'_>,
