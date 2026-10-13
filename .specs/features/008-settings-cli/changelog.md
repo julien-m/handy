@@ -307,3 +307,15 @@ Inspect [the Step 5 checkpoint](progress.md#current-step-5-checkpoint--early-cli
 - **Execution evidence:** RED 3 suites; GREEN targeted Rust and frontend tests, strict clippy, fmt, lint, format check, tsc, translations; conventions PASS/new 0. Commit `bc76443`.
 
 Inspect [the correction checkpoint](progress.md#current-step-4-correction-checkpoint--independent-audits-a-and-b) and [the dispositions](implementation.md#step-4-audit-corrections).
+
+## 2026-10-13 — Feature: Step 6 domain framework and output domain
+
+- **Type:** Feature
+- **Spec modified:** No (contract matrix and schema updated: domain `arguments`, `details.offset`).
+- **Code modified:** settings_service/{domains/mod, domains/output, domains/fixture_tests, input}.rs (new), operations, request, protocol, errors, edit, render, route, live, sequence, tauri_adapter, mod; cli.rs; settings.rs; tests settings_domains (new), settings_validation; README.md, AGENTS.md, bindings.ts.
+- **AC impacted:** AC-006, AC-007, AC-008 (partial; no AC certified).
+- **Author:** Claude Code (implementation agent, orchestrator-supervised)
+- **Action:** domain framework (registry, aliases, dry run, atomic commit, live-only refusal, bounded UTF-8 file/stdin input) and the `output` domain; README CLI documentation with recovery rules.
+- **Execution evidence:** targeted Rust tests (lib 57, settings targets incl. domains 8) and frontend checks exit 0; strict clippy; conventions PASS/new 0. Commit `462a5a5`.
+
+Inspect [the Step 6 checkpoint](progress.md#current-step-6-checkpoint--domain-framework-and-output-domain).

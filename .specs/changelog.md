@@ -29,6 +29,10 @@
 
 `## Quality Engineering` added from the existing QE Analysis: criticality High, blast radius Shared, primary risk Data; `livespec delivery lane` reads it (full). No AC, FR or SC changed; the spec review is stale until an independent reviewer refreshes it.
 
+## 2026-10-13 — 008-settings-cli: Step 6 domain framework and output domain Done
+
+`handy settings output get|set` (with `--dry-run`) over the existing output settings, on a domain framework shared by later features (aliases, dry run through the commit validation, atomic commit, live-only refusal, bounded UTF-8 file/stdin input). README documents the CLI and its recovery rules. Targeted tests and conventions PASS/new 0. Commit `462a5a5`; Step 7 in progress; no AC certified. Inspect [the checkpoint](features/008-settings-cli/progress.md#current-step-6-checkpoint--domain-framework-and-output-domain).
+
 ## 2026-10-13 — 008-settings-cli: Step 4 independent audit corrections Done
 
 Both Step 4 audits corrected: every UI and routed CLI write is one ordered write, the service is installed before the first startup reader and falls back to read-only, P0 tests added, minors and simple nits fixed; Linux decision 008 applied (free session bus plus free lease allows offline writes). Targeted tests, lint, format and conventions PASS/new 0. Commit `bc76443`; no AC certified. Inspect [the checkpoint](features/008-settings-cli/progress.md#current-step-4-correction-checkpoint--independent-audits-a-and-b).
