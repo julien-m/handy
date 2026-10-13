@@ -5,6 +5,10 @@
 
 ---
 
+## 2026-10-13 — 008-settings-cli: Step3 pure repository resumes; app adoption moved into Step4 all-writer cutover
+
+Root authorized the bounded sequencing refinement after an independent source-backed snapshot-intent finding. Step3 keeps pure Repository/Locator/normalization; Step4 atomically migrates all writers and app/settings-file plugin ownership, with startup/cache evidence then. Seven steps/FR/AC/business/native/output scope unchanged; direct already-locked dirs6 matches Tauri resolver, fs2 retained. Initial isolated reads RED0/3→GREEN3/0 only; Step3 In Progress, no app activation/full AC/runtime-loss claim. Inspect [finding](features/008-settings-cli/proofs/current-run-step3/ordering-finding.json) and [refined plan](features/008-settings-cli/plan.md#step-3--build-atomic-repository-revision-and-locking).
+
 ## 2026-10-13 — 008-settings-cli: Step 2 pure foundation Done;21 tests pass, whole acceptance remains partial
 
 Root accepted current corrective scoped review: descriptors63/ports51/enums17, explicit public redaction, typed errors/version1/closed DTOs and checked generated schema. Actual-bridge GREEN21/0/0, clippy/full format0; unchanged platform22/frontend gates retained. Raw audit0 blocker/7 major/5 minor dispositioned; repository PASS/new0 after3 expect corrections with unchanged baseline. Step3 Todo; feature In Progress, no whole-AC or actual UI-adapter parity/native PASS. Inspect [summary](features/008-settings-cli/proofs/current-run-step2/corrective-summary.json), [review](features/008-settings-cli/proofs/current-run-step2/corrective-review.json) and [checkpoint](features/008-settings-cli/progress.md).

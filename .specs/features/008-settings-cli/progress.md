@@ -1,18 +1,24 @@
 # Progress — 008-settings-cli
 
-Current checkpoint: 2026-10-13 13:37 CEST. This table determines the resume point. Read [the specification](spec.md) and [the approved plan](plan.md) before continuing.
+Current checkpoint: 2026-10-13 — Step3 initialization. This table determines the resume point. Read [the specification](spec.md) and [the approved plan](plan.md) before continuing.
 
 | Step | Status | Files | Tests run | Result | Updated at |
 | --- | --- | --- | --- | --- | --- |
 | 1 — Platform startup and console mechanisms | Done | 14 source/test files bound by final summary/review | Actual-bridge targeted Cargo; strict clippy; Cargo fmt; unchanged-frontend types/lint/global format; scoped source review and audit dispositions | 22 passed, 0 failed, 0 ignored; checks exit 0; final scoped PASS; audit exit 0 with findings dispositioned, not zero findings; no full AC certified | 2026-10-13 12:26 CEST |
 | 2 — Descriptors, validators and DTOs | Done | 16 source/contract paths; 63 descriptors/51 scalar ports/17 enum keys, public projection and typed DTOs | Corrective Cargo validation; strict clippy; full format; scoped independent review; repository conventions | 21 passed, 0 failed, 0 ignored; checks exit 0; scoped PASS; unchanged-baseline conventions PASS/new0; no complete AC certified | 2026-10-13 13:37 CEST |
-| 3 — Atomic repository and revision | Todo | Not started | Not run | Next step after supervisor acceptance/commit of Step 2 | 2026-10-13 12:26 CEST |
+| 3 — Atomic repository and revision | In Progress | Pure locator/repository/normalization only; app integration retained | Isolated reads RED0/3 then GREEN3/0 | Initial read subset only; transaction/local step gates pending, no full AC | 2026-10-13 |
 | 4 — All app writers and live effects | Todo | Not started | Not run | Requires Step 3; CLI writes disabled | 2026-10-13 12:26 CEST |
 | 5 — Private IPC and early CLI | Todo | Not started | Not run | Includes client authentication before bytes and lease-proven reclamation | 2026-10-13 12:26 CEST |
 | 6 — Output domain and bulk framework | Todo | Not started | Not run | Requires Step 5 | 2026-10-13 12:26 CEST |
 | 7 — Acceptance and regression | Todo | Not started | Not run | Includes mandatory full macOS settings/new-app evidence | 2026-10-13 12:26 CEST |
 
-Resume point: Step 3 Todo after supervisor acceptance/commit of completed Step 2 foundation. Step 1 commit verified by supervisor: `50fdd0446809211a73d970c56df9750ea7272fa8`; no push/merge and index empty at that checkpoint. Step 1 Done means the planned primitive step was tested/reviewed and its effective audit findings dispositioned. The feature remains In Progress; every complete AC/SC remains unproved. No staging, commit, push or merge was performed by the documenter.
+Resume point: Step3 pure repository/locator/normalization implementation In Progress. App adoption and exclusive settings-file plugin ownership move together with all writers at Step4; settings CLI remains disabled. Step 1 commit verified by supervisor: `50fdd0446809211a73d970c56df9750ea7272fa8`; no push/merge and index empty at that checkpoint. Step 1 Done means the planned primitive step was tested/reviewed and its effective audit findings dispositioned. The feature remains In Progress; every complete AC/SC remains unproved. No staging, commit, push or merge was performed by the documenter.
+
+## Current Step3 initialization — bounded ordering refinement
+
+Supervisor authorized the mechanical Step3/4 sequencing correction after [the independent source finding](proofs/current-run-step3/ordering-finding.json) confirmed that `write_settings(AppSettings)` lacks field intent/base revision. Actual log/microphone writers submit whole snapshots; reload plus a lock cannot distinguish a stale untouched field from an intended overwrite. This is a feasible source-backed interleaving, not an observed runtime lost update. Read [the refined Step3/4 plan](plan.md#step-3--build-atomic-repository-revision-and-locking).
+
+Step3 keeps pure Repository/Locator/normalization, atomic raw preservation/revision/CAS and isolated tests; existing app integration and CLI remain unchanged. Step4 performs all-writer migration and app adoption/settings-specific plugin ownership/autosave/exit-save removal in one cutover, with startup/cache evidence then. No temporary snapshot-to-patch/provenance machinery. Direct dirs6 is already locked and matches the native Tauri resolver; fs2 remains planned locking. Initial read-only subset observed RED0passed/3failed exit101, GREEN3passed/0failed exit0; inspect [RED](proofs/current-run-step3/red-reads.stdout), [GREEN](proofs/current-run-step3/green-reads.stdout) and [GREEN exit](proofs/current-run-step3/green-reads.exit). Step3 is not Done; no complete AC or app parity is claimed. Official bounded plan review/progression is supervisor-owned before later app activation.
 
 ## Current Step 2 checkpoint — pure foundation gate accepted
 

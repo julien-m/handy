@@ -239,3 +239,19 @@ Inspect [final summary](proofs/current-run-step1/minimal-final2-summary.json), [
 - **Failure handling:** Do not turn pure port parity into corresponding UI-adapter parity or claim whole-AC/native certification. Supervisor owns next commit/progression; no documenter history action.
 
 Inspect [current summary](proofs/current-run-step2/corrective-summary.json), [scoped review](proofs/current-run-step2/corrective-review.json), [raw audit](proofs/current-run-step2/audit.stdout), [repository receipt](../../conventions/runs/20261013T113238Z/receipt.json) and [checkpoint](progress.md).
+
+## 2026-10-13 — Plan Update: Keep repository adoption atomic with all-writer migration
+
+- **Type:** Spec Update
+- **Spec modified:** No; seven steps, FR/AC IDs, business/native/output scope unchanged.
+- **Code modified:** None by documenter; pure Step3 worker remains independent.
+- **AC impacted:** Planning/evidence ordering only; no runtime loss or completed criterion claimed.
+- **Author:** Codex
+- **Prerequisite:** Independent source-backed ordering finding confirmed before plan write; root authorized the bounded correction.
+- **Required inputs:** Actual full-snapshot write boundary and log/microphone writers, refined Step3/4 plan, current Tauri resolver and already-locked dirs6.
+- **Action:** Keep isolated Repository/Locator/normalization in Step3; move running-app adoption/settings-file plugin ownership/autosave/exit-save closure and startup/cache proof to the single Step4 all-writer cutover. No snapshot-to-patch adapter/global provenance machinery. Record direct dirs6 matching current native Tauri resolution alongside fs2.
+- **Execution evidence:** Finding is a feasible source interleaving, not observed runtime loss. Initial pure read subset RED0/3 exit101, GREEN3/0 exit0; transaction/step gates remain pending.
+- **Success criteria:** Step3 In Progress, app integration/CLI retained; final architecture and seven-step scope unchanged. Official bounded plan review/progression remains supervisor-owned before app activation.
+- **Failure handling:** Block app/service adoption until all-writer closure; preserve existing history and complete AC/native evidence requirements.
+
+Inspect [actual ordering finding](proofs/current-run-step3/ordering-finding.json), [refined plan](plan.md#step-3--build-atomic-repository-revision-and-locking) and [initial read GREEN](proofs/current-run-step3/green-reads.stdout).
