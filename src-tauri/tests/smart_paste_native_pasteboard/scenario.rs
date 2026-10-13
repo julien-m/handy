@@ -137,67 +137,100 @@ pub(super) fn publish(harness: &mut Harness, transaction: u64) -> Result<i64, St
         .map_err(|error| format!("publish: {error}"))
 }
 
+/// Two external reads after the simulated key-down.
+struct ExternalReads {
+    first_events: usize,
+    second_events: usize,
+    count_after: i64,
+}
+
+/// Reads the published item twice from other processes and counts the
+/// read events the provider reported for each.
+fn read_twice(harness: &mut Harness) -> Result<ExternalReads, String> {
+    let key_down = harness.now();
+    let first = external_read(&harness.name)?;
+    let first_events = harness
+        .reads
+        .try_iter()
+        .filter(|r| r.at >= key_down)
+        .count();
+    let second = external_read(&harness.name)?;
+    let second_events = harness.reads.try_iter().count();
+    let count_after = harness
+        .pasteboard
+        .change_count()
+        .map_err(|e| e.to_string())?;
+    ensure(
+        first == TRANSCRIPT && second == TRANSCRIPT,
+        "reader text differs",
+    )?;
+    ensure(
+        first_events == 1,
+        "first external read was not reported once",
+    )?;
+    Ok(ExternalReads {
+        first_events,
+        second_events,
+        count_after,
+    })
+}
+
+/// Restores `snapshot` over `publication` and checks the saved types came back.
+fn restore_checked(
+    harness: &mut Harness,
+    snapshot: PasteboardSnapshot,
+    publication: i64,
+    saved_types: &[Vec<TypeBytes>],
+) -> Result<(), String> {
+    let restored = harness
+        .pasteboard
+        .restore_snapshot(Arc::new(snapshot), publication)
+        .map_err(|error| error.to_string())?;
+    let restored_types = read_all(&harness.name)?;
+    let is_exact = is_restored_exactly(saved_types, &restored_types);
+    ensure(
+        restored == GuardedWrite::Written && is_exact,
+        &format!(
+            "rich restore failed: {restored:?}, saved {:?}, restored {:?}",
+            type_names(saved_types),
+            type_names(&restored_types)
+        ),
+    )
+}
+
 /// Rich multi-item content survives snapshot → lazy publication → external
 /// reads → guarded restoration, byte for byte.
 fn rich_round_trip(harness: &mut Harness) -> Result<serde_json::Value, String> {
     seed(&harness.name, rich_fixture())?;
     let (snapshot, capture_ms) = timed_capture(harness, SnapshotBudget::default())?;
     let saved_types = saved(&snapshot);
-    let skipped = snapshot.skipped().to_vec();
+    let skipped = skipped_by_name(snapshot.skipped());
     ensure(
         contains_fixture(&saved_types),
         "seeded types missing from snapshot",
     )?;
     let publication = publish(harness, 1)?;
     let published_types = read_types(&harness.name)?;
-    let key_down = harness.now();
-    let first = external_read(&harness.name)?;
-    let first_reads = harness
-        .reads
-        .try_iter()
-        .filter(|r| r.at >= key_down)
-        .count();
-    let second = external_read(&harness.name)?;
-    let second_reads = harness.reads.try_iter().count();
-    let count_after_reads = harness
-        .pasteboard
-        .change_count()
-        .map_err(|e| e.to_string())?;
-    let restored = harness
-        .pasteboard
-        .restore_snapshot(Arc::new(snapshot), publication)
-        .map_err(|error| error.to_string())?;
-    let restored_types = read_all(&harness.name)?;
-    let is_restored_exactly = is_restored_exactly(&saved_types, &restored_types);
+    let reads = read_twice(harness);
+    let restored = reads
+        .as_ref()
+        .map_err(String::clone)
+        .and_then(|_| restore_checked(harness, snapshot, publication, &saved_types));
     harness.pasteboard.release_transaction(TransactionId(1));
-    ensure(
-        first == TRANSCRIPT && second == TRANSCRIPT,
-        "reader text differs",
-    )?;
-    ensure(
-        first_reads == 1,
-        "first external read was not reported once",
-    )?;
-    ensure(
-        restored == GuardedWrite::Written && is_restored_exactly,
-        &format!(
-            "rich restore failed: {restored:?}, saved {:?}, restored {:?}",
-            type_names(&saved_types),
-            type_names(&restored_types)
-        ),
-    )?;
+    let (reads, ()) = (reads?, restored?);
+    let lengths = |t: &Vec<TypeBytes>| t.iter().map(|(u, b)| json!([u, b.len()])).collect();
     Ok(json!({
         "check": "rich_round_trip",
         "capture_ms": capture_ms,
         "capture_within_200_ms": capture_ms <= 200.0,
-        "saved_types": saved_types.iter().map(|t| t.iter().map(|(u, b)| json!([u, b.len()])).collect::<Vec<_>>()).collect::<Vec<_>>(),
-        "skipped_types": skipped_by_name(&skipped),
+        "saved_types": saved_types.iter().map(lengths).collect::<Vec<Vec<_>>>(),
+        "skipped_types": skipped,
         "published_types": published_types,
         "markers_present": MARKERS.iter().all(|m| published_types.iter().any(|t| t == m)),
-        "first_external_read_events": first_reads,
-        "second_external_read_events": second_reads,
-        "change_count_stable_after_lazy_reads": count_after_reads == publication,
-        "restored_exactly": is_restored_exactly,
+        "first_external_read_events": reads.first_events,
+        "second_external_read_events": reads.second_events,
+        "change_count_stable_after_lazy_reads": reads.count_after == publication,
+        "restored_exactly": true,
     }))
 }
 
