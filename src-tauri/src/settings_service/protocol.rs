@@ -80,15 +80,6 @@ impl<T: Serialize> SettingsEnvelope<T> {
 
 pub use super::request::{OperationRequest, ProtocolVersion, SettingsOperation};
 
-/// Minimal owner extension metadata; production domain registration is Step 6.
-// @spec FR-005: Typed domain extension foundation — .specs/features/008-settings-cli/spec.md#fr-005
-pub trait DomainExtension {
-    /// Stable command namespace owned by the extension.
-    fn name(&self) -> &'static str;
-    /// Current-build help text; future domains are not advertised prematurely.
-    fn help(&self) -> &'static str;
-}
-
 /// Generate the checked contract from actual descriptor types and closed wire DTO shapes.
 // @spec FR-006: Deterministic JSON wire schema — .specs/features/008-settings-cli/spec.md#fr-006
 pub fn contract_schema() -> Result<serde_json::Value, SettingsError> {
@@ -122,7 +113,7 @@ pub fn contract_schema() -> Result<serde_json::Value, SettingsError> {
       "failure":{"type":"object","additionalProperties":false,"required":["ok","error"],"properties":{"ok":{"const":false},"error":{"$ref":"#/$defs/error"}}},
       "revision":{"type":"integer","minimum":0,"maximum":u64::MAX},
       "error":{"type":"object","additionalProperties":false,"required":["code","message","details"],"properties":{"code":{"enum":code_values},"message":{"type":"string"},"details":{"$ref":"#/$defs/error_details"}}},
-      "error_details":{"type":"object","additionalProperties":false,"properties":{"current_revision":{"$ref":"#/$defs/revision"},"outcome":{"enum":["unknown","committed"]},"field":{"enum":keys},"issues":{"type":"array","items":{"type":"object","additionalProperties":false,"required":["field","reason"],"properties":{"field":{"enum":keys},"reason":{"type":"string"}}}}}},
+      "error_details":{"type":"object","additionalProperties":false,"properties":{"current_revision":{"$ref":"#/$defs/revision"},"outcome":{"enum":["unknown","committed"]},"field":{"enum":keys},"offset":{"type":"integer","minimum":0},"issues":{"type":"array","items":{"type":"object","additionalProperties":false,"required":["field","reason"],"properties":{"field":{"enum":keys},"reason":{"type":"string"}}}}}},
       "public_settings":{"type":"object","additionalProperties":false,"required":keys,"properties":properties},
       "provider":public_provider_schema(),"binding":public_binding_schema(),"prompt":public_prompt_schema(),
       "operation_request":operation_request_schema()
@@ -225,9 +216,10 @@ fn operation_request_schema() -> serde_json::Value {
             "domain" => {
                 properties["domain"] = json!({"type":"string"});
                 properties["action"] = json!({"type":"string"});
+                properties["arguments"] = json!({"type":"array","items":{"type":"string"}});
                 properties["dry_run"] = json!({"type":"boolean"});
                 properties["input"] = json!({"type":["string","null"]});
-                required.extend(["domain", "action", "dry_run"]);
+                required.extend(["domain", "action", "arguments", "dry_run"]);
             }
             _ => {}
         }

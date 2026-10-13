@@ -3,6 +3,7 @@
 //! notifies the UI, and publishes the private endpoint that answers routed CLI operations.
 use super::{
     command_error::SettingsCommandError,
+    domains::DomainChange,
     edit::SettingsEditFn,
     errors::{SettingsError, SettingsErrorCode},
     ipc::EndpointHandle,
@@ -268,13 +269,28 @@ impl SettingsBackend for RoutedBackend {
     ) -> Result<SettingsRead, SettingsError> {
         let live = live(&self.app)?;
         let commit = sequence::write_scalar(&live, &TauriEffects(&self.app), mutation, expected)?;
-        Ok(SettingsRead {
-            snapshot: SettingsSnapshot {
-                settings: commit.after,
-                revision: commit.revision,
-            },
-            warning: live.recovered(),
-        })
+        Ok(routed_read(&live, commit))
+    }
+    fn commit_change(
+        &self,
+        change: &DomainChange,
+        expected: Option<Revision>,
+    ) -> Result<SettingsRead, SettingsError> {
+        let live = live(&self.app)?;
+        let commit = sequence::write_change(&live, &TauriEffects(&self.app), change, expected)?;
+        Ok(routed_read(&live, commit))
+    }
+    fn is_live(&self) -> bool {
+        true
+    }
+}
+fn routed_read(live: &LiveSettings, commit: LiveCommit) -> SettingsRead {
+    SettingsRead {
+        snapshot: SettingsSnapshot {
+            settings: commit.after,
+            revision: commit.revision,
+        },
+        warning: live.recovered(),
     }
 }
 /// Published CLI endpoint of this instance, removed at exit.

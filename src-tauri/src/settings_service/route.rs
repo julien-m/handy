@@ -133,4 +133,12 @@ impl SettingsBackend for OfflineBackend {
         self.repository
             .commit_with_probe(mutation, expected, &self.probe, &())
     }
+    fn commit_change(
+        &self,
+        change: &super::domains::DomainChange,
+        expected: Option<Revision>,
+    ) -> Result<SettingsRead, SettingsError> {
+        self.repository
+            .commit_edit_with_probe(&change.edit(), expected, &self.probe)
+    }
 }

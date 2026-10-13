@@ -2,6 +2,7 @@
 //! instance; each produces the one envelope that every surface renders.
 use super::{
     descriptor,
+    domains::{DomainCall, DomainChange},
     errors::{SettingsError, SettingsErrorCode},
     protocol::{Revision, SettingsEnvelope, SettingsOperation},
     store::SettingsRead,
@@ -25,6 +26,24 @@ pub trait SettingsBackend {
         mutation: SettingsMutation,
         expected: Option<Revision>,
     ) -> Result<SettingsRead, SettingsError>;
+    /// Commit one domain change atomically on the latest settings, through the same path.
+    ///
+    /// # Errors
+    /// Same as `commit`. The default refuses with `unavailable`: a backend that cannot write
+    /// domain changes never pretends to.
+    fn commit_change(
+        &self,
+        change: &DomainChange,
+        expected: Option<Revision>,
+    ) -> Result<SettingsRead, SettingsError> {
+        // Both parameters are unused on purpose: this backend has no domain write path.
+        let _ = (change, expected);
+        Err(SettingsError::new(SettingsErrorCode::Unavailable))
+    }
+    /// True for a running instance, which can answer live-only domain operations.
+    fn is_live(&self) -> bool {
+        false
+    }
 }
 
 /// Result of one operation: its envelope, and whether the settings read were recovered.
@@ -92,8 +111,7 @@ pub fn execute(operation: &SettingsOperation, backend: &dyn SettingsBackend) -> 
             value,
             expected_revision,
         } => set(backend, key, value, *expected_revision),
-        // No domain is registered in this build; domains are added by their owning features.
-        SettingsOperation::Domain { .. } => Err(SettingsError::new(SettingsErrorCode::UsageError)),
+        SettingsOperation::Domain { .. } => domain(operation, backend),
     };
     match result {
         Ok((revision, data, warning)) => Reply::success(revision, data, warning),
@@ -101,6 +119,29 @@ pub fn execute(operation: &SettingsOperation, backend: &dyn SettingsBackend) -> 
     }
 }
 type Outcome = Result<(Revision, Value, bool), SettingsError>;
+/// A domain operation, run with the domains registered in this build.
+fn domain(operation: &SettingsOperation, backend: &dyn SettingsBackend) -> Outcome {
+    let SettingsOperation::Domain {
+        domain,
+        action,
+        arguments,
+        input,
+        dry_run,
+        expected_revision,
+    } = operation
+    else {
+        return Err(SettingsError::new(SettingsErrorCode::UsageError));
+    };
+    let call = DomainCall {
+        domain,
+        action,
+        arguments,
+        input: input.as_deref(),
+        dry_run: *dry_run,
+        expected: *expected_revision,
+    };
+    super::domains::execute(&call, backend, super::domains::production())
+}
 fn public(read: &SettingsRead) -> Result<Value, SettingsError> {
     serde_json::to_value(read.snapshot.public_settings())
         .map_err(|_| SettingsError::new(SettingsErrorCode::InternalError))

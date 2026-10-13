@@ -1,6 +1,6 @@
 # Settings CLI wire contract
 
-This contract is executable for `get`, `keys` and `set` since Step 5 (offline and routed to a running instance); domains, dry-run and import/export arrive with Step 6.
+This contract is executable for `get`, `keys` and `set` since Step 5 (offline and routed to a running instance) and for the domain framework and the `output` domain since Step 6.
 
 Inspect [the functional source](../spec.md) and [typed protocol](../../../../src-tauri/src/settings_service/protocol.rs). Generate [the JSON schema](settings-cli.schema.json) from `contract_schema()`; its finite metadata comes from the explicit descriptor inventory, not a raw store object. This is JSON Schema, not OpenAPI.
 
@@ -10,7 +10,9 @@ Inspect [the functional source](../spec.md) and [typed protocol](../../../../src
 | `settings keys` | Key, canonical value type, nullable flag, allowed values/range, read-only/secret flags, owner and runtime effect category |
 | `settings set KEY VALUE` | One scalar value validated by descriptor; list fields name their owner command, readonly/secret fields direct the user to settings UI |
 | `settings set ... --expected-revision N` | Refused with `revision_conflict` (`details.current_revision`) unless the settings are at revision N |
-| Domains | `DomainExtension` supplies metadata; actual domain registration/help, file/stdin input and dry-run orchestration are Step 6 |
+| `settings output get [KEY]` | The 10 existing output settings (`paste_method`, `clipboard_handling`, `auto_submit`, `auto_submit_key`, `paste_delay_ms`, `paste_delay_after_ms`, `reliable_paste`, `typing_tool`, `external_script_path`, `append_trailing_space`) or one of them; another key is `not_found` |
+| `settings output set KEY VALUE [--expected-revision N] [--dry-run]` | Same descriptor validation and commit path as `set`; `--dry-run` returns `{"dry_run":true,"changes":{KEY:value}}` at the current revision, writes nothing and runs no live effect; an invalid dry run is `validation_failed` (exit 2) with no preview |
+| Domains (framework) | `handy settings <domain> <action>`; `--help` lists exactly the domains of the build (`output` only in 008). Wire request `domain` carries `domain`, `action` (aliases `edit`→`update`, `delete`→`remove`), positional `arguments`, `input` (file or `-` stdin content read by the CLI process, UTF-8, at most 1 MiB: larger is `limit_exceeded`, non-UTF-8 is `validation_failed` with `details.offset`; a terminal stdin is refused, never prompted), `dry_run` and `expected_revision`. A domain change commits atomically through the shared path (all or nothing). A live-only answer without a running instance is `unavailable`. Export to `-` prints only the exchange content without `--json` and puts it in `data.content` with it |
 
 The scalar CLI grammar accepts exact booleans `true`/`false`, unsigned integers, finite bounded numbers, canonical enum strings and literal strings. Nullable fields accept exact `null` to clear. Whitespace in meaningful strings is preserved. For the three device selectors (`selected_microphone`, `clamshell_microphone`, `selected_output_device`), `null` is the only representation of the system default on every surface (the UI sends null for its "Default" entry); every string, `default` included (a real ALSA PCM name on Linux), is a device name stored byte for byte. Disk-only log-level integers/uppercase and overlay-position `none` aliases are rejected as mutation input. Prompt selection requires current membership. Build policy may disable updater mutation. Widget step increments are not imposed.
 

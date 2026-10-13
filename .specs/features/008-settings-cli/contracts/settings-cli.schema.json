@@ -214,6 +214,10 @@
           },
           "type": "array"
         },
+        "offset": {
+          "minimum": 0,
+          "type": "integer"
+        },
         "outcome": {
           "enum": [
             "unknown",
@@ -343,6 +347,12 @@
             "action": {
               "type": "string"
             },
+            "arguments": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
             "domain": {
               "type": "string"
             },
@@ -385,6 +395,7 @@
             "operation",
             "domain",
             "action",
+            "arguments",
             "dry_run"
           ],
           "type": "object"

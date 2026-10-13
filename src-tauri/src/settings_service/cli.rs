@@ -7,7 +7,7 @@ use super::{
     render::{emit, View},
     route::route,
 };
-use crate::cli::{CliArgs, CliCommand, SettingsArgs, SettingsCommand};
+use crate::cli::{CliArgs, CliCommand, OutputAction, SettingsArgs, SettingsCommand};
 use clap::{error::ErrorKind, Parser};
 use serde_json::json;
 use std::ffi::OsString;
@@ -57,6 +57,32 @@ pub fn operation(command: &SettingsCommand) -> SettingsOperation {
             value: value.clone(),
             expected_revision: expected_revision.map(super::protocol::Revision),
         },
+        SettingsCommand::Output(output) => output_operation(&output.action),
+    }
+}
+/// Wire operation of an output-domain action (no file or stdin input in this domain).
+fn output_operation(action: &OutputAction) -> SettingsOperation {
+    let (action, arguments, dry_run, expected) = match action {
+        OutputAction::Get { key } => ("get", key.iter().cloned().collect(), false, None),
+        OutputAction::Set {
+            key,
+            value,
+            expected_revision,
+            dry_run,
+        } => (
+            "set",
+            vec![key.clone(), value.clone()],
+            *dry_run,
+            *expected_revision,
+        ),
+    };
+    SettingsOperation::Domain {
+        domain: "output".to_owned(),
+        action: action.to_owned(),
+        arguments,
+        input: None,
+        dry_run,
+        expected_revision: expected.map(super::protocol::Revision),
     }
 }
 /// Recording, startup and transcription flags cannot be combined with `settings`; `--debug` and

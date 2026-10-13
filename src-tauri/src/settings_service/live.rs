@@ -341,6 +341,20 @@ impl super::operations::SettingsBackend for LiveSettings {
             warning: self.recovered,
         })
     }
+    fn commit_change(
+        &self,
+        change: &super::domains::DomainChange,
+        expected: Option<Revision>,
+    ) -> Result<SettingsRead, SettingsError> {
+        let commit = self.commit(&change.edit(), expected)?;
+        Ok(SettingsRead {
+            snapshot: SettingsSnapshot {
+                settings: commit.after,
+                revision: commit.revision,
+            },
+            warning: self.recovered,
+        })
+    }
 }
 #[cfg(test)]
 #[path = "live_tests.rs"]

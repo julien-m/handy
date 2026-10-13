@@ -52,6 +52,12 @@ impl SpyPort {
             *failing = keys.to_vec();
         }
     }
+    fn notifications(&self) -> usize {
+        self.events()
+            .iter()
+            .filter(|event| event.starts_with("notify:"))
+            .count()
+    }
     fn record(&self, event: String) {
         if let Ok(mut events) = self.events.lock() {
             events.push(event);
@@ -278,23 +284,19 @@ fn concurrent_manager_repair_and_user_selection_lose_no_update() -> TestResult {
         };
         select(&live, &port, "whisper-small", "USB")?;
         repairs.join().map_err(|_| "repair panicked")??;
+        assert_selected(&directory, "whisper-small", "USB")?;
+        let notified = port.notifications() as u64;
         assert_eq!(
-            stored(&directory, "selected_model")?,
-            json!("whisper-small")
-        );
-        assert_eq!(stored(&directory, "selected_microphone")?, json!("USB"));
-        let revision = live.snapshot().revision.0;
-        let notified = port
-            .events()
-            .iter()
-            .filter(|e| e.starts_with("notify:"))
-            .count();
-        assert_eq!(
-            notified as u64,
-            revision - start,
-            "one event per committed change"
+            notified,
+            live.snapshot().revision.0 - start,
+            "one event per change"
         );
     }
+    Ok(())
+}
+fn assert_selected(directory: &tempfile::TempDir, model: &str, microphone: &str) -> TestResult {
+    assert_eq!(stored(directory, "selected_model")?, json!(model));
+    assert_eq!(stored(directory, "selected_microphone")?, json!(microphone));
     Ok(())
 }
 /// User selection of a model and a microphone (ordered write).

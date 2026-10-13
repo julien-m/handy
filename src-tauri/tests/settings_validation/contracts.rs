@@ -204,7 +204,7 @@ fn valid_get_keys_set_domain_shapes_roundtrip_with_optional_nulls(
         json!({"operation":"get","key":null}),
         json!({"operation":"keys"}),
         json!({"operation":"set","key":"paste_method","value":"ctrl_v"}),
-        json!({"operation":"domain","domain":"output","action":"import","dry_run":true,"input":null}),
+        json!({"operation":"domain","domain":"output","action":"set","arguments":["paste_method","direct"],"dry_run":true,"input":null}),
     ] {
         let mut object = candidate.as_object().ok_or("variant object")?.clone();
         object.extend([

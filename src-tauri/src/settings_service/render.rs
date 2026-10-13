@@ -12,6 +12,10 @@ pub enum View {
     OneSetting,
     Keys,
     Change,
+    /// Dry run: the changes that would be committed, nothing written.
+    Preview,
+    /// Export: the exchange content itself (`data.content`), nothing else on stdout.
+    Export,
     Help,
 }
 impl View {
@@ -21,7 +25,22 @@ impl View {
             SettingsOperation::Get { key: None } => Self::AllSettings,
             SettingsOperation::Get { key: Some(_) } => Self::OneSetting,
             SettingsOperation::Keys => Self::Keys,
-            SettingsOperation::Set { .. } | SettingsOperation::Domain { .. } => Self::Change,
+            SettingsOperation::Set { .. } => Self::Change,
+            SettingsOperation::Domain {
+                action,
+                arguments,
+                dry_run,
+                ..
+            } => Self::of_domain(action, arguments.len(), *dry_run),
+        }
+    }
+    fn of_domain(action: &str, arguments: usize, dry_run: bool) -> Self {
+        match (action, arguments) {
+            _ if dry_run => Self::Preview,
+            ("export", _) => Self::Export,
+            ("get", 0) => Self::AllSettings,
+            ("get", _) => Self::OneSetting,
+            _ => Self::Change,
         }
     }
 }
@@ -76,21 +95,24 @@ fn success_text(view: View, envelope: &Value) -> String {
             .and_then(|object| object.values().next())
             .map_or_else(String::new, |value| format!("{}\n", plain(value))),
         View::Keys => keys_table(&data["keys"]),
-        View::Change => match data.as_object() {
-            Some(object) => object
-                .iter()
-                .map(|(key, value)| {
-                    format!(
-                        "{key} = {} (revision {})\n",
-                        plain(value),
-                        envelope["revision"]
-                    )
-                })
-                .collect(),
-            None => String::new(),
-        },
+        View::Change => change_lines(data, &envelope["revision"]),
+        View::Preview => format!(
+            "Dry run: nothing was changed (revision {}). Would set:\n{}",
+            envelope["revision"],
+            object_lines(&data["changes"])
+        ),
+        View::Export => data["content"].as_str().unwrap_or_default().to_owned(),
         View::Help => data["help"].as_str().unwrap_or_default().to_owned(),
     }
+}
+/// `key = value (revision N)` per changed key.
+fn change_lines(data: &Value, revision: &Value) -> String {
+    data.as_object().map_or_else(String::new, |object| {
+        object
+            .iter()
+            .map(|(key, value)| format!("{key} = {} (revision {revision})\n", plain(value)))
+            .collect()
+    })
 }
 /// Strings print as themselves; other values print as compact JSON.
 fn plain(value: &Value) -> String {

@@ -32,11 +32,9 @@ pub(super) fn apply_edit(
     edit: &SettingsEdit<'_>,
 ) -> Result<Option<(AppSettings, Revision)>, SettingsError> {
     let before = &document.read.snapshot.settings;
-    let settings = edited_settings(before, edit)?;
-    super::validation::validate_dependencies(before, &settings)?;
+    let settings = preview(before, edit)?;
     let current = serde_json::to_value(before).map_err(|_| persistence_failed())?;
     let candidate = serde_json::to_value(&settings).map_err(|_| persistence_failed())?;
-    require_stable(&current, &candidate)?;
     if current == candidate {
         return Ok(None);
     }
@@ -46,6 +44,24 @@ pub(super) fn apply_edit(
     document.raw["settings"] = payload;
     document.raw["settings_revision"] = serde_json::json!(revision.0);
     Ok(Some((settings, revision)))
+}
+/// Settings `edit` would commit on `before`, with every rule of the commit (shared cross-field
+/// rules, read-normalization fixed point) but without writing: the dry-run path and the first
+/// half of `apply_edit`.
+///
+/// # Errors
+/// The edit's own refusal, `validation_failed` for a cross-field rule or a value read
+/// normalization would replace.
+pub(crate) fn preview(
+    before: &AppSettings,
+    edit: &SettingsEdit<'_>,
+) -> Result<AppSettings, SettingsError> {
+    let settings = edited_settings(before, edit)?;
+    super::validation::validate_dependencies(before, &settings)?;
+    let current = serde_json::to_value(before).map_err(|_| persistence_failed())?;
+    let candidate = serde_json::to_value(&settings).map_err(|_| persistence_failed())?;
+    require_stable(&current, &candidate)?;
+    Ok(settings)
 }
 /// Candidate settings produced by the edit from the locked `before`.
 pub(super) fn edited_settings(

@@ -78,7 +78,8 @@ pub enum CliCommand {
 #[derive(Args, Debug, Clone)]
 #[command(
     after_help = "Exit codes: 0 success; 1 persistence_failed, internal_error; 2 usage_error, \
-validation_failed; 3 revision_conflict; 4 not_found; 5 unavailable.\n\
+validation_failed, shortcut_conflict, limit_exceeded; 3 revision_conflict; 4 not_found; \
+5 unavailable.\n\
 After an unavailable error with outcome \"unknown\", read the settings again before retrying."
 )]
 pub struct SettingsArgs {
@@ -110,6 +111,39 @@ pub enum SettingsCommand {
         /// Refuse the change unless the settings are still at revision N
         #[arg(long, value_name = "N")]
         expected_revision: Option<u64>,
+    },
+    /// Output settings: paste method, clipboard handling, automatic submit, delays, typing tool
+    Output(OutputArgs),
+}
+
+/// `handy settings output`: the existing output settings, with the validation of `set`.
+#[derive(Args, Debug, Clone)]
+pub struct OutputArgs {
+    #[command(subcommand)]
+    pub action: OutputAction,
+}
+
+/// Actions of the output domain in this build.
+#[derive(Subcommand, Debug, Clone)]
+pub enum OutputAction {
+    /// Print the output settings, or only KEY
+    Get {
+        /// Output setting key (paste_method, clipboard_handling, auto_submit, ...)
+        key: Option<String>,
+    },
+    /// Change one output setting; with --dry-run, validate and preview without writing
+    #[command(allow_negative_numbers = true)]
+    Set {
+        /// Output setting key
+        key: String,
+        /// New value, parsed with the key's type
+        value: String,
+        /// Refuse the change unless the settings are still at revision N
+        #[arg(long, value_name = "N")]
+        expected_revision: Option<u64>,
+        /// Validate and show the change without writing it
+        #[arg(long)]
+        dry_run: bool,
     },
 }
 

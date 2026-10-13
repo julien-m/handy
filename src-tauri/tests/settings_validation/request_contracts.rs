@@ -52,7 +52,14 @@ fn request_schema_closes_each_operation_to_its_own_fields() -> Result<(), Box<dy
         ("set", vec!["key", "value", "expected_revision"]),
         (
             "domain",
-            vec!["domain", "action", "input", "dry_run", "expected_revision"],
+            vec![
+                "domain",
+                "action",
+                "arguments",
+                "input",
+                "dry_run",
+                "expected_revision",
+            ],
         ),
     ] {
         let branch = request_variant(&schema, operation).ok_or("branch")?;

@@ -39,6 +39,9 @@ pub enum SettingsOperation {
     Domain {
         domain: String,
         action: String,
+        /// Positional arguments of the domain action (never raw argv: flags are typed fields).
+        arguments: Vec<String>,
+        /// File or stdin content read by the CLI process, bounded like a frame.
         input: Option<String>,
         dry_run: bool,
         expected_revision: Option<Revision>,
@@ -79,6 +82,7 @@ impl OperationRequest {
                 "operation",
                 "domain",
                 "action",
+                "arguments",
                 "input",
                 "dry_run",
                 "expected_revision",

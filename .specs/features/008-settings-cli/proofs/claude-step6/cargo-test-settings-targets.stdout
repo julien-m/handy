@@ -1,0 +1,172 @@
+
+running 19 tests
+test contract::keys_describe_type_allowed_values_range_and_access ... ok
+test contract::help_lists_generic_operations_in_both_modes ... ok
+test contract::json_get_prints_one_envelope_with_revision_and_every_public_key ... ok
+test contract::list_secret_and_read_only_keys_point_to_their_owner ... ok
+test offline::headless_read_never_creates_the_store_and_a_write_persists_one_revision ... ok
+test contract::secrets_and_rejected_arguments_never_reach_stdout_or_stderr ... ok
+test routed::a_live_listener_on_the_endpoint_name_is_never_replaced ... ok
+test routed::a_stale_endpoint_name_is_reclaimed_under_the_lease_and_removed_at_close ... ok
+test routed::the_running_instance_refuses_stale_and_invalid_writes_without_committing ... ok
+test routed::the_running_instance_answers_reads_and_commits_writes_with_its_live_state ... ok
+test offline::unreadable_store_reads_defaults_with_a_stderr_warning_and_refuses_writes ... ok
+test offline::older_handy_holding_its_singleton_refuses_reads_and_writes_without_touching_the_store ... ok
+test contract::stale_expected_revision_reports_the_current_revision ... ok
+test contract::human_output_is_readable_and_diagnostics_stay_on_stderr ... ok
+test offline::rejected_write_changes_nothing ... ok
+test offline::concurrent_cli_writers_lose_no_field ... ok
+test contract::every_owned_error_code_has_its_documented_exit ... ok
+test offline::held_startup_lease_without_a_reachable_channel_refuses_and_never_writes_offline ... ok
+test routed::no_answer_within_five_seconds_is_an_unknown_outcome_resolved_by_a_new_read ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 12.39s
+
+
+running 8 tests
+test output_set_with_an_older_handy_running_is_unavailable_and_writes_nothing ... ok
+test invalid_output_dry_run_is_refused_with_exit_two_and_no_preview ... ok
+test help_lists_the_generic_operations_and_exactly_the_domains_of_this_build ... ok
+test output_get_reads_exactly_the_output_settings_without_creating_the_store ... ok
+test stale_output_set_is_a_revision_conflict_reported_on_stderr ... ok
+test output_dry_run_previews_with_exit_zero_and_never_writes ... ok
+test output_set_commits_through_the_shared_path ... ok
+test output_set_routed_to_a_running_instance_is_committed_by_the_instance ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s
+
+
+running 10 tests
+test read_only_startup::a_real_lease_conflict_is_the_only_startup_refusal ... ok
+test read_only_startup::linked_store_starts_read_only_on_its_target ... ok
+test read_only_startup::hard_linked_store_starts_read_only_on_its_content ... ok
+test read_only_startup::shared_lock_permissions_start_read_only_on_the_store_content ... ok
+test instance_fences_offline_writers_and_a_restart_sees_their_later_commit ... ok
+test read_only_startup::unreadable_store_starts_read_only_on_defaults ... ok
+test concurrent_ui_commits_lose_no_field_and_increment_once_each ... ok
+test device_selectors_store_null_for_the_default_and_literal_names_otherwise ... ok
+test ui_adapter_and_cli_store_the_same_value_or_refuse_with_the_same_error ... ok
+test generated_parity::every_settable_scalar_key_gets_the_same_decision_on_ui_and_cli ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.42s
+
+
+running 29 tests
+test cli_console::detach_success_including_no_attached_console_is_accepted ... ok
+test cli_console::detach_failure_retains_error_kind_and_safe_operation_context ... ok
+test platform_unix::tests::same_user_peers_pass_the_current_user_check_on_both_ends ... ok
+test cli_console::historical_startup_and_recording_flags_remain_combinable ... ok
+test cli_console::settings_set_takes_an_expected_revision_and_a_trailing_json_flag ... ok
+test cli_console::settings_set_takes_a_negative_value_and_a_leading_json_flag ... ok
+test cli_console::historical_invocations_parse_without_a_subcommand ... ok
+test platform_unix::tests::bind_rejects_socket_replacement_with_matching_owner_and_mode ... ok
+test cli_console::historical_value_flags_keep_values_and_transcription_combinations ... ok
+test cli_console::historical_boolean_flags_keep_their_parser_values ... ok
+test cli_console::parsed_gui_detaches_console_and_headless_keeps_it ... ok
+test unix::absent_probe_creates_nothing ... ok
+test platform_unix::tests::native_peer_identity_mismatch_never_returns_stream ... ok
+test windows::lease_backed_session_bus_absence_is_absence_and_errors_stay_refused ... ok
+test windows::pipe_identity_rejects_injection_and_isolates_user_and_store ... ok
+test platform_unix::tests::bind_rejects_regular_replacement_without_changing_permissions ... ok
+test windows::rejected_pipe_authentication_never_returns_resource_and_closes_peer ... ok
+test windows::session_negative_cannot_prove_other_sessions_absent ... ok
+test unix::ambiguous_legacy_resources_fail_closed ... ok
+test windows::uncertainty_does_not_authorize_offline_operation ... ok
+test windows::successful_pipe_authentication_precedes_resource_transfer ... ok
+test unix::a_listening_socket_name_is_never_reclaimed ... ok
+test unix::close_retains_socket_and_releases_lock_by_lifetime ... ok
+test unix::occupied_probe_never_notifies_or_modifies_store ... ok
+test unix::new_socket_authenticates_peer_and_refuses_replaced_path ... ok
+test unix::lock_and_file_refuse_hostile_aliases ... ok
+test unix::private_directory_refuses_permissions_alias_and_replacement ... ok
+test unix::stale_socket_name_is_reclaimed_only_with_lease_proof ... ok
+test platform_unix::tests::concurrent_socket_binds_preserve_unrelated_file_creation_permissions ... ok
+
+test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+
+running 43 tests
+test driver::repository_subprocess_fixture ... ignored, test-only subprocess entry point; executed by process/crash contracts with stdin barriers
+test locator::missing_ancestor_is_canonicalized_and_parent_traversal_is_refused ... ok
+test locator::installed_resolution_appends_identifier_store_without_creating_it ... ok
+test locator::unreadable_or_non_utf8_legacy_marker_beside_data_selects_portable_like_startup ... ok
+test locator::same_user_symlink_chain_resolves_hop_by_hop_to_its_final_directory ... ok
+test locator::portable_magic_and_legacy_markers_are_read_without_mutation ... ok
+test locator::symlink_loops_and_overlong_chains_are_refused ... ok
+test normalized_writes::store_without_settings_object_reads_as_a_fresh_install ... ok
+test normalized_writes::startup_on_unreadable_json_or_malformed_revision_recovers_read_only_with_lease ... ok
+test ownership::foreign_lease_noop_on_absent_store_is_unavailable ... ok
+test normalized_writes::gpu_device_write_on_schema_one_store_survives_the_next_read ... ok
+test faults::replaced_temporary_path_never_replaces_store_or_deletes_substitute ... ok
+test ownership::passive_occupied_socket_refuses_without_connecting_or_deleting ... ok
+test normalized_writes::gpu_accelerator_without_device_is_refused_and_changes_nothing ... ok
+test normalized_writes::normalized_write_changes_only_the_mutated_visible_field ... ok
+test normalized_writes::overlay_position_write_on_legacy_hidden_overlay_keeps_overlay_style ... ok
+test normalized_writes::chinese_script_write_on_legacy_language_intent_keeps_selected_language ... ok
+test faults::stable_lock_inode_survives_replacement_and_is_retained_after_release ... ok
+test ownership::native_owner_appearing_after_temp_sync_refuses_before_replace ... ok
+test reads::broken_json_read_recovers_defaults_without_overwriting ... ok
+test reads::missing_store_returns_defaults_without_creating_parent_or_store ... ok
+test substitution::ancestor_symlink_into_another_users_directory_is_refused ... ok
+test reads::salvage_keeps_valid_revision_valid_fields_and_store_bytes ... ok
+test substitution::parent_substituted_before_read_and_restored_before_replace_is_refused ... ok
+test substitution::store_and_locks_moved_into_a_substituted_parent_are_refused_by_parent_identity ... ok
+test substitution::store_file_symlink_is_refused_for_reads_and_writes ... ok
+test ownership::startup_normalizes_once_preserves_raw_secrets_and_keeps_offline_fenced ... ok
+test ownership::offline_noop_on_deleted_store_while_instance_runs_is_unavailable ... ok
+test transactions::prompt_mutation_revalidates_membership_against_the_locked_fresh_snapshot ... ok
+test transactions::corrupt_or_overflow_revision_and_broken_json_refuse_write ... ok
+test ownership::startup_merge_never_copies_unknown_fields_between_items_with_duplicate_ids ... ok
+test transactions::refused_or_noop_commit_on_absent_store_creates_no_directory_or_lock ... ok
+test transactions::stale_compare_and_set_refuses_without_changing_bytes ... ok
+test substitution::same_user_ancestor_symlink_resolves_to_its_canonical_directory ... ok
+test transactions::changed_patch_is_durable_increments_once_and_preserves_unknowns_and_secrets ... ok
+test ownership::lease_holding_instance_commits_while_offline_writers_stay_refused ... ok
+test transactions::semantic_noop_does_not_rewrite_or_increment_and_first_change_is_one ... ok
+test normalized_writes::gpu_accelerator_with_device_is_reread_as_returned_and_device_cannot_be_cleared ... ok
+test faults::every_durable_fault_preserves_a_complete_generation_and_reports_uncertainty ... ok
+test processes::barrier_started_startup_and_writer_respect_real_lease_ownership ... ok
+test processes::independent_raw_reader_observes_only_complete_old_or_new_generations ... ok
+test processes::forced_process_termination_before_and_after_replace_preserves_complete_generations_and_releases_locks ... ok
+test processes::overlapping_subprocess_writers_serialize_under_the_lock_and_preserve_disjoint_fields ... ok
+
+test result: ok. 42 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 1.33s
+
+
+running 21 tests
+test contracts::all_documented_error_codes_have_fixed_exits_and_object_details ... ok
+test contracts::request_roundtrip_keeps_typed_operation_without_debug_or_secret_diagnostics ... ok
+test inventory::independent_access_inventory_covers_7_readonly_1_secret_4_collections_51_scalars ... ok
+test request_contracts::every_operation_refuses_fields_owned_by_other_variants ... ok
+test contracts::valid_get_keys_set_domain_shapes_roundtrip_with_optional_nulls ... ok
+test scalars::cli_rejects_noncanonical_boolean_and_out_of_range_numbers ... ok
+test request_contracts::unsupported_request_versions_and_extra_fields_are_rejected_safely ... ok
+test scalars::every_nullable_scalar_preserves_strings_and_accepts_null_clear ... ok
+test scalars::legacy_aliases_are_disk_only_and_build_policy_is_shared ... ok
+test scalars::all_51_scalar_ports_accept_the_same_typed_values ... ok
+test scalars::unknown_and_protected_keys_are_refused_without_echoing_input ... ok
+test scalars::numeric_boundaries_and_overflow_have_identical_safe_error_reasons ... ok
+test request_contracts::request_schema_closes_each_operation_to_its_own_fields ... ok
+test contracts::operation_schema_requires_the_same_variant_fields_as_serde ... ok
+test contracts::generated_schema_matches_wire_shapes_and_descriptor_inventory ... ok
+test contracts::checked_schema_matches_the_actual_dto_generator ... ok
+test inventory::every_actual_stored_field_has_exactly_one_descriptor ... ok
+test request_contracts::public_schema_requires_all_fields_and_preserves_legacy_numeric_reads ... ok
+test request_contracts::all_canonical_public_enums_and_required_keys_match_independent_inventory ... ok
+test contracts::explicit_projection_reports_secret_presence_without_any_raw_canary ... ok
+test inventory::independent_enum_inventory_accepts_every_current_canonical_variant ... ok
+
+test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.13s
+
+
+running 7 tests
+test no_webview_capability_grants_the_store_plugin ... ok
+test settings_service_is_installed_before_the_first_startup_reader ... ok
+test frontend_never_opens_the_settings_store_directly ... ok
+test only_the_settings_service_emits_settings_changed ... ok
+test settings_file_name_is_only_spelled_by_the_service ... ok
+test store_plugin_is_gone_and_settings_path_is_only_resolved_by_the_service ... ok
+test no_backend_code_writes_settings_outside_the_service ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s
+

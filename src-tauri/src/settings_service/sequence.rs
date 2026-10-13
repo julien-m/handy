@@ -117,6 +117,21 @@ pub(crate) fn write_scalar(
         commit_and_apply(live, port, &SettingsEdit::Scalar(mutation), expected)
     })
 }
+/// Domain change routed to the instance (for example `handy settings output set`): same order,
+/// effects and event as a settings-UI write.
+///
+/// # Errors
+/// Same as `write_scalar`, plus the change's own refusal.
+pub(crate) fn write_change(
+    live: &LiveSettings,
+    port: &dyn LiveEffectsPort,
+    change: &super::domains::DomainChange,
+    expected: Option<Revision>,
+) -> Result<LiveCommit, SettingsError> {
+    ordered(live, port, || {
+        commit_and_apply(live, port, &change.edit(), expected)
+    })
+}
 /// Typed UI or manager edit applied to the latest settings, in the write order.
 ///
 /// # Errors

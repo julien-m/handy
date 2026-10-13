@@ -66,6 +66,10 @@ pub enum ValidationReason {
     UnknownPrompt,
     UpdaterDisabled,
     GpuDeviceRequired,
+    /// Domain input (file or stdin) is not UTF-8 text; `details.offset` names the first bad byte.
+    InvalidEncoding,
+    /// Domain input does not follow the domain's exchange format.
+    InvalidInput,
 }
 impl ValidationReason {
     fn message(self) -> &'static str {
@@ -86,6 +90,8 @@ impl ValidationReason {
             Self::UnknownPrompt => "Selected prompt does not exist.",
             Self::UpdaterDisabled => "Update checks are disabled by system configuration.",
             Self::GpuDeviceRequired => "The GPU accelerator requires a selected GPU device.",
+            Self::InvalidEncoding => "Input is not valid UTF-8 text.",
+            Self::InvalidInput => "Input does not follow the exchange format.",
         }
     }
 }
@@ -99,6 +105,9 @@ pub struct ErrorDetails {
     outcome: Option<Outcome>,
     #[serde(skip_serializing_if = "Option::is_none")]
     field: Option<&'static str>,
+    /// Byte offset of the first invalid byte of a domain input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    offset: Option<u64>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     issues: Vec<FieldIssue>,
 }
@@ -155,6 +164,13 @@ impl SettingsError {
                 reason: reason.message(),
             });
         }
+        error
+    }
+    /// Domain input refused for `reason`, without echoing it; `offset` locates invalid UTF-8.
+    pub fn invalid_input(reason: ValidationReason, offset: Option<u64>) -> Self {
+        let mut error = Self::new(SettingsErrorCode::ValidationFailed);
+        error.reason = Some(reason);
+        error.details.offset = offset;
         error
     }
     /// Report a stale compare-and-set with the observed revision.

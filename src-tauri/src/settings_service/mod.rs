@@ -6,6 +6,7 @@ pub mod cli;
 pub mod command_error;
 pub mod descriptor;
 mod descriptor_data;
+pub mod domains;
 pub(crate) mod edit;
 mod effects;
 #[cfg(unix)]
@@ -13,6 +14,7 @@ mod endpoint_unix;
 #[cfg(windows)]
 mod endpoint_windows;
 pub mod errors;
+pub mod input;
 pub mod ipc;
 pub mod live;
 pub mod locator;
