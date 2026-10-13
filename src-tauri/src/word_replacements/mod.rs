@@ -12,6 +12,8 @@ pub mod validation;
 #[cfg(test)]
 mod exchange_tests;
 #[cfg(test)]
+mod matcher_script_tests;
+#[cfg(test)]
 mod matcher_tests;
 #[cfg(test)]
 mod preview_tests;

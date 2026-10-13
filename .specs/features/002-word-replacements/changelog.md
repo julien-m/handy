@@ -17,6 +17,15 @@
 - **Review:** these normative edits invalidate the spec and plan review receipts. Both independent reviews must be redone by another agent before any progression gate; no prior PASS is retained.
 - **Author:** Claude Code (implementation agent, orchestrator decisions)
 
+## 2026-10-13 — [Bugfix]: Join controls and CJK-side marks block matches; tab-separated header ignored
+
+- **Type:** Bugfix
+- **Spec modified:** No (the clarifications are the previous entry)
+- **Code modified:** `word_replacements/unicode_generate.py` (new `J` Join_Control class from the pinned `PropList.txt`), regenerated `unicode-data.txt` and `unicode-sources.json` (only the header line and `J;200C;200D` change), `unicode.rs` (`is_join_control`, word characters include join controls), `matcher.rs` (`is_side_open`: a CJK side still rejects an adjacent combining mark), `exchange.rs` (header recognized by trimmed fields with tab or `;`), new `matcher_script_tests.rs` (script-boundary fixtures moved out of `matcher_tests.rs` to keep it under 400 lines, plus 8 new ones: 58 fixtures in total), `mod.rs` (test module), `exchange_tests.rs` (tab header, spaced header, look-alikes), `unicode.rs` tests. The generator's table assembly moved to `_property_tables` (30-line function limit); a second regeneration produced byte-identical files.
+- **AC impacted:** AC-004 (tab header), AC-006 (ZWNJ/ZWJ, NFD kana on a CJK side).
+- **Evidence:** raw outputs in `proofs/claude-fix2/` (red run without the fix, library, exchange and pipeline tests, strict Clippy, fmt, lint, format, repository conventions, LiveSpec validation).
+- **Author:** Claude Code (implementation agent)
+
 ## 2026-10-13 — [Spec Update]: AC-006 word characters include combining marks
 
 - **Type:** Spec Update (Clarify decision, `spec-refine` traceability rules)

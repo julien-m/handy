@@ -174,19 +174,31 @@ def build_records(sources: dict[str, str]) -> list[str]:
     """
     records = [
         f"# Unicode {UNICODE_VERSION}; F=full C+F folding, W=White_Space, L=Letter/Nd, "
-        "M=Mn/Mc/Me, K=CJK"
+        "M=Mn/Mc/Me, J=Join_Control, K=CJK"
     ]
     for line in sources["CaseFolding.txt"].splitlines():
         fields = line.split("#", 1)[0].split(";")
         if len(fields) > 2 and fields[1].strip() in {"C", "F"}:
             records.append(f"F;{fields[0].strip()};{fields[2].strip()}")
+    for label, points in _property_tables(sources):
+        records.extend(f"{label};{start:X};{end:X}" for start, end in coalesce(points))
+    return records
+
+
+def _property_tables(sources: dict[str, str]) -> list[tuple[str, set[int]]]:
     letters = letter_digit_points(sources["UnicodeData.txt"])
     marks = mark_points(sources["UnicodeData.txt"])
     white = _property_points(sources["PropList.txt"], {"White_Space"})
+    # ZWNJ/ZWJ join letters inside one word (Persian, Urdu, joined sequences).
+    joiners = _property_points(sources["PropList.txt"], {"Join_Control"})
     cjk = _cjk_points(sources, letters, marks)
-    for label, points in (("W", white), ("L", letters), ("M", marks), ("K", cjk)):
-        records.extend(f"{label};{start:X};{end:X}" for start, end in coalesce(points))
-    return records
+    return [
+        ("W", white),
+        ("L", letters),
+        ("M", marks),
+        ("J", joiners),
+        ("K", cjk),
+    ]
 
 
 def _checked_download(url: str, expected: str) -> bytes:

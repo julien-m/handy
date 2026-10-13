@@ -1,4 +1,4 @@
-# Unicode 17.0.0; F=full C+F folding, W=White_Space, L=Letter/Nd, M=Mn/Mc/Me, K=CJK
+# Unicode 17.0.0; F=full C+F folding, W=White_Space, L=Letter/Nd, M=Mn/Mc/Me, J=Join_Control, K=CJK
 F;0041;0061
 F;0042;0062
 F;0043;0063
@@ -2657,6 +2657,7 @@ M;1E6F5;1E6F5
 M;1E8D0;1E8D6
 M;1E944;1E94A
 M;E0100;E01EF
+J;200C;200D
 K;305;305
 K;323;323
 K;1100;11FF

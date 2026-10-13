@@ -34,6 +34,7 @@ pub struct UnicodeData {
     whitespace: Vec<(u32, u32)>,
     letters_digits: Vec<(u32, u32)>,
     marks: Vec<(u32, u32)>,
+    join_controls: Vec<(u32, u32)>,
     cjk: Vec<(u32, u32)>,
 }
 
@@ -60,6 +61,7 @@ impl UnicodeData {
                 "W" => insert_range(&mut data.whitespace, start, fields[2])?,
                 "L" => insert_range(&mut data.letters_digits, start, fields[2])?,
                 "M" => insert_range(&mut data.marks, start, fields[2])?,
+                "J" => insert_range(&mut data.join_controls, start, fields[2])?,
                 "K" => insert_range(&mut data.cjk, start, fields[2])?,
                 _ => return Err(UnicodeDataError),
             }
@@ -94,12 +96,19 @@ impl UnicodeData {
         contains(&self.marks, character)
     }
 
-    // @spec AC-006: Word characters include combining marks — .specs/features/002-word-replacements/spec.md#ac-006
-    /// Test a word character for AC-006 boundaries: letter, decimal digit or
-    /// combining mark, so a dependent vowel, virama or decomposed accent keeps
-    /// its base letter's word intact.
+    /// Test Join_Control: U+200C ZERO WIDTH NON-JOINER and U+200D ZERO WIDTH JOINER.
+    pub fn is_join_control(&self, character: char) -> bool {
+        contains(&self.join_controls, character)
+    }
+
+    // @spec AC-006: Word characters include combining marks and joiners — .specs/features/002-word-replacements/spec.md#ac-006
+    /// Test a word character for AC-006 boundaries: letter, decimal digit,
+    /// combining mark or join control, so a dependent vowel, virama, decomposed
+    /// accent or a ZWNJ inside a Persian word keeps that word intact.
     pub fn is_word_character(&self, character: char) -> bool {
-        self.is_letter_or_digit(character) || self.is_combining_mark(character)
+        self.is_letter_or_digit(character)
+            || self.is_combining_mark(character)
+            || self.is_join_control(character)
     }
 
     /// Test Han/kana/hangul and shared kana letters/marks for a side exemption.
@@ -307,6 +316,21 @@ mod tests {
     }
 
     #[test]
+    fn classify_pinned_join_controls_as_word_characters() -> Result<(), Box<dyn std::error::Error>>
+    {
+        let data = UnicodeData::load()?;
+        for character in ['\u{200C}', '\u{200D}'] {
+            assert!(data.is_join_control(character), "{character:?}");
+            assert!(data.is_word_character(character), "{character:?}");
+        }
+        for character in ['\u{200B}', '\u{200E}', '\u{2060}'] {
+            assert!(!data.is_join_control(character), "{character:?}");
+            assert!(!data.is_word_character(character), "{character:?}");
+        }
+        Ok(())
+    }
+
+    #[test]
     fn reject_malformed_tables_without_panicking() {
         for source in [
             "F;DF;",
@@ -315,6 +339,7 @@ mod tests {
             "W;20;1F",
             "W;20;20\nW;20;21",
             "M;301;300",
+            "J;200D;200C",
             "Q;20;20",
         ] {
             assert!(UnicodeData::parse(source).is_err());

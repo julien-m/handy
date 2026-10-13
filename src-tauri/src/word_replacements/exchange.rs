@@ -15,8 +15,12 @@ use super::{
 pub const MAX_IMPORT_BYTES: usize = 1_000_000;
 /// Canonical header written by export and always shown by the bulk editor.
 pub const EXPORT_HEADER: &str = "recognized;replacement";
-/// AC-004 headers, compared after trimming and Unicode case folding.
-const ACCEPTED_HEADERS: [&str; 2] = ["texte_reconnu;remplacement", EXPORT_HEADER];
+/// AC-004 header field pairs, compared per field after trimming and Unicode
+/// case folding, whatever the separator (tab or `;`).
+const ACCEPTED_HEADERS: [(&str, &str); 2] = [
+    ("texte_reconnu", "remplacement"),
+    ("recognized", "replacement"),
+];
 const BYTE_ORDER_MARK: char = '\u{FEFF}';
 
 /// Why raw file or stdin bytes cannot become exchange text; never carries content.
@@ -165,7 +169,7 @@ fn parse_line(data: &UnicodeData, line: &str, is_header_candidate: &mut bool) ->
     }
     // AC-004: only the first content line may be a header, never a later one.
     let was_header_candidate = std::mem::replace(is_header_candidate, false);
-    if was_header_candidate && ACCEPTED_HEADERS.contains(&data.normalized_key(trimmed).as_str()) {
+    if was_header_candidate && is_header(data, line) {
         return ParsedLineContent::Ignored {
             reason: IgnoredLine::Header,
         };
@@ -173,10 +177,30 @@ fn parse_line(data: &UnicodeData, line: &str, is_header_candidate: &mut bool) ->
     parse_rule_line(line)
 }
 
-fn parse_rule_line(line: &str) -> ParsedLineContent {
+// @spec AC-004: Header recognized with tab or semicolon — .specs/features/002-word-replacements/spec.md#ac-004
+/// Whether a line's two fields, split like a rule line and trimmed, are an
+/// accepted header pair, so a spreadsheet header row is never imported.
+fn is_header(data: &UnicodeData, line: &str) -> bool {
+    split_fields(line).is_some_and(|(recognized, replacement)| {
+        let fields = (
+            data.normalized_key(recognized),
+            data.normalized_key(replacement),
+        );
+        ACCEPTED_HEADERS
+            .iter()
+            .any(|(left, right)| fields.0 == *left && fields.1 == *right)
+    })
+}
+
+/// Split on the first tab when the line has one, otherwise on the first `;`.
+fn split_fields(line: &str) -> Option<(&str, &str)> {
     // AC-004: a tab wins over `;` so spreadsheet rows keep semicolons literal.
     let separator = if line.contains('\t') { '\t' } else { ';' };
-    let Some((recognized, replacement)) = line.split_once(separator) else {
+    line.split_once(separator)
+}
+
+fn parse_rule_line(line: &str) -> ParsedLineContent {
+    let Some((recognized, replacement)) = split_fields(line) else {
         return ParsedLineContent::Invalid {
             issues: vec![FieldIssue {
                 field: super::validation::Field::Line,

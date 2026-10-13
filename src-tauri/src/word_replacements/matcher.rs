@@ -48,7 +48,8 @@ impl std::error::Error for CompileError {}
 struct CompiledRule {
     id: RuleId,
     replacement: String,
-    /// AC-006: a recognized side starting/ending with CJK skips its boundary test.
+    /// AC-006: a recognized side starting/ending with CJK ignores neighbouring
+    /// base characters; an adjacent combining mark still blocks the match.
     is_start_exempt: bool,
     is_end_exempt: bool,
 }
@@ -221,17 +222,28 @@ impl CompiledReplacements {
     }
 }
 
-/// AC-006 boundary: neighbours are not word characters (Letter, Decimal_Number
-/// or combining mark Mn/Mc/Me), unless that side of the recognized text is CJK
-/// (written without spaces). Marks count so a rule never splits a base letter
-/// from its dependent vowel, virama or decomposed accent.
+/// AC-006 boundary on both sides of the match; see `is_side_open`.
 fn has_boundaries(data: &UnicodeData, text: &str, span: Range<usize>, rule: &CompiledRule) -> bool {
-    let is_word = |character: Option<char>| character.is_some_and(|c| data.is_word_character(c));
     let before = text
         .get(..span.start)
         .and_then(|head| head.chars().next_back());
     let after = text.get(span.end..).and_then(|tail| tail.chars().next());
-    (rule.is_start_exempt || !is_word(before)) && (rule.is_end_exempt || !is_word(after))
+    is_side_open(data, before, rule.is_start_exempt)
+        && is_side_open(data, after, rule.is_end_exempt)
+}
+
+/// One side of a match is open when its neighbour is the text edge or not a
+/// word character (Letter, Decimal_Number, combining mark Mn/Mc/Me or join
+/// control), so a rule never splits a word, a dependent vowel, a virama, a
+/// decomposed accent or a ZWNJ-joined Persian word. A CJK side (written without
+/// spaces) ignores neighbouring base characters only: a combining mark there
+/// still blocks, so `か` never matches the base of an NFD `が`.
+fn is_side_open(data: &UnicodeData, neighbour: Option<char>, is_cjk_exempt: bool) -> bool {
+    match neighbour {
+        None => true,
+        Some(character) if is_cjk_exempt => !data.is_combining_mark(character),
+        Some(character) => !data.is_word_character(character),
+    }
 }
 
 /// Index of the first token of the next original scalar or whitespace run.

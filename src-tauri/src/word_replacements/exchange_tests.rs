@@ -63,10 +63,42 @@ fn recognize_header_case_insensitively_after_blank_and_comment_lines() -> TestRe
 }
 
 #[test]
-fn treat_tab_or_spaced_header_as_ordinary_rule() -> TestResult {
-    let expected = vec![rule("recognized", "replacement")];
-    assert_eq!(contents("recognized\treplacement\n")?, expected);
-    assert_eq!(contents("recognized ; replacement")?, expected);
+fn recognize_tab_separated_header_copied_from_a_spreadsheet() -> TestResult {
+    assert_eq!(
+        contents("recognized\treplacement\nCloud Code\tClaude Code\n")?,
+        vec![
+            ignored(IgnoredLine::Header),
+            rule("Cloud Code", "Claude Code")
+        ]
+    );
+    assert_eq!(
+        contents("Texte_Reconnu\tRemplacement\r\nOpen Claw\tOpenClaw")?,
+        vec![ignored(IgnoredLine::Header), rule("Open Claw", "OpenClaw")]
+    );
+    Ok(())
+}
+
+#[test]
+fn recognize_header_fields_after_trimming_whatever_the_separator() -> TestResult {
+    let header = vec![ignored(IgnoredLine::Header)];
+    assert_eq!(contents("recognized ; replacement")?, header);
+    assert_eq!(contents(" recognized \t replacement ")?, header);
+    Ok(())
+}
+
+#[test]
+fn keep_header_lookalikes_and_later_tab_headers_as_rules() -> TestResult {
+    assert_eq!(
+        contents("recognized;replacement;extra\nrecognized\treplacement")?,
+        vec![
+            rule("recognized", "replacement;extra"),
+            rule("recognized", "replacement"),
+        ]
+    );
+    assert_eq!(
+        contents("recognized\treplacement\trest")?,
+        vec![invalid(Field::Replacement, IssueKind::ForbiddenCharacter)]
+    );
     Ok(())
 }
 

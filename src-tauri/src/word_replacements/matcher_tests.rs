@@ -1,16 +1,17 @@
 //! Table-driven AC-006/AC-007 matching fixtures (SC-001) and output invariants.
 
 use super::matcher::{CompiledReplacements, OutputSegment};
+use super::matcher_script_tests::SCRIPT_CASES;
 use super::model::ReplacementRule;
 
 type TestResult = Result<(), Box<dyn std::error::Error>>;
 
 /// One exact matching oracle: ordered rules, recognized text, expected output.
-struct Case {
-    name: &'static str,
-    rules: &'static [(&'static str, &'static str)],
-    input: &'static str,
-    expected: &'static str,
+pub(super) struct Case {
+    pub(super) name: &'static str,
+    pub(super) rules: &'static [(&'static str, &'static str)],
+    pub(super) input: &'static str,
+    pub(super) expected: &'static str,
 }
 
 const CASES: &[Case] = &[
@@ -255,54 +256,6 @@ const CASES: &[Case] = &[
         expected: "a;b #c",
     },
     Case {
-        name: "dependent vowel sign blocks Devanagari prefix",
-        rules: &[("भारत", "India")],
-        input: "भारतीय संविधान",
-        expected: "भारतीय संविधान",
-    },
-    Case {
-        name: "dependent vowel sign blocks Devanagari suffix",
-        rules: &[("रत", "Z")],
-        input: "भारत",
-        expected: "भारत",
-    },
-    Case {
-        name: "virama blocks Devanagari conjunct split",
-        rules: &[("स", "S")],
-        input: "स्त",
-        expected: "स्त",
-    },
-    Case {
-        name: "whole Devanagari words replaced",
-        rules: &[("भारत", "India"), ("भारतीय", "Indian")],
-        input: "भारत और भारतीय संविधान।",
-        expected: "India और Indian संविधान।",
-    },
-    Case {
-        name: "decomposed accent after match blocks",
-        rules: &[("cafe", "X")],
-        input: "cafe\u{301} ok",
-        expected: "cafe\u{301} ok",
-    },
-    Case {
-        name: "precomposed accent does not match base letters",
-        rules: &[("cafe", "X")],
-        input: "café",
-        expected: "café",
-    },
-    Case {
-        name: "decomposed accent before match blocks",
-        rules: &[("ok", "OK")],
-        input: "e\u{301}ok",
-        expected: "e\u{301}ok",
-    },
-    Case {
-        name: "whole decomposed word replaced",
-        rules: &[("cafe\u{301}", "Café")],
-        input: "un CAFE\u{301}, merci",
-        expected: "un Café, merci",
-    },
-    Case {
         name: "rule with several internal spaces",
         rules: &[("cloud   code", "Claude Code")],
         input: "cloud code and cloud \t\u{A0} code",
@@ -329,10 +282,18 @@ fn compile(rules: &[(&str, &str)]) -> Result<CompiledReplacements, Box<dyn std::
     Ok(CompiledReplacements::compile(&rules)?)
 }
 
+/// Every SC-001 fixture: general cases, then script-boundary cases.
+fn all_cases() -> impl Iterator<Item = &'static Case> {
+    CASES.iter().chain(SCRIPT_CASES)
+}
+
 #[test]
 fn match_every_exact_fixture() -> TestResult {
-    assert!(CASES.len() >= 30, "SC-001 requires at least 30 fixtures");
-    for case in CASES {
+    assert!(
+        all_cases().count() >= 30,
+        "SC-001 requires at least 30 fixtures"
+    );
+    for case in all_cases() {
         let output = compile(case.rules)?.apply(case.input);
         assert_eq!(output.text(), case.expected, "{}", case.name);
     }
@@ -341,7 +302,7 @@ fn match_every_exact_fixture() -> TestResult {
 
 #[test]
 fn segments_cover_the_original_text_in_order() -> TestResult {
-    for case in CASES {
+    for case in all_cases() {
         let output = compile(case.rules)?.apply(case.input);
         let mut covered = 0;
         for segment in &output.segments {

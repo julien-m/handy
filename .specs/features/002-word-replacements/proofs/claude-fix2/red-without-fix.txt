@@ -1,0 +1,26 @@
+# Red check: matcher.rs and exchange.rs at HEAD, is_word_character without join controls; new tests and regenerated data kept
+$ cargo test --manifest-path src-tauri/Cargo.toml --lib word_replacements
+Tue Oct 13 15:54:51 UTC 2026
+test word_replacements::exchange_tests::recognize_header_fields_after_trimming_whatever_the_separator ... FAILED
+test word_replacements::exchange_tests::recognize_tab_separated_header_copied_from_a_spreadsheet ... FAILED
+test word_replacements::unicode::tests::classify_pinned_join_controls_as_word_characters ... FAILED
+test word_replacements::matcher_tests::match_every_exact_fixture ... FAILED
+---- word_replacements::exchange_tests::recognize_header_fields_after_trimming_whatever_the_separator stdout ----
+thread 'word_replacements::exchange_tests::recognize_header_fields_after_trimming_whatever_the_separator' (41858693) panicked at src/word_replacements/exchange_tests.rs:81:5:
+assertion `left == right` failed
+  left: [Rule { recognized: "recognized", replacement: "replacement" }]
+ right: [Ignored { reason: Header }]
+---- word_replacements::exchange_tests::recognize_tab_separated_header_copied_from_a_spreadsheet stdout ----
+thread 'word_replacements::exchange_tests::recognize_tab_separated_header_copied_from_a_spreadsheet' (41858694) panicked at src/word_replacements/exchange_tests.rs:67:5:
+assertion `left == right` failed
+  left: [Rule { recognized: "recognized", replacement: "replacement" }, Rule { recognized: "Cloud Code", replacement: "Claude Code" }]
+ right: [Ignored { reason: Header }, Rule { recognized: "Cloud Code", replacement: "Claude Code" }]
+---- word_replacements::unicode::tests::classify_pinned_join_controls_as_word_characters stdout ----
+thread 'word_replacements::unicode::tests::classify_pinned_join_controls_as_word_characters' (41858735) panicked at src/word_replacements/unicode.rs:322:13:
+---- word_replacements::matcher_tests::match_every_exact_fixture stdout ----
+thread 'word_replacements::matcher_tests::match_every_exact_fixture' (41858704) panicked at src/word_replacements/matcher_tests.rs:385:9:
+assertion `left == right` failed: zero-width non-joiner keeps a Persian prefix in its word
+  left: "X\u{200c}خواهم"
+ right: "می\u{200c}خواهم"
+test result: FAILED. 53 passed; 4 failed; 0 ignored; 0 measured; 310 filtered out; finished in 0.12s
+EXIT=101
