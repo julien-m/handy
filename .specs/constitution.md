@@ -27,3 +27,10 @@ Independent families:
 ## Testing Standards
 
 Read [testing strategy](testing/strategy.md).
+
+### Native platform evidence (user decision 2026-10-13)
+
+- Code targets every supported platform (macOS, Windows, Linux) and must build and pass its automated tests.
+- macOS native evidence is required before a feature is marked Implemented.
+- Native evidence that needs Windows, Linux, an older Handy binary or a second user account is recorded as **pending release evidence** with the exact check to run. It never blocks implementation steps, feature completion on the integration branch, or the merge into `dev`; it is never claimed as passed.
+- Implementations follow the reviewed spec at its minimal scope: a plan mechanism that the spec does not require (for example replaying commands for an older running Handy) is not built.
