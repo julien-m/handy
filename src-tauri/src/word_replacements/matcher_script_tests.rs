@@ -1,8 +1,9 @@
 //! AC-006 combining-mark and join-control boundary fixtures (SC-001): Indic
-//! vowel signs and virama, decomposed accents, Persian ZWNJ, ZWJ, kana marks on
-//! a CJK side and the accepted CJK-side false positives (halfwidth sound marks,
-//! NFD hangul jamo). Plain Han, kana and hangul boundaries stay in
-//! `matcher_tests`, which runs these fixtures with the general ones.
+//! vowel signs and virama, decomposed accents, Persian ZWNJ, ZWJ, kana marks
+//! and join controls on a CJK side and the accepted CJK-side false positives
+//! (halfwidth sound marks, NFD hangul jamo). Plain Han, kana and hangul
+//! boundaries stay in `matcher_tests`, which runs these fixtures with the
+//! general ones.
 
 use super::matcher_tests::Case;
 
@@ -96,6 +97,24 @@ pub(super) const SCRIPT_CASES: &[Case] = &[
         rules: &[("\u{304B}\u{3044}", "X")],
         input: "\u{304B}\u{3099}\u{304B}\u{3044}",
         expected: "\u{304B}\u{3099}\u{304B}\u{3044}",
+    },
+    Case {
+        name: "zero-width joiner after a match blocks on a CJK side",
+        rules: &[("\u{304B}", "X")],
+        input: "\u{304B}\u{200D}\u{304D}",
+        expected: "\u{304B}\u{200D}\u{304D}",
+    },
+    Case {
+        name: "zero-width non-joiner after a match blocks on a CJK side",
+        rules: &[("\u{304B}", "X")],
+        input: "\u{304B}\u{200C}\u{304D}",
+        expected: "\u{304B}\u{200C}\u{304D}",
+    },
+    Case {
+        name: "join controls before a match block on a CJK side",
+        rules: &[("\u{304B}", "X")],
+        input: "\u{304D}\u{200D}\u{304B} \u{304D}\u{200C}\u{304B}",
+        expected: "\u{304D}\u{200D}\u{304B} \u{304D}\u{200C}\u{304B}",
     },
     Case {
         name: "rule ending with an NFD dakuten keeps the CJK exemption",

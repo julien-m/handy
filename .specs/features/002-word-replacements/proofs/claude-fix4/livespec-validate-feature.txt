@@ -1,0 +1,18 @@
+OK      .specs/features/002-word-replacements/changelog.md Score: 100/100
+OK      .specs/features/002-word-replacements/implementation.md Score: 100/100
+OK      .specs/features/002-word-replacements/pipeline.md Score: 100/100
+OK      .specs/features/002-word-replacements/plan.md Score: 100/100
+OK      .specs/features/002-word-replacements/progress.md Score: 100/100
+OK      .specs/features/002-word-replacements/proofs/claude/independent-audit.md
+Score: 100/100
+OK      
+.specs/features/002-word-replacements/proofs/claude-fix1/independent-reaudit.md 
+Score: 100/100
+OK      
+.specs/features/002-word-replacements/proofs/claude-fix2/independent-review.md 
+Score: 100/100
+OK      
+.specs/features/002-word-replacements/proofs/claude-review/independent-review.md
+Score: 100/100
+OK      .specs/features/002-word-replacements/spec.md Score: 100/100
+exit 0

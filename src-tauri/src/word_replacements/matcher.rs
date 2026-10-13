@@ -235,16 +235,19 @@ fn has_boundaries(data: &UnicodeData, text: &str, span: Range<usize>, rule: &Com
 /// One side of a match is open when its neighbour is the text edge or not a
 /// word character (Letter, Decimal_Number, combining mark Mn/Mc/Me or join
 /// control), so a rule never splits a word, a dependent vowel, a virama, a
-/// decomposed accent or a ZWNJ-joined Persian word. A CJK side ignores every
-/// neighbour except a combining mark: base characters, ZWNJ and ZWJ do not
-/// block there, while a combining mark does, so `か` never matches the base of
-/// an NFD `が`. Letters that extend a CJK character without being marks
-/// (halfwidth U+FF9E/U+FF9F, NFD hangul jamo) do not block either: accepted
-/// false positives listed in the spec Edge Cases.
+/// decomposed accent or a ZWNJ-joined Persian word. AC-006 limits the CJK
+/// exemption to base characters: a CJK side ignores any neighbouring base
+/// character, but a combining mark, ZWNJ (U+200C) or ZWJ (U+200D) still blocks
+/// it, so `か` never matches the base of an NFD `が` nor a kana joined by a
+/// join control. Letters that extend a CJK character without being marks
+/// (halfwidth U+FF9E/U+FF9F, NFD hangul jamo) do not block: accepted false
+/// positives listed in the spec Edge Cases.
 fn is_side_open(data: &UnicodeData, neighbour: Option<char>, is_cjk_exempt: bool) -> bool {
     match neighbour {
         None => true,
-        Some(character) if is_cjk_exempt => !data.is_combining_mark(character),
+        Some(character) if is_cjk_exempt => {
+            !(data.is_combining_mark(character) || data.is_join_control(character))
+        }
         Some(character) => !data.is_word_character(character),
     }
 }

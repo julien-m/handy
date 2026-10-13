@@ -1,0 +1,40 @@
+test word_replacements::model::tests::preserve_opaque_ids_and_order_through_json ... ok
+test word_replacements::tests::preserve_opaque_id_bytes_without_format_length_or_trim_limits ... ok
+test word_replacements::tests::reject_forbidden_characters_and_leading_comments ... ok
+test word_replacements::tests::reject_duplicate_folded_recognized_keys ... ok
+test word_replacements::tests::accept_scalar_limits_and_reject_empty_or_one_over_maximum ... ok
+test word_replacements::tests::report_all_duplicate_participants_without_mutating_input ... ok
+test word_replacements::tests::trim_only_edges_and_preserve_valid_inner_replacement_bytes ... ok
+test word_replacements::tests::reject_unicode_hard_line_breaks_in_both_fields ... ok
+test word_replacements::tests::validate_opaque_id_rejects_all_duplicate_participants ... ok
+test word_replacements::unicode::tests::classify_pinned_combining_marks_as_word_characters ... ok
+test word_replacements::tests::validate_opaque_id_rejects_empty_without_changing_input ... ok
+test word_replacements::unicode::tests::classify_pinned_join_controls_as_word_characters ... ok
+test word_replacements::unicode::tests::classify_pinned_supplementary_letters_decimal_digits_and_cjk ... ok
+test word_replacements::unicode::tests::retain_complete_expansion_and_whitespace_source_boundaries ... ok
+test word_replacements::unicode::tests::reject_malformed_tables_without_panicking ... ok
+test word_replacements::unicode::tests::fold_default_unicode_without_turkic_or_normalization ... ok
+test word_replacements::matcher_tests::segments_cover_the_original_text_in_order ... ok
+test word_replacements::matcher_tests::match_every_exact_fixture ... FAILED
+test word_replacements::unicode::tests::verify_embedded_data_and_license_against_pinned_provenance ... ok
+test word_replacements::tests::accept_empty_and_maximum_sets_reject_one_more ... ok
+test word_replacements::preview_tests::refuse_candidates_above_the_rule_limit ... ok
+test word_replacements::tests::default_legacy_settings_to_empty_replacements ... ok
+
+failures:
+
+---- word_replacements::matcher_tests::match_every_exact_fixture stdout ----
+
+thread 'word_replacements::matcher_tests::match_every_exact_fixture' (43182239) panicked at src/word_replacements/matcher_tests.rs:298:9:
+assertion `left == right` failed: zero-width joiner after a match blocks on a CJK side
+  left: "X\u{200d}き"
+ right: "か\u{200d}き"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    word_replacements::matcher_tests::match_every_exact_fixture
+
+test result: FAILED. 56 passed; 1 failed; 0 ignored; 0 measured; 310 filtered out; finished in 0.10s
+
+error: test failed, to rerun pass `--lib`

@@ -75,6 +75,20 @@ Verification ([proofs/claude-fix3](proofs/claude-fix3/)): `cargo test --lib` 351
 
 **Reviews to redo.** The AC-006 and Edge Cases edits make both review receipts stale: `--progression implement --model claude-opus-5-5 --review-max-chars 180000` now returns `BLOCKED: clarify_not_ready:stale_or_incomplete_spec_review` ([output](proofs/claude-fix3/livespec-progression-implement.txt)). An independent reviewer must refresh the spec review, the plan review and Analyze with that budget; no prior PASS is reused.
 
+## Independent spec review W1 fix (2026-10-13)
+
+Review: [independent spec review](proofs/claude-review/independent-review.md), finding W1. Raw outputs: [proofs/claude-fix4](proofs/claude-fix4/).
+
+This change aligns the code on AC-006 as written; `spec.md` and `plan.md` are untouched, so the refreshed review receipts stay valid. AC-006 limits the CJK-side exemption to neighbouring base characters, and ZWNJ (U+200C) and ZWJ (U+200D) are word characters, not base characters, so they now block a match on a CJK side exactly like a combining mark. Before, `is_side_open` ignored them and the rule `か→X` turned `か‍き` into `X‍き`.
+
+- Code: `is_side_open` in `matcher.rs` blocks a CJK side on a combining mark or a join control; its comment states the rule.
+- Fixtures (`matcher_script_tests.rs`): `か‍き` and `か‌き` with `か→X` unchanged; the symmetric case with ZWJ and ZWNJ before the match (`き‍か き‌か`) unchanged. No other fixture changed or regressed, including `あかい` → `あXい` and the accepted halfwidth/jamo false positives.
+- Red run without the fix: [red-without-fix.txt](proofs/claude-fix4/red-without-fix.txt) (`か‍き` gives `X‍き`).
+
+Verification ([proofs/claude-fix4](proofs/claude-fix4/)): `cargo test --lib` 351 PASS / 16 ignored (new fixtures run inside the table-driven test); `--test replacement_exchange` 5 PASS; `--test replacement_pipeline` 7 PASS; `cargo fmt --check` OK; `livespec conventions verify --feature repo --json` PASS (run `20261013T183746Z`, 0 blocker, 0 violation in `word_replacements/`); `livespec validate .specs/features/002-word-replacements --progression implement --model claude-opus-5-5 --review-max-chars 180000` → `Progression: READY`.
+
+The Clarify decision suggested by the reviewer (`decision:ac-006:cjk-side-join-control-blocks`) and the explicit AC-006 wording are left for the next spec revision; recording them now would stale the receipts.
+
 ## Waiting for 008
 
 - Step 1 adapter compatibility and startup normalization through the actual settings service.
