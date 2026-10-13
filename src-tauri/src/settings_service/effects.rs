@@ -53,6 +53,7 @@ fn live_effect(key: &str) -> Option<LiveEffect> {
 
 /// Apply the live effect of every changed key except `skip` (effects a command prepared before
 /// committing). Every key runs even after a failure; the first failing key is returned.
+// @spec FR-003: Ordered live effects after the durable commit — .specs/features/008-settings-cli/spec.md#fr-003
 pub(crate) fn apply_changed(
     app: &AppHandle,
     commit: &LiveCommit,

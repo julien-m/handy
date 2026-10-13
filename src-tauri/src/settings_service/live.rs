@@ -38,6 +38,7 @@ impl OwnerProbe for ProbeRef<'_> {
 }
 
 /// Live settings of one process. Commits are serialized in-process, then published.
+// @spec FR-003: All writers and live adapters — .specs/features/008-settings-cli/spec.md#fr-003
 pub struct LiveSettings {
     repository: SettingsRepository,
     authority: Authority,

@@ -27,6 +27,7 @@ struct SettingsChanged {
 ///
 /// # Errors
 /// Any startup refusal of `LiveSettings::start_owned`.
+// @spec FR-004: Instance startup lease and exclusive store ownership — .specs/features/008-settings-cli/spec.md#fr-004
 pub fn install_owned(app: &AppHandle) -> Result<(), SettingsError> {
     let repository = SettingsRepository::new(StoreLocator::current()?);
     let live = LiveSettings::start_owned(repository, &ClaimedSingleInstance)?;
