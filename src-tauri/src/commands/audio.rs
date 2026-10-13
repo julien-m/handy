@@ -212,13 +212,13 @@ pub async fn get_available_microphones() -> Result<Vec<AudioDevice>, String> {
     .map_err(|e| format!("audio task join failed: {}", e))?
 }
 
-/// "default" selects the system default device (stored as null by the shared validator); the
+/// `None` selects the system default device; a name is stored as is, "default" included. The
 /// device restart is the live effect, run off the webview thread.
 #[tauri::command]
 #[specta::specta]
 pub async fn set_selected_microphone(
     app: AppHandle,
-    device_name: String,
+    device_name: Option<String>,
 ) -> Result<(), SettingsCommandError> {
     run_settings_write(move || tauri_adapter::set_value(&app, "selected_microphone", device_name))
         .await
@@ -259,12 +259,12 @@ pub async fn get_available_output_devices() -> Result<Vec<AudioDevice>, String> 
     .map_err(|e| format!("audio task join failed: {}", e))?
 }
 
-/// "default" selects the system default output device (stored as null).
+/// `None` selects the system default output device; a name is stored as is.
 #[tauri::command]
 #[specta::specta]
 pub fn set_selected_output_device(
     app: AppHandle,
-    device_name: String,
+    device_name: Option<String>,
 ) -> Result<(), SettingsCommandError> {
     tauri_adapter::set_value(&app, "selected_output_device", device_name)
 }
@@ -292,12 +292,12 @@ pub async fn play_test_sound(app: AppHandle, sound_type: String) {
     audio_feedback::play_test_sound(&app, sound);
 }
 
-/// "default" selects the system default device while the lid is closed (stored as null).
+/// `None` selects the system default device while the lid is closed; a name is stored as is.
 #[tauri::command]
 #[specta::specta]
 pub fn set_clamshell_microphone(
     app: AppHandle,
-    device_name: String,
+    device_name: Option<String>,
 ) -> Result<(), SettingsCommandError> {
     tauri_adapter::set_value(&app, "clamshell_microphone", device_name)
 }

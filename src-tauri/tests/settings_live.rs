@@ -31,11 +31,12 @@ fn accepted_cases() -> Vec<(&'static str, Value, &'static str)> {
         ),
         ("external_script_path", Value::Null, "null"),
         ("recording_retention_period", json!("weeks2"), "weeks2"),
-        // The default device entry: the UI sends its sentinel, the CLI user types it.
-        ("selected_microphone", json!("Default"), "default"),
-        ("selected_microphone", json!("default"), "Default"),
-        ("clamshell_microphone", json!("Default"), "default"),
-        ("selected_output_device", json!("default"), "default"),
+        // Device selectors: the UI "Default" entry and the CLI `null` both mean the system
+        // default; "default" is a literal device name on both surfaces.
+        ("selected_microphone", Value::Null, "null"),
+        ("clamshell_microphone", Value::Null, "null"),
+        ("selected_output_device", Value::Null, "null"),
+        ("selected_microphone", json!("default"), "default"),
         (
             "selected_microphone",
             json!("USB Microphone"),
@@ -199,16 +200,21 @@ fn instance_fences_offline_writers_and_a_restart_sees_their_later_commit() -> Te
     Ok(())
 }
 #[test]
-fn default_device_intention_is_stored_as_null_from_the_ui_and_the_cli() -> TestResult {
-    for (key, ui_sentinel, cli_text) in [
-        ("selected_microphone", "Default", "default"),
-        ("clamshell_microphone", "default", "Default"),
-        ("selected_output_device", "Default", "null"),
+fn device_selectors_store_null_for_the_default_and_literal_names_otherwise() -> TestResult {
+    for key in [
+        "selected_microphone",
+        "clamshell_microphone",
+        "selected_output_device",
     ] {
-        let (_, ui) = ui_path(key, json!(ui_sentinel))?;
-        let (_, cli) = cli_path(key, cli_text)?;
+        let (_, ui) = ui_path(key, Value::Null)?;
+        let (_, cli) = cli_path(key, "null")?;
         assert!(ui[key].is_null() && cli[key].is_null(), "{key}");
-        assert_eq!(ui["revision"], cli["revision"]);
+        let (_, ui) = ui_path(key, json!("default"))?;
+        let (_, cli) = cli_path(key, "default")?;
+        assert_eq!(
+            (&ui[key], &cli[key]),
+            (&json!("default"), &json!("default"))
+        );
     }
     Ok(())
 }

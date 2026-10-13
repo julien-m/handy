@@ -188,22 +188,18 @@ fn every_nullable_scalar_preserves_strings_and_accepts_null_clear(
         "clamshell_microphone",
         "selected_output_device",
     ] {
-        for sentinel in ["default", "Default"] {
-            let cleared = validate_cli(key, "null", &context)?;
-            assert_eq!(validate_ui(key, json!(sentinel), &context)?, cleared);
-            // Same intention, same stored value: the CLI maps the UI's sentinels to null too.
-            assert_eq!(validate_cli(key, sentinel, &context)?, cleared);
-        }
-        // Any other name is a device name on both surfaces, kept byte for byte.
-        for name in ["DEFAULT", "USB Microphone", " default"] {
-            assert_eq!(
-                validate_ui(key, json!(name), &context)?,
-                validate_cli(key, name, &context)?
-            );
-            assert_eq!(
-                serde_json::to_value(validate_cli(key, name, &context)?.value())?,
-                json!(name)
-            );
+        // Null is the only system-default value; "default" is a device name (a real ALSA PCM on
+        // Linux) kept byte for byte, so each intention has exactly one stored value.
+        for name in [
+            "default",
+            "Default",
+            "DEFAULT",
+            "USB Microphone",
+            " default",
+        ] {
+            let cli = validate_cli(key, name, &context)?;
+            assert_eq!(validate_ui(key, json!(name), &context)?, cli);
+            assert_eq!(serde_json::to_value(cli.value())?, json!(name));
         }
     }
     assert!(validate_ui("transcribe_gpu_device", json!(7), &context).is_err());

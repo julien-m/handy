@@ -27,9 +27,7 @@ export const OutputDeviceSelector: React.FC<OutputDeviceSelectorProps> =
       } = useSettings();
 
       const selectedOutputDevice =
-        getSetting("selected_output_device") === "default"
-          ? "Default"
-          : getSetting("selected_output_device") || "Default";
+        getSetting("selected_output_device") || "Default";
 
       const handleOutputDeviceSelect = async (deviceName: string) => {
         await updateSetting("selected_output_device", deviceName);

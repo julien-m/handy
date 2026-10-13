@@ -800,10 +800,10 @@ async getAvailableMicrophones() : Promise<Result<AudioDevice[], string>> {
 }
 },
 /**
- * "default" selects the system default device (stored as null by the shared validator); the
+ * `None` selects the system default device; a name is stored as is, "default" included. The
  * device restart is the live effect, run off the webview thread.
  */
-async setSelectedMicrophone(deviceName: string) : Promise<Result<null, SettingsCommandError>> {
+async setSelectedMicrophone(deviceName: string | null) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("set_selected_microphone", { deviceName }) };
 } catch (e) {
@@ -828,9 +828,9 @@ async getAvailableOutputDevices() : Promise<Result<AudioDevice[], string>> {
 }
 },
 /**
- * "default" selects the system default output device (stored as null).
+ * `None` selects the system default output device; a name is stored as is.
  */
-async setSelectedOutputDevice(deviceName: string) : Promise<Result<null, SettingsCommandError>> {
+async setSelectedOutputDevice(deviceName: string | null) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("set_selected_output_device", { deviceName }) };
 } catch (e) {
@@ -853,9 +853,9 @@ async checkCustomSounds() : Promise<CustomSounds> {
     return await TAURI_INVOKE("check_custom_sounds");
 },
 /**
- * "default" selects the system default device while the lid is closed (stored as null).
+ * `None` selects the system default device while the lid is closed; a name is stored as is.
  */
-async setClamshellMicrophone(deviceName: string) : Promise<Result<null, SettingsCommandError>> {
+async setClamshellMicrophone(deviceName: string | null) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("set_clamshell_microphone", { deviceName }) };
 } catch (e) {

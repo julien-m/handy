@@ -103,6 +103,13 @@ const DEFAULT_AUDIO_DEVICE: AudioDevice = {
   is_default: true,
 };
 
+// The "Default" entry of the device selectors is stored as null (system default); every other
+// name, "default" included (a real ALSA device on Linux), is stored as a literal device name.
+const toStoredDevice = (value: unknown): string | null =>
+  value === null || value === undefined || value === DEFAULT_AUDIO_DEVICE.name
+    ? null
+    : (value as string);
+
 const settingUpdaters: {
   [K in keyof Settings]?: (value: Settings[K]) => Promise<unknown>;
 } = {
@@ -127,23 +134,13 @@ const settingUpdaters: {
   hold_threshold_ms: (value) =>
     commands.changeHoldThresholdMsSetting(value as number),
   selected_microphone: (value) =>
-    commands.setSelectedMicrophone(
-      (value as string) === "Default" || value === null
-        ? "default"
-        : (value as string),
-    ),
+    commands.setSelectedMicrophone(toStoredDevice(value)),
   selected_channel: (value) =>
     commands.setSelectedChannel((value as number | null | undefined) ?? null),
   clamshell_microphone: (value) =>
-    commands.setClamshellMicrophone(
-      (value as string) === "Default" ? "default" : (value as string),
-    ),
+    commands.setClamshellMicrophone(toStoredDevice(value)),
   selected_output_device: (value) =>
-    commands.setSelectedOutputDevice(
-      (value as string) === "Default" || value === null
-        ? "default"
-        : (value as string),
-    ),
+    commands.setSelectedOutputDevice(toStoredDevice(value)),
   recording_retention_period: (value) =>
     commands.updateRecordingRetentionPeriod(value as string),
   translate_to_english: (value) =>
@@ -267,9 +264,7 @@ export const useSettingsStore = create<SettingsStore>()(
         if (result.status === "ok") {
           const devicesWithDefault = [
             DEFAULT_AUDIO_DEVICE,
-            ...result.data.filter(
-              (d) => d.name !== "Default" && d.name !== "default",
-            ),
+            ...result.data.filter((d) => d.name !== DEFAULT_AUDIO_DEVICE.name),
           ];
           set({ audioDevices: devicesWithDefault });
         } else {
@@ -288,9 +283,7 @@ export const useSettingsStore = create<SettingsStore>()(
         if (result.status === "ok") {
           const devicesWithDefault = [
             DEFAULT_AUDIO_DEVICE,
-            ...result.data.filter(
-              (d) => d.name !== "Default" && d.name !== "default",
-            ),
+            ...result.data.filter((d) => d.name !== DEFAULT_AUDIO_DEVICE.name),
           ];
           set({ outputDevices: devicesWithDefault });
         } else {

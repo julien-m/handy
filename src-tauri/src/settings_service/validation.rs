@@ -53,38 +53,18 @@ pub fn validate_cli(
     context: &ValidationContext<'_>,
 ) -> Result<SettingsMutation, SettingsError> {
     let entry = editable_descriptor(key)?;
-    let value = if is_default_device(entry, candidate) {
-        serde_json::Value::Null
-    } else {
-        parse_cli(entry, candidate)?
-    };
+    let value = parse_cli(entry, candidate)?;
     validate_value(entry, value, context)
 }
 
-/// UI controls send typed values; device sentinels map to null exactly as for the CLI.
+/// UI controls send typed values. Device selectors use null for the system default on every
+/// surface; "default" is an ordinary device name (a real ALSA PCM on Linux), never a sentinel.
 pub fn validate_ui(
     key: &str,
     candidate: serde_json::Value,
     context: &ValidationContext<'_>,
 ) -> Result<SettingsMutation, SettingsError> {
-    let entry = editable_descriptor(key)?;
-    let value = match candidate.as_str() {
-        Some(text) if is_default_device(entry, text) => serde_json::Value::Null,
-        _ => candidate,
-    };
-    validate_value(entry, value, context)
-}
-
-/// Business rule shared by every surface: a device selector stores the system default as null,
-/// and "default"/"Default" (the entry the device lists show for it) mean that default. The same
-/// intention therefore stores the same value from the UI or the CLI. Lossy on purpose: a device
-/// literally named "default" or "Default" cannot be selected, as the UI device lists already hide
-/// those names; any other spelling is kept byte for byte as a device name.
-fn is_default_device(entry: &super::descriptor::SettingDescriptor, text: &str) -> bool {
-    matches!(
-        entry.key,
-        "selected_microphone" | "clamshell_microphone" | "selected_output_device"
-    ) && matches!(text, "default" | "Default")
+    validate_value(editable_descriptor(key)?, candidate, context)
 }
 
 fn editable_descriptor(
