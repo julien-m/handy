@@ -1,8 +1,16 @@
 //! Deterministic replacement rules, Unicode normalization and validation.
 
+pub mod exchange;
+pub mod materialize;
 pub mod model;
+pub mod preview;
 pub mod unicode;
 pub mod validation;
+
+#[cfg(test)]
+mod exchange_tests;
+#[cfg(test)]
+mod preview_tests;
 
 #[cfg(test)]
 mod tests {

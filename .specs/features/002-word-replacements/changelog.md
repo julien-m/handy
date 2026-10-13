@@ -1,5 +1,14 @@
 # Changelog - 002-word-replacements
 
+## 2026-10-13 — [Feature]: Exchange format and deterministic previews
+
+- **Type:** Feature
+- **Spec modified:** No.
+- **Code modified:** `src-tauri/src/word_replacements/{exchange,preview,materialize}.rs` with `exchange_tests.rs`/`preview_tests.rs`, `validation.rs` (two issue kinds, one field, shorter field check), `src-tauri/tests/replacement_exchange.rs`.
+- **AC impacted:** AC-003/004/005 (pure parsing, export, merge/replace preview and Apply gating); persistence, revision binding, editor and CLI remain Waiting for 008.
+- **Evidence:** Library 331 PASS / 17 ignored, exchange file integration 5 PASS, Clippy/fmt/lint/format PASS, repo conventions receipt `20261013T144051Z` PASS; raw outputs in `proofs/claude/step2-*`.
+- **Author:** Claude Code (implementation agent, core-first run).
+
 ## 2026-10-13 — [Feature]: Core domain model and pinned Unicode validation
 
 - **Type:** Feature

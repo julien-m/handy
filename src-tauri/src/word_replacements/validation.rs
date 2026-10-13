@@ -25,6 +25,8 @@ pub enum Field {
     Recognized,
     Replacement,
     Rules,
+    /// A whole exchange line, before it can be split into fields.
+    Line,
 }
 
 /// Stable validation kind; diagnostics never contain user rule text.
@@ -40,6 +42,10 @@ pub enum IssueKind {
     DuplicateKey,
     TooManyRules,
     UnicodeDataUnavailable,
+    /// An exchange line has neither a tab nor a `;` separator.
+    MissingSeparator,
+    /// The saved base set is itself invalid, so no preview can be applied to it.
+    InvalidSavedRules,
 }
 
 /// An issue in one input field before a rule has an ordered position.
@@ -98,44 +104,46 @@ fn validate_fields_with_data(
         MAX_REPLACEMENT_SCALARS,
         &mut issues,
     );
-    if recognized.starts_with('#') {
-        issues.push(FieldIssue {
-            field: Field::Recognized,
-            kind: IssueKind::LeadingComment,
-        });
+    if issues.is_empty() {
+        Ok((recognized.to_owned(), replacement.to_owned()))
+    } else {
+        Err(issues)
     }
-    if !issues.is_empty() {
-        return Err(issues);
-    }
-    Ok((recognized.to_owned(), replacement.to_owned()))
 }
 
 fn check_field(value: &str, field: Field, max: usize, issues: &mut Vec<FieldIssue>) {
     let count = value.chars().count();
-    if count == 0 {
-        issues.push(FieldIssue {
-            field,
-            kind: IssueKind::TooShort,
-        });
-    }
-    if count > max {
-        issues.push(FieldIssue {
-            field,
-            kind: IssueKind::TooLong,
-        });
-    }
-    // Forbid Unicode hard line breaks; semicolons remain literal replacement text.
-    if value.chars().any(|character| {
-        matches!(
-            character,
-            '\r' | '\n' | '\t' | '\u{000B}' | '\u{000C}' | '\u{0085}' | '\u{2028}' | '\u{2029}'
-        ) || (field == Field::Recognized && character == ';')
-    }) {
-        issues.push(FieldIssue {
-            field,
-            kind: IssueKind::ForbiddenCharacter,
-        });
-    }
+    let is_recognized = field == Field::Recognized;
+    let checks = [
+        // AC-002: recognized text cannot start like an exchange comment line.
+        (
+            is_recognized && value.starts_with('#'),
+            IssueKind::LeadingComment,
+        ),
+        (count == 0, IssueKind::TooShort),
+        (count > max, IssueKind::TooLong),
+        (
+            value
+                .chars()
+                .any(|character| is_forbidden(character, is_recognized)),
+            IssueKind::ForbiddenCharacter,
+        ),
+    ];
+    issues.extend(
+        checks
+            .into_iter()
+            .filter(|(has_failed, _)| *has_failed)
+            .map(|(_, kind)| FieldIssue { field, kind }),
+    );
+}
+
+/// Unicode hard line breaks and tabs are forbidden in both fields; `;` only in
+/// recognized text, so replacements may contain it literally.
+fn is_forbidden(character: char, is_recognized: bool) -> bool {
+    matches!(
+        character,
+        '\r' | '\n' | '\t' | '\u{000B}' | '\u{000C}' | '\u{0085}' | '\u{2028}' | '\u{2029}'
+    ) || (is_recognized && character == ';')
 }
 
 // @spec AC-002: Rule bounds and duplicate keys — .specs/features/002-word-replacements/spec.md#ac-002
