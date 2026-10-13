@@ -24,6 +24,9 @@ pub enum SettlementTrigger {
     ReadsWentQuiet,
     /// "Not read" was declared at the per-application deadline.
     NotReadDeclared,
+    /// The keystroke was cancelled after publication (destination lost or
+    /// a late accessibility write appeared): no read can be expected.
+    KeystrokeCancelled,
     /// Handy is exiting normally.
     Exit {
         /// A qualifying read was observed and its quiet period or cap elapsed.
@@ -57,8 +60,8 @@ impl SettlementAction {
 /// Business rules: restoration only ever follows a confirmed read whose
 /// quiet period elapsed; "not read" never restores (the previous content
 /// could otherwise be pasted by a slow target); copy mode keeps the
-/// transcript as plain text instead of restoring; exit materializes the
-/// transcript whenever restoration is not due yet.
+/// transcript as plain text instead of restoring; exit and a cancelled
+/// keystroke materialize the transcript whenever restoration is not due.
 pub fn settlement_action(trigger: SettlementTrigger, policy: ClipboardPolicy) -> SettlementAction {
     match (trigger, policy) {
         (SettlementTrigger::ReadsWentQuiet, ClipboardPolicy::DontModify) => {
@@ -175,6 +178,16 @@ mod tests {
             settlement_action(due, CopyToClipboard),
             MaterializeTranscript
         );
+    }
+
+    #[test]
+    fn cancelled_keystroke_materializes_and_never_restores() {
+        for policy in [DontModify, CopyToClipboard] {
+            assert_eq!(
+                settlement_action(KeystrokeCancelled, policy),
+                MaterializeTranscript
+            );
+        }
     }
 
     #[test]

@@ -37,8 +37,9 @@ impl fmt::Display for AxError {
 
 impl std::error::Error for AxError {}
 
-/// Selected range of a text field, in UTF-16 code units.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+/// Selected range of a text field, in UTF-16 code units (default: caret at
+/// the start).
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
 pub struct Utf16Range {
     /// Start of the selection (caret position when empty).
     pub location: usize,

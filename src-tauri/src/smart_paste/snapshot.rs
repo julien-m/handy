@@ -52,6 +52,9 @@ pub enum SnapshotError {
     Protocol(ProtocolError),
     /// The pasteboard changed while it was being read.
     SourceChanged,
+    /// The pasteboard was not empty but no type could be saved; starting
+    /// would lose it, so the transaction refuses to start.
+    NothingSaved,
 }
 
 /// Why a type was not saved.

@@ -112,3 +112,12 @@ AppKit caching and delayed AX mutation counterexamples remain explicit: callback
 - **AC impacted:** AC-010, AC-011 (implemented, certification pending)
 - **Author:** Claude Opus 5.5 (implementation agent, orchestrated run)
 - **Evidence:** [read-only keyboard receipt](evidence/native-keyboard-adapter.json); selection, key posting and remote applications pending release evidence. Step 6 is committed before step 5 so the coordinator composes finished ports.
+
+## 2026-10-13 — Feature: Step 5 serialized coordinator
+
+- **Type:** Feature
+- **Spec modified:** No
+- **Code modified:** src-tauri/src/smart_paste/{coordinator,coordinator_chord,pending,request,actor,settlement,snapshot,ax_port,mod}.rs, src-tauri/tests/smart_paste/{coordinator,chain,actor,privacy,rig,fake_pasteboard}.rs
+- **AC impacted:** AC-009, AC-010, AC-012, AC-013, AC-017, AC-018 (composed, certification pending)
+- **Author:** Claude Opus 5.5 (implementation agent, orchestrated run)
+- **Notes:** The actor is not yet owned by the app nor called by the paste pipeline: that wiring consumes the 006 destination context (step 7). The pre-publication AX guard runs after the snapshot so a write applied during the capture is still verified with the clipboard untouched.

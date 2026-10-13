@@ -2,9 +2,15 @@
 //! with scripted native ports and a virtual clock.
 
 mod smart_paste {
+    pub mod actor;
+    pub mod chain;
+    pub mod coordinator;
     pub mod direct;
+    pub mod fake_pasteboard;
     pub mod fakes;
     pub mod keyboard;
     pub mod lifecycle;
+    pub mod privacy;
+    pub mod rig;
     pub mod snapshot;
 }

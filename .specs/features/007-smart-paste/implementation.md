@@ -7,9 +7,9 @@ Inspect [the specification](spec.md) and [the progress checkpoints](progress.md)
 | Requirement | File(s) | @spec Anchor | Status | Last Verified |
 |---|---|---|---|---|
 | [FR-005: Multi-type receipt transaction](spec.md#fr-005) | [snapshot](../../../src-tauri/src/smart_paste/snapshot.rs), [snapshot_helper](../../../src-tauri/src/smart_paste/snapshot_helper.rs), [macos_pasteboard](../../../src-tauri/src/smart_paste/macos_pasteboard.rs), [lifecycle](../../../src-tauri/src/smart_paste/lifecycle.rs), [pasteboard receipt](evidence/native-pasteboard-adapter.json) | FR-005 | Partial — bounded snapshot, helper and on-demand publication implemented, certification pending; general pasteboard and real applications pending release evidence | 2026-10-13 |
-| [FR-006: Guarded restoration](spec.md#fr-006) | [lifecycle](../../../src-tauri/src/smart_paste/lifecycle.rs), [settlement](../../../src-tauri/src/smart_paste/settlement.rs) | FR-006 | Partial — pure timing and guarded decisions implemented, certification pending; native adapter pending | 2026-10-13 |
+| [FR-006: Guarded restoration](spec.md#fr-006) | [lifecycle](../../../src-tauri/src/smart_paste/lifecycle.rs), [settlement](../../../src-tauri/src/smart_paste/settlement.rs), [pending](../../../src-tauri/src/smart_paste/pending.rs), [coordinator](../../../src-tauri/src/smart_paste/coordinator.rs), [macos_pasteboard](../../../src-tauri/src/smart_paste/macos_pasteboard.rs) | FR-006 | Partial — restoration, copy mode, succession and exit implemented, certification pending; app exit hook waits for step 7 | 2026-10-13 |
 | [FR-007: App and keyboard strategies](spec.md#fr-007) | [strategy](../../../src-tauri/src/smart_paste/strategy.rs), [keyboard](../../../src-tauri/src/smart_paste/keyboard.rs), [key_events](../../../src-tauri/src/smart_paste/key_events.rs), [macos_keyboard](../../../src-tauri/src/smart_paste/macos_keyboard.rs), [keyboard receipt](evidence/native-keyboard-adapter.json) | FR-007 | Partial — strategies and layout handling implemented, certification pending; selection/posting natively pending release evidence | 2026-10-13 |
-| [FR-008: Truthful outcomes](spec.md#fr-008) | [outcome](../../../src-tauri/src/smart_paste/outcome.rs) | FR-008 | Partial — outcome contract implemented, certification pending; 009/010 consumers pending | 2026-10-13 |
+| [FR-008: Truthful outcomes](spec.md#fr-008) | [outcome](../../../src-tauri/src/smart_paste/outcome.rs), [coordinator](../../../src-tauri/src/smart_paste/coordinator.rs), [actor](../../../src-tauri/src/smart_paste/actor.rs) | FR-008 | Partial — terminal outcomes and late-read diagnostics produced, certification pending; 009/010 consumers and pipeline wiring wait for 006/009/010 | 2026-10-13 |
 | [FR-009: Settings, migration and CLI](spec.md#fr-009) | None | Pending | Waiting for 008 | — |
 | [FR-010: Native evidence](spec.md#fr-010) | [Native spike](../../../src-tauri/tests/smart_paste_native.rs), [harness](../../../scripts/smart-paste-native-proof.ts), [AX observations](evidence/native-ax-spike.json) | FR-010 | Partial — synthetic native observations, release matrix pending | 2026-10-13 |
 | [FR-011: Verified direct insertion](spec.md#fr-011) | [direct](../../../src-tauri/src/smart_paste/direct.rs), [ax_port](../../../src-tauri/src/smart_paste/ax_port.rs), [macos_ax](../../../src-tauri/src/smart_paste/macos_ax.rs), [AX adapter receipt](evidence/native-ax-adapter.json) | FR-011 | Partial — bounded verified insertion and fallback guard implemented, certification pending; chain wiring waits for 006 | 2026-10-13 |
@@ -22,13 +22,13 @@ Inspect [the specification](spec.md) and [the progress checkpoints](progress.md)
 | AC-009 | [lifecycle tests](../../../src-tauri/tests/smart_paste_lifecycle.rs), [settlement](../../../src-tauri/src/smart_paste/settlement.rs) | Implemented (pure timing/guard), certification pending — real repeat reads not observable after AppKit cache fulfillment |
 | AC-010 | [strategy](../../../src-tauri/src/smart_paste/strategy.rs) | Partial — bundle table implemented, certification pending; composition in the coordinator (step 5); remote apps pending release evidence |
 | AC-011 | [keyboard tests](../../../src-tauri/tests/smart_paste/keyboard.rs), [native read-only check](../../../src-tauri/tests/smart_paste_native_keyboard.rs) | Implemented, certification pending — real ABC/US selection and restoration pending release evidence (layouts disabled on this Mac) |
-| AC-012 | [outcome](../../../src-tauri/src/smart_paste/outcome.rs) | Partial — eight kinds and eligibility implemented, certification pending |
-| AC-013 | None | Missing |
+| AC-012 | [outcome](../../../src-tauri/src/smart_paste/outcome.rs), [coordinator tests](../../../src-tauri/tests/smart_paste/coordinator.rs), [chain tests](../../../src-tauri/tests/smart_paste/chain.rs) | Implemented in the coordinator, certification pending — indicator message (006) and Enter/recovery consumers (009/010) pending |
+| AC-013 | [coordinator tests](../../../src-tauri/tests/smart_paste/coordinator.rs), [chain tests](../../../src-tauri/tests/smart_paste/chain.rs) | Implemented, certification pending — history is not touched by smart paste |
 | AC-014 | None | Waiting for 008 — shared startup migration and UI |
 | AC-015 | None | Waiting for 008 — settings service, revisions, CLI parity |
 | AC-016 | [Native spike](../../../src-tauri/tests/smart_paste_native.rs) | Partial — synthetic checks only; real application/layout matrix pending release evidence |
 | AC-017 | [scripted tests](../../../src-tauri/tests/smart_paste/direct.rs), [native adapter test](../../../src-tauri/tests/smart_paste_native_ax.rs) | Implemented, certification pending — production adapter verified on synthetic fields; real applications pending release evidence |
-| AC-018 | [scripted tests](../../../src-tauri/tests/smart_paste/direct.rs) | Partial — 250 ms direct budget implemented; chain composition in the coordinator (step 5); 010 consumer pending |
+| AC-018 | [direct tests](../../../src-tauri/tests/smart_paste/direct.rs), [chain tests](../../../src-tauri/tests/smart_paste/chain.rs) | Implemented in the coordinator, certification pending — recovery bubble consumer (010) pending |
 | has_dropdown / is_keyboard_navigable | None | Waiting for 008 — UI contract and settings integration |
 
 ## Native observations and boundaries
@@ -54,6 +54,7 @@ Inspect [the specification](spec.md) and [the progress checkpoints](progress.md)
 
 Raw command outputs for every checkpoint are kept under [proofs/claude](proofs/claude/) as `<step>-<gate>.{out,err,exit}`.
 
+- Step 5: `--test smart_paste` 86/0 including real-time actor and log-privacy tests ([stdout](proofs/claude/step-5-cargo-test.out)); clippy unchanged; fmt, lint, format and conventions PASS.
 - Step 6: `--test smart_paste` 50/0 and the read-only native keyboard check ([stdout](proofs/claude/step-6-native-keyboard.out)); clippy unchanged; fmt, lint, format and conventions PASS.
 - Step 4: `--test smart_paste` 43/0 and the harness-free native pasteboard scenario ([stdout](proofs/claude/step-4-native-pasteboard.out)); clippy unchanged; fmt, lint, format and conventions PASS.
 - Step 3: `--test smart_paste` 30/0 and the native AX adapter test 1/0 ([stdout](proofs/claude/step-3-native-ax.out)); clippy unchanged; fmt, lint, format and conventions PASS.
