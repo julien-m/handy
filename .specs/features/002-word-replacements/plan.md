@@ -340,13 +340,13 @@ No .specs/design/theme.css or theme.md exists, so theme installation Step 0 is i
 
 ### Step 7 — Produce acceptance, performance and native evidence
 
-**Prerequisite:** Steps 1–6 complete on supported OS builds; UI design gate and independent analysis ready.
+**Prerequisite:** Steps 1–6 complete with available macOS native build/test evidence; UI design gate and independent analysis ready. Checks requiring Windows/Linux, an older Handy binary, a second user account or an interactive check unavailable headlessly are listed as pending release evidence with the exact check to run; they do not block implementation steps or integration-branch completion.
 **Required inputs:** Actual binaries/hashes, private stores, controlled transcript/target and hardware, complete assertion inventory.
 **Action:** New `src-tauri/tests/replacement_performance.rs` release benchmark, new `scripts/replacement-native-proof.ts` Bun process harness derived from 008 private-store conventions, and native manual observation protocol. Run the resolved commands and retain an AC/FR/SC matrix plus per-stage text, durable revisions, file bytes, M1 timing samples and native focus/dialog/insertion observations. Test real UI and CLI export→replace-import for 1/100/1000 rules and compare ordered content. Exercise live settings update then next dictation, all insertion/history stage variants and persistence failures. No real user store or rule corpus in fixtures.
 **FR covered:** FR-001.4: Native editor restart proof, FR-002.5: Complete validation boundary proof, FR-003.4: UI CLI round-trip matrix, FR-004.5: Fault atomicity proof, FR-005.3: Stage and performance proof, FR-006.3: Native binary CLI contract proof
 **Execution evidence:** Actual OS/tool/build hashes, command stdout/stderr/exits, assertion matrix, persisted generations, recorded fields and target readback, independent native observations.
 **Success criteria:** All AC/SC prove their real behavior; M1 release 1000-rule/2000-scalar matching adds <20 ms; no unexplained P0/P1 failure; no inference from another feature's receipts.
-**Failure handling:** Missing native/platform/performance proof remains BLOCKED for delivery; report exact failed assertion or missing harness rather than claim certification.
+**Failure handling:** Missing available macOS native proof or required performance proof remains BLOCKED; report the exact failed assertion or missing harness. Windows/Linux, older-binary, second-account and non-headless interactive checks remain pending release evidence with exact instructions, never passed by inference and never blocking implementation steps or integration-branch completion.
 
 ## Resolved Test Commands
 

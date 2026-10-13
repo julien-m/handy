@@ -5,6 +5,8 @@
 
 ---
 
+## 2026-10-13 — [Feature 002] Step 1 core: ordered replacement model, pinned Unicode 17 offsets/properties and shared scalar/ID validation; additive empty settings and native-generated bindings. Rust target 20 PASS, regression 306 PASS / 17 ignored, generator boundary tests 6 PASS, Clippy/frontend checks and repository conventions PASS. Complete UI/transactions/CLI remain Waiting for 008; no acceptance certification claimed.
+
 ## 2026-10-13 — [Feature 007] Smart paste plan rewritten from 2026-10-13 spec — 9 steps, 4 diagrams; AX-first and receipt-only restoration; native/design release gates
 <!-- finalize:spec-plan:2026-10-13:17322c07 -->
 
