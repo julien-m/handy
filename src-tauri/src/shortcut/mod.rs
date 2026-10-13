@@ -167,6 +167,14 @@ impl BindingResponse {
             error: Some(error),
         }
     }
+    /// The committed binding, registered (or managed by the recording lifecycle for "cancel").
+    fn succeeded(binding: ShortcutBinding) -> Self {
+        Self {
+            success: true,
+            binding: Some(binding),
+            error: None,
+        }
+    }
 }
 
 /// Change one shortcut. The native registration is prepared first (unregister the old one,
@@ -179,13 +187,7 @@ pub fn change_binding(
     id: String,
     binding: String,
 ) -> Result<BindingResponse, SettingsCommandError> {
-    // Reject empty bindings — every shortcut should have a value
-    if binding.trim().is_empty() {
-        return Err(SettingsCommandError::invalid(
-            "bindings",
-            ValidationReason::CanonicalValue,
-        ));
-    }
+    require_binding_text(&binding)?;
     let settings = settings::get_settings(&app);
     let Some(previous) = binding_or_default(&settings, &id) else {
         let error = format!("Binding with id '{}' not found in defaults", id);
@@ -196,19 +198,27 @@ pub fn change_binding(
     updated.current_binding = binding;
     // The cancel binding is registered dynamically by the recording lifecycle, never here.
     let is_dynamic = id == "cancel";
-    if !is_dynamic {
-        if let Err(error) =
-            prepare_binding(&app, &previous, &updated, settings.keyboard_implementation)
-        {
-            return Ok(BindingResponse::failed(error));
-        }
+    let prepared = if is_dynamic {
+        Ok(())
+    } else {
+        prepare_binding(&app, &previous, &updated, settings.keyboard_implementation)
+    };
+    if let Err(error) = prepared {
+        return Ok(BindingResponse::failed(error));
     }
     commit_binding(&app, &id, &previous, &updated, is_dynamic)?;
-    Ok(BindingResponse {
-        success: true,
-        binding: Some(updated),
-        error: None,
-    })
+    Ok(BindingResponse::succeeded(updated))
+}
+
+/// Reject empty bindings: every shortcut must have a value.
+fn require_binding_text(binding: &str) -> Result<(), SettingsCommandError> {
+    if binding.trim().is_empty() {
+        return Err(SettingsCommandError::invalid(
+            "bindings",
+            ValidationReason::CanonicalValue,
+        ));
+    }
+    Ok(())
 }
 
 /// Commit the binding on the latest settings; a refusal undoes the prepared registration.
