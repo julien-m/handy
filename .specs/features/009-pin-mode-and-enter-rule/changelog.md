@@ -60,3 +60,13 @@
 - Update outcome matrix, timing anchors, native/QE risks and source-backed review/progression; preserve 008 transaction/domain names and the deferred one-pass UI gate.
 
 <!-- finalize:spec-plan:2026-10-13:183e40c6 -->
+
+## 2026-10-13 — [Spec Update]: Quality Engineering classification for the delivery lane
+
+- **Type:** Spec Update
+- **Spec modified:** Yes (sections: Quality Engineering added after QE Analysis; frontmatter `updated`)
+- **Code modified:** None
+- **AC impacted:** None (no AC, FR or SC changed)
+- **Classification:** criticality High, blast radius Shared, primary risk Functional, taken from the existing QE Analysis; `livespec delivery lane`: full
+- **Review:** the previous spec review is stale; an independent reviewer refreshes it
+- **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)

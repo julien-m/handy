@@ -4,7 +4,7 @@ title: Recovery Bubble
 priority: P1
 status: Planned
 created: 2026-10-12
-updated: 2026-10-12
+updated: 2026-10-13
 ---
 
 # Feature Spec: Recovery Bubble
@@ -357,6 +357,13 @@ Feature: Keyboard access to bubble actions
 - **Non-functional expectations:** Bubble shown within 300 ms of the recovery decision; full transcript transported regardless of length; no transcript text logged above debug level.
 - **Missing evidence:** No native drag test; classification accuracy unknown per application; mockups deferred before `spec-ship`.
 - **Boundary:** QE defines risk and test sufficiency; the independent review judges requirements; Penflow governs UI design evidence; spec-test executes runtime proof.
+
+## Quality Engineering
+
+- **Risk:** High criticality (rated so by the QE Analysis: the transcript can be lost, or a false recovery can interrupt normal dictation); Shared blast radius (the recovery decision sits on every failed or risky insertion and must not regress normal insertion); primary risk Data (lost text), followed by Regression (false recoveries).
+- **Applicable dimensions:** functional correctness, data integrity, accessibility, platform compatibility, UX, regression of normal insertion.
+- **P0 gates/evidence:** Decision table tests for AC-001/AC-002 with fake destination and classification seams; state-machine tests for drag begin/refuse/accept, copy, close and new dictation; no Enter while the bubble is shown.
+- **Boundary:** QE defines risk and test sufficiency only. The independent spec review judges requirements, Penflow governs UI design evidence, spec-test executes runtime proof and the end-of-feature delivery review looks for defects.
 
 ## Screens
 

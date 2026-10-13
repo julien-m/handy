@@ -4,7 +4,7 @@ title: Microphone Priority
 priority: P1
 status: Planned
 created: 2026-10-09
-updated: 2026-10-12
+updated: 2026-10-13
 ---
 
 # Feature Spec: Microphone Priority
@@ -413,6 +413,13 @@ Feature: Commit microphone priority
 - **Non-functional expectations:** Device enumeration and opening sit behind an injectable seam so disconnect/ambiguity tests are deterministic; never enumerate on the webview/main loop; bound attempts by configured length; serialize settings commits and recording boundaries; labels and recovery errors are translated; no audio, device names or credential payloads in debug output added by this feature.
 - **Missing evidence:** All application tests are PLANNED. No native Handy recording, build, migration or UI assertion has run for this feature. Draft UI contract, independent review, clarification, design and finalization gates remain open until their receipts exist.
 - **Boundary:** QE defines risk/test sufficiency. Independent review judges requirements. Penflow governs UI source/design evidence. spec-test executes runtime proof; broader security audit is separate.
+
+## Quality Engineering
+
+- **Risk:** High criticality (rated so by the QE Analysis: microphone resolution runs before every recording, and the clamshell behavior and the migration of the legacy single selection must not regress); Shared blast radius (the resolver serves every recording, and the ordered list is read and written by both the settings UI and the settings CLI of feature 008); primary risk Regression.
+- **Applicable dimensions:** functional correctness, regression, API/contract compatibility, data/migration integrity, security, performance, accessibility/UX, observability/operability.
+- **P0 gates/evidence:** Gherkin-derived resolver, migration and transaction tests; retention of unavailable preferences; clamshell regression fixtures; UI/CLI equivalence and stale-revision tests; native disconnect/reconnect and restart evidence.
+- **Boundary:** QE defines risk and test sufficiency only. The independent spec review judges requirements, Penflow governs UI design evidence, spec-test executes runtime proof and the end-of-feature delivery review looks for defects; a broader security audit is separate.
 
 ## Screens
 

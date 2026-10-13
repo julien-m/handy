@@ -5,6 +5,30 @@
 
 ---
 
+## 2026-10-13 — [Feature 001] Spec refined: Quality Engineering classification for the delivery lane
+
+`## Quality Engineering` added from the existing QE Analysis: criticality High, blast radius Shared, primary risk Regression; `livespec delivery lane` reads it (full). No AC, FR or SC changed; the spec review is stale until an independent reviewer refreshes it.
+
+## 2026-10-13 — [Feature 003] Spec refined: Quality Engineering classification for the delivery lane
+
+`## Quality Engineering` added from the existing QE Analysis: criticality Medium, blast radius Shared, primary risk UX; `livespec delivery lane` reads it (light once the spec review is current). No AC, FR or SC changed; the spec review is stale until an independent reviewer refreshes it.
+
+## 2026-10-13 — [Feature 005] Spec refined: Quality Engineering classification for the delivery lane
+
+`## Quality Engineering` added from the existing QE Analysis: criticality High, blast radius Shared, primary risk Data; `livespec delivery lane` reads it (full). No AC, FR or SC changed; the spec review is stale until an independent reviewer refreshes it.
+
+## 2026-10-13 — [Feature 006] Spec refined: Quality Engineering classification for the delivery lane
+
+`## Quality Engineering` added from the existing QE Analysis: criticality High, blast radius Shared, primary risk Functional; `livespec delivery lane` reads it (full). No AC, FR or SC changed; the spec review is stale until an independent reviewer refreshes it.
+
+## 2026-10-13 — [Feature 009] Spec refined: Quality Engineering classification for the delivery lane
+
+`## Quality Engineering` added from the existing QE Analysis: criticality High, blast radius Shared, primary risk Functional; `livespec delivery lane` reads it (full). No AC, FR or SC changed; the spec review is stale until an independent reviewer refreshes it.
+
+## 2026-10-13 — [Feature 010] Spec refined: Quality Engineering classification for the delivery lane
+
+`## Quality Engineering` added from the existing QE Analysis: criticality High, blast radius Shared, primary risk Data; `livespec delivery lane` reads it (full). No AC, FR or SC changed; the spec review is stale until an independent reviewer refreshes it.
+
 ## 2026-10-13 — 008-settings-cli: Step 5 early settings CLI and private channel Done
 
 `handy settings get|keys|set` runs before any GUI setup, offline under the shared lock or routed to the running instance over an authenticated private channel (5 s deadline, unknown outcome, no fallback). The system default device is stored as null on every surface. Full suite 429 passed/0 failed/17 ignored; conventions PASS/new 0. Commits `49b2736`…`be94db8`; Steps 6–7 Todo; no AC certified. Inspect [the checkpoint](features/008-settings-cli/progress.md#current-step-5-checkpoint--early-cli-and-private-channel).

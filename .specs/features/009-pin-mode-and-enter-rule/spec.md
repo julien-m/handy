@@ -4,7 +4,7 @@ title: PIN Mode and Enter Rule
 priority: P1
 status: Planned
 created: 2026-10-12
-updated: 2026-10-12
+updated: 2026-10-13
 ---
 
 # Feature Spec: PIN Mode and Enter Rule
@@ -326,6 +326,13 @@ Feature: Keyboard access to Automatic Enter
 - **Non-functional expectations:** Exactly zero or one Enter per dictation; Enter sent within 100 ms after a successful insertion step; no window titles or text logged above debug level.
 - **Missing evidence:** No runtime test; mockups deferred before `spec-ship`.
 - **Boundary:** QE defines risk and test sufficiency; the independent review judges requirements; Penflow governs UI design evidence; spec-test executes runtime proof.
+
+## Quality Engineering
+
+- **Risk:** High criticality (rated so by the QE Analysis: an automatic Enter after a failed or misrouted insertion can send a message); Shared blast radius (a pin routes every following dictation, the single Enter option migrates the existing auto-submit setting, and both are exposed through the settings CLI); primary risk Functional (Enter sent after a failed or misrouted insertion).
+- **Applicable dimensions:** functional correctness, safety of automatic actions, data migration, regression, accessibility, UX.
+- **P0 gates/evidence:** Gate table tests for AC-005 (each condition false blocks Enter); option × pin matrix tests; migration tests from auto-submit on/off with each key; pin resolution and unpin timing tests.
+- **Boundary:** QE defines risk and test sufficiency only. The independent spec review judges requirements, Penflow governs UI design evidence, spec-test executes runtime proof and the end-of-feature delivery review looks for defects.
 
 ## Screens
 

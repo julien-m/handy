@@ -32,3 +32,13 @@
 - **Details:** Eight work packages; execution order 1-2-3-4-7-5-6-8. Clarified durable-history/cancellation race. Final native reviews use actual runtime model and explicit complete-context budget 180000. Visual authority deferred to common pre-spec-ship pass; no certification claimed.
 
 <!-- finalize:spec-plan:2026-10-12:86a3d72b -->
+
+## 2026-10-13 — [Spec Update]: Quality Engineering classification for the delivery lane
+
+- **Type:** Spec Update
+- **Spec modified:** Yes (sections: Quality Engineering added after QE Analysis; frontmatter `updated`)
+- **Code modified:** None
+- **AC impacted:** None (no AC, FR or SC changed)
+- **Classification:** criticality High, blast radius Shared, primary risk Data, taken from the existing QE Analysis; `livespec delivery lane`: full
+- **Review:** the previous spec review is stale; an independent reviewer refreshes it
+- **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
