@@ -5,6 +5,8 @@
 
 ---
 
+## 2026-10-13 — [Feature 002] Spec refined: AC-006 Korean rationale made factual (particles attach to the preceding word); halfwidth U+FF9E/U+FF9F and NFD hangul jamo documented as accepted CJK-side false positives with fixtures (1 Clarify decision, IDs preserved); spec/plan reviews to redo.
+
 ## 2026-10-13 — [Feature 002] Spec refined: Quality Engineering classification for the delivery lane
 
 `## Quality Engineering` added from the existing QE Analysis: criticality High, blast radius Shared, primary risk Data; `livespec delivery lane` reads it (full). No AC, FR or SC changed; the spec review is stale until an independent reviewer refreshes it.

@@ -235,9 +235,12 @@ fn has_boundaries(data: &UnicodeData, text: &str, span: Range<usize>, rule: &Com
 /// One side of a match is open when its neighbour is the text edge or not a
 /// word character (Letter, Decimal_Number, combining mark Mn/Mc/Me or join
 /// control), so a rule never splits a word, a dependent vowel, a virama, a
-/// decomposed accent or a ZWNJ-joined Persian word. A CJK side (written without
-/// spaces) ignores neighbouring base characters only: a combining mark there
-/// still blocks, so `か` never matches the base of an NFD `が`.
+/// decomposed accent or a ZWNJ-joined Persian word. A CJK side ignores every
+/// neighbour except a combining mark: base characters, ZWNJ and ZWJ do not
+/// block there, while a combining mark does, so `か` never matches the base of
+/// an NFD `が`. Letters that extend a CJK character without being marks
+/// (halfwidth U+FF9E/U+FF9F, NFD hangul jamo) do not block either: accepted
+/// false positives listed in the spec Edge Cases.
 fn is_side_open(data: &UnicodeData, neighbour: Option<char>, is_cjk_exempt: bool) -> bool {
     match neighbour {
         None => true,

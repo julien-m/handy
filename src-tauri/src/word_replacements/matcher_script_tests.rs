@@ -1,6 +1,8 @@
-//! Script-boundary AC-006 fixtures (SC-001): combining marks in Indic scripts
-//! and decomposed accents, zero-width joiners in Persian, and kana marks on a
-//! CJK side. `matcher_tests` runs them with the general fixtures.
+//! AC-006 combining-mark and join-control boundary fixtures (SC-001): Indic
+//! vowel signs and virama, decomposed accents, Persian ZWNJ, ZWJ, kana marks on
+//! a CJK side and the accepted CJK-side false positives (halfwidth sound marks,
+//! NFD hangul jamo). Plain Han, kana and hangul boundaries stay in
+//! `matcher_tests`, which runs these fixtures with the general ones.
 
 use super::matcher_tests::Case;
 
@@ -100,5 +102,23 @@ pub(super) const SCRIPT_CASES: &[Case] = &[
         rules: &[("\u{304B}\u{3099}", "GA")],
         input: "\u{304B}\u{3099}\u{304D}",
         expected: "GA\u{304D}",
+    },
+    Case {
+        name: "accepted false positive: halfwidth voiced sound mark U+FF9E is a letter",
+        rules: &[("\u{FF76}", "X")],
+        input: "\u{FF76}\u{FF9E}\u{FF77}",
+        expected: "X\u{FF9E}\u{FF77}",
+    },
+    Case {
+        name: "accepted false positive: halfwidth semi-voiced sound mark U+FF9F is a letter",
+        rules: &[("\u{FF8A}", "X")],
+        input: "\u{FF8A}\u{FF9F}",
+        expected: "X\u{FF9F}",
+    },
+    Case {
+        name: "accepted false positive: NFD hangul trailing jamo is a letter",
+        rules: &[("\u{1112}\u{1161}", "X")],
+        input: "\u{1112}\u{1161}\u{11AB}",
+        expected: "X\u{11AB}",
     },
 ];

@@ -108,3 +108,13 @@
 - **Classification:** criticality High, blast radius Shared, primary risk Data, taken from the existing QE Analysis; `livespec delivery lane`: full
 - **Review:** the previous spec review is stale; an independent reviewer refreshes it
 - **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
+
+## 2026-10-13 — [Spec Update]: Accepted CJK-side false positives and factual Korean rationale
+
+- **Type:** Spec Update
+- **Spec modified:** Yes (sections: AC-006 rationale sentence, Edge Cases, Clarifications)
+- **Code modified:** Yes (`matcher_script_tests.rs`: three fixtures freezing the accepted behavior; `matcher.rs` doc comment only). No matching behavior changed.
+- **AC impacted:** AC-006 (rationale corrected; no requirement ID added or renumbered)
+- **Details:** AC-006 no longer claims that Korean is written without spaces: the exemption is justified by Chinese and Japanese being written without spaces between words and by Korean particles attaching to the preceding word. Edge Cases list the halfwidth sound marks U+FF9E/U+FF9F and NFD hangul jamo as accepted false positives on a CJK side (decision `decision:ac-006:cjk-non-mark-extenders-accepted-false-positive`); a UAX #29 grapheme-cluster rule is deferred to the next spec revision. Independent review findings M1, N1 and N2 ([review](proofs/claude-fix2/independent-review.md), [outputs](proofs/claude-fix3/)).
+- **Review:** the spec and plan review receipts are stale after this edit; an independent reviewer refreshes them.
+- **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
