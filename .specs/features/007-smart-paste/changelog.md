@@ -77,3 +77,11 @@ AppKit caching and delayed AX mutation counterexamples remain explicit: callback
 - **AC impacted:** AC-008, AC-011, AC-016, AC-017 (feasibility only, no acceptance)
 - **Author:** Claude Opus 5.5 (implementation agent, orchestrated run)
 - **Evidence:** AppKit receipt regenerated against the current harness; AX and TIS receipts match their probe hashes. Raw gate outputs in [proofs/claude](proofs/claude/).
+
+## 2026-10-13 — Feature: Step 2 pure lifecycle and outcome contracts
+
+- **Type:** Feature
+- **Spec modified:** No
+- **Code modified:** src-tauri/src/lib.rs, src-tauri/src/smart_paste/{mod,ids,outcome,timing,clock,lifecycle,settlement}.rs, src-tauri/tests/smart_paste_lifecycle.rs
+- **AC impacted:** AC-008, AC-009, AC-012, AC-013 (implemented in pure form, certification pending)
+- **Author:** Claude Opus 5.5 (implementation agent, orchestrated run)
