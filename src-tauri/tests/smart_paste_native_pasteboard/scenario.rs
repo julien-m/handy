@@ -8,7 +8,10 @@ use handy_app_lib::smart_paste::ids::{TransactionId, Transcript};
 use handy_app_lib::smart_paste::pasteboard_port::{
     GuardedWrite, PasteboardPort, TranscriptMarking,
 };
-use handy_app_lib::smart_paste::snapshot::{PasteboardSnapshot, SkipCause, SnapshotBudget};
+use handy_app_lib::smart_paste::pasteboard_types::is_derived_type;
+use handy_app_lib::smart_paste::snapshot::{
+    PasteboardSnapshot, SkipCause, SkippedType, SnapshotBudget,
+};
 use serde_json::json;
 
 use super::hardening::{
@@ -74,6 +77,32 @@ fn contains_fixture(saved_types: &[Vec<TypeBytes>]) -> bool {
         })
 }
 
+/// Whether `restored` holds exactly the `saved` types and bytes, in order,
+/// per item. AppKit re-derives conversions (for example UTF-16 text) from a
+/// restored type; such a derived type is ignored when it was not saved
+/// (skipped at the capture deadline), never when it differs.
+pub(super) fn is_restored_exactly(saved: &[Vec<TypeBytes>], restored: &[Vec<TypeBytes>]) -> bool {
+    saved.len() == restored.len()
+        && saved.iter().zip(restored).all(|(saved, restored)| {
+            let kept = restored.iter().filter(|(uti, _)| {
+                !is_derived_type(uti) || saved.iter().any(|(name, _)| name == uti)
+            });
+            kept.eq(saved.iter())
+        })
+}
+
+/// Skipped types as `[name, cause]` pairs.
+fn skipped_by_name(skipped: &[SkippedType]) -> Vec<serde_json::Value> {
+    let pair = |s: &SkippedType| json!([s.uti, format!("{:?}", s.cause)]);
+    skipped.iter().map(pair).collect()
+}
+
+/// Type names per item, for failure messages (synthetic fixtures only).
+pub(super) fn type_names(items: &[Vec<TypeBytes>]) -> Vec<Vec<String>> {
+    let names = |item: &Vec<TypeBytes>| item.iter().map(|(uti, _)| uti.clone()).collect();
+    items.iter().map(names).collect()
+}
+
 /// Turns a failed condition into the scenario error `message`.
 pub(super) fn ensure(condition: bool, message: &str) -> Result<(), String> {
     condition.then_some(()).ok_or_else(|| message.to_string())
@@ -114,6 +143,7 @@ fn rich_round_trip(harness: &mut Harness) -> Result<serde_json::Value, String> {
     seed(&harness.name, rich_fixture())?;
     let (snapshot, capture_ms) = timed_capture(harness, SnapshotBudget::default())?;
     let saved_types = saved(&snapshot);
+    let skipped = snapshot.skipped().to_vec();
     ensure(
         contains_fixture(&saved_types),
         "seeded types missing from snapshot",
@@ -137,7 +167,8 @@ fn rich_round_trip(harness: &mut Harness) -> Result<serde_json::Value, String> {
         .pasteboard
         .restore_snapshot(Arc::new(snapshot), publication)
         .map_err(|error| error.to_string())?;
-    let is_restored_exactly = read_all(&harness.name)? == saved_types;
+    let restored_types = read_all(&harness.name)?;
+    let is_restored_exactly = is_restored_exactly(&saved_types, &restored_types);
     harness.pasteboard.release_transaction(TransactionId(1));
     ensure(
         first == TRANSCRIPT && second == TRANSCRIPT,
@@ -149,13 +180,18 @@ fn rich_round_trip(harness: &mut Harness) -> Result<serde_json::Value, String> {
     )?;
     ensure(
         restored == GuardedWrite::Written && is_restored_exactly,
-        "restore failed",
+        &format!(
+            "rich restore failed: {restored:?}, saved {:?}, restored {:?}",
+            type_names(&saved_types),
+            type_names(&restored_types)
+        ),
     )?;
     Ok(json!({
         "check": "rich_round_trip",
         "capture_ms": capture_ms,
         "capture_within_200_ms": capture_ms <= 200.0,
         "saved_types": saved_types.iter().map(|t| t.iter().map(|(u, b)| json!([u, b.len()])).collect::<Vec<_>>()).collect::<Vec<_>>(),
+        "skipped_types": skipped_by_name(&skipped),
         "published_types": published_types,
         "markers_present": MARKERS.iter().all(|m| published_types.iter().any(|t| t == m)),
         "first_external_read_events": first_reads,

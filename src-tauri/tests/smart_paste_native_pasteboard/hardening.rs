@@ -19,7 +19,8 @@ use sha2::{Digest, Sha256};
 
 use super::recorder::take_calls;
 use super::scenario::{
-    ensure, publish, read_types, rich_fixture, saved, timed_capture, TRANSCRIPT,
+    ensure, is_restored_exactly, publish, read_types, rich_fixture, saved, timed_capture,
+    type_names, TRANSCRIPT,
 };
 use super::support::{external_item_count, read_all, seed, Harness, TypeBytes};
 
@@ -103,11 +104,16 @@ pub fn restore_is_current_host_only(harness: &mut Harness) -> Result<serde_json:
         .restore_snapshot(Arc::new(snapshot), publication)
         .map_err(|error| error.to_string())?;
     let restore_calls = take_calls(&harness.name);
-    let is_restored_exactly = read_all(&harness.name)? == saved_types;
+    let restored_types = read_all(&harness.name)?;
+    let is_restored_exactly = is_restored_exactly(&saved_types, &restored_types);
     harness.pasteboard.release_transaction(TransactionId(11));
     ensure(
         restored == GuardedWrite::Written && is_restored_exactly,
-        "restore failed",
+        &format!(
+            "host-only restore failed: {restored:?}, saved {:?}, restored {:?}",
+            type_names(&saved_types),
+            type_names(&restored_types)
+        ),
     )?;
     ensure(
         publish_calls == ["prepare(1)"] && restore_calls == ["prepare(1)"],
