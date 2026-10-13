@@ -254,6 +254,66 @@ const CASES: &[Case] = &[
         input: "x",
         expected: "a;b #c",
     },
+    Case {
+        name: "dependent vowel sign blocks Devanagari prefix",
+        rules: &[("भारत", "India")],
+        input: "भारतीय संविधान",
+        expected: "भारतीय संविधान",
+    },
+    Case {
+        name: "dependent vowel sign blocks Devanagari suffix",
+        rules: &[("रत", "Z")],
+        input: "भारत",
+        expected: "भारत",
+    },
+    Case {
+        name: "virama blocks Devanagari conjunct split",
+        rules: &[("स", "S")],
+        input: "स्त",
+        expected: "स्त",
+    },
+    Case {
+        name: "whole Devanagari words replaced",
+        rules: &[("भारत", "India"), ("भारतीय", "Indian")],
+        input: "भारत और भारतीय संविधान।",
+        expected: "India और Indian संविधान।",
+    },
+    Case {
+        name: "decomposed accent after match blocks",
+        rules: &[("cafe", "X")],
+        input: "cafe\u{301} ok",
+        expected: "cafe\u{301} ok",
+    },
+    Case {
+        name: "precomposed accent does not match base letters",
+        rules: &[("cafe", "X")],
+        input: "café",
+        expected: "café",
+    },
+    Case {
+        name: "decomposed accent before match blocks",
+        rules: &[("ok", "OK")],
+        input: "e\u{301}ok",
+        expected: "e\u{301}ok",
+    },
+    Case {
+        name: "whole decomposed word replaced",
+        rules: &[("cafe\u{301}", "Café")],
+        input: "un CAFE\u{301}, merci",
+        expected: "un Café, merci",
+    },
+    Case {
+        name: "rule with several internal spaces",
+        rules: &[("cloud   code", "Claude Code")],
+        input: "cloud code and cloud \t\u{A0} code",
+        expected: "Claude Code and Claude Code",
+    },
+    Case {
+        name: "no match starts inside a sharp s expansion",
+        rules: &[("se", "X")],
+        input: "ße",
+        expected: "ße",
+    },
 ];
 
 fn compile(rules: &[(&str, &str)]) -> Result<CompiledReplacements, Box<dyn std::error::Error>> {

@@ -101,7 +101,10 @@ pub fn read_exchange_input<R: Read>(reader: R) -> Result<String, ExchangeInputEr
 }
 
 // @spec AC-005: Bounded UTF-8 import — .specs/features/002-word-replacements/spec.md#ac-005
-/// Enforce the byte cap, strict UTF-8 and remove only a leading byte order mark.
+/// Enforce the byte cap and strict UTF-8; the text is returned unchanged.
+///
+/// A leading byte order mark is kept here: `parse_exchange` removes exactly one
+/// for every source (file, stdin or pasted text), so it is never removed twice.
 ///
 /// # Errors
 ///
@@ -113,17 +116,14 @@ pub fn decode_exchange_bytes(bytes: Vec<u8>) -> Result<String, ExchangeInputErro
             max_bytes: MAX_IMPORT_BYTES,
         });
     }
-    let text = String::from_utf8(bytes).map_err(|error| ExchangeInputError::InvalidUtf8 {
+    String::from_utf8(bytes).map_err(|error| ExchangeInputError::InvalidUtf8 {
         byte_offset: error.utf8_error().valid_up_to(),
-    })?;
-    Ok(match text.strip_prefix(BYTE_ORDER_MARK) {
-        Some(stripped) => stripped.to_owned(),
-        None => text,
     })
 }
 
 // @spec FR-003: Parse exchange lines with diagnostics — .specs/features/002-word-replacements/spec.md#fr-003
 /// Parse exchange text line by line; never executes or interprets content.
+/// Only the initial byte order mark is removed; a second one stays content.
 ///
 /// # Errors
 ///

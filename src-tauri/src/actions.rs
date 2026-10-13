@@ -13,7 +13,9 @@ use crate::tray::{set_tray_state, TrayIconState};
 use crate::utils::{
     self, show_processing_overlay, show_recording_overlay, show_transcribing_overlay,
 };
-use crate::word_replacements::dictation::{compile_for_dictation, DictationRuleCapture};
+use crate::word_replacements::dictation::{
+    compile_for_dictation, finalize_or_transcribe, DictationRuleCapture,
+};
 use crate::TranscriptionCoordinator;
 use log::{debug, error, warn};
 use once_cell::sync::Lazy;
@@ -607,12 +609,9 @@ impl ShortcutAction for TranscribeAction {
 
         let binding_id = binding_id.to_string(); // Clone binding_id for the async task
         let post_process = self.post_process;
-        let captured_rules = self.rules_at_start.take(&binding_id).unwrap_or_else(|| {
-            // No capture means the start path did not record (e.g. it failed);
-            // fall back to the rules committed now rather than skipping them.
-            debug!("No replacement rules captured at recording start; using current rules");
-            get_settings(app).word_replacements
-        });
+        let captured_rules = self
+            .rules_at_start
+            .rules_for_stop(&binding_id, || get_settings(app).word_replacements);
         let cancel_generation = rm.cancel_generation();
 
         tauri::async_runtime::spawn(async move {
@@ -660,17 +659,14 @@ impl ShortcutAction for TranscribeAction {
                     // running, finalize it and use its text (all audio was already
                     // fed to the stream); otherwise batch-transcribe the samples.
                     let transcription_time = Instant::now();
+                    // One compiled matcher serves the stream finalize and its batch
+                    // fallback (worker crash or empty stream) of the same audio.
                     let replacements = compile_for_dictation(&captured_rules);
-                    let transcription_result = match tm.finalize_stream(&replacements) {
-                        // A finalized stream with usable text wins. An empty result
-                        // (no active stream, produced nothing, or the stream failed
-                        // or its worker crashed) falls back to a full batch
-                        // transcription of the same audio. A cancelled finalize is
-                        // surfaced instead, so a cancel never starts a batch run.
-                        Ok(Some(text)) if !text.trim().is_empty() => Ok(text),
-                        Ok(_) => tm.transcribe(samples, &replacements),
-                        Err(err) => Err(err),
-                    };
+                    let transcription_result = finalize_or_transcribe(
+                        &replacements,
+                        |replacements| tm.finalize_stream(replacements),
+                        |replacements| tm.transcribe(samples, replacements),
+                    );
 
                     // Await WAV save and verify
                     let wav_saved = match wav_handle.await {

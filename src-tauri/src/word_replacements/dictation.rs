@@ -7,7 +7,7 @@
 use std::collections::HashMap;
 use std::sync::{Mutex, PoisonError};
 
-use log::warn;
+use log::{debug, warn};
 
 use super::{matcher::CompiledReplacements, model::ReplacementRule};
 
@@ -31,6 +31,48 @@ impl DictationRuleCapture {
     pub fn take(&self, binding_id: &str) -> Option<Vec<ReplacementRule>> {
         let mut captured = self.captured.lock().unwrap_or_else(PoisonError::into_inner);
         captured.remove(binding_id)
+    }
+
+    // @spec AC-007: Captured rules apply to their dictation — .specs/features/002-word-replacements/spec.md#ac-007
+    /// Rules for the dictation `binding_id` is stopping: its start snapshot,
+    /// removed from the capture, or `current()` when the start path recorded
+    /// none (for example because recording failed to start). `current` is only
+    /// called on that fallback, so the settings are not read otherwise.
+    pub fn rules_for_stop<F>(&self, binding_id: &str, current: F) -> Vec<ReplacementRule>
+    where
+        F: FnOnce() -> Vec<ReplacementRule>,
+    {
+        self.take(binding_id).unwrap_or_else(|| {
+            // Falling back to the committed rules beats silently skipping them.
+            debug!("No replacement rules captured at recording start; using current rules");
+            current()
+        })
+    }
+}
+
+/// Final text of one dictation, with one compiled matcher shared by both paths.
+///
+/// `finalize` finalizes a live stream; usable (non-blank) text wins. An empty
+/// result (no stream, nothing produced, stream failure) falls back to `batch`
+/// over the same audio. A finalize error (such as a cancel) is returned as is,
+/// so a cancelled dictation never starts a batch run.
+///
+/// # Errors
+///
+/// The error of `finalize`, or of `batch` when the fallback runs.
+pub fn finalize_or_transcribe<E, F, B>(
+    replacements: &CompiledReplacements,
+    finalize: F,
+    batch: B,
+) -> Result<String, E>
+where
+    F: FnOnce(&CompiledReplacements) -> Result<Option<String>, E>,
+    B: FnOnce(&CompiledReplacements) -> Result<String, E>,
+{
+    match finalize(replacements) {
+        Ok(Some(text)) if !text.trim().is_empty() => Ok(text),
+        Ok(_) => batch(replacements),
+        Err(error) => Err(error),
     }
 }
 

@@ -128,15 +128,29 @@ def _property_points(text: str, properties: set[str]) -> set[int]:
     }
 
 
-def _cjk_points(sources: dict[str, str], letters: set[int]) -> set[int]:
+def mark_points(text: str) -> set[int]:
+    """Collect General_Category Mn, Mc and Me scalars without side effects.
+
+    Args:
+        text: UTF-8-decoded UnicodeData content.
+    Returns:
+        Combining mark scalar values; UnicodeData lists no mark as a range.
+    Raises:
+        IndexError, ValueError: A record has malformed fields or hexadecimal values.
+    """
+    return {
+        int(row.split(";")[0], 16)
+        for row in text.splitlines()
+        if row.split(";")[2] in {"Mn", "Mc", "Me"}
+    }
+
+
+def _cjk_points(
+    sources: dict[str, str], letters: set[int], marks: set[int]
+) -> set[int]:
     cjk = _property_points(
         sources["Scripts.txt"], {"Han", "Hiragana", "Katakana", "Hangul"}
     )
-    marks = {
-        int(row.split(";")[0], 16)
-        for row in sources["UnicodeData.txt"].splitlines()
-        if row.split(";")[2].startswith("M")
-    }
     # Shared kana Letter/Mark characters include prolonged marks and combining dakuten.
     for start, end, scripts in property_rows(sources["ScriptExtensions.txt"]):
         if {"Hira", "Kana", "Hang"}.intersection(scripts.split()):
@@ -159,16 +173,18 @@ def build_records(sources: dict[str, str]) -> list[str]:
         KeyError, ValueError: A required source is missing or malformed.
     """
     records = [
-        f"# Unicode {UNICODE_VERSION}; F=full C+F folding, W=White_Space, L=Letter/Nd, K=CJK"
+        f"# Unicode {UNICODE_VERSION}; F=full C+F folding, W=White_Space, L=Letter/Nd, "
+        "M=Mn/Mc/Me, K=CJK"
     ]
     for line in sources["CaseFolding.txt"].splitlines():
         fields = line.split("#", 1)[0].split(";")
         if len(fields) > 2 and fields[1].strip() in {"C", "F"}:
             records.append(f"F;{fields[0].strip()};{fields[2].strip()}")
     letters = letter_digit_points(sources["UnicodeData.txt"])
+    marks = mark_points(sources["UnicodeData.txt"])
     white = _property_points(sources["PropList.txt"], {"White_Space"})
-    cjk = _cjk_points(sources, letters)
-    for label, points in (("W", white), ("L", letters), ("K", cjk)):
+    cjk = _cjk_points(sources, letters, marks)
+    for label, points in (("W", white), ("L", letters), ("M", marks), ("K", cjk)):
         records.extend(f"{label};{start:X};{end:X}" for start, end in coalesce(points))
     return records
 

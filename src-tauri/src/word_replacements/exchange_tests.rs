@@ -152,7 +152,7 @@ fn treat_csv_quotes_as_literal_text_and_empty_input_as_no_lines() -> TestResult 
 fn decode_bytes_with_cap_bom_and_utf8_offset() {
     assert_eq!(
         decode_exchange_bytes(b"\xEF\xBB\xBFA;B".to_vec()),
-        Ok("A;B".into())
+        Ok("\u{FEFF}A;B".into())
     );
     assert_eq!(
         decode_exchange_bytes(b"A;\xFFB".to_vec()),
@@ -165,6 +165,18 @@ fn decode_bytes_with_cap_bom_and_utf8_offset() {
         })
     );
     assert!(decode_exchange_bytes(vec![b'a'; MAX_IMPORT_BYTES]).is_ok());
+}
+
+#[test]
+fn remove_only_the_initial_bom_once_across_decode_and_parse() -> TestResult {
+    let decoded = decode_exchange_bytes(b"\xEF\xBB\xBF\xEF\xBB\xBFA;B\n\xEF\xBB\xBFC;D".to_vec())?;
+    assert_eq!(decoded, "\u{FEFF}\u{FEFF}A;B\n\u{FEFF}C;D");
+    assert_eq!(
+        contents(&decoded)?,
+        vec![rule("\u{FEFF}A", "B"), rule("\u{FEFF}C", "D")]
+    );
+    assert_eq!(contents("\u{FEFF}A;B")?, vec![rule("A", "B")]);
+    Ok(())
 }
 
 #[test]

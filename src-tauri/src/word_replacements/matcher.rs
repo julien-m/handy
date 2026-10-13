@@ -221,10 +221,12 @@ impl CompiledReplacements {
     }
 }
 
-/// AC-006 boundary: neighbours are not Letter/Decimal_Number, unless that side
-/// of the recognized text is CJK (written without spaces).
+/// AC-006 boundary: neighbours are not word characters (Letter, Decimal_Number
+/// or combining mark Mn/Mc/Me), unless that side of the recognized text is CJK
+/// (written without spaces). Marks count so a rule never splits a base letter
+/// from its dependent vowel, virama or decomposed accent.
 fn has_boundaries(data: &UnicodeData, text: &str, span: Range<usize>, rule: &CompiledRule) -> bool {
-    let is_word = |character: Option<char>| character.is_some_and(|c| data.is_letter_or_digit(c));
+    let is_word = |character: Option<char>| character.is_some_and(|c| data.is_word_character(c));
     let before = text
         .get(..span.start)
         .and_then(|head| head.chars().next_back());
