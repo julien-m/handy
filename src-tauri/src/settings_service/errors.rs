@@ -60,6 +60,7 @@ pub enum ValidationReason {
     PromptsDomain,
     UnknownPrompt,
     UpdaterDisabled,
+    GpuDeviceRequired,
 }
 impl ValidationReason {
     fn message(self) -> &'static str {
@@ -79,6 +80,7 @@ impl ValidationReason {
             }
             Self::UnknownPrompt => "Selected prompt does not exist.",
             Self::UpdaterDisabled => "Update checks are disabled by system configuration.",
+            Self::GpuDeviceRequired => "The GPU accelerator requires a selected GPU device.",
         }
     }
 }

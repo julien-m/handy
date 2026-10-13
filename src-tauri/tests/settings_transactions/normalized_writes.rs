@@ -134,3 +134,66 @@ fn startup_on_unreadable_json_or_malformed_revision_recovers_read_only_with_leas
     }
     Ok(())
 }
+/// Commit one CLI value on an existing repository with an absent passive owner.
+fn commit_value(
+    repository: &SettingsRepository,
+    directory: &tempfile::TempDir,
+    key: &str,
+    value: &str,
+) -> Result<
+    handy_app_lib::settings_service::store::SettingsRead,
+    handy_app_lib::settings_service::errors::SettingsError,
+> {
+    let mutation = validate_cli(
+        key,
+        value,
+        &ValidationContext {
+            prompt_ids: &[],
+            updates_allowed: true,
+        },
+    )?;
+    let probe = LegacyPathProbe::new(directory.path().join("absent.sock"));
+    repository.commit_with_probe(mutation, None, &probe, &())
+}
+#[test]
+fn gpu_accelerator_without_device_is_refused_and_changes_nothing() -> TestResult {
+    let directory = tempfile::tempdir()?;
+    let path = directory.path().join("settings_store.json");
+    let repository = SettingsRepository::new(path.clone());
+    commit_value(&repository, &directory, "audio_feedback", "true")?;
+    let bytes = std::fs::read(&path)?;
+    let error = commit_value(&repository, &directory, "transcribe_accelerator", "gpu")
+        .err()
+        .ok_or("gpu without device accepted")?;
+    let wire = serde_json::to_value(&error)?;
+    assert_eq!(wire["code"], "validation_failed");
+    assert_eq!(wire["details"]["field"], "transcribe_accelerator");
+    assert_eq!(
+        wire["details"]["issues"][0]["reason"],
+        "The GPU accelerator requires a selected GPU device."
+    );
+    assert_eq!(std::fs::read(&path)?, bytes);
+    Ok(())
+}
+#[test]
+fn gpu_accelerator_with_device_is_reread_as_returned_and_device_cannot_be_cleared() -> TestResult {
+    let directory = tempfile::tempdir()?;
+    let path = directory.path().join("settings_store.json");
+    let repository = SettingsRepository::new(path.clone());
+    commit_value(&repository, &directory, "transcribe_gpu_device", "gpu-1")?;
+    let committed = commit_value(&repository, &directory, "transcribe_accelerator", "gpu")?;
+    let returned = serde_json::to_value(committed.snapshot.public_settings())?;
+    assert_eq!(returned["transcribe_accelerator"], "gpu");
+    assert_eq!(public(&repository)?, returned);
+    let bytes = std::fs::read(&path)?;
+    let error = commit_value(&repository, &directory, "transcribe_gpu_device", "null")
+        .err()
+        .ok_or("device cleared under the GPU accelerator")?;
+    let wire = serde_json::to_value(&error)?;
+    assert_eq!(wire["details"]["field"], "transcribe_gpu_device");
+    assert_eq!(std::fs::read(&path)?, bytes);
+    commit_value(&repository, &directory, "transcribe_accelerator", "auto")?;
+    commit_value(&repository, &directory, "transcribe_gpu_device", "null")?;
+    assert_eq!(public(&repository)?["transcribe_accelerator"], "auto");
+    Ok(())
+}

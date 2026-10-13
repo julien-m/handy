@@ -62,18 +62,58 @@ pub(super) fn persist(
     let (temporary, mut file) = private_temp(parent)?;
     let staged = stage_generation(&directory, &temporary, &mut file, value, observer)
         .and_then(|()| authorize())
+        .map_err(PersistFailure::BeforeReplace)
         .and_then(|()| {
             #[cfg(unix)]
             let replaced = directory.replace(&temporary, path);
             #[cfg(windows)]
             let replaced = directory.replace(&file, path);
-            replaced
+            replaced.map_err(replace_failure)
         });
-    if let Err(error) = staged {
-        discard_temp(&temporary, &file);
-        return Err(error);
+    if let Err(failure) = staged {
+        if failure.discards_temp() {
+            discard_temp(&temporary, &file);
+        }
+        return Err(failure.into_error());
     }
     confirm_durable(&directory, observer)
+}
+/// Phase a failed persist step reached; it alone decides whether the temp may be discarded.
+#[derive(Debug)]
+enum PersistFailure {
+    /// Nothing was replaced: the temp is still this call's private generation.
+    BeforeReplace(SettingsError),
+    /// The rename happened (or may have): the held temp handle may now name the committed store.
+    AfterReplace(SettingsError),
+}
+impl PersistFailure {
+    /// Business rule: discarding after replacement would delete the committed store (Windows
+    /// deletes through the held handle, which then names `settings_store.json`), so only a
+    /// failure before replacement removes the temp.
+    fn discards_temp(&self) -> bool {
+        matches!(self, Self::BeforeReplace(_))
+    }
+    fn into_error(self) -> SettingsError {
+        match self {
+            Self::BeforeReplace(error) | Self::AfterReplace(error) => error,
+        }
+    }
+}
+/// Platform-independent phase of a failed native replacement.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum ReplacePhase {
+    /// The rename was refused; the store still holds the previous generation.
+    Before,
+    /// The rename succeeded but its durability (Windows handle flush, Unix directory fsync)
+    /// could not be confirmed.
+    After,
+}
+/// Map a replacement phase to its public code and its temp-cleanup decision.
+fn replace_failure(phase: ReplacePhase) -> PersistFailure {
+    match phase {
+        ReplacePhase::Before => PersistFailure::BeforeReplace(persistence_failed()),
+        ReplacePhase::After => PersistFailure::AfterReplace(SettingsError::unknown_outcome()),
+    }
 }
 /// Write, sync and revalidate the private generation before the final authorization.
 fn stage_generation(
@@ -123,7 +163,9 @@ fn confirm_durable(
     observer
         .observe(PersistStage::AfterReplace)
         .map_err(|_| SettingsError::unknown_outcome())?;
-    directory.sync()?;
+    directory
+        .sync()
+        .map_err(|phase| replace_failure(phase).into_error())?;
     observer
         .observe(PersistStage::AfterDirectorySync)
         .map_err(|_| SettingsError::unknown_outcome())
@@ -160,15 +202,14 @@ impl ParentDirectory {
         Ok(())
     }
     /// Unix replacement is pathname-based: rename(2) atomically swaps the directory entry, so the
-    /// held temp handle is not needed here (its identity was checked by `validate_temp`).
-    fn replace(&self, temporary: &Path, target: &Path) -> Result<(), SettingsError> {
-        std::fs::rename(temporary, target).map_err(|_| persistence_failed())
+    /// held temp handle is not needed here (its identity was checked by `validate_temp`). A failed
+    /// rename replaced nothing.
+    fn replace(&self, temporary: &Path, target: &Path) -> Result<(), ReplacePhase> {
+        std::fs::rename(temporary, target).map_err(|_| ReplacePhase::Before)
     }
-    /// fsync the parent so the rename itself survives a crash.
-    fn sync(&self) -> Result<(), SettingsError> {
-        self.handle
-            .sync_all()
-            .map_err(|_| SettingsError::unknown_outcome())
+    /// fsync the parent so the rename itself survives a crash; a failure happens after replacement.
+    fn sync(&self) -> Result<(), ReplacePhase> {
+        self.handle.sync_all().map_err(|_| ReplacePhase::After)
     }
 }
 #[cfg(windows)]
@@ -182,23 +223,17 @@ impl ParentDirectory {
     }
     /// Windows replacement is handle-relative: the open temp handle is renamed inside the pinned
     /// parent, so the temp pathname is not needed here.
-    fn replace(&self, file: &File, target: &Path) -> Result<(), SettingsError> {
-        let name = target.file_name().ok_or_else(persistence_failed)?;
+    fn replace(&self, file: &File, target: &Path) -> Result<(), ReplacePhase> {
+        let name = target.file_name().ok_or(ReplacePhase::Before)?;
         super::windows_store::replace_owned(file, &self.pinned, name)
-            // OS diagnostics remain private; the replacement phase determines the fixed public code.
+            // OS diagnostics remain private; only the replacement phase survives.
             .map_err(|error| match error {
-                super::windows_store::ReplaceError::Before(error) => {
-                    let _ = error;
-                    persistence_failed()
-                }
-                super::windows_store::ReplaceError::After(error) => {
-                    let _ = error;
-                    SettingsError::unknown_outcome()
-                }
+                super::windows_store::ReplaceError::Before(_) => ReplacePhase::Before,
+                super::windows_store::ReplaceError::After(_) => ReplacePhase::After,
             })
     }
     /// `replace_owned` already flushes the renamed handle; Windows has no directory fsync to add.
-    fn sync(&self) -> Result<(), SettingsError> {
+    fn sync(&self) -> Result<(), ReplacePhase> {
         Ok(())
     }
 }
@@ -296,7 +331,26 @@ fn validate_temp(path: &Path, held: &File) -> Result<(), SettingsError> {
 }
 #[cfg(test)]
 mod tests {
-    use super::private_temp_with;
+    use super::{private_temp_with, replace_failure, PersistFailure, ReplacePhase};
+    use crate::settings_service::errors::{SettingsError, SettingsErrorCode};
+
+    #[test]
+    fn temp_is_discarded_only_for_failures_before_replacement() {
+        let refused = replace_failure(ReplacePhase::Before);
+        assert!(refused.discards_temp());
+        assert_eq!(
+            refused.into_error().code(),
+            SettingsErrorCode::PersistenceFailed
+        );
+        let staged =
+            PersistFailure::BeforeReplace(SettingsError::new(SettingsErrorCode::Unavailable));
+        assert!(staged.discards_temp());
+        let committed = replace_failure(ReplacePhase::After);
+        assert!(!committed.discards_temp());
+        assert_eq!(committed.into_error(), SettingsError::unknown_outcome());
+        let uncertain = PersistFailure::AfterReplace(SettingsError::unknown_outcome());
+        assert!(!uncertain.discards_temp());
+    }
 
     #[test]
     fn occupied_temporary_names_are_skipped_without_modification(

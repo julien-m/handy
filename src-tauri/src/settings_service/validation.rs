@@ -213,3 +213,34 @@ fn validate_type(
     };
     value.ok_or_else(|| SettingsError::validation(entry.key, ValidationReason::CanonicalType))
 }
+
+/// Cross-field rules checked on the complete candidate under the transaction lock, so every
+/// surface (UI command, running instance, CLI) gets the same decision.
+///
+/// `before` is the locked current settings; the reported field is the dependent key the change
+/// touched.
+///
+/// # Errors
+/// `validation_failed` when `after` violates a dependency between fields.
+pub(crate) fn validate_dependencies(
+    before: &crate::settings::AppSettings,
+    after: &crate::settings::AppSettings,
+) -> Result<(), SettingsError> {
+    use crate::settings::TranscribeAcceleratorSetting;
+    // Business rule: the GPU accelerator targets one exact device. Without one, read normalization
+    // would silently turn it back into Auto, and AC-003 forbids replacing a value by a default.
+    if after.transcribe_accelerator == TranscribeAcceleratorSetting::Gpu
+        && after.transcribe_gpu_device.is_none()
+    {
+        let field = if before.transcribe_accelerator == after.transcribe_accelerator {
+            "transcribe_gpu_device"
+        } else {
+            "transcribe_accelerator"
+        };
+        return Err(SettingsError::validation(
+            field,
+            ValidationReason::GpuDeviceRequired,
+        ));
+    }
+    Ok(())
+}

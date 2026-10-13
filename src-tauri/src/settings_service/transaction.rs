@@ -1,7 +1,7 @@
 //! Lock/reload/patch transactions preserve raw fields and independent startup ownership.
 pub use super::atomic::{PersistObserver, PersistStage};
 use super::{
-    errors::{SettingsError, SettingsErrorCode},
+    errors::{SettingsError, SettingsErrorCode, ValidationReason},
     ownership::{require_absent, FileLock, NativeOwnerProbe, OwnerProbe, StartupLease},
     protocol::{Revision, SettingsSnapshot},
     raw_merge::{apply_changed_fields, normalized_payload},
@@ -149,9 +149,7 @@ impl SettingsRepository {
         if std::fs::symlink_metadata(&path).is_ok() {
             return Ok(None);
         }
-        if let Authority::Offline(probe) = authority {
-            require_absent(*probe)?;
-        }
+        verify_absent_store_authority(&path, authority)?;
         let mut document = absent_document();
         check_revision(&document, expected)?;
         let mutation = revalidate_mutation(&document.read.snapshot.settings, mutation)?;
@@ -231,6 +229,27 @@ impl SettingsRepository {
         super::locator::canonical_path(&path)
     }
 }
+/// Same authority as a locked commit, without creating anything: the owner's lease must be this
+/// store's valid instance lock; an offline writer needs a passive absence and, when the instance
+/// lock already exists, must be able to take it (an instance running on a deleted store refuses).
+fn verify_absent_store_authority<P: OwnerProbe>(
+    path: &Path,
+    authority: &Authority<'_, P>,
+) -> Result<(), SettingsError> {
+    let lease_path = path.with_file_name(INSTANCE_LOCK);
+    match authority {
+        Authority::Owner(lease) if lease.lock.path() == lease_path => lease.validate(),
+        Authority::Owner(_) => Err(SettingsError::new(SettingsErrorCode::Unavailable)),
+        Authority::Offline(probe) => {
+            require_absent(*probe)?;
+            if std::fs::symlink_metadata(&lease_path).is_ok() {
+                // Taken and released at once; a lock file that exists is never created here.
+                FileLock::acquire(lease_path, false)?;
+            }
+            Ok(())
+        }
+    }
+}
 /// Offline writers take the lease nonblocking (a running instance makes them `unavailable`); the
 /// owner's retained lease must be this store's instance lock.
 fn establish_fence<'a, P: OwnerProbe>(
@@ -305,7 +324,9 @@ fn apply_mutation(
         serde_json::to_value(mutation.value()).map_err(|_| persistence_failed())?;
     let settings: AppSettings =
         serde_json::from_value(candidate).map_err(|_| persistence_failed())?;
+    super::validation::validate_dependencies(&document.read.snapshot.settings, &settings)?;
     let candidate = serde_json::to_value(&settings).map_err(|_| persistence_failed())?;
+    require_stable(&candidate)?;
     if current == candidate {
         return Ok(None);
     }
@@ -315,6 +336,25 @@ fn apply_mutation(
     document.raw["settings"] = payload;
     document.raw["settings_revision"] = serde_json::json!(revision.0);
     Ok(Some((settings, revision)))
+}
+/// The committed candidate must be a fixed point of read normalization; otherwise the next read
+/// would rewrite the accepted value and the returned snapshot would differ from the reread.
+///
+/// # Errors
+/// `validation_failed` naming the first field that normalization would change.
+fn require_stable(candidate: &serde_json::Value) -> Result<(), SettingsError> {
+    let (normalized, _) = super::normalization::normalize(candidate)?;
+    let normalized = serde_json::to_value(&normalized).map_err(|_| persistence_failed())?;
+    match super::descriptor::descriptors()
+        .iter()
+        .find(|entry| candidate.get(entry.key) != normalized.get(entry.key))
+    {
+        Some(entry) => Err(SettingsError::validation(
+            entry.key,
+            ValidationReason::CanonicalValue,
+        )),
+        None => Ok(()),
+    }
 }
 /// Merge startup normalization into the raw payload; `None` when the stored payload is already normal.
 fn normalize_document(document: &mut Document) -> Result<Option<Revision>, SettingsError> {

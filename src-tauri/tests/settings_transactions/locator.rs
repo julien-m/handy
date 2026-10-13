@@ -90,3 +90,48 @@ fn unreadable_or_non_utf8_legacy_marker_beside_data_selects_portable_like_startu
     assert_eq!(std::fs::read(marker)?, [0xff, 0xfe, 0x00]);
     Ok(())
 }
+#[test]
+#[cfg(unix)]
+fn same_user_symlink_chain_resolves_hop_by_hop_to_its_final_directory(
+) -> Result<(), Box<dyn std::error::Error>> {
+    let directory = tempfile::tempdir()?;
+    let real = directory.path().join("real");
+    std::fs::create_dir(&real)?;
+    let middle = directory.path().join("middle");
+    std::os::unix::fs::symlink(&real, &middle)?;
+    let alias = directory.path().join("alias");
+    std::os::unix::fs::symlink("middle", &alias)?;
+    let executable = directory.path().join("handy");
+    assert_eq!(
+        StoreLocator::resolve(&executable, &alias.join("nested"))?,
+        real.canonicalize()?.join("nested/settings_store.json")
+    );
+    Ok(())
+}
+#[test]
+#[cfg(unix)]
+fn symlink_loops_and_overlong_chains_are_refused() -> Result<(), Box<dyn std::error::Error>> {
+    use handy_app_lib::settings_service::errors::SettingsErrorCode;
+    let directory = tempfile::tempdir()?;
+    let executable = directory.path().join("handy");
+    std::os::unix::fs::symlink("loop_b", directory.path().join("loop_a"))?;
+    std::os::unix::fs::symlink("loop_a", directory.path().join("loop_b"))?;
+    let looped = StoreLocator::resolve(&executable, &directory.path().join("loop_a/nested"))
+        .err()
+        .ok_or("symlink loop resolved")?;
+    assert_eq!(looped.code(), SettingsErrorCode::Unavailable);
+    std::fs::create_dir(directory.path().join("hop0"))?;
+    for hop in 1..=10 {
+        std::os::unix::fs::symlink(
+            format!("hop{}", hop - 1),
+            directory.path().join(format!("hop{hop}")),
+        )?;
+    }
+    let overlong = StoreLocator::resolve(&executable, &directory.path().join("hop10/nested"))
+        .err()
+        .ok_or("overlong chain resolved")?;
+    assert_eq!(overlong.code(), SettingsErrorCode::Unavailable);
+    let short = StoreLocator::resolve(&executable, &directory.path().join("hop3/nested"))?;
+    assert!(short.ends_with("hop0/nested/settings_store.json"));
+    Ok(())
+}

@@ -219,3 +219,57 @@ fn lease_holding_instance_commits_while_offline_writers_stay_refused(
     drop(lease);
     Ok(())
 }
+/// Revalidated value of `key` on the defaults, so committing it is a semantic no-op on an absent store.
+fn default_noop(
+    key: &str,
+) -> Result<handy_app_lib::settings_service::validation::SettingsMutation, Box<dyn std::error::Error>>
+{
+    let directory = tempfile::tempdir()?;
+    let defaults =
+        SettingsRepository::new(directory.path().join("absent").join("settings_store.json"))
+            .read_snapshot()?;
+    let value = serde_json::to_value(defaults.snapshot.public_settings())?[key].to_string();
+    Ok(validate_cli(
+        key,
+        &value,
+        &ValidationContext {
+            prompt_ids: &[],
+            updates_allowed: true,
+        },
+    )?)
+}
+#[test]
+fn foreign_lease_noop_on_absent_store_is_unavailable() -> Result<(), Box<dyn std::error::Error>> {
+    let owned = tempfile::tempdir()?;
+    let probe = LegacyPathProbe::new(owned.path().join("absent.sock"));
+    let (_, lease) =
+        SettingsRepository::new(owned.path().join("settings_store.json")).initialize(&probe)?;
+    let other = tempfile::tempdir()?;
+    let absent = SettingsRepository::new(other.path().join("settings_store.json"));
+    let error = absent
+        .commit_owned(&lease, default_noop("audio_feedback")?, None)
+        .err()
+        .ok_or("foreign lease accepted on an absent store")?;
+    assert_eq!(error.code(), SettingsErrorCode::Unavailable);
+    assert!(std::fs::read_dir(other.path())?.next().is_none());
+    Ok(())
+}
+#[test]
+fn offline_noop_on_deleted_store_while_instance_runs_is_unavailable(
+) -> Result<(), Box<dyn std::error::Error>> {
+    let directory = tempfile::tempdir()?;
+    let path = directory.path().join("settings_store.json");
+    let probe = LegacyPathProbe::new(directory.path().join("absent.sock"));
+    let repository = SettingsRepository::new(path.clone());
+    let (_, lease) = repository.initialize(&probe)?;
+    std::fs::remove_file(&path)?;
+    let error = repository
+        .commit_with_probe(default_noop("audio_feedback")?, None, &probe, &())
+        .err()
+        .ok_or("offline no-op accepted while the instance holds the lease")?;
+    assert_eq!(error.code(), SettingsErrorCode::Unavailable);
+    let owned = repository.commit_owned(&lease, default_noop("audio_feedback")?, None)?;
+    assert_eq!(owned.snapshot.revision.0, 0);
+    assert!(!path.exists());
+    Ok(())
+}

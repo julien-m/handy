@@ -96,45 +96,60 @@ fn validate_canonical_ancestor(ancestor: &Path) -> Result<PathBuf, SettingsError
 /// walk stops at the first missing component, which creation will add. The final component (the
 /// store file itself) must never be a link: atomic replacement would replace the link, not its target.
 fn reject_aliases(path: &Path) -> Result<(), SettingsError> {
+    walk_aliases(path, true, 0)
+}
+/// Bound on nested user-owned links followed while checking one chain; deeper chains (or loops)
+/// are refused. 8 is far above any real dotfile or relocated-data layout.
+const MAX_ALIAS_DEPTH: u8 = 8;
+/// Check each existing component of `path`; `is_store` forbids a link as the last component.
+fn walk_aliases(path: &Path, is_store: bool, depth: u8) -> Result<(), SettingsError> {
     let mut current = PathBuf::new();
     for component in path.components() {
         current.push(component);
         let metadata = match std::fs::symlink_metadata(&current) {
             Ok(metadata) => metadata,
+            // Early exit: missing components are created later and cannot be aliases yet.
             Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(()),
             Err(_) => return Err(persistence_failed()),
         };
-        let is_final = current.as_path() == path;
-        if metadata.file_type().is_symlink()
-            && (is_final || !is_permitted_alias(&current, &metadata))
-        {
-            return Err(SettingsError::new(SettingsErrorCode::Unavailable));
+        if metadata.file_type().is_symlink() {
+            if is_store && current.as_path() == path {
+                return Err(SettingsError::new(SettingsErrorCode::Unavailable));
+            }
+            check_alias(&current, &metadata, depth)?;
         }
     }
     Ok(())
 }
 /// Plan rule: refuse only aliases that cross a user boundary. Root-owned Unix links (macOS `/var`
 /// -> `/private/var`) belong to the system and are followed; a link owned by the current user is
-/// followed only when its resolved target is a directory owned by the current user too (dotfiles
-/// or relocated data directories). Windows symlinks and junctions are always refused, because
-/// their ownership is ACL-based and is not checked by this resolver.
-fn is_permitted_alias(link: &Path, metadata: &std::fs::Metadata) -> bool {
+/// followed only when every link of its chain passes this same rule (one hop at a time, bounded)
+/// and its resolved target is a directory owned by the current user. Windows symlinks and
+/// junctions are always refused, because their ownership is ACL-based and is not checked here.
+fn check_alias(link: &Path, metadata: &std::fs::Metadata, depth: u8) -> Result<(), SettingsError> {
+    let refused = || SettingsError::new(SettingsErrorCode::Unavailable);
     #[cfg(unix)]
     {
         use std::os::unix::fs::MetadataExt;
         let user = super::ownership::current_uid();
         match metadata.uid() {
-            0 => true,
-            owner if owner == user => {
-                std::fs::metadata(link).is_ok_and(|target| target.is_dir() && target.uid() == user)
+            0 => Ok(()),
+            owner if owner == user && depth < MAX_ALIAS_DEPTH => {
+                let target = std::fs::read_link(link).map_err(|_| refused())?;
+                let parent = link.parent().ok_or_else(refused)?;
+                walk_aliases(&parent.join(target), false, depth + 1)?;
+                std::fs::metadata(link)
+                    .is_ok_and(|target| target.is_dir() && target.uid() == user)
+                    .then_some(())
+                    .ok_or_else(refused)
             }
-            _ => false,
+            _ => Err(refused()),
         }
     }
     #[cfg(not(unix))]
     {
-        let _ = (link, metadata);
-        false
+        let _ = (link, metadata, depth);
+        Err(refused())
     }
 }
 /// Unix (device, inode) identity used to detect a substituted directory entry.
