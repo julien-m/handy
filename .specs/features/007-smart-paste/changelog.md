@@ -85,3 +85,12 @@ AppKit caching and delayed AX mutation counterexamples remain explicit: callback
 - **Code modified:** src-tauri/src/lib.rs, src-tauri/src/smart_paste/{mod,ids,outcome,timing,clock,lifecycle,settlement}.rs, src-tauri/tests/smart_paste_lifecycle.rs
 - **AC impacted:** AC-008, AC-009, AC-012, AC-013 (implemented in pure form, certification pending)
 - **Author:** Claude Opus 5.5 (implementation agent, orchestrated run)
+
+## 2026-10-13 — Feature: Step 3 bounded verified AX insertion
+
+- **Type:** Feature
+- **Spec modified:** No
+- **Code modified:** src-tauri/src/smart_paste/{ax_port,direct,macos_ax,mod}.rs, src-tauri/tests/smart_paste.rs, src-tauri/tests/smart_paste/{direct,fakes,lifecycle}.rs, src-tauri/tests/smart_paste_native_ax.rs
+- **AC impacted:** AC-017, AC-018 (implemented, certification pending)
+- **Author:** Claude Opus 5.5 (implementation agent, orchestrated run)
+- **Evidence:** [native AX adapter receipt](evidence/native-ax-adapter.json) on synthetic offscreen fields; real applications pending release evidence.

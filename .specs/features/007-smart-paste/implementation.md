@@ -12,7 +12,7 @@ Inspect [the specification](spec.md) and [the progress checkpoints](progress.md)
 | [FR-008: Truthful outcomes](spec.md#fr-008) | [outcome](../../../src-tauri/src/smart_paste/outcome.rs) | FR-008 | Partial — outcome contract implemented, certification pending; 009/010 consumers pending | 2026-10-13 |
 | [FR-009: Settings, migration and CLI](spec.md#fr-009) | None | Pending | Waiting for 008 | — |
 | [FR-010: Native evidence](spec.md#fr-010) | [Native spike](../../../src-tauri/tests/smart_paste_native.rs), [harness](../../../scripts/smart-paste-native-proof.ts), [AX observations](evidence/native-ax-spike.json) | FR-010 | Partial — synthetic native observations, release matrix pending | 2026-10-13 |
-| [FR-011: Verified direct insertion](spec.md#fr-011) | [AX observations](evidence/native-ax-spike.json) | Pending | Partial — native mechanism proven with synthetic field | 2026-10-13 |
+| [FR-011: Verified direct insertion](spec.md#fr-011) | [direct](../../../src-tauri/src/smart_paste/direct.rs), [ax_port](../../../src-tauri/src/smart_paste/ax_port.rs), [macos_ax](../../../src-tauri/src/smart_paste/macos_ax.rs), [AX adapter receipt](evidence/native-ax-adapter.json) | FR-011 | Partial — bounded verified insertion and fallback guard implemented, certification pending; chain wiring waits for 006 | 2026-10-13 |
 
 ## Acceptance Criteria Mapping
 
@@ -27,8 +27,8 @@ Inspect [the specification](spec.md) and [the progress checkpoints](progress.md)
 | AC-014 | None | Waiting for 008 — shared startup migration and UI |
 | AC-015 | None | Waiting for 008 — settings service, revisions, CLI parity |
 | AC-016 | [Native spike](../../../src-tauri/tests/smart_paste_native.rs) | Partial — synthetic checks only; real application/layout matrix pending release evidence |
-| AC-017 | [AX observations](evidence/native-ax-spike.json) | Partial — synthetic native UTF-16 replacement verified; production classifier pending |
-| AC-018 | None | Missing — insertion chain and recovery consumer pending |
+| AC-017 | [scripted tests](../../../src-tauri/tests/smart_paste/direct.rs), [native adapter test](../../../src-tauri/tests/smart_paste_native_ax.rs) | Implemented, certification pending — production adapter verified on synthetic fields; real applications pending release evidence |
+| AC-018 | [scripted tests](../../../src-tauri/tests/smart_paste/direct.rs) | Partial — 250 ms direct budget implemented; chain composition in the coordinator (step 5); 010 consumer pending |
 | has_dropdown / is_keyboard_navigable | None | Waiting for 008 — UI contract and settings integration |
 
 ## Native observations and boundaries
@@ -54,5 +54,6 @@ Inspect [the specification](spec.md) and [the progress checkpoints](progress.md)
 
 Raw command outputs for every checkpoint are kept under [proofs/claude](proofs/claude/) as `<step>-<gate>.{out,err,exit}`.
 
+- Step 3: `--test smart_paste` 30/0 and the native AX adapter test 1/0 ([stdout](proofs/claude/step-3-native-ax.out)); clippy unchanged; fmt, lint, format and conventions PASS.
 - Step 2: `cargo test --lib smart_paste` 16/0 and `--test smart_paste_lifecycle` 14/0 within the full suite ([stdout](proofs/claude/step-2-cargo-test.out)); clippy unchanged (5 existing, 0 new); fmt, lint, format and conventions PASS.
 - Step 1: the opt-in native fixture passed 1/0 ([stdout](proofs/claude/step-1-native-cargo.out), [exit](proofs/claude/step-1-native-cargo.exit)); full `cargo test` passed ([stdout](proofs/claude/step-1-cargo-test.out)); `cargo clippy --all-targets` reports the same 5 pre-existing warnings in untouched code (`lib.rs`, `managers/transcription.rs`, `engine_supervisor/supervisor.rs`, `managers/gguf_meta.rs`, `portable.rs`) and no new one ([stderr](proofs/claude/step-1-clippy.err)); fmt, lint, format and repo conventions PASS.

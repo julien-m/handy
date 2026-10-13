@@ -1,0 +1,59 @@
+{
+ "feature": "007-smart-paste",
+ "captured_at": "2026-10-13T14:51:29.920674+00:00",
+ "command": "CARGO_TARGET_DIR=<shared> cargo test --manifest-path src-tauri/Cargo.toml --test smart_paste_native_ax -- --ignored --nocapture",
+ "exit_status": 0,
+ "raw_log": ".specs/features/007-smart-paste/proofs/claude/step-3-native-ax.out",
+ "source_head": "a2f926ac4ac5854eabc16df1acd8a7f725f6d37a",
+ "source_sha256": {
+  "src-tauri/src/smart_paste/direct.rs": "b21563bd9d8b968659880a3e18bf314f754f1d0d7baafd3b9124e62cf2e6a2bb",
+  "src-tauri/src/smart_paste/macos_ax.rs": "21f93c33efed877bde6c60f01e6dd1dbc3e7b5667c2afd5e33d40fc09398fbee",
+  "src-tauri/src/smart_paste/ax_port.rs": "fd3bf7a43375713513110050a3d2dffddc46e8ec81edc4d5c6f32dc39501c675",
+  "src-tauri/tests/smart_paste_native_ax.rs": "6fcc5a9ea614430ede8dc3e2a4045040a439dd193cf4038d7212e94b74dc78fb"
+ },
+ "platform": "ProductName:  macOS\nProductVersion:  26.5.2\nBuildVersion:  25F84",
+ "swift": "Apple Swift version 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101)",
+ "rustc": "rustc 1.94.0 (4a4ef493e 2026-03-02)",
+ "observations": [
+  {
+   "mode": "small",
+   "warm": false,
+   "warmup_ms": 0.0,
+   "attempt": "Verified",
+   "elapsed_ms": 32.234
+  },
+  {
+   "mode": "small",
+   "warm": true,
+   "warmup_ms": 20.104,
+   "attempt": "Verified",
+   "elapsed_ms": 7.593
+  },
+  {
+   "mode": "large",
+   "warm": true,
+   "warmup_ms": 10.818,
+   "attempt": "Skipped(TooLarge)",
+   "elapsed_ms": 1.94
+  },
+  {
+   "mode": "delayed",
+   "warm": true,
+   "warmup_ms": 10.162,
+   "attempt": "Unchanged(FallbackGuard(<field values redacted>))",
+   "elapsed_ms": 146.773
+  },
+  {
+   "mode": "delayed",
+   "late_guard": "AppliedLate"
+  },
+  {
+   "mode": "secure",
+   "warm": true,
+   "warmup_ms": 10.375,
+   "attempt": "Skipped(SecureField)",
+   "elapsed_ms": 0.112
+  }
+ ],
+ "boundary": "Production MacAxTextPort and attempt_direct_insertion against offscreen synthetic AppKit fixtures (inactive accessory app; no activation, keys or clipboard). A cold first AX contact may exceed the 100 ms preparation budget and must then only skip to the clipboard paste. Accessibility trust is that of the responsible process of this terminal session, not Handy.app. Real applications (TextEdit, Notes, ChatGPT, Comet, Chromium), layouts and the 10-run thresholds remain pending release evidence (AC-016)."
+}
