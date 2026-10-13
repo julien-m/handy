@@ -1,5 +1,25 @@
 # Changelog - 002-word-replacements
 
+## 2026-10-13 — [Spec Update]: AC-006 word characters include combining marks
+
+- **Type:** Spec Update (Clarify decision, `spec-refine` traceability rules)
+- **Spec modified:** Yes (sections: AC-006 criterion, Story 4 Gherkin scenario "A combining mark belongs to its word", Edge Cases, Clarifications ledger, front matter `updated`)
+- **Code modified:** None in this entry (see the following Bugfix entry)
+- **AC impacted:** AC-006 (meaning clarified; IDs preserved, no AC/FR/SC added or renumbered); FR-005 unchanged (it already requires whole-word semantics defined by AC-006)
+- **Decision:** Orchestrator decision 2026-10-13 on independent audit finding 1: for boundaries a word character is a Unicode letter, a decimal digit or a combining mark (Mn, Mc, Me), on both sides of a match, so a rule never replaces a word fragment in Indic scripts (dependent vowels, virama) or next to a decomposed (NFD) accent. The side-by-side CJK exemption is unchanged. Recorded with `persist_clarification_decision` (`002-word-replacements:AC-006` / `decision:ac-006:word-character-includes-combining-marks`).
+- **Review:** The semantic spec review cache was already stale before this edit (`livespec validate --progression implement` returned `clarify_not_ready:stale_or_incomplete_spec_review`); this normative edit also invalidates it. Refresh the independent spec review before any progression gate; no prior review PASS is retained.
+- **Author:** Claude Code (implementation agent, orchestrator decision)
+
+## 2026-10-13 — [Bugfix]: Independent audit fixes (combining-mark boundaries, BOM, stop-path harness, scope)
+
+- **Type:** Bugfix
+- **Spec modified:** No (the AC-006 clarification is the previous entry)
+- **Code modified:** `word_replacements/{unicode_generate.py,unicode-data.txt,unicode-sources.json,unicode.rs,matcher.rs,matcher_tests.rs}` (pinned Unicode 17 `M` table for Mn/Mc/Me, `is_word_character` boundary on both sides, 10 new fixtures); `word_replacements/{exchange.rs,exchange_tests.rs}` (BOM removed once, by the parser only); `word_replacements/dictation.rs`, `actions.rs`, new `tests/replacement_pipeline.rs` (stop-time rule selection and stream/batch fallback extracted and tested with injected ports); `lib.rs`, `engine_supervisor/supervisor.rs`, `managers/gguf_meta.rs`, `portable.rs`, `src/bindings.ts` (out-of-scope changes reverted to `dev`; bindings keep only the generated replacement types).
+- **AC impacted:** AC-006 (combining marks, several-space rule, no match inside a folding expansion), AC-004/AC-005 (single BOM removal), AC-007 (capture/stop/fallback wiring now tested).
+- **Dependencies:** No new crate. `unicode-general-category` is absent from `Cargo.lock`; the existing checksum-pinned Unicode 17 generator gained a targeted mark table instead, so letters, marks, whitespace and folding stay on one Unicode version.
+- **Evidence:** raw outputs in `proofs/claude-fix1/`: library 348 PASS / 16 ignored, exchange 5 PASS, pipeline harness 7 PASS, red check of the new fixtures without the fix, strict Clippy on lib/bins/replacement tests PASS, fmt/lint/format/Ruff PASS, repository conventions PASS.
+- **Author:** Claude Code (implementation agent)
+
 ## 2026-10-13 — [Feature]: Replacement matcher and transcription pipeline integration
 
 - **Type:** Feature

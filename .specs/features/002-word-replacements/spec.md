@@ -4,7 +4,7 @@ title: Word Replacements
 priority: P1
 status: Planned
 created: 2026-10-12
-updated: 2026-10-12
+updated: 2026-10-13
 ---
 
 # Feature Spec: Word Replacements
@@ -155,6 +155,10 @@ Feature: Replacement matching semantics
     Given the rule "art" to "ART" exists
     When the recognized text is "smart art"
     Then the output is "smart ART"
+  Scenario: A combining mark belongs to its word
+    Given the rule "भारत" to "India" exists
+    When the recognized text is "भारतीय संविधान"
+    Then the output is "भारतीय संविधान"
   Scenario: Longest rule wins on overlap
     Given the rules "Cloud" to "Claude" and "Cloud Code" to "Claude Code CLI" exist in that order
     When the recognized text is "cloud code and cloud"
@@ -237,7 +241,7 @@ flowchart TD
 
 ### AC-006
 
-**Criterion:** Matching is case-insensitive (Unicode case folding) and the replacement is inserted exactly as written. A match must start and end on word boundaries: the characters immediately before and after the match are not Unicode letters or digits, or are the text edges. On a side where the recognized text begins or ends with a CJK ideograph, kana or hangul character, no boundary check applies, because those scripts are written without spaces. A whitespace run inside the recognized text matches any non-empty whitespace run; other characters match literally. Punctuation adjacent to a match is kept.
+**Criterion:** Matching is case-insensitive (Unicode case folding) and the replacement is inserted exactly as written. A match must start and end on word boundaries: the characters immediately before and after the match are not word characters, or are the text edges. A word character is a Unicode letter, a decimal digit or a combining mark (General_Category Mn, Mc or Me), so a rule never replaces a word fragment, including in Indic scripts (dependent vowel signs, virama) and next to a decomposed (NFD) accent. On a side where the recognized text begins or ends with a CJK ideograph, kana or hangul character, no boundary check applies, because those scripts are written without spaces. A whitespace run inside the recognized text matches any non-empty whitespace run; other characters match literally. Punctuation adjacent to a match is kept.
 **Priority:** P1 | **Story:** Story 4
 
 ### AC-007
@@ -405,6 +409,9 @@ Feature: Commit replacement rules
 - Decision `` / `placeholders:- Planned `flow_id: word-replacements`, `screen_id: replacement-settings`. The Penflow workspace is `incomplete` on 2026-10-12; the forward contract, semantic and test IDs are produced in the single pass before `spec-ship`: [NEEDS CLARIFICATION] until then. No inspection READY or certification PASS is claimed.`: User decision 2026-10-12 (lightweight UI contract): Penflow flow/screen contracts, semantic and test IDs and Pencil mockups for all program features are produced in one pass before spec-ship; until then the planned flow_id and screen_id above are authoritative and no inspection READY or certification PASS is claimed.
 <!-- livespec-clarification:{"requirement_id": "", "decision_key": "placeholders:- Planned `flow_id: word-replacements`, `screen_id: replacement-settings`. The Penflow workspace is `incomplete` on 2026-10-12; the forward contract, semantic and test IDs are produced in the single pass before `spec-ship`: [NEEDS CLARIFICATION] until then. No inspection READY or certification PASS is claimed.", "evidence_hash": "60177e7db83c98006a89d753b5518c4788a2eb2b8d860901fc70f5faaffac0b6", "answer": "User decision 2026-10-12 (lightweight UI contract): Penflow flow/screen contracts, semantic and test IDs and Pencil mockups for all program features are produced in one pass before spec-ship; until then the planned flow_id and screen_id above are authoritative and no inspection READY or certification PASS is claimed."} -->
 
+- Decision `002-word-replacements:AC-006` / `decision:ac-006:word-character-includes-combining-marks`: Orchestrator decision 2026-10-13 (independent audit finding 1): for AC-006 word boundaries a word character is a Unicode letter, a decimal digit or a combining mark (General_Category Mn, Mc or Me), checked on both sides of the match. A rule therefore never replaces a word fragment, including Indic scripts (dependent vowel signs, virama) and decomposed (NFD) accents. The side-by-side CJK exemption is unchanged.
+<!-- livespec-clarification:{"requirement_id": "002-word-replacements:AC-006", "decision_key": "decision:ac-006:word-character-includes-combining-marks", "evidence_hash": "78e1693c5b19e28640a96965d2c4657aa7b18ec31fee4aebc1cccd4eb7167638", "answer": "Orchestrator decision 2026-10-13 (independent audit finding 1): for AC-006 word boundaries a word character is a Unicode letter, a decimal digit or a combining mark (General_Category Mn, Mc or Me), checked on both sides of the match. A rule therefore never replaces a word fragment, including Indic scripts (dependent vowel signs, virama) and decomposed (NFD) accents. The side-by-side CJK exemption is unchanged."} -->
+
 ## QE Analysis
 
 - **Criticality:** High; **Blast radius:** Every dictation output; **Primary risk:** Silent text corruption; **Confidence:** Medium (pipeline source mapped, nothing executed).
@@ -430,7 +437,7 @@ Feature: Commit replacement rules
 ## Edge Cases
 
 - Rule whose replacement contains its own recognized text ("Code" → "Claude Code"): single pass, no infinite expansion.
-- Recognized text with accents or non-Latin letters: Unicode case folding applies; boundaries follow AC-006, including the CJK exception.
+- Recognized text with accents or non-Latin letters: Unicode case folding applies; boundaries follow AC-006, including the CJK exception. Combining marks (Indic vowel signs and virama, decomposed accents) are word characters, so a rule never matches part of a word.
 - Recognized text containing punctuation ("C++"): matched literally; boundaries are checked on the characters around the whole match.
 - Import file with Windows line endings or a UTF-8 BOM: CRLF and a leading BOM are accepted.
 - Settings changed by the CLI while the UI editor has unsaved edits: UI Save returns a revision conflict and offers reload.
