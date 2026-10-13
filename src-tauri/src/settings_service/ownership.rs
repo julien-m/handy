@@ -11,7 +11,7 @@ use std::{
     time::{Duration, Instant},
 };
 #[path = "instance_probe.rs"]
-mod probe;
+pub(super) mod probe;
 pub use probe::LegacyState as OwnerState;
 // The future IPC technical deadline is five seconds; transaction lock waiting is bounded here too.
 const LOCK_DEADLINE: Duration = Duration::from_secs(5);

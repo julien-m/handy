@@ -3,6 +3,7 @@
 //! offline write.
 use super::{
     errors::{SettingsError, SettingsErrorCode},
+    ipc::{self, Connection},
     locator::StoreLocator,
     operations::{execute, Reply, SettingsBackend},
     ownership::{FileLock, LegacyPathProbe, NativeOwnerProbe, OwnerProbe, OwnerState},
@@ -12,6 +13,11 @@ use super::{
     validation::SettingsMutation,
 };
 use std::path::Path;
+use std::time::{Duration, Instant};
+
+// A starting instance publishes its endpoint right after taking the lease; 20 ms polling keeps
+// that wait short without busy-looping over the 5 s deadline.
+const ENDPOINT_RETRY: Duration = Duration::from_millis(20);
 
 /// Debug builds only: absolute pathname that replaces the passive legacy-owner probe, so process
 /// tests never depend on a Handy the developer is running. Release builds ignore it.
@@ -25,11 +31,31 @@ pub fn route(operation: &SettingsOperation) -> Reply {
         Err(error) => Reply::failure(error),
     }
 }
+/// Strategy: an authenticated instance endpoint always wins; without one, a held startup lease
+/// means an instance is starting or busy, so the endpoint is retried until the deadline and the
+/// store is never written behind it; only a free lease allows the offline path.
 fn route_store(store: &Path, operation: &SettingsOperation) -> Result<Reply, SettingsError> {
-    if instance_running(store)? {
-        return Err(unavailable());
+    let identity = ipc::store_identity(store)?;
+    let endpoint = ipc::endpoint(&identity)?;
+    let deadline = Instant::now() + ipc::DEADLINE;
+    loop {
+        match endpoint.connect() {
+            Connection::Connected(stream) => {
+                let request = ipc::request(&identity, operation.clone());
+                return Ok(ipc::exchange(stream, &request, deadline));
+            }
+            Connection::Refused => return Err(unavailable()),
+            Connection::NotListening => {}
+        }
+        if !instance_running(store)? {
+            return offline(store, operation);
+        }
+        // Exit when the deadline passes: the owner never answered, nothing was sent.
+        if Instant::now() >= deadline {
+            return Err(unavailable());
+        }
+        std::thread::sleep(ENDPOINT_RETRY);
     }
-    offline(store, operation)
 }
 fn unavailable() -> SettingsError {
     SettingsError::new(SettingsErrorCode::Unavailable)

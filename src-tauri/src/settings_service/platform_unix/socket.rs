@@ -55,12 +55,14 @@ impl PrivateSocket {
         })
     }
 
-    /// Return the new settings endpoint path.
+    /// Return the new settings endpoint path (boundary tests).
+    #[cfg(test)]
     pub(crate) fn path(&self) -> &Path {
         &self.path
     }
 
-    /// Set nonblocking mode so the transport can enforce a total deadline.
+    /// Set nonblocking mode (boundary tests; the endpoint accepts on a dedicated blocking thread).
+    #[cfg(test)]
     pub(crate) fn set_nonblocking(&self, nonblocking: bool) -> io::Result<()> {
         self.listener
             .as_ref()
@@ -85,6 +87,43 @@ impl PrivateSocket {
         Ok((stream, address))
     }
 
+    /// Bind like `bind`, reclaiming a stale name only with lease proof: `prove_lease` must show
+    /// that the caller holds this endpoint's lease, so no live listener of the endpoint can
+    /// exist. A name that still accepts connections is refused and never removed. The stat and
+    /// unlink below cannot exclude a same-user replacement in between; inside the owner-only
+    /// directory only the same user can do that, which is outside the threat model.
+    pub(crate) fn bind_reclaiming(
+        directory: &PrivateDirectory,
+        filename: &str,
+        prove_lease: impl Fn() -> io::Result<()>,
+    ) -> io::Result<Self> {
+        match Self::bind(directory, filename) {
+            Err(error) if error.kind() == io::ErrorKind::AddrInUse => {
+                prove_lease()?;
+                remove_stale(directory, filename)?;
+                prove_lease()?;
+                Self::bind(directory, filename)
+            }
+            other => other,
+        }
+    }
+
+    /// Close this listener and remove its name while `prove_lease` shows that the endpoint lease
+    /// is still held, so a normal restart finds no stale name.
+    pub(crate) fn close_and_remove(
+        &mut self,
+        prove_lease: impl FnOnce() -> io::Result<()>,
+    ) -> io::Result<()> {
+        self.close_owned_listener()?;
+        prove_lease()?;
+        self.directory.validate_current()?;
+        let metadata = fs::symlink_metadata(&self.path)?;
+        if ResourceIdentity::from_metadata(&metadata) != self.identity {
+            return Err(unavailable());
+        }
+        fs::remove_file(&self.path)
+    }
+
     /// Close only this listener; retain its socket name for later proven reclamation.
     /// No stat/unlink pair can atomically exclude same-UID pathname replacement.
     /// Routing must prove the lease is dead before reclaiming a stale endpoint.
@@ -101,6 +140,17 @@ impl PrivateSocket {
     }
 }
 
+/// Remove a same-user socket name that no longer accepts connections.
+fn remove_stale(directory: &PrivateDirectory, filename: &str) -> io::Result<()> {
+    directory.validate_current()?;
+    let path = directory.path().join(filename);
+    validate_private_socket(&fs::symlink_metadata(&path)?)?;
+    if UnixStream::connect(&path).is_ok() {
+        return Err(unavailable());
+    }
+    fs::remove_file(&path)
+}
+
 fn validate_private_socket(metadata: &fs::Metadata) -> io::Result<()> {
     if !metadata.file_type().is_socket() || metadata.uid() != current_uid() || metadata.nlink() != 1
     {
@@ -109,7 +159,9 @@ fn validate_private_socket(metadata: &fs::Metadata) -> io::Result<()> {
     Ok(())
 }
 
-/// Authenticate the effective UID of the connected local peer.
+/// Authenticate the effective UID of the connected local peer (boundary tests; the endpoint
+/// passes its expected UID to `verify_peer_uid`).
+#[cfg(test)]
 pub(crate) fn verify_peer(stream: &UnixStream) -> io::Result<()> {
     verify_peer_uid(stream, current_uid())
 }

@@ -93,3 +93,10 @@ fn concurrent_socket_binds_preserve_unrelated_file_creation_permissions() -> io:
     assert_eq!(fs::read(before)?, b"before");
     Ok(())
 }
+
+#[test]
+fn same_user_peers_pass_the_current_user_check_on_both_ends() -> io::Result<()> {
+    let (client, server) = std::os::unix::net::UnixStream::pair()?;
+    verify_peer(&server)?;
+    verify_peer(&client)
+}

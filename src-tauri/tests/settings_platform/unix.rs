@@ -154,3 +154,36 @@ fn lock_and_file_refuse_hostile_aliases() -> Result<(), Box<dyn std::error::Erro
     assert_eq!(fs::read(target)?, b"retained");
     Ok(())
 }
+
+#[test]
+fn stale_socket_name_is_reclaimed_only_with_lease_proof() -> Result<(), Box<dyn std::error::Error>>
+{
+    let (_temp, directory) = fixture()?;
+    let path = directory.path().join("endpoint");
+    drop(UnixListener::bind(&path)?);
+    let denied = PrivateSocket::bind_reclaiming(&directory, "endpoint", || {
+        Err(std::io::Error::from(std::io::ErrorKind::PermissionDenied))
+    });
+    assert!(denied.is_err() && path.exists(), "no proof, no removal");
+    let lease = StartupFence::acquire(&directory, "endpoint.lease")?;
+    let mut socket =
+        PrivateSocket::bind_reclaiming(&directory, "endpoint", || lease.validate_current())?;
+    let _client = UnixStream::connect(&path)?;
+    socket.close_and_remove(|| lease.validate_current())?;
+    assert!(!path.exists(), "a proven close removes the name");
+    Ok(())
+}
+
+#[test]
+fn a_listening_socket_name_is_never_reclaimed() -> Result<(), Box<dyn std::error::Error>> {
+    let (_temp, directory) = fixture()?;
+    let path = directory.path().join("endpoint");
+    let _live = UnixListener::bind(&path)?;
+    let inode = fs::symlink_metadata(&path)?.ino();
+    let lease = StartupFence::acquire(&directory, "endpoint.lease")?;
+    let outcome =
+        PrivateSocket::bind_reclaiming(&directory, "endpoint", || lease.validate_current());
+    assert!(outcome.is_err());
+    assert_eq!(fs::symlink_metadata(&path)?.ino(), inode);
+    Ok(())
+}

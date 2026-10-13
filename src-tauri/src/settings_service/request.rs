@@ -1,4 +1,4 @@
-//! Closed request DTOs; peer identity, framing and deadlines belong to Step 5.
+//! Closed request DTOs; peer identity, framing and deadlines are enforced by the IPC module.
 
 use super::errors::{SettingsError, SettingsErrorCode};
 use super::protocol::Revision;
@@ -24,7 +24,7 @@ impl<'de> Deserialize<'de> for ProtocolVersion {
 }
 
 /// Typed current-build operations; unknown and cross-variant fields are rejected.
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 #[serde(tag = "operation", rename_all = "snake_case", deny_unknown_fields)]
 pub enum SettingsOperation {
     Get {

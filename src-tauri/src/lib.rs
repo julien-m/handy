@@ -956,6 +956,9 @@ pub fn run(cli_args: CliArgs) {
                 return Ok(());
             }
 
+            // The GUI instance owns the store: answer `handy settings` over the private channel.
+            settings_service::tauri_adapter::publish_endpoint(app.handle());
+
             // Create main window programmatically so we can set data_directory
             // for portable mode (redirects WebView2 cache to portable Data dir)
             let mut win_builder =
@@ -1114,8 +1117,6 @@ pub fn run(cli_args: CliArgs) {
     #[cfg(target_os = "macos")]
     apply_startup_activation_policy(&mut app, headless_mode);
 
-    // `app` is only used by the macOS arm.
-    #[cfg_attr(not(target_os = "macos"), allow(unused_variables))]
     app.run(|app, event| match &event {
         #[cfg(target_os = "macos")]
         tauri::RunEvent::Reopen { .. } => {
@@ -1134,6 +1135,7 @@ pub fn run(cli_args: CliArgs) {
             }
             show_main_window(app);
         }
+        tauri::RunEvent::Exit => settings_service::tauri_adapter::close_endpoint(app),
         // No transcription teardown on exit: transcribe.cpp runs only in the
         // worker process, which exits by itself as soon as this process's end
         // of its stdin closes, even if it is hung. Waiting on an unload here

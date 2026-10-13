@@ -50,6 +50,17 @@ impl Reply {
         });
         Self { envelope, warning }
     }
+    /// Accept an envelope received from another process only when it has the contract shape.
+    pub(crate) fn from_wire(envelope: Value, warning: bool) -> Option<Self> {
+        let valid = if envelope.get("ok").and_then(Value::as_bool)? {
+            envelope.get("revision").is_some_and(Value::is_u64) && envelope.get("data").is_some()
+        } else {
+            error_code(&envelope).is_some()
+                && envelope["error"]["message"].is_string()
+                && envelope["error"]["details"].is_object()
+        };
+        valid.then_some(Self { envelope, warning })
+    }
     /// The JSON envelope printed with `--json`.
     pub fn envelope(&self) -> &Value {
         &self.envelope

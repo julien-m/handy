@@ -235,6 +235,30 @@ fn changed_keys(
         .map(|entry| entry.key)
         .collect())
 }
+/// The running instance answers routed CLI operations from its published snapshot and commits
+/// them through the same service as the settings UI. Live effects are added by the Tauri adapter.
+impl super::operations::SettingsBackend for LiveSettings {
+    fn read(&self) -> Result<SettingsRead, SettingsError> {
+        Ok(SettingsRead {
+            snapshot: self.snapshot(),
+            warning: self.recovered,
+        })
+    }
+    fn commit(
+        &self,
+        mutation: SettingsMutation,
+        expected: Option<Revision>,
+    ) -> Result<SettingsRead, SettingsError> {
+        let commit = self.commit_scalar(mutation, expected)?;
+        Ok(SettingsRead {
+            snapshot: SettingsSnapshot {
+                settings: commit.after,
+                revision: commit.revision,
+            },
+            warning: self.recovered,
+        })
+    }
+}
 #[cfg(test)]
 #[path = "live_tests.rs"]
 mod tests;

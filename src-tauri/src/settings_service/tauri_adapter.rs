@@ -1,17 +1,21 @@
 //! Tauri adapter of the live settings service: installed at startup, it serves the published
 //! snapshot to every reader and commits every UI and manager write, then applies live effects and
-//! notifies the UI.
+//! notifies the UI, and publishes the private endpoint that answers routed CLI operations.
 use super::{
     command_error::SettingsCommandError,
     edit::SettingsEditFn,
     errors::{SettingsError, SettingsErrorCode},
+    ipc::EndpointHandle,
     live::{ClaimedSingleInstance, LiveCommit, LiveSettings},
     locator::StoreLocator,
+    operations::SettingsBackend,
     ownership::NativeOwnerProbe,
-    protocol::Revision,
-    store::SettingsRepository,
+    protocol::{Revision, SettingsSnapshot},
+    store::{SettingsRead, SettingsRepository},
+    validation::SettingsMutation,
 };
 use crate::settings::AppSettings;
+use std::sync::Arc;
 use tauri::{AppHandle, Emitter, Manager};
 
 /// UI notification: revision and changed key names only, never values (some are secret).
@@ -174,6 +178,13 @@ pub fn finish(
     commit: &LiveCommit,
     skip: &[&str],
 ) -> Result<(), SettingsCommandError> {
+    apply_and_notify(app, commit, skip).map_err(SettingsCommandError::from)
+}
+fn apply_and_notify(
+    app: &AppHandle,
+    commit: &LiveCommit,
+    skip: &[&str],
+) -> Result<(), SettingsError> {
     if commit.changed.is_empty() {
         return Ok(());
     }
@@ -185,5 +196,60 @@ pub fn finish(
     if let Err(error) = app.emit("settings-changed", event) {
         log::warn!("Could not notify the UI of a settings change: {error}");
     }
-    applied.map_err(|key| SettingsError::committed_effect_failed(commit.revision, key).into())
+    applied.map_err(|key| SettingsError::committed_effect_failed(commit.revision, key))
+}
+
+/// CLI operations routed to this instance: the published snapshot, then the same commit, live
+/// effects and UI event as a settings-UI scalar write. Like that UI path, the effects run after the
+/// commit lock is released (see the Step 4 audit finding on unserialized live effects).
+struct RoutedBackend {
+    app: AppHandle,
+}
+impl SettingsBackend for RoutedBackend {
+    fn read(&self) -> Result<SettingsRead, SettingsError> {
+        live(&self.app)?.read()
+    }
+    fn commit(
+        &self,
+        mutation: SettingsMutation,
+        expected: Option<Revision>,
+    ) -> Result<SettingsRead, SettingsError> {
+        let live = live(&self.app)?;
+        let commit = live.commit_scalar(mutation, expected)?;
+        apply_and_notify(&self.app, &commit, &[])?;
+        Ok(SettingsRead {
+            snapshot: SettingsSnapshot {
+                settings: commit.after,
+                revision: commit.revision,
+            },
+            warning: live.recovered(),
+        })
+    }
+}
+/// Published CLI endpoint of this instance, removed at exit.
+struct PublishedEndpoint(std::sync::Mutex<Option<EndpointHandle>>);
+
+/// Publish the private CLI endpoint once the settings service owns the store. A failure is
+/// logged: CLI calls then report `unavailable` while this instance holds the lease.
+pub fn publish_endpoint(app: &AppHandle) {
+    let backend = Arc::new(RoutedBackend { app: app.clone() });
+    match StoreLocator::current().and_then(|store| super::ipc::serve(&store, backend)) {
+        Ok(handle) => {
+            app.manage(PublishedEndpoint(std::sync::Mutex::new(Some(handle))));
+        }
+        Err(error) => log::error!("Settings CLI endpoint could not start: {error}"),
+    }
+}
+/// Remove the CLI endpoint at exit, while the startup lease is still held.
+pub fn close_endpoint(app: &AppHandle) {
+    let handle = app.try_state::<PublishedEndpoint>().and_then(|published| {
+        published
+            .0
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .take()
+    });
+    if let Some(handle) = handle {
+        handle.close();
+    }
 }

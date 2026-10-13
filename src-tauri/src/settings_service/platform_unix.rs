@@ -10,7 +10,9 @@ mod socket;
 mod startup_fence;
 
 pub(crate) use resources::{current_uid, PrivateDirectory};
-pub(crate) use socket::{verify_peer, verify_peer_uid, PrivateSocket};
+#[cfg(test)]
+pub(crate) use socket::verify_peer;
+pub(crate) use socket::{verify_peer_uid, PrivateSocket};
 pub(crate) use startup_fence::StartupFence;
 
 #[cfg(test)]
