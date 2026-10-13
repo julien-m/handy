@@ -4,6 +4,15 @@
 use clap::Parser;
 use handy_app_lib::CliArgs;
 
+/// Smart-paste snapshot helper: reads the pasteboard read-only and streams it
+/// to the parent, without Tauri, the CLI or single-instance handling.
+fn exit_if_smart_paste_snapshot_helper() {
+    #[cfg(target_os = "macos")]
+    if handy_app_lib::smart_paste::snapshot_helper::is_helper_invocation() {
+        std::process::exit(handy_app_lib::smart_paste::snapshot_helper::run_helper());
+    }
+}
+
 fn main() {
     #[cfg(target_os = "linux")]
     {
@@ -29,6 +38,8 @@ fn main() {
     if handy_app_lib::engine_supervisor::is_worker_invocation() {
         std::process::exit(handy_app_lib::engine_supervisor::run_worker());
     }
+
+    exit_if_smart_paste_snapshot_helper();
 
     let cli_args = CliArgs::parse();
     handy_app_lib::run(cli_args)

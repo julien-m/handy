@@ -94,3 +94,12 @@ AppKit caching and delayed AX mutation counterexamples remain explicit: callback
 - **AC impacted:** AC-017, AC-018 (implemented, certification pending)
 - **Author:** Claude Opus 5.5 (implementation agent, orchestrated run)
 - **Evidence:** [native AX adapter receipt](evidence/native-ax-adapter.json) on synthetic offscreen fields; real applications pending release evidence.
+
+## 2026-10-13 — Feature: Step 4 bounded snapshot and on-demand provider
+
+- **Type:** Feature
+- **Spec modified:** No
+- **Code modified:** src-tauri/src/main.rs, src-tauri/Cargo.toml, src-tauri/src/smart_paste/{snapshot,snapshot_protocol,snapshot_helper,macos_snapshot_stream,pasteboard_port,macos_pasteboard,main_thread,mod}.rs, src-tauri/tests/smart_paste/snapshot.rs, src-tauri/tests/smart_paste_native_pasteboard{.rs,/scenario.rs,/support.rs}
+- **AC impacted:** AC-008, AC-009, AC-013 (adapter implemented, certification pending)
+- **Author:** Claude Opus 5.5 (implementation agent, orchestrated run)
+- **Evidence:** [native pasteboard receipt](evidence/native-pasteboard-adapter.json) on an isolated named pasteboard. Findings: AppKit lists derived types whose conversion needs the owner process (saved as read, they consume part of the 200 ms budget); the first execution of a newly written binary costs seconds, so the first helper spawn of an installed Handy.app is pending release evidence.

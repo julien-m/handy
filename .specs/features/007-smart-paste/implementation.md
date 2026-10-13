@@ -6,7 +6,7 @@ Inspect [the specification](spec.md) and [the progress checkpoints](progress.md)
 
 | Requirement | File(s) | @spec Anchor | Status | Last Verified |
 |---|---|---|---|---|
-| [FR-005: Multi-type receipt transaction](spec.md#fr-005) | [Native spike](../../../src-tauri/tests/smart_paste_native.rs), [harness](../../../scripts/smart-paste-native-proof.ts) | FR-005 | Partial — native feasibility; production adapter pending | 2026-10-13 |
+| [FR-005: Multi-type receipt transaction](spec.md#fr-005) | [snapshot](../../../src-tauri/src/smart_paste/snapshot.rs), [snapshot_helper](../../../src-tauri/src/smart_paste/snapshot_helper.rs), [macos_pasteboard](../../../src-tauri/src/smart_paste/macos_pasteboard.rs), [lifecycle](../../../src-tauri/src/smart_paste/lifecycle.rs), [pasteboard receipt](evidence/native-pasteboard-adapter.json) | FR-005 | Partial — bounded snapshot, helper and on-demand publication implemented, certification pending; general pasteboard and real applications pending release evidence | 2026-10-13 |
 | [FR-006: Guarded restoration](spec.md#fr-006) | [lifecycle](../../../src-tauri/src/smart_paste/lifecycle.rs), [settlement](../../../src-tauri/src/smart_paste/settlement.rs) | FR-006 | Partial — pure timing and guarded decisions implemented, certification pending; native adapter pending | 2026-10-13 |
 | [FR-007: App and keyboard strategies](spec.md#fr-007) | [Native keyboard observations](evidence/native-keyboard-spike.json) | Pending | Partial — read-only TIS observations | 2026-10-13 |
 | [FR-008: Truthful outcomes](spec.md#fr-008) | [outcome](../../../src-tauri/src/smart_paste/outcome.rs) | FR-008 | Partial — outcome contract implemented, certification pending; 009/010 consumers pending | 2026-10-13 |
@@ -18,7 +18,7 @@ Inspect [the specification](spec.md) and [the progress checkpoints](progress.md)
 
 | AC | Test File | Status |
 |---|---|---|
-| AC-008 | [Native spike](../../../src-tauri/tests/smart_paste_native.rs) | Partial — item provider and byte roundtrip observed; AppKit repeat-read cache limitation |
+| AC-008 | [snapshot tests](../../../src-tauri/tests/smart_paste/snapshot.rs), [native scenario](../../../src-tauri/tests/smart_paste_native_pasteboard/scenario.rs) | Implemented, certification pending — production adapter on a named pasteboard; key posting and layout resolution in steps 5–6; AppKit repeat-read cache limitation remains |
 | AC-009 | [lifecycle tests](../../../src-tauri/tests/smart_paste_lifecycle.rs), [settlement](../../../src-tauri/src/smart_paste/settlement.rs) | Implemented (pure timing/guard), certification pending — real repeat reads not observable after AppKit cache fulfillment |
 | AC-010 | None | Missing |
 | AC-011 | [Keyboard observations](evidence/native-keyboard-spike.json) | Partial — current layout resolution only; enabled ABC/US and switching/restoration pending |
@@ -54,6 +54,7 @@ Inspect [the specification](spec.md) and [the progress checkpoints](progress.md)
 
 Raw command outputs for every checkpoint are kept under [proofs/claude](proofs/claude/) as `<step>-<gate>.{out,err,exit}`.
 
+- Step 4: `--test smart_paste` 43/0 and the harness-free native pasteboard scenario ([stdout](proofs/claude/step-4-native-pasteboard.out)); clippy unchanged; fmt, lint, format and conventions PASS.
 - Step 3: `--test smart_paste` 30/0 and the native AX adapter test 1/0 ([stdout](proofs/claude/step-3-native-ax.out)); clippy unchanged; fmt, lint, format and conventions PASS.
 - Step 2: `cargo test --lib smart_paste` 16/0 and `--test smart_paste_lifecycle` 14/0 within the full suite ([stdout](proofs/claude/step-2-cargo-test.out)); clippy unchanged (5 existing, 0 new); fmt, lint, format and conventions PASS.
 - Step 1: the opt-in native fixture passed 1/0 ([stdout](proofs/claude/step-1-native-cargo.out), [exit](proofs/claude/step-1-native-cargo.exit)); full `cargo test` passed ([stdout](proofs/claude/step-1-cargo-test.out)); `cargo clippy --all-targets` reports the same 5 pre-existing warnings in untouched code (`lib.rs`, `managers/transcription.rs`, `engine_supervisor/supervisor.rs`, `managers/gguf_meta.rs`, `portable.rs`) and no new one ([stderr](proofs/claude/step-1-clippy.err)); fmt, lint, format and repo conventions PASS.

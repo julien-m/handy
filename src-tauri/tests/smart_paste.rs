@@ -5,4 +5,5 @@ mod smart_paste {
     pub mod direct;
     pub mod fakes;
     pub mod lifecycle;
+    pub mod snapshot;
 }

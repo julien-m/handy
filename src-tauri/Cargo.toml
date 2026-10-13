@@ -192,6 +192,12 @@ transcribe-cpp = { version = "0.3.1", default-features = false, features = [
 tao = { git = "https://github.com/cjpais/tao", rev = "c3bee28c1d446d95f08c95c3b6f8d4bde052b876" }
 tao-macros = { git = "https://github.com/cjpais/tao", rev = "c3bee28c1d446d95f08c95c3b6f8d4bde052b876" }
 
+# On-demand pasteboard items are served by the main run loop, which libtest
+# keeps busy: this opt-in native target drives its own main thread.
+[[test]]
+name = "smart_paste_native_pasteboard"
+harness = false
+
 [dev-dependencies]
 tempfile = "3"
 # Test-only tokio features for the local socket servers exercising the
