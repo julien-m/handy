@@ -5,6 +5,10 @@
 
 ---
 
+## 2026-10-13 — [Feature 002] Spec refined: Quality Engineering classification for the delivery lane
+
+`## Quality Engineering` added from the existing QE Analysis: criticality High, blast radius Shared, primary risk Data; `livespec delivery lane` reads it (full). No AC, FR or SC changed; the spec review is stale until an independent reviewer refreshes it.
+
 ## 2026-10-13 — [Feature 002] Spec and plan refined, re-audit fixes: AC-006 word characters include ZWNJ/ZWJ and a CJK side still rejects an adjacent combining mark; AC-004 header recognized with tab or `;`; AC-005 1 MB = 1,000,000 bytes; AC-007 guarantee scoped before AI post-processing (6 Clarify decisions, IDs preserved); plan aligned; spec/plan reviews to redo.
 
 ## 2026-10-13 — [Feature 002] Spec refined and audit fixes: AC-006 word characters now include combining marks (Clarify decision, IDs preserved); matcher, BOM, stop-path harness and scope fixes; lib 348 PASS, pipeline harness 7 PASS, conventions PASS.

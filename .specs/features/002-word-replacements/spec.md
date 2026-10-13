@@ -444,6 +444,13 @@ Feature: Commit replacement rules
 - **Missing evidence:** No test executed; no mockup (deferred before `spec-ship`); revision contract owned by 008 not yet specified.
 - **Boundary:** QE defines risk and test sufficiency; the independent review judges requirements; Penflow governs UI design evidence; spec-test executes runtime proof.
 
+## Quality Engineering
+
+- **Risk:** High criticality (rated so by the QE Analysis: a wrong rule application silently corrupts dictated text); Shared blast radius (rules apply to every dictation output, and bulk import/export and CLI access use the settings revision contract of feature 008); primary risk Data (silent text corruption).
+- **Applicable dimensions:** functional correctness, data integrity, API/contract compatibility, performance, accessibility/UX, internationalization, security (file import).
+- **P0 gates/evidence:** Table-driven matching tests for every AC-006/AC-007 rule (case, Unicode, boundaries, whitespace, punctuation, overlap, no chaining); parser/serializer round-trip and diagnostics tests; atomic import tests with injected persistence failure; UI/CLI equivalence tests.
+- **Boundary:** QE defines risk and test sufficiency only. The independent spec review judges requirements, Penflow governs UI design evidence, spec-test executes runtime proof and the end-of-feature delivery review looks for defects.
+
 ## Screens
 
 | Screen | Status | Reference |
