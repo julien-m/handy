@@ -369,6 +369,7 @@ Crée, édite, bootstrap, impact-check, liste, inspecte et lance des User Journe
 - `/spec-journey run` — exécution compiled-only
 - `/spec-journey list`
 - `/spec-journey inspect <journey-id>`
+- `/spec-journey visual` — l'agent évalue les contrats visuels LLM, écrit les reçus, puis `livespec journey visual-verify`
 
 ### /spec-plan
 
@@ -532,10 +533,9 @@ Avant toute commande `spec-*`, **Read** `.specs/spec-system.md` (rappel CLAUDE.m
 
 ## Synchronisation
 
-Le check `.checks/livespec-routing-sync.md` (bloquant via `/audit`) garantit la bijection entre `.agent-sync/skills/spec-*` et les entrées de `livespec-commands.md`. Toute désync bloque le commit.
+Le check `.checks/livespec-routing-sync.md` (bloquant via la revue native independante en effort `high`) garantit la bijection entre `.agent-sync/skills/spec-*` et les entrées de `livespec-commands.md`. Toute désync bloque le commit.
 
 <!-- cc-hub:project-rules:end -->
-
 <!-- livespec:start -->
 
 ## LiveSpec
