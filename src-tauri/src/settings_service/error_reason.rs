@@ -27,10 +27,26 @@ pub enum ErrorReason {
     RegistrationRefused,
     /// The shortcut text is not valid for the active keyboard implementation (004).
     InvalidShortcut,
+    /// The prompt name is empty after trimming (005).
+    PromptNameEmpty,
+    /// The prompt name is longer than 60 characters (005).
+    PromptNameTooLong,
+    /// Another prompt has the same name, ignoring case (005).
+    PromptNameDuplicate,
+    /// The prompt text is empty or only whitespace (005).
+    PromptTextEmpty,
+    /// The prompt text is longer than 8000 characters (005).
+    PromptTextTooLong,
+    /// A provider override needs both a provider and a model (005).
+    OverrideIncomplete,
+    /// The override names a provider this build does not have (005).
+    UnknownProvider,
+    /// The prompt has issues and cannot be used until edited (005).
+    PromptInvalid,
 }
 impl ErrorReason {
     /// Every reason of this build, in wire-schema order.
-    pub const ALL: [Self; 7] = [
+    pub const ALL: [Self; 15] = [
         Self::UnsupportedPlatform,
         Self::ShortcutSessionBusy,
         Self::InstanceRequired,
@@ -38,6 +54,14 @@ impl ErrorReason {
         Self::AlternativesUnsupported,
         Self::RegistrationRefused,
         Self::InvalidShortcut,
+        Self::PromptNameEmpty,
+        Self::PromptNameTooLong,
+        Self::PromptNameDuplicate,
+        Self::PromptTextEmpty,
+        Self::PromptTextTooLong,
+        Self::OverrideIncomplete,
+        Self::UnknownProvider,
+        Self::PromptInvalid,
     ];
     /// Fixed English message of this reason.
     pub fn message(self) -> &'static str {
@@ -49,6 +73,14 @@ impl ErrorReason {
             Self::AlternativesUnsupported => "This action keeps a single shortcut.",
             Self::RegistrationRefused => "The system refused the shortcut.",
             Self::InvalidShortcut => "Not a valid shortcut.",
+            Self::PromptNameEmpty => "The prompt name is empty.",
+            Self::PromptNameTooLong => "The prompt name is longer than 60 characters.",
+            Self::PromptNameDuplicate => "Another prompt already has this name.",
+            Self::PromptTextEmpty => "The prompt text is empty.",
+            Self::PromptTextTooLong => "The prompt text is longer than 8000 characters.",
+            Self::OverrideIncomplete => "A provider override needs a provider and a model.",
+            Self::UnknownProvider => "The provider does not exist in this build.",
+            Self::PromptInvalid => "The prompt is invalid and must be edited first.",
         }
     }
 }

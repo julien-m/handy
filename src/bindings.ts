@@ -326,7 +326,16 @@ async fetchPostProcessModels(providerId: string) : Promise<Result<string[], stri
 }
 },
 /**
- * Append a prompt; its id is generated once, outside the (re-runnable) edit.
+ * The library as published, with each prompt's issues and the default prompt.
+ */
+async getPromptLibrary() : Promise<PromptLibraryView> {
+    return await TAURI_INVOKE("get_prompt_library");
+},
+/**
+ * Create a prompt; the id is generated once, outside the (re-runnable) edit.
+ * 
+ * # Errors
+ * `validation_failed` with a prompt reason, `limit_exceeded` at 50 prompts, or a commit refusal.
  */
 async addPostProcessPrompt(name: string, prompt: string) : Promise<Result<LLMPrompt, SettingsCommandError>> {
     try {
@@ -337,7 +346,10 @@ async addPostProcessPrompt(name: string, prompt: string) : Promise<Result<LLMPro
 }
 },
 /**
- * Rename or rewrite an existing prompt.
+ * Rename and rewrite a prompt; the edited prompt must be valid.
+ * 
+ * # Errors
+ * `not_found`, `validation_failed` with a prompt reason, or a commit refusal.
  */
 async updatePostProcessPrompt(id: string, name: string, prompt: string) : Promise<Result<null, SettingsCommandError>> {
     try {
@@ -348,7 +360,10 @@ async updatePostProcessPrompt(id: string, name: string, prompt: string) : Promis
 }
 },
 /**
- * Delete a prompt; the last prompt is kept, and a deleted selection moves to the first prompt.
+ * Delete a prompt (the UI confirms first); a deleted default becomes None.
+ * 
+ * # Errors
+ * `not_found`, or a commit refusal.
  */
 async deletePostProcessPrompt(id: string) : Promise<Result<null, SettingsCommandError>> {
     try {
@@ -358,9 +373,30 @@ async deletePostProcessPrompt(id: string) : Promise<Result<null, SettingsCommand
     else return { status: "error", error: e  as any };
 }
 },
-async setPostProcessSelectedPrompt(id: string) : Promise<Result<null, SettingsCommandError>> {
+/**
+ * Choose the default prompt of the post-processing shortcut, or None.
+ * 
+ * # Errors
+ * `not_found`, `validation_failed` (`prompt_not_usable`) for a prompt with issues.
+ */
+async setPostProcessSelectedPrompt(id: string | null) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("set_post_process_selected_prompt", { id }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Set the provider and model a prompt uses, or return it to the default provider with `None`.
+ * 
+ * # Errors
+ * `not_found`; `validation_failed` with `prompt_override_incomplete`, `prompt_unknown_provider`
+ * or `unsupported_platform` (Apple Intelligence off Apple silicon).
+ */
+async setPostProcessPromptProviderOverride(id: string, providerOverride: PromptProviderOverride | null) : Promise<Result<null, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("set_post_process_prompt_provider_override", { id, providerOverride }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -1268,7 +1304,20 @@ export type KeyboardDiagnosticReport = { secure_input_enabled: boolean; culprit_
  */
 key_down: number; key_up: number; flags_changed: number; mouse: number; duration_ms: number }
 export type KeyboardImplementation = "tauri" | "handy_keys"
-export type LLMPrompt = { id: string; name: string; prompt: string }
+/**
+ * One prompt of the library. `id`, `name` and `prompt` keep their historical wire names; the
+ * fields added by 005 are absent from stores written before it and never serialized when
+ * unset, so a store without overrides or starters stays byte-identical for earlier versions.
+ */
+export type LLMPrompt = { id: string; name: string; prompt: string; 
+/**
+ * Provider and model override; `None` uses the default provider and its model.
+ */
+provider_override?: PromptProviderOverride | null; 
+/**
+ * Added by the one-time starter migration (still editable and deletable).
+ */
+starter?: boolean }
 export type LogLevel = "trace" | "debug" | "info" | "warn" | "error"
 /**
  * Answer of a menu request: the menu, or why it is refused (a typed value, not an error, so
@@ -1343,6 +1392,72 @@ export type PaginatedHistory = { entries: HistoryEntry[]; has_more: boolean }
 export type PasteMethod = "ctrl_v" | "direct" | "none" | "shift_insert" | "ctrl_shift_v" | "external_script"
 export type PermissionAccess = "allowed" | "denied" | "unknown"
 export type PostProcessProvider = { id: string; label: string; base_url: string; allow_base_url_edit?: boolean; models_endpoint?: string | null; supports_structured_output?: boolean }
+/**
+ * Why a prompt is not valid (and cannot be used until edited). Legacy prompts that break a rule
+ * stay in the library with their issues listed.
+ */
+export type PromptIssue = 
+/**
+ * The trimmed name is empty.
+ */
+"name_empty" | 
+/**
+ * The trimmed name is longer than `MAX_NAME_CHARS`.
+ */
+"name_too_long" | 
+/**
+ * Another prompt has the same trimmed name, ignoring case.
+ */
+"name_duplicate" | 
+/**
+ * The text is empty or only whitespace (precision of AC-001, decision 2026-10-14).
+ */
+"text_empty" | 
+/**
+ * The text is longer than `MAX_TEXT_CHARS`.
+ */
+"text_too_long" | 
+/**
+ * The override names a provider but no model (or the reverse).
+ */
+"override_incomplete" | 
+/**
+ * The override names a provider this build does not have.
+ */
+"unknown_provider"
+/**
+ * The library with its default prompt (None when absent or no longer in the library).
+ */
+export type PromptLibraryView = { 
+/**
+ * Durable settings revision the view was read at.
+ */
+revision: number; 
+/**
+ * Default prompt of the post-processing shortcut, or `None`.
+ */
+default_prompt_id: string | null; prompts: PromptView[] }
+/**
+ * Provider and model a prompt uses instead of the default ones (005). API keys stay per
+ * provider: an override names a provider id and a model, never a credential.
+ */
+export type PromptProviderOverride = { provider_id: string; model: string }
+/**
+ * One prompt as the settings show it.
+ */
+export type PromptView = { id: string; name: string; prompt: string; 
+/**
+ * Provider and model override; `None` uses the default provider.
+ */
+provider_override: PromptProviderOverride | null; 
+/**
+ * Added by the starter migration.
+ */
+starter: boolean; 
+/**
+ * Why the prompt cannot be used until edited; empty for a valid prompt.
+ */
+issues: PromptIssue[] }
 export type RecordingRetentionPeriod = "never" | "preserve_limit" | "days_3" | "weeks_2" | "months_3"
 /**
  * The single per-dictation decision "insert or recover", and the only Enter veto.
@@ -1613,7 +1728,39 @@ export type ValidationReason = "canonical_type" | "canonical_value" | "out_of_ra
  * A dictation session (recording, processing, a held or remembered shortcut) is running;
  * the shortcut registrations cannot change until it ends.
  */
-"shortcut_session_busy"
+"shortcut_session_busy" | 
+/**
+ * The prompt name is empty after trimming (005).
+ */
+"prompt_name_empty" | 
+/**
+ * The prompt name is longer than 60 characters (005).
+ */
+"prompt_name_too_long" | 
+/**
+ * Another prompt has the same name, ignoring case (005).
+ */
+"prompt_name_duplicate" | 
+/**
+ * The prompt text is empty or only whitespace (005).
+ */
+"prompt_text_empty" | 
+/**
+ * The prompt text is longer than 8000 characters (005).
+ */
+"prompt_text_too_long" | 
+/**
+ * A provider override needs both a provider and a model (005).
+ */
+"prompt_override_incomplete" | 
+/**
+ * The override names a provider this build does not have (005).
+ */
+"prompt_unknown_provider" | 
+/**
+ * The prompt has issues and cannot be used until edited (005).
+ */
+"prompt_not_usable"
 export type WindowsMicrophonePermissionStatus = { supported: boolean; overall_access: PermissionAccess; device_access: PermissionAccess; app_access: PermissionAccess; desktop_app_access: PermissionAccess }
 
 /** tauri-specta globals **/

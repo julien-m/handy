@@ -155,10 +155,13 @@ fn startup_merge_never_copies_unknown_fields_between_items_with_duplicate_ids(
     let prompts = disk["settings"]["post_process_prompts"]
         .as_array()
         .ok_or("prompts array")?;
-    assert_eq!(prompts.len(), 2);
+    // The two stored prompts come first, unchanged; the one-time starter prompts of 005
+    // (AC-002) follow, since this legacy store has no schema version yet.
+    assert_eq!(prompts.len(), 8);
     assert_eq!(prompts[0]["name"], "First");
     assert_eq!(prompts[1]["name"], "Second");
     assert!(prompts[1].get("extra").is_none());
+    assert!(prompts[2..].iter().all(|prompt| prompt["starter"] == true));
     Ok(())
 }
 #[test]

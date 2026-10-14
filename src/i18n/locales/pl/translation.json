@@ -723,7 +723,16 @@
       "persistenceFailed": "Nie udało się zapisać ustawień.",
       "generic": "Nie udało się zmienić ustawienia.",
       "readOnly": "Ustawienia są w tej sesji tylko do odczytu: pliku ustawień nie można bezpiecznie zapisać, więc zmiany nie zostaną zachowane.",
-      "unsupportedPlatform": "To ustawienie nie jest dostępne w tym systemie."
+      "unsupportedPlatform": "To ustawienie nie jest dostępne w tym systemie.",
+      "promptNameEmpty": "Wpisz nazwę promptu.",
+      "promptNameTooLong": "Nazwa promptu może mieć maksymalnie 60 znaków.",
+      "promptNameDuplicate": "Inny prompt ma już tę nazwę. Nazwy muszą być unikalne.",
+      "promptTextEmpty": "Wpisz treść promptu.",
+      "promptTextTooLong": "Treść promptu może mieć maksymalnie 8000 znaków.",
+      "promptOverrideIncomplete": "Wybierz dostawcę i model albo użyj domyślnego dostawcy.",
+      "promptUnknownProvider": "Ten dostawca jest niedostępny.",
+      "promptNotUsable": "Ten prompt jest nieprawidłowy. Edytuj go przed użyciem.",
+      "limitExceeded": "Osiągnięto maksymalną liczbę."
     }
   },
   "appLanguage": {

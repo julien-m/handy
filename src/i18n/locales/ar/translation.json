@@ -723,7 +723,16 @@
       "persistenceFailed": "تعذّر حفظ الإعدادات.",
       "generic": "تعذّر تغيير الإعداد.",
       "readOnly": "الإعدادات للقراءة فقط في هذه الجلسة: لا يمكن الكتابة في ملف الإعدادات بأمان، لذا لن تُحفظ التغييرات.",
-      "unsupportedPlatform": "هذا الإعداد غير متاح على هذا النظام."
+      "unsupportedPlatform": "هذا الإعداد غير متاح على هذا النظام.",
+      "promptNameEmpty": "أدخل اسمًا للموجّه.",
+      "promptNameTooLong": "يجب ألا يتجاوز اسم الموجّه 60 حرفًا.",
+      "promptNameDuplicate": "يوجد موجّه آخر بهذا الاسم. يجب أن تكون الأسماء فريدة.",
+      "promptTextEmpty": "أدخل نص الموجّه.",
+      "promptTextTooLong": "يجب ألا يتجاوز نص الموجّه 8000 حرف.",
+      "promptOverrideIncomplete": "اختر مزوّدًا ونموذجًا، أو استخدم المزوّد الافتراضي.",
+      "promptUnknownProvider": "هذا المزوّد غير متاح.",
+      "promptNotUsable": "هذا الموجّه غير صالح. عدّله قبل استخدامه.",
+      "limitExceeded": "تم بلوغ الحد الأقصى للعدد."
     }
   },
   "appLanguage": {

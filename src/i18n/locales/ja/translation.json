@@ -723,7 +723,16 @@
       "persistenceFailed": "設定を保存できませんでした。",
       "generic": "設定を変更できませんでした。",
       "readOnly": "このセッションでは設定は読み取り専用です。設定ファイルに安全に書き込めないため、変更は保存されません。",
-      "unsupportedPlatform": "この設定はこのシステムでは利用できません。"
+      "unsupportedPlatform": "この設定はこのシステムでは利用できません。",
+      "promptNameEmpty": "プロンプトの名前を入力してください。",
+      "promptNameTooLong": "プロンプト名は60文字以内にしてください。",
+      "promptNameDuplicate": "同じ名前のプロンプトがすでにあります。名前は重複できません。",
+      "promptTextEmpty": "プロンプトの本文を入力してください。",
+      "promptTextTooLong": "プロンプトの本文は8,000文字以内にしてください。",
+      "promptOverrideIncomplete": "プロバイダーとモデルの両方を選ぶか、既定のプロバイダーを使ってください。",
+      "promptUnknownProvider": "このプロバイダーは利用できません。",
+      "promptNotUsable": "このプロンプトは無効です。使用する前に編集してください。",
+      "limitExceeded": "上限数に達しました。"
     }
   },
   "appLanguage": {

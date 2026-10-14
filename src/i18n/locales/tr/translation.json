@@ -723,7 +723,16 @@
       "persistenceFailed": "Ayarlar kaydedilemedi.",
       "generic": "Ayar değiştirilemedi.",
       "readOnly": "Ayarlar bu oturumda salt okunur: ayar dosyasına güvenli şekilde yazılamıyor, bu nedenle değişiklikler kaydedilmeyecek.",
-      "unsupportedPlatform": "Bu ayar bu sistemde kullanılamaz."
+      "unsupportedPlatform": "Bu ayar bu sistemde kullanılamaz.",
+      "promptNameEmpty": "İstem için bir ad girin.",
+      "promptNameTooLong": "İstem adı en fazla 60 karakter olabilir.",
+      "promptNameDuplicate": "Başka bir istem zaten bu adı kullanıyor. Adlar benzersiz olmalıdır.",
+      "promptTextEmpty": "İstem metnini girin.",
+      "promptTextTooLong": "İstem metni en fazla 8.000 karakter olabilir.",
+      "promptOverrideIncomplete": "Bir sağlayıcı ve bir model seçin ya da varsayılan sağlayıcıyı kullanın.",
+      "promptUnknownProvider": "Bu sağlayıcı kullanılamıyor.",
+      "promptNotUsable": "Bu istem geçersiz. Kullanmadan önce düzenleyin.",
+      "limitExceeded": "Azami sayıya ulaşıldı."
     }
   },
   "appLanguage": {

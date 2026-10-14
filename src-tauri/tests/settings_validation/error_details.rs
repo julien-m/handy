@@ -92,7 +92,15 @@ fn schema_closes_reason_and_items() -> TestResult {
         "last_shortcut",
         "alternatives_unsupported",
         "registration_refused",
-        "invalid_shortcut"
+        "invalid_shortcut",
+        "prompt_name_empty",
+        "prompt_name_too_long",
+        "prompt_name_duplicate",
+        "prompt_text_empty",
+        "prompt_text_too_long",
+        "override_incomplete",
+        "unknown_provider",
+        "prompt_invalid"
     ]);
     assert_eq!(details["reason"], json!({ "enum": reasons }));
     assert_eq!(

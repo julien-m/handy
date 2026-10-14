@@ -204,7 +204,7 @@ fn public_binding_schema() -> serde_json::Value {
     serde_json::json!({"type":"object","additionalProperties":false,"required":["id","name","description","default_binding","current_binding"],"properties":{"id":{"type":"string"},"name":{"type":"string"},"description":{"type":"string"},"default_binding":{"type":"string"},"current_binding":{"type":"string"},"additional_bindings":{"type":"array","items":{"type":"string"},"minItems":1}}})
 }
 fn public_prompt_schema() -> serde_json::Value {
-    serde_json::json!({"type":"object","additionalProperties":false,"required":["id","name","prompt"],"properties":{"id":{"type":"string"},"name":{"type":"string"},"prompt":{"type":"string"}}})
+    serde_json::json!({"type":"object","additionalProperties":false,"required":["id","name","prompt"],"properties":{"id":{"type":"string"},"name":{"type":"string"},"prompt":{"type":"string"},"provider_override":{"type":"object","additionalProperties":false,"required":["provider_id","model"],"properties":{"provider_id":{"type":"string"},"model":{"type":"string"}}},"starter":{"const":true}}})
 }
 
 fn operation_request_schema() -> serde_json::Value {

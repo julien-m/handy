@@ -723,7 +723,16 @@
       "persistenceFailed": "无法保存设置。",
       "generic": "无法更改设置。",
       "readOnly": "本次会话中设置为只读：无法安全写入设置文件，因此更改不会保存。",
-      "unsupportedPlatform": "此设置在此系统上不可用。"
+      "unsupportedPlatform": "此设置在此系统上不可用。",
+      "promptNameEmpty": "请输入提示词名称。",
+      "promptNameTooLong": "提示词名称不能超过 60 个字符。",
+      "promptNameDuplicate": "已有同名的提示词。名称必须唯一。",
+      "promptTextEmpty": "请输入提示词内容。",
+      "promptTextTooLong": "提示词内容不能超过 8000 个字符。",
+      "promptOverrideIncomplete": "请同时选择服务提供商和模型，或使用默认服务提供商。",
+      "promptUnknownProvider": "该服务提供商不可用。",
+      "promptNotUsable": "该提示词无效。请先编辑后再使用。",
+      "limitExceeded": "已达到最大数量。"
     }
   },
   "appLanguage": {

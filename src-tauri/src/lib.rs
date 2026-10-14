@@ -21,6 +21,7 @@ mod memory;
 mod overlay;
 mod paste_tx;
 pub mod portable;
+pub mod prompts;
 mod secure_input;
 #[cfg(target_os = "macos")]
 mod secure_input_shadow;
@@ -718,10 +719,12 @@ pub fn run(cli_args: CliArgs) {
             shortcut::change_post_process_model_setting,
             shortcut::set_post_process_provider,
             shortcut::fetch_post_process_models,
-            shortcut::add_post_process_prompt,
-            shortcut::update_post_process_prompt,
-            shortcut::delete_post_process_prompt,
-            shortcut::set_post_process_selected_prompt,
+            commands::prompts::get_prompt_library,
+            commands::prompts::add_post_process_prompt,
+            commands::prompts::update_post_process_prompt,
+            commands::prompts::delete_post_process_prompt,
+            commands::prompts::set_post_process_selected_prompt,
+            commands::prompts::set_post_process_prompt_provider_override,
             shortcut::update_custom_words,
             shortcut::suspend_all_bindings,
             shortcut::resume_all_bindings,

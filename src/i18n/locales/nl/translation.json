@@ -726,7 +726,16 @@
       "persistenceFailed": "De instellingen konden niet worden opgeslagen.",
       "generic": "De instelling kon niet worden gewijzigd.",
       "readOnly": "De instellingen zijn in deze sessie alleen-lezen: het instellingenbestand kan niet veilig worden geschreven, dus wijzigingen worden niet opgeslagen.",
-      "unsupportedPlatform": "Deze instelling is niet beschikbaar op dit systeem."
+      "unsupportedPlatform": "Deze instelling is niet beschikbaar op dit systeem.",
+      "promptNameEmpty": "Voer een naam in voor de prompt.",
+      "promptNameTooLong": "De naam van de prompt mag maximaal 60 tekens lang zijn.",
+      "promptNameDuplicate": "Een andere prompt heeft al deze naam. Namen moeten uniek zijn.",
+      "promptTextEmpty": "Voer de tekst van de prompt in.",
+      "promptTextTooLong": "De tekst van de prompt mag maximaal 8.000 tekens lang zijn.",
+      "promptOverrideIncomplete": "Kies een provider en een model, of gebruik de standaardprovider.",
+      "promptUnknownProvider": "Deze provider is niet beschikbaar.",
+      "promptNotUsable": "Deze prompt is ongeldig. Bewerk hem voordat je hem gebruikt.",
+      "limitExceeded": "Het maximale aantal is bereikt."
     }
   },
   "appLanguage": {

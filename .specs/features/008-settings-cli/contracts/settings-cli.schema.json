@@ -238,7 +238,15 @@
                   "last_shortcut",
                   "alternatives_unsupported",
                   "registration_refused",
-                  "invalid_shortcut"
+                  "invalid_shortcut",
+                  "prompt_name_empty",
+                  "prompt_name_too_long",
+                  "prompt_name_duplicate",
+                  "prompt_text_empty",
+                  "prompt_text_too_long",
+                  "override_incomplete",
+                  "unknown_provider",
+                  "prompt_invalid"
                 ]
               },
               "index": {
@@ -293,7 +301,15 @@
             "last_shortcut",
             "alternatives_unsupported",
             "registration_refused",
-            "invalid_shortcut"
+            "invalid_shortcut",
+            "prompt_name_empty",
+            "prompt_name_too_long",
+            "prompt_name_duplicate",
+            "prompt_text_empty",
+            "prompt_text_too_long",
+            "override_incomplete",
+            "unknown_provider",
+            "prompt_invalid"
           ]
         }
       },
@@ -485,6 +501,25 @@
         },
         "prompt": {
           "type": "string"
+        },
+        "provider_override": {
+          "additionalProperties": false,
+          "properties": {
+            "model": {
+              "type": "string"
+            },
+            "provider_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "provider_id",
+            "model"
+          ],
+          "type": "object"
+        },
+        "starter": {
+          "const": true
         }
       },
       "required": [

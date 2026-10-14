@@ -723,7 +723,16 @@
       "persistenceFailed": "Inställningarna kunde inte sparas.",
       "generic": "Inställningen kunde inte ändras.",
       "readOnly": "Inställningarna är skrivskyddade under den här sessionen: inställningsfilen kan inte skrivas säkert, så ändringar sparas inte.",
-      "unsupportedPlatform": "Den här inställningen är inte tillgänglig på det här systemet."
+      "unsupportedPlatform": "Den här inställningen är inte tillgänglig på det här systemet.",
+      "promptNameEmpty": "Ange ett namn på prompten.",
+      "promptNameTooLong": "Promptens namn får vara högst 60 tecken.",
+      "promptNameDuplicate": "En annan prompt har redan det här namnet. Namn måste vara unika.",
+      "promptTextEmpty": "Ange promptens text.",
+      "promptTextTooLong": "Promptens text får vara högst 8 000 tecken.",
+      "promptOverrideIncomplete": "Välj både en leverantör och en modell, eller använd standardleverantören.",
+      "promptUnknownProvider": "Den här leverantören är inte tillgänglig.",
+      "promptNotUsable": "Den här prompten är ogiltig. Redigera den innan du använder den.",
+      "limitExceeded": "Det högsta antalet har nåtts."
     }
   },
   "appLanguage": {
