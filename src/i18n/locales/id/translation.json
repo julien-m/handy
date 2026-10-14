@@ -248,10 +248,7 @@
     "sound": {
       "title": "Suara",
       "microphone": {
-        "title": "Mikrofon",
-        "description": "Pilih perangkat mikrofon yang Anda inginkan",
-        "placeholder": "Pilih mikrofon...",
-        "loading": "Memuat..."
+        "placeholder": "Pilih mikrofon..."
       },
       "microphonePriority": {
         "title": "Prioritas mikrofon",

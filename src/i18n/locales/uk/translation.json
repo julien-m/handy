@@ -248,10 +248,7 @@
     "sound": {
       "title": "Звук",
       "microphone": {
-        "title": "Мікрофон",
-        "description": "Оберіть бажаний мікрофон",
-        "placeholder": "Оберіть мікрофон...",
-        "loading": "Завантаження..."
+        "placeholder": "Оберіть мікрофон..."
       },
       "microphonePriority": {
         "title": "Пріоритет мікрофонів",

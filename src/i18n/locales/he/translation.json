@@ -248,10 +248,7 @@
     "sound": {
       "title": "שמע",
       "microphone": {
-        "title": "מיקרופון",
-        "description": "בחר את המיקרופון המועדף עליך",
-        "placeholder": "בחר מיקרופון...",
-        "loading": "טוען..."
+        "placeholder": "בחר מיקרופון..."
       },
       "microphonePriority": {
         "title": "עדיפות מיקרופונים",

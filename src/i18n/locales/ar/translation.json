@@ -225,10 +225,7 @@
     "sound": {
       "title": "الصوت",
       "microphone": {
-        "title": "الميكروفون",
-        "description": "اختر جهاز الميكروفون المفضل لديك",
-        "placeholder": "اختر الميكروفون...",
-        "loading": "جاري التحميل..."
+        "placeholder": "اختر الميكروفون..."
       },
       "microphonePriority": {
         "title": "أولوية الميكروفونات",

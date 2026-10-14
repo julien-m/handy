@@ -88,3 +88,11 @@
 - **Commits:** `6c114bc7` (merge), `4c664550`
 - **Proofs:** `proofs/claude-sync/summary.txt`; full cargo test 1133 passed, conventions PASS, progression implement READY
 - **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-14 — [Fix]: UI delivery review, correction round 1 (Step 6)
+
+- **Type:** Fix
+- **Spec modified:** No (the missing Reset control, the "None"/"Default" labels and the position of the Unsaved changes bar are declared deviations; Reset needs a `spec-refine`)
+- **Code modified:** status polling paused while the window is hidden (`status-polling.ts`, `use-microphone-status.ts`); focus kept or moved after Save, Retry, Remove, Discard and Reload (`editor-focus.ts`, views); Add and Save inactive while the settings load and no write without a revision; no phantom draft; interrupted drags cancelled; Unknown after a failed device listing (`settingsStore.ts`); `success` / `error` / `valid` state anchors; three functions brought under 30 lines; 3 orphaned locale keys removed
+- **AC impacted:** AC-001, AC-002, AC-007, SC-003 (automated: 75 bun tests, 15 headless Chromium tests in `tests/microphone-priority.spec.ts`); real-window and native evidence still pending with Julien
+- **Author:** Claude Code (claude-opus-5-5)

@@ -29,7 +29,9 @@ mock.module("@/stores/settingsStore", () => ({ useSettingsStore: () => null }));
 mock.module("sonner", () => ({ toast: {} }));
 mock.module("react-i18next", () => ({ useTranslation: () => ({ t: String }) }));
 const { settleWrite, writePriority } = await import("./use-priority-editor");
-const { EMPTY_DRAFT, editOrder, startSave } = await import("./draft-state");
+const { EMPTY_DRAFT, SAVED_DRAFT, editOrder, startSave } = await import(
+  "./draft-state"
+);
 type Draft = typeof EMPTY_DRAFT;
 
 const conflict: SettingsCommandError = {
@@ -50,6 +52,7 @@ const recorder = () => {
       refreshSettings: async () => void log.push("refreshSettings"),
       refreshStatus: async () => void log.push("refreshStatus"),
       notify: (key: string, kind: string) => void log.push(`${kind}:${key}`),
+      focusStable: () => void log.push("focusStable"),
     },
   };
 };
@@ -80,13 +83,14 @@ describe("save", () => {
     );
   });
 
-  test("success rereads before dropping the draft, then confirms", async () => {
+  test("success rereads before dropping the draft, marks it saved, moves focus, then confirms", async () => {
     const { log, effects } = recorder();
     const holder = draftHolder(editing);
     await settleWrite({ ok: true }, holder.setDraft, effects);
-    expect(holder.current()).toBe(EMPTY_DRAFT);
+    expect(holder.current()).toBe(SAVED_DRAFT);
+    expect(holder.current().savePhase).toBe("saved");
     expect(log.join()).toBe(
-      "refreshSettings,success:settings.sound.microphonePriority.draft.saved,refreshStatus",
+      "refreshSettings,focusStable,success:settings.sound.microphonePriority.draft.saved,refreshStatus",
     );
   });
 
@@ -100,6 +104,7 @@ describe("save", () => {
     expect(JSON.stringify(holder.current().order)).toBe(
       JSON.stringify(["MacBook", "USB headset"]),
     );
+    // The bar stays, so does the focused Save: no focus move.
     expect(log.join()).toBe("refreshSettings");
   });
 
@@ -114,7 +119,7 @@ describe("save", () => {
     await settleWrite({ ok: false, error }, holder.setDraft, effects);
     expect(holder.current()).toBe(EMPTY_DRAFT);
     expect(log.join()).toBe(
-      "refreshSettings,error:errors.settings.committedNotApplied,refreshStatus",
+      "refreshSettings,focusStable,error:errors.settings.committedNotApplied,refreshStatus",
     );
   });
 

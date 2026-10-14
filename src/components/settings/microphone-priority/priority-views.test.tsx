@@ -33,6 +33,7 @@ const list = renderToStaticMarkup(
     busy={false}
     onMove={noop}
     onRemove={noop}
+    onFocusRequest={noop}
   />,
 );
 
@@ -77,6 +78,12 @@ describe("priority list (microphone-settings)", () => {
     expect(has(list, "bg-yellow-500/20 text-yellow-400")).toBe(true);
   });
 
+  test("every row control is a focus target named after its microphone", () => {
+    expect(count(list, "data-focus-key=")).toBe(9);
+    expect(has(list, 'data-focus-key="USB headset\nremove"')).toBe(true);
+    expect(has(list, 'data-focus-key="Studio Display\nup"')).toBe(true);
+  });
+
   test("ranks follow the order", () => {
     expect(has(list, 'data-testid="microphone-settings-choice-rank">1<')).toBe(
       true,
@@ -95,6 +102,7 @@ describe("empty list (microphone-settings-empty)", () => {
       busy={false}
       onMove={noop}
       onRemove={noop}
+      onFocusRequest={noop}
     />,
   );
   test("explains that the system default is used", () => {
@@ -111,6 +119,7 @@ describe("empty list (microphone-settings-empty)", () => {
 const addProps = {
   enumerated: ["USB headset", "MacBook"],
   addError: null,
+  accepted: false,
   busy: false,
   onAdd: noop,
   onOpen: noop,
@@ -146,6 +155,19 @@ describe("Add control", () => {
     expect(
       has(markup, 'data-testid="microphone-settings-error-add-error"'),
     ).toBe(true);
+  });
+
+  test("valid: a corrected choice was added, the control is empty again", () => {
+    const markup = renderToStaticMarkup(<AddControl {...addProps} accepted />);
+    expect(has(markup, 'data-state="valid"')).toBe(true);
+    expect(has(markup, "ring-red-500")).toBe(false);
+    expect(has(markup, `${ROOT}.addPlaceholder`)).toBe(true);
+    expect(has(markup, 'data-focus-key="microphone-priority-add"')).toBe(true);
+  });
+
+  test("busy (write in flight or settings loading): disabled", () => {
+    const markup = renderToStaticMarkup(<AddControl {...addProps} busy />);
+    expect(count(markup, "disabled=")).toBe(1);
   });
 
   test("no device to add: disabled and named by the reason", () => {
@@ -262,7 +284,7 @@ describe("draft feedback", () => {
 
   test("conflict banner (microphone-settings-error)", () => {
     const markup = renderToStaticMarkup(
-      <ConflictAlert visible onReload={noop} />,
+      <ConflictAlert visible busy={false} onReload={noop} />,
     );
     expect(has(markup, 'role="alert"')).toBe(true);
     for (const id of ["conflict", "conflict-title", "reload"]) {
@@ -271,8 +293,20 @@ describe("draft feedback", () => {
       );
     }
     expect(
-      renderToStaticMarkup(<ConflictAlert visible={false} onReload={noop} />),
+      renderToStaticMarkup(
+        <ConflictAlert visible={false} busy={false} onReload={noop} />,
+      ),
     ).toBe("");
+  });
+
+  test("Reload stays focusable but inert while a write is in flight", () => {
+    let reloads = 0;
+    const markup = renderToStaticMarkup(
+      <ConflictAlert visible busy onReload={() => (reloads += 1)} />,
+    );
+    expect(has(markup, 'aria-disabled="true"')).toBe(true);
+    expect(has(markup, " disabled=")).toBe(false);
+    expect(reloads).toBe(0);
   });
 
   test("Save enabled for a valid changed draft", () => {
@@ -291,6 +325,9 @@ describe("draft feedback", () => {
     expect(has(markup, 'data-state="loading"')).toBe(true);
     expect(has(markup, 'aria-busy="true"')).toBe(true);
     expect(has(markup, `${ROOT}.draft.saving`)).toBe(true);
+    // Save keeps focus during the write: inactive through aria-disabled, never `disabled`.
+    expect(has(markup, 'aria-disabled="true" aria-busy="true"')).toBe(true);
+    expect(count(markup, " disabled=")).toBe(1);
   });
 
   test("failed write: error and Retry", () => {

@@ -248,10 +248,7 @@
     "sound": {
       "title": "Son",
       "microphone": {
-        "title": "Microphone",
-        "description": "Sélectionnez votre périphérique d'entrée audio",
-        "placeholder": "Sélectionner un microphone...",
-        "loading": "Chargement..."
+        "placeholder": "Sélectionner un microphone..."
       },
       "microphonePriority": {
         "title": "Priorité des microphones",

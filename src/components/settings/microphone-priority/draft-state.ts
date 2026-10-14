@@ -16,8 +16,8 @@ export interface SavedPriority {
   revision: number | null;
 }
 
-/** Write state of the Save control. */
-export type SavePhase = "idle" | "saving" | "failed";
+/** Write state of the Save control; "saved" marks the editor right after a successful Save. */
+export type SavePhase = "idle" | "saving" | "failed" | "saved";
 
 /** Refused addition: the chosen name stays in the Add control with its message. */
 export interface AddError {
@@ -36,6 +36,8 @@ export interface PriorityDraft {
   savePhase: SavePhase;
   saveError: TranslatedMessage | null;
   addError: AddError | null;
+  /** The last Add choice was accepted (the Add control's "valid" state). */
+  addAccepted: boolean;
 }
 
 export const EMPTY_DRAFT: PriorityDraft = {
@@ -45,6 +47,13 @@ export const EMPTY_DRAFT: PriorityDraft = {
   savePhase: "idle",
   saveError: null,
   addError: null,
+  addAccepted: false,
+};
+
+/** No draft, right after a successful Save (the editor's "success" state until the next edit). */
+export const SAVED_DRAFT: PriorityDraft = {
+  ...EMPTY_DRAFT,
+  savePhase: "saved",
 };
 
 /** Translation namespace of the editor. */
@@ -107,18 +116,32 @@ export const orderError = (
 };
 
 /**
- * Whether Save may dispatch a write.
+ * Revision a Save sends: the one the draft is based on, else the committed one.
  * @param draft editor state
  * @param saved committed priority
- * @returns true for a changed, valid draft with no write in flight
+ * @returns the expected revision, or null while the settings are not loaded
+ */
+export const baseRevision = (
+  draft: PriorityDraft,
+  saved: SavedPriority,
+): number | null => draft.base?.revision ?? saved.revision;
+
+/**
+ * Whether Save may dispatch a write. Without a known revision (settings not loaded yet) nothing
+ * is written: the backend would treat a null revision as an unconditional write.
+ * @param draft editor state
+ * @param saved committed priority
+ * @returns true for a changed, valid draft with a base revision and no write in flight
  */
 export const canSave = (draft: PriorityDraft, saved: SavedPriority): boolean =>
   draft.savePhase !== "saving" &&
+  baseRevision(draft, saved) !== null &&
   isDirty(draft, saved) &&
   orderError(draft.order ?? []) === null;
 
 /**
- * Apply an edited order: the first edit records the committed order it starts from. Edits are
+ * Apply an edited order: the first edit records the committed order it starts from, and an edit
+ * back to the committed order drops the draft (no dirty draft equal to what is saved). Edits are
  * ignored while a write is in flight, so the order being saved is the order shown.
  * @param draft editor state
  * @param saved committed priority
@@ -131,6 +154,7 @@ export const editOrder = (
   next: readonly string[],
 ): PriorityDraft => {
   if (draft.savePhase === "saving") return draft;
+  if (sameOrder(next, saved.order)) return EMPTY_DRAFT;
   return {
     ...draft,
     order: next,
@@ -138,6 +162,7 @@ export const editOrder = (
     savePhase: "idle",
     saveError: null,
     addError: null,
+    addAccepted: false,
   };
 };
 
@@ -202,16 +227,19 @@ export const addChoice = (
   if (draft.savePhase === "saving") return draft;
   const order = shownOrder(draft, saved);
   const message = additionError(order, name);
-  if (message) return { ...draft, addError: { name, message } };
-  return editOrder(draft, saved, [...order, name]);
+  if (message) {
+    return { ...draft, addError: { name, message }, addAccepted: false };
+  }
+  return { ...editOrder(draft, saved, [...order, name]), addAccepted: true };
 };
 
 /**
- * Follow a new committed state while editing. Three cases: the committed order still equals the
- * base (another setting changed), so only the base revision advances; it now equals the draft (our
- * own Save, or the same order saved elsewhere), so nothing conflicts; otherwise the order changed
- * elsewhere, so the draft is kept, the conflict is raised and the base moves to the new revision,
- * which lets a later Save knowingly replace that order.
+ * Follow a new committed state while editing. Three cases: the committed order now equals the
+ * draft (our own Save, an unknown outcome that did commit, or the same order saved elsewhere), so
+ * the draft is dropped, except during the write, which settles it; the committed order still
+ * equals the base (another setting changed), so only the base revision advances; otherwise the
+ * order changed elsewhere, so the draft is kept, the conflict is raised and the base moves to the
+ * new revision, which lets a later Save knowingly replace that order.
  * @param draft editor state
  * @param saved committed priority just read
  * @returns the rebased state
@@ -222,9 +250,12 @@ export const rebaseDraft = (
 ): PriorityDraft => {
   if (draft.order === null || draft.base === null) return draft;
   if (draft.base.revision === saved.revision) return draft;
-  const foreign =
-    !sameOrder(saved.order, draft.base.order) &&
-    !sameOrder(saved.order, draft.order);
+  if (sameOrder(saved.order, draft.order)) {
+    return draft.savePhase === "saving"
+      ? { ...draft, base: saved }
+      : EMPTY_DRAFT;
+  }
+  const foreign = !sameOrder(saved.order, draft.base.order);
   return { ...draft, base: saved, conflict: draft.conflict || foreign };
 };
 

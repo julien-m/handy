@@ -248,10 +248,7 @@
     "sound": {
       "title": "Geluid",
       "microphone": {
-        "title": "Microfoon",
-        "description": "Selecteer de gewenste microfoon",
-        "placeholder": "Microfoon selecteren...",
-        "loading": "Laden..."
+        "placeholder": "Microfoon selecteren..."
       },
       "microphonePriority": {
         "title": "Microfoonprioriteit",

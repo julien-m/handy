@@ -248,10 +248,7 @@
     "sound": {
       "title": "Lyd",
       "microphone": {
-        "title": "Mikrofon",
-        "description": "Vælg din foretrukne mikrofonenhed",
-        "placeholder": "Vælg mikrofon...",
-        "loading": "Indlæser..."
+        "placeholder": "Vælg mikrofon..."
       },
       "microphonePriority": {
         "title": "Mikrofonprioritet",

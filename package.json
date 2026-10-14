@@ -19,6 +19,7 @@
     "test:settings-errors": "bun src/stores/settings-errors.test.ts",
     "test:settings-store": "bun test src/stores/settings-store.test.ts",
     "test:microphone-priority": "bun test src/components/settings/microphone-priority",
+    "test:microphone-priority-ui": "playwright test tests/microphone-priority.spec.ts --reporter=line",
     "test:playwright": "playwright test",
     "test:playwright:ui": "playwright test --ui",
     "check:translations": "bun scripts/check-translations.ts",

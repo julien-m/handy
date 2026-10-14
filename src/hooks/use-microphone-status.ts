@@ -1,7 +1,8 @@
-// Microphone status of the audio settings (feature 001, AC-002): read when the view opens, every
-// 5 seconds while it stays open and on demand (Refresh, Retry). Each read takes a generation
-// ticket and only the newest read may update the view, so a late answer never overwrites a newer
-// one and nothing is applied after the view closes.
+// Microphone status of the audio settings (feature 001, AC-002): read when the view opens or
+// becomes visible again, every 5 seconds while it stays visible (paused while the window is
+// hidden in the tray, see status-polling.ts) and on demand (Refresh, Retry). Each read takes a
+// generation ticket and only the newest read may update the view, so a late answer never
+// overwrites a newer one and nothing is applied after the view is hidden or closes.
 import { useCallback, useEffect, useRef, useState } from "react";
 import { commands, type MicrophoneStatus } from "@/bindings";
 import {
@@ -10,8 +11,13 @@ import {
   mergeStatusRead,
   type StatusView,
 } from "@/components/settings/microphone-priority/availability";
+import {
+  documentVisibility,
+  startStatusPolling,
+  windowClock,
+} from "@/components/settings/microphone-priority/status-polling";
 
-/** Refresh period while the audio settings are open, fixed by AC-002. */
+/** Refresh period while the audio settings are open and visible, fixed by AC-002. */
 export const STATUS_REFRESH_MS = 5000;
 
 /** Status view plus its manual refresh. */
@@ -37,7 +43,7 @@ const readStatus = async (): Promise<MicrophoneStatus | null> => {
 
 /**
  * Keep the microphone status of the open settings view up to date.
- * Side effects: starts a 5 s timer for the lifetime of the calling component.
+ * Side effects: polls every 5 s while the calling component is mounted and the page is visible.
  * @returns the last status view and a manual refresh
  */
 export const useMicrophoneStatus = (): MicrophoneStatusHandle => {
@@ -52,15 +58,18 @@ export const useMicrophoneStatus = (): MicrophoneStatusHandle => {
     setView((previous) => mergeStatusRead(previous, read));
   }, []);
 
-  useEffect(() => {
-    void refresh();
-    const timer = window.setInterval(() => void refresh(), STATUS_REFRESH_MS);
-    return () => {
-      window.clearInterval(timer);
-      // Invalidate the pending read so it is not applied after unmount.
-      fence.current.invalidate();
-    };
-  }, [refresh]);
+  useEffect(
+    () =>
+      // The returned stop function runs on unmount: timer cleared, pending read dropped.
+      startStatusPolling({
+        read: () => void refresh(),
+        invalidate: () => fence.current.invalidate(),
+        clock: windowClock,
+        visibility: documentVisibility,
+        periodMs: STATUS_REFRESH_MS,
+      }),
+    [refresh],
+  );
 
   return { ...view, refresh };
 };

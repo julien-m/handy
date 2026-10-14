@@ -248,10 +248,7 @@
     "sound": {
       "title": "Âm thanh",
       "microphone": {
-        "title": "Micrô",
-        "description": "Chọn thiết bị micrô ưa thích của bạn",
-        "placeholder": "Chọn micrô...",
-        "loading": "Đang tải..."
+        "placeholder": "Chọn micrô..."
       },
       "microphonePriority": {
         "title": "Thứ tự ưu tiên micrô",

@@ -7,6 +7,7 @@ import type { Availability } from "@/bindings";
 import Badge from "../../ui/Badge";
 import { AVAILABILITY_TONE } from "./availability";
 import { PRIORITY_KEY_ROOT } from "./draft-state";
+import { rowFocusKey } from "./editor-focus";
 import type { PointerReorder } from "./use-pointer-reorder";
 
 /** Row control that keeps focus after a keyboard move. */
@@ -72,8 +73,32 @@ const rowState = (props: PriorityRowProps) => {
 type Translate = ReturnType<typeof useTranslation>["t"];
 
 /**
- * Move up, Move down and Remove of one row; the first row cannot move up, the last cannot move
- * down, and nothing acts while a write is in flight.
+ * Move up or Move down of one row; the first row cannot move up, the last cannot move down.
+ * @param props row props
+ * @param t translation function
+ * @param control direction of the move
+ * @returns the control's props
+ */
+const moveSpec = (
+  props: PriorityRowProps,
+  t: Translate,
+  control: RowControl,
+): RowButtonProps => {
+  const { name, index, count, busy } = props;
+  const up = control === "up";
+  const to = up ? index - 1 : index + 1;
+  return {
+    label: t(`${PRIORITY_KEY_ROOT}.${up ? "moveUp" : "moveDown"}`, { name }),
+    testId: `microphone-settings-choice-${up ? "move-up" : "move-down"}`,
+    focusKey: rowFocusKey(name, control),
+    inert: busy || (up ? index === 0 : index === count - 1),
+    onActivate: () => props.onMove(index, to, control),
+    children: up ? <ArrowUp size={14} /> : <ArrowDown size={14} />,
+  };
+};
+
+/**
+ * Move up, Move down and Remove of one row; nothing acts while a write is in flight.
  * @param props row props
  * @param t translation function
  * @returns the three controls, in reading order
@@ -81,38 +106,18 @@ type Translate = ReturnType<typeof useTranslation>["t"];
 const controlSpecs = (
   props: PriorityRowProps,
   t: Translate,
-): RowButtonProps[] => {
-  const { name, index, count, busy } = props;
-  const label = (key: string) => t(`${PRIORITY_KEY_ROOT}.${key}`, { name });
-  const testId = (control: string) => `microphone-settings-choice-${control}`;
-  const move = (to: number, control: RowControl) => ({
-    focusKey: `${name}\n${control}`,
-    onActivate: () => props.onMove(index, to, control),
-  });
-  return [
-    {
-      label: label("moveUp"),
-      testId: testId("move-up"),
-      ...move(index - 1, "up"),
-      inert: busy || index === 0,
-      children: <ArrowUp size={14} />,
-    },
-    {
-      label: label("moveDown"),
-      testId: testId("move-down"),
-      ...move(index + 1, "down"),
-      inert: busy || index === count - 1,
-      children: <ArrowDown size={14} />,
-    },
-    {
-      label: label("remove"),
-      testId: testId("remove"),
-      inert: busy,
-      onActivate: () => props.onRemove(index),
-      children: <X size={14} />,
-    },
-  ];
-};
+): RowButtonProps[] => [
+  moveSpec(props, t, "up"),
+  moveSpec(props, t, "down"),
+  {
+    label: t(`${PRIORITY_KEY_ROOT}.remove`, { name: props.name }),
+    testId: "microphone-settings-choice-remove",
+    focusKey: rowFocusKey(props.name, "remove"),
+    inert: props.busy,
+    onActivate: () => props.onRemove(props.index),
+    children: <X size={14} />,
+  },
+];
 
 /** Controls of one row. */
 const RowControls: React.FC<PriorityRowProps> = (props) => {

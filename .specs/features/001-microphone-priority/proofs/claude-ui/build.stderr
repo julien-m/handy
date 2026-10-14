@@ -1,5 +1,5 @@
 $ tsc && vite build
-(node:72650) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(node:63577) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
 (Use `node --trace-deprecation ...` to show where the warning was created)
 
 (!) Some chunks are larger than 500 kB after minification. Consider:

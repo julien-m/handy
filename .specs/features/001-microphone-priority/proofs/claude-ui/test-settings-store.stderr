@@ -19,7 +19,7 @@ SettingsCommandFailure: Settings operation failed.
 },
 
       at throwIfSettingsError (/Users/julienm/projects/handy-wt/ui-001-microphones/src/stores/settings-errors.ts:124:46)
-      at <anonymous> (/Users/julienm/projects/handy-wt/ui-001-microphones/src/stores/settingsStore.ts:363:11)
+      at <anonymous> (/Users/julienm/projects/handy-wt/ui-001-microphones/src/stores/settingsStore.ts:370:11)
       at async <anonymous> (/Users/julienm/projects/handy-wt/ui-001-microphones/src/stores/settings-store.test.ts:109:11)
 
 Failed to update setting always_on_microphone: 119 |     typeof result === "object" &&
@@ -40,7 +40,7 @@ SettingsCommandFailure: Settings operation is unavailable.
 },
 
       at throwIfSettingsError (/Users/julienm/projects/handy-wt/ui-001-microphones/src/stores/settings-errors.ts:124:46)
-      at <anonymous> (/Users/julienm/projects/handy-wt/ui-001-microphones/src/stores/settingsStore.ts:363:11)
+      at <anonymous> (/Users/julienm/projects/handy-wt/ui-001-microphones/src/stores/settingsStore.ts:370:11)
       at async <anonymous> (/Users/julienm/projects/handy-wt/ui-001-microphones/src/stores/settings-store.test.ts:116:19)
 
 Failed to update setting always_on_microphone: 119 |     typeof result === "object" &&
@@ -61,7 +61,7 @@ SettingsCommandFailure: Settings operation is unavailable.
 },
 
       at throwIfSettingsError (/Users/julienm/projects/handy-wt/ui-001-microphones/src/stores/settings-errors.ts:124:46)
-      at <anonymous> (/Users/julienm/projects/handy-wt/ui-001-microphones/src/stores/settingsStore.ts:363:11)
+      at <anonymous> (/Users/julienm/projects/handy-wt/ui-001-microphones/src/stores/settingsStore.ts:370:11)
       at async <anonymous> (/Users/julienm/projects/handy-wt/ui-001-microphones/src/stores/settings-store.test.ts:129:11)
 
 Failed to update setting return_to_dictation_app: 119 |     typeof result === "object" &&
@@ -82,7 +82,7 @@ SettingsCommandFailure: Setting value is invalid.
 },
 
       at throwIfSettingsError (/Users/julienm/projects/handy-wt/ui-001-microphones/src/stores/settings-errors.ts:124:46)
-      at <anonymous> (/Users/julienm/projects/handy-wt/ui-001-microphones/src/stores/settingsStore.ts:363:11)
+      at <anonymous> (/Users/julienm/projects/handy-wt/ui-001-microphones/src/stores/settingsStore.ts:370:11)
       at async <anonymous> (/Users/julienm/projects/handy-wt/ui-001-microphones/src/stores/settings-store.test.ts:174:26)
 
 Failed to update setting return_to_dictation_app: 119 |     typeof result === "object" &&
@@ -103,11 +103,11 @@ SettingsCommandFailure: Settings operation is unavailable.
 },
 
       at throwIfSettingsError (/Users/julienm/projects/handy-wt/ui-001-microphones/src/stores/settings-errors.ts:124:46)
-      at <anonymous> (/Users/julienm/projects/handy-wt/ui-001-microphones/src/stores/settingsStore.ts:363:11)
+      at <anonymous> (/Users/julienm/projects/handy-wt/ui-001-microphones/src/stores/settingsStore.ts:370:11)
       at async <anonymous> (/Users/julienm/projects/handy-wt/ui-001-microphones/src/stores/settings-store.test.ts:185:19)
 
 
  8 pass
  0 fail
  20 expect() calls
-Ran 8 tests across 1 file. [14.00ms]
+Ran 8 tests across 1 file. [17.00ms]

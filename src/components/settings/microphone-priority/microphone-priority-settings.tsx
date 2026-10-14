@@ -5,7 +5,7 @@
 import React, { createContext, useContext } from "react";
 import { ClamshellRow } from "./clamshell-row";
 import { ConflictAlert, DraftBar } from "./draft-feedback";
-import { orderError } from "./draft-state";
+import { orderError, type SavePhase } from "./draft-state";
 import { EffectiveInputRow } from "./effective-input";
 import { PrioritySection } from "./priority-editor";
 import { usePriorityEditor, type PriorityEditor } from "./use-priority-editor";
@@ -24,9 +24,16 @@ const EditorDraftBar: React.FC<{ editor: PriorityEditor }> = ({ editor }) => (
   />
 );
 
+/** Editor state of the async_action contract: "error" after a failed write, "success" after Save. */
+const EDITOR_STATE: Partial<Record<SavePhase, string>> = {
+  failed: "error",
+  saved: "success",
+};
+
 /**
- * Screen of the microphone priority editor around the Sound group.
- * Side effects: reads the microphone status every 5 s while mounted.
+ * Screen of the microphone priority editor around the Sound group. It holds every focus target
+ * of the editor (SC-003).
+ * Side effects: reads the microphone status every 5 s while mounted and visible.
  * @param props.children the Sound settings group, which renders MicrophonePriorityRows
  */
 export const MicrophonePrioritySettings: React.FC<{
@@ -35,9 +42,15 @@ export const MicrophonePrioritySettings: React.FC<{
   const editor = usePriorityEditor();
   return (
     <EditorContext.Provider value={editor}>
-      <div className="space-y-6" data-testid="microphone-settings-screen">
+      <div
+        ref={editor.focus.rootRef}
+        className="space-y-6"
+        data-testid="microphone-settings-screen"
+        data-state={EDITOR_STATE[editor.draft.savePhase]}
+      >
         <ConflictAlert
           visible={editor.draft.conflict}
+          busy={editor.draft.savePhase === "saving"}
           onReload={() => void editor.reload()}
         />
         <div data-testid="microphone-settings-sound">{children}</div>

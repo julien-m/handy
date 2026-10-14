@@ -8,12 +8,16 @@ import Badge from "../../ui/Badge";
 import { Dropdown } from "../../ui/Dropdown";
 import { secondsSince } from "./availability";
 import { PRIORITY_KEY_ROOT, type AddError } from "./draft-state";
+import { ADD_FOCUS_KEY } from "./editor-focus";
 
 /** Props of the Add control. */
 export interface AddControlProps {
   /** Enumerated device names, or null before the first listing. */
   enumerated: readonly string[] | null;
   addError: AddError | null;
+  /** The last choice was added (state "valid" until the next edit). */
+  accepted: boolean;
+  /** A write is in flight or the settings are not loaded: nothing can be added. */
   busy: boolean;
   onAdd: (name: string) => void;
   onOpen: () => void;
@@ -48,23 +52,35 @@ const LINK_CLASSES =
   "text-sm font-medium text-logo-primary hover:underline cursor-pointer rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-logo-primary";
 
 /**
+ * Visual state of the Add control (has_validation): a refused name is "invalid", an accepted
+ * choice "valid" until the next edit, otherwise "empty".
+ * @param props Add control props
+ * @returns the contract state
+ */
+const addState = (props: AddControlProps): "invalid" | "valid" | "empty" => {
+  if (props.addError !== null) return "invalid";
+  return props.accepted ? "valid" : "empty";
+};
+
+/**
  * Add microphone dropdown. A valid choice is added at once and the control empties again; a
- * duplicate stays shown with a red outline (states: empty, invalid). Without any device to add,
- * the control is disabled and its accessible name says why.
+ * duplicate stays shown with a red outline (states: empty, invalid, valid). Without any device to
+ * add, the control is disabled and its accessible name says why.
  */
 export const AddControl: React.FC<AddControlProps> = (props) => {
   const { t } = useTranslation();
   const names = props.enumerated ?? [];
   const noDevices = props.enumerated !== null && names.length === 0;
-  const invalid = props.addError !== null;
+  const state = addState(props);
   const label = t(
     `${PRIORITY_KEY_ROOT}.${noDevices ? "noDevices" : "addLabel"}`,
   );
   return (
     <div
-      className={`rounded-md ${invalid ? "ring-1 ring-red-500" : ""}`}
+      className={`rounded-md ${state === "invalid" ? "ring-1 ring-red-500" : ""}`}
       data-testid="microphone-settings-add"
-      data-state={invalid ? "invalid" : "empty"}
+      data-state={state}
+      data-focus-key={ADD_FOCUS_KEY}
     >
       <Dropdown
         options={names.map((name) => ({ value: name, label: name }))}

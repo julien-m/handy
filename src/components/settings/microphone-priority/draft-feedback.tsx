@@ -1,5 +1,7 @@
 // Draft feedback of the microphone priority editor (feature 001, AC-007): the "settings changed
-// elsewhere" banner with Reload, and the Unsaved changes bar with Discard and Save.
+// elsewhere" banner with Reload, and the Unsaved changes bar with Discard and Save. Save and Reload
+// are made inactive with aria-disabled rather than disabled, so a control that has focus keeps it
+// while a write runs and when Save turns into Retry (SC-003).
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { AlertTriangle } from "lucide-react";
@@ -13,6 +15,8 @@ import {
 /** Props of the conflict banner. */
 export interface ConflictAlertProps {
   visible: boolean;
+  /** A write is in flight: Reload is inactive until it settles. */
+  busy: boolean;
   onReload: () => void;
 }
 
@@ -26,6 +30,28 @@ export interface DraftBarProps {
   onDiscard: () => void;
   onSave: () => void;
 }
+
+/** Classes of a control made inactive with aria-disabled (the Button styles only `disabled`). */
+const INACTIVE_CLASSES =
+  "aria-disabled:opacity-50 aria-disabled:cursor-not-allowed";
+
+/** Reload of the conflict banner; inactive (still focusable) while a write is in flight. */
+const ReloadButton: React.FC<Omit<ConflictAlertProps, "visible">> = (props) => {
+  const { t } = useTranslation();
+  return (
+    <Button
+      variant="warning"
+      className={INACTIVE_CLASSES}
+      onClick={() => {
+        if (!props.busy) props.onReload();
+      }}
+      aria-disabled={props.busy}
+      data-testid="microphone-settings-error-reload"
+    >
+      {t(`${PRIORITY_KEY_ROOT}.conflict.reload`)}
+    </Button>
+  );
+};
 
 /** The committed order changed elsewhere: the draft is kept until Reload or Save. */
 export const ConflictAlert: React.FC<ConflictAlertProps> = (props) => {
@@ -47,13 +73,7 @@ export const ConflictAlert: React.FC<ConflictAlertProps> = (props) => {
         </p>
         <p>{t(`${PRIORITY_KEY_ROOT}.conflict.body`)}</p>
       </div>
-      <Button
-        variant="warning"
-        onClick={props.onReload}
-        data-testid="microphone-settings-error-reload"
-      >
-        {t(`${PRIORITY_KEY_ROOT}.conflict.reload`)}
-      </Button>
+      <ReloadButton busy={props.busy} onReload={props.onReload} />
     </div>
   );
 };
@@ -87,8 +107,11 @@ const DraftActions: React.FC<DraftBarProps> = (props) => {
       </Button>
       <Button
         variant="primary"
-        onClick={props.onSave}
-        disabled={!props.saveEnabled}
+        className={INACTIVE_CLASSES}
+        onClick={() => {
+          if (props.saveEnabled) props.onSave();
+        }}
+        aria-disabled={!props.saveEnabled}
         aria-busy={saving}
         data-state={save.state}
         data-testid="microphone-settings-save"

@@ -9,6 +9,7 @@ import type { SettingsCommandError } from "@/bindings";
 import {
   EMPTY_DRAFT,
   PRIORITY_KEYS,
+  SAVED_DRAFT,
   addChoice,
   canSave,
   editOrder,
@@ -102,6 +103,42 @@ describe("draft edits", () => {
     expect(canSave(edited([...saved.order]), saved)).toBe(false);
   });
 
+  test("an edit reverted by hand drops the draft (no phantom draft)", () => {
+    const moved = edited(moveChoice(saved.order, 1, 0));
+    const back = editOrder(
+      moved,
+      saved,
+      moveChoice(shownOrder(moved, saved), 1, 0),
+    );
+    expect(back).toBe(EMPTY_DRAFT);
+    const removed = edited(removeChoice(saved.order, 1));
+    expect(addChoice(removed, saved, "MacBook").order).toBe(null);
+  });
+
+  test("nothing is saved before the settings are loaded (no revision)", () => {
+    const unloaded: SavedPriority = { order: [], revision: null };
+    const draft = addChoice(EMPTY_DRAFT, unloaded, "USB headset");
+    expect(json(draft.order)).toBe(json(["USB headset"]));
+    expect(isDirty(draft, unloaded)).toBe(true);
+    expect(canSave(draft, unloaded)).toBe(false);
+  });
+
+  test("Add states: an accepted choice is valid until the next edit", () => {
+    const added = addChoice(EMPTY_DRAFT, saved, "Studio Display");
+    expect(added.addAccepted).toBe(true);
+    expect(addChoice(added, saved, "MacBook").addAccepted).toBe(false);
+    expect(editOrder(added, saved, ["Studio Display"]).addAccepted).toBe(false);
+  });
+
+  test("the saved state lasts until the next edit", () => {
+    expect(SAVED_DRAFT.savePhase).toBe("saved");
+    expect(isDirty(SAVED_DRAFT, saved)).toBe(false);
+    expect(rebaseDraft(SAVED_DRAFT, { ...saved, revision: 8 })).toBe(
+      SAVED_DRAFT,
+    );
+    expect(editOrder(SAVED_DRAFT, saved, ["MacBook"]).savePhase).toBe("idle");
+  });
+
   test("edits are ignored while a write is in flight", () => {
     const saving = startSave(edited(["MacBook"]));
     expect(canSave(saving, saved)).toBe(false);
@@ -122,9 +159,28 @@ describe("revision changes while editing", () => {
     expect(json(rebased.order)).toBe(json(draft.order));
   });
 
-  test("our own Save committed the draft: no conflict", () => {
+  test("our own Save committed the draft: no conflict, the write settles it", () => {
     const next = { order: ["MacBook", "USB headset"], revision: 5 };
-    expect(rebaseDraft(draft, next).conflict).toBe(false);
+    const rebased = rebaseDraft(startSave(draft), next);
+    expect(rebased.conflict).toBe(false);
+    expect(rebased.savePhase).toBe("saving");
+    expect(rebased.base?.revision).toBe(5);
+  });
+
+  test("the same order committed outside a write (unknown outcome that did commit): draft dropped", () => {
+    const unknown = failSave(startSave(draft), refusal({ outcome: "unknown" }));
+    const next = { order: ["MacBook", "USB headset"], revision: 5 };
+    expect(rebaseDraft(unknown, next)).toBe(EMPTY_DRAFT);
+  });
+
+  test("a reverted edit then a foreign change: no conflict, no dirty draft", () => {
+    const moved = edited(moveChoice(saved.order, 1, 0));
+    const reverted = editOrder(moved, saved, [...saved.order]);
+    const foreign = { order: ["C"], revision: 5 };
+    const rebased = rebaseDraft(reverted, foreign);
+    expect(rebased.conflict).toBe(false);
+    expect(isDirty(rebased, foreign)).toBe(false);
+    expect(canSave(rebased, foreign)).toBe(false);
   });
 
   test("the order changed elsewhere: conflict, draft kept, base current", () => {

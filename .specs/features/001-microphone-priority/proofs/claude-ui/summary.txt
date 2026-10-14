@@ -1,17 +1,35 @@
+Delivery review, UI correction round 1 (2026-10-14): every command rerun on the corrected tree.
 exit=0  bun run lint
 exit=0  bun run format:check
 exit=0  bunx --no-install tsc --noEmit
 exit=0  bun run check:translations
 exit=0  bun run build
 exit=0  bun run test:microphone-priority
+exit=0  bun run test:microphone-priority-ui   (= playwright test tests/microphone-priority.spec.ts --reporter=line; new)
 exit=0  bun run test:settings-store
 exit=0  bun run test:settings-errors
 exit=0  bun run test:shortcut-list
 exit=0  bun run test:keyboard
 exit=0  bun test src/components/ui/dropdown-aria.test.tsx
-exit=0  livespec conventions verify --feature repo --json   (verdict=PASS new_count=0 blockers=0 receipt=.specs/conventions/runs/20261014T141438Z/receipt.json; raw output not kept)
+exit=0  livespec conventions verify --feature repo --json   (verdict=PASS new_count=0 blockers=0 receipt=.specs/conventions/runs/20261014T144314Z/receipt.json; raw output not kept)
 
-Feature tests (bun run test:microphone-priority): 54 pass, 0 fail across draft-state.test.ts, availability.test.ts, save-priority.test.ts, priority-views.test.tsx.
+Feature tests (bun run test:microphone-priority): 75 pass, 0 fail across draft-state.test.ts, availability.test.ts,
+  save-priority.test.ts, priority-views.test.tsx, status-polling.test.ts (new: simulated clock and visibility),
+  editor-focus.test.ts (new: focus targets after Remove).
+Browser tests (bun run test:microphone-priority-ui): 15 passed. tests/microphone-priority.spec.ts drives the real editor,
+  settings store and status hook in headless Chromium against a fake Tauri IPC (tests/harness/), served by the Vite dev
+  server of playwright.config.ts: focus after Save busy/Retry/success, Remove (next, previous, Add), keyboard move,
+  Discard, Reload, Reload inactive during a Save; Add/Save inactive while the settings load; Unknown for a draft-only
+  name after a failed device listing; status polling on Playwright's simulated clock (read on open, every 5 s, none
+  while hidden, read on reshow, none after unmount); drags cancelled by window blur, page hidden, lost pointer capture
+  and pointercancel, and an uninterrupted drop.
+Red run on HEAD e9aca1d8 (src/ stashed, same spec before the Save test was split in two): 11 failed, 3 passed (keyboard
+  move, pointercancel and the plain drop already worked) -> test-microphone-priority-ui-red-head.out.
+Regression: test:settings-store 8 pass; test:settings-errors, test:shortcut-list, test:keyboard exit 0; dropdown aria 3 pass.
+No Rust file changed: no cargo test, clippy or cargo fmt run for this round.
+
+Previous run (Step 6 delivery, before the review), kept for history:
+  Feature tests (bun run test:microphone-priority): 54 pass, 0 fail across draft-state.test.ts, availability.test.ts, save-priority.test.ts, priority-views.test.tsx.
 Regression: test:settings-store 8 pass; test:settings-errors, test:shortcut-list, test:keyboard exit 0; dropdown aria 3 pass.
 No Rust file changed: no cargo test, clippy or cargo fmt run for this step.
 
@@ -22,4 +40,6 @@ headless/ — headless Chromium (Playwright 1.58.0, colorScheme dark, deviceScal
   interact.out + drag-drop-target.png: the real PriorityList bundled with `bun build` (harness.tsx)
     and driven by interact.mjs — 13/13 PASS (keyboard reorder keeps focus, Tab order, inert edge
     move, pointer drop-target/dragging states, drop, Escape cancel, Remove), no page errors.
-  Pending, with Julien: the editor in a real Handy window (bun run tauri dev) and native UI acceptance.
+  The headless/ harness predates the onFocusRequest prop of PriorityList; tests/microphone-priority.spec.ts replaces it.
+  Pending, with Julien: the editor in a real Handy window (bun run tauri dev) and native UI acceptance, including
+  document.visibilityState after closing the window to the tray (Web Inspector).

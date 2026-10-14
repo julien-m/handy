@@ -248,10 +248,7 @@
     "sound": {
       "title": "आवाज़",
       "microphone": {
-        "title": "माइक्रोफ़ोन",
-        "description": "अपना पसंदीदा माइक्रोफ़ोन डिवाइस चुनें",
-        "placeholder": "माइक्रोफ़ोन चुनें...",
-        "loading": "लोड हो रहा है..."
+        "placeholder": "माइक्रोफ़ोन चुनें..."
       },
       "microphonePriority": {
         "title": "माइक्रोफ़ोन प्राथमिकता",

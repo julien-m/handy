@@ -248,10 +248,7 @@
     "sound": {
       "title": "So",
       "microphone": {
-        "title": "Micròfon",
-        "description": "Selecciona el micròfon preferit",
-        "placeholder": "Seleccionaun micròfon...",
-        "loading": "S'està carregant..."
+        "placeholder": "Seleccionaun micròfon..."
       },
       "microphonePriority": {
         "title": "Prioritat dels micròfons",

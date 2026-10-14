@@ -248,10 +248,7 @@
     "sound": {
       "title": "Ses",
       "microphone": {
-        "title": "Mikrofon",
-        "description": "Tercih ettiğiniz mikrofon cihazını seçin",
-        "placeholder": "Mikrofon seçin...",
-        "loading": "Yükleniyor..."
+        "placeholder": "Mikrofon seçin..."
       },
       "microphonePriority": {
         "title": "Mikrofon önceliği",

@@ -248,10 +248,7 @@
     "sound": {
       "title": "Som",
       "microphone": {
-        "title": "Microfone",
-        "description": "Selecione seu dispositivo de microfone preferido",
-        "placeholder": "Selecionar microfone...",
-        "loading": "Carregando..."
+        "placeholder": "Selecionar microfone..."
       },
       "microphonePriority": {
         "title": "Prioridade de microfones",

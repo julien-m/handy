@@ -1,13 +1,13 @@
 vite v6.4.1 building for production...
 transforming...
-✓ 2146 modules transformed.
+✓ 2148 modules transformed.
 rendering chunks...
 computing gzip size...
 dist/index.html                       0.48 kB │ gzip:   0.29 kB
 dist/src/overlay/index.html           0.71 kB │ gzip:   0.36 kB
 dist/assets/overlay-D4NMD69W.css      8.26 kB │ gzip:   2.24 kB
-dist/assets/main-BeOdm8uI.css        54.17 kB │ gzip:   9.35 kB
-dist/assets/overlay-F73IEbMY.js       4.45 kB │ gzip:   1.82 kB
-dist/assets/main-_5c7ViRB.js        520.78 kB │ gzip: 163.52 kB
-dist/assets/theme-1kuyuT5B.js     1,164.77 kB │ gzip: 335.65 kB
-✓ built in 2.11s
+dist/assets/main-D7pANGC2.css        54.30 kB │ gzip:   9.38 kB
+dist/assets/overlay-Dy4Rh0jl.js       4.45 kB │ gzip:   1.82 kB
+dist/assets/main-CPdsr5dH.js        523.44 kB │ gzip: 164.41 kB
+dist/assets/theme-qHlxcUge.js     1,161.66 kB │ gzip: 334.73 kB
+✓ built in 2.04s

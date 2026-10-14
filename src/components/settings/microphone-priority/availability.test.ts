@@ -10,6 +10,7 @@ import {
   availabilityOf,
   createReadFence,
   describeEffective,
+  enumeratedNames,
   mergeStatusRead,
   reasonMessage,
   secondsSince,
@@ -72,6 +73,19 @@ describe("availability", () => {
       { index: "1", name: "default", is_default: false },
     ]);
     expect(JSON.stringify(names)).toBe(JSON.stringify(["MacBook", "default"]));
+  });
+
+  test("a failed device listing leaves draft-only names unknown, not unavailable", () => {
+    // After a failed listing the store keeps only the synthetic default entry.
+    const fallback = [{ index: "default", name: "Default", is_default: true }];
+    const enumerated = enumeratedNames(fallback, true);
+    expect(enumerated).toBe(null);
+    expect(availabilityOf("Studio", view, enumerated)).toBe("unknown");
+    expect(availabilityOf("USB headset", view, enumerated)).toBe("unavailable");
+    const listed = enumeratedNames(fallback, false);
+    expect(JSON.stringify(listed)).toBe("[]");
+    expect(availabilityOf("Studio", view, listed)).toBe("unavailable");
+    expect(enumeratedNames([], false)).toBe(null);
   });
 });
 

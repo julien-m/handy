@@ -248,10 +248,7 @@
     "sound": {
       "title": "聲音",
       "microphone": {
-        "title": "麥克風",
-        "description": "選擇您偏好的麥克風裝置",
-        "placeholder": "選擇麥克風...",
-        "loading": "載入中..."
+        "placeholder": "選擇麥克風..."
       },
       "microphonePriority": {
         "title": "麥克風優先順序",

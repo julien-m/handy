@@ -36,6 +36,9 @@ interface SettingsStore {
   isLoading: boolean;
   isUpdating: Record<string, boolean>;
   audioDevices: AudioDevice[];
+  // The last microphone listing failed: `audioDevices` then holds only the synthetic default,
+  // which is not evidence that a device is absent (feature 001, FR-002).
+  audioDevicesFailed: boolean;
   outputDevices: AudioDevice[];
   customSounds: { start: boolean; stop: boolean };
   postProcessModelOptions: Record<string, string[]>;
@@ -237,6 +240,7 @@ export const useSettingsStore = create<SettingsStore>()(
     isLoading: true,
     isUpdating: {},
     audioDevices: [],
+    audioDevicesFailed: false,
     outputDevices: [],
     customSounds: { start: false, stop: false },
     postProcessModelOptions: {},
@@ -295,13 +299,16 @@ export const useSettingsStore = create<SettingsStore>()(
             DEFAULT_AUDIO_DEVICE,
             ...result.data.filter((d) => d.name !== DEFAULT_AUDIO_DEVICE.name),
           ];
-          set({ audioDevices: devicesWithDefault });
+          set({ audioDevices: devicesWithDefault, audioDevicesFailed: false });
         } else {
-          set({ audioDevices: [DEFAULT_AUDIO_DEVICE] });
+          set({
+            audioDevices: [DEFAULT_AUDIO_DEVICE],
+            audioDevicesFailed: true,
+          });
         }
       } catch (error) {
         console.error("Failed to load audio devices:", error);
-        set({ audioDevices: [DEFAULT_AUDIO_DEVICE] });
+        set({ audioDevices: [DEFAULT_AUDIO_DEVICE], audioDevicesFailed: true });
       }
     },
 

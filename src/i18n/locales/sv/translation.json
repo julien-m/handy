@@ -248,10 +248,7 @@
     "sound": {
       "title": "Ljud",
       "microphone": {
-        "title": "Mikrofon",
-        "description": "Välj din föredragna mikrofonenhet",
-        "placeholder": "Välj mikrofon...",
-        "loading": "Laddar..."
+        "placeholder": "Välj mikrofon..."
       },
       "microphonePriority": {
         "title": "Mikrofonprioritet",

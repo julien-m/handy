@@ -17,6 +17,8 @@ import {
   MicrophonePrioritySettings,
 } from "../microphone-priority/microphone-priority-settings";
 
+// Feature 001: the microphone priority editor wraps the Sound group (conflict banner above it,
+// Unsaved changes bar below it); the other Sound rows are unchanged.
 export const GeneralSettings: React.FC = () => {
   const { t } = useTranslation();
   const { audioFeedbackEnabled } = useSettings();
@@ -30,8 +32,6 @@ export const GeneralSettings: React.FC = () => {
         {!isLinux && <ShortcutInput shortcutId="cancel" grouped={true} />}
       </SettingsGroup>
       <ModelSettingsCard />
-      {/* Feature 001: the priority editor wraps the Sound group (conflict banner above it,
-          Unsaved changes bar below it); the other Sound rows are unchanged. */}
       <MicrophonePrioritySettings>
         <SettingsGroup title={t("settings.sound.title")}>
           <MicrophonePriorityRows />

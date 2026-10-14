@@ -248,10 +248,7 @@
     "sound": {
       "title": "Zvuk",
       "microphone": {
-        "title": "Mikrofon",
-        "description": "Vyberte preferované zařízení mikrofonu",
-        "placeholder": "Vyberte mikrofon...",
-        "loading": "Načítání..."
+        "placeholder": "Vyberte mikrofon..."
       },
       "microphonePriority": {
         "title": "Priorita mikrofonů",

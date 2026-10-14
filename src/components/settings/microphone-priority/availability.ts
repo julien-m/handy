@@ -46,6 +46,19 @@ export const addableNames = (devices: readonly AudioDevice[]): string[] =>
     .map((device) => device.name);
 
 /**
+ * Names the editor may classify draft-only choices against. A failed listing is unknown, not an
+ * empty system: the store then keeps only the synthetic default entry.
+ * @param devices enumerated input devices from the store
+ * @param listingFailed whether the last listing failed
+ * @returns the addable names, or null before a successful listing
+ */
+export const enumeratedNames = (
+  devices: readonly AudioDevice[],
+  listingFailed: boolean,
+): string[] | null =>
+  listingFailed || devices.length === 0 ? null : addableNames(devices);
+
+/**
  * Availability of one choice. The status read covers the committed order; a name only in the
  * draft is classified from the enumerated device names (one match available, several ambiguous).
  * @param name configured exact name

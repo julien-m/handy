@@ -1,10 +1,11 @@
 // Microphone priority section of the audio settings (feature 001): title, explanation, the
-// ordered list with availability, the Add and Clear controls and the availability check line.
+// ordered list with availability, the Add control and the availability check line.
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { SettingContainer } from "../../ui/SettingContainer";
 import { availabilityOf } from "./availability";
 import { PRIORITY_KEY_ROOT } from "./draft-state";
+import { STABLE_FOCUS_KEY } from "./editor-focus";
 import { AddControl, AddErrorText, CheckLine } from "./priority-controls";
 import { PriorityList } from "./priority-list";
 import type { PriorityEditor } from "./use-priority-editor";
@@ -29,7 +30,8 @@ const EditorAddControl: React.FC<PrioritySectionProps> = ({ editor }) => (
   <AddControl
     enumerated={editor.enumerated}
     addError={editor.draft.addError}
-    busy={editor.draft.savePhase === "saving"}
+    accepted={editor.draft.addAccepted}
+    busy={editor.loading || editor.draft.savePhase === "saving"}
     onAdd={editor.add}
     onOpen={() => void editor.refreshAll()}
   />
@@ -58,6 +60,7 @@ const EditorList: React.FC<PrioritySectionProps> = ({ editor }) => {
       busy={editor.draft.savePhase === "saving"}
       onMove={editor.move}
       onRemove={editor.remove}
+      onFocusRequest={editor.focus.request}
     />
   );
 };
@@ -78,6 +81,7 @@ export const PrioritySection: React.FC<PrioritySectionProps> = ({ editor }) => {
       grouped={true}
       testId="microphone-settings-priority"
       titleTestId="microphone-settings-priority-title"
+      titleFocusKey={STABLE_FOCUS_KEY}
     >
       <div className="space-y-3">
         <EditorList editor={editor} />
