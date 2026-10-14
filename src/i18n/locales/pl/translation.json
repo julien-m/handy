@@ -755,7 +755,51 @@
     "transcribing": "Transkrypcja...",
     "processing": "Przetwarzanie...",
     "loadingModel": "Wczytywanie modelu...",
-    "fallbackNotice": "Przetwarzanie przez AI nie powiodło się. Użyto oryginalnego tekstu."
+    "fallbackNotice": "Przetwarzanie przez AI nie powiodło się. Użyto oryginalnego tekstu.",
+    "destination": {
+      "label": "Cel: {{name}}",
+      "frontmostApp": "Aplikacja na pierwszym planie",
+      "remove": "Usuń cel",
+      "unknownApp": "Aplikacja docelowa",
+      "choiceFailed": "Nie udało się zmienić celu.",
+      "menu": {
+        "title": "Cel tego dyktowania",
+        "frontmostNow": "Teraz na pierwszym planie",
+        "otherApps": "Inne aplikacje",
+        "frontmostAtEnd": "Aplikacja na pierwszym planie na końcu",
+        "loading": "Wczytywanie aplikacji…",
+        "failed": "Nie udało się wczytać listy aplikacji."
+      },
+      "refused": {
+        "stale": "Cel zmienił się w międzyczasie; lista została odświeżona.",
+        "frozen": "Wstawianie już się rozpoczęło; celu nie można już zmienić.",
+        "unavailable": "Ta aplikacja nie jest już dostępna; lista została odświeżona."
+      },
+      "notice": {
+        "appClosedKept": "{{app}} jest zamknięta. Nic nie wstawiono; transkrypcja jest zachowana w Historii.",
+        "appClosedNotKept": "{{app}} jest zamknięta. Nic nie wstawiono, a transkrypcji nie udało się zapisać w Historii.",
+        "activationFailedKept": "{{app}} nie przeszła na pierwszy plan. Nic nie wstawiono; transkrypcja jest zachowana w Historii.",
+        "activationFailedNotKept": "{{app}} nie przeszła na pierwszy plan. Nic nie wstawiono, a transkrypcji nie udało się zapisać w Historii.",
+        "insertionFailedKept": "{{app}} mogła nie otrzymać tekstu; transkrypcja jest zachowana w Historii.",
+        "insertionFailedNotKept": "{{app}} mogła nie otrzymać tekstu, a transkrypcji nie udało się zapisać w Historii."
+      }
+    },
+    "prompt": {
+      "label": "Prompt tego dyktowania: {{name}}",
+      "hint": "Najedź kursorem, aby zobaczyć opcje",
+      "none": "Brak (bez przetwarzania przez AI)",
+      "menuTitle": "Prompt tego dyktowania",
+      "note": "Dotyczy tylko tego dyktowania. Domyślnym pozostaje {{name}}.",
+      "loading": "Wczytywanie promptów…",
+      "failed": "Nie udało się wczytać promptów.",
+      "choiceFailed": "Nie udało się zmienić promptu.",
+      "refused": {
+        "sessionEnded": "Nagrywanie się zakończyło; promptu nie można już zmienić.",
+        "processingOff": "Przetwarzanie przez AI jest wyłączone dla tego dyktowania.",
+        "promptMissing": "Ten prompt już nie istnieje.",
+        "promptNotUsable": "Ten prompt zawiera błędy; najpierw go popraw w ustawieniach."
+      }
+    }
   },
   "whatsNew": {
     "title": "Nowości w Handy v{{version}}"

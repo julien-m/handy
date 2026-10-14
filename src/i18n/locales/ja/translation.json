@@ -755,7 +755,51 @@
     "transcribing": "文字起こし中…",
     "processing": "処理中…",
     "loadingModel": "モデルを読み込み中…",
-    "fallbackNotice": "AI 処理に失敗しました。元のテキストを使用しました。"
+    "fallbackNotice": "AI 処理に失敗しました。元のテキストを使用しました。",
+    "destination": {
+      "label": "挿入先: {{name}}",
+      "frontmostApp": "最前面のアプリ",
+      "remove": "挿入先を解除",
+      "unknownApp": "挿入先のアプリ",
+      "choiceFailed": "挿入先を変更できませんでした。",
+      "menu": {
+        "title": "この音声入力の挿入先",
+        "frontmostNow": "現在最前面",
+        "otherApps": "その他のアプリ",
+        "frontmostAtEnd": "終了時に最前面のアプリ",
+        "loading": "アプリを読み込み中…",
+        "failed": "アプリの一覧を読み込めませんでした。"
+      },
+      "refused": {
+        "stale": "その間に挿入先が変わりました。一覧を更新しました。",
+        "frozen": "挿入が始まったため、挿入先は変更できません。",
+        "unavailable": "このアプリは利用できなくなりました。一覧を更新しました。"
+      },
+      "notice": {
+        "appClosedKept": "{{app}} は終了しています。何も挿入されていません。文字起こしは履歴に保存されています。",
+        "appClosedNotKept": "{{app}} は終了しています。何も挿入されておらず、文字起こしを履歴に保存できませんでした。",
+        "activationFailedKept": "{{app}} が最前面になりませんでした。何も挿入されていません。文字起こしは履歴に保存されています。",
+        "activationFailedNotKept": "{{app}} が最前面になりませんでした。何も挿入されておらず、文字起こしを履歴に保存できませんでした。",
+        "insertionFailedKept": "{{app}} がテキストを受け取っていない可能性があります。文字起こしは履歴に保存されています。",
+        "insertionFailedNotKept": "{{app}} がテキストを受け取っていない可能性があり、文字起こしを履歴に保存できませんでした。"
+      }
+    },
+    "prompt": {
+      "label": "この音声入力のプロンプト: {{name}}",
+      "hint": "ポインタを合わせるとオプションを表示",
+      "none": "なし (AI 処理なし)",
+      "menuTitle": "この音声入力のプロンプト",
+      "note": "この音声入力にのみ適用されます。デフォルトは {{name}} のままです。",
+      "loading": "プロンプトを読み込み中…",
+      "failed": "プロンプトを読み込めませんでした。",
+      "choiceFailed": "プロンプトを変更できませんでした。",
+      "refused": {
+        "sessionEnded": "録音が終了したため、プロンプトは変更できません。",
+        "processingOff": "この音声入力では AI 処理がオフです。",
+        "promptMissing": "このプロンプトはもう存在しません。",
+        "promptNotUsable": "このプロンプトには問題があります。先に設定で編集してください。"
+      }
+    }
   },
   "whatsNew": {
     "title": "Handy v{{version}} の新機能"

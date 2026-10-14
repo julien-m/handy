@@ -755,7 +755,51 @@
     "transcribing": "正在轉錄...",
     "processing": "處理中...",
     "loadingModel": "正在載入模型...",
-    "fallbackNotice": "AI 處理失敗。已使用原始文字。"
+    "fallbackNotice": "AI 處理失敗。已使用原始文字。",
+    "destination": {
+      "label": "目標：{{name}}",
+      "frontmostApp": "最前方的 App",
+      "remove": "移除目標",
+      "unknownApp": "目標 App",
+      "choiceFailed": "無法變更目標。",
+      "menu": {
+        "title": "本次聽寫的目標",
+        "frontmostNow": "目前在最前方",
+        "otherApps": "其他 App",
+        "frontmostAtEnd": "結束時最前方的 App",
+        "loading": "正在載入 App…",
+        "failed": "無法載入 App 列表。"
+      },
+      "refused": {
+        "stale": "目標在這段期間已變更；列表已重新整理。",
+        "frozen": "插入已開始；目標無法再變更。",
+        "unavailable": "此 App 已無法使用；列表已重新整理。"
+      },
+      "notice": {
+        "appClosedKept": "{{app}} 已關閉。未插入任何內容；轉錄文字保留在歷史紀錄中。",
+        "appClosedNotKept": "{{app}} 已關閉。未插入任何內容，且轉錄文字無法儲存到歷史紀錄。",
+        "activationFailedKept": "{{app}} 未切換到最前方。未插入任何內容；轉錄文字保留在歷史紀錄中。",
+        "activationFailedNotKept": "{{app}} 未切換到最前方。未插入任何內容，且轉錄文字無法儲存到歷史紀錄。",
+        "insertionFailedKept": "{{app}} 可能未收到文字；轉錄文字保留在歷史紀錄中。",
+        "insertionFailedNotKept": "{{app}} 可能未收到文字，且轉錄文字無法儲存到歷史紀錄。"
+      }
+    },
+    "prompt": {
+      "label": "本次聽寫的提示詞：{{name}}",
+      "hint": "游標移到上方即可查看選項",
+      "none": "無（不進行 AI 處理）",
+      "menuTitle": "本次聽寫的提示詞",
+      "note": "僅適用於本次聽寫。預設仍為 {{name}}。",
+      "loading": "正在載入提示詞…",
+      "failed": "無法載入提示詞。",
+      "choiceFailed": "無法變更提示詞。",
+      "refused": {
+        "sessionEnded": "錄音已停止；提示詞無法再變更。",
+        "processingOff": "本次聽寫已關閉 AI 處理。",
+        "promptMissing": "此提示詞已不存在。",
+        "promptNotUsable": "此提示詞有問題；請先在設定中編輯。"
+      }
+    }
   },
   "whatsNew": {
     "title": "Handy v{{version}} 新功能"

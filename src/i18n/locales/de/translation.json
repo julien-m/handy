@@ -755,7 +755,51 @@
     "transcribing": "Transkribiere...",
     "processing": "Verarbeite...",
     "loadingModel": "Modell wird geladen...",
-    "fallbackNotice": "Die KI-Verarbeitung ist fehlgeschlagen. Der Originaltext wurde verwendet."
+    "fallbackNotice": "Die KI-Verarbeitung ist fehlgeschlagen. Der Originaltext wurde verwendet.",
+    "destination": {
+      "label": "Ziel: {{name}}",
+      "frontmostApp": "App im Vordergrund",
+      "remove": "Ziel entfernen",
+      "unknownApp": "Die Ziel-App",
+      "choiceFailed": "Das Ziel konnte nicht geändert werden.",
+      "menu": {
+        "title": "Ziel dieses Diktats",
+        "frontmostNow": "Jetzt im Vordergrund",
+        "otherApps": "Andere Apps",
+        "frontmostAtEnd": "App im Vordergrund am Ende",
+        "loading": "Apps werden geladen…",
+        "failed": "Die App-Liste konnte nicht geladen werden."
+      },
+      "refused": {
+        "stale": "Das Ziel hat sich inzwischen geändert; die Liste wurde aktualisiert.",
+        "frozen": "Das Einfügen hat begonnen; das Ziel kann nicht mehr geändert werden.",
+        "unavailable": "Diese App ist nicht mehr verfügbar; die Liste wurde aktualisiert."
+      },
+      "notice": {
+        "appClosedKept": "{{app}} ist geschlossen. Es wurde nichts eingefügt; das Transkript bleibt im Verlauf.",
+        "appClosedNotKept": "{{app}} ist geschlossen. Es wurde nichts eingefügt, und das Transkript konnte nicht im Verlauf gespeichert werden.",
+        "activationFailedKept": "{{app}} kam nicht in den Vordergrund. Es wurde nichts eingefügt; das Transkript bleibt im Verlauf.",
+        "activationFailedNotKept": "{{app}} kam nicht in den Vordergrund. Es wurde nichts eingefügt, und das Transkript konnte nicht im Verlauf gespeichert werden.",
+        "insertionFailedKept": "{{app}} hat den Text möglicherweise nicht erhalten; das Transkript bleibt im Verlauf.",
+        "insertionFailedNotKept": "{{app}} hat den Text möglicherweise nicht erhalten, und das Transkript konnte nicht im Verlauf gespeichert werden."
+      }
+    },
+    "prompt": {
+      "label": "Prompt für dieses Diktat: {{name}}",
+      "hint": "Zum Anzeigen der Optionen darüberfahren",
+      "none": "Keiner (keine KI-Verarbeitung)",
+      "menuTitle": "Prompt für dieses Diktat",
+      "note": "Gilt nur für dieses Diktat. Standard bleibt {{name}}.",
+      "loading": "Prompts werden geladen…",
+      "failed": "Die Prompts konnten nicht geladen werden.",
+      "choiceFailed": "Der Prompt konnte nicht geändert werden.",
+      "refused": {
+        "sessionEnded": "Die Aufnahme ist beendet; der Prompt kann nicht mehr geändert werden.",
+        "processingOff": "Die KI-Verarbeitung ist für dieses Diktat aus.",
+        "promptMissing": "Dieser Prompt existiert nicht mehr.",
+        "promptNotUsable": "Dieser Prompt hat Fehler; bearbeite ihn zuerst in den Einstellungen."
+      }
+    }
   },
   "whatsNew": {
     "title": "Neu in Handy v{{version}}"

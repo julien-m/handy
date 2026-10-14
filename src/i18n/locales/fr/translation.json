@@ -755,7 +755,51 @@
     "transcribing": "Transcription...",
     "processing": "Traitement...",
     "loadingModel": "Chargement du modèle...",
-    "fallbackNotice": "Le traitement par l'IA a échoué. Le texte original a été utilisé."
+    "fallbackNotice": "Le traitement par l'IA a échoué. Le texte original a été utilisé.",
+    "destination": {
+      "label": "Destination : {{name}}",
+      "frontmostApp": "App au premier plan",
+      "remove": "Retirer la destination",
+      "unknownApp": "L'app de destination",
+      "choiceFailed": "La destination n'a pas pu être modifiée.",
+      "menu": {
+        "title": "Destination de cette dictée",
+        "frontmostNow": "Au premier plan maintenant",
+        "otherApps": "Autres apps",
+        "frontmostAtEnd": "App au premier plan à la fin",
+        "loading": "Chargement des apps…",
+        "failed": "La liste des apps n'a pas pu être chargée."
+      },
+      "refused": {
+        "stale": "La destination a changé entre-temps ; la liste a été actualisée.",
+        "frozen": "L'insertion a commencé ; la destination ne peut plus changer.",
+        "unavailable": "Cette app n'est plus disponible ; la liste a été actualisée."
+      },
+      "notice": {
+        "appClosedKept": "{{app}} est fermée. Rien n'a été inséré ; la transcription est conservée dans l'Historique.",
+        "appClosedNotKept": "{{app}} est fermée. Rien n'a été inséré, et la transcription n'a pas pu être enregistrée dans l'Historique.",
+        "activationFailedKept": "{{app}} n'est pas passée au premier plan. Rien n'a été inséré ; la transcription est conservée dans l'Historique.",
+        "activationFailedNotKept": "{{app}} n'est pas passée au premier plan. Rien n'a été inséré, et la transcription n'a pas pu être enregistrée dans l'Historique.",
+        "insertionFailedKept": "{{app}} n'a peut-être pas reçu le texte ; la transcription est conservée dans l'Historique.",
+        "insertionFailedNotKept": "{{app}} n'a peut-être pas reçu le texte, et la transcription n'a pas pu être enregistrée dans l'Historique."
+      }
+    },
+    "prompt": {
+      "label": "Prompt de cette dictée : {{name}}",
+      "hint": "Survolez pour voir les options",
+      "none": "Aucun (sans traitement IA)",
+      "menuTitle": "Prompt de cette dictée",
+      "note": "S'applique à cette dictée uniquement. Le prompt par défaut reste {{name}}.",
+      "loading": "Chargement des prompts…",
+      "failed": "Les prompts n'ont pas pu être chargés.",
+      "choiceFailed": "Le prompt n'a pas pu être modifié.",
+      "refused": {
+        "sessionEnded": "L'enregistrement est terminé ; le prompt ne peut plus changer.",
+        "processingOff": "Le traitement IA est désactivé pour cette dictée.",
+        "promptMissing": "Ce prompt n'existe plus.",
+        "promptNotUsable": "Ce prompt comporte des erreurs ; modifiez-le d'abord dans les réglages."
+      }
+    }
   },
   "whatsNew": {
     "title": "Nouveautés de Handy v{{version}}"

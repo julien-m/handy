@@ -758,7 +758,51 @@
     "transcribing": "Mentranskripsikan...",
     "processing": "Memproses...",
     "loadingModel": "Memuat model...",
-    "fallbackNotice": "Pemrosesan AI gagal. Teks asli yang digunakan."
+    "fallbackNotice": "Pemrosesan AI gagal. Teks asli yang digunakan.",
+    "destination": {
+      "label": "Tujuan: {{name}}",
+      "frontmostApp": "Aplikasi di depan",
+      "remove": "Hapus tujuan",
+      "unknownApp": "Aplikasi tujuan",
+      "choiceFailed": "Tujuan tidak dapat diubah.",
+      "menu": {
+        "title": "Tujuan dikte ini",
+        "frontmostNow": "Di depan sekarang",
+        "otherApps": "Aplikasi lain",
+        "frontmostAtEnd": "Aplikasi di depan saat selesai",
+        "loading": "Memuat aplikasi…",
+        "failed": "Daftar aplikasi tidak dapat dimuat."
+      },
+      "refused": {
+        "stale": "Tujuan berubah sementara itu; daftar telah diperbarui.",
+        "frozen": "Penyisipan sudah dimulai; tujuan tidak dapat diubah lagi.",
+        "unavailable": "Aplikasi ini tidak tersedia lagi; daftar telah diperbarui."
+      },
+      "notice": {
+        "appClosedKept": "{{app}} tertutup. Tidak ada yang disisipkan; transkrip disimpan di Riwayat.",
+        "appClosedNotKept": "{{app}} tertutup. Tidak ada yang disisipkan, dan transkrip tidak dapat disimpan di Riwayat.",
+        "activationFailedKept": "{{app}} tidak muncul di depan. Tidak ada yang disisipkan; transkrip disimpan di Riwayat.",
+        "activationFailedNotKept": "{{app}} tidak muncul di depan. Tidak ada yang disisipkan, dan transkrip tidak dapat disimpan di Riwayat.",
+        "insertionFailedKept": "{{app}} mungkin tidak menerima teks; transkrip disimpan di Riwayat.",
+        "insertionFailedNotKept": "{{app}} mungkin tidak menerima teks, dan transkrip tidak dapat disimpan di Riwayat."
+      }
+    },
+    "prompt": {
+      "label": "Prompt untuk dikte ini: {{name}}",
+      "hint": "Arahkan kursor untuk melihat opsi",
+      "none": "Tidak ada (tanpa pemrosesan AI)",
+      "menuTitle": "Prompt untuk dikte ini",
+      "note": "Hanya berlaku untuk dikte ini. Bawaan tetap {{name}}.",
+      "loading": "Memuat prompt…",
+      "failed": "Prompt tidak dapat dimuat.",
+      "choiceFailed": "Prompt tidak dapat diubah.",
+      "refused": {
+        "sessionEnded": "Perekaman sudah berhenti; prompt tidak dapat diubah lagi.",
+        "processingOff": "Pemrosesan AI nonaktif untuk dikte ini.",
+        "promptMissing": "Prompt ini sudah tidak ada.",
+        "promptNotUsable": "Prompt ini bermasalah; edit dulu di pengaturan."
+      }
+    }
   },
   "secureInput": {
     "blockedWithCulprit_one": "{{name}} mungkin memblokir 1 pintasan",

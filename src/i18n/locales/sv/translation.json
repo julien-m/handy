@@ -755,7 +755,51 @@
     "transcribing": "Transkriberar...",
     "processing": "Bearbetar...",
     "loadingModel": "Laddar modell...",
-    "fallbackNotice": "AI-bearbetningen misslyckades. Originaltexten användes."
+    "fallbackNotice": "AI-bearbetningen misslyckades. Originaltexten användes.",
+    "destination": {
+      "label": "Mål: {{name}}",
+      "frontmostApp": "App i förgrunden",
+      "remove": "Ta bort mål",
+      "unknownApp": "Målappen",
+      "choiceFailed": "Målet kunde inte ändras.",
+      "menu": {
+        "title": "Mål för den här dikteringen",
+        "frontmostNow": "I förgrunden nu",
+        "otherApps": "Andra appar",
+        "frontmostAtEnd": "App i förgrunden vid slutet",
+        "loading": "Läser in appar…",
+        "failed": "Listan över appar kunde inte läsas in."
+      },
+      "refused": {
+        "stale": "Målet ändrades under tiden; listan har uppdaterats.",
+        "frozen": "Infogningen har börjat; målet kan inte längre ändras.",
+        "unavailable": "Den här appen är inte längre tillgänglig; listan har uppdaterats."
+      },
+      "notice": {
+        "appClosedKept": "{{app}} är stängd. Inget infogades; transkriptionen finns kvar i Historik.",
+        "appClosedNotKept": "{{app}} är stängd. Inget infogades, och transkriptionen kunde inte sparas i Historik.",
+        "activationFailedKept": "{{app}} kom inte till förgrunden. Inget infogades; transkriptionen finns kvar i Historik.",
+        "activationFailedNotKept": "{{app}} kom inte till förgrunden. Inget infogades, och transkriptionen kunde inte sparas i Historik.",
+        "insertionFailedKept": "{{app}} kanske inte tog emot texten; transkriptionen finns kvar i Historik.",
+        "insertionFailedNotKept": "{{app}} kanske inte tog emot texten, och transkriptionen kunde inte sparas i Historik."
+      }
+    },
+    "prompt": {
+      "label": "Prompt för den här dikteringen: {{name}}",
+      "hint": "Håll pekaren över för att se alternativen",
+      "none": "Ingen (ingen AI-bearbetning)",
+      "menuTitle": "Prompt för den här dikteringen",
+      "note": "Gäller bara den här dikteringen. Standard förblir {{name}}.",
+      "loading": "Läser in prompter…",
+      "failed": "Prompterna kunde inte läsas in.",
+      "choiceFailed": "Prompten kunde inte ändras.",
+      "refused": {
+        "sessionEnded": "Inspelningen har stoppats; prompten kan inte längre ändras.",
+        "processingOff": "AI-bearbetning är avstängd för den här dikteringen.",
+        "promptMissing": "Den här prompten finns inte längre.",
+        "promptNotUsable": "Den här prompten har fel; redigera den först i inställningarna."
+      }
+    }
   },
   "whatsNew": {
     "title": "Nytt i Handy v{{version}}"

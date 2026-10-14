@@ -755,7 +755,51 @@
     "transcribing": "Trascrizione...",
     "processing": "Elaborazione...",
     "loadingModel": "Caricamento del modello...",
-    "fallbackNotice": "L'elaborazione con l'IA non è riuscita. È stato usato il testo originale."
+    "fallbackNotice": "L'elaborazione con l'IA non è riuscita. È stato usato il testo originale.",
+    "destination": {
+      "label": "Destinazione: {{name}}",
+      "frontmostApp": "App in primo piano",
+      "remove": "Rimuovi destinazione",
+      "unknownApp": "L'app di destinazione",
+      "choiceFailed": "Impossibile cambiare la destinazione.",
+      "menu": {
+        "title": "Destinazione di questa dettatura",
+        "frontmostNow": "In primo piano ora",
+        "otherApps": "Altre app",
+        "frontmostAtEnd": "App in primo piano alla fine",
+        "loading": "Caricamento delle app…",
+        "failed": "Impossibile caricare l'elenco delle app."
+      },
+      "refused": {
+        "stale": "La destinazione è cambiata nel frattempo; l'elenco è stato aggiornato.",
+        "frozen": "L'inserimento è iniziato; la destinazione non può più cambiare.",
+        "unavailable": "Questa app non è più disponibile; l'elenco è stato aggiornato."
+      },
+      "notice": {
+        "appClosedKept": "{{app}} è chiusa. Non è stato inserito nulla; la trascrizione è conservata nella Cronologia.",
+        "appClosedNotKept": "{{app}} è chiusa. Non è stato inserito nulla e non è stato possibile salvare la trascrizione nella Cronologia.",
+        "activationFailedKept": "{{app}} non è passata in primo piano. Non è stato inserito nulla; la trascrizione è conservata nella Cronologia.",
+        "activationFailedNotKept": "{{app}} non è passata in primo piano. Non è stato inserito nulla e non è stato possibile salvare la trascrizione nella Cronologia.",
+        "insertionFailedKept": "{{app}} potrebbe non aver ricevuto il testo; la trascrizione è conservata nella Cronologia.",
+        "insertionFailedNotKept": "{{app}} potrebbe non aver ricevuto il testo e non è stato possibile salvare la trascrizione nella Cronologia."
+      }
+    },
+    "prompt": {
+      "label": "Prompt di questa dettatura: {{name}}",
+      "hint": "Passa il puntatore per vedere le opzioni",
+      "none": "Nessuno (nessuna elaborazione IA)",
+      "menuTitle": "Prompt di questa dettatura",
+      "note": "Vale solo per questa dettatura. Il predefinito resta {{name}}.",
+      "loading": "Caricamento dei prompt…",
+      "failed": "Impossibile caricare i prompt.",
+      "choiceFailed": "Impossibile cambiare il prompt.",
+      "refused": {
+        "sessionEnded": "La registrazione è terminata; il prompt non può più cambiare.",
+        "processingOff": "L'elaborazione IA è disattivata per questa dettatura.",
+        "promptMissing": "Questo prompt non esiste più.",
+        "promptNotUsable": "Questo prompt contiene errori; modificalo prima nelle impostazioni."
+      }
+    }
   },
   "whatsNew": {
     "title": "Novità in Handy v{{version}}"

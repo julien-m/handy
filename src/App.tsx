@@ -27,7 +27,7 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 import { Sidebar, SidebarSection, SECTIONS_CONFIG } from "./components/Sidebar";
 import { WhatsNewGate } from "./components/whats-new";
 import { useSettings } from "./hooks/useSettings";
-import { useSmartPasteHandOver } from "./hooks/use-smart-paste-hand-over";
+import { useOverlayNoneNotices } from "./hooks/use-overlay-none-notices";
 import { useSettingsStore } from "./stores/settingsStore";
 import { commands } from "@/bindings";
 import { getLanguageDirection, initializeRTL } from "@/lib/utils/rtl";
@@ -64,7 +64,7 @@ function App() {
   const [currentSection, setCurrentSection] =
     useState<SidebarSection>("general");
   const { settings, updateSetting } = useSettings();
-  useSmartPasteHandOver();
+  useOverlayNoneNotices(settings?.overlay_style);
   const direction = getLanguageDirection(i18n.language);
   const refreshAudioDevices = useSettingsStore(
     (state) => state.refreshAudioDevices,
