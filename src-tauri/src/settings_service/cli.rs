@@ -253,7 +253,7 @@ fn prompt_options(action: &PromptsAction) -> ChangeOptions {
         | PromptsAction::Update { options, .. }
         | PromptsAction::Delete { options, .. }
         | PromptsAction::SetDefault { options, .. }
-        | PromptsAction::SetProviderOverride { options, .. } => options.clone(),
+        | PromptsAction::SetProviderOverride { options, .. } => *options,
     }
 }
 /// `create NAME [TEXT]`: the text is omitted when it comes from stdin.
