@@ -192,3 +192,11 @@ AppKit caching and delayed AX mutation counterexamples remain explicit: callback
 - **AC impacted:** AC-010, AC-012, AC-013, AC-018 through dictation; AC-016 procedure written (implemented behind the gate, certification pending)
 - **Author:** Claude Opus 5.5 (implementation agent, step 7 run)
 - **Notes:** Smart paste is 006's `InsertionPort` (`dispatch(guard)`): the first guard check builds the context, 006's guard is registered for every later destination check of the actor, and the terminal `PasteOutcome` becomes `method_outcome`, status and disposition. Without a 006 session it inserts into the application in front through the same live foreground source. `smart-paste-dispatch` stays closed by default: closed, dictation is identical to `dev`. The four gate combinations, the exit settlement, the Enter (009) and late-read (010) hooks and the Screen Sharing toast are described in [the rollout gates](implementation.md#rollout-gates); the AC-016 matrix is [a procedure for Julien](implementation.md#native-acceptance-procedure-ac-016-with-julien), not run. Proofs: [claude-step7](proofs/claude-step7/).
+
+## 2026-10-14 — [Feature]: Hand-over message on the recording indicator (UI pass)
+
+- **Type:** Feature
+- **Spec modified:** No
+- **Code modified:** src/overlay/* (notices), src/hooks/use-overlay-none-notices.ts (replaces use-smart-paste-hand-over.ts), App.tsx, smart_paste/app.rs (comment)
+- **AC impacted:** AC-012 (presentation); browser-tested, native proof pending
+- **Author:** Claude Code (UI pass, feature/ui-overlay 69a6ee73)

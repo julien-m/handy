@@ -755,7 +755,51 @@
     "transcribing": "正在转录...",
     "processing": "处理中...",
     "loadingModel": "正在加载模型...",
-    "fallbackNotice": "AI 处理失败。已使用原始文本。"
+    "fallbackNotice": "AI 处理失败。已使用原始文本。",
+    "destination": {
+      "label": "目标：{{name}}",
+      "frontmostApp": "最前面的应用",
+      "remove": "移除目标",
+      "unknownApp": "目标应用",
+      "choiceFailed": "无法更改目标。",
+      "menu": {
+        "title": "本次听写的目标",
+        "frontmostNow": "当前最前面",
+        "otherApps": "其他应用",
+        "frontmostAtEnd": "结束时最前面的应用",
+        "loading": "正在加载应用…",
+        "failed": "无法加载应用列表。"
+      },
+      "refused": {
+        "stale": "目标在此期间已更改；列表已刷新。",
+        "frozen": "插入已开始；目标无法再更改。",
+        "unavailable": "此应用已不可用；列表已刷新。"
+      },
+      "notice": {
+        "appClosedKept": "{{app}} 已关闭。未插入任何内容；转录文本保留在历史记录中。",
+        "appClosedNotKept": "{{app}} 已关闭。未插入任何内容，且转录文本无法保存到历史记录。",
+        "activationFailedKept": "{{app}} 未切换到最前面。未插入任何内容；转录文本保留在历史记录中。",
+        "activationFailedNotKept": "{{app}} 未切换到最前面。未插入任何内容，且转录文本无法保存到历史记录。",
+        "insertionFailedKept": "{{app}} 可能未收到文本；转录文本保留在历史记录中。",
+        "insertionFailedNotKept": "{{app}} 可能未收到文本，且转录文本无法保存到历史记录。"
+      }
+    },
+    "prompt": {
+      "label": "本次听写的提示词：{{name}}",
+      "hint": "悬停查看选项",
+      "none": "无（不进行 AI 处理）",
+      "menuTitle": "本次听写的提示词",
+      "note": "仅适用于本次听写。默认仍为 {{name}}。",
+      "loading": "正在加载提示词…",
+      "failed": "无法加载提示词。",
+      "choiceFailed": "无法更改提示词。",
+      "refused": {
+        "sessionEnded": "录音已停止；提示词无法再更改。",
+        "processingOff": "本次听写已关闭 AI 处理。",
+        "promptMissing": "此提示词已不存在。",
+        "promptNotUsable": "此提示词有问题；请先在设置中编辑。"
+      }
+    }
   },
   "whatsNew": {
     "title": "Handy v{{version}} 新功能"

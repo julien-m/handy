@@ -12,6 +12,7 @@ import type {
 import i18n, { syncLanguageFromSettings } from "@/i18n";
 import type { ModelStateEvent } from "@/lib/types/events";
 import { getLanguageDirection } from "@/lib/utils/rtl";
+import { IndicatorStack, useIndicatorExtras } from "./indicator-stack";
 
 type OverlayState = "recording" | "streaming" | "transcribing" | "processing";
 
@@ -69,6 +70,15 @@ const RecordingOverlay: React.FC = () => {
   const capRef = useRef<HTMLDivElement>(null);
   const pinnedRef = useRef(true);
   const direction = getLanguageDirection(i18n.language);
+  // Prompt (005), destination (006) and notices (005, 006, 007) around the Handy pill.
+  const extras = useIndicatorExtras({
+    isVisible,
+    state,
+    phase,
+    position,
+    direction,
+  });
+  const withDestination = extras.withDestination;
 
   useEffect(() => {
     const setupEventListeners = async () => {
@@ -182,12 +192,15 @@ const RecordingOverlay: React.FC = () => {
     setupEventListeners();
   }, []);
 
-  // Elapsed capture timer starts only once microphone samples are flowing.
+  // Elapsed capture timer starts only once microphone samples are flowing. The compact pill
+  // shows it only next to a destination badge (006 mockup).
+  const timed =
+    state === "streaming" || (state === "recording" && withDestination);
   useEffect(() => {
-    if (state !== "streaming" || !isVisible || !captureReady) return;
+    if (!timed || !isVisible || !captureReady) return;
     const id = setInterval(() => setElapsed((e) => e + 1), 1000);
     return () => clearInterval(id);
-  }, [state, isVisible, captureReady]);
+  }, [timed, isVisible, captureReady]);
 
   // Stick to the bottom as text streams in — but only while pinned, so a user who
   // has scrolled up to read history isn't yanked back down by the next chunk.
@@ -211,7 +224,8 @@ const RecordingOverlay: React.FC = () => {
     setOverflowing(false);
   }, [session]);
 
-  if (!isVisible) return null;
+  if (!isVisible && !extras.hasNotices) return null;
+  const stack = extras.stack;
 
   // Re-pin when the user is within ~a line of the bottom; unpin otherwise.
   const handleStreamScroll = () => {
@@ -267,7 +281,11 @@ const RecordingOverlay: React.FC = () => {
       </div>
       {waveform}
       <div className="sbase-r">
-        {showTimer && <span className="stimer">{fmtTime(elapsed)}</span>}
+        {showTimer && (
+          <span className="stimer" data-testid="recording-indicator-pill-timer">
+            {fmtTime(elapsed)}
+          </span>
+        )}
         {showCancel && cancelBtn}
       </div>
     </div>
@@ -301,9 +319,10 @@ const RecordingOverlay: React.FC = () => {
     const collapsed = working && !hasText;
 
     return (
-      <div dir={direction} className={`ov-stage ${position}`}>
+      <IndicatorStack {...stack} form="live">
         <div
           key={session}
+          data-testid="recording-indicator-pill"
           className={`scard ${open ? "open" : ""} ${collapsed ? "working" : ""} ${
             isVisible ? "" : "leaving"
           }`}
@@ -341,7 +360,7 @@ const RecordingOverlay: React.FC = () => {
               )
             : listeningRow(open, true)}
         </div>
-      </div>
+      </IndicatorStack>
     );
   }
 
@@ -353,16 +372,16 @@ const RecordingOverlay: React.FC = () => {
     state === "processing" ? t("overlay.processing") : transcribingLabel;
 
   return (
-    <div
-      dir={direction}
-      className={`ov-stage ${position} ov-fade ${isVisible ? "show" : ""}`}
-    >
+    <IndicatorStack {...stack} form="compact">
       <div
         className={`scard compact ${working && isVisible ? "cworking" : ""}`}
+        data-testid="recording-indicator-pill"
       >
-        {working ? workingRow(workLabel, true) : listeningRow(false, true)}
+        {working
+          ? workingRow(workLabel, true)
+          : listeningRow(withDestination, true)}
       </div>
-    </div>
+    </IndicatorStack>
   );
 };
 

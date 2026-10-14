@@ -755,7 +755,51 @@
     "transcribing": "Transcrevendo...",
     "processing": "Processando...",
     "loadingModel": "Carregando modelo...",
-    "fallbackNotice": "O processamento por IA falhou. O texto original foi usado."
+    "fallbackNotice": "O processamento por IA falhou. O texto original foi usado.",
+    "destination": {
+      "label": "Destino: {{name}}",
+      "frontmostApp": "App em primeiro plano",
+      "remove": "Remover destino",
+      "unknownApp": "A app de destino",
+      "choiceFailed": "Não foi possível alterar o destino.",
+      "menu": {
+        "title": "Destino deste ditado",
+        "frontmostNow": "Em primeiro plano agora",
+        "otherApps": "Outras apps",
+        "frontmostAtEnd": "App em primeiro plano no fim",
+        "loading": "A carregar apps…",
+        "failed": "Não foi possível carregar a lista de apps."
+      },
+      "refused": {
+        "stale": "O destino mudou entretanto; a lista foi atualizada.",
+        "frozen": "A inserção já começou; o destino já não pode mudar.",
+        "unavailable": "Esta app já não está disponível; a lista foi atualizada."
+      },
+      "notice": {
+        "appClosedKept": "{{app}} está fechada. Nada foi inserido; a transcrição fica guardada no Histórico.",
+        "appClosedNotKept": "{{app}} está fechada. Nada foi inserido e não foi possível guardar a transcrição no Histórico.",
+        "activationFailedKept": "{{app}} não passou para primeiro plano. Nada foi inserido; a transcrição fica guardada no Histórico.",
+        "activationFailedNotKept": "{{app}} não passou para primeiro plano. Nada foi inserido e não foi possível guardar a transcrição no Histórico.",
+        "insertionFailedKept": "{{app}} pode não ter recebido o texto; a transcrição fica guardada no Histórico.",
+        "insertionFailedNotKept": "{{app}} pode não ter recebido o texto e não foi possível guardar a transcrição no Histórico."
+      }
+    },
+    "prompt": {
+      "label": "Prompt deste ditado: {{name}}",
+      "hint": "Passe o cursor para ver as opções",
+      "none": "Nenhum (sem processamento por IA)",
+      "menuTitle": "Prompt deste ditado",
+      "note": "Aplica-se só a este ditado. O predefinido continua a ser {{name}}.",
+      "loading": "A carregar prompts…",
+      "failed": "Não foi possível carregar os prompts.",
+      "choiceFailed": "Não foi possível alterar o prompt.",
+      "refused": {
+        "sessionEnded": "A gravação terminou; o prompt já não pode mudar.",
+        "processingOff": "O processamento por IA está desligado para este ditado.",
+        "promptMissing": "Este prompt já não existe.",
+        "promptNotUsable": "Este prompt tem erros; edite-o primeiro nas definições."
+      }
+    }
   },
   "whatsNew": {
     "title": "Novidades no Handy v{{version}}"

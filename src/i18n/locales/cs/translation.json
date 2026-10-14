@@ -755,7 +755,51 @@
     "transcribing": "Přepisuji...",
     "processing": "Zpracovávám...",
     "loadingModel": "Načítání modelu...",
-    "fallbackNotice": "Zpracování pomocí AI selhalo. Byl použit původní text."
+    "fallbackNotice": "Zpracování pomocí AI selhalo. Byl použit původní text.",
+    "destination": {
+      "label": "Cíl: {{name}}",
+      "frontmostApp": "Aplikace v popředí",
+      "remove": "Odebrat cíl",
+      "unknownApp": "Cílová aplikace",
+      "choiceFailed": "Cíl se nepodařilo změnit.",
+      "menu": {
+        "title": "Cíl tohoto diktování",
+        "frontmostNow": "Nyní v popředí",
+        "otherApps": "Další aplikace",
+        "frontmostAtEnd": "Aplikace v popředí na konci",
+        "loading": "Načítání aplikací…",
+        "failed": "Seznam aplikací se nepodařilo načíst."
+      },
+      "refused": {
+        "stale": "Cíl se mezitím změnil; seznam byl obnoven.",
+        "frozen": "Vkládání už začalo; cíl už nelze změnit.",
+        "unavailable": "Tato aplikace už není dostupná; seznam byl obnoven."
+      },
+      "notice": {
+        "appClosedKept": "{{app}} je zavřená. Nic nebylo vloženo; přepis zůstává v Historii.",
+        "appClosedNotKept": "{{app}} je zavřená. Nic nebylo vloženo a přepis se nepodařilo uložit do Historie.",
+        "activationFailedKept": "{{app}} se nedostala do popředí. Nic nebylo vloženo; přepis zůstává v Historii.",
+        "activationFailedNotKept": "{{app}} se nedostala do popředí. Nic nebylo vloženo a přepis se nepodařilo uložit do Historie.",
+        "insertionFailedKept": "{{app}} možná text nepřijala; přepis zůstává v Historii.",
+        "insertionFailedNotKept": "{{app}} možná text nepřijala a přepis se nepodařilo uložit do Historie."
+      }
+    },
+    "prompt": {
+      "label": "Prompt tohoto diktování: {{name}}",
+      "hint": "Najeďte myší pro zobrazení možností",
+      "none": "Žádný (bez zpracování AI)",
+      "menuTitle": "Prompt tohoto diktování",
+      "note": "Platí jen pro toto diktování. Výchozí zůstává {{name}}.",
+      "loading": "Načítání promptů…",
+      "failed": "Prompty se nepodařilo načíst.",
+      "choiceFailed": "Prompt se nepodařilo změnit.",
+      "refused": {
+        "sessionEnded": "Nahrávání skončilo; prompt už nelze změnit.",
+        "processingOff": "Zpracování AI je pro toto diktování vypnuté.",
+        "promptMissing": "Tento prompt už neexistuje.",
+        "promptNotUsable": "Tento prompt obsahuje chyby; nejprve ho upravte v nastavení."
+      }
+    }
   },
   "whatsNew": {
     "title": "Novinky v Handy v{{version}}"

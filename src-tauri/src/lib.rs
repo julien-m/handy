@@ -778,6 +778,8 @@ pub fn run(cli_args: CliArgs) {
             commands::destination::destination_menu,
             commands::destination::choose_destination,
             commands::destination::remove_destination,
+            commands::overlay::set_overlay_extent,
+            commands::overlay::hold_overlay_for_notice,
             commands::is_portable,
             commands::is_update_checks_locked,
             commands::get_app_dir_path,

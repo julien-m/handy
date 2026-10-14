@@ -755,7 +755,51 @@
     "transcribing": "Transkribe ediliyor...",
     "processing": "İşleniyor...",
     "loadingModel": "Model yükleniyor...",
-    "fallbackNotice": "Yapay zekâ işlemi başarısız oldu. Özgün metin kullanıldı."
+    "fallbackNotice": "Yapay zekâ işlemi başarısız oldu. Özgün metin kullanıldı.",
+    "destination": {
+      "label": "Hedef: {{name}}",
+      "frontmostApp": "Öndeki uygulama",
+      "remove": "Hedefi kaldır",
+      "unknownApp": "Hedef uygulama",
+      "choiceFailed": "Hedef değiştirilemedi.",
+      "menu": {
+        "title": "Bu dikte için hedef",
+        "frontmostNow": "Şu anda önde",
+        "otherApps": "Diğer uygulamalar",
+        "frontmostAtEnd": "Sonda öndeki uygulama",
+        "loading": "Uygulamalar yükleniyor…",
+        "failed": "Uygulama listesi yüklenemedi."
+      },
+      "refused": {
+        "stale": "Hedef bu arada değişti; liste yenilendi.",
+        "frozen": "Ekleme başladı; hedef artık değiştirilemez.",
+        "unavailable": "Bu uygulama artık kullanılamıyor; liste yenilendi."
+      },
+      "notice": {
+        "appClosedKept": "{{app}} kapalı. Hiçbir şey eklenmedi; transkript Geçmiş'te tutuluyor.",
+        "appClosedNotKept": "{{app}} kapalı. Hiçbir şey eklenmedi ve transkript Geçmiş'e kaydedilemedi.",
+        "activationFailedKept": "{{app}} öne gelmedi. Hiçbir şey eklenmedi; transkript Geçmiş'te tutuluyor.",
+        "activationFailedNotKept": "{{app}} öne gelmedi. Hiçbir şey eklenmedi ve transkript Geçmiş'e kaydedilemedi.",
+        "insertionFailedKept": "{{app}} metni almamış olabilir; transkript Geçmiş'te tutuluyor.",
+        "insertionFailedNotKept": "{{app}} metni almamış olabilir ve transkript Geçmiş'e kaydedilemedi."
+      }
+    },
+    "prompt": {
+      "label": "Bu dikte için prompt: {{name}}",
+      "hint": "Seçenekleri görmek için üzerine gelin",
+      "none": "Yok (yapay zekâ işlemi yok)",
+      "menuTitle": "Bu dikte için prompt",
+      "note": "Yalnızca bu dikte için geçerli. Varsayılan {{name}} olarak kalır.",
+      "loading": "Promptlar yükleniyor…",
+      "failed": "Promptlar yüklenemedi.",
+      "choiceFailed": "Prompt değiştirilemedi.",
+      "refused": {
+        "sessionEnded": "Kayıt durdu; prompt artık değiştirilemez.",
+        "processingOff": "Bu dikte için yapay zekâ işlemi kapalı.",
+        "promptMissing": "Bu prompt artık yok.",
+        "promptNotUsable": "Bu promptta hatalar var; önce ayarlarda düzenleyin."
+      }
+    }
   },
   "whatsNew": {
     "title": "Handy v{{version}} yenilikleri"

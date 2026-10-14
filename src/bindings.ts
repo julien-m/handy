@@ -823,6 +823,20 @@ async chooseDestination(dictationId: DictationId, selectionVersion: number, choi
 async removeDestination(dictationId: DictationId, selectionVersion: number) : Promise<ChoiceAnswer> {
     return await TAURI_INVOKE("remove_destination", { dictationId, selectionVersion });
 },
+/**
+ * Grow (or shrink back) the overlay window to `width` × `height` logical points, never below
+ * the base size of the current indicator form; the window stays anchored to its screen edge.
+ */
+async setOverlayExtent(width: number, height: number) : Promise<void> {
+    await TAURI_INVOKE("set_overlay_extent", { width, height });
+},
+/**
+ * Keep the overlay up for `duration_ms` (capped at 15 s) so a notice stays visible after the
+ * dictation ended; `0` ends the hold. Ignored when the overlay style is none.
+ */
+async holdOverlayForNotice(durationMs: number) : Promise<void> {
+    await TAURI_INVOKE("hold_overlay_for_notice", { durationMs });
+},
 async isPortable() : Promise<boolean> {
     return await TAURI_INVOKE("is_portable");
 },

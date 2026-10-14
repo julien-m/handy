@@ -758,7 +758,51 @@
     "transcribing": "Transcriberen...",
     "processing": "Verwerken...",
     "loadingModel": "Model laden...",
-    "fallbackNotice": "De AI-verwerking is mislukt. De oorspronkelijke tekst is gebruikt."
+    "fallbackNotice": "De AI-verwerking is mislukt. De oorspronkelijke tekst is gebruikt.",
+    "destination": {
+      "label": "Bestemming: {{name}}",
+      "frontmostApp": "App op de voorgrond",
+      "remove": "Bestemming verwijderen",
+      "unknownApp": "De bestemmingsapp",
+      "choiceFailed": "De bestemming kon niet worden gewijzigd.",
+      "menu": {
+        "title": "Bestemming van dit dictaat",
+        "frontmostNow": "Nu op de voorgrond",
+        "otherApps": "Andere apps",
+        "frontmostAtEnd": "App op de voorgrond aan het einde",
+        "loading": "Apps laden…",
+        "failed": "De lijst met apps kon niet worden geladen."
+      },
+      "refused": {
+        "stale": "De bestemming is intussen gewijzigd; de lijst is vernieuwd.",
+        "frozen": "Het invoegen is begonnen; de bestemming kan niet meer veranderen.",
+        "unavailable": "Deze app is niet meer beschikbaar; de lijst is vernieuwd."
+      },
+      "notice": {
+        "appClosedKept": "{{app}} is gesloten. Er is niets ingevoegd; de transcriptie blijft bewaard in Geschiedenis.",
+        "appClosedNotKept": "{{app}} is gesloten. Er is niets ingevoegd en de transcriptie kon niet in Geschiedenis worden opgeslagen.",
+        "activationFailedKept": "{{app}} kwam niet naar de voorgrond. Er is niets ingevoegd; de transcriptie blijft bewaard in Geschiedenis.",
+        "activationFailedNotKept": "{{app}} kwam niet naar de voorgrond. Er is niets ingevoegd en de transcriptie kon niet in Geschiedenis worden opgeslagen.",
+        "insertionFailedKept": "{{app}} heeft de tekst mogelijk niet ontvangen; de transcriptie blijft bewaard in Geschiedenis.",
+        "insertionFailedNotKept": "{{app}} heeft de tekst mogelijk niet ontvangen en de transcriptie kon niet in Geschiedenis worden opgeslagen."
+      }
+    },
+    "prompt": {
+      "label": "Prompt voor dit dictaat: {{name}}",
+      "hint": "Beweeg erover om de opties te zien",
+      "none": "Geen (geen AI-verwerking)",
+      "menuTitle": "Prompt voor dit dictaat",
+      "note": "Geldt alleen voor dit dictaat. De standaard blijft {{name}}.",
+      "loading": "Prompts laden…",
+      "failed": "De prompts konden niet worden geladen.",
+      "choiceFailed": "De prompt kon niet worden gewijzigd.",
+      "refused": {
+        "sessionEnded": "De opname is gestopt; de prompt kan niet meer veranderen.",
+        "processingOff": "AI-verwerking staat uit voor dit dictaat.",
+        "promptMissing": "Deze prompt bestaat niet meer.",
+        "promptNotUsable": "Deze prompt bevat fouten; bewerk hem eerst in de instellingen."
+      }
+    }
   },
   "secureInput": {
     "blockedWithCulprit_one": "{{name}} blokkeert mogelijk 1 sneltoets",

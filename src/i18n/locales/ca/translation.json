@@ -758,7 +758,51 @@
     "transcribing": "S'està transcrivint...",
     "processing": "S'està processant...",
     "loadingModel": "S'està carregant el model...",
-    "fallbackNotice": "El processament amb IA ha fallat. S'ha fet servir el text original."
+    "fallbackNotice": "El processament amb IA ha fallat. S'ha fet servir el text original.",
+    "destination": {
+      "label": "Destinació: {{name}}",
+      "frontmostApp": "App en primer pla",
+      "remove": "Treu la destinació",
+      "unknownApp": "L'app de destinació",
+      "choiceFailed": "No s'ha pogut canviar la destinació.",
+      "menu": {
+        "title": "Destinació d'aquest dictat",
+        "frontmostNow": "En primer pla ara",
+        "otherApps": "Altres apps",
+        "frontmostAtEnd": "App en primer pla al final",
+        "loading": "S'estan carregant les apps…",
+        "failed": "No s'ha pogut carregar la llista d'apps."
+      },
+      "refused": {
+        "stale": "La destinació ha canviat mentrestant; s'ha actualitzat la llista.",
+        "frozen": "La inserció ja ha començat; la destinació ja no pot canviar.",
+        "unavailable": "Aquesta app ja no està disponible; s'ha actualitzat la llista."
+      },
+      "notice": {
+        "appClosedKept": "{{app}} està tancada. No s'ha inserit res; la transcripció es conserva a l'Historial.",
+        "appClosedNotKept": "{{app}} està tancada. No s'ha inserit res i no s'ha pogut desar la transcripció a l'Historial.",
+        "activationFailedKept": "{{app}} no ha passat al primer pla. No s'ha inserit res; la transcripció es conserva a l'Historial.",
+        "activationFailedNotKept": "{{app}} no ha passat al primer pla. No s'ha inserit res i no s'ha pogut desar la transcripció a l'Historial.",
+        "insertionFailedKept": "És possible que {{app}} no hagi rebut el text; la transcripció es conserva a l'Historial.",
+        "insertionFailedNotKept": "És possible que {{app}} no hagi rebut el text i no s'ha pogut desar la transcripció a l'Historial."
+      }
+    },
+    "prompt": {
+      "label": "Indicació d'aquest dictat: {{name}}",
+      "hint": "Passa el cursor per veure les opcions",
+      "none": "Cap (sense processament amb IA)",
+      "menuTitle": "Indicació d'aquest dictat",
+      "note": "Només s'aplica a aquest dictat. La predeterminada continua sent {{name}}.",
+      "loading": "S'estan carregant les indicacions…",
+      "failed": "No s'han pogut carregar les indicacions.",
+      "choiceFailed": "No s'ha pogut canviar la indicació.",
+      "refused": {
+        "sessionEnded": "L'enregistrament ha acabat; la indicació ja no pot canviar.",
+        "processingOff": "El processament amb IA està desactivat per a aquest dictat.",
+        "promptMissing": "Aquesta indicació ja no existeix.",
+        "promptNotUsable": "Aquesta indicació té errors; edita-la primer a la configuració."
+      }
+    }
   },
   "secureInput": {
     "blockedWithCulprit_one": "{{name}} pot estar blocant 1 drecera",
