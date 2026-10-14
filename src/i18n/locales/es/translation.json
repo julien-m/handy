@@ -432,6 +432,8 @@
       "listLabel": "Términos del vocabulario",
       "remove": "Eliminar {{term}}",
       "retry": "Reintentar",
+      "loading": "Cargando el vocabulario…",
+      "listFailed": "No se pudo leer el vocabulario guardado. No se ha cambiado nada; reinténtalo para cargarlo.",
       "empty": {
         "title": "Aún no hay términos",
         "body": "Agrega nombres como Claude Code u OpenClaw, uno por uno o pegando una lista."
@@ -455,6 +457,7 @@
         "conflict": "El vocabulario cambió mientras tanto y se volvió a cargar. Inténtalo de nuevo.",
         "notFound": "Este término ya se había eliminado. El vocabulario se volvió a cargar.",
         "unknown": "Handy no pudo confirmar el cambio. El vocabulario se volvió a cargar; revísalo antes de intentarlo de nuevo.",
+        "committed": "El vocabulario se guardó, pero Handy no pudo aplicarlo de inmediato. La lista se ha vuelto a cargar.",
         "saved": "Tu vocabulario guardado no ha cambiado."
       },
       "status": {

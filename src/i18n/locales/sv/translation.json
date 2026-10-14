@@ -432,6 +432,8 @@
       "listLabel": "Vokabulärtermer",
       "remove": "Ta bort {{term}}",
       "retry": "Försök igen",
+      "loading": "Läser in vokabulären…",
+      "listFailed": "Det gick inte att läsa den sparade vokabulären. Inget har ändrats; försök igen för att läsa in den.",
       "empty": {
         "title": "Inga termer än",
         "body": "Lägg till namn som Claude Code eller OpenClaw, en i taget eller som en inklistrad lista."
@@ -455,6 +457,7 @@
         "conflict": "Vokabulären ändrades under tiden och har lästs in igen. Försök igen.",
         "notFound": "Den här termen var redan borttagen. Vokabulären har lästs in igen.",
         "unknown": "Handy kunde inte bekräfta ändringen. Vokabulären har lästs in igen; kontrollera den innan du försöker igen.",
+        "committed": "Vokabulären sparades, men Handy kunde inte tillämpa den direkt. Listan har lästs in igen.",
         "saved": "Din sparade vokabulär är oförändrad."
       },
       "status": {

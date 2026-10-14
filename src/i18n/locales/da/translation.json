@@ -432,6 +432,8 @@
       "listLabel": "Udtryk i ordforrådet",
       "remove": "Fjern {{term}}",
       "retry": "Prøv igen",
+      "loading": "Indlæser ordforrådet…",
+      "listFailed": "Det gemte ordforråd kunne ikke læses. Intet er ændret; prøv igen for at indlæse det.",
       "empty": {
         "title": "Ingen udtryk endnu",
         "body": "Tilføj navne som Claude Code eller OpenClaw, ét ad gangen eller som en indsat liste."
@@ -455,6 +457,7 @@
         "conflict": "Ordforrådet blev ændret i mellemtiden og er genindlæst. Prøv igen.",
         "notFound": "Dette udtryk var allerede fjernet. Ordforrådet er genindlæst.",
         "unknown": "Handy kunne ikke bekræfte ændringen. Ordforrådet er genindlæst; tjek det, før du prøver igen.",
+        "committed": "Ordforrådet blev gemt, men Handy kunne ikke anvende det med det samme. Listen er indlæst igen.",
         "saved": "Dit gemte ordforråd er uændret."
       },
       "status": {

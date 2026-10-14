@@ -1,8 +1,8 @@
 /**
  * Vocabulary editor state (feature 003): the saved list with its revision, the status for the
  * selected model, the single pending commit and the paste preview. Every commit carries the
- * revision the UI shows; stale answers (older revision, superseded request, edited paste text)
- * are discarded. The backend commands are injected so the rules run without Tauri.
+ * revision the UI shows (Apply: the one its preview was computed on); stale answers (older
+ * revision, superseded request, edited paste text) are discarded. The backend commands are injected so the rules run without Tauri.
  */
 import { createStore, type StoreApi } from "zustand/vanilla";
 import type {
@@ -153,7 +153,8 @@ const loadList = async (ctx: Context) => {
     const list = await api.getVocabulary();
     if (ticket === seq.list) adoptList(ctx, list);
   } catch (error) {
-    // The editor keeps the last list it showed and offers a retry; nothing is written.
+    // The editor keeps the last list it showed (or none) and shows the error with Retry;
+    // nothing is written.
     console.error("Vocabulary read failed:", error);
     if (ticket === seq.list) set({ listFailed: true });
   }
@@ -174,7 +175,7 @@ const loadStatus = async ({ api, set, seq }: Context) => {
   if (ticket === seq.status) set({ status });
 };
 
-/** Send one commit for `operation` at the shown revision. */
+/** Send one commit for `operation` at `revision`. */
 const send = (
   api: VocabularyApi,
   operation: VocabularyOperation,
@@ -222,11 +223,13 @@ const fail = async (
 
 /**
  * Dispatch `operation` unless another commit is pending.
+ * @param revision expected revision; defaults to the shown list's (Apply passes its preview's)
  * @returns true when the backend committed it
  */
 const commit = async (
   ctx: Context,
   operation: VocabularyOperation,
+  revision?: number,
 ): Promise<boolean> => {
   const { api, get, set } = ctx;
   const { pending, list } = get();
@@ -234,7 +237,7 @@ const commit = async (
   set({ pending: operation, phase: "loading" });
   let result: Result<VocabularyList, SettingsCommandError>;
   try {
-    result = await send(api, operation, list.revision);
+    result = await send(api, operation, revision ?? list.revision);
   } catch (error) {
     await fail(ctx, operation, toError(error));
     return false;
@@ -266,12 +269,18 @@ const loadPreview = async ({ api, get, set, seq }: Context) => {
   }
 };
 
+/**
+ * Apply the previewed text at the revision the preview was computed on: if the list changed
+ * since, the backend answers a revision conflict and the preview is reread, so Apply never
+ * commits a merge other than the one shown.
+ */
 const apply = (ctx: Context): Promise<boolean> => {
   const { preview, previewText, pasteText } = ctx.get();
   if (!preview || !preview.applicable || previewText !== pasteText) {
     return Promise.resolve(false);
   }
-  return commit(ctx, { kind: "apply", input: pasteText });
+  const operation: VocabularyOperation = { kind: "apply", input: pasteText };
+  return commit(ctx, operation, preview.revision);
 };
 
 const retry = (ctx: Context): Promise<boolean> => {

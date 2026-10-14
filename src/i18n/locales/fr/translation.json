@@ -432,6 +432,8 @@
       "listLabel": "Termes du vocabulaire",
       "remove": "Supprimer {{term}}",
       "retry": "Réessayer",
+      "loading": "Chargement du vocabulaire…",
+      "listFailed": "Impossible de lire le vocabulaire enregistré. Rien n’a été modifié ; réessayez pour le charger.",
       "empty": {
         "title": "Aucun terme pour l’instant",
         "body": "Ajoutez des noms comme Claude Code ou OpenClaw, un par un ou en collant une liste."
@@ -455,6 +457,7 @@
         "conflict": "Le vocabulaire a changé entre-temps et a été rechargé. Réessayez.",
         "notFound": "Ce terme a déjà été supprimé. Le vocabulaire a été rechargé.",
         "unknown": "Handy n’a pas pu confirmer la modification. Le vocabulaire a été rechargé ; vérifiez-le avant de réessayer.",
+        "committed": "Le vocabulaire a été enregistré, mais Handy n’a pas pu l’appliquer tout de suite. La liste a été rechargée.",
         "saved": "Votre vocabulaire enregistré n’a pas changé."
       },
       "status": {

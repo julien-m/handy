@@ -2,7 +2,7 @@
  * Saved vocabulary terms as removable chips (legacy and not-sent terms flagged), the empty state,
  * the Add row and the term count.
  */
-import React, { useEffect, useId, useRef } from "react";
+import React, { useEffect, useId, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BookA, ClipboardPaste, Plus, TriangleAlert, X } from "lucide-react";
 import type { Occurrence, SettingsCommandError } from "@/bindings";
@@ -11,13 +11,13 @@ import { Input } from "../../ui/Input";
 import {
   canAddTerm,
   chipFlagKey,
+  FOCUS_RING,
+  removalFocusPosition,
   termInputState,
   VOCABULARY_MAX_TERMS,
+  type RemovalTarget,
   type VocabularyScreen,
 } from "./vocabulary-model";
-
-/** Visible keyboard focus with the existing logo-pink ring. */
-const FOCUS_RING = "focus-visible:ring-1 focus-visible:ring-logo-primary";
 
 interface TermChipProps {
   occurrence: Occurrence;
@@ -107,30 +107,39 @@ export interface TermListProps {
   focusInput: () => void;
 }
 
-/** After a keyboard removal, focus the term now at that position, else the term input. */
+/**
+ * Once a removal settles, focus the next term (removed) or the same term (failed, after the list
+ * is reread), else the term input. The target is set only after the commit answers, so a reload
+ * during a failure never consumes it early.
+ */
 const useRemovalFocus = (terms: Occurrence[], focusInput: () => void) => {
   const removeButtons = useRef<Array<HTMLButtonElement | null>>([]);
-  const pendingFocus = useRef<number | null>(null);
+  const target = useRef<RemovalTarget | null>(null);
+  const [settled, setSettled] = useState(0);
   useEffect(() => {
-    const index = pendingFocus.current;
-    if (index === null) return;
-    pendingFocus.current = null;
-    // The term that took the removed one's place, or the input after the last term.
-    const next = index < terms.length ? removeButtons.current[index] : null;
+    const done = target.current;
+    if (done === null) return;
+    target.current = null;
+    const position = removalFocusPosition(terms, done);
+    const next = position === null ? null : removeButtons.current[position];
     if (next) next.focus();
     else focusInput();
-  }, [terms, focusInput]);
-  return { removeButtons, pendingFocus };
+  }, [settled, terms, focusInput]);
+  const settle = (done: RemovalTarget) => {
+    target.current = done;
+    setSettled((count) => count + 1);
+  };
+  return { removeButtons, settle };
 };
 
-const TermList: React.FC<TermListProps> = (props) => {
-  const { terms, screen, overBudget, busy, onRemove, focusInput } = props;
+interface TermListBodyProps extends TermListProps {
+  remove: (occurrence: Occurrence) => void;
+  removeButtons: React.MutableRefObject<Array<HTMLButtonElement | null>>;
+}
+
+const TermList: React.FC<TermListBodyProps> = (props) => {
+  const { terms, screen, overBudget, busy, removeButtons } = props;
   const { t } = useTranslation();
-  const { removeButtons, pendingFocus } = useRemovalFocus(terms, focusInput);
-  const remove = async (occurrence: Occurrence) => {
-    pendingFocus.current = occurrence.index; // before the commit: the list may re-render first
-    if (!(await onRemove(occurrence))) pendingFocus.current = null;
-  };
   return (
     <ul
       className="flex flex-wrap gap-2"
@@ -144,7 +153,7 @@ const TermList: React.FC<TermListProps> = (props) => {
           screen={screen}
           overBudget={overBudget.has(occurrence.index)}
           busy={busy}
-          onRemove={remove}
+          onRemove={props.remove}
           removeRef={(element) => (removeButtons.current[position] = element)}
         />
       ))}
@@ -153,15 +162,26 @@ const TermList: React.FC<TermListProps> = (props) => {
 };
 
 /**
- * Saved terms, or the empty state when there are none.
+ * Saved terms, or the empty state when there are none. Removal focus lives here so it survives
+ * the switch to the empty state after the last term goes.
  * @param props terms, screen prefix, over-budget positions, busy flag and callbacks
  */
-export const VocabularyTerms: React.FC<TermListProps> = (props) =>
-  props.terms.length === 0 ? (
-    <EmptyTerms screen={props.screen} />
-  ) : (
-    <TermList {...props} />
+export const VocabularyTerms: React.FC<TermListProps> = (props) => {
+  const { terms, onRemove, focusInput } = props;
+  const { removeButtons, settle } = useRemovalFocus(terms, focusInput);
+  const remove = async (occurrence: Occurrence) => {
+    const removed = await onRemove(occurrence);
+    settle({ index: occurrence.index, term: occurrence.term, removed });
+  };
+  if (terms.length === 0) return <EmptyTerms screen={props.screen} />;
+  return (
+    <TermList
+      {...props}
+      remove={(occurrence) => void remove(occurrence)}
+      removeButtons={removeButtons}
+    />
   );
+};
 
 export interface AddRowProps {
   screen: VocabularyScreen;
@@ -170,6 +190,8 @@ export interface AddRowProps {
   refusal: SettingsCommandError | null;
   errorId: string | undefined;
   inputId: string;
+  /** Id of "Paste a list…", which gets focus back when the paste box closes. */
+  pasteId: string;
   onDraft: (draft: string) => void;
   onAdd: () => void;
   onPaste: () => void;
@@ -215,7 +237,11 @@ const AddButton: React.FC<AddRowProps & { enabled: boolean }> = (props) => {
         data-testid={`${screen}-add`}
         disabled={!enabled}
         aria-describedby={enabled ? undefined : hintId}
-        onClick={props.onAdd}
+        onClick={() => {
+          // Add turns disabled while the commit runs: keep the focus on the field.
+          document.getElementById(props.inputId)?.focus();
+          props.onAdd();
+        }}
       >
         <Plus className="w-4 h-4" aria-hidden />
         {t("settings.vocabulary.add")}
@@ -242,6 +268,7 @@ export const VocabularyAddRow: React.FC<AddRowProps> = (props) => {
       <AddButton {...props} enabled={enabled} />
       <Button
         variant="ghost"
+        id={props.pasteId}
         className={`inline-flex items-center gap-1 ${FOCUS_RING}`}
         data-testid={`${props.screen}-paste`}
         disabled={props.busy}

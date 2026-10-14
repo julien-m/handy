@@ -99,6 +99,8 @@ describe("screens and test IDs", () => {
       "vocabulary-settings",
     );
     assert.equal(listScreen(3, null), "vocabulary-settings");
+    // An unread list (loading or failed) is never shown as the empty screen.
+    assert.equal(listScreen(null, null), "vocabulary-settings");
   });
 
   test("every contract test ID of the vocabulary screens is emitted", () => {
@@ -344,6 +346,11 @@ describe("chips and refusals", () => {
         { code: "persistence_failed" },
         "errors.settings.persistenceFailed",
         true,
+      ],
+      [
+        { code: "internal_error", outcome: "committed" },
+        "settings.vocabulary.errors.committed",
+        false,
       ],
     ];
     for (const [overrides, key, retry] of cases) {

@@ -8,9 +8,9 @@ import { useTranslation } from "react-i18next";
 import { Info } from "lucide-react";
 import type { SettingsCommandError, VocabularyStatusReport } from "@/bindings";
 import { Alert } from "../../ui/Alert";
-import { Button } from "../../ui/Button";
 import type { StatusState } from "../../../stores/vocabulary-store";
 import type { VocabularyScreen } from "./vocabulary-model";
+import { RetryButton } from "./vocabulary-notices";
 import {
   notSentGroups,
   sentTotal,
@@ -126,9 +126,7 @@ const FailedStatus: React.FC<{
         title={title}
         body={t(`${root}.failed.body`)}
       />
-      <Button variant="secondary" size="sm" onClick={onRetry}>
-        {t("settings.vocabulary.retry")}
-      </Button>
+      <RetryButton onRetry={onRetry} />
     </div>
   );
 };

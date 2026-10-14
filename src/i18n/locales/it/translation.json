@@ -432,6 +432,8 @@
       "listLabel": "Termini del vocabolario",
       "remove": "Rimuovi {{term}}",
       "retry": "Riprova",
+      "loading": "Caricamento del vocabolario…",
+      "listFailed": "Impossibile leggere il vocabolario salvato. Non è stato modificato nulla; riprova per caricarlo.",
       "empty": {
         "title": "Ancora nessun termine",
         "body": "Aggiungi nomi come Claude Code o OpenClaw, uno alla volta o incollando un elenco."
@@ -455,6 +457,7 @@
         "conflict": "Il vocabolario è cambiato nel frattempo ed è stato ricaricato. Riprova.",
         "notFound": "Questo termine era già stato rimosso. Il vocabolario è stato ricaricato.",
         "unknown": "Handy non ha potuto confermare la modifica. Il vocabolario è stato ricaricato; controllalo prima di riprovare.",
+        "committed": "Il vocabolario è stato salvato, ma Handy non è riuscito ad applicarlo subito. L'elenco è stato ricaricato.",
         "saved": "Il vocabolario salvato non è cambiato."
       },
       "status": {

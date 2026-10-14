@@ -15,18 +15,48 @@ import {
 import { useSettingsStore } from "../stores/settingsStore";
 
 /** Pause after the last keystroke before the paste preview is asked again (one call, not one per key). */
-const PREVIEW_DELAY_MS = 200;
+export const PREVIEW_DELAY_MS = 200;
 
-/** Reread the status whenever a model loads or unloads. */
-const useModelStateRefresh = (store: VocabularyStore) => {
-  useEffect(() => {
-    const unlisten = listen("model-state-changed", () => {
-      void store.getState().loadStatus();
-    });
-    return () => {
-      void unlisten.then((stop) => stop());
-    };
-  }, [store]);
+/**
+ * Reread everything a settings revision can change: the list, the status and, while the paste box
+ * is open, its preview.
+ * @param store editor store
+ */
+export const refreshVocabulary = (store: VocabularyStore): void => {
+  const state = store.getState();
+  void state.loadList();
+  void state.loadStatus();
+  if (state.pasteOpen) void state.loadPreview();
+};
+
+/**
+ * Reread the status whenever a model loads or unloads.
+ * @param store editor store
+ * @returns a function that stops listening
+ */
+export const watchModelState = (store: VocabularyStore): (() => void) => {
+  const unlisten = listen("model-state-changed", () => {
+    void store.getState().loadStatus();
+  });
+  return () => {
+    void unlisten.then((stop) => stop());
+  };
+};
+
+/**
+ * Ask for the paste preview once typing pauses; a new keystroke cancels the pending request.
+ * @param store editor store
+ * @param delayMs pause before the request
+ * @returns a function that cancels the pending request
+ */
+export const schedulePreview = (
+  store: VocabularyStore,
+  delayMs = PREVIEW_DELAY_MS,
+): (() => void) => {
+  const timer = setTimeout(() => {
+    void store.getState().loadPreview();
+  }, delayMs);
+  return () => clearTimeout(timer);
 };
 
 /** Ask for the paste preview once typing pauses. */
@@ -35,10 +65,7 @@ const usePreviewDebounce = (store: VocabularyStore) => {
   const pasteText = useStore(store, (state) => state.pasteText);
   useEffect(() => {
     if (!pasteOpen) return;
-    const timer = setTimeout(() => {
-      void store.getState().loadPreview();
-    }, PREVIEW_DELAY_MS);
-    return () => clearTimeout(timer);
+    return schedulePreview(store);
   }, [store, pasteOpen, pasteText]);
 };
 
@@ -49,13 +76,8 @@ const usePreviewDebounce = (store: VocabularyStore) => {
 export const useVocabulary = (): VocabularyStore => {
   const [store] = useState(() => createVocabularyStore(commands));
   const revision = useSettingsStore((state) => state.revision);
-  useEffect(() => {
-    const state = store.getState();
-    void state.loadList();
-    void state.loadStatus();
-    if (state.pasteOpen) void state.loadPreview();
-  }, [store, revision]);
-  useModelStateRefresh(store);
+  useEffect(() => refreshVocabulary(store), [store, revision]);
+  useEffect(() => watchModelState(store), [store]);
   usePreviewDebounce(store);
   return store;
 };

@@ -432,6 +432,8 @@
       "listLabel": "Vocabulairetermen",
       "remove": "{{term}} verwijderen",
       "retry": "Opnieuw proberen",
+      "loading": "Vocabulaire laden…",
+      "listFailed": "Het opgeslagen vocabulaire kon niet worden gelezen. Er is niets gewijzigd; probeer het opnieuw om het te laden.",
       "empty": {
         "title": "Nog geen termen",
         "body": "Voeg namen toe zoals Claude Code of OpenClaw, één voor één of als geplakte lijst."
@@ -455,6 +457,7 @@
         "conflict": "Het vocabulaire is intussen gewijzigd en opnieuw geladen. Probeer het opnieuw.",
         "notFound": "Deze term was al verwijderd. Het vocabulaire is opnieuw geladen.",
         "unknown": "Handy kon de wijziging niet bevestigen. Het vocabulaire is opnieuw geladen; controleer het voordat je het opnieuw probeert.",
+        "committed": "Het vocabulaire is opgeslagen, maar Handy kon het niet meteen toepassen. De lijst is opnieuw geladen.",
         "saved": "Je opgeslagen vocabulaire is ongewijzigd."
       },
       "status": {

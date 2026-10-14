@@ -432,6 +432,8 @@
       "listLabel": "Terminy słownictwa",
       "remove": "Usuń {{term}}",
       "retry": "Spróbuj ponownie",
+      "loading": "Wczytywanie słownictwa…",
+      "listFailed": "Nie udało się odczytać zapisanego słownictwa. Nic nie zostało zmienione; spróbuj ponownie, aby je wczytać.",
       "empty": {
         "title": "Brak terminów",
         "body": "Dodaj nazwy, np. Claude Code lub OpenClaw, pojedynczo lub jako wklejoną listę."
@@ -455,6 +457,7 @@
         "conflict": "Słownictwo zmieniło się w międzyczasie i zostało wczytane ponownie. Spróbuj ponownie.",
         "notFound": "Ten termin został już usunięty. Słownictwo zostało wczytane ponownie.",
         "unknown": "Handy nie mógł potwierdzić zmiany. Słownictwo zostało wczytane ponownie; sprawdź je przed ponowną próbą.",
+        "committed": "Słownictwo zostało zapisane, ale Handy nie mógł go od razu zastosować. Lista została wczytana ponownie.",
         "saved": "Twoje zapisane słownictwo nie zostało zmienione."
       },
       "status": {

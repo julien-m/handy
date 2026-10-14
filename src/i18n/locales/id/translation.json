@@ -432,6 +432,8 @@
       "listLabel": "Istilah kosakata",
       "remove": "Hapus {{term}}",
       "retry": "Coba lagi",
+      "loading": "Memuat kosakata…",
+      "listFailed": "Kosakata yang tersimpan tidak dapat dibaca. Tidak ada yang diubah; coba lagi untuk memuatnya.",
       "empty": {
         "title": "Belum ada istilah",
         "body": "Tambahkan nama seperti Claude Code atau OpenClaw, satu per satu atau sebagai daftar yang ditempel."
@@ -455,6 +457,7 @@
         "conflict": "Kosakata berubah sementara itu dan telah dimuat ulang. Coba lagi.",
         "notFound": "Istilah ini sudah dihapus. Kosakata telah dimuat ulang.",
         "unknown": "Handy tidak dapat memastikan perubahan. Kosakata telah dimuat ulang; periksa sebelum mencoba lagi.",
+        "committed": "Kosakata sudah disimpan, tetapi Handy tidak dapat langsung menerapkannya. Daftar telah dimuat ulang.",
         "saved": "Kosakata yang tersimpan tidak berubah."
       },
       "status": {

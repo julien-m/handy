@@ -4,7 +4,7 @@
  * paste box with preview and Apply, and the status for the selected model. Every commit goes
  * through the vocabulary commands with the revision the editor shows.
  */
-import React, { useCallback, useId } from "react";
+import React, { useCallback, useEffect, useId, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { useStore } from "zustand";
@@ -13,18 +13,19 @@ import { useModelStore } from "../../stores/modelStore";
 import { useSettingsStore } from "../../stores/settingsStore";
 import type { VocabularyStore } from "../../stores/vocabulary-store";
 import { getTranslatedModelName } from "../../lib/utils/modelTranslation";
-import { Alert } from "../ui/Alert";
-import { Button } from "../ui/Button";
 import { SettingsGroup } from "../ui/SettingsGroup";
 import {
-  canRetry,
-  commitErrorKey,
   isTermRefusal,
   listScreen,
   overBudgetIndices,
   VOCABULARY_SCREENS,
   type VocabularyScreen,
 } from "./vocabulary/vocabulary-model";
+import {
+  CommitFailure,
+  ListLoading,
+  ListReadFailure,
+} from "./vocabulary/vocabulary-notices";
 import { VocabularyStatusView } from "./vocabulary/vocabulary-status";
 import {
   VocabularyAddRow,
@@ -58,29 +59,16 @@ interface ViewProps {
 
 /** The failed commit, if any, with Retry when retrying can succeed. */
 const FailureView: React.FC<ViewProps & { errorId: string }> = (props) => {
-  const { store, screen, errorId } = props;
-  const { t } = useTranslation();
-  const failure = useStore(store, (state) => state.failure);
-  const retry = useStore(store, (state) => state.retry);
+  const failure = useStore(props.store, (state) => state.failure);
+  const retry = useStore(props.store, (state) => state.retry);
   if (!failure) return null;
   return (
-    <div
-      className="flex flex-col items-start gap-2"
-      data-testid={`${screen}-error`}
-      role="alert"
-    >
-      <Alert variant="error">
-        <span id={errorId} className="block">
-          {t(commitErrorKey(failure.error))}
-        </span>
-        <span className="block">{t("settings.vocabulary.errors.saved")}</span>
-      </Alert>
-      {canRetry(failure.error) && (
-        <Button variant="secondary" size="sm" onClick={() => void retry()}>
-          {t("settings.vocabulary.retry")}
-        </Button>
-      )}
-    </div>
+    <CommitFailure
+      screen={props.screen}
+      error={failure.error}
+      errorId={props.errorId}
+      onRetry={() => void retry()}
+    />
   );
 };
 
@@ -126,7 +114,7 @@ const useTermsProps = (
 const useAddRowProps = (
   store: VocabularyStore,
   screen: VocabularyScreen,
-  ids: { inputId: string; errorId: string },
+  ids: { inputId: string; errorId: string; pasteId: string },
 ): AddRowProps => {
   const state = useStore(store);
   const failure = state.failure;
@@ -139,34 +127,62 @@ const useAddRowProps = (
     refusal: termRefused ? failure.error : null,
     errorId: failure ? ids.errorId : undefined,
     inputId: ids.inputId,
+    pasteId: ids.pasteId,
     onDraft: state.setDraft,
     onAdd: () => void state.add(),
     onPaste: state.openPaste,
   };
 };
 
+/** Saved terms once read; a loading line before, an error with Retry when the read failed. */
+const SavedTerms: React.FC<ViewProps & { termsProps: TermListProps }> = (
+  props,
+) => {
+  const { store, screen, termsProps } = props;
+  const read = useStore(store, (state) => state.list !== null);
+  const failed = useStore(store, (state) => state.listFailed);
+  const loadList = useStore(store, (state) => state.loadList);
+  // The error and its Retry leave once the list is read: hand the focus to the term input.
+  const retry = async () => {
+    await loadList();
+    if (!store.getState().listFailed) termsProps.focusInput();
+  };
+  return (
+    <>
+      {failed && (
+        <ListReadFailure screen={screen} onRetry={() => void retry()} />
+      )}
+      {read && <VocabularyTerms {...termsProps} />}
+      {!read && !failed && <ListLoading screen={screen} />}
+    </>
+  );
+};
+
 /** List view: status, terms, Add row, error and count. */
-const ListView: React.FC<ViewProps> = ({ store, screen }) => {
+const ListView: React.FC<ViewProps & { pasteId: string }> = (props) => {
+  const { store, screen, pasteId } = props;
   const inputId = useId();
   const errorId = useId();
-  const state = useStore(store);
+  const status = useStore(store, (state) => state.status);
+  const loadStatus = useStore(store, (state) => state.loadStatus);
   const model = useModelName(store);
   const focusInput = useCallback(
     () => document.getElementById(inputId)?.focus(),
     [inputId],
   );
   const termsProps = useTermsProps(store, screen, focusInput);
-  const addRowProps = useAddRowProps(store, screen, { inputId, errorId });
+  const ids = { inputId, errorId, pasteId };
+  const addRowProps = useAddRowProps(store, screen, ids);
   const total = termsProps.terms.length;
   return (
     <>
       <VocabularyStatusView
-        status={state.status}
+        status={status}
         screen={screen}
         model={model}
-        onRetry={() => void state.loadStatus()}
+        onRetry={() => void loadStatus()}
       />
-      <VocabularyTerms {...termsProps} />
+      <SavedTerms store={store} screen={screen} termsProps={termsProps} />
       <VocabularyAddRow {...addRowProps} />
       <FailureView store={store} screen={screen} errorId={errorId} />
       {total > 0 && <VocabularyCount screen={screen} total={total} />}
@@ -213,6 +229,17 @@ const ApplyBar: React.FC<{ store: VocabularyStore }> = ({ store }) => {
   );
 };
 
+/** When the paste box closes (Cancel or Apply), give the focus back to "Paste a list…". */
+const usePasteReturnFocus = (pasteOpen: boolean, pasteId: string) => {
+  const wasOpen = useRef(pasteOpen);
+  useEffect(() => {
+    if (wasOpen.current && !pasteOpen) {
+      document.getElementById(pasteId)?.focus();
+    }
+    wasOpen.current = pasteOpen;
+  }, [pasteOpen, pasteId]);
+};
+
 /**
  * Settings group "Vocabulary": the list view, or the paste view with its Apply bar.
  */
@@ -220,11 +247,12 @@ export const CustomWords: React.FC = () => {
   const { t } = useTranslation();
   const store = useVocabulary();
   const state = useStore(store);
+  const pasteId = useId();
+  usePasteReturnFocus(state.pasteOpen, pasteId);
   const report = state.status.kind === "ready" ? state.status.report : null;
   const screen = state.pasteOpen
     ? VOCABULARY_SCREENS.paste
-    : listScreen(state.list?.terms.length ?? 0, report?.status ?? null);
-  const View = state.pasteOpen ? PasteView : ListView;
+    : listScreen(state.list?.terms.length ?? null, report?.status ?? null);
   return (
     <div className="space-y-6" data-testid={`${screen}-screen`}>
       <div data-testid={`${screen}-vocabulary`} data-state={state.phase}>
@@ -234,7 +262,11 @@ export const CustomWords: React.FC = () => {
             data-testid={`${screen}-terms`}
           >
             <Header screen={screen} paste={state.pasteOpen} />
-            <View store={store} screen={screen} />
+            {state.pasteOpen ? (
+              <PasteView store={store} screen={screen} />
+            ) : (
+              <ListView store={store} screen={screen} pasteId={pasteId} />
+            )}
           </div>
         </SettingsGroup>
       </div>

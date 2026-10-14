@@ -432,6 +432,8 @@
       "listLabel": "Termíny slovníku",
       "remove": "Odebrat {{term}}",
       "retry": "Zkusit znovu",
+      "loading": "Načítání slovníku…",
+      "listFailed": "Uložený slovník se nepodařilo načíst. Nic se nezměnilo; zkuste ho načíst znovu.",
       "empty": {
         "title": "Zatím žádné termíny",
         "body": "Přidejte jména jako Claude Code nebo OpenClaw, po jednom nebo jako vložený seznam."
@@ -455,6 +457,7 @@
         "conflict": "Slovník se mezitím změnil a byl znovu načten. Zkuste to znovu.",
         "notFound": "Tento termín už byl odebrán. Slovník byl znovu načten.",
         "unknown": "Handy nemohl potvrdit změnu. Slovník byl znovu načten; před dalším pokusem ho zkontrolujte.",
+        "committed": "Slovník byl uložen, ale Handy ho nemohl hned použít. Seznam byl znovu načten.",
         "saved": "Váš uložený slovník zůstal beze změny."
       },
       "status": {

@@ -8,7 +8,7 @@ import type { VocabularyImportPreview } from "@/bindings";
 import Badge from "../../ui/Badge";
 import { Button } from "../../ui/Button";
 import { Textarea } from "../../ui/Textarea";
-import { VOCABULARY_SCREENS } from "./vocabulary-model";
+import { FOCUS_RING, VOCABULARY_SCREENS } from "./vocabulary-model";
 import {
   applyLabelKey,
   applyNote,
@@ -240,6 +240,7 @@ export const VocabularyApplyBar: React.FC<ApplyBarProps> = (props) => {
       </p>
       <Button
         variant="secondary"
+        className={FOCUS_RING}
         data-testid={`${SCREEN}-cancel`}
         disabled={props.applying}
         onClick={props.onCancel}

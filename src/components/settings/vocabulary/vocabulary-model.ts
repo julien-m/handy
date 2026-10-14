@@ -11,6 +11,10 @@ import type {
 } from "@/bindings";
 import { settingsErrorKey } from "../../../stores/settings-errors";
 
+/** Visible keyboard focus with the existing logo-pink ring, for buttons whose variant has none. */
+export const FOCUS_RING =
+  "focus-visible:ring-1 focus-visible:ring-logo-primary";
+
 /** Mirrors `MAX_TERMS` (`recognition_vocabulary/validation.rs`); only used for the count label. */
 export const VOCABULARY_MAX_TERMS = 500;
 
@@ -27,13 +31,13 @@ export type VocabularyScreen =
 
 /**
  * Mockup screen the list view matches, which also prefixes its test IDs.
- * @param termCount stored occurrences
+ * @param termCount stored occurrences, or null while the list is unread (loading or failed)
  * @param status current status, or null while it loads or failed
- * @returns the empty screen for an empty list, the unsupported one for a model without
- * recognition context, the default screen otherwise
+ * @returns the empty screen for a read empty list, the unsupported one for a model without
+ * recognition context, the default screen otherwise (an unread list is never shown as empty)
  */
 export const listScreen = (
-  termCount: number,
+  termCount: number | null,
   status: VocabularyStatus | null,
 ): VocabularyScreen => {
   if (termCount === 0) return VOCABULARY_SCREENS.empty;
@@ -115,6 +119,9 @@ export const commitErrorKey = (error: SettingsCommandError | null): string => {
   const item = error.items?.[0];
   if (item && ITEM_KEYS[item.code]) return ITEM_KEYS[item.code];
   if (error.outcome === "unknown") return "settings.vocabulary.errors.unknown";
+  if (error.outcome === "committed") {
+    return "settings.vocabulary.errors.committed";
+  }
   switch (error.code) {
     case "limit_exceeded":
       return "settings.vocabulary.errors.limit";
@@ -142,6 +149,57 @@ export const isTermRefusal = (error: SettingsCommandError | null): boolean =>
  * @returns true when retrying the same operation can succeed
  */
 export const canRetry = (error: SettingsCommandError | null): boolean =>
+  error?.outcome !== "committed" &&
   !isTermRefusal(error) &&
   error?.code !== "limit_exceeded" &&
   error?.code !== "not_found";
+
+/** What the commit failure notice shows besides its message. */
+export interface FailureNotice {
+  /** "Your saved vocabulary is unchanged": only when the backend reports no durable outcome. */
+  unchanged: boolean;
+  /** Retry offered. */
+  retry: boolean;
+}
+
+/**
+ * Lines and controls of a failed commit. An `unknown` outcome may have landed and a `committed`
+ * one did land, so neither claims the vocabulary is unchanged; a committed change is not retried.
+ * @param error typed refusal, or null for a failure without one
+ * @returns whether to state that the saved vocabulary is unchanged and whether to offer Retry
+ */
+export const failureNotice = (
+  error: SettingsCommandError | null,
+): FailureNotice => ({
+  unchanged: (error?.outcome ?? null) === null,
+  retry: canRetry(error),
+});
+
+/** A removal that settled: the occurrence it targeted and whether the backend removed it. */
+export interface RemovalTarget {
+  index: number;
+  term: string;
+  removed: boolean;
+}
+
+/**
+ * Chip position that receives focus once a removal settles.
+ * @param terms list shown after the removal (reloaded after a failure)
+ * @param target the removal that settled
+ * @returns after a failure, the same term if it is still listed; otherwise the term now at the
+ * removed position; null when no term is there (focus goes to the term input)
+ */
+export const removalFocusPosition = (
+  terms: readonly Occurrence[],
+  target: RemovalTarget,
+): number | null => {
+  if (!target.removed) {
+    const same = terms.findIndex(
+      (term) => term.index === target.index && term.term === target.term,
+    );
+    const kept =
+      same >= 0 ? same : terms.findIndex((term) => term.term === target.term);
+    if (kept >= 0) return kept;
+  }
+  return target.index < terms.length ? target.index : null;
+};

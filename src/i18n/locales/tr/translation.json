@@ -432,6 +432,8 @@
       "listLabel": "Kelime dağarcığı terimleri",
       "remove": "{{term}} Kaldır",
       "retry": "Yeniden dene",
+      "loading": "Kelime dağarcığı yükleniyor…",
+      "listFailed": "Kayıtlı kelime dağarcığı okunamadı. Hiçbir şey değişmedi; yüklemek için yeniden deneyin.",
       "empty": {
         "title": "Henüz terim yok",
         "body": "Claude Code veya OpenClaw gibi adları tek tek ya da yapıştırılmış bir liste olarak ekleyin."
@@ -455,6 +457,7 @@
         "conflict": "Kelime dağarcığı bu arada değişti ve yeniden yüklendi. Tekrar deneyin.",
         "notFound": "Bu terim zaten kaldırılmış. Kelime dağarcığı yeniden yüklendi.",
         "unknown": "Handy değişikliği doğrulayamadı. Kelime dağarcığı yeniden yüklendi; tekrar denemeden önce kontrol edin.",
+        "committed": "Kelime dağarcığı kaydedildi ancak Handy bunu hemen uygulayamadı. Liste yeniden yüklendi.",
         "saved": "Kayıtlı kelime dağarcığınız değişmedi."
       },
       "status": {

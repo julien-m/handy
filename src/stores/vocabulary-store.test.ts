@@ -224,6 +224,23 @@ describe("commits", () => {
   });
 });
 
+describe("durable outcomes", () => {
+  for (const [code, outcome] of [
+    ["unavailable", "unknown"],
+    ["internal_error", "committed"],
+  ] as const) {
+    test(`an ${outcome} outcome rereads the saved list`, async () => {
+      const { store, queues, named } = await loadedStore(["OpenClaw"]);
+      queues.commits.push(Promise.resolve(refused(refusal({ code, outcome }))));
+      queues.lists.push(Promise.resolve(list(2, [])));
+      assert.equal(await store.getState().remove(0, "OpenClaw"), false);
+      assert.equal(named("getVocabulary").length, 2);
+      assert.equal(store.getState().list?.revision, 2);
+      assert.equal(store.getState().failure?.error?.outcome, outcome);
+    });
+  }
+});
+
 describe("status", () => {
   test("a superseded status answer is discarded", async () => {
     const { store, queues } = await loadedStore([]);
@@ -314,6 +331,22 @@ describe("paste", () => {
     assert.equal(state.list?.terms.length, 3);
   });
 
+  test("Apply commits at its preview's revision, not a newer shown list", async () => {
+    const { store, queues, named } = await loadedStore([], 2);
+    store.getState().openPaste();
+    store.getState().setPasteText("OpenClaw");
+    queues.previews.push(Promise.resolve(preview(2, ["OpenClaw"])));
+    await store.getState().loadPreview();
+    // Another window or the CLI changed the list before the preview was reread.
+    queues.lists.push(Promise.resolve(list(3, ["Penflow"])));
+    await store.getState().loadList();
+    queues.commits.push(
+      Promise.resolve(refused(refusal({ code: "revision_conflict" }))),
+    );
+    assert.equal(await store.getState().apply(), false);
+    assert.equal(named("apply")[0][1][2], 2);
+  });
+
   test("a conflicting Apply rereads the list and the preview", async () => {
     const { store, queues, named } = await loadedStore([], 2);
     store.getState().openPaste();
@@ -336,6 +369,7 @@ test("rereads follow conflicts, missing rows and unconfirmed outcomes only", () 
   assert.equal(needsReload(refusal({ code: "revision_conflict" })), true);
   assert.equal(needsReload(refusal({ code: "not_found" })), true);
   assert.equal(needsReload(refusal({ outcome: "unknown" })), true);
+  assert.equal(needsReload(refusal({ outcome: "committed" })), true);
   assert.equal(needsReload(null), true);
   assert.equal(needsReload(refusal({ code: "limit_exceeded" })), false);
   assert.equal(needsReload(refusal({})), false);

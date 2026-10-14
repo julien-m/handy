@@ -432,6 +432,8 @@
       "listLabel": "Vocabulary terms",
       "remove": "Remove {{term}}",
       "retry": "Retry",
+      "loading": "Loading the vocabulary…",
+      "listFailed": "Couldn't read the saved vocabulary. Nothing was changed; retry to load it.",
       "empty": {
         "title": "No terms yet",
         "body": "Add names such as Claude Code or OpenClaw, one at a time or as a pasted list."
@@ -455,6 +457,7 @@
         "conflict": "The vocabulary changed in the meantime and was reloaded. Try again.",
         "notFound": "This term was already removed. The vocabulary was reloaded.",
         "unknown": "Handy couldn't confirm the change. The vocabulary was reloaded; check it before trying again.",
+        "committed": "The vocabulary was saved, but Handy couldn't apply it right away. The list was reloaded.",
         "saved": "Your saved vocabulary is unchanged."
       },
       "status": {

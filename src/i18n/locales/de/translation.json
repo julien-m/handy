@@ -432,6 +432,8 @@
       "listLabel": "Vokabularbegriffe",
       "remove": "{{term}} entfernen",
       "retry": "Erneut versuchen",
+      "loading": "Vokabular wird geladen…",
+      "listFailed": "Das gespeicherte Vokabular konnte nicht gelesen werden. Es wurde nichts geändert; versuche es erneut, um es zu laden.",
       "empty": {
         "title": "Noch keine Begriffe",
         "body": "Füge Namen wie Claude Code oder OpenClaw hinzu, einzeln oder als eingefügte Liste."
@@ -455,6 +457,7 @@
         "conflict": "Das Vokabular wurde zwischenzeitlich geändert und neu geladen. Versuche es erneut.",
         "notFound": "Dieser Begriff wurde bereits entfernt. Das Vokabular wurde neu geladen.",
         "unknown": "Handy konnte die Änderung nicht bestätigen. Das Vokabular wurde neu geladen; prüfe es, bevor du es erneut versuchst.",
+        "committed": "Das Vokabular wurde gespeichert, aber Handy konnte es nicht sofort anwenden. Die Liste wurde neu geladen.",
         "saved": "Dein gespeichertes Vokabular ist unverändert."
       },
       "status": {

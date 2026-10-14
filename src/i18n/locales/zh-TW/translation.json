@@ -432,6 +432,8 @@
       "listLabel": "詞彙表術語",
       "remove": "刪除 {{term}}",
       "retry": "重試",
+      "loading": "正在載入詞彙表…",
+      "listFailed": "無法讀取已儲存的詞彙表。沒有任何變更；請重試以載入。",
       "empty": {
         "title": "尚無術語",
         "body": "新增 Claude Code 或 OpenClaw 等名稱，可逐一新增，也可貼上清單。"
@@ -455,6 +457,7 @@
         "conflict": "詞彙表在此期間已變更並重新載入。請再試一次。",
         "notFound": "此術語已被刪除。詞彙表已重新載入。",
         "unknown": "Handy 無法確認此變更。詞彙表已重新載入；請先檢查後再重試。",
+        "committed": "詞彙表已儲存，但 Handy 未能立即套用。清單已重新載入。",
         "saved": "您已儲存的詞彙表未變更。"
       },
       "status": {

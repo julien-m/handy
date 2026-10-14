@@ -432,6 +432,8 @@
       "listLabel": "Các thuật ngữ trong từ vựng",
       "remove": "Xóa {{term}}",
       "retry": "Thử lại",
+      "loading": "Đang tải từ vựng…",
+      "listFailed": "Không đọc được từ vựng đã lưu. Không có gì thay đổi; hãy thử lại để tải.",
       "empty": {
         "title": "Chưa có thuật ngữ nào",
         "body": "Thêm các tên như Claude Code hoặc OpenClaw, từng cái một hoặc dán cả danh sách."
@@ -455,6 +457,7 @@
         "conflict": "Từ vựng đã thay đổi trong lúc đó và đã được tải lại. Hãy thử lại.",
         "notFound": "Thuật ngữ này đã bị xóa. Từ vựng đã được tải lại.",
         "unknown": "Handy không thể xác nhận thay đổi. Từ vựng đã được tải lại; hãy kiểm tra trước khi thử lại.",
+        "committed": "Từ vựng đã được lưu, nhưng Handy chưa thể áp dụng ngay. Danh sách đã được tải lại.",
         "saved": "Từ vựng đã lưu của bạn không thay đổi."
       },
       "status": {

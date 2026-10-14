@@ -432,6 +432,8 @@
       "listLabel": "Termos do vocabulário",
       "remove": "Remover {{term}}",
       "retry": "Tentar novamente",
+      "loading": "Carregando o vocabulário…",
+      "listFailed": "Não foi possível ler o vocabulário salvo. Nada foi alterado; tente novamente para carregá-lo.",
       "empty": {
         "title": "Nenhum termo ainda",
         "body": "Adicione nomes como Claude Code ou OpenClaw, um de cada vez ou como uma lista colada."
@@ -455,6 +457,7 @@
         "conflict": "O vocabulário mudou nesse meio-tempo e foi recarregado. Tente novamente.",
         "notFound": "Este termo já foi removido. O vocabulário foi recarregado.",
         "unknown": "O Handy não conseguiu confirmar a alteração. O vocabulário foi recarregado; verifique-o antes de tentar novamente.",
+        "committed": "O vocabulário foi salvo, mas o Handy não conseguiu aplicá-lo imediatamente. A lista foi recarregada.",
         "saved": "Seu vocabulário salvo não foi alterado."
       },
       "status": {
