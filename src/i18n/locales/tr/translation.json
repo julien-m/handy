@@ -202,9 +202,7 @@
           }
         },
         "errors": {
-          "restore": "Orijinal kısayol geri yüklenemedi",
-          "set": "Kısayol ayarlanamadı: {{error}}",
-          "reset": "Kısayol orijinal değerine sıfırlanamadı"
+          "set": "Kısayol ayarlanamadı: {{error}}"
         },
         "list": {
           "add": "Kısayol ekle",

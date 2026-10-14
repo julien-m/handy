@@ -164,3 +164,12 @@ Pending release evidence (never claimed as passed), each with its exact check:
 - Latency: four versus one shortcut per action, release build, paired samples per the plan's protocol (≤10 ms delta).
 
 No AC is certified by this run: every implemented AC is "implemented, certification pending".
+
+### Review round 1 (2026-10-14)
+
+Proofs: [round 1 proofs](proofs/claude-hardening-fix1/summary.txt).
+
+- **Recorders that disappear (audit).** A HandyKeys start answered after its chip unmounted (blocked draft clicked again, then Discard) is stopped at once, so the backend never keeps every shortcut suspended; a Tauri chip that unmounts while it holds the shortcuts suspended, or while its suspension is answered, resumes them (`recorder-lifecycle.ts`, tests `recorder-lifecycle.test.ts`). The HandyKeys key listener reads `finish` through a ref, so a list re-render (inline `onCapture`) no longer stops the backend mid-recording.
+- **One-shot requests (review).** The chip's request effect is `actOnRecordRequest`; `shortcut-list-render.test.tsx` plays Change on a row, its StrictMode replay, the row leaving and coming back with the same shortcut, and the draft chip remounted after a keyboard implementation switch: no second start.
+- **Stale start reason (review info).** A commit clears the start failure of a captured draft.
+- **Orphan translations.** `settings.general.shortcut.errors.restore` and `.reset` (unused since the non-capture recorders were removed, confirmed by grep) are removed from the 26 locales.

@@ -137,7 +137,7 @@ const afterCommitEvent = (state: DraftState, event: DraftEvent): DraftState => {
   switch (event.type) {
     case "commit":
       return canCommit(state)
-        ? { ...state, phase: "committing", refusal: null }
+        ? { ...state, phase: "committing", refusal: null, startFailure: null }
         : state;
     case "committed":
     case "discard":

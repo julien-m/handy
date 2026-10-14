@@ -182,9 +182,7 @@
           }
         },
         "errors": {
-          "restore": "Herstellen van originele sneltoets mislukt",
-          "set": "Instellen van sneltoets mislukt: {{error}}",
-          "reset": "Sneltoets terugzetten naar standaardwaarde mislukt"
+          "set": "Instellen van sneltoets mislukt: {{error}}"
         },
         "list": {
           "add": "Sneltoets toevoegen",

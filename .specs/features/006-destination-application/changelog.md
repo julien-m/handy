@@ -167,3 +167,12 @@
 - **Tests:** overlay::surface (4 new), menu-timer.test.ts, indicator-render.test.tsx; [proofs](proofs/claude-hardening/summary.txt)
 - **Author:** Claude Code (claude-opus-5-5)
 
+## 2026-10-14 — [Bugfix]: UI hardening, review round 1
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** src-tauri/src/overlay_indicator.rs, src/components/settings/return-to-app-setting.tsx, src/overlay/indicator-render.test.tsx, indicator-gates-render.test.tsx (new), indicator-test-fixtures.ts (new), package.json
+- **AC impacted:** AC-003, AC-007 (unchanged behavior)
+- **Why:** hardening review: functions over 30 lines and a test file over 400 lines.
+- **Tests:** test:indicator, test:output-settings; [proofs](proofs/claude-hardening-fix1/summary.txt)
+- **Author:** Claude Code (claude-opus-5-5)

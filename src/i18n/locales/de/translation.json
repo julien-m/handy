@@ -202,9 +202,7 @@
           }
         },
         "errors": {
-          "restore": "Ursprüngliches Tastenkürzel konnte nicht wiederhergestellt werden",
-          "set": "Tastenkürzel konnte nicht gesetzt werden: {{error}}",
-          "reset": "Tastenkürzel konnte nicht auf Originalwert zurückgesetzt werden"
+          "set": "Tastenkürzel konnte nicht gesetzt werden: {{error}}"
         },
         "list": {
           "add": "Tastenkürzel hinzufügen",

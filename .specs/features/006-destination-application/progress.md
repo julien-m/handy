@@ -121,3 +121,6 @@ Branch `fix/ui-hardening-b`, from the warnings of the delivery reviews and audit
 - **Function size.** `DestinationBadge` (42 lines) split into `BadgeButton`/`BadgeIcon`, `StackItems` (38) into `MenuItems` and the stack, `useDestination` (32) with `useMenuControls`; the menu toggle now reads the rendered (stale-aware) state, so the first click after a stale menu opens a fresh one (review info).
 - **implementation.md:** the FR-003 row no longer says "UI not implemented".
 
+### Review round 1 (2026-10-14)
+
+- The settings row's hidden description moved into the toggle component; `place_overlay` split (`place_logical` for macOS and Linux) to stay within 30 lines; the indicator markup tests split in two files (`indicator-render.test.tsx` gates open, `indicator-gates-render.test.tsx` gates closed and base-window fit) with shared `indicator-test-fixtures.ts`, both run by `test:indicator`. Proofs: [round 1 proofs](proofs/claude-hardening-fix1/summary.txt).

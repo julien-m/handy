@@ -182,9 +182,7 @@
           }
         },
         "errors": {
-          "restore": "Gagal memulihkan pintasan asli",
-          "set": "Gagal mengatur pintasan: {{error}}",
-          "reset": "Gagal mengembalikan pintasan ke nilai awal"
+          "set": "Gagal mengatur pintasan: {{error}}"
         },
         "list": {
           "add": "Tambah pintasan",

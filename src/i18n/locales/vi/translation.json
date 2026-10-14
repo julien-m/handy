@@ -202,9 +202,7 @@
           }
         },
         "errors": {
-          "restore": "Không thể khôi phục phím tắt gốc",
-          "set": "Không thể đặt phím tắt: {{error}}",
-          "reset": "Không thể đặt lại phím tắt về giá trị gốc"
+          "set": "Không thể đặt phím tắt: {{error}}"
         },
         "list": {
           "add": "Thêm phím tắt",

@@ -68,25 +68,34 @@ interface ReturnToAppSettingProps {
 
 interface ReturnToggleProps {
   view: ReturnToAppView;
-  descriptionId: string;
+  description: string;
 }
 
-/** The toggle, off and disabled with its reason where unsupported. */
-const ReturnToggle: React.FC<ReturnToggleProps> = ({ view, descriptionId }) => {
+/**
+ * The toggle, off and disabled with its reason where unsupported; screen
+ * readers get the description (or the reason) through a hidden copy.
+ */
+const ReturnToggle: React.FC<ReturnToggleProps> = ({ view, description }) => {
   const { t } = useTranslation();
   const { updateSetting, isUpdating } = useSettings();
+  const descriptionId = useId();
   const isBusy = isUpdating("return_to_dictation_app");
   return (
-    <SwitchControl
-      checked={view.checked}
-      disabled={view.state !== "available" || isBusy}
-      ariaLabel={t(`${KEY}.title`)}
-      ariaDescribedBy={descriptionId}
-      testId={`${TEST_ID}-toggle`}
-      onChange={(enabled) =>
-        void updateSetting("return_to_dictation_app", enabled)
-      }
-    />
+    <>
+      <span id={descriptionId} className="sr-only">
+        {description}
+      </span>
+      <SwitchControl
+        checked={view.checked}
+        disabled={view.state !== "available" || isBusy}
+        ariaLabel={t(`${KEY}.title`)}
+        ariaDescribedBy={descriptionId}
+        testId={`${TEST_ID}-toggle`}
+        onChange={(enabled) =>
+          void updateSetting("return_to_dictation_app", enabled)
+        }
+      />
+    </>
   );
 };
 
@@ -96,13 +105,12 @@ const ReturnToggle: React.FC<ReturnToggleProps> = ({ view, descriptionId }) => {
  * Nothing is shown while support is unknown or when this build does not offer
  * destination return (rollout gate closed: the settings stay as on `dev`).
  */
-export const ReturnToAppSetting: React.FC<ReturnToAppSettingProps> = ({
-  grouped = false,
-}) => {
+export const ReturnToAppSetting: React.FC<ReturnToAppSettingProps> = (
+  props,
+) => {
   const { t } = useTranslation();
   const stored = useSettings().getSetting("return_to_dictation_app");
   const view = returnToAppView(useDestinationSupport(), stored);
-  const descriptionId = useId();
   if (view.state === "hidden" || view.state === "loading") return null;
   const description = t(view.descriptionKey);
   return (
@@ -110,7 +118,7 @@ export const ReturnToAppSetting: React.FC<ReturnToAppSettingProps> = ({
       title={t(`${KEY}.title`)}
       description={description}
       descriptionMode="inline"
-      grouped={grouped}
+      grouped={props.grouped ?? false}
       testId={TEST_ID}
     >
       <div className="flex items-center gap-3" data-state={view.state}>
@@ -119,10 +127,7 @@ export const ReturnToAppSetting: React.FC<ReturnToAppSettingProps> = ({
           details={t(`${KEY}.details`)}
           testId={`${TEST_ID}-info`}
         />
-        <span id={descriptionId} className="sr-only">
-          {description}
-        </span>
-        <ReturnToggle view={view} descriptionId={descriptionId} />
+        <ReturnToggle view={view} description={description} />
       </div>
     </SettingContainer>
   );

@@ -54,7 +54,17 @@ const { ShortcutList } = await import("./shortcut-list");
 const { LegacyConflictAlert, SystemRefusalAlert } = await import(
   "./shortcut-list-alerts"
 );
-const { DraftRow, ListMessages } = await import("./shortcut-list-rows");
+const { DraftRow, ListMessages, ShortcutRow } = await import(
+  "./shortcut-list-rows"
+);
+const { actOnRecordRequest } = await import("./shortcut-chip");
+const {
+  NO_RECORD_REQUEST,
+  dropUnlistedRequest,
+  markRequestHandled,
+  requestFor,
+  requestRecording,
+} = await import("./record-request-model");
 const { describeStartFailure, shortcutTestIds } = await import(
   "./shortcut-list-feedback"
 );
@@ -304,5 +314,75 @@ describe("list messages", () => {
     );
     expect(markup.includes('role="alert"')).toBe(true);
     expect(markup.includes("secureInput.recorderBlocked")).toBe(true);
+  });
+});
+
+describe("one-shot record requests (Change, Add)", () => {
+  const ids = shortcutTestIds("transcribe");
+  /** A mounted row chip: its own handled request, like `useListControl`'s ref. */
+  const mountChip = () => ({ handled: { current: 0 }, starts: 0 });
+  type Chip = ReturnType<typeof mountChip>;
+  /** Runs the chip's request effect for the request the list gives it. */
+  const runEffect = (
+    chip: Chip,
+    request: number,
+    onHandled: (n: number) => void,
+  ) =>
+    actOnRecordRequest(request, chip.handled, () => (chip.starts += 1), {
+      onRequestHandled: onHandled,
+    });
+
+  test("a row given a request renders idle until its chip handles it", () => {
+    const markup = renderToStaticMarkup(
+      <ShortcutRow
+        actionId="transcribe"
+        shortcut="alt+space"
+        ids={ids}
+        hasRemove
+        canRemove
+        busy={false}
+        recordRequest={1}
+        onRequestHandled={() => undefined}
+        onEdit={noop}
+      />,
+    );
+    expect(
+      markup.includes('data-testid="shortcut-settings-dictation-shortcut"'),
+    ).toBe(true);
+    expect(markup.includes('data-state="idle"')).toBe(true);
+  });
+
+  test("Change starts the row once; the row remounted with the same shortcut does not record", () => {
+    let list = requestRecording(NO_RECORD_REQUEST, "alt+space");
+    const handle = (n: number) => (list = markRequestHandled(list, n));
+    const first = mountChip();
+    expect(runEffect(first, requestFor(list, "alt+space"), handle)).toBe(true);
+    // StrictMode's second run and later re-renders never replay it.
+    expect(runEffect(first, requestFor(list, "alt+space"), handle)).toBe(false);
+    expect(first.starts).toBe(1);
+    // The row leaves the list (CLI, another window) and comes back.
+    list = dropUnlistedRequest(list, []);
+    const remounted = mountChip();
+    runEffect(remounted, requestFor(list, "alt+space"), handle);
+    expect(remounted.starts).toBe(0);
+  });
+
+  test("a request pending while its row is gone is dropped before the row returns", () => {
+    let list = requestRecording(NO_RECORD_REQUEST, "alt+space");
+    list = dropUnlistedRequest(list, ["f5"]);
+    const remounted = mountChip();
+    runEffect(remounted, requestFor(list, "alt+space"), () => undefined);
+    expect(remounted.starts).toBe(0);
+  });
+
+  test("the draft recorder remounted (keyboard implementation switch) does not record again", () => {
+    let draft = requestRecording(NO_RECORD_REQUEST, "draft");
+    const handle = (n: number) => (draft = markRequestHandled(draft, n));
+    const tauriChip = mountChip();
+    runEffect(tauriChip, requestFor(draft, "draft"), handle);
+    expect(tauriChip.starts).toBe(1);
+    const handyKeysChip = mountChip();
+    runEffect(handyKeysChip, requestFor(draft, "draft"), handle);
+    expect(handyKeysChip.starts).toBe(0);
   });
 });

@@ -202,9 +202,7 @@
           }
         },
         "errors": {
-          "restore": "Échec de la restauration du raccourci original",
-          "set": "Échec de la définition du raccourci : {{error}}",
-          "reset": "Échec de la réinitialisation du raccourci à sa valeur d'origine"
+          "set": "Échec de la définition du raccourci : {{error}}"
         },
         "list": {
           "add": "Ajouter un raccourci",

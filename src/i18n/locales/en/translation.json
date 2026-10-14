@@ -182,9 +182,7 @@
           }
         },
         "errors": {
-          "restore": "Failed to restore original shortcut",
-          "set": "Failed to set shortcut: {{error}}",
-          "reset": "Failed to reset shortcut to original value"
+          "set": "Failed to set shortcut: {{error}}"
         },
         "list": {
           "add": "Add shortcut",

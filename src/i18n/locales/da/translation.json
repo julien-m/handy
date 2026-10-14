@@ -182,9 +182,7 @@
           }
         },
         "errors": {
-          "restore": "Kunne ikke gendanne den oprindelige genvej",
-          "set": "Kunne ikke indstille genvej: {{error}}",
-          "reset": "Kunne ikke nulstille genvej til oprindelig indstilling"
+          "set": "Kunne ikke indstille genvej: {{error}}"
         },
         "list": {
           "add": "Tilføj genvej",

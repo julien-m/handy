@@ -12,6 +12,7 @@ import {
   type HistoryLimitEvent,
   SHOWN_STORED,
   historyLimitStep,
+  isBlurWithinWindow,
   isCommitKey,
   parseHistoryLimit,
 } from "./history-limit-model";
@@ -55,36 +56,57 @@ const HistoryLimitError: React.FC<{ id: string }> = ({ id }) => {
   );
 };
 
-/** The number field and its unit. */
+type HistoryLimitFieldState = ReturnType<typeof useHistoryLimitField>;
+
+interface NumberFieldProps {
+  field: HistoryLimitFieldState;
+  errorId: string;
+}
+
+/** The number field: typing keeps a draft, Enter or leaving it inside the window saves. */
+const HistoryLimitNumberField: React.FC<NumberFieldProps> = ({
+  field,
+  errorId,
+}) => (
+  <Input
+    type="number"
+    min={HISTORY_LIMIT_RANGE.min}
+    max={HISTORY_LIMIT_RANGE.max}
+    value={field.text}
+    onChange={(event) =>
+      field.apply({ type: "typed", text: event.target.value })
+    }
+    onBlur={(event) => {
+      const inside = isBlurWithinWindow(
+        document.hasFocus(),
+        event.relatedTarget,
+      );
+      field.apply({ type: "left", withinWindow: inside });
+    }}
+    onKeyDown={(event) =>
+      isCommitKey(event.key) && field.apply({ type: "committed" })
+    }
+    disabled={field.isBusy}
+    invalid={!field.isValid}
+    aria-describedby={field.isValid ? undefined : errorId}
+    data-testid={`${TEST_ID}-input`}
+    className="w-20"
+  />
+);
+
+/** The number field with its unit, and the error under them. */
 const HistoryLimitInput: React.FC<{ errorId: string }> = ({ errorId }) => {
   const { t } = useTranslation();
-  const { text, isValid, isBusy, apply } = useHistoryLimitField();
+  const field = useHistoryLimitField();
   return (
     <div className="flex flex-col items-end gap-1">
       <div className="flex items-center space-x-2">
-        <Input
-          type="number"
-          min={HISTORY_LIMIT_RANGE.min}
-          max={HISTORY_LIMIT_RANGE.max}
-          value={text}
-          onChange={(event) =>
-            apply({ type: "typed", text: event.target.value })
-          }
-          onBlur={() => apply({ type: "committed" })}
-          onKeyDown={(event) =>
-            isCommitKey(event.key) && apply({ type: "committed" })
-          }
-          disabled={isBusy}
-          invalid={!isValid}
-          aria-describedby={isValid ? undefined : errorId}
-          data-testid={`${TEST_ID}-input`}
-          className="w-20"
-        />
+        <HistoryLimitNumberField field={field} errorId={errorId} />
         <span className="text-sm text-text">
           {t("settings.debug.historyLimit.entries")}
         </span>
       </div>
-      {!isValid && <HistoryLimitError id={errorId} />}
+      {!field.isValid && <HistoryLimitError id={errorId} />}
     </div>
   );
 };

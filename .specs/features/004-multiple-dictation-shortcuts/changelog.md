@@ -101,3 +101,12 @@
 - **Tests:** shortcut-draft-model, shortcut-list-feedback, record-request-model (new), shortcut-list-render; [proofs](proofs/claude-hardening/summary.txt)
 - **Author:** Claude Code (claude-opus-5-5)
 
+## 2026-10-14 — [Bugfix]: UI hardening, review round 1
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** src/components/settings/recorder-lifecycle.ts (new, + test), GlobalShortcutInput.tsx, HandyKeysShortcutInput.tsx, shortcut-chip.tsx, shortcut-draft-model.ts, shortcut-list-render.test.tsx, package.json, 26 locales (two orphan keys removed)
+- **AC impacted:** AC-001, AC-004
+- **Why:** delivery audit and review of the hardening: a start answered after the chip unmounted could leave shortcuts suspended; the one-shot request wiring had no test; orphan translation keys.
+- **Tests:** recorder-lifecycle.test.ts (6), shortcut-list-render.test.tsx (4 new); [proofs](proofs/claude-hardening-fix1/summary.txt)
+- **Author:** Claude Code (claude-opus-5-5)

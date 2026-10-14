@@ -6,6 +6,7 @@ import {
   type HistoryLimitEvent,
   SHOWN_STORED,
   historyLimitStep,
+  isBlurWithinWindow,
   isCommitKey,
   parseHistoryLimit,
 } from "./history-limit-model";
@@ -40,6 +41,10 @@ const play = (stored: number, events: HistoryLimitEvent[]) => {
 };
 const typed = (text: string): HistoryLimitEvent => ({ type: "typed", text });
 const COMMITTED: HistoryLimitEvent = { type: "committed" };
+/** Blur to another place of the window. */
+const LEFT_INSIDE: HistoryLimitEvent = { type: "left", withinWindow: true };
+/** Blur because the window lost focus (another app, closed to the tray). */
+const WINDOW_LOST: HistoryLimitEvent = { type: "left", withinWindow: false };
 
 describe("saving the history limit (blur or Enter)", () => {
   test("typing 1 then 12 sends nothing until the field is left, then 12 once", () => {
@@ -63,7 +68,7 @@ describe("saving the history limit (blur or Enter)", () => {
     expect(isCommitKey("1")).toBe(false);
     expect(isCommitKey("Tab")).toBe(false);
     // Enter, then the blur that follows: one save only.
-    expect(play(5, [typed("40"), COMMITTED, COMMITTED]).saves).toEqual([40]);
+    expect(play(5, [typed("40"), COMMITTED, LEFT_INSIDE]).saves).toEqual([40]);
   });
 
   test("an unchanged value is not sent again", () => {
@@ -80,5 +85,31 @@ describe("saving the history limit (blur or Enter)", () => {
       COMMITTED,
     ]);
     expect(corrected.saves).toEqual([100]);
+  });
+});
+
+describe("blur caused by the window losing focus", () => {
+  test("typing 1 on the way to 12, then switching app, saves nothing", () => {
+    const away = play(5, [typed("1"), WINDOW_LOST]);
+    expect(away.saves).toEqual([]);
+    expect(away.field).toEqual({ draft: "1" });
+  });
+
+  test("back in the window the draft is kept and finished normally", () => {
+    const back = play(5, [typed("1"), WINDOW_LOST, typed("12"), LEFT_INSIDE]);
+    expect(back.saves).toEqual([12]);
+    const enter = play(5, [typed("1"), WINDOW_LOST, typed("12"), COMMITTED]);
+    expect(enter.saves).toEqual([12]);
+  });
+
+  test("leaving the field for another place of the window saves", () => {
+    expect(play(5, [typed("40"), LEFT_INSIDE]).saves).toEqual([40]);
+  });
+
+  test("a blur stays in the window when the document keeps focus or another element takes it", () => {
+    expect(isBlurWithinWindow(true, null)).toBe(true);
+    expect(isBlurWithinWindow(false, { tagName: "BUTTON" })).toBe(true);
+    expect(isBlurWithinWindow(false, null)).toBe(false);
+    expect(isBlurWithinWindow(false, undefined)).toBe(false);
   });
 });

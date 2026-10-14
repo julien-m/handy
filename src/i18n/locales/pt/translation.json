@@ -182,9 +182,7 @@
           }
         },
         "errors": {
-          "restore": "Falha ao restaurar atalho original",
-          "set": "Falha ao definir atalho: {{error}}",
-          "reset": "Falha ao redefinir atalho para o valor original"
+          "set": "Falha ao definir atalho: {{error}}"
         },
         "list": {
           "add": "Adicionar atalho",

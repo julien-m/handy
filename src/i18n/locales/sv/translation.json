@@ -182,9 +182,7 @@
           }
         },
         "errors": {
-          "restore": "Misslyckades med att återställa ursprungligt kortkommando",
-          "set": "Misslyckades med att ställa in kortkommando: {{error}}",
-          "reset": "Misslyckades med att återställa kortkommando till ursprungsvärdet"
+          "set": "Misslyckades med att ställa in kortkommando: {{error}}"
         },
         "list": {
           "add": "Lägg till kortkommando",

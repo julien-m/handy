@@ -18,6 +18,7 @@ import {
   useChipText,
 } from "./shortcut-chip";
 import type { RecorderStartFailure } from "./shortcut-draft-model";
+import { startHandyKeys, useMounted } from "./recorder-lifecycle";
 
 interface HandyKeysShortcutInputProps {
   shortcutId: string;
@@ -103,37 +104,19 @@ const notifyStartFailure = (
 };
 
 /**
- * Asks the backend to record. It refuses while macOS Secure Input is active
- * (the listener would receive no key events and capture just the modifier)
- * and then also shows the Secure Input warning banner.
- * @returns Null once recording, else why it could not start.
- */
-const startBackendRecording = async (
-  shortcutId: string,
-): Promise<RecorderStartFailure | null> => {
-  try {
-    const result = await commands.startHandyKeysRecording(shortcutId);
-    if (result.status === "ok") return null;
-    const message = String(result.error);
-    return message.includes("secure-input-active")
-      ? { kind: "secure_input" }
-      : { kind: "failed", message };
-  } catch (error) {
-    console.error("Failed to start recording:", error);
-    return { kind: "failed", message: String(error) };
-  }
-};
-
-/**
  * Listens to the backend's key events while `isRecording`: shows the keys
  * held and calls `finish` with the combination to commit. Unmounting stops
- * the backend recording so no recording loop is orphaned.
+ * the backend recording so no recording loop is orphaned. `finish` is read
+ * through a ref: a re-render of the list (a new inline `onCapture`) never
+ * restarts the listener, which would stop the backend mid-recording.
  */
 const useBackendKeys = (
   isRecording: boolean,
   finish: (shortcut: string) => Promise<void>,
 ): string => {
   const [currentKeys, setCurrentKeys] = useState("");
+  const latestFinish = useRef(finish);
+  latestFinish.current = finish;
   useEffect(() => {
     if (!isRecording) return setCurrentKeys("");
     let refs: CaptureRefs = { keyed: "", modifierOnly: "" };
@@ -146,14 +129,14 @@ const useBackendKeys = (
       refs = step.refs;
       if (step.commit === null) return;
       isDone = true;
-      void finish(step.commit);
+      void latestFinish.current(step.commit);
     });
     return () => {
       isDone = true;
       void unlisten.then((stop) => stop());
       commands.stopHandyKeysRecording().catch(console.error);
     };
-  }, [isRecording, finish]);
+  }, [isRecording]);
   return currentKeys;
 };
 
@@ -179,23 +162,28 @@ const captureThenStop = async (
   }
 };
 
-/** Recording state of the chip, from the backend's start answer to the stop. */
+/**
+ * Recording state of the chip, from the backend's start answer to the stop.
+ * A start that succeeds after the chip unmounted is stopped at once.
+ */
 const useRecording = (
   shortcutId: string,
   onCapture: (shortcut: string) => Promise<void>,
 ) => {
   const { t } = useTranslation();
+  const mounted = useMounted();
   const [isRecording, setIsRecording] = useState(false);
   const stop = useCallback(async () => {
     await commands.stopHandyKeysRecording().catch(console.error);
     setIsRecording(false);
   }, []);
   const start = useCallback(async () => {
-    const failure = await startBackendRecording(shortcutId);
-    if (failure) notifyStartFailure(failure, t);
-    else setIsRecording(true);
-    return failure;
-  }, [shortcutId, t]);
+    const answer = await startHandyKeys(shortcutId, () => mounted.current);
+    if (answer.status === "recording") setIsRecording(true);
+    if (answer.status !== "refused") return null;
+    notifyStartFailure(answer.failure, t);
+    return answer.failure;
+  }, [shortcutId, t, mounted]);
   const finish = useCallback(
     (shortcut: string) => captureThenStop(onCapture, shortcut, stop, t),
     [onCapture, stop, t],

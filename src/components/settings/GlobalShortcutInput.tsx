@@ -12,6 +12,11 @@ import {
 import { useOsType } from "../../hooks/useOsType";
 import { commands } from "@/bindings";
 import {
+  resumeOnUnmount,
+  suspendForCapture,
+  useMounted,
+} from "./recorder-lifecycle";
+import {
   ShortcutChip,
   useCancelOnClickOutside,
   useChipText,
@@ -120,19 +125,25 @@ const useKeyCapture = (
 
 /**
  * Recording state of the chip: start suspends every global shortcut so none
- * fires (or swallows the keys) while recording; stop resumes them.
+ * fires (or swallows the keys) while recording; stop resumes them, and so
+ * does unmounting while recording or while a start is answered.
  */
 const useRecording = (onCapture: (shortcut: string) => Promise<void>) => {
+  const mounted = useMounted();
+  const isSuspending = useRef(false);
   const [isRecording, setIsRecording] = useState(false);
+  useEffect(() => resumeOnUnmount(isSuspending), []);
   const stop = useCallback(async () => {
+    isSuspending.current = false;
     await commands.resumeAllBindings().catch(console.error);
     setIsRecording(false);
   }, []);
   const start = useCallback(async () => {
-    await commands.suspendAllBindings().catch(console.error);
-    setIsRecording(true);
+    const answer = await suspendForCapture(() => mounted.current);
+    isSuspending.current = answer.status === "recording";
+    setIsRecording(isSuspending.current);
     return null;
-  }, []);
+  }, [mounted]);
   const finish = useCallback(
     (shortcut: string) => {
       // Saving is the caller's job (it reports refusals); the shortcuts

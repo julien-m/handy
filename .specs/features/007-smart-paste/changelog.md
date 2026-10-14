@@ -211,3 +211,12 @@ AppKit caching and delayed AX mutation counterexamples remain explicit: callback
 - **Tests:** indicator-render.test.tsx; [proofs](proofs/claude-hardening/summary.txt)
 - **Author:** Claude Code (claude-opus-5-5)
 
+## 2026-10-14 — [Bugfix]: UI hardening, review round 1
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** src/overlay/indicator-render.test.tsx split with indicator-gates-render.test.tsx and indicator-test-fixtures.ts (tests only)
+- **AC impacted:** none (tests only)
+- **Why:** hardening review: the indicator test file exceeded 400 lines.
+- **Tests:** test:indicator; [proofs](proofs/claude-hardening-fix1/summary.txt)
+- **Author:** Claude Code (claude-opus-5-5)

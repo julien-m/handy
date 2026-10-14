@@ -43,10 +43,28 @@ pub(super) fn place_overlay(
     height: f64,
 ) {
     #[cfg(not(target_os = "windows"))]
-    let (width, height) = get_monitor_with_cursor(app_handle).map_or((width, height), |monitor| {
-        fit_to(&monitor, 1.0, (width, height))
-    });
+    {
+        let (width, height) = get_monitor_with_cursor(app_handle)
+            .map_or((width, height), |monitor| {
+                fit_to(&monitor, 1.0, (width, height))
+            });
+        place_logical(app_handle, overlay_window, width, height);
+    }
+    #[cfg(target_os = "windows")]
+    if let Err(error) = place_windows_overlay(app_handle, overlay_window, width, height) {
+        log::error!("Failed to place recording overlay: {error}");
+    }
+}
 
+/// macOS and Linux placement in logical points: the GTK layer surface when it is active (it
+/// anchors itself to its edge), else the window size and its computed position.
+#[cfg(not(target_os = "windows"))]
+fn place_logical(
+    app_handle: &AppHandle,
+    overlay_window: &tauri::webview::WebviewWindow,
+    width: f64,
+    height: f64,
+) {
     #[cfg(target_os = "linux")]
     if LAYER_SHELL_ACTIVE.load(Ordering::SeqCst) {
         let position = settings::get_settings(app_handle).overlay_position;
@@ -56,18 +74,10 @@ pub(super) fn place_overlay(
         }
         return;
     }
-
-    #[cfg(not(target_os = "windows"))]
-    {
-        let _ = overlay_window.set_size(tauri::Size::Logical(tauri::LogicalSize { width, height }));
-        if let Some((x, y)) = calculate_overlay_position(app_handle, width, height) {
-            let _ = overlay_window
-                .set_position(tauri::Position::Logical(tauri::LogicalPosition { x, y }));
-        }
-    }
-    #[cfg(target_os = "windows")]
-    if let Err(error) = place_windows_overlay(app_handle, overlay_window, width, height) {
-        log::error!("Failed to place recording overlay: {error}");
+    let _ = overlay_window.set_size(tauri::Size::Logical(tauri::LogicalSize { width, height }));
+    if let Some((x, y)) = calculate_overlay_position(app_handle, width, height) {
+        let _ =
+            overlay_window.set_position(tauri::Position::Logical(tauri::LogicalPosition { x, y }));
     }
 }
 

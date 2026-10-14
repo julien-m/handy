@@ -119,6 +119,30 @@ interface ShortcutChipProps {
 }
 
 /**
+ * Effect body of a chip for the list's start request. Each request starts
+ * recording once, even when React runs the effect twice (StrictMode: a
+ * second start would ask the backend twice), then is reported handled so the
+ * list forgets it and a chip mounted later never replays it.
+ * @param request Request number the chip receives (0: none).
+ * @param handled Last request this chip instance handled.
+ * @param start Starts recording (a disabled chip ignores it).
+ * @param control Where the handled request is reported.
+ * @returns Whether the request was acted on.
+ */
+export const actOnRecordRequest = (
+  request: number,
+  handled: React.MutableRefObject<number>,
+  start: () => void,
+  control: Pick<ShortcutChipControl, "onRequestHandled">,
+): boolean => {
+  if (!isNewRecordRequest(request, handled.current)) return false;
+  handled.current = request;
+  start();
+  control.onRequestHandled?.(request);
+  return true;
+};
+
+/**
  * Handles each new start request of the list once, then reports it handled
  * so the list forgets it, and reports recording changes. The latest
  * callbacks are read through a ref so a re-render never replays a request.
@@ -133,13 +157,8 @@ const useListControl = (
   const wasRecording = useRef(isRecording);
   const handledRequest = useRef(0);
   useEffect(() => {
-    // Each request starts recording once, even when React runs the effect
-    // twice (StrictMode): a second start would ask the backend twice.
-    const request = control.recordRequest;
-    if (!isNewRecordRequest(request, handledRequest.current)) return;
-    handledRequest.current = request;
-    latest.current.start();
-    latest.current.control.onRequestHandled?.(request);
+    const { start, control: current } = latest.current;
+    actOnRecordRequest(control.recordRequest, handledRequest, start, current);
   }, [control.recordRequest]);
   useEffect(() => {
     // Report changes only: the first render is not a stop, and reporting it

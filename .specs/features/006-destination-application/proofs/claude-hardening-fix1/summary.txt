@@ -1,0 +1,43 @@
+UI hardening, review round 1 — branch fix/ui-hardening-b, checks run on the working tree of the fix commit (parent 8f43d3c9), 2026-10-14
+Rust: CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.shared-target CMAKE_POLICY_VERSION_MINIMUM=3.5
+
+exit command (directory)
+0    npx tsc --noEmit   (in .)
+0    bun run lint   (in .)
+0    bun run format:check   (in .)
+0    bun run check:translations   (in .)
+0    bun run build   (in .)
+0    bun run test:keyboard   (in .)
+0    bun run test:shortcut-list   (in .)
+0    bun run test:settings-errors   (in .)
+0    bun run test:settings-store   (in .)
+0    bun run test:microphone-priority   (in .)
+0    bun run test:word-replacements   (in .)
+0    bun run test:prompt-settings   (in .)
+0    bun run test:indicator   (in .)
+0    bun run test:vocabulary   (in .)
+0    bun run test:shortcut-states   (in .)
+0    bun run test:output-settings   (in .)
+0    cargo fmt -- --check   (in src-tauri)
+0    cargo clippy --lib --bins -- -D warnings   (in src-tauri)
+0    cargo test --lib   (in src-tauri)
+0    livespec conventions verify --feature repo --json > /dev/null   (in .)
+
+Results:
+- cargo test --lib: test result: ok. 916 passed; 0 failed; 17 ignored; 0 measured; 0 filtered out; finished in 2.78s
+- test:indicator: 30 pass,0 fail,17 pass,0 fail
+- test:keyboard: keyboard: all assertions passed
+- test:microphone-priority: 88 pass,0 fail
+- test:output-settings: 30 pass,0 fail,7 pass,0 fail,10 pass,0 fail
+- test:prompt-settings: 55 pass,0 fail,5 pass,0 fail
+- test:settings-errors: settings-errors: all assertions passed
+- test:settings-store: 12 pass,0 fail
+- test:shortcut-list: shortcut-list-model: all assertions passed
+- test:shortcut-states: 36 pass,0 fail,6 pass,0 fail,15 pass,0 fail
+- test:vocabulary: 45 pass,0 fail
+- test:word-replacements: 68 pass,0 fail
+- check:translations: All 25 languages have complete translations
+- livespec conventions verify: verdict PASS, new_count 0, blockers 0, receipt .specs/conventions/runs/20261014T165551Z/receipt.json (not committed)
+- docs: 008 progress.md restored from 43b3f2ff plus the hardening row (git diff --numstat 43b3f2ff: 1 added, 0 removed); every other progress/implementation/changelog touched only gains lines or rewrites its own rows; the broken relative links and anchors of the touched docs and .specs/changelog.md are exactly those of 43b3f2ff (pre-existing untracked proof files), none added
+
+Not run here (pending, with Julien or release evidence): rendered settings window and native indicator proofs; Windows and Linux builds of overlay_indicator.rs (no toolchain on this Mac).
