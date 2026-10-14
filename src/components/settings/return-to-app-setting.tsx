@@ -1,6 +1,7 @@
 // "Return to the dictation's application" (006): a toggle with its inline
 // description, an info button with the details, and, where destination
-// return is unavailable, the reason in place of the description.
+// return is unavailable, the reason in place of the description. A build
+// that does not offer destination return shows no row at all.
 import React, { useId, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSettings } from "../../hooks/useSettings";
@@ -8,7 +9,7 @@ import { useDestinationSupport } from "../../hooks/use-destination-support";
 import { SettingContainer } from "../ui/SettingContainer";
 import { SwitchControl } from "../ui/ToggleSwitch";
 import { Tooltip } from "../ui/Tooltip";
-import { returnToAppView } from "./return-to-app-model";
+import { type ReturnToAppView, returnToAppView } from "./return-to-app-model";
 
 const KEY = "settings.advanced.returnToApp";
 const TEST_ID = "output-settings-return-app";
@@ -65,18 +66,44 @@ interface ReturnToAppSettingProps {
   grouped?: boolean;
 }
 
+interface ReturnToggleProps {
+  view: ReturnToAppView;
+  descriptionId: string;
+}
+
+/** The toggle, off and disabled with its reason where unsupported. */
+const ReturnToggle: React.FC<ReturnToggleProps> = ({ view, descriptionId }) => {
+  const { t } = useTranslation();
+  const { updateSetting, isUpdating } = useSettings();
+  const isBusy = isUpdating("return_to_dictation_app");
+  return (
+    <SwitchControl
+      checked={view.checked}
+      disabled={view.state !== "available" || isBusy}
+      ariaLabel={t(`${KEY}.title`)}
+      ariaDescribedBy={descriptionId}
+      testId={`${TEST_ID}-toggle`}
+      onChange={(enabled) =>
+        void updateSetting("return_to_dictation_app", enabled)
+      }
+    />
+  );
+};
+
 // @spec AC-007: Unavailable on this system with the reason — .specs/features/006-destination-application/spec.md#ac-007
-/** The setting row; the toggle is disabled with its reason where unsupported. */
+/**
+ * The setting row; the toggle is disabled with its reason where unsupported.
+ * Nothing is shown while support is unknown or when this build does not offer
+ * destination return (rollout gate closed: the settings stay as on `dev`).
+ */
 export const ReturnToAppSetting: React.FC<ReturnToAppSettingProps> = ({
   grouped = false,
 }) => {
   const { t } = useTranslation();
-  const { getSetting, updateSetting, isUpdating } = useSettings();
-  const view = returnToAppView(
-    useDestinationSupport(),
-    getSetting("return_to_dictation_app"),
-  );
+  const stored = useSettings().getSetting("return_to_dictation_app");
+  const view = returnToAppView(useDestinationSupport(), stored);
   const descriptionId = useId();
+  if (view.state === "hidden" || view.state === "loading") return null;
   const description = t(view.descriptionKey);
   return (
     <SettingContainer
@@ -95,18 +122,7 @@ export const ReturnToAppSetting: React.FC<ReturnToAppSettingProps> = ({
         <span id={descriptionId} className="sr-only">
           {description}
         </span>
-        <SwitchControl
-          checked={view.checked}
-          disabled={
-            view.state !== "available" || isUpdating("return_to_dictation_app")
-          }
-          ariaLabel={t(`${KEY}.title`)}
-          ariaDescribedBy={descriptionId}
-          testId={`${TEST_ID}-toggle`}
-          onChange={(enabled) =>
-            void updateSetting("return_to_dictation_app", enabled)
-          }
-        />
+        <ReturnToggle view={view} descriptionId={descriptionId} />
       </div>
     </SettingContainer>
   );

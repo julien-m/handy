@@ -4,6 +4,7 @@
 use crate::destination::{
     app::{emit_changed, manager},
     context::DictationId,
+    rollout::Rollout,
     session::{DestinationSupport, SelectionRefusal},
     snapshot::{ChoiceAnswer, DestinationSnapshot, MenuAnswer, MenuChoice},
 };
@@ -17,8 +18,12 @@ pub async fn destination_snapshot(app: AppHandle) -> Option<DestinationSnapshot>
 }
 #[tauri::command]
 #[specta::specta]
-/// Runtime support of destination return in this instance (AC-007 reason).
+/// Runtime support of destination return in this instance (AC-007 reason); `None` when this
+/// build does not offer destination return (rollout gate closed), so the settings hide it.
 pub async fn destination_support(app: AppHandle) -> Option<DestinationSupport> {
+    if !Rollout::CURRENT.offers_setting() {
+        return None;
+    }
     Some(manager(&app)?.support())
 }
 // @spec FR-003: Menu for the current dictation only — .specs/features/006-destination-application/spec.md#fr-003

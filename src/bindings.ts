@@ -808,7 +808,8 @@ async destinationSnapshot() : Promise<DestinationSnapshot | null> {
     return await TAURI_INVOKE("destination_snapshot");
 },
 /**
- * Runtime support of destination return in this instance (AC-007 reason).
+ * Runtime support of destination return in this instance (AC-007 reason); `None` when this
+ * build does not offer destination return (rollout gate closed), so the settings hide it.
  */
 async destinationSupport() : Promise<DestinationSupport | null> {
     return await TAURI_INVOKE("destination_support");
