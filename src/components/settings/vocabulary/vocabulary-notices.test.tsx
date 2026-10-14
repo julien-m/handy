@@ -125,6 +125,29 @@ describe("visible keyboard focus", () => {
   });
 });
 
+describe("Apply keeps the focus while it sends and after a failure", () => {
+  const applyButton = (applying: boolean) =>
+    renderToStaticMarkup(
+      <VocabularyApplyBar
+        text="OpenClaw"
+        preview={null}
+        fresh={false}
+        applying={applying}
+        onCancel={() => undefined}
+        onApply={() => undefined}
+      />,
+    ).match(/<button[^>]*-apply"[^>]*>/)?.[0] ?? "";
+
+  test("inactive with aria-disabled, never disabled, while sending or not applicable", () => {
+    for (const applying of [true, false]) {
+      const apply = applyButton(applying);
+      assert.equal(apply.includes('aria-disabled="true"'), true);
+      assert.equal(/\sdisabled=""/.test(apply), false);
+    }
+    assert.equal(applyButton(true).includes('data-state="loading"'), true);
+  });
+});
+
 describe("focus after a removal", () => {
   const terms = (...names: string[]): Occurrence[] =>
     names.map((term, index) => ({ index, term, issue: null }));

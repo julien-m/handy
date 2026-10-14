@@ -198,6 +198,14 @@ interface ApplyBarProps {
   onApply: () => void;
 }
 
+/** Classes of a control made inactive with aria-disabled (the Button styles only `disabled`). */
+const INACTIVE_CLASSES =
+  "aria-disabled:opacity-50 aria-disabled:cursor-not-allowed";
+
+/**
+ * Apply. Inactive with aria-disabled rather than disabled, so a focused Apply keeps the focus
+ * while it sends and after a failure (the note it points to says why it is inactive).
+ */
 const ApplyButton: React.FC<ApplyBarProps & { noteId: string }> = (props) => {
   const { preview, fresh, applying } = props;
   const { t } = useTranslation();
@@ -206,12 +214,15 @@ const ApplyButton: React.FC<ApplyBarProps & { noteId: string }> = (props) => {
   return (
     <Button
       variant="primary"
+      className={INACTIVE_CLASSES}
       data-testid={`${SCREEN}-apply`}
       data-state={state}
-      disabled={state !== "enabled"}
+      aria-disabled={state !== "enabled"}
       aria-busy={applying}
       aria-describedby={props.noteId}
-      onClick={props.onApply}
+      onClick={() => {
+        if (state === "enabled") props.onApply();
+      }}
     >
       {t(applyLabelKey(added, applying), { n: added })}
     </Button>

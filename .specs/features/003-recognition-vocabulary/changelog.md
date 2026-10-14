@@ -63,3 +63,13 @@
 - **Offline status:** `vocabulary status` offline returns 008's delivered live-only refusal (`unavailable`/5, scenario « Live state without running app » of the 008 spec) applied to a D2 operation; justified in the plan, spec unchanged
 - **Review:** the plan review is stale; an independent reviewer refreshes it
 - **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
+
+## 2026-10-14 — [Bugfix]: UI hardening of the vocabulary editor (Apply focus, Retry of a failed Apply)
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** src/components/settings/CustomWords.tsx, src/components/settings/vocabulary/{vocabulary-paste.tsx, vocabulary-paste-model.ts, vocabulary-terms.tsx, vocabulary-retry.ts (new)}, src/stores/vocabulary-store.ts, tests (vocabulary-retry.test.ts new, vocabulary-model, vocabulary-notices, vocabulary-store), package.json (`test:vocabulary`)
+- **AC impacted:** AC-001 (paste box: no empty merge sent, Retry follows the Apply rule); behavioral AC is_keyboard_navigable (focus kept on Apply, stable focus after Retry)
+- **Evidence:** [proofs/claude-hardening/summary.txt](proofs/claude-hardening/summary.txt)
+- **Author:** Claude Code (UI hardening pass)
+
