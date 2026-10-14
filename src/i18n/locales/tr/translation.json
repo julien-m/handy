@@ -481,7 +481,8 @@
           "providerModel": "{{provider}} · {{model}}",
           "noShortcut": "Kısayol yok",
           "notReady": "Hazır değil: {{reason}}",
-          "invalid": "Geçersiz: {{reason}}"
+          "invalid": "Geçersiz: {{reason}}",
+          "reloadFailed": "İstemler yenilenemedi. Gösterilenler güncel olmayabilir."
         },
         "issues": {
           "name_empty": "ad eksik",
@@ -535,7 +536,13 @@
           "shortcuts": "Kısayollar (en fazla {{limit}})",
           "changedElsewhere": "Bu istem başka bir yerde değiştirildi. Değişikliği görmek için yeniden yükleyin veya kendi sürümünüzü korumak için kaydedin.",
           "reload": "Yeniden yükle",
-          "deletedElsewhere": "Bu istem başka bir yerde silindi ve artık kaydedilemez."
+          "deletedElsewhere": "Bu istem başka bir yerde silindi ve artık kaydedilemez.",
+          "shortcutsSavedImmediately": "Kısayol değişiklikleri hemen kaydedilir.",
+          "fixField": {
+            "api_key": "{{provider}} için API anahtarı",
+            "endpoint": "{{provider}} uç noktası",
+            "hint": "Alandan çıktığınızda kaydedilir. Varsayılan sağlayıcı değişmez."
+          }
         },
         "actions": {
           "note": "Değişiklikler kaydettikten sonraki ilk diktede geçerli olur.",
@@ -569,7 +576,8 @@
           "failedHint": "Sağlayıcı ayarlarını kontrol edin, ardından testi yeniden çalıştırın.",
           "retry": "Yeniden çalıştır",
           "busy": "Başka bir test hâlâ çalışıyor. Bittiğinde yeniden deneyin.",
-          "skipped": "İstemi test etmek için örnek bir metin girin."
+          "skipped": "İstemi test etmek için örnek bir metin girin.",
+          "outdated": "Bu sonuç istemin veya örneğin önceki bir sürümüne ait. Testi yeniden çalıştırın."
         },
         "shortcutOwner": "“{{name}}” istemi"
       }

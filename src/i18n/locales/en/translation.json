@@ -481,7 +481,8 @@
           "providerModel": "{{provider}} · {{model}}",
           "noShortcut": "No shortcut",
           "notReady": "Not ready: {{reason}}",
-          "invalid": "Invalid: {{reason}}"
+          "invalid": "Invalid: {{reason}}",
+          "reloadFailed": "The prompts could not be refreshed. What is shown may be out of date."
         },
         "issues": {
           "name_empty": "name missing",
@@ -535,7 +536,13 @@
           "shortcuts": "Shortcuts (up to {{limit}})",
           "changedElsewhere": "This prompt was changed elsewhere. Reload it to see the change, or save to keep your version.",
           "reload": "Reload",
-          "deletedElsewhere": "This prompt was deleted elsewhere and can no longer be saved."
+          "deletedElsewhere": "This prompt was deleted elsewhere and can no longer be saved.",
+          "shortcutsSavedImmediately": "Shortcut changes are saved immediately.",
+          "fixField": {
+            "api_key": "API key for {{provider}}",
+            "endpoint": "Endpoint of {{provider}}",
+            "hint": "Saved when you leave the field. The default provider does not change."
+          }
         },
         "actions": {
           "note": "Changes apply to the next dictation after you save.",
@@ -569,7 +576,8 @@
           "failedHint": "Check the provider settings, then run the test again.",
           "retry": "Run again",
           "busy": "Another test is still running. Try again when it ends.",
-          "skipped": "Enter a sample text to test the prompt."
+          "skipped": "Enter a sample text to test the prompt.",
+          "outdated": "This result is for an earlier version of the prompt or sample. Run the test again."
         },
         "shortcutOwner": "the prompt “{{name}}”"
       }

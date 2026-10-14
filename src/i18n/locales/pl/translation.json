@@ -481,7 +481,8 @@
           "providerModel": "{{provider}} · {{model}}",
           "noShortcut": "Brak skrótu",
           "notReady": "Niegotowy: {{reason}}",
-          "invalid": "Nieprawidłowy: {{reason}}"
+          "invalid": "Nieprawidłowy: {{reason}}",
+          "reloadFailed": "Nie udało się odświeżyć promptów. Wyświetlane dane mogą być nieaktualne."
         },
         "issues": {
           "name_empty": "brak nazwy",
@@ -535,7 +536,13 @@
           "shortcuts": "Skróty (do {{limit}})",
           "changedElsewhere": "Ten prompt został zmieniony w innym miejscu. Wczytaj go ponownie, aby zobaczyć zmianę, lub zapisz, aby zachować swoją wersję.",
           "reload": "Wczytaj ponownie",
-          "deletedElsewhere": "Ten prompt został usunięty w innym miejscu i nie można go już zapisać."
+          "deletedElsewhere": "Ten prompt został usunięty w innym miejscu i nie można go już zapisać.",
+          "shortcutsSavedImmediately": "Zmiany skrótów są zapisywane natychmiast.",
+          "fixField": {
+            "api_key": "Klucz API dla {{provider}}",
+            "endpoint": "Punkt końcowy {{provider}}",
+            "hint": "Zapisywane po opuszczeniu pola. Domyślny dostawca się nie zmienia."
+          }
         },
         "actions": {
           "note": "Zmiany obowiązują od następnego dyktowania po zapisaniu.",
@@ -569,7 +576,8 @@
           "failedHint": "Sprawdź ustawienia dostawcy, a następnie uruchom test ponownie.",
           "retry": "Uruchom ponownie",
           "busy": "Inny test wciąż trwa. Spróbuj ponownie po jego zakończeniu.",
-          "skipped": "Wpisz przykładowy tekst, aby przetestować prompt."
+          "skipped": "Wpisz przykładowy tekst, aby przetestować prompt.",
+          "outdated": "Ten wynik dotyczy wcześniejszej wersji promptu lub próbki. Uruchom test ponownie."
         },
         "shortcutOwner": "prompt „{{name}}”"
       }

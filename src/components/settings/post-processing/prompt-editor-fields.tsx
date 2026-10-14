@@ -7,6 +7,9 @@ import { Input } from "../../ui/Input";
 import { Textarea } from "../../ui/Textarea";
 import { PROMPT_KEYS, nameFieldState } from "./prompt-library-model";
 import type { PromptEditorModel } from "./use-prompt-editor";
+import { useFocusOnMount } from "./use-focus-on-mount";
+
+const KEY = `${PROMPT_KEYS}.editor`;
 
 /** Error classes of a field: the red border wins over hover and focus. */
 const ERROR_BORDER = "border-red-400!";
@@ -35,37 +38,57 @@ const FieldError: React.FC<FieldErrorProps> = ({ id, testId, messageKey }) => {
 interface EditorFieldsProps {
   testId: string;
   model: PromptEditorModel;
+  /** The field takes the focus when the editor opens. */
+  focusOnOpen?: boolean;
 }
 
+interface FieldLabelProps {
+  htmlFor: string;
+  testId: string;
+  text: string;
+}
+
+const FieldLabel: React.FC<FieldLabelProps> = ({ htmlFor, testId, text }) => (
+  <label
+    htmlFor={htmlFor}
+    className="text-sm font-semibold"
+    data-testid={testId}
+  >
+    {text}
+  </label>
+);
+
+/** Accessibility and highlight attributes of a field with an error. */
+const errorAttributesOf = (error: string | null, errorId: string) => ({
+  "aria-invalid": error !== null,
+  "aria-describedby": error ? errorId : undefined,
+  className: `w-full ${error ? ERROR_BORDER : ""}`,
+});
+
 /** Name of the prompt: 1–60 characters, unique ignoring case. */
-export const PromptNameField: React.FC<EditorFieldsProps> = ({
-  testId,
-  model,
-}) => {
+export const PromptNameField: React.FC<EditorFieldsProps> = (props) => {
+  const { testId, model, focusOnOpen = false } = props;
   const { t } = useTranslation();
   const inputId = useId();
   const errorId = `${inputId}-error`;
+  const focusRef = useFocusOnMount<HTMLDivElement>(focusOnOpen);
   return (
-    <div className="flex flex-col gap-2">
-      <label
+    <div ref={focusRef} className="flex flex-col gap-2">
+      <FieldLabel
         htmlFor={inputId}
-        className="text-sm font-semibold"
-        data-testid={`${testId}-form-name-label`}
-      >
-        {t(`${PROMPT_KEYS}.editor.name`)}
-      </label>
+        testId={`${testId}-form-name-label`}
+        text={t(`${KEY}.name`)}
+      />
       <Input
         id={inputId}
         type="text"
         value={model.draft.name}
         onChange={(event) => model.setName(event.target.value)}
         onBlur={model.touchName}
-        placeholder={t(`${PROMPT_KEYS}.editor.namePlaceholder`)}
+        placeholder={t(`${KEY}.namePlaceholder`)}
         data-testid={`${testId}-form-name`}
         data-state={nameFieldState(model.validation.nameIssue)}
-        aria-invalid={model.nameError !== null}
-        aria-describedby={model.nameError ? errorId : undefined}
-        className={`w-full ${model.nameError ? ERROR_BORDER : ""}`}
+        {...errorAttributesOf(model.nameError, errorId)}
       />
       <FieldError
         id={errorId}
@@ -76,6 +99,16 @@ export const PromptNameField: React.FC<EditorFieldsProps> = ({
   );
 };
 
+/** The `${output}` placeholder hint under the text. */
+const TextHint: React.FC<{ testId: string }> = ({ testId }) => (
+  <p
+    className="text-xs text-mid-gray/70"
+    data-testid={`${testId}-form-text-hint`}
+  >
+    <Trans i18nKey={`${KEY}.textHint`} components={{ code: <code /> }} />
+  </p>
+);
+
 /** Text of the prompt: 1–8000 characters, `${output}` stands for the transcript. */
 export const PromptTextField: React.FC<EditorFieldsProps> = ({
   testId,
@@ -84,35 +117,24 @@ export const PromptTextField: React.FC<EditorFieldsProps> = ({
   const { t } = useTranslation();
   const inputId = useId();
   const errorId = `${inputId}-error`;
+  const label = t(`${KEY}.text`);
   return (
     <div className="flex flex-col gap-2">
-      <label
+      <FieldLabel
         htmlFor={inputId}
-        className="text-sm font-semibold"
-        data-testid={`${testId}-form-text-label`}
-      >
-        {t(`${PROMPT_KEYS}.editor.text`)}
-      </label>
+        testId={`${testId}-form-text-label`}
+        text={label}
+      />
       <Textarea
         id={inputId}
         value={model.draft.text}
         onChange={(event) => model.setText(event.target.value)}
         onBlur={model.touchText}
-        placeholder={t(`${PROMPT_KEYS}.editor.textPlaceholder`)}
+        placeholder={t(`${KEY}.textPlaceholder`)}
         data-testid={`${testId}-form-text`}
-        aria-invalid={model.textError !== null}
-        aria-describedby={model.textError ? errorId : undefined}
-        className={`w-full ${model.textError ? ERROR_BORDER : ""}`}
+        {...errorAttributesOf(model.textError, errorId)}
       />
-      <p
-        className="text-xs text-mid-gray/70"
-        data-testid={`${testId}-form-text-hint`}
-      >
-        <Trans
-          i18nKey={`${PROMPT_KEYS}.editor.textHint`}
-          components={{ code: <code /> }}
-        />
-      </p>
+      <TextHint testId={testId} />
       <FieldError
         id={errorId}
         testId={`${testId}-form-text-error`}

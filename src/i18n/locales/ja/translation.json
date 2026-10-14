@@ -481,7 +481,8 @@
           "providerModel": "{{provider}} · {{model}}",
           "noShortcut": "ショートカットなし",
           "notReady": "準備未完了: {{reason}}",
-          "invalid": "無効: {{reason}}"
+          "invalid": "無効: {{reason}}",
+          "reloadFailed": "プロンプトを更新できませんでした。表示が古い可能性があります。"
         },
         "issues": {
           "name_empty": "名前がありません",
@@ -535,7 +536,13 @@
           "shortcuts": "ショートカット (最大 {{limit}} 件)",
           "changedElsewhere": "このプロンプトは別の場所で変更されました。変更を見るには再読み込みし、自分の版を残すには保存してください。",
           "reload": "再読み込み",
-          "deletedElsewhere": "このプロンプトは別の場所で削除されたため、保存できません。"
+          "deletedElsewhere": "このプロンプトは別の場所で削除されたため、保存できません。",
+          "shortcutsSavedImmediately": "ショートカットの変更はすぐに保存されます。",
+          "fixField": {
+            "api_key": "{{provider}} の API キー",
+            "endpoint": "{{provider}} のエンドポイント",
+            "hint": "フィールドを離れると保存されます。デフォルトのプロバイダーは変わりません。"
+          }
         },
         "actions": {
           "note": "変更は保存後の次の音声入力から適用されます。",
@@ -569,7 +576,8 @@
           "failedHint": "プロバイダーの設定を確認してから、もう一度テストしてください。",
           "retry": "もう一度実行",
           "busy": "別のテストを実行中です。終了してからもう一度お試しください。",
-          "skipped": "プロンプトをテストするにはサンプルテキストを入力してください。"
+          "skipped": "プロンプトをテストするにはサンプルテキストを入力してください。",
+          "outdated": "この結果は以前のプロンプトまたはサンプルのものです。もう一度テストしてください。"
         },
         "shortcutOwner": "プロンプト「{{name}}」"
       }

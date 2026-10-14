@@ -481,7 +481,8 @@
           "providerModel": "{{provider}} · {{model}}",
           "noShortcut": "无快捷键",
           "notReady": "未就绪：{{reason}}",
-          "invalid": "无效：{{reason}}"
+          "invalid": "无效：{{reason}}",
+          "reloadFailed": "无法刷新提示词。显示的内容可能已过时。"
         },
         "issues": {
           "name_empty": "缺少名称",
@@ -535,7 +536,13 @@
           "shortcuts": "快捷键（最多 {{limit}} 个）",
           "changedElsewhere": "此提示词已在别处被修改。重新加载可查看更改，保存则保留你的版本。",
           "reload": "重新加载",
-          "deletedElsewhere": "此提示词已在别处被删除，无法再保存。"
+          "deletedElsewhere": "此提示词已在别处被删除，无法再保存。",
+          "shortcutsSavedImmediately": "快捷键更改会立即保存。",
+          "fixField": {
+            "api_key": "{{provider}} 的 API 密钥",
+            "endpoint": "{{provider}} 的端点",
+            "hint": "离开字段时保存。默认提供商不会改变。"
+          }
         },
         "actions": {
           "note": "保存后，更改将应用于下一次听写。",
@@ -569,7 +576,8 @@
           "failedHint": "请检查提供商设置，然后重新运行测试。",
           "retry": "重新运行",
           "busy": "另一个测试仍在运行。请在其结束后重试。",
-          "skipped": "请输入示例文本来测试提示词。"
+          "skipped": "请输入示例文本来测试提示词。",
+          "outdated": "此结果对应提示词或示例的旧版本。请重新运行测试。"
         },
         "shortcutOwner": "提示词“{{name}}”"
       }

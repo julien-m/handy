@@ -1,6 +1,8 @@
 // "Prompts" group of the prompt settings (005 AC-001, AC-002, AC-004): every
 // prompt with its provider, shortcuts and, when it cannot run, why; the
-// default prompt highlighted; New prompt within the 50-prompt limit.
+// default prompt highlighted; New prompt within the 50-prompt limit; a
+// failed reload flagged; the focus back on the button that opened the
+// editor once it closes.
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Pencil, Plus } from "lucide-react";
@@ -12,8 +14,15 @@ import { Alert } from "../../ui/Alert";
 import Badge from "../../ui/Badge";
 import { Button } from "../../ui/Button";
 import { SettingsGroup } from "../../ui/SettingsGroup";
-import { MAX_PROMPTS, PROMPT_KEYS, rowStatusOf } from "./prompt-library-model";
+import {
+  MAX_PROMPTS,
+  NEW_PROMPT_FOCUS,
+  PROMPT_KEYS,
+  rowStatusOf,
+} from "./prompt-library-model";
+import { LibraryReloadNotice } from "./prompt-library-notice";
 import { providerLabelOf } from "./prompt-provider-model";
+import { useFocusOnMount } from "./use-focus-on-mount";
 import type { PromptLibraryState } from "./use-prompt-library";
 
 const TEST_ID = "prompt-settings";
@@ -65,11 +74,37 @@ const RowBadges: React.FC<{ prompt: ListedPrompt }> = ({ prompt }) => {
 interface PromptRowProps {
   prompt: ListedPrompt;
   isDefault: boolean;
+  /** The edit button takes the focus (the editor of this prompt closed). */
+  takesFocus: boolean;
   onEdit: (id: string) => void;
 }
 
-const PromptRow: React.FC<PromptRowProps> = ({ prompt, isDefault, onEdit }) => {
+/** Pencil button that opens the editor of a prompt. */
+const EditButton: React.FC<PromptRowProps> = ({
+  prompt,
+  takesFocus,
+  onEdit,
+}) => {
   const { t } = useTranslation();
+  const focusRef = useFocusOnMount<HTMLButtonElement>(takesFocus);
+  const label = t(`${PROMPT_KEYS}.list.edit`, { name: prompt.name });
+  return (
+    <button
+      ref={focusRef}
+      type="button"
+      className="p-1 rounded-md cursor-pointer hover:bg-logo-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-logo-primary"
+      data-testid={`${TEST_ID}-prompt-edit`}
+      aria-label={label}
+      title={label}
+      onClick={() => onEdit(prompt.id)}
+    >
+      <Pencil size={16} />
+    </button>
+  );
+};
+
+const PromptRow: React.FC<PromptRowProps> = (props) => {
+  const { prompt, isDefault } = props;
   const providerText = useProviderText(prompt);
   return (
     <li
@@ -93,17 +128,28 @@ const PromptRow: React.FC<PromptRowProps> = ({ prompt, isDefault, onEdit }) => {
         </p>
       </div>
       <RowBadges prompt={prompt} />
-      <button
-        type="button"
-        className="p-1 rounded-md cursor-pointer hover:bg-logo-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-logo-primary"
-        data-testid={`${TEST_ID}-prompt-edit`}
-        aria-label={t(`${PROMPT_KEYS}.list.edit`, { name: prompt.name })}
-        title={t(`${PROMPT_KEYS}.list.edit`, { name: prompt.name })}
-        onClick={() => onEdit(prompt.id)}
-      >
-        <Pencil size={16} />
-      </button>
+      <EditButton {...props} />
     </li>
+  );
+};
+
+/** First load failed: nothing to show but the error and Retry. */
+const LoadError: React.FC<{ state: PromptLibraryState }> = ({ state }) => {
+  const { t } = useTranslation();
+  const retry = (
+    <Button variant="secondary" size="sm" onClick={state.reload}>
+      {t(`${PROMPT_KEYS}.list.retry`)}
+    </Button>
+  );
+  return (
+    <Alert
+      variant="error"
+      role="alert"
+      testId={`${TEST_ID}-load-error`}
+      action={retry}
+    >
+      {t(`${PROMPT_KEYS}.list.loadFailed`)}
+    </Alert>
   );
 };
 
@@ -113,20 +159,7 @@ const ListPlaceholder: React.FC<{ state: PromptLibraryState }> = ({
 }) => {
   const { t } = useTranslation();
   if (state.loadState === "error" && !state.library) {
-    return (
-      <Alert
-        variant="error"
-        role="alert"
-        testId={`${TEST_ID}-load-error`}
-        action={
-          <Button variant="secondary" size="sm" onClick={state.reload}>
-            {t(`${PROMPT_KEYS}.list.retry`)}
-          </Button>
-        }
-      >
-        {t(`${PROMPT_KEYS}.list.loadFailed`)}
-      </Alert>
-    );
+    return <LoadError state={state} />;
   }
   const isLoading = !state.library;
   return (
@@ -142,19 +175,29 @@ const ListPlaceholder: React.FC<{ state: PromptLibraryState }> = ({
 
 interface PromptListGroupProps {
   state: PromptLibraryState;
+  /** Prompt id or `NEW_PROMPT_FOCUS` whose button takes the focus back. */
+  focusId: string | null;
   onEdit: (id: string) => void;
   onNew: () => void;
 }
 
+interface ListFooterProps {
+  count: number;
+  takesFocus: boolean;
+  onNew: () => void;
+}
+
 /** New prompt and the library count; New is unavailable at the limit. */
-const ListFooter: React.FC<{ count: number; onNew: () => void }> = ({
+const ListFooter: React.FC<ListFooterProps> = ({
   count,
+  takesFocus,
   onNew,
 }) => {
   const { t } = useTranslation();
+  const focusRef = useFocusOnMount<HTMLDivElement>(takesFocus);
   const isFull = count >= MAX_PROMPTS;
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div ref={focusRef} className="flex flex-wrap items-center gap-3">
       <Button
         variant="secondary"
         size="md"
@@ -175,37 +218,53 @@ const ListFooter: React.FC<{ count: number; onNew: () => void }> = ({
   );
 };
 
-/** The library with its rows, New prompt and count. */
-export const PromptListGroup: React.FC<PromptListGroupProps> = ({
+/** The rows of a non-empty library. */
+const PromptRows: React.FC<PromptListGroupProps> = ({
   state,
+  focusId,
   onEdit,
-  onNew,
 }) => {
-  const { t } = useTranslation();
-  const prompts = state.library?.prompts ?? [];
   const defaultId = state.library?.default_prompt_id ?? null;
+  return (
+    <ul
+      className="rounded-md border border-mid-gray/20 divide-y divide-mid-gray/20 overflow-hidden"
+      data-testid={`${TEST_ID}-list`}
+    >
+      {(state.library?.prompts ?? []).map((prompt) => (
+        <PromptRow
+          key={prompt.id}
+          prompt={prompt}
+          isDefault={prompt.id === defaultId}
+          takesFocus={prompt.id === focusId}
+          onEdit={onEdit}
+        />
+      ))}
+    </ul>
+  );
+};
+
+/** The library with its rows, New prompt and count. */
+export const PromptListGroup: React.FC<PromptListGroupProps> = (props) => {
+  const { state, focusId, onNew } = props;
+  const { t } = useTranslation();
+  const count = state.library?.prompts.length ?? 0;
   return (
     <div data-testid={`${TEST_ID}-library`}>
       <SettingsGroup title={t(`${PROMPT_KEYS}.list.title`)}>
         <div className="px-4 py-3 space-y-3">
-          {prompts.length > 0 ? (
-            <ul
-              className="rounded-md border border-mid-gray/20 divide-y divide-mid-gray/20 overflow-hidden"
-              data-testid={`${TEST_ID}-list`}
-            >
-              {prompts.map((prompt) => (
-                <PromptRow
-                  key={prompt.id}
-                  prompt={prompt}
-                  isDefault={prompt.id === defaultId}
-                  onEdit={onEdit}
-                />
-              ))}
-            </ul>
+          <LibraryReloadNotice testId={TEST_ID} state={state} />
+          {count > 0 ? (
+            <PromptRows {...props} />
           ) : (
             <ListPlaceholder state={state} />
           )}
-          {state.library && <ListFooter count={prompts.length} onNew={onNew} />}
+          {state.library && (
+            <ListFooter
+              count={count}
+              takesFocus={focusId === NEW_PROMPT_FOCUS}
+              onNew={onNew}
+            />
+          )}
         </div>
       </SettingsGroup>
     </div>

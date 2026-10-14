@@ -481,7 +481,8 @@
           "providerModel": "{{provider}} · {{model}}",
           "noShortcut": "Inget kortkommando",
           "notReady": "Inte redo: {{reason}}",
-          "invalid": "Ogiltig: {{reason}}"
+          "invalid": "Ogiltig: {{reason}}",
+          "reloadFailed": "Prompterna kunde inte uppdateras. Det som visas kan vara inaktuellt."
         },
         "issues": {
           "name_empty": "namn saknas",
@@ -535,7 +536,13 @@
           "shortcuts": "Kortkommandon (upp till {{limit}})",
           "changedElsewhere": "Den här prompten har ändrats någon annanstans. Läs in den igen för att se ändringen, eller spara för att behålla din version.",
           "reload": "Läs in igen",
-          "deletedElsewhere": "Den här prompten har tagits bort någon annanstans och kan inte längre sparas."
+          "deletedElsewhere": "Den här prompten har tagits bort någon annanstans och kan inte längre sparas.",
+          "shortcutsSavedImmediately": "Ändringar av kortkommandon sparas direkt.",
+          "fixField": {
+            "api_key": "API-nyckel för {{provider}}",
+            "endpoint": "Slutpunkt för {{provider}}",
+            "hint": "Sparas när du lämnar fältet. Standardleverantören ändras inte."
+          }
         },
         "actions": {
           "note": "Ändringarna gäller nästa diktering efter att du sparat.",
@@ -569,7 +576,8 @@
           "failedHint": "Kontrollera leverantörsinställningarna och kör testet igen.",
           "retry": "Kör igen",
           "busy": "Ett annat test körs fortfarande. Försök igen när det är klart.",
-          "skipped": "Ange en exempeltext för att testa prompten."
+          "skipped": "Ange en exempeltext för att testa prompten.",
+          "outdated": "Det här resultatet gäller en tidigare version av prompten eller exemplet. Kör testet igen."
         },
         "shortcutOwner": "prompten ”{{name}}”"
       }

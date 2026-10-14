@@ -481,7 +481,8 @@
           "providerModel": "{{provider}} · {{model}}",
           "noShortcut": "Kein Tastenkürzel",
           "notReady": "Nicht bereit: {{reason}}",
-          "invalid": "Ungültig: {{reason}}"
+          "invalid": "Ungültig: {{reason}}",
+          "reloadFailed": "Die Prompts konnten nicht aktualisiert werden. Die Anzeige ist möglicherweise veraltet."
         },
         "issues": {
           "name_empty": "Name fehlt",
@@ -535,7 +536,13 @@
           "shortcuts": "Tastenkürzel (bis zu {{limit}})",
           "changedElsewhere": "Dieser Prompt wurde an anderer Stelle geändert. Lade ihn neu, um die Änderung zu sehen, oder speichere, um deine Version zu behalten.",
           "reload": "Neu laden",
-          "deletedElsewhere": "Dieser Prompt wurde an anderer Stelle gelöscht und kann nicht mehr gespeichert werden."
+          "deletedElsewhere": "Dieser Prompt wurde an anderer Stelle gelöscht und kann nicht mehr gespeichert werden.",
+          "shortcutsSavedImmediately": "Änderungen an Tastenkürzeln werden sofort gespeichert.",
+          "fixField": {
+            "api_key": "API-Schlüssel für {{provider}}",
+            "endpoint": "Endpunkt von {{provider}}",
+            "hint": "Wird beim Verlassen des Feldes gespeichert. Der Standardanbieter ändert sich nicht."
+          }
         },
         "actions": {
           "note": "Änderungen gelten ab dem nächsten Diktat nach dem Speichern.",
@@ -569,7 +576,8 @@
           "failedHint": "Prüfe die Anbietereinstellungen und starte den Test erneut.",
           "retry": "Erneut starten",
           "busy": "Ein anderer Test läuft noch. Versuche es erneut, wenn er beendet ist.",
-          "skipped": "Gib einen Beispieltext ein, um den Prompt zu testen."
+          "skipped": "Gib einen Beispieltext ein, um den Prompt zu testen.",
+          "outdated": "Dieses Ergebnis gehört zu einer früheren Version des Prompts oder Beispiels. Starte den Test erneut."
         },
         "shortcutOwner": "den Prompt „{{name}}“"
       }

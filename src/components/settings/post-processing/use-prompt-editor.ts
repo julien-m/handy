@@ -1,21 +1,23 @@
 // State of the prompt editor (005 AC-001, Behavioral AC `has_validation` and
 // `is_submittable`): the draft against its saved values, live validation,
 // the Save state, backend refusals per field, and a prompt changed or
-// deleted elsewhere while it is open.
+// deleted elsewhere while it is open. The rules live in the pure
+// `prompt-editor-sync.ts` and `prompt-draft-model.ts`.
 import {
   type Dispatch,
+  type MutableRefObject,
   type SetStateAction,
   useCallback,
   useEffect,
-  useMemo,
+  useRef,
   useState,
 } from "react";
-import type { ListedPrompt, PromptLibraryView } from "@/bindings";
 import { settingsErrorKey } from "../../../stores/settings-errors";
+import { useSettingsStore } from "../../../stores/settingsStore";
 import {
+  type CommitOutcome,
   createPrompt,
   updatePrompt,
-  type CommitOutcome,
 } from "./prompt-commands";
 import {
   type DraftValidation,
@@ -25,17 +27,24 @@ import {
   type PromptDraft,
   type SaveState,
   EMPTY_DRAFT,
-  draftOf,
-  externalChangeOf,
   fieldErrorOf,
   isDraftDirty,
   refusalFieldOf,
   saveStateOf,
-  savedAfterCommit,
   validateDraft,
 } from "./prompt-draft-model";
+import {
+  type EditorSync,
+  type LibrarySnapshot,
+  createdIdToOpen,
+  initialSyncOf,
+  reconcileWithLibrary,
+  showsIssuesAtOpen,
+  syncAfterSave,
+} from "./prompt-editor-sync";
 import { fieldIssueKey, otherPromptNames } from "./prompt-library-model";
 import type { ProviderDraft } from "./prompt-provider-model";
+import type { PromptLibraryState } from "./use-prompt-library";
 
 /** Everything the editor renders and the actions it takes. */
 export interface PromptEditorModel {
@@ -65,122 +74,127 @@ const GENERIC_REFUSAL: EditorRefusal = {
   key: "errors.settings.generic",
 };
 
+type SetSync = Dispatch<SetStateAction<EditorSync>>;
+
+/**
+ * Editor state reconciled with each loaded library: a library older than the
+ * editor's own save is ignored (see `reconcileWithLibrary`). The render uses
+ * the reconciled state at once; the effect stores it by reconciling the
+ * latest state again, so a keystroke made in between is never overwritten.
+ */
+const useEditorSync = (target: EditorTarget, snapshot: LibrarySnapshot) => {
+  const [stored, setSync] = useState(() => initialSyncOf(snapshot.current));
+  const { sync, external } = reconcileWithLibrary(stored, target, snapshot);
+  useEffect(() => {
+    if (sync === stored) return;
+    setSync((now) => reconcileWithLibrary(now, target, snapshot).sync);
+  }, [sync, stored, target, snapshot]);
+  return { sync, external, setSync };
+};
+
+/** Whether the component is still mounted, for answers that come late. */
+const useMounted = (): MutableRefObject<boolean> => {
+  const mounted = useRef(true);
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+  return mounted;
+};
+
 /** Parts of a draft committed by a save outcome. */
 const committedPartsOf = (outcome: CommitOutcome) =>
   outcome.status === "saved"
     ? { content: true, provider: true }
     : { content: outcome.contentSaved, provider: false };
 
-interface DraftPair {
-  draft: PromptDraft;
-  saved: PromptDraft;
-  setDraft: Dispatch<SetStateAction<PromptDraft>>;
-  setSaved: Dispatch<SetStateAction<PromptDraft>>;
-}
-
-const useDraftPair = (initial: PromptDraft): DraftPair => {
-  const [draft, setDraft] = useState(initial);
-  const [saved, setSaved] = useState(initial);
-  return { draft, saved, setDraft, setSaved };
-};
-
 /**
- * Whether the edited prompt has been in the library: a prompt just created
- * here is not deleted while the library reload that lists it is pending.
+ * Sends `sent` as a new prompt or as the changes of the edited one.
+ * @throws Error when a command cannot be invoked at all.
  */
-const useSeenInLibrary = (current: ListedPrompt | undefined): boolean => {
-  const [seen, setSeen] = useState(Boolean(current));
-  useEffect(() => {
-    if (current) setSeen(true);
-  }, [current]);
-  return seen || Boolean(current);
-};
-
-/**
- * Change made elsewhere to the edited prompt. Without local changes the
- * editor silently takes the new values; with local changes it reports the
- * change and lets the user reload or keep their version.
- */
-const useExternalChange = (
+const commitDraft = (
   target: EditorTarget,
-  current: ListedPrompt | undefined,
-  pair: DraftPair,
-): ExternalChange => {
-  const seen = useSeenInLibrary(current);
-  const external =
-    target.mode === "edit" && seen
-      ? externalChangeOf(pair.saved, current)
-      : "none";
-  const isDirty = isDraftDirty(pair.draft, pair.saved);
-  const { setDraft, setSaved } = pair;
-  useEffect(() => {
-    if (external !== "changed" || isDirty || !current) return;
-    setSaved(draftOf(current));
-    setDraft(draftOf(current));
-  }, [external, isDirty, current, setDraft, setSaved]);
-  return external;
-};
+  sent: PromptDraft,
+  base: PromptDraft,
+): Promise<CommitOutcome> =>
+  target.mode === "new"
+    ? createPrompt(sent, base)
+    : updatePrompt(target.id, sent, base);
 
-interface SaveFlow {
+interface SaveFeedback {
   saving: boolean;
   refusal: EditorRefusal | null;
   justSaved: boolean;
+}
+
+const IDLE_FEEDBACK: SaveFeedback = {
+  saving: false,
+  refusal: null,
+  justSaved: false,
+};
+
+/** Feedback of a save outcome: saved, or the refusal under its field. */
+const feedbackOf = (outcome: CommitOutcome): SaveFeedback =>
+  outcome.status === "saved"
+    ? { ...IDLE_FEEDBACK, justSaved: true }
+    : {
+        ...IDLE_FEEDBACK,
+        refusal: {
+          field: refusalFieldOf(outcome.error),
+          key: settingsErrorKey(outcome.error),
+        },
+      };
+
+interface SaveFlow extends SaveFeedback {
   clearFeedback: () => void;
   save: () => Promise<void>;
 }
 
-/** Commits the draft and records what was saved or why it was refused. */
+/**
+ * Commits the draft and records what was saved or why it was refused. An
+ * answer that arrives after the editor closed changes nothing (a creation
+ * then never reopens the editor).
+ */
 const useSaveFlow = (
   target: EditorTarget,
-  pair: DraftPair,
+  sync: EditorSync,
+  setSync: SetSync,
   onCreated: (id: string) => void,
 ): SaveFlow => {
-  const [saving, setSaving] = useState(false);
-  const [refusal, setRefusal] = useState<EditorRefusal | null>(null);
-  const [justSaved, setJustSaved] = useState(false);
+  const [feedback, setFeedback] = useState(IDLE_FEEDBACK);
+  const mounted = useMounted();
   const save = async () => {
-    setSaving(true);
-    setRefusal(null);
-    setJustSaved(false);
+    const sent = sync.draft;
+    const base = target.mode === "new" ? EMPTY_DRAFT : sync.saved;
+    setFeedback({ ...IDLE_FEEDBACK, saving: true });
     try {
-      const outcome =
-        target.mode === "new"
-          ? await createPrompt(pair.draft, EMPTY_DRAFT)
-          : await updatePrompt(target.id, pair.draft, pair.saved);
-      applyOutcome(outcome);
+      const outcome = await commitDraft(target, sent, base);
+      const createdId = createdIdToOpen(target, outcome, mounted.current);
+      if (!mounted.current) return;
+      const revision = useSettingsStore.getState().revision;
+      const committed = committedPartsOf(outcome);
+      setSync((now) => syncAfterSave(now, { sent, base, committed, revision }));
+      setFeedback(feedbackOf(outcome));
+      if (createdId) onCreated(createdId);
     } catch (failure) {
       console.error("Failed to save the prompt:", failure);
-      setRefusal(GENERIC_REFUSAL);
-    } finally {
-      setSaving(false);
+      if (mounted.current)
+        setFeedback({ ...IDLE_FEEDBACK, refusal: GENERIC_REFUSAL });
     }
   };
-  const applyOutcome = (outcome: CommitOutcome) => {
-    const base = target.mode === "new" ? EMPTY_DRAFT : pair.saved;
-    const next = savedAfterCommit(pair.draft, base, committedPartsOf(outcome));
-    pair.setSaved(next);
-    if (outcome.status === "saved") {
-      pair.setDraft(next);
-      setJustSaved(true);
-    } else {
-      const field = refusalFieldOf(outcome.error);
-      setRefusal({ field, key: settingsErrorKey(outcome.error) });
-    }
-    // A new prompt exists once created, even if its override was refused:
-    // the editor then edits it.
-    if (target.mode === "new" && outcome.id) onCreated(outcome.id);
-  };
-  const clearFeedback = useCallback(() => {
-    setRefusal(null);
-    setJustSaved(false);
-  }, []);
-  return { saving, refusal, justSaved, clearFeedback, save };
+  const clearFeedback = useCallback(() => setFeedback(IDLE_FEEDBACK), []);
+  return { ...feedback, clearFeedback, save };
 };
 
-/** Name and text fields: show an issue once the field was left. */
-const useTouched = () => {
-  const [name, setName] = useState(false);
-  const [text, setText] = useState(false);
+/**
+ * Name and text fields: show an issue once the field was left, or from the
+ * start when `showAtOnce` (an invalid saved prompt opened to be fixed).
+ */
+const useTouched = (showAtOnce: boolean) => {
+  const [name, setName] = useState(showAtOnce);
+  const [text, setText] = useState(showAtOnce);
   return {
     name,
     text,
@@ -192,53 +206,60 @@ const useTouched = () => {
 /**
  * Editor state for `target`.
  * @param target Prompt being edited, or a new one.
- * @param library Latest library (reloaded after every revision).
+ * @param libraryState Latest library (reloaded after every revision).
  * @param onCreated Called with the id of a new prompt once it exists.
  */
 export const usePromptEditor = (
   target: EditorTarget,
-  library: PromptLibraryView | null,
+  libraryState: PromptLibraryState,
   onCreated: (id: string) => void,
 ): PromptEditorModel => {
-  const prompts = useMemo(() => library?.prompts ?? [], [library]);
+  const prompts = libraryState.library?.prompts ?? [];
   const editingId = target.mode === "edit" ? target.id : null;
   const current = prompts.find((prompt) => prompt.id === editingId);
-  const pair = useDraftPair(current ? draftOf(current) : EMPTY_DRAFT);
-  const external = useExternalChange(target, current, pair);
-  const flow = useSaveFlow(target, pair, onCreated);
-  const touched = useTouched();
-  const validation = validateDraft(
-    pair.draft,
-    otherPromptNames(prompts, editingId),
-  );
-  const isDirty = target.mode === "new" || isDraftDirty(pair.draft, pair.saved);
-  const edit = (patch: Partial<PromptDraft>) => {
-    flow.clearFeedback();
-    pair.setDraft((draft) => ({ ...draft, ...patch }));
-  };
+  const snapshot = { current, revision: libraryState.loadedRevision };
+  const { sync, external, setSync } = useEditorSync(target, snapshot);
+  const flow = useSaveFlow(target, sync, setSync, onCreated);
+  const touched = useTouched(showsIssuesAtOpen(target, current));
+  const names = otherPromptNames(prompts, editingId);
+  const validation = validateDraft(sync.draft, names);
   return {
-    draft: pair.draft,
+    draft: sync.draft,
     validation,
     external,
     saveState: saveStateOf({
       valid: validation.valid,
-      dirty: isDirty,
+      dirty: target.mode === "new" || isDraftDirty(sync.draft, sync.saved),
       saving: flow.saving,
       deleted: external === "deleted",
     }),
     ...fieldErrorsOf(validation, touched, flow.refusal),
     justSaved: flow.justSaved,
-    setName: (name) => edit({ name }),
-    setText: (text) => edit({ text }),
-    setProvider: (provider) => edit({ provider }),
+    ...editActionsOf(setSync, flow.clearFeedback, touched),
+    reloadSaved: () => current && setSync(initialSyncOf(current)),
+    save: flow.save,
+  };
+};
+
+/**
+ * Field setters (an edit clears the last saved/refused feedback) and the
+ * "field left" handlers.
+ */
+const editActionsOf = (
+  setSync: SetSync,
+  clearFeedback: () => void,
+  touched: { touchName: () => void; touchText: () => void },
+) => {
+  const edit = (patch: Partial<PromptDraft>) => {
+    clearFeedback();
+    setSync((now) => ({ ...now, draft: { ...now.draft, ...patch } }));
+  };
+  return {
+    setName: (name: string) => edit({ name }),
+    setText: (text: string) => edit({ text }),
+    setProvider: (provider: ProviderDraft) => edit({ provider }),
     touchName: touched.touchName,
     touchText: touched.touchText,
-    reloadSaved: () => {
-      if (!current) return;
-      pair.setSaved(draftOf(current));
-      pair.setDraft(draftOf(current));
-    },
-    save: flow.save,
   };
 };
 

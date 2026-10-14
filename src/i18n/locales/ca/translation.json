@@ -481,7 +481,8 @@
           "providerModel": "{{provider}} · {{model}}",
           "noShortcut": "Sense drecera",
           "notReady": "No està a punt: {{reason}}",
-          "invalid": "No vàlid: {{reason}}"
+          "invalid": "No vàlid: {{reason}}",
+          "reloadFailed": "No s’han pogut actualitzar els prompts. El que es mostra pot estar desactualitzat."
         },
         "issues": {
           "name_empty": "falta el nom",
@@ -535,7 +536,13 @@
           "shortcuts": "Dreceres (fins a {{limit}})",
           "changedElsewhere": "Aquest prompt s'ha modificat en un altre lloc. Torna'l a carregar per veure el canvi o desa per conservar la teva versió.",
           "reload": "Torna a carregar",
-          "deletedElsewhere": "Aquest prompt s'ha eliminat en un altre lloc i ja no es pot desar."
+          "deletedElsewhere": "Aquest prompt s'ha eliminat en un altre lloc i ja no es pot desar.",
+          "shortcutsSavedImmediately": "Els canvis de dreceres es desen immediatament.",
+          "fixField": {
+            "api_key": "Clau API de {{provider}}",
+            "endpoint": "Endpoint de {{provider}}",
+            "hint": "Es desa quan surts del camp. El proveïdor per defecte no canvia."
+          }
         },
         "actions": {
           "note": "Els canvis s'apliquen al següent dictat després de desar.",
@@ -569,7 +576,8 @@
           "failedHint": "Comprova la configuració del proveïdor i torna a executar la prova.",
           "retry": "Torna a executar",
           "busy": "Encara hi ha una altra prova en curs. Torna-ho a provar quan acabi.",
-          "skipped": "Introdueix un text d'exemple per provar el prompt."
+          "skipped": "Introdueix un text d'exemple per provar el prompt.",
+          "outdated": "Aquest resultat correspon a una versió anterior del prompt o de la mostra. Torna a executar la prova."
         },
         "shortcutOwner": "el prompt «{{name}}»"
       }

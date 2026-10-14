@@ -1,0 +1,20 @@
+Browser-mock checks (NOT a native window) — delivery-review fix round 1, 2026-10-14
+Harness: Vite dev server on the worktree with a scratch Tauri IPC mock (scratchpad, outside the repo),
+browser pane at http://localhost:1431, page Post Process. Results read from the DOM with data-testid.
+
+1. Open "Translate to English" (OpenAI, no key): focus on prompt-settings-editor-form-name; model select
+   aria-label "Model".
+2. Type in the text, click "Add API key" (prompt-settings-editor-form-fix), type a key, leave the field:
+   the mock received change_post_process_api_key_setting("openai", …); the draft text kept
+   "… Keep it formal."; readiness turned to "OpenAI · gpt-4.1-mini · Ready"; the default provider
+   (custom) unchanged. Screenshot: prompt-settings-editor-inline-api-key.jpg (inline field open).
+3. get_prompt_library delayed 1.5 s, Save: sampled every 250 ms for 2 s — text kept the saved value,
+   no prompt-settings-editor-changed-elsewhere, "Prompt saved." shown, Save disabled.
+4. get_prompt_library failing, edit + Save: prompt-settings-editor-reload-error shown with Retry, text
+   kept; after Retry (library back) the notice left, text kept, no changed-elsewhere notice.
+5. Test run, then text edited: prompt-settings-editor-test-outdated shown.
+6. Cancel: focus back on "Edit Translate to English".
+7. Open the 70-character legacy prompt: name error "Use 60 characters or fewer." shown at once,
+   aria-invalid=true, note "Fix the highlighted fields to save."
+8. New prompt, add_post_process_prompt delayed 0.8 s, Save then Cancel at once: the list stayed shown
+   (editor not reopened), the prompt was created (8 rows), focus on prompt-settings-new.

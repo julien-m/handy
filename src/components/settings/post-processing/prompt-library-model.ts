@@ -130,3 +130,22 @@ export const rowStatusOf = (prompt: ListedPrompt): RowStatus | null => {
   }
   return null;
 };
+
+/** Focus target of the New prompt button. */
+export const NEW_PROMPT_FOCUS = "new";
+
+/**
+ * Control that takes the focus back when the editor closes: the edit button
+ * of the prompt that was edited while it is listed, else New prompt (a new
+ * prompt cancelled, or a prompt deleted).
+ * @param editedId Prompt the editor had open, or null for a new prompt.
+ * @param prompts Listed prompts.
+ * @returns The prompt id, or `NEW_PROMPT_FOCUS`.
+ */
+export const focusReturnOf = (
+  editedId: string | null,
+  prompts: ReadonlyArray<ListedPrompt>,
+): string =>
+  editedId !== null && prompts.some((prompt) => prompt.id === editedId)
+    ? editedId
+    : NEW_PROMPT_FOCUS;

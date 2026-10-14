@@ -481,7 +481,8 @@
           "providerModel": "{{provider}} · {{model}}",
           "noShortcut": "Sin atajo",
           "notReady": "No está listo: {{reason}}",
-          "invalid": "No válido: {{reason}}"
+          "invalid": "No válido: {{reason}}",
+          "reloadFailed": "No se pudieron actualizar los prompts. Lo que se muestra puede estar desactualizado."
         },
         "issues": {
           "name_empty": "falta el nombre",
@@ -535,7 +536,13 @@
           "shortcuts": "Atajos (hasta {{limit}})",
           "changedElsewhere": "Este prompt se modificó en otro lugar. Recárgalo para ver el cambio o guarda para conservar tu versión.",
           "reload": "Recargar",
-          "deletedElsewhere": "Este prompt se eliminó en otro lugar y ya no se puede guardar."
+          "deletedElsewhere": "Este prompt se eliminó en otro lugar y ya no se puede guardar.",
+          "shortcutsSavedImmediately": "Los cambios de atajos se guardan inmediatamente.",
+          "fixField": {
+            "api_key": "Clave API de {{provider}}",
+            "endpoint": "Endpoint de {{provider}}",
+            "hint": "Se guarda al salir del campo. El proveedor predeterminado no cambia."
+          }
         },
         "actions": {
           "note": "Los cambios se aplican al siguiente dictado después de guardar.",
@@ -569,7 +576,8 @@
           "failedHint": "Revisa la configuración del proveedor y vuelve a ejecutar la prueba.",
           "retry": "Volver a ejecutar",
           "busy": "Otra prueba sigue en curso. Inténtalo de nuevo cuando termine.",
-          "skipped": "Introduce un texto de ejemplo para probar el prompt."
+          "skipped": "Introduce un texto de ejemplo para probar el prompt.",
+          "outdated": "Este resultado corresponde a una versión anterior del prompt o del ejemplo. Vuelve a ejecutar la prueba."
         },
         "shortcutOwner": "el prompt «{{name}}»"
       }

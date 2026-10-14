@@ -481,7 +481,8 @@
           "providerModel": "{{provider}} · {{model}}",
           "noShortcut": "Nessuna scorciatoia",
           "notReady": "Non pronto: {{reason}}",
-          "invalid": "Non valido: {{reason}}"
+          "invalid": "Non valido: {{reason}}",
+          "reloadFailed": "Non è stato possibile aggiornare i prompt. Ciò che vedi potrebbe non essere aggiornato."
         },
         "issues": {
           "name_empty": "nome mancante",
@@ -535,7 +536,13 @@
           "shortcuts": "Scorciatoie (fino a {{limit}})",
           "changedElsewhere": "Questo prompt è stato modificato altrove. Ricaricalo per vedere la modifica o salva per mantenere la tua versione.",
           "reload": "Ricarica",
-          "deletedElsewhere": "Questo prompt è stato eliminato altrove e non può più essere salvato."
+          "deletedElsewhere": "Questo prompt è stato eliminato altrove e non può più essere salvato.",
+          "shortcutsSavedImmediately": "Le modifiche alle scorciatoie vengono salvate subito.",
+          "fixField": {
+            "api_key": "Chiave API di {{provider}}",
+            "endpoint": "Endpoint di {{provider}}",
+            "hint": "Salvato quando lasci il campo. Il provider predefinito non cambia."
+          }
         },
         "actions": {
           "note": "Le modifiche si applicano alla dettatura successiva dopo il salvataggio.",
@@ -569,7 +576,8 @@
           "failedHint": "Controlla le impostazioni del provider, poi esegui di nuovo il test.",
           "retry": "Esegui di nuovo",
           "busy": "Un altro test è ancora in corso. Riprova quando sarà terminato.",
-          "skipped": "Inserisci un testo di esempio per provare il prompt."
+          "skipped": "Inserisci un testo di esempio per provare il prompt.",
+          "outdated": "Questo risultato riguarda una versione precedente del prompt o dell’esempio. Esegui di nuovo il test."
         },
         "shortcutOwner": "il prompt «{{name}}»"
       }

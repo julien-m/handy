@@ -1,8 +1,11 @@
 // Pure rules of the prompt test panel (005 AC-007): the panel state of each
-// test outcome, the error messages of failures and refusals, and the sample
-// prefilled from the last transcript.
+// test outcome, the error messages of failures and refusals, the sample
+// prefilled from the last transcript, and whether a result still describes
+// the draft shown.
 import type {
   HistoryEntry,
+  PromptProviderOverride,
+  PromptTestRequest,
   PromptTestResult,
   SettingsCommandError,
 } from "@/bindings";
@@ -123,3 +126,29 @@ export const refusedTestViewOf = (error: SettingsCommandError): TestView =>
 export const latestTranscriptOf = (
   entries: ReadonlyArray<HistoryEntry>,
 ): string => entries[0]?.transcription_text ?? "";
+
+/** Whether two provider overrides are the same provider and model. */
+const sameOverride = (
+  left: PromptProviderOverride | null,
+  right: PromptProviderOverride | null,
+): boolean =>
+  left === null || right === null
+    ? left === right
+    : left.provider_id === right.provider_id &&
+      left.model.trim() === right.model.trim();
+
+/**
+ * Whether a test result no longer describes the draft: its text, provider,
+ * model or sample changed since the test ran. The panel then marks it as
+ * outdated instead of passing it off as the current draft's result.
+ * @param tested Request the shown result answers, or null before any test.
+ * @param current Request the current draft and sample would send.
+ */
+export const isResultOutdated = (
+  tested: PromptTestRequest | null,
+  current: PromptTestRequest,
+): boolean =>
+  tested !== null &&
+  (tested.text !== current.text ||
+    tested.sample !== current.sample ||
+    !sameOverride(tested.provider_override, current.provider_override));

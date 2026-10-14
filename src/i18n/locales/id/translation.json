@@ -476,12 +476,13 @@
           "loading": "Memuat prompt…",
           "loadFailed": "Prompt tidak dapat dimuat.",
           "retry": "Coba lagi",
-          "edit": "Edit {{name}}",
+          "edit": "Ubah {{name}}",
           "defaultProvider": "Penyedia bawaan",
           "providerModel": "{{provider}} · {{model}}",
           "noShortcut": "Tanpa pintasan",
           "notReady": "Belum siap: {{reason}}",
-          "invalid": "Tidak valid: {{reason}}"
+          "invalid": "Tidak valid: {{reason}}",
+          "reloadFailed": "Prompt tidak dapat dimuat ulang. Yang ditampilkan mungkin sudah usang."
         },
         "issues": {
           "name_empty": "nama kosong",
@@ -535,7 +536,13 @@
           "shortcuts": "Pintasan (maksimal {{limit}})",
           "changedElsewhere": "Prompt ini diubah di tempat lain. Muat ulang untuk melihat perubahannya, atau simpan untuk mempertahankan versi Anda.",
           "reload": "Muat ulang",
-          "deletedElsewhere": "Prompt ini dihapus di tempat lain dan tidak dapat disimpan lagi."
+          "deletedElsewhere": "Prompt ini dihapus di tempat lain dan tidak dapat disimpan lagi.",
+          "shortcutsSavedImmediately": "Perubahan pintasan langsung disimpan.",
+          "fixField": {
+            "api_key": "Kunci API untuk {{provider}}",
+            "endpoint": "Endpoint {{provider}}",
+            "hint": "Disimpan saat Anda meninggalkan kolom. Penyedia bawaan tidak berubah."
+          }
         },
         "actions": {
           "note": "Perubahan berlaku untuk dikte berikutnya setelah Anda menyimpan.",
@@ -569,7 +576,8 @@
           "failedHint": "Periksa pengaturan penyedia, lalu jalankan uji lagi.",
           "retry": "Jalankan lagi",
           "busy": "Uji lain masih berjalan. Coba lagi setelah selesai.",
-          "skipped": "Masukkan teks contoh untuk menguji prompt."
+          "skipped": "Masukkan teks contoh untuk menguji prompt.",
+          "outdated": "Hasil ini untuk versi prompt atau sampel sebelumnya. Jalankan pengujian lagi."
         },
         "shortcutOwner": "prompt “{{name}}”"
       }

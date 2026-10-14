@@ -69,21 +69,20 @@ const RemoveButton: React.FC<RemoveButtonProps> = ({
   </button>
 );
 
-/** One stored shortcut: warnings, recorder chip and remove button. */
-export const ShortcutRow: React.FC<ShortcutRowProps> = ({
-  actionId,
-  rowId,
-  shortcut,
-  canRemove,
-  busy,
-  conflict,
-  refusal,
-  onEdit,
-}) => {
+/** Label of the remove button: remove, or why the last one stays. */
+const useRemoveLabel = (canRemove: boolean): string => {
   const { t } = useTranslation();
-  const removeLabel = canRemove
+  return canRemove
     ? t("settings.general.shortcut.list.remove")
     : t("settings.general.shortcut.list.removeLast");
+};
+
+/** One stored shortcut: warnings, recorder chip and remove button. */
+export const ShortcutRow: React.FC<ShortcutRowProps> = (props) => {
+  const { actionId, rowId, shortcut, canRemove, busy, onEdit } = props;
+  const { conflict, refusal } = props;
+  const { t } = useTranslation();
+  const removeLabel = useRemoveLabel(canRemove);
   return (
     <div
       className="flex items-center gap-1"

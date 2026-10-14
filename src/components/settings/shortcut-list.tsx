@@ -159,29 +159,26 @@ interface AddControlsProps {
   submit: (edit: ShortcutEdit) => Promise<void>;
 }
 
-const AddControls: React.FC<AddControlsProps> = ({
-  actionId,
-  limits,
-  count,
-  busy,
-  testId,
-  submit,
-}) => {
+/** Label of the add recorder: add, or why no shortcut can be added. */
+const useAddLabel = (canAdd: boolean, limits: ShortcutLimits): string => {
+  const { t } = useTranslation();
+  return canAdd
+    ? t("settings.general.shortcut.list.add")
+    : t("settings.general.shortcut.list.addLimit", { limit: limits.max });
+};
+
+const AddControls: React.FC<AddControlsProps> = (props) => {
+  const { actionId, limits, count, busy, testId, submit } = props;
   const { t } = useTranslation();
   const canAdd = canAddShortcut(count, limits);
+  const label = useAddLabel(canAdd, limits);
   return (
     <div className="flex items-center gap-1">
       <ShortcutInput
         shortcutId={actionId}
         value={null}
         disabled={!canAdd || busy}
-        label={
-          canAdd
-            ? t("settings.general.shortcut.list.add")
-            : t("settings.general.shortcut.list.addLimit", {
-                limit: limits.max,
-              })
-        }
+        label={label}
         testId={testId}
         onCapture={(shortcut) => submit({ kind: "add", shortcut })}
       />
@@ -234,6 +231,60 @@ const ListMessages: React.FC<ListMessagesProps> = ({
   );
 };
 
+/** Everything one list shows and the edit it sends. */
+const useShortcutListModel = (actionId: string) => {
+  const { getSetting, refusedShortcuts } = useSettings();
+  const actionName = useActionName();
+  const edit = useShortcutEdit(actionId, actionName);
+  const bindings = getSetting("bindings");
+  const stored = useStoredConflicts(
+    JSON.stringify(bindings ?? {}),
+    getSetting("keyboard_implementation"),
+  );
+  const binding = bindings?.[actionId];
+  const conflictOf = (shortcut: string) => {
+    const found = storedConflictFor(stored.conflicts, actionId, shortcut);
+    return found ? describeConflict(found.conflict, actionName) : undefined;
+  };
+  return {
+    ...edit,
+    shortcuts: binding ? shortcutsOf(binding) : [],
+    limits: limitsFor(actionId),
+    busy: edit.state === "loading",
+    conflictsFailed: stored.failed,
+    conflictOf,
+    refusalOf: (shortcut: string) =>
+      refusalFor(refusedShortcuts, actionId, shortcut),
+  };
+};
+
+type ShortcutListModel = ReturnType<typeof useShortcutListModel>;
+
+interface ListPartProps {
+  actionId: string;
+  testIds: ShortcutListTestIds;
+  list: ShortcutListModel;
+}
+
+/** One row per stored shortcut, with its warnings. */
+const ShortcutRows: React.FC<ListPartProps> = ({ actionId, testIds, list }) => (
+  <>
+    {list.shortcuts.map((shortcut, index) => (
+      <ShortcutRow
+        key={shortcut}
+        actionId={actionId}
+        rowId={testIds.row(index)}
+        shortcut={shortcut}
+        canRemove={canRemoveShortcut(list.shortcuts.length, list.limits)}
+        busy={list.busy}
+        conflict={list.conflictOf(shortcut)}
+        refusal={list.refusalOf(shortcut)}
+        onEdit={list.submit}
+      />
+    ))}
+  </>
+);
+
 // @spec AC-006: Prompt shortcuts reuse the shared list — .specs/features/005-custom-ai-prompts/spec.md#ac-006
 /**
  * Shortcut controls of `actionId` without their settings row. Stored
@@ -246,59 +297,31 @@ export const ShortcutListEditor: React.FC<ShortcutListEditorProps> = ({
   testIds = defaultTestIds(actionId),
   layout = "column",
 }) => {
-  const { getSetting, refusedShortcuts } = useSettings();
-  const actionName = useActionName();
-  const { state, error, submit } = useShortcutEdit(actionId, actionName);
-  const bindings = getSetting("bindings");
-  const { conflicts, failed } = useStoredConflicts(
-    JSON.stringify(bindings ?? {}),
-    getSetting("keyboard_implementation"),
-  );
-  const binding = bindings?.[actionId];
-  const shortcuts = binding ? shortcutsOf(binding) : [];
-  const limits = limitsFor(actionId);
-  const busy = state === "loading";
-  const conflictOf = (shortcut: string) => {
-    const stored = storedConflictFor(conflicts, actionId, shortcut);
-    return stored ? describeConflict(stored.conflict, actionName) : undefined;
-  };
+  const list = useShortcutListModel(actionId);
   const isRow = layout === "row";
+  const layoutClasses = isRow
+    ? "flex flex-wrap items-center gap-2"
+    : "flex flex-col items-end gap-1";
   return (
     <div
-      className={
-        isRow
-          ? "flex flex-wrap items-center gap-2"
-          : "flex flex-col items-end gap-1"
-      }
+      className={layoutClasses}
       data-testid={testIds.list}
-      data-state={state}
-      aria-busy={busy}
+      data-state={list.state}
+      aria-busy={list.busy}
     >
-      {shortcuts.map((shortcut, index) => (
-        <ShortcutRow
-          key={shortcut}
-          actionId={actionId}
-          rowId={testIds.row(index)}
-          shortcut={shortcut}
-          canRemove={canRemoveShortcut(shortcuts.length, limits)}
-          busy={busy}
-          conflict={conflictOf(shortcut)}
-          refusal={refusalFor(refusedShortcuts, actionId, shortcut)}
-          onEdit={submit}
-        />
-      ))}
+      <ShortcutRows actionId={actionId} testIds={testIds} list={list} />
       <AddControls
         actionId={actionId}
-        limits={limits}
-        count={shortcuts.length}
-        busy={busy}
+        limits={list.limits}
+        count={list.shortcuts.length}
+        busy={list.busy}
         testId={testIds.add}
-        submit={submit}
+        submit={list.submit}
       />
       <ListMessages
         listId={testIds.list}
-        conflictsFailed={failed}
-        error={error}
+        conflictsFailed={list.conflictsFailed}
+        error={list.error}
         align={isRow ? "basis-full" : "text-right"}
       />
     </div>

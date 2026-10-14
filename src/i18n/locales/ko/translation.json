@@ -481,7 +481,8 @@
           "providerModel": "{{provider}} · {{model}}",
           "noShortcut": "단축키 없음",
           "notReady": "준비 안 됨: {{reason}}",
-          "invalid": "유효하지 않음: {{reason}}"
+          "invalid": "유효하지 않음: {{reason}}",
+          "reloadFailed": "프롬프트를 새로 고칠 수 없습니다. 표시된 내용이 최신이 아닐 수 있습니다."
         },
         "issues": {
           "name_empty": "이름 없음",
@@ -535,7 +536,13 @@
           "shortcuts": "단축키(최대 {{limit}}개)",
           "changedElsewhere": "이 프롬프트가 다른 곳에서 변경되었습니다. 변경 사항을 보려면 다시 불러오고, 내 버전을 유지하려면 저장하세요.",
           "reload": "다시 불러오기",
-          "deletedElsewhere": "이 프롬프트는 다른 곳에서 삭제되어 더 이상 저장할 수 없습니다."
+          "deletedElsewhere": "이 프롬프트는 다른 곳에서 삭제되어 더 이상 저장할 수 없습니다.",
+          "shortcutsSavedImmediately": "단축키 변경 사항은 즉시 저장됩니다.",
+          "fixField": {
+            "api_key": "{{provider}} API 키",
+            "endpoint": "{{provider}} 엔드포인트",
+            "hint": "필드를 벗어나면 저장됩니다. 기본 제공자는 바뀌지 않습니다."
+          }
         },
         "actions": {
           "note": "변경 사항은 저장한 뒤 다음 받아쓰기부터 적용됩니다.",
@@ -569,7 +576,8 @@
           "failedHint": "제공자 설정을 확인한 뒤 테스트를 다시 실행하세요.",
           "retry": "다시 실행",
           "busy": "다른 테스트가 아직 실행 중입니다. 끝난 뒤 다시 시도하세요.",
-          "skipped": "프롬프트를 테스트하려면 예시 텍스트를 입력하세요."
+          "skipped": "프롬프트를 테스트하려면 예시 텍스트를 입력하세요.",
+          "outdated": "이 결과는 이전 버전의 프롬프트 또는 샘플에 대한 것입니다. 테스트를 다시 실행하세요."
         },
         "shortcutOwner": "프롬프트 “{{name}}”"
       }

@@ -481,7 +481,8 @@
           "providerModel": "{{provider}} · {{model}}",
           "noShortcut": "無快速鍵",
           "notReady": "尚未就緒：{{reason}}",
-          "invalid": "無效：{{reason}}"
+          "invalid": "無效：{{reason}}",
+          "reloadFailed": "無法重新整理提示詞。顯示的內容可能已過時。"
         },
         "issues": {
           "name_empty": "缺少名稱",
@@ -535,7 +536,13 @@
           "shortcuts": "快速鍵（最多 {{limit}} 個）",
           "changedElsewhere": "此提示詞已在其他地方被修改。重新載入可查看變更，儲存則保留你的版本。",
           "reload": "重新載入",
-          "deletedElsewhere": "此提示詞已在其他地方被刪除，無法再儲存。"
+          "deletedElsewhere": "此提示詞已在其他地方被刪除，無法再儲存。",
+          "shortcutsSavedImmediately": "快捷鍵變更會立即儲存。",
+          "fixField": {
+            "api_key": "{{provider}} 的 API 金鑰",
+            "endpoint": "{{provider}} 的端點",
+            "hint": "離開欄位時儲存。預設提供者不會改變。"
+          }
         },
         "actions": {
           "note": "儲存後，變更會套用到下一次聽寫。",
@@ -569,7 +576,8 @@
           "failedHint": "請檢查供應商設定，然後再次執行測試。",
           "retry": "再次執行",
           "busy": "另一個測試仍在執行中。請在它結束後再試一次。",
-          "skipped": "請輸入範例文字來測試提示詞。"
+          "skipped": "請輸入範例文字來測試提示詞。",
+          "outdated": "此結果對應提示詞或範例的舊版本。請重新執行測試。"
         },
         "shortcutOwner": "提示詞「{{name}}」"
       }

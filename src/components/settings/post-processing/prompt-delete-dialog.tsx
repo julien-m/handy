@@ -36,6 +36,42 @@ const useShortcutText = (): ((shortcuts: string[]) => string) => {
       .join(", ");
 };
 
+/** Announces a deletion with the shortcuts it removed. */
+const useDeletedToast = (): ((
+  prompt: ListedPrompt,
+  removed: string[],
+) => void) => {
+  const { t } = useTranslation();
+  const shortcutText = useShortcutText();
+  return (prompt, removed) => {
+    const shortcuts = shortcutText(removed);
+    toast.success(
+      shortcuts
+        ? t(`${KEY}.deletedWithShortcuts`, { name: prompt.name, shortcuts })
+        : t(`${KEY}.deleted`, { name: prompt.name }),
+    );
+  };
+};
+
+/**
+ * Deletes `prompt` and announces it.
+ * @returns The translation key of the refusal, or null once deleted.
+ */
+const deletePrompt = async (
+  prompt: ListedPrompt,
+  announce: (prompt: ListedPrompt, removed: string[]) => void,
+): Promise<string | null> => {
+  try {
+    const result = await commands.deletePostProcessPrompt(prompt.id);
+    if (result.status === "error") return settingsErrorKey(result.error);
+    announce(prompt, result.data);
+    return null;
+  } catch (failure) {
+    console.error("Failed to delete the prompt:", failure);
+    return "errors.settings.generic";
+  }
+};
+
 // @spec AC-006: Deleting a prompt removes its shortcuts after confirmation — .specs/features/005-custom-ai-prompts/spec.md#ac-006
 /**
  * Confirms and deletes `prompt`, then reports the removed shortcuts.
@@ -46,49 +82,25 @@ export const usePromptDeletion = (
   prompt: ListedPrompt | undefined,
   onDeleted: () => void,
 ): PromptDeletion => {
-  const { t } = useTranslation();
-  const shortcutText = useShortcutText();
+  const announce = useDeletedToast();
   const [isConfirming, setIsConfirming] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const confirm = async () => {
     if (!prompt) return;
     setIsDeleting(true);
-    try {
-      const result = await commands.deletePostProcessPrompt(prompt.id);
-      if (result.status === "error") {
-        setError(settingsErrorKey(result.error));
-        return;
-      }
-      const removed = shortcutText(result.data);
-      toast.success(
-        removed
-          ? t(`${KEY}.deletedWithShortcuts`, {
-              name: prompt.name,
-              shortcuts: removed,
-            })
-          : t(`${KEY}.deleted`, { name: prompt.name }),
-      );
-      onDeleted();
-    } catch (failure) {
-      console.error("Failed to delete the prompt:", failure);
-      setError("errors.settings.generic");
-    } finally {
-      setIsDeleting(false);
-      setIsConfirming(false);
-    }
+    const refusal = await deletePrompt(prompt, announce);
+    setError(refusal);
+    setIsDeleting(false);
+    setIsConfirming(false);
+    if (!refusal) onDeleted();
   };
-  return {
-    isConfirming,
-    isDeleting,
-    error,
-    ask: () => {
-      setError(null);
-      setIsConfirming(true);
-    },
-    dismiss: () => setIsConfirming(false),
-    confirm,
+  const ask = () => {
+    setError(null);
+    setIsConfirming(true);
   };
+  const dismiss = () => setIsConfirming(false);
+  return { isConfirming, isDeleting, error, ask, dismiss, confirm };
 };
 
 interface PromptDeleteDialogProps {
@@ -98,15 +110,57 @@ interface PromptDeleteDialogProps {
   deletion: PromptDeletion;
 }
 
-/** The confirmation dialog. */
-export const PromptDeleteDialog: React.FC<PromptDeleteDialogProps> = ({
+/** Cancel and Delete of the confirmation. */
+const DialogFooter: React.FC<PromptDeleteDialogProps> = ({
   testId,
-  prompt,
-  isDefault,
   deletion,
 }) => {
   const { t } = useTranslation();
+  return (
+    <>
+      <Button
+        variant="secondary"
+        onClick={deletion.dismiss}
+        disabled={deletion.isDeleting}
+      >
+        {t(`${KEY}.cancel`)}
+      </Button>
+      <Button
+        variant="danger"
+        onClick={() => void deletion.confirm()}
+        disabled={deletion.isDeleting}
+        data-testid={`${testId}-delete-confirm`}
+      >
+        {t(`${KEY}.confirm`)}
+      </Button>
+    </>
+  );
+};
+
+/** What the deletion removes: shortcuts, the default, for good. */
+const DialogBody: React.FC<PromptDeleteDialogProps> = (props) => {
+  const { testId, prompt, isDefault } = props;
+  const { t } = useTranslation();
   const shortcutText = useShortcutText();
+  return (
+    <div className="space-y-2 text-sm" data-testid={`${testId}-delete-dialog`}>
+      {prompt.shortcuts.length > 0 && (
+        <p>
+          {t(`${KEY}.shortcuts`, { shortcuts: shortcutText(prompt.shortcuts) })}
+        </p>
+      )}
+      {isDefault && <p>{t(`${KEY}.default`)}</p>}
+      <p className="text-mid-gray">{t(`${KEY}.body`)}</p>
+    </div>
+  );
+};
+
+/** The confirmation dialog. */
+export const PromptDeleteDialog: React.FC<PromptDeleteDialogProps> = (
+  props,
+) => {
+  const { prompt, deletion } = props;
+  const { t } = useTranslation();
   return (
     <Dialog
       open={deletion.isConfirming}
@@ -116,40 +170,9 @@ export const PromptDeleteDialog: React.FC<PromptDeleteDialogProps> = ({
       title={t(`${KEY}.title`, { name: prompt.name })}
       closeLabel={t(`${KEY}.close`)}
       dismissible={!deletion.isDeleting}
-      footer={
-        <>
-          <Button
-            variant="secondary"
-            onClick={deletion.dismiss}
-            disabled={deletion.isDeleting}
-          >
-            {t(`${KEY}.cancel`)}
-          </Button>
-          <Button
-            variant="danger"
-            onClick={() => void deletion.confirm()}
-            disabled={deletion.isDeleting}
-            data-testid={`${testId}-delete-confirm`}
-          >
-            {t(`${KEY}.confirm`)}
-          </Button>
-        </>
-      }
+      footer={<DialogFooter {...props} />}
     >
-      <div
-        className="space-y-2 text-sm"
-        data-testid={`${testId}-delete-dialog`}
-      >
-        {prompt.shortcuts.length > 0 && (
-          <p>
-            {t(`${KEY}.shortcuts`, {
-              shortcuts: shortcutText(prompt.shortcuts),
-            })}
-          </p>
-        )}
-        {isDefault && <p>{t(`${KEY}.default`)}</p>}
-        <p className="text-mid-gray">{t(`${KEY}.body`)}</p>
-      </div>
+      <DialogBody {...props} />
     </Dialog>
   );
 };

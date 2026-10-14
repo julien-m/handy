@@ -171,13 +171,14 @@ export const draftReadinessOf = (
   return { ...base, missing: unavailable ? "provider_unavailable" : null };
 };
 
-/** Where the user fixes a missing item, when it is outside the editor. */
+/** Provider setting the editor's inline fix field sets, if any. */
 export type ReadinessFix = "api_key" | "endpoint" | null;
 
 /**
  * Fix offered next to a not-ready provider: the API key and the custom
- * endpoint are set in the provider settings of the page; a missing model is
- * chosen in the editor itself, and the other items have no fix there.
+ * endpoint are typed in an inline field of the editor, for the provider the
+ * prompt resolves to; a missing model is chosen in the editor itself, and
+ * the other items have no fix there.
  * @param missing First missing item.
  */
 export const readinessFixOf = (
@@ -230,4 +231,51 @@ export const modelOptionsOf = (
   const trimmed = current.trim();
   if (trimmed !== "" && !models.includes(trimmed)) models.unshift(trimmed);
   return models.map((model) => ({ value: model, label: model }));
+};
+
+/** A provider setting saved from the editor's inline fix field. */
+export interface ProviderFixChange {
+  fix: "api_key" | "endpoint";
+  /** The provider the prompt resolves to, never the default-provider choice. */
+  providerId: string;
+  value: string;
+}
+
+/**
+ * Current value of the setting a fix field edits.
+ * @param settings Provider configuration of the settings.
+ * @param fix Setting the field edits.
+ * @param providerId Provider the prompt resolves to.
+ */
+export const fixValueOf = (
+  settings: ProviderSettings,
+  fix: "api_key" | "endpoint",
+  providerId: string,
+): string => {
+  if (fix === "api_key") return settings.apiKeys[providerId] ?? "";
+  return settings.providers.find((p) => p.id === providerId)?.base_url ?? "";
+};
+
+/**
+ * Change to save when the fix field is left: the trimmed value for the
+ * resolved provider, or null when it is empty or unchanged. Saving it never
+ * changes the default provider (the key and the endpoint are stored per
+ * provider).
+ * @param settings Provider configuration of the settings.
+ * @param fix Setting the field edits.
+ * @param readiness Readiness of the draft's provider choice.
+ * @param typed Value typed in the field.
+ */
+export const providerFixChangeOf = (
+  settings: ProviderSettings,
+  fix: "api_key" | "endpoint",
+  readiness: DraftReadiness,
+  typed: string,
+): ProviderFixChange | null => {
+  const value = typed.trim();
+  const { providerId } = readiness;
+  if (value === "" || value === fixValueOf(settings, fix, providerId).trim()) {
+    return null;
+  }
+  return { fix, providerId, value };
 };

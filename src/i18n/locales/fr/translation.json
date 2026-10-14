@@ -481,7 +481,8 @@
           "providerModel": "{{provider}} · {{model}}",
           "noShortcut": "Aucun raccourci",
           "notReady": "Pas prêt : {{reason}}",
-          "invalid": "Invalide : {{reason}}"
+          "invalid": "Invalide : {{reason}}",
+          "reloadFailed": "Les prompts n’ont pas pu être actualisés. L’affichage n’est peut-être plus à jour."
         },
         "issues": {
           "name_empty": "nom manquant",
@@ -535,7 +536,13 @@
           "shortcuts": "Raccourcis (jusqu'à {{limit}})",
           "changedElsewhere": "Ce prompt a été modifié ailleurs. Rechargez-le pour voir la modification, ou enregistrez pour garder votre version.",
           "reload": "Recharger",
-          "deletedElsewhere": "Ce prompt a été supprimé ailleurs et ne peut plus être enregistré."
+          "deletedElsewhere": "Ce prompt a été supprimé ailleurs et ne peut plus être enregistré.",
+          "shortcutsSavedImmediately": "Les modifications de raccourcis sont enregistrées immédiatement.",
+          "fixField": {
+            "api_key": "Clé API de {{provider}}",
+            "endpoint": "Point de terminaison de {{provider}}",
+            "hint": "Enregistré quand vous quittez le champ. Le fournisseur par défaut ne change pas."
+          }
         },
         "actions": {
           "note": "Les modifications s'appliquent à la prochaine dictée après l'enregistrement.",
@@ -569,7 +576,8 @@
           "failedHint": "Vérifiez les réglages du fournisseur, puis relancez le test.",
           "retry": "Relancer",
           "busy": "Un autre test est encore en cours. Réessayez quand il sera terminé.",
-          "skipped": "Saisissez un texte d'exemple pour tester le prompt."
+          "skipped": "Saisissez un texte d'exemple pour tester le prompt.",
+          "outdated": "Ce résultat concerne une version antérieure du prompt ou de l’exemple. Relancez le test."
         },
         "shortcutOwner": "le prompt « {{name}} »"
       }

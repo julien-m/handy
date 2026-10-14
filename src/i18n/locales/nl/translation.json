@@ -481,7 +481,8 @@
           "providerModel": "{{provider}} · {{model}}",
           "noShortcut": "Geen sneltoets",
           "notReady": "Niet klaar: {{reason}}",
-          "invalid": "Ongeldig: {{reason}}"
+          "invalid": "Ongeldig: {{reason}}",
+          "reloadFailed": "De prompts konden niet worden vernieuwd. Wat je ziet is mogelijk verouderd."
         },
         "issues": {
           "name_empty": "naam ontbreekt",
@@ -535,7 +536,13 @@
           "shortcuts": "Sneltoetsen (maximaal {{limit}})",
           "changedElsewhere": "Deze prompt is elders gewijzigd. Laad hem opnieuw om de wijziging te zien, of sla op om je eigen versie te behouden.",
           "reload": "Opnieuw laden",
-          "deletedElsewhere": "Deze prompt is elders verwijderd en kan niet meer worden opgeslagen."
+          "deletedElsewhere": "Deze prompt is elders verwijderd en kan niet meer worden opgeslagen.",
+          "shortcutsSavedImmediately": "Wijzigingen in sneltoetsen worden direct opgeslagen.",
+          "fixField": {
+            "api_key": "API-sleutel voor {{provider}}",
+            "endpoint": "Endpoint van {{provider}}",
+            "hint": "Opgeslagen zodra je het veld verlaat. De standaardprovider verandert niet."
+          }
         },
         "actions": {
           "note": "Wijzigingen gelden voor het volgende dictaat na het opslaan.",
@@ -569,7 +576,8 @@
           "failedHint": "Controleer de providerinstellingen en voer de test opnieuw uit.",
           "retry": "Opnieuw uitvoeren",
           "busy": "Er loopt nog een andere test. Probeer het opnieuw als die klaar is.",
-          "skipped": "Voer een voorbeeldtekst in om de prompt te testen."
+          "skipped": "Voer een voorbeeldtekst in om de prompt te testen.",
+          "outdated": "Dit resultaat hoort bij een eerdere versie van de prompt of het voorbeeld. Voer de test opnieuw uit."
         },
         "shortcutOwner": "de prompt „{{name}}”"
       }

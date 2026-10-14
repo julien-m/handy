@@ -24,6 +24,8 @@ type BaseProps = {
   onChange: (value: string | null, action: ActionMeta<SelectOption>) => void;
   onBlur?: () => void;
   className?: string;
+  /** Accessible name when no label element is tied to the control. */
+  ariaLabel?: string;
   formatCreateLabel?: (input: string) => string;
 };
 
@@ -130,6 +132,7 @@ export const Select: React.FC<SelectProps> = React.memo(
     onChange,
     onBlur,
     className = "",
+    ariaLabel,
     isCreatable,
     formatCreateLabel,
     onCreateOption,
@@ -160,6 +163,7 @@ export const Select: React.FC<SelectProps> = React.memo(
       onBlur,
       isClearable,
       styles: selectStyles,
+      "aria-label": ariaLabel,
     };
 
     if (isCreatable) {

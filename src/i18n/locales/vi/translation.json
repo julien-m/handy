@@ -481,7 +481,8 @@
           "providerModel": "{{provider}} · {{model}}",
           "noShortcut": "Không có phím tắt",
           "notReady": "Chưa sẵn sàng: {{reason}}",
-          "invalid": "Không hợp lệ: {{reason}}"
+          "invalid": "Không hợp lệ: {{reason}}",
+          "reloadFailed": "Không thể làm mới các prompt. Nội dung hiển thị có thể đã cũ."
         },
         "issues": {
           "name_empty": "thiếu tên",
@@ -535,7 +536,13 @@
           "shortcuts": "Phím tắt (tối đa {{limit}})",
           "changedElsewhere": "Prompt này đã được thay đổi ở nơi khác. Tải lại để xem thay đổi, hoặc lưu để giữ phiên bản của bạn.",
           "reload": "Tải lại",
-          "deletedElsewhere": "Prompt này đã bị xóa ở nơi khác và không thể lưu nữa."
+          "deletedElsewhere": "Prompt này đã bị xóa ở nơi khác và không thể lưu nữa.",
+          "shortcutsSavedImmediately": "Thay đổi phím tắt được lưu ngay lập tức.",
+          "fixField": {
+            "api_key": "Khóa API của {{provider}}",
+            "endpoint": "Endpoint của {{provider}}",
+            "hint": "Được lưu khi bạn rời khỏi ô. Nhà cung cấp mặc định không thay đổi."
+          }
         },
         "actions": {
           "note": "Thay đổi áp dụng cho lần đọc chính tả tiếp theo sau khi lưu.",
@@ -569,7 +576,8 @@
           "failedHint": "Kiểm tra cài đặt nhà cung cấp rồi chạy lại.",
           "retry": "Chạy lại",
           "busy": "Một lần kiểm tra khác vẫn đang chạy. Hãy thử lại khi nó kết thúc.",
-          "skipped": "Nhập văn bản mẫu để kiểm tra prompt."
+          "skipped": "Nhập văn bản mẫu để kiểm tra prompt.",
+          "outdated": "Kết quả này thuộc phiên bản trước của prompt hoặc mẫu. Hãy chạy lại kiểm tra."
         },
         "shortcutOwner": "prompt “{{name}}”"
       }

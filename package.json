@@ -18,7 +18,7 @@
     "test:shortcut-list": "bun src/components/settings/shortcut-list-model.test.ts",
     "test:settings-errors": "bun src/stores/settings-errors.test.ts",
     "test:settings-store": "bun test src/stores/settings-store.test.ts",
-    "test:prompt-settings": "bun test src/components/settings/post-processing/prompt-settings-model.test.ts src/components/settings/post-processing/prompt-commands.test.ts",
+    "test:prompt-settings": "bun test src/components/settings/post-processing/prompt-settings-model.test.ts src/components/settings/post-processing/prompt-commands.test.ts src/components/settings/post-processing/prompt-editor-sync.test.ts src/components/settings/post-processing/prompt-editor-rules.test.ts",
     "test:playwright": "playwright test",
     "test:playwright:ui": "playwright test --ui",
     "check:translations": "bun scripts/check-translations.ts",

@@ -1,7 +1,7 @@
 // The Post Process settings page: AI post-processing switch and default
 // prompt, prompt library and editor (005), AI dictation shortcut (004) and
 // the OpenAI-compatible provider settings.
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { RefreshCcw } from "lucide-react";
 
@@ -17,9 +17,13 @@ import { usePostProcessProviderState } from "../PostProcessingSettingsApi/usePos
 import { ShortcutList } from "../shortcut-list";
 import type { EditorTarget } from "./prompt-draft-model";
 import { PromptEditor } from "./prompt-editor";
+import { focusReturnOf } from "./prompt-library-model";
 import { PromptListGroup } from "./prompt-list";
 import { PromptProcessingGroup } from "./prompt-processing-group";
-import { usePromptLibrary } from "./use-prompt-library";
+import {
+  type PromptLibraryState,
+  usePromptLibrary,
+} from "./use-prompt-library";
 
 const PostProcessingSettingsApiComponent: React.FC = () => {
   const { t } = useTranslation();
@@ -147,16 +151,55 @@ export const PostProcessingSettingsApi = React.memo(
 );
 PostProcessingSettingsApi.displayName = "PostProcessingSettingsApi";
 
-/** Back to the list; a readiness fix scrolls to the provider settings. */
-const useScrollToProviders = (isEditing: boolean) => {
-  const providersRef = useRef<HTMLDivElement>(null);
-  const [pending, setPending] = useState(false);
-  useEffect(() => {
-    if (isEditing || !pending) return;
-    providersRef.current?.scrollIntoView({ block: "start" });
-    setPending(false);
-  }, [isEditing, pending]);
-  return { providersRef, requestScroll: () => setPending(true) };
+/**
+ * Which editor is open, and which one closed last (its button takes the
+ * focus back when the list returns).
+ */
+const useEditorTarget = () => {
+  const [target, setTarget] = useState<EditorTarget | null>(null);
+  const [closed, setClosed] = useState<EditorTarget | null>(null);
+  const open = (next: EditorTarget) => {
+    setClosed(null);
+    setTarget(next);
+  };
+  const close = () => {
+    setClosed(target);
+    setTarget(null);
+  };
+  return { target, closed, open, close };
+};
+
+/** The prompt groups, the AI dictation shortcut and the provider settings. */
+const PromptSettingsPage: React.FC<{
+  libraryState: PromptLibraryState;
+  focusId: string | null;
+  open: (target: EditorTarget) => void;
+}> = ({ libraryState, focusId, open }) => {
+  const { t } = useTranslation();
+  return (
+    <div
+      className="max-w-3xl w-full mx-auto space-y-6"
+      data-testid="prompt-settings-screen"
+    >
+      <PromptProcessingGroup library={libraryState.library} />
+      <PromptListGroup
+        state={libraryState}
+        focusId={focusId}
+        onEdit={(id) => open({ mode: "edit", id })}
+        onNew={() => open({ mode: "new" })}
+      />
+      <SettingsGroup title={t("settings.postProcessing.hotkey.title")}>
+        <ShortcutList
+          actionId="transcribe_with_post_process"
+          descriptionMode="tooltip"
+          grouped={true}
+        />
+      </SettingsGroup>
+      <SettingsGroup title={t("settings.postProcessing.api.title")}>
+        <PostProcessingSettingsApi />
+      </SettingsGroup>
+    </div>
+  );
 };
 
 // @spec AC-001: Prompt list and editor in the settings — .specs/features/005-custom-ai-prompts/spec.md#ac-001
@@ -166,47 +209,29 @@ const useScrollToProviders = (isEditing: boolean) => {
  * shortcut and the provider settings.
  */
 export const PostProcessingSettings: React.FC = () => {
-  const { t } = useTranslation();
   const libraryState = usePromptLibrary();
-  const [target, setTarget] = useState<EditorTarget | null>(null);
-  const { providersRef, requestScroll } = useScrollToProviders(target !== null);
+  const { target, closed, open, close } = useEditorTarget();
   if (target) {
     return (
       <PromptEditor
         target={target}
-        library={libraryState.library}
-        onCreated={(id) => setTarget({ mode: "edit", id })}
-        onClose={() => setTarget(null)}
-        onFix={() => {
-          setTarget(null);
-          requestScroll();
-        }}
+        libraryState={libraryState}
+        onCreated={(id) => open({ mode: "edit", id })}
+        onClose={close}
       />
     );
   }
+  const focusId = closed
+    ? focusReturnOf(
+        closed.mode === "edit" ? closed.id : null,
+        libraryState.library?.prompts ?? [],
+      )
+    : null;
   return (
-    <div
-      className="max-w-3xl w-full mx-auto space-y-6"
-      data-testid="prompt-settings-screen"
-    >
-      <PromptProcessingGroup library={libraryState.library} />
-      <PromptListGroup
-        state={libraryState}
-        onEdit={(id) => setTarget({ mode: "edit", id })}
-        onNew={() => setTarget({ mode: "new" })}
-      />
-      <SettingsGroup title={t("settings.postProcessing.hotkey.title")}>
-        <ShortcutList
-          actionId="transcribe_with_post_process"
-          descriptionMode="tooltip"
-          grouped={true}
-        />
-      </SettingsGroup>
-      <div ref={providersRef}>
-        <SettingsGroup title={t("settings.postProcessing.api.title")}>
-          <PostProcessingSettingsApi />
-        </SettingsGroup>
-      </div>
-    </div>
+    <PromptSettingsPage
+      libraryState={libraryState}
+      focusId={focusId}
+      open={open}
+    />
   );
 };

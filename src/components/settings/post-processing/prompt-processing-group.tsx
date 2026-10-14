@@ -42,12 +42,12 @@ const useDefaultOptions = (
   ];
 };
 
-// @spec AC-003: Default prompt chosen in settings — .specs/features/005-custom-ai-prompts/spec.md#ac-003
-const DefaultPromptSelect: React.FC<DefaultPromptSelectProps> = ({
-  library,
-}) => {
+/**
+ * Saves the default prompt; a refusal or a failed command is shown
+ * translated (toast), never left unhandled.
+ */
+const useChooseDefault = () => {
   const { t } = useTranslation();
-  const options = useDefaultOptions(library);
   const [isSaving, setIsSaving] = useState(false);
   const choose = async (value: string) => {
     setIsSaving(true);
@@ -58,10 +58,23 @@ const DefaultPromptSelect: React.FC<DefaultPromptSelectProps> = ({
       if (result.status === "error") {
         toast.error(t(settingsErrorKey(result.error)));
       }
+    } catch (failure) {
+      console.error("Failed to set the default prompt:", failure);
+      toast.error(t("errors.settings.generic"));
     } finally {
       setIsSaving(false);
     }
   };
+  return { isSaving, choose };
+};
+
+// @spec AC-003: Default prompt chosen in settings — .specs/features/005-custom-ai-prompts/spec.md#ac-003
+const DefaultPromptSelect: React.FC<DefaultPromptSelectProps> = ({
+  library,
+}) => {
+  const { t } = useTranslation();
+  const options = useDefaultOptions(library);
+  const { isSaving, choose } = useChooseDefault();
   const title = t(`${PROMPT_KEYS}.processing.defaultTitle`);
   return (
     <SettingContainer

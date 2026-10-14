@@ -53,13 +53,62 @@ const ActionMessages: React.FC<PromptEditorActionsProps> = ({
   );
 };
 
+/** Save with its enabled, disabled or loading state. */
+const SaveButton: React.FC<PromptEditorActionsProps> = ({ testId, model }) => {
+  const { t } = useTranslation();
+  const isSaving = model.saveState === "loading";
+  return (
+    <Button
+      variant="primary"
+      className={BUTTON_CLASSES}
+      onClick={() => void model.save()}
+      disabled={model.saveState !== "enabled"}
+      aria-busy={isSaving}
+      data-state={model.saveState}
+      data-testid={`${testId}-save`}
+    >
+      {t(`${KEY}.${isSaving ? "saving" : "save"}`)}
+    </Button>
+  );
+};
+
+/** Delete (saved prompt only), Cancel and Save. */
+const ActionButtons: React.FC<PromptEditorActionsProps> = (props) => {
+  const { testId, deletion, onCancel } = props;
+  const { t } = useTranslation();
+  const deleteButton = deletion && (
+    <Button
+      variant="danger-ghost"
+      className={BUTTON_CLASSES}
+      onClick={deletion.ask}
+      disabled={deletion.isDeleting}
+      data-testid={`${testId}-delete`}
+    >
+      {t(`${KEY}.delete`)}
+    </Button>
+  );
+  return (
+    <>
+      {deleteButton}
+      <Button
+        variant="secondary"
+        className={BUTTON_CLASSES}
+        onClick={onCancel}
+        data-testid={`${testId}-cancel`}
+      >
+        {t(`${KEY}.cancel`)}
+      </Button>
+      <SaveButton {...props} />
+    </>
+  );
+};
+
 /** The editor's action bar. */
 export const PromptEditorActions: React.FC<PromptEditorActionsProps> = (
   props,
 ) => {
   const { t } = useTranslation();
-  const { testId, model, deletion, onCancel } = props;
-  const isSaving = model.saveState === "loading";
+  const { testId, model } = props;
   return (
     <div data-testid={`${testId}-actions`}>
       <SettingsGroup>
@@ -71,36 +120,7 @@ export const PromptEditorActions: React.FC<PromptEditorActionsProps> = (
             >
               {t(`${KEY}.${model.validation.valid ? "note" : "fixFields"}`)}
             </p>
-            {deletion && (
-              <Button
-                variant="danger-ghost"
-                className={BUTTON_CLASSES}
-                onClick={deletion.ask}
-                disabled={deletion.isDeleting}
-                data-testid={`${testId}-delete`}
-              >
-                {t(`${KEY}.delete`)}
-              </Button>
-            )}
-            <Button
-              variant="secondary"
-              className={BUTTON_CLASSES}
-              onClick={onCancel}
-              data-testid={`${testId}-cancel`}
-            >
-              {t(`${KEY}.cancel`)}
-            </Button>
-            <Button
-              variant="primary"
-              className={BUTTON_CLASSES}
-              onClick={() => void model.save()}
-              disabled={model.saveState !== "enabled"}
-              aria-busy={isSaving}
-              data-state={model.saveState}
-              data-testid={`${testId}-save`}
-            >
-              {t(`${KEY}.${isSaving ? "saving" : "save"}`)}
-            </Button>
+            <ActionButtons {...props} />
           </div>
           <ActionMessages {...props} />
         </div>

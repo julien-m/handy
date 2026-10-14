@@ -481,7 +481,8 @@
           "providerModel": "{{provider}} · {{model}}",
           "noShortcut": "Ingen genvej",
           "notReady": "Ikke klar: {{reason}}",
-          "invalid": "Ugyldig: {{reason}}"
+          "invalid": "Ugyldig: {{reason}}",
+          "reloadFailed": "Prompterne kunne ikke opdateres. Det viste kan være forældet."
         },
         "issues": {
           "name_empty": "navn mangler",
@@ -535,7 +536,13 @@
           "shortcuts": "Genveje (op til {{limit}})",
           "changedElsewhere": "Denne prompt er ændret et andet sted. Genindlæs den for at se ændringen, eller gem for at beholde din version.",
           "reload": "Genindlæs",
-          "deletedElsewhere": "Denne prompt er slettet et andet sted og kan ikke længere gemmes."
+          "deletedElsewhere": "Denne prompt er slettet et andet sted og kan ikke længere gemmes.",
+          "shortcutsSavedImmediately": "Ændringer af genveje gemmes med det samme.",
+          "fixField": {
+            "api_key": "API-nøgle til {{provider}}",
+            "endpoint": "Endpoint for {{provider}}",
+            "hint": "Gemmes, når du forlader feltet. Standardudbyderen ændres ikke."
+          }
         },
         "actions": {
           "note": "Ændringer gælder for næste diktering, efter du har gemt.",
@@ -569,7 +576,8 @@
           "failedHint": "Tjek udbyderindstillingerne, og kør testen igen.",
           "retry": "Kør igen",
           "busy": "En anden test kører stadig. Prøv igen, når den er færdig.",
-          "skipped": "Angiv en eksempeltekst for at teste prompten."
+          "skipped": "Angiv en eksempeltekst for at teste prompten.",
+          "outdated": "Dette resultat hører til en tidligere version af prompten eller eksemplet. Kør testen igen."
         },
         "shortcutOwner": "prompten “{{name}}”"
       }

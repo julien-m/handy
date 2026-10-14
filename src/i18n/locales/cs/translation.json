@@ -481,7 +481,8 @@
           "providerModel": "{{provider}} · {{model}}",
           "noShortcut": "Bez zkratky",
           "notReady": "Nepřipraveno: {{reason}}",
-          "invalid": "Neplatný: {{reason}}"
+          "invalid": "Neplatný: {{reason}}",
+          "reloadFailed": "Prompty se nepodařilo obnovit. Zobrazené údaje nemusí být aktuální."
         },
         "issues": {
           "name_empty": "chybí název",
@@ -535,7 +536,13 @@
           "shortcuts": "Zkratky (nejvýše {{limit}})",
           "changedElsewhere": "Tento prompt byl změněn jinde. Načtěte ho znovu, abyste viděli změnu, nebo uložte a ponechte svou verzi.",
           "reload": "Načíst znovu",
-          "deletedElsewhere": "Tento prompt byl jinde smazán a už ho nelze uložit."
+          "deletedElsewhere": "Tento prompt byl jinde smazán a už ho nelze uložit.",
+          "shortcutsSavedImmediately": "Změny zkratek se ukládají okamžitě.",
+          "fixField": {
+            "api_key": "API klíč pro {{provider}}",
+            "endpoint": "Koncový bod {{provider}}",
+            "hint": "Uloží se po opuštění pole. Výchozí poskytovatel se nemění."
+          }
         },
         "actions": {
           "note": "Změny platí od dalšího diktátu po uložení.",
@@ -569,7 +576,8 @@
           "failedHint": "Zkontrolujte nastavení poskytovatele a spusťte test znovu.",
           "retry": "Spustit znovu",
           "busy": "Jiný test stále běží. Zkuste to znovu, až skončí.",
-          "skipped": "Zadejte ukázkový text pro otestování promptu."
+          "skipped": "Zadejte ukázkový text pro otestování promptu.",
+          "outdated": "Tento výsledek patří ke starší verzi promptu nebo vzorku. Spusťte test znovu."
         },
         "shortcutOwner": "prompt „{{name}}“"
       }

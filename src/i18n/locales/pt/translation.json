@@ -481,7 +481,8 @@
           "providerModel": "{{provider}} · {{model}}",
           "noShortcut": "Sem atalho",
           "notReady": "Não está pronto: {{reason}}",
-          "invalid": "Inválido: {{reason}}"
+          "invalid": "Inválido: {{reason}}",
+          "reloadFailed": "Não foi possível atualizar os prompts. O que é mostrado pode estar desatualizado."
         },
         "issues": {
           "name_empty": "nome ausente",
@@ -535,7 +536,13 @@
           "shortcuts": "Atalhos (até {{limit}})",
           "changedElsewhere": "Este prompt foi alterado em outro lugar. Recarregue-o para ver a alteração ou salve para manter sua versão.",
           "reload": "Recarregar",
-          "deletedElsewhere": "Este prompt foi excluído em outro lugar e não pode mais ser salvo."
+          "deletedElsewhere": "Este prompt foi excluído em outro lugar e não pode mais ser salvo.",
+          "shortcutsSavedImmediately": "As alterações de atalhos são salvas imediatamente.",
+          "fixField": {
+            "api_key": "Chave de API de {{provider}}",
+            "endpoint": "Endpoint de {{provider}}",
+            "hint": "Salvo ao sair do campo. O provedor padrão não muda."
+          }
         },
         "actions": {
           "note": "As alterações valem para o próximo ditado depois de salvar.",
@@ -569,7 +576,8 @@
           "failedHint": "Verifique as configurações do provedor e execute o teste novamente.",
           "retry": "Executar novamente",
           "busy": "Outro teste ainda está em andamento. Tente de novo quando ele terminar.",
-          "skipped": "Digite um texto de exemplo para testar o prompt."
+          "skipped": "Digite um texto de exemplo para testar o prompt.",
+          "outdated": "Este resultado é de uma versão anterior do prompt ou do exemplo. Execute o teste novamente."
         },
         "shortcutOwner": "o prompt “{{name}}”"
       }

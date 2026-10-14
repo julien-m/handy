@@ -1,7 +1,9 @@
 /**
  * Commits of the prompt editor against stubbed commands: the name and text
- * and the provider override are sent in order, only when they changed, and
- * a refusal says what was already saved. Run with `bun run test:prompt-settings`.
+ * and the provider override are sent in order, only when they changed, a
+ * refusal says what was already saved, and a `committed` or `unknown`
+ * outcome is resolved by rereading the library. Run with
+ * `bun run test:prompt-settings`.
  */
 import { beforeEach, describe, expect, mock, test } from "bun:test";
 import type { PromptProviderOverride, SettingsCommandError } from "@/bindings";
@@ -25,6 +27,7 @@ const commands = {
     id: string,
     override: PromptProviderOverride | null,
   ) => answer("override", [id, override]),
+  getPromptLibrary: () => answer("library", []),
 };
 // The real bindings need Tauri IPC; the commits only need these commands.
 mock.module("@/bindings", () => ({ commands }));
@@ -123,5 +126,74 @@ describe("prompt commits", () => {
     const outcome = await updatePrompt("p1", draft, saved);
     expect(outcome).toMatchObject({ status: "refused", contentSaved: false });
     expect(calls.map(([name]) => name)).toEqual(["update"]);
+  });
+});
+
+const uncertain = (outcome: "committed" | "unknown"): Reply => ({
+  status: "error",
+  error: {
+    code: "persistence_failed",
+    message: "Not confirmed.",
+    field: "post_process_prompts",
+    reason: null,
+    outcome,
+    current_revision: null,
+  },
+});
+const libraryWith = (
+  prompts: Array<{ id: string; name: string; prompt: string }>,
+): Reply =>
+  ok({
+    default_prompt_id: null,
+    post_process_enabled: true,
+    prompts: prompts.map((prompt) => ({ ...prompt, provider_override: null })),
+  });
+
+// @spec AC-001: A stored-but-unconfirmed creation is never a refusal — .specs/features/005-custom-ai-prompts/spec.md#ac-001
+describe("committed or unknown outcomes", () => {
+  beforeEach(() => {
+    calls.length = 0;
+    replies = {};
+  });
+
+  test("a committed creation found in the library is saved and edited", async () => {
+    replies.add = [uncertain("committed")];
+    replies.library = [
+      libraryWith([
+        { id: "made", name: "Shorten", prompt: "Shorten ${output}" },
+      ]),
+    ];
+    const outcome = await createPrompt(
+      { ...saved, name: " Shorten " },
+      EMPTY_DRAFT,
+    );
+    expect(outcome).toEqual({ status: "saved", id: "made" });
+    expect(calls.map(([name]) => name)).toEqual(["add", "library"]);
+  });
+
+  test("an unknown creation missing from the library stays refused", async () => {
+    replies.add = [uncertain("unknown")];
+    replies.library = [libraryWith([])];
+    const outcome = await createPrompt({ ...saved }, EMPTY_DRAFT);
+    expect(outcome).toMatchObject({ status: "refused", id: null });
+  });
+
+  test("a validation refusal is not reread", async () => {
+    replies.add = [refusal("prompt_name_duplicate")];
+    await createPrompt({ ...saved }, EMPTY_DRAFT);
+    expect(calls.map(([name]) => name)).toEqual(["add"]);
+  });
+
+  test("an unknown update whose values are stored counts as saved", async () => {
+    replies.update = [uncertain("unknown")];
+    replies.library = [
+      libraryWith([{ id: "p1", name: "Shorten", prompt: "New ${output}" }]),
+    ];
+    const outcome = await updatePrompt(
+      "p1",
+      { ...saved, text: "New ${output}" },
+      saved,
+    );
+    expect(outcome).toEqual({ status: "saved", id: "p1" });
   });
 });
