@@ -154,3 +154,19 @@
 - Review: the plan review is stale until an independent reviewer refreshes it.
 
 <!-- finalize:spec-refine:2026-10-14:19f333f0 -->
+
+## 2026-10-14 — [Spec Update]: pinned reasons split, destination-return gate recorded, 50 ms pause before Enter kept in the plan
+
+- **Type:** Spec Update
+- **Spec modified:** Yes (sections: Story 2 Gherkin and Mermaid, AC-003, Clarifications)
+- **Code modified:** None (plan.md updated: Enter authorization, Step 5, risk table)
+- **AC impacted:** AC-003 (reason wording; ID unchanged), AC-005 (plan timing only)
+- **Author:** Claude Code (spec-refine 009, claude-opus-5-5)
+- **AC-003:** the reason "pinned app unavailable" becomes `pinned_app_not_running` (the pinned application is closed) or `activation_failed` (running, not frontmost within the 006 limit), the reasons `.specs/features/010-recovery-bubble/spec.md` expects. Story 2 gains the activation-failure scenario and branch.
+- **Delivery precision (Clarification 2026-10-14):** all of 009 ships behind the `destination-return` gate of 006; gate closed, Handy behaves exactly as `dev`. No AC, FR or SC changes.
+- **Plan (orchestrator decision 2026-10-14):** the plan had removed `dev`'s pause before Enter. It now keeps a 50 ms stabilization pause after t0 (`PRE_ENTER_SETTLE`, the value of `clipboard.rs` and `AUTO_SUBMIT_SETTLE` in `smart_paste/app.rs`), waited through the Clock off the main thread, with the frontmost check and claim after it, inside the 100 ms budget.
+- Clarification inventory was empty: both decisions are written in `## Clarifications`.
+- Review preparation at 180,000 characters: spec 1 batch, plan 16 batches, no error.
+- Review: the spec and plan reviews are stale until an independent reviewer refreshes them.
+
+<!-- finalize:spec-refine:2026-10-14:b5422949 -->

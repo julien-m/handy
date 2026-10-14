@@ -5,6 +5,9 @@
 
 ---
 
+## 2026-10-14 — [Feature 009] Spec refined: AC-003 reasons split into pinned_app_not_running and activation_failed, destination-return gate recorded; plan keeps dev's 50 ms pause before Enter
+<!-- finalize:spec-refine:2026-10-14:b5422949 -->
+
 ## 2026-10-14 — [Feature 010] Plan refined: round 4 review ingested, 010 behind 006's destination-return gate (closed build keeps dev's paste-error), before_insertion synchronous in the first guard check with a ~50 ms AX budget, names aligned on delivered 006/007
 <!-- finalize:spec-refine:2026-10-14:fb255547 -->
 

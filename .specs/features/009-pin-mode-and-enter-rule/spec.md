@@ -75,6 +75,12 @@ Feature: Pinned app unavailable
     Then no text is inserted into any application
     And the transcript is preserved as in feature 006
     And the pin stays until the user unpins it
+  Scenario: Pinned app running but not brought forward
+    Given Notes is pinned and running
+    When Notes does not become frontmost within the 006 limit at insertion time
+    Then no text is inserted into any application
+    And the transcript is preserved as in feature 006 with the reason "activation_failed"
+    And the pin stays until the user unpins it
   Scenario: Pinned app reopened
     Given Notes is pinned and was closed
     When Notes is reopened and the user dictates
@@ -84,8 +90,10 @@ Feature: Pinned app unavailable
 ```mermaid
 flowchart TD
   A[Transcript ready, pinned destination] --> B{Pinned app running?}
-  B -- No --> C[Preserve transcript; reason: pinned app closed; pin kept]
-  B -- Yes --> D[Activation and insertion as in 006]
+  B -- No --> C[Preserve transcript; reason: pinned_app_not_running; pin kept]
+  B -- Yes --> D{Frontmost within the 006 limit?}
+  D -- No --> E[Preserve transcript; reason: activation_failed; pin kept]
+  D -- Yes --> F[Insertion as in 006]
 ```
 
 ### Story 3 — One automatic Enter option `P1`
@@ -223,7 +231,7 @@ flowchart TD
 
 ### AC-003
 
-**Criterion:** When the pinned application is not running, or cannot be activated within the 006 limit, no text is inserted anywhere, the transcript is preserved as specified by 006 with the reason "pinned app unavailable", and the pin remains. When an application with the pinned identity runs again, following dictations go to it.
+**Criterion:** When the pinned application is not running, or cannot be activated within the 006 limit, no text is inserted anywhere, the transcript is preserved as specified by 006, and the pin remains. The reason is `pinned_app_not_running` when no application with the pinned identity is running, and `activation_failed` when it is running but does not become frontmost within the 006 limit; these are the two reasons the recovery bubble (`.specs/features/010-recovery-bubble/spec.md`) expects. When an application with the pinned identity runs again, following dictations go to it.
 **Priority:** P1 | **Story:** Story 2
 
 ### AC-004
@@ -317,6 +325,8 @@ Feature: Keyboard access to Automatic Enter
 - The migration covers every current auto-submit path (classic paste, smart paste of 007 on macOS, reliable paste on Windows, settings commands and UI) so that no second Enter mechanism remains.
 - "Successful insertion" follows the 006 contract: insertion attempted with the method reporting success; it is not a verification of the field content.
 - Program context: specified in list order (001–010); depends on 006 (destination, badge) and 008 (CLI); 010 recovery display suppresses Enter.
+- Decision 2026-10-14 (program orchestrator, before the independent review): the single reason "pinned app unavailable" of AC-003 is split in two. `pinned_app_not_running`: no application with the pinned identity is running. `activation_failed`: it is running but does not become frontmost within the 006 limit. These are the reasons expected by `.specs/features/010-recovery-bubble/spec.md` ("<App> is pinned but not open" and "Could not bring <App> forward"). No other pinned reason exists.
+- Decision 2026-10-14 (program orchestrator, delivery precision): all of 009 (pin, pin badge, Automatic Enter setting and its migration, Enter authority, CLI `destination` operations and Automatic Enter keys) ships behind the `destination-return` gate of `.specs/features/006-destination-application/spec.md`. Gate closed, Handy behaves exactly as `dev`: the existing auto-submit switch, key and Enter paths, no pin entries, no Automatic Enter setting. Gate open, this specification applies. No AC, FR or SC changes; the requirements describe the gate-open build.
 
 ## QE Analysis
 
