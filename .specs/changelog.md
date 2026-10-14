@@ -5,6 +5,11 @@
 
 ---
 
+## 2026-10-14 — [Feature 006] Plan refined: settings framework Step 0 (D2–D4) and merged 008 names
+<!-- finalize:spec-refine:2026-10-14:b0be88bc -->
+
+New Step 0 extends the 008 framework with live domain operations (`DomainPlan::Live`, `LiveOperation`, `LiveContext`), a static `PlatformCapability`, and optional `details.reason`/`details.items`; unsupported platform is `validation_failed`/2 with `unsupported_platform` (D4). `DestinationContext` and a single `RecoveryDisposition` veto defined for 007/009/010; 007 identifiers and wire values adopted; QE aligned on the spec (High, Shared, Functional); Windows/Linux native proof as pending release evidence (D1). Spec unchanged; the plan review is stale until an independent reviewer refreshes it.
+
 ## 2026-10-14 — [Feature 003] Plan refined: merged 008 names and program decisions D1–D4
 
 Plan QE aligned on the spec (Medium, light lane); `vocabulary status` as a D2 live operation (depends on 006 step 0); per-line errors in D3 `details.items`; `context_budget_unverified` as `internal_error`/1 (D4); stdout-only export; Whisper budget of 223 tokens sourced from the engine, other budgets measured in Step 1; Windows/Linux native proof as pending release evidence. Spec unchanged; the plan review is stale until an independent reviewer refreshes it.

@@ -61,3 +61,20 @@
 - **Classification:** criticality High, blast radius Shared, primary risk Functional, taken from the existing QE Analysis; `livespec delivery lane`: full
 - **Review:** the previous spec review is stale; an independent reviewer refreshes it
 - **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
+
+## 2026-10-14 — [Plan Update]: Settings framework Step 0 (D2–D4), merged 008 names and 007 interface
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md and contracts/destination-contract.md updated)
+- **AC impacted:** None (pre-implementation plan alignment; AC-005, AC-006, AC-007, AC-008 coverage clarified)
+- **Author:** Claude Code (spec-refine 006 plan, claude-opus-5-5)
+- Applies the 2026-10-14 independent plan review (3 blocking findings) and orchestrator decisions D1–D4.
+- D1: only macOS native evidence gates a step; Windows, Linux, an older binary and a second account are pending release evidence with exact checks (Steps 1, 7, Testing Strategy, QE).
+- New Step 0 extends the 008 framework: `DomainPlan::Live` with `domains/live_operation.rs` (`LiveOperation`, `LiveCall`, `LiveAnswer`, `LiveContext`, `managed_state`), `SettingsBackend::live_context` (only `RoutedBackend`), offline refusal identical to the delivered live-only refusal (`unavailable`, exit 5, empty details); `platform_capability.rs` (`PlatformCapability::Destination`, `PlatformCapabilities`, `required_capability`, `check`); `ErrorDetails.reason` (`ErrorReason`) and `ErrorDetails.items` (`ErrorItem`, max 100); `SettingsError::unsupported_platform` (D4: `validation_failed`/2, `details.reason = "unsupported_platform"`). Names also recorded in `.specs/ship.md` (Contrat D2/D3).
+- Uses delivered 008 names only (`tauri_adapter::write`, `shortcut/mod.rs` output commands, `OUTPUT_KEYS: [&str; 11]`, `effects.rs`); `LiveSettingsEffects` removed. Static platform capability decides the CLI/UI refusal offline and routed; runtime foreground readability stays in the running instance and is never a CLI validation; `output get` returns the plain value.
+- Defines `DestinationContext` (PID, stable identity incl. bundle ID, `dictation_id`, `destination_generation`, frontmost-at-end and `target: None` cases) and the single `RecoveryDisposition {Pending, Insert, Recover, Cancelled}` veto shared with 009/010; aligns identifiers and outcome wire values with 007; 007 alone displays its remote-screen clipboard message; 006 tests map injected 007 results instead of 007 timers.
+- QE Analysis aligned with the spec (High, Shared, Functional); Next Action no longer pins a model.
+- Review: the plan review is stale until an independent reviewer refreshes it.
+
+<!-- finalize:spec-refine:2026-10-14:b0be88bc -->

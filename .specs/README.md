@@ -39,7 +39,7 @@
 | 003 | Recognition Vocabulary | Planned | 2026-10-12 | 2026-10-12 | [spec](features/003-recognition-vocabulary/spec.md) |
 | 004 | Multiple Dictation Shortcuts | Planned | 2026-10-12 | 2026-10-12 | [spec](features/004-multiple-dictation-shortcuts/spec.md) |
 | 005 | Custom AI Prompts | Planned | 2026-10-12 | 2026-10-12 | [spec](features/005-custom-ai-prompts/spec.md) |
-| 006 | Destination Application | Planned | 2026-10-12 | 2026-10-13 | [spec](features/006-destination-application/spec.md) |
+| 006 | Destination Application | Planned | 2026-10-12 | 2026-10-14 | [spec](features/006-destination-application/spec.md) |
 | 007 | Smart Paste | Planned | 2026-10-12 | 2026-10-13 | [spec](features/007-smart-paste/spec.md) |
 | 008 | Settings CLI | In Progress | 2026-10-12 | 2026-10-13 | [spec](features/008-settings-cli/spec.md) |
 | 009 | PIN Mode and Enter Rule | Planned | 2026-10-12 | 2026-10-13 | [spec](features/009-pin-mode-and-enter-rule/spec.md) |
@@ -68,16 +68,16 @@
 <!-- readme:activity:start -->
 | Date | Type | Description |
 |---|---|---|
-| 2026-10-13 | Bugfix | 008-settings-cli: Step 3 audit corrections applied; Done pending independent audit |
-| 2026-10-13 | Feature | 008-settings-cli: Step 3 Blocked by platform refusal; feature delivery incomplete |
-| 2026-10-13 | Feature | 008-settings-cli: Step3 pure repository resumes; app adoption moved into Step4 all-writer cutover |
-| 2026-10-13 | Feature | 008-settings-cli: Step 2 pure foundation Done;21 tests pass, whole acceptance remains partial |
-| 2026-10-13 | Feature | 008-settings-cli: Step 1 primitive gate Done; 22 tests pass, complete acceptance remains partial |
-| 2026-10-13 | Feature | 008-settings-cli: Bounded Unix mechanism refined; current-source proof pending |
-| 2026-10-13 | Feature | 008-settings-cli: Registry activity refreshed; socket failure-path retention recorded |
-| 2026-10-13 | Feature | 008-settings-cli: Root corrects whole-AC step-block interpretation; Step 1 audit pending |
-| 2026-10-13 | Feature | 008-settings-cli: Superseded whole-AC step-block interpretation |
-| 2026-10-13 | Feature | 008-settings-cli: Step 1 local parser/console tests 17/17; mandatory audit Blocked without verdict; Steps 2–7 Todo, all ACs uncertified |
+| 2026-10-14 | Feature | [Feature 006] Plan refined: settings framework Step 0 (D2–D4) and merged 008 names |
+| 2026-10-14 | Feature | [Feature 003] Plan refined: merged 008 names and program decisions D1–D4 |
+| 2026-10-13 | Feature | [Feature 001] Spec refined: Quality Engineering classification for the delivery lane |
+| 2026-10-13 | Feature | [Feature 003] Spec refined: Quality Engineering classification for the delivery lane |
+| 2026-10-13 | Feature | [Feature 005] Spec refined: Quality Engineering classification for the delivery lane |
+| 2026-10-13 | Feature | [Feature 006] Spec refined: Quality Engineering classification for the delivery lane |
+| 2026-10-13 | Feature | [Feature 009] Spec refined: Quality Engineering classification for the delivery lane |
+| 2026-10-13 | Feature | [Feature 010] Spec refined: Quality Engineering classification for the delivery lane |
+| 2026-10-13 | Feature | 008-settings-cli: final delivery review correction round 1 Done |
+| 2026-10-13 | Feature | 008-settings-cli: Step 7 macOS native proof (debug build) Done; release evidence pending |
 <!-- readme:activity:end -->
 
 ---
@@ -161,3 +161,5 @@
 <!-- finalize:spec-plan:2026-10-13:ff08720c -->
 
 <!-- finalize:spec-plan:2026-10-13:1953f656 -->
+
+<!-- finalize:spec-refine:2026-10-14:b0be88bc -->
