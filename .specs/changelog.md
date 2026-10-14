@@ -5,6 +5,9 @@
 
 ---
 
+## 2026-10-14 — [Feature 010] Plan refined: permission_missing aligned on the spec (no keystroke sent, so no possible-partial-insertion detail)
+<!-- finalize:spec-refine:2026-10-14:3d66e47e -->
+
 ## 2026-10-14 — [Feature 010] Spec refined: focus in another process inserts (Key Entities), history claim conditional on a successful save, no 'some text' detail for permission_missing, destination-return gate recorded, a new dictation closes the bubble even before 4 s
 <!-- finalize:spec-refine:2026-10-14:8ecc2640 -->
 
