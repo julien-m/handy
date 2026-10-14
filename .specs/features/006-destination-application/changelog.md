@@ -95,3 +95,13 @@
 - Review: the plan review is stale until an independent reviewer refreshes it.
 
 <!-- finalize:spec-refine:2026-10-14:8325a713 -->
+
+## 2026-10-14 — [Feature]: Non-UI implementation of destination application (partial)
+
+- **Type:** Feature
+- **Spec modified:** No
+- **Code modified:** `src-tauri/src/settings_service/` (Step 0: live operations, platform capability, error details; Step 3: `return_to_dictation_app` key), `src-tauri/src/destination/` (new: session manager, contracts, macOS/Windows adapters, orchestrator, guard, outcome, recovery), `src-tauri/src/commands/destination.rs`, `src-tauri/src/{actions,clipboard,utils,settings,lib,cli}.rs`, `src/bindings.ts`, `src/stores/settings-errors.ts`, 26 locales, tests (`destination_cli.rs`, `destination_platform.rs`, settings test updates), README, 008 contract and schema
+- **AC impacted:** AC-001, AC-002, AC-004 (backend), AC-005, AC-006, AC-007, AC-008 — all partial, none certified; AC-003 not started (UI)
+- **Author:** Claude Code (spec-implement 006, claude-opus-5-5)
+- Commits: `85b0088` (Step 0), `86f8e44` (Step 2, Step 1 read-only part), `bfaece4` (Step 3), `4071dcd` (Step 4 and the non-UI part of Step 6).
+- Not done: UI (badge, menu, reason display, settings toggle and its write command), 007/009/010 adapters, native activation/focus/timing evidence; Windows compile-only; Linux and Windows native checks pending release evidence. See [implementation](implementation.md) and [progress](progress.md).
