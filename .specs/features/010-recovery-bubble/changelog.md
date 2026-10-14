@@ -111,3 +111,21 @@
 - Review: the plan review is stale until an independent reviewer refreshes it.
 
 <!-- finalize:spec-refine:2026-10-14:e2c204ed -->
+
+## 2026-10-14 — [Plan Update]: round 4 review ingested, 010 behind 006's destination-return gate, synchronous verdict in the guard check
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md and contracts/recovery-contract.md updated)
+- **AC impacted:** None (pre-implementation; AC-001, AC-002, AC-006 and AC-007 planning only, IDs unchanged)
+- **Author:** Claude Code (spec-refine 010 plan, claude-opus-5-5)
+- Applies the round 4 independent plan review (synthesis never ingested before) and the orchestrator decisions of 2026-10-14, checked against the delivered 006 and 007 code in `dev`.
+- **Rollout gate:** all of 010 ships behind 006's `destination-return` Cargo feature. Closed (default build): a failed paste shows the existing `paste-error` message as in `dev`, Linux and 007's sessionless path included, with no bubble, classification or setting (`not_found`/4, checked schema unchanged). Open: a Linux method failure gets the reduced bubble through a `FrontmostAtEnd` session.
+- **Order:** the sequence diagram and steps follow delivered 006. `before_insertion` runs in the first accepted `DispatchGuard::check()`, after `paste_delay_ms`, where the disposition becomes `Insert`.
+- **Thread:** the verdict is synchronous, on the main thread for main-thread methods. The AX classification is bounded to about 50 ms with `AXUIElementSetMessagingTimeout`, and doubt or timeout answers `Insert`. The worker classification and the impossible post-classification recheck are removed. Step 4 lists `destination/delivery.rs`, `destination/app.rs` and `smart_paste/app.rs`.
+- **Scope:** the "field detection macOS-only" settings note is removed. No AX call happens when the setting is off, when no insertion is due or for 007 per-application strategy bundles.
+- **Names:** `Recover(NoTextField)` arrives as `insertion_failed` without `method_outcome` and is correlated by `(dictation_id, destination_generation)`. 010's presentation type becomes `BubbleReason`, to avoid 006's `context::RecoveryReason`. The display name comes from the session snapshot, then `WorkspacePort::instances`, then the localized noun. `transaction_id` is compared as a decimal string.
+- Plan review preparation at 180,000 characters: 14 batches, no error.
+- Review: the plan review is stale until an independent reviewer refreshes it.
+
+<!-- finalize:spec-refine:2026-10-14:fb255547 -->

@@ -5,6 +5,9 @@
 
 ---
 
+## 2026-10-14 — [Feature 010] Plan refined: round 4 review ingested, 010 behind 006's destination-return gate (closed build keeps dev's paste-error), before_insertion synchronous in the first guard check with a ~50 ms AX budget, names aligned on delivered 006/007
+<!-- finalize:spec-refine:2026-10-14:fb255547 -->
+
 ## 2026-10-14 — [Feature 009] Plan refined: round 4 review ingested, 009 behind 006's destination-return gate (closed build keeps dev's auto_submit, migration never rewrites it), Enter keyed by dictation and generation, status limited to the pinned app
 <!-- finalize:spec-refine:2026-10-14:19f333f0 -->
 
