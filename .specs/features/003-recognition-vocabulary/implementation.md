@@ -96,8 +96,9 @@ remains. No AC is certified. The settings screen shows the list, the paste previ
 - **Placement.** "Custom Words" leaves Advanced > Transcription; a "Vocabulary" settings group follows it, as in
   the mockups. `CustomWords.tsx` keeps its name and export (plan: no gratuitous rename) and now renders that group.
 - **Files.** `src/components/settings/vocabulary/` (`vocabulary-model.ts`, `vocabulary-status-model.ts`,
-  `vocabulary-paste-model.ts`, `vocabulary-terms.tsx`, `vocabulary-status.tsx`, `vocabulary-paste.tsx`, tests),
-  `src/stores/vocabulary-store.ts` (+ test), `src/hooks/use-vocabulary.ts`.
+  `vocabulary-paste-model.ts`, `vocabulary-terms.tsx`, `vocabulary-status.tsx`, `vocabulary-paste.tsx`,
+  `vocabulary-notices.tsx`, tests), `src/stores/vocabulary-store.ts` (+ test), `src/hooks/use-vocabulary.ts`
+  (+ test).
 - **Commands.** `getVocabulary`, `getVocabularyStatus`, `addVocabularyTerm`, `removeVocabularyOccurrence`,
   `previewVocabularyImport`, `applyVocabularyImport` (merge mode). No Rust change, no new command.
 - **Test IDs.** One component serves the four mockup screens; the prefix follows the state (empty list →
@@ -110,5 +111,42 @@ remains. No AC is certified. The settings screen shows the list, the paste previ
   failures; the status box has `role="status"` (polite) rather than an assertive alert; plural counts use
   number-neutral wording in languages with several plural forms; a duplicate line names its earlier spelling
   with a display-only fold and falls back to "already in the list".
-- **Not done.** Playwright `tests/vocabulary-settings.spec.ts` (the commands need the Tauri backend); real
-  window captures, keyboard and status checks in the running app, pending with Julien.
+- **Not done.** Playwright `tests/vocabulary-settings.spec.ts`: feasible on the mocked-IPC harness, not
+  written; recorded as pending evidence, with Julien. Real window captures, keyboard and status checks in the
+  running app: pending, with Julien.
+
+### UI fix round 1 (delivery review `combined`, BLOCKED: 2 blocking, 7 warnings)
+
+- **Focus ring.** `Button` `secondary` removes the outline without a ring. Cancel and both Retry buttons
+  (status, commit failure) now carry `FOCUS_RING` (exported from `vocabulary-model.ts`; Retry is one shared
+  `RetryButton`). Checked every editor button: Add, "Paste a list…" and the remove buttons already had it,
+  Apply (`primary`) has its own ring, the input and the paste editor have a focus border.
+- **Truthful commit failure.** `failureNotice`: "Your saved vocabulary is unchanged" only when the error has
+  no `outcome`. `unknown`: no "unchanged", list reread, Retry kept. `committed`: list reread, message
+  `settings.vocabulary.errors.committed`, no Retry (`canRetry` is false). Unit and render tests for the three
+  cases.
+- **Apply revision.** Apply sends `preview.revision`; if the list changed since, the backend answers
+  `revision_conflict` and the preview is reread.
+- **List read.** Before the first answer the list shows `<screen>-loading`; a failed read shows
+  `<screen>-list-error` with Retry (focus then goes to the term input). An unread list never uses the
+  `-empty` prefix nor "No terms yet".
+- **Focus.** After Cancel or Apply, focus returns to "Paste a list…"; Add keeps focus on the term input;
+  removal focus is decided once the commit answers (`removalFocusPosition`): the next term after a removal,
+  the same term after a failure (also after a reread), the input when no term is left.
+- **Hook test.** `src/hooks/use-vocabulary.test.ts` tests the hook's bindings (`refreshVocabulary`,
+  `watchModelState`, `schedulePreview`, extracted from the effects). No DOM renderer is installed, so the
+  effect wiring itself (`useEffect` dependencies) is not executed by a test; the harness exercised it.
+- **Proof hygiene.** The 2 MB `proofs/claude-ui/conventions.stdout` was removed with `git rm` and replaced by
+  `proofs/claude-ui/conventions-summary.txt` (verdict, `new_count`, blockers, receipt path, sha256).
+- Evidence: `proofs/claude-ui-fix1/` (`summary.txt`; `harness/checks.txt` with captures, mocked IPC).
+
+### Design deviations (Penflow contract, not yet updated)
+
+The contract (`penflow/flow-ui-contract/contract.json`) will be updated later; it is not changed here.
+- **Term instance ids.** Chips carry `data-instance-id="term-<stored index>"`, while the contract template is
+  `term-{key}`. The index stays unique even with legacy duplicates, whose keys repeat.
+- **After Apply.** A successful Apply closes the paste box, shows a toast and returns to the list screen
+  (focus on "Paste a list…"), while the contract transition `vocabulary-settings-paste.apply.applied` stays on
+  the paste screen in an `applied` state.
+- **Additive test IDs.** `<screen>-loading` and `<screen>-list-error` (list read) join `<screen>-error`
+  (commit failure); none is a contract node.

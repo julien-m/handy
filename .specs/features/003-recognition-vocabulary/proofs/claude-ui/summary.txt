@@ -9,3 +9,4 @@ bun run test:settings-store -> exit 0
 bun run test:shortcut-list -> exit 0
 bun run test:keyboard -> exit 0
 livespec conventions verify --feature repo --json -> exit 0
+livespec conventions verify (UI fix round 1): raw stdout replaced by conventions-summary.txt

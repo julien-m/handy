@@ -1,0 +1,18 @@
+Browser checks with mocked IPC (vite dev on localhost:5191, Claude Browser pane), UI fix round 1.
+Not a real Handy window; real-window, keyboard-in-app and native evidence stay pending, with Julien.
+
+?s=default&listFail=1   first get_vocabulary throws
+  - list-error with Retry shown, no "No terms yet" (list-read-failure.jpg)
+  - Shift+Tab onto Retry shows the pink ring (retry-focus-ring.png)
+  - Retry (Enter) reads 6 terms, the error leaves, focus moves to the term input
+Add with the keyboard: type "Mistral", Tab to Add, Enter -> term added, focus on vocabulary-settings-new-term
+?commitError=unavailable (no outcome), Enter on "Remove Claude Opus"
+  - error "...cannot be changed right now..." + "Your saved vocabulary is unchanged." + Retry
+  - focus stays on "Remove Claude Opus" (remove-failed-focus-kept.jpg)
+?commitError=internal_error:committed -> committed message, no "unchanged", no Retry, list reread (2 reads), focus kept
+?commitError=unavailable:unknown       -> unknown message, no "unchanged", Retry offered, list reread (2 reads)
+Successful removal of the 2nd term -> focus on the next term ("Remove Claude Opus")
+Paste a list -> Cancel -> focus on vocabulary-settings-paste
+Paste a list -> type -> Tab to Cancel: pink 1px ring (box-shadow rgb(242,140,187)) (cancel-focus-ring.png)
+Paste a list -> type -> Apply (Enter) -> term added, box closed, focus on vocabulary-settings-paste,
+  apply_vocabulary_import sent expectedRevision 2 (the preview's revision)
