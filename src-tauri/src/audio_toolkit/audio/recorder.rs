@@ -8,18 +8,21 @@ use std::{
 };
 
 use cpal::{
-    traits::{DeviceTrait, HostTrait, StreamTrait},
+    traits::{DeviceTrait, HostTrait},
     Device, Sample, SizedSample,
 };
 use rtrb::{Consumer, Producer, RingBuffer};
 
-use super::attempt::{self, AttemptFailure, OpenLedger, MAX_STALLED_OPENS};
+use super::attempt::{AttemptFailure, OpenLedger, MAX_STALLED_OPENS};
 use crate::audio_toolkit::{
     audio::{AudioVisualiser, FrameResampler},
     constants,
     vad::{self, VadFrame},
     VoiceActivityDetector,
 };
+use opening::{CacheEntry, NativeOpen};
+
+mod opening;
 
 enum Cmd {
     /// Begin capturing. Carries the send timestamp so the consumer can log how
@@ -108,7 +111,7 @@ pub struct AudioRecorder {
     /// mode. Keyed by name so a system-default change misses naturally;
     /// cleared whenever an open fails so a stale rate/format self-heals on the
     /// caller's retry.
-    config_cache: Arc<Mutex<Option<(String, cpal::SupportedStreamConfig)>>>,
+    config_cache: Arc<Mutex<CacheEntry>>,
     /// Set by cpal when the active input stream can no longer capture.
     stream_error: Arc<AtomicBool>,
     /// Abandoned opens still running, shared by every open of this recorder.
@@ -225,200 +228,22 @@ impl AudioRecorder {
             log::warn!("Capture stream failed; rebuilding microphone stream");
             self.close()?;
         }
-
-        self.stream_error.store(false, Ordering::Relaxed);
-
-        let (cmd_tx, cmd_rx) = mpsc::channel::<Cmd>();
-        let (init_tx, init_rx) = mpsc::sync_channel::<Result<(), String>>(1);
-        let (attempt_owner, attempt_worker) =
-            attempt::begin(&self.open_ledger).map_err(open_error)?;
-
-        let host = crate::audio_toolkit::get_cpal_host();
         let device = match device {
             Some(dev) => dev,
-            None => host
+            None => crate::audio_toolkit::get_cpal_host()
                 .default_input_device()
                 .ok_or_else(|| Error::new(std::io::ErrorKind::NotFound, "No input device found"))?,
         };
-
-        let thread_device = device.clone();
-        let vad = self.vad.clone();
-        // Move the optional level callback into the worker thread
-        let level_cb = self.level_cb.clone();
-        // Move the optional real-time audio frame callback into the worker thread
-        let audio_cb = self.audio_cb.clone();
-        let selected_channel = self.selected_channel;
-        let config_cache = Arc::clone(&self.config_cache);
-        let stream_error = Arc::clone(&self.stream_error);
-        let loss_cb = self.loss_cb.clone();
-        let salvage = Arc::clone(&self.salvage);
-
-        let worker = std::thread::spawn(move || {
-            let transport = Arc::new(CaptureTransportState::default());
-            let init_result = (|| -> Result<(cpal::Stream, u32, Consumer<f32>), String> {
-                let config_started = Instant::now();
-                let device_name = thread_device.name().unwrap_or_default();
-                let cached_config = config_cache
-                    .lock()
-                    .unwrap()
-                    .as_ref()
-                    .filter(|(name, _)| !device_name.is_empty() && *name == device_name)
-                    .map(|(_, cfg)| cfg.clone());
-                let config_was_cached = cached_config.is_some();
-                let config = match cached_config {
-                    Some(cfg) => cfg,
-                    None => AudioRecorder::get_preferred_config(&thread_device)
-                        .map_err(|e| format!("Failed to fetch preferred config: {e}"))?,
-                };
-                let config_elapsed = config_started.elapsed();
-
-                let sample_rate = config.sample_rate().0;
-                let channels = config.channels() as usize;
-
-                log::info!(
-                    "Using device: {:?}\nSample rate: {}\nChannels: {}\nFormat: {:?}",
-                    thread_device.name(),
-                    sample_rate,
-                    channels,
-                    config.sample_format()
-                );
-
-                if let Some(channel) = selected_channel {
-                    if channel < channels {
-                        log::info!("Using selected input channel: {}", channel + 1);
-                    } else {
-                        log::warn!(
-                            "Selected input channel {} is out of range for a {}-channel device; averaging all channels instead",
-                            channel + 1,
-                            channels
-                        );
-                    }
-                } else {
-                    log::info!("Averaging all {} input channels", channels);
-                }
-
-                let build_started = Instant::now();
-                let (stream, sample_consumer) = match config.sample_format() {
-                    cpal::SampleFormat::U8 => AudioRecorder::build_stream::<u8>(
-                        &thread_device,
-                        &config,
-                        channels,
-                        selected_channel,
-                        Arc::clone(&transport),
-                        Arc::clone(&stream_error),
-                    ),
-                    cpal::SampleFormat::I8 => AudioRecorder::build_stream::<i8>(
-                        &thread_device,
-                        &config,
-                        channels,
-                        selected_channel,
-                        Arc::clone(&transport),
-                        Arc::clone(&stream_error),
-                    ),
-                    cpal::SampleFormat::I16 => AudioRecorder::build_stream::<i16>(
-                        &thread_device,
-                        &config,
-                        channels,
-                        selected_channel,
-                        Arc::clone(&transport),
-                        Arc::clone(&stream_error),
-                    ),
-                    cpal::SampleFormat::I32 => AudioRecorder::build_stream::<i32>(
-                        &thread_device,
-                        &config,
-                        channels,
-                        selected_channel,
-                        Arc::clone(&transport),
-                        Arc::clone(&stream_error),
-                    ),
-                    cpal::SampleFormat::F32 => AudioRecorder::build_stream::<f32>(
-                        &thread_device,
-                        &config,
-                        channels,
-                        selected_channel,
-                        Arc::clone(&transport),
-                        Arc::clone(&stream_error),
-                    ),
-                    sample_format => {
-                        return Err(format!("Unsupported sample format: {sample_format:?}"));
-                    }
-                }
-                .map_err(|e| format!("Failed to build input stream: {e}"))?;
-                let build_elapsed = build_started.elapsed();
-
-                let play_started = Instant::now();
-                stream
-                    .play()
-                    .map_err(|e| format!("Failed to start microphone stream: {e}"))?;
-                log::debug!(
-                    "mic worker init: fetch_config={:?} (cached={}) build_stream={:?} play={:?}",
-                    config_elapsed,
-                    config_was_cached,
-                    build_elapsed,
-                    play_started.elapsed()
-                );
-
-                // The device accepted this config; remember it so the next
-                // open skips the HAL property queries entirely.
-                if !config_was_cached && !device_name.is_empty() {
-                    *config_cache.lock().unwrap() = Some((device_name, config));
-                }
-
-                Ok((stream, sample_rate, sample_consumer))
-            })();
-
-            match init_result {
-                Ok((stream, _, _)) if !attempt_worker.publish() => {
-                    // The caller gave up on this attempt: release the device at once.
-                    drop(stream);
-                }
-                Ok((stream, sample_rate, sample_consumer)) => {
-                    let _ = init_tx.send(Ok(()));
-                    // Timestamp for the play()-returned -> first-samples gap the
-                    // init handshake can't see (hardware dependent).
-                    let stream_running_at = Instant::now();
-                    let processor = CaptureProcessor::new(
-                        sample_rate,
-                        vad,
-                        level_cb,
-                        audio_cb,
-                        stream_running_at,
-                    )
-                    .with_stream_ports(salvage, loss_cb);
-                    run_consumer(
-                        processor,
-                        sample_consumer,
-                        cmd_rx,
-                        transport,
-                        Arc::clone(&stream_error),
-                    );
-                    drop(stream);
-                }
-                Err(error_message) => {
-                    // A failed open may mean the cached config went stale
-                    // (device re-plugged, rate/format changed in the OS).
-                    // Drop it so the next attempt re-queries the device.
-                    *config_cache.lock().unwrap() = None;
-                    log::error!("{error_message}");
-                    let _ = init_tx.send(Err(error_message));
-                }
-            }
-        });
-
-        match attempt_owner.wait(&init_rx, timeout) {
-            Ok(()) => {
-                self.device = Some(device);
-                self.cmd_tx = Some(cmd_tx);
-                self.worker_handle = Some(worker);
-                Ok(())
-            }
-            // An abandoned worker may be blocked in a native call: it is never joined.
-            Err(AttemptFailure::TimedOut) => Err(open_error(AttemptFailure::TimedOut)),
-            Err(failure) => {
-                let _ = worker.join();
-                Err(open_error(failure))
-            }
-        }
+        let native = NativeOpen {
+            device: device.clone(),
+            config_cache: Arc::clone(&self.config_cache),
+            selected_channel: self.selected_channel,
+        };
+        self.open_attempt(timeout, move |transport, stream_error| {
+            native.open(transport, stream_error)
+        })?;
+        self.device = Some(device);
+        Ok(())
     }
 
     /// Queue a recording start and return a one-shot receiver that resolves only
@@ -1152,5 +977,8 @@ fn run_consumer(
 #[cfg(test)]
 #[path = "recorder/loss_tests.rs"]
 mod loss_tests;
+#[cfg(test)]
+#[path = "recorder/opening_tests.rs"]
+mod opening_tests;
 #[cfg(test)]
 mod tests;
