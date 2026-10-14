@@ -1,6 +1,8 @@
 /**
  * Section navigation that respects unsaved edits (feature 002, has_dirty_state): leaving a
- * section whose editor holds a draft asks to stay or to discard the edits first.
+ * section whose editor holds a draft asks to stay or to discard the edits first. While that
+ * editor commits (a Save or an Apply in flight) the request is ignored: the dialog would offer a
+ * Discard the commit cannot honor.
  */
 import React, { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -8,6 +10,7 @@ import { Dialog } from "./ui/Dialog";
 import { Button } from "./ui/Button";
 import {
   discardUnsavedChanges,
+  hasCommitInFlight,
   hasUnsavedChanges,
 } from "@/stores/unsaved-changes";
 
@@ -28,13 +31,14 @@ export const useGuardedNavigation = <T,>(
   const [pending, setPending] = useState<{ target: T } | null>(null);
   const request = useCallback(
     (target: T) => {
+      if (hasCommitInFlight()) return;
       if (hasUnsavedChanges()) setPending({ target });
       else navigate(target);
     },
     [navigate],
   );
   const leave = () => {
-    if (pending === null) return;
+    if (pending === null || hasCommitInFlight()) return;
     discardUnsavedChanges();
     setPending(null);
     navigate(pending.target);

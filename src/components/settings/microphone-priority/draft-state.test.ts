@@ -1,7 +1,8 @@
 /**
  * Draft rules of the microphone priority editor (feature 001): edits change only the draft,
  * duplicates are refused, emptying the list changes only the draft, a change saved elsewhere raises the
- * conflict and keeps the draft, and typed refusals are translated.
+ * conflict and keeps the draft with Save inactive until Reload or Discard, and typed refusals are
+ * translated.
  * Run with `bun run test:microphone-priority`.
  */
 import { describe, expect, test } from "bun:test";
@@ -189,7 +190,18 @@ describe("revision changes while editing", () => {
     expect(rebased.conflict).toBe(true);
     expect(json(rebased.order)).toBe(json(draft.order));
     expect(rebased.base?.revision).toBe(6);
-    expect(canSave(rebased, next)).toBe(true);
+    expect(canSave(rebased, next)).toBe(false);
+  });
+
+  test("during a conflict an edit keeps Save inactive; Discard ends it", () => {
+    const next = { order: ["Dock"], revision: 6 };
+    const conflicted = rebaseDraft(draft, next);
+    const edited = editOrder(conflicted, next, ["USB headset", "Dock"]);
+    expect(edited.conflict).toBe(true);
+    expect(canSave(edited, next)).toBe(false);
+    expect(canSave(EMPTY_DRAFT, next)).toBe(false);
+    const fresh = editOrder(EMPTY_DRAFT, next, ["USB headset", "Dock"]);
+    expect(canSave(fresh, next)).toBe(true);
   });
 
   test("nothing to rebase without a draft", () => {
@@ -206,6 +218,7 @@ describe("revision changes while editing", () => {
     expect(failed.conflict).toBe(true);
     expect(failed.savePhase).toBe("idle");
     expect(json(failed.order)).toBe(json(draft.order));
+    expect(canSave(failed, saved)).toBe(false);
   });
 });
 

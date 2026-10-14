@@ -2,8 +2,8 @@
  * Status polling of the microphone priority editor (feature 001, AC-002) in headless Chromium, on
  * Playwright's simulated clock: the real status hook against the fake Tauri IPC of
  * `tests/harness/`. The page visibility and the Tauri window visibility are switched apart, so the
- * window case reproduces a webview that keeps reporting "visible" after `window.hide()` (expected
- * on Windows with WebView2). Not a native window proof. Run with
+ * window cases reproduce a webview that keeps reporting "visible" after `window.hide()` or a
+ * minimize (expected on Windows with WebView2), and a window shown without a focus event. Not a native window proof. Run with
  * `bun run test:microphone-priority-ui`.
  */
 import { expect, test, type Page } from "@playwright/test";
@@ -66,6 +66,33 @@ test("window hidden while the page stays visible: no read; shown and focused fro
   await expect.poll(() => reads(page)).toBe(base + 1);
   await page.clock.runFor(PERIOD);
   await expect.poll(() => reads(page)).toBe(base + 2);
+});
+
+test("window shown by the backend without a focus event: a read at once (main-window-shown)", async ({
+  page,
+}) => {
+  const base = await openOnPausedClock(page);
+  await page.evaluate(() => window.harness.setWindowShown(false));
+  await page.clock.runFor(PERIOD);
+  await page.clock.runFor(30_000);
+  expect(await reads(page)).toBe(base);
+  await page.evaluate(() => window.harness.showWindowWithoutFocus());
+  await expect.poll(() => reads(page)).toBe(base + 1);
+  await page.clock.runFor(PERIOD);
+  await expect.poll(() => reads(page)).toBe(base + 2);
+});
+
+test("window minimized while the page stays visible: no read until shown again", async ({
+  page,
+}) => {
+  const base = await openOnPausedClock(page);
+  await page.evaluate(() => window.harness.setWindowMinimized(true));
+  // The next period asks the window, finds it minimized and stops the timer.
+  await page.clock.runFor(PERIOD);
+  await page.clock.runFor(60_000);
+  expect(await reads(page)).toBe(base);
+  await page.evaluate(() => window.harness.showWindowWithoutFocus());
+  await expect.poll(() => reads(page)).toBe(base + 1);
 });
 
 test("the window cannot tell its visibility: the page visibility decides", async ({

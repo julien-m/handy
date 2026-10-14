@@ -96,6 +96,8 @@ mock.module("./use-prompt-library", () => ({
 
 const { PostProcessingSettings } = await import("./PostProcessingSettings");
 const { ShortcutListEditor } = await import("../shortcut-list-editor");
+const { providerFixFieldOf } = await import("./prompt-provider-fix");
+const { Alert } = await import("../../ui/Alert");
 
 const has = (markup: string, testId: string): boolean =>
   markup.includes(`data-testid="${testId}"`);
@@ -150,5 +152,37 @@ describe("prompt shortcut list (prompt:<id>)", () => {
     const markup = renderPromptList("prompt:new");
     expect(has(markup, "prompt-settings-editor-form-shortcut")).toBe(false);
     expect(has(markup, editorIds.add)).toBe(true);
+  });
+});
+
+// @spec AC-004: The inline fix sets the resolved provider, never the default — .specs/features/005-custom-ai-prompts/spec.md#ac-004
+describe("inline fix field", () => {
+  const fieldFor = (providerId: string) =>
+    providerFixFieldOf(
+      {
+        testId: "prompt-settings-editor",
+        readiness: { provider: null, providerId, model: "", missing: null },
+        settings: {
+          providers: [],
+          defaultProviderId: "custom",
+          models: {},
+          apiKeys: {},
+        },
+      },
+      "api_key",
+    );
+
+  test("is remounted when the prompt's provider changes", () => {
+    expect(fieldFor("openai").key).toBe("api_key:openai");
+    expect(fieldFor("anthropic").key).toBe("api_key:anthropic");
+  });
+});
+
+describe("Alert action", () => {
+  test("an empty action keeps the plain layout, without an action column", () => {
+    const message = "settings.message";
+    const plain = renderToStaticMarkup(<Alert>{message}</Alert>);
+    const empty = renderToStaticMarkup(<Alert action="">{message}</Alert>);
+    expect(empty).toBe(plain);
   });
 });

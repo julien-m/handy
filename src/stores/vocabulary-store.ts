@@ -272,11 +272,13 @@ const loadPreview = async ({ api, get, set, seq }: Context) => {
 /**
  * Apply the previewed text at the revision the preview was computed on: if the list changed
  * since, the backend answers a revision conflict and the preview is reread, so Apply never
- * commits a merge other than the one shown.
+ * commits a merge other than the one shown. A merge that adds no term is not sent (the Apply
+ * button is inactive for it, and a Retry after a failure follows the same rule).
  */
 const apply = (ctx: Context): Promise<boolean> => {
   const { preview, previewText, pasteText } = ctx.get();
-  if (!preview || !preview.applicable || previewText !== pasteText) {
+  const adds = (preview?.preview.added.length ?? 0) > 0;
+  if (!preview || !preview.applicable || !adds || previewText !== pasteText) {
     return Promise.resolve(false);
   }
   const operation: VocabularyOperation = { kind: "apply", input: pasteText };

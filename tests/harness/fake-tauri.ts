@@ -43,6 +43,8 @@ export const backend = {
   commitBeforeFailure: false,
   /** Answer of the window's `isVisible()`; the page visibility is set apart (`setVisible`). */
   windowVisible: true,
+  /** Answer of the window's `isMinimized()`. */
+  windowMinimized: false,
   windowVisibilityFails: false,
   windowVisibilityChecks: 0,
   settingsGate: null as Deferred | null,
@@ -154,6 +156,7 @@ const handlers: Record<string, Handler> = {
     if (backend.windowVisibilityFails) throw "window unavailable";
     return backend.windowVisible;
   },
+  "plugin:window|is_minimized": () => backend.windowMinimized,
   "plugin:os|locale": () => "en-US",
   "plugin:event|listen": (args) => {
     listeners.push({
@@ -218,6 +221,21 @@ export const setVisible = (visible: boolean): void => {
 export const setWindowShown = (shown: boolean): void => {
   backend.windowVisible = shown;
   if (shown) emit("tauri://focus", null);
+};
+
+/**
+ * Show the window as `show_main_window` does when the window gets no focus event (refused
+ * `set_focus`): only the backend's `main-window-shown` event signals it.
+ */
+export const showWindowWithoutFocus = (): void => {
+  backend.windowVisible = true;
+  backend.windowMinimized = false;
+  emit("main-window-shown", null);
+};
+
+/** Minimize or restore the window; the page stays "visible" and nothing is emitted. */
+export const setWindowMinimized = (minimized: boolean): void => {
+  backend.windowMinimized = minimized;
 };
 
 /** Hold the next writes until `releaseSave`, which settles them with `failure` or success. */

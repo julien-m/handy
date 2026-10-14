@@ -1,8 +1,9 @@
 /**
  * Polling of the microphone status (feature 001, AC-002) on a simulated clock, a simulated page
  * visibility and a fake Tauri window: a read on open, one every 5 s while visible, none while the
- * page or the window is hidden, a read at once when shown again or refocused, nothing after stop,
- * and the documented fallback when the window cannot tell. Run with
+ * page or the window is hidden or minimized, a read at once when shown again (focus or the
+ * backend's `main-window-shown`), nothing after stop, and the documented fallback when the window
+ * cannot tell. Run with
  * `bun run test:microphone-priority`.
  */
 import { describe, expect, test } from "bun:test";
@@ -190,23 +191,31 @@ describe("status polling", () => {
   });
 });
 
-/** A fake Tauri window: visibility, focus listeners, a failing read and the number of reads. */
+/** A fake Tauri window: visibility, minimized state, focus and shown listeners, a failing read. */
 const fakeWindow = () => {
-  const state = { visible: true, failing: false, asks: 0 };
-  const handlers = new Set<(focused: boolean) => void>();
+  const state = { visible: true, minimized: false, failing: false, asks: 0 };
+  const focusHandlers = new Set<() => void>();
+  const shownHandlers = new Set<() => void>();
+  const listenTo =
+    (handlers: Set<() => void>): WindowPort["onShown"] =>
+    async (handler) => {
+      handlers.add(handler);
+      return () => void handlers.delete(handler);
+    };
   const port: WindowPort = {
     isVisible: async () => {
       state.asks += 1;
       if (state.failing) throw new Error("window unavailable");
       return state.visible;
     },
-    onFocusChanged: async (handler) => {
-      handlers.add(handler);
-      return () => void handlers.delete(handler);
-    },
+    isMinimized: async () => state.minimized,
+    onFocusChanged: listenTo(focusHandlers),
+    onShown: listenTo(shownHandlers),
   };
-  const focus = (focused: boolean) => handlers.forEach((h) => h(focused));
-  return { state, port, focus, listeners: () => handlers.size };
+  const focus = () => focusHandlers.forEach((handler) => handler());
+  const shown = () => shownHandlers.forEach((handler) => handler());
+  const listeners = () => focusHandlers.size + shownHandlers.size;
+  return { state, port, focus, shown, listeners };
 };
 
 /** Polling bound to a page that stays visible and a fake window, as WebView2 would report it. */
@@ -244,7 +253,7 @@ describe("status polling with the Tauri window", () => {
   test("hidden then blurred: paused without waiting for the next period", async () => {
     const { time, win, counts } = await setupWindow();
     win.state.visible = false;
-    win.focus(false);
+    win.focus();
     await answered();
     expect(time.live()).toBe(0);
     expect(counts.invalidations).toBe(1);
@@ -256,7 +265,7 @@ describe("status polling with the Tauri window", () => {
     win.state.visible = false;
     await advance(3 * PERIOD);
     win.state.visible = true;
-    win.focus(true);
+    win.focus();
     await answered();
     expect(counts.reads).toBe(2);
     await advance(PERIOD);
@@ -266,8 +275,8 @@ describe("status polling with the Tauri window", () => {
 
   test("focus changes of a visible window start no second timer and no extra read", async () => {
     const { time, win, counts } = await setupWindow();
-    win.focus(false);
-    win.focus(true);
+    win.focus();
+    win.focus();
     await answered();
     expect(counts.reads).toBe(1);
     expect(time.live()).toBe(1);
@@ -286,41 +295,44 @@ describe("status polling with the Tauri window", () => {
     expect(counts.reads).toBe(4);
   });
 
-  test("stop releases the window focus listener", async () => {
+  test("shown by the backend without a focus event: a read at once, then every 5 s", async () => {
+    const { time, advance, win, counts } = await setupWindow();
+    win.state.visible = false;
+    await advance(3 * PERIOD);
+    expect(counts.reads).toBe(1);
+    win.state.visible = true;
+    win.shown();
+    await answered();
+    expect(counts.reads).toBe(2);
+    await advance(PERIOD);
+    expect(counts.reads).toBe(3);
+    expect(time.live()).toBe(1);
+  });
+
+  test("minimized while the page stays visible: paused at the next period", async () => {
+    const { time, advance, win, counts } = await setupWindow();
+    win.state.minimized = true;
+    await advance(PERIOD);
+    expect(counts.reads).toBe(1);
+    expect(time.live()).toBe(0);
+    await advance(60 * PERIOD);
+    expect(counts.reads).toBe(1);
+  });
+
+  test("restored from the taskbar: the focus event reads at once", async () => {
+    const { advance, win, counts } = await setupWindow();
+    win.state.minimized = true;
+    await advance(PERIOD);
+    win.state.minimized = false;
+    win.focus();
+    await answered();
+    expect(counts.reads).toBe(2);
+  });
+
+  test("stop releases the focus and shown listeners", async () => {
     const { win, stop } = await setupWindow();
-    expect(win.listeners()).toBe(1);
+    expect(win.listeners()).toBe(2);
     stop();
     expect(win.listeners()).toBe(0);
-  });
-});
-
-describe("window visibility source", () => {
-  test("an unsubscribe before the focus listener is ready releases it once ready", async () => {
-    const released: string[] = [];
-    let ready: (release: () => void) => void = () => undefined;
-    const port: WindowPort = {
-      isVisible: async () => true,
-      onFocusChanged: () => new Promise((resolve) => (ready = resolve)),
-    };
-    const unsubscribe = windowVisibility(port).subscribe(() => undefined);
-    unsubscribe();
-    ready(() => void released.push("focus listener"));
-    await answered();
-    expect(released).toEqual(["focus listener"]);
-  });
-
-  test("a failed focus subscription is reported", async () => {
-    const warnings: string[] = [];
-    const port: WindowPort = {
-      isVisible: async () => true,
-      onFocusChanged: async () => {
-        throw new Error("listen refused");
-      },
-    };
-    windowVisibility(port, (message) => warnings.push(message)).subscribe(
-      () => undefined,
-    );
-    await answered();
-    expect(warnings).toEqual(["Window focus subscription failed:"]);
   });
 });

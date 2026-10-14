@@ -140,6 +140,25 @@ remains. No AC is certified. The settings screen shows the list, the paste previ
   `proofs/claude-ui/conventions-summary.txt` (verdict, `new_count`, blockers, receipt path, sha256).
 - Evidence: `proofs/claude-ui-fix1/` (`summary.txt`; `harness/checks.txt` with captures, mocked IPC).
 
+### UI hardening pass (delivery review round 2 `combined` PASS, warnings)
+
+- **Focus on Apply.** `ApplyButton` (`vocabulary-paste.tsx`) uses `aria-disabled` with a click guard in its
+  `disabled` and `loading` states, so the focus stays on Apply while it sends and after a failure (the
+  note it describes explains why it is inactive). `data-state` is unchanged. Render test in
+  `vocabulary-notices.test.tsx`.
+- **Focus after Retry.** `retryThenFocus` (`vocabulary-retry.ts`): a successful Retry of an Add or a
+  removal focuses the term input; a successful Retry of an Apply closes the paste box and
+  `usePasteReturnFocus` focuses "Paste a list…". A failed Retry keeps the error and its Retry button.
+- **Retry of a failed Apply.** `retryApply` asks `applyRetryBlock` (`vocabulary-paste-model.ts`) on the
+  preview reread after the failure: not applicable (lines to fix, over capacity, still checking) → nothing
+  sent, the note shown in a warning toast; nothing to add → nothing sent, info toast; otherwise the store's
+  `retry`, and the "Terms added" toast on success. The store's `apply` also refuses a merge that adds no
+  term. Tests: `vocabulary-retry.test.ts` (new, in `test:vocabulary`), `vocabulary-model.test.ts`,
+  `vocabulary-store.test.ts`.
+- **Conventions.** `AddButton` (now `addFromButton` and `AddHint`) and `CustomWords` (`vocabularyScreen`;
+  `ListView` gives the status to `StatusView`) are 30 lines or fewer (TypeScript AST measure).
+- Evidence: `proofs/claude-hardening/summary.txt`.
+
 ### Design deviations (Penflow contract, not yet updated)
 
 The contract (`penflow/flow-ui-contract/contract.json`) will be updated later; it is not changed here.

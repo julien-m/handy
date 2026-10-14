@@ -81,6 +81,10 @@ export const stub = {
   applyReplies: [] as Array<Reply<ReplacementRulesView>>,
   /** When set, Save waits for it before answering (a Save in flight). */
   saveGate: null as Promise<void> | null,
+  /** When set, Apply waits for it before answering (an Apply in flight). */
+  applyGate: null as Promise<void> | null,
+  /** When set, the validator waits for it before answering (a check in flight). */
+  checkGate: null as Promise<void> | null,
   previewRevision: 4,
   /** Extra fields of every preview (a preview that changed). */
   previewExtra: {} as Partial<ReplacementPreview>,
@@ -98,6 +102,8 @@ export const resetStubs = (): void => {
   stub.saveReplies = [];
   stub.applyReplies = [];
   stub.saveGate = null;
+  stub.applyGate = null;
+  stub.checkGate = null;
   stub.previewRevision = 4;
   stub.previewExtra = {};
   stub.saveCalls.length = 0;
@@ -132,6 +138,7 @@ const applyWordReplacements = async (
   revision: number,
 ) => {
   stub.applyCalls.push([input, mode, revision]);
+  if (stub.applyGate !== null) await stub.applyGate;
   return (
     stub.applyReplies.shift() ?? { status: "ok", data: view(revision + 1, []) }
   );
@@ -139,7 +146,12 @@ const applyWordReplacements = async (
 
 const commands = {
   getWordReplacements: async () => stub.current,
-  checkWordReplacements: async () => stub.checkIssues,
+  checkWordReplacements: async () => {
+    // Read the issues before waiting, as the backend answers for the draft it was sent.
+    const issues = stub.checkIssues;
+    if (stub.checkGate !== null) await stub.checkGate;
+    return issues;
+  },
   saveWordReplacements,
   previewWordReplacements,
   applyWordReplacements,

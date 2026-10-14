@@ -9,6 +9,7 @@ import { listen } from "@tauri-apps/api/event";
 import { registerUnsavedChangesGuard } from "@/stores/unsaved-changes";
 import { isListDirty, useReplacementEditor } from "./editor-store";
 import { isTextDirty, useReplacementText } from "./text-store";
+import { useReplacementFiles } from "./file-store";
 
 /**
  * Whether the editor's current view holds unsaved edits.
@@ -21,8 +22,31 @@ export const isEditorDirty = (): boolean => {
     : isTextDirty(useReplacementText.getState());
 };
 
-/** Drop the edits of both views and show the saved list. */
+/**
+ * Whether a Save, an Apply or an import Apply is in flight. The request owns the rules until it
+ * settles: the guarded transitions (List/Text, Import…, section navigation) are not offered and
+ * nothing is discarded meanwhile.
+ * @returns true while a commit runs
+ */
+export const isCommitInFlight = (): boolean =>
+  useReplacementEditor.getState().commit === "saving" ||
+  useReplacementText.getState().applying ||
+  useReplacementFiles.getState().phase === "applying";
+
+/**
+ * Reactive `isCommitInFlight`, for the controls it makes inactive.
+ * @returns true while a commit runs
+ */
+export const useCommitInFlight = (): boolean => {
+  const saving = useReplacementEditor((state) => state.commit === "saving");
+  const applying = useReplacementText((state) => state.applying);
+  const importing = useReplacementFiles((state) => state.phase === "applying");
+  return saving || applying || importing;
+};
+
+/** Drop the edits of both views and show the saved list; ignored while a commit runs. */
 export const discardEditor = (): void => {
+  if (isCommitInFlight()) return;
   const editor = useReplacementEditor.getState();
   editor.discard();
   useReplacementText.getState().open(editor.saved);
@@ -34,6 +58,7 @@ export const useEditorLifecycle = (): void => {
     void useReplacementEditor.getState().loadRules();
     const unregister = registerUnsavedChangesGuard({
       isDirty: isEditorDirty,
+      isBusy: isCommitInFlight,
       discard: discardEditor,
     });
     const unlisten = listen<{ revision: number }>(

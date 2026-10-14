@@ -162,6 +162,34 @@ export const applyNote = (
   return { key: `${NOTE_ROOT}.ready`, values: {} };
 };
 
+/** Why a Retry of a failed Apply sends nothing, and how the message is shown. */
+export interface ApplyRetryBlock {
+  note: ApplyNote;
+  /** "info" when every line is already saved, "warning" when the lines must change first. */
+  tone: "info" | "warning";
+}
+
+/**
+ * Whether a Retry of a failed Apply may send the commit again. The failure rereads the preview, so
+ * Retry follows the same rule as Apply: an applicable, current preview that adds at least one
+ * term. Otherwise nothing is sent and the note explains why (lines to fix, the 500-term limit, a
+ * preview still checking, or nothing left to add because the terms are already saved).
+ * @param text current paste text
+ * @param preview preview reread after the failure, or null
+ * @param fresh true when the preview answers `text`
+ * @returns null when Retry may send, else the message to show
+ */
+export const applyRetryBlock = (
+  text: string,
+  preview: VocabularyImportPreview | null,
+  fresh: boolean,
+): ApplyRetryBlock | null => {
+  if (applyState(preview, fresh, false) === "enabled") return null;
+  const note = applyNote(text, preview, fresh);
+  const tone = note.key === `${NOTE_ROOT}.nothingToAdd` ? "info" : "warning";
+  return { note, tone };
+};
+
 /**
  * Translation key of the Apply label.
  * @param added terms Apply would add

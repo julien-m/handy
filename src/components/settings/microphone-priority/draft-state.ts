@@ -1,6 +1,7 @@
 // Draft of the microphone priority editor (feature 001): edits change only the draft, Save
 // commits the complete order with the revision the draft is based on, and a change saved
-// elsewhere keeps the draft and raises a conflict until Reload, Discard or a successful Save.
+// elsewhere keeps the draft and raises a conflict until Reload or Discard. Save stays inactive
+// during a conflict, so the order saved elsewhere is never replaced without being seen.
 import type { ErrorReason, SettingsCommandError } from "@/bindings";
 import { settingsErrorKey } from "@/stores/settings-errors";
 
@@ -128,13 +129,17 @@ export const baseRevision = (
 
 /**
  * Whether Save may dispatch a write. Without a known revision (settings not loaded yet) nothing
- * is written: the backend would treat a null revision as an unconditional write.
+ * is written: the backend would treat a null revision as an unconditional write. During a
+ * conflict nothing is written either: the base already moved to the order saved elsewhere, so a
+ * Save would replace it silently; Reload or Discard ends the conflict first.
  * @param draft editor state
  * @param saved committed priority
- * @returns true for a changed, valid draft with a base revision and no write in flight
+ * @returns true for a changed, valid draft with a base revision, no conflict and no write in
+ *   flight
  */
 export const canSave = (draft: PriorityDraft, saved: SavedPriority): boolean =>
   draft.savePhase !== "saving" &&
+  !draft.conflict &&
   baseRevision(draft, saved) !== null &&
   isDirty(draft, saved) &&
   orderError(draft.order ?? []) === null;
@@ -238,8 +243,8 @@ export const addChoice = (
  * draft (our own Save, an unknown outcome that did commit, or the same order saved elsewhere), so
  * the draft is dropped, except during the write, which settles it; the committed order still
  * equals the base (another setting changed), so only the base revision advances; otherwise the
- * order changed elsewhere, so the draft is kept, the conflict is raised and the base moves to the
- * new revision, which lets a later Save knowingly replace that order.
+ * order changed elsewhere, so the draft is kept, the conflict is raised (Save inactive until
+ * Reload or Discard) and the base moves to the new revision.
  * @param draft editor state
  * @param saved committed priority just read
  * @returns the rebased state

@@ -11,9 +11,12 @@ import {
   DEFAULT_PROVIDER_VALUE,
   type ProviderSettings,
   draftReadinessOf,
+  fixFieldKeyOf,
+  fixSettingOf,
   fixValueOf,
   providerFixChangeOf,
 } from "./prompt-provider-model";
+import { actionNoteKeyOf } from "./prompt-draft-model";
 import { isResultOutdated } from "./prompt-test-model";
 
 const provider = (id: string, baseUrl: string): PostProcessProvider => ({
@@ -87,6 +90,38 @@ describe("inline provider fix", () => {
 });
 
 // @spec AC-007: A test result belongs to the draft it ran on — .specs/features/005-custom-ai-prompts/spec.md#ac-007
+// @spec AC-004: The inline fix sets the resolved provider, never the default — .specs/features/005-custom-ai-prompts/spec.md#ac-004
+describe("inline fix writes", () => {
+  test("the endpoint fix writes the base URL alone, so the model is kept", () => {
+    expect(fixSettingOf("endpoint")).toBe("base_url");
+    expect(fixSettingOf("api_key")).toBe("api_key");
+  });
+
+  test("one fix field per missing item and provider", () => {
+    expect(fixFieldKeyOf("api_key", "openai")).toBe("api_key:openai");
+    expect(fixFieldKeyOf("api_key", "openai")).not.toBe(
+      fixFieldKeyOf("api_key", "anthropic"),
+    );
+    expect(fixFieldKeyOf("api_key", "custom")).not.toBe(
+      fixFieldKeyOf("endpoint", "custom"),
+    );
+  });
+});
+
+// @spec AC-001: Editor note and Save state — .specs/features/005-custom-ai-prompts/spec.md#ac-001
+describe("action bar note", () => {
+  test("'Fix the highlighted fields' only while a field shows an error", () => {
+    const none = { nameError: null, textError: null };
+    expect(actionNoteKeyOf(none)).toBe("note");
+    expect(actionNoteKeyOf({ ...none, textError: "text_empty" })).toBe(
+      "fixFields",
+    );
+    expect(actionNoteKeyOf({ ...none, nameError: "name_empty" })).toBe(
+      "fixFields",
+    );
+  });
+});
+
 describe("test result freshness", () => {
   const tested = {
     text: "Shorten ${output}",

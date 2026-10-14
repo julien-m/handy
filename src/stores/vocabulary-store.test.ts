@@ -362,6 +362,25 @@ describe("paste", () => {
     assert.equal(store.getState().list?.revision, 3);
     assert.equal(named("preview").length, 2);
     assert.deepEqual(store.getState().preview?.preview.added, []);
+    // The reread merge adds nothing: Retry sends no empty merge.
+    assert.equal(await store.getState().retry(), false);
+    assert.equal(named("apply").length, 1);
+  });
+
+  test("Retry of an Apply sends nothing while the reread preview is not applicable", async () => {
+    const { store, queues, named } = await loadedStore([], 2);
+    store.getState().openPaste();
+    store.getState().setPasteText("OpenClaw\n<x>");
+    queues.previews.push(Promise.resolve(preview(2, ["OpenClaw", "<x>"])));
+    await store.getState().loadPreview();
+    queues.commits.push(
+      Promise.resolve(refused(refusal({ outcome: "unknown" }))),
+    );
+    const issue = { index: 1, issue: "forbidden_character" as const };
+    queues.previews.push(Promise.resolve(preview(3, ["OpenClaw"], [issue])));
+    assert.equal(await store.getState().apply(), false);
+    assert.equal(await store.getState().retry(), false);
+    assert.equal(named("apply").length, 1);
   });
 });
 

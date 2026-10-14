@@ -59,7 +59,7 @@ export const useReplacementText = create<TextStore>()(() => ({
   setText,
   requestPreview,
   apply,
-  cancel: () => open(useReplacementEditor.getState().saved),
+  cancel,
 }));
 
 const state = (): TextStore => useReplacementText.getState();
@@ -123,6 +123,12 @@ function open(rules: ReadonlyArray<ReplacementRule>): void {
     applying: false,
     failure: null,
   });
+}
+
+/** Drop the text edits; ignored while Apply runs, so the text stays read-only until it settles. */
+function cancel(): void {
+  if (state().applying) return;
+  open(useReplacementEditor.getState().saved);
 }
 
 /**

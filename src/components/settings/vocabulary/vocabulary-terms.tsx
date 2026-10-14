@@ -221,14 +221,34 @@ const TermInput: React.FC<AddRowProps & { enabled: boolean }> = (props) => {
   );
 };
 
+/**
+ * Add a term from the Add button. Add turns disabled while the commit runs, so the focus moves to
+ * the term input first instead of falling on the page.
+ * @param props the term input's id and the Add callback
+ */
+const addFromButton = (props: Pick<AddRowProps, "inputId" | "onAdd">) => {
+  document.getElementById(props.inputId)?.focus();
+  props.onAdd();
+};
+
+/** Why Add is unavailable, for screen readers (a commit is running, or the input is empty). */
+const AddHint: React.FC<{ id: string; busy: boolean }> = ({ id, busy }) => {
+  const { t } = useTranslation();
+  const hint = busy
+    ? "settings.vocabulary.busy"
+    : "settings.vocabulary.addHint";
+  return (
+    <span id={id} className="sr-only">
+      {t(hint)}
+    </span>
+  );
+};
+
 /** Add, with an accessible explanation while it is unavailable. */
 const AddButton: React.FC<AddRowProps & { enabled: boolean }> = (props) => {
   const { screen, busy, enabled } = props;
   const { t } = useTranslation();
   const hintId = useId();
-  const hint = busy
-    ? "settings.vocabulary.busy"
-    : "settings.vocabulary.addHint";
   return (
     <>
       <Button
@@ -237,20 +257,12 @@ const AddButton: React.FC<AddRowProps & { enabled: boolean }> = (props) => {
         data-testid={`${screen}-add`}
         disabled={!enabled}
         aria-describedby={enabled ? undefined : hintId}
-        onClick={() => {
-          // Add turns disabled while the commit runs: keep the focus on the field.
-          document.getElementById(props.inputId)?.focus();
-          props.onAdd();
-        }}
+        onClick={() => addFromButton(props)}
       >
         <Plus className="w-4 h-4" aria-hidden />
         {t("settings.vocabulary.add")}
       </Button>
-      {!enabled && (
-        <span id={hintId} className="sr-only">
-          {t(hint)}
-        </span>
-      )}
+      {!enabled && <AddHint id={hintId} busy={busy} />}
     </>
   );
 };
