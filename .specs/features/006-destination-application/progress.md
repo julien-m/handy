@@ -13,6 +13,8 @@ Current checkpoint: see the table. Read [the specification](spec.md), [the plan]
 
 Resume point: the non-UI part of Step 6 is delivered with Step 4 (see notes); what remains is UI (Step 5, Step 6 reason display), the settings UI command, 007/009/010 adapters when their owners ship, and the native/release evidence of Step 7. The UI waits for the program's one-pass Penflow design pass. Step 5 (badge, menu, settings toggle) and the UI halves of Steps 1 and 6 wait for the program's one-pass Penflow design pass.
 
+Commits on `feature/006-destination-application` (not pushed): Step 0 `0867599`; Step 2 with the read-only part of Step 1 `7a95f0c`; Step 3 `b98ee80`; Step 4 with the non-UI part of Step 6 `4823d8f`; implementation map and final checks `3645b28`.
+
 ## Step 0 — notes
 
 - **Delivered names** (plan § Settings framework extension): `domains::DomainPlan::Live(Box<dyn LiveOperation>)`; `domains::live_operation::{LiveOperation, LiveCall {dry_run, expected}, LiveAnswer::{Read, Committed}, LiveContext {app, read, commit_change}, managed_state}`; `operations::SettingsBackend::live_context` (default `None`, `RoutedBackend` returns itself); `platform_capability::{PlatformCapability::Destination, PlatformCapabilities::{current, only, supports, check}, required_capability}` (table `KEY_CAPABILITIES` empty in Step 0); `ValidationContext.platform`, `DomainCall.platform`, `DomainRequest.platform`; `errors::{ErrorReason::UnsupportedPlatform, ErrorItem::new, MAX_ERROR_ITEMS = 100}`, `ErrorDetails.{reason, items}`, `SettingsError::{unsupported_platform, with_reason, with_items, detail_reason, items}`, `ValidationReason::UnsupportedPlatform`.
