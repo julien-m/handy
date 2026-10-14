@@ -7,6 +7,7 @@ pub mod matcher;
 pub mod materialize;
 pub mod model;
 pub mod preview;
+mod preview_scan;
 pub mod published;
 pub mod service;
 pub mod transfer;
@@ -120,6 +121,37 @@ mod tests {
                 );
             }
         }
+    }
+
+    #[test]
+    fn reject_control_and_bidi_formatting_characters_in_both_fields() {
+        let refused = [
+            '\u{0}', '\u{1}', '\u{8}', '\u{1B}', '\u{7F}', '\u{80}', '\u{9F}', '\u{202A}',
+            '\u{202E}', '\u{2066}', '\u{2069}',
+        ];
+        for control in refused {
+            let text = format!("a{control}b");
+            for (recognized, replacement, field) in [
+                (&text[..], "valid", Field::Recognized),
+                ("valid", &text[..], Field::Replacement),
+            ] {
+                let issues = validate_fields(recognized, replacement).unwrap_err();
+                let kinds: Vec<_> = issues
+                    .iter()
+                    .map(|issue| (issue.field, issue.kind))
+                    .collect();
+                assert_eq!(kinds, [(field, IssueKind::ControlCharacter)], "{control:?}");
+            }
+        }
+        // Join controls, directional marks and combining marks are needed by scripts.
+        for kept in [
+            '\u{200C}', '\u{200D}', '\u{200E}', '\u{200F}', '\u{061C}', '\u{0301}',
+        ] {
+            let text = format!("a{kept}b");
+            assert!(validate_fields(&text, &text).is_ok(), "{kept:?}");
+        }
+        let tab = validate_fields("valid", "a\tb").unwrap_err();
+        assert_eq!(tab.len(), 1, "a tab is only a forbidden character");
     }
 
     #[test]

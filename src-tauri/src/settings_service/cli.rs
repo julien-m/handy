@@ -85,7 +85,8 @@ fn export_destination(command: &SettingsCommand) -> Option<&str> {
     }
 }
 /// Write the exported content of a successful `reply` to `path` (atomically) and answer with
-/// `{path, count, bytes}`; an unwritable destination is `usage_error` and leaves it unchanged.
+/// `{path, count, bytes}`; a failed write is `persistence_failed` (`export_not_written`) and
+/// leaves the destination unchanged.
 fn write_export(path: &str, reply: &Reply) -> Reply {
     let envelope = reply.envelope();
     let (Some(revision), Some(content)) = (
@@ -99,7 +100,9 @@ fn write_export(path: &str, reply: &Reply) -> Reply {
         content,
     );
     if written.is_err() {
-        return Reply::failure(SettingsError::new(SettingsErrorCode::UsageError));
+        let error = SettingsError::new(SettingsErrorCode::PersistenceFailed)
+            .with_reason(super::errors::ErrorReason::ExportNotWritten);
+        return Reply::failure(error);
     }
     let data = json!({ "path": path, "count": envelope["data"]["count"], "bytes": content.len() });
     Reply::success(super::protocol::Revision(revision), data, reply.warning())
@@ -275,10 +278,11 @@ fn parse_failure(argv: &[OsString], error: &clap::Error) -> i32 {
     let reply = Reply::failure(SettingsError::new(SettingsErrorCode::UsageError));
     emit(View::Help, &reply, json)
 }
-/// Human help needs no settings access; JSON help carries the current revision, read like `get`.
+/// Human help needs no settings access; JSON help carries the current revision, read with
+/// `keys`, whose reply is small whatever the settings hold.
 fn help(text: String, json: bool) -> i32 {
     let reply = if json {
-        let read = route(&SettingsOperation::Get { key: None });
+        let read = route(&SettingsOperation::Keys);
         match read.envelope()["revision"].as_u64() {
             Some(revision) => Reply::success(
                 super::protocol::Revision(revision),

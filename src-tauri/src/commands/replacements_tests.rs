@@ -1,8 +1,8 @@
 //! The settings window's replacement commits through the real settings service (an offline
 //! store): the list Save and bulk Apply edits, their revision binding and their refusals.
 use super::{
-    check_word_replacements, draft_rules, fresh_ids, import_edit, import_edit_at, save_edit,
-    RuleDraft,
+    check_word_replacements, draft_rules, fresh_ids, import_edit, import_edit_at, preview_view,
+    save_edit, RuleDraft,
 };
 use crate::settings_service::{
     command_error::SettingsCommandError,
@@ -153,4 +153,24 @@ fn refusals_reach_the_editor_as_the_shared_typed_settings_error() -> TestResult 
         (&"revision_conflict".into(), &5.into())
     );
     Ok(())
+}
+
+#[test]
+fn preview_is_bounded_like_apply_and_counts_every_line() {
+    let oversized = "#".repeat(1_000_001);
+    let refused = preview_view(Revision(3), &[], &oversized, ImportMode::Merge).err();
+    let code = refused.map(|error| error.code());
+    assert_eq!(code, Some(SettingsErrorCode::LimitExceeded));
+    let input = format!("{}a;1\n", "\n".repeat(999_990));
+    let view = preview_view(Revision(3), &[], &input, ImportMode::Merge);
+    let preview = view.map(|view| (view.revision, view.preview)).ok();
+    let counts = preview.map(|(revision, preview)| {
+        (
+            revision,
+            preview.ignored_lines,
+            preview.lines.len(),
+            preview.can_apply(),
+        )
+    });
+    assert_eq!(counts, Some((3, 999_990, 1001, true)));
 }

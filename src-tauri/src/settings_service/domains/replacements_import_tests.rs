@@ -183,3 +183,32 @@ fn a_failed_durable_write_leaves_rules_store_and_revision_unchanged() -> TestRes
     assert_eq!(texts(&rules(&failing)), pairs(&[("kept", "Kept")]));
     Ok(())
 }
+
+#[test]
+fn an_import_with_control_or_bidi_characters_is_refused_without_echoing_them() -> TestResult {
+    let directory = tempfile::tempdir()?;
+    let service = offline(&directory)?;
+    let input = "red\u{1B}[31m;alert\nsafe;evil\u{202E}txt\nok;\u{1B}]52;c;x\u{7}\n";
+    let (code, _, error) = outcome(&Call::new("import", &["merge"]).input(input).run(&service));
+    let codes: Vec<_> = error["details"]["items"]
+        .as_array()
+        .map(|items| {
+            items
+                .iter()
+                .map(|item| (item["index"].clone(), item["code"].clone()))
+                .collect()
+        })
+        .unwrap_or_default();
+    let expected = [
+        (json!(0), json!("recognized_control_character")),
+        (json!(1), json!("replacement_control_character")),
+        (json!(2), json!("replacement_control_character")),
+    ];
+    assert_eq!((code, codes), (2, expected.to_vec()));
+    let text = error.to_string();
+    for echoed in ["alert", "evil", "31m", "52;c"] {
+        assert!(!text.contains(echoed), "{echoed}");
+    }
+    assert!(texts(&rules(&service)).is_empty(), "nothing saved");
+    Ok(())
+}

@@ -59,6 +59,9 @@ pub enum IssueKind {
     MissingSeparator,
     /// The saved base set is itself invalid, so no preview can be applied to it.
     InvalidSavedRules,
+    /// A control character (C0, DEL, C1) or a bidirectional embedding, override or isolate
+    /// control, which the exchange format and the inserted text must not carry.
+    ControlCharacter,
 }
 
 impl IssueKind {
@@ -76,6 +79,7 @@ impl IssueKind {
             Self::UnicodeDataUnavailable => "unicode_data_unavailable",
             Self::MissingSeparator => "missing_separator",
             Self::InvalidSavedRules => "invalid_saved_rules",
+            Self::ControlCharacter => "control_character",
         }
     }
 }
@@ -160,6 +164,13 @@ fn check_field(value: &str, field: Field, max: usize, issues: &mut Vec<FieldIssu
                 .any(|character| is_forbidden(character, is_recognized)),
             IssueKind::ForbiddenCharacter,
         ),
+        // A line break or tab is already a forbidden character, never also a control one.
+        (
+            value.chars().any(|character| {
+                is_control_or_bidi_override(character) && !is_forbidden(character, is_recognized)
+            }),
+            IssueKind::ControlCharacter,
+        ),
     ];
     issues.extend(
         checks
@@ -176,6 +187,15 @@ fn is_forbidden(character: char, is_recognized: bool) -> bool {
         character,
         '\r' | '\n' | '\t' | '\u{000B}' | '\u{000C}' | '\u{0085}' | '\u{2028}' | '\u{2029}'
     ) || (is_recognized && character == ';')
+}
+
+/// Orchestrator decision (2026-10-14, delivery review): C0 and C1 controls and DEL (General
+/// Category Cc) could rewrite a terminal that prints a rule or reach the application that
+/// receives the dictation, and the bidirectional embedding, override and isolate controls
+/// (U+202A–U+202E, U+2066–U+2069) reorder text invisibly; both fields refuse them. ZWNJ, ZWJ and
+/// the directional marks (LRM, RLM, ALM) stay allowed because scripts need them.
+fn is_control_or_bidi_override(character: char) -> bool {
+    character.is_control() || matches!(character, '\u{202A}'..='\u{202E}' | '\u{2066}'..='\u{2069}')
 }
 
 // @spec AC-002: Rule bounds and duplicate keys — .specs/features/002-word-replacements/spec.md#ac-002

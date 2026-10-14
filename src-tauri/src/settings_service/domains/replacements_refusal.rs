@@ -36,7 +36,7 @@ fn rule_refusal(issues: &[RuleIssue]) -> SettingsError {
 }
 
 /// Every issue of every error line of an import, then the first set issue as the reason.
-pub(super) fn input_refusal(preview: &ReplacementPreview) -> SettingsError {
+fn input_refusal(preview: &ReplacementPreview) -> SettingsError {
     let items = preview.lines.iter().flat_map(|line| {
         // Input lines are 1-based; an error line always has one (deletions carry no issue).
         let index = line
@@ -64,6 +64,8 @@ fn reason(field: Field, kind: IssueKind) -> ErrorReason {
         IssueKind::TooLong => ErrorReason::ReplacementTooLong,
         IssueKind::ForbiddenCharacter if is_recognized => ErrorReason::RecognizedForbiddenCharacter,
         IssueKind::ForbiddenCharacter => ErrorReason::ReplacementForbiddenCharacter,
+        IssueKind::ControlCharacter if is_recognized => ErrorReason::RecognizedControlCharacter,
+        IssueKind::ControlCharacter => ErrorReason::ReplacementControlCharacter,
         IssueKind::LeadingComment => ErrorReason::RecognizedLeadingComment,
         IssueKind::DuplicateKey => ErrorReason::DuplicateRecognized,
         IssueKind::EmptyId => ErrorReason::EmptyRuleId,

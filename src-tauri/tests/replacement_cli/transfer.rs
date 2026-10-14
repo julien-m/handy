@@ -73,6 +73,45 @@ fn a_maximal_set_is_listed_and_exported_offline_and_from_a_running_instance() ->
     Ok(())
 }
 
+/// `get` of every setting and of the rules, and `--help --json`, with a maximal set; returns
+/// the settings of the full `get`.
+fn get_a_maximal_set(app: &Portable, rules: &[Value]) -> Fallible<Value> {
+    let all = app.run(&["settings", "get", "--json"])?;
+    assert!(
+        all.stdout.len() > ipc::MAX_FRAME_BYTES,
+        "larger than one message"
+    );
+    let settings = all.envelope()?["data"].clone();
+    let expected = Value::from(rules.to_vec());
+    assert_eq!((all.code, &settings["word_replacements"]), (0, &expected));
+    assert_eq!(
+        settings["start_hidden"],
+        json!(false),
+        "the other settings too"
+    );
+    let one = app.run(&["settings", "get", "word_replacements", "--json"])?;
+    let only_rules = json!({ "word_replacements": expected });
+    assert_eq!((one.code, &one.envelope()?["data"]), (0, &only_rules));
+    assert_eq!(app.run(&["settings", "--help", "--json"])?.code, 0);
+    Ok(settings)
+}
+
+#[test]
+fn get_returns_a_maximal_set_offline_and_from_a_running_instance() -> TestResult {
+    let app = Portable::new()?;
+    let rules = maximal_rules();
+    seed(&app, &rules)?;
+    let offline = get_a_maximal_set(&app, &rules)?;
+    let (_instance, endpoint) = serve(&app)?;
+    let routed = get_a_maximal_set(&app, &rules)?;
+    assert_eq!(
+        routed, offline,
+        "same settings through the running instance"
+    );
+    endpoint.close();
+    Ok(())
+}
+
 /// A valid input under 1,000,000 bytes whose JSON escaping exceeds one 1 MiB request: quotes in
 /// every replacement and a comment line of control characters.
 fn escaped_heavy_input() -> String {

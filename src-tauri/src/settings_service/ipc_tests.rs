@@ -132,3 +132,32 @@ fn an_oversized_request_is_refused_before_sending_with_limit_exceeded() -> TestR
     assert!(encode(&request("store", SettingsOperation::Keys)).is_ok());
     Ok(())
 }
+
+#[test]
+fn a_reply_larger_than_a_frame_becomes_a_typed_limit_for_the_same_request() -> TestResult {
+    let fitting = WireReply {
+        request_id: "r-1".into(),
+        warning: false,
+        envelope: json!({"ok": true, "revision": 1, "data": {}}),
+    };
+    let bytes = framed_reply(fitting).ok_or("dropped")?;
+    assert_eq!(
+        serde_json::from_slice::<Value>(&bytes)?["envelope"]["ok"],
+        true
+    );
+    let oversized = WireReply {
+        request_id: "r-2".into(),
+        warning: true,
+        envelope: json!({"ok": true, "revision": 1, "data": {"rules": "x".repeat(MAX_FRAME_BYTES)}}),
+    };
+    let bytes = framed_reply(oversized).ok_or("dropped")?;
+    assert!(bytes.len() <= MAX_FRAME_BYTES);
+    let reply: Value = serde_json::from_slice(&bytes)?;
+    assert_eq!(reply["request_id"], "r-2");
+    let error = &reply["envelope"]["error"];
+    assert_eq!(
+        (&error["code"], &error["details"]["reason"]),
+        (&json!("limit_exceeded"), &json!("reply_too_large"))
+    );
+    Ok(())
+}

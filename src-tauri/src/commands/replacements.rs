@@ -17,7 +17,7 @@ use crate::word_replacements::{
     exchange::MAX_IMPORT_BYTES,
     model::{ReplacementRule, RuleId, RuleIdSource, UuidRuleIdSource},
     preview::{preview_exchange, ImportMode, ReplacementPreview},
-    service::{import_rules, new_rule_count, PreallocatedIds, RuleSetError},
+    service::{PlannedImport, PreallocatedIds, RuleSetError},
     validation::{validate_rules, RuleIssue},
 };
 use serde::{Deserialize, Serialize};
@@ -72,16 +72,33 @@ pub fn check_word_replacements(rules: Vec<RuleDraft>) -> Vec<RuleIssue> {
 #[tauri::command]
 #[specta::specta]
 /// Preview `input` (bulk text or imported file) in `mode` against the published rules.
+///
+/// # Errors
+/// `limit_exceeded` above 1,000,000 bytes, like Apply: nothing is previewed.
 pub fn preview_word_replacements(
     app: AppHandle,
     input: String,
     mode: ImportMode,
-) -> ReplacementPreviewView {
+) -> Result<ReplacementPreviewView, SettingsCommandError> {
     let (revision, settings) = tauri_adapter::view(&app);
-    ReplacementPreviewView {
-        revision: revision.0,
-        preview: preview_exchange(&settings.word_replacements, &input, mode),
+    preview_view(revision, &settings.word_replacements, &input, mode)
+        .map_err(SettingsCommandError::from)
+}
+
+/// The preview of `input` at `revision`, refused above the import size bound.
+fn preview_view(
+    revision: Revision,
+    saved: &[ReplacementRule],
+    input: &str,
+    mode: ImportMode,
+) -> Result<ReplacementPreviewView, SettingsError> {
+    if input.len() > MAX_IMPORT_BYTES {
+        return Err(SettingsError::new(SettingsErrorCode::LimitExceeded));
     }
+    Ok(ReplacementPreviewView {
+        revision: revision.0,
+        preview: preview_exchange(saved, input, mode),
+    })
 }
 
 // @spec AC-001: List draft saved once — .specs/features/002-word-replacements/spec.md#ac-001
@@ -161,8 +178,9 @@ fn import_edit_at(
     import_edit(&settings.word_replacements, input, mode)
 }
 
-/// Edit applying `input` in `mode` to the locked rules, with the identities of its new rules
-/// allocated now from the preview of `saved` (the rules at the expected revision).
+/// Edit applying `input` in `mode` to the locked rules, decided now on the preview of `saved`
+/// (the rules at the expected revision) with the identities of its new rules; under the lock the
+/// decided set is reused while the rules are unchanged.
 ///
 /// # Errors
 /// `limit_exceeded` above 1,000,000 bytes; `validation_failed` when the preview cannot apply.
@@ -174,17 +192,12 @@ fn import_edit(
     if input.len() > MAX_IMPORT_BYTES {
         return Err(SettingsError::new(SettingsErrorCode::LimitExceeded));
     }
-    let preview = preview_exchange(saved, &input, mode);
-    if !preview.can_apply() {
-        return Err(refusal(RuleSetError::InvalidInput(Box::new(preview))));
-    }
-    let ids = (0..new_rule_count(&preview))
-        .map(|_| UuidRuleIdSource.next_id())
-        .collect::<Vec<_>>();
+    let (planned, _preview) =
+        PlannedImport::new(saved, input, mode, &mut UuidRuleIdSource).map_err(refusal)?;
     Ok(move |settings: &mut AppSettings| {
-        let mut source = PreallocatedIds::new(&ids);
-        let outcome = import_rules(&settings.word_replacements, &input, mode, &mut source);
-        settings.word_replacements = outcome.map_err(refusal)?.rules;
+        settings.word_replacements = planned
+            .apply(&settings.word_replacements)
+            .map_err(refusal)?;
         Ok(())
     })
 }

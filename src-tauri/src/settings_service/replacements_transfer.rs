@@ -1,11 +1,12 @@
-//! CLI-process side of replacement operations larger than one channel message (1 MiB). A list
-//! or an export reads the rules in pages and refuses pages of different revisions (it starts
-//! again, so a concurrent change never mixes two rule sets); an import whose input does not fit
-//! one request is staged in ordered chunks, then imported by token in one atomic commit. Every
-//! request of one operation shares the operation's single deadline, and the caller still gets
-//! exactly one reply.
+//! CLI-process side of replacement operations larger than one channel message (1 MiB). A list,
+//! an export or a `get` of the rules reads them in pages and refuses pages of different revisions
+//! (it starts again, so a concurrent change never mixes two rule sets); a `get` of every setting
+//! reads the other settings in one request and keeps them only when the pages have the same
+//! revision. An import whose input does not fit one request is staged in ordered chunks, then
+//! imported by token in one atomic commit. Every request of one operation shares the operation's
+//! single deadline, and the caller still gets exactly one reply.
 use super::{
-    domains::replacements::MAX_PAGE_BYTES,
+    domains::replacements::{MAX_PAGE_BYTES, RULES_KEY},
     errors::{SettingsError, SettingsErrorCode},
     ipc,
     operations::Reply,
@@ -23,35 +24,33 @@ use std::time::Instant;
 /// are being rewritten continuously.
 const READ_ATTEMPTS: usize = 3;
 
-/// Route `operation`; replacement lists, exports and oversized imports use the bounded transfer.
+/// Route `operation`; `get` of every setting or of the rules, replacement lists, exports and
+/// oversized imports use the bounded transfer.
 pub fn route_operation(operation: &SettingsOperation) -> Reply {
     let deadline = Instant::now() + ipc::DEADLINE;
-    let SettingsOperation::Domain {
-        domain,
-        action,
-        arguments,
-        ..
-    } = operation
-    else {
-        return route_until(operation, deadline);
-    };
-    match (domain.as_str(), action.as_str(), arguments.len()) {
-        ("replacements", "list", 0) => list(deadline, false),
-        ("replacements", "export", 0) => list(deadline, true),
-        ("replacements", "import", 1) if !ipc::fits_frame(operation) => {
-            staged_import(operation, deadline)
-        }
+    match operation {
+        SettingsOperation::Get { key: None } => get_all(deadline),
+        SettingsOperation::Get { key: Some(key) } if key == RULES_KEY => get_rules(deadline),
+        SettingsOperation::Domain {
+            domain,
+            action,
+            arguments,
+            ..
+        } if domain == "replacements" => match (action.as_str(), arguments.len()) {
+            ("list", 0) => list(deadline, false),
+            ("export", 0) => list(deadline, true),
+            ("import", 1) if !ipc::fits_frame(operation) => staged_import(operation, deadline),
+            _ => route_until(operation, deadline),
+        },
         _ => route_until(operation, deadline),
     }
 }
 
 /// The whole list (`{rules}`) or export (`{content, count}`) of one revision.
 fn list(deadline: Instant, export: bool) -> Reply {
-    let read = (0..READ_ATTEMPTS).find_map(|_| read_pages(deadline).transpose());
-    let (revision, rules, warning) = match read {
-        Some(Ok(read)) => read,
-        Some(Err(failure)) => return failure,
-        None => return Reply::failure(SettingsError::new(SettingsErrorCode::Unavailable)),
+    let (revision, rules, warning) = match consistent_pages(deadline) {
+        Ok(read) => read,
+        Err(failure) => return failure,
     };
     let data = if export {
         match serde_json::from_value::<Vec<ReplacementRule>>(Value::Array(rules)) {
@@ -62,6 +61,48 @@ fn list(deadline: Instant, export: bool) -> Reply {
         json!({ "rules": rules })
     };
     Reply::success(revision, data, warning)
+}
+
+/// `get word_replacements`: the rules of one revision, in the shape of any one-key `get`.
+fn get_rules(deadline: Instant) -> Reply {
+    match consistent_pages(deadline) {
+        Ok((revision, rules, warning)) => {
+            Reply::success(revision, json!({ RULES_KEY: rules }), warning)
+        }
+        Err(failure) => failure,
+    }
+}
+
+/// `get` of every setting: the other settings and the rule pages, kept only when they come from
+/// one revision; a change between them starts again (see `READ_ATTEMPTS`).
+fn get_all(deadline: Instant) -> Reply {
+    for _ in 0..READ_ATTEMPTS {
+        let head = route_until(&private_step("read-settings", Vec::new(), None), deadline);
+        let Some(revision) = head.envelope()["revision"].as_u64() else {
+            return head;
+        };
+        let (pages_revision, rules, warning) = match consistent_pages(deadline) {
+            Ok(read) => read,
+            Err(failure) => return failure,
+        };
+        // Loop exit: both reads saw the same revision, so they describe one settings state.
+        if pages_revision == Revision(revision) {
+            let mut data = head.envelope()["data"].clone();
+            data[RULES_KEY] = Value::Array(rules);
+            return Reply::success(pages_revision, data, warning || head.warning());
+        }
+    }
+    Reply::failure(SettingsError::new(SettingsErrorCode::Unavailable))
+}
+
+/// All rule pages of one revision, after at most `READ_ATTEMPTS` reads.
+fn consistent_pages(deadline: Instant) -> Result<Pages, Reply> {
+    match (0..READ_ATTEMPTS).find_map(|_| read_pages(deadline).transpose()) {
+        Some(read) => read,
+        None => Err(Reply::failure(SettingsError::new(
+            SettingsErrorCode::Unavailable,
+        ))),
+    }
 }
 
 type Pages = (Revision, Vec<Value>, bool);

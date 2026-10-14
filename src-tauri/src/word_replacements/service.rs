@@ -107,6 +107,65 @@ pub fn import_rules(
     }
 }
 
+/// An import decided on the rules it previewed. Its set is reused when the locked rules are
+/// still those rules (the commit is bound to the previewed revision, so this is the usual case),
+/// so the preview is not computed again under the settings lock; otherwise the import is
+/// computed again on the locked rules with the same identities.
+pub struct PlannedImport {
+    planned: Vec<ReplacementRule>,
+    rules: Vec<ReplacementRule>,
+    input: String,
+    mode: ImportMode,
+    ids: Vec<RuleId>,
+}
+
+impl PlannedImport {
+    /// Preview `input` on `saved` in `mode` and materialize its set, the identities of new rules
+    /// drawn from `source` now; returns the plan and its preview.
+    ///
+    /// # Errors
+    /// Those of `import_rules`.
+    pub fn new(
+        saved: &[ReplacementRule],
+        input: String,
+        mode: ImportMode,
+        source: &mut dyn RuleIdSource,
+    ) -> Result<(Self, ReplacementPreview), RuleSetError> {
+        let preview = preview_exchange(saved, &input, mode);
+        let ids: Vec<RuleId> = (0..new_rule_count(&preview))
+            .map(|_| source.next_id())
+            .collect();
+        let rules = match materialize_candidate(&preview, &mut PreallocatedIds::new(&ids)) {
+            Ok(rules) => rules,
+            Err(PreviewRejected::HasErrors) => {
+                return Err(RuleSetError::InvalidInput(Box::new(preview)))
+            }
+            Err(PreviewRejected::Invalid(issues)) => return Err(RuleSetError::Invalid(issues)),
+        };
+        let planned = saved.to_vec();
+        let plan = Self {
+            planned,
+            rules,
+            input,
+            mode,
+            ids,
+        };
+        Ok((plan, preview))
+    }
+
+    /// The set to commit when the locked rules are `locked`.
+    ///
+    /// # Errors
+    /// Those of `import_rules` when `locked` differs from the previewed rules.
+    pub fn apply(&self, locked: &[ReplacementRule]) -> Result<Vec<ReplacementRule>, RuleSetError> {
+        if locked == self.planned.as_slice() {
+            return Ok(self.rules.clone());
+        }
+        let mut ids = PreallocatedIds::new(&self.ids);
+        import_rules(locked, &self.input, self.mode, &mut ids).map(|outcome| outcome.rules)
+    }
+}
+
 /// Number of identities a preview allocates when it is committed (one per new rule).
 pub fn new_rule_count(preview: &ReplacementPreview) -> usize {
     preview

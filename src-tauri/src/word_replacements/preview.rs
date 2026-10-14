@@ -12,11 +12,14 @@ use specta::Type;
 pub use super::materialize::{materialize_candidate, PreviewRejected};
 
 use super::{
-    exchange::{parse_exchange, IgnoredLine, ParsedLine, ParsedLineContent},
+    exchange::{parse_exchange_lines, IgnoredLine},
     model::{ReplacementRule, RuleId},
+    preview_scan::{scan_input, InputRule},
     unicode::UnicodeData,
     validation::{validate_rules, Field, FieldIssue, IssueKind, MAX_RULES},
 };
+
+pub use super::preview_scan::{MAX_DUPLICATE_LINES, MAX_LISTED_OTHER_LINES};
 
 /// How imported rules combine with the saved set (AC-005).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Type)]
@@ -64,7 +67,9 @@ pub struct CandidateRule {
     pub replacement: String,
 }
 
-/// Complete preview; `candidate` is exactly the ordered set Apply would commit.
+/// Preview of an input; `candidate` is exactly the ordered set Apply would commit. Rule and
+/// deletion rows are always listed; ignored and error rows are listed up to
+/// `MAX_LISTED_OTHER_LINES` and counted in full, so memory stays bounded for any input.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Type)]
 pub struct ReplacementPreview {
     pub mode: ImportMode,
@@ -75,24 +80,20 @@ pub struct ReplacementPreview {
     pub candidate: Vec<CandidateRule>,
     /// The candidate equals the saved set in content, identity and order.
     pub is_noop: bool,
+    /// Ignored input lines (blank, comment, header), listed or not.
+    pub ignored_lines: usize,
+    /// Input lines with an error, listed or not.
+    pub error_lines: usize,
+    /// Input lines left out of `lines`: ignored or error lines beyond the listed bound, and rule
+    /// lines after the 1000th (which make the input too large anyway).
+    pub omitted_lines: usize,
 }
 
 impl ReplacementPreview {
     /// Apply is available only without any line or set error (AC-003).
     pub fn can_apply(&self) -> bool {
-        self.set_issues.is_empty()
-            && self
-                .lines
-                .iter()
-                .all(|line| line.status != PreviewStatus::Error)
+        self.set_issues.is_empty() && self.error_lines == 0
     }
-}
-
-struct InputRule {
-    line_index: usize,
-    key: String,
-    recognized: String,
-    replacement: String,
 }
 
 // @spec FR-004: Merge/replace preview without writes — .specs/features/002-word-replacements/spec.md#fr-004
@@ -104,45 +105,53 @@ pub fn preview_exchange(
 ) -> ReplacementPreview {
     let input_sha256 = format!("{:x}", Sha256::digest(input.as_bytes()));
     let Ok((data, parsed)) =
-        UnicodeData::load().and_then(|data| Ok((data, parse_exchange(input)?)))
+        UnicodeData::load().and_then(|data| Ok((data, parse_exchange_lines(input)?)))
     else {
         return unavailable_preview(mode, input_sha256);
     };
-    let mut lines: Vec<PreviewLine> = parsed.iter().map(initial_line).collect();
-    let input_rules = collect_input_rules(data, &parsed);
-    let candidate = classify_input(data, saved, &input_rules, mode, &mut lines);
+    let mut scan = scan_input(data, parsed);
+    let (candidate, duplicated) = classify_input(data, saved, &scan.rules, mode, &mut scan.rows);
+    let mut set_issues = candidate_set_issues(saved, &candidate);
+    if scan.has_excess_rules && !set_issues.contains(&IssueKind::TooManyRules) {
+        set_issues.push(IssueKind::TooManyRules);
+    }
     ReplacementPreview {
-        set_issues: candidate_set_issues(saved, &candidate),
+        set_issues,
         is_noop: is_same_set(saved, &candidate),
         mode,
         input_sha256,
-        lines,
+        lines: scan.rows,
         candidate,
+        ignored_lines: scan.ignored_lines,
+        error_lines: scan.invalid_lines + duplicated,
+        omitted_lines: scan.omitted_lines,
     }
 }
 
-/// Classify rule lines against the saved set and build the ordered candidate.
+/// Classify rule lines against the saved set; returns the ordered candidate and the number of
+/// rule lines refused as duplicates.
 fn classify_input(
     data: &UnicodeData,
     saved: &[ReplacementRule],
     input_rules: &[InputRule],
     mode: ImportMode,
     lines: &mut Vec<PreviewLine>,
-) -> Vec<CandidateRule> {
+) -> (Vec<CandidateRule>, usize) {
     let duplicated = mark_input_duplicates(input_rules, lines);
     let accepted: Vec<&InputRule> = input_rules
         .iter()
-        .filter(|rule| !duplicated.contains(&rule.line_index))
+        .filter(|rule| !duplicated.contains(&rule.row))
         .collect();
     let saved_keys = index_saved_keys(data, saved);
-    match mode {
+    let candidate = match mode {
         ImportMode::Merge => merge_candidate(saved, &saved_keys, &accepted, lines),
         ImportMode::Replace => {
-            // Deletions follow the input rows, so input line indices stay valid.
+            // Deletions follow the input rows, so input row indices stay valid.
             lines.extend(deletion_lines(data, saved, input_rules));
             replace_candidate(saved, &saved_keys, &accepted, lines)
         }
-    }
+    };
+    (candidate, duplicated.len())
 }
 
 fn candidate_set_issues(saved: &[ReplacementRule], candidate: &[CandidateRule]) -> Vec<IssueKind> {
@@ -165,74 +174,36 @@ fn unavailable_preview(mode: ImportMode, input_sha256: String) -> ReplacementPre
         set_issues: vec![IssueKind::UnicodeDataUnavailable],
         candidate: Vec::new(),
         is_noop: false,
+        ignored_lines: 0,
+        error_lines: 0,
+        omitted_lines: 0,
     }
 }
 
-fn initial_line(line: &ParsedLine) -> PreviewLine {
-    let (status, ignored, issues) = match &line.content {
-        ParsedLineContent::Ignored { reason } => {
-            (PreviewStatus::Ignored, Some(*reason), Vec::new())
-        }
-        ParsedLineContent::Invalid { issues } => (PreviewStatus::Error, None, issues.clone()),
-        // Rule lines are classified once compared with the saved set.
-        ParsedLineContent::Rule { .. } => (PreviewStatus::Add, None, Vec::new()),
-    };
-    PreviewLine {
-        line_number: Some(line.line_number),
-        status,
-        ignored,
-        rule_id: None,
-        recognized: None,
-        replacement: None,
-        issues,
-        duplicate_lines: Vec::new(),
-    }
-}
-
-fn collect_input_rules(data: &UnicodeData, parsed: &[ParsedLine]) -> Vec<InputRule> {
-    parsed
-        .iter()
-        .enumerate()
-        .filter_map(|(line_index, line)| match &line.content {
-            ParsedLineContent::Rule {
-                recognized,
-                replacement,
-            } => Some(InputRule {
-                line_index,
-                key: data.normalized_key(recognized),
-                recognized: recognized.clone(),
-                replacement: replacement.clone(),
-            }),
-            _ => None,
-        })
-        .collect()
-}
-
-/// Mark every participant of a duplicated key as an error and return their indices.
+/// Mark every participant of a duplicated key as an error and return their row indices.
 fn mark_input_duplicates(input: &[InputRule], lines: &mut [PreviewLine]) -> HashSet<usize> {
-    let mut groups: HashMap<&str, Vec<usize>> = HashMap::new();
+    let mut groups: HashMap<&str, Vec<&InputRule>> = HashMap::new();
     for rule in input {
-        groups
-            .entry(rule.key.as_str())
-            .or_default()
-            .push(rule.line_index);
+        groups.entry(rule.key.as_str()).or_default().push(rule);
     }
     let mut duplicated = HashSet::new();
     // AC-005: duplicates inside one input are errors for all participants, never first-wins.
-    for indices in groups.into_values().filter(|indices| indices.len() > 1) {
-        for &index in &indices {
-            let line = &mut lines[index];
+    for group in groups.into_values().filter(|group| group.len() > 1) {
+        for rule in &group {
+            let line = &mut lines[rule.row];
             line.status = PreviewStatus::Error;
             line.issues.push(FieldIssue {
                 field: Field::Recognized,
                 kind: IssueKind::DuplicateKey,
             });
-            line.duplicate_lines = indices
+            // Bounded: a key repeated on every line would otherwise list n² line numbers.
+            line.duplicate_lines = group
                 .iter()
-                .filter(|&&other| other != index)
-                .map(|&other| other + 1)
+                .filter(|other| other.row != rule.row)
+                .map(|other| other.line_number)
+                .take(MAX_DUPLICATE_LINES)
                 .collect();
-            duplicated.insert(index);
+            duplicated.insert(rule.row);
         }
     }
     duplicated
@@ -257,7 +228,7 @@ fn merge_candidate(
 ) -> Vec<CandidateRule> {
     let mut candidate: Vec<CandidateRule> = saved.iter().map(candidate_from_saved).collect();
     for rule in accepted {
-        let line = &mut lines[rule.line_index];
+        let line = &mut lines[rule.row];
         // AC-005 merge: a matching key keeps saved spelling, ID and position.
         if let Some(&position) = saved_keys.get(&rule.key) {
             let existing = &mut candidate[position];
@@ -288,7 +259,7 @@ fn replace_candidate(
     for rule in accepted {
         let existing = saved_keys.get(&rule.key).map(|&position| &saved[position]);
         let (status, entry) = replace_entry(existing, rule);
-        let line = &mut lines[rule.line_index];
+        let line = &mut lines[rule.row];
         line.status = status;
         fill_line(line, &entry);
         candidate.push(entry);

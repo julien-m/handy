@@ -96,3 +96,21 @@ fn hostile_staging_steps_are_refused_with_stable_codes() -> TestResult {
     assert!(rules(&service).as_array().is_some_and(Vec::is_empty));
     Ok(())
 }
+
+#[test]
+fn read_settings_is_the_public_get_without_the_rules() -> TestResult {
+    let directory = tempfile::tempdir()?;
+    let service = offline(&directory)?;
+    Call::new("add", &["cloud code", "Claude Code"]).run(&service);
+    let (code, _, data) = outcome(&Call::new("read-settings", &[]).run(&service));
+    let mut public = serde_json::to_value(service.snapshot().public_settings())?;
+    let removed = public
+        .as_object_mut()
+        .and_then(|object| object.remove(super::super::RULES_KEY));
+    assert_eq!(
+        removed.map(|rules| rules.as_array().map(Vec::len)),
+        Some(Some(1))
+    );
+    assert_eq!((code, data), (0, public));
+    Ok(())
+}

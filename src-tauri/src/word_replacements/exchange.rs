@@ -133,17 +133,26 @@ pub fn decode_exchange_bytes(bytes: Vec<u8>) -> Result<String, ExchangeInputErro
 ///
 /// `UnicodeDataError` when the embedded Unicode tables are unusable.
 pub fn parse_exchange(text: &str) -> Result<Vec<ParsedLine>, UnicodeDataError> {
+    Ok(parse_exchange_lines(text)?.collect())
+}
+
+/// `parse_exchange` one line at a time, so a caller can count lines it does not keep.
+///
+/// # Errors
+///
+/// `UnicodeDataError` when the embedded Unicode tables are unusable.
+pub fn parse_exchange_lines(
+    text: &str,
+) -> Result<impl Iterator<Item = ParsedLine> + '_, UnicodeDataError> {
     let data = UnicodeData::load()?;
     let text = text.strip_prefix(BYTE_ORDER_MARK).unwrap_or(text);
     let mut is_header_candidate = true;
-    let lines = split_lines(text)
+    Ok(split_lines(text)
         .enumerate()
-        .map(|(index, line)| ParsedLine {
+        .map(move |(index, line)| ParsedLine {
             line_number: index + 1,
             content: parse_line(data, line, &mut is_header_candidate),
-        })
-        .collect();
-    Ok(lines)
+        }))
 }
 
 fn split_lines(text: &str) -> impl Iterator<Item = &str> {

@@ -4,7 +4,7 @@ use super::exchange::serialize_exchange;
 use super::model::{ReplacementRule, RuleId, RuleIdSource};
 use super::preview::{
     materialize_candidate, preview_exchange, ImportMode, PreviewRejected, PreviewStatus,
-    ReplacementPreview,
+    ReplacementPreview, MAX_DUPLICATE_LINES, MAX_LISTED_OTHER_LINES,
 };
 use super::validation::{IssueKind, MAX_RULES};
 
@@ -229,4 +229,51 @@ fn hash_exact_input_and_keep_saved_rules_untouched() {
     assert_ne!(first.input_sha256, second.input_sha256);
     assert_eq!(first.input_sha256.len(), 64);
     assert_eq!(base, before);
+}
+
+#[test]
+fn a_million_blank_or_error_lines_list_a_bounded_number_of_rows() {
+    let blank = "\n".repeat(999_999);
+    let preview = preview_exchange(&[], &blank, ImportMode::Merge);
+    let counts = (
+        preview.lines.len(),
+        preview.ignored_lines,
+        preview.omitted_lines,
+    );
+    assert_eq!(counts, (MAX_LISTED_OTHER_LINES, 999_999, 999_999 - 1000));
+    assert!(preview.can_apply() && preview.candidate.is_empty());
+    let errors = "x\n".repeat(499_999);
+    let preview = preview_exchange(&[], &errors, ImportMode::Replace);
+    let counts = (
+        preview.lines.len(),
+        preview.error_lines,
+        preview.omitted_lines,
+    );
+    assert_eq!(counts, (MAX_LISTED_OTHER_LINES, 499_999, 499_999 - 1000));
+    assert!(!preview.can_apply());
+}
+
+#[test]
+fn rule_lines_past_the_rule_limit_are_counted_and_refused() {
+    let input: String = (0..MAX_RULES + 500)
+        .map(|index| format!("r{index};x\n"))
+        .collect();
+    let preview = preview_exchange(&[], &input, ImportMode::Replace);
+    assert_eq!(
+        (preview.lines.len(), preview.omitted_lines),
+        (MAX_RULES, 500)
+    );
+    assert_eq!(preview.set_issues, vec![IssueKind::TooManyRules]);
+    assert!(!preview.can_apply());
+}
+
+#[test]
+fn a_key_repeated_on_every_line_names_a_bounded_number_of_other_lines() {
+    let preview = preview_exchange(&[], &"same;x\n".repeat(MAX_RULES), ImportMode::Merge);
+    assert_eq!(preview.error_lines, MAX_RULES);
+    assert!(preview
+        .lines
+        .iter()
+        .all(|line| line.duplicate_lines.len() == MAX_DUPLICATE_LINES));
+    assert_eq!(preview.lines[0].duplicate_lines[0], 2);
 }

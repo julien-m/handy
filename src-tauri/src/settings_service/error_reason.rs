@@ -33,6 +33,8 @@ pub enum ErrorReason {
     RecognizedTooLong,
     /// A recognized text holds a line break, a tab or `;` (002).
     RecognizedForbiddenCharacter,
+    /// A recognized text holds a control or bidirectional formatting character (002).
+    RecognizedControlCharacter,
     /// A recognized text starts with `#`, like an exchange comment (002).
     RecognizedLeadingComment,
     /// Two rules have the same normalized recognized text (002).
@@ -43,6 +45,8 @@ pub enum ErrorReason {
     ReplacementTooLong,
     /// A replacement text holds a line break or a tab (002).
     ReplacementForbiddenCharacter,
+    /// A replacement text holds a control or bidirectional formatting character (002).
+    ReplacementControlCharacter,
     /// A replacement rule has an empty id (002).
     EmptyRuleId,
     /// Two replacement rules share an id (002).
@@ -55,10 +59,14 @@ pub enum ErrorReason {
     InvalidSavedRules,
     /// The Unicode data needed to validate rules is unavailable (002).
     UnicodeDataUnavailable,
+    /// The running instance's answer does not fit one channel message (002).
+    ReplyTooLarge,
+    /// The export file could not be written; the destination is unchanged (002).
+    ExportNotWritten,
 }
 impl ErrorReason {
     /// Every reason of this build, in wire-schema order.
-    pub const ALL: [Self; 21] = [
+    pub const ALL: [Self; 25] = [
         Self::UnsupportedPlatform,
         Self::ShortcutSessionBusy,
         Self::InstanceRequired,
@@ -69,17 +77,21 @@ impl ErrorReason {
         Self::RecognizedEmpty,
         Self::RecognizedTooLong,
         Self::RecognizedForbiddenCharacter,
+        Self::RecognizedControlCharacter,
         Self::RecognizedLeadingComment,
         Self::DuplicateRecognized,
         Self::ReplacementEmpty,
         Self::ReplacementTooLong,
         Self::ReplacementForbiddenCharacter,
+        Self::ReplacementControlCharacter,
         Self::EmptyRuleId,
         Self::DuplicateRuleId,
         Self::MissingSeparator,
         Self::TooManyRules,
         Self::InvalidSavedRules,
         Self::UnicodeDataUnavailable,
+        Self::ReplyTooLarge,
+        Self::ExportNotWritten,
     ];
     /// Fixed English message of this reason.
     pub fn message(self) -> &'static str {
@@ -96,6 +108,9 @@ impl ErrorReason {
             Self::RecognizedForbiddenCharacter => {
                 "The recognized text contains a line break, a tab or a semicolon."
             }
+            Self::RecognizedControlCharacter => {
+                "The recognized text contains a control or bidirectional formatting character."
+            }
             Self::RecognizedLeadingComment => "The recognized text cannot start with #.",
             Self::DuplicateRecognized => "Another rule has the same recognized text.",
             Self::ReplacementEmpty => "The replacement is empty.",
@@ -103,12 +118,19 @@ impl ErrorReason {
             Self::ReplacementForbiddenCharacter => {
                 "The replacement contains a line break or a tab."
             }
+            Self::ReplacementControlCharacter => {
+                "The replacement contains a control or bidirectional formatting character."
+            }
             Self::EmptyRuleId => "The rule id is empty.",
             Self::DuplicateRuleId => "Another rule has the same id.",
             Self::MissingSeparator => "The line has no tab or semicolon separator.",
             Self::TooManyRules => "More than 1000 rules.",
             Self::InvalidSavedRules => "The saved rules are invalid; repair them first.",
             Self::UnicodeDataUnavailable => "Unicode data is unavailable.",
+            Self::ReplyTooLarge => {
+                "The answer is larger than one message; read large lists with their domain command."
+            }
+            Self::ExportNotWritten => "The export file could not be written; it is unchanged.",
         }
     }
 }

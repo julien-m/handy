@@ -7,16 +7,16 @@ use super::{
 };
 use crate::settings::AppSettings;
 use crate::settings_service::errors::{SettingsError, SettingsErrorCode};
+use crate::settings_service::public::PublicSettings;
 use crate::word_replacements::{
     exchange::{serialize_exchange, MAX_IMPORT_BYTES},
     model::{ReplacementRule, RuleId, RuleIdSource, UuidRuleIdSource},
-    preview::{preview_exchange, ImportMode, PreviewLine, PreviewStatus, ReplacementPreview},
-    service::{self, new_rule_count, PreallocatedIds, RuleSetError},
+    preview::{ImportMode, PreviewLine, PreviewStatus, ReplacementPreview},
+    service::{self, PlannedImport, RuleSetError},
     transfer::{self, StageError},
 };
 use serde_json::{json, Value};
 
-use super::replacements_refusal::input_refusal;
 pub use super::replacements_refusal::refusal;
 
 /// Settings key of the rules; validation errors name it in `details.field`.
@@ -28,8 +28,9 @@ impl Domain for ReplacementsDomain {
     fn name(&self) -> &'static str {
         "replacements"
     }
-    /// Public actions, then the private transfer steps the CLI uses when a list or an import
-    /// does not fit one channel message (`read-page`, `stage-begin`, `stage-append`).
+    /// Public actions, then the private transfer steps the CLI uses when a list, a `get` or an
+    /// import does not fit one channel message (`read-page`, `read-settings`, `stage-begin`,
+    /// `stage-append`).
     fn actions(&self) -> &'static [&'static str] {
         &[
             "list",
@@ -39,6 +40,7 @@ impl Domain for ReplacementsDomain {
             "import",
             "export",
             "read-page",
+            "read-settings",
             "stage-begin",
             "stage-append",
         ]
@@ -59,6 +61,7 @@ impl Domain for ReplacementsDomain {
             ("import", [mode]) => import(rules, mode, request.input),
             ("import", [mode, token]) => import(rules, mode, Some(&staged_input(token)?)),
             ("read-page", [start]) => read_page(rules, start),
+            ("read-settings", []) => settings_without_rules(settings),
             ("stage-begin", [length, sha256]) => stage_begin(length, sha256),
             ("stage-append", [token, index]) => stage_append(token, index, request.input),
             _ => Err(SettingsError::new(SettingsErrorCode::UsageError)),
@@ -90,6 +93,16 @@ fn read_page(rules: &[ReplacementRule], start: &str) -> Result<DomainPlan, Setti
     Ok(DomainPlan::Read(
         json!({ "rules": page, "total": rules.len(), "next": next }),
     ))
+}
+/// The public settings of `get` without `word_replacements`: a `get` of every setting reads
+/// them here and the rules in pages of the same revision (see `replacements_transfer`).
+fn settings_without_rules(settings: &AppSettings) -> Result<DomainPlan, SettingsError> {
+    let mut public = serde_json::to_value(PublicSettings::from_settings(settings))
+        .map_err(|_| SettingsError::new(SettingsErrorCode::InternalError))?;
+    if let Some(object) = public.as_object_mut() {
+        object.remove(RULES_KEY);
+    }
+    Ok(DomainPlan::Read(public))
 }
 /// Reserve a staged import input (see `word_replacements::transfer`).
 fn stage_begin(length: &str, sha256: &str) -> Result<DomainPlan, SettingsError> {
@@ -170,7 +183,8 @@ fn remove(id: &str) -> DomainPlan {
     })
 }
 /// Import `input` in `mode`. The preview decided here is the one committed: the change is bound
-/// to this read's revision and its new identities are allocated now.
+/// to this read's revision, its new identities are allocated now, and its set is reused at the
+/// commit instead of computing the preview again under the settings lock.
 fn import(
     rules: &[ReplacementRule],
     mode: &str,
@@ -182,20 +196,12 @@ fn import(
     if input.len() > MAX_IMPORT_BYTES {
         return Err(SettingsError::new(SettingsErrorCode::LimitExceeded));
     }
-    let preview = preview_exchange(rules, input, mode);
-    if !preview.can_apply() {
-        return Err(input_refusal(&preview));
-    }
-    let ids: Vec<RuleId> = (0..new_rule_count(&preview))
-        .map(|_| UuidRuleIdSource.next_id())
-        .collect();
+    let (planned, preview) =
+        PlannedImport::new(rules, input.to_owned(), mode, &mut UuidRuleIdSource)
+            .map_err(refusal)?;
     let summary = import_report(&preview);
-    let input = input.to_owned();
     Ok(DomainPlan::Reported(ReportedChange {
-        change: rules_change(move |saved| {
-            service::import_rules(saved, &input, mode, &mut PreallocatedIds::new(&ids))
-                .map(|outcome| outcome.rules)
-        }),
+        change: rules_change(move |saved| planned.apply(saved)),
         report: Box::new(move |settings| with_count(&summary, settings)),
         bound: true,
     }))
@@ -241,8 +247,9 @@ fn with_count(summary: &Value, settings: &AppSettings) -> Result<Value, Settings
     report["count"] = json!(settings.word_replacements.len());
     Ok(report)
 }
-/// Mode, status counts and one `{line?, status, id?}` per rule line or deletion; ignored lines
-/// are only counted and rule text is left out, so the report stays far below one reply frame.
+/// Mode, status counts and one `{line?, status, id?}` per rule line or deletion (an applicable
+/// preview lists them all); ignored lines are only counted and rule text is left out, so the
+/// report stays far below one reply frame.
 fn import_report(preview: &ReplacementPreview) -> Value {
     let count = |status| {
         preview
@@ -263,7 +270,7 @@ fn import_report(preview: &ReplacementPreview) -> Value {
         "updated": count(PreviewStatus::Update),
         "deleted": count(PreviewStatus::Delete),
         "unchanged": count(PreviewStatus::Unchanged),
-        "ignored": count(PreviewStatus::Ignored),
+        "ignored": preview.ignored_lines,
         "lines": lines,
     })
 }

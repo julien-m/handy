@@ -3,7 +3,8 @@
 use super::model::{ReplacementRule, RuleId};
 use super::preview::{ImportMode, PreviewStatus};
 use super::service::{
-    add_rule, import_rules, new_rule_count, remove_rule, update_rule, PreallocatedIds, RuleSetError,
+    add_rule, import_rules, new_rule_count, remove_rule, update_rule, PlannedImport,
+    PreallocatedIds, RuleSetError,
 };
 use super::validation::{Field, IssueKind, RuleIssue, MAX_RULES};
 
@@ -231,5 +232,29 @@ fn stable_names_match_the_serialized_forms() -> TestResult {
     for kind in kinds {
         assert_eq!(serde_json::to_value(kind)?, kind.as_str());
     }
+    Ok(())
+}
+
+#[test]
+fn a_planned_import_reuses_its_set_on_unchanged_rules_and_recomputes_otherwise() -> TestResult {
+    let ids = [RuleId::from("n1")];
+    let input = "type script;TypeScript\n".to_owned();
+    let mut source = PreallocatedIds::new(&ids);
+    let (planned, preview) = PlannedImport::new(&saved(), input, ImportMode::Merge, &mut source)
+        .map_err(|error| format!("{error:?}"))?;
+    assert_eq!(new_rule_count(&preview), 1);
+    let unchanged = planned
+        .apply(&saved())
+        .map_err(|error| format!("{error:?}"))?;
+    assert_eq!(unchanged[2], rule("n1", "type script", "TypeScript"));
+    let moved = [rule("z", "zed", "Zed")];
+    let recomputed = planned
+        .apply(&moved)
+        .map_err(|error| format!("{error:?}"))?;
+    let expected = vec![
+        rule("z", "zed", "Zed"),
+        rule("n1", "type script", "TypeScript"),
+    ];
+    assert_eq!(recomputed, expected);
     Ok(())
 }

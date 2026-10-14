@@ -1083,9 +1083,17 @@ async checkWordReplacements(rules: RuleDraft[]) : Promise<RuleIssue[]> {
 },
 /**
  * Preview `input` (bulk text or imported file) in `mode` against the published rules.
+ * 
+ * # Errors
+ * `limit_exceeded` above 1,000,000 bytes, like Apply: nothing is previewed.
  */
-async previewWordReplacements(input: string, mode: ImportMode) : Promise<ReplacementPreviewView> {
-    return await TAURI_INVOKE("preview_word_replacements", { input, mode });
+async previewWordReplacements(input: string, mode: ImportMode) : Promise<Result<ReplacementPreviewView, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("preview_word_replacements", { input, mode }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
 },
 /**
  * Save the complete draft list as the rule set, in one commit at `expected_revision`, and
@@ -1362,7 +1370,12 @@ export type IssueKind = "empty_id" | "duplicate_id" | "too_short" | "too_long" |
 /**
  * The saved base set is itself invalid, so no preview can be applied to it.
  */
-"invalid_saved_rules"
+"invalid_saved_rules" | 
+/**
+ * A control character (C0, DEL, C1) or a bidirectional embedding, override or isolate
+ * control, which the exchange format and the inserted text must not carry.
+ */
+"control_character"
 export type KeyboardDiagnosticReport = { secure_input_enabled: boolean; culprit_pid: number | null; culprit_name: string | null; 
 /**
  * Counts only — key identity is deliberately never captured.
@@ -1476,7 +1489,9 @@ export type RecoveryDisposition = "pending" | "insert" | "recover" | "cancelled"
  */
 export type RefusedShortcut = { action_id: string; shortcut: string; reason: string }
 /**
- * Complete preview; `candidate` is exactly the ordered set Apply would commit.
+ * Preview of an input; `candidate` is exactly the ordered set Apply would commit. Rule and
+ * deletion rows are always listed; ignored and error rows are listed up to
+ * `MAX_LISTED_OTHER_LINES` and counted in full, so memory stays bounded for any input.
  */
 export type ReplacementPreview = { mode: ImportMode; 
 /**
@@ -1486,7 +1501,20 @@ input_sha256: string; lines: PreviewLine[]; set_issues: IssueKind[]; candidate: 
 /**
  * The candidate equals the saved set in content, identity and order.
  */
-is_noop: boolean }
+is_noop: boolean; 
+/**
+ * Ignored input lines (blank, comment, header), listed or not.
+ */
+ignored_lines: number; 
+/**
+ * Input lines with an error, listed or not.
+ */
+error_lines: number; 
+/**
+ * Input lines left out of `lines`: ignored or error lines beyond the listed bound, and rule
+ * lines after the 1000th (which make the input too large anyway).
+ */
+omitted_lines: number }
 /**
  * A bulk or import preview against the rules saved at `revision`.
  */

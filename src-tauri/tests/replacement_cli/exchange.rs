@@ -133,9 +133,14 @@ fn an_unwritable_export_destination_is_refused_and_left_unchanged() -> TestResul
     std::fs::create_dir(&occupied)?;
     std::fs::write(app.root.path().join("occupied/kept"), "kept")?;
     let (code, envelope) = replacements(&app, &["export", &occupied])?;
+    let error = &envelope["error"];
     assert_eq!(
-        (code, &envelope["error"]["code"]),
-        (2, &json!("usage_error"))
+        (code, &error["code"], &error["details"]["reason"]),
+        (
+            1,
+            &json!("persistence_failed"),
+            &json!("export_not_written")
+        )
     );
     let kept = std::fs::read_to_string(app.root.path().join("occupied/kept"))?;
     assert_eq!(kept, "kept");
