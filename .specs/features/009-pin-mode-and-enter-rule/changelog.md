@@ -87,3 +87,19 @@
 - Review: the spec and plan reviews are stale until an independent reviewer refreshes them.
 
 <!-- finalize:spec-refine:2026-10-14:0feee4a1 -->
+
+## 2026-10-14 — [Plan Update]: 008 sources as code paths, explicit AC-006, claim_enter, two pinned failure reasons
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md updated)
+- **AC impacted:** None (pre-implementation; structural coverage back to 13/13)
+- **Author:** Claude Code (spec-refine 009 plan, claude-opus-5-5)
+- Applies the round 2 independent review.
+- 008's spec and implementation map are cited as code paths, and 006's Step 0 is named in text (006's plan stays the inspected context), so the plan review no longer loads 008's document graph or an untracked file. Plan review preparation at 180,000 characters: 20 batches, no error (round 2 simulation: 30).
+- AC lists written one by one ("AC-004, AC-006" instead of "AC-004/006"), so AC-006 has a structural reference again.
+- The atomic read is 006's `DestinationManager::claim_enter`: the `Pending → Consumed` transition grants once on `Insert` and refuses `Pending`/`Recover`/`Cancelled`, a stale generation and a second claim, under the session lock of `set_disposition` (Enter veto, Step 4, state diagram, risks).
+- Orchestrator decision 2026-10-14: AC-003 "pinned app unavailable" is carried by `pinned_app_not_running` (pin not running; new in 006's reason enum) and `activation_failed` (pin running, not brought forward within 1 s; 006's existing reason), the reasons 010 presents; Gherkin, sequence diagram, Step 2 and risks updated; no untyped subtype.
+- Review: the plan review is stale until an independent reviewer refreshes it.
+
+<!-- finalize:spec-refine:2026-10-14:f275f226 -->

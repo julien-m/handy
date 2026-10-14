@@ -5,6 +5,9 @@
 
 ---
 
+## 2026-10-14 — [Feature 009] Plan refined: 008 sources cited as code paths (plan review preparable in 20 batches), explicit AC-006 (13/13), DestinationManager::claim_enter, pinned_app_not_running and activation_failed aligned with 010
+<!-- finalize:spec-refine:2026-10-14:f275f226 -->
+
 ## 2026-10-14 — [Feature 006] Plan refined: 008 sources cited as code paths (plan review preparable in 1 batch), four ValidationContext constructions, DestinationManager::claim_enter for 009, pinned_app_not_running reason
 <!-- finalize:spec-refine:2026-10-14:8325a713 -->
 
