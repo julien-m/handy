@@ -29,7 +29,9 @@ byte-identical to the merged files. Evidence in `proofs/claude-sync/` (`summary.
 full `cargo test` 954 passed, 0 failed, 25 ignored; clippy `--lib --bins -D warnings` exit 0;
 clippy `--all-targets` exit 0 with the 5 pre-existing upstream warnings only; `cargo fmt --check`,
 `bun run lint`, `bun run format:check`, `tsc`, the frontend unit tests and the translation check
-exit 0; repository conventions PASS, new 0, baseline unchanged.
+exit 0; repository conventions PASS, new 0, baseline unchanged. `livespec validate
+--progression implement --model claude-opus-5-5 --review-max-chars 180000` after the sync:
+`Progression: READY`, exit 0 (`proofs/claude-sync/validate-implement.*`); no review was rerun.
 
 ## Resume point
 
