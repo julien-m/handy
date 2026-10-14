@@ -710,6 +710,7 @@
     "modelLoadFailedUnknown": "מודל לא ידוע",
     "pasteFailedTitle": "ההדבקה נכשלה",
     "pasteFailed": "לא ניתן היה להדביק את הטקסט ביישום הפעיל.",
+    "pasteFailedNotSaved": "לא ניתן היה להדביק את הטקסט או לשמור אותו בהיסטוריה.",
     "transcriptionFailedTitle": "התמלול נכשל",
     "settings": {
       "committedNotApplied": "ההגדרה נשמרה, אך לא ניתן היה להחיל אותה מיד.",

@@ -710,6 +710,7 @@
     "modelLoadFailedUnknown": "неизвестная модель",
     "pasteFailedTitle": "Не удалось вставить текст",
     "pasteFailed": "Не удалось вставить текст в активное приложение.",
+    "pasteFailedNotSaved": "Не удалось вставить текст или сохранить его в истории.",
     "transcriptionFailedTitle": "Ошибка транскрипции",
     "settings": {
       "committedNotApplied": "Настройка сохранена, но её не удалось применить сразу.",

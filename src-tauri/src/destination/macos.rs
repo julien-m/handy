@@ -1,7 +1,10 @@
 //! macOS workspace adapter over NSWorkspace / NSRunningApplication. Identity is the bundle
 //! identifier (the executable path for the rare app without one); Handy is excluded by its
 //! own process id. Every call is a brief read or one activation request, made inside an
-//! autorelease pool so it can run on a worker thread; no window title is read.
+//! autorelease pool so it can run on a worker thread; no window title is read. `frontmost_now`
+//! (activation wait and pre-dispatch guard) reads the focused application live through
+//! Accessibility (`macos_focus`), because `NSWorkspace` values only change when this process's
+//! main run loop turns, which it does not during the paste delay on the main thread.
 use super::context::ApplicationIdentity;
 use super::workspace::{ActivationRequest, Foreground, RunningApp, WorkspacePort};
 use objc2::rc::{autoreleasepool, Retained};
@@ -61,6 +64,14 @@ fn fallback_name(identity: &ApplicationIdentity) -> String {
             .unwrap_or_default(),
     }
 }
+/// Foreground of an application read from the system: none (unreadable), Handy, or another app.
+fn classify(front: Option<RunningApp>, own_pid: u32) -> Foreground {
+    match front {
+        None => Foreground::Unreadable,
+        Some(app) if app.pid == own_pid => Foreground::Handy,
+        Some(app) => Foreground::Application(app),
+    }
+}
 /// An application the user can switch to: a regular (Dock) app that is still running.
 fn is_windowed(app: &NSRunningApplication) -> bool {
     app.activationPolicy() == NSApplicationActivationPolicy::Regular && !app.isTerminated()
@@ -71,11 +82,24 @@ impl WorkspacePort for MacWorkspace {
     fn frontmost(&self) -> Foreground {
         autoreleasepool(|_| {
             let front = NSWorkspace::sharedWorkspace().frontmostApplication();
-            match front.as_deref().and_then(snapshot) {
-                None => Foreground::Unreadable,
-                Some(app) if app.pid == self.own_pid => Foreground::Handy,
-                Some(app) => Foreground::Application(app),
+            classify(front.as_deref().and_then(snapshot), self.own_pid)
+        })
+    }
+    /// Live read through Accessibility; an unreadable focus is `Unreadable`, never the cached
+    /// `NSWorkspace` value, so the guard fails closed (`activation_failed`) instead of trusting it.
+    fn frontmost_now(&self) -> Foreground {
+        let pid = match super::macos_focus::focused_application_pid() {
+            Ok(pid) => pid,
+            Err(error) => {
+                log::debug!("Focused application not readable: {error:?}");
+                return Foreground::Unreadable;
             }
+        };
+        autoreleasepool(|_| {
+            let app = i32::try_from(pid)
+                .ok()
+                .and_then(NSRunningApplication::runningApplicationWithProcessIdentifier);
+            classify(app.as_deref().and_then(snapshot), self.own_pid)
         })
     }
     fn running_windowed_apps(&self) -> Vec<RunningApp> {
@@ -130,5 +154,28 @@ impl WorkspacePort for MacWorkspace {
                 _ => ActivationRequest::Refused,
             }
         })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn notes(pid: u32) -> RunningApp {
+        RunningApp {
+            pid,
+            identity: ApplicationIdentity::BundleId("com.apple.Notes".to_owned()),
+            display_name: "Notes".to_owned(),
+            icon_ref: None,
+        }
+    }
+    #[test]
+    fn a_read_is_unreadable_handy_or_another_application() {
+        assert_eq!(classify(None, 7), Foreground::Unreadable);
+        assert_eq!(classify(Some(notes(7)), 7), Foreground::Handy);
+        assert_eq!(
+            classify(Some(notes(8)), 7),
+            Foreground::Application(notes(8))
+        );
     }
 }

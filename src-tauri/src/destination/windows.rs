@@ -2,8 +2,12 @@
 //! user model ID when the process is packaged, otherwise its canonical executable path), the
 //! visible unowned non-tool top-level windows as "applications with windows", and one
 //! `SetForegroundWindow` request, which the system may refuse (foreground lock). Handy is
-//! excluded by its own process id. No window title is read. Native behavior on Windows is
-//! pending release evidence; this file is compile-checked only.
+//! excluded by its own process id. No window title is read. UWP/WinUI applications live in an
+//! `ApplicationFrameWindow` owned by the shared `ApplicationFrameHost.exe`: the application is the
+//! process of the frame's child core window (identified by its AUMID), and a frame without one
+//! (suspended or minimized app) or the host itself never counts as an application, so two hosted
+//! applications are never confused. Native behavior on Windows is pending release evidence; this
+//! file is compile-checked only.
 use super::context::ApplicationIdentity;
 use super::workspace::{ActivationRequest, Foreground, RunningApp, WorkspacePort};
 use std::path::PathBuf;
@@ -13,13 +17,19 @@ use windows_sys::Win32::System::Threading::{
     OpenProcess, QueryFullProcessImageNameW, PROCESS_NAME_WIN32, PROCESS_QUERY_LIMITED_INFORMATION,
 };
 use windows_sys::Win32::UI::WindowsAndMessaging::{
-    EnumWindows, GetForegroundWindow, GetWindow, GetWindowLongPtrW, GetWindowThreadProcessId,
-    IsIconic, IsWindowVisible, SetForegroundWindow, ShowWindow, GWL_EXSTYLE, GW_OWNER, SW_RESTORE,
-    WS_EX_TOOLWINDOW,
+    EnumChildWindows, EnumWindows, GetClassNameW, GetForegroundWindow, GetWindow,
+    GetWindowLongPtrW, GetWindowThreadProcessId, IsIconic, IsWindowVisible, SetForegroundWindow,
+    ShowWindow, GWL_EXSTYLE, GW_OWNER, SW_RESTORE, WS_EX_TOOLWINDOW,
 };
 
 // Longest path or AUMID read: 32 767 UTF-16 units is the Win32 extended-path maximum.
 const MAX_TEXT: usize = 32_767;
+/// Window class of the frame hosting UWP/WinUI applications.
+const FRAME_HOST_CLASS: &str = "ApplicationFrameWindow";
+/// Executable of the shared host of those frames; never an application identity.
+const FRAME_HOST_EXECUTABLE: &str = "ApplicationFrameHost.exe";
+// Window class names are at most 256 characters (WNDCLASS documentation).
+const MAX_CLASS_NAME: usize = 256;
 
 /// The Windows workspace of this process.
 pub struct WindowsWorkspace {
@@ -48,6 +58,46 @@ fn window_pid(window: HWND) -> Option<u32> {
     // SAFETY: `window` is a window handle from the system; `pid` outlives the call.
     unsafe { GetWindowThreadProcessId(window, &mut pid) };
     (pid != 0).then_some(pid)
+}
+/// Window class name of `window` (empty when unreadable).
+fn class_name(window: HWND) -> String {
+    let mut buffer = [0_u16; MAX_CLASS_NAME];
+    // SAFETY: `buffer` holds `MAX_CLASS_NAME` UTF-16 units; the call writes at most that many.
+    let length = unsafe { GetClassNameW(window, buffer.as_mut_ptr(), MAX_CLASS_NAME as i32) };
+    let length = usize::try_from(length).unwrap_or(0).min(MAX_CLASS_NAME);
+    String::from_utf16_lossy(&buffer[..length])
+}
+/// Process of the application `window` shows: its owner, or for a hosted UWP/WinUI frame the
+/// process of its child core window; `None` for a frame without one.
+fn app_pid(window: HWND) -> Option<u32> {
+    let owner = window_pid(window)?;
+    if class_name(window) != FRAME_HOST_CLASS {
+        return Some(owner);
+    }
+    hosted_pid(window, owner)
+}
+/// First child window of `frame` owned by another process than the frame host `host`.
+fn hosted_pid(frame: HWND, host: u32) -> Option<u32> {
+    struct Search {
+        host: u32,
+        found: Option<u32>,
+    }
+    unsafe extern "system" fn visit(child: HWND, state: LPARAM) -> i32 {
+        // SAFETY: `state` is the address of the search below, alive for the whole enumeration.
+        let search = unsafe { &mut *(state as *mut Search) };
+        match window_pid(child) {
+            // Stop at the first child of another process: the hosted application's core window.
+            Some(pid) if pid != search.host => {
+                search.found = Some(pid);
+                0
+            }
+            _ => 1,
+        }
+    }
+    let mut search = Search { host, found: None };
+    // SAFETY: the callback only touches `search`, which outlives the synchronous enumeration.
+    unsafe { EnumChildWindows(frame, Some(visit), &mut search as *mut Search as LPARAM) };
+    search.found
 }
 /// A top-level window the user switches to: visible, unowned and not a tool window.
 fn is_app_window(window: HWND) -> bool {
@@ -104,9 +154,17 @@ fn identity_of(pid: u32) -> Option<ApplicationIdentity> {
     unsafe { CloseHandle(process) };
     match (aumid.filter(|text| !text.is_empty()), path) {
         (Some(aumid), _) => Some(ApplicationIdentity::Aumid(aumid)),
+        (None, Some(path)) if is_frame_host(&path) => None,
         (None, Some(path)) => Some(ApplicationIdentity::ExecutablePath(PathBuf::from(path))),
         (None, None) => None,
     }
+}
+/// Business rule: the frame host is shared by every hosted application, so its executable path
+/// would make them all one identity; it is never an identity.
+fn is_frame_host(path: &str) -> bool {
+    std::path::Path::new(path)
+        .file_name()
+        .is_some_and(|name| name.eq_ignore_ascii_case(FRAME_HOST_EXECUTABLE))
 }
 /// Typed snapshot of process `pid`; the display name is the executable stem or AUMID tail.
 fn snapshot(pid: u32) -> Option<RunningApp> {
@@ -133,7 +191,7 @@ impl WorkspacePort for WindowsWorkspace {
     fn frontmost(&self) -> Foreground {
         // SAFETY: no arguments; returns a possibly null window handle.
         let window = unsafe { GetForegroundWindow() };
-        match window_pid(window).map(|pid| (pid, snapshot(pid))) {
+        match app_pid(window).map(|pid| (pid, snapshot(pid))) {
             Some((pid, _)) if pid == self.own_pid => Foreground::Handy,
             Some((_, Some(app))) => Foreground::Application(app),
             _ => Foreground::Unreadable,
@@ -141,7 +199,7 @@ impl WorkspacePort for WindowsWorkspace {
     }
     fn running_windowed_apps(&self) -> Vec<RunningApp> {
         let mut apps: Vec<RunningApp> = Vec::new();
-        for pid in app_windows().into_iter().filter_map(window_pid) {
+        for pid in app_windows().into_iter().filter_map(app_pid) {
             // Skip Handy and a process already listed (several windows of one process).
             if pid == self.own_pid || apps.iter().any(|known| known.pid == pid) {
                 continue;
@@ -156,7 +214,7 @@ impl WorkspacePort for WindowsWorkspace {
     }
     fn instances(&self, identity: &ApplicationIdentity) -> Vec<RunningApp> {
         let mut apps: Vec<RunningApp> = Vec::new();
-        for pid in app_windows().into_iter().filter_map(window_pid) {
+        for pid in app_windows().into_iter().filter_map(app_pid) {
             if pid == self.own_pid || apps.iter().any(|known| known.pid == pid) {
                 continue;
             }
@@ -170,7 +228,7 @@ impl WorkspacePort for WindowsWorkspace {
     fn activate_once(&self, target: &RunningApp) -> ActivationRequest {
         let window = app_windows()
             .into_iter()
-            .find(|window| window_pid(*window) == Some(target.pid));
+            .find(|window| app_pid(*window) == Some(target.pid));
         let Some(window) = window else {
             return ActivationRequest::Refused;
         };

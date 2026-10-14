@@ -18,12 +18,10 @@ pub struct PlatformCapabilities {
     supported: &'static [PlatformCapability],
 }
 
-// Business rule: destination capture and activation exist on macOS and Windows only; Linux
-// cannot read the frontmost application reliably across Wayland compositors (006 spec).
-#[cfg(any(target_os = "macos", target_os = "windows"))]
-const BUILD_CAPABILITIES: &[PlatformCapability] = &[PlatformCapability::Destination];
-#[cfg(not(any(target_os = "macos", target_os = "windows")))]
-const BUILD_CAPABILITIES: &[PlatformCapability] = &[];
+// The build declares `Destination` only on macOS and Windows with the 006 rollout gate open
+// (`destination::rollout`); closed, every validator refuses `return_to_dictation_app`.
+const BUILD_CAPABILITIES: &[PlatformCapability] =
+    crate::destination::rollout::Rollout::CURRENT.capabilities();
 
 /// Setting keys that need a capability; each later feature adds its own row.
 const KEY_CAPABILITIES: &[(&str, PlatformCapability)] =
@@ -100,8 +98,9 @@ mod tests {
         assert!(PlatformCapabilities::only(&[]).check(None, None).is_ok());
     }
     #[test]
-    fn the_build_supports_destination_exactly_on_macos_and_windows() {
-        let expected = cfg!(any(target_os = "macos", target_os = "windows"));
+    fn the_build_supports_destination_exactly_on_macos_and_windows_with_the_gate_open() {
+        let expected = cfg!(feature = "destination-return")
+            && cfg!(any(target_os = "macos", target_os = "windows"));
         assert_eq!(
             PlatformCapabilities::current().supports(PlatformCapability::Destination),
             expected

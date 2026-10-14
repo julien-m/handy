@@ -760,8 +760,6 @@ impl ShortcutAction for TranscribeAction {
                                 });
                                 let insertion = (destination_ticket, processed.final_text, history);
                                 insert_final_text(&ah, insertion, cancelled).await;
-                                utils::hide_recording_overlay(&ah);
-                                set_tray_state(&ah, TrayIconState::Idle);
                             }
                         }
                         Err(err) => {

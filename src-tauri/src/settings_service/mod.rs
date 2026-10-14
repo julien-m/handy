@@ -13,6 +13,7 @@ mod effects;
 mod endpoint_unix;
 #[cfg(windows)]
 mod endpoint_windows;
+pub mod error_reason;
 pub mod errors;
 pub mod input;
 pub mod ipc;

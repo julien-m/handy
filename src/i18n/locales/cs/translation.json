@@ -710,6 +710,7 @@
     "modelLoadFailedUnknown": "neznámý model",
     "pasteFailedTitle": "Vložení textu se nezdařilo",
     "pasteFailed": "Text nebylo možné vložit do aktivní aplikace.",
+    "pasteFailedNotSaved": "Text se nepodařilo vložit ani uložit do historie.",
     "transcriptionFailedTitle": "Přepis selhal",
     "settings": {
       "committedNotApplied": "Nastavení bylo uloženo, ale nepodařilo se ho okamžitě použít.",

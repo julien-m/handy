@@ -146,8 +146,9 @@ impl Orchestrator {
             Resolution::Ambiguous => Err(failed(destination, DestinationFailure::ActivationFailed)),
         }
     }
+    /// Same live foreground source as the guard, so the wait and the guard never disagree.
     fn in_front(&self, app: &RunningApp) -> bool {
-        matches!(self.manager.workspace.frontmost(), Foreground::Application(front) if front.pid == app.pid && front.identity == app.identity)
+        matches!(self.manager.workspace.frontmost_now(), Foreground::Application(front) if front.pid == app.pid && front.identity == app.identity)
     }
     /// Sample the foreground until `app` is in front, the dictation is cancelled, or more than
     /// `ACTIVATION_DEADLINE` has elapsed since `started` (an observation at exactly 1 s counts).

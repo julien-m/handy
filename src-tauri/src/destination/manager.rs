@@ -132,6 +132,9 @@ impl DestinationManager {
         }
         let (support, _) = selection_of(self.workspace.frontmost());
         self.lock().support = Some(support);
+        // Warm the live read off the main thread: its first macOS call took about 40 ms on the
+        // native run (later calls under 1 ms), and the guard makes it on the main thread.
+        let _ = self.workspace.frontmost_now();
         support
     }
     /// Snapshot of the current session, if any.
@@ -203,6 +206,29 @@ impl DestinationManager {
             support: session.support,
             selection,
         })
+    }
+    /// The insertion worker of this dictation failed before reporting: freeze its selection
+    /// (no later choice) and move its disposition to `Recover`. Returns the source of its
+    /// selection, or `None` when the dictation is no longer current (cancelled or superseded).
+    pub fn fail_insertion(
+        &self,
+        dictation_id: DictationId,
+        generation: u64,
+    ) -> Option<super::context::DestinationSource> {
+        let mut state = self.lock();
+        if state.generation != generation {
+            return None;
+        }
+        state.menu.clear();
+        let session = state.session.as_mut()?;
+        if !session.is(dictation_id, generation) || session.phase == SessionPhase::Finished {
+            return None;
+        }
+        // Already frozen when the worker passed the insertion entry; the refusal is expected.
+        let _ = session.freeze(dictation_id, generation);
+        // Refused only when the disposition is already final (`Recover` or `Cancelled`).
+        let _ = session.set_disposition(dictation_id, generation, RecoveryDisposition::Recover);
+        Some(session.selection.source())
     }
     /// The terminal outcome of this dictation was published.
     pub fn finish(&self, dictation_id: DictationId, generation: u64) {

@@ -1,0 +1,1204 @@
+{
+  "note": "Compact summary of `livespec conventions verify --feature repo --json` stdout (full stdout not kept).",
+  "verdict": "PASS",
+  "receipt_path": ".specs/conventions/runs/20261014T062002Z/receipt.json",
+  "run_id": "20261014T062002Z",
+  "baseline": {
+    "baselined_count": 546,
+    "new_count": 0,
+    "path": ".specs/conventions/baseline.json",
+    "resolved_count": 3636,
+    "sha256": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe"
+  },
+  "blockers": [],
+  "violation_counts": {
+    "warning:builtin.doc_coverage": 317,
+    "warning:builtin.max_file_lines": 12,
+    "warning:builtin.max_function_lines": 147
+  },
+  "violations_in_files_changed_vs_dev": [
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/actions.rs",
+      "line": 355,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/actions.rs",
+      "line": 355,
+      "message": "process_transcription_output has 33 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/cli.rs",
+      "line": 215,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/clipboard.rs",
+      "line": 130,
+      "message": "try_send_key_combo_linux has 37 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/clipboard.rs",
+      "line": 254,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/clipboard.rs",
+      "line": 330,
+      "message": "detect_ydotool_key_syntax has 37 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/clipboard.rs",
+      "line": 426,
+      "message": "type_text_via_xdotool has 57 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/clipboard.rs",
+      "line": 734,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/clipboard.rs",
+      "line": 734,
+      "message": "send_return_key has 42 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/clipboard.rs",
+      "line": 998,
+      "message": "external_script_does_not_wait_for_inherited_stdio has 35 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/history.rs",
+      "line": 11,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/history.rs",
+      "line": 25,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/history.rs",
+      "line": 38,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/history.rs",
+      "line": 51,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/history.rs",
+      "line": 64,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/commands/history.rs",
+      "line": 64,
+      "message": "retry_history_entry_transcription has 50 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/history.rs",
+      "line": 118,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/history.rs",
+      "line": 128,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/mod.rs",
+      "line": 17,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/mod.rs",
+      "line": 23,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/mod.rs",
+      "line": 29,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/mod.rs",
+      "line": 35,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/mod.rs",
+      "line": 44,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/mod.rs",
+      "line": 61,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/mod.rs",
+      "line": 72,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/mod.rs",
+      "line": 78,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/mod.rs",
+      "line": 88,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/mod.rs",
+      "line": 97,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/mod.rs",
+      "line": 113,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/mod.rs",
+      "line": 127,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/mod.rs",
+      "line": 143,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/mod.rs",
+      "line": 158,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/commands/mod.rs",
+      "line": 196,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/lib.rs",
+      "line": 657,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/managers/history.rs",
+      "line": 87,
+      "message": "update_transcription has 46 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/managers/history.rs",
+      "line": 134,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/managers/history.rs",
+      "line": 184,
+      "message": "cleanup_by_count has 31 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/managers/history.rs",
+      "line": 216,
+      "message": "cleanup_by_time has 43 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/managers/history.rs",
+      "line": 260,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/managers/history.rs",
+      "line": 260,
+      "message": "get_history_entries has 56 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/managers/history.rs",
+      "line": 367,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/managers/history.rs",
+      "line": 394,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/managers/history.rs",
+      "line": 403,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/managers/history.rs",
+      "line": 425,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/settings.rs",
+      "line": 25,
+      "message": "deserialize has 41 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/settings.rs",
+      "line": 260,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/settings.rs",
+      "line": 273,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/settings.rs",
+      "line": 300,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/settings.rs",
+      "line": 304,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/settings.rs",
+      "line": 858,
+      "message": "ensure_post_process_defaults has 55 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/settings.rs",
+      "line": 916,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/settings.rs",
+      "line": 1046,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/settings.rs",
+      "line": 1052,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/settings.rs",
+      "line": 1058,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/settings.rs",
+      "line": 1215,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/settings.rs",
+      "line": 1221,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/settings.rs",
+      "line": 1229,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/settings.rs",
+      "line": 1234,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/settings_service/domains/mod.rs",
+      "line": 133,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/settings_service/operations.rs",
+      "line": 125,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/settings_service/protocol.rs",
+      "line": 85,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/settings_service/protocol.rs",
+      "line": 85,
+      "message": "contract_schema has 40 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/settings_service/protocol.rs",
+      "line": 126,
+      "message": "public_field_schema has 41 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/settings_service/public.rs",
+      "line": 168,
+      "message": "from_settings has 32 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/settings_service/render.rs",
+      "line": 62,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/settings_service/tauri_adapter.rs",
+      "line": 41,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/settings_service/validation.rs",
+      "line": 129,
+      "message": "validate_value has 32 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 134,
+      "message": "reconcile_cancel_shortcut has 33 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 403,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 411,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 560,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 596,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 605,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 611,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 620,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 629,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 635,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 649,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 664,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 673,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 682,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 691,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 700,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 706,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 712,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 718,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 727,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 737,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 755,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 768,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 777,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 786,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 792,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 801,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 810,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 819,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 832,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 838,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 847,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 856,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 862,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 888,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 917,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 941,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 964,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 987,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1009,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1033,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1058,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1089,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1089,
+      "message": "fetch_post_process_models has 42 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1134,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1143,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1152,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1175,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1184,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1193,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1206,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1215,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1224,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1233,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1242,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1251,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1260,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1275,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/tray.rs",
+      "line": 102,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/tray.rs",
+      "line": 442,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/tray.rs",
+      "line": 604,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/tray.rs",
+      "line": 621,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/tray.rs",
+      "line": 638,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/utils.rs",
+      "line": 86,
+      "message": "cancel_current_operation has 36 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/utils.rs",
+      "line": 125,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/utils.rs",
+      "line": 134,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/utils.rs",
+      "line": 143,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/utils.rs",
+      "line": 149,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/utils.rs",
+      "line": 157,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/tests/settings_transactions/driver.rs",
+      "line": 23,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/tests/settings_transactions/driver.rs",
+      "line": 23,
+      "message": "start has 50 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/tests/settings_transactions/driver.rs",
+      "line": 73,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/tests/settings_transactions/driver.rs",
+      "line": 78,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/tests/settings_transactions/driver.rs",
+      "line": 104,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/tests/settings_transactions/driver.rs",
+      "line": 116,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/tests/settings_transactions/driver.rs",
+      "line": 120,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/tests/settings_transactions/driver.rs",
+      "line": 127,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/tests/settings_transactions/driver.rs",
+      "line": 158,
+      "message": "repository_subprocess_fixture has 31 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/tests/settings_transactions/driver.rs",
+      "line": 226,
+      "message": "write_fixture has 43 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/tests/settings_transactions/faults.rs",
+      "line": 21,
+      "message": "every_durable_fault_preserves_a_complete_generation_and_reports_uncertainty has 53 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/tests/settings_transactions/faults.rs",
+      "line": 107,
+      "message": "replaced_temporary_path_never_replaces_store_or_deletes_substitute has 36 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/tests/settings_transactions/normalized_writes.rs",
+      "line": 103,
+      "message": "startup_on_unreadable_json_or_malformed_revision_recovers_read_only_with_lease has 37 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/tests/settings_transactions/ownership.rs",
+      "line": 60,
+      "message": "startup_normalizes_once_preserves_raw_secrets_and_keeps_offline_fenced has 48 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/tests/settings_transactions/ownership.rs",
+      "line": 110,
+      "message": "passive_occupied_socket_refuses_without_connecting_or_deleting has 34 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/tests/settings_transactions/ownership.rs",
+      "line": 165,
+      "message": "lease_holding_instance_commits_while_offline_writers_stay_refused has 59 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/tests/settings_transactions/processes.rs",
+      "line": 14,
+      "message": "overlapping_subprocess_writers_serialize_under_the_lock_and_preserve_disjoint_fields has 36 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/tests/settings_transactions/processes.rs",
+      "line": 51,
+      "message": "barrier_started_startup_and_writer_respect_real_lease_ownership has 43 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/tests/settings_transactions/processes.rs",
+      "line": 95,
+      "message": "independent_raw_reader_observes_only_complete_old_or_new_generations has 50 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/tests/settings_transactions/processes.rs",
+      "line": 173,
+      "message": "forced_process_termination_before_and_after_replace_preserves_complete_generations_and_releases_locks has 40 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/tests/settings_transactions/substitution.rs",
+      "line": 66,
+      "message": "parent_substituted_before_read_and_restored_before_replace_is_refused has 37 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/tests/settings_transactions/substitution.rs",
+      "line": 128,
+      "message": "same_user_ancestor_symlink_resolves_to_its_canonical_directory has 34 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/tests/settings_transactions/transactions.rs",
+      "line": 166,
+      "message": "refused_or_noop_commit_on_absent_store_creates_no_directory_or_lock has 54 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/tests/settings_validation/contracts.rs",
+      "line": 65,
+      "message": "request_roundtrip_keeps_typed_operation_without_debug_or_secret_diagnostics has 32 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/tests/settings_validation/contracts.rs",
+      "line": 99,
+      "message": "generated_schema_matches_wire_shapes_and_descriptor_inventory has 37 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/tests/settings_validation/contracts.rs",
+      "line": 160,
+      "message": "operation_schema_requires_the_same_variant_fields_as_serde has 37 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/tests/settings_validation/inventory.rs",
+      "line": 136,
+      "message": "independent_enum_inventory_accepts_every_current_canonical_variant has 36 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/tests/settings_validation/request_contracts.rs",
+      "line": 46,
+      "message": "request_schema_closes_each_operation_to_its_own_fields has 37 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/tests/settings_validation/request_contracts.rs",
+      "line": 85,
+      "message": "public_schema_requires_all_fields_and_preserves_legacy_numeric_reads has 31 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/tests/settings_validation/scalars.rs",
+      "line": 59,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/tests/settings_validation/scalars.rs",
+      "line": 174,
+      "message": "every_nullable_scalar_preserves_strings_and_accepts_null_clear has 49 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/tests/settings_validation/scalars.rs",
+      "line": 224,
+      "message": "numeric_boundaries_and_overflow_have_identical_safe_error_reasons has 48 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_file_lines",
+      "path": "src/components/settings/history/HistorySettings.tsx",
+      "line": 1,
+      "message": "453 lines > 400"
+    }
+  ]
+}

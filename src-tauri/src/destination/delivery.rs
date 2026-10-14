@@ -2,13 +2,15 @@
 //! existing insertion method on the main thread with the pre-dispatch guard, then publish one
 //! terminal outcome (metadata event `insertion-outcome`, optional consumers) and keep a failed
 //! transcript in the recovery slot. History is saved by the caller; its actual result is passed
-//! in and never overstated. The transcript never enters an event or a log.
-use super::context::{DictationId, NoRecoveryConsumer};
+//! in and never overstated. The transcript never enters an event or a log. Without a session
+//! (rollout gate closed, see `rollout`) the insertion of `dev` before 006 runs unchanged.
+use super::context::{DestinationSource, DictationId, NoRecoveryConsumer};
 use super::guard::DispatchGuard;
 use super::insertion::{InsertionPort, InsertionReport, InsertionRequest, Orchestrator};
 use super::manager::DestinationManager;
 use super::outcome::{
-    HistoryStatus, InsertionOutcome, InsertionStatus, MethodResult, TranscriptRef,
+    DestinationFailure, HistoryStatus, InsertionOutcome, InsertionStatus, MethodResult,
+    TranscriptRef,
 };
 use super::recovery::{OutcomeRegistry, RecoverySlot};
 use super::workspace::SystemClock;
@@ -18,6 +20,8 @@ use tauri::{AppHandle, Emitter, Manager};
 
 /// UI event of a terminal insertion outcome (metadata only).
 pub const INSERTION_OUTCOME: &str = "insertion-outcome";
+/// Existing UI event of a failed insertion (toast); never carries the transcript.
+const PASTE_ERROR: &str = "paste-error";
 
 /// The dictation an insertion belongs to, read when the recording stops.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -54,6 +58,9 @@ impl HistoryRecord {
 /// The recording stopped: keep the destination through processing and AI, and return the
 /// ticket of this dictation (none before the manager is installed).
 pub fn ticket_at_stop(app: &AppHandle) -> Option<DictationTicket> {
+    if !super::rollout::Rollout::CURRENT.opens_sessions() {
+        return None;
+    }
     let manager = super::app::manager(app)?;
     manager.mark_processing();
     let snapshot = manager.snapshot()?;
@@ -73,7 +80,9 @@ pub fn abandon(app: &AppHandle) {
 }
 
 // @spec FR-002: Async activation, then the configured method — .specs/features/006-destination-application/spec.md#fr-002
-/// Insert `text` for `ticket` and publish its outcome; returns the outcome when one was produced.
+/// Insert `text` for `ticket` and publish its outcome; `None` only without a destination manager.
+/// The insertion settings are read once here and the same snapshot drives the activation route
+/// and the insertion method, so a concurrent settings change cannot split them.
 pub async fn deliver(
     app: AppHandle,
     ticket: DictationTicket,
@@ -82,67 +91,125 @@ pub async fn deliver(
     cancelled: Box<dyn Fn() -> bool + Send + Sync>,
 ) -> Option<InsertionOutcome> {
     let manager = super::app::manager(&app)?;
-    let paste_method_none =
-        crate::settings::get_settings(&app).paste_method == crate::settings::PasteMethod::None;
+    let settings = crate::settings::get_settings(&app);
     let request = InsertionRequest {
         dictation_id: ticket.dictation_id,
         destination_generation: ticket.destination_generation,
-        paste_method_none,
+        paste_method_none: settings.paste_method == crate::settings::PasteMethod::None,
         cancelled,
     };
     let method = MainThreadPaste {
         app: app.clone(),
         text: text.clone(),
+        settings,
     };
     let worker_manager = Arc::clone(&manager);
-    let report = tauri::async_runtime::spawn_blocking(move || {
+    let joined = tauri::async_runtime::spawn_blocking(move || {
         orchestrator(worker_manager).deliver(request, &method)
     })
-    .await
-    .map_err(|error| log::error!("Destination insertion worker failed: {error}"))
-    .ok()?;
+    .await;
+    let report = joined.unwrap_or_else(|error| worker_failed(&manager, ticket, &error));
     Some(publish(&app, &manager, ticket, report, text, history))
 }
-/// Insert the final text of a stopped dictation: through its destination (006), or into the
-/// application in front as before when no destination session exists. A failure is also
-/// reported through the existing `paste-error` event (staged fallback until 010 presents it).
+/// The insertion worker ended without a report (a panic in the orchestrator or the method): the
+/// dictation is reported as an insertion failure, so `publish` keeps its transcript for recovery
+/// and ends the session; a dictation already cancelled is reported cancelled.
+fn worker_failed(
+    manager: &DestinationManager,
+    ticket: DictationTicket,
+    error: &dyn std::fmt::Display,
+) -> InsertionReport {
+    let source = manager.fail_insertion(ticket.dictation_id, ticket.destination_generation);
+    log::error!("Destination insertion worker failed ({error}); reported as an insertion failure");
+    let (status, reason) = match source {
+        Some(_) => (
+            InsertionStatus::Failed,
+            Some(DestinationFailure::InsertionFailed),
+        ),
+        None => (InsertionStatus::Cancelled, None),
+    };
+    InsertionReport {
+        status,
+        reason,
+        method_result: None,
+        target: None,
+        source: source.unwrap_or(DestinationSource::FrontmostAtEnd),
+    }
+}
+/// Insert the final text of a stopped dictation, then end the recording indicator: through its
+/// destination session (006, rollout gate open), or exactly as before 006 without a session.
 pub async fn insert_final_text(
     app: &AppHandle,
     (ticket, text, history): (Option<DictationTicket>, String, HistoryRecord),
     cancelled: Box<dyn Fn() -> bool + Send + Sync>,
 ) {
-    let started = std::time::Instant::now();
     let Some(ticket) = ticket else {
-        return insert_without_destination(app, text, &*cancelled);
+        return paste_as_before(app, text, cancelled);
     };
+    let started = std::time::Instant::now();
     match deliver(app.clone(), ticket, text, history, cancelled).await {
-        Some(outcome) if outcome.status != InsertionStatus::Failed => {
-            log::debug!(
-                "Insertion finished as {:?} in {:?}",
-                outcome.status,
-                started.elapsed()
+        Some(outcome) => report_outcome(app, &outcome, started.elapsed()),
+        None => {
+            log::error!(
+                "Destination manager missing: transcription not inserted (history {:?})",
+                history.status
             );
-        }
-        Some(_) | None => {
-            log::error!("Transcription was not inserted; it is kept for recovery");
-            let _ = app.emit("paste-error", ());
+            let _ = app.emit(PASTE_ERROR, ());
         }
     }
+    end_indicator(app);
 }
-/// The previous path, kept for a dictation without session: paste on the main thread.
-fn insert_without_destination(app: &AppHandle, text: String, cancelled: &dyn Fn() -> bool) {
-    if cancelled() {
+/// Payload of `paste-error` for a destination failure: whether the transcript is in history.
+/// Never carries the transcript.
+#[derive(Clone, Copy, Debug, serde::Serialize)]
+struct PasteErrorPayload {
+    history_saved: bool,
+}
+/// Log the outcome truthfully and show the interim failure toast (010 presents reasons later).
+fn report_outcome(app: &AppHandle, outcome: &InsertionOutcome, elapsed: std::time::Duration) {
+    if outcome.status != InsertionStatus::Failed {
+        log::debug!("Insertion finished as {:?} in {elapsed:?}", outcome.status);
         return;
     }
+    log::error!(
+        "Transcription not inserted ({:?}); retained for recovery: {}; history: {:?}",
+        outcome.reason,
+        outcome.transcript_ref.is_some(),
+        outcome.history_status
+    );
+    // Double failure (not inserted and not in history): until 010 reads the retained transcript,
+    // the user cannot reach it, so the toast says it was not saved either (text never shown).
+    let history_saved = outcome.history_status == HistoryStatus::Saved;
+    let _ = app.emit(PASTE_ERROR, PasteErrorPayload { history_saved });
+}
+/// Hide the recording overlay and set the tray back to idle.
+fn end_indicator(app: &AppHandle) {
+    crate::utils::hide_recording_overlay(app);
+    crate::tray::set_tray_state(app, crate::tray::TrayIconState::Idle);
+}
+/// The insertion of `dev` before 006, unchanged: on the main thread, a cancellation check, the
+/// configured method with the settings read there, the `paste-error` toast, then the indicator.
+fn paste_as_before(app: &AppHandle, text: String, cancelled: Box<dyn Fn() -> bool + Send + Sync>) {
     let handle = app.clone();
+    let paste_time = std::time::Instant::now();
     let scheduled = app.run_on_main_thread(move || {
-        if let Err(error) = crate::utils::paste(text, handle.clone(), &|| Ok(())) {
-            log::error!("Failed to paste transcription: {error}");
-            let _ = handle.emit("paste-error", ());
+        if cancelled() {
+            log::debug!("Transcription operation cancelled before paste");
+            return end_indicator(&handle);
         }
+        let settings = crate::settings::get_settings(&handle);
+        match crate::utils::paste(text, handle.clone(), &settings, &|| Ok(())) {
+            Ok(()) => log::debug!("Text pasted successfully in {:?}", paste_time.elapsed()),
+            Err(error) => {
+                log::error!("Failed to paste transcription: {error}");
+                let _ = handle.emit(PASTE_ERROR, ());
+            }
+        }
+        end_indicator(&handle);
     });
     if let Err(error) = scheduled {
         log::error!("Failed to run paste on main thread: {error:?}");
+        end_indicator(app);
     }
 }
 fn orchestrator(manager: Arc<DestinationManager>) -> Orchestrator {
@@ -154,16 +221,18 @@ fn orchestrator(manager: Arc<DestinationManager>) -> Orchestrator {
     }
 }
 
-/// The existing insertion method, run on the main thread like before; the guard is called by
-/// `clipboard::paste` after its configured delay. The worker waits for its result.
+/// The existing insertion method, run on the main thread like before with the settings snapshot
+/// of `deliver`; the guard is called by `clipboard::paste` after its configured delay. The
+/// worker waits for its result.
 struct MainThreadPaste {
     app: AppHandle,
     text: String,
+    settings: crate::settings::AppSettings,
 }
 impl InsertionPort for MainThreadPaste {
     fn dispatch(&self, guard: Arc<DispatchGuard>) -> MethodResult {
         let (sender, receiver) = std::sync::mpsc::channel();
-        let (app, text) = (self.app.clone(), self.text.clone());
+        let (app, text, settings) = (self.app.clone(), self.text.clone(), self.settings.clone());
         let scheduled = self.app.run_on_main_thread(move || {
             let check = || {
                 guard
@@ -172,7 +241,7 @@ impl InsertionPort for MainThreadPaste {
                     .map_err(|refusal| refusal.to_string())
             };
             // A dropped receiver means the worker is gone; there is nobody left to inform.
-            let _ = sender.send(crate::utils::paste(text, app, &check));
+            let _ = sender.send(crate::utils::paste(text, app, &settings, &check));
         });
         let result = match scheduled {
             Ok(()) => receiver
@@ -255,79 +324,5 @@ fn completed_at() -> u64 {
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::destination::context::{ApplicationIdentity, DestinationSource};
-    use crate::destination::outcome::{DestinationFailure, MethodOutcome};
-
-    fn ticket() -> DictationTicket {
-        DictationTicket {
-            dictation_id: DictationId(4),
-            destination_generation: 9,
-        }
-    }
-    fn report(status: InsertionStatus, method_result: Option<MethodResult>) -> InsertionReport {
-        InsertionReport {
-            status,
-            reason: (status == InsertionStatus::Failed).then_some(DestinationFailure::AppClosed),
-            method_result,
-            target: Some(ApplicationIdentity::BundleId("com.apple.Notes".to_owned())),
-            source: DestinationSource::Captured,
-        }
-    }
-
-    #[test]
-    fn the_outcome_carries_the_actual_history_result_and_the_exact_method_kind() {
-        let history = HistoryRecord {
-            status: HistoryStatus::Failed,
-            entry_id: None,
-        };
-        let detailed = MethodResult::Detailed {
-            outcome: MethodOutcome::ReadObserved,
-            transaction_id: Some("tx-1".to_owned()),
-        };
-        let attempted = report(InsertionStatus::InsertionAttempted, Some(detailed));
-        let built = outcome(ticket(), attempted, history, None);
-        assert_eq!(
-            (built.dictation_id, built.destination_generation),
-            (DictationId(4), 9)
-        );
-        assert_eq!(built.method_outcome, Some(MethodOutcome::ReadObserved));
-        assert_eq!(built.transaction_id.as_deref(), Some("tx-1"));
-        assert_eq!(
-            (built.history_status, built.history_entry_id),
-            (HistoryStatus::Failed, None)
-        );
-    }
-    #[test]
-    fn a_failed_destination_names_its_target_and_ids_are_unique() {
-        let history = HistoryRecord {
-            status: HistoryStatus::Saved,
-            entry_id: Some(12),
-        };
-        let first = outcome(
-            ticket(),
-            report(InsertionStatus::Failed, None),
-            history,
-            Some(TranscriptRef(3)),
-        );
-        let second = outcome(
-            ticket(),
-            report(InsertionStatus::Failed, None),
-            history,
-            None,
-        );
-        assert_eq!(first.reason, Some(DestinationFailure::AppClosed));
-        assert_eq!(
-            first.target,
-            Some(ApplicationIdentity::BundleId("com.apple.Notes".to_owned()))
-        );
-        assert_eq!(
-            (first.method_outcome, first.transcript_ref),
-            (None, Some(TranscriptRef(3)))
-        );
-        assert_ne!(first.outcome_id, second.outcome_id);
-        let event = serde_json::to_value(&first).unwrap_or_default();
-        assert!(event.get("text").is_none() && event.get("transcript").is_none());
-    }
-}
+#[path = "delivery_tests.rs"]
+mod tests;

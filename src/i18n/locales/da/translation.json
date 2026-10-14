@@ -713,6 +713,7 @@
     "modelLoadFailedUnknown": "ukendt model",
     "pasteFailedTitle": "Kunne ikke indsætte tekst",
     "pasteFailed": "Teksten kunne ikke indsættes i det aktive program.",
+    "pasteFailedNotSaved": "Teksten kunne hverken indsættes eller gemmes i historikken.",
     "transcriptionFailedTitle": "Transskription mislykkedes",
     "settings": {
       "committedNotApplied": "Indstillingen blev gemt, men kunne ikke anvendes med det samme.",

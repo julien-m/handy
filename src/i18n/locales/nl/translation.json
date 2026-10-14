@@ -713,6 +713,7 @@
     "modelLoadFailedUnknown": "onbekend model",
     "pasteFailedTitle": "Tekst plakken mislukt",
     "pasteFailed": "Tekst kon niet worden geplakt in de actieve applicatie.",
+    "pasteFailedNotSaved": "De tekst kon niet worden geplakt of in de geschiedenis worden opgeslagen.",
     "transcriptionFailedTitle": "Transcriptie mislukt",
     "settings": {
       "committedNotApplied": "De instelling is opgeslagen, maar kon niet direct worden toegepast.",

@@ -713,6 +713,7 @@
     "modelLoadFailedUnknown": "unknown model",
     "pasteFailedTitle": "Failed to Paste Text",
     "pasteFailed": "Text could not be pasted into the active application.",
+    "pasteFailedNotSaved": "The text could not be pasted or saved to history.",
     "transcriptionFailedTitle": "Transcription Failed",
     "settings": {
       "committedNotApplied": "The setting was saved, but it could not be applied right away.",

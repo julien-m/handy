@@ -713,6 +713,7 @@
     "modelLoadFailedUnknown": "model desconegut",
     "pasteFailedTitle": "No s'ha pogut enganxar el text",
     "pasteFailed": "No s'ha pogut enganxar el text a l'aplicació activa.",
+    "pasteFailedNotSaved": "No s'ha pogut enganxar el text ni desar-lo a l'historial.",
     "transcriptionFailedTitle": "La transcripció ha fallat",
     "settings": {
       "committedNotApplied": "La configuració s'ha desat, però no s'ha pogut aplicar immediatament.",

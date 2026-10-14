@@ -710,6 +710,7 @@
     "modelLoadFailedUnknown": "modelo desconocido",
     "pasteFailedTitle": "Error al pegar el texto",
     "pasteFailed": "No se pudo pegar el texto en la aplicación activa.",
+    "pasteFailedNotSaved": "No se pudo pegar el texto ni guardarlo en el historial.",
     "transcriptionFailedTitle": "Error de transcripción",
     "settings": {
       "committedNotApplied": "La configuración se guardó, pero no se pudo aplicar de inmediato.",

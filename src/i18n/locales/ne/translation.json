@@ -713,6 +713,7 @@
     "modelLoadFailedUnknown": "अज्ञात मोडेल",
     "pasteFailedTitle": "टेक्स्ट पेस्ट गर्न सकिएन",
     "pasteFailed": "सक्रिय एपमा टेक्स्ट पेस्ट गर्न सकिएन।",
+    "pasteFailedNotSaved": "पाठ टाँस्न वा इतिहासमा सुरक्षित गर्न सकिएन।",
     "transcriptionFailedTitle": "ट्रान्सक्रिप्सन गर्न सकिएन",
     "settings": {
       "committedNotApplied": "सेटिङ सुरक्षित गरियो, तर तुरुन्तै लागू गर्न सकिएन।",

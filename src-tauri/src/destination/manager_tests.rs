@@ -216,7 +216,7 @@ fn restart_and_pid_reuse_resolve_by_identity_and_fail_closed_when_ambiguous() {
         resolve(&[reused.clone(), restarted.clone()]),
         Resolution::Running(restarted.clone())
     );
-    assert_eq!(resolve(&[reused.clone()]), Resolution::Closed);
+    assert_eq!(resolve(std::slice::from_ref(&reused)), Resolution::Closed);
     assert_eq!(
         resolve(&[restarted, app(98, "com.openai.chat", "ChatGPT")]),
         Resolution::Ambiguous
@@ -245,4 +245,28 @@ fn concurrent_enter_claims_and_recover_are_serialized_by_the_session_lock() -> T
     assert!(granted <= 1);
     assert_eq!(recover, Ok(RecoveryDisposition::Recover));
     Ok(())
+}
+#[test]
+fn a_failed_insertion_worker_freezes_the_dictation_and_asks_for_recovery() -> TestResult {
+    let (_, manager) = manager(Foreground::Application(chatgpt()), vec![chatgpt()]);
+    let started = manager.commit_start(manager.capture(true));
+    let (id, generation) = (started.dictation_id, started.destination_generation);
+    manager.mark_processing();
+    let source = manager.fail_insertion(id, generation);
+    assert_eq!(source, Some(DestinationSource::Captured));
+    let snapshot = manager.snapshot().ok_or("no session")?;
+    assert_eq!(snapshot.disposition, RecoveryDisposition::Recover);
+    assert!(manager.freeze(id, generation).is_err());
+    manager.finish(id, generation);
+    assert!(!manager.is_current(id, generation));
+    assert_eq!(manager.fail_insertion(id, generation), None);
+    Ok(())
+}
+#[test]
+fn a_failed_insertion_worker_of_a_cancelled_dictation_reports_no_source() {
+    let (_, manager) = manager(Foreground::Application(chatgpt()), vec![chatgpt()]);
+    let started = manager.commit_start(manager.capture(true));
+    manager.cancel();
+    let failed = manager.fail_insertion(started.dictation_id, started.destination_generation);
+    assert_eq!(failed, None);
 }

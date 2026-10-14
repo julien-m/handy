@@ -12,14 +12,20 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Mutex;
 type TestResult = Result<(), Box<dyn std::error::Error>>;
 
-/// Workspace whose activation brings the target in front `delay` after the request.
+/// Workspace whose activation brings the target in front `delay` after the request; `live`,
+/// when set, is what the live read sees while the cached `frontmost` still shows the old app.
 struct ScheduledWorkspace {
     inner: FakeWorkspace,
     clock: Arc<FakeClock>,
     delay: Option<Duration>,
     front_at: Mutex<Option<(std::time::Instant, RunningApp)>>,
+    live: Mutex<Option<Foreground>>,
 }
 impl WorkspacePort for ScheduledWorkspace {
+    fn frontmost_now(&self) -> Foreground {
+        let live = self.live.lock().ok().and_then(|live| live.clone());
+        live.unwrap_or_else(|| self.frontmost())
+    }
     fn frontmost(&self) -> Foreground {
         let scheduled = self.front_at.lock().ok().and_then(|at| at.clone());
         match scheduled {
@@ -88,7 +94,7 @@ fn inputs(method: &Method) -> Vec<DestinationContext> {
 struct Recover;
 impl RecoveryPort for Recover {
     fn before_insertion(&self, _context: &DestinationContext) -> PreInsertionVerdict {
-        PreInsertionVerdict::Recover(RecoveryReason::NoEditableField)
+        PreInsertionVerdict::Recover(RecoveryReason::NoTextField)
     }
 }
 struct Fixture {
@@ -102,18 +108,23 @@ fn textedit() -> RunningApp {
 fn safari() -> RunningApp {
     app(22, "com.apple.Safari", "Safari")
 }
-fn fixture(delay: Option<Duration>, recovery: Arc<dyn RecoveryPort>) -> Fixture {
-    let clock = Arc::new(FakeClock::new());
+/// TextEdit in front, TextEdit and Safari running.
+fn scheduled_workspace(clock: Arc<FakeClock>, delay: Option<Duration>) -> ScheduledWorkspace {
     let inner = FakeWorkspace::new(
         Foreground::Application(textedit()),
         vec![textedit(), safari()],
     );
-    let workspace = Arc::new(ScheduledWorkspace {
+    ScheduledWorkspace {
         inner,
-        clock: clock.clone(),
+        clock,
         delay,
         front_at: Mutex::new(None),
-    });
+        live: Mutex::new(None),
+    }
+}
+fn fixture(delay: Option<Duration>, recovery: Arc<dyn RecoveryPort>) -> Fixture {
+    let clock = Arc::new(FakeClock::new());
+    let workspace = Arc::new(scheduled_workspace(clock.clone(), delay));
     let platform = PlatformCapabilities::only(&[PlatformCapability::Destination]);
     let manager = Arc::new(DestinationManager::new(
         workspace.clone(),

@@ -94,6 +94,56 @@ fn focus_lost_during_the_insertion_delay_dispatches_nothing_and_never_reactivate
     );
 }
 #[test]
+fn a_switch_only_the_live_read_sees_during_the_delay_dispatches_nothing() {
+    // macOS: the cached foreground still shows TextEdit (main run loop not turned during the
+    // delay) while the live read already sees Safari; the guard must trust the live read.
+    let fixture = default_fixture();
+    let workspace = fixture.workspace.clone();
+    let mut method = method();
+    method.during_delay = Box::new(move || {
+        *workspace
+            .live
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner) =
+            Some(Foreground::Application(safari()));
+    });
+    let report = fixture.orchestrator.deliver(start(&fixture, true), &method);
+    assert_eq!(
+        fixture.workspace.frontmost(),
+        Foreground::Application(textedit())
+    );
+    assert_eq!(
+        (report.status, report.reason),
+        (
+            InsertionStatus::Failed,
+            Some(DestinationFailure::ActivationFailed)
+        )
+    );
+    assert!(inputs(&method).is_empty());
+    assert_eq!(activations(&fixture), 1);
+}
+#[test]
+fn the_activation_wait_trusts_the_live_read_not_the_cached_foreground() {
+    // The cached foreground shows TextEdit in front, the live read never does: no dispatch.
+    let fixture = default_fixture();
+    *fixture
+        .workspace
+        .live
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner) =
+        Some(Foreground::Application(safari()));
+    let method = method();
+    let report = fixture.orchestrator.deliver(start(&fixture, true), &method);
+    assert_eq!(
+        (report.status, report.reason),
+        (
+            InsertionStatus::Failed,
+            Some(DestinationFailure::ActivationFailed)
+        )
+    );
+    assert!(inputs(&method).is_empty());
+}
+#[test]
 fn an_insertion_delay_longer_than_the_deadline_is_preserved_with_a_fresh_guard() {
     let fixture = default_fixture();
     let clock = fixture.clock.clone();

@@ -647,8 +647,8 @@ fn default_paste_delay_ms() -> u64 {
     60
 }
 
-/// Business rule (006): destination return is on by default where the platform supports it,
-/// and off elsewhere; the default is never written at startup.
+/// Business rule (006): destination return is on by default where the build supports it (macOS
+/// and Windows with the rollout gate open), and off elsewhere; never written at startup.
 fn default_return_to_dictation_app() -> bool {
     use crate::settings_service::platform_capability::{PlatformCapabilities, PlatformCapability};
     PlatformCapabilities::current().supports(PlatformCapability::Destination)

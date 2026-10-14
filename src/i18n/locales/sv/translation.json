@@ -710,6 +710,7 @@
     "noInputDevice": "Ingen ljudenhet hittades. Anslut en mikrofon eller ett headset och försök igen.",
     "pasteFailedTitle": "Det gick inte att klistra in texten",
     "pasteFailed": "Texten kunde inte klistras in i det aktiva programmet.",
+    "pasteFailedNotSaved": "Texten kunde varken klistras in eller sparas i historiken.",
     "transcriptionFailedTitle": "Transkriptionen misslyckades",
     "settings": {
       "committedNotApplied": "Inställningen sparades men kunde inte tillämpas direkt.",

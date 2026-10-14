@@ -710,6 +710,7 @@
     "modelLoadFailedUnknown": "nieznany model",
     "pasteFailedTitle": "Nie udało się wkleić tekstu",
     "pasteFailed": "Nie można było wkleić tekstu do aktywnej aplikacji.",
+    "pasteFailedNotSaved": "Nie udało się wkleić tekstu ani zapisać go w historii.",
     "transcriptionFailedTitle": "Transkrypcja nie powiodła się",
     "settings": {
       "committedNotApplied": "Ustawienie zostało zapisane, ale nie można go było od razu zastosować.",

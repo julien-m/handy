@@ -713,6 +713,7 @@
     "modelLoadFailedUnknown": "अज्ञात मॉडल",
     "pasteFailedTitle": "टेक्स्ट पेस्ट नहीं हो सका",
     "pasteFailed": "खुले हुए ऐप्लिकेशन में टेक्स्ट पेस्ट नहीं किया जा सका.",
+    "pasteFailedNotSaved": "टेक्स्ट को न तो पेस्ट किया जा सका और न ही इतिहास में सहेजा जा सका।",
     "transcriptionFailedTitle": "ट्रांसक्रिप्शन नहीं हो सका",
     "settings": {
       "committedNotApplied": "सेटिंग सहेज ली गई, लेकिन उसे तुरंत लागू नहीं किया जा सका।",

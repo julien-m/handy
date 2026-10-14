@@ -710,6 +710,7 @@
     "modelLoadFailedUnknown": "نموذج غير معروف",
     "pasteFailedTitle": "فشل لصق النص",
     "pasteFailed": "تعذر لصق النص في التطبيق النشط.",
+    "pasteFailedNotSaved": "تعذر لصق النص أو حفظه في السجل.",
     "transcriptionFailedTitle": "فشل التفريغ النصي",
     "settings": {
       "committedNotApplied": "تم حفظ الإعداد، لكن تعذّر تطبيقه على الفور.",

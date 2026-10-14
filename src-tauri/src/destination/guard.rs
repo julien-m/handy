@@ -118,7 +118,8 @@ impl DispatchGuard {
     }
     /// The activated instance must still be in front; without one, whatever app is in front.
     fn target_in_front(&self) -> Result<Option<RunningApp>, GuardRefusal> {
-        let front = match self.manager.workspace.frontmost() {
+        // Live read: this runs on the main thread right after the configured delay.
+        let front = match self.manager.workspace.frontmost_now() {
             Foreground::Application(app) => Some(app),
             Foreground::Handy | Foreground::Unreadable => None,
         };

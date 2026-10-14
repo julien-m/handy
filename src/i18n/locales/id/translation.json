@@ -713,6 +713,7 @@
     "modelLoadFailedUnknown": "model tidak dikenal",
     "pasteFailedTitle": "Gagal Menempelkan Teks",
     "pasteFailed": "Teks tidak dapat ditempelkan ke aplikasi aktif.",
+    "pasteFailedNotSaved": "Teks tidak dapat ditempel maupun disimpan ke riwayat.",
     "transcriptionFailedTitle": "Transkripsi Gagal",
     "settings": {
       "committedNotApplied": "Pengaturan telah disimpan, tetapi tidak dapat langsung diterapkan.",

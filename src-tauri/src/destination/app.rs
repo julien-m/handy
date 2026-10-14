@@ -38,8 +38,12 @@ pub struct PendingCapture {
     capture: super::manager::TentativeCapture,
 }
 // @spec FR-001: Capture at the actual recording start — .specs/features/006-destination-application/spec.md#fr-001
-/// Read the destination before any Handy surface is shown (none before installation).
+/// Read the destination before any Handy surface is shown (none before installation, and none
+/// while the rollout gate is closed: the dictation then inserts as before 006).
 pub fn capture_at_start(app: &AppHandle, return_enabled: bool) -> Option<PendingCapture> {
+    if !super::rollout::Rollout::CURRENT.opens_sessions() {
+        return None;
+    }
     let manager = manager(app)?;
     let capture = manager.capture(return_enabled);
     log::debug!("Destination capture took {:?}", capture.elapsed);

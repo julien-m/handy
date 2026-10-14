@@ -87,8 +87,8 @@ impl RecoveryDisposition {
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum RecoveryReason {
-    /// The focused element of the target cannot receive text.
-    NoEditableField,
+    /// No text field is focused in the target (010 spec reason "No text field is focused").
+    NoTextField,
 }
 
 /// Answer of the optional 010 pre-insertion check.

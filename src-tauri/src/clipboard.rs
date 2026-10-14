@@ -1,7 +1,7 @@
 use crate::input::{self, EnigoState};
 #[cfg(target_os = "linux")]
 use crate::settings::TypingTool;
-use crate::settings::{get_settings, AutoSubmitKey, ClipboardHandling, PasteMethod};
+use crate::settings::{AppSettings, AutoSubmitKey, ClipboardHandling, PasteMethod};
 use enigo::{Direction, Enigo, Key, Keyboard};
 use log::info;
 use std::process::Command;
@@ -778,10 +778,15 @@ fn should_send_auto_submit(auto_submit: bool, paste_method: PasteMethod) -> bool
     auto_submit && paste_method != PasteMethod::None
 }
 
-/// Insert `text` with the configured method; `check` runs right before the first dispatch.
 // @spec FR-002: Guard after the configured delay, before input — .specs/features/006-destination-application/spec.md#fr-002
-pub fn paste(text: String, app_handle: AppHandle, check: DispatchCheck<'_>) -> Result<(), String> {
-    let settings = get_settings(&app_handle);
+/// Insert `text` with the method of `settings`, a snapshot the caller read once for this
+/// insertion; `check` runs right before the first dispatch.
+pub fn paste(
+    text: String,
+    app_handle: AppHandle,
+    settings: &AppSettings,
+    check: DispatchCheck<'_>,
+) -> Result<(), String> {
     let paste_method = settings.paste_method;
     let paste_delay_ms = settings.paste_delay_ms;
     let paste_delay_after_ms = settings.paste_delay_after_ms;

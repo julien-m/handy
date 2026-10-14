@@ -48,6 +48,14 @@ pub enum ActivationRequest {
 pub trait WorkspacePort: Send + Sync {
     /// The application in front now; brief, callable from any thread.
     fn frontmost(&self) -> Foreground;
+    /// The application in front now, read from a source that does not depend on this process's
+    /// main run loop having turned. The activation wait and the pre-dispatch guard use it: the
+    /// guard runs on the main thread right after the configured delay, where a value cached by
+    /// the run loop (macOS `NSWorkspace`) would still show the application of before the delay.
+    /// Adapters whose `frontmost` is already a live system read keep this default.
+    fn frontmost_now(&self) -> Foreground {
+        self.frontmost()
+    }
     /// Other running applications that have user windows, deduplicated by identity, Handy
     /// and windowless helpers excluded.
     fn running_windowed_apps(&self) -> Vec<RunningApp>;

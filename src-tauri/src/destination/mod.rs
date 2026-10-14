@@ -14,10 +14,13 @@ pub mod history;
 pub mod insertion;
 #[cfg(target_os = "macos")]
 pub mod macos;
+#[cfg(target_os = "macos")]
+pub mod macos_focus;
 pub mod manager;
 mod menu;
 pub mod outcome;
 pub mod recovery;
+pub mod rollout;
 pub mod session;
 pub mod snapshot;
 #[cfg(target_os = "windows")]

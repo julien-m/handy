@@ -710,6 +710,7 @@
     "modelLoadFailedUnknown": "bilinmeyen model",
     "pasteFailedTitle": "Metin yapıştırılamadı",
     "pasteFailed": "Metin etkin uygulamaya yapıştırılamadı.",
+    "pasteFailedNotSaved": "Metin yapıştırılamadı ve geçmişe kaydedilemedi.",
     "transcriptionFailedTitle": "Transkripsiyon başarısız oldu",
     "settings": {
       "committedNotApplied": "Ayar kaydedildi ancak hemen uygulanamadı.",

@@ -710,6 +710,7 @@
     "modelLoadFailedUnknown": "unbekanntes Modell",
     "pasteFailedTitle": "Text konnte nicht eingefügt werden",
     "pasteFailed": "Der Text konnte nicht in die aktive Anwendung eingefügt werden.",
+    "pasteFailedNotSaved": "Der Text konnte weder eingefügt noch im Verlauf gespeichert werden.",
     "transcriptionFailedTitle": "Transkription fehlgeschlagen",
     "settings": {
       "committedNotApplied": "Die Einstellung wurde gespeichert, konnte aber nicht sofort angewendet werden.",

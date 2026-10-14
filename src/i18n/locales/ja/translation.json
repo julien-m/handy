@@ -710,6 +710,7 @@
     "modelLoadFailedUnknown": "不明なモデル",
     "pasteFailedTitle": "テキストの貼り付けに失敗しました",
     "pasteFailed": "アクティブなアプリにテキストを貼り付けられませんでした。",
+    "pasteFailedNotSaved": "テキストを貼り付けることも、履歴に保存することもできませんでした。",
     "transcriptionFailedTitle": "文字起こしに失敗しました",
     "settings": {
       "committedNotApplied": "設定は保存されましたが、すぐには適用できませんでした。",

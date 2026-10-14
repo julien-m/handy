@@ -710,6 +710,7 @@
     "modelLoadFailedUnknown": "modèle inconnu",
     "pasteFailedTitle": "Échec du collage du texte",
     "pasteFailed": "Le texte n'a pas pu être collé dans l'application active.",
+    "pasteFailedNotSaved": "Le texte n'a pas pu être collé ni enregistré dans l'historique.",
     "transcriptionFailedTitle": "Échec de la transcription",
     "settings": {
       "committedNotApplied": "Le réglage est enregistré, mais n'a pas pu être appliqué immédiatement.",

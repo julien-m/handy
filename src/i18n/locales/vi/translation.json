@@ -710,6 +710,7 @@
     "modelLoadFailedUnknown": "mô hình không xác định",
     "pasteFailedTitle": "Không thể dán văn bản",
     "pasteFailed": "Không thể dán văn bản vào ứng dụng đang hoạt động.",
+    "pasteFailedNotSaved": "Không thể dán văn bản hoặc lưu vào lịch sử.",
     "transcriptionFailedTitle": "Phiên âm thất bại",
     "settings": {
       "committedNotApplied": "Cài đặt đã được lưu nhưng không thể áp dụng ngay.",

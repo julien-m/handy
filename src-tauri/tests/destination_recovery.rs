@@ -151,7 +151,9 @@ fn version_four(db: &Path) -> rusqlite::Result<()> {
     conn.execute("DELETE FROM transcription_history WHERE id >= 6", [])?;
     Ok(())
 }
-fn rows_of(db: &Path) -> rusqlite::Result<Vec<(i64, Option<String>, i64, bool)>> {
+/// One history row as read back: id, file name (NULL for text only), timestamp, saved flag.
+type HistoryRow = (i64, Option<String>, i64, bool);
+fn rows_of(db: &Path) -> rusqlite::Result<Vec<HistoryRow>> {
     let conn = Connection::open(db)?;
     let mut statement = conn
         .prepare("SELECT id, file_name, timestamp, saved FROM transcription_history ORDER BY id")?;

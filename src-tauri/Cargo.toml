@@ -23,6 +23,13 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 # name = "cli"
 # path = "src/audio_toolkit/bin/cli.rs"
 
+[features]
+# Destination return rollout gate (feature 006, `destination::rollout`). Off: dictation inserts as
+# before 006 (no capture, activation or pre-dispatch guard) and `return_to_dictation_app` is
+# refused as `unsupported_platform` by the UI and the CLI. Open it only after the native macOS
+# activation and guard proof with the maintainer and the Penflow-certified destination UI.
+destination-return = []
+
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
 serde_json = "1"

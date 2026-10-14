@@ -710,6 +710,7 @@
     "modelLoadFailedUnknown": "modello sconosciuto",
     "pasteFailedTitle": "Impossibile incollare il testo",
     "pasteFailed": "Non è stato possibile incollare il testo nell'applicazione attiva.",
+    "pasteFailedNotSaved": "Non è stato possibile incollare il testo né salvarlo nella cronologia.",
     "transcriptionFailedTitle": "Trascrizione non riuscita",
     "settings": {
       "committedNotApplied": "L'impostazione è stata salvata, ma non è stato possibile applicarla subito.",

@@ -710,6 +710,7 @@
     "modelLoadFailedUnknown": "未知模型",
     "pasteFailedTitle": "粘贴文本失败",
     "pasteFailed": "无法将文本粘贴到当前活动的应用程序中。",
+    "pasteFailedNotSaved": "无法粘贴文本，也无法将其保存到历史记录。",
     "transcriptionFailedTitle": "转录失败",
     "settings": {
       "committedNotApplied": "设置已保存，但无法立即应用。",
