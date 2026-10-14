@@ -5,7 +5,7 @@ use serde::Serialize;
 /// Error of a settings UI command: the stable code and English message shared with the CLI,
 /// plus the field and typed reason the UI maps to a translation (never free-text parsing).
 // @spec FR-006: Stable UI errors and translations — .specs/features/008-settings-cli/spec.md#fr-006
-#[derive(Clone, Debug, PartialEq, Serialize, specta::Type)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, specta::Type)]
 pub struct SettingsCommandError {
     /// Stable category, identical to the CLI error code.
     pub code: SettingsErrorCode,

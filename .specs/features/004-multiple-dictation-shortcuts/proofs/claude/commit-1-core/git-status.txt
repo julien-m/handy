@@ -1,0 +1,60 @@
+ M .specs/conventions-gates.yaml
+ M package.json
+ M src-tauri/src/lib.rs
+ M src-tauri/src/secure_input.rs
+ M src-tauri/src/settings.rs
+ M src-tauri/src/shortcut/handler.rs
+ M src-tauri/src/shortcut/handy_keys.rs
+ M src-tauri/src/shortcut/mod.rs
+ M src-tauri/src/shortcut/tauri_impl.rs
+ M src-tauri/src/transcription_coordinator.rs
+ M src/bindings.ts
+ M src/components/settings/GlobalShortcutInput.tsx
+ M src/components/settings/HandyKeysShortcutInput.tsx
+ M src/components/settings/ShortcutInput.tsx
+ M src/components/settings/general/GeneralSettings.tsx
+ M src/components/settings/post-processing/PostProcessingSettings.tsx
+ M src/hooks/useSettings.ts
+ M src/i18n/locales/ar/translation.json
+ M src/i18n/locales/bg/translation.json
+ M src/i18n/locales/ca/translation.json
+ M src/i18n/locales/cs/translation.json
+ M src/i18n/locales/da/translation.json
+ M src/i18n/locales/de/translation.json
+ M src/i18n/locales/en/translation.json
+ M src/i18n/locales/es/translation.json
+ M src/i18n/locales/fr/translation.json
+ M src/i18n/locales/he/translation.json
+ M src/i18n/locales/hi/translation.json
+ M src/i18n/locales/id/translation.json
+ M src/i18n/locales/it/translation.json
+ M src/i18n/locales/ja/translation.json
+ M src/i18n/locales/ko/translation.json
+ M src/i18n/locales/ne/translation.json
+ M src/i18n/locales/nl/translation.json
+ M src/i18n/locales/pl/translation.json
+ M src/i18n/locales/pt/translation.json
+ M src/i18n/locales/ru/translation.json
+ M src/i18n/locales/sv/translation.json
+ M src/i18n/locales/tr/translation.json
+ M src/i18n/locales/uk/translation.json
+ M src/i18n/locales/vi/translation.json
+ M src/i18n/locales/zh-TW/translation.json
+ M src/i18n/locales/zh/translation.json
+ M src/stores/settingsStore.ts
+?? .specs/conventions/runs/20261013T145753Z/
+?? .specs/conventions/runs/20261013T145851Z/
+?? .specs/conventions/runs/20261013T151501Z/
+?? .specs/conventions/runs/20261013T151640Z/
+?? .specs/features/004-multiple-dictation-shortcuts/pipeline.md
+?? .specs/features/004-multiple-dictation-shortcuts/proofs/
+?? src-tauri/src/shortcut/action_shortcuts.rs
+?? src-tauri/src/shortcut/action_shortcuts/
+?? src-tauri/src/shortcut/conflicts.rs
+?? src-tauri/src/shortcut/edits.rs
+?? src-tauri/src/shortcut/identity.rs
+?? src-tauri/src/shortcut/migration_tests.rs
+?? src/components/settings/shortcut-chip.tsx
+?? src/components/settings/shortcut-list-model.test.ts
+?? src/components/settings/shortcut-list-model.ts
+?? src/components/settings/shortcut-list.tsx

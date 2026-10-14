@@ -113,7 +113,7 @@ pub fn contract_schema() -> Result<serde_json::Value, SettingsError> {
       "failure":{"type":"object","additionalProperties":false,"required":["ok","error"],"properties":{"ok":{"const":false},"error":{"$ref":"#/$defs/error"}}},
       "revision":{"type":"integer","minimum":0,"maximum":u64::MAX},
       "error":{"type":"object","additionalProperties":false,"required":["code","message","details"],"properties":{"code":{"enum":code_values},"message":{"type":"string"},"details":{"$ref":"#/$defs/error_details"}}},
-      "error_details":{"type":"object","additionalProperties":false,"properties":{"current_revision":{"$ref":"#/$defs/revision"},"outcome":{"enum":["unknown","committed"]},"field":{"enum":keys},"offset":{"type":"integer","minimum":0},"issues":{"type":"array","items":{"type":"object","additionalProperties":false,"required":["field","reason"],"properties":{"field":{"enum":keys},"reason":{"type":"string"}}}}}},
+      "error_details":{"type":"object","additionalProperties":false,"properties":{"current_revision":{"$ref":"#/$defs/revision"},"outcome":{"enum":["unknown","committed"]},"field":{"enum":keys},"offset":{"type":"integer","minimum":0},"reason":{"type":"string"},"action_id":{"type":"string"},"owning_action":{"type":"string"},"owning_shortcut":{"type":"string"},"kind":{"enum":["duplicate","modifier_overlap"]},"limit":{"type":"integer","minimum":1},"issues":{"type":"array","items":{"type":"object","additionalProperties":false,"required":["field","reason"],"properties":{"field":{"enum":keys},"reason":{"type":"string"}}}}}},
       "public_settings":{"type":"object","additionalProperties":false,"required":keys,"properties":properties},
       "provider":public_provider_schema(),"binding":public_binding_schema(),"prompt":public_prompt_schema(),
       "operation_request":operation_request_schema()
@@ -195,7 +195,7 @@ fn public_provider_schema() -> serde_json::Value {
     serde_json::json!({"type":"object","additionalProperties":false,"required":["id","label","base_url","allow_base_url_edit","models_endpoint","supports_structured_output"],"properties":{"id":{"type":"string"},"label":{"type":"string"},"base_url":{"type":"string"},"allow_base_url_edit":{"type":"boolean"},"models_endpoint":{"type":["string","null"]},"supports_structured_output":{"type":"boolean"}}})
 }
 fn public_binding_schema() -> serde_json::Value {
-    serde_json::json!({"type":"object","additionalProperties":false,"required":["id","name","description","default_binding","current_binding"],"properties":{"id":{"type":"string"},"name":{"type":"string"},"description":{"type":"string"},"default_binding":{"type":"string"},"current_binding":{"type":"string"}}})
+    serde_json::json!({"type":"object","additionalProperties":false,"required":["id","name","description","default_binding","current_binding"],"properties":{"id":{"type":"string"},"name":{"type":"string"},"description":{"type":"string"},"default_binding":{"type":"string"},"current_binding":{"type":"string"},"additional_bindings":{"type":"array","items":{"type":"string"},"minItems":1}}})
 }
 fn public_prompt_schema() -> serde_json::Value {
     serde_json::json!({"type":"object","additionalProperties":false,"required":["id","name","prompt"],"properties":{"id":{"type":"string"},"name":{"type":"string"},"prompt":{"type":"string"}}})

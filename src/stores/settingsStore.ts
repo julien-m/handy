@@ -8,11 +8,16 @@ import type {
   ModelUnloadTimeout,
   TranscribeAcceleratorSetting,
   OrtAcceleratorSetting,
+  RefusedShortcut,
   ShortcutActivation,
+  ShortcutEdit,
+  ShortcutEditError,
   VadBackend,
 } from "@/bindings";
 import { commands } from "@/bindings";
 import { toast } from "sonner";
+import { bindingFailure } from "@/lib/shortcut-edit-failure";
+import { keepStoredRefusals } from "@/components/settings/shortcut-list-model";
 import i18n from "@/i18n";
 import {
   failedCommandRecovery,
@@ -36,6 +41,9 @@ interface SettingsStore {
   postProcessModelOptions: Record<string, string[]>;
   // null until loadUpdateChecksLocked() resolves
   updateChecksLocked: boolean | null;
+  // Shortcuts the system refused when post-processing was last enabled;
+  // their rows carry a warning until they are changed.
+  refusedShortcuts: RefusedShortcut[];
 
   // Actions
   initialize: () => Promise<void>;
@@ -51,6 +59,12 @@ interface SettingsStore {
   refreshOutputDevices: () => Promise<void>;
   updateBinding: (id: string, binding: string) => Promise<void>;
   resetBinding: (id: string) => Promise<void>;
+  editBindingShortcuts: (
+    id: string,
+    edit: ShortcutEdit,
+  ) => Promise<ShortcutEditError | null>;
+  setPostProcessEnabled: (enabled: boolean) => Promise<RefusedShortcut[]>;
+  clearRefusedShortcuts: () => void;
   getSetting: <K extends keyof Settings>(key: K) => Settings[K] | undefined;
   isUpdatingKey: (key: string) => boolean;
   playTestSound: (soundType: "start" | "stop") => Promise<void>;
@@ -173,8 +187,7 @@ const settingUpdaters: {
   auto_submit_key: (value) =>
     commands.changeAutoSubmitKeySetting(value as string),
   history_limit: (value) => commands.updateHistoryLimit(value as number),
-  post_process_enabled: (value) =>
-    commands.changePostProcessEnabledSetting(value as boolean),
+  post_process_enabled: (value) => togglePostProcess(value as boolean),
   post_process_selected_prompt_id: (value) =>
     commands.setPostProcessSelectedPrompt(value as string),
   mute_while_recording: (value) =>
@@ -224,6 +237,7 @@ export const useSettingsStore = create<SettingsStore>()(
     customSounds: { start: false, stop: false },
     postProcessModelOptions: {},
     updateChecksLocked: null,
+    refusedShortcuts: [],
 
     // Internal setters
     setSettings: (settings) => set({ settings }),
@@ -413,9 +427,10 @@ export const useSettingsStore = create<SettingsStore>()(
           throw new Error(i18n.t(settingsErrorKey(result.error)));
         }
 
-        // Check if the binding change was successful
+        // Check if the binding change was successful; a typed refusal is
+        // thrown as ShortcutEditFailure so the caller can translate it.
         if (!result.data.success) {
-          throw new Error(result.data.error || "Failed to update binding");
+          throw bindingFailure(result.data);
         }
       } catch (error) {
         console.error(`Failed to update binding ${id}:`, error);
@@ -452,7 +467,8 @@ export const useSettingsStore = create<SettingsStore>()(
       }
     },
 
-    // Reset a specific binding
+    // Reset a specific binding. A refusal (the default now belongs to
+    // another action) is thrown, as by updateBinding, for the caller to show.
     resetBinding: async (id) => {
       const { setUpdating, refreshSettings } = get();
       const updateKey = `binding_${id}`;
@@ -463,14 +479,72 @@ export const useSettingsStore = create<SettingsStore>()(
         const result = await commands.resetBinding(id);
         throwIfSettingsError(result);
         if (result.status === "ok" && !result.data.success) {
-          throw new Error(result.data.error ?? "Failed to reset binding");
+          throw bindingFailure(result.data);
         }
         await refreshSettings();
       } catch (error) {
         console.error(`Failed to reset binding ${id}:`, error);
-        notifySettingsError(error);
+        throw error;
       } finally {
         setUpdating(updateKey, false);
+      }
+    },
+
+    // Edit the shortcut list of one action; the backend validates, registers
+    // and saves. Returns the typed refusal, if any (a refusal of the settings
+    // service included), for the caller to show.
+    editBindingShortcuts: async (id, edit) => {
+      const updateKey = `binding_${id}`;
+      get().setUpdating(updateKey, true);
+      try {
+        const response = await commands.editBindingShortcuts(id, edit);
+        const saved = response.binding;
+        if (saved) {
+          set((state) => {
+            const bindings = { ...state.settings?.bindings, [id]: saved };
+            return {
+              settings: state.settings ? { ...state.settings, bindings } : null,
+              // A refused shortcut that was changed or removed is no
+              // longer flagged.
+              refusedShortcuts: keepStoredRefusals(
+                state.refusedShortcuts,
+                bindings,
+              ),
+            };
+          });
+        }
+        return response.error;
+      } finally {
+        get().setUpdating(updateKey, false);
+      }
+    },
+
+    // A keyboard implementation switch registers every shortcut again, so
+    // the refusals of the last activation no longer describe the backend.
+    clearRefusedShortcuts: () => set({ refusedShortcuts: [] }),
+
+    // Enable or disable post-processing; the backend always saves the
+    // choice. Returns the shortcuts the system refused, for the caller to
+    // report. If the command itself fails, the previous value is shown
+    // again and the error is thrown.
+    setPostProcessEnabled: async (enabled) => {
+      const updateKey = "post_process_enabled";
+      const previous = get().settings?.post_process_enabled ?? false;
+      const show = (value: boolean) =>
+        set((state) => ({
+          settings: state.settings
+            ? { ...state.settings, post_process_enabled: value }
+            : null,
+        }));
+      get().setUpdating(updateKey, true);
+      show(enabled);
+      try {
+        return await togglePostProcess(enabled);
+      } catch (error) {
+        show(previous);
+        throw error;
+      } finally {
+        get().setUpdating(updateKey, false);
       }
     },
 
@@ -717,3 +791,20 @@ export const useSettingsStore = create<SettingsStore>()(
     },
   })),
 );
+
+// @spec AC-002: Post-processing activation behaves as before — .specs/features/004-multiple-dictation-shortcuts/spec.md#ac-002
+/**
+ * Toggles post-processing in the backend, which always saves the choice, as
+ * before multiple shortcuts. Records the shortcuts the system refused so
+ * their rows are flagged; disabling clears them.
+ * @param enabled New value of `post_process_enabled`.
+ * @returns The refused shortcuts, empty when disabling.
+ */
+async function togglePostProcess(enabled: boolean): Promise<RefusedShortcut[]> {
+  const result = await commands.changePostProcessEnabledSetting(enabled);
+  throwIfSettingsError(result);
+  if (result.status === "error") return [];
+  const refused = enabled ? result.data : [];
+  useSettingsStore.setState({ refusedShortcuts: refused });
+  return refused;
+}

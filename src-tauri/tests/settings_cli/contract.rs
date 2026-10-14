@@ -166,7 +166,7 @@ const UI_ONLY: &str = "This setting is changed in the settings UI.";
 const OWNED_ELSEWHERE: [(&str, &str); 4] = [
     (
         "bindings",
-        "Use handy settings shortcuts; this domain is not available in this build.",
+        "Use handy settings shortcuts to change shortcuts.",
     ),
     (
         "custom_words",

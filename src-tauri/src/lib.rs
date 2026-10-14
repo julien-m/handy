@@ -19,6 +19,8 @@ mod overlay;
 mod paste_tx;
 pub mod portable;
 mod secure_input;
+#[cfg(target_os = "macos")]
+mod secure_input_shadow;
 mod settings;
 pub mod settings_service;
 mod shortcut;
@@ -678,6 +680,8 @@ pub fn run(cli_args: CliArgs) {
         .commands(collect_commands![
             shortcut::change_binding,
             shortcut::reset_binding,
+            shortcut::edits::edit_binding_shortcuts,
+            shortcut::edits::get_shortcut_conflicts,
             shortcut::change_shortcut_activation_setting,
             shortcut::change_hold_threshold_ms_setting,
             shortcut::change_audio_feedback_setting,

@@ -1,0 +1,29 @@
+livespec-shim-notice: dev mode executes the LiveSpec checkout /Users/julienm/projects/livespec
+OK      .specs/features/004-multiple-dictation-shortcuts/changelog.md Score: 
+100/100
+OK      
+.specs/features/004-multiple-dictation-shortcuts/contracts/shortcuts-cli.md 
+Score: 100/100
+OK      .specs/features/004-multiple-dictation-shortcuts/implementation.md 
+Score: 100/100
+OK      .specs/features/004-multiple-dictation-shortcuts/pipeline.md Score: 
+100/100
+OK      .specs/features/004-multiple-dictation-shortcuts/plan.md Score: 100/100
+OK      .specs/features/004-multiple-dictation-shortcuts/progress.md Score: 
+100/100
+OK      
+.specs/features/004-multiple-dictation-shortcuts/proofs/claude/independent-audit
+.md Score: 100/100
+OK      
+.specs/features/004-multiple-dictation-shortcuts/proofs/claude-fix1/independent-
+reaudit.md Score: 100/100
+OK      
+.specs/features/004-multiple-dictation-shortcuts/proofs/claude-integration/1-mer
+ge-dev/README.md Score: 100/100
+OK      
+.specs/features/004-multiple-dictation-shortcuts/proofs/claude-integration/2-cli
+-and-live-changes/README.md Score: 100/100
+OK      
+.specs/features/004-multiple-dictation-shortcuts/proofs/claude-review/independen
+t-review.md Score: 100/100
+OK      .specs/features/004-multiple-dictation-shortcuts/spec.md Score: 100/100

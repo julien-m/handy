@@ -1,0 +1,19 @@
+{
+  "command": "livespec conventions verify --feature repo --json",
+  "run_id": "20261013T161342Z",
+  "verdict": "PASS",
+  "blockers": 0,
+  "violations": 400,
+  "baseline": {
+    "baselined_count": 669,
+    "new_count": 0,
+    "path": ".specs/conventions/baseline.json",
+    "resolved_count": 3513,
+    "sha256": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe"
+  },
+  "receipt_path": ".specs/conventions/runs/20261013T161342Z/receipt.json",
+  "receipt_sha256": "9cc6a2b38efac5287c9aff31e1b5ffb31ecfe813d84fd395f33a35b6599efe04",
+  "stdout_bytes": 2242739,
+  "stdout_sha256": "f57dc75639f5ebfeb4b81dd045d4f988f007f479cb71416c020ac1d6d1c76952",
+  "note": "Full stdout and receipt not committed (about 2.2 MB and 1.3 MB); the receipt stays untracked under .specs/conventions/runs/."
+}

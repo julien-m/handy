@@ -1,3 +1,7 @@
+//! Transcription lifecycle coordinator: one thread owns every start/stop
+//! decision for the transcription actions, whichever shortcut, signal or
+//! CLI flag produced the input.
+
 use crate::actions::ACTION_MAP;
 use crate::managers::audio::AudioRecordingManager;
 use crate::settings::ShortcutActivation;
@@ -7,6 +11,10 @@ use std::sync::Arc;
 use std::thread;
 use std::time::{Duration, Instant};
 use tauri::{AppHandle, Manager};
+
+mod quiescence;
+use quiescence::{InputGate, LeaseRequest};
+pub use quiescence::{QuiescenceLease, SessionBusy};
 
 const DEBOUNCE: Duration = Duration::from_millis(30);
 const RELEASE_GRACE: Duration = Duration::from_millis(50);
@@ -18,13 +26,21 @@ enum PttAction {
     CancelRelease,
 }
 
+/// Identity of one physical shortcut: the action it triggers and which of
+/// the action's shortcuts it is. Hold modes match releases on this pair.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct ShortcutKey<'a> {
+    action_id: &'a str,
+    shortcut_id: &'a str,
+}
+
 /// A key-up deferred by `RELEASE_GRACE` so a synthesized X11 auto-repeat
 /// press can cancel it (#1539). When the grace elapses the hold is resolved
 /// by [`CoordinatorState::finish_hold`] (recording) or
 /// [`CoordinatorState::finish_pending_hold`] (press remembered while busy).
 struct PendingRelease {
     binding_id: String,
-    hotkey_string: String,
+    shortcut_id: String,
     deadline: Instant,
     /// When the key actually went up. The hold duration is measured to this
     /// instant, not to the grace expiry.
@@ -34,12 +50,22 @@ struct PendingRelease {
     hold_threshold: Duration,
 }
 
+impl PendingRelease {
+    fn key(&self) -> ShortcutKey<'_> {
+        ShortcutKey {
+            action_id: &self.binding_id,
+            shortcut_id: &self.shortcut_id,
+        }
+    }
+}
+
 /// A press that arrived while the pipeline was still busy processing the
 /// previous transcription. Toggle-style triggers (SIGUSR2, CLI flags, some
 /// pedal setups) flip state on every edge, so dropping a busy press desyncs
 /// the parity: the next edge starts a recording nobody will ever stop.
 struct PendingPress {
     binding_id: String,
+    shortcut_id: String,
     hotkey_string: String,
     /// The real key-down time, so a hold that straddles the drain is still
     /// measured from when the user pressed, not from when recording began.
@@ -49,6 +75,8 @@ struct PendingPress {
     /// within the threshold (a tap). An unlocked pending press is a key we
     /// believe is still held.
     locked: bool,
+    /// Remembered in toggle mode: any shortcut of the action owns it.
+    owned_by_action: bool,
 }
 
 impl PendingPress {
@@ -58,6 +86,28 @@ impl PendingPress {
         } else {
             Remembered::Held
         }
+    }
+
+    fn key(&self) -> ShortcutKey<'_> {
+        ShortcutKey {
+            action_id: &self.binding_id,
+            shortcut_id: &self.shortcut_id,
+        }
+    }
+
+    // @spec AC-003: Busy press owned by action (toggle) or shortcut (hold) — .specs/features/004-multiple-dictation-shortcuts/spec.md#ac-003
+    /// Whether `input` belongs to this remembered press. Business rule: a
+    /// press remembered in toggle mode belongs to the action, and a toggle
+    /// input (keyboard or external trigger) acts on the action, so any of its
+    /// shortcuts flips it; otherwise the press belongs to the pressed
+    /// shortcut, as in the hold modes.
+    fn claims(&self, input: &InputEvent) -> bool {
+        if self.binding_id != input.binding_id {
+            return false;
+        }
+        self.owned_by_action
+            || input.mode == ShortcutActivation::Toggle
+            || self.shortcut_id == input.shortcut_id
     }
 }
 
@@ -77,6 +127,11 @@ struct Hold {
     /// ignored. Always set for toggle; set for hold-or-toggle once a release
     /// has been classified as a tap.
     locked: bool,
+    /// The shortcut that started the session. Only its release ends a held
+    /// session.
+    shortcut_id: String,
+    /// Hotkey text of the starting input, reused by the stop effect.
+    hotkey_string: String,
 }
 
 /// What to do with an input that arrives while the pipeline is busy
@@ -130,6 +185,9 @@ enum Stage {
 /// A keyboard/signal edge for a transcribe binding.
 struct InputEvent {
     binding_id: String,
+    /// Which shortcut of the action produced the edge (the stored shortcut
+    /// text, or the trigger name for external inputs).
+    shortcut_id: String,
     hotkey_string: String,
     is_pressed: bool,
     mode: ShortcutActivation,
@@ -148,6 +206,13 @@ impl InputEvent {
             ShortcutActivation::HoldOrToggle => self.hold_threshold,
             // Every release stops; toggle never defers releases at all.
             ShortcutActivation::PushToTalk | ShortcutActivation::Toggle => Duration::ZERO,
+        }
+    }
+
+    fn key(&self) -> ShortcutKey<'_> {
+        ShortcutKey {
+            action_id: &self.binding_id,
+            shortcut_id: &self.shortcut_id,
         }
     }
 }
@@ -170,22 +235,28 @@ enum Effect {
 /// Commands processed sequentially by the coordinator thread.
 enum Command {
     Input(InputEvent),
-    Cancel { recording_was_active: bool },
+    Cancel {
+        recording_was_active: bool,
+    },
     ProcessingFinished,
+    /// A shortcut registration change asks for a quiescence lease (see `quiescence`).
+    Quiesce(Arc<LeaseRequest>),
+    /// A quiescence lease was released.
+    Resume,
 }
 
 /// Decide whether a key-up should be deferred (so auto-repeat can cancel it)
 /// or a key-down cancels a deferred release. `hold_to_talk` is whether a
 /// release currently ends the session: true for push-to-talk and for an
 /// unlocked hold-or-toggle session, false for toggle and a locked session.
-/// `held_binding` is the binding whose key we believe is down — the one
+/// `held_binding` is the shortcut whose key we believe is down — the one
 /// recording, or the one remembered while the pipeline is busy.
-fn classify_ptt_event(
-    pending_release_binding: Option<&str>,
+fn classify_ptt_event<K: PartialEq + ?Sized>(
+    pending_release_binding: Option<&K>,
     is_pressed: bool,
     hold_to_talk: bool,
-    binding_id: &str,
-    held_binding: Option<&str>,
+    binding_id: &K,
+    held_binding: Option<&K>,
 ) -> PttAction {
     if !hold_to_talk {
         return PttAction::Passthrough;
@@ -216,6 +287,11 @@ fn classify_ptt_event(
 /// * toggle — releases are ignored, the next press stops (locked from the start)
 /// * hold-or-toggle — a release after a long hold stops; a release after a
 ///   short tap locks the session, and the next press stops
+///
+/// An action can own several shortcuts. A locked session (toggle, or a
+/// classified tap) belongs to the action: any of its shortcuts stops it. A
+/// held session belongs to the starting shortcut: only its release ends it
+/// and the action's other shortcuts are ignored meanwhile.
 struct CoordinatorState {
     stage: Stage,
     hold: Option<Hold>,
@@ -235,6 +311,15 @@ impl CoordinatorState {
         }
     }
 
+    /// Whether no session exists: idle, nothing held, remembered or deferred. Only then may a
+    /// shortcut registration change (it could remove the shortcut a session still needs).
+    fn is_quiescent(&self) -> bool {
+        self.stage == Stage::Idle
+            && self.hold.is_none()
+            && self.pending_press.is_none()
+            && self.pending_release.is_none()
+    }
+
     /// Deadline of the deferred release, if any — drives `recv_timeout`.
     fn grace_deadline(&self) -> Option<Instant> {
         self.pending_release.as_ref().map(|p| p.deadline)
@@ -247,138 +332,207 @@ impl CoordinatorState {
             || self.pending_press.as_ref().is_some_and(|p| p.locked)
     }
 
-    fn on_input(&mut self, input: InputEvent, now: Instant) -> Option<Effect> {
-        let pending_release_binding = self
-            .pending_release
-            .as_ref()
-            .map(|pending| pending.binding_id.as_str());
-        let held_binding = match &self.stage {
-            Stage::Recording(id) => Some(id.as_str()),
-            Stage::Processing => self.pending_press.as_ref().map(|p| p.binding_id.as_str()),
+    /// The shortcut that started the live recording, if any.
+    fn recording_owner(&self) -> Option<ShortcutKey<'_>> {
+        match (&self.stage, &self.hold) {
+            (Stage::Recording(id), Some(hold)) => Some(ShortcutKey {
+                action_id: id,
+                shortcut_id: &hold.shortcut_id,
+            }),
+            _ => None,
+        }
+    }
+
+    /// The shortcut whose key we believe is down: the one recording, or the
+    /// one remembered while the pipeline is busy.
+    fn held_key(&self) -> Option<ShortcutKey<'_>> {
+        match &self.stage {
+            Stage::Recording(_) => self.recording_owner(),
+            Stage::Processing => self.pending_press.as_ref().map(PendingPress::key),
             Stage::Idle => None,
-        };
+        }
+    }
+
+    // @spec FR-002: Mode-dependent session ownership — .specs/features/004-multiple-dictation-shortcuts/spec.md#fr-002
+    fn on_input(&mut self, input: InputEvent, now: Instant) -> Option<Effect> {
         let hold_to_talk = input.mode != ShortcutActivation::Toggle && !self.is_locked();
-
-        match classify_ptt_event(
-            pending_release_binding,
-            input.is_pressed,
-            hold_to_talk,
-            &input.binding_id,
-            held_binding,
-        ) {
-            PttAction::CancelRelease => {
-                self.pending_release = None;
-                return None;
-            }
-            PttAction::DeferRelease => {
-                self.pending_release = Some(PendingRelease {
-                    hold_threshold: input.effective_hold_threshold(),
-                    binding_id: input.binding_id,
-                    hotkey_string: input.hotkey_string,
-                    deadline: now + RELEASE_GRACE,
-                    released_at: now,
-                });
-                return None;
-            }
-            PttAction::Passthrough => {}
+        if self.absorb_release_edge(&input, hold_to_talk, now) {
+            return None;
         }
-
-        // Debounce rapid-fire press events (key repeat / double-tap).
-        // Releases in the hold modes are deferred above to absorb X11 auto-repeat.
-        // External triggers are exempt: each one is a deliberate edge from the
-        // user's own integration, and dropping it desyncs toggle parity.
-        if input.is_pressed && !input.external {
-            if self
-                .last_press
-                .is_some_and(|t| now.duration_since(t) < DEBOUNCE)
-            {
-                debug!("Debounced press for '{}'", input.binding_id);
-                return None;
-            }
-            self.last_press = Some(now);
+        if self.is_debounced(&input, now) {
+            return None;
         }
-
         // A busy pipeline can't accept lifecycle changes now: classify the
         // input against any already-remembered press instead of dropping it
         // silently.
         if let Stage::Processing = self.stage {
-            // Only one press can be remembered. Once a binding has claimed it,
-            // inputs for a different binding are ignored — the same rule as a
-            // different binding pressed while recording — rather than silently
-            // replacing the remembered press and breaking its parity.
-            if let Some(pending) = &self.pending_press {
-                if pending.binding_id != input.binding_id {
-                    debug!(
-                        "Ignoring input for '{}': '{}' is already pending",
-                        input.binding_id, pending.binding_id
-                    );
-                    return None;
-                }
-            }
-            let remembered = self.pending_press.as_ref().map(|p| p.remembered());
-            match classify_busy_input(input.is_pressed, input.mode, remembered) {
-                BusyAction::Remember => {
-                    debug!(
-                        "Remembering press for '{}': pipeline busy",
-                        input.binding_id
-                    );
-                    self.pending_press = Some(PendingPress {
-                        // Toggle never ends on a release: locked from the start.
-                        locked: input.mode == ShortcutActivation::Toggle,
-                        binding_id: input.binding_id,
-                        hotkey_string: input.hotkey_string,
-                        pressed_at: now,
-                    });
-                }
-                BusyAction::Forget => {
-                    debug!("Forgetting remembered press for '{}'", input.binding_id);
-                    self.pending_press = None;
-                }
-                BusyAction::Ignore => {
-                    debug!("Ignoring input for '{}': pipeline busy", input.binding_id);
-                }
-            }
+            self.on_busy_input(input, now);
             return None;
         }
-
         if input.is_pressed {
-            match &self.stage {
-                Stage::Idle => {
-                    // Toggle never ends on a release: locked from the start.
-                    let locked = input.mode == ShortcutActivation::Toggle;
-                    return Some(self.begin_recording(
-                        input.binding_id,
-                        input.hotkey_string,
-                        now,
-                        locked,
-                    ));
-                }
-                Stage::Recording(id) if id == &input.binding_id => {
-                    // A locked session ends on the next press. In toggle mode
-                    // every press ends it, even if the recording began under a
-                    // hold mode (the setting changed mid-recording) — otherwise
-                    // nothing but Escape could stop it.
-                    if self.is_locked() || input.mode == ShortcutActivation::Toggle {
-                        return Some(self.begin_processing(input.binding_id, input.hotkey_string));
-                    }
-                    // The key is still held (its release will end this
-                    // recording), so a repeated press means nothing.
-                    debug!("Ignoring press for '{}': key is held", input.binding_id);
-                }
-                _ => debug!(
+            return self.on_press(input, now);
+        }
+        self.on_release(input, hold_to_talk, now)
+    }
+
+    /// Release-grace handling for the hold modes (#1539): defers a key-up of
+    /// the held shortcut, or lets an auto-repeat press cancel the deferred
+    /// one. Returns whether the edge was absorbed.
+    fn absorb_release_edge(
+        &mut self,
+        input: &InputEvent,
+        hold_to_talk: bool,
+        now: Instant,
+    ) -> bool {
+        let pending = self.pending_release.as_ref().map(PendingRelease::key);
+        let held = self.held_key();
+        match classify_ptt_event(
+            pending.as_ref(),
+            input.is_pressed,
+            hold_to_talk,
+            &input.key(),
+            held.as_ref(),
+        ) {
+            PttAction::CancelRelease => {
+                self.pending_release = None;
+                true
+            }
+            PttAction::DeferRelease => {
+                self.defer_release(input, now);
+                true
+            }
+            PttAction::Passthrough => false,
+        }
+    }
+
+    fn defer_release(&mut self, input: &InputEvent, now: Instant) {
+        self.pending_release = Some(PendingRelease {
+            hold_threshold: input.effective_hold_threshold(),
+            binding_id: input.binding_id.clone(),
+            shortcut_id: input.shortcut_id.clone(),
+            deadline: now + RELEASE_GRACE,
+            released_at: now,
+        });
+    }
+
+    /// Debounce rapid-fire press events (key repeat / double-tap). The
+    /// window is global, not per shortcut. Releases in the hold modes are
+    /// deferred before this to absorb X11 auto-repeat. External triggers are
+    /// exempt: each one is a deliberate edge from the user's own integration,
+    /// and dropping it desyncs toggle parity.
+    fn is_debounced(&mut self, input: &InputEvent, now: Instant) -> bool {
+        if !input.is_pressed || input.external {
+            return false;
+        }
+        if self
+            .last_press
+            .is_some_and(|t| now.duration_since(t) < DEBOUNCE)
+        {
+            debug!("Debounced press for '{}'", input.binding_id);
+            return true;
+        }
+        self.last_press = Some(now);
+        false
+    }
+
+    fn on_busy_input(&mut self, input: InputEvent, now: Instant) {
+        // Only one press can be remembered. Once a shortcut has claimed it,
+        // inputs it does not claim are ignored — the same rule as a different
+        // binding pressed while recording — rather than silently replacing
+        // the remembered press and breaking its parity.
+        if let Some(pending) = &self.pending_press {
+            if !pending.claims(&input) {
+                debug!(
+                    "Ignoring input for '{}': '{}' is already pending",
+                    input.binding_id, pending.binding_id
+                );
+                return;
+            }
+        }
+        let remembered = self.pending_press.as_ref().map(|p| p.remembered());
+        match classify_busy_input(input.is_pressed, input.mode, remembered) {
+            BusyAction::Remember => self.remember_press(input, now),
+            BusyAction::Forget => {
+                debug!("Forgetting remembered press for '{}'", input.binding_id);
+                self.pending_press = None;
+            }
+            BusyAction::Ignore => {
+                debug!("Ignoring input for '{}': pipeline busy", input.binding_id);
+            }
+        }
+    }
+
+    fn remember_press(&mut self, input: InputEvent, now: Instant) {
+        debug!(
+            "Remembering press for '{}': pipeline busy",
+            input.binding_id
+        );
+        let is_toggle = input.mode == ShortcutActivation::Toggle;
+        self.pending_press = Some(PendingPress {
+            // Toggle never ends on a release: locked from the start.
+            locked: is_toggle,
+            owned_by_action: is_toggle,
+            binding_id: input.binding_id,
+            shortcut_id: input.shortcut_id,
+            hotkey_string: input.hotkey_string,
+            pressed_at: now,
+        });
+    }
+
+    fn on_press(&mut self, input: InputEvent, now: Instant) -> Option<Effect> {
+        match &self.stage {
+            Stage::Idle => {
+                // Toggle never ends on a release: locked from the start.
+                let locked = input.mode == ShortcutActivation::Toggle;
+                Some(self.begin_recording(
+                    input.binding_id,
+                    input.shortcut_id,
+                    input.hotkey_string,
+                    now,
+                    locked,
+                ))
+            }
+            Stage::Recording(id) if id == &input.binding_id => {
+                self.on_press_while_recording(&input)
+            }
+            _ => {
+                debug!(
                     "Ignoring press for '{}': another binding is recording",
                     input.binding_id
-                ),
+                );
+                None
             }
-        } else if hold_to_talk
-            && matches!(&self.stage, Stage::Recording(id) if id == &input.binding_id)
-        {
-            // A release that was not deferred (one is already pending for this
-            // binding): resolve it immediately rather than dropping it.
-            let threshold = input.effective_hold_threshold();
-            return self.finish_hold(input.binding_id, input.hotkey_string, now, threshold);
         }
+    }
+
+    /// A press of the recording action. A locked session ends on the next
+    /// press of any shortcut of its action. In toggle mode every press ends
+    /// it, even if the recording began under a hold mode (the setting
+    /// changed mid-recording) — otherwise nothing but Escape could stop it.
+    fn on_press_while_recording(&mut self, input: &InputEvent) -> Option<Effect> {
+        if self.is_locked() || input.mode == ShortcutActivation::Toggle {
+            return self.stop_recording();
+        }
+        // The starting key is still held (its release will end this
+        // recording): a repeat, or another shortcut of the action.
+        debug!("Ignoring press for '{}': key is held", input.binding_id);
         None
+    }
+
+    /// A release that was not deferred (one is already pending for this
+    /// shortcut): resolve it immediately rather than dropping it. Only the
+    /// release of the shortcut that started the session counts.
+    fn on_release(
+        &mut self,
+        input: InputEvent,
+        hold_to_talk: bool,
+        now: Instant,
+    ) -> Option<Effect> {
+        if !hold_to_talk || self.recording_owner() != Some(input.key()) {
+            return None;
+        }
+        let threshold = input.effective_hold_threshold();
+        self.finish_hold(now, threshold)
     }
 
     /// The `RELEASE_GRACE` window elapsed with no cancelling press arriving:
@@ -386,19 +540,13 @@ impl CoordinatorState {
     /// holding — the live recording, or a press remembered while busy.
     fn on_grace_expired(&mut self) -> Option<Effect> {
         let pending = self.pending_release.take()?;
-        match &self.stage {
-            Stage::Recording(id) if *id == pending.binding_id => self.finish_hold(
-                pending.binding_id,
-                pending.hotkey_string,
-                pending.released_at,
-                pending.hold_threshold,
-            ),
-            Stage::Processing => {
-                self.finish_pending_hold(&pending);
-                None
-            }
-            _ => None,
+        if self.recording_owner() == Some(pending.key()) {
+            return self.finish_hold(pending.released_at, pending.hold_threshold);
         }
+        if let Stage::Processing = self.stage {
+            self.finish_pending_hold(&pending);
+        }
+        None
     }
 
     /// A press remembered while the pipeline was busy has been released for
@@ -409,7 +557,7 @@ impl CoordinatorState {
         let Some(pending) = self
             .pending_press
             .as_mut()
-            .filter(|p| p.binding_id == release.binding_id)
+            .filter(|p| p.key() == release.key())
         else {
             return;
         };
@@ -434,13 +582,7 @@ impl CoordinatorState {
     /// The key that started the current recording has been released for real.
     /// A hold at least `threshold` long stops recording; anything shorter was a
     /// tap, which locks the session on until the next press.
-    fn finish_hold(
-        &mut self,
-        binding_id: String,
-        hotkey_string: String,
-        released_at: Instant,
-        threshold: Duration,
-    ) -> Option<Effect> {
+    fn finish_hold(&mut self, released_at: Instant, threshold: Duration) -> Option<Effect> {
         let held = self
             .hold
             .as_ref()
@@ -449,10 +591,10 @@ impl CoordinatorState {
             // stopping is the safe reading (it is what push-to-talk always did).
             .unwrap_or(Duration::MAX);
         if held >= threshold {
-            return Some(self.begin_processing(binding_id, hotkey_string));
+            return self.stop_recording();
         }
         if let Some(hold) = &mut self.hold {
-            debug!("Tap ({held:?}) for '{binding_id}': recording locked on until the next press");
+            debug!("Tap ({held:?}): recording locked on until the next press");
             hold.locked = true;
         }
         None
@@ -482,6 +624,7 @@ impl CoordinatorState {
         );
         Some(self.begin_recording(
             pending.binding_id,
+            pending.shortcut_id,
             pending.hotkey_string,
             pending.pressed_at,
             pending.locked,
@@ -497,31 +640,47 @@ impl CoordinatorState {
         }
     }
 
-    /// Optimistic transition to `Recording`; rolled back via
-    /// [`CoordinatorState::on_start_result`] if the effect fails to start
-    /// recording for real.
+    /// Optimistic transition to `Recording`, owned by `shortcut_id`; rolled
+    /// back via [`CoordinatorState::on_start_result`] if the effect fails to
+    /// start recording for real.
     fn begin_recording(
         &mut self,
         binding_id: String,
+        shortcut_id: String,
         hotkey_string: String,
         pressed_at: Instant,
         locked: bool,
     ) -> Effect {
         self.stage = Stage::Recording(binding_id.clone());
-        self.hold = Some(Hold { pressed_at, locked });
+        self.hold = Some(Hold {
+            pressed_at,
+            locked,
+            shortcut_id,
+            hotkey_string: hotkey_string.clone(),
+        });
         Effect::Start {
             binding_id,
             hotkey_string,
         }
     }
 
-    fn begin_processing(&mut self, binding_id: String, hotkey_string: String) -> Effect {
+    /// Stop the live recording with the metadata of the input that started
+    /// it, whichever shortcut of the action ends it.
+    fn stop_recording(&mut self) -> Option<Effect> {
+        let Stage::Recording(binding_id) = &self.stage else {
+            return None;
+        };
+        let binding_id = binding_id.clone();
         self.stage = Stage::Processing;
-        self.hold = None;
-        Effect::Stop {
+        let hotkey_string = self
+            .hold
+            .take()
+            .map(|hold| hold.hotkey_string)
+            .unwrap_or_default();
+        Some(Effect::Stop {
             binding_id,
             hotkey_string,
-        }
+        })
     }
 }
 
@@ -534,54 +693,20 @@ pub struct TranscriptionCoordinator {
     tx: Sender<Command>,
 }
 
+/// Whether `id` is one of the actions driven by the coordinator.
 pub fn is_transcribe_binding(id: &str) -> bool {
     id == "transcribe" || id == "transcribe_with_post_process"
 }
 
 impl TranscriptionCoordinator {
+    /// Spawns the coordinator thread. It runs until the coordinator is
+    /// dropped (channel closed).
     pub fn new(app: AppHandle) -> Self {
         let (tx, rx) = mpsc::channel();
 
         thread::spawn(move || {
             let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-                let mut state = CoordinatorState::new();
-
-                loop {
-                    let cmd = if let Some(deadline) = state.grace_deadline() {
-                        match rx.recv_timeout(deadline.saturating_duration_since(Instant::now())) {
-                            Ok(cmd) => cmd,
-                            Err(mpsc::RecvTimeoutError::Timeout) => {
-                                if let Some(effect) = state.on_grace_expired() {
-                                    run_effect(&app, &mut state, effect);
-                                }
-                                continue;
-                            }
-                            Err(mpsc::RecvTimeoutError::Disconnected) => break,
-                        }
-                    } else {
-                        match rx.recv() {
-                            Ok(cmd) => cmd,
-                            Err(_) => break,
-                        }
-                    };
-
-                    match cmd {
-                        Command::Input(input) => {
-                            if let Some(effect) = state.on_input(input, Instant::now()) {
-                                run_effect(&app, &mut state, effect);
-                            }
-                        }
-                        Command::Cancel {
-                            recording_was_active,
-                        } => state.on_cancel(recording_was_active),
-                        Command::ProcessingFinished => {
-                            if let Some(effect) = state.on_processing_finished() {
-                                run_effect(&app, &mut state, effect);
-                            }
-                        }
-                    }
-                }
-                debug!("Transcription coordinator exited");
+                run_coordinator_loop(&app, &rx);
             }));
             if let Err(e) = result {
                 error!("Transcription coordinator panicked: {e:?}");
@@ -591,64 +716,50 @@ impl TranscriptionCoordinator {
         Self { tx }
     }
 
-    /// Send a keyboard input event for a transcribe binding. `hold_threshold`
-    /// only matters for [`ShortcutActivation::HoldOrToggle`].
+    /// Send a keyboard input event for one shortcut of a transcribe binding.
+    /// `shortcut_id` names which of the action's shortcuts fired;
+    /// `hold_threshold` only matters for [`ShortcutActivation::HoldOrToggle`].
     pub fn send_input(
         &self,
         binding_id: &str,
+        shortcut_id: &str,
         hotkey_string: &str,
         is_pressed: bool,
         mode: ShortcutActivation,
         hold_threshold: Duration,
     ) {
-        self.send(
-            binding_id,
-            hotkey_string,
+        self.send(InputEvent {
+            binding_id: binding_id.to_string(),
+            shortcut_id: shortcut_id.to_string(),
+            hotkey_string: hotkey_string.to_string(),
             is_pressed,
             mode,
             hold_threshold,
-            false,
-        );
+            external: false,
+        });
     }
 
     /// Send an external trigger (SIGUSR2, CLI flag). Always a toggle press,
     /// always exempt from debounce — see [`InputEvent::external`].
     pub fn send_external_input(&self, binding_id: &str, source: &str) {
-        self.send(
-            binding_id,
-            source,
-            true,
-            ShortcutActivation::Toggle,
-            Duration::ZERO,
-            true,
-        );
+        self.send(InputEvent {
+            binding_id: binding_id.to_string(),
+            shortcut_id: source.to_string(),
+            hotkey_string: source.to_string(),
+            is_pressed: true,
+            mode: ShortcutActivation::Toggle,
+            hold_threshold: Duration::ZERO,
+            external: true,
+        });
     }
 
-    fn send(
-        &self,
-        binding_id: &str,
-        hotkey_string: &str,
-        is_pressed: bool,
-        mode: ShortcutActivation,
-        hold_threshold: Duration,
-        external: bool,
-    ) {
-        if self
-            .tx
-            .send(Command::Input(InputEvent {
-                binding_id: binding_id.to_string(),
-                hotkey_string: hotkey_string.to_string(),
-                is_pressed,
-                mode,
-                hold_threshold,
-                external,
-            }))
-            .is_err()
-        {
+    fn send(&self, input: InputEvent) {
+        if self.tx.send(Command::Input(input)).is_err() {
             warn!("Transcription coordinator channel closed");
         }
     }
 
+    /// Tells the coordinator that the recording was cancelled.
     pub fn notify_cancel(&self, recording_was_active: bool) {
         if self
             .tx
@@ -661,9 +772,104 @@ impl TranscriptionCoordinator {
         }
     }
 
+    /// Tells the coordinator that the transcription pipeline drained.
     pub fn notify_processing_finished(&self) {
         if self.tx.send(Command::ProcessingFinished).is_err() {
             warn!("Transcription coordinator channel closed");
+        }
+    }
+
+    // @spec FR-002: Changes wait for a quiescent coordinator — .specs/features/004-multiple-dictation-shortcuts/spec.md#fr-002
+    /// Quiescence lease for a shortcut registration change, answered by the coordinator thread
+    /// in input order (see `quiescence`). Blocks the caller (never the coordinator) up to
+    /// `timeout`.
+    ///
+    /// # Errors
+    /// `SessionBusy` while a session exists, or when the coordinator does not answer in time
+    /// (it is then running a start or stop effect).
+    pub fn quiesce(&self, timeout: Duration) -> Result<QuiescenceLease, SessionBusy> {
+        let request = LeaseRequest::new();
+        if self
+            .tx
+            .send(Command::Quiesce(Arc::clone(&request)))
+            .is_err()
+        {
+            // No coordinator thread, so no session and no input: nothing to protect.
+            warn!("Transcription coordinator channel closed");
+            return Ok(QuiescenceLease::new(self.tx.clone()));
+        }
+        if request.wait(timeout) {
+            Ok(QuiescenceLease::new(self.tx.clone()))
+        } else {
+            Err(SessionBusy)
+        }
+    }
+}
+
+/// Coordinator thread body: executes every command until the channel
+/// closes.
+fn run_coordinator_loop(app: &AppHandle, rx: &mpsc::Receiver<Command>) {
+    let mut state = CoordinatorState::new();
+    let mut gate = InputGate::default();
+    while let Some(cmd) = next_command(app, &mut state, rx) {
+        if let Some(effect) = dispatch(&mut state, &mut gate, cmd, Instant::now()) {
+            run_effect(app, &mut state, effect);
+        }
+    }
+    debug!("Transcription coordinator exited");
+}
+
+/// One command applied to the state machine and the input gate, in arrival order.
+fn dispatch(
+    state: &mut CoordinatorState,
+    gate: &mut InputGate,
+    cmd: Command,
+    now: Instant,
+) -> Option<Effect> {
+    match cmd {
+        Command::Input(input) if !gate.admits(input.external) => {
+            debug!("Shortcut input gated during a registration change");
+            None
+        }
+        Command::Input(input) => state.on_input(input, now),
+        Command::Cancel {
+            recording_was_active,
+        } => {
+            state.on_cancel(recording_was_active);
+            None
+        }
+        Command::ProcessingFinished => state.on_processing_finished(),
+        Command::Quiesce(request) => {
+            gate.answer(&request, state.is_quiescent());
+            None
+        }
+        Command::Resume => {
+            gate.release();
+            None
+        }
+    }
+}
+
+/// Waits for the next command. While a release is deferred, the wait ends
+/// at its grace deadline and the release is resolved first. Returns `None`
+/// once the channel is closed.
+fn next_command(
+    app: &AppHandle,
+    state: &mut CoordinatorState,
+    rx: &mpsc::Receiver<Command>,
+) -> Option<Command> {
+    loop {
+        let Some(deadline) = state.grace_deadline() else {
+            return rx.recv().ok();
+        };
+        match rx.recv_timeout(deadline.saturating_duration_since(Instant::now())) {
+            Ok(cmd) => return Some(cmd),
+            Err(mpsc::RecvTimeoutError::Timeout) => {
+                if let Some(effect) = state.on_grace_expired() {
+                    run_effect(app, state, effect);
+                }
+            }
+            Err(mpsc::RecvTimeoutError::Disconnected) => return None,
         }
     }
 }
@@ -891,6 +1097,7 @@ mod tests {
     fn ptt_input(is_pressed: bool) -> InputEvent {
         InputEvent {
             binding_id: BINDING.to_string(),
+            shortcut_id: BINDING.to_string(),
             hotkey_string: BINDING.to_string(),
             is_pressed,
             mode: ShortcutActivation::PushToTalk,
@@ -1029,6 +1236,7 @@ mod tests {
             state.on_input(
                 InputEvent {
                     binding_id: BINDING.to_string(),
+                    shortcut_id: BINDING.to_string(),
                     hotkey_string: BINDING.to_string(),
                     is_pressed: true,
                     mode: ShortcutActivation::Toggle,
@@ -1091,6 +1299,7 @@ mod tests {
     fn toggle_input_for(binding_id: &str, external: bool) -> InputEvent {
         InputEvent {
             binding_id: binding_id.to_string(),
+            shortcut_id: binding_id.to_string(),
             hotkey_string: binding_id.to_string(),
             is_pressed: true,
             mode: ShortcutActivation::Toggle,
@@ -1216,6 +1425,7 @@ mod tests {
     fn input(mode: ShortcutActivation, is_pressed: bool) -> InputEvent {
         InputEvent {
             binding_id: BINDING.to_string(),
+            shortcut_id: BINDING.to_string(),
             hotkey_string: BINDING.to_string(),
             is_pressed,
             mode,
@@ -1613,5 +1823,259 @@ mod tests {
             "held 400ms since the real key-down: must stop, not lock"
         );
         assert_eq!(state.stage, Stage::Processing);
+    }
+}
+
+/// Several shortcuts bound to one action (feature 004): A starts the session,
+/// B is another shortcut of the same action.
+#[cfg(test)]
+mod multi_shortcut_tests {
+    use super::*;
+
+    const ACTION: &str = "transcribe";
+    const A: &str = "option+space";
+    const B: &str = "ctrl+option+d";
+    const HOLD_THRESHOLD: Duration = Duration::from_millis(300);
+
+    fn key(mode: ShortcutActivation, shortcut: &str, is_pressed: bool) -> InputEvent {
+        InputEvent {
+            binding_id: ACTION.to_string(),
+            shortcut_id: shortcut.to_string(),
+            hotkey_string: shortcut.to_string(),
+            is_pressed,
+            mode,
+            hold_threshold: HOLD_THRESHOLD,
+            external: false,
+        }
+    }
+
+    fn ms(n: u64) -> Duration {
+        Duration::from_millis(n)
+    }
+
+    fn is_start(effect: &Option<Effect>) -> bool {
+        matches!(effect, Some(Effect::Start { .. }))
+    }
+
+    fn is_stop(effect: &Option<Effect>) -> bool {
+        matches!(effect, Some(Effect::Stop { .. }))
+    }
+
+    /// Starts a session with A in `mode` at `t0`.
+    fn started_by_a(mode: ShortcutActivation, t0: Instant) -> CoordinatorState {
+        let mut state = CoordinatorState::new();
+        let effect = state.on_input(key(mode, A, true), t0);
+        assert!(is_start(&effect), "A must start the session");
+        state
+    }
+
+    // @spec AC-003: Toggle stops with any shortcut of the action — .specs/features/004-multiple-dictation-shortcuts/spec.md#ac-003
+    #[test]
+    fn toggle_b_stops_a_session_with_the_starting_metadata() {
+        let mode = ShortcutActivation::Toggle;
+        let t0 = Instant::now();
+        let mut state = started_by_a(mode, t0);
+
+        let effect = state.on_input(key(mode, B, true), t0 + ms(500));
+        assert_eq!(
+            effect,
+            Some(Effect::Stop {
+                binding_id: ACTION.to_string(),
+                hotkey_string: A.to_string(),
+            })
+        );
+        assert_eq!(state.stage, Stage::Processing);
+    }
+
+    #[test]
+    fn toggle_b_inside_the_debounce_window_is_dropped() {
+        let mode = ShortcutActivation::Toggle;
+        let t0 = Instant::now();
+        let mut state = started_by_a(mode, t0);
+
+        assert!(state.on_input(key(mode, B, true), t0 + ms(29)).is_none());
+        assert_eq!(state.stage, Stage::Recording(ACTION.to_string()));
+        assert!(is_stop(&state.on_input(key(mode, B, true), t0 + ms(60))));
+    }
+
+    #[test]
+    fn simultaneous_presses_start_only_once() {
+        let mode = ShortcutActivation::PushToTalk;
+        let t0 = Instant::now();
+        let mut state = started_by_a(mode, t0);
+        assert!(state.on_input(key(mode, B, true), t0 + ms(2)).is_none());
+        assert_eq!(state.stage, Stage::Recording(ACTION.to_string()));
+    }
+
+    // @spec AC-003: Hold modes end only on the starting shortcut's release — .specs/features/004-multiple-dictation-shortcuts/spec.md#ac-003
+    #[test]
+    fn push_to_talk_ignores_b_while_a_is_held() {
+        let mode = ShortcutActivation::PushToTalk;
+        let t0 = Instant::now();
+        let mut state = started_by_a(mode, t0);
+
+        assert!(state.on_input(key(mode, B, true), t0 + ms(200)).is_none());
+        assert!(state.on_input(key(mode, B, false), t0 + ms(300)).is_none());
+        assert!(state.grace_deadline().is_none(), "B release must not defer");
+        assert_eq!(state.stage, Stage::Recording(ACTION.to_string()));
+
+        assert!(state.on_input(key(mode, A, false), t0 + ms(400)).is_none());
+        assert!(is_stop(&state.on_grace_expired()));
+    }
+
+    #[test]
+    fn push_to_talk_b_press_does_not_cancel_a_deferred_release() {
+        let mode = ShortcutActivation::PushToTalk;
+        let t0 = Instant::now();
+        let mut state = started_by_a(mode, t0);
+
+        assert!(state.on_input(key(mode, A, false), t0 + ms(400)).is_none());
+        assert!(state.on_input(key(mode, B, true), t0 + ms(420)).is_none());
+        assert!(
+            state.grace_deadline().is_some(),
+            "A's release stays pending"
+        );
+        assert!(is_stop(&state.on_grace_expired()));
+    }
+
+    #[test]
+    fn hold_or_toggle_held_phase_ignores_b() {
+        let mode = ShortcutActivation::HoldOrToggle;
+        let t0 = Instant::now();
+        let mut state = started_by_a(mode, t0);
+
+        assert!(state.on_input(key(mode, B, true), t0 + ms(100)).is_none());
+        assert!(state.on_input(key(mode, B, false), t0 + ms(150)).is_none());
+        assert!(!state.is_locked(), "B's short press is not A's tap");
+
+        assert!(state.on_input(key(mode, A, false), t0 + ms(800)).is_none());
+        assert!(is_stop(&state.on_grace_expired()));
+    }
+
+    #[test]
+    fn hold_or_toggle_locked_phase_stops_on_b() {
+        let mode = ShortcutActivation::HoldOrToggle;
+        let t0 = Instant::now();
+        let mut state = started_by_a(mode, t0);
+
+        assert!(state.on_input(key(mode, A, false), t0 + ms(120)).is_none());
+        assert!(state.on_grace_expired().is_none());
+        assert!(state.is_locked());
+
+        assert!(is_stop(&state.on_input(key(mode, B, true), t0 + ms(3000))));
+    }
+
+    #[test]
+    fn toggle_presses_of_a_and_b_while_busy_net_to_no_op() {
+        let mode = ShortcutActivation::Toggle;
+        let t0 = Instant::now();
+        let mut state = started_by_a(mode, t0);
+        assert!(is_stop(&state.on_input(key(mode, A, true), t0 + ms(500))));
+
+        assert!(state.on_input(key(mode, A, true), t0 + ms(600)).is_none());
+        assert!(state.on_input(key(mode, B, true), t0 + ms(700)).is_none());
+        assert!(state.on_processing_finished().is_none());
+        assert_eq!(state.stage, Stage::Idle);
+    }
+
+    #[test]
+    fn hold_mode_busy_press_belongs_to_the_pressed_shortcut() {
+        let mode = ShortcutActivation::PushToTalk;
+        let t0 = Instant::now();
+        let mut state = started_by_a(mode, t0);
+        assert!(state.on_input(key(mode, A, false), t0 + ms(400)).is_none());
+        assert!(is_stop(&state.on_grace_expired()));
+
+        assert!(state.on_input(key(mode, A, true), t0 + ms(600)).is_none());
+        assert!(state.on_input(key(mode, B, true), t0 + ms(700)).is_none());
+        assert!(state.on_input(key(mode, B, false), t0 + ms(750)).is_none());
+        assert!(is_start(&state.on_processing_finished()));
+
+        assert!(state.on_input(key(mode, B, false), t0 + ms(900)).is_none());
+        assert_eq!(state.stage, Stage::Recording(ACTION.to_string()));
+        assert!(state.on_input(key(mode, A, false), t0 + ms(950)).is_none());
+        assert!(is_stop(&state.on_grace_expired()));
+    }
+
+    #[test]
+    fn hold_or_toggle_busy_tap_keeps_shortcut_ownership_until_the_drain() {
+        let mode = ShortcutActivation::HoldOrToggle;
+        let t0 = Instant::now();
+        let mut state = started_by_a(mode, t0);
+        assert!(state.on_input(key(mode, A, false), t0 + ms(800)).is_none());
+        assert!(is_stop(&state.on_grace_expired()));
+
+        assert!(state.on_input(key(mode, A, true), t0 + ms(1000)).is_none());
+        assert!(state.on_input(key(mode, A, false), t0 + ms(1100)).is_none());
+        assert!(state.on_grace_expired().is_none());
+        assert!(state.is_locked(), "A's busy tap is queued locked");
+
+        assert!(state.on_input(key(mode, B, true), t0 + ms(1200)).is_none());
+        assert!(state.is_locked(), "B must not forget A's queued tap");
+        assert!(is_start(&state.on_processing_finished()));
+        assert!(is_stop(&state.on_input(key(mode, B, true), t0 + ms(2000))));
+    }
+
+    fn external_toggle() -> InputEvent {
+        InputEvent {
+            external: true,
+            ..key(ShortcutActivation::Toggle, "SIGUSR2", true)
+        }
+    }
+
+    /// Drives a push-to-talk session started by A into `Processing`.
+    fn busy_after_a(t0: Instant) -> CoordinatorState {
+        let mode = ShortcutActivation::PushToTalk;
+        let mut state = started_by_a(mode, t0);
+        assert!(state.on_input(key(mode, A, false), t0 + ms(400)).is_none());
+        assert!(is_stop(&state.on_grace_expired()));
+        state
+    }
+
+    #[test]
+    fn toggle_remembered_press_belongs_to_the_action_for_hold_inputs() {
+        let t0 = Instant::now();
+        let mut state = busy_after_a(t0);
+        assert!(state.on_input(external_toggle(), t0 + ms(500)).is_none());
+        let press = key(ShortcutActivation::PushToTalk, B, true);
+        assert!(state.on_input(press, t0 + ms(600)).is_none());
+        assert!(
+            state.on_processing_finished().is_none(),
+            "B forgets the action-owned queued toggle"
+        );
+    }
+
+    #[test]
+    fn external_toggle_flips_a_press_remembered_by_a_shortcut() {
+        let t0 = Instant::now();
+        let mut state = busy_after_a(t0);
+        let press = key(ShortcutActivation::PushToTalk, A, true);
+        assert!(state.on_input(press, t0 + ms(500)).is_none());
+        assert!(state.on_input(external_toggle(), t0 + ms(510)).is_none());
+        assert!(
+            state.on_processing_finished().is_none(),
+            "an external toggle acts on the action, as before"
+        );
+    }
+
+    #[test]
+    fn other_action_stays_ignored_while_a_records() {
+        let mode = ShortcutActivation::Toggle;
+        let t0 = Instant::now();
+        let mut state = started_by_a(mode, t0);
+        let mut other = key(mode, "option+shift+space", true);
+        other.binding_id = "transcribe_with_post_process".to_string();
+        assert!(state.on_input(other, t0 + ms(500)).is_none());
+        assert_eq!(state.stage, Stage::Recording(ACTION.to_string()));
+    }
+
+    #[test]
+    fn failed_start_from_a_lets_b_start_a_new_session() {
+        let mode = ShortcutActivation::PushToTalk;
+        let t0 = Instant::now();
+        let mut state = started_by_a(mode, t0);
+        state.on_start_result(ACTION, false);
+        assert_eq!(state.stage, Stage::Idle);
+        assert!(is_start(&state.on_input(key(mode, B, true), t0 + ms(100))));
     }
 }

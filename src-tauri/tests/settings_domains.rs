@@ -1,5 +1,5 @@
 //! Domain framework through the real binary: `handy settings --help` lists exactly the domains of
-//! this build (only `output`), and the output domain reads and changes the existing output
+//! this build (`output`, and `shortcuts` from feature 004), and the output domain reads and changes the existing output
 //! settings with the validation, dry run, revision and channels of the settings contract, offline
 //! and routed to a running instance.
 #![cfg(unix)]
@@ -39,10 +39,15 @@ fn help_lists_the_generic_operations_and_exactly_the_domains_of_this_build() -> 
     assert_eq!(help.code, 0);
     assert_eq!(
         commands(&help.stdout),
-        ["get", "keys", "set", "output", "help"]
+        ["get", "keys", "set", "output", "shortcuts", "help"]
     );
     let output = app.run(&["settings", "output", "--help"])?;
     assert_eq!(commands(&output.stdout), ["get", "set", "help"]);
+    let shortcuts = app.run(&["settings", "shortcuts", "--help"])?;
+    assert_eq!(
+        commands(&shortcuts.stdout),
+        ["list", "add", "remove", "reset", "help"]
+    );
     Ok(())
 }
 #[test]

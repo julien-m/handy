@@ -4,7 +4,7 @@ title: Multiple Dictation Shortcuts
 priority: P1
 status: Planned
 created: 2026-10-12
-updated: 2026-10-12
+updated: 2026-10-13
 ---
 
 # Feature Spec: Multiple Dictation Shortcuts
@@ -334,6 +334,13 @@ Feature: Commit a shortcut
 - **Non-functional expectations:** With four shortcuts per action, the time from key press to recording start stays within 10 ms of the single-shortcut baseline; no key events are logged above debug level.
 - **Missing evidence:** No native runtime test; mockups deferred before `spec-ship`.
 - **Boundary:** QE defines risk and test sufficiency; the independent review judges requirements; Penflow governs UI design evidence; spec-test executes runtime proof.
+
+## Quality Engineering
+
+- **Risk:** High criticality (rated so by the QE Analysis: dictation start and stop can regress or trigger twice); Shared blast radius (the shortcut coordinator drives dictation start/stop for every user on both keyboard implementations, and single bindings migrate to shortcut lists); primary risk Regression (activation regression and double triggering).
+- **Applicable dimensions:** functional correctness, regression, platform compatibility (Tauri vs HandyKeys, macOS/Windows/Linux), data migration, accessibility, UX.
+- **P0 gates/evidence:** Coordinator state-machine unit tests for each activation mode with two shortcuts; migration test from single bindings; conflict checker table tests (equal, reordered modifiers, modifier-only overlap, cross-action, cancel).
+- **Boundary:** QE defines risk and test sufficiency only. The independent spec review judges requirements, Penflow governs UI design evidence, spec-test executes runtime proof and the end-of-feature delivery review looks for defects.
 
 ## Screens
 

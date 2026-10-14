@@ -34,3 +34,60 @@
 - **Scope:** Seven implementation steps, two sequence diagrams, one state diagram and one logical ER diagram. Preserve pre-upgrade legacy registration/event behavior and visible conflicts; reject new conflicting candidates. Independent reviews and progression verified separately; no visual/runtime certification.
 
 <!-- finalize:spec-plan:2026-10-12:12d2f055 -->
+
+## 2026-10-13 — [Feature]: Core multiple shortcuts without the 008 settings service
+
+- **Type:** Feature
+- **Spec modified:** No
+- **Code modified:** settings.rs, shortcut/{mod,handler,tauri_impl,handy_keys,identity,conflicts,action_shortcuts,edits,migration_tests}.rs, secure_input.rs, transcription_coordinator.rs, lib.rs, bindings.ts, settings shortcut list UI, settingsStore.ts, useSettings.ts, 26 locales
+- **AC impacted:** AC-001, AC-002, AC-003, AC-004, AC-005 (implemented, certification pending); AC-006 Waiting for 008
+- **Author:** Claude Code (core-first implementation agent)
+- **Scope:** Ordered 1–4 shortcuts per transcription action with additive storage; action and shortcut identity through both backends, Carbon shadows and the coordinator; shared normalized conflict checker with legacy conflicts kept and flagged; settings list UI on existing commands. CLI, revision commit, quiescence lease and inactive-action OS probe Waiting for 008. Checks before the code commits: Rust 338 then 340 PASS / 16 ignored, Clippy warnings identical to `dev` ([dev baseline](proofs/claude/dev-baseline/)), fmt, ESLint, Prettier, tsc, translations and repository conventions PASS ([core](proofs/claude/commit-1-core/), [busy ownership fix](proofs/claude/commit-2-busy-ownership/)).
+- **Fix (same day):** a press remembered while busy keeps the ownership it was remembered with (toggle = action), and external triggers act on the action, preserving the pre-004 mixed external/keyboard parity.
+
+## 2026-10-13 — [Bugfix]: Independent audit fixes (fix1)
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** shortcut/{registration_delta,implementation_switch,edits,tauri_impl,mod,action_shortcuts}.rs (+ tests), secure_input.rs, secure_input_shadow.rs, lib.rs, bindings.ts, settingsStore.ts, lib/shortcut-edit-failure.ts, hooks/useShortcutFailureText.ts, shortcut-list.tsx, shortcut-list-model.ts (+ test), GlobalShortcutInput.tsx, HandyKeysShortcutInput.tsx, debug/KeyboardImplementationSelector.tsx, 26 locales
+- **AC impacted:** AC-002, AC-004, AC-005 (implemented, certification pending; no acceptance claimed)
+- **Author:** Claude Code (implementation agent, fix pass under supervision)
+- **Scope:** Fixes the [independent audit](proofs/claude/independent-audit.md) minors m1, m2, m3, m5, m6, m7 and nits n2, n4, n7; m4 (recorder states) stays with the Penflow/UI pass; n1, n3, n5, n6 documented in [progress](progress.md#audit-fix-1-2026-10-13). Tauri probe of disabled post-processing shortcuts before saving; inherited-conflict slots handed to the surviving action instead of unregistered; keyboard switch repair by destination parser, keeping and reporting the conflicts it introduces (new `ImplementationChangeResult.conflicts`, translated toast); typed `BindingResponse.edit_error` so cancel refusals are translated and a refused reset is shown; conflict warnings refreshed on any action change, fetch failures shown; delta/rollback and Carbon shadow tests; committed conventions outputs reduced to a summary and hash. Behavior note: the HandyKeys first-start switch now also emits `settings-changed`. Checks: Rust 363 PASS / 16 ignored, `shortcut::` 61, coordinator 50, `secure_input` 5, fmt, Clippy warnings identical to `dev`, ESLint, Prettier, tsc, translations, keyboard and list tests, repository conventions PASS (`new_count` 0) ([fix1 proofs](proofs/claude-fix1/)).
+
+## 2026-10-13 — [Spec Update]: Quality Engineering classification for the delivery lane
+
+- **Type:** Spec Update
+- **Spec modified:** Yes (sections: Quality Engineering added after QE Analysis; frontmatter `updated`)
+- **Code modified:** None
+- **AC impacted:** None (no AC, FR or SC changed)
+- **Classification:** criticality High, blast radius Shared, primary risk Regression, taken from the existing QE Analysis; `livespec delivery lane`: full
+- **Review:** the previous spec review is stale; an independent reviewer refreshes it
+- **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
+
+## 2026-10-13 — [Bugfix]: Independent re-audit fixes (fix2)
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** shortcut/{registration_delta,edits,mod,tauri_impl}.rs (+ tests), secure_input_shadow.rs (test), bindings.ts, settingsStore.ts, useSettings.ts, PostProcessingToggle.tsx, 26 locales; `implementation.md` structure
+- **AC impacted:** AC-002, AC-004, AC-005 (implemented, certification pending; no acceptance claimed)
+- **Author:** Claude Code (implementation agent, fix pass under supervision)
+- **Scope:** Fixes the [independent re-audit](proofs/claude-fix1/independent-reaudit.md) minor M1 and nits N1–N6 (N6 history residue documented: squash merge). The post-processing toggle registers or releases through the registration delta before saving: disabling hands a shared Tauri slot back to Transcribe; enabling leaves a slot held by another action to it, rolls back on refusal and keeps post-processing off with a translated message (`change_post_process_enabled_setting` now returns `ShortcutEditError`). Cancel shortcuts are probed with the OS outside recording (Tauri, not Linux). Probe release retried once; a failed handover release no longer registers the survivor; unknown action ids never receive a slot; the first switch to HandyKeys repairs the lists first; invalid syntax on the legacy recorders is a typed, translated refusal. `implementation.md` gains front matter and the AC mapping heading the validator expects. Checks: Rust 372 PASS / 16 ignored, `shortcut::` 69, coordinator 50, `secure_input` 6, fmt, ESLint, tsc, Prettier, translations, keyboard and list tests, repository conventions PASS (`new_count` 0), `livespec validate` exit 0 ([fix2 proofs](proofs/claude-fix2/)).
+
+## 2026-10-13 — [Bugfix]: Post-processing activation as before, refused shortcuts reported (fix3)
+
+- **Type:** Bugfix
+- **Spec modified:** No (`spec.md` and `plan.md` unchanged; the code is aligned on the existing spec)
+- **Code modified:** shortcut/{registration_delta,edits,mod}.rs (+ tests, edits tests moved to `edits/tests.rs`), bindings.ts, settingsStore.ts, useSettings.ts, PostProcessingToggle.tsx, shortcut-list.tsx, shortcut-list-model.ts (+ test), KeyboardImplementationSelector.tsx, 26 locales
+- **AC impacted:** AC-002 (implemented, certification pending; no acceptance claimed)
+- **Author:** Claude Code (fix pass under supervision, claude-opus-5-5)
+- **Scope:** Fixes the toggle finding of the [independent spec review](proofs/claude-review/independent-review.md): enabling post-processing always succeeds and is saved, as before this feature (Header, Edge Cases, AC-002), instead of being refused when the OS refuses a shortcut. The slot handover of fix2 is kept. Each refused shortcut is reported by a translated toast and a warning on its row, which stays editable in the Post Processing settings. `plan.md:338` contradicts `plan.md:76` on this point; recorded in [progress](progress.md#independent-spec-review-fix-2026-10-13) for the next plan revision. Checks: Rust 376 PASS / 16 ignored, `shortcut::` 73, coordinator 50, fmt, ESLint, tsc, Prettier, translations, list tests, repository conventions PASS (`new_count` 0), progression implement READY ([fix3 proofs](proofs/claude-fix3/)).
+
+## 2026-10-14 — [Feature]: Integration with 008, shortcuts CLI and prepared shortcut changes
+
+- **Type:** Feature
+- **Spec modified:** No
+- **Code modified:** merge of `dev` (`22e0f33`); shortcut/{edits,mod,handy_keys,bindings_change,live_change,keyboard_switch,fake_backend}.rs, transcription_coordinator.rs + quiescence.rs, secure_input.rs, settings_service/{sequence,native_changes,tauri_adapter,domains,errors,operations,render,cli,protocol,public,effects,command_error}.rs, cli.rs, tests/shortcuts_cli.rs, settings_cli/settings_domains tests, bindings.ts, settingsStore.ts, settings-errors.ts, shortcut-list-model.ts, PostProcessingToggle.tsx, 26 locales, README, AGENTS.md, 008 checked schema (`e2b0ab5`)
+- **AC impacted:** AC-001, AC-004, AC-006 (implemented, certification pending; no acceptance claimed)
+- **Author:** Claude Code (implementation agent, claude-opus-5-5)
+- **Scope:** Every former "Waiting for 008" item: list edits, the post-processing toggle and the keyboard switch are prepared changes of the 008 service (registration before one-revision commits, compensation on refusal, refused with `shortcut_session_busy` during a dictation through the coordinator quiescence lease); `handy settings shortcuts list/add/remove/reset` with `--json`, `--dry-run`, live-only changes (`instance_required` offline) and stable codes; startup HandyKeys fallback repairs the lists for Tauri. Decisions to confirm and remaining items in [progress](progress.md#integration-with-008-2026-10-14). Checks in [integration proofs](proofs/claude-integration/).
+

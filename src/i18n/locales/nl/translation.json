@@ -185,6 +185,22 @@
           "restore": "Herstellen van originele sneltoets mislukt",
           "set": "Instellen van sneltoets mislukt: {{error}}",
           "reset": "Sneltoets terugzetten naar standaardwaarde mislukt"
+        },
+        "list": {
+          "add": "Sneltoets toevoegen",
+          "addLimit": "Maximaal {{limit}} sneltoetsen per actie",
+          "change": "Klik om een nieuwe combinatie op te nemen",
+          "remove": "Deze sneltoets verwijderen",
+          "removeLast": "Elke actie houdt minstens één sneltoets",
+          "reset": "Standaardsneltoets herstellen",
+          "errors": {
+            "conflict": "Al in gebruik door {{action}} ({{shortcut}})",
+            "overlap": "Zou ook {{action}} activeren ({{shortcut}})",
+            "invalid": "Ongeldige sneltoets: {{error}}",
+            "registration": "Het systeem heeft deze sneltoets geweigerd: {{error}}",
+            "generic": "De sneltoets kon niet worden opgeslagen",
+            "conflictsUnavailable": "Conflicten tussen sneltoetsen konden niet worden gecontroleerd"
+          }
         }
       },
       "language": {
@@ -552,7 +568,8 @@
       },
       "postProcessingToggle": {
         "label": "Naverwerking",
-        "description": "Schakel AI-gestuurde tekstverfijning in na transcriptie"
+        "description": "Schakel AI-gestuurde tekstverfijning in na transcriptie",
+        "shortcutRefused": "Naverwerking staat aan, maar het systeem heeft de sneltoets {{shortcut}} geweigerd. Wijzig deze in de instellingen voor naverwerking."
       },
       "muteWhileRecording": {
         "label": "Dempen tijdens opname",
@@ -565,7 +582,8 @@
       "keyboardImplementation": {
         "title": "Toetsenbord-implementatie",
         "description": "Kies de backend voor sneltoetsen.",
-        "bindingsReset": "Sneltoetsen waren incompatibel en zijn teruggezet naar de standaardwaarden"
+        "bindingsReset": "Sommige sneltoetsen waren incompatibel en zijn teruggezet naar hun standaardwaarde of verwijderd",
+        "conflictsKept": "Sommige sneltoetsen conflicteren nu met een andere actie. Ze zijn behouden en gemarkeerd in de sneltoetsinstellingen."
       },
       "paths": {
         "appData": "App-data:",
@@ -702,6 +720,7 @@
       "validationFailed": "Deze waarde wordt niet geaccepteerd voor deze instelling.",
       "revisionConflict": "De instellingen zijn elders gewijzigd. Laad opnieuw en probeer het nog eens.",
       "unavailable": "Deze instelling kan nu niet worden gewijzigd. Probeer het later opnieuw.",
+      "shortcutSessionBusy": "Er loopt een dictaat. Probeer het opnieuw wanneer het is afgelopen.",
       "persistenceFailed": "De instellingen konden niet worden opgeslagen.",
       "generic": "De instelling kon niet worden gewijzigd.",
       "readOnly": "De instellingen zijn in deze sessie alleen-lezen: het instellingenbestand kan niet veilig worden geschreven, dus wijzigingen worden niet opgeslagen."

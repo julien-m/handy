@@ -185,6 +185,22 @@
           "restore": "Failed to restore original shortcut",
           "set": "Failed to set shortcut: {{error}}",
           "reset": "Failed to reset shortcut to original value"
+        },
+        "list": {
+          "add": "Add shortcut",
+          "addLimit": "Up to {{limit}} shortcuts per action",
+          "change": "Click to record a new combination",
+          "remove": "Remove this shortcut",
+          "removeLast": "Each action keeps at least one shortcut",
+          "reset": "Reset to the default shortcut",
+          "errors": {
+            "conflict": "Already used by {{action}} ({{shortcut}})",
+            "overlap": "Would also trigger {{action}} ({{shortcut}})",
+            "invalid": "Invalid shortcut: {{error}}",
+            "registration": "The system refused this shortcut: {{error}}",
+            "generic": "The shortcut could not be saved",
+            "conflictsUnavailable": "Shortcut conflicts could not be checked"
+          }
         }
       },
       "language": {
@@ -552,7 +568,8 @@
       },
       "postProcessingToggle": {
         "label": "Post Processing",
-        "description": "Enable AI-powered text refinement after transcription"
+        "description": "Enable AI-powered text refinement after transcription",
+        "shortcutRefused": "Post Processing is on, but the system refused the shortcut {{shortcut}}. Change it in the Post Processing settings."
       },
       "muteWhileRecording": {
         "label": "Mute While Recording",
@@ -565,7 +582,8 @@
       "keyboardImplementation": {
         "title": "Keyboard Implementation",
         "description": "Choose the keyboard shortcut backend.",
-        "bindingsReset": "Keyboard shortcuts were incompatible and reset to defaults"
+        "bindingsReset": "Some keyboard shortcuts were incompatible and were reset to their defaults or removed",
+        "conflictsKept": "Some shortcuts now conflict with another action. They were kept and are marked in the shortcut settings."
       },
       "paths": {
         "appData": "App Data:",
@@ -702,6 +720,7 @@
       "validationFailed": "This value is not accepted for this setting.",
       "revisionConflict": "Settings were changed elsewhere. Reload and try again.",
       "unavailable": "This setting cannot be changed right now. Try again later.",
+      "shortcutSessionBusy": "A dictation is in progress. Try again when it ends.",
       "persistenceFailed": "Settings could not be saved.",
       "generic": "The setting could not be changed.",
       "readOnly": "Settings are read-only for this session: the settings file cannot be written safely, so changes will not be saved."

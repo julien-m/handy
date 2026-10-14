@@ -270,6 +270,10 @@ struct PublicBinding {
     description: String,
     default_binding: String,
     current_binding: String,
+    /// Alternative shortcuts after `current_binding` (feature 004), omitted when there is none,
+    /// as in the store.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    additional_bindings: Vec<String>,
 }
 impl From<&ShortcutBinding> for PublicBinding {
     fn from(value: &ShortcutBinding) -> Self {
@@ -279,6 +283,7 @@ impl From<&ShortcutBinding> for PublicBinding {
             description: value.description.clone(),
             default_binding: value.default_binding.clone(),
             current_binding: value.current_binding.clone(),
+            additional_bindings: value.additional_bindings.clone(),
         }
     }
 }

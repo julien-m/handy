@@ -1,0 +1,38 @@
+{
+  "command": "livespec conventions verify --feature repo --json",
+  "exit": 1,
+  "run_id": "20261014T031537Z",
+  "verdict": "FAIL",
+  "blockers": 0,
+  "violations": 491,
+  "error_violations": [
+    {
+      "fix_hint": "",
+      "line": 9,
+      "message": "suppression directive `allow` exceeds budget 0",
+      "path": "src-tauri/tests/shortcuts_cli.rs",
+      "rule_id": "builtin.suppression_directives",
+      "severity": "error",
+      "source": "builtin"
+    }
+  ],
+  "baseline": {
+    "baselined_count": 654,
+    "new_count": 1,
+    "path": ".specs/conventions/baseline.json",
+    "resolved_count": 3528,
+    "sha256": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe"
+  },
+  "receipt_path": ".specs/conventions/runs/20261014T031537Z/receipt.json",
+  "receipt_sha256": "3f6a311bc92b92877b0d5818977fe47b3f40860cd9d4c23d59e9f87dcb36fde1",
+  "stdout_bytes": 2066099,
+  "stdout_sha256": "bdb524796d49eb6b9b61a3b4da9398c73426fa5adae4f2dbf9c08873cf6e12b5",
+  "stderr": [
+    "livespec-shim-notice: dev mode executes the LiveSpec checkout /Users/julienm/projects/livespec"
+  ],
+  "run_directory": ".specs/conventions/runs/20261014T031537Z",
+  "run_files": [
+    "receipt.json"
+  ],
+  "note": "First run: `#[allow(dead_code)]` on the shared harness include in tests/shortcuts_cli.rs exceeded the suppression budget 0. Removed; the harness method is now used by a test. Run directory moved to the Trash."
+}
