@@ -99,9 +99,11 @@ pub struct ShortcutBinding {
 
 impl ShortcutBinding {
     /// Every shortcut of the action in order: the first one, then the
-    /// alternatives.
+    /// alternatives. An empty first shortcut is no shortcut (a prompt target
+    /// with none, 005), never an entry to register.
     pub fn shortcuts(&self) -> Vec<String> {
         std::iter::once(self.current_binding.clone())
+            .filter(|first| !first.is_empty())
             .chain(self.additional_bindings.iter().cloned())
             .collect()
     }

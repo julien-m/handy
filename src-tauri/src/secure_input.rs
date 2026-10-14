@@ -414,7 +414,9 @@ mod imp {
                 if id == "cancel" && !state.cancel_requested.load(Ordering::SeqCst) {
                     continue;
                 }
-                if id == "transcribe_with_post_process" && !settings.post_process_enabled {
+                if crate::shortcut::prompt_targets::is_post_process_gated(id)
+                    && !settings.post_process_enabled
+                {
                     continue;
                 }
 

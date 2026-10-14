@@ -276,13 +276,28 @@ impl SettingsBackend for RoutedBackend {
         };
         Ok(routed_read(&live, commit))
     }
+    // @spec AC-006: Deleting a prompt releases its shortcuts first — .specs/features/005-custom-ai-prompts/spec.md#ac-006
+    /// A domain change that also changes the shortcut lists (deleting a prompt with shortcuts,
+    /// 005) gets the settings UI's `bindings` preparation: released before the commit,
+    /// registered again when the commit is refused, refused during a dictation session. Any
+    /// other change skips the preparation (a no-op for `bindings`) and commits as before.
     fn commit_change(
         &self,
         change: &DomainChange,
         expected: Option<Revision>,
     ) -> Result<SettingsRead, SettingsError> {
         let live = live(&self.app)?;
-        let commit = sequence::write_change(&live, &TauriEffects(&self.app), change, expected)?;
+        let effects = TauriEffects(&self.app);
+        let commit = match native_changes::prepared_change(&self.app, "bindings") {
+            Some(native) => sequence::write_change_prepared(
+                &live,
+                &effects,
+                ("bindings", change),
+                expected,
+                native?,
+            )?,
+            None => sequence::write_change(&live, &effects, change, expected)?,
+        };
         Ok(routed_read(&live, commit))
     }
     /// A live-only domain change of `key` gets the native preparation of the settings UI.

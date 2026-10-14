@@ -4,6 +4,8 @@
 
 use super::*;
 use crate::shortcut::fake_backend::FakeBackend;
+use crate::shortcut::identity::ShortcutRegistration;
+use crate::shortcut::prompt_targets::POST_PROCESS_ACTION;
 
 type TestResult = Result<(), String>;
 

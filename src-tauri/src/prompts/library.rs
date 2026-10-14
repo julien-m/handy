@@ -170,8 +170,8 @@ pub fn update(
 }
 
 // @spec FR-001: Delete resets the default to None — .specs/features/005-custom-ai-prompts/spec.md#fr-001
-/// Delete prompt `id` (the last one included: the library has no minimum). When it was the
-/// default, the default becomes None, never another prompt.
+/// Delete prompt `id` (the last one included: the library has no minimum) and its shortcuts.
+/// When it was the default, the default becomes None, never another prompt.
 ///
 /// # Errors
 /// `NotFound`.
@@ -183,6 +183,8 @@ pub fn remove(settings: &mut AppSettings, id: &str) -> Result<(), PromptError> {
     if settings.post_process_prompts.len() == before {
         return Err(PromptError::NotFound);
     }
+    // Its shortcuts go in the same revision (AC-006); the running instance releases them first.
+    crate::shortcut::prompt_targets::remove_target(settings, id);
     if settings.post_process_selected_prompt_id.as_deref() == Some(id) {
         settings.post_process_selected_prompt_id = None;
     }

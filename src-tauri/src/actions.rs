@@ -846,6 +846,16 @@ impl ShortcutAction for TestAction {
     }
 }
 
+/// The action a shortcut of `binding_id` runs: its own entry of `ACTION_MAP`, or for a prompt
+/// shortcut (005) the post-processing dictation, whose session then takes that prompt.
+pub fn action_for(binding_id: &str) -> Option<Arc<dyn ShortcutAction>> {
+    let id = match crate::shortcut::prompt_targets::prompt_of(binding_id) {
+        Some(_) => crate::shortcut::prompt_targets::POST_PROCESS_ACTION,
+        None => binding_id,
+    };
+    ACTION_MAP.get(id).cloned()
+}
+
 // Static Action Map
 pub static ACTION_MAP: Lazy<HashMap<String, Arc<dyn ShortcutAction>>> = Lazy::new(|| {
     let mut map = HashMap::new();

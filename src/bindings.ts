@@ -326,10 +326,19 @@ async fetchPostProcessModels(providerId: string) : Promise<Result<string[], stri
 }
 },
 /**
- * The library as published, with each prompt's issues and the default prompt.
+ * The library as published: each prompt with its issues, shortcuts and provider readiness, and
+ * the default prompt. Runs on the blocking pool (the Apple Intelligence check is synchronous).
+ * 
+ * # Errors
+ * `internal_error` if the worker could not run.
  */
-async getPromptLibrary() : Promise<PromptLibraryView> {
-    return await TAURI_INVOKE("get_prompt_library");
+async getPromptLibrary() : Promise<Result<PromptLibraryView, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("get_prompt_library") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
 },
 /**
  * Create a prompt; the id is generated once, outside the (re-runnable) edit.
@@ -360,12 +369,15 @@ async updatePostProcessPrompt(id: string, name: string, prompt: string) : Promis
 }
 },
 /**
- * Delete a prompt (the UI confirms first); a deleted default becomes None.
+ * Delete a prompt and its shortcuts (the UI confirms first, naming them); a deleted default
+ * becomes None. Its shortcuts are released before the commit and registered again if the
+ * commit is refused. Returns the removed shortcuts.
  * 
  * # Errors
- * `not_found`, or a commit refusal.
+ * `not_found`; `unavailable` (`shortcut_session_busy`) during a dictation when the prompt has
+ * shortcuts; or a commit refusal. Nothing is removed then.
  */
-async deletePostProcessPrompt(id: string) : Promise<Result<null, SettingsCommandError>> {
+async deletePostProcessPrompt(id: string) : Promise<Result<string[], SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("delete_post_process_prompt", { id }) };
 } catch (e) {
@@ -1318,6 +1330,22 @@ provider_override?: PromptProviderOverride | null;
  * Added by the one-time starter migration (still editable and deletable).
  */
 starter?: boolean }
+/**
+ * One prompt of the library listing: its view, its 0–2 shortcuts and its readiness.
+ */
+export type ListedPrompt = ({ id: string; name: string; prompt: string; 
+/**
+ * Provider and model override; `None` uses the default provider.
+ */
+provider_override: PromptProviderOverride | null; 
+/**
+ * Added by the starter migration.
+ */
+starter: boolean; 
+/**
+ * Why the prompt cannot be used until edited; empty for a valid prompt.
+ */
+issues: PromptIssue[] }) & { shortcuts: string[]; readiness: Readiness }
 export type LogLevel = "trace" | "debug" | "info" | "warn" | "error"
 /**
  * Answer of a menu request: the menu, or why it is refused (a typed value, not an error, so
@@ -1430,34 +1458,54 @@ export type PromptIssue =
  */
 export type PromptLibraryView = { 
 /**
- * Durable settings revision the view was read at.
- */
-revision: number; 
-/**
  * Default prompt of the post-processing shortcut, or `None`.
  */
-default_prompt_id: string | null; prompts: PromptView[] }
+default_prompt_id: string | null; 
+/**
+ * The AI post-processing switch: off, no dictation is processed.
+ */
+post_process_enabled: boolean; prompts: ListedPrompt[] }
 /**
  * Provider and model a prompt uses instead of the default ones (005). API keys stay per
  * provider: an override names a provider id and a model, never a credential.
  */
 export type PromptProviderOverride = { provider_id: string; model: string }
 /**
- * One prompt as the settings show it.
+ * Public readiness of a prompt: which provider and model it uses and what is missing.
  */
-export type PromptView = { id: string; name: string; prompt: string; 
+export type Readiness = { provider_id: string | null; model: string | null; is_override: boolean; ready: boolean; missing: ReadinessIssue | null }
 /**
- * Provider and model override; `None` uses the default provider.
+ * Why a prompt cannot process right now. Never carries a credential.
  */
-provider_override: PromptProviderOverride | null; 
+export type ReadinessIssue = 
 /**
- * Added by the starter migration.
+ * The provider has no base URL.
  */
-starter: boolean; 
+"missing_endpoint" | 
 /**
- * Why the prompt cannot be used until edited; empty for a valid prompt.
+ * No model is configured for the provider (or in the override).
  */
-issues: PromptIssue[] }
+"missing_model" | 
+/**
+ * The provider needs an API key and has none.
+ */
+"missing_api_key" | 
+/**
+ * Apple Intelligence is not available on this device right now.
+ */
+"provider_unavailable" | 
+/**
+ * The provider does not exist in this build.
+ */
+"unknown_provider" | 
+/**
+ * The prompt has validation issues and must be edited first.
+ */
+"invalid_prompt" | 
+/**
+ * The prompt is no longer in the library.
+ */
+"prompt_missing"
 export type RecordingRetentionPeriod = "never" | "preserve_limit" | "days_3" | "weeks_2" | "months_3"
 /**
  * The single per-dictation decision "insert or recover", and the only Enter veto.

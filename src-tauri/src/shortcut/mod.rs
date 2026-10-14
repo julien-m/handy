@@ -15,6 +15,7 @@ pub mod conflicts;
 pub mod edits;
 #[cfg(test)]
 mod fake_backend;
+mod gated;
 mod handler;
 pub mod handy_keys;
 pub mod identity;
@@ -23,6 +24,7 @@ mod keyboard_switch;
 pub(crate) mod live_change;
 #[cfg(test)]
 mod migration_tests;
+pub mod prompt_targets;
 mod registration_delta;
 pub mod tauri_impl;
 
@@ -168,11 +170,12 @@ fn reconcile_cancel_shortcut(app: &AppHandle) {
 // @spec AC-005: Cancel keeps its dynamic registration — .specs/features/004-multiple-dictation-shortcuts/spec.md#ac-005
 /// Whether `id`'s shortcuts are registered with the backend outside
 /// recording: cancel is registered dynamically while recording, and the
-/// post-processing action only while post-processing is enabled.
+/// post-processing action and the prompt shortcuts (005) only while
+/// post-processing is enabled.
 pub(crate) fn is_statically_registered(id: &str, settings: &settings::AppSettings) -> bool {
     match id {
         "cancel" => false,
-        "transcribe_with_post_process" => settings.post_process_enabled,
+        _ if prompt_targets::is_post_process_gated(id) => settings.post_process_enabled,
         _ => true,
     }
 }
@@ -384,10 +387,7 @@ pub fn suspend_all_shortcuts(app: &AppHandle) {
 pub fn resume_all_shortcuts(app: &AppHandle) {
     let settings = get_settings(app);
     for (id, binding) in &settings.bindings {
-        if id == "cancel" {
-            continue;
-        }
-        if id == "transcribe_with_post_process" && !settings.post_process_enabled {
+        if !is_statically_registered(id, &settings) {
             continue;
         }
         if let Err(e) = register_shortcut(app, binding.clone()) {

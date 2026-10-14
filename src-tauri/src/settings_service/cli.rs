@@ -8,7 +8,7 @@ use super::{
     route::route,
 };
 use crate::cli::{
-    ChangeOptions, CliArgs, CliCommand, OutputAction, SettingsArgs, SettingsCommand,
+    ChangeOptions, CliArgs, CliCommand, OutputAction, PromptsAction, SettingsArgs, SettingsCommand,
     ShortcutsAction,
 };
 use clap::{error::ErrorKind, Parser};
@@ -17,8 +17,9 @@ use std::ffi::OsString;
 
 /// What `main` does next.
 pub enum Dispatch {
-    /// Not a settings invocation: start the app with these historical arguments.
-    App(CliArgs),
+    /// Not a settings invocation: start the app with these historical arguments (boxed: the
+    /// parsed arguments are far larger than an exit code).
+    App(Box<CliArgs>),
     /// A settings invocation ran; exit with this code.
     Exit(i32),
 }
@@ -30,7 +31,7 @@ pub fn dispatch(argv: Vec<OsString>) -> Dispatch {
     match CliArgs::try_parse_from(&argv) {
         Ok(args) => match args.command.clone() {
             Some(CliCommand::Settings(settings)) => Dispatch::Exit(run(&args, &settings)),
-            None => Dispatch::App(args),
+            None => Dispatch::App(Box::new(args)),
         },
         Err(error) if settings_requested(&argv) => Dispatch::Exit(parse_failure(&argv, &error)),
         Err(error) => error.exit(),
@@ -38,13 +39,42 @@ pub fn dispatch(argv: Vec<OsString>) -> Dispatch {
 }
 
 fn run(args: &CliArgs, settings: &SettingsArgs) -> i32 {
-    let operation = operation(&settings.operation);
+    let json = args.json || settings.json;
+    // A text read from stdin is read here, in the CLI process, never by the running instance.
+    let operation = match read_operation(&settings.operation) {
+        Ok(operation) => operation,
+        Err(error) => return emit(View::Change, &Reply::failure(error), json),
+    };
     let reply = if mixes_app_flags(args) {
         Reply::failure(SettingsError::new(SettingsErrorCode::UsageError))
     } else {
         route(&operation)
     };
-    emit(View::of(&operation), &reply, args.json || settings.json)
+    emit(View::of(&operation), &reply, json)
+}
+/// The wire operation of `command`, with a prompt text given as `-` read from stdin.
+///
+/// # Errors
+/// The refusals of `input::read_source` (terminal stdin, size, encoding).
+fn read_operation(command: &SettingsCommand) -> Result<SettingsOperation, SettingsError> {
+    match command {
+        SettingsCommand::Prompts(prompts) => {
+            let input = match stdin_text(&prompts.action) {
+                true => Some(super::input::read_source("-")?),
+                false => None,
+            };
+            Ok(prompts_operation(&prompts.action, input))
+        }
+        other => Ok(operation(other)),
+    }
+}
+/// Whether the prompt action takes its text from stdin (`--text -`).
+fn stdin_text(action: &PromptsAction) -> bool {
+    match action {
+        PromptsAction::Create { text, .. } => text == "-",
+        PromptsAction::Update { text, .. } => text.as_deref() == Some("-"),
+        _ => false,
+    }
 }
 /// The wire operation of a parsed command.
 pub fn operation(command: &SettingsCommand) -> SettingsOperation {
@@ -62,7 +92,94 @@ pub fn operation(command: &SettingsCommand) -> SettingsOperation {
         },
         SettingsCommand::Output(output) => output_operation(&output.action),
         SettingsCommand::Shortcuts(shortcuts) => shortcuts_operation(&shortcuts.action),
+        SettingsCommand::Prompts(prompts) => prompts_operation(&prompts.action, None),
     }
+}
+/// Wire operation of a prompts-domain action (arguments documented in `domains::prompts`);
+/// `input` is the text already read from stdin, which then replaces the text argument.
+fn prompts_operation(action: &PromptsAction, input: Option<String>) -> SettingsOperation {
+    let (name, arguments, options) = prompt_arguments(action, input.is_some());
+    SettingsOperation::Domain {
+        domain: "prompts".to_owned(),
+        action: name.to_owned(),
+        arguments,
+        input,
+        dry_run: options.dry_run,
+        expected_revision: options.expected_revision.map(super::protocol::Revision),
+    }
+}
+/// Canonical action, wire arguments and change options of a prompts action.
+fn prompt_arguments(
+    action: &PromptsAction,
+    from_stdin: bool,
+) -> (&'static str, Vec<String>, ChangeOptions) {
+    use PromptsAction as A;
+    let (name, arguments) = match action {
+        A::List => ("list", Vec::new()),
+        A::Create { name, text, .. } => ("create", text_arguments(name, Some(text), from_stdin)),
+        A::Update { id, name, text, .. } => {
+            ("update", update_arguments(id, name, text, from_stdin))
+        }
+        A::Delete { id, .. } => ("remove", vec![id.clone()]),
+        A::SetDefault { id, .. } => ("set-default", vec![id.clone()]),
+        A::SetProviderOverride {
+            id,
+            provider,
+            model,
+            clear,
+            ..
+        } => (
+            "set-provider-override",
+            override_arguments(id, provider, model, *clear),
+        ),
+    };
+    (name, arguments, prompt_options(action))
+}
+/// Revision and dry-run options of a prompts change; `list` has none.
+fn prompt_options(action: &PromptsAction) -> ChangeOptions {
+    match action {
+        PromptsAction::List => ChangeOptions::default(),
+        PromptsAction::Create { options, .. }
+        | PromptsAction::Update { options, .. }
+        | PromptsAction::Delete { options, .. }
+        | PromptsAction::SetDefault { options, .. }
+        | PromptsAction::SetProviderOverride { options, .. } => options.clone(),
+    }
+}
+/// `create NAME [TEXT]`: the text is omitted when it comes from stdin.
+fn text_arguments(name: &str, text: Option<&String>, from_stdin: bool) -> Vec<String> {
+    let text = text.filter(|_| !from_stdin).cloned();
+    std::iter::once(name.to_owned()).chain(text).collect()
+}
+/// `update ID [name=NAME] [text=TEXT]`: the text is omitted when it comes from stdin.
+fn update_arguments(
+    id: &str,
+    name: &Option<String>,
+    text: &Option<String>,
+    from_stdin: bool,
+) -> Vec<String> {
+    let text = named("text", text).filter(|_| !from_stdin);
+    let fields = [named("name", name), text].into_iter().flatten();
+    std::iter::once(id.to_owned()).chain(fields).collect()
+}
+/// `set-provider-override ID provider=P model=M`, or `ID clear=true`.
+fn override_arguments(
+    id: &str,
+    provider: &Option<String>,
+    model: &Option<String>,
+    clear: bool,
+) -> Vec<String> {
+    let fields = match clear {
+        true => vec![Some("clear=true".to_owned())],
+        false => vec![named("provider", provider), named("model", model)],
+    };
+    std::iter::once(id.to_owned())
+        .chain(fields.into_iter().flatten())
+        .collect()
+}
+/// `key=value` wire argument of an optional flag.
+fn named(key: &str, value: &Option<String>) -> Option<String> {
+    value.as_ref().map(|value| format!("{key}={value}"))
 }
 /// Wire operation of a shortcuts-domain action.
 fn shortcuts_operation(action: &ShortcutsAction) -> SettingsOperation {

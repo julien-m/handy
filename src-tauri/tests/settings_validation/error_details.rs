@@ -81,27 +81,29 @@ fn items_are_sorted_by_index_and_bounded_without_candidate_values() -> TestResul
     assert_eq!(bounded.items().last().map(ErrorItem::index), Some(99));
     Ok(())
 }
+/// Every closed `details.reason` of this build, in wire-schema order.
+const REASONS: [&str; 15] = [
+    "unsupported_platform",
+    "shortcut_session_busy",
+    "instance_required",
+    "last_shortcut",
+    "alternatives_unsupported",
+    "registration_refused",
+    "invalid_shortcut",
+    "prompt_name_empty",
+    "prompt_name_too_long",
+    "prompt_name_duplicate",
+    "prompt_text_empty",
+    "prompt_text_too_long",
+    "override_incomplete",
+    "unknown_provider",
+    "prompt_invalid",
+];
 #[test]
 fn schema_closes_reason_and_items() -> TestResult {
     let schema = contract_schema()?;
     let details = &schema["$defs"]["error_details"]["properties"];
-    let reasons = json!([
-        "unsupported_platform",
-        "shortcut_session_busy",
-        "instance_required",
-        "last_shortcut",
-        "alternatives_unsupported",
-        "registration_refused",
-        "invalid_shortcut",
-        "prompt_name_empty",
-        "prompt_name_too_long",
-        "prompt_name_duplicate",
-        "prompt_text_empty",
-        "prompt_text_too_long",
-        "override_incomplete",
-        "unknown_provider",
-        "prompt_invalid"
-    ]);
+    let reasons = json!(REASONS);
     assert_eq!(details["reason"], json!({ "enum": reasons }));
     assert_eq!(
         details["items"]["items"]["properties"]["code"]["enum"],

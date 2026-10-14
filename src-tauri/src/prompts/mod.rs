@@ -2,5 +2,6 @@
 //! migration, shared by the settings UI commands and the `handy settings prompts` domain.
 pub mod library;
 pub mod migration;
+pub mod provider;
 pub mod types;
 pub mod view;

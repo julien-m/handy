@@ -117,6 +117,86 @@ pub enum SettingsCommand {
     Output(OutputArgs),
     /// Shortcuts of each action: list them; add, remove or reset them in the running Handy
     Shortcuts(ShortcutsArgs),
+    /// AI post-processing prompts: list them with their readiness (running Handy); create,
+    /// update, delete, choose the default and the provider override
+    Prompts(PromptsArgs),
+}
+/// `handy settings prompts`: the prompt library, with the validation of the settings window.
+#[derive(Args, Debug, Clone)]
+#[command(
+    after_help = "A name has 1 to 60 characters and is unique ignoring case; a text has 1 to 8000 \
+characters and is not only spaces; a library holds at most 50 prompts. TEXT - reads the text \
+from stdin. list needs a running Handy (it checks provider readiness there); without one it fails \
+with unavailable, and the library stays readable with handy settings get post_process_prompts. \
+Deleting a prompt also deletes its shortcuts (manage them with handy settings shortcuts and the \
+action prompt:ID); during a dictation that deletion fails with unavailable (reason \
+shortcut_session_busy). API keys are never printed; configure them in the settings window."
+)]
+pub struct PromptsArgs {
+    #[command(subcommand)]
+    pub action: PromptsAction,
+}
+/// Actions of the prompts domain.
+#[derive(Subcommand, Debug, Clone)]
+pub enum PromptsAction {
+    /// Print every prompt with its shortcuts, provider readiness and the default prompt
+    List,
+    /// Create a prompt
+    Create {
+        /// Name, unique ignoring case
+        #[arg(long)]
+        name: String,
+        /// Text; "${output}" stands for the transcript; - reads it from stdin
+        #[arg(long)]
+        text: String,
+        #[command(flatten)]
+        options: ChangeOptions,
+    },
+    /// Change the name and/or the text of prompt ID
+    #[command(visible_alias = "edit")]
+    Update {
+        /// Prompt id, as listed
+        id: String,
+        /// New name
+        #[arg(long)]
+        name: Option<String>,
+        /// New text; - reads it from stdin
+        #[arg(long)]
+        text: Option<String>,
+        #[command(flatten)]
+        options: ChangeOptions,
+    },
+    /// Delete prompt ID and its shortcuts; a deleted default becomes none
+    #[command(visible_alias = "remove")]
+    Delete {
+        /// Prompt id, as listed
+        id: String,
+        #[command(flatten)]
+        options: ChangeOptions,
+    },
+    /// Choose the default prompt of the post-processing shortcut (a prompt id, or none)
+    SetDefault {
+        /// Prompt id, or none
+        id: String,
+        #[command(flatten)]
+        options: ChangeOptions,
+    },
+    /// Set the provider and model of prompt ID, or --clear to use the default provider again
+    SetProviderOverride {
+        /// Prompt id, as listed
+        id: String,
+        /// Provider id (openai, custom, apple_intelligence, ...)
+        #[arg(long, requires = "model", required_unless_present = "clear")]
+        provider: Option<String>,
+        /// Model of that provider
+        #[arg(long, requires = "provider")]
+        model: Option<String>,
+        /// Use the default provider and model again
+        #[arg(long, conflicts_with_all = ["provider", "model"])]
+        clear: bool,
+        #[command(flatten)]
+        options: ChangeOptions,
+    },
 }
 
 /// `handy settings shortcuts`: the shortcut lists, with the validation of the settings window.
