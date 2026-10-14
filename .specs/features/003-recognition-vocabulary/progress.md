@@ -16,6 +16,21 @@ Penflow pass and is not started. Per-step evidence lives in `proofs/claude-impl/
 | 5 Settings screen | Todo | — | — | Not started: waits for the Penflow pass (code-ir, semantic and test IDs, design certification) | 2026-10-14 |
 | 6 Acceptance, performance, regressions | In Progress | `proofs/claude-impl/final/` | `cargo test` (all targets); `bun run test:keyboard`, `test:shortcut-list`, `test:settings-errors`, `test:settings-store` | Automated suites pass (749 Rust tests, 21 ignored); native proof, SC-003, performance and UI not run | 2026-10-14 |
 
+## Sync with dev (2026-10-14)
+
+Merge `bc1143ee` of `dev` (`825598e9`: smart paste 007 behind `smart-paste-dispatch`, clipboard
+test fix, docs). No textual conflict; the files changed on both sides were checked: one
+`[features]` table in `Cargo.toml` (`smart-paste-dispatch`, `destination-return`) beside the
+`caseless` pin, 65 public keys with 003's `custom_words` and `custom_filler_words` refusals, 007's
+`ValidationReason` variants beside 003's closed `ErrorReason` list, README and changelogs (dev's
+versions; 003 did not touch them). The 008 checked schema (contract DTO generator) and
+`bindings.ts` (debug specta export, isolated HOME, `--list-models`) were regenerated and came out
+byte-identical to the merged files. Evidence in `proofs/claude-sync/` (`summary.txt`):
+full `cargo test` 954 passed, 0 failed, 25 ignored; clippy `--lib --bins -D warnings` exit 0;
+clippy `--all-targets` exit 0 with the 5 pre-existing upstream warnings only; `cargo fmt --check`,
+`bun run lint`, `bun run format:check`, `tsc`, the frontend unit tests and the translation check
+exit 0; repository conventions PASS, new 0, baseline unchanged.
+
 ## Resume point
 
 Resume at Step 0a and Step 5 once the Penflow pass for `recognition-vocabulary` / `vocabulary-settings`
