@@ -1,39 +1,46 @@
 {
   "schema_version": "1",
   "policy_version": "078.1",
-  "context_hash": "287cd4db40749d089d3980b4eac0f7097cadbc475582f5c5679b31f0cdd8d7c7",
+  "context_hash": "de909c6321df1ee96fdd289e7e800431cb40d24d84dd2dd67c7deae8e4a89094",
   "source_hashes": {
     ".specs/constitution.md": "f65acb99e00dfab5f8ce418aae1b5979265f2b2eb3c399666b09c4c2caf82067",
-    ".specs/features/001-microphone-priority/plan.md": "604643ec42dd075ff29ca1df4f2e7b07001e18b2184e2f135ad925b4e1f3441d",
-    ".specs/features/001-microphone-priority/spec.md": "d949baeef810be7cd8a360f9eef027dbd410b1ef588064f91fba75ba46f41226",
-    ".specs/features/008-settings-cli/plan.md": "863ef2789f6e9256d78832d64722f7812104b33c98d5876166f97ffc361d4eec",
+    ".specs/features/001-microphone-priority/plan.md": "a85aad5e71781e204cd03b031c6cfc94dc0e8962944ad00bdd3d8c4f289e7d17",
+    ".specs/features/001-microphone-priority/spec.md": "4d3d351d92aad4c59097d91571d75ba024477c94b7dabb349ee14df35135805f",
     ".specs/project.md": "cd935573446ed94fa43256de0a4d14b9474c4356fa66623f3c8c32a80572b699",
     ".specs/stacks/_default.md": "4df92d16eef38a57c8c2bf1fff8425852b86a41e86c6b7c16423ec166ddfc0f8",
     ".specs/testing/strategy.md": "bfe0dd480a9d3cf2575cba8407a984add02dcbdad2a17fcb4fc560def9058934"
   },
   "reviewer_model": "claude-opus-5-5",
   "complete": true,
-  "ready": false,
+  "ready": true,
   "errors": [],
   "conclusions": [
     {
       "requirement_id": "001-microphone-priority:AC-001",
       "disposition": "covered",
-      "rationale": "Draft editor with pointer and Move up/down, Save of the complete order, duplicate/empty validation and restart readback.",
+      "rationale": "The plan persists a complete ordered list, edits it as a UI draft with pointer drag and Move up/down that share identical transitions, adds/removes entries from the catalog, rejects empty/duplicate names with validation_failed and no partial commit, and tests exact order after restart in real-file integration and UI tests.",
       "source_citations": [
         {
           "section_id": ".specs/features/001-microphone-priority/spec.md:L187-L191",
           "excerpt": "supports add/remove and both pointer and keyboard reorder, and preserves the exact committed order after restart"
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/spec.md:L187-L191",
+          "excerpt": "Duplicate or empty device identities are rejected without a partial write."
         }
       ],
       "plan_citations": [
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L97-L104",
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L67-L76",
+          "excerpt": "Duplicate/empty input returns `validation_failed` without a partial commit"
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L99-L109",
           "excerpt": "Pointer dragging and Move up/down have identical draft transitions"
         },
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L367-L384",
-          "excerpt": "exact order after restart"
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L411-L428",
+          "excerpt": "explicit empty wins, exact order after restart, idempotence"
         }
       ],
       "searched_plan_sections": []
@@ -41,21 +48,33 @@
     {
       "requirement_id": "001-microphone-priority:AC-002",
       "disposition": "covered",
-      "rationale": "Four statuses, open/5 s/Retry refresh with fencing, effective input with reason and scope current/last/not-used-yet, text in addition to color.",
+      "rationale": "Four availability states are projected from a non-invasive catalog (failure is unknown, duplicates ambiguous), refreshed on open, every 5 seconds and on Retry with one in-flight refresh and fenced late replies; the effective input is shown separately with reason and current/last-recording/not-used-yet scope; Add lists the real catalog; availability text complements color.",
       "source_citations": [
         {
           "section_id": ".specs/features/001-microphone-priority/spec.md:L192-L196",
-          "excerpt": "The microphone actually used is displayed separately from saved order"
+          "excerpt": "Availability refreshes when the audio settings open, every 5 seconds while they remain open, and on manual Retry"
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/spec.md:L192-L196",
+          "excerpt": "Status uses text in addition to color."
         }
       ],
       "plan_citations": [
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L75-L82",
-          "excerpt": "open/5-second cadence/Retry trigger fresh observations"
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L77-L84",
+          "excerpt": "open/5-second cadence/Retry trigger fresh observations, late replies are fenced and unmount cancels publication"
         },
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L89-L96",
-          "excerpt": "otherwise display last **recording** device since launch, marked last-used, or not-used-yet after restart"
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L91-L98",
+          "excerpt": "Reasons are first-choice, fallback, clamshell, system-default; availability is independent."
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L99-L109",
+          "excerpt": "Availability text adds information to color"
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L67-L76",
+          "excerpt": "UI Add lists the real catalog (including duplicate-name groups labelled ambiguous)"
         }
       ],
       "searched_plan_sections": []
@@ -63,17 +82,29 @@
     {
       "requirement_id": "001-microphone-priority:AC-003",
       "disposition": "covered",
-      "rationale": "Ordered once-only attempts, ambiguity skip, one re-enumeration and default inside one 6 s deadline with owned attempt handles. The allocation may give an attempt less than 2 s (see warning).",
+      "rationale": "Every stream opening (recording start, always-on launch, idle committed edit, loss) uses a fresh catalog and tries configured names in order; ambiguity counts as a failed attempt; each attempt has a 2 s timeout inside a 6 s monotonic deadline with a reserved default slot; one re-enumeration; arming state kept until first-sample readiness; no pre-readiness audio; transient failures never modify the list. The reservation rule that skips late configured choices with reason `deadline` is a plan-level reconciliation of the 2 s/6 s bounds and is recorded as a non-critical ambiguity.",
       "source_citations": [
         {
           "section_id": ".specs/features/001-microphone-priority/spec.md:L197-L201",
           "excerpt": "Each open attempt times out after 2 seconds and the whole resolution after 6 seconds"
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/spec.md:L197-L201",
+          "excerpt": "A configured name matching several present devices counts as a failed attempt with reason ambiguous."
         }
       ],
       "plan_citations": [
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L75-L82",
-          "excerpt": "A single monotonic 6-second resolution deadline includes lid probe, enumeration, one fresh re-enumeration"
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L77-L84",
+          "excerpt": "every open attempt gets its full 2-second timeout; the 6-second total limits how many attempts start and never shortens one."
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L85-L90",
+          "excerpt": "indicator stays arming until the actual stream/capture is ready. Do not buffer/replay audio spoken before readiness."
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L77-L84",
+          "excerpt": "Normal resolution uses the committed revision captured at session start and a fresh catalog at every recording start, including always-on."
         }
       ],
       "searched_plan_sections": []
@@ -81,8 +112,12 @@
     {
       "requirement_id": "001-microphone-priority:AC-004",
       "disposition": "covered",
-      "rationale": "Non-destructive fallback, fresh catalog at each start for reconnection, always-on reopen before capture and pending revision during recording.",
+      "rationale": "The plan removes the fallback erasure path, keeps saved choices and clamshell untouched, re-resolves with a fresh catalog at every start so a reconnected higher device wins, re-resolves always-on at recording start and reopens before capture when the device differs, and defers edits during capture to the next session without discarding captured audio.",
       "source_citations": [
+        {
+          "section_id": ".specs/features/001-microphone-priority/spec.md:L202-L206",
+          "excerpt": "A fallback, disconnect or reconnect never deletes/reorders saved choices or resets the clamshell setting."
+        },
         {
           "section_id": ".specs/features/001-microphone-priority/spec.md:L202-L206",
           "excerpt": "Editing priority during a recording affects the next session and does not interrupt or discard the current session's captured audio."
@@ -90,11 +125,15 @@
       ],
       "plan_citations": [
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L75-L82",
-          "excerpt": "a fresh catalog at every recording start, including always-on"
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L349-L358",
+          "excerpt": "Remove `persist_default_microphone_after_fallback` erasure and first-match cache path."
         },
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L89-L96",
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L91-L98",
+          "excerpt": "Always-on recording start re-resolves; same device retains healthy stream, changed device reopens before capture."
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L91-L98",
           "excerpt": "active recording continues on its chosen stream, then applies latest pending revision after completion"
         }
       ],
@@ -103,35 +142,55 @@
     {
       "requirement_id": "001-microphone-priority:AC-005",
       "disposition": "covered",
-      "rationale": "Closed lid and configured override selects override then default; open/unknown lid or no override uses the list.",
+      "rationale": "Closed lid with a configured override tries the override then the system default, excluding the normal list; open/unknown lid or no override uses the normal list; a lid probe that does not finish in time counts as unknown; resolution never writes settings. Tests cover override present/absent and unknown lid.",
       "source_citations": [
         {
           "section_id": ".specs/features/001-microphone-priority/spec.md:L207-L211",
-          "excerpt": "with a configured override and a confirmed closed lid, attempt the clamshell microphone"
+          "excerpt": "with a configured override and a confirmed closed lid, attempt the clamshell microphone; if it is unavailable or fails to open, attempt the system default, as today"
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/spec.md:L207-L211",
+          "excerpt": "Open lid or unknown lid state uses the normal priority list."
         }
       ],
       "plan_citations": [
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L75-L82",
-          "excerpt": "Closed lid **and configured override** selects override then default, excluding normal list."
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L77-L84",
+          "excerpt": "Closed lid **and configured override** selects override then default, excluding normal list. Open/unknown lid, or no override, uses normal priority."
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L445-L475",
+          "excerpt": "Override configured AND confirmed closed; otherwise normal; no-override and unknown-lid tests"
         }
       ],
       "searched_plan_sections": []
     },
     {
       "requirement_id": "001-microphone-priority:AC-006",
-      "disposition": "ambiguous",
-      "rationale": "Presence-aware migration, explicit empty wins, raw legacy key preserved and recoverable startup commit are planned. The plan keeps the \"legacy default sentinel\" mapping to an empty list, while the merged 008 treats a stored literal \"default\" as a device name; stores written by the 008 CLI after its merge can hold such a value.",
+      "disposition": "covered",
+      "rationale": "Migration detects raw key presence before serde defaults; null legacy becomes [], any non-null value including \"default\" becomes [exact_name] as clarified on 2026-10-14; an explicit list including [] wins; the raw legacy key and clamshell/unknown fields are preserved; persistence uses 008's atomic startup normalization keeping original bytes on failure; idempotence and failure fixtures are planned.",
       "source_citations": [
         {
           "section_id": ".specs/features/001-microphone-priority/spec.md:L212-L216",
-          "excerpt": "null/default becomes an empty normal priority list"
+          "excerpt": "a non-null legacy selected_microphone becomes one priority entry with that exact name, including the device name \"default\""
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/spec.md:L212-L216",
+          "excerpt": "Migration is idempotent, retains unavailable legacy choices, preserves clamshell settings and leaves the original store recoverable if persistence fails."
         }
       ],
       "plan_citations": [
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L67-L74",
-          "excerpt": "null or legacy default sentinel becomes `[]`"
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L67-L76",
+          "excerpt": "Absent `microphone_priority`: a **null** legacy `selected_microphone` (008 stores the system default as null) becomes `[]`"
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L67-L76",
+          "excerpt": "atomic replacement that keeps the original bytes on failure"
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L411-L428",
+          "excerpt": "missing/null legacy (→ `[]`), literal `\"default\"` (→ `[\"default\"]`), unavailable/ambiguous legacy"
         }
       ],
       "searched_plan_sections": []
@@ -139,8 +198,12 @@
     {
       "requirement_id": "001-microphone-priority:AC-007",
       "disposition": "covered",
-      "rationale": "One typed list patch through the shared commit, CAS with draft retention and Reload, next-open cache invalidation and truthful post-commit failure.",
+      "rationale": "UI and CLI submit the same DomainChange through the merged 008 transaction (tauri_adapter::write_change vs SettingsBackend::commit_change) with the same validator; invalid/stale/failed writes produce typed errors with no partial state; the UI keeps the draft on conflict and offers Reload; the commit's live effect invalidates the next-open cache without interrupting an active recording.",
       "source_citations": [
+        {
+          "section_id": ".specs/features/001-microphone-priority/spec.md:L217-L221",
+          "excerpt": "On a stale revision the UI keeps the draft, shows that settings changed elsewhere and offers Reload"
+        },
         {
           "section_id": ".specs/features/001-microphone-priority/spec.md:L217-L221",
           "excerpt": "A committed priority update invalidates cached resolution for the next stream opening without interrupting an active recording."
@@ -148,12 +211,16 @@
       ],
       "plan_citations": [
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L67-L74",
-          "excerpt": "The whole ordered list is one typed patch to the latest snapshot"
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L99-L109",
+          "excerpt": "Save submits the complete draft as the same `DomainChange` through `tauri_adapter::write_change` with the base revision (same validator and transaction as the CLI)"
         },
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L97-L104",
-          "excerpt": "Stale revision retains draft and offers Reload"
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L99-L109",
+          "excerpt": "Stale revision retains draft and offers Reload to adopt current committed order/discard edits."
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L67-L76",
+          "excerpt": "which invalidates the next-open resolution cache and queues the always-on reopen"
         }
       ],
       "searched_plan_sections": []
@@ -161,17 +228,29 @@
     {
       "requirement_id": "001-microphone-priority:AC-008",
       "disposition": "covered",
-      "rationale": "Exact command names, zero-name empty set, list data shape with configured/availability/effective, exact 008 exits; the domain-framework fit is questioned in a warning.",
+      "rationale": "The plan registers the exact `handy settings microphones list` and `set-priority <name>...` names as a 008 Domain, reuses expected-revision placement, the single JSON envelope, 008 stable codes and exit mapping, introduces no MCP server, exposes no credentials, and implements the 2026-10-14 clarifications: `list` as a live operation refused offline with `unavailable`/5, offline order readable via `get microphone_priority`, and generic `set selected_microphone`/`microphone_priority` refused with `microphones_domain`.",
       "source_citations": [
         {
           "section_id": ".specs/features/001-microphone-priority/spec.md:L222-L226",
-          "excerpt": "`handy settings microphones set-priority <name>...` (complete order, optional expected revision)"
+          "excerpt": "With `--json`, stdout contains only the F8 JSON envelope"
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/spec.md:L394-L415",
+          "excerpt": "Without a running Handy it returns the 008 live-only refusal (`unavailable`, exit 5, empty details) and never fabricates availability."
         }
       ],
       "plan_citations": [
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L97-L104",
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L99-L109",
           "excerpt": "Keep the public names in AC-008: `handy settings microphones list` and `handy settings microphones set-priority <name>...`."
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L99-L109",
+          "excerpt": "No second JSON line or diagnostics on stdout, no MCP server, no OpenAPI because no HTTP endpoint is introduced."
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L359-L368",
+          "excerpt": "`list` live answer and offline `unavailable`/5 with empty details"
         }
       ],
       "searched_plan_sections": []
@@ -179,17 +258,25 @@
     {
       "requirement_id": "001-microphone-priority:FR-001",
       "disposition": "covered",
-      "rationale": "Steps 2, 6, 7.",
+      "rationale": "Persistence of a unique ordered list (`microphone_priority: Vec<String>` with shared uniqueness validation) and accessible add/remove/reorder controls in the existing audio settings (draft editor, Move up/down, focus retention, keyboard tests) are planned in Steps 2, 6 and 7.",
       "source_citations": [
         {
           "section_id": ".specs/features/001-microphone-priority/spec.md:L346-L350",
-          "excerpt": "Persist a unique ordered list of microphone choices"
+          "excerpt": "Persist a unique ordered list of microphone choices and expose accessible add/remove/reorder controls in the existing audio settings."
         }
       ],
       "plan_citations": [
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L285-L294",
-          "excerpt": "with list schema/descriptor/patch and absent-key startup migration"
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L329-L338",
+          "excerpt": "FR-001.1: Persistent ordered list"
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L369-L378",
+          "excerpt": "FR-001.2: Accessible list editor"
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L99-L109",
+          "excerpt": "stable per-name row identity preserves focus after reorder/remove/retry"
         }
       ],
       "searched_plan_sections": []
@@ -197,17 +284,29 @@
     {
       "requirement_id": "001-microphone-priority:FR-002",
       "disposition": "covered",
-      "rationale": "Catalog projection and UI refresh.",
+      "rationale": "Availability and effective input are separate projections; failed or incomplete enumeration yields unknown and never unavailable; duplicate names are ambiguous, skipped as failed attempts without arbitrary first-match, and stay saved.",
       "source_citations": [
         {
           "section_id": ".specs/features/001-microphone-priority/spec.md:L351-L355",
-          "excerpt": "Same-named ambiguous devices are reported as ambiguous"
+          "excerpt": "failed enumeration is unknown, not proof that a device disappeared"
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/spec.md:L351-L355",
+          "excerpt": "are skipped as a failed attempt at stream opening rather than resolved to an arbitrary device"
         }
       ],
       "plan_citations": [
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L295-L304",
-          "excerpt": "pure candidate/deadline/status policy and real cpal catalog adapter"
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L77-L84",
+          "excerpt": "failure or incomplete name discovery marks affected status unknown; duplicates are ambiguous. Failed probes cannot masquerade as absence."
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L339-L348",
+          "excerpt": "name groups never arbitrary first-match"
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L50-L64",
+          "excerpt": "AC-002/003; four availability states, effective reason, timed refresh"
         }
       ],
       "searched_plan_sections": []
@@ -215,17 +314,21 @@
     {
       "requirement_id": "001-microphone-priority:FR-003",
       "disposition": "covered",
-      "rationale": "Pure resolver plus owned opener.",
+      "rationale": "Ordered resolution then system default with bounded per-attempt and global deadlines, explicit recording error on failure, and no list mutation (fallback erasure path removed) are planned in Steps 1, 3, 4 and 7 with fake-clock traces.",
       "source_citations": [
         {
           "section_id": ".specs/features/001-microphone-priority/spec.md:L356-L360",
-          "excerpt": "Resolve and open normal microphone choices in order, then system default"
+          "excerpt": "Resolve and open normal microphone choices in order, then system default, with bounded attempts and explicit failure."
         }
       ],
       "plan_citations": [
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L295-L304",
-          "excerpt": "One re-enumeration, budget allocations/default and normal/clamshell branches explicit."
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L339-L348",
+          "excerpt": "Each eligible name tried once in order, default inside global budget after failures, unknown never unavailable, preferences untouched."
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L246-L279",
+          "excerpt": "Resolving --> Error: deadline or no device"
         }
       ],
       "searched_plan_sections": []
@@ -233,17 +336,21 @@
     {
       "requirement_id": "001-microphone-priority:FR-004",
       "disposition": "covered",
-      "rationale": "Sealed prefix, single completion token, no splice.",
+      "rationale": "Changes apply at the next opening (queued revision-tagged effect), the session keeps its chosen device, and a loss seals and transcribes the captured prefix exactly once through the normal stop path with a translated cut-short notice and no splicing; the next opening re-resolves.",
       "source_citations": [
         {
           "section_id": ".specs/features/001-microphone-priority/spec.md:L361-L365",
-          "excerpt": "A device loss ends the current recording"
+          "excerpt": "audio captured before the loss is kept and transcribed normally, the user is told the recording was cut short, and no other microphone is spliced into its samples"
         }
       ],
       "plan_citations": [
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L89-L96",
-          "excerpt": "seal the current generation's captured prefix, end it exactly once"
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L91-L98",
+          "excerpt": "seal the current generation's captured prefix, end it exactly once, report translated cut-short notification"
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L91-L98",
+          "excerpt": "Do not use cancel-generation or splice samples from fallback device."
         }
       ],
       "searched_plan_sections": []
@@ -251,17 +358,25 @@
     {
       "requirement_id": "001-microphone-priority:FR-005",
       "disposition": "covered",
-      "rationale": "Clamshell policy and integration.",
+      "rationale": "Closed-lid override-then-default behavior is preserved and resolution never writes the clamshell setting or the list; regression fixtures cover clamshell with and without override.",
       "source_citations": [
         {
           "section_id": ".specs/features/001-microphone-priority/spec.md:L366-L370",
-          "excerpt": "Preserve the existing closed-lid behavior"
+          "excerpt": "Preserve the existing closed-lid behavior (override first, then system default) and never erase the clamshell setting or the normal priority list."
         }
       ],
       "plan_citations": [
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L305-L314",
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L339-L348",
+          "excerpt": "FR-005.1: Closed-lid override policy"
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L349-L358",
           "excerpt": "FR-005.2: Clamshell integration"
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L39-L49",
+          "excerpt": "PASS: retain clamshell and legacy raw key"
         }
       ],
       "searched_plan_sections": []
@@ -269,17 +384,21 @@
     {
       "requirement_id": "001-microphone-priority:FR-006",
       "disposition": "covered",
-      "rationale": "Presence-aware recoverable migration (default wording tracked on AC-006).",
+      "rationale": "Migration runs only when the key is absent in the raw payload, maps legacy intent, preserves the legacy key, clamshell and unknown fields, and persists through the atomic startup commit that keeps the original on failure.",
       "source_citations": [
         {
           "section_id": ".specs/features/001-microphone-priority/spec.md:L371-L375",
-          "excerpt": "Migrate old single microphone selection only when the priority key is absent"
+          "excerpt": "Migrate old single microphone selection only when the priority key is absent, retaining intent and recoverability without changing unrelated settings."
         }
       ],
       "plan_citations": [
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L67-L74",
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L67-L76",
           "excerpt": "Detect key presence in raw JSON before serde defaults."
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L67-L76",
+          "excerpt": "Preserve the raw legacy key unchanged and ignore it for normal resolution once the new key exists. Keep clamshell/channel/unknown fields."
         }
       ],
       "searched_plan_sections": []
@@ -287,17 +406,25 @@
     {
       "requirement_id": "001-microphone-priority:FR-007",
       "disposition": "covered",
-      "rationale": "Shared validator/transaction, events and cache invalidation.",
+      "rationale": "Shared typed validation, the single locked revisioned 008 commit path, conflict handling, the live effect that invalidates the resolution cache, and the 008 settings-changed event are reused for UI and CLI, with parity tests.",
       "source_citations": [
         {
           "section_id": ".specs/features/001-microphone-priority/spec.md:L376-L380",
-          "excerpt": "Share typed validation, atomic persistence, revision conflict handling"
+          "excerpt": "Share typed validation, atomic persistence, revision conflict handling, cache invalidation and setting change notifications between UI and CLI."
         }
       ],
       "plan_citations": [
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L67-L74",
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L67-L76",
           "excerpt": "Do not create another lock, revision counter, file writer, settings channel or envelope."
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L67-L76",
+          "excerpt": "the effect runs after the durable commit and before the `settings-changed` event, as for every 008 effect"
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L411-L428",
+          "excerpt": "genuine UI adapter versus CLI valid/invalid parity, CAS, complete-order readback"
         }
       ],
       "searched_plan_sections": []
@@ -305,17 +432,21 @@
     {
       "requirement_id": "001-microphone-priority:FR-008",
       "disposition": "covered",
-      "rationale": "microphones Domain registration and CLI process tests.",
+      "rationale": "The 008 JSON operations are extended with `set-priority` (write) and the live `list` read returning configured order separately from availability and effective input, with the documented 008 codes and exits; the priority read is also available offline via `get microphone_priority`.",
       "source_citations": [
         {
           "section_id": ".specs/features/001-microphone-priority/spec.md:L381-L385",
-          "excerpt": "Extend F8 settings JSON operations with priority read/write and device-status read contracts"
+          "excerpt": "Extend F8 settings JSON operations with priority read/write and device-status read contracts, preserving configured/effective separation and documented error codes."
         }
       ],
       "plan_citations": [
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L315-L324",
-          "excerpt": "New `src-tauri/src/settings_service/domains/microphones.rs`"
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L99-L109",
+          "excerpt": "List data: `configured_order`, `availability` entries `{name,status}`, `availability_observed_at`, `effective_input` `{name,reason,scope,capture_generation}` or null"
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L99-L109",
+          "excerpt": "Reuse success 0; persistence_failed/internal_error 1; usage_error/validation_failed 2; revision_conflict 3 with current_revision"
         }
       ],
       "searched_plan_sections": []
@@ -323,17 +454,21 @@
     {
       "requirement_id": "001-microphone-priority:SC-001",
       "disposition": "covered",
-      "rationale": "All eight AC gate release.",
+      "rationale": "Step 7 requires per-AC scoped proof for all eight AC with binary/OS/hash evidence; macOS native/UI evidence gates Implemented while Windows/Linux native checks are pending release evidence, consistent with the constitution; no generic runtime success is claimed.",
       "source_citations": [
         {
-          "section_id": ".specs/features/001-microphone-priority/spec.md:L452-L455",
+          "section_id": ".specs/features/001-microphone-priority/spec.md:L461-L464",
           "excerpt": "All eight AC pass their mapped deterministic tests and required native/UI scenarios before feature release"
         }
       ],
       "plan_citations": [
         {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L379-L388",
+          "excerpt": "All AC/SC and P0/P1 gates have actual scoped proof on macOS"
+        },
+        {
           "section_id": ".specs/features/001-microphone-priority/plan.md:L50-L64",
-          "excerpt": "SC-001 requires all eight AC plus native/UI gates"
+          "excerpt": "SC-001 requires all eight AC plus native/UI gates; Story 4's P2 label does not relax the release gate."
         }
       ],
       "searched_plan_sections": []
@@ -341,17 +476,21 @@
     {
       "requirement_id": "001-microphone-priority:SC-002",
       "disposition": "covered",
-      "rationale": "Fixture preservation across failure tests.",
+      "rationale": "Failure fixtures (disconnect/reconnect, enumeration failure, clamshell fallback, restart) assert exact configured order and unrelated settings; real-file tests include unknown-field preservation.",
       "source_citations": [
         {
-          "section_id": ".specs/features/001-microphone-priority/spec.md:L456-L459",
-          "excerpt": "Disconnect/reconnect, enumeration failure, clamshell fallback and restart tests preserve exact configured order"
+          "section_id": ".specs/features/001-microphone-priority/spec.md:L465-L468",
+          "excerpt": "Disconnect/reconnect, enumeration failure, clamshell fallback and restart tests preserve exact configured order and unrelated settings in every fixture."
         }
       ],
       "plan_citations": [
         {
           "section_id": ".specs/features/001-microphone-priority/plan.md:L50-L64",
           "excerpt": "SC-002 asserts exact configured order and unrelated settings across each failure fixture."
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L411-L428",
+          "excerpt": "flush/replace fault and unknown-field preservation"
         }
       ],
       "searched_plan_sections": []
@@ -359,17 +498,21 @@
     {
       "requirement_id": "001-microphone-priority:SC-003",
       "disposition": "covered",
-      "rationale": "Keyboard/focus/error recovery in UI tests.",
+      "rationale": "Keyboard add/remove/reorder, focus retention, text statuses and error recovery are planned in draft-state and Playwright tests, with design/source assertions (Penflow) separated from runtime assertions.",
       "source_citations": [
         {
-          "section_id": ".specs/features/001-microphone-priority/spec.md:L460-L462",
-          "excerpt": "recover from a rejected write without losing focus"
+          "section_id": ".specs/features/001-microphone-priority/spec.md:L469-L471",
+          "excerpt": "Keyboard-only users can add, remove and reorder a choice, read availability and recover from a rejected write without losing focus"
         }
       ],
       "plan_citations": [
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L367-L384",
-          "excerpt": "tab/Enter move, focus retention"
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L50-L64",
+          "excerpt": "SC-003 requires keyboard focus/error recovery and separate design/runtime assertions."
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L411-L428",
+          "excerpt": "pointer target/drag, tab/Enter move, focus retention, unavailable removal, all four text statuses"
         }
       ],
       "searched_plan_sections": []
@@ -377,14 +520,18 @@
   ],
   "ambiguities": [
     {
-      "requirement_id": "001-microphone-priority:AC-006",
-      "decision_key": "literal-default-migration",
-      "question": "Should migration map only null to an empty list, given that the merged 008 stores the system default as null and a literal \"default\" as a device name?",
+      "requirement_id": "001-microphone-priority:AC-003",
+      "decision_key": "deadline-skips-configured-choices",
+      "question": "When slow configured attempts exhaust the time before the reserved default slot (fewer than 4 s left), should remaining configured choices be skipped as failed with reason `deadline` so the system default always gets its full 2 s, or should a still-present configured choice be preferred over the default? The plan adopts the former from an orchestrator decision that is not recorded in the spec Clarifications; it is a reasonable reconciliation of the 2 s/6 s bounds and the default-after-failures rule, so it is non-critical.",
       "critical": false,
       "citations": [
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L67-L74",
-          "excerpt": "A real device literally named `Default` is an exact name; legacy sentinel interpretation applies only to legacy migration"
+          "section_id": ".specs/features/001-microphone-priority/spec.md:L197-L201",
+          "excerpt": "Attempt the system default only after configured attempts fail"
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L77-L84",
+          "excerpt": "the configured choices not yet attempted are recorded as failed attempts with reason `deadline`"
         }
       ],
       "resolution": "",
@@ -393,13 +540,61 @@
   ],
   "extra_scope": [
     {
-      "description": "Bounded owned attempt workers with reaping and an outstanding-open cap.",
-      "justification": "Needed to honour the 2 s/6 s bounds (AC-003) because a blocked cpal opener cannot be killed.",
-      "approved": false,
+      "description": "Cap on outstanding native open workers; reaching the cap reports a recording error.",
+      "justification": "Needed to keep attempts bounded when blocked cpal openers cannot be killed (FR-003 bounded attempts, edge case 'no unbounded stream reopen loop'); it adds no user-facing setting.",
+      "approved": true,
       "citations": [
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L83-L88",
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L85-L90",
           "excerpt": "cap outstanding native opens so repeated starts cannot create unlimited detached threads"
+        }
+      ],
+      "kind": "technical"
+    },
+    {
+      "description": "Per-name D3 refusal details (`details.items`, new `ErrorReason` variants) and the `microphones_domain` reason, relying on 006 step 0.",
+      "justification": "Implements the typed validation errors of AC-001/AC-007 and the 2026-10-14 legacy-key clarification inside the F8 envelope; no free text or device name is echoed.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L67-L76",
+          "excerpt": "new `ErrorReason` variants `microphone_name_empty` and `microphone_name_duplicate`, fixed messages that never echo the name"
+        }
+      ],
+      "kind": "technical"
+    },
+    {
+      "description": "Additional list wire fields (`availability_observed_at`, `scope`, `capture_generation`, typed enumeration warning).",
+      "justification": "Expose the AC-002 current/last/not-used-yet distinction and the separate observation clock of availability versus configured revision; data-only fields of the requested read contract.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L99-L109",
+          "excerpt": "these are explicitly distinct clocks, not an atomic promise about changing hardware"
+        }
+      ],
+      "kind": "technical"
+    },
+    {
+      "description": "Whitespace-only names are rejected in addition to empty names.",
+      "justification": "Interprets AC-001 'empty device identities' for names that are visually empty; no real device naming is restricted otherwise and case/bytes are preserved.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L67-L76",
+          "excerpt": "Shared validation accepts exact, non-empty, non-whitespace-only unique names regardless of current presence"
+        }
+      ],
+      "kind": "technical"
+    },
+    {
+      "description": "Push-to-talk release after an automatic end (loss) is consumed as a no-op.",
+      "justification": "Required so a loss-ended session completes exactly once (FR-004) and a late key release does not start or stop another session.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L91-L98",
+          "excerpt": "Push-to-talk release after automatic end consumes its ended binding and is a no-op"
         }
       ],
       "kind": "technical"
@@ -407,101 +602,97 @@
   ],
   "findings": [
     {
-      "category": "constitution",
-      "severity": "blocking",
-      "description": "Native evidence on Windows and Linux is made a step and completion gate: Step 1 proves ownership on macOS/Windows/Linux and Step 2 requires Step 1 feasibility; Step 7 keeps missing native platform evidence \"explicitly BLOCKED\". The constitution (2026-10-13) records such evidence as pending release evidence that never blocks implementation steps, feature completion on the integration branch or the dev merge. The plan predates that decision (updated 2026-10-12).",
-      "suggestion": "Keep macOS native proof as the Implemented gate and Windows/Linux compilation plus automated tests as gates; record Windows/Linux native spike and acceptance rows as pending release evidence with exact checks, as the 008 plan does.",
+      "category": "ordering",
+      "severity": "warning",
+      "description": "Step 2 moves `RuntimeEffect::AudioInput` to `microphone_priority`, makes `selected_microphone` read-only and maps the live effect to cache invalidation/always-on reopen, but the resolver/cache that reads `microphone_priority` only exists after Steps 3-4 and the legacy `set_selected_microphone` command is only retired in Step 5. Between Step 2 and Steps 4/5 the declared runtime effect is not read at use (the plan claims the effects.rs test stays green) and the existing selector may write or fail on a read-only key.",
+      "suggestion": "State the intermediate-state policy: either keep the effect mapping and read-only switch in Step 4/5 together with their consumers, or map `microphone_priority` in Step 2 to the existing MicrophoneDevice effect with a temporary adapter so every step leaves tests green and the app usable.",
       "citations": [
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L275-L284",
-          "excerpt": "enum-while-open behavior on macOS/Windows/Linux"
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L67-L76",
+          "excerpt": "the `effects.rs` test that every declared runtime effect is applied or read at use stays green"
         },
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L285-L294",
-          "excerpt": "**Prerequisite:** 008 service and writer inventory delivered; Step 1 native feasibility established."
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L67-L76",
+          "excerpt": "The legacy UI command `set_selected_microphone` and its `tauri_adapter::write` call are removed in Step 5"
         },
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L335-L344",
-          "excerpt": "Missing native platform/UI/resource/WAV evidence remains explicitly BLOCKED"
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L349-L358",
+          "excerpt": "Adapt `update_selected_device`, start/stop/always-on/lazy-close to queued committed-revision policy"
+        }
+      ]
+    },
+    {
+      "category": "coverage",
+      "severity": "warning",
+      "description": "AC-003 requires always-on mode to re-open the stream after a device loss. The plan covers idle stream loss (one bounded resolution per event) and loss during capture (prefix sealing), but does not state or test that, after a loss during an active always-on recording, the always-on stream is re-resolved once the recording completes; the state model only leaves Idle on a pending revision or next start.",
+      "suggestion": "Add an explicit rule and a microphone_sessions.rs/native case: always-on loss during capture → complete the prefix, then one bounded re-resolution of the always-on stream.",
+      "citations": [
+        {
+          "section_id": ".specs/features/001-microphone-priority/spec.md:L197-L201",
+          "excerpt": "in always-on microphone mode, when the stream opens at launch, after a committed priority change while no recording is active, or after a device loss"
         },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L91-L98",
+          "excerpt": "Idle stream-loss recovery is one bounded resolution per event, no self-triggered unbounded loop"
+        },
+        {
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L246-L279",
+          "excerpt": "Idle --> Resolving: pending always-on revision or next start"
+        }
+      ]
+    },
+    {
+      "category": "testability",
+      "severity": "warning",
+      "description": "The constitution makes building and passing automated tests on macOS, Windows and Linux mandatory (only native evidence is pending). Step 7 states this success criterion, but the Resolved Test Commands give no Windows/Linux build/test command or CI job to produce that evidence.",
+      "suggestion": "Name the CI workflow/job (or exact cross-platform cargo/bun commands) that proves Windows and Linux build and automated tests, distinct from pending native evidence.",
+      "citations": [
         {
           "section_id": ".specs/constitution.md:L31-L36",
-          "excerpt": "It never blocks implementation steps, feature completion on the integration branch, or the merge into `dev`; it is never claimed as passed."
-        }
-      ]
-    },
-    {
-      "category": "feasibility",
-      "severity": "warning",
-      "description": "The plan reuses the 008 Domain trait for `microphones list`, whose data needs a device catalog (offline headless enumeration) and live effective input. In the merged 008 (HEAD 0fb75ae) `Domain::plan(request, &AppSettings)` is pure, \"no I/O and no live effect\", and `LiveOnly(Value)` is still computed from settings; the instance-side backend answers from the published settings snapshot. Implementing the list therefore requires extending the 008 framework (a runtime context or read port), which the 008 plan said later owners would not need to change.",
-      "suggestion": "State the framework extension explicitly (for example a domain read context with catalog and live-state ports, absent offline) and its tests, instead of \"reuse\".",
-      "citations": [
-        {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L97-L104",
-          "excerpt": "Offline catalog read is a bounded headless worker without Tauri/model/UI activation"
+          "excerpt": "Code targets every supported platform (macOS, Windows, Linux) and must build and pass its automated tests."
         },
         {
-          "section_id": ".specs/features/008-settings-cli/plan.md:L48-L60",
-          "excerpt": "Their later owners register domains and aliases (`edit`→`update`, `delete`→`remove`) without changing the framework."
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L379-L388",
+          "excerpt": "code builds and automated tests pass on macOS, Windows and Linux"
         }
       ]
     },
     {
-      "category": "feasibility",
-      "severity": "warning",
-      "description": "Plan-era 008 names do not match the merged 008: there is no `LiveSettingsEffects` (effects.rs behind LiveSettings); UI writes must go through `settings_service::tauri_adapter` (`edit` for a typed list edit); a list change is a `ChangeKind::Apply` edit; descriptor data lives in descriptor_data.rs where `selected_microphone` is currently generic-settable and owned by the \"microphones\" domain.",
-      "suggestion": "Name the delivered entry points in Steps 2, 4 and 5 and make `selected_microphone` read-only (or redirected to the microphones domain) once the priority key exists, so a generic CLI set cannot write an ignored key.",
+      "category": "measurable_acceptance",
+      "severity": "info",
+      "description": "The budget rule says at most two configured attempts can run to their full 2 s timeout before the default; since a second attempt may start only with at least 4 s left and enumeration/lid probe take non-zero time, in practice at most one full-timeout configured attempt precedes the default. Tests should assert the actual bound rather than the theoretical two.",
+      "suggestion": "Express the test oracle in terms of the start rule (start only with >=4 s left; default starts by t = 4 s) and include a trace with non-zero enumeration time.",
       "citations": [
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L67-L74",
-          "excerpt": "Extend its `SettingDescriptor`, `SettingsMutation`, `SettingsSnapshot`, `Revision`, `PublicSettings`, `OperationRequest`, `SettingsError`, `Domain` trait and `LiveSettingsEffects`"
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L77-L84",
+          "excerpt": "at most two configured attempts can run to their full timeout before the default"
         },
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L315-L324",
-          "excerpt": "Retire legacy selected-microphone writer in favor of priority operations; legacy stored data remains."
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L77-L84",
+          "excerpt": "A configured attempt (or the closed-lid override attempt) starts only while at least 4 seconds remain"
         }
       ]
     },
     {
-      "category": "consistency",
-      "severity": "warning",
-      "description": "The deadline allocation can give a configured attempt less than the 2 s the spec states (\"Each open attempt times out after 2 seconds\"): the default slot is reserved and the remaining normal budget is divided across candidates. This resolves a real tension between the 2 s and 6 s bounds, but a device that opens in 1.5 s may fail with four candidates.",
-      "suggestion": "Record the allocation rule as an accepted interpretation (spec-refine) or keep 2 s per attempt and let the 6 s deadline cut the list.",
-      "citations": [
-        {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L75-L82",
-          "excerpt": "Divide the remaining normal-phase budget across unresolved candidates in saved order, each open ≤2 seconds and ≤its remaining allocation."
-        }
-      ]
-    },
-    {
-      "category": "consistency",
+      "category": "dependencies",
       "severity": "info",
-      "description": "Plan QE Analysis (High, Shared settings/audio pipeline, Regression) matches the spec QE Analysis and Quality Engineering classification.",
-      "suggestion": "No change.",
+      "description": "Steps 2 and 5 depend on 006 step 0 (D2/D3), which is not yet merged; Step 2 also waits on the macOS native spike although the settings schema/migration work does not depend on native feasibility. The dependency is declared, but it can serialize unrelated work.",
+      "suggestion": "Keep the declared prerequisites, and consider allowing the non-D3 part of Step 2 (field, migration, descriptor) to proceed independently of Step 1.",
       "citations": [
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L385-L400",
-          "excerpt": "Criticality High; blast radius Shared settings/audio pipeline; primary risk Regression"
-        }
-      ]
-    },
-    {
-      "category": "ordering",
-      "severity": "info",
-      "description": "UI code waits for the program one-pass Penflow design certification, currently BLOCKED/certified false.",
-      "suggestion": "Run the program design pass before Step 6.",
-      "citations": [
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L329-L338",
+          "excerpt": "Step 1 native feasibility established on macOS; **006 step 0 merged**"
+        },
         {
-          "section_id": ".specs/features/001-microphone-priority/plan.md:L113-L120",
-          "excerpt": "Inspection reported BLOCKED/certified false."
+          "section_id": ".specs/features/001-microphone-priority/plan.md:L476-L478",
+          "excerpt": "Steps 2 (D3 variants) and 5 (D2/D3) wait for 006 step 0"
         }
       ]
     }
   ],
   "confidence": 4,
   "raw_results": [
-    "{\n \"batch_id\": \"batch-001\",\n \"reviewed_section_ids\": [\n  \".specs/constitution.md:L1-L2\",\n  \".specs/constitution.md:L3-L17\",\n  \".specs/constitution.md:L18-L26\",\n  \".specs/constitution.md:L27-L30\",\n  \".specs/constitution.md:L31-L36\",\n  \".specs/features/001-microphone-priority/plan.md:L1-L16\",\n  \".specs/features/001-microphone-priority/plan.md:L17-L18\",\n  \".specs/features/001-microphone-priority/plan.md:L19-L24\",\n  \".specs/features/001-microphone-priority/plan.md:L25-L38\",\n  \".specs/features/001-microphone-priority/plan.md:L39-L49\",\n  \".specs/features/001-microphone-priority/plan.md:L50-L64\",\n  \".specs/features/001-microphone-priority/plan.md:L65-L66\",\n  \".specs/features/001-microphone-priority/plan.md:L67-L74\",\n  \".specs/features/001-microphone-priority/plan.md:L75-L82\",\n  \".specs/features/001-microphone-priority/plan.md:L83-L88\",\n  \".specs/features/001-microphone-priority/plan.md:L89-L96\",\n  \".specs/features/001-microphone-priority/plan.md:L97-L104\",\n  \".specs/features/001-microphone-priority/plan.md:L105-L112\",\n  \".specs/features/001-microphone-priority/plan.md:L113-L120\",\n  \".specs/features/001-microphone-priority/plan.md:L121-L201\",\n  \".specs/features/001-microphone-priority/plan.md:L202-L235\",\n  \".specs/features/001-microphone-priority/plan.md:L236-L272\",\n  \".specs/features/001-microphone-priority/plan.md:L273-L274\",\n  \".specs/features/001-microphone-priority/plan.md:L275-L284\",\n  \".specs/features/001-microphone-priority/plan.md:L285-L294\",\n  \".specs/features/001-microphone-priority/plan.md:L295-L304\",\n  \".specs/features/001-microphone-priority/plan.md:L305-L314\",\n  \".specs/features/001-microphone-priority/plan.md:L315-L324\",\n  \".specs/features/001-microphone-priority/plan.md:L325-L334\",\n  \".specs/features/001-microphone-priority/plan.md:L335-L344\",\n  \".specs/features/001-microphone-priority/plan.md:L345-L366\",\n  \".specs/features/001-microphone-priority/plan.md:L367-L384\",\n  \".specs/features/001-microphone-priority/plan.md:L385-L400\",\n  \".specs/features/001-microphone-priority/plan.md:L401-L423\",\n  \".specs/features/001-microphone-priority/plan.md:L424-L426\",\n  \".specs/features/001-microphone-priority/spec.md:L1-L9\",\n  \".specs/features/001-microphone-priority/spec.md:L10-L11\",\n  \".specs/features/001-microphone-priority/spec.md:L12-L20\",\n  \".specs/features/001-microphone-priority/spec.md:L21-L22\",\n  \".specs/features/001-microphone-priority/spec.md:L23-L58\",\n  \".specs/features/001-microphone-priority/spec.md:L59-L112\",\n  \".specs/features/001-microphone-priority/spec.md:L113-L154\",\n  \".specs/features/001-microphone-priority/spec.md:L155-L184\",\n  \".specs/features/001-microphone-priority/spec.md:L185-L186\",\n  \".specs/features/001-microphone-priority/spec.md:L187-L191\",\n  \".specs/features/001-microphone-priority/spec.md:L192-L196\",\n  \".specs/features/001-microphone-priority/spec.md:L197-L201\",\n  \".specs/features/001-microphone-priority/spec.md:L202-L206\",\n  \".specs/features/001-microphone-priority/spec.md:L207-L211\",\n  \".specs/features/001-microphone-priority/spec.md:L212-L216\",\n  \".specs/features/001-microphone-priority/spec.md:L217-L221\",\n  \".specs/features/001-microphone-priority/spec.md:L222-L226\",\n  \".specs/features/001-microphone-priority/spec.md:L227-L230\",\n  \".specs/features/001-microphone-priority/spec.md:L231-L254\",\n  \".specs/features/001-microphone-priority/spec.md:L255-L271\",\n  \".specs/features/001-microphone-priority/spec.md:L272-L292\",\n  \".specs/features/001-microphone-priority/spec.md:L293-L309\",\n  \".specs/features/001-microphone-priority/spec.md:L310-L343\",\n  \".specs/features/001-microphone-priority/spec.md:L344-L345\",\n  \".specs/features/001-microphone-priority/spec.md:L346-L350\",\n  \".specs/features/001-microphone-priority/spec.md:L351-L355\",\n  \".specs/features/001-microphone-priority/spec.md:L356-L360\",\n  \".specs/features/001-microphone-priority/spec.md:L361-L365\",\n  \".specs/features/001-microphone-priority/spec.md:L366-L370\",\n  \".specs/features/001-microphone-priority/spec.md:L371-L375\",\n  \".specs/features/001-microphone-priority/spec.md:L376-L380\",\n  \".specs/features/001-microphone-priority/spec.md:L381-L385\",\n  \".specs/features/001-microphone-priority/spec.md:L386-L393\",\n  \".specs/features/001-microphone-priority/spec.md:L394-L406\",\n  \".specs/features/001-microphone-priority/spec.md:L407-L416\",\n  \".specs/features/001-microphone-priority/spec.md:L417-L423\",\n  \".specs/features/001-microphone-priority/spec.md:L424-L431\",\n  \".specs/features/001-microphone-priority/spec.md:L432-L436\",\n  \".specs/features/001-microphone-priority/spec.md:L437-L449\",\n  \".specs/features/001-microphone-priority/spec.md:L450-L451\",\n  \".specs/features/001-microphone-priority/spec.md:L452-L455\",\n  \".specs/features/001-microphone-priority/spec.md:L456-L459\",\n  \".specs/features/001-microphone-priority/spec.md:L460-L462\",\n  \".specs/features/008-settings-cli/plan.md:L1-L9\",\n  \".specs/features/008-settings-cli/plan.md:L10-L11\",\n  \".specs/features/008-settings-cli/plan.md:L12-L17\",\n  \".specs/features/008-settings-cli/plan.md:L18-L35\",\n  \".specs/features/008-settings-cli/plan.md:L36-L47\",\n  \".specs/features/008-settings-cli/plan.md:L48-L60\",\n  \".specs/features/008-settings-cli/plan.md:L61-L62\",\n  \".specs/features/008-settings-cli/plan.md:L63-L68\",\n  \".specs/features/008-settings-cli/plan.md:L69-L76\",\n  \".specs/features/008-settings-cli/plan.md:L77-L82\",\n  \".specs/features/008-settings-cli/plan.md:L83-L102\",\n  \".specs/features/008-settings-cli/plan.md:L103-L123\",\n  \".specs/features/008-settings-cli/plan.md:L124-L211\",\n  \".specs/features/008-settings-cli/plan.md:L212-L249\",\n  \".specs/features/008-settings-cli/plan.md:L250-L289\",\n  \".specs/features/008-settings-cli/plan.md:L290-L291\",\n  \".specs/features/008-settings-cli/plan.md:L292-L301\",\n  \".specs/features/008-settings-cli/plan.md:L302-L311\",\n  \".specs/features/008-settings-cli/plan.md:L312-L321\",\n  \".specs/features/008-settings-cli/plan.md:L322-L331\",\n  \".specs/features/008-settings-cli/plan.md:L332-L341\",\n  \".specs/features/008-settings-cli/plan.md:L342-L351\",\n  \".specs/features/008-settings-cli/plan.md:L352-L361\",\n  \".specs/features/008-settings-cli/plan.md:L362-L385\",\n  \".specs/features/008-settings-cli/plan.md:L386-L402\",\n  \".specs/features/008-settings-cli/plan.md:L403-L416\",\n  \".specs/features/008-settings-cli/plan.md:L417-L431\",\n  \".specs/features/008-settings-cli/plan.md:L432-L459\",\n  \".specs/features/008-settings-cli/plan.md:L460-L462\",\n  \".specs/project.md:L1-L2\",\n  \".specs/project.md:L3-L7\",\n  \".specs/project.md:L8-L16\",\n  \".specs/project.md:L17-L20\",\n  \".specs/project.md:L21-L24\",\n  \".specs/project.md:L25-L28\",\n  \".specs/project.md:L29-L36\",\n  \".specs/stacks/_default.md:L1-L5\",\n  \".specs/stacks/_default.md:L6-L7\",\n  \".specs/stacks/_default.md:L8-L21\",\n  \".specs/stacks/_default.md:L22-L31\",\n  \".specs/testing/strategy.md:L1-L2\",\n  \".specs/testing/strategy.md:L3-L6\",\n  \".specs/testing/strategy.md:L7-L12\",\n  \".specs/testing/strategy.md:L13-L16\"\n ],\n \"conclusions\": [\n  {\n   \"requirement_id\": \"001-microphone-priority:AC-001\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Draft editor with pointer and Move up/down, Save of the complete order, duplicate/empty validation and restart readback.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L187-L191\",\n     \"excerpt\": \"supports add/remove and both pointer and keyboard reorder, and preserves the exact committed order after restart\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L97-L104\",\n     \"excerpt\": \"Pointer dragging and Move up/down have identical draft transitions\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L367-L384\",\n     \"excerpt\": \"exact order after restart\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:AC-002\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Four statuses, open/5 s/Retry refresh with fencing, effective input with reason and scope current/last/not-used-yet, text in addition to color.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L192-L196\",\n     \"excerpt\": \"The microphone actually used is displayed separately from saved order\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L75-L82\",\n     \"excerpt\": \"open/5-second cadence/Retry trigger fresh observations\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L89-L96\",\n     \"excerpt\": \"otherwise display last **recording** device since launch, marked last-used, or not-used-yet after restart\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:AC-003\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Ordered once-only attempts, ambiguity skip, one re-enumeration and default inside one 6 s deadline with owned attempt handles. The allocation may give an attempt less than 2 s (see warning).\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L197-L201\",\n     \"excerpt\": \"Each open attempt times out after 2 seconds and the whole resolution after 6 seconds\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L75-L82\",\n     \"excerpt\": \"A single monotonic 6-second resolution deadline includes lid probe, enumeration, one fresh re-enumeration\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:AC-004\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Non-destructive fallback, fresh catalog at each start for reconnection, always-on reopen before capture and pending revision during recording.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L202-L206\",\n     \"excerpt\": \"Editing priority during a recording affects the next session and does not interrupt or discard the current session's captured audio.\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L75-L82\",\n     \"excerpt\": \"a fresh catalog at every recording start, including always-on\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L89-L96\",\n     \"excerpt\": \"active recording continues on its chosen stream, then applies latest pending revision after completion\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:AC-005\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Closed lid and configured override selects override then default; open/unknown lid or no override uses the list.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L207-L211\",\n     \"excerpt\": \"with a configured override and a confirmed closed lid, attempt the clamshell microphone\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L75-L82\",\n     \"excerpt\": \"Closed lid **and configured override** selects override then default, excluding normal list.\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:AC-006\",\n   \"disposition\": \"ambiguous\",\n   \"rationale\": \"Presence-aware migration, explicit empty wins, raw legacy key preserved and recoverable startup commit are planned. The plan keeps the \\\"legacy default sentinel\\\" mapping to an empty list, while the merged 008 treats a stored literal \\\"default\\\" as a device name; stores written by the 008 CLI after its merge can hold such a value.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L212-L216\",\n     \"excerpt\": \"null/default becomes an empty normal priority list\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L67-L74\",\n     \"excerpt\": \"null or legacy default sentinel becomes `[]`\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:AC-007\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"One typed list patch through the shared commit, CAS with draft retention and Reload, next-open cache invalidation and truthful post-commit failure.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L217-L221\",\n     \"excerpt\": \"A committed priority update invalidates cached resolution for the next stream opening without interrupting an active recording.\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L67-L74\",\n     \"excerpt\": \"The whole ordered list is one typed patch to the latest snapshot\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L97-L104\",\n     \"excerpt\": \"Stale revision retains draft and offers Reload\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:AC-008\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Exact command names, zero-name empty set, list data shape with configured/availability/effective, exact 008 exits; the domain-framework fit is questioned in a warning.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L222-L226\",\n     \"excerpt\": \"`handy settings microphones set-priority <name>...` (complete order, optional expected revision)\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L97-L104\",\n     \"excerpt\": \"Keep the public names in AC-008: `handy settings microphones list` and `handy settings microphones set-priority <name>...`.\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:FR-001\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Steps 2, 6, 7.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L346-L350\",\n     \"excerpt\": \"Persist a unique ordered list of microphone choices\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L285-L294\",\n     \"excerpt\": \"with list schema/descriptor/patch and absent-key startup migration\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:FR-002\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Catalog projection and UI refresh.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L351-L355\",\n     \"excerpt\": \"Same-named ambiguous devices are reported as ambiguous\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L295-L304\",\n     \"excerpt\": \"pure candidate/deadline/status policy and real cpal catalog adapter\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:FR-003\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Pure resolver plus owned opener.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L356-L360\",\n     \"excerpt\": \"Resolve and open normal microphone choices in order, then system default\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L295-L304\",\n     \"excerpt\": \"One re-enumeration, budget allocations/default and normal/clamshell branches explicit.\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:FR-004\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Sealed prefix, single completion token, no splice.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L361-L365\",\n     \"excerpt\": \"A device loss ends the current recording\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L89-L96\",\n     \"excerpt\": \"seal the current generation's captured prefix, end it exactly once\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:FR-005\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Clamshell policy and integration.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L366-L370\",\n     \"excerpt\": \"Preserve the existing closed-lid behavior\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L305-L314\",\n     \"excerpt\": \"FR-005.2: Clamshell integration\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:FR-006\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Presence-aware recoverable migration (default wording tracked on AC-006).\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L371-L375\",\n     \"excerpt\": \"Migrate old single microphone selection only when the priority key is absent\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L67-L74\",\n     \"excerpt\": \"Detect key presence in raw JSON before serde defaults.\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:FR-007\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Shared validator/transaction, events and cache invalidation.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L376-L380\",\n     \"excerpt\": \"Share typed validation, atomic persistence, revision conflict handling\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L67-L74\",\n     \"excerpt\": \"Do not create another lock, revision counter, file writer, settings channel or envelope.\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:FR-008\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"microphones Domain registration and CLI process tests.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L381-L385\",\n     \"excerpt\": \"Extend F8 settings JSON operations with priority read/write and device-status read contracts\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L315-L324\",\n     \"excerpt\": \"New `src-tauri/src/settings_service/domains/microphones.rs`\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:SC-001\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"All eight AC gate release.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L452-L455\",\n     \"excerpt\": \"All eight AC pass their mapped deterministic tests and required native/UI scenarios before feature release\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L50-L64\",\n     \"excerpt\": \"SC-001 requires all eight AC plus native/UI gates\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:SC-002\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Fixture preservation across failure tests.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L456-L459\",\n     \"excerpt\": \"Disconnect/reconnect, enumeration failure, clamshell fallback and restart tests preserve exact configured order\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L50-L64\",\n     \"excerpt\": \"SC-002 asserts exact configured order and unrelated settings across each failure fixture.\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:SC-003\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Keyboard/focus/error recovery in UI tests.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L460-L462\",\n     \"excerpt\": \"recover from a rejected write without losing focus\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L367-L384\",\n     \"excerpt\": \"tab/Enter move, focus retention\"\n    }\n   ]\n  }\n ],\n \"ambiguities\": [\n  {\n   \"requirement_id\": \"001-microphone-priority:AC-006\",\n   \"decision_key\": \"literal-default-migration\",\n   \"critical\": false,\n   \"question\": \"Should migration map only null to an empty list, given that the merged 008 stores the system default as null and a literal \\\"default\\\" as a device name?\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L67-L74\",\n     \"excerpt\": \"A real device literally named `Default` is an exact name; legacy sentinel interpretation applies only to legacy migration\"\n    }\n   ]\n  }\n ],\n \"extra_scope\": [\n  {\n   \"description\": \"Bounded owned attempt workers with reaping and an outstanding-open cap.\",\n   \"justification\": \"Needed to honour the 2 s/6 s bounds (AC-003) because a blocked cpal opener cannot be killed.\",\n   \"approved\": false,\n   \"kind\": \"technical\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L83-L88\",\n     \"excerpt\": \"cap outstanding native opens so repeated starts cannot create unlimited detached threads\"\n    }\n   ]\n  }\n ],\n \"findings\": [\n  {\n   \"category\": \"constitution\",\n   \"severity\": \"blocking\",\n   \"description\": \"Native evidence on Windows and Linux is made a step and completion gate: Step 1 proves ownership on macOS/Windows/Linux and Step 2 requires Step 1 feasibility; Step 7 keeps missing native platform evidence \\\"explicitly BLOCKED\\\". The constitution (2026-10-13) records such evidence as pending release evidence that never blocks implementation steps, feature completion on the integration branch or the dev merge. The plan predates that decision (updated 2026-10-12).\",\n   \"suggestion\": \"Keep macOS native proof as the Implemented gate and Windows/Linux compilation plus automated tests as gates; record Windows/Linux native spike and acceptance rows as pending release evidence with exact checks, as the 008 plan does.\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L275-L284\",\n     \"excerpt\": \"enum-while-open behavior on macOS/Windows/Linux\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L285-L294\",\n     \"excerpt\": \"**Prerequisite:** 008 service and writer inventory delivered; Step 1 native feasibility established.\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L335-L344\",\n     \"excerpt\": \"Missing native platform/UI/resource/WAV evidence remains explicitly BLOCKED\"\n    },\n    {\n     \"section_id\": \".specs/constitution.md:L31-L36\",\n     \"excerpt\": \"It never blocks implementation steps, feature completion on the integration branch, or the merge into `dev`; it is never claimed as passed.\"\n    }\n   ]\n  },\n  {\n   \"category\": \"feasibility\",\n   \"severity\": \"warning\",\n   \"description\": \"The plan reuses the 008 Domain trait for `microphones list`, whose data needs a device catalog (offline headless enumeration) and live effective input. In the merged 008 (HEAD 0fb75ae) `Domain::plan(request, &AppSettings)` is pure, \\\"no I/O and no live effect\\\", and `LiveOnly(Value)` is still computed from settings; the instance-side backend answers from the published settings snapshot. Implementing the list therefore requires extending the 008 framework (a runtime context or read port), which the 008 plan said later owners would not need to change.\",\n   \"suggestion\": \"State the framework extension explicitly (for example a domain read context with catalog and live-state ports, absent offline) and its tests, instead of \\\"reuse\\\".\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L97-L104\",\n     \"excerpt\": \"Offline catalog read is a bounded headless worker without Tauri/model/UI activation\"\n    },\n    {\n     \"section_id\": \".specs/features/008-settings-cli/plan.md:L48-L60\",\n     \"excerpt\": \"Their later owners register domains and aliases (`edit`→`update`, `delete`→`remove`) without changing the framework.\"\n    }\n   ]\n  },\n  {\n   \"category\": \"feasibility\",\n   \"severity\": \"warning\",\n   \"description\": \"Plan-era 008 names do not match the merged 008: there is no `LiveSettingsEffects` (effects.rs behind LiveSettings); UI writes must go through `settings_service::tauri_adapter` (`edit` for a typed list edit); a list change is a `ChangeKind::Apply` edit; descriptor data lives in descriptor_data.rs where `selected_microphone` is currently generic-settable and owned by the \\\"microphones\\\" domain.\",\n   \"suggestion\": \"Name the delivered entry points in Steps 2, 4 and 5 and make `selected_microphone` read-only (or redirected to the microphones domain) once the priority key exists, so a generic CLI set cannot write an ignored key.\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L67-L74\",\n     \"excerpt\": \"Extend its `SettingDescriptor`, `SettingsMutation`, `SettingsSnapshot`, `Revision`, `PublicSettings`, `OperationRequest`, `SettingsError`, `Domain` trait and `LiveSettingsEffects`\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L315-L324\",\n     \"excerpt\": \"Retire legacy selected-microphone writer in favor of priority operations; legacy stored data remains.\"\n    }\n   ]\n  },\n  {\n   \"category\": \"consistency\",\n   \"severity\": \"warning\",\n   \"description\": \"The deadline allocation can give a configured attempt less than the 2 s the spec states (\\\"Each open attempt times out after 2 seconds\\\"): the default slot is reserved and the remaining normal budget is divided across candidates. This resolves a real tension between the 2 s and 6 s bounds, but a device that opens in 1.5 s may fail with four candidates.\",\n   \"suggestion\": \"Record the allocation rule as an accepted interpretation (spec-refine) or keep 2 s per attempt and let the 6 s deadline cut the list.\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L75-L82\",\n     \"excerpt\": \"Divide the remaining normal-phase budget across unresolved candidates in saved order, each open ≤2 seconds and ≤its remaining allocation.\"\n    }\n   ]\n  },\n  {\n   \"category\": \"consistency\",\n   \"severity\": \"info\",\n   \"description\": \"Plan QE Analysis (High, Shared settings/audio pipeline, Regression) matches the spec QE Analysis and Quality Engineering classification.\",\n   \"suggestion\": \"No change.\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L385-L400\",\n     \"excerpt\": \"Criticality High; blast radius Shared settings/audio pipeline; primary risk Regression\"\n    }\n   ]\n  },\n  {\n   \"category\": \"ordering\",\n   \"severity\": \"info\",\n   \"description\": \"UI code waits for the program one-pass Penflow design certification, currently BLOCKED/certified false.\",\n   \"suggestion\": \"Run the program design pass before Step 6.\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L113-L120\",\n     \"excerpt\": \"Inspection reported BLOCKED/certified false.\"\n    }\n   ]\n  }\n ],\n \"confidence\": 4\n}"
+    "{\n \"batch_id\": \"batch-001\",\n \"reviewed_section_ids\": [\n  \".specs/constitution.md:L1-L2\",\n  \".specs/constitution.md:L3-L17\",\n  \".specs/constitution.md:L18-L26\",\n  \".specs/constitution.md:L27-L30\",\n  \".specs/constitution.md:L31-L36\",\n  \".specs/features/001-microphone-priority/plan.md:L1-L16\",\n  \".specs/features/001-microphone-priority/plan.md:L17-L18\",\n  \".specs/features/001-microphone-priority/plan.md:L19-L24\",\n  \".specs/features/001-microphone-priority/plan.md:L25-L38\",\n  \".specs/features/001-microphone-priority/plan.md:L39-L49\",\n  \".specs/features/001-microphone-priority/plan.md:L50-L64\",\n  \".specs/features/001-microphone-priority/plan.md:L65-L66\",\n  \".specs/features/001-microphone-priority/plan.md:L67-L76\",\n  \".specs/features/001-microphone-priority/plan.md:L77-L84\",\n  \".specs/features/001-microphone-priority/plan.md:L85-L90\",\n  \".specs/features/001-microphone-priority/plan.md:L91-L98\",\n  \".specs/features/001-microphone-priority/plan.md:L99-L109\",\n  \".specs/features/001-microphone-priority/plan.md:L110-L117\",\n  \".specs/features/001-microphone-priority/plan.md:L118-L125\",\n  \".specs/features/001-microphone-priority/plan.md:L126-L245\",\n  \".specs/features/001-microphone-priority/plan.md:L246-L279\",\n  \".specs/features/001-microphone-priority/plan.md:L280-L316\",\n  \".specs/features/001-microphone-priority/plan.md:L317-L318\",\n  \".specs/features/001-microphone-priority/plan.md:L319-L328\",\n  \".specs/features/001-microphone-priority/plan.md:L329-L338\",\n  \".specs/features/001-microphone-priority/plan.md:L339-L348\",\n  \".specs/features/001-microphone-priority/plan.md:L349-L358\",\n  \".specs/features/001-microphone-priority/plan.md:L359-L368\",\n  \".specs/features/001-microphone-priority/plan.md:L369-L378\",\n  \".specs/features/001-microphone-priority/plan.md:L379-L388\",\n  \".specs/features/001-microphone-priority/plan.md:L389-L410\",\n  \".specs/features/001-microphone-priority/plan.md:L411-L428\",\n  \".specs/features/001-microphone-priority/plan.md:L429-L444\",\n  \".specs/features/001-microphone-priority/plan.md:L445-L475\",\n  \".specs/features/001-microphone-priority/plan.md:L476-L478\",\n  \".specs/features/001-microphone-priority/spec.md:L1-L9\",\n  \".specs/features/001-microphone-priority/spec.md:L10-L11\",\n  \".specs/features/001-microphone-priority/spec.md:L12-L20\",\n  \".specs/features/001-microphone-priority/spec.md:L21-L22\",\n  \".specs/features/001-microphone-priority/spec.md:L23-L58\",\n  \".specs/features/001-microphone-priority/spec.md:L59-L112\",\n  \".specs/features/001-microphone-priority/spec.md:L113-L154\",\n  \".specs/features/001-microphone-priority/spec.md:L155-L184\",\n  \".specs/features/001-microphone-priority/spec.md:L185-L186\",\n  \".specs/features/001-microphone-priority/spec.md:L187-L191\",\n  \".specs/features/001-microphone-priority/spec.md:L192-L196\",\n  \".specs/features/001-microphone-priority/spec.md:L197-L201\",\n  \".specs/features/001-microphone-priority/spec.md:L202-L206\",\n  \".specs/features/001-microphone-priority/spec.md:L207-L211\",\n  \".specs/features/001-microphone-priority/spec.md:L212-L216\",\n  \".specs/features/001-microphone-priority/spec.md:L217-L221\",\n  \".specs/features/001-microphone-priority/spec.md:L222-L226\",\n  \".specs/features/001-microphone-priority/spec.md:L227-L230\",\n  \".specs/features/001-microphone-priority/spec.md:L231-L254\",\n  \".specs/features/001-microphone-priority/spec.md:L255-L271\",\n  \".specs/features/001-microphone-priority/spec.md:L272-L292\",\n  \".specs/features/001-microphone-priority/spec.md:L293-L309\",\n  \".specs/features/001-microphone-priority/spec.md:L310-L343\",\n  \".specs/features/001-microphone-priority/spec.md:L344-L345\",\n  \".specs/features/001-microphone-priority/spec.md:L346-L350\",\n  \".specs/features/001-microphone-priority/spec.md:L351-L355\",\n  \".specs/features/001-microphone-priority/spec.md:L356-L360\",\n  \".specs/features/001-microphone-priority/spec.md:L361-L365\",\n  \".specs/features/001-microphone-priority/spec.md:L366-L370\",\n  \".specs/features/001-microphone-priority/spec.md:L371-L375\",\n  \".specs/features/001-microphone-priority/spec.md:L376-L380\",\n  \".specs/features/001-microphone-priority/spec.md:L381-L385\",\n  \".specs/features/001-microphone-priority/spec.md:L386-L393\",\n  \".specs/features/001-microphone-priority/spec.md:L394-L415\",\n  \".specs/features/001-microphone-priority/spec.md:L416-L425\",\n  \".specs/features/001-microphone-priority/spec.md:L426-L432\",\n  \".specs/features/001-microphone-priority/spec.md:L433-L440\",\n  \".specs/features/001-microphone-priority/spec.md:L441-L445\",\n  \".specs/features/001-microphone-priority/spec.md:L446-L458\",\n  \".specs/features/001-microphone-priority/spec.md:L459-L460\",\n  \".specs/features/001-microphone-priority/spec.md:L461-L464\",\n  \".specs/features/001-microphone-priority/spec.md:L465-L468\",\n  \".specs/features/001-microphone-priority/spec.md:L469-L471\",\n  \".specs/project.md:L1-L2\",\n  \".specs/project.md:L3-L7\",\n  \".specs/project.md:L8-L16\",\n  \".specs/project.md:L17-L20\",\n  \".specs/project.md:L21-L24\",\n  \".specs/project.md:L25-L28\",\n  \".specs/project.md:L29-L36\",\n  \".specs/stacks/_default.md:L1-L5\",\n  \".specs/stacks/_default.md:L6-L7\",\n  \".specs/stacks/_default.md:L8-L21\",\n  \".specs/stacks/_default.md:L22-L31\",\n  \".specs/testing/strategy.md:L1-L2\",\n  \".specs/testing/strategy.md:L3-L6\",\n  \".specs/testing/strategy.md:L7-L12\",\n  \".specs/testing/strategy.md:L13-L16\"\n ],\n \"conclusions\": [\n  {\n   \"requirement_id\": \"001-microphone-priority:AC-001\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"The plan persists a complete ordered list, edits it as a UI draft with pointer drag and Move up/down that share identical transitions, adds/removes entries from the catalog, rejects empty/duplicate names with validation_failed and no partial commit, and tests exact order after restart in real-file integration and UI tests.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L187-L191\",\n     \"excerpt\": \"supports add/remove and both pointer and keyboard reorder, and preserves the exact committed order after restart\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L187-L191\",\n     \"excerpt\": \"Duplicate or empty device identities are rejected without a partial write.\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L67-L76\",\n     \"excerpt\": \"Duplicate/empty input returns `validation_failed` without a partial commit\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L99-L109\",\n     \"excerpt\": \"Pointer dragging and Move up/down have identical draft transitions\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L411-L428\",\n     \"excerpt\": \"explicit empty wins, exact order after restart, idempotence\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:AC-002\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Four availability states are projected from a non-invasive catalog (failure is unknown, duplicates ambiguous), refreshed on open, every 5 seconds and on Retry with one in-flight refresh and fenced late replies; the effective input is shown separately with reason and current/last-recording/not-used-yet scope; Add lists the real catalog; availability text complements color.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L192-L196\",\n     \"excerpt\": \"Availability refreshes when the audio settings open, every 5 seconds while they remain open, and on manual Retry\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L192-L196\",\n     \"excerpt\": \"Status uses text in addition to color.\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L77-L84\",\n     \"excerpt\": \"open/5-second cadence/Retry trigger fresh observations, late replies are fenced and unmount cancels publication\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L91-L98\",\n     \"excerpt\": \"Reasons are first-choice, fallback, clamshell, system-default; availability is independent.\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L99-L109\",\n     \"excerpt\": \"Availability text adds information to color\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L67-L76\",\n     \"excerpt\": \"UI Add lists the real catalog (including duplicate-name groups labelled ambiguous)\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:AC-003\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Every stream opening (recording start, always-on launch, idle committed edit, loss) uses a fresh catalog and tries configured names in order; ambiguity counts as a failed attempt; each attempt has a 2 s timeout inside a 6 s monotonic deadline with a reserved default slot; one re-enumeration; arming state kept until first-sample readiness; no pre-readiness audio; transient failures never modify the list. The reservation rule that skips late configured choices with reason `deadline` is a plan-level reconciliation of the 2 s/6 s bounds and is recorded as a non-critical ambiguity.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L197-L201\",\n     \"excerpt\": \"Each open attempt times out after 2 seconds and the whole resolution after 6 seconds\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L197-L201\",\n     \"excerpt\": \"A configured name matching several present devices counts as a failed attempt with reason ambiguous.\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L77-L84\",\n     \"excerpt\": \"every open attempt gets its full 2-second timeout; the 6-second total limits how many attempts start and never shortens one.\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L85-L90\",\n     \"excerpt\": \"indicator stays arming until the actual stream/capture is ready. Do not buffer/replay audio spoken before readiness.\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L77-L84\",\n     \"excerpt\": \"Normal resolution uses the committed revision captured at session start and a fresh catalog at every recording start, including always-on.\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:AC-004\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"The plan removes the fallback erasure path, keeps saved choices and clamshell untouched, re-resolves with a fresh catalog at every start so a reconnected higher device wins, re-resolves always-on at recording start and reopens before capture when the device differs, and defers edits during capture to the next session without discarding captured audio.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L202-L206\",\n     \"excerpt\": \"A fallback, disconnect or reconnect never deletes/reorders saved choices or resets the clamshell setting.\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L202-L206\",\n     \"excerpt\": \"Editing priority during a recording affects the next session and does not interrupt or discard the current session's captured audio.\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L349-L358\",\n     \"excerpt\": \"Remove `persist_default_microphone_after_fallback` erasure and first-match cache path.\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L91-L98\",\n     \"excerpt\": \"Always-on recording start re-resolves; same device retains healthy stream, changed device reopens before capture.\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L91-L98\",\n     \"excerpt\": \"active recording continues on its chosen stream, then applies latest pending revision after completion\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:AC-005\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Closed lid with a configured override tries the override then the system default, excluding the normal list; open/unknown lid or no override uses the normal list; a lid probe that does not finish in time counts as unknown; resolution never writes settings. Tests cover override present/absent and unknown lid.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L207-L211\",\n     \"excerpt\": \"with a configured override and a confirmed closed lid, attempt the clamshell microphone; if it is unavailable or fails to open, attempt the system default, as today\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L207-L211\",\n     \"excerpt\": \"Open lid or unknown lid state uses the normal priority list.\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L77-L84\",\n     \"excerpt\": \"Closed lid **and configured override** selects override then default, excluding normal list. Open/unknown lid, or no override, uses normal priority.\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L445-L475\",\n     \"excerpt\": \"Override configured AND confirmed closed; otherwise normal; no-override and unknown-lid tests\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:AC-006\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Migration detects raw key presence before serde defaults; null legacy becomes [], any non-null value including \\\"default\\\" becomes [exact_name] as clarified on 2026-10-14; an explicit list including [] wins; the raw legacy key and clamshell/unknown fields are preserved; persistence uses 008's atomic startup normalization keeping original bytes on failure; idempotence and failure fixtures are planned.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L212-L216\",\n     \"excerpt\": \"a non-null legacy selected_microphone becomes one priority entry with that exact name, including the device name \\\"default\\\"\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L212-L216\",\n     \"excerpt\": \"Migration is idempotent, retains unavailable legacy choices, preserves clamshell settings and leaves the original store recoverable if persistence fails.\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L67-L76\",\n     \"excerpt\": \"Absent `microphone_priority`: a **null** legacy `selected_microphone` (008 stores the system default as null) becomes `[]`\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L67-L76\",\n     \"excerpt\": \"atomic replacement that keeps the original bytes on failure\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L411-L428\",\n     \"excerpt\": \"missing/null legacy (→ `[]`), literal `\\\"default\\\"` (→ `[\\\"default\\\"]`), unavailable/ambiguous legacy\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:AC-007\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"UI and CLI submit the same DomainChange through the merged 008 transaction (tauri_adapter::write_change vs SettingsBackend::commit_change) with the same validator; invalid/stale/failed writes produce typed errors with no partial state; the UI keeps the draft on conflict and offers Reload; the commit's live effect invalidates the next-open cache without interrupting an active recording.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L217-L221\",\n     \"excerpt\": \"On a stale revision the UI keeps the draft, shows that settings changed elsewhere and offers Reload\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L217-L221\",\n     \"excerpt\": \"A committed priority update invalidates cached resolution for the next stream opening without interrupting an active recording.\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L99-L109\",\n     \"excerpt\": \"Save submits the complete draft as the same `DomainChange` through `tauri_adapter::write_change` with the base revision (same validator and transaction as the CLI)\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L99-L109\",\n     \"excerpt\": \"Stale revision retains draft and offers Reload to adopt current committed order/discard edits.\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L67-L76\",\n     \"excerpt\": \"which invalidates the next-open resolution cache and queues the always-on reopen\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:AC-008\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"The plan registers the exact `handy settings microphones list` and `set-priority <name>...` names as a 008 Domain, reuses expected-revision placement, the single JSON envelope, 008 stable codes and exit mapping, introduces no MCP server, exposes no credentials, and implements the 2026-10-14 clarifications: `list` as a live operation refused offline with `unavailable`/5, offline order readable via `get microphone_priority`, and generic `set selected_microphone`/`microphone_priority` refused with `microphones_domain`.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L222-L226\",\n     \"excerpt\": \"With `--json`, stdout contains only the F8 JSON envelope\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L394-L415\",\n     \"excerpt\": \"Without a running Handy it returns the 008 live-only refusal (`unavailable`, exit 5, empty details) and never fabricates availability.\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L99-L109\",\n     \"excerpt\": \"Keep the public names in AC-008: `handy settings microphones list` and `handy settings microphones set-priority <name>...`.\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L99-L109\",\n     \"excerpt\": \"No second JSON line or diagnostics on stdout, no MCP server, no OpenAPI because no HTTP endpoint is introduced.\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L359-L368\",\n     \"excerpt\": \"`list` live answer and offline `unavailable`/5 with empty details\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:FR-001\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Persistence of a unique ordered list (`microphone_priority: Vec<String>` with shared uniqueness validation) and accessible add/remove/reorder controls in the existing audio settings (draft editor, Move up/down, focus retention, keyboard tests) are planned in Steps 2, 6 and 7.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L346-L350\",\n     \"excerpt\": \"Persist a unique ordered list of microphone choices and expose accessible add/remove/reorder controls in the existing audio settings.\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L329-L338\",\n     \"excerpt\": \"FR-001.1: Persistent ordered list\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L369-L378\",\n     \"excerpt\": \"FR-001.2: Accessible list editor\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L99-L109\",\n     \"excerpt\": \"stable per-name row identity preserves focus after reorder/remove/retry\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:FR-002\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Availability and effective input are separate projections; failed or incomplete enumeration yields unknown and never unavailable; duplicate names are ambiguous, skipped as failed attempts without arbitrary first-match, and stay saved.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L351-L355\",\n     \"excerpt\": \"failed enumeration is unknown, not proof that a device disappeared\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L351-L355\",\n     \"excerpt\": \"are skipped as a failed attempt at stream opening rather than resolved to an arbitrary device\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L77-L84\",\n     \"excerpt\": \"failure or incomplete name discovery marks affected status unknown; duplicates are ambiguous. Failed probes cannot masquerade as absence.\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L339-L348\",\n     \"excerpt\": \"name groups never arbitrary first-match\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L50-L64\",\n     \"excerpt\": \"AC-002/003; four availability states, effective reason, timed refresh\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:FR-003\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Ordered resolution then system default with bounded per-attempt and global deadlines, explicit recording error on failure, and no list mutation (fallback erasure path removed) are planned in Steps 1, 3, 4 and 7 with fake-clock traces.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L356-L360\",\n     \"excerpt\": \"Resolve and open normal microphone choices in order, then system default, with bounded attempts and explicit failure.\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L339-L348\",\n     \"excerpt\": \"Each eligible name tried once in order, default inside global budget after failures, unknown never unavailable, preferences untouched.\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L246-L279\",\n     \"excerpt\": \"Resolving --> Error: deadline or no device\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:FR-004\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Changes apply at the next opening (queued revision-tagged effect), the session keeps its chosen device, and a loss seals and transcribes the captured prefix exactly once through the normal stop path with a translated cut-short notice and no splicing; the next opening re-resolves.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L361-L365\",\n     \"excerpt\": \"audio captured before the loss is kept and transcribed normally, the user is told the recording was cut short, and no other microphone is spliced into its samples\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L91-L98\",\n     \"excerpt\": \"seal the current generation's captured prefix, end it exactly once, report translated cut-short notification\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L91-L98\",\n     \"excerpt\": \"Do not use cancel-generation or splice samples from fallback device.\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:FR-005\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Closed-lid override-then-default behavior is preserved and resolution never writes the clamshell setting or the list; regression fixtures cover clamshell with and without override.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L366-L370\",\n     \"excerpt\": \"Preserve the existing closed-lid behavior (override first, then system default) and never erase the clamshell setting or the normal priority list.\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L339-L348\",\n     \"excerpt\": \"FR-005.1: Closed-lid override policy\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L349-L358\",\n     \"excerpt\": \"FR-005.2: Clamshell integration\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L39-L49\",\n     \"excerpt\": \"PASS: retain clamshell and legacy raw key\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:FR-006\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Migration runs only when the key is absent in the raw payload, maps legacy intent, preserves the legacy key, clamshell and unknown fields, and persists through the atomic startup commit that keeps the original on failure.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L371-L375\",\n     \"excerpt\": \"Migrate old single microphone selection only when the priority key is absent, retaining intent and recoverability without changing unrelated settings.\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L67-L76\",\n     \"excerpt\": \"Detect key presence in raw JSON before serde defaults.\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L67-L76\",\n     \"excerpt\": \"Preserve the raw legacy key unchanged and ignore it for normal resolution once the new key exists. Keep clamshell/channel/unknown fields.\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:FR-007\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Shared typed validation, the single locked revisioned 008 commit path, conflict handling, the live effect that invalidates the resolution cache, and the 008 settings-changed event are reused for UI and CLI, with parity tests.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L376-L380\",\n     \"excerpt\": \"Share typed validation, atomic persistence, revision conflict handling, cache invalidation and setting change notifications between UI and CLI.\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L67-L76\",\n     \"excerpt\": \"Do not create another lock, revision counter, file writer, settings channel or envelope.\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L67-L76\",\n     \"excerpt\": \"the effect runs after the durable commit and before the `settings-changed` event, as for every 008 effect\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L411-L428\",\n     \"excerpt\": \"genuine UI adapter versus CLI valid/invalid parity, CAS, complete-order readback\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:FR-008\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"The 008 JSON operations are extended with `set-priority` (write) and the live `list` read returning configured order separately from availability and effective input, with the documented 008 codes and exits; the priority read is also available offline via `get microphone_priority`.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L381-L385\",\n     \"excerpt\": \"Extend F8 settings JSON operations with priority read/write and device-status read contracts, preserving configured/effective separation and documented error codes.\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L99-L109\",\n     \"excerpt\": \"List data: `configured_order`, `availability` entries `{name,status}`, `availability_observed_at`, `effective_input` `{name,reason,scope,capture_generation}` or null\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L99-L109\",\n     \"excerpt\": \"Reuse success 0; persistence_failed/internal_error 1; usage_error/validation_failed 2; revision_conflict 3 with current_revision\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:SC-001\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Step 7 requires per-AC scoped proof for all eight AC with binary/OS/hash evidence; macOS native/UI evidence gates Implemented while Windows/Linux native checks are pending release evidence, consistent with the constitution; no generic runtime success is claimed.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L461-L464\",\n     \"excerpt\": \"All eight AC pass their mapped deterministic tests and required native/UI scenarios before feature release\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L379-L388\",\n     \"excerpt\": \"All AC/SC and P0/P1 gates have actual scoped proof on macOS\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L50-L64\",\n     \"excerpt\": \"SC-001 requires all eight AC plus native/UI gates; Story 4's P2 label does not relax the release gate.\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:SC-002\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Failure fixtures (disconnect/reconnect, enumeration failure, clamshell fallback, restart) assert exact configured order and unrelated settings; real-file tests include unknown-field preservation.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L465-L468\",\n     \"excerpt\": \"Disconnect/reconnect, enumeration failure, clamshell fallback and restart tests preserve exact configured order and unrelated settings in every fixture.\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L50-L64\",\n     \"excerpt\": \"SC-002 asserts exact configured order and unrelated settings across each failure fixture.\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L411-L428\",\n     \"excerpt\": \"flush/replace fault and unknown-field preservation\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"001-microphone-priority:SC-003\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Keyboard add/remove/reorder, focus retention, text statuses and error recovery are planned in draft-state and Playwright tests, with design/source assertions (Penflow) separated from runtime assertions.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L469-L471\",\n     \"excerpt\": \"Keyboard-only users can add, remove and reorder a choice, read availability and recover from a rejected write without losing focus\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L50-L64\",\n     \"excerpt\": \"SC-003 requires keyboard focus/error recovery and separate design/runtime assertions.\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L411-L428\",\n     \"excerpt\": \"pointer target/drag, tab/Enter move, focus retention, unavailable removal, all four text statuses\"\n    }\n   ]\n  }\n ],\n \"ambiguities\": [\n  {\n   \"requirement_id\": \"001-microphone-priority:AC-003\",\n   \"decision_key\": \"deadline-skips-configured-choices\",\n   \"question\": \"When slow configured attempts exhaust the time before the reserved default slot (fewer than 4 s left), should remaining configured choices be skipped as failed with reason `deadline` so the system default always gets its full 2 s, or should a still-present configured choice be preferred over the default? The plan adopts the former from an orchestrator decision that is not recorded in the spec Clarifications; it is a reasonable reconciliation of the 2 s/6 s bounds and the default-after-failures rule, so it is non-critical.\",\n   \"critical\": false,\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L197-L201\",\n     \"excerpt\": \"Attempt the system default only after configured attempts fail\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L77-L84\",\n     \"excerpt\": \"the configured choices not yet attempted are recorded as failed attempts with reason `deadline`\"\n    }\n   ]\n  }\n ],\n \"extra_scope\": [\n  {\n   \"kind\": \"technical\",\n   \"description\": \"Cap on outstanding native open workers; reaching the cap reports a recording error.\",\n   \"justification\": \"Needed to keep attempts bounded when blocked cpal openers cannot be killed (FR-003 bounded attempts, edge case 'no unbounded stream reopen loop'); it adds no user-facing setting.\",\n   \"approved\": true,\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L85-L90\",\n     \"excerpt\": \"cap outstanding native opens so repeated starts cannot create unlimited detached threads\"\n    }\n   ]\n  },\n  {\n   \"kind\": \"technical\",\n   \"description\": \"Per-name D3 refusal details (`details.items`, new `ErrorReason` variants) and the `microphones_domain` reason, relying on 006 step 0.\",\n   \"justification\": \"Implements the typed validation errors of AC-001/AC-007 and the 2026-10-14 legacy-key clarification inside the F8 envelope; no free text or device name is echoed.\",\n   \"approved\": true,\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L67-L76\",\n     \"excerpt\": \"new `ErrorReason` variants `microphone_name_empty` and `microphone_name_duplicate`, fixed messages that never echo the name\"\n    }\n   ]\n  },\n  {\n   \"kind\": \"technical\",\n   \"description\": \"Additional list wire fields (`availability_observed_at`, `scope`, `capture_generation`, typed enumeration warning).\",\n   \"justification\": \"Expose the AC-002 current/last/not-used-yet distinction and the separate observation clock of availability versus configured revision; data-only fields of the requested read contract.\",\n   \"approved\": true,\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L99-L109\",\n     \"excerpt\": \"these are explicitly distinct clocks, not an atomic promise about changing hardware\"\n    }\n   ]\n  },\n  {\n   \"kind\": \"technical\",\n   \"description\": \"Whitespace-only names are rejected in addition to empty names.\",\n   \"justification\": \"Interprets AC-001 'empty device identities' for names that are visually empty; no real device naming is restricted otherwise and case/bytes are preserved.\",\n   \"approved\": true,\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L67-L76\",\n     \"excerpt\": \"Shared validation accepts exact, non-empty, non-whitespace-only unique names regardless of current presence\"\n    }\n   ]\n  },\n  {\n   \"kind\": \"technical\",\n   \"description\": \"Push-to-talk release after an automatic end (loss) is consumed as a no-op.\",\n   \"justification\": \"Required so a loss-ended session completes exactly once (FR-004) and a late key release does not start or stop another session.\",\n   \"approved\": true,\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L91-L98\",\n     \"excerpt\": \"Push-to-talk release after automatic end consumes its ended binding and is a no-op\"\n    }\n   ]\n  }\n ],\n \"findings\": [\n  {\n   \"category\": \"ordering\",\n   \"severity\": \"warning\",\n   \"description\": \"Step 2 moves `RuntimeEffect::AudioInput` to `microphone_priority`, makes `selected_microphone` read-only and maps the live effect to cache invalidation/always-on reopen, but the resolver/cache that reads `microphone_priority` only exists after Steps 3-4 and the legacy `set_selected_microphone` command is only retired in Step 5. Between Step 2 and Steps 4/5 the declared runtime effect is not read at use (the plan claims the effects.rs test stays green) and the existing selector may write or fail on a read-only key.\",\n   \"suggestion\": \"State the intermediate-state policy: either keep the effect mapping and read-only switch in Step 4/5 together with their consumers, or map `microphone_priority` in Step 2 to the existing MicrophoneDevice effect with a temporary adapter so every step leaves tests green and the app usable.\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L67-L76\",\n     \"excerpt\": \"the `effects.rs` test that every declared runtime effect is applied or read at use stays green\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L67-L76\",\n     \"excerpt\": \"The legacy UI command `set_selected_microphone` and its `tauri_adapter::write` call are removed in Step 5\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L349-L358\",\n     \"excerpt\": \"Adapt `update_selected_device`, start/stop/always-on/lazy-close to queued committed-revision policy\"\n    }\n   ]\n  },\n  {\n   \"category\": \"coverage\",\n   \"severity\": \"warning\",\n   \"description\": \"AC-003 requires always-on mode to re-open the stream after a device loss. The plan covers idle stream loss (one bounded resolution per event) and loss during capture (prefix sealing), but does not state or test that, after a loss during an active always-on recording, the always-on stream is re-resolved once the recording completes; the state model only leaves Idle on a pending revision or next start.\",\n   \"suggestion\": \"Add an explicit rule and a microphone_sessions.rs/native case: always-on loss during capture → complete the prefix, then one bounded re-resolution of the always-on stream.\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/spec.md:L197-L201\",\n     \"excerpt\": \"in always-on microphone mode, when the stream opens at launch, after a committed priority change while no recording is active, or after a device loss\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L91-L98\",\n     \"excerpt\": \"Idle stream-loss recovery is one bounded resolution per event, no self-triggered unbounded loop\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L246-L279\",\n     \"excerpt\": \"Idle --> Resolving: pending always-on revision or next start\"\n    }\n   ]\n  },\n  {\n   \"category\": \"testability\",\n   \"severity\": \"warning\",\n   \"description\": \"The constitution makes building and passing automated tests on macOS, Windows and Linux mandatory (only native evidence is pending). Step 7 states this success criterion, but the Resolved Test Commands give no Windows/Linux build/test command or CI job to produce that evidence.\",\n   \"suggestion\": \"Name the CI workflow/job (or exact cross-platform cargo/bun commands) that proves Windows and Linux build and automated tests, distinct from pending native evidence.\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/constitution.md:L31-L36\",\n     \"excerpt\": \"Code targets every supported platform (macOS, Windows, Linux) and must build and pass its automated tests.\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L379-L388\",\n     \"excerpt\": \"code builds and automated tests pass on macOS, Windows and Linux\"\n    }\n   ]\n  },\n  {\n   \"category\": \"measurable_acceptance\",\n   \"severity\": \"info\",\n   \"description\": \"The budget rule says at most two configured attempts can run to their full 2 s timeout before the default; since a second attempt may start only with at least 4 s left and enumeration/lid probe take non-zero time, in practice at most one full-timeout configured attempt precedes the default. Tests should assert the actual bound rather than the theoretical two.\",\n   \"suggestion\": \"Express the test oracle in terms of the start rule (start only with >=4 s left; default starts by t = 4 s) and include a trace with non-zero enumeration time.\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L77-L84\",\n     \"excerpt\": \"at most two configured attempts can run to their full timeout before the default\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L77-L84\",\n     \"excerpt\": \"A configured attempt (or the closed-lid override attempt) starts only while at least 4 seconds remain\"\n    }\n   ]\n  },\n  {\n   \"category\": \"dependencies\",\n   \"severity\": \"info\",\n   \"description\": \"Steps 2 and 5 depend on 006 step 0 (D2/D3), which is not yet merged; Step 2 also waits on the macOS native spike although the settings schema/migration work does not depend on native feasibility. The dependency is declared, but it can serialize unrelated work.\",\n   \"suggestion\": \"Keep the declared prerequisites, and consider allowing the non-D3 part of Step 2 (field, migration, descriptor) to proceed independently of Step 1.\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L329-L338\",\n     \"excerpt\": \"Step 1 native feasibility established on macOS; **006 step 0 merged**\"\n    },\n    {\n     \"section_id\": \".specs/features/001-microphone-priority/plan.md:L476-L478\",\n     \"excerpt\": \"Steps 2 (D3 variants) and 5 (D2/D3) wait for 006 step 0\"\n    }\n   ]\n  }\n ],\n \"confidence\": 4,\n \"synthesized_batch_ids\": [],\n \"resolutions\": []\n}"
   ],
   "synthesis": null,
   "synthesis_transport_version": null
