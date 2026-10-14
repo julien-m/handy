@@ -10,7 +10,7 @@ interface SettingContainerProps {
   layout?: "horizontal" | "stacked";
   disabled?: boolean;
   tooltipPosition?: "top" | "bottom";
-  /** Test identifier of the row; its title gets `<testId>-title`. */
+  /** Test id of the row; its title gets `${testId}-title`. */
   testId?: string;
 }
 
@@ -46,6 +46,8 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
     }
   }, [showTooltip]);
 
+  const titleTestId = testId ? `${testId}-title` : undefined;
+
   const toggleTooltip = () => {
     setShowTooltip(!showTooltip);
   };
@@ -60,8 +62,8 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
         <div className={containerClasses} data-testid={testId}>
           <div className="flex items-center gap-2 mb-2">
             <h3
-              data-testid={testId && `${testId}-title`}
               className={`text-sm font-medium ${disabled ? "opacity-50" : ""}`}
+              data-testid={titleTestId}
             >
               {title}
             </h3>
@@ -112,8 +114,8 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
       <div className={containerClasses} data-testid={testId}>
         <div className="mb-2">
           <h3
-            data-testid={testId && `${testId}-title`}
             className={`text-sm font-medium ${disabled ? "opacity-50" : ""}`}
+            data-testid={titleTestId}
           >
             {title}
           </h3>
@@ -137,8 +139,8 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
         <div className="max-w-2/3">
           <div className="flex items-center gap-2">
             <h3
-              data-testid={testId && `${testId}-title`}
               className={`text-sm font-medium ${disabled ? "opacity-50" : ""}`}
+              data-testid={titleTestId}
             >
               {title}
             </h3>
@@ -190,8 +192,8 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
     <div className={horizontalContainerClasses} data-testid={testId}>
       <div className="max-w-2/3">
         <h3
-          data-testid={testId && `${testId}-title`}
           className={`text-sm font-medium ${disabled ? "opacity-50" : ""}`}
+          data-testid={titleTestId}
         >
           {title}
         </h3>

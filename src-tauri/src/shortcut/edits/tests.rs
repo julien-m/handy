@@ -134,3 +134,39 @@ fn an_unchanged_toggle_touches_no_registration() -> TestResult {
     assert!(backend.slots.is_empty());
     Ok(())
 }
+
+#[test]
+fn a_check_reports_a_conflict_and_saves_nothing() -> TestResult {
+    let settings = settings_with_post_process(true, &["f13"])?;
+    let edit = ShortcutEdit::Add {
+        shortcut: "f13".into(),
+    };
+    let refusal = check_shortcut_edit(&settings, "transcribe", &edit);
+    let Some(ShortcutEditError::ShortcutConflict { conflict }) = refusal else {
+        return Err(format!("expected a conflict, got {refusal:?}"));
+    };
+    assert_eq!(conflict.owning_action, POST_PROCESS_ACTION);
+    let transcribe = settings.bindings.get("transcribe").ok_or("no transcribe")?;
+    assert_eq!(transcribe.shortcuts(), vec!["alt+space".to_string()]);
+    Ok(())
+}
+
+#[test]
+fn a_check_accepts_a_free_shortcut_and_enforces_the_limit() -> TestResult {
+    let mut settings = settings_with_post_process(true, &["f13"])?;
+    let add = |shortcut: &str| ShortcutEdit::Add {
+        shortcut: shortcut.into(),
+    };
+    assert_eq!(
+        check_shortcut_edit(&settings, "transcribe", &add("f14")),
+        None
+    );
+    set_shortcuts(
+        &mut settings,
+        "transcribe",
+        &["alt+space", "f15", "f16", "f17"],
+    )?;
+    let refusal = check_shortcut_edit(&settings, "transcribe", &add("f14"));
+    assert_eq!(refusal, Some(ShortcutEditError::LimitExceeded { limit: 4 }));
+    Ok(())
+}

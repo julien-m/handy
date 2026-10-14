@@ -10,7 +10,7 @@ import type { ListedPrompt, PromptLibraryView } from "@/bindings";
 import { Alert } from "../../ui/Alert";
 import { Button } from "../../ui/Button";
 import { SettingsGroup } from "../../ui/SettingsGroup";
-import { ShortcutListEditor } from "../shortcut-list";
+import { ShortcutListEditor } from "../shortcut-list-editor";
 import {
   MAX_SHORTCUTS_PER_PROMPT,
   promptTargetOf,

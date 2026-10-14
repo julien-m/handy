@@ -200,7 +200,21 @@
             "registration": "Het systeem heeft deze sneltoets geweigerd: {{error}}",
             "generic": "De sneltoets kon niet worden opgeslagen",
             "conflictsUnavailable": "Conflicten tussen sneltoetsen konden niet worden gecontroleerd"
-          }
+          },
+          "changeButton": "Wijzigen",
+          "discard": "Deze sneltoets verwerpen",
+          "lastHint": "Elke actie houdt minstens één sneltoets. Wijzig of herstel deze in plaats daarvan.",
+          "limitHint": "{{count}} van {{limit}} sneltoetsen. Verwijder er een om een andere toe te voegen.",
+          "draftConflict": "{{shortcut}} wordt al gebruikt door {{action}}. Er is niets opgeslagen.",
+          "draftOverlap": "{{shortcut}} zou ook {{action}} activeren. Er is niets opgeslagen.",
+          "legacyOverlap": "{{shortcut}} overlapt met {{action}}",
+          "legacyDuplicate": "{{shortcut}} wordt ook gebruikt door {{action}}",
+          "legacyBody": "Hij werkt nog zoals vóór de update. Wijzig hem om deze waarschuwing te wissen.",
+          "systemRefused": "{{system}} weigerde {{shortcut}}",
+          "systemRefusedGeneric": "Het systeem weigerde deze sneltoets",
+          "systemRefusedBody": "Mogelijk heeft een andere app deze combinatie geregistreerd. Kies een andere of probeer het opnieuw.",
+          "systemReason": "Systeembericht: {{error}}",
+          "retry": "Opnieuw proberen"
         }
       },
       "language": {
@@ -344,9 +358,13 @@
           "clipboardShiftInsert": "Klembord (Shift+Insert)",
           "direct": "Direct",
           "none": "Geen",
-          "externalScript": "Extern script"
+          "externalScript": "Extern script",
+          "clipboardMac": "Klembord (⌘V)",
+          "smartPasteDescription": "Standaard op macOS",
+          "noneDescription": "Alleen geschiedenis en klembord"
         },
-        "externalScriptPlaceholder": "/pad/naar/je/script.sh"
+        "externalScriptPlaceholder": "/pad/naar/je/script.sh",
+        "descriptionSmart": "Slim plakken schrijft rechtstreeks in het veld, of plakt anders en herstelt je klembord."
       },
       "typingTool": {
         "title": "Typgereedschap",
@@ -392,14 +410,6 @@
           "sec15": "Na 15 seconden (Debug)"
         }
       },
-      "customWords": {
-        "title": "Eigen woordenlijst",
-        "description": "Help ondersteunde modellen namen en vaktermen te herkennen. Fuzzy-correctie is momenteel beperkt tot woorden met de letters A–Z en cijfers.",
-        "placeholder": "Woord toevoegen",
-        "add": "Toevoegen",
-        "remove": "{{word}} verwijderen",
-        "duplicate": "\"{{word}}\" bestaat al"
-      },
       "voiceActivityDetection": {
         "title": "Spraakactiviteitsdetectie (VAD)",
         "description": "Filter stilte uit opnames. Streaming-modellen gebruiken een langere VAD-uitloop; het uitschakelen van VAD neemt de ruwe audio op."
@@ -424,6 +434,143 @@
           "simplified": "Vereenvoudigd",
           "traditional": "Traditioneel"
         }
+      },
+      "returnToApp": {
+        "title": "Terug naar de app van het dicteren",
+        "description": "Invoegen in de app waar het dicteren begon, ook als je intussen van app wisselt.",
+        "unavailableUnreadable": "Niet beschikbaar op dit systeem: Handy kan de voorste app hier niet lezen. De tekst gaat aan het einde naar de app op de voorgrond.",
+        "unavailablePlatform": "Niet beschikbaar op dit systeem. De tekst gaat aan het einde naar de app op de voorgrond.",
+        "details": "Handy onthoudt de voorste app wanneer het dicteren begint en schakelt daar terug voordat de tekst wordt ingevoegd. Staat dit uit, dan gaat de tekst naar de app die op de voorgrond staat als het dicteren eindigt.",
+        "detailsLabel": "Over teruggaan naar de app van het dicteren"
+      }
+    },
+    "vocabulary": {
+      "group": "Vocabulaire",
+      "title": "Vocabulaire",
+      "description": "Namen en termen die het model moet herkennen, als het dat ondersteunt. Vervangingen herschrijven de tekst juist na de herkenning.",
+      "placeholder": "Term toevoegen",
+      "inputLabel": "Nieuwe vocabulaireterm",
+      "add": "Toevoegen",
+      "addHint": "Typ een term om die toe te voegen.",
+      "busy": "Wacht tot de huidige wijziging klaar is.",
+      "paste": "Lijst plakken…",
+      "count": "{{total}} van {{max}} termen",
+      "listLabel": "Vocabulairetermen",
+      "remove": "{{term}} verwijderen",
+      "retry": "Opnieuw proberen",
+      "loading": "Vocabulaire laden…",
+      "listFailed": "Het opgeslagen vocabulaire kon niet worden gelezen. Er is niets gewijzigd; probeer het opnieuw om het te laden.",
+      "empty": {
+        "title": "Nog geen termen",
+        "body": "Voeg namen toe zoals Claude Code of OpenClaw, één voor één of als geplakte lijst."
+      },
+      "flag": {
+        "empty": "Lege term, niet verzonden. Verwijder deze.",
+        "too_long": "Langer dan 100 tekens, niet verzonden. Verwijder deze en voeg een kortere versie toe.",
+        "line_break": "Bevat een regeleinde, niet verzonden. Verwijder deze en voeg hem opnieuw toe.",
+        "forbidden_character": "Bevat < > of \", niet verzonden. Verwijder deze en voeg hem toe zonder deze tekens.",
+        "duplicate": "Gelijk aan een eerdere term, niet verzonden. Verwijder deze.",
+        "over_capacity": "Boven de limiet van 500 termen, niet verzonden tot de lijst korter is.",
+        "over_budget": "Niet verzonden: boven de modellimiet."
+      },
+      "errors": {
+        "term_empty": "Voer een term in.",
+        "term_too_long": "Een term mag maximaal 100 tekens hebben.",
+        "term_line_break": "Een term moet op één regel passen.",
+        "term_forbidden_character": "Verwijder de tekens < > of \" uit de term.",
+        "term_duplicate": "Elke term mag één keer voorkomen, en deze staat al in het vocabulaire.",
+        "limit": "Het vocabulaire bevat maximaal 500 termen. Verwijder een term om een andere toe te voegen.",
+        "conflict": "Het vocabulaire is intussen gewijzigd en opnieuw geladen. Probeer het opnieuw.",
+        "notFound": "Deze term was al verwijderd. Het vocabulaire is opnieuw geladen.",
+        "unknown": "Handy kon de wijziging niet bevestigen. Het vocabulaire is opnieuw geladen; controleer het voordat je het opnieuw probeert.",
+        "committed": "Het vocabulaire is opgeslagen, maar Handy kon het niet meteen toepassen. De lijst is opnieuw geladen.",
+        "saved": "Je opgeslagen vocabulaire is ongewijzigd."
+      },
+      "status": {
+        "loading": "Controleren wat het model ondersteunt…",
+        "selectedModel": "het geselecteerde model",
+        "used": {
+          "title": "Gebruikt tijdens herkenning door {{model}}",
+          "sent": "{{sent}} van {{total}} termen worden verzonden.",
+          "sentOne": "{{sent}} van 1 term wordt verzonden."
+        },
+        "notSent": {
+          "over_budget": "Niet verzonden, boven de modellimiet: {{terms}}.",
+          "invalid": "Niet verzonden, ongeldig: {{terms}}.",
+          "duplicate": "Niet verzonden, dubbel: {{terms}}.",
+          "over_capacity": "Niet verzonden, voorbij 500 termen: {{terms}}."
+        },
+        "noTermSent": {
+          "title": "Er wordt geen term naar {{model}} verzonden",
+          "empty_vocabulary": "Het vocabulaire is leeg. Voeg termen toe om ze tijdens de herkenning te gebruiken.",
+          "invalid_terms_only": "Elke opgeslagen term is ongeldig of dubbel. Verwijder de gemarkeerde termen en voeg gecorrigeerde toe.",
+          "over_budget": "De eerste term overschrijdt de modellimiet, dus er wordt geen term verzonden. Verwijder deze om de termen erna te verzenden."
+        },
+        "notSupported": {
+          "title": "{{model}} kan het vocabulaire niet gebruiken tijdens de herkenning",
+          "body": "In plaats daarvan wordt na de herkenning een benaderende correctie toegepast. Kies een Whisper-model om termen naar de herkenner te sturen."
+        },
+        "streaming": {
+          "title": "Niet gebruikt bij livestreaming",
+          "body": "{{model}} transcribeert live, waarbij geen herkenningscontext wordt verzonden. Benaderende correctie wordt in plaats daarvan op de eindtekst toegepast."
+        },
+        "unknown": {
+          "title": "Ondersteuning onbekend totdat het model is geladen",
+          "model_not_loaded": "Handy controleert wat {{model}} ondersteunt wanneer het model wordt geladen.",
+          "capability_query_unanswered": "{{model}} heeft niet op tijd geantwoord, bijvoorbeeld tijdens een dictaat. Handy controleert het daarna opnieuw."
+        },
+        "budgetUnverified": {
+          "title": "Vocabulaire-ondersteuning kan niet worden bevestigd voor {{model}}",
+          "body": "Dit model geeft aan herkenningscontext te ondersteunen, maar deze build heeft er geen gedocumenteerde limiet voor. Er wordt geen term verzonden; in plaats daarvan wordt benaderende correctie toegepast."
+        },
+        "failed": {
+          "title": "Kon de vocabulairestatus niet lezen",
+          "body": "Je vocabulaire is opgeslagen. Probeer het opnieuw om te controleren wat het model ondersteunt."
+        }
+      },
+      "pasteBox": {
+        "title": "Termen plakken",
+        "description": "Eén term per regel. Duplicaten worden overgeslagen; ongeldige regels moet je corrigeren voordat je toevoegt.",
+        "label": "Te plakken termen, één per regel",
+        "previewTitle": "Voorbeeld",
+        "previewEmpty": "Plak of typ één term per regel om te zien wat er wordt toegevoegd.",
+        "sameAs": "{{term}} — gelijk aan {{original}}",
+        "alreadyListed": "{{term}} — staat al in de lijst",
+        "summary": {
+          "add": "{{n}} toe te voegen",
+          "duplicateOne": "1 duplicaat",
+          "duplicateMany": "{{n}} duplicaten",
+          "errorOne": "1 fout",
+          "errorMany": "{{n}} fouten"
+        },
+        "kind": {
+          "add": "Toevoegen",
+          "duplicate": "Duplicaat",
+          "error": "Fout"
+        },
+        "line": {
+          "empty": "Regel {{line}}: lege regel, verwijder deze",
+          "too_long": "Regel {{line}}: gebruik maximaal 100 tekens",
+          "line_break": "Regel {{line}}: houd de term op één regel",
+          "forbidden_character": "Regel {{line}}: verwijder de tekens < > of \"",
+          "duplicate": "Regel {{line}}: gelijk aan een eerdere term",
+          "over_capacity": "Regel {{line}}: boven de limiet van 500 termen"
+        },
+        "note": {
+          "empty": "Je vocabulaire blijft ongewijzigd totdat je de termen toevoegt.",
+          "checking": "Regels controleren…",
+          "fixOne": "Corrigeer regel {{lines}} om de termen toe te voegen. Je vocabulaire is ongewijzigd.",
+          "fixMany": "Corrigeer regels {{lines}} om de termen toe te voegen. Je vocabulaire is ongewijzigd.",
+          "overCapacity": "Het vocabulaire bevat maximaal 500 termen. Maak de lijst korter om deze toe te voegen. Je vocabulaire is ongewijzigd.",
+          "nothingToAdd": "Elke regel staat al in het vocabulaire.",
+          "ready": "Duplicaten worden overgeslagen. Er wordt niets opgeslagen totdat je de termen toevoegt."
+        },
+        "cancel": "Annuleren",
+        "applyOne": "1 term toevoegen",
+        "applyMany": "{{n}} termen toevoegen",
+        "applyZero": "Termen toevoegen",
+        "applying": "Toevoegen…",
+        "applied": "Termen toegevoegd aan het vocabulaire."
       }
     },
     "postProcessing": {
@@ -650,7 +797,8 @@
       "historyLimit": {
         "title": "Geschiedenislimiet",
         "description": "Maximum aantal te bewaren geschiedenisitems",
-        "entries": "items"
+        "entries": "items",
+        "invalid": "Voer een geheel getal in van {{min}} tot {{max}}."
       },
       "recordingRetention": {
         "title": "Opnames automatisch verwijderen",
@@ -798,7 +946,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy heeft toegankelijkheidsmachtigingen nodig om getranscribeerde tekst te kunnen typen.",
-    "openSettings": "Systeeminstellingen openen"
+    "openSettings": "Systeeminstellingen openen",
+    "offTitle": "De toegankelijkheidstoestemming staat uit",
+    "smartPasteOff": "Slim plakken kan niet invoegen of plakken. Je transcripties worden bewaard zodat je ze kunt terughalen."
   },
   "errors": {
     "loadDirectory": "Fout bij laden van map: {{error}}",
@@ -828,7 +978,7 @@
       "revisionConflict": "De instellingen zijn elders gewijzigd. Laad opnieuw en probeer het nog eens.",
       "unavailable": "Deze instelling kan nu niet worden gewijzigd. Probeer het later opnieuw.",
       "shortcutSessionBusy": "Er loopt een dictaat. Probeer het opnieuw wanneer het is afgelopen.",
-      "persistenceFailed": "De instellingen konden niet worden opgeslagen.",
+      "persistenceFailed": "Kan instellingen niet opslaan: het instellingenbestand kon niet worden geschreven. Er is niets gewijzigd.",
       "generic": "De instelling kon niet worden gewijzigd.",
       "readOnly": "De instellingen zijn in deze sessie alleen-lezen: het instellingenbestand kan niet veilig worden geschreven, dus wijzigingen worden niet opgeslagen.",
       "unsupportedPlatform": "Deze instelling is niet beschikbaar op dit systeem.",
@@ -840,7 +990,10 @@
       "promptOverrideIncomplete": "Kies een provider en een model, of gebruik de standaardprovider.",
       "promptUnknownProvider": "Deze provider is niet beschikbaar.",
       "promptNotUsable": "Deze prompt is ongeldig. Bewerk hem voordat je hem gebruikt.",
-      "limitExceeded": "Het maximale aantal is bereikt."
+      "limitExceeded": "Het maximale aantal is bereikt.",
+      "conflictTitle": "Instellingen elders gewijzigd",
+      "conflictBody": "De opdrachtregel of een ander venster heeft een nieuwere versie opgeslagen. Laad opnieuw om die te zien; je niet-opgeslagen wijziging wordt verworpen.",
+      "reload": "Opnieuw laden"
     }
   },
   "appLanguage": {
@@ -860,7 +1013,51 @@
     "transcribing": "Transcriberen...",
     "processing": "Verwerken...",
     "loadingModel": "Model laden...",
-    "fallbackNotice": "De AI-verwerking is mislukt. De oorspronkelijke tekst is gebruikt."
+    "fallbackNotice": "De AI-verwerking is mislukt. De oorspronkelijke tekst is gebruikt.",
+    "destination": {
+      "label": "Bestemming: {{name}}",
+      "frontmostApp": "App op de voorgrond",
+      "remove": "Bestemming verwijderen",
+      "unknownApp": "De bestemmingsapp",
+      "choiceFailed": "De bestemming kon niet worden gewijzigd.",
+      "menu": {
+        "title": "Bestemming van dit dictaat",
+        "frontmostNow": "Nu op de voorgrond",
+        "otherApps": "Andere apps",
+        "frontmostAtEnd": "App op de voorgrond aan het einde",
+        "loading": "Apps laden…",
+        "failed": "De lijst met apps kon niet worden geladen."
+      },
+      "refused": {
+        "stale": "De bestemming is intussen gewijzigd; de lijst is vernieuwd.",
+        "frozen": "Het invoegen is begonnen; de bestemming kan niet meer veranderen.",
+        "unavailable": "Deze app is niet meer beschikbaar; de lijst is vernieuwd."
+      },
+      "notice": {
+        "appClosedKept": "{{app}} is gesloten. Er is niets ingevoegd; de transcriptie blijft bewaard in Geschiedenis.",
+        "appClosedNotKept": "{{app}} is gesloten. Er is niets ingevoegd en de transcriptie kon niet in Geschiedenis worden opgeslagen.",
+        "activationFailedKept": "{{app}} kwam niet naar de voorgrond. Er is niets ingevoegd; de transcriptie blijft bewaard in Geschiedenis.",
+        "activationFailedNotKept": "{{app}} kwam niet naar de voorgrond. Er is niets ingevoegd en de transcriptie kon niet in Geschiedenis worden opgeslagen.",
+        "insertionFailedKept": "{{app}} heeft de tekst mogelijk niet ontvangen; de transcriptie blijft bewaard in Geschiedenis.",
+        "insertionFailedNotKept": "{{app}} heeft de tekst mogelijk niet ontvangen en de transcriptie kon niet in Geschiedenis worden opgeslagen."
+      }
+    },
+    "prompt": {
+      "label": "Prompt voor dit dictaat: {{name}}",
+      "hint": "Beweeg erover om de opties te zien",
+      "none": "Geen (geen AI-verwerking)",
+      "menuTitle": "Prompt voor dit dictaat",
+      "note": "Geldt alleen voor dit dictaat. De standaard blijft {{name}}.",
+      "loading": "Prompts laden…",
+      "failed": "De prompts konden niet worden geladen.",
+      "choiceFailed": "De prompt kon niet worden gewijzigd.",
+      "refused": {
+        "sessionEnded": "De opname is gestopt; de prompt kan niet meer veranderen.",
+        "processingOff": "AI-verwerking staat uit voor dit dictaat.",
+        "promptMissing": "Deze prompt bestaat niet meer.",
+        "promptNotUsable": "Deze prompt bevat fouten; bewerk hem eerst in de instellingen."
+      }
+    }
   },
   "secureInput": {
     "blockedWithCulprit_one": "{{name}} blokkeert mogelijk 1 sneltoets",

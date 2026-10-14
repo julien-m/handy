@@ -1,0 +1,5 @@
+$ bun test src/stores/vocabulary-store.test.ts src/components/settings/vocabulary/vocabulary-model.test.ts
+
+ 30 pass
+ 0 fail
+Ran 30 tests across 2 files. [22.00ms]

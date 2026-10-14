@@ -147,3 +147,17 @@
 - Review: the spec and plan reviews are stale until an independent reviewer refreshes them. The plan still discloses possible partial insertion for `permission_missing` (reason table and decision table); a plan alignment is needed before the plan review.
 
 <!-- finalize:spec-refine:2026-10-14:8ecc2640 -->
+
+## 2026-10-14 — [Plan Update]: permission_missing aligned on the spec, no possible-partial-insertion detail
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md updated)
+- **AC impacted:** None (pre-implementation; AC-001 planning only, ID unchanged)
+- **Author:** Claude Code (spec-refine 010 plan, claude-opus-5-5)
+- Orchestrator decision 2026-10-14: smart paste `permission_missing` sends no keystroke and leaves the clipboard unchanged, so it cannot cause a partial insertion. The plan now matches spec AC-001 and its Clarification of 2026-10-14. The bubble shows "Insertion failed" and the explanation says nothing was sent to the application.
+- Updated: decision table (separate `permission_missing` row), method-outcome paragraph, history explanation, sequence diagram (`permission_missing` branch), canonical reason table (detail by outcome), new Gherkin scenario "Permission missing".
+- Plan review preparation at 180,000 characters: 14 batches, no error (unchanged).
+- Review: the plan review is stale until an independent reviewer refreshes it.
+
+<!-- finalize:spec-refine:2026-10-14:3d66e47e -->

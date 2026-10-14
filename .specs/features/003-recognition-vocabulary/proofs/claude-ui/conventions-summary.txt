@@ -1,0 +1,10 @@
+Command: livespec conventions verify --feature repo --json
+Exit: 0 (conventions.exit)
+Verdict: PASS
+new_count: 0
+baselined_count: 527
+Blockers: 0
+Run id: 20261014T140939Z
+Receipt: .specs/conventions/runs/20261014T140939Z/receipt.json (ignored by git)
+Raw JSON stdout: 1,995,036 bytes, sha256 47821a2dc8d3ef60ce70478d85e75ddceced4582b41dd61c9ada93b2c3adc271; removed from the repository (UI fix round 1),
+only this summary is kept. stderr kept in conventions.stderr.

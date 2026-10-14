@@ -1,0 +1,12 @@
+bun run lint -> exit 0
+bun run format:check -> exit 0
+bunx --no-install tsc --noEmit -> exit 0
+bun run check:translations -> exit 0
+bun run build -> exit 0
+bun run test:vocabulary -> exit 0
+bun run test:settings-errors -> exit 0
+bun run test:settings-store -> exit 0
+bun run test:shortcut-list -> exit 0
+bun run test:keyboard -> exit 0
+livespec conventions verify --feature repo --json -> exit 0
+livespec conventions verify (UI fix round 1): raw stdout replaced by conventions-summary.txt
