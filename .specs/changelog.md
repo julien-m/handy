@@ -5,6 +5,9 @@
 
 ---
 
+## 2026-10-14 — [Feature 010] Spec refined: focus in another process inserts (Key Entities), history claim conditional on a successful save, no 'some text' detail for permission_missing, destination-return gate recorded, a new dictation closes the bubble even before 4 s
+<!-- finalize:spec-refine:2026-10-14:8ecc2640 -->
+
 ## 2026-10-14 — [Feature 009] Spec refined: AC-003 reasons split into pinned_app_not_running and activation_failed, destination-return gate recorded; plan keeps dev's 50 ms pause before Enter
 <!-- finalize:spec-refine:2026-10-14:b5422949 -->
 

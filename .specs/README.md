@@ -68,6 +68,7 @@
 <!-- readme:activity:start -->
 | Date | Type | Description |
 |---|---|---|
+| 2026-10-14 | Feature | [Feature 010] Spec refined: focus in another process inserts (Key Entities), history claim conditional on a successful save, no 'some text' detail for permission_missing, destination-return gate recorded, a new dictation closes the bubble even before 4 s |
 | 2026-10-14 | Feature | [Feature 009] Spec refined: AC-003 reasons split into pinned_app_not_running and activation_failed, destination-return gate recorded; plan keeps dev's 50 ms pause before Enter |
 | 2026-10-14 | Feature | [Feature 010] Plan refined: round 4 review ingested, 010 behind 006's destination-return gate (closed build keeps dev's paste-error), before_insertion synchronous in the first guard check with a ~50 ms AX budget, names aligned on delivered 006/007 |
 | 2026-10-14 | Feature | [Feature 009] Plan refined: round 4 review ingested, 009 behind 006's destination-return gate (closed build keeps dev's auto_submit, migration never rewrites it), Enter keyed by dictation and generation, status limited to the pinned app |
@@ -77,7 +78,6 @@
 | 2026-10-13 | Feature | [Feature 007] Smart paste fix round 1: current-host-only restoration, concealed/transient content never restored (Julien's decision on AC-009), audit A/B minors fixed or documented; release blockers R-1/R-2 still open |
 | 2026-10-13 | Feature | [Feature 007] Smart paste core implemented (steps 1–6): verified AX insertion, bounded multi-type snapshot helper, on-demand provider, serialized coordinator, per-app/keyboard strategies; settings (008) and destination wiring (006) pending; certification pending |
 | 2026-10-13 | Feature | Smart Paste: record native feasibility and explicit cache/late-write limits; settings integration awaits 008 |
-| 2026-10-14 | Feature | [Feature 006] Synced with `dev` (004 merged, one closed settings error reason enum shared by 004 and 006); settings UI command `change_return_to_dictation_app_setting` with a typed `unsupported_platform` refusal handled by the store; history rule delivered (text-only row when the WAV fails, nullable `file_name` migration shared with 005, `history_status` from the actual `save_entry` result). Full `cargo test` 681 passed / 20 ignored, frontend checks and repository conventions PASS; no visual UI, no AC certified. |
 <!-- readme:activity:end -->
 
 ---
@@ -191,3 +191,5 @@
 <!-- finalize:spec-refine:2026-10-14:fb255547 -->
 
 <!-- finalize:spec-refine:2026-10-14:b5422949 -->
+
+<!-- finalize:spec-refine:2026-10-14:8ecc2640 -->

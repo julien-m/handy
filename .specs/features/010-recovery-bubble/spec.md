@@ -4,7 +4,7 @@ title: Recovery Bubble
 priority: P1
 status: Planned
 created: 2026-10-12
-updated: 2026-10-13
+updated: 2026-10-14
 ---
 
 # Feature Spec: Recovery Bubble
@@ -145,13 +145,15 @@ Feature: Bubble actions
   Scenario: Close
     Given the bubble is visible
     When the user activates Close
-    Then the bubble closes and the transcript stays in history
+    Then the bubble closes
+    And the history entry is untouched: the transcript is in history only if its history save succeeded
   Scenario: Explanation
     Given the bubble is visible with reason "No text field is focused"
     When the user activates the explanation control
-    Then a short text explains the reason and that the transcript is kept in history
+    Then a short text explains the reason
+    And it says the transcript is kept in history only if the history save succeeded; otherwise it says the transcript is not in history
   Scenario: New dictation
-    Given the bubble is visible
+    Given the bubble is visible, even for less than 4 seconds
     When the user starts a new dictation
     Then the bubble closes and the live indicator appears
 ```
@@ -160,7 +162,7 @@ Feature: Bubble actions
 flowchart TD
   A[Bubble visible] --> B{User action}
   B -- Copy --> C[Write full transcript to clipboard; close]
-  B -- Close --> D[Close; history kept]
+  B -- Close --> D[Close; history entry untouched]
   B -- Explanation --> E[Show reason details; stay open]
   B -- New dictation --> F[Close; show live indicator]
 ```
@@ -196,7 +198,7 @@ flowchart TD
 
 ### AC-001
 
-**Criterion:** Before insertion, Handy shows the bubble in place of the live indicator instead of inserting when the destination is unavailable (closed, pinned app unavailable) or uncertain (not confirmed frontmost before insertion, as defined by 006); nothing is inserted. After insertion, when the insertion method reports failure (including the smart paste outcomes "not read", "permission missing" and "uncertain" of 007), Handy shows the bubble with the reason "Insertion failed", and the explanation says some text may have reached the application. In both cases no Enter is sent. The bubble is shown even when the overlay style is none, and it replaces the 006 reason display on the indicator.
+**Criterion:** Before insertion, Handy shows the bubble in place of the live indicator instead of inserting when the destination is unavailable (closed, or pinned app not running: `pinned_app_not_running`) or uncertain (not confirmed frontmost before insertion, as defined by 006, including a running pinned app not brought forward: `activation_failed`); nothing is inserted. After insertion, when the insertion method reports failure (including the smart paste outcomes "not read", "permission missing" and "uncertain" of 007), Handy shows the bubble with the reason "Insertion failed". The explanation adds "Some text may have reached the application" only for failures where input may have been sent: a failure reported by the classic, direct or script methods, and the smart paste outcomes "not read", "uncertain" and "insertion failed". For "permission missing", no keystroke is sent, so the explanation says nothing was sent to the application instead. Reasons decided before insertion never show this detail. In both cases no Enter is sent. The bubble is shown even when the overlay style is none, and it replaces the 006 reason display on the indicator.
 **Priority:** P1 | **Story:** Story 1
 
 ### AC-002
@@ -216,7 +218,7 @@ flowchart TD
 
 ### AC-005
 
-**Criterion:** Copy writes the full transcript to the clipboard as a deliberate user copy, which also makes any pending smart paste restoration (007) abandon through its changeCount guard, and closes the bubble. Close closes it. The explanation control shows the reason details and states that the transcript is kept in history when history saving succeeded. Starting a new dictation closes the bubble. The bubble has no automatic timeout. Closing the bubble never deletes the history entry.
+**Criterion:** Copy writes the full transcript to the clipboard as a deliberate user copy, which also makes any pending smart paste restoration (007) abandon through its changeCount guard, and closes the bubble. Close closes it. The explanation control shows the reason details and states that the transcript is kept in history only when history saving succeeded (006 `history_status` saved); otherwise it states that the transcript is not in history. Starting a new dictation closes the bubble immediately, even if it has been visible for less than 4 seconds. The bubble has no automatic timeout. Closing the bubble never deletes the history entry.
 **Priority:** P1 | **Story:** Story 4
 
 ### AC-006
@@ -283,7 +285,7 @@ Feature: Bubble control hints
   Scenario: Explanation content
     Given the user opens the explanation
     When it is displayed
-    Then it names the reason and says the transcript is kept in history
+    Then it names the reason and says the transcript is kept in history only if the history save succeeded
 ```
 
 ### is_keyboard_navigable
@@ -334,8 +336,8 @@ Feature: Keyboard access to bubble actions
 | Entity | Description | Key fields |
 |---|---|---|
 | Recovery state | One bubble instance | dictation id, transcript, reason, destination name, created at |
-| Recovery reason | Why insertion was replaced | app closed, pinned app unavailable, activation not confirmed, focus in another process, insertion failed, no text field |
-| Focus classification | macOS focused element result | editable, not editable, undetermined, permission missing |
+| Recovery reason | Why insertion was replaced | app closed, pinned app not running (`pinned_app_not_running`), activation not confirmed (`activation_failed`), insertion failed, no text field |
+| Focus classification | macOS focused element result | editable, not editable, undetermined (including keyboard focus owned by another process, AC-002; verdict `Insert`, no recovery reason), permission missing |
 
 ## Clarifications
 
@@ -347,6 +349,15 @@ Feature: Keyboard access to bubble actions
 - `[ASSUMED]` Drag is macOS only; Windows and Linux get Copy, Close and explanation.
 - Real behavior of drops into ChatGPT, Comet and other fields is unverified; the plan includes native checks.
 - Program context: specified in list order (001–010); depends on 006 (destination and outcomes), 007 (smart paste outcomes "not read", "permission missing" and "uncertain" count as insertion failure), 009 (Enter suppression) and 008 (CLI).
+
+- Decision `010-recovery-bubble:AC-003` / `pinned-running-activation-failure-reason`: 2026-10-14 (program orchestrator): "Could not bring <App> forward". A pinned application that is running but does not become frontmost within the 006 limit carries the reason `activation_failed`; "<App> is pinned but not open" is reserved for `pinned_app_not_running` (the pinned application is not running). These are the two reasons into which `.specs/features/009-pin-mode-and-enter-rule/spec.md` AC-003 splits "pinned app unavailable".
+<!-- livespec-clarification:{"requirement_id": "010-recovery-bubble:AC-003", "decision_key": "pinned-running-activation-failure-reason", "evidence_hash": "de2dc486f9b942517c77204e51bdcc7570bb8a91e97f5686deb029267b251e3f", "answer": "2026-10-14 (program orchestrator): \"Could not bring <App> forward\". A pinned application that is running but does not become frontmost within the 006 limit carries the reason `activation_failed`; \"<App> is pinned but not open\" is reserved for `pinned_app_not_running` (the pinned application is not running). These are the two reasons into which `.specs/features/009-pin-mode-and-enter-rule/spec.md` AC-003 splits \"pinned app unavailable\"."} -->
+
+- Decision 2026-10-14 (program orchestrator, Key Entities): keyboard focus owned by another process than the destination is not a recovery reason. As AC-002 states, it counts as undetermined, so the verdict is `Insert` and Handy inserts as usual; the Key Entities table lists it under Focus classification, not under Recovery reason.
+- Decision 2026-10-14 (program orchestrator, Story 4 and AC-005): the bubble never claims history it does not have. "Kept in history" is said only when the history save succeeded, as in `.specs/features/006-destination-application/spec.md` AC-005, read from the outcome's `history_status` (saved); when the save failed or was not attempted, the explanation says the transcript is not in history. Close never deletes a history entry either way.
+- Decision 2026-10-14 (program orchestrator, AC-001): the detail "Some text may have reached the application" is shown only for "Insertion failed" outcomes where input may have been sent: a failure reported by the classic, direct or script methods, and the smart paste outcomes "not read", "uncertain" and "insertion failed" of `.specs/features/007-smart-paste/spec.md`. It is not shown for "permission missing", where the permission check precedes any keystroke and the clipboard is unchanged; that explanation says nothing was sent to the application. Reasons decided before insertion (app closed, pinned app not running, activation not confirmed, no text field) never show it.
+- Decision 2026-10-14 (program orchestrator, delivery precision): all of 010 (bubble, focus classification, drag, Copy, Close, explanation, "Show the bubble when no text field is focused" setting and its CLI key) ships behind the `destination-return` gate of `.specs/features/006-destination-application/spec.md`. Gate closed, Handy behaves exactly as `dev`: no bubble, no classification, the existing `paste-error` notification on a paste failure, and no new setting. Gate open, this specification applies. No AC, FR or SC changes; the requirements describe the gate-open build.
+- Decision 2026-10-14 (program orchestrator, AC-005 and the 006 minimum display): a new dictation closes the bubble immediately, even if it has been visible for less than 4 seconds; Copy, Close and an accepted drop close it immediately too. The "at least 4 seconds" of `.specs/features/006-destination-application/spec.md` AC-005 applies to passive display, which the bubble satisfies since it has no timeout. Verified 2026-10-14: the 006 spec states the 4-second minimum without a new-dictation rule; the delivered 006 code builds no timed reason display (it hides the indicator after insertion and shows the `paste-error` notification, `src-tauri/src/destination/delivery.rs`), so no delivered behavior keeps a reason over a new dictation; the 006 plan's unbuilt rule that kept a reason across a new recording is replaced for the bubble, which 010 owns.
 
 ## QE Analysis
 
@@ -381,7 +392,7 @@ Feature: Keyboard access to bubble actions
 - Very long transcript: the preview shows two lines; drag and Copy carry the full text.
 - Drop into a field that filters input (for example a numeric field): the drop may be accepted with altered content; Handy only records "drop accepted".
 - Bubble visible when the screen locks: it stays until an explicit action or a new dictation.
-- Several recoveries in a row: each new dictation closes the previous bubble; earlier transcripts remain in history.
+- Several recoveries in a row: each new dictation closes the previous bubble, even before 4 seconds; earlier transcripts remain in history when their history save succeeded.
 
 ## Success Criteria
 

@@ -129,3 +129,21 @@
 - Review: the plan review is stale until an independent reviewer refreshes it.
 
 <!-- finalize:spec-refine:2026-10-14:fb255547 -->
+
+## 2026-10-14 — [Spec Update]: focus in another process, conditional history, "some text" detail, destination-return gate, new dictation before 4 s
+
+- **Type:** Spec Update
+- **Spec modified:** Yes (sections: Story 4 Gherkin and Mermaid, has_tooltip Gherkin, AC-001, AC-005, Key Entities, Clarifications, Edge Cases)
+- **Code modified:** None
+- **AC impacted:** AC-001, AC-003 (decision only), AC-005 (IDs unchanged)
+- **Author:** Claude Code (spec-refine 010, claude-opus-5-5)
+- **Key Entities:** focus owned by another process is no longer a recovery reason; it is an undetermined classification with the verdict `Insert`, as AC-002 states. Pinned reasons named `pinned_app_not_running` and `activation_failed`.
+- **AC-003 (persisted Clarify decision):** a running pinned app not brought forward shows "Could not bring <App> forward"; "is pinned but not open" is reserved for `pinned_app_not_running`.
+- **Story 4 and AC-005:** "kept in history" only when the history save succeeded (006 AC-005, `history_status`); otherwise the explanation says the transcript is not in history.
+- **AC-001:** "Some text may have reached the application" only for method failures and the smart paste outcomes "not read", "uncertain" and "insertion failed"; never for "permission missing" (no keystroke sent) or pre-insertion reasons.
+- **AC-005:** a new dictation closes the bubble immediately, even before 4 seconds; the 006 minimum applies to passive display. Checked against the 006 spec and delivered code (no timed reason display in `dev`, only `paste-error`).
+- **Delivery precision (Clarification 2026-10-14):** all of 010 ships behind the `destination-return` gate of 006; gate closed, Handy behaves exactly as `dev`.
+- Review preparation at 180,000 characters: spec 1 batch, plan 14 batches, no error.
+- Review: the spec and plan reviews are stale until an independent reviewer refreshes them. The plan still discloses possible partial insertion for `permission_missing` (reason table and decision table); a plan alignment is needed before the plan review.
+
+<!-- finalize:spec-refine:2026-10-14:8ecc2640 -->
