@@ -83,7 +83,28 @@ pub struct ShortcutBinding {
     pub name: String,
     pub description: String,
     pub default_binding: String,
+    /// First shortcut of the action. Kept at this location so earlier Handy
+    /// versions, which only read this field, keep that shortcut working.
     pub current_binding: String,
+    // @spec FR-001: Ordered 1-4 shortcuts per action — .specs/features/004-multiple-dictation-shortcuts/spec.md#fr-001
+    /// Alternative shortcuts after `current_binding`, in order. Backward
+    /// compatibility: stores written before multiple shortcuts lack the field
+    /// and load it empty; older versions ignore it when reading. Never
+    /// serialized when empty, so a single-shortcut store stays byte-identical.
+    // `default` comes last: specta derives TypeScript optionality from the
+    // last of these serde options, so the binding type marks it optional.
+    #[serde(skip_serializing_if = "Vec::is_empty", default)]
+    pub additional_bindings: Vec<String>,
+}
+
+impl ShortcutBinding {
+    /// Every shortcut of the action in order: the first one, then the
+    /// alternatives.
+    pub fn shortcuts(&self) -> Vec<String> {
+        std::iter::once(self.current_binding.clone())
+            .chain(self.additional_bindings.iter().cloned())
+            .collect()
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Type)]
@@ -481,6 +502,9 @@ pub struct AppSettings {
     pub mute_while_recording: bool,
     #[serde(default)]
     pub append_trailing_space: bool,
+    /// Return to the application where the dictation started before inserting (006).
+    #[serde(default = "default_return_to_dictation_app")]
+    pub return_to_dictation_app: bool,
     #[serde(default = "default_app_language")]
     pub app_language: String,
     #[serde(default = "default_theme")]
@@ -638,6 +662,13 @@ fn default_word_correction_threshold() -> f64 {
 
 fn default_paste_delay_ms() -> u64 {
     60
+}
+
+/// Business rule (006): destination return is on by default where the build supports it (macOS
+/// and Windows with the rollout gate open), and off elsewhere; never written at startup.
+fn default_return_to_dictation_app() -> bool {
+    use crate::settings_service::platform_capability::{PlatformCapabilities, PlatformCapability};
+    PlatformCapabilities::current().supports(PlatformCapability::Destination)
 }
 
 fn default_paste_delay_after_ms() -> u64 {
@@ -918,6 +949,7 @@ pub fn get_default_settings() -> AppSettings {
             description: "Converts your speech into text.".to_string(),
             default_binding: default_shortcut.to_string(),
             current_binding: default_shortcut.to_string(),
+            additional_bindings: Vec::new(),
         },
     );
     #[cfg(target_os = "windows")]
@@ -938,6 +970,7 @@ pub fn get_default_settings() -> AppSettings {
                 .to_string(),
             default_binding: default_post_process_shortcut.to_string(),
             current_binding: default_post_process_shortcut.to_string(),
+            additional_bindings: Vec::new(),
         },
     );
     bindings.insert(
@@ -948,6 +981,7 @@ pub fn get_default_settings() -> AppSettings {
             description: "Cancels the current recording.".to_string(),
             default_binding: "escape".to_string(),
             current_binding: "escape".to_string(),
+            additional_bindings: Vec::new(),
         },
     );
 
@@ -994,6 +1028,7 @@ pub fn get_default_settings() -> AppSettings {
         post_process_selected_prompt_id: None,
         mute_while_recording: false,
         append_trailing_space: false,
+        return_to_dictation_app: default_return_to_dictation_app(),
         app_language: default_app_language(),
         theme: default_theme(),
         experimental_enabled: false,

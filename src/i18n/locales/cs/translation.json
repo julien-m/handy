@@ -205,6 +205,22 @@
           "restore": "Nepodařilo se obnovit původní zkratku",
           "set": "Nepodařilo se nastavit zkratku: {{error}}",
           "reset": "Nepodařilo se vrátit zkratku na původní hodnotu"
+        },
+        "list": {
+          "add": "Přidat zkratku",
+          "addLimit": "Až {{limit}} zkratky na akci",
+          "change": "Klikněte pro nahrání nové kombinace",
+          "remove": "Odebrat tuto zkratku",
+          "removeLast": "Každá akce si ponechá alespoň jednu zkratku",
+          "reset": "Obnovit výchozí zkratku",
+          "errors": {
+            "conflict": "Již používá {{action}} ({{shortcut}})",
+            "overlap": "Spustila by také {{action}} ({{shortcut}})",
+            "invalid": "Neplatná zkratka: {{error}}",
+            "registration": "Systém tuto zkratku odmítl: {{error}}",
+            "generic": "Zkratku se nepodařilo uložit",
+            "conflictsUnavailable": "Konflikty zkratek se nepodařilo ověřit"
+          }
         }
       },
       "language": {
@@ -477,6 +493,7 @@
       "deleteError": "Nepodařilo se smazat záznam. Zkuste to prosím znovu.",
       "retranscribe": "Přepsat znovu",
       "retranscribeError": "Opětovný přepis se nezdařil. Zkuste to prosím znovu.",
+      "noAudio": "Pro tuto položku nebyl uložen žádný zvukový záznam, nelze ji proto znovu přepsat.",
       "transcribing": "Přepisuji...",
       "transcriptionFailed": "Přepis selhal. Můžete zkusit přepis znovu pomocí ikony opakování."
     },
@@ -539,7 +556,8 @@
       },
       "postProcessingToggle": {
         "label": "Následné zpracování",
-        "description": "Povolit AI vylepšení textu po přepisu"
+        "description": "Povolit AI vylepšení textu po přepisu",
+        "shortcutRefused": "Následné zpracování je zapnuté, ale systém odmítl zkratku {{shortcut}}. Změňte ji v nastavení následného zpracování."
       },
       "muteWhileRecording": {
         "label": "Ztlumit při nahrávání",
@@ -552,7 +570,8 @@
       "keyboardImplementation": {
         "title": "Implementace klávesnice",
         "description": "Zvolte backend pro klávesové zkratky.",
-        "bindingsReset": "Klávesové zkratky byly nekompatibilní a byly obnoveny na výchozí hodnoty"
+        "bindingsReset": "Některé klávesové zkratky byly nekompatibilní a byly obnoveny na výchozí hodnotu nebo odebrány",
+        "conflictsKept": "Některé zkratky jsou nyní v konfliktu s jinou akcí. Byly zachovány a jsou označeny v nastavení zkratek."
       },
       "paths": {
         "appData": "Data aplikace:",
@@ -692,6 +711,7 @@
     "modelLoadFailedUnknown": "neznámý model",
     "pasteFailedTitle": "Vložení textu se nezdařilo",
     "pasteFailed": "Text nebylo možné vložit do aktivní aplikace.",
+    "pasteFailedNotSaved": "Text se nepodařilo vložit ani uložit do historie.",
     "transcriptionFailedTitle": "Přepis selhal",
     "settings": {
       "committedNotApplied": "Nastavení bylo uloženo, ale nepodařilo se ho okamžitě použít.",
@@ -700,9 +720,11 @@
       "validationFailed": "Tato hodnota není pro toto nastavení přípustná.",
       "revisionConflict": "Nastavení bylo změněno jinde. Načtěte je znovu a zkuste to znovu.",
       "unavailable": "Toto nastavení teď nelze změnit. Zkuste to později.",
+      "shortcutSessionBusy": "Probíhá diktování. Zkuste to znovu, až skončí.",
       "persistenceFailed": "Nastavení se nepodařilo uložit.",
       "generic": "Nastavení se nepodařilo změnit.",
-      "readOnly": "Nastavení je v této relaci jen pro čtení: soubor nastavení nelze bezpečně zapsat, změny se proto neuloží."
+      "readOnly": "Nastavení je v této relaci jen pro čtení: soubor nastavení nelze bezpečně zapsat, změny se proto neuloží.",
+      "unsupportedPlatform": "Toto nastavení není v tomto systému k dispozici."
     }
   },
   "appLanguage": {

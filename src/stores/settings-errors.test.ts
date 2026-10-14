@@ -51,8 +51,25 @@ assert.equal(
   SETTINGS_ERROR_KEYS.committedNotApplied,
 );
 assert.equal(
+  settingsErrorKey(
+    refusal({ field: "paste_method", reason: "unsupported_platform" }),
+  ),
+  SETTINGS_ERROR_KEYS.unsupportedPlatform,
+);
+assert.equal(
   settingsErrorKey(refusal({ code: "unavailable", field: "vad_backend" })),
   SETTINGS_ERROR_KEYS.unavailable,
+);
+// A dictation in progress refuses every shortcut change with its own message.
+assert.equal(
+  settingsErrorKey(
+    refusal({
+      code: "unavailable",
+      field: "bindings",
+      reason: "shortcut_session_busy",
+    }),
+  ),
+  SETTINGS_ERROR_KEYS.shortcutSessionBusy,
 );
 assert.equal(
   settingsErrorKey(refusal({ code: "persistence_failed" })),

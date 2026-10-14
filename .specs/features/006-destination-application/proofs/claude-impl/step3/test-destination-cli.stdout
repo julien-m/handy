@@ -1,0 +1,11 @@
+
+running 6 tests
+test without_the_capability_cli_domain_and_ui_validation_refuse_identically ... ok
+test with_an_older_handy_running_the_set_is_unavailable_and_writes_nothing ... ok
+test an_invalid_value_is_a_canonical_type_refusal_before_the_platform_check ... ok
+test a_set_routed_to_the_running_instance_is_committed_by_it ... ok
+test output_get_reads_the_plain_value_with_the_platform_default ... ok
+test offline_set_commits_once_and_a_no_op_keeps_the_revision ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.12s
+

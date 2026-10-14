@@ -4,7 +4,7 @@ title: PIN Mode and Enter Rule
 priority: P1
 status: Planned
 created: 2026-10-12
-updated: 2026-10-13
+updated: 2026-10-14
 ---
 
 # Feature Spec: PIN Mode and Enter Rule
@@ -213,7 +213,7 @@ flowchart TD
 
 ### AC-001
 
-**Criterion:** The badge menu of feature 006 offers "Pin <destination>" when nothing or another app is pinned and "Unpin" when an app is pinned. Pinning stores the destination's identity and makes it the destination of the current dictation and of every following dictation, whatever application is frontmost at their start, until unpinned or until Handy quits. The badge shows a pin mark and the accessible name "Destination: <name>, pinned".
+**Criterion:** The badge menu of feature 006 offers "Pin <destination>" when nothing or another app is pinned and "Unpin" when an app is pinned. Pinning stores the destination's identity and makes it the destination of the current dictation and of every following dictation, whatever application is frontmost at their start, until unpinned or until Handy quits. The badge shows a pin mark and the accessible name "Destination: <name>, pinned". While an application is pinned, the badge is shown even when the 006 setting "Return to the dictation's application" is off (the only exception to 006 AC-003); with that setting off and nothing pinned, no badge is shown, and with the overlay style none or without destination support no badge is shown.
 **Priority:** P1 | **Story:** Story 1
 
 ### AC-002
@@ -313,6 +313,7 @@ Feature: Keyboard access to Automatic Enter
 - `[ASSUMED]` The pin lasts until unpinned or until Handy quits; it is not restored after a restart, so a forgotten pin never sends text after a reboot.
 - `[ASSUMED]` Pinning requires destination support (006, macOS and Windows); where unsupported, pin entries are not offered and the CLI returns `validation_failed` with the platform reason. With the overlay style none, pinning is available through the CLI only.
 - `[ASSUMED]` New installations default to Automatic Enter "Never", matching today's auto-submit default (off).
+- Decision 2026-10-14 (program orchestrator, after the independent review): 006 AC-003 hides the badge when "Return to the dictation's application" is off, but a pin activates its application even then (AC-002) and the badge menu is where Unpin is offered. Rule: an active pin shows the badge whatever that setting is; without a pin, 006 AC-003 applies unchanged. 006's spec is not modified; this feature owns the exception.
 - The migration covers every current auto-submit path (classic paste, smart paste of 007 on macOS, reliable paste on Windows, settings commands and UI) so that no second Enter mechanism remains.
 - "Successful insertion" follows the 006 contract: insertion attempted with the method reporting success; it is not a verification of the field content.
 - Program context: specified in list order (001–010); depends on 006 (destination, badge) and 008 (CLI); 010 recovery display suppresses Enter.

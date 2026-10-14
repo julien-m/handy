@@ -205,6 +205,22 @@
           "restore": "Không thể khôi phục phím tắt gốc",
           "set": "Không thể đặt phím tắt: {{error}}",
           "reset": "Không thể đặt lại phím tắt về giá trị gốc"
+        },
+        "list": {
+          "add": "Thêm phím tắt",
+          "addLimit": "Tối đa {{limit}} phím tắt cho mỗi thao tác",
+          "change": "Nhấp để ghi một tổ hợp mới",
+          "remove": "Xóa phím tắt này",
+          "removeLast": "Mỗi thao tác giữ ít nhất một phím tắt",
+          "reset": "Đặt lại phím tắt mặc định",
+          "errors": {
+            "conflict": "Đã được {{action}} sử dụng ({{shortcut}})",
+            "overlap": "Cũng sẽ kích hoạt {{action}} ({{shortcut}})",
+            "invalid": "Phím tắt không hợp lệ: {{error}}",
+            "registration": "Hệ thống đã từ chối phím tắt này: {{error}}",
+            "generic": "Không thể lưu phím tắt",
+            "conflictsUnavailable": "Không thể kiểm tra xung đột phím tắt"
+          }
         }
       },
       "language": {
@@ -477,6 +493,7 @@
       "deleteError": "Không thể xóa mục. Vui lòng thử lại.",
       "retranscribe": "Phiên âm lại",
       "retranscribeError": "Không thể phiên âm lại. Vui lòng thử lại.",
+      "noAudio": "Không có bản ghi âm nào được lưu cho mục này, vì vậy không thể phiên âm lại.",
       "transcribing": "Đang phiên âm...",
       "transcriptionFailed": "Phiên âm thất bại. Bạn có thể phiên âm lại bằng biểu tượng thử lại."
     },
@@ -539,7 +556,8 @@
       },
       "postProcessingToggle": {
         "label": "Xử lý sau",
-        "description": "Bật tinh chỉnh văn bản bằng AI sau khi chuyển đổi"
+        "description": "Bật tinh chỉnh văn bản bằng AI sau khi chuyển đổi",
+        "shortcutRefused": "Xử lý sau đang bật, nhưng hệ thống đã từ chối phím tắt {{shortcut}}. Hãy đổi phím tắt này trong cài đặt Xử lý sau."
       },
       "muteWhileRecording": {
         "label": "Tắt tiếng khi ghi âm",
@@ -552,7 +570,8 @@
       "keyboardImplementation": {
         "title": "Triển khai bàn phím",
         "description": "Chọn hệ thống xử lý phím tắt.",
-        "bindingsReset": "Các phím tắt không tương thích và đã được đặt lại về mặc định"
+        "bindingsReset": "Một số phím tắt không tương thích và đã được đặt lại về mặc định hoặc bị xóa",
+        "conflictsKept": "Một số phím tắt hiện xung đột với một thao tác khác. Chúng được giữ lại và được đánh dấu trong cài đặt phím tắt."
       },
       "paths": {
         "appData": "Dữ liệu ứng dụng:",
@@ -692,6 +711,7 @@
     "modelLoadFailedUnknown": "mô hình không xác định",
     "pasteFailedTitle": "Không thể dán văn bản",
     "pasteFailed": "Không thể dán văn bản vào ứng dụng đang hoạt động.",
+    "pasteFailedNotSaved": "Không thể dán văn bản hoặc lưu vào lịch sử.",
     "transcriptionFailedTitle": "Phiên âm thất bại",
     "settings": {
       "committedNotApplied": "Cài đặt đã được lưu nhưng không thể áp dụng ngay.",
@@ -700,9 +720,11 @@
       "validationFailed": "Giá trị này không được chấp nhận cho cài đặt này.",
       "revisionConflict": "Cài đặt đã được thay đổi ở nơi khác. Hãy tải lại và thử lại.",
       "unavailable": "Không thể thay đổi cài đặt này ngay bây giờ. Hãy thử lại sau.",
+      "shortcutSessionBusy": "Đang đọc chính tả. Hãy thử lại khi kết thúc.",
       "persistenceFailed": "Không thể lưu cài đặt.",
       "generic": "Không thể thay đổi cài đặt.",
-      "readOnly": "Cài đặt chỉ đọc trong phiên này: không thể ghi tệp cài đặt một cách an toàn, vì vậy các thay đổi sẽ không được lưu."
+      "readOnly": "Cài đặt chỉ đọc trong phiên này: không thể ghi tệp cài đặt một cách an toàn, vì vậy các thay đổi sẽ không được lưu.",
+      "unsupportedPlatform": "Cài đặt này không khả dụng trên hệ thống này."
     }
   },
   "appLanguage": {

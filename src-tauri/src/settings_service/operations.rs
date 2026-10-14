@@ -40,9 +40,29 @@ pub trait SettingsBackend {
         let _ = (change, expected);
         Err(SettingsError::new(SettingsErrorCode::Unavailable))
     }
+    /// Commit a live-only domain change of descriptor `key` (for example the shortcut lists),
+    /// with the native preparation the settings UI gives that key.
+    ///
+    /// # Errors
+    /// Same as `commit_change`. The default refuses with `unavailable`: only a running instance
+    /// can prepare a live change.
+    fn commit_live_change(
+        &self,
+        key: &'static str,
+        change: &DomainChange,
+        expected: Option<Revision>,
+    ) -> Result<SettingsRead, SettingsError> {
+        // Every parameter is unused on purpose: this backend has no live state to prepare.
+        let _ = (key, change, expected);
+        Err(SettingsError::instance_required())
+    }
     /// True for a running instance, which can answer live-only domain operations.
     fn is_live(&self) -> bool {
         false
+    }
+    /// The running instance, for live domain operations; `None` offline (the default).
+    fn live_context(&self) -> Option<&dyn super::domains::live_operation::LiveContext> {
+        None
     }
 }
 
@@ -139,6 +159,7 @@ fn domain(operation: &SettingsOperation, backend: &dyn SettingsBackend) -> Outco
         input: input.as_deref(),
         dry_run: *dry_run,
         expected: *expected_revision,
+        platform: super::platform_capability::PlatformCapabilities::current(),
     };
     super::domains::execute(&call, backend, super::domains::production())
 }
@@ -191,6 +212,7 @@ fn set(
     let context = ValidationContext {
         prompt_ids: &prompt_ids,
         updates_allowed: !crate::settings::update_checks_forced_disabled(),
+        platform: super::platform_capability::PlatformCapabilities::current(),
     };
     let mutation = validate_cli(key, value, &context)?;
     let key = mutation.key();

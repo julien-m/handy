@@ -4,6 +4,7 @@
 use super::active;
 use handy_app_lib::settings_service::{
     ownership::LegacyPathProbe,
+    platform_capability::PlatformCapabilities,
     protocol::Revision,
     store::SettingsRepository,
     validation::{validate_cli, ValidationContext},
@@ -90,6 +91,7 @@ fn a_later_cmd_v_choice_survives_every_reload() -> TestResult {
     let context = ValidationContext {
         prompt_ids: &[],
         updates_allowed: true,
+        platform: PlatformCapabilities::current(),
     };
     let chosen = repository.commit_owned(
         &lease,

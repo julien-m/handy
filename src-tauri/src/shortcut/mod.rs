@@ -9,12 +9,24 @@
 //! The active implementation is determined by the `keyboard_implementation`
 //! setting and can be changed at runtime.
 
-mod binding_change;
+pub mod action_shortcuts;
+mod bindings_change;
+pub mod conflicts;
+pub mod edits;
+#[cfg(test)]
+mod fake_backend;
 mod handler;
 pub mod handy_keys;
+pub mod identity;
+mod implementation_switch;
+mod keyboard_switch;
+pub(crate) mod live_change;
+#[cfg(test)]
+mod migration_tests;
+mod registration_delta;
 pub mod tauri_impl;
 
-use log::{debug, error, info, warn};
+use log::{debug, error, warn};
 use serde::Serialize;
 use specta::Type;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -32,6 +44,7 @@ use crate::settings_service::{
     tauri_adapter as live_settings,
     ui_value::UiValue,
 };
+use identity::ShortcutRegistration;
 
 // Note: Commands are accessed via shortcut::handy_keys:: in lib.rs
 
@@ -67,6 +80,26 @@ static CANCEL_REQUESTED: AtomicBool = AtomicBool::new(false);
 /// The lock also serializes reconciliation passes.
 #[cfg(not(target_os = "linux"))]
 static CANCEL_REGISTERED: std::sync::Mutex<bool> = std::sync::Mutex::new(false);
+
+/// Whether the cancel shortcut is registered right now (a recording runs).
+/// Always false on Linux, which never registers it. Never blocks: a
+/// reconcile pass holds the lock while it registers or releases cancel and
+/// may wait for the main thread, where settings commands run, so a held
+/// lock counts as registered (no probe while cancel changes state).
+pub(crate) fn is_cancel_registered() -> bool {
+    #[cfg(target_os = "linux")]
+    {
+        false
+    }
+    #[cfg(not(target_os = "linux"))]
+    {
+        match CANCEL_REGISTERED.try_lock() {
+            Ok(registered) => *registered,
+            Err(std::sync::TryLockError::Poisoned(e)) => *e.into_inner(),
+            Err(std::sync::TryLockError::WouldBlock) => true,
+        }
+    }
+}
 
 /// Register the cancel shortcut (called when recording starts)
 pub fn register_cancel_shortcut(app: &AppHandle) {
@@ -132,22 +165,103 @@ fn reconcile_cancel_shortcut(app: &AppHandle) {
     }
 }
 
-/// Register a shortcut using the appropriate implementation
-pub fn register_shortcut(app: &AppHandle, binding: ShortcutBinding) -> Result<(), String> {
-    let settings = get_settings(app);
-    match settings.keyboard_implementation {
-        KeyboardImplementation::Tauri => tauri_impl::register_shortcut(app, binding),
-        KeyboardImplementation::HandyKeys => handy_keys::register_shortcut(app, binding),
+// @spec AC-005: Cancel keeps its dynamic registration — .specs/features/004-multiple-dictation-shortcuts/spec.md#ac-005
+/// Whether `id`'s shortcuts are registered with the backend outside
+/// recording: cancel is registered dynamically while recording, and the
+/// post-processing action only while post-processing is enabled.
+pub(crate) fn is_statically_registered(id: &str, settings: &settings::AppSettings) -> bool {
+    match id {
+        "cancel" => false,
+        "transcribe_with_post_process" => settings.post_process_enabled,
+        _ => true,
     }
 }
 
-/// Unregister a shortcut using the appropriate implementation
-pub fn unregister_shortcut(app: &AppHandle, binding: ShortcutBinding) -> Result<(), String> {
-    let settings = get_settings(app);
-    match settings.keyboard_implementation {
-        KeyboardImplementation::Tauri => tauri_impl::unregister_shortcut(app, binding),
-        KeyboardImplementation::HandyKeys => handy_keys::unregister_shortcut(app, binding),
+/// Registrations of every shortcut registered at startup, using the
+/// default binding for any action missing from the store.
+pub(crate) fn startup_registrations(app: &AppHandle) -> Vec<ShortcutRegistration> {
+    keyboard_switch::static_registrations(&settings::load_or_create_app_settings(app))
+}
+
+/// Register one shortcut of one action with the active implementation
+///
+/// # Errors
+/// Returns the backend's refusal.
+pub fn register_registration(
+    app: &AppHandle,
+    registration: &ShortcutRegistration,
+) -> Result<(), String> {
+    register_with(app, get_settings(app).keyboard_implementation, registration)
+}
+
+fn register_with(
+    app: &AppHandle,
+    implementation: KeyboardImplementation,
+    registration: &ShortcutRegistration,
+) -> Result<(), String> {
+    match implementation {
+        KeyboardImplementation::Tauri => tauri_impl::register_shortcut(app, registration),
+        KeyboardImplementation::HandyKeys => handy_keys::register_shortcut(app, registration),
     }
+}
+
+/// Unregister one shortcut of one action from the active implementation
+///
+/// # Errors
+/// Returns the backend's refusal.
+pub fn unregister_registration(
+    app: &AppHandle,
+    registration: &ShortcutRegistration,
+) -> Result<(), String> {
+    unregister_with(app, get_settings(app).keyboard_implementation, registration)
+}
+
+fn unregister_with(
+    app: &AppHandle,
+    implementation: KeyboardImplementation,
+    registration: &ShortcutRegistration,
+) -> Result<(), String> {
+    match implementation {
+        KeyboardImplementation::Tauri => tauri_impl::unregister_shortcut(app, registration),
+        KeyboardImplementation::HandyKeys => handy_keys::unregister_shortcut(app, registration),
+    }
+}
+
+/// Register every shortcut of `binding` using the appropriate implementation.
+/// Each shortcut is attempted independently, so an already-registered one
+/// does not keep the others from registering.
+///
+/// # Errors
+/// Returns the first refusal after attempting every shortcut.
+pub fn register_shortcut(app: &AppHandle, binding: ShortcutBinding) -> Result<(), String> {
+    first_error(
+        ShortcutRegistration::all_of(&binding)
+            .iter()
+            .map(|registration| register_registration(app, registration)),
+    )
+}
+
+/// Unregister every shortcut of `binding` using the appropriate implementation
+///
+/// # Errors
+/// Returns the first refusal after attempting every shortcut.
+pub fn unregister_shortcut(app: &AppHandle, binding: ShortcutBinding) -> Result<(), String> {
+    first_error(
+        ShortcutRegistration::all_of(&binding)
+            .iter()
+            .map(|registration| unregister_registration(app, registration)),
+    )
+}
+
+/// Consumes every result (so every operation runs) and keeps the first error.
+fn first_error(results: impl Iterator<Item = Result<(), String>>) -> Result<(), String> {
+    let mut first = Ok(());
+    for result in results {
+        if first.is_ok() {
+            first = result;
+        }
+    }
+    first
 }
 
 // ============================================================================
@@ -158,52 +272,90 @@ pub fn unregister_shortcut(app: &AppHandle, binding: ShortcutBinding) -> Result<
 pub struct BindingResponse {
     success: bool,
     binding: Option<ShortcutBinding>,
+    /// English description of the refusal, for older callers.
     error: Option<String>,
+    /// Typed refusal, which the settings UI translates.
+    edit_error: Option<action_shortcuts::ShortcutEditError>,
 }
-impl BindingResponse {
-    /// Refusal shown to the user (invalid shortcut, registration failure); nothing is stored.
-    fn failed(error: String) -> Self {
-        Self {
-            success: false,
-            binding: None,
-            error: Some(error),
-        }
-    }
-    /// The committed binding, registered (or managed by the recording lifecycle for "cancel").
-    fn succeeded(binding: ShortcutBinding) -> Self {
-        Self {
-            success: true,
-            binding: Some(binding),
-            error: None,
-        }
-    }
-}
-
-/// Change one shortcut as one ordered settings write (see `binding_change`): the native
-/// registration is prepared, the binding committed on the latest settings, and a refused commit
-/// restores the previous registration. Runs on the blocking pool, never on the main thread.
 #[tauri::command]
 #[specta::specta]
+/// Replaces the first shortcut of action `id`, as the settings recorder did before multiple
+/// shortcuts, as one ordered settings write (see [`edits::apply_shortcut_edit`]). Alternatives
+/// are kept; the new shortcut goes through the shared validation and conflict check. Runs on the
+/// blocking pool, never on the main thread.
+///
+/// # Errors
+/// An empty shortcut, or a refusal of the settings service (busy, persistence); every refusal of
+/// the edit itself, invalid syntax included, is reported in the response.
 pub async fn change_binding(
     app: AppHandle,
     id: String,
     binding: String,
 ) -> Result<BindingResponse, SettingsCommandError> {
-    live_settings::blocking(move || binding_change::change(&app, &id, binding)).await
+    if binding.trim().is_empty() {
+        return Err(SettingsCommandError::invalid(
+            "bindings",
+            ValidationReason::CanonicalValue,
+        ));
+    }
+    live_settings::blocking(move || {
+        let previous = edits::current_binding_or_default(&settings::get_settings(&app), &id)
+            .map(|current| current.current_binding)
+            .unwrap_or_default();
+        let edit = action_shortcuts::ShortcutEdit::Replace {
+            previous,
+            shortcut: binding,
+        };
+        let result = edits::apply_shortcut_edit(&app, &id, &edit)?;
+        Ok(binding_response(&app, result))
+    })
+    .await
+}
+
+/// Maps an edit result to the legacy response: every refusal, invalid
+/// syntax included, is in the response with its typed reason so the
+/// settings translate it; `error` keeps the English text for older callers.
+fn binding_response(
+    app: &AppHandle,
+    result: Result<ShortcutBinding, action_shortcuts::ShortcutEditError>,
+) -> BindingResponse {
+    match result {
+        Ok(binding) => BindingResponse {
+            success: true,
+            binding: Some(binding),
+            error: None,
+            edit_error: None,
+        },
+        Err(error) => {
+            let message = edits::describe_edit_error(app, &error);
+            warn!("change_binding error: {}", message);
+            BindingResponse {
+                success: false,
+                binding: None,
+                error: Some(message),
+                edit_error: Some(error),
+            }
+        }
+    }
 }
 
 #[tauri::command]
 #[specta::specta]
+/// Restores the single default shortcut of action `id`; alternatives are removed.
+///
+/// # Errors
+/// An unknown action or a refusal of the settings service; refusals of the edit are in the
+/// response.
 pub async fn reset_binding(
     app: AppHandle,
     id: String,
 ) -> Result<BindingResponse, SettingsCommandError> {
     live_settings::blocking(move || {
-        let binding =
-            settings::get_stored_binding(&settings::get_settings(&app), &id).map_err(|_| {
-                SettingsCommandError::invalid("bindings", ValidationReason::CanonicalValue)
-            })?;
-        binding_change::change(&app, &id, binding.default_binding)
+        settings::get_stored_binding(&settings::get_settings(&app), &id).map_err(|_| {
+            SettingsCommandError::invalid("bindings", ValidationReason::CanonicalValue)
+        })?;
+        let result = edits::apply_shortcut_edit(&app, &id, &action_shortcuts::ShortcutEdit::Reset)?;
+        Ok(binding_response(&app, result))
     })
     .await
 }
@@ -269,16 +421,25 @@ pub fn resume_all_bindings(app: AppHandle) -> Result<(), String> {
 #[derive(Serialize, Type)]
 pub struct ImplementationChangeResult {
     pub success: bool,
-    /// List of binding IDs that were reset to defaults due to incompatibility
+    /// Binding IDs whose shortcuts were reset to the default or removed
+    /// because the new implementation cannot register them
     pub reset_bindings: Vec<String>,
+    /// Stored shortcuts that conflict under the new implementation and did
+    /// not before. They are kept, as inherited conflicts are, and flagged in
+    /// the settings.
+    pub conflicts: Vec<conflicts::StoredShortcutConflict>,
 }
 
-/// Change the keyboard implementation with runtime switching, as one ordered write. The value is
-/// validated and committed like any setting; its live effect (`switch_keyboard_implementation`)
-/// unregisters the old shortcuts, registers them with the new implementation and resets
-/// incompatible ones, so the bindings compared around the commit are exactly those resets.
 #[tauri::command]
 #[specta::specta]
+/// Change the keyboard implementation with runtime switching, as one ordered write: the shared
+/// validator checks the value, every registration moves to the new implementation with the
+/// lists repaired for it, then the implementation and the repaired lists are committed in one
+/// revision (see [`live_change::keyboard_implementation`]); a refused commit moves them back.
+///
+/// # Errors
+/// A refused value, `unavailable` during a dictation session or when HandyKeys cannot start
+/// (nothing changed), or a refusal of the commit.
 pub async fn change_keyboard_implementation_setting(
     app: AppHandle,
     implementation: UiValue<String>,
@@ -286,66 +447,109 @@ pub async fn change_keyboard_implementation_setting(
     let implementation = implementation.into_json();
     live_settings::blocking(move || {
         live_settings::ordered(&app, || {
-            let before = settings::get_settings(&app).bindings;
-            live_settings::set(&app, "keyboard_implementation", implementation)?;
-            let reset_bindings = settings::get_settings(&app)
-                .bindings
-                .into_iter()
-                .filter(|(id, binding)| {
-                    before
-                        .get(id)
-                        .is_some_and(|old| old.current_binding != binding.current_binding)
-                })
-                .map(|(id, _)| id)
-                .collect();
-            Ok(ImplementationChangeResult {
-                success: true,
-                reset_bindings,
-            })
+            let previous = settings::get_settings(&app);
+            live_settings::set_prepared(&app, "keyboard_implementation", implementation)?;
+            Ok(switch_result(&app, &previous))
         })
     })
     .await
 }
 
-/// Live effect of a committed `keyboard_implementation` change, shared by every surface.
+/// Live effect of a committed `keyboard_implementation` change that was not prepared (the
+/// prepared write of every surface skips it): the registrations move to the new implementation
+/// and the lists it cannot register are repaired by an internal commit.
 ///
 /// # Errors
 /// The HandyKeys initialization failure (the implementation is then reverted to Tauri by a
 /// second commit and the shortcuts are registered with it).
 pub(crate) fn switch_keyboard_implementation(
     app: &AppHandle,
-    from: KeyboardImplementation,
-    to: KeyboardImplementation,
+    before: &settings::AppSettings,
+    after: &settings::AppSettings,
 ) -> Result<(), String> {
-    if from == to {
+    if before.keyboard_implementation == after.keyboard_implementation {
         return Ok(());
     }
-    info!(
-        "Switching keyboard implementation from {:?} to {:?}",
-        from, to
-    );
-    unregister_all_shortcuts(app, from);
-    // Carbon fallback registrations use the Tauri plugin. Remove them before
-    // registering the full Tauri implementation to avoid duplicate conflicts.
-    if to == KeyboardImplementation::Tauri {
+    let mut repaired = after.clone();
+    let ids = keyboard_switch::repair_lists(&mut repaired);
+    if let Err(error) = keyboard_switch::switch_registrations(app, before, &repaired) {
+        persist_tauri_fallback(app);
         crate::secure_input::reconcile_fallback(app);
+        return Err(format!("{error}. Reverted to Tauri."));
     }
-    // Initialize new implementation if needed (HandyKeys needs state); it registers shortcuts.
-    if to == KeyboardImplementation::HandyKeys && initialize_handy_keys_with_rollback(app)? {
-        crate::secure_input::reconcile_fallback(app);
-        return Ok(());
-    }
-    register_all_shortcuts_for_implementation(app, to);
+    persist_binding_repairs(app, &repaired, &ids);
     crate::secure_input::reconcile_fallback(app);
-    info!("Keyboard implementation switched to {:?}", to);
     Ok(())
 }
 
-/// Persist the Tauri implementation after HandyKeys failed, so it is not retried at next launch.
-/// The caller registers the Tauri shortcuts itself, so the switch effect must not run again.
+/// Ids of the stored bindings whose shortcut list differs from `previous`, sorted.
+fn changed_lists(previous: &settings::AppSettings, current: &settings::AppSettings) -> Vec<String> {
+    let mut ids: Vec<String> = current
+        .bindings
+        .iter()
+        .filter(|(id, binding)| {
+            previous
+                .bindings
+                .get(*id)
+                .is_some_and(|old| old.shortcuts() != binding.shortcuts())
+        })
+        .map(|(id, _)| id.clone())
+        .collect();
+    ids.sort();
+    ids
+}
+
+/// Commit the repaired bindings `ids` of `repaired` (only those entries), if any.
+fn persist_binding_repairs(app: &AppHandle, repaired: &settings::AppSettings, ids: &[String]) {
+    if ids.is_empty() {
+        return;
+    }
+    live_settings::repair(
+        app,
+        "shortcuts repaired for the keyboard implementation",
+        &|settings| {
+            for id in ids {
+                if let Some(binding) = repaired.bindings.get(id) {
+                    settings.bindings.insert(id.clone(), binding.clone());
+                }
+            }
+            Ok(())
+        },
+    );
+}
+
+/// The switch outcome: the bindings the switch repaired (reset to the default or with removed
+/// alternatives) and the conflicts it introduced, compared with the `previous` settings.
+fn switch_result(app: &AppHandle, previous: &settings::AppSettings) -> ImplementationChangeResult {
+    let current = settings::get_settings(app);
+    let reset_bindings = changed_lists(previous, &current);
+    let conflicts = implementation_switch::introduced_conflicts(
+        &previous.bindings,
+        previous.keyboard_implementation,
+        &current.bindings,
+        current.keyboard_implementation,
+    );
+    if !conflicts.is_empty() {
+        warn!(
+            "{} stored shortcut(s) conflict under {:?}; kept and flagged",
+            conflicts.len(),
+            current.keyboard_implementation
+        );
+    }
+    ImplementationChangeResult {
+        success: true,
+        reset_bindings,
+        conflicts,
+    }
+}
+
+/// Persist the Tauri implementation after HandyKeys failed, so it is not retried at next launch,
+/// with the lists repaired for Tauri in the same commit, as a switch does. The caller registers
+/// the Tauri shortcuts itself, so the switch effect must not run again.
 fn persist_tauri_fallback(app: &AppHandle) {
     live_settings::repair(app, "the Tauri shortcut fallback", &|settings| {
         settings.keyboard_implementation = KeyboardImplementation::Tauri;
+        keyboard_switch::repair_lists(settings);
         Ok(())
     });
 }
@@ -366,7 +570,7 @@ pub fn get_keyboard_implementation(app: AppHandle) -> String {
 // ============================================================================
 
 /// Validate a shortcut for a specific implementation
-fn validate_shortcut_for_implementation(
+pub(crate) fn validate_shortcut_for_implementation(
     raw: &str,
     implementation: KeyboardImplementation,
 ) -> Result<(), String> {
@@ -374,139 +578,6 @@ fn validate_shortcut_for_implementation(
         KeyboardImplementation::Tauri => tauri_impl::validate_shortcut(raw),
         KeyboardImplementation::HandyKeys => handy_keys::validate_shortcut(raw),
     }
-}
-
-/// Unregister all shortcuts for the current implementation
-fn unregister_all_shortcuts(app: &AppHandle, implementation: KeyboardImplementation) {
-    let bindings = settings::get_bindings(app);
-
-    for (id, binding) in bindings {
-        // Skip cancel shortcut as it's dynamically registered
-        if id == "cancel" {
-            continue;
-        }
-
-        let result = match implementation {
-            KeyboardImplementation::Tauri => tauri_impl::unregister_shortcut(app, binding),
-            KeyboardImplementation::HandyKeys => handy_keys::unregister_shortcut(app, binding),
-        };
-
-        if let Err(e) = result {
-            warn!(
-                "Failed to unregister shortcut '{}' during switch: {}",
-                id, e
-            );
-        }
-    }
-}
-
-/// Register all shortcuts for a specific implementation, validating and resetting invalid ones
-/// to their defaults; the resets are committed as one edit of those bindings only.
-fn register_all_shortcuts_for_implementation(
-    app: &AppHandle,
-    implementation: KeyboardImplementation,
-) -> Vec<String> {
-    let current_settings = settings::get_settings(app);
-    let mut resets: Vec<(String, ShortcutBinding)> = Vec::new();
-    for (id, default_binding) in &settings::get_default_settings().bindings {
-        // Skip cancel shortcut as it's dynamically registered
-        if id == "cancel" {
-            continue;
-        }
-        // Skip post-processing shortcut when the feature is disabled
-        if id == "transcribe_with_post_process" && !current_settings.post_process_enabled {
-            continue;
-        }
-        let stored = current_settings.bindings.get(id).cloned();
-        let (binding, is_reset) = binding_for_implementation(
-            stored.unwrap_or_else(|| default_binding.clone()),
-            default_binding,
-            implementation,
-        );
-        if is_reset {
-            resets.push((id.clone(), binding.clone()));
-        }
-        register_with(app, implementation, id, binding);
-    }
-    persist_binding_resets(app, &resets);
-    resets.into_iter().map(|(id, _)| id).collect()
-}
-
-/// The binding to register with `implementation`, reset to its default when invalid there.
-fn binding_for_implementation(
-    mut binding: ShortcutBinding,
-    default_binding: &ShortcutBinding,
-    implementation: KeyboardImplementation,
-) -> (ShortcutBinding, bool) {
-    match validate_shortcut_for_implementation(&binding.current_binding, implementation) {
-        Ok(()) => (binding, false),
-        Err(e) => {
-            info!(
-                "Shortcut '{}' ({}) is invalid for {:?}: {}. Resetting to default.",
-                binding.id, binding.current_binding, implementation, e
-            );
-            binding.current_binding = default_binding.current_binding.clone();
-            (binding, true)
-        }
-    }
-}
-
-/// Register one binding with an explicit implementation; failures are logged.
-fn register_with(
-    app: &AppHandle,
-    implementation: KeyboardImplementation,
-    id: &str,
-    binding: ShortcutBinding,
-) {
-    let result = match implementation {
-        KeyboardImplementation::Tauri => tauri_impl::register_shortcut(app, binding),
-        KeyboardImplementation::HandyKeys => handy_keys::register_shortcut(app, binding),
-    };
-    if let Err(e) = result {
-        error!(
-            "Failed to register shortcut '{}' for {:?}: {}",
-            id, implementation, e
-        );
-    }
-}
-
-/// Commit the bindings reset to their defaults (only those entries), if any.
-fn persist_binding_resets(app: &AppHandle, resets: &[(String, ShortcutBinding)]) {
-    if resets.is_empty() {
-        return;
-    }
-    live_settings::repair(
-        app,
-        "shortcuts reset for the keyboard implementation",
-        &|settings| {
-            for (id, binding) in resets {
-                settings.bindings.insert(id.clone(), binding.clone());
-            }
-            Ok(())
-        },
-    );
-}
-
-/// Initialize HandyKeys if not already initialized, with rollback on failure
-fn initialize_handy_keys_with_rollback(app: &AppHandle) -> Result<bool, String> {
-    if app.try_state::<handy_keys::HandyKeysState>().is_some() {
-        return Ok(false); // Already initialized, caller should continue
-    }
-
-    if let Err(e) = handy_keys::init_shortcuts(app) {
-        error!("Failed to initialize HandyKeys: {}", e);
-        // Rollback to Tauri
-        persist_tauri_fallback(app);
-        crate::secure_input::reconcile_fallback(app);
-        tauri_impl::init_shortcuts(app);
-        return Err(format!(
-            "Failed to initialize HandyKeys: {}. Reverted to Tauri.",
-            e
-        ));
-    }
-
-    // init_shortcuts already registered shortcuts
-    Ok(true)
 }
 
 // ============================================================================
@@ -803,13 +874,21 @@ pub async fn change_auto_submit_key_setting(
     live_settings::write(app, "auto_submit_key", key).await
 }
 
+// @spec AC-002: Post-processing activation behaves as before — .specs/features/004-multiple-dictation-shortcuts/spec.md#ac-002
 #[tauri::command]
 #[specta::specta]
+/// Enables or disables post-processing and always saves the choice, as
+/// before this feature, as one ordered settings write (see
+/// [`edits::set_post_process_enabled`]). A shortcut the system refuses stays
+/// stored and editable, and is returned so the settings say so.
+///
+/// # Errors
+/// A refusal of the settings service (persistence); the toggle itself is never refused.
 pub async fn change_post_process_enabled_setting(
     app: AppHandle,
-    enabled: UiValue<bool>,
-) -> SettingsResult {
-    live_settings::write(app, "post_process_enabled", enabled).await
+    enabled: bool,
+) -> Result<Vec<edits::RefusedShortcut>, SettingsCommandError> {
+    live_settings::blocking(move || edits::set_post_process_enabled(&app, enabled)).await
 }
 
 #[tauri::command]
@@ -821,26 +900,18 @@ pub async fn change_experimental_enabled_setting(
     live_settings::write(app, "experimental_enabled", enabled).await
 }
 
-/// Register or unregister the post-processing shortcut after `post_process_enabled` changed
-/// (live effect shared by every surface).
-pub(crate) fn apply_post_process_shortcut(app: &AppHandle, enabled: bool) -> Result<(), String> {
-    let binding = get_settings(app)
-        .bindings
-        .get("transcribe_with_post_process")
-        .cloned();
-    let applied = match binding {
-        Some(binding) if enabled => register_shortcut(app, binding),
-        Some(binding) => {
-            // Unregistering a shortcut that is not registered leaves the desired state in place.
-            if let Err(error) = unregister_shortcut(app, binding) {
-                debug!("Post-process shortcut was not registered: {}", error);
-            }
-            Ok(())
-        }
-        None => Ok(()),
-    };
+/// Register or release the post-processing shortcuts after `post_process_enabled` changed from
+/// `before` (live effect shared by every surface that commits the scalar alone). As in the
+/// settings, a shortcut the system refuses is logged and stays stored; the toggle stands.
+pub(crate) fn apply_post_process_shortcut(
+    app: &AppHandle,
+    before: &settings::AppSettings,
+    enabled: bool,
+) -> Result<(), String> {
+    let (_, refused) = edits::toggle_post_process_on_backend(app, before, enabled);
+    edits::log_refusals(&refused);
     crate::secure_input::reconcile_fallback(app);
-    applied
+    Ok(())
 }
 
 /// Provider configuration refusals name the provider list field with a fixed reason.
@@ -1091,6 +1162,20 @@ pub async fn change_append_trailing_space_setting(
     enabled: UiValue<bool>,
 ) -> SettingsResult {
     live_settings::write(app, "append_trailing_space", enabled).await
+}
+
+#[tauri::command]
+#[specta::specta]
+// @spec FR-006: Settings UI write of the destination setting — .specs/features/006-destination-application/spec.md#fr-006
+/// Settings UI write of `return_to_dictation_app`: the shared UI validator (a build without the
+/// destination capability refuses `true` and `false` with `validation_failed` and the typed reason
+/// `unsupported_platform`), one durable commit, then `settings-changed`. The value is read when a
+/// dictation starts, so no live effect runs.
+pub async fn change_return_to_dictation_app_setting(
+    app: AppHandle,
+    enabled: UiValue<bool>,
+) -> SettingsResult {
+    live_settings::write(app, "return_to_dictation_app", enabled).await
 }
 
 #[tauri::command]

@@ -205,6 +205,22 @@
           "restore": "Ursprüngliches Tastenkürzel konnte nicht wiederhergestellt werden",
           "set": "Tastenkürzel konnte nicht gesetzt werden: {{error}}",
           "reset": "Tastenkürzel konnte nicht auf Originalwert zurückgesetzt werden"
+        },
+        "list": {
+          "add": "Tastenkürzel hinzufügen",
+          "addLimit": "Bis zu {{limit}} Tastenkürzel pro Aktion",
+          "change": "Klicken, um eine neue Kombination aufzunehmen",
+          "remove": "Dieses Tastenkürzel entfernen",
+          "removeLast": "Jede Aktion behält mindestens ein Tastenkürzel",
+          "reset": "Auf das Standard-Tastenkürzel zurücksetzen",
+          "errors": {
+            "conflict": "Bereits von {{action}} verwendet ({{shortcut}})",
+            "overlap": "Würde auch {{action}} auslösen ({{shortcut}})",
+            "invalid": "Ungültiges Tastenkürzel: {{error}}",
+            "registration": "Das System hat dieses Tastenkürzel abgelehnt: {{error}}",
+            "generic": "Das Tastenkürzel konnte nicht gespeichert werden",
+            "conflictsUnavailable": "Konflikte zwischen Tastenkürzeln konnten nicht geprüft werden"
+          }
         }
       },
       "language": {
@@ -477,6 +493,7 @@
       "deleteError": "Eintrag konnte nicht gelöscht werden. Bitte versuche es erneut.",
       "retranscribe": "Erneut transkribieren",
       "retranscribeError": "Erneute Transkription fehlgeschlagen. Bitte versuche es erneut.",
+      "noAudio": "Für diesen Eintrag wurde keine Audioaufnahme gespeichert, daher kann er nicht erneut transkribiert werden.",
       "transcribing": "Transkribiere...",
       "transcriptionFailed": "Transkription fehlgeschlagen. Du kannst über das Wiederholen-Symbol erneut transkribieren."
     },
@@ -539,7 +556,8 @@
       },
       "postProcessingToggle": {
         "label": "Nachbearbeitung",
-        "description": "KI-gestützte Textverfeinerung nach der Transkription aktivieren"
+        "description": "KI-gestützte Textverfeinerung nach der Transkription aktivieren",
+        "shortcutRefused": "Die Nachbearbeitung ist aktiviert, aber das System hat das Tastenkürzel {{shortcut}} abgelehnt. Ändere es in den Einstellungen der Nachbearbeitung."
       },
       "muteWhileRecording": {
         "label": "Während Aufnahme stummschalten",
@@ -552,7 +570,8 @@
       "keyboardImplementation": {
         "title": "Tastatur-Implementierung",
         "description": "Wähle das Backend für Tastaturkürzel.",
-        "bindingsReset": "Tastaturkürzel waren inkompatibel und wurden auf die Standardwerte zurückgesetzt"
+        "bindingsReset": "Einige Tastenkürzel waren inkompatibel und wurden auf ihren Standardwert zurückgesetzt oder entfernt",
+        "conflictsKept": "Einige Tastenkürzel kollidieren jetzt mit einer anderen Aktion. Sie wurden beibehalten und sind in den Tastenkürzel-Einstellungen markiert."
       },
       "paths": {
         "appData": "App-Daten:",
@@ -692,6 +711,7 @@
     "modelLoadFailedUnknown": "unbekanntes Modell",
     "pasteFailedTitle": "Text konnte nicht eingefügt werden",
     "pasteFailed": "Der Text konnte nicht in die aktive Anwendung eingefügt werden.",
+    "pasteFailedNotSaved": "Der Text konnte weder eingefügt noch im Verlauf gespeichert werden.",
     "transcriptionFailedTitle": "Transkription fehlgeschlagen",
     "settings": {
       "committedNotApplied": "Die Einstellung wurde gespeichert, konnte aber nicht sofort angewendet werden.",
@@ -700,9 +720,11 @@
       "validationFailed": "Dieser Wert ist für diese Einstellung nicht zulässig.",
       "revisionConflict": "Die Einstellungen wurden an anderer Stelle geändert. Laden Sie neu und versuchen Sie es erneut.",
       "unavailable": "Diese Einstellung kann gerade nicht geändert werden. Versuchen Sie es später erneut.",
+      "shortcutSessionBusy": "Ein Diktat läuft gerade. Versuche es erneut, wenn es beendet ist.",
       "persistenceFailed": "Die Einstellungen konnten nicht gespeichert werden.",
       "generic": "Die Einstellung konnte nicht geändert werden.",
-      "readOnly": "Die Einstellungen sind in dieser Sitzung schreibgeschützt: Die Einstellungsdatei kann nicht sicher geschrieben werden, daher werden Änderungen nicht gespeichert."
+      "readOnly": "Die Einstellungen sind in dieser Sitzung schreibgeschützt: Die Einstellungsdatei kann nicht sicher geschrieben werden, daher werden Änderungen nicht gespeichert.",
+      "unsupportedPlatform": "Diese Einstellung ist auf diesem System nicht verfügbar."
     }
   },
   "appLanguage": {

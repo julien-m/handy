@@ -1,0 +1,434 @@
+{
+  "note": "Compact summary of `livespec conventions verify --feature repo --json` stdout (full stdout not kept).",
+  "verdict": "PASS",
+  "receipt_path": ".specs/conventions/runs/20261014T052940Z/receipt.json",
+  "run_id": "20261014T052940Z",
+  "baseline": {
+    "baselined_count": 548,
+    "new_count": 0,
+    "path": ".specs/conventions/baseline.json",
+    "resolved_count": 3634,
+    "sha256": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe"
+  },
+  "blockers": [],
+  "violation_counts": {
+    "warning:builtin.doc_coverage": 320,
+    "warning:builtin.max_file_lines": 13,
+    "warning:builtin.max_function_lines": 148
+  },
+  "violations_in_files_changed_vs_HEAD": [
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/lib.rs",
+      "line": 655,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 134,
+      "message": "reconcile_cancel_shortcut has 33 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 403,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 411,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 560,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 596,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 605,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 611,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 620,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 629,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 635,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 649,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 664,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 673,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 682,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 691,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 700,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 706,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 712,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 718,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 727,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 737,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 755,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 768,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 777,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 786,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 792,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 801,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 810,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 819,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 832,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 838,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 847,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 856,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 862,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 888,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 917,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 941,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 964,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 987,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1009,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1033,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1058,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1089,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1089,
+      "message": "fetch_post_process_models has 42 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1134,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1143,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1152,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1175,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1184,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1193,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1206,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1215,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1224,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1233,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1242,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1251,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1260,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "line": 1275,
+      "message": "public API lacks docs"
+    }
+  ]
+}

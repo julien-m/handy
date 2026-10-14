@@ -205,6 +205,22 @@
           "restore": "Error al restaurar el atajo original",
           "set": "Error al configurar el atajo: {{error}}",
           "reset": "Error al restablecer el atajo al valor original"
+        },
+        "list": {
+          "add": "Añadir atajo",
+          "addLimit": "Hasta {{limit}} atajos por acción",
+          "change": "Haz clic para grabar una nueva combinación",
+          "remove": "Eliminar este atajo",
+          "removeLast": "Cada acción conserva al menos un atajo",
+          "reset": "Restablecer el atajo predeterminado",
+          "errors": {
+            "conflict": "Ya lo usa {{action}} ({{shortcut}})",
+            "overlap": "También activaría {{action}} ({{shortcut}})",
+            "invalid": "Atajo no válido: {{error}}",
+            "registration": "El sistema rechazó este atajo: {{error}}",
+            "generic": "No se pudo guardar el atajo",
+            "conflictsUnavailable": "No se pudieron comprobar los conflictos de atajos"
+          }
         }
       },
       "language": {
@@ -477,6 +493,7 @@
       "deleteError": "Error al eliminar la entrada. Por favor, intenta de nuevo.",
       "retranscribe": "Re-transcribir",
       "retranscribeError": "No se pudo re-transcribir. Por favor, inténtalo de nuevo.",
+      "noAudio": "No se guardó ninguna grabación de audio para esta entrada, por lo que no se puede re-transcribir.",
       "transcribing": "Transcribiendo...",
       "transcriptionFailed": "La transcripción falló. Puedes re-transcribir usando el icono de reintentar."
     },
@@ -539,7 +556,8 @@
       },
       "postProcessingToggle": {
         "label": "Post procesamiento",
-        "description": "Habilitar refinamiento de texto impulsado por IA después de la transcripción"
+        "description": "Habilitar refinamiento de texto impulsado por IA después de la transcripción",
+        "shortcutRefused": "El post procesamiento está activado, pero el sistema rechazó el atajo {{shortcut}}. Cámbialo en los ajustes de post procesamiento."
       },
       "muteWhileRecording": {
         "label": "Silenciar durante la grabación",
@@ -552,7 +570,8 @@
       "keyboardImplementation": {
         "title": "Implementación del teclado",
         "description": "Elige el sistema que gestiona los atajos de teclado.",
-        "bindingsReset": "Los atajos de teclado eran incompatibles y se restablecieron a los valores predeterminados"
+        "bindingsReset": "Algunos atajos de teclado eran incompatibles y se restablecieron a su valor predeterminado o se eliminaron",
+        "conflictsKept": "Algunos atajos ahora entran en conflicto con otra acción. Se han conservado y están marcados en los ajustes de atajos."
       },
       "paths": {
         "appData": "Datos de la aplicación:",
@@ -692,6 +711,7 @@
     "modelLoadFailedUnknown": "modelo desconocido",
     "pasteFailedTitle": "Error al pegar el texto",
     "pasteFailed": "No se pudo pegar el texto en la aplicación activa.",
+    "pasteFailedNotSaved": "No se pudo pegar el texto ni guardarlo en el historial.",
     "transcriptionFailedTitle": "Error de transcripción",
     "settings": {
       "committedNotApplied": "La configuración se guardó, pero no se pudo aplicar de inmediato.",
@@ -700,9 +720,11 @@
       "validationFailed": "Este valor no se admite para esta configuración.",
       "revisionConflict": "La configuración se cambió en otro lugar. Recarga e inténtalo de nuevo.",
       "unavailable": "Esta configuración no se puede cambiar ahora. Inténtalo más tarde.",
+      "shortcutSessionBusy": "Hay un dictado en curso. Inténtalo de nuevo cuando termine.",
       "persistenceFailed": "No se pudo guardar la configuración.",
       "generic": "No se pudo cambiar la configuración.",
-      "readOnly": "La configuración es de solo lectura en esta sesión: el archivo de configuración no se puede escribir de forma segura, así que los cambios no se guardarán."
+      "readOnly": "La configuración es de solo lectura en esta sesión: el archivo de configuración no se puede escribir de forma segura, así que los cambios no se guardarán.",
+      "unsupportedPlatform": "Este ajuste no está disponible en este sistema."
     }
   },
   "appLanguage": {

@@ -1,0 +1,3384 @@
+{
+  "ambiguous": [],
+  "created": [],
+  "kind": "pencil-context-map",
+  "matched": [
+    {
+      "pencil_node_id": "pnkzS",
+      "pencil_path": "0",
+      "role": "screen",
+      "semantic_id": "microphone-settings",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "ZhoZr",
+      "pencil_path": "0.1.0",
+      "role": "container",
+      "semantic_id": "microphone-settings.sound",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "H0JEq",
+      "pencil_path": "0.1.0.1.0",
+      "role": "container",
+      "semantic_id": "microphone-settings.priority",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "X1vYo",
+      "pencil_path": "0.1.0.1.0.0.0",
+      "role": "text",
+      "semantic_id": "microphone-settings.priority.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "IqCBb",
+      "pencil_path": "0.1.0.1.0.1",
+      "role": "list",
+      "semantic_id": "microphone-settings.choices",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "EIErV",
+      "pencil_path": "0.1.0.1.0.1.0",
+      "role": "container",
+      "semantic_id": "microphone-settings.choice",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "XgCaa",
+      "pencil_path": "0.1.0.1.0.1.0.1",
+      "role": "text",
+      "semantic_id": "microphone-settings.choice.rank",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "sK1Ku",
+      "pencil_path": "0.1.0.1.0.1.0.2",
+      "role": "text",
+      "semantic_id": "microphone-settings.choice.name",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Nz1qY",
+      "pencil_path": "0.1.0.1.0.1.0.3",
+      "role": "text",
+      "semantic_id": "microphone-settings.choice.status",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "zu3dS",
+      "pencil_path": "0.1.0.1.0.1.0.4.0",
+      "role": "button",
+      "semantic_id": "microphone-settings.choice.move-up",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "YUbF4",
+      "pencil_path": "0.1.0.1.0.1.0.4.1",
+      "role": "button",
+      "semantic_id": "microphone-settings.choice.move-down",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "tscim",
+      "pencil_path": "0.1.0.1.0.1.0.4.2",
+      "role": "button",
+      "semantic_id": "microphone-settings.choice.remove",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "f6OEY4",
+      "pencil_path": "0.1.0.1.0.2.0",
+      "role": "select",
+      "semantic_id": "microphone-settings.add",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "lNScf",
+      "pencil_path": "0.1.0.1.0.2.1",
+      "role": "button",
+      "semantic_id": "microphone-settings.refresh",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "XjMRl",
+      "pencil_path": "0.1.0.1.0.2.2",
+      "role": "text",
+      "semantic_id": "microphone-settings.checked",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "OUHXC",
+      "pencil_path": "0.1.0.1.1",
+      "role": "container",
+      "semantic_id": "microphone-settings.in-use",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "i4XzYI",
+      "pencil_path": "0.1.0.1.1.0.0",
+      "role": "text",
+      "semantic_id": "microphone-settings.in-use.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "tx0mU",
+      "pencil_path": "0.1.0.1.1.1.0",
+      "role": "text",
+      "semantic_id": "microphone-settings.in-use.device",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "eIzTt",
+      "pencil_path": "0.1.0.1.1.1.1",
+      "role": "text",
+      "semantic_id": "microphone-settings.in-use.reason",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "mZsNt",
+      "pencil_path": "0.1.0.1.2",
+      "role": "container",
+      "semantic_id": "microphone-settings.clamshell",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "eXt4d",
+      "pencil_path": "0.1.0.1.2.0.0",
+      "role": "text",
+      "semantic_id": "microphone-settings.clamshell.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "sgmGl",
+      "pencil_path": "0.1.0.1.2.1",
+      "role": "select",
+      "semantic_id": "microphone-settings.clamshell.select",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "c4cjgJ",
+      "pencil_path": "0.1.1",
+      "role": "container",
+      "semantic_id": "microphone-settings.draft",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "nAa5V",
+      "pencil_path": "0.1.1.0",
+      "role": "text",
+      "semantic_id": "microphone-settings.draft.note",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Knsps",
+      "pencil_path": "0.1.1.1",
+      "role": "button",
+      "semantic_id": "microphone-settings.discard",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "fOlUP",
+      "pencil_path": "0.1.1.2",
+      "role": "button",
+      "semantic_id": "microphone-settings.save",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "FBBGj",
+      "pencil_path": "1",
+      "role": "screen",
+      "semantic_id": "microphone-settings-empty",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "nNV7I",
+      "pencil_path": "1.1.0",
+      "role": "container",
+      "semantic_id": "microphone-settings-empty.sound",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "OHiSU",
+      "pencil_path": "1.1.0.1.0",
+      "role": "container",
+      "semantic_id": "microphone-settings-empty.priority",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "H9FEi",
+      "pencil_path": "1.1.0.1.0.0.0",
+      "role": "text",
+      "semantic_id": "microphone-settings-empty.priority.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "aMoNe",
+      "pencil_path": "1.1.0.1.0.1",
+      "role": "container",
+      "semantic_id": "microphone-settings-empty.empty",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "NaAR0",
+      "pencil_path": "1.1.0.1.0.1.1",
+      "role": "text",
+      "semantic_id": "microphone-settings-empty.empty.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "o1LAnV",
+      "pencil_path": "1.1.0.1.0.1.2",
+      "role": "text",
+      "semantic_id": "microphone-settings-empty.empty.body",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "YjSS2",
+      "pencil_path": "1.1.0.1.0.2.0",
+      "role": "select",
+      "semantic_id": "microphone-settings-empty.add",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "MbPlB",
+      "pencil_path": "1.1.0.1.0.2.1",
+      "role": "button",
+      "semantic_id": "microphone-settings-empty.refresh",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "F6EstR",
+      "pencil_path": "1.1.0.1.1",
+      "role": "container",
+      "semantic_id": "microphone-settings-empty.in-use",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "CE7Yl",
+      "pencil_path": "1.1.0.1.1.0.0",
+      "role": "text",
+      "semantic_id": "microphone-settings-empty.in-use.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "tR2Gg",
+      "pencil_path": "1.1.0.1.1.1",
+      "role": "text",
+      "semantic_id": "microphone-settings-empty.in-use.device",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "eNWf8",
+      "pencil_path": "1.1.0.1.2",
+      "role": "container",
+      "semantic_id": "microphone-settings-empty.clamshell",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "D90l8F",
+      "pencil_path": "1.1.0.1.2.0.0",
+      "role": "text",
+      "semantic_id": "microphone-settings-empty.clamshell.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "B9JGMT",
+      "pencil_path": "1.1.0.1.2.1",
+      "role": "select",
+      "semantic_id": "microphone-settings-empty.clamshell.select",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "wjWr8",
+      "pencil_path": "2",
+      "role": "screen",
+      "semantic_id": "microphone-settings-error",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "mvAcL",
+      "pencil_path": "2.1.0",
+      "role": "alert",
+      "semantic_id": "microphone-settings-error.conflict",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "iwkAM",
+      "pencil_path": "2.1.0.1.0",
+      "role": "text",
+      "semantic_id": "microphone-settings-error.conflict.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "P6IVI",
+      "pencil_path": "2.1.0.2",
+      "role": "button",
+      "semantic_id": "microphone-settings-error.reload",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "REKJK",
+      "pencil_path": "2.1.1",
+      "role": "container",
+      "semantic_id": "microphone-settings-error.sound",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "JUJpM",
+      "pencil_path": "2.1.1.1.0",
+      "role": "container",
+      "semantic_id": "microphone-settings-error.priority",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "vzHOZ",
+      "pencil_path": "2.1.1.1.0.0.0",
+      "role": "text",
+      "semantic_id": "microphone-settings-error.priority.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "qXvXe",
+      "pencil_path": "2.1.1.1.0.1",
+      "role": "list",
+      "semantic_id": "microphone-settings-error.choices",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "z5XsSg",
+      "pencil_path": "2.1.1.1.0.1.0",
+      "role": "container",
+      "semantic_id": "microphone-settings-error.choice",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "XXjRv",
+      "pencil_path": "2.1.1.1.0.1.0.1",
+      "role": "text",
+      "semantic_id": "microphone-settings-error.choice.rank",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "O8kY0V",
+      "pencil_path": "2.1.1.1.0.1.0.2",
+      "role": "text",
+      "semantic_id": "microphone-settings-error.choice.name",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "cMJKp",
+      "pencil_path": "2.1.1.1.0.1.0.3",
+      "role": "text",
+      "semantic_id": "microphone-settings-error.choice.status",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "oJrvN",
+      "pencil_path": "2.1.1.1.0.1.0.4.0",
+      "role": "button",
+      "semantic_id": "microphone-settings-error.choice.move-up",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Jr1Tz",
+      "pencil_path": "2.1.1.1.0.1.0.4.1",
+      "role": "button",
+      "semantic_id": "microphone-settings-error.choice.move-down",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "gumdx",
+      "pencil_path": "2.1.1.1.0.1.0.4.2",
+      "role": "button",
+      "semantic_id": "microphone-settings-error.choice.remove",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "FVapy",
+      "pencil_path": "2.1.1.1.0.2.0",
+      "role": "text",
+      "semantic_id": "microphone-settings-error.refresh-error",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "tf9pd",
+      "pencil_path": "2.1.1.1.0.2.1",
+      "role": "button",
+      "semantic_id": "microphone-settings-error.retry",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "go9jC",
+      "pencil_path": "2.1.1.1.0.3.0",
+      "role": "select",
+      "semantic_id": "microphone-settings-error.add",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "ur3Lw",
+      "pencil_path": "2.1.1.1.0.3.1",
+      "role": "text",
+      "semantic_id": "microphone-settings-error.add-error",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "k1WKln",
+      "pencil_path": "2.1.2",
+      "role": "container",
+      "semantic_id": "microphone-settings-error.draft",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "CWcw5",
+      "pencil_path": "2.1.2.0",
+      "role": "text",
+      "semantic_id": "microphone-settings-error.draft.note",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Gep1z",
+      "pencil_path": "2.1.2.1",
+      "role": "button",
+      "semantic_id": "microphone-settings-error.discard",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "b3Vw2l",
+      "pencil_path": "2.1.2.2",
+      "role": "button",
+      "semantic_id": "microphone-settings-error.save",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "xhyeQ",
+      "pencil_path": "3",
+      "role": "screen",
+      "semantic_id": "replacement-settings",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "t7XznN",
+      "pencil_path": "3.1.0",
+      "role": "container",
+      "semantic_id": "replacement-settings.replacements",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "dYteN",
+      "pencil_path": "3.1.0.1.0",
+      "role": "container",
+      "semantic_id": "replacement-settings.rules",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "OkfFq",
+      "pencil_path": "3.1.0.1.0.0.0",
+      "role": "text",
+      "semantic_id": "replacement-settings.rules.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "HIwlV",
+      "pencil_path": "3.1.0.1.0.1.0",
+      "role": "container",
+      "semantic_id": "replacement-settings.views",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "AUGe0",
+      "pencil_path": "3.1.0.1.0.1.0.0",
+      "role": "button",
+      "semantic_id": "replacement-settings.view-list",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "ROwwB",
+      "pencil_path": "3.1.0.1.0.1.0.1",
+      "role": "button",
+      "semantic_id": "replacement-settings.view-text",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "j1IBkm",
+      "pencil_path": "3.1.0.1.0.1.1.0",
+      "role": "button",
+      "semantic_id": "replacement-settings.import",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "sVepb",
+      "pencil_path": "3.1.0.1.0.1.1.1",
+      "role": "button",
+      "semantic_id": "replacement-settings.export",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "jmXuz",
+      "pencil_path": "3.1.0.1.0.2.0",
+      "role": "input",
+      "semantic_id": "replacement-settings.new-recognized",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "c3fonH",
+      "pencil_path": "3.1.0.1.0.2.1",
+      "role": "input",
+      "semantic_id": "replacement-settings.new-replacement",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "H9XuoR",
+      "pencil_path": "3.1.0.1.0.2.2",
+      "role": "button",
+      "semantic_id": "replacement-settings.add",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "kdPim",
+      "pencil_path": "3.1.0.1.0.3",
+      "role": "list",
+      "semantic_id": "replacement-settings.list",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "JhlI2",
+      "pencil_path": "3.1.0.1.0.3.0",
+      "role": "container",
+      "semantic_id": "replacement-settings.rule",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "aA8ZH",
+      "pencil_path": "3.1.0.1.0.3.0.0",
+      "role": "text",
+      "semantic_id": "replacement-settings.rule.recognized",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "HZzap",
+      "pencil_path": "3.1.0.1.0.3.0.2",
+      "role": "text",
+      "semantic_id": "replacement-settings.rule.replacement",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "R0clpl",
+      "pencil_path": "3.1.0.1.0.3.0.3.0",
+      "role": "button",
+      "semantic_id": "replacement-settings.rule.edit",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "b4Qyue",
+      "pencil_path": "3.1.0.1.0.3.0.3.1",
+      "role": "button",
+      "semantic_id": "replacement-settings.rule.delete",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "zq8Ad",
+      "pencil_path": "3.1.0.1.0.4",
+      "role": "text",
+      "semantic_id": "replacement-settings.count",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "C4TUb",
+      "pencil_path": "3.1.1",
+      "role": "container",
+      "semantic_id": "replacement-settings.draft",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "WqF3J",
+      "pencil_path": "3.1.1.0",
+      "role": "text",
+      "semantic_id": "replacement-settings.draft.note",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "IDy4O",
+      "pencil_path": "3.1.1.1",
+      "role": "button",
+      "semantic_id": "replacement-settings.discard",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Su3OR",
+      "pencil_path": "3.1.1.2",
+      "role": "button",
+      "semantic_id": "replacement-settings.save",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "v6Cace",
+      "pencil_path": "4",
+      "role": "screen",
+      "semantic_id": "replacement-settings-empty",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "jVBeN",
+      "pencil_path": "4.1.0",
+      "role": "container",
+      "semantic_id": "replacement-settings-empty.replacements",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "JGzjH",
+      "pencil_path": "4.1.0.1.0",
+      "role": "container",
+      "semantic_id": "replacement-settings-empty.rules",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "AX6uE",
+      "pencil_path": "4.1.0.1.0.0.0",
+      "role": "text",
+      "semantic_id": "replacement-settings-empty.rules.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "v9dxB",
+      "pencil_path": "4.1.0.1.0.1.0",
+      "role": "container",
+      "semantic_id": "replacement-settings-empty.views",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "mYqQN",
+      "pencil_path": "4.1.0.1.0.1.0.0",
+      "role": "button",
+      "semantic_id": "replacement-settings-empty.view-list",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "WlOsP",
+      "pencil_path": "4.1.0.1.0.1.0.1",
+      "role": "button",
+      "semantic_id": "replacement-settings-empty.view-text",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "eLXFv",
+      "pencil_path": "4.1.0.1.0.1.1.0",
+      "role": "button",
+      "semantic_id": "replacement-settings-empty.import",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "lxVid",
+      "pencil_path": "4.1.0.1.0.1.1.1",
+      "role": "button",
+      "semantic_id": "replacement-settings-empty.export",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "I98iy1",
+      "pencil_path": "4.1.0.1.0.2",
+      "role": "container",
+      "semantic_id": "replacement-settings-empty.empty",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "bUWCd",
+      "pencil_path": "4.1.0.1.0.2.1",
+      "role": "text",
+      "semantic_id": "replacement-settings-empty.empty.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "n8Efw",
+      "pencil_path": "4.1.0.1.0.2.2",
+      "role": "text",
+      "semantic_id": "replacement-settings-empty.empty.body",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "h2jGZR",
+      "pencil_path": "4.1.0.1.0.2.3.0",
+      "role": "button",
+      "semantic_id": "replacement-settings-empty.empty.add",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "SXros",
+      "pencil_path": "4.1.0.1.0.2.3.1",
+      "role": "button",
+      "semantic_id": "replacement-settings-empty.empty.paste",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "rrn1Y",
+      "pencil_path": "5",
+      "role": "screen",
+      "semantic_id": "replacement-settings-bulk",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "r4Tse2",
+      "pencil_path": "5.1.0",
+      "role": "container",
+      "semantic_id": "replacement-settings-bulk.replacements",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "uVnJW",
+      "pencil_path": "5.1.0.1.0",
+      "role": "container",
+      "semantic_id": "replacement-settings-bulk.rules",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "yX803",
+      "pencil_path": "5.1.0.1.0.0.0",
+      "role": "text",
+      "semantic_id": "replacement-settings-bulk.rules.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "O0AcJ",
+      "pencil_path": "5.1.0.1.0.1.0",
+      "role": "container",
+      "semantic_id": "replacement-settings-bulk.views",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "WLTY6",
+      "pencil_path": "5.1.0.1.0.1.0.0",
+      "role": "button",
+      "semantic_id": "replacement-settings-bulk.view-list",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "qkhiY",
+      "pencil_path": "5.1.0.1.0.1.0.1",
+      "role": "button",
+      "semantic_id": "replacement-settings-bulk.view-text",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "gdcAr",
+      "pencil_path": "5.1.0.1.0.1.1.0",
+      "role": "button",
+      "semantic_id": "replacement-settings-bulk.import",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "O4ZVb9",
+      "pencil_path": "5.1.0.1.0.1.1.1",
+      "role": "button",
+      "semantic_id": "replacement-settings-bulk.export",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "jNrPY",
+      "pencil_path": "5.1.0.1.0.2",
+      "role": "input",
+      "semantic_id": "replacement-settings-bulk.editor",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "mBmbB",
+      "pencil_path": "5.1.0.1.0.3",
+      "role": "text",
+      "semantic_id": "replacement-settings-bulk.hint",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "GKZNx",
+      "pencil_path": "5.1.0.1.0.4",
+      "role": "container",
+      "semantic_id": "replacement-settings-bulk.preview",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "ERr4m",
+      "pencil_path": "5.1.0.1.0.4.0.0",
+      "role": "text",
+      "semantic_id": "replacement-settings-bulk.preview.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "lNef9",
+      "pencil_path": "5.1.0.1.0.4.0.1",
+      "role": "text",
+      "semantic_id": "replacement-settings-bulk.preview.summary",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "QpeNO",
+      "pencil_path": "5.1.0.1.0.4.1",
+      "role": "list",
+      "semantic_id": "replacement-settings-bulk.preview.lines",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "fuCTR",
+      "pencil_path": "5.1.0.1.0.4.1.0",
+      "role": "container",
+      "semantic_id": "replacement-settings-bulk.preview.line",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Omcvc",
+      "pencil_path": "5.1.0.1.0.4.1.0.0",
+      "role": "text",
+      "semantic_id": "replacement-settings-bulk.preview.line.number",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "KnATv",
+      "pencil_path": "5.1.0.1.0.4.1.0.1",
+      "role": "text",
+      "semantic_id": "replacement-settings-bulk.preview.line.kind",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "xK1tx",
+      "pencil_path": "5.1.0.1.0.4.1.0.2",
+      "role": "text",
+      "semantic_id": "replacement-settings-bulk.preview.line.text",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "k1gcGT",
+      "pencil_path": "5.1.1",
+      "role": "container",
+      "semantic_id": "replacement-settings-bulk.apply-bar",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "I6ngH",
+      "pencil_path": "5.1.1.0",
+      "role": "text",
+      "semantic_id": "replacement-settings-bulk.apply-bar.note",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "QGccw",
+      "pencil_path": "5.1.1.1",
+      "role": "button",
+      "semantic_id": "replacement-settings-bulk.cancel",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "k7L5EF",
+      "pencil_path": "5.1.1.2",
+      "role": "button",
+      "semantic_id": "replacement-settings-bulk.apply",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "jLdv7",
+      "pencil_path": "6",
+      "role": "screen",
+      "semantic_id": "replacement-settings-import",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "S5d0TF",
+      "pencil_path": "6.1.0",
+      "role": "alert",
+      "semantic_id": "replacement-settings-import.unreadable",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "sFC1z",
+      "pencil_path": "6.1.0.1.0",
+      "role": "text",
+      "semantic_id": "replacement-settings-import.unreadable.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "PV79e",
+      "pencil_path": "6.1.1",
+      "role": "modal",
+      "semantic_id": "replacement-settings-import.dialog",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Hteze",
+      "pencil_path": "6.1.1.1",
+      "role": "text",
+      "semantic_id": "replacement-settings-import.dialog.file",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "AjM0r",
+      "pencil_path": "6.1.1.2.0",
+      "role": "text",
+      "semantic_id": "replacement-settings-import.dialog.mode-label",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "zZqi5",
+      "pencil_path": "6.1.1.2.1",
+      "role": "toggle",
+      "semantic_id": "replacement-settings-import.dialog.merge",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "deCEJ",
+      "pencil_path": "6.1.1.2.2",
+      "role": "toggle",
+      "semantic_id": "replacement-settings-import.dialog.replace",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "RSIcr",
+      "pencil_path": "6.1.1.3",
+      "role": "container",
+      "semantic_id": "replacement-settings-import.dialog.summary",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "H0XFQ",
+      "pencil_path": "6.1.1.3.0.0",
+      "role": "text",
+      "semantic_id": "replacement-settings-import.dialog.updates",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "VBZeW",
+      "pencil_path": "6.1.1.3.0.1",
+      "role": "text",
+      "semantic_id": "replacement-settings-import.dialog.adds",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "eW1BB",
+      "pencil_path": "6.1.1.3.0.2",
+      "role": "text",
+      "semantic_id": "replacement-settings-import.dialog.errors",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "LGJfq",
+      "pencil_path": "6.1.1.3.1",
+      "role": "text",
+      "semantic_id": "replacement-settings-import.dialog.example",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "m6ZRN",
+      "pencil_path": "6.1.1.4.0",
+      "role": "button",
+      "semantic_id": "replacement-settings-import.dialog.cancel",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "EzX4l",
+      "pencil_path": "6.1.1.4.1",
+      "role": "button",
+      "semantic_id": "replacement-settings-import.dialog.apply",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "zdFop",
+      "pencil_path": "7",
+      "role": "screen",
+      "semantic_id": "vocabulary-settings",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "f5nnwU",
+      "pencil_path": "7.1.0",
+      "role": "container",
+      "semantic_id": "vocabulary-settings.vocabulary",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "tsD2j",
+      "pencil_path": "7.1.0.1.0",
+      "role": "container",
+      "semantic_id": "vocabulary-settings.terms",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Vwra3",
+      "pencil_path": "7.1.0.1.0.0.0",
+      "role": "text",
+      "semantic_id": "vocabulary-settings.terms.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "oYNqU",
+      "pencil_path": "7.1.0.1.0.1",
+      "role": "alert",
+      "semantic_id": "vocabulary-settings.status",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "f4GMDp",
+      "pencil_path": "7.1.0.1.0.1.1.0",
+      "role": "text",
+      "semantic_id": "vocabulary-settings.status.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "s4h6X",
+      "pencil_path": "7.1.0.1.0.2",
+      "role": "list",
+      "semantic_id": "vocabulary-settings.list",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "fWd0z",
+      "pencil_path": "7.1.0.1.0.2.0.0",
+      "role": "text",
+      "semantic_id": "vocabulary-settings.term",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "ZMIeq",
+      "pencil_path": "7.1.0.1.0.2.0.0.1",
+      "role": "button",
+      "semantic_id": "vocabulary-settings.term.remove",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "PdF4Z",
+      "pencil_path": "7.1.0.1.0.3.0",
+      "role": "input",
+      "semantic_id": "vocabulary-settings.new-term",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "b4TJt",
+      "pencil_path": "7.1.0.1.0.3.1",
+      "role": "button",
+      "semantic_id": "vocabulary-settings.add",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "bgYXt",
+      "pencil_path": "7.1.0.1.0.3.2",
+      "role": "button",
+      "semantic_id": "vocabulary-settings.paste",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "I0aOa",
+      "pencil_path": "7.1.0.1.0.4",
+      "role": "text",
+      "semantic_id": "vocabulary-settings.count",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "nQ1jf",
+      "pencil_path": "8",
+      "role": "screen",
+      "semantic_id": "vocabulary-settings-paste",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "T8gmlD",
+      "pencil_path": "8.1.0",
+      "role": "container",
+      "semantic_id": "vocabulary-settings-paste.vocabulary",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "EGqio",
+      "pencil_path": "8.1.0.1.0",
+      "role": "container",
+      "semantic_id": "vocabulary-settings-paste.terms",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Q9t225",
+      "pencil_path": "8.1.0.1.0.0.0",
+      "role": "text",
+      "semantic_id": "vocabulary-settings-paste.terms.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "huuug",
+      "pencil_path": "8.1.0.1.0.1",
+      "role": "input",
+      "semantic_id": "vocabulary-settings-paste.editor",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "scZHe",
+      "pencil_path": "8.1.0.1.0.2",
+      "role": "container",
+      "semantic_id": "vocabulary-settings-paste.preview",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "F6PaE",
+      "pencil_path": "8.1.0.1.0.2.0.0",
+      "role": "text",
+      "semantic_id": "vocabulary-settings-paste.preview.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "n9Cvb2",
+      "pencil_path": "8.1.0.1.0.2.0.1",
+      "role": "text",
+      "semantic_id": "vocabulary-settings-paste.preview.summary",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "TJYzW",
+      "pencil_path": "8.1.0.1.0.2.1",
+      "role": "list",
+      "semantic_id": "vocabulary-settings-paste.preview.lines",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Z61wH",
+      "pencil_path": "8.1.0.1.0.2.1.0",
+      "role": "container",
+      "semantic_id": "vocabulary-settings-paste.preview.line",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "V7zvOQ",
+      "pencil_path": "8.1.0.1.0.2.1.0.0",
+      "role": "text",
+      "semantic_id": "vocabulary-settings-paste.preview.line.kind",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "FLFMH",
+      "pencil_path": "8.1.0.1.0.2.1.0.1",
+      "role": "text",
+      "semantic_id": "vocabulary-settings-paste.preview.line.text",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "XYQDD",
+      "pencil_path": "8.1.1",
+      "role": "container",
+      "semantic_id": "vocabulary-settings-paste.apply-bar",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "bPR8r",
+      "pencil_path": "8.1.1.0",
+      "role": "text",
+      "semantic_id": "vocabulary-settings-paste.apply-bar.note",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "yiW5N",
+      "pencil_path": "8.1.1.1",
+      "role": "button",
+      "semantic_id": "vocabulary-settings-paste.cancel",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "qWnt7",
+      "pencil_path": "8.1.1.2",
+      "role": "button",
+      "semantic_id": "vocabulary-settings-paste.apply",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "nz7BV",
+      "pencil_path": "9",
+      "role": "screen",
+      "semantic_id": "vocabulary-settings-unsupported",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "ZmPnC",
+      "pencil_path": "9.1.0",
+      "role": "container",
+      "semantic_id": "vocabulary-settings-unsupported.vocabulary",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "nQttn",
+      "pencil_path": "9.1.0.1.0",
+      "role": "container",
+      "semantic_id": "vocabulary-settings-unsupported.terms",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "sIWUJ",
+      "pencil_path": "9.1.0.1.0.0.0",
+      "role": "text",
+      "semantic_id": "vocabulary-settings-unsupported.terms.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "mbwj5",
+      "pencil_path": "9.1.0.1.0.1",
+      "role": "alert",
+      "semantic_id": "vocabulary-settings-unsupported.status",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Y8RFj5",
+      "pencil_path": "9.1.0.1.0.1.1.0",
+      "role": "text",
+      "semantic_id": "vocabulary-settings-unsupported.status.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "cSTgs",
+      "pencil_path": "9.1.0.1.0.2",
+      "role": "list",
+      "semantic_id": "vocabulary-settings-unsupported.list",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "FpmRd",
+      "pencil_path": "9.1.0.1.0.2.0.0",
+      "role": "text",
+      "semantic_id": "vocabulary-settings-unsupported.term",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "PYS5p",
+      "pencil_path": "9.1.0.1.0.2.0.0.1",
+      "role": "button",
+      "semantic_id": "vocabulary-settings-unsupported.term.remove",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "XGzZv",
+      "pencil_path": "9.1.0.1.0.3.0",
+      "role": "input",
+      "semantic_id": "vocabulary-settings-unsupported.new-term",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "TQOvT",
+      "pencil_path": "9.1.0.1.0.3.1",
+      "role": "button",
+      "semantic_id": "vocabulary-settings-unsupported.add",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "k0mj0A",
+      "pencil_path": "9.1.0.1.0.3.2",
+      "role": "button",
+      "semantic_id": "vocabulary-settings-unsupported.paste",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "echW6",
+      "pencil_path": "10",
+      "role": "screen",
+      "semantic_id": "vocabulary-settings-empty",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "HL38s",
+      "pencil_path": "10.1.0",
+      "role": "container",
+      "semantic_id": "vocabulary-settings-empty.vocabulary",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "FJAu7",
+      "pencil_path": "10.1.0.1.0",
+      "role": "container",
+      "semantic_id": "vocabulary-settings-empty.terms",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "OGsfr",
+      "pencil_path": "10.1.0.1.0.0.0",
+      "role": "text",
+      "semantic_id": "vocabulary-settings-empty.terms.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "l2Lqm",
+      "pencil_path": "10.1.0.1.0.1",
+      "role": "alert",
+      "semantic_id": "vocabulary-settings-empty.status",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "yGv9G",
+      "pencil_path": "10.1.0.1.0.1.1.0",
+      "role": "text",
+      "semantic_id": "vocabulary-settings-empty.status.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "G9AQBL",
+      "pencil_path": "10.1.0.1.0.2",
+      "role": "container",
+      "semantic_id": "vocabulary-settings-empty.empty",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "EbnUI",
+      "pencil_path": "10.1.0.1.0.2.1",
+      "role": "text",
+      "semantic_id": "vocabulary-settings-empty.empty.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "k88uFh",
+      "pencil_path": "10.1.0.1.0.2.2",
+      "role": "text",
+      "semantic_id": "vocabulary-settings-empty.empty.body",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "lnGeb",
+      "pencil_path": "10.1.0.1.0.3.0",
+      "role": "input",
+      "semantic_id": "vocabulary-settings-empty.new-term",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "r2gvyQ",
+      "pencil_path": "10.1.0.1.0.3.1",
+      "role": "button",
+      "semantic_id": "vocabulary-settings-empty.add",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "g6TyOT",
+      "pencil_path": "10.1.0.1.0.3.2",
+      "role": "button",
+      "semantic_id": "vocabulary-settings-empty.paste",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "F402Hv",
+      "pencil_path": "11",
+      "role": "screen",
+      "semantic_id": "shortcut-settings",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Z45qDb",
+      "pencil_path": "11.1.0",
+      "role": "container",
+      "semantic_id": "shortcut-settings.general",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "cl3Ze",
+      "pencil_path": "11.1.0.1.0",
+      "role": "container",
+      "semantic_id": "shortcut-settings.dictation",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "QIxIL",
+      "pencil_path": "11.1.0.1.0.0.0",
+      "role": "text",
+      "semantic_id": "shortcut-settings.dictation.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "qFl9q",
+      "pencil_path": "11.1.0.1.0.1.0",
+      "role": "list",
+      "semantic_id": "shortcut-settings.dictation.list",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "xGpdi",
+      "pencil_path": "11.1.0.1.0.1.0.0.0",
+      "role": "text",
+      "semantic_id": "shortcut-settings.dictation.shortcut",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Tz2ob",
+      "pencil_path": "11.1.0.1.0.1.0.0.0.1",
+      "role": "button",
+      "semantic_id": "shortcut-settings.dictation.shortcut.remove",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "rMAbH",
+      "pencil_path": "11.1.0.1.0.1.1",
+      "role": "button",
+      "semantic_id": "shortcut-settings.dictation.recording",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "R4W2e",
+      "pencil_path": "11.1.0.1.0.2.0",
+      "role": "button",
+      "semantic_id": "shortcut-settings.dictation.add",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "g0pgI",
+      "pencil_path": "11.1.0.1.0.2.1",
+      "role": "button",
+      "semantic_id": "shortcut-settings.dictation.reset",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "f6mzXY",
+      "pencil_path": "11.1.0.1.1",
+      "role": "container",
+      "semantic_id": "shortcut-settings.ai-dictation",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "h9WeHu",
+      "pencil_path": "11.1.0.1.1.0.0",
+      "role": "text",
+      "semantic_id": "shortcut-settings.ai-dictation.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "n2jUF",
+      "pencil_path": "11.1.0.1.1.1.0",
+      "role": "list",
+      "semantic_id": "shortcut-settings.ai-dictation.list",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "C1CAb",
+      "pencil_path": "11.1.0.1.1.1.0.0.0",
+      "role": "text",
+      "semantic_id": "shortcut-settings.ai-dictation.shortcut",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "AHOSX",
+      "pencil_path": "11.1.0.1.1.1.0.0.0.1",
+      "role": "button",
+      "semantic_id": "shortcut-settings.ai-dictation.shortcut.remove",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "eKxkf",
+      "pencil_path": "11.1.0.1.1.1.1",
+      "role": "text",
+      "semantic_id": "shortcut-settings.ai-dictation.last",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "K6c9Hj",
+      "pencil_path": "11.1.0.1.1.2.0",
+      "role": "button",
+      "semantic_id": "shortcut-settings.ai-dictation.add",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "s0hjwp",
+      "pencil_path": "11.1.0.1.2",
+      "role": "container",
+      "semantic_id": "shortcut-settings.activation",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "mUmTu",
+      "pencil_path": "11.1.0.1.2.0.0",
+      "role": "text",
+      "semantic_id": "shortcut-settings.activation.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "d39cPr",
+      "pencil_path": "11.1.0.1.2.1",
+      "role": "select",
+      "semantic_id": "shortcut-settings.activation.select",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "ReONK",
+      "pencil_path": "11.1.0.1.3",
+      "role": "container",
+      "semantic_id": "shortcut-settings.cancel",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "f5HqxY",
+      "pencil_path": "11.1.0.1.3.0.0",
+      "role": "text",
+      "semantic_id": "shortcut-settings.cancel.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "CLdSX",
+      "pencil_path": "11.1.0.1.3.1",
+      "role": "button",
+      "semantic_id": "shortcut-settings.cancel.shortcut",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Fj4JW",
+      "pencil_path": "12",
+      "role": "screen",
+      "semantic_id": "shortcut-settings-conflict",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "f1nEO8",
+      "pencil_path": "12.1.0",
+      "role": "container",
+      "semantic_id": "shortcut-settings-conflict.general",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "SyhCa",
+      "pencil_path": "12.1.0.1.0",
+      "role": "container",
+      "semantic_id": "shortcut-settings-conflict.dictation",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "hXbqN",
+      "pencil_path": "12.1.0.1.0.0.0",
+      "role": "text",
+      "semantic_id": "shortcut-settings-conflict.dictation.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "X0XUN5",
+      "pencil_path": "12.1.0.1.0.1.0",
+      "role": "list",
+      "semantic_id": "shortcut-settings-conflict.dictation.list",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "OKyhJ",
+      "pencil_path": "12.1.0.1.0.1.0.0.0",
+      "role": "text",
+      "semantic_id": "shortcut-settings-conflict.dictation.shortcut",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "wsd1h",
+      "pencil_path": "12.1.0.1.0.1.0.0.0.1",
+      "role": "button",
+      "semantic_id": "shortcut-settings-conflict.dictation.shortcut.remove",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "IamOA",
+      "pencil_path": "12.1.0.1.0.1.1",
+      "role": "button",
+      "semantic_id": "shortcut-settings-conflict.dictation.recording",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "VpLFu",
+      "pencil_path": "12.1.0.1.0.2",
+      "role": "text",
+      "semantic_id": "shortcut-settings-conflict.dictation.conflict",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "OKv9Z",
+      "pencil_path": "12.1.0.1.0.3",
+      "role": "alert",
+      "semantic_id": "shortcut-settings-conflict.dictation.legacy",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "dgphu",
+      "pencil_path": "12.1.0.1.0.3.1.0",
+      "role": "text",
+      "semantic_id": "shortcut-settings-conflict.dictation.legacy.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "izqeQ",
+      "pencil_path": "12.1.0.1.0.3.2",
+      "role": "button",
+      "semantic_id": "shortcut-settings-conflict.dictation.change",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "SrU7E",
+      "pencil_path": "12.1.0.1.0.4",
+      "role": "alert",
+      "semantic_id": "shortcut-settings-conflict.dictation.os",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "mO657",
+      "pencil_path": "12.1.0.1.0.4.1.0",
+      "role": "text",
+      "semantic_id": "shortcut-settings-conflict.dictation.os.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "S9yxTu",
+      "pencil_path": "13",
+      "role": "screen",
+      "semantic_id": "shortcut-settings-limit",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "f9QZwl",
+      "pencil_path": "13.1.0",
+      "role": "container",
+      "semantic_id": "shortcut-settings-limit.general",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "n6vTo",
+      "pencil_path": "13.1.0.1.0",
+      "role": "container",
+      "semantic_id": "shortcut-settings-limit.dictation",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "WybTK",
+      "pencil_path": "13.1.0.1.0.0.0",
+      "role": "text",
+      "semantic_id": "shortcut-settings-limit.dictation.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "ABJcb",
+      "pencil_path": "13.1.0.1.0.1",
+      "role": "list",
+      "semantic_id": "shortcut-settings-limit.dictation.list",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "O0ThK",
+      "pencil_path": "13.1.0.1.0.1.0.0",
+      "role": "text",
+      "semantic_id": "shortcut-settings-limit.dictation.shortcut",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "PWuHc",
+      "pencil_path": "13.1.0.1.0.1.0.0.1",
+      "role": "button",
+      "semantic_id": "shortcut-settings-limit.dictation.shortcut.remove",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "ueDZz",
+      "pencil_path": "13.1.0.1.0.2.0",
+      "role": "button",
+      "semantic_id": "shortcut-settings-limit.dictation.add",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "KSNKP",
+      "pencil_path": "13.1.0.1.0.2.1",
+      "role": "text",
+      "semantic_id": "shortcut-settings-limit.dictation.limit",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "pSr0g",
+      "pencil_path": "14",
+      "role": "screen",
+      "semantic_id": "prompt-settings",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "dXxS4",
+      "pencil_path": "14.1.0",
+      "role": "container",
+      "semantic_id": "prompt-settings.processing",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "CGJHl",
+      "pencil_path": "14.1.0.1.0",
+      "role": "container",
+      "semantic_id": "prompt-settings.enabled",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "rTHxf",
+      "pencil_path": "14.1.0.1.0.0.0",
+      "role": "text",
+      "semantic_id": "prompt-settings.enabled.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "UDr7v",
+      "pencil_path": "14.1.0.1.0.1",
+      "role": "toggle",
+      "semantic_id": "prompt-settings.enabled.toggle",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "oTWsl",
+      "pencil_path": "14.1.0.1.1",
+      "role": "container",
+      "semantic_id": "prompt-settings.default",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Fn1vY",
+      "pencil_path": "14.1.0.1.1.0.0",
+      "role": "text",
+      "semantic_id": "prompt-settings.default.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "F3fTD",
+      "pencil_path": "14.1.0.1.1.1",
+      "role": "select",
+      "semantic_id": "prompt-settings.default.select",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "glRCX",
+      "pencil_path": "14.1.1",
+      "role": "container",
+      "semantic_id": "prompt-settings.library",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "IDBAW",
+      "pencil_path": "14.1.1.1.0",
+      "role": "list",
+      "semantic_id": "prompt-settings.list",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "hp9mt",
+      "pencil_path": "14.1.1.1.0.0",
+      "role": "container",
+      "semantic_id": "prompt-settings.prompt",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "D8Js74",
+      "pencil_path": "14.1.1.1.0.0.0.0",
+      "role": "text",
+      "semantic_id": "prompt-settings.prompt.name",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "uhIfp",
+      "pencil_path": "14.1.1.1.0.0.0.1",
+      "role": "text",
+      "semantic_id": "prompt-settings.prompt.provider",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "L17Wv",
+      "pencil_path": "14.1.1.1.0.0.1",
+      "role": "text",
+      "semantic_id": "prompt-settings.prompt.shortcut",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "i1xETR",
+      "pencil_path": "14.1.1.1.0.0.2",
+      "role": "button",
+      "semantic_id": "prompt-settings.prompt.edit",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "vMOpw",
+      "pencil_path": "14.1.1.1.1.0",
+      "role": "button",
+      "semantic_id": "prompt-settings.new",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "bxuou",
+      "pencil_path": "14.1.1.1.1.1",
+      "role": "text",
+      "semantic_id": "prompt-settings.count",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "EYkC8",
+      "pencil_path": "15",
+      "role": "screen",
+      "semantic_id": "prompt-settings-editor",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "I1b35l",
+      "pencil_path": "15.1.0",
+      "role": "container",
+      "semantic_id": "prompt-settings-editor.editor",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "hEvPD",
+      "pencil_path": "15.1.0.1.0",
+      "role": "container",
+      "semantic_id": "prompt-settings-editor.form",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "ccDcC",
+      "pencil_path": "15.1.0.1.0.0.0",
+      "role": "text",
+      "semantic_id": "prompt-settings-editor.form.name-label",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "R5hut",
+      "pencil_path": "15.1.0.1.0.0.1",
+      "role": "input",
+      "semantic_id": "prompt-settings-editor.form.name",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "QyEFW",
+      "pencil_path": "15.1.0.1.0.1.0",
+      "role": "text",
+      "semantic_id": "prompt-settings-editor.form.text-label",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Vjlw6",
+      "pencil_path": "15.1.0.1.0.1.1",
+      "role": "input",
+      "semantic_id": "prompt-settings-editor.form.text",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "kj3A1",
+      "pencil_path": "15.1.0.1.0.1.2",
+      "role": "text",
+      "semantic_id": "prompt-settings-editor.form.text-hint",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Z2UHz",
+      "pencil_path": "15.1.0.1.0.2.0.0",
+      "role": "text",
+      "semantic_id": "prompt-settings-editor.form.provider-label",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "mSWFa",
+      "pencil_path": "15.1.0.1.0.2.0.1",
+      "role": "select",
+      "semantic_id": "prompt-settings-editor.form.provider",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "I70WF",
+      "pencil_path": "15.1.0.1.0.2.1.0",
+      "role": "text",
+      "semantic_id": "prompt-settings-editor.form.model-label",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Ye8IA",
+      "pencil_path": "15.1.0.1.0.2.1.1",
+      "role": "select",
+      "semantic_id": "prompt-settings-editor.form.model",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "dqxga",
+      "pencil_path": "15.1.0.1.0.3",
+      "role": "text",
+      "semantic_id": "prompt-settings-editor.form.endpoint",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "y7Gkr",
+      "pencil_path": "15.1.0.1.0.4.0",
+      "role": "text",
+      "semantic_id": "prompt-settings-editor.form.shortcuts-label",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Pp4jL",
+      "pencil_path": "15.1.0.1.0.4.1.0",
+      "role": "list",
+      "semantic_id": "prompt-settings-editor.form.shortcuts",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "HvVWb",
+      "pencil_path": "15.1.0.1.0.4.1.0.0.0",
+      "role": "text",
+      "semantic_id": "prompt-settings-editor.form.shortcut",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Su0Xf",
+      "pencil_path": "15.1.0.1.0.4.1.0.0.0.1",
+      "role": "button",
+      "semantic_id": "prompt-settings-editor.form.shortcut.remove",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "U9Xxf",
+      "pencil_path": "15.1.0.1.0.4.1.1",
+      "role": "button",
+      "semantic_id": "prompt-settings-editor.form.add-shortcut",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "GhbNQ",
+      "pencil_path": "15.1.1",
+      "role": "container",
+      "semantic_id": "prompt-settings-editor.test",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Xlupp",
+      "pencil_path": "15.1.1.1.0",
+      "role": "input",
+      "semantic_id": "prompt-settings-editor.test.sample",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "yJ0DG",
+      "pencil_path": "15.1.1.1.1.0",
+      "role": "button",
+      "semantic_id": "prompt-settings-editor.test.run",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "LzYVB",
+      "pencil_path": "15.1.1.1.1.1",
+      "role": "text",
+      "semantic_id": "prompt-settings-editor.test.note",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "nlXNK",
+      "pencil_path": "15.1.1.1.2",
+      "role": "container",
+      "semantic_id": "prompt-settings-editor.test.result",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Nbo3F",
+      "pencil_path": "15.1.1.1.2.0",
+      "role": "text",
+      "semantic_id": "prompt-settings-editor.test.output",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "UFTeE",
+      "pencil_path": "15.1.1.1.2.1",
+      "role": "text",
+      "semantic_id": "prompt-settings-editor.test.meta",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "eBF1L",
+      "pencil_path": "15.1.2",
+      "role": "container",
+      "semantic_id": "prompt-settings-editor.actions",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "pT99R",
+      "pencil_path": "15.1.2.0",
+      "role": "text",
+      "semantic_id": "prompt-settings-editor.actions.note",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "g58eM",
+      "pencil_path": "15.1.2.1",
+      "role": "button",
+      "semantic_id": "prompt-settings-editor.delete",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "BHv9q",
+      "pencil_path": "15.1.2.2",
+      "role": "button",
+      "semantic_id": "prompt-settings-editor.cancel",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "FzkwV",
+      "pencil_path": "15.1.2.3",
+      "role": "button",
+      "semantic_id": "prompt-settings-editor.save",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "C2u9q",
+      "pencil_path": "16",
+      "role": "screen",
+      "semantic_id": "prompt-settings-invalid",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "HSV2l",
+      "pencil_path": "16.1.0",
+      "role": "container",
+      "semantic_id": "prompt-settings-invalid.editor",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "yB58r",
+      "pencil_path": "16.1.0.1.0",
+      "role": "container",
+      "semantic_id": "prompt-settings-invalid.form",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "GBwYX",
+      "pencil_path": "16.1.0.1.0.0.0",
+      "role": "text",
+      "semantic_id": "prompt-settings-invalid.form.name-label",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "cBVul",
+      "pencil_path": "16.1.0.1.0.0.1",
+      "role": "input",
+      "semantic_id": "prompt-settings-invalid.form.name",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "x8Rcmg",
+      "pencil_path": "16.1.0.1.0.0.2",
+      "role": "text",
+      "semantic_id": "prompt-settings-invalid.form.name-error",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "DB5vw",
+      "pencil_path": "16.1.0.1.0.1.0",
+      "role": "text",
+      "semantic_id": "prompt-settings-invalid.form.text-label",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "fdKHx",
+      "pencil_path": "16.1.0.1.0.1.1",
+      "role": "input",
+      "semantic_id": "prompt-settings-invalid.form.text",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "ZJ34a",
+      "pencil_path": "16.1.0.1.0.2.0.0",
+      "role": "text",
+      "semantic_id": "prompt-settings-invalid.form.provider-label",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "DLV9O",
+      "pencil_path": "16.1.0.1.0.2.0.1",
+      "role": "select",
+      "semantic_id": "prompt-settings-invalid.form.provider",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "sxftb",
+      "pencil_path": "16.1.0.1.0.2.1.0",
+      "role": "text",
+      "semantic_id": "prompt-settings-invalid.form.model-label",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "QxMsp",
+      "pencil_path": "16.1.0.1.0.2.1.1",
+      "role": "select",
+      "semantic_id": "prompt-settings-invalid.form.model",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "I2DKW",
+      "pencil_path": "16.1.0.1.0.3",
+      "role": "alert",
+      "semantic_id": "prompt-settings-invalid.form.not-ready",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "B2NYek",
+      "pencil_path": "16.1.0.1.0.3.1.0",
+      "role": "text",
+      "semantic_id": "prompt-settings-invalid.form.not-ready.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "pI5xF",
+      "pencil_path": "16.1.0.1.0.3.2",
+      "role": "button",
+      "semantic_id": "prompt-settings-invalid.form.fix",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Dkm52",
+      "pencil_path": "16.1.1",
+      "role": "container",
+      "semantic_id": "prompt-settings-invalid.test",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "w4hgN9",
+      "pencil_path": "16.1.1.1.0",
+      "role": "input",
+      "semantic_id": "prompt-settings-invalid.test.sample",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "gkllA",
+      "pencil_path": "16.1.1.1.1.0",
+      "role": "button",
+      "semantic_id": "prompt-settings-invalid.test.run",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "CTY6o",
+      "pencil_path": "16.1.1.1.2",
+      "role": "alert",
+      "semantic_id": "prompt-settings-invalid.test.error",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "p7nOU",
+      "pencil_path": "16.1.1.1.2.1.0",
+      "role": "text",
+      "semantic_id": "prompt-settings-invalid.test.error.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "E3Ik8z",
+      "pencil_path": "16.1.2",
+      "role": "container",
+      "semantic_id": "prompt-settings-invalid.actions",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "ASBJJ",
+      "pencil_path": "16.1.2.0",
+      "role": "text",
+      "semantic_id": "prompt-settings-invalid.actions.note",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "w3eXk",
+      "pencil_path": "16.1.2.1",
+      "role": "button",
+      "semantic_id": "prompt-settings-invalid.cancel",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "KoN88",
+      "pencil_path": "16.1.2.2",
+      "role": "button",
+      "semantic_id": "prompt-settings-invalid.save",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "bUVrO",
+      "pencil_path": "17",
+      "role": "screen",
+      "semantic_id": "recording-indicator",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "qpwZG",
+      "pencil_path": "17.0",
+      "role": "container",
+      "semantic_id": "recording-indicator.bar",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "vksiJ",
+      "pencil_path": "17.0.0",
+      "role": "container",
+      "semantic_id": "recording-indicator.pill",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "jAbwF",
+      "pencil_path": "17.0.0.2",
+      "role": "text",
+      "semantic_id": "recording-indicator.pill.timer",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "f6iavt",
+      "pencil_path": "17.0.1",
+      "role": "button",
+      "semantic_id": "recording-indicator.prompt",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "T0ni9y",
+      "pencil_path": "17.0.2",
+      "role": "button",
+      "semantic_id": "recording-indicator.destination",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "xob7Y",
+      "pencil_path": "17.0.2.1",
+      "role": "text",
+      "semantic_id": "recording-indicator.destination.name",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "IUNU0",
+      "pencil_path": "17.0.2.2",
+      "role": "button",
+      "semantic_id": "recording-indicator.destination.remove",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "LIs41",
+      "pencil_path": "18",
+      "role": "screen",
+      "semantic_id": "recording-indicator-destination-menu",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "j2Ffh",
+      "pencil_path": "18.0",
+      "role": "container",
+      "semantic_id": "recording-indicator-destination-menu.menu",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "gwnJq",
+      "pencil_path": "18.0.0",
+      "role": "text",
+      "semantic_id": "recording-indicator-destination-menu.menu.now-label",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "uxda3",
+      "pencil_path": "18.0.1",
+      "role": "button",
+      "semantic_id": "recording-indicator-destination-menu.menu.frontmost",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "j8EPD",
+      "pencil_path": "18.0.2",
+      "role": "text",
+      "semantic_id": "recording-indicator-destination-menu.menu.others-label",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "x6Y669",
+      "pencil_path": "18.0.3",
+      "role": "button",
+      "semantic_id": "recording-indicator-destination-menu.menu.app",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "P98TFv",
+      "pencil_path": "18.0.7",
+      "role": "button",
+      "semantic_id": "recording-indicator-destination-menu.menu.frontmost-at-end",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "SX3Z7",
+      "pencil_path": "18.0.8",
+      "role": "button",
+      "semantic_id": "recording-indicator-destination-menu.menu.pin",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Q3iiE",
+      "pencil_path": "18.1",
+      "role": "container",
+      "semantic_id": "recording-indicator-destination-menu.bar",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "xZcEi",
+      "pencil_path": "18.1.0",
+      "role": "container",
+      "semantic_id": "recording-indicator-destination-menu.pill",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "xfb3j",
+      "pencil_path": "18.1.0.2",
+      "role": "text",
+      "semantic_id": "recording-indicator-destination-menu.pill.timer",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Yrn1Y",
+      "pencil_path": "18.1.1",
+      "role": "button",
+      "semantic_id": "recording-indicator-destination-menu.prompt",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "bprzB",
+      "pencil_path": "18.1.2",
+      "role": "button",
+      "semantic_id": "recording-indicator-destination-menu.destination",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "ugzEm",
+      "pencil_path": "18.1.2.1",
+      "role": "text",
+      "semantic_id": "recording-indicator-destination-menu.destination.name",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "BXnOQ",
+      "pencil_path": "18.1.2.2",
+      "role": "button",
+      "semantic_id": "recording-indicator-destination-menu.destination.remove",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "NASF3",
+      "pencil_path": "19",
+      "role": "screen",
+      "semantic_id": "recording-indicator-no-destination",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "z46hRJ",
+      "pencil_path": "19.0",
+      "role": "container",
+      "semantic_id": "recording-indicator-no-destination.bar",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "e9Qmf",
+      "pencil_path": "19.0.0",
+      "role": "container",
+      "semantic_id": "recording-indicator-no-destination.pill",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "uOfgX",
+      "pencil_path": "19.0.0.2",
+      "role": "text",
+      "semantic_id": "recording-indicator-no-destination.pill.timer",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Eu7kc",
+      "pencil_path": "19.0.1",
+      "role": "button",
+      "semantic_id": "recording-indicator-no-destination.prompt",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "teGBj",
+      "pencil_path": "19.0.2",
+      "role": "button",
+      "semantic_id": "recording-indicator-no-destination.destination",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "lrLnE",
+      "pencil_path": "19.0.2.1",
+      "role": "text",
+      "semantic_id": "recording-indicator-no-destination.destination.name",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "CCFAE",
+      "pencil_path": "20",
+      "role": "screen",
+      "semantic_id": "recording-indicator-destination-unavailable",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "AWLRT",
+      "pencil_path": "20.0",
+      "role": "alert",
+      "semantic_id": "recording-indicator-destination-unavailable.notice",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "XlUUl",
+      "pencil_path": "21",
+      "role": "screen",
+      "semantic_id": "recording-indicator-prompt-menu",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "tV3vQ",
+      "pencil_path": "21.0",
+      "role": "container",
+      "semantic_id": "recording-indicator-prompt-menu.menu",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "VNV0J",
+      "pencil_path": "21.0.0",
+      "role": "text",
+      "semantic_id": "recording-indicator-prompt-menu.menu.label",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "R04Ey",
+      "pencil_path": "21.0.1",
+      "role": "button",
+      "semantic_id": "recording-indicator-prompt-menu.menu.none",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Rkmk2",
+      "pencil_path": "21.0.2",
+      "role": "button",
+      "semantic_id": "recording-indicator-prompt-menu.menu.prompt",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "TXF2N",
+      "pencil_path": "21.0.8.0",
+      "role": "text",
+      "semantic_id": "recording-indicator-prompt-menu.menu.note",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "t3VPN",
+      "pencil_path": "21.1",
+      "role": "container",
+      "semantic_id": "recording-indicator-prompt-menu.bar",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "qkuW3",
+      "pencil_path": "21.1.0",
+      "role": "container",
+      "semantic_id": "recording-indicator-prompt-menu.pill",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "jh8Tb",
+      "pencil_path": "21.1.0.2",
+      "role": "text",
+      "semantic_id": "recording-indicator-prompt-menu.pill.timer",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "L3syfc",
+      "pencil_path": "21.1.1",
+      "role": "button",
+      "semantic_id": "recording-indicator-prompt-menu.prompt",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Ud6N8",
+      "pencil_path": "21.1.2",
+      "role": "button",
+      "semantic_id": "recording-indicator-prompt-menu.destination",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "j2kwOe",
+      "pencil_path": "21.1.2.1",
+      "role": "text",
+      "semantic_id": "recording-indicator-prompt-menu.destination.name",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "k20jBb",
+      "pencil_path": "21.1.2.2",
+      "role": "button",
+      "semantic_id": "recording-indicator-prompt-menu.destination.remove",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "tqJAs",
+      "pencil_path": "22",
+      "role": "screen",
+      "semantic_id": "recording-indicator-ai-failed",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "UI7xv",
+      "pencil_path": "22.0",
+      "role": "alert",
+      "semantic_id": "recording-indicator-ai-failed.notice",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "iuUkJ",
+      "pencil_path": "23",
+      "role": "screen",
+      "semantic_id": "recording-indicator-pinned",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "A6pvHK",
+      "pencil_path": "23.0",
+      "role": "container",
+      "semantic_id": "recording-indicator-pinned.menu",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "mmkcq",
+      "pencil_path": "23.0.0",
+      "role": "text",
+      "semantic_id": "recording-indicator-pinned.menu.now-label",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "gH0Im",
+      "pencil_path": "23.0.1",
+      "role": "button",
+      "semantic_id": "recording-indicator-pinned.menu.frontmost",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "pR9MQ",
+      "pencil_path": "23.0.2",
+      "role": "text",
+      "semantic_id": "recording-indicator-pinned.menu.others-label",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "yliDM",
+      "pencil_path": "23.0.3",
+      "role": "button",
+      "semantic_id": "recording-indicator-pinned.menu.app",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "w6mrJ",
+      "pencil_path": "23.0.6",
+      "role": "button",
+      "semantic_id": "recording-indicator-pinned.menu.unpin",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "zFkaL",
+      "pencil_path": "23.1",
+      "role": "container",
+      "semantic_id": "recording-indicator-pinned.bar",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "uvS1n",
+      "pencil_path": "23.1.0",
+      "role": "container",
+      "semantic_id": "recording-indicator-pinned.pill",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "KQtKT",
+      "pencil_path": "23.1.0.2",
+      "role": "text",
+      "semantic_id": "recording-indicator-pinned.pill.timer",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "LC5ry",
+      "pencil_path": "23.1.1",
+      "role": "button",
+      "semantic_id": "recording-indicator-pinned.prompt",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "CNvoa",
+      "pencil_path": "23.1.2",
+      "role": "button",
+      "semantic_id": "recording-indicator-pinned.destination",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "KqYOJ",
+      "pencil_path": "23.1.2.1",
+      "role": "text",
+      "semantic_id": "recording-indicator-pinned.destination.name",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "BQk5T",
+      "pencil_path": "23.1.2.3",
+      "role": "button",
+      "semantic_id": "recording-indicator-pinned.destination.remove",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "u2dJHX",
+      "pencil_path": "28",
+      "role": "screen",
+      "semantic_id": "output-settings",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "tqBFn",
+      "pencil_path": "28.1.0",
+      "role": "container",
+      "semantic_id": "output-settings.output",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "MCnc8",
+      "pencil_path": "28.1.0.1.0",
+      "role": "container",
+      "semantic_id": "output-settings.paste-method",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "dVE1U",
+      "pencil_path": "28.1.0.1.0.0.0",
+      "role": "text",
+      "semantic_id": "output-settings.paste-method.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "aU6wR",
+      "pencil_path": "28.1.0.1.0.1",
+      "role": "select",
+      "semantic_id": "output-settings.paste-method.select",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "PIbd0",
+      "pencil_path": "28.1.0.1.1",
+      "role": "container",
+      "semantic_id": "output-settings.clipboard",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "BQdW6",
+      "pencil_path": "28.1.0.1.1.0.0",
+      "role": "text",
+      "semantic_id": "output-settings.clipboard.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Kl1oW",
+      "pencil_path": "28.1.0.1.1.1",
+      "role": "select",
+      "semantic_id": "output-settings.clipboard.select",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Mb82V",
+      "pencil_path": "28.1.0.1.2",
+      "role": "container",
+      "semantic_id": "output-settings.return-app",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "nZsXM",
+      "pencil_path": "28.1.0.1.2.0.0",
+      "role": "text",
+      "semantic_id": "output-settings.return-app.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "HTnXm",
+      "pencil_path": "28.1.0.1.2.1.0",
+      "role": "button",
+      "semantic_id": "output-settings.return-app.info",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "f3wmDY",
+      "pencil_path": "28.1.0.1.2.1.1",
+      "role": "toggle",
+      "semantic_id": "output-settings.return-app.toggle",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Nq6RZ",
+      "pencil_path": "28.1.0.1.3",
+      "role": "container",
+      "semantic_id": "output-settings.auto-enter",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "kkBOw",
+      "pencil_path": "28.1.0.1.3.0.0",
+      "role": "text",
+      "semantic_id": "output-settings.auto-enter.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "q5I7XG",
+      "pencil_path": "28.1.0.1.3.1.0",
+      "role": "select",
+      "semantic_id": "output-settings.auto-enter.mode",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "K50G8",
+      "pencil_path": "28.1.0.1.3.1.1",
+      "role": "select",
+      "semantic_id": "output-settings.auto-enter.key",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "uLMfT",
+      "pencil_path": "28.1.0.1.4",
+      "role": "container",
+      "semantic_id": "output-settings.no-field-bubble",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "v7k5K8",
+      "pencil_path": "28.1.0.1.4.0.0",
+      "role": "text",
+      "semantic_id": "output-settings.no-field-bubble.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "OM6CH",
+      "pencil_path": "28.1.0.1.4.1",
+      "role": "toggle",
+      "semantic_id": "output-settings.no-field-bubble.toggle",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "x5bnOs",
+      "pencil_path": "29",
+      "role": "screen",
+      "semantic_id": "output-settings-paste-methods",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "fN6Xa",
+      "pencil_path": "29.1.0",
+      "role": "alert",
+      "semantic_id": "output-settings-paste-methods.permission",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "gp9Q4",
+      "pencil_path": "29.1.0.1.0",
+      "role": "text",
+      "semantic_id": "output-settings-paste-methods.permission.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "PfHb0",
+      "pencil_path": "29.1.0.2",
+      "role": "button",
+      "semantic_id": "output-settings-paste-methods.permission.open",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "evsdf",
+      "pencil_path": "29.1.1",
+      "role": "container",
+      "semantic_id": "output-settings-paste-methods.output",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "KHkhW",
+      "pencil_path": "29.1.1.1.0",
+      "role": "container",
+      "semantic_id": "output-settings-paste-methods.paste-method",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "xGzv7",
+      "pencil_path": "29.1.1.1.0.0.0",
+      "role": "text",
+      "semantic_id": "output-settings-paste-methods.paste-method.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "DyPqh",
+      "pencil_path": "29.1.1.1.0.1.0",
+      "role": "select",
+      "semantic_id": "output-settings-paste-methods.paste-method.select",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "MY1yf",
+      "pencil_path": "29.1.1.1.0.1.1",
+      "role": "container",
+      "semantic_id": "output-settings-paste-methods.paste-method.options",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Jxt02",
+      "pencil_path": "29.1.1.1.0.1.1.0",
+      "role": "button",
+      "semantic_id": "output-settings-paste-methods.paste-method.smart",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "YRQIb",
+      "pencil_path": "29.1.1.1.0.1.1.1",
+      "role": "button",
+      "semantic_id": "output-settings-paste-methods.paste-method.clipboard",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "kN4bL",
+      "pencil_path": "29.1.1.1.0.1.1.2",
+      "role": "button",
+      "semantic_id": "output-settings-paste-methods.paste-method.direct",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "KSWfk",
+      "pencil_path": "29.1.1.1.0.1.1.3",
+      "role": "button",
+      "semantic_id": "output-settings-paste-methods.paste-method.script",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "rbo72",
+      "pencil_path": "29.1.1.1.0.1.1.4",
+      "role": "button",
+      "semantic_id": "output-settings-paste-methods.paste-method.none",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "fwx9p",
+      "pencil_path": "29.1.1.1.1",
+      "role": "container",
+      "semantic_id": "output-settings-paste-methods.clipboard",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "iY4Rp",
+      "pencil_path": "29.1.1.1.1.0.0",
+      "role": "text",
+      "semantic_id": "output-settings-paste-methods.clipboard.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "qFdnT",
+      "pencil_path": "29.1.1.1.1.1",
+      "role": "select",
+      "semantic_id": "output-settings-paste-methods.clipboard.select",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "ulLj8",
+      "pencil_path": "30",
+      "role": "screen",
+      "semantic_id": "output-settings-unavailable",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "coF50",
+      "pencil_path": "30.1.0",
+      "role": "container",
+      "semantic_id": "output-settings-unavailable.output",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "b8z9L",
+      "pencil_path": "30.1.0.1.0",
+      "role": "container",
+      "semantic_id": "output-settings-unavailable.paste-method",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "CiDPP",
+      "pencil_path": "30.1.0.1.0.0.0",
+      "role": "text",
+      "semantic_id": "output-settings-unavailable.paste-method.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "jEzPW",
+      "pencil_path": "30.1.0.1.0.1",
+      "role": "select",
+      "semantic_id": "output-settings-unavailable.paste-method.select",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "xmvD1",
+      "pencil_path": "30.1.0.1.1",
+      "role": "container",
+      "semantic_id": "output-settings-unavailable.clipboard",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "b8YHh",
+      "pencil_path": "30.1.0.1.1.0.0",
+      "role": "text",
+      "semantic_id": "output-settings-unavailable.clipboard.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "RWO3Z",
+      "pencil_path": "30.1.0.1.1.1",
+      "role": "select",
+      "semantic_id": "output-settings-unavailable.clipboard.select",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "JdenC",
+      "pencil_path": "30.1.0.1.2",
+      "role": "container",
+      "semantic_id": "output-settings-unavailable.return-app",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "h1XuF",
+      "pencil_path": "30.1.0.1.2.0.0",
+      "role": "text",
+      "semantic_id": "output-settings-unavailable.return-app.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "V6Y8Vk",
+      "pencil_path": "30.1.0.1.2.1.0",
+      "role": "button",
+      "semantic_id": "output-settings-unavailable.return-app.info",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "y4vR14",
+      "pencil_path": "30.1.0.1.2.1.1",
+      "role": "toggle",
+      "semantic_id": "output-settings-unavailable.return-app.toggle",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "nc8UG",
+      "pencil_path": "30.1.0.1.3",
+      "role": "container",
+      "semantic_id": "output-settings-unavailable.auto-enter",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "N6sfNJ",
+      "pencil_path": "30.1.0.1.3.0.0",
+      "role": "text",
+      "semantic_id": "output-settings-unavailable.auto-enter.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "P8Y9Qi",
+      "pencil_path": "30.1.0.1.3.1.0",
+      "role": "select",
+      "semantic_id": "output-settings-unavailable.auto-enter.mode",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "O6ebE",
+      "pencil_path": "30.1.0.1.3.1.1",
+      "role": "select",
+      "semantic_id": "output-settings-unavailable.auto-enter.key",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "JPiAy",
+      "pencil_path": "30.1.0.1.4",
+      "role": "container",
+      "semantic_id": "output-settings-unavailable.no-field-bubble",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Vd5Lk",
+      "pencil_path": "30.1.0.1.4.0.0",
+      "role": "text",
+      "semantic_id": "output-settings-unavailable.no-field-bubble.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Mtebi",
+      "pencil_path": "30.1.0.1.4.1",
+      "role": "toggle",
+      "semantic_id": "output-settings-unavailable.no-field-bubble.toggle",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "jjCjH",
+      "pencil_path": "31",
+      "role": "screen",
+      "semantic_id": "output-settings-enter-options",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "m0gvL",
+      "pencil_path": "31.1.0",
+      "role": "container",
+      "semantic_id": "output-settings-enter-options.output",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "UhWIT",
+      "pencil_path": "31.1.0.1.0",
+      "role": "container",
+      "semantic_id": "output-settings-enter-options.auto-enter",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "gjAh4",
+      "pencil_path": "31.1.0.1.0.0.0",
+      "role": "text",
+      "semantic_id": "output-settings-enter-options.auto-enter.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "VdY1F",
+      "pencil_path": "31.1.0.1.0.1.0.0",
+      "role": "select",
+      "semantic_id": "output-settings-enter-options.auto-enter.mode",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "x3uoW",
+      "pencil_path": "31.1.0.1.0.1.0.1",
+      "role": "select",
+      "semantic_id": "output-settings-enter-options.auto-enter.key",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "SQOS5",
+      "pencil_path": "31.1.0.1.0.1.1",
+      "role": "container",
+      "semantic_id": "output-settings-enter-options.auto-enter.options",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "IAPUb",
+      "pencil_path": "31.1.0.1.0.1.1.0",
+      "role": "button",
+      "semantic_id": "output-settings-enter-options.auto-enter.never",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "shRiE",
+      "pencil_path": "31.1.0.1.0.1.1.1",
+      "role": "button",
+      "semantic_id": "output-settings-enter-options.auto-enter.always",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "SwZhF",
+      "pencil_path": "31.1.0.1.0.1.1.2",
+      "role": "button",
+      "semantic_id": "output-settings-enter-options.auto-enter.pin-only",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "G1GtY",
+      "pencil_path": "31.1.1",
+      "role": "text",
+      "semantic_id": "output-settings-enter-options.auto-enter.note",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "x8v3gM",
+      "pencil_path": "32",
+      "role": "screen",
+      "semantic_id": "settings-write-errors",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "WmvT5",
+      "pencil_path": "32.1.0",
+      "role": "alert",
+      "semantic_id": "settings-write-errors.conflict",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "ASprN",
+      "pencil_path": "32.1.0.1.0",
+      "role": "text",
+      "semantic_id": "settings-write-errors.conflict.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "jMxXa",
+      "pencil_path": "32.1.0.2",
+      "role": "button",
+      "semantic_id": "settings-write-errors.reload",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "kyRpB",
+      "pencil_path": "32.1.1",
+      "role": "container",
+      "semantic_id": "settings-write-errors.history",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "vRVof",
+      "pencil_path": "32.1.1.1.0",
+      "role": "container",
+      "semantic_id": "settings-write-errors.history-limit",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "tfrkx",
+      "pencil_path": "32.1.1.1.0.0.0",
+      "role": "text",
+      "semantic_id": "settings-write-errors.history-limit.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "oLtbs",
+      "pencil_path": "32.1.1.1.0.1.0",
+      "role": "input",
+      "semantic_id": "settings-write-errors.history-limit.input",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "dttcW",
+      "pencil_path": "32.1.1.1.0.1.1",
+      "role": "text",
+      "semantic_id": "settings-write-errors.history-limit.error",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "S46r1",
+      "pencil_path": "32.1.2",
+      "role": "alert",
+      "semantic_id": "settings-write-errors.save-failed",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "PrCcL",
+      "pencil_path": "32.1.2.1.0",
+      "role": "text",
+      "semantic_id": "settings-write-errors.save-failed.title",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "JxHwF",
+      "pencil_path": "24",
+      "role": "screen",
+      "semantic_id": "recovery-bubble",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "uj2qV",
+      "pencil_path": "24.0",
+      "role": "container",
+      "semantic_id": "recovery-bubble.bubble",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Kdiy1",
+      "pencil_path": "24.0.0.1",
+      "role": "text",
+      "semantic_id": "recovery-bubble.reason",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "Lb2O1",
+      "pencil_path": "24.0.0.2",
+      "role": "button",
+      "semantic_id": "recovery-bubble.close",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "ExmAN",
+      "pencil_path": "24.0.1",
+      "role": "text",
+      "semantic_id": "recovery-bubble.preview",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "NxZYO",
+      "pencil_path": "24.0.2.0",
+      "role": "button",
+      "semantic_id": "recovery-bubble.drag-handle",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "fgHuB",
+      "pencil_path": "24.0.2.1",
+      "role": "button",
+      "semantic_id": "recovery-bubble.copy",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "u4iacF",
+      "pencil_path": "24.0.2.2",
+      "role": "button",
+      "semantic_id": "recovery-bubble.why",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "g3wvbb",
+      "pencil_path": "25",
+      "role": "screen",
+      "semantic_id": "recovery-bubble-explanation",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "XiyUK",
+      "pencil_path": "25.0",
+      "role": "container",
+      "semantic_id": "recovery-bubble-explanation.bubble",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "jKTx9",
+      "pencil_path": "25.0.0.1",
+      "role": "text",
+      "semantic_id": "recovery-bubble-explanation.reason",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "ESVzD",
+      "pencil_path": "25.0.0.2",
+      "role": "button",
+      "semantic_id": "recovery-bubble-explanation.close",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "inJE8",
+      "pencil_path": "25.0.1",
+      "role": "text",
+      "semantic_id": "recovery-bubble-explanation.preview",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "iOseh",
+      "pencil_path": "25.0.2",
+      "role": "container",
+      "semantic_id": "recovery-bubble-explanation.explanation",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "kpZTd",
+      "pencil_path": "25.0.2.0",
+      "role": "text",
+      "semantic_id": "recovery-bubble-explanation.explanation.text",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "sgrER",
+      "pencil_path": "25.0.3.0",
+      "role": "button",
+      "semantic_id": "recovery-bubble-explanation.drag-handle",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "CRWGh",
+      "pencil_path": "25.0.3.1",
+      "role": "button",
+      "semantic_id": "recovery-bubble-explanation.copy",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "KO3fz",
+      "pencil_path": "25.0.3.2",
+      "role": "button",
+      "semantic_id": "recovery-bubble-explanation.why",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "D1Iaa",
+      "pencil_path": "26",
+      "role": "screen",
+      "semantic_id": "recovery-bubble-no-field",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "e8xCqp",
+      "pencil_path": "26.0",
+      "role": "container",
+      "semantic_id": "recovery-bubble-no-field.bubble",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "y1R3a",
+      "pencil_path": "26.0.0.1",
+      "role": "text",
+      "semantic_id": "recovery-bubble-no-field.reason",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "KpRoa",
+      "pencil_path": "26.0.0.2",
+      "role": "button",
+      "semantic_id": "recovery-bubble-no-field.close",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "ljHFT",
+      "pencil_path": "26.0.1",
+      "role": "text",
+      "semantic_id": "recovery-bubble-no-field.preview",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "N4Fyg",
+      "pencil_path": "26.0.2.0",
+      "role": "button",
+      "semantic_id": "recovery-bubble-no-field.drag-handle",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "VjRys",
+      "pencil_path": "26.0.2.1",
+      "role": "button",
+      "semantic_id": "recovery-bubble-no-field.copy",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "IEF5Y",
+      "pencil_path": "26.0.2.2",
+      "role": "button",
+      "semantic_id": "recovery-bubble-no-field.why",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "w1BVH",
+      "pencil_path": "27",
+      "role": "screen",
+      "semantic_id": "recovery-bubble-insertion-failed",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "M3XJv",
+      "pencil_path": "27.0",
+      "role": "container",
+      "semantic_id": "recovery-bubble-insertion-failed.bubble",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "b2WvC",
+      "pencil_path": "27.0.0.1",
+      "role": "text",
+      "semantic_id": "recovery-bubble-insertion-failed.reason",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "ZO92w",
+      "pencil_path": "27.0.0.2",
+      "role": "button",
+      "semantic_id": "recovery-bubble-insertion-failed.close",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "i0Buf",
+      "pencil_path": "27.0.1",
+      "role": "text",
+      "semantic_id": "recovery-bubble-insertion-failed.preview",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "psbL9",
+      "pencil_path": "27.0.2",
+      "role": "container",
+      "semantic_id": "recovery-bubble-insertion-failed.explanation",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "s6Bb2",
+      "pencil_path": "27.0.2.0",
+      "role": "text",
+      "semantic_id": "recovery-bubble-insertion-failed.explanation.text",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "h1FSG",
+      "pencil_path": "27.0.3.0",
+      "role": "button",
+      "semantic_id": "recovery-bubble-insertion-failed.copy",
+      "strategy": "semantic_id"
+    },
+    {
+      "pencil_node_id": "iZwom",
+      "pencil_path": "27.0.3.1",
+      "role": "button",
+      "semantic_id": "recovery-bubble-insertion-failed.why",
+      "strategy": "semantic_id"
+    }
+  ],
+  "status": "PASS",
+  "unmapped": [],
+  "version": 1
+}

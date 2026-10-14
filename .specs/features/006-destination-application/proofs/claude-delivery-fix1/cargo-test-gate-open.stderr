@@ -1,0 +1,18 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/006-destination-application/src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 20.10s
+     Running unittests src/lib.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/handy_app_lib-bec8ee2b7f6e6f19)
+     Running unittests src/main.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/handy-80ead5cccfd73bf0)
+     Running tests/destination_cli.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/destination_cli-8d551e78a14386b5)
+     Running tests/destination_platform.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/destination_platform-d8cb0d1a54dbbb6b)
+     Running tests/destination_recovery.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/destination_recovery-208e650c0f766253)
+     Running tests/settings_cli.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_cli-8a7cfd3953e298d4)
+     Running tests/settings_domains.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_domains-49e5d4fbceaa46d1)
+     Running tests/settings_live.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_live-6214d7a990a21bcd)
+     Running tests/settings_platform.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_platform-1c255498c5b95567)
+     Running tests/settings_transactions.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_transactions-5272f1151c63c255)
+     Running tests/settings_validation.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_validation-8f7b4612854282f9)
+     Running tests/settings_writers.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_writers-54c5adf7d9a5203a)
+     Running tests/shortcuts_cli.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/shortcuts_cli-e1d088dfbc9320af)
+   Doc-tests handy_app_lib

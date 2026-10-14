@@ -98,6 +98,7 @@ fn revalidate_mutation(
     let context = super::validation::ValidationContext {
         prompt_ids: &prompt_ids,
         updates_allowed: !crate::settings::update_checks_forced_disabled(),
+        platform: super::platform_capability::PlatformCapabilities::current(),
     };
     super::validation::validate_value(entry, candidate, &context)
 }

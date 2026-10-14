@@ -30,7 +30,7 @@ fn json_get_prints_one_envelope_with_revision_and_every_public_key() -> TestResu
         );
         assert_eq!(
             envelope["data"].as_object().map(|data| data.len()),
-            Some(64)
+            Some(65)
         );
     }
     let one = app
@@ -176,7 +176,7 @@ const UI_ONLY: &str = "This setting is changed in the settings UI.";
 const OWNED_ELSEWHERE: [(&str, &str); 4] = [
     (
         "bindings",
-        "Use handy settings shortcuts; this domain is not available in this build.",
+        "Use handy settings shortcuts to change shortcuts.",
     ),
     (
         "custom_words",

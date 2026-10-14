@@ -3,6 +3,13 @@
     "binding": {
       "additionalProperties": false,
       "properties": {
+        "additional_bindings": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
         "current_binding": {
           "type": "string"
         },
@@ -61,6 +68,9 @@
     "error_details": {
       "additionalProperties": false,
       "properties": {
+        "action_id": {
+          "type": "string"
+        },
         "current_revision": {
           "$ref": "#/$defs/revision"
         },
@@ -108,6 +118,7 @@
             "post_process_selected_prompt_id",
             "mute_while_recording",
             "append_trailing_space",
+            "return_to_dictation_app",
             "app_language",
             "theme",
             "experimental_enabled",
@@ -180,6 +191,7 @@
                   "post_process_selected_prompt_id",
                   "mute_while_recording",
                   "append_trailing_space",
+                  "return_to_dictation_app",
                   "app_language",
                   "theme",
                   "experimental_enabled",
@@ -216,6 +228,49 @@
           },
           "type": "array"
         },
+        "items": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "code": {
+                "enum": [
+                  "unsupported_platform",
+                  "shortcut_session_busy",
+                  "instance_required",
+                  "last_shortcut",
+                  "alternatives_unsupported",
+                  "registration_refused",
+                  "invalid_shortcut"
+                ]
+              },
+              "index": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "index",
+              "code",
+              "message"
+            ],
+            "type": "object"
+          },
+          "maxItems": 100,
+          "type": "array"
+        },
+        "kind": {
+          "enum": [
+            "duplicate",
+            "modifier_overlap"
+          ]
+        },
+        "limit": {
+          "minimum": 1,
+          "type": "integer"
+        },
         "offset": {
           "minimum": 0,
           "type": "integer"
@@ -224,6 +279,23 @@
           "enum": [
             "unknown",
             "committed"
+          ]
+        },
+        "owning_action": {
+          "type": "string"
+        },
+        "owning_shortcut": {
+          "type": "string"
+        },
+        "reason": {
+          "enum": [
+            "unsupported_platform",
+            "shortcut_session_busy",
+            "instance_required",
+            "last_shortcut",
+            "alternatives_unsupported",
+            "registration_refused",
+            "invalid_shortcut"
           ]
         }
       },
@@ -706,6 +778,9 @@
         "reliable_paste": {
           "type": "boolean"
         },
+        "return_to_dictation_app": {
+          "type": "boolean"
+        },
         "selected_channel": {
           "maximum": 65535,
           "minimum": 0,
@@ -866,6 +941,7 @@
         "post_process_selected_prompt_id",
         "mute_while_recording",
         "append_trailing_space",
+        "return_to_dictation_app",
         "app_language",
         "theme",
         "experimental_enabled",
@@ -1446,6 +1522,17 @@
     {
       "allowed_values": [],
       "key": "append_trailing_space",
+      "nullable": false,
+      "owner_domain": "output",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [],
+      "key": "return_to_dictation_app",
       "nullable": false,
       "owner_domain": "output",
       "range": null,

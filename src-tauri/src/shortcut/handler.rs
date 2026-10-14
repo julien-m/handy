@@ -7,6 +7,7 @@ use log::warn;
 use std::sync::Arc;
 use tauri::{AppHandle, Manager};
 
+use super::identity::ShortcutRegistration;
 use crate::actions::ACTION_MAP;
 use crate::managers::audio::AudioRecordingManager;
 use crate::settings::get_settings;
@@ -23,33 +24,28 @@ use crate::TranscriptionCoordinator;
 ///
 /// # Arguments
 /// * `app` - The Tauri app handle
-/// * `binding_id` - The ID of the binding (e.g., "transcribe", "cancel")
+/// * `registration` - The action and the shortcut of that action that fired
 /// * `hotkey_string` - The string representation of the hotkey
 /// * `is_pressed` - Whether this is a key press (true) or release (false)
 pub fn handle_shortcut_event(
     app: &AppHandle,
-    binding_id: &str,
+    registration: &ShortcutRegistration,
     hotkey_string: &str,
     is_pressed: bool,
 ) {
-    let settings = get_settings(app);
+    let binding_id = registration.action_id.as_str();
 
     // Transcribe bindings are handled by the coordinator.
     if is_transcribe_binding(binding_id) {
-        if let Some(coordinator) = app.try_state::<TranscriptionCoordinator>() {
-            coordinator.send_input(
-                binding_id,
-                hotkey_string,
-                is_pressed,
-                settings.shortcut_activation,
-                std::time::Duration::from_millis(settings.hold_threshold_ms),
-            );
-        } else {
-            warn!("TranscriptionCoordinator is not initialized");
-        }
+        send_to_coordinator(app, registration, hotkey_string, is_pressed);
         return;
     }
 
+    run_action(app, binding_id, hotkey_string, is_pressed);
+}
+
+/// Runs a non-transcribe action from ACTION_MAP for a shortcut edge.
+fn run_action(app: &AppHandle, binding_id: &str, hotkey_string: &str, is_pressed: bool) {
     let Some(action) = ACTION_MAP.get(binding_id) else {
         warn!(
             "No action defined in ACTION_MAP for shortcut ID '{}'. Shortcut: '{}', Pressed: {}",
@@ -73,4 +69,27 @@ pub fn handle_shortcut_event(
     } else {
         action.stop(app, binding_id, hotkey_string);
     }
+}
+
+/// Forwards a transcribe shortcut edge, with its shortcut identity, to the
+/// coordinator using the global activation mode and hold threshold.
+fn send_to_coordinator(
+    app: &AppHandle,
+    registration: &ShortcutRegistration,
+    hotkey_string: &str,
+    is_pressed: bool,
+) {
+    let Some(coordinator) = app.try_state::<TranscriptionCoordinator>() else {
+        warn!("TranscriptionCoordinator is not initialized");
+        return;
+    };
+    let settings = get_settings(app);
+    coordinator.send_input(
+        &registration.action_id,
+        &registration.shortcut_id,
+        hotkey_string,
+        is_pressed,
+        settings.shortcut_activation,
+        std::time::Duration::from_millis(settings.hold_threshold_ms),
+    );
 }

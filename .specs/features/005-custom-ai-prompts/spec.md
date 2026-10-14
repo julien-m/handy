@@ -4,7 +4,7 @@ title: Custom AI Prompts
 priority: P1
 status: Planned
 created: 2026-10-12
-updated: 2026-10-13
+updated: 2026-10-14
 ---
 
 # Feature Spec: Custom AI Prompts
@@ -151,8 +151,8 @@ Feature: Fallback to the initial transcript
   Scenario: Provider error
     Given the chosen prompt's provider returns an error
     When the dictation is processed
-    Then the initial transcript is inserted
-    And the indicator says AI processing failed and the original text was inserted
+    Then the initial transcript is used for insertion
+    And the indicator says the AI step failed and the original text was used for insertion
     And the history keeps the initial transcript and records the failure
   Scenario: Timeout
     Given the provider does not answer within 30 seconds
@@ -258,7 +258,7 @@ flowchart TD
 
 ### AC-005
 
-**Criterion:** When the AI step fails (provider or HTTP error, empty or whitespace-only result, provider not ready) or the whole step, including any internal retry or fallback request, exceeds 30 seconds, the initial transcript is inserted, the indicator states for at least 4 seconds that processing failed and the original was inserted, and the history keeps the initial transcript, the prompt name and the failure reason. Cancelling during processing inserts nothing; history behaves as today for cancelled dictations.
+**Criterion:** When the AI step fails (provider or HTTP error, empty or whitespace-only result, provider not ready) or the whole step, including any internal retry or fallback request, exceeds 30 seconds, the initial transcript is used for insertion, the indicator states for at least 4 seconds that the AI step failed and that the original text was used for insertion (it never states that the insertion succeeded: the insertion result is reported by 006, 007 and 010), and the history keeps the initial transcript, the prompt name and the failure reason. Cancelling during processing inserts nothing; history behaves as today for cancelled dictations.
 **Priority:** P1 | **Story:** Story 4
 
 ### AC-006
@@ -428,6 +428,9 @@ Feature: Commit a prompt
 - `[ASSUMED]` The indicator choice applies to the current dictation only; the default changes only in settings or the CLI.
 - Out of scope: scripts, launching applications, OCR and any other Spokenly action not listed in the Input.
 - Program context: specified in list order (001–010); the settings CLI foundation (008) ships first; shortcuts reuse the conflict checker of 004.
+
+- Decision `005-custom-ai-prompts:AC-005` / `fallback-notice-insertion-wording`: Decision 2026-10-14 (orchestrator, program review): when the AI step fails, the indicator states for at least 4 seconds that the AI step failed and that the original text was used for insertion. It never states that the insertion succeeded: the insertion result (attempted, verified, failed, recovery) belongs to 006, 007 and 010 and is reported by them. AC-005 and the Story 4 scenario are reworded accordingly; the history and cancellation rules are unchanged.
+<!-- livespec-clarification:{"requirement_id": "005-custom-ai-prompts:AC-005", "decision_key": "fallback-notice-insertion-wording", "evidence_hash": "4dfbe3403918eb2f60eb6d27a9bfdc05edaf353f03188422a88b66cd06a05897", "answer": "Decision 2026-10-14 (orchestrator, program review): when the AI step fails, the indicator states for at least 4 seconds that the AI step failed and that the original text was used for insertion. It never states that the insertion succeeded: the insertion result (attempted, verified, failed, recovery) belongs to 006, 007 and 010 and is reported by them. AC-005 and the Story 4 scenario are reworded accordingly; the history and cancellation rules are unchanged."} -->
 
 ## QE Analysis
 

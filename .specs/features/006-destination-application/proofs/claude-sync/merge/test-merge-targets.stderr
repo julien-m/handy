@@ -1,0 +1,6 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/006-destination-application/src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.52s
+     Running unittests src/lib.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/handy_app_lib-7f5ac070b7e42d2e)
+error: test failed, to rerun pass `--lib`

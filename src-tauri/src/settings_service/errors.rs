@@ -1,5 +1,6 @@
 //! Stable English errors with allowlisted details and no candidate-value diagnostics.
 
+pub use super::error_reason::{ErrorItem, ErrorReason, MAX_ERROR_ITEMS};
 use super::protocol::Revision;
 use serde::{Deserialize, Serialize};
 
@@ -74,6 +75,11 @@ pub enum ValidationReason {
     SmartPasteUnavailable,
     /// On macOS, smart paste replaces the beta reliable paste (feature 007).
     ReliablePasteReplaced,
+    /// The setting or operation needs a platform capability this build does not have.
+    UnsupportedPlatform,
+    /// A dictation session (recording, processing, a held or remembered shortcut) is running;
+    /// the shortcut registrations cannot change until it ends.
+    ShortcutSessionBusy,
 }
 impl ValidationReason {
     fn message(self) -> &'static str {
@@ -82,9 +88,7 @@ impl ValidationReason {
             Self::CanonicalValue => "Expected a canonical allowed value.",
             Self::OutOfRange => "Value is outside the allowed range.",
             Self::UiOnly => "This setting is changed in the settings UI.",
-            Self::ShortcutsDomain => {
-                "Use handy settings shortcuts; this domain is not available in this build."
-            }
+            Self::ShortcutsDomain => "Use handy settings shortcuts to change shortcuts.",
             Self::VocabularyDomain => {
                 "Use handy settings vocabulary; this domain is not available in this build."
             }
@@ -102,6 +106,8 @@ impl ValidationReason {
             Self::ReliablePasteReplaced => {
                 "On macOS, smart paste replaces the beta reliable paste."
             }
+            Self::UnsupportedPlatform => "This setting is not supported on this platform.",
+            Self::ShortcutSessionBusy => "A dictation is in progress; retry when it ends.",
         }
     }
 }
@@ -120,6 +126,32 @@ pub struct ErrorDetails {
     offset: Option<u64>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     issues: Vec<FieldIssue>,
+    /// Closed machine reason of the refusal (absent unless a constructor sets it).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    reason: Option<ErrorReason>,
+    /// Refused positions of a domain input, at most `MAX_ERROR_ITEMS`, sorted by index.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    items: Vec<ErrorItem>,
+    /// Shortcut details of a refused shortcut change (all absent otherwise).
+    #[serde(flatten)]
+    shortcut: ShortcutDetails,
+}
+
+/// Allowlisted details of a refused shortcut change (see `ErrorDetails`): the action concerned,
+/// the owner of a conflicting stored shortcut and the kind of conflict, or the per-action limit.
+/// Only known action ids and stored shortcut texts enter them.
+#[derive(Clone, Debug, Default, PartialEq, Serialize)]
+pub struct ShortcutDetails {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub action_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub owning_action: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub owning_shortcut: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub kind: Option<&'static str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<u32>,
 }
 
 /// No input value, internal serde error or arbitrary key enters the public error.
@@ -128,7 +160,8 @@ pub struct ErrorDetails {
 pub struct SettingsError {
     code: SettingsErrorCode,
     message: &'static str,
-    details: ErrorDetails,
+    /// Boxed so a `Result<_, SettingsError>` stays small on every settings path.
+    details: Box<ErrorDetails>,
     /// Typed reason for the settings UI; the wire form keeps only its English message in `issues`.
     #[serde(skip)]
     reason: Option<ValidationReason>,
@@ -159,7 +192,7 @@ impl SettingsError {
         Self {
             code,
             message,
-            details: ErrorDetails::default(),
+            details: Box::default(),
             reason: None,
         }
     }
@@ -209,6 +242,70 @@ impl SettingsError {
         error.details.outcome = Some(Outcome::Committed);
         error.details.current_revision = Some(revision);
         error.details.field = super::descriptor::descriptor(key).map(|entry| entry.key);
+        error
+    }
+    // @spec FR-006: Unsupported-platform refusal — .specs/features/006-destination-application/spec.md#fr-006
+    /// Setting `key` (or the operation, without a key) needs a platform capability this build
+    /// lacks: `validation_failed` (exit 2) with `details.reason = "unsupported_platform"`, decided
+    /// by the pure validator so that offline and routed calls refuse identically.
+    pub fn unsupported_platform(key: Option<&str>) -> Self {
+        let error = match key {
+            Some(key) => Self::validation(key, ValidationReason::UnsupportedPlatform),
+            None => {
+                let mut error = Self::new(SettingsErrorCode::ValidationFailed);
+                error.reason = Some(ValidationReason::UnsupportedPlatform);
+                error
+            }
+        };
+        error.with_reason(ErrorReason::UnsupportedPlatform)
+    }
+    /// Attach the closed machine reason `details.reason`.
+    pub fn with_reason(mut self, reason: ErrorReason) -> Self {
+        self.details.reason = Some(reason);
+        self
+    }
+    /// Attach refused input positions as `details.items`: sorted by index, the first
+    /// `MAX_ERROR_ITEMS` kept (lossy on purpose: the envelope stays bounded).
+    pub fn with_items(mut self, items: impl IntoIterator<Item = ErrorItem>) -> Self {
+        let mut items = items.into_iter().collect::<Vec<_>>();
+        items.sort_by_key(ErrorItem::index);
+        items.truncate(MAX_ERROR_ITEMS);
+        self.details.items = items;
+        self
+    }
+    /// Closed machine reason of `details.reason`, if any.
+    pub fn detail_reason(&self) -> Option<ErrorReason> {
+        self.details.reason
+    }
+    /// Refused input positions of `details.items`.
+    pub fn items(&self) -> &[ErrorItem] {
+        &self.details.items
+    }
+    /// A dictation session owns the shortcuts: the change of `key` was refused before anything
+    /// was registered or written.
+    pub fn session_busy(key: &str) -> Self {
+        let mut error = Self::live_state_refused(key);
+        error.reason = Some(ValidationReason::ShortcutSessionBusy);
+        error.with_reason(ErrorReason::ShortcutSessionBusy)
+    }
+    /// A live-only change was asked without a running instance: nothing was written.
+    pub fn instance_required() -> Self {
+        Self::shortcut(
+            SettingsErrorCode::Unavailable,
+            Some(ErrorReason::InstanceRequired),
+            ShortcutDetails::default(),
+        )
+    }
+    /// A refused shortcut change: `code` with the machine `reason` (if any) and the allowlisted
+    /// shortcut `details`.
+    pub fn shortcut(
+        code: SettingsErrorCode,
+        reason: Option<ErrorReason>,
+        details: ShortcutDetails,
+    ) -> Self {
+        let mut error = Self::new(code);
+        error.details.reason = reason;
+        error.details.shortcut = details;
         error
     }
     /// Fixed English message of this error.

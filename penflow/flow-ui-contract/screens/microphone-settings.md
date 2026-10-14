@@ -11,233 +11,337 @@ Generator: `penflow.flow-docs/1`
     {
       "binding_ref": {
         "access": "write",
-        "entity": "microphone",
+        "entity": "microphone_priority",
         "field": "new_choice"
       },
       "event": "change",
-      "id": "choose-microphone",
+      "id": "microphone-settings.add",
       "kind": "state_change",
-      "node": "microphone-choose",
+      "node": "microphone-settings.add",
       "trigger": "change"
     },
     {
       "event": "submit",
-      "guard": "valid-choice",
-      "id": "move-down",
+      "guard": "control-enabled",
+      "id": "microphone-settings.choice.move-down",
       "kind": "state_change",
-      "node": "microphone-move-down",
-      "success_transition": "move-down-complete",
+      "node": "microphone-settings.choice.move-down",
+      "success_transition": "microphone-settings.choice.move-down.reordered",
       "trigger": "click"
     },
     {
       "event": "submit",
-      "guard": "valid-choice",
-      "id": "move-up",
+      "guard": "control-enabled",
+      "id": "microphone-settings.choice.move-up",
       "kind": "state_change",
-      "node": "microphone-move-up",
-      "success_transition": "move-up-complete",
+      "node": "microphone-settings.choice.move-up",
+      "success_transition": "microphone-settings.choice.move-up.reordered",
       "trigger": "click"
     },
     {
       "event": "submit",
-      "guard": "valid-choice",
-      "id": "remove",
+      "guard": "control-enabled",
+      "id": "microphone-settings.choice.remove",
       "kind": "state_change",
-      "node": "microphone-remove",
-      "success_transition": "remove-complete",
+      "node": "microphone-settings.choice.remove",
+      "success_transition": "microphone-settings.choice.remove.removed",
+      "trigger": "click"
+    },
+    {
+      "binding_ref": {
+        "access": "write",
+        "entity": "microphone_priority",
+        "field": "clamshell"
+      },
+      "event": "change",
+      "id": "microphone-settings.clamshell.select",
+      "kind": "state_change",
+      "node": "microphone-settings.clamshell.select",
+      "trigger": "change"
+    },
+    {
+      "event": "submit",
+      "guard": "draft-dirty",
+      "id": "microphone-settings.discard",
+      "kind": "state_change",
+      "node": "microphone-settings.discard",
+      "success_transition": "microphone-settings.discard.discarded",
       "trigger": "click"
     },
     {
       "event": "submit",
-      "guard": "valid-choice",
-      "id": "save",
+      "guard": "control-enabled",
+      "id": "microphone-settings.refresh",
       "kind": "state_change",
-      "node": "microphone-save",
-      "success_transition": "save-complete",
+      "node": "microphone-settings.refresh",
+      "success_transition": "microphone-settings.refresh.refreshing",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "draft-valid",
+      "id": "microphone-settings.save",
+      "kind": "state_change",
+      "node": "microphone-settings.save",
+      "success_transition": "microphone-settings.save.saved",
       "trigger": "click"
     }
   ],
   "nodes": [
     {
-      "action": "choose-microphone",
-      "binding": "microphone.new_choice",
-      "id": "microphone-choose",
-      "role": "select",
-      "screen_id": "microphone-settings",
-      "semantic_id": "microphone-choose",
-      "test_id": "microphone-choose",
-      "text": "Add microphone"
-    },
-    {
-      "id": "microphone-clamshell",
-      "role": "text",
-      "screen_id": "microphone-settings",
-      "semantic_id": "microphone-clamshell",
-      "test_id": "microphone-clamshell",
-      "text": "Closed-lid override is tried first. Your configured order remains unchanged."
-    },
-    {
       "children": [
-        "microphone-choose",
-        "microphone-move-up",
-        "microphone-move-down",
-        "microphone-remove",
-        "microphone-save"
-      ],
-      "id": "microphone-controls",
-      "role": "container",
-      "screen_id": "microphone-settings",
-      "semantic_id": "microphone-controls",
-      "test_id": "microphone-controls"
-    },
-    {
-      "id": "microphone-description",
-      "role": "text",
-      "screen_id": "microphone-settings",
-      "semantic_id": "microphone-description",
-      "test_id": "microphone-description",
-      "text": "Handy uses the first available microphone. Unavailable choices stay in this list."
-    },
-    {
-      "binding": "microphone.effective",
-      "id": "microphone-effective",
-      "role": "text",
-      "screen_id": "microphone-settings",
-      "semantic_id": "microphone-effective",
-      "test_id": "microphone-effective",
-      "text": "Next input: MacBook microphone · Fallback from unavailable first choice"
-    },
-    {
-      "children": [
-        "microphone-effective",
-        "microphone-clamshell"
-      ],
-      "id": "microphone-effective-section",
-      "role": "container",
-      "screen_id": "microphone-settings",
-      "semantic_id": "microphone-effective-section",
-      "test_id": "microphone-effective-section"
-    },
-    {
-      "id": "microphone-example-first",
-      "role": "text",
-      "screen_id": "microphone-settings",
-      "semantic_id": "microphone-example-first",
-      "test_id": "microphone-example-first",
-      "text": "1  USB headset · Unavailable — sample data"
-    },
-    {
-      "id": "microphone-example-second",
-      "role": "text",
-      "screen_id": "microphone-settings",
-      "semantic_id": "microphone-example-second",
-      "test_id": "microphone-example-second",
-      "text": "2  MacBook microphone · Available — sample data"
-    },
-    {
-      "children": [
-        "microphone-title",
-        "microphone-description"
-      ],
-      "id": "microphone-header",
-      "role": "container",
-      "screen_id": "microphone-settings",
-      "semantic_id": "microphone-header",
-      "test_id": "microphone-header"
-    },
-    {
-      "action": "move-down",
-      "id": "microphone-move-down",
-      "role": "button",
-      "screen_id": "microphone-settings",
-      "semantic_id": "microphone-move-down",
-      "test_id": "microphone-move-down",
-      "text": "Move down"
-    },
-    {
-      "action": "move-up",
-      "id": "microphone-move-up",
-      "role": "button",
-      "screen_id": "microphone-settings",
-      "semantic_id": "microphone-move-up",
-      "test_id": "microphone-move-up",
-      "text": "Move up"
-    },
-    {
-      "id": "microphone-priority-label",
-      "role": "text",
-      "screen_id": "microphone-settings",
-      "semantic_id": "microphone-priority-label",
-      "test_id": "microphone-priority-label",
-      "text": "Configured order"
-    },
-    {
-      "binding": "microphone.priority",
-      "children": [
-        "microphone-example-first",
-        "microphone-example-second"
-      ],
-      "id": "microphone-priority-list",
-      "repeat_model": {
-        "collection": "microphone.priority",
-        "instance_id_template": "microphone-choice-{identity}",
-        "item_key": "identity",
-        "item_model": "microphone-choice"
-      },
-      "role": "list",
-      "screen_id": "microphone-settings",
-      "semantic_id": "microphone-priority-list",
-      "test_id": "microphone-priority-list"
-    },
-    {
-      "children": [
-        "microphone-priority-label",
-        "microphone-priority-list"
-      ],
-      "id": "microphone-priority-section",
-      "role": "container",
-      "screen_id": "microphone-settings",
-      "semantic_id": "microphone-priority-section",
-      "test_id": "microphone-priority-section"
-    },
-    {
-      "action": "remove",
-      "id": "microphone-remove",
-      "role": "button",
-      "screen_id": "microphone-settings",
-      "semantic_id": "microphone-remove",
-      "test_id": "microphone-remove",
-      "text": "Remove"
-    },
-    {
-      "action": "save",
-      "id": "microphone-save",
-      "role": "button",
-      "screen_id": "microphone-settings",
-      "semantic_id": "microphone-save",
-      "test_id": "microphone-save",
-      "text": "Save"
-    },
-    {
-      "children": [
-        "microphone-header",
-        "microphone-priority-section",
-        "microphone-effective-section",
-        "microphone-controls"
+        "microphone-settings.sound",
+        "microphone-settings.draft"
       ],
       "id": "microphone-settings",
       "role": "screen",
       "screen_id": "microphone-settings",
       "semantic_id": "microphone-settings",
-      "test_id": "microphone-settings"
+      "test_id": "microphone-settings-screen"
     },
     {
-      "id": "microphone-title",
+      "action": "microphone-settings.add",
+      "binding": "microphone_priority.new_choice",
+      "id": "microphone-settings.add",
+      "role": "select",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.add",
+      "test_id": "microphone-settings-add",
+      "text": "Add microphone…"
+    },
+    {
+      "id": "microphone-settings.checked",
       "role": "text",
       "screen_id": "microphone-settings",
-      "semantic_id": "microphone-title",
-      "test_id": "microphone-title",
+      "semantic_id": "microphone-settings.checked",
+      "test_id": "microphone-settings-checked",
+      "text": "Checked 3 s ago"
+    },
+    {
+      "children": [
+        "microphone-settings.choice.rank",
+        "microphone-settings.choice.name",
+        "microphone-settings.choice.status",
+        "microphone-settings.choice.move-up",
+        "microphone-settings.choice.move-down",
+        "microphone-settings.choice.remove"
+      ],
+      "id": "microphone-settings.choice",
+      "role": "container",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.choice",
+      "test_id": "microphone-settings-choice"
+    },
+    {
+      "action": "microphone-settings.choice.move-down",
+      "id": "microphone-settings.choice.move-down",
+      "role": "button",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.choice.move-down",
+      "test_id": "microphone-settings-choice-move-down"
+    },
+    {
+      "action": "microphone-settings.choice.move-up",
+      "id": "microphone-settings.choice.move-up",
+      "role": "button",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.choice.move-up",
+      "test_id": "microphone-settings-choice-move-up"
+    },
+    {
+      "id": "microphone-settings.choice.name",
+      "role": "text",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.choice.name",
+      "test_id": "microphone-settings-choice-name",
+      "text": "USB headset"
+    },
+    {
+      "id": "microphone-settings.choice.rank",
+      "role": "text",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.choice.rank",
+      "test_id": "microphone-settings-choice-rank",
+      "text": "1"
+    },
+    {
+      "action": "microphone-settings.choice.remove",
+      "id": "microphone-settings.choice.remove",
+      "role": "button",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.choice.remove",
+      "test_id": "microphone-settings-choice-remove"
+    },
+    {
+      "id": "microphone-settings.choice.status",
+      "role": "text",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.choice.status",
+      "test_id": "microphone-settings-choice-status",
+      "text": "Unavailable"
+    },
+    {
+      "children": [
+        "microphone-settings.choice"
+      ],
+      "id": "microphone-settings.choices",
+      "repeat_model": {
+        "collection": "microphone_priority.choices",
+        "instance_id_template": "microphone-{name}",
+        "item_key": "name",
+        "item_model": "microphone_choice"
+      },
+      "role": "list",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.choices",
+      "test_id": "microphone-settings-choices"
+    },
+    {
+      "children": [
+        "microphone-settings.clamshell.title",
+        "microphone-settings.clamshell.select"
+      ],
+      "id": "microphone-settings.clamshell",
+      "role": "container",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.clamshell",
+      "test_id": "microphone-settings-clamshell"
+    },
+    {
+      "action": "microphone-settings.clamshell.select",
+      "binding": "microphone_priority.clamshell",
+      "id": "microphone-settings.clamshell.select",
+      "role": "select",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.clamshell.select",
+      "test_id": "microphone-settings-clamshell-select",
+      "text": "Studio Display Microphone"
+    },
+    {
+      "id": "microphone-settings.clamshell.title",
+      "role": "text",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.clamshell.title",
+      "test_id": "microphone-settings-clamshell-title",
+      "text": "Closed-lid microphone"
+    },
+    {
+      "action": "microphone-settings.discard",
+      "id": "microphone-settings.discard",
+      "role": "button",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.discard",
+      "test_id": "microphone-settings-discard",
+      "text": "Discard"
+    },
+    {
+      "children": [
+        "microphone-settings.draft.note",
+        "microphone-settings.discard",
+        "microphone-settings.save"
+      ],
+      "id": "microphone-settings.draft",
+      "role": "container",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.draft",
+      "test_id": "microphone-settings-draft"
+    },
+    {
+      "id": "microphone-settings.draft.note",
+      "role": "text",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.draft.note",
+      "test_id": "microphone-settings-draft-note",
+      "text": "Unsaved changes. The next recording uses the saved order until you save."
+    },
+    {
+      "children": [
+        "microphone-settings.in-use.title",
+        "microphone-settings.in-use.device",
+        "microphone-settings.in-use.reason"
+      ],
+      "id": "microphone-settings.in-use",
+      "role": "container",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.in-use",
+      "test_id": "microphone-settings-in-use"
+    },
+    {
+      "id": "microphone-settings.in-use.device",
+      "role": "text",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.in-use.device",
+      "test_id": "microphone-settings-in-use-device",
+      "text": "MacBook Pro Microphone"
+    },
+    {
+      "id": "microphone-settings.in-use.reason",
+      "role": "text",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.in-use.reason",
+      "test_id": "microphone-settings-in-use-reason",
+      "text": "Fallback · USB headset unavailable"
+    },
+    {
+      "id": "microphone-settings.in-use.title",
+      "role": "text",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.in-use.title",
+      "test_id": "microphone-settings-in-use-title",
+      "text": "In use now"
+    },
+    {
+      "children": [
+        "microphone-settings.priority.title",
+        "microphone-settings.choices",
+        "microphone-settings.add",
+        "microphone-settings.refresh",
+        "microphone-settings.checked"
+      ],
+      "id": "microphone-settings.priority",
+      "role": "container",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.priority",
+      "test_id": "microphone-settings-priority"
+    },
+    {
+      "id": "microphone-settings.priority.title",
+      "role": "text",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.priority.title",
+      "test_id": "microphone-settings-priority-title",
       "text": "Microphone priority"
+    },
+    {
+      "action": "microphone-settings.refresh",
+      "id": "microphone-settings.refresh",
+      "role": "button",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.refresh",
+      "test_id": "microphone-settings-refresh",
+      "text": "Refresh availability"
+    },
+    {
+      "action": "microphone-settings.save",
+      "id": "microphone-settings.save",
+      "role": "button",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.save",
+      "test_id": "microphone-settings-save",
+      "text": "Save"
+    },
+    {
+      "children": [
+        "microphone-settings.priority",
+        "microphone-settings.in-use",
+        "microphone-settings.clamshell"
+      ],
+      "id": "microphone-settings.sound",
+      "role": "container",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.sound",
+      "test_id": "microphone-settings-sound",
+      "text": "Sound"
     }
   ],
   "relations": [],
@@ -247,32 +351,32 @@ Generator: `penflow.flow-docs/1`
     "root_node": "microphone-settings",
     "states": [
       {
-        "id": "editing"
+        "id": "default"
       },
       {
-        "id": "saving"
+        "id": "discarded"
+      },
+      {
+        "id": "refreshing"
+      },
+      {
+        "id": "removed"
+      },
+      {
+        "id": "reordered"
       },
       {
         "id": "saved"
       },
       {
-        "id": "error"
-      },
-      {
-        "id": "move-up-complete"
-      },
-      {
-        "id": "move-down-complete"
-      },
-      {
-        "id": "remove-complete"
+        "id": "saving"
       }
     ],
-    "surface": "web",
+    "surface": "desktop",
     "title": "Microphone priority",
     "viewport": {
-      "height": 680,
-      "width": 900
+      "height": 570,
+      "width": 680
     }
   }
 }

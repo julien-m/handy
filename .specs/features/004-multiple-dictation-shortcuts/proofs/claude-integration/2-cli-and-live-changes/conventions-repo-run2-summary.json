@@ -1,0 +1,28 @@
+{
+  "command": "livespec conventions verify --feature repo --json",
+  "exit": 0,
+  "run_id": "20261014T031830Z",
+  "verdict": "PASS",
+  "blockers": 0,
+  "violations": 490,
+  "error_violations": [],
+  "baseline": {
+    "baselined_count": 654,
+    "new_count": 0,
+    "path": ".specs/conventions/baseline.json",
+    "resolved_count": 3528,
+    "sha256": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe"
+  },
+  "receipt_path": ".specs/conventions/runs/20261014T031830Z/receipt.json",
+  "receipt_sha256": "4a37d1c60a7e4ded925b16716db01d74f8a8232631cb4c403a76977b44d194cd",
+  "stdout_bytes": 2065826,
+  "stdout_sha256": "77cda64a17a0483ec126cd5f3ad9a79a8bb94da9e5ba3cf2364431ca5f1ffddf",
+  "stderr": [
+    "livespec-shim-notice: dev mode executes the LiveSpec checkout /Users/julienm/projects/livespec"
+  ],
+  "run_directory": ".specs/conventions/runs/20261014T031830Z",
+  "run_files": [
+    "receipt.json"
+  ],
+  "note": "Second run (PASS) before the last fixes of this commit (doc placement on commands, split CLI test); superseded by conventions-repo-summary.json. Run directory moved to the Trash."
+}

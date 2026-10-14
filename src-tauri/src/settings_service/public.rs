@@ -98,6 +98,7 @@ struct PublicAdvanced {
     post_process_selected_prompt_id: Option<String>,
     mute_while_recording: bool,
     append_trailing_space: bool,
+    return_to_dictation_app: bool,
     app_language: String,
     theme: Theme,
     experimental_enabled: bool,
@@ -127,6 +128,7 @@ impl PublicAdvanced {
             post_process_selected_prompt_id: settings.post_process_selected_prompt_id.clone(),
             mute_while_recording: settings.mute_while_recording,
             append_trailing_space: settings.append_trailing_space,
+            return_to_dictation_app: settings.return_to_dictation_app,
             app_language: settings.app_language.clone(),
             theme: settings.theme,
             experimental_enabled: settings.experimental_enabled,
@@ -272,6 +274,10 @@ struct PublicBinding {
     description: String,
     default_binding: String,
     current_binding: String,
+    /// Alternative shortcuts after `current_binding` (feature 004), omitted when there is none,
+    /// as in the store.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    additional_bindings: Vec<String>,
 }
 impl From<&ShortcutBinding> for PublicBinding {
     fn from(value: &ShortcutBinding) -> Self {
@@ -281,6 +287,7 @@ impl From<&ShortcutBinding> for PublicBinding {
             description: value.description.clone(),
             default_binding: value.default_binding.clone(),
             current_binding: value.current_binding.clone(),
+            additional_bindings: value.additional_bindings.clone(),
         }
     }
 }

@@ -202,6 +202,7 @@ impl LiveSettings {
         let context = ValidationContext {
             prompt_ids: &prompt_ids,
             updates_allowed: !crate::settings::update_checks_forced_disabled(),
+            platform: super::platform_capability::PlatformCapabilities::current(),
         };
         validate_ui(key, value, &context)
     }

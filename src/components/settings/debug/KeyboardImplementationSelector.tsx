@@ -21,7 +21,8 @@ export const KeyboardImplementationSelector: React.FC<
   KeyboardImplementationSelectorProps
 > = ({ descriptionMode = "tooltip", grouped = false }) => {
   const { t } = useTranslation();
-  const { getSetting, isUpdating, refreshSettings } = useSettings();
+  const { getSetting, isUpdating, refreshSettings, clearRefusedShortcuts } =
+    useSettings();
   const currentImplementation =
     getSetting("keyboard_implementation") ?? "tauri";
 
@@ -41,11 +42,17 @@ export const KeyboardImplementationSelector: React.FC<
         return;
       }
 
-      // If any bindings were reset due to incompatibility, notify the user
+      // If any shortcuts were reset or removed due to incompatibility,
+      // notify the user
       if (result.data.reset_bindings.length > 0) {
         toast.warning(t("settings.debug.keyboardImplementation.bindingsReset"));
       }
+      // Shortcuts that now conflict are kept and flagged in the lists
+      if (result.data.conflicts.length > 0) {
+        toast.warning(t("settings.debug.keyboardImplementation.conflictsKept"));
+      }
 
+      clearRefusedShortcuts();
       await refreshSettings();
     } catch (error) {
       console.error("Failed to update keyboard implementation:", error);

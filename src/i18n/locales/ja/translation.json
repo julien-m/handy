@@ -205,6 +205,22 @@
           "restore": "元のショートカットを復元できませんでした",
           "set": "ショートカットを設定できませんでした: {{error}}",
           "reset": "ショートカットを元の値にリセットできませんでした"
+        },
+        "list": {
+          "add": "ショートカットを追加",
+          "addLimit": "1つの操作につき最大{{limit}}個のショートカット",
+          "change": "クリックして新しい組み合わせを記録",
+          "remove": "このショートカットを削除",
+          "removeLast": "各操作には少なくとも1つのショートカットが必要です",
+          "reset": "デフォルトのショートカットに戻す",
+          "errors": {
+            "conflict": "{{action}}で使用中です（{{shortcut}}）",
+            "overlap": "{{action}}も起動してしまいます（{{shortcut}}）",
+            "invalid": "無効なショートカット: {{error}}",
+            "registration": "システムがこのショートカットを拒否しました: {{error}}",
+            "generic": "ショートカットを保存できませんでした",
+            "conflictsUnavailable": "ショートカットの競合を確認できませんでした"
+          }
         }
       },
       "language": {
@@ -477,6 +493,7 @@
       "deleteError": "エントリーの削除に失敗しました。もう一度お試しください。",
       "retranscribe": "再文字起こし",
       "retranscribeError": "再文字起こしに失敗しました。もう一度お試しください。",
+      "noAudio": "このエントリには音声録音が保存されていないため、再文字起こしできません。",
       "transcribing": "文字起こし中…",
       "transcriptionFailed": "文字起こしに失敗しました。リトライアイコンを使用して再文字起こしできます。"
     },
@@ -539,7 +556,8 @@
       },
       "postProcessingToggle": {
         "label": "後処理",
-        "description": "文字起こし後の AI によるテキスト改善を有効化"
+        "description": "文字起こし後の AI によるテキスト改善を有効化",
+        "shortcutRefused": "後処理はオンですが、システムがショートカット {{shortcut}} を拒否しました。後処理の設定で変更してください。"
       },
       "muteWhileRecording": {
         "label": "録音中にミュート",
@@ -552,7 +570,8 @@
       "keyboardImplementation": {
         "title": "キーボード実装",
         "description": "キーボードショートカットのバックエンドを選択してください。",
-        "bindingsReset": "キーボードショートカットに互換性がなかったため、デフォルトにリセットされました"
+        "bindingsReset": "一部のキーボードショートカットに互換性がなかったため、デフォルトにリセットまたは削除されました",
+        "conflictsKept": "一部のショートカットが別のアクションと競合しています。ショートカットは保持され、ショートカット設定で示されています。"
       },
       "paths": {
         "appData": "アプリデータ:",
@@ -692,6 +711,7 @@
     "modelLoadFailedUnknown": "不明なモデル",
     "pasteFailedTitle": "テキストの貼り付けに失敗しました",
     "pasteFailed": "アクティブなアプリにテキストを貼り付けられませんでした。",
+    "pasteFailedNotSaved": "テキストを貼り付けることも、履歴に保存することもできませんでした。",
     "transcriptionFailedTitle": "文字起こしに失敗しました",
     "settings": {
       "committedNotApplied": "設定は保存されましたが、すぐには適用できませんでした。",
@@ -700,9 +720,11 @@
       "validationFailed": "この値はこの設定では使用できません。",
       "revisionConflict": "設定が別の場所で変更されました。再読み込みしてもう一度お試しください。",
       "unavailable": "この設定は現在変更できません。後でもう一度お試しください。",
+      "shortcutSessionBusy": "音声入力中です。終了してからもう一度お試しください。",
       "persistenceFailed": "設定を保存できませんでした。",
       "generic": "設定を変更できませんでした。",
-      "readOnly": "このセッションでは設定は読み取り専用です。設定ファイルに安全に書き込めないため、変更は保存されません。"
+      "readOnly": "このセッションでは設定は読み取り専用です。設定ファイルに安全に書き込めないため、変更は保存されません。",
+      "unsupportedPlatform": "この設定はこのシステムでは利用できません。"
     }
   },
   "appLanguage": {

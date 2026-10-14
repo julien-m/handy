@@ -185,6 +185,22 @@
           "restore": "Misslyckades med att återställa ursprungligt kortkommando",
           "set": "Misslyckades med att ställa in kortkommando: {{error}}",
           "reset": "Misslyckades med att återställa kortkommando till ursprungsvärdet"
+        },
+        "list": {
+          "add": "Lägg till kortkommando",
+          "addLimit": "Upp till {{limit}} kortkommandon per åtgärd",
+          "change": "Klicka för att spela in en ny kombination",
+          "remove": "Ta bort detta kortkommando",
+          "removeLast": "Varje åtgärd behåller minst ett kortkommando",
+          "reset": "Återställ standardkortkommandot",
+          "errors": {
+            "conflict": "Används redan av {{action}} ({{shortcut}})",
+            "overlap": "Skulle även utlösa {{action}} ({{shortcut}})",
+            "invalid": "Ogiltigt kortkommando: {{error}}",
+            "registration": "Systemet avvisade detta kortkommando: {{error}}",
+            "generic": "Kortkommandot kunde inte sparas",
+            "conflictsUnavailable": "Konflikter mellan kortkommandon kunde inte kontrolleras"
+          }
         }
       },
       "language": {
@@ -477,6 +493,7 @@
       "deleteError": "Misslyckades med att ta bort post. Försök igen.",
       "retranscribe": "Transkribera igen",
       "retranscribeError": "Misslyckades med att transkribera igen. Försök igen.",
+      "noAudio": "Ingen ljudinspelning sparades för den här posten, så den kan inte transkriberas igen.",
       "transcribing": "Transkriberar...",
       "transcriptionFailed": "Transkribering misslyckades. Du kan transkribera igen med hjälp av ikonen för nytt försök."
     },
@@ -539,7 +556,8 @@
       },
       "postProcessingToggle": {
         "label": "Efterbearbetning",
-        "description": "Aktivera AI-driven textförfining efter transkription"
+        "description": "Aktivera AI-driven textförfining efter transkription",
+        "shortcutRefused": "Efterbearbetning är på, men systemet avvisade kortkommandot {{shortcut}}. Ändra det i inställningarna för efterbearbetning."
       },
       "muteWhileRecording": {
         "label": "Ljudlös under inspelning",
@@ -552,7 +570,8 @@
       "keyboardImplementation": {
         "title": "Tangentbordsimplementering",
         "description": "Välj tangentbordsgenvägens implementation.",
-        "bindingsReset": "Kortkommandona var inkompatibla och återställdes till standardvärden"
+        "bindingsReset": "Vissa kortkommandon var inkompatibla och återställdes till standardvärdet eller togs bort",
+        "conflictsKept": "Vissa kortkommandon krockar nu med en annan åtgärd. De har behållits och är markerade i inställningarna för kortkommandon."
       },
       "paths": {
         "appData": "Appdata:",
@@ -692,6 +711,7 @@
     "noInputDevice": "Ingen ljudenhet hittades. Anslut en mikrofon eller ett headset och försök igen.",
     "pasteFailedTitle": "Det gick inte att klistra in texten",
     "pasteFailed": "Texten kunde inte klistras in i det aktiva programmet.",
+    "pasteFailedNotSaved": "Texten kunde varken klistras in eller sparas i historiken.",
     "transcriptionFailedTitle": "Transkriptionen misslyckades",
     "settings": {
       "committedNotApplied": "Inställningen sparades men kunde inte tillämpas direkt.",
@@ -700,9 +720,11 @@
       "validationFailed": "Värdet accepteras inte för den här inställningen.",
       "revisionConflict": "Inställningarna ändrades någon annanstans. Ladda om och försök igen.",
       "unavailable": "Den här inställningen kan inte ändras just nu. Försök igen senare.",
+      "shortcutSessionBusy": "En diktering pågår. Försök igen när den är klar.",
       "persistenceFailed": "Inställningarna kunde inte sparas.",
       "generic": "Inställningen kunde inte ändras.",
-      "readOnly": "Inställningarna är skrivskyddade under den här sessionen: inställningsfilen kan inte skrivas säkert, så ändringar sparas inte."
+      "readOnly": "Inställningarna är skrivskyddade under den här sessionen: inställningsfilen kan inte skrivas säkert, så ändringar sparas inte.",
+      "unsupportedPlatform": "Den här inställningen är inte tillgänglig på det här systemet."
     }
   },
   "appLanguage": {

@@ -1,17 +1,16 @@
 {
   "schema_version": "1",
   "policy_version": "078.1",
-  "context_hash": "2f3b84e6ec5d47cbce3729acbb23119001551dc4e5ad63e5642c3dd38a7c9ed9",
+  "context_hash": "63fa7e93868f3c420a64c219a89660f9af293b2244155f35b0ee23d70b9c0c6e",
   "source_hashes": {
-    ".specs/constitution.md": "2c1b8d9ab4024fb07ad588e883da39abeffe0f3db3bfc9afe3beb29df66659e9",
-    ".specs/features/003-recognition-vocabulary/plan.md": "7cd6167a9d8b1c554340aeae04c13886ca7ea4e8fd597cb29c13e701e82d44ca",
-    ".specs/features/003-recognition-vocabulary/spec.md": "d08a7fe07c7c497f20cae3eeb6066946351308104bacb8ccb6a4aecaf1029d8d",
-    ".specs/features/008-settings-cli/plan.md": "2a6499f2d69d1bffe3825c049295e0a91598c64787ce4e5237a38bf6cdc247e3",
+    ".specs/constitution.md": "f65acb99e00dfab5f8ce418aae1b5979265f2b2eb3c399666b09c4c2caf82067",
+    ".specs/features/003-recognition-vocabulary/plan.md": "be52411270655e64dc910d52b51ef74bb1ab2d9aec9730a38e250a7d71ae936f",
+    ".specs/features/003-recognition-vocabulary/spec.md": "e50af3db2155e80ec14219abbdee6a57e431de61338b08647598520ab125567f",
     ".specs/project.md": "cd935573446ed94fa43256de0a4d14b9474c4356fa66623f3c8c32a80572b699",
-    ".specs/stacks/_default.md": "2207c3a9a96bf3d08186d2f3f18e94db8ba120adaf2748b07fa61b609e906e4e",
+    ".specs/stacks/_default.md": "4df92d16eef38a57c8c2bf1fff8425852b86a41e86c6b7c16423ec166ddfc0f8",
     ".specs/testing/strategy.md": "bfe0dd480a9d3cf2575cba8407a984add02dcbdad2a17fcb4fc560def9058934"
   },
-  "reviewer_model": "gpt-6",
+  "reviewer_model": "claude-opus-5-5",
   "complete": true,
   "ready": true,
   "errors": [],
@@ -19,20 +18,28 @@
     {
       "requirement_id": "003-recognition-vocabulary:AC-001",
       "disposition": "covered",
-      "rationale": "The plan covers ordered add/remove/paste/preview UI, Rust-authoritative length/key/forbidden-input validation, ≤500 new candidate capacity, and atomic rejection. Direct duplicates fail; explicit bulk preview de-duplicates before the complete atomic write, preserving the spec scenario. NUL rejection is justified native safety. Grandfathered legacy data is explicitly separated from new validation.",
+      "rationale": "The plan implements a Rust-authoritative validator with 1-100 Unicode scalars on trimmed text, line-break and <, >, double-quote rejection, a trimmed/whitespace-collapsed/case-folded uniqueness key and the 500-term cap, rejects any candidate with an invalid line without saving a subset, and the Step 5 UI presents ordered rows, Add/remove and a paste preview with Apply. Duplicate lines in a paste are reported and skipped, exactly as the spec's own Story 1 scenario expects; legacy over-limit data is grandfathered per the spec edge case.",
       "source_citations": [
         {
           "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L171-L175",
-          "excerpt": "**Criterion:** The settings UI shows the vocabulary as an ordered list with add, remove and a paste box (one term per line) with preview. A term is valid when its trimmed text has 1–100 characters, no line break and none of the characters `<`, `>`, `\"`. Terms are unique by their trimmed, whitespace-collapsed, case-folded key; duplicates and invalid terms are reported without a partial write. The vocabulary holds at most 500 terms.\n**Priority:** P1 | **Story:** Story 1"
+          "excerpt": "The vocabulary holds at most 500 terms."
+        },
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L171-L175",
+          "excerpt": "duplicates and invalid terms are reported without a partial write"
         }
       ],
       "plan_citations": [
         {
           "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L70-L79",
-          "excerpt": "Direct add of a duplicate fails atomically."
+          "excerpt": "count Unicode scalar values on the trimmed text before collapse, require 1–100, and reject `<`, `>`, double quote and NUL"
         },
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L300-L309",
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L70-L79",
+          "excerpt": "Any invalid new line, capacity error or stale revision rejects the entire candidate; never save the valid subset while an invalid line remains."
+        },
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L339-L348",
           "excerpt": "present ordered rows, explicit Add/remove, paste preview/Apply, status and sent/excluded/legacy issue detail"
         }
       ],
@@ -41,25 +48,29 @@
     {
       "requirement_id": "003-recognition-vocabulary:AC-002",
       "disposition": "covered",
-      "rationale": "Reuse of custom_words and exact byte/order/threshold retention are explicit with occurrence-aware exemptions for legacy invalid/duplicate/over-limit lists. UI is renamed Vocabulary and explains replacements separation; migration/file fixtures prove preservation rather than silently normalize the old store. Fresh Step 2 explicitly binds AC-002 and SC-002 to the same 100% preservation criterion, strengthening traceability without altering behavior.",
+      "rationale": "custom_words stays the single serialized list, upgrading never normalizes or prunes entries, the threshold is preserved through 008, Step 2 gates 100% term/order/threshold preservation, and Step 5 renames the area Vocabulary and explains vocabulary versus replacements.",
       "source_citations": [
         {
           "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L176-L180",
-          "excerpt": "**Criterion:** The vocabulary is the existing custom-words list: upgrading keeps every stored term in order, and the existing approximate-correction threshold keeps its value. The UI names the list \"Vocabulary\" and explains that it influences recognition when supported, unlike replacement rules (002), which rewrite recognized text.\n**Priority:** P1 | **Story:** Story 1"
+          "excerpt": "upgrading keeps every stored term in order, and the existing approximate-correction threshold keeps its value"
+        },
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L176-L180",
+          "excerpt": "unlike replacement rules (002), which rewrite recognized text"
         }
       ],
       "plan_citations": [
         {
           "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L70-L79",
-          "excerpt": "Loading, upgrading and listing never normalize or prune old entries; threshold and unrelated/unknown settings fields are preserved through 008."
+          "excerpt": "`custom_words` remains the serialized list. Loading, upgrading and listing never normalize or prune old entries"
         },
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L300-L309",
-          "excerpt": "vocabulary versus replacements explained."
-        },
-        {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L270-L279",
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L309-L318",
           "excerpt": "AC-002 and SC-002: 100% legacy term/order/threshold preservation"
+        },
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L339-L348",
+          "excerpt": "vocabulary versus replacements explained"
         }
       ],
       "searched_plan_sections": []
@@ -67,21 +78,33 @@
     {
       "requirement_id": "003-recognition-vocabulary:AC-003",
       "disposition": "covered",
-      "rationale": "Five exclusive capability/mode/task statuses are defined with priority and actual request/accepted-term provenance. Future preview is explicitly prepared, not dispatched; used is restricted to a verified populated exact request and is labelled future effect for preview. Known capability with unknown budget is a technical error and blocks release, not a fabricated sixth successful state. Model-switch, task resolution and worker recovery invalidate stale descriptors.",
+      "rationale": "The plan defines the five statuses with a priority order identical to the spec flowchart (unknown, streaming, not supported, no term sent with reason, used), derives support from positive capability probes of the loaded model rather than a catalog or UI list, and requires used_during_recognition only for an acknowledged exact request. A separate technical readiness error outside the five statuses is raised as a warning finding.",
       "source_citations": [
         {
           "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L181-L185",
-          "excerpt": "**Criterion:** For the selected model, the vocabulary settings show exactly one status among: used during recognition (at least one term reaches the engine); no term sent (the model supports context but the vocabulary is empty or no term fits the budget, with that reason); not supported by this model (approximate correction applies instead); not used in live streaming; unknown until the model loads. The status derives from the capabilities declared by the loaded model and engine, not from a fixed model list. No status says \"used\" when no context reaches the engine.\n**Priority:** P1 | **Story:** Story 2"
+          "excerpt": "For the selected model, the vocabulary settings show exactly one status among"
+        },
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L181-L185",
+          "excerpt": "The status derives from the capabilities declared by the loaded model and engine, not from a fixed model list."
+        },
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L325-L337",
+          "excerpt": "shows the fifth status \"no term sent\" with its reason"
         }
       ],
       "plan_citations": [
         {
           "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L99-L108",
-          "excerpt": "Preview fields are marked `evidence_kind=prepared`, with last actual delivery separately `evidence_kind=dispatched`; preview never means a past run happened."
+          "excerpt": "Status priority: unreadable selected capability → unknown; final route streaming → not_used_streaming"
         },
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L99-L108",
-          "excerpt": "Status priority: unreadable selected capability → unknown; final route streaming → not_used_streaming; no supported mechanism for resolved task → not_supported; known mechanism with zero eligible/fitting terms → no_term_sent with empty/invalid-only/over-budget reason; otherwise exact accepted request → used_during_recognition."
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L80-L98",
+          "excerpt": "they never decide support in the UI or via the catalog"
+        },
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L80-L98",
+          "excerpt": "Actual status is calculated from the exact request builder output and engine acknowledgement, not a separate JS estimator."
         }
       ],
       "searched_plan_sections": []
@@ -89,25 +112,29 @@
     {
       "requirement_id": "003-recognition-vocabulary:AC-004",
       "disposition": "covered",
-      "rationale": "Supported batch mechanisms, longest ordered whole-term prefix, full rendered tokenizer accounting and sent/excluded reporting are planned. The 223 limit is explicitly an application safety ceiling intersected with actual native allowance, not invented native evidence. Unknown non-Whisper formulas/tokenizer APIs are bounded technical spike gates in Step 1; source-backed formulas and actual acceptance must exist before adapter enablement/release. This is readiness to perform gated implementation, not certification of completed engine feasibility.",
+      "rationale": "Batch requests use the mechanism the loaded model accepts (Whisper initial prompt, generic vocabulary, context prompt), select the longest whole prefix of terms in list order that fits a budget documented with sources in contracts/context-budget.md (Whisper 223 tokens; other families measured in Step 1, disabled until documented), and the settings and CLI status report sent and not-sent terms.",
       "source_citations": [
         {
           "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L186-L190",
-          "excerpt": "**Criterion:** In batch recognition, a model declaring recognition-context support receives the vocabulary through its supported mechanism (initial prompt, vocabulary list or context prompt). Terms are sent in list order up to the model's documented context budget; the settings and the CLI status report the number of terms sent and the terms not sent.\n**Priority:** P1 | **Story:** Story 3"
+          "excerpt": "Terms are sent in list order up to the model's documented context budget"
+        },
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L303-L307",
+          "excerpt": "within a documented per-mechanism budget, and record which terms were sent"
         }
       ],
       "plan_citations": [
         {
           "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L80-L98",
-          "excerpt": "223 is an application safety ceiling, not a claimed engine limit."
+          "excerpt": "Prepare the longest whole prefix of eligible terms whose **complete native rendered text** fits"
         },
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L260-L269",
-          "excerpt": "Exact numeric formula/unit/task restrictions for every supporting catalog mechanism; request fields and backend accepted-term counts agree; no inherited UI whitelist."
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L299-L308",
+          "excerpt": "`contracts/context-budget.md` gives a sourced, measured value, unit and task restrictions for every supporting catalog mechanism"
         },
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L80-L98",
-          "excerpt": "Never cut a term or let native trimming silently remove unreported terms."
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L109-L127",
+          "excerpt": "D2 live operation: selected model, capability, actual/preview mode/task, mechanism, budget/unit, status, terms sent/not_sent and evidence kind"
         }
       ],
       "searched_plan_sections": []
@@ -115,21 +142,29 @@
     {
       "requirement_id": "003-recognition-vocabulary:AC-005",
       "disposition": "covered",
-      "rationale": "The actual context_applied predicate replaces Whisper-name inference. Unsupported/streaming requests attach no context; nonempty fallback runs exactly once after final recognition, and any accepted context suppresses correction for the entire result. Empty list exception is explicit. No AI post-processing substitute is introduced.",
+      "rationale": "Unsupported models and streaming receive zero terms with all context fields absent; the fallback predicate applies approximate correction only when the snapshot list is nonempty and no context was acknowledged, skips it when at least one term was sent, and streaming applies it once to final text.",
       "source_citations": [
         {
           "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L191-L195",
-          "excerpt": "**Criterion:** A model without recognition-context support, and every streaming recognition, receives no vocabulary context. In those cases the existing approximate correction after recognition applies, as today. When context was sent, approximate correction is skipped, as today for Whisper.\n**Priority:** P1 | **Story:** Stories 2 and 3"
+          "excerpt": "A model without recognition-context support, and every streaming recognition, receives no vocabulary context."
+        },
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L191-L195",
+          "excerpt": "When context was sent, approximate correction is skipped, as today for Whisper."
         }
       ],
       "plan_citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L80-L98",
+          "excerpt": "Zero terms; vocabulary/prompt/Whisper extension all absent"
+        },
         {
           "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L99-L108",
           "excerpt": "Approximate correction predicate is `!snapshot.terms.is_empty() && !outcome.context_applied`."
         },
         {
           "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L99-L108",
-          "excerpt": "Streaming sends no context and applies fallback exactly once to final text, not repeatedly to cumulative preview."
+          "excerpt": "Streaming sends no context and applies fallback exactly once to final text"
         }
       ],
       "searched_plan_sections": []
@@ -137,11 +172,15 @@
     {
       "requirement_id": "003-recognition-vocabulary:AC-006",
       "disposition": "covered",
-      "rationale": "A revision-bound recognition snapshot applies committed edits only to the next request and keeps in-flight recognition stable without reload/restart. Empty snapshots send nothing and disable correction; integration tests explicitly cover active edits, recovery and no reload. Fresh Step 3 now explicitly binds the existing next-recognition behavior to AC-006; this is a structural mapping improvement, not additional scope.",
+      "rationale": "A per-recognition snapshot is captured just before each request, custom_words has no live effect and is read at use, list edits never reload the model, in-flight recognitions keep their own revision, and an empty list disables both context and correction. Step 3 sets AC-006 as its success criterion.",
       "source_citations": [
         {
           "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L196-L200",
-          "excerpt": "**Criterion:** A vocabulary change applies from the next recognition without restarting the app or reloading the model. An empty vocabulary sends no context and disables approximate correction.\n**Priority:** P2 | **Story:** Stories 1 and 3"
+          "excerpt": "A vocabulary change applies from the next recognition without restarting the app or reloading the model."
+        },
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L196-L200",
+          "excerpt": "An empty vocabulary sends no context and disables approximate correction."
         }
       ],
       "plan_citations": [
@@ -154,7 +193,7 @@
           "excerpt": "Zero sent with nonempty vocabulary uses fallback; empty list disables both."
         },
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L280-L289",
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L319-L328",
           "excerpt": "AC-006: next recognition sees committed vocabulary without restart/reload."
         }
       ],
@@ -163,21 +202,29 @@
     {
       "requirement_id": "003-recognition-vocabulary:AC-007",
       "disposition": "covered",
-      "rationale": "All six required CLI operation families, merge/replace file/stdin/dry-run, raw/JSON export and status are specified through VocabularyDomain. It reuses 008 read_snapshot/commit_mutation, private routing, renderer, codes and exits with CAS/no-op/unknown outcomes. Shared validator and real process/UI parity tests cover atomic behavior. Fresh source now consistently counts six operation families, resolving the historical inventory typo.",
+      "rationale": "The plan registers a VocabularyDomain in the 008 framework with list, add, remove, import (merge/replace, file or stdin, dry run), export one term per line on stdout and a live status operation, sharing the UI validator and the 008 atomic commit, with the 008 envelope, stable codes and exit codes and exactly one JSON envelope on stdout. Offline status reuses 008's live-only refusal, which the spec does not contradict.",
       "source_citations": [
         {
           "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L201-L205",
-          "excerpt": "**Criterion:** The settings CLI (008) offers vocabulary list, add, remove, import (merge or replace, file or stdin, dry run), export (one term per line) and status (selected model, support, terms sent, terms not sent), sharing UI validation and atomic commit. With `--json`, stdout contains only the JSON envelope; errors use stable codes and exit codes.\n**Priority:** P2 | **Story:** Story 4"
+          "excerpt": "import (merge or replace, file or stdin, dry run), export (one term per line)"
+        },
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L201-L205",
+          "excerpt": "With `--json`, stdout contains only the JSON envelope; errors use stable codes and exit codes."
         }
       ],
       "plan_citations": [
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L109-L125",
-          "excerpt": "Register `VocabularyDomain` in 008 `settings_service/domains/mod.rs`; new `domains/vocabulary.rs` delegates to existing trait parsing/preview/typed patch/export and the same `commit_mutation`."
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L109-L127",
+          "excerpt": "Canonical actions are `list`, `add`, `remove`, `import`, `export` and `status`"
         },
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L109-L125",
-          "excerpt": "Reuse exactly `{ok:true,revision:N,data:...}` and `{ok:false,error:{code,message,details:{...}}}`."
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L109-L127",
+          "excerpt": "success=0; persistence_failed/internal_error=1; usage_error/validation_failed/limit_exceeded=2"
+        },
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L329-L338",
+          "excerpt": "exactly one JSON envelope, no term-bearing diagnostics"
         }
       ],
       "searched_plan_sections": []
@@ -185,21 +232,21 @@
     {
       "requirement_id": "003-recognition-vocabulary:FR-001",
       "disposition": "covered",
-      "rationale": "Steps 2/3/5/6 map the single vocabulary store, authoritative validation and preview, atomic transaction, migration preservation and next-recognition snapshots to concrete files and meaningful tests. Legacy exemptions are identity-aware within the backend service, not asserted by the client. No new persistence list or revision channel is added.",
+      "rationale": "Ordered storage in the existing custom_words key, a single Rust validator used by preview and commit for UI and CLI, first-wins deduplicated bulk preview and an atomic compare-and-set commit through the 008 shared path are all specified in the architecture and Step 2.",
       "source_citations": [
         {
           "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L293-L297",
-          "excerpt": "**Requirement:** Persist an ordered, uniquely keyed vocabulary in the existing custom-words setting with shared validation, bulk paste preview and atomic commit.\n**AC References:** AC-001, AC-002, AC-006"
+          "excerpt": "Persist an ordered, uniquely keyed vocabulary in the existing custom-words setting with shared validation, bulk paste preview and atomic commit."
         }
       ],
       "plan_citations": [
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L270-L279",
-          "excerpt": "New `recognition_vocabulary/{validation.rs,preview.rs}` implements scalar/key validation, keyed de-dup preview and grandfathered occurrence handling."
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L70-L79",
+          "excerpt": "Bulk paste/import first prepares a candidate: keep the first spelling/order, report later duplicates as skipped non-errors"
         },
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L70-L79",
-          "excerpt": "Apply the same identity-aware validator in `commit_mutation`; legacy exemptions cannot be asserted by an untrusted caller."
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L109-L127",
+          "excerpt": "both bulk preview and commit call the same Rust validator"
         }
       ],
       "searched_plan_sections": []
@@ -207,21 +254,21 @@
     {
       "requirement_id": "003-recognition-vocabulary:FR-002",
       "disposition": "covered",
-      "rationale": "Steps 1/3/5/6 implement loaded capability probes, truthful five-state status and selected model/mode/task snapshots with frontend race protection. UI/catalog family names do not establish support. Technical readiness errors preserve honesty and prevent release rather than masquerade as unsupported or used.",
+      "rationale": "Step 1 extends the worker LoadedInfo with actual feature bits and extension acceptance for the selected loaded model; the snapshot records actual mode and resolved task, and one exclusive status is computed from it.",
       "source_citations": [
         {
           "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L298-L302",
-          "excerpt": "**Requirement:** Determine recognition-context support from the loaded model's declared capabilities and the recognition mode (batch or streaming), and expose one truthful status per model.\n**AC References:** AC-003, AC-005"
+          "excerpt": "Determine recognition-context support from the loaded model's declared capabilities and the recognition mode (batch or streaming), and expose one truthful status per model."
         }
       ],
       "plan_citations": [
         {
           "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L80-L98",
-          "excerpt": "Family names choose a request encoding/budget adapter only after positive capability probes; they never decide support in the UI or via the catalog."
+          "excerpt": "Probe the selected loaded model, not a temporary command-line model override."
         },
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L280-L289",
-          "excerpt": "New `recognition_vocabulary/{context.rs,status.rs}` builds typed snapshots and exclusive status."
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L99-L108",
+          "excerpt": "Capture immediately before a batch request or streaming begin, after loading the selected model and resolving effective translate task."
         }
       ],
       "searched_plan_sections": []
@@ -229,21 +276,21 @@
     {
       "requirement_id": "003-recognition-vocabulary:FR-003",
       "disposition": "covered",
-      "rationale": "Steps 1/3/6 assign actual capability and native fitting/tokenizer ports in worker ownership, exclusive mechanism request encoding and accepted-term telemetry. Per-mechanism numerical/formula evidence is a blocking implementation spike output; unknown formulas cannot be enabled, and unresolvable API gaps require plan revision/re-review. Tail exclusion is truthful and tested.",
+      "rationale": "Terms are passed through the accepted mechanism only, with native fitting rechecking the exact request and reporting accepted indices; context_applied reflects acknowledged whole terms, and the snapshot records sent and not-sent terms (volatile, exposed as dispatched evidence).",
       "source_citations": [
         {
           "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L303-L307",
-          "excerpt": "**Requirement:** Pass vocabulary terms to supporting models in batch recognition through the model's supported mechanism, within a documented per-mechanism budget, and record which terms were sent.\n**AC References:** AC-004"
+          "excerpt": "Pass vocabulary terms to supporting models in batch recognition through the model's supported mechanism"
         }
       ],
       "plan_citations": [
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L260-L269",
-          "excerpt": "Freeze source/version/hash and exact per-family budget/reserves into `contracts/context-budget.md` in this feature during implementation"
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L80-L98",
+          "excerpt": "Native fitting/tokenizer port rechecks the exact request and reports accepted indices/count"
         },
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L80-L98",
-          "excerpt": "Native fitting/tokenizer port rechecks the exact request and reports accepted indices/count; initial prompt/generic alternatives cannot be attached simultaneously."
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L99-L108",
+          "excerpt": "`context_applied` in `RunOutcome` is true only for acknowledged whole terms, not `run.model_is_whisper`."
         }
       ],
       "searched_plan_sections": []
@@ -251,21 +298,21 @@
     {
       "requirement_id": "003-recognition-vocabulary:FR-004",
       "disposition": "covered",
-      "rationale": "Steps 3/6 preserve the existing correction algorithm/threshold while gating execution by actual acknowledged context. In-flight list/threshold consistency, streaming-once semantics, empty/no-fit and engine regressions are concrete tests. Feature 002 stage ordering and 005 non-scope are explicitly maintained.",
+      "rationale": "The routing predicate keeps the existing correction as fallback when no term was acknowledged and skips it when context was sent, leaving the correction algorithm and threshold unchanged.",
       "source_citations": [
         {
           "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L308-L312",
-          "excerpt": "**Requirement:** Keep approximate correction as the fallback when no context is sent, and skip it when context was sent.\n**AC References:** AC-005, AC-006"
+          "excerpt": "Keep approximate correction as the fallback when no context is sent, and skip it when context was sent."
         }
       ],
       "plan_citations": [
         {
           "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L99-L108",
-          "excerpt": "Supporting models sending at least one term skip fallback for the complete result, including omitted terms, as AC-005 demands."
+          "excerpt": "Approximate correction predicate is `!snapshot.terms.is_empty() && !outcome.context_applied`."
         },
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L341-L355",
-          "excerpt": "empty/nonempty/no-fit, one term accepted suppresses all fallback, streaming context absent/fallback once"
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L319-L328",
+          "excerpt": "Existing text correction implementation stays unchanged"
         }
       ],
       "searched_plan_sections": []
@@ -273,21 +320,21 @@
     {
       "requirement_id": "003-recognition-vocabulary:FR-005",
       "disposition": "covered",
-      "rationale": "Steps 2/4/6 register the vocabulary domain with the exact 008 framework, owning typed mutation and single envelope renderer/error mapping. Operation matrix and process tests cover list/add/remove/import/export/status, validation and live/offline behavior. Fresh source uses 008 descriptor.rs singular and six operations, resolving the historical file-reference/count warning without introducing a new framework.",
+      "rationale": "Step 4 implements all six CLI operations on the registered domain with JSON output, the 008 envelope and stable codes/exits, per-line D3 items and process-level tests; its dependency on 006 step 0 is an explicit prerequisite.",
       "source_citations": [
         {
           "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L313-L317",
-          "excerpt": "**Requirement:** Expose vocabulary list, add, remove, import, export and status through the settings CLI with JSON output and stable error codes.\n**AC References:** AC-007"
+          "excerpt": "Expose vocabulary list, add, remove, import, export and status through the settings CLI with JSON output and stable error codes."
         }
       ],
       "plan_citations": [
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L290-L299",
-          "excerpt": "Extend only owning vocabulary domain and 008 clap domain registration in `settings_service/{cli.rs,domains/mod.rs}`."
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L329-L338",
+          "excerpt": "Implement list/add/remove/import/export/status operations above with existing private live/offline routing"
         },
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L109-L125",
-          "excerpt": "No second service, revision, file writer, IPC channel or renderer."
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L109-L127",
+          "excerpt": "Reuse exactly `{ok:true,revision:N,data:...}` and `{ok:false,error:{code,message,details:{...}}}`."
         }
       ],
       "searched_plan_sections": []
@@ -295,20 +342,20 @@
     {
       "requirement_id": "003-recognition-vocabulary:SC-001",
       "disposition": "covered",
-      "rationale": "The unit/worker/request matrix spans every declared cpp/ONNX family, conditional Granite metadata, final mode/task, request acceptance, unknown budget and hidden trimming. It asserts zero used_without_context using real serialization/request/ack seams, rather than infer native success from browser mocks or tool availability.",
+      "rationale": "The worker/request integration tests cover every listed ONNX and transcribe-cpp family plus Granite without metadata, asserting status and request content, and Step 3 sets zero used-without-context as its success criterion; UI rendering of the five statuses is tested in the browser suite.",
       "source_citations": [
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L370-L373",
-          "excerpt": "For every engine family in the clarification table, an automated test asserts the displayed status and whether context reaches the engine request; zero cases show \"used\" without context in the request."
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L377-L380",
+          "excerpt": "For every engine family in the clarification table, an automated test asserts the displayed status and whether context reaches the engine request"
         }
       ],
       "plan_citations": [
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L341-L355",
-          "excerpt": "actual protocol serialization and acknowledgement, Whisper initial prompt regression, positive/negative capability, every listed ONNX and cpp family, Granite lacking metadata"
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L380-L394",
+          "excerpt": "every listed ONNX and cpp family, Granite lacking metadata"
         },
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L280-L289",
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L319-L328",
           "excerpt": "Zero used_without_context across every family in spec"
         }
       ],
@@ -317,25 +364,21 @@
     {
       "requirement_id": "003-recognition-vocabulary:SC-002",
       "disposition": "covered",
-      "rationale": "Exact old term bytes/order and threshold retention are mandatory Step 2 success conditions with real isolated before/after stores. Fixtures cover duplicates, invalid terms and >500 preservation, remove-one occurrence, unrelated fields and transaction faults. Fresh Step 2 explicitly names SC-002 alongside AC-002 for this unchanged preservation gate. No storage pruning is authorized by runtime context filtering.",
+      "rationale": "Step 2 and the transaction integration suite assert exact legacy bytes, order and threshold before and after upgrade, including invalid, duplicate and over-500 legacy lists.",
       "source_citations": [
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L374-L377",
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L381-L384",
           "excerpt": "Upgrading a settings store with existing custom words keeps 100% of terms, their order and the correction threshold."
         }
       ],
       "plan_citations": [
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L270-L279",
-          "excerpt": "100% legacy term/order/threshold preservation"
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L54-L67",
+          "excerpt": "Exact term bytes/order and threshold before/after upgrade"
         },
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L341-L355",
-          "excerpt": "all legacy bytes/order/threshold, duplicate/invalid/>500 preservation, remove-one occurrence"
-        },
-        {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L270-L279",
-          "excerpt": "AC-002 and SC-002: 100% legacy term/order/threshold preservation"
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L380-L394",
+          "excerpt": "`vocabulary_transactions.rs`: all legacy bytes/order/threshold"
         }
       ],
       "searched_plan_sections": []
@@ -343,21 +386,21 @@
     {
       "requirement_id": "003-recognition-vocabulary:SC-003",
       "disposition": "covered",
-      "rationale": "Step 6 freezes real audio/model/parameters and records binary/model/audio hashes, actual outputs and baseline. Correct Claude Code spelling is required; absence/failure blocks SC-003 even when request tests pass. Evidence is separate from WAV-gated application history and no broad accuracy claim is inferred.",
+      "rationale": "Step 6 captures a frozen Claude Code sample on a supporting model with baseline, archives model id/hashes and output, and keeps SC-003 failing if the real sample fails even when mocked tests pass.",
       "source_citations": [
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L378-L380",
-          "excerpt": "On one supporting model, a recorded sample containing \"Claude Code\" produces the correct spelling with the vocabulary and the evidence is recorded with the model id."
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L385-L387",
+          "excerpt": "the evidence is recorded with the model id"
         }
       ],
       "plan_citations": [
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L310-L319",
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L349-L358",
           "excerpt": "Capture SC-003 on frozen Claude Code sample/model and retain baseline."
         },
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L310-L319",
-          "excerpt": "SC-003 failure remains failure even if mock request tests pass."
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L54-L67",
+          "excerpt": "Frozen real audio says Claude Code; model id and correct output archived"
         }
       ],
       "searched_plan_sections": []
@@ -365,122 +408,209 @@
   ],
   "ambiguities": [
     {
-      "requirement_id": "003-recognition-vocabulary:AC-001",
-      "decision_key": "ui-contract-delivery-phase",
-      "question": "May planning proceed without current generated Penflow inputs and mockups?",
-      "critical": true,
+      "requirement_id": "003-recognition-vocabulary:AC-003",
+      "decision_key": "not-supported-status-with-empty-vocabulary",
+      "question": "When the selected model has no recognition-context support and the vocabulary is empty, should the 'not supported' status still state that approximate correction applies instead, given AC-006 says an empty vocabulary disables approximate correction? The plan does not define the status wording for this combination.",
+      "critical": false,
       "citations": [
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L132-L137",
-          "excerpt": "User decision overrides generation during this plan"
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L181-L185",
+          "excerpt": "not supported by this model (approximate correction applies instead)"
+        },
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L196-L200",
+          "excerpt": "An empty vocabulary sends no context and disables approximate correction."
         }
       ],
-      "resolution": "Accepted user decision defers flow/screen contracts, semantic/test IDs and mockups to one program pass before spec-ship. The plan binds its future UI step to actual canonical code-ir, independent bound approval and design proof; no current UI certification is asserted.",
-      "resolution_citations": [
+      "resolution": "",
+      "resolution_citations": []
+    },
+    {
+      "requirement_id": "003-recognition-vocabulary:FR-003",
+      "decision_key": "sent-terms-record-persistence",
+      "question": "Does 'record which terms were sent' require a durable record (e.g. per history entry or across restarts), or is the plan's volatile per-recognition snapshot exposed as the last dispatched evidence sufficient?",
+      "critical": false,
+      "citations": [
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L356-L359",
-          "excerpt": "Per the user decision of 2026-10-12 (lightweight UI contract), the Penflow flow/screen contract, semantic and test IDs and the Pencil mockup are produced in one pass for all program features before `spec-ship`; the planned IDs above are authoritative until then."
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L303-L307",
+          "excerpt": "and record which terms were sent"
+        },
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L99-L108",
+          "excerpt": "`RecognitionContextSnapshot` is volatile"
         }
-      ]
+      ],
+      "resolution": "",
+      "resolution_citations": []
     }
   ],
   "extra_scope": [
     {
-      "description": "Reject embedded NUL in newly submitted vocabulary terms.",
-      "justification": "Justified technical necessity for native C-string safety, explicitly documented, with preserved legacy storage rather than destructive migration; it adds no new business flow.",
+      "description": "NUL is rejected in new terms in addition to the spec's <, > and double quote.",
+      "justification": "Needed for native C-string safety when terms are passed to the native engine; does not change user-facing business rules for realistic terms.",
       "approved": true,
       "citations": [
         {
           "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L70-L79",
           "excerpt": "reject `<`, `>`, double quote and NUL (native C-string safety)"
         }
-      ]
+      ],
+      "kind": "technical"
     },
     {
-      "description": "Conservative 223 rendered-token application ceiling in addition to each verified native/session allowance.",
-      "justification": "Justified bounded native request safety policy; it is disclosed as an application ceiling, preserves terms and reports all exclusions, and cannot stand in for the mandatory native per-mechanism budget proof. The feature already permits ordered budget exclusion, so it introduces no separate business operation.",
+      "description": "A technical readiness error `context_budget_unverified` (internal_error/1, UI actionable error) for a positive capability whose budget is not documented.",
+      "justification": "Required to avoid sending unchecked context or falsely labelling a supporting model as unsupported while honoring AC-004's documented-budget rule.",
       "approved": true,
       "citations": [
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L80-L98",
-          "excerpt": "223 is an application safety ceiling, not a claimed engine limit."
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L109-L127",
+          "excerpt": "`context_budget_unverified` is `internal_error`/1 with `details.reason`"
+        }
+      ],
+      "kind": "technical"
+    },
+    {
+      "description": "Status evidence distinguishes prepared next-request preview from last dispatched delivery (`evidence_kind`).",
+      "justification": "Necessary for a truthful status: a preview must not imply a past recognition used the vocabulary.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L99-L108",
+          "excerpt": "Preview fields are marked `evidence_kind=prepared`, with last actual delivery separately `evidence_kind=dispatched`"
+        }
+      ],
+      "kind": "technical"
+    },
+    {
+      "description": "New `tauri_adapter::write_change` wrapper so the UI commits the same DomainChange with compare-and-set as the CLI.",
+      "justification": "Needed for shared validation and atomic commit between UI and CLI (FR-001, AC-007) without a second writer.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L109-L127",
+          "excerpt": "through a new `tauri_adapter::write_change(app, &DomainChange, expected)` wrapper"
+        }
+      ],
+      "kind": "technical"
+    },
+    {
+      "description": "CLI export only to stdout with explicit `-`; file obtained by shell redirection, other targets are usage_error.",
+      "justification": "Constraint of the merged 008 framework, which has no file output; spec only requires one term per line.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L109-L127",
+          "excerpt": "any other target argument is `usage_error`"
+        }
+      ],
+      "kind": "technical"
+    },
+    {
+      "description": "Legacy over-capacity policy: remove-only mutations may reduce a grandfathered over-500 list, adds/merge are refused while above 500, and removal targets one occurrence by revision-bound index.",
+      "justification": "Operationalizes the spec edge case that legacy terms violating new limits are kept as stored and flagged until edited; no new user-facing capability beyond the spec's add/remove.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L70-L79",
+          "excerpt": "Remove-only mutations can reduce a legacy over-capacity list even before it reaches 500"
         },
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L80-L98",
-          "excerpt": "list it and all following terms as budget-excluded"
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L367-L374",
+          "excerpt": "Stored legacy terms that violate the new limits: kept as stored, flagged invalid in the UI, and excluded from context until edited."
         }
-      ]
+      ],
+      "kind": "business"
     }
   ],
   "findings": [
     {
-      "category": "implementation-inventory-resolved",
-      "severity": "info",
-      "description": "The prior review found descriptors.rs versus 008 descriptor.rs and seven versus six operation counts. Fresh complete context changes Step 2 to descriptor.rs and updates inventory, Step 4 and test matrix to six; this warning is resolved. The historical raw bundle remains separate and unchanged.",
-      "suggestion": "Preserve exact 008 service/domain filenames and six operation families during implementation.",
-      "citations": [
-        {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L270-L279",
-          "excerpt": "settings_service/{validation.rs,descriptor.rs}"
-        },
-        {
-          "section_id": ".specs/features/008-settings-cli/plan.md:L302-L311",
-          "excerpt": "settings_service/{mod.rs,descriptor.rs,validation.rs,protocol.rs,errors.rs}"
-        },
-        {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L290-L299",
-          "excerpt": "Six operations, atomic validation and same revision service"
-        }
-      ]
-    },
-    {
-      "category": "native-budget-spike",
+      "category": "requirement-conformance",
       "severity": "warning",
-      "description": "Non-Whisper native budget formulas, locked tokenizer/fitting access and backend accepted-term telemetry remain unproved. The plan explicitly blocks adapter activation and full release pending Step 1, which makes the design safe to spike but does not establish production engine support. A positive capability alone cannot clear this gate.",
-      "suggestion": "Retain the Step 1 gate exactly: version/hash-bound per-family formula/unit/reserves, exact native rendered selection and accepted-term evidence. If locked APIs cannot expose them, return the stated blocker and re-review the revised plan before later code; never relabel as unsupported or certify the 223 application ceiling as native budget.",
+      "description": "The plan introduces a technical readiness error shown instead of one of the five statuses when a loaded model declares a positive capability but no documented budget exists. Release is blocked for catalog adapters, but the spec expects new engine versions or non-catalog models to update status by declared capability, so this non-status state can still be reachable after release, which conflicts with 'exactly one status'.",
+      "suggestion": "State explicitly how a positive capability without a known family adapter/budget is presented post-release (e.g. which of the five statuses plus a technical note), or add a test proving that every reachable loaded model maps to one of the five statuses, and record the residual error path as accepted by the spec owner.",
       "citations": [
         {
           "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L80-L98",
-          "excerpt": "Unknown native formula/tokenizer blocks adapter activation, never sends unchecked text"
+          "excerpt": "A known positive capability with an unproven budget is a technical readiness error, distinct from the five domain statuses"
         },
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L260-L269",
-          "excerpt": "Unresolvable API gap requires plan revision/re-review before later code."
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L325-L337",
+          "excerpt": "AC-003 relies on declared capabilities so that new engine versions update the status without a spec change."
+        },
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L339-L348",
+          "excerpt": "Exactly one current status or explicit technical error"
         }
       ]
     },
     {
-      "category": "performance-feasibility",
+      "category": "missing-step",
       "severity": "warning",
-      "description": "Strict <5 ms for every context preparation includes cold tokenization/fitting and worker costs. Longest-prefix testing against rendered candidates could be quadratic if implemented naively; the plan identifies latency risk but the future native spike must validate a feasible fitting/cache strategy. This is an execution feasibility gate, not current proof.",
-      "suggestion": "Measure the complete native preparation path early, use the loaded tokenizer/native fitting helper and generation/revision cache without hidden rescans, retain cold and adversarial 500×100 cases. Keep the failure threshold and report blocked if it cannot be met; do not omit cold samples or timing of native query.",
+      "description": "No step explicitly adds the native UI commands for the bulk-paste candidate preview and the occurrence-based removal: Step 2 only modifies `update_custom_words`, Step 3's commands/transcription.rs entries concern context preview/status, yet Step 5's hook expects a typed backend preview.",
+      "suggestion": "In Step 2, list the Tauri command(s) for candidate preview (pure, revision-bound) and occurrence removal, their registration in lib.rs and the bindings regeneration they require.",
       "citations": [
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L310-L319",
-          "excerpt": "measure inclusive new context-preparation worker time, not inference/model load, with every measured preparation under 5 ms."
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L309-L318",
+          "excerpt": "modify shortcut/mod.rs `update_custom_words` to commit the same `DomainChange` through it"
         },
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L374-L389",
-          "excerpt": "Cold tokenization plus worker IPC could exceed the under-5-ms requirement"
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L319-L328",
+          "excerpt": "Modify `commands/transcription.rs` and lib.rs registration for preview/status query/events"
+        },
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L339-L348",
+          "excerpt": "New `src/hooks/use-vocabulary.ts` wraps typed backend preview/status"
         }
       ]
     },
     {
-      "category": "review-identity-continuation",
+      "category": "ordering",
       "severity": "info",
-      "description": "The current Next Action forwards both --model=gpt-6 and --review-max-chars=180000 into spec-implement. This documentary delta preserves the review/gate identity and introduces no additional feature behavior. The preceding explicit AC-002/SC-002 and AC-006 Step 2/3 references remain grounded in unchanged preservation/hot-update behavior.",
-      "suggestion": "Preserve this actual model/budget pair in the resumed implementation progression and review preparation. It is a next action only, not implementation authorization or execution evidence.",
+      "description": "Step 5 (P1 settings UI) requires CLI parity PASS, and Step 4 requires 006 step 0 merged, so the P1 UI story is transitively blocked by another feature's framework work needed only for the P2 CLI story.",
+      "suggestion": "Consider gating Step 5 on the Rust domain/preview APIs (Steps 2-3) and moving the UI/CLI parity check to Step 6, so the UI is not blocked by 006 step 0.",
       "citations": [
         {
-          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L390-L392",
-          "excerpt": "$spec-implement 003-recognition-vocabulary --model=gpt-6 --review-max-chars=180000"
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L339-L348",
+          "excerpt": "Rust APIs and CLI parity PASS"
+        },
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L329-L338",
+          "excerpt": "**006 step 0 merged**"
+        }
+      ]
+    },
+    {
+      "category": "ordering",
+      "severity": "info",
+      "description": "Step 2 (validation, legacy preservation, transactions) waits for 'typed descriptors stable' from the Step 1 native capability spike, although data-integrity work does not depend on engine capability descriptors.",
+      "suggestion": "Allow Step 2 to start in parallel with Step 1, keeping only Step 3 dependent on Step 1 evidence.",
+      "citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L309-L318",
+          "excerpt": "**Prerequisite:** Typed descriptors stable; merged 008 service tests PASS."
+        }
+      ]
+    },
+    {
+      "category": "status-truthfulness",
+      "severity": "info",
+      "description": "A worker capability query that times out while a model is loaded is reported as `unknown_until_model_loads`, while the spec scenario defines that status for no loaded model with unreadable capabilities; the label may mislead when the model is already loaded.",
+      "suggestion": "Keep the unknown status but attach a distinct reason (e.g. capability query timed out) so the UI/CLI text stays truthful.",
+      "citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/plan.md:L109-L127",
+          "excerpt": "or a worker query that does not answer in time, is the successful status `unknown_until_model_loads`, never a guess"
+        },
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L58-L105",
+          "excerpt": "Given no model is loaded and the selected model's capabilities cannot be read"
         }
       ]
     }
   ],
   "confidence": 4,
   "raw_results": [
-    "{\"batch_id\": \"batch-001\", \"reviewed_section_ids\": [\".specs/constitution.md:L1-L2\", \".specs/constitution.md:L3-L17\", \".specs/constitution.md:L18-L26\", \".specs/constitution.md:L27-L29\", \".specs/features/003-recognition-vocabulary/plan.md:L1-L16\", \".specs/features/003-recognition-vocabulary/plan.md:L17-L18\", \".specs/features/003-recognition-vocabulary/plan.md:L19-L24\", \".specs/features/003-recognition-vocabulary/plan.md:L25-L39\", \".specs/features/003-recognition-vocabulary/plan.md:L40-L53\", \".specs/features/003-recognition-vocabulary/plan.md:L54-L67\", \".specs/features/003-recognition-vocabulary/plan.md:L68-L69\", \".specs/features/003-recognition-vocabulary/plan.md:L70-L79\", \".specs/features/003-recognition-vocabulary/plan.md:L80-L98\", \".specs/features/003-recognition-vocabulary/plan.md:L99-L108\", \".specs/features/003-recognition-vocabulary/plan.md:L109-L125\", \".specs/features/003-recognition-vocabulary/plan.md:L126-L131\", \".specs/features/003-recognition-vocabulary/plan.md:L132-L137\", \".specs/features/003-recognition-vocabulary/plan.md:L138-L257\", \".specs/features/003-recognition-vocabulary/plan.md:L258-L259\", \".specs/features/003-recognition-vocabulary/plan.md:L260-L269\", \".specs/features/003-recognition-vocabulary/plan.md:L270-L279\", \".specs/features/003-recognition-vocabulary/plan.md:L280-L289\", \".specs/features/003-recognition-vocabulary/plan.md:L290-L299\", \".specs/features/003-recognition-vocabulary/plan.md:L300-L309\", \".specs/features/003-recognition-vocabulary/plan.md:L310-L319\", \".specs/features/003-recognition-vocabulary/plan.md:L320-L340\", \".specs/features/003-recognition-vocabulary/plan.md:L341-L355\", \".specs/features/003-recognition-vocabulary/plan.md:L356-L373\", \".specs/features/003-recognition-vocabulary/plan.md:L374-L389\", \".specs/features/003-recognition-vocabulary/plan.md:L390-L392\", \".specs/features/003-recognition-vocabulary/spec.md:L1-L9\", \".specs/features/003-recognition-vocabulary/spec.md:L10-L11\", \".specs/features/003-recognition-vocabulary/spec.md:L12-L20\", \".specs/features/003-recognition-vocabulary/spec.md:L21-L22\", \".specs/features/003-recognition-vocabulary/spec.md:L23-L57\", \".specs/features/003-recognition-vocabulary/spec.md:L58-L105\", \".specs/features/003-recognition-vocabulary/spec.md:L106-L142\", \".specs/features/003-recognition-vocabulary/spec.md:L143-L168\", \".specs/features/003-recognition-vocabulary/spec.md:L169-L170\", \".specs/features/003-recognition-vocabulary/spec.md:L171-L175\", \".specs/features/003-recognition-vocabulary/spec.md:L176-L180\", \".specs/features/003-recognition-vocabulary/spec.md:L181-L185\", \".specs/features/003-recognition-vocabulary/spec.md:L186-L190\", \".specs/features/003-recognition-vocabulary/spec.md:L191-L195\", \".specs/features/003-recognition-vocabulary/spec.md:L196-L200\", \".specs/features/003-recognition-vocabulary/spec.md:L201-L205\", \".specs/features/003-recognition-vocabulary/spec.md:L206-L209\", \".specs/features/003-recognition-vocabulary/spec.md:L210-L234\", \".specs/features/003-recognition-vocabulary/spec.md:L235-L255\", \".specs/features/003-recognition-vocabulary/spec.md:L256-L271\", \".specs/features/003-recognition-vocabulary/spec.md:L272-L290\", \".specs/features/003-recognition-vocabulary/spec.md:L291-L292\", \".specs/features/003-recognition-vocabulary/spec.md:L293-L297\", \".specs/features/003-recognition-vocabulary/spec.md:L298-L302\", \".specs/features/003-recognition-vocabulary/spec.md:L303-L307\", \".specs/features/003-recognition-vocabulary/spec.md:L308-L312\", \".specs/features/003-recognition-vocabulary/spec.md:L313-L317\", \".specs/features/003-recognition-vocabulary/spec.md:L318-L324\", \".specs/features/003-recognition-vocabulary/spec.md:L325-L337\", \".specs/features/003-recognition-vocabulary/spec.md:L338-L347\", \".specs/features/003-recognition-vocabulary/spec.md:L348-L355\", \".specs/features/003-recognition-vocabulary/spec.md:L356-L359\", \".specs/features/003-recognition-vocabulary/spec.md:L360-L367\", \".specs/features/003-recognition-vocabulary/spec.md:L368-L369\", \".specs/features/003-recognition-vocabulary/spec.md:L370-L373\", \".specs/features/003-recognition-vocabulary/spec.md:L374-L377\", \".specs/features/003-recognition-vocabulary/spec.md:L378-L380\", \".specs/features/008-settings-cli/plan.md:L1-L9\", \".specs/features/008-settings-cli/plan.md:L10-L11\", \".specs/features/008-settings-cli/plan.md:L12-L17\", \".specs/features/008-settings-cli/plan.md:L18-L34\", \".specs/features/008-settings-cli/plan.md:L35-L46\", \".specs/features/008-settings-cli/plan.md:L47-L59\", \".specs/features/008-settings-cli/plan.md:L60-L61\", \".specs/features/008-settings-cli/plan.md:L62-L67\", \".specs/features/008-settings-cli/plan.md:L68-L75\", \".specs/features/008-settings-cli/plan.md:L76-L81\", \".specs/features/008-settings-cli/plan.md:L82-L102\", \".specs/features/008-settings-cli/plan.md:L103-L123\", \".specs/features/008-settings-cli/plan.md:L124-L211\", \".specs/features/008-settings-cli/plan.md:L212-L249\", \".specs/features/008-settings-cli/plan.md:L250-L289\", \".specs/features/008-settings-cli/plan.md:L290-L291\", \".specs/features/008-settings-cli/plan.md:L292-L301\", \".specs/features/008-settings-cli/plan.md:L302-L311\", \".specs/features/008-settings-cli/plan.md:L312-L321\", \".specs/features/008-settings-cli/plan.md:L322-L331\", \".specs/features/008-settings-cli/plan.md:L332-L341\", \".specs/features/008-settings-cli/plan.md:L342-L351\", \".specs/features/008-settings-cli/plan.md:L352-L361\", \".specs/features/008-settings-cli/plan.md:L362-L383\", \".specs/features/008-settings-cli/plan.md:L384-L400\", \".specs/features/008-settings-cli/plan.md:L401-L415\", \".specs/features/008-settings-cli/plan.md:L416-L438\", \".specs/features/008-settings-cli/plan.md:L439-L441\", \".specs/project.md:L1-L2\", \".specs/project.md:L3-L7\", \".specs/project.md:L8-L16\", \".specs/project.md:L17-L20\", \".specs/project.md:L21-L24\", \".specs/project.md:L25-L28\", \".specs/project.md:L29-L36\", \".specs/stacks/_default.md:L1-L4\", \".specs/stacks/_default.md:L5-L6\", \".specs/stacks/_default.md:L7-L20\", \".specs/stacks/_default.md:L21-L30\", \".specs/testing/strategy.md:L1-L2\", \".specs/testing/strategy.md:L3-L6\", \".specs/testing/strategy.md:L7-L12\", \".specs/testing/strategy.md:L13-L16\"], \"conclusions\": [{\"requirement_id\": \"003-recognition-vocabulary:AC-001\", \"disposition\": \"covered\", \"rationale\": \"The plan covers ordered add/remove/paste/preview UI, Rust-authoritative length/key/forbidden-input validation, ≤500 new candidate capacity, and atomic rejection. Direct duplicates fail; explicit bulk preview de-duplicates before the complete atomic write, preserving the spec scenario. NUL rejection is justified native safety. Grandfathered legacy data is explicitly separated from new validation.\", \"source_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L171-L175\", \"excerpt\": \"**Criterion:** The settings UI shows the vocabulary as an ordered list with add, remove and a paste box (one term per line) with preview. A term is valid when its trimmed text has 1–100 characters, no line break and none of the characters `<`, `>`, `\\\"`. Terms are unique by their trimmed, whitespace-collapsed, case-folded key; duplicates and invalid terms are reported without a partial write. The vocabulary holds at most 500 terms.\\n**Priority:** P1 | **Story:** Story 1\"}], \"plan_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L70-L79\", \"excerpt\": \"Direct add of a duplicate fails atomically.\"}, {\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L300-L309\", \"excerpt\": \"present ordered rows, explicit Add/remove, paste preview/Apply, status and sent/excluded/legacy issue detail\"}], \"searched_plan_sections\": []}, {\"requirement_id\": \"003-recognition-vocabulary:AC-002\", \"disposition\": \"covered\", \"rationale\": \"Reuse of custom_words and exact byte/order/threshold retention are explicit with occurrence-aware exemptions for legacy invalid/duplicate/over-limit lists. UI is renamed Vocabulary and explains replacements separation; migration/file fixtures prove preservation rather than silently normalize the old store. Fresh Step 2 explicitly binds AC-002 and SC-002 to the same 100% preservation criterion, strengthening traceability without altering behavior.\", \"source_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L176-L180\", \"excerpt\": \"**Criterion:** The vocabulary is the existing custom-words list: upgrading keeps every stored term in order, and the existing approximate-correction threshold keeps its value. The UI names the list \\\"Vocabulary\\\" and explains that it influences recognition when supported, unlike replacement rules (002), which rewrite recognized text.\\n**Priority:** P1 | **Story:** Story 1\"}], \"plan_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L70-L79\", \"excerpt\": \"Loading, upgrading and listing never normalize or prune old entries; threshold and unrelated/unknown settings fields are preserved through 008.\"}, {\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L300-L309\", \"excerpt\": \"vocabulary versus replacements explained.\"}, {\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L270-L279\", \"excerpt\": \"AC-002 and SC-002: 100% legacy term/order/threshold preservation\"}], \"searched_plan_sections\": []}, {\"requirement_id\": \"003-recognition-vocabulary:AC-003\", \"disposition\": \"covered\", \"rationale\": \"Five exclusive capability/mode/task statuses are defined with priority and actual request/accepted-term provenance. Future preview is explicitly prepared, not dispatched; used is restricted to a verified populated exact request and is labelled future effect for preview. Known capability with unknown budget is a technical error and blocks release, not a fabricated sixth successful state. Model-switch, task resolution and worker recovery invalidate stale descriptors.\", \"source_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L181-L185\", \"excerpt\": \"**Criterion:** For the selected model, the vocabulary settings show exactly one status among: used during recognition (at least one term reaches the engine); no term sent (the model supports context but the vocabulary is empty or no term fits the budget, with that reason); not supported by this model (approximate correction applies instead); not used in live streaming; unknown until the model loads. The status derives from the capabilities declared by the loaded model and engine, not from a fixed model list. No status says \\\"used\\\" when no context reaches the engine.\\n**Priority:** P1 | **Story:** Story 2\"}], \"plan_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L99-L108\", \"excerpt\": \"Preview fields are marked `evidence_kind=prepared`, with last actual delivery separately `evidence_kind=dispatched`; preview never means a past run happened.\"}, {\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L99-L108\", \"excerpt\": \"Status priority: unreadable selected capability → unknown; final route streaming → not_used_streaming; no supported mechanism for resolved task → not_supported; known mechanism with zero eligible/fitting terms → no_term_sent with empty/invalid-only/over-budget reason; otherwise exact accepted request → used_during_recognition.\"}], \"searched_plan_sections\": []}, {\"requirement_id\": \"003-recognition-vocabulary:AC-004\", \"disposition\": \"covered\", \"rationale\": \"Supported batch mechanisms, longest ordered whole-term prefix, full rendered tokenizer accounting and sent/excluded reporting are planned. The 223 limit is explicitly an application safety ceiling intersected with actual native allowance, not invented native evidence. Unknown non-Whisper formulas/tokenizer APIs are bounded technical spike gates in Step 1; source-backed formulas and actual acceptance must exist before adapter enablement/release. This is readiness to perform gated implementation, not certification of completed engine feasibility.\", \"source_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L186-L190\", \"excerpt\": \"**Criterion:** In batch recognition, a model declaring recognition-context support receives the vocabulary through its supported mechanism (initial prompt, vocabulary list or context prompt). Terms are sent in list order up to the model's documented context budget; the settings and the CLI status report the number of terms sent and the terms not sent.\\n**Priority:** P1 | **Story:** Story 3\"}], \"plan_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L80-L98\", \"excerpt\": \"223 is an application safety ceiling, not a claimed engine limit.\"}, {\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L260-L269\", \"excerpt\": \"Exact numeric formula/unit/task restrictions for every supporting catalog mechanism; request fields and backend accepted-term counts agree; no inherited UI whitelist.\"}, {\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L80-L98\", \"excerpt\": \"Never cut a term or let native trimming silently remove unreported terms.\"}], \"searched_plan_sections\": []}, {\"requirement_id\": \"003-recognition-vocabulary:AC-005\", \"disposition\": \"covered\", \"rationale\": \"The actual context_applied predicate replaces Whisper-name inference. Unsupported/streaming requests attach no context; nonempty fallback runs exactly once after final recognition, and any accepted context suppresses correction for the entire result. Empty list exception is explicit. No AI post-processing substitute is introduced.\", \"source_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L191-L195\", \"excerpt\": \"**Criterion:** A model without recognition-context support, and every streaming recognition, receives no vocabulary context. In those cases the existing approximate correction after recognition applies, as today. When context was sent, approximate correction is skipped, as today for Whisper.\\n**Priority:** P1 | **Story:** Stories 2 and 3\"}], \"plan_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L99-L108\", \"excerpt\": \"Approximate correction predicate is `!snapshot.terms.is_empty() && !outcome.context_applied`.\"}, {\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L99-L108\", \"excerpt\": \"Streaming sends no context and applies fallback exactly once to final text, not repeatedly to cumulative preview.\"}], \"searched_plan_sections\": []}, {\"requirement_id\": \"003-recognition-vocabulary:AC-006\", \"disposition\": \"covered\", \"rationale\": \"A revision-bound recognition snapshot applies committed edits only to the next request and keeps in-flight recognition stable without reload/restart. Empty snapshots send nothing and disable correction; integration tests explicitly cover active edits, recovery and no reload. Fresh Step 3 now explicitly binds the existing next-recognition behavior to AC-006; this is a structural mapping improvement, not additional scope.\", \"source_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L196-L200\", \"excerpt\": \"**Criterion:** A vocabulary change applies from the next recognition without restarting the app or reloading the model. An empty vocabulary sends no context and disables approximate correction.\\n**Priority:** P2 | **Story:** Stories 1 and 3\"}], \"plan_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L99-L108\", \"excerpt\": \"Vocabulary edits affect the next recognition; an in-flight batch or stream/finalize keeps its own list/threshold even if the UI commits meanwhile. No model reload for list edits.\"}, {\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L99-L108\", \"excerpt\": \"Zero sent with nonempty vocabulary uses fallback; empty list disables both.\"}, {\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L280-L289\", \"excerpt\": \"AC-006: next recognition sees committed vocabulary without restart/reload.\"}], \"searched_plan_sections\": []}, {\"requirement_id\": \"003-recognition-vocabulary:AC-007\", \"disposition\": \"covered\", \"rationale\": \"All six required CLI operation families, merge/replace file/stdin/dry-run, raw/JSON export and status are specified through VocabularyDomain. It reuses 008 read_snapshot/commit_mutation, private routing, renderer, codes and exits with CAS/no-op/unknown outcomes. Shared validator and real process/UI parity tests cover atomic behavior. Fresh source now consistently counts six operation families, resolving the historical inventory typo.\", \"source_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L201-L205\", \"excerpt\": \"**Criterion:** The settings CLI (008) offers vocabulary list, add, remove, import (merge or replace, file or stdin, dry run), export (one term per line) and status (selected model, support, terms sent, terms not sent), sharing UI validation and atomic commit. With `--json`, stdout contains only the JSON envelope; errors use stable codes and exit codes.\\n**Priority:** P2 | **Story:** Story 4\"}], \"plan_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L109-L125\", \"excerpt\": \"Register `VocabularyDomain` in 008 `settings_service/domains/mod.rs`; new `domains/vocabulary.rs` delegates to existing trait parsing/preview/typed patch/export and the same `commit_mutation`.\"}, {\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L109-L125\", \"excerpt\": \"Reuse exactly `{ok:true,revision:N,data:...}` and `{ok:false,error:{code,message,details:{...}}}`.\"}], \"searched_plan_sections\": []}, {\"requirement_id\": \"003-recognition-vocabulary:FR-001\", \"disposition\": \"covered\", \"rationale\": \"Steps 2/3/5/6 map the single vocabulary store, authoritative validation and preview, atomic transaction, migration preservation and next-recognition snapshots to concrete files and meaningful tests. Legacy exemptions are identity-aware within the backend service, not asserted by the client. No new persistence list or revision channel is added.\", \"source_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L293-L297\", \"excerpt\": \"**Requirement:** Persist an ordered, uniquely keyed vocabulary in the existing custom-words setting with shared validation, bulk paste preview and atomic commit.\\n**AC References:** AC-001, AC-002, AC-006\"}], \"plan_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L270-L279\", \"excerpt\": \"New `recognition_vocabulary/{validation.rs,preview.rs}` implements scalar/key validation, keyed de-dup preview and grandfathered occurrence handling.\"}, {\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L70-L79\", \"excerpt\": \"Apply the same identity-aware validator in `commit_mutation`; legacy exemptions cannot be asserted by an untrusted caller.\"}], \"searched_plan_sections\": []}, {\"requirement_id\": \"003-recognition-vocabulary:FR-002\", \"disposition\": \"covered\", \"rationale\": \"Steps 1/3/5/6 implement loaded capability probes, truthful five-state status and selected model/mode/task snapshots with frontend race protection. UI/catalog family names do not establish support. Technical readiness errors preserve honesty and prevent release rather than masquerade as unsupported or used.\", \"source_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L298-L302\", \"excerpt\": \"**Requirement:** Determine recognition-context support from the loaded model's declared capabilities and the recognition mode (batch or streaming), and expose one truthful status per model.\\n**AC References:** AC-003, AC-005\"}], \"plan_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L80-L98\", \"excerpt\": \"Family names choose a request encoding/budget adapter only after positive capability probes; they never decide support in the UI or via the catalog.\"}, {\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L280-L289\", \"excerpt\": \"New `recognition_vocabulary/{context.rs,status.rs}` builds typed snapshots and exclusive status.\"}], \"searched_plan_sections\": []}, {\"requirement_id\": \"003-recognition-vocabulary:FR-003\", \"disposition\": \"covered\", \"rationale\": \"Steps 1/3/6 assign actual capability and native fitting/tokenizer ports in worker ownership, exclusive mechanism request encoding and accepted-term telemetry. Per-mechanism numerical/formula evidence is a blocking implementation spike output; unknown formulas cannot be enabled, and unresolvable API gaps require plan revision/re-review. Tail exclusion is truthful and tested.\", \"source_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L303-L307\", \"excerpt\": \"**Requirement:** Pass vocabulary terms to supporting models in batch recognition through the model's supported mechanism, within a documented per-mechanism budget, and record which terms were sent.\\n**AC References:** AC-004\"}], \"plan_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L260-L269\", \"excerpt\": \"Freeze source/version/hash and exact per-family budget/reserves into `contracts/context-budget.md` in this feature during implementation\"}, {\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L80-L98\", \"excerpt\": \"Native fitting/tokenizer port rechecks the exact request and reports accepted indices/count; initial prompt/generic alternatives cannot be attached simultaneously.\"}], \"searched_plan_sections\": []}, {\"requirement_id\": \"003-recognition-vocabulary:FR-004\", \"disposition\": \"covered\", \"rationale\": \"Steps 3/6 preserve the existing correction algorithm/threshold while gating execution by actual acknowledged context. In-flight list/threshold consistency, streaming-once semantics, empty/no-fit and engine regressions are concrete tests. Feature 002 stage ordering and 005 non-scope are explicitly maintained.\", \"source_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L308-L312\", \"excerpt\": \"**Requirement:** Keep approximate correction as the fallback when no context is sent, and skip it when context was sent.\\n**AC References:** AC-005, AC-006\"}], \"plan_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L99-L108\", \"excerpt\": \"Supporting models sending at least one term skip fallback for the complete result, including omitted terms, as AC-005 demands.\"}, {\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L341-L355\", \"excerpt\": \"empty/nonempty/no-fit, one term accepted suppresses all fallback, streaming context absent/fallback once\"}], \"searched_plan_sections\": []}, {\"requirement_id\": \"003-recognition-vocabulary:FR-005\", \"disposition\": \"covered\", \"rationale\": \"Steps 2/4/6 register the vocabulary domain with the exact 008 framework, owning typed mutation and single envelope renderer/error mapping. Operation matrix and process tests cover list/add/remove/import/export/status, validation and live/offline behavior. Fresh source uses 008 descriptor.rs singular and six operations, resolving the historical file-reference/count warning without introducing a new framework.\", \"source_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L313-L317\", \"excerpt\": \"**Requirement:** Expose vocabulary list, add, remove, import, export and status through the settings CLI with JSON output and stable error codes.\\n**AC References:** AC-007\"}], \"plan_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L290-L299\", \"excerpt\": \"Extend only owning vocabulary domain and 008 clap domain registration in `settings_service/{cli.rs,domains/mod.rs}`.\"}, {\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L109-L125\", \"excerpt\": \"No second service, revision, file writer, IPC channel or renderer.\"}], \"searched_plan_sections\": []}, {\"requirement_id\": \"003-recognition-vocabulary:SC-001\", \"disposition\": \"covered\", \"rationale\": \"The unit/worker/request matrix spans every declared cpp/ONNX family, conditional Granite metadata, final mode/task, request acceptance, unknown budget and hidden trimming. It asserts zero used_without_context using real serialization/request/ack seams, rather than infer native success from browser mocks or tool availability.\", \"source_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L370-L373\", \"excerpt\": \"For every engine family in the clarification table, an automated test asserts the displayed status and whether context reaches the engine request; zero cases show \\\"used\\\" without context in the request.\"}], \"plan_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L341-L355\", \"excerpt\": \"actual protocol serialization and acknowledgement, Whisper initial prompt regression, positive/negative capability, every listed ONNX and cpp family, Granite lacking metadata\"}, {\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L280-L289\", \"excerpt\": \"Zero used_without_context across every family in spec\"}], \"searched_plan_sections\": []}, {\"requirement_id\": \"003-recognition-vocabulary:SC-002\", \"disposition\": \"covered\", \"rationale\": \"Exact old term bytes/order and threshold retention are mandatory Step 2 success conditions with real isolated before/after stores. Fixtures cover duplicates, invalid terms and >500 preservation, remove-one occurrence, unrelated fields and transaction faults. Fresh Step 2 explicitly names SC-002 alongside AC-002 for this unchanged preservation gate. No storage pruning is authorized by runtime context filtering.\", \"source_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L374-L377\", \"excerpt\": \"Upgrading a settings store with existing custom words keeps 100% of terms, their order and the correction threshold.\"}], \"plan_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L270-L279\", \"excerpt\": \"100% legacy term/order/threshold preservation\"}, {\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L341-L355\", \"excerpt\": \"all legacy bytes/order/threshold, duplicate/invalid/>500 preservation, remove-one occurrence\"}, {\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L270-L279\", \"excerpt\": \"AC-002 and SC-002: 100% legacy term/order/threshold preservation\"}], \"searched_plan_sections\": []}, {\"requirement_id\": \"003-recognition-vocabulary:SC-003\", \"disposition\": \"covered\", \"rationale\": \"Step 6 freezes real audio/model/parameters and records binary/model/audio hashes, actual outputs and baseline. Correct Claude Code spelling is required; absence/failure blocks SC-003 even when request tests pass. Evidence is separate from WAV-gated application history and no broad accuracy claim is inferred.\", \"source_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L378-L380\", \"excerpt\": \"On one supporting model, a recorded sample containing \\\"Claude Code\\\" produces the correct spelling with the vocabulary and the evidence is recorded with the model id.\"}], \"plan_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L310-L319\", \"excerpt\": \"Capture SC-003 on frozen Claude Code sample/model and retain baseline.\"}, {\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L310-L319\", \"excerpt\": \"SC-003 failure remains failure even if mock request tests pass.\"}], \"searched_plan_sections\": []}], \"ambiguities\": [{\"requirement_id\": \"003-recognition-vocabulary:AC-001\", \"decision_key\": \"ui-contract-delivery-phase\", \"question\": \"May planning proceed without current generated Penflow inputs and mockups?\", \"critical\": true, \"citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L132-L137\", \"excerpt\": \"User decision overrides generation during this plan\"}], \"resolution\": \"Accepted user decision defers flow/screen contracts, semantic/test IDs and mockups to one program pass before spec-ship. The plan binds its future UI step to actual canonical code-ir, independent bound approval and design proof; no current UI certification is asserted.\", \"resolution_citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L356-L359\", \"excerpt\": \"Per the user decision of 2026-10-12 (lightweight UI contract), the Penflow flow/screen contract, semantic and test IDs and the Pencil mockup are produced in one pass for all program features before `spec-ship`; the planned IDs above are authoritative until then.\"}]}], \"extra_scope\": [{\"description\": \"Reject embedded NUL in newly submitted vocabulary terms.\", \"justification\": \"Justified technical necessity for native C-string safety, explicitly documented, with preserved legacy storage rather than destructive migration; it adds no new business flow.\", \"approved\": true, \"citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L70-L79\", \"excerpt\": \"reject `<`, `>`, double quote and NUL (native C-string safety)\"}]}, {\"description\": \"Conservative 223 rendered-token application ceiling in addition to each verified native/session allowance.\", \"justification\": \"Justified bounded native request safety policy; it is disclosed as an application ceiling, preserves terms and reports all exclusions, and cannot stand in for the mandatory native per-mechanism budget proof. The feature already permits ordered budget exclusion, so it introduces no separate business operation.\", \"approved\": true, \"citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L80-L98\", \"excerpt\": \"223 is an application safety ceiling, not a claimed engine limit.\"}, {\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L80-L98\", \"excerpt\": \"list it and all following terms as budget-excluded\"}]}], \"findings\": [{\"category\": \"implementation-inventory-resolved\", \"severity\": \"info\", \"description\": \"The prior review found descriptors.rs versus 008 descriptor.rs and seven versus six operation counts. Fresh complete context changes Step 2 to descriptor.rs and updates inventory, Step 4 and test matrix to six; this warning is resolved. The historical raw bundle remains separate and unchanged.\", \"suggestion\": \"Preserve exact 008 service/domain filenames and six operation families during implementation.\", \"citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L270-L279\", \"excerpt\": \"settings_service/{validation.rs,descriptor.rs}\"}, {\"section_id\": \".specs/features/008-settings-cli/plan.md:L302-L311\", \"excerpt\": \"settings_service/{mod.rs,descriptor.rs,validation.rs,protocol.rs,errors.rs}\"}, {\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L290-L299\", \"excerpt\": \"Six operations, atomic validation and same revision service\"}]}, {\"category\": \"native-budget-spike\", \"severity\": \"warning\", \"description\": \"Non-Whisper native budget formulas, locked tokenizer/fitting access and backend accepted-term telemetry remain unproved. The plan explicitly blocks adapter activation and full release pending Step 1, which makes the design safe to spike but does not establish production engine support. A positive capability alone cannot clear this gate.\", \"suggestion\": \"Retain the Step 1 gate exactly: version/hash-bound per-family formula/unit/reserves, exact native rendered selection and accepted-term evidence. If locked APIs cannot expose them, return the stated blocker and re-review the revised plan before later code; never relabel as unsupported or certify the 223 application ceiling as native budget.\", \"citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L80-L98\", \"excerpt\": \"Unknown native formula/tokenizer blocks adapter activation, never sends unchecked text\"}, {\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L260-L269\", \"excerpt\": \"Unresolvable API gap requires plan revision/re-review before later code.\"}]}, {\"category\": \"performance-feasibility\", \"severity\": \"warning\", \"description\": \"Strict <5 ms for every context preparation includes cold tokenization/fitting and worker costs. Longest-prefix testing against rendered candidates could be quadratic if implemented naively; the plan identifies latency risk but the future native spike must validate a feasible fitting/cache strategy. This is an execution feasibility gate, not current proof.\", \"suggestion\": \"Measure the complete native preparation path early, use the loaded tokenizer/native fitting helper and generation/revision cache without hidden rescans, retain cold and adversarial 500×100 cases. Keep the failure threshold and report blocked if it cannot be met; do not omit cold samples or timing of native query.\", \"citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L310-L319\", \"excerpt\": \"measure inclusive new context-preparation worker time, not inference/model load, with every measured preparation under 5 ms.\"}, {\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L374-L389\", \"excerpt\": \"Cold tokenization plus worker IPC could exceed the under-5-ms requirement\"}]}, {\"category\": \"review-identity-continuation\", \"severity\": \"info\", \"description\": \"The current Next Action forwards both --model=gpt-6 and --review-max-chars=180000 into spec-implement. This documentary delta preserves the review/gate identity and introduces no additional feature behavior. The preceding explicit AC-002/SC-002 and AC-006 Step 2/3 references remain grounded in unchanged preservation/hot-update behavior.\", \"suggestion\": \"Preserve this actual model/budget pair in the resumed implementation progression and review preparation. It is a next action only, not implementation authorization or execution evidence.\", \"citations\": [{\"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L390-L392\", \"excerpt\": \"$spec-implement 003-recognition-vocabulary --model=gpt-6 --review-max-chars=180000\"}]}], \"confidence\": 4, \"synthesized_batch_ids\": [], \"resolutions\": []}"
+    "{\n \"batch_id\": \"batch-001\",\n \"reviewed_section_ids\": [\n  \".specs/constitution.md:L1-L2\",\n  \".specs/constitution.md:L3-L17\",\n  \".specs/constitution.md:L18-L26\",\n  \".specs/constitution.md:L27-L30\",\n  \".specs/constitution.md:L31-L36\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L1-L16\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L17-L18\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L19-L24\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L25-L39\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L40-L53\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L54-L67\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L68-L69\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L70-L79\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L80-L98\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L99-L108\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L109-L127\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L128-L133\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L134-L139\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L140-L296\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L297-L298\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L299-L308\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L309-L318\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L319-L328\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L329-L338\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L339-L348\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L349-L358\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L359-L379\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L380-L394\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L395-L412\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L413-L438\",\n  \".specs/features/003-recognition-vocabulary/plan.md:L439-L441\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L1-L9\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L10-L11\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L12-L20\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L21-L22\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L23-L57\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L58-L105\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L106-L142\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L143-L168\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L169-L170\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L171-L175\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L176-L180\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L181-L185\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L186-L190\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L191-L195\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L196-L200\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L201-L205\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L206-L209\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L210-L234\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L235-L255\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L256-L271\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L272-L290\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L291-L292\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L293-L297\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L298-L302\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L303-L307\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L308-L312\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L313-L317\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L318-L324\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L325-L337\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L338-L347\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L348-L354\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L355-L362\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L363-L366\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L367-L374\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L375-L376\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L377-L380\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L381-L384\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L385-L387\",\n  \".specs/project.md:L1-L2\",\n  \".specs/project.md:L3-L7\",\n  \".specs/project.md:L8-L16\",\n  \".specs/project.md:L17-L20\",\n  \".specs/project.md:L21-L24\",\n  \".specs/project.md:L25-L28\",\n  \".specs/project.md:L29-L36\",\n  \".specs/stacks/_default.md:L1-L5\",\n  \".specs/stacks/_default.md:L6-L7\",\n  \".specs/stacks/_default.md:L8-L21\",\n  \".specs/stacks/_default.md:L22-L31\",\n  \".specs/testing/strategy.md:L1-L2\",\n  \".specs/testing/strategy.md:L3-L6\",\n  \".specs/testing/strategy.md:L7-L12\",\n  \".specs/testing/strategy.md:L13-L16\"\n ],\n \"conclusions\": [\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:AC-001\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"The plan implements a Rust-authoritative validator with 1-100 Unicode scalars on trimmed text, line-break and <, >, double-quote rejection, a trimmed/whitespace-collapsed/case-folded uniqueness key and the 500-term cap, rejects any candidate with an invalid line without saving a subset, and the Step 5 UI presents ordered rows, Add/remove and a paste preview with Apply. Duplicate lines in a paste are reported and skipped, exactly as the spec's own Story 1 scenario expects; legacy over-limit data is grandfathered per the spec edge case.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L171-L175\",\n     \"excerpt\": \"The vocabulary holds at most 500 terms.\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L171-L175\",\n     \"excerpt\": \"duplicates and invalid terms are reported without a partial write\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L70-L79\",\n     \"excerpt\": \"count Unicode scalar values on the trimmed text before collapse, require 1–100, and reject `<`, `>`, double quote and NUL\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L70-L79\",\n     \"excerpt\": \"Any invalid new line, capacity error or stale revision rejects the entire candidate; never save the valid subset while an invalid line remains.\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L339-L348\",\n     \"excerpt\": \"present ordered rows, explicit Add/remove, paste preview/Apply, status and sent/excluded/legacy issue detail\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:AC-002\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"custom_words stays the single serialized list, upgrading never normalizes or prunes entries, the threshold is preserved through 008, Step 2 gates 100% term/order/threshold preservation, and Step 5 renames the area Vocabulary and explains vocabulary versus replacements.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L176-L180\",\n     \"excerpt\": \"upgrading keeps every stored term in order, and the existing approximate-correction threshold keeps its value\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L176-L180\",\n     \"excerpt\": \"unlike replacement rules (002), which rewrite recognized text\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L70-L79\",\n     \"excerpt\": \"`custom_words` remains the serialized list. Loading, upgrading and listing never normalize or prune old entries\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L309-L318\",\n     \"excerpt\": \"AC-002 and SC-002: 100% legacy term/order/threshold preservation\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L339-L348\",\n     \"excerpt\": \"vocabulary versus replacements explained\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:AC-003\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"The plan defines the five statuses with a priority order identical to the spec flowchart (unknown, streaming, not supported, no term sent with reason, used), derives support from positive capability probes of the loaded model rather than a catalog or UI list, and requires used_during_recognition only for an acknowledged exact request. A separate technical readiness error outside the five statuses is raised as a warning finding.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L181-L185\",\n     \"excerpt\": \"For the selected model, the vocabulary settings show exactly one status among\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L181-L185\",\n     \"excerpt\": \"The status derives from the capabilities declared by the loaded model and engine, not from a fixed model list.\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L325-L337\",\n     \"excerpt\": \"shows the fifth status \\\"no term sent\\\" with its reason\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L99-L108\",\n     \"excerpt\": \"Status priority: unreadable selected capability → unknown; final route streaming → not_used_streaming\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L80-L98\",\n     \"excerpt\": \"they never decide support in the UI or via the catalog\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L80-L98\",\n     \"excerpt\": \"Actual status is calculated from the exact request builder output and engine acknowledgement, not a separate JS estimator.\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:AC-004\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Batch requests use the mechanism the loaded model accepts (Whisper initial prompt, generic vocabulary, context prompt), select the longest whole prefix of terms in list order that fits a budget documented with sources in contracts/context-budget.md (Whisper 223 tokens; other families measured in Step 1, disabled until documented), and the settings and CLI status report sent and not-sent terms.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L186-L190\",\n     \"excerpt\": \"Terms are sent in list order up to the model's documented context budget\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L303-L307\",\n     \"excerpt\": \"within a documented per-mechanism budget, and record which terms were sent\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L80-L98\",\n     \"excerpt\": \"Prepare the longest whole prefix of eligible terms whose **complete native rendered text** fits\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L299-L308\",\n     \"excerpt\": \"`contracts/context-budget.md` gives a sourced, measured value, unit and task restrictions for every supporting catalog mechanism\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L109-L127\",\n     \"excerpt\": \"D2 live operation: selected model, capability, actual/preview mode/task, mechanism, budget/unit, status, terms sent/not_sent and evidence kind\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:AC-005\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Unsupported models and streaming receive zero terms with all context fields absent; the fallback predicate applies approximate correction only when the snapshot list is nonempty and no context was acknowledged, skips it when at least one term was sent, and streaming applies it once to final text.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L191-L195\",\n     \"excerpt\": \"A model without recognition-context support, and every streaming recognition, receives no vocabulary context.\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L191-L195\",\n     \"excerpt\": \"When context was sent, approximate correction is skipped, as today for Whisper.\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L80-L98\",\n     \"excerpt\": \"Zero terms; vocabulary/prompt/Whisper extension all absent\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L99-L108\",\n     \"excerpt\": \"Approximate correction predicate is `!snapshot.terms.is_empty() && !outcome.context_applied`.\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L99-L108\",\n     \"excerpt\": \"Streaming sends no context and applies fallback exactly once to final text\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:AC-006\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"A per-recognition snapshot is captured just before each request, custom_words has no live effect and is read at use, list edits never reload the model, in-flight recognitions keep their own revision, and an empty list disables both context and correction. Step 3 sets AC-006 as its success criterion.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L196-L200\",\n     \"excerpt\": \"A vocabulary change applies from the next recognition without restarting the app or reloading the model.\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L196-L200\",\n     \"excerpt\": \"An empty vocabulary sends no context and disables approximate correction.\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L99-L108\",\n     \"excerpt\": \"Vocabulary edits affect the next recognition; an in-flight batch or stream/finalize keeps its own list/threshold even if the UI commits meanwhile. No model reload for list edits.\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L99-L108\",\n     \"excerpt\": \"Zero sent with nonempty vocabulary uses fallback; empty list disables both.\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L319-L328\",\n     \"excerpt\": \"AC-006: next recognition sees committed vocabulary without restart/reload.\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:AC-007\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"The plan registers a VocabularyDomain in the 008 framework with list, add, remove, import (merge/replace, file or stdin, dry run), export one term per line on stdout and a live status operation, sharing the UI validator and the 008 atomic commit, with the 008 envelope, stable codes and exit codes and exactly one JSON envelope on stdout. Offline status reuses 008's live-only refusal, which the spec does not contradict.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L201-L205\",\n     \"excerpt\": \"import (merge or replace, file or stdin, dry run), export (one term per line)\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L201-L205\",\n     \"excerpt\": \"With `--json`, stdout contains only the JSON envelope; errors use stable codes and exit codes.\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L109-L127\",\n     \"excerpt\": \"Canonical actions are `list`, `add`, `remove`, `import`, `export` and `status`\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L109-L127\",\n     \"excerpt\": \"success=0; persistence_failed/internal_error=1; usage_error/validation_failed/limit_exceeded=2\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L329-L338\",\n     \"excerpt\": \"exactly one JSON envelope, no term-bearing diagnostics\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:FR-001\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Ordered storage in the existing custom_words key, a single Rust validator used by preview and commit for UI and CLI, first-wins deduplicated bulk preview and an atomic compare-and-set commit through the 008 shared path are all specified in the architecture and Step 2.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L293-L297\",\n     \"excerpt\": \"Persist an ordered, uniquely keyed vocabulary in the existing custom-words setting with shared validation, bulk paste preview and atomic commit.\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L70-L79\",\n     \"excerpt\": \"Bulk paste/import first prepares a candidate: keep the first spelling/order, report later duplicates as skipped non-errors\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L109-L127\",\n     \"excerpt\": \"both bulk preview and commit call the same Rust validator\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:FR-002\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Step 1 extends the worker LoadedInfo with actual feature bits and extension acceptance for the selected loaded model; the snapshot records actual mode and resolved task, and one exclusive status is computed from it.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L298-L302\",\n     \"excerpt\": \"Determine recognition-context support from the loaded model's declared capabilities and the recognition mode (batch or streaming), and expose one truthful status per model.\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L80-L98\",\n     \"excerpt\": \"Probe the selected loaded model, not a temporary command-line model override.\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L99-L108\",\n     \"excerpt\": \"Capture immediately before a batch request or streaming begin, after loading the selected model and resolving effective translate task.\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:FR-003\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Terms are passed through the accepted mechanism only, with native fitting rechecking the exact request and reporting accepted indices; context_applied reflects acknowledged whole terms, and the snapshot records sent and not-sent terms (volatile, exposed as dispatched evidence).\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L303-L307\",\n     \"excerpt\": \"Pass vocabulary terms to supporting models in batch recognition through the model's supported mechanism\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L80-L98\",\n     \"excerpt\": \"Native fitting/tokenizer port rechecks the exact request and reports accepted indices/count\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L99-L108\",\n     \"excerpt\": \"`context_applied` in `RunOutcome` is true only for acknowledged whole terms, not `run.model_is_whisper`.\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:FR-004\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"The routing predicate keeps the existing correction as fallback when no term was acknowledged and skips it when context was sent, leaving the correction algorithm and threshold unchanged.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L308-L312\",\n     \"excerpt\": \"Keep approximate correction as the fallback when no context is sent, and skip it when context was sent.\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L99-L108\",\n     \"excerpt\": \"Approximate correction predicate is `!snapshot.terms.is_empty() && !outcome.context_applied`.\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L319-L328\",\n     \"excerpt\": \"Existing text correction implementation stays unchanged\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:FR-005\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Step 4 implements all six CLI operations on the registered domain with JSON output, the 008 envelope and stable codes/exits, per-line D3 items and process-level tests; its dependency on 006 step 0 is an explicit prerequisite.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L313-L317\",\n     \"excerpt\": \"Expose vocabulary list, add, remove, import, export and status through the settings CLI with JSON output and stable error codes.\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L329-L338\",\n     \"excerpt\": \"Implement list/add/remove/import/export/status operations above with existing private live/offline routing\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L109-L127\",\n     \"excerpt\": \"Reuse exactly `{ok:true,revision:N,data:...}` and `{ok:false,error:{code,message,details:{...}}}`.\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:SC-001\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"The worker/request integration tests cover every listed ONNX and transcribe-cpp family plus Granite without metadata, asserting status and request content, and Step 3 sets zero used-without-context as its success criterion; UI rendering of the five statuses is tested in the browser suite.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L377-L380\",\n     \"excerpt\": \"For every engine family in the clarification table, an automated test asserts the displayed status and whether context reaches the engine request\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L380-L394\",\n     \"excerpt\": \"every listed ONNX and cpp family, Granite lacking metadata\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L319-L328\",\n     \"excerpt\": \"Zero used_without_context across every family in spec\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:SC-002\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Step 2 and the transaction integration suite assert exact legacy bytes, order and threshold before and after upgrade, including invalid, duplicate and over-500 legacy lists.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L381-L384\",\n     \"excerpt\": \"Upgrading a settings store with existing custom words keeps 100% of terms, their order and the correction threshold.\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L54-L67\",\n     \"excerpt\": \"Exact term bytes/order and threshold before/after upgrade\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L380-L394\",\n     \"excerpt\": \"`vocabulary_transactions.rs`: all legacy bytes/order/threshold\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:SC-003\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Step 6 captures a frozen Claude Code sample on a supporting model with baseline, archives model id/hashes and output, and keeps SC-003 failing if the real sample fails even when mocked tests pass.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L385-L387\",\n     \"excerpt\": \"the evidence is recorded with the model id\"\n    }\n   ],\n   \"plan_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L349-L358\",\n     \"excerpt\": \"Capture SC-003 on frozen Claude Code sample/model and retain baseline.\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L54-L67\",\n     \"excerpt\": \"Frozen real audio says Claude Code; model id and correct output archived\"\n    }\n   ]\n  }\n ],\n \"ambiguities\": [\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:AC-003\",\n   \"decision_key\": \"not-supported-status-with-empty-vocabulary\",\n   \"question\": \"When the selected model has no recognition-context support and the vocabulary is empty, should the 'not supported' status still state that approximate correction applies instead, given AC-006 says an empty vocabulary disables approximate correction? The plan does not define the status wording for this combination.\",\n   \"critical\": false,\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L181-L185\",\n     \"excerpt\": \"not supported by this model (approximate correction applies instead)\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L196-L200\",\n     \"excerpt\": \"An empty vocabulary sends no context and disables approximate correction.\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:FR-003\",\n   \"decision_key\": \"sent-terms-record-persistence\",\n   \"question\": \"Does 'record which terms were sent' require a durable record (e.g. per history entry or across restarts), or is the plan's volatile per-recognition snapshot exposed as the last dispatched evidence sufficient?\",\n   \"critical\": false,\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L303-L307\",\n     \"excerpt\": \"and record which terms were sent\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L99-L108\",\n     \"excerpt\": \"`RecognitionContextSnapshot` is volatile\"\n    }\n   ]\n  }\n ],\n \"extra_scope\": [\n  {\n   \"description\": \"NUL is rejected in new terms in addition to the spec's <, > and double quote.\",\n   \"justification\": \"Needed for native C-string safety when terms are passed to the native engine; does not change user-facing business rules for realistic terms.\",\n   \"approved\": true,\n   \"kind\": \"technical\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L70-L79\",\n     \"excerpt\": \"reject `<`, `>`, double quote and NUL (native C-string safety)\"\n    }\n   ]\n  },\n  {\n   \"description\": \"A technical readiness error `context_budget_unverified` (internal_error/1, UI actionable error) for a positive capability whose budget is not documented.\",\n   \"justification\": \"Required to avoid sending unchecked context or falsely labelling a supporting model as unsupported while honoring AC-004's documented-budget rule.\",\n   \"approved\": true,\n   \"kind\": \"technical\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L109-L127\",\n     \"excerpt\": \"`context_budget_unverified` is `internal_error`/1 with `details.reason`\"\n    }\n   ]\n  },\n  {\n   \"description\": \"Status evidence distinguishes prepared next-request preview from last dispatched delivery (`evidence_kind`).\",\n   \"justification\": \"Necessary for a truthful status: a preview must not imply a past recognition used the vocabulary.\",\n   \"approved\": true,\n   \"kind\": \"technical\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L99-L108\",\n     \"excerpt\": \"Preview fields are marked `evidence_kind=prepared`, with last actual delivery separately `evidence_kind=dispatched`\"\n    }\n   ]\n  },\n  {\n   \"description\": \"New `tauri_adapter::write_change` wrapper so the UI commits the same DomainChange with compare-and-set as the CLI.\",\n   \"justification\": \"Needed for shared validation and atomic commit between UI and CLI (FR-001, AC-007) without a second writer.\",\n   \"approved\": true,\n   \"kind\": \"technical\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L109-L127\",\n     \"excerpt\": \"through a new `tauri_adapter::write_change(app, &DomainChange, expected)` wrapper\"\n    }\n   ]\n  },\n  {\n   \"description\": \"CLI export only to stdout with explicit `-`; file obtained by shell redirection, other targets are usage_error.\",\n   \"justification\": \"Constraint of the merged 008 framework, which has no file output; spec only requires one term per line.\",\n   \"approved\": true,\n   \"kind\": \"technical\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L109-L127\",\n     \"excerpt\": \"any other target argument is `usage_error`\"\n    }\n   ]\n  },\n  {\n   \"description\": \"Legacy over-capacity policy: remove-only mutations may reduce a grandfathered over-500 list, adds/merge are refused while above 500, and removal targets one occurrence by revision-bound index.\",\n   \"justification\": \"Operationalizes the spec edge case that legacy terms violating new limits are kept as stored and flagged until edited; no new user-facing capability beyond the spec's add/remove.\",\n   \"approved\": true,\n   \"kind\": \"business\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L70-L79\",\n     \"excerpt\": \"Remove-only mutations can reduce a legacy over-capacity list even before it reaches 500\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L367-L374\",\n     \"excerpt\": \"Stored legacy terms that violate the new limits: kept as stored, flagged invalid in the UI, and excluded from context until edited.\"\n    }\n   ]\n  }\n ],\n \"findings\": [\n  {\n   \"category\": \"requirement-conformance\",\n   \"severity\": \"warning\",\n   \"description\": \"The plan introduces a technical readiness error shown instead of one of the five statuses when a loaded model declares a positive capability but no documented budget exists. Release is blocked for catalog adapters, but the spec expects new engine versions or non-catalog models to update status by declared capability, so this non-status state can still be reachable after release, which conflicts with 'exactly one status'.\",\n   \"suggestion\": \"State explicitly how a positive capability without a known family adapter/budget is presented post-release (e.g. which of the five statuses plus a technical note), or add a test proving that every reachable loaded model maps to one of the five statuses, and record the residual error path as accepted by the spec owner.\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L80-L98\",\n     \"excerpt\": \"A known positive capability with an unproven budget is a technical readiness error, distinct from the five domain statuses\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L325-L337\",\n     \"excerpt\": \"AC-003 relies on declared capabilities so that new engine versions update the status without a spec change.\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L339-L348\",\n     \"excerpt\": \"Exactly one current status or explicit technical error\"\n    }\n   ]\n  },\n  {\n   \"category\": \"missing-step\",\n   \"severity\": \"warning\",\n   \"description\": \"No step explicitly adds the native UI commands for the bulk-paste candidate preview and the occurrence-based removal: Step 2 only modifies `update_custom_words`, Step 3's commands/transcription.rs entries concern context preview/status, yet Step 5's hook expects a typed backend preview.\",\n   \"suggestion\": \"In Step 2, list the Tauri command(s) for candidate preview (pure, revision-bound) and occurrence removal, their registration in lib.rs and the bindings regeneration they require.\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L309-L318\",\n     \"excerpt\": \"modify shortcut/mod.rs `update_custom_words` to commit the same `DomainChange` through it\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L319-L328\",\n     \"excerpt\": \"Modify `commands/transcription.rs` and lib.rs registration for preview/status query/events\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L339-L348\",\n     \"excerpt\": \"New `src/hooks/use-vocabulary.ts` wraps typed backend preview/status\"\n    }\n   ]\n  },\n  {\n   \"category\": \"ordering\",\n   \"severity\": \"info\",\n   \"description\": \"Step 5 (P1 settings UI) requires CLI parity PASS, and Step 4 requires 006 step 0 merged, so the P1 UI story is transitively blocked by another feature's framework work needed only for the P2 CLI story.\",\n   \"suggestion\": \"Consider gating Step 5 on the Rust domain/preview APIs (Steps 2-3) and moving the UI/CLI parity check to Step 6, so the UI is not blocked by 006 step 0.\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L339-L348\",\n     \"excerpt\": \"Rust APIs and CLI parity PASS\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L329-L338\",\n     \"excerpt\": \"**006 step 0 merged**\"\n    }\n   ]\n  },\n  {\n   \"category\": \"ordering\",\n   \"severity\": \"info\",\n   \"description\": \"Step 2 (validation, legacy preservation, transactions) waits for 'typed descriptors stable' from the Step 1 native capability spike, although data-integrity work does not depend on engine capability descriptors.\",\n   \"suggestion\": \"Allow Step 2 to start in parallel with Step 1, keeping only Step 3 dependent on Step 1 evidence.\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L309-L318\",\n     \"excerpt\": \"**Prerequisite:** Typed descriptors stable; merged 008 service tests PASS.\"\n    }\n   ]\n  },\n  {\n   \"category\": \"status-truthfulness\",\n   \"severity\": \"info\",\n   \"description\": \"A worker capability query that times out while a model is loaded is reported as `unknown_until_model_loads`, while the spec scenario defines that status for no loaded model with unreadable capabilities; the label may mislead when the model is already loaded.\",\n   \"suggestion\": \"Keep the unknown status but attach a distinct reason (e.g. capability query timed out) so the UI/CLI text stays truthful.\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/plan.md:L109-L127\",\n     \"excerpt\": \"or a worker query that does not answer in time, is the successful status `unknown_until_model_loads`, never a guess\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L58-L105\",\n     \"excerpt\": \"Given no model is loaded and the selected model's capabilities cannot be read\"\n    }\n   ]\n  }\n ],\n \"confidence\": 4,\n \"synthesized_batch_ids\": [],\n \"resolutions\": []\n}"
   ],
   "synthesis": null,
   "synthesis_transport_version": null

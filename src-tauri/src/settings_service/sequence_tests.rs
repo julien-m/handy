@@ -4,12 +4,11 @@
 //! when an unknown outcome landed; concurrent writes and repairs leave the native state equal to
 //! the disk and lose no update.
 use super::{
-    commit_prepared, ordered, repair, write_edit, write_prepared, write_value, LiveEffectsPort,
+    repair, write_edit, write_edit_prepared, write_prepared, write_value, LiveEffectsPort,
     PreparedChange,
 };
 use crate::settings::AppSettings;
 use crate::settings_service::{
-    edit::SettingsEdit,
     errors::{Outcome, SettingsError, SettingsErrorCode},
     live::{LiveCommit, LiveSettings},
     ownership::LegacyPathProbe,
@@ -170,6 +169,7 @@ fn mirrored<'a>(port: &'a SpyPort, key: &'static str, value: Value) -> PreparedC
             let before = serde_json::to_value(before).unwrap_or_default();
             port.set_native(key, before[key].clone());
         }),
+        extend: None,
     }
 }
 #[test]
@@ -182,6 +182,7 @@ fn refused_preparation_leaves_disk_revision_native_and_ui_unchanged() -> TestRes
     let refusal = PreparedChange {
         prepare: Box::new(|_, _| Err(SettingsError::live_state_refused("vad_backend"))),
         compensate: Box::new(|_| port.record("compensated".into())),
+        extend: None,
     };
     let error = write_prepared(&live, &port, "vad_backend", json!("earshot"), refusal)
         .err()
@@ -214,29 +215,64 @@ fn refused_commit_compensates_the_prepared_native_change() -> TestResult {
     Ok(())
 }
 #[test]
-fn refused_prepared_edit_compensates_and_notifies_nothing() -> TestResult {
+fn a_prepared_scalar_commits_its_extension_in_the_same_revision() -> TestResult {
     let directory = tempfile::tempdir()?;
     let live = owned(&directory)?;
     let port = SpyPort::default();
+    let revision = live.snapshot().revision.0;
+    let feedback = live.settings().audio_feedback;
+    let mut change = mirrored(&port, "vad_backend", json!("earshot"));
+    change.extend = Some(Box::new(|settings: &mut AppSettings| {
+        settings.audio_feedback = !settings.audio_feedback;
+        Ok(())
+    }));
+    let commit = write_prepared(&live, &port, "vad_backend", json!("earshot"), change)?;
+    assert_eq!(commit.revision.0, revision + 1);
+    assert_eq!(stored(&directory, "vad_backend")?, json!("earshot"));
+    assert_eq!(stored(&directory, "audio_feedback")?, json!(!feedback));
+    assert_eq!(port.native("vad_backend"), Some(json!("earshot")));
+    Ok(())
+}
+#[test]
+fn refused_prepared_edit_compensates_and_notifies_nothing() -> TestResult {
+    let directory = tempfile::tempdir()?;
+    let live = LiveSettings::start_read_only(store(&directory), SettingsErrorCode::Unavailable);
+    let port = SpyPort::default();
+    port.set_native("bindings", json!("published"));
+    let change = mirrored(&port, "bindings", json!("prepared"));
+    let edit = |settings: &mut AppSettings| {
+        if let Some(binding) = settings.bindings.get_mut("transcribe") {
+            binding.current_binding = "f13".into();
+        }
+        Ok(())
+    };
+    let error = write_edit_prepared(&live, &port, "bindings", &edit, change)
+        .err()
+        .ok_or("read-only commit accepted")?;
+    assert_eq!(error.code(), SettingsErrorCode::Unavailable);
+    let published = serde_json::to_value(&live.settings().bindings)?;
+    assert_eq!(port.native("bindings"), Some(published));
+    assert!(port.events().is_empty());
+    Ok(())
+}
+#[test]
+fn a_refused_edit_prepares_nothing() -> TestResult {
+    let directory = tempfile::tempdir()?;
+    let live = owned(&directory)?;
+    let port = SpyPort::default();
+    port.set_native("bindings", json!("published"));
+    let change = mirrored(&port, "bindings", json!("prepared"));
     let refused = |_: &mut AppSettings| {
         Err(SettingsError::validation(
             "bindings",
             crate::settings_service::errors::ValidationReason::CanonicalValue,
         ))
     };
-    let compensated = AtomicBool::new(false);
-    let result = ordered(&live, &port, || {
-        let before = live.settings();
-        let edit = SettingsEdit::Apply(&refused);
-        commit_prepared(&live, &port, "bindings", &edit, &before, || {
-            compensated.store(true, Ordering::SeqCst)
-        })
-    });
-    assert_eq!(
-        result.err().map(|error| error.code()),
-        Some(SettingsErrorCode::ValidationFailed)
-    );
-    assert!(compensated.load(Ordering::SeqCst));
+    let error = write_edit_prepared(&live, &port, "bindings", &refused, change)
+        .err()
+        .ok_or("refused edit committed")?;
+    assert_eq!(error.code(), SettingsErrorCode::ValidationFailed);
+    assert_eq!(port.native("bindings"), Some(json!("published")));
     assert!(port.events().is_empty());
     Ok(())
 }
@@ -329,3 +365,6 @@ mod races;
 
 #[path = "sequence_parity_tests.rs"]
 mod parity;
+
+#[path = "sequence_destination_tests.rs"]
+mod destination;

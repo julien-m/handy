@@ -48,6 +48,7 @@ fn recording_refusal(key: &'static str) -> PreparedChange<'static> {
     PreparedChange {
         prepare: Box::new(move |_, _| Err(SettingsError::live_state_refused(key))),
         compensate: Box::new(|_| {}),
+        extend: None,
     }
 }
 fn cli_set(backend: &dyn SettingsBackend, key: &str, value: &str, expected: Option<u64>) -> Value {
@@ -108,6 +109,7 @@ fn expect_earshot() -> PreparedChange<'static> {
             Ok(())
         }),
         compensate: Box::new(|_| {}),
+        extend: None,
     }
 }
 #[test]

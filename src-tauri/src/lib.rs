@@ -9,16 +9,21 @@ mod chinese_script;
 pub mod cli;
 mod clipboard;
 mod commands;
+pub mod destination;
 pub mod engine_supervisor;
 mod helpers;
 mod input;
 mod llm_client;
 mod managers;
+/// History storage (text-only rows included), public for the history integration tests.
+pub use managers::history_store;
 mod memory;
 mod overlay;
 mod paste_tx;
 pub mod portable;
 mod secure_input;
+#[cfg(target_os = "macos")]
+mod secure_input_shadow;
 mod settings;
 pub mod settings_service;
 mod shortcut;
@@ -242,6 +247,7 @@ fn initialize_core_logic(app_handle: &AppHandle) {
     app_handle.manage(transcription_manager.clone());
     app_handle.manage(history_manager.clone());
     app_handle.manage(tray::TrayState::new());
+    destination::app::install(app_handle);
 
     // Note: Shortcuts are NOT initialized here.
     // The frontend is responsible for calling the `initialize_shortcuts` command
@@ -679,6 +685,8 @@ pub fn run(cli_args: CliArgs) {
         .commands(collect_commands![
             shortcut::change_binding,
             shortcut::reset_binding,
+            shortcut::edits::edit_binding_shortcuts,
+            shortcut::edits::get_shortcut_conflicts,
             shortcut::change_shortcut_activation_setting,
             shortcut::change_hold_threshold_ms_setting,
             shortcut::change_audio_feedback_setting,
@@ -721,6 +729,7 @@ pub fn run(cli_args: CliArgs) {
             shortcut::resume_all_bindings,
             shortcut::change_mute_while_recording_setting,
             shortcut::change_append_trailing_space_setting,
+            shortcut::change_return_to_dictation_app_setting,
             shortcut::change_lazy_stream_close_setting,
             shortcut::change_vad_enabled_setting,
             shortcut::change_vad_backend_setting,
@@ -744,6 +753,11 @@ pub fn run(cli_args: CliArgs) {
             trigger_update_check,
             show_main_window_command,
             commands::cancel_operation,
+            commands::destination::destination_snapshot,
+            commands::destination::destination_support,
+            commands::destination::destination_menu,
+            commands::destination::choose_destination,
+            commands::destination::remove_destination,
             commands::is_portable,
             commands::is_update_checks_locked,
             commands::get_app_dir_path,

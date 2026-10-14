@@ -205,6 +205,22 @@
           "restore": "Orijinal kısayol geri yüklenemedi",
           "set": "Kısayol ayarlanamadı: {{error}}",
           "reset": "Kısayol orijinal değerine sıfırlanamadı"
+        },
+        "list": {
+          "add": "Kısayol ekle",
+          "addLimit": "Eylem başına en fazla {{limit}} kısayol",
+          "change": "Yeni bir kombinasyon kaydetmek için tıklayın",
+          "remove": "Bu kısayolu kaldır",
+          "removeLast": "Her eylem en az bir kısayol tutar",
+          "reset": "Varsayılan kısayola sıfırla",
+          "errors": {
+            "conflict": "Zaten {{action}} tarafından kullanılıyor ({{shortcut}})",
+            "overlap": "{{action}} eylemini de tetikler ({{shortcut}})",
+            "invalid": "Geçersiz kısayol: {{error}}",
+            "registration": "Sistem bu kısayolu reddetti: {{error}}",
+            "generic": "Kısayol kaydedilemedi",
+            "conflictsUnavailable": "Kısayol çakışmaları denetlenemedi"
+          }
         }
       },
       "language": {
@@ -477,6 +493,7 @@
       "deleteError": "Kayıt silinemedi. Lütfen tekrar deneyin.",
       "retranscribe": "Yeniden transkribe et",
       "retranscribeError": "Yeniden transkripsiyon başarısız oldu. Lütfen tekrar deneyin.",
+      "noAudio": "Bu kayıt için ses kaydı saklanmadı, bu yüzden yeniden yazıya dökülemez.",
       "transcribing": "Transkribe ediliyor...",
       "transcriptionFailed": "Transkripsiyon başarısız oldu. Yeniden deneme simgesini kullanarak tekrar transkribe edebilirsiniz."
     },
@@ -539,7 +556,8 @@
       },
       "postProcessingToggle": {
         "label": "Son İşlem",
-        "description": "Transkripsiyon sonrası yapay zekâ destekli metin iyileştirmeyi etkinleştirir"
+        "description": "Transkripsiyon sonrası yapay zekâ destekli metin iyileştirmeyi etkinleştirir",
+        "shortcutRefused": "Son İşlem açık, ancak sistem {{shortcut}} kısayolunu reddetti. Kısayolu Son İşlem ayarlarından değiştirin."
       },
       "muteWhileRecording": {
         "label": "Kayıt Sırasında Sessize Al",
@@ -552,7 +570,8 @@
       "keyboardImplementation": {
         "title": "Klavye Uygulaması",
         "description": "Klavye kısayolları için kullanılacak altyapıyı seçin.",
-        "bindingsReset": "Klavye kısayolları uyumsuzdu ve varsayılan ayarlara sıfırlandı"
+        "bindingsReset": "Bazı klavye kısayolları uyumsuzdu ve varsayılan değerlerine sıfırlandı ya da kaldırıldı",
+        "conflictsKept": "Bazı kısayollar artık başka bir eylemle çakışıyor. Korundular ve kısayol ayarlarında işaretlendiler."
       },
       "paths": {
         "appData": "Uygulama Verileri:",
@@ -692,6 +711,7 @@
     "modelLoadFailedUnknown": "bilinmeyen model",
     "pasteFailedTitle": "Metin yapıştırılamadı",
     "pasteFailed": "Metin etkin uygulamaya yapıştırılamadı.",
+    "pasteFailedNotSaved": "Metin yapıştırılamadı ve geçmişe kaydedilemedi.",
     "transcriptionFailedTitle": "Transkripsiyon başarısız oldu",
     "settings": {
       "committedNotApplied": "Ayar kaydedildi ancak hemen uygulanamadı.",
@@ -700,9 +720,11 @@
       "validationFailed": "Bu değer bu ayar için kabul edilmiyor.",
       "revisionConflict": "Ayarlar başka bir yerde değiştirildi. Yeniden yükleyip tekrar deneyin.",
       "unavailable": "Bu ayar şu anda değiştirilemiyor. Daha sonra tekrar deneyin.",
+      "shortcutSessionBusy": "Bir dikte devam ediyor. Bittiğinde tekrar deneyin.",
       "persistenceFailed": "Ayarlar kaydedilemedi.",
       "generic": "Ayar değiştirilemedi.",
-      "readOnly": "Ayarlar bu oturumda salt okunur: ayar dosyasına güvenli şekilde yazılamıyor, bu nedenle değişiklikler kaydedilmeyecek."
+      "readOnly": "Ayarlar bu oturumda salt okunur: ayar dosyasına güvenli şekilde yazılamıyor, bu nedenle değişiklikler kaydedilmeyecek.",
+      "unsupportedPlatform": "Bu ayar bu sistemde kullanılamaz."
     }
   },
   "appLanguage": {

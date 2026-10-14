@@ -1,0 +1,22 @@
+$ livespec validate .specs/features/004-multiple-dictation-shortcuts
+Tue Oct 13 18:22:30 UTC 2026
+OK      .specs/features/004-multiple-dictation-shortcuts/changelog.md Score: 
+100/100
+OK      
+.specs/features/004-multiple-dictation-shortcuts/contracts/shortcuts-cli.md 
+Score: 100/100
+OK      .specs/features/004-multiple-dictation-shortcuts/implementation.md 
+Score: 100/100
+OK      .specs/features/004-multiple-dictation-shortcuts/pipeline.md Score: 
+100/100
+OK      .specs/features/004-multiple-dictation-shortcuts/plan.md Score: 100/100
+OK      .specs/features/004-multiple-dictation-shortcuts/progress.md Score: 
+100/100
+OK      
+.specs/features/004-multiple-dictation-shortcuts/proofs/claude/independent-audit
+.md Score: 100/100
+OK      
+.specs/features/004-multiple-dictation-shortcuts/proofs/claude-fix1/independent-
+reaudit.md Score: 100/100
+OK      .specs/features/004-multiple-dictation-shortcuts/spec.md Score: 100/100
+EXIT=0

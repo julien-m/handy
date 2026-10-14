@@ -1,9 +1,10 @@
 //! `handy settings output`: the existing output settings (paste method, clipboard handling,
 //! automatic submit, paste delays, typing tool, external script, trailing space), read and changed
-//! through the same descriptors and validator as generic `get`/`set` and the settings UI. Feature
-//! 007 adds `paste_method smart_paste` through that shared validation: accepted only where
-//! `smart_paste::setting_policy` makes it selectable, refused elsewhere with `validation_failed`
-//! (exit 2) before any write, dry runs included.
+//! through the same descriptors and validator as generic `get`/`set` and the settings UI, plus
+//! 006's destination return (`return_to_dictation_app`, refused on a platform without the
+//! destination capability). Feature 007 adds `paste_method smart_paste` through that shared
+//! validation: accepted only where `smart_paste::setting_policy` makes it selectable, refused
+//! elsewhere with `validation_failed` (exit 2) before any write, dry runs included.
 use super::{ChangeKind, Domain, DomainChange, DomainPlan, DomainRequest};
 use crate::settings::AppSettings;
 use crate::settings_service::{
@@ -12,7 +13,7 @@ use crate::settings_service::{
 };
 
 /// Output settings of this build, in help order.
-pub const OUTPUT_KEYS: [&str; 10] = [
+pub const OUTPUT_KEYS: [&str; 11] = [
     "paste_method",
     "clipboard_handling",
     "auto_submit",
@@ -23,6 +24,7 @@ pub const OUTPUT_KEYS: [&str; 10] = [
     "typing_tool",
     "external_script_path",
     "append_trailing_space",
+    "return_to_dictation_app",
 ];
 
 /// The output domain.
@@ -48,7 +50,7 @@ impl Domain for OutputDomain {
                 settings,
                 &[output_key(key)?],
             )?)),
-            ("set", [key, value]) => set(settings, output_key(key)?, value),
+            ("set", [key, value]) => set(request, settings, output_key(key)?, value),
             _ => Err(SettingsError::new(SettingsErrorCode::UsageError)),
         }
     }
@@ -61,8 +63,10 @@ fn output_key(key: &str) -> Result<&'static str, SettingsError> {
         .find(|known| *known == key)
         .ok_or_else(|| SettingsError::new(SettingsErrorCode::NotFound))
 }
-/// Same validator as `handy settings set` (prompt membership and build policy from `settings`).
+/// Same validator as `handy settings set` (prompt membership and build policy from `settings`,
+/// platform capabilities from the request).
 fn set(
+    request: &DomainRequest<'_>,
     settings: &AppSettings,
     key: &'static str,
     value: &str,
@@ -75,6 +79,7 @@ fn set(
     let context = ValidationContext {
         prompt_ids: &prompt_ids,
         updates_allowed: !crate::settings::update_checks_forced_disabled(),
+        platform: request.platform,
     };
     let mutation = validate_cli(key, value, &context)?;
     Ok(DomainPlan::Change {

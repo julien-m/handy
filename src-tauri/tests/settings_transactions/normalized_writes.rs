@@ -1,4 +1,5 @@
 //! Writes and startup on not-yet-normalized, empty or unreadable stores keep every visible field.
+use handy_app_lib::settings_service::platform_capability::PlatformCapabilities;
 use handy_app_lib::settings_service::{
     ownership::LegacyPathProbe,
     protocol::Revision,
@@ -29,6 +30,7 @@ fn commit_on(
         &ValidationContext {
             prompt_ids: &[],
             updates_allowed: true,
+            platform: PlatformCapabilities::current(),
         },
     )?;
     let probe = LegacyPathProbe::new(directory.path().join("absent.sock"));
@@ -120,6 +122,7 @@ fn startup_on_unreadable_json_or_malformed_revision_recovers_read_only_with_leas
             &ValidationContext {
                 prompt_ids: &[],
                 updates_allowed: true,
+                platform: PlatformCapabilities::current(),
             },
         )?;
         let offline = repository
@@ -150,6 +153,7 @@ fn commit_value(
         &ValidationContext {
             prompt_ids: &[],
             updates_allowed: true,
+            platform: PlatformCapabilities::current(),
         },
     )?;
     let probe = LegacyPathProbe::new(directory.path().join("absent.sock"));

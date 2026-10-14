@@ -1,0 +1,9 @@
+
+running 3 tests
+destination_return_wired=true declares_destination=true
+test destination::rollout::tests::a_closed_gate_declares_no_capability_and_opens_no_session_on_any_platform ... ok
+test destination::rollout::tests::an_open_gate_declares_destination_only_on_a_capable_platform ... ok
+test destination::rollout::tests::this_build_follows_the_destination_return_feature ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 540 filtered out; finished in 0.00s
+

@@ -6,9 +6,14 @@
 
 export const commands = {
 /**
- * Change one shortcut as one ordered settings write (see `binding_change`): the native
- * registration is prepared, the binding committed on the latest settings, and a refused commit
- * restores the previous registration. Runs on the blocking pool, never on the main thread.
+ * Replaces the first shortcut of action `id`, as the settings recorder did before multiple
+ * shortcuts, as one ordered settings write (see [`edits::apply_shortcut_edit`]). Alternatives
+ * are kept; the new shortcut goes through the shared validation and conflict check. Runs on the
+ * blocking pool, never on the main thread.
+ * 
+ * # Errors
+ * An empty shortcut, or a refusal of the settings service (busy, persistence); every refusal of
+ * the edit itself, invalid syntax included, is reported in the response.
  */
 async changeBinding(id: string, binding: string) : Promise<Result<BindingResponse, SettingsCommandError>> {
     try {
@@ -18,6 +23,13 @@ async changeBinding(id: string, binding: string) : Promise<Result<BindingRespons
     else return { status: "error", error: e  as any };
 }
 },
+/**
+ * Restores the single default shortcut of action `id`; alternatives are removed.
+ * 
+ * # Errors
+ * An unknown action or a refusal of the settings service; refusals of the edit are in the
+ * response.
+ */
 async resetBinding(id: string) : Promise<Result<BindingResponse, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("reset_binding", { id }) };
@@ -25,6 +37,21 @@ async resetBinding(id: string) : Promise<Result<BindingResponse, SettingsCommand
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
 }
+},
+/**
+ * Applies one edit to the shortcut list of action `id` and saves it, on the blocking pool.
+ * Every refusal is in the response, typed: a refusal of the edit, or `settings_refused` when
+ * the settings service could not save it (nothing is then saved either).
+ */
+async editBindingShortcuts(id: string, edit: ShortcutEdit) : Promise<ShortcutEditResponse> {
+    return await TAURI_INVOKE("edit_binding_shortcuts", { id, edit });
+},
+/**
+ * Stored shortcuts that conflict with another stored shortcut. They stay
+ * registered as before; the settings flag them until the user changes them.
+ */
+async getShortcutConflicts() : Promise<StoredShortcutConflict[]> {
+    return await TAURI_INVOKE("get_shortcut_conflicts");
 },
 async changeShortcutActivationSetting(activation: ShortcutActivation) : Promise<Result<null, SettingsCommandError>> {
     try {
@@ -228,7 +255,16 @@ async changeAutoSubmitKeySetting(key: string) : Promise<Result<null, SettingsCom
     else return { status: "error", error: e  as any };
 }
 },
-async changePostProcessEnabledSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
+/**
+ * Enables or disables post-processing and always saves the choice, as
+ * before this feature, as one ordered settings write (see
+ * [`edits::set_post_process_enabled`]). A shortcut the system refuses stays
+ * stored and editable, and is returned so the settings say so.
+ * 
+ * # Errors
+ * A refusal of the settings service (persistence); the toggle itself is never refused.
+ */
+async changePostProcessEnabledSetting(enabled: boolean) : Promise<Result<RefusedShortcut[], SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_post_process_enabled_setting", { enabled }) };
 } catch (e) {
@@ -387,6 +423,20 @@ async changeAppendTrailingSpaceSetting(enabled: boolean) : Promise<Result<null, 
     else return { status: "error", error: e  as any };
 }
 },
+/**
+ * Settings UI write of `return_to_dictation_app`: the shared UI validator (a build without the
+ * destination capability refuses `true` and `false` with `validation_failed` and the typed reason
+ * `unsupported_platform`), one durable commit, then `settings-changed`. The value is read when a
+ * dictation starts, so no live effect runs.
+ */
+async changeReturnToDictationAppSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_return_to_dictation_app_setting", { enabled }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async changeLazyStreamCloseSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_lazy_stream_close_setting", { enabled }) };
@@ -468,10 +518,14 @@ async changeWhatsNewLastSeenVersionSetting(version: string) : Promise<Result<nul
 }
 },
 /**
- * Change the keyboard implementation with runtime switching, as one ordered write. The value is
- * validated and committed like any setting; its live effect (`switch_keyboard_implementation`)
- * unregisters the old shortcuts, registers them with the new implementation and resets
- * incompatible ones, so the bindings compared around the commit are exactly those resets.
+ * Change the keyboard implementation with runtime switching, as one ordered write: the shared
+ * validator checks the value, every registration moves to the new implementation with the
+ * lists repaired for it, then the implementation and the repaired lists are committed in one
+ * revision (see [`live_change::keyboard_implementation`]); a refused commit moves them back.
+ * 
+ * # Errors
+ * A refused value, `unavailable` during a dictation session or when HandyKeys cannot start
+ * (nothing changed), or a refusal of the commit.
  */
 async changeKeyboardImplementationSetting(implementation: string) : Promise<Result<ImplementationChangeResult, SettingsCommandError>> {
     try {
@@ -581,6 +635,36 @@ async showMainWindowCommand() : Promise<Result<null, string>> {
 },
 async cancelOperation() : Promise<void> {
     await TAURI_INVOKE("cancel_operation");
+},
+/**
+ * Current session snapshot, if a dictation has started.
+ */
+async destinationSnapshot() : Promise<DestinationSnapshot | null> {
+    return await TAURI_INVOKE("destination_snapshot");
+},
+/**
+ * Runtime support of destination return in this instance (AC-007 reason).
+ */
+async destinationSupport() : Promise<DestinationSupport | null> {
+    return await TAURI_INVOKE("destination_support");
+},
+/**
+ * Badge menu of the exact dictation and version (frontmost first, then windowed apps).
+ */
+async destinationMenu(dictationId: DictationId, selectionVersion: number) : Promise<MenuAnswer> {
+    return await TAURI_INVOKE("destination_menu", { dictationId, selectionVersion });
+},
+/**
+ * Apply a badge choice for the exact dictation and version; refused unchanged otherwise.
+ */
+async chooseDestination(dictationId: DictationId, selectionVersion: number, choice: MenuChoice) : Promise<ChoiceAnswer> {
+    return await TAURI_INVOKE("choose_destination", { dictationId, selectionVersion, choice });
+},
+/**
+ * The badge cross: same mutation as "Frontmost app at the end"; the setting is untouched.
+ */
+async removeDestination(dictationId: DictationId, selectionVersion: number) : Promise<ChoiceAnswer> {
+    return await TAURI_INVOKE("remove_destination", { dictationId, selectionVersion });
 },
 async isPortable() : Promise<boolean> {
     return await TAURI_INVOKE("is_portable");
@@ -1066,7 +1150,11 @@ whats_new_last_seen_version?: string; selected_model?: string; onboarding_comple
  * Which input channel to use on the selected microphone device.
  * None means "average all channels" (original behavior).
  */
-selected_channel?: number | null; clamshell_microphone?: string | null; selected_output_device?: string | null; translate_to_english?: boolean; selected_language?: string; overlay_position?: OverlayPosition; debug_mode?: boolean; log_level?: LogLevel; custom_words?: string[]; model_unload_timeout?: ModelUnloadTimeout; word_correction_threshold?: number; history_limit?: number; recording_retention_period?: RecordingRetentionPeriod; paste_method?: PasteMethod; clipboard_handling?: ClipboardHandling; auto_submit?: boolean; auto_submit_key?: AutoSubmitKey; post_process_enabled?: boolean; post_process_provider_id?: string; post_process_providers?: PostProcessProvider[]; post_process_api_keys?: SecretMap; post_process_models?: Partial<{ [key in string]: string }>; post_process_prompts?: LLMPrompt[]; post_process_selected_prompt_id?: string | null; mute_while_recording?: boolean; append_trailing_space?: boolean; app_language?: string; theme?: Theme; experimental_enabled?: boolean; lazy_stream_close?: boolean; keyboard_implementation?: KeyboardImplementation; show_tray_icon?: boolean; paste_delay_ms?: number; paste_delay_after_ms?: number; 
+selected_channel?: number | null; clamshell_microphone?: string | null; selected_output_device?: string | null; translate_to_english?: boolean; selected_language?: string; overlay_position?: OverlayPosition; debug_mode?: boolean; log_level?: LogLevel; custom_words?: string[]; model_unload_timeout?: ModelUnloadTimeout; word_correction_threshold?: number; history_limit?: number; recording_retention_period?: RecordingRetentionPeriod; paste_method?: PasteMethod; clipboard_handling?: ClipboardHandling; auto_submit?: boolean; auto_submit_key?: AutoSubmitKey; post_process_enabled?: boolean; post_process_provider_id?: string; post_process_providers?: PostProcessProvider[]; post_process_api_keys?: SecretMap; post_process_models?: Partial<{ [key in string]: string }>; post_process_prompts?: LLMPrompt[]; post_process_selected_prompt_id?: string | null; mute_while_recording?: boolean; append_trailing_space?: boolean; 
+/**
+ * Return to the application where the dictation started before inserting (006).
+ */
+return_to_dictation_app?: boolean; app_language?: string; theme?: Theme; experimental_enabled?: boolean; lazy_stream_close?: boolean; keyboard_implementation?: KeyboardImplementation; show_tray_icon?: boolean; paste_delay_ms?: number; paste_delay_after_ms?: number; 
 /**
  * Debug-gated ("beta") receipt-sequenced paste: restore the clipboard only
  * after the target app actually reads the transcript, instead of after a
@@ -1103,7 +1191,15 @@ overlay_style?: OverlayStyle }
 export type AudioDevice = { index: string; name: string; is_default: boolean }
 export type AutoSubmitKey = "enter" | "ctrl_enter" | "cmd_enter"
 export type AvailableAccelerators = { transcribe: string[]; ort: string[]; gpu_devices: GpuDeviceOption[] }
-export type BindingResponse = { success: boolean; binding: ShortcutBinding | null; error: string | null }
+export type BindingResponse = { success: boolean; binding: ShortcutBinding | null; 
+/**
+ * English description of the refusal, for older callers.
+ */
+error: string | null; 
+/**
+ * Typed refusal, which the settings UI translates.
+ */
+edit_error: ShortcutEditError | null }
 /**
  * Script applied to Mandarin and Cantonese output. Other languages are never
  * converted.
@@ -1113,8 +1209,44 @@ export type ChineseScript =
  * Keep whatever script the model produced.
  */
 "as_transcribed" | "simplified" | "traditional"
+/**
+ * Answer of a badge choice or removal: the updated session, or why it is refused unchanged.
+ */
+export type ChoiceAnswer = { status: "chosen"; value: DestinationSnapshot } | { status: "refused"; value: SelectionRefusal }
 export type ClipboardHandling = "dont_modify" | "copy_to_clipboard"
+/**
+ * Why a candidate cannot be used.
+ */
+export type ConflictKind = 
+/**
+ * The same combination is already assigned.
+ */
+"duplicate" | 
+/**
+ * A modifier-only shortcut would fire together with the other one.
+ */
+"modifier_overlap"
 export type CustomSounds = { start: boolean; stop: boolean }
+/**
+ * Badge menu of one dictation: applications, then "Frontmost app at the end".
+ */
+export type DestinationMenu = { dictation_id: DictationId; selection_version: number; entries: MenuEntry[]; 
+/**
+ * True when "Frontmost app at the end" is the current choice.
+ */
+frontmost_at_end_current: boolean }
+/**
+ * Session snapshot sent to the UI (`destination-changed`) and returned by session commands.
+ */
+export type DestinationSnapshot = { dictation_id: DictationId; destination_generation: number; selection_version: number; phase: SessionPhase; return_enabled: boolean; support: DestinationSupport; selection: SelectionView; disposition: RecoveryDisposition }
+/**
+ * Runtime support of destination return in the running instance.
+ */
+export type DestinationSupport = { state: "supported" } | { state: "unsupported"; reason: SupportReason }
+/**
+ * Immutable identity of one accepted dictation (the same value 007 puts in its `PasteOutcome`).
+ */
+export type DictationId = number
 export type EngineType = 
 /**
  * Any GGML/GGUF model loaded through transcribe-cpp (Whisper, Parakeet,
@@ -1123,16 +1255,26 @@ export type EngineType =
  */
 "TranscribeCpp" | "Parakeet" | "Moonshine" | "MoonshineStreaming" | "SenseVoice" | "GigaAM" | "Canary" | "Cohere"
 export type GpuDeviceOption = { id: string; name: string; total_vram_mb: number }
-export type HistoryEntry = { id: number; file_name: string; timestamp: number; saved: boolean; title: string; transcription_text: string; post_processed_text: string | null; post_process_prompt: string | null; post_process_requested: boolean }
+/**
+ * One history row. `file_name` is `None` for a text-only row (no audio recording).
+ */
+export type HistoryEntry = { id: number; file_name: string | null; timestamp: number; saved: boolean; title: string; transcription_text: string; post_processed_text: string | null; post_process_prompt: string | null; post_process_requested: boolean }
 export type HistoryUpdatePayload = { action: "added"; entry: HistoryEntry } | { action: "updated"; entry: HistoryEntry } | { action: "deleted"; id: number } | { action: "toggled"; id: number }
 /**
  * Result of changing keyboard implementation
  */
 export type ImplementationChangeResult = { success: boolean; 
 /**
- * List of binding IDs that were reset to defaults due to incompatibility
+ * Binding IDs whose shortcuts were reset to the default or removed
+ * because the new implementation cannot register them
  */
-reset_bindings: string[] }
+reset_bindings: string[]; 
+/**
+ * Stored shortcuts that conflict under the new implementation and did
+ * not before. They are kept, as inherited conflicts are, and flagged in
+ * the settings.
+ */
+conflicts: StoredShortcutConflict[] }
 export type KeyboardDiagnosticReport = { secure_input_enabled: boolean; culprit_pid: number | null; culprit_name: string | null; 
 /**
  * Counts only — key identity is deliberately never captured.
@@ -1141,6 +1283,27 @@ key_down: number; key_up: number; flags_changed: number; mouse: number; duration
 export type KeyboardImplementation = "tauri" | "handy_keys"
 export type LLMPrompt = { id: string; name: string; prompt: string }
 export type LogLevel = "trace" | "debug" | "info" | "warn" | "error"
+/**
+ * Answer of a menu request: the menu, or why it is refused (a typed value, not an error, so
+ * the badge handles both without exception paths).
+ */
+export type MenuAnswer = { status: "menu"; value: DestinationMenu } | { status: "refused"; value: SelectionRefusal }
+/**
+ * A badge choice: an entry token of the current menu, or "Frontmost app at the end" (the cross).
+ */
+export type MenuChoice = { kind: "application"; token: number } | { kind: "frontmost_at_end" }
+/**
+ * One application entry of the badge menu, addressed by an opaque manager token.
+ */
+export type MenuEntry = { token: number; display_name: string; icon_ref: string | null; 
+/**
+ * The current destination of this dictation.
+ */
+current: boolean; 
+/**
+ * The application frontmost when the menu opened (listed first).
+ */
+frontmost: boolean }
 export type ModelInfo = { id: string; name: string; description: string; filename: string; source: ModelSource; size_mb: number; is_downloaded: boolean; is_downloading: boolean; partial_size: number; is_directory: boolean; engine_type: EngineType; accuracy_score: number; speed_score: number; supports_translation: boolean; is_recommended: boolean; supported_languages: string[]; supports_language_selection: boolean; is_custom: boolean; supports_streaming: boolean; supports_language_detection: boolean }
 export type ModelLoadStatus = { is_loaded: boolean; current_model: string | null }
 /**
@@ -1195,6 +1358,16 @@ export type PermissionAccess = "allowed" | "denied" | "unknown"
 export type PostProcessProvider = { id: string; label: string; base_url: string; allow_base_url_edit?: boolean; models_endpoint?: string | null; supports_structured_output?: boolean }
 export type RecordingRetentionPeriod = "never" | "preserve_limit" | "days_3" | "weeks_2" | "months_3"
 /**
+ * The single per-dictation decision "insert or recover", and the only Enter veto.
+ */
+export type RecoveryDisposition = "pending" | "insert" | "recover" | "cancelled"
+/**
+ * A post-processing shortcut the backend refused when post-processing was
+ * enabled. It stays stored and editable; the settings flag its row.
+ * `reason` is the backend's message, in English.
+ */
+export type RefusedShortcut = { action_id: string; shortcut: string; reason: string }
+/**
  * Provider API keys: `Debug` is redacted and the public settings projection reports presence only.
  */
 export type SecretMap = Partial<{ [key in string]: string }>
@@ -1230,6 +1403,30 @@ uncovered_bindings: string[];
  * warning banner appears and explains why recording refused.
  */
 recorder_blocked: boolean }
+/**
+ * A refused badge choice; the session is unchanged.
+ */
+export type SelectionRefusal = 
+/**
+ * Another dictation, or an older `selection_version`.
+ */
+"stale" | 
+/**
+ * Insertion has begun (or the session ended): choices are closed.
+ */
+"frozen" | 
+/**
+ * The chosen entry is unknown, closed or no longer running.
+ */
+"unavailable"
+/**
+ * What the badge shows for the current selection.
+ */
+export type SelectionView = { kind: "frontmost_at_end" } | { kind: "application"; display_name: string; icon_ref: string | null }
+/**
+ * Lifecycle of one dictation's session.
+ */
+export type SessionPhase = "recording" | "processing" | "inserting" | "finished" | "cancelled"
 /**
  * Error of a settings UI command: the stable code and English message shared with the CLI,
  * plus the field and typed reason the UI maps to a translation (never free-text parsing).
@@ -1297,8 +1494,65 @@ export type ShortcutActivation =
  * (`hold_threshold_ms`).
  */
 "hold_or_toggle"
-export type ShortcutBinding = { id: string; name: string; description: string; default_binding: string; current_binding: string }
+export type ShortcutBinding = { id: string; name: string; description: string; default_binding: string; 
+/**
+ * First shortcut of the action. Kept at this location so earlier Handy
+ * versions, which only read this field, keep that shortcut working.
+ */
+current_binding: string; 
+/**
+ * Alternative shortcuts after `current_binding`, in order. Backward
+ * compatibility: stores written before multiple shortcuts lack the field
+ * and load it empty; older versions ignore it when reading. Never
+ * serialized when empty, so a single-shortcut store stays byte-identical.
+ */
+additional_bindings?: string[] }
+/**
+ * A conflict with an existing shortcut, naming its owning action.
+ */
+export type ShortcutConflict = { kind: ConflictKind; owning_action: string; owning_shortcut: string }
+/**
+ * A requested change to the shortcut list of one action.
+ */
+export type ShortcutEdit = 
+/**
+ * Append an alternative shortcut.
+ */
+{ kind: "add"; shortcut: string } | 
+/**
+ * Remove one shortcut; removing the first promotes the next one.
+ */
+{ kind: "remove"; shortcut: string } | 
+/**
+ * Replace one shortcut in place.
+ */
+{ kind: "replace"; previous: string; shortcut: string } | 
+/**
+ * Restore the single default shortcut.
+ */
+{ kind: "reset" }
+/**
+ * Why an edit was refused. Codes map to the settings CLI envelope (008):
+ * `shortcut_conflict` and `limit_exceeded` as is, `not_found` for unknown
+ * entries, every other code as `validation_failed`.
+ */
+export type ShortcutEditError = { code: "shortcut_conflict"; conflict: ShortcutConflict } | { code: "limit_exceeded"; limit: number } | { code: "last_shortcut" } | { code: "alternatives_unsupported" } | { code: "invalid_shortcut"; message: string } | { code: "not_found"; shortcut: string } | { code: "action_not_found"; action_id: string } | { code: "registration_failed"; message: string } | 
+/**
+ * The settings service refused or could not save the change (persistence, unavailable):
+ * nothing was saved, and the registrations are as before.
+ */
+{ code: "settings_refused"; error: SettingsCommandError }
+/**
+ * Outcome of a shortcut list edit: the saved binding, or why nothing was
+ * saved.
+ */
+export type ShortcutEditResponse = { binding: ShortcutBinding | null; error: ShortcutEditError | null }
 export type SoundTheme = "marimba" | "pop" | "custom"
+/**
+ * A conflict between two stored shortcuts, reported as a warning. Upgrades
+ * keep such shortcuts registered exactly as before (decision 2026-10-12).
+ */
+export type StoredShortcutConflict = { action_id: string; shortcut: string; conflict: ShortcutConflict }
 /**
  * Phase of the streaming overlay card, emitted to drive its UI state.
  */
@@ -1332,6 +1586,18 @@ export type StreamTextEvent = { committed: string; tentative: string }
  */
 export type StreamWorkKind = "transcribing" | "polishing"
 /**
+ * Why destination return is unavailable.
+ */
+export type SupportReason = 
+/**
+ * This build has no destination capability (Linux).
+ */
+"platform_unsupported" | 
+/**
+ * The running instance cannot read the frontmost application.
+ */
+"frontmost_unreadable"
+/**
  * UI appearance mode. `System` follows the OS `prefers-color-scheme`; `Light`
  * and `Dark` force one of the two palettes Handy already ships.
  */
@@ -1359,7 +1625,16 @@ export type ValidationReason = "canonical_type" | "canonical_value" | "out_of_ra
 /**
  * On macOS, smart paste replaces the beta reliable paste (feature 007).
  */
-"reliable_paste_replaced"
+"reliable_paste_replaced" | 
+/**
+ * The setting or operation needs a platform capability this build does not have.
+ */
+"unsupported_platform" | 
+/**
+ * A dictation session (recording, processing, a held or remembered shortcut) is running;
+ * the shortcut registrations cannot change until it ends.
+ */
+"shortcut_session_busy"
 export type WindowsMicrophonePermissionStatus = { supported: boolean; overall_access: PermissionAccess; device_access: PermissionAccess; app_access: PermissionAccess; desktop_app_access: PermissionAccess }
 
 /** tauri-specta globals **/

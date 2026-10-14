@@ -2,6 +2,8 @@
 
 #[path = "settings_validation/contracts.rs"]
 mod contracts;
+#[path = "settings_validation/error_details.rs"]
+mod error_details;
 #[path = "settings_validation/inventory.rs"]
 mod inventory;
 #[path = "settings_validation/request_contracts.rs"]
