@@ -6,8 +6,11 @@
 //! application is activated.
 pub mod app;
 pub mod context;
+pub mod delivery;
 #[cfg(test)]
 pub(crate) mod fake_workspace;
+pub mod guard;
+pub mod insertion;
 #[cfg(target_os = "macos")]
 pub mod macos;
 pub mod manager;

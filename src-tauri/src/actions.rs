@@ -2,6 +2,7 @@
 use crate::apple_intelligence;
 use crate::audio_feedback::{play_feedback_sound, play_feedback_sound_blocking, SoundType};
 use crate::audio_toolkit::{is_microphone_access_denied, is_no_input_device_error, VadPolicy};
+use crate::destination::delivery::{insert_final_text, HistoryRecord};
 use crate::managers::audio::AudioRecordingManager;
 use crate::managers::history::HistoryManager;
 use crate::managers::model::ModelManager;
@@ -384,6 +385,35 @@ pub(crate) async fn process_transcription_output(
     }
 }
 
+// @spec FR-004: History status from the actual save result — .specs/features/006-destination-application/spec.md#fr-004
+/// Save the history entry when the WAV was saved (`file_name`) and report the actual result.
+fn save_history(
+    hm: &HistoryManager,
+    file_name: Option<String>,
+    transcription: String,
+    post_process: bool,
+    processed: &ProcessedTranscription,
+) -> HistoryRecord {
+    let Some(file_name) = file_name else {
+        return HistoryRecord::NOT_SAVED;
+    };
+    let post_processed = processed.post_processed_text.clone();
+    let prompt = processed.post_process_prompt.clone();
+    match hm.save_entry(
+        file_name,
+        transcription,
+        post_process,
+        post_processed,
+        prompt,
+    ) {
+        Ok(entry) => HistoryRecord::saved(entry.id),
+        Err(err) => {
+            error!("Failed to save history entry: {}", err);
+            HistoryRecord::FAILED
+        }
+    }
+}
+
 impl ShortcutAction for TranscribeAction {
     fn start(&self, app: &AppHandle, binding_id: &str, _shortcut_str: &str) {
         let start_time = Instant::now();
@@ -425,6 +455,9 @@ impl ShortcutAction for TranscribeAction {
         // Get the microphone mode to determine audio feedback timing
         let plan_started = Instant::now();
         let settings = get_settings(app);
+        // Read the destination before any Handy surface is shown; committed only on success.
+        let destination =
+            crate::destination::app::capture_at_start(app, settings.return_to_dictation_app);
         let is_always_on = settings.always_on_microphone;
 
         let selected_model_info = app
@@ -478,6 +511,9 @@ impl ShortcutAction for TranscribeAction {
                     "Recording request accepted in {:?}; waiting for first microphone samples",
                     recording_start_time.elapsed()
                 );
+                if let Some(destination) = destination {
+                    destination.commit(app);
+                }
                 let generation = readiness.generation();
                 let app_clone = app.clone();
                 let rm_clone = Arc::clone(&rm);
@@ -602,6 +638,7 @@ impl ShortcutAction for TranscribeAction {
         let binding_id = binding_id.to_string(); // Clone binding_id for the async task
         let post_process = self.post_process;
         let cancel_generation = rm.cancel_generation();
+        let destination_ticket = crate::destination::delivery::ticket_at_stop(app);
 
         tauri::async_runtime::spawn(async move {
             let _guard = FinishGuard(ah.clone(), Arc::clone(&tm));
@@ -628,6 +665,7 @@ impl ShortcutAction for TranscribeAction {
 
                 if samples.is_empty() {
                     debug!("Recording produced no audio samples; skipping persistence");
+                    crate::destination::delivery::abandon(&ah);
                     // Tear down any streaming worker so its channel doesn't leak
                     // and block the next start_stream.
                     tm.cancel_stream();
@@ -724,53 +762,28 @@ impl ShortcutAction for TranscribeAction {
                                 return;
                             }
 
-                            // Save to history if WAV was saved
-                            if wav_saved {
-                                if let Err(err) = hm.save_entry(
-                                    file_name,
-                                    transcription,
-                                    post_process,
-                                    processed.post_processed_text.clone(),
-                                    processed.post_process_prompt.clone(),
-                                ) {
-                                    error!("Failed to save history entry: {}", err);
-                                }
-                            }
+                            // Save to history if WAV was saved; the actual result is reported.
+                            let history = save_history(
+                                &hm,
+                                wav_saved.then_some(file_name),
+                                transcription,
+                                post_process,
+                                &processed,
+                            );
 
                             if processed.final_text.is_empty() {
+                                crate::destination::delivery::abandon(&ah);
                                 utils::hide_recording_overlay(&ah);
                                 set_tray_state(&ah, TrayIconState::Idle);
                             } else {
-                                let ah_clone = ah.clone();
-                                let paste_time = Instant::now();
-                                let final_text = processed.final_text;
-                                let rm_for_paste = Arc::clone(&rm);
-                                ah.run_on_main_thread(move || {
-                                    if rm_for_paste.was_cancelled_since(cancel_generation) {
-                                        debug!("Transcription operation cancelled before paste");
-                                        utils::hide_recording_overlay(&ah_clone);
-                                        set_tray_state(&ah_clone, TrayIconState::Idle);
-                                        return;
-                                    }
-
-                                    match utils::paste(final_text, ah_clone.clone()) {
-                                        Ok(()) => debug!(
-                                            "Text pasted successfully in {:?}",
-                                            paste_time.elapsed()
-                                        ),
-                                        Err(e) => {
-                                            error!("Failed to paste transcription: {}", e);
-                                            let _ = ah_clone.emit("paste-error", ());
-                                        }
-                                    }
-                                    utils::hide_recording_overlay(&ah_clone);
-                                    set_tray_state(&ah_clone, TrayIconState::Idle);
-                                })
-                                .unwrap_or_else(|e| {
-                                    error!("Failed to run paste on main thread: {:?}", e);
-                                    utils::hide_recording_overlay(&ah);
-                                    set_tray_state(&ah, TrayIconState::Idle);
+                                let cancelled = Box::new({
+                                    let rm = Arc::clone(&rm);
+                                    move || rm.was_cancelled_since(cancel_generation)
                                 });
+                                let insertion = (destination_ticket, processed.final_text, history);
+                                insert_final_text(&ah, insertion, cancelled).await;
+                                utils::hide_recording_overlay(&ah);
+                                set_tray_state(&ah, TrayIconState::Idle);
                             }
                         }
                         Err(err) => {
@@ -784,6 +797,7 @@ impl ShortcutAction for TranscribeAction {
                             }
 
                             error!("Transcription failed: {}", err);
+                            crate::destination::delivery::abandon(&ah);
                             // Surface the failure to the UI (toast). The full
                             // message is also in handy.log via the line above.
                             let _ = ah.emit("transcription-error", err.to_string());
@@ -806,6 +820,7 @@ impl ShortcutAction for TranscribeAction {
                 }
             } else {
                 debug!("No samples retrieved from recording stop");
+                crate::destination::delivery::abandon(&ah);
                 // Tear down any streaming worker so its channel doesn't leak.
                 tm.cancel_stream();
                 utils::hide_recording_overlay(&ah);

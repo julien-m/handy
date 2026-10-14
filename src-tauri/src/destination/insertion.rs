@@ -1,0 +1,274 @@
+//! Insertion orchestrator (worker thread): freeze the destination, skip activation for paste
+//! method "none", resolve the chosen application, request activation once, wait for it in front
+//! for at most 1 s by bounded sampling (never on the main thread), then hand the existing
+//! insertion method a `DispatchGuard` it calls after its configured delay. A failed destination
+//! never falls back to another application and is never retried.
+use super::context::{ApplicationIdentity, DestinationSource, RecoveryDisposition, RecoveryPort};
+use super::guard::{DispatchGuard, GuardRefusal};
+use super::manager::{DestinationManager, FrozenDestination};
+use super::outcome::{map_method_result, DestinationFailure, InsertionStatus, MethodResult};
+use super::session::{Destination, DestinationSupport, Selection};
+use super::workspace::{
+    resolve_instance, ActivationRequest, Clock, Foreground, Pause, Resolution, RunningApp,
+};
+use std::sync::Arc;
+use std::time::Duration;
+
+/// Bounded wait for the activated destination to be in front (AC-002).
+pub const ACTIVATION_DEADLINE: Duration = Duration::from_secs(1);
+// Foreground sampling period: 20 ms keeps the observed latency well under the 1 s budget for
+// about 50 cheap reads, with no busy loop.
+const SAMPLE_PERIOD: Duration = Duration::from_millis(20);
+
+/// The existing insertion method, run with the guard (on the main thread in production).
+pub trait InsertionPort: Send + Sync {
+    /// Insert the final text; the method calls `guard.check()` before its first dispatch.
+    fn dispatch(&self, guard: Arc<DispatchGuard>) -> MethodResult;
+}
+
+/// Ports of the orchestrator.
+pub struct Orchestrator {
+    pub manager: Arc<DestinationManager>,
+    pub clock: Arc<dyn Clock>,
+    pub pause: Arc<dyn Pause>,
+    pub recovery: Arc<dyn RecoveryPort>,
+}
+/// One insertion request.
+pub struct InsertionRequest {
+    pub dictation_id: super::context::DictationId,
+    pub destination_generation: u64,
+    /// Paste method "none": no activation, `skipped` outcome.
+    pub paste_method_none: bool,
+    pub cancelled: Box<dyn Fn() -> bool + Send + Sync>,
+}
+/// What happened, before history and conservation are added.
+#[derive(Clone, Debug, PartialEq)]
+pub struct InsertionReport {
+    pub status: InsertionStatus,
+    pub reason: Option<DestinationFailure>,
+    pub method_result: Option<MethodResult>,
+    pub target: Option<ApplicationIdentity>,
+    pub source: DestinationSource,
+}
+impl InsertionReport {
+    fn ended(
+        status: InsertionStatus,
+        reason: Option<DestinationFailure>,
+        source: DestinationSource,
+    ) -> Self {
+        let (method_result, target) = (None, None);
+        Self {
+            status,
+            reason,
+            method_result,
+            target,
+            source,
+        }
+    }
+}
+
+impl Orchestrator {
+    // @spec FR-002: Activate then delegate to the configured method — .specs/features/006-destination-application/spec.md#fr-002
+    /// Deliver one dictation's text to its destination; see the module documentation.
+    pub fn deliver(
+        &self,
+        request: InsertionRequest,
+        method: &dyn InsertionPort,
+    ) -> InsertionReport {
+        let frozen = match self.freeze(&request) {
+            Ok(frozen) => frozen,
+            Err(report) => return report,
+        };
+        let target = match activation_route(&frozen, request.paste_method_none) {
+            Some(destination) => match self.activate(&frozen, &destination, &*request.cancelled) {
+                Ok(app) => Some(app),
+                Err(report) => return self.fail(&frozen, report),
+            },
+            None => None,
+        };
+        let manager = Arc::clone(&self.manager);
+        let recovery = Arc::clone(&self.recovery);
+        let guard =
+            DispatchGuard::new(manager, recovery, frozen.clone(), target, request.cancelled);
+        let guard = Arc::new(guard);
+        let result = method.dispatch(Arc::clone(&guard));
+        self.conclude(&frozen, &guard, result, request.paste_method_none)
+    }
+    /// Insertion entry: a cancelled or superseded dictation ends here without activation.
+    fn freeze(&self, request: &InsertionRequest) -> Result<FrozenDestination, InsertionReport> {
+        let (id, generation) = (request.dictation_id, request.destination_generation);
+        let cancelled = InsertionReport::ended(
+            InsertionStatus::Cancelled,
+            None,
+            DestinationSource::FrontmostAtEnd,
+        );
+        if (request.cancelled)() {
+            let _ = self
+                .manager
+                .set_disposition(id, generation, RecoveryDisposition::Cancelled);
+            return Err(cancelled);
+        }
+        self.manager.freeze(id, generation).map_err(|_| cancelled)
+    }
+    // @spec FR-004: No fallback when the destination is unavailable — .specs/features/006-destination-application/spec.md#fr-004
+    /// Resolve, request once, and wait for the destination in front within the deadline.
+    fn activate(
+        &self,
+        frozen: &FrozenDestination,
+        destination: &Destination,
+        cancelled: &dyn Fn() -> bool,
+    ) -> Result<RunningApp, InsertionReport> {
+        let app = self.resolve(destination)?;
+        let started = self.clock.now();
+        let refused = !self.in_front(&app)
+            && self.manager.workspace.activate_once(&app) == ActivationRequest::Refused;
+        let waited = if refused {
+            WaitResult::TimedOut
+        } else {
+            self.wait_in_front(&app, started, cancelled)
+        };
+        match waited {
+            WaitResult::InFront => Ok(app),
+            WaitResult::Cancelled => Err(InsertionReport::ended(
+                InsertionStatus::Cancelled,
+                None,
+                frozen.selection.source(),
+            )),
+            WaitResult::TimedOut => Err(failed(destination, DestinationFailure::ActivationFailed)),
+        }
+    }
+    /// The running instance of `destination` (never another application).
+    fn resolve(&self, destination: &Destination) -> Result<RunningApp, InsertionReport> {
+        let instances = self.manager.workspace.instances(&destination.identity);
+        match resolve_instance(&destination.identity, destination.captured_pid, &instances) {
+            Resolution::Running(app) => Ok(app),
+            Resolution::Closed => Err(failed(destination, DestinationFailure::AppClosed)),
+            Resolution::Ambiguous => Err(failed(destination, DestinationFailure::ActivationFailed)),
+        }
+    }
+    fn in_front(&self, app: &RunningApp) -> bool {
+        matches!(self.manager.workspace.frontmost(), Foreground::Application(front) if front.pid == app.pid && front.identity == app.identity)
+    }
+    /// Sample the foreground until `app` is in front, the dictation is cancelled, or more than
+    /// `ACTIVATION_DEADLINE` has elapsed since `started` (an observation at exactly 1 s counts).
+    fn wait_in_front(
+        &self,
+        app: &RunningApp,
+        started: std::time::Instant,
+        cancelled: &dyn Fn() -> bool,
+    ) -> WaitResult {
+        loop {
+            if cancelled() {
+                return WaitResult::Cancelled;
+            }
+            let elapsed = self.clock.now().saturating_duration_since(started);
+            if self.in_front(app) && elapsed <= ACTIVATION_DEADLINE {
+                return WaitResult::InFront;
+            }
+            // Exit once the deadline has passed without the destination in front.
+            if elapsed >= ACTIVATION_DEADLINE {
+                return WaitResult::TimedOut;
+            }
+            self.pause
+                .pause(SAMPLE_PERIOD.min(ACTIVATION_DEADLINE - elapsed));
+        }
+    }
+    /// A destination or method failure: the disposition becomes `Recover` (or `Cancelled`).
+    fn fail(&self, frozen: &FrozenDestination, report: InsertionReport) -> InsertionReport {
+        let next = match report.status {
+            InsertionStatus::Cancelled => RecoveryDisposition::Cancelled,
+            _ => RecoveryDisposition::Recover,
+        };
+        let _ =
+            self.manager
+                .set_disposition(frozen.dictation_id, frozen.destination_generation, next);
+        report
+    }
+    /// Map the guard refusal or the method result to the report and the disposition.
+    fn conclude(
+        &self,
+        frozen: &FrozenDestination,
+        guard: &DispatchGuard,
+        result: MethodResult,
+        skipped: bool,
+    ) -> InsertionReport {
+        let context = guard.context();
+        let source = context
+            .as_ref()
+            .map_or(frozen.selection.source(), |context| context.source);
+        let report = match (guard.refusal(), skipped) {
+            (Some(refusal), _) => refusal_report(refusal, source),
+            (None, true) => InsertionReport::ended(InsertionStatus::Skipped, None, source),
+            (None, false) => method_report(result, context, source),
+        };
+        if guard.refusal().is_some() || report.reason.is_some() {
+            return self.fail(frozen, report);
+        }
+        report
+    }
+}
+
+/// The method ran past the guard: its exact result, mapped (plan "Outcome" table).
+fn method_report(
+    result: MethodResult,
+    context: Option<super::context::DestinationContext>,
+    source: DestinationSource,
+) -> InsertionReport {
+    let (status, reason, _) = map_method_result(&result);
+    let target = context
+        .and_then(|context| context.target)
+        .map(|target| target.identity);
+    InsertionReport {
+        status,
+        reason,
+        method_result: Some(result),
+        target,
+        source,
+    }
+}
+
+/// A destination failure that names the destination.
+fn failed(destination: &Destination, reason: DestinationFailure) -> InsertionReport {
+    InsertionReport {
+        target: Some(destination.identity.clone()),
+        ..InsertionReport::ended(InsertionStatus::Failed, Some(reason), destination.source)
+    }
+}
+/// A guard refusal: no input was dispatched.
+fn refusal_report(refusal: GuardRefusal, source: DestinationSource) -> InsertionReport {
+    let failed = |reason| InsertionReport::ended(InsertionStatus::Failed, Some(reason), source);
+    match refusal {
+        GuardRefusal::Cancelled => InsertionReport::ended(InsertionStatus::Cancelled, None, source),
+        GuardRefusal::TargetLost => failed(DestinationFailure::ActivationFailed),
+        GuardRefusal::RecoverInstead => failed(DestinationFailure::InsertionFailed),
+    }
+}
+
+enum WaitResult {
+    InFront,
+    Cancelled,
+    TimedOut,
+}
+
+/// The application to activate, or `None` for the frontmost-at-the-end route: destination
+/// return off or unsupported for this dictation, no destination, or paste method "none".
+fn activation_route(
+    frozen: &FrozenDestination,
+    paste_method_none: bool,
+) -> Option<super::session::Destination> {
+    match (
+        &frozen.selection,
+        frozen.return_enabled,
+        frozen.support,
+        paste_method_none,
+    ) {
+        (Selection::Application(destination), true, DestinationSupport::Supported, false) => {
+            Some(destination.clone())
+        }
+        _ => None,
+    }
+}
+
+#[cfg(test)]
+#[path = "insertion_tests.rs"]
+mod tests;

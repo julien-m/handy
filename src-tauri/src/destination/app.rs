@@ -32,6 +32,30 @@ pub fn install(app: &AppHandle) {
     let app = app.clone();
     std::thread::spawn(move || emit_support(&app, manager.refresh_support()));
 }
+/// Destination read at a starting recording, committed once the recording really starts.
+pub struct PendingCapture {
+    manager: Arc<DestinationManager>,
+    capture: super::manager::TentativeCapture,
+}
+// @spec FR-001: Capture at the actual recording start — .specs/features/006-destination-application/spec.md#fr-001
+/// Read the destination before any Handy surface is shown (none before installation).
+pub fn capture_at_start(app: &AppHandle, return_enabled: bool) -> Option<PendingCapture> {
+    let manager = manager(app)?;
+    let capture = manager.capture(return_enabled);
+    log::debug!("Destination capture took {:?}", capture.elapsed);
+    Some(PendingCapture { manager, capture })
+}
+impl PendingCapture {
+    /// The recording started: commit the session and tell the UI (support too, if it changed).
+    pub fn commit(self, app: &AppHandle) {
+        let previous = self.manager.support();
+        let snapshot = self.manager.commit_start(self.capture);
+        if snapshot.support != previous {
+            emit_support(app, snapshot.support);
+        }
+        emit_changed(app, &snapshot);
+    }
+}
 /// The destination manager, once installed.
 pub fn manager(app: &AppHandle) -> Option<Arc<DestinationManager>> {
     app.try_state::<Arc<DestinationManager>>()

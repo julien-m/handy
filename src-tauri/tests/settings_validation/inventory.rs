@@ -58,7 +58,13 @@ fn independent_access_inventory_covers_7_readonly_1_secret_4_collections_52_scal
         .into_iter()
         .map(|(key, _, _)| key)
         .collect();
-    let actual_scalars: BTreeSet<_> = descriptors()
+    assert_eq!(scalar_keys.len(), 52);
+    assert_eq!(scalar_keys, actual_scalars());
+    Ok(())
+}
+/// Descriptor keys that are neither read-only, secret nor collections.
+fn actual_scalars() -> BTreeSet<&'static str> {
+    descriptors()
         .iter()
         .filter(|entry| {
             !READONLY.contains(&entry.key)
@@ -66,10 +72,7 @@ fn independent_access_inventory_covers_7_readonly_1_secret_4_collections_52_scal
                 && !COLLECTIONS.iter().any(|(key, _)| *key == entry.key)
         })
         .map(|entry| entry.key)
-        .collect();
-    assert_eq!(scalar_keys.len(), 52);
-    assert_eq!(scalar_keys, actual_scalars);
-    Ok(())
+        .collect()
 }
 
 pub(super) const ENUM_INVENTORY: &[(&str, &[&str])] = &[

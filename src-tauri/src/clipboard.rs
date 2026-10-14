@@ -51,13 +51,17 @@ fn finish_clipboard_paste(
     paste_result
 }
 
+/// Pre-dispatch check run immediately before the first emitted key, text or script (006
+/// destination guard); an error stops the method before any input.
+pub type DispatchCheck<'a> = &'a dyn Fn() -> Result<(), String>;
+
 /// Pastes text using the clipboard: saves current content, writes text, sends paste keystroke, restores clipboard.
 fn paste_via_clipboard(
     text: &str,
     app_handle: &AppHandle,
     paste_method: &PasteMethod,
-    paste_delay_ms: u64,
-    paste_delay_after_ms: u64,
+    (paste_delay_ms, paste_delay_after_ms): (u64, u64),
+    check: DispatchCheck<'_>,
 ) -> Result<(), String> {
     let clipboard = app_handle.clipboard();
     let saved_text = clipboard.read_text().ok().filter(|t| !t.is_empty());
@@ -78,6 +82,9 @@ fn paste_via_clipboard(
     // Capture key injection errors so the original clipboard is restored before
     // propagating them to the caller.
     let paste_result = (|| -> Result<(), String> {
+        // Order matters: the destination is rechecked after the configured delay, right before
+        // the keystroke; a refusal still restores the clipboard below.
+        check()?;
         // Send paste key combo
         #[cfg(target_os = "linux")]
         let key_combo_sent = try_send_key_combo_linux(paste_method)?;
@@ -771,7 +778,9 @@ fn should_send_auto_submit(auto_submit: bool, paste_method: PasteMethod) -> bool
     auto_submit && paste_method != PasteMethod::None
 }
 
-pub fn paste(text: String, app_handle: AppHandle) -> Result<(), String> {
+/// Insert `text` with the configured method; `check` runs right before the first dispatch.
+// @spec FR-002: Guard after the configured delay, before input — .specs/features/006-destination-application/spec.md#fr-002
+pub fn paste(text: String, app_handle: AppHandle, check: DispatchCheck<'_>) -> Result<(), String> {
     let settings = get_settings(&app_handle);
     let paste_method = settings.paste_method;
     let paste_delay_ms = settings.paste_delay_ms;
@@ -795,6 +804,7 @@ pub fn paste(text: String, app_handle: AppHandle) -> Result<(), String> {
             info!("PasteMethod::None selected - skipping paste action");
         }
         PasteMethod::Direct => {
+            check()?;
             paste_direct(
                 &text,
                 &app_handle,
@@ -810,6 +820,8 @@ pub fn paste(text: String, app_handle: AppHandle) -> Result<(), String> {
             // the legacy path untouched.
             #[cfg(any(target_os = "macos", target_os = "windows"))]
             if settings.reliable_paste {
+                // The reliable path publishes the clipboard and types at once: check first.
+                check()?;
                 let reliable_result = with_enigo(&app_handle, |enigo| {
                     crate::paste_tx::try_reliable_paste(
                         &text,
@@ -832,8 +844,8 @@ pub fn paste(text: String, app_handle: AppHandle) -> Result<(), String> {
                 &text,
                 &app_handle,
                 &paste_method,
-                paste_delay_ms,
-                paste_delay_after_ms,
+                (paste_delay_ms, paste_delay_after_ms),
+                check,
             )?
         }
         PasteMethod::ExternalScript => {
@@ -842,6 +854,7 @@ pub fn paste(text: String, app_handle: AppHandle) -> Result<(), String> {
                 .as_ref()
                 .filter(|p| !p.is_empty())
                 .ok_or("External script path is not configured")?;
+            check()?;
             paste_via_external_script(&text, script_path)?;
         }
     }
