@@ -1,30 +1,30 @@
 {
   "schema_version": "1",
   "policy_version": "078.1",
-  "context_hash": "4eeb559236590bd6f949275550b706f0f486af053f580a95da84ed312fa41a1e",
+  "context_hash": "f320250ac0c1e3a861d8cd3c70060304349decc755d2bd8e0b8f5fa583acb841",
   "source_hashes": {
     ".specs/constitution.md": "f65acb99e00dfab5f8ce418aae1b5979265f2b2eb3c399666b09c4c2caf82067",
-    ".specs/features/009-pin-mode-and-enter-rule/spec.md": "35eb4a9d4cd350d4d1e0d5e6204ff24fa0fafac5c3d37c14551a17bbec47679d",
+    ".specs/features/009-pin-mode-and-enter-rule/spec.md": "dba7e2e123639dfab1bf61d3acd84b74a4430eed65fb763c9ce938368cbd0e98",
     ".specs/project.md": "cd935573446ed94fa43256de0a4d14b9474c4356fa66623f3c8c32a80572b699",
     ".specs/stacks/_default.md": "4df92d16eef38a57c8c2bf1fff8425852b86a41e86c6b7c16423ec166ddfc0f8",
     ".specs/testing/strategy.md": "bfe0dd480a9d3cf2575cba8407a984add02dcbdad2a17fcb4fc560def9058934"
   },
   "reviewer_model": "claude-opus-5-5",
   "complete": true,
-  "ready": true,
+  "ready": false,
   "errors": [],
   "conclusions": [
     {
       "requirement_id": "009-pin-mode-and-enter-rule:AC-001",
       "disposition": "covered",
-      "rationale": "Observable badge-menu entries, pin scope (current and following dictations until unpin or quit), accessible name and the single badge-visibility exception to 006 AC-003 are now stated, with the no-pin, overlay-none and unsupported cases enumerated; FR-001 supplies the storage/resolution rule. Testable by UI and unit tests.",
+      "rationale": "Pin/Unpin menu entries, scope (current + following dictations), pin mark, accessible name and the badge visibility exception are explicit and testable; FR-001 resolves pin before capture.",
       "source_citations": [
         {
-          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L214-L218",
-          "excerpt": "While an application is pinned, the badge is shown even when the 006 setting \"Return to the dictation's application\" is off (the only exception to 006 AC-003)"
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L222-L226",
+          "excerpt": "Pinning stores the destination's identity"
         },
         {
-          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L282-L286",
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L290-L294",
           "excerpt": "resolve each dictation's destination from the pin before the frontmost-app capture of 006"
         }
       ],
@@ -33,16 +33,16 @@
     },
     {
       "requirement_id": "009-pin-mode-and-enter-rule:AC-002",
-      "disposition": "covered",
-      "rationale": "Defines the effect of choosing another app (current dictation only), unpinning before insertion (fallback to captured app, source captured) and activation even when return is off; the clarifications pin the decision. Deterministic and testable.",
+      "disposition": "ambiguous",
+      "rationale": "Badge-choice and unpin rules are clear, but unpinning a pinned dictation when the 006 Return setting is off has no captured app to fall back to (006 captures nothing then).",
       "source_citations": [
         {
-          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L219-L223",
-          "excerpt": "Unpinning before insertion begins makes the current dictation's destination the application captured at its start as in 006"
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L227-L231",
+          "excerpt": "makes the current dictation's destination the application captured at its start"
         },
         {
-          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L310-L320",
-          "excerpt": "Rule: an active pin shows the badge whatever that setting is; without a pin, 006 AC-003 applies unchanged."
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L227-L231",
+          "excerpt": "a pinned destination is activated even when the 006"
         }
       ],
       "plan_citations": [],
@@ -51,15 +51,15 @@
     {
       "requirement_id": "009-pin-mode-and-enter-rule:AC-003",
       "disposition": "covered",
-      "rationale": "Unavailable pinned app (not running or not activated within the 006 limit) inserts nothing, preserves the transcript with a reason and keeps the pin; reopening restores routing. FR-002 matches.",
+      "rationale": "Two named reasons with exact conditions, no insertion, transcript preserved per 006, pin kept, resumes when the app runs again; aligned with Story 2, FR-002 and the 2026-10-14 decision.",
       "source_citations": [
         {
-          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L224-L228",
-          "excerpt": "no text is inserted anywhere, the transcript is preserved as specified by 006 with the reason \"pinned app unavailable\", and the pin remains"
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L232-L236",
+          "excerpt": "the transcript is preserved as specified by 006, and the pin remains"
         },
         {
-          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L287-L291",
-          "excerpt": "Treat an unavailable pinned application as an unavailable destination without clearing the pin."
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L295-L299",
+          "excerpt": "without clearing the pin"
         }
       ],
       "plan_citations": [],
@@ -67,16 +67,16 @@
     },
     {
       "requirement_id": "009-pin-mode-and-enter-rule:AC-004",
-      "disposition": "covered",
-      "rationale": "Three-value setting, retained key, explicit upgrade mapping and removal of every other auto-submit control; SC-002 makes the migration measurable.",
+      "disposition": "ambiguous",
+      "rationale": "Mapping off->Never, on->Always with key kept is clear, but it is not said whether legacy auto_submit fields stay readable by a gate-closed or older build reading the same store.",
       "source_citations": [
         {
-          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L229-L233",
-          "excerpt": "Upgrade maps auto-submit off to Never and on to Always and keeps the key."
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L237-L241",
+          "excerpt": "Upgrade maps auto-submit off to Never and on to Always and keeps the key"
         },
         {
-          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L292-L296",
-          "excerpt": "Replace the auto-submit switch by one three-value Automatic Enter setting with migration and a retained key choice."
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L300-L304",
+          "excerpt": "with migration and a retained key choice"
         }
       ],
       "plan_citations": [],
@@ -85,14 +85,14 @@
     {
       "requirement_id": "009-pin-mode-and-enter-rule:AC-005",
       "disposition": "covered",
-      "rationale": "Complete conjunctive gate: destination still frontmost, method success, smart-paste allowed outcomes, Windows reliable read, no recovery display, method not none, plus the pin condition. Each condition is independently falsifiable, matching the QE P0 gate-table tests.",
+      "rationale": "Exhaustive conjunctive gate (frontmost, method success, smart-paste outcomes, Windows read/fallback, no recovery, paste not none, pin source) is testable; QE P0 gate-table tests target it.",
       "source_citations": [
         {
-          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L234-L238",
-          "excerpt": "\"Only in PIN mode\" additionally requires that the dictation's destination came from the pin. Otherwise no Enter is sent."
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L242-L246",
+          "excerpt": "The Enter press is sent at most once, after the insertion step"
         },
         {
-          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L321-L330",
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L331-L340",
           "excerpt": "Gate table tests for AC-005 (each condition false blocks Enter)"
         }
       ],
@@ -101,16 +101,16 @@
     },
     {
       "requirement_id": "009-pin-mode-and-enter-rule:AC-006",
-      "disposition": "covered",
-      "rationale": "CLI operations, the identifier rule (running app else not_found), unavailable without an instance, shared UI validation of the three wire values, and JSON-only stdout are all specified with 008 stable codes.",
+      "disposition": "ambiguous",
+      "rationale": "Operations, codes and values are explicit, but the CLI key name of the option and the fate of the existing settable `auto_submit` CLI key under the gate-open build are unspecified.",
       "source_citations": [
         {
-          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L239-L243",
-          "excerpt": "`destination unpin` and `destination status` (pinned app or none) against a running instance, returning `unavailable` without one"
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L247-L251",
+          "excerpt": "reads and sets the Automatic Enter option and key with the UI validation"
         },
         {
-          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L292-L296",
-          "excerpt": "Replace the auto-submit switch by one three-value Automatic Enter setting with migration and a retained key choice."
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L300-L304",
+          "excerpt": "Replace the auto-submit switch by one three-value Automatic Enter setting"
         }
       ],
       "plan_citations": [],
@@ -119,10 +119,10 @@
     {
       "requirement_id": "009-pin-mode-and-enter-rule:FR-001",
       "disposition": "covered",
-      "rationale": "Session pin storage and resolution order are explicit and traced to AC-001, AC-002 and AC-006.",
+      "rationale": "Session pin settable from badge or CLI and resolved before 006 capture; detailed by AC-001/002/006.",
       "source_citations": [
         {
-          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L282-L286",
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L290-L294",
           "excerpt": "Store a session pin (application identity) set and cleared from the badge menu or CLI"
         }
       ],
@@ -132,11 +132,11 @@
     {
       "requirement_id": "009-pin-mode-and-enter-rule:FR-002",
       "disposition": "covered",
-      "rationale": "Unavailable pin handled as unavailable destination, pin preserved; traced to AC-003.",
+      "rationale": "Unavailable pinned app handled as unavailable destination with pin retained; reasons detailed in AC-003.",
       "source_citations": [
         {
-          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L287-L291",
-          "excerpt": "without clearing the pin"
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L295-L299",
+          "excerpt": "Treat an unavailable pinned application as an unavailable destination"
         }
       ],
       "plan_citations": [],
@@ -145,11 +145,11 @@
     {
       "requirement_id": "009-pin-mode-and-enter-rule:FR-003",
       "disposition": "covered",
-      "rationale": "Single three-value setting with migration; traced to AC-004 and AC-006.",
+      "rationale": "Single three-value setting replacing the switch, with migration and retained key; values and mapping detailed in AC-004.",
       "source_citations": [
         {
-          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L292-L296",
-          "excerpt": "one three-value Automatic Enter setting with migration and a retained key choice"
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L300-L304",
+          "excerpt": "Replace the auto-submit switch by one three-value Automatic Enter setting"
         }
       ],
       "plan_citations": [],
@@ -158,11 +158,11 @@
     {
       "requirement_id": "009-pin-mode-and-enter-rule:FR-004",
       "disposition": "covered",
-      "rationale": "At most one Enter per dictation gated by the outcome contract; traced to AC-005.",
+      "rationale": "At most one Enter, gated by the outcome contract and option; contract enumerated in AC-005.",
       "source_citations": [
         {
-          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L297-L301",
-          "excerpt": "Send at most one Enter press per dictation, gated by the insertion outcome contract and the option value."
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L305-L309",
+          "excerpt": "Send at most one Enter press per dictation"
         }
       ],
       "plan_citations": [],
@@ -171,11 +171,11 @@
     {
       "requirement_id": "009-pin-mode-and-enter-rule:SC-001",
       "disposition": "covered",
-      "rationale": "Quantified: 100% of the option x pin x outcome matrix yields the expected 0 or 1 presses.",
+      "rationale": "Measurable 100% target over an automated option x pin x outcome matrix defined by AC-005.",
       "source_citations": [
         {
-          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L358-L361",
-          "excerpt": "the number of Enter presses equals the expected value (0 or 1) in 100% of cases"
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L368-L371",
+          "excerpt": "the number of Enter presses equals the expected value (0 or 1)"
         }
       ],
       "plan_citations": [],
@@ -184,11 +184,11 @@
     {
       "requirement_id": "009-pin-mode-and-enter-rule:SC-002",
       "disposition": "covered",
-      "rationale": "Every existing auto-submit combination mapped with the same key; measurable by upgrade tests.",
+      "rationale": "Finite combination set (on/off x three keys) with documented mapping; automatable.",
       "source_citations": [
         {
-          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L362-L365",
-          "excerpt": "Upgrade tests map every existing auto-submit combination to the documented Automatic Enter value with the same key."
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L372-L375",
+          "excerpt": "map every existing auto-submit combination to the documented Automatic Enter value"
         }
       ],
       "plan_citations": [],
@@ -197,10 +197,10 @@
     {
       "requirement_id": "009-pin-mode-and-enter-rule:SC-003",
       "disposition": "covered",
-      "rationale": "Native macOS check with a fixed count (five dictations from three apps). Per the constitution only macOS native evidence gates Implemented; Windows remains pending release evidence.",
+      "rationale": "Concrete native check (5 dictations, 3 source apps), consistent with the constitution's macOS native evidence rule.",
       "source_citations": [
         {
-          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L366-L368",
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L376-L378",
           "excerpt": "a pinned ChatGPT receives five consecutive dictations started from three other applications"
         }
       ],
@@ -208,49 +208,207 @@
       "searched_plan_sections": []
     }
   ],
-  "ambiguities": [],
-  "extra_scope": [],
-  "findings": [
+  "ambiguities": [
     {
-      "category": "consistency",
-      "severity": "info",
-      "description": "The only normative change since round 1 is the AC-001 badge exception and its dated clarification. It resolves the round-1 non-critical ambiguity (badge visibility when return is off) and keeps 006's spec untouched; 006 AC-003 remains true without a pin.",
-      "suggestion": "Make the 006 badge visibility predicate in the plan consume the pin state so both rules are implemented in one place.",
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-002",
+      "decision_key": "unpin_with_return_setting_off",
+      "question": "With Return setting off, 006 captures no app at start. If the user unpins mid-dictation, does it insert into the frontmost app at end (no destination), or must 009 capture at start whenever pinned?",
+      "critical": false,
       "citations": [
         {
-          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L310-L320",
-          "excerpt": "006's spec is not modified; this feature owns the exception."
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L227-L231",
+          "excerpt": "makes the current dictation's destination the application captured at its start"
+        }
+      ],
+      "resolution": "",
+      "resolution_citations": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-004",
+      "decision_key": "legacy_auto_submit_after_migration",
+      "question": "After migration, are auto_submit/auto_submit_key kept (or mirrored) so a gate-closed or older Handy build keeps the user's Enter behavior, or are they removed?",
+      "critical": false,
+      "citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L237-L241",
+          "excerpt": "Upgrade maps auto-submit off to Never and on to Always and keeps the key"
+        }
+      ],
+      "resolution": "",
+      "resolution_citations": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-006",
+      "decision_key": "cli_legacy_auto_submit_key",
+      "question": "Under the gate-open build, what does the CLI return for the existing `auto_submit` key (rejected, alias of Automatic Enter?), and what are the new option's CLI key names?",
+      "critical": false,
+      "citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L247-L251",
+          "excerpt": "reads and sets the Automatic Enter option and key with the UI validation"
+        }
+      ],
+      "resolution": "",
+      "resolution_citations": []
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-006",
+      "decision_key": "cli_pin_during_dictation",
+      "question": "Does a CLI pin of another identifier (or unpin) during a dictation change the in-progress dictation's destination, as a badge pin does, or apply from the next one?",
+      "critical": false,
+      "citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L359-L365",
+          "excerpt": "Pin set while no dictation is running (CLI): applies from the next dictation."
+        }
+      ],
+      "resolution": "",
+      "resolution_citations": []
+    }
+  ],
+  "extra_scope": [
+    {
+      "description": "Dictation destination source (captured, badge choice, pin) tracked per dictation.",
+      "justification": "Needed to evaluate Only in PIN mode and the unpin rule of AC-002.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L310-L317",
+          "excerpt": "captured, badge choice, pin"
+        }
+      ],
+      "kind": "technical"
+    },
+    {
+      "description": "Whole feature shipped behind the 006 destination-return gate.",
+      "justification": "Orchestrator decision 2026-10-14; keeps dev behavior unchanged while the gate is closed.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L318-L330",
+          "excerpt": "ships behind the `destination-return` gate"
+        }
+      ],
+      "kind": "technical"
+    },
+    {
+      "description": "Active pin shows the badge and activates the pinned app even when the 006 Return setting is off (exception to 006 AC-003).",
+      "justification": "Requested by the 2026-10-14 orchestrator decision so Unpin stays reachable.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L318-L330",
+          "excerpt": "an active pin shows the badge whatever that setting is"
+        }
+      ],
+      "kind": "business"
+    },
+    {
+      "description": "Pin is cleared when Handy quits and not restored after restart; the Input only says the pin lasts until it is unpinned. Backed only by an [ASSUMED] clarification.",
+      "justification": "No approved decision; narrows the Input's pin lifetime.",
+      "approved": false,
+      "citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L318-L330",
+          "excerpt": "The pin lasts until unpinned or until Handy quits"
+        }
+      ],
+      "kind": "business"
+    }
+  ],
+  "findings": [
+    {
+      "category": "ambiguity",
+      "severity": "warning",
+      "description": "AC-002 falls back to the app 'captured at its start as in 006', but a pin activates even with the 006 Return setting off, where 006 captures nothing (delivered code: capture() selects FrontmostAtEnd when return is disabled). Unpin mid-dictation then has no defined destination; same for CLI `current` during such a dictation.",
+      "suggestion": "State the fallback when Return is off: insert into the frontmost app at end with source 'captured'/no destination and no pin_only Enter, or capture at start whenever pinned.",
+      "citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L227-L231",
+          "excerpt": "makes the current dictation's destination the application captured at its start"
+        }
+      ]
+    },
+    {
+      "category": "scope",
+      "severity": "warning",
+      "description": "Pin lifetime ends at Handy quit, an [ASSUMED] narrowing of the Input ('until it is unpinned'); not an approved decision. AC-001 makes it normative.",
+      "suggestion": "Confirm with the user (or record a decision) that the pin is session-only, or persist it.",
+      "citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L12-L20",
+          "excerpt": "until it is unpinned"
+        },
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L222-L226",
+          "excerpt": "until unpinned or until Handy quits"
+        }
+      ]
+    },
+    {
+      "category": "data-migration",
+      "severity": "warning",
+      "description": "The gate is a build-time Cargo feature and a gate-closed build must behave exactly as dev with the existing auto-submit switch. The spec does not say whether migration keeps legacy auto_submit/auto_submit_key in the store, so switching to a gate-closed or older build could silently change Enter behavior.",
+      "suggestion": "Specify that legacy fields are preserved (or mirrored from the new value) and add a downgrade/gate-closed read case to SC-002.",
+      "citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L318-L330",
+          "excerpt": "Gate closed, Handy behaves exactly as `dev`: the existing auto-submit switch"
+        }
+      ]
+    },
+    {
+      "category": "cli-contract",
+      "severity": "warning",
+      "description": "008 currently exposes `auto_submit` and `auto_submit_key` as settable CLI keys. The migration claims to cover settings commands, but the spec names neither the new CLI key for the option nor the result of `settings set auto_submit` in the gate-open build, which matters for existing scripts.",
+      "suggestion": "Name the CLI keys (e.g. option and key) and state the legacy key's behavior (stable error code or alias).",
+      "citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L318-L330",
+          "excerpt": "The migration covers every current auto-submit path"
         }
       ]
     },
     {
       "category": "consistency",
       "severity": "info",
-      "description": "AC-003 names a single reason \"pinned app unavailable\" while 010 distinguishes a closed pinned app from an app that could not be brought forward. Both map to the same no-insertion behavior; the reason text is owned by 010.",
-      "suggestion": "Have the plan transmit the closed versus activation-timeout subtype to 010 so the 010 reason table can be applied.",
+      "description": "Story 4 flowchart starts with 'Destination frontmost?' and omits AC-005 branches: no-destination dictations, paste method none, the Windows fallback to classic paste and the smart-paste 'typed' outcome.",
+      "suggestion": "Align the Story 4 flowchart with AC-005's full gate.",
       "citations": [
         {
-          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L224-L228",
-          "excerpt": "When the pinned application is not running, or cannot be activated within the 006 limit"
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L145-L188",
+          "excerpt": "Smart paste read observed, or Windows reliable paste read confirmed, if used?"
         }
       ]
     },
     {
       "category": "testability",
-      "severity": "warning",
-      "description": "QE P1 lists native checks for ChatGPT and Comet without separating platforms. Per the constitution only macOS native evidence is required before Implemented; Windows observation is pending release evidence.",
-      "suggestion": "In the plan, gate on macOS native checks and record Windows as pending release evidence with the exact check.",
+      "severity": "info",
+      "description": "QE sets a 100 ms Enter latency expectation that no AC or SC carries, so no gate will verify it.",
+      "suggestion": "Either add it to an SC with a measurement method or mark it informative.",
       "citations": [
         {
-          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L321-L330",
-          "excerpt": "Native checks pinning ChatGPT and Comet with application switches"
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L331-L340",
+          "excerpt": "Enter sent within 100 ms after a successful insertion step"
+        }
+      ]
+    },
+    {
+      "category": "ux-gap",
+      "severity": "info",
+      "description": "With the Return setting off and nothing pinned no badge is shown, so the Input's badge entry point cannot pin in that configuration; only the CLI can. Consistent, but worth stating explicitly.",
+      "suggestion": "Mention in Edge Cases that with Return off, pinning starts from the CLI.",
+      "citations": [
+        {
+          "section_id": ".specs/features/009-pin-mode-and-enter-rule/spec.md:L222-L226",
+          "excerpt": "with that setting off and nothing pinned, no badge is shown"
         }
       ]
     }
   ],
   "confidence": 4,
   "raw_results": [
-    "{\"batch_id\": \"batch-001\", \"reviewed_section_ids\": [\".specs/constitution.md:L1-L2\", \".specs/constitution.md:L3-L17\", \".specs/constitution.md:L18-L26\", \".specs/constitution.md:L27-L30\", \".specs/constitution.md:L31-L36\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L1-L9\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L10-L11\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L12-L20\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L21-L22\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L23-L62\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L63-L90\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L91-L136\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L137-L180\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L181-L211\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L212-L213\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L214-L218\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L219-L223\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L224-L228\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L229-L233\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L234-L238\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L239-L243\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L244-L247\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L248-L263\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L264-L279\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L280-L281\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L282-L286\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L287-L291\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L292-L296\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L297-L301\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L302-L309\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L310-L320\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L321-L330\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L331-L337\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L338-L344\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L345-L348\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L349-L355\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L356-L357\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L358-L361\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L362-L365\", \".specs/features/009-pin-mode-and-enter-rule/spec.md:L366-L368\", \".specs/project.md:L1-L2\", \".specs/project.md:L3-L7\", \".specs/project.md:L8-L16\", \".specs/project.md:L17-L20\", \".specs/project.md:L21-L24\", \".specs/project.md:L25-L28\", \".specs/project.md:L29-L36\", \".specs/stacks/_default.md:L1-L5\", \".specs/stacks/_default.md:L6-L7\", \".specs/stacks/_default.md:L8-L21\", \".specs/stacks/_default.md:L22-L31\", \".specs/testing/strategy.md:L1-L2\", \".specs/testing/strategy.md:L3-L6\", \".specs/testing/strategy.md:L7-L12\", \".specs/testing/strategy.md:L13-L16\"], \"conclusions\": [{\"requirement_id\": \"009-pin-mode-and-enter-rule:AC-001\", \"disposition\": \"covered\", \"rationale\": \"Observable badge-menu entries, pin scope (current and following dictations until unpin or quit), accessible name and the single badge-visibility exception to 006 AC-003 are now stated, with the no-pin, overlay-none and unsupported cases enumerated; FR-001 supplies the storage/resolution rule. Testable by UI and unit tests.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L214-L218\", \"excerpt\": \"While an application is pinned, the badge is shown even when the 006 setting \\\"Return to the dictation's application\\\" is off (the only exception to 006 AC-003)\"}, {\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L282-L286\", \"excerpt\": \"resolve each dictation's destination from the pin before the frontmost-app capture of 006\"}]}, {\"requirement_id\": \"009-pin-mode-and-enter-rule:AC-002\", \"disposition\": \"covered\", \"rationale\": \"Defines the effect of choosing another app (current dictation only), unpinning before insertion (fallback to captured app, source captured) and activation even when return is off; the clarifications pin the decision. Deterministic and testable.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L219-L223\", \"excerpt\": \"Unpinning before insertion begins makes the current dictation's destination the application captured at its start as in 006\"}, {\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L310-L320\", \"excerpt\": \"Rule: an active pin shows the badge whatever that setting is; without a pin, 006 AC-003 applies unchanged.\"}]}, {\"requirement_id\": \"009-pin-mode-and-enter-rule:AC-003\", \"disposition\": \"covered\", \"rationale\": \"Unavailable pinned app (not running or not activated within the 006 limit) inserts nothing, preserves the transcript with a reason and keeps the pin; reopening restores routing. FR-002 matches.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L224-L228\", \"excerpt\": \"no text is inserted anywhere, the transcript is preserved as specified by 006 with the reason \\\"pinned app unavailable\\\", and the pin remains\"}, {\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L287-L291\", \"excerpt\": \"Treat an unavailable pinned application as an unavailable destination without clearing the pin.\"}]}, {\"requirement_id\": \"009-pin-mode-and-enter-rule:AC-004\", \"disposition\": \"covered\", \"rationale\": \"Three-value setting, retained key, explicit upgrade mapping and removal of every other auto-submit control; SC-002 makes the migration measurable.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L229-L233\", \"excerpt\": \"Upgrade maps auto-submit off to Never and on to Always and keeps the key.\"}, {\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L292-L296\", \"excerpt\": \"Replace the auto-submit switch by one three-value Automatic Enter setting with migration and a retained key choice.\"}]}, {\"requirement_id\": \"009-pin-mode-and-enter-rule:AC-005\", \"disposition\": \"covered\", \"rationale\": \"Complete conjunctive gate: destination still frontmost, method success, smart-paste allowed outcomes, Windows reliable read, no recovery display, method not none, plus the pin condition. Each condition is independently falsifiable, matching the QE P0 gate-table tests.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L234-L238\", \"excerpt\": \"\\\"Only in PIN mode\\\" additionally requires that the dictation's destination came from the pin. Otherwise no Enter is sent.\"}, {\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L321-L330\", \"excerpt\": \"Gate table tests for AC-005 (each condition false blocks Enter)\"}]}, {\"requirement_id\": \"009-pin-mode-and-enter-rule:AC-006\", \"disposition\": \"covered\", \"rationale\": \"CLI operations, the identifier rule (running app else not_found), unavailable without an instance, shared UI validation of the three wire values, and JSON-only stdout are all specified with 008 stable codes.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L239-L243\", \"excerpt\": \"`destination unpin` and `destination status` (pinned app or none) against a running instance, returning `unavailable` without one\"}, {\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L292-L296\", \"excerpt\": \"Replace the auto-submit switch by one three-value Automatic Enter setting with migration and a retained key choice.\"}]}, {\"requirement_id\": \"009-pin-mode-and-enter-rule:FR-001\", \"disposition\": \"covered\", \"rationale\": \"Session pin storage and resolution order are explicit and traced to AC-001, AC-002 and AC-006.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L282-L286\", \"excerpt\": \"Store a session pin (application identity) set and cleared from the badge menu or CLI\"}]}, {\"requirement_id\": \"009-pin-mode-and-enter-rule:FR-002\", \"disposition\": \"covered\", \"rationale\": \"Unavailable pin handled as unavailable destination, pin preserved; traced to AC-003.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L287-L291\", \"excerpt\": \"without clearing the pin\"}]}, {\"requirement_id\": \"009-pin-mode-and-enter-rule:FR-003\", \"disposition\": \"covered\", \"rationale\": \"Single three-value setting with migration; traced to AC-004 and AC-006.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L292-L296\", \"excerpt\": \"one three-value Automatic Enter setting with migration and a retained key choice\"}]}, {\"requirement_id\": \"009-pin-mode-and-enter-rule:FR-004\", \"disposition\": \"covered\", \"rationale\": \"At most one Enter per dictation gated by the outcome contract; traced to AC-005.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L297-L301\", \"excerpt\": \"Send at most one Enter press per dictation, gated by the insertion outcome contract and the option value.\"}]}, {\"requirement_id\": \"009-pin-mode-and-enter-rule:SC-001\", \"disposition\": \"covered\", \"rationale\": \"Quantified: 100% of the option x pin x outcome matrix yields the expected 0 or 1 presses.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L358-L361\", \"excerpt\": \"the number of Enter presses equals the expected value (0 or 1) in 100% of cases\"}]}, {\"requirement_id\": \"009-pin-mode-and-enter-rule:SC-002\", \"disposition\": \"covered\", \"rationale\": \"Every existing auto-submit combination mapped with the same key; measurable by upgrade tests.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L362-L365\", \"excerpt\": \"Upgrade tests map every existing auto-submit combination to the documented Automatic Enter value with the same key.\"}]}, {\"requirement_id\": \"009-pin-mode-and-enter-rule:SC-003\", \"disposition\": \"covered\", \"rationale\": \"Native macOS check with a fixed count (five dictations from three apps). Per the constitution only macOS native evidence gates Implemented; Windows remains pending release evidence.\", \"source_citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L366-L368\", \"excerpt\": \"a pinned ChatGPT receives five consecutive dictations started from three other applications\"}]}], \"ambiguities\": [], \"extra_scope\": [], \"findings\": [{\"category\": \"consistency\", \"severity\": \"info\", \"description\": \"The only normative change since round 1 is the AC-001 badge exception and its dated clarification. It resolves the round-1 non-critical ambiguity (badge visibility when return is off) and keeps 006's spec untouched; 006 AC-003 remains true without a pin.\", \"suggestion\": \"Make the 006 badge visibility predicate in the plan consume the pin state so both rules are implemented in one place.\", \"citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L310-L320\", \"excerpt\": \"006's spec is not modified; this feature owns the exception.\"}]}, {\"category\": \"consistency\", \"severity\": \"info\", \"description\": \"AC-003 names a single reason \\\"pinned app unavailable\\\" while 010 distinguishes a closed pinned app from an app that could not be brought forward. Both map to the same no-insertion behavior; the reason text is owned by 010.\", \"suggestion\": \"Have the plan transmit the closed versus activation-timeout subtype to 010 so the 010 reason table can be applied.\", \"citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L224-L228\", \"excerpt\": \"When the pinned application is not running, or cannot be activated within the 006 limit\"}]}, {\"category\": \"testability\", \"severity\": \"warning\", \"description\": \"QE P1 lists native checks for ChatGPT and Comet without separating platforms. Per the constitution only macOS native evidence is required before Implemented; Windows observation is pending release evidence.\", \"suggestion\": \"In the plan, gate on macOS native checks and record Windows as pending release evidence with the exact check.\", \"citations\": [{\"section_id\": \".specs/features/009-pin-mode-and-enter-rule/spec.md:L321-L330\", \"excerpt\": \"Native checks pinning ChatGPT and Comet with application switches\"}]}], \"confidence\": 4}"
+    "{\"batch_id\":\"batch-001\",\"reviewed_section_ids\":[\".specs/constitution.md:L1-L2\",\".specs/constitution.md:L3-L17\",\".specs/constitution.md:L18-L26\",\".specs/constitution.md:L27-L30\",\".specs/constitution.md:L31-L36\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L1-L9\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L10-L11\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L12-L20\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L21-L22\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L23-L62\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L63-L98\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L99-L144\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L145-L188\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L189-L219\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L220-L221\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L222-L226\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L227-L231\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L232-L236\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L237-L241\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L242-L246\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L247-L251\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L252-L255\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L256-L271\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L272-L287\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L288-L289\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L290-L294\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L295-L299\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L300-L304\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L305-L309\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L310-L317\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L318-L330\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L331-L340\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L341-L347\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L348-L354\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L355-L358\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L359-L365\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L366-L367\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L368-L371\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L372-L375\",\".specs/features/009-pin-mode-and-enter-rule/spec.md:L376-L378\",\".specs/project.md:L1-L2\",\".specs/project.md:L3-L7\",\".specs/project.md:L8-L16\",\".specs/project.md:L17-L20\",\".specs/project.md:L21-L24\",\".specs/project.md:L25-L28\",\".specs/project.md:L29-L36\",\".specs/stacks/_default.md:L1-L5\",\".specs/stacks/_default.md:L6-L7\",\".specs/stacks/_default.md:L8-L21\",\".specs/stacks/_default.md:L22-L31\",\".specs/testing/strategy.md:L1-L2\",\".specs/testing/strategy.md:L3-L6\",\".specs/testing/strategy.md:L7-L12\",\".specs/testing/strategy.md:L13-L16\"],\n\"conclusions\":[\n{\"requirement_id\":\"009-pin-mode-and-enter-rule:AC-001\",\"disposition\":\"covered\",\"rationale\":\"Pin/Unpin menu entries, scope (current + following dictations), pin mark, accessible name and the badge visibility exception are explicit and testable; FR-001 resolves pin before capture.\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L222-L226\",\"excerpt\":\"Pinning stores the destination's identity\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L290-L294\",\"excerpt\":\"resolve each dictation's destination from the pin before the frontmost-app capture of 006\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},\n{\"requirement_id\":\"009-pin-mode-and-enter-rule:AC-002\",\"disposition\":\"ambiguous\",\"rationale\":\"Badge-choice and unpin rules are clear, but unpinning a pinned dictation when the 006 Return setting is off has no captured app to fall back to (006 captures nothing then).\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L227-L231\",\"excerpt\":\"makes the current dictation's destination the application captured at its start\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L227-L231\",\"excerpt\":\"a pinned destination is activated even when the 006\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},\n{\"requirement_id\":\"009-pin-mode-and-enter-rule:AC-003\",\"disposition\":\"covered\",\"rationale\":\"Two named reasons with exact conditions, no insertion, transcript preserved per 006, pin kept, resumes when the app runs again; aligned with Story 2, FR-002 and the 2026-10-14 decision.\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L232-L236\",\"excerpt\":\"the transcript is preserved as specified by 006, and the pin remains\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L295-L299\",\"excerpt\":\"without clearing the pin\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},\n{\"requirement_id\":\"009-pin-mode-and-enter-rule:AC-004\",\"disposition\":\"ambiguous\",\"rationale\":\"Mapping off->Never, on->Always with key kept is clear, but it is not said whether legacy auto_submit fields stay readable by a gate-closed or older build reading the same store.\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L237-L241\",\"excerpt\":\"Upgrade maps auto-submit off to Never and on to Always and keeps the key\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L300-L304\",\"excerpt\":\"with migration and a retained key choice\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},\n{\"requirement_id\":\"009-pin-mode-and-enter-rule:AC-005\",\"disposition\":\"covered\",\"rationale\":\"Exhaustive conjunctive gate (frontmost, method success, smart-paste outcomes, Windows read/fallback, no recovery, paste not none, pin source) is testable; QE P0 gate-table tests target it.\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L242-L246\",\"excerpt\":\"The Enter press is sent at most once, after the insertion step\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L331-L340\",\"excerpt\":\"Gate table tests for AC-005 (each condition false blocks Enter)\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},\n{\"requirement_id\":\"009-pin-mode-and-enter-rule:AC-006\",\"disposition\":\"ambiguous\",\"rationale\":\"Operations, codes and values are explicit, but the CLI key name of the option and the fate of the existing settable `auto_submit` CLI key under the gate-open build are unspecified.\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L247-L251\",\"excerpt\":\"reads and sets the Automatic Enter option and key with the UI validation\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L300-L304\",\"excerpt\":\"Replace the auto-submit switch by one three-value Automatic Enter setting\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},\n{\"requirement_id\":\"009-pin-mode-and-enter-rule:FR-001\",\"disposition\":\"covered\",\"rationale\":\"Session pin settable from badge or CLI and resolved before 006 capture; detailed by AC-001/002/006.\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L290-L294\",\"excerpt\":\"Store a session pin (application identity) set and cleared from the badge menu or CLI\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},\n{\"requirement_id\":\"009-pin-mode-and-enter-rule:FR-002\",\"disposition\":\"covered\",\"rationale\":\"Unavailable pinned app handled as unavailable destination with pin retained; reasons detailed in AC-003.\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L295-L299\",\"excerpt\":\"Treat an unavailable pinned application as an unavailable destination\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},\n{\"requirement_id\":\"009-pin-mode-and-enter-rule:FR-003\",\"disposition\":\"covered\",\"rationale\":\"Single three-value setting replacing the switch, with migration and retained key; values and mapping detailed in AC-004.\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L300-L304\",\"excerpt\":\"Replace the auto-submit switch by one three-value Automatic Enter setting\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},\n{\"requirement_id\":\"009-pin-mode-and-enter-rule:FR-004\",\"disposition\":\"covered\",\"rationale\":\"At most one Enter, gated by the outcome contract and option; contract enumerated in AC-005.\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L305-L309\",\"excerpt\":\"Send at most one Enter press per dictation\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},\n{\"requirement_id\":\"009-pin-mode-and-enter-rule:SC-001\",\"disposition\":\"covered\",\"rationale\":\"Measurable 100% target over an automated option x pin x outcome matrix defined by AC-005.\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L368-L371\",\"excerpt\":\"the number of Enter presses equals the expected value (0 or 1)\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},\n{\"requirement_id\":\"009-pin-mode-and-enter-rule:SC-002\",\"disposition\":\"covered\",\"rationale\":\"Finite combination set (on/off x three keys) with documented mapping; automatable.\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L372-L375\",\"excerpt\":\"map every existing auto-submit combination to the documented Automatic Enter value\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},\n{\"requirement_id\":\"009-pin-mode-and-enter-rule:SC-003\",\"disposition\":\"covered\",\"rationale\":\"Concrete native check (5 dictations, 3 source apps), consistent with the constitution's macOS native evidence rule.\",\"source_citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L376-L378\",\"excerpt\":\"a pinned ChatGPT receives five consecutive dictations started from three other applications\"}],\"plan_citations\":[],\"searched_plan_sections\":[]}\n],\n\"ambiguities\":[\n{\"requirement_id\":\"009-pin-mode-and-enter-rule:AC-002\",\"decision_key\":\"unpin_with_return_setting_off\",\"question\":\"With Return setting off, 006 captures no app at start. If the user unpins mid-dictation, does it insert into the frontmost app at end (no destination), or must 009 capture at start whenever pinned?\",\"critical\":false,\"citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L227-L231\",\"excerpt\":\"makes the current dictation's destination the application captured at its start\"}]},\n{\"requirement_id\":\"009-pin-mode-and-enter-rule:AC-004\",\"decision_key\":\"legacy_auto_submit_after_migration\",\"question\":\"After migration, are auto_submit/auto_submit_key kept (or mirrored) so a gate-closed or older Handy build keeps the user's Enter behavior, or are they removed?\",\"critical\":false,\"citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L237-L241\",\"excerpt\":\"Upgrade maps auto-submit off to Never and on to Always and keeps the key\"}]},\n{\"requirement_id\":\"009-pin-mode-and-enter-rule:AC-006\",\"decision_key\":\"cli_legacy_auto_submit_key\",\"question\":\"Under the gate-open build, what does the CLI return for the existing `auto_submit` key (rejected, alias of Automatic Enter?), and what are the new option's CLI key names?\",\"critical\":false,\"citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L247-L251\",\"excerpt\":\"reads and sets the Automatic Enter option and key with the UI validation\"}]},\n{\"requirement_id\":\"009-pin-mode-and-enter-rule:AC-006\",\"decision_key\":\"cli_pin_during_dictation\",\"question\":\"Does a CLI pin of another identifier (or unpin) during a dictation change the in-progress dictation's destination, as a badge pin does, or apply from the next one?\",\"critical\":false,\"citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L359-L365\",\"excerpt\":\"Pin set while no dictation is running (CLI): applies from the next dictation.\"}]}\n],\n\"extra_scope\":[\n{\"kind\":\"technical\",\"description\":\"Dictation destination source (captured, badge choice, pin) tracked per dictation.\",\"justification\":\"Needed to evaluate Only in PIN mode and the unpin rule of AC-002.\",\"approved\":true,\"citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L310-L317\",\"excerpt\":\"captured, badge choice, pin\"}]},\n{\"kind\":\"technical\",\"description\":\"Whole feature shipped behind the 006 destination-return gate.\",\"justification\":\"Orchestrator decision 2026-10-14; keeps dev behavior unchanged while the gate is closed.\",\"approved\":true,\"citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L318-L330\",\"excerpt\":\"ships behind the `destination-return` gate\"}]},\n{\"kind\":\"business\",\"description\":\"Active pin shows the badge and activates the pinned app even when the 006 Return setting is off (exception to 006 AC-003).\",\"justification\":\"Requested by the 2026-10-14 orchestrator decision so Unpin stays reachable.\",\"approved\":true,\"citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L318-L330\",\"excerpt\":\"an active pin shows the badge whatever that setting is\"}]},\n{\"kind\":\"business\",\"description\":\"Pin is cleared when Handy quits and not restored after restart; the Input only says the pin lasts until it is unpinned. Backed only by an [ASSUMED] clarification.\",\"justification\":\"No approved decision; narrows the Input's pin lifetime.\",\"approved\":false,\"citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L318-L330\",\"excerpt\":\"The pin lasts until unpinned or until Handy quits\"}]}\n],\n\"findings\":[\n{\"category\":\"ambiguity\",\"severity\":\"warning\",\"description\":\"AC-002 falls back to the app 'captured at its start as in 006', but a pin activates even with the 006 Return setting off, where 006 captures nothing (delivered code: capture() selects FrontmostAtEnd when return is disabled). Unpin mid-dictation then has no defined destination; same for CLI `current` during such a dictation.\",\"suggestion\":\"State the fallback when Return is off: insert into the frontmost app at end with source 'captured'/no destination and no pin_only Enter, or capture at start whenever pinned.\",\"citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L227-L231\",\"excerpt\":\"makes the current dictation's destination the application captured at its start\"}]},\n{\"category\":\"scope\",\"severity\":\"warning\",\"description\":\"Pin lifetime ends at Handy quit, an [ASSUMED] narrowing of the Input ('until it is unpinned'); not an approved decision. AC-001 makes it normative.\",\"suggestion\":\"Confirm with the user (or record a decision) that the pin is session-only, or persist it.\",\"citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L12-L20\",\"excerpt\":\"until it is unpinned\"},{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L222-L226\",\"excerpt\":\"until unpinned or until Handy quits\"}]},\n{\"category\":\"data-migration\",\"severity\":\"warning\",\"description\":\"The gate is a build-time Cargo feature and a gate-closed build must behave exactly as dev with the existing auto-submit switch. The spec does not say whether migration keeps legacy auto_submit/auto_submit_key in the store, so switching to a gate-closed or older build could silently change Enter behavior.\",\"suggestion\":\"Specify that legacy fields are preserved (or mirrored from the new value) and add a downgrade/gate-closed read case to SC-002.\",\"citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L318-L330\",\"excerpt\":\"Gate closed, Handy behaves exactly as `dev`: the existing auto-submit switch\"}]},\n{\"category\":\"cli-contract\",\"severity\":\"warning\",\"description\":\"008 currently exposes `auto_submit` and `auto_submit_key` as settable CLI keys. The migration claims to cover settings commands, but the spec names neither the new CLI key for the option nor the result of `settings set auto_submit` in the gate-open build, which matters for existing scripts.\",\"suggestion\":\"Name the CLI keys (e.g. option and key) and state the legacy key's behavior (stable error code or alias).\",\"citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L318-L330\",\"excerpt\":\"The migration covers every current auto-submit path\"}]},\n{\"category\":\"consistency\",\"severity\":\"info\",\"description\":\"Story 4 flowchart starts with 'Destination frontmost?' and omits AC-005 branches: no-destination dictations, paste method none, the Windows fallback to classic paste and the smart-paste 'typed' outcome.\",\"suggestion\":\"Align the Story 4 flowchart with AC-005's full gate.\",\"citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L145-L188\",\"excerpt\":\"Smart paste read observed, or Windows reliable paste read confirmed, if used?\"}]},\n{\"category\":\"testability\",\"severity\":\"info\",\"description\":\"QE sets a 100 ms Enter latency expectation that no AC or SC carries, so no gate will verify it.\",\"suggestion\":\"Either add it to an SC with a measurement method or mark it informative.\",\"citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L331-L340\",\"excerpt\":\"Enter sent within 100 ms after a successful insertion step\"}]},\n{\"category\":\"ux-gap\",\"severity\":\"info\",\"description\":\"With the Return setting off and nothing pinned no badge is shown, so the Input's badge entry point cannot pin in that configuration; only the CLI can. Consistent, but worth stating explicitly.\",\"suggestion\":\"Mention in Edge Cases that with Return off, pinning starts from the CLI.\",\"citations\":[{\"section_id\":\".specs/features/009-pin-mode-and-enter-rule/spec.md:L222-L226\",\"excerpt\":\"with that setting off and nothing pinned, no badge is shown\"}]}\n],\n\"confidence\":4}\n"
   ],
   "synthesis": null,
   "synthesis_transport_version": null
