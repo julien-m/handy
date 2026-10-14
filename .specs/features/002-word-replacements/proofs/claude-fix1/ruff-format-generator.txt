@@ -1,0 +1,4 @@
+$ ruff format --check src-tauri/src/word_replacements/unicode_generate.py
+Tue Oct 13 15:28:20 UTC 2026
+1 file already formatted
+EXIT=0

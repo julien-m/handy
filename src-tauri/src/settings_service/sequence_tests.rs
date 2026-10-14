@@ -337,11 +337,12 @@ fn assert_selected(directory: &tempfile::TempDir, model: &str, microphone: &str)
 }
 /// User selection of a model and a microphone (ordered write).
 fn select(live: &LiveSettings, port: &SpyPort, model: &str, microphone: &str) -> TestResult {
-    write_edit(live, port, &|settings| {
+    let edit = |settings: &mut crate::settings::AppSettings| {
         settings.selected_model = model.into();
         settings.selected_microphone = Some(microphone.into());
         Ok(())
-    })?;
+    };
+    write_edit(live, port, &edit, None)?;
     Ok(())
 }
 /// The model and microphone managers' repairs (unordered), each conditional on the locked state.

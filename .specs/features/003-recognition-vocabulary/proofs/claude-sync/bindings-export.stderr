@@ -1,0 +1,18 @@
+[2026-10-14][10:13:05][handy_app_lib::managers::model][INFO] Seeded 69 catalog model(s) into the registry
+[2026-10-14][10:13:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_device_init: tensor API disabled for pre-M5 and pre-A19 devices
+[2026-10-14][10:13:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_library_init: using embedded metal library
+[2026-10-14][10:13:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_library_compile_all: loaded 20 libraries from embedded data in 0.057 sec (max single = 0.056 sec)
+[2026-10-14][10:13:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_device_init: GPU name:   MTL0 (Apple M4 Pro)
+[2026-10-14][10:13:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_device_init: GPU family: MTLGPUFamilyApple9  (1009)
+[2026-10-14][10:13:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)
+[2026-10-14][10:13:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_device_init: simdgroup reduction   = true
+[2026-10-14][10:13:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_device_init: simdgroup matrix mul. = true
+[2026-10-14][10:13:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_device_init: has unified memory    = true
+[2026-10-14][10:13:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_device_init: has bfloat            = true
+[2026-10-14][10:13:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_device_init: has tensor            = false
+[2026-10-14][10:13:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_device_init: use residency sets    = false
+[2026-10-14][10:13:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_device_init: use shared buffers    = true
+[2026-10-14][10:13:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_device_init: recommendedMaxWorkingSetSize  = 19069.67 MB
+[2026-10-14][10:13:05][handy_app_lib::managers::transcription][INFO] transcribe-cpp initialized with 2 compute device(s): [MTL0 (metal), CPU (cpu)]
+[2026-10-14][10:13:05][handy_app_lib::managers::transcription][INFO] transcribe.cpp accelerator preference: Auto (applied on next model load)
+[2026-10-14][10:13:05][handy_app_lib::managers::transcription][INFO] ORT accelerator set to: auto

@@ -339,6 +339,7 @@
         "description": "בחר איך הטקסט יוכנס. ישיר: מדמה הקלדה דרך קלט המערכת. ללא: מדלג על הדבקה ומעדכן רק היסטוריה/לוח.",
         "options": {
           "clipboard": "לוח ({{modifier}}+V)",
+          "smartPaste": "הדבקה חכמה",
           "clipboardCtrlShiftV": "לוח (Ctrl+Shift+V)",
           "clipboardShiftInsert": "לוח (Shift+Insert)",
           "direct": "ישיר",
@@ -767,5 +768,8 @@
     "learnMore": "איך לתקן את זה",
     "recorderBlocked": "לא ניתן להקליט קיצורים כרגע — Secure Input של macOS חוסם אירועי מקשים. פתור תחילה את אזהרת Secure Input.",
     "dismiss": "התעלם"
+  },
+  "smartPaste": {
+    "handOver": "הטקסט הועבר ללוח עבור המסך המרוחק"
   }
 }

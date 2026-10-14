@@ -1,0 +1,23 @@
+
+running 18 tests
+test engine_supervisor::protocol::tests::device_key_matches_legacy_format ... ok
+test engine_supervisor::protocol::tests::clean_eof_is_none ... ok
+test recognition_vocabulary::budget::tests::empty_list_needs_no_tokenizer_and_failures_propagate ... ok
+test recognition_vocabulary::budget::tests::first_overflowing_term_stops_the_prefix ... ok
+test recognition_vocabulary::budget::tests::budget_boundary_is_inclusive ... ok
+test recognition_vocabulary::budget::tests::whole_list_within_budget_is_sent ... ok
+test recognition_vocabulary::capability::tests::whisper_needs_the_feature_and_the_accepted_extension ... ok
+test recognition_vocabulary::capability::tests::generic_mechanisms_are_unverified_until_documented ... ok
+test engine_supervisor::protocol::tests::section_limit_is_inclusive_and_fits_the_length_prefix ... ok
+test recognition_vocabulary::context::tests::whisper_prompt_carries_exactly_the_fitted_terms ... ok
+test recognition_vocabulary::context::tests::unsupported_and_unverified_models_never_get_a_prompt ... ok
+test recognition_vocabulary::context::tests::nothing_fitting_sends_no_prompt ... ok
+test engine_supervisor::protocol::tests::loaded_info_without_context_fields_reads_as_no_context ... ok
+test engine_supervisor::protocol::tests::round_trips_message_with_pcm ... ok
+test engine_supervisor::protocol::tests::truncated_frame_is_an_error ... ok
+test engine_supervisor::protocol::tests::context_preparation_round_trips_over_the_wire ... ok
+test engine_supervisor::supervisor::context::tests::without_a_loaded_model_no_context_is_prepared_and_no_worker_starts ... ok
+test recognition_vocabulary::budget::tests::whisper_budget_is_the_documented_223_tokens ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 540 filtered out; finished in 0.01s
+

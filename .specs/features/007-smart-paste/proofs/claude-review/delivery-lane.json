@@ -1,0 +1,1 @@
+{"feature": "007-smart-paste", "lane": "full", "criticality": null, "blast_radius": null, "reasons": [{"code": "qe_section_missing", "detail": "spec.md has no 'Quality Engineering' section"}]}

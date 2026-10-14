@@ -1,0 +1,68 @@
+
+running 14 tests
+test operations::help_lists_every_replacement_action ... ok
+test operations::generic_set_of_the_rules_names_the_replacements_domain ... ok
+test operations::an_empty_recognized_text_exits_two_with_a_stable_code_and_no_write ... ok
+test operations::human_errors_go_to_stderr_with_the_item_locations ... ok
+test exchange::import_files_are_bounded_at_one_million_bytes_and_must_exist ... ok
+test routed::with_an_older_handy_running_changes_are_unavailable_and_write_nothing ... ok
+test exchange::import_dry_run_previews_two_additions_and_leaves_the_rules_unchanged ... ok
+test exchange::stdin_import_accepts_bom_and_crlf_and_refuses_non_utf8_with_its_offset ... ok
+test exchange::an_unwritable_export_destination_is_refused_and_left_unchanged ... ok
+test operations::a_stale_expected_revision_is_a_conflict_that_writes_nothing ... ok
+test operations::add_then_edit_alias_keep_the_id_and_position ... ok
+test operations::delete_alias_removes_and_an_unknown_id_is_not_found ... ok
+test routed::operations_routed_to_a_running_instance_are_committed_and_published_by_it ... ok
+test exchange::export_then_replace_import_reproduces_1_100_and_1000_rules ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.88s
+
+
+running 7 tests
+test current_settings_are_not_read_when_a_capture_exists ... ok
+test stream_and_batch_fallback_share_one_compiled_matcher ... ok
+test usable_stream_text_skips_the_batch_run ... ok
+test rules_captured_at_start_win_over_a_commit_during_recording ... ok
+test cancelled_finalize_never_starts_a_batch_run ... ok
+test missing_capture_falls_back_to_current_settings ... ok
+test next_dictation_uses_the_rules_committed_before_it_started ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+running 5 tests
+test a_legacy_store_starts_without_rules_and_keeps_its_settings_and_revision ... ok
+test a_no_op_import_returns_the_current_revision_without_writing ... ok
+test rules_survive_a_restart_in_their_order ... ok
+test the_stop_path_keeps_the_matcher_captured_at_recording_start ... ok
+test a_cli_commit_applies_from_the_next_dictation_not_the_current_one ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.36s
+
+
+running 10 tests
+test read_only_startup::a_real_lease_conflict_is_the_only_startup_refusal ... ok
+test read_only_startup::linked_store_starts_read_only_on_its_target ... ok
+test read_only_startup::shared_lock_permissions_start_read_only_on_the_store_content ... ok
+test read_only_startup::hard_linked_store_starts_read_only_on_its_content ... ok
+test read_only_startup::unreadable_store_starts_read_only_on_defaults ... ok
+test instance_fences_offline_writers_and_a_restart_sees_their_later_commit ... ok
+test concurrent_ui_commits_lose_no_field_and_increment_once_each ... ok
+test device_selectors_store_null_for_the_default_and_literal_names_otherwise ... ok
+test ui_adapter_and_cli_store_the_same_value_or_refuse_with_the_same_error ... ok
+test generated_parity::every_settable_scalar_key_gets_the_same_decision_on_ui_and_cli ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 17.54s
+
+
+running 7 tests
+test no_webview_capability_grants_the_store_plugin ... ok
+test settings_service_is_installed_before_the_first_startup_reader ... ok
+test settings_file_name_is_only_spelled_by_the_service ... ok
+test only_the_settings_service_emits_settings_changed ... ok
+test store_plugin_is_gone_and_settings_path_is_only_resolved_by_the_service ... ok
+test frontend_never_opens_the_settings_store_directly ... ok
+test no_backend_code_writes_settings_outside_the_service ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.31s
+

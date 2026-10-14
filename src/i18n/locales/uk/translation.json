@@ -339,6 +339,7 @@
         "description": "Оберіть спосіб вставки тексту. Прямий: емулює набір тексту. Немає: пропускає вставку, оновлює лише історію/буфер обміну.",
         "options": {
           "clipboard": "Буфер обміну ({{modifier}}+V)",
+          "smartPaste": "Розумна вставка",
           "clipboardCtrlShiftV": "Буфер обміну (Ctrl+Shift+V)",
           "clipboardShiftInsert": "Буфер обміну (Shift+Insert)",
           "direct": "Прямий",
@@ -767,5 +768,8 @@
     "learnMore": "Як це виправити",
     "recorderBlocked": "Зараз неможливо записати комбінацію — Secure Input у macOS блокує події клавіш. Спершу усуньте попередження про Secure Input.",
     "dismiss": "Приховати"
+  },
+  "smartPaste": {
+    "handOver": "Текст розміщено в буфері обміну для віддаленого екрана"
   }
 }

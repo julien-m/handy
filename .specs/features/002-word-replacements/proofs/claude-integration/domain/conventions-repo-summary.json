@@ -1,0 +1,89 @@
+{
+  "command": "livespec conventions verify --feature repo --json",
+  "exit": 0,
+  "verdict": "PASS",
+  "feature_slug": "repo",
+  "run_id": "20261014T025723Z",
+  "receipt_path": ".specs/conventions/runs/20261014T025723Z/receipt.json",
+  "baseline": {
+    "baselined_count": 656,
+    "new_count": 0,
+    "path": ".specs/conventions/baseline.json",
+    "resolved_count": 3526,
+    "sha256": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe"
+  },
+  "baseline_sha256_before": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe",
+  "baseline_sha256_after": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe",
+  "blockers": [],
+  "violations_in_files_changed_since_base": [
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/cli.rs",
+      "line": 235,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/settings_service/cli.rs",
+      "line": 29,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/settings_service/domains/mod.rs",
+      "line": 124,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/settings_service/protocol.rs",
+      "line": 85,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/settings_service/protocol.rs",
+      "line": 85,
+      "message": "contract_schema has 38 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/settings_service/protocol.rs",
+      "line": 124,
+      "message": "public_field_schema has 35 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.doc_coverage",
+      "path": "src-tauri/src/settings_service/render.rs",
+      "line": 63,
+      "message": "public API lacks docs"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/settings_service/validation.rs",
+      "line": 127,
+      "message": "validate_value has 32 lines > 30"
+    },
+    {
+      "severity": "warning",
+      "rule_id": "builtin.max_function_lines",
+      "path": "src/bindings.ts",
+      "line": 1389,
+      "message": "__makeEvents__ has 34 lines > 30"
+    }
+  ],
+  "base": "10d81b9",
+  "new_run_dirs": [
+    "20261014T025723Z"
+  ],
+  "receipt": "run directory moved to the trash after this summary (not kept in the repository)",
+  "source": "working tree of the replacements domain commit, on top of 10d81b9"
+}

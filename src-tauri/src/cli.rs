@@ -115,12 +115,82 @@ pub enum SettingsCommand {
     /// Output settings: paste method, clipboard handling, automatic submit, delays, typing tool,
     /// return to the dictation's application
     Output(OutputArgs),
+    /// Word replacement rules: list, add, update, remove, import and export
+    Replacements(ReplacementsArgs),
     /// Shortcuts of each action: list them; add, remove or reset them in the running Handy
     Shortcuts(ShortcutsArgs),
+    /// Recognition vocabulary: list, add, remove, import or export terms; status for the
+    /// selected model
+    Vocabulary(VocabularyArgs),
     /// AI post-processing prompts: list them with their readiness (running Handy); create,
     /// update, delete, choose the default and the provider override
     Prompts(PromptsArgs),
 }
+
+/// `handy settings vocabulary`: the recognition vocabulary, with the validation of the settings
+/// window.
+#[derive(Args, Debug, Clone)]
+#[command(
+    after_help = "TERM has 1 to 100 characters, no line break and none of < > \". Terms are \
+unique ignoring case and spacing; a list holds at most 500 terms. export prints one term per line \
+on stdout: redirect it to save a file. status needs a running Handy, which reports the model it \
+has loaded; without one it fails with unavailable (exit 5)."
+)]
+pub struct VocabularyArgs {
+    #[command(subcommand)]
+    pub action: VocabularyAction,
+}
+
+/// How an import combines with the saved terms.
+#[derive(clap::ValueEnum, Debug, Clone, Copy, PartialEq, Eq)]
+pub enum VocabularyImportMode {
+    /// Keep the saved terms and append the new ones in input order
+    Merge,
+    /// Make the input the whole list, in input order
+    Replace,
+}
+
+/// Actions of the vocabulary domain.
+#[derive(Subcommand, Debug, Clone)]
+pub enum VocabularyAction {
+    /// Print the saved terms in order, with the reason a term is not sent to recognition
+    List,
+    /// Append one term
+    Add {
+        /// Term to add
+        term: String,
+        #[command(flatten)]
+        options: ChangeOptions,
+    },
+    /// Remove the first saved term equal to TERM, ignoring case and spacing
+    Remove {
+        /// Term to remove
+        term: String,
+        #[command(flatten)]
+        options: ChangeOptions,
+    },
+    /// Import terms, one per line, as one change (duplicates skipped, any invalid line refuses
+    /// the whole input)
+    Import {
+        /// File path, or `-` for stdin
+        source: String,
+        /// merge appends the new terms; replace makes the input the whole list
+        #[arg(long, value_enum, default_value_t = VocabularyImportMode::Merge)]
+        mode: VocabularyImportMode,
+        #[command(flatten)]
+        options: ChangeOptions,
+    },
+    /// Print one saved term per line on stdout
+    Export {
+        /// `-` for stdout (the only target)
+        #[arg(default_value = "-")]
+        target: String,
+    },
+    /// Whether the selected model uses the vocabulary during recognition, with the terms sent
+    /// and not sent (needs a running Handy)
+    Status,
+}
+
 /// `handy settings prompts`: the prompt library, with the validation of the settings window.
 #[derive(Args, Debug, Clone)]
 #[command(
@@ -212,13 +282,13 @@ pub struct ShortcutsArgs {
     pub action: ShortcutsAction,
 }
 
-/// Change options shared by the shortcut actions.
-#[derive(Args, Debug, Clone, Default)]
+/// Change options shared by the shortcut and replacement actions that write.
+#[derive(Args, Debug, Clone, Copy, Default)]
 pub struct ChangeOptions {
     /// Refuse the change unless the settings are still at revision N
     #[arg(long, value_name = "N")]
     pub expected_revision: Option<u64>,
-    /// Validate and show the change without writing or registering it
+    /// Validate and show the change without writing it (or registering a shortcut)
     #[arg(long)]
     pub dry_run: bool,
 }
@@ -286,6 +356,75 @@ pub enum OutputAction {
         /// Validate and show the change without writing it
         #[arg(long)]
         dry_run: bool,
+    },
+}
+
+/// `handy settings replacements`: ordered rules applied to every dictation (exchange format:
+/// `recognized;replacement` or `recognized<TAB>replacement`, one rule per line).
+#[derive(Args, Debug, Clone)]
+pub struct ReplacementsArgs {
+    #[command(subcommand)]
+    pub action: ReplacementsAction,
+}
+
+/// How an import combines with the saved rules.
+#[derive(clap::ValueEnum, Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ImportModeArg {
+    /// Update the replacement of rules with the same recognized text, append the new ones
+    Merge,
+    /// Make the input the whole rule set, in input order
+    Replace,
+}
+
+/// Actions of the replacements domain.
+#[derive(Subcommand, Debug, Clone)]
+pub enum ReplacementsAction {
+    /// Print the rules in their saved order (id, recognized text, replacement)
+    List,
+    /// Append a rule
+    Add {
+        /// Text as recognized by the speech model (1-100 characters, no `;`, tab or line break)
+        recognized: String,
+        /// Text inserted instead, exactly as written (1-500 characters, no tab or line break)
+        replacement: String,
+        #[command(flatten)]
+        options: ChangeOptions,
+    },
+    /// Change both texts of a rule, keeping its id and position
+    #[command(alias = "edit")]
+    Update {
+        /// Rule id, as printed by `list`
+        id: String,
+        /// New recognized text
+        recognized: String,
+        /// New replacement
+        replacement: String,
+        #[command(flatten)]
+        options: ChangeOptions,
+    },
+    /// Remove a rule
+    #[command(alias = "delete")]
+    Remove {
+        /// Rule id, as printed by `list`
+        id: String,
+        #[command(flatten)]
+        options: ChangeOptions,
+    },
+    /// Import rules from a file, or `-` for stdin (UTF-8, at most 1,000,000 bytes), atomically
+    Import {
+        /// File path, or `-` to read stdin
+        source: String,
+        /// merge: update matching rules and append new ones; replace: the input becomes the set
+        #[arg(long, value_enum)]
+        mode: ImportModeArg,
+        #[command(flatten)]
+        options: ChangeOptions,
+    },
+    /// Export the rules to a file, or `-` (default) for stdout
+    Export {
+        /// File path, or `-` for stdout
+        #[arg(default_value = "-")]
+        destination: String,
     },
 }
 

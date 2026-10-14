@@ -1,5 +1,5 @@
 use crate::audio_toolkit::{
-    apply_custom_words, detect_output_language, normalize_transcription_output,
+    apply_custom_words_outside_protected, detect_output_language, normalize_transcription_output,
     remove_filler_words, OutputLanguageEvidence,
 };
 use crate::chinese_script::{convert_chinese_script, ChineseVariety};
@@ -13,6 +13,7 @@ use crate::settings::{
     get_settings, AppSettings, ChineseScript, ModelUnloadTimeout, OrtAcceleratorSetting,
     TranscribeAcceleratorSetting,
 };
+use crate::word_replacements::matcher::CompiledReplacements;
 use anyhow::Result;
 use log::{debug, error, info, warn};
 use serde::{Deserialize, Serialize};
@@ -37,6 +38,9 @@ use transcribe_rs::{
     },
     SpeechModel, TranscribeOptions,
 };
+
+#[path = "transcription_vocabulary.rs"]
+mod vocabulary;
 
 const STREAM_PERF_LOG_INTERVAL: Duration = Duration::from_secs(5);
 
@@ -1070,8 +1074,9 @@ impl TranscriptionManager {
     /// fall back to batch transcription. `Err` means the transcription was
     /// cancelled. There is no timeout here: waiting behind a model load is a
     /// queue position, not a failure (#1841), and the engine bounds the
-    /// finalize itself by the audio it still has to decode.
-    pub fn finalize_stream(&self) -> Result<Option<String>> {
+    /// finalize itself by the audio it still has to decode. `replacements` is
+    /// the rule snapshot captured when this dictation started.
+    pub fn finalize_stream(&self, replacements: &CompiledReplacements) -> Result<Option<String>> {
         let Some(tx) = self.router.take() else {
             return Ok(None);
         };
@@ -1091,6 +1096,7 @@ impl TranscriptionManager {
         let filtered = post_process_transcription_text(
             finalized.text,
             &settings,
+            replacements,
             false,
             &finalized.output_language,
             &finalized.supported_languages,
@@ -1125,7 +1131,13 @@ impl TranscriptionManager {
         .emit(&self.app_handle);
     }
 
-    pub fn transcribe(&self, audio: Vec<f32>) -> Result<String> {
+    /// Batch-transcribe `audio`, applying the rule snapshot captured for this
+    /// dictation after language detection and script conversion.
+    pub fn transcribe(
+        &self,
+        audio: Vec<f32>,
+        replacements: &CompiledReplacements,
+    ) -> Result<String> {
         #[cfg(debug_assertions)]
         if std::env::var("HANDY_FORCE_TRANSCRIPTION_FAILURE").is_ok() {
             return Err(anyhow::anyhow!(
@@ -1204,15 +1216,13 @@ impl TranscriptionManager {
         );
         debug!("Output language evidence: {:?}", output_language);
 
-        // Apply fuzzy word correction if custom words are configured — UNLESS the
-        // words were already handed to the model as an initial prompt (whisper
-        // family). We don't pass a prompt to non-whisper models (it requires the
-        // whisper-kind run extension), so they still get fuzzy correction here,
-        // same as the ONNX engines.
+        // Approximate correction applies to a non-empty vocabulary unless at least one term
+        // reached the engine as recognition context (feature 003, AC-005).
         let filtered_result = post_process_transcription_text(
             run.text,
             &settings,
-            run.model_is_whisper,
+            replacements,
+            run.context_applied,
             &output_language,
             &run.languages,
         );
@@ -1265,12 +1275,10 @@ impl TranscriptionManager {
         active_model: &str,
     ) -> Result<RunOutcome> {
         // Whether the model advertises Feature::InitialPrompt. Informational
-        // (logged below); the whisper run extension and the fuzzy-correction
-        // skip are gated on `model_is_whisper` instead, since non-whisper
-        // archs can advertise the feature while rejecting the whisper-kind
-        // extension.
+        // (logged below); the recognition context requires the feature AND the
+        // accepted whisper-kind extension (non-whisper archs can advertise the
+        // feature while rejecting the extension), decided by the worker.
         let model_takes_initial_prompt = info.supports_initial_prompt;
-        let model_is_whisper = info.arch == "whisper";
         let model_supports_translate = info.capabilities.supports_translate;
         let languages = info.capabilities.languages;
         debug!(
@@ -1282,18 +1290,16 @@ impl TranscriptionManager {
             languages
         );
 
-        // Custom words become the initial prompt ONLY for models that accept
-        // one (whisper family). Attaching the whisper run extension to a
-        // non-whisper arch is rejected with INVALID_ARG, so skip it there and
-        // let the fuzzy post-correction handle custom words instead.
-        let family = if settings.custom_words.is_empty() || !model_is_whisper {
-            None
-        } else {
-            Some(RunExtension::Whisper(WhisperRunOptions {
-                initial_prompt: Some(settings.custom_words.join(", ")),
+        // The vocabulary becomes the initial prompt only when the worker fitted at
+        // least one whole term to the model's documented budget; otherwise no
+        // context is sent and the fuzzy post-correction handles the terms.
+        let family = self.batch_context_prompt(settings).map(|prompt| {
+            RunExtension::Whisper(WhisperRunOptions {
+                initial_prompt: Some(prompt),
                 ..Default::default()
-            }))
-        };
+            })
+        });
+        let context_applied = family.is_some();
 
         let run_plan = transcribe_cpp_run_plan(
             settings.translate_to_english,
@@ -1338,7 +1344,7 @@ impl TranscriptionManager {
             // Whisper's audio-based LID (auto mode only; `None` when a
             // language hint was passed).
             model_detected_language: transcript.language,
-            model_is_whisper,
+            context_applied,
         })
     }
 
@@ -1503,7 +1509,7 @@ impl TranscriptionManager {
             applied_language_hint,
             output_was_translated,
             model_detected_language: None,
-            model_is_whisper: false,
+            context_applied: false,
         })
     }
 }
@@ -1518,12 +1524,11 @@ struct RunOutcome {
     output_was_translated: bool,
     /// The language the model itself detected, if it reported one.
     model_detected_language: Option<String>,
-    /// Whether the loaded model is actually whisper-family (arch string).
-    /// Non-whisper archs (e.g. Voxtral Small) can advertise
-    /// Feature::InitialPrompt yet reject the whisper-kind run extension with
-    /// INVALID_ARG, so the whisper extension must be gated on the arch, not
-    /// on the feature (see #1601).
-    model_is_whisper: bool,
+    /// Whether at least one whole vocabulary term reached the engine as
+    /// recognition context in this successful run (feature 003). Only then is
+    /// approximate correction skipped. The context requires the accepted
+    /// whisper-kind extension, never the advertised feature alone (#1601).
+    context_applied: bool,
 }
 
 fn emit_stream_text(app_handle: &AppHandle, committed: &str, tentative: &str) {
@@ -1756,10 +1761,14 @@ fn transcribe_cpp_run_plan(
     }
 }
 
-fn post_process_transcription_text(
+/// Native final-text stages shared by both final transcription paths: language evidence, Chinese
+/// script, word replacements, approximate correction outside replaced spans, filler removal and
+/// normalization (a panic keeps the text unchanged).
+pub(crate) fn post_process_transcription_text(
     raw: String,
     settings: &AppSettings,
-    custom_words_already_prompted: bool,
+    replacements: &CompiledReplacements,
+    context_applied: bool,
     output_language: &OutputLanguageEvidence,
     supported_languages: &[String],
 ) -> String {
@@ -1799,15 +1808,8 @@ fn post_process_transcription_text(
             _ => raw,
         };
 
-        let corrected = if !settings.custom_words.is_empty() && !custom_words_already_prompted {
-            apply_custom_words(
-                &raw,
-                &settings.custom_words,
-                settings.word_correction_threshold,
-            )
-        } else {
-            raw
-        };
+        // @spec FR-004: Correction only when no context was sent — .specs/features/003-recognition-vocabulary/spec.md#fr-004
+        let corrected = replace_then_correct(&raw, settings, replacements, context_applied);
 
         let without_fillers = remove_filler_words(
             &corrected,
@@ -1818,6 +1820,29 @@ fn post_process_transcription_text(
 
         normalize_transcription_output(&without_fillers)
     })
+}
+
+// @spec AC-007: Replacement pipeline position — .specs/features/002-word-replacements/spec.md#ac-007
+/// Apply explicit replacements, then approximate custom-word correction outside
+/// the replaced spans. Runs after script conversion and before filler removal,
+/// normalization and AI post-processing. Replacement is unconditional; the
+/// correction is skipped when at least one vocabulary term reached the engine
+/// as recognition context (`context_applied`, feature 003).
+fn replace_then_correct(
+    raw: &str,
+    settings: &AppSettings,
+    replacements: &CompiledReplacements,
+    context_applied: bool,
+) -> String {
+    let replaced = replacements.apply(raw);
+    if settings.custom_words.is_empty() || context_applied {
+        return replaced.text();
+    }
+    apply_custom_words_outside_protected(
+        &replaced.spans(),
+        &settings.custom_words,
+        settings.word_correction_threshold,
+    )
 }
 
 /// Characters to wait for before detecting the preview's language. A lone
@@ -2137,6 +2162,41 @@ pub fn get_available_accelerators(tm: &TranscriptionManager) -> AvailableAcceler
     }
 }
 
+impl Drop for TranscriptionManager {
+    fn drop(&mut self) {
+        // Skip shutdown unless this is the very last clone. TranscriptionManager
+        // is cloned by initiate_model_load() and the watcher thread — those
+        // clones dropping must not kill the watcher. The watcher thread holds
+        // its own clone, so onnx's strong_count is always >= 2 while the
+        // watcher is alive. When it reaches 1, only this instance remains
+        // and we can safely shut down.
+        if Arc::strong_count(&self.onnx) > 1 {
+            return;
+        }
+
+        // Signal the watcher thread to shutdown
+        self.shutdown_signal.store(true, Ordering::Relaxed);
+
+        // Wait for the thread to finish gracefully.
+        // Use match instead of unwrap to avoid panicking if the mutex is
+        // poisoned — a panic inside Drop calls abort().
+        let mut guard = match self.watcher_handle.lock() {
+            Ok(g) => g,
+            Err(e) => {
+                warn!("Recovered poisoned watcher_handle mutex during TranscriptionManager drop — a panic occurred earlier this session");
+                e.into_inner()
+            }
+        };
+        if let Some(handle) = guard.take() {
+            if let Err(e) = handle.join() {
+                warn!("Failed to join idle watcher thread: {:?}", e);
+            } else {
+                debug!("Idle watcher thread joined successfully");
+            }
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -2215,6 +2275,7 @@ mod tests {
             let result = post_process_transcription_text(
                 "学校に行きます".to_string(),
                 &settings,
+                &CompiledReplacements::empty(),
                 false,
                 &evidence,
                 &languages(&["zh", "ja", "en"]),
@@ -2234,6 +2295,7 @@ mod tests {
         let result = post_process_transcription_text(
             "我們今天下午一起去學校圖書館看書，然後再去吃晚飯。".to_string(),
             &settings,
+            &CompiledReplacements::empty(),
             false,
             &OutputLanguageEvidence::Unknown,
             &languages(&["zh", "en", "ja"]),
@@ -2255,6 +2317,7 @@ mod tests {
         let result = post_process_transcription_text(
             "eu vi um carro".to_string(),
             &settings,
+            &CompiledReplacements::empty(),
             false,
             &evidence,
             &supported,
@@ -2297,6 +2360,7 @@ mod tests {
         let result = post_process_transcription_text(
             "um uhm ok".to_string(),
             &settings,
+            &CompiledReplacements::empty(),
             false,
             &evidence,
             &languages(&["en", "pt"]),
@@ -2317,6 +2381,7 @@ mod tests {
             "um so the weather forecast said it would probably rain throughout the whole weekend"
                 .to_string(),
             &settings,
+            &CompiledReplacements::empty(),
             false,
             &OutputLanguageEvidence::Unknown,
             &languages(&["en", "pt", "es", "de"]),
@@ -2338,6 +2403,7 @@ mod tests {
         let result = post_process_transcription_text(
             "eu vi um carro na rua ontem de manhã quando fui ao mercado".to_string(),
             &settings,
+            &CompiledReplacements::empty(),
             false,
             &OutputLanguageEvidence::Unknown,
             &languages(&["en", "pt", "es", "de"]),
@@ -2424,6 +2490,7 @@ mod tests {
         let result = post_process_transcription_text(
             "eu vi um carro".to_string(),
             &settings,
+            &CompiledReplacements::empty(),
             false,
             &evidence,
             &supported,
@@ -2495,39 +2562,91 @@ mod tests {
         assert_eq!(plan.language.as_deref(), Some("es"));
         assert_eq!(plan.target_language, None);
     }
-}
 
-impl Drop for TranscriptionManager {
-    fn drop(&mut self) {
-        // Skip shutdown unless this is the very last clone. TranscriptionManager
-        // is cloned by initiate_model_load() and the watcher thread — those
-        // clones dropping must not kill the watcher. The watcher thread holds
-        // its own clone, so onnx's strong_count is always >= 2 while the
-        // watcher is alive. When it reaches 1, only this instance remains
-        // and we can safely shut down.
-        if Arc::strong_count(&self.onnx) > 1 {
-            return;
-        }
+    fn replacement_rules(rules: &[(&str, &str)]) -> CompiledReplacements {
+        let rules: Vec<_> = rules
+            .iter()
+            .enumerate()
+            .map(|(index, (recognized, replacement))| {
+                crate::word_replacements::model::ReplacementRule {
+                    id: format!("rule-{index}").into(),
+                    recognized: (*recognized).into(),
+                    replacement: (*replacement).into(),
+                }
+            })
+            .collect();
+        crate::word_replacements::dictation::compile_for_dictation(&rules)
+    }
 
-        // Signal the watcher thread to shutdown
-        self.shutdown_signal.store(true, Ordering::Relaxed);
-
-        // Wait for the thread to finish gracefully.
-        // Use match instead of unwrap to avoid panicking if the mutex is
-        // poisoned — a panic inside Drop calls abort().
-        let mut guard = match self.watcher_handle.lock() {
-            Ok(g) => g,
-            Err(e) => {
-                warn!("Recovered poisoned watcher_handle mutex during TranscriptionManager drop — a panic occurred earlier this session");
-                e.into_inner()
-            }
+    #[test]
+    fn replacements_apply_after_chinese_script_conversion() {
+        let settings = AppSettings {
+            chinese_script: ChineseScript::Traditional,
+            filler_word_removal_enabled: false,
+            ..Default::default()
         };
-        if let Some(handle) = guard.take() {
-            if let Err(e) = handle.join() {
-                warn!("Failed to join idle watcher thread: {:?}", e);
-            } else {
-                debug!("Idle watcher thread joined successfully");
-            }
-        }
+        let result = post_process_transcription_text(
+            "我住在东京".to_string(),
+            &settings,
+            &replacement_rules(&[("東京", "Tokyo")]),
+            false,
+            &OutputLanguageEvidence::UserSelected("zh".to_string()),
+            &languages(&["zh"]),
+        );
+        assert_eq!(result, "我住在Tokyo");
+    }
+
+    #[test]
+    fn replacements_apply_even_when_whisper_received_custom_words() {
+        let settings = AppSettings {
+            custom_words: vec!["Claude".to_string()],
+            ..Default::default()
+        };
+        let result = post_process_transcription_text(
+            "open cloud code now".to_string(),
+            &settings,
+            &replacement_rules(&[("cloud code", "Claude Code")]),
+            true,
+            &OutputLanguageEvidence::UserSelected("en".to_string()),
+            &languages(&["en"]),
+        );
+        assert_eq!(result, "open Claude Code now");
+    }
+
+    #[test]
+    fn approximate_correction_skips_replaced_spans_only() {
+        let settings = AppSettings {
+            custom_words: vec!["ChargeBee".to_string()],
+            word_correction_threshold: 0.5,
+            filler_word_removal_enabled: false,
+            ..Default::default()
+        };
+        let result = post_process_transcription_text(
+            "pay me via charge b".to_string(),
+            &settings,
+            &replacement_rules(&[("pay me", "Charge B")]),
+            false,
+            &OutputLanguageEvidence::UserSelected("en".to_string()),
+            &languages(&["en"]),
+        );
+        assert_eq!(result, "Charge B via ChargeBee");
+    }
+
+    #[test]
+    fn later_filler_removal_still_applies_to_replacement_text() {
+        let settings = AppSettings {
+            selected_language: "en".to_string(),
+            filler_word_removal_enabled: true,
+            ..Default::default()
+        };
+        let result = post_process_transcription_text(
+            "use acme today".to_string(),
+            &settings,
+            &replacement_rules(&[("acme", "um Acme")]),
+            false,
+            &OutputLanguageEvidence::UserSelected("en".to_string()),
+            &languages(&["en"]),
+        );
+        assert_eq!(result, "use Acme today");
     }
 }

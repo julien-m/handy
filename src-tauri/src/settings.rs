@@ -208,6 +208,12 @@ pub enum PasteMethod {
     ShiftInsert,
     CtrlShiftV,
     ExternalScript,
+    // macOS smart paste (feature 007, `crate::smart_paste`). Selectable, macOS
+    // default and migration target only while its rollout gate is open
+    // (`smart-paste-dispatch`): see
+    // `smart_paste::setting_policy`. A plain comment, not a doc comment, so
+    // specta's generated `bindings.ts` stays exactly as committed.
+    SmartPaste,
 }
 
 /// How the transcribe shortcut's key events drive a recording.
@@ -282,11 +288,13 @@ impl Default for KeyboardImplementation {
 
 impl Default for PasteMethod {
     fn default() -> Self {
-        // Default to CtrlV for macOS and Windows, Direct for Linux
+        // CtrlV for macOS and Windows, Direct for Linux; smart paste replaces CtrlV on macOS
+        // only once dictation delivers through it (feature 007 rollout gate).
         #[cfg(target_os = "linux")]
-        return PasteMethod::Direct;
+        let platform_default = PasteMethod::Direct;
         #[cfg(not(target_os = "linux"))]
-        return PasteMethod::CtrlV;
+        let platform_default = PasteMethod::CtrlV;
+        crate::smart_paste::setting_policy::Rollout::CURRENT.default_paste_method(platform_default)
     }
 }
 
@@ -494,6 +502,10 @@ pub struct AppSettings {
     pub log_level: LogLevel,
     #[serde(default)]
     pub custom_words: Vec<String>,
+    // @spec FR-001: Ordered replacement settings — .specs/features/002-word-replacements/spec.md#fr-001
+    /// Ordered explicit corrections, independent from approximate custom words.
+    #[serde(default)]
+    pub word_replacements: Vec<crate::word_replacements::model::ReplacementRule>,
     #[serde(default)]
     pub model_unload_timeout: ModelUnloadTimeout,
     #[serde(default = "default_word_correction_threshold")]
@@ -552,6 +564,11 @@ pub struct AppSettings {
     /// fixed delay. See `paste_tx`. macOS and Windows only.
     #[serde(default)]
     pub reliable_paste: bool,
+    /// Internal marker of the one-time macOS migration to smart paste (feature 007, see
+    /// `smart_paste::setting_policy`); read-only on every settings surface. Stores missing it are
+    /// treated as never migrated.
+    #[serde(default = "default_smart_paste_migration_version")]
+    pub smart_paste_migration_version: u32,
     #[serde(default = "default_typing_tool")]
     pub typing_tool: TypingTool,
     #[serde(default)]
@@ -641,6 +658,10 @@ fn default_overlay_position() -> OverlayPosition {
     // Position only matters when the overlay is shown; whether it shows at all is
     // `overlay_style` (Linux defaults that to None). So a single default suffices.
     OverlayPosition::Bottom
+}
+
+fn default_smart_paste_migration_version() -> u32 {
+    crate::smart_paste::setting_policy::Rollout::CURRENT.fresh_install_marker()
 }
 
 fn default_overlay_style() -> OverlayStyle {
@@ -1036,6 +1057,7 @@ pub fn get_default_settings() -> AppSettings {
         debug_mode: false,
         log_level: default_log_level(),
         custom_words: Vec::new(),
+        word_replacements: Vec::new(),
         model_unload_timeout: ModelUnloadTimeout::default(),
         word_correction_threshold: default_word_correction_threshold(),
         history_limit: default_history_limit(),
@@ -1063,6 +1085,7 @@ pub fn get_default_settings() -> AppSettings {
         paste_delay_ms: default_paste_delay_ms(),
         paste_delay_after_ms: default_paste_delay_after_ms(),
         reliable_paste: false,
+        smart_paste_migration_version: default_smart_paste_migration_version(),
         typing_tool: default_typing_tool(),
         external_script_path: None,
         filler_word_removal_enabled: default_filler_word_removal_enabled(),
@@ -1239,6 +1262,16 @@ pub(crate) fn apply_settings_migrations(
         } else {
             OverlayStyle::Live
         };
+        updated = true;
+    }
+
+    // One-time macOS migration to smart paste (AC-014), inactive until the
+    // paste pipeline dispatches smart paste; see `smart_paste::setting_policy`.
+    if crate::smart_paste::setting_policy::migrate(
+        settings,
+        settings_value,
+        crate::smart_paste::setting_policy::Rollout::CURRENT,
+    ) {
         updated = true;
     }
 
@@ -1459,6 +1492,32 @@ mod tests {
         assert_eq!(settings.transcribe_gpu_device, None);
     }
 
+    // @spec FR-009: Smart paste persisted value — .specs/features/007-smart-paste/spec.md#fr-009
+    #[test]
+    fn smart_paste_round_trips_as_a_persisted_paste_method() -> Result<(), serde_json::Error> {
+        let parsed: PasteMethod = serde_json::from_str("\"smart_paste\"")?;
+        assert_eq!(parsed, PasteMethod::SmartPaste);
+        assert_eq!(
+            serde_json::to_string(&PasteMethod::SmartPaste)?,
+            "\"smart_paste\""
+        );
+        Ok(())
+    }
+
+    // @spec FR-009: macOS default only once dictation dispatches smart paste — .specs/features/007-smart-paste/spec.md#fr-009
+    #[test]
+    fn smart_paste_is_the_default_only_where_the_rollout_is_active() {
+        use crate::smart_paste::setting_policy::Rollout;
+        let defaults = get_default_settings();
+        let is_smart = defaults.paste_method == PasteMethod::SmartPaste;
+        assert_eq!(is_smart, Rollout::CURRENT.is_active());
+        assert_eq!(PasteMethod::default(), defaults.paste_method);
+        assert_eq!(
+            defaults.smart_paste_migration_version,
+            Rollout::CURRENT.fresh_install_marker()
+        );
+    }
+
     #[test]
     fn default_settings_disable_auto_submit() {
         let settings = get_default_settings();
@@ -1661,7 +1720,8 @@ mod tests {
             "overlay_style": "live",
             "chinese_script": "as_transcribed",
             "transcribe_accelerator": "gpu",
-            "transcribe_gpu_device": settings.transcribe_gpu_device
+            "transcribe_gpu_device": settings.transcribe_gpu_device,
+            "smart_paste_migration_version": 1
         });
 
         assert!(!apply_settings_migrations(&mut settings, &raw));

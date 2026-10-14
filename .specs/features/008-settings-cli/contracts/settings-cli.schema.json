@@ -101,6 +101,7 @@
             "debug_mode",
             "log_level",
             "custom_words",
+            "word_replacements",
             "model_unload_timeout",
             "word_correction_threshold",
             "history_limit",
@@ -128,6 +129,7 @@
             "paste_delay_ms",
             "paste_delay_after_ms",
             "reliable_paste",
+            "smart_paste_migration_version",
             "typing_tool",
             "external_script_path",
             "filler_word_removal_enabled",
@@ -173,6 +175,7 @@
                   "debug_mode",
                   "log_level",
                   "custom_words",
+                  "word_replacements",
                   "model_unload_timeout",
                   "word_correction_threshold",
                   "history_limit",
@@ -200,6 +203,7 @@
                   "paste_delay_ms",
                   "paste_delay_after_ms",
                   "reliable_paste",
+                  "smart_paste_migration_version",
                   "typing_tool",
                   "external_script_path",
                   "filler_word_removal_enabled",
@@ -239,6 +243,32 @@
                   "alternatives_unsupported",
                   "registration_refused",
                   "invalid_shortcut",
+                  "recognized_empty",
+                  "recognized_too_long",
+                  "recognized_forbidden_character",
+                  "recognized_control_character",
+                  "recognized_leading_comment",
+                  "duplicate_recognized",
+                  "replacement_empty",
+                  "replacement_too_long",
+                  "replacement_forbidden_character",
+                  "replacement_control_character",
+                  "empty_rule_id",
+                  "duplicate_rule_id",
+                  "missing_separator",
+                  "too_many_rules",
+                  "invalid_saved_rules",
+                  "unicode_data_unavailable",
+                  "reply_too_large",
+                  "export_not_written",
+                  "export_symbolic_link",
+                  "export_read_only",
+                  "term_empty",
+                  "term_too_long",
+                  "term_line_break",
+                  "term_forbidden_character",
+                  "term_duplicate",
+                  "context_budget_unverified",
                   "prompt_name_empty",
                   "prompt_name_too_long",
                   "prompt_name_duplicate",
@@ -302,6 +332,32 @@
             "alternatives_unsupported",
             "registration_refused",
             "invalid_shortcut",
+            "recognized_empty",
+            "recognized_too_long",
+            "recognized_forbidden_character",
+            "recognized_control_character",
+            "recognized_leading_comment",
+            "duplicate_recognized",
+            "replacement_empty",
+            "replacement_too_long",
+            "replacement_forbidden_character",
+            "replacement_control_character",
+            "empty_rule_id",
+            "duplicate_rule_id",
+            "missing_separator",
+            "too_many_rules",
+            "invalid_saved_rules",
+            "unicode_data_unavailable",
+            "reply_too_large",
+            "export_not_written",
+            "export_symbolic_link",
+            "export_read_only",
+            "term_empty",
+            "term_too_long",
+            "term_line_break",
+            "term_forbidden_character",
+            "term_duplicate",
+            "context_budget_unverified",
             "prompt_name_empty",
             "prompt_name_too_long",
             "prompt_name_duplicate",
@@ -859,6 +915,11 @@
         "show_whats_new_on_update": {
           "type": "boolean"
         },
+        "smart_paste_migration_version": {
+          "maximum": 18446744073709551615,
+          "minimum": 0,
+          "type": "integer"
+        },
         "sound_theme": {
           "enum": [
             "marimba",
@@ -924,6 +985,12 @@
         },
         "word_correction_threshold": {
           "type": "number"
+        },
+        "word_replacements": {
+          "items": {
+            "$ref": "#/$defs/replacement_rule"
+          },
+          "type": "array"
         }
       },
       "required": [
@@ -952,6 +1019,7 @@
         "debug_mode",
         "log_level",
         "custom_words",
+        "word_replacements",
         "model_unload_timeout",
         "word_correction_threshold",
         "history_limit",
@@ -979,6 +1047,7 @@
         "paste_delay_ms",
         "paste_delay_after_ms",
         "reliable_paste",
+        "smart_paste_migration_version",
         "typing_tool",
         "external_script_path",
         "filler_word_removal_enabled",
@@ -991,6 +1060,26 @@
         "vad_enabled",
         "vad_backend",
         "overlay_style"
+      ],
+      "type": "object"
+    },
+    "replacement_rule": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "recognized": {
+          "type": "string"
+        },
+        "replacement": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "recognized",
+        "replacement"
       ],
       "type": "object"
     },
@@ -1329,6 +1418,17 @@
       "key": "custom_words",
       "nullable": false,
       "owner_domain": "vocabulary",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "array"
+    },
+    {
+      "allowed_values": [],
+      "key": "word_replacements",
+      "nullable": false,
+      "owner_domain": "replacements",
       "range": null,
       "read_only": false,
       "runtime_effect": "none",
@@ -1679,6 +1779,20 @@
       "runtime_effect": "none",
       "secret": false,
       "value_type": "boolean"
+    },
+    {
+      "allowed_values": [],
+      "key": "smart_paste_migration_version",
+      "nullable": false,
+      "owner_domain": "output",
+      "range": {
+        "max": 4294967295.0,
+        "min": 0.0
+      },
+      "read_only": true,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "integer"
     },
     {
       "allowed_values": [

@@ -9,6 +9,9 @@ use super::protocol::{
     read_message, write_message, DeviceInfo, DeviceSelector, LoadedInfo, Request, Response,
 };
 use super::{CPU_ONLY_FLAG, LOG_LEVEL_ENV};
+use crate::recognition_vocabulary::{
+    budget::ModelTokenizer, capability::probe_capabilities, context::prepare_context,
+};
 use log::{debug, error, warn, LevelFilter, Log, Metadata, Record};
 use std::fs::File;
 use std::io::{self, BufReader, Write};
@@ -140,6 +143,10 @@ pub fn run() -> i32 {
                 },
                 None => not_loaded(),
             },
+            Request::PrepareContext { terms } => match session.as_ref() {
+                Some((session, info)) => prepare_context_response(session, info, &terms),
+                None => not_loaded(),
+            },
             Request::Feed | Request::Finalize { .. } | Request::StreamReset => {
                 Response::Error("no active stream".to_string())
             }
@@ -248,6 +255,15 @@ fn serve_stream(
     Ok(())
 }
 
+/// Fit the vocabulary to the loaded model with its own tokenizer (feature 003).
+fn prepare_context_response(session: &Session, info: &LoadedInfo, terms: &[String]) -> Response {
+    let tokenizer = ModelTokenizer(session.model());
+    match prepare_context(info.context, terms, &tokenizer) {
+        Ok(prepared) => Response::ContextPrepared(prepared),
+        Err(e) => Response::Error(e),
+    }
+}
+
 fn not_loaded() -> Response {
     Response::Error("no model loaded".to_string())
 }
@@ -311,6 +327,7 @@ fn load(
             .unwrap_or_else(|| "unknown".to_string()),
         capabilities: model.capabilities(),
         supports_initial_prompt: model.supports(Feature::InitialPrompt),
+        context: probe_capabilities(&model),
     };
     Ok((session, info))
 }

@@ -208,6 +208,13 @@ async changePasteMethodSetting(method: string) : Promise<Result<null, SettingsCo
 async getAvailableTypingTools() : Promise<string[]> {
     return await TAURI_INVOKE("get_available_typing_tools");
 },
+/**
+ * Whether the paste method selector offers smart paste: macOS only, and only once dictation
+ * delivers through it (feature 007 rollout gate, `smart_paste::setting_policy`).
+ */
+async isSmartPasteAvailable() : Promise<boolean> {
+    return await TAURI_INVOKE("is_smart_paste_available");
+},
 async changeTypingToolSetting(tool: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_typing_tool_setting", { tool }) };
@@ -460,11 +467,75 @@ async selectDictationPrompt(sessionId: number, promptId: string | null) : Promis
 }
 },
 /**
- * Vocabulary list owned by the settings UI until its CLI domain ships.
+ * Whole vocabulary list from the settings UI, committed as the vocabulary domain's change: same
+ * validator as the CLI (unchanged legacy rows stay exempt), compare-and-set on
+ * `expected_revision` when the UI passes its base revision.
  */
-async updateCustomWords(words: string[]) : Promise<Result<null, SettingsCommandError>> {
+async updateCustomWords(words: string[], expectedRevision: number | null) : Promise<Result<null, SettingsCommandError>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("update_custom_words", { words }) };
+    return { status: "ok", data: await TAURI_INVOKE("update_custom_words", { words, expectedRevision }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Saved vocabulary and its revision.
+ */
+async getVocabulary() : Promise<VocabularyList> {
+    return await TAURI_INVOKE("get_vocabulary");
+},
+/**
+ * Preview a bulk input (one term per line) against the saved list; pure, nothing is written.
+ */
+async previewVocabularyImport(input: string, mode: VocabularyImportMode) : Promise<VocabularyImportPreview> {
+    return await TAURI_INVOKE("preview_vocabulary_import", { input, mode });
+},
+/**
+ * Apply a previewed bulk input as one atomic candidate at the preview's revision.
+ */
+async applyVocabularyImport(input: string, mode: VocabularyImportMode, expectedRevision: number) : Promise<Result<VocabularyList, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("apply_vocabulary_import", { input, mode, expectedRevision }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Add one term.
+ */
+async addVocabularyTerm(term: string, expectedRevision: number) : Promise<Result<VocabularyList, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("add_vocabulary_term", { term, expectedRevision }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Remove the occurrence at `index`, which must still hold `term` (legacy duplicates are removed
+ * one row at a time).
+ */
+async removeVocabularyOccurrence(index: number, term: string, expectedRevision: number) : Promise<Result<VocabularyList, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("remove_vocabulary_occurrence", { index, term, expectedRevision }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Status of the vocabulary for the selected model (one of five), from the loaded model and the
+ * exact preparation of the next request; never loads a model.
+ * 
+ * # Errors
+ * `internal_error` with reason `context_budget_unverified` for a model whose declared mechanism
+ * has no documented budget; `unavailable` before the transcription manager exists.
+ */
+async getVocabularyStatus() : Promise<Result<VocabularyStatusReport, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("get_vocabulary_status") };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -1162,6 +1233,68 @@ async updateRecordingRetentionPeriod(period: string) : Promise<Result<null, Sett
 }
 },
 /**
+ * The published rules and their revision.
+ */
+async getWordReplacements() : Promise<ReplacementRulesView> {
+    return await TAURI_INVOKE("get_word_replacements");
+},
+/**
+ * Issues of a draft list (fields, duplicate keys, set size), from the shared validator; empty
+ * when the draft can be saved.
+ */
+async checkWordReplacements(rules: RuleDraft[]) : Promise<RuleIssue[]> {
+    return await TAURI_INVOKE("check_word_replacements", { rules });
+},
+/**
+ * Preview `input` (bulk text or imported file) in `mode` against the published rules, on a
+ * blocking worker: a 1,000,000-byte input never stalls the main thread.
+ * 
+ * # Errors
+ * `limit_exceeded` above 1,000,000 bytes, like Apply: nothing is previewed.
+ */
+async previewWordReplacements(input: string, mode: ImportMode) : Promise<Result<ReplacementPreviewView, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("preview_word_replacements", { input, mode }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Save the complete draft list as the rule set, in one commit at `expected_revision`, and
+ * return the saved rules with their revision.
+ * 
+ * # Errors
+ * A `SettingsCommandError`, nothing saved: `validation_failed` (`invalid_items`; the fields
+ * come from `check_word_replacements`) for an invalid draft, `revision_conflict` with the
+ * current revision when the settings moved on, and every refusal of the settings service.
+ */
+async saveWordReplacements(rules: RuleDraft[], expectedRevision: number) : Promise<Result<ReplacementRulesView, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("save_word_replacements", { rules, expectedRevision }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Apply `input` in `mode` (the bulk editor's Apply or a file import) in one commit at
+ * `expected_revision`, the revision its preview was computed at, and return the saved rules.
+ * 
+ * # Errors
+ * A `SettingsCommandError`, nothing saved: `limit_exceeded` above 1,000,000 bytes,
+ * `validation_failed` (`invalid_items`; the lines come from `preview_word_replacements`), and
+ * the refusals of `save_word_replacements`.
+ */
+async applyWordReplacements(input: string, mode: ImportMode, expectedRevision: number) : Promise<Result<ReplacementRulesView, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("apply_word_replacements", { input, mode, expectedRevision }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
  * Checks if the Mac is a laptop by detecting battery presence
  * 
  * This uses pmset to check for battery information.
@@ -1240,7 +1373,11 @@ whats_new_last_seen_version?: string; selected_model?: string; onboarding_comple
  * Which input channel to use on the selected microphone device.
  * None means "average all channels" (original behavior).
  */
-selected_channel?: number | null; clamshell_microphone?: string | null; selected_output_device?: string | null; translate_to_english?: boolean; selected_language?: string; overlay_position?: OverlayPosition; debug_mode?: boolean; log_level?: LogLevel; custom_words?: string[]; model_unload_timeout?: ModelUnloadTimeout; word_correction_threshold?: number; history_limit?: number; recording_retention_period?: RecordingRetentionPeriod; paste_method?: PasteMethod; clipboard_handling?: ClipboardHandling; auto_submit?: boolean; auto_submit_key?: AutoSubmitKey; post_process_enabled?: boolean; post_process_provider_id?: string; post_process_providers?: PostProcessProvider[]; post_process_api_keys?: SecretMap; post_process_models?: Partial<{ [key in string]: string }>; post_process_prompts?: LLMPrompt[]; post_process_selected_prompt_id?: string | null; mute_while_recording?: boolean; append_trailing_space?: boolean; 
+selected_channel?: number | null; clamshell_microphone?: string | null; selected_output_device?: string | null; translate_to_english?: boolean; selected_language?: string; overlay_position?: OverlayPosition; debug_mode?: boolean; log_level?: LogLevel; custom_words?: string[]; 
+/**
+ * Ordered explicit corrections, independent from approximate custom words.
+ */
+word_replacements?: ReplacementRule[]; model_unload_timeout?: ModelUnloadTimeout; word_correction_threshold?: number; history_limit?: number; recording_retention_period?: RecordingRetentionPeriod; paste_method?: PasteMethod; clipboard_handling?: ClipboardHandling; auto_submit?: boolean; auto_submit_key?: AutoSubmitKey; post_process_enabled?: boolean; post_process_provider_id?: string; post_process_providers?: PostProcessProvider[]; post_process_api_keys?: SecretMap; post_process_models?: Partial<{ [key in string]: string }>; post_process_prompts?: LLMPrompt[]; post_process_selected_prompt_id?: string | null; mute_while_recording?: boolean; append_trailing_space?: boolean; 
 /**
  * Return to the application where the dictation started before inserting (006).
  */
@@ -1250,7 +1387,13 @@ return_to_dictation_app?: boolean; app_language?: string; theme?: Theme; experim
  * after the target app actually reads the transcript, instead of after a
  * fixed delay. See `paste_tx`. macOS and Windows only.
  */
-reliable_paste?: boolean; typing_tool?: TypingTool; external_script_path?: string | null; filler_word_removal_enabled?: boolean; custom_filler_words?: string[] | null; 
+reliable_paste?: boolean; 
+/**
+ * Internal marker of the one-time macOS migration to smart paste (feature 007, see
+ * `smart_paste::setting_policy`); read-only on every settings surface. Stores missing it are
+ * treated as never migrated.
+ */
+smart_paste_migration_version?: number; typing_tool?: TypingTool; external_script_path?: string | null; filler_word_removal_enabled?: boolean; custom_filler_words?: string[] | null; 
 /**
  * Fresh installs default from the OS locale; existing stores are migrated
  * in `apply_settings_migrations`.
@@ -1285,6 +1428,14 @@ error: string | null;
  */
 edit_error: ShortcutEditError | null }
 /**
+ * Unit of a context budget.
+ */
+export type BudgetUnit = "tokens"
+/**
+ * Candidate rule; new rules receive a durable ID only when committed.
+ */
+export type CandidateRule = { existing_id: RuleId | null; recognized: string; replacement: string }
+/**
  * Script applied to Mandarin and Cantonese output. Other languages are never
  * converted.
  */
@@ -1310,6 +1461,26 @@ export type ConflictKind =
  * A modifier-only shortcut would fire together with the other one.
  */
 "modifier_overlap"
+/**
+ * Documented context budget of one mechanism.
+ */
+export type ContextBudget = { value: number; unit: BudgetUnit }
+/**
+ * How the vocabulary reaches the engine.
+ */
+export type ContextMechanism = 
+/**
+ * Whisper run extension `initial_prompt`, terms joined with ", ".
+ */
+"whisper_initial_prompt" | 
+/**
+ * Generic `RunOptions::vocabulary` (Qwen3-ASR, Fun-ASR, Granite with the GGUF capability).
+ */
+"generic_vocabulary" | 
+/**
+ * Generic `RunOptions::prompt` used as recognition context.
+ */
+"context_prompt"
 export type CustomSounds = { start: boolean; stop: boolean }
 /**
  * Badge menu of one dictation: applications, then "Frontmost app at the end".
@@ -1359,6 +1530,205 @@ export type EngineType =
  */
 "TranscribeCpp" | "Parakeet" | "Moonshine" | "MoonshineStreaming" | "SenseVoice" | "GigaAM" | "Canary" | "Cohere"
 /**
+ * One refused position of a domain input: zero-based `index`, closed `code` and its fixed
+ * message; never the candidate value.
+ */
+export type ErrorItem = { index: number; code: ErrorReason; message: string }
+/**
+ * Closed snake_case reasons of `details.reason` and `details.items[].code`; later features add
+ * their own variants. Each has a fixed English message and never carries a candidate value.
+ */
+export type ErrorReason = 
+/**
+ * The operation or setting needs a platform capability this build does not have.
+ */
+"unsupported_platform" | 
+/**
+ * A dictation session owns the shortcuts until it ends (004).
+ */
+"shortcut_session_busy" | 
+/**
+ * A live-only change was asked without a running instance (004).
+ */
+"instance_required" | 
+/**
+ * The last shortcut of a dictation action cannot be removed (004).
+ */
+"last_shortcut" | 
+/**
+ * The action keeps a single shortcut (004).
+ */
+"alternatives_unsupported" | 
+/**
+ * The system refused to register the shortcut (004).
+ */
+"registration_refused" | 
+/**
+ * The shortcut text is not valid for the active keyboard implementation (004).
+ */
+"invalid_shortcut" | 
+/**
+ * A replacement rule has no recognized text (002).
+ */
+"recognized_empty" | 
+/**
+ * A recognized text is longer than 100 characters (002).
+ */
+"recognized_too_long" | 
+/**
+ * A recognized text holds a line break, a tab or `;` (002).
+ */
+"recognized_forbidden_character" | 
+/**
+ * A recognized text holds a control or bidirectional formatting character (002).
+ */
+"recognized_control_character" | 
+/**
+ * A recognized text starts with `#`, like an exchange comment (002).
+ */
+"recognized_leading_comment" | 
+/**
+ * Two rules have the same normalized recognized text (002).
+ */
+"duplicate_recognized" | 
+/**
+ * A replacement rule has no replacement text (002).
+ */
+"replacement_empty" | 
+/**
+ * A replacement text is longer than 500 characters (002).
+ */
+"replacement_too_long" | 
+/**
+ * A replacement text holds a line break or a tab (002).
+ */
+"replacement_forbidden_character" | 
+/**
+ * A replacement text holds a control or bidirectional formatting character (002).
+ */
+"replacement_control_character" | 
+/**
+ * A replacement rule has an empty id (002).
+ */
+"empty_rule_id" | 
+/**
+ * Two replacement rules share an id (002).
+ */
+"duplicate_rule_id" | 
+/**
+ * An exchange line has neither a tab nor a `;` separator (002).
+ */
+"missing_separator" | 
+/**
+ * The rule set would hold more than 1000 rules (002).
+ */
+"too_many_rules" | 
+/**
+ * The saved rules are invalid, so no import can be previewed on them (002).
+ */
+"invalid_saved_rules" | 
+/**
+ * The Unicode data needed to validate rules is unavailable (002).
+ */
+"unicode_data_unavailable" | 
+/**
+ * The running instance's answer does not fit one channel message (002).
+ */
+"reply_too_large" | 
+/**
+ * The export file could not be written; the destination is unchanged (002).
+ */
+"export_not_written" | 
+/**
+ * The export destination is a symbolic link, refused; nothing is written (002).
+ */
+"export_symbolic_link" | 
+/**
+ * The export destination is a file the user cannot write; it is unchanged (002).
+ */
+"export_read_only" | 
+/**
+ * A vocabulary term is empty once trimmed (003).
+ */
+"term_empty" | 
+/**
+ * A vocabulary term exceeds 100 characters (003).
+ */
+"term_too_long" | 
+/**
+ * A vocabulary term contains a line break (003).
+ */
+"term_line_break" | 
+/**
+ * A vocabulary term contains `<`, `>`, `"` or NUL (003).
+ */
+"term_forbidden_character" | 
+/**
+ * A vocabulary term repeats another term (003).
+ */
+"term_duplicate" | 
+/**
+ * The loaded model declares a recognition-context mechanism whose budget is not documented
+ * for this build (003): a durable internal defect, never a retryable state.
+ */
+"context_budget_unverified" | 
+/**
+ * The prompt name is empty after trimming (005).
+ */
+"prompt_name_empty" | 
+/**
+ * The prompt name is longer than 60 characters (005).
+ */
+"prompt_name_too_long" | 
+/**
+ * Another prompt has the same name, ignoring case (005).
+ */
+"prompt_name_duplicate" | 
+/**
+ * The prompt text is empty or only whitespace (005).
+ */
+"prompt_text_empty" | 
+/**
+ * The prompt text is longer than 8000 characters (005).
+ */
+"prompt_text_too_long" | 
+/**
+ * A provider override needs both a provider and a model (005).
+ */
+"override_incomplete" | 
+/**
+ * The override names a provider this build does not have (005).
+ */
+"unknown_provider" | 
+/**
+ * The prompt has issues and cannot be used until edited (005).
+ */
+"prompt_invalid"
+/**
+ * Whether the report describes a prepared next request or a dispatched one.
+ */
+export type EvidenceKind = 
+/**
+ * The next request, prepared exactly as a dictation would; no run happened.
+ */
+"prepared"
+/**
+ * A saved term that is not sent, at its stored position.
+ */
+export type ExcludedTerm = { index: number; term: string; reason: ExclusionReason }
+/**
+ * Why a saved term does not reach the engine.
+ */
+export type ExclusionReason = "empty" | "too_long" | "line_break" | "forbidden_character" | "duplicate" | "over_capacity" | 
+/**
+ * Valid, but after the first term that did not fit the budget.
+ */
+"over_budget" | 
+/**
+ * Valid, but this model or mode receives no context at all.
+ */
+"no_context"
+/**
  * Why the AI step produced no usable text. Codes are stored in history and shown translated;
  * they never carry a provider message, a URL or a credential.
  */
@@ -1379,6 +1749,18 @@ export type FailureReason =
  * The previous Apple Intelligence request is still running natively.
  */
 "provider_busy" | "missing_endpoint" | "missing_model" | "missing_api_key" | "provider_unavailable" | "unknown_provider" | "invalid_prompt" | "prompt_missing"
+/**
+ * Stable field identifier translated at UI/CLI boundaries.
+ */
+export type Field = "id" | "recognized" | "replacement" | "rules" | 
+/**
+ * A whole exchange line, before it can be split into fields.
+ */
+"line"
+/**
+ * An issue in one input field before a rule has an ordered position.
+ */
+export type FieldIssue = { field: Field; kind: IssueKind }
 export type GpuDeviceOption = { id: string; name: string; total_vram_mb: number }
 /**
  * One history row. `file_name` is `None` for a text-only row (no audio recording).
@@ -1389,6 +1771,10 @@ export type HistoryEntry = ({ post_process_prompt_id: string | null; post_proces
  */
 post_process_failure: string | null }) & { id: number; file_name: string | null; timestamp: number; saved: boolean; title: string; transcription_text: string; post_processed_text: string | null; post_process_prompt: string | null; post_process_requested: boolean }
 export type HistoryUpdatePayload = { action: "added"; entry: HistoryEntry } | { action: "updated"; entry: HistoryEntry } | { action: "deleted"; id: number } | { action: "toggled"; id: number }
+/**
+ * Why a line carries no rule.
+ */
+export type IgnoredLine = "blank" | "comment" | "header"
 /**
  * Result of changing keyboard implementation
  */
@@ -1404,6 +1790,59 @@ reset_bindings: string[];
  * the settings.
  */
 conflicts: StoredShortcutConflict[] }
+/**
+ * How imported rules combine with the saved set (AC-005).
+ */
+export type ImportMode = 
+/**
+ * Update matching keys in place and append new rules in input order.
+ */
+"merge" | 
+/**
+ * The input becomes the whole set; the bulk editor always uses this mode.
+ */
+"replace"
+/**
+ * The candidate list a bulk input would produce, and why it could not be applied.
+ */
+export type ImportPreview = { mode: VocabularyImportMode; 
+/**
+ * New unique terms, in input order.
+ */
+added: VocabularyPreviewLine[]; 
+/**
+ * Lines skipped because their key repeats an earlier line or (merge) a saved term.
+ */
+duplicates: VocabularyPreviewLine[]; 
+/**
+ * Invalid lines: any of them refuses the whole input.
+ */
+issues: LineIssue[]; 
+/**
+ * The complete list applying this preview would save.
+ */
+candidate: string[]; 
+/**
+ * Applying would exceed `MAX_TERMS` (merge: any addition while the list is full).
+ */
+over_capacity: boolean }
+/**
+ * Stable validation kind; diagnostics never contain user rule text.
+ */
+export type IssueKind = "empty_id" | "duplicate_id" | "too_short" | "too_long" | "forbidden_character" | "leading_comment" | "duplicate_key" | "too_many_rules" | "unicode_data_unavailable" | 
+/**
+ * An exchange line has neither a tab nor a `;` separator.
+ */
+"missing_separator" | 
+/**
+ * The saved base set is itself invalid, so no preview can be applied to it.
+ */
+"invalid_saved_rules" | 
+/**
+ * A control character (C0, DEL, C1) or a bidirectional embedding, override or isolate
+ * control, which the exchange format and the inserted text must not carry.
+ */
+"control_character"
 export type KeyboardDiagnosticReport = { secure_input_enabled: boolean; culprit_pid: number | null; culprit_name: string | null; 
 /**
  * Counts only — key identity is deliberately never captured.
@@ -1424,6 +1863,10 @@ provider_override?: PromptProviderOverride | null;
  * Added by the one-time starter migration (still editable and deletable).
  */
 starter?: boolean }
+/**
+ * One refused input line.
+ */
+export type LineIssue = { index: number; issue: TermIssue }
 /**
  * One prompt of the library listing: its view, its 0–2 shortcuts and its readiness.
  */
@@ -1489,6 +1932,22 @@ sha256: string | null } } |
  */
 "Local"
 export type ModelUnloadTimeout = "never" | "immediately" | "min_2" | "min_5" | "min_10" | "min_15" | "hour_1" | "sec_15"
+/**
+ * One stored occurrence, with the reason it is excluded from the recognition context, if any.
+ */
+export type Occurrence = { 
+/**
+ * Zero-based position in the stored list.
+ */
+index: number; 
+/**
+ * Stored text, unchanged.
+ */
+term: string; 
+/**
+ * Why this occurrence is excluded from the context; `None` when it is eligible.
+ */
+issue: TermIssue | null }
 export type OrtAcceleratorSetting = "auto" | "cpu" | "cuda" | "directml" | "rocm"
 /**
  * Durable outcome of a failed operation; clients must reread before retrying either one.
@@ -1511,9 +1970,29 @@ export type OverlayPosition = "top" | "bottom"
  */
 export type OverlayStyle = "none" | "minimal" | "live"
 export type PaginatedHistory = { entries: HistoryEntry[]; has_more: boolean }
-export type PasteMethod = "ctrl_v" | "direct" | "none" | "shift_insert" | "ctrl_shift_v" | "external_script"
+export type PasteMethod = "ctrl_v" | "direct" | "none" | "shift_insert" | "ctrl_shift_v" | "external_script" | "smart_paste"
 export type PermissionAccess = "allowed" | "denied" | "unknown"
 export type PostProcessProvider = { id: string; label: string; base_url: string; allow_base_url_edit?: boolean; models_endpoint?: string | null; supports_structured_output?: boolean }
+/**
+ * One preview row; deletions have no input line number.
+ */
+export type PreviewLine = { line_number: number | null; status: PreviewStatus; ignored: IgnoredLine | null; 
+/**
+ * Existing rule updated, kept unchanged or deleted by this row.
+ */
+rule_id: RuleId | null; 
+/**
+ * Resulting content for add/update/unchanged, removed content for delete.
+ */
+recognized: string | null; replacement: string | null; issues: FieldIssue[]; 
+/**
+ * Other input lines sharing this line's normalized key.
+ */
+duplicate_lines: number[] }
+/**
+ * Per-line outcome shown before Apply (AC-003).
+ */
+export type PreviewStatus = "add" | "update" | "delete" | "unchanged" | "ignored" | "error"
 /**
  * Why a choice on the indicator was refused; nothing changed.
  */
@@ -1662,6 +2141,10 @@ export type ReadinessIssue =
  * The prompt is no longer in the library.
  */
 "prompt_missing"
+/**
+ * Recognition mode of the selected model's dictations.
+ */
+export type RecognitionMode = "batch" | "streaming"
 export type RecordingRetentionPeriod = "never" | "preserve_limit" | "days_3" | "weeks_2" | "months_3"
 /**
  * The single per-dictation decision "insert or recover", and the only Enter veto.
@@ -1673,6 +2156,57 @@ export type RecoveryDisposition = "pending" | "insert" | "recover" | "cancelled"
  * `reason` is the backend's message, in English.
  */
 export type RefusedShortcut = { action_id: string; shortcut: string; reason: string }
+/**
+ * Preview of an input; `candidate` is exactly the ordered set Apply would commit. Rule and
+ * deletion rows are always listed; ignored rows and error rows are each listed up to
+ * `MAX_LISTED_OTHER_LINES` and counted in full, so memory stays bounded for any input.
+ */
+export type ReplacementPreview = { mode: ImportMode; 
+/**
+ * SHA-256 of the exact input text, so Apply can prove it used this input.
+ */
+input_sha256: string; lines: PreviewLine[]; set_issues: IssueKind[]; candidate: CandidateRule[]; 
+/**
+ * The candidate equals the saved set in content, identity and order.
+ */
+is_noop: boolean; 
+/**
+ * Ignored input lines (blank, comment, header), listed or not.
+ */
+ignored_lines: number; 
+/**
+ * Input lines with an error, listed or not.
+ */
+error_lines: number; 
+/**
+ * Input lines left out of `lines`: ignored or error lines beyond the listed bound, and rule
+ * lines after the 1000th (which make the input too large anyway).
+ */
+omitted_lines: number }
+/**
+ * A bulk or import preview against the rules saved at `revision`.
+ */
+export type ReplacementPreviewView = { revision: number; preview: ReplacementPreview }
+/**
+ * Persisted content; normalized keys and positions are derived from the list.
+ */
+export type ReplacementRule = { id: RuleId; recognized: string; replacement: string }
+/**
+ * Saved rules in order, with the settings revision they were read at.
+ */
+export type ReplacementRulesView = { revision: number; rules: ReplacementRule[] }
+/**
+ * One rule of the editor's draft; a new rule has no id until it is saved.
+ */
+export type RuleDraft = { id: RuleId | null; recognized: string; replacement: string }
+/**
+ * Stable opaque rule identity; exchange files carry content rather than IDs.
+ */
+export type RuleId = string
+/**
+ * Ordered rule issue; index is zero-based or absent for a whole-set issue.
+ */
+export type RuleIssue = { rule_index: number | null; field: Field; kind: IssueKind }
 /**
  * Provider API keys: `Debug` is redacted and the public settings projection reports presence only.
  */
@@ -1761,7 +2295,16 @@ outcome: Outcome | null;
 /**
  * Revision the outcome or conflict refers to.
  */
-current_revision: number | null }
+current_revision: number | null; 
+/**
+ * Closed machine reason (`details.reason` on the CLI), if any; omitted when absent.
+ */
+detail_reason?: ErrorReason | null; 
+/**
+ * Refused input positions (`details.items` on the CLI), for example vocabulary terms;
+ * omitted when empty.
+ */
+items?: ErrorItem[] | null }
 /**
  * Stable wire categories; their fixed exit meanings never depend on input text.
  */
@@ -1855,6 +2398,31 @@ export type ShortcutEditError = { code: "shortcut_conflict"; conflict: ShortcutC
 export type ShortcutEditResponse = { binding: ShortcutBinding | null; error: ShortcutEditError | null }
 export type SoundTheme = "marimba" | "pop" | "custom"
 /**
+ * Why a status was reached, where the status alone does not say it.
+ */
+export type StatusReason = 
+/**
+ * `no_term_sent`: the vocabulary is empty.
+ */
+"empty_vocabulary" | 
+/**
+ * `no_term_sent`: every saved term is invalid, a duplicate or over capacity.
+ */
+"invalid_terms_only" | 
+/**
+ * `no_term_sent`: the first eligible term does not fit the budget.
+ */
+"over_budget" | 
+/**
+ * `unknown_until_model_loads`: the selected model is not loaded.
+ */
+"model_not_loaded" | 
+/**
+ * `unknown_until_model_loads`: the model is loaded but the engine did not answer the
+ * capability query in time (for example during a dictation).
+ */
+"capability_query_unanswered"
+/**
  * A conflict between two stored shortcuts, reported as a warning. Upgrades
  * keep such shortcuts registered exactly as before (decision 2026-10-12).
  */
@@ -1904,6 +2472,34 @@ export type SupportReason =
  */
 "frontmost_unreadable"
 /**
+ * Why a term (new or stored) is refused or excluded from the recognition context.
+ */
+export type TermIssue = 
+/**
+ * Nothing left after trimming.
+ */
+"empty" | 
+/**
+ * More than `MAX_TERM_CHARS` Unicode scalar values.
+ */
+"too_long" | 
+/**
+ * A line separator inside the term.
+ */
+"line_break" | 
+/**
+ * `<`, `>`, `"` or NUL.
+ */
+"forbidden_character" | 
+/**
+ * Same key as an earlier term.
+ */
+"duplicate" | 
+/**
+ * Stored beyond the first `MAX_TERMS` positions (legacy list only).
+ */
+"over_capacity"
+/**
  * UI appearance mode. `System` follows the OS `prefers-color-scheme`; `Light`
  * and `Dark` force one of the two palettes Handy already ships.
  */
@@ -1924,6 +2520,22 @@ export type ValidationReason = "canonical_type" | "canonical_value" | "out_of_ra
  * Domain input does not follow the domain's exchange format.
  */
 "invalid_input" | 
+/**
+ * Collection owned by `handy settings replacements`.
+ */
+"replacements_domain" | 
+/**
+ * Items of a domain list or exchange input failed validation; `details.items` locates them.
+ */
+"invalid_items" | 
+/**
+ * Smart paste is not selectable on this platform or in this build (feature 007).
+ */
+"smart_paste_unavailable" | 
+/**
+ * On macOS, smart paste replaces the beta reliable paste (feature 007).
+ */
+"reliable_paste_replaced" | 
 /**
  * The setting or operation needs a platform capability this build does not have.
  */
@@ -1965,6 +2577,49 @@ export type ValidationReason = "canonical_type" | "canonical_value" | "out_of_ra
  * The prompt has issues and cannot be used until edited (005).
  */
 "prompt_not_usable"
+/**
+ * How bulk input combines with the saved list. Exported to TypeScript under a vocabulary name:
+ * word replacements (002) export their own `ImportMode`.
+ */
+export type VocabularyImportMode = 
+/**
+ * Keep the saved list and append the new unique terms in input order.
+ */
+"merge" | 
+/**
+ * Make the input the whole list, in input order.
+ */
+"replace"
+/**
+ * A paste preview against the saved list at `revision`; nothing is written.
+ */
+export type VocabularyImportPreview = { revision: number; preview: ImportPreview; 
+/**
+ * True when Apply can commit the whole candidate.
+ */
+applicable: boolean }
+/**
+ * The saved vocabulary at one revision: every stored occurrence, unchanged, with the reason it
+ * is excluded from the recognition context.
+ */
+export type VocabularyList = { revision: number; terms: Occurrence[] }
+/**
+ * One input line kept or skipped, with its zero-based line index. Exported to TypeScript under
+ * a vocabulary name: word replacements (002) export their own `PreviewLine`.
+ */
+export type VocabularyPreviewLine = { index: number; 
+/**
+ * Validated text (trimmed, whitespace collapsed).
+ */
+term: string }
+/**
+ * The five statuses of the spec (AC-003).
+ */
+export type VocabularyStatus = "used_during_recognition" | "no_term_sent" | "not_supported" | "not_used_streaming" | "unknown_until_model_loads"
+/**
+ * Status of the vocabulary for the selected model, with the terms sent and not sent.
+ */
+export type VocabularyStatusReport = { model_id: string; mode: RecognitionMode; status: VocabularyStatus; reason: StatusReason | null; mechanism: ContextMechanism | null; budget: ContextBudget | null; terms_sent: string[]; terms_not_sent: ExcludedTerm[]; evidence_kind: EvidenceKind }
 export type WindowsMicrophonePermissionStatus = { supported: boolean; overall_access: PermissionAccess; device_access: PermissionAccess; app_access: PermissionAccess; desktop_app_access: PermissionAccess }
 
 /** tauri-specta globals **/

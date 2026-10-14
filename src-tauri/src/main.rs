@@ -30,6 +30,15 @@ fn configure_environment() {
     }
 }
 
+/// Smart-paste snapshot helper: reads the pasteboard read-only and streams it
+/// to the parent, without Tauri, the CLI or single-instance handling.
+fn exit_if_smart_paste_snapshot_helper() {
+    #[cfg(target_os = "macos")]
+    if handy_app_lib::smart_paste::snapshot_helper::is_helper_invocation() {
+        std::process::exit(handy_app_lib::smart_paste::snapshot_helper::run_helper());
+    }
+}
+
 fn main() {
     configure_environment();
 
@@ -39,6 +48,9 @@ fn main() {
     if handy_app_lib::engine_supervisor::is_worker_invocation() {
         std::process::exit(handy_app_lib::engine_supervisor::run_worker());
     }
+
+    // Hidden pasteboard helper: exits before the settings CLI and the app parse argv.
+    exit_if_smart_paste_snapshot_helper();
 
     let argv: Vec<std::ffi::OsString> = std::env::args_os().collect();
     #[cfg(target_os = "windows")]

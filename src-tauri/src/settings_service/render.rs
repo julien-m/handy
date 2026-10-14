@@ -16,8 +16,14 @@ pub enum View {
     Preview,
     /// Export: the exchange content itself (`data.content`), nothing else on stdout.
     Export,
+    /// Export written to a file by the CLI process (`data.path`, `data.count`, `data.durable`).
+    ExportFile,
+    /// Ordered list items (`data.rules`), one tab-separated line each.
+    List,
     /// Shortcut lists (`handy settings shortcuts`): one line per action.
     Shortcuts,
+    /// Vocabulary list (`handy settings vocabulary list`): one line per stored term.
+    Terms,
     /// Prompt library (`handy settings prompts list`): one line per prompt.
     Prompts,
     Help,
@@ -43,8 +49,10 @@ impl View {
         match (action, arguments) {
             _ if dry_run => Self::Preview,
             _ if domain == "shortcuts" => Self::Shortcuts,
+            ("list", _) if domain == "vocabulary" => Self::Terms,
             ("list", _) if domain == "prompts" => Self::Prompts,
             ("export", _) => Self::Export,
+            ("list", _) => Self::List,
             ("get", 0) => Self::AllSettings,
             ("get", _) => Self::OneSetting,
             _ => Self::Change,
@@ -73,6 +81,10 @@ pub fn emit(view: View, reply: &Reply, json: bool) -> i32 {
     reply.exit_code()
 }
 
+/// An export file replaced on disk whose directory could not be synced (`data.durable` false).
+const EXPORT_NOT_SYNCED_WARNING: &str =
+    "Warning: the export file was replaced, but the system could not confirm it is saved to disk.\n";
+
 /// Pure rendering of one reply.
 pub fn render(view: View, reply: &Reply, json: bool) -> Output {
     let envelope = reply.envelope();
@@ -81,6 +93,9 @@ pub fn render(view: View, reply: &Reply, json: bool) -> Output {
         output
             .stderr
             .push_str("Warning: the settings store was recovered; some values may be defaults.\n");
+    }
+    if view == View::ExportFile && envelope["data"]["durable"] == Value::Bool(false) {
+        output.stderr.push_str(EXPORT_NOT_SYNCED_WARNING);
     }
     if json {
         output.stdout = format!("{envelope}\n");
@@ -109,7 +124,14 @@ fn success_text(view: View, envelope: &Value) -> String {
             object_lines(&data["changes"])
         ),
         View::Export => data["content"].as_str().unwrap_or_default().to_owned(),
+        View::ExportFile => format!(
+            "Exported {} rules to {}\n",
+            data["count"],
+            data["path"].as_str().unwrap_or_default()
+        ),
+        View::List => rule_lines(&data["rules"]),
         View::Shortcuts => shortcut_lines(data),
+        View::Terms => term_lines(&data["terms"]),
         View::Prompts => prompt_lines(data),
         View::Help => data["help"].as_str().unwrap_or_default().to_owned(),
     }
@@ -122,6 +144,24 @@ fn change_lines(data: &Value, revision: &Value) -> String {
             .map(|(key, value)| format!("{key} = {} (revision {revision})\n", plain(value)))
             .collect()
     })
+}
+/// `id<TAB>recognized<TAB>replacement` per rule: rule texts never contain a tab or line break.
+fn rule_lines(rules: &Value) -> String {
+    let field = |rule: &Value, name: &str| rule[name].as_str().unwrap_or_default().to_owned();
+    rules
+        .as_array()
+        .map(Vec::as_slice)
+        .unwrap_or_default()
+        .iter()
+        .map(|rule| {
+            format!(
+                "{}\t{}\t{}\n",
+                field(rule, "id"),
+                field(rule, "recognized"),
+                field(rule, "replacement")
+            )
+        })
+        .collect()
 }
 /// `action: first, second (default: shortcut)` per action of a list or of a change.
 fn shortcut_lines(data: &Value) -> String {
@@ -174,6 +214,16 @@ fn prompt_lines(data: &Value) -> String {
             let id = plain(&prompt["id"]);
             let name = plain(&prompt["name"]);
             format!("{marker}{id}: {name} ({readiness}) [{shortcuts}]\n")
+        })
+        .collect()
+}
+/// `index: term` per stored term, with the reason it is not sent (`[duplicate]`) when any.
+fn term_lines(terms: &Value) -> String {
+    let rows = terms.as_array().map(Vec::as_slice).unwrap_or_default();
+    rows.iter()
+        .map(|row| match row["issue"].as_str() {
+            Some(issue) => format!("{}: {} [{issue}]\n", row["index"], plain(&row["term"])),
+            None => format!("{}: {}\n", row["index"], plain(&row["term"])),
         })
         .collect()
 }
@@ -336,6 +386,21 @@ mod tests {
                 .starts_with("Warning:"));
         }
         assert_eq!(render(View::OneSetting, &reply, false).stdout, "dark\n");
+    }
+    #[test]
+    fn an_export_file_without_a_confirmed_sync_warns_on_stderr_in_both_modes() {
+        let data = |durable| json!({"path": "r.txt", "count": 1, "bytes": 4, "durable": durable});
+        let synced = Reply::success(Revision(2), data(true), false);
+        assert!(render(View::ExportFile, &synced, false).stderr.is_empty());
+        let unsynced = Reply::success(Revision(2), data(false), false);
+        for json in [true, false] {
+            let output = render(View::ExportFile, &unsynced, json);
+            assert!(output
+                .stderr
+                .starts_with("Warning: the export file was replaced"));
+        }
+        let human = render(View::ExportFile, &unsynced, false).stdout;
+        assert_eq!(human, "Exported 1 rules to r.txt\n");
     }
     #[test]
     fn human_errors_print_the_detail_reason_and_items_on_stderr() {

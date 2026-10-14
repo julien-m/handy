@@ -4,6 +4,16 @@
 use super::harness::{Portable, TestResult};
 use serde_json::json;
 
+/// Default paste method of this build: smart paste is the macOS default only once dictation
+/// delivers through it (feature 007 rollout gate, Cargo feature `smart-paste-dispatch`).
+pub(super) fn default_paste_method() -> &'static str {
+    if cfg!(all(target_os = "macos", feature = "smart-paste-dispatch")) {
+        "smart_paste"
+    } else {
+        "ctrl_v"
+    }
+}
+
 #[test]
 fn json_get_prints_one_envelope_with_revision_and_every_public_key() -> TestResult {
     let app = Portable::new()?;
@@ -20,13 +30,13 @@ fn json_get_prints_one_envelope_with_revision_and_every_public_key() -> TestResu
         );
         assert_eq!(
             envelope["data"].as_object().map(|data| data.len()),
-            Some(64)
+            Some(66)
         );
     }
     let one = app
         .run(&["settings", "get", "paste_method", "--json"])?
         .envelope()?;
-    assert_eq!(one["data"], json!({"paste_method": "ctrl_v"}));
+    assert_eq!(one["data"], json!({"paste_method": default_paste_method()}));
     Ok(())
 }
 #[test]
@@ -35,7 +45,7 @@ fn human_output_is_readable_and_diagnostics_stay_on_stderr() -> TestResult {
     let get = app.run(&["settings", "get", "paste_method"])?;
     assert_eq!(
         (get.code, get.stdout.as_str(), get.stderr.as_str()),
-        (0, "ctrl_v\n", "")
+        (0, format!("{}\n", default_paste_method()).as_str(), "")
     );
     let set = app.run(&["settings", "set", "paste_method", "direct"])?;
     assert_eq!(
@@ -163,15 +173,17 @@ fn stale_expected_revision_reports_the_current_revision() -> TestResult {
 }
 const UI_ONLY: &str = "This setting is changed in the settings UI.";
 /// Keys generic `set` refuses, with the reason naming where they are changed.
-const OWNED_ELSEWHERE: [(&str, &str); 4] = [
+const OWNED_ELSEWHERE: [(&str, &str); 5] = [
     (
         "bindings",
         "Use handy settings shortcuts to change shortcuts.",
     ),
     (
         "custom_words",
-        "Use handy settings vocabulary; this domain is not available in this build.",
+        "Use handy settings vocabulary to change this list.",
     ),
+    // The vocabulary commands do not manage filler words: they are changed in the app.
+    ("custom_filler_words", UI_ONLY),
     ("post_process_api_keys", UI_ONLY),
     ("selected_model", UI_ONLY),
 ];

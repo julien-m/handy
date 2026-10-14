@@ -339,6 +339,7 @@
         "description": "Wähle, wie Text eingefügt wird. Direkt: simuliert Tippen über Systemeingabe. Keine: überspringt Einfügen, aktualisiert nur Verlauf/Zwischenablage.",
         "options": {
           "clipboard": "Zwischenablage ({{modifier}}+V)",
+          "smartPaste": "Intelligentes Einfügen",
           "clipboardCtrlShiftV": "Zwischenablage (Strg+Umschalt+V)",
           "clipboardShiftInsert": "Zwischenablage (Umschalt+Einfg)",
           "direct": "Direkt",
@@ -767,5 +768,8 @@
     "learnMore": "So behebst du das",
     "recorderBlocked": "Tastenkürzel können gerade nicht aufgezeichnet werden — macOS Secure Input blockiert Tastenereignisse. Behebe zuerst die Secure-Input-Warnung.",
     "dismiss": "Ausblenden"
+  },
+  "smartPaste": {
+    "handOver": "Text für den entfernten Bildschirm in die Zwischenablage gelegt"
   }
 }

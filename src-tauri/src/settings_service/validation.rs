@@ -83,15 +83,26 @@ fn editable_descriptor(
         ));
     }
     if matches!(entry.value_type, SettingType::Array | SettingType::Object) {
-        let reason = match entry.owner_domain {
-            "shortcuts" => ValidationReason::ShortcutsDomain,
-            "vocabulary" => ValidationReason::VocabularyDomain,
-            "prompts" => ValidationReason::PromptsDomain,
-            _ => ValidationReason::UiOnly,
-        };
-        return Err(SettingsError::validation(entry.key, reason));
+        return Err(SettingsError::validation(
+            entry.key,
+            collection_reason(entry),
+        ));
     }
     Ok(entry)
+}
+
+/// Refusal of a generic write to a list or map, naming the command that owns it.
+fn collection_reason(entry: &super::descriptor::SettingDescriptor) -> ValidationReason {
+    match entry.owner_domain {
+        "shortcuts" => ValidationReason::ShortcutsDomain,
+        // The vocabulary commands manage `custom_words` only; filler words are edited in
+        // the app's settings, so the CLI points there instead of to a command.
+        "vocabulary" if entry.key == "custom_filler_words" => ValidationReason::UiOnly,
+        "vocabulary" => ValidationReason::VocabularyDomain,
+        "prompts" => ValidationReason::PromptsDomain,
+        "replacements" => ValidationReason::ReplacementsDomain,
+        _ => ValidationReason::UiOnly,
+    }
 }
 
 fn parse_cli(
@@ -132,6 +143,7 @@ pub(super) fn validate_value(
     context: &ValidationContext<'_>,
 ) -> Result<SettingsMutation, SettingsError> {
     let value = validate_type(entry, &candidate)?;
+    validate_rollout(entry.key, &candidate)?;
     if !entry.allowed_values.is_empty()
         && !candidate
             .as_str()
@@ -157,6 +169,16 @@ pub(super) fn validate_value(
         key: entry.key,
         value,
     })
+}
+
+/// Platform and rollout refusals of smart paste (feature 007), checked before the allowed values
+/// so they name their own reason.
+fn validate_rollout(key: &'static str, candidate: &serde_json::Value) -> Result<(), SettingsError> {
+    use crate::smart_paste::setting_policy::{refusal, Rollout};
+    match refusal(key, candidate, Rollout::CURRENT) {
+        Some(reason) => Err(SettingsError::validation(key, reason)),
+        None => Ok(()),
+    }
 }
 
 fn validate_context(

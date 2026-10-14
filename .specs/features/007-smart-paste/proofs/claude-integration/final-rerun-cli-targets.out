@@ -1,0 +1,69 @@
+ 5:18  up 8 days, 18:14, 1 user, load averages: 41.42 63.45 69.77
+
+running 19 tests
+test contract::keys_describe_type_allowed_values_range_and_access ... ok
+test contract::help_lists_generic_operations_in_both_modes ... ok
+test contract::human_output_is_readable_and_diagnostics_stay_on_stderr ... ok
+test contract::list_secret_and_read_only_keys_point_to_their_owner ... ok
+test offline::unreadable_store_reads_defaults_with_a_stderr_warning_and_refuses_writes ... ok
+test routed::a_live_listener_on_the_endpoint_name_is_never_replaced ... ok
+test contract::stale_expected_revision_reports_the_current_revision ... ok
+test offline::headless_read_never_creates_the_store_and_a_write_persists_one_revision ... ok
+test routed::a_stale_endpoint_name_is_reclaimed_under_the_lease_and_removed_at_close ... FAILED
+test offline::concurrent_cli_writers_lose_no_field ... ok
+test routed::the_running_instance_refuses_stale_and_invalid_writes_without_committing ... ok
+test routed::the_running_instance_answers_reads_and_commits_writes_with_its_live_state ... ok
+test offline::older_handy_holding_its_singleton_refuses_reads_and_writes_without_touching_the_store ... ok
+test contract::every_owned_error_code_has_its_documented_exit ... ok
+test contract::json_get_prints_one_envelope_with_revision_and_every_public_key ... ok
+test contract::secrets_and_rejected_arguments_never_reach_stdout_or_stderr ... ok
+test offline::rejected_write_changes_nothing ... ok
+test offline::held_startup_lease_without_a_reachable_channel_refuses_and_never_writes_offline ... ok
+test routed::no_answer_within_five_seconds_is_an_unknown_outcome_resolved_by_a_new_read ... ok
+
+failures:
+
+---- routed::a_stale_endpoint_name_is_reclaimed_under_the_lease_and_removed_at_close stdout ----
+Error: SettingsError { code: Unavailable, message: "Settings operation is unavailable.", details: ErrorDetails { current_revision: None, outcome: None, field: None, offset: None, issues: [] }, reason: None }
+
+
+failures:
+    routed::a_stale_endpoint_name_is_reclaimed_under_the_lease_and_removed_at_close
+
+test result: FAILED. 18 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 11.47s
+
+
+running 8 tests
+test output_set_with_an_older_handy_running_is_unavailable_and_writes_nothing ... ok
+test invalid_output_dry_run_is_refused_with_exit_two_and_no_preview ... ok
+test help_lists_the_generic_operations_and_exactly_the_domains_of_this_build ... ok
+test output_get_reads_exactly_the_output_settings_without_creating_the_store ... ok
+test stale_output_set_is_a_revision_conflict_reported_on_stderr ... ok
+test output_dry_run_previews_with_exit_zero_and_never_writes ... ok
+test output_set_commits_through_the_shared_path ... ok
+test output_set_routed_to_a_running_instance_is_committed_by_the_instance ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.32s
+
+
+running 16 tests
+test store::a_new_installation_defaults_to_smart_paste_only_when_active ... ok
+test validation::existing_methods_stay_valid_in_both_rollout_states ... ok
+test store::read_only_reads_normalize_in_memory_without_writing_the_marker ... ok
+test validation::smart_paste_gets_the_same_decision_from_the_ui_and_the_cli ... ok
+test validation::the_beta_switch_is_refused_on_both_ports_only_once_smart_paste_replaces_it ... ok
+test validation::the_migration_marker_is_read_only_everywhere ... ok
+test store::a_later_cmd_v_choice_survives_every_reload ... ok
+test store::startup_moves_cmd_v_to_smart_paste_once_with_its_marker ... ok
+test store::startup_keeps_every_other_method ... ok
+test cli::output_set_smart_paste_commits_or_is_refused_by_the_rollout ... ok
+test cli::readable_refusal_goes_to_stderr_with_exit_two ... ok
+test cli::keys_list_smart_paste_only_when_selectable_and_the_marker_as_read_only ... ok
+test cli::generic_set_and_output_set_give_the_same_answer ... ok
+test cli::output_set_of_the_beta_switch_follows_the_rollout ... ok
+test cli::output_dry_run_previews_or_refuses_smart_paste_and_never_writes ... ok
+test cli::offline_upgrade_reads_normalized_and_the_next_write_persists_the_migration ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.87s
+
+binary after run: 1 occurrence(s) of the 007 refusal text; b8f902233911699591d02ff06a804255a9b05a9c61b9164c49628fd6782e8b8c  /Users/julienm/projects/handy-wt/.shared-target/debug/handy

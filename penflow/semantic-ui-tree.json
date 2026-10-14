@@ -1979,6 +1979,23 @@
           "trigger": "recovery-bubble-insertion-failed.why"
         }
       ]
+    },
+    {
+      "entry_screen": "handy-reference",
+      "id": "handy-reference",
+      "source_map": {
+        "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+        "contract_path": "$.flows[10]"
+      },
+      "steps": [
+        {
+          "id": "handy-reference-entry",
+          "intent": "handy-reference",
+          "screen_id": "handy-reference"
+        }
+      ],
+      "title": "handy-reference",
+      "transitions": []
     }
   ],
   "kind": "semantic-ui-tree",
@@ -11285,6 +11302,35 @@
       "viewport": {
         "height": 300,
         "width": 560
+      }
+    },
+    {
+      "flow_id": "handy-reference",
+      "id": "handy-reference",
+      "root": {
+        "role": "screen",
+        "semantic_id": "handy-reference",
+        "source_map": {
+          "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+          "contract_path": "$.nodes[482]"
+        },
+        "test_id": "handy-reference-screen"
+      },
+      "side_effects": [],
+      "source_map": {
+        "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+        "contract_path": "$.screens[33]"
+      },
+      "states": [
+        {
+          "name": "default"
+        }
+      ],
+      "surface": "desktop",
+      "validations": [],
+      "viewport": {
+        "height": 570,
+        "width": 680
       }
     }
   ],

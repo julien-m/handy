@@ -82,7 +82,7 @@ fn items_are_sorted_by_index_and_bounded_without_candidate_values() -> TestResul
     Ok(())
 }
 /// Every closed `details.reason` of this build, in wire-schema order.
-const REASONS: [&str; 15] = [
+const REASONS: [&str; 41] = [
     "unsupported_platform",
     "shortcut_session_busy",
     "instance_required",
@@ -90,6 +90,32 @@ const REASONS: [&str; 15] = [
     "alternatives_unsupported",
     "registration_refused",
     "invalid_shortcut",
+    "recognized_empty",
+    "recognized_too_long",
+    "recognized_forbidden_character",
+    "recognized_control_character",
+    "recognized_leading_comment",
+    "duplicate_recognized",
+    "replacement_empty",
+    "replacement_too_long",
+    "replacement_forbidden_character",
+    "replacement_control_character",
+    "empty_rule_id",
+    "duplicate_rule_id",
+    "missing_separator",
+    "too_many_rules",
+    "invalid_saved_rules",
+    "unicode_data_unavailable",
+    "reply_too_large",
+    "export_not_written",
+    "export_symbolic_link",
+    "export_read_only",
+    "term_empty",
+    "term_too_long",
+    "term_line_break",
+    "term_forbidden_character",
+    "term_duplicate",
+    "context_budget_unverified",
     "prompt_name_empty",
     "prompt_name_too_long",
     "prompt_name_duplicate",
@@ -103,7 +129,7 @@ const REASONS: [&str; 15] = [
 fn schema_closes_reason_and_items() -> TestResult {
     let schema = contract_schema()?;
     let details = &schema["$defs"]["error_details"]["properties"];
-    let reasons = json!(REASONS);
+    let reasons = json!(REASONS.as_slice());
     assert_eq!(details["reason"], json!({ "enum": reasons }));
     assert_eq!(
         details["items"]["items"]["properties"]["code"]["enum"],

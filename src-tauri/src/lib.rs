@@ -10,6 +10,7 @@ pub mod cli;
 mod clipboard;
 mod commands;
 pub mod destination;
+mod dictation_output;
 pub mod engine_supervisor;
 mod helpers;
 mod input;
@@ -22,6 +23,7 @@ mod overlay;
 mod paste_tx;
 pub mod portable;
 pub mod prompts;
+pub mod recognition_vocabulary;
 mod secure_input;
 #[cfg(target_os = "macos")]
 mod secure_input_shadow;
@@ -29,10 +31,12 @@ mod settings;
 pub mod settings_service;
 mod shortcut;
 mod signal_handle;
+pub mod smart_paste;
 mod transcription_coordinator;
 mod tray;
 mod tray_i18n;
 mod utils;
+pub mod word_replacements;
 
 pub use cli::CliArgs;
 #[cfg(debug_assertions)]
@@ -249,6 +253,7 @@ fn initialize_core_logic(app_handle: &AppHandle) {
     app_handle.manage(prompts::session::PromptSessions::default());
     app_handle.manage(tray::TrayState::new());
     destination::app::install(app_handle);
+    smart_paste::app::install(app_handle);
 
     // Note: Shortcuts are NOT initialized here.
     // The frontend is responsible for calling the `initialize_shortcuts` command
@@ -595,6 +600,7 @@ fn run_headless_transcription(app: &AppHandle, args: &CliArgs) -> i32 {
     let bound_backend = tm.current_backend();
 
     let runs = args.repeat.unwrap_or(1).max(1);
+    let replacements = crate::word_replacements::published::current_matcher(app);
     let mut times_ms: Vec<u64> = Vec::new();
     let mut text = String::new();
     for i in 0..runs {
@@ -608,7 +614,7 @@ fn run_headless_transcription(app: &AppHandle, args: &CliArgs) -> i32 {
             }
         }
         let t = Instant::now();
-        match tm.transcribe(samples.clone()) {
+        match tm.transcribe(samples.clone(), &replacements) {
             Ok(out) => text = out,
             Err(e) => {
                 eprintln!("error: transcribe failed: {}", e);
@@ -708,6 +714,7 @@ pub fn run(cli_args: CliArgs) {
             shortcut::change_reliable_paste_setting,
             shortcut::change_paste_method_setting,
             shortcut::get_available_typing_tools,
+            shortcut::is_smart_paste_available,
             shortcut::change_typing_tool_setting,
             shortcut::change_external_script_path_setting,
             shortcut::change_clipboard_handling_setting,
@@ -731,6 +738,12 @@ pub fn run(cli_args: CliArgs) {
             commands::prompts::get_dictation_prompt,
             commands::prompts::select_dictation_prompt,
             shortcut::update_custom_words,
+            commands::vocabulary::get_vocabulary,
+            commands::vocabulary::preview_vocabulary_import,
+            commands::vocabulary::apply_vocabulary_import,
+            commands::vocabulary::add_vocabulary_term,
+            commands::vocabulary::remove_vocabulary_occurrence,
+            commands::vocabulary::get_vocabulary_status,
             shortcut::suspend_all_bindings,
             shortcut::resume_all_bindings,
             shortcut::change_mute_while_recording_setting,
@@ -815,6 +828,11 @@ pub fn run(cli_args: CliArgs) {
             commands::history::retry_history_entry_transcription,
             commands::history::update_history_limit,
             commands::history::update_recording_retention_period,
+            commands::replacements::get_word_replacements,
+            commands::replacements::check_word_replacements,
+            commands::replacements::preview_word_replacements,
+            commands::replacements::save_word_replacements,
+            commands::replacements::apply_word_replacements,
             helpers::clamshell::is_laptop,
         ])
         .events(collect_events![
@@ -939,6 +957,7 @@ pub fn run(cli_args: CliArgs) {
             Some(vec![]),
         ))
         .manage(cli_args.clone())
+        .manage(word_replacements::published::PublishedReplacements::default())
         .setup(move |app| {
             #[cfg(target_os = "windows")]
             log::info!(
@@ -1168,6 +1187,9 @@ pub fn run(cli_args: CliArgs) {
                 tray::recreate_tray_icon(app);
             }
             show_main_window(app);
+        }
+        tauri::RunEvent::ExitRequested { code, api, .. } => {
+            smart_paste::app::settle_before_exit(app, *code, api)
         }
         tauri::RunEvent::Exit => settings_service::tauri_adapter::close_endpoint(app),
         // No transcription teardown on exit: transcribe.cpp runs only in the

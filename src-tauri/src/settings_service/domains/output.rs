@@ -2,7 +2,9 @@
 //! automatic submit, paste delays, typing tool, external script, trailing space), read and changed
 //! through the same descriptors and validator as generic `get`/`set` and the settings UI, plus
 //! 006's destination return (`return_to_dictation_app`, refused on a platform without the
-//! destination capability). Feature 007 extends this domain (smart paste).
+//! destination capability). Feature 007 adds `paste_method smart_paste` through that shared
+//! validation: accepted only where `smart_paste::setting_policy` makes it selectable, refused
+//! elsewhere with `validation_failed` (exit 2) before any write, dry runs included.
 use super::{ChangeKind, Domain, DomainChange, DomainPlan, DomainRequest};
 use crate::settings::AppSettings;
 use crate::settings_service::{

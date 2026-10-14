@@ -1,0 +1,13 @@
+$ livespec conventions verify --feature repo --json
+Tue Oct 13 18:10:56 UTC 2026
+{
+  "verdict": "PASS",
+  "run_id": "20261013T181105Z",
+  "receipt_path": ".specs/conventions/runs/20261013T181105Z/receipt.json",
+  "blockers": [],
+  "violations_total": 410,
+  "baselined_violations": 674,
+  "violations_in_src-tauri/src/word_replacements/": [],
+  "note": "Full JSON (about 2 MB) summarized; the complete receipt is in the receipt_path run directory (not committed)."
+}
+EXIT=0

@@ -1,6 +1,7 @@
 use crate::audio_feedback::{play_feedback_sound, play_feedback_sound_blocking, SoundType};
 use crate::audio_toolkit::{is_microphone_access_denied, is_no_input_device_error, VadPolicy};
-use crate::destination::delivery::insert_final_text;
+use crate::destination::delivery::{insert_final_text, DictationTicket, HistoryRecord};
+use crate::dictation_output::{deliver, Delivery, OutputPorts, ProcessedTranscription};
 use crate::managers::audio::AudioRecordingManager;
 use crate::managers::history::HistoryManager;
 use crate::managers::history_store::NewHistoryEntry;
@@ -15,6 +16,8 @@ use crate::tray::{set_tray_state, TrayIconState};
 use crate::utils::{
     self, show_processing_overlay, show_recording_overlay, show_transcribing_overlay,
 };
+use crate::word_replacements::dictation::{finalize_or_transcribe, DictationRuleCapture};
+use crate::word_replacements::published::current_matcher;
 use crate::TranscriptionCoordinator;
 use log::{debug, error, warn};
 use once_cell::sync::Lazy;
@@ -63,10 +66,77 @@ pub trait ShortcutAction: Send + Sync {
 
 // Transcribe Action. Whether its AI step runs, and with which prompt, is decided by the
 // dictation's prompt session (005), from the binding that started it.
-struct TranscribeAction;
+struct TranscribeAction {
+    /// Replacement rules in force when each binding's recording started.
+    rules_at_start: DictationRuleCapture,
+}
 
 fn should_use_streaming_overlay(style: OverlayStyle, is_streaming: bool) -> bool {
     style == OverlayStyle::Live && is_streaming
+}
+
+/// Real output ports of one dictation (see `dictation_output`): the AI step with the prompt
+/// frozen at the stop (005) and its overlay, the history manager and the destination insertion
+/// (006).
+struct AppOutputPorts {
+    app: AppHandle,
+    recording: Arc<AudioRecordingManager>,
+    transcription: Arc<TranscriptionManager>,
+    history: Arc<HistoryManager>,
+    cancel_generation: u64,
+    /// Prompt session frozen at the stop: its prompt (`None`: no AI step) and its id.
+    frozen: dictation::FrozenSession,
+    use_streaming_overlay: bool,
+    /// The verified WAV of this dictation, or `None` for a text-only history row.
+    file_name: Option<String>,
+    destination_ticket: Option<DictationTicket>,
+}
+
+impl OutputPorts for AppOutputPorts {
+    type History = HistoryRecord;
+    async fn post_process(&self, native: &str) -> Option<ProcessedTranscription> {
+        if self.frozen.prompt.is_some() {
+            if self.use_streaming_overlay {
+                self.transcription
+                    .emit_stream_working(StreamWorkKind::Polishing);
+            } else {
+                show_processing_overlay(&self.app);
+            }
+        }
+        let processing = dictation::process_frozen(native, self.frozen.prompt.as_ref());
+        complete_unless_cancelled(processing, || self.is_cancelled()).await
+    }
+    fn is_cancelled(&self) -> bool {
+        self.recording.was_cancelled_since(self.cancel_generation)
+    }
+    fn save_history(&self, native: String, processed: &ProcessedTranscription) -> HistoryRecord {
+        let entry = NewHistoryEntry {
+            file_name: self.file_name.clone(),
+            transcription_text: native,
+            post_process_requested: self.frozen.prompt.is_some(),
+            post_processed_text: processed.post_processed_text.clone(),
+            post_process_prompt: processed.post_process_prompt.clone(),
+            processing: processed.processing.clone(),
+        };
+        let cancelled = || self.is_cancelled();
+        let history =
+            crate::destination::history::save_dictation(self.history.as_ref(), entry, &cancelled);
+        dictation::notify_failure(&self.app, self.frozen.session_id, processed);
+        history
+    }
+    fn abandon(&self) {
+        crate::destination::delivery::abandon(&self.app);
+        utils::hide_recording_overlay(&self.app);
+        set_tray_state(&self.app, TrayIconState::Idle);
+    }
+    async fn insert(&self, text: String, history: HistoryRecord) {
+        let cancelled = Box::new({
+            let (recording, generation) = (Arc::clone(&self.recording), self.cancel_generation);
+            move || recording.was_cancelled_since(generation)
+        });
+        let insertion = (self.destination_ticket, text, history);
+        insert_final_text(&self.app, insertion, cancelled).await;
+    }
 }
 
 impl ShortcutAction for TranscribeAction {
@@ -166,6 +236,9 @@ impl ShortcutAction for TranscribeAction {
                     "Recording request accepted in {:?}; waiting for first microphone samples",
                     recording_start_time.elapsed()
                 );
+                // AC-007: this dictation uses the rules committed before it started.
+                self.rules_at_start
+                    .capture(&binding_id, current_matcher(app));
                 if let Some(destination) = destination {
                     destination.commit(app);
                 }
@@ -295,6 +368,9 @@ impl ShortcutAction for TranscribeAction {
                                                  // The stop is the linearization point: the prompt shown now is the one processed.
         let frozen = dictation::freeze_session(app);
         let post_process = frozen.prompt.is_some();
+        let captured_rules = self
+            .rules_at_start
+            .rules_for_stop(&binding_id, || current_matcher(app));
         let cancel_generation = rm.cancel_generation();
         let destination_ticket = crate::destination::delivery::ticket_at_stop(app);
 
@@ -345,16 +421,13 @@ impl ShortcutAction for TranscribeAction {
                     // running, finalize it and use its text (all audio was already
                     // fed to the stream); otherwise batch-transcribe the samples.
                     let transcription_time = Instant::now();
-                    let transcription_result = match tm.finalize_stream() {
-                        // A finalized stream with usable text wins. An empty result
-                        // (no active stream, produced nothing, or the stream failed
-                        // or its worker crashed) falls back to a full batch
-                        // transcription of the same audio. A cancelled finalize is
-                        // surfaced instead, so a cancel never starts a batch run.
-                        Ok(Some(text)) if !text.trim().is_empty() => Ok(text),
-                        Ok(_) => tm.transcribe(samples),
-                        Err(err) => Err(err),
-                    };
+                    // One compiled matcher serves the stream finalize and its batch
+                    // fallback (worker crash or empty stream) of the same audio.
+                    let transcription_result = finalize_or_transcribe(
+                        &captured_rules,
+                        |replacements| tm.finalize_stream(replacements),
+                        |replacements| tm.transcribe(samples, replacements),
+                    );
 
                     // Await WAV save and verify
                     let wav_saved = match wav_handle.await {
@@ -394,61 +467,27 @@ impl ShortcutAction for TranscribeAction {
                                 transcription_time.elapsed(),
                                 utils::redact_text(&transcription)
                             );
-
-                            if post_process {
-                                if use_streaming_overlay {
-                                    tm.emit_stream_working(StreamWorkKind::Polishing);
-                                } else {
-                                    show_processing_overlay(&ah);
-                                }
-                            }
-                            let Some(processed) = complete_unless_cancelled(
-                                dictation::process_frozen(&transcription, frozen.prompt.as_ref()),
-                                || rm.was_cancelled_since(cancel_generation),
-                            )
-                            .await
-                            else {
-                                debug!("Transcription operation cancelled during output handling");
-                                utils::hide_recording_overlay(&ah);
-                                set_tray_state(&ah, TrayIconState::Idle);
-                                return;
-                            };
-
-                            if rm.was_cancelled_since(cancel_generation) || processed.cancelled {
-                                debug!("Transcription operation cancelled before paste");
-                                utils::hide_recording_overlay(&ah);
-                                set_tray_state(&ah, TrayIconState::Idle);
-                                return;
-                            }
-
-                            // Saved with its audio, or text-only when the WAV failed; the
-                            // actual save_entry result is reported.
-                            let entry = NewHistoryEntry {
+                            let ports = AppOutputPorts {
+                                app: ah.clone(),
+                                recording: Arc::clone(&rm),
+                                transcription: Arc::clone(&tm),
+                                history: Arc::clone(&hm),
+                                cancel_generation,
+                                frozen,
+                                use_streaming_overlay,
                                 file_name: wav_saved.then_some(file_name),
-                                transcription_text: transcription,
-                                post_process_requested: post_process,
-                                post_processed_text: processed.post_processed_text.clone(),
-                                post_process_prompt: processed.post_process_prompt.clone(),
-                                processing: processed.processing.clone(),
+                                destination_ticket,
                             };
-                            let history = crate::destination::history::save_dictation(
-                                hm.as_ref(),
-                                entry,
-                                &|| rm.was_cancelled_since(cancel_generation),
-                            );
-                            dictation::notify_failure(&ah, frozen.session_id, &processed);
-
-                            if processed.final_text.is_empty() {
-                                crate::destination::delivery::abandon(&ah);
-                                utils::hide_recording_overlay(&ah);
-                                set_tray_state(&ah, TrayIconState::Idle);
-                            } else {
-                                let cancelled = Box::new({
-                                    let rm = Arc::clone(&rm);
-                                    move || rm.was_cancelled_since(cancel_generation)
-                                });
-                                let insertion = (destination_ticket, processed.final_text, history);
-                                insert_final_text(&ah, insertion, cancelled).await;
+                            match deliver(&ports, transcription).await {
+                                // Insertion and an empty text end the indicator themselves.
+                                Delivery::Inserted | Delivery::NothingToInsert => {}
+                                Delivery::Cancelled => {
+                                    debug!(
+                                        "Transcription operation cancelled during output handling"
+                                    );
+                                    utils::hide_recording_overlay(&ah);
+                                    set_tray_state(&ah, TrayIconState::Idle);
+                                }
                             }
                         }
                         Err(err) => {
@@ -550,11 +589,15 @@ pub static ACTION_MAP: Lazy<HashMap<String, Arc<dyn ShortcutAction>>> = Lazy::ne
     let mut map = HashMap::new();
     map.insert(
         "transcribe".to_string(),
-        Arc::new(TranscribeAction) as Arc<dyn ShortcutAction>,
+        Arc::new(TranscribeAction {
+            rules_at_start: DictationRuleCapture::default(),
+        }) as Arc<dyn ShortcutAction>,
     );
     map.insert(
         "transcribe_with_post_process".to_string(),
-        Arc::new(TranscribeAction) as Arc<dyn ShortcutAction>,
+        Arc::new(TranscribeAction {
+            rules_at_start: DictationRuleCapture::default(),
+        }) as Arc<dyn ShortcutAction>,
     );
     map.insert(
         "cancel".to_string(),

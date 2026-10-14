@@ -4,7 +4,7 @@ title: Word Replacements
 priority: P1
 status: Planned
 created: 2026-10-12
-updated: 2026-10-12
+updated: 2026-10-13
 ---
 
 # Feature Spec: Word Replacements
@@ -155,6 +155,14 @@ Feature: Replacement matching semantics
     Given the rule "art" to "ART" exists
     When the recognized text is "smart art"
     Then the output is "smart ART"
+  Scenario: A combining mark belongs to its word
+    Given the rule "भारत" to "India" exists
+    When the recognized text is "भारतीय संविधान"
+    Then the output is "भारतीय संविधान"
+  Scenario: A zero-width non-joiner belongs to its word
+    Given the rule "می" to "X" exists
+    When the recognized text is "می‌خواهم", where "می" and "خواهم" are joined by U+200C
+    Then the output is "می‌خواهم"
   Scenario: Longest rule wins on overlap
     Given the rules "Cloud" to "Claude" and "Cloud Code" to "Claude Code CLI" exist in that order
     When the recognized text is "cloud code and cloud"
@@ -227,22 +235,22 @@ flowchart TD
 
 ### AC-004
 
-**Criterion:** The exchange format is UTF-8 text with one rule per line. A line containing a tab splits on its first tab; otherwise it splits on its first `;`. Blank lines and lines starting with `#` are ignored. The first line that is neither blank nor a comment is ignored as a header when it equals (case-insensitively, after trimming) `texte_reconnu;remplacement` or `recognized;replacement`. Export writes the header `recognized;replacement`, then one `recognized;replacement` line per rule in list order; because AC-002 forbids tab, `;` and a leading `#` in recognized text and tab in replacements, every valid rule set round-trips. Replacement text may contain `;`. CSV quoting is not supported; spreadsheet copy and paste uses the tab separator.
+**Criterion:** The exchange format is UTF-8 text with one rule per line. A line containing a tab splits on its first tab; otherwise it splits on its first `;`. Blank lines and lines starting with `#` are ignored. The first line that is neither blank nor a comment is ignored as a header when its two fields, split like a rule line and trimmed, equal case-insensitively `texte_reconnu` and `remplacement` or `recognized` and `replacement`, whatever the separator (tab or `;`). Export writes the header `recognized;replacement`, then one `recognized;replacement` line per rule in list order; because AC-002 forbids tab, `;` and a leading `#` in recognized text and tab in replacements, every valid rule set round-trips. Replacement text may contain `;`. CSV quoting is not supported; spreadsheet copy and paste uses the tab separator.
 **Priority:** P1 | **Story:** Stories 2 and 3
 
 ### AC-005
 
-**Criterion:** Import accepts a file up to 1 MB in merge or replace mode. Merge updates the replacement of rules whose normalized key matches, keeps their position, and appends new rules in file order. Replace makes the file content the whole rule set in file order. Duplicate keys inside one file or block are errors. Import is atomic: on any error, unreadable file or persistence failure, saved rules are unchanged. Export then replace-import of the same file reproduces the same rules and order.
+**Criterion:** Import accepts a file up to 1 MB (1,000,000 bytes, inclusive) in merge or replace mode. Merge updates the replacement of rules whose normalized key matches, keeps their position, and appends new rules in file order. Replace makes the file content the whole rule set in file order. Duplicate keys inside one file or block are errors. Import is atomic: on any error, unreadable file or persistence failure, saved rules are unchanged. Export then replace-import of the same file reproduces the same rules and order.
 **Priority:** P2 | **Story:** Story 3
 
 ### AC-006
 
-**Criterion:** Matching is case-insensitive (Unicode case folding) and the replacement is inserted exactly as written. A match must start and end on word boundaries: the characters immediately before and after the match are not Unicode letters or digits, or are the text edges. On a side where the recognized text begins or ends with a CJK ideograph, kana or hangul character, no boundary check applies, because those scripts are written without spaces. A whitespace run inside the recognized text matches any non-empty whitespace run; other characters match literally. Punctuation adjacent to a match is kept.
+**Criterion:** Matching is case-insensitive (Unicode case folding) and the replacement is inserted exactly as written. A match must start and end on word boundaries: the characters immediately before and after the match are not word characters, or are the text edges. A word character is a Unicode letter, a decimal digit, a combining mark (General_Category Mn, Mc or Me) or a zero-width non-joiner or joiner (U+200C, U+200D), so a rule never replaces a word fragment, including in Indic scripts (dependent vowel signs, virama), next to a decomposed (NFD) accent and inside a Persian or Urdu word joined by a zero-width non-joiner. On a side where the recognized text begins or ends with a CJK ideograph, kana or hangul character, the boundary check ignores neighbouring base characters, because Chinese and Japanese are written without spaces between words and Korean attaches particles directly to the preceding word; a combining mark immediately next to the match still blocks it on that side. A whitespace run inside the recognized text matches any non-empty whitespace run; other characters match literally. Punctuation adjacent to a match is kept.
 **Priority:** P1 | **Story:** Story 4
 
 ### AC-007
 
-**Criterion:** Rules apply in one left-to-right pass over the final recognized text. At each position the rule with the longest normalized key wins; ties follow list order. A matched span is replaced and scanning continues after it; replacement output is never rescanned (no chaining). Rules apply after speech recognition, language detection and Chinese script conversion, and before the existing approximate custom-word correction, filler removal, normalization and AI post-processing. Approximate correction never alters a span produced by a replacement. The inserted text and the history text include the replacements. Rules committed from the UI or the CLI apply from the next dictation of the running app. An empty rule set leaves text unchanged.
+**Criterion:** Rules apply in one left-to-right pass over the final recognized text. At each position the rule with the longest normalized key wins; ties follow list order. A matched span is replaced and scanning continues after it; replacement output is never rescanned (no chaining). Rules apply after speech recognition, language detection and Chinese script conversion, and before the existing approximate custom-word correction, filler removal, normalization and AI post-processing. Approximate correction never alters a span produced by a replacement. The text handed to AI post-processing and the history transcription text include the replacements; without AI post-processing, the inserted text includes them too. Text rewritten by AI post-processing is outside this guarantee. Rules committed from the UI or the CLI apply from the next dictation of the running app. An empty rule set leaves text unchanged.
 **Priority:** P1 | **Story:** Story 4
 
 ### AC-008
@@ -405,6 +413,30 @@ Feature: Commit replacement rules
 - Decision `` / `placeholders:- Planned `flow_id: word-replacements`, `screen_id: replacement-settings`. The Penflow workspace is `incomplete` on 2026-10-12; the forward contract, semantic and test IDs are produced in the single pass before `spec-ship`: [NEEDS CLARIFICATION] until then. No inspection READY or certification PASS is claimed.`: User decision 2026-10-12 (lightweight UI contract): Penflow flow/screen contracts, semantic and test IDs and Pencil mockups for all program features are produced in one pass before spec-ship; until then the planned flow_id and screen_id above are authoritative and no inspection READY or certification PASS is claimed.
 <!-- livespec-clarification:{"requirement_id": "", "decision_key": "placeholders:- Planned `flow_id: word-replacements`, `screen_id: replacement-settings`. The Penflow workspace is `incomplete` on 2026-10-12; the forward contract, semantic and test IDs are produced in the single pass before `spec-ship`: [NEEDS CLARIFICATION] until then. No inspection READY or certification PASS is claimed.", "evidence_hash": "60177e7db83c98006a89d753b5518c4788a2eb2b8d860901fc70f5faaffac0b6", "answer": "User decision 2026-10-12 (lightweight UI contract): Penflow flow/screen contracts, semantic and test IDs and Pencil mockups for all program features are produced in one pass before spec-ship; until then the planned flow_id and screen_id above are authoritative and no inspection READY or certification PASS is claimed."} -->
 
+- Decision `002-word-replacements:AC-006` / `decision:ac-006:word-character-includes-combining-marks`: Orchestrator decision 2026-10-13 (independent audit finding 1): for AC-006 word boundaries a word character is a Unicode letter, a decimal digit or a combining mark (General_Category Mn, Mc or Me), checked on both sides of the match. A rule therefore never replaces a word fragment, including Indic scripts (dependent vowel signs, virama) and decomposed (NFD) accents. The side-by-side CJK exemption is unchanged.
+<!-- livespec-clarification:{"requirement_id": "002-word-replacements:AC-006", "decision_key": "decision:ac-006:word-character-includes-combining-marks", "evidence_hash": "78e1693c5b19e28640a96965d2c4657aa7b18ec31fee4aebc1cccd4eb7167638", "answer": "Orchestrator decision 2026-10-13 (independent audit finding 1): for AC-006 word boundaries a word character is a Unicode letter, a decimal digit or a combining mark (General_Category Mn, Mc or Me), checked on both sides of the match. A rule therefore never replaces a word fragment, including Indic scripts (dependent vowel signs, virama) and decomposed (NFD) accents. The side-by-side CJK exemption is unchanged."} -->
+
+- Decision `002-word-replacements:AC-006` / `decision:ac-006:join-controls-are-word-characters`: Orchestrator decision 2026-10-13 (independent re-audit finding N1): U+200C ZERO WIDTH NON-JOINER (ZWNJ) and U+200D ZERO WIDTH JOINER (ZWJ) count as word characters for AC-006 boundaries, like letters, decimal digits and combining marks. A rule therefore never replaces a morpheme joined by ZWNJ inside a Persian or Urdu word: the rule می to X leaves می‌خواهم unchanged.
+<!-- livespec-clarification:{"requirement_id": "002-word-replacements:AC-006", "decision_key": "decision:ac-006:join-controls-are-word-characters", "evidence_hash": "f353743efecbc2ee996f1892ee85cdbde313de5372be65abb97be4b1d7563a60", "answer": "Orchestrator decision 2026-10-13 (independent re-audit finding N1): U+200C ZERO WIDTH NON-JOINER (ZWNJ) and U+200D ZERO WIDTH JOINER (ZWJ) count as word characters for AC-006 boundaries, like letters, decimal digits and combining marks. A rule therefore never replaces a morpheme joined by ZWNJ inside a Persian or Urdu word: the rule می to X leaves می‌خواهم unchanged."} -->
+
+- Decision `002-word-replacements:AC-006` / `decision:ac-006:cjk-exemption-applies-to-base-characters`: Orchestrator decision 2026-10-13 (independent re-audit finding N3): the CJK side exemption applies to base characters only. A combining mark immediately next to the matched text still blocks the match, even on a CJK side. The rule か to X leaves が (が in NFD) unchanged, while the rule か to X in あかい keeps its current behavior (あXい).
+<!-- livespec-clarification:{"requirement_id": "002-word-replacements:AC-006", "decision_key": "decision:ac-006:cjk-exemption-applies-to-base-characters", "evidence_hash": "d9e03d7e67724263db30fd1acf360c0a3968341a46d37b7509b959e8ad06c32e", "answer": "Orchestrator decision 2026-10-13 (independent re-audit finding N3): the CJK side exemption applies to base characters only. A combining mark immediately next to the matched text still blocks the match, even on a CJK side. The rule か to X leaves が (が in NFD) unchanged, while the rule か to X in あかい keeps its current behavior (あXい)."} -->
+
+- Decision `002-word-replacements:AC-006` / `decision:ac-006:emoji-variation-selector-accepted-false-negative`: Orchestrator decision 2026-10-13 (independent re-audit finding N4): behavior is unchanged. A variation selector (General_Category Mn, for example U+FE0F after an emoji) is a combining mark, so it blocks a match next to it. This false negative is accepted and documented in Edge Cases; it never corrupts text, and a rule written with the selector still matches.
+<!-- livespec-clarification:{"requirement_id": "002-word-replacements:AC-006", "decision_key": "decision:ac-006:emoji-variation-selector-accepted-false-negative", "evidence_hash": "f353743efecbc2ee996f1892ee85cdbde313de5372be65abb97be4b1d7563a60", "answer": "Orchestrator decision 2026-10-13 (independent re-audit finding N4): behavior is unchanged. A variation selector (General_Category Mn, for example U+FE0F after an emoji) is a combining mark, so it blocks a match next to it. This false negative is accepted and documented in Edge Cases; it never corrupts text, and a rule written with the selector still matches."} -->
+
+- Decision `002-word-replacements:AC-005` / `decision:ac-005:one-megabyte-is-decimal-bytes`: Orchestrator decision 2026-10-13 (spec review ambiguity): 1 MB means 1,000,000 bytes, inclusive, which is the implemented import cap.
+<!-- livespec-clarification:{"requirement_id": "002-word-replacements:AC-005", "decision_key": "decision:ac-005:one-megabyte-is-decimal-bytes", "evidence_hash": "562f4f5406c3da22cbe5651f3a8bfabf6ad4427c69b52d0c6a2207025660fa25", "answer": "Orchestrator decision 2026-10-13 (spec review ambiguity): 1 MB means 1,000,000 bytes, inclusive, which is the implemented import cap."} -->
+
+- Decision `002-word-replacements:AC-004` / `decision:ac-004:header-recognized-with-either-separator`: Orchestrator decision 2026-10-13 (spec review ambiguity): the header is recognized whatever its separator, tab or semicolon. The first content line is a header when its two fields, split like a rule line and trimmed, equal case-insensitively the header names, so a header copied from a spreadsheet is not imported as a rule.
+<!-- livespec-clarification:{"requirement_id": "002-word-replacements:AC-004", "decision_key": "decision:ac-004:header-recognized-with-either-separator", "evidence_hash": "75f8bcf0d4c5991f8e99b7e7b25545ac301be78001f688aef5a9e8af47265f8d", "answer": "Orchestrator decision 2026-10-13 (spec review ambiguity): the header is recognized whatever its separator, tab or semicolon. The first content line is a header when its two fields, split like a rule line and trimmed, equal case-insensitively the header names, so a header copied from a spreadsheet is not imported as a rule."} -->
+
+- Decision `002-word-replacements:AC-007` / `decision:ac-007:inserted-text-guarantee-before-ai-post-processing`: Orchestrator decision 2026-10-13 (spec review ambiguity): the guarantee covers the text handed to AI post-processing, which includes the replacements; it does not cover the text that the AI rewrites. Without AI post-processing, the inserted text and the history transcription text include the replacements.
+<!-- livespec-clarification:{"requirement_id": "002-word-replacements:AC-007", "decision_key": "decision:ac-007:inserted-text-guarantee-before-ai-post-processing", "evidence_hash": "2bbca261cdf84b815f692cab139ad0f5cf66d8b52b4a9c5c026040ad8c0c048e", "answer": "Orchestrator decision 2026-10-13 (spec review ambiguity): the guarantee covers the text handed to AI post-processing, which includes the replacements; it does not cover the text that the AI rewrites. Without AI post-processing, the inserted text and the history transcription text include the replacements."} -->
+
+- Decision `002-word-replacements:AC-006` / `decision:ac-006:cjk-non-mark-extenders-accepted-false-positive`: Orchestrator decision 2026-10-13 (independent review finding M1): behavior is unchanged. On a CJK side, the halfwidth voiced and semi-voiced sound marks U+FF9E and U+FF9F (Lm) and NFD conjoining hangul jamo (Lo) are base characters, so the rule ｶ to X turns ｶﾞｷ into Xﾞｷ and an NFD jamo rule 하 to X turns NFD 한 into Xᆫ. These false positives are accepted, documented in Edge Cases and frozen by fixtures; a grapheme-cluster rule (UAX #29) for CJK sides is deferred to the next spec revision.
+<!-- livespec-clarification:{"requirement_id": "002-word-replacements:AC-006", "decision_key": "decision:ac-006:cjk-non-mark-extenders-accepted-false-positive", "evidence_hash": "4f2080282a66d92b471ac00bbcb98492e7ce93b878841070e468813ed5badcca", "answer": "Orchestrator decision 2026-10-13 (independent review finding M1): behavior is unchanged. On a CJK side, the halfwidth voiced and semi-voiced sound marks U+FF9E and U+FF9F (Lm) and NFD conjoining hangul jamo (Lo) are base characters, so the rule ｶ to X turns ｶﾞｷ into Xﾞｷ and an NFD jamo rule 하 to X turns NFD 한 into Xᆫ. These false positives are accepted, documented in Edge Cases and frozen by fixtures; a grapheme-cluster rule (UAX #29) for CJK sides is deferred to the next spec revision."} -->
+
 ## QE Analysis
 
 - **Criticality:** High; **Blast radius:** Every dictation output; **Primary risk:** Silent text corruption; **Confidence:** Medium (pipeline source mapped, nothing executed).
@@ -414,6 +446,13 @@ Feature: Commit replacement rules
 - **Non-functional expectations:** Matching 1000 rules over a 2000-character transcript adds under 20 ms in a release build on an Apple M1 Mac; import parsing never executes content; no rule text is written to logs above debug level.
 - **Missing evidence:** No test executed; no mockup (deferred before `spec-ship`); revision contract owned by 008 not yet specified.
 - **Boundary:** QE defines risk and test sufficiency; the independent review judges requirements; Penflow governs UI design evidence; spec-test executes runtime proof.
+
+## Quality Engineering
+
+- **Risk:** High criticality (rated so by the QE Analysis: a wrong rule application silently corrupts dictated text); Shared blast radius (rules apply to every dictation output, and bulk import/export and CLI access use the settings revision contract of feature 008); primary risk Data (silent text corruption).
+- **Applicable dimensions:** functional correctness, data integrity, API/contract compatibility, performance, accessibility/UX, internationalization, security (file import).
+- **P0 gates/evidence:** Table-driven matching tests for every AC-006/AC-007 rule (case, Unicode, boundaries, whitespace, punctuation, overlap, no chaining); parser/serializer round-trip and diagnostics tests; atomic import tests with injected persistence failure; UI/CLI equivalence tests.
+- **Boundary:** QE defines risk and test sufficiency only. The independent spec review judges requirements, Penflow governs UI design evidence, spec-test executes runtime proof and the end-of-feature delivery review looks for defects.
 
 ## Screens
 
@@ -430,7 +469,11 @@ Feature: Commit replacement rules
 ## Edge Cases
 
 - Rule whose replacement contains its own recognized text ("Code" → "Claude Code"): single pass, no infinite expansion.
-- Recognized text with accents or non-Latin letters: Unicode case folding applies; boundaries follow AC-006, including the CJK exception.
+- Recognized text with accents or non-Latin letters: Unicode case folding applies; boundaries follow AC-006, including the CJK exception. Combining marks (Indic vowel signs and virama, decomposed accents) and the zero-width non-joiner and joiner (U+200C, U+200D, used inside Persian and Urdu words and in joined sequences) are word characters, so a rule never matches part of a word.
+- CJK side next to a combining mark: the CJK exemption ignores neighbouring base characters only. The rule "か" to "X" leaves "が" written in NFD ("か" followed by U+3099) unchanged, while it still turns "あかい" into "あXい".
+- CJK-side extenders that are not combining marks (accepted false positives): the halfwidth voiced and semi-voiced sound marks U+FF9E and U+FF9F are letters (General_Category Lm) and NFD conjoining hangul jamo are letters (Lo), so a CJK side treats them as neighbouring base characters. The rule "ｶ" to "X" turns "ｶﾞｷ" into "Xﾞｷ", the rule "ﾊ" to "X" turns "ﾊﾟ" into "Xﾟ", and a rule written in NFD jamo "하" (U+1112 U+1161) to "X" turns NFD "한" (U+1112 U+1161 U+11AB) into "Xᆫ". These splits are accepted: recognized text is normally full-width and NFC, and a rule typed in NFC never matches NFD text because the normalized key applies no Unicode normalization form (AC-002). A grapheme-cluster rule (UAX #29) for CJK sides is deferred to the next spec revision.
+- Emoji variation selector (accepted false negative): a variation selector such as U+FE0F is a combining mark, so it blocks a match next to it. The rule "ok" to "X" leaves "❤️ok" unchanged, and the rule "❤" to "love" does not match "❤️" (U+2764 U+FE0F). No text is ever corrupted; a rule written with the selector ("❤️" to "love") matches.
+- Header copied from a spreadsheet: a tab-separated first line `recognized<TAB>replacement` or `texte_reconnu<TAB>remplacement` is ignored as a header, like its `;` form (AC-004).
 - Recognized text containing punctuation ("C++"): matched literally; boundaries are checked on the characters around the whole match.
 - Import file with Windows line endings or a UTF-8 BOM: CRLF and a leading BOM are accepted.
 - Settings changed by the CLI while the UI editor has unsaved edits: UI Save returns a revision conflict and offers reload.

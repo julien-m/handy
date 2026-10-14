@@ -1,0 +1,60 @@
+{
+ "feature": "007-smart-paste",
+ "captured_at": "2026-10-13T19:00:38.372170+00:00",
+ "command": "CARGO_TARGET_DIR=<shared> cargo test --manifest-path src-tauri/Cargo.toml --test smart_paste_native_ax -- --ignored --test-threads=1 --nocapture",
+ "exit_status": 0,
+ "raw_log": ".specs/features/007-smart-paste/proofs/claude-fix1/native-ax.out",
+ "source_head": "b499073413a9a284acbafb7d145bf3ef611e5302",
+ "source_sha256": {
+  "src-tauri/src/smart_paste/direct.rs": "6e20c6b6496162f097f3d97baac7bba7edc65541ee20b7353d0c24a4f1cad39e",
+  "src-tauri/src/smart_paste/macos_ax.rs": "3be71ca8f42afa11a614a03cf637e08e7900ca07f262b6fb0b10910dae84377b",
+  "src-tauri/src/smart_paste/ax_port.rs": "8627803d2d3507a336568a5f91f9e384ea1d179c8ad973c710381010bfab68e9",
+  "src-tauri/src/smart_paste/macos_cf.rs": "dba3fad9c6db255dc240c4c48795c12939a55cbb7770c2a1de5ae35b2a8f5fca",
+  "src-tauri/tests/smart_paste_native_ax.rs": "6fcc5a9ea614430ede8dc3e2a4045040a439dd193cf4038d7212e94b74dc78fb"
+ },
+ "binary_sha256": {
+  "test_executable": {
+   "path": "/Users/julienm/projects/handy-wt/.shared-target/debug/deps/smart_paste_native_ax-3682536ee679bd4f",
+   "sha256": "ac46a177eaeccbc9c7d99a1db6180df9c6774f0c8dd22ede1c9512337d52fa6f",
+   "hashed": "after the run",
+   "unchanged_since_run": true
+  }
+ },
+ "platform": "ProductName:\t\tmacOS\nProductVersion:\t\t26.5.2\nBuildVersion:\t\t25F84",
+ "rustc": "rustc 1.94.0 (4a4ef493e 2026-03-02)",
+ "observations": [
+  {
+   "mode": "small",
+   "warm": true,
+   "warmup_ms": 11.163,
+   "attempt": "Verified",
+   "elapsed_ms": 5.613
+  },
+  {
+   "mode": "large",
+   "warm": true,
+   "warmup_ms": 17.799,
+   "attempt": "Skipped(TooLarge)",
+   "elapsed_ms": 1.765
+  },
+  {
+   "mode": "delayed",
+   "warm": true,
+   "warmup_ms": 12.266,
+   "attempt": "Unchanged(FallbackGuard(<field values redacted>))",
+   "elapsed_ms": 146.487
+  },
+  {
+   "mode": "delayed",
+   "late_guard": "AppliedLate"
+  },
+  {
+   "mode": "secure",
+   "warm": true,
+   "warmup_ms": 13.874,
+   "attempt": "Skipped(SecureField)",
+   "elapsed_ms": 0.115
+  }
+ ],
+ "boundary": "Production MacAxTextPort and attempt_direct_insertion against offscreen synthetic AppKit fixtures (inactive accessory app; no activation, keys or clipboard). Read-back now keeps polling after a read error and decides from the last read of the window. A cold first AX contact may exceed the 100 ms preparation budget and must then only skip to the clipboard paste. Accessibility trust is that of the responsible process of this terminal session, not Handy.app. Real applications (TextEdit, Notes, ChatGPT, Comet, Chromium), layouts and the 10-run thresholds remain pending release evidence (AC-016)."
+}

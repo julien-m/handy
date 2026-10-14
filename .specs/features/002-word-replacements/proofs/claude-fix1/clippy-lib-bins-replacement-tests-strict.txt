@@ -1,0 +1,7 @@
+$ cargo clippy --manifest-path src-tauri/Cargo.toml --lib --bins --test replacement_exchange --test replacement_pipeline --test replacement_performance -- -D warnings
+Tue Oct 13 15:29:52 UTC 2026
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/002-word-replacements/src-tauri)
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 10.05s
+EXIT=0

@@ -1,0 +1,18 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+warning: unused import: `AxField`
+  --> tests/smart_paste_native_ax.rs:15:43
+   |
+15 | use handy_app_lib::smart_paste::ax_port::{AxField, AxTextPort};
+   |                                           ^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `handy` (test "smart_paste_native_ax") generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.37s
+     Running unittests src/lib.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/handy_app_lib-4698937194a84f46)
+     Running unittests src/main.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/handy-4451d43fc9009bcb)
+     Running tests/smart_paste.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/smart_paste-b4979ff4847f1e8e)
+     Running tests/smart_paste_native.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/smart_paste_native-c4233de84cd128d7)
+     Running tests/smart_paste_native_ax.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/smart_paste_native_ax-3682536ee679bd4f)
+   Doc-tests handy_app_lib

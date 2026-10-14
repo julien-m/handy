@@ -1,0 +1,8 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on artifact directory
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.45s
+     Running unittests src/lib.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/handy_app_lib-98098f02853eda75)

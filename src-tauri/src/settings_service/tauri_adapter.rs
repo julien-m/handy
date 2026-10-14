@@ -168,10 +168,41 @@ pub async fn blocking<T: Send + 'static>(
 /// # Errors
 /// Same as `set`, plus the edit's own refusal.
 pub fn edit(app: &AppHandle, edit: SettingsEditFn<'_>) -> Result<LiveCommit, SettingsCommandError> {
+    edit_at(app, edit, None)
+}
+/// Typed edit committed only while the settings are still at `expected` (when given): an editor
+/// that worked from a revision never overwrites a newer one.
+///
+/// # Errors
+/// Same as `edit`, plus `revision_conflict` (with the current revision) when they moved on.
+pub fn edit_at(
+    app: &AppHandle,
+    edit: SettingsEditFn<'_>,
+    expected: Option<Revision>,
+) -> Result<LiveCommit, SettingsCommandError> {
     Ok(sequence::write_edit(
         live(app)?.inner(),
         &TauriEffects(app),
         edit,
+        expected,
+    )?)
+}
+/// Domain change from the settings UI (a list edit built with the same validator as the CLI
+/// domain), committed in the write order with the UI's base revision: the same edit, compare-and-
+/// set, live effects and event as a routed CLI change (`sequence::write_change`).
+///
+/// # Errors
+/// `revision_conflict` for a stale `expected`, the change's own refusal, otherwise same as `set`.
+pub fn write_change(
+    app: &AppHandle,
+    change: &DomainChange,
+    expected: Option<Revision>,
+) -> Result<LiveCommit, SettingsCommandError> {
+    Ok(sequence::write_change(
+        live(app)?.inner(),
+        &TauriEffects(app),
+        change,
+        expected,
     )?)
 }
 /// Scalar write whose fallible native change is prepared first (from the settings published when

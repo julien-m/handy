@@ -1,0 +1,10 @@
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/007-smart-paste/src-tauri)
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 29.25s
+     Running tests/settings_cli.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_cli-116f00d547bdbe3d)
+error: test failed, to rerun pass `--test settings_cli`
+     Running tests/settings_domains.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_domains-907d897927e28d4d)
+     Running tests/smart_paste_settings.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/smart_paste_settings-52c65e13abea23f2)
+error: 1 target failed:
+    `--test settings_cli`

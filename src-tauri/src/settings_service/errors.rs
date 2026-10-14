@@ -71,6 +71,14 @@ pub enum ValidationReason {
     InvalidEncoding,
     /// Domain input does not follow the domain's exchange format.
     InvalidInput,
+    /// Collection owned by `handy settings replacements`.
+    ReplacementsDomain,
+    /// Items of a domain list or exchange input failed validation; `details.items` locates them.
+    InvalidItems,
+    /// Smart paste is not selectable on this platform or in this build (feature 007).
+    SmartPasteUnavailable,
+    /// On macOS, smart paste replaces the beta reliable paste (feature 007).
+    ReliablePasteReplaced,
     /// The setting or operation needs a platform capability this build does not have.
     UnsupportedPlatform,
     /// A dictation session (recording, processing, a held or remembered shortcut) is running;
@@ -101,9 +109,7 @@ impl ValidationReason {
             Self::OutOfRange => "Value is outside the allowed range.",
             Self::UiOnly => "This setting is changed in the settings UI.",
             Self::ShortcutsDomain => "Use handy settings shortcuts to change shortcuts.",
-            Self::VocabularyDomain => {
-                "Use handy settings vocabulary; this domain is not available in this build."
-            }
+            Self::VocabularyDomain => "Use handy settings vocabulary to change this list.",
             Self::PromptsDomain => {
                 "Use handy settings prompts; this domain is not available in this build."
             }
@@ -112,6 +118,14 @@ impl ValidationReason {
             Self::GpuDeviceRequired => "The GPU accelerator requires a selected GPU device.",
             Self::InvalidEncoding => "Input is not valid UTF-8 text.",
             Self::InvalidInput => "Input does not follow the exchange format.",
+            Self::ReplacementsDomain => "Use handy settings replacements.",
+            Self::InvalidItems => "Items failed validation; see details.items.",
+            Self::SmartPasteUnavailable => {
+                "Smart paste is not available on this platform or in this build."
+            }
+            Self::ReliablePasteReplaced => {
+                "On macOS, smart paste replaces the beta reliable paste."
+            }
             Self::UnsupportedPlatform => "This setting is not supported on this platform.",
             Self::ShortcutSessionBusy => "A dictation is in progress; retry when it ends.",
             Self::PromptNameEmpty => "The prompt name is empty.",
@@ -228,6 +242,17 @@ impl SettingsError {
         let mut error = Self::new(SettingsErrorCode::ValidationFailed);
         error.reason = Some(reason);
         error.details.offset = offset;
+        error
+    }
+    /// Items of the collection `key` refused at their positions (`details.items`, bounded and
+    /// sorted by `with_items`), with an optional set-level `reason` that has no position.
+    pub fn invalid_items(
+        key: &str,
+        items: impl IntoIterator<Item = ErrorItem>,
+        reason: Option<ErrorReason>,
+    ) -> Self {
+        let mut error = Self::validation(key, ValidationReason::InvalidItems).with_items(items);
+        error.details.reason = reason;
         error
     }
     /// Report a stale compare-and-set with the observed revision.

@@ -339,6 +339,7 @@
         "description": "Vyberte, jak se text vkládá. Přímé: simuluje psaní přes systémový vstup. Žádné: přeskočí vložení a aktualizuje pouze historii/schránku.",
         "options": {
           "clipboard": "Schránka ({{modifier}}+V)",
+          "smartPaste": "Chytré vložení",
           "clipboardCtrlShiftV": "Schránka (Ctrl+Shift+V)",
           "clipboardShiftInsert": "Schránka (Shift+Insert)",
           "direct": "Přímé",
@@ -767,5 +768,8 @@
     "learnMore": "Jak to vyřešit",
     "recorderBlocked": "Zkratky teď nelze nahrát — Secure Input v macOS blokuje události kláves. Nejprve vyřešte upozornění na Secure Input.",
     "dismiss": "Zavřít"
+  },
+  "smartPaste": {
+    "handOver": "Text byl vložen do schránky pro vzdálenou obrazovku"
   }
 }
