@@ -10,8 +10,9 @@ interface SettingContainerProps {
   layout?: "horizontal" | "stacked";
   disabled?: boolean;
   tooltipPosition?: "top" | "bottom";
-  /** `data-testid` of the row and of its title (feature UI contracts). */
+  /** Test id of the row; its title gets `${testId}-title` unless `titleTestId` is given. */
   testId?: string;
+  /** Explicit test id of the title, overriding the one derived from `testId`. */
   titleTestId?: string;
   /** Makes the title a programmatic focus target (tabIndex -1) with this `data-focus-key`. */
   titleFocusKey?: string;
@@ -45,7 +46,10 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
   titleTestId,
   titleFocusKey,
 }) => {
-  const titleProps = titleAttributes(titleTestId, titleFocusKey);
+  const titleProps = titleAttributes(
+    titleTestId ?? (testId ? `${testId}-title` : undefined),
+    titleFocusKey,
+  );
   const [showTooltip, setShowTooltip] = useState(false);
   const tooltipRef = useRef<HTMLDivElement>(null);
 

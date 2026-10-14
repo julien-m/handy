@@ -200,7 +200,21 @@
             "registration": "系統拒絕了此快速鍵：{{error}}",
             "generic": "無法儲存快速鍵",
             "conflictsUnavailable": "無法檢查快速鍵衝突"
-          }
+          },
+          "changeButton": "變更",
+          "discard": "捨棄此快速鍵",
+          "lastHint": "每個動作至少保留一個快速鍵。請改為變更或重設。",
+          "limitHint": "已有 {{count}}/{{limit}} 個快速鍵。請先移除一個再新增。",
+          "draftConflict": "{{shortcut}} 已被{{action}}使用。未儲存任何內容。",
+          "draftOverlap": "{{shortcut}} 也會觸發{{action}}。未儲存任何內容。",
+          "legacyOverlap": "{{shortcut}} 與{{action}}重疊",
+          "legacyDuplicate": "{{shortcut}} 也被{{action}}使用",
+          "legacyBody": "它仍像更新前一樣運作。變更它即可清除此警告。",
+          "systemRefused": "{{system}} 拒絕了 {{shortcut}}",
+          "systemRefusedGeneric": "系統拒絕了此快速鍵",
+          "systemRefusedBody": "可能有其他 App 已註冊此組合鍵。請另選一個或重試。",
+          "systemReason": "系統訊息：{{error}}",
+          "retry": "重試"
         }
       },
       "language": {
@@ -401,9 +415,13 @@
           "clipboardShiftInsert": "剪貼簿 (Shift+Insert)",
           "direct": "直接",
           "none": "無",
-          "externalScript": "外部腳本"
+          "externalScript": "外部腳本",
+          "clipboardMac": "剪貼簿 (⌘V)",
+          "smartPasteDescription": "macOS 上的預設方式",
+          "noneDescription": "僅歷史紀錄和剪貼簿"
         },
-        "externalScriptPlaceholder": "/path/to/your/script.sh"
+        "externalScriptPlaceholder": "/path/to/your/script.sh",
+        "descriptionSmart": "智慧貼上會直接寫入欄位，否則會貼上並還原你的剪貼簿。"
       },
       "typingTool": {
         "title": "輸入工具",
@@ -449,14 +467,6 @@
           "sec15": "15 秒後（偵錯）"
         }
       },
-      "customWords": {
-        "title": "自訂詞彙",
-        "description": "協助支援的模型辨識名稱和專業術語。目前，模糊修正僅適用於使用 A–Z 字母和數字的詞語。",
-        "placeholder": "新增詞彙",
-        "add": "新增",
-        "remove": "刪除 {{word}}",
-        "duplicate": "「{{word}}」已存在"
-      },
       "voiceActivityDetection": {
         "title": "語音活動偵測",
         "description": "過濾錄音中的靜音。支援串流的模型會使用較長的 VAD 尾段；停用 VAD 則會錄製原始音訊"
@@ -481,6 +491,143 @@
           "simplified": "簡體",
           "traditional": "繁體"
         }
+      },
+      "returnToApp": {
+        "title": "返回聽寫所在的 App",
+        "description": "即使中途切換了 App，也插入到開始聽寫的 App 中。",
+        "unavailableUnreadable": "此系統上無法使用：Handy 無法在此讀取前景 App。文字會在結束時進入位於前景的 App。",
+        "unavailablePlatform": "此系統上無法使用。文字會在結束時進入位於前景的 App。",
+        "details": "Handy 會在聽寫開始時記住前景 App，並在插入文字前切換回該 App。關閉時，文字會進入聽寫結束時位於前景的 App。",
+        "detailsLabel": "關於返回聽寫所在的 App"
+      }
+    },
+    "vocabulary": {
+      "group": "詞彙表",
+      "title": "詞彙表",
+      "description": "模型應辨識的名稱和術語（在模型支援時生效）。取代規則則是在辨識後改寫文字。",
+      "placeholder": "新增術語",
+      "inputLabel": "新詞彙術語",
+      "add": "新增",
+      "addHint": "輸入術語即可新增。",
+      "busy": "請等待目前的變更完成。",
+      "paste": "貼上清單…",
+      "count": "{{total}} / {{max}} 個術語",
+      "listLabel": "詞彙表術語",
+      "remove": "刪除 {{term}}",
+      "retry": "重試",
+      "loading": "正在載入詞彙表…",
+      "listFailed": "無法讀取已儲存的詞彙表。沒有任何變更；請重試以載入。",
+      "empty": {
+        "title": "尚無術語",
+        "body": "新增 Claude Code 或 OpenClaw 等名稱，可逐一新增，也可貼上清單。"
+      },
+      "flag": {
+        "empty": "空白術語，未傳送。請將其刪除。",
+        "too_long": "超過 100 個字元，未傳送。請刪除後新增較短的版本。",
+        "line_break": "包含換行字元，未傳送。請刪除後重新新增。",
+        "forbidden_character": "包含 < > 或 \"，未傳送。請刪除後去掉這些字元再新增。",
+        "duplicate": "與前面的術語相同，未傳送。請將其刪除。",
+        "over_capacity": "超出 500 個術語的上限，在清單縮短前不會傳送。",
+        "over_budget": "未傳送：超出模型限制。"
+      },
+      "errors": {
+        "term_empty": "請輸入術語。",
+        "term_too_long": "術語最多 100 個字元。",
+        "term_line_break": "術語必須在一行內。",
+        "term_forbidden_character": "請從術語中刪除 < > 或 \" 字元。",
+        "term_duplicate": "每個術語只能出現一次，而此術語已在詞彙表中。",
+        "limit": "詞彙表最多容納 500 個術語。請刪除一個術語後再新增。",
+        "conflict": "詞彙表在此期間已變更並重新載入。請再試一次。",
+        "notFound": "此術語已被刪除。詞彙表已重新載入。",
+        "unknown": "Handy 無法確認此變更。詞彙表已重新載入；請先檢查後再重試。",
+        "committed": "詞彙表已儲存，但 Handy 未能立即套用。清單已重新載入。",
+        "saved": "您已儲存的詞彙表未變更。"
+      },
+      "status": {
+        "loading": "正在檢查模型支援的功能…",
+        "selectedModel": "所選模型",
+        "used": {
+          "title": "{{model}} 在辨識時使用",
+          "sent": "已傳送 {{sent}} / {{total}} 個術語。",
+          "sentOne": "已傳送 {{sent}} / 1 個術語。"
+        },
+        "notSent": {
+          "over_budget": "未傳送，超出模型限制：{{terms}}。",
+          "invalid": "未傳送，無效：{{terms}}。",
+          "duplicate": "未傳送，重複：{{terms}}。",
+          "over_capacity": "未傳送，超出 500 個術語：{{terms}}。"
+        },
+        "noTermSent": {
+          "title": "沒有術語傳送給 {{model}}",
+          "empty_vocabulary": "詞彙表是空的。新增術語以在辨識時使用。",
+          "invalid_terms_only": "所有已儲存的術語都無效或重複。請刪除已標示的術語並新增修正後的術語。",
+          "over_budget": "第一個術語超出模型限制，因此不會傳送任何術語。刪除它即可傳送其後的術語。"
+        },
+        "notSupported": {
+          "title": "{{model}} 無法在辨識時使用詞彙表",
+          "body": "將改為在辨識後進行近似修正。選擇 Whisper 模型即可將術語傳送給辨識器。"
+        },
+        "streaming": {
+          "title": "即時串流轉錄時不使用",
+          "body": "{{model}} 進行即時轉錄，不會傳送辨識上下文。將改為對最終文字進行近似修正。"
+        },
+        "unknown": {
+          "title": "模型載入前支援情況未知",
+          "model_not_loaded": "Handy 會在載入 {{model}} 時檢查其支援的功能。",
+          "capability_query_unanswered": "{{model}} 未及時回應，例如在聽寫期間。Handy 稍後會再次檢查。"
+        },
+        "budgetUnverified": {
+          "title": "無法確認 {{model}} 是否支援詞彙表",
+          "body": "此模型宣告支援辨識上下文，但此版本沒有為其記載限制。不會傳送任何術語；將改為進行近似修正。"
+        },
+        "failed": {
+          "title": "無法讀取詞彙表狀態",
+          "body": "您的詞彙表已儲存。請重試以檢查模型支援的功能。"
+        }
+      },
+      "pasteBox": {
+        "title": "貼上術語",
+        "description": "每行一個術語。重複項目將被略過；無效的行必須在新增前修正。",
+        "label": "要貼上的術語，每行一個",
+        "previewTitle": "預覽",
+        "previewEmpty": "每行貼上或輸入一個術語，即可查看將新增的內容。",
+        "sameAs": "{{term}} — 與 {{original}} 相同",
+        "alreadyListed": "{{term}} — 已在清單中",
+        "summary": {
+          "add": "待新增 {{n}} 個",
+          "duplicateOne": "1 個重複項目",
+          "duplicateMany": "{{n}} 個重複項目",
+          "errorOne": "1 個錯誤",
+          "errorMany": "{{n}} 個錯誤"
+        },
+        "kind": {
+          "add": "新增",
+          "duplicate": "重複",
+          "error": "錯誤"
+        },
+        "line": {
+          "empty": "第 {{line}} 行：空白行，請刪除",
+          "too_long": "第 {{line}} 行：最多使用 100 個字元",
+          "line_break": "第 {{line}} 行：術語須保持在一行內",
+          "forbidden_character": "第 {{line}} 行：請刪除 < > 或 \" 字元",
+          "duplicate": "第 {{line}} 行：與前面的術語相同",
+          "over_capacity": "第 {{line}} 行：超出 500 個術語的上限"
+        },
+        "note": {
+          "empty": "在您新增術語之前，詞彙表不會變更。",
+          "checking": "正在檢查各行…",
+          "fixOne": "修正第 {{lines}} 行即可新增術語。您的詞彙表未變更。",
+          "fixMany": "修正第 {{lines}} 行即可新增術語。您的詞彙表未變更。",
+          "overCapacity": "詞彙表最多容納 500 個術語。請縮短清單後再新增。您的詞彙表未變更。",
+          "nothingToAdd": "所有行都已在詞彙表中。",
+          "ready": "重複項目將被略過。在您新增術語之前不會儲存任何內容。"
+        },
+        "cancel": "取消",
+        "applyOne": "新增 1 個術語",
+        "applyMany": "新增 {{n}} 個術語",
+        "applyZero": "新增術語",
+        "applying": "正在新增…",
+        "applied": "術語已新增至詞彙表。"
       }
     },
     "postProcessing": {
@@ -591,7 +738,8 @@
       "historyLimit": {
         "title": "歷史紀錄上限",
         "description": "歷史紀錄的最大保留筆數",
-        "entries": "筆"
+        "entries": "筆",
+        "invalid": "請輸入 {{min}} 到 {{max}} 之間的整數。"
       },
       "recordingRetention": {
         "title": "自動刪除錄音",
@@ -750,7 +898,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy 需要輔助使用權限才能輸入轉錄的文字",
-    "openSettings": "開啟系統設定"
+    "openSettings": "開啟系統設定",
+    "offTitle": "輔助使用權限已關閉",
+    "smartPasteOff": "智慧貼上無法插入或貼上。你的轉錄內容會保留以便復原。"
   },
   "errors": {
     "loadDirectory": "載入目錄時發生錯誤: {{error}}",
@@ -780,7 +930,7 @@
       "revisionConflict": "設定已在其他地方變更。請重新載入後再試一次。",
       "unavailable": "目前無法變更此設定，請稍後再試。",
       "shortcutSessionBusy": "正在進行聽寫。請在結束後再試一次。",
-      "persistenceFailed": "無法儲存設定。",
+      "persistenceFailed": "無法儲存設定：無法寫入設定檔。未做任何變更。",
       "generic": "無法變更設定。",
       "readOnly": "本次工作階段的設定為唯讀：無法安全寫入設定檔，因此變更不會儲存。",
       "unsupportedPlatform": "此設定在此系統上無法使用。",
@@ -792,7 +942,10 @@
       "promptOverrideIncomplete": "請同時選擇服務提供者和模型，或使用預設服務提供者。",
       "promptUnknownProvider": "此服務提供者無法使用。",
       "promptNotUsable": "此提示詞無效。請先編輯後再使用。",
-      "limitExceeded": "已達到最大數量。"
+      "limitExceeded": "已達到最大數量。",
+      "conflictTitle": "設定已在其他地方變更",
+      "conflictBody": "命令列或其他視窗儲存了較新的版本。重新載入即可查看；你未儲存的修改將被捨棄。",
+      "reload": "重新載入"
     }
   },
   "appLanguage": {
@@ -812,7 +965,51 @@
     "transcribing": "正在轉錄...",
     "processing": "處理中...",
     "loadingModel": "正在載入模型...",
-    "fallbackNotice": "AI 處理失敗。已使用原始文字。"
+    "fallbackNotice": "AI 處理失敗。已使用原始文字。",
+    "destination": {
+      "label": "目標：{{name}}",
+      "frontmostApp": "最前方的 App",
+      "remove": "移除目標",
+      "unknownApp": "目標 App",
+      "choiceFailed": "無法變更目標。",
+      "menu": {
+        "title": "本次聽寫的目標",
+        "frontmostNow": "目前在最前方",
+        "otherApps": "其他 App",
+        "frontmostAtEnd": "結束時最前方的 App",
+        "loading": "正在載入 App…",
+        "failed": "無法載入 App 列表。"
+      },
+      "refused": {
+        "stale": "目標在這段期間已變更；列表已重新整理。",
+        "frozen": "插入已開始；目標無法再變更。",
+        "unavailable": "此 App 已無法使用；列表已重新整理。"
+      },
+      "notice": {
+        "appClosedKept": "{{app}} 已關閉。未插入任何內容；轉錄文字保留在歷史紀錄中。",
+        "appClosedNotKept": "{{app}} 已關閉。未插入任何內容，且轉錄文字無法儲存到歷史紀錄。",
+        "activationFailedKept": "{{app}} 未切換到最前方。未插入任何內容；轉錄文字保留在歷史紀錄中。",
+        "activationFailedNotKept": "{{app}} 未切換到最前方。未插入任何內容，且轉錄文字無法儲存到歷史紀錄。",
+        "insertionFailedKept": "{{app}} 可能未收到文字；轉錄文字保留在歷史紀錄中。",
+        "insertionFailedNotKept": "{{app}} 可能未收到文字，且轉錄文字無法儲存到歷史紀錄。"
+      }
+    },
+    "prompt": {
+      "label": "本次聽寫的提示詞：{{name}}",
+      "hint": "游標移到上方即可查看選項",
+      "none": "無（不進行 AI 處理）",
+      "menuTitle": "本次聽寫的提示詞",
+      "note": "僅適用於本次聽寫。預設仍為 {{name}}。",
+      "loading": "正在載入提示詞…",
+      "failed": "無法載入提示詞。",
+      "choiceFailed": "無法變更提示詞。",
+      "refused": {
+        "sessionEnded": "錄音已停止；提示詞無法再變更。",
+        "processingOff": "本次聽寫已關閉 AI 處理。",
+        "promptMissing": "此提示詞已不存在。",
+        "promptNotUsable": "此提示詞有問題；請先在設定中編輯。"
+      }
+    }
   },
   "whatsNew": {
     "title": "Handy v{{version}} 新功能"

@@ -1,0 +1,16 @@
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { resolve } from "path";
+
+const repo = resolve(__dirname, "..");
+export default defineConfig({
+  root: __dirname,
+  plugins: [react()],
+  resolve: {
+    alias: {
+      "@": resolve(repo, "src"),
+      "@/bindings": resolve(repo, "src/bindings.ts"),
+    },
+  },
+  server: { port: 1499, strictPort: true, fs: { allow: [repo] } },
+});

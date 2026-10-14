@@ -200,7 +200,21 @@
             "registration": "Systemet afviste denne genvej: {{error}}",
             "generic": "Genvejen kunne ikke gemmes",
             "conflictsUnavailable": "Konflikter mellem genveje kunne ikke kontrolleres"
-          }
+          },
+          "changeButton": "Skift",
+          "discard": "Kassér denne genvej",
+          "lastHint": "Hver handling beholder mindst én genvej. Skift eller nulstil den i stedet.",
+          "limitHint": "{{count}} af {{limit}} genveje. Fjern en for at tilføje en anden.",
+          "draftConflict": "{{shortcut}} bruges allerede af {{action}}. Intet blev gemt.",
+          "draftOverlap": "{{shortcut}} ville også udløse {{action}}. Intet blev gemt.",
+          "legacyOverlap": "{{shortcut}} overlapper med {{action}}",
+          "legacyDuplicate": "{{shortcut}} bruges også af {{action}}",
+          "legacyBody": "Den virker stadig som før opdateringen. Skift den for at fjerne denne advarsel.",
+          "systemRefused": "{{system}} afviste {{shortcut}}",
+          "systemRefusedGeneric": "Systemet afviste denne genvej",
+          "systemRefusedBody": "En anden app har muligvis registreret denne kombination. Vælg en anden, eller prøv igen.",
+          "systemReason": "Systemmeddelelse: {{error}}",
+          "retry": "Prøv igen"
         }
       },
       "language": {
@@ -401,9 +415,13 @@
           "clipboardShiftInsert": "Udklipsholder (Shift+Insert)",
           "direct": "Direkte",
           "none": "Ingen",
-          "externalScript": "Eksternt script"
+          "externalScript": "Eksternt script",
+          "clipboardMac": "Udklipsholder (⌘V)",
+          "smartPasteDescription": "Standard på macOS",
+          "noneDescription": "Kun historik og udklipsholder"
         },
-        "externalScriptPlaceholder": "/sti/til/dit/script.sh"
+        "externalScriptPlaceholder": "/sti/til/dit/script.sh",
+        "descriptionSmart": "Smart indsættelse skriver direkte i feltet og ellers indsætter og gendanner den udklipsholderen."
       },
       "typingTool": {
         "title": "Skriveværktøj",
@@ -449,14 +467,6 @@
           "sec15": "Efter 15 sekunder (fejlfinding)"
         }
       },
-      "customWords": {
-        "title": "Brugerdefinerede ord",
-        "description": "Hjælp understøttede modeller med at genkende navne og specialiserede udtryk. Fuzzy-korrektion er i øjeblikket begrænset til ord, der bruger A-Z og tal.",
-        "placeholder": "Tilføj et ord",
-        "add": "Tilføj",
-        "remove": "Fjern {{word}}",
-        "duplicate": "\"{{word}}\" findes allerede"
-      },
       "voiceActivityDetection": {
         "title": "Stemmeaktivitetsdetektion",
         "description": "Filtrer stilhed fra optagelser. Streaming-modeller bruger en længere VAD-hale; deaktivering af VAD optager rå lyd."
@@ -481,6 +491,143 @@
           "simplified": "Forenklet",
           "traditional": "Traditionel"
         }
+      },
+      "returnToApp": {
+        "title": "Vend tilbage til dikteringens app",
+        "description": "Indsæt i den app, hvor dikteringen startede, også hvis du skifter app imens.",
+        "unavailableUnreadable": "Ikke tilgængelig på dette system: Handy kan ikke se den forreste app her. Teksten går til appen forrest, når du er færdig.",
+        "unavailablePlatform": "Ikke tilgængelig på dette system. Teksten går til appen forrest, når du er færdig.",
+        "details": "Handy husker den forreste app, når en diktering starter, og skifter tilbage til den, før teksten indsættes. Når den er slået fra, går teksten til appen forrest, når dikteringen slutter.",
+        "detailsLabel": "Om at vende tilbage til dikteringens app"
+      }
+    },
+    "vocabulary": {
+      "group": "Ordforråd",
+      "title": "Ordforråd",
+      "description": "Navne og udtryk, som modellen skal genkende, når den understøtter det. Erstatninger omskriver i stedet teksten efter genkendelsen.",
+      "placeholder": "Tilføj et udtryk",
+      "inputLabel": "Nyt udtryk i ordforrådet",
+      "add": "Tilføj",
+      "addHint": "Skriv et udtryk for at tilføje det.",
+      "busy": "Vent, til den aktuelle ændring er færdig.",
+      "paste": "Indsæt en liste…",
+      "count": "{{total}} af {{max}} udtryk",
+      "listLabel": "Udtryk i ordforrådet",
+      "remove": "Fjern {{term}}",
+      "retry": "Prøv igen",
+      "loading": "Indlæser ordforrådet…",
+      "listFailed": "Det gemte ordforråd kunne ikke læses. Intet er ændret; prøv igen for at indlæse det.",
+      "empty": {
+        "title": "Ingen udtryk endnu",
+        "body": "Tilføj navne som Claude Code eller OpenClaw, ét ad gangen eller som en indsat liste."
+      },
+      "flag": {
+        "empty": "Tomt udtryk, sendes ikke. Fjern det.",
+        "too_long": "Længere end 100 tegn, sendes ikke. Fjern det, og tilføj en kortere version.",
+        "line_break": "Indeholder et linjeskift, sendes ikke. Fjern det, og tilføj det igen.",
+        "forbidden_character": "Indeholder < > eller \", sendes ikke. Fjern det, og tilføj det uden disse tegn.",
+        "duplicate": "Samme som et tidligere udtryk, sendes ikke. Fjern det.",
+        "over_capacity": "Over grænsen på 500 udtryk, sendes ikke, før listen er kortere.",
+        "over_budget": "Sendes ikke: over modellens grænse."
+      },
+      "errors": {
+        "term_empty": "Indtast et udtryk.",
+        "term_too_long": "Et udtryk må højst have 100 tegn.",
+        "term_line_break": "Et udtryk skal kunne stå på én linje.",
+        "term_forbidden_character": "Fjern tegnene < > eller \" fra udtrykket.",
+        "term_duplicate": "Hvert udtryk må kun optræde én gang, og dette findes allerede i ordforrådet.",
+        "limit": "Ordforrådet kan højst rumme 500 udtryk. Fjern et udtryk for at tilføje et andet.",
+        "conflict": "Ordforrådet blev ændret i mellemtiden og er genindlæst. Prøv igen.",
+        "notFound": "Dette udtryk var allerede fjernet. Ordforrådet er genindlæst.",
+        "unknown": "Handy kunne ikke bekræfte ændringen. Ordforrådet er genindlæst; tjek det, før du prøver igen.",
+        "committed": "Ordforrådet blev gemt, men Handy kunne ikke anvende det med det samme. Listen er indlæst igen.",
+        "saved": "Dit gemte ordforråd er uændret."
+      },
+      "status": {
+        "loading": "Tjekker, hvad modellen understøtter…",
+        "selectedModel": "den valgte model",
+        "used": {
+          "title": "Bruges under genkendelse af {{model}}",
+          "sent": "{{sent}} af {{total}} udtryk sendes.",
+          "sentOne": "{{sent}} af 1 udtryk sendes."
+        },
+        "notSent": {
+          "over_budget": "Sendes ikke, over modellens grænse: {{terms}}.",
+          "invalid": "Sendes ikke, ugyldige: {{terms}}.",
+          "duplicate": "Sendes ikke, dubletter: {{terms}}.",
+          "over_capacity": "Sendes ikke, ud over 500 udtryk: {{terms}}."
+        },
+        "noTermSent": {
+          "title": "Intet udtryk sendes til {{model}}",
+          "empty_vocabulary": "Ordforrådet er tomt. Tilføj udtryk for at bruge dem under genkendelse.",
+          "invalid_terms_only": "Alle gemte udtryk er ugyldige eller dubletter. Fjern de markerede udtryk, og tilføj rettede versioner.",
+          "over_budget": "Det første udtryk er over modellens grænse, så intet udtryk sendes. Fjern det for at sende udtrykkene efter det."
+        },
+        "notSupported": {
+          "title": "{{model}} kan ikke bruge ordforrådet under genkendelse",
+          "body": "I stedet anvendes omtrentlig korrektion efter genkendelsen. Vælg en Whisper-model for at sende udtryk til genkendelsen."
+        },
+        "streaming": {
+          "title": "Bruges ikke ved live streaming",
+          "body": "{{model}} transskriberer live, hvilket ikke sender nogen genkendelseskontekst. I stedet anvendes omtrentlig korrektion på den endelige tekst."
+        },
+        "unknown": {
+          "title": "Understøttelse ukendt, indtil modellen indlæses",
+          "model_not_loaded": "Handy tjekker, hvad {{model}} understøtter, når den indlæses.",
+          "capability_query_unanswered": "{{model}} svarede ikke i tide, for eksempel under en diktering. Handy tjekker igen bagefter."
+        },
+        "budgetUnverified": {
+          "title": "Understøttelse af ordforråd kan ikke bekræftes for {{model}}",
+          "body": "Denne model angiver genkendelseskontekst, men denne version har ingen dokumenteret grænse for den. Intet udtryk sendes; i stedet anvendes omtrentlig korrektion."
+        },
+        "failed": {
+          "title": "Kunne ikke læse ordforrådets status",
+          "body": "Dit ordforråd er gemt. Prøv igen for at tjekke, hvad modellen understøtter."
+        }
+      },
+      "pasteBox": {
+        "title": "Indsæt udtryk",
+        "description": "Ét udtryk pr. linje. Dubletter springes over; ugyldige linjer skal rettes, før de tilføjes.",
+        "label": "Udtryk, der skal indsættes, ét pr. linje",
+        "previewTitle": "Forhåndsvisning",
+        "previewEmpty": "Indsæt eller skriv ét udtryk pr. linje for at se, hvad der bliver tilføjet.",
+        "sameAs": "{{term}} — samme som {{original}}",
+        "alreadyListed": "{{term}} — findes allerede på listen",
+        "summary": {
+          "add": "{{n}} at tilføje",
+          "duplicateOne": "1 dublet",
+          "duplicateMany": "{{n}} dubletter",
+          "errorOne": "1 fejl",
+          "errorMany": "{{n}} fejl"
+        },
+        "kind": {
+          "add": "Tilføj",
+          "duplicate": "Dublet",
+          "error": "Fejl"
+        },
+        "line": {
+          "empty": "Linje {{line}}: tom linje, fjern den",
+          "too_long": "Linje {{line}}: brug højst 100 tegn",
+          "line_break": "Linje {{line}}: hold udtrykket på én linje",
+          "forbidden_character": "Linje {{line}}: fjern tegnene < > eller \"",
+          "duplicate": "Linje {{line}}: samme som et tidligere udtryk",
+          "over_capacity": "Linje {{line}}: over grænsen på 500 udtryk"
+        },
+        "note": {
+          "empty": "Dit ordforråd er uændret, indtil du tilføjer udtrykkene.",
+          "checking": "Tjekker linjerne…",
+          "fixOne": "Ret linje {{lines}} for at tilføje udtrykkene. Dit ordforråd er uændret.",
+          "fixMany": "Ret linjerne {{lines}} for at tilføje udtrykkene. Dit ordforråd er uændret.",
+          "overCapacity": "Ordforrådet kan højst rumme 500 udtryk. Gør listen kortere for at tilføje den. Dit ordforråd er uændret.",
+          "nothingToAdd": "Alle linjer findes allerede i ordforrådet.",
+          "ready": "Dubletter springes over. Intet gemmes, før du tilføjer udtrykkene."
+        },
+        "cancel": "Annuller",
+        "applyOne": "Tilføj 1 udtryk",
+        "applyMany": "Tilføj {{n}} udtryk",
+        "applyZero": "Tilføj udtryk",
+        "applying": "Tilføjer…",
+        "applied": "Udtrykkene er tilføjet til ordforrådet."
       }
     },
     "postProcessing": {
@@ -605,7 +752,8 @@
       "historyLimit": {
         "title": "Historikgrænse",
         "description": "Maksimalt antal historikposter, der skal beholdes",
-        "entries": "poster"
+        "entries": "poster",
+        "invalid": "Indtast et helt tal fra {{min}} til {{max}}."
       },
       "recordingRetention": {
         "title": "Automatisk sletning af optagelser",
@@ -753,7 +901,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy har brug for tilgængelighedstilladelser for at skrive den transskriberede tekst.",
-    "openSettings": "Åbn systemindstillinger"
+    "openSettings": "Åbn systemindstillinger",
+    "offTitle": "Tilladelsen til tilgængelighed er slået fra",
+    "smartPasteOff": "Smart indsættelse kan hverken indsætte eller sætte ind. Dine transskriptioner gemmes, så de kan gendannes."
   },
   "errors": {
     "loadDirectory": "Fejl ved indlæsning af mappe: {{error}}",
@@ -783,7 +933,7 @@
       "revisionConflict": "Indstillingerne blev ændret et andet sted. Genindlæs, og prøv igen.",
       "unavailable": "Denne indstilling kan ikke ændres lige nu. Prøv igen senere.",
       "shortcutSessionBusy": "En diktering er i gang. Prøv igen, når den er færdig.",
-      "persistenceFailed": "Indstillingerne kunne ikke gemmes.",
+      "persistenceFailed": "Indstillingerne kunne ikke gemmes: indstillingsfilen kunne ikke skrives. Intet blev ændret.",
       "generic": "Indstillingen kunne ikke ændres.",
       "readOnly": "Indstillingerne er skrivebeskyttede i denne session: indstillingsfilen kan ikke skrives sikkert, så ændringer gemmes ikke.",
       "unsupportedPlatform": "Denne indstilling er ikke tilgængelig på dette system.",
@@ -795,7 +945,10 @@
       "promptOverrideIncomplete": "Vælg både en udbyder og en model, eller brug standardudbyderen.",
       "promptUnknownProvider": "Denne udbyder er ikke tilgængelig.",
       "promptNotUsable": "Denne prompt er ugyldig. Rediger den, før du bruger den.",
-      "limitExceeded": "Det maksimale antal er nået."
+      "limitExceeded": "Det maksimale antal er nået.",
+      "conflictTitle": "Indstillingerne blev ændret et andet sted",
+      "conflictBody": "Kommandolinjen eller et andet vindue gemte en nyere version. Genindlæs for at se den; din ikke-gemte ændring kasseres.",
+      "reload": "Genindlæs"
     }
   },
   "appLanguage": {
@@ -815,7 +968,51 @@
     "transcribing": "Transskriberer...",
     "processing": "Behandler...",
     "loadingModel": "Indlæser model...",
-    "fallbackNotice": "AI-behandlingen mislykkedes. Den oprindelige tekst blev brugt."
+    "fallbackNotice": "AI-behandlingen mislykkedes. Den oprindelige tekst blev brugt.",
+    "destination": {
+      "label": "Destination: {{name}}",
+      "frontmostApp": "App i forgrunden",
+      "remove": "Fjern destination",
+      "unknownApp": "Destinationsappen",
+      "choiceFailed": "Destinationen kunne ikke ændres.",
+      "menu": {
+        "title": "Destination for denne diktering",
+        "frontmostNow": "I forgrunden nu",
+        "otherApps": "Andre apps",
+        "frontmostAtEnd": "App i forgrunden til sidst",
+        "loading": "Indlæser apps…",
+        "failed": "Listen over apps kunne ikke indlæses."
+      },
+      "refused": {
+        "stale": "Destinationen er ændret i mellemtiden; listen er opdateret.",
+        "frozen": "Indsættelsen er begyndt; destinationen kan ikke længere ændres.",
+        "unavailable": "Denne app er ikke længere tilgængelig; listen er opdateret."
+      },
+      "notice": {
+        "appClosedKept": "{{app}} er lukket. Intet blev indsat; transskriptionen gemmes i Historik.",
+        "appClosedNotKept": "{{app}} er lukket. Intet blev indsat, og transskriptionen kunne ikke gemmes i Historik.",
+        "activationFailedKept": "{{app}} kom ikke i forgrunden. Intet blev indsat; transskriptionen gemmes i Historik.",
+        "activationFailedNotKept": "{{app}} kom ikke i forgrunden. Intet blev indsat, og transskriptionen kunne ikke gemmes i Historik.",
+        "insertionFailedKept": "{{app}} har muligvis ikke modtaget teksten; transskriptionen gemmes i Historik.",
+        "insertionFailedNotKept": "{{app}} har muligvis ikke modtaget teksten, og transskriptionen kunne ikke gemmes i Historik."
+      }
+    },
+    "prompt": {
+      "label": "Prompt for denne diktering: {{name}}",
+      "hint": "Hold markøren over for at se mulighederne",
+      "none": "Ingen (ingen AI-behandling)",
+      "menuTitle": "Prompt for denne diktering",
+      "note": "Gælder kun denne diktering. Standarden forbliver {{name}}.",
+      "loading": "Indlæser prompts…",
+      "failed": "Prompterne kunne ikke indlæses.",
+      "choiceFailed": "Prompten kunne ikke ændres.",
+      "refused": {
+        "sessionEnded": "Optagelsen er stoppet; prompten kan ikke længere ændres.",
+        "processingOff": "AI-behandling er slået fra for denne diktering.",
+        "promptMissing": "Denne prompt findes ikke længere.",
+        "promptNotUsable": "Denne prompt har fejl; rediger den først i indstillingerne."
+      }
+    }
   },
   "secureInput": {
     "blockedWithCulprit_one": "{{name}} blokerer muligvis 1 genvej",

@@ -1,0 +1,13 @@
+{
+  "command": "livespec conventions verify --feature repo --json",
+  "exit": 0,
+  "verdict": "PASS",
+  "blockers": 0,
+  "baseline_new_count": 0,
+  "baselined_count": 527,
+  "violations_total": 502,
+  "receipt_path": ".specs/conventions/runs/20261014T142744Z/receipt.json",
+  "run_id": "20261014T142744Z",
+  "stdout_sha256": "6c945a0f32a7c25e44eb1eba53f1631357df514d5e23e52d3f06d11013c8d4ae",
+  "note": "run on the staged tree of commit 6413b2ad; violations are pre-existing warnings outside the touched files"
+}

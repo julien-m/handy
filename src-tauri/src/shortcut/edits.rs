@@ -62,6 +62,30 @@ pub async fn edit_binding_shortcuts(
     }
 }
 
+// @spec AC-004: Validation before saving — .specs/features/004-multiple-dictation-shortcuts/spec.md#ac-004
+#[tauri::command]
+#[specta::specta]
+/// Checks one edit of action `id` against the published settings without registering or saving
+/// anything, so the settings can show a recorded shortcut as valid or invalid before it is added.
+/// The system's own registration check runs only when the edit is applied.
+pub fn check_binding_shortcut_edit(
+    app: AppHandle,
+    id: String,
+    edit: ShortcutEdit,
+) -> Option<ShortcutEditError> {
+    check_shortcut_edit(&settings::get_settings(&app), &id, &edit)
+}
+
+/// The refusal `edit` of action `id` would get on `settings`, if any (limits, syntax, shared
+/// conflict check). Pure: nothing is registered or saved.
+pub(crate) fn check_shortcut_edit(
+    settings: &AppSettings,
+    id: &str,
+    edit: &ShortcutEdit,
+) -> Option<ShortcutEditError> {
+    plan_shortcut_edit(settings, id, edit).err()
+}
+
 // @spec AC-002: Legacy conflicts kept and flagged — .specs/features/004-multiple-dictation-shortcuts/spec.md#ac-002
 #[tauri::command]
 #[specta::specta]

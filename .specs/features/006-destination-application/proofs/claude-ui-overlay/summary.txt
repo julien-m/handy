@@ -1,0 +1,33 @@
+UI pass — recording indicator (006 badge, cross, menu, reason; 005 prompt pill, menu, AI failure
+notice; 007 Screen Sharing hand-over on the indicator). Worktree handy-wt/ui-overlay, branch
+feature/ui-overlay. CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.shared-target.
+
+Command (cwd)                                                          exit  result
+cargo test --lib overlay (src-tauri)                                      0  12 passed (6 overlay::surface)
+cargo test --lib prompts::dictation (src-tauri)                           0  1 passed (005 notice wording unchanged)
+cargo clippy --lib --bins -- -D warnings (src-tauri)                      0  no warning
+cargo fmt -- --check (src-tauri)                                          0
+cargo build (src-tauri, debug)                                            0
+HOME=<scratch>/home <scratch>/handy --list-models (src-tauri)             0  bindings.ts exported (+2 commands:
+                                                                             setOverlayExtent, holdOverlayForNotice);
+                                                                             binary sha256 in bindings-export-binary.sha256
+bun run lint                                                              0
+node_modules/.bin/tsc --noEmit                                            0
+bun run format:check (prettier --check . && cargo fmt -- --check)         0
+bun run check:translations                                                0  25 languages complete
+bun run build                                                             0
+bun run test:indicator                                                    0  35 pass (models + markup, gates closed/open)
+bun run test:settings-store                                               0  unchanged suite, run after the bun:test shim change
+bun test src/components/ui/dropdown-navigation.test.ts                    0  idem
+bun test src/components/settings/paste-method-options.test.ts             0  idem
+livespec conventions verify --feature repo --json                         0  PASS, new_count 0, no blocker
+
+Browser preview (not native evidence): browser-preview/*.png, rendered by Chromium (Playwright,
+560x460 CSS px, x2, dark) from RecordingOverlay with mocked Tauri IPC and events; harness sources
+in browser-preview/harness/*.txt (kept out of the repository in preview.local/, gitignored).
+States: default, default_hover-prompt, default_click-dest, no-destination, default_remove,
+unavailable, ai-failed, hand-over, gate-closed, prompt-only, live, s_default_pos_top.
+
+Not run here (pending, with Julien): native macOS window (NSPanel resize anchored to the edge,
+hover delivery to a non-key panel, no focus taken, menu <= 200 ms, notice hold >= 4 s after the
+hide); Windows and Linux builds of overlay.rs (cfg branches untouched in shape, not compiled here).

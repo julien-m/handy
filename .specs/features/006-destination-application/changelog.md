@@ -139,3 +139,11 @@
 - Destination return is now behind the `destination-return` Cargo feature, off by default: the default build dictates exactly as `dev` and refuses `return_to_dictation_app` as `unsupported_platform`; the text-only history rule stays active. Opening conditions: native macOS activation and guard proof with Julien, Penflow-certified UI ([implementation, Rollout gate](implementation.md#rollout-gate)).
 - Behind the gate: live Accessibility foreground read for the guard and the activation wait (macOS), one settings snapshot per insertion, truthful worker-failure outcome with the transcript retained, a "not saved" toast on a double failure, Windows hosted UWP apps resolved by their core window process. Also `RecoveryReason::NoTextField`, `errors.rs` split under 400 lines, the two new clippy warnings removed. Deviation recorded: `InsertionPort::dispatch(guard)` kept, contract updated. Details: [progress](progress.md#delivery-review-fix-round-1--notes-2026-10-14).
 
+
+## 2026-10-14 — [Feature]: Recording indicator badge, cross, menu and reason (UI pass)
+
+- **Type:** Feature
+- **Spec modified:** No
+- **Code modified:** src/overlay/* (new indicator modules, RecordingOverlay.tsx), src-tauri/src/overlay.rs, overlay_surface.rs, commands/overlay.rs, lib.rs, bindings.ts, 26 locales
+- **AC impacted:** AC-003, AC-004, AC-005 (indicator part); browser-tested, native proof pending
+- **Author:** Claude Code (UI pass, feature/ui-overlay 69a6ee73)

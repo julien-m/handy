@@ -53,6 +53,14 @@ async editBindingShortcuts(id: string, edit: ShortcutEdit) : Promise<ShortcutEdi
 async getShortcutConflicts() : Promise<StoredShortcutConflict[]> {
     return await TAURI_INVOKE("get_shortcut_conflicts");
 },
+/**
+ * Checks one edit of action `id` against the published settings without registering or saving
+ * anything, so the settings can show a recorded shortcut as valid or invalid before it is added.
+ * The system's own registration check runs only when the edit is applied.
+ */
+async checkBindingShortcutEdit(id: string, edit: ShortcutEdit) : Promise<ShortcutEditError | null> {
+    return await TAURI_INVOKE("check_binding_shortcut_edit", { id, edit });
+},
 async changeShortcutActivationSetting(activation: ShortcutActivation) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_shortcut_activation_setting", { activation }) };
@@ -822,6 +830,20 @@ async chooseDestination(dictationId: DictationId, selectionVersion: number, choi
  */
 async removeDestination(dictationId: DictationId, selectionVersion: number) : Promise<ChoiceAnswer> {
     return await TAURI_INVOKE("remove_destination", { dictationId, selectionVersion });
+},
+/**
+ * Grow (or shrink back) the overlay window to `width` × `height` logical points, never below
+ * the base size of the current indicator form; the window stays anchored to its screen edge.
+ */
+async setOverlayExtent(width: number, height: number) : Promise<void> {
+    await TAURI_INVOKE("set_overlay_extent", { width, height });
+},
+/**
+ * Keep the overlay up for `duration_ms` (capped at 15 s) so a notice stays visible after the
+ * dictation ended; `0` ends the hold. Ignored when the overlay style is none.
+ */
+async holdOverlayForNotice(durationMs: number) : Promise<void> {
+    await TAURI_INVOKE("hold_overlay_for_notice", { durationMs });
 },
 async isPortable() : Promise<boolean> {
     return await TAURI_INVOKE("is_portable");
