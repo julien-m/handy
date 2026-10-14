@@ -1,0 +1,20 @@
+$ cargo test --manifest-path src-tauri/Cargo.toml --test replacement_pipeline
+Tue Oct 13 18:10:48 UTC 2026
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/002-word-replacements/src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.16s
+     Running tests/replacement_pipeline.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/replacement_pipeline-8024bda765dcf7d1)
+
+running 7 tests
+test current_settings_are_not_read_when_a_capture_exists ... ok
+test cancelled_finalize_never_starts_a_batch_run ... ok
+test missing_capture_falls_back_to_current_settings ... ok
+test next_dictation_uses_the_rules_committed_before_it_started ... ok
+test stream_and_batch_fallback_share_one_compiled_matcher ... ok
+test rules_captured_at_start_win_over_a_commit_during_recording ... ok
+test usable_stream_text_skips_the_batch_run ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+EXIT=0

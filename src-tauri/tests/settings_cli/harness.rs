@@ -77,26 +77,42 @@ impl Portable {
     }
     /// Run the binary with `args`; the developer's own Handy never decides the outcome.
     pub fn run(&self, args: &[&str]) -> Fallible<Run> {
-        let child = {
-            // macOS occasionally SIGKILLed children of a freshly linked binary when the test
-            // threads launched it simultaneously; one completed launch first (help reads no
-            // store) and serialized spawns avoid it. The children still run concurrently.
-            let _spawning = SPAWN.lock().map_err(|_| "spawn lock poisoned")?;
-            WARM_UP.get_or_init(|| {
-                Command::new(env!("CARGO_BIN_EXE_handy"))
-                    .args(["settings", "--help"])
-                    .output()
-                    .map(|output| output.status.success())
-                    .unwrap_or(false)
-            });
-            Command::new(&self.binary)
-                .args(args)
-                .env("HANDY_SETTINGS_TEST_LEGACY_SOCKET", &self.legacy_socket)
-                .stdout(Stdio::piped())
-                .stderr(Stdio::piped())
-                .spawn()?
-        };
+        self.run_input(args, None)
+    }
+    /// Run the binary with `args`, and `input` on its stdin (a pipe, never a terminal) when given.
+    pub fn run_input(&self, args: &[&str], input: Option<&[u8]>) -> Fallible<Run> {
+        let mut child = self.spawn(args, input.is_some())?;
+        if let (Some(input), Some(mut stdin)) = (input, child.stdin.take()) {
+            use std::io::Write;
+            // Dropping the handle closes the pipe, so the child sees the end of its input.
+            stdin.write_all(input)?;
+        }
         Ok(Run::from(child.wait_with_output()?))
+    }
+    fn spawn(&self, args: &[&str], piped_stdin: bool) -> Fallible<std::process::Child> {
+        // macOS occasionally SIGKILLed children of a freshly linked binary when the test
+        // threads launched it simultaneously; one completed launch first (help reads no
+        // store) and serialized spawns avoid it. The children still run concurrently.
+        let _spawning = SPAWN.lock().map_err(|_| "spawn lock poisoned")?;
+        WARM_UP.get_or_init(|| {
+            Command::new(env!("CARGO_BIN_EXE_handy"))
+                .args(["settings", "--help"])
+                .output()
+                .map(|output| output.status.success())
+                .unwrap_or(false)
+        });
+        let stdin = if piped_stdin {
+            Stdio::piped()
+        } else {
+            Stdio::inherit()
+        };
+        Ok(Command::new(&self.binary)
+            .args(args)
+            .env("HANDY_SETTINGS_TEST_LEGACY_SOCKET", &self.legacy_socket)
+            .stdin(stdin)
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()?)
     }
     /// Raw store bytes, or None when the store does not exist.
     pub fn store_bytes(&self) -> Fallible<Option<Vec<u8>>> {

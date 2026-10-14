@@ -219,6 +219,56 @@ pub fn apply_custom_words(text: &str, custom_words: &[String], threshold: f64) -
     result.join(" ")
 }
 
+/// A piece of text; protected pieces come from explicit word replacements.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct TextSpan<'a> {
+    pub text: &'a str,
+    pub is_protected: bool,
+}
+
+// @spec FR-005: Protect replaced spans from approximate correction — .specs/features/002-word-replacements/spec.md#fr-005
+/// Apply approximate custom-word correction only outside protected spans.
+///
+/// Without protected spans this is exactly `apply_custom_words` on the joined
+/// text. Otherwise each unprotected span is corrected on its own, so no n-gram
+/// crosses a protected span, and the whitespace at each seam is kept verbatim.
+pub fn apply_custom_words_outside_protected(
+    spans: &[TextSpan<'_>],
+    custom_words: &[String],
+    threshold: f64,
+) -> String {
+    if !spans.iter().any(|span| span.is_protected) {
+        let joined: String = spans.iter().map(|span| span.text).collect();
+        return apply_custom_words(&joined, custom_words, threshold);
+    }
+    spans
+        .iter()
+        .map(|span| {
+            if span.is_protected {
+                span.text.to_string()
+            } else {
+                correct_keeping_edge_whitespace(span.text, custom_words, threshold)
+            }
+        })
+        .collect()
+}
+
+fn correct_keeping_edge_whitespace(text: &str, custom_words: &[String], threshold: f64) -> String {
+    let core_start = text.len() - text.trim_start().len();
+    let core_end = text.trim_end().len();
+    if core_start >= core_end {
+        return text.to_string();
+    }
+    // apply_custom_words trims and rejoins words; the seams to protected spans
+    // keep their original whitespace instead.
+    format!(
+        "{}{}{}",
+        &text[..core_start],
+        apply_custom_words(&text[core_start..core_end], custom_words, threshold),
+        &text[core_end..]
+    )
+}
+
 /// Preserves the case pattern of the original word when applying a replacement
 fn preserve_case_pattern(original: &str, replacement: &str) -> String {
     if original.chars().all(|c| c.is_uppercase()) {
@@ -880,5 +930,57 @@ mod tests {
         let custom_words = vec!["你号".to_string()];
         let result = apply_custom_words(text, &custom_words, 1.0);
         assert_eq!(result, text);
+    }
+
+    fn span(text: &str, is_protected: bool) -> TextSpan<'_> {
+        TextSpan { text, is_protected }
+    }
+
+    #[test]
+    fn protected_span_is_never_approximately_corrected() {
+        let custom_words = vec!["ChargeBee".to_string()];
+        let spans = [
+            span("pay with ", false),
+            span("Charge B", true),
+            span("; also: charge b today", false),
+        ];
+        assert_eq!(
+            apply_custom_words_outside_protected(&spans, &custom_words, 0.5),
+            "pay with Charge B; also: ChargeBee today"
+        );
+    }
+
+    #[test]
+    fn ngrams_never_cross_a_protected_span() {
+        let custom_words = vec!["ChargeBee".to_string()];
+        let spans = [span("Charge ", false), span("B", true), span(" now", false)];
+        assert_eq!(
+            apply_custom_words_outside_protected(&spans, &custom_words, 0.5),
+            "Charge B now"
+        );
+    }
+
+    #[test]
+    fn seams_keep_original_whitespace_and_punctuation() {
+        let custom_words = vec!["Zzzz".to_string()];
+        let spans = [
+            span("  open\t", false),
+            span("Claude Code", true),
+            span("!  ", false),
+        ];
+        assert_eq!(
+            apply_custom_words_outside_protected(&spans, &custom_words, 0.18),
+            "  open\tClaude Code!  "
+        );
+    }
+
+    #[test]
+    fn unprotected_text_uses_the_existing_correction_path() {
+        let text = "il cui nome è Charge B, che permette";
+        let custom_words = vec!["ChargeBee".to_string()];
+        assert_eq!(
+            apply_custom_words_outside_protected(&[span(text, false)], &custom_words, 0.5),
+            apply_custom_words(text, &custom_words, 0.5)
+        );
     }
 }

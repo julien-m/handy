@@ -1,0 +1,1837 @@
+
+running 1 test
+SCHEMA_BEGIN
+{
+  "$defs": {
+    "binding": {
+      "additionalProperties": false,
+      "properties": {
+        "additional_bindings": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "current_binding": {
+          "type": "string"
+        },
+        "default_binding": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "default_binding",
+        "current_binding"
+      ],
+      "type": "object"
+    },
+    "error": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "enum": [
+            "usage_error",
+            "validation_failed",
+            "shortcut_conflict",
+            "limit_exceeded",
+            "revision_conflict",
+            "not_found",
+            "unavailable",
+            "persistence_failed",
+            "internal_error"
+          ]
+        },
+        "details": {
+          "$ref": "#/$defs/error_details"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "details"
+      ],
+      "type": "object"
+    },
+    "error_details": {
+      "additionalProperties": false,
+      "properties": {
+        "action_id": {
+          "type": "string"
+        },
+        "current_revision": {
+          "$ref": "#/$defs/revision"
+        },
+        "field": {
+          "enum": [
+            "settings_schema_version",
+            "bindings",
+            "shortcut_activation",
+            "hold_threshold_ms",
+            "audio_feedback",
+            "audio_feedback_volume",
+            "sound_theme",
+            "start_hidden",
+            "autostart_enabled",
+            "update_checks_enabled",
+            "show_whats_new_on_update",
+            "whats_new_last_seen_version",
+            "selected_model",
+            "onboarding_completed",
+            "always_on_microphone",
+            "selected_microphone",
+            "selected_channel",
+            "clamshell_microphone",
+            "selected_output_device",
+            "translate_to_english",
+            "selected_language",
+            "overlay_position",
+            "debug_mode",
+            "log_level",
+            "custom_words",
+            "word_replacements",
+            "model_unload_timeout",
+            "word_correction_threshold",
+            "history_limit",
+            "recording_retention_period",
+            "paste_method",
+            "clipboard_handling",
+            "auto_submit",
+            "auto_submit_key",
+            "post_process_enabled",
+            "post_process_provider_id",
+            "post_process_providers",
+            "post_process_api_keys",
+            "post_process_models",
+            "post_process_prompts",
+            "post_process_selected_prompt_id",
+            "mute_while_recording",
+            "append_trailing_space",
+            "app_language",
+            "theme",
+            "experimental_enabled",
+            "lazy_stream_close",
+            "keyboard_implementation",
+            "show_tray_icon",
+            "paste_delay_ms",
+            "paste_delay_after_ms",
+            "reliable_paste",
+            "typing_tool",
+            "external_script_path",
+            "filler_word_removal_enabled",
+            "custom_filler_words",
+            "chinese_script",
+            "transcribe_accelerator",
+            "ort_accelerator",
+            "transcribe_gpu_device",
+            "extra_recording_buffer_ms",
+            "vad_enabled",
+            "vad_backend",
+            "overlay_style"
+          ]
+        },
+        "issues": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "field": {
+                "enum": [
+                  "settings_schema_version",
+                  "bindings",
+                  "shortcut_activation",
+                  "hold_threshold_ms",
+                  "audio_feedback",
+                  "audio_feedback_volume",
+                  "sound_theme",
+                  "start_hidden",
+                  "autostart_enabled",
+                  "update_checks_enabled",
+                  "show_whats_new_on_update",
+                  "whats_new_last_seen_version",
+                  "selected_model",
+                  "onboarding_completed",
+                  "always_on_microphone",
+                  "selected_microphone",
+                  "selected_channel",
+                  "clamshell_microphone",
+                  "selected_output_device",
+                  "translate_to_english",
+                  "selected_language",
+                  "overlay_position",
+                  "debug_mode",
+                  "log_level",
+                  "custom_words",
+                  "word_replacements",
+                  "model_unload_timeout",
+                  "word_correction_threshold",
+                  "history_limit",
+                  "recording_retention_period",
+                  "paste_method",
+                  "clipboard_handling",
+                  "auto_submit",
+                  "auto_submit_key",
+                  "post_process_enabled",
+                  "post_process_provider_id",
+                  "post_process_providers",
+                  "post_process_api_keys",
+                  "post_process_models",
+                  "post_process_prompts",
+                  "post_process_selected_prompt_id",
+                  "mute_while_recording",
+                  "append_trailing_space",
+                  "app_language",
+                  "theme",
+                  "experimental_enabled",
+                  "lazy_stream_close",
+                  "keyboard_implementation",
+                  "show_tray_icon",
+                  "paste_delay_ms",
+                  "paste_delay_after_ms",
+                  "reliable_paste",
+                  "typing_tool",
+                  "external_script_path",
+                  "filler_word_removal_enabled",
+                  "custom_filler_words",
+                  "chinese_script",
+                  "transcribe_accelerator",
+                  "ort_accelerator",
+                  "transcribe_gpu_device",
+                  "extra_recording_buffer_ms",
+                  "vad_enabled",
+                  "vad_backend",
+                  "overlay_style"
+                ]
+              },
+              "reason": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "field",
+              "reason"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "items": {
+          "items": {
+            "$ref": "#/$defs/item_issue"
+          },
+          "maxItems": 1000,
+          "type": "array"
+        },
+        "kind": {
+          "enum": [
+            "duplicate",
+            "modifier_overlap"
+          ]
+        },
+        "limit": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "offset": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "omitted_items": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "outcome": {
+          "enum": [
+            "unknown",
+            "committed"
+          ]
+        },
+        "owning_action": {
+          "type": "string"
+        },
+        "owning_shortcut": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "failure": {
+      "additionalProperties": false,
+      "properties": {
+        "error": {
+          "$ref": "#/$defs/error"
+        },
+        "ok": {
+          "const": false
+        }
+      },
+      "required": [
+        "ok",
+        "error"
+      ],
+      "type": "object"
+    },
+    "item_issue": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "line": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "position": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "field",
+        "kind"
+      ],
+      "type": "object"
+    },
+    "operation_request": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "operation": {
+              "const": "get"
+            },
+            "protocol_version": {
+              "const": 1
+            },
+            "request_id": {
+              "type": "string"
+            },
+            "store_identity": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "protocol_version",
+            "request_id",
+            "store_identity",
+            "operation"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "operation": {
+              "const": "keys"
+            },
+            "protocol_version": {
+              "const": 1
+            },
+            "request_id": {
+              "type": "string"
+            },
+            "store_identity": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "protocol_version",
+            "request_id",
+            "store_identity",
+            "operation"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "expected_revision": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/revision"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "key": {
+              "type": "string"
+            },
+            "operation": {
+              "const": "set"
+            },
+            "protocol_version": {
+              "const": 1
+            },
+            "request_id": {
+              "type": "string"
+            },
+            "store_identity": {
+              "type": "string"
+            },
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "protocol_version",
+            "request_id",
+            "store_identity",
+            "operation",
+            "key",
+            "value"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "action": {
+              "type": "string"
+            },
+            "arguments": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "domain": {
+              "type": "string"
+            },
+            "dry_run": {
+              "type": "boolean"
+            },
+            "expected_revision": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/revision"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "input": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "operation": {
+              "const": "domain"
+            },
+            "protocol_version": {
+              "const": 1
+            },
+            "request_id": {
+              "type": "string"
+            },
+            "store_identity": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "protocol_version",
+            "request_id",
+            "store_identity",
+            "operation",
+            "domain",
+            "action",
+            "arguments",
+            "dry_run"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "prompt": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "prompt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "prompt"
+      ],
+      "type": "object"
+    },
+    "provider": {
+      "additionalProperties": false,
+      "properties": {
+        "allow_base_url_edit": {
+          "type": "boolean"
+        },
+        "base_url": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "models_endpoint": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "supports_structured_output": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "base_url",
+        "allow_base_url_edit",
+        "models_endpoint",
+        "supports_structured_output"
+      ],
+      "type": "object"
+    },
+    "public_settings": {
+      "additionalProperties": false,
+      "properties": {
+        "always_on_microphone": {
+          "type": "boolean"
+        },
+        "app_language": {
+          "type": "string"
+        },
+        "append_trailing_space": {
+          "type": "boolean"
+        },
+        "audio_feedback": {
+          "type": "boolean"
+        },
+        "audio_feedback_volume": {
+          "type": "number"
+        },
+        "auto_submit": {
+          "type": "boolean"
+        },
+        "auto_submit_key": {
+          "enum": [
+            "enter",
+            "ctrl_enter",
+            "cmd_enter"
+          ],
+          "type": "string"
+        },
+        "autostart_enabled": {
+          "type": "boolean"
+        },
+        "bindings": {
+          "additionalProperties": {
+            "$ref": "#/$defs/binding"
+          },
+          "type": "object"
+        },
+        "chinese_script": {
+          "enum": [
+            "as_transcribed",
+            "simplified",
+            "traditional"
+          ],
+          "type": "string"
+        },
+        "clamshell_microphone": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "clipboard_handling": {
+          "enum": [
+            "dont_modify",
+            "copy_to_clipboard"
+          ],
+          "type": "string"
+        },
+        "custom_filler_words": {
+          "items": {
+            "type": "string"
+          },
+          "type": [
+            "array",
+            "null"
+          ]
+        },
+        "custom_words": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "debug_mode": {
+          "type": "boolean"
+        },
+        "experimental_enabled": {
+          "type": "boolean"
+        },
+        "external_script_path": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "extra_recording_buffer_ms": {
+          "maximum": 18446744073709551615,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "filler_word_removal_enabled": {
+          "type": "boolean"
+        },
+        "history_limit": {
+          "maximum": 18446744073709551615,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "hold_threshold_ms": {
+          "maximum": 18446744073709551615,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "keyboard_implementation": {
+          "enum": [
+            "tauri",
+            "handy_keys"
+          ],
+          "type": "string"
+        },
+        "lazy_stream_close": {
+          "type": "boolean"
+        },
+        "log_level": {
+          "enum": [
+            "trace",
+            "debug",
+            "info",
+            "warn",
+            "error"
+          ],
+          "type": "string"
+        },
+        "model_unload_timeout": {
+          "enum": [
+            "never",
+            "immediately",
+            "min2",
+            "min5",
+            "min10",
+            "min15",
+            "hour1",
+            "sec15"
+          ],
+          "type": "string"
+        },
+        "mute_while_recording": {
+          "type": "boolean"
+        },
+        "onboarding_completed": {
+          "type": "boolean"
+        },
+        "ort_accelerator": {
+          "enum": [
+            "auto",
+            "cpu",
+            "cuda",
+            "directml",
+            "rocm"
+          ],
+          "type": "string"
+        },
+        "overlay_position": {
+          "enum": [
+            "top",
+            "bottom"
+          ],
+          "type": "string"
+        },
+        "overlay_style": {
+          "enum": [
+            "none",
+            "minimal",
+            "live"
+          ],
+          "type": "string"
+        },
+        "paste_delay_after_ms": {
+          "maximum": 18446744073709551615,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "paste_delay_ms": {
+          "maximum": 18446744073709551615,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "paste_method": {
+          "enum": [
+            "ctrl_v",
+            "direct",
+            "none",
+            "shift_insert",
+            "ctrl_shift_v",
+            "external_script"
+          ],
+          "type": "string"
+        },
+        "post_process_api_keys": {
+          "additionalProperties": {
+            "additionalProperties": false,
+            "properties": {
+              "present": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "present"
+            ],
+            "type": "object"
+          },
+          "type": "object"
+        },
+        "post_process_enabled": {
+          "type": "boolean"
+        },
+        "post_process_models": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "post_process_prompts": {
+          "items": {
+            "$ref": "#/$defs/prompt"
+          },
+          "type": "array"
+        },
+        "post_process_provider_id": {
+          "type": "string"
+        },
+        "post_process_providers": {
+          "items": {
+            "$ref": "#/$defs/provider"
+          },
+          "type": "array"
+        },
+        "post_process_selected_prompt_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "recording_retention_period": {
+          "enum": [
+            "never",
+            "preserve_limit",
+            "days3",
+            "weeks2",
+            "months3"
+          ],
+          "type": "string"
+        },
+        "reliable_paste": {
+          "type": "boolean"
+        },
+        "selected_channel": {
+          "maximum": 65535,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "selected_language": {
+          "type": "string"
+        },
+        "selected_microphone": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "selected_model": {
+          "type": "string"
+        },
+        "selected_output_device": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "settings_schema_version": {
+          "maximum": 4294967295,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "shortcut_activation": {
+          "enum": [
+            "toggle",
+            "push_to_talk",
+            "hold_or_toggle"
+          ],
+          "type": "string"
+        },
+        "show_tray_icon": {
+          "type": "boolean"
+        },
+        "show_whats_new_on_update": {
+          "type": "boolean"
+        },
+        "sound_theme": {
+          "enum": [
+            "marimba",
+            "pop",
+            "custom"
+          ],
+          "type": "string"
+        },
+        "start_hidden": {
+          "type": "boolean"
+        },
+        "theme": {
+          "enum": [
+            "system",
+            "light",
+            "dark"
+          ],
+          "type": "string"
+        },
+        "transcribe_accelerator": {
+          "enum": [
+            "auto",
+            "cpu",
+            "gpu"
+          ],
+          "type": "string"
+        },
+        "transcribe_gpu_device": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "translate_to_english": {
+          "type": "boolean"
+        },
+        "typing_tool": {
+          "enum": [
+            "auto",
+            "wtype",
+            "kwtype",
+            "dotool",
+            "ydotool",
+            "xdotool"
+          ],
+          "type": "string"
+        },
+        "update_checks_enabled": {
+          "type": "boolean"
+        },
+        "vad_backend": {
+          "enum": [
+            "silero",
+            "earshot"
+          ],
+          "type": "string"
+        },
+        "vad_enabled": {
+          "type": "boolean"
+        },
+        "whats_new_last_seen_version": {
+          "type": "string"
+        },
+        "word_correction_threshold": {
+          "type": "number"
+        },
+        "word_replacements": {
+          "items": {
+            "$ref": "#/$defs/replacement_rule"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "settings_schema_version",
+        "bindings",
+        "shortcut_activation",
+        "hold_threshold_ms",
+        "audio_feedback",
+        "audio_feedback_volume",
+        "sound_theme",
+        "start_hidden",
+        "autostart_enabled",
+        "update_checks_enabled",
+        "show_whats_new_on_update",
+        "whats_new_last_seen_version",
+        "selected_model",
+        "onboarding_completed",
+        "always_on_microphone",
+        "selected_microphone",
+        "selected_channel",
+        "clamshell_microphone",
+        "selected_output_device",
+        "translate_to_english",
+        "selected_language",
+        "overlay_position",
+        "debug_mode",
+        "log_level",
+        "custom_words",
+        "word_replacements",
+        "model_unload_timeout",
+        "word_correction_threshold",
+        "history_limit",
+        "recording_retention_period",
+        "paste_method",
+        "clipboard_handling",
+        "auto_submit",
+        "auto_submit_key",
+        "post_process_enabled",
+        "post_process_provider_id",
+        "post_process_providers",
+        "post_process_api_keys",
+        "post_process_models",
+        "post_process_prompts",
+        "post_process_selected_prompt_id",
+        "mute_while_recording",
+        "append_trailing_space",
+        "app_language",
+        "theme",
+        "experimental_enabled",
+        "lazy_stream_close",
+        "keyboard_implementation",
+        "show_tray_icon",
+        "paste_delay_ms",
+        "paste_delay_after_ms",
+        "reliable_paste",
+        "typing_tool",
+        "external_script_path",
+        "filler_word_removal_enabled",
+        "custom_filler_words",
+        "chinese_script",
+        "transcribe_accelerator",
+        "ort_accelerator",
+        "transcribe_gpu_device",
+        "extra_recording_buffer_ms",
+        "vad_enabled",
+        "vad_backend",
+        "overlay_style"
+      ],
+      "type": "object"
+    },
+    "replacement_rule": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "recognized": {
+          "type": "string"
+        },
+        "replacement": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "recognized",
+        "replacement"
+      ],
+      "type": "object"
+    },
+    "revision": {
+      "maximum": 18446744073709551615,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "success": {
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "type": "object"
+        },
+        "ok": {
+          "const": true
+        },
+        "revision": {
+          "$ref": "#/$defs/revision"
+        }
+      },
+      "required": [
+        "ok",
+        "revision",
+        "data"
+      ],
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/success"
+    },
+    {
+      "$ref": "#/$defs/failure"
+    }
+  ],
+  "title": "Handy settings CLI envelope",
+  "x-setting-descriptors": [
+    {
+      "allowed_values": [],
+      "key": "settings_schema_version",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": {
+        "max": 4294967295.0,
+        "min": 0.0
+      },
+      "read_only": true,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "integer"
+    },
+    {
+      "allowed_values": [],
+      "key": "bindings",
+      "nullable": false,
+      "owner_domain": "shortcuts",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "object"
+    },
+    {
+      "allowed_values": [
+        "toggle",
+        "push_to_talk",
+        "hold_or_toggle"
+      ],
+      "key": "shortcut_activation",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "shortcuts",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [],
+      "key": "hold_threshold_ms",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": {
+        "max": 1000.0,
+        "min": 100.0
+      },
+      "read_only": false,
+      "runtime_effect": "shortcuts",
+      "secret": false,
+      "value_type": "integer"
+    },
+    {
+      "allowed_values": [],
+      "key": "audio_feedback",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "audio_output",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [],
+      "key": "audio_feedback_volume",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": {
+        "max": 1.0,
+        "min": 0.0
+      },
+      "read_only": false,
+      "runtime_effect": "audio_output",
+      "secret": false,
+      "value_type": "number"
+    },
+    {
+      "allowed_values": [
+        "marimba",
+        "pop",
+        "custom"
+      ],
+      "key": "sound_theme",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "audio_output",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [],
+      "key": "start_hidden",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [],
+      "key": "autostart_enabled",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "autostart",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [],
+      "key": "update_checks_enabled",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "updater",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [],
+      "key": "show_whats_new_on_update",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [],
+      "key": "whats_new_last_seen_version",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": true,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [],
+      "key": "selected_model",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": true,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [],
+      "key": "onboarding_completed",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": true,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [],
+      "key": "always_on_microphone",
+      "nullable": false,
+      "owner_domain": "microphones",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "audio_input",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [],
+      "key": "selected_microphone",
+      "nullable": true,
+      "owner_domain": "microphones",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "audio_input",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [],
+      "key": "selected_channel",
+      "nullable": true,
+      "owner_domain": "microphones",
+      "range": {
+        "max": 65535.0,
+        "min": 0.0
+      },
+      "read_only": false,
+      "runtime_effect": "audio_input",
+      "secret": false,
+      "value_type": "integer"
+    },
+    {
+      "allowed_values": [],
+      "key": "clamshell_microphone",
+      "nullable": true,
+      "owner_domain": "microphones",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "audio_input",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [],
+      "key": "selected_output_device",
+      "nullable": true,
+      "owner_domain": "microphones",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "audio_output",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [],
+      "key": "translate_to_english",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [],
+      "key": "selected_language",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [
+        "top",
+        "bottom"
+      ],
+      "key": "overlay_position",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "overlay",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [],
+      "key": "debug_mode",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "logging",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [
+        "trace",
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ],
+      "key": "log_level",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "logging",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [],
+      "key": "custom_words",
+      "nullable": false,
+      "owner_domain": "vocabulary",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "array"
+    },
+    {
+      "allowed_values": [],
+      "key": "word_replacements",
+      "nullable": false,
+      "owner_domain": "replacements",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "array"
+    },
+    {
+      "allowed_values": [
+        "never",
+        "immediately",
+        "min2",
+        "min5",
+        "min10",
+        "min15",
+        "hour1",
+        "sec15"
+      ],
+      "key": "model_unload_timeout",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "model",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [],
+      "key": "word_correction_threshold",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": {
+        "max": 1.0,
+        "min": 0.0
+      },
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "number"
+    },
+    {
+      "allowed_values": [],
+      "key": "history_limit",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": {
+        "max": 1000.0,
+        "min": 0.0
+      },
+      "read_only": false,
+      "runtime_effect": "history",
+      "secret": false,
+      "value_type": "integer"
+    },
+    {
+      "allowed_values": [
+        "never",
+        "preserve_limit",
+        "days3",
+        "weeks2",
+        "months3"
+      ],
+      "key": "recording_retention_period",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "history",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [
+        "ctrl_v",
+        "direct",
+        "none",
+        "shift_insert",
+        "ctrl_shift_v",
+        "external_script"
+      ],
+      "key": "paste_method",
+      "nullable": false,
+      "owner_domain": "output",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [
+        "dont_modify",
+        "copy_to_clipboard"
+      ],
+      "key": "clipboard_handling",
+      "nullable": false,
+      "owner_domain": "output",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [],
+      "key": "auto_submit",
+      "nullable": false,
+      "owner_domain": "output",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [
+        "enter",
+        "ctrl_enter",
+        "cmd_enter"
+      ],
+      "key": "auto_submit_key",
+      "nullable": false,
+      "owner_domain": "output",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [],
+      "key": "post_process_enabled",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "shortcuts",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [],
+      "key": "post_process_provider_id",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": true,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [],
+      "key": "post_process_providers",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": true,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "array"
+    },
+    {
+      "allowed_values": [],
+      "key": "post_process_api_keys",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": true,
+      "runtime_effect": "none",
+      "secret": true,
+      "value_type": "object"
+    },
+    {
+      "allowed_values": [],
+      "key": "post_process_models",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": true,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "object"
+    },
+    {
+      "allowed_values": [],
+      "key": "post_process_prompts",
+      "nullable": false,
+      "owner_domain": "prompts",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "array"
+    },
+    {
+      "allowed_values": [],
+      "key": "post_process_selected_prompt_id",
+      "nullable": true,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [],
+      "key": "mute_while_recording",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [],
+      "key": "append_trailing_space",
+      "nullable": false,
+      "owner_domain": "output",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [],
+      "key": "app_language",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "language",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [
+        "system",
+        "light",
+        "dark"
+      ],
+      "key": "theme",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "theme",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [],
+      "key": "experimental_enabled",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [],
+      "key": "lazy_stream_close",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [
+        "tauri",
+        "handy_keys"
+      ],
+      "key": "keyboard_implementation",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "shortcuts",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [],
+      "key": "show_tray_icon",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "tray",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [],
+      "key": "paste_delay_ms",
+      "nullable": false,
+      "owner_domain": "output",
+      "range": {
+        "max": 5000.0,
+        "min": 10.0
+      },
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "integer"
+    },
+    {
+      "allowed_values": [],
+      "key": "paste_delay_after_ms",
+      "nullable": false,
+      "owner_domain": "output",
+      "range": {
+        "max": 5000.0,
+        "min": 10.0
+      },
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "integer"
+    },
+    {
+      "allowed_values": [],
+      "key": "reliable_paste",
+      "nullable": false,
+      "owner_domain": "output",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [
+        "auto",
+        "wtype",
+        "kwtype",
+        "dotool",
+        "ydotool",
+        "xdotool"
+      ],
+      "key": "typing_tool",
+      "nullable": false,
+      "owner_domain": "output",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [],
+      "key": "external_script_path",
+      "nullable": true,
+      "owner_domain": "output",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [],
+      "key": "filler_word_removal_enabled",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [],
+      "key": "custom_filler_words",
+      "nullable": true,
+      "owner_domain": "vocabulary",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "array"
+    },
+    {
+      "allowed_values": [
+        "as_transcribed",
+        "simplified",
+        "traditional"
+      ],
+      "key": "chinese_script",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [
+        "auto",
+        "cpu",
+        "gpu"
+      ],
+      "key": "transcribe_accelerator",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "model",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [
+        "auto",
+        "cpu",
+        "cuda",
+        "directml",
+        "rocm"
+      ],
+      "key": "ort_accelerator",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "model",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [],
+      "key": "transcribe_gpu_device",
+      "nullable": true,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "model",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [],
+      "key": "extra_recording_buffer_ms",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": {
+        "max": 1500.0,
+        "min": 0.0
+      },
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "integer"
+    },
+    {
+      "allowed_values": [],
+      "key": "vad_enabled",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [
+        "silero",
+        "earshot"
+      ],
+      "key": "vad_backend",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "vad",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [
+        "none",
+        "minimal",
+        "live"
+      ],
+      "key": "overlay_style",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "overlay",
+      "secret": false,
+      "value_type": "string"
+    }
+  ]
+}
+SCHEMA_END
+test contracts::generated_schema_matches_wire_shapes_and_descriptor_inventory ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 20 filtered out; finished in 0.05s
+

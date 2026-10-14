@@ -92,7 +92,27 @@ fn schema_closes_reason_and_items() -> TestResult {
         "last_shortcut",
         "alternatives_unsupported",
         "registration_refused",
-        "invalid_shortcut"
+        "invalid_shortcut",
+        "recognized_empty",
+        "recognized_too_long",
+        "recognized_forbidden_character",
+        "recognized_control_character",
+        "recognized_leading_comment",
+        "duplicate_recognized",
+        "replacement_empty",
+        "replacement_too_long",
+        "replacement_forbidden_character",
+        "replacement_control_character",
+        "empty_rule_id",
+        "duplicate_rule_id",
+        "missing_separator",
+        "too_many_rules",
+        "invalid_saved_rules",
+        "unicode_data_unavailable",
+        "reply_too_large",
+        "export_not_written",
+        "export_symbolic_link",
+        "export_read_only"
     ]);
     assert_eq!(details["reason"], json!({ "enum": reasons }));
     assert_eq!(

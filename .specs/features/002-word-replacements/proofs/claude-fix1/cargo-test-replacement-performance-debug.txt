@@ -1,0 +1,15 @@
+$ cargo test --manifest-path src-tauri/Cargo.toml --test replacement_performance
+Tue Oct 13 15:26:50 UTC 2026
+    Blocking waiting for file lock on artifact directory
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/002-word-replacements/src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 9.95s
+     Running tests/replacement_performance.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/replacement_performance-14489b43862b12fc)
+
+running 1 test
+test match_1000_rules_over_2000_scalars_within_budget ... ignored, release-only timing budget
+
+test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+EXIT=0

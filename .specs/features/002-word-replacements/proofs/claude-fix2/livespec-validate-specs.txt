@@ -1,0 +1,120 @@
+$ livespec validate --format compact
+Tue Oct 13 16:08:56 UTC 2026
+OK      .specs/bootstrap-recap.md Score: 100/100
+OK      .specs/changelog.md Score: 100/100
+OK      .specs/constitution.md Score: 100/100
+OK      .specs/design/changelog.md Score: 100/100
+OK      .specs/features/001-microphone-priority/changelog.md Score: 100/100
+OK      .specs/features/001-microphone-priority/plan.md Score: 100/100
+OK      .specs/features/001-microphone-priority/preparatory-plan.md Score: 
+100/100
+OK      .specs/features/001-microphone-priority/spec.md Score: 100/100
+OK      .specs/features/002-word-replacements/changelog.md Score: 100/100
+OK      .specs/features/002-word-replacements/implementation.md Score: 100/100
+OK      .specs/features/002-word-replacements/pipeline.md Score: 100/100
+OK      .specs/features/002-word-replacements/plan.md Score: 100/100
+OK      .specs/features/002-word-replacements/progress.md Score: 100/100
+OK      .specs/features/002-word-replacements/proofs/claude/independent-audit.md
+Score: 100/100
+OK      
+.specs/features/002-word-replacements/proofs/claude-fix1/independent-reaudit.md 
+Score: 100/100
+OK      .specs/features/002-word-replacements/spec.md Score: 100/100
+OK      .specs/features/003-recognition-vocabulary/changelog.md Score: 100/100
+OK      .specs/features/003-recognition-vocabulary/plan.md Score: 100/100
+OK      .specs/features/003-recognition-vocabulary/spec.md Score: 100/100
+OK      .specs/features/004-multiple-dictation-shortcuts/changelog.md Score: 
+100/100
+OK      
+.specs/features/004-multiple-dictation-shortcuts/contracts/shortcuts-cli.md 
+Score: 100/100
+OK      .specs/features/004-multiple-dictation-shortcuts/plan.md Score: 100/100
+OK      .specs/features/004-multiple-dictation-shortcuts/spec.md Score: 100/100
+OK      
+.specs/features/005-custom-ai-prompts/.reviews/plan-run/plan-entry-final.md 
+Score: 100/100
+OK      .specs/features/005-custom-ai-prompts/.reviews/plan-run/plan-entry.md 
+Score: 100/100
+OK      .specs/features/005-custom-ai-prompts/.reviews/plan-run/run-notes.md 
+Score: 100/100
+OK      .specs/features/005-custom-ai-prompts/changelog.md Score: 100/100
+OK      .specs/features/005-custom-ai-prompts/plan.md Score: 100/100
+OK      .specs/features/005-custom-ai-prompts/spec.md Score: 100/100
+OK      .specs/features/006-destination-application/.reviews/finalize-entry.md 
+Score: 100/100
+OK      
+.specs/features/006-destination-application/.reviews/workflow-evidence.md Score:
+100/100
+OK      .specs/features/006-destination-application/changelog.md Score: 100/100
+OK      
+.specs/features/006-destination-application/contracts/destination-contract.md 
+Score: 100/100
+OK      .specs/features/006-destination-application/plan.md Score: 100/100
+OK      .specs/features/006-destination-application/spec.md Score: 100/100
+OK      .specs/features/007-smart-paste/changelog.md Score: 100/100
+OK      .specs/features/007-smart-paste/plan.md Score: 100/100
+OK      .specs/features/007-smart-paste/run/007-current-finalize-entry.md Score:
+100/100
+OK      .specs/features/007-smart-paste/run/plan-finalize-entry.md Score: 
+100/100
+OK      .specs/features/007-smart-paste/spec.md Score: 100/100
+OK      
+.specs/features/007-smart-paste/superseded/plan-clipboard-recovery-window.md 
+Score: 100/100
+OK      
+.specs/features/007-smart-paste/superseded/spec-clipboard-recovery-window.md 
+Score: 100/100
+OK      .specs/features/008-settings-cli/changelog.md Score: 100/100
+OK      .specs/features/008-settings-cli/pipeline.md Score: 100/100
+OK      .specs/features/008-settings-cli/plan.md Score: 100/100
+OK      .specs/features/008-settings-cli/spec.md Score: 100/100
+OK      .specs/features/009-pin-mode-and-enter-rule/changelog.md Score: 100/100
+OK      .specs/features/009-pin-mode-and-enter-rule/plan.md Score: 100/100
+OK      .specs/features/009-pin-mode-and-enter-rule/spec.md Score: 100/100
+OK      .specs/features/010-recovery-bubble/changelog.md Score: 100/100
+OK      .specs/features/010-recovery-bubble/contracts/recovery-contract.md 
+Score: 100/100
+OK      .specs/features/010-recovery-bubble/plan.md Score: 100/100
+OK      .specs/features/010-recovery-bubble/spec.md Score: 100/100
+OK      
+.specs/penflow-approvals/source-604643ec42dd075ff29ca1df4f2e7b07001e18b2184e2f13
+5ad925b4e1f3441d.md Score: 100/100
+OK      
+.specs/penflow-approvals/source-6d343c8828db5cf78f93e0f043f66605a6d25c8727a7edc5
+3f817d102b7adfa2.md Score: 100/100
+OK      
+.specs/penflow-approvals/source-7069e4f51b2cd3645b40712b919f1ae8b75cccdae0042542
+9636faf377b12d2b.md Score: 100/100
+OK      
+.specs/penflow-approvals/source-a3ab266f5e7879cc93f839e04ba34bd64ce13fbfa17b0698
+57670f1a0079c1c3.md Score: 100/100
+OK      
+.specs/penflow-approvals/source-a624a389ba71346bfa51d1f9b4ab132e091345f60f1b8769
+59be939946d8636b.md Score: 100/100
+OK      
+.specs/penflow-approvals/source-b0257e05de19a8ccab6d33293295604377d2a24a89c3597b
+9ce95ad91e0d8c99.md Score: 100/100
+OK      
+.specs/penflow-approvals/source-dde7de9a379300c8f142908da2eade55973acd8a27610635
+df1aa5ee646c4a05.md Score: 100/100
+OK      
+.specs/penflow-approvals/source-e0ebfa19ecf77a4f621433c0004e43c8153ded88f899c6a3
+c3cd40963656c1d4.md Score: 100/100
+OK      
+.specs/penflow-approvals/source-fabf7c9adf516095fb004d27eee1ec7c28aa32e705ea4c19
+5e33db8c87ea84b2.md Score: 100/100
+OK      
+.specs/penflow-approvals/workflow-55b08214835a3a4df905758f3da55a3227d00ef7745751
+fe265c5d00e56350e9.md Score: 100/100
+OK      
+.specs/penflow-approvals/workflow-698931ce46b08ec8d69e99dae3bce60a626d149af76c10
+b5cec6bcb2661f49c0.md Score: 100/100
+OK      
+.specs/penflow-approvals/workflow-ffe00ad3ea82e8371425ef33c157f55230ee758734f4ce
+144c59edac45d29517.md Score: 100/100
+OK      .specs/preflight.md Score: 100/100
+OK      .specs/project.md Score: 100/100
+OK      .specs/roadmap.md Score: 100/100
+OK      .specs/stacks/_default.md Score: 100/100
+OK      .specs/tool-defects/penflow-flow-projection-20261013.md Score: 100/100
+EXIT=0

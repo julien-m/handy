@@ -41,6 +41,7 @@ inventory! {
  "debug_mode" => (Boolean,false,None,&[],false,false,"general",Logging);
  "log_level" => (String,false,None,&["trace","debug","info","warn","error"],false,false,"general",Logging);
  "custom_words" => (Array,false,None,&[],false,false,"vocabulary",None);
+ "word_replacements" => (Array,false,None,&[],false,false,"replacements",None);
  "model_unload_timeout" => (String,false,None,&["never","immediately","min2","min5","min10","min15","hour1","sec15"],false,false,"general",Model);
  "word_correction_threshold" => (Number,false,range(0.0,1.0),&[],false,false,"general",None);
  "history_limit" => (Integer,false,range(0.0,1000.0),&[],false,false,"general",History);

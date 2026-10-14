@@ -1,0 +1,7 @@
+$ (temporary) sed 's/data.is_word_character(c)/data.is_letter_or_digit(c)/' matcher.rs; cargo test --manifest-path src-tauri/Cargo.toml --lib word_replacements::matcher_tests
+Red check of the AC-006 combining-mark fixtures against the pre-fix boundary predicate; matcher.rs was restored right after.
+test word_replacements::matcher_tests::match_every_exact_fixture ... FAILED
+thread 'word_replacements::matcher_tests::match_every_exact_fixture' (41494707) panicked at src/word_replacements/matcher_tests.rs:337:9:
+  left: "Indiaीय"
+ right: "भारतीय"
+test result: FAILED. 3 passed; 1 failed; 0 ignored; 0 measured; 360 filtered out; finished in 0.01s

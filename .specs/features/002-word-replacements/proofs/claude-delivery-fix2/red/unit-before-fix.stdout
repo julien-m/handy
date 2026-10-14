@@ -1,0 +1,29 @@
+
+running 2 tests
+test word_replacements::preview_tests::an_error_line_after_the_listed_ignored_lines_is_still_listed ... FAILED
+test commands::replacements::tests::the_ui_preview_lists_an_error_line_after_a_thousand_ignored_lines ... FAILED
+
+failures:
+
+---- word_replacements::preview_tests::an_error_line_after_the_listed_ignored_lines_is_still_listed stdout ----
+
+thread 'word_replacements::preview_tests::an_error_line_after_the_listed_ignored_lines_is_still_listed' (50735594) panicked at src/word_replacements/preview_tests.rs:299:5:
+assertion `left == right` failed
+  left: []
+ right: [(Some(1001), 1)]
+
+---- commands::replacements::tests::the_ui_preview_lists_an_error_line_after_a_thousand_ignored_lines stdout ----
+
+thread 'commands::replacements::tests::the_ui_preview_lists_an_error_line_after_a_thousand_ignored_lines' (50735593) panicked at src/commands/replacements_tests.rs:197:5:
+assertion `left == right` failed
+  left: Some([])
+ right: Some([(Some(1001), Some(MissingSeparator))])
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    commands::replacements::tests::the_ui_preview_lists_an_error_line_after_a_thousand_ignored_lines
+    word_replacements::preview_tests::an_error_line_after_the_listed_ignored_lines_is_still_listed
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 675 filtered out; finished in 0.01s
+

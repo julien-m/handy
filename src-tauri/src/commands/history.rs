@@ -3,6 +3,7 @@ use crate::managers::{
     history::{HistoryManager, PaginatedHistory},
     transcription::TranscriptionManager,
 };
+use crate::word_replacements::published::current_matcher;
 use std::sync::Arc;
 use tauri::{AppHandle, State};
 
@@ -90,10 +91,13 @@ pub async fn retry_history_entry_transcription(
     transcription_manager.initiate_model_load();
 
     let tm = Arc::clone(&transcription_manager);
-    let transcription = tauri::async_runtime::spawn_blocking(move || tm.transcribe(samples))
-        .await
-        .map_err(|e| format!("Transcription task panicked: {}", e))?
-        .map_err(|e| e.to_string())?;
+    // A retry is a new dictation of saved audio: it uses the rules committed now.
+    let rules = current_matcher(&app);
+    let transcription =
+        tauri::async_runtime::spawn_blocking(move || tm.transcribe(samples, &rules))
+            .await
+            .map_err(|e| format!("Transcription task panicked: {}", e))?
+            .map_err(|e| e.to_string())?;
 
     if transcription.is_empty() {
         return Err("Recording contains no speech".to_string());
