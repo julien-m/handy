@@ -1,0 +1,30 @@
+002-word-replacements — UI hardening pass (2026-10-14)
+
+No Rust change for this feature.
+
+Shared checks (one run on the final tree of branch fix/ui-hardening-a, all four features applied; worktree /Users/julienm/projects/handy-wt/ui-hardening-a; port 1420 checked free before Playwright):
+
+npx tsc --noEmit => 0
+bun run lint => 0
+bun run format:check => 0   (prettier + cargo fmt -- --check)
+bun run check:translations => 0
+bun run build => 0
+bun run test:keyboard => 0   (all assertions passed)
+bun run test:shortcut-list => 0   (all assertions passed)
+bun run test:settings-errors => 0   (all assertions passed)
+bun run test:settings-store => 0   (11 pass)
+bun run test:microphone-priority => 0   (96 pass)
+bun run test:word-replacements => 0   (79 pass)
+bun run test:prompt-settings => 0   (58 + 7 pass)
+bun run test:indicator => 0   (35 pass)
+bun run test:vocabulary => 0   (53 pass)
+bun run test:shortcut-states => 0   (20 + 9 pass)
+bun run test:output-settings => 0   (20 + 7 pass)
+bun run test:microphone-priority-ui => 0   (Playwright, 26 passed)
+livespec conventions verify --feature repo --json > /dev/null => 0   (verdict PASS, new_count 0, blockers 0, receipt .specs/conventions/runs/20261014T163006Z/receipt.json, ignored by git; raw output not committed)
+
+Note: an earlier run of the same script had lint => 1 (two literal strings in a new render test) and conventions verify => 1 at the same time; both were fixed and the final run above is all 0.
+Function length (TypeScript AST, declaration to closing line) of every changed production file: no function above 30 lines; no changed file above 400 lines.
+
+New or changed 002 tests: draft-gate-model.test.ts (new, 7), editor-revision.test.ts (Discard during a Save, Discard and Cancel during an Apply, navigation while committing, late validator answer).
+Input.tsx: rendered markup compared with the previous component for 81 combinations of variant, invalid, disabled and className: 0 differences (one-off script, not committed).

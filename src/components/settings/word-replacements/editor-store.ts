@@ -186,8 +186,9 @@ function applyFollow(view: ReplacementRulesView): void {
   }
 }
 
-/** Replace the saved rules and the draft with a committed view. */
+/** Replace the saved rules and the draft with a committed view; a pending check is dropped. */
 function acceptView(view: ReplacementRulesView, commit: CommitState): void {
+  checkSequence += 1;
   patch({
     saved: view.rules,
     revision: view.revision,
@@ -255,9 +256,11 @@ function removeRule(key: string): void {
 
 /**
  * Drop the unsaved draft: the list shows the saved rules again. After a conflict the rules known
- * here are stale, so they are read again (like Reload).
+ * here are stale, so they are read again (like Reload). Ignored while a Save is in flight: the
+ * Save owns the draft and replaces it with what it committed.
  */
 function discard(): void {
+  if (isDraftLocked(editor())) return;
   if (editor().failure?.conflict === true) {
     void loadRules();
     return;

@@ -197,6 +197,18 @@ The UI delivery review (BLOCKED, 2 blocking findings) and its audit (PASS with w
 
 Not changed in this round (info findings): the `Badge` merge with other UI branches, RTL arrows, i18next plural keys, the save-or-discard dialog body before an import, the testid of the import dialog.
 
+## UI hardening pass (2026-10-14, branch `fix/ui-hardening-a`)
+
+Warnings of the UI delivery review round 2 (`review` PASS, `audit` PASS). Commands and exit codes: [proofs/claude-hardening](proofs/claude-hardening/summary.txt).
+
+| Finding | Correction |
+|---|---|
+| Review and audit warning — guard dialogs during a Save or an Apply | The guarded transitions are inactive while a commit runs (`isCommitInFlight`: list Save, text Apply or import Apply): the List/Text switch and Import… are disabled, a gated request opens no dialog, and section navigation is ignored (`hasCommitInFlight` on the guard's new `isBusy`). The editor's own Save-or-Discard dialog cannot be closed (`dismissible` off) and its Cancel and Discard are inactive (`aria-disabled`) while its Save runs. `discard()`, `discardEditor`, the text `cancel()` and `discardUnsavedChanges` do nothing during a commit, so the lock is never lifted. The waiting transition runs only after the Save that the same request started (`draft-gate-model.ts`), never after a Cancel or a refused commit. Tests: `draft-gate-model.test.ts` (7), `editor-revision.test.ts` (Discard during a Save, Discard and Cancel during an Apply, navigation while committing) |
+| Audit warning — `Input` render function of 34 lines | Class computation moved to `inputClasses` (render 19 lines); markup identical for the 81 combinations of variant, invalid, disabled and className (one-off comparison with the previous component) |
+| Review info — `acceptView` kept a validator answer in flight | `acceptView` increments the check sequence, so a late answer for the replaced draft is dropped. Test: `editor-revision.test.ts` (held check, reload, release) |
+
+Still pending with Julien: `tests/word-replacements.spec.ts` (Playwright) and the real-window proofs.
+
 ## Pending release evidence (never claimed as passed)
 
 - M1 budget: `cargo test --release --manifest-path src-tauri/Cargo.toml --test replacement_performance -- --nocapture` on an Apple M1 Mac; max sample must stay under 20 ms.

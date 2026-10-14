@@ -1,8 +1,9 @@
 /**
  * Replacement editor stores and the global settings revision (feature 002): a change of another
  * setting never turns Save, Apply or an import into a false conflict, a real change of the rules
- * still does and keeps Save disabled until Reload, an uncertain Save is settled by a reread, and
- * edits are locked while a commit is in flight.
+ * still does and keeps Save disabled until Reload, an uncertain Save is settled by a reread,
+ * edits, Discard and navigation are locked while a commit is in flight, and a late validator
+ * answer never marks rules it was not asked about.
  * Run with `bun run test:word-replacements` (Bun's test runner, for its module mocking).
  */
 import assert from "node:assert/strict";
@@ -16,6 +17,10 @@ const { canSave, isListDirty, useReplacementEditor } = await import(
 );
 const { useReplacementText } = await import("./text-store");
 const { useReplacementFiles } = await import("./file-store");
+const { discardEditor, isCommitInFlight } = await import(
+  "./use-editor-lifecycle"
+);
+const guards = await import("@/stores/unsaved-changes");
 
 const editor = () => useReplacementEditor.getState();
 const settle = () => new Promise((done) => setTimeout(done, 0));
@@ -180,6 +185,78 @@ describe("edits while a commit is in flight", () => {
       "recognized;replacement\nA;B",
     );
     useReplacementText.setState({ applying: false });
+  });
+});
+
+describe("Discard and navigation while a commit is in flight", () => {
+  test("Discard during a Save keeps the lock; the Save settles", async () => {
+    await editReplacement("Mine");
+    let release = () => {};
+    stub.saveGate = new Promise((done) => (release = done));
+    const saving = editor().save();
+    editor().discard();
+    discardEditor();
+    assert.equal(editor().commit, "saving");
+    assert.equal(editor().draft[0].replacement, "Mine");
+    assert.equal(isCommitInFlight(), true);
+    release();
+    assert.equal(await saving, true);
+    assert.equal(editor().commit, "saved");
+  });
+
+  test("Discard and Cancel during an Apply keep the text read-only", async () => {
+    const typed = "recognized;replacement\nA;B";
+    editor().setView("text");
+    useReplacementText.getState().setText(typed);
+    await useReplacementText.getState().requestPreview();
+    let release = () => {};
+    stub.applyGate = new Promise((done) => (release = done));
+    const applying = useReplacementText.getState().apply();
+    discardEditor();
+    useReplacementText.getState().cancel();
+    assert.equal(useReplacementText.getState().applying, true);
+    assert.equal(useReplacementText.getState().text, typed);
+    assert.equal(editor().view, "text");
+    release();
+    assert.equal(await applying, true);
+    assert.equal(useReplacementText.getState().applying, false);
+  });
+
+  test("section navigation is not offered while the editor commits", async () => {
+    await editReplacement("Mine");
+    let busy = true;
+    let discarded = 0;
+    const unregister = guards.registerUnsavedChangesGuard({
+      isDirty: () => true,
+      isBusy: () => busy,
+      discard: () => void (discarded += 1),
+    });
+    assert.equal(guards.hasCommitInFlight(), true);
+    guards.discardUnsavedChanges();
+    assert.equal(discarded, 0);
+    busy = false;
+    assert.equal(guards.hasCommitInFlight(), false);
+    guards.discardUnsavedChanges();
+    assert.equal(discarded, 1);
+    unregister();
+  });
+});
+
+describe("late validator answers", () => {
+  test("a check of a replaced draft does not mark the reloaded rules", async () => {
+    let release = () => {};
+    stub.checkGate = new Promise((done) => (release = done));
+    stub.checkIssues = [
+      { rule_index: 0, field: "replacement", kind: "duplicate_key" },
+    ];
+    editor().editRule("a", "replacement", "Mine");
+    stub.checkIssues = [];
+    await editor().loadRules();
+    release();
+    await settle();
+    assert.equal(editor().issues.length, 0);
+    assert.equal(editor().checking, false);
+    assert.equal(isListDirty(editor()), false);
   });
 });
 

@@ -1,6 +1,8 @@
 /**
  * Header of the replacement editor: title, description, the List/Text switch and the Import…
  * and Export… buttons (contract nodes `<screen>.rules.title`, `.views`, `.import`, `.export`).
+ * The switch and Import… are inactive while a Save or an Apply is in flight: they would leave
+ * edits the request still owns.
  */
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -14,6 +16,8 @@ interface RulesHeaderProps {
   view: EditorView;
   importing: boolean;
   exporting: boolean;
+  /** A Save or an Apply is in flight. */
+  busy: boolean;
   onView: (view: EditorView) => void;
   onImport: () => void;
   onExport: () => void;
@@ -40,13 +44,15 @@ export const RulesHeader: React.FC<RulesHeaderProps> = (props) => {
   );
 };
 
-const ViewSwitch: React.FC<RulesHeaderProps> = ({ screen, view, onView }) => {
+const ViewSwitch: React.FC<RulesHeaderProps> = (props) => {
+  const { screen, view, onView } = props;
   const { t } = useTranslation();
   const option = (value: EditorView) => (
     <Button
       variant={view === value ? "primary-soft" : "ghost"}
       className={view === value ? "" : "text-mid-gray"}
       aria-pressed={view === value}
+      disabled={props.busy}
       data-testid={`${screen}-view-${value}`}
       onClick={() => onView(value)}
     >
@@ -73,7 +79,7 @@ const FileButtons: React.FC<RulesHeaderProps> = (props) => {
       <Button
         variant="secondary"
         className="flex items-center gap-2"
-        disabled={props.importing}
+        disabled={props.importing || props.busy}
         aria-busy={props.importing}
         data-testid={`${props.screen}-import`}
         onClick={props.onImport}
