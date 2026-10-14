@@ -5,6 +5,8 @@
 
 ---
 
+## 2026-10-14 — [Features 004, 005, 006, 007, 008] UI hardening: shortcut draft exit and one-shot record requests (004), return-to-app row hidden while its gate is closed (006), Reload failure kept in the conflict alert and history limit saves tested (008), indicator window bounded by its monitor, menu timers cleaned, closed-gate test compared with dev (005/006/007)
+
 ## 2026-10-14 — [Feature 010] Plan refined: permission_missing aligned on the spec (no keystroke sent, so no possible-partial-insertion detail)
 <!-- finalize:spec-refine:2026-10-14:3d66e47e -->
 
