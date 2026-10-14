@@ -18,6 +18,8 @@
     "test:shortcut-list": "bun src/components/settings/shortcut-list-model.test.ts",
     "test:settings-errors": "bun src/stores/settings-errors.test.ts",
     "test:settings-store": "bun test src/stores/settings-store.test.ts",
+    "test:shortcut-states": "bun test src/components/settings/shortcut-draft-model.test.ts src/components/settings/shortcut-list-feedback.test.ts && bun test src/components/settings/shortcut-list-render.test.tsx",
+    "test:output-settings": "bun test src/components/settings/return-to-app-model.test.ts src/components/settings/history-limit-model.test.ts src/components/settings/paste-method-options.test.ts && bun test src/components/settings/output-settings-render.test.tsx",
     "test:playwright": "playwright test",
     "test:playwright:ui": "playwright test --ui",
     "check:translations": "bun scripts/check-translations.ts",

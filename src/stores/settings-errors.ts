@@ -85,6 +85,29 @@ export const settingsErrorKey = (
   }
 };
 
+/** How the settings window shows a refused settings command (settings-write-errors mockup). */
+export type SettingsErrorDisplay =
+  | "conflict-alert"
+  | "save-failed-toast"
+  | "toast";
+
+/**
+ * Where a refusal is shown: a revision conflict as the "Settings changed elsewhere" alert with
+ * Reload, a write failure as the "Couldn't save settings" notice, anything else as a toast.
+ * Validation errors with an inline place (an input) are shown there by their own setting.
+ * @param error typed error, or null for an untyped failure
+ * @returns the display of the refusal
+ */
+export const settingsErrorDisplay = (
+  error: SettingsCommandError | null,
+): SettingsErrorDisplay => {
+  if (error === null) return "toast";
+  if (error.code === "revision_conflict") return "conflict-alert";
+  return settingsErrorKey(error) === SETTINGS_ERROR_KEYS.persistenceFailed
+    ? "save-failed-toast"
+    : "toast";
+};
+
 /**
  * Narrow an unknown command error to the typed settings error.
  * @param value error payload of a command result

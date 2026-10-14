@@ -200,7 +200,21 @@
             "registration": "Het systeem heeft deze sneltoets geweigerd: {{error}}",
             "generic": "De sneltoets kon niet worden opgeslagen",
             "conflictsUnavailable": "Conflicten tussen sneltoetsen konden niet worden gecontroleerd"
-          }
+          },
+          "changeButton": "Wijzigen",
+          "discard": "Deze sneltoets verwerpen",
+          "lastHint": "Elke actie houdt minstens één sneltoets. Wijzig of herstel deze in plaats daarvan.",
+          "limitHint": "{{count}} van {{limit}} sneltoetsen. Verwijder er een om een andere toe te voegen.",
+          "draftConflict": "{{shortcut}} wordt al gebruikt door {{action}}. Er is niets opgeslagen.",
+          "draftOverlap": "{{shortcut}} zou ook {{action}} activeren. Er is niets opgeslagen.",
+          "legacyOverlap": "{{shortcut}} overlapt met {{action}}",
+          "legacyDuplicate": "{{shortcut}} wordt ook gebruikt door {{action}}",
+          "legacyBody": "Hij werkt nog zoals vóór de update. Wijzig hem om deze waarschuwing te wissen.",
+          "systemRefused": "{{system}} weigerde {{shortcut}}",
+          "systemRefusedGeneric": "Het systeem weigerde deze sneltoets",
+          "systemRefusedBody": "Mogelijk heeft een andere app deze combinatie geregistreerd. Kies een andere of probeer het opnieuw.",
+          "systemReason": "Systeembericht: {{error}}",
+          "retry": "Opnieuw proberen"
         }
       },
       "language": {
@@ -344,9 +358,13 @@
           "clipboardShiftInsert": "Klembord (Shift+Insert)",
           "direct": "Direct",
           "none": "Geen",
-          "externalScript": "Extern script"
+          "externalScript": "Extern script",
+          "clipboardMac": "Klembord (⌘V)",
+          "smartPasteDescription": "Standaard op macOS",
+          "noneDescription": "Alleen geschiedenis en klembord"
         },
-        "externalScriptPlaceholder": "/pad/naar/je/script.sh"
+        "externalScriptPlaceholder": "/pad/naar/je/script.sh",
+        "descriptionSmart": "Slim plakken schrijft rechtstreeks in het veld, of plakt anders en herstelt je klembord."
       },
       "typingTool": {
         "title": "Typgereedschap",
@@ -424,6 +442,14 @@
           "simplified": "Vereenvoudigd",
           "traditional": "Traditioneel"
         }
+      },
+      "returnToApp": {
+        "title": "Terug naar de app van het dicteren",
+        "description": "Invoegen in de app waar het dicteren begon, ook als je intussen van app wisselt.",
+        "unavailableUnreadable": "Niet beschikbaar op dit systeem: Handy kan de voorste app hier niet lezen. De tekst gaat aan het einde naar de app op de voorgrond.",
+        "unavailablePlatform": "Niet beschikbaar op dit systeem. De tekst gaat aan het einde naar de app op de voorgrond.",
+        "details": "Handy onthoudt de voorste app wanneer het dicteren begint en schakelt daar terug voordat de tekst wordt ingevoegd. Staat dit uit, dan gaat de tekst naar de app die op de voorgrond staat als het dicteren eindigt.",
+        "detailsLabel": "Over teruggaan naar de app van het dicteren"
       }
     },
     "postProcessing": {
@@ -548,7 +574,8 @@
       "historyLimit": {
         "title": "Geschiedenislimiet",
         "description": "Maximum aantal te bewaren geschiedenisitems",
-        "entries": "items"
+        "entries": "items",
+        "invalid": "Voer een geheel getal in van {{min}} tot {{max}}."
       },
       "recordingRetention": {
         "title": "Opnames automatisch verwijderen",
@@ -696,7 +723,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy heeft toegankelijkheidsmachtigingen nodig om getranscribeerde tekst te kunnen typen.",
-    "openSettings": "Systeeminstellingen openen"
+    "openSettings": "Systeeminstellingen openen",
+    "offTitle": "De toegankelijkheidstoestemming staat uit",
+    "smartPasteOff": "Slim plakken kan niet invoegen of plakken. Je transcripties worden bewaard zodat je ze kunt terughalen."
   },
   "errors": {
     "loadDirectory": "Fout bij laden van map: {{error}}",
@@ -726,7 +755,7 @@
       "revisionConflict": "De instellingen zijn elders gewijzigd. Laad opnieuw en probeer het nog eens.",
       "unavailable": "Deze instelling kan nu niet worden gewijzigd. Probeer het later opnieuw.",
       "shortcutSessionBusy": "Er loopt een dictaat. Probeer het opnieuw wanneer het is afgelopen.",
-      "persistenceFailed": "De instellingen konden niet worden opgeslagen.",
+      "persistenceFailed": "Kan instellingen niet opslaan: het instellingenbestand kon niet worden geschreven. Er is niets gewijzigd.",
       "generic": "De instelling kon niet worden gewijzigd.",
       "readOnly": "De instellingen zijn in deze sessie alleen-lezen: het instellingenbestand kan niet veilig worden geschreven, dus wijzigingen worden niet opgeslagen.",
       "unsupportedPlatform": "Deze instelling is niet beschikbaar op dit systeem.",
@@ -738,7 +767,10 @@
       "promptOverrideIncomplete": "Kies een provider en een model, of gebruik de standaardprovider.",
       "promptUnknownProvider": "Deze provider is niet beschikbaar.",
       "promptNotUsable": "Deze prompt is ongeldig. Bewerk hem voordat je hem gebruikt.",
-      "limitExceeded": "Het maximale aantal is bereikt."
+      "limitExceeded": "Het maximale aantal is bereikt.",
+      "conflictTitle": "Instellingen elders gewijzigd",
+      "conflictBody": "De opdrachtregel of een ander venster heeft een nieuwere versie opgeslagen. Laad opnieuw om die te zien; je niet-opgeslagen wijziging wordt verworpen.",
+      "reload": "Opnieuw laden"
     }
   },
   "appLanguage": {

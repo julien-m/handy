@@ -220,7 +220,21 @@
             "registration": "System odrzucił ten skrót: {{error}}",
             "generic": "Nie udało się zapisać skrótu",
             "conflictsUnavailable": "Nie udało się sprawdzić konfliktów skrótów"
-          }
+          },
+          "changeButton": "Zmień",
+          "discard": "Odrzuć ten skrót",
+          "lastHint": "Każda akcja zachowuje co najmniej jeden skrót. Zamiast tego zmień go lub przywróć.",
+          "limitHint": "{{count}} z {{limit}} skrótów. Usuń jeden, aby dodać inny.",
+          "draftConflict": "{{shortcut}} jest już używany przez {{action}}. Nic nie zostało zapisane.",
+          "draftOverlap": "{{shortcut}} uruchomiłby też {{action}}. Nic nie zostało zapisane.",
+          "legacyOverlap": "{{shortcut}} nakłada się na {{action}}",
+          "legacyDuplicate": "{{shortcut}} jest też używany przez {{action}}",
+          "legacyBody": "Działa tak jak przed aktualizacją. Zmień go, aby usunąć to ostrzeżenie.",
+          "systemRefused": "{{system}} odrzucił {{shortcut}}",
+          "systemRefusedGeneric": "System odrzucił ten skrót",
+          "systemRefusedBody": "Inna aplikacja mogła zarejestrować tę kombinację. Wybierz inną lub spróbuj ponownie.",
+          "systemReason": "Komunikat systemu: {{error}}",
+          "retry": "Spróbuj ponownie"
         }
       },
       "language": {
@@ -344,9 +358,13 @@
           "clipboardShiftInsert": "Schowek (Shift+Insert)",
           "direct": "Bezpośrednio",
           "none": "Brak",
-          "externalScript": "Skrypt zewnętrzny"
+          "externalScript": "Skrypt zewnętrzny",
+          "clipboardMac": "Schowek (⌘V)",
+          "smartPasteDescription": "Domyślnie w macOS",
+          "noneDescription": "Tylko historia i schowek"
         },
-        "externalScriptPlaceholder": "/sciezka/do/twojego/skryptu.sh"
+        "externalScriptPlaceholder": "/sciezka/do/twojego/skryptu.sh",
+        "descriptionSmart": "Inteligentne wklejanie wpisuje tekst bezpośrednio w pole, a w przeciwnym razie wkleja go i przywraca schowek."
       },
       "typingTool": {
         "title": "Narzędzie do wpisywania",
@@ -424,6 +442,14 @@
           "simplified": "Uproszczone",
           "traditional": "Tradycyjne"
         }
+      },
+      "returnToApp": {
+        "title": "Wróć do aplikacji dyktowania",
+        "description": "Wstawiaj do aplikacji, w której zaczęło się dyktowanie, nawet jeśli w międzyczasie przełączysz aplikację.",
+        "unavailableUnreadable": "Niedostępne w tym systemie: Handy nie może tu odczytać aplikacji na pierwszym planie. Tekst trafi na końcu do aplikacji na pierwszym planie.",
+        "unavailablePlatform": "Niedostępne w tym systemie. Tekst trafi na końcu do aplikacji na pierwszym planie.",
+        "details": "Handy zapamiętuje aplikację na pierwszym planie w chwili rozpoczęcia dyktowania i wraca do niej przed wstawieniem tekstu. Gdy opcja jest wyłączona, tekst trafia do aplikacji na pierwszym planie po zakończeniu dyktowania.",
+        "detailsLabel": "Informacje o powrocie do aplikacji dyktowania"
       }
     },
     "postProcessing": {
@@ -534,7 +560,8 @@
       "historyLimit": {
         "title": "Limit historii",
         "description": "Maksymalna liczba wpisów w historii",
-        "entries": "wpisy"
+        "entries": "wpisy",
+        "invalid": "Wpisz liczbę całkowitą od {{min}} do {{max}}."
       },
       "recordingRetention": {
         "title": "Automatyczne usuwanie nagrań",
@@ -693,7 +720,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy potrzebuje uprawnień dostępności, aby wpisywać transkrybowany tekst.",
-    "openSettings": "Otwórz ustawienia systemowe"
+    "openSettings": "Otwórz ustawienia systemowe",
+    "offTitle": "Uprawnienie dostępności jest wyłączone",
+    "smartPasteOff": "Inteligentne wklejanie nie może wstawiać ani wklejać. Twoje transkrypcje są zachowywane do odzyskania."
   },
   "errors": {
     "loadDirectory": "Błąd wczytywania katalogu: {{error}}",
@@ -723,7 +752,7 @@
       "revisionConflict": "Ustawienia zostały zmienione gdzie indziej. Odśwież i spróbuj ponownie.",
       "unavailable": "Tego ustawienia nie można teraz zmienić. Spróbuj ponownie później.",
       "shortcutSessionBusy": "Trwa dyktowanie. Spróbuj ponownie po jego zakończeniu.",
-      "persistenceFailed": "Nie udało się zapisać ustawień.",
+      "persistenceFailed": "Nie można zapisać ustawień: nie udało się zapisać pliku ustawień. Nic nie zostało zmienione.",
       "generic": "Nie udało się zmienić ustawienia.",
       "readOnly": "Ustawienia są w tej sesji tylko do odczytu: pliku ustawień nie można bezpiecznie zapisać, więc zmiany nie zostaną zachowane.",
       "unsupportedPlatform": "To ustawienie nie jest dostępne w tym systemie.",
@@ -735,7 +764,10 @@
       "promptOverrideIncomplete": "Wybierz dostawcę i model albo użyj domyślnego dostawcy.",
       "promptUnknownProvider": "Ten dostawca jest niedostępny.",
       "promptNotUsable": "Ten prompt jest nieprawidłowy. Edytuj go przed użyciem.",
-      "limitExceeded": "Osiągnięto maksymalną liczbę."
+      "limitExceeded": "Osiągnięto maksymalną liczbę.",
+      "conflictTitle": "Ustawienia zmieniono gdzie indziej",
+      "conflictBody": "Wiersz poleceń lub inne okno zapisało nowszą wersję. Odśwież, aby ją zobaczyć; niezapisana zmiana zostanie odrzucona.",
+      "reload": "Odśwież"
     }
   },
   "appLanguage": {

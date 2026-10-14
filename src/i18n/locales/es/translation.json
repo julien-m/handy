@@ -220,7 +220,21 @@
             "registration": "El sistema rechazó este atajo: {{error}}",
             "generic": "No se pudo guardar el atajo",
             "conflictsUnavailable": "No se pudieron comprobar los conflictos de atajos"
-          }
+          },
+          "changeButton": "Cambiar",
+          "discard": "Descartar este atajo",
+          "lastHint": "Cada acción conserva al menos un atajo. Cámbialo o restablécelo.",
+          "limitHint": "{{count}} de {{limit}} atajos. Elimina uno para añadir otro.",
+          "draftConflict": "{{shortcut}} ya lo usa {{action}}. No se guardó nada.",
+          "draftOverlap": "{{shortcut}} también activaría {{action}}. No se guardó nada.",
+          "legacyOverlap": "{{shortcut}} se solapa con {{action}}",
+          "legacyDuplicate": "{{shortcut}} también lo usa {{action}}",
+          "legacyBody": "Sigue funcionando como antes de la actualización. Cámbialo para quitar este aviso.",
+          "systemRefused": "{{system}} rechazó {{shortcut}}",
+          "systemRefusedGeneric": "El sistema rechazó este atajo",
+          "systemRefusedBody": "Puede que otra app haya registrado esta combinación. Elige otra o vuelve a intentarlo.",
+          "systemReason": "Mensaje del sistema: {{error}}",
+          "retry": "Reintentar"
         }
       },
       "language": {
@@ -344,9 +358,13 @@
           "clipboardShiftInsert": "Portapapeles (Shift+Insert)",
           "direct": "Directo",
           "none": "Ninguno",
-          "externalScript": "Script externo"
+          "externalScript": "Script externo",
+          "clipboardMac": "Portapapeles (⌘V)",
+          "smartPasteDescription": "Predeterminado en macOS",
+          "noneDescription": "Solo historial y portapapeles"
         },
-        "externalScriptPlaceholder": "/ruta/a/su/script.sh"
+        "externalScriptPlaceholder": "/ruta/a/su/script.sh",
+        "descriptionSmart": "El pegado inteligente escribe directamente en el campo; si no, pega y restaura el portapapeles."
       },
       "typingTool": {
         "title": "Herramienta de escritura",
@@ -424,6 +442,14 @@
           "simplified": "Simplificado",
           "traditional": "Tradicional"
         }
+      },
+      "returnToApp": {
+        "title": "Volver a la aplicación del dictado",
+        "description": "Insertar en la app donde empezó el dictado, aunque cambies de app mientras tanto.",
+        "unavailableUnreadable": "No disponible en este sistema: Handy no puede leer la app en primer plano. El texto va a la app en primer plano al final.",
+        "unavailablePlatform": "No disponible en este sistema. El texto va a la app en primer plano al final.",
+        "details": "Handy recuerda la app en primer plano al empezar un dictado y vuelve a ella antes de insertar el texto. Si está desactivado, el texto va a la app en primer plano cuando termina el dictado.",
+        "detailsLabel": "Acerca de volver a la aplicación del dictado"
       }
     },
     "postProcessing": {
@@ -534,7 +560,8 @@
       "historyLimit": {
         "title": "Límite de historial",
         "description": "Número máximo de entradas de historial a conservar",
-        "entries": "entradas"
+        "entries": "entradas",
+        "invalid": "Introduce un número entero de {{min}} a {{max}}."
       },
       "recordingRetention": {
         "title": "Eliminación automática de grabaciones",
@@ -693,7 +720,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy necesita permisos de accesibilidad para escribir texto transcrito.",
-    "openSettings": "Abrir Ajustes del Sistema"
+    "openSettings": "Abrir Ajustes del Sistema",
+    "offTitle": "El permiso de accesibilidad está desactivado",
+    "smartPasteOff": "El pegado inteligente no puede insertar ni pegar. Tus transcripciones se conservan para recuperarlas."
   },
   "errors": {
     "loadDirectory": "Error al cargar el directorio: {{error}}",
@@ -723,7 +752,7 @@
       "revisionConflict": "La configuración se cambió en otro lugar. Recarga e inténtalo de nuevo.",
       "unavailable": "Esta configuración no se puede cambiar ahora. Inténtalo más tarde.",
       "shortcutSessionBusy": "Hay un dictado en curso. Inténtalo de nuevo cuando termine.",
-      "persistenceFailed": "No se pudo guardar la configuración.",
+      "persistenceFailed": "No se pudo guardar la configuración: no se pudo escribir el archivo de configuración. No se cambió nada.",
       "generic": "No se pudo cambiar la configuración.",
       "readOnly": "La configuración es de solo lectura en esta sesión: el archivo de configuración no se puede escribir de forma segura, así que los cambios no se guardarán.",
       "unsupportedPlatform": "Este ajuste no está disponible en este sistema.",
@@ -735,7 +764,10 @@
       "promptOverrideIncomplete": "Elige un proveedor y un modelo, o usa el proveedor predeterminado.",
       "promptUnknownProvider": "Este proveedor no está disponible.",
       "promptNotUsable": "Este prompt no es válido. Edítalo antes de usarlo.",
-      "limitExceeded": "Se ha alcanzado el número máximo."
+      "limitExceeded": "Se ha alcanzado el número máximo.",
+      "conflictTitle": "La configuración cambió en otro lugar",
+      "conflictBody": "La línea de comandos u otra ventana guardó una versión más reciente. Recarga para verla; tu cambio sin guardar se descarta.",
+      "reload": "Recargar"
     }
   },
   "appLanguage": {

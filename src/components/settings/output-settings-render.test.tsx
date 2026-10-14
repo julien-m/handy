@@ -1,0 +1,151 @@
+/**
+ * Rendered states of the output settings (006 return to the dictation's application, 007 paste
+ * method) and of the settings write errors (008): contract test ids, the unavailable reason, the
+ * revision conflict alert and the history limit field. Run with `bun run test:output-settings`.
+ */
+import { describe, expect, mock, test } from "bun:test";
+import { renderToStaticMarkup } from "react-dom/server";
+import type { DestinationSupport } from "@/bindings";
+
+mock.module("react-i18next", () => ({
+  useTranslation: () => ({ t: (key: string) => key }),
+}));
+mock.module("@tauri-apps/plugin-os", () => ({ type: () => "macos" }));
+
+let support: DestinationSupport | null | undefined = undefined;
+mock.module("../../hooks/use-destination-support", () => ({
+  useDestinationSupport: () => support,
+}));
+mock.module("../../hooks/use-smart-paste-availability", () => ({
+  useSmartPasteAvailability: () => true,
+}));
+let stored: Record<string, unknown> = {};
+mock.module("../../hooks/useSettings", () => ({
+  useSettings: () => ({
+    getSetting: (key: string) => stored[key],
+    updateSetting: async () => true,
+    isUpdating: () => false,
+  }),
+}));
+let revisionConflict = false;
+mock.module("../../stores/settingsStore", () => ({
+  useSettingsStore: (select: (state: object) => unknown) =>
+    select({ revisionConflict, reloadAfterConflict: async () => undefined }),
+}));
+
+const { ReturnToAppSetting } = await import("./return-to-app-setting");
+const { PasteMethodSetting } = await import("./PasteMethod");
+const { SettingsConflictAlert } = await import("./settings-conflict-alert");
+const { HistoryLimit } = await import("./HistoryLimit");
+
+const TOGGLE = 'data-testid="output-settings-return-app-toggle"';
+/** The toggle's input element, whatever its attribute order. */
+const toggleOf = (markup: string): string => {
+  const end = markup.indexOf(TOGGLE);
+  return markup.slice(
+    markup.lastIndexOf("<input", end),
+    markup.indexOf(">", end),
+  );
+};
+
+describe("return to the dictation's application (006)", () => {
+  test("gate closed: unavailable, off, with the reason, info still offered", () => {
+    support = { state: "unsupported", reason: "platform_unsupported" };
+    stored = { return_to_dictation_app: true };
+    const markup = renderToStaticMarkup(<ReturnToAppSetting grouped />);
+    expect(markup.includes('data-testid="output-settings-return-app"')).toBe(
+      true,
+    );
+    expect(
+      markup.includes('data-testid="output-settings-return-app-title"'),
+    ).toBe(true);
+    expect(
+      markup.includes("settings.advanced.returnToApp.unavailablePlatform"),
+    ).toBe(true);
+    expect(
+      markup.includes('data-testid="output-settings-return-app-info"'),
+    ).toBe(true);
+    const toggle = toggleOf(markup);
+    expect(toggle.includes("disabled")).toBe(true);
+    expect(toggle.includes("checked")).toBe(false);
+  });
+
+  test("frontmost app unreadable: its own reason", () => {
+    support = { state: "unsupported", reason: "frontmost_unreadable" };
+    const markup = renderToStaticMarkup(<ReturnToAppSetting grouped />);
+    expect(
+      markup.includes("settings.advanced.returnToApp.unavailableUnreadable"),
+    ).toBe(true);
+  });
+
+  test("supported: the stored value, usable", () => {
+    support = { state: "supported" };
+    stored = { return_to_dictation_app: true };
+    const markup = renderToStaticMarkup(<ReturnToAppSetting grouped />);
+    expect(markup.includes("settings.advanced.returnToApp.description")).toBe(
+      true,
+    );
+    const toggle = toggleOf(markup);
+    expect(toggle.includes("checked")).toBe(true);
+    expect(toggle.includes("disabled")).toBe(false);
+  });
+});
+
+describe("paste method selector (007)", () => {
+  test("smart paste offered: its description inline and the contract ids", () => {
+    stored = { paste_method: "smart_paste" };
+    const markup = renderToStaticMarkup(
+      <PasteMethodSetting descriptionMode="inline" grouped />,
+    );
+    expect(markup.includes('data-testid="output-settings-paste-method"')).toBe(
+      true,
+    );
+    expect(
+      markup.includes('data-testid="output-settings-paste-method-select"'),
+    ).toBe(true);
+    expect(
+      markup.includes("settings.advanced.pasteMethod.descriptionSmart"),
+    ).toBe(true);
+    expect(
+      markup.includes(
+        ">settings.advanced.pasteMethod.options.smartPaste</span>",
+      ),
+    ).toBe(true);
+  });
+});
+
+describe("settings write errors (008)", () => {
+  test("no conflict: nothing shown", () => {
+    revisionConflict = false;
+    expect(renderToStaticMarkup(<SettingsConflictAlert />)).toBe("");
+  });
+
+  test("revision conflict: the alert with its title and Reload", () => {
+    revisionConflict = true;
+    const markup = renderToStaticMarkup(<SettingsConflictAlert />);
+    expect(
+      markup.includes('data-testid="settings-write-errors-conflict"'),
+    ).toBe(true);
+    expect(
+      markup.includes('data-testid="settings-write-errors-conflict-title"'),
+    ).toBe(true);
+    expect(markup.includes('data-testid="settings-write-errors-reload"')).toBe(
+      true,
+    );
+    expect(markup.includes("errors.settings.conflictBody")).toBe(true);
+  });
+
+  test("a stored history limit shows no error", () => {
+    stored = { history_limit: 5 };
+    const markup = renderToStaticMarkup(<HistoryLimit grouped />);
+    expect(
+      markup.includes(
+        'data-testid="settings-write-errors-history-limit-input"',
+      ),
+    ).toBe(true);
+    expect(markup.includes("settings-write-errors-history-limit-error")).toBe(
+      false,
+    );
+    expect(markup.includes("aria-invalid")).toBe(false);
+  });
+});

@@ -220,7 +220,21 @@
             "registration": "システムがこのショートカットを拒否しました: {{error}}",
             "generic": "ショートカットを保存できませんでした",
             "conflictsUnavailable": "ショートカットの競合を確認できませんでした"
-          }
+          },
+          "changeButton": "変更",
+          "discard": "このショートカットを破棄",
+          "lastHint": "各操作には少なくとも1つのショートカットが残ります。代わりに変更またはリセットしてください。",
+          "limitHint": "ショートカット {{count}}/{{limit}} 個。追加するには1つ削除してください。",
+          "draftConflict": "{{shortcut}} はすでに {{action}} で使用されています。何も保存されていません。",
+          "draftOverlap": "{{shortcut}} は {{action}} も起動してしまいます。何も保存されていません。",
+          "legacyOverlap": "{{shortcut}} は {{action}} と重複しています",
+          "legacyDuplicate": "{{shortcut}} は {{action}} でも使用されています",
+          "legacyBody": "アップデート前と同じように動作し続けています。この警告を消すには変更してください。",
+          "systemRefused": "{{system}} が {{shortcut}} を拒否しました",
+          "systemRefusedGeneric": "システムがこのショートカットを拒否しました",
+          "systemRefusedBody": "別のアプリがこの組み合わせを登録している可能性があります。別の組み合わせを選ぶか、もう一度お試しください。",
+          "systemReason": "システムのメッセージ: {{error}}",
+          "retry": "再試行"
         }
       },
       "language": {
@@ -344,9 +358,13 @@
           "clipboardShiftInsert": "クリップボード (Shift+Insert)",
           "direct": "直接",
           "none": "なし",
-          "externalScript": "外部スクリプト"
+          "externalScript": "外部スクリプト",
+          "clipboardMac": "クリップボード (⌘V)",
+          "smartPasteDescription": "macOS の既定",
+          "noneDescription": "履歴とクリップボードのみ"
         },
-        "externalScriptPlaceholder": "/path/to/your/script.sh"
+        "externalScriptPlaceholder": "/path/to/your/script.sh",
+        "descriptionSmart": "スマート貼り付けはフィールドに直接書き込み、できない場合は貼り付けてからクリップボードを元に戻します。"
       },
       "typingTool": {
         "title": "タイピングツール",
@@ -424,6 +442,14 @@
           "simplified": "簡体字",
           "traditional": "繁体字"
         }
+      },
+      "returnToApp": {
+        "title": "音声入力を始めたアプリに戻る",
+        "description": "途中で別のアプリに切り替えても、音声入力を始めたアプリに挿入します。",
+        "unavailableUnreadable": "このシステムでは利用できません: Handy はここで最前面のアプリを読み取れません。テキストは最後に最前面にあるアプリに入力されます。",
+        "unavailablePlatform": "このシステムでは利用できません。テキストは最後に最前面にあるアプリに入力されます。",
+        "details": "Handy は音声入力の開始時に最前面のアプリを記憶し、テキストを挿入する前にそのアプリに戻ります。オフの場合、テキストは音声入力の終了時に最前面にあるアプリに入力されます。",
+        "detailsLabel": "音声入力を始めたアプリに戻る機能について"
       }
     },
     "postProcessing": {
@@ -534,7 +560,8 @@
       "historyLimit": {
         "title": "履歴上限",
         "description": "保持する履歴エントリーの最大数",
-        "entries": "件"
+        "entries": "件",
+        "invalid": "{{min}} から {{max}} までの整数を入力してください。"
       },
       "recordingRetention": {
         "title": "録音の自動削除",
@@ -693,7 +720,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy が文字起こしテキストを入力するには、アクセシビリティ権限が必要です。",
-    "openSettings": "システム設定を開く"
+    "openSettings": "システム設定を開く",
+    "offTitle": "アクセシビリティ権限がオフです",
+    "smartPasteOff": "スマート貼り付けで挿入も貼り付けもできません。文字起こしは復元用に保持されます。"
   },
   "errors": {
     "loadDirectory": "ディレクトリの読み込みエラー: {{error}}",
@@ -723,7 +752,7 @@
       "revisionConflict": "設定が別の場所で変更されました。再読み込みしてもう一度お試しください。",
       "unavailable": "この設定は現在変更できません。後でもう一度お試しください。",
       "shortcutSessionBusy": "音声入力中です。終了してからもう一度お試しください。",
-      "persistenceFailed": "設定を保存できませんでした。",
+      "persistenceFailed": "設定を保存できませんでした: 設定ファイルに書き込めませんでした。何も変更されていません。",
       "generic": "設定を変更できませんでした。",
       "readOnly": "このセッションでは設定は読み取り専用です。設定ファイルに安全に書き込めないため、変更は保存されません。",
       "unsupportedPlatform": "この設定はこのシステムでは利用できません。",
@@ -735,7 +764,10 @@
       "promptOverrideIncomplete": "プロバイダーとモデルの両方を選ぶか、既定のプロバイダーを使ってください。",
       "promptUnknownProvider": "このプロバイダーは利用できません。",
       "promptNotUsable": "このプロンプトは無効です。使用する前に編集してください。",
-      "limitExceeded": "上限数に達しました。"
+      "limitExceeded": "上限数に達しました。",
+      "conflictTitle": "設定が別の場所で変更されました",
+      "conflictBody": "コマンドラインまたは別のウィンドウが新しいバージョンを保存しました。再読み込みして確認してください。保存していない変更は破棄されます。",
+      "reload": "再読み込み"
     }
   },
   "appLanguage": {

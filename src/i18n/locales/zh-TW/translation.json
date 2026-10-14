@@ -200,7 +200,21 @@
             "registration": "系統拒絕了此快速鍵：{{error}}",
             "generic": "無法儲存快速鍵",
             "conflictsUnavailable": "無法檢查快速鍵衝突"
-          }
+          },
+          "changeButton": "變更",
+          "discard": "捨棄此快速鍵",
+          "lastHint": "每個動作至少保留一個快速鍵。請改為變更或重設。",
+          "limitHint": "已有 {{count}}/{{limit}} 個快速鍵。請先移除一個再新增。",
+          "draftConflict": "{{shortcut}} 已被{{action}}使用。未儲存任何內容。",
+          "draftOverlap": "{{shortcut}} 也會觸發{{action}}。未儲存任何內容。",
+          "legacyOverlap": "{{shortcut}} 與{{action}}重疊",
+          "legacyDuplicate": "{{shortcut}} 也被{{action}}使用",
+          "legacyBody": "它仍像更新前一樣運作。變更它即可清除此警告。",
+          "systemRefused": "{{system}} 拒絕了 {{shortcut}}",
+          "systemRefusedGeneric": "系統拒絕了此快速鍵",
+          "systemRefusedBody": "可能有其他 App 已註冊此組合鍵。請另選一個或重試。",
+          "systemReason": "系統訊息：{{error}}",
+          "retry": "重試"
         }
       },
       "language": {
@@ -344,9 +358,13 @@
           "clipboardShiftInsert": "剪貼簿 (Shift+Insert)",
           "direct": "直接",
           "none": "無",
-          "externalScript": "外部腳本"
+          "externalScript": "外部腳本",
+          "clipboardMac": "剪貼簿 (⌘V)",
+          "smartPasteDescription": "macOS 上的預設方式",
+          "noneDescription": "僅歷史紀錄和剪貼簿"
         },
-        "externalScriptPlaceholder": "/path/to/your/script.sh"
+        "externalScriptPlaceholder": "/path/to/your/script.sh",
+        "descriptionSmart": "智慧貼上會直接寫入欄位，否則會貼上並還原你的剪貼簿。"
       },
       "typingTool": {
         "title": "輸入工具",
@@ -424,6 +442,14 @@
           "simplified": "簡體",
           "traditional": "繁體"
         }
+      },
+      "returnToApp": {
+        "title": "返回聽寫所在的 App",
+        "description": "即使中途切換了 App，也插入到開始聽寫的 App 中。",
+        "unavailableUnreadable": "此系統上無法使用：Handy 無法在此讀取前景 App。文字會在結束時進入位於前景的 App。",
+        "unavailablePlatform": "此系統上無法使用。文字會在結束時進入位於前景的 App。",
+        "details": "Handy 會在聽寫開始時記住前景 App，並在插入文字前切換回該 App。關閉時，文字會進入聽寫結束時位於前景的 App。",
+        "detailsLabel": "關於返回聽寫所在的 App"
       }
     },
     "postProcessing": {
@@ -534,7 +560,8 @@
       "historyLimit": {
         "title": "歷史紀錄上限",
         "description": "歷史紀錄的最大保留筆數",
-        "entries": "筆"
+        "entries": "筆",
+        "invalid": "請輸入 {{min}} 到 {{max}} 之間的整數。"
       },
       "recordingRetention": {
         "title": "自動刪除錄音",
@@ -693,7 +720,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy 需要輔助使用權限才能輸入轉錄的文字",
-    "openSettings": "開啟系統設定"
+    "openSettings": "開啟系統設定",
+    "offTitle": "輔助使用權限已關閉",
+    "smartPasteOff": "智慧貼上無法插入或貼上。你的轉錄內容會保留以便復原。"
   },
   "errors": {
     "loadDirectory": "載入目錄時發生錯誤: {{error}}",
@@ -723,7 +752,7 @@
       "revisionConflict": "設定已在其他地方變更。請重新載入後再試一次。",
       "unavailable": "目前無法變更此設定，請稍後再試。",
       "shortcutSessionBusy": "正在進行聽寫。請在結束後再試一次。",
-      "persistenceFailed": "無法儲存設定。",
+      "persistenceFailed": "無法儲存設定：無法寫入設定檔。未做任何變更。",
       "generic": "無法變更設定。",
       "readOnly": "本次工作階段的設定為唯讀：無法安全寫入設定檔，因此變更不會儲存。",
       "unsupportedPlatform": "此設定在此系統上無法使用。",
@@ -735,7 +764,10 @@
       "promptOverrideIncomplete": "請同時選擇服務提供者和模型，或使用預設服務提供者。",
       "promptUnknownProvider": "此服務提供者無法使用。",
       "promptNotUsable": "此提示詞無效。請先編輯後再使用。",
-      "limitExceeded": "已達到最大數量。"
+      "limitExceeded": "已達到最大數量。",
+      "conflictTitle": "設定已在其他地方變更",
+      "conflictBody": "命令列或其他視窗儲存了較新的版本。重新載入即可查看；你未儲存的修改將被捨棄。",
+      "reload": "重新載入"
     }
   },
   "appLanguage": {

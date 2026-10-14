@@ -695,6 +695,7 @@ pub fn run(cli_args: CliArgs) {
             shortcut::reset_binding,
             shortcut::edits::edit_binding_shortcuts,
             shortcut::edits::get_shortcut_conflicts,
+            shortcut::edits::check_binding_shortcut_edit,
             shortcut::change_shortcut_activation_setting,
             shortcut::change_hold_threshold_ms_setting,
             shortcut::change_audio_feedback_setting,

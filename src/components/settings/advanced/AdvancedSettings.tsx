@@ -10,6 +10,7 @@ import { ShowTrayIcon } from "../ShowTrayIcon";
 import { PasteMethodSetting } from "../PasteMethod";
 import { TypingToolSetting } from "../TypingTool";
 import { ClipboardHandlingSetting } from "../ClipboardHandling";
+import { ReturnToAppSetting } from "../return-to-app-setting";
 import { AutoSubmit } from "../AutoSubmit";
 import { PostProcessingToggle } from "../PostProcessingToggle";
 import { AppendTrailingSpace } from "../AppendTrailingSpace";
@@ -31,7 +32,10 @@ export const AdvancedSettings: React.FC = () => {
   const experimentalEnabled = getSetting("experimental_enabled") || false;
 
   return (
-    <div className="max-w-3xl w-full mx-auto space-y-6">
+    <div
+      className="max-w-3xl w-full mx-auto space-y-6"
+      data-testid="output-settings-screen"
+    >
       <SettingsGroup title={t("settings.advanced.groups.app")}>
         <StartHidden descriptionMode="tooltip" grouped={true} />
         <AutostartToggle descriptionMode="tooltip" grouped={true} />
@@ -41,12 +45,15 @@ export const AdvancedSettings: React.FC = () => {
         <ExperimentalToggle descriptionMode="tooltip" grouped={true} />
       </SettingsGroup>
 
-      <SettingsGroup title={t("settings.advanced.groups.output")}>
-        <PasteMethodSetting descriptionMode="tooltip" grouped={true} />
-        <TypingToolSetting descriptionMode="tooltip" grouped={true} />
-        <ClipboardHandlingSetting descriptionMode="tooltip" grouped={true} />
-        <AutoSubmit descriptionMode="tooltip" grouped={true} />
-      </SettingsGroup>
+      <div data-testid="output-settings-output">
+        <SettingsGroup title={t("settings.advanced.groups.output")}>
+          <PasteMethodSetting descriptionMode="inline" grouped={true} />
+          <TypingToolSetting descriptionMode="tooltip" grouped={true} />
+          <ClipboardHandlingSetting descriptionMode="tooltip" grouped={true} />
+          <ReturnToAppSetting grouped={true} />
+          <AutoSubmit descriptionMode="tooltip" grouped={true} />
+        </SettingsGroup>
+      </div>
 
       <SettingsGroup title={t("settings.advanced.groups.transcription")}>
         <VoiceActivityDetection descriptionMode="tooltip" grouped={true} />
@@ -56,13 +63,15 @@ export const AdvancedSettings: React.FC = () => {
         <AppendTrailingSpace descriptionMode="tooltip" grouped={true} />
       </SettingsGroup>
 
-      <SettingsGroup title={t("settings.advanced.groups.history")}>
-        <HistoryLimit descriptionMode="tooltip" grouped={true} />
-        <RecordingRetentionPeriodSelector
-          descriptionMode="tooltip"
-          grouped={true}
-        />
-      </SettingsGroup>
+      <div data-testid="settings-write-errors-history">
+        <SettingsGroup title={t("settings.advanced.groups.history")}>
+          <HistoryLimit descriptionMode="tooltip" grouped={true} />
+          <RecordingRetentionPeriodSelector
+            descriptionMode="tooltip"
+            grouped={true}
+          />
+        </SettingsGroup>
+      </div>
 
       {experimentalEnabled && (
         <SettingsGroup title={t("settings.advanced.groups.experimental")}>

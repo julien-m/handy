@@ -197,7 +197,21 @@
             "registration": "رفض النظام هذا الاختصار: {{error}}",
             "generic": "تعذّر حفظ الاختصار",
             "conflictsUnavailable": "تعذّر التحقق من تعارضات الاختصارات"
-          }
+          },
+          "changeButton": "تغيير",
+          "discard": "تجاهل هذا الاختصار",
+          "lastHint": "يحتفظ كل إجراء باختصار واحد على الأقل. غيّره أو أعد تعيينه بدلاً من ذلك.",
+          "limitHint": "{{count}} من {{limit}} اختصارات. أزل واحدًا لإضافة آخر.",
+          "draftConflict": "{{shortcut}} مستخدم بالفعل بواسطة {{action}}. لم يُحفظ أي شيء.",
+          "draftOverlap": "سيؤدي {{shortcut}} أيضًا إلى تشغيل {{action}}. لم يُحفظ أي شيء.",
+          "legacyOverlap": "يتداخل {{shortcut}} مع {{action}}",
+          "legacyDuplicate": "{{shortcut}} مستخدم أيضًا بواسطة {{action}}",
+          "legacyBody": "لا يزال يعمل كما كان قبل التحديث. غيّره لإزالة هذا التحذير.",
+          "systemRefused": "رفض {{system}} الاختصار {{shortcut}}",
+          "systemRefusedGeneric": "رفض النظام هذا الاختصار",
+          "systemRefusedBody": "ربما سجّل تطبيق آخر هذه التركيبة. اختر تركيبة أخرى أو حاول مرة أخرى.",
+          "systemReason": "رسالة النظام: {{error}}",
+          "retry": "حاول مرة أخرى"
         }
       },
       "language": {
@@ -321,9 +335,13 @@
           "clipboardShiftInsert": "الحافظة (Shift+Insert)",
           "direct": "مباشر",
           "none": "بلا",
-          "externalScript": "نص برمجي خارجي"
+          "externalScript": "نص برمجي خارجي",
+          "clipboardMac": "الحافظة (⌘V)",
+          "smartPasteDescription": "الافتراضي على macOS",
+          "noneDescription": "السجل والحافظة فقط"
         },
-        "externalScriptPlaceholder": "/path/to/your/script.sh"
+        "externalScriptPlaceholder": "/path/to/your/script.sh",
+        "descriptionSmart": "يكتب اللصق الذكي في الحقل مباشرةً، وإلا فإنه يلصق النص ثم يستعيد محتوى الحافظة."
       },
       "typingTool": {
         "title": "أداة الكتابة",
@@ -401,6 +419,14 @@
           "simplified": "مبسطة",
           "traditional": "تقليدية"
         }
+      },
+      "returnToApp": {
+        "title": "العودة إلى تطبيق الإملاء",
+        "description": "الإدراج في التطبيق الذي بدأ فيه الإملاء، حتى لو انتقلت إلى تطبيق آخر في هذه الأثناء.",
+        "unavailableUnreadable": "غير متاح على هذا النظام: لا يستطيع Handy قراءة التطبيق الأمامي هنا. يذهب النص إلى التطبيق الموجود في المقدمة عند الانتهاء.",
+        "unavailablePlatform": "غير متاح على هذا النظام. يذهب النص إلى التطبيق الموجود في المقدمة عند الانتهاء.",
+        "details": "يتذكر Handy التطبيق الموجود في المقدمة عند بدء الإملاء ويعود إليه قبل إدراج النص. عند إيقاف هذا الخيار، يذهب النص إلى التطبيق الموجود في المقدمة عند انتهاء الإملاء.",
+        "detailsLabel": "حول العودة إلى تطبيق الإملاء"
       }
     },
     "postProcessing": {
@@ -511,7 +537,8 @@
       "historyLimit": {
         "title": "حد السجل",
         "description": "الحد الأقصى لعدد إدخالات السجل المراد الاحتفاظ بها",
-        "entries": "إدخالات"
+        "entries": "إدخالات",
+        "invalid": "أدخل عددًا صحيحًا من {{min}} إلى {{max}}."
       },
       "recordingRetention": {
         "title": "حذف التسجيلات تلقائياً",
@@ -693,7 +720,9 @@
   },
   "accessibility": {
     "permissionsDescription": ".يحتاج Handy إلى أذونات إمكانية الوصول لكتابة النص المفرغ",
-    "openSettings": "فتح إعدادات النظام"
+    "openSettings": "فتح إعدادات النظام",
+    "offTitle": "إذن تسهيلات الاستخدام متوقف",
+    "smartPasteOff": "لا يستطيع اللصق الذكي الإدراج أو اللصق. يتم الاحتفاظ بنصوصك المفرّغة لاستعادتها."
   },
   "errors": {
     "loadDirectory": "خطأ في تحميل المجلد: {{error}}",
@@ -723,7 +752,7 @@
       "revisionConflict": "تم تغيير الإعدادات في مكان آخر. أعد التحميل وحاول مرة أخرى.",
       "unavailable": "لا يمكن تغيير هذا الإعداد الآن. حاول مرة أخرى لاحقًا.",
       "shortcutSessionBusy": "هناك إملاء قيد التقدم. حاول مرة أخرى عند انتهائه.",
-      "persistenceFailed": "تعذّر حفظ الإعدادات.",
+      "persistenceFailed": "تعذّر حفظ الإعدادات: لم تتم الكتابة إلى ملف الإعدادات. لم يتغير أي شيء.",
       "generic": "تعذّر تغيير الإعداد.",
       "readOnly": "الإعدادات للقراءة فقط في هذه الجلسة: لا يمكن الكتابة في ملف الإعدادات بأمان، لذا لن تُحفظ التغييرات.",
       "unsupportedPlatform": "هذا الإعداد غير متاح على هذا النظام.",
@@ -735,7 +764,10 @@
       "promptOverrideIncomplete": "اختر مزوّدًا ونموذجًا، أو استخدم المزوّد الافتراضي.",
       "promptUnknownProvider": "هذا المزوّد غير متاح.",
       "promptNotUsable": "هذا الموجّه غير صالح. عدّله قبل استخدامه.",
-      "limitExceeded": "تم بلوغ الحد الأقصى للعدد."
+      "limitExceeded": "تم بلوغ الحد الأقصى للعدد.",
+      "conflictTitle": "تم تغيير الإعدادات في مكان آخر",
+      "conflictBody": "حفظ سطر الأوامر أو نافذة أخرى إصدارًا أحدث. أعد التحميل لرؤيته؛ سيتم تجاهل تعديلك غير المحفوظ.",
+      "reload": "إعادة التحميل"
     }
   },
   "appLanguage": {

@@ -54,6 +54,40 @@ describe("smart paste absent elsewhere", () => {
   });
 });
 
+describe("option labels, descriptions and test ids (mockup)", () => {
+  test("smart paste and None carry their second line", () => {
+    const choices = pasteMethodChoices("macos", "smart_paste", true);
+    const described = choices.map((entry) => entry.descriptionKey ?? "-");
+    expect(described).toEqual([
+      "settings.advanced.pasteMethod.options.smartPasteDescription",
+      "-",
+      "settings.advanced.pasteMethod.options.noneDescription",
+    ]);
+  });
+  test("macOS shows the Command symbol, other systems Ctrl+V", () => {
+    const [, mac] = pasteMethodChoices("macos", "ctrl_v", true);
+    expect(mac.labelKey).toBe(
+      "settings.advanced.pasteMethod.options.clipboardMac",
+    );
+    const [windows] = pasteMethodChoices("windows", "ctrl_v", true);
+    expect(windows.labelKey).toBe(
+      "settings.advanced.pasteMethod.options.clipboard",
+    );
+  });
+  test("slugs follow the contract option ids", () => {
+    const linux = pasteMethodChoices("linux", "ctrl_v", false);
+    expect(linux.map((entry) => entry.slug)).toEqual([
+      "clipboard",
+      "direct",
+      "none",
+      "clipboard-ctrl-shift-v",
+      "clipboard-shift-insert",
+      "script",
+    ]);
+    expect(pasteMethodChoices("macos", null, true)[0].slug).toBe("smart");
+  });
+});
+
 describe("beta reliable paste switch", () => {
   test("hidden on macOS only once smart paste replaces it", () => {
     expect(showsReliablePasteToggle("macos", true)).toBe(false);

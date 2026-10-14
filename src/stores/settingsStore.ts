@@ -1,3 +1,4 @@
+import { createElement } from "react";
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 import { listen } from "@tauri-apps/api/event";
@@ -24,6 +25,7 @@ import {
   isCurrentRevision,
   SETTINGS_ERROR_KEYS,
   SettingsCommandFailure,
+  settingsErrorDisplay,
   settingsErrorKey,
   throwIfSettingsError,
 } from "./settings-errors";
@@ -45,8 +47,12 @@ interface SettingsStore {
   // Shortcuts the system refused when post-processing was last enabled;
   // their rows carry a warning until they are changed.
   refusedShortcuts: RefusedShortcut[];
+  // Another writer (CLI, other window) committed a newer revision than the one a write expected;
+  // the settings window shows "Settings changed elsewhere" until Reload.
+  revisionConflict: boolean;
 
   // Actions
+  reloadAfterConflict: () => Promise<void>;
   initialize: () => Promise<void>;
   loadDefaultSettings: () => Promise<void>;
   loadUpdateChecksLocked: () => Promise<void>;
@@ -102,12 +108,29 @@ interface SettingsStore {
  * Show a refused settings command explicitly (translated from its typed code/reason).
  * @param error error thrown by a settings action
  */
+const SAVE_FAILED_TEST_ID = "settings-write-errors-save-failed";
+
 const notifySettingsError = (error: unknown): void => {
-  const key =
-    error instanceof SettingsCommandFailure
-      ? settingsErrorKey(error.detail)
-      : SETTINGS_ERROR_KEYS.generic;
-  toast.error(i18n.t(key));
+  const detail = error instanceof SettingsCommandFailure ? error.detail : null;
+  const key = detail ? settingsErrorKey(detail) : SETTINGS_ERROR_KEYS.generic;
+  switch (settingsErrorDisplay(detail)) {
+    case "conflict-alert":
+      useSettingsStore.setState({ revisionConflict: true });
+      return;
+    case "save-failed-toast":
+      // Test ids of the settings-write-errors contract on the notice and its text.
+      toast.error(
+        createElement(
+          "span",
+          { "data-testid": `${SAVE_FAILED_TEST_ID}-title` },
+          i18n.t(key),
+        ),
+        { testId: SAVE_FAILED_TEST_ID },
+      );
+      return;
+    default:
+      toast.error(i18n.t(key));
+  }
 };
 
 // Shown once per session: every later change is refused with its own message anyway.
@@ -249,6 +272,7 @@ export const useSettingsStore = create<SettingsStore>()(
     postProcessModelOptions: {},
     updateChecksLocked: null,
     refusedShortcuts: [],
+    revisionConflict: false,
 
     // Internal setters
     setSettings: (settings) => set({ settings }),
@@ -535,6 +559,13 @@ export const useSettingsStore = create<SettingsStore>()(
     // A keyboard implementation switch registers every shortcut again, so
     // the refusals of the last activation no longer describe the backend.
     clearRefusedShortcuts: () => set({ refusedShortcuts: [] }),
+
+    // Reload after "Settings changed elsewhere": the store is authoritative, so the newer
+    // revision replaces whatever this window held; the alert closes once it is shown.
+    reloadAfterConflict: async () => {
+      await get().refreshSettings();
+      set({ revisionConflict: false });
+    },
 
     // Enable or disable post-processing; the backend always saves the
     // choice. Returns the shortcuts the system refused, for the caller to

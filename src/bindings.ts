@@ -53,6 +53,14 @@ async editBindingShortcuts(id: string, edit: ShortcutEdit) : Promise<ShortcutEdi
 async getShortcutConflicts() : Promise<StoredShortcutConflict[]> {
     return await TAURI_INVOKE("get_shortcut_conflicts");
 },
+/**
+ * Checks one edit of action `id` against the published settings without registering or saving
+ * anything, so the settings can show a recorded shortcut as valid or invalid before it is added.
+ * The system's own registration check runs only when the edit is applied.
+ */
+async checkBindingShortcutEdit(id: string, edit: ShortcutEdit) : Promise<ShortcutEditError | null> {
+    return await TAURI_INVOKE("check_binding_shortcut_edit", { id, edit });
+},
 async changeShortcutActivationSetting(activation: ShortcutActivation) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_shortcut_activation_setting", { activation }) };

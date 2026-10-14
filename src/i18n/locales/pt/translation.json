@@ -200,7 +200,21 @@
             "registration": "O sistema recusou este atalho: {{error}}",
             "generic": "Não foi possível salvar o atalho",
             "conflictsUnavailable": "Não foi possível verificar os conflitos de atalhos"
-          }
+          },
+          "changeButton": "Alterar",
+          "discard": "Descartar este atalho",
+          "lastHint": "Cada ação mantém pelo menos um atalho. Altere-o ou redefina-o.",
+          "limitHint": "{{count}} de {{limit}} atalhos. Remova um para adicionar outro.",
+          "draftConflict": "{{shortcut}} já é usado por {{action}}. Nada foi salvo.",
+          "draftOverlap": "{{shortcut}} também acionaria {{action}}. Nada foi salvo.",
+          "legacyOverlap": "{{shortcut}} se sobrepõe a {{action}}",
+          "legacyDuplicate": "{{shortcut}} também é usado por {{action}}",
+          "legacyBody": "Continuou funcionando como antes da atualização. Altere-o para remover este aviso.",
+          "systemRefused": "O {{system}} recusou {{shortcut}}",
+          "systemRefusedGeneric": "O sistema recusou este atalho",
+          "systemRefusedBody": "Outro app pode ter registrado esta combinação. Escolha outra ou tente novamente.",
+          "systemReason": "Mensagem do sistema: {{error}}",
+          "retry": "Tentar novamente"
         }
       },
       "language": {
@@ -344,9 +358,13 @@
           "clipboardShiftInsert": "Área de Transferência (Shift+Insert)",
           "direct": "Direto",
           "none": "Nenhum",
-          "externalScript": "Script externo"
+          "externalScript": "Script externo",
+          "clipboardMac": "Área de Transferência (⌘V)",
+          "smartPasteDescription": "Padrão no macOS",
+          "noneDescription": "Somente histórico e área de transferência"
         },
-        "externalScriptPlaceholder": "/caminho/para/seu/script.sh"
+        "externalScriptPlaceholder": "/caminho/para/seu/script.sh",
+        "descriptionSmart": "A colagem inteligente escreve direto no campo; caso contrário, cola e restaura sua área de transferência."
       },
       "typingTool": {
         "title": "Ferramenta de digitação",
@@ -424,6 +442,14 @@
           "simplified": "Simplificado",
           "traditional": "Tradicional"
         }
+      },
+      "returnToApp": {
+        "title": "Voltar ao aplicativo do ditado",
+        "description": "Inserir no app em que o ditado começou, mesmo que você troque de app nesse meio-tempo.",
+        "unavailableUnreadable": "Indisponível neste sistema: o Handy não consegue ler o app em primeiro plano aqui. O texto vai para o app em primeiro plano no final.",
+        "unavailablePlatform": "Indisponível neste sistema. O texto vai para o app em primeiro plano no final.",
+        "details": "O Handy lembra o app em primeiro plano quando um ditado começa e volta a ele antes de inserir o texto. Desativado, o texto vai para o app em primeiro plano quando o ditado termina.",
+        "detailsLabel": "Sobre voltar ao aplicativo do ditado"
       }
     },
     "postProcessing": {
@@ -534,7 +560,8 @@
       "historyLimit": {
         "title": "Limite de Histórico",
         "description": "Número máximo de entradas de histórico a manter",
-        "entries": "entradas"
+        "entries": "entradas",
+        "invalid": "Digite um número inteiro de {{min}} a {{max}}."
       },
       "recordingRetention": {
         "title": "Excluir Gravações Automaticamente",
@@ -693,7 +720,9 @@
   },
   "accessibility": {
     "permissionsDescription": "O Handy precisa de permissões de acessibilidade para digitar o texto transcrito.",
-    "openSettings": "Abrir Configurações do Sistema"
+    "openSettings": "Abrir Configurações do Sistema",
+    "offTitle": "A permissão de acessibilidade está desativada",
+    "smartPasteOff": "A colagem inteligente não consegue inserir nem colar. Suas transcrições são mantidas para recuperação."
   },
   "errors": {
     "loadDirectory": "Erro ao carregar diretório: {{error}}",
@@ -723,7 +752,7 @@
       "revisionConflict": "As configurações foram alteradas em outro lugar. Recarregue e tente novamente.",
       "unavailable": "Esta configuração não pode ser alterada agora. Tente novamente mais tarde.",
       "shortcutSessionBusy": "Um ditado está em andamento. Tente novamente quando terminar.",
-      "persistenceFailed": "Não foi possível salvar as configurações.",
+      "persistenceFailed": "Não foi possível salvar as configurações: o arquivo de configurações não pôde ser gravado. Nada foi alterado.",
       "generic": "Não foi possível alterar a configuração.",
       "readOnly": "As configurações estão somente leitura nesta sessão: o arquivo de configurações não pode ser gravado com segurança, então as alterações não serão salvas.",
       "unsupportedPlatform": "Esta configuração não está disponível neste sistema.",
@@ -735,7 +764,10 @@
       "promptOverrideIncomplete": "Escolha um provedor e um modelo, ou use o provedor padrão.",
       "promptUnknownProvider": "Este provedor não está disponível.",
       "promptNotUsable": "Este prompt é inválido. Edite-o antes de usá-lo.",
-      "limitExceeded": "O número máximo foi atingido."
+      "limitExceeded": "O número máximo foi atingido.",
+      "conflictTitle": "Configurações alteradas em outro lugar",
+      "conflictBody": "A linha de comando ou outra janela salvou uma versão mais recente. Recarregue para vê-la; sua alteração não salva será descartada.",
+      "reload": "Recarregar"
     }
   },
   "appLanguage": {
