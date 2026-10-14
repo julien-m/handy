@@ -146,6 +146,29 @@ Reports: full-lane delivery review `reviewer-002` BLOCKED (1 blocking, 2 warning
 
 Verification ([final](proofs/claude-delivery-fix1/final/)): full `cargo test` exit 0, 856 passed, 0 failed, 22 ignored; `cargo clippy --lib --bins -- -D warnings` 0; `cargo clippy --all-targets` 0 with the 4 baseline warnings only; `cargo fmt --check` 0; `bun run lint` 0; `bun run format:check` 0; `tsc --noEmit` 0; `livespec conventions verify --feature repo --json` PASS (run `20261014T093251Z`, blockers 0, new 0, baselined 538).
 
+## Delivery review correction round 2 (2026-10-14)
+
+Reports: full-lane delivery review `reviewer-002-r2` BLOCKED (1 blocking, 1 warning, 7 info) and audit `auditor-002-r2` PASS with 2 warnings. This is the last correction round allowed (round 3 of 3); only the points below were changed. Raw outputs in [proofs/claude-delivery-fix2](proofs/claude-delivery-fix2/).
+
+| Commit | What |
+|---|---|
+| `9cc4a7f` | Blocking — error lines located after many ignored lines |
+| `f5383aa` | Conventions — `check_field` and `ErrorReason::message` under 30 lines |
+| `691bd5f` | Audit info — `preview_word_replacements` off the main thread |
+| `7f608c7` | Review and audit warnings — export through links, read-only files, temporary permissions, directory sync |
+
+| Finding | Disposition |
+|---|---|
+| Blocking (review) — `preview_scan.rs:95`, ignored rows starve error rows | Fixed. Ignored rows and error rows each have their own bound of `MAX_LISTED_OTHER_LINES` (1000), so the first 1000 error lines are always listed, whatever the number of blank or comment lines before them; the refusal's `details.items` keeps the first 100 (D3) with `index` and `code`. Tests: 500 blank + 500 comment lines then `Cloud Opus` lists one error row at line 1001 (`preview_tests`), the settings-window preview shows it (`commands::replacements` tests), the CLI import and `--dry-run` refuse with `items = [{index: 1000, code: missing_separator}]`, and 150 errors after the ignored lines give exactly 100 items starting at index 1000 (`replacement_cli` `exchange`). Red before the fix: [red](proofs/claude-delivery-fix2/red/) (unit and CLI tests fail with no listed error and no items) |
+| Warning (audit) — export through a symbolic link, over a read-only file; README "like a shell redirection" | Fixed by orchestrator decision. The destination itself is refused when it is a symbolic link (dangling or not) with `persistence_failed` / `export_symbolic_link`, or a regular file the user cannot write (no write bit, or an open for writing refused by the system) with `persistence_failed` / `export_read_only`; nothing is written, the path is never in the error. Two closed reasons added (27), 008 checked schema regenerated ([schema](proofs/claude-delivery-fix2/schema/)). README and the module comment no longer say "like a shell redirection". Directories in the path are still resolved by the system (`/tmp` is itself a link on macOS) |
+| Info (review and audit) — temporary file briefly 0644 | Fixed. The temporary is created with `OpenOptionsExt::mode` (the replaced file's mode, or 0600 for a new file) and that mode is set exactly before the first byte is written. A new export file is now 0600 (README) |
+| Warning (review) — failed directory sync after the rename reported as `export_not_written` | Fixed: the export succeeds with `data.durable = false` and a stderr warning ("the export file was replaced, but the system could not confirm it is saved to disk"); `export_not_written` is kept for failures before the rename. Tests: a 0300 directory (rename works, opening it to sync fails) in `exchange_file_tests` and through the CLI |
+| Warning (audit) — `check_field` 32 lines, `ErrorReason::message` 39 lines | Fixed without behavior change: `field_checks` returns the five checks, `rule_message` answers the 002 rule reasons; a test checks that every reason of `ErrorReason::ALL` has its own message and none reaches the fallback; the reason-to-message mapping was compared before and after (25 identical pairs) |
+| Info (audit) — synchronous `preview_word_replacements` | Fixed: `async`, run on `tauri_adapter::blocking`; the TypeScript binding keeps the same signature (only its doc comment changed) |
+| Other info findings | Recorded as follow-ups in implementation.md (invisible characters, `debug` log of settings, `.gitattributes`, W1, W2); no code change |
+
+Verification ([final](proofs/claude-delivery-fix2/final/), HEAD `7f608c7`): full `cargo test` exit 0, 866 passed, 0 failed, 22 ignored; `cargo clippy --lib --bins -- -D warnings` 0; `cargo clippy --all-targets` 0 with the 4 baseline warnings of `dev` only (`lib.rs`, `supervisor.rs`, `gguf_meta.rs`, `portable.rs`); `cargo fmt --check` 0; `bun run lint` 0; `bun run format:check` 0; `tsc --noEmit` 0; `livespec conventions verify --feature repo --json` PASS (run `20261014T100207Z`, blockers 0, baselined 538). No new function above 30 lines in the touched files; the 006 test `schema_closes_reason_and_items` (already 48 lines) grows to 50 with the two reasons. During development one `replacement_cli` run hit the known load flake of `an_import_larger_than_one_request_is_staged_offline_and_routed` (no export involved); it passed alone, in two reruns and in the full suite. `src/bindings.ts` was edited only in two doc comments, matching the Rust comments line for line (the debug app was not launched to re-export).
+
 ## Pending release evidence (never claimed as passed)
 
 - M1 budget: `cargo test --release --manifest-path src-tauri/Cargo.toml --test replacement_performance -- --nocapture` on an Apple M1 Mac; max sample must stay under 20 ms.
