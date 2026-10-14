@@ -10,7 +10,7 @@ pub const MAX_ERROR_ITEMS: usize = 100;
 /// Closed snake_case reasons of `details.reason` and `details.items[].code`; later features add
 /// their own variants. Each has a fixed English message and never carries a candidate value.
 // @spec FR-006: Shared error details for the settings CLI — .specs/features/006-destination-application/spec.md#fr-006
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, specta::Type)]
 #[serde(rename_all = "snake_case")]
 pub enum ErrorReason {
     /// The operation or setting needs a platform capability this build does not have.
@@ -67,6 +67,19 @@ pub enum ErrorReason {
     ExportSymbolicLink,
     /// The export destination is a file the user cannot write; it is unchanged (002).
     ExportReadOnly,
+    /// A vocabulary term is empty once trimmed (003).
+    TermEmpty,
+    /// A vocabulary term exceeds 100 characters (003).
+    TermTooLong,
+    /// A vocabulary term contains a line break (003).
+    TermLineBreak,
+    /// A vocabulary term contains `<`, `>`, `"` or NUL (003).
+    TermForbiddenCharacter,
+    /// A vocabulary term repeats another term (003).
+    TermDuplicate,
+    /// The loaded model declares a recognition-context mechanism whose budget is not documented
+    /// for this build (003): a durable internal defect, never a retryable state.
+    ContextBudgetUnverified,
     /// The microphone choices change only through `handy settings microphones` (001).
     MicrophonesDomain,
     /// A microphone choice is empty or only whitespace (001).
@@ -76,7 +89,7 @@ pub enum ErrorReason {
 }
 impl ErrorReason {
     /// Every reason of this build, in wire-schema order.
-    pub const ALL: [Self; 30] = [
+    pub const ALL: [Self; 36] = [
         Self::UnsupportedPlatform,
         Self::ShortcutSessionBusy,
         Self::InstanceRequired,
@@ -104,6 +117,12 @@ impl ErrorReason {
         Self::ExportNotWritten,
         Self::ExportSymbolicLink,
         Self::ExportReadOnly,
+        Self::TermEmpty,
+        Self::TermTooLong,
+        Self::TermLineBreak,
+        Self::TermForbiddenCharacter,
+        Self::TermDuplicate,
+        Self::ContextBudgetUnverified,
         Self::MicrophonesDomain,
         Self::MicrophoneNameEmpty,
         Self::MicrophoneNameDuplicate,
@@ -129,8 +148,24 @@ impl ErrorReason {
             Self::MicrophonesDomain => "Use handy settings microphones set-priority.",
             Self::MicrophoneNameEmpty => "A microphone name cannot be empty.",
             Self::MicrophoneNameDuplicate => "Each microphone may appear only once.",
-            rule => rule.rule_message(),
+            other => other.term_message().unwrap_or_else(|| other.rule_message()),
         }
+    }
+    /// Message of a vocabulary term or recognition context reason (003); `None` for every other
+    /// reason.
+    fn term_message(self) -> Option<&'static str> {
+        let message = match self {
+            Self::TermEmpty => "A term cannot be empty.",
+            Self::TermTooLong => "A term has at most 100 characters.",
+            Self::TermLineBreak => "A term cannot contain a line break.",
+            Self::TermForbiddenCharacter => "A term cannot contain <, > or \".",
+            Self::TermDuplicate => "Each term may appear only once.",
+            Self::ContextBudgetUnverified => {
+                "The selected model's recognition context budget is not documented in this build."
+            }
+            _ => return None,
+        };
+        Some(message)
     }
     /// Message of a replacement rule or rule set reason (002); `message` answers every other
     /// reason first, and a test checks that no reason reaches the fallback.
@@ -170,7 +205,7 @@ const UNMATCHED_MESSAGE: &str = "The settings change was refused.";
 
 /// One refused position of a domain input: zero-based `index`, closed `code` and its fixed
 /// message; never the candidate value.
-#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, specta::Type)]
 pub struct ErrorItem {
     index: u64,
     code: ErrorReason,

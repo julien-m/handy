@@ -95,9 +95,7 @@ impl ValidationReason {
             Self::OutOfRange => "Value is outside the allowed range.",
             Self::UiOnly => "This setting is changed in the settings UI.",
             Self::ShortcutsDomain => "Use handy settings shortcuts to change shortcuts.",
-            Self::VocabularyDomain => {
-                "Use handy settings vocabulary; this domain is not available in this build."
-            }
+            Self::VocabularyDomain => "Use handy settings vocabulary to change this list.",
             Self::PromptsDomain => {
                 "Use handy settings prompts; this domain is not available in this build."
             }

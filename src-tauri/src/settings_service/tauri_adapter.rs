@@ -163,23 +163,6 @@ pub async fn blocking<T: Send + 'static>(
             SettingsCommandError::from(SettingsError::new(SettingsErrorCode::InternalError))
         })?
 }
-/// Domain change from the settings UI (a whole list, for example) in the write order, with the
-/// same validation and transaction as the CLI and a compare-and-set on the revision the UI edited.
-///
-/// # Errors
-/// Same as `set`, plus the change's own refusal and `revision_conflict`.
-pub fn write_change(
-    app: &AppHandle,
-    change: &DomainChange,
-    expected: Option<Revision>,
-) -> Result<LiveCommit, SettingsCommandError> {
-    Ok(sequence::write_change(
-        live(app)?.inner(),
-        &TauriEffects(app),
-        change,
-        expected,
-    )?)
-}
 /// Typed UI or manager edit applied to the latest settings, in the write order.
 ///
 /// # Errors
@@ -201,6 +184,24 @@ pub fn edit_at(
         live(app)?.inner(),
         &TauriEffects(app),
         edit,
+        expected,
+    )?)
+}
+/// Domain change from the settings UI (a list edit built with the same validator as the CLI
+/// domain), committed in the write order with the UI's base revision: the same edit, compare-and-
+/// set, live effects and event as a routed CLI change (`sequence::write_change`).
+///
+/// # Errors
+/// `revision_conflict` for a stale `expected`, the change's own refusal, otherwise same as `set`.
+pub fn write_change(
+    app: &AppHandle,
+    change: &DomainChange,
+    expected: Option<Revision>,
+) -> Result<LiveCommit, SettingsCommandError> {
+    Ok(sequence::write_change(
+        live(app)?.inner(),
+        &TauriEffects(app),
+        change,
         expected,
     )?)
 }

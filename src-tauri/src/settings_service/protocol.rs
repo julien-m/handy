@@ -105,7 +105,7 @@ pub fn contract_schema() -> Result<serde_json::Value, SettingsError> {
     ];
     let code_values = serde_json::to_value(codes)
         .map_err(|_| SettingsError::new(SettingsErrorCode::InternalError))?;
-    let reasons = serde_json::to_value(super::errors::ErrorReason::ALL)
+    let reasons = serde_json::to_value(super::errors::ErrorReason::ALL.as_slice())
         .map_err(|_| SettingsError::new(SettingsErrorCode::InternalError))?;
     let metadata = serde_json::to_value(super::descriptor::descriptors())
         .map_err(|_| SettingsError::new(SettingsErrorCode::InternalError))?;

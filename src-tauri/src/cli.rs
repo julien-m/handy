@@ -119,8 +119,75 @@ pub enum SettingsCommand {
     Replacements(ReplacementsArgs),
     /// Shortcuts of each action: list them; add, remove or reset them in the running Handy
     Shortcuts(ShortcutsArgs),
+    /// Recognition vocabulary: list, add, remove, import or export terms; status for the
+    /// selected model
+    Vocabulary(VocabularyArgs),
     /// Microphone choices: list the saved order, availability and microphone in use; replace it
     Microphones(MicrophonesArgs),
+}
+
+/// `handy settings vocabulary`: the recognition vocabulary, with the validation of the settings
+/// window.
+#[derive(Args, Debug, Clone)]
+#[command(
+    after_help = "TERM has 1 to 100 characters, no line break and none of < > \". Terms are \
+unique ignoring case and spacing; a list holds at most 500 terms. export prints one term per line \
+on stdout: redirect it to save a file. status needs a running Handy, which reports the model it \
+has loaded; without one it fails with unavailable (exit 5)."
+)]
+pub struct VocabularyArgs {
+    #[command(subcommand)]
+    pub action: VocabularyAction,
+}
+
+/// How an import combines with the saved terms.
+#[derive(clap::ValueEnum, Debug, Clone, Copy, PartialEq, Eq)]
+pub enum VocabularyImportMode {
+    /// Keep the saved terms and append the new ones in input order
+    Merge,
+    /// Make the input the whole list, in input order
+    Replace,
+}
+
+/// Actions of the vocabulary domain.
+#[derive(Subcommand, Debug, Clone)]
+pub enum VocabularyAction {
+    /// Print the saved terms in order, with the reason a term is not sent to recognition
+    List,
+    /// Append one term
+    Add {
+        /// Term to add
+        term: String,
+        #[command(flatten)]
+        options: ChangeOptions,
+    },
+    /// Remove the first saved term equal to TERM, ignoring case and spacing
+    Remove {
+        /// Term to remove
+        term: String,
+        #[command(flatten)]
+        options: ChangeOptions,
+    },
+    /// Import terms, one per line, as one change (duplicates skipped, any invalid line refuses
+    /// the whole input)
+    Import {
+        /// File path, or `-` for stdin
+        source: String,
+        /// merge appends the new terms; replace makes the input the whole list
+        #[arg(long, value_enum, default_value_t = VocabularyImportMode::Merge)]
+        mode: VocabularyImportMode,
+        #[command(flatten)]
+        options: ChangeOptions,
+    },
+    /// Print one saved term per line on stdout
+    Export {
+        /// `-` for stdout (the only target)
+        #[arg(default_value = "-")]
+        target: String,
+    },
+    /// Whether the selected model uses the vocabulary during recognition, with the terms sent
+    /// and not sent (needs a running Handy)
+    Status,
 }
 
 /// `handy settings microphones`: the ordered microphone choices (feature 001).

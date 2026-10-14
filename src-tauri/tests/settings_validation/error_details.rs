@@ -113,6 +113,12 @@ fn schema_closes_reason_and_items() -> TestResult {
         "export_not_written",
         "export_symbolic_link",
         "export_read_only",
+        "term_empty",
+        "term_too_long",
+        "term_line_break",
+        "term_forbidden_character",
+        "term_duplicate",
+        "context_budget_unverified",
         "microphones_domain",
         "microphone_name_empty",
         "microphone_name_duplicate"

@@ -1,0 +1,3 @@
+settings-errors: all assertions passed
+bun test v1.3.9 (cf6cdbbb)
+shortcut-list-model: all assertions passed

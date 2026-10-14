@@ -175,7 +175,7 @@ const UI_ONLY: &str = "This setting is changed in the settings UI.";
 /// Keys generic `set` refuses, with the reason naming where they are changed.
 const MICROPHONES: &str =
     "Use handy settings microphones set-priority to change the microphone choices.";
-const OWNED_ELSEWHERE: [(&str, &str); 6] = [
+const OWNED_ELSEWHERE: [(&str, &str); 7] = [
     ("selected_microphone", MICROPHONES),
     ("microphone_priority", MICROPHONES),
     (
@@ -184,8 +184,10 @@ const OWNED_ELSEWHERE: [(&str, &str); 6] = [
     ),
     (
         "custom_words",
-        "Use handy settings vocabulary; this domain is not available in this build.",
+        "Use handy settings vocabulary to change this list.",
     ),
+    // The vocabulary commands do not manage filler words: they are changed in the app.
+    ("custom_filler_words", UI_ONLY),
     ("post_process_api_keys", UI_ONLY),
     ("selected_model", UI_ONLY),
 ];
