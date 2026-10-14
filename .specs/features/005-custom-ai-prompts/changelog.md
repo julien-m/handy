@@ -70,3 +70,15 @@
 - **History/WAV:** text-only AI-failure row kept (spec AC-005); divergence with the 006 WAV-gated rule signalled in `.specs/ship.md`
 - **Review:** the plan review is stale; an independent reviewer refreshes it
 - **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
+
+## 2026-10-14 — [Plan Update]: make the plan review preparable, order Step 2, justify offline prompt list
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md updated)
+- **AC impacted:** None (pre-implementation)
+- **Review budget:** 008's plan and implementation record are cited as inline paths, not links; the untracked program notes are no longer referenced, the D2/D3/D4 names are copied into the Summary and the history/WAV question with 006 is stated in the plan only. Plan review preparation at 180,000 characters: 1 batch, no error (was `paired_review_batch_budget_exceeded`)
+- **Step 2 order:** prerequisite names `tauri_adapter::write_change` (added by Step 2 with the same signature if neither 001 nor 003 has delivered it); deletion commits without preparation because no prompt shortcut exists before Step 3; Step 3 adds the `bindings` preparation and `sequence::write_change_prepared` and switches UI deletion to `ordered` + `commit_prepared_edit`
+- **Offline list:** `prompts list` offline returns 008's delivered live-only refusal (`unavailable`/5, scenario « Live state without running app » of the 008 spec) applied to a D2 operation; justified in the plan, spec unchanged
+- **Review:** the plan review is stale; an independent reviewer refreshes it
+- **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
