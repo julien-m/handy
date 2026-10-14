@@ -253,6 +253,66 @@
         "placeholder": "Chọn micrô...",
         "loading": "Đang tải..."
       },
+      "microphonePriority": {
+        "title": "Thứ tự ưu tiên micrô",
+        "description": "Handy ghi âm bằng micrô khả dụng đầu tiên theo thứ tự này, sau đó là micrô mặc định của hệ thống. Micrô không khả dụng vẫn giữ nguyên vị trí.",
+        "emptyTitle": "Chưa có micrô ưu tiên",
+        "emptyBody": "Handy dùng micrô mặc định của hệ thống cho đến khi bạn thêm micrô.",
+        "status": {
+          "available": "Khả dụng",
+          "unavailable": "Không khả dụng",
+          "ambiguous": "Không rõ ràng",
+          "unknown": "Không xác định"
+        },
+        "moveUp": "Di chuyển {{name}} lên",
+        "moveDown": "Di chuyển {{name}} xuống",
+        "remove": "Xóa {{name}}",
+        "addLabel": "Thêm micrô",
+        "addPlaceholder": "Thêm micrô…",
+        "noDevices": "Không phát hiện micrô nào để thêm",
+        "duplicateChoice": "{{name}} đã có trong danh sách.",
+        "refresh": "Làm mới tình trạng khả dụng",
+        "checked": "Đã kiểm tra {{seconds}} giây trước",
+        "refreshFailed": "Không thể kiểm tra thiết bị",
+        "retry": "Thử lại",
+        "inUse": {
+          "title": "Đang dùng",
+          "description": "Micrô Handy đang dùng để ghi âm, hoặc micrô đã dùng trong lần ghi âm gần nhất. Có thể khác với lựa chọn đầu tiên của bạn.",
+          "notUsedYet": "Chưa dùng kể từ khi khởi động",
+          "systemDefault": "Micrô mặc định của hệ thống",
+          "unnamed": "Micrô không tên",
+          "lastRecording": "Lần ghi âm gần nhất · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "Lựa chọn đầu tiên",
+          "fallback": "Dự phòng",
+          "fallbackUnavailable": "Dự phòng · {{name}} không khả dụng",
+          "fallbackAmbiguous": "Dự phòng · {{name}} không rõ ràng",
+          "clamshell": "Micrô khi gập nắp",
+          "system_default": "Mặc định hệ thống"
+        },
+        "clamshell": {
+          "title": "Micrô khi gập nắp",
+          "description": "Được thử trước tiên khi nắp đóng. Thứ tự ưu tiên của bạn không thay đổi.",
+          "none": "Không có"
+        },
+        "draft": {
+          "note": "Thay đổi chưa lưu. Cho đến khi bạn lưu, lần ghi âm tiếp theo dùng thứ tự đã lưu.",
+          "discard": "Hủy bỏ",
+          "save": "Lưu",
+          "saving": "Đang lưu…",
+          "saved": "Đã lưu thứ tự ưu tiên micrô"
+        },
+        "conflict": {
+          "title": "Cài đặt đã thay đổi ở nơi khác",
+          "body": "Các chỉnh sửa của bạn được giữ lại. Tải lại sẽ hiển thị thứ tự đã lưu và hủy các chỉnh sửa của bạn.",
+          "reload": "Tải lại"
+        },
+        "errors": {
+          "duplicate": "Mỗi micrô chỉ được xuất hiện một lần.",
+          "empty": "Tên micrô không được để trống."
+        }
+      },
       "channel": {
         "title": "Kênh đầu vào",
         "description": "Chọn kênh đầu vào để ghi âm. Sử dụng tùy chọn này nếu giao diện âm thanh của bạn có nhiều đầu vào.",

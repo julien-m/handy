@@ -253,6 +253,66 @@
         "placeholder": "Välj mikrofon...",
         "loading": "Laddar..."
       },
+      "microphonePriority": {
+        "title": "Mikrofonprioritet",
+        "description": "Handy spelar in med den första tillgängliga mikrofonen i den här ordningen och sedan med systemets standard. Otillgängliga mikrofoner behåller sin plats.",
+        "emptyTitle": "Ingen föredragen mikrofon",
+        "emptyBody": "Handy använder systemets standardmikrofon tills du lägger till en.",
+        "status": {
+          "available": "Tillgänglig",
+          "unavailable": "Otillgänglig",
+          "ambiguous": "Tvetydig",
+          "unknown": "Okänd"
+        },
+        "moveUp": "Flytta upp {{name}}",
+        "moveDown": "Flytta ned {{name}}",
+        "remove": "Ta bort {{name}}",
+        "addLabel": "Lägg till mikrofon",
+        "addPlaceholder": "Lägg till mikrofon…",
+        "noDevices": "Ingen mikrofon hittades att lägga till",
+        "duplicateChoice": "{{name}} finns redan i listan.",
+        "refresh": "Uppdatera tillgänglighet",
+        "checked": "Kontrollerades för {{seconds}} s sedan",
+        "refreshFailed": "Det gick inte att kontrollera enheterna",
+        "retry": "Försök igen",
+        "inUse": {
+          "title": "Används nu",
+          "description": "Mikrofonen som Handy spelar in med, eller den som användes vid senaste inspelningen. Den kan skilja sig från ditt förstahandsval.",
+          "notUsedYet": "Inte använd sedan start",
+          "systemDefault": "Systemets standardmikrofon",
+          "unnamed": "Namnlös mikrofon",
+          "lastRecording": "Senaste inspelning · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "Förstahandsval",
+          "fallback": "Reserv",
+          "fallbackUnavailable": "Reserv · {{name}} otillgänglig",
+          "fallbackAmbiguous": "Reserv · {{name}} tvetydig",
+          "clamshell": "Mikrofon med stängt lock",
+          "system_default": "Systemstandard"
+        },
+        "clamshell": {
+          "title": "Mikrofon med stängt lock",
+          "description": "Provas först när locket är stängt. Din prioritetsordning ändras inte.",
+          "none": "Ingen"
+        },
+        "draft": {
+          "note": "Osparade ändringar. Tills du sparar använder nästa inspelning den sparade ordningen.",
+          "discard": "Förkasta",
+          "save": "Spara",
+          "saving": "Sparar…",
+          "saved": "Mikrofonprioritet sparad"
+        },
+        "conflict": {
+          "title": "Inställningarna ändrades någon annanstans",
+          "body": "Dina ändringar behålls. Ladda om visar den sparade ordningen och förkastar dina ändringar.",
+          "reload": "Ladda om"
+        },
+        "errors": {
+          "duplicate": "Varje mikrofon får bara förekomma en gång.",
+          "empty": "Ett mikrofonnamn får inte vara tomt."
+        }
+      },
       "channel": {
         "title": "Ingångskanal",
         "description": "Välj vilken ingångskanal du vill spela in från. Använd detta om ditt ljudgränssnitt har flera ingångar.",

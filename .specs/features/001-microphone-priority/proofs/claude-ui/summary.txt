@@ -1,0 +1,25 @@
+exit=0  bun run lint
+exit=0  bun run format:check
+exit=0  bunx --no-install tsc --noEmit
+exit=0  bun run check:translations
+exit=0  bun run build
+exit=0  bun run test:microphone-priority
+exit=0  bun run test:settings-store
+exit=0  bun run test:settings-errors
+exit=0  bun run test:shortcut-list
+exit=0  bun run test:keyboard
+exit=0  bun test src/components/ui/dropdown-aria.test.tsx
+exit=0  livespec conventions verify --feature repo --json   (verdict=PASS new_count=0 blockers=0 receipt=.specs/conventions/runs/20261014T141438Z/receipt.json; raw output not kept)
+
+Feature tests (bun run test:microphone-priority): 54 pass, 0 fail across draft-state.test.ts, availability.test.ts, save-priority.test.ts, priority-views.test.tsx.
+Regression: test:settings-store 8 pass; test:settings-errors, test:shortcut-list, test:keyboard exit 0; dropdown aria 3 pass.
+No Rust file changed: no cargo test, clippy or cargo fmt run for this step.
+
+headless/ — headless Chromium (Playwright 1.58.0, colorScheme dark, deviceScaleFactor 2), NOT a native window:
+  microphone-settings.png, microphone-settings-empty.png, microphone-settings-error.png:
+    the real view components rendered with renderToStaticMarkup and fake editor data, styled by the
+    built dist CSS (render-states.test.tsx run with `bun test`, screenshots by shoot.mjs).
+  interact.out + drag-drop-target.png: the real PriorityList bundled with `bun build` (harness.tsx)
+    and driven by interact.mjs — 13/13 PASS (keyboard reorder keeps focus, Tab order, inert edge
+    move, pointer drop-target/dragging states, drop, Escape cancel, Remove), no page errors.
+  Pending, with Julien: the editor in a real Handy window (bun run tauri dev) and native UI acceptance.

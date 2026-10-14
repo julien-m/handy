@@ -1,0 +1,145 @@
+// Controls under the priority list (feature 001): Add microphone (enumerated devices; a duplicate
+// is refused with its message) and the availability check line — Refresh availability with
+// "Checked N s ago", or the failure pill with Retry. As in the validated mockup there is no
+// separate Reset control: removing every row empties the draft, which still needs Save.
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import Badge from "../../ui/Badge";
+import { Dropdown } from "../../ui/Dropdown";
+import { secondsSince } from "./availability";
+import { PRIORITY_KEY_ROOT, type AddError } from "./draft-state";
+
+/** Props of the Add control. */
+export interface AddControlProps {
+  /** Enumerated device names, or null before the first listing. */
+  enumerated: readonly string[] | null;
+  addError: AddError | null;
+  busy: boolean;
+  onAdd: (name: string) => void;
+  onOpen: () => void;
+}
+
+/** Props of the availability check line. */
+export interface CheckLineProps {
+  failed: boolean;
+  /** Time of the last device observation, or null before the first read. */
+  observedAt: string | null;
+  /** Whether "Checked N s ago" applies (a non-empty list). */
+  showChecked: boolean;
+  onRefresh: () => void;
+}
+
+const TICK_MS = 1000; // "Checked N s ago" counts whole seconds.
+
+/**
+ * Current time, updated every second while mounted.
+ * @returns milliseconds since the epoch
+ */
+const useNow = (): number => {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now()), TICK_MS);
+    return () => window.clearInterval(timer);
+  }, []);
+  return now;
+};
+
+const LINK_CLASSES =
+  "text-sm font-medium text-logo-primary hover:underline cursor-pointer rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-logo-primary";
+
+/**
+ * Add microphone dropdown. A valid choice is added at once and the control empties again; a
+ * duplicate stays shown with a red outline (states: empty, invalid). Without any device to add,
+ * the control is disabled and its accessible name says why.
+ */
+export const AddControl: React.FC<AddControlProps> = (props) => {
+  const { t } = useTranslation();
+  const names = props.enumerated ?? [];
+  const noDevices = props.enumerated !== null && names.length === 0;
+  const invalid = props.addError !== null;
+  const label = t(
+    `${PRIORITY_KEY_ROOT}.${noDevices ? "noDevices" : "addLabel"}`,
+  );
+  return (
+    <div
+      className={`rounded-md ${invalid ? "ring-1 ring-red-500" : ""}`}
+      data-testid="microphone-settings-add"
+      data-state={invalid ? "invalid" : "empty"}
+    >
+      <Dropdown
+        options={names.map((name) => ({ value: name, label: name }))}
+        selectedValue={props.addError?.name ?? null}
+        onSelect={props.onAdd}
+        onOpen={props.onOpen}
+        placeholder={
+          noDevices ? label : t(`${PRIORITY_KEY_ROOT}.addPlaceholder`)
+        }
+        ariaLabel={label}
+        disabled={props.busy || noDevices}
+      />
+    </div>
+  );
+};
+
+/** Refusal of the Add control, announced when it appears. */
+export const AddErrorText: React.FC<{ error: AddError }> = ({ error }) => {
+  const { t } = useTranslation();
+  return (
+    <p
+      role="alert"
+      className="text-sm text-red-400"
+      data-testid="microphone-settings-error-add-error"
+    >
+      {t(error.message.key, error.message.params)}
+    </p>
+  );
+};
+
+/** Failed availability check: the pill and Retry. */
+const CheckFailed: React.FC<{ onRetry: () => void }> = ({ onRetry }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="flex items-center gap-3">
+      <span data-testid="microphone-settings-error-refresh-error" role="status">
+        <Badge variant="error">{t(`${PRIORITY_KEY_ROOT}.refreshFailed`)}</Badge>
+      </span>
+      <button
+        type="button"
+        className={LINK_CLASSES}
+        data-testid="microphone-settings-error-retry"
+        onClick={onRetry}
+      >
+        {t(`${PRIORITY_KEY_ROOT}.retry`)}
+      </button>
+    </div>
+  );
+};
+
+/** Refresh availability, with the age of the last observation. */
+export const CheckLine: React.FC<CheckLineProps> = (props) => {
+  const { t } = useTranslation();
+  const now = useNow();
+  if (props.failed) return <CheckFailed onRetry={props.onRefresh} />;
+  const seconds =
+    props.observedAt === null ? null : secondsSince(props.observedAt, now);
+  return (
+    <div className="flex items-center gap-3">
+      <button
+        type="button"
+        className={LINK_CLASSES}
+        data-testid="microphone-settings-refresh"
+        onClick={props.onRefresh}
+      >
+        {t(`${PRIORITY_KEY_ROOT}.refresh`)}
+      </button>
+      {props.showChecked && seconds !== null && (
+        <span
+          className="text-sm text-mid-gray"
+          data-testid="microphone-settings-checked"
+        >
+          {t(`${PRIORITY_KEY_ROOT}.checked`, { seconds: String(seconds) })}
+        </span>
+      )}
+    </div>
+  );
+};

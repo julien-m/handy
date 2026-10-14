@@ -1,7 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { type } from "@tauri-apps/plugin-os";
-import { MicrophoneSelector } from "../MicrophoneSelector";
 import { ChannelSelector } from "../ChannelSelector";
 import { ShortcutInput } from "../ShortcutInput";
 import { ShortcutList } from "../shortcut-list";
@@ -13,6 +12,10 @@ import { useSettings } from "../../../hooks/useSettings";
 import { VolumeSlider } from "../VolumeSlider";
 import { MuteWhileRecording } from "../MuteWhileRecording";
 import { ModelSettingsCard } from "./ModelSettingsCard";
+import {
+  MicrophonePriorityRows,
+  MicrophonePrioritySettings,
+} from "../microphone-priority/microphone-priority-settings";
 
 export const GeneralSettings: React.FC = () => {
   const { t } = useTranslation();
@@ -27,18 +30,22 @@ export const GeneralSettings: React.FC = () => {
         {!isLinux && <ShortcutInput shortcutId="cancel" grouped={true} />}
       </SettingsGroup>
       <ModelSettingsCard />
-      <SettingsGroup title={t("settings.sound.title")}>
-        <MicrophoneSelector descriptionMode="tooltip" grouped={true} />
-        <ChannelSelector descriptionMode="tooltip" grouped={true} />
-        <MuteWhileRecording descriptionMode="tooltip" grouped={true} />
-        <AudioFeedback descriptionMode="tooltip" grouped={true} />
-        <OutputDeviceSelector
-          descriptionMode="tooltip"
-          grouped={true}
-          disabled={!audioFeedbackEnabled}
-        />
-        <VolumeSlider disabled={!audioFeedbackEnabled} />
-      </SettingsGroup>
+      {/* Feature 001: the priority editor wraps the Sound group (conflict banner above it,
+          Unsaved changes bar below it); the other Sound rows are unchanged. */}
+      <MicrophonePrioritySettings>
+        <SettingsGroup title={t("settings.sound.title")}>
+          <MicrophonePriorityRows />
+          <ChannelSelector descriptionMode="tooltip" grouped={true} />
+          <MuteWhileRecording descriptionMode="tooltip" grouped={true} />
+          <AudioFeedback descriptionMode="tooltip" grouped={true} />
+          <OutputDeviceSelector
+            descriptionMode="tooltip"
+            grouped={true}
+            disabled={!audioFeedbackEnabled}
+          />
+          <VolumeSlider disabled={!audioFeedbackEnabled} />
+        </SettingsGroup>
+      </MicrophonePrioritySettings>
     </div>
   );
 };

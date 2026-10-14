@@ -1,0 +1,24 @@
+$ bun test src/components/settings/microphone-priority
+
+src/components/settings/microphone-priority/priority-views.test.tsx:
+Warning: useLayoutEffect does nothing on the server, because its effect cannot be encoded into the server renderer's output format. This will lead to a mismatch between the initial, non-hydrated UI and the intended UI. To avoid this, useLayoutEffect should only be used in components that render exclusively on the client. See https://reactjs.org/link/uselayouteffect-ssr for common fixes.
+    at PriorityList (/Users/julienm/projects/handy-wt/ui-001-microphones/src/components/settings/microphone-priority/priority-list.tsx:109:19)
+Warning: useLayoutEffect does nothing on the server, because its effect cannot be encoded into the server renderer's output format. This will lead to a mismatch between the initial, non-hydrated UI and the intended UI. To avoid this, useLayoutEffect should only be used in components that render exclusively on the client. See https://reactjs.org/link/uselayouteffect-ssr for common fixes.
+    at PriorityList (/Users/julienm/projects/handy-wt/ui-001-microphones/src/components/settings/microphone-priority/priority-list.tsx:109:19)
+
+src/components/settings/microphone-priority/save-priority.test.ts:
+Microphone priority write failed: 117 |       "refreshSettings,error:errors.settings.committedNotApplied,refreshStatus",
+118 |     );
+119 |   });
+120 | 
+121 |   test("a thrown command error is an untyped failure with a retry", async () => {
+122 |     reply = new Error("ipc");
+                      ^
+error: ipc
+      at <anonymous> (/Users/julienm/projects/handy-wt/ui-001-microphones/src/components/settings/microphone-priority/save-priority.test.ts:122:17)
+
+
+ 54 pass
+ 0 fail
+ 156 expect() calls
+Ran 54 tests across 4 files. [80.00ms]

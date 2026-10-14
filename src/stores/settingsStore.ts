@@ -27,7 +27,6 @@ import {
   settingsErrorKey,
   throwIfSettingsError,
 } from "./settings-errors";
-import { promotedOrder } from "./microphone-priority";
 
 interface SettingsStore {
   settings: Settings | null;
@@ -152,14 +151,8 @@ const settingUpdaters: {
     commands.changeShortcutActivationSetting(value as ShortcutActivation),
   hold_threshold_ms: (value) =>
     commands.changeHoldThresholdMsSetting(value as number),
-  // Feature 001: the single selector writes the priority list (compare-and-set on the
-  // revision this window shows), never the read-only legacy key.
-  selected_microphone: (value) => {
-    const { settings, revision } = useSettingsStore.getState();
-    const current = settings?.microphone_priority ?? [];
-    const order = promotedOrder(current, toStoredDevice(value));
-    return commands.setMicrophonePriority(order, revision);
-  },
+  // Feature 001: `selected_microphone` is read-only; the priority editor saves the complete
+  // list through `set_microphone_priority` (microphone-priority/use-priority-editor.ts).
   selected_channel: (value) =>
     commands.setSelectedChannel((value as number | null | undefined) ?? null),
   clamshell_microphone: (value) =>
@@ -280,8 +273,8 @@ export const useSettingsStore = create<SettingsStore>()(
         const normalizedSettings: Settings = {
           ...settings,
           always_on_microphone: settings.always_on_microphone ?? false,
-          // The legacy selector shows the first priority choice until the priority editor
-          // replaces it (feature 001); an empty list is the system default.
+          // The channel selector reads the first priority choice (feature 001); an empty
+          // list is the system default.
           selected_microphone: settings.microphone_priority?.[0] ?? "Default",
           clamshell_microphone: settings.clamshell_microphone ?? "Default",
           selected_output_device: settings.selected_output_device ?? "Default",

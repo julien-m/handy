@@ -253,6 +253,66 @@
         "placeholder": "Pilih mikrofon...",
         "loading": "Memuat..."
       },
+      "microphonePriority": {
+        "title": "Prioritas mikrofon",
+        "description": "Handy merekam dengan mikrofon pertama yang tersedia sesuai urutan ini, lalu dengan bawaan sistem. Mikrofon yang tidak tersedia tetap di posisinya.",
+        "emptyTitle": "Tidak ada mikrofon pilihan",
+        "emptyBody": "Handy menggunakan mikrofon bawaan sistem hingga Anda menambahkan mikrofon.",
+        "status": {
+          "available": "Tersedia",
+          "unavailable": "Tidak tersedia",
+          "ambiguous": "Ambigu",
+          "unknown": "Tidak diketahui"
+        },
+        "moveUp": "Pindahkan {{name}} ke atas",
+        "moveDown": "Pindahkan {{name}} ke bawah",
+        "remove": "Hapus {{name}}",
+        "addLabel": "Tambah mikrofon",
+        "addPlaceholder": "Tambah mikrofon…",
+        "noDevices": "Tidak ada mikrofon terdeteksi untuk ditambahkan",
+        "duplicateChoice": "{{name}} sudah ada di daftar.",
+        "refresh": "Segarkan ketersediaan",
+        "checked": "Diperiksa {{seconds}} dtk lalu",
+        "refreshFailed": "Tidak dapat memeriksa perangkat",
+        "retry": "Coba lagi",
+        "inUse": {
+          "title": "Sedang digunakan",
+          "description": "Mikrofon yang sedang dipakai Handy untuk merekam, atau yang dipakai pada rekaman terakhir. Bisa berbeda dari pilihan pertama Anda.",
+          "notUsedYet": "Belum digunakan sejak dibuka",
+          "systemDefault": "Mikrofon bawaan sistem",
+          "unnamed": "Mikrofon tanpa nama",
+          "lastRecording": "Rekaman terakhir · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "Pilihan pertama",
+          "fallback": "Cadangan",
+          "fallbackUnavailable": "Cadangan · {{name}} tidak tersedia",
+          "fallbackAmbiguous": "Cadangan · {{name}} ambigu",
+          "clamshell": "Mikrofon saat laptop ditutup",
+          "system_default": "Bawaan sistem"
+        },
+        "clamshell": {
+          "title": "Mikrofon saat laptop ditutup",
+          "description": "Dicoba lebih dulu saat laptop ditutup. Urutan prioritas Anda tidak berubah.",
+          "none": "Tidak ada"
+        },
+        "draft": {
+          "note": "Perubahan belum disimpan. Sampai Anda menyimpan, rekaman berikutnya memakai urutan yang tersimpan.",
+          "discard": "Buang",
+          "save": "Simpan",
+          "saving": "Menyimpan…",
+          "saved": "Prioritas mikrofon disimpan"
+        },
+        "conflict": {
+          "title": "Pengaturan diubah di tempat lain",
+          "body": "Suntingan Anda tetap ada. Muat ulang menampilkan urutan yang tersimpan dan membuang suntingan Anda.",
+          "reload": "Muat ulang"
+        },
+        "errors": {
+          "duplicate": "Setiap mikrofon hanya boleh muncul sekali.",
+          "empty": "Nama mikrofon tidak boleh kosong."
+        }
+      },
       "channel": {
         "title": "Kanal Masukan",
         "description": "Pilih kanal masukan yang akan direkam. Gunakan ini jika antarmuka audio Anda memiliki beberapa masukan.",

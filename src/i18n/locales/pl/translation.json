@@ -253,6 +253,66 @@
         "placeholder": "Wybierz mikrofon...",
         "loading": "Wczytywanie..."
       },
+      "microphonePriority": {
+        "title": "Priorytet mikrofonów",
+        "description": "Handy nagrywa pierwszym dostępnym mikrofonem w tej kolejności, a następnie domyślnym mikrofonem systemu. Niedostępne mikrofony zachowują swoje miejsce.",
+        "emptyTitle": "Brak preferowanego mikrofonu",
+        "emptyBody": "Handy używa domyślnego mikrofonu systemu, dopóki nie dodasz własnego.",
+        "status": {
+          "available": "Dostępny",
+          "unavailable": "Niedostępny",
+          "ambiguous": "Niejednoznaczny",
+          "unknown": "Nieznany"
+        },
+        "moveUp": "Przenieś {{name}} wyżej",
+        "moveDown": "Przenieś {{name}} niżej",
+        "remove": "Usuń {{name}}",
+        "addLabel": "Dodaj mikrofon",
+        "addPlaceholder": "Dodaj mikrofon…",
+        "noDevices": "Nie wykryto mikrofonu do dodania",
+        "duplicateChoice": "{{name}} jest już na liście.",
+        "refresh": "Odśwież dostępność",
+        "checked": "Sprawdzono {{seconds}} s temu",
+        "refreshFailed": "Nie udało się sprawdzić urządzeń",
+        "retry": "Ponów",
+        "inUse": {
+          "title": "Teraz w użyciu",
+          "description": "Mikrofon, którym Handy nagrywa, lub ten użyty przy ostatnim nagraniu. Może różnić się od Twojego pierwszego wyboru.",
+          "notUsedYet": "Nieużywany od uruchomienia",
+          "systemDefault": "Domyślny mikrofon systemu",
+          "unnamed": "Mikrofon bez nazwy",
+          "lastRecording": "Ostatnie nagranie · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "Pierwszy wybór",
+          "fallback": "Zastępczy",
+          "fallbackUnavailable": "Zastępczy · {{name}} niedostępny",
+          "fallbackAmbiguous": "Zastępczy · {{name}} niejednoznaczny",
+          "clamshell": "Mikrofon przy zamkniętej pokrywie",
+          "system_default": "Domyślny systemu"
+        },
+        "clamshell": {
+          "title": "Mikrofon przy zamkniętej pokrywie",
+          "description": "Używany w pierwszej kolejności, gdy pokrywa jest zamknięta. Twoja kolejność priorytetów się nie zmienia.",
+          "none": "Brak"
+        },
+        "draft": {
+          "note": "Niezapisane zmiany. Dopóki nie zapiszesz, następne nagranie użyje zapisanej kolejności.",
+          "discard": "Odrzuć",
+          "save": "Zapisz",
+          "saving": "Zapisywanie…",
+          "saved": "Zapisano priorytet mikrofonów"
+        },
+        "conflict": {
+          "title": "Ustawienia zmieniono gdzie indziej",
+          "body": "Twoje zmiany zostały zachowane. Ponowne wczytanie pokaże zapisaną kolejność i odrzuci Twoje zmiany.",
+          "reload": "Wczytaj ponownie"
+        },
+        "errors": {
+          "duplicate": "Każdy mikrofon może wystąpić tylko raz.",
+          "empty": "Nazwa mikrofonu nie może być pusta."
+        }
+      },
       "channel": {
         "title": "Kanał wejściowy",
         "description": "Wybierz kanał wejściowy, z którego chcesz nagrywać. Użyj tej opcji, jeśli interfejs audio ma wiele wejść.",

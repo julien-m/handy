@@ -253,6 +253,66 @@
         "placeholder": "Selecionar microfone...",
         "loading": "Carregando..."
       },
+      "microphonePriority": {
+        "title": "Prioridade de microfones",
+        "description": "O Handy grava com o primeiro microfone disponível nesta ordem e, depois, com o padrão do sistema. Microfones indisponíveis mantêm sua posição.",
+        "emptyTitle": "Nenhum microfone preferido",
+        "emptyBody": "O Handy usa o microfone padrão do sistema até você adicionar um.",
+        "status": {
+          "available": "Disponível",
+          "unavailable": "Indisponível",
+          "ambiguous": "Ambíguo",
+          "unknown": "Desconhecido"
+        },
+        "moveUp": "Mover {{name}} para cima",
+        "moveDown": "Mover {{name}} para baixo",
+        "remove": "Remover {{name}}",
+        "addLabel": "Adicionar microfone",
+        "addPlaceholder": "Adicionar microfone…",
+        "noDevices": "Nenhum microfone detectado para adicionar",
+        "duplicateChoice": "{{name}} já está na lista.",
+        "refresh": "Atualizar disponibilidade",
+        "checked": "Verificado há {{seconds}} s",
+        "refreshFailed": "Não foi possível verificar os dispositivos",
+        "retry": "Tentar novamente",
+        "inUse": {
+          "title": "Em uso agora",
+          "description": "O microfone com que o Handy está gravando ou o usado na última gravação. Pode ser diferente da sua primeira escolha.",
+          "notUsedYet": "Ainda não usado desde a inicialização",
+          "systemDefault": "Microfone padrão do sistema",
+          "unnamed": "Microfone sem nome",
+          "lastRecording": "Última gravação · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "Primeira escolha",
+          "fallback": "Alternativa",
+          "fallbackUnavailable": "Alternativa · {{name}} indisponível",
+          "fallbackAmbiguous": "Alternativa · {{name}} ambíguo",
+          "clamshell": "Microfone com a tampa fechada",
+          "system_default": "Padrão do sistema"
+        },
+        "clamshell": {
+          "title": "Microfone com a tampa fechada",
+          "description": "Tentado primeiro quando a tampa está fechada. Sua ordem de prioridade não muda.",
+          "none": "Nenhum"
+        },
+        "draft": {
+          "note": "Alterações não salvas. Até você salvar, a próxima gravação usa a ordem salva.",
+          "discard": "Descartar",
+          "save": "Salvar",
+          "saving": "Salvando…",
+          "saved": "Prioridade de microfones salva"
+        },
+        "conflict": {
+          "title": "Configurações alteradas em outro lugar",
+          "body": "Suas edições são mantidas. Recarregar mostra a ordem salva e descarta suas edições.",
+          "reload": "Recarregar"
+        },
+        "errors": {
+          "duplicate": "Cada microfone só pode aparecer uma vez.",
+          "empty": "O nome do microfone não pode ficar vazio."
+        }
+      },
       "channel": {
         "title": "Canal de entrada",
         "description": "Selecione o canal de entrada que será gravado. Use esta opção se a sua interface de áudio tiver várias entradas.",

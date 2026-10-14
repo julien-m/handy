@@ -253,6 +253,66 @@
         "placeholder": "Mikrofon seçin...",
         "loading": "Yükleniyor..."
       },
+      "microphonePriority": {
+        "title": "Mikrofon önceliği",
+        "description": "Handy bu sıradaki ilk kullanılabilir mikrofonla, ardından sistem varsayılanıyla kayıt yapar. Kullanılamayan mikrofonlar yerlerini korur.",
+        "emptyTitle": "Tercih edilen mikrofon yok",
+        "emptyBody": "Siz bir mikrofon ekleyene kadar Handy sistem varsayılan mikrofonunu kullanır.",
+        "status": {
+          "available": "Kullanılabilir",
+          "unavailable": "Kullanılamıyor",
+          "ambiguous": "Belirsiz",
+          "unknown": "Bilinmiyor"
+        },
+        "moveUp": "{{name}} öğesini yukarı taşı",
+        "moveDown": "{{name}} öğesini aşağı taşı",
+        "remove": "{{name}} öğesini kaldır",
+        "addLabel": "Mikrofon ekle",
+        "addPlaceholder": "Mikrofon ekle…",
+        "noDevices": "Eklenecek mikrofon algılanmadı",
+        "duplicateChoice": "{{name}} zaten listede.",
+        "refresh": "Kullanılabilirliği yenile",
+        "checked": "{{seconds}} sn önce kontrol edildi",
+        "refreshFailed": "Cihazlar kontrol edilemedi",
+        "retry": "Tekrar dene",
+        "inUse": {
+          "title": "Şu anda kullanılan",
+          "description": "Handy'nin kayıt yaptığı mikrofon veya son kayıtta kullanılan mikrofon. İlk tercihinizden farklı olabilir.",
+          "notUsedYet": "Başlatıldığından beri henüz kullanılmadı",
+          "systemDefault": "Sistem varsayılan mikrofonu",
+          "unnamed": "Adsız mikrofon",
+          "lastRecording": "Son kayıt · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "İlk tercih",
+          "fallback": "Yedek",
+          "fallbackUnavailable": "Yedek · {{name}} kullanılamıyor",
+          "fallbackAmbiguous": "Yedek · {{name}} belirsiz",
+          "clamshell": "Kapalı kapak mikrofonu",
+          "system_default": "Sistem varsayılanı"
+        },
+        "clamshell": {
+          "title": "Kapalı kapak mikrofonu",
+          "description": "Kapak kapalıyken ilk önce denenir. Öncelik sıranız değişmez.",
+          "none": "Yok"
+        },
+        "draft": {
+          "note": "Kaydedilmemiş değişiklikler. Siz kaydedene kadar sonraki kayıt kayıtlı sırayı kullanır.",
+          "discard": "Vazgeç",
+          "save": "Kaydet",
+          "saving": "Kaydediliyor…",
+          "saved": "Mikrofon önceliği kaydedildi"
+        },
+        "conflict": {
+          "title": "Ayarlar başka bir yerde değiştirildi",
+          "body": "Düzenlemeleriniz korunuyor. Yeniden yükle, kayıtlı sırayı gösterir ve düzenlemelerinizi atar.",
+          "reload": "Yeniden yükle"
+        },
+        "errors": {
+          "duplicate": "Her mikrofon yalnızca bir kez yer alabilir.",
+          "empty": "Mikrofon adı boş olamaz."
+        }
+      },
       "channel": {
         "title": "Giriş Kanalı",
         "description": "Kayıt yapılacak giriş kanalını seçin. Ses arabiriminizde birden fazla giriş varsa bu seçeneği kullanın.",

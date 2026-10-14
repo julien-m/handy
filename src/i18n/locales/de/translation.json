@@ -253,6 +253,66 @@
         "placeholder": "Mikrofon auswählen...",
         "loading": "Wird geladen..."
       },
+      "microphonePriority": {
+        "title": "Mikrofon-Priorität",
+        "description": "Handy nimmt mit dem ersten verfügbaren Mikrofon in dieser Reihenfolge auf, danach mit dem Systemstandard. Nicht verfügbare Mikrofone behalten ihren Platz.",
+        "emptyTitle": "Kein bevorzugtes Mikrofon",
+        "emptyBody": "Handy verwendet das Standardmikrofon des Systems, bis Sie eines hinzufügen.",
+        "status": {
+          "available": "Verfügbar",
+          "unavailable": "Nicht verfügbar",
+          "ambiguous": "Mehrdeutig",
+          "unknown": "Unbekannt"
+        },
+        "moveUp": "{{name}} nach oben verschieben",
+        "moveDown": "{{name}} nach unten verschieben",
+        "remove": "{{name}} entfernen",
+        "addLabel": "Mikrofon hinzufügen",
+        "addPlaceholder": "Mikrofon hinzufügen…",
+        "noDevices": "Kein Mikrofon zum Hinzufügen erkannt",
+        "duplicateChoice": "{{name}} ist bereits in der Liste.",
+        "refresh": "Verfügbarkeit aktualisieren",
+        "checked": "Vor {{seconds}} s geprüft",
+        "refreshFailed": "Geräte konnten nicht geprüft werden",
+        "retry": "Erneut versuchen",
+        "inUse": {
+          "title": "Aktuell verwendet",
+          "description": "Das Mikrofon, mit dem Handy gerade aufnimmt, oder das bei der letzten Aufnahme verwendete. Es kann von Ihrer ersten Wahl abweichen.",
+          "notUsedYet": "Seit dem Start noch nicht verwendet",
+          "systemDefault": "Standardmikrofon des Systems",
+          "unnamed": "Unbenanntes Mikrofon",
+          "lastRecording": "Letzte Aufnahme · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "Erste Wahl",
+          "fallback": "Ersatz",
+          "fallbackUnavailable": "Ersatz · {{name}} nicht verfügbar",
+          "fallbackAmbiguous": "Ersatz · {{name}} mehrdeutig",
+          "clamshell": "Mikrofon bei geschlossenem Deckel",
+          "system_default": "Systemstandard"
+        },
+        "clamshell": {
+          "title": "Mikrofon bei geschlossenem Deckel",
+          "description": "Wird zuerst versucht, wenn der Deckel geschlossen ist. Ihre Prioritätsreihenfolge bleibt unverändert.",
+          "none": "Keines"
+        },
+        "draft": {
+          "note": "Ungespeicherte Änderungen. Bis Sie speichern, verwendet die nächste Aufnahme die gespeicherte Reihenfolge.",
+          "discard": "Verwerfen",
+          "save": "Speichern",
+          "saving": "Wird gespeichert…",
+          "saved": "Mikrofon-Priorität gespeichert"
+        },
+        "conflict": {
+          "title": "Einstellungen an anderer Stelle geändert",
+          "body": "Ihre Änderungen bleiben erhalten. „Neu laden“ zeigt die gespeicherte Reihenfolge und verwirft Ihre Änderungen.",
+          "reload": "Neu laden"
+        },
+        "errors": {
+          "duplicate": "Jedes Mikrofon darf nur einmal vorkommen.",
+          "empty": "Der Mikrofonname darf nicht leer sein."
+        }
+      },
       "channel": {
         "title": "Eingangskanal",
         "description": "Wähle den Eingangskanal aus, von dem aufgenommen werden soll. Verwende diese Option, wenn dein Audio-Interface mehrere Eingänge hat.",

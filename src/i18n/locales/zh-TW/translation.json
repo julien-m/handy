@@ -253,6 +253,66 @@
         "placeholder": "選擇麥克風...",
         "loading": "載入中..."
       },
+      "microphonePriority": {
+        "title": "麥克風優先順序",
+        "description": "Handy 會依此順序使用第一個可用的麥克風錄音，接著使用系統預設麥克風。無法使用的麥克風會保留其位置。",
+        "emptyTitle": "沒有偏好的麥克風",
+        "emptyBody": "在您新增麥克風之前，Handy 會使用系統預設麥克風。",
+        "status": {
+          "available": "可用",
+          "unavailable": "無法使用",
+          "ambiguous": "不明確",
+          "unknown": "未知"
+        },
+        "moveUp": "上移 {{name}}",
+        "moveDown": "下移 {{name}}",
+        "remove": "移除 {{name}}",
+        "addLabel": "新增麥克風",
+        "addPlaceholder": "新增麥克風…",
+        "noDevices": "未偵測到可新增的麥克風",
+        "duplicateChoice": "{{name}} 已在清單中。",
+        "refresh": "重新整理可用狀態",
+        "checked": "{{seconds}} 秒前檢查",
+        "refreshFailed": "無法檢查裝置",
+        "retry": "重試",
+        "inUse": {
+          "title": "目前使用中",
+          "description": "Handy 正在錄音使用的麥克風，或上次錄音使用的麥克風。可能與您的首選不同。",
+          "notUsedYet": "啟動後尚未使用",
+          "systemDefault": "系統預設麥克風",
+          "unnamed": "未命名的麥克風",
+          "lastRecording": "上次錄音 · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "首選",
+          "fallback": "備援",
+          "fallbackUnavailable": "備援 · {{name}} 無法使用",
+          "fallbackAmbiguous": "備援 · {{name}} 不明確",
+          "clamshell": "闔蓋麥克風",
+          "system_default": "系統預設"
+        },
+        "clamshell": {
+          "title": "闔蓋麥克風",
+          "description": "闔上筆電時優先嘗試。您的優先順序維持不變。",
+          "none": "無"
+        },
+        "draft": {
+          "note": "有未儲存的變更。在您儲存之前，下次錄音會使用已儲存的順序。",
+          "discard": "捨棄",
+          "save": "儲存",
+          "saving": "正在儲存…",
+          "saved": "已儲存麥克風優先順序"
+        },
+        "conflict": {
+          "title": "設定已在其他地方變更",
+          "body": "您的編輯已保留。重新載入會顯示已儲存的順序並捨棄您的編輯。",
+          "reload": "重新載入"
+        },
+        "errors": {
+          "duplicate": "每個麥克風只能出現一次。",
+          "empty": "麥克風名稱不能為空。"
+        }
+      },
       "channel": {
         "title": "輸入聲道",
         "description": "選擇要錄音的輸入聲道。如果您的音訊介面有多個輸入，請使用此選項。",

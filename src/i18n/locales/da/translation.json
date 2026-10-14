@@ -253,6 +253,66 @@
         "placeholder": "Vælg mikrofon...",
         "loading": "Indlæser..."
       },
+      "microphonePriority": {
+        "title": "Mikrofonprioritet",
+        "description": "Handy optager med den første tilgængelige mikrofon i denne rækkefølge og derefter med systemets standard. Utilgængelige mikrofoner beholder deres plads.",
+        "emptyTitle": "Ingen foretrukken mikrofon",
+        "emptyBody": "Handy bruger systemets standardmikrofon, indtil du tilføjer en.",
+        "status": {
+          "available": "Tilgængelig",
+          "unavailable": "Utilgængelig",
+          "ambiguous": "Tvetydig",
+          "unknown": "Ukendt"
+        },
+        "moveUp": "Flyt {{name}} op",
+        "moveDown": "Flyt {{name}} ned",
+        "remove": "Fjern {{name}}",
+        "addLabel": "Tilføj mikrofon",
+        "addPlaceholder": "Tilføj mikrofon…",
+        "noDevices": "Ingen mikrofon fundet at tilføje",
+        "duplicateChoice": "{{name}} er allerede på listen.",
+        "refresh": "Opdater tilgængelighed",
+        "checked": "Kontrolleret for {{seconds}} s siden",
+        "refreshFailed": "Enhederne kunne ikke kontrolleres",
+        "retry": "Prøv igen",
+        "inUse": {
+          "title": "I brug nu",
+          "description": "Den mikrofon, Handy optager med, eller den, der blev brugt ved seneste optagelse. Den kan afvige fra dit førstevalg.",
+          "notUsedYet": "Ikke brugt endnu siden start",
+          "systemDefault": "Systemets standardmikrofon",
+          "unnamed": "Unavngiven mikrofon",
+          "lastRecording": "Seneste optagelse · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "Førstevalg",
+          "fallback": "Reserve",
+          "fallbackUnavailable": "Reserve · {{name}} utilgængelig",
+          "fallbackAmbiguous": "Reserve · {{name}} tvetydig",
+          "clamshell": "Mikrofon med lukket låg",
+          "system_default": "Systemstandard"
+        },
+        "clamshell": {
+          "title": "Mikrofon med lukket låg",
+          "description": "Prøves først, når låget er lukket. Din prioriteringsrækkefølge forbliver uændret.",
+          "none": "Ingen"
+        },
+        "draft": {
+          "note": "Ikke-gemte ændringer. Indtil du gemmer, bruger næste optagelse den gemte rækkefølge.",
+          "discard": "Kassér",
+          "save": "Gem",
+          "saving": "Gemmer…",
+          "saved": "Mikrofonprioritet gemt"
+        },
+        "conflict": {
+          "title": "Indstillingerne blev ændret et andet sted",
+          "body": "Dine ændringer bevares. Genindlæs viser den gemte rækkefølge og kasserer dine ændringer.",
+          "reload": "Genindlæs"
+        },
+        "errors": {
+          "duplicate": "Hver mikrofon må kun optræde én gang.",
+          "empty": "Et mikrofonnavn må ikke være tomt."
+        }
+      },
       "channel": {
         "title": "Inputkanal",
         "description": "Vælg, hvilken inputkanal der skal optages fra. Brug dette, hvis din lydgrænseflade har flere indgange.",

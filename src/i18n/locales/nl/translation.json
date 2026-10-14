@@ -253,6 +253,66 @@
         "placeholder": "Microfoon selecteren...",
         "loading": "Laden..."
       },
+      "microphonePriority": {
+        "title": "Microfoonprioriteit",
+        "description": "Handy neemt op met de eerste beschikbare microfoon in deze volgorde, daarna met de systeemstandaard. Niet-beschikbare microfoons behouden hun plaats.",
+        "emptyTitle": "Geen voorkeursmicrofoon",
+        "emptyBody": "Handy gebruikt de standaardmicrofoon van het systeem totdat je er een toevoegt.",
+        "status": {
+          "available": "Beschikbaar",
+          "unavailable": "Niet beschikbaar",
+          "ambiguous": "Dubbelzinnig",
+          "unknown": "Onbekend"
+        },
+        "moveUp": "{{name}} omhoog verplaatsen",
+        "moveDown": "{{name}} omlaag verplaatsen",
+        "remove": "{{name}} verwijderen",
+        "addLabel": "Microfoon toevoegen",
+        "addPlaceholder": "Microfoon toevoegen…",
+        "noDevices": "Geen microfoon gedetecteerd om toe te voegen",
+        "duplicateChoice": "{{name}} staat al in de lijst.",
+        "refresh": "Beschikbaarheid verversen",
+        "checked": "{{seconds}} s geleden gecontroleerd",
+        "refreshFailed": "Kan apparaten niet controleren",
+        "retry": "Opnieuw proberen",
+        "inUse": {
+          "title": "Nu in gebruik",
+          "description": "De microfoon waarmee Handy opneemt, of die van de laatste opname. Dit kan afwijken van je eerste keuze.",
+          "notUsedYet": "Nog niet gebruikt sinds het starten",
+          "systemDefault": "Standaardmicrofoon van het systeem",
+          "unnamed": "Naamloze microfoon",
+          "lastRecording": "Laatste opname · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "Eerste keuze",
+          "fallback": "Terugval",
+          "fallbackUnavailable": "Terugval · {{name}} niet beschikbaar",
+          "fallbackAmbiguous": "Terugval · {{name}} dubbelzinnig",
+          "clamshell": "Microfoon bij gesloten deksel",
+          "system_default": "Systeemstandaard"
+        },
+        "clamshell": {
+          "title": "Microfoon bij gesloten deksel",
+          "description": "Wordt eerst geprobeerd als het deksel gesloten is. Je prioriteitsvolgorde blijft ongewijzigd.",
+          "none": "Geen"
+        },
+        "draft": {
+          "note": "Niet-opgeslagen wijzigingen. Tot je opslaat, gebruikt de volgende opname de opgeslagen volgorde.",
+          "discard": "Negeren",
+          "save": "Opslaan",
+          "saving": "Opslaan…",
+          "saved": "Microfoonprioriteit opgeslagen"
+        },
+        "conflict": {
+          "title": "Instellingen elders gewijzigd",
+          "body": "Je wijzigingen blijven bewaard. Opnieuw laden toont de opgeslagen volgorde en verwijdert je wijzigingen.",
+          "reload": "Opnieuw laden"
+        },
+        "errors": {
+          "duplicate": "Elke microfoon mag maar één keer voorkomen.",
+          "empty": "Een microfoonnaam mag niet leeg zijn."
+        }
+      },
       "channel": {
         "title": "Ingangskanaal",
         "description": "Selecteer het ingangskanaal waarvan moet worden opgenomen. Gebruik dit als je audio-interface meerdere ingangen heeft.",
