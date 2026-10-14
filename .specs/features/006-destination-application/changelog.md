@@ -78,3 +78,20 @@
 - Review: the plan review is stale until an independent reviewer refreshes it.
 
 <!-- finalize:spec-refine:2026-10-14:b0be88bc -->
+
+## 2026-10-14 — [Plan Update]: 008 sources as code paths, four ValidationContext constructions, atomic Enter claim for 009
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md and contracts/destination-contract.md updated)
+- **AC impacted:** None (pre-implementation; structural coverage 17/17)
+- **Author:** Claude Code (spec-refine 006 plan, claude-opus-5-5)
+- Applies the round 2 independent review: its plan review could not be prepared (`paired_review_batch_budget_exceeded`, more than 64 batches) because the second 008 link was normative and pulled 008's whole document graph, including an untracked file.
+- 008's spec and implementation map are now cited as code paths (`.specs/features/008-settings-cli/...`), so they import no normative closure; the contract's links to this feature's plan and spec each carry their own "Inspect". Plan review preparation at 180,000 characters: 1 batch, no error.
+- Step 0: `ValidationContext.platform` is set in the four production constructions (`operations::set`, `LiveSettings::validate_ui_value`, `domains::output::set` and the under-lock revalidation `edit::revalidate_mutation`, `edit.rs:98`) and in the 29 test constructions of `src-tauri/tests/`.
+- New `DestinationManager::claim_enter(dictation_id, destination_generation) -> Result<EnterClaim, EnterRefusal>` (plan, contract, Step 2 tests, Gherkin): reads the disposition and records the single Enter claim under the session lock of `set_disposition`; refuses `Stale`, `Disposition(current)` and `AlreadyClaimed`; a later `Recover` does not revoke a granted claim. 006 never calls it; 009 does.
+- Reason enum: 009 adds `pinned_app_not_running`; a running pinned app not brought forward keeps `activation_failed` (orchestrator decision 2026-10-14).
+- Shared D2/D3 names are recorded in this plan and its contract only; no reference to the untracked program notes.
+- Review: the plan review is stale until an independent reviewer refreshes it.
+
+<!-- finalize:spec-refine:2026-10-14:8325a713 -->

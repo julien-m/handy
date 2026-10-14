@@ -5,6 +5,9 @@
 
 ---
 
+## 2026-10-14 — [Feature 006] Plan refined: 008 sources cited as code paths (plan review preparable in 1 batch), four ValidationContext constructions, DestinationManager::claim_enter for 009, pinned_app_not_running reason
+<!-- finalize:spec-refine:2026-10-14:8325a713 -->
+
 ## 2026-10-14 — [Feature 005] Plan refined: plan review preparable again, Step 2 ordered, offline prompt list justified
 
 The plan cites other features' documents as inline paths instead of links, so its review no longer loads 008's document graph (preparation at 180,000 characters: 1 batch, no error); it no longer references the untracked program notes and copies the D2/D3/D4 names it uses. Step 2 names `tauri_adapter::write_change` as prerequisite (added by Step 2 if 001/003 have not) and commits deletions without preparation until Step 3 adds the `bindings` preparation. Offline `prompts list` is justified as 008's delivered live-only refusal applied to a D2 operation. Spec unchanged; the plan review is stale until an independent reviewer refreshes it.

@@ -68,16 +68,16 @@
 <!-- readme:activity:start -->
 | Date | Type | Description |
 |---|---|---|
+| 2026-10-14 | Feature | [Feature 006] Plan refined: 008 sources cited as code paths (plan review preparable in 1 batch), four ValidationContext constructions, DestinationManager::claim_enter for 009, pinned_app_not_running reason |
+| 2026-10-14 | Feature | [Feature 005] Plan refined: plan review preparable again, Step 2 ordered, offline prompt list justified |
+| 2026-10-14 | Feature | [Feature 003] Plan refined: plan review preparable again, durable-error rule renamed, offline status justified |
+| 2026-10-14 | Feature | [Feature 001] Plan refined: plan review preparable again, 006 step 0 before Step 2 |
+| 2026-10-14 | Feature | [Feature 010] Plan refined: one Enter veto with 009, method outcome from 006, late-read update |
+| 2026-10-14 | Feature | [Feature 005] Spec and plan refined: truthful failure notice, merged 008 names, live prompt list |
 | 2026-10-14 | Feature | [Feature 009] Spec and plan refined: pinned badge rule, D2 live pin operations, retired auto_submit, single Enter veto |
 | 2026-10-14 | Feature | [Feature 001] Spec and plan refined: literal "default" migration, live microphone list, full 2-second attempts |
 | 2026-10-14 | Feature | [Feature 006] Plan refined: settings framework Step 0 (D2–D4) and merged 008 names |
 | 2026-10-14 | Feature | [Feature 003] Plan refined: merged 008 names and program decisions D1–D4 |
-| 2026-10-13 | Feature | [Feature 001] Spec refined: Quality Engineering classification for the delivery lane |
-| 2026-10-13 | Feature | [Feature 003] Spec refined: Quality Engineering classification for the delivery lane |
-| 2026-10-13 | Feature | [Feature 005] Spec refined: Quality Engineering classification for the delivery lane |
-| 2026-10-13 | Feature | [Feature 006] Spec refined: Quality Engineering classification for the delivery lane |
-| 2026-10-13 | Feature | [Feature 009] Spec refined: Quality Engineering classification for the delivery lane |
-| 2026-10-13 | Feature | [Feature 010] Spec refined: Quality Engineering classification for the delivery lane |
 <!-- readme:activity:end -->
 
 ---
@@ -165,3 +165,5 @@
 <!-- finalize:spec-refine:2026-10-14:b0be88bc -->
 
 <!-- finalize:spec-refine:2026-10-14:0feee4a1 -->
+
+<!-- finalize:spec-refine:2026-10-14:8325a713 -->
