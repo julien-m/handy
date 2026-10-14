@@ -1766,7 +1766,10 @@ fn transcribe_cpp_run_plan(
     }
 }
 
-fn post_process_transcription_text(
+/// Native final-text stages shared by both final transcription paths: language evidence, Chinese
+/// script, word replacements, approximate correction outside replaced spans, filler removal and
+/// normalization (a panic keeps the text unchanged).
+pub(crate) fn post_process_transcription_text(
     raw: String,
     settings: &AppSettings,
     replacements: &CompiledReplacements,

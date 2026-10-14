@@ -2,6 +2,7 @@
 use crate::apple_intelligence;
 use crate::audio_feedback::{play_feedback_sound, play_feedback_sound_blocking, SoundType};
 use crate::audio_toolkit::{is_microphone_access_denied, is_no_input_device_error, VadPolicy};
+use crate::dictation_output::{deliver, Delivery, OutputPorts, ProcessedTranscription};
 use crate::managers::audio::AudioRecordingManager;
 use crate::managers::history::HistoryManager;
 use crate::managers::model::ModelManager;
@@ -348,12 +349,6 @@ async fn post_process_transcription(settings: &AppSettings, transcription: &str)
     }
 }
 
-pub(crate) struct ProcessedTranscription {
-    pub final_text: String,
-    pub post_processed_text: Option<String>,
-    pub post_process_prompt: Option<String>,
-}
-
 pub(crate) async fn process_transcription_output(
     app: &AppHandle,
     transcription: &str,
@@ -386,6 +381,92 @@ pub(crate) async fn process_transcription_output(
         post_processed_text,
         post_process_prompt,
     }
+}
+
+/// Real output ports of one dictation (see `dictation_output`): the configured AI
+/// post-processing with its overlay, the history manager and the paste on the main thread.
+struct AppOutputPorts {
+    app: AppHandle,
+    recording: Arc<AudioRecordingManager>,
+    transcription: Arc<TranscriptionManager>,
+    history: Arc<HistoryManager>,
+    cancel_generation: u64,
+    post_process: bool,
+    use_streaming_overlay: bool,
+    file_name: String,
+}
+
+impl OutputPorts for AppOutputPorts {
+    async fn post_process(&self, native: &str) -> Option<ProcessedTranscription> {
+        if self.post_process {
+            if self.use_streaming_overlay {
+                self.transcription
+                    .emit_stream_working(StreamWorkKind::Polishing);
+            } else {
+                show_processing_overlay(&self.app);
+            }
+        }
+        let processing = process_transcription_output(&self.app, native, self.post_process);
+        complete_unless_cancelled(processing, || self.is_cancelled()).await
+    }
+    fn is_cancelled(&self) -> bool {
+        self.recording.was_cancelled_since(self.cancel_generation)
+    }
+    fn save_history(&self, native: String, processed: &ProcessedTranscription) {
+        let saved = self.history.save_entry(
+            self.file_name.clone(),
+            native,
+            self.post_process,
+            processed.post_processed_text.clone(),
+            processed.post_process_prompt.clone(),
+        );
+        if let Err(err) = saved {
+            error!("Failed to save history entry: {}", err);
+        }
+    }
+    fn insert(&self, text: String) {
+        paste_on_main_thread(&self.app, &self.recording, self.cancel_generation, text);
+    }
+}
+
+/// Paste `final_text` on the main thread unless the dictation was cancelled meanwhile, then
+/// return the overlay and tray to idle.
+fn paste_on_main_thread(
+    ah: &AppHandle,
+    rm: &Arc<AudioRecordingManager>,
+    cancel_generation: u64,
+    final_text: String,
+) {
+    let (ah_clone, rm_for_paste) = (ah.clone(), Arc::clone(rm));
+    let paste_time = Instant::now();
+    ah.run_on_main_thread(move || {
+        paste_unless_cancelled(&ah_clone, &rm_for_paste, cancel_generation, final_text);
+        debug!("Paste step finished in {:?}", paste_time.elapsed());
+    })
+    .unwrap_or_else(|e| {
+        error!("Failed to run paste on main thread: {:?}", e);
+        utils::hide_recording_overlay(ah);
+        set_tray_state(ah, TrayIconState::Idle);
+    });
+}
+
+/// Main-thread side of `paste_on_main_thread`.
+fn paste_unless_cancelled(
+    ah: &AppHandle,
+    rm: &AudioRecordingManager,
+    cancel_generation: u64,
+    final_text: String,
+) {
+    if rm.was_cancelled_since(cancel_generation) {
+        debug!("Transcription operation cancelled before paste");
+    } else if let Err(e) = utils::paste(final_text, ah.clone()) {
+        error!("Failed to paste transcription: {}", e);
+        let _ = ah.emit("paste-error", ());
+    } else {
+        debug!("Text pasted successfully");
+    }
+    utils::hide_recording_overlay(ah);
+    set_tray_state(ah, TrayIconState::Idle);
 }
 
 impl ShortcutAction for TranscribeAction {
@@ -704,80 +785,29 @@ impl ShortcutAction for TranscribeAction {
                                 transcription_time.elapsed(),
                                 utils::redact_text(&transcription)
                             );
-
-                            if post_process {
-                                if use_streaming_overlay {
-                                    tm.emit_stream_working(StreamWorkKind::Polishing);
-                                } else {
-                                    show_processing_overlay(&ah);
-                                }
-                            }
-                            let Some(processed) = complete_unless_cancelled(
-                                process_transcription_output(&ah, &transcription, post_process),
-                                || rm.was_cancelled_since(cancel_generation),
-                            )
-                            .await
-                            else {
-                                debug!("Transcription operation cancelled during output handling");
-                                utils::hide_recording_overlay(&ah);
-                                set_tray_state(&ah, TrayIconState::Idle);
-                                return;
+                            let ports = AppOutputPorts {
+                                app: ah.clone(),
+                                recording: Arc::clone(&rm),
+                                transcription: Arc::clone(&tm),
+                                history: Arc::clone(&hm),
+                                cancel_generation,
+                                post_process,
+                                use_streaming_overlay,
+                                file_name,
                             };
-
-                            if rm.was_cancelled_since(cancel_generation) {
-                                debug!("Transcription operation cancelled before paste");
-                                utils::hide_recording_overlay(&ah);
-                                set_tray_state(&ah, TrayIconState::Idle);
-                                return;
-                            }
-
-                            // Save to history if WAV was saved
-                            if wav_saved {
-                                if let Err(err) = hm.save_entry(
-                                    file_name,
-                                    transcription,
-                                    post_process,
-                                    processed.post_processed_text.clone(),
-                                    processed.post_process_prompt.clone(),
-                                ) {
-                                    error!("Failed to save history entry: {}", err);
-                                }
-                            }
-
-                            if processed.final_text.is_empty() {
-                                utils::hide_recording_overlay(&ah);
-                                set_tray_state(&ah, TrayIconState::Idle);
-                            } else {
-                                let ah_clone = ah.clone();
-                                let paste_time = Instant::now();
-                                let final_text = processed.final_text;
-                                let rm_for_paste = Arc::clone(&rm);
-                                ah.run_on_main_thread(move || {
-                                    if rm_for_paste.was_cancelled_since(cancel_generation) {
-                                        debug!("Transcription operation cancelled before paste");
-                                        utils::hide_recording_overlay(&ah_clone);
-                                        set_tray_state(&ah_clone, TrayIconState::Idle);
-                                        return;
-                                    }
-
-                                    match utils::paste(final_text, ah_clone.clone()) {
-                                        Ok(()) => debug!(
-                                            "Text pasted successfully in {:?}",
-                                            paste_time.elapsed()
-                                        ),
-                                        Err(e) => {
-                                            error!("Failed to paste transcription: {}", e);
-                                            let _ = ah_clone.emit("paste-error", ());
-                                        }
-                                    }
-                                    utils::hide_recording_overlay(&ah_clone);
-                                    set_tray_state(&ah_clone, TrayIconState::Idle);
-                                })
-                                .unwrap_or_else(|e| {
-                                    error!("Failed to run paste on main thread: {:?}", e);
+                            match deliver(&ports, transcription, wav_saved).await {
+                                Delivery::Inserted => {}
+                                Delivery::Cancelled => {
+                                    debug!(
+                                        "Transcription operation cancelled during output handling"
+                                    );
                                     utils::hide_recording_overlay(&ah);
                                     set_tray_state(&ah, TrayIconState::Idle);
-                                });
+                                }
+                                Delivery::NothingToInsert => {
+                                    utils::hide_recording_overlay(&ah);
+                                    set_tray_state(&ah, TrayIconState::Idle);
+                                }
                             }
                         }
                         Err(err) => {
