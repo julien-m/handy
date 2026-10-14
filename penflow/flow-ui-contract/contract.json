@@ -1088,6 +1088,24 @@
         "width": 560,
         "height": 300
       }
+    },
+    {
+      "id": "handy-reference",
+      "flow_id": "handy-reference",
+      "title": "Handy reference — existing General settings and component library",
+      "surface": "desktop",
+      "root_node": "handy-reference",
+      "states": [
+        {
+          "id": "default"
+        }
+      ],
+      "viewport": {
+        "width": 680,
+        "height": 570
+      },
+      "static": true,
+      "static_reason": "Design reference only: the current Handy General settings window recomposed from the source code, and the reusable pen.dev components every feature screen is built from. It is not a feature screen and adds no behavior."
     }
   ],
   "nodes": [
@@ -5878,6 +5896,13 @@
       "role": "button",
       "text": "Hide details",
       "action": "recovery-bubble-insertion-failed.why"
+    },
+    {
+      "id": "handy-reference",
+      "screen_id": "handy-reference",
+      "semantic_id": "handy-reference",
+      "test_id": "handy-reference-screen",
+      "role": "screen"
     }
   ],
   "guards": [
@@ -7620,6 +7645,10 @@
     {
       "id": "recovery-bubble",
       "entry_screen": "recovery-bubble"
+    },
+    {
+      "id": "handy-reference",
+      "entry_screen": "handy-reference"
     }
   ],
   "transitions": [

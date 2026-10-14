@@ -1,54 +1,151 @@
 /*
- * Penflow theme for the Handy mockups (light theme).
- * Mirrors src/styles/theme.css and src/overlay/RecordingOverlay.css:
- * background #fbfbfb, text #0f0f0f, logo pink #faa2ca, mid-gray borders.
- * Accessibility adjustments (WCAG AA, 4.5:1 for 12-14px text):
- * - primary #b83a73 is a deeper shade of the UI pink #da5893, because white
- *   text on #da5893 reaches only 3.6:1;
- * - status text colors are darker than the app's #d97706 / #dc2626 so they
- *   stay readable on their tinted surfaces.
- * Inter stands in for the system UI font in renders.
+ * Penflow theme for the Handy mockups — dark mode, copied from the Handy code.
+ *
+ * Rule: no value here is invented or adjusted. Each one is read from the
+ * Handy source (paths relative to the repo root) or is a Tailwind v4.1.16
+ * default resolved with Handy's root font size:
+ *   src/App.css:20  `:root { font-size: 15px }`  =>  1rem = 15px, so the
+ *   Tailwind spacing unit (--spacing: 0.25rem, node_modules/tailwindcss/
+ *   theme.css:277) is 3.75px, text-sm is 13.125px, rounded-lg is 7.5px...
+ * Opacity utilities (`bg-mid-gray/20`, `text-text/60`) are kept as 8-digit
+ * hex (#RRGGBBAA) over the same base color.
+ * Tailwind palette colors are written in oklch; their sRGB hex is computed
+ * from the oklch value on the cited line.
+ * Full per-value provenance, light-mode values and off-scale spacing:
+ * penflow/style-provenance.md.
  */
 :root {
-  --background: #FBFBFB;
-  --foreground: #0F0F0F;
-  --card: #FFFFFF;
-  --card-foreground: #0F0F0F;
-  --panel: #FFFFFF;
-  --panel-2: #F4F4F4;
-  --primary: #B83A73;
+  /* src/styles/theme.css:13  --dark-color-background */
+  --background: #2C2B29;
+  /* src/styles/theme.css:12  --dark-color-text */
+  --foreground: #FBFBFB;
+  /* src/components/ui/SettingsGroup.tsx:26  `bg-background` */
+  --card: #2C2B29;
+  --card-foreground: #FBFBFB;
+  /* src/components/ui/Dropdown.tsx:93, Tooltip.tsx:104  menus/tooltips `bg-background` */
+  --panel: #2C2B29;
+  /* src/components/ui/Dropdown.tsx:68, Input.tsx:14  `bg-mid-gray/10` (theme.css:28 #808080) */
+  --panel-2: #8080801A;
+  /* src/styles/theme.css:26  --color-background-ui (Button primary, toggle on) */
+  --primary: #DA5893;
+  /* src/components/ui/Button.tsx:27  `text-white` (tailwind theme.css:275) */
   --primary-foreground: #FFFFFF;
-  --border: #E2E2E2;
-  --input: #CFCFCF;
-  --muted: #EFEFEF;
-  --muted-foreground: #6B6B6B;
-  --accent: #FDEDF4;
-  --destructive: #B91C1C;
-  --success: #166534;
-  --warning: #92400E;
-  --info: #1D4ED8;
-  --ring: #B83A73;
-  --radius: 8px;
-  --font-sans: Inter;
-  --font-mono: JetBrains Mono;
-  --font-size-xs: 12px;
-  --font-size-sm: 13px;
-  --font-size-base: 14px;
-  --font-size-lg: 18px;
-  --font-size-xl: 20px;
+  /* src/components/ui/SettingsGroup.tsx:26-27  `border-mid-gray/20`, `divide-mid-gray/20` */
+  --border: #80808033;
+  /* src/components/ui/Dropdown.tsx:68, Input.tsx:14  `border-mid-gray/80` */
+  --input: #808080CC;
+  /* src/components/ui/ToggleSwitch.tsx:47 track `bg-mid-gray/20`; Badge.tsx:17 secondary */
+  --muted: #80808033;
+  /* src/styles/theme.css:28  --color-mid-gray (`text-mid-gray`) */
+  --muted-foreground: #808080;
+  /* src/components/ui/Dropdown.tsx:109  selected option `bg-logo-primary/20` (theme.css:14) */
+  --accent: #F28CBB33;
+  /* src/components/settings/shortcut-list.tsx:271  `text-red-500` (tailwind theme.css:15) */
+  --destructive: #FB2C36;
+  /* src/components/ui/Badge.tsx:16, Alert.tsx:36  `text-green-400` (tailwind theme.css:74) */
+  --success: #05DF72;
+  /* src/components/ui/Alert.tsx:26  warning text `text-yellow-400` (tailwind theme.css:50) */
+  --warning: #FDC700;
+  /* src/components/ui/Alert.tsx:31  info text `text-blue-400` (tailwind theme.css:134) */
+  --info: #51A2FF;
+  /* src/components/ui/Select.tsx:56, ToggleSwitch.tsx:47  focus ring `logo-primary` (theme.css:14) */
+  --ring: #F28CBB;
+  /* `rounded-lg` = 0.5rem (tailwind theme.css:352) x 15px */
+  --radius: 7.5px;
+  /* Tailwind default sans stack (tailwind theme.css:2-4): ui-sans-serif, system-ui,
+     sans-serif... No font-family is set by Handy, so the webview uses the OS UI font
+     (SF Pro on macOS). The overlay stack (RecordingOverlay.css:4) is the same OS font. */
+  --font-sans: system-ui;
+  /* Tailwind default mono stack (tailwind theme.css:6-8); only `font-mono` in debug paths */
+  --font-mono: ui-monospace;
+  /* `text-xs` 0.75rem, `text-sm` 0.875rem, `text-base` 1rem, `text-lg` 1.125rem
+     (tailwind theme.css:299-305) x 15px */
+  --font-size-xs: 11.25px;
+  --font-size-sm: 13.125px;
+  --font-size-base: 15px;
+  --font-size-lg: 16.875px;
+  /* `text-xl` 1.25rem (tailwind theme.css:307) x 15px. The overlay's 12px
+     (RecordingOverlay.css:348,463) is in Penflow's default type scale. */
+  --font-size-xl: 18.75px;
 
-  --palette-logo: #FAA2CA;
-  --palette-desktop: #E7E5E1;
-  --palette-success-surface: #EAF6EE;
-  --palette-warning-surface: #FEF6E7;
-  --palette-error-surface: #FDECEC;
-  --palette-info-surface: #EAF0FD;
+  /* Logo, src/styles/theme.css:14-15 + HandyTextLogo.tsx last path fill */
+  --palette-logo: #F28CBB;
+  --palette-logo-stroke: #FAD1ED;
+  --palette-logo-highlight: #F9C5E8;
+  /* Sidebar.tsx:108 active item `bg-logo-primary/80` */
+  --palette-logo-80: #F28CBBCC;
+  /* Dropdown.tsx:71, Input.tsx:18 hover `bg-logo-primary/10` */
+  --palette-logo-10: #F28CBB1A;
+  /* HandyKeysShortcutInput.tsx:370, shortcut-chip.tsx:33 recording `bg-logo-primary/30` */
+  --palette-logo-30: #F28CBB4D;
+  /* mid-gray opacities (theme.css:28) */
+  --palette-mid-gray-5: #8080800D;
+  --palette-mid-gray-40: #80808066;
+  --palette-mid-gray-60: #80808099;
+  /* text opacities (theme.css:12): Footer.tsx:26 text/60, Badge.tsx:17 text/70,
+     ResetButton.tsx:20 text/80, Slider.tsx:84 text/90, ResetButton.tsx:19 text/40 */
+  --palette-text-40: #FBFBFB66;
+  --palette-text-60: #FBFBFB99;
+  --palette-text-70: #FBFBFBB3;
+  --palette-text-80: #FBFBFBCC;
+  --palette-text-90: #FBFBFBE6;
+  /* ToggleSwitch.tsx:47 knob `after:border-gray-300` (tailwind theme.css:229) */
+  --palette-gray-300: #D1D5DC;
+  /* Tailwind status colors used by Alert.tsx, Badge.tsx, shortcut-list.tsx, Button.tsx */
+  --palette-red-400: #FF6467;
+  --palette-red-600: #E7000B;
+  --palette-yellow-500: #F0B100;
+  --palette-yellow-600: #D08700;
+  --palette-green-500: #00C950;
+  --palette-blue-500: #2B7FFF;
+  /* Alert.tsx:19,24,29,34 surfaces `bg-*-500/10` */
+  --palette-error-surface: #FB2C361A;
+  --palette-warning-surface: #F0B1001A;
+  --palette-info-surface: #2B7FFF1A;
+  --palette-success-surface: #00C9501A;
+  /* Badge.tsx:16 success `bg-green-500/20`; same /20 recipe for the other statuses */
+  --palette-success-badge: #00C95033;
+  --palette-warning-badge: #F0B10033;
+  --palette-error-badge: #FB2C3633;
+  --palette-info-badge: #2B7FFF33;
+  /* Dialog.tsx:161 backdrop `bg-black/50`; shadow-lg/xl rgb(0 0 0 / 0.1) (tailwind theme.css:362-363) */
+  --palette-backdrop: #00000080;
+  --palette-shadow: #0000001A;
+
+  /* Recording overlay, src/overlay/RecordingOverlay.css (dark values) */
+  /* :7 --s-surface = background 98% */
+  --palette-overlay-surface: #2C2B29FA;
+  /* :36 --dark-s-border = text 12% */
+  --palette-overlay-border: #FBFBFB1F;
+  /* :38 --dark-s-hair = text 8% */
+  --palette-overlay-hair: #FBFBFB14;
+  /* :29 --dark-s-muted */
+  --palette-overlay-muted: #A3A09A;
+  /* :31 --dark-s-faint */
+  --palette-overlay-faint: #6F6C66;
+  /* :21-25 --dark-s-accent-soft = logo-primary 20% */
+  --palette-overlay-accent-soft: #F28CBB33;
+  /* :256 .stext-cap text 90% */
+  --palette-overlay-text: #FBFBFBE6;
+
+  /* Not from Handy: the desktop behind the overlay and third-party app icons
+     (destination apps) are scenery for the overlay mockups. */
+  --palette-desktop: #1E1D1C;
   --palette-app-green: #0F7B61;
   --palette-app-blue: #2563EB;
   --palette-app-orange: #C2410C;
   --palette-app-gray: #52525B;
 
-  --radius-sm: 6px;
-  --radius-chip: 10px;
-  --radius-pill: 20px;
+  /* Radii (x 15px): `rounded-md` 0.375rem (tailwind theme.css:351),
+     `rounded` 0.25rem (:350), ToggleSwitch `rounded-full` on a 22.5px track,
+     overlay .scard 24px / open 16px / working 18px (RecordingOverlay.css:167,203,207),
+     overlay wave bars 2px (:374) */
+  --radius-md: 5.625px;
+  --radius-sm: 3.75px;
+  --radius-full: 11.25px;
+  --radius-pill: 24px;
+  --radius-panel: 16px;
+  --radius-working: 18px;
+  --radius-bar: 2px;
+  --radius-dot: 3.5px;
 }
