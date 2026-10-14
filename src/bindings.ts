@@ -6,9 +6,14 @@
 
 export const commands = {
 /**
- * Change one shortcut as one ordered settings write (see `binding_change`): the native
- * registration is prepared, the binding committed on the latest settings, and a refused commit
- * restores the previous registration. Runs on the blocking pool, never on the main thread.
+ * Replaces the first shortcut of action `id`, as the settings recorder did before multiple
+ * shortcuts, as one ordered settings write (see [`edits::apply_shortcut_edit`]). Alternatives
+ * are kept; the new shortcut goes through the shared validation and conflict check. Runs on the
+ * blocking pool, never on the main thread.
+ * 
+ * # Errors
+ * An empty shortcut, or a refusal of the settings service (busy, persistence); every refusal of
+ * the edit itself, invalid syntax included, is reported in the response.
  */
 async changeBinding(id: string, binding: string) : Promise<Result<BindingResponse, SettingsCommandError>> {
     try {
@@ -18,6 +23,13 @@ async changeBinding(id: string, binding: string) : Promise<Result<BindingRespons
     else return { status: "error", error: e  as any };
 }
 },
+/**
+ * Restores the single default shortcut of action `id`; alternatives are removed.
+ * 
+ * # Errors
+ * An unknown action or a refusal of the settings service; refusals of the edit are in the
+ * response.
+ */
 async resetBinding(id: string) : Promise<Result<BindingResponse, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("reset_binding", { id }) };
@@ -25,6 +37,21 @@ async resetBinding(id: string) : Promise<Result<BindingResponse, SettingsCommand
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
 }
+},
+/**
+ * Applies one edit to the shortcut list of action `id` and saves it, on the blocking pool.
+ * Every refusal is in the response, typed: a refusal of the edit, or `settings_refused` when
+ * the settings service could not save it (nothing is then saved either).
+ */
+async editBindingShortcuts(id: string, edit: ShortcutEdit) : Promise<ShortcutEditResponse> {
+    return await TAURI_INVOKE("edit_binding_shortcuts", { id, edit });
+},
+/**
+ * Stored shortcuts that conflict with another stored shortcut. They stay
+ * registered as before; the settings flag them until the user changes them.
+ */
+async getShortcutConflicts() : Promise<StoredShortcutConflict[]> {
+    return await TAURI_INVOKE("get_shortcut_conflicts");
 },
 async changeShortcutActivationSetting(activation: ShortcutActivation) : Promise<Result<null, SettingsCommandError>> {
     try {
@@ -221,7 +248,16 @@ async changeAutoSubmitKeySetting(key: string) : Promise<Result<null, SettingsCom
     else return { status: "error", error: e  as any };
 }
 },
-async changePostProcessEnabledSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
+/**
+ * Enables or disables post-processing and always saves the choice, as
+ * before this feature, as one ordered settings write (see
+ * [`edits::set_post_process_enabled`]). A shortcut the system refuses stays
+ * stored and editable, and is returned so the settings say so.
+ * 
+ * # Errors
+ * A refusal of the settings service (persistence); the toggle itself is never refused.
+ */
+async changePostProcessEnabledSetting(enabled: boolean) : Promise<Result<RefusedShortcut[], SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_post_process_enabled_setting", { enabled }) };
 } catch (e) {
@@ -461,10 +497,14 @@ async changeWhatsNewLastSeenVersionSetting(version: string) : Promise<Result<nul
 }
 },
 /**
- * Change the keyboard implementation with runtime switching, as one ordered write. The value is
- * validated and committed like any setting; its live effect (`switch_keyboard_implementation`)
- * unregisters the old shortcuts, registers them with the new implementation and resets
- * incompatible ones, so the bindings compared around the commit are exactly those resets.
+ * Change the keyboard implementation with runtime switching, as one ordered write: the shared
+ * validator checks the value, every registration moves to the new implementation with the
+ * lists repaired for it, then the implementation and the repaired lists are committed in one
+ * revision (see [`live_change::keyboard_implementation`]); a refused commit moves them back.
+ * 
+ * # Errors
+ * A refused value, `unavailable` during a dictation session or when HandyKeys cannot start
+ * (nothing changed), or a refusal of the commit.
  */
 async changeKeyboardImplementationSetting(implementation: string) : Promise<Result<ImplementationChangeResult, SettingsCommandError>> {
     try {
@@ -1130,7 +1170,15 @@ overlay_style?: OverlayStyle }
 export type AudioDevice = { index: string; name: string; is_default: boolean }
 export type AutoSubmitKey = "enter" | "ctrl_enter" | "cmd_enter"
 export type AvailableAccelerators = { transcribe: string[]; ort: string[]; gpu_devices: GpuDeviceOption[] }
-export type BindingResponse = { success: boolean; binding: ShortcutBinding | null; error: string | null }
+export type BindingResponse = { success: boolean; binding: ShortcutBinding | null; 
+/**
+ * English description of the refusal, for older callers.
+ */
+error: string | null; 
+/**
+ * Typed refusal, which the settings UI translates.
+ */
+edit_error: ShortcutEditError | null }
 /**
  * Candidate rule; new rules receive a durable ID only when committed.
  */
@@ -1145,6 +1193,18 @@ export type ChineseScript =
  */
 "as_transcribed" | "simplified" | "traditional"
 export type ClipboardHandling = "dont_modify" | "copy_to_clipboard"
+/**
+ * Why a candidate cannot be used.
+ */
+export type ConflictKind = 
+/**
+ * The same combination is already assigned.
+ */
+"duplicate" | 
+/**
+ * A modifier-only shortcut would fire together with the other one.
+ */
+"modifier_overlap"
 export type CustomSounds = { start: boolean; stop: boolean }
 export type EngineType = 
 /**
@@ -1177,9 +1237,16 @@ export type IgnoredLine = "blank" | "comment" | "header"
  */
 export type ImplementationChangeResult = { success: boolean; 
 /**
- * List of binding IDs that were reset to defaults due to incompatibility
+ * Binding IDs whose shortcuts were reset to the default or removed
+ * because the new implementation cannot register them
  */
-reset_bindings: string[] }
+reset_bindings: string[]; 
+/**
+ * Stored shortcuts that conflict under the new implementation and did
+ * not before. They are kept, as inherited conflicts are, and flagged in
+ * the settings.
+ */
+conflicts: StoredShortcutConflict[] }
 /**
  * How imported rules combine with the saved set (AC-005).
  */
@@ -1285,6 +1352,12 @@ duplicate_lines: number[] }
  */
 export type PreviewStatus = "add" | "update" | "delete" | "unchanged" | "ignored" | "error"
 export type RecordingRetentionPeriod = "never" | "preserve_limit" | "days_3" | "weeks_2" | "months_3"
+/**
+ * A post-processing shortcut the backend refused when post-processing was
+ * enabled. It stays stored and editable; the settings flag its row.
+ * `reason` is the backend's message, in English.
+ */
+export type RefusedShortcut = { action_id: string; shortcut: string; reason: string }
 /**
  * Outcome of an editor commit, returned as a value (never a rejected promise): the saved rules
  * with their revision, or the typed refusal while nothing was saved.
@@ -1429,8 +1502,65 @@ export type ShortcutActivation =
  * (`hold_threshold_ms`).
  */
 "hold_or_toggle"
-export type ShortcutBinding = { id: string; name: string; description: string; default_binding: string; current_binding: string }
+export type ShortcutBinding = { id: string; name: string; description: string; default_binding: string; 
+/**
+ * First shortcut of the action. Kept at this location so earlier Handy
+ * versions, which only read this field, keep that shortcut working.
+ */
+current_binding: string; 
+/**
+ * Alternative shortcuts after `current_binding`, in order. Backward
+ * compatibility: stores written before multiple shortcuts lack the field
+ * and load it empty; older versions ignore it when reading. Never
+ * serialized when empty, so a single-shortcut store stays byte-identical.
+ */
+additional_bindings?: string[] }
+/**
+ * A conflict with an existing shortcut, naming its owning action.
+ */
+export type ShortcutConflict = { kind: ConflictKind; owning_action: string; owning_shortcut: string }
+/**
+ * A requested change to the shortcut list of one action.
+ */
+export type ShortcutEdit = 
+/**
+ * Append an alternative shortcut.
+ */
+{ kind: "add"; shortcut: string } | 
+/**
+ * Remove one shortcut; removing the first promotes the next one.
+ */
+{ kind: "remove"; shortcut: string } | 
+/**
+ * Replace one shortcut in place.
+ */
+{ kind: "replace"; previous: string; shortcut: string } | 
+/**
+ * Restore the single default shortcut.
+ */
+{ kind: "reset" }
+/**
+ * Why an edit was refused. Codes map to the settings CLI envelope (008):
+ * `shortcut_conflict` and `limit_exceeded` as is, `not_found` for unknown
+ * entries, every other code as `validation_failed`.
+ */
+export type ShortcutEditError = { code: "shortcut_conflict"; conflict: ShortcutConflict } | { code: "limit_exceeded"; limit: number } | { code: "last_shortcut" } | { code: "alternatives_unsupported" } | { code: "invalid_shortcut"; message: string } | { code: "not_found"; shortcut: string } | { code: "action_not_found"; action_id: string } | { code: "registration_failed"; message: string } | 
+/**
+ * The settings service refused or could not save the change (persistence, unavailable):
+ * nothing was saved, and the registrations are as before.
+ */
+{ code: "settings_refused"; error: SettingsCommandError }
+/**
+ * Outcome of a shortcut list edit: the saved binding, or why nothing was
+ * saved.
+ */
+export type ShortcutEditResponse = { binding: ShortcutBinding | null; error: ShortcutEditError | null }
 export type SoundTheme = "marimba" | "pop" | "custom"
+/**
+ * A conflict between two stored shortcuts, reported as a warning. Upgrades
+ * keep such shortcuts registered exactly as before (decision 2026-10-12).
+ */
+export type StoredShortcutConflict = { action_id: string; shortcut: string; conflict: ShortcutConflict }
 /**
  * Phase of the streaming overlay card, emitted to drive its UI state.
  */
@@ -1491,7 +1621,12 @@ export type ValidationReason = "canonical_type" | "canonical_value" | "out_of_ra
 /**
  * Items of a domain list or exchange input failed validation; `details.items` locates them.
  */
-"invalid_items"
+"invalid_items" | 
+/**
+ * A dictation session (recording, processing, a held or remembered shortcut) is running;
+ * the shortcut registrations cannot change until it ends.
+ */
+"shortcut_session_busy"
 export type WindowsMicrophonePermissionStatus = { supported: boolean; overall_access: PermissionAccess; device_access: PermissionAccess; app_access: PermissionAccess; desktop_app_access: PermissionAccess }
 
 /** tauri-specta globals **/

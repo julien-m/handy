@@ -61,3 +61,51 @@
 - **Classification:** criticality High, blast radius Shared, primary risk Functional, taken from the existing QE Analysis; `livespec delivery lane`: full
 - **Review:** the previous spec review is stale; an independent reviewer refreshes it
 - **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
+
+## 2026-10-14 — [Plan Update]: Settings framework Step 0 (D2–D4), merged 008 names and 007 interface
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md and contracts/destination-contract.md updated)
+- **AC impacted:** None (pre-implementation plan alignment; AC-005, AC-006, AC-007, AC-008 coverage clarified)
+- **Author:** Claude Code (spec-refine 006 plan, claude-opus-5-5)
+- Applies the 2026-10-14 independent plan review (3 blocking findings) and orchestrator decisions D1–D4.
+- D1: only macOS native evidence gates a step; Windows, Linux, an older binary and a second account are pending release evidence with exact checks (Steps 1, 7, Testing Strategy, QE).
+- New Step 0 extends the 008 framework: `DomainPlan::Live` with `domains/live_operation.rs` (`LiveOperation`, `LiveCall`, `LiveAnswer`, `LiveContext`, `managed_state`), `SettingsBackend::live_context` (only `RoutedBackend`), offline refusal identical to the delivered live-only refusal (`unavailable`, exit 5, empty details); `platform_capability.rs` (`PlatformCapability::Destination`, `PlatformCapabilities`, `required_capability`, `check`); `ErrorDetails.reason` (`ErrorReason`) and `ErrorDetails.items` (`ErrorItem`, max 100); `SettingsError::unsupported_platform` (D4: `validation_failed`/2, `details.reason = "unsupported_platform"`). Names also recorded in `.specs/ship.md` (Contrat D2/D3).
+- Uses delivered 008 names only (`tauri_adapter::write`, `shortcut/mod.rs` output commands, `OUTPUT_KEYS: [&str; 11]`, `effects.rs`); `LiveSettingsEffects` removed. Static platform capability decides the CLI/UI refusal offline and routed; runtime foreground readability stays in the running instance and is never a CLI validation; `output get` returns the plain value.
+- Defines `DestinationContext` (PID, stable identity incl. bundle ID, `dictation_id`, `destination_generation`, frontmost-at-end and `target: None` cases) and the single `RecoveryDisposition {Pending, Insert, Recover, Cancelled}` veto shared with 009/010; aligns identifiers and outcome wire values with 007; 007 alone displays its remote-screen clipboard message; 006 tests map injected 007 results instead of 007 timers.
+- QE Analysis aligned with the spec (High, Shared, Functional); Next Action no longer pins a model.
+- Review: the plan review is stale until an independent reviewer refreshes it.
+
+<!-- finalize:spec-refine:2026-10-14:b0be88bc -->
+
+## 2026-10-14 — [Plan Update]: 008 sources as code paths, four ValidationContext constructions, atomic Enter claim for 009
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md and contracts/destination-contract.md updated)
+- **AC impacted:** None (pre-implementation; structural coverage 17/17)
+- **Author:** Claude Code (spec-refine 006 plan, claude-opus-5-5)
+- Applies the round 2 independent review: its plan review could not be prepared (`paired_review_batch_budget_exceeded`, more than 64 batches) because the second 008 link was normative and pulled 008's whole document graph, including an untracked file.
+- 008's spec and implementation map are now cited as code paths (`.specs/features/008-settings-cli/...`), so they import no normative closure; the contract's links to this feature's plan and spec each carry their own "Inspect". Plan review preparation at 180,000 characters: 1 batch, no error.
+- Step 0: `ValidationContext.platform` is set in the four production constructions (`operations::set`, `LiveSettings::validate_ui_value`, `domains::output::set` and the under-lock revalidation `edit::revalidate_mutation`, `edit.rs:98`) and in the 29 test constructions of `src-tauri/tests/`.
+- New `DestinationManager::claim_enter(dictation_id, destination_generation) -> Result<EnterClaim, EnterRefusal>` (plan, contract, Step 2 tests, Gherkin): reads the disposition and records the single Enter claim under the session lock of `set_disposition`; refuses `Stale`, `Disposition(current)` and `AlreadyClaimed`; a later `Recover` does not revoke a granted claim. 006 never calls it; 009 does.
+- Reason enum: 009 adds `pinned_app_not_running`; a running pinned app not brought forward keeps `activation_failed` (orchestrator decision 2026-10-14).
+- Shared D2/D3 names are recorded in this plan and its contract only; no reference to the untracked program notes.
+- Review: the plan review is stale until an independent reviewer refreshes it.
+
+<!-- finalize:spec-refine:2026-10-14:8325a713 -->
+
+## 2026-10-14 — [Spec Update]: Text-only history entry when the audio recording fails
+
+- **Type:** Spec Update
+- **Spec modified:** Yes (sections: AC-005, Clarifications, frontmatter `updated`)
+- **Code modified:** None (plan.md and contracts/destination-contract.md updated)
+- **AC impacted:** AC-005 (history clause; ID unchanged)
+- **Author:** Claude Code (spec-refine 006 + plan, claude-opus-5-5)
+- Julien's decision 2026-10-14: a dictation whose WAV cannot be saved, whatever the cause, still gets a text-only history entry. Recorded as a dated decision under `## Clarifications` (Clarify inventory empty).
+- AC-005 now reads "the transcript stays in history whenever the history save succeeds, as a text-only entry when the audio recording could not be saved" instead of "whenever history saving succeeds as today". Story 4, SC-002 and the cancellation behavior are unchanged.
+- Plan: the history save no longer depends on the WAV; `InsertionOutcome.history_status` comes only from the actual `save_entry` result (`saved` includes a text-only row; `failed` on save_entry failure; `not_saved` when no write was attempted); Step 6 removes the `wav_saved` gate and its history matrix covers WAV failure saved text-only. The shared history change (nullable `file_name` migration, gate removal, guards for rows without audio) is built once by whichever of 006 Step 6 and 005 Step 7 runs first. Contract history line aligned.
+- Review: the spec and plan reviews are stale until an independent reviewer refreshes them.
+
+<!-- finalize:spec-refine:2026-10-14:2190dbf9 -->

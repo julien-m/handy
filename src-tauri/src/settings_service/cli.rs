@@ -9,7 +9,7 @@ use super::{
 };
 use crate::cli::{
     ChangeOptions, CliArgs, CliCommand, ImportModeArg, OutputAction, ReplacementsAction,
-    SettingsArgs, SettingsCommand,
+    SettingsArgs, SettingsCommand, ShortcutsAction,
 };
 use clap::{error::ErrorKind, Parser};
 use serde_json::json;
@@ -120,6 +120,33 @@ pub fn operation(command: &SettingsCommand) -> SettingsOperation {
         },
         SettingsCommand::Output(output) => output_operation(&output.action),
         SettingsCommand::Replacements(replacements) => replacements_operation(&replacements.action),
+        SettingsCommand::Shortcuts(shortcuts) => shortcuts_operation(&shortcuts.action),
+    }
+}
+/// Wire operation of a shortcuts-domain action.
+fn shortcuts_operation(action: &ShortcutsAction) -> SettingsOperation {
+    let none = ChangeOptions::default();
+    let (name, arguments, options) = match action {
+        ShortcutsAction::List { action } => ("list", action.iter().cloned().collect(), &none),
+        ShortcutsAction::Add {
+            action,
+            shortcut,
+            options,
+        } => ("add", vec![action.clone(), shortcut.clone()], options),
+        ShortcutsAction::Remove {
+            action,
+            shortcut,
+            options,
+        } => ("remove", vec![action.clone(), shortcut.clone()], options),
+        ShortcutsAction::Reset { action, options } => ("reset", vec![action.clone()], options),
+    };
+    SettingsOperation::Domain {
+        domain: "shortcuts".to_owned(),
+        action: name.to_owned(),
+        arguments,
+        input: None,
+        dry_run: options.dry_run,
+        expected_revision: options.expected_revision.map(super::protocol::Revision),
     }
 }
 /// Wire operation of a replacements action. An import's input is attached by `run` (it reads a

@@ -74,6 +74,9 @@ pub enum ValidationReason {
     ReplacementsDomain,
     /// Items of a domain list or exchange input failed validation; `details.items` locates them.
     InvalidItems,
+    /// A dictation session (recording, processing, a held or remembered shortcut) is running;
+    /// the shortcut registrations cannot change until it ends.
+    ShortcutSessionBusy,
 }
 impl ValidationReason {
     fn message(self) -> &'static str {
@@ -82,9 +85,7 @@ impl ValidationReason {
             Self::CanonicalValue => "Expected a canonical allowed value.",
             Self::OutOfRange => "Value is outside the allowed range.",
             Self::UiOnly => "This setting is changed in the settings UI.",
-            Self::ShortcutsDomain => {
-                "Use handy settings shortcuts; this domain is not available in this build."
-            }
+            Self::ShortcutsDomain => "Use handy settings shortcuts to change shortcuts.",
             Self::VocabularyDomain => {
                 "Use handy settings vocabulary; this domain is not available in this build."
             }
@@ -98,6 +99,7 @@ impl ValidationReason {
             Self::InvalidInput => "Input does not follow the exchange format.",
             Self::ReplacementsDomain => "Use handy settings replacements.",
             Self::InvalidItems => "Items failed validation; see details.items.",
+            Self::ShortcutSessionBusy => "A dictation is in progress; retry when it ends.",
         }
     }
 }
@@ -136,6 +138,10 @@ pub struct ErrorDetails {
     /// Boxed: most errors have none, and every `Result` carrying this error stays small.
     #[serde(flatten, skip_serializing_if = "Option::is_none")]
     item_issues: Option<Box<ItemIssues>>,
+    /// Machine reason and shortcut details of a refusal, boxed so that the common error stays
+    /// small.
+    #[serde(flatten)]
+    refusal: Option<Box<RefusalDetails>>,
 }
 /// Located item issues of a validation refusal.
 #[derive(Clone, Debug, PartialEq, Serialize)]
@@ -144,6 +150,34 @@ struct ItemIssues {
     /// Item issues beyond `MAX_ITEM_ISSUES`, counted but not listed.
     #[serde(skip_serializing_if = "Option::is_none")]
     omitted_items: Option<u64>,
+}
+
+/// Stable machine reason of a refusal (`shortcut_session_busy`, `last_shortcut`...), never
+/// input text, with the shortcut details when a shortcut change was refused.
+#[derive(Clone, Debug, Default, PartialEq, Serialize)]
+struct RefusalDetails {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    reason: Option<&'static str>,
+    /// The action concerned, the owner of a conflicting stored shortcut and the kind of
+    /// conflict, or the per-action limit. Only known action ids and stored shortcut texts enter
+    /// them.
+    #[serde(flatten)]
+    shortcut: ShortcutDetails,
+}
+
+/// Allowlisted details of a refused shortcut change (see `ErrorDetails`).
+#[derive(Clone, Debug, Default, PartialEq, Serialize)]
+pub struct ShortcutDetails {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub action_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub owning_action: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub owning_shortcut: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub kind: Option<&'static str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<u32>,
 }
 
 /// No input value, internal serde error or arbitrary key enters the public error.
@@ -253,6 +287,46 @@ impl SettingsError {
         error.details.current_revision = Some(revision);
         error.details.field = super::descriptor::descriptor(key).map(|entry| entry.key);
         error
+    }
+    /// A dictation session owns the shortcuts: the change of `key` was refused before anything
+    /// was registered or written.
+    pub fn session_busy(key: &str) -> Self {
+        let mut error = Self::live_state_refused(key);
+        error.reason = Some(ValidationReason::ShortcutSessionBusy);
+        error.details.refusal = Some(Box::new(RefusalDetails {
+            reason: Some("shortcut_session_busy"),
+            ..RefusalDetails::default()
+        }));
+        error
+    }
+    /// A live-only change was asked without a running instance: nothing was written.
+    pub fn instance_required() -> Self {
+        Self::shortcut(
+            SettingsErrorCode::Unavailable,
+            Some("instance_required"),
+            ShortcutDetails::default(),
+        )
+    }
+    /// A refused shortcut change: `code` with the machine `reason` (if any) and the allowlisted
+    /// shortcut `details`.
+    pub fn shortcut(
+        code: SettingsErrorCode,
+        reason: Option<&'static str>,
+        details: ShortcutDetails,
+    ) -> Self {
+        let mut error = Self::new(code);
+        error.details.refusal = Some(Box::new(RefusalDetails {
+            reason,
+            shortcut: details,
+        }));
+        error
+    }
+    /// Stable machine reason in the details, if any.
+    pub fn detail_reason(&self) -> Option<&'static str> {
+        self.details
+            .refusal
+            .as_ref()
+            .and_then(|refusal| refusal.reason)
     }
     /// Fixed English message of this error.
     pub fn message(&self) -> &'static str {

@@ -95,14 +95,14 @@ fn apply_effect(app: &AppHandle, effect: LiveEffect, commit: &LiveCommit) -> Res
         LiveEffect::TranscriptionReload => reload_transcription(app, false),
         LiveEffect::TranscribeGpuRetry => reload_transcription(app, true),
         LiveEffect::PostProcessShortcut => {
-            return crate::shortcut::apply_post_process_shortcut(app, after.post_process_enabled)
+            return crate::shortcut::apply_post_process_shortcut(
+                app,
+                &commit.before,
+                after.post_process_enabled,
+            )
         }
         LiveEffect::KeyboardImplementation => {
-            return crate::shortcut::switch_keyboard_implementation(
-                app,
-                commit.before.keyboard_implementation,
-                after.keyboard_implementation,
-            )
+            return crate::shortcut::switch_keyboard_implementation(app, &commit.before, after)
         }
         LiveEffect::HistoryCleanup => return cleanup_history(app),
         LiveEffect::Replacements => publish_replacements(app, commit),

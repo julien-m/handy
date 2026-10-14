@@ -40,6 +40,22 @@ pub trait SettingsBackend {
         let _ = (change, expected);
         Err(SettingsError::new(SettingsErrorCode::Unavailable))
     }
+    /// Commit a live-only domain change of descriptor `key` (for example the shortcut lists),
+    /// with the native preparation the settings UI gives that key.
+    ///
+    /// # Errors
+    /// Same as `commit_change`. The default refuses with `unavailable`: only a running instance
+    /// can prepare a live change.
+    fn commit_live_change(
+        &self,
+        key: &'static str,
+        change: &DomainChange,
+        expected: Option<Revision>,
+    ) -> Result<SettingsRead, SettingsError> {
+        // Every parameter is unused on purpose: this backend has no live state to prepare.
+        let _ = (key, change, expected);
+        Err(SettingsError::instance_required())
+    }
     /// True for a running instance, which can answer live-only domain operations.
     fn is_live(&self) -> bool {
         false

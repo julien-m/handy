@@ -4,7 +4,7 @@ title: Microphone Priority
 priority: P1
 status: Planned
 created: 2026-10-09
-updated: 2026-10-13
+updated: 2026-10-14
 ---
 
 # Feature Spec: Microphone Priority
@@ -211,7 +211,7 @@ flowchart TD
 
 ### AC-006
 
-**Criterion:** On first load without the new priority key, a non-default legacy selected_microphone becomes one priority entry; null/default becomes an empty normal priority list; the closed-lid override precedence in AC-005 still applies. An explicitly stored new list, including an empty list, wins. Migration is idempotent, retains unavailable legacy choices, preserves clamshell settings and leaves the original store recoverable if persistence fails.
+**Criterion:** On first load without the new priority key, a non-null legacy selected_microphone becomes one priority entry with that exact name, including the device name "default"; null (the system default) becomes an empty normal priority list; the closed-lid override precedence in AC-005 still applies. An explicitly stored new list, including an empty list, wins. Migration is idempotent, retains unavailable legacy choices, preserves clamshell settings and leaves the original store recoverable if persistence fails.
 **Priority:** P1 | **Story:** Story 3
 
 ### AC-007
@@ -404,6 +404,15 @@ Feature: Commit microphone priority
 - Decision `` / `placeholders:- Workspace status on 2026-10-12: `incomplete` (missing `expected-ui-tree.json`, `code-ir.json`, desktop frame dimensions). Per the user's 2026-10-12 decision, the full forward contract and Pencil mockups for all program features are completed once, before `spec-ship`. Semantic/test IDs: [NEEDS CLARIFICATION] until that pass. No inspection READY or certification PASS is claimed.`: User decision 2026-10-12 (lightweight UI contract): Penflow flow/screen contracts, semantic and test IDs and Pencil mockups for all program features are produced in one pass before spec-ship; until then the planned flow_id and screen_id above are authoritative and no inspection READY or certification PASS is claimed.
 <!-- livespec-clarification:{"requirement_id": "", "decision_key": "placeholders:- Workspace status on 2026-10-12: `incomplete` (missing `expected-ui-tree.json`, `code-ir.json`, desktop frame dimensions). Per the user's 2026-10-12 decision, the full forward contract and Pencil mockups for all program features are completed once, before `spec-ship`. Semantic/test IDs: [NEEDS CLARIFICATION] until that pass. No inspection READY or certification PASS is claimed.", "evidence_hash": "b61444800c5ba99004508bcff949034b15088bbab3f0772da8c38f3707d21dcd", "answer": "User decision 2026-10-12 (lightweight UI contract): Penflow flow/screen contracts, semantic and test IDs and Pencil mockups for all program features are produced in one pass before spec-ship; until then the planned flow_id and screen_id above are authoritative and no inspection READY or certification PASS is claimed."} -->
 
+- Decision `001-microphone-priority:AC-006` / `literal-default-migration`: Decision 2026-10-14 (orchestrator, aligned with the merged 008): the system default microphone is stored as null and "default" is an ordinary device name (a real ALSA PCM on Linux), never a sentinel. On first load without the priority key, a null selected_microphone becomes an empty normal priority list, and any non-null value, including the string "default", becomes a one-entry list with that exact name (for example ["default"]). AC-006 is reworded accordingly.
+<!-- livespec-clarification:{"requirement_id": "001-microphone-priority:AC-006", "decision_key": "literal-default-migration", "evidence_hash": "5bbcb7e6aa16fb499a7b8a5e23178476b0bfec904eb42d8707c808b4542d6821", "answer": "Decision 2026-10-14 (orchestrator, aligned with the merged 008): the system default microphone is stored as null and \"default\" is an ordinary device name (a real ALSA PCM on Linux), never a sentinel. On first load without the priority key, a null selected_microphone becomes an empty normal priority list, and any non-null value, including the string \"default\", becomes a one-entry list with that exact name (for example [\"default\"]). AC-006 is reworded accordingly."} -->
+
+- Decision `001-microphone-priority:AC-008` / `offline-list-content`: Decision 2026-10-14 (orchestrator, decision D2 of the program): `handy settings microphones list` is a live operation, answered by the running Handy through the 008 private channel, because availability, the effective device and its reason come from that instance's audio manager. Without a running Handy it returns the 008 live-only refusal (`unavailable`, exit 5, empty details) and never fabricates availability. The configured order stays readable offline from the settings: `handy settings get microphone_priority`. `set-priority` works with or without a running Handy.
+<!-- livespec-clarification:{"requirement_id": "001-microphone-priority:AC-008", "decision_key": "offline-list-content", "evidence_hash": "2c2236315d9898288244a4c4661e38c0cd86f1af325e05ceac4d30a5a67a17cb", "answer": "Decision 2026-10-14 (orchestrator, decision D2 of the program): `handy settings microphones list` is a live operation, answered by the running Handy through the 008 private channel, because availability, the effective device and its reason come from that instance's audio manager. Without a running Handy it returns the 008 live-only refusal (`unavailable`, exit 5, empty details) and never fabricates availability. The configured order stays readable offline from the settings: `handy settings get microphone_priority`. `set-priority` works with or without a running Handy."} -->
+
+- Decision `001-microphone-priority:AC-008` / `legacy-selected-microphone-key`: Decision 2026-10-14 (orchestrator): after migration `selected_microphone` stays stored unchanged (downgrade) but no surface writes it any more. `handy settings keys` reports it read-only, `handy settings get selected_microphone` still shows the stored value, and `handy settings set selected_microphone …` returns `validation_failed` (exit 2) with `details.field = "selected_microphone"` and `details.reason = "microphones_domain"`, whose message names `handy settings microphones set-priority`. The new `microphone_priority` list is refused by generic `set` with the same reason.
+<!-- livespec-clarification:{"requirement_id": "001-microphone-priority:AC-008", "decision_key": "legacy-selected-microphone-key", "evidence_hash": "3c67d0c33a7240a2dfdaf1469ef7895ea2f7c5de70c64ecbcc3b36e03f534be4", "answer": "Decision 2026-10-14 (orchestrator): after migration `selected_microphone` stays stored unchanged (downgrade) but no surface writes it any more. `handy settings keys` reports it read-only, `handy settings get selected_microphone` still shows the stored value, and `handy settings set selected_microphone …` returns `validation_failed` (exit 2) with `details.field = \"selected_microphone\"` and `details.reason = \"microphones_domain\"`, whose message names `handy settings microphones set-priority`. The new `microphone_priority` list is refused by generic `set` with the same reason."} -->
+
 ## QE Analysis
 
 - **Criticality:** High; **Blast radius:** Shared; **Primary risk:** Regression; **Confidence:** Medium for source understanding, Low for unexecuted runtime.
@@ -437,7 +446,7 @@ Feature: Commit microphone priority
 ## Edge Cases
 
 - Channel selection: the existing channel setting applies only when valid for the opened device; otherwise the device's default channel mapping is used and the setting is not changed.
-- Legacy key: after migration `selected_microphone` stays stored unchanged (not read while the priority key exists) so a downgrade keeps the previous choice; the legacy set command is replaced by the priority operations.
+- Legacy key: after migration `selected_microphone` stays stored unchanged (not read while the priority key exists) so a downgrade keeps the previous choice; the legacy set command is replaced by the priority operations; generic `set` of `selected_microphone` is refused (see Clarifications).
 - Reset: empties the draft normal list only; it requires Save and leaves clamshell unchanged.
 - Empty normal list: use and show system default when the lid is open/unknown or no usable override applies; a confirmed closed lid still attempts the configured override first.
 - All devices missing: retain configured entries and show the attempted default or recording error.

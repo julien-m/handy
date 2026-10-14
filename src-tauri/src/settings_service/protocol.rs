@@ -200,7 +200,7 @@ fn public_provider_schema() -> serde_json::Value {
     serde_json::json!({"type":"object","additionalProperties":false,"required":["id","label","base_url","allow_base_url_edit","models_endpoint","supports_structured_output"],"properties":{"id":{"type":"string"},"label":{"type":"string"},"base_url":{"type":"string"},"allow_base_url_edit":{"type":"boolean"},"models_endpoint":{"type":["string","null"]},"supports_structured_output":{"type":"boolean"}}})
 }
 fn public_binding_schema() -> serde_json::Value {
-    serde_json::json!({"type":"object","additionalProperties":false,"required":["id","name","description","default_binding","current_binding"],"properties":{"id":{"type":"string"},"name":{"type":"string"},"description":{"type":"string"},"default_binding":{"type":"string"},"current_binding":{"type":"string"}}})
+    serde_json::json!({"type":"object","additionalProperties":false,"required":["id","name","description","default_binding","current_binding"],"properties":{"id":{"type":"string"},"name":{"type":"string"},"description":{"type":"string"},"default_binding":{"type":"string"},"current_binding":{"type":"string"},"additional_bindings":{"type":"array","items":{"type":"string"},"minItems":1}}})
 }
 fn public_prompt_schema() -> serde_json::Value {
     serde_json::json!({"type":"object","additionalProperties":false,"required":["id","name","prompt"],"properties":{"id":{"type":"string"},"name":{"type":"string"},"prompt":{"type":"string"}}})
@@ -208,7 +208,7 @@ fn public_prompt_schema() -> serde_json::Value {
 
 /// Allowlisted error details; `field` names a descriptor key, item issues name item fields.
 fn error_details_schema(keys: &[&str]) -> serde_json::Value {
-    serde_json::json!({"type":"object","additionalProperties":false,"properties":{"current_revision":{"$ref":"#/$defs/revision"},"outcome":{"enum":["unknown","committed"]},"field":{"enum":keys},"offset":{"type":"integer","minimum":0},"issues":{"type":"array","items":{"type":"object","additionalProperties":false,"required":["field","reason"],"properties":{"field":{"enum":keys},"reason":{"type":"string"}}}},"items":{"type":"array","maxItems":super::errors::MAX_ITEM_ISSUES,"items":{"$ref":"#/$defs/item_issue"}},"omitted_items":{"type":"integer","minimum":1}}})
+    serde_json::json!({"type":"object","additionalProperties":false,"properties":{"current_revision":{"$ref":"#/$defs/revision"},"outcome":{"enum":["unknown","committed"]},"field":{"enum":keys},"offset":{"type":"integer","minimum":0},"reason":{"type":"string"},"action_id":{"type":"string"},"owning_action":{"type":"string"},"owning_shortcut":{"type":"string"},"kind":{"enum":["duplicate","modifier_overlap"]},"limit":{"type":"integer","minimum":1},"issues":{"type":"array","items":{"type":"object","additionalProperties":false,"required":["field","reason"],"properties":{"field":{"enum":keys},"reason":{"type":"string"}}}},"items":{"type":"array","maxItems":super::errors::MAX_ITEM_ISSUES,"items":{"$ref":"#/$defs/item_issue"}},"omitted_items":{"type":"integer","minimum":1}}})
 }
 fn item_issue_schema() -> serde_json::Value {
     serde_json::json!({"type":"object","additionalProperties":false,"required":["field","kind"],"properties":{"line":{"type":"integer","minimum":1},"position":{"type":"integer","minimum":1},"field":{"type":"string"},"kind":{"type":"string"}}})

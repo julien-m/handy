@@ -8,6 +8,18 @@ interface ShortcutInputProps {
   grouped?: boolean;
   shortcutId: string;
   disabled?: boolean;
+  /**
+   * Capture mode: the recorder hands the recorded combination to this
+   * callback instead of saving it as the action's first shortcut, and
+   * renders only the key chip.
+   */
+  onCapture?: (shortcut: string) => Promise<void>;
+  /** Capture mode: the shortcut shown on the chip; null shows the add label. */
+  value?: string | null;
+  /** Capture mode: accessible name and tooltip of the chip. */
+  label?: string;
+  /** Capture mode: stable test identifier of the chip. */
+  testId?: string;
 }
 
 /**

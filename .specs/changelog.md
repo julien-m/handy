@@ -23,6 +23,81 @@
 
 ## 2026-10-13 — [Feature 002] Step 1 core: ordered replacement model, pinned Unicode 17 offsets/properties and shared scalar/ID validation; additive empty settings and native-generated bindings. Rust target 20 PASS, regression 306 PASS / 17 ignored, generator boundary tests 6 PASS, Clippy/frontend checks and repository conventions PASS. Complete UI/transactions/CLI remain Waiting for 008; no acceptance certification claimed.
 
+## 2026-10-14 — [Feature 009] Plan refined: history_status from 006's actual save_entry result, a WAV failure tested as a saved text-only row (Julien's decision), save_entry failure as failed
+<!-- finalize:spec-refine:2026-10-14:48c67c3f -->
+
+## 2026-10-14 — [Feature 010] Plan refined: history_status carried from 006's actual save_entry result, text-only row saved when the WAV fails (Julien's decision), not_saved no longer tied to a disabled or unavailable WAV
+<!-- finalize:spec-refine:2026-10-14:e2c204ed -->
+
+## 2026-10-14 — [Feature 005] Plan refined: text-only history row for every dictation whose WAV fails (Julien's decision), open WAV question removed, history change shared with 006
+<!-- finalize:spec-refine:2026-10-14:d7cad1e7 -->
+
+## 2026-10-14 — [Feature 006] Spec and plan refined: text-only history entry when the WAV fails (Julien's decision), AC-005 history clause no longer tied to the audio-gated save, history_status from the actual save_entry result
+<!-- finalize:spec-refine:2026-10-14:2190dbf9 -->
+
+## 2026-10-14 — [Feature 009] Plan refined: auto_submit refused by a plain not_found (retired-key hint removed), cross source FrontmostAtEnd and resolved_target aligned with 006, Windows full acceptance pending release evidence
+<!-- finalize:spec-refine:2026-10-14:86e43d44 -->
+
+## 2026-10-14 — [Feature 004] Integrated with 008: `dev` merged; shortcut lists, the post-processing toggle and the keyboard switch commit through the settings service with registration prepared before one revision and undone on refusal, refused during a dictation (coordinator quiescence lease); `handy settings shortcuts list/add/remove/reset` (live-only changes, dry run, stable codes). Full `cargo test`, frontend checks and repository conventions PASS; native CLI evidence pending; no AC certified.
+
+## 2026-10-13 — [Feature 004] Spec review fix: enabling post-processing always succeeds again, as the spec requires; a shortcut the OS refuses is reported by a translated toast and a warning on its row and stays editable; the shared-slot handover is kept. Rust 376 PASS / 16 ignored, frontend checks and repository conventions PASS, progression implement READY.
+
+## 2026-10-13 — [Feature 004] Re-audit fixes: disabling post-processing hands a shared Tauri slot back to Transcribe, a refused late activation keeps post-processing off with a translated message, OS probe of cancel outside recording, nits N1–N5 fixed and N6 documented, `implementation.md` structure valid. Rust 372 PASS / 16 ignored, frontend checks and repository conventions PASS.
+
+## 2026-10-13 — [Feature 004] Spec refined: Quality Engineering classification for the delivery lane
+
+`## Quality Engineering` added from the existing QE Analysis: criticality High, blast radius Shared, primary risk Regression; `livespec delivery lane` reads it (full). No AC, FR or SC changed; the spec review is stale until an independent reviewer refreshes it.
+
+## 2026-10-13 — [Feature 004] Audit fixes: inherited-conflict slots kept on Tauri edits, OS probe of disabled post-processing shortcuts, switch repair by destination parser with kept-and-reported conflicts, translated cancel refusals, live conflict warnings, rollback and Carbon shadow tests. Rust 363 PASS / 16 ignored, frontend checks and repository conventions PASS; recorder states stay with the UI pass.
+
+## 2026-10-13 — [Feature 004] Core: 1–4 shortcuts per dictation action with additive storage, action+shortcut identity in both backends and the coordinator (toggle/locked any shortcut, held starting shortcut only), shared conflict checker with legacy conflicts flagged, settings list UI. Rust 340 PASS / 16 ignored, Clippy as `dev`, frontend checks and repository conventions PASS. CLI and revision commit Waiting for 008; no acceptance certification claimed.
+## 2026-10-14 — [Feature 010] Plan refined: 008 sources cited as code paths (plan review preparable in 18 batches), shared contracts cited from the 006 plan, pinned reasons aligned with 009
+<!-- finalize:spec-refine:2026-10-14:61308064 -->
+
+## 2026-10-14 — [Feature 009] Plan refined: 008 sources cited as code paths (plan review preparable in 20 batches), explicit AC-006 (13/13), DestinationManager::claim_enter, pinned_app_not_running and activation_failed aligned with 010
+<!-- finalize:spec-refine:2026-10-14:f275f226 -->
+
+## 2026-10-14 — [Feature 006] Plan refined: 008 sources cited as code paths (plan review preparable in 1 batch), four ValidationContext constructions, DestinationManager::claim_enter for 009, pinned_app_not_running reason
+<!-- finalize:spec-refine:2026-10-14:8325a713 -->
+
+## 2026-10-14 — [Feature 005] Plan refined: plan review preparable again, Step 2 ordered, offline prompt list justified
+
+The plan cites other features' documents as inline paths instead of links, so its review no longer loads 008's document graph (preparation at 180,000 characters: 1 batch, no error); it no longer references the untracked program notes and copies the D2/D3/D4 names it uses. Step 2 names `tauri_adapter::write_change` as prerequisite (added by Step 2 if 001/003 have not) and commits deletions without preparation until Step 3 adds the `bindings` preparation. Offline `prompts list` is justified as 008's delivered live-only refusal applied to a D2 operation. Spec unchanged; the plan review is stale until an independent reviewer refreshes it.
+
+## 2026-10-14 — [Feature 003] Plan refined: plan review preparable again, durable-error rule renamed, offline status justified
+
+The plan cites other features' documents as inline paths instead of links and writes `Inspect [Whisper model documentation](…)`, so its review no longer loads 008's document graph nor an external contract (preparation at 180,000 characters: 1 batch, no error); it no longer references the untracked program notes and copies the D2 names it uses. "Rule D4" becomes the durable-error rule (program D4 is the unsupported-platform refusal). Offline `vocabulary status` is justified as 008's delivered live-only refusal applied to a D2 operation. Spec unchanged; the plan review is stale until an independent reviewer refreshes it.
+
+## 2026-10-14 — [Feature 001] Plan refined: plan review preparable again, 006 step 0 before Step 2
+
+The plan cites 008's plan and implementation record and 006's plan as inline paths instead of links, so its review no longer loads 008's document graph (preparation at 180,000 characters: 1 batch, no error); it no longer references the untracked program notes and copies the D2/D3 names it uses. Step 2's prerequisite now names 006 step 0 (D3 variants). Spec unchanged; the plan review is stale until an independent reviewer refreshes it.
+
+## 2026-10-14 — [Feature 010] Plan refined: one Enter veto with 009, method outcome from 006, late-read update
+
+The plan consumes `InsertionOutcome.method_outcome` from 006 instead of a separate 007 adapter, updates the existing bubble on 007's late-read diagnostic, shares 006's `RecoveryDisposition` as the single Enter veto (010 only answers `RecoveryPort::before_insertion`), uses the merged 008 names and records Windows/Linux native proof as pending release evidence. Spec unchanged; the plan review is stale until an independent reviewer refreshes it.
+
+## 2026-10-14 — [Feature 005] Spec and plan refined: truthful failure notice, merged 008 names, live prompt list
+
+Spec: AC-005 notice says the AI step failed and the original text was used for insertion, never that insertion succeeded (Clarify decision). Plan: merged 008 names, canonical `remove`/`update` actions, shortcut removal through 008's native preparation, `prompts list` as a D2 live operation with the Apple Intelligence check, `unsupported_platform` refusal (D4), 004 merge as explicit dependency, QE aligned, Windows/Linux native proof as pending release evidence; history/WAV divergence with 006 signalled in ship.md. Spec and plan reviews are stale until an independent reviewer refreshes them.
+
+## 2026-10-14 — [Feature 009] Spec and plan refined: pinned badge rule, D2 live pin operations, retired auto_submit, single Enter veto
+<!-- finalize:spec-refine:2026-10-14:0feee4a1 -->
+
+Spec AC-001 now shows the badge while an app is pinned even with 006 destination return off (decision in Clarifications; 006 spec unchanged). Plan: `destination pin|unpin|status` as 006 Step 0 live operations with precedence `unsupported_platform` (2) → no instance (5) → `not_found` (4); retired `auto_submit` is `not_found`/4 with `details.reason = "retired_key"`; the Enter veto is 006's single `RecoveryDisposition`; Windows/Linux native proof as pending release evidence; QE aligned on the spec. Spec and plan reviews are stale until an independent reviewer refreshes them.
+
+## 2026-10-14 — [Feature 001] Spec and plan refined: literal "default" migration, live microphone list, full 2-second attempts
+
+Spec: AC-006 maps only a null legacy selection to an empty list (the device name "default" becomes an exact entry); Clarifications record the live-only `microphones list` (configured order readable with `get microphone_priority`) and the read-only legacy `selected_microphone` (`validation_failed`, `details.reason = "microphones_domain"`). Plan: merged 008 names, D2 live list (depends on 006 step 0), D3 per-name items, full 2-second attempts within the 6-second total, Windows/Linux native proof as pending release evidence. Spec and plan reviews are stale until an independent reviewer refreshes them.
+
+## 2026-10-14 — [Feature 006] Plan refined: settings framework Step 0 (D2–D4) and merged 008 names
+<!-- finalize:spec-refine:2026-10-14:b0be88bc -->
+
+New Step 0 extends the 008 framework with live domain operations (`DomainPlan::Live`, `LiveOperation`, `LiveContext`), a static `PlatformCapability`, and optional `details.reason`/`details.items`; unsupported platform is `validation_failed`/2 with `unsupported_platform` (D4). `DestinationContext` and a single `RecoveryDisposition` veto defined for 007/009/010; 007 identifiers and wire values adopted; QE aligned on the spec (High, Shared, Functional); Windows/Linux native proof as pending release evidence (D1). Spec unchanged; the plan review is stale until an independent reviewer refreshes it.
+
+## 2026-10-14 — [Feature 003] Plan refined: merged 008 names and program decisions D1–D4
+
+Plan QE aligned on the spec (Medium, light lane); `vocabulary status` as a D2 live operation (depends on 006 step 0); per-line errors in D3 `details.items`; `context_budget_unverified` as `internal_error`/1 (D4); stdout-only export; Whisper budget of 223 tokens sourced from the engine, other budgets measured in Step 1; Windows/Linux native proof as pending release evidence. Spec unchanged; the plan review is stale until an independent reviewer refreshes it.
+
 ## 2026-10-13 — [Feature 001] Spec refined: Quality Engineering classification for the delivery lane
 
 `## Quality Engineering` added from the existing QE Analysis: criticality High, blast radius Shared, primary risk Regression; `livespec delivery lane` reads it (full). No AC, FR or SC changed; the spec review is stale until an independent reviewer refreshes it.

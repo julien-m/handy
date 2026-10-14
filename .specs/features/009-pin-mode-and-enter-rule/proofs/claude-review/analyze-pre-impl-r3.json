@@ -1,0 +1,129 @@
+{
+  "findings": [
+    {
+      "finding_id": "AN-SCOPE-68614c0b",
+      "category": "scope",
+      "severity": "HIGH",
+      "locations": [],
+      "summary": "New public CLI error reason `retired_key` with details.field hint for `auto_submit`; no 009 AC asks for it.",
+      "recommendation": "Refresh the complete independent plan review and resolve its findings"
+    }
+  ],
+  "coverage": [
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-001",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-003",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-002",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-004",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-005",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:AC-006",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:FR-001",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:FR-002",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:FR-003",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:FR-004",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:SC-001",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:SC-002",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "009-pin-mode-and-enter-rule:SC-003",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    }
+  ],
+  "coverage_percent": 100.0,
+  "coverage_kind": "structural_reference",
+  "semantic_status": "blocked",
+  "metrics": {
+    "total_requirements": 13,
+    "covered_requirements": 13,
+    "coverage_percent": 100.0,
+    "critical_count": 0,
+    "high_count": 1,
+    "implementation_present": 0
+  }
+}

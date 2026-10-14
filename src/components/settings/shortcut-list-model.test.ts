@@ -1,0 +1,221 @@
+// Assertions for the shortcut list rules; run with
+// `bun src/components/settings/shortcut-list-model.test.ts`.
+import assert from "node:assert/strict";
+import type {
+  RefusedShortcut,
+  ShortcutBinding,
+  StoredShortcutConflict,
+} from "@/bindings";
+import {
+  MAX_SHORTCUTS_PER_ACTION,
+  canAddShortcut,
+  canRemoveShortcut,
+  describeEditError,
+  describeShortcutFailure,
+  keepStoredRefusals,
+  refusalFor,
+  shortcutsOf,
+  storedConflictFor,
+} from "./shortcut-list-model";
+import {
+  ShortcutEditFailure,
+  bindingFailure,
+} from "../../lib/shortcut-edit-failure";
+import { SettingsCommandFailure } from "../../stores/settings-errors";
+
+const binding = (additional?: string[]): ShortcutBinding => ({
+  id: "transcribe",
+  name: "Transcribe",
+  description: "Converts your speech into text.",
+  default_binding: "option+space",
+  current_binding: "option+space",
+  additional_bindings: additional,
+});
+
+const actionName = (actionId: string): string => `name:${actionId}`;
+
+// A legacy store has no alternatives field.
+assert.deepEqual(shortcutsOf(binding()), ["option+space"]);
+assert.deepEqual(shortcutsOf(binding(["ctrl+option+d"])), [
+  "option+space",
+  "ctrl+option+d",
+]);
+
+// Bounds: 1 to 4 shortcuts per action.
+assert.equal(MAX_SHORTCUTS_PER_ACTION, 4);
+assert.equal(canAddShortcut(3), true);
+assert.equal(canAddShortcut(4), false);
+assert.equal(canRemoveShortcut(1), false);
+assert.equal(canRemoveShortcut(2), true);
+
+// Conflicts name the owning action.
+assert.deepEqual(
+  describeEditError(
+    {
+      code: "shortcut_conflict",
+      conflict: {
+        kind: "duplicate",
+        owning_action: "transcribe_with_post_process",
+        owning_shortcut: "option+shift+space",
+      },
+    },
+    actionName,
+  ),
+  {
+    key: "settings.general.shortcut.list.errors.conflict",
+    params: {
+      action: "name:transcribe_with_post_process",
+      shortcut: "option+shift+space",
+    },
+  },
+);
+assert.equal(
+  describeEditError(
+    {
+      code: "shortcut_conflict",
+      conflict: {
+        kind: "modifier_overlap",
+        owning_action: "transcribe",
+        owning_shortcut: "option",
+      },
+    },
+    actionName,
+  ).key,
+  "settings.general.shortcut.list.errors.overlap",
+);
+assert.deepEqual(
+  describeEditError({ code: "limit_exceeded", limit: 4 }, actionName),
+  {
+    key: "settings.general.shortcut.list.addLimit",
+    params: { limit: 4 },
+  },
+);
+assert.equal(
+  describeEditError({ code: "last_shortcut" }, actionName).key,
+  "settings.general.shortcut.list.removeLast",
+);
+assert.deepEqual(
+  describeEditError(
+    { code: "registration_failed", message: "HotKey already registered" },
+    actionName,
+  ),
+  {
+    key: "settings.general.shortcut.list.errors.registration",
+    params: { error: "HotKey already registered" },
+  },
+);
+
+const conflicts: StoredShortcutConflict[] = [
+  {
+    action_id: "transcribe",
+    shortcut: "alt+space",
+    conflict: {
+      kind: "duplicate",
+      owning_action: "transcribe_with_post_process",
+      owning_shortcut: "option+space",
+    },
+  },
+];
+assert.equal(
+  storedConflictFor(conflicts, "transcribe", "alt+space"),
+  conflicts[0],
+);
+assert.equal(storedConflictFor(conflicts, "transcribe", "f13"), undefined);
+
+// Legacy recorders (cancel): a typed refusal is translated, naming the
+// owning action; anything else keeps its raw text.
+const cancelConflict = bindingFailure({
+  success: false,
+  binding: null,
+  error: "Conflicts with 'option+space' of Transcribe",
+  edit_error: {
+    code: "shortcut_conflict",
+    conflict: {
+      kind: "duplicate",
+      owning_action: "transcribe",
+      owning_shortcut: "option+space",
+    },
+  },
+});
+assert.ok(cancelConflict instanceof ShortcutEditFailure);
+assert.deepEqual(describeShortcutFailure(cancelConflict, actionName), {
+  key: "settings.general.shortcut.list.errors.conflict",
+  params: { action: "name:transcribe", shortcut: "option+space" },
+});
+const untyped = bindingFailure({
+  success: false,
+  binding: null,
+  error: "Binding not found",
+  edit_error: null,
+});
+assert.ok(!(untyped instanceof ShortcutEditFailure));
+assert.equal(
+  describeShortcutFailure(untyped, actionName),
+  "Error: Binding not found",
+);
+
+// Enabling post-processing succeeds although the system refuses one of its
+// shortcuts: that row carries a warning and stays editable.
+const refused: RefusedShortcut[] = [
+  {
+    action_id: "transcribe_with_post_process",
+    shortcut: "f14",
+    reason: "HotKey already registered",
+  },
+];
+assert.deepEqual(refusalFor(refused, "transcribe_with_post_process", "f14"), {
+  key: "settings.general.shortcut.list.errors.registration",
+  params: { error: "HotKey already registered" },
+});
+assert.equal(
+  refusalFor(refused, "transcribe_with_post_process", "f13"),
+  undefined,
+);
+assert.equal(refusalFor(refused, "transcribe", "f14"), undefined);
+
+// A refused shortcut that was changed or removed loses its warning.
+const postBinding = (shortcuts: string[]): ShortcutBinding => ({
+  ...binding(shortcuts.slice(1)),
+  id: "transcribe_with_post_process",
+  current_binding: shortcuts[0],
+});
+assert.deepEqual(
+  keepStoredRefusals(refused, {
+    transcribe_with_post_process: postBinding(["f13", "f14"]),
+  }),
+  refused,
+);
+assert.deepEqual(
+  keepStoredRefusals(refused, {
+    transcribe_with_post_process: postBinding(["f13", "f15"]),
+  }),
+  [],
+);
+assert.deepEqual(keepStoredRefusals(refused, {}), []);
+
+// A refusal of the settings service is translated from its typed code, in
+// the list response and when a legacy recorder throws it.
+const persistenceFailed = {
+  code: "persistence_failed",
+  message: "Settings persistence failed.",
+  field: null,
+  reason: null,
+  outcome: null,
+  current_revision: null,
+} as const;
+assert.deepEqual(
+  describeEditError(
+    { code: "settings_refused", error: persistenceFailed },
+    actionName,
+  ),
+  { key: "errors.settings.persistenceFailed", params: {} },
+);
+assert.deepEqual(
+  describeShortcutFailure(
+    new SettingsCommandFailure(persistenceFailed),
+    actionName,
+  ),
+  { key: "errors.settings.persistenceFailed", params: {} },
+);
+
+console.log("shortcut-list-model: all assertions passed");

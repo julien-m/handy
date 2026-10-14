@@ -1,0 +1,136 @@
+{
+  "findings": [],
+  "coverage": [
+    {
+      "requirement_id": "010-recovery-bubble:AC-001",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:AC-002",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:AC-003",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:AC-004",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:AC-005",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:AC-006",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:AC-007",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:FR-001",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:FR-002",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:FR-003",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:FR-004",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:FR-005",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:SC-001",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:SC-002",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:SC-003",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    }
+  ],
+  "coverage_percent": 100.0,
+  "coverage_kind": "structural_reference",
+  "semantic_status": "covered",
+  "metrics": {
+    "total_requirements": 15,
+    "covered_requirements": 15,
+    "coverage_percent": 100.0,
+    "critical_count": 0,
+    "high_count": 0,
+    "implementation_present": 0
+  }
+}

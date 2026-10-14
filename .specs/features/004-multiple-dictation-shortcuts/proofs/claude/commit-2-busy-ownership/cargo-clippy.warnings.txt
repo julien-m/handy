@@ -1,0 +1,5 @@
+      1 warning: `handy` (lib test) generated 5 warnings (run `cargo clippy --fix --lib -p handy --tests` to apply 5 suggestions)
+      2 warning: items after a test module
+      1 warning: this `repeat().take()` can be written more concisely
+      1 warning: this boolean expression can be simplified
+      1 warning: using `write!()` with a format string that ends in a single newline

@@ -1,0 +1,37 @@
+$ bun scripts/check-translations.ts
+[34m
+🌍 Translation Consistency Check
+[0m
+Loading reference language: en
+Reference has 474 keys
+
+[34mResults:[0m
+────────────────────────────────────────────────────────────
+[32m✓ AR: All keys present[0m
+[32m✓ BG: All keys present[0m
+[32m✓ CA: All keys present[0m
+[32m✓ CS: All keys present[0m
+[32m✓ DA: All keys present[0m
+[32m✓ DE: All keys present[0m
+[32m✓ ES: All keys present[0m
+[32m✓ FR: All keys present[0m
+[32m✓ HE: All keys present[0m
+[32m✓ HI: All keys present[0m
+[32m✓ ID: All keys present[0m
+[32m✓ IT: All keys present[0m
+[32m✓ JA: All keys present[0m
+[32m✓ KO: All keys present[0m
+[32m✓ NE: All keys present[0m
+[32m✓ NL: All keys present[0m
+[32m✓ PL: All keys present[0m
+[32m✓ PT: All keys present[0m
+[32m✓ RU: All keys present[0m
+[32m✓ SV: All keys present[0m
+[32m✓ TR: All keys present[0m
+[32m✓ UK: All keys present[0m
+[32m✓ VI: All keys present[0m
+[32m✓ ZH: All keys present[0m
+[32m✓ ZH-TW: All keys present[0m
+────────────────────────────────────────────────────────────
+[32m
+✓ All 25 languages have complete translations![0m

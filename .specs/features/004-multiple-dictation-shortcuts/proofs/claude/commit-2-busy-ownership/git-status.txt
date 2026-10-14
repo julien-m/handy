@@ -1,0 +1,17 @@
+ M .specs/changelog.md
+ M .specs/features/004-multiple-dictation-shortcuts/changelog.md
+ M src-tauri/src/shortcut/action_shortcuts.rs
+ M src-tauri/src/shortcut/conflicts.rs
+ M src-tauri/src/shortcut/edits.rs
+ M src-tauri/src/shortcut/mod.rs
+ M src-tauri/src/transcription_coordinator.rs
+ M src/components/settings/shortcut-list.tsx
+?? .specs/conventions/runs/20261013T145753Z/
+?? .specs/conventions/runs/20261013T145851Z/
+?? .specs/conventions/runs/20261013T151501Z/
+?? .specs/conventions/runs/20261013T151640Z/
+?? .specs/conventions/runs/20261013T152703Z/
+?? .specs/features/004-multiple-dictation-shortcuts/implementation.md
+?? .specs/features/004-multiple-dictation-shortcuts/pipeline.md
+?? .specs/features/004-multiple-dictation-shortcuts/progress.md
+?? .specs/features/004-multiple-dictation-shortcuts/proofs/

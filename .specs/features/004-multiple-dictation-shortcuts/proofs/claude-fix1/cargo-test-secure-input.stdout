@@ -1,0 +1,10 @@
+
+running 5 tests
+test secure_input_shadow::tests::modifier_only_shortcuts_are_immune ... ok
+test secure_input_shadow::tests::fn_and_unparseable_shortcuts_are_uncovered ... ok
+test secure_input_shadow::tests::full_modifier_groups_are_covered_without_degradation ... ok
+test secure_input_shadow::tests::widened_shadow_keeps_the_original_identity ... ok
+test secure_input_shadow::tests::each_shortcut_of_an_action_gets_its_own_shadow_identity ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 374 filtered out; finished in 0.00s
+

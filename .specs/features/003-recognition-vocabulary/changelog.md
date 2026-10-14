@@ -34,3 +34,32 @@
 - **Classification:** criticality Medium, blast radius Shared, primary risk UX, taken from the existing QE Analysis; `livespec delivery lane`: light once the spec review is current
 - **Review:** the previous spec review is stale; an independent reviewer refreshes it
 - **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
+
+## 2026-10-14 — [Plan Update]: align the plan on the merged 008 and the program decisions D1–D4
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md updated)
+- **AC impacted:** None (pre-implementation)
+- **QE:** plan `## QE Analysis` aligned on the spec (Medium, Shared, UX then Regression); delivery lane stays light
+- **008 names:** `Domain`/`DomainPlan`/`DomainChange(ChangeKind::Apply)`, `SettingsBackend::commit_change`, `sequence::write_change`, `input::read_source`, `View::Export`; new `tauri_adapter::write_change` for the UI write with its base revision; `commit_mutation` and `LiveSettingsEffects` (never shipped) removed
+- **D2:** `vocabulary status` is a live operation of 006 step 0 (`DomainPlan::Live`, `VocabularyStatus`, `managed_state::<Arc<TranscriptionManager>>`); offline it returns the 008 live-only refusal (`unavailable`/5); Step 4 depends on 006 step 0
+- **D3:** per-line refusals in `details.items` (`ErrorItem`, ≤100) with new `ErrorReason` variants `term_empty`, `term_too_long`, `term_line_break`, `term_forbidden_character`, `term_duplicate`
+- **D4:** `context_budget_unverified` becomes `internal_error`/1 with `details.reason`, never exit 5 (not transient, not fixable by the user)
+- **Export:** stdout only (`vocabulary export -`), a file by shell redirection, because the merged 008 framework has no file output
+- **Budget:** Whisper 223 tokens sourced from the engine rule `n_text_ctx / 2 − 1` (OpenAI Whisper decoder, whisper.cpp); other mechanisms measured and documented in Step 1 (`contracts/context-budget.md`), no application ceiling
+- **D1:** Step 6 requires macOS native proof only; Windows/Linux observations are pending release evidence
+- **Review:** the plan review is stale; an independent reviewer refreshes it
+- **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
+
+## 2026-10-14 — [Plan Update]: make the plan review preparable, rename the durable-error rule, justify offline status
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md updated)
+- **AC impacted:** None (pre-implementation)
+- **Review budget:** 008's plan and implementation record are cited as inline paths, not links; the untracked program notes are no longer referenced and the D2 names are copied into the CLI section; `Inspect [Whisper model documentation](…)` so the external link is context, not a normative contract. Plan review preparation at 180,000 characters: 1 batch, no error (was `paired_review_batch_budget_exceeded` and `external_contract_not_loaded`)
+- **Durable-error rule:** the plan's "Rule D4" (never `unavailable`/5 for `context_budget_unverified`) is renamed, since program D4 is the unsupported-platform refusal; behavior unchanged
+- **Offline status:** `vocabulary status` offline returns 008's delivered live-only refusal (`unavailable`/5, scenario « Live state without running app » of the 008 spec) applied to a D2 operation; justified in the plan, spec unchanged
+- **Review:** the plan review is stale; an independent reviewer refreshes it
+- **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)

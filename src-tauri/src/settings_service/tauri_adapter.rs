@@ -13,7 +13,7 @@ use super::{
     operations::SettingsBackend,
     ownership::NativeOwnerProbe,
     protocol::{Revision, SettingsSnapshot},
-    sequence::{self, LiveEffectsPort},
+    sequence::{self, LiveEffectsPort, PreparedChange},
     store::{SettingsRead, SettingsRepository},
     ui_value::UiValue,
     validation::SettingsMutation,
@@ -201,11 +201,43 @@ pub fn set_prepared(
 ) -> Result<LiveCommit, SettingsCommandError> {
     let native = native_changes::prepared_change(app, key)
         .unwrap_or_else(|| Err(SettingsError::new(SettingsErrorCode::InternalError)))?;
+    set_prepared_with(app, key, value, native)
+}
+/// `set_prepared` with the native change built by the caller from the same `native_changes`
+/// constructor (for example with a sink for the details only the settings UI shows).
+///
+/// # Errors
+/// Same as `set_prepared`.
+pub fn set_prepared_with(
+    app: &AppHandle,
+    key: &'static str,
+    value: serde_json::Value,
+    native: PreparedChange<'_>,
+) -> Result<LiveCommit, SettingsCommandError> {
     Ok(sequence::write_prepared(
         live(app)?.inner(),
         &TauriEffects(app),
         key,
         value,
+        native,
+    )?)
+}
+/// Typed UI edit of `key` whose native change is prepared first and compensated when the commit
+/// is refused (the shortcut lists), in the write order.
+///
+/// # Errors
+/// The preparation's refusal (nothing committed), otherwise same as `edit`.
+pub fn edit_prepared(
+    app: &AppHandle,
+    key: &'static str,
+    apply: SettingsEditFn<'_>,
+    native: PreparedChange<'_>,
+) -> Result<LiveCommit, SettingsCommandError> {
+    Ok(sequence::write_edit_prepared(
+        live(app)?.inner(),
+        &TauriEffects(app),
+        key,
+        apply,
         native,
     )?)
 }
@@ -219,29 +251,6 @@ pub fn ordered<T>(
 ) -> Result<T, SettingsCommandError> {
     let live = live(app)?;
     sequence::ordered(&live, &TauriEffects(app), body)
-}
-/// Commit an edit whose native change `key` was prepared inside `ordered` from `before`; a
-/// refused commit runs `compensate` (see `sequence::commit_prepared`).
-///
-/// # Errors
-/// Same as `edit`.
-pub fn commit_prepared_edit(
-    app: &AppHandle,
-    key: &'static str,
-    apply: SettingsEditFn<'_>,
-    before: &AppSettings,
-    compensate: impl FnOnce(),
-) -> Result<LiveCommit, SettingsCommandError> {
-    let edit = super::edit::SettingsEdit::Apply(apply);
-    let live = live(app)?;
-    Ok(sequence::commit_prepared(
-        &live,
-        &TauriEffects(app),
-        key,
-        &edit,
-        before,
-        compensate,
-    )?)
 }
 /// Internal writer (startup fallback, manager repair): committed outside the write order with no
 /// live effect (the caller's live state already reflects it); the UI is notified. A refusal is
@@ -287,6 +296,23 @@ impl SettingsBackend for RoutedBackend {
     ) -> Result<SettingsRead, SettingsError> {
         let live = live(&self.app)?;
         let commit = sequence::write_change(&live, &TauriEffects(&self.app), change, expected)?;
+        Ok(routed_read(&live, commit))
+    }
+    /// A live-only domain change of `key` gets the native preparation of the settings UI.
+    fn commit_live_change(
+        &self,
+        key: &'static str,
+        change: &DomainChange,
+        expected: Option<Revision>,
+    ) -> Result<SettingsRead, SettingsError> {
+        let live = live(&self.app)?;
+        let effects = TauriEffects(&self.app);
+        let commit = match native_changes::prepared_change(&self.app, key) {
+            Some(native) => {
+                sequence::write_change_prepared(&live, &effects, (key, change), expected, native?)?
+            }
+            None => sequence::write_change(&live, &effects, change, expected)?,
+        };
         Ok(routed_read(&live, commit))
     }
     fn is_live(&self) -> bool {

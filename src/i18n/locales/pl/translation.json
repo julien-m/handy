@@ -205,6 +205,22 @@
           "restore": "Nie udało się przywrócić oryginalnego skrótu",
           "set": "Nie udało się ustawić skrótu: {{error}}",
           "reset": "Nie udało się zresetować skrótu do wartości domyślnej"
+        },
+        "list": {
+          "add": "Dodaj skrót",
+          "addLimit": "Maksymalnie {{limit}} skróty na akcję",
+          "change": "Kliknij, aby nagrać nową kombinację",
+          "remove": "Usuń ten skrót",
+          "removeLast": "Każda akcja zachowuje co najmniej jeden skrót",
+          "reset": "Przywróć domyślny skrót",
+          "errors": {
+            "conflict": "Już używany przez {{action}} ({{shortcut}})",
+            "overlap": "Uruchomiłby też {{action}} ({{shortcut}})",
+            "invalid": "Nieprawidłowy skrót: {{error}}",
+            "registration": "System odrzucił ten skrót: {{error}}",
+            "generic": "Nie udało się zapisać skrótu",
+            "conflictsUnavailable": "Nie udało się sprawdzić konfliktów skrótów"
+          }
         }
       },
       "language": {
@@ -538,7 +554,8 @@
       },
       "postProcessingToggle": {
         "label": "Postprocess",
-        "description": "Włącz AI do ulepszania tekstu po transkrypcji"
+        "description": "Włącz AI do ulepszania tekstu po transkrypcji",
+        "shortcutRefused": "Postprocess jest włączony, ale system odrzucił skrót {{shortcut}}. Zmień go w ustawieniach postprocessu."
       },
       "muteWhileRecording": {
         "label": "Wycisz podczas nagrywania",
@@ -551,7 +568,8 @@
       "keyboardImplementation": {
         "title": "Implementacja klawiatury",
         "description": "Wybierz backend dla skrótów klawiaturowych.",
-        "bindingsReset": "Skróty klawiaturowe były niekompatybilne i zostały zresetowane do wartości domyślnych"
+        "bindingsReset": "Niektóre skróty klawiaturowe były niekompatybilne i zostały zresetowane do wartości domyślnych lub usunięte",
+        "conflictsKept": "Niektóre skróty kolidują teraz z inną akcją. Zostały zachowane i są oznaczone w ustawieniach skrótów."
       },
       "paths": {
         "appData": "Dane aplikacji:",
@@ -699,6 +717,7 @@
       "validationFailed": "Ta wartość nie jest akceptowana dla tego ustawienia.",
       "revisionConflict": "Ustawienia zostały zmienione gdzie indziej. Odśwież i spróbuj ponownie.",
       "unavailable": "Tego ustawienia nie można teraz zmienić. Spróbuj ponownie później.",
+      "shortcutSessionBusy": "Trwa dyktowanie. Spróbuj ponownie po jego zakończeniu.",
       "persistenceFailed": "Nie udało się zapisać ustawień.",
       "generic": "Nie udało się zmienić ustawienia.",
       "readOnly": "Ustawienia są w tej sesji tylko do odczytu: pliku ustawień nie można bezpiecznie zapisać, więc zmiany nie zostaną zachowane."

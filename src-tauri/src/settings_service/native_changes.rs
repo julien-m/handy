@@ -1,7 +1,8 @@
 //! Native changes the live state can refuse (swapping the VAD detector or the input channel
-//! during a recording): prepared before the commit and undone when the commit is refused. The
-//! settings UI commands and CLI writes routed to the instance take them from here, so a refused
-//! change is `unavailable` with nothing written on both surfaces.
+//! during a recording, changing the shortcut registrations during a dictation session):
+//! prepared before the commit and undone when the commit is refused. The settings UI commands
+//! and CLI writes routed to the instance take them from here, so a refused change is refused
+//! with nothing written on both surfaces.
 use super::{
     errors::{SettingsError, SettingsErrorCode},
     sequence::PreparedChange,
@@ -10,10 +11,9 @@ use crate::managers::audio::AudioRecordingManager;
 use std::sync::Arc;
 use tauri::{AppHandle, Manager};
 
-/// Keys whose live change is prepared before their commit.
-pub(crate) const PREPARED_KEYS: [&str; 2] = ["vad_backend", "selected_channel"];
-
-/// The prepared native change of `key`, or `None` when its live effect simply follows the commit.
+/// The prepared native change of `key` (audio keys here, shortcut keys from
+/// `shortcut::live_change`, feature 004), or `None` when its live effect simply follows the
+/// commit.
 ///
 /// # Errors
 /// `unavailable` (inside `Some`) when the audio manager is not running.
@@ -21,17 +21,28 @@ pub(crate) fn prepared_change(
     app: &AppHandle,
     key: &str,
 ) -> Option<Result<PreparedChange<'static>, SettingsError>> {
-    if !PREPARED_KEYS.contains(&key) {
-        return None;
+    use crate::shortcut::live_change;
+    match key {
+        "vad_backend" | "selected_channel" => Some(audio_change(app, key)),
+        "post_process_enabled" => Some(Ok(live_change::post_process(app.clone(), None))),
+        "keyboard_implementation" => Some(Ok(live_change::keyboard_implementation(app.clone()))),
+        "bindings" => Some(Ok(live_change::bindings(app.clone(), None))),
+        _ => None,
     }
+}
+/// The prepared change of an audio key.
+///
+/// # Errors
+/// `unavailable` when the audio manager is not running.
+fn audio_change(app: &AppHandle, key: &str) -> Result<PreparedChange<'static>, SettingsError> {
     let Some(manager) = app.try_state::<Arc<AudioRecordingManager>>() else {
-        return Some(Err(SettingsError::new(SettingsErrorCode::Unavailable)));
+        return Err(SettingsError::new(SettingsErrorCode::Unavailable));
     };
     let manager = Arc::clone(manager.inner());
-    Some(Ok(match key {
+    Ok(match key {
         "vad_backend" => vad_backend(manager),
         _ => selected_channel(manager),
-    }))
+    })
 }
 /// Swap the VAD detector (reopening the microphone when needed); restore it on refusal.
 fn vad_backend(manager: Arc<AudioRecordingManager>) -> PreparedChange<'static> {
@@ -47,6 +58,7 @@ fn vad_backend(manager: Arc<AudioRecordingManager>) -> PreparedChange<'static> {
                 log::error!("Failed to restore the previous VAD backend: {error}");
             }
         }),
+        extend: None,
     }
 }
 /// Restart capture on the requested channel; restore the previous one on refusal.
@@ -63,6 +75,7 @@ fn selected_channel(manager: Arc<AudioRecordingManager>) -> PreparedChange<'stat
                 log::error!("Failed to restore the previous channel: {error}");
             }
         }),
+        extend: None,
     }
 }
 /// The refusal of the live state, logged with its detail, reported without it.

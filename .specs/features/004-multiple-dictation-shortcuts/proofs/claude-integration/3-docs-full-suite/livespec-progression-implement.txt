@@ -1,0 +1,2 @@
+livespec-shim-notice: dev mode executes the LiveSpec checkout /Users/julienm/projects/livespec
+BLOCKED: analyze_not_ready:incomplete

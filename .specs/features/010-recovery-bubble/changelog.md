@@ -68,3 +68,46 @@
 - **Classification:** criticality High, blast radius Shared, primary risk Data, taken from the existing QE Analysis; `livespec delivery lane`: full
 - **Review:** the previous spec review is stale; an independent reviewer refreshes it
 - **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
+
+## 2026-10-14 — [Plan Update]: one Enter veto with 009, method outcome from 006, late-read update, D1
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md and contracts/recovery-contract.md updated)
+- **AC impacted:** None (pre-implementation)
+- **D1:** Steps 1 and 7 gated by macOS only; Windows/Linux native spikes and matrices are pending release evidence with their exact command; AC-006 platform policy proven by automated tests. Supersedes the 2026-10-13 entry that made Windows/Linux native proof mandatory
+- **Method outcome:** no separate 007 adapter; 010 reads `InsertionOutcome.method_outcome` (007 `PasteOutcome.kind` wire values) with 006's current field names (`dictation_id`, `destination_generation`, `transaction_id`)
+- **Late read:** 007 `PasteDiagnostic` updates the existing correlated bubble ("may have been pasted after all"), no second bubble, no outcome or Enter change
+- **Enter veto:** single contract shared with 009: 006's `RecoveryDisposition { Pending, Insert, Recover, Cancelled }`; 010 answers `RecoveryPort::before_insertion` with `PreInsertionVerdict`, never calls `set_disposition`, publishes no other veto
+- **008 names:** descriptor row, `OUTPUT_KEYS`, `validate_cli`/`validate_ui`, `tauri_adapter::write`; never-shipped names removed
+- **Review:** the plan review is stale; an independent reviewer refreshes it
+- **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
+
+## 2026-10-14 — [Plan Update]: 008 sources as code paths, pinned reasons aligned with 009
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md updated)
+- **AC impacted:** None (pre-implementation; structural coverage 15/15)
+- **Author:** Claude Code (spec-refine 010 plan, claude-opus-5-5)
+- Applies the round 2 independent review: 008's plan was a normative link ("[008's plan] is historical context") and pulled 008's whole document graph, so the plan review could not be prepared.
+- 008's implementation record and plan are cited as code paths; the shared contracts are cited from the 006 plan and its destination contract only, without the untracked program notes. Plan review preparation at 180,000 characters: 18 batches, no error (round 2 simulation: 33).
+- Pinned reasons aligned with the 009 plan (orchestrator decision 2026-10-14): `pinned_app_not_running` ("<App> is pinned but not open") and `activation_failed` with `destination_source = pinned` ("Could not bring <App> forward"), in the decision table, outcome mapping, sequence diagram and canonical reason table; the Enter claim is 006's `DestinationManager::claim_enter`.
+- Review: the plan review is stale until an independent reviewer refreshes it.
+
+<!-- finalize:spec-refine:2026-10-14:61308064 -->
+
+## 2026-10-14 — [Plan Update]: history_status from the actual save_entry result, text-only row when the WAV fails
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md and contracts/recovery-contract.md updated)
+- **AC impacted:** None (pre-implementation; AC-005 planning only, ID unchanged)
+- **Author:** Claude Code (spec-refine 010 plan, claude-opus-5-5)
+- Aligns with Julien's decision 2026-10-14, carried by the 006 spec and plan (commit `306c368`, `.specs/features/006-destination-application/plan.md` and `contracts/destination-contract.md`): a dictation whose WAV cannot be saved still gets a text-only history entry.
+- The recovery instance carries 006's `history_status` unchanged: `saved` when save_entry committed the row, text-only included (WAV disabled, unavailable or failed); `failed` when save_entry was attempted and failed; `not_saved` only when no write was attempted. The plan no longer maps a disabled or unavailable WAV to `not_saved`. A recovery always follows a non-cancelled transcript, so `not_saved` is not expected there and gets the same no-history explanation as `failed`.
+- Current-state note (actions.rs `wav_saved` gate removed by the 006 plan), Step 4 inputs, execution evidence, P0 history integration row, risk row and the contract history line aligned.
+- Plan review preparation at 180,000 characters: 22 batches, no error (previous: 18; the growth comes from the cited 006 plan, which grew with the same decision).
+- Review: the plan review is stale until an independent reviewer refreshes it.
+
+<!-- finalize:spec-refine:2026-10-14:e2c204ed -->

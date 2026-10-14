@@ -3,6 +3,13 @@
     "binding": {
       "additionalProperties": false,
       "properties": {
+        "additional_bindings": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
         "current_binding": {
           "type": "string"
         },
@@ -61,6 +68,9 @@
     "error_details": {
       "additionalProperties": false,
       "properties": {
+        "action_id": {
+          "type": "string"
+        },
         "current_revision": {
           "$ref": "#/$defs/revision"
         },
@@ -223,6 +233,16 @@
           "maxItems": 1000,
           "type": "array"
         },
+        "kind": {
+          "enum": [
+            "duplicate",
+            "modifier_overlap"
+          ]
+        },
+        "limit": {
+          "minimum": 1,
+          "type": "integer"
+        },
         "offset": {
           "minimum": 0,
           "type": "integer"
@@ -236,6 +256,15 @@
             "unknown",
             "committed"
           ]
+        },
+        "owning_action": {
+          "type": "string"
+        },
+        "owning_shortcut": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
         }
       },
       "type": "object"

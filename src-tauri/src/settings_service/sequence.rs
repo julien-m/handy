@@ -160,7 +160,7 @@ pub(crate) fn write_prepared(
 ) -> Result<LiveCommit, SettingsError> {
     ordered(live, port, || {
         let mutation = live.validate_ui_value(key, value)?;
-        prepare_and_commit(live, port, mutation, None, native)
+        prepare_scalar(live, port, mutation, None, native)
     })
 }
 /// CLI scalar routed to the instance for a key the settings UI prepares: the same preparation,
@@ -176,31 +176,90 @@ pub(crate) fn write_scalar_prepared(
     native: PreparedChange<'_>,
 ) -> Result<LiveCommit, SettingsError> {
     ordered(live, port, || {
-        prepare_and_commit(live, port, mutation, expected, native)
+        prepare_scalar(live, port, mutation, expected, native)
     })
 }
-/// Prepare the native change of `mutation` from the current settings toward its candidate, then
-/// commit it; a no-op skips the preparation and a stale `expected` revision prepares nothing.
-fn prepare_and_commit(
+/// Domain change routed to the instance whose key has a prepared native change (for example the
+/// shortcut lists): the same preparation, refusal and compensation as a settings-UI edit.
+///
+/// # Errors
+/// Same as `write_scalar_prepared`, plus the change's own refusal (before any native change).
+pub(crate) fn write_change_prepared(
+    live: &LiveSettings,
+    port: &dyn LiveEffectsPort,
+    (key, change): (&'static str, &super::domains::DomainChange),
+    expected: Option<Revision>,
+    native: PreparedChange<'_>,
+) -> Result<LiveCommit, SettingsError> {
+    ordered(live, port, || {
+        prepare_and_commit(live, port, key, &change.edit(), expected, native)
+    })
+}
+/// Typed edit of `key` whose native change is prepared first, in the write order (the settings
+/// UI's list edits).
+///
+/// # Errors
+/// Same as `write_prepared`, plus the edit's own refusal (before any native change).
+pub(crate) fn write_edit_prepared(
+    live: &LiveSettings,
+    port: &dyn LiveEffectsPort,
+    key: &'static str,
+    edit: SettingsEditFn<'_>,
+    native: PreparedChange<'_>,
+) -> Result<LiveCommit, SettingsError> {
+    ordered(live, port, || {
+        prepare_and_commit(live, port, key, &SettingsEdit::Apply(edit), None, native)
+    })
+}
+/// A prepared scalar, with the further edit its native change implies (`PreparedChange::extend`)
+/// committed in the same revision.
+fn prepare_scalar(
     live: &LiveSettings,
     port: &dyn LiveEffectsPort,
     mutation: SettingsMutation,
     expected: Option<Revision>,
-    native: PreparedChange<'_>,
+    mut native: PreparedChange<'_>,
 ) -> Result<LiveCommit, SettingsError> {
     let key = mutation.key();
+    let Some(extend) = native.extend.take() else {
+        let edit = SettingsEdit::Scalar(mutation);
+        return prepare_and_commit(live, port, key, &edit, expected, native);
+    };
+    let scalar = SettingsEdit::Scalar(mutation);
+    let apply = |settings: &mut AppSettings| {
+        *settings = super::edit::edited_settings(settings, &scalar)?;
+        extend(settings)
+    };
+    prepare_and_commit(
+        live,
+        port,
+        key,
+        &SettingsEdit::Apply(&apply),
+        expected,
+        native,
+    )
+}
+/// Prepare the native change of `key` from the current settings toward the candidate of `edit`,
+/// then commit it; a no-op skips the preparation and a stale `expected` revision prepares nothing.
+fn prepare_and_commit(
+    live: &LiveSettings,
+    port: &dyn LiveEffectsPort,
+    key: &'static str,
+    edit: &SettingsEdit<'_>,
+    expected: Option<Revision>,
+    native: PreparedChange<'_>,
+) -> Result<LiveCommit, SettingsError> {
     let before = live.settings();
-    let edit = SettingsEdit::Scalar(mutation);
-    let candidate = super::edit::edited_settings(&before, &edit)?;
+    let candidate = super::edit::preview(&before, edit)?;
     if !key_differs(&before, &candidate, key) {
-        return commit_and_apply(live, port, &edit, expected);
+        return commit_and_apply(live, port, edit, expected);
     }
     let current = live.snapshot().revision;
     if expected.is_some_and(|expected| expected != current) {
         return Err(SettingsError::revision_conflict(current));
     }
     (native.prepare)(&before, &candidate)?;
-    commit_prepared_at(live, port, key, &edit, &before, expected, || {
+    commit_prepared_at(live, port, key, edit, &before, expected, || {
         (native.compensate)(&before)
     })
 }
@@ -210,10 +269,15 @@ pub(crate) type Prepare<'a> =
     Box<dyn FnOnce(&AppSettings, &AppSettings) -> Result<(), SettingsError> + 'a>;
 /// Undo of a preparation, from the same settings.
 pub(crate) type Compensate<'a> = Box<dyn FnOnce(&AppSettings) + 'a>;
+/// Further edit a prepared scalar implies, committed with it (pure: it may run twice).
+pub(crate) type Extend<'a> = Box<dyn Fn(&mut AppSettings) -> Result<(), SettingsError> + 'a>;
 /// A reversible native change: applied before the commit, undone if the commit is refused.
 pub(crate) struct PreparedChange<'a> {
     pub prepare: Prepare<'a>,
     pub compensate: Compensate<'a>,
+    /// For a scalar: the other fields its change implies (for example the shortcut lists
+    /// repaired for a new keyboard implementation), committed in the same revision.
+    pub extend: Option<Extend<'a>>,
 }
 fn key_differs(before: &AppSettings, after: &AppSettings, key: &str) -> bool {
     let value = |settings: &AppSettings| {
@@ -241,21 +305,8 @@ pub(crate) fn commit_and_apply(
 }
 /// Commit a change whose native side was prepared in this ordered write: the effect of `key` is
 /// skipped, a refused commit runs `compensate`, and an unknown outcome keeps the preparation only
-/// when the reread store holds the new value of `key`.
-///
-/// # Errors
-/// Same as `commit_and_apply`.
-pub(crate) fn commit_prepared(
-    live: &LiveSettings,
-    port: &dyn LiveEffectsPort,
-    key: &'static str,
-    edit: &SettingsEdit<'_>,
-    before: &AppSettings,
-    compensate: impl FnOnce(),
-) -> Result<LiveCommit, SettingsError> {
-    commit_prepared_at(live, port, key, edit, before, None, compensate)
-}
-/// `commit_prepared` with the compare-and-set revision of a routed CLI write.
+/// when the reread store holds the new value of `key`. `expected` is the compare-and-set
+/// revision of a routed CLI write.
 fn commit_prepared_at(
     live: &LiveSettings,
     port: &dyn LiveEffectsPort,

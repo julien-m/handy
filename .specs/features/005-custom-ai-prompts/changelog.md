@@ -42,3 +42,57 @@
 - **Classification:** criticality High, blast radius Shared, primary risk Data, taken from the existing QE Analysis; `livespec delivery lane`: full
 - **Review:** the previous spec review is stale; an independent reviewer refreshes it
 - **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
+
+## 2026-10-14 — [Spec Update]: AC-005 failure notice no longer claims the insertion succeeded
+
+- **Type:** Spec Update
+- **Spec modified:** Yes (sections: AC-005, Story 4 scenario, Clarifications; frontmatter `updated`)
+- **Code modified:** None
+- **AC impacted:** AC-005
+- **Clarify decision:** `fallback-notice-insertion-wording`: on AI failure the indicator says for at least 4 seconds that the AI step failed and that the original text was used for insertion; it never states that the insertion succeeded, whose result belongs to 006, 007 and 010
+- **Review:** the spec review is stale; an independent reviewer refreshes it
+- **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
+
+## 2026-10-14 — [Plan Update]: align the plan on the merged 008, D1–D4 and the clarified AC-005
+
+- **Type:** Spec Update
+- **Spec modified:** No (plan entry; see the spec entry above)
+- **Code modified:** None (plan.md updated)
+- **AC impacted:** None (pre-implementation)
+- **D1:** Steps 1, 5 and 8 gated by macOS only; Windows/Linux native checks are pending release evidence with their exact command
+- **008 names:** `Domain`/`DomainChange(ChangeKind::Apply)`, `SettingsBackend::commit_change`, `tauri_adapter::{ordered, commit_prepared_edit, write_change}`, `native_changes`, `sequence::PreparedChange`, `apply_settings_migrations`; never-shipped names removed
+- **Shortcut removal:** through 008's native preparation (`bindings` preparation in `native_changes`, new `sequence::write_change_prepared` for routed CLI changes), released before the commit and re-registered on refusal
+- **Actions:** the domain declares canonical `remove` and `update`; `delete`/`edit` keep working through `canonical_action`
+- **D2:** `prompts list` is the `PromptsList` live operation (readiness and Apple Intelligence availability in the instance); offline refusal, library readable with `get post_process_prompts`
+- **D3/D4:** 005 `ErrorReason` variants; Apple Intelligence override off macOS refused with `unsupported_platform` (`validation_failed`/2)
+- **Dependencies:** 004 is not merged into `dev` (Step 3 and prompt-shortcut parts wait); 006 step 0 for D2/D3
+- **QE:** plan QE aligned on the spec (High, Shared, Data then Security)
+- **History/WAV:** text-only AI-failure row kept (spec AC-005); divergence with the 006 WAV-gated rule signalled in `.specs/ship.md`
+- **Review:** the plan review is stale; an independent reviewer refreshes it
+- **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
+
+## 2026-10-14 — [Plan Update]: make the plan review preparable, order Step 2, justify offline prompt list
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md updated)
+- **AC impacted:** None (pre-implementation)
+- **Review budget:** 008's plan and implementation record are cited as inline paths, not links; the untracked program notes are no longer referenced, the D2/D3/D4 names are copied into the Summary and the history/WAV question with 006 is stated in the plan only. Plan review preparation at 180,000 characters: 1 batch, no error (was `paired_review_batch_budget_exceeded`)
+- **Step 2 order:** prerequisite names `tauri_adapter::write_change` (added by Step 2 with the same signature if neither 001 nor 003 has delivered it); deletion commits without preparation because no prompt shortcut exists before Step 3; Step 3 adds the `bindings` preparation and `sequence::write_change_prepared` and switches UI deletion to `ordered` + `commit_prepared_edit`
+- **Offline list:** `prompts list` offline returns 008's delivered live-only refusal (`unavailable`/5, scenario « Live state without running app » of the 008 spec) applied to a D2 operation; justified in the plan, spec unchanged
+- **Review:** the plan review is stale; an independent reviewer refreshes it
+- **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
+
+## 2026-10-14 — [Plan Update]: Text-only history entry for every dictation whose WAV fails
+
+- **Type:** Spec Update
+- **Spec modified:** No (checked: no 005 requirement ties history to the WAV)
+- **Code modified:** None (plan.md updated)
+- **AC impacted:** None (pre-implementation; AC-005 unchanged)
+- **Author:** Claude Code (spec-refine 005 plan, claude-opus-5-5)
+- Julien's decision 2026-10-14 settles the open question "history without WAV": every noncancelled dictation that produced a transcript, not only an AI failure, gets a text-only row when its WAV fails, whatever the cause. The open question is removed from the history decision and the risk table.
+- Step 7 removes the `wav_saved` gate for every such dictation; its evidence and success criteria add an ordinary dictation saved text-only on WAV failure. The history change shared with 006 (nullable `file_name` rebuild, gate removal, guards for rows without audio) is built once by whichever of 005 Step 7 and 006 Step 6 runs first; 005's prompt metadata columns stay in Step 7.
+- Constitution check: the text-only row beyond AI failures is required by 006 AC-005, so 005 shares it rather than adding scope.
+- Review: the plan review is stale until an independent reviewer refreshes it.
+
+<!-- finalize:spec-refine:2026-10-14:d7cad1e7 -->

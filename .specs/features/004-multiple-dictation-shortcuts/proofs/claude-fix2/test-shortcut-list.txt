@@ -1,0 +1,5 @@
+$ bun run test:shortcut-list
+Tue Oct 13 18:19:58 UTC 2026
+$ bun src/components/settings/shortcut-list-model.test.ts
+shortcut-list-model: all assertions passed
+EXIT=0
