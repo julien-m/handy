@@ -200,7 +200,21 @@
             "registration": "Systemet afviste denne genvej: {{error}}",
             "generic": "Genvejen kunne ikke gemmes",
             "conflictsUnavailable": "Konflikter mellem genveje kunne ikke kontrolleres"
-          }
+          },
+          "changeButton": "Skift",
+          "discard": "Kassér denne genvej",
+          "lastHint": "Hver handling beholder mindst én genvej. Skift eller nulstil den i stedet.",
+          "limitHint": "{{count}} af {{limit}} genveje. Fjern en for at tilføje en anden.",
+          "draftConflict": "{{shortcut}} bruges allerede af {{action}}. Intet blev gemt.",
+          "draftOverlap": "{{shortcut}} ville også udløse {{action}}. Intet blev gemt.",
+          "legacyOverlap": "{{shortcut}} overlapper med {{action}}",
+          "legacyDuplicate": "{{shortcut}} bruges også af {{action}}",
+          "legacyBody": "Den virker stadig som før opdateringen. Skift den for at fjerne denne advarsel.",
+          "systemRefused": "{{system}} afviste {{shortcut}}",
+          "systemRefusedGeneric": "Systemet afviste denne genvej",
+          "systemRefusedBody": "En anden app har muligvis registreret denne kombination. Vælg en anden, eller prøv igen.",
+          "systemReason": "Systemmeddelelse: {{error}}",
+          "retry": "Prøv igen"
         }
       },
       "language": {
@@ -344,9 +358,13 @@
           "clipboardShiftInsert": "Udklipsholder (Shift+Insert)",
           "direct": "Direkte",
           "none": "Ingen",
-          "externalScript": "Eksternt script"
+          "externalScript": "Eksternt script",
+          "clipboardMac": "Udklipsholder (⌘V)",
+          "smartPasteDescription": "Standard på macOS",
+          "noneDescription": "Kun historik og udklipsholder"
         },
-        "externalScriptPlaceholder": "/sti/til/dit/script.sh"
+        "externalScriptPlaceholder": "/sti/til/dit/script.sh",
+        "descriptionSmart": "Smart indsættelse skriver direkte i feltet og ellers indsætter og gendanner den udklipsholderen."
       },
       "typingTool": {
         "title": "Skriveværktøj",
@@ -416,6 +434,14 @@
           "simplified": "Forenklet",
           "traditional": "Traditionel"
         }
+      },
+      "returnToApp": {
+        "title": "Vend tilbage til dikteringens app",
+        "description": "Indsæt i den app, hvor dikteringen startede, også hvis du skifter app imens.",
+        "unavailableUnreadable": "Ikke tilgængelig på dette system: Handy kan ikke se den forreste app her. Teksten går til appen forrest, når du er færdig.",
+        "unavailablePlatform": "Ikke tilgængelig på dette system. Teksten går til appen forrest, når du er færdig.",
+        "details": "Handy husker den forreste app, når en diktering starter, og skifter tilbage til den, før teksten indsættes. Når den er slået fra, går teksten til appen forrest, når dikteringen slutter.",
+        "detailsLabel": "Om at vende tilbage til dikteringens app"
       }
     },
     "vocabulary": {
@@ -669,7 +695,8 @@
       "historyLimit": {
         "title": "Historikgrænse",
         "description": "Maksimalt antal historikposter, der skal beholdes",
-        "entries": "poster"
+        "entries": "poster",
+        "invalid": "Indtast et helt tal fra {{min}} til {{max}}."
       },
       "recordingRetention": {
         "title": "Automatisk sletning af optagelser",
@@ -817,7 +844,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy har brug for tilgængelighedstilladelser for at skrive den transskriberede tekst.",
-    "openSettings": "Åbn systemindstillinger"
+    "openSettings": "Åbn systemindstillinger",
+    "offTitle": "Tilladelsen til tilgængelighed er slået fra",
+    "smartPasteOff": "Smart indsættelse kan hverken indsætte eller sætte ind. Dine transskriptioner gemmes, så de kan gendannes."
   },
   "errors": {
     "loadDirectory": "Fejl ved indlæsning af mappe: {{error}}",
@@ -847,7 +876,7 @@
       "revisionConflict": "Indstillingerne blev ændret et andet sted. Genindlæs, og prøv igen.",
       "unavailable": "Denne indstilling kan ikke ændres lige nu. Prøv igen senere.",
       "shortcutSessionBusy": "En diktering er i gang. Prøv igen, når den er færdig.",
-      "persistenceFailed": "Indstillingerne kunne ikke gemmes.",
+      "persistenceFailed": "Indstillingerne kunne ikke gemmes: indstillingsfilen kunne ikke skrives. Intet blev ændret.",
       "generic": "Indstillingen kunne ikke ændres.",
       "readOnly": "Indstillingerne er skrivebeskyttede i denne session: indstillingsfilen kan ikke skrives sikkert, så ændringer gemmes ikke.",
       "unsupportedPlatform": "Denne indstilling er ikke tilgængelig på dette system.",
@@ -859,7 +888,10 @@
       "promptOverrideIncomplete": "Vælg både en udbyder og en model, eller brug standardudbyderen.",
       "promptUnknownProvider": "Denne udbyder er ikke tilgængelig.",
       "promptNotUsable": "Denne prompt er ugyldig. Rediger den, før du bruger den.",
-      "limitExceeded": "Det maksimale antal er nået."
+      "limitExceeded": "Det maksimale antal er nået.",
+      "conflictTitle": "Indstillingerne blev ændret et andet sted",
+      "conflictBody": "Kommandolinjen eller et andet vindue gemte en nyere version. Genindlæs for at se den; din ikke-gemte ændring kasseres.",
+      "reload": "Genindlæs"
     }
   },
   "appLanguage": {

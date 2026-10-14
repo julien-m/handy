@@ -220,7 +220,21 @@
             "registration": "Hệ thống đã từ chối phím tắt này: {{error}}",
             "generic": "Không thể lưu phím tắt",
             "conflictsUnavailable": "Không thể kiểm tra xung đột phím tắt"
-          }
+          },
+          "changeButton": "Thay đổi",
+          "discard": "Bỏ phím tắt này",
+          "lastHint": "Mỗi thao tác luôn giữ ít nhất một phím tắt. Hãy thay đổi hoặc đặt lại phím tắt đó.",
+          "limitHint": "{{count}}/{{limit}} phím tắt. Hãy xóa một phím tắt để thêm phím khác.",
+          "draftConflict": "{{shortcut}} đã được {{action}} sử dụng. Chưa có gì được lưu.",
+          "draftOverlap": "{{shortcut}} cũng sẽ kích hoạt {{action}}. Chưa có gì được lưu.",
+          "legacyOverlap": "{{shortcut}} trùng với {{action}}",
+          "legacyDuplicate": "{{shortcut}} cũng được {{action}} sử dụng",
+          "legacyBody": "Phím tắt vẫn hoạt động như trước bản cập nhật. Hãy thay đổi để xóa cảnh báo này.",
+          "systemRefused": "{{system}} đã từ chối {{shortcut}}",
+          "systemRefusedGeneric": "Hệ thống đã từ chối phím tắt này",
+          "systemRefusedBody": "Có thể một ứng dụng khác đã đăng ký tổ hợp này. Hãy chọn tổ hợp khác hoặc thử lại.",
+          "systemReason": "Thông báo hệ thống: {{error}}",
+          "retry": "Thử lại"
         }
       },
       "language": {
@@ -344,9 +358,13 @@
           "clipboardShiftInsert": "Bảng nhớ tạm (Shift+Insert)",
           "direct": "Trực tiếp",
           "none": "Không có",
-          "externalScript": "Script bên ngoài"
+          "externalScript": "Script bên ngoài",
+          "clipboardMac": "Bảng nhớ tạm (⌘V)",
+          "smartPasteDescription": "Mặc định trên macOS",
+          "noneDescription": "Chỉ lịch sử và bảng nhớ tạm"
         },
-        "externalScriptPlaceholder": "/duong-dan/toi/script.sh"
+        "externalScriptPlaceholder": "/duong-dan/toi/script.sh",
+        "descriptionSmart": "Dán thông minh ghi trực tiếp vào ô nhập; nếu không được, sẽ dán rồi khôi phục bảng nhớ tạm của bạn."
       },
       "typingTool": {
         "title": "Công cụ gõ",
@@ -416,6 +434,14 @@
           "simplified": "Giản thể",
           "traditional": "Phồn thể"
         }
+      },
+      "returnToApp": {
+        "title": "Quay lại ứng dụng đọc chính tả",
+        "description": "Chèn vào ứng dụng nơi bắt đầu đọc chính tả, kể cả khi bạn chuyển ứng dụng trong lúc đó.",
+        "unavailableUnreadable": "Không khả dụng trên hệ thống này: Handy không thể đọc ứng dụng ở phía trước tại đây. Văn bản sẽ vào ứng dụng ở phía trước khi kết thúc.",
+        "unavailablePlatform": "Không khả dụng trên hệ thống này. Văn bản sẽ vào ứng dụng ở phía trước khi kết thúc.",
+        "details": "Handy ghi nhớ ứng dụng ở phía trước khi bắt đầu đọc chính tả và quay lại ứng dụng đó trước khi chèn văn bản. Khi tắt, văn bản sẽ vào ứng dụng ở phía trước lúc kết thúc đọc chính tả.",
+        "detailsLabel": "Giới thiệu về việc quay lại ứng dụng đọc chính tả"
       }
     },
     "vocabulary": {
@@ -655,7 +681,8 @@
       "historyLimit": {
         "title": "Giới hạn lịch sử",
         "description": "Số lượng mục lịch sử tối đa cần giữ",
-        "entries": "mục"
+        "entries": "mục",
+        "invalid": "Nhập một số nguyên từ {{min}} đến {{max}}."
       },
       "recordingRetention": {
         "title": "Tự động xóa ghi âm",
@@ -814,7 +841,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy cần quyền truy cập để gõ văn bản đã chuyển đổi.",
-    "openSettings": "Mở Cài đặt Hệ thống"
+    "openSettings": "Mở Cài đặt Hệ thống",
+    "offTitle": "Quyền trợ năng đang tắt",
+    "smartPasteOff": "Dán thông minh không thể chèn hay dán. Bản chép lời của bạn được giữ lại để khôi phục."
   },
   "errors": {
     "loadDirectory": "Lỗi khi tải thư mục: {{error}}",
@@ -844,7 +873,7 @@
       "revisionConflict": "Cài đặt đã được thay đổi ở nơi khác. Hãy tải lại và thử lại.",
       "unavailable": "Không thể thay đổi cài đặt này ngay bây giờ. Hãy thử lại sau.",
       "shortcutSessionBusy": "Đang đọc chính tả. Hãy thử lại khi kết thúc.",
-      "persistenceFailed": "Không thể lưu cài đặt.",
+      "persistenceFailed": "Không thể lưu cài đặt: không ghi được tệp cài đặt. Không có gì bị thay đổi.",
       "generic": "Không thể thay đổi cài đặt.",
       "readOnly": "Cài đặt chỉ đọc trong phiên này: không thể ghi tệp cài đặt một cách an toàn, vì vậy các thay đổi sẽ không được lưu.",
       "unsupportedPlatform": "Cài đặt này không khả dụng trên hệ thống này.",
@@ -856,7 +885,10 @@
       "promptOverrideIncomplete": "Hãy chọn cả nhà cung cấp và mô hình, hoặc dùng nhà cung cấp mặc định.",
       "promptUnknownProvider": "Nhà cung cấp này không khả dụng.",
       "promptNotUsable": "Prompt này không hợp lệ. Hãy chỉnh sửa trước khi dùng.",
-      "limitExceeded": "Đã đạt số lượng tối đa."
+      "limitExceeded": "Đã đạt số lượng tối đa.",
+      "conflictTitle": "Cài đặt đã được thay đổi ở nơi khác",
+      "conflictBody": "Dòng lệnh hoặc một cửa sổ khác đã lưu phiên bản mới hơn. Tải lại để xem; thay đổi chưa lưu của bạn sẽ bị bỏ.",
+      "reload": "Tải lại"
     }
   },
   "appLanguage": {

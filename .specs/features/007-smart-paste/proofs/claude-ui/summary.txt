@@ -1,0 +1,11 @@
+UI pass — paste method selector and accessibility alert (Penflow output-settings, output-settings-paste-methods)
+Code commit 6413b2ad, branch feature/ui-general-output, 2026-10-14. Shared check run: ../../../004-multiple-dictation-shortcuts/proofs/claude-ui/summary.txt
+
+Command                                                     Exit  Output
+bun run test:output-settings   (paste-method options 13 pass incl. descriptions, ⌘V label, slugs; render: smart paste description and test ids)   0   test-output-settings.*
+bun test src/components/ui/dropdown-navigation.test.ts src/components/ui/dropdown-aria.test.tsx   (12 pass)   0   test-dropdown.*
+bun run lint / format:check / tsc --noEmit / check:translations / build   0 each   bun-lint.*, bun-format-check.*, tsc.*, check-translations.*, bun-build.*
+livespec conventions verify --feature repo --json           0     conventions-repo-summary.json (PASS)
+
+Smart paste is listed only when is_smart_paste_available answers true (unchanged rule). With the smart-paste-dispatch gate closed it is absent.
+Not run (pending, with Julien): rendered window screenshot of the open selector, accessibility alert with the permission really off.

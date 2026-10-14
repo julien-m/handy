@@ -6,6 +6,7 @@ import {
   isSettingsCommandError,
   SETTINGS_ERROR_KEYS,
   SettingsCommandFailure,
+  settingsErrorDisplay,
   settingsErrorKey,
   throwIfSettingsError,
 } from "./settings-errors";
@@ -148,5 +149,26 @@ assert.equal(failedCommandRecovery(unknown, 4, 4), "refresh");
 assert.equal(failedCommandRecovery(refused, 4, 4), "rollback");
 assert.equal(failedCommandRecovery(refused, 4, 6), "refresh");
 assert.equal(failedCommandRecovery(new Error("ipc"), null, null), "rollback");
+
+// Display of a refusal (008 settings-write-errors mockup).
+assert.equal(
+  settingsErrorDisplay(
+    refusal({ code: "revision_conflict", current_revision: 7 }),
+  ),
+  "conflict-alert",
+);
+assert.equal(
+  settingsErrorDisplay(refusal({ code: "persistence_failed" })),
+  "save-failed-toast",
+);
+// Stored but not applied is not a failed save.
+assert.equal(
+  settingsErrorDisplay(
+    refusal({ code: "persistence_failed", outcome: "committed" }),
+  ),
+  "toast",
+);
+assert.equal(settingsErrorDisplay(refusal({})), "toast");
+assert.equal(settingsErrorDisplay(null), "toast");
 
 console.log("settings-errors: all assertions passed");

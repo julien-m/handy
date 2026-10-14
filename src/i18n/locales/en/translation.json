@@ -200,7 +200,21 @@
             "registration": "The system refused this shortcut: {{error}}",
             "generic": "The shortcut could not be saved",
             "conflictsUnavailable": "Shortcut conflicts could not be checked"
-          }
+          },
+          "changeButton": "Change",
+          "discard": "Discard this shortcut",
+          "lastHint": "Each action keeps at least one shortcut. Change or reset it instead.",
+          "limitHint": "{{count}} of {{limit}} shortcuts. Remove one to add another.",
+          "draftConflict": "{{shortcut}} is already used by {{action}}. Nothing was saved.",
+          "draftOverlap": "{{shortcut}} would also trigger {{action}}. Nothing was saved.",
+          "legacyOverlap": "{{shortcut}} overlaps with {{action}}",
+          "legacyDuplicate": "{{shortcut}} is also used by {{action}}",
+          "legacyBody": "It kept working as before the update. Change it to clear this warning.",
+          "systemRefused": "{{system}} refused {{shortcut}}",
+          "systemRefusedGeneric": "The system refused this shortcut",
+          "systemRefusedBody": "Another app may have registered this combination. Pick another one or try again.",
+          "systemReason": "System message: {{error}}",
+          "retry": "Try again"
         }
       },
       "language": {
@@ -344,9 +358,13 @@
           "clipboardShiftInsert": "Clipboard (Shift+Insert)",
           "direct": "Direct",
           "none": "None",
-          "externalScript": "External Script"
+          "externalScript": "External Script",
+          "clipboardMac": "Clipboard (⌘V)",
+          "smartPasteDescription": "Default on macOS",
+          "noneDescription": "History and clipboard only"
         },
-        "externalScriptPlaceholder": "/path/to/your/script.sh"
+        "externalScriptPlaceholder": "/path/to/your/script.sh",
+        "descriptionSmart": "Smart paste writes into the field directly, otherwise pastes and restores your clipboard."
       },
       "typingTool": {
         "title": "Typing Tool",
@@ -416,6 +434,14 @@
           "simplified": "Simplified",
           "traditional": "Traditional"
         }
+      },
+      "returnToApp": {
+        "title": "Return to the dictation's application",
+        "description": "Insert into the app where the dictation started, even if you switch apps meanwhile.",
+        "unavailableUnreadable": "Unavailable on this system: Handy can't read the frontmost app here. Text goes to the app in front at the end.",
+        "unavailablePlatform": "Unavailable on this system. Text goes to the app in front at the end.",
+        "details": "Handy remembers the app in front when a dictation starts and switches back to it before inserting the text. When off, the text goes to the app in front when the dictation ends.",
+        "detailsLabel": "About returning to the dictation's application"
       }
     },
     "vocabulary": {
@@ -669,7 +695,8 @@
       "historyLimit": {
         "title": "History Limit",
         "description": "Maximum number of history entries to keep",
-        "entries": "entries"
+        "entries": "entries",
+        "invalid": "Enter a whole number from {{min}} to {{max}}."
       },
       "recordingRetention": {
         "title": "Auto-Delete Recordings",
@@ -817,7 +844,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy needs accessibility permissions to type transcribed text.",
-    "openSettings": "Open System Settings"
+    "openSettings": "Open System Settings",
+    "offTitle": "Accessibility permission is off",
+    "smartPasteOff": "Smart paste can't insert or paste. Your transcripts are kept for recovery."
   },
   "errors": {
     "loadDirectory": "Error loading directory: {{error}}",
@@ -847,7 +876,7 @@
       "revisionConflict": "Settings were changed elsewhere. Reload and try again.",
       "unavailable": "This setting cannot be changed right now. Try again later.",
       "shortcutSessionBusy": "A dictation is in progress. Try again when it ends.",
-      "persistenceFailed": "Settings could not be saved.",
+      "persistenceFailed": "Couldn't save settings: the settings file could not be written. Nothing was changed.",
       "generic": "The setting could not be changed.",
       "readOnly": "Settings are read-only for this session: the settings file cannot be written safely, so changes will not be saved.",
       "unsupportedPlatform": "This setting is not available on this system.",
@@ -859,7 +888,10 @@
       "promptOverrideIncomplete": "Choose both a provider and a model, or use the default provider.",
       "promptUnknownProvider": "This provider is not available.",
       "promptNotUsable": "This prompt is invalid. Edit it before using it.",
-      "limitExceeded": "The maximum number has been reached."
+      "limitExceeded": "The maximum number has been reached.",
+      "conflictTitle": "Settings changed elsewhere",
+      "conflictBody": "The command line or another window saved a newer version. Reload to see it; your unsaved edit is discarded.",
+      "reload": "Reload"
     }
   },
   "appLanguage": {

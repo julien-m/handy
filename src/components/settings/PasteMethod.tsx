@@ -9,6 +9,9 @@ import { useSmartPasteAvailability } from "../../hooks/use-smart-paste-availabil
 import type { PasteMethod } from "@/bindings";
 import { pasteMethodChoices } from "./paste-method-options";
 
+/** Prefix of the option test ids (output-settings-paste-methods screen). */
+const OPTION_TEST_ID = "output-settings-paste-methods-paste-method";
+
 interface PasteMethodProps {
   descriptionMode?: "inline" | "tooltip";
   grouped?: boolean;
@@ -32,22 +35,35 @@ export const PasteMethodSetting: React.FC<PasteMethodProps> = React.memo(
     ).map((choice) => ({
       value: choice.value,
       label: t(choice.labelKey, { modifier }),
+      description: choice.descriptionKey && t(choice.descriptionKey),
       disabled: choice.disabled,
+      testId: `${OPTION_TEST_ID}-${choice.slug}`,
     }));
+    // The description explains smart paste only where it is offered.
+    const isSmartPasteOffered = pasteMethodOptions.some(
+      (option) => option.value === "smart_paste" && !option.disabled,
+    );
 
     const externalScriptPath = getSetting("external_script_path") || "";
 
     return (
       <SettingContainer
         title={t("settings.advanced.pasteMethod.title")}
-        description={t("settings.advanced.pasteMethod.description")}
+        description={t(
+          isSmartPasteOffered
+            ? "settings.advanced.pasteMethod.descriptionSmart"
+            : "settings.advanced.pasteMethod.description",
+        )}
         descriptionMode={descriptionMode}
         grouped={grouped}
         tooltipPosition="bottom"
+        testId="output-settings-paste-method"
       >
         <div className="flex flex-col gap-2">
           <Dropdown
             ariaLabel={t("settings.advanced.pasteMethod.title")}
+            testId="output-settings-paste-method-select"
+            menuTestId={`${OPTION_TEST_ID}-options`}
             options={pasteMethodOptions}
             selectedValue={selectedMethod}
             onSelect={(value) =>

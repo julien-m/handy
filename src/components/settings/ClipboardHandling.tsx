@@ -35,9 +35,12 @@ export const ClipboardHandlingSetting: React.FC<ClipboardHandlingProps> =
         description={t("settings.advanced.clipboardHandling.description")}
         descriptionMode={descriptionMode}
         grouped={grouped}
+        testId="output-settings-clipboard"
       >
         <Dropdown
           options={clipboardHandlingOptions}
+          testId="output-settings-clipboard-select"
+          ariaLabel={t("settings.advanced.clipboardHandling.title")}
           selectedValue={selectedHandling}
           onSelect={(value) =>
             updateSetting("clipboard_handling", value as ClipboardHandling)

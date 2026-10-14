@@ -220,7 +220,21 @@
             "registration": "Le système a refusé ce raccourci : {{error}}",
             "generic": "Le raccourci n'a pas pu être enregistré",
             "conflictsUnavailable": "Impossible de vérifier les conflits de raccourcis"
-          }
+          },
+          "changeButton": "Modifier",
+          "discard": "Abandonner ce raccourci",
+          "lastHint": "Chaque action garde au moins un raccourci. Modifiez-le ou réinitialisez-le plutôt.",
+          "limitHint": "{{count}} raccourcis sur {{limit}}. Supprimez-en un pour en ajouter un autre.",
+          "draftConflict": "{{shortcut}} est déjà utilisé par {{action}}. Rien n'a été enregistré.",
+          "draftOverlap": "{{shortcut}} déclencherait aussi {{action}}. Rien n'a été enregistré.",
+          "legacyOverlap": "{{shortcut}} chevauche {{action}}",
+          "legacyDuplicate": "{{shortcut}} est aussi utilisé par {{action}}",
+          "legacyBody": "Il fonctionne toujours comme avant la mise à jour. Modifiez-le pour faire disparaître cet avertissement.",
+          "systemRefused": "{{system}} a refusé {{shortcut}}",
+          "systemRefusedGeneric": "Le système a refusé ce raccourci",
+          "systemRefusedBody": "Une autre app a peut-être enregistré cette combinaison. Choisissez-en une autre ou réessayez.",
+          "systemReason": "Message du système : {{error}}",
+          "retry": "Réessayer"
         }
       },
       "language": {
@@ -344,9 +358,13 @@
           "clipboardShiftInsert": "Presse-papiers (Shift+Insert)",
           "direct": "Direct",
           "none": "Aucun",
-          "externalScript": "Script externe"
+          "externalScript": "Script externe",
+          "clipboardMac": "Presse-papiers (⌘V)",
+          "smartPasteDescription": "Par défaut sur macOS",
+          "noneDescription": "Historique et presse-papiers uniquement"
         },
-        "externalScriptPlaceholder": "/chemin/vers/votre/script.sh"
+        "externalScriptPlaceholder": "/chemin/vers/votre/script.sh",
+        "descriptionSmart": "Le collage intelligent écrit directement dans le champ, sinon il colle puis restaure votre presse-papiers."
       },
       "typingTool": {
         "title": "Outil de frappe",
@@ -416,6 +434,14 @@
           "simplified": "Simplifié",
           "traditional": "Traditionnel"
         }
+      },
+      "returnToApp": {
+        "title": "Revenir à l'application de la dictée",
+        "description": "Insérer dans l'app où la dictée a commencé, même si vous changez d'app entre-temps.",
+        "unavailableUnreadable": "Indisponible sur ce système : Handy ne peut pas lire l'app au premier plan ici. Le texte va à l'app au premier plan à la fin.",
+        "unavailablePlatform": "Indisponible sur ce système. Le texte va à l'app au premier plan à la fin.",
+        "details": "Handy retient l'app au premier plan au début d'une dictée et y revient avant d'insérer le texte. Désactivé, le texte va à l'app au premier plan à la fin de la dictée.",
+        "detailsLabel": "À propos du retour à l'application de la dictée"
       }
     },
     "vocabulary": {
@@ -655,7 +681,8 @@
       "historyLimit": {
         "title": "Limite d'historique",
         "description": "Nombre maximum d'entrées d'historique à conserver",
-        "entries": "entrées"
+        "entries": "entrées",
+        "invalid": "Saisissez un nombre entier de {{min}} à {{max}}."
       },
       "recordingRetention": {
         "title": "Suppression automatique des enregistrements",
@@ -814,7 +841,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy a besoin des autorisations d'accessibilité pour taper le texte transcrit.",
-    "openSettings": "Ouvrir les Préférences Système"
+    "openSettings": "Ouvrir les Préférences Système",
+    "offTitle": "L'autorisation d'accessibilité est désactivée",
+    "smartPasteOff": "Le collage intelligent ne peut ni insérer ni coller. Vos transcriptions sont conservées pour être récupérées."
   },
   "errors": {
     "loadDirectory": "Erreur lors du chargement du répertoire : {{error}}",
@@ -844,7 +873,7 @@
       "revisionConflict": "Les réglages ont été modifiés ailleurs. Rechargez et réessayez.",
       "unavailable": "Ce réglage ne peut pas être modifié pour le moment. Réessayez plus tard.",
       "shortcutSessionBusy": "Une dictée est en cours. Réessayez lorsqu'elle sera terminée.",
-      "persistenceFailed": "Les réglages n'ont pas pu être enregistrés.",
+      "persistenceFailed": "Impossible d'enregistrer les réglages : le fichier de réglages n'a pas pu être écrit. Rien n'a été modifié.",
       "generic": "Le réglage n'a pas pu être modifié.",
       "readOnly": "Les réglages sont en lecture seule pour cette session : le fichier de réglages ne peut pas être écrit en toute sécurité, les modifications ne seront donc pas enregistrées.",
       "unsupportedPlatform": "Ce réglage n'est pas disponible sur ce système.",
@@ -856,7 +885,10 @@
       "promptOverrideIncomplete": "Choisissez un fournisseur et un modèle, ou utilisez le fournisseur par défaut.",
       "promptUnknownProvider": "Ce fournisseur n'est pas disponible.",
       "promptNotUsable": "Ce prompt est invalide. Modifiez-le avant de l'utiliser.",
-      "limitExceeded": "Le nombre maximum est atteint."
+      "limitExceeded": "Le nombre maximum est atteint.",
+      "conflictTitle": "Réglages modifiés ailleurs",
+      "conflictBody": "La ligne de commande ou une autre fenêtre a enregistré une version plus récente. Rechargez pour la voir ; votre modification non enregistrée est abandonnée.",
+      "reload": "Recharger"
     }
   },
   "appLanguage": {

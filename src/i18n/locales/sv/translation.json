@@ -200,7 +200,21 @@
             "registration": "Systemet avvisade detta kortkommando: {{error}}",
             "generic": "Kortkommandot kunde inte sparas",
             "conflictsUnavailable": "Konflikter mellan kortkommandon kunde inte kontrolleras"
-          }
+          },
+          "changeButton": "Ändra",
+          "discard": "Släng detta kortkommando",
+          "lastHint": "Varje åtgärd behåller minst ett kortkommando. Ändra eller återställ det i stället.",
+          "limitHint": "{{count}} av {{limit}} kortkommandon. Ta bort ett för att lägga till ett annat.",
+          "draftConflict": "{{shortcut}} används redan av {{action}}. Inget sparades.",
+          "draftOverlap": "{{shortcut}} skulle även utlösa {{action}}. Inget sparades.",
+          "legacyOverlap": "{{shortcut}} överlappar med {{action}}",
+          "legacyDuplicate": "{{shortcut}} används även av {{action}}",
+          "legacyBody": "Det fungerar som före uppdateringen. Ändra det för att ta bort varningen.",
+          "systemRefused": "{{system}} nekade {{shortcut}}",
+          "systemRefusedGeneric": "Systemet nekade detta kortkommando",
+          "systemRefusedBody": "En annan app kan ha registrerat den här kombinationen. Välj en annan eller försök igen.",
+          "systemReason": "Systemmeddelande: {{error}}",
+          "retry": "Försök igen"
         }
       },
       "language": {
@@ -344,9 +358,13 @@
           "clipboardShiftInsert": "Urklipp (Shift+Insert)",
           "direct": "Direkt",
           "none": "Ingen",
-          "externalScript": "Externt skript"
+          "externalScript": "Externt skript",
+          "clipboardMac": "Urklipp (⌘V)",
+          "smartPasteDescription": "Standard på macOS",
+          "noneDescription": "Endast historik och urklipp"
         },
-        "externalScriptPlaceholder": "/sökväg/till/ditt/skript.sh"
+        "externalScriptPlaceholder": "/sökväg/till/ditt/skript.sh",
+        "descriptionSmart": "Smart inklistring skriver direkt i fältet, annars klistrar den in och återställer urklippet."
       },
       "typingTool": {
         "title": "Skrivverktyg",
@@ -416,6 +434,14 @@
           "simplified": "Förenklad",
           "traditional": "Traditionell"
         }
+      },
+      "returnToApp": {
+        "title": "Återgå till dikteringens app",
+        "description": "Infoga i appen där dikteringen startade, även om du byter app under tiden.",
+        "unavailableUnreadable": "Inte tillgängligt på det här systemet: Handy kan inte läsa appen i förgrunden här. Texten hamnar i appen i förgrunden när du är klar.",
+        "unavailablePlatform": "Inte tillgängligt på det här systemet. Texten hamnar i appen i förgrunden när du är klar.",
+        "details": "Handy kommer ihåg appen i förgrunden när en diktering startar och växlar tillbaka till den innan texten infogas. När inställningen är av hamnar texten i appen i förgrunden när dikteringen slutar.",
+        "detailsLabel": "Om att återgå till dikteringens app"
       }
     },
     "vocabulary": {
@@ -655,7 +681,8 @@
       "historyLimit": {
         "title": "Historikgräns",
         "description": "Maximalt antal historikposter som ska sparas",
-        "entries": "poster"
+        "entries": "poster",
+        "invalid": "Ange ett heltal från {{min}} till {{max}}."
       },
       "recordingRetention": {
         "title": "Radera inspelningar automatiskt",
@@ -814,7 +841,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy behöver behörighet för hjälpmedel för att kunna skriva transkriberad text.",
-    "openSettings": "Öppna systeminställningar"
+    "openSettings": "Öppna systeminställningar",
+    "offTitle": "Behörigheten för hjälpmedel är avstängd",
+    "smartPasteOff": "Smart inklistring kan varken infoga eller klistra in. Dina transkriptioner sparas så att de kan återställas."
   },
   "errors": {
     "loadDirectory": "Fel vid laddning av mapp: {{error}}",
@@ -844,7 +873,7 @@
       "revisionConflict": "Inställningarna ändrades någon annanstans. Ladda om och försök igen.",
       "unavailable": "Den här inställningen kan inte ändras just nu. Försök igen senare.",
       "shortcutSessionBusy": "En diktering pågår. Försök igen när den är klar.",
-      "persistenceFailed": "Inställningarna kunde inte sparas.",
+      "persistenceFailed": "Det gick inte att spara inställningarna: inställningsfilen kunde inte skrivas. Inget ändrades.",
       "generic": "Inställningen kunde inte ändras.",
       "readOnly": "Inställningarna är skrivskyddade under den här sessionen: inställningsfilen kan inte skrivas säkert, så ändringar sparas inte.",
       "unsupportedPlatform": "Den här inställningen är inte tillgänglig på det här systemet.",
@@ -856,7 +885,10 @@
       "promptOverrideIncomplete": "Välj både en leverantör och en modell, eller använd standardleverantören.",
       "promptUnknownProvider": "Den här leverantören är inte tillgänglig.",
       "promptNotUsable": "Den här prompten är ogiltig. Redigera den innan du använder den.",
-      "limitExceeded": "Det högsta antalet har nåtts."
+      "limitExceeded": "Det högsta antalet har nåtts.",
+      "conflictTitle": "Inställningarna ändrades någon annanstans",
+      "conflictBody": "Kommandoraden eller ett annat fönster sparade en nyare version. Ladda om för att se den; din osparade ändring förkastas.",
+      "reload": "Ladda om"
     }
   },
   "appLanguage": {

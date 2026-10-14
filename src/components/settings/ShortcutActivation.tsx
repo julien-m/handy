@@ -48,9 +48,12 @@ export const ShortcutActivationSetting: React.FC<ShortcutActivationProps> =
         description={t("settings.general.shortcutActivation.description")}
         descriptionMode={descriptionMode}
         grouped={grouped}
+        testId="shortcut-settings-activation"
       >
         <Dropdown
           options={options}
+          testId="shortcut-settings-activation-select"
+          ariaLabel={t("settings.general.shortcutActivation.title")}
           menuClassName="right-0 w-80 max-w-[calc(100vw-2rem)]"
           selectedValue={selected}
           onSelect={(value) =>

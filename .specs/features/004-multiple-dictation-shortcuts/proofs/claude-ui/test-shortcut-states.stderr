@@ -1,0 +1,11 @@
+$ bun test src/components/settings/shortcut-draft-model.test.ts src/components/settings/shortcut-list-feedback.test.ts && bun test src/components/settings/shortcut-list-render.test.tsx
+
+ 20 pass
+ 0 fail
+ 47 expect() calls
+Ran 20 tests across 2 files. [11.00ms]
+
+ 9 pass
+ 0 fail
+ 33 expect() calls
+Ran 9 tests across 1 file. [68.00ms]

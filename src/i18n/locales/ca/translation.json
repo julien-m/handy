@@ -200,7 +200,21 @@
             "registration": "El sistema ha rebutjat aquesta drecera: {{error}}",
             "generic": "No s'ha pogut desar la drecera",
             "conflictsUnavailable": "No s'han pogut comprovar els conflictes de dreceres"
-          }
+          },
+          "changeButton": "Canvia",
+          "discard": "Descarta aquesta drecera",
+          "lastHint": "Cada acció conserva almenys una drecera. Canvieu-la o restabliu-la.",
+          "limitHint": "{{count}} de {{limit}} dreceres. Elimineu-ne una per afegir-ne una altra.",
+          "draftConflict": "{{shortcut}} ja l'utilitza {{action}}. No s'ha desat res.",
+          "draftOverlap": "{{shortcut}} també activaria {{action}}. No s'ha desat res.",
+          "legacyOverlap": "{{shortcut}} se solapa amb {{action}}",
+          "legacyDuplicate": "{{shortcut}} també l'utilitza {{action}}",
+          "legacyBody": "Continua funcionant com abans de l'actualització. Canvieu-la per eliminar aquest avís.",
+          "systemRefused": "{{system}} ha rebutjat {{shortcut}}",
+          "systemRefusedGeneric": "El sistema ha rebutjat aquesta drecera",
+          "systemRefusedBody": "Pot ser que una altra aplicació hagi registrat aquesta combinació. Trieu-ne una altra o torneu-ho a provar.",
+          "systemReason": "Missatge del sistema: {{error}}",
+          "retry": "Torna-ho a provar"
         }
       },
       "language": {
@@ -344,9 +358,13 @@
           "clipboardShiftInsert": "Porta-retalls (Maj+Insert)",
           "direct": "Directe",
           "none": "Cap",
-          "externalScript": "Script extern"
+          "externalScript": "Script extern",
+          "clipboardMac": "Porta-retalls (⌘V)",
+          "smartPasteDescription": "Predeterminat a macOS",
+          "noneDescription": "Només historial i porta-retalls"
         },
-        "externalScriptPlaceholder": "/camí/al/vostre/script.sh"
+        "externalScriptPlaceholder": "/camí/al/vostre/script.sh",
+        "descriptionSmart": "L'enganxat intel·ligent escriu directament al camp; si no pot, enganxa i restaura el porta-retalls."
       },
       "typingTool": {
         "title": "Eina d'escriptura",
@@ -416,6 +434,14 @@
           "simplified": "Simplificat",
           "traditional": "Tradicional"
         }
+      },
+      "returnToApp": {
+        "title": "Torna a l'aplicació del dictat",
+        "description": "Insereix a l'aplicació on ha començat el dictat, encara que mentrestant canvieu d'aplicació.",
+        "unavailableUnreadable": "No disponible en aquest sistema: Handy no pot llegir l'aplicació en primer pla. El text va a l'aplicació en primer pla al final.",
+        "unavailablePlatform": "No disponible en aquest sistema. El text va a l'aplicació en primer pla al final.",
+        "details": "Handy recorda l'aplicació en primer pla quan comença un dictat i hi torna abans d'inserir el text. Si està desactivat, el text va a l'aplicació en primer pla quan acaba el dictat.",
+        "detailsLabel": "Quant a tornar a l'aplicació del dictat"
       }
     },
     "vocabulary": {
@@ -669,7 +695,8 @@
       "historyLimit": {
         "title": "Límit de l'historial",
         "description": "Nombre màxim d'entrades de l'historial que es conservaran",
-        "entries": "entrades"
+        "entries": "entrades",
+        "invalid": "Introduïu un nombre enter entre {{min}} i {{max}}."
       },
       "recordingRetention": {
         "title": "Supressió automàtica d'enregistraments",
@@ -817,7 +844,9 @@
   },
   "accessibility": {
     "permissionsDescription": "El Handy necessita permisos d'accessibilitat per escriure el text transcrit.",
-    "openSettings": "Obriu la configuració del sistema"
+    "openSettings": "Obriu la configuració del sistema",
+    "offTitle": "El permís d'accessibilitat està desactivat",
+    "smartPasteOff": "L'enganxat intel·ligent no pot inserir ni enganxar. Les vostres transcripcions es conserven per recuperar-les."
   },
   "errors": {
     "loadDirectory": "Error en carregar el directori: {{error}}",
@@ -847,7 +876,7 @@
       "revisionConflict": "La configuració s'ha canviat en un altre lloc. Torneu a carregar i torneu-ho a provar.",
       "unavailable": "Aquesta configuració no es pot canviar ara. Torneu-ho a provar més tard.",
       "shortcutSessionBusy": "Hi ha un dictat en curs. Torna-ho a provar quan acabi.",
-      "persistenceFailed": "No s'ha pogut desar la configuració.",
+      "persistenceFailed": "No s'ha pogut desar la configuració: no s'ha pogut escriure el fitxer de configuració. No s'ha canviat res.",
       "generic": "No s'ha pogut canviar la configuració.",
       "readOnly": "La configuració és només de lectura en aquesta sessió: el fitxer de configuració no es pot escriure de manera segura, de manera que els canvis no es desaran.",
       "unsupportedPlatform": "Aquesta configuració no està disponible en aquest sistema.",
@@ -859,7 +888,10 @@
       "promptOverrideIncomplete": "Tria un proveïdor i un model, o fes servir el proveïdor predeterminat.",
       "promptUnknownProvider": "Aquest proveïdor no està disponible.",
       "promptNotUsable": "Aquest prompt no és vàlid. Edita'l abans de fer-lo servir.",
-      "limitExceeded": "S'ha arribat al nombre màxim."
+      "limitExceeded": "S'ha arribat al nombre màxim.",
+      "conflictTitle": "La configuració s'ha canviat en un altre lloc",
+      "conflictBody": "La línia d'ordres o una altra finestra ha desat una versió més nova. Torneu a carregar per veure-la; la vostra modificació no desada es descarta.",
+      "reload": "Torna a carregar"
     }
   },
   "appLanguage": {

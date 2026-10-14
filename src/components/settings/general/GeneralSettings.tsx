@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { type } from "@tauri-apps/plugin-os";
 import { MicrophoneSelector } from "../MicrophoneSelector";
 import { ChannelSelector } from "../ChannelSelector";
-import { ShortcutInput } from "../ShortcutInput";
 import { ShortcutList } from "../shortcut-list";
 import { SettingsGroup } from "../../ui/SettingsGroup";
 import { OutputDeviceSelector } from "../OutputDeviceSelector";
@@ -19,13 +18,18 @@ export const GeneralSettings: React.FC = () => {
   const { audioFeedbackEnabled } = useSettings();
   const isLinux = type() === "linux";
   return (
-    <div className="max-w-3xl w-full mx-auto space-y-6">
-      <SettingsGroup title={t("settings.general.title")}>
-        <ShortcutList actionId="transcribe" grouped={true} />
-        <ShortcutActivationSetting descriptionMode="tooltip" grouped={true} />
-        {/* Cancel shortcut remains hidden on Linux because of dynamic shortcut instability. */}
-        {!isLinux && <ShortcutInput shortcutId="cancel" grouped={true} />}
-      </SettingsGroup>
+    <div
+      className="max-w-3xl w-full mx-auto space-y-6"
+      data-testid="shortcut-settings-screen"
+    >
+      <div data-testid="shortcut-settings-general">
+        <SettingsGroup title={t("settings.general.title")}>
+          <ShortcutList actionId="transcribe" grouped={true} />
+          <ShortcutActivationSetting descriptionMode="tooltip" grouped={true} />
+          {/* Cancel shortcut remains hidden on Linux because of dynamic shortcut instability. */}
+          {!isLinux && <ShortcutList actionId="cancel" grouped single />}
+        </SettingsGroup>
+      </div>
       <ModelSettingsCard />
       <SettingsGroup title={t("settings.sound.title")}>
         <MicrophoneSelector descriptionMode="tooltip" grouped={true} />

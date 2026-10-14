@@ -220,7 +220,21 @@
             "registration": "Das System hat dieses Tastenkürzel abgelehnt: {{error}}",
             "generic": "Das Tastenkürzel konnte nicht gespeichert werden",
             "conflictsUnavailable": "Konflikte zwischen Tastenkürzeln konnten nicht geprüft werden"
-          }
+          },
+          "changeButton": "Ändern",
+          "discard": "Dieses Tastenkürzel verwerfen",
+          "lastHint": "Jede Aktion behält mindestens ein Tastenkürzel. Ändern oder setzen Sie es stattdessen zurück.",
+          "limitHint": "{{count}} von {{limit}} Tastenkürzeln. Entfernen Sie eines, um ein weiteres hinzuzufügen.",
+          "draftConflict": "{{shortcut}} wird bereits von {{action}} verwendet. Es wurde nichts gespeichert.",
+          "draftOverlap": "{{shortcut}} würde auch {{action}} auslösen. Es wurde nichts gespeichert.",
+          "legacyOverlap": "{{shortcut}} überschneidet sich mit {{action}}",
+          "legacyDuplicate": "{{shortcut}} wird auch von {{action}} verwendet",
+          "legacyBody": "Es funktioniert weiter wie vor dem Update. Ändern Sie es, um diese Warnung zu entfernen.",
+          "systemRefused": "{{system}} hat {{shortcut}} abgelehnt",
+          "systemRefusedGeneric": "Das System hat dieses Tastenkürzel abgelehnt",
+          "systemRefusedBody": "Möglicherweise hat eine andere App diese Kombination registriert. Wählen Sie eine andere oder versuchen Sie es erneut.",
+          "systemReason": "Systemmeldung: {{error}}",
+          "retry": "Erneut versuchen"
         }
       },
       "language": {
@@ -344,9 +358,13 @@
           "clipboardShiftInsert": "Zwischenablage (Umschalt+Einfg)",
           "direct": "Direkt",
           "none": "Keine",
-          "externalScript": "Externes Skript"
+          "externalScript": "Externes Skript",
+          "clipboardMac": "Zwischenablage (⌘V)",
+          "smartPasteDescription": "Standard unter macOS",
+          "noneDescription": "Nur Verlauf und Zwischenablage"
         },
-        "externalScriptPlaceholder": "/pfad/zu/ihrem/skript.sh"
+        "externalScriptPlaceholder": "/pfad/zu/ihrem/skript.sh",
+        "descriptionSmart": "Intelligentes Einfügen schreibt direkt ins Feld, sonst fügt es ein und stellt die Zwischenablage wieder her."
       },
       "typingTool": {
         "title": "Eingabetool",
@@ -416,6 +434,14 @@
           "simplified": "Vereinfacht",
           "traditional": "Traditionell"
         }
+      },
+      "returnToApp": {
+        "title": "Zur App des Diktats zurückkehren",
+        "description": "In die App einfügen, in der das Diktat begann, auch wenn Sie zwischendurch die App wechseln.",
+        "unavailableUnreadable": "Auf diesem System nicht verfügbar: Handy kann die App im Vordergrund hier nicht erkennen. Der Text geht am Ende an die App im Vordergrund.",
+        "unavailablePlatform": "Auf diesem System nicht verfügbar. Der Text geht am Ende an die App im Vordergrund.",
+        "details": "Handy merkt sich beim Start eines Diktats die App im Vordergrund und wechselt vor dem Einfügen zu ihr zurück. Ist die Option aus, geht der Text an die App, die am Ende des Diktats im Vordergrund ist.",
+        "detailsLabel": "Über die Rückkehr zur App des Diktats"
       }
     },
     "vocabulary": {
@@ -655,7 +681,8 @@
       "historyLimit": {
         "title": "Verlaufslimit",
         "description": "Maximale Anzahl der Verlaufseinträge",
-        "entries": "Einträge"
+        "entries": "Einträge",
+        "invalid": "Geben Sie eine ganze Zahl von {{min}} bis {{max}} ein."
       },
       "recordingRetention": {
         "title": "Aufnahmen automatisch löschen",
@@ -814,7 +841,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy benötigt Bedienungshilfen-Berechtigungen, um transkribierten Text einzugeben.",
-    "openSettings": "Systemeinstellungen öffnen"
+    "openSettings": "Systemeinstellungen öffnen",
+    "offTitle": "Die Bedienungshilfen-Berechtigung ist deaktiviert",
+    "smartPasteOff": "Intelligentes Einfügen kann weder einfügen noch über die Zwischenablage einsetzen. Ihre Transkripte bleiben zur Wiederherstellung erhalten."
   },
   "errors": {
     "loadDirectory": "Fehler beim Laden des Verzeichnisses: {{error}}",
@@ -844,7 +873,7 @@
       "revisionConflict": "Die Einstellungen wurden an anderer Stelle geändert. Laden Sie neu und versuchen Sie es erneut.",
       "unavailable": "Diese Einstellung kann gerade nicht geändert werden. Versuchen Sie es später erneut.",
       "shortcutSessionBusy": "Ein Diktat läuft gerade. Versuche es erneut, wenn es beendet ist.",
-      "persistenceFailed": "Die Einstellungen konnten nicht gespeichert werden.",
+      "persistenceFailed": "Einstellungen konnten nicht gespeichert werden: Die Einstellungsdatei konnte nicht geschrieben werden. Es wurde nichts geändert.",
       "generic": "Die Einstellung konnte nicht geändert werden.",
       "readOnly": "Die Einstellungen sind in dieser Sitzung schreibgeschützt: Die Einstellungsdatei kann nicht sicher geschrieben werden, daher werden Änderungen nicht gespeichert.",
       "unsupportedPlatform": "Diese Einstellung ist auf diesem System nicht verfügbar.",
@@ -856,7 +885,10 @@
       "promptOverrideIncomplete": "Wähle einen Anbieter und ein Modell oder verwende den Standardanbieter.",
       "promptUnknownProvider": "Dieser Anbieter ist nicht verfügbar.",
       "promptNotUsable": "Dieser Prompt ist ungültig. Bearbeite ihn, bevor du ihn verwendest.",
-      "limitExceeded": "Die Höchstzahl ist erreicht."
+      "limitExceeded": "Die Höchstzahl ist erreicht.",
+      "conflictTitle": "Einstellungen wurden an anderer Stelle geändert",
+      "conflictBody": "Die Befehlszeile oder ein anderes Fenster hat eine neuere Version gespeichert. Laden Sie neu, um sie zu sehen; Ihre ungespeicherte Änderung wird verworfen.",
+      "reload": "Neu laden"
     }
   },
   "appLanguage": {

@@ -10,6 +10,8 @@ interface SettingContainerProps {
   layout?: "horizontal" | "stacked";
   disabled?: boolean;
   tooltipPosition?: "top" | "bottom";
+  /** Test id of the row; its title gets `${testId}-title`. */
+  testId?: string;
 }
 
 export const SettingContainer: React.FC<SettingContainerProps> = ({
@@ -21,6 +23,7 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
   layout = "horizontal",
   disabled = false,
   tooltipPosition = "top",
+  testId,
 }) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const tooltipRef = useRef<HTMLDivElement>(null);
@@ -43,6 +46,8 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
     }
   }, [showTooltip]);
 
+  const titleTestId = testId ? `${testId}-title` : undefined;
+
   const toggleTooltip = () => {
     setShowTooltip(!showTooltip);
   };
@@ -54,10 +59,11 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
   if (layout === "stacked") {
     if (descriptionMode === "tooltip") {
       return (
-        <div className={containerClasses}>
+        <div className={containerClasses} data-testid={testId}>
           <div className="flex items-center gap-2 mb-2">
             <h3
               className={`text-sm font-medium ${disabled ? "opacity-50" : ""}`}
+              data-testid={titleTestId}
             >
               {title}
             </h3>
@@ -105,9 +111,12 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
     }
 
     return (
-      <div className={containerClasses}>
+      <div className={containerClasses} data-testid={testId}>
         <div className="mb-2">
-          <h3 className={`text-sm font-medium ${disabled ? "opacity-50" : ""}`}>
+          <h3
+            className={`text-sm font-medium ${disabled ? "opacity-50" : ""}`}
+            data-testid={titleTestId}
+          >
             {title}
           </h3>
           <p className={`text-sm ${disabled ? "opacity-50" : ""}`}>
@@ -126,11 +135,12 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
 
   if (descriptionMode === "tooltip") {
     return (
-      <div className={horizontalContainerClasses}>
+      <div className={horizontalContainerClasses} data-testid={testId}>
         <div className="max-w-2/3">
           <div className="flex items-center gap-2">
             <h3
               className={`text-sm font-medium ${disabled ? "opacity-50" : ""}`}
+              data-testid={titleTestId}
             >
               {title}
             </h3>
@@ -179,9 +189,12 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
   }
 
   return (
-    <div className={horizontalContainerClasses}>
+    <div className={horizontalContainerClasses} data-testid={testId}>
       <div className="max-w-2/3">
-        <h3 className={`text-sm font-medium ${disabled ? "opacity-50" : ""}`}>
+        <h3
+          className={`text-sm font-medium ${disabled ? "opacity-50" : ""}`}
+          data-testid={titleTestId}
+        >
           {title}
         </h3>
         <p className={`text-sm ${disabled ? "opacity-50" : ""}`}>

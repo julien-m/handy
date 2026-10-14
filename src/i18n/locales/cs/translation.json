@@ -220,7 +220,21 @@
             "registration": "Systém tuto zkratku odmítl: {{error}}",
             "generic": "Zkratku se nepodařilo uložit",
             "conflictsUnavailable": "Konflikty zkratek se nepodařilo ověřit"
-          }
+          },
+          "changeButton": "Změnit",
+          "discard": "Zahodit tuto zkratku",
+          "lastHint": "Každá akce si ponechává alespoň jednu zkratku. Místo toho ji změňte nebo obnovte.",
+          "limitHint": "{{count}} z {{limit}} zkratek. Odeberte jednu, abyste mohli přidat další.",
+          "draftConflict": "{{shortcut}} už používá {{action}}. Nic nebylo uloženo.",
+          "draftOverlap": "{{shortcut}} by spustila i {{action}}. Nic nebylo uloženo.",
+          "legacyOverlap": "{{shortcut}} se překrývá s {{action}}",
+          "legacyDuplicate": "{{shortcut}} používá také {{action}}",
+          "legacyBody": "Funguje dál jako před aktualizací. Změňte ji, aby toto upozornění zmizelo.",
+          "systemRefused": "{{system}} odmítl {{shortcut}}",
+          "systemRefusedGeneric": "Systém tuto zkratku odmítl",
+          "systemRefusedBody": "Tuto kombinaci možná zaregistrovala jiná aplikace. Vyberte jinou nebo to zkuste znovu.",
+          "systemReason": "Zpráva systému: {{error}}",
+          "retry": "Zkusit znovu"
         }
       },
       "language": {
@@ -344,9 +358,13 @@
           "clipboardShiftInsert": "Schránka (Shift+Insert)",
           "direct": "Přímé",
           "none": "Žádné",
-          "externalScript": "Externí skript"
+          "externalScript": "Externí skript",
+          "clipboardMac": "Schránka (⌘V)",
+          "smartPasteDescription": "Výchozí v macOS",
+          "noneDescription": "Pouze historie a schránka"
         },
-        "externalScriptPlaceholder": "/cesta/k/vasemu/skriptu.sh"
+        "externalScriptPlaceholder": "/cesta/k/vasemu/skriptu.sh",
+        "descriptionSmart": "Chytré vložení zapisuje přímo do pole, jinak vloží text a obnoví schránku."
       },
       "typingTool": {
         "title": "Nástroj pro psaní",
@@ -416,6 +434,14 @@
           "simplified": "Zjednodušené",
           "traditional": "Tradiční"
         }
+      },
+      "returnToApp": {
+        "title": "Vrátit se do aplikace diktování",
+        "description": "Vložit do aplikace, ve které diktování začalo, i když mezitím přepnete jinam.",
+        "unavailableUnreadable": "V tomto systému není k dispozici: Handy zde nedokáže zjistit aplikaci v popředí. Text se na konci vloží do aplikace v popředí.",
+        "unavailablePlatform": "V tomto systému není k dispozici. Text se na konci vloží do aplikace v popředí.",
+        "details": "Handy si při zahájení diktování zapamatuje aplikaci v popředí a před vložením textu se do ní vrátí. Když je volba vypnutá, text se vloží do aplikace v popředí na konci diktování.",
+        "detailsLabel": "O návratu do aplikace diktování"
       }
     },
     "vocabulary": {
@@ -655,7 +681,8 @@
       "historyLimit": {
         "title": "Limit historie",
         "description": "Maximální počet záznamů historie k uchování",
-        "entries": "záznamů"
+        "entries": "záznamů",
+        "invalid": "Zadejte celé číslo od {{min}} do {{max}}."
       },
       "recordingRetention": {
         "title": "Automatické mazání nahrávek",
@@ -814,7 +841,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy potřebuje oprávnění usnadnění přístupu, aby mohlo psát přepsaný text.",
-    "openSettings": "Otevřít Nastavení systému"
+    "openSettings": "Otevřít Nastavení systému",
+    "offTitle": "Oprávnění zpřístupnění je vypnuté",
+    "smartPasteOff": "Chytré vložení nemůže vkládat text. Vaše přepisy zůstávají uložené k obnovení."
   },
   "errors": {
     "loadDirectory": "Chyba při načítání adresáře: {{error}}",
@@ -844,7 +873,7 @@
       "revisionConflict": "Nastavení bylo změněno jinde. Načtěte je znovu a zkuste to znovu.",
       "unavailable": "Toto nastavení teď nelze změnit. Zkuste to později.",
       "shortcutSessionBusy": "Probíhá diktování. Zkuste to znovu, až skončí.",
-      "persistenceFailed": "Nastavení se nepodařilo uložit.",
+      "persistenceFailed": "Nastavení nelze uložit: soubor nastavení nešlo zapsat. Nic se nezměnilo.",
       "generic": "Nastavení se nepodařilo změnit.",
       "readOnly": "Nastavení je v této relaci jen pro čtení: soubor nastavení nelze bezpečně zapsat, změny se proto neuloží.",
       "unsupportedPlatform": "Toto nastavení není v tomto systému k dispozici.",
@@ -856,7 +885,10 @@
       "promptOverrideIncomplete": "Zvolte poskytovatele i model, nebo použijte výchozího poskytovatele.",
       "promptUnknownProvider": "Tento poskytovatel není k dispozici.",
       "promptNotUsable": "Tento prompt je neplatný. Před použitím ho upravte.",
-      "limitExceeded": "Bylo dosaženo maximálního počtu."
+      "limitExceeded": "Bylo dosaženo maximálního počtu.",
+      "conflictTitle": "Nastavení bylo změněno jinde",
+      "conflictBody": "Příkazový řádek nebo jiné okno uložilo novější verzi. Načtěte ji znovu; vaše neuložená úprava bude zahozena.",
+      "reload": "Načíst znovu"
     }
   },
   "appLanguage": {

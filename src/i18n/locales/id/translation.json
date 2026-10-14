@@ -200,7 +200,21 @@
             "registration": "Sistem menolak pintasan ini: {{error}}",
             "generic": "Pintasan tidak dapat disimpan",
             "conflictsUnavailable": "Bentrokan pintasan tidak dapat diperiksa"
-          }
+          },
+          "changeButton": "Ubah",
+          "discard": "Buang pintasan ini",
+          "lastHint": "Setiap tindakan menyimpan setidaknya satu pintasan. Ubah atau atur ulang pintasan itu.",
+          "limitHint": "{{count}} dari {{limit}} pintasan. Hapus satu untuk menambahkan yang lain.",
+          "draftConflict": "{{shortcut}} sudah digunakan oleh {{action}}. Tidak ada yang disimpan.",
+          "draftOverlap": "{{shortcut}} juga akan memicu {{action}}. Tidak ada yang disimpan.",
+          "legacyOverlap": "{{shortcut}} tumpang tindih dengan {{action}}",
+          "legacyDuplicate": "{{shortcut}} juga digunakan oleh {{action}}",
+          "legacyBody": "Pintasan ini tetap berfungsi seperti sebelum pembaruan. Ubah untuk menghapus peringatan ini.",
+          "systemRefused": "{{system}} menolak {{shortcut}}",
+          "systemRefusedGeneric": "Sistem menolak pintasan ini",
+          "systemRefusedBody": "Aplikasi lain mungkin telah mendaftarkan kombinasi ini. Pilih kombinasi lain atau coba lagi.",
+          "systemReason": "Pesan sistem: {{error}}",
+          "retry": "Coba lagi"
         }
       },
       "language": {
@@ -344,9 +358,13 @@
           "clipboardShiftInsert": "Papan klip (Shift+Insert)",
           "direct": "Langsung",
           "none": "Tidak Ada",
-          "externalScript": "Skrip Eksternal"
+          "externalScript": "Skrip Eksternal",
+          "clipboardMac": "Papan klip (⌘V)",
+          "smartPasteDescription": "Bawaan di macOS",
+          "noneDescription": "Hanya riwayat dan papan klip"
         },
-        "externalScriptPlaceholder": "/path/to/your/script.sh"
+        "externalScriptPlaceholder": "/path/to/your/script.sh",
+        "descriptionSmart": "Tempel cerdas menulis langsung ke kolom; jika tidak bisa, menempel lalu memulihkan papan klip Anda."
       },
       "typingTool": {
         "title": "Alat Pengetikan",
@@ -416,6 +434,14 @@
           "simplified": "Sederhana",
           "traditional": "Tradisional"
         }
+      },
+      "returnToApp": {
+        "title": "Kembali ke aplikasi dikte",
+        "description": "Sisipkan ke aplikasi tempat dikte dimulai, meskipun Anda berpindah aplikasi sementara itu.",
+        "unavailableUnreadable": "Tidak tersedia di sistem ini: Handy tidak dapat membaca aplikasi terdepan di sini. Teks masuk ke aplikasi yang berada di depan saat selesai.",
+        "unavailablePlatform": "Tidak tersedia di sistem ini. Teks masuk ke aplikasi yang berada di depan saat selesai.",
+        "details": "Handy mengingat aplikasi di depan saat dikte dimulai dan kembali ke aplikasi itu sebelum menyisipkan teks. Jika nonaktif, teks masuk ke aplikasi yang berada di depan saat dikte selesai.",
+        "detailsLabel": "Tentang kembali ke aplikasi dikte"
       }
     },
     "vocabulary": {
@@ -669,7 +695,8 @@
       "historyLimit": {
         "title": "Batas Riwayat",
         "description": "Jumlah maksimum entri riwayat yang disimpan",
-        "entries": "entri"
+        "entries": "entri",
+        "invalid": "Masukkan bilangan bulat dari {{min}} sampai {{max}}."
       },
       "recordingRetention": {
         "title": "Hapus Rekaman Secara Otomatis",
@@ -817,7 +844,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy memerlukan izin aksesibilitas untuk mengetik teks hasil transkripsi.",
-    "openSettings": "Buka Pengaturan Sistem"
+    "openSettings": "Buka Pengaturan Sistem",
+    "offTitle": "Izin aksesibilitas nonaktif",
+    "smartPasteOff": "Tempel cerdas tidak dapat menyisipkan atau menempel. Transkrip Anda disimpan untuk dipulihkan."
   },
   "errors": {
     "loadDirectory": "Kesalahan saat memuat direktori: {{error}}",
@@ -847,7 +876,7 @@
       "revisionConflict": "Pengaturan telah diubah di tempat lain. Muat ulang dan coba lagi.",
       "unavailable": "Pengaturan ini tidak dapat diubah sekarang. Coba lagi nanti.",
       "shortcutSessionBusy": "Dikte sedang berlangsung. Coba lagi setelah selesai.",
-      "persistenceFailed": "Pengaturan tidak dapat disimpan.",
+      "persistenceFailed": "Tidak dapat menyimpan pengaturan: file pengaturan tidak dapat ditulis. Tidak ada yang diubah.",
       "generic": "Pengaturan tidak dapat diubah.",
       "readOnly": "Pengaturan hanya-baca untuk sesi ini: file pengaturan tidak dapat ditulis dengan aman, sehingga perubahan tidak akan disimpan.",
       "unsupportedPlatform": "Pengaturan ini tidak tersedia di sistem ini.",
@@ -859,7 +888,10 @@
       "promptOverrideIncomplete": "Pilih penyedia dan model, atau gunakan penyedia default.",
       "promptUnknownProvider": "Penyedia ini tidak tersedia.",
       "promptNotUsable": "Prompt ini tidak valid. Edit sebelum digunakan.",
-      "limitExceeded": "Jumlah maksimum telah tercapai."
+      "limitExceeded": "Jumlah maksimum telah tercapai.",
+      "conflictTitle": "Pengaturan diubah di tempat lain",
+      "conflictBody": "Baris perintah atau jendela lain menyimpan versi yang lebih baru. Muat ulang untuk melihatnya; perubahan Anda yang belum disimpan akan dibuang.",
+      "reload": "Muat ulang"
     }
   },
   "appLanguage": {

@@ -220,7 +220,21 @@
             "registration": "Sistem bu kısayolu reddetti: {{error}}",
             "generic": "Kısayol kaydedilemedi",
             "conflictsUnavailable": "Kısayol çakışmaları denetlenemedi"
-          }
+          },
+          "changeButton": "Değiştir",
+          "discard": "Bu kısayolu at",
+          "lastHint": "Her eylem en az bir kısayolu korur. Bunun yerine onu değiştirin veya sıfırlayın.",
+          "limitHint": "{{count}}/{{limit}} kısayol. Başka bir tane eklemek için birini kaldırın.",
+          "draftConflict": "{{shortcut}} zaten {{action}} tarafından kullanılıyor. Hiçbir şey kaydedilmedi.",
+          "draftOverlap": "{{shortcut}} ayrıca {{action}} eylemini de tetikler. Hiçbir şey kaydedilmedi.",
+          "legacyOverlap": "{{shortcut}}, {{action}} ile çakışıyor",
+          "legacyDuplicate": "{{shortcut}}, {{action}} tarafından da kullanılıyor",
+          "legacyBody": "Güncellemeden önceki gibi çalışmaya devam etti. Bu uyarıyı kaldırmak için değiştirin.",
+          "systemRefused": "{{system}}, {{shortcut}} kısayolunu reddetti",
+          "systemRefusedGeneric": "Sistem bu kısayolu reddetti",
+          "systemRefusedBody": "Bu kombinasyonu başka bir uygulama kaydetmiş olabilir. Başka bir tane seçin veya tekrar deneyin.",
+          "systemReason": "Sistem iletisi: {{error}}",
+          "retry": "Tekrar dene"
         }
       },
       "language": {
@@ -344,9 +358,13 @@
           "clipboardShiftInsert": "Pano (Shift+Insert)",
           "direct": "Doğrudan",
           "none": "Yok",
-          "externalScript": "Harici Betik"
+          "externalScript": "Harici Betik",
+          "clipboardMac": "Pano (⌘V)",
+          "smartPasteDescription": "macOS'ta varsayılan",
+          "noneDescription": "Yalnızca geçmiş ve pano"
         },
-        "externalScriptPlaceholder": "/dosya/yolu/betik.sh"
+        "externalScriptPlaceholder": "/dosya/yolu/betik.sh",
+        "descriptionSmart": "Akıllı yapıştırma doğrudan alana yazar; aksi halde yapıştırır ve panonuzu geri yükler."
       },
       "typingTool": {
         "title": "Yazma Aracı",
@@ -416,6 +434,14 @@
           "simplified": "Basitleştirilmiş",
           "traditional": "Geleneksel"
         }
+      },
+      "returnToApp": {
+        "title": "Dikte uygulamasına dön",
+        "description": "Bu arada uygulama değiştirseniz bile metni diktenin başladığı uygulamaya ekler.",
+        "unavailableUnreadable": "Bu sistemde kullanılamıyor: Handy burada öndeki uygulamayı okuyamıyor. Metin sonunda öndeki uygulamaya gider.",
+        "unavailablePlatform": "Bu sistemde kullanılamıyor. Metin sonunda öndeki uygulamaya gider.",
+        "details": "Handy, dikte başladığında öndeki uygulamayı hatırlar ve metni eklemeden önce ona geri döner. Kapalıyken metin, dikte bittiğinde öndeki uygulamaya gider.",
+        "detailsLabel": "Dikte uygulamasına dönme hakkında"
       }
     },
     "vocabulary": {
@@ -655,7 +681,8 @@
       "historyLimit": {
         "title": "Geçmiş Limiti",
         "description": "Saklanacak maksimum geçmiş kaydı sayısı",
-        "entries": "kayıt"
+        "entries": "kayıt",
+        "invalid": "{{min}} ile {{max}} arasında bir tam sayı girin."
       },
       "recordingRetention": {
         "title": "Kayıtları Otomatik Sil",
@@ -814,7 +841,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy, transkribe edilen metni yazabilmek için erişilebilirlik izinlerine ihtiyaç duyar.",
-    "openSettings": "Sistem Ayarlarını Aç"
+    "openSettings": "Sistem Ayarlarını Aç",
+    "offTitle": "Erişilebilirlik izni kapalı",
+    "smartPasteOff": "Akıllı yapıştırma ekleme veya yapıştırma yapamaz. Dökümleriniz kurtarma için saklanır."
   },
   "errors": {
     "loadDirectory": "Dizin yüklenirken hata oluştu: {{error}}",
@@ -844,7 +873,7 @@
       "revisionConflict": "Ayarlar başka bir yerde değiştirildi. Yeniden yükleyip tekrar deneyin.",
       "unavailable": "Bu ayar şu anda değiştirilemiyor. Daha sonra tekrar deneyin.",
       "shortcutSessionBusy": "Bir dikte devam ediyor. Bittiğinde tekrar deneyin.",
-      "persistenceFailed": "Ayarlar kaydedilemedi.",
+      "persistenceFailed": "Ayarlar kaydedilemedi: ayar dosyasına yazılamadı. Hiçbir şey değiştirilmedi.",
       "generic": "Ayar değiştirilemedi.",
       "readOnly": "Ayarlar bu oturumda salt okunur: ayar dosyasına güvenli şekilde yazılamıyor, bu nedenle değişiklikler kaydedilmeyecek.",
       "unsupportedPlatform": "Bu ayar bu sistemde kullanılamaz.",
@@ -856,7 +885,10 @@
       "promptOverrideIncomplete": "Bir sağlayıcı ve bir model seçin ya da varsayılan sağlayıcıyı kullanın.",
       "promptUnknownProvider": "Bu sağlayıcı kullanılamıyor.",
       "promptNotUsable": "Bu istem geçersiz. Kullanmadan önce düzenleyin.",
-      "limitExceeded": "Azami sayıya ulaşıldı."
+      "limitExceeded": "Azami sayıya ulaşıldı.",
+      "conflictTitle": "Ayarlar başka bir yerde değiştirildi",
+      "conflictBody": "Komut satırı veya başka bir pencere daha yeni bir sürüm kaydetti. Görmek için yeniden yükleyin; kaydedilmemiş değişikliğiniz atılır.",
+      "reload": "Yeniden yükle"
     }
   },
   "appLanguage": {

@@ -200,7 +200,21 @@
             "registration": "시스템이 이 단축키를 거부했습니다: {{error}}",
             "generic": "단축키를 저장할 수 없습니다",
             "conflictsUnavailable": "단축키 충돌을 확인할 수 없습니다"
-          }
+          },
+          "changeButton": "변경",
+          "discard": "이 단축키 취소",
+          "lastHint": "각 동작에는 단축키가 하나 이상 있어야 합니다. 대신 변경하거나 재설정하세요.",
+          "limitHint": "단축키 {{count}}/{{limit}}개. 다른 단축키를 추가하려면 하나를 제거하세요.",
+          "draftConflict": "{{shortcut}}은(는) 이미 {{action}}에서 사용 중입니다. 아무것도 저장되지 않았습니다.",
+          "draftOverlap": "{{shortcut}}은(는) {{action}}도 실행합니다. 아무것도 저장되지 않았습니다.",
+          "legacyOverlap": "{{shortcut}}이(가) {{action}}과(와) 겹칩니다",
+          "legacyDuplicate": "{{shortcut}}은(는) {{action}}에서도 사용됩니다",
+          "legacyBody": "업데이트 전과 같이 계속 작동합니다. 이 경고를 없애려면 변경하세요.",
+          "systemRefused": "{{system}}에서 {{shortcut}}을(를) 거부했습니다",
+          "systemRefusedGeneric": "시스템에서 이 단축키를 거부했습니다",
+          "systemRefusedBody": "다른 앱이 이 조합을 등록했을 수 있습니다. 다른 조합을 선택하거나 다시 시도하세요.",
+          "systemReason": "시스템 메시지: {{error}}",
+          "retry": "다시 시도"
         }
       },
       "language": {
@@ -344,9 +358,13 @@
           "clipboardShiftInsert": "클립보드 (Shift+Insert)",
           "direct": "직접",
           "none": "없음",
-          "externalScript": "외부 스크립트"
+          "externalScript": "외부 스크립트",
+          "clipboardMac": "클립보드 (⌘V)",
+          "smartPasteDescription": "macOS 기본값",
+          "noneDescription": "히스토리와 클립보드만"
         },
-        "externalScriptPlaceholder": "/path/to/your/script.sh"
+        "externalScriptPlaceholder": "/path/to/your/script.sh",
+        "descriptionSmart": "스마트 붙여넣기는 필드에 직접 입력하고, 그렇지 않으면 붙여넣은 뒤 클립보드를 복원합니다."
       },
       "typingTool": {
         "title": "타이핑 도구",
@@ -416,6 +434,14 @@
           "simplified": "간체",
           "traditional": "번체"
         }
+      },
+      "returnToApp": {
+        "title": "받아쓰기한 앱으로 돌아가기",
+        "description": "그 사이 다른 앱으로 전환해도 받아쓰기를 시작한 앱에 입력합니다.",
+        "unavailableUnreadable": "이 시스템에서는 사용할 수 없습니다: Handy가 여기서 맨 앞의 앱을 읽을 수 없습니다. 텍스트는 마지막에 앞에 있는 앱으로 들어갑니다.",
+        "unavailablePlatform": "이 시스템에서는 사용할 수 없습니다. 텍스트는 마지막에 앞에 있는 앱으로 들어갑니다.",
+        "details": "Handy는 받아쓰기를 시작할 때 맨 앞의 앱을 기억하고 텍스트를 입력하기 전에 그 앱으로 돌아갑니다. 끄면 받아쓰기가 끝날 때 앞에 있는 앱으로 텍스트가 들어갑니다.",
+        "detailsLabel": "받아쓰기한 앱으로 돌아가기 정보"
       }
     },
     "vocabulary": {
@@ -655,7 +681,8 @@
       "historyLimit": {
         "title": "히스토리 제한",
         "description": "보관할 최대 히스토리 항목 수",
-        "entries": "항목"
+        "entries": "항목",
+        "invalid": "{{min}}에서 {{max}} 사이의 정수를 입력하세요."
       },
       "recordingRetention": {
         "title": "녹음 자동 삭제",
@@ -814,7 +841,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy는 녹음된 텍스트를 입력하기 위해 접근성 권한이 필요합니다.",
-    "openSettings": "시스템 설정 열기"
+    "openSettings": "시스템 설정 열기",
+    "offTitle": "손쉬운 사용 권한이 꺼져 있습니다",
+    "smartPasteOff": "스마트 붙여넣기로 입력하거나 붙여넣을 수 없습니다. 전사 내용은 복구할 수 있도록 보관됩니다."
   },
   "errors": {
     "loadDirectory": "디렉토리 로딩 오류: {{error}}",
@@ -844,7 +873,7 @@
       "revisionConflict": "설정이 다른 곳에서 변경되었습니다. 새로 고친 후 다시 시도하세요.",
       "unavailable": "지금은 이 설정을 변경할 수 없습니다. 나중에 다시 시도하세요.",
       "shortcutSessionBusy": "받아쓰기가 진행 중입니다. 끝난 후 다시 시도하세요.",
-      "persistenceFailed": "설정을 저장할 수 없습니다.",
+      "persistenceFailed": "설정을 저장할 수 없습니다: 설정 파일에 쓸 수 없었습니다. 아무것도 변경되지 않았습니다.",
       "generic": "설정을 변경할 수 없습니다.",
       "readOnly": "이번 세션에서는 설정이 읽기 전용입니다. 설정 파일에 안전하게 쓸 수 없으므로 변경 사항이 저장되지 않습니다.",
       "unsupportedPlatform": "이 설정은 이 시스템에서 사용할 수 없습니다.",
@@ -856,7 +885,10 @@
       "promptOverrideIncomplete": "공급자와 모델을 모두 선택하거나 기본 공급자를 사용하세요.",
       "promptUnknownProvider": "이 공급자는 사용할 수 없습니다.",
       "promptNotUsable": "이 프롬프트는 유효하지 않습니다. 사용하기 전에 편집하세요.",
-      "limitExceeded": "최대 개수에 도달했습니다."
+      "limitExceeded": "최대 개수에 도달했습니다.",
+      "conflictTitle": "설정이 다른 곳에서 변경되었습니다",
+      "conflictBody": "명령줄 또는 다른 창에서 더 새로운 버전을 저장했습니다. 새로 고쳐 확인하세요. 저장하지 않은 변경 내용은 삭제됩니다.",
+      "reload": "새로 고침"
     }
   },
   "appLanguage": {

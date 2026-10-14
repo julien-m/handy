@@ -200,7 +200,21 @@
             "registration": "המערכת דחתה את קיצור הדרך: {{error}}",
             "generic": "לא ניתן היה לשמור את קיצור הדרך",
             "conflictsUnavailable": "לא ניתן היה לבדוק התנגשויות בין קיצורי דרך"
-          }
+          },
+          "changeButton": "שינוי",
+          "discard": "ביטול קיצור דרך זה",
+          "lastHint": "לכל פעולה נשאר לפחות קיצור דרך אחד. במקום זאת, שנו או אפסו אותו.",
+          "limitHint": "{{count}} מתוך {{limit}} קיצורי דרך. הסירו אחד כדי להוסיף אחר.",
+          "draftConflict": "{{shortcut}} כבר בשימוש על ידי {{action}}. דבר לא נשמר.",
+          "draftOverlap": "{{shortcut}} יפעיל גם את {{action}}. דבר לא נשמר.",
+          "legacyOverlap": "{{shortcut}} חופף לפעולה {{action}}",
+          "legacyDuplicate": "{{shortcut}} נמצא בשימוש גם על ידי {{action}}",
+          "legacyBody": "הוא ממשיך לעבוד כמו לפני העדכון. שנו אותו כדי להסיר את האזהרה.",
+          "systemRefused": "{{system}} דחה את {{shortcut}}",
+          "systemRefusedGeneric": "המערכת דחתה את קיצור הדרך הזה",
+          "systemRefusedBody": "ייתכן שאפליקציה אחרת רשמה את הצירוף הזה. בחרו צירוף אחר או נסו שוב.",
+          "systemReason": "הודעת המערכת: {{error}}",
+          "retry": "נסו שוב"
         }
       },
       "language": {
@@ -344,9 +358,13 @@
           "clipboardShiftInsert": "לוח (Shift+Insert)",
           "direct": "ישיר",
           "none": "ללא",
-          "externalScript": "סקריפט חיצוני"
+          "externalScript": "סקריפט חיצוני",
+          "clipboardMac": "לוח (⌘V)",
+          "smartPasteDescription": "ברירת המחדל ב-macOS",
+          "noneDescription": "היסטוריה ולוח בלבד"
         },
-        "externalScriptPlaceholder": "/path/to/your/script.sh"
+        "externalScriptPlaceholder": "/path/to/your/script.sh",
+        "descriptionSmart": "הדבקה חכמה כותבת ישירות לשדה, ואחרת מדביקה ומשחזרת את הלוח."
       },
       "typingTool": {
         "title": "כלי הקלדה",
@@ -416,6 +434,14 @@
           "simplified": "מפושט",
           "traditional": "מסורתי"
         }
+      },
+      "returnToApp": {
+        "title": "חזרה לאפליקציה של ההכתבה",
+        "description": "הכנסה לאפליקציה שבה התחילה ההכתבה, גם אם עברתם בינתיים לאפליקציה אחרת.",
+        "unavailableUnreadable": "לא זמין במערכת זו: Handy לא יכול לזהות כאן את האפליקציה שבחזית. הטקסט יעבור לאפליקציה שבחזית בסיום.",
+        "unavailablePlatform": "לא זמין במערכת זו. הטקסט יעבור לאפליקציה שבחזית בסיום.",
+        "details": "Handy זוכר את האפליקציה שבחזית כשההכתבה מתחילה וחוזר אליה לפני הכנסת הטקסט. כשהאפשרות כבויה, הטקסט עובר לאפליקציה שבחזית בסיום ההכתבה.",
+        "detailsLabel": "על החזרה לאפליקציה של ההכתבה"
       }
     },
     "vocabulary": {
@@ -655,7 +681,8 @@
       "historyLimit": {
         "title": "מגבלת היסטוריה",
         "description": "המספר המרבי של רשומות היסטוריה לשמירה",
-        "entries": "רשומות"
+        "entries": "רשומות",
+        "invalid": "הזינו מספר שלם בין {{min}} ל-{{max}}."
       },
       "recordingRetention": {
         "title": "מחיקה אוטומטית של הקלטות",
@@ -814,7 +841,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy צריך הרשאות נגישות כדי להקליד את הטקסט המתומלל.",
-    "openSettings": "פתח את הגדרות המערכת"
+    "openSettings": "פתח את הגדרות המערכת",
+    "offTitle": "הרשאת הנגישות כבויה",
+    "smartPasteOff": "הדבקה חכמה לא יכולה להכניס או להדביק. התמלולים שלכם נשמרים לשחזור."
   },
   "errors": {
     "loadDirectory": "שגיאה בטעינת תיקייה: {{error}}",
@@ -844,7 +873,7 @@
       "revisionConflict": "ההגדרות שונו במקום אחר. טענו מחדש ונסו שוב.",
       "unavailable": "לא ניתן לשנות הגדרה זו כרגע. נסו שוב מאוחר יותר.",
       "shortcutSessionBusy": "מתבצעת הכתבה. נסו שוב כשהיא תסתיים.",
-      "persistenceFailed": "לא ניתן היה לשמור את ההגדרות.",
+      "persistenceFailed": "לא ניתן לשמור את ההגדרות: לא ניתן היה לכתוב לקובץ ההגדרות. דבר לא שונה.",
       "generic": "לא ניתן היה לשנות את ההגדרה.",
       "readOnly": "ההגדרות לקריאה בלבד בהפעלה זו: לא ניתן לכתוב את קובץ ההגדרות בבטחה, ולכן השינויים לא יישמרו.",
       "unsupportedPlatform": "הגדרה זו אינה זמינה במערכת זו.",
@@ -856,7 +885,10 @@
       "promptOverrideIncomplete": "בחרו ספק ומודל, או השתמשו בספק ברירת המחדל.",
       "promptUnknownProvider": "ספק זה אינו זמין.",
       "promptNotUsable": "ההנחיה אינה תקינה. ערכו אותה לפני השימוש.",
-      "limitExceeded": "הגעתם למספר המרבי."
+      "limitExceeded": "הגעתם למספר המרבי.",
+      "conflictTitle": "ההגדרות שונו במקום אחר",
+      "conflictBody": "שורת הפקודה או חלון אחר שמרו גרסה חדשה יותר. טענו מחדש כדי לראות אותה; העריכה שלא נשמרה תבוטל.",
+      "reload": "טעינה מחדש"
     }
   },
   "appLanguage": {

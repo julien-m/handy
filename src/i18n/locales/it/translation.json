@@ -220,7 +220,21 @@
             "registration": "Il sistema ha rifiutato questa scorciatoia: {{error}}",
             "generic": "Impossibile salvare la scorciatoia",
             "conflictsUnavailable": "Impossibile verificare i conflitti tra scorciatoie"
-          }
+          },
+          "changeButton": "Modifica",
+          "discard": "Scarta questa scorciatoia",
+          "lastHint": "Ogni azione mantiene almeno una scorciatoia. Modificala o reimpostala.",
+          "limitHint": "{{count}} scorciatoie su {{limit}}. Rimuovine una per aggiungerne un'altra.",
+          "draftConflict": "{{shortcut}} è già usata da {{action}}. Non è stato salvato nulla.",
+          "draftOverlap": "{{shortcut}} attiverebbe anche {{action}}. Non è stato salvato nulla.",
+          "legacyOverlap": "{{shortcut}} si sovrappone a {{action}}",
+          "legacyDuplicate": "{{shortcut}} è usata anche da {{action}}",
+          "legacyBody": "Continua a funzionare come prima dell'aggiornamento. Modificala per rimuovere questo avviso.",
+          "systemRefused": "{{system}} ha rifiutato {{shortcut}}",
+          "systemRefusedGeneric": "Il sistema ha rifiutato questa scorciatoia",
+          "systemRefusedBody": "Un'altra app potrebbe aver registrato questa combinazione. Scegline un'altra o riprova.",
+          "systemReason": "Messaggio di sistema: {{error}}",
+          "retry": "Riprova"
         }
       },
       "language": {
@@ -344,9 +358,13 @@
           "clipboardShiftInsert": "Appunti (Shift+Insert)",
           "direct": "Diretto",
           "none": "Nessuno",
-          "externalScript": "Script esterno"
+          "externalScript": "Script esterno",
+          "clipboardMac": "Appunti (⌘V)",
+          "smartPasteDescription": "Predefinito su macOS",
+          "noneDescription": "Solo cronologia e appunti"
         },
-        "externalScriptPlaceholder": "/percorso/del/tuo/script.sh"
+        "externalScriptPlaceholder": "/percorso/del/tuo/script.sh",
+        "descriptionSmart": "Incolla intelligente scrive direttamente nel campo, altrimenti incolla e ripristina gli appunti."
       },
       "typingTool": {
         "title": "Strumento di digitazione",
@@ -416,6 +434,14 @@
           "simplified": "Semplificato",
           "traditional": "Tradizionale"
         }
+      },
+      "returnToApp": {
+        "title": "Torna all'app della dettatura",
+        "description": "Inserisce nell'app in cui è iniziata la dettatura, anche se nel frattempo cambi app.",
+        "unavailableUnreadable": "Non disponibile su questo sistema: Handy non riesce a leggere l'app in primo piano. Il testo va all'app in primo piano alla fine.",
+        "unavailablePlatform": "Non disponibile su questo sistema. Il testo va all'app in primo piano alla fine.",
+        "details": "Handy ricorda l'app in primo piano all'inizio della dettatura e torna a quella prima di inserire il testo. Se disattivato, il testo va all'app in primo piano al termine della dettatura.",
+        "detailsLabel": "Informazioni sul ritorno all'app della dettatura"
       }
     },
     "vocabulary": {
@@ -655,7 +681,8 @@
       "historyLimit": {
         "title": "Limite della Cronologia",
         "description": "Massimo numero di elementi da conservare nella cronologia",
-        "entries": "elementi"
+        "entries": "elementi",
+        "invalid": "Inserisci un numero intero da {{min}} a {{max}}."
       },
       "recordingRetention": {
         "title": "Eliminazione Automatica Registrazioni",
@@ -814,7 +841,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy ha bisogno dei permessi di accessibilità per digitare il testo trascritto.",
-    "openSettings": "Apri Impostazioni di Sistema"
+    "openSettings": "Apri Impostazioni di Sistema",
+    "offTitle": "Il permesso di accessibilità è disattivato",
+    "smartPasteOff": "Incolla intelligente non può inserire né incollare. Le tue trascrizioni vengono conservate per il recupero."
   },
   "errors": {
     "loadDirectory": "Errore di caricamento cartella: {{error}}",
@@ -844,7 +873,7 @@
       "revisionConflict": "Le impostazioni sono state modificate altrove. Ricarica e riprova.",
       "unavailable": "Questa impostazione non può essere modificata ora. Riprova più tardi.",
       "shortcutSessionBusy": "È in corso una dettatura. Riprova al termine.",
-      "persistenceFailed": "Impossibile salvare le impostazioni.",
+      "persistenceFailed": "Impossibile salvare le impostazioni: non è stato possibile scrivere il file delle impostazioni. Non è stato modificato nulla.",
       "generic": "Impossibile modificare l'impostazione.",
       "readOnly": "Le impostazioni sono di sola lettura in questa sessione: il file delle impostazioni non può essere scritto in modo sicuro, quindi le modifiche non verranno salvate.",
       "unsupportedPlatform": "Questa impostazione non è disponibile su questo sistema.",
@@ -856,7 +885,10 @@
       "promptOverrideIncomplete": "Scegli un provider e un modello, oppure usa il provider predefinito.",
       "promptUnknownProvider": "Questo provider non è disponibile.",
       "promptNotUsable": "Questo prompt non è valido. Modificalo prima di usarlo.",
-      "limitExceeded": "È stato raggiunto il numero massimo."
+      "limitExceeded": "È stato raggiunto il numero massimo.",
+      "conflictTitle": "Impostazioni modificate altrove",
+      "conflictBody": "La riga di comando o un'altra finestra ha salvato una versione più recente. Ricarica per vederla; la modifica non salvata viene scartata.",
+      "reload": "Ricarica"
     }
   },
   "appLanguage": {
