@@ -56,7 +56,7 @@ remains. No AC is certified. Nothing on the screen shows the vocabulary status y
 - **Not built in this run:**
   - no cache of the context preparation: one worker call per dictation, performance not measured;
   - no new invalidation event: the UI will refresh on `settings-changed` and `model-state-changed`.
-- **Generic `set` refusal.** Only `custom_words` gets `VocabularyDomain` ("Use handy settings vocabulary to change this list."); `custom_filler_words` keeps its `dev` refusal ("…; this domain is not available in this build.") through `FillerWordsUnavailable`, since that domain does not manage filler words. `settings_cli` `list_secret_and_read_only_keys_point_to_their_owner` fixes both.
+- **Generic `set` refusal.** Only `custom_words` gets `VocabularyDomain` ("Use handy settings vocabulary to change this list."); `custom_filler_words` gets `UiOnly` ("This setting is changed in the settings UI."), since the vocabulary commands do not manage filler words and the CLI must not point to them. `settings_cli` `list_secret_and_read_only_keys_point_to_their_owner` fixes both.
 
 ## Files Created/Modified
 

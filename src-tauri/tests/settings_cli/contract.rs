@@ -172,11 +172,8 @@ const OWNED_ELSEWHERE: [(&str, &str); 5] = [
         "custom_words",
         "Use handy settings vocabulary to change this list.",
     ),
-    // The vocabulary domain does not manage filler words: the unregistered-owner refusal stays.
-    (
-        "custom_filler_words",
-        "Use handy settings vocabulary; this domain is not available in this build.",
-    ),
+    // The vocabulary commands do not manage filler words: they are changed in the app.
+    ("custom_filler_words", UI_ONLY),
     ("post_process_api_keys", UI_ONLY),
     ("selected_model", UI_ONLY),
 ];

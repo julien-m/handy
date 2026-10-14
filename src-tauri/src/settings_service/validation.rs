@@ -95,11 +95,9 @@ fn editable_descriptor(
 fn collection_reason(entry: &super::descriptor::SettingDescriptor) -> ValidationReason {
     match entry.owner_domain {
         "shortcuts" => ValidationReason::ShortcutsDomain,
-        // The vocabulary domain manages `custom_words` only; filler words keep the
-        // "not available in this build" refusal of an unregistered owner (008 plan).
-        "vocabulary" if entry.key == "custom_filler_words" => {
-            ValidationReason::FillerWordsUnavailable
-        }
+        // The vocabulary commands manage `custom_words` only; filler words are edited in
+        // the app's settings, so the CLI points there instead of to a command.
+        "vocabulary" if entry.key == "custom_filler_words" => ValidationReason::UiOnly,
         "vocabulary" => ValidationReason::VocabularyDomain,
         "prompts" => ValidationReason::PromptsDomain,
         _ => ValidationReason::UiOnly,
