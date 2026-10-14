@@ -149,6 +149,12 @@ pub(crate) fn encode(request: &OperationRequest) -> Result<EncodedRequest, Setti
         frame,
     })
 }
+/// True when `operation` fits one request frame once wrapped (same check as `encode`, with an
+/// identity of the real length).
+pub(crate) fn fits_frame(operation: &SettingsOperation) -> bool {
+    let identity = "0".repeat(64);
+    encode(&request(&identity, operation.clone())).is_ok()
+}
 /// Send one encoded request and wait until `deadline`. Once bytes may have left, every failure
 /// (timeout, broken or malformed reply) is `unavailable` with outcome `unknown`: no fallback, no
 /// replay.

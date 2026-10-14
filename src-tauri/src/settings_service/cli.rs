@@ -46,7 +46,7 @@ fn run(args: &CliArgs, settings: &SettingsArgs) -> i32 {
     } else {
         // Files and stdin belong to this process: read before routing, written after the reply.
         let routed = match with_input(operation, &settings.operation) {
-            Ok(operation) => route(&operation),
+            Ok(operation) => super::replacements_transfer::route_operation(&operation),
             Err(error) => Reply::failure(error),
         };
         match destination {

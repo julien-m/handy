@@ -12,6 +12,7 @@ use crate::word_replacements::{
     model::{ReplacementRule, RuleId, RuleIdSource, UuidRuleIdSource},
     preview::{preview_exchange, ImportMode, PreviewLine, PreviewStatus, ReplacementPreview},
     service::{self, new_rule_count, PreallocatedIds, RuleSetError},
+    transfer::{self, StageError},
     validation::RuleIssue,
 };
 use serde_json::{json, Value};
@@ -25,8 +26,20 @@ impl Domain for ReplacementsDomain {
     fn name(&self) -> &'static str {
         "replacements"
     }
+    /// Public actions, then the private transfer steps the CLI uses when a list or an import
+    /// does not fit one channel message (`read-page`, `stage-begin`, `stage-append`).
     fn actions(&self) -> &'static [&'static str] {
-        &["list", "add", "update", "remove", "import", "export"]
+        &[
+            "list",
+            "add",
+            "update",
+            "remove",
+            "import",
+            "export",
+            "read-page",
+            "stage-begin",
+            "stage-append",
+        ]
     }
     // @spec FR-006: Replacement CLI operations — .specs/features/002-word-replacements/spec.md#fr-006
     fn plan(
@@ -42,11 +55,78 @@ impl Domain for ReplacementsDomain {
             ("update", [id, recognized, replacement]) => Ok(update(id, recognized, replacement)),
             ("remove", [id]) => Ok(remove(id)),
             ("import", [mode]) => import(rules, mode, request.input),
+            ("import", [mode, token]) => import(rules, mode, Some(&staged_input(token)?)),
+            ("read-page", [start]) => read_page(rules, start),
+            ("stage-begin", [length, sha256]) => stage_begin(length, sha256),
+            ("stage-append", [token, index]) => stage_append(token, index, request.input),
             _ => Err(SettingsError::new(SettingsErrorCode::UsageError)),
         }
     }
 }
 
+/// Encoded rules per page: half a channel message, so a page reply always fits one message.
+pub const MAX_PAGE_BYTES: usize = 512 * 1024;
+
+/// Rules from position `start` (0-based) up to `MAX_PAGE_BYTES` of JSON (at least one), with
+/// the total and the start of the next page (`null` after the last). The envelope revision lets
+/// the reader refuse pages of different revisions.
+fn read_page(rules: &[ReplacementRule], start: &str) -> Result<DomainPlan, SettingsError> {
+    let start: usize = start.parse().map_err(|_| usage())?;
+    let mut page = Vec::new();
+    let mut bytes = 0;
+    for rule in rules.iter().skip(start) {
+        let value = rule_value(rule);
+        bytes += value.to_string().len() + 1;
+        // Loop exit: the page is full; the first rule always fits (a rule is a few KiB at most).
+        if bytes > MAX_PAGE_BYTES && !page.is_empty() {
+            break;
+        }
+        page.push(value);
+    }
+    let end = start.saturating_add(page.len());
+    let next = (end < rules.len()).then_some(end);
+    Ok(DomainPlan::Read(
+        json!({ "rules": page, "total": rules.len(), "next": next }),
+    ))
+}
+/// Reserve a staged import input (see `word_replacements::transfer`).
+fn stage_begin(length: &str, sha256: &str) -> Result<DomainPlan, SettingsError> {
+    let length: usize = length.parse().map_err(|_| usage())?;
+    let token = transfer::staging()
+        .begin(length, sha256)
+        .map_err(stage_refusal)?;
+    transfer::schedule_sweep();
+    Ok(DomainPlan::Read(json!({ "token": token })))
+}
+fn stage_append(
+    token: &str,
+    index: &str,
+    chunk: Option<&str>,
+) -> Result<DomainPlan, SettingsError> {
+    let index: u64 = index.parse().map_err(|_| usage())?;
+    let chunk = chunk.ok_or_else(usage)?;
+    transfer::staging()
+        .append(token, index, chunk)
+        .map_err(stage_refusal)?;
+    Ok(DomainPlan::Read(json!({ "received": chunk.len() })))
+}
+/// The complete staged input of `token`, removed from staging.
+fn staged_input(token: &str) -> Result<String, SettingsError> {
+    transfer::staging().take(token).map_err(stage_refusal)
+}
+/// Stable code of a staging refusal: start again (unavailable), fix the request (usage) or the
+/// input (limit).
+fn stage_refusal(error: StageError) -> SettingsError {
+    let code = match error {
+        StageError::Unknown | StageError::Saturated => SettingsErrorCode::Unavailable,
+        StageError::Mismatch => SettingsErrorCode::UsageError,
+        StageError::TooLarge => SettingsErrorCode::LimitExceeded,
+    };
+    SettingsError::new(code)
+}
+fn usage() -> SettingsError {
+    SettingsError::new(SettingsErrorCode::UsageError)
+}
 /// Exchange text of the saved rules (header, then one line per rule in order) and their count.
 fn export(rules: &[ReplacementRule]) -> Value {
     json!({ "content": serialize_exchange(rules), "count": rules.len() })

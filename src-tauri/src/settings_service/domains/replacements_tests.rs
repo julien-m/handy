@@ -18,6 +18,8 @@ use std::path::PathBuf;
 
 #[path = "replacements_import_tests.rs"]
 mod import;
+#[path = "replacements_transfer_tests.rs"]
+mod transfer;
 
 type TestResult = Result<(), Box<dyn std::error::Error>>;
 

@@ -9,6 +9,7 @@ pub mod model;
 pub mod preview;
 pub mod published;
 pub mod service;
+pub mod transfer;
 pub mod unicode;
 pub mod validation;
 
