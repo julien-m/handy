@@ -68,3 +68,17 @@
 - **Classification:** criticality High, blast radius Shared, primary risk Data, taken from the existing QE Analysis; `livespec delivery lane`: full
 - **Review:** the previous spec review is stale; an independent reviewer refreshes it
 - **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
+
+## 2026-10-14 — [Plan Update]: one Enter veto with 009, method outcome from 006, late-read update, D1
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md and contracts/recovery-contract.md updated)
+- **AC impacted:** None (pre-implementation)
+- **D1:** Steps 1 and 7 gated by macOS only; Windows/Linux native spikes and matrices are pending release evidence with their exact command; AC-006 platform policy proven by automated tests. Supersedes the 2026-10-13 entry that made Windows/Linux native proof mandatory
+- **Method outcome:** no separate 007 adapter; 010 reads `InsertionOutcome.method_outcome` (007 `PasteOutcome.kind` wire values) with 006's current field names (`dictation_id`, `destination_generation`, `transaction_id`)
+- **Late read:** 007 `PasteDiagnostic` updates the existing correlated bubble ("may have been pasted after all"), no second bubble, no outcome or Enter change
+- **Enter veto:** single contract shared with 009: 006's `RecoveryDisposition { Pending, Insert, Recover, Cancelled }`; 010 answers `RecoveryPort::before_insertion` with `PreInsertionVerdict`, never calls `set_disposition`, publishes no other veto
+- **008 names:** descriptor row, `OUTPUT_KEYS`, `validate_cli`/`validate_ui`, `tauri_adapter::write`; never-shipped names removed
+- **Review:** the plan review is stale; an independent reviewer refreshes it
+- **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
