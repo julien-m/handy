@@ -148,9 +148,22 @@ fn validate_fields_with_data(
 }
 
 fn check_field(value: &str, field: Field, max: usize, issues: &mut Vec<FieldIssue>) {
+    issues.extend(
+        field_checks(value, field == Field::Recognized, max)
+            .into_iter()
+            .filter(|(has_failed, _)| *has_failed)
+            .map(|(_, kind)| FieldIssue { field, kind }),
+    );
+}
+
+/// Every check of one field with the issue it reports, in reporting order.
+fn field_checks(value: &str, is_recognized: bool, max: usize) -> [(bool, IssueKind); 5] {
     let count = value.chars().count();
-    let is_recognized = field == Field::Recognized;
-    let checks = [
+    // A line break or tab is already a forbidden character, never also a control one.
+    let is_control = |character: char| {
+        is_control_or_bidi_override(character) && !is_forbidden(character, is_recognized)
+    };
+    [
         // AC-002: recognized text cannot start like an exchange comment line.
         (
             is_recognized && value.starts_with('#'),
@@ -164,20 +177,8 @@ fn check_field(value: &str, field: Field, max: usize, issues: &mut Vec<FieldIssu
                 .any(|character| is_forbidden(character, is_recognized)),
             IssueKind::ForbiddenCharacter,
         ),
-        // A line break or tab is already a forbidden character, never also a control one.
-        (
-            value.chars().any(|character| {
-                is_control_or_bidi_override(character) && !is_forbidden(character, is_recognized)
-            }),
-            IssueKind::ControlCharacter,
-        ),
-    ];
-    issues.extend(
-        checks
-            .into_iter()
-            .filter(|(has_failed, _)| *has_failed)
-            .map(|(_, kind)| FieldIssue { field, kind }),
-    );
+        (value.chars().any(is_control), IssueKind::ControlCharacter),
+    ]
 }
 
 /// Unicode hard line breaks and tabs are forbidden in both fields; `;` only in

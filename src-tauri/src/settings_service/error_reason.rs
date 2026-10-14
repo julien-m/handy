@@ -103,6 +103,17 @@ impl ErrorReason {
             Self::AlternativesUnsupported => "This action keeps a single shortcut.",
             Self::RegistrationRefused => "The system refused the shortcut.",
             Self::InvalidShortcut => "Not a valid shortcut.",
+            Self::ReplyTooLarge => {
+                "The answer is larger than one message; read large lists with their domain command."
+            }
+            Self::ExportNotWritten => "The export file could not be written; it is unchanged.",
+            rule => rule.rule_message(),
+        }
+    }
+    /// Message of a replacement rule or rule set reason (002); `message` answers every other
+    /// reason first, and a test checks that no reason reaches the fallback.
+    fn rule_message(self) -> &'static str {
+        match self {
             Self::RecognizedEmpty => "The recognized text is empty.",
             Self::RecognizedTooLong => "The recognized text is longer than 100 characters.",
             Self::RecognizedForbiddenCharacter => {
@@ -127,13 +138,13 @@ impl ErrorReason {
             Self::TooManyRules => "More than 1000 rules.",
             Self::InvalidSavedRules => "The saved rules are invalid; repair them first.",
             Self::UnicodeDataUnavailable => "Unicode data is unavailable.",
-            Self::ReplyTooLarge => {
-                "The answer is larger than one message; read large lists with their domain command."
-            }
-            Self::ExportNotWritten => "The export file could not be written; it is unchanged.",
+            _ => UNMATCHED_MESSAGE,
         }
     }
 }
+
+/// Fallback of `rule_message` for a reason `message` should have answered; never reached.
+const UNMATCHED_MESSAGE: &str = "The settings change was refused.";
 
 /// One refused position of a domain input: zero-based `index`, closed `code` and its fixed
 /// message; never the candidate value.
@@ -159,5 +170,21 @@ impl ErrorItem {
     /// Closed reason of this position.
     pub fn code(&self) -> ErrorReason {
         self.code
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{ErrorReason, UNMATCHED_MESSAGE};
+
+    #[test]
+    fn every_reason_has_its_own_message() {
+        let messages: Vec<&str> = ErrorReason::ALL
+            .iter()
+            .map(|reason| reason.message())
+            .collect();
+        assert!(!messages.contains(&UNMATCHED_MESSAGE));
+        let unique: std::collections::HashSet<_> = messages.iter().collect();
+        assert_eq!(unique.len(), ErrorReason::ALL.len());
     }
 }
