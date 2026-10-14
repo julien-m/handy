@@ -170,7 +170,7 @@ const OWNED_ELSEWHERE: [(&str, &str); 4] = [
     ),
     (
         "custom_words",
-        "Use handy settings vocabulary; this domain is not available in this build.",
+        "Use handy settings vocabulary to change this list.",
     ),
     ("post_process_api_keys", UI_ONLY),
     ("selected_model", UI_ONLY),

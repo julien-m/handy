@@ -367,11 +367,59 @@ async setPostProcessSelectedPrompt(id: string) : Promise<Result<null, SettingsCo
 }
 },
 /**
- * Vocabulary list owned by the settings UI until its CLI domain ships.
+ * Whole vocabulary list from the settings UI, committed as the vocabulary domain's change: same
+ * validator as the CLI (unchanged legacy rows stay exempt), compare-and-set on
+ * `expected_revision` when the UI passes its base revision.
  */
-async updateCustomWords(words: string[]) : Promise<Result<null, SettingsCommandError>> {
+async updateCustomWords(words: string[], expectedRevision: number | null) : Promise<Result<null, SettingsCommandError>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("update_custom_words", { words }) };
+    return { status: "ok", data: await TAURI_INVOKE("update_custom_words", { words, expectedRevision }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Saved vocabulary and its revision.
+ */
+async getVocabulary() : Promise<VocabularyList> {
+    return await TAURI_INVOKE("get_vocabulary");
+},
+/**
+ * Preview a bulk input (one term per line) against the saved list; pure, nothing is written.
+ */
+async previewVocabularyImport(input: string, mode: ImportMode) : Promise<VocabularyImportPreview> {
+    return await TAURI_INVOKE("preview_vocabulary_import", { input, mode });
+},
+/**
+ * Apply a previewed bulk input as one atomic candidate at the preview's revision.
+ */
+async applyVocabularyImport(input: string, mode: ImportMode, expectedRevision: number) : Promise<Result<VocabularyList, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("apply_vocabulary_import", { input, mode, expectedRevision }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Add one term.
+ */
+async addVocabularyTerm(term: string, expectedRevision: number) : Promise<Result<VocabularyList, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("add_vocabulary_term", { term, expectedRevision }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Remove the occurrence at `index`, which must still hold `term` (legacy duplicates are removed
+ * one row at a time).
+ */
+async removeVocabularyOccurrence(index: number, term: string, expectedRevision: number) : Promise<Result<VocabularyList, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("remove_vocabulary_occurrence", { index, term, expectedRevision }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -1241,6 +1289,69 @@ export type EngineType =
  * the file, so this one variant covers the whole transcribe-cpp family.
  */
 "TranscribeCpp" | "Parakeet" | "Moonshine" | "MoonshineStreaming" | "SenseVoice" | "GigaAM" | "Canary" | "Cohere"
+/**
+ * One refused position of a domain input: zero-based `index`, closed `code` and its fixed
+ * message; never the candidate value.
+ */
+export type ErrorItem = { index: number; code: ErrorReason; message: string }
+/**
+ * Closed snake_case reasons of `details.reason` and `details.items[].code`; later features add
+ * their own variants. Each has a fixed English message and never carries a candidate value.
+ */
+export type ErrorReason = 
+/**
+ * The operation or setting needs a platform capability this build does not have.
+ */
+"unsupported_platform" | 
+/**
+ * A dictation session owns the shortcuts until it ends (004).
+ */
+"shortcut_session_busy" | 
+/**
+ * A live-only change was asked without a running instance (004).
+ */
+"instance_required" | 
+/**
+ * The last shortcut of a dictation action cannot be removed (004).
+ */
+"last_shortcut" | 
+/**
+ * The action keeps a single shortcut (004).
+ */
+"alternatives_unsupported" | 
+/**
+ * The system refused to register the shortcut (004).
+ */
+"registration_refused" | 
+/**
+ * The shortcut text is not valid for the active keyboard implementation (004).
+ */
+"invalid_shortcut" | 
+/**
+ * A vocabulary term is empty once trimmed (003).
+ */
+"term_empty" | 
+/**
+ * A vocabulary term exceeds 100 characters (003).
+ */
+"term_too_long" | 
+/**
+ * A vocabulary term contains a line break (003).
+ */
+"term_line_break" | 
+/**
+ * A vocabulary term contains `<`, `>`, `"` or NUL (003).
+ */
+"term_forbidden_character" | 
+/**
+ * A vocabulary term repeats another term (003).
+ */
+"term_duplicate" | 
+/**
+ * The loaded model declares a recognition-context mechanism whose budget is not documented
+ * for this build (003): a durable internal defect, never a retryable state.
+ */
+"context_budget_unverified"
 export type GpuDeviceOption = { id: string; name: string; total_vram_mb: number }
 /**
  * One history row. `file_name` is `None` for a text-only row (no audio recording).
@@ -1262,6 +1373,42 @@ reset_bindings: string[];
  * the settings.
  */
 conflicts: StoredShortcutConflict[] }
+/**
+ * How bulk input combines with the saved list.
+ */
+export type ImportMode = 
+/**
+ * Keep the saved list and append the new unique terms in input order.
+ */
+"merge" | 
+/**
+ * Make the input the whole list, in input order.
+ */
+"replace"
+/**
+ * The candidate list a bulk input would produce, and why it could not be applied.
+ */
+export type ImportPreview = { mode: ImportMode; 
+/**
+ * New unique terms, in input order.
+ */
+added: PreviewLine[]; 
+/**
+ * Lines skipped because their key repeats an earlier line or (merge) a saved term.
+ */
+duplicates: PreviewLine[]; 
+/**
+ * Invalid lines: any of them refuses the whole input.
+ */
+issues: LineIssue[]; 
+/**
+ * The complete list applying this preview would save.
+ */
+candidate: string[]; 
+/**
+ * Applying would exceed `MAX_TERMS` (merge: any addition while the list is full).
+ */
+over_capacity: boolean }
 export type KeyboardDiagnosticReport = { secure_input_enabled: boolean; culprit_pid: number | null; culprit_name: string | null; 
 /**
  * Counts only — key identity is deliberately never captured.
@@ -1269,6 +1416,10 @@ export type KeyboardDiagnosticReport = { secure_input_enabled: boolean; culprit_
 key_down: number; key_up: number; flags_changed: number; mouse: number; duration_ms: number }
 export type KeyboardImplementation = "tauri" | "handy_keys"
 export type LLMPrompt = { id: string; name: string; prompt: string }
+/**
+ * One refused input line.
+ */
+export type LineIssue = { index: number; issue: TermIssue }
 export type LogLevel = "trace" | "debug" | "info" | "warn" | "error"
 /**
  * Answer of a menu request: the menu, or why it is refused (a typed value, not an error, so
@@ -1318,6 +1469,22 @@ sha256: string | null } } |
  */
 "Local"
 export type ModelUnloadTimeout = "never" | "immediately" | "min_2" | "min_5" | "min_10" | "min_15" | "hour_1" | "sec_15"
+/**
+ * One stored occurrence, with the reason it is excluded from the recognition context, if any.
+ */
+export type Occurrence = { 
+/**
+ * Zero-based position in the stored list.
+ */
+index: number; 
+/**
+ * Stored text, unchanged.
+ */
+term: string; 
+/**
+ * Why this occurrence is excluded from the context; `None` when it is eligible.
+ */
+issue: TermIssue | null }
 export type OrtAcceleratorSetting = "auto" | "cpu" | "cuda" | "directml" | "rocm"
 /**
  * Durable outcome of a failed operation; clients must reread before retrying either one.
@@ -1343,6 +1510,14 @@ export type PaginatedHistory = { entries: HistoryEntry[]; has_more: boolean }
 export type PasteMethod = "ctrl_v" | "direct" | "none" | "shift_insert" | "ctrl_shift_v" | "external_script"
 export type PermissionAccess = "allowed" | "denied" | "unknown"
 export type PostProcessProvider = { id: string; label: string; base_url: string; allow_base_url_edit?: boolean; models_endpoint?: string | null; supports_structured_output?: boolean }
+/**
+ * One input line kept or skipped, with its zero-based line index.
+ */
+export type PreviewLine = { index: number; 
+/**
+ * Validated text (trimmed, whitespace collapsed).
+ */
+term: string }
 export type RecordingRetentionPeriod = "never" | "preserve_limit" | "days_3" | "weeks_2" | "months_3"
 /**
  * The single per-dictation decision "insert or recover", and the only Enter veto.
@@ -1442,7 +1617,16 @@ outcome: Outcome | null;
 /**
  * Revision the outcome or conflict refers to.
  */
-current_revision: number | null }
+current_revision: number | null; 
+/**
+ * Closed machine reason (`details.reason` on the CLI), if any; omitted when absent.
+ */
+detail_reason?: ErrorReason | null; 
+/**
+ * Refused input positions (`details.items` on the CLI), for example vocabulary terms;
+ * omitted when empty.
+ */
+items?: ErrorItem[] | null }
 /**
  * Stable wire categories; their fixed exit meanings never depend on input text.
  */
@@ -1585,6 +1769,34 @@ export type SupportReason =
  */
 "frontmost_unreadable"
 /**
+ * Why a term (new or stored) is refused or excluded from the recognition context.
+ */
+export type TermIssue = 
+/**
+ * Nothing left after trimming.
+ */
+"empty" | 
+/**
+ * More than `MAX_TERM_CHARS` Unicode scalar values.
+ */
+"too_long" | 
+/**
+ * A line separator inside the term.
+ */
+"line_break" | 
+/**
+ * `<`, `>`, `"` or NUL.
+ */
+"forbidden_character" | 
+/**
+ * Same key as an earlier term.
+ */
+"duplicate" | 
+/**
+ * Stored beyond the first `MAX_TERMS` positions (legacy list only).
+ */
+"over_capacity"
+/**
  * UI appearance mode. `System` follows the OS `prefers-color-scheme`; `Light`
  * and `Dark` force one of the two palettes Handy already ships.
  */
@@ -1614,6 +1826,19 @@ export type ValidationReason = "canonical_type" | "canonical_value" | "out_of_ra
  * the shortcut registrations cannot change until it ends.
  */
 "shortcut_session_busy"
+/**
+ * A paste preview against the saved list at `revision`; nothing is written.
+ */
+export type VocabularyImportPreview = { revision: number; preview: ImportPreview; 
+/**
+ * True when Apply can commit the whole candidate.
+ */
+applicable: boolean }
+/**
+ * The saved vocabulary at one revision: every stored occurrence, unchanged, with the reason it
+ * is excluded from the recognition context.
+ */
+export type VocabularyList = { revision: number; terms: Occurrence[] }
 export type WindowsMicrophonePermissionStatus = { supported: boolean; overall_access: PermissionAccess; device_access: PermissionAccess; app_access: PermissionAccess; desktop_app_access: PermissionAccess }
 
 /** tauri-specta globals **/

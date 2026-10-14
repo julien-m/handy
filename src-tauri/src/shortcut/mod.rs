@@ -749,16 +749,22 @@ pub async fn change_whats_new_last_seen_version_setting(
     .await
 }
 
-/// Vocabulary list owned by the settings UI until its CLI domain ships.
+/// Whole vocabulary list from the settings UI, committed as the vocabulary domain's change: same
+/// validator as the CLI (unchanged legacy rows stay exempt), compare-and-set on
+/// `expected_revision` when the UI passes its base revision.
+// @spec FR-001: UI list commit through the shared change — .specs/features/003-recognition-vocabulary/spec.md#fr-001
 #[tauri::command]
 #[specta::specta]
-pub async fn update_custom_words(app: AppHandle, words: Vec<String>) -> SettingsResult {
+pub async fn update_custom_words(
+    app: AppHandle,
+    words: Vec<String>,
+    expected_revision: Option<u64>,
+) -> SettingsResult {
     live_settings::blocking(move || {
-        live_settings::edit(&app, &|settings| {
-            settings.custom_words = words.clone();
-            Ok(())
-        })
-        .map(|_| ())
+        let change =
+            crate::recognition_vocabulary::edits::VocabularyEdit::Replace(words).into_change();
+        let expected = expected_revision.map(crate::settings_service::protocol::Revision);
+        live_settings::write_change(&app, &change, expected).map(|_| ())
     })
     .await
 }
