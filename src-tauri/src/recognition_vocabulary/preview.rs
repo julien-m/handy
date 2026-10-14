@@ -4,9 +4,11 @@ use super::validation::{term_key, validate_term, TermIssue, MAX_TERMS};
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 
-/// How bulk input combines with the saved list.
+/// How bulk input combines with the saved list. Exported to TypeScript under a vocabulary name:
+/// word replacements (002) export their own `ImportMode`.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
 #[serde(rename_all = "snake_case")]
+#[specta(rename = "VocabularyImportMode")]
 pub enum ImportMode {
     /// Keep the saved list and append the new unique terms in input order.
     Merge,
@@ -25,8 +27,10 @@ impl ImportMode {
     }
 }
 
-/// One input line kept or skipped, with its zero-based line index.
+/// One input line kept or skipped, with its zero-based line index. Exported to TypeScript under
+/// a vocabulary name: word replacements (002) export their own `PreviewLine`.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, specta::Type)]
+#[specta(rename = "VocabularyPreviewLine")]
 pub struct PreviewLine {
     pub index: u32,
     /// Validated text (trimmed, whitespace collapsed).

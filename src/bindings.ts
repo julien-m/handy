@@ -395,13 +395,13 @@ async getVocabulary() : Promise<VocabularyList> {
 /**
  * Preview a bulk input (one term per line) against the saved list; pure, nothing is written.
  */
-async previewVocabularyImport(input: string, mode: ImportMode) : Promise<VocabularyImportPreview> {
+async previewVocabularyImport(input: string, mode: VocabularyImportMode) : Promise<VocabularyImportPreview> {
     return await TAURI_INVOKE("preview_vocabulary_import", { input, mode });
 },
 /**
  * Apply a previewed bulk input as one atomic candidate at the preview's revision.
  */
-async applyVocabularyImport(input: string, mode: ImportMode, expectedRevision: number) : Promise<Result<VocabularyList, SettingsCommandError>> {
+async applyVocabularyImport(input: string, mode: VocabularyImportMode, expectedRevision: number) : Promise<Result<VocabularyList, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("apply_vocabulary_import", { input, mode, expectedRevision }) };
 } catch (e) {
@@ -1617,18 +1617,6 @@ reset_bindings: string[];
  */
 conflicts: StoredShortcutConflict[] }
 /**
- * How bulk input combines with the saved list.
- */
-export type ImportMode = 
-/**
- * Keep the saved list and append the new unique terms in input order.
- */
-"merge" | 
-/**
- * Make the input the whole list, in input order.
- */
-"replace"
-/**
  * How imported rules combine with the saved set (AC-005).
  */
 export type ImportMode = 
@@ -1643,15 +1631,15 @@ export type ImportMode =
 /**
  * The candidate list a bulk input would produce, and why it could not be applied.
  */
-export type ImportPreview = { mode: ImportMode; 
+export type ImportPreview = { mode: VocabularyImportMode; 
 /**
  * New unique terms, in input order.
  */
-added: PreviewLine[]; 
+added: VocabularyPreviewLine[]; 
 /**
  * Lines skipped because their key repeats an earlier line or (merge) a saved term.
  */
-duplicates: PreviewLine[]; 
+duplicates: VocabularyPreviewLine[]; 
 /**
  * Invalid lines: any of them refuses the whole input.
  */
@@ -1798,14 +1786,6 @@ recognized: string | null; replacement: string | null; issues: FieldIssue[];
  * Other input lines sharing this line's normalized key.
  */
 duplicate_lines: number[] }
-/**
- * One input line kept or skipped, with its zero-based line index.
- */
-export type PreviewLine = { index: number; 
-/**
- * Validated text (trimmed, whitespace collapsed).
- */
-term: string }
 /**
  * Per-line outcome shown before Apply (AC-003).
  */
@@ -2215,6 +2195,19 @@ export type ValidationReason = "canonical_type" | "canonical_value" | "out_of_ra
  */
 "shortcut_session_busy"
 /**
+ * How bulk input combines with the saved list. Exported to TypeScript under a vocabulary name:
+ * word replacements (002) export their own `ImportMode`.
+ */
+export type VocabularyImportMode = 
+/**
+ * Keep the saved list and append the new unique terms in input order.
+ */
+"merge" | 
+/**
+ * Make the input the whole list, in input order.
+ */
+"replace"
+/**
  * A paste preview against the saved list at `revision`; nothing is written.
  */
 export type VocabularyImportPreview = { revision: number; preview: ImportPreview; 
@@ -2227,6 +2220,15 @@ applicable: boolean }
  * is excluded from the recognition context.
  */
 export type VocabularyList = { revision: number; terms: Occurrence[] }
+/**
+ * One input line kept or skipped, with its zero-based line index. Exported to TypeScript under
+ * a vocabulary name: word replacements (002) export their own `PreviewLine`.
+ */
+export type VocabularyPreviewLine = { index: number; 
+/**
+ * Validated text (trimmed, whitespace collapsed).
+ */
+term: string }
 /**
  * The five statuses of the spec (AC-003).
  */
