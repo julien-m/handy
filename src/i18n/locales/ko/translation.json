@@ -751,7 +751,8 @@
   "overlay": {
     "transcribing": "텍스트로 변환 중...",
     "processing": "처리 중...",
-    "loadingModel": "모델 로딩 중..."
+    "loadingModel": "모델 로딩 중...",
+    "fallbackNotice": "AI 처리에 실패했습니다. 원본 텍스트를 사용했습니다."
   },
   "whatsNew": {
     "title": "Handy v{{version}}의 새 소식"

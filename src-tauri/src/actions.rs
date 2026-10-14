@@ -7,11 +7,9 @@ use crate::managers::history_store::NewHistoryEntry;
 use crate::managers::model::ModelManager;
 use crate::managers::transcription::StreamWorkKind;
 use crate::managers::transcription::TranscriptionManager;
-use crate::prompts::output::OutputDecision;
-use crate::prompts::processor::{
-    complete_unless_cancelled, process, ResolvedPrompt, PROCESSING_BUDGET,
-};
-use crate::settings::{get_settings, AppSettings, OverlayStyle};
+use crate::prompts::dictation;
+use crate::prompts::processor::complete_unless_cancelled;
+use crate::settings::{get_settings, OverlayStyle};
 use crate::shortcut;
 use crate::tray::{set_tray_state, TrayIconState};
 use crate::utils::{
@@ -30,6 +28,15 @@ use tauri::{AppHandle, Emitter};
 struct RecordingErrorEvent {
     error_type: String,
     detail: Option<String>,
+}
+
+/// Drop guard ending the dictation's prompt session when its processing task ends, however it
+/// ends (005): later indicator choices and late results are refused.
+struct SessionEnd(AppHandle, Option<u64>);
+impl Drop for SessionEnd {
+    fn drop(&mut self) {
+        dictation::end_session(&self.0, self.1);
+    }
 }
 
 /// Drop guard that finishes the transcription pipeline, including immediate
@@ -54,61 +61,12 @@ pub trait ShortcutAction: Send + Sync {
     fn stop(&self, app: &AppHandle, binding_id: &str, shortcut_str: &str);
 }
 
-// Transcribe Action
-struct TranscribeAction {
-    post_process: bool,
-}
+// Transcribe Action. Whether its AI step runs, and with which prompt, is decided by the
+// dictation's prompt session (005), from the binding that started it.
+struct TranscribeAction;
 
 fn should_use_streaming_overlay(style: OverlayStyle, is_streaming: bool) -> bool {
     style == OverlayStyle::Live && is_streaming
-}
-
-// @spec FR-004: Raw transcript kept when the AI step fails — .specs/features/005-custom-ai-prompts/spec.md#fr-004
-/// Output of a transcription: the AI step with the default prompt when `post_process` is set
-/// (005 processor: one 30-second budget, typed failure), otherwise the transcript as is. Any
-/// failure or a default of None keeps the raw transcript.
-pub(crate) async fn process_transcription_output(
-    app: &AppHandle,
-    transcription: &str,
-    post_process: bool,
-) -> OutputDecision {
-    let Some(prompt) = post_process
-        .then(|| default_prompt(&get_settings(app)))
-        .flatten()
-    else {
-        return OutputDecision::raw(transcription);
-    };
-    let port = crate::prompts::native::NativeProviders;
-    let report = process(&prompt, transcription, &port, PROCESSING_BUDGET, &|| false).await;
-    let decision = OutputDecision::after(transcription, &prompt, report);
-    if let Some(reason) = decision.failure {
-        warn!(
-            "AI processing failed ({}); the original text is used",
-            reason.code()
-        );
-    }
-    decision
-}
-
-/// The default prompt frozen from `settings`, or `None` when the default is None (no
-/// processing). A default naming a missing prompt is resolved as a failure (`prompt_missing`).
-fn default_prompt(settings: &AppSettings) -> Option<ResolvedPrompt> {
-    let id = settings.post_process_selected_prompt_id.clone()?;
-    let resolved = match crate::prompts::library::find(settings, &id) {
-        Some(prompt) => ResolvedPrompt {
-            id,
-            name: prompt.name.clone(),
-            text: prompt.prompt.clone(),
-            choice: crate::prompts::provider::resolve(settings, prompt),
-        },
-        None => ResolvedPrompt {
-            id,
-            name: String::new(),
-            text: String::new(),
-            choice: Err(crate::prompts::provider::ReadinessIssue::PromptMissing),
-        },
-    };
-    Some(resolved)
 }
 
 impl ShortcutAction for TranscribeAction {
@@ -211,6 +169,7 @@ impl ShortcutAction for TranscribeAction {
                 if let Some(destination) = destination {
                     destination.commit(app);
                 }
+                dictation::start_session(app, &settings, &binding_id);
                 let generation = readiness.generation();
                 let app_clone = app.clone();
                 let rm_clone = Arc::clone(&rm);
@@ -333,12 +292,15 @@ impl ShortcutAction for TranscribeAction {
         play_feedback_sound(app, SoundType::Stop);
 
         let binding_id = binding_id.to_string(); // Clone binding_id for the async task
-        let post_process = self.post_process;
+                                                 // The stop is the linearization point: the prompt shown now is the one processed.
+        let frozen = dictation::freeze_session(app);
+        let post_process = frozen.prompt.is_some();
         let cancel_generation = rm.cancel_generation();
         let destination_ticket = crate::destination::delivery::ticket_at_stop(app);
 
         tauri::async_runtime::spawn(async move {
             let _guard = FinishGuard(ah.clone(), Arc::clone(&tm));
+            let _session = SessionEnd(ah.clone(), frozen.session_id);
             debug!(
                 "Starting async transcription task for binding: {}",
                 binding_id
@@ -441,7 +403,7 @@ impl ShortcutAction for TranscribeAction {
                                 }
                             }
                             let Some(processed) = complete_unless_cancelled(
-                                process_transcription_output(&ah, &transcription, post_process),
+                                dictation::process_frozen(&transcription, frozen.prompt.as_ref()),
                                 || rm.was_cancelled_since(cancel_generation),
                             )
                             .await
@@ -452,7 +414,7 @@ impl ShortcutAction for TranscribeAction {
                                 return;
                             };
 
-                            if rm.was_cancelled_since(cancel_generation) {
+                            if rm.was_cancelled_since(cancel_generation) || processed.cancelled {
                                 debug!("Transcription operation cancelled before paste");
                                 utils::hide_recording_overlay(&ah);
                                 set_tray_state(&ah, TrayIconState::Idle);
@@ -474,6 +436,7 @@ impl ShortcutAction for TranscribeAction {
                                 entry,
                                 &|| rm.was_cancelled_since(cancel_generation),
                             );
+                            dictation::notify_failure(&ah, frozen.session_id, &processed);
 
                             if processed.final_text.is_empty() {
                                 crate::destination::delivery::abandon(&ah);
@@ -587,13 +550,11 @@ pub static ACTION_MAP: Lazy<HashMap<String, Arc<dyn ShortcutAction>>> = Lazy::ne
     let mut map = HashMap::new();
     map.insert(
         "transcribe".to_string(),
-        Arc::new(TranscribeAction {
-            post_process: false,
-        }) as Arc<dyn ShortcutAction>,
+        Arc::new(TranscribeAction) as Arc<dyn ShortcutAction>,
     );
     map.insert(
         "transcribe_with_post_process".to_string(),
-        Arc::new(TranscribeAction { post_process: true }) as Arc<dyn ShortcutAction>,
+        Arc::new(TranscribeAction) as Arc<dyn ShortcutAction>,
     );
     map.insert(
         "cancel".to_string(),

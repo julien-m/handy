@@ -751,7 +751,8 @@
   "overlay": {
     "transcribing": "Transkriberar...",
     "processing": "Bearbetar...",
-    "loadingModel": "Laddar modell..."
+    "loadingModel": "Laddar modell...",
+    "fallbackNotice": "AI-bearbetningen misslyckades. Originaltexten användes."
   },
   "whatsNew": {
     "title": "Nytt i Handy v{{version}}"

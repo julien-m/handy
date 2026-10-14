@@ -2,10 +2,12 @@
 //! edit and delete prompts, choose the default and the provider override. Each change is one
 //! typed edit of the settings service, decided by the same `prompts::library` rules as
 //! `handy settings prompts`, so both surfaces refuse with the same code and reason.
+use crate::prompts::dictation::DictationPromptChanged;
 use crate::prompts::library;
 use crate::prompts::native::NativeProviders;
 use crate::prompts::processor::{ProviderPort, PROCESSING_BUDGET};
 use crate::prompts::provider::NativeAvailability;
+use crate::prompts::session::{DictationPromptView, PromptChoiceRefusal, PromptSessions};
 use crate::prompts::test_run::{run_test, PromptTestRequest, PromptTestResult, TestGate};
 use crate::prompts::types::PromptError;
 use crate::prompts::view::{library_view, PromptLibraryView};
@@ -15,7 +17,8 @@ use crate::settings_service::{
     platform_capability::PlatformCapabilities, tauri_adapter as live_settings,
 };
 use crate::shortcut::prompt_targets;
-use tauri::AppHandle;
+use tauri::{AppHandle, State};
+use tauri_specta::Event;
 
 type CommandResult<T> = Result<T, SettingsCommandError>;
 
@@ -185,4 +188,37 @@ pub async fn test_post_process_prompt(
 /// Cancel the running prompt test (closing the editor); its late result reads `cancelled`.
 pub fn cancel_post_process_prompt_test() {
     TEST_GATE.cancel();
+}
+
+#[tauri::command]
+#[specta::specta]
+/// Prompt of the dictation in progress, for the indicator (`None`: no dictation).
+pub fn get_dictation_prompt(sessions: State<'_, PromptSessions>) -> Option<DictationPromptView> {
+    sessions.current()
+}
+
+// @spec FR-002: Indicator choice for this dictation only — .specs/features/005-custom-ai-prompts/spec.md#fr-002
+#[tauri::command]
+#[specta::specta]
+/// Choose the prompt of recording `session_id` from the indicator (`None`: no processing); the
+/// default prompt is unchanged. The indicator shows the acknowledged view, never its own guess.
+///
+/// # Errors
+/// `session_ended` after the stop or for another session, `processing_off`, `prompt_missing`,
+/// `prompt_not_usable`; nothing changes.
+pub fn select_dictation_prompt(
+    app: AppHandle,
+    sessions: State<'_, PromptSessions>,
+    session_id: u64,
+    prompt_id: Option<String>,
+) -> Result<DictationPromptView, PromptChoiceRefusal> {
+    let settings = live_settings::current(&app);
+    let view = sessions.select(session_id, prompt_id.as_deref(), &settings)?;
+    let changed = DictationPromptChanged {
+        prompt: Some(view.clone()),
+    };
+    if let Err(error) = changed.emit(&app) {
+        log::warn!("Could not notify the indicator of the dictation prompt: {error}");
+    }
+    Ok(view)
 }

@@ -751,7 +751,8 @@
   "overlay": {
     "transcribing": "מתמלל...",
     "processing": "מעבד...",
-    "loadingModel": "טוען מודל..."
+    "loadingModel": "טוען מודל...",
+    "fallbackNotice": "העיבוד באמצעות בינה מלאכותית נכשל. נעשה שימוש בטקסט המקורי."
   },
   "whatsNew": {
     "title": "חדש ב-Handy v{{version}}"

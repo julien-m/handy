@@ -751,7 +751,8 @@
   "overlay": {
     "transcribing": "Přepisuji...",
     "processing": "Zpracovávám...",
-    "loadingModel": "Načítání modelu..."
+    "loadingModel": "Načítání modelu...",
+    "fallbackNotice": "Zpracování pomocí AI selhalo. Byl použit původní text."
   },
   "whatsNew": {
     "title": "Novinky v Handy v{{version}}"

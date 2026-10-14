@@ -751,7 +751,8 @@
   "overlay": {
     "transcribing": "Транскрибиране...",
     "processing": "Обработка...",
-    "loadingModel": "Зареждане на модела..."
+    "loadingModel": "Зареждане на модела...",
+    "fallbackNotice": "Обработката с ИИ не бе успешна. Използван е оригиналният текст."
   },
   "whatsNew": {
     "title": "Ново в Handy v{{version}}"

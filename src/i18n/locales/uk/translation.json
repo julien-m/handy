@@ -751,7 +751,8 @@
   "overlay": {
     "transcribing": "Обробка...",
     "processing": "Постобробка...",
-    "loadingModel": "Завантаження моделі..."
+    "loadingModel": "Завантаження моделі...",
+    "fallbackNotice": "Обробка ШІ не вдалася. Використано початковий текст."
   },
   "whatsNew": {
     "title": "Нове в Handy v{{version}}"

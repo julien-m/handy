@@ -751,7 +751,8 @@
   "overlay": {
     "transcribing": "Đang chuyển đổi...",
     "processing": "Đang xử lý...",
-    "loadingModel": "Đang tải mô hình..."
+    "loadingModel": "Đang tải mô hình...",
+    "fallbackNotice": "Xử lý bằng AI thất bại. Đã dùng văn bản gốc."
   },
   "whatsNew": {
     "title": "Điểm mới trong Handy v{{version}}"

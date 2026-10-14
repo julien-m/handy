@@ -751,7 +751,8 @@
   "overlay": {
     "transcribing": "Transkrypcja...",
     "processing": "Przetwarzanie...",
-    "loadingModel": "Wczytywanie modelu..."
+    "loadingModel": "Wczytywanie modelu...",
+    "fallbackNotice": "Przetwarzanie przez AI nie powiodło się. Użyto oryginalnego tekstu."
   },
   "whatsNew": {
     "title": "Nowości w Handy v{{version}}"

@@ -751,7 +751,8 @@
   "overlay": {
     "transcribing": "جاري التفريغ...",
     "processing": "جاري المعالجة...",
-    "loadingModel": "جارٍ تحميل النموذج..."
+    "loadingModel": "جارٍ تحميل النموذج...",
+    "fallbackNotice": "فشلت المعالجة بالذكاء الاصطناعي. تم استخدام النص الأصلي."
   },
   "whatsNew": {
     "title": "الجديد في Handy v{{version}}"

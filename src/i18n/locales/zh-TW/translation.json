@@ -751,7 +751,8 @@
   "overlay": {
     "transcribing": "正在轉錄...",
     "processing": "處理中...",
-    "loadingModel": "正在載入模型..."
+    "loadingModel": "正在載入模型...",
+    "fallbackNotice": "AI 處理失敗。已使用原始文字。"
   },
   "whatsNew": {
     "title": "Handy v{{version}} 新功能"

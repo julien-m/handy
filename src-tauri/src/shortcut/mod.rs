@@ -10,7 +10,7 @@
 //! setting and can be changed at runtime.
 
 pub mod action_shortcuts;
-mod bindings_change;
+pub(crate) mod bindings_change;
 pub mod conflicts;
 pub mod edits;
 #[cfg(test)]

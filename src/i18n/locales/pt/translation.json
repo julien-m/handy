@@ -751,7 +751,8 @@
   "overlay": {
     "transcribing": "Transcrevendo...",
     "processing": "Processando...",
-    "loadingModel": "Carregando modelo..."
+    "loadingModel": "Carregando modelo...",
+    "fallbackNotice": "O processamento por IA falhou. O texto original foi usado."
   },
   "whatsNew": {
     "title": "Novidades no Handy v{{version}}"

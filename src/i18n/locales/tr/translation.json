@@ -751,7 +751,8 @@
   "overlay": {
     "transcribing": "Transkribe ediliyor...",
     "processing": "İşleniyor...",
-    "loadingModel": "Model yükleniyor..."
+    "loadingModel": "Model yükleniyor...",
+    "fallbackNotice": "Yapay zekâ işlemi başarısız oldu. Özgün metin kullanıldı."
   },
   "whatsNew": {
     "title": "Handy v{{version}} yenilikleri"

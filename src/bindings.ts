@@ -438,6 +438,28 @@ async cancelPostProcessPromptTest() : Promise<void> {
     await TAURI_INVOKE("cancel_post_process_prompt_test");
 },
 /**
+ * Prompt of the dictation in progress, for the indicator (`None`: no dictation).
+ */
+async getDictationPrompt() : Promise<DictationPromptView | null> {
+    return await TAURI_INVOKE("get_dictation_prompt");
+},
+/**
+ * Choose the prompt of recording `session_id` from the indicator (`None`: no processing); the
+ * default prompt is unchanged. The indicator shows the acknowledged view, never its own guess.
+ * 
+ * # Errors
+ * `session_ended` after the stop or for another session, `processing_off`, `prompt_missing`,
+ * `prompt_not_usable`; nothing changes.
+ */
+async selectDictationPrompt(sessionId: number, promptId: string | null) : Promise<Result<DictationPromptView, PromptChoiceRefusal>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("select_dictation_prompt", { sessionId, promptId }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
  * Vocabulary list owned by the settings UI until its CLI domain ships.
  */
 async updateCustomWords(words: string[]) : Promise<Result<null, SettingsCommandError>> {
@@ -1159,11 +1181,15 @@ async isLaptop() : Promise<Result<boolean, string>> {
 
 
 export const events = __makeEvents__<{
+dictationPromptChanged: DictationPromptChanged,
 historyUpdatePayload: HistoryUpdatePayload,
+promptProcessingFailed: PromptProcessingFailed,
 streamPhaseEvent: StreamPhaseEvent,
 streamTextEvent: StreamTextEvent
 }>({
+dictationPromptChanged: "dictation-prompt-changed",
 historyUpdatePayload: "history-update-payload",
+promptProcessingFailed: "prompt-processing-failed",
 streamPhaseEvent: "stream-phase-event",
 streamTextEvent: "stream-text-event"
 })
@@ -1305,6 +1331,26 @@ export type DestinationSupport = { state: "supported" } | { state: "unsupported"
  * Immutable identity of one accepted dictation (the same value 007 puts in its `PasteOutcome`).
  */
 export type DictationId = number
+/**
+ * The indicator's prompt changed (`None`: no dictation in progress).
+ */
+export type DictationPromptChanged = { prompt: DictationPromptView | null }
+/**
+ * The indicator's view of the dictation prompt.
+ */
+export type DictationPromptView = { 
+/**
+ * Session the choice must name (stale UI events of another session are refused).
+ */
+session_id: number; 
+/**
+ * Prompt of this dictation; `None` means no AI processing.
+ */
+prompt_id: string | null; prompt_name: string | null; 
+/**
+ * False when AI post-processing is off: the menu is hidden and the prompt stays None.
+ */
+selectable: boolean }
 export type EngineType = 
 /**
  * Any GGML/GGUF model loaded through transcribe-cpp (Whisper, Parakeet,
@@ -1469,6 +1515,26 @@ export type PasteMethod = "ctrl_v" | "direct" | "none" | "shift_insert" | "ctrl_
 export type PermissionAccess = "allowed" | "denied" | "unknown"
 export type PostProcessProvider = { id: string; label: string; base_url: string; allow_base_url_edit?: boolean; models_endpoint?: string | null; supports_structured_output?: boolean }
 /**
+ * Why a choice on the indicator was refused; nothing changed.
+ */
+export type PromptChoiceRefusal = 
+/**
+ * No recording of that session any more (stopped, cancelled or another session).
+ */
+"session_ended" | 
+/**
+ * AI post-processing is off for this dictation.
+ */
+"processing_off" | 
+/**
+ * The prompt is not in the library.
+ */
+"prompt_missing" | 
+/**
+ * The prompt has issues and cannot be used until edited.
+ */
+"prompt_not_usable"
+/**
  * Why a prompt is not valid (and cannot be used until edited). Legacy prompts that break a rule
  * stay in the library with their issues listed.
  */
@@ -1513,6 +1579,16 @@ default_prompt_id: string | null;
  * The AI post-processing switch: off, no dictation is processed.
  */
 post_process_enabled: boolean; prompts: ListedPrompt[] }
+/**
+ * The AI step of a dictation failed and the original text was used for insertion. The notice
+ * (translated key `overlay.fallbackNotice`, English source "AI processing failed. The original
+ * text was used.") never says whether the insertion succeeded: 006, 007 and 010 report that.
+ */
+export type PromptProcessingFailed = { session_id: number; prompt_name: string | null; reason: FailureReason; 
+/**
+ * Minimum display time of the notice, in milliseconds.
+ */
+notice_ms: number }
 /**
  * Provider and model a prompt uses instead of the default ones (005). API keys stay per
  * provider: an override names a provider id and a model, never a credential.

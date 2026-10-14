@@ -246,6 +246,7 @@ fn initialize_core_logic(app_handle: &AppHandle) {
     app_handle.manage(model_manager.clone());
     app_handle.manage(transcription_manager.clone());
     app_handle.manage(history_manager.clone());
+    app_handle.manage(prompts::session::PromptSessions::default());
     app_handle.manage(tray::TrayState::new());
     destination::app::install(app_handle);
 
@@ -727,6 +728,8 @@ pub fn run(cli_args: CliArgs) {
             commands::prompts::set_post_process_prompt_provider_override,
             commands::prompts::test_post_process_prompt,
             commands::prompts::cancel_post_process_prompt_test,
+            commands::prompts::get_dictation_prompt,
+            commands::prompts::select_dictation_prompt,
             shortcut::update_custom_words,
             shortcut::suspend_all_bindings,
             shortcut::resume_all_bindings,
@@ -818,6 +821,8 @@ pub fn run(cli_args: CliArgs) {
             managers::history::HistoryUpdatePayload,
             managers::transcription::StreamTextEvent,
             managers::transcription::StreamPhaseEvent,
+            prompts::dictation::DictationPromptChanged,
+            prompts::dictation::PromptProcessingFailed,
         ]);
 
     #[cfg(debug_assertions)] // <- Only export on non-release builds
