@@ -6,6 +6,7 @@
 //! deliberate: transcribe-cpp's serde impls round-trip NaN confidences through
 //! `null`, which only works with a self-describing format.
 
+use crate::recognition_vocabulary::{capability::ContextCapabilities, context::ContextPreparation};
 use serde::{Deserialize, Serialize};
 use std::io::{self, Read, Write};
 use std::path::PathBuf;
@@ -50,6 +51,11 @@ pub enum Request {
         want_language: bool,
     },
     StreamReset,
+    /// Fit the eligible vocabulary `terms` (list order) to the loaded model's documented context
+    /// mechanism with its tokenizer; answered with [`Response::ContextPrepared`].
+    PrepareContext {
+        terms: Vec<String>,
+    },
 }
 
 /// How the worker should pick the device for a [`Request::Load`]. Device
@@ -83,6 +89,7 @@ pub enum Response {
         text: StreamText,
         language: Option<String>,
     },
+    ContextPrepared(ContextPreparation),
     Ok,
     Error(String),
 }
@@ -153,6 +160,9 @@ pub struct LoadedInfo {
     pub on_gpu: bool,
     pub capabilities: Capabilities,
     pub supports_initial_prompt: bool,
+    /// Recognition-context features of the model (feature 003).
+    #[serde(default)]
+    pub context: ContextCapabilities,
 }
 
 /// Encode one frame. Refuses a section the reader would refuse, so an
@@ -262,6 +272,75 @@ mod tests {
         let (req, got): (Request, Vec<f32>) = read_message(&mut buf.as_slice()).unwrap().unwrap();
         assert!(matches!(req, Request::Run { .. }));
         assert_eq!(got, pcm);
+    }
+
+    #[test]
+    fn context_preparation_round_trips_over_the_wire() -> Result<(), Box<dyn std::error::Error>> {
+        use crate::recognition_vocabulary::{
+            budget::ContextBudget,
+            capability::ContextMechanism,
+            context::{ContextPreparation, FittedContext},
+        };
+        let terms = vec!["Claude Code".to_string(), "OpenClaw".to_string()];
+        let mut buf = Vec::new();
+        write_message(
+            &mut buf,
+            &Request::PrepareContext {
+                terms: terms.clone(),
+            },
+            None,
+        )?;
+        let (req, _): (Request, Vec<f32>) =
+            read_message(&mut buf.as_slice())?.ok_or("no request frame")?;
+        assert!(matches!(req, Request::PrepareContext { terms: got } if got == terms));
+        let fitted = ContextPreparation::Fitted(FittedContext {
+            mechanism: ContextMechanism::WhisperInitialPrompt,
+            budget: ContextBudget::WHISPER,
+            sent: 2,
+            tokens: 7,
+        });
+        let mut buf = Vec::new();
+        write_message(&mut buf, &Response::ContextPrepared(fitted.clone()), None)?;
+        let (resp, _): (Response, Vec<f32>) =
+            read_message(&mut buf.as_slice())?.ok_or("no response frame")?;
+        assert!(matches!(resp, Response::ContextPrepared(got) if got == fitted));
+        Ok(())
+    }
+
+    #[test]
+    fn loaded_info_without_context_fields_reads_as_no_context(
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        let info = LoadedInfo {
+            arch: "whisper".into(),
+            variant: String::new(),
+            backend: "cpu".into(),
+            device: "cpu".into(),
+            on_gpu: false,
+            capabilities: Capabilities {
+                native_sample_rate: 16_000,
+                languages: Vec::new(),
+                translate_target_languages: Vec::new(),
+                max_timestamp_kind: transcribe_cpp::TimestampKind::Auto,
+                supports_language_detect: false,
+                supports_translate: false,
+                supports_streaming: false,
+                supports_spec_decode: false,
+                max_audio_ms: 0,
+            },
+            supports_initial_prompt: true,
+            context: ContextCapabilities {
+                initial_prompt: true,
+                ..ContextCapabilities::default()
+            },
+        };
+        let mut legacy = serde_json::to_value(&info)?;
+        legacy
+            .as_object_mut()
+            .ok_or("LoadedInfo is a JSON object")?
+            .remove("context");
+        let read: LoadedInfo = serde_json::from_value(legacy)?;
+        assert_eq!(read.context, ContextCapabilities::default());
+        Ok(())
     }
 
     #[test]

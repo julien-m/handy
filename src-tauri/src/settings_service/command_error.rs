@@ -1,5 +1,7 @@
 //! Typed settings error returned by Tauri commands, so the UI never falls back silently.
-use super::errors::{Outcome, SettingsError, SettingsErrorCode, ValidationReason};
+use super::errors::{
+    ErrorItem, ErrorReason, Outcome, SettingsError, SettingsErrorCode, ValidationReason,
+};
 use serde::Serialize;
 
 /// Error of a settings UI command: the stable code and English message shared with the CLI,
@@ -19,6 +21,15 @@ pub struct SettingsCommandError {
     pub outcome: Option<Outcome>,
     /// Revision the outcome or conflict refers to.
     pub current_revision: Option<u64>,
+    /// Closed machine reason (`details.reason` on the CLI), if any; omitted when absent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[specta(optional)]
+    pub detail_reason: Option<ErrorReason>,
+    /// Refused input positions (`details.items` on the CLI), for example vocabulary terms;
+    /// omitted when empty.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[specta(optional)]
+    pub items: Option<Vec<ErrorItem>>,
 }
 impl From<SettingsError> for SettingsCommandError {
     fn from(error: SettingsError) -> Self {
@@ -29,6 +40,8 @@ impl From<SettingsError> for SettingsCommandError {
             reason: error.reason(),
             outcome: error.outcome(),
             current_revision: error.current_revision().map(|revision| revision.0),
+            detail_reason: error.detail_reason(),
+            items: (!error.items().is_empty()).then(|| error.items().to_vec()),
         }
     }
 }

@@ -187,6 +187,24 @@ pub fn edit_at(
         expected,
     )?)
 }
+/// Domain change from the settings UI (a list edit built with the same validator as the CLI
+/// domain), committed in the write order with the UI's base revision: the same edit, compare-and-
+/// set, live effects and event as a routed CLI change (`sequence::write_change`).
+///
+/// # Errors
+/// `revision_conflict` for a stale `expected`, the change's own refusal, otherwise same as `set`.
+pub fn write_change(
+    app: &AppHandle,
+    change: &DomainChange,
+    expected: Option<Revision>,
+) -> Result<LiveCommit, SettingsCommandError> {
+    Ok(sequence::write_change(
+        live(app)?.inner(),
+        &TauriEffects(app),
+        change,
+        expected,
+    )?)
+}
 /// Scalar write whose fallible native change is prepared first (from the settings published when
 /// the ordered write starts) and compensated when the commit is refused, so a refusal leaves both
 /// the disk and the live state unchanged. The preparation of `key` comes from `native_changes`,

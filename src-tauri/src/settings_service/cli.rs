@@ -9,7 +9,7 @@ use super::{
 };
 use crate::cli::{
     ChangeOptions, CliArgs, CliCommand, ImportModeArg, OutputAction, ReplacementsAction,
-    SettingsArgs, SettingsCommand, ShortcutsAction,
+    SettingsArgs, SettingsCommand, ShortcutsAction, VocabularyAction, VocabularyImportMode,
 };
 use crate::word_replacements::exchange_file;
 use clap::{error::ErrorKind, Parser};
@@ -56,22 +56,6 @@ fn run(args: &CliArgs, settings: &SettingsArgs) -> i32 {
         }
     };
     emit(view, &reply, args.json || settings.json)
-}
-/// Domain input named by the command (an import source), read as bounded UTF-8 text.
-fn with_input(
-    mut operation: SettingsOperation,
-    command: &SettingsCommand,
-) -> Result<SettingsOperation, SettingsError> {
-    let SettingsCommand::Replacements(replacements) = command else {
-        return Ok(operation);
-    };
-    let ReplacementsAction::Import { source, .. } = &replacements.action else {
-        return Ok(operation);
-    };
-    if let SettingsOperation::Domain { input, .. } = &mut operation {
-        *input = Some(super::input::read_source(source)?);
-    }
-    Ok(operation)
 }
 /// File destination of an export; `-` (stdout) is rendered from the reply itself.
 fn export_destination(command: &SettingsCommand) -> Option<&str> {
@@ -131,6 +115,65 @@ pub fn operation(command: &SettingsCommand) -> SettingsOperation {
         SettingsCommand::Output(output) => output_operation(&output.action),
         SettingsCommand::Replacements(replacements) => replacements_operation(&replacements.action),
         SettingsCommand::Shortcuts(shortcuts) => shortcuts_operation(&shortcuts.action),
+        SettingsCommand::Vocabulary(vocabulary) => vocabulary_operation(&vocabulary.action),
+    }
+}
+/// Domain input named by the command (a replacements or vocabulary import source), read as
+/// bounded UTF-8 text.
+///
+/// # Errors
+/// The refusals of `input::read_source` (unreadable file, terminal stdin, size, encoding).
+fn with_input(
+    mut operation: SettingsOperation,
+    command: &SettingsCommand,
+) -> Result<SettingsOperation, SettingsError> {
+    let Some(source) = import_source(command) else {
+        return Ok(operation);
+    };
+    if let SettingsOperation::Domain { input, .. } = &mut operation {
+        *input = Some(super::input::read_source(source)?);
+    }
+    Ok(operation)
+}
+/// File path or `-` named by an import command; `None` for every other command.
+fn import_source(command: &SettingsCommand) -> Option<&str> {
+    match command {
+        SettingsCommand::Replacements(replacements) => match &replacements.action {
+            ReplacementsAction::Import { source, .. } => Some(source.as_str()),
+            _ => None,
+        },
+        SettingsCommand::Vocabulary(vocabulary) => match &vocabulary.action {
+            VocabularyAction::Import { source, .. } => Some(source.as_str()),
+            _ => None,
+        },
+        _ => None,
+    }
+}
+/// Wire operation of a vocabulary action; an import's input is attached by `run`.
+// @spec FR-005: Vocabulary CLI commands — .specs/features/003-recognition-vocabulary/spec.md#fr-005
+fn vocabulary_operation(action: &VocabularyAction) -> SettingsOperation {
+    let none = ChangeOptions::default();
+    let (name, arguments, options) = match action {
+        VocabularyAction::List => ("list", Vec::new(), &none),
+        VocabularyAction::Add { term, options } => ("add", vec![term.clone()], options),
+        VocabularyAction::Remove { term, options } => ("remove", vec![term.clone()], options),
+        VocabularyAction::Import { mode, options, .. } => {
+            let mode = match mode {
+                VocabularyImportMode::Merge => "merge",
+                VocabularyImportMode::Replace => "replace",
+            };
+            ("import", vec![mode.to_owned()], options)
+        }
+        VocabularyAction::Export { target } => ("export", vec![target.clone()], &none),
+        VocabularyAction::Status => ("status", Vec::new(), &none),
+    };
+    SettingsOperation::Domain {
+        domain: "vocabulary".to_owned(),
+        action: name.to_owned(),
+        arguments,
+        input: None,
+        dry_run: options.dry_run,
+        expected_revision: options.expected_revision.map(super::protocol::Revision),
     }
 }
 /// Wire operation of a shortcuts-domain action.

@@ -1,0 +1,29 @@
+Sync of feature/003-recognition-vocabulary with dev (825598e9), merge commit bc1143ee.
+Shared target: CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.shared-target (debug only).
+
+Merge: no textual conflict. Files changed on both sides, auto-merged and checked:
+  src-tauri/Cargo.toml (one [features] table: smart-paste-dispatch, destination-return; caseless pin;
+  007 [[test]] harness=false targets), settings_service/{errors,validation}.rs (007 ValidationReason
+  variants + rollout check; 003 vocabulary message + collection_reason), tests/settings_cli/contract.rs
+  (65 keys, default_paste_method; 5 OWNED_ELSEWHERE incl. custom_filler_words), shortcut/mod.rs, lib.rs,
+  008 checked schema, src/bindings.ts.
+
+Regeneration:
+  schema-export.*: cargo test --test settings_validation generated_schema_matches_wire_shapes_and_descriptor_inventory
+    -- --nocapture; SCHEMA_BEGIN..END block byte-identical to the merged settings-cli.schema.json.
+  build-bin.*, bindings-export.*: cargo build --bin handy; binary copied out of the shared target;
+    HOME=<scratchpad>/export-home.XXXX handy --list-models (run from src-tauri) -> exit 0; bindings.ts
+    rewritten at 12:13:04 and byte-identical to the merged file.
+
+Checks (exit codes in *.exit):
+  cargo-test: exit 0, 954 passed, 0 failed, 25 ignored (lib 655/17i; destination_cli 6; destination_platform 0/3i;
+    destination_recovery 6; settings_cli 19; settings_domains 8; settings_live 10; settings_platform 33;
+    settings_transactions 42/1i; settings_validation 25; settings_writers 7; shortcuts_cli 8; smart_paste 109;
+    smart_paste_native 0/1i; smart_paste_native_ax 0/1i; smart_paste_native_keyboard 1i; smart_paste_native_pasteboard 1i;
+    smart_paste_settings 16; vocabulary_cli 6; vocabulary_transactions 4; doctests 0).
+  clippy-lib-bins (-D warnings): exit 0.
+  clippy-all-targets: exit 0, 5 warnings, all pre-existing upstream lines (lib.rs:446, supervisor.rs:1568,
+    gguf_meta.rs:484, transcription.rs:2137, portable.rs:198); no new warning.
+  cargo-fmt-check, lint, format-check, tsc: exit 0.
+  test-settings-errors, test-settings-store, test-shortcut-list, test-keyboard, check-translations: exit 0.
+  conventions-repo: verdict PASS, new 0, baselined 539 (baseline unchanged).

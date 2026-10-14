@@ -22,6 +22,7 @@ mod memory;
 mod overlay;
 mod paste_tx;
 pub mod portable;
+pub mod recognition_vocabulary;
 mod secure_input;
 #[cfg(target_os = "macos")]
 mod secure_input_shadow;
@@ -729,6 +730,12 @@ pub fn run(cli_args: CliArgs) {
             shortcut::delete_post_process_prompt,
             shortcut::set_post_process_selected_prompt,
             shortcut::update_custom_words,
+            commands::vocabulary::get_vocabulary,
+            commands::vocabulary::preview_vocabulary_import,
+            commands::vocabulary::apply_vocabulary_import,
+            commands::vocabulary::add_vocabulary_term,
+            commands::vocabulary::remove_vocabulary_occurrence,
+            commands::vocabulary::get_vocabulary_status,
             shortcut::suspend_all_bindings,
             shortcut::resume_all_bindings,
             shortcut::change_mute_while_recording_setting,

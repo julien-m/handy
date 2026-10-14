@@ -374,11 +374,75 @@ async setPostProcessSelectedPrompt(id: string) : Promise<Result<null, SettingsCo
 }
 },
 /**
- * Vocabulary list owned by the settings UI until its CLI domain ships.
+ * Whole vocabulary list from the settings UI, committed as the vocabulary domain's change: same
+ * validator as the CLI (unchanged legacy rows stay exempt), compare-and-set on
+ * `expected_revision` when the UI passes its base revision.
  */
-async updateCustomWords(words: string[]) : Promise<Result<null, SettingsCommandError>> {
+async updateCustomWords(words: string[], expectedRevision: number | null) : Promise<Result<null, SettingsCommandError>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("update_custom_words", { words }) };
+    return { status: "ok", data: await TAURI_INVOKE("update_custom_words", { words, expectedRevision }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Saved vocabulary and its revision.
+ */
+async getVocabulary() : Promise<VocabularyList> {
+    return await TAURI_INVOKE("get_vocabulary");
+},
+/**
+ * Preview a bulk input (one term per line) against the saved list; pure, nothing is written.
+ */
+async previewVocabularyImport(input: string, mode: VocabularyImportMode) : Promise<VocabularyImportPreview> {
+    return await TAURI_INVOKE("preview_vocabulary_import", { input, mode });
+},
+/**
+ * Apply a previewed bulk input as one atomic candidate at the preview's revision.
+ */
+async applyVocabularyImport(input: string, mode: VocabularyImportMode, expectedRevision: number) : Promise<Result<VocabularyList, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("apply_vocabulary_import", { input, mode, expectedRevision }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Add one term.
+ */
+async addVocabularyTerm(term: string, expectedRevision: number) : Promise<Result<VocabularyList, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("add_vocabulary_term", { term, expectedRevision }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Remove the occurrence at `index`, which must still hold `term` (legacy duplicates are removed
+ * one row at a time).
+ */
+async removeVocabularyOccurrence(index: number, term: string, expectedRevision: number) : Promise<Result<VocabularyList, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("remove_vocabulary_occurrence", { index, term, expectedRevision }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Status of the vocabulary for the selected model (one of five), from the loaded model and the
+ * exact preparation of the next request; never loads a model.
+ * 
+ * # Errors
+ * `internal_error` with reason `context_budget_unverified` for a model whose declared mechanism
+ * has no documented budget; `unavailable` before the transcription manager exists.
+ */
+async getVocabularyStatus() : Promise<Result<VocabularyStatusReport, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("get_vocabulary_status") };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -1267,6 +1331,10 @@ error: string | null;
  */
 edit_error: ShortcutEditError | null }
 /**
+ * Unit of a context budget.
+ */
+export type BudgetUnit = "tokens"
+/**
  * Candidate rule; new rules receive a durable ID only when committed.
  */
 export type CandidateRule = { existing_id: RuleId | null; recognized: string; replacement: string }
@@ -1296,6 +1364,26 @@ export type ConflictKind =
  * A modifier-only shortcut would fire together with the other one.
  */
 "modifier_overlap"
+/**
+ * Documented context budget of one mechanism.
+ */
+export type ContextBudget = { value: number; unit: BudgetUnit }
+/**
+ * How the vocabulary reaches the engine.
+ */
+export type ContextMechanism = 
+/**
+ * Whisper run extension `initial_prompt`, terms joined with ", ".
+ */
+"whisper_initial_prompt" | 
+/**
+ * Generic `RunOptions::vocabulary` (Qwen3-ASR, Fun-ASR, Granite with the GGUF capability).
+ */
+"generic_vocabulary" | 
+/**
+ * Generic `RunOptions::prompt` used as recognition context.
+ */
+"context_prompt"
 export type CustomSounds = { start: boolean; stop: boolean }
 /**
  * Badge menu of one dictation: applications, then "Frontmost app at the end".
@@ -1324,6 +1412,173 @@ export type EngineType =
  * the file, so this one variant covers the whole transcribe-cpp family.
  */
 "TranscribeCpp" | "Parakeet" | "Moonshine" | "MoonshineStreaming" | "SenseVoice" | "GigaAM" | "Canary" | "Cohere"
+/**
+ * One refused position of a domain input: zero-based `index`, closed `code` and its fixed
+ * message; never the candidate value.
+ */
+export type ErrorItem = { index: number; code: ErrorReason; message: string }
+/**
+ * Closed snake_case reasons of `details.reason` and `details.items[].code`; later features add
+ * their own variants. Each has a fixed English message and never carries a candidate value.
+ */
+export type ErrorReason = 
+/**
+ * The operation or setting needs a platform capability this build does not have.
+ */
+"unsupported_platform" | 
+/**
+ * A dictation session owns the shortcuts until it ends (004).
+ */
+"shortcut_session_busy" | 
+/**
+ * A live-only change was asked without a running instance (004).
+ */
+"instance_required" | 
+/**
+ * The last shortcut of a dictation action cannot be removed (004).
+ */
+"last_shortcut" | 
+/**
+ * The action keeps a single shortcut (004).
+ */
+"alternatives_unsupported" | 
+/**
+ * The system refused to register the shortcut (004).
+ */
+"registration_refused" | 
+/**
+ * The shortcut text is not valid for the active keyboard implementation (004).
+ */
+"invalid_shortcut" | 
+/**
+ * A replacement rule has no recognized text (002).
+ */
+"recognized_empty" | 
+/**
+ * A recognized text is longer than 100 characters (002).
+ */
+"recognized_too_long" | 
+/**
+ * A recognized text holds a line break, a tab or `;` (002).
+ */
+"recognized_forbidden_character" | 
+/**
+ * A recognized text holds a control or bidirectional formatting character (002).
+ */
+"recognized_control_character" | 
+/**
+ * A recognized text starts with `#`, like an exchange comment (002).
+ */
+"recognized_leading_comment" | 
+/**
+ * Two rules have the same normalized recognized text (002).
+ */
+"duplicate_recognized" | 
+/**
+ * A replacement rule has no replacement text (002).
+ */
+"replacement_empty" | 
+/**
+ * A replacement text is longer than 500 characters (002).
+ */
+"replacement_too_long" | 
+/**
+ * A replacement text holds a line break or a tab (002).
+ */
+"replacement_forbidden_character" | 
+/**
+ * A replacement text holds a control or bidirectional formatting character (002).
+ */
+"replacement_control_character" | 
+/**
+ * A replacement rule has an empty id (002).
+ */
+"empty_rule_id" | 
+/**
+ * Two replacement rules share an id (002).
+ */
+"duplicate_rule_id" | 
+/**
+ * An exchange line has neither a tab nor a `;` separator (002).
+ */
+"missing_separator" | 
+/**
+ * The rule set would hold more than 1000 rules (002).
+ */
+"too_many_rules" | 
+/**
+ * The saved rules are invalid, so no import can be previewed on them (002).
+ */
+"invalid_saved_rules" | 
+/**
+ * The Unicode data needed to validate rules is unavailable (002).
+ */
+"unicode_data_unavailable" | 
+/**
+ * The running instance's answer does not fit one channel message (002).
+ */
+"reply_too_large" | 
+/**
+ * The export file could not be written; the destination is unchanged (002).
+ */
+"export_not_written" | 
+/**
+ * The export destination is a symbolic link, refused; nothing is written (002).
+ */
+"export_symbolic_link" | 
+/**
+ * The export destination is a file the user cannot write; it is unchanged (002).
+ */
+"export_read_only" | 
+/**
+ * A vocabulary term is empty once trimmed (003).
+ */
+"term_empty" | 
+/**
+ * A vocabulary term exceeds 100 characters (003).
+ */
+"term_too_long" | 
+/**
+ * A vocabulary term contains a line break (003).
+ */
+"term_line_break" | 
+/**
+ * A vocabulary term contains `<`, `>`, `"` or NUL (003).
+ */
+"term_forbidden_character" | 
+/**
+ * A vocabulary term repeats another term (003).
+ */
+"term_duplicate" | 
+/**
+ * The loaded model declares a recognition-context mechanism whose budget is not documented
+ * for this build (003): a durable internal defect, never a retryable state.
+ */
+"context_budget_unverified"
+/**
+ * Whether the report describes a prepared next request or a dispatched one.
+ */
+export type EvidenceKind = 
+/**
+ * The next request, prepared exactly as a dictation would; no run happened.
+ */
+"prepared"
+/**
+ * A saved term that is not sent, at its stored position.
+ */
+export type ExcludedTerm = { index: number; term: string; reason: ExclusionReason }
+/**
+ * Why a saved term does not reach the engine.
+ */
+export type ExclusionReason = "empty" | "too_long" | "line_break" | "forbidden_character" | "duplicate" | "over_capacity" | 
+/**
+ * Valid, but after the first term that did not fit the budget.
+ */
+"over_budget" | 
+/**
+ * Valid, but this model or mode receives no context at all.
+ */
+"no_context"
 /**
  * Stable field identifier translated at UI/CLI boundaries.
  */
@@ -1374,6 +1629,30 @@ export type ImportMode =
  */
 "replace"
 /**
+ * The candidate list a bulk input would produce, and why it could not be applied.
+ */
+export type ImportPreview = { mode: VocabularyImportMode; 
+/**
+ * New unique terms, in input order.
+ */
+added: VocabularyPreviewLine[]; 
+/**
+ * Lines skipped because their key repeats an earlier line or (merge) a saved term.
+ */
+duplicates: VocabularyPreviewLine[]; 
+/**
+ * Invalid lines: any of them refuses the whole input.
+ */
+issues: LineIssue[]; 
+/**
+ * The complete list applying this preview would save.
+ */
+candidate: string[]; 
+/**
+ * Applying would exceed `MAX_TERMS` (merge: any addition while the list is full).
+ */
+over_capacity: boolean }
+/**
  * Stable validation kind; diagnostics never contain user rule text.
  */
 export type IssueKind = "empty_id" | "duplicate_id" | "too_short" | "too_long" | "forbidden_character" | "leading_comment" | "duplicate_key" | "too_many_rules" | "unicode_data_unavailable" | 
@@ -1397,6 +1676,10 @@ export type KeyboardDiagnosticReport = { secure_input_enabled: boolean; culprit_
 key_down: number; key_up: number; flags_changed: number; mouse: number; duration_ms: number }
 export type KeyboardImplementation = "tauri" | "handy_keys"
 export type LLMPrompt = { id: string; name: string; prompt: string }
+/**
+ * One refused input line.
+ */
+export type LineIssue = { index: number; issue: TermIssue }
 export type LogLevel = "trace" | "debug" | "info" | "warn" | "error"
 /**
  * Answer of a menu request: the menu, or why it is refused (a typed value, not an error, so
@@ -1446,6 +1729,22 @@ sha256: string | null } } |
  */
 "Local"
 export type ModelUnloadTimeout = "never" | "immediately" | "min_2" | "min_5" | "min_10" | "min_15" | "hour_1" | "sec_15"
+/**
+ * One stored occurrence, with the reason it is excluded from the recognition context, if any.
+ */
+export type Occurrence = { 
+/**
+ * Zero-based position in the stored list.
+ */
+index: number; 
+/**
+ * Stored text, unchanged.
+ */
+term: string; 
+/**
+ * Why this occurrence is excluded from the context; `None` when it is eligible.
+ */
+issue: TermIssue | null }
 export type OrtAcceleratorSetting = "auto" | "cpu" | "cuda" | "directml" | "rocm"
 /**
  * Durable outcome of a failed operation; clients must reread before retrying either one.
@@ -1491,6 +1790,10 @@ duplicate_lines: number[] }
  * Per-line outcome shown before Apply (AC-003).
  */
 export type PreviewStatus = "add" | "update" | "delete" | "unchanged" | "ignored" | "error"
+/**
+ * Recognition mode of the selected model's dictations.
+ */
+export type RecognitionMode = "batch" | "streaming"
 export type RecordingRetentionPeriod = "never" | "preserve_limit" | "days_3" | "weeks_2" | "months_3"
 /**
  * The single per-dictation decision "insert or recover", and the only Enter veto.
@@ -1641,7 +1944,16 @@ outcome: Outcome | null;
 /**
  * Revision the outcome or conflict refers to.
  */
-current_revision: number | null }
+current_revision: number | null; 
+/**
+ * Closed machine reason (`details.reason` on the CLI), if any; omitted when absent.
+ */
+detail_reason?: ErrorReason | null; 
+/**
+ * Refused input positions (`details.items` on the CLI), for example vocabulary terms;
+ * omitted when empty.
+ */
+items?: ErrorItem[] | null }
 /**
  * Stable wire categories; their fixed exit meanings never depend on input text.
  */
@@ -1735,6 +2047,31 @@ export type ShortcutEditError = { code: "shortcut_conflict"; conflict: ShortcutC
 export type ShortcutEditResponse = { binding: ShortcutBinding | null; error: ShortcutEditError | null }
 export type SoundTheme = "marimba" | "pop" | "custom"
 /**
+ * Why a status was reached, where the status alone does not say it.
+ */
+export type StatusReason = 
+/**
+ * `no_term_sent`: the vocabulary is empty.
+ */
+"empty_vocabulary" | 
+/**
+ * `no_term_sent`: every saved term is invalid, a duplicate or over capacity.
+ */
+"invalid_terms_only" | 
+/**
+ * `no_term_sent`: the first eligible term does not fit the budget.
+ */
+"over_budget" | 
+/**
+ * `unknown_until_model_loads`: the selected model is not loaded.
+ */
+"model_not_loaded" | 
+/**
+ * `unknown_until_model_loads`: the model is loaded but the engine did not answer the
+ * capability query in time (for example during a dictation).
+ */
+"capability_query_unanswered"
+/**
  * A conflict between two stored shortcuts, reported as a warning. Upgrades
  * keep such shortcuts registered exactly as before (decision 2026-10-12).
  */
@@ -1784,6 +2121,34 @@ export type SupportReason =
  */
 "frontmost_unreadable"
 /**
+ * Why a term (new or stored) is refused or excluded from the recognition context.
+ */
+export type TermIssue = 
+/**
+ * Nothing left after trimming.
+ */
+"empty" | 
+/**
+ * More than `MAX_TERM_CHARS` Unicode scalar values.
+ */
+"too_long" | 
+/**
+ * A line separator inside the term.
+ */
+"line_break" | 
+/**
+ * `<`, `>`, `"` or NUL.
+ */
+"forbidden_character" | 
+/**
+ * Same key as an earlier term.
+ */
+"duplicate" | 
+/**
+ * Stored beyond the first `MAX_TERMS` positions (legacy list only).
+ */
+"over_capacity"
+/**
  * UI appearance mode. `System` follows the OS `prefers-color-scheme`; `Light`
  * and `Dark` force one of the two palettes Handy already ships.
  */
@@ -1829,6 +2194,49 @@ export type ValidationReason = "canonical_type" | "canonical_value" | "out_of_ra
  * the shortcut registrations cannot change until it ends.
  */
 "shortcut_session_busy"
+/**
+ * How bulk input combines with the saved list. Exported to TypeScript under a vocabulary name:
+ * word replacements (002) export their own `ImportMode`.
+ */
+export type VocabularyImportMode = 
+/**
+ * Keep the saved list and append the new unique terms in input order.
+ */
+"merge" | 
+/**
+ * Make the input the whole list, in input order.
+ */
+"replace"
+/**
+ * A paste preview against the saved list at `revision`; nothing is written.
+ */
+export type VocabularyImportPreview = { revision: number; preview: ImportPreview; 
+/**
+ * True when Apply can commit the whole candidate.
+ */
+applicable: boolean }
+/**
+ * The saved vocabulary at one revision: every stored occurrence, unchanged, with the reason it
+ * is excluded from the recognition context.
+ */
+export type VocabularyList = { revision: number; terms: Occurrence[] }
+/**
+ * One input line kept or skipped, with its zero-based line index. Exported to TypeScript under
+ * a vocabulary name: word replacements (002) export their own `PreviewLine`.
+ */
+export type VocabularyPreviewLine = { index: number; 
+/**
+ * Validated text (trimmed, whitespace collapsed).
+ */
+term: string }
+/**
+ * The five statuses of the spec (AC-003).
+ */
+export type VocabularyStatus = "used_during_recognition" | "no_term_sent" | "not_supported" | "not_used_streaming" | "unknown_until_model_loads"
+/**
+ * Status of the vocabulary for the selected model, with the terms sent and not sent.
+ */
+export type VocabularyStatusReport = { model_id: string; mode: RecognitionMode; status: VocabularyStatus; reason: StatusReason | null; mechanism: ContextMechanism | null; budget: ContextBudget | null; terms_sent: string[]; terms_not_sent: ExcludedTerm[]; evidence_kind: EvidenceKind }
 export type WindowsMicrophonePermissionStatus = { supported: boolean; overall_access: PermissionAccess; device_access: PermissionAccess; app_access: PermissionAccess; desktop_app_access: PermissionAccess }
 
 /** tauri-specta globals **/

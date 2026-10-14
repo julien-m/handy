@@ -4,6 +4,7 @@ pub mod history;
 pub mod models;
 pub mod replacements;
 pub mod transcription;
+pub mod vocabulary;
 
 use crate::settings::{get_settings, update_checks_forced_disabled, AppSettings, LogLevel};
 use crate::settings_service::{
