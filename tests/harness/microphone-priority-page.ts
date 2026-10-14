@@ -11,6 +11,7 @@ export interface Harness {
     saveCalls: unknown[];
     listingFails: boolean;
     windowVisible: boolean;
+    windowMinimized: boolean;
     windowVisibilityFails: boolean;
     windowVisibilityChecks: number;
   };
@@ -21,6 +22,8 @@ export interface Harness {
   releaseSettings: () => void;
   setVisible: (visible: boolean) => void;
   setWindowShown: (shown: boolean) => void;
+  setWindowMinimized: (minimized: boolean) => void;
+  showWindowWithoutFocus: () => void;
   unmount: () => void;
 }
 

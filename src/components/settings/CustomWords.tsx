@@ -11,7 +11,10 @@ import { useStore } from "zustand";
 import { useVocabulary } from "../../hooks/use-vocabulary";
 import { useModelStore } from "../../stores/modelStore";
 import { useSettingsStore } from "../../stores/settingsStore";
-import type { VocabularyStore } from "../../stores/vocabulary-store";
+import type {
+  VocabularyState,
+  VocabularyStore,
+} from "../../stores/vocabulary-store";
 import { getTranslatedModelName } from "../../lib/utils/modelTranslation";
 import { SettingsGroup } from "../ui/SettingsGroup";
 import {
@@ -38,6 +41,7 @@ import {
   VocabularyApplyBar,
   VocabularyPaste,
 } from "./vocabulary/vocabulary-paste";
+import { retryApply, retryThenFocus } from "./vocabulary/vocabulary-retry";
 
 /** Display name of the status model, or of the selected one before any status answers. */
 const useModelName = (store: VocabularyStore): string => {
@@ -58,18 +62,37 @@ interface ViewProps {
 }
 
 /** The failed commit, if any, with Retry when retrying can succeed. */
-const FailureView: React.FC<ViewProps & { errorId: string }> = (props) => {
+const FailureView: React.FC<
+  ViewProps & { errorId: string; onRetry: () => Promise<void> }
+> = (props) => {
   const failure = useStore(props.store, (state) => state.failure);
-  const retry = useStore(props.store, (state) => state.retry);
   if (!failure) return null;
   return (
     <CommitFailure
       screen={props.screen}
       error={failure.error}
       errorId={props.errorId}
-      onRetry={() => void retry()}
+      onRetry={() => void props.onRetry()}
     />
   );
+};
+
+/**
+ * Retry of a failed Apply with its messages: why nothing was sent, or the same confirmation as
+ * Apply.
+ * @param store editor store
+ * @returns the Retry action
+ */
+const useApplyRetry = (store: VocabularyStore): (() => Promise<void>) => {
+  const { t } = useTranslation();
+  return () =>
+    retryApply(store, {
+      blocked: ({ note, tone }) =>
+        (tone === "info" ? toast.info : toast.warning)(
+          t(note.key, note.values),
+        ),
+      applied: () => toast.success(t("settings.vocabulary.pasteBox.applied")),
+    });
 };
 
 const Header: React.FC<{ screen: VocabularyScreen; paste: boolean }> = ({
@@ -158,14 +181,26 @@ const SavedTerms: React.FC<ViewProps & { termsProps: TermListProps }> = (
   );
 };
 
+/** Status of the vocabulary for the selected model, with its Retry. */
+const StatusView: React.FC<ViewProps> = ({ store, screen }) => {
+  const status = useStore(store, (state) => state.status);
+  const loadStatus = useStore(store, (state) => state.loadStatus);
+  const model = useModelName(store);
+  return (
+    <VocabularyStatusView
+      status={status}
+      screen={screen}
+      model={model}
+      onRetry={() => void loadStatus()}
+    />
+  );
+};
+
 /** List view: status, terms, Add row, error and count. */
 const ListView: React.FC<ViewProps & { pasteId: string }> = (props) => {
   const { store, screen, pasteId } = props;
   const inputId = useId();
   const errorId = useId();
-  const status = useStore(store, (state) => state.status);
-  const loadStatus = useStore(store, (state) => state.loadStatus);
-  const model = useModelName(store);
   const focusInput = useCallback(
     () => document.getElementById(inputId)?.focus(),
     [inputId],
@@ -176,15 +211,15 @@ const ListView: React.FC<ViewProps & { pasteId: string }> = (props) => {
   const total = termsProps.terms.length;
   return (
     <>
-      <VocabularyStatusView
-        status={status}
-        screen={screen}
-        model={model}
-        onRetry={() => void loadStatus()}
-      />
+      <StatusView store={store} screen={screen} />
       <SavedTerms store={store} screen={screen} termsProps={termsProps} />
       <VocabularyAddRow {...addRowProps} />
-      <FailureView store={store} screen={screen} errorId={errorId} />
+      <FailureView
+        store={store}
+        screen={screen}
+        errorId={errorId}
+        onRetry={retryThenFocus(store, focusInput)}
+      />
       {total > 0 && <VocabularyCount screen={screen} total={total} />}
     </>
   );
@@ -194,6 +229,7 @@ const ListView: React.FC<ViewProps & { pasteId: string }> = (props) => {
 const PasteView: React.FC<ViewProps> = ({ store, screen }) => {
   const errorId = useId();
   const state = useStore(store);
+  const retryFailedApply = useApplyRetry(store);
   const fresh = state.previewText === state.pasteText;
   return (
     <>
@@ -203,7 +239,12 @@ const PasteView: React.FC<ViewProps> = ({ store, screen }) => {
         busy={state.pending?.kind === "apply"}
         onText={state.setPasteText}
       />
-      <FailureView store={store} screen={screen} errorId={errorId} />
+      <FailureView
+        store={store}
+        screen={screen}
+        errorId={errorId}
+        onRetry={retryFailedApply}
+      />
     </>
   );
 };
@@ -241,6 +282,20 @@ const usePasteReturnFocus = (pasteOpen: boolean, pasteId: string) => {
 };
 
 /**
+ * Contract screen shown: the paste screen while the box is open, else the list screen that fits
+ * the saved terms and the model status.
+ * @param state editor state
+ * @returns the screen's test-id prefix
+ */
+const vocabularyScreen = (
+  state: Pick<VocabularyState, "pasteOpen" | "list" | "status">,
+): VocabularyScreen => {
+  if (state.pasteOpen) return VOCABULARY_SCREENS.paste;
+  const report = state.status.kind === "ready" ? state.status.report : null;
+  return listScreen(state.list?.terms.length ?? null, report?.status ?? null);
+};
+
+/**
  * Settings group "Vocabulary": the list view, or the paste view with its Apply bar.
  */
 export const CustomWords: React.FC = () => {
@@ -249,10 +304,7 @@ export const CustomWords: React.FC = () => {
   const state = useStore(store);
   const pasteId = useId();
   usePasteReturnFocus(state.pasteOpen, pasteId);
-  const report = state.status.kind === "ready" ? state.status.report : null;
-  const screen = state.pasteOpen
-    ? VOCABULARY_SCREENS.paste
-    : listScreen(state.list?.terms.length ?? null, report?.status ?? null);
+  const screen = vocabularyScreen(state);
   return (
     <div className="space-y-6" data-testid={`${screen}-screen`}>
       <div data-testid={`${screen}-vocabulary`} data-state={state.phase}>

@@ -1,5 +1,14 @@
 # Changelog - 002-word-replacements
 
+## 2026-10-14 — [Bugfix]: UI hardening of the replacement editor (guard dialog during a commit, Input, late checks)
+
+- **Type:** Bugfix (warnings of the UI delivery review round 2 and its audit, both PASS)
+- **Spec modified:** No
+- **Code modified:** src/components/settings/word-replacements/{draft-gate-model.ts (new), draft-gate.tsx, editor-store.ts, text-store.ts, use-editor-lifecycle.ts, rules-header.tsx, word-replacements.tsx, editor-test-stubs.ts}, src/stores/unsaved-changes.ts, src/components/unsaved-changes-dialog.tsx, src/components/ui/Input.tsx; tests draft-gate-model.test.ts (new), editor-revision.test.ts
+- **AC impacted:** AC-001 (guarded transitions never discard a draft a Save or an Apply still owns); no AC certified.
+- **Evidence:** [proofs/claude-hardening/summary.txt](proofs/claude-hardening/summary.txt)
+- **Author:** Claude Code (UI hardening pass)
+
 ## 2026-10-14 — [Bugfix]: Delivery review correction round 1 (merge of 006, bounded get, control characters, bounded previews, export file)
 
 - **Type:** Bugfix (merge of `dev` with 006, then the blocking finding and the warnings of the delivery review and audit)

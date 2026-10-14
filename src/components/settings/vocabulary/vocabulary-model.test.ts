@@ -28,6 +28,7 @@ import {
 import {
   applyLabelKey,
   applyNote,
+  applyRetryBlock,
   applyState,
   previewRows,
   previewSummary,
@@ -155,6 +156,22 @@ describe("Behavioral AC visual states", () => {
     assert.equal(applyState(valid, true, true), "loading");
     const nothing = wrap({ ...specPaste, added: [], issues: [] });
     assert.equal(applyState(nothing, true, false), "disabled");
+  });
+
+  test("Retry of a failed Apply: sent, a line to fix, or nothing to add", () => {
+    const valid = wrap({ ...specPaste, issues: [] });
+    assert.equal(applyRetryBlock("a", valid, true), null);
+    const invalid = applyRetryBlock("a", wrap(specPaste), true);
+    assert.equal(invalid?.tone, "warning");
+    assert.equal(invalid?.note.key, "settings.vocabulary.pasteBox.note.fixOne");
+    const nothing = wrap({ ...specPaste, added: [], issues: [] });
+    const empty = applyRetryBlock("a", nothing, true);
+    assert.equal(empty?.tone, "info");
+    assert.equal(
+      empty?.note.key,
+      "settings.vocabulary.pasteBox.note.nothingToAdd",
+    );
+    assert.equal(applyRetryBlock("a", null, false)?.tone, "warning");
   });
 });
 

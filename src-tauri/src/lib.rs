@@ -113,6 +113,12 @@ fn build_console_filter() -> env_filter::Filter {
     builder.build()
 }
 
+/// Event emitted once `show_main_window` has shown the main window (feature 001, AC-002). The
+/// settings resume their status polling on it, since a reopened window does not always get a
+/// focus event (refused `set_focus`, Windows foreground lock, Wayland). The name is mirrored by
+/// `MAIN_WINDOW_SHOWN_EVENT` in `src/components/settings/microphone-priority/window-visibility.ts`.
+const MAIN_WINDOW_SHOWN_EVENT: &str = "main-window-shown";
+
 fn show_main_window(app: &AppHandle) {
     if let Some(main_window) = app.get_webview_window("main") {
         if let Err(e) = main_window.unminimize() {
@@ -129,6 +135,10 @@ fn show_main_window(app: &AppHandle) {
             if let Err(e) = app.set_activation_policy(tauri::ActivationPolicy::Regular) {
                 log::error!("Failed to set activation policy to Regular: {}", e);
             }
+        }
+        // Emitted after show(), so a visibility question asked on it finds the window visible.
+        if let Err(e) = app.emit(MAIN_WINDOW_SHOWN_EVENT, ()) {
+            log::error!("Failed to emit {}: {}", MAIN_WINDOW_SHOWN_EVENT, e);
         }
         return;
     }

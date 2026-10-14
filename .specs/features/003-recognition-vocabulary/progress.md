@@ -59,6 +59,21 @@ Handy window, no native capture, no keyboard check in the app yet: pending, with
 
 Evidence in `proofs/claude-ui-fix1/` (`summary.txt`, `harness/checks.txt` and captures, mocked IPC).
 
+**UI hardening pass** (2026-10-14, branch `fix/ui-hardening-a`; warnings of the UI delivery review
+round 2, `combined` PASS). Fixed:
+- Apply is made inactive with `aria-disabled` (never `disabled`), so a focused Apply keeps the focus
+  while it sends and after a failed Apply; activating it while inactive does nothing;
+- after a successful Retry the focus goes to a stable point: the term input (Add or removal) or
+  "Paste a list…" (Apply, the paste box closes);
+- Retry of a failed Apply follows the Apply rule on the preview reread after the failure: a preview that
+  cannot be applied sends nothing and shows its note in a toast, a merge that adds nothing is never sent
+  (also refused by the store's `apply`), a success shows the same "Terms added" toast as Apply;
+- `AddButton` and `CustomWords` are 30 lines or fewer (`addFromButton`, `AddHint`, `vocabularyScreen`,
+  `StatusView`).
+
+Evidence in `proofs/claude-hardening/summary.txt`. Not changed: Apply's focus ring (`primary` variant),
+to check in the real-window keyboard proof with Julien.
+
 ## Resume point
 
 The UI is built and its delivery-review findings of round 1 are fixed. Next: the delivery review reruns

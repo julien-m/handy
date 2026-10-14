@@ -18,7 +18,7 @@ import { useReplacementFiles } from "./file-store";
 import { useReplacementText } from "./text-store";
 import { screenId, type ScreenId } from "./rules-model";
 import { showsRuleList } from "./editor-model";
-import { useEditorLifecycle } from "./use-editor-lifecycle";
+import { useCommitInFlight, useEditorLifecycle } from "./use-editor-lifecycle";
 import { useDraftGate } from "./draft-gate";
 import { RulesHeader } from "./rules-header";
 import { RuleAddForm } from "./rule-add-form";
@@ -74,6 +74,7 @@ const useScreen = (view: EditorView, adding: boolean): ScreenId => {
 interface EditorActions {
   importing: boolean;
   exporting: boolean;
+  busy: boolean;
   onView: (view: EditorView) => void;
   onImport: () => void;
   onExport: () => void;
@@ -86,6 +87,7 @@ const useEditorActions = (
   const { t } = useTranslation();
   const importing = useReplacementFiles((state) => state.phase !== "idle");
   const exporting = useReplacementFiles((state) => state.exporting);
+  const busy = useCommitInFlight();
   const onView = (target: EditorView) => {
     if (useReplacementEditor.getState().view === target) return;
     gate(() => {
@@ -98,7 +100,7 @@ const useEditorActions = (
     gate(() => void useReplacementFiles.getState().pickImport());
   // Export writes the saved rules; unsaved edits are not part of it, so it needs no gate.
   const onExport = () => void exportWithFeedback(t);
-  return { importing, exporting, onView, onImport, onExport };
+  return { importing, exporting, busy, onView, onImport, onExport };
 };
 
 /** Export the saved rules and confirm the outcome with a toast. */

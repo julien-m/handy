@@ -241,6 +241,32 @@ export interface ProviderFixChange {
   value: string;
 }
 
+/** Provider setting written by an inline fix, as the settings store names it. */
+export type ProviderFixSetting = "api_key" | "base_url";
+
+/**
+ * Setting an inline fix writes. The endpoint fix writes the base URL alone: the API group's
+ * `updatePostProcessBaseUrl` also clears the provider's model (behavior from before 005, kept
+ * there), which would leave a prompt that uses the default provider without a model it cannot
+ * set from the editor.
+ * @param fix Missing item the field sets.
+ * @returns The setting to write.
+ */
+export const fixSettingOf = (
+  fix: ProviderFixChange["fix"],
+): ProviderFixSetting => (fix === "api_key" ? "api_key" : "base_url");
+
+/**
+ * React key of the inline fix field: one field per missing item and provider, so a value typed
+ * for one provider is never saved for another one the prompt switched to.
+ * @param fix Missing item the field sets.
+ * @param providerId Provider the prompt resolves to.
+ */
+export const fixFieldKeyOf = (
+  fix: ProviderFixChange["fix"],
+  providerId: string,
+): string => `${fix}:${providerId}`;
+
 /**
  * Current value of the setting a fix field edits.
  * @param settings Provider configuration of the settings.
