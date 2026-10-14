@@ -1,9 +1,54 @@
+/*
+ * Penflow theme for the Handy mockups (light theme).
+ * Mirrors src/styles/theme.css and src/overlay/RecordingOverlay.css:
+ * background #fbfbfb, text #0f0f0f, logo pink #faa2ca, mid-gray borders.
+ * Accessibility adjustments (WCAG AA, 4.5:1 for 12-14px text):
+ * - primary #b83a73 is a deeper shade of the UI pink #da5893, because white
+ *   text on #da5893 reaches only 3.6:1;
+ * - status text colors are darker than the app's #d97706 / #dc2626 so they
+ *   stay readable on their tinted surfaces.
+ * Inter stands in for the system UI font in renders.
+ */
 :root {
- --background: #FAFAF9;
- --foreground: #1A1A1A;
- --muted-foreground: #57534E;
- --primary: #D97706;
- --border: #D6D3D1;
- --font-family: Inter;
- --radius: 8px;
+  --background: #FBFBFB;
+  --foreground: #0F0F0F;
+  --card: #FFFFFF;
+  --card-foreground: #0F0F0F;
+  --panel: #FFFFFF;
+  --panel-2: #F4F4F4;
+  --primary: #B83A73;
+  --primary-foreground: #FFFFFF;
+  --border: #E2E2E2;
+  --input: #CFCFCF;
+  --muted: #EFEFEF;
+  --muted-foreground: #6B6B6B;
+  --accent: #FDEDF4;
+  --destructive: #B91C1C;
+  --success: #166534;
+  --warning: #92400E;
+  --info: #1D4ED8;
+  --ring: #B83A73;
+  --radius: 8px;
+  --font-sans: Inter;
+  --font-mono: JetBrains Mono;
+  --font-size-xs: 12px;
+  --font-size-sm: 13px;
+  --font-size-base: 14px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+
+  --palette-logo: #FAA2CA;
+  --palette-desktop: #E7E5E1;
+  --palette-success-surface: #EAF6EE;
+  --palette-warning-surface: #FEF6E7;
+  --palette-error-surface: #FDECEC;
+  --palette-info-surface: #EAF0FD;
+  --palette-app-green: #0F7B61;
+  --palette-app-blue: #2563EB;
+  --palette-app-orange: #C2410C;
+  --palette-app-gray: #52525B;
+
+  --radius-sm: 6px;
+  --radius-chip: 10px;
+  --radius-pill: 20px;
 }
