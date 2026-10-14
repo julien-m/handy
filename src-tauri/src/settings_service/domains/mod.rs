@@ -2,11 +2,12 @@
 //! current settings and the request, what to answer or which typed change to make; the framework
 //! does the rest the same way for every domain: action aliases, live-only refusal, dry-run preview
 //! through the commit path's own validation, and one atomic commit through the shared backend.
-//! `output` (008) and `shortcuts` (004) are registered in this build; later features add their
-//! domain to `production`.
+//! `output` (008), `shortcuts` (004) and `vocabulary` (003) are registered in this build; later
+//! features add their domain to `production`.
 pub mod live_operation;
 pub mod output;
 pub mod shortcuts;
+pub mod vocabulary;
 
 use super::{
     edit::{SettingsEdit, SettingsEditFn},
@@ -100,7 +101,11 @@ pub trait Domain: Sync {
 
 /// Domains of this build, in help order.
 pub fn production() -> &'static [&'static dyn Domain] {
-    &[&output::OutputDomain, &shortcuts::ShortcutsDomain]
+    &[
+        &output::OutputDomain,
+        &shortcuts::ShortcutsDomain,
+        &vocabulary::VocabularyDomain,
+    ]
 }
 /// Shared verb aliases: every domain accepts `edit` for `update` and `delete` for `remove`.
 pub fn canonical_action(action: &str) -> &str {

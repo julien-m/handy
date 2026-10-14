@@ -18,6 +18,8 @@ pub enum View {
     Export,
     /// Shortcut lists (`handy settings shortcuts`): one line per action.
     Shortcuts,
+    /// Vocabulary list (`handy settings vocabulary list`): one line per stored term.
+    Terms,
     Help,
 }
 impl View {
@@ -41,6 +43,7 @@ impl View {
         match (action, arguments) {
             _ if dry_run => Self::Preview,
             _ if domain == "shortcuts" => Self::Shortcuts,
+            ("list", _) if domain == "vocabulary" => Self::Terms,
             ("export", _) => Self::Export,
             ("get", 0) => Self::AllSettings,
             ("get", _) => Self::OneSetting,
@@ -107,6 +110,7 @@ fn success_text(view: View, envelope: &Value) -> String {
         ),
         View::Export => data["content"].as_str().unwrap_or_default().to_owned(),
         View::Shortcuts => shortcut_lines(data),
+        View::Terms => term_lines(&data["terms"]),
         View::Help => data["help"].as_str().unwrap_or_default().to_owned(),
     }
 }
@@ -141,6 +145,16 @@ fn shortcut_lines(data: &Value) -> String {
                 plain(&action["action_id"]),
                 plain(&action["default_shortcut"])
             )
+        })
+        .collect()
+}
+/// `index: term` per stored term, with the reason it is not sent (`[duplicate]`) when any.
+fn term_lines(terms: &Value) -> String {
+    let rows = terms.as_array().map(Vec::as_slice).unwrap_or_default();
+    rows.iter()
+        .map(|row| match row["issue"].as_str() {
+            Some(issue) => format!("{}: {} [{issue}]\n", row["index"], plain(&row["term"])),
+            None => format!("{}: {}\n", row["index"], plain(&row["term"])),
         })
         .collect()
 }

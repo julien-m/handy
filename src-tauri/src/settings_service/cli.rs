@@ -9,7 +9,7 @@ use super::{
 };
 use crate::cli::{
     ChangeOptions, CliArgs, CliCommand, OutputAction, SettingsArgs, SettingsCommand,
-    ShortcutsAction,
+    ShortcutsAction, VocabularyAction, VocabularyImportMode,
 };
 use clap::{error::ErrorKind, Parser};
 use serde_json::json;
@@ -42,7 +42,11 @@ fn run(args: &CliArgs, settings: &SettingsArgs) -> i32 {
     let reply = if mixes_app_flags(args) {
         Reply::failure(SettingsError::new(SettingsErrorCode::UsageError))
     } else {
-        route(&operation)
+        // Files and stdin belong to this process: read before routing.
+        match with_input(operation.clone(), &settings.operation) {
+            Ok(operation) => route(&operation),
+            Err(error) => Reply::failure(error),
+        }
     };
     emit(View::of(&operation), &reply, args.json || settings.json)
 }
@@ -62,6 +66,53 @@ pub fn operation(command: &SettingsCommand) -> SettingsOperation {
         },
         SettingsCommand::Output(output) => output_operation(&output.action),
         SettingsCommand::Shortcuts(shortcuts) => shortcuts_operation(&shortcuts.action),
+        SettingsCommand::Vocabulary(vocabulary) => vocabulary_operation(&vocabulary.action),
+    }
+}
+/// Domain input named by the command (a vocabulary import source), read as bounded UTF-8 text.
+///
+/// # Errors
+/// The refusals of `input::read_source` (unreadable file, terminal stdin, size, encoding).
+fn with_input(
+    mut operation: SettingsOperation,
+    command: &SettingsCommand,
+) -> Result<SettingsOperation, SettingsError> {
+    let SettingsCommand::Vocabulary(vocabulary) = command else {
+        return Ok(operation);
+    };
+    let VocabularyAction::Import { source, .. } = &vocabulary.action else {
+        return Ok(operation);
+    };
+    if let SettingsOperation::Domain { input, .. } = &mut operation {
+        *input = Some(super::input::read_source(source)?);
+    }
+    Ok(operation)
+}
+/// Wire operation of a vocabulary action; an import's input is attached by `run`.
+// @spec FR-005: Vocabulary CLI commands — .specs/features/003-recognition-vocabulary/spec.md#fr-005
+fn vocabulary_operation(action: &VocabularyAction) -> SettingsOperation {
+    let none = ChangeOptions::default();
+    let (name, arguments, options) = match action {
+        VocabularyAction::List => ("list", Vec::new(), &none),
+        VocabularyAction::Add { term, options } => ("add", vec![term.clone()], options),
+        VocabularyAction::Remove { term, options } => ("remove", vec![term.clone()], options),
+        VocabularyAction::Import { mode, options, .. } => {
+            let mode = match mode {
+                VocabularyImportMode::Merge => "merge",
+                VocabularyImportMode::Replace => "replace",
+            };
+            ("import", vec![mode.to_owned()], options)
+        }
+        VocabularyAction::Export { target } => ("export", vec![target.clone()], &none),
+        VocabularyAction::Status => ("status", Vec::new(), &none),
+    };
+    SettingsOperation::Domain {
+        domain: "vocabulary".to_owned(),
+        action: name.to_owned(),
+        arguments,
+        input: None,
+        dry_run: options.dry_run,
+        expected_revision: options.expected_revision.map(super::protocol::Revision),
     }
 }
 /// Wire operation of a shortcuts-domain action.
