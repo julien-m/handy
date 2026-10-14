@@ -105,35 +105,8 @@ fn replace(current: &[String], next: &[String]) -> Result<Vec<String>, SettingsE
     if is_subsequence(next, current) {
         return Ok(next.to_vec());
     }
-    let mut saved: HashMap<&str, usize> = HashMap::new();
-    for term in current {
-        *saved.entry(term.as_str()).or_default() += 1;
-    }
-    let kept = next
-        .iter()
-        .map(|term| take(&mut saved, term))
-        .collect::<Vec<_>>();
-    let mut keys = next
-        .iter()
-        .zip(&kept)
-        .filter(|(_, kept)| **kept)
-        .map(|(term, _)| term_key(term))
-        .collect::<HashSet<_>>();
-    let mut items = Vec::new();
-    let mut result = Vec::with_capacity(next.len());
-    for (index, (term, kept)) in next.iter().zip(&kept).enumerate() {
-        if *kept {
-            result.push(term.clone());
-            continue;
-        }
-        match validate_term(term) {
-            Err(issue) => items.push((index, issue)),
-            Ok(valid) if !keys.insert(valid.key.clone()) => {
-                items.push((index, TermIssue::Duplicate));
-            }
-            Ok(valid) => result.push(valid.text),
-        }
-    }
+    let kept = kept_occurrences(current, next);
+    let (result, items) = validate_new_terms(next, &kept);
     if !items.is_empty() {
         return Err(refused(items));
     }
@@ -142,6 +115,38 @@ fn replace(current: &[String], next: &[String]) -> Result<Vec<String>, SettingsE
         return Err(SettingsError::new(SettingsErrorCode::LimitExceeded));
     }
     Ok(result)
+}
+
+/// For each entry of `next`, whether it is an unchanged saved occurrence.
+fn kept_occurrences(current: &[String], next: &[String]) -> Vec<bool> {
+    let mut saved: HashMap<&str, usize> = HashMap::new();
+    for term in current {
+        *saved.entry(term.as_str()).or_default() += 1;
+    }
+    next.iter().map(|term| take(&mut saved, term)).collect()
+}
+
+/// The list with new terms validated, and the refused positions; a new term may not share its
+/// key with any other entry, kept legacy occurrences included.
+fn validate_new_terms(next: &[String], kept: &[bool]) -> (Vec<String>, Vec<(usize, TermIssue)>) {
+    let entries = || next.iter().zip(kept);
+    let mut keys = entries()
+        .filter(|(_, kept)| **kept)
+        .map(|(term, _)| term_key(term))
+        .collect::<HashSet<_>>();
+    let mut items = Vec::new();
+    let mut result = Vec::with_capacity(next.len());
+    for (index, (term, kept)) in entries().enumerate() {
+        match (*kept, validate_term(term)) {
+            (true, _) => result.push(term.clone()),
+            (false, Err(issue)) => items.push((index, issue)),
+            (false, Ok(valid)) if !keys.insert(valid.key.clone()) => {
+                items.push((index, TermIssue::Duplicate));
+            }
+            (false, Ok(valid)) => result.push(valid.text),
+        }
+    }
+    (result, items)
 }
 
 /// Use one saved occurrence of `term`, if any is left.

@@ -426,6 +426,22 @@ async removeVocabularyOccurrence(index: number, term: string, expectedRevision: 
 }
 },
 /**
+ * Status of the vocabulary for the selected model (one of five), from the loaded model and the
+ * exact preparation of the next request; never loads a model.
+ * 
+ * # Errors
+ * `internal_error` with reason `context_budget_unverified` for a model whose declared mechanism
+ * has no documented budget; `unavailable` before the transcription manager exists.
+ */
+async getVocabularyStatus() : Promise<Result<VocabularyStatusReport, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("get_vocabulary_status") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
  * Temporarily unregister all bindings while the user is recording a
  * shortcut in the UI. This avoids firing actions while keys are recorded.
  */
@@ -1236,6 +1252,10 @@ error: string | null;
  */
 edit_error: ShortcutEditError | null }
 /**
+ * Unit of a context budget.
+ */
+export type BudgetUnit = "tokens"
+/**
  * Script applied to Mandarin and Cantonese output. Other languages are never
  * converted.
  */
@@ -1261,6 +1281,26 @@ export type ConflictKind =
  * A modifier-only shortcut would fire together with the other one.
  */
 "modifier_overlap"
+/**
+ * Documented context budget of one mechanism.
+ */
+export type ContextBudget = { value: number; unit: BudgetUnit }
+/**
+ * How the vocabulary reaches the engine.
+ */
+export type ContextMechanism = 
+/**
+ * Whisper run extension `initial_prompt`, terms joined with ", ".
+ */
+"whisper_initial_prompt" | 
+/**
+ * Generic `RunOptions::vocabulary` (Qwen3-ASR, Fun-ASR, Granite with the GGUF capability).
+ */
+"generic_vocabulary" | 
+/**
+ * Generic `RunOptions::prompt` used as recognition context.
+ */
+"context_prompt"
 export type CustomSounds = { start: boolean; stop: boolean }
 /**
  * Badge menu of one dictation: applications, then "Frontmost app at the end".
@@ -1352,6 +1392,30 @@ export type ErrorReason =
  * for this build (003): a durable internal defect, never a retryable state.
  */
 "context_budget_unverified"
+/**
+ * Whether the report describes a prepared next request or a dispatched one.
+ */
+export type EvidenceKind = 
+/**
+ * The next request, prepared exactly as a dictation would; no run happened.
+ */
+"prepared"
+/**
+ * A saved term that is not sent, at its stored position.
+ */
+export type ExcludedTerm = { index: number; term: string; reason: ExclusionReason }
+/**
+ * Why a saved term does not reach the engine.
+ */
+export type ExclusionReason = "empty" | "too_long" | "line_break" | "forbidden_character" | "duplicate" | "over_capacity" | 
+/**
+ * Valid, but after the first term that did not fit the budget.
+ */
+"over_budget" | 
+/**
+ * Valid, but this model or mode receives no context at all.
+ */
+"no_context"
 export type GpuDeviceOption = { id: string; name: string; total_vram_mb: number }
 /**
  * One history row. `file_name` is `None` for a text-only row (no audio recording).
@@ -1518,6 +1582,10 @@ export type PreviewLine = { index: number;
  * Validated text (trimmed, whitespace collapsed).
  */
 term: string }
+/**
+ * Recognition mode of the selected model's dictations.
+ */
+export type RecognitionMode = "batch" | "streaming"
 export type RecordingRetentionPeriod = "never" | "preserve_limit" | "days_3" | "weeks_2" | "months_3"
 /**
  * The single per-dictation decision "insert or recover", and the only Enter veto.
@@ -1720,6 +1788,31 @@ export type ShortcutEditError = { code: "shortcut_conflict"; conflict: ShortcutC
 export type ShortcutEditResponse = { binding: ShortcutBinding | null; error: ShortcutEditError | null }
 export type SoundTheme = "marimba" | "pop" | "custom"
 /**
+ * Why a status was reached, where the status alone does not say it.
+ */
+export type StatusReason = 
+/**
+ * `no_term_sent`: the vocabulary is empty.
+ */
+"empty_vocabulary" | 
+/**
+ * `no_term_sent`: every saved term is invalid, a duplicate or over capacity.
+ */
+"invalid_terms_only" | 
+/**
+ * `no_term_sent`: the first eligible term does not fit the budget.
+ */
+"over_budget" | 
+/**
+ * `unknown_until_model_loads`: the selected model is not loaded.
+ */
+"model_not_loaded" | 
+/**
+ * `unknown_until_model_loads`: the model is loaded but the engine did not answer the
+ * capability query in time (for example during a dictation).
+ */
+"capability_query_unanswered"
+/**
  * A conflict between two stored shortcuts, reported as a warning. Upgrades
  * keep such shortcuts registered exactly as before (decision 2026-10-12).
  */
@@ -1839,6 +1932,14 @@ applicable: boolean }
  * is excluded from the recognition context.
  */
 export type VocabularyList = { revision: number; terms: Occurrence[] }
+/**
+ * The five statuses of the spec (AC-003).
+ */
+export type VocabularyStatus = "used_during_recognition" | "no_term_sent" | "not_supported" | "not_used_streaming" | "unknown_until_model_loads"
+/**
+ * Status of the vocabulary for the selected model, with the terms sent and not sent.
+ */
+export type VocabularyStatusReport = { model_id: string; mode: RecognitionMode; status: VocabularyStatus; reason: StatusReason | null; mechanism: ContextMechanism | null; budget: ContextBudget | null; terms_sent: string[]; terms_not_sent: ExcludedTerm[]; evidence_kind: EvidenceKind }
 export type WindowsMicrophonePermissionStatus = { supported: boolean; overall_access: PermissionAccess; device_access: PermissionAccess; app_access: PermissionAccess; desktop_app_access: PermissionAccess }
 
 /** tauri-specta globals **/

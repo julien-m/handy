@@ -87,30 +87,23 @@ mod tests {
             .into_iter()
             .map(|occurrence| (occurrence.term, occurrence.issue))
             .collect::<Vec<_>>();
+        let expected = [
+            None,
+            Some(TermIssue::Duplicate),
+            Some(TermIssue::ForbiddenCharacter),
+            None,
+            Some(TermIssue::Empty),
+        ];
         assert_eq!(
             issues,
-            vec![
-                ("Handy".to_owned(), None),
-                ("handy".to_owned(), Some(TermIssue::Duplicate)),
-                ("<bad>".to_owned(), Some(TermIssue::ForbiddenCharacter)),
-                ("  spaced  ".to_owned(), None),
-                (String::new(), Some(TermIssue::Empty)),
-            ]
+            stored.iter().cloned().zip(expected).collect::<Vec<_>>()
         );
         let eligible = eligible_terms(&stored);
-        assert_eq!(
-            eligible,
-            vec![
-                EligibleTerm {
-                    index: 0,
-                    text: "Handy".into()
-                },
-                EligibleTerm {
-                    index: 3,
-                    text: "spaced".into()
-                },
-            ]
-        );
+        let eligible = eligible
+            .iter()
+            .map(|t| (t.index, t.text.as_str()))
+            .collect::<Vec<_>>();
+        assert_eq!(eligible, vec![(0, "Handy"), (3, "spaced")]);
     }
 
     #[test]

@@ -1,18 +1,24 @@
 //! Typed settings UI commands of the recognition vocabulary (feature 003): read the saved list
 //! with its legacy flags, preview a paste, and commit additions, imports and per-occurrence
 //! removals through the same validator and commit path as `handy settings vocabulary`.
+use crate::managers::transcription::TranscriptionManager;
 use crate::recognition_vocabulary::{
     edits::{refuse_preview, VocabularyEdit},
     occurrences::{inspect, Occurrence},
     preview::{prepare_import, ImportMode, ImportPreview},
+    status::VocabularyStatusReport,
 };
 use crate::settings::AppSettings;
 use crate::settings_service::{
-    command_error::SettingsCommandError, protocol::Revision, tauri_adapter as live_settings,
+    command_error::SettingsCommandError,
+    errors::{SettingsError, SettingsErrorCode},
+    protocol::Revision,
+    tauri_adapter as live_settings,
 };
 use serde::Serialize;
 use specta::Type;
-use tauri::AppHandle;
+use std::sync::Arc;
+use tauri::{AppHandle, Manager};
 
 /// The saved vocabulary at one revision: every stored occurrence, unchanged, with the reason it
 /// is excluded from the recognition context.
@@ -120,4 +126,28 @@ pub async fn remove_vocabulary_occurrence(
         term,
     };
     commit(app, edit, expected_revision).await
+}
+
+/// Status of the vocabulary for the selected model (one of five), from the loaded model and the
+/// exact preparation of the next request; never loads a model.
+///
+/// # Errors
+/// `internal_error` with reason `context_budget_unverified` for a model whose declared mechanism
+/// has no documented budget; `unavailable` before the transcription manager exists.
+// @spec FR-002: Status command for the settings UI — .specs/features/003-recognition-vocabulary/spec.md#fr-002
+#[tauri::command]
+#[specta::specta]
+pub async fn get_vocabulary_status(
+    app: AppHandle,
+) -> Result<VocabularyStatusReport, SettingsCommandError> {
+    live_settings::blocking(move || {
+        let manager = app
+            .try_state::<Arc<TranscriptionManager>>()
+            .ok_or_else(|| SettingsError::new(SettingsErrorCode::Unavailable))?;
+        let settings = live_settings::current(&app);
+        Ok(manager
+            .vocabulary_status(&settings)
+            .map_err(SettingsError::from)?)
+    })
+    .await
 }

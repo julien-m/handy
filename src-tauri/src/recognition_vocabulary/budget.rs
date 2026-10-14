@@ -96,18 +96,16 @@ pub fn fit_whisper_prefix(
     counter: &dyn TokenCounter,
 ) -> Result<FittedPrefix, String> {
     let budget = budget as usize;
+    let mut fitted = FittedPrefix { sent: 0, tokens: 0 };
     if terms.is_empty() {
-        return Ok(FittedPrefix { sent: 0, tokens: 0 });
+        return Ok(fitted);
     }
     // Common case first: the whole list fits in one tokenizer call.
-    let all = prompt_tokens(terms, terms.len(), counter)?;
-    if all <= budget {
-        return Ok(FittedPrefix {
-            sent: terms.len(),
-            tokens: all,
-        });
+    let tokens = prompt_tokens(terms, terms.len(), counter)?;
+    if tokens <= budget {
+        let sent = terms.len();
+        return Ok(FittedPrefix { sent, tokens });
     }
-    let mut fitted = FittedPrefix { sent: 0, tokens: 0 };
     for count in 1..terms.len() {
         let tokens = prompt_tokens(terms, count, counter)?;
         // Stop at the first term that overflows: the sent list stays an ordered prefix.

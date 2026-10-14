@@ -7,4 +7,5 @@ pub mod context;
 pub mod edits;
 pub mod occurrences;
 pub mod preview;
+pub mod status;
 pub mod validation;

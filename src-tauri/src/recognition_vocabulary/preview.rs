@@ -82,6 +82,21 @@ pub fn split_lines(input: &str) -> Vec<&str> {
 /// wins, later duplicates are skipped without error, invalid lines are reported by index.
 // @spec FR-001: Bulk paste preview and atomic candidate — .specs/features/003-recognition-vocabulary/spec.md#fr-001
 pub fn prepare_import(current: &[String], input: &str, mode: ImportMode) -> ImportPreview {
+    let mut preview = classify_lines(current, input, mode);
+    let added = preview.added.iter().map(|line| line.term.clone());
+    preview.candidate = match mode {
+        ImportMode::Merge => current.iter().cloned().chain(added).collect(),
+        ImportMode::Replace => added.collect(),
+    };
+    preview.over_capacity = match mode {
+        ImportMode::Merge => !preview.added.is_empty() && preview.candidate.len() > MAX_TERMS,
+        ImportMode::Replace => preview.candidate.len() > MAX_TERMS,
+    };
+    preview
+}
+
+/// Sort the lines of `input` into added, duplicate and invalid ones (candidate not built yet).
+fn classify_lines(current: &[String], input: &str, mode: ImportMode) -> ImportPreview {
     let mut seen: HashSet<String> = match mode {
         ImportMode::Merge => current.iter().map(|term| term_key(term)).collect(),
         ImportMode::Replace => HashSet::new(),
@@ -108,15 +123,6 @@ pub fn prepare_import(current: &[String], input: &str, mode: ImportMode) -> Impo
             }),
         }
     }
-    let added = preview.added.iter().map(|line| line.term.clone());
-    preview.candidate = match mode {
-        ImportMode::Merge => current.iter().cloned().chain(added).collect(),
-        ImportMode::Replace => added.collect(),
-    };
-    preview.over_capacity = match mode {
-        ImportMode::Merge => !preview.added.is_empty() && preview.candidate.len() > MAX_TERMS,
-        ImportMode::Replace => preview.candidate.len() > MAX_TERMS,
-    };
     preview
 }
 

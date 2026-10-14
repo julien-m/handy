@@ -729,6 +729,7 @@ pub fn run(cli_args: CliArgs) {
             commands::vocabulary::apply_vocabulary_import,
             commands::vocabulary::add_vocabulary_term,
             commands::vocabulary::remove_vocabulary_occurrence,
+            commands::vocabulary::get_vocabulary_status,
             shortcut::suspend_all_bindings,
             shortcut::resume_all_bindings,
             shortcut::change_mute_while_recording_setting,
