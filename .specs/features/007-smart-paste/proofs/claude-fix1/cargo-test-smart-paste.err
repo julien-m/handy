@@ -1,0 +1,7 @@
+    Blocking waiting for file lock on artifact directory
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/007-smart-paste/src-tauri)
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 34.80s
+     Running unittests src/lib.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/handy_app_lib-4698937194a84f46)
+     Running tests/smart_paste.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/smart_paste-b4979ff4847f1e8e)

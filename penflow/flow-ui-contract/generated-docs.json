@@ -1,7 +1,7 @@
 {
   "contract": {
     "path": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-    "sha256": "6e9c03b37e3c8531414854803caafdd45fc7137f7b94b3b796c7f8be58e386e0"
+    "sha256": "cfb31c1088185ce6bfa3e9a33485d27a19f4fdbc1624b8de5ac35b393392364b"
   },
   "files": [
     {
@@ -11,6 +11,10 @@
     {
       "path": "flows/destination-application.md",
       "sha256": "33c8c99585b6467a6fae5f92334a67b81ddd0a24af02f485800ac0ed93559e80"
+    },
+    {
+      "path": "flows/handy-reference.md",
+      "sha256": "70e3ce49d0f043a1b26bc186de3d85ac7bc8b1dbacd322105df3622486b325f2"
     },
     {
       "path": "flows/microphone-priority.md",
@@ -43,6 +47,10 @@
     {
       "path": "flows/word-replacements.md",
       "sha256": "9e05ee820ae1c5db234251dde1fa81a17adc93e7c9a44725ac8260eee46acbb7"
+    },
+    {
+      "path": "screens/handy-reference.md",
+      "sha256": "147e0d80996ea53dadcb23c0966b2e50d8aa937166a3b6bc93615fc1a28d6ed8"
     },
     {
       "path": "screens/microphone-settings-empty.md",

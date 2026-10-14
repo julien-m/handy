@@ -820,6 +820,14 @@ pub async fn change_paste_method_setting(
     live_settings::write(app, "paste_method", method).await
 }
 
+/// Whether the paste method selector offers smart paste: macOS only, and only once dictation
+/// delivers through it (feature 007 rollout gate, `smart_paste::setting_policy`).
+#[tauri::command]
+#[specta::specta]
+pub fn is_smart_paste_available() -> bool {
+    crate::smart_paste::setting_policy::Rollout::CURRENT.is_active()
+}
+
 #[tauri::command]
 #[specta::specta]
 pub fn get_available_typing_tools() -> Vec<String> {

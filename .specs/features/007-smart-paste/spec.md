@@ -2,7 +2,7 @@
 feature: smart-paste
 title: Smart Paste
 priority: P1
-status: Planned
+status: In Progress
 created: 2026-10-12
 updated: 2026-10-13
 ---
@@ -14,7 +14,7 @@ updated: 2026-10-13
 - **Feature:** Smart Paste
 - **Branch:** None — specification only (program specified before `spec-ship`)
 - **Date:** 2026-10-12
-- **Status:** Planned
+- **Status:** In Progress
 - **Input:** Program item 7, scope replaced on 2026-10-12 by Julien's decision (relayed from Codex): replace the clipboard recovery window (10–15 seconds) with smart paste inspired by Spokenly; do not plan or implement the recovery window for now; keep number 7. Read the Spokenly smart-paste report (`.investigations/spokenly-smart-paste-2026-10-09/rapport.md`). Adopt its documented principles in Handy: multi-type save of the clipboard; transcript provided on demand by a pasteboard data provider; single first-read callback; current-host-only and transient marking; restoration after the read with a fallback delay and a `changeCount` guard that preserves any newer copy; strategy adapted to the application and the keyboard, selecting the ABC then US layout and restoring the keyboard afterwards. Static Spokenly constants: 300 ms / 800 ms, Jump Desktop 1.5 s / 3 s. Inserting through `AXSelectedText` stays a distinct method (superseded by the decision of 2026-10-13 below); destination and PIN act upstream. Verify real insertion and compatibility, because the reverse-engineering evidence is static. Decisions of 2026-10-13 (Julien): (1) a previous clipboard content or an earlier transcript must never be pasted by mistake: restore only after a read confirmed after the paste keystroke, once reads have been quiet for 300 ms after the last one, and never restore when no read occurred (the transcript stays and recovery is offered); (2) try direct insertion through the accessibility API first, verified by reading the field back, then fall back to the clipboard paste, then to the recovery bubble. Program item 8 requires the settings CLI to read and modify output behaviors.
 - **Feature Number:** 007
 
@@ -49,6 +49,12 @@ Feature: Smart paste restores the previous clipboard
     Given the clipboard was empty before the dictation
     When the restoration runs
     Then the clipboard is empty again
+  Scenario: Concealed or transient content is not restored
+    Given the clipboard holds a password copied from a password manager and marked concealed
+    And the paste method is smart paste and the clipboard paste is used
+    When a dictation produces "hello world" and TextEdit reads the clipboard after the paste keystroke
+    Then 300 ms after the last read the password is not put back
+    And the clipboard holds "hello world" for this Mac only, marked transient and concealed
 ```
 
 ```mermaid
@@ -61,7 +67,9 @@ flowchart TD
   F -- Yes --> G[Wait until 300 ms without any new read]
   F -- No --> H[Outcome: not read; transcript stays; never restore]
   G --> I{changeCount unchanged since publication?}
-  I -- Yes --> J[Restore saved content or clear]
+  I -- Yes --> P{Saved content marked concealed or transient?}
+  P -- No --> J[Restore saved content, current host only, or clear]
+  P -- Yes --> Q[Keep the transcript; never restore]
   I -- No --> K[Leave the newer content]
 ```
 
@@ -254,7 +262,7 @@ AC-001 to AC-007 belonged to the retired clipboard recovery window scope and are
 
 ### AC-009
 
-**Criterion:** Restoration requires a read observed after the paste keystroke. It runs once no new read has occurred for 300 ms after the last read, and at the latest 8 s after the first read if reads keep coming (for Jump Desktop, `com.p5sys.jump.mac.viewer`: 1.5 s of quiet). When no read is observed within 800 ms after the keystroke (3 s for Jump Desktop), the outcome is "not read", the saved snapshot is discarded and the previous content is never restored for that dictation: the transcript stays on the clipboard until the user or another application replaces it. A restoration puts back the saved items and types exactly, or clears the pasteboard if it was empty, only when the pasteboard `changeCount` still equals the value recorded at publication; otherwise it does nothing.
+**Criterion:** Restoration requires a read observed after the paste keystroke. It runs once no new read has occurred for 300 ms after the last read, and at the latest 8 s after the first read if reads keep coming (for Jump Desktop, `com.p5sys.jump.mac.viewer`: 1.5 s of quiet). When no read is observed within 800 ms after the keystroke (3 s for Jump Desktop), the outcome is "not read", the saved snapshot is discarded and the previous content is never restored for that dictation: the transcript stays on the clipboard until the user or another application replaces it. A restoration puts back the saved items and types exactly, or clears the pasteboard if it was empty, only when the pasteboard `changeCount` still equals the value recorded at publication; otherwise it does nothing. Restored content is current-host-only, so it is never sent again to the user's other devices. Content whose saved items carry `org.nspasteboard.ConcealedType` or `org.nspasteboard.TransientType` is never restored (decision 2026-10-13, see Clarifications): when the restoration would run, the transcript stays on the clipboard instead, as current-host-only text with the transient, concealed and auto-generated markers, under the same `changeCount` guard.
 **Priority:** P1 | **Story:** Stories 1 and 2
 
 ### AC-010
@@ -399,10 +407,14 @@ FR-001 to FR-004 belonged to the retired scope and are not reused.
 - `[ASSUMED]` Screen Sharing: the transcript stays on the clipboard for the remote side, since no local paste occurs; Spokenly's specific focus path for Screen Sharing is not reproduced.
 - Residual limitation: an application that reads again more than 300 ms after its last read (or after the 8 s cap) receives the restored content; without any read the previous content is never restored. Native checks (AC-016) measure this with the chosen delays.
 - Known limitation: with Screen Sharing the previous clipboard is not restored, because the transcript is handed to the remote side.
+- Known limitation (implementation, 2026-10-13, to confirm with Julien): with clipboard handling "copy to clipboard", the transcript becomes ordinary plain text when "not read" is declared (AC-013); the pasteboard then serves later reads without any provider callback, so the late-read message of AC-012 cannot be produced in that mode.
 - To verify natively: whether AppKit calls the data provider again after a clipboard manager read it before the keystroke; a missing second call would produce a false "not read".
 - Destination and PIN (006, 009) act before smart paste; direct accessibility insertion is the first step of smart paste (AC-017).
 - Read attribution: each dictation publishes its own on-demand item; reads served for an item of an earlier dictation never start or delay the restoration of the current one.
 - Program context: specified in list order (001–010); the settings CLI foundation (008) ships first.
+
+- Decision `007-smart-paste:AC-009` / `decision:ac-009:concealed-or-transient-content-not-restored`: User decision 2026-10-13 (Julien, relayed by the orchestrator after independent audit B, finding MAJOR-1): clipboard content marked `org.nspasteboard.ConcealedType` or `org.nspasteboard.TransientType` is not restored after a dictation. Other content is restored normally, always as current-host-only content (`currentHostOnly`). Reason: a dictation changes `changeCount`, so a password manager's automatic clearing no longer fires; restoring the secret would leave it on the clipboard indefinitely.
+<!-- livespec-clarification:{"requirement_id": "007-smart-paste:AC-009", "decision_key": "decision:ac-009:concealed-or-transient-content-not-restored", "evidence_hash": "a5432975c454211298925d5ad7e473f089411f64735971530ee67b3a8e592a3f", "answer": "User decision 2026-10-13 (Julien, relayed by the orchestrator after independent audit B, finding MAJOR-1): clipboard content marked `org.nspasteboard.ConcealedType` or `org.nspasteboard.TransientType` is not restored after a dictation. Other content is restored normally, always as current-host-only content (`currentHostOnly`). Reason: a dictation changes `changeCount`, so a password manager's automatic clearing no longer fires; restoring the secret would leave it on the clipboard indefinitely."} -->
 
 ## QE Analysis
 
@@ -431,6 +443,7 @@ FR-001 to FR-004 belonged to the retired scope and are not reused.
 - Pasteboard content that cannot be read as data (promised by another app and failing): that type is skipped and listed in the debug log by type name only; the other types are restored.
 - Layout switch fails: Cmd+V is sent with the current source, and the outcome still depends on the read.
 - Second dictation before the first restoration: no intermediate restoration happens; if `changeCount` is unchanged since the first publication, the first snapshot stays the content to restore after the second dictation, otherwise the current content is saved as the new snapshot.
+- Password manager or other concealed or transient content on the clipboard (`org.nspasteboard.ConcealedType` or `org.nspasteboard.TransientType` on any saved item, including a type that could not be saved): it is never restored, its bytes are not kept, and the transcript stays instead, as current-host-only text with Handy's markers. Handy's own earlier transcript item carries these markers, so after "not read" a second dictation does not put the first transcript back either. Content marked only `org.nspasteboard.AutoGeneratedType` is restored normally.
 - Handy quits before restoration: the pending restoration runs before exit only when a read was observed and `changeCount` is unchanged; otherwise the transcript stays.
 
 ## Success Criteria

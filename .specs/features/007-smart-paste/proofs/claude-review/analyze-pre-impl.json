@@ -1,0 +1,268 @@
+{
+  "findings": [],
+  "coverage": [
+    {
+      "requirement_id": "007-smart-paste:AC-010",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-012",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-001",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-007",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-008",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-011",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-009",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-017",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-013",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-014",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-015",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-018",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:AC-016",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:FR-001",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:FR-004",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:FR-005",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:FR-006",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:FR-007",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:FR-008",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:FR-009",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:FR-010",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:FR-011",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:SC-001",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:SC-003",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:SC-004",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:SC-005",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:SC-008",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:SC-007",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md",
+        "implementation.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "007-smart-paste:SC-006",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    }
+  ],
+  "coverage_percent": 100.0,
+  "coverage_kind": "structural_reference",
+  "semantic_status": "covered",
+  "metrics": {
+    "total_requirements": 29,
+    "covered_requirements": 29,
+    "coverage_percent": 100.0,
+    "critical_count": 0,
+    "high_count": 0,
+    "implementation_present": 1
+  }
+}

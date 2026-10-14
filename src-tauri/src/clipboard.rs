@@ -778,6 +778,21 @@ fn should_send_auto_submit(auto_submit: bool, paste_method: PasteMethod) -> bool
     auto_submit && paste_method != PasteMethod::None
 }
 
+/// Press the automatic-submit key once through the shared Enigo instance (classic methods after
+/// their paste; smart paste after an Enter-eligible outcome).
+pub(crate) fn send_auto_submit(app_handle: &AppHandle, key: AutoSubmitKey) -> Result<(), String> {
+    with_enigo(app_handle, |enigo| send_return_key(enigo, key))
+}
+
+/// The text a paste method inserts: the transcript, plus a trailing space when enabled.
+pub fn with_trailing_space(text: String, settings: &AppSettings) -> String {
+    if settings.append_trailing_space {
+        format!("{text} ")
+    } else {
+        text
+    }
+}
+
 // @spec FR-002: Guard after the configured delay, before input — .specs/features/006-destination-application/spec.md#fr-002
 /// Insert `text` with the method of `settings`, a snapshot the caller read once for this
 /// insertion; `check` runs right before the first dispatch.
@@ -791,12 +806,7 @@ pub fn paste(
     let paste_delay_ms = settings.paste_delay_ms;
     let paste_delay_after_ms = settings.paste_delay_after_ms;
 
-    // Append trailing space if setting is enabled
-    let text = if settings.append_trailing_space {
-        format!("{} ", text)
-    } else {
-        text
-    };
+    let text = with_trailing_space(text, settings);
 
     info!(
         "Using paste method: {:?}, delay before: {}ms, delay after: {}ms",
@@ -853,6 +863,17 @@ pub fn paste(
                 check,
             )?
         }
+        PasteMethod::SmartPaste => {
+            // Smart paste never runs on this synchronous main-thread path: its actor needs the
+            // main run loop, so dictation dispatches it from a worker (`smart_paste::dispatch`,
+            // routed by `destination::delivery`). This branch is only reached when its rollout
+            // gate is closed. Never fall back to the classic fixed-delay paste here: it could
+            // paste the previous clipboard. "Copy to clipboard" still leaves the transcript.
+            if settings.clipboard_handling == ClipboardHandling::CopyToClipboard {
+                write_text_to_clipboard(&app_handle, &text)?;
+            }
+            return Err("Smart paste is not available in this build".into());
+        }
         PasteMethod::ExternalScript => {
             let script_path = settings
                 .external_script_path
@@ -866,9 +887,7 @@ pub fn paste(
 
     if should_send_auto_submit(settings.auto_submit, paste_method) {
         std::thread::sleep(Duration::from_millis(50));
-        if let Err(error) = with_enigo(&app_handle, |enigo| {
-            send_return_key(enigo, settings.auto_submit_key)
-        }) {
+        if let Err(error) = send_auto_submit(&app_handle, settings.auto_submit_key) {
             log::warn!("Paste succeeded, but auto-submit failed: {error}");
         }
     }

@@ -19,16 +19,23 @@ incremental = true # Compile your binary in smaller steps.
 name = "handy_app_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
-# [[bin]]
-# name = "cli"
-# path = "src/audio_toolkit/bin/cli.rs"
-
 [features]
+# Smart paste rollout gate (feature 007, `smart_paste::setting_policy`). Off: smart paste cannot be
+# selected, is not the macOS default, no migration moves anyone to it and dictation is unchanged.
+# On: dictation dispatches it (with 006's destination session when `destination-return` is on,
+# into the application in front otherwise). Open it only after the native AC-016 proof with the
+# maintainer (feature 007 implementation.md, "Rollout gates").
+smart-paste-dispatch = []
+
 # Destination return rollout gate (feature 006, `destination::rollout`). Off: dictation inserts as
 # before 006 (no capture, activation or pre-dispatch guard) and `return_to_dictation_app` is
 # refused as `unsupported_platform` by the UI and the CLI. Open it only after the native macOS
 # activation and guard proof with the maintainer and the Penflow-certified destination UI.
 destination-return = []
+
+# [[bin]]
+# name = "cli"
+# path = "src/audio_toolkit/bin/cli.rs"
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
@@ -204,6 +211,17 @@ transcribe-cpp = { version = "0.3.1", default-features = false, features = [
 [patch.crates-io]
 tao = { git = "https://github.com/cjpais/tao", rev = "c3bee28c1d446d95f08c95c3b6f8d4bde052b876" }
 tao-macros = { git = "https://github.com/cjpais/tao", rev = "c3bee28c1d446d95f08c95c3b6f8d4bde052b876" }
+
+# On-demand pasteboard items are served by the main run loop, which libtest
+# keeps busy: this opt-in native target drives its own main thread.
+[[test]]
+name = "smart_paste_native_pasteboard"
+harness = false
+
+# Text Input Sources also require the main thread.
+[[test]]
+name = "smart_paste_native_keyboard"
+harness = false
 
 [dev-dependencies]
 tempfile = "3"
