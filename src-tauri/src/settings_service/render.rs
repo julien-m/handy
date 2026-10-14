@@ -16,7 +16,7 @@ pub enum View {
     Preview,
     /// Export: the exchange content itself (`data.content`), nothing else on stdout.
     Export,
-    /// Export written to a file by the CLI process (`data.path`, `data.count`).
+    /// Export written to a file by the CLI process (`data.path`, `data.count`, `data.durable`).
     ExportFile,
     /// Ordered list items (`data.rules`), one tab-separated line each.
     List,
@@ -75,6 +75,10 @@ pub fn emit(view: View, reply: &Reply, json: bool) -> i32 {
     reply.exit_code()
 }
 
+/// An export file replaced on disk whose directory could not be synced (`data.durable` false).
+const EXPORT_NOT_SYNCED_WARNING: &str =
+    "Warning: the export file was replaced, but the system could not confirm it is saved to disk.\n";
+
 /// Pure rendering of one reply.
 pub fn render(view: View, reply: &Reply, json: bool) -> Output {
     let envelope = reply.envelope();
@@ -83,6 +87,9 @@ pub fn render(view: View, reply: &Reply, json: bool) -> Output {
         output
             .stderr
             .push_str("Warning: the settings store was recovered; some values may be defaults.\n");
+    }
+    if view == View::ExportFile && envelope["data"]["durable"] == Value::Bool(false) {
+        output.stderr.push_str(EXPORT_NOT_SYNCED_WARNING);
     }
     if json {
         output.stdout = format!("{envelope}\n");
@@ -332,6 +339,21 @@ mod tests {
                 .starts_with("Warning:"));
         }
         assert_eq!(render(View::OneSetting, &reply, false).stdout, "dark\n");
+    }
+    #[test]
+    fn an_export_file_without_a_confirmed_sync_warns_on_stderr_in_both_modes() {
+        let data = |durable| json!({"path": "r.txt", "count": 1, "bytes": 4, "durable": durable});
+        let synced = Reply::success(Revision(2), data(true), false);
+        assert!(render(View::ExportFile, &synced, false).stderr.is_empty());
+        let unsynced = Reply::success(Revision(2), data(false), false);
+        for json in [true, false] {
+            let output = render(View::ExportFile, &unsynced, json);
+            assert!(output
+                .stderr
+                .starts_with("Warning: the export file was replaced"));
+        }
+        let human = render(View::ExportFile, &unsynced, false).stdout;
+        assert_eq!(human, "Exported 1 rules to r.txt\n");
     }
     #[test]
     fn human_errors_print_the_detail_reason_and_items_on_stderr() {

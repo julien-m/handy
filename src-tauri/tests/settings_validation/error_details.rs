@@ -110,7 +110,9 @@ fn schema_closes_reason_and_items() -> TestResult {
         "invalid_saved_rules",
         "unicode_data_unavailable",
         "reply_too_large",
-        "export_not_written"
+        "export_not_written",
+        "export_symbolic_link",
+        "export_read_only"
     ]);
     assert_eq!(details["reason"], json!({ "enum": reasons }));
     assert_eq!(

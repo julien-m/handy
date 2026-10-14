@@ -258,7 +258,9 @@
                   "invalid_saved_rules",
                   "unicode_data_unavailable",
                   "reply_too_large",
-                  "export_not_written"
+                  "export_not_written",
+                  "export_symbolic_link",
+                  "export_read_only"
                 ]
               },
               "index": {
@@ -331,7 +333,9 @@
             "invalid_saved_rules",
             "unicode_data_unavailable",
             "reply_too_large",
-            "export_not_written"
+            "export_not_written",
+            "export_symbolic_link",
+            "export_read_only"
           ]
         }
       },

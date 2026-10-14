@@ -180,3 +180,65 @@ fn an_invalid_line_after_a_thousand_ignored_lines_is_located_by_import_and_dry_r
     assert_eq!(app.store_bytes()?, None);
     Ok(())
 }
+
+/// Exit code and `details.reason` of `export <destination>`; the path never enters the error.
+#[cfg(unix)]
+fn refused_export(app: &Portable, destination: &str) -> super::harness::Fallible<(i32, String)> {
+    let run = app.run(&["settings", "replacements", "export", destination, "--json"])?;
+    assert!(!run.stdout.contains(destination) && !run.stderr.contains(destination));
+    let envelope = run.envelope()?;
+    assert_eq!(envelope["error"]["code"], json!("persistence_failed"));
+    let reason = envelope["error"]["details"]["reason"].as_str();
+    Ok((run.code, reason.unwrap_or_default().to_owned()))
+}
+
+#[cfg(unix)]
+#[test]
+fn an_export_through_a_symbolic_link_or_to_a_read_only_file_is_refused() -> TestResult {
+    use std::os::unix::fs::PermissionsExt;
+    let app = Portable::new()?;
+    replacements(&app, &["add", "a", "b"])?;
+    let target = write(&app, "target.txt", b"kept")?;
+    let link = path(&app, "link.txt");
+    std::os::unix::fs::symlink(&target, &link)?;
+    assert_eq!(
+        refused_export(&app, &link)?,
+        (1, "export_symbolic_link".into())
+    );
+    assert_eq!(std::fs::read_to_string(&target)?, "kept");
+    let locked = write(&app, "locked.txt", b"kept")?;
+    std::fs::set_permissions(&locked, std::fs::Permissions::from_mode(0o444))?;
+    assert_eq!(
+        refused_export(&app, &locked)?,
+        (1, "export_read_only".into())
+    );
+    assert_eq!(std::fs::read_to_string(&locked)?, "kept");
+    Ok(())
+}
+
+#[cfg(unix)]
+#[test]
+fn an_export_whose_directory_cannot_be_synced_succeeds_with_a_warning() -> TestResult {
+    use std::os::unix::fs::PermissionsExt;
+    let app = Portable::new()?;
+    replacements(&app, &["add", "a", "b"])?;
+    let directory = app.root.path().join("write-only");
+    std::fs::create_dir(&directory)?;
+    let file = directory.join("rules.txt").to_string_lossy().into_owned();
+    std::fs::set_permissions(&directory, std::fs::Permissions::from_mode(0o300))?;
+    let run = app.run(&["settings", "replacements", "export", &file, "--json"]);
+    std::fs::set_permissions(&directory, std::fs::Permissions::from_mode(0o700))?;
+    let run = run?;
+    let data = &run.envelope()?["data"];
+    assert_eq!((run.code, &data["durable"]), (0, &json!(false)));
+    assert!(run
+        .stderr
+        .starts_with("Warning: the export file was replaced"));
+    assert_eq!(
+        std::fs::read_to_string(&file)?,
+        "recognized;replacement\na;b\n"
+    );
+    let mode = std::fs::metadata(&file)?.permissions().mode() & 0o777;
+    assert_eq!(mode, 0o600);
+    Ok(())
+}

@@ -1,54 +1,97 @@
 //! Exchange files on disk: an export is written atomically (private temporary file in the
-//! destination directory, flushed, then renamed over the destination), so a failed or interrupted
-//! write leaves an existing destination intact and never a partial file. An existing destination
-//! is replaced without confirmation and keeps its permissions; a symbolic link is kept and its
-//! target receives the export, like a shell redirection.
+//! destination directory, created with its final permissions, flushed, then renamed over the
+//! destination), so a failed or interrupted write leaves an existing destination intact and never
+//! a partial file. An existing destination is replaced without confirmation and keeps its
+//! permissions; a new one is private (0600 on Unix). Orchestrator decision (2026-10-14, delivery
+//! review): a destination that is a symbolic link (whatever its target) or a read-only file is
+//! refused before anything is written, so an export never lands in a file the user did not name
+//! nor replaces one the user protected.
 
 use std::fs::{File, OpenOptions, Permissions};
 use std::io::Write;
 use std::path::{Path, PathBuf};
 
+/// Mode of a new export file on Unix: only its owner can read the rules.
+#[cfg(unix)]
+const NEW_FILE_MODE: u32 = 0o600;
+
+/// Why an export was not written; the destination is unchanged in every case.
+#[derive(Debug)]
+pub enum ExportError {
+    /// The destination is a symbolic link (dangling or not).
+    SymbolicLink,
+    /// The destination is a file the user cannot write.
+    ReadOnly,
+    /// Any other I/O failure (missing directory, a directory in the way, permission, full disk).
+    Io(std::io::Error),
+}
+
+/// A completed export: the destination holds the new content.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Written {
+    /// The rename was flushed to the directory, so it survives a crash.
+    Durable,
+    /// The directory could not be synced after the rename: the file is replaced, but a crash
+    /// right now could still bring back the old content.
+    NotSynced,
+}
+
 /// Write `content` to `path` atomically.
 ///
-/// Side effects: creates and removes a temporary file next to the destination; replaces the
-/// destination, which is `path` or, when `path` is a symbolic link, the file it points to.
+/// Side effects: creates and removes a temporary file next to `path`, then replaces `path`.
 ///
 /// # Errors
-/// Any I/O failure (missing directory, dangling link, permission, full disk); the destination is
-/// then unchanged and the temporary file is removed.
-pub fn write_exchange_file(path: &Path, content: &str) -> std::io::Result<()> {
-    let destination = resolve_destination(path)?;
-    let permissions = existing_permissions(&destination)?;
-    let temporary = temporary_path(&destination)?;
+/// `SymbolicLink` or `ReadOnly` before anything is written; `Io` for any other failure, after
+/// which the temporary file is removed. The destination is unchanged in every case.
+pub fn write_exchange_file(path: &Path, content: &str) -> Result<Written, ExportError> {
+    let permissions = writable_destination(path)?;
+    let temporary = temporary_path(path).map_err(ExportError::Io)?;
     // Order matters: the bytes and the permissions are durable in the temporary file before the
-    // rename publishes them, so the destination is either the old file or the complete new one;
-    // the directory is synced last so the rename itself survives a crash.
-    let written = write_synced(&temporary, content, permissions)
-        .and_then(|()| std::fs::rename(&temporary, &destination))
-        .and_then(|()| sync_directory(&destination));
-    if written.is_err() {
+    // rename publishes them, so the destination is either the old file or the complete new one.
+    let written = write_synced(&temporary, content, permissions.as_ref())
+        .and_then(|()| std::fs::rename(&temporary, path));
+    if let Err(error) = written {
         // Best effort: the temporary may not exist if creating it failed; the error is returned.
         let _ = std::fs::remove_file(&temporary);
+        return Err(ExportError::Io(error));
     }
-    written
+    // The destination already holds the export: a failed directory sync only leaves the rename's
+    // durability unconfirmed, which the caller reports instead of claiming nothing changed.
+    Ok(match sync_directory(path) {
+        Ok(()) => Written::Durable,
+        Err(_) => Written::NotSynced,
+    })
 }
 
-/// The file to replace: `path`, or the file a symbolic link `path` points to (the link stays a
-/// link). A dangling link fails with `NotFound` instead of being replaced by a regular file.
-fn resolve_destination(path: &Path) -> std::io::Result<PathBuf> {
-    match std::fs::symlink_metadata(path) {
-        Ok(metadata) if metadata.file_type().is_symlink() => std::fs::canonicalize(path),
-        _ => Ok(path.to_path_buf()),
+/// Permissions of the existing destination, kept by its replacement (`None` for a new file),
+/// after refusing a symbolic link and a regular file the user cannot write.
+fn writable_destination(path: &Path) -> Result<Option<Permissions>, ExportError> {
+    let metadata = match std::fs::symlink_metadata(path) {
+        Ok(metadata) => metadata,
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(None),
+        Err(error) => return Err(ExportError::Io(error)),
+    };
+    if metadata.file_type().is_symlink() {
+        return Err(ExportError::SymbolicLink);
     }
+    if metadata.permissions().readonly() {
+        return Err(ExportError::ReadOnly);
+    }
+    if metadata.is_file() {
+        probe_write_access(path)?;
+    }
+    Ok(Some(metadata.permissions()))
 }
 
-/// Permissions of an existing destination, kept by its replacement; `None` for a new file, which
-/// gets the default permissions of a new file.
-fn existing_permissions(path: &Path) -> std::io::Result<Option<Permissions>> {
-    match std::fs::metadata(path) {
-        Ok(metadata) => Ok(Some(metadata.permissions())),
-        Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(None),
-        Err(error) => Err(error),
+/// Open the existing regular file for writing, without truncating or changing it, so the system
+/// decides like a shell redirection whether this user may write it (owner, ACL, flags).
+fn probe_write_access(path: &Path) -> Result<(), ExportError> {
+    match OpenOptions::new().write(true).open(path) {
+        Ok(_) => Ok(()),
+        Err(error) if error.kind() == std::io::ErrorKind::PermissionDenied => {
+            Err(ExportError::ReadOnly)
+        }
+        Err(error) => Err(ExportError::Io(error)),
     }
 }
 
@@ -71,25 +114,35 @@ fn temporary_path(path: &Path) -> std::io::Result<PathBuf> {
 fn write_synced(
     path: &Path,
     content: &str,
-    permissions: Option<Permissions>,
+    permissions: Option<&Permissions>,
 ) -> std::io::Result<()> {
-    // create_new: never write through a file or link that already has this name.
-    let mut file: File = OpenOptions::new().write(true).create_new(true).open(path)?;
+    let mut file = create_private(path, permissions)?;
     file.write_all(content.as_bytes())?;
-    keep_permissions(&file, permissions)?;
     file.sync_all()
 }
 
-/// Unix: the mode of the replaced file. Windows only has a read-only flag, and a read-only
-/// destination already refuses the rename, so the new file keeps its default attributes.
+/// Unix: create the temporary with its final mode (the replaced file's, or `NEW_FILE_MODE`) and
+/// set that mode exactly before any byte is written, so the rules are never readable more
+/// widely than in the final file. `create_new` never writes through an existing name or link.
 #[cfg(unix)]
-fn keep_permissions(file: &File, permissions: Option<Permissions>) -> std::io::Result<()> {
-    permissions.map_or(Ok(()), |permissions| file.set_permissions(permissions))
+fn create_private(path: &Path, permissions: Option<&Permissions>) -> std::io::Result<File> {
+    use std::os::unix::fs::{OpenOptionsExt, PermissionsExt};
+    let mode = permissions.map_or(NEW_FILE_MODE, |permissions| permissions.mode() & 0o7777);
+    let file = OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .mode(mode)
+        .open(path)?;
+    // The umask may have narrowed the creation mode; the final mode is applied as is.
+    file.set_permissions(Permissions::from_mode(mode))?;
+    Ok(file)
 }
+/// Windows only has a read-only flag, and a read-only destination is refused before, so the new
+/// file keeps its default attributes.
 #[cfg(not(unix))]
-fn keep_permissions(_file: &File, _permissions: Option<Permissions>) -> std::io::Result<()> {
-    // Both parameters are unused on purpose: see the Unix variant.
-    Ok(())
+fn create_private(path: &Path, _permissions: Option<&Permissions>) -> std::io::Result<File> {
+    // The permissions are unused on purpose: see above.
+    OpenOptions::new().write(true).create_new(true).open(path)
 }
 
 /// Unix: fsync the destination's directory so the rename is durable. Windows has no directory
@@ -109,75 +162,5 @@ fn sync_directory(_destination: &Path) -> std::io::Result<()> {
 }
 
 #[cfg(test)]
-mod tests {
-    use super::write_exchange_file;
-
-    type TestResult = Result<(), Box<dyn std::error::Error>>;
-
-    #[test]
-    fn replace_an_existing_file_and_leave_no_temporary() -> TestResult {
-        let directory = tempfile::tempdir()?;
-        let path = directory.path().join("rules.txt");
-        std::fs::write(&path, "old")?;
-        write_exchange_file(&path, "recognized;replacement\na;b\n")?;
-        assert_eq!(
-            std::fs::read_to_string(&path)?,
-            "recognized;replacement\na;b\n"
-        );
-        assert_eq!(std::fs::read_dir(directory.path())?.count(), 1);
-        Ok(())
-    }
-
-    #[test]
-    fn a_failed_write_keeps_the_destination_and_removes_the_temporary() -> TestResult {
-        let directory = tempfile::tempdir()?;
-        let missing = directory.path().join("missing").join("rules.txt");
-        assert!(write_exchange_file(&missing, "a;b\n").is_err());
-        // A directory cannot be replaced by a file: the rename fails after the temporary exists.
-        let occupied = directory.path().join("occupied");
-        std::fs::create_dir(&occupied)?;
-        std::fs::write(occupied.join("kept"), "kept")?;
-        assert!(write_exchange_file(&occupied, "a;b\n").is_err());
-        assert_eq!(std::fs::read_to_string(occupied.join("kept"))?, "kept");
-        assert_eq!(std::fs::read_dir(directory.path())?.count(), 1);
-        Ok(())
-    }
-
-    #[cfg(unix)]
-    #[test]
-    fn an_existing_destination_keeps_its_permissions() -> TestResult {
-        use std::os::unix::fs::PermissionsExt;
-        let directory = tempfile::tempdir()?;
-        let path = directory.path().join("rules.txt");
-        std::fs::write(&path, "old")?;
-        std::fs::set_permissions(&path, std::fs::Permissions::from_mode(0o600))?;
-        write_exchange_file(&path, "a;b\n")?;
-        let mode = std::fs::metadata(&path)?.permissions().mode() & 0o777;
-        assert_eq!(
-            (std::fs::read_to_string(&path)?, mode),
-            ("a;b\n".into(), 0o600)
-        );
-        Ok(())
-    }
-
-    #[cfg(unix)]
-    #[test]
-    fn a_symbolic_link_stays_and_its_target_gets_the_export() -> TestResult {
-        let directory = tempfile::tempdir()?;
-        let target = directory.path().join("target.txt");
-        let link = directory.path().join("link.txt");
-        std::fs::write(&target, "old")?;
-        std::os::unix::fs::symlink(&target, &link)?;
-        write_exchange_file(&link, "a;b\n")?;
-        assert!(std::fs::symlink_metadata(&link)?.file_type().is_symlink());
-        assert_eq!(std::fs::read_to_string(&target)?, "a;b\n");
-        let dangling = directory.path().join("dangling.txt");
-        std::os::unix::fs::symlink(directory.path().join("absent.txt"), &dangling)?;
-        assert!(write_exchange_file(&dangling, "a;b\n").is_err());
-        assert!(std::fs::symlink_metadata(&dangling)?
-            .file_type()
-            .is_symlink());
-        assert_eq!(std::fs::read_dir(directory.path())?.count(), 3);
-        Ok(())
-    }
-}
+#[path = "exchange_file_tests.rs"]
+mod tests;

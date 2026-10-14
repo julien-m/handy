@@ -63,10 +63,14 @@ pub enum ErrorReason {
     ReplyTooLarge,
     /// The export file could not be written; the destination is unchanged (002).
     ExportNotWritten,
+    /// The export destination is a symbolic link, refused; nothing is written (002).
+    ExportSymbolicLink,
+    /// The export destination is a file the user cannot write; it is unchanged (002).
+    ExportReadOnly,
 }
 impl ErrorReason {
     /// Every reason of this build, in wire-schema order.
-    pub const ALL: [Self; 25] = [
+    pub const ALL: [Self; 27] = [
         Self::UnsupportedPlatform,
         Self::ShortcutSessionBusy,
         Self::InstanceRequired,
@@ -92,6 +96,8 @@ impl ErrorReason {
         Self::UnicodeDataUnavailable,
         Self::ReplyTooLarge,
         Self::ExportNotWritten,
+        Self::ExportSymbolicLink,
+        Self::ExportReadOnly,
     ];
     /// Fixed English message of this reason.
     pub fn message(self) -> &'static str {
@@ -107,6 +113,10 @@ impl ErrorReason {
                 "The answer is larger than one message; read large lists with their domain command."
             }
             Self::ExportNotWritten => "The export file could not be written; it is unchanged.",
+            Self::ExportSymbolicLink => {
+                "The export destination is a symbolic link; nothing was written."
+            }
+            Self::ExportReadOnly => "The export destination is read-only; it is unchanged.",
             rule => rule.rule_message(),
         }
     }

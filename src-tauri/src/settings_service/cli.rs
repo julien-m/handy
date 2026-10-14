@@ -1,7 +1,7 @@
 //! Early `handy settings` path: parse, route one operation and print its reply before any Tauri,
 //! window, tray, model or single-instance initialization. Other invocations return to the app.
 use super::{
-    errors::{SettingsError, SettingsErrorCode},
+    errors::{ErrorReason, SettingsError, SettingsErrorCode},
     operations::Reply,
     protocol::SettingsOperation,
     render::{emit, View},
@@ -11,6 +11,7 @@ use crate::cli::{
     ChangeOptions, CliArgs, CliCommand, ImportModeArg, OutputAction, ReplacementsAction,
     SettingsArgs, SettingsCommand, ShortcutsAction,
 };
+use crate::word_replacements::exchange_file;
 use clap::{error::ErrorKind, Parser};
 use serde_json::json;
 use std::ffi::OsString;
@@ -85,8 +86,9 @@ fn export_destination(command: &SettingsCommand) -> Option<&str> {
     }
 }
 /// Write the exported content of a successful `reply` to `path` (atomically) and answer with
-/// `{path, count, bytes}`; a failed write is `persistence_failed` (`export_not_written`) and
-/// leaves the destination unchanged.
+/// `{path, count, bytes, durable}`; `durable` is false when the file was replaced but its
+/// directory could not be synced. A refused or failed write is `persistence_failed` and leaves
+/// the destination unchanged.
 fn write_export(path: &str, reply: &Reply) -> Reply {
     let envelope = reply.envelope();
     let (Some(revision), Some(content)) = (
@@ -95,17 +97,22 @@ fn write_export(path: &str, reply: &Reply) -> Reply {
     ) else {
         return reply.clone();
     };
-    let written = crate::word_replacements::exchange_file::write_exchange_file(
-        std::path::Path::new(path),
-        content,
-    );
-    if written.is_err() {
-        let error = SettingsError::new(SettingsErrorCode::PersistenceFailed)
-            .with_reason(super::errors::ErrorReason::ExportNotWritten);
-        return Reply::failure(error);
-    }
-    let data = json!({ "path": path, "count": envelope["data"]["count"], "bytes": content.len() });
+    let written = match exchange_file::write_exchange_file(std::path::Path::new(path), content) {
+        Ok(written) => written,
+        Err(error) => return Reply::failure(export_failure(&error)),
+    };
+    let data = json!({ "path": path, "count": envelope["data"]["count"], "bytes": content.len(),
+        "durable": written == exchange_file::Written::Durable });
     Reply::success(super::protocol::Revision(revision), data, reply.warning())
+}
+/// Typed refusal of an export write; the reason never carries the path.
+fn export_failure(error: &exchange_file::ExportError) -> SettingsError {
+    let reason = match error {
+        exchange_file::ExportError::SymbolicLink => ErrorReason::ExportSymbolicLink,
+        exchange_file::ExportError::ReadOnly => ErrorReason::ExportReadOnly,
+        exchange_file::ExportError::Io(_) => ErrorReason::ExportNotWritten,
+    };
+    SettingsError::new(SettingsErrorCode::PersistenceFailed).with_reason(reason)
 }
 /// The wire operation of a parsed command.
 pub fn operation(command: &SettingsCommand) -> SettingsOperation {
