@@ -4,7 +4,7 @@ spec_ref: spec.md
 title: Microphone Priority Technical Plan
 status: Planned
 created: 2026-10-12
-updated: 2026-10-12
+updated: 2026-10-14
 penflow_verification_policy:
   version: 1
   mode: livespec
@@ -20,7 +20,7 @@ penflow_verification_policy:
 
 Extend 008's settings transaction/domain service with persistent microphone priority; resolve audio input with bounded workers and session generations, keep intent separate from availability/effective input, and replace the single selector with an accessible draft editor.
 
-Inspect [functional source](spec.md) for FR-001–FR-008, AC-001–AC-008 and SC-001–SC-003. Inspect [008's frozen foundation plan](../008-settings-cli/plan.md) for the exact shared architecture names. Scope **L**: eight FR, shared audio/settings lifecycle, migration and cross-platform native failure handling. Deliver 008 first, then 001; this command produces documentation only.
+Inspect [functional source](spec.md) for FR-001–FR-008, AC-001–AC-008 and SC-001–SC-003. Inspect [008's implementation record](../008-settings-cli/implementation.md) and the merged `src-tauri/src/settings_service/` for the exact shared names; [008's plan](../008-settings-cli/plan.md) is historical context, and names it announced but never shipped (`commit_mutation`, `LiveSettingsEffects`) are not used. Scope **L**: eight FR, shared audio/settings lifecycle, migration and cross-platform native failure handling. 008 is merged in `dev` (`e9f96df`). `microphones list` also depends on **step 0 of 006**, which adds live domain operations (D2) and typed error details (D3) to the 008 framework; the exact names are recorded in `.specs/ship.md` (« Contrat D2/D3 »). This command produces documentation only.
 
 ## Technical Context
 
@@ -28,8 +28,8 @@ Inspect [functional source](spec.md) for FR-001–FR-008, AC-001–AC-008 and SC
 |---|---|---|
 | Backend | Rust edition 2021, Tauri 2.11.5, existing Tokio | Existing managers, commands, Cargo manifest |
 | Audio | Existing cpal, AudioRecorder, VAD, resampling | Preserve sample-processing pipeline, channel policy and readiness handshake |
-| Settings | 008 SettingsRepository, SettingsSnapshot, Revision, SettingsMutation, SettingsError | One fresh-disk `commit_mutation` path and existing durable revision/lock |
-| CLI | 008 Domain trait, OperationRequest, clap and single renderer | Add `microphones` registration; reuse local IPC/offline routing |
+| Settings | Merged 008: `SettingsRepository::read_snapshot`, `SettingsSnapshot`, `Revision`, `SettingsError`, `domains::{DomainChange, ChangeKind::Apply}`, `SettingsBackend::commit_change` (`sequence::write_change` live, `commit_edit_with_probe` offline), `tauri_adapter` for UI writes, `effects.rs` live effects | One locked fresh-read commit path and the existing durable revision/lock |
+| CLI | 008 `Domain` trait and `domains::production()`, `crate::cli` clap types, `render.rs`; 006 step 0 `DomainPlan::Live`/`LiveOperation` (D2) and `ErrorReason`/`ErrorItem` (D3) | Add `microphones` registration; reuse local IPC/offline routing |
 | UI | React 18, TypeScript, Zustand, i18next | Existing general audio settings; typed Tauri commands/events |
 | Storage | Existing JSON settings payload; `microphone_priority: Vec<String>` | No new database, HTTP API, cloud resources or credentials |
 | Tests | Cargo unit/integration, Bun, Playwright, native hardware procedure | Pure policy versus real capture/file/process boundaries |
@@ -66,11 +66,13 @@ SC-001 requires all eight AC plus native/UI gates; Story 4's P2 label does not r
 
 ### Settings and migration
 
-008 must deliver `settings_service/{descriptor.rs,validation.rs,protocol.rs,errors.rs,store.rs,transaction.rs,live.rs,domains/mod.rs,cli.rs,render.rs}` before production wiring. Extend its `SettingDescriptor`, `SettingsMutation`, `SettingsSnapshot`, `Revision`, `PublicSettings`, `OperationRequest`, `SettingsError`, `Domain` trait and `LiveSettingsEffects`; use `SettingsRepository::read_snapshot` and `commit_mutation`. Do not create another lock, revision counter, file writer, settings channel or envelope. The whole ordered list is one typed patch to the latest snapshot; unrelated simultaneous writes survive. Generic scalar set refuses the list and directs users to the registered domain.
+Use the merged 008 service. New stored key `microphone_priority: Vec<String>` gets a reviewed descriptor row in `descriptor_data.rs` (`Array`, owner `microphones`, `RuntimeEffect::AudioInput`) and a projection in `PublicSettings` (`public.rs`). Every write commits a `DomainChange(ChangeKind::Apply(..))` whose edit sets the complete validated list on the locked latest settings: the CLI through `SettingsBackend::commit_change` (`sequence::write_change` in the running instance, `SettingsRepository::commit_edit_with_probe` offline), the settings UI with its base revision through `tauri_adapter::write_change(app, &DomainChange, expected)`, a thin wrapper over the existing `sequence::write_change` added by whichever of 001 and 003 ships first (003 plans the same wrapper). Do not create another lock, revision counter, file writer, settings channel or envelope. The whole ordered list is one edit of the latest snapshot; unrelated simultaneous writes survive. `effects.rs` maps `microphone_priority` to the microphone live effect (`LiveEffect::MicrophoneDevice` or a dedicated variant), which invalidates the next-open resolution cache and queues the always-on reopen of [Recording boundary](#recording-boundary-always-on-and-loss); the effect runs after the durable commit and before the `settings-changed` event, as for every 008 effect.
 
-Detect key presence in raw JSON before serde defaults. Absent `microphone_priority`: non-default legacy `selected_microphone` becomes `[exact_name]`; null or legacy default sentinel becomes `[]`. Present new list, including `[]`, wins. Preserve the raw legacy key unchanged and ignore it for normal resolution once the new key exists. Keep clamshell/channel/unknown fields. Startup migration commits once under 008's lock, with atomic replacement/recoverable original bytes; failure leaves the original readable and reports an actionable persistence error. No read-only CLI operation writes a migration. Test second startup no-op, unavailable/ambiguous legacy names and failed flush/replace.
+Generic `set` refusals: `validation::editable_descriptor` already refuses list keys with a typed reason per owner domain; add the `"microphones" => ValidationReason::MicrophonesDomain` arm (message naming `handy settings microphones set-priority`, translated by the UI) and attach D3 `details.reason = "microphones_domain"` (new `ErrorReason::MicrophonesDomain`, through `SettingsError::with_reason`). After migration `selected_microphone` stays stored for downgrade but no surface writes it: its descriptor row becomes `read_only: true`, so `handy settings keys` reports it read-only and `get` still shows the stored value, and the read-only branch of `editable_descriptor` answers a read-only key owned by `microphones` with the same `MicrophonesDomain` refusal (`validation_failed`, exit 2, `details.field = "selected_microphone"`, `details.reason = "microphones_domain"`) instead of the generic "changed in the settings UI" message, which would be false because the UI no longer writes that key either. This is the solution that fits the merged 008 code: removing the descriptor row would break 008's rule that every stored key is classified (the descriptor list also drives the raw-merge preservation of stored fields), and keeping it writable would accept a value nothing reads. The legacy UI command `set_selected_microphone` and its `tauri_adapter::write` call are removed in Step 5; `RuntimeEffect::AudioInput` of `selected_microphone` moves to `microphone_priority` (the `effects.rs` test that every declared runtime effect is applied or read at use stays green).
 
-Shared validation accepts exact, non-empty, non-whitespace-only unique names regardless of current presence; preserve case and meaningful bytes. Presence is runtime status, never a persistence validator. UI Add lists the real catalog (including duplicate-name groups labelled ambiguous); a grouped ambiguous name may be saved once but never opens an arbitrary device. The synthetic system-default option is not a priority entry: empty list represents fallback. A real device literally named `Default` is an exact name; legacy sentinel interpretation applies only to legacy migration, never new-list validation. Removed unavailable entries remain removable. Duplicate/empty input returns `validation_failed` without a partial commit. No invented list-count cap; 008's bounded request size remains authoritative.
+Detect key presence in raw JSON before serde defaults. Absent `microphone_priority`: a **null** legacy `selected_microphone` (008 stores the system default as null) becomes `[]`; any non-null value becomes `[exact_name]`, including the string `"default"`, which 008 treats as an ordinary device name (a real ALSA PCM on Linux), never as a sentinel (spec Clarification of AC-006, 2026-10-14). Present new list, including `[]`, wins. Preserve the raw legacy key unchanged and ignore it for normal resolution once the new key exists. Keep clamshell/channel/unknown fields. The rule lives in `settings::apply_settings_migrations(&mut settings, payload)`, which 008's `normalization::normalize` calls with the raw payload, so key presence is detected before serde defaults. The running instance persists it once through 008's startup normalization commit (`SettingsRepository::initialize`: startup lease, settings lock, atomic replacement that keeps the original bytes on failure); failure leaves the original readable and reports an actionable persistence error. Headless CLI reads normalize in memory and never write the migration. Test second startup no-op, unavailable/ambiguous legacy names, the literal `"default"` name and failed flush/replace.
+
+Shared validation accepts exact, non-empty, non-whitespace-only unique names regardless of current presence; preserve case and meaningful bytes. Presence is runtime status, never a persistence validator. UI Add lists the real catalog (including duplicate-name groups labelled ambiguous); a grouped ambiguous name may be saved once but never opens an arbitrary device. The synthetic system-default option is not a priority entry: empty list represents fallback. A real device literally named `default` or `Default` is an exact name, in migration and in new-list validation alike; there is no sentinel. Removed unavailable entries remain removable. Duplicate/empty input returns `validation_failed` without a partial commit; with D3, `details.items` lists each refused name as `ErrorItem::new(index, code)` (0-based position in the submitted order, new `ErrorReason` variants `microphone_name_empty` and `microphone_name_duplicate`, fixed messages that never echo the name). No invented list-count cap; 008's bounded request size remains authoritative.
 
 ### Resolution and deadline allocation
 
@@ -78,11 +80,11 @@ Inject `AudioDeviceCatalog`, `StreamOpener`, monotonic `Clock/Deadline`, `LidSta
 
 Normal resolution uses the committed revision captured at session start and a fresh catalog at every recording start, including always-on. Device-change notifications may invalidate cache but cannot replace the next-start fresh check needed for reconnection. Cache transient handles/config only within a catalog generation. Closed lid **and configured override** selects override then default, excluding normal list. Open/unknown lid, or no override, uses normal priority. Channel mapping uses saved channel only if valid for actual device; otherwise existing default mapping without changing settings.
 
-A single monotonic 6-second resolution deadline includes lid probe, enumeration, one fresh re-enumeration on stale-cache/enumeration failure and open/readiness work. Reserve up to the last 2 seconds for one default attempt. Divide the remaining normal-phase budget across unresolved candidates in saved order, each open ≤2 seconds and ≤its remaining allocation. Presence/ambiguity failures consume no open call; configured candidates that cannot resolve within the remaining deadline receive a typed deadline failure. Re-enumerate at most once, never reopen an already attempted name; then attempt default once inside the same 6 seconds. Closed-lid override follows the same bounded rule. Four-plus slow devices and slow enumeration must prove termination/default allocation rather than silently extend the deadline. If the native spike cannot ensure default invocation and cancellation inside this budget, AC-003 is a release blocker, not a claimed guarantee. Start latency samples are collected separately for on-demand/always-on; no unsupported additional user-facing latency target is invented.
+Budget rule (orchestrator decision 2026-10-14, AC-003): **every open attempt gets its full 2-second timeout; the 6-second total limits how many attempts start and never shortens one.** A single monotonic 6-second resolution deadline covers the lid probe, enumeration, the one fresh re-enumeration on stale-cache/enumeration failure and the open/readiness attempts. A configured attempt (or the closed-lid override attempt) starts only while at least 4 seconds remain: its own 2 seconds plus 2 seconds reserved for the system-default attempt. Enumeration, the lid probe and the re-enumeration are bounded so that they end by t = 4 s at the latest; a probe still running then counts as failed (status unknown). When fewer than 4 seconds remain, the configured choices not yet attempted are recorded as failed attempts with reason `deadline` (their open is never called, preferences unchanged), and the system-default attempt starts no later than t = 4 s with its full 2 seconds, so it always runs after configured attempts fail, as AC-003 requires. Presence/ambiguity failures consume no open call. Consequence: at most two configured attempts can run to their full timeout before the default; faster failures leave room for more choices. Re-enumerate at most once, never reopen an already attempted name. Four-plus slow devices and slow enumeration must prove termination, full 2-second attempts and the default slot rather than silently extend the deadline. If the native spike shows that the default cannot be invoked and cancelled inside this budget on macOS, AC-003 is a release blocker, not a claimed guarantee. Start latency samples are collected separately for on-demand/always-on; no unsupported additional user-facing latency target is invented.
 
 ### Worker ownership and readiness
 
-Existing `AudioRecorder::open` waits on unbounded `init_rx.recv()` and can join a stalled worker. Refactor attempt initialization into an owned attempt handle with generation, deadline/cancellation flag and stop/drain channel. Coordinator never joins a potentially blocked opener on the main loop or while holding settings/manager state locks. A timed-out generation cannot publish a device, cache config, capture-ready event or samples; a late native stream is immediately dropped by its owner. Track/reap abandoned workers; cap outstanding native opens so repeated starts cannot create unlimited detached threads. Reaching the cap reports a recording error, never successful capture. Step 1 must prove cleanup and device release on each supported backend; a `spawn_blocking` timeout alone proves only caller latency. If cpal cannot bound native ownership cleanup, stop the spike and propose an isolated cancellable native worker design for review before production; never assume Rust can kill a blocked thread.
+Existing `AudioRecorder::open` waits on unbounded `init_rx.recv()` and can join a stalled worker. Refactor attempt initialization into an owned attempt handle with generation, deadline/cancellation flag and stop/drain channel. Coordinator never joins a potentially blocked opener on the main loop or while holding settings/manager state locks. A timed-out generation cannot publish a device, cache config, capture-ready event or samples; a late native stream is immediately dropped by its owner. Track/reap abandoned workers; cap outstanding native opens so repeated starts cannot create unlimited detached threads. Reaching the cap reports a recording error, never successful capture. Step 1 must prove cleanup and device release on macOS (CoreAudio); the same proof on the Windows (WASAPI) and Linux (ALSA/PulseAudio) backends is pending release evidence under the constitution, while their code builds and passes the automated tests. A `spawn_blocking` timeout alone proves only caller latency. If cpal cannot bound native ownership cleanup, stop the spike and propose an isolated cancellable native worker design for review before production; never assume Rust can kill a blocked thread.
 
 `Stream::play()` is not recording readiness. Preserve existing first-sample handshake and capture generation fencing; indicator stays arming until the actual stream/capture is ready. Do not buffer/replay audio spoken before readiness. Effective input is published only from a successful owned stream; resolve actual default name from that opened handle rather than infer it from a synthetic label.
 
@@ -96,11 +98,14 @@ Keep current effective stream while always-on is open; otherwise display last **
 
 ### UI and CLI operations
 
-Keep the public names in AC-008: `handy settings microphones list` and `handy settings microphones set-priority <name>...`. Zero names sets the valid empty list; quote names with spaces, use clap's `--` separator for hyphen-leading names. Reuse 008 expected-revision argument/JSON placements, Domain schema/help, typed request patch and renderer. Persisted offline writes remain supported through 008; live-only effective input is null/offline/not-used-yet, never fabricated from preferences. Offline catalog read is a bounded headless worker without Tauri/model/UI activation; failed enumeration yields unknown status with warning in data, never a destructive write. Domain list gets a revision-consistent configured snapshot plus separately timestamped observed audio generation; these are explicitly distinct clocks, not an atomic promise about changing hardware.
+Keep the public names in AC-008: `handy settings microphones list` and `handy settings microphones set-priority <name>...`. New `settings_service/domains/microphones.rs` implements the 008 `Domain` trait with canonical actions `list` and `set-priority`, registered in `domains::production()`. Zero names sets the valid empty list; quote names with spaces, use clap's `--` separator for hyphen-leading names. Reuse 008 expected-revision argument/JSON placements, help and renderer.
 
-List data: `configured_order`, `availability` entries `{name,status}`, `availability_observed_at`, `effective_input` `{name,reason,scope,capture_generation}` or null, and optional typed enumeration warning. Mutation data returns committed `configured_order`; 008 envelope carries the authoritative revision. `scope` is current/last-recording/not-used-yet/offline. Exact wire enums and nullable fields are locked in domain DTO tests, not localized. Reuse success 0; persistence_failed/internal_error 1; usage_error/validation_failed 2; revision_conflict 3 with current_revision; not_found 4 where applicable; unavailable/unknown-outcome 5. A failed catalog projection may be successful data with unknown statuses; a failed transport/service read uses 008 errors. No credentials or raw AppSettings serialization. No second JSON line or diagnostics on stdout, no MCP server, no OpenAPI because no HTTP endpoint is introduced.
+- **`set-priority`** is decided by the pure `Domain::plan`: validate the names (D3 `details.items` on refusal), then `DomainPlan::Change { change: DomainChange(ChangeKind::Apply(..)), keys: vec!["microphone_priority"] }`. It works offline (`commit_edit_with_probe`) and live (`sequence::write_change`, then the microphone live effect), with `--dry-run` previewing through the same edit.
+- **`list`** is a **live operation of 006 step 0 (D2)**: `plan` returns `DomainPlan::Live(Box::new(MicrophonesList))`, a `domains::live_operation::LiveOperation` whose `run(context, call)` reads the configured order and revision with `LiveContext::read`, reaches the running instance's audio manager with `managed_state::<Arc<AudioRecordingManager>>(context)`, takes a fresh bounded catalog observation on a worker (never the UI thread, well inside 008's 5-second answer deadline) and the current or last effective input, and returns `LiveAnswer::Read(data)`. Without a running Handy, `domains::execute` returns the 008 live-only refusal unchanged (`unavailable`, exit 5, empty details): the CLI process never enumerates devices itself and never fabricates availability or an effective device. The configured order stays readable offline with `handy settings get microphone_priority` (spec Clarification, 2026-10-14). The list reply pairs a revision-consistent configured snapshot with a separately timestamped audio observation; these are explicitly distinct clocks, not an atomic promise about changing hardware. A failed enumeration inside the live operation yields unknown statuses with a typed warning in data, never a destructive write.
 
-UI keeps `draft_order`, base Revision and dirty/error/busy/conflict state. Save submits complete draft through same validator/transaction; busy prevents double dispatch. Stale revision retains draft and offers Reload to adopt current committed order/discard edits. A settings-changed event advances committed data but never overwrites a dirty draft; older async reads cannot overwrite newer revisions. Reset empties draft only (translated explanation that Save is required), not clamshell; retain spec label rather than silently invent a renamed action. Pointer dragging and Move up/down have identical draft transitions; stable per-name row identity preserves focus after reorder/remove/retry. Availability text adds information to color; loading/error/success/dragging/drop-target/empty/invalid/valid/enabled/disabled/focus are testable states.
+List data: `configured_order`, `availability` entries `{name,status}`, `availability_observed_at`, `effective_input` `{name,reason,scope,capture_generation}` or null, and optional typed enumeration warning. Mutation data returns committed `microphone_priority` (the configured order); 008 envelope carries the authoritative revision. `scope` is current/last-recording/not-used-yet (no offline scope: offline, `list` is refused). Exact wire enums and nullable fields are locked in domain DTO tests, not localized. Reuse success 0; persistence_failed/internal_error 1; usage_error/validation_failed 2; revision_conflict 3 with current_revision; not_found 4 where applicable; unavailable/unknown-outcome 5, including the offline live-only refusal of `list`. A failed catalog projection may be successful data with unknown statuses; a failed transport/service read uses 008 errors. No credentials or raw AppSettings serialization. No second JSON line or diagnostics on stdout, no MCP server, no OpenAPI because no HTTP endpoint is introduced.
+
+UI keeps `draft_order`, base Revision and dirty/error/busy/conflict state. Save submits the complete draft as the same `DomainChange` through `tauri_adapter::write_change` with the base revision (same validator and transaction as the CLI); busy prevents double dispatch. The settings UI reads availability and the effective input through a Tauri command over the same audio-manager projection that `MicrophonesList` uses, so both surfaces report the same data. Stale revision retains draft and offers Reload to adopt current committed order/discard edits. A settings-changed event advances committed data but never overwrites a dirty draft; older async reads cannot overwrite newer revisions. Reset empties draft only (translated explanation that Save is required), not clamshell; retain spec label rather than silently invent a renamed action. Pointer dragging and Move up/down have identical draft transitions; stable per-name row identity preserves focus after reorder/remove/retry. Availability text adds information to color; loading/error/success/dragging/drop-target/empty/invalid/valid/enabled/disabled/focus are testable states.
 
 ## Design Reference
 
@@ -138,12 +143,12 @@ Feature: One shared microphone settings transaction
 ```mermaid
 sequenceDiagram
   participant UI as Draft editor
-  participant CLI as 008 microphones Domain
-  participant Service as 008 commit_mutation
+  participant CLI as microphones Domain (set-priority)
+  participant Service as 008 sequence::write_change / commit_edit_with_probe
   participant Disk as Locked fresh repository
-  participant Audio as Audio coordinator
-  UI->>Service: complete order, expected Revision
-  CLI->>Service: same SettingsMutation
+  participant Audio as Audio coordinator (effects.rs)
+  UI->>Service: DomainChange via tauri_adapter::write_change, expected Revision
+  CLI->>Service: same DomainChange via SettingsBackend::commit_change
   Service->>Disk: lock and reread current settings
   alt invalid or stale revision
     Service-->>UI: typed error, keep draft
@@ -154,6 +159,45 @@ sequenceDiagram
     Audio->>Audio: invalidate next resolution, queue if recording
     Service-->>UI: committed revision and settings-changed
     Service-->>CLI: single success envelope
+  end
+```
+
+```gherkin
+Feature: Microphone list through the running instance
+  Scenario: Live list
+    Given Handy is running
+    When the user runs "handy settings microphones list --json"
+    Then the running instance answers with the configured order, each choice's availability and the effective device with its reason
+  Scenario: No running instance
+    Given Handy is not running
+    When the user runs "handy settings microphones list --json"
+    Then the exit code is 5 with code "unavailable" and empty details
+    And "handy settings get microphone_priority --json" still returns the configured order
+  Scenario: Legacy key refused
+    Given the settings were migrated to a priority list
+    When the user runs "handy settings set selected_microphone USB --json"
+    Then the exit code is 2 with code "validation_failed" and details.reason "microphones_domain"
+    And nothing is written
+```
+
+```mermaid
+sequenceDiagram
+  participant CLI as handy settings microphones list
+  participant Route as 008 route
+  participant Instance as Running Handy (RoutedBackend)
+  participant Op as MicrophonesList LiveOperation
+  participant Audio as AudioRecordingManager and catalog worker
+  CLI->>Route: Domain operation
+  alt instance endpoint answers
+    Route->>Instance: private channel request
+    Instance->>Op: run(LiveContext, LiveCall)
+    Op->>Op: LiveContext::read (configured order, revision)
+    Op->>Audio: bounded fresh catalog and effective input
+    Audio-->>Op: statuses (unknown on failure) and effective input
+    Op-->>Instance: LiveAnswer::Read(list data)
+    Instance-->>CLI: success envelope, exit 0
+  else no running instance
+    Route-->>CLI: unavailable, exit 5 (008 live-only refusal)
   end
 ```
 
@@ -274,19 +318,19 @@ erDiagram
 
 ### Step 1 — Spike bounded native ownership and capture loss
 
-**Prerequisite:** 008 architecture pinned; current spec/progression plan and independent plan review ready before code.
+**Prerequisite:** 008 merged (`e9f96df`); current spec/progression plan and independent plan review ready before code.
 **Required inputs:** Existing blocking recorder handshake, cpal backends, readiness generation, test hardware and isolated native harness.
-**Action:** Plan new `src-tauri/tests/microphone_native.rs` and `scripts/microphone-native-proof.ts`; modify recorder only during implementation to inject attempt/loss ports. Prove timeout fencing, bounded outstanding workers, late stream drop/device release, prefix drain after worker death and enum-while-open behavior on macOS/Windows/Linux. Capture fresh-start latency and cleanup observations.
+**Action:** Plan new `src-tauri/tests/microphone_native.rs` and `scripts/microphone-native-proof.ts`; modify recorder only during implementation to inject attempt/loss ports. Prove timeout fencing, bounded outstanding workers, late stream drop/device release, prefix drain after worker death and enum-while-open behavior on macOS (CoreAudio). Capture fresh-start latency and cleanup observations. The same spike on Windows (WASAPI) and Linux (ALSA/PulseAudio) is recorded as **pending release evidence** with the exact command (`bun scripts/microphone-native-proof.ts --binary <absolute-release-binary> --platform windows|linux --out <proof-directory>`); it never blocks this step or the next ones.
 **FR covered:** FR-002.1: Native enumeration evidence, FR-003.1: Deadline and cleanup spike, FR-004.1: Loss prefix and completion spike
 **Execution evidence:** Binary/OS/device-class metadata, monotonic timings, handle/worker counters, native cut-short transcript and captured-prefix hash.
-**Success criteria:** Per-open ≤2 s/global ≤6 s with final default slot, zero stale publication, bounded native resource ownership, exactly-once prefix completion; backend unknowns explicit.
-**Failure handling:** Missing cleanup/prefix guarantee blocks production audio integration and affected platform release. Review a changed native ownership design before coding it; no caller-timeout-only success.
+**Success criteria:** On macOS: every open attempt bounded by its full 2 s, global ≤6 s with the reserved default slot, zero stale publication, bounded native resource ownership, exactly-once prefix completion; backend unknowns explicit.
+**Failure handling:** A missing cleanup/prefix guarantee on macOS blocks production audio integration. A Windows/Linux failure observed later is a release finding for that platform, not a gate on these steps. Review a changed native ownership design before coding it; no caller-timeout-only success.
 
 ### Step 2 — Extend 008 schema, migration and transaction validation
 
-**Prerequisite:** 008 service and writer inventory delivered; Step 1 native feasibility established.
-**Required inputs:** Raw presence-aware settings, Revision, SettingsMutation, SettingsError, repository fault seam.
-**Action:** Modify `src-tauri/src/settings.rs` and `settings_service/{descriptor.rs,validation.rs,protocol.rs,store.rs,transaction.rs}` with list schema/descriptor/patch and absent-key startup migration. New `src-tauri/tests/microphone_settings.rs` uses real temp store plus fault/barrier adapters. Preserve legacy/clamshell/unknown fields; no independent serializer/writer.
+**Prerequisite:** 008 merged; Step 1 native feasibility established on macOS.
+**Required inputs:** Raw presence-aware settings (`settings::apply_settings_migrations` with the raw payload), `Revision`, `DomainChange`, `SettingsError`, repository fault seam.
+**Action:** Modify `src-tauri/src/settings.rs` (field, `apply_settings_migrations` rule) and `settings_service/{descriptor_data.rs,public.rs,validation.rs,errors.rs,effects.rs,tauri_adapter.rs}`: `microphone_priority` row, `selected_microphone` read-only, `ValidationReason::MicrophonesDomain` and `ErrorReason::MicrophonesDomain`/`MicrophoneNameEmpty`/`MicrophoneNameDuplicate` (D3 variants, once 006 step 0 is merged), live effect mapping, `tauri_adapter::write_change` if 003 has not added it. The contract schema (`protocol::contract_schema()` and `features/008-settings-cli/contracts/settings-cli.schema.json`) follows the new key and reasons. New `src-tauri/tests/microphone_settings.rs` uses real temp store plus fault/barrier adapters. Preserve legacy/clamshell/unknown fields; no independent serializer/writer.
 **FR covered:** FR-001.1: Persistent ordered list, FR-006.1: Presence-aware recoverable migration, FR-007.1: Shared atomic list validation
 **Execution evidence:** Raw before/after generations, idempotence and explicit-empty fixtures, validation parity, failed-write unchanged hashes and revisions.
 **Success criteria:** Complete valid order commits once; stale/invalid/failure never partially changes state; migration repeat is no-op and original source survives failures.
@@ -305,7 +349,7 @@ erDiagram
 ### Step 4 — Integrate stream ownership and recording boundaries
 
 **Prerequisite:** Native spike and pure resolver gates PASS.
-**Required inputs:** Recorder worker/error/readiness channels, AudioRecordingManager state, 008 LiveSettingsEffects and actions stop pipeline.
+**Required inputs:** Recorder worker/error/readiness channels, AudioRecordingManager state, 008 `effects.rs` live effect of `microphone_priority` and actions stop pipeline.
 **Action:** Modify `audio_toolkit/audio/recorder.rs`, `managers/audio.rs`, `actions.rs` and necessary shortcut completion dispatch to own attempt generations, drain lost prefix and publish effective state. Remove `persist_default_microphone_after_fallback` erasure and first-match cache path. Adapt `update_selected_device`, start/stop/always-on/lazy-close to queued committed-revision policy, preserve channel/VAD. New `src-tauri/tests/microphone_sessions.rs`; reuse recorder inline tests.
 **FR covered:** FR-003.3: Owned opener and ready boundary, FR-004.2: Deferred changes and loss completion, FR-005.2: Clamshell integration, FR-007.2: Commit cache and boundary effects
 **Execution evidence:** Race barriers for stop/loss/cancel/commit/late-ready, audio-prefix assertions, always-on startup/edit/reconnect and no-op tests, WAV-failure observation.
@@ -314,12 +358,12 @@ erDiagram
 
 ### Step 5 — Register microphones domain and typed frontend commands
 
-**Prerequisite:** 008 Domain/IPC/envelope deployed and Steps 2–4 stable.
-**Required inputs:** Domain trait, OperationRequest, read_snapshot/commit_mutation, catalog/effective projection, shared errors.
-**Action:** New `src-tauri/src/settings_service/domains/microphones.rs`; modify `domains/mod.rs` registration, `commands/audio.rs` and `lib.rs` command bindings. Retire legacy selected-microphone writer in favor of priority operations; legacy stored data remains. Generate `src/bindings.ts` through existing specta flow during implementation. New `src-tauri/tests/microphone_cli.rs`; create feature contract matrix/schema from typed DTOs during implementation.
+**Prerequisite:** 008 merged, Steps 2–4 stable and **006 step 0 merged** (D2 `DomainPlan::Live`, `LiveOperation`, `LiveContext`, `managed_state`; D3 `ErrorReason`, `ErrorItem`, `with_items`, `with_reason`), which `microphones list` and the per-name refusals need.
+**Required inputs:** `Domain` trait, `SettingsOperation::Domain` wire request, `SettingsBackend::commit_change`, D2/D3 types, catalog/effective projection, shared errors.
+**Action:** New `src-tauri/src/settings_service/domains/microphones.rs` (pure `set-priority` plan, `MicrophonesList` live operation); modify `domains/mod.rs` (`production()`), `crate::cli` clap `SettingsCommand`, `settings_service/cli.rs`, `commands/audio.rs` and `lib.rs` command bindings. Retire the legacy `set_selected_microphone` command in favor of priority operations; legacy stored data remains. Generate `src/bindings.ts` through existing specta flow during implementation. New `src-tauri/tests/microphone_cli.rs`; create feature contract matrix/schema from typed DTOs during implementation.
 **FR covered:** FR-002.3: Status and effective read contract, FR-007.3: UI and CLI adapter equivalence, FR-008.1: microphones Domain commands
 **Execution evidence:** Real CLI processes on isolated stores, live/offline/CAS/no-op/transport-timeout/UTF-8/quoted-name cases; exactly one envelope and exit mapping.
-**Success criteria:** Exact AC-008 names; zero-name empty set; no raw settings/secrets/log names; inherited 008 timeout/routing and no-retry semantics; shared validator results.
+**Success criteria:** Exact AC-008 names; zero-name empty set; `list` live answer and offline `unavailable`/5 with empty details; `set selected_microphone` and `set microphone_priority` refused with `validation_failed`/2 and `details.reason = "microphones_domain"`; per-name `details.items`; no raw settings/secrets/log names; inherited 008 timeout/routing and no-retry semantics; shared validator results.
 **Failure handling:** Contract drift or second persistence path blocks release. Uncertain IPC outcome is reread before retry; enumeration failure preserves saved order.
 
 ### Step 6 — Build accessible draft editor and status refresh
@@ -339,8 +383,8 @@ erDiagram
 **Action:** Run commands below; extend test/harness files from prior steps with AC matrix, restart, reconnect, active-edit and legacy-ambiguous cases. Update application README CLI/settings usage during implementation only. Preserve original/transcribed-prefix and WAV outcome evidence without logging speech/device names. Verify all 008 setting-domain regression tests still pass.
 **FR covered:** FR-001.3: Restart and editor acceptance, FR-002.5: Availability and native proof, FR-003.4: Deadline fallback evidence, FR-004.3: Session race acceptance, FR-005.3: Clamshell regression proof, FR-006.2: Migration fault evidence, FR-007.5: Transaction parity and event proof, FR-008.2: CLI process contract proof
 **Execution evidence:** Versioned binary hash, command stdout/stderr/exits, per-AC assertions, native UI/capture observations and resource/latency samples.
-**Success criteria:** All AC/SC and P0/P1 gates have actual scoped proof; no unrelated/global suite failures hidden; every platform claimed is observed.
-**Failure handling:** Missing native platform/UI/resource/WAV evidence remains explicitly BLOCKED; browser Tauri fakes and tool versions cannot certify native acceptance.
+**Success criteria:** All AC/SC and P0/P1 gates have actual scoped proof on macOS; code builds and automated tests pass on macOS, Windows and Linux; no unrelated/global suite failures hidden; every platform claimed is observed.
+**Failure handling:** Missing macOS native/UI/resource/WAV evidence keeps the feature from Implemented, with its exact cause; browser Tauri fakes and tool versions cannot certify native acceptance. Per the constitution (decision 2026-10-13), native checks that need Windows, Linux, an older Handy binary or a second user account are recorded as **pending release evidence** with the exact command (the native orchestration command of the Resolved Test Commands with `--platform windows|linux`); they never block a step, feature completion on the integration branch or the merge into `dev`, and are never claimed as passed.
 
 ## Resolved Test Commands
 
@@ -368,19 +412,19 @@ Availability checked 2026-10-12: Cargo/rustc 1.94.0, clippy 0.1.94, rustfmt 1.8.
 
 | Priority/level | Concrete planned file and assertion | FR / AC |
 |---|---|---|
-| P0 unit | policy inline tests and microphone_resolution.rs: ordered first usable, ambiguity, failed enumeration, default, lid unknown/no override, 2 s/6 s, four-plus slow devices, one refresh/no repeated choice | FR-002/003/005; AC-003/005 |
-| P0 real-file integration | microphone_settings.rs: missing/null/default/unavailable/ambiguous legacy, explicit empty wins, exact order after restart, idempotence, flush/replace fault and unknown-field preservation | FR-001/006/007; AC-001/006/007 |
+| P0 unit | policy inline tests and microphone_resolution.rs: ordered first usable, ambiguity, failed enumeration, default, lid unknown/no override, every started attempt gets its full 2 s, no configured attempt starts with less than 4 s left, default starts by t = 4 s, deadline-skipped choices recorded as failed, four-plus slow devices, slow enumeration, one refresh/no repeated choice | FR-002/003/005; AC-003/005 |
+| P0 real-file integration | microphone_settings.rs: missing/null legacy (→ `[]`), literal `"default"` (→ `["default"]`), unavailable/ambiguous legacy, explicit empty wins, exact order after restart, idempotence, flush/replace fault and unknown-field preservation | FR-001/006/007; AC-001/006/007 |
 | P0 concurrency | microphone_sessions.rs: pending edit, always-on launch/idle/active edit, reconnect before next keypress, same stream reuse, late generation, loss/stop/cancel race, no-op reopen, bounded worker cap | FR-003/004/007; AC-003/004/007 |
 | P0 capture/action | microphone_sessions.rs and microphone_native.rs: recover sample prefix even on consumer death, once-only transcription, no splice, cut-short notice, post-loss release no-op, WAV failure is not history success | FR-004; AC-004; SC-001/002 |
-| P0 process contract | microphone_cli.rs: genuine UI adapter versus CLI valid/invalid parity, CAS, complete-order readback, exact names/envelope/exits, offline unknown/current absence, IPC unknown reread | FR-007/008; AC-007/008 |
+| P0 process contract | microphone_cli.rs: genuine UI adapter versus CLI valid/invalid parity, CAS, complete-order readback, exact names/envelope/exits, live `list` and offline `unavailable`/5 with empty details, offline `get microphone_priority`, `set selected_microphone`/`set microphone_priority` refused with `details.reason = "microphones_domain"`, per-name `details.items`, IPC unknown reread | FR-007/008; AC-007/008 |
 | P1 frontend unit | draft-state.test.ts: validation, busy/error/success, conflict keeps draft, Reset draft only, Reload discards, event revision and late-read fencing | FR-001/007; AC-001/007 |
 | P1 UI/a11y/visual | tests/microphone-priority.spec.ts: pointer target/drag, tab/Enter move, focus retention, unavailable removal, all four text statuses, 5 s/open/Retry, current/last/not-used-yet, Save/Reset/Reload, all behavioral trait states | FR-001/002; AC-001/002/007; SC-003 |
-| P0/P1 native | microphone_native.rs + native-proof.ts: unplug while speaking, known reconnect, stale opener cleanup, no main-loop freeze, enum while active, always-on switch, clamshell override/default, permissions denied | FR-002–005; AC-002–005 |
+| P0/P1 native | microphone_native.rs + native-proof.ts on macOS: unplug while speaking, known reconnect, stale opener cleanup, no main-loop freeze, enum while active, always-on switch, clamshell override/default, permissions denied. Windows/Linux: pending release evidence | FR-002–005; AC-002–005 |
 | P1 regression | Existing recorder tests, full Rust plus 008 domain/transaction suite; channel invalid defaults, VAD/resampling, lazy close, push-to-talk/toggle/cancel, clamshell no override | All FR; SC-001/002 |
 
 Inject only I/O boundaries: catalog/open/lid/error/sample drain, monotonic clock, store fault and event/output ports. Test actual policy/validation/transaction, not mocked service-under-test. Clipboard, workspace/activation, AX classification and LLM are outside F1 and remain existing output-stage ports; no unused new seams introduced here. A fake downstream transcription completion port asserts dispatch/prefix once; real native transcription evidence remains mandatory. Use barriers/callbacks/fake clocks, never arbitrary sleeps.
 
-Native manual procedure: build against the required model/VAD resource on an isolated store; record OS/build/binary hash and anonymized device classes. Save A/B order, restart/read UI and CLI; unplug A, record with B, reconnect A and start again. Repeat on-demand/always-on and with edits during capture. Speak a known local fixture, disconnect mid-utterance, inspect retained prefix/transcription and notification exactly once; check WAV/history outcome separately. Exercise real closed lid with override present/absent and unknown-lid injected fixture, channel fallback and enumeration while stream open. Record start/attempt/end monotonic times, readiness, resource counters and UI responsiveness. Repeat supported Windows/Linux backends; macOS proof does not certify them. Private audio artifacts are kept only in operator-selected isolated proof storage, never printed in debug logs.
+Native manual procedure: build against the required model/VAD resource on an isolated store; record OS/build/binary hash and anonymized device classes. Save A/B order, restart/read UI and CLI; unplug A, record with B, reconnect A and start again. Repeat on-demand/always-on and with edits during capture. Speak a known local fixture, disconnect mid-utterance, inspect retained prefix/transcription and notification exactly once; check WAV/history outcome separately. Exercise real closed lid with override present/absent and unknown-lid injected fixture, channel fallback and enumeration while stream open. Record start/attempt/end monotonic times, readiness, resource counters and UI responsiveness. The same procedure on Windows and Linux is pending release evidence (constitution): macOS proof does not certify them and they are never claimed as passed. Private audio artifacts are kept only in operator-selected isolated proof storage, never printed in debug logs.
 
 ## QE Analysis
 
@@ -389,10 +433,10 @@ Criticality High; blast radius Shared settings/audio pipeline; primary risk Regr
 | Gate | Evidence and owner | Blocking rule / known gap |
 |---|---|---|
 | Plan quality | Current independent raw review, structural validate, Analyze/progression; planner | Complete review is required; no invented PASS |
-| P0 audio ownership | Step 1/4 fake-clock plus native worker/resource/prefix transcripts; implementer/spec-test | Caller timeout without cleanup or captured-prefix loss blocks release |
+| P0 audio ownership | Step 1/4 fake-clock plus macOS native worker/resource/prefix transcripts; implementer/spec-test | Caller timeout without cleanup or captured-prefix loss on macOS blocks release; Windows/Linux observations are pending release evidence, never a step gate |
 | P0 data/contract | Real store generations, UI/CLI parity/CAS/no-op and 008 regression; spec-test | Partial write, erasure, lost revision or second writer blocks release |
 | P1 UI/source authority | Common pass code IR/IDs, bound review/design certificate, screenshots and focus assertions; program UI producer/spec-test | Penflow incomplete today; user-approved preparation deferral is not certification |
-| P1 performance/operability | 2 s/6 s traces, always-on latency samples, off-main-loop observation, actionable retries; native operator | Missing deadline/default evidence or resource growth blocks release |
+| P1 performance/operability | Full-2 s attempt and 6 s total traces with the default slot, always-on latency samples, off-main-loop observation, actionable retries; native operator (macOS) | Missing deadline/default evidence or resource growth on macOS blocks release |
 | Privacy | Sentinel assertions in stdout/stderr/errors/logs, no added name/audio/secret dumps; implementer | Projection only; F1 does not perform a broader vulnerability audit |
 | Evidence integrity | AC/SC matrix with binary/OS/hash/transcripts; verifier | Tools/planned tests do not prove native success |
 
@@ -404,10 +448,10 @@ All findings from the original specification review and refreshed model-bound re
 
 | Finding | Decision / test / documented risk |
 |---|---|
-| F8 interface not pinned | Frozen 008 names/service/Domain/error mapping above; release dependency mandatory |
+| F8 interface not pinned | Merged 008 names (`Domain`, `DomainChange`, `SettingsBackend::commit_change`, `tauri_adapter`, `effects.rs`) and 006 step 0 D2/D3 names above |
 | AC-008 names versus provisional clarification | Register exact microphones list/set-priority AC names as Domain extension; no rename of 008 |
 | UI contract/IDs/mockups deferred | Common pre-spec-ship pass; required policy retained, no certification claim |
-| Default versus 6 s and blocking cpal | Budget allocation reserves default; owned attempt fence/reaper/native spike; release blocker if cleanup infeasible |
+| Default versus 6 s and blocking cpal | Every attempt keeps its full 2 s; the 6 s total limits the number of attempts and reserves the default slot (start by t = 4 s); owned attempt fence/reaper/native spike; release blocker if cleanup infeasible on macOS |
 | Closed-lid carve-out | Override configured AND confirmed closed; otherwise normal; no-override and unknown-lid tests |
 | Always-on per-start latency | Fresh catalog off main loop, same healthy stream reuse; measure mode-specific latency and honor 6 s bound |
 | Enumeration side effects | No open/probe during refresh, one in flight; busy/error→unknown; native backend tests |
@@ -420,7 +464,13 @@ All findings from the original specification review and refreshed model-bound re
 | Post-loss release/toggle | Ended binding release no-op; next independent toggle can start; race/session-token tests |
 | Native prefix and history | Once-only recoverable drain/transcription, no replacement splice; WAV-gated history truthfully separate |
 | Main-thread/shared lock waits | Worker audio coordinator; no join/open/enum under settings/main-loop lock; observe UI responsiveness |
+| 2026-10-14 review: Windows/Linux native proof as step gates | macOS native proof gates Implemented; Windows/Linux recorded as pending release evidence with their exact command (constitution) |
+| 2026-10-14 review: `Domain::plan` is pure, `list` needs the audio manager | `list` is a D2 live operation of 006 step 0 (`MicrophonesList`); offline it returns the 008 live-only refusal; configured order readable with `get microphone_priority` |
+| 2026-10-14 review: names announced by the 008 plan but not shipped | `commit_mutation`, `LiveSettingsEffects`, `SettingsMutation` for lists replaced by `DomainChange`, `SettingsBackend::commit_change`, `tauri_adapter::write_change`, `effects.rs` |
+| 2026-10-14 review: legacy `selected_microphone` still settable | Read-only descriptor, `validation_failed`/2 with `details.reason = "microphones_domain"` (spec Clarification) |
+| 2026-10-14 review: `default` sentinel vs 008 | Only null maps to `[]`; `"default"` is an exact device name (spec AC-006 and Clarification) |
+| 2026-10-14 review: per-attempt budget below 2 s | Full 2 s per attempt; the 6 s total limits how many start (orchestrator decision) |
 
 ## Next Action
 
-After current independent plan review and READY progression, the next implementation command is `$spec-implement 001-microphone-priority --model=gpt-6`, with 008 delivered first and the common UI contract/design pass completed before UI code. It is not executed by this planning task. No application changes, commit or push are authorized here.
+After current independent plan review and READY progression, the next implementation command is `/spec-implement 001-microphone-priority` with `--review-max-chars 180000` and the model resolved at implementation time; Step 5 waits for 006 step 0 (D2/D3) and the common UI contract/design pass precedes UI code. It is not executed by this planning task. No application changes, commit or push are authorized here.

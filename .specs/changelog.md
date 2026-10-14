@@ -5,6 +5,10 @@
 
 ---
 
+## 2026-10-14 — [Feature 001] Spec and plan refined: literal "default" migration, live microphone list, full 2-second attempts
+
+Spec: AC-006 maps only a null legacy selection to an empty list (the device name "default" becomes an exact entry); Clarifications record the live-only `microphones list` (configured order readable with `get microphone_priority`) and the read-only legacy `selected_microphone` (`validation_failed`, `details.reason = "microphones_domain"`). Plan: merged 008 names, D2 live list (depends on 006 step 0), D3 per-name items, full 2-second attempts within the 6-second total, Windows/Linux native proof as pending release evidence. Spec and plan reviews are stale until an independent reviewer refreshes them.
+
 ## 2026-10-14 — [Feature 006] Plan refined: settings framework Step 0 (D2–D4) and merged 008 names
 <!-- finalize:spec-refine:2026-10-14:b0be88bc -->
 

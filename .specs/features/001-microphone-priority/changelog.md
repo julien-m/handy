@@ -32,3 +32,28 @@
 - **Classification:** criticality High, blast radius Shared, primary risk Regression, taken from the existing QE Analysis; `livespec delivery lane`: full
 - **Review:** the previous spec review is stale; an independent reviewer refreshes it
 - **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
+
+## 2026-10-14 — [Spec Update]: AC-006 migration of the literal "default" and two CLI clarifications
+
+- **Type:** Spec Update
+- **Spec modified:** Yes (sections: AC-006, Clarifications, Edge Cases; frontmatter `updated`)
+- **Code modified:** None
+- **AC impacted:** AC-006 (reworded), AC-008 (clarified, wording unchanged)
+- **Clarify decisions:** `literal-default-migration` (null → empty list; any non-null value, including `"default"`, → one exact entry), `offline-list-content` (`microphones list` is a live operation; offline 008 live-only refusal; order readable with `get microphone_priority`), `legacy-selected-microphone-key` (read-only; generic `set` → `validation_failed` with `details.reason = "microphones_domain"`)
+- **Review:** the spec review is stale; an independent reviewer refreshes it
+- **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
+
+## 2026-10-14 — [Plan Update]: align the plan on the merged 008 and the program decisions D1, D2 and D3
+
+- **Type:** Spec Update
+- **Spec modified:** No (plan entry; see the spec entry above)
+- **Code modified:** None (plan.md updated)
+- **AC impacted:** None (pre-implementation)
+- **D1:** macOS native proof gates Implemented; Windows/Linux spikes and acceptance are pending release evidence with their exact command
+- **D2:** `microphones list` is the `MicrophonesList` live operation of 006 step 0; Step 5 depends on 006 step 0; offline it returns the 008 live-only refusal
+- **D3:** per-name refusals in `details.items` (`microphone_name_empty`, `microphone_name_duplicate`); `details.reason = "microphones_domain"` for `selected_microphone` and `microphone_priority` under generic `set`
+- **008 names:** `DomainChange(ChangeKind::Apply)`, `SettingsBackend::commit_change`, `tauri_adapter::write_change` (shared with 003), `effects.rs`, `settings::apply_settings_migrations`, `SettingsRepository::initialize`; never-shipped names removed
+- **Legacy key:** `selected_microphone` read-only descriptor, `ValidationReason`/`ErrorReason::MicrophonesDomain`
+- **Budget:** each open attempt keeps its full 2 s; the 6 s total limits how many attempts start and reserves the default slot (start by t = 4 s)
+- **Review:** the plan review is stale; an independent reviewer refreshes it
+- **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
