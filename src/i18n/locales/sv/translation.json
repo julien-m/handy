@@ -458,26 +458,120 @@
           "refreshModels": "Uppdatera modeller"
         }
       },
-      "prompts": {
-        "title": "Prompt",
-        "selectedPrompt": {
-          "title": "Vald prompt",
-          "description": "Välj en mall för att förfina transkriptioner eller skapa en ny. Använd ${output} inuti prompttexten för att referera till den fångade transkriptionen."
+      "promptLibrary": {
+        "processing": {
+          "title": "AI-efterbearbetning",
+          "enabledDescription": "Bearbeta dikteringar med en prompt. Av: ingen diktering bearbetas.",
+          "defaultTitle": "Standardprompt",
+          "defaultDescription": "Används av kortkommandot för AI-diktering. Vanlig diktering börjar med Ingen.",
+          "none": "Ingen",
+          "invalidOption": "Ogiltig: redigera den innan du använder den"
         },
-        "noPrompts": "Inga prompter tillgängliga",
-        "selectPrompt": "Välj en prompt",
-        "createNew": "Skapa ny prompt",
-        "promptLabel": "Prompt-etikett",
-        "promptLabelPlaceholder": "Ange namn på prompt",
-        "promptInstructions": "Prompt-instruktioner",
-        "promptInstructionsPlaceholder": "Skriv instruktionerna som ska köras efter transkription. Exempel: Förbättra grammatik och tydlighet för följande text: ${output}",
-        "promptTip": "Tips: Använd <code>${output}</code> för att infoga den transkriberade texten i din prompt.",
-        "updatePrompt": "Uppdatera prompt",
-        "deletePrompt": "Ta bort prompt",
-        "createPrompt": "Skapa prompt",
-        "cancel": "Avbryt",
-        "selectToEdit": "Välj en prompt ovan för att visa och redigera dess detaljer.",
-        "createFirst": "Klicka på 'Skapa ny prompt' ovan för att skapa din första prompt för efterbearbetning."
+        "list": {
+          "title": "Promptar",
+          "count": "{{count}} av {{limit}} promptar",
+          "full": "{{limit}} av {{limit}} promptar: ta bort en för att lägga till en annan",
+          "new": "Ny prompt",
+          "empty": "Inga promptar än. Skapa en för att bearbeta dina dikteringar.",
+          "loading": "Läser in promptar…",
+          "loadFailed": "Promptarna kunde inte läsas in.",
+          "retry": "Försök igen",
+          "edit": "Redigera {{name}}",
+          "defaultProvider": "Standardleverantör",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Inget kortkommando",
+          "notReady": "Inte redo: {{reason}}",
+          "invalid": "Ogiltig: {{reason}}"
+        },
+        "issues": {
+          "name_empty": "namn saknas",
+          "name_too_long": "namnet är för långt",
+          "name_duplicate": "dubblettnamn",
+          "text_empty": "text saknas",
+          "text_too_long": "texten är för lång",
+          "override_incomplete": "leverantör eller modell saknas",
+          "unknown_provider": "okänd leverantör"
+        },
+        "reasons": {
+          "provider_error": "leverantören returnerade ett fel",
+          "empty_result": "leverantören returnerade ett tomt resultat",
+          "timeout": "inget svar inom 30 sekunder",
+          "provider_busy": "leverantören är fortfarande upptagen med en annan begäran",
+          "missing_endpoint": "slutpunkt saknas",
+          "missing_model": "modell saknas",
+          "missing_api_key": "API-nyckel saknas",
+          "provider_unavailable": "leverantören är inte tillgänglig på den här enheten",
+          "unknown_provider": "okänd leverantör",
+          "invalid_prompt": "prompten är ogiltig",
+          "prompt_missing": "prompten finns inte längre"
+        },
+        "editor": {
+          "editTitle": "Redigera prompt",
+          "newTitle": "Ny prompt",
+          "name": "Namn",
+          "namePlaceholder": "Promptens namn",
+          "text": "Prompt",
+          "textPlaceholder": "Skriv instruktionerna som ska tillämpas på transkriptionen. Exempel: Korta ner transkriptionen till det väsentliga. ${output}",
+          "textHint": "<code>${output}</code> ersätts med transkriptionen.",
+          "fieldErrors": {
+            "name_empty": "Ange ett namn (1–60 tecken).",
+            "name_too_long": "Använd högst 60 tecken.",
+            "name_duplicate": "En annan prompt har det här namnet. Namn måste vara unika.",
+            "text_empty": "Ange promptens text.",
+            "text_too_long": "Använd högst 8 000 tecken."
+          },
+          "provider": "Leverantör",
+          "defaultProviderOption": "Standardleverantör ({{provider}})",
+          "model": "Modell",
+          "modelPlaceholder": "Skriv ett modellnamn",
+          "readyEndpoint": "Slutpunkt {{endpoint}} · Redo",
+          "readyProvider": "{{provider}} · {{model}} · Redo",
+          "notReadyTitle": "{{provider}} är inte redo: {{reason}}",
+          "notReadyBody": "Dikteringar med den här prompten hoppar över AI-steget och behåller originaltexten.",
+          "fix": {
+            "api_key": "Lägg till API-nyckel",
+            "endpoint": "Ange slutpunkt"
+          },
+          "shortcuts": "Kortkommandon (upp till {{limit}})",
+          "changedElsewhere": "Den här prompten har ändrats någon annanstans. Läs in den igen för att se ändringen, eller spara för att behålla din version.",
+          "reload": "Läs in igen",
+          "deletedElsewhere": "Den här prompten har tagits bort någon annanstans och kan inte längre sparas."
+        },
+        "actions": {
+          "note": "Ändringarna gäller nästa diktering efter att du sparat.",
+          "fixFields": "Rätta de markerade fälten för att spara.",
+          "delete": "Ta bort prompt",
+          "cancel": "Avbryt",
+          "save": "Spara",
+          "saving": "Sparar…",
+          "saved": "Prompten har sparats."
+        },
+        "deleteDialog": {
+          "title": "Ta bort ”{{name}}”?",
+          "shortcuts": "Dess kortkommandon tas bort: {{shortcuts}}.",
+          "default": "Det är standardprompten: standarden blir Ingen.",
+          "body": "Det går inte att ångra.",
+          "cancel": "Avbryt",
+          "confirm": "Ta bort",
+          "close": "Stäng",
+          "deleted": "Prompten ”{{name}}” har tagits bort.",
+          "deletedWithShortcuts": "Prompten ”{{name}}” har tagits bort. Borttagna kortkommandon: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Test",
+          "sampleLabel": "Exempeltext",
+          "samplePlaceholder": "Skriv eller klistra in en exempeltranskription",
+          "run": "Kör test",
+          "running": "Testar…",
+          "note": "Inget infogas och historiken ändras inte.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} s",
+          "failedTitle": "Testet misslyckades: {{reason}}",
+          "failedHint": "Kontrollera leverantörsinställningarna och kör testet igen.",
+          "retry": "Kör igen",
+          "busy": "Ett annat test körs fortfarande. Försök igen när det är klart.",
+          "skipped": "Ange en exempeltext för att testa prompten."
+        },
+        "shortcutOwner": "prompten ”{{name}}”"
       }
     },
     "history": {

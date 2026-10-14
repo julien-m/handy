@@ -458,26 +458,120 @@
           "refreshModels": "Làm mới mô hình"
         }
       },
-      "prompts": {
-        "title": "Câu lệnh",
-        "selectedPrompt": {
-          "title": "Prompt đã chọn",
-          "description": "Chọn một mẫu để tinh chỉnh bản ghi hoặc tạo mới. Sử dụng ${output} trong văn bản prompt để tham chiếu bản ghi đã chụp."
+      "promptLibrary": {
+        "processing": {
+          "title": "Xử lý sau bằng AI",
+          "enabledDescription": "Xử lý bản đọc chính tả bằng một prompt. Tắt: không bản đọc nào được xử lý.",
+          "defaultTitle": "Prompt mặc định",
+          "defaultDescription": "Được phím tắt đọc chính tả AI sử dụng. Đọc chính tả thường bắt đầu với Không có.",
+          "none": "Không có",
+          "invalidOption": "Không hợp lệ: hãy chỉnh sửa trước khi dùng"
         },
-        "noPrompts": "Không có prompt nào",
-        "selectPrompt": "Chọn một prompt",
-        "createNew": "Tạo Prompt mới",
-        "promptLabel": "Nhãn Prompt",
-        "promptLabelPlaceholder": "Nhập tên prompt",
-        "promptInstructions": "Hướng dẫn Prompt",
-        "promptInstructionsPlaceholder": "Viết hướng dẫn để chạy sau khi chuyển đổi. Ví dụ: Cải thiện ngữ pháp và độ rõ ràng cho văn bản sau: ${output}",
-        "promptTip": "Mẹo: Sử dụng <code>${output}</code> để chèn văn bản đã chuyển đổi vào prompt của bạn.",
-        "updatePrompt": "Cập nhật Prompt",
-        "deletePrompt": "Xóa Prompt",
-        "createPrompt": "Tạo Prompt",
-        "cancel": "Hủy",
-        "selectToEdit": "Chọn một prompt ở trên để xem và chỉnh sửa chi tiết.",
-        "createFirst": "Nhấn 'Tạo Prompt mới' ở trên để tạo prompt xử lý sau đầu tiên của bạn."
+        "list": {
+          "title": "Prompt",
+          "count": "{{count}}/{{limit}} prompt",
+          "full": "{{limit}}/{{limit}} prompt: xóa một prompt để thêm prompt khác",
+          "new": "Prompt mới",
+          "empty": "Chưa có prompt nào. Hãy tạo một prompt để xử lý bản đọc chính tả.",
+          "loading": "Đang tải prompt…",
+          "loadFailed": "Không thể tải các prompt.",
+          "retry": "Thử lại",
+          "edit": "Chỉnh sửa {{name}}",
+          "defaultProvider": "Nhà cung cấp mặc định",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Không có phím tắt",
+          "notReady": "Chưa sẵn sàng: {{reason}}",
+          "invalid": "Không hợp lệ: {{reason}}"
+        },
+        "issues": {
+          "name_empty": "thiếu tên",
+          "name_too_long": "tên quá dài",
+          "name_duplicate": "tên bị trùng",
+          "text_empty": "thiếu nội dung",
+          "text_too_long": "nội dung quá dài",
+          "override_incomplete": "thiếu nhà cung cấp hoặc mô hình",
+          "unknown_provider": "nhà cung cấp không xác định"
+        },
+        "reasons": {
+          "provider_error": "nhà cung cấp trả về lỗi",
+          "empty_result": "nhà cung cấp trả về kết quả trống",
+          "timeout": "không có phản hồi trong 30 giây",
+          "provider_busy": "nhà cung cấp vẫn đang bận với yêu cầu khác",
+          "missing_endpoint": "thiếu endpoint",
+          "missing_model": "thiếu mô hình",
+          "missing_api_key": "thiếu khóa API",
+          "provider_unavailable": "nhà cung cấp không khả dụng trên thiết bị này",
+          "unknown_provider": "nhà cung cấp không xác định",
+          "invalid_prompt": "prompt không hợp lệ",
+          "prompt_missing": "prompt không còn tồn tại"
+        },
+        "editor": {
+          "editTitle": "Chỉnh sửa prompt",
+          "newTitle": "Prompt mới",
+          "name": "Tên",
+          "namePlaceholder": "Tên prompt",
+          "text": "Prompt",
+          "textPlaceholder": "Viết hướng dẫn áp dụng cho bản chép lời. Ví dụ: Rút gọn bản chép lời chỉ còn ý chính. ${output}",
+          "textHint": "<code>${output}</code> được thay bằng bản chép lời.",
+          "fieldErrors": {
+            "name_empty": "Nhập tên (1–60 ký tự).",
+            "name_too_long": "Dùng tối đa 60 ký tự.",
+            "name_duplicate": "Một prompt khác đã dùng tên này. Tên phải là duy nhất.",
+            "text_empty": "Nhập nội dung prompt.",
+            "text_too_long": "Dùng tối đa 8.000 ký tự."
+          },
+          "provider": "Nhà cung cấp",
+          "defaultProviderOption": "Nhà cung cấp mặc định ({{provider}})",
+          "model": "Mô hình",
+          "modelPlaceholder": "Nhập tên mô hình",
+          "readyEndpoint": "Endpoint {{endpoint}} · Sẵn sàng",
+          "readyProvider": "{{provider}} · {{model}} · Sẵn sàng",
+          "notReadyTitle": "{{provider}} chưa sẵn sàng: {{reason}}",
+          "notReadyBody": "Bản đọc chính tả với prompt này sẽ bỏ qua bước AI và giữ nguyên văn bản gốc.",
+          "fix": {
+            "api_key": "Thêm khóa API",
+            "endpoint": "Đặt endpoint"
+          },
+          "shortcuts": "Phím tắt (tối đa {{limit}})",
+          "changedElsewhere": "Prompt này đã được thay đổi ở nơi khác. Tải lại để xem thay đổi, hoặc lưu để giữ phiên bản của bạn.",
+          "reload": "Tải lại",
+          "deletedElsewhere": "Prompt này đã bị xóa ở nơi khác và không thể lưu nữa."
+        },
+        "actions": {
+          "note": "Thay đổi áp dụng cho lần đọc chính tả tiếp theo sau khi lưu.",
+          "fixFields": "Sửa các trường được đánh dấu để lưu.",
+          "delete": "Xóa prompt",
+          "cancel": "Hủy",
+          "save": "Lưu",
+          "saving": "Đang lưu…",
+          "saved": "Đã lưu prompt."
+        },
+        "deleteDialog": {
+          "title": "Xóa “{{name}}”?",
+          "shortcuts": "Các phím tắt của nó sẽ bị xóa: {{shortcuts}}.",
+          "default": "Đây là prompt mặc định: mặc định sẽ trở thành Không có.",
+          "body": "Không thể hoàn tác thao tác này.",
+          "cancel": "Hủy",
+          "confirm": "Xóa",
+          "close": "Đóng",
+          "deleted": "Đã xóa prompt “{{name}}”.",
+          "deletedWithShortcuts": "Đã xóa prompt “{{name}}”. Phím tắt đã xóa: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Kiểm tra",
+          "sampleLabel": "Văn bản mẫu",
+          "samplePlaceholder": "Nhập hoặc dán một bản chép lời mẫu",
+          "run": "Chạy kiểm tra",
+          "running": "Đang kiểm tra…",
+          "note": "Không có gì được chèn và lịch sử không thay đổi.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} giây",
+          "failedTitle": "Kiểm tra thất bại: {{reason}}",
+          "failedHint": "Kiểm tra cài đặt nhà cung cấp rồi chạy lại.",
+          "retry": "Chạy lại",
+          "busy": "Một lần kiểm tra khác vẫn đang chạy. Hãy thử lại khi nó kết thúc.",
+          "skipped": "Nhập văn bản mẫu để kiểm tra prompt."
+        },
+        "shortcutOwner": "prompt “{{name}}”"
       }
     },
     "history": {

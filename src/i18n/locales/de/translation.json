@@ -458,26 +458,120 @@
           "refreshModels": "Modelle aktualisieren"
         }
       },
-      "prompts": {
-        "title": "Prompt",
-        "selectedPrompt": {
-          "title": "Ausgewählter Prompt",
-          "description": "Wähle eine Vorlage zur Verfeinerung von Transkriptionen oder erstelle eine neue. Verwende ${output} im Prompt-Text, um auf das erfasste Transkript zu verweisen."
+      "promptLibrary": {
+        "processing": {
+          "title": "KI-Nachbearbeitung",
+          "enabledDescription": "Diktate mit einem Prompt verarbeiten. Aus: Kein Diktat wird verarbeitet.",
+          "defaultTitle": "Standard-Prompt",
+          "defaultDescription": "Wird vom KI-Diktat-Tastenkürzel verwendet. Einfaches Diktat beginnt mit Keiner.",
+          "none": "Keiner",
+          "invalidOption": "Ungültig: vor der Verwendung bearbeiten"
         },
-        "noPrompts": "Keine Prompts verfügbar",
-        "selectPrompt": "Prompt auswählen",
-        "createNew": "Neuen Prompt erstellen",
-        "promptLabel": "Prompt-Name",
-        "promptLabelPlaceholder": "Prompt-Namen eingeben",
-        "promptInstructions": "Prompt-Anweisungen",
-        "promptInstructionsPlaceholder": "Schreibe die Anweisungen, die nach der Transkription ausgeführt werden sollen. Beispiel: Verbessere Grammatik und Klarheit für folgenden Text: ${output}",
-        "promptTip": "Tipp: Verwende <code>${output}</code>, um den transkribierten Text in deinen Prompt einzufügen.",
-        "updatePrompt": "Prompt aktualisieren",
-        "deletePrompt": "Prompt löschen",
-        "createPrompt": "Prompt erstellen",
-        "cancel": "Abbrechen",
-        "selectToEdit": "Wähle oben einen Prompt aus, um dessen Details anzuzeigen und zu bearbeiten.",
-        "createFirst": "Klicke oben auf 'Neuen Prompt erstellen', um deinen ersten Nachbearbeitungs-Prompt zu erstellen."
+        "list": {
+          "title": "Prompts",
+          "count": "{{count}} von {{limit}} Prompts",
+          "full": "{{limit}} von {{limit}} Prompts: Lösche einen, um einen weiteren hinzuzufügen",
+          "new": "Neuer Prompt",
+          "empty": "Noch keine Prompts. Erstelle einen, um deine Diktate zu verarbeiten.",
+          "loading": "Prompts werden geladen…",
+          "loadFailed": "Die Prompts konnten nicht geladen werden.",
+          "retry": "Erneut versuchen",
+          "edit": "{{name}} bearbeiten",
+          "defaultProvider": "Standardanbieter",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Kein Tastenkürzel",
+          "notReady": "Nicht bereit: {{reason}}",
+          "invalid": "Ungültig: {{reason}}"
+        },
+        "issues": {
+          "name_empty": "Name fehlt",
+          "name_too_long": "Name zu lang",
+          "name_duplicate": "doppelter Name",
+          "text_empty": "Text fehlt",
+          "text_too_long": "Text zu lang",
+          "override_incomplete": "Anbieter oder Modell fehlt",
+          "unknown_provider": "unbekannter Anbieter"
+        },
+        "reasons": {
+          "provider_error": "der Anbieter hat einen Fehler zurückgegeben",
+          "empty_result": "der Anbieter hat ein leeres Ergebnis zurückgegeben",
+          "timeout": "keine Antwort innerhalb von 30 Sekunden",
+          "provider_busy": "der Anbieter bearbeitet noch eine andere Anfrage",
+          "missing_endpoint": "Endpunkt fehlt",
+          "missing_model": "Modell fehlt",
+          "missing_api_key": "API-Schlüssel fehlt",
+          "provider_unavailable": "Anbieter auf diesem Gerät nicht verfügbar",
+          "unknown_provider": "unbekannter Anbieter",
+          "invalid_prompt": "der Prompt ist ungültig",
+          "prompt_missing": "der Prompt existiert nicht mehr"
+        },
+        "editor": {
+          "editTitle": "Prompt bearbeiten",
+          "newTitle": "Neuer Prompt",
+          "name": "Name",
+          "namePlaceholder": "Name des Prompts",
+          "text": "Prompt",
+          "textPlaceholder": "Schreibe die Anweisungen für das Transkript. Beispiel: Kürze das Transkript auf das Wesentliche. ${output}",
+          "textHint": "<code>${output}</code> wird durch das Transkript ersetzt.",
+          "fieldErrors": {
+            "name_empty": "Gib einen Namen ein (1–60 Zeichen).",
+            "name_too_long": "Verwende höchstens 60 Zeichen.",
+            "name_duplicate": "Ein anderer Prompt hat diesen Namen. Namen müssen eindeutig sein.",
+            "text_empty": "Gib den Text des Prompts ein.",
+            "text_too_long": "Verwende höchstens 8.000 Zeichen."
+          },
+          "provider": "Anbieter",
+          "defaultProviderOption": "Standardanbieter ({{provider}})",
+          "model": "Modell",
+          "modelPlaceholder": "Modellnamen eingeben",
+          "readyEndpoint": "Endpunkt {{endpoint}} · Bereit",
+          "readyProvider": "{{provider}} · {{model}} · Bereit",
+          "notReadyTitle": "{{provider}} ist nicht bereit: {{reason}}",
+          "notReadyBody": "Diktate mit diesem Prompt überspringen den KI-Schritt und behalten den Originaltext.",
+          "fix": {
+            "api_key": "API-Schlüssel hinzufügen",
+            "endpoint": "Endpunkt festlegen"
+          },
+          "shortcuts": "Tastenkürzel (bis zu {{limit}})",
+          "changedElsewhere": "Dieser Prompt wurde an anderer Stelle geändert. Lade ihn neu, um die Änderung zu sehen, oder speichere, um deine Version zu behalten.",
+          "reload": "Neu laden",
+          "deletedElsewhere": "Dieser Prompt wurde an anderer Stelle gelöscht und kann nicht mehr gespeichert werden."
+        },
+        "actions": {
+          "note": "Änderungen gelten ab dem nächsten Diktat nach dem Speichern.",
+          "fixFields": "Korrigiere die markierten Felder, um zu speichern.",
+          "delete": "Prompt löschen",
+          "cancel": "Abbrechen",
+          "save": "Speichern",
+          "saving": "Wird gespeichert…",
+          "saved": "Prompt gespeichert."
+        },
+        "deleteDialog": {
+          "title": "„{{name}}“ löschen?",
+          "shortcuts": "Seine Tastenkürzel werden entfernt: {{shortcuts}}.",
+          "default": "Es ist der Standard-Prompt: Der Standard wird zu Keiner.",
+          "body": "Dies kann nicht rückgängig gemacht werden.",
+          "cancel": "Abbrechen",
+          "confirm": "Löschen",
+          "close": "Schließen",
+          "deleted": "Prompt „{{name}}“ gelöscht.",
+          "deletedWithShortcuts": "Prompt „{{name}}“ gelöscht. Entfernte Tastenkürzel: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Test",
+          "sampleLabel": "Beispieltext",
+          "samplePlaceholder": "Beispieltranskript eingeben oder einfügen",
+          "run": "Test starten",
+          "running": "Test läuft…",
+          "note": "Es wird nichts eingefügt und der Verlauf bleibt unverändert.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} s",
+          "failedTitle": "Test fehlgeschlagen: {{reason}}",
+          "failedHint": "Prüfe die Anbietereinstellungen und starte den Test erneut.",
+          "retry": "Erneut starten",
+          "busy": "Ein anderer Test läuft noch. Versuche es erneut, wenn er beendet ist.",
+          "skipped": "Gib einen Beispieltext ein, um den Prompt zu testen."
+        },
+        "shortcutOwner": "den Prompt „{{name}}“"
       }
     },
     "history": {

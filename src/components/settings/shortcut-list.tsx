@@ -1,22 +1,27 @@
-// Settings row listing every shortcut of one action (1 to 4), with record,
-// remove, add and reset controls. Every change goes through the backend
-// `edit_binding_shortcuts` command, which validates, registers and saves.
+// Settings row listing every shortcut of one action, with record, remove,
+// add and reset controls: 1 to 4 shortcuts for a dictation action (004), 0 to
+// 2 without default for a prompt target `prompt:<id>` (005). Every change
+// goes through the backend `edit_binding_shortcuts` command, which
+// validates, registers and saves.
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { AlertTriangle, X } from "lucide-react";
 import { commands } from "@/bindings";
 import type { ShortcutEdit, StoredShortcutConflict } from "@/bindings";
 import { useSettings } from "../../hooks/useSettings";
 import { ResetButton } from "../ui/ResetButton";
 import { SettingContainer } from "../ui/SettingContainer";
 import { ShortcutInput } from "./ShortcutInput";
+import { ShortcutRow } from "./shortcut-row";
 import {
-  MAX_SHORTCUTS_PER_ACTION,
+  type ShortcutLimits,
   type TranslatedMessage,
   canAddShortcut,
   canRemoveShortcut,
   describeConflict,
   describeEditError,
+  limitsFor,
+  promptIdOf,
+  promptNameOfTarget,
   refusalFor,
   shortcutsOf,
   storedConflictFor,
@@ -28,89 +33,21 @@ interface ShortcutListProps {
   grouped?: boolean;
 }
 
+/** Test identifiers of a list; the defaults are 004's. */
+export interface ShortcutListTestIds {
+  list: string;
+  /** Row of the shortcut at `index`; its remove button adds `-remove`. */
+  row: (index: number) => string;
+  add: string;
+}
+
 type ListState = "idle" | "loading" | "error" | "success";
 
-interface ShortcutRowProps {
-  actionId: string;
-  index: number;
-  shortcut: string;
-  canRemove: boolean;
-  busy: boolean;
-  conflict?: TranslatedMessage;
-  /** The system refused this shortcut: it is stored but does nothing. */
-  refusal?: TranslatedMessage;
-  onEdit: (edit: ShortcutEdit) => Promise<void>;
-}
-
-interface RowWarningProps {
-  message: TranslatedMessage;
-  testId: string;
-}
-
-/** Warning icon of a row, explained by its accessible label and tooltip. */
-const RowWarning: React.FC<RowWarningProps> = ({ message, testId }) => {
-  const { t } = useTranslation();
-  const text = t(message.key, message.params);
-  return (
-    <span
-      role="img"
-      className="text-yellow-500"
-      data-testid={testId}
-      aria-label={text}
-      title={text}
-    >
-      <AlertTriangle size={14} />
-    </span>
-  );
-};
-
-const ShortcutRow: React.FC<ShortcutRowProps> = ({
-  actionId,
-  index,
-  shortcut,
-  canRemove,
-  busy,
-  conflict,
-  refusal,
-  onEdit,
-}) => {
-  const { t } = useTranslation();
-  const removeLabel = canRemove
-    ? t("settings.general.shortcut.list.remove")
-    : t("settings.general.shortcut.list.removeLast");
-  const rowId = `shortcut-row-${actionId}-${index}`;
-  return (
-    <div className="flex items-center gap-1" data-testid={rowId}>
-      {refusal && <RowWarning message={refusal} testId={`${rowId}-refused`} />}
-      {conflict && (
-        <RowWarning message={conflict} testId={`${rowId}-conflict`} />
-      )}
-      <ShortcutInput
-        shortcutId={actionId}
-        value={shortcut}
-        disabled={busy}
-        label={t("settings.general.shortcut.list.change")}
-        testId={`${rowId}-recorder`}
-        onCapture={(next) =>
-          onEdit({ kind: "replace", previous: shortcut, shortcut: next })
-        }
-      />
-      <button
-        type="button"
-        className={`p-1 rounded-md ${canRemove && !busy ? "hover:bg-logo-primary/30 cursor-pointer" : "opacity-50 cursor-not-allowed"}`}
-        data-testid={`${rowId}-remove`}
-        aria-label={removeLabel}
-        aria-disabled={!canRemove || busy}
-        title={removeLabel}
-        onClick={() => {
-          if (canRemove && !busy) void onEdit({ kind: "remove", shortcut });
-        }}
-      >
-        <X size={14} />
-      </button>
-    </div>
-  );
-};
+const defaultTestIds = (actionId: string): ShortcutListTestIds => ({
+  list: `shortcut-list-${actionId}`,
+  row: (index) => `shortcut-row-${actionId}-${index}`,
+  add: `shortcut-list-${actionId}-add`,
+});
 
 interface StoredConflicts {
   conflicts: StoredShortcutConflict[];
@@ -152,32 +89,41 @@ const useStoredConflicts = (
   return state;
 };
 
-// @spec AC-001: Settings list with add and remove controls — .specs/features/004-multiple-dictation-shortcuts/spec.md#ac-001
 /**
- * Lists and edits every shortcut of `actionId`. Stored shortcuts that
- * already conflict (kept as before an upgrade) or that the system refused
- * when post-processing was enabled carry a warning and stay editable.
+ * Display name of an action in messages: a prompt target is named after
+ * its prompt, a dictation action by its translated name.
  */
-export const ShortcutList: React.FC<ShortcutListProps> = ({
-  actionId,
-  descriptionMode = "tooltip",
-  grouped = false,
-}) => {
+const useActionName = (): ((actionId: string) => string) => {
   const { t } = useTranslation();
-  const { getSetting, editBindingShortcuts, refusedShortcuts } = useSettings();
+  const { getSetting } = useSettings();
+  const prompts = getSetting("post_process_prompts");
+  return useCallback(
+    (actionId: string) => {
+      const promptName = promptNameOfTarget(prompts ?? [], actionId);
+      return promptName === null
+        ? t(`settings.general.shortcut.bindings.${actionId}.name`, actionId)
+        : t("settings.postProcessing.promptLibrary.shortcutOwner", {
+            name: promptName,
+          });
+    },
+    [t, prompts],
+  );
+};
+
+interface ShortcutEditState {
+  state: ListState;
+  error: TranslatedMessage | null;
+  submit: (edit: ShortcutEdit) => Promise<void>;
+}
+
+/** Sends one edit of `actionId`'s list and keeps its outcome. */
+const useShortcutEdit = (
+  actionId: string,
+  actionName: (actionId: string) => string,
+): ShortcutEditState => {
+  const { editBindingShortcuts } = useSettings();
   const [state, setState] = useState<ListState>("idle");
   const [error, setError] = useState<TranslatedMessage | null>(null);
-  const bindings = getSetting("bindings");
-  const binding = bindings?.[actionId];
-  const { conflicts, failed: conflictsFailed } = useStoredConflicts(
-    JSON.stringify(bindings ?? {}),
-    getSetting("keyboard_implementation"),
-  );
-  const actionName = useCallback(
-    (id: string) => t(`settings.general.shortcut.bindings.${id}.name`, id),
-    [t],
-  );
-
   const submit = async (edit: ShortcutEdit) => {
     setState("loading");
     setError(null);
@@ -194,87 +140,196 @@ export const ShortcutList: React.FC<ShortcutListProps> = ({
       setState("error");
     }
   };
+  return { state, error, submit };
+};
 
-  if (!binding) return null;
-  const shortcuts = shortcutsOf(binding);
+interface ShortcutListEditorProps {
+  actionId: string;
+  testIds?: ShortcutListTestIds;
+  /** `column` (settings rows, 004) or `row` (prompt editor, 005). */
+  layout?: "column" | "row";
+}
+
+interface AddControlsProps {
+  actionId: string;
+  limits: ShortcutLimits;
+  count: number;
+  busy: boolean;
+  testId: string;
+  submit: (edit: ShortcutEdit) => Promise<void>;
+}
+
+const AddControls: React.FC<AddControlsProps> = ({
+  actionId,
+  limits,
+  count,
+  busy,
+  testId,
+  submit,
+}) => {
+  const { t } = useTranslation();
+  const canAdd = canAddShortcut(count, limits);
+  return (
+    <div className="flex items-center gap-1">
+      <ShortcutInput
+        shortcutId={actionId}
+        value={null}
+        disabled={!canAdd || busy}
+        label={
+          canAdd
+            ? t("settings.general.shortcut.list.add")
+            : t("settings.general.shortcut.list.addLimit", {
+                limit: limits.max,
+              })
+        }
+        testId={testId}
+        onCapture={(shortcut) => submit({ kind: "add", shortcut })}
+      />
+      {limits.resettable && (
+        <ResetButton
+          onClick={() => void submit({ kind: "reset" })}
+          disabled={busy}
+          ariaLabel={t("settings.general.shortcut.list.reset")}
+        />
+      )}
+    </div>
+  );
+};
+
+interface ListMessagesProps {
+  listId: string;
+  conflictsFailed: boolean;
+  error: TranslatedMessage | null;
+  align: string;
+}
+
+const ListMessages: React.FC<ListMessagesProps> = ({
+  listId,
+  conflictsFailed,
+  error,
+  align,
+}) => {
+  const { t } = useTranslation();
+  return (
+    <>
+      {conflictsFailed && (
+        <p
+          role="status"
+          className={`text-xs text-yellow-600 max-w-xs ${align}`}
+          data-testid={`${listId}-conflicts-unavailable`}
+        >
+          {t("settings.general.shortcut.list.errors.conflictsUnavailable")}
+        </p>
+      )}
+      {error && (
+        <p
+          role="alert"
+          className={`text-xs text-red-500 max-w-xs ${align}`}
+          data-testid={`${listId}-error`}
+        >
+          {t(error.key, error.params)}
+        </p>
+      )}
+    </>
+  );
+};
+
+// @spec AC-006: Prompt shortcuts reuse the shared list — .specs/features/005-custom-ai-prompts/spec.md#ac-006
+/**
+ * Shortcut controls of `actionId` without their settings row. Stored
+ * shortcuts that already conflict (kept as before an upgrade) or that the
+ * system refused when post-processing was enabled carry a warning and stay
+ * editable.
+ */
+export const ShortcutListEditor: React.FC<ShortcutListEditorProps> = ({
+  actionId,
+  testIds = defaultTestIds(actionId),
+  layout = "column",
+}) => {
+  const { getSetting, refusedShortcuts } = useSettings();
+  const actionName = useActionName();
+  const { state, error, submit } = useShortcutEdit(actionId, actionName);
+  const bindings = getSetting("bindings");
+  const { conflicts, failed } = useStoredConflicts(
+    JSON.stringify(bindings ?? {}),
+    getSetting("keyboard_implementation"),
+  );
+  const binding = bindings?.[actionId];
+  const shortcuts = binding ? shortcutsOf(binding) : [];
+  const limits = limitsFor(actionId);
   const busy = state === "loading";
-  const canAdd = canAddShortcut(shortcuts.length);
-  const listId = `shortcut-list-${actionId}`;
   const conflictOf = (shortcut: string) => {
     const stored = storedConflictFor(conflicts, actionId, shortcut);
     return stored ? describeConflict(stored.conflict, actionName) : undefined;
   };
+  const isRow = layout === "row";
+  return (
+    <div
+      className={
+        isRow
+          ? "flex flex-wrap items-center gap-2"
+          : "flex flex-col items-end gap-1"
+      }
+      data-testid={testIds.list}
+      data-state={state}
+      aria-busy={busy}
+    >
+      {shortcuts.map((shortcut, index) => (
+        <ShortcutRow
+          key={shortcut}
+          actionId={actionId}
+          rowId={testIds.row(index)}
+          shortcut={shortcut}
+          canRemove={canRemoveShortcut(shortcuts.length, limits)}
+          busy={busy}
+          conflict={conflictOf(shortcut)}
+          refusal={refusalFor(refusedShortcuts, actionId, shortcut)}
+          onEdit={submit}
+        />
+      ))}
+      <AddControls
+        actionId={actionId}
+        limits={limits}
+        count={shortcuts.length}
+        busy={busy}
+        testId={testIds.add}
+        submit={submit}
+      />
+      <ListMessages
+        listId={testIds.list}
+        conflictsFailed={failed}
+        error={error}
+        align={isRow ? "basis-full" : "text-right"}
+      />
+    </div>
+  );
+};
 
+// @spec AC-001: Settings list with add and remove controls — .specs/features/004-multiple-dictation-shortcuts/spec.md#ac-001
+/** Settings row listing and editing every shortcut of `actionId`. */
+export const ShortcutList: React.FC<ShortcutListProps> = ({
+  actionId,
+  descriptionMode = "tooltip",
+  grouped = false,
+}) => {
+  const { t } = useTranslation();
+  const { getSetting } = useSettings();
+  const binding = getSetting("bindings")?.[actionId];
+  // A dictation action always has a stored binding once settings loaded; a
+  // prompt target has none until its first shortcut.
+  if (!binding && promptIdOf(actionId) === null) return null;
   return (
     <SettingContainer
-      title={actionName(actionId)}
+      title={t(`settings.general.shortcut.bindings.${actionId}.name`, actionId)}
       description={t(
         `settings.general.shortcut.bindings.${actionId}.description`,
-        binding.description,
+        binding?.description ?? "",
       )}
       descriptionMode={descriptionMode}
       grouped={grouped}
       layout="horizontal"
     >
-      <div
-        className="flex flex-col items-end gap-1"
-        data-testid={listId}
-        data-state={state}
-        aria-busy={busy}
-      >
-        {shortcuts.map((shortcut, index) => (
-          <ShortcutRow
-            key={shortcut}
-            actionId={actionId}
-            index={index}
-            shortcut={shortcut}
-            canRemove={canRemoveShortcut(shortcuts.length)}
-            busy={busy}
-            conflict={conflictOf(shortcut)}
-            refusal={refusalFor(refusedShortcuts, actionId, shortcut)}
-            onEdit={submit}
-          />
-        ))}
-        <div className="flex items-center gap-1">
-          <ShortcutInput
-            shortcutId={actionId}
-            value={null}
-            disabled={!canAdd || busy}
-            label={
-              canAdd
-                ? t("settings.general.shortcut.list.add")
-                : t("settings.general.shortcut.list.addLimit", {
-                    limit: MAX_SHORTCUTS_PER_ACTION,
-                  })
-            }
-            testId={`${listId}-add`}
-            onCapture={(shortcut) => submit({ kind: "add", shortcut })}
-          />
-          <ResetButton
-            onClick={() => void submit({ kind: "reset" })}
-            disabled={busy}
-            ariaLabel={t("settings.general.shortcut.list.reset")}
-          />
-        </div>
-        {conflictsFailed && (
-          <p
-            role="status"
-            className="text-xs text-yellow-600 max-w-xs text-right"
-            data-testid={`${listId}-conflicts-unavailable`}
-          >
-            {t("settings.general.shortcut.list.errors.conflictsUnavailable")}
-          </p>
-        )}
-        {error && (
-          <p
-            role="alert"
-            className="text-xs text-red-500 max-w-xs text-right"
-            data-testid={`${listId}-error`}
-          >
-            {t(error.key, error.params)}
-          </p>
-        )}
-      </div>
+      <ShortcutListEditor actionId={actionId} />
     </SettingContainer>
   );
 };

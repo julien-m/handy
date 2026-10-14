@@ -458,26 +458,120 @@
           "refreshModels": "Modelleri Yenile"
         }
       },
-      "prompts": {
-        "title": "Prompt",
-        "selectedPrompt": {
-          "title": "Seçili Prompt",
-          "description": "Transkripsiyonları iyileştirmek için bir şablon seçin veya yeni bir tane oluşturun. Yakalanan transkripte referans vermek için prompt metni içinde ${output} kullanın."
+      "promptLibrary": {
+        "processing": {
+          "title": "Yapay zekâ ile son işlem",
+          "enabledDescription": "Dikteleri bir istemle işle. Kapalı: hiçbir dikte işlenmez.",
+          "defaultTitle": "Varsayılan istem",
+          "defaultDescription": "Yapay zekâ dikte kısayolu tarafından kullanılır. Düz dikte Hiçbiri ile başlar.",
+          "none": "Hiçbiri",
+          "invalidOption": "Geçersiz: kullanmadan önce düzenleyin"
         },
-        "noPrompts": "Kullanılabilir prompt yok",
-        "selectPrompt": "Prompt Seç",
-        "createNew": "Yeni Prompt Oluştur",
-        "promptLabel": "Prompt Etiketi",
-        "promptLabelPlaceholder": "Prompt adı girin",
-        "promptInstructions": "Prompt Talimatları",
-        "promptInstructionsPlaceholder": "Transkripsiyondan sonra çalıştırılacak talimatları yazın. Örnek: Aşağıdaki metnin dilbilgisini ve açıklığını iyileştir: ${output}",
-        "promptTip": "İpucu: Transkribe edilen metni promptunuza eklemek için <code>${output}</code> kullanın.",
-        "updatePrompt": "Promptu Güncelle",
-        "deletePrompt": "Promptu Sil",
-        "createPrompt": "Prompt Oluştur",
-        "cancel": "İptal",
-        "selectToEdit": "Ayrıntılarını görüntülemek ve düzenlemek için yukarıdan bir prompt seçin.",
-        "createFirst": "İlk son işlem promptunuzu oluşturmak için yukarıdaki “Yeni Prompt Oluştur” seçeneğine tıklayın."
+        "list": {
+          "title": "İstemler",
+          "count": "{{count}} / {{limit}} istem",
+          "full": "{{limit}} / {{limit}} istem: başka bir tane eklemek için birini silin",
+          "new": "Yeni istem",
+          "empty": "Henüz istem yok. Diktelerinizi işlemek için bir tane oluşturun.",
+          "loading": "İstemler yükleniyor…",
+          "loadFailed": "İstemler yüklenemedi.",
+          "retry": "Yeniden dene",
+          "edit": "{{name}} istemini düzenle",
+          "defaultProvider": "Varsayılan sağlayıcı",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Kısayol yok",
+          "notReady": "Hazır değil: {{reason}}",
+          "invalid": "Geçersiz: {{reason}}"
+        },
+        "issues": {
+          "name_empty": "ad eksik",
+          "name_too_long": "ad çok uzun",
+          "name_duplicate": "yinelenen ad",
+          "text_empty": "metin eksik",
+          "text_too_long": "metin çok uzun",
+          "override_incomplete": "sağlayıcı veya model eksik",
+          "unknown_provider": "bilinmeyen sağlayıcı"
+        },
+        "reasons": {
+          "provider_error": "sağlayıcı bir hata döndürdü",
+          "empty_result": "sağlayıcı boş bir sonuç döndürdü",
+          "timeout": "30 saniye içinde yanıt yok",
+          "provider_busy": "sağlayıcı hâlâ başka bir istekle meşgul",
+          "missing_endpoint": "uç nokta eksik",
+          "missing_model": "model eksik",
+          "missing_api_key": "API anahtarı eksik",
+          "provider_unavailable": "sağlayıcı bu cihazda kullanılamıyor",
+          "unknown_provider": "bilinmeyen sağlayıcı",
+          "invalid_prompt": "istem geçersiz",
+          "prompt_missing": "istem artık mevcut değil"
+        },
+        "editor": {
+          "editTitle": "İstemi düzenle",
+          "newTitle": "Yeni istem",
+          "name": "Ad",
+          "namePlaceholder": "İstem adı",
+          "text": "İstem",
+          "textPlaceholder": "Transkripte uygulanacak talimatları yazın. Örnek: Transkripti özüne indirerek kısalt. ${output}",
+          "textHint": "<code>${output}</code> transkriptle değiştirilir.",
+          "fieldErrors": {
+            "name_empty": "Bir ad girin (1–60 karakter).",
+            "name_too_long": "En fazla 60 karakter kullanın.",
+            "name_duplicate": "Bu ada sahip başka bir istem var. Adlar benzersiz olmalıdır.",
+            "text_empty": "İstem metnini girin.",
+            "text_too_long": "En fazla 8.000 karakter kullanın."
+          },
+          "provider": "Sağlayıcı",
+          "defaultProviderOption": "Varsayılan sağlayıcı ({{provider}})",
+          "model": "Model",
+          "modelPlaceholder": "Bir model adı yazın",
+          "readyEndpoint": "Uç nokta {{endpoint}} · Hazır",
+          "readyProvider": "{{provider}} · {{model}} · Hazır",
+          "notReadyTitle": "{{provider}} hazır değil: {{reason}}",
+          "notReadyBody": "Bu istemle yapılan dikteler yapay zekâ adımını atlar ve özgün metni korur.",
+          "fix": {
+            "api_key": "API anahtarı ekle",
+            "endpoint": "Uç noktayı ayarla"
+          },
+          "shortcuts": "Kısayollar (en fazla {{limit}})",
+          "changedElsewhere": "Bu istem başka bir yerde değiştirildi. Değişikliği görmek için yeniden yükleyin veya kendi sürümünüzü korumak için kaydedin.",
+          "reload": "Yeniden yükle",
+          "deletedElsewhere": "Bu istem başka bir yerde silindi ve artık kaydedilemez."
+        },
+        "actions": {
+          "note": "Değişiklikler kaydettikten sonraki ilk diktede geçerli olur.",
+          "fixFields": "Kaydetmek için işaretli alanları düzeltin.",
+          "delete": "İstemi sil",
+          "cancel": "İptal",
+          "save": "Kaydet",
+          "saving": "Kaydediliyor…",
+          "saved": "İstem kaydedildi."
+        },
+        "deleteDialog": {
+          "title": "“{{name}}” silinsin mi?",
+          "shortcuts": "Kısayolları kaldırılacak: {{shortcuts}}.",
+          "default": "Bu varsayılan istem: varsayılan Hiçbiri olacak.",
+          "body": "Bu işlem geri alınamaz.",
+          "cancel": "İptal",
+          "confirm": "Sil",
+          "close": "Kapat",
+          "deleted": "“{{name}}” istemi silindi.",
+          "deletedWithShortcuts": "“{{name}}” istemi silindi. Kaldırılan kısayollar: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Test",
+          "sampleLabel": "Örnek metin",
+          "samplePlaceholder": "Örnek bir transkript yazın veya yapıştırın",
+          "run": "Testi çalıştır",
+          "running": "Test ediliyor…",
+          "note": "Hiçbir şey eklenmez ve geçmiş değişmez.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} sn",
+          "failedTitle": "Test başarısız: {{reason}}",
+          "failedHint": "Sağlayıcı ayarlarını kontrol edin, ardından testi yeniden çalıştırın.",
+          "retry": "Yeniden çalıştır",
+          "busy": "Başka bir test hâlâ çalışıyor. Bittiğinde yeniden deneyin.",
+          "skipped": "İstemi test etmek için örnek bir metin girin."
+        },
+        "shortcutOwner": "“{{name}}” istemi"
       }
     },
     "history": {

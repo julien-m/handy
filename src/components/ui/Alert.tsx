@@ -9,6 +9,12 @@ interface AlertProps {
   contained?: boolean;
   children: React.ReactNode;
   className?: string;
+  /** Control shown at the end of the alert (a fix or a retry). */
+  action?: React.ReactNode;
+  /** Test identifier of the alert. */
+  testId?: string;
+  /** ARIA role, for an alert that must be announced. */
+  role?: "alert" | "status";
 }
 
 const variantStyles: Record<
@@ -49,6 +55,9 @@ export const Alert: React.FC<AlertProps> = ({
   contained = false,
   children,
   className = "",
+  action,
+  testId,
+  role,
 }) => {
   const styles = variantStyles[variant];
   const Icon = variantIcons[variant];
@@ -56,9 +65,14 @@ export const Alert: React.FC<AlertProps> = ({
   return (
     <div
       className={`flex items-start gap-3 p-4 ${styles.container} ${contained ? "" : "rounded-lg"} ${className}`}
+      data-testid={testId}
+      role={role}
     >
       <Icon className={`w-5 h-5 shrink-0 mt-0.5 ${styles.icon}`} />
-      <p className={`text-sm ${styles.text}`}>{children}</p>
+      <p className={`text-sm ${styles.text} ${action ? "flex-1" : ""}`}>
+        {children}
+      </p>
+      {action && <div className="shrink-0">{action}</div>}
     </div>
   );
 };

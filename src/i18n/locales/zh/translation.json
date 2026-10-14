@@ -458,26 +458,120 @@
           "refreshModels": "刷新模型"
         }
       },
-      "prompts": {
-        "title": "提示词",
-        "selectedPrompt": {
-          "title": "已选提示词",
-          "description": "选择用于优化转录的模板或创建新模板。在提示词文本中使用 ${output} 来引用捕获的转录。"
+      "promptLibrary": {
+        "processing": {
+          "title": "AI 后处理",
+          "enabledDescription": "用提示词处理听写内容。关闭：不处理任何听写。",
+          "defaultTitle": "默认提示词",
+          "defaultDescription": "由 AI 听写快捷键使用。普通听写以“无”开始。",
+          "none": "无",
+          "invalidOption": "无效：请先编辑再使用"
         },
-        "noPrompts": "没有可用的提示词",
-        "selectPrompt": "选择提示词",
-        "createNew": "创建新提示词",
-        "promptLabel": "提示词名称",
-        "promptLabelPlaceholder": "输入提示词名称",
-        "promptInstructions": "提示词指令",
-        "promptInstructionsPlaceholder": "编写转录后要执行的指令。示例：改进以下文本的语法和清晰度: ${output}",
-        "promptTip": "提示：使用 <code>${output}</code> 将转录文本插入到您的提示词中。",
-        "updatePrompt": "更新提示词",
-        "deletePrompt": "删除提示词",
-        "createPrompt": "创建提示词",
-        "cancel": "取消",
-        "selectToEdit": "选择上方的提示词以查看和编辑其详细信息。",
-        "createFirst": "点击上方的「创建新提示词」来创建您的第一个后处理提示词。"
+        "list": {
+          "title": "提示词",
+          "count": "{{count}} / {{limit}} 个提示词",
+          "full": "{{limit}} / {{limit}} 个提示词：删除一个才能添加新的",
+          "new": "新建提示词",
+          "empty": "还没有提示词。创建一个来处理你的听写。",
+          "loading": "正在加载提示词…",
+          "loadFailed": "无法加载提示词。",
+          "retry": "重试",
+          "edit": "编辑 {{name}}",
+          "defaultProvider": "默认提供商",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "无快捷键",
+          "notReady": "未就绪：{{reason}}",
+          "invalid": "无效：{{reason}}"
+        },
+        "issues": {
+          "name_empty": "缺少名称",
+          "name_too_long": "名称过长",
+          "name_duplicate": "名称重复",
+          "text_empty": "缺少文本",
+          "text_too_long": "文本过长",
+          "override_incomplete": "缺少提供商或模型",
+          "unknown_provider": "未知提供商"
+        },
+        "reasons": {
+          "provider_error": "提供商返回了错误",
+          "empty_result": "提供商返回了空结果",
+          "timeout": "30 秒内无响应",
+          "provider_busy": "提供商仍在处理另一个请求",
+          "missing_endpoint": "缺少端点",
+          "missing_model": "缺少模型",
+          "missing_api_key": "缺少 API 密钥",
+          "provider_unavailable": "该提供商在此设备上不可用",
+          "unknown_provider": "未知提供商",
+          "invalid_prompt": "提示词无效",
+          "prompt_missing": "提示词已不存在"
+        },
+        "editor": {
+          "editTitle": "编辑提示词",
+          "newTitle": "新建提示词",
+          "name": "名称",
+          "namePlaceholder": "提示词名称",
+          "text": "提示词",
+          "textPlaceholder": "写下要应用于转录文本的指令。示例：将转录文本精简为要点。${output}",
+          "textHint": "<code>${output}</code> 会被替换为转录文本。",
+          "fieldErrors": {
+            "name_empty": "请输入名称（1–60 个字符）。",
+            "name_too_long": "最多使用 60 个字符。",
+            "name_duplicate": "已有提示词使用此名称。名称必须唯一。",
+            "text_empty": "请输入提示词文本。",
+            "text_too_long": "最多使用 8,000 个字符。"
+          },
+          "provider": "提供商",
+          "defaultProviderOption": "默认提供商（{{provider}}）",
+          "model": "模型",
+          "modelPlaceholder": "输入模型名称",
+          "readyEndpoint": "端点 {{endpoint}} · 已就绪",
+          "readyProvider": "{{provider}} · {{model}} · 已就绪",
+          "notReadyTitle": "{{provider}} 未就绪：{{reason}}",
+          "notReadyBody": "使用此提示词的听写会跳过 AI 步骤并保留原始文本。",
+          "fix": {
+            "api_key": "添加 API 密钥",
+            "endpoint": "设置端点"
+          },
+          "shortcuts": "快捷键（最多 {{limit}} 个）",
+          "changedElsewhere": "此提示词已在别处被修改。重新加载可查看更改，保存则保留你的版本。",
+          "reload": "重新加载",
+          "deletedElsewhere": "此提示词已在别处被删除，无法再保存。"
+        },
+        "actions": {
+          "note": "保存后，更改将应用于下一次听写。",
+          "fixFields": "请修正标出的字段后再保存。",
+          "delete": "删除提示词",
+          "cancel": "取消",
+          "save": "保存",
+          "saving": "正在保存…",
+          "saved": "提示词已保存。"
+        },
+        "deleteDialog": {
+          "title": "删除“{{name}}”？",
+          "shortcuts": "其快捷键将被移除：{{shortcuts}}。",
+          "default": "这是默认提示词：默认值将变为“无”。",
+          "body": "此操作无法撤销。",
+          "cancel": "取消",
+          "confirm": "删除",
+          "close": "关闭",
+          "deleted": "已删除提示词“{{name}}”。",
+          "deletedWithShortcuts": "已删除提示词“{{name}}”。已移除的快捷键：{{shortcuts}}。"
+        },
+        "test": {
+          "title": "测试",
+          "sampleLabel": "示例文本",
+          "samplePlaceholder": "输入或粘贴一段示例转录文本",
+          "run": "运行测试",
+          "running": "正在测试…",
+          "note": "不会插入任何内容，历史记录也不会改变。",
+          "meta": "{{model}} · {{provider}} · {{seconds}} 秒",
+          "failedTitle": "测试失败：{{reason}}",
+          "failedHint": "请检查提供商设置，然后重新运行测试。",
+          "retry": "重新运行",
+          "busy": "另一个测试仍在运行。请在其结束后重试。",
+          "skipped": "请输入示例文本来测试提示词。"
+        },
+        "shortcutOwner": "提示词“{{name}}”"
       }
     },
     "history": {

@@ -458,26 +458,120 @@
           "refreshModels": "Actualiser les modèles"
         }
       },
-      "prompts": {
-        "title": "Prompt",
-        "selectedPrompt": {
-          "title": "Prompt sélectionné",
-          "description": "Sélectionnez un modèle pour affiner les transcriptions ou créez-en un nouveau. Utilisez ${output} dans le texte du prompt pour référencer la transcription capturée."
+      "promptLibrary": {
+        "processing": {
+          "title": "Post-traitement IA",
+          "enabledDescription": "Traite les dictées avec un prompt. Désactivé : aucune dictée n'est traitée.",
+          "defaultTitle": "Prompt par défaut",
+          "defaultDescription": "Utilisé par le raccourci de dictée IA. La dictée simple démarre avec Aucun.",
+          "none": "Aucun",
+          "invalidOption": "Invalide : modifiez-le avant de l'utiliser"
         },
-        "noPrompts": "Aucun prompt disponible",
-        "selectPrompt": "Sélectionner un prompt",
-        "createNew": "Créer un nouveau prompt",
-        "promptLabel": "Libellé du prompt",
-        "promptLabelPlaceholder": "Entrez le nom du prompt",
-        "promptInstructions": "Instructions du prompt",
-        "promptInstructionsPlaceholder": "Écrivez les instructions à exécuter après la transcription. Exemple : Améliorer la grammaire et la clarté du texte suivant : ${output}",
-        "promptTip": "Astuce : Utilisez <code>${output}</code> pour insérer le texte transcrit dans votre prompt.",
-        "updatePrompt": "Mettre à jour le prompt",
-        "deletePrompt": "Supprimer le prompt",
-        "createPrompt": "Créer le prompt",
-        "cancel": "Annuler",
-        "selectToEdit": "Sélectionnez un prompt ci-dessus pour voir et modifier ses détails.",
-        "createFirst": "Cliquez sur 'Créer un nouveau prompt' ci-dessus pour créer votre premier prompt de post-traitement."
+        "list": {
+          "title": "Prompts",
+          "count": "{{count}} prompts sur {{limit}}",
+          "full": "{{limit}} prompts sur {{limit}} : supprimez-en un pour en ajouter un autre",
+          "new": "Nouveau prompt",
+          "empty": "Aucun prompt pour l'instant. Créez-en un pour traiter vos dictées.",
+          "loading": "Chargement des prompts…",
+          "loadFailed": "Les prompts n'ont pas pu être chargés.",
+          "retry": "Réessayer",
+          "edit": "Modifier {{name}}",
+          "defaultProvider": "Fournisseur par défaut",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Aucun raccourci",
+          "notReady": "Pas prêt : {{reason}}",
+          "invalid": "Invalide : {{reason}}"
+        },
+        "issues": {
+          "name_empty": "nom manquant",
+          "name_too_long": "nom trop long",
+          "name_duplicate": "nom en double",
+          "text_empty": "texte manquant",
+          "text_too_long": "texte trop long",
+          "override_incomplete": "fournisseur ou modèle manquant",
+          "unknown_provider": "fournisseur inconnu"
+        },
+        "reasons": {
+          "provider_error": "le fournisseur a renvoyé une erreur",
+          "empty_result": "le fournisseur a renvoyé un résultat vide",
+          "timeout": "pas de réponse en 30 secondes",
+          "provider_busy": "le fournisseur traite encore une autre requête",
+          "missing_endpoint": "point de terminaison manquant",
+          "missing_model": "modèle manquant",
+          "missing_api_key": "clé API manquante",
+          "provider_unavailable": "fournisseur indisponible sur cet appareil",
+          "unknown_provider": "fournisseur inconnu",
+          "invalid_prompt": "le prompt est invalide",
+          "prompt_missing": "le prompt n'existe plus"
+        },
+        "editor": {
+          "editTitle": "Modifier le prompt",
+          "newTitle": "Nouveau prompt",
+          "name": "Nom",
+          "namePlaceholder": "Nom du prompt",
+          "text": "Prompt",
+          "textPlaceholder": "Écrivez les instructions à appliquer à la transcription. Exemple : Raccourcis la transcription à l'essentiel. ${output}",
+          "textHint": "<code>${output}</code> est remplacé par la transcription.",
+          "fieldErrors": {
+            "name_empty": "Saisissez un nom (1 à 60 caractères).",
+            "name_too_long": "Utilisez 60 caractères au maximum.",
+            "name_duplicate": "Un autre prompt porte ce nom. Les noms doivent être uniques.",
+            "text_empty": "Saisissez le texte du prompt.",
+            "text_too_long": "Utilisez 8 000 caractères au maximum."
+          },
+          "provider": "Fournisseur",
+          "defaultProviderOption": "Fournisseur par défaut ({{provider}})",
+          "model": "Modèle",
+          "modelPlaceholder": "Saisissez un nom de modèle",
+          "readyEndpoint": "Point de terminaison {{endpoint}} · Prêt",
+          "readyProvider": "{{provider}} · {{model}} · Prêt",
+          "notReadyTitle": "{{provider}} n'est pas prêt : {{reason}}",
+          "notReadyBody": "Les dictées avec ce prompt sautent l'étape IA et gardent le texte d'origine.",
+          "fix": {
+            "api_key": "Ajouter une clé API",
+            "endpoint": "Définir le point de terminaison"
+          },
+          "shortcuts": "Raccourcis (jusqu'à {{limit}})",
+          "changedElsewhere": "Ce prompt a été modifié ailleurs. Rechargez-le pour voir la modification, ou enregistrez pour garder votre version.",
+          "reload": "Recharger",
+          "deletedElsewhere": "Ce prompt a été supprimé ailleurs et ne peut plus être enregistré."
+        },
+        "actions": {
+          "note": "Les modifications s'appliquent à la prochaine dictée après l'enregistrement.",
+          "fixFields": "Corrigez les champs signalés pour enregistrer.",
+          "delete": "Supprimer le prompt",
+          "cancel": "Annuler",
+          "save": "Enregistrer",
+          "saving": "Enregistrement…",
+          "saved": "Prompt enregistré."
+        },
+        "deleteDialog": {
+          "title": "Supprimer « {{name}} » ?",
+          "shortcuts": "Ses raccourcis seront supprimés : {{shortcuts}}.",
+          "default": "C'est le prompt par défaut : le défaut devient Aucun.",
+          "body": "Cette action est irréversible.",
+          "cancel": "Annuler",
+          "confirm": "Supprimer",
+          "close": "Fermer",
+          "deleted": "Prompt « {{name}} » supprimé.",
+          "deletedWithShortcuts": "Prompt « {{name}} » supprimé. Raccourcis supprimés : {{shortcuts}}."
+        },
+        "test": {
+          "title": "Test",
+          "sampleLabel": "Texte d'exemple",
+          "samplePlaceholder": "Saisissez ou collez une transcription d'exemple",
+          "run": "Lancer le test",
+          "running": "Test en cours…",
+          "note": "Rien n'est inséré et l'historique n'est pas modifié.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} s",
+          "failedTitle": "Échec du test : {{reason}}",
+          "failedHint": "Vérifiez les réglages du fournisseur, puis relancez le test.",
+          "retry": "Relancer",
+          "busy": "Un autre test est encore en cours. Réessayez quand il sera terminé.",
+          "skipped": "Saisissez un texte d'exemple pour tester le prompt."
+        },
+        "shortcutOwner": "le prompt « {{name}} »"
       }
     },
     "history": {

@@ -458,26 +458,120 @@
           "refreshModels": "Obnovit modely"
         }
       },
-      "prompts": {
-        "title": "Prompt",
-        "selectedPrompt": {
-          "title": "Vybraný prompt",
-          "description": "Vyberte šablonu pro zpřesnění přepisu nebo vytvořte novou. V textu promptu použijte ${output} pro vložení zachyceného přepisu."
+      "promptLibrary": {
+        "processing": {
+          "title": "Následné zpracování AI",
+          "enabledDescription": "Zpracovávat diktáty pomocí promptu. Vypnuto: žádný diktát se nezpracovává.",
+          "defaultTitle": "Výchozí prompt",
+          "defaultDescription": "Používá ho zkratka pro diktování s AI. Běžné diktování začíná s možností Žádný.",
+          "none": "Žádný",
+          "invalidOption": "Neplatný: před použitím ho upravte"
         },
-        "noPrompts": "Nejsou k dispozici žádné prompty",
-        "selectPrompt": "Vyberte prompt",
-        "createNew": "Vytvořit nový prompt",
-        "promptLabel": "Název promptu",
-        "promptLabelPlaceholder": "Zadejte název promptu",
-        "promptInstructions": "Instrukce promptu",
-        "promptInstructionsPlaceholder": "Napište instrukce, které se mají spustit po přepisu. Příklad: Zlepšete gramatiku a srozumitelnost následujícího textu: ${output}",
-        "promptTip": "Tip: Použijte <code>${output}</code> pro vložení přepsaného textu do promptu.",
-        "updatePrompt": "Aktualizovat prompt",
-        "deletePrompt": "Smazat prompt",
-        "createPrompt": "Vytvořit prompt",
-        "cancel": "Zrušit",
-        "selectToEdit": "Vyberte výše prompt, abyste zobrazili a upravili jeho podrobnosti.",
-        "createFirst": "Klikněte nahoře na 'Vytvořit nový prompt' a vytvořte svůj první prompt pro následné zpracování."
+        "list": {
+          "title": "Prompty",
+          "count": "{{count}} z {{limit}} promptů",
+          "full": "{{limit}} z {{limit}} promptů: smažte jeden, abyste mohli přidat další",
+          "new": "Nový prompt",
+          "empty": "Zatím žádné prompty. Vytvořte prompt pro zpracování diktátů.",
+          "loading": "Načítání promptů…",
+          "loadFailed": "Prompty se nepodařilo načíst.",
+          "retry": "Zkusit znovu",
+          "edit": "Upravit {{name}}",
+          "defaultProvider": "Výchozí poskytovatel",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Bez zkratky",
+          "notReady": "Nepřipraveno: {{reason}}",
+          "invalid": "Neplatný: {{reason}}"
+        },
+        "issues": {
+          "name_empty": "chybí název",
+          "name_too_long": "příliš dlouhý název",
+          "name_duplicate": "duplicitní název",
+          "text_empty": "chybí text",
+          "text_too_long": "příliš dlouhý text",
+          "override_incomplete": "chybí poskytovatel nebo model",
+          "unknown_provider": "neznámý poskytovatel"
+        },
+        "reasons": {
+          "provider_error": "poskytovatel vrátil chybu",
+          "empty_result": "poskytovatel vrátil prázdný výsledek",
+          "timeout": "žádná odpověď do 30 sekund",
+          "provider_busy": "poskytovatel ještě zpracovává jiný požadavek",
+          "missing_endpoint": "chybí koncový bod",
+          "missing_model": "chybí model",
+          "missing_api_key": "chybí klíč API",
+          "provider_unavailable": "poskytovatel není na tomto zařízení dostupný",
+          "unknown_provider": "neznámý poskytovatel",
+          "invalid_prompt": "prompt je neplatný",
+          "prompt_missing": "prompt už neexistuje"
+        },
+        "editor": {
+          "editTitle": "Upravit prompt",
+          "newTitle": "Nový prompt",
+          "name": "Název",
+          "namePlaceholder": "Název promptu",
+          "text": "Prompt",
+          "textPlaceholder": "Napište pokyny, které se použijí na přepis. Příklad: Zkrať přepis na to podstatné. ${output}",
+          "textHint": "<code>${output}</code> se nahradí přepisem.",
+          "fieldErrors": {
+            "name_empty": "Zadejte název (1–60 znaků).",
+            "name_too_long": "Použijte nejvýše 60 znaků.",
+            "name_duplicate": "Jiný prompt má stejný název. Názvy musí být jedinečné.",
+            "text_empty": "Zadejte text promptu.",
+            "text_too_long": "Použijte nejvýše 8 000 znaků."
+          },
+          "provider": "Poskytovatel",
+          "defaultProviderOption": "Výchozí poskytovatel ({{provider}})",
+          "model": "Model",
+          "modelPlaceholder": "Zadejte název modelu",
+          "readyEndpoint": "Koncový bod {{endpoint}} · Připraveno",
+          "readyProvider": "{{provider}} · {{model}} · Připraveno",
+          "notReadyTitle": "{{provider}} není připraven: {{reason}}",
+          "notReadyBody": "Diktáty s tímto promptem přeskočí krok AI a ponechají původní text.",
+          "fix": {
+            "api_key": "Přidat klíč API",
+            "endpoint": "Nastavit koncový bod"
+          },
+          "shortcuts": "Zkratky (nejvýše {{limit}})",
+          "changedElsewhere": "Tento prompt byl změněn jinde. Načtěte ho znovu, abyste viděli změnu, nebo uložte a ponechte svou verzi.",
+          "reload": "Načíst znovu",
+          "deletedElsewhere": "Tento prompt byl jinde smazán a už ho nelze uložit."
+        },
+        "actions": {
+          "note": "Změny platí od dalšího diktátu po uložení.",
+          "fixFields": "Pro uložení opravte zvýrazněná pole.",
+          "delete": "Smazat prompt",
+          "cancel": "Zrušit",
+          "save": "Uložit",
+          "saving": "Ukládání…",
+          "saved": "Prompt uložen."
+        },
+        "deleteDialog": {
+          "title": "Smazat „{{name}}“?",
+          "shortcuts": "Jeho zkratky budou odebrány: {{shortcuts}}.",
+          "default": "Je to výchozí prompt: výchozí hodnotou se stane Žádný.",
+          "body": "Tuto akci nelze vrátit.",
+          "cancel": "Zrušit",
+          "confirm": "Smazat",
+          "close": "Zavřít",
+          "deleted": "Prompt „{{name}}“ byl smazán.",
+          "deletedWithShortcuts": "Prompt „{{name}}“ byl smazán. Odebrané zkratky: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Test",
+          "sampleLabel": "Ukázkový text",
+          "samplePlaceholder": "Napište nebo vložte ukázkový přepis",
+          "run": "Spustit test",
+          "running": "Testování…",
+          "note": "Nic se nevloží a historie se nezmění.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} s",
+          "failedTitle": "Test selhal: {{reason}}",
+          "failedHint": "Zkontrolujte nastavení poskytovatele a spusťte test znovu.",
+          "retry": "Spustit znovu",
+          "busy": "Jiný test stále běží. Zkuste to znovu, až skončí.",
+          "skipped": "Zadejte ukázkový text pro otestování promptu."
+        },
+        "shortcutOwner": "prompt „{{name}}“"
       }
     },
     "history": {

@@ -20,6 +20,8 @@ interface DropdownProps {
   onOpen?: () => void;
   /** Accessible name of the control (the setting title). */
   ariaLabel?: string;
+  /** Test identifier of the control button. */
+  testId?: string;
 }
 
 export const Dropdown: React.FC<DropdownProps> = ({
@@ -32,6 +34,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   disabled = false,
   onOpen,
   ariaLabel,
+  testId,
 }) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
@@ -107,6 +110,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
         onKeyDown={handleKeyDown}
         disabled={disabled}
         role="combobox"
+        data-testid={testId}
         aria-label={ariaLabel}
         aria-haspopup="listbox"
         aria-expanded={isOpen}

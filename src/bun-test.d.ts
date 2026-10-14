@@ -10,7 +10,13 @@ declare module "bun:test" {
   /** Run `body` before each test of the enclosing group. */
   export function beforeEach(body: () => void | Promise<void>): void;
   /** Assertions on `actual`. */
-  export function expect(actual: unknown): { toBe(expected: unknown): void };
+  export function expect(actual: unknown): {
+    toBe(expected: unknown): void;
+    toEqual(expected: unknown): void;
+    toBeNull(): void;
+    toContain(expected: unknown): void;
+    toMatchObject(expected: object): void;
+  };
   /** Module mocking: replaces `specifier` for every later import. */
   export const mock: {
     module(specifier: string, factory: () => Record<string, unknown>): void;

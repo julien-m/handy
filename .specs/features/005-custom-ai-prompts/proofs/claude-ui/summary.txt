@@ -1,0 +1,21 @@
+005 custom AI prompts — settings UI (plan Steps 6 settings part; Step 1 and the indicator are out of scope)
+Worktree: /Users/julienm/projects/handy-wt/ui-005-prompts, branch feature/ui-005-prompts
+Run: 2026-10-14 16:20 CEST
+
+Command | exit | output
+bun run lint | 0 | bun-lint.stdout
+bun run format:check | 0 | bun-format-check.stdout
+bunx tsc --noEmit | 0 | tsc.stdout
+bun run check:translations | 0 | check-translations.stdout (25 languages complete)
+bun run build | 0 | build.stdout
+bun run test:prompt-settings | 0 | test-prompt-settings.stdout/.stderr (31 pass, 0 fail, 2 files)
+bun run test:shortcut-list | 0 | test-shortcut-list.stdout
+bun run test:settings-errors | 0 | test-settings-errors.stdout
+bun run test:settings-store | 0 | test-settings-store.stdout/.stderr
+bun run test:keyboard | 0 | test-keyboard.stdout
+livespec conventions verify --feature repo --json | 0 | conventions-repo-summary.json (verdict PASS, new_count 0)
+
+No Rust file changed: no cargo test, clippy or cargo fmt run for this step.
+
+Browser-mock visual check (NOT a native window): Vite dev server with a scratch Tauri IPC mock
+(outside the repo), screenshots in browser-mock/. Native window and macOS evidence: pending, with Julien.

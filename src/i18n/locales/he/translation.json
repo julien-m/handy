@@ -458,26 +458,120 @@
           "refreshModels": "רענן מודלים"
         }
       },
-      "prompts": {
-        "title": "פרומפט",
-        "selectedPrompt": {
-          "title": "פרומפט נבחר",
-          "description": "בחר תבנית לשיפור התמלול או צור חדשה. השתמש ב-${output} בתוך טקסט הפרומפט כדי להפנות לתמלול שנקלט."
+      "promptLibrary": {
+        "processing": {
+          "title": "עיבוד משלים בבינה מלאכותית",
+          "enabledDescription": "עיבוד הכתבות באמצעות פרומפט. כבוי: אף הכתבה לא מעובדת.",
+          "defaultTitle": "פרומפט ברירת מחדל",
+          "defaultDescription": "משמש את קיצור הדרך להכתבה עם בינה מלאכותית. הכתבה רגילה מתחילה עם „ללא”.",
+          "none": "ללא",
+          "invalidOption": "לא תקין: ערכו אותו לפני השימוש"
         },
-        "noPrompts": "אין פרומפטים זמינים",
-        "selectPrompt": "בחר פרומפט",
-        "createNew": "צור פרומפט חדש",
-        "promptLabel": "שם הפרומפט",
-        "promptLabelPlaceholder": "הזן שם לפרומפט",
-        "promptInstructions": "הוראות לפרומפט",
-        "promptInstructionsPlaceholder": "כתוב את ההוראות שירוצו אחרי התמלול. לדוגמה: שפר דקדוק ובהירות עבור הטקסט הבא: ${output}",
-        "promptTip": "טיפ: השתמש ב-<code>${output}</code> כדי להכניס את הטקסט המתומלל לפרומפט שלך.",
-        "updatePrompt": "עדכן פרומפט",
-        "deletePrompt": "מחק פרומפט",
-        "createPrompt": "צור פרומפט",
-        "cancel": "ביטול",
-        "selectToEdit": "בחר פרומפט למעלה כדי לצפות בפרטים שלו ולערוך אותם.",
-        "createFirst": "לחץ על 'צור פרומפט חדש' למעלה כדי ליצור את פרומפט העיבוד הראשון שלך."
+        "list": {
+          "title": "פרומפטים",
+          "count": "{{count}} מתוך {{limit}} פרומפטים",
+          "full": "{{limit}} מתוך {{limit}} פרומפטים: מחקו אחד כדי להוסיף אחר",
+          "new": "פרומפט חדש",
+          "empty": "אין עדיין פרומפטים. צרו אחד כדי לעבד את ההכתבות שלכם.",
+          "loading": "טוען פרומפטים…",
+          "loadFailed": "לא ניתן היה לטעון את הפרומפטים.",
+          "retry": "ניסיון חוזר",
+          "edit": "עריכת {{name}}",
+          "defaultProvider": "ספק ברירת מחדל",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "ללא קיצור דרך",
+          "notReady": "לא מוכן: {{reason}}",
+          "invalid": "לא תקין: {{reason}}"
+        },
+        "issues": {
+          "name_empty": "חסר שם",
+          "name_too_long": "השם ארוך מדי",
+          "name_duplicate": "שם כפול",
+          "text_empty": "חסר טקסט",
+          "text_too_long": "הטקסט ארוך מדי",
+          "override_incomplete": "חסר ספק או מודל",
+          "unknown_provider": "ספק לא מוכר"
+        },
+        "reasons": {
+          "provider_error": "הספק החזיר שגיאה",
+          "empty_result": "הספק החזיר תוצאה ריקה",
+          "timeout": "אין תשובה בתוך 30 שניות",
+          "provider_busy": "הספק עדיין עסוק בבקשה אחרת",
+          "missing_endpoint": "חסרה נקודת קצה",
+          "missing_model": "חסר מודל",
+          "missing_api_key": "חסר מפתח API",
+          "provider_unavailable": "הספק אינו זמין במכשיר זה",
+          "unknown_provider": "ספק לא מוכר",
+          "invalid_prompt": "הפרומפט אינו תקין",
+          "prompt_missing": "הפרומפט כבר לא קיים"
+        },
+        "editor": {
+          "editTitle": "עריכת פרומפט",
+          "newTitle": "פרומפט חדש",
+          "name": "שם",
+          "namePlaceholder": "שם הפרומפט",
+          "text": "פרומפט",
+          "textPlaceholder": "כתבו את ההוראות שיחולו על התמלול. דוגמה: קצר את התמלול לעיקר. ${output}",
+          "textHint": "<code>${output}</code> מוחלף בתמלול.",
+          "fieldErrors": {
+            "name_empty": "הזינו שם (1–60 תווים).",
+            "name_too_long": "השתמשו ב־60 תווים לכל היותר.",
+            "name_duplicate": "לפרומפט אחר יש את השם הזה. השמות חייבים להיות ייחודיים.",
+            "text_empty": "הזינו את טקסט הפרומפט.",
+            "text_too_long": "השתמשו ב־8,000 תווים לכל היותר."
+          },
+          "provider": "ספק",
+          "defaultProviderOption": "ספק ברירת מחדל ({{provider}})",
+          "model": "מודל",
+          "modelPlaceholder": "הקלידו שם מודל",
+          "readyEndpoint": "נקודת קצה {{endpoint}} · מוכן",
+          "readyProvider": "{{provider}} · {{model}} · מוכן",
+          "notReadyTitle": "{{provider}} אינו מוכן: {{reason}}",
+          "notReadyBody": "הכתבות עם פרומפט זה מדלגות על שלב הבינה המלאכותית ושומרות את הטקסט המקורי.",
+          "fix": {
+            "api_key": "הוספת מפתח API",
+            "endpoint": "הגדרת נקודת קצה"
+          },
+          "shortcuts": "קיצורי דרך (עד {{limit}})",
+          "changedElsewhere": "פרומפט זה שונה במקום אחר. טענו אותו מחדש כדי לראות את השינוי, או שמרו כדי להשאיר את הגרסה שלכם.",
+          "reload": "טעינה מחדש",
+          "deletedElsewhere": "פרומפט זה נמחק במקום אחר ולא ניתן עוד לשמור אותו."
+        },
+        "actions": {
+          "note": "השינויים יחולו על ההכתבה הבאה לאחר השמירה.",
+          "fixFields": "תקנו את השדות המסומנים כדי לשמור.",
+          "delete": "מחיקת פרומפט",
+          "cancel": "ביטול",
+          "save": "שמירה",
+          "saving": "שומר…",
+          "saved": "הפרומפט נשמר."
+        },
+        "deleteDialog": {
+          "title": "למחוק את „{{name}}”?",
+          "shortcuts": "קיצורי הדרך שלו יוסרו: {{shortcuts}}.",
+          "default": "זהו פרומפט ברירת המחדל: ברירת המחדל תהפוך ל„ללא”.",
+          "body": "לא ניתן לבטל פעולה זו.",
+          "cancel": "ביטול",
+          "confirm": "מחיקה",
+          "close": "סגירה",
+          "deleted": "הפרומפט „{{name}}” נמחק.",
+          "deletedWithShortcuts": "הפרומפט „{{name}}” נמחק. קיצורי דרך שהוסרו: {{shortcuts}}."
+        },
+        "test": {
+          "title": "בדיקה",
+          "sampleLabel": "טקסט לדוגמה",
+          "samplePlaceholder": "הקלידו או הדביקו תמלול לדוגמה",
+          "run": "הרצת בדיקה",
+          "running": "בודק…",
+          "note": "שום דבר לא מוכנס וההיסטוריה לא משתנה.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} שנ׳",
+          "failedTitle": "הבדיקה נכשלה: {{reason}}",
+          "failedHint": "בדקו את הגדרות הספק והריצו את הבדיקה שוב.",
+          "retry": "הרצה חוזרת",
+          "busy": "בדיקה אחרת עדיין רצה. נסו שוב כשתסתיים.",
+          "skipped": "הזינו טקסט לדוגמה כדי לבדוק את הפרומפט."
+        },
+        "shortcutOwner": "הפרומפט „{{name}}”"
       }
     },
     "history": {

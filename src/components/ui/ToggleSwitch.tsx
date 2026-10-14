@@ -11,6 +11,8 @@ interface ToggleSwitchProps {
   descriptionMode?: "inline" | "tooltip";
   grouped?: boolean;
   tooltipPosition?: "top" | "bottom";
+  /** Test identifier of the row; the switch gets `<testId>-toggle`. */
+  testId?: string;
 }
 
 export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
@@ -23,6 +25,7 @@ export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
   descriptionMode = "tooltip",
   grouped = false,
   tooltipPosition = "top",
+  testId,
 }) => {
   return (
     <SettingContainer
@@ -32,6 +35,7 @@ export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
       grouped={grouped}
       disabled={disabled}
       tooltipPosition={tooltipPosition}
+      testId={testId}
     >
       <label
         className={`flex items-center ${disabled || isUpdating ? "cursor-not-allowed" : "cursor-pointer"}`}
@@ -40,6 +44,8 @@ export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
           type="checkbox"
           value=""
           className="sr-only peer"
+          data-testid={testId && `${testId}-toggle`}
+          aria-label={label}
           checked={checked}
           disabled={disabled || isUpdating}
           onChange={(e) => onChange(e.target.checked)}

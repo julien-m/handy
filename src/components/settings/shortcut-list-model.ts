@@ -15,6 +15,57 @@ import {
 
 /** Mirrors MAX_SHORTCUTS_PER_ACTION in src-tauri/src/shortcut/action_shortcuts.rs. */
 export const MAX_SHORTCUTS_PER_ACTION = 4;
+/** Mirrors PROMPT_TARGET_PREFIX in src-tauri/src/shortcut/prompt_targets.rs (005). */
+export const PROMPT_TARGET_PREFIX = "prompt:";
+/** Mirrors the 0–2 shortcuts of a prompt target (005 AC-006). */
+export const MAX_SHORTCUTS_PER_PROMPT = 2;
+
+/** How many shortcuts an action keeps, and whether it has a default. */
+export interface ShortcutLimits {
+  max: number;
+  /** Shortcuts that cannot be removed: 1 for an action, 0 for a prompt. */
+  min: number;
+  /** Whether the action has a default shortcut to reset to. */
+  resettable: boolean;
+}
+
+/** Limits of the dictation actions (004): 1 to 4 shortcuts and a default. */
+export const ACTION_SHORTCUT_LIMITS: ShortcutLimits = {
+  max: MAX_SHORTCUTS_PER_ACTION,
+  min: 1,
+  resettable: true,
+};
+/** Limits of a prompt target (005): 0 to 2 shortcuts and no default. */
+export const PROMPT_SHORTCUT_LIMITS: ShortcutLimits = {
+  max: MAX_SHORTCUTS_PER_PROMPT,
+  min: 0,
+  resettable: false,
+};
+
+/**
+ * Action id of the shortcuts of a prompt.
+ * @param promptId Prompt id.
+ */
+export const promptTargetOf = (promptId: string): string =>
+  `${PROMPT_TARGET_PREFIX}${promptId}`;
+
+/**
+ * Prompt id of a prompt target, or null for any other action.
+ * @param actionId Action id.
+ */
+export const promptIdOf = (actionId: string): string | null =>
+  actionId.startsWith(PROMPT_TARGET_PREFIX)
+    ? actionId.slice(PROMPT_TARGET_PREFIX.length)
+    : null;
+
+/**
+ * Limits of an action's shortcut list.
+ * @param actionId Action id (a prompt target or a dictation action).
+ */
+export const limitsFor = (actionId: string): ShortcutLimits =>
+  promptIdOf(actionId) === null
+    ? ACTION_SHORTCUT_LIMITS
+    : PROMPT_SHORTCUT_LIMITS;
 
 /** A translation key with its interpolation values. */
 export interface TranslatedMessage {
@@ -23,27 +74,37 @@ export interface TranslatedMessage {
 }
 
 /**
- * Every shortcut of an action, first one first.
+ * Every shortcut of an action, first one first. A prompt target left
+ * without shortcuts has an empty first shortcut, which is not one (like
+ * `ShortcutBinding::shortcuts` in the backend).
  * @param binding Stored binding of the action.
  * @returns The ordered shortcuts.
  */
-export const shortcutsOf = (binding: ShortcutBinding): string[] => [
-  binding.current_binding,
-  ...(binding.additional_bindings ?? []),
-];
+export const shortcutsOf = (binding: ShortcutBinding): string[] =>
+  [binding.current_binding, ...(binding.additional_bindings ?? [])].filter(
+    (shortcut) => shortcut !== "",
+  );
 
 /**
  * Whether one more shortcut can be added.
  * @param count Current number of shortcuts of the action.
+ * @param limits Limits of the action (a dictation action by default).
  */
-export const canAddShortcut = (count: number): boolean =>
-  count < MAX_SHORTCUTS_PER_ACTION;
+export const canAddShortcut = (
+  count: number,
+  limits: ShortcutLimits = ACTION_SHORTCUT_LIMITS,
+): boolean => count < limits.max;
 
 /**
- * Whether a shortcut can be removed: each action keeps at least one.
+ * Whether a shortcut can be removed: a dictation action keeps at least
+ * one, a prompt may lose its last one.
  * @param count Current number of shortcuts of the action.
+ * @param limits Limits of the action (a dictation action by default).
  */
-export const canRemoveShortcut = (count: number): boolean => count > 1;
+export const canRemoveShortcut = (
+  count: number,
+  limits: ShortcutLimits = ACTION_SHORTCUT_LIMITS,
+): boolean => count > limits.min;
 
 const LIST_KEY = "settings.general.shortcut.list";
 
@@ -183,3 +244,19 @@ export const keepStoredRefusals = (
     const binding = bindings[refusal.action_id];
     return binding ? shortcutsOf(binding).includes(refusal.shortcut) : false;
   });
+
+/**
+ * Name of the prompt a prompt target belongs to, for messages naming the
+ * owner of a shortcut; the prompt id when the prompt is gone.
+ * @param prompts Prompts of the library.
+ * @param actionId Action id.
+ * @returns The prompt name, or null for a dictation action.
+ */
+export const promptNameOfTarget = (
+  prompts: ReadonlyArray<{ id: string; name: string }>,
+  actionId: string,
+): string | null => {
+  const promptId = promptIdOf(actionId);
+  if (promptId === null) return null;
+  return prompts.find((prompt) => prompt.id === promptId)?.name ?? promptId;
+};
