@@ -1,0 +1,14 @@
+Tool                                               Status  Auto-installable
+-------------------------------------------------  ------  ----------------
+Bun                                                ok      yes             
+Frontend dependencies                              ok      yes             
+Rust toolchain                                     ok      yes             
+CMake                                              ok      yes             
+Xcode Command Line Tools                           ok      yes             
+Silero VAD model                                   ok      yes             
+LiveSpec CLI                                       ok      yes             
+Penflow CLI                                        ok      yes             
+pen.dev application                                ok      yes             
+conventions scaffold                               ok      yes             
+conventions lint binary: node_modules/.bin/eslint  ok      yes             
+LIVESPEC preflight · OK · ok=11 · missing=0

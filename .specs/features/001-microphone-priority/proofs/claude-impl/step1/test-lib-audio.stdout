@@ -1,0 +1,43 @@
+
+running 38 tests
+test audio_toolkit::audio::recorder::tests::bounded_drain_leaves_remaining_samples_for_the_next_command_cycle ... ok
+test audio_toolkit::audio::attempt::tests::a_worker_ending_without_handshake_is_lost ... ok
+test audio_toolkit::audio::recorder::loss_tests::stop_without_a_consumer_returns_the_salvaged_prefix ... ok
+test audio_toolkit::audio::attempt::tests::a_publication_racing_the_timeout_is_accepted_not_abandoned ... ok
+test audio_toolkit::audio::recorder::tests::callback_downmixes_or_selects_multichannel_input ... ok
+test audio_toolkit::audio::attempt::tests::a_worker_exiting_at_the_timeout_is_never_counted_as_stalled ... ok
+test audio_toolkit::audio::attempt::tests::a_ready_handshake_returns_the_stream_result ... ok
+test audio_toolkit::audio::recorder::tests::callback_forwards_boundary_block_then_stays_silent_until_resumed ... ok
+test audio_toolkit::audio::attempt::tests::a_worker_error_is_reported_without_counting_a_stall ... ok
+test audio_toolkit::audio::recorder::tests::callback_partially_fills_ring_and_counts_dropped_audio ... ok
+test audio_toolkit::audio::recorder::tests::callback_writes_mono_samples ... ok
+test audio_toolkit::audio::recorder::tests::detects_no_input_device ... ok
+test audio_toolkit::audio::recorder::tests::detects_coreaudio_config_error ... ok
+test audio_toolkit::audio::recorder::tests::detects_access_is_denied ... ok
+test audio_toolkit::audio::recorder::tests::detects_permission_denied ... ok
+test audio_toolkit::audio::recorder::tests::detects_windows_error_code ... ok
+test audio_toolkit::audio::recorder::tests::does_not_match_other_errors_for_no_device ... ok
+test audio_toolkit::audio::recorder::tests::does_not_match_unrelated_errors ... ok
+test audio_toolkit::audio::recorder::tests::stream_error_requires_reopen ... ok
+test audio_toolkit::audio::recorder::tests::idle_chunks_are_discarded_without_reaching_the_recording ... ok
+test audio_toolkit::audio::recorder::tests::ring_wraparound_preserves_both_read_slices_in_order ... ok
+test audio_toolkit::audio::recorder::tests::unopened_recorder_does_not_need_reopen ... ok
+test audio_toolkit::audio::recorder::tests::resampler_frame_size_follows_the_vad_backend ... ok
+test audio_toolkit::audio::recorder::loss_tests::the_processed_prefix_survives_a_consumer_ending_without_stop ... ok
+test audio_toolkit::audio::resampler::tests::finish_does_not_leak_tail_into_next_session ... ok
+test audio_toolkit::audio::recorder::tests::shutdown_is_processed_without_audio_samples ... ok
+test audio_toolkit::audio::resampler::tests::finish_flushes_resampler_delay ... ok
+test audio_toolkit::audio::resampler::tests::reset_clears_in_buf_and_pending ... ok
+test audio_toolkit::audio::resampler::tests::reset_passthrough_mode_clears_pending ... ok
+test audio_toolkit::audio::resampler::tests::finish_flushes_resampler_delay_44100 ... ok
+test audio_toolkit::audio::resampler::tests::finish_flushes_unaligned_tail ... ok
+test audio_toolkit::audio::recorder::tests::repeated_start_stop_cycles_resume_capture_without_leaking_samples ... ok
+test audio_toolkit::audio::recorder::loss_tests::a_lost_stream_returns_its_prefix_without_waiting_for_the_pause ... ok
+test audio_toolkit::audio::attempt::tests::the_stalled_open_cap_refuses_new_attempts_until_a_stall_ends ... ok
+test audio_toolkit::audio::resampler::tests::reset_clears_fft_overlap_buffers ... ok
+test audio_toolkit::audio::attempt::tests::a_timed_out_attempt_is_abandoned_and_its_late_stream_dropped ... ok
+test audio_toolkit::audio::resampler::tests::reset_between_recordings_no_crosstalk ... ok
+test audio_toolkit::audio::recorder::tests::missing_callback_at_stop_marks_stream_for_rebuild_and_returns_samples ... ok
+
+test result: ok. 38 passed; 0 failed; 0 ignored; 0 measured; 517 filtered out; finished in 2.01s
+

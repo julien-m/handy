@@ -13,6 +13,7 @@ use cpal::{
 };
 use rtrb::{Consumer, Producer, RingBuffer};
 
+use super::attempt::{self, AttemptFailure, OpenLedger, MAX_STALLED_OPENS};
 use crate::audio_toolkit::{
     audio::{AudioVisualiser, FrameResampler},
     constants,
@@ -84,6 +85,13 @@ impl VadConfig {
 /// policy while recording. Used to feed a live streaming transcription as audio arrives.
 pub type AudioFrameCallback = Arc<dyn Fn(&[f32]) + Send + Sync + 'static>;
 pub type LevelCallback = Arc<dyn Fn(Vec<f32>) + Send + Sync + 'static>;
+/// Callback invoked once per input stream, on the consumer thread, when the backend reports
+/// that the stream can no longer capture (device unplugged, driver reset).
+pub type LossCallback = Arc<dyn Fn() + Send + Sync + 'static>;
+
+/// Every open attempt gets this much time for its handshake (AC-003 of feature 001: each open
+/// attempt times out after 2 seconds).
+pub const OPEN_ATTEMPT_TIMEOUT: Duration = Duration::from_secs(2);
 
 pub struct AudioRecorder {
     device: Option<Device>,
@@ -103,6 +111,11 @@ pub struct AudioRecorder {
     config_cache: Arc<Mutex<Option<(String, cpal::SupportedStreamConfig)>>>,
     /// Set by cpal when the active input stream can no longer capture.
     stream_error: Arc<AtomicBool>,
+    /// Abandoned opens still running, shared by every open of this recorder.
+    open_ledger: Arc<OpenLedger>,
+    loss_cb: Option<LossCallback>,
+    /// Recording samples processed so far, readable even if the consumer thread died.
+    salvage: Arc<Mutex<Vec<f32>>>,
 }
 
 impl AudioRecorder {
@@ -117,7 +130,29 @@ impl AudioRecorder {
             selected_channel: None,
             config_cache: Arc::new(Mutex::new(None)),
             stream_error: Arc::new(AtomicBool::new(false)),
+            open_ledger: OpenLedger::new(MAX_STALLED_OPENS),
+            loss_cb: None,
+            salvage: Arc::new(Mutex::new(Vec::new())),
         })
+    }
+
+    /// Register the callback told when the open stream is lost (see `LossCallback`).
+    pub fn with_loss_callback<F>(mut self, cb: F) -> Self
+    where
+        F: Fn() + Send + Sync + 'static,
+    {
+        self.loss_cb = Some(Arc::new(cb));
+        self
+    }
+
+    /// Name of the device the open stream captures from, read from the opened handle.
+    pub fn device_name(&self) -> Option<String> {
+        self.device.as_ref().and_then(|device| device.name().ok())
+    }
+
+    /// Abandoned opens of this recorder still running (bounded by `MAX_STALLED_OPENS`).
+    pub fn stalled_opens(&self) -> usize {
+        self.open_ledger.stalled()
     }
 
     /// Attach a single VAD engine, reconfigured per session for the offline vs
@@ -169,7 +204,20 @@ impl AudioRecorder {
         self.selected_channel = channel.map(usize::from);
     }
 
+    /// Open `device` (the system default when `None`) within `OPEN_ATTEMPT_TIMEOUT`.
     pub fn open(&mut self, device: Option<Device>) -> Result<(), Box<dyn std::error::Error>> {
+        self.open_within(device, OPEN_ATTEMPT_TIMEOUT)
+    }
+
+    // @spec FR-003: Each open attempt bounded, late stream dropped — .specs/features/001-microphone-priority/spec.md#fr-003
+    /// Open `device` (the system default when `None`), waiting at most `timeout` for the capture
+    /// worker. A timed-out worker is abandoned, never joined: if its native open completes later
+    /// it drops the stream itself (see `attempt`).
+    pub fn open_within(
+        &mut self,
+        device: Option<Device>,
+        timeout: Duration,
+    ) -> Result<(), Box<dyn std::error::Error>> {
         if self.worker_handle.is_some() {
             if !self.needs_reopen() {
                 return Ok(()); // already open
@@ -182,6 +230,8 @@ impl AudioRecorder {
 
         let (cmd_tx, cmd_rx) = mpsc::channel::<Cmd>();
         let (init_tx, init_rx) = mpsc::sync_channel::<Result<(), String>>(1);
+        let (attempt_owner, attempt_worker) =
+            attempt::begin(&self.open_ledger).map_err(open_error)?;
 
         let host = crate::audio_toolkit::get_cpal_host();
         let device = match device {
@@ -200,6 +250,8 @@ impl AudioRecorder {
         let selected_channel = self.selected_channel;
         let config_cache = Arc::clone(&self.config_cache);
         let stream_error = Arc::clone(&self.stream_error);
+        let loss_cb = self.loss_cb.clone();
+        let salvage = Arc::clone(&self.salvage);
 
         let worker = std::thread::spawn(move || {
             let transport = Arc::new(CaptureTransportState::default());
@@ -316,6 +368,10 @@ impl AudioRecorder {
             })();
 
             match init_result {
+                Ok((stream, _, _)) if !attempt_worker.publish() => {
+                    // The caller gave up on this attempt: release the device at once.
+                    drop(stream);
+                }
                 Ok((stream, sample_rate, sample_consumer)) => {
                     let _ = init_tx.send(Ok(()));
                     // Timestamp for the play()-returned -> first-samples gap the
@@ -327,7 +383,8 @@ impl AudioRecorder {
                         level_cb,
                         audio_cb,
                         stream_running_at,
-                    );
+                    )
+                    .with_stream_ports(salvage, loss_cb);
                     run_consumer(
                         processor,
                         sample_consumer,
@@ -348,27 +405,18 @@ impl AudioRecorder {
             }
         });
 
-        match init_rx.recv() {
-            Ok(Ok(())) => {
+        match attempt_owner.wait(&init_rx, timeout) {
+            Ok(()) => {
                 self.device = Some(device);
                 self.cmd_tx = Some(cmd_tx);
                 self.worker_handle = Some(worker);
                 Ok(())
             }
-            Ok(Err(error_message)) => {
+            // An abandoned worker may be blocked in a native call: it is never joined.
+            Err(AttemptFailure::TimedOut) => Err(open_error(AttemptFailure::TimedOut)),
+            Err(failure) => {
                 let _ = worker.join();
-                let kind = if is_microphone_access_denied(&error_message) {
-                    std::io::ErrorKind::PermissionDenied
-                } else {
-                    std::io::ErrorKind::Other
-                };
-                Err(Box::new(Error::new(kind, error_message)))
-            }
-            Err(recv_error) => {
-                let _ = worker.join();
-                Err(Box::new(Error::other(format!(
-                    "Failed to initialize microphone worker: {recv_error}"
-                ))))
+                Err(open_error(failure))
             }
         }
     }
@@ -390,14 +438,29 @@ impl AudioRecorder {
         Ok(ready_rx)
     }
 
+    // @spec FR-004: A lost input keeps its captured prefix — .specs/features/001-microphone-priority/spec.md#fr-004
+    /// Stop the current recording and return its samples. If the consumer thread died, the
+    /// samples it had already processed are returned instead of an error.
     pub fn stop(&self) -> Result<Vec<f32>, Box<dyn std::error::Error>> {
         let tx = self
             .cmd_tx
             .as_ref()
             .ok_or_else(|| Error::other("Recorder is not open"))?;
         let (resp_tx, resp_rx) = mpsc::channel();
-        tx.send(Cmd::Stop(resp_tx))?;
-        Ok(resp_rx.recv()?)
+        if tx.send(Cmd::Stop(resp_tx)).is_err() {
+            return Ok(self.salvage_prefix());
+        }
+        Ok(resp_rx.recv().unwrap_or_else(|_| self.salvage_prefix()))
+    }
+
+    /// Samples of the current recording kept by a consumer that ended without answering Stop.
+    fn salvage_prefix(&self) -> Vec<f32> {
+        let samples = std::mem::take(&mut *lock_samples(&self.salvage));
+        log::warn!(
+            "Microphone consumer ended during stop; recovered {} processed samples",
+            samples.len()
+        );
+        samples
     }
 
     /// True when the active capture stream must be rebuilt.
@@ -608,6 +671,31 @@ impl AudioRecorder {
     }
 }
 
+/// Error of a failed open attempt; a denied access keeps its `PermissionDenied` kind.
+fn open_error(failure: AttemptFailure) -> Box<dyn std::error::Error> {
+    let error = match failure {
+        AttemptFailure::Failed(message) if is_microphone_access_denied(&message) => {
+            Error::new(std::io::ErrorKind::PermissionDenied, message)
+        }
+        AttemptFailure::Failed(message) => Error::other(message),
+        AttemptFailure::TimedOut => Error::new(
+            std::io::ErrorKind::TimedOut,
+            "Microphone did not open within its time limit",
+        ),
+        AttemptFailure::CapReached => Error::other("Too many microphone opens are still stalled"),
+        AttemptFailure::WorkerLost => Error::other("Failed to initialize microphone worker"),
+    };
+    Box::new(error)
+}
+
+/// The sample buffer, even after a consumer panicked while holding it (its content stays valid
+/// audio: frames are appended whole).
+fn lock_samples(samples: &Mutex<Vec<f32>>) -> std::sync::MutexGuard<'_, Vec<f32>> {
+    samples
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner)
+}
+
 fn acknowledge_pause_after_write(transport: &CaptureTransportState) {
     if transport.pause_requested.load(Ordering::Acquire) {
         transport.pause_acknowledged.store(true, Ordering::Release);
@@ -712,7 +800,8 @@ struct CaptureProcessor {
 
     // ---- recording-scoped: reset by `begin_recording` ------------------- //
     vad_policy: VadPolicy,
-    processed_samples: Vec<f32>,
+    processed_samples: Arc<Mutex<Vec<f32>>>,
+    loss_cb: Option<LossCallback>,
     awaiting_first_captured_chunk: Option<Instant>,
     capture_ready_tx: Option<mpsc::Sender<()>>,
     total_dropped_samples: u64,
@@ -763,11 +852,32 @@ impl CaptureProcessor {
             max_drain_samples,
             first_chunk_logged: false,
             vad_policy: VadPolicy::Offline,
-            processed_samples: Vec::new(),
+            processed_samples: Arc::new(Mutex::new(Vec::new())),
+            loss_cb: None,
             awaiting_first_captured_chunk: None,
             capture_ready_tx: None,
             total_dropped_samples: 0,
             overrun_warning_logged: false,
+        }
+    }
+
+    /// Share the recording buffer with the recorder (salvaged if this consumer dies) and set the
+    /// callback told once when the stream is lost.
+    fn with_stream_ports(
+        mut self,
+        samples: Arc<Mutex<Vec<f32>>>,
+        loss_cb: Option<LossCallback>,
+    ) -> Self {
+        lock_samples(&samples).clear();
+        self.processed_samples = samples;
+        self.loss_cb = loss_cb;
+        self
+    }
+
+    /// Tell the recorder's owner, once per stream, that the stream was lost.
+    fn report_stream_loss(&mut self) {
+        if let Some(callback) = self.loss_cb.take() {
+            callback();
         }
     }
 
@@ -778,7 +888,7 @@ impl CaptureProcessor {
         self.total_dropped_samples = 0;
         self.overrun_warning_logged = false;
         self.vad_policy = policy;
-        self.processed_samples.clear();
+        lock_samples(&self.processed_samples).clear();
         self.visualizer.reset();
         self.frame_resampler.reset();
         if policy != VadPolicy::Disabled {
@@ -828,15 +938,12 @@ impl CaptureProcessor {
         }
 
         let vad_policy = self.vad_policy;
+        let samples = Arc::clone(&self.processed_samples);
+        let mut processed = lock_samples(&samples);
         self.frame_resampler.push(raw, |frame: &[f32]| {
-            handle_frame(
-                frame,
-                vad_policy,
-                &self.vad,
-                &self.audio_cb,
-                &mut self.processed_samples,
-            )
+            handle_frame(frame, vad_policy, &self.vad, &self.audio_cb, &mut processed)
         });
+        drop(processed);
 
         if let Some(started) = self.awaiting_first_captured_chunk.take() {
             log::debug!(
@@ -871,15 +978,12 @@ impl CaptureProcessor {
     /// Flush the resampler tail and hand back the finished recording.
     fn finish_recording(&mut self) -> Vec<f32> {
         let vad_policy = self.vad_policy;
+        let samples = Arc::clone(&self.processed_samples);
+        let mut processed = lock_samples(&samples);
         self.frame_resampler.finish(|frame: &[f32]| {
-            handle_frame(
-                frame,
-                vad_policy,
-                &self.vad,
-                &self.audio_cb,
-                &mut self.processed_samples,
-            )
+            handle_frame(frame, vad_policy, &self.vad, &self.audio_cb, &mut processed)
         });
+        drop(processed);
 
         // Diagnostic for VAD audio still withheld when capture stopped; it is
         // not conclusive in either direction.
@@ -907,7 +1011,7 @@ impl CaptureProcessor {
                 self.total_dropped_samples
             );
         }
-        std::mem::take(&mut self.processed_samples)
+        std::mem::take(&mut *lock_samples(&self.processed_samples))
     }
 }
 
@@ -968,7 +1072,9 @@ fn run_consumer(
                         transport.pause_acknowledged.store(false, Ordering::Relaxed);
                         transport.pause_requested.store(true, Ordering::Release);
                         let pause_started = Instant::now();
+                        // A lost stream sends no more callbacks: do not wait for its pause.
                         while !transport.pause_acknowledged.load(Ordering::Acquire)
+                            && !stream_error.load(Ordering::Acquire)
                             && pause_started.elapsed() < PAUSE_ACK_TIMEOUT
                         {
                             let drained =
@@ -1038,9 +1144,13 @@ fn run_consumer(
         if stream_error.load(Ordering::Acquire) && !stream_error_logged {
             log::error!("Microphone backend reported a stream error; it will be rebuilt");
             stream_error_logged = true;
+            processor.report_stream_loss();
         }
     }
 }
 
+#[cfg(test)]
+#[path = "recorder/loss_tests.rs"]
+mod loss_tests;
 #[cfg(test)]
 mod tests;
