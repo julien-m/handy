@@ -1,0 +1,35 @@
+
+
+Running 23 tests using 6 workers
+
+
+
+
+
+
+
+
+[1A[2K[1/23] [chromium] › tests/microphone-priority-drag.spec.ts:91:3 › pointer cancel cancels the drag without reordering
+[1A[2K[2/23] [chromium] › tests/microphone-priority-drag.spec.ts:91:3 › page hidden cancels the drag without reordering
+[1A[2K[3/23] [chromium] › tests/microphone-priority-drag.spec.ts:99:1 › an uninterrupted drag still drops
+[1A[2K[4/23] [chromium] › tests/microphone-priority-drag.spec.ts:91:3 › lost pointer capture cancels the drag without reordering
+[1A[2K[5/23] [chromium] › tests/microphone-priority-drag.spec.ts:91:3 › window blur cancels the drag without reordering
+[1A[2K[6/23] [chromium] › tests/microphone-priority-drag.spec.ts:107:1 › the dragged row removed by a change saved elsewhere: the drag is cancelled and moves nothing
+[1A[2K[7/23] [chromium] › tests/microphone-priority-drag.spec.ts:132:1 › a write starting during a drag cancels it
+[1A[2K[8/23] [chromium] › tests/microphone-priority-polling.spec.ts:27:1 › page visibility: on open, every 5 s while visible, paused while hidden, cleared on unmount
+[1A[2K[9/23] [chromium] › tests/microphone-priority-polling.spec.ts:50:1 › window hidden while the page stays visible: no read; shown and focused from the tray: a read at once
+[1A[2K[10/23] [chromium] › tests/microphone-priority-polling.spec.ts:71:1 › the window cannot tell its visibility: the page visibility decides
+[1A[2K[11/23] [chromium] › tests/microphone-priority.spec.ts:42:3 › focus after each action (SC-003) › Save keeps focus while busy and when it turns into Retry
+[1A[2K[12/23] [chromium] › tests/microphone-priority.spec.ts:50:3 › focus after each action (SC-003) › a successful Retry marks the editor saved and moves focus to the title
+[1A[2K[13/23] [chromium] › tests/microphone-priority.spec.ts:65:3 › focus after each action (SC-003) › Remove moves focus to the next row, else the previous one, else Add
+[1A[2K[14/23] [chromium] › tests/microphone-priority.spec.ts:82:3 › focus after each action (SC-003) › a keyboard move keeps focus on the moved row's control
+[1A[2K[15/23] [chromium] › tests/microphone-priority.spec.ts:97:3 › focus after each action (SC-003) › Discard moves focus to the section title
+[1A[2K[16/23] [chromium] › tests/microphone-priority.spec.ts:107:3 › focus after each action (SC-003) › Reload moves focus to the section title
+[1A[2K[17/23] [chromium] › tests/microphone-priority.spec.ts:123:3 › focus after each action (SC-003) › Reload is inactive while a Save is in flight
+[1A[2K[18/23] [chromium] › tests/microphone-priority.spec.ts:151:3 › focus after each action (SC-003) › an unknown outcome that did commit is confirmed and focus moves to the title
+[1A[2K[19/23] [chromium] › tests/microphone-priority.spec.ts:166:3 › focus after each action (SC-003) › an unknown outcome that did not commit keeps the draft and Retry with focus
+[1A[2K[20/23] [chromium] › tests/microphone-priority.spec.ts:181:3 › focus after each action (SC-003) › the same order saved elsewhere while Save has focus: focus moves to the title
+[1A[2K[21/23] [chromium] › tests/microphone-priority.spec.ts:198:3 › focus after each action (SC-003) › the same order saved elsewhere leaves a focus that is still on a row alone
+[1A[2K[22/23] [chromium] › tests/microphone-priority.spec.ts:213:3 › loading guard and failed listing › Add and Save are inactive until the settings are loaded
+[1A[2K[23/23] [chromium] › tests/microphone-priority.spec.ts:227:3 › loading guard and failed listing › a failed listing: Unknown for a draft-only name, Add inactive until a Refresh lists again (FR-002)
+[1A[2K  23 passed (4.2s)

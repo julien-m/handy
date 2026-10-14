@@ -262,10 +262,67 @@
     "sound": {
       "title": "Sonido",
       "microphone": {
-        "title": "Micrófono",
-        "description": "Selecciona tu dispositivo de micrófono preferido",
-        "placeholder": "Seleccionar micrófono...",
-        "loading": "Cargando..."
+        "placeholder": "Seleccionar micrófono..."
+      },
+      "microphonePriority": {
+        "title": "Prioridad de micrófonos",
+        "description": "Handy graba con el primer micrófono disponible en este orden y, después, con el predeterminado del sistema. Los micrófonos no disponibles conservan su lugar.",
+        "emptyTitle": "Ningún micrófono preferido",
+        "emptyBody": "Handy usa el micrófono predeterminado del sistema hasta que añadas uno.",
+        "status": {
+          "available": "Disponible",
+          "unavailable": "No disponible",
+          "ambiguous": "Ambiguo",
+          "unknown": "Desconocido"
+        },
+        "moveUp": "Subir {{name}}",
+        "moveDown": "Bajar {{name}}",
+        "remove": "Quitar {{name}}",
+        "addLabel": "Añadir micrófono",
+        "addPlaceholder": "Añadir micrófono…",
+        "noDevices": "No se detectó ningún micrófono para añadir",
+        "duplicateChoice": "{{name}} ya está en la lista.",
+        "refresh": "Actualizar disponibilidad",
+        "checked": "Comprobado hace {{seconds}} s",
+        "refreshFailed": "No se pudieron comprobar los dispositivos",
+        "retry": "Reintentar",
+        "inUse": {
+          "title": "En uso ahora",
+          "description": "El micrófono con el que Handy está grabando o el que usó la última grabación. Puede ser distinto de tu primera opción.",
+          "notUsedYet": "Aún no se ha usado desde el inicio",
+          "systemDefault": "Micrófono predeterminado del sistema",
+          "unnamed": "Micrófono sin nombre",
+          "lastRecording": "Última grabación · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "Primera opción",
+          "fallback": "Alternativa",
+          "fallbackUnavailable": "Alternativa · {{name}} no disponible",
+          "fallbackAmbiguous": "Alternativa · {{name}} ambiguo",
+          "clamshell": "Micrófono con la tapa cerrada",
+          "system_default": "Predeterminado del sistema"
+        },
+        "clamshell": {
+          "title": "Micrófono con la tapa cerrada",
+          "description": "Se prueba primero cuando la tapa está cerrada. Tu orden de prioridad no cambia.",
+          "none": "Ninguno"
+        },
+        "draft": {
+          "note": "Cambios sin guardar. Hasta que guardes, la próxima grabación usará el orden guardado.",
+          "discard": "Descartar",
+          "save": "Guardar",
+          "saving": "Guardando…",
+          "saved": "Prioridad de micrófonos guardada"
+        },
+        "conflict": {
+          "title": "La configuración cambió en otro lugar",
+          "body": "Tus cambios se conservan. Recargar muestra el orden guardado y descarta tus cambios.",
+          "reload": "Recargar"
+        },
+        "errors": {
+          "duplicate": "Cada micrófono solo puede aparecer una vez.",
+          "empty": "El nombre del micrófono no puede estar vacío."
+        }
       },
       "channel": {
         "title": "Canal de entrada",

@@ -262,10 +262,67 @@
     "sound": {
       "title": "声音",
       "microphone": {
-        "title": "麦克风",
-        "description": "选择您偏好的麦克风设备",
-        "placeholder": "选择麦克风...",
-        "loading": "加载中..."
+        "placeholder": "选择麦克风..."
+      },
+      "microphonePriority": {
+        "title": "麦克风优先级",
+        "description": "Handy 会按此顺序使用第一个可用的麦克风录音，然后使用系统默认麦克风。不可用的麦克风保留其位置。",
+        "emptyTitle": "没有首选麦克风",
+        "emptyBody": "在您添加麦克风之前，Handy 使用系统默认麦克风。",
+        "status": {
+          "available": "可用",
+          "unavailable": "不可用",
+          "ambiguous": "有歧义",
+          "unknown": "未知"
+        },
+        "moveUp": "上移 {{name}}",
+        "moveDown": "下移 {{name}}",
+        "remove": "移除 {{name}}",
+        "addLabel": "添加麦克风",
+        "addPlaceholder": "添加麦克风…",
+        "noDevices": "未检测到可添加的麦克风",
+        "duplicateChoice": "{{name}} 已在列表中。",
+        "refresh": "刷新可用状态",
+        "checked": "{{seconds}} 秒前检查",
+        "refreshFailed": "无法检查设备",
+        "retry": "重试",
+        "inUse": {
+          "title": "当前使用",
+          "description": "Handy 正在录音所用的麦克风，或上次录音使用的麦克风。它可能与您的首选不同。",
+          "notUsedYet": "启动后尚未使用",
+          "systemDefault": "系统默认麦克风",
+          "unnamed": "未命名麦克风",
+          "lastRecording": "上次录音 · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "首选",
+          "fallback": "备用",
+          "fallbackUnavailable": "备用 · {{name}} 不可用",
+          "fallbackAmbiguous": "备用 · {{name}} 有歧义",
+          "clamshell": "合盖麦克风",
+          "system_default": "系统默认"
+        },
+        "clamshell": {
+          "title": "合盖麦克风",
+          "description": "合上笔记本盖子时优先尝试。您的优先顺序保持不变。",
+          "none": "无"
+        },
+        "draft": {
+          "note": "有未保存的更改。在您保存之前，下次录音将使用已保存的顺序。",
+          "discard": "放弃",
+          "save": "保存",
+          "saving": "正在保存…",
+          "saved": "麦克风优先级已保存"
+        },
+        "conflict": {
+          "title": "设置已在其他地方更改",
+          "body": "您的编辑已保留。重新加载会显示已保存的顺序并放弃您的编辑。",
+          "reload": "重新加载"
+        },
+        "errors": {
+          "duplicate": "每个麦克风只能出现一次。",
+          "empty": "麦克风名称不能为空。"
+        }
       },
       "channel": {
         "title": "输入通道",

@@ -262,10 +262,67 @@
     "sound": {
       "title": "Zvuk",
       "microphone": {
-        "title": "Mikrofon",
-        "description": "Vyberte preferované zařízení mikrofonu",
-        "placeholder": "Vyberte mikrofon...",
-        "loading": "Načítání..."
+        "placeholder": "Vyberte mikrofon..."
+      },
+      "microphonePriority": {
+        "title": "Priorita mikrofonů",
+        "description": "Handy nahrává prvním dostupným mikrofonem v tomto pořadí, poté výchozím mikrofonem systému. Nedostupné mikrofony si zachovají své místo.",
+        "emptyTitle": "Žádný preferovaný mikrofon",
+        "emptyBody": "Handy používá výchozí mikrofon systému, dokud nějaký nepřidáte.",
+        "status": {
+          "available": "Dostupný",
+          "unavailable": "Nedostupný",
+          "ambiguous": "Nejednoznačný",
+          "unknown": "Neznámý"
+        },
+        "moveUp": "Posunout {{name}} nahoru",
+        "moveDown": "Posunout {{name}} dolů",
+        "remove": "Odebrat {{name}}",
+        "addLabel": "Přidat mikrofon",
+        "addPlaceholder": "Přidat mikrofon…",
+        "noDevices": "Nebyl zjištěn žádný mikrofon k přidání",
+        "duplicateChoice": "{{name}} už je v seznamu.",
+        "refresh": "Obnovit dostupnost",
+        "checked": "Zkontrolováno před {{seconds}} s",
+        "refreshFailed": "Zařízení se nepodařilo zkontrolovat",
+        "retry": "Zkusit znovu",
+        "inUse": {
+          "title": "Nyní používaný",
+          "description": "Mikrofon, kterým Handy nahrává, nebo ten použitý při posledním nahrávání. Může se lišit od vaší první volby.",
+          "notUsedYet": "Od spuštění zatím nepoužit",
+          "systemDefault": "Výchozí mikrofon systému",
+          "unnamed": "Mikrofon bez názvu",
+          "lastRecording": "Poslední nahrávání · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "První volba",
+          "fallback": "Náhradní",
+          "fallbackUnavailable": "Náhradní · {{name}} nedostupný",
+          "fallbackAmbiguous": "Náhradní · {{name}} nejednoznačný",
+          "clamshell": "Mikrofon při zavřeném víku",
+          "system_default": "Výchozí systému"
+        },
+        "clamshell": {
+          "title": "Mikrofon při zavřeném víku",
+          "description": "Zkouší se jako první, když je víko zavřené. Vaše pořadí priorit zůstává beze změny.",
+          "none": "Žádný"
+        },
+        "draft": {
+          "note": "Neuložené změny. Dokud neuložíte, další nahrávání použije uložené pořadí.",
+          "discard": "Zahodit",
+          "save": "Uložit",
+          "saving": "Ukládání…",
+          "saved": "Priorita mikrofonů uložena"
+        },
+        "conflict": {
+          "title": "Nastavení bylo změněno jinde",
+          "body": "Vaše úpravy zůstávají zachovány. Načíst znovu zobrazí uložené pořadí a zahodí vaše úpravy.",
+          "reload": "Načíst znovu"
+        },
+        "errors": {
+          "duplicate": "Každý mikrofon smí být uveden jen jednou.",
+          "empty": "Název mikrofonu nesmí být prázdný."
+        }
       },
       "channel": {
         "title": "Vstupní kanál",

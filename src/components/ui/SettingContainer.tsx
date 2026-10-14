@@ -10,9 +10,28 @@ interface SettingContainerProps {
   layout?: "horizontal" | "stacked";
   disabled?: boolean;
   tooltipPosition?: "top" | "bottom";
-  /** Test id of the row; its title gets `${testId}-title`. */
+  /** Test id of the row; its title gets `${testId}-title` unless `titleTestId` is given. */
   testId?: string;
+  /** Explicit test id of the title, overriding the one derived from `testId`. */
+  titleTestId?: string;
+  /** Makes the title a programmatic focus target (tabIndex -1) with this `data-focus-key`. */
+  titleFocusKey?: string;
 }
+
+/**
+ * Attributes of the title heading: its test ID and, when it is a focus target, its focus key.
+ * @param titleTestId test ID of the title
+ * @param titleFocusKey focus key, or undefined when the title is not focusable
+ * @returns the heading attributes
+ */
+const titleAttributes = (titleTestId?: string, titleFocusKey?: string) =>
+  titleFocusKey === undefined
+    ? { "data-testid": titleTestId }
+    : {
+        "data-testid": titleTestId,
+        "data-focus-key": titleFocusKey,
+        tabIndex: -1,
+      };
 
 export const SettingContainer: React.FC<SettingContainerProps> = ({
   title,
@@ -24,7 +43,13 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
   disabled = false,
   tooltipPosition = "top",
   testId,
+  titleTestId,
+  titleFocusKey,
 }) => {
+  const titleProps = titleAttributes(
+    titleTestId ?? (testId ? `${testId}-title` : undefined),
+    titleFocusKey,
+  );
   const [showTooltip, setShowTooltip] = useState(false);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
@@ -46,8 +71,6 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
     }
   }, [showTooltip]);
 
-  const titleTestId = testId ? `${testId}-title` : undefined;
-
   const toggleTooltip = () => {
     setShowTooltip(!showTooltip);
   };
@@ -62,8 +85,8 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
         <div className={containerClasses} data-testid={testId}>
           <div className="flex items-center gap-2 mb-2">
             <h3
+              {...titleProps}
               className={`text-sm font-medium ${disabled ? "opacity-50" : ""}`}
-              data-testid={titleTestId}
             >
               {title}
             </h3>
@@ -114,8 +137,8 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
       <div className={containerClasses} data-testid={testId}>
         <div className="mb-2">
           <h3
+            {...titleProps}
             className={`text-sm font-medium ${disabled ? "opacity-50" : ""}`}
-            data-testid={titleTestId}
           >
             {title}
           </h3>
@@ -139,8 +162,8 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
         <div className="max-w-2/3">
           <div className="flex items-center gap-2">
             <h3
+              {...titleProps}
               className={`text-sm font-medium ${disabled ? "opacity-50" : ""}`}
-              data-testid={titleTestId}
             >
               {title}
             </h3>
@@ -192,8 +215,8 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
     <div className={horizontalContainerClasses} data-testid={testId}>
       <div className="max-w-2/3">
         <h3
+          {...titleProps}
           className={`text-sm font-medium ${disabled ? "opacity-50" : ""}`}
-          data-testid={titleTestId}
         >
           {title}
         </h3>

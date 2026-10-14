@@ -1,0 +1,20 @@
+Merge of dev (aa4c9060) into feature/ui-001-microphones after fix round 2 (7c3641b3).
+Conflicts: package.json (scripts union), src/components/ui/Badge.tsx (dev version: info/warning/error variants + testId/title; same recipes as 001).
+All commands run in the worktree after `bun install`:
+tsc --noEmit = 0
+bun run lint = 0
+bun run format:check = 0
+bun run check:translations = 0
+bun run build = 0
+test:microphone-priority = 0 (88 pass)
+test:word-replacements = 0 (68 pass)
+test:prompt-settings = 0 (55 + 5 pass)
+test:indicator = 0 (35 pass)
+test:vocabulary = 0 (45 pass)
+test:shortcut-states = 0 (20 + 9 pass)
+test:output-settings = 0 (20 + 7 pass)
+test:settings-store = 0 (11 pass)
+test:settings-errors = 0
+test:shortcut-list = 0
+test:keyboard = 0
+test:microphone-priority-ui = 0 (23 passed, Playwright; port 1420 free)

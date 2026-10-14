@@ -1,0 +1,20 @@
+# Merge of dev (1797c2c0) into feature/ui-001-microphones (8a812d45) — verification exit codes
+# cwd: worktree root; logs: <name>.stdout/.stderr/.exit in this folder
+port 1420 free before Playwright (lsof -iTCP:1420 -sTCP:LISTEN found no listener)
+bunx tsc --noEmit => exit 0
+bun run lint => exit 0
+bun run format:check => exit 0
+bun run check:translations => exit 0
+bun run build => exit 0
+bun run test:microphone-priority => exit 0
+bun run test:microphone-priority-ui => exit 0
+bun run test:indicator => exit 0
+bun run test:vocabulary => exit 0
+bun run test:shortcut-states => exit 0
+bun run test:output-settings => exit 0
+bun run test:settings-store => exit 0
+bun run test:settings-errors => exit 0
+bun run test:shortcut-list => exit 0
+bun run test:keyboard => exit 0
+livespec conventions verify --feature repo --json > /dev/null => exit 0 (raw output not committed)
+cargo fmt/clippy/test: not run — no Rust file in conflict (the branch changes no Rust file)

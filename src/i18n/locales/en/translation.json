@@ -262,10 +262,67 @@
     "sound": {
       "title": "Sound",
       "microphone": {
-        "title": "Microphone",
-        "description": "Select your preferred microphone device",
-        "placeholder": "Select microphone...",
-        "loading": "Loading..."
+        "placeholder": "Select microphone..."
+      },
+      "microphonePriority": {
+        "title": "Microphone priority",
+        "description": "Handy records with the first available microphone in this order, then the system default. Unavailable microphones keep their place.",
+        "emptyTitle": "No preferred microphone",
+        "emptyBody": "Handy uses the system default microphone until you add one.",
+        "status": {
+          "available": "Available",
+          "unavailable": "Unavailable",
+          "ambiguous": "Ambiguous",
+          "unknown": "Unknown"
+        },
+        "moveUp": "Move {{name}} up",
+        "moveDown": "Move {{name}} down",
+        "remove": "Remove {{name}}",
+        "addLabel": "Add microphone",
+        "addPlaceholder": "Add microphone…",
+        "noDevices": "No microphone detected to add",
+        "duplicateChoice": "{{name}} is already in the list.",
+        "refresh": "Refresh availability",
+        "checked": "Checked {{seconds}} s ago",
+        "refreshFailed": "Couldn't check devices",
+        "retry": "Retry",
+        "inUse": {
+          "title": "In use now",
+          "description": "The microphone Handy is recording with, or the one used by the last recording. It can differ from your first choice.",
+          "notUsedYet": "Not used yet since launch",
+          "systemDefault": "System default microphone",
+          "unnamed": "Unnamed microphone",
+          "lastRecording": "Last recording · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "First choice",
+          "fallback": "Fallback",
+          "fallbackUnavailable": "Fallback · {{name}} unavailable",
+          "fallbackAmbiguous": "Fallback · {{name}} ambiguous",
+          "clamshell": "Closed-lid microphone",
+          "system_default": "System default"
+        },
+        "clamshell": {
+          "title": "Closed-lid microphone",
+          "description": "Tried first when the lid is closed. Your priority order stays unchanged.",
+          "none": "None"
+        },
+        "draft": {
+          "note": "Unsaved changes. The next recording uses the saved order until you save.",
+          "discard": "Discard",
+          "save": "Save",
+          "saving": "Saving…",
+          "saved": "Microphone priority saved"
+        },
+        "conflict": {
+          "title": "Settings changed elsewhere",
+          "body": "Your edits are kept. Reload shows the saved order and discards your edits.",
+          "reload": "Reload"
+        },
+        "errors": {
+          "duplicate": "Each microphone may appear only once.",
+          "empty": "A microphone name can't be empty."
+        }
       },
       "channel": {
         "title": "Input Channel",

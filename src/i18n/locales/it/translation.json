@@ -262,10 +262,67 @@
     "sound": {
       "title": "Suono",
       "microphone": {
-        "title": "Microfono",
-        "description": "Scegli il microfono preferito",
-        "placeholder": "Scegli microfono...",
-        "loading": "Caricamento..."
+        "placeholder": "Scegli microfono..."
+      },
+      "microphonePriority": {
+        "title": "Priorità dei microfoni",
+        "description": "Handy registra con il primo microfono disponibile in quest'ordine, poi con quello predefinito di sistema. I microfoni non disponibili mantengono la loro posizione.",
+        "emptyTitle": "Nessun microfono preferito",
+        "emptyBody": "Handy usa il microfono predefinito di sistema finché non ne aggiungi uno.",
+        "status": {
+          "available": "Disponibile",
+          "unavailable": "Non disponibile",
+          "ambiguous": "Ambiguo",
+          "unknown": "Sconosciuto"
+        },
+        "moveUp": "Sposta su {{name}}",
+        "moveDown": "Sposta giù {{name}}",
+        "remove": "Rimuovi {{name}}",
+        "addLabel": "Aggiungi microfono",
+        "addPlaceholder": "Aggiungi microfono…",
+        "noDevices": "Nessun microfono rilevato da aggiungere",
+        "duplicateChoice": "{{name}} è già nell'elenco.",
+        "refresh": "Aggiorna disponibilità",
+        "checked": "Verificato {{seconds}} s fa",
+        "refreshFailed": "Impossibile verificare i dispositivi",
+        "retry": "Riprova",
+        "inUse": {
+          "title": "In uso ora",
+          "description": "Il microfono con cui Handy sta registrando o quello usato nell'ultima registrazione. Può essere diverso dalla tua prima scelta.",
+          "notUsedYet": "Non ancora usato dall'avvio",
+          "systemDefault": "Microfono predefinito di sistema",
+          "unnamed": "Microfono senza nome",
+          "lastRecording": "Ultima registrazione · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "Prima scelta",
+          "fallback": "Riserva",
+          "fallbackUnavailable": "Riserva · {{name}} non disponibile",
+          "fallbackAmbiguous": "Riserva · {{name}} ambiguo",
+          "clamshell": "Microfono con coperchio chiuso",
+          "system_default": "Predefinito di sistema"
+        },
+        "clamshell": {
+          "title": "Microfono con coperchio chiuso",
+          "description": "Provato per primo quando il coperchio è chiuso. L'ordine di priorità resta invariato.",
+          "none": "Nessuno"
+        },
+        "draft": {
+          "note": "Modifiche non salvate. Finché non salvi, la prossima registrazione usa l'ordine salvato.",
+          "discard": "Scarta",
+          "save": "Salva",
+          "saving": "Salvataggio…",
+          "saved": "Priorità dei microfoni salvata"
+        },
+        "conflict": {
+          "title": "Impostazioni modificate altrove",
+          "body": "Le tue modifiche sono conservate. Ricarica mostra l'ordine salvato e scarta le tue modifiche.",
+          "reload": "Ricarica"
+        },
+        "errors": {
+          "duplicate": "Ogni microfono può comparire una sola volta.",
+          "empty": "Il nome del microfono non può essere vuoto."
+        }
       },
       "channel": {
         "title": "Canale di ingresso",

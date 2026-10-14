@@ -32,12 +32,7 @@ let views: Array<Promise<SettingsView>> = [];
 let modeReplies: Array<Promise<ModeReply>> = [];
 let returnReplies: Array<Promise<ModeReply>> = [];
 const returnCalls: unknown[] = [];
-const priorityCalls: Array<[string[], number | null]> = [];
 const commands = {
-  setMicrophonePriority: (order: string[], revision: number | null) => {
-    priorityCalls.push([order, revision]);
-    return Promise.resolve({ status: "ok", data: 8 });
-  },
   getSettingsView: () => views.shift() ?? Promise.resolve(view(0, false)),
   updateMicrophoneMode: () =>
     modeReplies.shift() ?? Promise.resolve({ status: "ok", data: null }),
@@ -251,8 +246,8 @@ describe("settings write errors", () => {
   });
 });
 
-// @spec AC-001: The selector edits the shared ordered list — .specs/features/001-microphone-priority/spec.md#ac-001
-describe("legacy microphone selector (feature 001)", () => {
+// @spec AC-001: The editor's committed order reaches the other Sound rows — .specs/features/001-microphone-priority/spec.md#ac-001
+describe("microphone priority in the settings store (feature 001)", () => {
   const withPriority = (order: string[]): SettingsView =>
     ({
       revision: 7,
@@ -260,18 +255,15 @@ describe("legacy microphone selector (feature 001)", () => {
       read_only: false,
     }) as unknown as SettingsView;
 
-  test("a chosen device moves first and the default empties the order", async () => {
+  test("the first committed choice is the channel selector's microphone", async () => {
     views = [Promise.resolve(withPriority(["USB", "Dock"]))];
     await store().refreshSettings();
     expect(store().settings?.selected_microphone).toBe("USB");
-    priorityCalls.length = 0;
-    await store().updateSetting("selected_microphone", "Dock");
-    await store().updateSetting("selected_microphone", "Default");
-    expect(JSON.stringify(priorityCalls)).toBe(
-      JSON.stringify([
-        [["Dock", "USB"], 7],
-        [[], 7],
-      ]),
+    expect(JSON.stringify(store().settings?.microphone_priority)).toBe(
+      JSON.stringify(["USB", "Dock"]),
     );
+    views = [Promise.resolve({ ...withPriority([]), revision: 8 })];
+    await store().refreshSettings();
+    expect(store().settings?.selected_microphone).toBe("Default");
   });
 });

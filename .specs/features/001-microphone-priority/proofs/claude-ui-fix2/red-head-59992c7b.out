@@ -1,0 +1,206 @@
+(node:25788) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[1A[2K[WebServer] (node:25790) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+[WebServer] (Use `node --trace-deprecation ...` to show where the warning was created)
+
+
+Running 23 tests using 6 workers
+
+[1A[2K[WebServer] [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+
+[1A[2K(node:25796) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+[1A[2K(node:25794) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+[1A[2K(node:25793) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+[1A[2K(node:25792) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+[1A[2K(node:25795) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+[1A[2K[1/23] [chromium] › tests/microphone-priority-drag.spec.ts:91:3 › window blur cancels the drag without reordering
+[1A[2K(node:25797) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+[1A[2K[2/23] [chromium] › tests/microphone-priority-drag.spec.ts:91:3 › pointer cancel cancels the drag without reordering
+[1A[2K[3/23] [chromium] › tests/microphone-priority-drag.spec.ts:91:3 › lost pointer capture cancels the drag without reordering
+[1A[2K[4/23] [chromium] › tests/microphone-priority-drag.spec.ts:91:3 › page hidden cancels the drag without reordering
+[1A[2K[5/23] [chromium] › tests/microphone-priority-drag.spec.ts:107:1 › the dragged row removed by a change saved elsewhere: the drag is cancelled and moves nothing
+[1A[2K[6/23] [chromium] › tests/microphone-priority-drag.spec.ts:99:1 › an uninterrupted drag still drops
+[1A[2K[7/23] [chromium] › tests/microphone-priority-drag.spec.ts:132:1 › a write starting during a drag cancels it
+[1A[2K[8/23] [chromium] › tests/microphone-priority-polling.spec.ts:27:1 › page visibility: on open, every 5 s while visible, paused while hidden, cleared on unmount
+[1A[2K[9/23] [chromium] › tests/microphone-priority-polling.spec.ts:50:1 › window hidden while the page stays visible: no read; shown and focused from the tray: a read at once
+[1A[2K[10/23] [chromium] › tests/microphone-priority-polling.spec.ts:71:1 › the window cannot tell its visibility: the page visibility decides
+[1A[2K[11/23] [chromium] › tests/microphone-priority.spec.ts:42:3 › focus after each action (SC-003) › Save keeps focus while busy and when it turns into Retry
+[1A[2K[12/23] [chromium] › tests/microphone-priority.spec.ts:50:3 › focus after each action (SC-003) › a successful Retry marks the editor saved and moves focus to the title
+[1A[2K[13/23] [chromium] › tests/microphone-priority.spec.ts:65:3 › focus after each action (SC-003) › Remove moves focus to the next row, else the previous one, else Add
+[1A[2K[14/23] [chromium] › tests/microphone-priority.spec.ts:82:3 › focus after each action (SC-003) › a keyboard move keeps focus on the moved row's control
+[1A[2K[15/23] [chromium] › tests/microphone-priority.spec.ts:97:3 › focus after each action (SC-003) › Discard moves focus to the section title
+[1A[2K[16/23] [chromium] › tests/microphone-priority.spec.ts:107:3 › focus after each action (SC-003) › Reload moves focus to the section title
+[1A[2K[17/23] [chromium] › tests/microphone-priority.spec.ts:123:3 › focus after each action (SC-003) › Reload is inactive while a Save is in flight
+[1A[2K[18/23] [chromium] › tests/microphone-priority.spec.ts:151:3 › focus after each action (SC-003) › an unknown outcome that did commit is confirmed and focus moves to the title
+[1A[2K[19/23] [chromium] › tests/microphone-priority.spec.ts:166:3 › focus after each action (SC-003) › an unknown outcome that did not commit keeps the draft and Retry with focus
+[1A[2K[20/23] [chromium] › tests/microphone-priority.spec.ts:181:3 › focus after each action (SC-003) › the same order saved elsewhere while Save has focus: focus moves to the title
+[1A[2K[21/23] [chromium] › tests/microphone-priority.spec.ts:198:3 › focus after each action (SC-003) › the same order saved elsewhere leaves a focus that is still on a row alone
+[1A[2K[22/23] [chromium] › tests/microphone-priority.spec.ts:213:3 › loading guard and failed listing › Add and Save are inactive until the settings are loaded
+[1A[2K[23/23] [chromium] › tests/microphone-priority.spec.ts:227:3 › loading guard and failed listing › a failed listing: Unknown for a draft-only name, Add inactive until a Refresh lists again (FR-002)
+[1A[2K  1) [chromium] › tests/microphone-priority-drag.spec.ts:107:1 › the dragged row removed by a change saved elsewhere: the drag is cancelled and moves nothing 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeNull[2m()[22m
+
+    Received: [31m"drop-target"[39m
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      55 | const expectNoDrag = async (page: Page): Promise<void> => {
+      56 |   const list = page.getByTestId("microphone-settings-choices");
+    > 57 |   await expect.poll(() => list.getAttribute("data-state")).toBeNull();
+         |   ^
+      58 |   await expect(page.locator("li[data-state]")).toHaveCount(0);
+      59 | };
+      60 |
+        at expectNoDrag (/Users/julienm/projects/handy-wt/ui-001-microphones/tests/microphone-priority-drag.spec.ts:57:3)
+        at /Users/julienm/projects/handy-wt/ui-001-microphones/tests/microphone-priority-drag.spec.ts:123:3
+
+    Error Context: test-results/microphone-priority-drag-t-b7b0b-cancelled-and-moves-nothing-chromium/error-context.md
+
+
+[1A[2K  2) [chromium] › tests/microphone-priority-drag.spec.ts:132:1 › a write starting during a drag cancels it 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeNull[2m()[22m
+
+    Received: [31m"drop-target"[39m
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      55 | const expectNoDrag = async (page: Page): Promise<void> => {
+      56 |   const list = page.getByTestId("microphone-settings-choices");
+    > 57 |   await expect.poll(() => list.getAttribute("data-state")).toBeNull();
+         |   ^
+      58 |   await expect(page.locator("li[data-state]")).toHaveCount(0);
+      59 | };
+      60 |
+        at expectNoDrag (/Users/julienm/projects/handy-wt/ui-001-microphones/tests/microphone-priority-drag.spec.ts:57:3)
+        at /Users/julienm/projects/handy-wt/ui-001-microphones/tests/microphone-priority-drag.spec.ts:144:3
+
+    Error Context: test-results/microphone-priority-drag-a-9f305-ng-during-a-drag-cancels-it-chromium/error-context.md
+
+
+[1A[2K  3) [chromium] › tests/microphone-priority-polling.spec.ts:50:1 › window hidden while the page stays visible: no read; shown and focused from the tray: a read at once 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeGreaterThan[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: > [32m0[39m
+    Received:   [31m0[39m
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      57 |   const checks = () =>
+      58 |     page.evaluate(() => window.harness.backend.windowVisibilityChecks);
+    > 59 |   await expect.poll(checks).toBeGreaterThan(0);
+         |   ^
+      60 |   const asked = await checks();
+      61 |   await page.clock.runFor(60_000);
+      62 |   expect(await reads(page)).toBe(base);
+        at /Users/julienm/projects/handy-wt/ui-001-microphones/tests/microphone-priority-polling.spec.ts:59:3
+
+    Error Context: test-results/microphone-priority-pollin-70d76-rom-the-tray-a-read-at-once-chromium/error-context.md
+
+
+[1A[2K  4) [chromium] › tests/microphone-priority.spec.ts:151:3 › focus after each action (SC-003) › an unknown outcome that did commit is confirmed and focus moves to the title 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoHaveAttribute[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator:  getByTestId('microphone-settings-screen')
+    Expected: [32m"success"[39m
+    Received: [31m"error"[39m
+    Timeout:  5000ms
+
+    Call log:
+    [2m  - Expect "toHaveAttribute" with timeout 5000ms[22m
+    [2m  - waiting for getByTestId('microphone-settings-screen')[22m
+    [2m    9 × locator resolved to <div class="space-y-6" data-state="error" data-testid="microphone-settings-screen">…</div>[22m
+    [2m      - unexpected value "error"[22m
+
+
+      158 |     await expect(
+      159 |       page.getByTestId("microphone-settings-screen"),
+    > 160 |     ).toHaveAttribute("data-state", "success");
+          |       ^
+      161 |     await expect(page.getByTestId("microphone-settings-draft")).toBeHidden();
+      162 |     await expectFocus(page, TITLE);
+      163 |     expect(await order(page)).toEqual([MACBOOK, USB, STUDIO]);
+        at /Users/julienm/projects/handy-wt/ui-001-microphones/tests/microphone-priority.spec.ts:160:7
+
+    Error Context: test-results/microphone-priority-focus--e24a9-nd-focus-moves-to-the-title-chromium/error-context.md
+
+
+[1A[2K  5) [chromium] › tests/microphone-priority.spec.ts:181:3 › focus after each action (SC-003) › the same order saved elsewhere while Save has focus: focus moves to the title 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32m"microphone-settings-priority-title"[39m
+    Received: [31m"body"[39m
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+       at harness/microphone-priority-page.ts:88
+
+      86 |   expected: string,
+      87 | ): Promise<void> => {
+    > 88 |   await expect.poll(() => focused(page)).toBe(expected);
+         |   ^
+      89 | };
+      90 |
+      91 | /** Make the draft dirty from the keyboard: Move up on the second row. */
+        at expectFocus (/Users/julienm/projects/handy-wt/ui-001-microphones/tests/harness/microphone-priority-page.ts:88:3)
+        at /Users/julienm/projects/handy-wt/ui-001-microphones/tests/microphone-priority.spec.ts:192:5
+
+    Error Context: test-results/microphone-priority-focus--5b1cf-us-focus-moves-to-the-title-chromium/error-context.md
+
+
+[1A[2K  6) [chromium] › tests/microphone-priority.spec.ts:227:3 › loading guard and failed listing › a failed listing: Unknown for a draft-only name, Add inactive until a Refresh lists again (FR-002) 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeDisabled[2m([22m[2m)[22m failed
+
+    Locator:  getByTestId('microphone-settings-add').getByRole('combobox')
+    Expected: disabled
+    Received: enabled
+    Timeout:  5000ms
+
+    Call log:
+    [2m  - Expect "toBeDisabled" with timeout 5000ms[22m
+    [2m  - waiting for getByTestId('microphone-settings-add').getByRole('combobox')[22m
+    [2m    9 × locator resolved to <button type="button" role="combobox" aria-controls=":r0:" aria-expanded="false" aria-haspopup="listbox" aria-label="Add microphone" class="px-2 py-[5px] text-sm font-semibold bg-mid-gray/10 border border-mid-gray/80 rounded-md min-w-[200px] w-full text-start grid grid-cols-[1fr_auto] gap-2 items-center transition-all duration-150 hover:bg-logo-primary/10 cursor-pointer hover:border-logo-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-logo-primary">…</button>[22m
+    [2m      - unexpected value "enabled"[22m
+
+
+      251 |       row(page, USB).getByTestId("microphone-settings-choice-status"),
+      252 |     ).toHaveText(text.status.available);
+    > 253 |     await expect(add).toBeDisabled();
+          |                       ^
+      254 |     await expect(add).toHaveAccessibleName(text.refreshFailed);
+      255 |     await page.evaluate(() => {
+      256 |       window.harness.backend.listingFails = false;
+        at /Users/julienm/projects/handy-wt/ui-001-microphones/tests/microphone-priority.spec.ts:253:23
+
+    Error Context: test-results/microphone-priority-loadin-61b01-Refresh-lists-again-FR-002--chromium/error-context.md
+
+
+[1A[2K  6 failed
+    [chromium] › tests/microphone-priority-drag.spec.ts:107:1 › the dragged row removed by a change saved elsewhere: the drag is cancelled and moves nothing 
+    [chromium] › tests/microphone-priority-drag.spec.ts:132:1 › a write starting during a drag cancels it 
+    [chromium] › tests/microphone-priority-polling.spec.ts:50:1 › window hidden while the page stays visible: no read; shown and focused from the tray: a read at once 
+    [chromium] › tests/microphone-priority.spec.ts:151:3 › focus after each action (SC-003) › an unknown outcome that did commit is confirmed and focus moves to the title 
+    [chromium] › tests/microphone-priority.spec.ts:181:3 › focus after each action (SC-003) › the same order saved elsewhere while Save has focus: focus moves to the title 
+    [chromium] › tests/microphone-priority.spec.ts:227:3 › loading guard and failed listing › a failed listing: Unknown for a draft-only name, Add inactive until a Refresh lists again (FR-002) 
+  17 passed (10.2s)

@@ -262,10 +262,67 @@
     "sound": {
       "title": "So",
       "microphone": {
-        "title": "Micròfon",
-        "description": "Selecciona el micròfon preferit",
-        "placeholder": "Seleccionaun micròfon...",
-        "loading": "S'està carregant..."
+        "placeholder": "Seleccionaun micròfon..."
+      },
+      "microphonePriority": {
+        "title": "Prioritat dels micròfons",
+        "description": "Handy enregistra amb el primer micròfon disponible en aquest ordre i després amb el predeterminat del sistema. Els micròfons no disponibles mantenen la seva posició.",
+        "emptyTitle": "Cap micròfon preferit",
+        "emptyBody": "Handy fa servir el micròfon predeterminat del sistema fins que n'afegiu un.",
+        "status": {
+          "available": "Disponible",
+          "unavailable": "No disponible",
+          "ambiguous": "Ambigu",
+          "unknown": "Desconegut"
+        },
+        "moveUp": "Puja {{name}}",
+        "moveDown": "Baixa {{name}}",
+        "remove": "Treu {{name}}",
+        "addLabel": "Afegeix un micròfon",
+        "addPlaceholder": "Afegeix un micròfon…",
+        "noDevices": "No s'ha detectat cap micròfon per afegir",
+        "duplicateChoice": "{{name}} ja és a la llista.",
+        "refresh": "Actualitza la disponibilitat",
+        "checked": "Comprovat fa {{seconds}} s",
+        "refreshFailed": "No s'han pogut comprovar els dispositius",
+        "retry": "Torna-ho a provar",
+        "inUse": {
+          "title": "En ús ara",
+          "description": "El micròfon amb què Handy està enregistrant, o el que va fer servir l'últim enregistrament. Pot ser diferent de la vostra primera opció.",
+          "notUsedYet": "Encara no s'ha fet servir des de l'inici",
+          "systemDefault": "Micròfon predeterminat del sistema",
+          "unnamed": "Micròfon sense nom",
+          "lastRecording": "Últim enregistrament · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "Primera opció",
+          "fallback": "Alternativa",
+          "fallbackUnavailable": "Alternativa · {{name}} no disponible",
+          "fallbackAmbiguous": "Alternativa · {{name}} ambigu",
+          "clamshell": "Micròfon amb la tapa tancada",
+          "system_default": "Predeterminat del sistema"
+        },
+        "clamshell": {
+          "title": "Micròfon amb la tapa tancada",
+          "description": "Es prova primer quan la tapa està tancada. L'ordre de prioritat no canvia.",
+          "none": "Cap"
+        },
+        "draft": {
+          "note": "Canvis sense desar. Fins que no deseu, el proper enregistrament fa servir l'ordre desat.",
+          "discard": "Descarta",
+          "save": "Desa",
+          "saving": "S'està desant…",
+          "saved": "S'ha desat la prioritat dels micròfons"
+        },
+        "conflict": {
+          "title": "La configuració s'ha canviat en un altre lloc",
+          "body": "Les vostres edicions es conserven. Torna a carregar mostra l'ordre desat i descarta les vostres edicions.",
+          "reload": "Torna a carregar"
+        },
+        "errors": {
+          "duplicate": "Cada micròfon només pot aparèixer una vegada.",
+          "empty": "El nom del micròfon no pot estar buit."
+        }
       },
       "channel": {
         "title": "Canal d'entrada",

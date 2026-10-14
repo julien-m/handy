@@ -1,0 +1,14 @@
+PASS Enter on Move up of row 2 reorders: MacBook Pro Microphone | USB headset | Studio Display Microphone
+PASS focus stays on the moved row's Move up: microphone-settings-choice-move-up of MacBook Pro Microphone
+PASS Enter on Move down of row 1 reorders: USB headset | MacBook Pro Microphone | Studio Display Microphone
+PASS focus stays on the moved row's Move down: microphone-settings-choice-move-down of MacBook Pro Microphone
+PASS Move up of the first row is inert: USB headset | MacBook Pro Microphone | Studio Display Microphone
+PASS Tab reading order: microphone-settings-choice-move-down of USB headset, microphone-settings-choice-remove of USB headset, microphone-settings-choice-move-up of MacBook Pro Microphone, microphone-settings-choice-move-down of MacBook Pro Microphone
+PASS list state while over a new row: drop-target
+PASS dragged row state: dragging
+PASS target row state: drop-target
+PASS drop reorders the draft: MacBook Pro Microphone | Studio Display Microphone | USB headset
+PASS states cleared after the drop: null
+PASS Escape cancels the drag: MacBook Pro Microphone | Studio Display Microphone | USB headset
+PASS Remove drops the row from the draft: MacBook Pro Microphone | Studio Display Microphone
+page errors: none

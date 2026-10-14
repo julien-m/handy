@@ -262,10 +262,67 @@
     "sound": {
       "title": "Son",
       "microphone": {
-        "title": "Microphone",
-        "description": "Sélectionnez votre périphérique d'entrée audio",
-        "placeholder": "Sélectionner un microphone...",
-        "loading": "Chargement..."
+        "placeholder": "Sélectionner un microphone..."
+      },
+      "microphonePriority": {
+        "title": "Priorité des microphones",
+        "description": "Handy enregistre avec le premier microphone disponible dans cet ordre, puis avec le microphone par défaut du système. Les microphones indisponibles gardent leur place.",
+        "emptyTitle": "Aucun microphone préféré",
+        "emptyBody": "Handy utilise le microphone par défaut du système tant que vous n'en ajoutez pas.",
+        "status": {
+          "available": "Disponible",
+          "unavailable": "Indisponible",
+          "ambiguous": "Ambigu",
+          "unknown": "Inconnu"
+        },
+        "moveUp": "Monter {{name}}",
+        "moveDown": "Descendre {{name}}",
+        "remove": "Retirer {{name}}",
+        "addLabel": "Ajouter un microphone",
+        "addPlaceholder": "Ajouter un microphone…",
+        "noDevices": "Aucun microphone détecté à ajouter",
+        "duplicateChoice": "{{name}} est déjà dans la liste.",
+        "refresh": "Actualiser la disponibilité",
+        "checked": "Vérifié il y a {{seconds}} s",
+        "refreshFailed": "Impossible de vérifier les périphériques",
+        "retry": "Réessayer",
+        "inUse": {
+          "title": "Utilisé actuellement",
+          "description": "Le microphone avec lequel Handy enregistre, ou celui utilisé lors du dernier enregistrement. Il peut différer de votre premier choix.",
+          "notUsedYet": "Pas encore utilisé depuis le lancement",
+          "systemDefault": "Microphone par défaut du système",
+          "unnamed": "Microphone sans nom",
+          "lastRecording": "Dernier enregistrement · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "Premier choix",
+          "fallback": "Repli",
+          "fallbackUnavailable": "Repli · {{name}} indisponible",
+          "fallbackAmbiguous": "Repli · {{name}} ambigu",
+          "clamshell": "Microphone capot fermé",
+          "system_default": "Par défaut du système"
+        },
+        "clamshell": {
+          "title": "Microphone capot fermé",
+          "description": "Essayé en premier quand le capot est fermé. Votre ordre de priorité reste inchangé.",
+          "none": "Aucun"
+        },
+        "draft": {
+          "note": "Modifications non enregistrées. Jusqu'à l'enregistrement, la prochaine dictée utilise l'ordre déjà enregistré.",
+          "discard": "Abandonner",
+          "save": "Enregistrer",
+          "saving": "Enregistrement…",
+          "saved": "Priorité des microphones enregistrée"
+        },
+        "conflict": {
+          "title": "Réglages modifiés ailleurs",
+          "body": "Vos modifications sont conservées. Recharger affiche l'ordre enregistré et abandonne vos modifications.",
+          "reload": "Recharger"
+        },
+        "errors": {
+          "duplicate": "Chaque microphone ne peut apparaître qu'une seule fois.",
+          "empty": "Le nom d'un microphone ne peut pas être vide."
+        }
       },
       "channel": {
         "title": "Canal d’entrée",

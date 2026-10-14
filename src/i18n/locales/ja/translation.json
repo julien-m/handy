@@ -262,10 +262,67 @@
     "sound": {
       "title": "サウンド",
       "microphone": {
-        "title": "マイク",
-        "description": "使用するマイクデバイスを選択",
-        "placeholder": "マイクを選択…",
-        "loading": "読み込み中…"
+        "placeholder": "マイクを選択…"
+      },
+      "microphonePriority": {
+        "title": "マイクの優先順位",
+        "description": "Handy はこの順番で最初に使用可能なマイクで録音し、なければシステムのデフォルトを使います。使用できないマイクも順位は保持されます。",
+        "emptyTitle": "優先マイクがありません",
+        "emptyBody": "マイクを追加するまで、Handy はシステムのデフォルトマイクを使用します。",
+        "status": {
+          "available": "使用可能",
+          "unavailable": "使用不可",
+          "ambiguous": "曖昧",
+          "unknown": "不明"
+        },
+        "moveUp": "{{name}}を上へ移動",
+        "moveDown": "{{name}}を下へ移動",
+        "remove": "{{name}}を削除",
+        "addLabel": "マイクを追加",
+        "addPlaceholder": "マイクを追加…",
+        "noDevices": "追加できるマイクが検出されません",
+        "duplicateChoice": "{{name}}はすでにリストにあります。",
+        "refresh": "使用可否を更新",
+        "checked": "{{seconds}}秒前に確認",
+        "refreshFailed": "デバイスを確認できませんでした",
+        "retry": "再試行",
+        "inUse": {
+          "title": "現在使用中",
+          "description": "Handy が録音に使用しているマイク、または前回の録音で使用されたマイクです。第一候補と異なる場合があります。",
+          "notUsedYet": "起動後まだ使用されていません",
+          "systemDefault": "システムのデフォルトマイク",
+          "unnamed": "名前のないマイク",
+          "lastRecording": "前回の録音 · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "第一候補",
+          "fallback": "代替",
+          "fallbackUnavailable": "代替 · {{name}}は使用不可",
+          "fallbackAmbiguous": "代替 · {{name}}は曖昧",
+          "clamshell": "クラムシェルマイク",
+          "system_default": "システムのデフォルト"
+        },
+        "clamshell": {
+          "title": "クラムシェルマイク",
+          "description": "蓋を閉じているときに最初に試します。優先順位は変わりません。",
+          "none": "なし"
+        },
+        "draft": {
+          "note": "未保存の変更があります。保存するまで、次の録音では保存済みの順番が使われます。",
+          "discard": "破棄",
+          "save": "保存",
+          "saving": "保存中…",
+          "saved": "マイクの優先順位を保存しました"
+        },
+        "conflict": {
+          "title": "設定が別の場所で変更されました",
+          "body": "編集内容は保持されています。再読み込みすると保存済みの順番が表示され、編集内容は破棄されます。",
+          "reload": "再読み込み"
+        },
+        "errors": {
+          "duplicate": "各マイクは一度だけ指定できます。",
+          "empty": "マイク名は空にできません。"
+        }
       },
       "channel": {
         "title": "入力チャンネル",
