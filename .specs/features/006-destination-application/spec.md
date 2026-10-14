@@ -4,7 +4,7 @@ title: Destination Application
 priority: P1
 status: Planned
 created: 2026-10-12
-updated: 2026-10-13
+updated: 2026-10-14
 ---
 
 # Feature Spec: Destination Application
@@ -222,7 +222,7 @@ flowchart TD
 
 ### AC-005
 
-**Criterion:** If the destination is no longer running, is not frontmost within 1 second of activation, or the insertion method reports failure, no text is sent to any other application; the transcript stays in history whenever history saving succeeds as today, the indicator displays the reason (app closed, activation failed, insertion failed) for at least 4 seconds (with the overlay style none, the recovery bubble of 010 carries the reason), and the transcript is handed to the recovery bubble (010).
+**Criterion:** If the destination is no longer running, is not frontmost within 1 second of activation, or the insertion method reports failure, no text is sent to any other application; the transcript stays in history whenever the history save succeeds, as a text-only entry when the audio recording could not be saved, the indicator displays the reason (app closed, activation failed, insertion failed) for at least 4 seconds (with the overlay style none, the recovery bubble of 010 carries the reason), and the transcript is handed to the recovery bubble (010).
 **Priority:** P1 | **Story:** Story 4
 
 ### AC-006
@@ -347,6 +347,7 @@ Feature: Keyboard access to destination settings
 - Compatibility with ChatGPT, Comet and other applications is unverified; the plan includes native checks with these applications.
 - Pinning the destination across dictations is feature 009; the recovery bubble is 010; smart paste (007) is an insertion method that runs after this feature has activated the destination.
 - Program context: specified in list order (001–010); the settings CLI foundation (008) ships first.
+- Decision 2026-10-14 (Julien): a dictation whose audio recording (WAV) cannot be saved, whatever the cause and not only when the AI step fails, still gets a text-only history entry; losing the text is worse than losing the audio. AC-005 therefore no longer ties the history to today's audio-gated save. Story 4, SC-002, requirement IDs and the cancellation behavior are unchanged.
 
 ## QE Analysis
 

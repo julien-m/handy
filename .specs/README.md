@@ -68,6 +68,7 @@
 <!-- readme:activity:start -->
 | Date | Type | Description |
 |---|---|---|
+| 2026-10-14 | Feature | [Feature 006] Spec and plan refined: text-only history entry when the WAV fails (Julien's decision), AC-005 history clause no longer tied to the audio-gated save, history_status from the actual save_entry result |
 | 2026-10-14 | Feature | [Feature 009] Plan refined: auto_submit refused by a plain not_found (retired-key hint removed), cross source FrontmostAtEnd and resolved_target aligned with 006, Windows full acceptance pending release evidence |
 | 2026-10-14 | Feature | [Feature 010] Plan refined: 008 sources cited as code paths (plan review preparable in 18 batches), shared contracts cited from the 006 plan, pinned reasons aligned with 009 |
 | 2026-10-14 | Feature | [Feature 009] Plan refined: 008 sources cited as code paths (plan review preparable in 20 batches), explicit AC-006 (13/13), DestinationManager::claim_enter, pinned_app_not_running and activation_failed aligned with 010 |
@@ -77,7 +78,6 @@
 | 2026-10-14 | Feature | [Feature 001] Plan refined: plan review preparable again, 006 step 0 before Step 2 |
 | 2026-10-14 | Feature | [Feature 010] Plan refined: one Enter veto with 009, method outcome from 006, late-read update |
 | 2026-10-14 | Feature | [Feature 005] Spec and plan refined: truthful failure notice, merged 008 names, live prompt list |
-| 2026-10-14 | Feature | [Feature 009] Spec and plan refined: pinned badge rule, D2 live pin operations, retired auto_submit, single Enter veto |
 <!-- readme:activity:end -->
 
 ---
@@ -173,3 +173,5 @@
 <!-- finalize:spec-refine:2026-10-14:61308064 -->
 
 <!-- finalize:spec-refine:2026-10-14:86e43d44 -->
+
+<!-- finalize:spec-refine:2026-10-14:2190dbf9 -->

@@ -5,6 +5,9 @@
 
 ---
 
+## 2026-10-14 — [Feature 006] Spec and plan refined: text-only history entry when the WAV fails (Julien's decision), AC-005 history clause no longer tied to the audio-gated save, history_status from the actual save_entry result
+<!-- finalize:spec-refine:2026-10-14:2190dbf9 -->
+
 ## 2026-10-14 — [Feature 009] Plan refined: auto_submit refused by a plain not_found (retired-key hint removed), cross source FrontmostAtEnd and resolved_target aligned with 006, Windows full acceptance pending release evidence
 <!-- finalize:spec-refine:2026-10-14:86e43d44 -->
 
