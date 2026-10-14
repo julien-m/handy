@@ -8,13 +8,13 @@ use crate::audio_toolkit::{
 };
 use crate::helpers::clamshell;
 use crate::managers::transcription::StreamRouter;
-use crate::settings::{get_settings, write_settings, AppSettings, VadBackend};
+use crate::settings::{get_settings, AppSettings, VadBackend};
 use crate::utils;
 use log::{debug, error, info, trace, warn};
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{mpsc, Arc, Mutex};
 use std::time::{Duration, Instant};
-use tauri::{Emitter, Manager};
+use tauri::Manager;
 
 const STREAM_IDLE_TIMEOUT: Duration = Duration::from_secs(30);
 const SILERO_VAD_THRESHOLD: f32 = 0.3;
@@ -537,20 +537,20 @@ impl AudioRecordingManager {
     /// Keep persisted settings and the UI aligned with a successful runtime
     /// fallback. Re-read first so recovery cannot clear a microphone the user
     /// selected concurrently while the stream was being rebuilt.
+    ///
+    /// The condition is evaluated on the freshly locked settings; the settings service emits the
+    /// UI event. The live effect (device restart) is skipped: this repair follows the restart.
     fn persist_default_microphone_after_fallback(&self, unavailable_name: &str) {
-        let mut settings = get_settings(&self.app_handle);
-        if settings.selected_microphone.as_deref() != Some(unavailable_name) {
-            return;
-        }
-
-        settings.selected_microphone = None;
-        write_settings(&self.app_handle, settings);
-        let _ = self.app_handle.emit(
-            "settings-changed",
-            serde_json::json!({
-                "setting": "selected_microphone",
-                "value": "Default"
-            }),
+        let edit = |settings: &mut AppSettings| {
+            if settings.selected_microphone.as_deref() == Some(unavailable_name) {
+                settings.selected_microphone = None;
+            }
+            Ok(())
+        };
+        crate::settings_service::tauri_adapter::repair(
+            &self.app_handle,
+            "the default microphone fallback",
+            &edit,
         );
     }
 

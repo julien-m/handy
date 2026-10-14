@@ -1,0 +1,13 @@
+Native macOS check of the read-only startup (Step 4 audit A, M2) with the Step 7 proof binary
+(see ../native/environment.json), on an isolated HOME (<scratchpad>/ro-home):
+
+1. Offline CLI (legacy probe pointed at an absent path through the debug-only seam) writes
+   start_hidden=true and paste_method=direct: setup.stdout (revisions 1 and 2).
+2. The store is moved to <ro-home>/dotfiles-settings.json and replaced by a symbolic link to it,
+   as a dotfile manager would (store-dir.txt).
+3. The GUI app is launched with HOME=<ro-home>: app-alive.txt (still running after 8 s; before the
+   fix, setup panicked on this store), app-log-read-only.txt (read-only warning, start-hidden
+   policy taken from the linked store's content, CLI endpoint not started for this store).
+4. `handy settings set paste_method ctrl_v --json`: cli-write.* (unavailable, exit 5).
+5. The app is stopped (SIGTERM); store-sha-before.txt equals store-sha-after.txt (store untouched).
+Not observed here: the translated read-only toast in the settings window (the window stays hidden).

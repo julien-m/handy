@@ -1,0 +1,17 @@
+Read and change Handy's persistent settings without starting the app
+
+Usage: handy settings [OPTIONS] <COMMAND>
+
+Commands:
+  get     Print all non-secret settings, or only KEY
+  keys    List settings keys with type, allowed values or range, and read-only flag
+  set     Change one scalar setting (true/false, integer, number, allowed value, text or null)
+  output  Output settings: paste method, clipboard handling, automatic submit, delays, typing tool
+  help    Print this message or the help of the given subcommand(s)
+
+Options:
+      --json  Print exactly one JSON envelope on stdout (also accepted before `settings`)
+  -h, --help  Print help
+
+Exit codes: 0 success; 1 persistence_failed, internal_error; 2 usage_error, validation_failed, shortcut_conflict, limit_exceeded; 3 revision_conflict; 4 not_found; 5 unavailable.
+After an unavailable error with outcome "unknown", read the settings again before retrying.

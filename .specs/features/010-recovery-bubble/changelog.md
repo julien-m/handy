@@ -58,3 +58,13 @@
 - Reprepare independent review after concurrent dependency changes; do not reuse stale readiness.
 
 <!-- finalize:spec-plan:2026-10-13:09d4dd98 -->
+
+## 2026-10-13 — [Spec Update]: Quality Engineering classification for the delivery lane
+
+- **Type:** Spec Update
+- **Spec modified:** Yes (sections: Quality Engineering added after QE Analysis; frontmatter `updated`)
+- **Code modified:** None
+- **AC impacted:** None (no AC, FR or SC changed)
+- **Classification:** criticality High, blast radius Shared, primary risk Data, taken from the existing QE Analysis; `livespec delivery lane`: full
+- **Review:** the previous spec review is stale; an independent reviewer refreshes it
+- **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)

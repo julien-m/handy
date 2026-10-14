@@ -5,6 +5,7 @@ import type {
   AppSettings as Settings,
   AudioDevice,
   ChineseScript,
+  ModelUnloadTimeout,
   TranscribeAcceleratorSetting,
   OrtAcceleratorSetting,
   ShortcutActivation,
@@ -12,9 +13,20 @@ import type {
 } from "@/bindings";
 import { commands } from "@/bindings";
 import { toast } from "sonner";
+import i18n from "@/i18n";
+import {
+  failedCommandRecovery,
+  isCurrentRevision,
+  SETTINGS_ERROR_KEYS,
+  SettingsCommandFailure,
+  settingsErrorKey,
+  throwIfSettingsError,
+} from "./settings-errors";
 
 interface SettingsStore {
   settings: Settings | null;
+  // Revision of `settings`; refresh responses older than it are discarded.
+  revision: number | null;
   defaultSettings: Settings | null;
   isLoading: boolean;
   isUpdating: Record<string, boolean>;
@@ -32,7 +44,7 @@ interface SettingsStore {
   updateSetting: <K extends keyof Settings>(
     key: K,
     value: Settings[K],
-  ) => Promise<void>;
+  ) => Promise<boolean>;
   resetSetting: (key: keyof Settings) => Promise<void>;
   refreshSettings: () => Promise<void>;
   refreshAudioDevices: () => Promise<void>;
@@ -71,6 +83,21 @@ interface SettingsStore {
   setCustomSounds: (sounds: { start: boolean; stop: boolean }) => void;
 }
 
+/**
+ * Show a refused settings command explicitly (translated from its typed code/reason).
+ * @param error error thrown by a settings action
+ */
+const notifySettingsError = (error: unknown): void => {
+  const key =
+    error instanceof SettingsCommandFailure
+      ? settingsErrorKey(error.detail)
+      : SETTINGS_ERROR_KEYS.generic;
+  toast.error(i18n.t(key));
+};
+
+// Shown once per session: every later change is refused with its own message anyway.
+let readOnlyWarned = false;
+
 // Note: Default settings are now fetched from Rust via commands.getDefaultSettings()
 // This ensures platform-specific defaults (like overlay_position, shortcuts, paste_method) work correctly
 
@@ -79,6 +106,13 @@ const DEFAULT_AUDIO_DEVICE: AudioDevice = {
   name: "Default",
   is_default: true,
 };
+
+// The "Default" entry of the device selectors is stored as null (system default); every other
+// name, "default" included (a real ALSA device on Linux), is stored as a literal device name.
+const toStoredDevice = (value: unknown): string | null =>
+  value === null || value === undefined || value === DEFAULT_AUDIO_DEVICE.name
+    ? null
+    : (value as string);
 
 const settingUpdaters: {
   [K in keyof Settings]?: (value: Settings[K]) => Promise<unknown>;
@@ -104,29 +138,13 @@ const settingUpdaters: {
   hold_threshold_ms: (value) =>
     commands.changeHoldThresholdMsSetting(value as number),
   selected_microphone: (value) =>
-    commands.setSelectedMicrophone(
-      (value as string) === "Default" || value === null
-        ? "default"
-        : (value as string),
-    ),
-  selected_channel: async (value) => {
-    const result = await commands.setSelectedChannel(
-      (value as number | null | undefined) ?? null,
-    );
-    if (result.status === "error") {
-      throw new Error(result.error);
-    }
-  },
+    commands.setSelectedMicrophone(toStoredDevice(value)),
+  selected_channel: (value) =>
+    commands.setSelectedChannel((value as number | null | undefined) ?? null),
   clamshell_microphone: (value) =>
-    commands.setClamshellMicrophone(
-      (value as string) === "Default" ? "default" : (value as string),
-    ),
+    commands.setClamshellMicrophone(toStoredDevice(value)),
   selected_output_device: (value) =>
-    commands.setSelectedOutputDevice(
-      (value as string) === "Default" || value === null
-        ? "default"
-        : (value as string),
-    ),
+    commands.setSelectedOutputDevice(toStoredDevice(value)),
   recording_retention_period: (value) =>
     commands.updateRecordingRetentionPeriod(value as string),
   translate_to_english: (value) =>
@@ -172,15 +190,8 @@ const settingUpdaters: {
     commands.changeLazyStreamCloseSetting(value as boolean),
   overlay_style: (value) => commands.changeOverlayStyleSetting(value as string),
   vad_enabled: (value) => commands.changeVadEnabledSetting(value as boolean),
-  vad_backend: async (value) => {
-    const result = await commands.changeVadBackendSetting(value as VadBackend);
-    if (result.status === "error") {
-      // Rejected switches (e.g. mid-recording) roll the dropdown back via the
-      // throw below; the toast tells the user why.
-      toast.error(result.error);
-      throw new Error(result.error);
-    }
-  },
+  // Rejected switches (e.g. mid-recording) roll the dropdown back in updateSetting.
+  vad_backend: (value) => commands.changeVadBackendSetting(value as VadBackend),
   filler_word_removal_enabled: (value) =>
     commands.changeFillerWordRemovalEnabledSetting(value as boolean),
   chinese_script: (value) =>
@@ -197,11 +208,14 @@ const settingUpdaters: {
     commands.changeTranscribeGpuDevice(value as string | null),
   extra_recording_buffer_ms: (value) =>
     commands.changeExtraRecordingBufferSetting(value as number),
+  model_unload_timeout: (value) =>
+    commands.setModelUnloadTimeout(value as ModelUnloadTimeout),
 };
 
 export const useSettingsStore = create<SettingsStore>()(
   subscribeWithSelector((set, get) => ({
     settings: null,
+    revision: null,
     defaultSettings: null,
     isLoading: true,
     isUpdating: {},
@@ -230,22 +244,22 @@ export const useSettingsStore = create<SettingsStore>()(
     // Load settings from store
     refreshSettings: async () => {
       try {
-        const result = await commands.getAppSettings();
-        if (result.status === "ok") {
-          const settings = result.data;
-          const normalizedSettings: Settings = {
-            ...settings,
-            always_on_microphone: settings.always_on_microphone ?? false,
-            selected_microphone: settings.selected_microphone ?? "Default",
-            clamshell_microphone: settings.clamshell_microphone ?? "Default",
-            selected_output_device:
-              settings.selected_output_device ?? "Default",
-          };
-          set({ settings: normalizedSettings, isLoading: false });
-        } else {
-          console.error("Failed to load settings:", result.error);
-          set({ isLoading: false });
+        const view = await commands.getSettingsView();
+        const { revision, settings } = view;
+        if (view.read_only && !readOnlyWarned) {
+          readOnlyWarned = true;
+          toast.warning(i18n.t(SETTINGS_ERROR_KEYS.readOnly));
         }
+        // An older refresh answering after a newer one must not roll the UI back.
+        if (!isCurrentRevision(revision, get().revision)) return;
+        const normalizedSettings: Settings = {
+          ...settings,
+          always_on_microphone: settings.always_on_microphone ?? false,
+          selected_microphone: settings.selected_microphone ?? "Default",
+          clamshell_microphone: settings.clamshell_microphone ?? "Default",
+          selected_output_device: settings.selected_output_device ?? "Default",
+        };
+        set({ settings: normalizedSettings, revision, isLoading: false });
       } catch (error) {
         console.error("Failed to load settings:", error);
         set({ isLoading: false });
@@ -259,9 +273,7 @@ export const useSettingsStore = create<SettingsStore>()(
         if (result.status === "ok") {
           const devicesWithDefault = [
             DEFAULT_AUDIO_DEVICE,
-            ...result.data.filter(
-              (d) => d.name !== "Default" && d.name !== "default",
-            ),
+            ...result.data.filter((d) => d.name !== DEFAULT_AUDIO_DEVICE.name),
           ];
           set({ audioDevices: devicesWithDefault });
         } else {
@@ -280,9 +292,7 @@ export const useSettingsStore = create<SettingsStore>()(
         if (result.status === "ok") {
           const devicesWithDefault = [
             DEFAULT_AUDIO_DEVICE,
-            ...result.data.filter(
-              (d) => d.name !== "Default" && d.name !== "default",
-            ),
+            ...result.data.filter((d) => d.name !== DEFAULT_AUDIO_DEVICE.name),
           ];
           set({ outputDevices: devicesWithDefault });
         } else {
@@ -317,7 +327,7 @@ export const useSettingsStore = create<SettingsStore>()(
       key: K,
       value: Settings[K],
     ) => {
-      const { settings, setUpdating } = get();
+      const { settings, setUpdating, revision: revisionAtStart } = get();
       const updateKey = String(key);
       const originalValue = settings?.[key];
 
@@ -330,15 +340,29 @@ export const useSettingsStore = create<SettingsStore>()(
 
         const updater = settingUpdaters[key];
         if (updater) {
-          await updater(value);
+          throwIfSettingsError(await updater(value));
         } else if (key !== "bindings" && key !== "selected_model") {
           console.warn(`No handler for setting: ${String(key)}`);
         }
+        return true;
       } catch (error) {
+        // A failure is always shown. A refusal is rolled back; a committed or possibly committed
+        // value, or one superseded by a newer revision, is reread instead (the store decides).
         console.error(`Failed to update setting ${String(key)}:`, error);
-        if (settings) {
-          set({ settings: { ...settings, [key]: originalValue } });
+        notifySettingsError(error);
+        if (
+          failedCommandRecovery(error, revisionAtStart, get().revision) ===
+          "refresh"
+        ) {
+          await get().refreshSettings();
+        } else {
+          set((state) => ({
+            settings: state.settings
+              ? { ...state.settings, [key]: originalValue }
+              : null,
+          }));
         }
+        return false;
       } finally {
         setUpdating(updateKey, false);
       }
@@ -357,8 +381,9 @@ export const useSettingsStore = create<SettingsStore>()(
 
     // Update a specific binding
     updateBinding: async (id, binding) => {
-      const { settings, setUpdating } = get();
+      const { settings, setUpdating, revision: revisionAtStart } = get();
       const updateKey = `binding_${id}`;
+      let refusal: SettingsCommandFailure | null = null;
       const originalBinding = settings?.bindings?.[id]?.current_binding;
 
       setUpdating(updateKey, true);
@@ -384,7 +409,8 @@ export const useSettingsStore = create<SettingsStore>()(
 
         // Check if the command executed successfully
         if (result.status === "error") {
-          throw new Error(result.error);
+          refusal = new SettingsCommandFailure(result.error);
+          throw new Error(i18n.t(settingsErrorKey(result.error)));
         }
 
         // Check if the binding change was successful
@@ -394,8 +420,15 @@ export const useSettingsStore = create<SettingsStore>()(
       } catch (error) {
         console.error(`Failed to update binding ${id}:`, error);
 
-        // Rollback on error
-        if (originalBinding && get().settings) {
+        // A committed or possibly committed binding is reread; a refusal is rolled back.
+        const recovery = failedCommandRecovery(
+          refusal ?? error,
+          revisionAtStart,
+          get().revision,
+        );
+        if (recovery === "refresh") {
+          await get().refreshSettings();
+        } else if (originalBinding && get().settings) {
           set((state) => ({
             settings: state.settings
               ? {
@@ -427,10 +460,15 @@ export const useSettingsStore = create<SettingsStore>()(
       setUpdating(updateKey, true);
 
       try {
-        await commands.resetBinding(id);
+        const result = await commands.resetBinding(id);
+        throwIfSettingsError(result);
+        if (result.status === "ok" && !result.data.success) {
+          throw new Error(result.data.error ?? "Failed to reset binding");
+        }
         await refreshSettings();
       } catch (error) {
         console.error(`Failed to reset binding ${id}:`, error);
+        notifySettingsError(error);
       } finally {
         setUpdating(updateKey, false);
       }
@@ -445,6 +483,7 @@ export const useSettingsStore = create<SettingsStore>()(
       } = get();
       const updateKey = "post_process_provider_id";
       const previousId = settings?.post_process_provider_id ?? null;
+      const revisionAtStart = get().revision;
 
       setUpdating(updateKey, true);
 
@@ -461,11 +500,17 @@ export const useSettingsStore = create<SettingsStore>()(
       setPostProcessModelOptions(providerId, []);
 
       try {
-        await commands.setPostProcessProvider(providerId);
+        throwIfSettingsError(await commands.setPostProcessProvider(providerId));
         await refreshSettings();
       } catch (error) {
         console.error("Failed to set post-process provider:", error);
-        if (previousId !== null) {
+        notifySettingsError(error);
+        if (
+          failedCommandRecovery(error, revisionAtStart, get().revision) ===
+          "refresh"
+        ) {
+          await refreshSettings();
+        } else if (previousId !== null) {
           set((state) => ({
             settings: state.settings
               ? { ...state.settings, post_process_provider_id: previousId }
@@ -490,11 +535,17 @@ export const useSettingsStore = create<SettingsStore>()(
 
       try {
         if (settingType === "base_url") {
-          await commands.changePostProcessBaseUrlSetting(providerId, value);
+          throwIfSettingsError(
+            await commands.changePostProcessBaseUrlSetting(providerId, value),
+          );
         } else if (settingType === "api_key") {
-          await commands.changePostProcessApiKeySetting(providerId, value);
+          throwIfSettingsError(
+            await commands.changePostProcessApiKeySetting(providerId, value),
+          );
         } else if (settingType === "model") {
-          await commands.changePostProcessModelSetting(providerId, value);
+          throwIfSettingsError(
+            await commands.changePostProcessModelSetting(providerId, value),
+          );
         }
         await refreshSettings();
       } catch (error) {
@@ -502,6 +553,7 @@ export const useSettingsStore = create<SettingsStore>()(
           `Failed to update post-process ${settingType.replace("_", " ")}:`,
           error,
         );
+        notifySettingsError(error);
       } finally {
         setUpdating(updateKey, false);
       }
@@ -521,6 +573,7 @@ export const useSettingsStore = create<SettingsStore>()(
         );
         if (urlResult.status === "error") {
           console.error("Failed to persist base URL:", urlResult.error);
+          notifySettingsError(new SettingsCommandFailure(urlResult.error));
           return;
         }
 
@@ -533,6 +586,7 @@ export const useSettingsStore = create<SettingsStore>()(
         );
         if (modelResult.status === "error") {
           console.error("Failed to reset model setting:", modelResult.error);
+          notifySettingsError(new SettingsCommandFailure(modelResult.error));
           return;
         }
 
@@ -604,12 +658,7 @@ export const useSettingsStore = create<SettingsStore>()(
     // Load default settings from Rust
     loadDefaultSettings: async () => {
       try {
-        const result = await commands.getDefaultSettings();
-        if (result.status === "ok") {
-          set({ defaultSettings: result.data });
-        } else {
-          console.error("Failed to load default settings:", result.error);
-        }
+        set({ defaultSettings: await commands.getDefaultSettings() });
       } catch (error) {
         console.error("Failed to load default settings:", error);
       }
@@ -654,12 +703,17 @@ export const useSettingsStore = create<SettingsStore>()(
       listen("model-state-changed", () => {
         get().refreshSettings();
       });
-      listen<{ setting?: string }>("settings-changed", (event) => {
-        get().refreshSettings();
-        if (event.payload.setting === "selected_microphone") {
-          get().refreshAudioDevices();
-        }
-      });
+      // Every committed write (UI, internal repair, later the CLI) emits its revision and the
+      // changed key names; values are refetched, never carried by the event.
+      listen<{ revision: number; keys: string[] }>(
+        "settings-changed",
+        (event) => {
+          get().refreshSettings();
+          if (event.payload.keys.includes("selected_microphone")) {
+            get().refreshAudioDevices();
+          }
+        },
+      );
     },
   })),
 );

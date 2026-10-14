@@ -1,0 +1,28 @@
+    Updating crates.io index
+     Locking 1 package to latest compatible version
+      Adding fs2 v0.4.3
+ Downloading crates ...
+  Downloaded fs2 v0.4.3
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling fs2 v0.4.3
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy/src-tauri)
+warning: fields `raw`, `writable`, and `missing` are never read
+  --> src/settings_service/store.rs:21:9
+   |
+20 | pub(super) struct Document {
+   |                   -------- fields in this struct
+21 |     pub raw: Value,
+   |         ^^^
+22 |     pub read: SettingsRead,
+23 |     pub writable: bool,
+   |         ^^^^^^^^
+24 |     pub missing: bool,
+   |         ^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `handy` (lib) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 29.75s
+     Running tests/settings_transactions.rs (src-tauri/target/debug/deps/settings_transactions-6eb66a0401923cda)
+error: test failed, to rerun pass `--test settings_transactions`

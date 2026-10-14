@@ -1,0 +1,6 @@
+RED for audit finding 2 (lease holder cannot commit) is API-level: at 1ae5d84 no owner commit path exists.
+Command: git grep -c commit_owned 1ae5d84 -- src-tauri  -> no match (exit 1).
+Before 42b4d41, the only commit entry points (commit_mutation, commit_with_probe) re-acquired
+settings.instance.lock nonblocking, which the lease-holding instance can never obtain (the previous
+test startup_normalizes_once_preserves_raw_secrets_and_keeps_offline_fenced observed `unavailable`).
+GREEN: ownership::lease_holding_instance_commits_while_offline_writers_stay_refused in cargo-test.stdout.

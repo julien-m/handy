@@ -5,6 +5,7 @@ import { Dropdown, type DropdownOption } from "../../ui/Dropdown";
 import { useSettings } from "../../../hooks/useSettings";
 import { commands } from "@/bindings";
 import { toast } from "sonner";
+import { settingsErrorKey } from "@/stores/settings-errors";
 
 const KEYBOARD_IMPLEMENTATION_OPTIONS: DropdownOption[] = [
   { value: "tauri", label: "Tauri Global Shortcut" },
@@ -35,7 +36,8 @@ export const KeyboardImplementationSelector: React.FC<
           "Failed to update keyboard implementation:",
           result.error,
         );
-        toast.error(String(result.error));
+        toast.error(t(settingsErrorKey(result.error)));
+        await refreshSettings();
         return;
       }
 

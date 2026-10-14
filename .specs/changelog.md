@@ -21,6 +21,135 @@
 
 ## 2026-10-13 — [Feature 002] Step 1 core: ordered replacement model, pinned Unicode 17 offsets/properties and shared scalar/ID validation; additive empty settings and native-generated bindings. Rust target 20 PASS, regression 306 PASS / 17 ignored, generator boundary tests 6 PASS, Clippy/frontend checks and repository conventions PASS. Complete UI/transactions/CLI remain Waiting for 008; no acceptance certification claimed.
 
+## 2026-10-13 — [Feature 001] Spec refined: Quality Engineering classification for the delivery lane
+
+`## Quality Engineering` added from the existing QE Analysis: criticality High, blast radius Shared, primary risk Regression; `livespec delivery lane` reads it (full). No AC, FR or SC changed; the spec review is stale until an independent reviewer refreshes it.
+
+## 2026-10-13 — [Feature 003] Spec refined: Quality Engineering classification for the delivery lane
+
+`## Quality Engineering` added from the existing QE Analysis: criticality Medium, blast radius Shared, primary risk UX; `livespec delivery lane` reads it (light once the spec review is current). No AC, FR or SC changed; the spec review is stale until an independent reviewer refreshes it.
+
+## 2026-10-13 — [Feature 005] Spec refined: Quality Engineering classification for the delivery lane
+
+`## Quality Engineering` added from the existing QE Analysis: criticality High, blast radius Shared, primary risk Data; `livespec delivery lane` reads it (full). No AC, FR or SC changed; the spec review is stale until an independent reviewer refreshes it.
+
+## 2026-10-13 — [Feature 006] Spec refined: Quality Engineering classification for the delivery lane
+
+`## Quality Engineering` added from the existing QE Analysis: criticality High, blast radius Shared, primary risk Functional; `livespec delivery lane` reads it (full). No AC, FR or SC changed; the spec review is stale until an independent reviewer refreshes it.
+
+## 2026-10-13 — [Feature 009] Spec refined: Quality Engineering classification for the delivery lane
+
+`## Quality Engineering` added from the existing QE Analysis: criticality High, blast radius Shared, primary risk Functional; `livespec delivery lane` reads it (full). No AC, FR or SC changed; the spec review is stale until an independent reviewer refreshes it.
+
+## 2026-10-13 — [Feature 010] Spec refined: Quality Engineering classification for the delivery lane
+
+`## Quality Engineering` added from the existing QE Analysis: criticality High, blast radius Shared, primary risk Data; `livespec delivery lane` reads it (full). No AC, FR or SC changed; the spec review is stale until an independent reviewer refreshes it.
+
+## 2026-10-13 — 008-settings-cli: final delivery review correction round 1 Done
+
+Both blocking findings fixed (Windows offline write under decision 008; endpoint thread without busy loop) with the audit and review warnings of the same area: bounded endpoint close and republication, Windows pipe instances and deadlines, GUI subsystem with terminal attachment, requests refused before sending when too large, routed VAD/channel writes prepared like the UI, stdin tests, docs. Full `cargo test` 490 passed/0 failed/18 ignored; conventions PASS/new 0. Next: a fresh independent delivery review. Inspect [the checkpoint](features/008-settings-cli/progress.md#current-delivery-review-checkpoint--correction-round-1).
+
+## 2026-10-13 — 008-settings-cli: Step 7 macOS native proof (debug build) Done; release evidence pending
+
+Native harness (macOS 26.5.2, M4 Pro, debug proof binary, isolated HOME): 18/18 checks — older Handy refusal, offline/live reads and writes, start-hidden without Dock icon, routed live effect, no app registration by the CLI, endpoint reclamation, read-only startup. Full `cargo test` 474 passed/0 failed/17 ignored. Pending: M1 release latency, settings window refresh and shortcut re-registration (human), Windows/Linux/second account. Feature not Implemented. Inspect [the checkpoint](features/008-settings-cli/progress.md#current-step-7-checkpoint--macos-native-proof-debug-build).
+
+## 2026-10-13 — 008-settings-cli: Step 6 domain framework and output domain Done
+
+`handy settings output get|set` (with `--dry-run`) over the existing output settings, on a domain framework shared by later features (aliases, dry run through the commit validation, atomic commit, live-only refusal, bounded UTF-8 file/stdin input). README documents the CLI and its recovery rules. Targeted tests and conventions PASS/new 0. Commit `462a5a5`; Step 7 in progress; no AC certified. Inspect [the checkpoint](features/008-settings-cli/progress.md#current-step-6-checkpoint--domain-framework-and-output-domain).
+
+## 2026-10-13 — 008-settings-cli: Step 4 independent audit corrections Done
+
+Both Step 4 audits corrected: every UI and routed CLI write is one ordered write, the service is installed before the first startup reader and falls back to read-only, P0 tests added, minors and simple nits fixed; Linux decision 008 applied (free session bus plus free lease allows offline writes). Targeted tests, lint, format and conventions PASS/new 0. Commit `bc76443`; no AC certified. Inspect [the checkpoint](features/008-settings-cli/progress.md#current-step-4-correction-checkpoint--independent-audits-a-and-b).
+
+## 2026-10-13 — 008-settings-cli: Step 5 early settings CLI and private channel Done
+
+`handy settings get|keys|set` runs before any GUI setup, offline under the shared lock or routed to the running instance over an authenticated private channel (5 s deadline, unknown outcome, no fallback). The system default device is stored as null on every surface. Full suite 429 passed/0 failed/17 ignored; conventions PASS/new 0. Commits `49b2736`…`be94db8`; Steps 6–7 Todo; no AC certified. Inspect [the checkpoint](features/008-settings-cli/progress.md#current-step-5-checkpoint--early-cli-and-private-channel).
+
+## 2026-10-13 — 008-settings-cli: Step 3 audit corrections applied, pending independent audit
+
+Blocker fixed by detection (parent and read-store identities rechecked before replacement), three majors and 8 minors/nit fixed, 3 Windows function-size minors dispositioned. Full suite 356 passed/0 failed/17 ignored; conventions PASS. Code commit `1ae5d84`; Steps 4–7 Todo; no AC certified. Inspect [the checkpoint](features/008-settings-cli/progress.md#current-step-3-checkpoint--audit-corrections-applied-pending-independent-audit).
+
+## 2026-10-13 — 008-settings-cli: Step 3 Blocked by platform refusal; feature delivery incomplete
+
+Supervisor received `This content was flagged for possible cybersecurity risk...` during required Step 3 audit corrections and interrupted workers/reviewer. Historical local21 passed/0 failed/1 ignored and scoped PASS do not close final audit1 blocker/3 major/11 minor/1 nit; no corrective version is certified. Earlier `input_too_large` was mitigated and is not this blocker. Steps 4–7 remain Todo. Prior verified commits:Step1 `50fdd044`, Step2 `0a7a433`, documentary refinement `e3bc314`; no feature delivery. Inspect [the authoritative stop](features/008-settings-cli/progress.md#current-step-3-stop--platform-refusal-blocks-required-corrections). No corrective retry/source action, new commit/archive or alternate method by documenter.
+
+## 2026-10-13 — 008-settings-cli: Step3 pure repository resumes; app adoption moved into Step4 all-writer cutover
+
+Root authorized the bounded sequencing refinement after an independent source-backed snapshot-intent finding. Step3 keeps pure Repository/Locator/normalization; Step4 atomically migrates all writers and app/settings-file plugin ownership, with startup/cache evidence then. Seven steps/FR/AC/business/native/output scope unchanged; direct already-locked dirs6 matches Tauri resolver, fs2 retained. Initial isolated reads RED0/3→GREEN3/0 only; Step3 In Progress, no app activation/full AC/runtime-loss claim. Inspect [finding](features/008-settings-cli/proofs/current-run-step3/ordering-finding.json) and [refined plan](features/008-settings-cli/plan.md#step-3--build-atomic-repository-revision-and-locking).
+
+## 2026-10-13 — 008-settings-cli: Step 2 pure foundation Done;21 tests pass, whole acceptance remains partial
+
+Root accepted current corrective scoped review: descriptors63/ports51/enums17, explicit public redaction, typed errors/version1/closed DTOs and checked generated schema. Actual-bridge GREEN21/0/0, clippy/full format0; unchanged platform22/frontend gates retained. Raw audit0 blocker/7 major/5 minor dispositioned; repository PASS/new0 after3 expect corrections with unchanged baseline. Step3 Todo; feature In Progress, no whole-AC or actual UI-adapter parity/native PASS. Inspect [summary](features/008-settings-cli/proofs/current-run-step2/corrective-summary.json), [review](features/008-settings-cli/proofs/current-run-step2/corrective-review.json) and [checkpoint](features/008-settings-cli/progress.md).
+
+## 2026-10-13 — 008-settings-cli: Step 1 primitive gate Done; 22 tests pass, complete acceptance remains partial
+
+Root accepted scoped final review and audit dispositions: assertion RED101/GREEN22/0/0, actual Swift bridge, strict clippy/Cargo fmt0 and prior unchanged-frontend types/lint/format0. Audit exit0 reported0 blocker/2 major/7 minor/2 nit; pipe major corrected, FreeConsole false positive and remaining observations explicitly dispositioned. Step2 Todo; feature In Progress, no complete AC/SC certified. Inspect [final summary](features/008-settings-cli/proofs/current-run-step1/minimal-final2-summary.json), [scoped review](features/008-settings-cli/proofs/current-run-step1/minimal-final2-review.json) and [checkpoint](features/008-settings-cli/progress.md). Client authentication/reclamation remainStep5, full macOS settings/native proofStep7; foreign checks pending release evidence.
+
+## 2026-10-13 — 008-settings-cli: Bounded Unix mechanism refined; current-source proof pending
+
+- **Prerequisite:** Root-approved correction of actual process-mask finding and independent mechanism decision.
+- **Required inputs:** Current plan, kernel peer-UID/directory contract, informative OS references and exact restoration evidence.
+- **Action:** CurrentUID directory0700 and pinned guards plus both-side kernel UID before bytes replace socket-mode prescription; no umask/pathchmod/bootstrap permission framework. Step5 retains lease-proven reclamation.
+- **Execution evidence:** Native fd-fchmod EINVAL and pinned-open EOPNOTSUPP; own incomplete bootstrap hunks surgically restored, no successful compile/RED/PASS claim. Earlier tests remain historical snapshots.
+- **Success criteria:** FR/AC IDs, seven steps, business/release scope unchanged; Step1 In Progress, fresh implementation/tests/reviews/audit and official plan refresh pending.
+- **Failure handling:** Read [mechanism review](features/008-settings-cli/proofs/current-run-step1/minimal-channel-review.json) and [restoration](features/008-settings-cli/proofs/current-run-step1/bootstrap-surgical-restore.json). No Step2 or current-source certification before accepted gates.
+
+## 2026-10-13 — 008-settings-cli: Registry activity refreshed; socket failure-path retention recorded
+
+- **Prerequisite:** Renewed audit found stale Recent Activity; Step 1 source corrections remain In Progress.
+- **Required inputs:** Global changelog order, registry markers, socket ownership/failure and retention tests.
+- **Action:** Refresh latest ten entries newest first; preserve feature statuses/metadata. Retain socket failure paths fail-closed, avoiding same-UID check/unlink races; lease-proven reclamation belongs to Step 5.
+- **Execution evidence:** Documentary/source inspection only; prior 20/20 and quality PASS bind the earlier source snapshot. Fresh worker-source checks/review/audit are pending.
+- **Success criteria:** Current activity summary; no Step 1 Done, Step 2 start or certified AC.
+- **Failure handling:** Read [the ongoing correction disposition](features/008-settings-cli/implementation.md#ongoing-step-1-corrections-and-socket-failure-path-disposition) and [checkpoint](features/008-settings-cli/progress.md). Preserve existing history and foreign pending evidence; no endpoint-deletion shortcut or false fresh PASS.
+
+## 2026-10-13 — 008-settings-cli: Root corrects whole-AC step-block interpretation; Step 1 audit pending
+
+- **Prerequisite:** Root verified the actual Step Gate.
+- **Required inputs:** Scoped/transverse checks, independent reviews, checkpoint and renewed audit including untracked files.
+- **Action:** Step 1 In Progress, Steps 2–7 Todo; earlier report superseded, history preserved; root owns pipeline/spec metadata.
+- **Execution evidence:** Existing actual-bridge 20/20, clippy/types/lint/format exit 0, partial-scope source review PASS; whole-AC mapping complete but not ready, ingest exit 1, no capture attempted.
+- **Success criteria:** Renewed audit pending; no Step 1 Done or certified AC. Generic goal execution proof is aggregate after Step 7; final whole-AC certification remains mandatory.
+- **Failure handling:** Read [the authoritative checkpoint](features/008-settings-cli/progress.md) and [corrected historical report](tool-defects/2026-10-13-step-execution-proof-requires-whole-acceptance-criterion-bef.md). No runtime bug established, no criterion weakening, fabricated proof or Git history.
+
+## 2026-10-13 — 008-settings-cli: Superseded whole-AC step-block interpretation
+
+Historical only; read the later root correction and authoritative checkpoint. No runtime defect was established.
+
+- **Prerequisite:** Approved minimal Step 1 scope and native evidence policy.
+- **Required inputs:** Current source/tests, actual Swift bridge, independently reviewed mapping and trusted runtime.
+- **Action:** Preserve Step 1 changes and partial mappings; Steps 2–7 stay Todo, no Git history.
+- **Execution evidence:** 20 passed/0 failed/0 ignored; clippy/types/lint/format exit 0; partial-scope source review PASS; mapping ingest exit 1, complete=true/ready=false/errors=[] with AC-005 missing.
+- **Success criteria:** Local primitive checks pass; no AC/SC certified, no Step 1 Done. After-step audit NOT RUN.
+- **Failure handling:** Read [the tool granularity defect](tool-defects/2026-10-13-step-execution-proof-requires-whole-acceptance-criterion-bef.md) and [authoritative checkpoint](features/008-settings-cli/progress.md). Whole-AC gates remain valid; no fake coverage or criterion rewrite. Old audit failure is historical; foreign native checks remain pending release evidence.
+
+## 2026-10-13 — 008-settings-cli: Step 1 local parser/console tests 17/17; mandatory audit Blocked without verdict; Steps 2–7 Todo, all ACs uncertified
+
+Inspect [the current checkpoint](features/008-settings-cli/progress.md) for scope and pending release evidence.
+
+## 2026-10-13 — 008-settings-cli: private socket correction; implementation blocked by native execution runner
+
+Native primitive tests passed 13/13; complete CLI acceptance remains unimplemented. Read [the recorded LiveSpec defect](tool-defects/2026-10-13-cargo-runner-lacks-native-execution-certification.md).
+
+## 2026-10-13 — 008-settings-cli: Native primitives narrowed
+
+Local 10/10 pass; official typed capture blocked by tool. Read [the current checkpoint](features/008-settings-cli/progress.md).
+
+## 2026-10-13 — Plan validation: normalize partial implementation map frontmatter and AC heading; no mapping or code changes
+<!-- finalize:spec-plan:2026-10-13:1953f656 -->
+
+## 2026-10-13 — Plan refined: partial spike reuse, minimal passive legacy refusal without replay, simple Windows console compilation checks, macOS required and exact pending release evidence
+<!-- finalize:spec-plan:2026-10-13:ff08720c -->
+
+## 2026-10-13 — [Feature 008] - **Type:** Refactor
+<!-- finalize:spec-implement:2026-10-13:9b1995bc -->
+
+## 2026-10-13 — 008-settings-cli: partial isolated startup spike; native and conventions gates blocked
+<!-- finalize:spec-implement:2026-10-13:61bf0cb4 -->
+
+## 2026-10-13 — Settings CLI plan resumed; independent semantic review refreshed without rewriting canonical requirements
+<!-- finalize:spec-plan:2026-10-13:e428ba3d -->
+
 ## 2026-10-13 — [Feature 007] Smart paste plan rewritten from 2026-10-13 spec — 9 steps, 4 diagrams; AX-first and receipt-only restoration; native/design release gates
 <!-- finalize:spec-plan:2026-10-13:17322c07 -->
 

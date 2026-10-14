@@ -1,4 +1,6 @@
-use clap::Parser;
+//! Parse Handy startup, recording-control, headless transcription and settings arguments.
+
+use clap::{Args, Parser, Subcommand};
 use std::path::PathBuf;
 
 #[derive(Parser, Debug, Clone, Default)]
@@ -60,4 +62,95 @@ pub struct CliArgs {
     /// Emit --transcribe-file results as JSON.
     #[arg(long)]
     pub json: bool,
+
+    #[command(subcommand)]
+    pub command: Option<CliCommand>,
+}
+
+/// Subcommands; their absence keeps every historical invocation unchanged.
+#[derive(Subcommand, Debug, Clone)]
+pub enum CliCommand {
+    /// Read and change Handy's persistent settings without starting the app
+    Settings(SettingsArgs),
+}
+
+/// `handy settings`: one operation, routed to a running Handy or applied to the store.
+#[derive(Args, Debug, Clone)]
+#[command(
+    after_help = "Exit codes: 0 success; 1 persistence_failed, internal_error; 2 usage_error, \
+validation_failed, shortcut_conflict, limit_exceeded; 3 revision_conflict; 4 not_found; \
+5 unavailable.\n\
+After an unavailable error with outcome \"unknown\", read the settings again before retrying."
+)]
+pub struct SettingsArgs {
+    /// Print exactly one JSON envelope on stdout (also accepted before `settings`)
+    #[arg(long, global = true)]
+    pub json: bool,
+
+    #[command(subcommand)]
+    pub operation: SettingsCommand,
+}
+
+/// Generic settings operations of this build.
+#[derive(Subcommand, Debug, Clone)]
+pub enum SettingsCommand {
+    /// Print all non-secret settings, or only KEY
+    Get {
+        /// Setting key, as listed by `handy settings keys`
+        key: Option<String>,
+    },
+    /// List settings keys with type, allowed values or range, and read-only flag
+    Keys,
+    /// Change one scalar setting (true/false, integer, number, allowed value, text or null)
+    #[command(allow_negative_numbers = true)]
+    Set {
+        /// Setting key, as listed by `handy settings keys`
+        key: String,
+        /// New value, parsed with the key's type
+        value: String,
+        /// Refuse the change unless the settings are still at revision N
+        #[arg(long, value_name = "N")]
+        expected_revision: Option<u64>,
+    },
+    /// Output settings: paste method, clipboard handling, automatic submit, delays, typing tool
+    Output(OutputArgs),
+}
+
+/// `handy settings output`: the existing output settings, with the validation of `set`.
+#[derive(Args, Debug, Clone)]
+pub struct OutputArgs {
+    #[command(subcommand)]
+    pub action: OutputAction,
+}
+
+/// Actions of the output domain in this build.
+#[derive(Subcommand, Debug, Clone)]
+pub enum OutputAction {
+    /// Print the output settings, or only KEY
+    Get {
+        /// Output setting key (paste_method, clipboard_handling, auto_submit, ...)
+        key: Option<String>,
+    },
+    /// Change one output setting; with --dry-run, validate and preview without writing
+    #[command(allow_negative_numbers = true)]
+    Set {
+        /// Output setting key
+        key: String,
+        /// New value, parsed with the key's type
+        value: String,
+        /// Refuse the change unless the settings are still at revision N
+        #[arg(long, value_name = "N")]
+        expected_revision: Option<u64>,
+        /// Validate and show the change without writing it
+        #[arg(long)]
+        dry_run: bool,
+    },
+}
+
+impl CliArgs {
+    /// Return whether the GUI startup path may detach its inherited Windows console.
+    // @spec FR-001: Preserve headless console output — .specs/features/008-settings-cli/spec.md#fr-001
+    pub fn should_detach_console(&self) -> bool {
+        self.transcribe_file.is_none() && !self.list_devices && !self.list_models
+    }
 }

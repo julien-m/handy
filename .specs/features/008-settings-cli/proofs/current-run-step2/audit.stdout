@@ -1,0 +1,79 @@
+1. `/.specs/features/008-settings-cli/progress.md:8`
+   - Rule: Documentation §27 — Keep Comments Synchronized
+   - Severity: major
+   - What is wrong: Step 2 says “Not run” although the change intent records 16 passing validation tests plus successful clippy and formatting checks.
+   - Proposed fix: Replace the Step 2 test/result cells with the actual commands, counts, and exit statuses while retaining the explicit statement that no complete AC is certified.
+
+2. `/src-tauri/src/settings_service/descriptor.rs:49`
+   - Rule: General §2 — Strong Typing
+   - Severity: minor
+   - What is wrong: `owner_domain` represents a closed business category as an unrestricted string.
+   - Proposed fix: Introduce an `OwnerDomain` enum with `General`, `Shortcuts`, `Microphones`, `Vocabulary`, `Prompts`, and `Output` variants, serialize it as `snake_case`, and replace string matching in validation.
+
+3. `/src-tauri/src/settings_service/descriptor_data.rs:18`
+   - Rule: General §25.1/§25.14 — Magic Constants and Arbitrary Limits
+   - Severity: minor
+   - What is wrong: Business bounds such as `100..1000`, `10..5000`, and `0..1500` have no comment identifying their source or rationale.
+   - Proposed fix: Add a concise comment before the inventory explaining that these bounds reproduce the existing settings/UI contracts and identify the authoritative source.
+
+4. `/src-tauri/src/settings_service/protocol.rs:20`
+   - Rule: General §11 — Validate External Data at Boundaries
+   - Severity: major
+   - What is wrong: `from_stored_value` deserializes permissively and silently ignores unknown persisted fields, allowing an unclassified newer or corrupted setting to disappear.
+   - Proposed fix: Before deserialization, require an object and reject every key absent from `descriptor::descriptors()` with the fixed redacted persistence error; update the canary test to expect rejection without secret disclosure.
+
+5. `/src-tauri/src/settings_service/protocol.rs:108`
+   - Rule: API/DTO Contract Consistency
+   - Severity: major
+   - What is wrong: `protocol_version: u16` accepts every integer during deserialization while the generated schema promises the constant value `1`.
+   - Proposed fix: Deserialize through a validated `ProtocolVersion` newtype or field deserializer that accepts only `1`, and add rejection tests for `0` and `2`.
+
+6. `/src-tauri/src/settings_service/protocol.rs:159`
+   - Rule: General §13 — API and DTO Rules
+   - Severity: major
+   - What is wrong: `public_field_schema` drops descriptor requirements, allowed values, and numeric ranges, so the checked schema accepts missing fields, invalid enum strings, and out-of-range values that the actual DTO cannot produce.
+   - Proposed fix: Add all 63 keys to `public_settings.required`; emit `enum` from `allowed_values`; emit `minimum`/`maximum` from `range`; then regenerate `settings-cli.schema.json`.
+
+7. `/src-tauri/src/settings_service/protocol.rs:207`
+   - Rule: General §11 — External Data Validation
+   - Severity: major
+   - What is wrong: The request schema permits unknown properties and fields belonging to other operation variants, matching the runtime’s permissive deserialization rather than a closed typed request contract.
+   - Proposed fix: Define each operation branch with the common fields plus its exact variant fields and `additionalProperties: false`, and apply equivalent strict unknown-field rejection during `OperationRequest` deserialization.
+
+8. `/src-tauri/src/settings_service/public.rs:177`
+   - Rule: General §25.12 — Lossy Data Transformation Comment
+   - Severity: minor
+   - What is wrong: API-key values are intentionally reduced to presence booleans without an inline explanation of what is discarded and why.
+   - Proposed fix: Add a comment immediately before the mapping stating that raw secret contents are deliberately discarded and only non-sensitive presence is exposed.
+
+9. `/src-tauri/src/settings_service/validation.rs:31`
+   - Rule: General §25.12 — Lossy Data Transformation Comment
+   - Severity: minor
+   - What is wrong: The custom `Debug` implementation deliberately omits the mutation value without documenting the security reason.
+   - Proposed fix: Add a comment before the implementation explaining that candidate values are excluded to prevent settings or secret-adjacent data from entering diagnostics.
+
+10. `/src-tauri/src/settings_service/validation.rs:64`
+    - Rule: General §25.8 — Backward Compatibility Code
+    - Severity: minor
+    - What is wrong: The `default`/`Default` compatibility normalization does not identify the legacy producer or when the aliases can be removed.
+    - Proposed fix: Add an inline comment naming the legacy UI/store format supported and the removal condition after all persisted writers have migrated.
+
+11. `/src-tauri/tests/settings_validation/scalars.rs:220`
+    - Rule: General §9 — Testing
+    - Severity: major
+    - What is wrong: Comparing `.err()` values allows the boundary test to pass when both validators incorrectly accept an out-of-range value (`None == None`).
+    - Proposed fix: Use `expect_err` for both calls, then compare the returned errors and assert `SettingsErrorCode::ValidationFailed`.
+
+12. `/src-tauri/tests/settings_validation/scalars.rs:280`
+    - Rule: General §9 — Testing
+    - Severity: major
+    - What is wrong: The disabled-updater parity assertion also passes if both validation paths incorrectly accept the mutation.
+    - Proposed fix: Replace both `.err()` calls with `expect_err("disabled updater mutation must fail")`, compare the errors, and assert `ValidationFailed`.
+
+Summary: 0 blockers, 7 major, 5 minor, 0 nits.
+⚙ Audit: stack detected — TypeScript + ESLint
+⚙ Audit: no checks found (no ~/.check/ or .check/)
+⚙ Audit: 15 file(s) in scope — .specs/features/008-settings-cli/contracts/settings-cli.md, .specs/features/008-settings-cli/contracts/settings-cli.schema.json, .specs/features/008-settings-cli/progress.md, src-tauri/src/lib.rs, src-tauri/src/settings_service/descriptor.rs, src-tauri/src/settings_service/descriptor_data.rs, src-tauri/src/settings_service/errors.rs, src-tauri/src/settings_service/mod.rs, src-tauri/src/settings_service/protocol.rs, src-tauri/src/settings_service/public.rs, src-tauri/src/settings_service/validation.rs, src-tauri/tests/settings_validation.rs, src-tauri/tests/settings_validation/contracts.rs, src-tauri/tests/settings_validation/inventory.rs, src-tauri/tests/settings_validation/scalars.rs
+⚙ Audit: conventions loaded (33712 chars)
+⚙ Audit: intent loaded (1210 chars)
+✅ Audit: done (read-only — caller decides which findings to fix)

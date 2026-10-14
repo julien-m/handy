@@ -1,0 +1,15 @@
+
+running 1 test
+test transactions::prompt_mutation_revalidates_membership_against_the_locked_fresh_snapshot ... FAILED
+
+failures:
+
+---- transactions::prompt_mutation_revalidates_membership_against_the_locked_fresh_snapshot stdout ----
+Error: "removed prompt committed"
+
+
+failures:
+    transactions::prompt_mutation_revalidates_membership_against_the_locked_fresh_snapshot
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 20 filtered out; finished in 0.07s
+

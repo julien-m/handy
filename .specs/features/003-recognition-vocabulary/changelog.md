@@ -24,3 +24,13 @@
 - **Author:** Codex (spec-plan --auto, model gpt-6)
 
 <!-- finalize:spec-plan:2026-10-12:32171392 -->
+
+## 2026-10-13 — [Spec Update]: Quality Engineering classification for the delivery lane
+
+- **Type:** Spec Update
+- **Spec modified:** Yes (sections: Quality Engineering added after QE Analysis; frontmatter `updated`)
+- **Code modified:** None
+- **AC impacted:** None (no AC, FR or SC changed)
+- **Classification:** criticality Medium, blast radius Shared, primary risk UX, taken from the existing QE Analysis; `livespec delivery lane`: light once the spec review is current
+- **Review:** the previous spec review is stale; an independent reviewer refreshes it
+- **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)

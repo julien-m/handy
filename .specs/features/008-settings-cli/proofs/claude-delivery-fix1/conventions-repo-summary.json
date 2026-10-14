@@ -1,0 +1,22 @@
+{
+  "command": "livespec conventions verify --feature repo --json",
+  "exit": 0,
+  "verdict": "PASS",
+  "feature_slug": "repo",
+  "run_id": "20261013T204941Z",
+  "receipt_path": ".specs/conventions/runs/20261013T204941Z/receipt.json",
+  "baseline": {
+    "baselined_count": 658,
+    "new_count": 0,
+    "path": ".specs/conventions/baseline.json",
+    "resolved_count": 3524,
+    "sha256": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe"
+  },
+  "baseline_sha256_before": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe",
+  "baseline_sha256_after": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe",
+  "blockers": [],
+  "warnings_listed": 493,
+  "raw_output": "conventions-repo.stdout",
+  "receipt": "run directory moved to the trash after this summary (not kept in the repository)",
+  "source": "working tree on top of af2874bf00a93d6a2d8ef980e8b647b5082711d0 (correction round 1, before its commits)"
+}

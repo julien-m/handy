@@ -1,0 +1,73 @@
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy/src-tauri)
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+warning: items after a test module
+   --> src/lib.rs:437:1
+    |
+437 | mod headless_guard_tests {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+...
+455 | fn run_headless_transcription(app: &AppHandle, args: &CliArgs) -> i32 {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+651 | pub fn run(cli_args: CliArgs) {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#items_after_test_module
+    = note: `#[warn(clippy::items_after_test_module)]` on by default
+    = help: move the items to before the test module was defined
+
+warning: this boolean expression can be simplified
+    --> src/engine_supervisor/supervisor.rs:1551:15
+     |
+1551 |           while !lock(&engine.shared.in_flight)
+     |  _______________^
+1552 | |             .as_ref()
+1553 | |             .is_some_and(|call| call.what == what)
+     | |__________________________________________________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#nonminimal_bool
+     = note: `#[warn(clippy::nonminimal_bool)]` on by default
+help: try
+     |
+1551 ~         while lock(&engine.shared.in_flight)
+1552 +             .as_ref().is_none_or(|call| call.what != what)
+     |
+
+warning: this `repeat().take()` can be written more concisely
+   --> src/managers/gguf_meta.rs:484:21
+    |
+484 |         data.extend(std::iter::repeat(0).take((MAX_STORED_ARRAY_LEN + 1) as usize));
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: consider using `repeat_n()` instead: `std::iter::repeat_n(0, (MAX_STORED_ARRAY_LEN + 1) as usize)`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#manual_repeat_n
+    = note: `#[warn(clippy::manual_repeat_n)]` on by default
+
+warning: items after a test module
+    --> src/managers/transcription.rs:2141:1
+     |
+2141 | mod tests {
+     | ^^^^^^^^^
+...
+2500 | impl Drop for TranscriptionManager {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#items_after_test_module
+     = help: move the items to before the test module was defined
+
+warning: using `write!()` with a format string that ends in a single newline
+   --> src/portable.rs:198:9
+    |
+198 |         write!(f, "  Handy Portable Mode\n").unwrap();
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.94.0/index.html#write_with_newline
+    = note: `#[warn(clippy::write_with_newline)]` on by default
+help: use `writeln!` instead
+    |
+198 -         write!(f, "  Handy Portable Mode\n").unwrap();
+198 +         writeln!(f, "  Handy Portable Mode").unwrap();
+    |
+
+warning: `handy` (lib test) generated 5 warnings (run `cargo clippy --fix --lib -p handy --tests` to apply 5 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 11.48s

@@ -1,0 +1,6 @@
+RED for Step 4 audit A m4: the auditor's two undetected writers were injected for this run only
+(a `std::fs::write(... .join("settings_store.json"), ...)` function appended to
+src-tauri/src/commands/mod.rs and `invoke("plugin:store|load", ...)` in a new src/audit-probe.ts),
+then `cargo test --test settings_writers` was run: the new scan fails 2 tests (file name outside the
+service, frontend plugin:store). Both injections were removed right after; GREEN is in
+cargo-test-settings-targets.stdout (settings_writers 7 passed).

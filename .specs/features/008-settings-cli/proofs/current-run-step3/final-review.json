@@ -1,0 +1,291 @@
+{
+  "reviewer_model": "gpt-6.1-sol",
+  "scope": "Independent full Step3 source/spec/quality review of isolated repository, locator, normalization, lock/lease and durable replacement primitives, with final targeted readback of real crash tests and API docs. App/plugin/all-writer activation remains Step4, CLI/live IPC Step5.",
+  "verdict": "SCOPED PASS",
+  "blocking_findings": [],
+  "feature_pass": false,
+  "certified_acs": [],
+  "summary_path": ".specs/features/008-settings-cli/proofs/current-run-step3/summary.json",
+  "summary_sha256": "40e6f01cf91a45045ba2e500eb36bebcd710a00ff6c9a1991055ede8c39c7e48",
+  "source_tree_sha256": "bdecf5c8aed01f1078ac35f74537c31a32c7bfb47f8f1315c9603745d007dd11",
+  "all24_current_source_hashes_verified": true,
+  "files": [
+    {
+      "path": "src-tauri/Cargo.lock",
+      "sha256": "ea4ca717f423f23f232d03db441eaca09677d2120be71ad6804b9746698ef971",
+      "lines": 9178
+    },
+    {
+      "path": "src-tauri/Cargo.toml",
+      "sha256": "4f95034948e5cb2b1f5811f71c20b970d8105437791fb5e1c8876fed49343ddf",
+      "lines": 209
+    },
+    {
+      "path": "src-tauri/src/portable.rs",
+      "sha256": "4d57accabb9eee7ed1d472e3d8a60412b2925886fc4280478238b1b8e28932ee",
+      "lines": 217
+    },
+    {
+      "path": "src-tauri/src/settings.rs",
+      "sha256": "ed1d0de985ec12f5d3afac24d1b1d22f1b4ce3f9a44240a96613f2a97428ffed",
+      "lines": 1792
+    },
+    {
+      "path": "src-tauri/src/settings_service/atomic.rs",
+      "sha256": "8e0f1646744f6d0f9b4b244311bb2ff3771d9f1395ac68042ac9ebb529b1421b",
+      "lines": 202
+    },
+    {
+      "path": "src-tauri/src/settings_service/instance_probe.rs",
+      "sha256": "fd37a4fe2227441561263edb06d4d49e0b5d1f59215417670b4bec82f127b6d8",
+      "lines": 112
+    },
+    {
+      "path": "src-tauri/src/settings_service/locator.rs",
+      "sha256": "314b8ea3b18a4d606e9643f206f56eced7f95e61c19093b6c41c04d6f591f4d7",
+      "lines": 90
+    },
+    {
+      "path": "src-tauri/src/settings_service/mod.rs",
+      "sha256": "49730227a4dc87a18abfb89ed0eb83cd539d08f7f357c9be9f7b0d3f20f98a3b",
+      "lines": 17
+    },
+    {
+      "path": "src-tauri/src/settings_service/normalization.rs",
+      "sha256": "cc91e0ffa43020ddfc096b3fdd878744842226a497c1784751a7216355782750",
+      "lines": 39
+    },
+    {
+      "path": "src-tauri/src/settings_service/ownership.rs",
+      "sha256": "e59ce5c2e0fad1abdca8f63d530581eb6e82c35541eb8f3485cdf598bd535c52",
+      "lines": 198
+    },
+    {
+      "path": "src-tauri/src/settings_service/store.rs",
+      "sha256": "db8d489ed17c80be9320e166d9623dacfd172f1333fc5f974256807ad09f5cd7",
+      "lines": 126
+    },
+    {
+      "path": "src-tauri/src/settings_service/transaction.rs",
+      "sha256": "dd89649ce20e04b152abb4e8974df5e7ab6541bb09d79c0df0371747ca6adeb0",
+      "lines": 216
+    },
+    {
+      "path": "src-tauri/src/settings_service/validation.rs",
+      "sha256": "e176d840464251c19562c758d10a8dd94219e43a1b8ecc72ac99716fd2d91441",
+      "lines": 215
+    },
+    {
+      "path": "src-tauri/src/settings_service/windows_store.rs",
+      "sha256": "3266621d51845eb72f9ed89ab4d47066e57d81e21fd8812c36507aaab1b568ad",
+      "lines": 258
+    },
+    {
+      "path": "src-tauri/src/settings_service/windows_store/replace.rs",
+      "sha256": "16dd42b9f3e44149457d085b8c0220cc4e885fd92bdbebd6d8b259de2d519f91",
+      "lines": 92
+    },
+    {
+      "path": "src-tauri/src/settings_service/windows_store/security.rs",
+      "sha256": "29e90eefbf5d47ce2e5bc0bf8b935d4413650b14e77fc4f893c70b96cdc7c421",
+      "lines": 243
+    },
+    {
+      "path": "src-tauri/tests/settings_transactions.rs",
+      "sha256": "3f7ab582e4abc0b2bda10ea9361fd04e8900a9a8d0fe6eb62e9c7f0ffa59d4e9",
+      "lines": 15
+    },
+    {
+      "path": "src-tauri/tests/settings_transactions/driver.rs",
+      "sha256": "fa35b46390897b9126d452c23ad533232beb79e5d35369ce7221216839258f47",
+      "lines": 219
+    },
+    {
+      "path": "src-tauri/tests/settings_transactions/faults.rs",
+      "sha256": "132e6c2defcd6bcd3bf92456ff978344364a3777e35879dd3f9640d5c67981b0",
+      "lines": 151
+    },
+    {
+      "path": "src-tauri/tests/settings_transactions/locator.rs",
+      "sha256": "3ff4f69d02acbf849a28c55f02c0fcc5ef7138797c52f606cd8bb51b76b50f22",
+      "lines": 73
+    },
+    {
+      "path": "src-tauri/tests/settings_transactions/ownership.rs",
+      "sha256": "c8e4e88f8027e031bdcdd373452afb1929b9e87ee504879b28b5b4f812c05832",
+      "lines": 141
+    },
+    {
+      "path": "src-tauri/tests/settings_transactions/processes.rs",
+      "sha256": "88bb207395fef38558e1d28393a4af4e9ebc07ebeb4bffd1380cf0643665ace3",
+      "lines": 231
+    },
+    {
+      "path": "src-tauri/tests/settings_transactions/reads.rs",
+      "sha256": "929fb9252da8684f9f900fdfeedf5a86af3a69a6566b0e0b70c934a98408cd20",
+      "lines": 55
+    },
+    {
+      "path": "src-tauri/tests/settings_transactions/transactions.rs",
+      "sha256": "2f1befd8f1e15c478809fab2a64d28481fb5b6935f75c4657f0f90b93810593f",
+      "lines": 161
+    }
+  ],
+  "context_bindings": [
+    {
+      "path": ".specs/spec-system.md",
+      "sha256": "4f7ed66b7211358a589022d5c8a6b09c66b92cb34f1bb46a4c0ec64d402ea9f1"
+    },
+    {
+      "path": ".specs/constitution.md",
+      "sha256": "f65acb99e00dfab5f8ce418aae1b5979265f2b2eb3c399666b09c4c2caf82067"
+    },
+    {
+      "path": ".specs/features/008-settings-cli/spec.md",
+      "sha256": "3e123c506378cdd7b2fd0b725fcb9877e1b6f8fecd4cf7d040a15347c78c098b"
+    },
+    {
+      "path": ".specs/features/008-settings-cli/plan.md",
+      "sha256": "863ef2789f6e9256d78832d64722f7812104b33c98d5876166f97ffc361d4eec"
+    },
+    {
+      "path": ".specs/features/008-settings-cli/run/supervisor-resume-context.md",
+      "sha256": "4db2cbf4ee32512e05dc1d6066a97d649b16bc44d1dfb45e401794c070cc4a5a"
+    }
+  ],
+  "quality": {
+    "new_rust_files": 17,
+    "new_rust_max_file_lines": 258,
+    "new_rust_max_function_lines": 49,
+    "test_exemptions": [],
+    "crash_scenario_lines": 37,
+    "crash_generation_assertion_helper_lines": 28,
+    "existing_settings_file_exception": "Existing settings.rs1792 lines changed only two helper visibilities; existing app read/write/startup bodies and plugin registration remain unchanged. Cargo.lock is lock data.",
+    "public_docs_and_anchors": "Checked external repository/locator/lease/probe/observer APIs and direct FR002/003/004 anchors; three short FileLock acquire/validate and Descriptor attributes docs added and relued.",
+    "nonblocking_observation": {
+      "rule": "General functions target20\u201330 lines",
+      "disposition": "Several bounded cross-platform orchestration/FFI functions and scenario tests remain31\u201349 lines. Their ordered lock/reload/validation/fsync/replace or checked-handle responsibilities stay explicit and under hard50; no mechanical abstraction solely for line count is required by this scoped review."
+    }
+  },
+  "checks_observed": {
+    "post-crash-test": {
+      "exit": 0,
+      "stdout_sha256": "60e00b669fbdfa19034745d6b4226bf08f6c3826386f83fb2582c935c38f4e82",
+      "stderr_sha256": "5772bdd15adbe05f858917f3586b6b3b2f992f269b8db98ad94d6e837b09c2bb"
+    },
+    "crash-final-test": {
+      "exit": 0,
+      "stdout_sha256": "412df4ecdf5e861a51c258afc3106670489e63ba75f51f342babf981ddb2af08",
+      "stderr_sha256": "0f638dc1c55153679ddf76aa02064c2df19b6d48794803cdfee31222bf5c3b34"
+    },
+    "crash-final-clippy": {
+      "exit": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "683955e9bf1f8f8c9625916556ef403278c548aca148709acfc4ffe84102410a"
+    },
+    "crash-final-format": {
+      "exit": 0,
+      "stdout_sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+      "stderr_sha256": "56b8ab91673c31d3b969d25b1e3ca20fb38a11f416855911aa2164233e77afcd"
+    },
+    "windows-check-final": {
+      "exit": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "1440f371541c1e47faa29934713784c2b8575f41fc3539d7bdf6249c8109f0d6"
+    }
+  },
+  "tests": {
+    "full_suite_before_final_assertion_extraction": {
+      "passed": 21,
+      "failed": 0,
+      "ignored": 1,
+      "filtered": 0,
+      "proof": "post-crash-test.stdout"
+    },
+    "current_frozen_affected_scenario": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 21,
+      "proof": "crash-final-test.stdout"
+    },
+    "binding_limit": "Full21 suite precedes behavior-preserving extraction only in crash test; current extracted helper/scenario was rerun successfully. Other20 assertion bodies and production semantics unchanged. No fresh whole-suite21 run is invented.",
+    "ignored_driver": "Technical ignored fixture is invoked explicitly with --ignored by the real process contracts, not an unexecuted acceptance scenario.",
+    "full_suite_nested_processes": "Four distinct normal child exits0 plus two real forced terminations; final affected scenario additionally proves SIGKILL for PID21126/21127 through source assertion and GREEN result.",
+    "qualified_ids": [
+      "handy/test/settings_transactions::faults::every_durable_fault_preserves_a_complete_generation_and_reports_uncertainty",
+      "handy/test/settings_transactions::faults::replaced_temporary_path_never_replaces_store_or_deletes_substitute",
+      "handy/test/settings_transactions::faults::stable_lock_inode_survives_replacement_and_is_retained_after_release",
+      "handy/test/settings_transactions::locator::installed_resolution_uses_the_same_directory_provider_as_tauri",
+      "handy/test/settings_transactions::locator::missing_ancestor_is_canonicalized_and_parent_traversal_is_refused",
+      "handy/test/settings_transactions::locator::portable_magic_and_legacy_markers_are_read_without_mutation",
+      "handy/test/settings_transactions::ownership::native_owner_appearing_after_temp_sync_refuses_before_replace",
+      "handy/test/settings_transactions::ownership::passive_occupied_socket_refuses_without_connecting_or_deleting",
+      "handy/test/settings_transactions::ownership::startup_normalizes_once_preserves_raw_secrets_and_keeps_offline_fenced",
+      "handy/test/settings_transactions::processes::barrier_started_startup_and_writer_respect_real_lease_ownership",
+      "handy/test/settings_transactions::processes::forced_process_termination_before_and_after_replace_preserves_complete_generations_and_releases_locks",
+      "handy/test/settings_transactions::processes::independent_raw_reader_observes_only_complete_old_or_new_generations",
+      "handy/test/settings_transactions::processes::two_barrier_started_subprocess_writers_preserve_disjoint_fields",
+      "handy/test/settings_transactions::reads::broken_json_read_recovers_defaults_without_overwriting",
+      "handy/test/settings_transactions::reads::missing_store_returns_defaults_without_creating_parent_or_store",
+      "handy/test/settings_transactions::reads::salvage_keeps_valid_revision_valid_fields_and_store_bytes",
+      "handy/test/settings_transactions::transactions::changed_patch_is_durable_increments_once_and_preserves_unknowns_and_secrets",
+      "handy/test/settings_transactions::transactions::corrupt_or_overflow_revision_and_broken_json_refuse_write",
+      "handy/test/settings_transactions::transactions::prompt_mutation_revalidates_membership_against_the_locked_fresh_snapshot",
+      "handy/test/settings_transactions::transactions::semantic_noop_does_not_rewrite_or_increment_and_first_change_is_one",
+      "handy/test/settings_transactions::transactions::stale_compare_and_set_refuses_without_changing_bytes"
+    ],
+    "actual_swift_bridge_observed": true,
+    "run_by_reviewer": false
+  },
+  "independent_judgments": [
+    "StoreLocator uses direct dirs6 to match current Tauri OS directory provider, reads portable markers without creating/upgrading Data or changing environment, canonicalizes nearest existing ancestor, rejects parent traversal and checks owner/type boundaries. Existing AppHandle adapters remain unchanged, consistent with reviewed bounded sequencing refinement.",
+    "Fresh disk reads take stable sibling settings.lock when parent exists; absent parent/store returns defaults revision0 without creating store/parent. Normalization is pure in-memory, preserving valid siblings/revision during payload salvage. Existing malformed revision or unrecoverable JSON never authorizes a write or counter reset; warnings and public errors contain no raw parser data.",
+    "Transactions acquire stable transaction lock plus independent instance lease, reload raw bytes, reject stale CAS, revalidate scalar against locked fresh prompt/build context, construct typed candidate and compare normalized values. Semantic no-op does not replace bytes/increment; changed first commit is1 and checked counter overflow refuses before persist. Genuine stale-prompt RED101 then GREEN proves dependency revalidation rather than trusting parse-time context.",
+    "Only changed typed fields are merged into preserved raw payload; untouched secret/future siblings remain raw. Startup normalization commits explicitly once, merges nested provider fields by id and preserves existing raw secrets; second initialization is no-op. Raw Document remains internal; public reads use existing explicit typed redacted projection.",
+    "FileLock never truncates/unlinks stable lock names; Unix nofollow/cloexec handles are owner/type/link/mode checked and held-path identity is revalidated. Busy lease and occupied/uncertain/unavailable legacy state refuse offline writes. Passive native owner check runs again after temp fsync immediately before replace; actual macOS socket appearing at that stage causes unavailable with original store bytes unchanged and no callback/connect/delete.",
+    "Private same-directory create_new temporary generation is serialized, flushed and synced before replacement; pinned directory/temp/locks/owner are checked before rename. Failed temporary/substitute paths are retained, avoiding unsafe cleanup. Six genuine fault stages assert complete old/new JSON and distinguish pre-replace persistence_failed from uncertain post-replace outcome. Independent raw reader verifies complete matching revision/value generations during32 actual commits.",
+    "Real barrier-started subprocess writers store both disjoint field changes with revisions1/2; startup/writer race verifies either fully-visible prior commit or live lease refusal. Actual SIGKILL before/after replace now proves complete old/new bytes, revision7/8, retained unknown canary and successful subsequent commit after OS lock release. This proves process termination recovery, not physical power-loss simulation.",
+    "Windows helpers isolate checked-handle file identity, persistent TokenUser owner/private DACL, reparse/hardlink refusal and pinned ancestors denying rename/delete. Replacement uses owned DELETE-capable temp handle and relative FILE_RENAME_INFO against pinned parent, distinguishing pre/post-rename failures. Fresh windows-check-final compiles these exact helpers, instance probe and fs2 against x86_64-pc-windows-msvc real std with exit0/no compiler warnings; it is not full-app SDK linking or native Windows execution."
+  ],
+  "resolved_findings": [
+    {
+      "finding": "Crash evidence was only returned I/O faults",
+      "status": "resolved",
+      "initial_evidence": "faults.rs six Err injections were insufficient; red-crash exit101 preserves original absence.",
+      "fix": "Driver test-only observer pauses at real BeforeReplace/AfterReplace; owned child is killed/waited with SIGKILL assertion, then raw old/new generation and next commit are checked. No production behavior change."
+    },
+    {
+      "finding": "New crash test exceeded hard50 at61 lines",
+      "status": "resolved",
+      "fix": "Generation JSON/byte/fingerprint assertions extracted into named28-line helper; scenario37 lines. Final affected test, strict clippy and fullformat exit0 observed."
+    },
+    {
+      "finding": "Three internal API helper docs missing",
+      "status": "resolved",
+      "fix": "Bounded acquire/identity-validation/descriptor-borrow lifetime comments now present; fresh Windows helper compile after doc addition is bound separately."
+    }
+  ],
+  "primary_sources": [
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/winbase/ns-winbase-file_rename_info",
+      "supports": "Relative filename may resolve against RootDirectory handle; filename length is bytes and ReplaceIfExists controls replacement."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfileinformationbyhandle",
+      "supports": "FileRenameInfo accepts FILE_RENAME_INFO and requires suitable handle access; native platform behavior remains separately unobserved."
+    }
+  ],
+  "remaining_scope": [
+    "All AppHandle startup/read/write adoption and settings-file plugin ownership/autosave/exit-save closure must switch atomically with all-writer migration in Step4; no global stale-snapshot adapter/cache was added.",
+    "Step4 genuine UI/native-effect parity and Step5 framing, both-end peer authentication, lease publication/reclamation, CLI reachability and renderer remain incomplete. No whole AC002/003/004/005 or SC002 completion/certification claimed here.",
+    "Mandatory macOS release/M1 latency/no window-tray-model/new-app IPC/live UI/shortcut evidence remains Step7.",
+    "Pending release Windows: build/link full app natively and run repository/lock/private ACL/reparse/rename/flush plus console checks on supported Windows; compile-only helper proof does not pass them.",
+    "Pending release Linux: native full build/tests plus DBus same-user/session scope, sibling lock/private file and socket UID checks under X11/Wayland.",
+    "Pending release older binary: run old Handy, invoke settings mutation, verify unavailable, identical store bytes and no old callback/window activation; second account: verify foreign UID/SID peer rejection before bytes and unchanged store. These pending observations do not block this implementation step."
+  ],
+  "application_source_modified_by_reviewer": false,
+  "tests_run_by_reviewer": false,
+  "official_audit_and_commit": "Supervisor-owned; no separate official audit receipt or final conventions PASS invented by this review.",
+  "acceptance_mapping": "No partial mapping/capture prepared, certified_acs remains empty."
+}

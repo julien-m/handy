@@ -1,0 +1,117 @@
+{
+  "reviewer_model": "gpt-6.1-sol",
+  "scope": "Independent source-backed ordering finding only; not a normative global plan review or implementation/acceptance verdict.",
+  "finding_status": "CONFIRMED",
+  "finding_id": "step3-app-adoption-before-writer-migration",
+  "severity": "major plan sequencing defect if Step3 activates the repository in the running app",
+  "certified_acs": [],
+  "feature_pass": false,
+  "source_bindings": [
+    {
+      "path": ".specs/features/008-settings-cli/plan.md",
+      "sha256": "dd51597b5d338b0d27778ab4d58c478727021489e6b910b3c8f3a61f89bf6e71"
+    },
+    {
+      "path": "src-tauri/src/settings.rs",
+      "sha256": "ed1d0de985ec12f5d3afac24d1b1d22f1b4ce3f9a44240a96613f2a97428ffed"
+    },
+    {
+      "path": "src-tauri/src/commands/mod.rs",
+      "sha256": "042a10f92b6d4f37776841376e9b76e392e846f4515d74e0533e83bcc2deb07f"
+    },
+    {
+      "path": "src-tauri/src/commands/audio.rs",
+      "sha256": "eaf3c7fe9eb95612d5a9f2bbf332eae12df5edabb566440e2e95289335c6237b"
+    },
+    {
+      "path": "src-tauri/src/lib.rs",
+      "sha256": "8f3466063c69e417a8ce36d82134e4a170c4fa9df0e7790187bbcc686b4f10d1"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "src-tauri/src/settings.rs",
+      "lines": [
+        1037,
+        1039,
+        1044,
+        1068,
+        1074,
+        1079
+      ],
+      "observation": "get_settings returns owned AppSettings without revision/provenance and currently reads cached plugin store; migration/default/provider normalization also calls store.set."
+    },
+    {
+      "path": "src-tauri/src/settings.rs",
+      "lines": [
+        1248,
+        1250,
+        1253
+      ],
+      "observation": "write_settings accepts entire owned AppSettings, returns unit, and replaces settings wholesale through plugin store. No field intent, base snapshot identity, expected revision, or patch reaches this boundary. No distinct settings_store function exists in this source: SETTINGS_STORE_PATH and these StoreExt calls own access."
+    },
+    {
+      "path": "src-tauri/src/commands/mod.rs",
+      "lines": [
+        63,
+        72,
+        73,
+        74
+      ],
+      "observation": "set_log_level reads full snapshot, changes one log_level field and passes entire snapshot to write_settings."
+    },
+    {
+      "path": "src-tauri/src/commands/audio.rs",
+      "lines": [
+        159,
+        161,
+        162,
+        163
+      ],
+      "observation": "update_microphone_mode independently reads full snapshot, changes always_on_microphone and passes entire snapshot to write_settings."
+    },
+    {
+      "path": ".specs/features/008-settings-cli/plan.md",
+      "lines": [
+        74,
+        78,
+        315,
+        318,
+        325,
+        329
+      ],
+      "observation": "Architecture requires patch against fresh loaded state. Step3 nevertheless adopts service in settings.rs and removes settings-file plugin ownership/autosave/exit-save before Step4 replaces snapshot writers. Step3 no-lost-fields/no-stale-cache success criterion cannot be guaranteed under that transitional app adoption."
+    },
+    {
+      "path": "src-tauri/src/lib.rs",
+      "lines": [
+        887
+      ],
+      "observation": "Global plugin-store remains registered; bounded handoff must remove only settings_store.json participation, retaining other stores."
+    }
+  ],
+  "reasoning": "Suppose both current writers read base {log:L0,microphone:M0}. Microphone writer commits M1. Log writer then submits {log:L1,microphone:M0}. A lock/reload adapter diffing that submitted snapshot against latest durable state sees L1 and M0 as changes; the interface cannot distinguish stale M0 from an intentional microphone reset. Reload and write serialization alone do not reconstruct intent. A global cached baseline would add unspecified state and still is not this interface contract. Removing plugin settings-file ownership without changing these writers also leaves their current write boundary incoherent; retaining it alongside a repository would retain independent cached rewrites. This is a source-backed feasible interleaving, not an observed runtime loss or a claim about uninspected plugin autosave defaults.",
+  "bounded_recommendation": {
+    "move_only_to_step4": [
+      "Activate AppHandle repository read/write/startup adapters in the running app.",
+      "Transfer exclusive settings_store.json plugin ownership and remove settings-file autosave/exit-save participation in the same writer-migration cutover.",
+      "Gate no direct writer/cache flush remaining and live application startup/write race evidence on that atomic cutover."
+    ],
+    "keep_in_step3": [
+      "Pure StoreLocator and non-creating offline repository primitives.",
+      "Pure normalization/salvage/migration extraction, isolated startup normalization transaction logic.",
+      "Raw preservation, revision/CAS/no-op/overflow, stable lock, atomic durable replacement and isolated subprocess/crash/race tests."
+    ],
+    "constraints": [
+      "Keep seven steps, FR/AC/business requirements and native evidence policy unchanged.",
+      "No new global baseline/cache or temporary full-snapshot-to-patch adapter.",
+      "No app repository activation until Step4 all-writer closure; no CLI mutation reachability before Steps1\u20134 pass.",
+      "Final architecture remains the same; relocate activation/evidence responsibilities only."
+    ]
+  },
+  "limitations": [
+    "Two concrete writers establish the narrow interface deficiency; this is not a fresh exhaustive writer inventory.",
+    "No code, plan/spec or documentation changed by reviewer; official bounded plan refinement/reviews remain supervisor-owned.",
+    "No tests executed and no concurrent-loss runtime observation claimed."
+  ]
+}

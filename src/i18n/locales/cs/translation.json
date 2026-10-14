@@ -691,7 +691,18 @@
     "modelLoadFailedUnknown": "neznámý model",
     "pasteFailedTitle": "Vložení textu se nezdařilo",
     "pasteFailed": "Text nebylo možné vložit do aktivní aplikace.",
-    "transcriptionFailedTitle": "Přepis selhal"
+    "transcriptionFailedTitle": "Přepis selhal",
+    "settings": {
+      "committedNotApplied": "Nastavení bylo uloženo, ale nepodařilo se ho okamžitě použít.",
+      "gpuDeviceRequired": "Než zvolíte akcelerátor GPU, vyberte zařízení GPU.",
+      "outOfRange": "Tato hodnota je mimo povolený rozsah.",
+      "validationFailed": "Tato hodnota není pro toto nastavení přípustná.",
+      "revisionConflict": "Nastavení bylo změněno jinde. Načtěte je znovu a zkuste to znovu.",
+      "unavailable": "Toto nastavení teď nelze změnit. Zkuste to později.",
+      "persistenceFailed": "Nastavení se nepodařilo uložit.",
+      "generic": "Nastavení se nepodařilo změnit.",
+      "readOnly": "Nastavení je v této relaci jen pro čtení: soubor nastavení nelze bezpečně zapsat, změny se proto neuloží."
+    }
   },
   "appLanguage": {
     "title": "Jazyk aplikace",

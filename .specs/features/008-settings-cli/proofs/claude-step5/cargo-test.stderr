@@ -1,0 +1,12 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.49s
+     Running unittests src/lib.rs (target/debug/deps/handy_app_lib-73e303613d9c1bf2)
+     Running unittests src/main.rs (target/debug/deps/handy-93b17c23c1881fa4)
+     Running tests/settings_cli.rs (target/debug/deps/settings_cli-edb6c3d07d8d6f5b)
+     Running tests/settings_live.rs (target/debug/deps/settings_live-efa375015146466d)
+     Running tests/settings_platform.rs (target/debug/deps/settings_platform-49e03a5f45e9e020)
+     Running tests/settings_transactions.rs (target/debug/deps/settings_transactions-05314483cc7219f2)
+     Running tests/settings_validation.rs (target/debug/deps/settings_validation-9727b78385d1914e)
+     Running tests/settings_writers.rs (target/debug/deps/settings_writers-f5fc67da74431819)
+   Doc-tests handy_app_lib

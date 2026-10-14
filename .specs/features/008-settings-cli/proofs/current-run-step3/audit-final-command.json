@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/opt/homebrew/opt/python@3.14/bin/python3",
+    "/Users/julienm/.claude/skills/audit/scripts/audit_fix.py",
+    "--intent",
+    "008 Step3 pure isolated repository/locator/normalization, fresh raw-preserving atomic settings_revision CAS/no-op/overflow patches under persistent fs2 sibling settings.lock and retained startup lease. Approved bounded plan refinement is officially READY: running-app AppHandle adoption, all writers, settings-file plugin ownership/autosave/exit-save closure remain together in Step4; CLI activation Step5. No global UI parity/whole AC or full Windows/native acceptance claimed. Read creates no store/Data/marker; stable lock infrastructure in existing parent is permitted. Final passive owner probe runs after temp fsync immediately before guarded replacement. Unprovable legacy same-user scope stays fail-closed; no notifying connect, legacy delete, unsafe chmod or global umask. Failed private temporary paths retained deliberately; identity substitutions must not replace store/delete replacement. Windows persistent TokenUser ownership differs from session logon SID IPC; exact x86 Windows SDK/std type check only, not full app/link/native. Actual macOS targeted tests full21pass/0fail/1ignored technical driver run six subprocesses, four normal exits and two SIGKILL at Before/AfterReplace, old/new exact complete bytes plus subsequent lock reuse; final changed crash target1pass/0fail/0ignored. Fresh prompt dependency revalidation uses shared validator. Strict clippy and format pass. Review only actual changed Step3 code/docs, no later domains or temporary full-snapshot adapter. Existing long settings.rs changes are helper visibility only; baseline remains immutable."
+  ],
+  "cwd": "/Users/julienm/projects/handy",
+  "source_tree_sha256": "bdecf5c8aed01f1078ac35f74537c31a32c7bfb47f8f1315c9603745d007dd11",
+  "head": "e3bc314fd931ced04a1a03f811ff919eb76966f6",
+  "diff_bytes": 108195,
+  "retry_hypothesis": "Removing already-officially-reviewed generated plan receipt from remaining HEAD diff by authorized documentation-only commit reduces actual audit input below provider limit. No files filtered, wrappers, model or global configuration changed.",
+  "retry_evidence": "Raw Codex error input_too_large actual1131358/max1048576; root documentation commit e3bc314fd931ced04a1a03f811ff919eb76966f6 verified no Step3 code committed.",
+  "started_at_unix": 1791896239.064873,
+  "retry_result": "exit=0"
+}

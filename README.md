@@ -122,6 +122,38 @@ handy --start-hidden --no-tray
 > /Applications/Handy.app/Contents/MacOS/Handy --toggle-transcription
 > ```
 
+### Settings from the command line (`handy settings`)
+
+`handy settings` reads and changes Handy's settings from a terminal or a script, with the same validation as the settings window. It never opens a window, a tray icon or a model, and it exits as soon as the operation is done.
+
+```bash
+handy settings get                         # all settings (API keys show only {"present": true|false})
+handy settings get paste_method            # one value
+handy settings keys                        # every key with its type, allowed values or range, and access
+handy settings set paste_method direct     # change one setting
+handy settings set paste_delay_ms 120 --expected-revision 7   # only if nobody changed the settings since revision 7
+handy settings output get                  # the output settings (paste method, clipboard handling, auto submit, delays, typing tool...)
+handy settings output set auto_submit true --dry-run          # validate and preview, write nothing
+handy settings --help                      # operations and the domains available in this build
+```
+
+- **Where the change goes.** If Handy is running, the command is sent to it over a private, current-user-only channel (no network listener) and the running app applies it at once: shortcuts, microphone, overlay and the settings window update without a restart. If Handy is not running, the command writes the settings file itself, under the same lock and validation. If an older Handy (without this channel) is running, the command refuses with `unavailable` rather than write behind its back.
+- **Scripts and agents.** Add `--json` (before or after `settings`) to get exactly one JSON line on stdout: `{"ok":true,"revision":N,"data":…}` or `{"ok":false,"error":{"code":…,"message":…,"details":{…}}}`. Without `--json`, stdout shows readable values. Errors, warnings and hints always go to stderr.
+- **Windows.** Handy is a windowed application: `handy settings` prints to the terminal it was started from and keeps redirections to a file or a pipe. An interactive cmd.exe or PowerShell prompt does not wait for a windowed application, so the prompt can come back before the output and without the exit code; to read the exit code, use `start /wait handy settings …` (cmd), `Start-Process -Wait -PassThru` (PowerShell) or the process API of your script language.
+- **Revisions.** Every committed change, from any surface, increments the revision by one; a change that changes nothing and a read do not. Pass `--expected-revision N` to refuse a change when the settings moved on.
+- **Domains.** Lists and bulk data (microphones, replacements, vocabulary, shortcuts, prompts...) are changed through their own domain commands, added by the features that own them; `handy settings --help` lists exactly the domains of your build. Generic `set` refuses a list key and names the domain command; API keys and internal fields stay in the settings window. Domain commands that take a file accept `-` for stdin (never an interactive prompt), at most 1 MiB of UTF-8 text, and the whole request must fit in one 1 MiB message once escaped: a larger one is refused with `limit_exceeded` before anything is sent. `--dry-run` previews without writing, and an invalid preview fails like the real change.
+
+| Exit | Codes                                                                     | What to do                                                                                                                                                                                                                                   |
+| ---- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0    | success                                                                   | —                                                                                                                                                                                                                                            |
+| 1    | `persistence_failed`, `internal_error`                                    | The settings file could not be written, or Handy failed after saving: read the settings again.                                                                                                                                               |
+| 2    | `usage_error`, `validation_failed`, `shortcut_conflict`, `limit_exceeded` | Fix the command or the value; nothing was changed.                                                                                                                                                                                           |
+| 3    | `revision_conflict`                                                       | Someone changed the settings: read them again (`details.current_revision`), then decide.                                                                                                                                                     |
+| 4    | `not_found`                                                               | Unknown key (see `handy settings keys`).                                                                                                                                                                                                     |
+| 5    | `unavailable`                                                             | Handy is busy, starting, older, or the store cannot be used. With `details.outcome = "unknown"` (no answer within 5 seconds), the change may or may not have been applied: **read the settings again before retrying; never retry blindly.** |
+
+An error with `details.outcome = "committed"` means the value was saved but Handy could not apply it immediately; it retries before the next change.
+
 ## Known Issues & Current Limitations
 
 This project is actively being developed and has some [known issues](https://github.com/cjpais/Handy/issues). We believe in transparency about the current state:

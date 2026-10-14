@@ -1,0 +1,18 @@
+
+running 1 test
+test platform_unix::tests::native_peer_identity_mismatch_never_returns_stream ... FAILED
+
+failures:
+
+---- platform_unix::tests::native_peer_identity_mismatch_never_returns_stream stdout ----
+
+thread 'platform_unix::tests::native_peer_identity_mismatch_never_returns_stream' (39130453) panicked at tests/../src/settings_service/platform_unix/tests.rs:24:10:
+a native peer with another expected owner must not be published: (UnixStream { fd: FileDesc(OwnedFd { fd: 7 }), local: "/private/var/folders/l_/t1s_zytx2fqb0dkzz40d3v7m0000gn/T/.tmp96HnSw/settings.sock" (pathname), peer: (unnamed) }, (unnamed))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    platform_unix::tests::native_peer_identity_mismatch_never_returns_stream
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 20 filtered out; finished in 0.00s
+
