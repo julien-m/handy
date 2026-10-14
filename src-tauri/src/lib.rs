@@ -725,6 +725,7 @@ pub fn run(cli_args: CliArgs) {
             shortcut::resume_all_bindings,
             shortcut::change_mute_while_recording_setting,
             shortcut::change_append_trailing_space_setting,
+            shortcut::change_return_to_dictation_app_setting,
             shortcut::change_lazy_stream_close_setting,
             shortcut::change_vad_enabled_setting,
             shortcut::change_vad_backend_setting,

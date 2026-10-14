@@ -416,6 +416,20 @@ async changeAppendTrailingSpaceSetting(enabled: boolean) : Promise<Result<null, 
     else return { status: "error", error: e  as any };
 }
 },
+/**
+ * Settings UI write of `return_to_dictation_app`: the shared UI validator (a build without the
+ * destination capability refuses `true` and `false` with `validation_failed` and the typed reason
+ * `unsupported_platform`), one durable commit, then `settings-changed`. The value is read when a
+ * dictation starts, so no live effect runs.
+ */
+async changeReturnToDictationAppSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_return_to_dictation_app_setting", { enabled }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async changeLazyStreamCloseSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_lazy_stream_close_setting", { enabled }) };

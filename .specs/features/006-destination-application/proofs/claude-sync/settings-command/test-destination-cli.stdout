@@ -1,0 +1,56 @@
+
+running 6 tests
+test without_the_capability_cli_domain_and_ui_validation_refuse_identically ... ok
+test with_an_older_handy_running_the_set_is_unavailable_and_writes_nothing ... ok
+test an_invalid_value_is_a_canonical_type_refusal_before_the_platform_check ... ok
+test a_set_routed_to_the_running_instance_is_committed_by_it ... ok
+test output_get_reads_the_plain_value_with_the_platform_default ... ok
+test offline_set_commits_once_and_a_no_op_keeps_the_revision ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.77s
+
+
+running 10 tests
+test read_only_startup::a_real_lease_conflict_is_the_only_startup_refusal ... ok
+test read_only_startup::hard_linked_store_starts_read_only_on_its_content ... ok
+test read_only_startup::shared_lock_permissions_start_read_only_on_the_store_content ... ok
+test read_only_startup::linked_store_starts_read_only_on_its_target ... ok
+test instance_fences_offline_writers_and_a_restart_sees_their_later_commit ... ok
+test read_only_startup::unreadable_store_starts_read_only_on_defaults ... ok
+test concurrent_ui_commits_lose_no_field_and_increment_once_each ... ok
+test device_selectors_store_null_for_the_default_and_literal_names_otherwise ... ok
+test ui_adapter_and_cli_store_the_same_value_or_refuse_with_the_same_error ... ok
+test generated_parity::every_settable_scalar_key_gets_the_same_decision_on_ui_and_cli ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.74s
+
+
+running 25 tests
+test error_details::items_are_sorted_by_index_and_bounded_without_candidate_values ... ok
+test error_details::existing_errors_carry_neither_reason_nor_items ... ok
+test contracts::all_documented_error_codes_have_fixed_exits_and_object_details ... ok
+test error_details::unsupported_platform_is_validation_failed_exit_two_with_reason_and_field ... ok
+test contracts::valid_get_keys_set_domain_shapes_roundtrip_with_optional_nulls ... ok
+test contracts::request_roundtrip_keeps_typed_operation_without_debug_or_secret_diagnostics ... ok
+test request_contracts::every_operation_refuses_fields_owned_by_other_variants ... ok
+test request_contracts::unsupported_request_versions_and_extra_fields_are_rejected_safely ... ok
+test inventory::independent_access_inventory_covers_7_readonly_1_secret_4_collections_52_scalars ... ok
+test scalars::cli_rejects_noncanonical_boolean_and_out_of_range_numbers ... ok
+test scalars::all_52_scalar_ports_accept_the_same_typed_values ... ok
+test contracts::operation_schema_requires_the_same_variant_fields_as_serde ... ok
+test error_details::schema_closes_reason_and_items ... ok
+test scalars::every_nullable_scalar_preserves_strings_and_accepts_null_clear ... ok
+test scalars::legacy_aliases_are_disk_only_and_build_policy_is_shared ... ok
+test scalars::unknown_and_protected_keys_are_refused_without_echoing_input ... ok
+test scalars::numeric_boundaries_and_overflow_have_identical_safe_error_reasons ... ok
+test contracts::checked_schema_matches_the_actual_dto_generator ... ok
+test request_contracts::request_schema_closes_each_operation_to_its_own_fields ... ok
+test contracts::generated_schema_matches_wire_shapes_and_descriptor_inventory ... ok
+test inventory::every_actual_stored_field_has_exactly_one_descriptor ... ok
+test request_contracts::public_schema_requires_all_fields_and_preserves_legacy_numeric_reads ... ok
+test contracts::explicit_projection_reports_secret_presence_without_any_raw_canary ... ok
+test request_contracts::all_canonical_public_enums_and_required_keys_match_independent_inventory ... ok
+test inventory::independent_enum_inventory_accepts_every_current_canonical_variant ... ok
+
+test result: ok. 25 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+

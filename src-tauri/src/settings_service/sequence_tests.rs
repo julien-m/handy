@@ -365,3 +365,6 @@ mod races;
 
 #[path = "sequence_parity_tests.rs"]
 mod parity;
+
+#[path = "sequence_destination_tests.rs"]
+mod destination;
