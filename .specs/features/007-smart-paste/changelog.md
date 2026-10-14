@@ -167,3 +167,19 @@ AppKit caching and delayed AX mutation counterexamples remain explicit: callback
 - **AC impacted:** AC-014, AC-015, has_dropdown, is_keyboard_navigable (implemented, certification pending)
 - **Author:** Claude Opus 5.5 (implementation agent, integration run)
 - **Notes:** The pipeline still refuses smart paste until step 7 (006), so the migration, the macOS default and the selector option are ready, tested in both states, and inactive until step 7 enables `smart-paste-dispatch` with the wiring. In the shipped build `smart_paste` is refused with `validation_failed` on every surface. See [the rollout gate](implementation.md#rollout-gate-default-and-migration-until-step-7) and [the proofs](proofs/claude-integration/).
+
+## 2026-10-14 — [Plan Update]: history without the WAV gate (006 rule) and delivered 008 settings names
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md updated)
+- **AC impacted:** None (AC-013 and AC-014/AC-015 planning text only, IDs unchanged)
+- **Author:** Claude Code (spec-refine 007 plan, claude-opus-5-5)
+- Eligibility: `spec-refine` refuses a plan once `implementation.md` exists; this alignment was made on explicit instruction with the same discipline (diff limited to the plan, preserved IDs, changelogs). Step 7 (pipeline wiring), which the history text governs, is not implemented yet.
+- History: Julien's decision 2026-10-14, carried by the 006 spec and plan on `dev` (commit `306c368`, `.specs/features/006-destination-application/plan.md`): a dictation whose WAV cannot be saved still gets a text-only history entry; `history_status` comes only from the actual `save_entry` result. The plan no longer asks Step 7 to "preserve WAV-gated history": 007 does not reintroduce the `wav_saved` gate and never touches history (AC-013). Current-state note, history paragraph, Step 7 action, regression gate and risk row aligned.
+- 008 names: `LiveSettingsEffects` (never shipped) removed; the plan now names the delivered `src-tauri/src/settings_service/` API: `SettingDescriptor` rows in `descriptor_data.rs`, `OutputDomain`/`OUTPUT_KEYS`, `SettingsMutation` from `validate_cli`/`validate_ui`, the live commit `LiveSettings::commit_scalar` (UI through `tauri_adapter::write`, CLI routed to the running instance), offline `SettingsRepository::commit_mutation`, live effects `effects::apply_changed` and the `settings-changed` event, startup migration through `settings::apply_settings_migrations`. The Gherkin and sequence diagram no longer present `commit_mutation` as the live UI/CLI commit; the Step 8 file list matches the files actually changed.
+- 008's plan is cited as a code path instead of a Markdown link.
+- Plan review preparation at 180,000 characters: 1 batch, no error.
+- Review: the plan review is stale until an independent reviewer refreshes it.
+
+<!-- finalize:spec-refine:2026-10-14:d424af86 -->
