@@ -1,0 +1,19 @@
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/001-microphone-priority/src-tauri)
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 31.87s
+     Running tests/microphone_cli.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_cli-c0739a795936cfb0)
+     Running tests/microphone_native.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_native-e0bf71716475fc5d)
+     Running tests/microphone_resolution.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_resolution-e2ae6131479e2e62)
+     Running tests/microphone_sessions.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_sessions-7f01a6b77367350a)
+     Running tests/microphone_settings.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_settings-c529b994fc35893f)
+     Running tests/prompt_cli.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/prompt_cli-ca097d1c59a98554)
+     Running tests/prompt_history.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/prompt_history-bbec5b35d15aed5d)
+     Running tests/prompt_library.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/prompt_library-73a7f361def962c3)
+     Running tests/settings_cli.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_cli-e70757b33518775c)
+     Running tests/settings_domains.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_domains-a09e2ab9ba56e7ae)
+     Running tests/settings_live.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_live-fb7113221cf5d8c9)
+     Running tests/settings_platform.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_platform-9b9443d5fd793590)
+     Running tests/settings_transactions.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_transactions-d21dc82046243f7f)
+     Running tests/settings_validation.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_validation-dcf915670a97a639)
+     Running tests/settings_writers.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_writers-4fa5bbbb6fa510ec)
