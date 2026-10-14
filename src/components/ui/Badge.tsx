@@ -2,7 +2,10 @@ import React from "react";
 
 interface BadgeProps {
   children: React.ReactNode;
-  variant?: "primary" | "success" | "secondary" | "warning" | "error" | "info";
+  variant?: "primary" | "success" | "secondary" | "info" | "warning" | "error";
+  /** Test identifier of the badge. */
+  testId?: string;
+  title?: string;
   className?: string;
 }
 
@@ -10,19 +13,23 @@ const Badge: React.FC<BadgeProps> = ({
   children,
   variant = "primary",
   className = "",
+  testId,
+  title,
 }) => {
   const variantClasses = {
     primary: "bg-logo-primary",
     success: "bg-green-500/20 text-green-400",
     secondary: "bg-mid-gray/20 text-text/70",
-    // Status pills (feature 001): the success recipe (`*-500/20` surface, `*-400` text).
+    // Same recipe as success (`*-500/20` surface, `*-400` text) for status pills (001) and preview outcomes (002).
+    info: "bg-blue-500/20 text-blue-400",
     warning: "bg-yellow-500/20 text-yellow-400",
     error: "bg-red-500/20 text-red-400",
-    info: "bg-blue-500/20 text-blue-400",
   };
 
   return (
     <span
+      data-testid={testId}
+      title={title}
       className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${variantClasses[variant]} ${className}`}
     >
       {children}

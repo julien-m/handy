@@ -662,26 +662,128 @@
           "refreshModels": "Odśwież modele"
         }
       },
-      "prompts": {
-        "title": "Prompt",
-        "selectedPrompt": {
-          "title": "Wybrany prompt",
-          "description": "Wybierz szablon do ulepszania transkrypcji lub utwórz nowy. Użyj ${output} w treści, aby odwołać się do przechwyconej transkrypcji."
+      "promptLibrary": {
+        "processing": {
+          "title": "Przetwarzanie końcowe AI",
+          "enabledDescription": "Przetwarzaj dyktowanie za pomocą promptu. Wyłączone: żadne dyktowanie nie jest przetwarzane.",
+          "defaultTitle": "Domyślny prompt",
+          "defaultDescription": "Używany przez skrót dyktowania z AI. Zwykłe dyktowanie zaczyna się od opcji Brak.",
+          "none": "Brak",
+          "invalidOption": "Nieprawidłowy: edytuj go przed użyciem"
         },
-        "noPrompts": "Brak dostępnych promptów",
-        "selectPrompt": "Wybierz prompt",
-        "createNew": "Utwórz nowy prompt",
-        "promptLabel": "Etykieta promptu",
-        "promptLabelPlaceholder": "Wpisz nazwę promptu",
-        "promptInstructions": "Instrukcje promptu",
-        "promptInstructionsPlaceholder": "Wpisz instrukcje do wykonania po transkrypcji. Przykład: Popraw gramatykę i jasność dla następującego tekstu: ${output}",
-        "promptTip": "Wskazówka: użyj <code>${output}</code>, aby wstawić transkrybowany tekst do promptu.",
-        "updatePrompt": "Zaktualizuj prompt",
-        "deletePrompt": "Usuń prompt",
-        "createPrompt": "Utwórz prompt",
-        "cancel": "Anuluj",
-        "selectToEdit": "Wybierz prompt powyżej, aby zobaczyć i edytować jego szczegóły.",
-        "createFirst": "Kliknij 'Utwórz nowy prompt' powyżej, aby utworzyć pierwszy prompt postprocessingu."
+        "list": {
+          "title": "Prompty",
+          "count": "{{count}} z {{limit}} promptów",
+          "full": "{{limit}} z {{limit}} promptów: usuń jeden, aby dodać kolejny",
+          "new": "Nowy prompt",
+          "empty": "Brak promptów. Utwórz prompt, aby przetwarzać dyktowanie.",
+          "loading": "Wczytywanie promptów…",
+          "loadFailed": "Nie udało się wczytać promptów.",
+          "retry": "Spróbuj ponownie",
+          "edit": "Edytuj {{name}}",
+          "defaultProvider": "Domyślny dostawca",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Brak skrótu",
+          "notReady": "Niegotowy: {{reason}}",
+          "invalid": "Nieprawidłowy: {{reason}}",
+          "reloadFailed": "Nie udało się odświeżyć promptów. Wyświetlane dane mogą być nieaktualne."
+        },
+        "issues": {
+          "name_empty": "brak nazwy",
+          "name_too_long": "za długa nazwa",
+          "name_duplicate": "powtórzona nazwa",
+          "text_empty": "brak tekstu",
+          "text_too_long": "za długi tekst",
+          "override_incomplete": "brak dostawcy lub modelu",
+          "unknown_provider": "nieznany dostawca"
+        },
+        "reasons": {
+          "provider_error": "dostawca zwrócił błąd",
+          "empty_result": "dostawca zwrócił pusty wynik",
+          "timeout": "brak odpowiedzi w ciągu 30 sekund",
+          "provider_busy": "dostawca wciąż obsługuje inne żądanie",
+          "missing_endpoint": "brak punktu końcowego",
+          "missing_model": "brak modelu",
+          "missing_api_key": "brak klucza API",
+          "provider_unavailable": "dostawca niedostępny na tym urządzeniu",
+          "unknown_provider": "nieznany dostawca",
+          "invalid_prompt": "prompt jest nieprawidłowy",
+          "prompt_missing": "prompt już nie istnieje"
+        },
+        "editor": {
+          "editTitle": "Edytuj prompt",
+          "newTitle": "Nowy prompt",
+          "name": "Nazwa",
+          "namePlaceholder": "Nazwa promptu",
+          "text": "Prompt",
+          "textPlaceholder": "Wpisz instrukcje do zastosowania na transkrypcji. Przykład: Skróć transkrypcję do najważniejszych informacji. ${output}",
+          "textHint": "<code>${output}</code> zostaje zastąpione transkrypcją.",
+          "fieldErrors": {
+            "name_empty": "Wpisz nazwę (od 1 do 60 znaków).",
+            "name_too_long": "Użyj najwyżej 60 znaków.",
+            "name_duplicate": "Inny prompt ma tę nazwę. Nazwy muszą być unikalne.",
+            "text_empty": "Wpisz tekst promptu.",
+            "text_too_long": "Użyj najwyżej 8000 znaków."
+          },
+          "provider": "Dostawca",
+          "defaultProviderOption": "Domyślny dostawca ({{provider}})",
+          "model": "Model",
+          "modelPlaceholder": "Wpisz nazwę modelu",
+          "readyEndpoint": "Punkt końcowy {{endpoint}} · Gotowy",
+          "readyProvider": "{{provider}} · {{model}} · Gotowy",
+          "notReadyTitle": "{{provider}} nie jest gotowy: {{reason}}",
+          "notReadyBody": "Dyktowanie z tym promptem pomija krok AI i zachowuje oryginalny tekst.",
+          "fix": {
+            "api_key": "Dodaj klucz API",
+            "endpoint": "Ustaw punkt końcowy"
+          },
+          "shortcuts": "Skróty (do {{limit}})",
+          "changedElsewhere": "Ten prompt został zmieniony w innym miejscu. Wczytaj go ponownie, aby zobaczyć zmianę, lub zapisz, aby zachować swoją wersję.",
+          "reload": "Wczytaj ponownie",
+          "deletedElsewhere": "Ten prompt został usunięty w innym miejscu i nie można go już zapisać.",
+          "shortcutsSavedImmediately": "Zmiany skrótów są zapisywane natychmiast.",
+          "fixField": {
+            "api_key": "Klucz API dla {{provider}}",
+            "endpoint": "Punkt końcowy {{provider}}",
+            "hint": "Zapisywane po opuszczeniu pola. Domyślny dostawca się nie zmienia."
+          }
+        },
+        "actions": {
+          "note": "Zmiany obowiązują od następnego dyktowania po zapisaniu.",
+          "fixFields": "Popraw zaznaczone pola, aby zapisać.",
+          "delete": "Usuń prompt",
+          "cancel": "Anuluj",
+          "save": "Zapisz",
+          "saving": "Zapisywanie…",
+          "saved": "Prompt zapisany."
+        },
+        "deleteDialog": {
+          "title": "Usunąć „{{name}}”?",
+          "shortcuts": "Jego skróty zostaną usunięte: {{shortcuts}}.",
+          "default": "To domyślny prompt: domyślną opcją stanie się Brak.",
+          "body": "Tej operacji nie można cofnąć.",
+          "cancel": "Anuluj",
+          "confirm": "Usuń",
+          "close": "Zamknij",
+          "deleted": "Usunięto prompt „{{name}}”.",
+          "deletedWithShortcuts": "Usunięto prompt „{{name}}”. Usunięte skróty: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Test",
+          "sampleLabel": "Przykładowy tekst",
+          "samplePlaceholder": "Wpisz lub wklej przykładową transkrypcję",
+          "run": "Uruchom test",
+          "running": "Testowanie…",
+          "note": "Nic nie zostanie wstawione, a historia się nie zmieni.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} s",
+          "failedTitle": "Test nie powiódł się: {{reason}}",
+          "failedHint": "Sprawdź ustawienia dostawcy, a następnie uruchom test ponownie.",
+          "retry": "Uruchom ponownie",
+          "busy": "Inny test wciąż trwa. Spróbuj ponownie po jego zakończeniu.",
+          "skipped": "Wpisz przykładowy tekst, aby przetestować prompt.",
+          "outdated": "Ten wynik dotyczy wcześniejszej wersji promptu lub próbki. Uruchom test ponownie."
+        },
+        "shortcutOwner": "prompt „{{name}}”"
       }
     },
     "history": {
@@ -870,6 +972,168 @@
         "label": "Pokaż nowości",
         "description": "Pokazuj informacje o wydaniu po aktualizacjach Handy"
       }
+    },
+    "replacements": {
+      "group": "Zamiany",
+      "title": "Reguły zamiany",
+      "description": "Przepisuj rozpoznany tekst zgodnie z własną pisownią. Stosowane po rozpoznaniu, w odróżnieniu od sekcji Słownictwo.",
+      "loading": "Wczytywanie reguł zamiany…",
+      "loadFailed": "Nie udało się wczytać reguł zamiany.",
+      "retry": "Spróbuj ponownie",
+      "views": {
+        "label": "Widok reguł",
+        "list": "Lista",
+        "text": "Tekst"
+      },
+      "import": "Importuj…",
+      "export": {
+        "button": "Eksportuj…",
+        "done": "Wyeksportowano reguły do {{name}}.",
+        "notSynced": "Wyeksportowano reguły do {{name}}, ale dysk nie potwierdził jeszcze zapisu.",
+        "symbolicLink": "{{name}} jest dowiązaniem: wybierz inny plik. Nic nie zostało wyeksportowane.",
+        "readOnly": "{{name}} jest tylko do odczytu: wybierz inny plik. Nic nie zostało wyeksportowane.",
+        "notWritten": "Nie udało się zapisać {{name}}. Plik pozostał bez zmian."
+      },
+      "add": {
+        "recognized": "Rozpoznany tekst",
+        "replacement": "Zamiennik",
+        "button": "Dodaj regułę",
+        "needsText": "Wpisz rozpoznany tekst i zamiennik, aby dodać regułę."
+      },
+      "rule": {
+        "edit": "Edytuj regułę {{recognized}}",
+        "done": "Zakończ edycję reguły {{recognized}}",
+        "delete": "Usuń regułę {{recognized}}",
+        "recognized": "Rozpoznany tekst reguły {{position}}",
+        "replacement": "Zamiennik reguły {{position}}"
+      },
+      "count": "Reguły: {{count}} z {{max}} · bez rozróżniania wielkości liter, całe słowa",
+      "empty": {
+        "title": "Brak reguł zamiany",
+        "body": "Dodaj regułę lub wklej wiersze, na przykład",
+        "paste": "Wklej reguły jako tekst"
+      },
+      "draft": {
+        "note": "Niezapisane zmiany. Dyktowanie korzysta z zapisanych reguł, dopóki nie zapiszesz zmian.",
+        "discard": "Odrzuć",
+        "save": "Zapisz",
+        "saving": "Zapisywanie…",
+        "saved": "Zapisano reguły zamiany."
+      },
+      "commit": {
+        "invalid": "Niektóre reguły są nieprawidłowe. Popraw wyróżnione wiersze i spróbuj ponownie.",
+        "unchanged": "Zapisane reguły nie zostały zmienione.",
+        "conflict": "Reguły zostały zmienione gdzie indziej, na przykład z wiersza poleceń. Wczytaj je ponownie, aby kontynuować.",
+        "reload": "Wczytaj ponownie",
+        "reloadDiscards": "Ponowne wczytanie pokaże zapisane reguły i odrzuci niezapisane zmiany."
+      },
+      "bulk": {
+        "editor": "Reguły jako tekst",
+        "hint": "Jedna reguła w wierszu: recognized;replacement. Przy wklejaniu z arkusza kalkulacyjnego działa też tabulator. Wiersze zaczynające się od # są pomijane.",
+        "cancel": "Anuluj",
+        "apply": "Zastosuj",
+        "applying": "Stosowanie…",
+        "applied": "Zastosowano reguły zamiany.",
+        "fixLine": "Popraw wiersz {{line}}, aby zastosować. Zapisane reguły nie zostały zmienione.",
+        "fixLines": "Popraw błędne wiersze (liczba: {{count}}), aby zastosować. Zapisane reguły nie zostały zmienione.",
+        "ready": "Zastosowanie zastąpi zapisane reguły tym podglądem.",
+        "noChanges": "Nic do zastosowania: tekst jest zgodny z zapisanymi regułami."
+      },
+      "preview": {
+        "title": "Podgląd",
+        "updating": "Aktualizowanie podglądu…",
+        "errorOne": "1 błąd · Zastosowanie niedostępne",
+        "errorMany": "Błędy: {{count}} · Zastosowanie niedostępne",
+        "changes": "Do dodania: {{adds}} · do aktualizacji: {{updates}} · do usunięcia: {{deletes}}",
+        "noChanges": "Brak zmian",
+        "omitted": "Niewyświetlone wiersze: {{count}}",
+        "duplicateOf": "Ten sam rozpoznany tekst co w wierszu {{lines}}",
+        "kinds": {
+          "add": "Dodanie",
+          "update": "Aktualizacja",
+          "delete": "Usunięcie",
+          "unchanged": "Bez zmian",
+          "ignored": "Pominięto",
+          "error": "Błąd"
+        },
+        "ignored": {
+          "header": "Wiersz nagłówka",
+          "blank": "Pusty wiersz",
+          "comment": "Komentarz"
+        }
+      },
+      "importDialog": {
+        "title": "Importuj reguły",
+        "close": "Zamknij",
+        "fileOne": "{{name}} · 1 wiersz · UTF-8",
+        "fileMany": "{{name}} · wiersze: {{count}} · UTF-8",
+        "mode": "Tryb",
+        "merge": "Scal: zaktualizuj pasujące reguły, dodaj nowe na końcu",
+        "replace": "Zastąp: plik staje się całym zestawem reguł",
+        "previewing": "Odczytywanie pliku…",
+        "updateOne": "1 aktualizacja",
+        "updateMany": "Aktualizacje: {{count}}",
+        "addOne": "1 dodanie",
+        "addMany": "Dodania: {{count}}",
+        "deleteOne": "1 usunięcie",
+        "deleteMany": "Usunięcia: {{count}}",
+        "errorOne": "1 błąd",
+        "errorMany": "Błędy: {{count}}",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (aktualizacja, zachowuje pozycję {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (dodana na końcu)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (usunięta)",
+        "noChanges": "Ten plik jest zgodny z zapisanymi regułami: nie ma nic do zaimportowania.",
+        "firstError": "Wiersz {{line}}: {{reason}}",
+        "cancel": "Anuluj",
+        "apply": "Zastosuj import",
+        "applying": "Importowanie…",
+        "imported": "Zaimportowano reguły."
+      },
+      "importRefusal": {
+        "encodingTitle": "Nie można zaimportować {{name}}: to nie jest tekst UTF-8",
+        "encodingBody": "Z tego pliku nic nie zaimportowano. Wyeksportuj zwykły tekst lub CSV, a następnie zaimportuj ponownie.",
+        "tooLargeTitle": "Nie można zaimportować {{name}}: plik jest większy niż 1 MB",
+        "tooLargeBody": "Nic nie zaimportowano. Podziel plik na mniejsze pliki, a następnie zaimportuj każdy z nich.",
+        "unreadableTitle": "Nie można odczytać {{name}}",
+        "unreadableBody": "Nic nie zaimportowano. Sprawdź, czy plik nadal istnieje i czy Handy może go otworzyć.",
+        "dismiss": "Zamknij"
+      },
+      "deleteDialog": {
+        "title": "Usunąć tę regułę?",
+        "body": "Reguła {{recognized}} → {{replacement}} zostanie usunięta z listy. Zapisz, aby zastosować zmianę.",
+        "cancel": "Anuluj",
+        "confirm": "Usuń"
+      },
+      "switchDialog": {
+        "title": "Zapisz lub odrzuć zmiany",
+        "body": "Lista i tekst edytują te same reguły. Najpierw zapisz lub odrzuć niezapisane zmiany.",
+        "cancel": "Anuluj",
+        "discard": "Odrzuć",
+        "save": "Zapisz"
+      },
+      "issues": {
+        "recognizedEmpty": "Wpisz rozpoznany tekst.",
+        "recognizedTooLong": "Rozpoznany tekst może mieć maksymalnie 100 znaków.",
+        "recognizedForbidden": "Rozpoznany tekst nie może zawierać podziału wiersza, tabulatora ani ;.",
+        "recognizedControl": "Rozpoznany tekst zawiera niewidoczny znak sterujący.",
+        "recognizedComment": "Rozpoznany tekst nie może zaczynać się od #.",
+        "duplicate": "Każdy rozpoznany tekst może wystąpić tylko raz; ten jest już zdefiniowany.",
+        "replacementEmpty": "Wpisz zamiennik.",
+        "replacementTooLong": "Zamiennik może mieć maksymalnie 500 znaków.",
+        "replacementForbidden": "Zamiennik nie może zawierać podziału wiersza ani tabulatora.",
+        "replacementControl": "Zamiennik zawiera niewidoczny znak sterujący.",
+        "missingSeparator": "Brak separatora: dodaj ;, a po nim zamiennik",
+        "tooManyRules": "Zestaw reguł może zawierać maksymalnie 1000 reguł.",
+        "invalidSavedRules": "Zapisane reguły są nieprawidłowe. Wczytaj je ponownie przed importem.",
+        "unicodeUnavailable": "Nie można teraz sprawdzić reguł. Uruchom ponownie Handy i spróbuj jeszcze raz.",
+        "invalidRule": "Ta reguła jest nieprawidłowa."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Niezapisane zmiany",
+      "description": "Niektóre reguły zamiany nie są zapisane. Zostań, aby je zapisać, lub odrzuć je i wyjdź.",
+      "stay": "Zostań",
+      "discard": "Odrzuć i wyjdź"
     }
   },
   "footer": {

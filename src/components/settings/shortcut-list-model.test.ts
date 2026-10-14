@@ -8,11 +8,16 @@ import type {
 } from "@/bindings";
 import {
   MAX_SHORTCUTS_PER_ACTION,
+  PROMPT_SHORTCUT_LIMITS,
   canAddShortcut,
   canRemoveShortcut,
   describeEditError,
   describeShortcutFailure,
   keepStoredRefusals,
+  limitsFor,
+  promptIdOf,
+  promptNameOfTarget,
+  promptTargetOf,
   refusalFor,
   shortcutsOf,
   storedConflictFor,
@@ -216,6 +221,38 @@ assert.deepEqual(
     actionName,
   ),
   { key: "errors.settings.persistenceFailed", params: {} },
+);
+
+// @spec AC-006: Prompt targets keep 0–2 shortcuts — .specs/features/005-custom-ai-prompts/spec.md#ac-006
+// Prompt targets (005): `prompt:<id>`, 0 to 2 shortcuts, the last one
+// removable, no default to reset to.
+assert.equal(promptTargetOf("abc"), "prompt:abc");
+assert.equal(promptIdOf("prompt:abc"), "abc");
+assert.equal(promptIdOf("transcribe"), null);
+assert.deepEqual(limitsFor("prompt:abc"), PROMPT_SHORTCUT_LIMITS);
+assert.deepEqual(limitsFor("transcribe"), {
+  max: MAX_SHORTCUTS_PER_ACTION,
+  min: 1,
+  resettable: true,
+});
+assert.equal(canAddShortcut(1, PROMPT_SHORTCUT_LIMITS), true);
+assert.equal(canAddShortcut(2, PROMPT_SHORTCUT_LIMITS), false);
+assert.equal(canRemoveShortcut(1, PROMPT_SHORTCUT_LIMITS), true);
+assert.equal(canRemoveShortcut(0, PROMPT_SHORTCUT_LIMITS), false);
+assert.equal(PROMPT_SHORTCUT_LIMITS.resettable, false);
+// A prompt target left without shortcuts has an empty first shortcut.
+assert.deepEqual(
+  shortcutsOf({ ...binding(), id: "prompt:abc", current_binding: "" }),
+  [],
+);
+// Messages name a prompt target after its prompt.
+const prompts = [{ id: "abc", name: "Notes" }];
+assert.equal(promptNameOfTarget(prompts, "prompt:abc"), "Notes");
+assert.equal(promptNameOfTarget(prompts, "prompt:gone"), "gone");
+assert.equal(promptNameOfTarget(prompts, "transcribe"), null);
+assert.deepEqual(
+  describeEditError({ code: "limit_exceeded", limit: 2 }, actionName),
+  { key: "settings.general.shortcut.list.addLimit", params: { limit: 2 } },
 );
 
 console.log("shortcut-list-model: all assertions passed");

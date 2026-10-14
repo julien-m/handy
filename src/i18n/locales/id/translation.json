@@ -662,26 +662,128 @@
           "refreshModels": "Segarkan model"
         }
       },
-      "prompts": {
-        "title": "Prompt",
-        "selectedPrompt": {
-          "title": "Prompt Terpilih",
-          "description": "Pilih templat untuk menyempurnakan transkripsi atau buat yang baru. Gunakan ${output} dalam teks prompt untuk merujuk ke hasil transkripsi."
+      "promptLibrary": {
+        "processing": {
+          "title": "Pascaproses AI",
+          "enabledDescription": "Proses dikte dengan prompt. Nonaktif: tidak ada dikte yang diproses.",
+          "defaultTitle": "Prompt bawaan",
+          "defaultDescription": "Digunakan oleh pintasan dikte AI. Dikte biasa dimulai dengan Tidak ada.",
+          "none": "Tidak ada",
+          "invalidOption": "Tidak valid: edit sebelum digunakan"
         },
-        "noPrompts": "Tidak ada prompt yang tersedia",
-        "selectPrompt": "Pilih prompt",
-        "createNew": "Buat Prompt Baru",
-        "promptLabel": "Label Prompt",
-        "promptLabelPlaceholder": "Masukkan nama prompt",
-        "promptInstructions": "Instruksi Prompt",
-        "promptInstructionsPlaceholder": "Tulis instruksi yang dijalankan setelah transkripsi. Contoh: Perbaiki tata bahasa dan kejelasan teks berikut: ${output}",
-        "promptTip": "Tips: Gunakan <code>${output}</code> untuk menyisipkan teks hasil transkripsi ke prompt Anda.",
-        "updatePrompt": "Perbarui Prompt",
-        "deletePrompt": "Hapus Prompt",
-        "createPrompt": "Buat Prompt",
-        "cancel": "Batal",
-        "selectToEdit": "Pilih prompt di atas untuk melihat dan mengedit detailnya.",
-        "createFirst": "Klik 'Buat Prompt Baru' di atas untuk membuat prompt pascaproses pertama Anda."
+        "list": {
+          "title": "Prompt",
+          "count": "{{count}} dari {{limit}} prompt",
+          "full": "{{limit}} dari {{limit}} prompt: hapus satu untuk menambahkan yang lain",
+          "new": "Prompt baru",
+          "empty": "Belum ada prompt. Buat satu untuk memproses dikte Anda.",
+          "loading": "Memuat prompt…",
+          "loadFailed": "Prompt tidak dapat dimuat.",
+          "retry": "Coba lagi",
+          "edit": "Ubah {{name}}",
+          "defaultProvider": "Penyedia bawaan",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Tanpa pintasan",
+          "notReady": "Belum siap: {{reason}}",
+          "invalid": "Tidak valid: {{reason}}",
+          "reloadFailed": "Prompt tidak dapat dimuat ulang. Yang ditampilkan mungkin sudah usang."
+        },
+        "issues": {
+          "name_empty": "nama kosong",
+          "name_too_long": "nama terlalu panjang",
+          "name_duplicate": "nama duplikat",
+          "text_empty": "teks kosong",
+          "text_too_long": "teks terlalu panjang",
+          "override_incomplete": "penyedia atau model belum diisi",
+          "unknown_provider": "penyedia tidak dikenal"
+        },
+        "reasons": {
+          "provider_error": "penyedia mengembalikan galat",
+          "empty_result": "penyedia mengembalikan hasil kosong",
+          "timeout": "tidak ada jawaban dalam 30 detik",
+          "provider_busy": "penyedia masih sibuk dengan permintaan lain",
+          "missing_endpoint": "endpoint belum diisi",
+          "missing_model": "model belum diisi",
+          "missing_api_key": "kunci API belum diisi",
+          "provider_unavailable": "penyedia tidak tersedia di perangkat ini",
+          "unknown_provider": "penyedia tidak dikenal",
+          "invalid_prompt": "prompt tidak valid",
+          "prompt_missing": "prompt sudah tidak ada"
+        },
+        "editor": {
+          "editTitle": "Edit prompt",
+          "newTitle": "Prompt baru",
+          "name": "Nama",
+          "namePlaceholder": "Nama prompt",
+          "text": "Prompt",
+          "textPlaceholder": "Tulis instruksi yang diterapkan pada transkrip. Contoh: Persingkat transkrip menjadi intinya saja. ${output}",
+          "textHint": "<code>${output}</code> diganti dengan transkrip.",
+          "fieldErrors": {
+            "name_empty": "Masukkan nama (1–60 karakter).",
+            "name_too_long": "Gunakan paling banyak 60 karakter.",
+            "name_duplicate": "Prompt lain sudah memakai nama ini. Nama harus unik.",
+            "text_empty": "Masukkan teks prompt.",
+            "text_too_long": "Gunakan paling banyak 8.000 karakter."
+          },
+          "provider": "Penyedia",
+          "defaultProviderOption": "Penyedia bawaan ({{provider}})",
+          "model": "Model",
+          "modelPlaceholder": "Ketik nama model",
+          "readyEndpoint": "Endpoint {{endpoint}} · Siap",
+          "readyProvider": "{{provider}} · {{model}} · Siap",
+          "notReadyTitle": "{{provider}} belum siap: {{reason}}",
+          "notReadyBody": "Dikte dengan prompt ini melewati langkah AI dan mempertahankan teks asli.",
+          "fix": {
+            "api_key": "Tambahkan kunci API",
+            "endpoint": "Atur endpoint"
+          },
+          "shortcuts": "Pintasan (maksimal {{limit}})",
+          "changedElsewhere": "Prompt ini diubah di tempat lain. Muat ulang untuk melihat perubahannya, atau simpan untuk mempertahankan versi Anda.",
+          "reload": "Muat ulang",
+          "deletedElsewhere": "Prompt ini dihapus di tempat lain dan tidak dapat disimpan lagi.",
+          "shortcutsSavedImmediately": "Perubahan pintasan langsung disimpan.",
+          "fixField": {
+            "api_key": "Kunci API untuk {{provider}}",
+            "endpoint": "Endpoint {{provider}}",
+            "hint": "Disimpan saat Anda meninggalkan kolom. Penyedia bawaan tidak berubah."
+          }
+        },
+        "actions": {
+          "note": "Perubahan berlaku untuk dikte berikutnya setelah Anda menyimpan.",
+          "fixFields": "Perbaiki kolom yang ditandai untuk menyimpan.",
+          "delete": "Hapus prompt",
+          "cancel": "Batal",
+          "save": "Simpan",
+          "saving": "Menyimpan…",
+          "saved": "Prompt disimpan."
+        },
+        "deleteDialog": {
+          "title": "Hapus “{{name}}”?",
+          "shortcuts": "Pintasannya akan dihapus: {{shortcuts}}.",
+          "default": "Ini prompt bawaan: bawaannya menjadi Tidak ada.",
+          "body": "Tindakan ini tidak dapat dibatalkan.",
+          "cancel": "Batal",
+          "confirm": "Hapus",
+          "close": "Tutup",
+          "deleted": "Prompt “{{name}}” dihapus.",
+          "deletedWithShortcuts": "Prompt “{{name}}” dihapus. Pintasan yang dihapus: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Uji",
+          "sampleLabel": "Teks contoh",
+          "samplePlaceholder": "Ketik atau tempel contoh transkrip",
+          "run": "Jalankan uji",
+          "running": "Menguji…",
+          "note": "Tidak ada yang disisipkan dan riwayat tidak berubah.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} dtk",
+          "failedTitle": "Uji gagal: {{reason}}",
+          "failedHint": "Periksa pengaturan penyedia, lalu jalankan uji lagi.",
+          "retry": "Jalankan lagi",
+          "busy": "Uji lain masih berjalan. Coba lagi setelah selesai.",
+          "skipped": "Masukkan teks contoh untuk menguji prompt.",
+          "outdated": "Hasil ini untuk versi prompt atau sampel sebelumnya. Jalankan pengujian lagi."
+        },
+        "shortcutOwner": "prompt “{{name}}”"
       }
     },
     "history": {
@@ -870,6 +972,168 @@
           "details": "Fitur ucapan-ke-teks lokal Handy dibangun menggunakan transcribe.cpp dan ggml. Terima kasih kepada Georgi Gerganov dan para kontributor atas karya luar biasa mereka."
         }
       }
+    },
+    "replacements": {
+      "group": "Penggantian",
+      "title": "Aturan penggantian",
+      "description": "Tulis ulang teks yang dikenali dengan ejaan Anda sendiri. Diterapkan setelah pengenalan, berbeda dengan Kosakata.",
+      "loading": "Memuat aturan penggantian…",
+      "loadFailed": "Aturan penggantian tidak dapat dimuat.",
+      "retry": "Coba lagi",
+      "views": {
+        "label": "Tampilan aturan",
+        "list": "Daftar",
+        "text": "Teks"
+      },
+      "import": "Impor…",
+      "export": {
+        "button": "Ekspor…",
+        "done": "Aturan diekspor ke {{name}}.",
+        "notSynced": "Aturan diekspor ke {{name}}, tetapi disk belum mengonfirmasi penulisan.",
+        "symbolicLink": "{{name}} adalah tautan: pilih file lain. Tidak ada yang diekspor.",
+        "readOnly": "{{name}} hanya-baca: pilih file lain. Tidak ada yang diekspor.",
+        "notWritten": "{{name}} tidak dapat ditulis. File tidak berubah."
+      },
+      "add": {
+        "recognized": "Teks yang dikenali",
+        "replacement": "Pengganti",
+        "button": "Tambah aturan",
+        "needsText": "Masukkan teks yang dikenali dan penggantinya untuk menambahkan aturan."
+      },
+      "rule": {
+        "edit": "Edit aturan {{recognized}}",
+        "done": "Selesai mengedit aturan {{recognized}}",
+        "delete": "Hapus aturan {{recognized}}",
+        "recognized": "Teks yang dikenali pada aturan {{position}}",
+        "replacement": "Pengganti pada aturan {{position}}"
+      },
+      "count": "{{count}} dari {{max}} aturan · tidak peka huruf besar/kecil, kata utuh",
+      "empty": {
+        "title": "Belum ada aturan penggantian",
+        "body": "Tambahkan aturan, atau tempel baris seperti",
+        "paste": "Tempel aturan sebagai teks"
+      },
+      "draft": {
+        "note": "Perubahan belum disimpan. Dikte menggunakan aturan tersimpan sampai Anda menyimpan.",
+        "discard": "Buang",
+        "save": "Simpan",
+        "saving": "Menyimpan…",
+        "saved": "Aturan penggantian disimpan."
+      },
+      "commit": {
+        "invalid": "Beberapa aturan tidak valid. Perbaiki baris yang ditandai, lalu coba lagi.",
+        "unchanged": "Aturan tersimpan tidak berubah.",
+        "conflict": "Aturan diubah di tempat lain, misalnya dari baris perintah. Muat ulang untuk melanjutkan.",
+        "reload": "Muat ulang",
+        "reloadDiscards": "Memuat ulang akan menampilkan aturan yang tersimpan dan membuang perubahan yang belum disimpan."
+      },
+      "bulk": {
+        "editor": "Aturan sebagai teks",
+        "hint": "Satu aturan per baris: recognized;replacement. Tab juga dapat digunakan untuk menempel dari spreadsheet. Baris yang diawali # diabaikan.",
+        "cancel": "Batal",
+        "apply": "Terapkan",
+        "applying": "Menerapkan…",
+        "applied": "Aturan penggantian diterapkan.",
+        "fixLine": "Perbaiki baris {{line}} untuk menerapkan. Aturan tersimpan tidak berubah.",
+        "fixLines": "Perbaiki {{count}} baris yang bermasalah untuk menerapkan. Aturan tersimpan tidak berubah.",
+        "ready": "Terapkan akan mengganti aturan tersimpan dengan pratinjau ini.",
+        "noChanges": "Tidak ada yang perlu diterapkan: teks sama dengan aturan tersimpan."
+      },
+      "preview": {
+        "title": "Pratinjau",
+        "updating": "Memperbarui pratinjau…",
+        "errorOne": "1 kesalahan · Terapkan tidak tersedia",
+        "errorMany": "{{count}} kesalahan · Terapkan tidak tersedia",
+        "changes": "{{adds}} ditambahkan · {{updates}} diperbarui · {{deletes}} dihapus",
+        "noChanges": "Tidak ada perubahan",
+        "omitted": "Baris tidak ditampilkan: {{count}}",
+        "duplicateOf": "Teks yang dikenali sama dengan baris {{lines}}",
+        "kinds": {
+          "add": "Tambah",
+          "update": "Perbarui",
+          "delete": "Hapus",
+          "unchanged": "Tidak berubah",
+          "ignored": "Diabaikan",
+          "error": "Kesalahan"
+        },
+        "ignored": {
+          "header": "Baris header",
+          "blank": "Baris kosong",
+          "comment": "Komentar"
+        }
+      },
+      "importDialog": {
+        "title": "Impor aturan",
+        "close": "Tutup",
+        "fileOne": "{{name}} · 1 baris · UTF-8",
+        "fileMany": "{{name}} · {{count}} baris · UTF-8",
+        "mode": "Mode",
+        "merge": "Gabungkan: perbarui aturan yang cocok, tambahkan aturan baru di akhir",
+        "replace": "Ganti: file menjadi seluruh kumpulan aturan",
+        "previewing": "Membaca file…",
+        "updateOne": "1 pembaruan",
+        "updateMany": "{{count}} pembaruan",
+        "addOne": "1 penambahan",
+        "addMany": "{{count}} penambahan",
+        "deleteOne": "1 penghapusan",
+        "deleteMany": "{{count}} penghapusan",
+        "errorOne": "1 kesalahan",
+        "errorMany": "{{count}} kesalahan",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (diperbarui, tetap di posisi {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (ditambahkan di akhir)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (dihapus)",
+        "noChanges": "File ini sama dengan aturan tersimpan: tidak ada yang perlu diimpor.",
+        "firstError": "Baris {{line}}: {{reason}}",
+        "cancel": "Batal",
+        "apply": "Terapkan impor",
+        "applying": "Mengimpor…",
+        "imported": "Aturan diimpor."
+      },
+      "importRefusal": {
+        "encodingTitle": "Tidak dapat mengimpor {{name}}: file ini bukan teks UTF-8",
+        "encodingBody": "Tidak ada yang diimpor dari file tersebut. Ekspor sebagai teks biasa atau CSV, lalu impor lagi.",
+        "tooLargeTitle": "Tidak dapat mengimpor {{name}}: ukurannya lebih dari 1 MB",
+        "tooLargeBody": "Tidak ada yang diimpor. Pecah file menjadi beberapa file yang lebih kecil, lalu impor satu per satu.",
+        "unreadableTitle": "Tidak dapat membaca {{name}}",
+        "unreadableBody": "Tidak ada yang diimpor. Pastikan file masih ada dan Handy dapat membukanya.",
+        "dismiss": "Tutup"
+      },
+      "deleteDialog": {
+        "title": "Hapus aturan ini?",
+        "body": "{{recognized}} → {{replacement}} akan dihapus dari daftar. Simpan untuk menerapkan perubahan.",
+        "cancel": "Batal",
+        "confirm": "Hapus"
+      },
+      "switchDialog": {
+        "title": "Simpan atau buang perubahan Anda",
+        "body": "Daftar dan teks mengedit aturan yang sama. Simpan atau buang dulu perubahan yang belum disimpan.",
+        "cancel": "Batal",
+        "discard": "Buang",
+        "save": "Simpan"
+      },
+      "issues": {
+        "recognizedEmpty": "Masukkan teks yang dikenali.",
+        "recognizedTooLong": "Teks yang dikenali dibatasi hingga 100 karakter.",
+        "recognizedForbidden": "Teks yang dikenali tidak boleh berisi baris baru, tab, atau ;.",
+        "recognizedControl": "Teks yang dikenali berisi karakter kontrol yang tidak terlihat.",
+        "recognizedComment": "Teks yang dikenali tidak boleh diawali #.",
+        "duplicate": "Setiap teks yang dikenali hanya boleh muncul sekali; teks ini sudah didefinisikan.",
+        "replacementEmpty": "Masukkan pengganti.",
+        "replacementTooLong": "Pengganti dibatasi hingga 500 karakter.",
+        "replacementForbidden": "Pengganti tidak boleh berisi baris baru atau tab.",
+        "replacementControl": "Pengganti berisi karakter kontrol yang tidak terlihat.",
+        "missingSeparator": "Pemisah tidak ada: tambahkan ; lalu penggantinya",
+        "tooManyRules": "Satu kumpulan aturan berisi paling banyak 1.000 aturan.",
+        "invalidSavedRules": "Aturan tersimpan tidak valid. Muat ulang sebelum mengimpor.",
+        "unicodeUnavailable": "Aturan tidak dapat diperiksa saat ini. Mulai ulang Handy, lalu coba lagi.",
+        "invalidRule": "Aturan ini tidak valid."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Perubahan belum disimpan",
+      "description": "Beberapa aturan penggantian Anda belum disimpan. Tetap di sini untuk menyimpannya, atau buang dan keluar.",
+      "stay": "Tetap di sini",
+      "discard": "Buang dan keluar"
     }
   },
   "footer": {

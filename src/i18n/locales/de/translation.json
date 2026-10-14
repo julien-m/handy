@@ -662,26 +662,128 @@
           "refreshModels": "Modelle aktualisieren"
         }
       },
-      "prompts": {
-        "title": "Prompt",
-        "selectedPrompt": {
-          "title": "Ausgewählter Prompt",
-          "description": "Wähle eine Vorlage zur Verfeinerung von Transkriptionen oder erstelle eine neue. Verwende ${output} im Prompt-Text, um auf das erfasste Transkript zu verweisen."
+      "promptLibrary": {
+        "processing": {
+          "title": "KI-Nachbearbeitung",
+          "enabledDescription": "Diktate mit einem Prompt verarbeiten. Aus: Kein Diktat wird verarbeitet.",
+          "defaultTitle": "Standard-Prompt",
+          "defaultDescription": "Wird vom KI-Diktat-Tastenkürzel verwendet. Einfaches Diktat beginnt mit Keiner.",
+          "none": "Keiner",
+          "invalidOption": "Ungültig: vor der Verwendung bearbeiten"
         },
-        "noPrompts": "Keine Prompts verfügbar",
-        "selectPrompt": "Prompt auswählen",
-        "createNew": "Neuen Prompt erstellen",
-        "promptLabel": "Prompt-Name",
-        "promptLabelPlaceholder": "Prompt-Namen eingeben",
-        "promptInstructions": "Prompt-Anweisungen",
-        "promptInstructionsPlaceholder": "Schreibe die Anweisungen, die nach der Transkription ausgeführt werden sollen. Beispiel: Verbessere Grammatik und Klarheit für folgenden Text: ${output}",
-        "promptTip": "Tipp: Verwende <code>${output}</code>, um den transkribierten Text in deinen Prompt einzufügen.",
-        "updatePrompt": "Prompt aktualisieren",
-        "deletePrompt": "Prompt löschen",
-        "createPrompt": "Prompt erstellen",
-        "cancel": "Abbrechen",
-        "selectToEdit": "Wähle oben einen Prompt aus, um dessen Details anzuzeigen und zu bearbeiten.",
-        "createFirst": "Klicke oben auf 'Neuen Prompt erstellen', um deinen ersten Nachbearbeitungs-Prompt zu erstellen."
+        "list": {
+          "title": "Prompts",
+          "count": "{{count}} von {{limit}} Prompts",
+          "full": "{{limit}} von {{limit}} Prompts: Lösche einen, um einen weiteren hinzuzufügen",
+          "new": "Neuer Prompt",
+          "empty": "Noch keine Prompts. Erstelle einen, um deine Diktate zu verarbeiten.",
+          "loading": "Prompts werden geladen…",
+          "loadFailed": "Die Prompts konnten nicht geladen werden.",
+          "retry": "Erneut versuchen",
+          "edit": "{{name}} bearbeiten",
+          "defaultProvider": "Standardanbieter",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Kein Tastenkürzel",
+          "notReady": "Nicht bereit: {{reason}}",
+          "invalid": "Ungültig: {{reason}}",
+          "reloadFailed": "Die Prompts konnten nicht aktualisiert werden. Die Anzeige ist möglicherweise veraltet."
+        },
+        "issues": {
+          "name_empty": "Name fehlt",
+          "name_too_long": "Name zu lang",
+          "name_duplicate": "doppelter Name",
+          "text_empty": "Text fehlt",
+          "text_too_long": "Text zu lang",
+          "override_incomplete": "Anbieter oder Modell fehlt",
+          "unknown_provider": "unbekannter Anbieter"
+        },
+        "reasons": {
+          "provider_error": "der Anbieter hat einen Fehler zurückgegeben",
+          "empty_result": "der Anbieter hat ein leeres Ergebnis zurückgegeben",
+          "timeout": "keine Antwort innerhalb von 30 Sekunden",
+          "provider_busy": "der Anbieter bearbeitet noch eine andere Anfrage",
+          "missing_endpoint": "Endpunkt fehlt",
+          "missing_model": "Modell fehlt",
+          "missing_api_key": "API-Schlüssel fehlt",
+          "provider_unavailable": "Anbieter auf diesem Gerät nicht verfügbar",
+          "unknown_provider": "unbekannter Anbieter",
+          "invalid_prompt": "der Prompt ist ungültig",
+          "prompt_missing": "der Prompt existiert nicht mehr"
+        },
+        "editor": {
+          "editTitle": "Prompt bearbeiten",
+          "newTitle": "Neuer Prompt",
+          "name": "Name",
+          "namePlaceholder": "Name des Prompts",
+          "text": "Prompt",
+          "textPlaceholder": "Schreibe die Anweisungen für das Transkript. Beispiel: Kürze das Transkript auf das Wesentliche. ${output}",
+          "textHint": "<code>${output}</code> wird durch das Transkript ersetzt.",
+          "fieldErrors": {
+            "name_empty": "Gib einen Namen ein (1–60 Zeichen).",
+            "name_too_long": "Verwende höchstens 60 Zeichen.",
+            "name_duplicate": "Ein anderer Prompt hat diesen Namen. Namen müssen eindeutig sein.",
+            "text_empty": "Gib den Text des Prompts ein.",
+            "text_too_long": "Verwende höchstens 8.000 Zeichen."
+          },
+          "provider": "Anbieter",
+          "defaultProviderOption": "Standardanbieter ({{provider}})",
+          "model": "Modell",
+          "modelPlaceholder": "Modellnamen eingeben",
+          "readyEndpoint": "Endpunkt {{endpoint}} · Bereit",
+          "readyProvider": "{{provider}} · {{model}} · Bereit",
+          "notReadyTitle": "{{provider}} ist nicht bereit: {{reason}}",
+          "notReadyBody": "Diktate mit diesem Prompt überspringen den KI-Schritt und behalten den Originaltext.",
+          "fix": {
+            "api_key": "API-Schlüssel hinzufügen",
+            "endpoint": "Endpunkt festlegen"
+          },
+          "shortcuts": "Tastenkürzel (bis zu {{limit}})",
+          "changedElsewhere": "Dieser Prompt wurde an anderer Stelle geändert. Lade ihn neu, um die Änderung zu sehen, oder speichere, um deine Version zu behalten.",
+          "reload": "Neu laden",
+          "deletedElsewhere": "Dieser Prompt wurde an anderer Stelle gelöscht und kann nicht mehr gespeichert werden.",
+          "shortcutsSavedImmediately": "Änderungen an Tastenkürzeln werden sofort gespeichert.",
+          "fixField": {
+            "api_key": "API-Schlüssel für {{provider}}",
+            "endpoint": "Endpunkt von {{provider}}",
+            "hint": "Wird beim Verlassen des Feldes gespeichert. Der Standardanbieter ändert sich nicht."
+          }
+        },
+        "actions": {
+          "note": "Änderungen gelten ab dem nächsten Diktat nach dem Speichern.",
+          "fixFields": "Korrigiere die markierten Felder, um zu speichern.",
+          "delete": "Prompt löschen",
+          "cancel": "Abbrechen",
+          "save": "Speichern",
+          "saving": "Wird gespeichert…",
+          "saved": "Prompt gespeichert."
+        },
+        "deleteDialog": {
+          "title": "„{{name}}“ löschen?",
+          "shortcuts": "Seine Tastenkürzel werden entfernt: {{shortcuts}}.",
+          "default": "Es ist der Standard-Prompt: Der Standard wird zu Keiner.",
+          "body": "Dies kann nicht rückgängig gemacht werden.",
+          "cancel": "Abbrechen",
+          "confirm": "Löschen",
+          "close": "Schließen",
+          "deleted": "Prompt „{{name}}“ gelöscht.",
+          "deletedWithShortcuts": "Prompt „{{name}}“ gelöscht. Entfernte Tastenkürzel: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Test",
+          "sampleLabel": "Beispieltext",
+          "samplePlaceholder": "Beispieltranskript eingeben oder einfügen",
+          "run": "Test starten",
+          "running": "Test läuft…",
+          "note": "Es wird nichts eingefügt und der Verlauf bleibt unverändert.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} s",
+          "failedTitle": "Test fehlgeschlagen: {{reason}}",
+          "failedHint": "Prüfe die Anbietereinstellungen und starte den Test erneut.",
+          "retry": "Erneut starten",
+          "busy": "Ein anderer Test läuft noch. Versuche es erneut, wenn er beendet ist.",
+          "skipped": "Gib einen Beispieltext ein, um den Prompt zu testen.",
+          "outdated": "Dieses Ergebnis gehört zu einer früheren Version des Prompts oder Beispiels. Starte den Test erneut."
+        },
+        "shortcutOwner": "den Prompt „{{name}}“"
       }
     },
     "history": {
@@ -870,6 +972,168 @@
         "label": "Neuerungen anzeigen",
         "description": "Versionshinweise nach Handy-Updates anzeigen"
       }
+    },
+    "replacements": {
+      "group": "Ersetzungen",
+      "title": "Ersetzungsregeln",
+      "description": "Schreibe erkannten Text in deiner eigenen Schreibweise um. Wird anders als das Vokabular erst nach der Erkennung angewendet.",
+      "loading": "Ersetzungsregeln werden geladen…",
+      "loadFailed": "Die Ersetzungsregeln konnten nicht geladen werden.",
+      "retry": "Erneut versuchen",
+      "views": {
+        "label": "Regelansicht",
+        "list": "Liste",
+        "text": "Text"
+      },
+      "import": "Importieren…",
+      "export": {
+        "button": "Exportieren…",
+        "done": "Regeln nach {{name}} exportiert.",
+        "notSynced": "Regeln nach {{name}} exportiert, aber das Speichern auf dem Datenträger ist noch nicht bestätigt.",
+        "symbolicLink": "{{name}} ist ein Link: Wähle eine andere Datei. Es wurde nichts exportiert.",
+        "readOnly": "{{name}} ist schreibgeschützt: Wähle eine andere Datei. Es wurde nichts exportiert.",
+        "notWritten": "{{name}} konnte nicht geschrieben werden. Die Datei ist unverändert."
+      },
+      "add": {
+        "recognized": "Erkannter Text",
+        "replacement": "Ersetzung",
+        "button": "Regel hinzufügen",
+        "needsText": "Gib den erkannten Text und die Ersetzung ein, um eine Regel hinzuzufügen."
+      },
+      "rule": {
+        "edit": "Regel {{recognized}} bearbeiten",
+        "done": "Bearbeitung der Regel {{recognized}} beenden",
+        "delete": "Regel {{recognized}} löschen",
+        "recognized": "Erkannter Text der Regel {{position}}",
+        "replacement": "Ersetzung der Regel {{position}}"
+      },
+      "count": "{{count}} von {{max}} Regeln · ohne Beachtung der Groß-/Kleinschreibung, nur ganze Wörter",
+      "empty": {
+        "title": "Noch keine Ersetzungsregeln",
+        "body": "Füge eine Regel hinzu oder füge Zeilen ein wie",
+        "paste": "Regeln als Text einfügen"
+      },
+      "draft": {
+        "note": "Nicht gespeicherte Änderungen. Diktate verwenden die gespeicherten Regeln, bis du speicherst.",
+        "discard": "Verwerfen",
+        "save": "Speichern",
+        "saving": "Wird gespeichert…",
+        "saved": "Ersetzungsregeln gespeichert."
+      },
+      "commit": {
+        "invalid": "Einige Regeln sind ungültig. Korrigiere die markierten Zeilen und versuche es erneut.",
+        "unchanged": "Die gespeicherten Regeln sind unverändert.",
+        "conflict": "Die Regeln wurden an anderer Stelle geändert, zum Beispiel über die Befehlszeile. Lade sie neu, um fortzufahren.",
+        "reload": "Neu laden",
+        "reloadDiscards": "Beim Neuladen werden die gespeicherten Regeln angezeigt und deine nicht gespeicherten Änderungen verworfen."
+      },
+      "bulk": {
+        "editor": "Regeln als Text",
+        "hint": "Eine Regel pro Zeile: recognized;replacement. Ein Tabulator funktioniert auch beim Einfügen aus einer Tabelle. Zeilen, die mit # beginnen, werden ignoriert.",
+        "cancel": "Abbrechen",
+        "apply": "Anwenden",
+        "applying": "Wird angewendet…",
+        "applied": "Ersetzungsregeln angewendet.",
+        "fixLine": "Korrigiere Zeile {{line}}, um anzuwenden. Die gespeicherten Regeln sind unverändert.",
+        "fixLines": "Korrigiere die {{count}} fehlerhaften Zeilen, um anzuwenden. Die gespeicherten Regeln sind unverändert.",
+        "ready": "„Anwenden“ ersetzt die gespeicherten Regeln durch diese Vorschau.",
+        "noChanges": "Nichts anzuwenden: Der Text entspricht den gespeicherten Regeln."
+      },
+      "preview": {
+        "title": "Vorschau",
+        "updating": "Vorschau wird aktualisiert…",
+        "errorOne": "1 Fehler · Anwenden nicht möglich",
+        "errorMany": "{{count}} Fehler · Anwenden nicht möglich",
+        "changes": "Hinzufügen: {{adds}} · Aktualisieren: {{updates}} · Löschen: {{deletes}}",
+        "noChanges": "Keine Änderungen",
+        "omitted": "Nicht aufgeführte Zeilen: {{count}}",
+        "duplicateOf": "Gleicher erkannter Text wie in Zeile {{lines}}",
+        "kinds": {
+          "add": "Hinzufügen",
+          "update": "Aktualisieren",
+          "delete": "Löschen",
+          "unchanged": "Unverändert",
+          "ignored": "Ignoriert",
+          "error": "Fehler"
+        },
+        "ignored": {
+          "header": "Kopfzeile",
+          "blank": "Leerzeile",
+          "comment": "Kommentar"
+        }
+      },
+      "importDialog": {
+        "title": "Regeln importieren",
+        "close": "Schließen",
+        "fileOne": "{{name}} · 1 Zeile · UTF-8",
+        "fileMany": "{{name}} · {{count}} Zeilen · UTF-8",
+        "mode": "Modus",
+        "merge": "Zusammenführen: passende Regeln aktualisieren, neue am Ende hinzufügen",
+        "replace": "Ersetzen: Die Datei wird zum gesamten Regelsatz",
+        "previewing": "Datei wird gelesen…",
+        "updateOne": "1 Aktualisierung",
+        "updateMany": "{{count}} Aktualisierungen",
+        "addOne": "1 Hinzufügung",
+        "addMany": "{{count}} Hinzufügungen",
+        "deleteOne": "1 Löschung",
+        "deleteMany": "{{count}} Löschungen",
+        "errorOne": "1 Fehler",
+        "errorMany": "{{count}} Fehler",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (Aktualisierung, behält Position {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (am Ende hinzugefügt)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (entfernt)",
+        "noChanges": "Diese Datei entspricht den gespeicherten Regeln: Es gibt nichts zu importieren.",
+        "firstError": "Zeile {{line}}: {{reason}}",
+        "cancel": "Abbrechen",
+        "apply": "Import anwenden",
+        "applying": "Wird importiert…",
+        "imported": "Regeln importiert."
+      },
+      "importRefusal": {
+        "encodingTitle": "{{name}} konnte nicht importiert werden: Es ist kein UTF-8-Text",
+        "encodingBody": "Aus dieser Datei wurde nichts importiert. Exportiere sie als reinen Text oder CSV und importiere sie dann erneut.",
+        "tooLargeTitle": "{{name}} konnte nicht importiert werden: Die Datei ist größer als 1 MB",
+        "tooLargeBody": "Es wurde nichts importiert. Teile die Datei in kleinere Dateien auf und importiere sie dann einzeln.",
+        "unreadableTitle": "{{name}} konnte nicht gelesen werden",
+        "unreadableBody": "Es wurde nichts importiert. Prüfe, ob die Datei noch existiert und Handy sie öffnen kann.",
+        "dismiss": "Ausblenden"
+      },
+      "deleteDialog": {
+        "title": "Diese Regel löschen?",
+        "body": "{{recognized}} → {{replacement}} wird aus der Liste entfernt. Speichere, um die Änderung anzuwenden.",
+        "cancel": "Abbrechen",
+        "confirm": "Löschen"
+      },
+      "switchDialog": {
+        "title": "Änderungen speichern oder verwerfen",
+        "body": "Liste und Text bearbeiten dieselben Regeln. Speichere oder verwirf zuerst deine nicht gespeicherten Änderungen.",
+        "cancel": "Abbrechen",
+        "discard": "Verwerfen",
+        "save": "Speichern"
+      },
+      "issues": {
+        "recognizedEmpty": "Gib den erkannten Text ein.",
+        "recognizedTooLong": "Der erkannte Text ist auf 100 Zeichen begrenzt.",
+        "recognizedForbidden": "Der erkannte Text darf keinen Zeilenumbruch, keinen Tabulator und kein ; enthalten.",
+        "recognizedControl": "Der erkannte Text enthält ein unsichtbares Steuerzeichen.",
+        "recognizedComment": "Der erkannte Text darf nicht mit # beginnen.",
+        "duplicate": "Jeder erkannte Text darf nur einmal vorkommen; dieser ist bereits definiert.",
+        "replacementEmpty": "Gib die Ersetzung ein.",
+        "replacementTooLong": "Die Ersetzung ist auf 500 Zeichen begrenzt.",
+        "replacementForbidden": "Die Ersetzung darf keinen Zeilenumbruch und keinen Tabulator enthalten.",
+        "replacementControl": "Die Ersetzung enthält ein unsichtbares Steuerzeichen.",
+        "missingSeparator": "Trennzeichen fehlt: Füge ; und dann die Ersetzung hinzu",
+        "tooManyRules": "Ein Regelsatz umfasst höchstens 1.000 Regeln.",
+        "invalidSavedRules": "Die gespeicherten Regeln sind ungültig. Lade sie vor dem Import neu.",
+        "unicodeUnavailable": "Die Regeln können gerade nicht geprüft werden. Starte Handy neu und versuche es dann erneut.",
+        "invalidRule": "Diese Regel ist ungültig."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Nicht gespeicherte Änderungen",
+      "description": "Einige deiner Ersetzungsregeln sind nicht gespeichert. Bleib hier, um sie zu speichern, oder verwirf sie und verlasse die Seite.",
+      "stay": "Bleiben",
+      "discard": "Verwerfen und verlassen"
     }
   },
   "footer": {

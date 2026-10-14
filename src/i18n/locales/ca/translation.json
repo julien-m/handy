@@ -662,26 +662,128 @@
           "refreshModels": "Actualitzeu els models"
         }
       },
-      "prompts": {
-        "title": "Indicació",
-        "selectedPrompt": {
-          "title": "Indicació seleccionada",
-          "description": "Seleccioneu una plantilla per millorar les transcripcions o creeu-ne una de nova. Utilitzeu ${output} dins del text de la indicació per fer referència a la transcripció enregistrada."
+      "promptLibrary": {
+        "processing": {
+          "title": "Postprocessament amb IA",
+          "enabledDescription": "Processa els dictats amb un prompt. Desactivat: no es processa cap dictat.",
+          "defaultTitle": "Prompt per defecte",
+          "defaultDescription": "L'utilitza la drecera de dictat amb IA. El dictat simple comença amb Cap.",
+          "none": "Cap",
+          "invalidOption": "No vàlid: edita'l abans de fer-lo servir"
         },
-        "noPrompts": "No hi ha indicacions disponibles",
-        "selectPrompt": "Seleccioneu una indicació",
-        "createNew": "Creeu una indicació nova",
-        "promptLabel": "Nom de la indicació",
-        "promptLabelPlaceholder": "Introduïu el nom de la indicació",
-        "promptInstructions": "Instruccions de la indicació",
-        "promptInstructionsPlaceholder": "Escriviu les instruccions que s'executaran després de la transcripció. Exemple: Millora la gramàtica i la claredat del text següol: ${output}",
-        "promptTip": "Consell: utilitzeu <code>${output}</code> per inserir el text transcrit a la indicació.",
-        "updatePrompt": "Actualitzeu la indicació",
-        "deletePrompt": "Suprimiu la indicació",
-        "createPrompt": "Creeu la indicació",
-        "cancel": "Cancel·leu",
-        "selectToEdit": "Seleccioneu una indicació more amunt per veure'n i editar-ne els detalls.",
-        "createFirst": "Feu clic a «Creeu una indicació nova» més amunt per crear la primera indicació de postprocessament."
+        "list": {
+          "title": "Prompts",
+          "count": "{{count}} de {{limit}} prompts",
+          "full": "{{limit}} de {{limit}} prompts: elimina'n un per afegir-ne un altre",
+          "new": "Prompt nou",
+          "empty": "Encara no hi ha prompts. Crea'n un per processar els teus dictats.",
+          "loading": "S'estan carregant els prompts…",
+          "loadFailed": "No s'han pogut carregar els prompts.",
+          "retry": "Torna-ho a provar",
+          "edit": "Edita {{name}}",
+          "defaultProvider": "Proveïdor per defecte",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Sense drecera",
+          "notReady": "No està a punt: {{reason}}",
+          "invalid": "No vàlid: {{reason}}",
+          "reloadFailed": "No s’han pogut actualitzar els prompts. El que es mostra pot estar desactualitzat."
+        },
+        "issues": {
+          "name_empty": "falta el nom",
+          "name_too_long": "nom massa llarg",
+          "name_duplicate": "nom duplicat",
+          "text_empty": "falta el text",
+          "text_too_long": "text massa llarg",
+          "override_incomplete": "falta el proveïdor o el model",
+          "unknown_provider": "proveïdor desconegut"
+        },
+        "reasons": {
+          "provider_error": "el proveïdor ha retornat un error",
+          "empty_result": "el proveïdor ha retornat un resultat buit",
+          "timeout": "cap resposta en 30 segons",
+          "provider_busy": "el proveïdor encara està ocupat amb una altra sol·licitud",
+          "missing_endpoint": "falta el punt final",
+          "missing_model": "falta el model",
+          "missing_api_key": "falta la clau d'API",
+          "provider_unavailable": "proveïdor no disponible en aquest dispositiu",
+          "unknown_provider": "proveïdor desconegut",
+          "invalid_prompt": "el prompt no és vàlid",
+          "prompt_missing": "el prompt ja no existeix"
+        },
+        "editor": {
+          "editTitle": "Edita el prompt",
+          "newTitle": "Prompt nou",
+          "name": "Nom",
+          "namePlaceholder": "Nom del prompt",
+          "text": "Prompt",
+          "textPlaceholder": "Escriu les instruccions que s'aplicaran a la transcripció. Exemple: Escurça la transcripció a l'essencial. ${output}",
+          "textHint": "<code>${output}</code> se substitueix per la transcripció.",
+          "fieldErrors": {
+            "name_empty": "Introdueix un nom (d'1 a 60 caràcters).",
+            "name_too_long": "Fes servir 60 caràcters com a màxim.",
+            "name_duplicate": "Un altre prompt té aquest nom. Els noms han de ser únics.",
+            "text_empty": "Introdueix el text del prompt.",
+            "text_too_long": "Fes servir 8.000 caràcters com a màxim."
+          },
+          "provider": "Proveïdor",
+          "defaultProviderOption": "Proveïdor per defecte ({{provider}})",
+          "model": "Model",
+          "modelPlaceholder": "Escriu el nom d'un model",
+          "readyEndpoint": "Punt final {{endpoint}} · A punt",
+          "readyProvider": "{{provider}} · {{model}} · A punt",
+          "notReadyTitle": "{{provider}} no està a punt: {{reason}}",
+          "notReadyBody": "Els dictats amb aquest prompt ometen el pas d'IA i conserven el text original.",
+          "fix": {
+            "api_key": "Afegeix una clau d'API",
+            "endpoint": "Defineix el punt final"
+          },
+          "shortcuts": "Dreceres (fins a {{limit}})",
+          "changedElsewhere": "Aquest prompt s'ha modificat en un altre lloc. Torna'l a carregar per veure el canvi o desa per conservar la teva versió.",
+          "reload": "Torna a carregar",
+          "deletedElsewhere": "Aquest prompt s'ha eliminat en un altre lloc i ja no es pot desar.",
+          "shortcutsSavedImmediately": "Els canvis de dreceres es desen immediatament.",
+          "fixField": {
+            "api_key": "Clau API de {{provider}}",
+            "endpoint": "Endpoint de {{provider}}",
+            "hint": "Es desa quan surts del camp. El proveïdor per defecte no canvia."
+          }
+        },
+        "actions": {
+          "note": "Els canvis s'apliquen al següent dictat després de desar.",
+          "fixFields": "Corregeix els camps marcats per desar.",
+          "delete": "Elimina el prompt",
+          "cancel": "Cancel·la",
+          "save": "Desa",
+          "saving": "S'està desant…",
+          "saved": "S'ha desat el prompt."
+        },
+        "deleteDialog": {
+          "title": "Vols eliminar «{{name}}»?",
+          "shortcuts": "Se n'eliminaran les dreceres: {{shortcuts}}.",
+          "default": "És el prompt per defecte: el valor per defecte passa a ser Cap.",
+          "body": "Aquesta acció no es pot desfer.",
+          "cancel": "Cancel·la",
+          "confirm": "Elimina",
+          "close": "Tanca",
+          "deleted": "S'ha eliminat el prompt «{{name}}».",
+          "deletedWithShortcuts": "S'ha eliminat el prompt «{{name}}». Dreceres eliminades: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Prova",
+          "sampleLabel": "Text d'exemple",
+          "samplePlaceholder": "Escriu o enganxa una transcripció d'exemple",
+          "run": "Executa la prova",
+          "running": "S'està provant…",
+          "note": "No s'insereix res i l'historial no canvia.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} s",
+          "failedTitle": "La prova ha fallat: {{reason}}",
+          "failedHint": "Comprova la configuració del proveïdor i torna a executar la prova.",
+          "retry": "Torna a executar",
+          "busy": "Encara hi ha una altra prova en curs. Torna-ho a provar quan acabi.",
+          "skipped": "Introdueix un text d'exemple per provar el prompt.",
+          "outdated": "Aquest resultat correspon a una versió anterior del prompt o de la mostra. Torna a executar la prova."
+        },
+        "shortcutOwner": "el prompt «{{name}}»"
       }
     },
     "history": {
@@ -870,6 +972,168 @@
           "details": "La transcripció local de veu a text del Handy es basa en el transcribe.cpp i el ggml. Gràcies a la gran feina de Georgi Gerganov i dels col·laboradors."
         }
       }
+    },
+    "replacements": {
+      "group": "Substitucions",
+      "title": "Regles de substitució",
+      "description": "Reescriviu el text reconegut amb la vostra pròpia grafia. S'apliquen després del reconeixement, a diferència del Vocabulari.",
+      "loading": "S'estan carregant les regles de substitució…",
+      "loadFailed": "No s'han pogut carregar les regles de substitució.",
+      "retry": "Torna-ho a provar",
+      "views": {
+        "label": "Vista de les regles",
+        "list": "Llista",
+        "text": "Text"
+      },
+      "import": "Importa…",
+      "export": {
+        "button": "Exporta…",
+        "done": "S'han exportat les regles a {{name}}.",
+        "notSynced": "S'han exportat les regles a {{name}}, però el disc encara no ha confirmat l'escriptura.",
+        "symbolicLink": "{{name}} és un enllaç: trieu un altre fitxer. No s'ha exportat res.",
+        "readOnly": "{{name}} és només de lectura: trieu un altre fitxer. No s'ha exportat res.",
+        "notWritten": "No s'ha pogut escriure {{name}}. No s'ha modificat."
+      },
+      "add": {
+        "recognized": "Text reconegut",
+        "replacement": "Substitució",
+        "button": "Afegeix una regla",
+        "needsText": "Introduïu el text reconegut i la substitució per afegir una regla."
+      },
+      "rule": {
+        "edit": "Edita la regla {{recognized}}",
+        "done": "Acaba d'editar la regla {{recognized}}",
+        "delete": "Suprimeix la regla {{recognized}}",
+        "recognized": "Text reconegut de la regla {{position}}",
+        "replacement": "Substitució de la regla {{position}}"
+      },
+      "count": "{{count}} de {{max}} regles · sense distingir majúscules, paraules senceres",
+      "empty": {
+        "title": "Encara no hi ha cap regla de substitució",
+        "body": "Afegiu una regla o enganxeu línies com ara",
+        "paste": "Enganxa regles com a text"
+      },
+      "draft": {
+        "note": "Canvis no desats. Els dictats fan servir les regles desades fins que deseu.",
+        "discard": "Descarta",
+        "save": "Desa",
+        "saving": "S'està desant…",
+        "saved": "S'han desat les regles de substitució."
+      },
+      "commit": {
+        "invalid": "Algunes regles no són vàlides. Corregiu les files ressaltades i torneu-ho a provar.",
+        "unchanged": "Les regles desades no han canviat.",
+        "conflict": "Les regles s'han canviat en un altre lloc, per exemple des de la línia d'ordres. Torneu-les a carregar per continuar.",
+        "reload": "Torna a carregar",
+        "reloadDiscards": "En tornar a carregar es mostren les regles desades i es descarten els canvis no desats."
+      },
+      "bulk": {
+        "editor": "Regles com a text",
+        "hint": "Una regla per línia: recognized;replacement. També funciona una tabulació per enganxar des d'un full de càlcul. Les línies que comencen per # s'ignoren.",
+        "cancel": "Cancel·la",
+        "apply": "Aplica",
+        "applying": "S'està aplicant…",
+        "applied": "S'han aplicat les regles de substitució.",
+        "fixLine": "Corregiu la línia {{line}} per aplicar. Les regles desades no han canviat.",
+        "fixLines": "Corregiu les {{count}} línies amb errors per aplicar. Les regles desades no han canviat.",
+        "ready": "En aplicar, les regles desades se substitueixen per aquesta previsualització.",
+        "noChanges": "No hi ha res a aplicar: el text coincideix amb les regles desades."
+      },
+      "preview": {
+        "title": "Previsualització",
+        "updating": "S'està actualitzant la previsualització…",
+        "errorOne": "1 error · No es pot aplicar",
+        "errorMany": "{{count}} errors · No es pot aplicar",
+        "changes": "{{adds}} per afegir · {{updates}} per actualitzar · {{deletes}} per suprimir",
+        "noChanges": "Cap canvi",
+        "omitted": "Línies no mostrades: {{count}}",
+        "duplicateOf": "El mateix text reconegut que la línia {{lines}}",
+        "kinds": {
+          "add": "Addició",
+          "update": "Actualització",
+          "delete": "Supressió",
+          "unchanged": "Sense canvis",
+          "ignored": "Ignorada",
+          "error": "Error"
+        },
+        "ignored": {
+          "header": "Línia de capçalera",
+          "blank": "Línia en blanc",
+          "comment": "Comentari"
+        }
+      },
+      "importDialog": {
+        "title": "Importa regles",
+        "close": "Tanca",
+        "fileOne": "{{name}} · 1 línia · UTF-8",
+        "fileMany": "{{name}} · {{count}} línies · UTF-8",
+        "mode": "Mode",
+        "merge": "Combina: actualitza les regles coincidents i afegeix les noves al final",
+        "replace": "Substitueix: el fitxer esdevé tot el conjunt de regles",
+        "previewing": "S'està llegint el fitxer…",
+        "updateOne": "1 actualització",
+        "updateMany": "{{count}} actualitzacions",
+        "addOne": "1 addició",
+        "addMany": "{{count}} addicions",
+        "deleteOne": "1 supressió",
+        "deleteMany": "{{count}} supressions",
+        "errorOne": "1 error",
+        "errorMany": "{{count}} errors",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (actualització, manté la posició {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (afegida al final)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (suprimida)",
+        "noChanges": "Aquest fitxer coincideix amb les regles desades: no hi ha res a importar.",
+        "firstError": "Línia {{line}}: {{reason}}",
+        "cancel": "Cancel·la",
+        "apply": "Aplica la importació",
+        "applying": "S'està important…",
+        "imported": "S'han importat les regles."
+      },
+      "importRefusal": {
+        "encodingTitle": "No s'ha pogut importar {{name}}: no és text UTF-8",
+        "encodingBody": "No s'ha importat res d'aquest fitxer. Exporteu text pla o CSV i torneu a importar.",
+        "tooLargeTitle": "No s'ha pogut importar {{name}}: ocupa més d'1 MB",
+        "tooLargeBody": "No s'ha importat res. Dividiu el fitxer en fitxers més petits i importeu-los un per un.",
+        "unreadableTitle": "No s'ha pogut llegir {{name}}",
+        "unreadableBody": "No s'ha importat res. Comproveu que el fitxer encara existeix i que Handy el pot obrir.",
+        "dismiss": "Descarta"
+      },
+      "deleteDialog": {
+        "title": "Voleu suprimir aquesta regla?",
+        "body": "{{recognized}} → {{replacement}} se suprimirà de la llista. Deseu per aplicar el canvi.",
+        "cancel": "Cancel·la",
+        "confirm": "Suprimeix"
+      },
+      "switchDialog": {
+        "title": "Deseu o descarteu els canvis",
+        "body": "La llista i el text editen les mateixes regles. Primer deseu o descarteu els canvis no desats.",
+        "cancel": "Cancel·la",
+        "discard": "Descarta",
+        "save": "Desa"
+      },
+      "issues": {
+        "recognizedEmpty": "Introduïu el text reconegut.",
+        "recognizedTooLong": "El text reconegut està limitat a 100 caràcters.",
+        "recognizedForbidden": "El text reconegut no pot contenir cap salt de línia, tabulació ni ;.",
+        "recognizedControl": "El text reconegut conté un caràcter de control invisible.",
+        "recognizedComment": "El text reconegut no pot començar per #.",
+        "duplicate": "Cada text reconegut només pot aparèixer una vegada; aquest ja està definit.",
+        "replacementEmpty": "Introduïu la substitució.",
+        "replacementTooLong": "La substitució està limitada a 500 caràcters.",
+        "replacementForbidden": "La substitució no pot contenir cap salt de línia ni tabulació.",
+        "replacementControl": "La substitució conté un caràcter de control invisible.",
+        "missingSeparator": "Falta el separador: afegiu ; i després la substitució",
+        "tooManyRules": "Un conjunt de regles admet com a màxim 1.000 regles.",
+        "invalidSavedRules": "Les regles desades no són vàlides. Torneu-les a carregar abans d'importar.",
+        "unicodeUnavailable": "Ara no es poden comprovar les regles. Reinicieu Handy i torneu-ho a provar.",
+        "invalidRule": "Aquesta regla no és vàlida."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Canvis no desats",
+      "description": "Algunes de les regles de substitució no s'han desat. Quedeu-vos per desar-les o descarteu-les i sortiu.",
+      "stay": "Queda't",
+      "discard": "Descarta i surt"
     }
   },
   "footer": {

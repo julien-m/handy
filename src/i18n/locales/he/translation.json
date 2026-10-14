@@ -662,26 +662,128 @@
           "refreshModels": "רענן מודלים"
         }
       },
-      "prompts": {
-        "title": "פרומפט",
-        "selectedPrompt": {
-          "title": "פרומפט נבחר",
-          "description": "בחר תבנית לשיפור התמלול או צור חדשה. השתמש ב-${output} בתוך טקסט הפרומפט כדי להפנות לתמלול שנקלט."
+      "promptLibrary": {
+        "processing": {
+          "title": "עיבוד משלים בבינה מלאכותית",
+          "enabledDescription": "עיבוד הכתבות באמצעות פרומפט. כבוי: אף הכתבה לא מעובדת.",
+          "defaultTitle": "פרומפט ברירת מחדל",
+          "defaultDescription": "משמש את קיצור הדרך להכתבה עם בינה מלאכותית. הכתבה רגילה מתחילה עם „ללא”.",
+          "none": "ללא",
+          "invalidOption": "לא תקין: ערכו אותו לפני השימוש"
         },
-        "noPrompts": "אין פרומפטים זמינים",
-        "selectPrompt": "בחר פרומפט",
-        "createNew": "צור פרומפט חדש",
-        "promptLabel": "שם הפרומפט",
-        "promptLabelPlaceholder": "הזן שם לפרומפט",
-        "promptInstructions": "הוראות לפרומפט",
-        "promptInstructionsPlaceholder": "כתוב את ההוראות שירוצו אחרי התמלול. לדוגמה: שפר דקדוק ובהירות עבור הטקסט הבא: ${output}",
-        "promptTip": "טיפ: השתמש ב-<code>${output}</code> כדי להכניס את הטקסט המתומלל לפרומפט שלך.",
-        "updatePrompt": "עדכן פרומפט",
-        "deletePrompt": "מחק פרומפט",
-        "createPrompt": "צור פרומפט",
-        "cancel": "ביטול",
-        "selectToEdit": "בחר פרומפט למעלה כדי לצפות בפרטים שלו ולערוך אותם.",
-        "createFirst": "לחץ על 'צור פרומפט חדש' למעלה כדי ליצור את פרומפט העיבוד הראשון שלך."
+        "list": {
+          "title": "פרומפטים",
+          "count": "{{count}} מתוך {{limit}} פרומפטים",
+          "full": "{{limit}} מתוך {{limit}} פרומפטים: מחקו אחד כדי להוסיף אחר",
+          "new": "פרומפט חדש",
+          "empty": "אין עדיין פרומפטים. צרו אחד כדי לעבד את ההכתבות שלכם.",
+          "loading": "טוען פרומפטים…",
+          "loadFailed": "לא ניתן היה לטעון את הפרומפטים.",
+          "retry": "ניסיון חוזר",
+          "edit": "עריכת {{name}}",
+          "defaultProvider": "ספק ברירת מחדל",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "ללא קיצור דרך",
+          "notReady": "לא מוכן: {{reason}}",
+          "invalid": "לא תקין: {{reason}}",
+          "reloadFailed": "לא ניתן היה לרענן את הפרומפטים. ייתכן שהמוצג אינו עדכני."
+        },
+        "issues": {
+          "name_empty": "חסר שם",
+          "name_too_long": "השם ארוך מדי",
+          "name_duplicate": "שם כפול",
+          "text_empty": "חסר טקסט",
+          "text_too_long": "הטקסט ארוך מדי",
+          "override_incomplete": "חסר ספק או מודל",
+          "unknown_provider": "ספק לא מוכר"
+        },
+        "reasons": {
+          "provider_error": "הספק החזיר שגיאה",
+          "empty_result": "הספק החזיר תוצאה ריקה",
+          "timeout": "אין תשובה בתוך 30 שניות",
+          "provider_busy": "הספק עדיין עסוק בבקשה אחרת",
+          "missing_endpoint": "חסרה נקודת קצה",
+          "missing_model": "חסר מודל",
+          "missing_api_key": "חסר מפתח API",
+          "provider_unavailable": "הספק אינו זמין במכשיר זה",
+          "unknown_provider": "ספק לא מוכר",
+          "invalid_prompt": "הפרומפט אינו תקין",
+          "prompt_missing": "הפרומפט כבר לא קיים"
+        },
+        "editor": {
+          "editTitle": "עריכת פרומפט",
+          "newTitle": "פרומפט חדש",
+          "name": "שם",
+          "namePlaceholder": "שם הפרומפט",
+          "text": "פרומפט",
+          "textPlaceholder": "כתבו את ההוראות שיחולו על התמלול. דוגמה: קצר את התמלול לעיקר. ${output}",
+          "textHint": "<code>${output}</code> מוחלף בתמלול.",
+          "fieldErrors": {
+            "name_empty": "הזינו שם (1–60 תווים).",
+            "name_too_long": "השתמשו ב־60 תווים לכל היותר.",
+            "name_duplicate": "לפרומפט אחר יש את השם הזה. השמות חייבים להיות ייחודיים.",
+            "text_empty": "הזינו את טקסט הפרומפט.",
+            "text_too_long": "השתמשו ב־8,000 תווים לכל היותר."
+          },
+          "provider": "ספק",
+          "defaultProviderOption": "ספק ברירת מחדל ({{provider}})",
+          "model": "מודל",
+          "modelPlaceholder": "הקלידו שם מודל",
+          "readyEndpoint": "נקודת קצה {{endpoint}} · מוכן",
+          "readyProvider": "{{provider}} · {{model}} · מוכן",
+          "notReadyTitle": "{{provider}} אינו מוכן: {{reason}}",
+          "notReadyBody": "הכתבות עם פרומפט זה מדלגות על שלב הבינה המלאכותית ושומרות את הטקסט המקורי.",
+          "fix": {
+            "api_key": "הוספת מפתח API",
+            "endpoint": "הגדרת נקודת קצה"
+          },
+          "shortcuts": "קיצורי דרך (עד {{limit}})",
+          "changedElsewhere": "פרומפט זה שונה במקום אחר. טענו אותו מחדש כדי לראות את השינוי, או שמרו כדי להשאיר את הגרסה שלכם.",
+          "reload": "טעינה מחדש",
+          "deletedElsewhere": "פרומפט זה נמחק במקום אחר ולא ניתן עוד לשמור אותו.",
+          "shortcutsSavedImmediately": "שינויים בקיצורי מקלדת נשמרים מיד.",
+          "fixField": {
+            "api_key": "מפתח API עבור {{provider}}",
+            "endpoint": "נקודת הקצה של {{provider}}",
+            "hint": "נשמר כשיוצאים מהשדה. ספק ברירת המחדל אינו משתנה."
+          }
+        },
+        "actions": {
+          "note": "השינויים יחולו על ההכתבה הבאה לאחר השמירה.",
+          "fixFields": "תקנו את השדות המסומנים כדי לשמור.",
+          "delete": "מחיקת פרומפט",
+          "cancel": "ביטול",
+          "save": "שמירה",
+          "saving": "שומר…",
+          "saved": "הפרומפט נשמר."
+        },
+        "deleteDialog": {
+          "title": "למחוק את „{{name}}”?",
+          "shortcuts": "קיצורי הדרך שלו יוסרו: {{shortcuts}}.",
+          "default": "זהו פרומפט ברירת המחדל: ברירת המחדל תהפוך ל„ללא”.",
+          "body": "לא ניתן לבטל פעולה זו.",
+          "cancel": "ביטול",
+          "confirm": "מחיקה",
+          "close": "סגירה",
+          "deleted": "הפרומפט „{{name}}” נמחק.",
+          "deletedWithShortcuts": "הפרומפט „{{name}}” נמחק. קיצורי דרך שהוסרו: {{shortcuts}}."
+        },
+        "test": {
+          "title": "בדיקה",
+          "sampleLabel": "טקסט לדוגמה",
+          "samplePlaceholder": "הקלידו או הדביקו תמלול לדוגמה",
+          "run": "הרצת בדיקה",
+          "running": "בודק…",
+          "note": "שום דבר לא מוכנס וההיסטוריה לא משתנה.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} שנ׳",
+          "failedTitle": "הבדיקה נכשלה: {{reason}}",
+          "failedHint": "בדקו את הגדרות הספק והריצו את הבדיקה שוב.",
+          "retry": "הרצה חוזרת",
+          "busy": "בדיקה אחרת עדיין רצה. נסו שוב כשתסתיים.",
+          "skipped": "הזינו טקסט לדוגמה כדי לבדוק את הפרומפט.",
+          "outdated": "תוצאה זו שייכת לגרסה קודמת של הפרומפט או של הדוגמה. הריצו את הבדיקה שוב."
+        },
+        "shortcutOwner": "הפרומפט „{{name}}”"
       }
     },
     "history": {
@@ -870,6 +972,168 @@
         "label": "הצג מה חדש",
         "description": "הצג הערות גרסה לאחר עדכוני Handy"
       }
+    },
+    "replacements": {
+      "group": "החלפות",
+      "title": "כללי החלפה",
+      "description": "כתבו מחדש טקסט מזוהה באיות שלכם. מוחל לאחר הזיהוי, בשונה מאוצר המילים.",
+      "loading": "טוען כללי החלפה…",
+      "loadFailed": "לא ניתן היה לטעון את כללי ההחלפה.",
+      "retry": "נסה שוב",
+      "views": {
+        "label": "תצוגת כללים",
+        "list": "רשימה",
+        "text": "טקסט"
+      },
+      "import": "ייבוא…",
+      "export": {
+        "button": "ייצוא…",
+        "done": "הכללים יוצאו אל {{name}}.",
+        "notSynced": "הכללים יוצאו אל {{name}}, אבל הדיסק עדיין לא אישר את הכתיבה.",
+        "symbolicLink": "{{name}} הוא קישור: בחרו קובץ אחר. שום דבר לא יוצא.",
+        "readOnly": "{{name}} לקריאה בלבד: בחרו קובץ אחר. שום דבר לא יוצא.",
+        "notWritten": "לא ניתן היה לכתוב את {{name}}. הקובץ לא השתנה."
+      },
+      "add": {
+        "recognized": "טקסט מזוהה",
+        "replacement": "החלפה",
+        "button": "הוסף כלל",
+        "needsText": "הזינו את הטקסט המזוהה ואת ההחלפה כדי להוסיף כלל."
+      },
+      "rule": {
+        "edit": "ערוך את הכלל {{recognized}}",
+        "done": "סיים לערוך את הכלל {{recognized}}",
+        "delete": "מחק את הכלל {{recognized}}",
+        "recognized": "הטקסט המזוהה של כלל {{position}}",
+        "replacement": "ההחלפה של כלל {{position}}"
+      },
+      "count": "כללים: {{count}} מתוך {{max}} · ללא הבחנה בין אותיות רישיות לקטנות, מילים שלמות",
+      "empty": {
+        "title": "עדיין אין כללי החלפה",
+        "body": "הוסיפו כלל, או הדביקו שורות כמו",
+        "paste": "הדבק כללים כטקסט"
+      },
+      "draft": {
+        "note": "יש שינויים שלא נשמרו. הכתבות משתמשות בכללים השמורים עד שתשמרו.",
+        "discard": "בטל שינויים",
+        "save": "שמור",
+        "saving": "שומר…",
+        "saved": "כללי ההחלפה נשמרו."
+      },
+      "commit": {
+        "invalid": "חלק מהכללים אינם תקינים. תקנו את השורות המסומנות ונסו שוב.",
+        "unchanged": "הכללים השמורים לא השתנו.",
+        "conflict": "הכללים שונו במקום אחר, למשל משורת הפקודה. טענו אותם מחדש כדי להמשיך.",
+        "reload": "טען מחדש",
+        "reloadDiscards": "טעינה מחדש תציג את הכללים השמורים ותבטל את השינויים שלא נשמרו."
+      },
+      "bulk": {
+        "editor": "כללים כטקסט",
+        "hint": "כלל אחד בכל שורה: recognized;replacement. אפשר גם להשתמש בטאב בהדבקה מגיליון אלקטרוני. המערכת מתעלמת משורות שמתחילות ב-#.",
+        "cancel": "ביטול",
+        "apply": "החל",
+        "applying": "מחיל…",
+        "applied": "כללי ההחלפה הוחלו.",
+        "fixLine": "תקנו את שורה {{line}} כדי להחיל. הכללים השמורים לא השתנו.",
+        "fixLines": "תקנו את השורות השגויות ({{count}}) כדי להחיל. הכללים השמורים לא השתנו.",
+        "ready": "החלה תחליף את הכללים השמורים בתצוגה המקדימה הזו.",
+        "noChanges": "אין מה להחיל: הטקסט תואם לכללים השמורים."
+      },
+      "preview": {
+        "title": "תצוגה מקדימה",
+        "updating": "מעדכן את התצוגה המקדימה…",
+        "errorOne": "שגיאה אחת · לא ניתן להחיל",
+        "errorMany": "שגיאות: {{count}} · לא ניתן להחיל",
+        "changes": "להוספה: {{adds}} · לעדכון: {{updates}} · למחיקה: {{deletes}}",
+        "noChanges": "אין שינויים",
+        "omitted": "שורות שלא מוצגות: {{count}}",
+        "duplicateOf": "אותו טקסט מזוהה כמו בשורה {{lines}}",
+        "kinds": {
+          "add": "הוספה",
+          "update": "עדכון",
+          "delete": "מחיקה",
+          "unchanged": "ללא שינוי",
+          "ignored": "דולג",
+          "error": "שגיאה"
+        },
+        "ignored": {
+          "header": "שורת כותרת",
+          "blank": "שורה ריקה",
+          "comment": "הערה"
+        }
+      },
+      "importDialog": {
+        "title": "ייבוא כללים",
+        "close": "סגור",
+        "fileOne": "{{name}} · שורה אחת · UTF-8",
+        "fileMany": "{{name}} · שורות: {{count}} · UTF-8",
+        "mode": "מצב",
+        "merge": "מיזוג: עדכון כללים תואמים והוספת כללים חדשים בסוף",
+        "replace": "החלפה: הקובץ הופך לכל ערכת הכללים",
+        "previewing": "קורא את הקובץ…",
+        "updateOne": "עדכון אחד",
+        "updateMany": "עדכונים: {{count}}",
+        "addOne": "הוספה אחת",
+        "addMany": "הוספות: {{count}}",
+        "deleteOne": "מחיקה אחת",
+        "deleteMany": "מחיקות: {{count}}",
+        "errorOne": "שגיאה אחת",
+        "errorMany": "שגיאות: {{count}}",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (עדכון, נשאר במיקום {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (נוסף בסוף)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (הוסר)",
+        "noChanges": "הקובץ הזה תואם לכללים השמורים: אין מה לייבא.",
+        "firstError": "שורה {{line}}: {{reason}}",
+        "cancel": "ביטול",
+        "apply": "החל ייבוא",
+        "applying": "מייבא…",
+        "imported": "הכללים יובאו."
+      },
+      "importRefusal": {
+        "encodingTitle": "לא ניתן היה לייבא את {{name}}: הקובץ אינו טקסט UTF-8",
+        "encodingBody": "שום דבר לא יובא מהקובץ הזה. ייצאו אותו כטקסט פשוט או כ-CSV, ואז ייבאו שוב.",
+        "tooLargeTitle": "לא ניתן היה לייבא את {{name}}: הקובץ גדול מ-1 MB",
+        "tooLargeBody": "שום דבר לא יובא. פצלו את הקובץ לקבצים קטנים יותר, ואז ייבאו כל אחד מהם.",
+        "unreadableTitle": "לא ניתן היה לקרוא את {{name}}",
+        "unreadableBody": "שום דבר לא יובא. ודאו שהקובץ עדיין קיים ושל-Handy יש אפשרות לפתוח אותו.",
+        "dismiss": "התעלם"
+      },
+      "deleteDialog": {
+        "title": "למחוק את הכלל הזה?",
+        "body": "{{recognized}} → {{replacement}} יוסר מהרשימה. שמרו כדי להחיל את השינוי.",
+        "cancel": "ביטול",
+        "confirm": "מחק"
+      },
+      "switchDialog": {
+        "title": "שמרו או בטלו את השינויים",
+        "body": "הרשימה והטקסט עורכים את אותם כללים. קודם שמרו או בטלו את השינויים שלא נשמרו.",
+        "cancel": "ביטול",
+        "discard": "בטל שינויים",
+        "save": "שמור"
+      },
+      "issues": {
+        "recognizedEmpty": "הזינו את הטקסט המזוהה.",
+        "recognizedTooLong": "הטקסט המזוהה מוגבל ל-100 תווים.",
+        "recognizedForbidden": "הטקסט המזוהה לא יכול להכיל מעבר שורה, טאב או ;.",
+        "recognizedControl": "הטקסט המזוהה מכיל תו בקרה בלתי נראה.",
+        "recognizedComment": "הטקסט המזוהה לא יכול להתחיל ב-#.",
+        "duplicate": "כל טקסט מזוהה יכול להופיע פעם אחת בלבד; הטקסט הזה כבר מוגדר.",
+        "replacementEmpty": "הזינו את ההחלפה.",
+        "replacementTooLong": "ההחלפה מוגבלת ל-500 תווים.",
+        "replacementForbidden": "ההחלפה לא יכולה להכיל מעבר שורה או טאב.",
+        "replacementControl": "ההחלפה מכילה תו בקרה בלתי נראה.",
+        "missingSeparator": "חסר מפריד: הוסיפו ; ואחריו את ההחלפה",
+        "tooManyRules": "ערכת כללים יכולה להכיל עד 1,000 כללים.",
+        "invalidSavedRules": "הכללים השמורים אינם תקינים. טענו אותם מחדש לפני הייבוא.",
+        "unicodeUnavailable": "לא ניתן לבדוק את הכללים כרגע. הפעילו מחדש את Handy ונסו שוב.",
+        "invalidRule": "הכלל הזה אינו תקין."
+      }
+    },
+    "unsavedChanges": {
+      "title": "שינויים שלא נשמרו",
+      "description": "חלק מכללי ההחלפה שלכם לא נשמרו. הישארו כדי לשמור אותם, או בטלו אותם וצאו.",
+      "stay": "הישאר",
+      "discard": "בטל וצא"
     }
   },
   "footer": {

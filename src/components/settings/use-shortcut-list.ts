@@ -33,6 +33,7 @@ import {
   UNEXPECTED_FEEDBACK,
   feedbackAfterEdit,
 } from "./shortcut-list-feedback";
+import { promptNameOfTarget } from "./shortcut-list-model";
 
 export interface StoredConflicts {
   conflicts: StoredShortcutConflict[];
@@ -74,17 +75,28 @@ export const useStoredConflicts = (
   return state;
 };
 
-/** Display names for messages, in the current language and platform. */
+/**
+ * Display names for messages, in the current language and platform. A
+ * prompt target (005) is named after its prompt, a dictation action by its
+ * translated name.
+ */
 export const useMessageNames = (): MessageNames => {
   const { t } = useTranslation();
   const os = useOsType();
+  const prompts = useSettings().getSetting("post_process_prompts");
   return useMemo(
     () => ({
-      actionName: (id: string) =>
-        t(`settings.general.shortcut.bindings.${id}.name`, id),
+      actionName: (id: string) => {
+        const promptName = promptNameOfTarget(prompts ?? [], id);
+        return promptName === null
+          ? t(`settings.general.shortcut.bindings.${id}.name`, id)
+          : t("settings.postProcessing.promptLibrary.shortcutOwner", {
+              name: promptName,
+            });
+      },
       shortcutLabel: (shortcut: string) => formatKeyCombination(shortcut, os),
     }),
-    [t, os],
+    [t, os, prompts],
   );
 };
 

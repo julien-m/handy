@@ -662,26 +662,128 @@
           "refreshModels": "モデルを更新"
         }
       },
-      "prompts": {
-        "title": "プロンプト",
-        "selectedPrompt": {
-          "title": "選択したプロンプト",
-          "description": "文字起こしを改善するテンプレートを選択するか、新しく作成します。プロンプトテキスト内で ${output} を使用して、キャプチャした文字起こしを参照します。"
+      "promptLibrary": {
+        "processing": {
+          "title": "AI 後処理",
+          "enabledDescription": "プロンプトで音声入力を処理します。オフ: どの音声入力も処理されません。",
+          "defaultTitle": "既定のプロンプト",
+          "defaultDescription": "AI 音声入力のショートカットで使われます。通常の音声入力は「なし」で始まります。",
+          "none": "なし",
+          "invalidOption": "無効: 使用する前に編集してください"
         },
-        "noPrompts": "プロンプトがありません",
-        "selectPrompt": "プロンプトを選択",
-        "createNew": "新しいプロンプトを作成",
-        "promptLabel": "プロンプト名",
-        "promptLabelPlaceholder": "プロンプト名を入力",
-        "promptInstructions": "プロンプトの指示",
-        "promptInstructionsPlaceholder": "文字起こし後に実行する指示を記述します。例: 以下のテキストの文法と明瞭さを改善してください: ${output}",
-        "promptTip": "ヒント: <code>${output}</code> を使用して、文字起こしテキストをプロンプトに挿入します。",
-        "updatePrompt": "プロンプトを更新",
-        "deletePrompt": "プロンプトを削除",
-        "createPrompt": "プロンプトを作成",
-        "cancel": "キャンセル",
-        "selectToEdit": "上からプロンプトを選択して、詳細を表示・編集します。",
-        "createFirst": "上の「新しいプロンプトを作成」をクリックして、最初の後処理プロンプトを作成してください。"
+        "list": {
+          "title": "プロンプト",
+          "count": "{{count}} / {{limit}} 件のプロンプト",
+          "full": "{{limit}} / {{limit}} 件: 追加するには 1 件削除してください",
+          "new": "新しいプロンプト",
+          "empty": "プロンプトはまだありません。音声入力を処理するには作成してください。",
+          "loading": "プロンプトを読み込み中…",
+          "loadFailed": "プロンプトを読み込めませんでした。",
+          "retry": "再試行",
+          "edit": "{{name}} を編集",
+          "defaultProvider": "既定のプロバイダー",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "ショートカットなし",
+          "notReady": "準備未完了: {{reason}}",
+          "invalid": "無効: {{reason}}",
+          "reloadFailed": "プロンプトを更新できませんでした。表示が古い可能性があります。"
+        },
+        "issues": {
+          "name_empty": "名前がありません",
+          "name_too_long": "名前が長すぎます",
+          "name_duplicate": "名前が重複しています",
+          "text_empty": "本文がありません",
+          "text_too_long": "本文が長すぎます",
+          "override_incomplete": "プロバイダーまたはモデルがありません",
+          "unknown_provider": "不明なプロバイダー"
+        },
+        "reasons": {
+          "provider_error": "プロバイダーがエラーを返しました",
+          "empty_result": "プロバイダーが空の結果を返しました",
+          "timeout": "30 秒以内に応答がありません",
+          "provider_busy": "プロバイダーは別のリクエストを処理中です",
+          "missing_endpoint": "エンドポイントがありません",
+          "missing_model": "モデルがありません",
+          "missing_api_key": "API キーがありません",
+          "provider_unavailable": "このデバイスではプロバイダーを利用できません",
+          "unknown_provider": "不明なプロバイダー",
+          "invalid_prompt": "プロンプトが無効です",
+          "prompt_missing": "プロンプトはもう存在しません"
+        },
+        "editor": {
+          "editTitle": "プロンプトを編集",
+          "newTitle": "新しいプロンプト",
+          "name": "名前",
+          "namePlaceholder": "プロンプト名",
+          "text": "プロンプト",
+          "textPlaceholder": "文字起こしに適用する指示を書いてください。例: 文字起こしを要点だけに短くしてください。${output}",
+          "textHint": "<code>${output}</code> は文字起こしに置き換えられます。",
+          "fieldErrors": {
+            "name_empty": "名前を入力してください (1〜60 文字)。",
+            "name_too_long": "60 文字以内にしてください。",
+            "name_duplicate": "同じ名前のプロンプトがあります。名前は一意にしてください。",
+            "text_empty": "プロンプトの本文を入力してください。",
+            "text_too_long": "8,000 文字以内にしてください。"
+          },
+          "provider": "プロバイダー",
+          "defaultProviderOption": "既定のプロバイダー ({{provider}})",
+          "model": "モデル",
+          "modelPlaceholder": "モデル名を入力",
+          "readyEndpoint": "エンドポイント {{endpoint}} · 準備完了",
+          "readyProvider": "{{provider}} · {{model}} · 準備完了",
+          "notReadyTitle": "{{provider}} は準備ができていません: {{reason}}",
+          "notReadyBody": "このプロンプトでの音声入力は AI の処理を省略し、元のテキストを保持します。",
+          "fix": {
+            "api_key": "API キーを追加",
+            "endpoint": "エンドポイントを設定"
+          },
+          "shortcuts": "ショートカット (最大 {{limit}} 件)",
+          "changedElsewhere": "このプロンプトは別の場所で変更されました。変更を見るには再読み込みし、自分の版を残すには保存してください。",
+          "reload": "再読み込み",
+          "deletedElsewhere": "このプロンプトは別の場所で削除されたため、保存できません。",
+          "shortcutsSavedImmediately": "ショートカットの変更はすぐに保存されます。",
+          "fixField": {
+            "api_key": "{{provider}} の API キー",
+            "endpoint": "{{provider}} のエンドポイント",
+            "hint": "フィールドを離れると保存されます。デフォルトのプロバイダーは変わりません。"
+          }
+        },
+        "actions": {
+          "note": "変更は保存後の次の音声入力から適用されます。",
+          "fixFields": "保存するには、強調表示された項目を修正してください。",
+          "delete": "プロンプトを削除",
+          "cancel": "キャンセル",
+          "save": "保存",
+          "saving": "保存中…",
+          "saved": "プロンプトを保存しました。"
+        },
+        "deleteDialog": {
+          "title": "「{{name}}」を削除しますか?",
+          "shortcuts": "このプロンプトのショートカットは削除されます: {{shortcuts}}。",
+          "default": "既定のプロンプトです。既定は「なし」になります。",
+          "body": "この操作は元に戻せません。",
+          "cancel": "キャンセル",
+          "confirm": "削除",
+          "close": "閉じる",
+          "deleted": "プロンプト「{{name}}」を削除しました。",
+          "deletedWithShortcuts": "プロンプト「{{name}}」を削除しました。削除したショートカット: {{shortcuts}}。"
+        },
+        "test": {
+          "title": "テスト",
+          "sampleLabel": "サンプルテキスト",
+          "samplePlaceholder": "サンプルの文字起こしを入力または貼り付け",
+          "run": "テストを実行",
+          "running": "テスト中…",
+          "note": "何も挿入されず、履歴も変更されません。",
+          "meta": "{{model}} · {{provider}} · {{seconds}} 秒",
+          "failedTitle": "テストに失敗しました: {{reason}}",
+          "failedHint": "プロバイダーの設定を確認してから、もう一度テストしてください。",
+          "retry": "もう一度実行",
+          "busy": "別のテストを実行中です。終了してからもう一度お試しください。",
+          "skipped": "プロンプトをテストするにはサンプルテキストを入力してください。",
+          "outdated": "この結果は以前のプロンプトまたはサンプルのものです。もう一度テストしてください。"
+        },
+        "shortcutOwner": "プロンプト「{{name}}」"
       }
     },
     "history": {
@@ -870,6 +972,168 @@
         "label": "新機能を表示",
         "description": "Handy のアップデート後にリリースノートを表示"
       }
+    },
+    "replacements": {
+      "group": "置換",
+      "title": "置換ルール",
+      "description": "認識されたテキストを独自の表記に書き換えます。語彙とは異なり、認識の後に適用されます。",
+      "loading": "置換ルールを読み込んでいます…",
+      "loadFailed": "置換ルールを読み込めませんでした。",
+      "retry": "再試行",
+      "views": {
+        "label": "ルールの表示",
+        "list": "リスト",
+        "text": "テキスト"
+      },
+      "import": "インポート…",
+      "export": {
+        "button": "エクスポート…",
+        "done": "ルールを{{name}}にエクスポートしました。",
+        "notSynced": "ルールを{{name}}にエクスポートしましたが、ディスクへの書き込みはまだ確認されていません。",
+        "symbolicLink": "{{name}}はリンクです。別のファイルを選択してください。何もエクスポートされていません。",
+        "readOnly": "{{name}}は読み取り専用です。別のファイルを選択してください。何もエクスポートされていません。",
+        "notWritten": "{{name}}に書き込めませんでした。ファイルは変更されていません。"
+      },
+      "add": {
+        "recognized": "認識されたテキスト",
+        "replacement": "置換後のテキスト",
+        "button": "ルールを追加",
+        "needsText": "ルールを追加するには、認識されたテキストと置換後のテキストを入力してください。"
+      },
+      "rule": {
+        "edit": "ルール{{recognized}}を編集",
+        "done": "ルール{{recognized}}の編集を完了",
+        "delete": "ルール{{recognized}}を削除",
+        "recognized": "ルール{{position}}の認識されたテキスト",
+        "replacement": "ルール{{position}}の置換後のテキスト"
+      },
+      "count": "ルール {{count}} / {{max}} 件 · 大文字と小文字を区別せず、単語全体で一致",
+      "empty": {
+        "title": "置換ルールはまだありません",
+        "body": "ルールを追加するか、次のような行を貼り付けてください",
+        "paste": "ルールをテキストとして貼り付け"
+      },
+      "draft": {
+        "note": "未保存の変更があります。保存するまで、音声入力には保存済みのルールが使われます。",
+        "discard": "破棄",
+        "save": "保存",
+        "saving": "保存中…",
+        "saved": "置換ルールを保存しました。"
+      },
+      "commit": {
+        "invalid": "無効なルールがあります。強調表示された行を修正してから、もう一度お試しください。",
+        "unchanged": "保存済みのルールは変更されていません。",
+        "conflict": "ルールが別の場所(コマンドラインなど)で変更されました。続けるには再読み込みしてください。",
+        "reload": "再読み込み",
+        "reloadDiscards": "再読み込みすると保存済みのルールが表示され、保存していない変更は破棄されます。"
+      },
+      "bulk": {
+        "editor": "テキスト形式のルール",
+        "hint": "1行に1ルール: recognized;replacement。スプレッドシートからの貼り付けにはタブも使えます。# で始まる行は無視されます。",
+        "cancel": "キャンセル",
+        "apply": "適用",
+        "applying": "適用中…",
+        "applied": "置換ルールを適用しました。",
+        "fixLine": "適用するには{{line}}行目を修正してください。保存済みのルールは変更されていません。",
+        "fixLines": "適用するにはエラーのある{{count}}行を修正してください。保存済みのルールは変更されていません。",
+        "ready": "適用すると、保存済みのルールがこのプレビューの内容に置き換わります。",
+        "noChanges": "適用する内容はありません。テキストは保存済みのルールと一致しています。"
+      },
+      "preview": {
+        "title": "プレビュー",
+        "updating": "プレビューを更新中…",
+        "errorOne": "エラー1件 · 適用できません",
+        "errorMany": "エラー{{count}}件 · 適用できません",
+        "changes": "追加 {{adds}} · 更新 {{updates}} · 削除 {{deletes}}",
+        "noChanges": "変更なし",
+        "omitted": "表示されていない行: {{count}}",
+        "duplicateOf": "{{lines}}行目と同じ認識テキストです",
+        "kinds": {
+          "add": "追加",
+          "update": "更新",
+          "delete": "削除",
+          "unchanged": "変更なし",
+          "ignored": "無視",
+          "error": "エラー"
+        },
+        "ignored": {
+          "header": "ヘッダー行",
+          "blank": "空行",
+          "comment": "コメント"
+        }
+      },
+      "importDialog": {
+        "title": "ルールをインポート",
+        "close": "閉じる",
+        "fileOne": "{{name}} · 1行 · UTF-8",
+        "fileMany": "{{name}} · {{count}}行 · UTF-8",
+        "mode": "モード",
+        "merge": "マージ: 一致するルールを更新し、新しいルールを末尾に追加",
+        "replace": "置き換え: ファイルの内容がルール全体になります",
+        "previewing": "ファイルを読み込んでいます…",
+        "updateOne": "更新1件",
+        "updateMany": "更新{{count}}件",
+        "addOne": "追加1件",
+        "addMany": "追加{{count}}件",
+        "deleteOne": "削除1件",
+        "deleteMany": "削除{{count}}件",
+        "errorOne": "エラー1件",
+        "errorMany": "エラー{{count}}件",
+        "exampleUpdate": "{{recognized}} → {{replacement}}(更新、位置{{position}}を維持)",
+        "exampleAdd": "{{recognized}} → {{replacement}}(末尾に追加)",
+        "exampleDelete": "{{recognized}} → {{replacement}}(削除)",
+        "noChanges": "このファイルは保存済みのルールと一致しています。インポートする内容はありません。",
+        "firstError": "{{line}}行目: {{reason}}",
+        "cancel": "キャンセル",
+        "apply": "インポートを適用",
+        "applying": "インポート中…",
+        "imported": "ルールをインポートしました。"
+      },
+      "importRefusal": {
+        "encodingTitle": "{{name}}をインポートできません: UTF-8テキストではありません",
+        "encodingBody": "このファイルからは何もインポートされていません。プレーンテキストまたはCSVでエクスポートしてから、もう一度インポートしてください。",
+        "tooLargeTitle": "{{name}}をインポートできません: 1 MBを超えています",
+        "tooLargeBody": "何もインポートされていません。ファイルを小さなファイルに分割してから、それぞれをインポートしてください。",
+        "unreadableTitle": "{{name}}を読み込めません",
+        "unreadableBody": "何もインポートされていません。ファイルがまだ存在し、Handyで開けることを確認してください。",
+        "dismiss": "閉じる"
+      },
+      "deleteDialog": {
+        "title": "このルールを削除しますか?",
+        "body": "{{recognized}} → {{replacement}} がリストから削除されます。変更を反映するには保存してください。",
+        "cancel": "キャンセル",
+        "confirm": "削除"
+      },
+      "switchDialog": {
+        "title": "変更を保存または破棄",
+        "body": "リストとテキストは同じルールを編集します。先に未保存の変更を保存または破棄してください。",
+        "cancel": "キャンセル",
+        "discard": "破棄",
+        "save": "保存"
+      },
+      "issues": {
+        "recognizedEmpty": "認識されたテキストを入力してください。",
+        "recognizedTooLong": "認識されたテキストは100文字以内にしてください。",
+        "recognizedForbidden": "認識されたテキストに改行、タブ、; は使用できません。",
+        "recognizedControl": "認識されたテキストに不可視の制御文字が含まれています。",
+        "recognizedComment": "認識されたテキストを # で始めることはできません。",
+        "duplicate": "同じ認識テキストは1回しか使用できません。このテキストは既に定義されています。",
+        "replacementEmpty": "置換後のテキストを入力してください。",
+        "replacementTooLong": "置換後のテキストは500文字以内にしてください。",
+        "replacementForbidden": "置換後のテキストに改行やタブは使用できません。",
+        "replacementControl": "置換後のテキストに不可視の制御文字が含まれています。",
+        "missingSeparator": "区切り文字がありません: ; に続けて置換後のテキストを追加してください",
+        "tooManyRules": "1つのルールセットに含められるルールは最大1,000件です。",
+        "invalidSavedRules": "保存済みのルールが無効です。インポートする前に再読み込みしてください。",
+        "unicodeUnavailable": "現在ルールを確認できません。Handyを再起動してから、もう一度お試しください。",
+        "invalidRule": "このルールは無効です。"
+      }
+    },
+    "unsavedChanges": {
+      "title": "未保存の変更",
+      "description": "保存されていない置換ルールがあります。このまま留まって保存するか、破棄して移動してください。",
+      "stay": "留まる",
+      "discard": "破棄して移動"
     }
   },
   "footer": {

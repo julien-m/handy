@@ -104,3 +104,12 @@
 - **Code modified:** src/overlay/* (prompt pill and menu, notices), src/hooks/use-overlay-none-notices.ts, App.tsx, 26 locales
 - **AC impacted:** AC-003, AC-005 (indicator part); browser-tested, native proof pending
 - **Author:** Claude Code (UI pass, feature/ui-overlay 69a6ee73)
+
+## 2026-10-14 — [Bugfix]: Prompt settings UI, delivery-review fix round 1
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** `src/components/settings/post-processing/*` (new `prompt-editor-sync.ts`, `prompt-provider-fix.tsx`, `prompt-library-notice.tsx`, `use-focus-on-mount.ts`), `shortcut-list.tsx`, `shortcut-row.tsx`, `PostProcessingToggle.tsx`, `PostProcessingSettingsApi/ModelSelect.tsx`, `ui/Select.tsx`, 26 locales, `package.json`
+- **AC impacted:** AC-001, AC-002, AC-004, AC-006, AC-007
+- **Author:** Claude Code (claude-opus-5-5)
+- Own save no longer rolled back by a lagging library; failed reload shown with Retry; readiness fix inline in the editor for the resolved provider (contract navigation replaced, see implementation.md); typing during a save kept; Cancel during a creation honoured; `committed`/`unknown` outcomes reread; default-prompt failures shown; outdated test results flagged; invalid prompts highlighted at once; shortcut hint; focus and accessible names; function sizes reduced.

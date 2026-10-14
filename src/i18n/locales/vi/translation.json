@@ -662,26 +662,128 @@
           "refreshModels": "Làm mới mô hình"
         }
       },
-      "prompts": {
-        "title": "Câu lệnh",
-        "selectedPrompt": {
-          "title": "Prompt đã chọn",
-          "description": "Chọn một mẫu để tinh chỉnh bản ghi hoặc tạo mới. Sử dụng ${output} trong văn bản prompt để tham chiếu bản ghi đã chụp."
+      "promptLibrary": {
+        "processing": {
+          "title": "Xử lý sau bằng AI",
+          "enabledDescription": "Xử lý bản đọc chính tả bằng một prompt. Tắt: không bản đọc nào được xử lý.",
+          "defaultTitle": "Prompt mặc định",
+          "defaultDescription": "Được phím tắt đọc chính tả AI sử dụng. Đọc chính tả thường bắt đầu với Không có.",
+          "none": "Không có",
+          "invalidOption": "Không hợp lệ: hãy chỉnh sửa trước khi dùng"
         },
-        "noPrompts": "Không có prompt nào",
-        "selectPrompt": "Chọn một prompt",
-        "createNew": "Tạo Prompt mới",
-        "promptLabel": "Nhãn Prompt",
-        "promptLabelPlaceholder": "Nhập tên prompt",
-        "promptInstructions": "Hướng dẫn Prompt",
-        "promptInstructionsPlaceholder": "Viết hướng dẫn để chạy sau khi chuyển đổi. Ví dụ: Cải thiện ngữ pháp và độ rõ ràng cho văn bản sau: ${output}",
-        "promptTip": "Mẹo: Sử dụng <code>${output}</code> để chèn văn bản đã chuyển đổi vào prompt của bạn.",
-        "updatePrompt": "Cập nhật Prompt",
-        "deletePrompt": "Xóa Prompt",
-        "createPrompt": "Tạo Prompt",
-        "cancel": "Hủy",
-        "selectToEdit": "Chọn một prompt ở trên để xem và chỉnh sửa chi tiết.",
-        "createFirst": "Nhấn 'Tạo Prompt mới' ở trên để tạo prompt xử lý sau đầu tiên của bạn."
+        "list": {
+          "title": "Prompt",
+          "count": "{{count}}/{{limit}} prompt",
+          "full": "{{limit}}/{{limit}} prompt: xóa một prompt để thêm prompt khác",
+          "new": "Prompt mới",
+          "empty": "Chưa có prompt nào. Hãy tạo một prompt để xử lý bản đọc chính tả.",
+          "loading": "Đang tải prompt…",
+          "loadFailed": "Không thể tải các prompt.",
+          "retry": "Thử lại",
+          "edit": "Chỉnh sửa {{name}}",
+          "defaultProvider": "Nhà cung cấp mặc định",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Không có phím tắt",
+          "notReady": "Chưa sẵn sàng: {{reason}}",
+          "invalid": "Không hợp lệ: {{reason}}",
+          "reloadFailed": "Không thể làm mới các prompt. Nội dung hiển thị có thể đã cũ."
+        },
+        "issues": {
+          "name_empty": "thiếu tên",
+          "name_too_long": "tên quá dài",
+          "name_duplicate": "tên bị trùng",
+          "text_empty": "thiếu nội dung",
+          "text_too_long": "nội dung quá dài",
+          "override_incomplete": "thiếu nhà cung cấp hoặc mô hình",
+          "unknown_provider": "nhà cung cấp không xác định"
+        },
+        "reasons": {
+          "provider_error": "nhà cung cấp trả về lỗi",
+          "empty_result": "nhà cung cấp trả về kết quả trống",
+          "timeout": "không có phản hồi trong 30 giây",
+          "provider_busy": "nhà cung cấp vẫn đang bận với yêu cầu khác",
+          "missing_endpoint": "thiếu endpoint",
+          "missing_model": "thiếu mô hình",
+          "missing_api_key": "thiếu khóa API",
+          "provider_unavailable": "nhà cung cấp không khả dụng trên thiết bị này",
+          "unknown_provider": "nhà cung cấp không xác định",
+          "invalid_prompt": "prompt không hợp lệ",
+          "prompt_missing": "prompt không còn tồn tại"
+        },
+        "editor": {
+          "editTitle": "Chỉnh sửa prompt",
+          "newTitle": "Prompt mới",
+          "name": "Tên",
+          "namePlaceholder": "Tên prompt",
+          "text": "Prompt",
+          "textPlaceholder": "Viết hướng dẫn áp dụng cho bản chép lời. Ví dụ: Rút gọn bản chép lời chỉ còn ý chính. ${output}",
+          "textHint": "<code>${output}</code> được thay bằng bản chép lời.",
+          "fieldErrors": {
+            "name_empty": "Nhập tên (1–60 ký tự).",
+            "name_too_long": "Dùng tối đa 60 ký tự.",
+            "name_duplicate": "Một prompt khác đã dùng tên này. Tên phải là duy nhất.",
+            "text_empty": "Nhập nội dung prompt.",
+            "text_too_long": "Dùng tối đa 8.000 ký tự."
+          },
+          "provider": "Nhà cung cấp",
+          "defaultProviderOption": "Nhà cung cấp mặc định ({{provider}})",
+          "model": "Mô hình",
+          "modelPlaceholder": "Nhập tên mô hình",
+          "readyEndpoint": "Endpoint {{endpoint}} · Sẵn sàng",
+          "readyProvider": "{{provider}} · {{model}} · Sẵn sàng",
+          "notReadyTitle": "{{provider}} chưa sẵn sàng: {{reason}}",
+          "notReadyBody": "Bản đọc chính tả với prompt này sẽ bỏ qua bước AI và giữ nguyên văn bản gốc.",
+          "fix": {
+            "api_key": "Thêm khóa API",
+            "endpoint": "Đặt endpoint"
+          },
+          "shortcuts": "Phím tắt (tối đa {{limit}})",
+          "changedElsewhere": "Prompt này đã được thay đổi ở nơi khác. Tải lại để xem thay đổi, hoặc lưu để giữ phiên bản của bạn.",
+          "reload": "Tải lại",
+          "deletedElsewhere": "Prompt này đã bị xóa ở nơi khác và không thể lưu nữa.",
+          "shortcutsSavedImmediately": "Thay đổi phím tắt được lưu ngay lập tức.",
+          "fixField": {
+            "api_key": "Khóa API của {{provider}}",
+            "endpoint": "Endpoint của {{provider}}",
+            "hint": "Được lưu khi bạn rời khỏi ô. Nhà cung cấp mặc định không thay đổi."
+          }
+        },
+        "actions": {
+          "note": "Thay đổi áp dụng cho lần đọc chính tả tiếp theo sau khi lưu.",
+          "fixFields": "Sửa các trường được đánh dấu để lưu.",
+          "delete": "Xóa prompt",
+          "cancel": "Hủy",
+          "save": "Lưu",
+          "saving": "Đang lưu…",
+          "saved": "Đã lưu prompt."
+        },
+        "deleteDialog": {
+          "title": "Xóa “{{name}}”?",
+          "shortcuts": "Các phím tắt của nó sẽ bị xóa: {{shortcuts}}.",
+          "default": "Đây là prompt mặc định: mặc định sẽ trở thành Không có.",
+          "body": "Không thể hoàn tác thao tác này.",
+          "cancel": "Hủy",
+          "confirm": "Xóa",
+          "close": "Đóng",
+          "deleted": "Đã xóa prompt “{{name}}”.",
+          "deletedWithShortcuts": "Đã xóa prompt “{{name}}”. Phím tắt đã xóa: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Kiểm tra",
+          "sampleLabel": "Văn bản mẫu",
+          "samplePlaceholder": "Nhập hoặc dán một bản chép lời mẫu",
+          "run": "Chạy kiểm tra",
+          "running": "Đang kiểm tra…",
+          "note": "Không có gì được chèn và lịch sử không thay đổi.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} giây",
+          "failedTitle": "Kiểm tra thất bại: {{reason}}",
+          "failedHint": "Kiểm tra cài đặt nhà cung cấp rồi chạy lại.",
+          "retry": "Chạy lại",
+          "busy": "Một lần kiểm tra khác vẫn đang chạy. Hãy thử lại khi nó kết thúc.",
+          "skipped": "Nhập văn bản mẫu để kiểm tra prompt.",
+          "outdated": "Kết quả này thuộc phiên bản trước của prompt hoặc mẫu. Hãy chạy lại kiểm tra."
+        },
+        "shortcutOwner": "prompt “{{name}}”"
       }
     },
     "history": {
@@ -870,6 +972,168 @@
         "label": "Hiển thị điểm mới",
         "description": "Hiển thị ghi chú phát hành sau khi Handy cập nhật"
       }
+    },
+    "replacements": {
+      "group": "Thay thế",
+      "title": "Quy tắc thay thế",
+      "description": "Viết lại văn bản đã nhận dạng theo cách viết của riêng bạn. Khác với Từ vựng, quy tắc được áp dụng sau khi nhận dạng.",
+      "loading": "Đang tải quy tắc thay thế…",
+      "loadFailed": "Không thể tải quy tắc thay thế.",
+      "retry": "Thử lại",
+      "views": {
+        "label": "Chế độ xem quy tắc",
+        "list": "Danh sách",
+        "text": "Văn bản"
+      },
+      "import": "Nhập…",
+      "export": {
+        "button": "Xuất…",
+        "done": "Đã xuất quy tắc ra {{name}}.",
+        "notSynced": "Đã xuất quy tắc ra {{name}}, nhưng ổ đĩa chưa xác nhận việc ghi.",
+        "symbolicLink": "{{name}} là một liên kết: hãy chọn tệp khác. Chưa có gì được xuất.",
+        "readOnly": "{{name}} chỉ đọc: hãy chọn tệp khác. Chưa có gì được xuất.",
+        "notWritten": "Không thể ghi {{name}}. Tệp không bị thay đổi."
+      },
+      "add": {
+        "recognized": "Văn bản nhận dạng",
+        "replacement": "Văn bản thay thế",
+        "button": "Thêm quy tắc",
+        "needsText": "Nhập văn bản nhận dạng và văn bản thay thế để thêm quy tắc."
+      },
+      "rule": {
+        "edit": "Sửa quy tắc {{recognized}}",
+        "done": "Xong sửa quy tắc {{recognized}}",
+        "delete": "Xóa quy tắc {{recognized}}",
+        "recognized": "Văn bản nhận dạng của quy tắc {{position}}",
+        "replacement": "Văn bản thay thế của quy tắc {{position}}"
+      },
+      "count": "{{count}}/{{max}} quy tắc · không phân biệt hoa thường, nguyên từ",
+      "empty": {
+        "title": "Chưa có quy tắc thay thế nào",
+        "body": "Thêm một quy tắc, hoặc dán các dòng như",
+        "paste": "Dán quy tắc dưới dạng văn bản"
+      },
+      "draft": {
+        "note": "Có thay đổi chưa lưu. Việc đọc chính tả sẽ dùng các quy tắc đã lưu cho đến khi bạn lưu.",
+        "discard": "Hủy bỏ",
+        "save": "Lưu",
+        "saving": "Đang lưu…",
+        "saved": "Đã lưu quy tắc thay thế."
+      },
+      "commit": {
+        "invalid": "Một số quy tắc không hợp lệ. Hãy sửa các dòng được đánh dấu rồi thử lại.",
+        "unchanged": "Các quy tắc đã lưu không thay đổi.",
+        "conflict": "Các quy tắc đã bị thay đổi ở nơi khác, ví dụ từ dòng lệnh. Hãy tải lại để tiếp tục.",
+        "reload": "Tải lại",
+        "reloadDiscards": "Tải lại sẽ hiển thị các quy tắc đã lưu và hủy các thay đổi chưa lưu của bạn."
+      },
+      "bulk": {
+        "editor": "Quy tắc dạng văn bản",
+        "hint": "Mỗi dòng một quy tắc: recognized;replacement. Có thể dùng phím tab khi dán từ bảng tính. Các dòng bắt đầu bằng # sẽ bị bỏ qua.",
+        "cancel": "Hủy",
+        "apply": "Áp dụng",
+        "applying": "Đang áp dụng…",
+        "applied": "Đã áp dụng quy tắc thay thế.",
+        "fixLine": "Hãy sửa dòng {{line}} để áp dụng. Các quy tắc đã lưu không thay đổi.",
+        "fixLines": "Hãy sửa {{count}} dòng bị lỗi để áp dụng. Các quy tắc đã lưu không thay đổi.",
+        "ready": "Áp dụng sẽ thay thế các quy tắc đã lưu bằng bản xem trước này.",
+        "noChanges": "Không có gì để áp dụng: văn bản khớp với các quy tắc đã lưu."
+      },
+      "preview": {
+        "title": "Xem trước",
+        "updating": "Đang cập nhật bản xem trước…",
+        "errorOne": "1 lỗi · Không thể áp dụng",
+        "errorMany": "{{count}} lỗi · Không thể áp dụng",
+        "changes": "{{adds}} cần thêm · {{updates}} cần cập nhật · {{deletes}} cần xóa",
+        "noChanges": "Không có thay đổi",
+        "omitted": "Số dòng không được liệt kê: {{count}}",
+        "duplicateOf": "Trùng văn bản nhận dạng với dòng {{lines}}",
+        "kinds": {
+          "add": "Thêm",
+          "update": "Cập nhật",
+          "delete": "Xóa",
+          "unchanged": "Không đổi",
+          "ignored": "Bỏ qua",
+          "error": "Lỗi"
+        },
+        "ignored": {
+          "header": "Dòng tiêu đề",
+          "blank": "Dòng trống",
+          "comment": "Chú thích"
+        }
+      },
+      "importDialog": {
+        "title": "Nhập quy tắc",
+        "close": "Đóng",
+        "fileOne": "{{name}} · 1 dòng · UTF-8",
+        "fileMany": "{{name}} · {{count}} dòng · UTF-8",
+        "mode": "Chế độ",
+        "merge": "Gộp: cập nhật các quy tắc trùng khớp, thêm quy tắc mới vào cuối",
+        "replace": "Thay thế: tệp trở thành toàn bộ bộ quy tắc",
+        "previewing": "Đang đọc tệp…",
+        "updateOne": "1 cập nhật",
+        "updateMany": "{{count}} cập nhật",
+        "addOne": "1 bổ sung",
+        "addMany": "{{count}} bổ sung",
+        "deleteOne": "1 xóa",
+        "deleteMany": "{{count}} xóa",
+        "errorOne": "1 lỗi",
+        "errorMany": "{{count}} lỗi",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (cập nhật, giữ vị trí {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (thêm vào cuối)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (bị xóa)",
+        "noChanges": "Tệp này khớp với các quy tắc đã lưu: không có gì để nhập.",
+        "firstError": "Dòng {{line}}: {{reason}}",
+        "cancel": "Hủy",
+        "apply": "Áp dụng nhập",
+        "applying": "Đang nhập…",
+        "imported": "Đã nhập quy tắc."
+      },
+      "importRefusal": {
+        "encodingTitle": "Không thể nhập {{name}}: đây không phải văn bản UTF-8",
+        "encodingBody": "Chưa có gì được nhập từ tệp đó. Hãy xuất ra văn bản thuần hoặc CSV rồi nhập lại.",
+        "tooLargeTitle": "Không thể nhập {{name}}: tệp lớn hơn 1 MB",
+        "tooLargeBody": "Chưa có gì được nhập. Hãy chia tệp thành các tệp nhỏ hơn rồi nhập từng tệp.",
+        "unreadableTitle": "Không thể đọc {{name}}",
+        "unreadableBody": "Chưa có gì được nhập. Hãy kiểm tra tệp vẫn còn tồn tại và Handy có thể mở được.",
+        "dismiss": "Bỏ qua"
+      },
+      "deleteDialog": {
+        "title": "Xóa quy tắc này?",
+        "body": "{{recognized}} → {{replacement}} sẽ bị xóa khỏi danh sách. Hãy lưu để áp dụng thay đổi.",
+        "cancel": "Hủy",
+        "confirm": "Xóa"
+      },
+      "switchDialog": {
+        "title": "Lưu hoặc hủy bỏ thay đổi",
+        "body": "Danh sách và văn bản cùng chỉnh sửa một bộ quy tắc. Hãy lưu hoặc hủy bỏ các thay đổi chưa lưu trước.",
+        "cancel": "Hủy",
+        "discard": "Hủy bỏ",
+        "save": "Lưu"
+      },
+      "issues": {
+        "recognizedEmpty": "Nhập văn bản nhận dạng.",
+        "recognizedTooLong": "Văn bản nhận dạng tối đa 100 ký tự.",
+        "recognizedForbidden": "Văn bản nhận dạng không được chứa ngắt dòng, tab hoặc ;.",
+        "recognizedControl": "Văn bản nhận dạng chứa ký tự điều khiển ẩn.",
+        "recognizedComment": "Văn bản nhận dạng không được bắt đầu bằng #.",
+        "duplicate": "Mỗi văn bản nhận dạng chỉ được xuất hiện một lần; văn bản này đã được định nghĩa.",
+        "replacementEmpty": "Nhập văn bản thay thế.",
+        "replacementTooLong": "Văn bản thay thế tối đa 500 ký tự.",
+        "replacementForbidden": "Văn bản thay thế không được chứa ngắt dòng hoặc tab.",
+        "replacementControl": "Văn bản thay thế chứa ký tự điều khiển ẩn.",
+        "missingSeparator": "Thiếu dấu phân cách: thêm ; rồi đến văn bản thay thế",
+        "tooManyRules": "Một bộ quy tắc chứa tối đa 1.000 quy tắc.",
+        "invalidSavedRules": "Các quy tắc đã lưu không hợp lệ. Hãy tải lại trước khi nhập.",
+        "unicodeUnavailable": "Hiện không thể kiểm tra quy tắc. Hãy khởi động lại Handy rồi thử lại.",
+        "invalidRule": "Quy tắc này không hợp lệ."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Thay đổi chưa lưu",
+      "description": "Một số quy tắc thay thế của bạn chưa được lưu. Ở lại để lưu, hoặc hủy bỏ chúng và rời đi.",
+      "stay": "Ở lại",
+      "discard": "Hủy bỏ và rời đi"
     }
   },
   "footer": {

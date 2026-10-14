@@ -662,26 +662,128 @@
           "refreshModels": "刷新模型"
         }
       },
-      "prompts": {
-        "title": "提示词",
-        "selectedPrompt": {
-          "title": "已选提示词",
-          "description": "选择用于优化转录的模板或创建新模板。在提示词文本中使用 ${output} 来引用捕获的转录。"
+      "promptLibrary": {
+        "processing": {
+          "title": "AI 后处理",
+          "enabledDescription": "用提示词处理听写内容。关闭：不处理任何听写。",
+          "defaultTitle": "默认提示词",
+          "defaultDescription": "由 AI 听写快捷键使用。普通听写以“无”开始。",
+          "none": "无",
+          "invalidOption": "无效：请先编辑再使用"
         },
-        "noPrompts": "没有可用的提示词",
-        "selectPrompt": "选择提示词",
-        "createNew": "创建新提示词",
-        "promptLabel": "提示词名称",
-        "promptLabelPlaceholder": "输入提示词名称",
-        "promptInstructions": "提示词指令",
-        "promptInstructionsPlaceholder": "编写转录后要执行的指令。示例：改进以下文本的语法和清晰度: ${output}",
-        "promptTip": "提示：使用 <code>${output}</code> 将转录文本插入到您的提示词中。",
-        "updatePrompt": "更新提示词",
-        "deletePrompt": "删除提示词",
-        "createPrompt": "创建提示词",
-        "cancel": "取消",
-        "selectToEdit": "选择上方的提示词以查看和编辑其详细信息。",
-        "createFirst": "点击上方的「创建新提示词」来创建您的第一个后处理提示词。"
+        "list": {
+          "title": "提示词",
+          "count": "{{count}} / {{limit}} 个提示词",
+          "full": "{{limit}} / {{limit}} 个提示词：删除一个才能添加新的",
+          "new": "新建提示词",
+          "empty": "还没有提示词。创建一个来处理你的听写。",
+          "loading": "正在加载提示词…",
+          "loadFailed": "无法加载提示词。",
+          "retry": "重试",
+          "edit": "编辑 {{name}}",
+          "defaultProvider": "默认提供商",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "无快捷键",
+          "notReady": "未就绪：{{reason}}",
+          "invalid": "无效：{{reason}}",
+          "reloadFailed": "无法刷新提示词。显示的内容可能已过时。"
+        },
+        "issues": {
+          "name_empty": "缺少名称",
+          "name_too_long": "名称过长",
+          "name_duplicate": "名称重复",
+          "text_empty": "缺少文本",
+          "text_too_long": "文本过长",
+          "override_incomplete": "缺少提供商或模型",
+          "unknown_provider": "未知提供商"
+        },
+        "reasons": {
+          "provider_error": "提供商返回了错误",
+          "empty_result": "提供商返回了空结果",
+          "timeout": "30 秒内无响应",
+          "provider_busy": "提供商仍在处理另一个请求",
+          "missing_endpoint": "缺少端点",
+          "missing_model": "缺少模型",
+          "missing_api_key": "缺少 API 密钥",
+          "provider_unavailable": "该提供商在此设备上不可用",
+          "unknown_provider": "未知提供商",
+          "invalid_prompt": "提示词无效",
+          "prompt_missing": "提示词已不存在"
+        },
+        "editor": {
+          "editTitle": "编辑提示词",
+          "newTitle": "新建提示词",
+          "name": "名称",
+          "namePlaceholder": "提示词名称",
+          "text": "提示词",
+          "textPlaceholder": "写下要应用于转录文本的指令。示例：将转录文本精简为要点。${output}",
+          "textHint": "<code>${output}</code> 会被替换为转录文本。",
+          "fieldErrors": {
+            "name_empty": "请输入名称（1–60 个字符）。",
+            "name_too_long": "最多使用 60 个字符。",
+            "name_duplicate": "已有提示词使用此名称。名称必须唯一。",
+            "text_empty": "请输入提示词文本。",
+            "text_too_long": "最多使用 8,000 个字符。"
+          },
+          "provider": "提供商",
+          "defaultProviderOption": "默认提供商（{{provider}}）",
+          "model": "模型",
+          "modelPlaceholder": "输入模型名称",
+          "readyEndpoint": "端点 {{endpoint}} · 已就绪",
+          "readyProvider": "{{provider}} · {{model}} · 已就绪",
+          "notReadyTitle": "{{provider}} 未就绪：{{reason}}",
+          "notReadyBody": "使用此提示词的听写会跳过 AI 步骤并保留原始文本。",
+          "fix": {
+            "api_key": "添加 API 密钥",
+            "endpoint": "设置端点"
+          },
+          "shortcuts": "快捷键（最多 {{limit}} 个）",
+          "changedElsewhere": "此提示词已在别处被修改。重新加载可查看更改，保存则保留你的版本。",
+          "reload": "重新加载",
+          "deletedElsewhere": "此提示词已在别处被删除，无法再保存。",
+          "shortcutsSavedImmediately": "快捷键更改会立即保存。",
+          "fixField": {
+            "api_key": "{{provider}} 的 API 密钥",
+            "endpoint": "{{provider}} 的端点",
+            "hint": "离开字段时保存。默认提供商不会改变。"
+          }
+        },
+        "actions": {
+          "note": "保存后，更改将应用于下一次听写。",
+          "fixFields": "请修正标出的字段后再保存。",
+          "delete": "删除提示词",
+          "cancel": "取消",
+          "save": "保存",
+          "saving": "正在保存…",
+          "saved": "提示词已保存。"
+        },
+        "deleteDialog": {
+          "title": "删除“{{name}}”？",
+          "shortcuts": "其快捷键将被移除：{{shortcuts}}。",
+          "default": "这是默认提示词：默认值将变为“无”。",
+          "body": "此操作无法撤销。",
+          "cancel": "取消",
+          "confirm": "删除",
+          "close": "关闭",
+          "deleted": "已删除提示词“{{name}}”。",
+          "deletedWithShortcuts": "已删除提示词“{{name}}”。已移除的快捷键：{{shortcuts}}。"
+        },
+        "test": {
+          "title": "测试",
+          "sampleLabel": "示例文本",
+          "samplePlaceholder": "输入或粘贴一段示例转录文本",
+          "run": "运行测试",
+          "running": "正在测试…",
+          "note": "不会插入任何内容，历史记录也不会改变。",
+          "meta": "{{model}} · {{provider}} · {{seconds}} 秒",
+          "failedTitle": "测试失败：{{reason}}",
+          "failedHint": "请检查提供商设置，然后重新运行测试。",
+          "retry": "重新运行",
+          "busy": "另一个测试仍在运行。请在其结束后重试。",
+          "skipped": "请输入示例文本来测试提示词。",
+          "outdated": "此结果对应提示词或示例的旧版本。请重新运行测试。"
+        },
+        "shortcutOwner": "提示词“{{name}}”"
       }
     },
     "history": {
@@ -870,6 +972,168 @@
         "label": "显示新功能",
         "description": "Handy 更新后显示发行说明"
       }
+    },
+    "replacements": {
+      "group": "替换",
+      "title": "替换规则",
+      "description": "按您自己的写法改写识别出的文本。与词汇表不同，替换在识别之后应用。",
+      "loading": "正在加载替换规则…",
+      "loadFailed": "无法加载替换规则。",
+      "retry": "重试",
+      "views": {
+        "label": "规则视图",
+        "list": "列表",
+        "text": "文本"
+      },
+      "import": "导入…",
+      "export": {
+        "button": "导出…",
+        "done": "规则已导出到 {{name}}。",
+        "notSynced": "规则已导出到 {{name}}，但磁盘尚未确认写入。",
+        "symbolicLink": "{{name}} 是一个链接：请选择其他文件。未导出任何内容。",
+        "readOnly": "{{name}} 为只读：请选择其他文件。未导出任何内容。",
+        "notWritten": "无法写入 {{name}}。该文件未更改。"
+      },
+      "add": {
+        "recognized": "识别文本",
+        "replacement": "替换文本",
+        "button": "添加规则",
+        "needsText": "请输入识别文本和替换文本以添加规则。"
+      },
+      "rule": {
+        "edit": "编辑规则 {{recognized}}",
+        "done": "完成编辑规则 {{recognized}}",
+        "delete": "删除规则 {{recognized}}",
+        "recognized": "第 {{position}} 条规则的识别文本",
+        "replacement": "第 {{position}} 条规则的替换文本"
+      },
+      "count": "{{count}} / {{max}} 条规则 · 不区分大小写，全词匹配",
+      "empty": {
+        "title": "暂无替换规则",
+        "body": "添加一条规则，或粘贴如下格式的行",
+        "paste": "以文本形式粘贴规则"
+      },
+      "draft": {
+        "note": "有未保存的更改。在您保存之前，听写仍使用已保存的规则。",
+        "discard": "放弃",
+        "save": "保存",
+        "saving": "正在保存…",
+        "saved": "替换规则已保存。"
+      },
+      "commit": {
+        "invalid": "部分规则无效。请修正高亮显示的行，然后重试。",
+        "unchanged": "已保存的规则未更改。",
+        "conflict": "规则已在其他地方被更改，例如通过命令行。请重新加载以继续。",
+        "reload": "重新加载",
+        "reloadDiscards": "重新加载会显示已保存的规则，并放弃你未保存的更改。"
+      },
+      "bulk": {
+        "editor": "文本形式的规则",
+        "hint": "每行一条规则：recognized;replacement。从电子表格粘贴时也可使用制表符。以 # 开头的行将被忽略。",
+        "cancel": "取消",
+        "apply": "应用",
+        "applying": "正在应用…",
+        "applied": "替换规则已应用。",
+        "fixLine": "请修正第 {{line}} 行后再应用。已保存的规则未更改。",
+        "fixLines": "请修正 {{count}} 个出错的行后再应用。已保存的规则未更改。",
+        "ready": "“应用”将用此预览替换已保存的规则。",
+        "noChanges": "无需应用：文本与已保存的规则一致。"
+      },
+      "preview": {
+        "title": "预览",
+        "updating": "正在更新预览…",
+        "errorOne": "1 个错误 · 无法应用",
+        "errorMany": "{{count}} 个错误 · 无法应用",
+        "changes": "新增 {{adds}} 条 · 更新 {{updates}} 条 · 删除 {{deletes}} 条",
+        "noChanges": "无更改",
+        "omitted": "未列出的行：{{count}}",
+        "duplicateOf": "识别文本与第 {{lines}} 行相同",
+        "kinds": {
+          "add": "新增",
+          "update": "更新",
+          "delete": "删除",
+          "unchanged": "未更改",
+          "ignored": "已忽略",
+          "error": "错误"
+        },
+        "ignored": {
+          "header": "标题行",
+          "blank": "空行",
+          "comment": "注释"
+        }
+      },
+      "importDialog": {
+        "title": "导入规则",
+        "close": "关闭",
+        "fileOne": "{{name}} · 1 行 · UTF-8",
+        "fileMany": "{{name}} · {{count}} 行 · UTF-8",
+        "mode": "模式",
+        "merge": "合并：更新匹配的规则，新规则添加到末尾",
+        "replace": "替换：文件将成为完整的规则集",
+        "previewing": "正在读取文件…",
+        "updateOne": "1 项更新",
+        "updateMany": "{{count}} 项更新",
+        "addOne": "1 项新增",
+        "addMany": "{{count}} 项新增",
+        "deleteOne": "1 项删除",
+        "deleteMany": "{{count}} 项删除",
+        "errorOne": "1 个错误",
+        "errorMany": "{{count}} 个错误",
+        "exampleUpdate": "{{recognized}} → {{replacement}}（更新，保留第 {{position}} 位）",
+        "exampleAdd": "{{recognized}} → {{replacement}}（添加到末尾）",
+        "exampleDelete": "{{recognized}} → {{replacement}}（已移除）",
+        "noChanges": "此文件与已保存的规则一致：无需导入。",
+        "firstError": "第 {{line}} 行：{{reason}}",
+        "cancel": "取消",
+        "apply": "应用导入",
+        "applying": "正在导入…",
+        "imported": "规则已导入。"
+      },
+      "importRefusal": {
+        "encodingTitle": "无法导入 {{name}}：它不是 UTF-8 文本",
+        "encodingBody": "未从该文件导入任何内容。请导出为纯文本或 CSV，然后重新导入。",
+        "tooLargeTitle": "无法导入 {{name}}：文件大于 1 MB",
+        "tooLargeBody": "未导入任何内容。请将文件拆分为较小的文件，然后逐个导入。",
+        "unreadableTitle": "无法读取 {{name}}",
+        "unreadableBody": "未导入任何内容。请检查该文件是否仍然存在，以及 Handy 能否打开它。",
+        "dismiss": "关闭"
+      },
+      "deleteDialog": {
+        "title": "删除此规则？",
+        "body": "{{recognized}} → {{replacement}} 将从列表中移除。保存后更改才会生效。",
+        "cancel": "取消",
+        "confirm": "删除"
+      },
+      "switchDialog": {
+        "title": "保存或放弃更改",
+        "body": "列表和文本编辑的是同一组规则。请先保存或放弃未保存的更改。",
+        "cancel": "取消",
+        "discard": "放弃",
+        "save": "保存"
+      },
+      "issues": {
+        "recognizedEmpty": "请输入识别文本。",
+        "recognizedTooLong": "识别文本最多 100 个字符。",
+        "recognizedForbidden": "识别文本不能包含换行符、制表符或 ;。",
+        "recognizedControl": "识别文本包含不可见的控制字符。",
+        "recognizedComment": "识别文本不能以 # 开头。",
+        "duplicate": "每个识别文本只能出现一次；此文本已定义。",
+        "replacementEmpty": "请输入替换文本。",
+        "replacementTooLong": "替换文本最多 500 个字符。",
+        "replacementForbidden": "替换文本不能包含换行符或制表符。",
+        "replacementControl": "替换文本包含不可见的控制字符。",
+        "missingSeparator": "缺少分隔符：请添加 ; 再填写替换文本",
+        "tooManyRules": "一个规则集最多包含 1,000 条规则。",
+        "invalidSavedRules": "已保存的规则无效。请在导入前重新加载。",
+        "unicodeUnavailable": "暂时无法检查规则。请重启 Handy 后重试。",
+        "invalidRule": "此规则无效。"
+      }
+    },
+    "unsavedChanges": {
+      "title": "未保存的更改",
+      "description": "您的部分替换规则尚未保存。留下以保存它们，或放弃更改并离开。",
+      "stay": "留下",
+      "discard": "放弃并离开"
     }
   },
   "footer": {

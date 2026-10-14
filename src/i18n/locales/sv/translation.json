@@ -662,26 +662,128 @@
           "refreshModels": "Uppdatera modeller"
         }
       },
-      "prompts": {
-        "title": "Prompt",
-        "selectedPrompt": {
-          "title": "Vald prompt",
-          "description": "Välj en mall för att förfina transkriptioner eller skapa en ny. Använd ${output} inuti prompttexten för att referera till den fångade transkriptionen."
+      "promptLibrary": {
+        "processing": {
+          "title": "AI-efterbearbetning",
+          "enabledDescription": "Bearbeta dikteringar med en prompt. Av: ingen diktering bearbetas.",
+          "defaultTitle": "Standardprompt",
+          "defaultDescription": "Används av kortkommandot för AI-diktering. Vanlig diktering börjar med Ingen.",
+          "none": "Ingen",
+          "invalidOption": "Ogiltig: redigera den innan du använder den"
         },
-        "noPrompts": "Inga prompter tillgängliga",
-        "selectPrompt": "Välj en prompt",
-        "createNew": "Skapa ny prompt",
-        "promptLabel": "Prompt-etikett",
-        "promptLabelPlaceholder": "Ange namn på prompt",
-        "promptInstructions": "Prompt-instruktioner",
-        "promptInstructionsPlaceholder": "Skriv instruktionerna som ska köras efter transkription. Exempel: Förbättra grammatik och tydlighet för följande text: ${output}",
-        "promptTip": "Tips: Använd <code>${output}</code> för att infoga den transkriberade texten i din prompt.",
-        "updatePrompt": "Uppdatera prompt",
-        "deletePrompt": "Ta bort prompt",
-        "createPrompt": "Skapa prompt",
-        "cancel": "Avbryt",
-        "selectToEdit": "Välj en prompt ovan för att visa och redigera dess detaljer.",
-        "createFirst": "Klicka på 'Skapa ny prompt' ovan för att skapa din första prompt för efterbearbetning."
+        "list": {
+          "title": "Promptar",
+          "count": "{{count}} av {{limit}} promptar",
+          "full": "{{limit}} av {{limit}} promptar: ta bort en för att lägga till en annan",
+          "new": "Ny prompt",
+          "empty": "Inga promptar än. Skapa en för att bearbeta dina dikteringar.",
+          "loading": "Läser in promptar…",
+          "loadFailed": "Promptarna kunde inte läsas in.",
+          "retry": "Försök igen",
+          "edit": "Redigera {{name}}",
+          "defaultProvider": "Standardleverantör",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Inget kortkommando",
+          "notReady": "Inte redo: {{reason}}",
+          "invalid": "Ogiltig: {{reason}}",
+          "reloadFailed": "Prompterna kunde inte uppdateras. Det som visas kan vara inaktuellt."
+        },
+        "issues": {
+          "name_empty": "namn saknas",
+          "name_too_long": "namnet är för långt",
+          "name_duplicate": "dubblettnamn",
+          "text_empty": "text saknas",
+          "text_too_long": "texten är för lång",
+          "override_incomplete": "leverantör eller modell saknas",
+          "unknown_provider": "okänd leverantör"
+        },
+        "reasons": {
+          "provider_error": "leverantören returnerade ett fel",
+          "empty_result": "leverantören returnerade ett tomt resultat",
+          "timeout": "inget svar inom 30 sekunder",
+          "provider_busy": "leverantören är fortfarande upptagen med en annan begäran",
+          "missing_endpoint": "slutpunkt saknas",
+          "missing_model": "modell saknas",
+          "missing_api_key": "API-nyckel saknas",
+          "provider_unavailable": "leverantören är inte tillgänglig på den här enheten",
+          "unknown_provider": "okänd leverantör",
+          "invalid_prompt": "prompten är ogiltig",
+          "prompt_missing": "prompten finns inte längre"
+        },
+        "editor": {
+          "editTitle": "Redigera prompt",
+          "newTitle": "Ny prompt",
+          "name": "Namn",
+          "namePlaceholder": "Promptens namn",
+          "text": "Prompt",
+          "textPlaceholder": "Skriv instruktionerna som ska tillämpas på transkriptionen. Exempel: Korta ner transkriptionen till det väsentliga. ${output}",
+          "textHint": "<code>${output}</code> ersätts med transkriptionen.",
+          "fieldErrors": {
+            "name_empty": "Ange ett namn (1–60 tecken).",
+            "name_too_long": "Använd högst 60 tecken.",
+            "name_duplicate": "En annan prompt har det här namnet. Namn måste vara unika.",
+            "text_empty": "Ange promptens text.",
+            "text_too_long": "Använd högst 8 000 tecken."
+          },
+          "provider": "Leverantör",
+          "defaultProviderOption": "Standardleverantör ({{provider}})",
+          "model": "Modell",
+          "modelPlaceholder": "Skriv ett modellnamn",
+          "readyEndpoint": "Slutpunkt {{endpoint}} · Redo",
+          "readyProvider": "{{provider}} · {{model}} · Redo",
+          "notReadyTitle": "{{provider}} är inte redo: {{reason}}",
+          "notReadyBody": "Dikteringar med den här prompten hoppar över AI-steget och behåller originaltexten.",
+          "fix": {
+            "api_key": "Lägg till API-nyckel",
+            "endpoint": "Ange slutpunkt"
+          },
+          "shortcuts": "Kortkommandon (upp till {{limit}})",
+          "changedElsewhere": "Den här prompten har ändrats någon annanstans. Läs in den igen för att se ändringen, eller spara för att behålla din version.",
+          "reload": "Läs in igen",
+          "deletedElsewhere": "Den här prompten har tagits bort någon annanstans och kan inte längre sparas.",
+          "shortcutsSavedImmediately": "Ändringar av kortkommandon sparas direkt.",
+          "fixField": {
+            "api_key": "API-nyckel för {{provider}}",
+            "endpoint": "Slutpunkt för {{provider}}",
+            "hint": "Sparas när du lämnar fältet. Standardleverantören ändras inte."
+          }
+        },
+        "actions": {
+          "note": "Ändringarna gäller nästa diktering efter att du sparat.",
+          "fixFields": "Rätta de markerade fälten för att spara.",
+          "delete": "Ta bort prompt",
+          "cancel": "Avbryt",
+          "save": "Spara",
+          "saving": "Sparar…",
+          "saved": "Prompten har sparats."
+        },
+        "deleteDialog": {
+          "title": "Ta bort ”{{name}}”?",
+          "shortcuts": "Dess kortkommandon tas bort: {{shortcuts}}.",
+          "default": "Det är standardprompten: standarden blir Ingen.",
+          "body": "Det går inte att ångra.",
+          "cancel": "Avbryt",
+          "confirm": "Ta bort",
+          "close": "Stäng",
+          "deleted": "Prompten ”{{name}}” har tagits bort.",
+          "deletedWithShortcuts": "Prompten ”{{name}}” har tagits bort. Borttagna kortkommandon: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Test",
+          "sampleLabel": "Exempeltext",
+          "samplePlaceholder": "Skriv eller klistra in en exempeltranskription",
+          "run": "Kör test",
+          "running": "Testar…",
+          "note": "Inget infogas och historiken ändras inte.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} s",
+          "failedTitle": "Testet misslyckades: {{reason}}",
+          "failedHint": "Kontrollera leverantörsinställningarna och kör testet igen.",
+          "retry": "Kör igen",
+          "busy": "Ett annat test körs fortfarande. Försök igen när det är klart.",
+          "skipped": "Ange en exempeltext för att testa prompten.",
+          "outdated": "Det här resultatet gäller en tidigare version av prompten eller exemplet. Kör testet igen."
+        },
+        "shortcutOwner": "prompten ”{{name}}”"
       }
     },
     "history": {
@@ -870,6 +972,168 @@
         "label": "Visa nyheter",
         "description": "Visa versionsinformation efter Handy-uppdateringar"
       }
+    },
+    "replacements": {
+      "group": "Ersättningar",
+      "title": "Ersättningsregler",
+      "description": "Skriv om igenkänd text med din egen stavning. Tillämpas efter igenkänningen, till skillnad från Ordförråd.",
+      "loading": "Läser in ersättningsregler…",
+      "loadFailed": "Ersättningsreglerna kunde inte läsas in.",
+      "retry": "Försök igen",
+      "views": {
+        "label": "Regelvy",
+        "list": "Lista",
+        "text": "Text"
+      },
+      "import": "Importera…",
+      "export": {
+        "button": "Exportera…",
+        "done": "Reglerna exporterades till {{name}}.",
+        "notSynced": "Reglerna exporterades till {{name}}, men disken har ännu inte bekräftat skrivningen.",
+        "symbolicLink": "{{name}} är en länk: välj en annan fil. Inget exporterades.",
+        "readOnly": "{{name}} är skrivskyddad: välj en annan fil. Inget exporterades.",
+        "notWritten": "{{name}} kunde inte skrivas. Filen är oförändrad."
+      },
+      "add": {
+        "recognized": "Igenkänd text",
+        "replacement": "Ersättning",
+        "button": "Lägg till regel",
+        "needsText": "Ange den igenkända texten och ersättningen för att lägga till en regel."
+      },
+      "rule": {
+        "edit": "Redigera regeln {{recognized}}",
+        "done": "Klar med att redigera regeln {{recognized}}",
+        "delete": "Ta bort regeln {{recognized}}",
+        "recognized": "Igenkänd text för regel {{position}}",
+        "replacement": "Ersättning för regel {{position}}"
+      },
+      "count": "{{count}} av {{max}} regler · skiftlägesokänsligt, hela ord",
+      "empty": {
+        "title": "Inga ersättningsregler än",
+        "body": "Lägg till en regel eller klistra in rader som",
+        "paste": "Klistra in regler som text"
+      },
+      "draft": {
+        "note": "Osparade ändringar. Dikteringar använder de sparade reglerna tills du sparar.",
+        "discard": "Förkasta",
+        "save": "Spara",
+        "saving": "Sparar…",
+        "saved": "Ersättningsreglerna har sparats."
+      },
+      "commit": {
+        "invalid": "Vissa regler är ogiltiga. Rätta de markerade raderna och försök igen.",
+        "unchanged": "De sparade reglerna är oförändrade.",
+        "conflict": "Reglerna har ändrats på annat håll, till exempel från kommandoraden. Läs in dem igen för att fortsätta.",
+        "reload": "Läs in igen",
+        "reloadDiscards": "Om du läser in igen visas de sparade reglerna och dina osparade ändringar försvinner."
+      },
+      "bulk": {
+        "editor": "Regler som text",
+        "hint": "En regel per rad: recognized;replacement. Tabb fungerar också vid inklistring från kalkylark. Rader som börjar med # ignoreras.",
+        "cancel": "Avbryt",
+        "apply": "Tillämpa",
+        "applying": "Tillämpar…",
+        "applied": "Ersättningsreglerna har tillämpats.",
+        "fixLine": "Rätta rad {{line}} för att tillämpa. De sparade reglerna är oförändrade.",
+        "fixLines": "Rätta de {{count}} felaktiga raderna för att tillämpa. De sparade reglerna är oförändrade.",
+        "ready": "Tillämpa ersätter de sparade reglerna med den här förhandsvisningen.",
+        "noChanges": "Inget att tillämpa: texten stämmer med de sparade reglerna."
+      },
+      "preview": {
+        "title": "Förhandsvisning",
+        "updating": "Uppdaterar förhandsvisningen…",
+        "errorOne": "1 fel · Tillämpa är inte tillgängligt",
+        "errorMany": "{{count}} fel · Tillämpa är inte tillgängligt",
+        "changes": "{{adds}} att lägga till · {{updates}} att uppdatera · {{deletes}} att ta bort",
+        "noChanges": "Inga ändringar",
+        "omitted": "Rader som inte visas: {{count}}",
+        "duplicateOf": "Samma igenkända text som rad {{lines}}",
+        "kinds": {
+          "add": "Lägg till",
+          "update": "Uppdatera",
+          "delete": "Ta bort",
+          "unchanged": "Oförändrad",
+          "ignored": "Ignorerad",
+          "error": "Fel"
+        },
+        "ignored": {
+          "header": "Rubrikrad",
+          "blank": "Tom rad",
+          "comment": "Kommentar"
+        }
+      },
+      "importDialog": {
+        "title": "Importera regler",
+        "close": "Stäng",
+        "fileOne": "{{name}} · 1 rad · UTF-8",
+        "fileMany": "{{name}} · {{count}} rader · UTF-8",
+        "mode": "Läge",
+        "merge": "Sammanfoga: uppdatera matchande regler, lägg till nya i slutet",
+        "replace": "Ersätt: filen blir hela regeluppsättningen",
+        "previewing": "Läser filen…",
+        "updateOne": "1 uppdatering",
+        "updateMany": "{{count}} uppdateringar",
+        "addOne": "1 tillägg",
+        "addMany": "{{count}} tillägg",
+        "deleteOne": "1 borttagning",
+        "deleteMany": "{{count}} borttagningar",
+        "errorOne": "1 fel",
+        "errorMany": "{{count}} fel",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (uppdateras, behåller position {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (läggs till i slutet)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (tas bort)",
+        "noChanges": "Filen stämmer med de sparade reglerna: inget att importera.",
+        "firstError": "Rad {{line}}: {{reason}}",
+        "cancel": "Avbryt",
+        "apply": "Tillämpa import",
+        "applying": "Importerar…",
+        "imported": "Reglerna har importerats."
+      },
+      "importRefusal": {
+        "encodingTitle": "Det gick inte att importera {{name}}: filen är inte UTF-8-text",
+        "encodingBody": "Inget importerades från filen. Exportera vanlig text eller CSV och importera sedan igen.",
+        "tooLargeTitle": "Det gick inte att importera {{name}}: filen är större än 1 MB",
+        "tooLargeBody": "Inget importerades. Dela upp filen i mindre filer och importera sedan var och en.",
+        "unreadableTitle": "Det gick inte att läsa {{name}}",
+        "unreadableBody": "Inget importerades. Kontrollera att filen fortfarande finns och att Handy kan öppna den.",
+        "dismiss": "Avfärda"
+      },
+      "deleteDialog": {
+        "title": "Ta bort den här regeln?",
+        "body": "{{recognized}} → {{replacement}} tas bort från listan. Spara för att tillämpa ändringen.",
+        "cancel": "Avbryt",
+        "confirm": "Ta bort"
+      },
+      "switchDialog": {
+        "title": "Spara eller förkasta dina ändringar",
+        "body": "Listan och texten redigerar samma regler. Spara eller förkasta dina osparade ändringar först.",
+        "cancel": "Avbryt",
+        "discard": "Förkasta",
+        "save": "Spara"
+      },
+      "issues": {
+        "recognizedEmpty": "Ange den igenkända texten.",
+        "recognizedTooLong": "Den igenkända texten får vara högst 100 tecken.",
+        "recognizedForbidden": "Den igenkända texten får inte innehålla radbrytning, tabb eller ;.",
+        "recognizedControl": "Den igenkända texten innehåller ett osynligt kontrolltecken.",
+        "recognizedComment": "Den igenkända texten får inte börja med #.",
+        "duplicate": "Varje igenkänd text får bara förekomma en gång; den här är redan definierad.",
+        "replacementEmpty": "Ange ersättningen.",
+        "replacementTooLong": "Ersättningen får vara högst 500 tecken.",
+        "replacementForbidden": "Ersättningen får inte innehålla radbrytning eller tabb.",
+        "replacementControl": "Ersättningen innehåller ett osynligt kontrolltecken.",
+        "missingSeparator": "Avgränsare saknas: lägg till ; följt av ersättningen",
+        "tooManyRules": "En regeluppsättning rymmer högst 1 000 regler.",
+        "invalidSavedRules": "De sparade reglerna är ogiltiga. Läs in dem igen innan du importerar.",
+        "unicodeUnavailable": "Reglerna kan inte kontrolleras just nu. Starta om Handy och försök igen.",
+        "invalidRule": "Den här regeln är ogiltig."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Osparade ändringar",
+      "description": "Några av dina ersättningsregler är inte sparade. Stanna för att spara dem, eller förkasta dem och lämna.",
+      "stay": "Stanna",
+      "discard": "Förkasta och lämna"
     }
   },
   "footer": {

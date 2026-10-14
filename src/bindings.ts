@@ -1324,6 +1324,39 @@ async applyWordReplacements(input: string, mode: ImportMode, expectedRevision: n
 }
 },
 /**
+ * Open the import dialog of the main window and read the chosen file; `None` when cancelled.
+ * Nothing is saved: the editor previews the text, then applies it at the preview's revision.
+ * 
+ * # Errors
+ * `ReplacementFileError` with `limit_exceeded` above 1,000,000 bytes, `validation_failed`
+ * (reason `invalid_encoding`) for a file that is not UTF-8, `usage_error` for an unreadable file.
+ */
+async importWordReplacementsFile() : Promise<Result<ReplacementImportFile | null, ReplacementFileError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("import_word_replacements_file") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Open the export dialog of the main window and write the saved rules (canonical exchange
+ * format) atomically to the chosen file; `None` when cancelled. Unsaved draft edits are not
+ * exported.
+ * 
+ * # Errors
+ * `ReplacementFileError` with `persistence_failed` (reason `export_symbolic_link`,
+ * `export_read_only` or `export_not_written`); the destination is unchanged.
+ */
+async exportWordReplacementsFile() : Promise<Result<ReplacementExportFile | null, ReplacementFileError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("export_word_replacements_file") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
  * Checks if the Mac is a laptop by detecting battery presence
  * 
  * This uses pmset to check for battery information.
@@ -2300,6 +2333,38 @@ export type RecoveryDisposition = "pending" | "insert" | "recover" | "cancelled"
  * `reason` is the backend's message, in English.
  */
 export type RefusedShortcut = { action_id: string; shortcut: string; reason: string }
+/**
+ * A completed export of the saved rules.
+ */
+export type ReplacementExportFile = { 
+/**
+ * Name of the written file, without its directory.
+ */
+file_name: string; 
+/**
+ * Number of exported rules.
+ */
+count: number; 
+/**
+ * False when the file was replaced but the disk did not confirm the rename yet.
+ */
+durable: boolean }
+/**
+ * Refusal of a rule file: the typed settings error and the chosen file name (never its path).
+ */
+export type ReplacementFileError = { file_name: string; error: SettingsCommandError }
+/**
+ * A rule file chosen in the import dialog, read as bounded UTF-8 text.
+ */
+export type ReplacementImportFile = { 
+/**
+ * Name of the chosen file, without its directory.
+ */
+file_name: string; 
+/**
+ * Exact file text (at most 1,000,000 bytes), previewed and applied by the editor.
+ */
+text: string }
 /**
  * Preview of an input; `candidate` is exactly the ordered set Apply would commit. Rule and
  * deletion rows are always listed; ignored rows and error rows are each listed up to

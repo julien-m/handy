@@ -662,26 +662,128 @@
           "refreshModels": "Refresh models"
         }
       },
-      "prompts": {
-        "title": "Prompt",
-        "selectedPrompt": {
-          "title": "Selected Prompt",
-          "description": "Select a template for refining transcriptions or create a new one. Use ${output} inside the prompt text to reference the captured transcript."
+      "promptLibrary": {
+        "processing": {
+          "title": "AI post-processing",
+          "enabledDescription": "Process dictations with a prompt. Off: no dictation is processed.",
+          "defaultTitle": "Default prompt",
+          "defaultDescription": "Used by the AI dictation shortcut. Plain dictation starts with None.",
+          "none": "None",
+          "invalidOption": "Invalid: edit it before using it"
         },
-        "noPrompts": "No prompts available",
-        "selectPrompt": "Select a prompt",
-        "createNew": "Create New Prompt",
-        "promptLabel": "Prompt Label",
-        "promptLabelPlaceholder": "Enter prompt name",
-        "promptInstructions": "Prompt Instructions",
-        "promptInstructionsPlaceholder": "Write the instructions to run after transcription. Example: Improve grammar and clarity for the following text: ${output}",
-        "promptTip": "Tip: Use <code>${output}</code> to insert the transcribed text in your prompt.",
-        "updatePrompt": "Update Prompt",
-        "deletePrompt": "Delete Prompt",
-        "createPrompt": "Create Prompt",
-        "cancel": "Cancel",
-        "selectToEdit": "Select a prompt above to view and edit its details.",
-        "createFirst": "Click 'Create New Prompt' above to create your first post-processing prompt."
+        "list": {
+          "title": "Prompts",
+          "count": "{{count}} of {{limit}} prompts",
+          "full": "{{limit}} of {{limit}} prompts: delete one to add another",
+          "new": "New prompt",
+          "empty": "No prompts yet. Create one to process your dictations.",
+          "loading": "Loading prompts…",
+          "loadFailed": "The prompts could not be loaded.",
+          "retry": "Retry",
+          "edit": "Edit {{name}}",
+          "defaultProvider": "Default provider",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "No shortcut",
+          "notReady": "Not ready: {{reason}}",
+          "invalid": "Invalid: {{reason}}",
+          "reloadFailed": "The prompts could not be refreshed. What is shown may be out of date."
+        },
+        "issues": {
+          "name_empty": "name missing",
+          "name_too_long": "name too long",
+          "name_duplicate": "duplicate name",
+          "text_empty": "text missing",
+          "text_too_long": "text too long",
+          "override_incomplete": "provider or model missing",
+          "unknown_provider": "unknown provider"
+        },
+        "reasons": {
+          "provider_error": "the provider returned an error",
+          "empty_result": "the provider returned an empty result",
+          "timeout": "no answer within 30 seconds",
+          "provider_busy": "the provider is still busy with another request",
+          "missing_endpoint": "endpoint missing",
+          "missing_model": "model missing",
+          "missing_api_key": "API key missing",
+          "provider_unavailable": "provider unavailable on this device",
+          "unknown_provider": "unknown provider",
+          "invalid_prompt": "the prompt is invalid",
+          "prompt_missing": "the prompt no longer exists"
+        },
+        "editor": {
+          "editTitle": "Edit prompt",
+          "newTitle": "New prompt",
+          "name": "Name",
+          "namePlaceholder": "Prompt name",
+          "text": "Prompt",
+          "textPlaceholder": "Write the instructions to apply to the transcript. Example: Shorten the transcript to the essentials. ${output}",
+          "textHint": "<code>${output}</code> is replaced by the transcript.",
+          "fieldErrors": {
+            "name_empty": "Enter a name (1–60 characters).",
+            "name_too_long": "Use 60 characters or fewer.",
+            "name_duplicate": "Another prompt has this name. Names must be unique.",
+            "text_empty": "Enter the prompt text.",
+            "text_too_long": "Use 8,000 characters or fewer."
+          },
+          "provider": "Provider",
+          "defaultProviderOption": "Default provider ({{provider}})",
+          "model": "Model",
+          "modelPlaceholder": "Type a model name",
+          "readyEndpoint": "Endpoint {{endpoint}} · Ready",
+          "readyProvider": "{{provider}} · {{model}} · Ready",
+          "notReadyTitle": "{{provider}} is not ready: {{reason}}",
+          "notReadyBody": "Dictations with this prompt skip the AI step and keep the original text.",
+          "fix": {
+            "api_key": "Add API key",
+            "endpoint": "Set the endpoint"
+          },
+          "shortcuts": "Shortcuts (up to {{limit}})",
+          "changedElsewhere": "This prompt was changed elsewhere. Reload it to see the change, or save to keep your version.",
+          "reload": "Reload",
+          "deletedElsewhere": "This prompt was deleted elsewhere and can no longer be saved.",
+          "shortcutsSavedImmediately": "Shortcut changes are saved immediately.",
+          "fixField": {
+            "api_key": "API key for {{provider}}",
+            "endpoint": "Endpoint of {{provider}}",
+            "hint": "Saved when you leave the field. The default provider does not change."
+          }
+        },
+        "actions": {
+          "note": "Changes apply to the next dictation after you save.",
+          "fixFields": "Fix the highlighted fields to save.",
+          "delete": "Delete prompt",
+          "cancel": "Cancel",
+          "save": "Save",
+          "saving": "Saving…",
+          "saved": "Prompt saved."
+        },
+        "deleteDialog": {
+          "title": "Delete “{{name}}”?",
+          "shortcuts": "Its shortcuts will be removed: {{shortcuts}}.",
+          "default": "It is the default prompt: the default becomes None.",
+          "body": "This cannot be undone.",
+          "cancel": "Cancel",
+          "confirm": "Delete",
+          "close": "Close",
+          "deleted": "Prompt “{{name}}” deleted.",
+          "deletedWithShortcuts": "Prompt “{{name}}” deleted. Removed shortcuts: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Test",
+          "sampleLabel": "Sample text",
+          "samplePlaceholder": "Type or paste a sample transcript",
+          "run": "Run test",
+          "running": "Testing…",
+          "note": "Nothing is inserted and history is not changed.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} s",
+          "failedTitle": "Test failed: {{reason}}",
+          "failedHint": "Check the provider settings, then run the test again.",
+          "retry": "Run again",
+          "busy": "Another test is still running. Try again when it ends.",
+          "skipped": "Enter a sample text to test the prompt.",
+          "outdated": "This result is for an earlier version of the prompt or sample. Run the test again."
+        },
+        "shortcutOwner": "the prompt “{{name}}”"
       }
     },
     "history": {
@@ -870,6 +972,168 @@
           "details": "Handy's local speech-to-text is built on transcribe.cpp and ggml. Thanks to the amazing work by Georgi Gerganov and contributors."
         }
       }
+    },
+    "replacements": {
+      "group": "Replacements",
+      "title": "Replacement rules",
+      "description": "Rewrite recognized text with your own spelling. Applied after recognition, unlike Vocabulary.",
+      "loading": "Loading replacement rules…",
+      "loadFailed": "The replacement rules could not be loaded.",
+      "retry": "Retry",
+      "views": {
+        "label": "Rule view",
+        "list": "List",
+        "text": "Text"
+      },
+      "import": "Import…",
+      "export": {
+        "button": "Export…",
+        "done": "Rules exported to {{name}}.",
+        "notSynced": "Rules exported to {{name}}, but the disk has not confirmed the write yet.",
+        "symbolicLink": "{{name}} is a link: choose another file. Nothing was exported.",
+        "readOnly": "{{name}} is read-only: choose another file. Nothing was exported.",
+        "notWritten": "{{name}} could not be written. It is unchanged."
+      },
+      "add": {
+        "recognized": "Recognized text",
+        "replacement": "Replacement",
+        "button": "Add rule",
+        "needsText": "Enter the recognized text and the replacement to add a rule."
+      },
+      "rule": {
+        "edit": "Edit rule {{recognized}}",
+        "done": "Done editing rule {{recognized}}",
+        "delete": "Delete rule {{recognized}}",
+        "recognized": "Recognized text of rule {{position}}",
+        "replacement": "Replacement of rule {{position}}"
+      },
+      "count": "{{count}} of {{max}} rules · case-insensitive, whole words",
+      "empty": {
+        "title": "No replacement rules yet",
+        "body": "Add a rule, or paste lines such as",
+        "paste": "Paste rules as text"
+      },
+      "draft": {
+        "note": "Unsaved changes. Dictations use the saved rules until you save.",
+        "discard": "Discard",
+        "save": "Save",
+        "saving": "Saving…",
+        "saved": "Replacement rules saved."
+      },
+      "commit": {
+        "invalid": "Some rules are invalid. Fix the highlighted rows, then try again.",
+        "unchanged": "Saved rules are unchanged.",
+        "conflict": "The rules changed elsewhere, for example from the command line. Reload them to continue.",
+        "reload": "Reload",
+        "reloadDiscards": "Reloading shows the saved rules and discards your unsaved changes."
+      },
+      "bulk": {
+        "editor": "Rules as text",
+        "hint": "One rule per line: recognized;replacement. A tab also works for spreadsheet paste. Lines starting with # are ignored.",
+        "cancel": "Cancel",
+        "apply": "Apply",
+        "applying": "Applying…",
+        "applied": "Replacement rules applied.",
+        "fixLine": "Fix line {{line}} to apply. Saved rules are unchanged.",
+        "fixLines": "Fix the {{count}} lines in error to apply. Saved rules are unchanged.",
+        "ready": "Apply replaces the saved rules with this preview.",
+        "noChanges": "Nothing to apply: the text matches the saved rules."
+      },
+      "preview": {
+        "title": "Preview",
+        "updating": "Updating preview…",
+        "errorOne": "1 error · Apply unavailable",
+        "errorMany": "{{count}} errors · Apply unavailable",
+        "changes": "{{adds}} to add · {{updates}} to update · {{deletes}} to delete",
+        "noChanges": "No changes",
+        "omitted": "Lines not listed: {{count}}",
+        "duplicateOf": "Same recognized text as line {{lines}}",
+        "kinds": {
+          "add": "Add",
+          "update": "Update",
+          "delete": "Delete",
+          "unchanged": "Unchanged",
+          "ignored": "Ignored",
+          "error": "Error"
+        },
+        "ignored": {
+          "header": "Header line",
+          "blank": "Blank line",
+          "comment": "Comment"
+        }
+      },
+      "importDialog": {
+        "title": "Import rules",
+        "close": "Close",
+        "fileOne": "{{name}} · 1 line · UTF-8",
+        "fileMany": "{{name}} · {{count}} lines · UTF-8",
+        "mode": "Mode",
+        "merge": "Merge: update matching rules, add new ones at the end",
+        "replace": "Replace: the file becomes the whole rule set",
+        "previewing": "Reading the file…",
+        "updateOne": "1 update",
+        "updateMany": "{{count}} updates",
+        "addOne": "1 addition",
+        "addMany": "{{count}} additions",
+        "deleteOne": "1 deletion",
+        "deleteMany": "{{count}} deletions",
+        "errorOne": "1 error",
+        "errorMany": "{{count}} errors",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (update, keeps position {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (added at the end)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (removed)",
+        "noChanges": "This file matches the saved rules: nothing to import.",
+        "firstError": "Line {{line}}: {{reason}}",
+        "cancel": "Cancel",
+        "apply": "Apply import",
+        "applying": "Importing…",
+        "imported": "Rules imported."
+      },
+      "importRefusal": {
+        "encodingTitle": "Couldn't import {{name}}: it is not UTF-8 text",
+        "encodingBody": "Nothing was imported from that file. Export plain text or CSV, then import again.",
+        "tooLargeTitle": "Couldn't import {{name}}: it is larger than 1 MB",
+        "tooLargeBody": "Nothing was imported. Split the file into smaller files, then import each one.",
+        "unreadableTitle": "Couldn't read {{name}}",
+        "unreadableBody": "Nothing was imported. Check that the file still exists and that Handy can open it.",
+        "dismiss": "Dismiss"
+      },
+      "deleteDialog": {
+        "title": "Delete this rule?",
+        "body": "{{recognized}} → {{replacement}} will be removed from the list. Save to apply the change.",
+        "cancel": "Cancel",
+        "confirm": "Delete"
+      },
+      "switchDialog": {
+        "title": "Save or discard your changes",
+        "body": "The list and the text edit the same rules. Save or discard your unsaved changes first.",
+        "cancel": "Cancel",
+        "discard": "Discard",
+        "save": "Save"
+      },
+      "issues": {
+        "recognizedEmpty": "Enter the recognized text.",
+        "recognizedTooLong": "The recognized text is limited to 100 characters.",
+        "recognizedForbidden": "The recognized text cannot contain a line break, a tab or ;.",
+        "recognizedControl": "The recognized text contains an invisible control character.",
+        "recognizedComment": "The recognized text cannot start with #.",
+        "duplicate": "Each recognized text may appear only once; this one is already defined.",
+        "replacementEmpty": "Enter the replacement.",
+        "replacementTooLong": "The replacement is limited to 500 characters.",
+        "replacementForbidden": "The replacement cannot contain a line break or a tab.",
+        "replacementControl": "The replacement contains an invisible control character.",
+        "missingSeparator": "Missing separator: add ; then the replacement",
+        "tooManyRules": "A rule set holds at most 1,000 rules.",
+        "invalidSavedRules": "The saved rules are invalid. Reload them before importing.",
+        "unicodeUnavailable": "Rules can't be checked right now. Restart Handy, then try again.",
+        "invalidRule": "This rule is invalid."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Unsaved changes",
+      "description": "Some of your replacement rules are not saved. Stay to save them, or discard them and leave.",
+      "stay": "Stay",
+      "discard": "Discard and leave"
     }
   },
   "footer": {

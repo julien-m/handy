@@ -662,26 +662,128 @@
           "refreshModels": "Obnovit modely"
         }
       },
-      "prompts": {
-        "title": "Prompt",
-        "selectedPrompt": {
-          "title": "Vybraný prompt",
-          "description": "Vyberte šablonu pro zpřesnění přepisu nebo vytvořte novou. V textu promptu použijte ${output} pro vložení zachyceného přepisu."
+      "promptLibrary": {
+        "processing": {
+          "title": "Následné zpracování AI",
+          "enabledDescription": "Zpracovávat diktáty pomocí promptu. Vypnuto: žádný diktát se nezpracovává.",
+          "defaultTitle": "Výchozí prompt",
+          "defaultDescription": "Používá ho zkratka pro diktování s AI. Běžné diktování začíná s možností Žádný.",
+          "none": "Žádný",
+          "invalidOption": "Neplatný: před použitím ho upravte"
         },
-        "noPrompts": "Nejsou k dispozici žádné prompty",
-        "selectPrompt": "Vyberte prompt",
-        "createNew": "Vytvořit nový prompt",
-        "promptLabel": "Název promptu",
-        "promptLabelPlaceholder": "Zadejte název promptu",
-        "promptInstructions": "Instrukce promptu",
-        "promptInstructionsPlaceholder": "Napište instrukce, které se mají spustit po přepisu. Příklad: Zlepšete gramatiku a srozumitelnost následujícího textu: ${output}",
-        "promptTip": "Tip: Použijte <code>${output}</code> pro vložení přepsaného textu do promptu.",
-        "updatePrompt": "Aktualizovat prompt",
-        "deletePrompt": "Smazat prompt",
-        "createPrompt": "Vytvořit prompt",
-        "cancel": "Zrušit",
-        "selectToEdit": "Vyberte výše prompt, abyste zobrazili a upravili jeho podrobnosti.",
-        "createFirst": "Klikněte nahoře na 'Vytvořit nový prompt' a vytvořte svůj první prompt pro následné zpracování."
+        "list": {
+          "title": "Prompty",
+          "count": "{{count}} z {{limit}} promptů",
+          "full": "{{limit}} z {{limit}} promptů: smažte jeden, abyste mohli přidat další",
+          "new": "Nový prompt",
+          "empty": "Zatím žádné prompty. Vytvořte prompt pro zpracování diktátů.",
+          "loading": "Načítání promptů…",
+          "loadFailed": "Prompty se nepodařilo načíst.",
+          "retry": "Zkusit znovu",
+          "edit": "Upravit {{name}}",
+          "defaultProvider": "Výchozí poskytovatel",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Bez zkratky",
+          "notReady": "Nepřipraveno: {{reason}}",
+          "invalid": "Neplatný: {{reason}}",
+          "reloadFailed": "Prompty se nepodařilo obnovit. Zobrazené údaje nemusí být aktuální."
+        },
+        "issues": {
+          "name_empty": "chybí název",
+          "name_too_long": "příliš dlouhý název",
+          "name_duplicate": "duplicitní název",
+          "text_empty": "chybí text",
+          "text_too_long": "příliš dlouhý text",
+          "override_incomplete": "chybí poskytovatel nebo model",
+          "unknown_provider": "neznámý poskytovatel"
+        },
+        "reasons": {
+          "provider_error": "poskytovatel vrátil chybu",
+          "empty_result": "poskytovatel vrátil prázdný výsledek",
+          "timeout": "žádná odpověď do 30 sekund",
+          "provider_busy": "poskytovatel ještě zpracovává jiný požadavek",
+          "missing_endpoint": "chybí koncový bod",
+          "missing_model": "chybí model",
+          "missing_api_key": "chybí klíč API",
+          "provider_unavailable": "poskytovatel není na tomto zařízení dostupný",
+          "unknown_provider": "neznámý poskytovatel",
+          "invalid_prompt": "prompt je neplatný",
+          "prompt_missing": "prompt už neexistuje"
+        },
+        "editor": {
+          "editTitle": "Upravit prompt",
+          "newTitle": "Nový prompt",
+          "name": "Název",
+          "namePlaceholder": "Název promptu",
+          "text": "Prompt",
+          "textPlaceholder": "Napište pokyny, které se použijí na přepis. Příklad: Zkrať přepis na to podstatné. ${output}",
+          "textHint": "<code>${output}</code> se nahradí přepisem.",
+          "fieldErrors": {
+            "name_empty": "Zadejte název (1–60 znaků).",
+            "name_too_long": "Použijte nejvýše 60 znaků.",
+            "name_duplicate": "Jiný prompt má stejný název. Názvy musí být jedinečné.",
+            "text_empty": "Zadejte text promptu.",
+            "text_too_long": "Použijte nejvýše 8 000 znaků."
+          },
+          "provider": "Poskytovatel",
+          "defaultProviderOption": "Výchozí poskytovatel ({{provider}})",
+          "model": "Model",
+          "modelPlaceholder": "Zadejte název modelu",
+          "readyEndpoint": "Koncový bod {{endpoint}} · Připraveno",
+          "readyProvider": "{{provider}} · {{model}} · Připraveno",
+          "notReadyTitle": "{{provider}} není připraven: {{reason}}",
+          "notReadyBody": "Diktáty s tímto promptem přeskočí krok AI a ponechají původní text.",
+          "fix": {
+            "api_key": "Přidat klíč API",
+            "endpoint": "Nastavit koncový bod"
+          },
+          "shortcuts": "Zkratky (nejvýše {{limit}})",
+          "changedElsewhere": "Tento prompt byl změněn jinde. Načtěte ho znovu, abyste viděli změnu, nebo uložte a ponechte svou verzi.",
+          "reload": "Načíst znovu",
+          "deletedElsewhere": "Tento prompt byl jinde smazán a už ho nelze uložit.",
+          "shortcutsSavedImmediately": "Změny zkratek se ukládají okamžitě.",
+          "fixField": {
+            "api_key": "API klíč pro {{provider}}",
+            "endpoint": "Koncový bod {{provider}}",
+            "hint": "Uloží se po opuštění pole. Výchozí poskytovatel se nemění."
+          }
+        },
+        "actions": {
+          "note": "Změny platí od dalšího diktátu po uložení.",
+          "fixFields": "Pro uložení opravte zvýrazněná pole.",
+          "delete": "Smazat prompt",
+          "cancel": "Zrušit",
+          "save": "Uložit",
+          "saving": "Ukládání…",
+          "saved": "Prompt uložen."
+        },
+        "deleteDialog": {
+          "title": "Smazat „{{name}}“?",
+          "shortcuts": "Jeho zkratky budou odebrány: {{shortcuts}}.",
+          "default": "Je to výchozí prompt: výchozí hodnotou se stane Žádný.",
+          "body": "Tuto akci nelze vrátit.",
+          "cancel": "Zrušit",
+          "confirm": "Smazat",
+          "close": "Zavřít",
+          "deleted": "Prompt „{{name}}“ byl smazán.",
+          "deletedWithShortcuts": "Prompt „{{name}}“ byl smazán. Odebrané zkratky: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Test",
+          "sampleLabel": "Ukázkový text",
+          "samplePlaceholder": "Napište nebo vložte ukázkový přepis",
+          "run": "Spustit test",
+          "running": "Testování…",
+          "note": "Nic se nevloží a historie se nezmění.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} s",
+          "failedTitle": "Test selhal: {{reason}}",
+          "failedHint": "Zkontrolujte nastavení poskytovatele a spusťte test znovu.",
+          "retry": "Spustit znovu",
+          "busy": "Jiný test stále běží. Zkuste to znovu, až skončí.",
+          "skipped": "Zadejte ukázkový text pro otestování promptu.",
+          "outdated": "Tento výsledek patří ke starší verzi promptu nebo vzorku. Spusťte test znovu."
+        },
+        "shortcutOwner": "prompt „{{name}}“"
       }
     },
     "history": {
@@ -870,6 +972,168 @@
         "label": "Zobrazovat novinky",
         "description": "Zobrazovat poznámky k vydání po aktualizacích Handy"
       }
+    },
+    "replacements": {
+      "group": "Nahrazení",
+      "title": "Pravidla nahrazení",
+      "description": "Přepište rozpoznaný text podle vlastního pravopisu. Na rozdíl od Slovníku se uplatní až po rozpoznání.",
+      "loading": "Načítání pravidel nahrazení…",
+      "loadFailed": "Pravidla nahrazení se nepodařilo načíst.",
+      "retry": "Zkusit znovu",
+      "views": {
+        "label": "Zobrazení pravidel",
+        "list": "Seznam",
+        "text": "Text"
+      },
+      "import": "Importovat…",
+      "export": {
+        "button": "Exportovat…",
+        "done": "Pravidla byla exportována do {{name}}.",
+        "notSynced": "Pravidla byla exportována do {{name}}, ale disk zápis zatím nepotvrdil.",
+        "symbolicLink": "{{name}} je odkaz: vyberte jiný soubor. Nic nebylo exportováno.",
+        "readOnly": "{{name}} je jen pro čtení: vyberte jiný soubor. Nic nebylo exportováno.",
+        "notWritten": "{{name}} se nepodařilo zapsat. Zůstal beze změny."
+      },
+      "add": {
+        "recognized": "Rozpoznaný text",
+        "replacement": "Náhrada",
+        "button": "Přidat pravidlo",
+        "needsText": "Pro přidání pravidla zadejte rozpoznaný text a náhradu."
+      },
+      "rule": {
+        "edit": "Upravit pravidlo {{recognized}}",
+        "done": "Dokončit úpravu pravidla {{recognized}}",
+        "delete": "Smazat pravidlo {{recognized}}",
+        "recognized": "Rozpoznaný text pravidla {{position}}",
+        "replacement": "Náhrada pravidla {{position}}"
+      },
+      "count": "Pravidla: {{count}} z {{max}} · bez ohledu na velikost písmen, celá slova",
+      "empty": {
+        "title": "Zatím žádná pravidla nahrazení",
+        "body": "Přidejte pravidlo nebo vložte řádky jako",
+        "paste": "Vložit pravidla jako text"
+      },
+      "draft": {
+        "note": "Neuložené změny. Diktování používá uložená pravidla, dokud změny neuložíte.",
+        "discard": "Zahodit",
+        "save": "Uložit",
+        "saving": "Ukládání…",
+        "saved": "Pravidla nahrazení byla uložena."
+      },
+      "commit": {
+        "invalid": "Některá pravidla jsou neplatná. Opravte zvýrazněné řádky a zkuste to znovu.",
+        "unchanged": "Uložená pravidla se nezměnila.",
+        "conflict": "Pravidla byla změněna jinde, například z příkazového řádku. Chcete-li pokračovat, načtěte je znovu.",
+        "reload": "Načíst znovu",
+        "reloadDiscards": "Opětovné načtení zobrazí uložená pravidla a zahodí vaše neuložené změny."
+      },
+      "bulk": {
+        "editor": "Pravidla jako text",
+        "hint": "Jedno pravidlo na řádek: recognized;replacement. Při vkládání z tabulky funguje i tabulátor. Řádky začínající # se ignorují.",
+        "cancel": "Zrušit",
+        "apply": "Použít",
+        "applying": "Používání…",
+        "applied": "Pravidla nahrazení byla použita.",
+        "fixLine": "Pro použití opravte řádek {{line}}. Uložená pravidla se nezměnila.",
+        "fixLines": "Pro použití opravte chybné řádky (počet: {{count}}). Uložená pravidla se nezměnila.",
+        "ready": "Použitím nahradíte uložená pravidla tímto náhledem.",
+        "noChanges": "Není co použít: text odpovídá uloženým pravidlům."
+      },
+      "preview": {
+        "title": "Náhled",
+        "updating": "Aktualizace náhledu…",
+        "errorOne": "1 chyba · Použít nelze",
+        "errorMany": "Chyby: {{count}} · Použít nelze",
+        "changes": "Přidat: {{adds}} · Aktualizovat: {{updates}} · Smazat: {{deletes}}",
+        "noChanges": "Žádné změny",
+        "omitted": "Nezobrazené řádky: {{count}}",
+        "duplicateOf": "Stejný rozpoznaný text jako na řádku {{lines}}",
+        "kinds": {
+          "add": "Přidání",
+          "update": "Aktualizace",
+          "delete": "Smazání",
+          "unchanged": "Beze změny",
+          "ignored": "Ignorováno",
+          "error": "Chyba"
+        },
+        "ignored": {
+          "header": "Řádek záhlaví",
+          "blank": "Prázdný řádek",
+          "comment": "Komentář"
+        }
+      },
+      "importDialog": {
+        "title": "Importovat pravidla",
+        "close": "Zavřít",
+        "fileOne": "{{name}} · 1 řádek · UTF-8",
+        "fileMany": "{{name}} · řádky: {{count}} · UTF-8",
+        "mode": "Režim",
+        "merge": "Sloučit: aktualizovat odpovídající pravidla, nová přidat na konec",
+        "replace": "Nahradit: soubor se stane celou sadou pravidel",
+        "previewing": "Čtení souboru…",
+        "updateOne": "1 aktualizace",
+        "updateMany": "Aktualizace: {{count}}",
+        "addOne": "1 přidání",
+        "addMany": "Přidání: {{count}}",
+        "deleteOne": "1 smazání",
+        "deleteMany": "Smazání: {{count}}",
+        "errorOne": "1 chyba",
+        "errorMany": "Chyby: {{count}}",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (aktualizace, zachová pozici {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (přidáno na konec)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (odebráno)",
+        "noChanges": "Tento soubor odpovídá uloženým pravidlům: není co importovat.",
+        "firstError": "Řádek {{line}}: {{reason}}",
+        "cancel": "Zrušit",
+        "apply": "Použít import",
+        "applying": "Importování…",
+        "imported": "Pravidla byla importována."
+      },
+      "importRefusal": {
+        "encodingTitle": "{{name}} nelze importovat: nejde o text v UTF-8",
+        "encodingBody": "Z tohoto souboru nebylo nic importováno. Exportujte prostý text nebo CSV a importujte znovu.",
+        "tooLargeTitle": "{{name}} nelze importovat: je větší než 1 MB",
+        "tooLargeBody": "Nic nebylo importováno. Rozdělte soubor na menší soubory a importujte každý zvlášť.",
+        "unreadableTitle": "{{name}} nelze přečíst",
+        "unreadableBody": "Nic nebylo importováno. Zkontrolujte, zda soubor stále existuje a zda ho Handy může otevřít.",
+        "dismiss": "Zavřít"
+      },
+      "deleteDialog": {
+        "title": "Smazat toto pravidlo?",
+        "body": "{{recognized}} → {{replacement}} bude odebráno ze seznamu. Změnu použijete uložením.",
+        "cancel": "Zrušit",
+        "confirm": "Smazat"
+      },
+      "switchDialog": {
+        "title": "Uložte nebo zahoďte změny",
+        "body": "Seznam i text upravují stejná pravidla. Nejprve uložte nebo zahoďte neuložené změny.",
+        "cancel": "Zrušit",
+        "discard": "Zahodit",
+        "save": "Uložit"
+      },
+      "issues": {
+        "recognizedEmpty": "Zadejte rozpoznaný text.",
+        "recognizedTooLong": "Rozpoznaný text je omezen na 100 znaků.",
+        "recognizedForbidden": "Rozpoznaný text nesmí obsahovat zalomení řádku, tabulátor ani ;.",
+        "recognizedControl": "Rozpoznaný text obsahuje neviditelný řídicí znak.",
+        "recognizedComment": "Rozpoznaný text nesmí začínat znakem #.",
+        "duplicate": "Každý rozpoznaný text se smí objevit jen jednou; tento je již definován.",
+        "replacementEmpty": "Zadejte náhradu.",
+        "replacementTooLong": "Náhrada je omezena na 500 znaků.",
+        "replacementForbidden": "Náhrada nesmí obsahovat zalomení řádku ani tabulátor.",
+        "replacementControl": "Náhrada obsahuje neviditelný řídicí znak.",
+        "missingSeparator": "Chybí oddělovač: přidejte ; a potom náhradu",
+        "tooManyRules": "Sada pravidel může obsahovat nejvýše 1000 pravidel.",
+        "invalidSavedRules": "Uložená pravidla jsou neplatná. Před importem je načtěte znovu.",
+        "unicodeUnavailable": "Pravidla teď nelze zkontrolovat. Restartujte Handy a zkuste to znovu.",
+        "invalidRule": "Toto pravidlo je neplatné."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Neuložené změny",
+      "description": "Některá pravidla nahrazení nejsou uložená. Zůstaňte a uložte je, nebo je zahoďte a odejděte.",
+      "stay": "Zůstat",
+      "discard": "Zahodit a odejít"
     }
   },
   "footer": {

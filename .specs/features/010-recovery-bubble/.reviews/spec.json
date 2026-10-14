@@ -1,31 +1,27 @@
 {
   "schema_version": "1",
   "policy_version": "078.1",
-  "context_hash": "25476774287efd35047f6d42e00990ed7d9e2be3632d2bab3f63f50019967f34",
+  "context_hash": "07505792f9333e59f87c7f69d0a87474f406fef5d4611705d7ff4efb3a57096f",
   "source_hashes": {
     ".specs/constitution.md": "f65acb99e00dfab5f8ce418aae1b5979265f2b2eb3c399666b09c4c2caf82067",
-    ".specs/features/010-recovery-bubble/spec.md": "f5e9438a7786b6a7e2f0c4deb9782e2c14bed291fa7a16dbcdd98f5508cee4e5",
+    ".specs/features/010-recovery-bubble/spec.md": "87157b3f7db104dbb65e14d1d5a7615a95e149886d3c4bb2865be78959351edd",
     ".specs/project.md": "cd935573446ed94fa43256de0a4d14b9474c4356fa66623f3c8c32a80572b699",
     ".specs/stacks/_default.md": "4df92d16eef38a57c8c2bf1fff8425852b86a41e86c6b7c16423ec166ddfc0f8",
     ".specs/testing/strategy.md": "bfe0dd480a9d3cf2575cba8407a984add02dcbdad2a17fcb4fc560def9058934"
   },
   "reviewer_model": "claude-opus-5-5",
   "complete": true,
-  "ready": true,
+  "ready": false,
   "errors": [],
   "conclusions": [
     {
       "requirement_id": "010-recovery-bubble:AC-001",
-      "disposition": "covered",
-      "rationale": "Pre-insertion recovery for unavailable/uncertain destinations, post-insertion recovery for method failures including the 007 failure outcomes, no Enter, display with overlay style none and replacement of the 006 reason display are all observable; SC-001/SC-003 make them measurable.",
+      "disposition": "ambiguous",
+      "rationale": "Reasons, failure outcomes, detail rule and Enter suppression are precise and testable; open: whether the bubble applies when paste method is None.",
       "source_citations": [
         {
-          "section_id": ".specs/features/010-recovery-bubble/spec.md:L197-L201",
-          "excerpt": "Before insertion, Handy shows the bubble in place of the live indicator instead of inserting when the destination is unavailable (closed, pinned app unavailable) or uncertain (not confirmed frontmost before insertion, as defined by 006); nothing is inserted."
-        },
-        {
-          "section_id": ".specs/features/010-recovery-bubble/spec.md:L197-L201",
-          "excerpt": "In both cases no Enter is sent. The bubble is shown even when the overlay style is none, and it replaces the 006 reason display on the indicator."
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L199-L203",
+          "excerpt": "instead of inserting when the destination is unavailable"
         }
       ],
       "plan_citations": [],
@@ -33,12 +29,12 @@
     },
     {
       "requirement_id": "010-recovery-bubble:AC-002",
-      "disposition": "covered",
-      "rationale": "Three-way classification, foreign-process focus as undetermined, and the gating rule (only not editable with setting on recovers) are testable with a classification seam.",
+      "disposition": "ambiguous",
+      "rationale": "Three-way rule and setting gate are clear; the mapping of AX results (no focused element, AX error) to not editable vs undetermined is not stated.",
       "source_citations": [
         {
-          "section_id": ".specs/features/010-recovery-bubble/spec.md:L202-L206",
-          "excerpt": "Only \"not editable\" with the setting \"Show the bubble when no text field is focused\" on (default on) shows the bubble with reason \"No text field is focused\"."
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L204-L208",
+          "excerpt": "classifies the destination's focused element as editable, not editable or undetermined"
         }
       ],
       "plan_citations": [],
@@ -47,11 +43,15 @@
     {
       "requirement_id": "010-recovery-bubble:AC-003",
       "disposition": "covered",
-      "rationale": "Content (two-line preview, exact reason sentences, handle, Copy, Close, explanation), non-activation, first click and accessible names are checkable. See the non-critical ambiguity about the reason for a running pinned app that cannot be activated.",
+      "rationale": "Content, five reason templates, non-activating, first click and accessible names are concrete; reason split settled by the 2026-10-14 decision.",
       "source_citations": [
         {
-          "section_id": ".specs/features/010-recovery-bubble/spec.md:L207-L211",
-          "excerpt": "It does not take keyboard focus from other applications, accepts the first click, and has accessible names for every control."
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L209-L213",
+          "excerpt": "It does not take keyboard focus from other applications, accepts the first click"
+        },
+        {
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L342-L361",
+          "excerpt": "\"<App> is pinned but not open\" is reserved for `pinned_app_not_running`"
         }
       ],
       "plan_citations": [],
@@ -60,11 +60,11 @@
     {
       "requirement_id": "010-recovery-bubble:AC-004",
       "disposition": "covered",
-      "rationale": "Native copy-mode drag with full payload and preview, hide during drag, reappear on refusal, close on acceptance with 'drop accepted' only, and identity guarding are testable; SC-002 bounds native expectations.",
+      "rationale": "Native copy-mode drag, hide/reappear, accepted-drop logging without text and per-bubble identity are testable and match the Input.",
       "source_citations": [
         {
-          "section_id": ".specs/features/010-recovery-bubble/spec.md:L212-L216",
-          "excerpt": "If a drop is accepted, the bubble closes and the outcome is logged as \"drop accepted\" without the transcript, never as text verified in a field."
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L214-L218",
+          "excerpt": "starts a native drag session in copy mode carrying the full transcript"
         }
       ],
       "plan_citations": [],
@@ -73,11 +73,15 @@
     {
       "requirement_id": "010-recovery-bubble:AC-005",
       "disposition": "covered",
-      "rationale": "Copy semantics including the 007 changeCount interaction, Close, conditional history statement, new-dictation closing, no timeout and no history deletion are explicit.",
+      "rationale": "Copy/Close/explanation/new-dictation rules, history honesty and no timeout are explicit and backed by clarifications.",
       "source_citations": [
         {
-          "section_id": ".specs/features/010-recovery-bubble/spec.md:L217-L221",
-          "excerpt": "The bubble has no automatic timeout. Closing the bubble never deletes the history entry."
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L219-L223",
+          "excerpt": "The bubble has no automatic timeout."
+        },
+        {
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L342-L361",
+          "excerpt": "a new dictation closes the bubble immediately"
         }
       ],
       "plan_citations": [],
@@ -86,11 +90,11 @@
     {
       "requirement_id": "010-recovery-bubble:AC-006",
       "disposition": "covered",
-      "rationale": "Reduced Windows and Linux bubbles with explicit causes and actions.",
+      "rationale": "Reduced bubble per platform and its causes are explicit; Linux limited to insertion failed.",
       "source_citations": [
         {
-          "section_id": ".specs/features/010-recovery-bubble/spec.md:L222-L226",
-          "excerpt": "On Linux, where no destination is captured, it appears only for insertion failed, with the same actions."
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L224-L228",
+          "excerpt": "On Windows, the bubble offers Copy, Close and the explanation without drag"
         }
       ],
       "plan_citations": [],
@@ -99,11 +103,11 @@
     {
       "requirement_id": "010-recovery-bubble:AC-007",
       "disposition": "covered",
-      "rationale": "CLI read/set of the boolean with UI validation and JSON-only stdout, consistent with 008.",
+      "rationale": "CLI read/set with UI validation and JSON-only stdout are testable; Story 5 adds revision in output.",
       "source_citations": [
         {
-          "section_id": ".specs/features/010-recovery-bubble/spec.md:L227-L231",
-          "excerpt": "The settings CLI (008) reads and sets \"Show the bubble when no text field is focused\" with the UI validation"
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L229-L233",
+          "excerpt": "with `--json`, stdout contains only the JSON envelope"
         }
       ],
       "plan_citations": [],
@@ -112,11 +116,11 @@
     {
       "requirement_id": "010-recovery-bubble:FR-001",
       "disposition": "covered",
-      "rationale": "Decision before and after insertion as in AC-001/AC-002.",
+      "rationale": "Pre- and post-insertion decision inputs are enumerated and traced to AC-001/AC-002.",
       "source_citations": [
         {
-          "section_id": ".specs/features/010-recovery-bubble/spec.md:L307-L311",
-          "excerpt": "Decide before insertion whether to insert or recover, using destination availability, frontmost confirmation and, on macOS with permission, focused-element classification gated by a setting"
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L309-L313",
+          "excerpt": "Decide before insertion whether to insert or recover"
         }
       ],
       "plan_citations": [],
@@ -125,11 +129,11 @@
     {
       "requirement_id": "010-recovery-bubble:FR-002",
       "disposition": "covered",
-      "rationale": "Non-activating bubble that suppresses insertion and Enter.",
+      "rationale": "Bubble content and suppression of insertion and Enter trace to AC-001/003/005.",
       "source_citations": [
         {
-          "section_id": ".specs/features/010-recovery-bubble/spec.md:L312-L316",
-          "excerpt": "Show a non-activating bubble in place of the live indicator with transcript preview, reason, drag handle, Copy, Close and explanation, and suppress insertion and automatic Enter."
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L314-L318",
+          "excerpt": "Show a non-activating bubble in place of the live indicator"
         }
       ],
       "plan_citations": [],
@@ -138,11 +142,11 @@
     {
       "requirement_id": "010-recovery-bubble:FR-003",
       "disposition": "covered",
-      "rationale": "Native macOS drag source.",
+      "rationale": "Native drag source behavior traces to AC-004.",
       "source_citations": [
         {
-          "section_id": ".specs/features/010-recovery-bubble/spec.md:L317-L321",
-          "excerpt": "Provide a native macOS drag source carrying the full transcript in copy mode, hiding the bubble during the drag and restoring it on refusal."
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L319-L323",
+          "excerpt": "Provide a native macOS drag source carrying the full transcript in copy mode"
         }
       ],
       "plan_citations": [],
@@ -151,11 +155,11 @@
     {
       "requirement_id": "010-recovery-bubble:FR-004",
       "disposition": "covered",
-      "rationale": "Copy/Close/explanation/new-dictation behaviors and reduced platforms.",
+      "rationale": "Actions, no timeout, history untouched and reduced platforms trace to AC-005/AC-006.",
       "source_citations": [
         {
-          "section_id": ".specs/features/010-recovery-bubble/spec.md:L322-L326",
-          "excerpt": "Provide Copy, Close, explanation and new-dictation closing behaviors without timeout and without touching history, and the reduced bubble on Windows and Linux."
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L324-L328",
+          "excerpt": "without timeout and without touching history"
         }
       ],
       "plan_citations": [],
@@ -164,10 +168,10 @@
     {
       "requirement_id": "010-recovery-bubble:FR-005",
       "disposition": "covered",
-      "rationale": "Setting exposed in UI and CLI.",
+      "rationale": "Setting exposure in UI and CLI traces to AC-002/AC-007.",
       "source_citations": [
         {
-          "section_id": ".specs/features/010-recovery-bubble/spec.md:L327-L331",
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L329-L333",
           "excerpt": "Expose the \"no text field\" setting through settings UI and settings CLI."
         }
       ],
@@ -177,11 +181,11 @@
     {
       "requirement_id": "010-recovery-bubble:SC-001",
       "disposition": "covered",
-      "rationale": "Exhaustive decision-table tests with zero mismatches.",
+      "rationale": "Measurable: every reason and insert-as-usual case, zero mismatches.",
       "source_citations": [
         {
-          "section_id": ".specs/features/010-recovery-bubble/spec.md:L388-L391",
-          "excerpt": "Decision-table tests cover every recovery reason and every \"insert as usual\" case with zero mismatches."
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L399-L402",
+          "excerpt": "Decision-table tests cover every recovery reason and every \"insert as usual\" case"
         }
       ],
       "plan_citations": [],
@@ -190,11 +194,11 @@
     {
       "requirement_id": "010-recovery-bubble:SC-002",
       "disposition": "covered",
-      "rationale": "Native drag check with a minimum pass set (TextEdit, Notes) and recorded results elsewhere.",
+      "rationale": "Measurable native threshold (TextEdit and Notes) plus recorded results for all four apps.",
       "source_citations": [
         {
-          "section_id": ".specs/features/010-recovery-bubble/spec.md:L392-L395",
-          "excerpt": "transfers the full transcript in at least TextEdit and Notes, and each application's result is recorded."
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L403-L406",
+          "excerpt": "transfers the full transcript in at least TextEdit and Notes"
         }
       ],
       "plan_citations": [],
@@ -203,10 +207,10 @@
     {
       "requirement_id": "010-recovery-bubble:SC-003",
       "disposition": "covered",
-      "rationale": "No automated scenario sends Enter while the bubble is shown.",
+      "rationale": "Binary, automatable criterion.",
       "source_citations": [
         {
-          "section_id": ".specs/features/010-recovery-bubble/spec.md:L396-L398",
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L407-L409",
           "excerpt": "No automated scenario sends an Enter key press while the bubble is shown."
         }
       ],
@@ -216,70 +220,165 @@
   ],
   "ambiguities": [
     {
-      "requirement_id": "010-recovery-bubble:AC-003",
-      "decision_key": "pinned-running-activation-failure-reason",
-      "question": "When a pinned application is running but cannot be brought forward within the 006 limit, does the bubble say '<App> is pinned but not open' or 'Could not bring <App> forward'? Feature 009 groups both cases under the reason 'pinned app unavailable'; only the second sentence is truthful for a running app.",
+      "requirement_id": "010-recovery-bubble:AC-001",
+      "decision_key": "paste-method-none-recovery",
+      "question": "With paste method None (006 activates nothing, no insertion intended), does a closed or uncertain destination still show the bubble, or is recovery skipped?",
       "critical": false,
       "citations": [
         {
-          "section_id": ".specs/features/010-recovery-bubble/spec.md:L207-L211",
-          "excerpt": "(\"<App> is no longer open\", \"<App> is pinned but not open\", \"Could not bring <App> forward\", \"Insertion failed\", \"No text field is focused\")"
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L199-L203",
+          "excerpt": "instead of inserting when the destination is unavailable"
+        }
+      ],
+      "resolution": "",
+      "resolution_citations": []
+    },
+    {
+      "requirement_id": "010-recovery-bubble:AC-002",
+      "decision_key": "no-focused-element-classification",
+      "question": "Is 'no focused element' or an AX error (e.g. Finder desktop, app without window) classified not editable (bubble) or undetermined (insert)?",
+      "critical": false,
+      "citations": [
+        {
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L204-L208",
+          "excerpt": "Undetermined, editable, missing permission, other platforms or setting off insert as usual."
+        },
+        {
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L342-L361",
+          "excerpt": "with an undetermined result that does not force the panel"
         }
       ],
       "resolution": "",
       "resolution_citations": []
     }
   ],
-  "extra_scope": [],
-  "findings": [
+  "extra_scope": [
     {
-      "category": "cross-feature",
-      "severity": "info",
-      "description": "Smart paste (007) expects the bubble to state that the text may have been pasted after all when a read arrives after 'not read'. AC-001's explanation ('some text may have reached the application') covers it statically; a dynamic update is not required by 010.",
-      "suggestion": "The plan should state whether the late-read diagnostic of 007 updates the open bubble or is covered by the static explanation.",
+      "description": "Drag-handle hover hint \"Drag into a text field\" and an animated closing state; not asked by the Input nor traced to any AC/FR.",
+      "justification": "No source requests a hover hint or close animation; Input asks only drag, copy, close and why it appears.",
+      "approved": false,
       "citations": [
         {
-          "section_id": ".specs/features/010-recovery-bubble/spec.md:L197-L201",
-          "excerpt": "Handy shows the bubble with the reason \"Insertion failed\", and the explanation says some text may have reached the application."
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L275-L290",
+          "excerpt": "Then a hint says \"Drag into a text field\""
+        },
+        {
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L238-L255",
+          "excerpt": "When the bubble animates out"
+        }
+      ],
+      "kind": "business"
+    },
+    {
+      "description": "Whole feature ships behind the 006 destination-return gate; gate closed keeps dev behavior.",
+      "justification": "Approved orchestrator decision; staged rollout reusing the delivered 006 gate.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L342-L361",
+          "excerpt": "ships behind the `destination-return` gate"
+        }
+      ],
+      "kind": "technical"
+    }
+  ],
+  "findings": [
+    {
+      "category": "consistency",
+      "severity": "warning",
+      "description": "Story 1 Gherkin expects the literal reason \"Could not bring the app forward\" while AC-003 fixes the template with the app name.",
+      "suggestion": "Change the Gherkin to \"Could not bring Notes forward\" (or <App>) to match AC-003.",
+      "citations": [
+        {
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L23-L58",
+          "excerpt": "Then the bubble appears with the reason \"Could not bring the app forward\""
+        },
+        {
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L209-L213",
+          "excerpt": "\"Could not bring <App> forward\""
+        }
+      ]
+    },
+    {
+      "category": "completeness",
+      "severity": "warning",
+      "description": "Story 1 flowchart omits the post-insertion 'Insertion failed' path and the 'not editable, setting off' branch (no edge), so it under-describes AC-001/AC-002.",
+      "suggestion": "Add an Insert -> failure -> Bubble: Insertion failed edge and a 'Not editable and setting off -> Insert as usual' edge.",
+      "citations": [
+        {
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L23-L58",
+          "excerpt": "D -- Not editable and setting on --> E[Bubble: no text field]"
+        }
+      ]
+    },
+    {
+      "category": "completeness",
+      "severity": "warning",
+      "description": "Gate open, the spec does not say whether the delivered `paste-error` toast (006 delivery.rs emits it on failure) is suppressed when the bubble shows; AC-001 only replaces the indicator reason display. Risk of double reporting.",
+      "suggestion": "State that with the gate open the bubble replaces the paste-error notification for recovered outcomes (or keep both, explicitly).",
+      "citations": [
+        {
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L199-L203",
+          "excerpt": "it replaces the 006 reason display on the indicator"
+        },
+        {
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L342-L361",
+          "excerpt": "the existing `paste-error` notification on a paste failure"
+        }
+      ]
+    },
+    {
+      "category": "ambiguity",
+      "severity": "info",
+      "description": "'Transcript' is not defined as the final output text (after custom words, Chinese script, LLM post-processing) vs raw ASR text for preview, drag and Copy.",
+      "suggestion": "State that the bubble carries exactly the text that would have been inserted.",
+      "citations": [
+        {
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L219-L223",
+          "excerpt": "Copy writes the full transcript to the clipboard as a deliberate user copy"
         }
       ]
     },
     {
       "category": "consistency",
       "severity": "info",
-      "description": "Story 4's Close scenario says the transcript stays in history unconditionally, while AC-005 conditions the statement on a successful history save.",
-      "suggestion": "Treat AC-005 as authoritative; tests use successful saving as the Story 4 precondition.",
+      "description": "AC-003 lists a drag handle for every bubble while AC-006 gives Windows/Linux no drag; handle presence off macOS is implicit.",
+      "suggestion": "Say the drag handle (and its hint) is macOS only.",
       "citations": [
         {
-          "section_id": ".specs/features/010-recovery-bubble/spec.md:L131-L167",
-          "excerpt": "Then the bubble closes and the transcript stays in history"
-        },
-        {
-          "section_id": ".specs/features/010-recovery-bubble/spec.md:L217-L221",
-          "excerpt": "states that the transcript is kept in history when history saving succeeded."
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L209-L213",
+          "excerpt": "a drag handle, Copy, Close and an explanation control"
         }
       ]
     },
     {
-      "category": "qe-consistency",
+      "category": "feasibility",
       "severity": "info",
-      "description": "Quality Engineering (High, Shared, Data then Regression) matches QE Analysis (High, every failed or risky insertion, lost text or false recoveries).",
-      "suggestion": "Reuse this classification in the plan QE Analysis.",
+      "description": "A new dictation during a drag closes the bubble, but the AppKit drag session may still complete a drop into a field; the spec does not say if that late drop is acceptable.",
+      "suggestion": "State that an in-flight drag may still deliver its text after the bubble closed, and that only callbacks are ignored.",
       "citations": [
         {
-          "section_id": ".specs/features/010-recovery-bubble/spec.md:L361-L367",
-          "excerpt": "primary risk Data (lost text), followed by Regression (false recoveries)."
-        },
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L214-L218",
+          "excerpt": "a new dictation during a drag closes the bubble for good"
+        }
+      ]
+    },
+    {
+      "category": "testability",
+      "severity": "info",
+      "description": "The 300 ms display expectation is only in the QE notes, not in any AC or SC, so it has no measurable acceptance.",
+      "suggestion": "Promote it to an SC with a measurement method, or mark it non-gating.",
+      "citations": [
         {
-          "section_id": ".specs/features/010-recovery-bubble/spec.md:L351-L360",
-          "excerpt": "**Primary risk:** Lost text or false recoveries interrupting normal dictation"
+          "section_id": ".specs/features/010-recovery-bubble/spec.md:L362-L371",
+          "excerpt": "Bubble shown within 300 ms of the recovery decision"
         }
       ]
     }
   ],
   "confidence": 4,
   "raw_results": [
-    "{\"batch_id\": \"batch-001\", \"reviewed_section_ids\": [\".specs/constitution.md:L1-L2\", \".specs/constitution.md:L3-L17\", \".specs/constitution.md:L18-L26\", \".specs/constitution.md:L27-L30\", \".specs/constitution.md:L31-L36\", \".specs/features/010-recovery-bubble/spec.md:L1-L9\", \".specs/features/010-recovery-bubble/spec.md:L10-L11\", \".specs/features/010-recovery-bubble/spec.md:L12-L20\", \".specs/features/010-recovery-bubble/spec.md:L21-L22\", \".specs/features/010-recovery-bubble/spec.md:L23-L58\", \".specs/features/010-recovery-bubble/spec.md:L59-L95\", \".specs/features/010-recovery-bubble/spec.md:L96-L130\", \".specs/features/010-recovery-bubble/spec.md:L131-L167\", \".specs/features/010-recovery-bubble/spec.md:L168-L194\", \".specs/features/010-recovery-bubble/spec.md:L195-L196\", \".specs/features/010-recovery-bubble/spec.md:L197-L201\", \".specs/features/010-recovery-bubble/spec.md:L202-L206\", \".specs/features/010-recovery-bubble/spec.md:L207-L211\", \".specs/features/010-recovery-bubble/spec.md:L212-L216\", \".specs/features/010-recovery-bubble/spec.md:L217-L221\", \".specs/features/010-recovery-bubble/spec.md:L222-L226\", \".specs/features/010-recovery-bubble/spec.md:L227-L231\", \".specs/features/010-recovery-bubble/spec.md:L232-L235\", \".specs/features/010-recovery-bubble/spec.md:L236-L253\", \".specs/features/010-recovery-bubble/spec.md:L254-L272\", \".specs/features/010-recovery-bubble/spec.md:L273-L288\", \".specs/features/010-recovery-bubble/spec.md:L289-L304\", \".specs/features/010-recovery-bubble/spec.md:L305-L306\", \".specs/features/010-recovery-bubble/spec.md:L307-L311\", \".specs/features/010-recovery-bubble/spec.md:L312-L316\", \".specs/features/010-recovery-bubble/spec.md:L317-L321\", \".specs/features/010-recovery-bubble/spec.md:L322-L326\", \".specs/features/010-recovery-bubble/spec.md:L327-L331\", \".specs/features/010-recovery-bubble/spec.md:L332-L339\", \".specs/features/010-recovery-bubble/spec.md:L340-L350\", \".specs/features/010-recovery-bubble/spec.md:L351-L360\", \".specs/features/010-recovery-bubble/spec.md:L361-L367\", \".specs/features/010-recovery-bubble/spec.md:L368-L374\", \".specs/features/010-recovery-bubble/spec.md:L375-L378\", \".specs/features/010-recovery-bubble/spec.md:L379-L385\", \".specs/features/010-recovery-bubble/spec.md:L386-L387\", \".specs/features/010-recovery-bubble/spec.md:L388-L391\", \".specs/features/010-recovery-bubble/spec.md:L392-L395\", \".specs/features/010-recovery-bubble/spec.md:L396-L398\", \".specs/project.md:L1-L2\", \".specs/project.md:L3-L7\", \".specs/project.md:L8-L16\", \".specs/project.md:L17-L20\", \".specs/project.md:L21-L24\", \".specs/project.md:L25-L28\", \".specs/project.md:L29-L36\", \".specs/stacks/_default.md:L1-L5\", \".specs/stacks/_default.md:L6-L7\", \".specs/stacks/_default.md:L8-L21\", \".specs/stacks/_default.md:L22-L31\", \".specs/testing/strategy.md:L1-L2\", \".specs/testing/strategy.md:L3-L6\", \".specs/testing/strategy.md:L7-L12\", \".specs/testing/strategy.md:L13-L16\"], \"conclusions\": [{\"requirement_id\": \"010-recovery-bubble:AC-001\", \"disposition\": \"covered\", \"rationale\": \"Pre-insertion recovery for unavailable/uncertain destinations, post-insertion recovery for method failures including the 007 failure outcomes, no Enter, display with overlay style none and replacement of the 006 reason display are all observable; SC-001/SC-003 make them measurable.\", \"source_citations\": [{\"section_id\": \".specs/features/010-recovery-bubble/spec.md:L197-L201\", \"excerpt\": \"Before insertion, Handy shows the bubble in place of the live indicator instead of inserting when the destination is unavailable (closed, pinned app unavailable) or uncertain (not confirmed frontmost before insertion, as defined by 006); nothing is inserted.\"}, {\"section_id\": \".specs/features/010-recovery-bubble/spec.md:L197-L201\", \"excerpt\": \"In both cases no Enter is sent. The bubble is shown even when the overlay style is none, and it replaces the 006 reason display on the indicator.\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"010-recovery-bubble:AC-002\", \"disposition\": \"covered\", \"rationale\": \"Three-way classification, foreign-process focus as undetermined, and the gating rule (only not editable with setting on recovers) are testable with a classification seam.\", \"source_citations\": [{\"section_id\": \".specs/features/010-recovery-bubble/spec.md:L202-L206\", \"excerpt\": \"Only \\\"not editable\\\" with the setting \\\"Show the bubble when no text field is focused\\\" on (default on) shows the bubble with reason \\\"No text field is focused\\\".\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"010-recovery-bubble:AC-003\", \"disposition\": \"covered\", \"rationale\": \"Content (two-line preview, exact reason sentences, handle, Copy, Close, explanation), non-activation, first click and accessible names are checkable. See the non-critical ambiguity about the reason for a running pinned app that cannot be activated.\", \"source_citations\": [{\"section_id\": \".specs/features/010-recovery-bubble/spec.md:L207-L211\", \"excerpt\": \"It does not take keyboard focus from other applications, accepts the first click, and has accessible names for every control.\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"010-recovery-bubble:AC-004\", \"disposition\": \"covered\", \"rationale\": \"Native copy-mode drag with full payload and preview, hide during drag, reappear on refusal, close on acceptance with 'drop accepted' only, and identity guarding are testable; SC-002 bounds native expectations.\", \"source_citations\": [{\"section_id\": \".specs/features/010-recovery-bubble/spec.md:L212-L216\", \"excerpt\": \"If a drop is accepted, the bubble closes and the outcome is logged as \\\"drop accepted\\\" without the transcript, never as text verified in a field.\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"010-recovery-bubble:AC-005\", \"disposition\": \"covered\", \"rationale\": \"Copy semantics including the 007 changeCount interaction, Close, conditional history statement, new-dictation closing, no timeout and no history deletion are explicit.\", \"source_citations\": [{\"section_id\": \".specs/features/010-recovery-bubble/spec.md:L217-L221\", \"excerpt\": \"The bubble has no automatic timeout. Closing the bubble never deletes the history entry.\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"010-recovery-bubble:AC-006\", \"disposition\": \"covered\", \"rationale\": \"Reduced Windows and Linux bubbles with explicit causes and actions.\", \"source_citations\": [{\"section_id\": \".specs/features/010-recovery-bubble/spec.md:L222-L226\", \"excerpt\": \"On Linux, where no destination is captured, it appears only for insertion failed, with the same actions.\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"010-recovery-bubble:AC-007\", \"disposition\": \"covered\", \"rationale\": \"CLI read/set of the boolean with UI validation and JSON-only stdout, consistent with 008.\", \"source_citations\": [{\"section_id\": \".specs/features/010-recovery-bubble/spec.md:L227-L231\", \"excerpt\": \"The settings CLI (008) reads and sets \\\"Show the bubble when no text field is focused\\\" with the UI validation\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"010-recovery-bubble:FR-001\", \"disposition\": \"covered\", \"rationale\": \"Decision before and after insertion as in AC-001/AC-002.\", \"source_citations\": [{\"section_id\": \".specs/features/010-recovery-bubble/spec.md:L307-L311\", \"excerpt\": \"Decide before insertion whether to insert or recover, using destination availability, frontmost confirmation and, on macOS with permission, focused-element classification gated by a setting\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"010-recovery-bubble:FR-002\", \"disposition\": \"covered\", \"rationale\": \"Non-activating bubble that suppresses insertion and Enter.\", \"source_citations\": [{\"section_id\": \".specs/features/010-recovery-bubble/spec.md:L312-L316\", \"excerpt\": \"Show a non-activating bubble in place of the live indicator with transcript preview, reason, drag handle, Copy, Close and explanation, and suppress insertion and automatic Enter.\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"010-recovery-bubble:FR-003\", \"disposition\": \"covered\", \"rationale\": \"Native macOS drag source.\", \"source_citations\": [{\"section_id\": \".specs/features/010-recovery-bubble/spec.md:L317-L321\", \"excerpt\": \"Provide a native macOS drag source carrying the full transcript in copy mode, hiding the bubble during the drag and restoring it on refusal.\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"010-recovery-bubble:FR-004\", \"disposition\": \"covered\", \"rationale\": \"Copy/Close/explanation/new-dictation behaviors and reduced platforms.\", \"source_citations\": [{\"section_id\": \".specs/features/010-recovery-bubble/spec.md:L322-L326\", \"excerpt\": \"Provide Copy, Close, explanation and new-dictation closing behaviors without timeout and without touching history, and the reduced bubble on Windows and Linux.\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"010-recovery-bubble:FR-005\", \"disposition\": \"covered\", \"rationale\": \"Setting exposed in UI and CLI.\", \"source_citations\": [{\"section_id\": \".specs/features/010-recovery-bubble/spec.md:L327-L331\", \"excerpt\": \"Expose the \\\"no text field\\\" setting through settings UI and settings CLI.\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"010-recovery-bubble:SC-001\", \"disposition\": \"covered\", \"rationale\": \"Exhaustive decision-table tests with zero mismatches.\", \"source_citations\": [{\"section_id\": \".specs/features/010-recovery-bubble/spec.md:L388-L391\", \"excerpt\": \"Decision-table tests cover every recovery reason and every \\\"insert as usual\\\" case with zero mismatches.\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"010-recovery-bubble:SC-002\", \"disposition\": \"covered\", \"rationale\": \"Native drag check with a minimum pass set (TextEdit, Notes) and recorded results elsewhere.\", \"source_citations\": [{\"section_id\": \".specs/features/010-recovery-bubble/spec.md:L392-L395\", \"excerpt\": \"transfers the full transcript in at least TextEdit and Notes, and each application's result is recorded.\"}], \"plan_citations\": [], \"searched_plan_sections\": []}, {\"requirement_id\": \"010-recovery-bubble:SC-003\", \"disposition\": \"covered\", \"rationale\": \"No automated scenario sends Enter while the bubble is shown.\", \"source_citations\": [{\"section_id\": \".specs/features/010-recovery-bubble/spec.md:L396-L398\", \"excerpt\": \"No automated scenario sends an Enter key press while the bubble is shown.\"}], \"plan_citations\": [], \"searched_plan_sections\": []}], \"ambiguities\": [{\"requirement_id\": \"010-recovery-bubble:AC-003\", \"decision_key\": \"pinned-running-activation-failure-reason\", \"critical\": false, \"question\": \"When a pinned application is running but cannot be brought forward within the 006 limit, does the bubble say '<App> is pinned but not open' or 'Could not bring <App> forward'? Feature 009 groups both cases under the reason 'pinned app unavailable'; only the second sentence is truthful for a running app.\", \"citations\": [{\"section_id\": \".specs/features/010-recovery-bubble/spec.md:L207-L211\", \"excerpt\": \"(\\\"<App> is no longer open\\\", \\\"<App> is pinned but not open\\\", \\\"Could not bring <App> forward\\\", \\\"Insertion failed\\\", \\\"No text field is focused\\\")\"}]}], \"extra_scope\": [], \"findings\": [{\"category\": \"cross-feature\", \"severity\": \"info\", \"description\": \"Smart paste (007) expects the bubble to state that the text may have been pasted after all when a read arrives after 'not read'. AC-001's explanation ('some text may have reached the application') covers it statically; a dynamic update is not required by 010.\", \"suggestion\": \"The plan should state whether the late-read diagnostic of 007 updates the open bubble or is covered by the static explanation.\", \"citations\": [{\"section_id\": \".specs/features/010-recovery-bubble/spec.md:L197-L201\", \"excerpt\": \"Handy shows the bubble with the reason \\\"Insertion failed\\\", and the explanation says some text may have reached the application.\"}]}, {\"category\": \"consistency\", \"severity\": \"info\", \"description\": \"Story 4's Close scenario says the transcript stays in history unconditionally, while AC-005 conditions the statement on a successful history save.\", \"suggestion\": \"Treat AC-005 as authoritative; tests use successful saving as the Story 4 precondition.\", \"citations\": [{\"section_id\": \".specs/features/010-recovery-bubble/spec.md:L131-L167\", \"excerpt\": \"Then the bubble closes and the transcript stays in history\"}, {\"section_id\": \".specs/features/010-recovery-bubble/spec.md:L217-L221\", \"excerpt\": \"states that the transcript is kept in history when history saving succeeded.\"}]}, {\"category\": \"qe-consistency\", \"severity\": \"info\", \"description\": \"Quality Engineering (High, Shared, Data then Regression) matches QE Analysis (High, every failed or risky insertion, lost text or false recoveries).\", \"suggestion\": \"Reuse this classification in the plan QE Analysis.\", \"citations\": [{\"section_id\": \".specs/features/010-recovery-bubble/spec.md:L361-L367\", \"excerpt\": \"primary risk Data (lost text), followed by Regression (false recoveries).\"}, {\"section_id\": \".specs/features/010-recovery-bubble/spec.md:L351-L360\", \"excerpt\": \"**Primary risk:** Lost text or false recoveries interrupting normal dictation\"}]}], \"confidence\": 4, \"synthesized_batch_ids\": []}"
+    "{\"batch_id\":\"batch-001\",\"reviewed_section_ids\":[\".specs/constitution.md:L1-L2\",\".specs/constitution.md:L3-L17\",\".specs/constitution.md:L18-L26\",\".specs/constitution.md:L27-L30\",\".specs/constitution.md:L31-L36\",\".specs/features/010-recovery-bubble/spec.md:L1-L9\",\".specs/features/010-recovery-bubble/spec.md:L10-L11\",\".specs/features/010-recovery-bubble/spec.md:L12-L20\",\".specs/features/010-recovery-bubble/spec.md:L21-L22\",\".specs/features/010-recovery-bubble/spec.md:L23-L58\",\".specs/features/010-recovery-bubble/spec.md:L59-L95\",\".specs/features/010-recovery-bubble/spec.md:L96-L130\",\".specs/features/010-recovery-bubble/spec.md:L131-L169\",\".specs/features/010-recovery-bubble/spec.md:L170-L196\",\".specs/features/010-recovery-bubble/spec.md:L197-L198\",\".specs/features/010-recovery-bubble/spec.md:L199-L203\",\".specs/features/010-recovery-bubble/spec.md:L204-L208\",\".specs/features/010-recovery-bubble/spec.md:L209-L213\",\".specs/features/010-recovery-bubble/spec.md:L214-L218\",\".specs/features/010-recovery-bubble/spec.md:L219-L223\",\".specs/features/010-recovery-bubble/spec.md:L224-L228\",\".specs/features/010-recovery-bubble/spec.md:L229-L233\",\".specs/features/010-recovery-bubble/spec.md:L234-L237\",\".specs/features/010-recovery-bubble/spec.md:L238-L255\",\".specs/features/010-recovery-bubble/spec.md:L256-L274\",\".specs/features/010-recovery-bubble/spec.md:L275-L290\",\".specs/features/010-recovery-bubble/spec.md:L291-L306\",\".specs/features/010-recovery-bubble/spec.md:L307-L308\",\".specs/features/010-recovery-bubble/spec.md:L309-L313\",\".specs/features/010-recovery-bubble/spec.md:L314-L318\",\".specs/features/010-recovery-bubble/spec.md:L319-L323\",\".specs/features/010-recovery-bubble/spec.md:L324-L328\",\".specs/features/010-recovery-bubble/spec.md:L329-L333\",\".specs/features/010-recovery-bubble/spec.md:L334-L341\",\".specs/features/010-recovery-bubble/spec.md:L342-L361\",\".specs/features/010-recovery-bubble/spec.md:L362-L371\",\".specs/features/010-recovery-bubble/spec.md:L372-L378\",\".specs/features/010-recovery-bubble/spec.md:L379-L385\",\".specs/features/010-recovery-bubble/spec.md:L386-L389\",\".specs/features/010-recovery-bubble/spec.md:L390-L396\",\".specs/features/010-recovery-bubble/spec.md:L397-L398\",\".specs/features/010-recovery-bubble/spec.md:L399-L402\",\".specs/features/010-recovery-bubble/spec.md:L403-L406\",\".specs/features/010-recovery-bubble/spec.md:L407-L409\",\".specs/project.md:L1-L2\",\".specs/project.md:L3-L7\",\".specs/project.md:L8-L16\",\".specs/project.md:L17-L20\",\".specs/project.md:L21-L24\",\".specs/project.md:L25-L28\",\".specs/project.md:L29-L36\",\".specs/stacks/_default.md:L1-L5\",\".specs/stacks/_default.md:L6-L7\",\".specs/stacks/_default.md:L8-L21\",\".specs/stacks/_default.md:L22-L31\",\".specs/testing/strategy.md:L1-L2\",\".specs/testing/strategy.md:L3-L6\",\".specs/testing/strategy.md:L7-L12\",\".specs/testing/strategy.md:L13-L16\"],\"conclusions\":[{\"requirement_id\":\"010-recovery-bubble:AC-001\",\"disposition\":\"ambiguous\",\"rationale\":\"Reasons, failure outcomes, detail rule and Enter suppression are precise and testable; open: whether the bubble applies when paste method is None.\",\"source_citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L199-L203\",\"excerpt\":\"instead of inserting when the destination is unavailable\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"010-recovery-bubble:AC-002\",\"disposition\":\"ambiguous\",\"rationale\":\"Three-way rule and setting gate are clear; the mapping of AX results (no focused element, AX error) to not editable vs undetermined is not stated.\",\"source_citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L204-L208\",\"excerpt\":\"classifies the destination's focused element as editable, not editable or undetermined\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"010-recovery-bubble:AC-003\",\"disposition\":\"covered\",\"rationale\":\"Content, five reason templates, non-activating, first click and accessible names are concrete; reason split settled by the 2026-10-14 decision.\",\"source_citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L209-L213\",\"excerpt\":\"It does not take keyboard focus from other applications, accepts the first click\"},{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L342-L361\",\"excerpt\":\"\\\"<App> is pinned but not open\\\" is reserved for `pinned_app_not_running`\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"010-recovery-bubble:AC-004\",\"disposition\":\"covered\",\"rationale\":\"Native copy-mode drag, hide/reappear, accepted-drop logging without text and per-bubble identity are testable and match the Input.\",\"source_citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L214-L218\",\"excerpt\":\"starts a native drag session in copy mode carrying the full transcript\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"010-recovery-bubble:AC-005\",\"disposition\":\"covered\",\"rationale\":\"Copy/Close/explanation/new-dictation rules, history honesty and no timeout are explicit and backed by clarifications.\",\"source_citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L219-L223\",\"excerpt\":\"The bubble has no automatic timeout.\"},{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L342-L361\",\"excerpt\":\"a new dictation closes the bubble immediately\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"010-recovery-bubble:AC-006\",\"disposition\":\"covered\",\"rationale\":\"Reduced bubble per platform and its causes are explicit; Linux limited to insertion failed.\",\"source_citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L224-L228\",\"excerpt\":\"On Windows, the bubble offers Copy, Close and the explanation without drag\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"010-recovery-bubble:AC-007\",\"disposition\":\"covered\",\"rationale\":\"CLI read/set with UI validation and JSON-only stdout are testable; Story 5 adds revision in output.\",\"source_citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L229-L233\",\"excerpt\":\"with `--json`, stdout contains only the JSON envelope\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"010-recovery-bubble:FR-001\",\"disposition\":\"covered\",\"rationale\":\"Pre- and post-insertion decision inputs are enumerated and traced to AC-001/AC-002.\",\"source_citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L309-L313\",\"excerpt\":\"Decide before insertion whether to insert or recover\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"010-recovery-bubble:FR-002\",\"disposition\":\"covered\",\"rationale\":\"Bubble content and suppression of insertion and Enter trace to AC-001/003/005.\",\"source_citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L314-L318\",\"excerpt\":\"Show a non-activating bubble in place of the live indicator\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"010-recovery-bubble:FR-003\",\"disposition\":\"covered\",\"rationale\":\"Native drag source behavior traces to AC-004.\",\"source_citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L319-L323\",\"excerpt\":\"Provide a native macOS drag source carrying the full transcript in copy mode\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"010-recovery-bubble:FR-004\",\"disposition\":\"covered\",\"rationale\":\"Actions, no timeout, history untouched and reduced platforms trace to AC-005/AC-006.\",\"source_citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L324-L328\",\"excerpt\":\"without timeout and without touching history\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"010-recovery-bubble:FR-005\",\"disposition\":\"covered\",\"rationale\":\"Setting exposure in UI and CLI traces to AC-002/AC-007.\",\"source_citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L329-L333\",\"excerpt\":\"Expose the \\\"no text field\\\" setting through settings UI and settings CLI.\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"010-recovery-bubble:SC-001\",\"disposition\":\"covered\",\"rationale\":\"Measurable: every reason and insert-as-usual case, zero mismatches.\",\"source_citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L399-L402\",\"excerpt\":\"Decision-table tests cover every recovery reason and every \\\"insert as usual\\\" case\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"010-recovery-bubble:SC-002\",\"disposition\":\"covered\",\"rationale\":\"Measurable native threshold (TextEdit and Notes) plus recorded results for all four apps.\",\"source_citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L403-L406\",\"excerpt\":\"transfers the full transcript in at least TextEdit and Notes\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"010-recovery-bubble:SC-003\",\"disposition\":\"covered\",\"rationale\":\"Binary, automatable criterion.\",\"source_citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L407-L409\",\"excerpt\":\"No automated scenario sends an Enter key press while the bubble is shown.\"}],\"plan_citations\":[],\"searched_plan_sections\":[]}],\"ambiguities\":[{\"requirement_id\":\"010-recovery-bubble:AC-001\",\"decision_key\":\"paste-method-none-recovery\",\"question\":\"With paste method None (006 activates nothing, no insertion intended), does a closed or uncertain destination still show the bubble, or is recovery skipped?\",\"critical\":false,\"citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L199-L203\",\"excerpt\":\"instead of inserting when the destination is unavailable\"}]},{\"requirement_id\":\"010-recovery-bubble:AC-002\",\"decision_key\":\"no-focused-element-classification\",\"question\":\"Is 'no focused element' or an AX error (e.g. Finder desktop, app without window) classified not editable (bubble) or undetermined (insert)?\",\"critical\":false,\"citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L204-L208\",\"excerpt\":\"Undetermined, editable, missing permission, other platforms or setting off insert as usual.\"},{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L342-L361\",\"excerpt\":\"with an undetermined result that does not force the panel\"}]}],\"extra_scope\":[{\"description\":\"Drag-handle hover hint \\\"Drag into a text field\\\" and an animated closing state; not asked by the Input nor traced to any AC/FR.\",\"justification\":\"No source requests a hover hint or close animation; Input asks only drag, copy, close and why it appears.\",\"approved\":false,\"kind\":\"business\",\"citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L275-L290\",\"excerpt\":\"Then a hint says \\\"Drag into a text field\\\"\"},{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L238-L255\",\"excerpt\":\"When the bubble animates out\"}]},{\"description\":\"Whole feature ships behind the 006 destination-return gate; gate closed keeps dev behavior.\",\"justification\":\"Approved orchestrator decision; staged rollout reusing the delivered 006 gate.\",\"approved\":true,\"kind\":\"technical\",\"citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L342-L361\",\"excerpt\":\"ships behind the `destination-return` gate\"}]}],\"findings\":[{\"category\":\"consistency\",\"severity\":\"warning\",\"description\":\"Story 1 Gherkin expects the literal reason \\\"Could not bring the app forward\\\" while AC-003 fixes the template with the app name.\",\"suggestion\":\"Change the Gherkin to \\\"Could not bring Notes forward\\\" (or <App>) to match AC-003.\",\"citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L23-L58\",\"excerpt\":\"Then the bubble appears with the reason \\\"Could not bring the app forward\\\"\"},{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L209-L213\",\"excerpt\":\"\\\"Could not bring <App> forward\\\"\"}]},{\"category\":\"completeness\",\"severity\":\"warning\",\"description\":\"Story 1 flowchart omits the post-insertion 'Insertion failed' path and the 'not editable, setting off' branch (no edge), so it under-describes AC-001/AC-002.\",\"suggestion\":\"Add an Insert -> failure -> Bubble: Insertion failed edge and a 'Not editable and setting off -> Insert as usual' edge.\",\"citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L23-L58\",\"excerpt\":\"D -- Not editable and setting on --> E[Bubble: no text field]\"}]},{\"category\":\"completeness\",\"severity\":\"warning\",\"description\":\"Gate open, the spec does not say whether the delivered `paste-error` toast (006 delivery.rs emits it on failure) is suppressed when the bubble shows; AC-001 only replaces the indicator reason display. Risk of double reporting.\",\"suggestion\":\"State that with the gate open the bubble replaces the paste-error notification for recovered outcomes (or keep both, explicitly).\",\"citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L199-L203\",\"excerpt\":\"it replaces the 006 reason display on the indicator\"},{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L342-L361\",\"excerpt\":\"the existing `paste-error` notification on a paste failure\"}]},{\"category\":\"ambiguity\",\"severity\":\"info\",\"description\":\"'Transcript' is not defined as the final output text (after custom words, Chinese script, LLM post-processing) vs raw ASR text for preview, drag and Copy.\",\"suggestion\":\"State that the bubble carries exactly the text that would have been inserted.\",\"citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L219-L223\",\"excerpt\":\"Copy writes the full transcript to the clipboard as a deliberate user copy\"}]},{\"category\":\"consistency\",\"severity\":\"info\",\"description\":\"AC-003 lists a drag handle for every bubble while AC-006 gives Windows/Linux no drag; handle presence off macOS is implicit.\",\"suggestion\":\"Say the drag handle (and its hint) is macOS only.\",\"citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L209-L213\",\"excerpt\":\"a drag handle, Copy, Close and an explanation control\"}]},{\"category\":\"feasibility\",\"severity\":\"info\",\"description\":\"A new dictation during a drag closes the bubble, but the AppKit drag session may still complete a drop into a field; the spec does not say if that late drop is acceptable.\",\"suggestion\":\"State that an in-flight drag may still deliver its text after the bubble closed, and that only callbacks are ignored.\",\"citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L214-L218\",\"excerpt\":\"a new dictation during a drag closes the bubble for good\"}]},{\"category\":\"testability\",\"severity\":\"info\",\"description\":\"The 300 ms display expectation is only in the QE notes, not in any AC or SC, so it has no measurable acceptance.\",\"suggestion\":\"Promote it to an SC with a measurement method, or mark it non-gating.\",\"citations\":[{\"section_id\":\".specs/features/010-recovery-bubble/spec.md:L362-L371\",\"excerpt\":\"Bubble shown within 300 ms of the recovery decision\"}]}],\"confidence\":4}"
   ],
   "synthesis": null,
   "synthesis_transport_version": null

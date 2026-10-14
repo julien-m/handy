@@ -662,26 +662,128 @@
           "refreshModels": "Opdater modeller"
         }
       },
-      "prompts": {
-        "title": "Prompt",
-        "selectedPrompt": {
-          "title": "Valgt prompt",
-          "description": "Vælg en skabelon til at forfine transskriptioner, eller opret en ny. Brug ${output} i promptteksten for at referere til den fangede transskription."
+      "promptLibrary": {
+        "processing": {
+          "title": "AI-efterbehandling",
+          "enabledDescription": "Behandl dikteringer med en prompt. Fra: ingen diktering behandles.",
+          "defaultTitle": "Standardprompt",
+          "defaultDescription": "Bruges af genvejen til AI-diktering. Almindelig diktering starter med Ingen.",
+          "none": "Ingen",
+          "invalidOption": "Ugyldig: rediger den, før du bruger den"
         },
-        "noPrompts": "Ingen prompts tilgængelige",
-        "selectPrompt": "Vælg en prompt",
-        "createNew": "Opret ny prompt",
-        "promptLabel": "Promptnavn",
-        "promptLabelPlaceholder": "Indtast promptnavn",
-        "promptInstructions": "Promptinstruktioner",
-        "promptInstructionsPlaceholder": "Skriv de instruktioner, der skal køres efter transskription. Eksempel: Forbedr grammatik og klarhed for følgende tekst: ${output}",
-        "promptTip": "Tip: Brug <code>${output}</code> til at indsætte den transskriberede tekst i din prompt.",
-        "updatePrompt": "Opdater prompt",
-        "deletePrompt": "Slet prompt",
-        "createPrompt": "Opret prompt",
-        "cancel": "Annuller",
-        "selectToEdit": "Vælg en prompt ovenfor for at se og redigere dens detaljer.",
-        "createFirst": "Klik på 'Opret ny prompt' ovenfor for at oprette din første efterbehandlingsprompt."
+        "list": {
+          "title": "Prompter",
+          "count": "{{count}} af {{limit}} prompter",
+          "full": "{{limit}} af {{limit}} prompter: slet en for at tilføje en anden",
+          "new": "Ny prompt",
+          "empty": "Ingen prompter endnu. Opret en for at behandle dine dikteringer.",
+          "loading": "Indlæser prompter…",
+          "loadFailed": "Prompterne kunne ikke indlæses.",
+          "retry": "Prøv igen",
+          "edit": "Rediger {{name}}",
+          "defaultProvider": "Standardudbyder",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Ingen genvej",
+          "notReady": "Ikke klar: {{reason}}",
+          "invalid": "Ugyldig: {{reason}}",
+          "reloadFailed": "Prompterne kunne ikke opdateres. Det viste kan være forældet."
+        },
+        "issues": {
+          "name_empty": "navn mangler",
+          "name_too_long": "navnet er for langt",
+          "name_duplicate": "dubleret navn",
+          "text_empty": "tekst mangler",
+          "text_too_long": "teksten er for lang",
+          "override_incomplete": "udbyder eller model mangler",
+          "unknown_provider": "ukendt udbyder"
+        },
+        "reasons": {
+          "provider_error": "udbyderen returnerede en fejl",
+          "empty_result": "udbyderen returnerede et tomt resultat",
+          "timeout": "intet svar inden for 30 sekunder",
+          "provider_busy": "udbyderen er stadig optaget af en anden anmodning",
+          "missing_endpoint": "endpoint mangler",
+          "missing_model": "model mangler",
+          "missing_api_key": "API-nøgle mangler",
+          "provider_unavailable": "udbyderen er ikke tilgængelig på denne enhed",
+          "unknown_provider": "ukendt udbyder",
+          "invalid_prompt": "prompten er ugyldig",
+          "prompt_missing": "prompten findes ikke længere"
+        },
+        "editor": {
+          "editTitle": "Rediger prompt",
+          "newTitle": "Ny prompt",
+          "name": "Navn",
+          "namePlaceholder": "Promptens navn",
+          "text": "Prompt",
+          "textPlaceholder": "Skriv de instruktioner, der skal anvendes på transskriptionen. Eksempel: Forkort transskriptionen til det væsentlige. ${output}",
+          "textHint": "<code>${output}</code> erstattes af transskriptionen.",
+          "fieldErrors": {
+            "name_empty": "Angiv et navn (1–60 tegn).",
+            "name_too_long": "Brug højst 60 tegn.",
+            "name_duplicate": "En anden prompt har dette navn. Navne skal være unikke.",
+            "text_empty": "Angiv promptens tekst.",
+            "text_too_long": "Brug højst 8.000 tegn."
+          },
+          "provider": "Udbyder",
+          "defaultProviderOption": "Standardudbyder ({{provider}})",
+          "model": "Model",
+          "modelPlaceholder": "Skriv et modelnavn",
+          "readyEndpoint": "Endpoint {{endpoint}} · Klar",
+          "readyProvider": "{{provider}} · {{model}} · Klar",
+          "notReadyTitle": "{{provider}} er ikke klar: {{reason}}",
+          "notReadyBody": "Dikteringer med denne prompt springer AI-trinnet over og beholder den oprindelige tekst.",
+          "fix": {
+            "api_key": "Tilføj API-nøgle",
+            "endpoint": "Angiv endpoint"
+          },
+          "shortcuts": "Genveje (op til {{limit}})",
+          "changedElsewhere": "Denne prompt er ændret et andet sted. Genindlæs den for at se ændringen, eller gem for at beholde din version.",
+          "reload": "Genindlæs",
+          "deletedElsewhere": "Denne prompt er slettet et andet sted og kan ikke længere gemmes.",
+          "shortcutsSavedImmediately": "Ændringer af genveje gemmes med det samme.",
+          "fixField": {
+            "api_key": "API-nøgle til {{provider}}",
+            "endpoint": "Endpoint for {{provider}}",
+            "hint": "Gemmes, når du forlader feltet. Standardudbyderen ændres ikke."
+          }
+        },
+        "actions": {
+          "note": "Ændringer gælder for næste diktering, efter du har gemt.",
+          "fixFields": "Ret de markerede felter for at gemme.",
+          "delete": "Slet prompt",
+          "cancel": "Annuller",
+          "save": "Gem",
+          "saving": "Gemmer…",
+          "saved": "Prompten er gemt."
+        },
+        "deleteDialog": {
+          "title": "Slet “{{name}}”?",
+          "shortcuts": "Dens genveje fjernes: {{shortcuts}}.",
+          "default": "Det er standardprompten: standarden bliver Ingen.",
+          "body": "Det kan ikke fortrydes.",
+          "cancel": "Annuller",
+          "confirm": "Slet",
+          "close": "Luk",
+          "deleted": "Prompten “{{name}}” er slettet.",
+          "deletedWithShortcuts": "Prompten “{{name}}” er slettet. Fjernede genveje: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Test",
+          "sampleLabel": "Eksempeltekst",
+          "samplePlaceholder": "Skriv eller indsæt en eksempeltransskription",
+          "run": "Kør test",
+          "running": "Tester…",
+          "note": "Intet indsættes, og historikken ændres ikke.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} s",
+          "failedTitle": "Testen mislykkedes: {{reason}}",
+          "failedHint": "Tjek udbyderindstillingerne, og kør testen igen.",
+          "retry": "Kør igen",
+          "busy": "En anden test kører stadig. Prøv igen, når den er færdig.",
+          "skipped": "Angiv en eksempeltekst for at teste prompten.",
+          "outdated": "Dette resultat hører til en tidligere version af prompten eller eksemplet. Kør testen igen."
+        },
+        "shortcutOwner": "prompten “{{name}}”"
       }
     },
     "history": {
@@ -870,6 +972,168 @@
           "details": "Handys lokale tale-til-tekst funktionalitet er bygget på transcribe.cpp og ggml. Tak for det fantastiske arbejde af Georgi Gerganov og bidragyderne."
         }
       }
+    },
+    "replacements": {
+      "group": "Erstatninger",
+      "title": "Erstatningsregler",
+      "description": "Omskriv genkendt tekst med din egen stavemåde. Anvendes efter genkendelsen, i modsætning til Ordforråd.",
+      "loading": "Indlæser erstatningsregler…",
+      "loadFailed": "Erstatningsreglerne kunne ikke indlæses.",
+      "retry": "Prøv igen",
+      "views": {
+        "label": "Regelvisning",
+        "list": "Liste",
+        "text": "Tekst"
+      },
+      "import": "Importér…",
+      "export": {
+        "button": "Eksportér…",
+        "done": "Reglerne blev eksporteret til {{name}}.",
+        "notSynced": "Reglerne blev eksporteret til {{name}}, men disken har endnu ikke bekræftet skrivningen.",
+        "symbolicLink": "{{name}} er et link: vælg en anden fil. Intet blev eksporteret.",
+        "readOnly": "{{name}} er skrivebeskyttet: vælg en anden fil. Intet blev eksporteret.",
+        "notWritten": "{{name}} kunne ikke skrives. Den er uændret."
+      },
+      "add": {
+        "recognized": "Genkendt tekst",
+        "replacement": "Erstatning",
+        "button": "Tilføj regel",
+        "needsText": "Indtast den genkendte tekst og erstatningen for at tilføje en regel."
+      },
+      "rule": {
+        "edit": "Rediger reglen {{recognized}}",
+        "done": "Afslut redigering af reglen {{recognized}}",
+        "delete": "Slet reglen {{recognized}}",
+        "recognized": "Genkendt tekst i regel {{position}}",
+        "replacement": "Erstatning i regel {{position}}"
+      },
+      "count": "{{count}} af {{max}} regler · skelner ikke mellem store og små bogstaver, hele ord",
+      "empty": {
+        "title": "Ingen erstatningsregler endnu",
+        "body": "Tilføj en regel, eller indsæt linjer som",
+        "paste": "Indsæt regler som tekst"
+      },
+      "draft": {
+        "note": "Ikke-gemte ændringer. Dikteringer bruger de gemte regler, indtil du gemmer.",
+        "discard": "Kassér",
+        "save": "Gem",
+        "saving": "Gemmer…",
+        "saved": "Erstatningsreglerne er gemt."
+      },
+      "commit": {
+        "invalid": "Nogle regler er ugyldige. Ret de fremhævede rækker, og prøv igen.",
+        "unchanged": "De gemte regler er uændrede.",
+        "conflict": "Reglerne blev ændret et andet sted, for eksempel fra kommandolinjen. Genindlæs dem for at fortsætte.",
+        "reload": "Genindlæs",
+        "reloadDiscards": "Genindlæsning viser de gemte regler og kasserer dine ikke-gemte ændringer."
+      },
+      "bulk": {
+        "editor": "Regler som tekst",
+        "hint": "Én regel pr. linje: recognized;replacement. Et tabulatortegn virker også ved indsættelse fra et regneark. Linjer, der starter med #, ignoreres.",
+        "cancel": "Annuller",
+        "apply": "Anvend",
+        "applying": "Anvender…",
+        "applied": "Erstatningsreglerne er anvendt.",
+        "fixLine": "Ret linje {{line}} for at anvende. De gemte regler er uændrede.",
+        "fixLines": "Ret de {{count}} linjer med fejl for at anvende. De gemte regler er uændrede.",
+        "ready": "Anvend erstatter de gemte regler med denne forhåndsvisning.",
+        "noChanges": "Intet at anvende: teksten svarer til de gemte regler."
+      },
+      "preview": {
+        "title": "Forhåndsvisning",
+        "updating": "Opdaterer forhåndsvisning…",
+        "errorOne": "1 fejl · Anvend er ikke tilgængelig",
+        "errorMany": "{{count}} fejl · Anvend er ikke tilgængelig",
+        "changes": "{{adds}} at tilføje · {{updates}} at opdatere · {{deletes}} at slette",
+        "noChanges": "Ingen ændringer",
+        "omitted": "Linjer, der ikke vises: {{count}}",
+        "duplicateOf": "Samme genkendte tekst som linje {{lines}}",
+        "kinds": {
+          "add": "Tilføj",
+          "update": "Opdater",
+          "delete": "Slet",
+          "unchanged": "Uændret",
+          "ignored": "Ignoreret",
+          "error": "Fejl"
+        },
+        "ignored": {
+          "header": "Overskriftslinje",
+          "blank": "Tom linje",
+          "comment": "Kommentar"
+        }
+      },
+      "importDialog": {
+        "title": "Importér regler",
+        "close": "Luk",
+        "fileOne": "{{name}} · 1 linje · UTF-8",
+        "fileMany": "{{name}} · {{count}} linjer · UTF-8",
+        "mode": "Tilstand",
+        "merge": "Flet: opdater matchende regler, tilføj nye til sidst",
+        "replace": "Erstat: filen bliver hele regelsættet",
+        "previewing": "Læser filen…",
+        "updateOne": "1 opdatering",
+        "updateMany": "{{count}} opdateringer",
+        "addOne": "1 tilføjelse",
+        "addMany": "{{count}} tilføjelser",
+        "deleteOne": "1 sletning",
+        "deleteMany": "{{count}} sletninger",
+        "errorOne": "1 fejl",
+        "errorMany": "{{count}} fejl",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (opdatering, beholder position {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (tilføjet til sidst)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (fjernet)",
+        "noChanges": "Filen svarer til de gemte regler: intet at importere.",
+        "firstError": "Linje {{line}}: {{reason}}",
+        "cancel": "Annuller",
+        "apply": "Anvend import",
+        "applying": "Importerer…",
+        "imported": "Reglerne er importeret."
+      },
+      "importRefusal": {
+        "encodingTitle": "Kunne ikke importere {{name}}: det er ikke UTF-8-tekst",
+        "encodingBody": "Intet blev importeret fra filen. Eksportér ren tekst eller CSV, og importér igen.",
+        "tooLargeTitle": "Kunne ikke importere {{name}}: den er større end 1 MB",
+        "tooLargeBody": "Intet blev importeret. Opdel filen i mindre filer, og importér hver af dem.",
+        "unreadableTitle": "Kunne ikke læse {{name}}",
+        "unreadableBody": "Intet blev importeret. Kontrollér, at filen stadig findes, og at Handy kan åbne den.",
+        "dismiss": "Afvis"
+      },
+      "deleteDialog": {
+        "title": "Slet denne regel?",
+        "body": "{{recognized}} → {{replacement}} fjernes fra listen. Gem for at anvende ændringen.",
+        "cancel": "Annuller",
+        "confirm": "Slet"
+      },
+      "switchDialog": {
+        "title": "Gem eller kassér dine ændringer",
+        "body": "Listen og teksten redigerer de samme regler. Gem eller kassér dine ikke-gemte ændringer først.",
+        "cancel": "Annuller",
+        "discard": "Kassér",
+        "save": "Gem"
+      },
+      "issues": {
+        "recognizedEmpty": "Indtast den genkendte tekst.",
+        "recognizedTooLong": "Den genkendte tekst er begrænset til 100 tegn.",
+        "recognizedForbidden": "Den genkendte tekst må ikke indeholde et linjeskift, et tabulatortegn eller ;.",
+        "recognizedControl": "Den genkendte tekst indeholder et usynligt kontroltegn.",
+        "recognizedComment": "Den genkendte tekst må ikke starte med #.",
+        "duplicate": "Hver genkendt tekst må kun forekomme én gang; denne er allerede defineret.",
+        "replacementEmpty": "Indtast erstatningen.",
+        "replacementTooLong": "Erstatningen er begrænset til 500 tegn.",
+        "replacementForbidden": "Erstatningen må ikke indeholde et linjeskift eller et tabulatortegn.",
+        "replacementControl": "Erstatningen indeholder et usynligt kontroltegn.",
+        "missingSeparator": "Manglende separator: tilføj ; og derefter erstatningen",
+        "tooManyRules": "Et regelsæt kan højst indeholde 1.000 regler.",
+        "invalidSavedRules": "De gemte regler er ugyldige. Genindlæs dem, før du importerer.",
+        "unicodeUnavailable": "Reglerne kan ikke kontrolleres lige nu. Genstart Handy, og prøv igen.",
+        "invalidRule": "Denne regel er ugyldig."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Ikke-gemte ændringer",
+      "description": "Nogle af dine erstatningsregler er ikke gemt. Bliv for at gemme dem, eller kassér dem og forlad siden.",
+      "stay": "Bliv",
+      "discard": "Kassér og forlad"
     }
   },
   "footer": {
