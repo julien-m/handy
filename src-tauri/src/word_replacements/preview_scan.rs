@@ -1,7 +1,8 @@
 //! First pass of a preview: the parsed input lines become listed rows and counters, with a
 //! bounded memory whatever the input holds. A 1,000,000-byte input can hold about a million
 //! blank lines or half a million error lines; only rule lines (at most `MAX_RULES`), the first
-//! `MAX_LISTED_OTHER_LINES` ignored or error lines and the counters are kept.
+//! `MAX_LISTED_OTHER_LINES` ignored lines, the first `MAX_LISTED_OTHER_LINES` error lines and the
+//! counters are kept.
 use super::{
     exchange::{IgnoredLine, ParsedLine, ParsedLineContent},
     preview::{PreviewLine, PreviewStatus},
@@ -9,8 +10,10 @@ use super::{
     validation::{FieldIssue, MAX_RULES},
 };
 
-/// Ignored and error rows listed by a preview; the rest are counted. 1000 rows stay far below
-/// one channel message and readable in an editor, and name every line of a typical input.
+/// Ignored rows listed by a preview, and separately error rows; the rest of each kind are
+/// counted. 1000 rows stay far below one channel message and readable in an editor, and name
+/// every line of a typical input. Separate bounds keep error rows listed after any number of
+/// blank or comment lines, so a refusal always locates its first errors.
 pub const MAX_LISTED_OTHER_LINES: usize = 1000;
 /// Other input lines named by a duplicated row; the first ones are enough to find the others.
 pub const MAX_DUPLICATE_LINES: usize = 10;
@@ -34,7 +37,8 @@ pub(super) struct Scan {
     pub(super) omitted_lines: usize,
     /// More than `MAX_RULES` rule lines: the input can never be applied.
     pub(super) has_excess_rules: bool,
-    listed_other_lines: usize,
+    listed_ignored_lines: usize,
+    listed_error_lines: usize,
 }
 
 /// Scan `parsed` once, in input order.
@@ -92,16 +96,16 @@ impl Scan {
         ignored: Option<IgnoredLine>,
         issues: Vec<FieldIssue>,
     ) {
-        if self.listed_other_lines == MAX_LISTED_OTHER_LINES {
+        let (status, listed) = if ignored.is_some() {
+            (PreviewStatus::Ignored, &mut self.listed_ignored_lines)
+        } else {
+            (PreviewStatus::Error, &mut self.listed_error_lines)
+        };
+        if *listed == MAX_LISTED_OTHER_LINES {
             self.omitted_lines += 1;
             return;
         }
-        self.listed_other_lines += 1;
-        let status = if ignored.is_some() {
-            PreviewStatus::Ignored
-        } else {
-            PreviewStatus::Error
-        };
+        *listed += 1;
         self.rows.push(row(line_number, status, ignored, issues));
     }
 }

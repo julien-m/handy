@@ -174,3 +174,26 @@ fn preview_is_bounded_like_apply_and_counts_every_line() {
     });
     assert_eq!(counts, Some((3, 999_990, 1001, true)));
 }
+
+#[test]
+fn the_ui_preview_lists_an_error_line_after_a_thousand_ignored_lines() {
+    let input = format!("{}{}Cloud Opus\n", "\n".repeat(500), "# note\n".repeat(500));
+    let view = preview_view(Revision(3), &[], &input, ImportMode::Merge);
+    let preview = view.map(|view| view.preview).ok();
+    let error_rows = preview.as_ref().map(|preview| {
+        preview
+            .lines
+            .iter()
+            .filter(|line| !line.issues.is_empty())
+            .map(|line| {
+                (
+                    line.line_number,
+                    line.issues.first().map(|issue| issue.kind),
+                )
+            })
+            .collect::<Vec<_>>()
+    });
+    let expected = vec![(Some(1001), Some(IssueKind::MissingSeparator))];
+    assert_eq!(error_rows, Some(expected));
+    assert_eq!(preview.map(|preview| preview.can_apply()), Some(false));
+}

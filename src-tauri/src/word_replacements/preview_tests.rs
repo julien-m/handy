@@ -277,3 +277,45 @@ fn a_key_repeated_on_every_line_names_a_bounded_number_of_other_lines() {
         .all(|line| line.duplicate_lines.len() == MAX_DUPLICATE_LINES));
     assert_eq!(preview.lines[0].duplicate_lines[0], 2);
 }
+
+/// 500 blank and 500 comment lines, then one line without a separator (line 1001).
+fn invalid_line_after_many_ignored_lines() -> String {
+    format!("{}{}Cloud Opus\n", "\n".repeat(500), "# note\n".repeat(500))
+}
+
+#[test]
+fn an_error_line_after_the_listed_ignored_lines_is_still_listed() {
+    let preview = preview_exchange(
+        &[],
+        &invalid_line_after_many_ignored_lines(),
+        ImportMode::Merge,
+    );
+    let errors: Vec<_> = preview
+        .lines
+        .iter()
+        .filter(|line| line.status == PreviewStatus::Error)
+        .map(|line| (line.line_number, line.issues.len()))
+        .collect();
+    assert_eq!(errors, vec![(Some(1001), 1)]);
+    assert_eq!(
+        (
+            preview.ignored_lines,
+            preview.error_lines,
+            preview.omitted_lines
+        ),
+        (MAX_LISTED_OTHER_LINES, 1, 0)
+    );
+    let more_ignored = format!(
+        "{}{}",
+        "\n".repeat(5),
+        invalid_line_after_many_ignored_lines()
+    );
+    let preview = preview_exchange(&[], &more_ignored, ImportMode::Replace);
+    let listed_errors = preview
+        .lines
+        .iter()
+        .filter(|line| line.status == PreviewStatus::Error)
+        .count();
+    assert_eq!((listed_errors, preview.omitted_lines), (1, 5));
+    assert!(!preview.can_apply());
+}

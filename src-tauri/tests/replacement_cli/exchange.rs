@@ -146,3 +146,37 @@ fn an_unwritable_export_destination_is_refused_and_left_unchanged() -> TestResul
     assert_eq!(kept, "kept");
     Ok(())
 }
+
+/// Line 1001 has no separator, after 500 blank and 500 comment lines; `extra` more invalid
+/// lines follow it.
+fn invalid_after_ignored(extra: usize) -> String {
+    let ignored = format!("{}{}", "\n".repeat(500), "# note\n".repeat(500));
+    format!("{ignored}Cloud Opus\n{}", "x\n".repeat(extra))
+}
+
+#[test]
+fn an_invalid_line_after_a_thousand_ignored_lines_is_located_by_import_and_dry_run() -> TestResult {
+    let app = Portable::new()?;
+    let file = write(&app, "late.txt", invalid_after_ignored(0).as_bytes())?;
+    let item = json!([{"index": 1000, "code": "missing_separator",
+                       "message": "The line has no tab or semicolon separator."}]);
+    for dry_run in [false, true] {
+        let mut args = vec!["import", file.as_str(), "--mode", "merge"];
+        args.extend(dry_run.then_some("--dry-run"));
+        let (code, envelope) = replacements(&app, &args)?;
+        let error = &envelope["error"];
+        assert_eq!((code, &error["code"]), (2, &json!("validation_failed")));
+        assert_eq!(error["details"]["items"], item, "dry run: {dry_run}");
+    }
+    let many = write(&app, "many.txt", invalid_after_ignored(150).as_bytes())?;
+    let (code, envelope) = replacements(&app, &["import", &many, "--mode", "replace"])?;
+    let items = &envelope["error"]["details"]["items"];
+    let first = (&items[0]["index"], &items[0]["code"]);
+    assert_eq!(
+        (code, first),
+        (2, (&json!(1000), &json!("missing_separator")))
+    );
+    assert_eq!(items.as_array().map(Vec::len), Some(100));
+    assert_eq!(app.store_bytes()?, None);
+    Ok(())
+}

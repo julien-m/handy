@@ -68,7 +68,7 @@ pub struct CandidateRule {
 }
 
 /// Preview of an input; `candidate` is exactly the ordered set Apply would commit. Rule and
-/// deletion rows are always listed; ignored and error rows are listed up to
+/// deletion rows are always listed; ignored rows and error rows are each listed up to
 /// `MAX_LISTED_OTHER_LINES` and counted in full, so memory stays bounded for any input.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Type)]
 pub struct ReplacementPreview {
