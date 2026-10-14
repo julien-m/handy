@@ -2,7 +2,7 @@
 //! approximate correction, fillers, normalization) feeds the real output stages, whose AI,
 //! history and insertion ports are recorded. It checks which text each stage receives: the AI
 //! input and the history transcription include the replacements, the AI rewrite is outside the
-//! guarantee, and history is written only for a saved WAV.
+//! guarantee, and the history result reaches insertion.
 
 use std::cell::{Cell, RefCell};
 
@@ -20,9 +20,12 @@ struct Recorded {
     cancelled: Cell<bool>,
     ai_inputs: RefCell<Vec<String>>,
     history: RefCell<Vec<(String, Option<String>)>>,
-    inserted: RefCell<Vec<String>>,
+    abandoned: Cell<bool>,
+    /// Inserted text with the history receipt it was handed (the count of saved entries).
+    inserted: RefCell<Vec<(String, usize)>>,
 }
 impl OutputPorts for Recorded {
+    type History = usize;
     async fn post_process(&self, native: &str) -> Option<ProcessedTranscription> {
         let Some(ai) = self.ai else {
             return Some(processed(native, None));
@@ -34,12 +37,16 @@ impl OutputPorts for Recorded {
     fn is_cancelled(&self) -> bool {
         self.cancelled.get()
     }
-    fn save_history(&self, native: String, processed: &ProcessedTranscription) {
+    fn save_history(&self, native: String, processed: &ProcessedTranscription) -> usize {
         let entry = (native, processed.post_processed_text.clone());
         self.history.borrow_mut().push(entry);
+        self.history.borrow().len()
     }
-    fn insert(&self, text: String) {
-        self.inserted.borrow_mut().push(text);
+    fn abandon(&self) {
+        self.abandoned.set(true);
+    }
+    async fn insert(&self, text: String, history: usize) {
+        self.inserted.borrow_mut().push((text, history));
     }
 }
 fn processed(final_text: &str, ai: Option<String>) -> ProcessedTranscription {
@@ -68,8 +75,8 @@ fn native(raw: &str, settings: &AppSettings, rules: &[(&str, &str)]) -> String {
     let matcher = compile_for_dictation(&rules);
     post_process_transcription_text(raw.into(), settings, &matcher, false, &english, &[])
 }
-fn run(ports: &Recorded, native: String, wav_saved: bool) -> Delivery {
-    tauri::async_runtime::block_on(deliver(ports, native, wav_saved))
+fn run(ports: &Recorded, native: String) -> Delivery {
+    tauri::async_runtime::block_on(deliver(ports, native))
 }
 const CLAUDE: [(&str, &str); 1] = [("cloud code", "Claude Code")];
 
@@ -77,10 +84,10 @@ const CLAUDE: [(&str, &str); 1] = [("cloud code", "Claude Code")];
 fn without_ai_history_and_insertion_receive_the_replaced_text() {
     let text = native("open cloud code now", &AppSettings::default(), &CLAUDE);
     let ports = Recorded::default();
-    assert_eq!(run(&ports, text, true), Delivery::Inserted);
+    assert_eq!(run(&ports, text), Delivery::Inserted);
     let expected = "open Claude Code now".to_owned();
     assert_eq!(*ports.history.borrow(), [(expected.clone(), None)]);
-    assert_eq!(*ports.inserted.borrow(), [expected]);
+    assert_eq!(*ports.inserted.borrow(), [(expected, 1)]);
 }
 
 #[test]
@@ -90,24 +97,13 @@ fn with_ai_its_input_and_the_history_text_hold_the_replacement() {
         ai: Some(shout),
         ..Default::default()
     };
-    assert_eq!(run(&ports, text, true), Delivery::Inserted);
-    let native = "open Claude Code now".to_owned();
-    assert_eq!(*ports.ai_inputs.borrow(), [native.clone()]);
-    let rewritten = "OPEN CLAUDE CODE NOW".to_owned();
-    assert_eq!(*ports.history.borrow(), [(native, Some(rewritten.clone()))]);
-    assert_eq!(*ports.inserted.borrow(), [rewritten]);
-}
-
-#[test]
-fn without_a_saved_wav_there_is_no_history_entry() {
-    let text = native("open cloud code now", &AppSettings::default(), &CLAUDE);
-    let ports = Recorded::default();
-    assert_eq!(run(&ports, text, false), Delivery::Inserted);
-    assert!(ports.history.borrow().is_empty());
-    assert_eq!(
-        *ports.inserted.borrow(),
-        ["open Claude Code now".to_owned()]
-    );
+    assert_eq!(run(&ports, text), Delivery::Inserted);
+    let native = "open Claude Code now";
+    assert_eq!(*ports.ai_inputs.borrow(), [native]);
+    let rewritten = "OPEN CLAUDE CODE NOW";
+    let history = [(native.to_owned(), Some(rewritten.to_owned()))];
+    assert_eq!(*ports.history.borrow(), history);
+    assert_eq!(*ports.inserted.borrow(), [(rewritten.to_owned(), 1)]);
 }
 
 #[test]
@@ -117,16 +113,17 @@ fn a_cancel_during_ai_writes_no_history_and_inserts_nothing() {
         cancel_during_ai: true,
         ..Default::default()
     };
-    assert_eq!(run(&ports, "text".into(), true), Delivery::Cancelled);
+    assert_eq!(run(&ports, "text".into()), Delivery::Cancelled);
     assert!(ports.history.borrow().is_empty() && ports.inserted.borrow().is_empty());
+    assert!(!ports.abandoned.get());
 }
 
 #[test]
-fn an_empty_final_text_keeps_history_and_inserts_nothing() {
+fn an_empty_final_text_keeps_history_and_ends_without_insertion() {
     let ports = Recorded::default();
-    assert_eq!(run(&ports, String::new(), true), Delivery::NothingToInsert);
+    assert_eq!(run(&ports, String::new()), Delivery::NothingToInsert);
     assert_eq!(*ports.history.borrow(), [(String::new(), None)]);
-    assert!(ports.inserted.borrow().is_empty());
+    assert!(ports.inserted.borrow().is_empty() && ports.abandoned.get());
 }
 
 #[test]

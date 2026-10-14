@@ -492,6 +492,7 @@
       "deleteError": "刪除條目失敗，請重試",
       "retranscribe": "重新轉錄",
       "retranscribeError": "重新轉錄失敗，請重試。",
+      "noAudio": "此項目未儲存音訊錄音，因此無法重新轉錄。",
       "transcribing": "轉錄中...",
       "transcriptionFailed": "轉錄失敗。您可以使用重試圖示重新轉錄。"
     },
@@ -709,6 +710,7 @@
     "modelLoadFailedUnknown": "未知模型",
     "pasteFailedTitle": "貼上文字失敗",
     "pasteFailed": "無法將文字貼上至目前作用中的應用程式。",
+    "pasteFailedNotSaved": "無法貼上文字，也無法將其儲存至歷史記錄。",
     "transcriptionFailedTitle": "轉錄失敗",
     "settings": {
       "committedNotApplied": "設定已儲存，但無法立即套用。",
@@ -720,7 +722,8 @@
       "shortcutSessionBusy": "正在進行聽寫。請在結束後再試一次。",
       "persistenceFailed": "無法儲存設定。",
       "generic": "無法變更設定。",
-      "readOnly": "本次工作階段的設定為唯讀：無法安全寫入設定檔，因此變更不會儲存。"
+      "readOnly": "本次工作階段的設定為唯讀：無法安全寫入設定檔，因此變更不會儲存。",
+      "unsupportedPlatform": "此設定在此系統上無法使用。"
     }
   },
   "appLanguage": {

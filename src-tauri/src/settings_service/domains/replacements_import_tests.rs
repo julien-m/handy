@@ -57,9 +57,11 @@ fn invalid_imports_are_refused_whole_with_every_line_issue() -> TestResult {
     let directory = tempfile::tempdir()?;
     let service = offline(&directory)?;
     Call::new("add", &["kept", "Kept"]).run(&service);
-    let items = json!([{"line": 1, "field": "recognized", "kind": "duplicate_key"},
-                       {"line": 2, "field": "line", "kind": "missing_separator"},
-                       {"line": 3, "field": "recognized", "kind": "duplicate_key"}]);
+    let items = json!([
+        {"index": 0, "code": "duplicate_recognized", "message": "Another rule has the same recognized text."},
+        {"index": 1, "code": "missing_separator", "message": "The line has no tab or semicolon separator."},
+        {"index": 2, "code": "duplicate_recognized", "message": "Another rule has the same recognized text."}
+    ]);
     let call = Call::new("import", &["replace"]).input("a;1\nno separator\nA;2\n");
     for call in [call, call.dry_run()] {
         let (code, _, error) = outcome(&call.run(&service));
@@ -91,6 +93,7 @@ impl SettingsBackend for Interleaved<'_> {
         let context = ValidationContext {
             prompt_ids: &[],
             updates_allowed: true,
+            platform: crate::settings_service::platform_capability::PlatformCapabilities::current(),
         };
         // Alternate the value so every call is a real write, never a no-op.
         let is_direct = self.0.snapshot().settings.paste_method == PasteMethod::Direct;

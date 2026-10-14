@@ -67,8 +67,8 @@ fn a_maximal_set_is_listed_and_exported_offline_and_from_a_running_instance() ->
     let (_instance, endpoint) = serve(&app)?;
     list_and_export_a_maximal_set(&app, &rules)?;
     let (code, refused) = replacements(&app, &["add", "one more", "x"])?;
-    let items = &refused["error"]["details"]["items"];
-    assert_eq!((code, &items[0]["kind"]), (2, &json!("too_many_rules")));
+    let reason = &refused["error"]["details"]["reason"];
+    assert_eq!((code, reason), (2, &json!("too_many_rules")));
     endpoint.close();
     Ok(())
 }

@@ -1,0 +1,3 @@
+ src/bindings.ts | 127 ++++++++++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 124 insertions(+), 3 deletions(-)
+bindings exported by the debug binary (isolated HOME, headless --list-models); git diff --stat above is against HEAD

@@ -21,7 +21,8 @@ fn an_empty_recognized_text_exits_two_with_a_stable_code_and_no_write() -> TestR
     let (code, envelope) = replacements(&app, &["add", "", "x"])?;
     let error = &envelope["error"];
     assert_eq!((code, &error["code"]), (2, &json!("validation_failed")));
-    let item = json!([{"position": 1, "field": "recognized", "kind": "too_short"}]);
+    let item = json!([{"index": 0, "code": "recognized_empty",
+                       "message": "The recognized text is empty."}]);
     assert_eq!(error["details"]["items"], item);
     assert_eq!(app.store_bytes()?, None);
     Ok(())

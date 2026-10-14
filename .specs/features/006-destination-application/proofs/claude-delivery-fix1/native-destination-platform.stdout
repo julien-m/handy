@@ -1,0 +1,11 @@
+
+running 3 tests
+capture_ms=20.488 identity_kind=bundle_id
+test the_frontmost_application_is_read_with_its_identity_within_the_capture_budget ... ok
+menu_enumeration_ms=41.098 apps=19
+test running_applications_with_windows_are_listed_once_each_without_this_process ... ok
+live_first_read_ms=40.520 live_read_ms=0.230 same_as_nsworkspace=true live_is_loginwindow=true
+test the_live_focused_application_read_names_the_focused_application_within_the_budget ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.06s
+

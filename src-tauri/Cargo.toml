@@ -23,6 +23,13 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 # name = "cli"
 # path = "src/audio_toolkit/bin/cli.rs"
 
+[features]
+# Destination return rollout gate (feature 006, `destination::rollout`). Off: dictation inserts as
+# before 006 (no capture, activation or pre-dispatch guard) and `return_to_dictation_app` is
+# refused as `unsupported_platform` by the UI and the CLI. Open it only after the native macOS
+# activation and guard proof with the maintainer and the Penflow-certified destination UI.
+destination-return = []
+
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
 serde_json = "1"
@@ -107,7 +114,7 @@ tauri-plugin-single-instance = "2.3.2"
 tauri-plugin-updater = "2.10.1"
 
 [target.'cfg(windows)'.dependencies]
-windows-sys = { version = "0.60.2", features = ["Win32_Foundation", "Win32_Security", "Win32_Security_Authorization", "Win32_System_Threading", "Win32_System_Pipes", "Win32_Storage_FileSystem", "Win32_System_Console", "Win32_System_IO", "Win32_UI_WindowsAndMessaging"] }
+windows-sys = { version = "0.60.2", features = ["Win32_Foundation", "Win32_Security", "Win32_Security_Authorization", "Win32_System_Threading", "Win32_System_Pipes", "Win32_Storage_FileSystem", "Win32_System_Console", "Win32_System_IO", "Win32_UI_WindowsAndMessaging", "Win32_Storage_Packaging_Appx"] }
 # Used to reach ICoreWebView2Settings3 through the webview's controller
 # (disabling browser accelerator keys in the main window). Must match the
 # version wry links against so the COM types are identical.

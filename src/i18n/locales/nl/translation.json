@@ -492,6 +492,7 @@
       "deleteError": "Item verwijderen mislukt. Probeer het opnieuw.",
       "retranscribe": "Opnieuw transcriberen",
       "retranscribeError": "Opnieuw transcriberen mislukt. Probeer het opnieuw.",
+      "noAudio": "Voor dit item is geen audio-opname opgeslagen, dus het kan niet opnieuw worden getranscribeerd.",
       "transcribing": "Transcriberen...",
       "transcriptionFailed": "Transcriptie mislukt. Je kunt het opnieuw proberen via het herlaad-pictogram."
     },
@@ -712,6 +713,7 @@
     "modelLoadFailedUnknown": "onbekend model",
     "pasteFailedTitle": "Tekst plakken mislukt",
     "pasteFailed": "Tekst kon niet worden geplakt in de actieve applicatie.",
+    "pasteFailedNotSaved": "De tekst kon niet worden geplakt of in de geschiedenis worden opgeslagen.",
     "transcriptionFailedTitle": "Transcriptie mislukt",
     "settings": {
       "committedNotApplied": "De instelling is opgeslagen, maar kon niet direct worden toegepast.",
@@ -723,7 +725,8 @@
       "shortcutSessionBusy": "Er loopt een dictaat. Probeer het opnieuw wanneer het is afgelopen.",
       "persistenceFailed": "De instellingen konden niet worden opgeslagen.",
       "generic": "De instelling kon niet worden gewijzigd.",
-      "readOnly": "De instellingen zijn in deze sessie alleen-lezen: het instellingenbestand kan niet veilig worden geschreven, dus wijzigingen worden niet opgeslagen."
+      "readOnly": "De instellingen zijn in deze sessie alleen-lezen: het instellingenbestand kan niet veilig worden geschreven, dus wijzigingen worden niet opgeslagen.",
+      "unsupportedPlatform": "Deze instelling is niet beschikbaar op dit systeem."
     }
   },
   "appLanguage": {

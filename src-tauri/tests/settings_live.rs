@@ -1,6 +1,7 @@
 //! The running app's write path (settings UI adapter over the live service) against real stores:
 //! same decisions and stored values as the CLI path, one revision per commit under concurrency,
 //! and startup continuity with offline writers.
+use handy_app_lib::settings_service::platform_capability::PlatformCapabilities;
 use handy_app_lib::settings_service::{
     errors::SettingsError,
     live::LiveSettings,
@@ -104,6 +105,7 @@ fn cli_path(key: &str, text: &str) -> Result<(Value, Value), Box<dyn std::error:
     let context = ValidationContext {
         prompt_ids: &[],
         updates_allowed: true,
+        platform: PlatformCapabilities::current(),
     };
     let result = validate_cli(key, text, &context).and_then(|mutation| {
         repository
@@ -172,6 +174,7 @@ fn offline_delay(
     let context = ValidationContext {
         prompt_ids: &[],
         updates_allowed: true,
+        platform: PlatformCapabilities::current(),
     };
     let mutation = validate_cli("paste_delay_ms", value, &context)?;
     let expected = expected.map(handy_app_lib::settings_service::protocol::Revision);

@@ -1,4 +1,5 @@
 //! Fault stages expose only complete old/new JSON; substitutes are retained unmodified.
+use handy_app_lib::settings_service::platform_capability::PlatformCapabilities;
 use handy_app_lib::settings_service::{
     errors::SettingsErrorCode,
     ownership::LegacyPathProbe,
@@ -38,6 +39,7 @@ fn every_durable_fault_preserves_a_complete_generation_and_reports_uncertainty(
             &ValidationContext {
                 prompt_ids: &[],
                 updates_allowed: true,
+                platform: PlatformCapabilities::current(),
             },
         )?;
         let probe = LegacyPathProbe::new(directory.path().join("absent.sock"));
@@ -119,6 +121,7 @@ fn replaced_temporary_path_never_replaces_store_or_deletes_substitute(
         &ValidationContext {
             prompt_ids: &[],
             updates_allowed: true,
+            platform: PlatformCapabilities::current(),
         },
     )?;
     let probe = LegacyPathProbe::new(directory.path().join("absent.sock"));
@@ -156,6 +159,7 @@ fn stable_lock_inode_survives_replacement_and_is_retained_after_release(
             &ValidationContext {
                 prompt_ids: &[],
                 updates_allowed: true,
+                platform: PlatformCapabilities::current(),
             },
         )?;
         repository.commit_with_probe(mutation, None, &probe, &())?;

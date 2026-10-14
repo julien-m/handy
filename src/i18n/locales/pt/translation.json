@@ -492,6 +492,7 @@
       "deleteError": "Falha ao excluir entrada. Por favor, tente novamente.",
       "retranscribe": "Re-transcrever",
       "retranscribeError": "Falha ao re-transcrever. Por favor, tente novamente.",
+      "noAudio": "Nenhuma gravação de áudio foi salva para esta entrada, portanto ela não pode ser retranscrita.",
       "transcribing": "Transcrevendo...",
       "transcriptionFailed": "A transcrição falhou. Você pode re-transcrever usando o ícone de tentar novamente."
     },
@@ -709,6 +710,7 @@
     "modelLoadFailedUnknown": "modelo desconhecido",
     "pasteFailedTitle": "Falha ao colar o texto",
     "pasteFailed": "Não foi possível colar o texto no aplicativo ativo.",
+    "pasteFailedNotSaved": "Não foi possível colar o texto nem guardá-lo no histórico.",
     "transcriptionFailedTitle": "Falha na transcrição",
     "settings": {
       "committedNotApplied": "A configuração foi salva, mas não pôde ser aplicada imediatamente.",
@@ -720,7 +722,8 @@
       "shortcutSessionBusy": "Um ditado está em andamento. Tente novamente quando terminar.",
       "persistenceFailed": "Não foi possível salvar as configurações.",
       "generic": "Não foi possível alterar a configuração.",
-      "readOnly": "As configurações estão somente leitura nesta sessão: o arquivo de configurações não pode ser gravado com segurança, então as alterações não serão salvas."
+      "readOnly": "As configurações estão somente leitura nesta sessão: o arquivo de configurações não pode ser gravado com segurança, então as alterações não serão salvas.",
+      "unsupportedPlatform": "Esta configuração não está disponível neste sistema."
     }
   },
   "appLanguage": {

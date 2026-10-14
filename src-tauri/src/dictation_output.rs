@@ -1,8 +1,9 @@
 //! Output stages of one finished dictation, after the native text pipeline (recognition,
 //! language and script, word replacements, approximate correction, fillers, normalization): the
-//! optional AI post-processing, the history entry (only when the recording's WAV was saved) and
-//! the text handed to insertion. The stages run behind ports, so their order and the text each
-//! one receives are testable without Tauri; the shortcut action supplies the real ports.
+//! optional AI post-processing, the history entry (text-only when the recording's WAV was not
+//! saved, 006) and the text handed to insertion. The stages run behind ports, so their order and
+//! the text each one receives are testable without Tauri; the shortcut action supplies the real
+//! ports.
 
 use std::future::Future;
 
@@ -18,15 +19,21 @@ pub(crate) struct ProcessedTranscription {
 
 /// Native side of the output stages.
 pub(crate) trait OutputPorts {
+    /// Actual result of the history write, handed to insertion with the final text.
+    type History;
     /// AI post-processing of `native` (or `native` unchanged without AI); `None` when the
     /// dictation was cancelled while it ran.
     fn post_process(&self, native: &str) -> impl Future<Output = Option<ProcessedTranscription>>;
     /// True once the dictation was cancelled.
     fn is_cancelled(&self) -> bool;
-    /// Record the history entry: the native text and the optional AI result.
-    fn save_history(&self, native: String, processed: &ProcessedTranscription);
-    /// Hand `text` to insertion (an attempted paste).
-    fn insert(&self, text: String);
+    /// Record the history entry (with its audio, or text-only when the WAV was not saved): the
+    /// native text and the optional AI result; returns what actually happened.
+    fn save_history(&self, native: String, processed: &ProcessedTranscription) -> Self::History;
+    /// End a dictation that has nothing to insert.
+    fn abandon(&self);
+    /// Hand `text` to insertion with the history result of its dictation, then end the
+    /// recording indicator.
+    fn insert(&self, text: String, history: Self::History) -> impl Future<Output = ()>;
 }
 
 /// How the output stages of a dictation ended.
@@ -34,7 +41,7 @@ pub(crate) trait OutputPorts {
 pub(crate) enum Delivery {
     /// Cancelled during or right after AI post-processing: no history entry, no insertion.
     Cancelled,
-    /// The final text is empty: history only (when the WAV was saved).
+    /// The final text is empty: history only.
     NothingToInsert,
     /// The final text was handed to insertion.
     Inserted,
@@ -44,22 +51,21 @@ pub(crate) enum Delivery {
 /// Run the output stages of `native`, the text of the native pipeline (replacements included).
 ///
 /// Order matters: AI post-processing first (it may be cancelled), then the history entry, so a
-/// saved recording keeps its entry even when insertion fails, then insertion.
-pub(crate) async fn deliver(ports: &impl OutputPorts, native: String, wav_saved: bool) -> Delivery {
+/// dictation keeps its entry even when insertion fails and insertion reports the actual history
+/// result (006), then insertion.
+pub(crate) async fn deliver<P: OutputPorts>(ports: &P, native: String) -> Delivery {
     let Some(processed) = ports.post_process(&native).await else {
         return Delivery::Cancelled;
     };
     if ports.is_cancelled() {
         return Delivery::Cancelled;
     }
-    // Business rule: history keeps only recordings whose WAV was saved (retry needs the audio).
-    if wav_saved {
-        ports.save_history(native, &processed);
-    }
+    let history = ports.save_history(native, &processed);
     if processed.final_text.is_empty() {
+        ports.abandon();
         return Delivery::NothingToInsert;
     }
-    ports.insert(processed.final_text);
+    ports.insert(processed.final_text, history).await;
     Delivery::Inserted
 }
 

@@ -492,6 +492,7 @@
       "deleteError": "Échec de la suppression de l'entrée. Veuillez réessayer.",
       "retranscribe": "Re-transcrire",
       "retranscribeError": "Impossible de re-transcrire. Veuillez réessayer.",
+      "noAudio": "Aucun enregistrement audio n'a été conservé pour cette entrée : elle ne peut pas être re-transcrite.",
       "transcribing": "Transcription en cours...",
       "transcriptionFailed": "La transcription a échoué. Vous pouvez re-transcrire en utilisant l'icône de réessai."
     },
@@ -709,6 +710,7 @@
     "modelLoadFailedUnknown": "modèle inconnu",
     "pasteFailedTitle": "Échec du collage du texte",
     "pasteFailed": "Le texte n'a pas pu être collé dans l'application active.",
+    "pasteFailedNotSaved": "Le texte n'a pas pu être collé ni enregistré dans l'historique.",
     "transcriptionFailedTitle": "Échec de la transcription",
     "settings": {
       "committedNotApplied": "Le réglage est enregistré, mais n'a pas pu être appliqué immédiatement.",
@@ -720,7 +722,8 @@
       "shortcutSessionBusy": "Une dictée est en cours. Réessayez lorsqu'elle sera terminée.",
       "persistenceFailed": "Les réglages n'ont pas pu être enregistrés.",
       "generic": "Le réglage n'a pas pu être modifié.",
-      "readOnly": "Les réglages sont en lecture seule pour cette session : le fichier de réglages ne peut pas être écrit en toute sécurité, les modifications ne seront donc pas enregistrées."
+      "readOnly": "Les réglages sont en lecture seule pour cette session : le fichier de réglages ne peut pas être écrit en toute sécurité, les modifications ne seront donc pas enregistrées.",
+      "unsupportedPlatform": "Ce réglage n'est pas disponible sur ce système."
     }
   },
   "appLanguage": {

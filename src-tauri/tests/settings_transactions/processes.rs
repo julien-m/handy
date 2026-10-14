@@ -1,5 +1,6 @@
 //! Subprocess barriers and an independent reader verify real atomic repository generations.
 use super::driver::Driver;
+use handy_app_lib::settings_service::platform_capability::PlatformCapabilities;
 use handy_app_lib::settings_service::{
     ownership::LegacyPathProbe,
     store::SettingsRepository,
@@ -119,6 +120,7 @@ fn independent_raw_reader_observes_only_complete_old_or_new_generations() -> Tes
             &ValidationContext {
                 prompt_ids: &[],
                 updates_allowed: true,
+                platform: PlatformCapabilities::current(),
             },
         )?;
         assert_eq!(
@@ -194,6 +196,7 @@ fn forced_process_termination_before_and_after_replace_preserves_complete_genera
             &ValidationContext {
                 prompt_ids: &[],
                 updates_allowed: true,
+                platform: PlatformCapabilities::current(),
             },
         )?;
         assert_eq!(

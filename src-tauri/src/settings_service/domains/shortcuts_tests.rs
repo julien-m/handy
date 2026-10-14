@@ -71,6 +71,7 @@ fn call_at(
         input: None,
         dry_run,
         expected: expected.map(Revision),
+        platform: crate::settings_service::platform_capability::PlatformCapabilities::current(),
     };
     match execute(&call, backend, &[&ShortcutsDomain]) {
         Ok((revision, data, warning)) => Reply::success(revision, data, warning),

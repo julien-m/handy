@@ -4,18 +4,23 @@
 //! through the commit path's own validation, and one atomic commit through the shared backend.
 //! Registered: `output` (008), `replacements` (002) and `shortcuts` (004); later features add
 //! their domain to `production`.
+pub mod live_operation;
 pub mod output;
 pub mod replacements;
+mod replacements_refusal;
 pub mod shortcuts;
 
 use super::{
     edit::{SettingsEdit, SettingsEditFn},
     errors::{SettingsError, SettingsErrorCode},
     operations::SettingsBackend,
+    platform_capability::PlatformCapabilities,
     protocol::Revision,
+    store::SettingsRead,
     validation::SettingsMutation,
 };
 use crate::settings::AppSettings;
+use live_operation::{LiveAnswer, LiveCall, LiveOperation};
 use serde_json::{json, Value};
 
 /// Typed edit closure a domain hands to the shared commit path.
@@ -60,6 +65,9 @@ pub enum DomainPlan {
     LiveOnly(Value),
     /// Commit a change and answer with its report (see `ReportedChange`).
     Reported(ReportedChange),
+    /// Operation run inside the running instance (native state, managers); offline it is
+    /// `unavailable` and it never runs in the CLI process.
+    Live(Box<dyn LiveOperation>),
     /// Change of descriptor `key` that only a running instance can apply, because its native
     /// side is prepared before the commit (for example the shortcut registrations): offline it is
     /// `unavailable` (`instance_required`), except a dry run, which never claims the native side.
@@ -86,6 +94,8 @@ pub struct DomainRequest<'a> {
     pub action: &'a str,
     pub arguments: &'a [String],
     pub input: Option<&'a str>,
+    /// Capabilities of the build, so `plan` decides a platform refusal before any live routing.
+    pub platform: PlatformCapabilities,
 }
 /// A registered domain.
 pub trait Domain: Sync {
@@ -128,6 +138,8 @@ pub struct DomainCall<'a> {
     pub input: Option<&'a str>,
     pub dry_run: bool,
     pub expected: Option<Revision>,
+    /// Capabilities of the build (production passes `PlatformCapabilities::current()`).
+    pub platform: PlatformCapabilities,
 }
 /// Successful result: revision, data and the recovery warning of the settings read.
 pub type Answer = (Revision, Value, bool);
@@ -151,6 +163,7 @@ pub fn execute(
         DomainPlan::Read(data) => answer(data),
         DomainPlan::LiveOnly(data) if backend.is_live() => answer(data),
         DomainPlan::LiveOnly(_) => Err(SettingsError::new(SettingsErrorCode::Unavailable)),
+        DomainPlan::Live(operation) => run_live(operation.as_ref(), call, backend, &read),
         DomainPlan::Change { change, keys } => change_keys(call, backend, &read, &change, &keys),
         DomainPlan::LiveChange {
             key,
@@ -160,12 +173,32 @@ pub fn execute(
         DomainPlan::Reported(change) => reported(call, backend, &read, &change),
     }
 }
+/// Run a live operation inside the instance; offline, the same refusal as a live-only answer.
+// @spec FR-006: Live operations only inside the instance — .specs/features/006-destination-application/spec.md#fr-006
+fn run_live(
+    operation: &dyn LiveOperation,
+    call: &DomainCall<'_>,
+    backend: &dyn SettingsBackend,
+    read: &SettingsRead,
+) -> Result<Answer, SettingsError> {
+    let context = backend
+        .live_context()
+        .ok_or_else(|| SettingsError::new(SettingsErrorCode::Unavailable))?;
+    let live_call = LiveCall {
+        dry_run: call.dry_run,
+        expected: call.expected,
+    };
+    match operation.run(context, &live_call)? {
+        LiveAnswer::Read(data) => Ok((read.snapshot.revision, data, read.warning)),
+        LiveAnswer::Committed { read, data } => Ok((read.snapshot.revision, data, read.warning)),
+    }
+}
 /// A change answered with the public values of `keys`: previewed by a dry run, otherwise
 /// committed through the shared path.
 fn change_keys(
     call: &DomainCall<'_>,
     backend: &dyn SettingsBackend,
-    read: &super::store::SettingsRead,
+    read: &SettingsRead,
     change: &DomainChange,
     keys: &[&'static str],
 ) -> Result<Answer, SettingsError> {
@@ -184,7 +217,7 @@ fn change_keys(
 fn live_change(
     call: &DomainCall<'_>,
     backend: &dyn SettingsBackend,
-    read: &super::store::SettingsRead,
+    read: &SettingsRead,
     (key, change): (&'static str, &DomainChange),
     render: &Render,
 ) -> Result<Answer, SettingsError> {
@@ -239,6 +272,7 @@ fn resolve<'a>(
         action,
         arguments: call.arguments,
         input: call.input,
+        platform: call.platform,
     };
     Ok((domain, request))
 }
@@ -268,3 +302,6 @@ pub fn public_keys(settings: &AppSettings, keys: &[&'static str]) -> Result<Valu
 #[cfg(test)]
 #[path = "fixture_tests.rs"]
 mod fixture_tests;
+#[cfg(test)]
+#[path = "live_fixture_tests.rs"]
+mod live_fixture_tests;

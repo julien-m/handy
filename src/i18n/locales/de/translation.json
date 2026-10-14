@@ -492,6 +492,7 @@
       "deleteError": "Eintrag konnte nicht gelöscht werden. Bitte versuche es erneut.",
       "retranscribe": "Erneut transkribieren",
       "retranscribeError": "Erneute Transkription fehlgeschlagen. Bitte versuche es erneut.",
+      "noAudio": "Für diesen Eintrag wurde keine Audioaufnahme gespeichert, daher kann er nicht erneut transkribiert werden.",
       "transcribing": "Transkribiere...",
       "transcriptionFailed": "Transkription fehlgeschlagen. Du kannst über das Wiederholen-Symbol erneut transkribieren."
     },
@@ -709,6 +710,7 @@
     "modelLoadFailedUnknown": "unbekanntes Modell",
     "pasteFailedTitle": "Text konnte nicht eingefügt werden",
     "pasteFailed": "Der Text konnte nicht in die aktive Anwendung eingefügt werden.",
+    "pasteFailedNotSaved": "Der Text konnte weder eingefügt noch im Verlauf gespeichert werden.",
     "transcriptionFailedTitle": "Transkription fehlgeschlagen",
     "settings": {
       "committedNotApplied": "Die Einstellung wurde gespeichert, konnte aber nicht sofort angewendet werden.",
@@ -720,7 +722,8 @@
       "shortcutSessionBusy": "Ein Diktat läuft gerade. Versuche es erneut, wenn es beendet ist.",
       "persistenceFailed": "Die Einstellungen konnten nicht gespeichert werden.",
       "generic": "Die Einstellung konnte nicht geändert werden.",
-      "readOnly": "Die Einstellungen sind in dieser Sitzung schreibgeschützt: Die Einstellungsdatei kann nicht sicher geschrieben werden, daher werden Änderungen nicht gespeichert."
+      "readOnly": "Die Einstellungen sind in dieser Sitzung schreibgeschützt: Die Einstellungsdatei kann nicht sicher geschrieben werden, daher werden Änderungen nicht gespeichert.",
+      "unsupportedPlatform": "Diese Einstellung ist auf diesem System nicht verfügbar."
     }
   },
   "appLanguage": {

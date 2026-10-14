@@ -21,7 +21,9 @@ use super::bindings_change::{changed_actions, compensate_changes, prepare_change
 use super::edits::{self, BackendRegistry, RefusedShortcut};
 use super::keyboard_switch;
 use crate::settings::AppSettings;
-use crate::settings_service::errors::{SettingsError, SettingsErrorCode, ShortcutDetails};
+use crate::settings_service::errors::{
+    ErrorReason, SettingsError, SettingsErrorCode, ShortcutDetails,
+};
 use crate::settings_service::sequence::PreparedChange;
 use crate::transcription_coordinator::{QuiescenceLease, TranscriptionCoordinator};
 
@@ -89,7 +91,7 @@ fn registration_refused(
     };
     SettingsError::shortcut(
         SettingsErrorCode::ValidationFailed,
-        Some("registration_refused"),
+        Some(ErrorReason::RegistrationRefused),
         details,
     )
 }

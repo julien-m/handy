@@ -96,6 +96,16 @@
 
 <!-- finalize:spec-refine:2026-10-14:8325a713 -->
 
+## 2026-10-14 — [Feature]: Non-UI implementation of destination application (partial)
+
+- **Type:** Feature
+- **Spec modified:** No
+- **Code modified:** `src-tauri/src/settings_service/` (Step 0: live operations, platform capability, error details; Step 3: `return_to_dictation_app` key), `src-tauri/src/destination/` (new: session manager, contracts, macOS/Windows adapters, orchestrator, guard, outcome, recovery), `src-tauri/src/commands/destination.rs`, `src-tauri/src/{actions,clipboard,utils,settings,lib,cli}.rs`, `src/bindings.ts`, `src/stores/settings-errors.ts`, 26 locales, tests (`destination_cli.rs`, `destination_platform.rs`, settings test updates), README, 008 contract and schema
+- **AC impacted:** AC-001, AC-002, AC-004 (backend), AC-005, AC-006, AC-007, AC-008 — all partial, none certified; AC-003 not started (UI)
+- **Author:** Claude Code (spec-implement 006, claude-opus-5-5)
+- Commits: `0867599` (Step 0), `7a95f0c` (Step 2, Step 1 read-only part), `b98ee80` (Step 3), `4823d8f` (Step 4 and the non-UI part of Step 6), `3645b28` (implementation map).
+- Not done: UI (badge, menu, reason display, settings toggle and its write command), 007/009/010 adapters, native activation/focus/timing evidence; Windows compile-only; Linux and Windows native checks pending release evidence. See [implementation](implementation.md) and [progress](progress.md).
+
 ## 2026-10-14 — [Spec Update]: Text-only history entry when the audio recording fails
 
 - **Type:** Spec Update
@@ -109,3 +119,23 @@
 - Review: the spec and plan reviews are stale until an independent reviewer refreshes them.
 
 <!-- finalize:spec-refine:2026-10-14:2190dbf9 -->
+
+## 2026-10-14 — [Feature]: Sync with dev, settings UI command and history rule (partial)
+
+- **Type:** Feature
+- **Spec modified:** No
+- **Code modified:** merge `3b3a27a` (`settings_service/{errors,protocol,render,domains/mod,domains/shortcuts}.rs`, `shortcut/live_change.rs`, `src/stores/settings-errors.ts`, `src/bindings.ts`, README, 008 schema and contract); `3fd745d` (`shortcut/mod.rs`, `lib.rs`, `settings_service/sequence_destination_tests.rs`, `src/stores/settingsStore.ts`, `settings-store.test.ts`, `bindings.ts`); `8f374d4` (`managers/{history,history_store,mod}.rs`, `destination/{history,delivery,outcome,mod}.rs`, `actions.rs`, `commands/history.rs`, `lib.rs`, `tray.rs`, `tests/destination_recovery.rs`, `HistorySettings.tsx`, `bindings.ts`, 26 locales)
+- **AC impacted:** AC-005 (history clause), AC-007, AC-008 (UI command) — still partial, none certified
+- **Author:** Claude Code (spec-implement 006, claude-opus-5-5)
+- The history change shared with 005 Step 7 is built once here (nullable `file_name`, WAV gate removed for the transcript, guards for rows without audio). Not done: visual UI (badge, cross, menu, toggle, reason display), 007/009/010 adapters, native evidence. See [progress](progress.md#sync-run--notes-2026-10-14) and [implementation](implementation.md).
+
+## 2026-10-14 — [Fix]: Delivery review fix round 1 — rollout gate and review warnings
+
+- **Type:** Fix
+- **Spec modified:** No
+- **Code modified:** `422063a` (`Cargo.toml` feature `destination-return`; `destination/{rollout,macos_focus,delivery_tests}.rs` new; `destination/{app,delivery,guard,insertion,macos,windows,workspace,manager,context}.rs` and their tests; `settings_service/{error_reason.rs (new), errors.rs, platform_capability.rs, mod.rs}`; `settings.rs`, `clipboard.rs`, `actions.rs`; `tests/{destination_platform,destination_recovery}.rs`; `App.tsx`, 26 locales); `c2953cd` (`tests/destination_cli.rs`); contract updated (insertion method shape, live guard read, `NoTextField`)
+- **AC impacted:** AC-002, AC-005, AC-007, AC-008 — still partial, none certified
+- **Author:** Claude Code (delivery review corrections, claude-opus-5-5)
+- Destination return is now behind the `destination-return` Cargo feature, off by default: the default build dictates exactly as `dev` and refuses `return_to_dictation_app` as `unsupported_platform`; the text-only history rule stays active. Opening conditions: native macOS activation and guard proof with Julien, Penflow-certified UI ([implementation, Rollout gate](implementation.md#rollout-gate)).
+- Behind the gate: live Accessibility foreground read for the guard and the activation wait (macOS), one settings snapshot per insertion, truthful worker-failure outcome with the transcript retained, a "not saved" toast on a double failure, Windows hosted UWP apps resolved by their core window process. Also `RecoveryReason::NoTextField`, `errors.rs` split under 400 lines, the two new clippy warnings removed. Deviation recorded: `InsertionPort::dispatch(guard)` kept, contract updated. Details: [progress](progress.md#delivery-review-fix-round-1--notes-2026-10-14).
+

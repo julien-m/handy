@@ -105,6 +105,8 @@ pub fn contract_schema() -> Result<serde_json::Value, SettingsError> {
     ];
     let code_values = serde_json::to_value(codes)
         .map_err(|_| SettingsError::new(SettingsErrorCode::InternalError))?;
+    let reasons = serde_json::to_value(super::errors::ErrorReason::ALL)
+        .map_err(|_| SettingsError::new(SettingsErrorCode::InternalError))?;
     let metadata = serde_json::to_value(super::descriptor::descriptors())
         .map_err(|_| SettingsError::new(SettingsErrorCode::InternalError))?;
     Ok(
@@ -113,7 +115,7 @@ pub fn contract_schema() -> Result<serde_json::Value, SettingsError> {
       "failure":{"type":"object","additionalProperties":false,"required":["ok","error"],"properties":{"ok":{"const":false},"error":{"$ref":"#/$defs/error"}}},
       "revision":{"type":"integer","minimum":0,"maximum":u64::MAX},
       "error":{"type":"object","additionalProperties":false,"required":["code","message","details"],"properties":{"code":{"enum":code_values},"message":{"type":"string"},"details":{"$ref":"#/$defs/error_details"}}},
-      "error_details":error_details_schema(&keys),"item_issue":item_issue_schema(),
+      "error_details":{"type":"object","additionalProperties":false,"properties":{"current_revision":{"$ref":"#/$defs/revision"},"outcome":{"enum":["unknown","committed"]},"field":{"enum":keys},"offset":{"type":"integer","minimum":0},"issues":{"type":"array","items":{"type":"object","additionalProperties":false,"required":["field","reason"],"properties":{"field":{"enum":keys},"reason":{"type":"string"}}}},"reason":{"enum":reasons},"items":error_items_schema(&reasons),"action_id":{"type":"string"},"owning_action":{"type":"string"},"owning_shortcut":{"type":"string"},"kind":{"enum":["duplicate","modifier_overlap"]},"limit":{"type":"integer","minimum":1}}},
       "public_settings":{"type":"object","additionalProperties":false,"required":keys,"properties":properties},
       "provider":public_provider_schema(),"binding":public_binding_schema(),"prompt":public_prompt_schema(),"replacement_rule":public_replacement_rule_schema(),
       "operation_request":operation_request_schema()
@@ -196,6 +198,10 @@ fn apply_intrinsic_constraints(
     }
 }
 
+/// `details.items`: bounded refused positions, each with a closed code and fixed message.
+fn error_items_schema(reasons: &serde_json::Value) -> serde_json::Value {
+    serde_json::json!({"type":"array","maxItems":super::errors::MAX_ERROR_ITEMS,"items":{"type":"object","additionalProperties":false,"required":["index","code","message"],"properties":{"index":{"type":"integer","minimum":0},"code":{"enum":reasons},"message":{"type":"string"}}}})
+}
 fn public_provider_schema() -> serde_json::Value {
     serde_json::json!({"type":"object","additionalProperties":false,"required":["id","label","base_url","allow_base_url_edit","models_endpoint","supports_structured_output"],"properties":{"id":{"type":"string"},"label":{"type":"string"},"base_url":{"type":"string"},"allow_base_url_edit":{"type":"boolean"},"models_endpoint":{"type":["string","null"]},"supports_structured_output":{"type":"boolean"}}})
 }
@@ -206,13 +212,6 @@ fn public_prompt_schema() -> serde_json::Value {
     serde_json::json!({"type":"object","additionalProperties":false,"required":["id","name","prompt"],"properties":{"id":{"type":"string"},"name":{"type":"string"},"prompt":{"type":"string"}}})
 }
 
-/// Allowlisted error details; `field` names a descriptor key, item issues name item fields.
-fn error_details_schema(keys: &[&str]) -> serde_json::Value {
-    serde_json::json!({"type":"object","additionalProperties":false,"properties":{"current_revision":{"$ref":"#/$defs/revision"},"outcome":{"enum":["unknown","committed"]},"field":{"enum":keys},"offset":{"type":"integer","minimum":0},"reason":{"type":"string"},"action_id":{"type":"string"},"owning_action":{"type":"string"},"owning_shortcut":{"type":"string"},"kind":{"enum":["duplicate","modifier_overlap"]},"limit":{"type":"integer","minimum":1},"issues":{"type":"array","items":{"type":"object","additionalProperties":false,"required":["field","reason"],"properties":{"field":{"enum":keys},"reason":{"type":"string"}}}},"items":{"type":"array","maxItems":super::errors::MAX_ITEM_ISSUES,"items":{"$ref":"#/$defs/item_issue"}},"omitted_items":{"type":"integer","minimum":1}}})
-}
-fn item_issue_schema() -> serde_json::Value {
-    serde_json::json!({"type":"object","additionalProperties":false,"required":["field","kind"],"properties":{"line":{"type":"integer","minimum":1},"position":{"type":"integer","minimum":1},"field":{"type":"string"},"kind":{"type":"string"}}})
-}
 fn public_replacement_rule_schema() -> serde_json::Value {
     serde_json::json!({"type":"object","additionalProperties":false,"required":["id","recognized","replacement"],"properties":{"id":{"type":"string"},"recognized":{"type":"string"},"replacement":{"type":"string"}}})
 }

@@ -2,9 +2,11 @@
 use crate::apple_intelligence;
 use crate::audio_feedback::{play_feedback_sound, play_feedback_sound_blocking, SoundType};
 use crate::audio_toolkit::{is_microphone_access_denied, is_no_input_device_error, VadPolicy};
+use crate::destination::delivery::{insert_final_text, DictationTicket, HistoryRecord};
 use crate::dictation_output::{deliver, Delivery, OutputPorts, ProcessedTranscription};
 use crate::managers::audio::AudioRecordingManager;
 use crate::managers::history::HistoryManager;
+use crate::managers::history_store::NewHistoryEntry;
 use crate::managers::model::ModelManager;
 use crate::managers::transcription::StreamWorkKind;
 use crate::managers::transcription::TranscriptionManager;
@@ -384,7 +386,7 @@ pub(crate) async fn process_transcription_output(
 }
 
 /// Real output ports of one dictation (see `dictation_output`): the configured AI
-/// post-processing with its overlay, the history manager and the paste on the main thread.
+/// post-processing with its overlay, the history manager and the destination insertion (006).
 struct AppOutputPorts {
     app: AppHandle,
     recording: Arc<AudioRecordingManager>,
@@ -393,10 +395,13 @@ struct AppOutputPorts {
     cancel_generation: u64,
     post_process: bool,
     use_streaming_overlay: bool,
-    file_name: String,
+    /// The verified WAV of this dictation, or `None` for a text-only history row.
+    file_name: Option<String>,
+    destination_ticket: Option<DictationTicket>,
 }
 
 impl OutputPorts for AppOutputPorts {
+    type History = HistoryRecord;
     async fn post_process(&self, native: &str) -> Option<ProcessedTranscription> {
         if self.post_process {
             if self.use_streaming_overlay {
@@ -412,61 +417,30 @@ impl OutputPorts for AppOutputPorts {
     fn is_cancelled(&self) -> bool {
         self.recording.was_cancelled_since(self.cancel_generation)
     }
-    fn save_history(&self, native: String, processed: &ProcessedTranscription) {
-        let saved = self.history.save_entry(
-            self.file_name.clone(),
-            native,
-            self.post_process,
-            processed.post_processed_text.clone(),
-            processed.post_process_prompt.clone(),
-        );
-        if let Err(err) = saved {
-            error!("Failed to save history entry: {}", err);
-        }
+    fn save_history(&self, native: String, processed: &ProcessedTranscription) -> HistoryRecord {
+        let entry = NewHistoryEntry {
+            file_name: self.file_name.clone(),
+            transcription_text: native,
+            post_process_requested: self.post_process,
+            post_processed_text: processed.post_processed_text.clone(),
+            post_process_prompt: processed.post_process_prompt.clone(),
+        };
+        let cancelled = || self.is_cancelled();
+        crate::destination::history::save_dictation(self.history.as_ref(), entry, &cancelled)
     }
-    fn insert(&self, text: String) {
-        paste_on_main_thread(&self.app, &self.recording, self.cancel_generation, text);
+    fn abandon(&self) {
+        crate::destination::delivery::abandon(&self.app);
+        utils::hide_recording_overlay(&self.app);
+        set_tray_state(&self.app, TrayIconState::Idle);
     }
-}
-
-/// Paste `final_text` on the main thread unless the dictation was cancelled meanwhile, then
-/// return the overlay and tray to idle.
-fn paste_on_main_thread(
-    ah: &AppHandle,
-    rm: &Arc<AudioRecordingManager>,
-    cancel_generation: u64,
-    final_text: String,
-) {
-    let (ah_clone, rm_for_paste) = (ah.clone(), Arc::clone(rm));
-    let paste_time = Instant::now();
-    ah.run_on_main_thread(move || {
-        paste_unless_cancelled(&ah_clone, &rm_for_paste, cancel_generation, final_text);
-        debug!("Paste step finished in {:?}", paste_time.elapsed());
-    })
-    .unwrap_or_else(|e| {
-        error!("Failed to run paste on main thread: {:?}", e);
-        utils::hide_recording_overlay(ah);
-        set_tray_state(ah, TrayIconState::Idle);
-    });
-}
-
-/// Main-thread side of `paste_on_main_thread`.
-fn paste_unless_cancelled(
-    ah: &AppHandle,
-    rm: &AudioRecordingManager,
-    cancel_generation: u64,
-    final_text: String,
-) {
-    if rm.was_cancelled_since(cancel_generation) {
-        debug!("Transcription operation cancelled before paste");
-    } else if let Err(e) = utils::paste(final_text, ah.clone()) {
-        error!("Failed to paste transcription: {}", e);
-        let _ = ah.emit("paste-error", ());
-    } else {
-        debug!("Text pasted successfully");
+    async fn insert(&self, text: String, history: HistoryRecord) {
+        let cancelled = Box::new({
+            let (recording, generation) = (Arc::clone(&self.recording), self.cancel_generation);
+            move || recording.was_cancelled_since(generation)
+        });
+        let insertion = (self.destination_ticket, text, history);
+        insert_final_text(&self.app, insertion, cancelled).await;
     }
-    utils::hide_recording_overlay(ah);
-    set_tray_state(ah, TrayIconState::Idle);
 }
 
 impl ShortcutAction for TranscribeAction {
@@ -510,6 +484,9 @@ impl ShortcutAction for TranscribeAction {
         // Get the microphone mode to determine audio feedback timing
         let plan_started = Instant::now();
         let settings = get_settings(app);
+        // Read the destination before any Handy surface is shown; committed only on success.
+        let destination =
+            crate::destination::app::capture_at_start(app, settings.return_to_dictation_app);
         let is_always_on = settings.always_on_microphone;
 
         let selected_model_info = app
@@ -566,6 +543,9 @@ impl ShortcutAction for TranscribeAction {
                 // AC-007: this dictation uses the rules committed before it started.
                 self.rules_at_start
                     .capture(&binding_id, current_matcher(app));
+                if let Some(destination) = destination {
+                    destination.commit(app);
+                }
                 let generation = readiness.generation();
                 let app_clone = app.clone();
                 let rm_clone = Arc::clone(&rm);
@@ -693,6 +673,7 @@ impl ShortcutAction for TranscribeAction {
             .rules_at_start
             .rules_for_stop(&binding_id, || current_matcher(app));
         let cancel_generation = rm.cancel_generation();
+        let destination_ticket = crate::destination::delivery::ticket_at_stop(app);
 
         tauri::async_runtime::spawn(async move {
             let _guard = FinishGuard(ah.clone(), Arc::clone(&tm));
@@ -719,6 +700,7 @@ impl ShortcutAction for TranscribeAction {
 
                 if samples.is_empty() {
                     debug!("Recording produced no audio samples; skipping persistence");
+                    crate::destination::delivery::abandon(&ah);
                     // Tear down any streaming worker so its channel doesn't leak
                     // and block the next start_stream.
                     tm.cancel_stream();
@@ -793,18 +775,16 @@ impl ShortcutAction for TranscribeAction {
                                 cancel_generation,
                                 post_process,
                                 use_streaming_overlay,
-                                file_name,
+                                file_name: wav_saved.then_some(file_name),
+                                destination_ticket,
                             };
-                            match deliver(&ports, transcription, wav_saved).await {
-                                Delivery::Inserted => {}
+                            match deliver(&ports, transcription).await {
+                                // Insertion and an empty text end the indicator themselves.
+                                Delivery::Inserted | Delivery::NothingToInsert => {}
                                 Delivery::Cancelled => {
                                     debug!(
                                         "Transcription operation cancelled during output handling"
                                     );
-                                    utils::hide_recording_overlay(&ah);
-                                    set_tray_state(&ah, TrayIconState::Idle);
-                                }
-                                Delivery::NothingToInsert => {
                                     utils::hide_recording_overlay(&ah);
                                     set_tray_state(&ah, TrayIconState::Idle);
                                 }
@@ -821,18 +801,18 @@ impl ShortcutAction for TranscribeAction {
                             }
 
                             error!("Transcription failed: {}", err);
+                            crate::destination::delivery::abandon(&ah);
                             // Surface the failure to the UI (toast). The full
                             // message is also in handy.log via the line above.
                             let _ = ah.emit("transcription-error", err.to_string());
-                            // Save entry with empty text so user can retry
+                            // Save entry with empty text so user can retry (needs the audio)
                             if wav_saved {
-                                if let Err(save_err) = hm.save_entry(
-                                    file_name,
-                                    String::new(),
-                                    post_process,
-                                    None,
-                                    None,
-                                ) {
+                                let entry = NewHistoryEntry {
+                                    file_name: Some(file_name),
+                                    post_process_requested: post_process,
+                                    ..NewHistoryEntry::default()
+                                };
+                                if let Err(save_err) = hm.save_entry(entry) {
                                     error!("Failed to save failed history entry: {}", save_err);
                                 }
                             }
@@ -843,6 +823,7 @@ impl ShortcutAction for TranscribeAction {
                 }
             } else {
                 debug!("No samples retrieved from recording stop");
+                crate::destination::delivery::abandon(&ah);
                 // Tear down any streaming worker so its channel doesn't leak.
                 tm.cancel_stream();
                 utils::hide_recording_overlay(&ah);

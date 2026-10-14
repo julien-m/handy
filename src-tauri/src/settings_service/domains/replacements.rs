@@ -6,16 +6,18 @@ use super::{
     ChangeKind, Domain, DomainChange, DomainPlan, DomainRequest, ReportFn, ReportedChange,
 };
 use crate::settings::AppSettings;
-use crate::settings_service::errors::{ItemIssue, SettingsError, SettingsErrorCode};
+use crate::settings_service::errors::{SettingsError, SettingsErrorCode};
 use crate::word_replacements::{
     exchange::{serialize_exchange, MAX_IMPORT_BYTES},
     model::{ReplacementRule, RuleId, RuleIdSource, UuidRuleIdSource},
     preview::{preview_exchange, ImportMode, PreviewLine, PreviewStatus, ReplacementPreview},
     service::{self, new_rule_count, PreallocatedIds, RuleSetError},
     transfer::{self, StageError},
-    validation::RuleIssue,
 };
 use serde_json::{json, Value};
+
+use super::replacements_refusal::input_refusal;
+pub use super::replacements_refusal::refusal;
 
 /// Settings key of the rules; validation errors name it in `details.field`.
 pub const RULES_KEY: &str = "word_replacements";
@@ -301,44 +303,6 @@ fn rule_value(rule: &ReplacementRule) -> Value {
         "recognized": rule.recognized,
         "replacement": rule.replacement,
     })
-}
-/// Typed refusal of a rule-set edit, with item locations and no rule text.
-pub fn refusal(error: RuleSetError) -> SettingsError {
-    match error {
-        RuleSetError::NotFound => SettingsError::new(SettingsErrorCode::NotFound),
-        RuleSetError::Invalid(issues) => rule_refusal(&issues),
-        RuleSetError::InvalidInput(preview) => input_refusal(&preview),
-    }
-}
-fn rule_refusal(issues: &[RuleIssue]) -> SettingsError {
-    let items = issues
-        .iter()
-        .map(|issue| ItemIssue {
-            line: None,
-            position: issue.rule_index.map(|index| index as u64 + 1),
-            field: issue.field.as_str(),
-            kind: issue.kind.as_str(),
-        })
-        .collect();
-    SettingsError::invalid_items(RULES_KEY, items)
-}
-/// Every issue of every error line in input order, then the set issues.
-fn input_refusal(preview: &ReplacementPreview) -> SettingsError {
-    let lines = preview.lines.iter().flat_map(|line| {
-        line.issues.iter().map(move |issue| ItemIssue {
-            line: line.line_number.map(|number| number as u64),
-            position: None,
-            field: issue.field.as_str(),
-            kind: issue.kind.as_str(),
-        })
-    });
-    let set = preview.set_issues.iter().map(|kind| ItemIssue {
-        line: None,
-        position: None,
-        field: "rules",
-        kind: kind.as_str(),
-    });
-    SettingsError::invalid_items(RULES_KEY, lines.chain(set).collect())
 }
 #[cfg(test)]
 #[path = "replacements_tests.rs"]

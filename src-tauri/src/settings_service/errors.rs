@@ -1,5 +1,6 @@
 //! Stable English errors with allowlisted details and no candidate-value diagnostics.
 
+pub use super::error_reason::{ErrorItem, ErrorReason, MAX_ERROR_ITEMS};
 use super::protocol::Revision;
 use serde::{Deserialize, Serialize};
 
@@ -74,6 +75,8 @@ pub enum ValidationReason {
     ReplacementsDomain,
     /// Items of a domain list or exchange input failed validation; `details.items` locates them.
     InvalidItems,
+    /// The setting or operation needs a platform capability this build does not have.
+    UnsupportedPlatform,
     /// A dictation session (recording, processing, a held or remembered shortcut) is running;
     /// the shortcut registrations cannot change until it ends.
     ShortcutSessionBusy,
@@ -99,27 +102,11 @@ impl ValidationReason {
             Self::InvalidInput => "Input does not follow the exchange format.",
             Self::ReplacementsDomain => "Use handy settings replacements.",
             Self::InvalidItems => "Items failed validation; see details.items.",
+            Self::UnsupportedPlatform => "This setting is not supported on this platform.",
             Self::ShortcutSessionBusy => "A dictation is in progress; retry when it ends.",
         }
     }
 }
-
-/// One refused item of a domain list or exchange input: where it is and fixed field and kind
-/// names, never its text.
-#[derive(Clone, Debug, PartialEq, Serialize)]
-pub struct ItemIssue {
-    /// 1-based line of the exchange input.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line: Option<u64>,
-    /// 1-based position in the resulting ordered list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub position: Option<u64>,
-    pub field: &'static str,
-    pub kind: &'static str,
-}
-/// Item issues kept in one error. The reply must fit one channel frame (1 MiB); an issue takes
-/// under 100 bytes, so 1000 of them stay far below it, and `omitted_items` counts the rest.
-pub const MAX_ITEM_ISSUES: usize = 1000;
 
 /// Details always serialize as an object; only fixed typed evidence is admitted.
 #[derive(Clone, Debug, Default, PartialEq, Serialize)]
@@ -135,37 +122,20 @@ pub struct ErrorDetails {
     offset: Option<u64>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     issues: Vec<FieldIssue>,
-    /// Boxed: most errors have none, and every `Result` carrying this error stays small.
-    #[serde(flatten, skip_serializing_if = "Option::is_none")]
-    item_issues: Option<Box<ItemIssues>>,
-    /// Machine reason and shortcut details of a refusal, boxed so that the common error stays
-    /// small.
-    #[serde(flatten)]
-    refusal: Option<Box<RefusalDetails>>,
-}
-/// Located item issues of a validation refusal.
-#[derive(Clone, Debug, PartialEq, Serialize)]
-struct ItemIssues {
-    items: Vec<ItemIssue>,
-    /// Item issues beyond `MAX_ITEM_ISSUES`, counted but not listed.
+    /// Closed machine reason of the refusal (absent unless a constructor sets it).
     #[serde(skip_serializing_if = "Option::is_none")]
-    omitted_items: Option<u64>,
-}
-
-/// Stable machine reason of a refusal (`shortcut_session_busy`, `last_shortcut`...), never
-/// input text, with the shortcut details when a shortcut change was refused.
-#[derive(Clone, Debug, Default, PartialEq, Serialize)]
-struct RefusalDetails {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    reason: Option<&'static str>,
-    /// The action concerned, the owner of a conflicting stored shortcut and the kind of
-    /// conflict, or the per-action limit. Only known action ids and stored shortcut texts enter
-    /// them.
+    reason: Option<ErrorReason>,
+    /// Refused positions of a domain input, at most `MAX_ERROR_ITEMS`, sorted by index.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    items: Vec<ErrorItem>,
+    /// Shortcut details of a refused shortcut change (all absent otherwise).
     #[serde(flatten)]
     shortcut: ShortcutDetails,
 }
 
-/// Allowlisted details of a refused shortcut change (see `ErrorDetails`).
+/// Allowlisted details of a refused shortcut change (see `ErrorDetails`): the action concerned,
+/// the owner of a conflicting stored shortcut and the kind of conflict, or the per-action limit.
+/// Only known action ids and stored shortcut texts enter them.
 #[derive(Clone, Debug, Default, PartialEq, Serialize)]
 pub struct ShortcutDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -186,7 +156,8 @@ pub struct ShortcutDetails {
 pub struct SettingsError {
     code: SettingsErrorCode,
     message: &'static str,
-    details: ErrorDetails,
+    /// Boxed so a `Result<_, SettingsError>` stays small on every settings path.
+    details: Box<ErrorDetails>,
     /// Typed reason for the settings UI; the wire form keeps only its English message in `issues`.
     #[serde(skip)]
     reason: Option<ValidationReason>,
@@ -217,7 +188,7 @@ impl SettingsError {
         Self {
             code,
             message,
-            details: ErrorDetails::default(),
+            details: Box::default(),
             reason: None,
         }
     }
@@ -241,24 +212,16 @@ impl SettingsError {
         error.details.offset = offset;
         error
     }
-    /// Items of the collection `key` refused with their locations (at most `MAX_ITEM_ISSUES`).
-    pub fn invalid_items(key: &str, mut items: Vec<ItemIssue>) -> Self {
-        let mut error = Self::validation(key, ValidationReason::InvalidItems);
-        let omitted_items =
-            (items.len() > MAX_ITEM_ISSUES).then(|| (items.len() - MAX_ITEM_ISSUES) as u64);
-        items.truncate(MAX_ITEM_ISSUES);
-        error.details.item_issues = Some(Box::new(ItemIssues {
-            items,
-            omitted_items,
-        }));
+    /// Items of the collection `key` refused at their positions (`details.items`, bounded and
+    /// sorted by `with_items`), with an optional set-level `reason` that has no position.
+    pub fn invalid_items(
+        key: &str,
+        items: impl IntoIterator<Item = ErrorItem>,
+        reason: Option<ErrorReason>,
+    ) -> Self {
+        let mut error = Self::validation(key, ValidationReason::InvalidItems).with_items(items);
+        error.details.reason = reason;
         error
-    }
-    /// Item issues of a validation refusal, in input order.
-    pub fn items(&self) -> &[ItemIssue] {
-        self.details
-            .item_issues
-            .as_ref()
-            .map_or(&[], |issues| issues.items.as_slice())
     }
     /// Report a stale compare-and-set with the observed revision.
     pub fn revision_conflict(revision: Revision) -> Self {
@@ -288,22 +251,55 @@ impl SettingsError {
         error.details.field = super::descriptor::descriptor(key).map(|entry| entry.key);
         error
     }
+    // @spec FR-006: Unsupported-platform refusal — .specs/features/006-destination-application/spec.md#fr-006
+    /// Setting `key` (or the operation, without a key) needs a platform capability this build
+    /// lacks: `validation_failed` (exit 2) with `details.reason = "unsupported_platform"`, decided
+    /// by the pure validator so that offline and routed calls refuse identically.
+    pub fn unsupported_platform(key: Option<&str>) -> Self {
+        let error = match key {
+            Some(key) => Self::validation(key, ValidationReason::UnsupportedPlatform),
+            None => {
+                let mut error = Self::new(SettingsErrorCode::ValidationFailed);
+                error.reason = Some(ValidationReason::UnsupportedPlatform);
+                error
+            }
+        };
+        error.with_reason(ErrorReason::UnsupportedPlatform)
+    }
+    /// Attach the closed machine reason `details.reason`.
+    pub fn with_reason(mut self, reason: ErrorReason) -> Self {
+        self.details.reason = Some(reason);
+        self
+    }
+    /// Attach refused input positions as `details.items`: sorted by index, the first
+    /// `MAX_ERROR_ITEMS` kept (lossy on purpose: the envelope stays bounded).
+    pub fn with_items(mut self, items: impl IntoIterator<Item = ErrorItem>) -> Self {
+        let mut items = items.into_iter().collect::<Vec<_>>();
+        items.sort_by_key(ErrorItem::index);
+        items.truncate(MAX_ERROR_ITEMS);
+        self.details.items = items;
+        self
+    }
+    /// Closed machine reason of `details.reason`, if any.
+    pub fn detail_reason(&self) -> Option<ErrorReason> {
+        self.details.reason
+    }
+    /// Refused input positions of `details.items`.
+    pub fn items(&self) -> &[ErrorItem] {
+        &self.details.items
+    }
     /// A dictation session owns the shortcuts: the change of `key` was refused before anything
     /// was registered or written.
     pub fn session_busy(key: &str) -> Self {
         let mut error = Self::live_state_refused(key);
         error.reason = Some(ValidationReason::ShortcutSessionBusy);
-        error.details.refusal = Some(Box::new(RefusalDetails {
-            reason: Some("shortcut_session_busy"),
-            ..RefusalDetails::default()
-        }));
-        error
+        error.with_reason(ErrorReason::ShortcutSessionBusy)
     }
     /// A live-only change was asked without a running instance: nothing was written.
     pub fn instance_required() -> Self {
         Self::shortcut(
             SettingsErrorCode::Unavailable,
-            Some("instance_required"),
+            Some(ErrorReason::InstanceRequired),
             ShortcutDetails::default(),
         )
     }
@@ -311,22 +307,13 @@ impl SettingsError {
     /// shortcut `details`.
     pub fn shortcut(
         code: SettingsErrorCode,
-        reason: Option<&'static str>,
+        reason: Option<ErrorReason>,
         details: ShortcutDetails,
     ) -> Self {
         let mut error = Self::new(code);
-        error.details.refusal = Some(Box::new(RefusalDetails {
-            reason,
-            shortcut: details,
-        }));
+        error.details.reason = reason;
+        error.details.shortcut = details;
         error
-    }
-    /// Stable machine reason in the details, if any.
-    pub fn detail_reason(&self) -> Option<&'static str> {
-        self.details
-            .refusal
-            .as_ref()
-            .and_then(|refusal| refusal.reason)
     }
     /// Fixed English message of this error.
     pub fn message(&self) -> &'static str {

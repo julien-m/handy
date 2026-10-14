@@ -76,6 +76,7 @@ impl<'a> Call<'a> {
             input: self.input,
             dry_run: self.dry_run,
             expected: self.expected.map(Revision),
+            platform: crate::settings_service::platform_capability::PlatformCapabilities::current(),
         };
         match execute(&call, backend, &[&ReplacementsDomain]) {
             Ok((revision, data, warning)) => Reply::success(revision, data, warning),
@@ -170,8 +171,10 @@ fn a_duplicate_key_is_located_at_both_positions() -> TestResult {
     let (code, _, error) = outcome(&Call::new("add", &["CLOUD  code", "x"]).run(&service));
     assert_eq!((code, &error["code"]), (2, &json!("validation_failed")));
     assert_eq!(error["details"]["field"], "word_replacements");
-    let items = json!([{"position": 1, "field": "recognized", "kind": "duplicate_key"},
-                       {"position": 2, "field": "recognized", "kind": "duplicate_key"}]);
+    let items = json!([
+        {"index": 0, "code": "duplicate_recognized", "message": "Another rule has the same recognized text."},
+        {"index": 1, "code": "duplicate_recognized", "message": "Another rule has the same recognized text."}
+    ]);
     assert_eq!(error["details"]["items"], items);
     Ok(())
 }
@@ -186,7 +189,8 @@ fn refusals_never_echo_rule_text() -> TestResult {
         !text.contains("secret") && !text.contains("private"),
         "{text}"
     );
-    let items = json!([{"position": 1, "field": "recognized", "kind": "forbidden_character"}]);
+    let items = json!([{"index": 0, "code": "recognized_forbidden_character",
+                        "message": "The recognized text contains a line break, a tab or a semicolon."}]);
     assert_eq!(outcome(&reply).2["details"]["items"], items);
     Ok(())
 }
@@ -263,6 +267,7 @@ fn generic_set_names_the_replacements_domain() {
     let context = ValidationContext {
         prompt_ids: &[],
         updates_allowed: true,
+        platform: crate::settings_service::platform_capability::PlatformCapabilities::current(),
     };
     let refused = validate_cli("word_replacements", "[]", &context).err();
     let reason = refused.and_then(|error| error.reason());

@@ -1,0 +1,113 @@
+$ bun test src/stores/settings-store.test.ts
+
+src/stores/settings-store.test.ts:
+Failed to update setting always_on_microphone: 92 |     typeof result === "object" &&
+93 |     result !== null &&
+94 |     (result as { status?: unknown }).status === "error"
+95 |   ) {
+96 |     const error = (result as { error?: unknown }).error;
+97 |     if (isSettingsCommandError(error)) throw new SettingsCommandFailure(error);
+                                                  ^
+SettingsCommandFailure: Settings operation failed.
+ detail: {
+  code: "internal_error",
+  message: "Settings operation failed.",
+  field: "always_on_microphone",
+  reason: null,
+  outcome: "committed",
+  current_revision: 5,
+},
+
+      at throwIfSettingsError (/Users/julienm/projects/handy-wt/006-destination-application/src/stores/settings-errors.ts:97:46)
+      at <anonymous> (/Users/julienm/projects/handy-wt/006-destination-application/src/stores/settingsStore.ts:361:11)
+      at async <anonymous> (/Users/julienm/projects/handy-wt/006-destination-application/src/stores/settings-store.test.ts:109:11)
+
+Failed to update setting always_on_microphone: 92 |     typeof result === "object" &&
+93 |     result !== null &&
+94 |     (result as { status?: unknown }).status === "error"
+95 |   ) {
+96 |     const error = (result as { error?: unknown }).error;
+97 |     if (isSettingsCommandError(error)) throw new SettingsCommandFailure(error);
+                                                  ^
+SettingsCommandFailure: Settings operation is unavailable.
+ detail: {
+  code: "unavailable",
+  message: "Settings operation is unavailable.",
+  field: "always_on_microphone",
+  reason: null,
+  outcome: null,
+  current_revision: null,
+},
+
+      at throwIfSettingsError (/Users/julienm/projects/handy-wt/006-destination-application/src/stores/settings-errors.ts:97:46)
+      at <anonymous> (/Users/julienm/projects/handy-wt/006-destination-application/src/stores/settingsStore.ts:361:11)
+      at async <anonymous> (/Users/julienm/projects/handy-wt/006-destination-application/src/stores/settings-store.test.ts:116:19)
+
+Failed to update setting always_on_microphone: 92 |     typeof result === "object" &&
+93 |     result !== null &&
+94 |     (result as { status?: unknown }).status === "error"
+95 |   ) {
+96 |     const error = (result as { error?: unknown }).error;
+97 |     if (isSettingsCommandError(error)) throw new SettingsCommandFailure(error);
+                                                  ^
+SettingsCommandFailure: Settings operation is unavailable.
+ detail: {
+  code: "unavailable",
+  message: "Settings operation is unavailable.",
+  field: "always_on_microphone",
+  reason: null,
+  outcome: null,
+  current_revision: null,
+},
+
+      at throwIfSettingsError (/Users/julienm/projects/handy-wt/006-destination-application/src/stores/settings-errors.ts:97:46)
+      at <anonymous> (/Users/julienm/projects/handy-wt/006-destination-application/src/stores/settingsStore.ts:361:11)
+      at async <anonymous> (/Users/julienm/projects/handy-wt/006-destination-application/src/stores/settings-store.test.ts:129:11)
+
+Failed to update setting return_to_dictation_app: 92 |     typeof result === "object" &&
+93 |     result !== null &&
+94 |     (result as { status?: unknown }).status === "error"
+95 |   ) {
+96 |     const error = (result as { error?: unknown }).error;
+97 |     if (isSettingsCommandError(error)) throw new SettingsCommandFailure(error);
+                                                  ^
+SettingsCommandFailure: Setting value is invalid.
+ detail: {
+  code: "validation_failed",
+  message: "Setting value is invalid.",
+  field: "return_to_dictation_app",
+  reason: "unsupported_platform",
+  outcome: null,
+  current_revision: null,
+},
+
+      at throwIfSettingsError (/Users/julienm/projects/handy-wt/006-destination-application/src/stores/settings-errors.ts:97:46)
+      at <anonymous> (/Users/julienm/projects/handy-wt/006-destination-application/src/stores/settingsStore.ts:361:11)
+      at async <anonymous> (/Users/julienm/projects/handy-wt/006-destination-application/src/stores/settings-store.test.ts:174:26)
+
+Failed to update setting return_to_dictation_app: 92 |     typeof result === "object" &&
+93 |     result !== null &&
+94 |     (result as { status?: unknown }).status === "error"
+95 |   ) {
+96 |     const error = (result as { error?: unknown }).error;
+97 |     if (isSettingsCommandError(error)) throw new SettingsCommandFailure(error);
+                                                  ^
+SettingsCommandFailure: Settings operation is unavailable.
+ detail: {
+  code: "unavailable",
+  message: "Settings operation is unavailable.",
+  field: "return_to_dictation_app",
+  reason: null,
+  outcome: null,
+  current_revision: null,
+},
+
+      at throwIfSettingsError (/Users/julienm/projects/handy-wt/006-destination-application/src/stores/settings-errors.ts:97:46)
+      at <anonymous> (/Users/julienm/projects/handy-wt/006-destination-application/src/stores/settingsStore.ts:361:11)
+      at async <anonymous> (/Users/julienm/projects/handy-wt/006-destination-application/src/stores/settings-store.test.ts:185:19)
+
+
+ 7 pass
+ 0 fail
+ 17 expect() calls
+Ran 7 tests across 1 file. [43.00ms]

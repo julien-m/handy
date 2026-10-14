@@ -119,6 +119,7 @@
             "post_process_selected_prompt_id",
             "mute_while_recording",
             "append_trailing_space",
+            "return_to_dictation_app",
             "app_language",
             "theme",
             "experimental_enabled",
@@ -191,6 +192,7 @@
                   "post_process_selected_prompt_id",
                   "mute_while_recording",
                   "append_trailing_space",
+                  "return_to_dictation_app",
                   "app_language",
                   "theme",
                   "experimental_enabled",
@@ -228,9 +230,49 @@
         },
         "items": {
           "items": {
-            "$ref": "#/$defs/item_issue"
+            "additionalProperties": false,
+            "properties": {
+              "code": {
+                "enum": [
+                  "unsupported_platform",
+                  "shortcut_session_busy",
+                  "instance_required",
+                  "last_shortcut",
+                  "alternatives_unsupported",
+                  "registration_refused",
+                  "invalid_shortcut",
+                  "recognized_empty",
+                  "recognized_too_long",
+                  "recognized_forbidden_character",
+                  "recognized_leading_comment",
+                  "duplicate_recognized",
+                  "replacement_empty",
+                  "replacement_too_long",
+                  "replacement_forbidden_character",
+                  "empty_rule_id",
+                  "duplicate_rule_id",
+                  "missing_separator",
+                  "too_many_rules",
+                  "invalid_saved_rules",
+                  "unicode_data_unavailable"
+                ]
+              },
+              "index": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "index",
+              "code",
+              "message"
+            ],
+            "type": "object"
           },
-          "maxItems": 1000,
+          "maxItems": 100,
           "type": "array"
         },
         "kind": {
@@ -247,10 +289,6 @@
           "minimum": 0,
           "type": "integer"
         },
-        "omitted_items": {
-          "minimum": 1,
-          "type": "integer"
-        },
         "outcome": {
           "enum": [
             "unknown",
@@ -264,7 +302,29 @@
           "type": "string"
         },
         "reason": {
-          "type": "string"
+          "enum": [
+            "unsupported_platform",
+            "shortcut_session_busy",
+            "instance_required",
+            "last_shortcut",
+            "alternatives_unsupported",
+            "registration_refused",
+            "invalid_shortcut",
+            "recognized_empty",
+            "recognized_too_long",
+            "recognized_forbidden_character",
+            "recognized_leading_comment",
+            "duplicate_recognized",
+            "replacement_empty",
+            "replacement_too_long",
+            "replacement_forbidden_character",
+            "empty_rule_id",
+            "duplicate_rule_id",
+            "missing_separator",
+            "too_many_rules",
+            "invalid_saved_rules",
+            "unicode_data_unavailable"
+          ]
         }
       },
       "type": "object"
@@ -282,30 +342,6 @@
       "required": [
         "ok",
         "error"
-      ],
-      "type": "object"
-    },
-    "item_issue": {
-      "additionalProperties": false,
-      "properties": {
-        "field": {
-          "type": "string"
-        },
-        "kind": {
-          "type": "string"
-        },
-        "line": {
-          "minimum": 1,
-          "type": "integer"
-        },
-        "position": {
-          "minimum": 1,
-          "type": "integer"
-        }
-      },
-      "required": [
-        "field",
-        "kind"
       ],
       "type": "object"
     },
@@ -770,6 +806,9 @@
         "reliable_paste": {
           "type": "boolean"
         },
+        "return_to_dictation_app": {
+          "type": "boolean"
+        },
         "selected_channel": {
           "maximum": 65535,
           "minimum": 0,
@@ -932,6 +971,7 @@
         "post_process_selected_prompt_id",
         "mute_while_recording",
         "append_trailing_space",
+        "return_to_dictation_app",
         "app_language",
         "theme",
         "experimental_enabled",
@@ -1542,6 +1582,17 @@
     {
       "allowed_values": [],
       "key": "append_trailing_space",
+      "nullable": false,
+      "owner_domain": "output",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [],
+      "key": "return_to_dictation_app",
       "nullable": false,
       "owner_domain": "output",
       "range": null,
