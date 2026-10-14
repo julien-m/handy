@@ -704,7 +704,8 @@
       "unavailable": "Pengaturan ini tidak dapat diubah sekarang. Coba lagi nanti.",
       "persistenceFailed": "Pengaturan tidak dapat disimpan.",
       "generic": "Pengaturan tidak dapat diubah.",
-      "readOnly": "Pengaturan hanya-baca untuk sesi ini: file pengaturan tidak dapat ditulis dengan aman, sehingga perubahan tidak akan disimpan."
+      "readOnly": "Pengaturan hanya-baca untuk sesi ini: file pengaturan tidak dapat ditulis dengan aman, sehingga perubahan tidak akan disimpan.",
+      "unsupportedPlatform": "Pengaturan ini tidak tersedia di sistem ini."
     }
   },
   "appLanguage": {

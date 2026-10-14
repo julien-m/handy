@@ -214,6 +214,33 @@
           },
           "type": "array"
         },
+        "items": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "code": {
+                "enum": [
+                  "unsupported_platform"
+                ]
+              },
+              "index": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "index",
+              "code",
+              "message"
+            ],
+            "type": "object"
+          },
+          "maxItems": 100,
+          "type": "array"
+        },
         "offset": {
           "minimum": 0,
           "type": "integer"
@@ -222,6 +249,11 @@
           "enum": [
             "unknown",
             "committed"
+          ]
+        },
+        "reason": {
+          "enum": [
+            "unsupported_platform"
           ]
         }
       },

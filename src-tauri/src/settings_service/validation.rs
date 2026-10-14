@@ -40,10 +40,13 @@ impl std::fmt::Debug for SettingsMutation {
     }
 }
 
-/// Pure context supplies prompt membership and build policy without native effects.
+/// Pure context supplies prompt membership, build policy and platform capabilities without
+/// native effects.
 pub struct ValidationContext<'a> {
     pub prompt_ids: &'a [&'a str],
     pub updates_allowed: bool,
+    /// Capabilities of the build (production passes `PlatformCapabilities::current()`).
+    pub platform: super::platform_capability::PlatformCapabilities,
 }
 
 /// CLI textual values enter the same canonical validator as the UI port.
@@ -161,6 +164,8 @@ fn validate_context(
     candidate: &serde_json::Value,
     context: &ValidationContext<'_>,
 ) -> Result<(), SettingsError> {
+    let requirement = super::platform_capability::required_capability(entry.key);
+    context.platform.check(requirement, Some(entry.key))?;
     if entry.key == "post_process_selected_prompt_id"
         && candidate
             .as_str()

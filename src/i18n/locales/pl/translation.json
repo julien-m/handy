@@ -701,7 +701,8 @@
       "unavailable": "Tego ustawienia nie można teraz zmienić. Spróbuj ponownie później.",
       "persistenceFailed": "Nie udało się zapisać ustawień.",
       "generic": "Nie udało się zmienić ustawienia.",
-      "readOnly": "Ustawienia są w tej sesji tylko do odczytu: pliku ustawień nie można bezpiecznie zapisać, więc zmiany nie zostaną zachowane."
+      "readOnly": "Ustawienia są w tej sesji tylko do odczytu: pliku ustawień nie można bezpiecznie zapisać, więc zmiany nie zostaną zachowane.",
+      "unsupportedPlatform": "To ustawienie nie jest dostępne w tym systemie."
     }
   },
   "appLanguage": {

@@ -1336,7 +1336,11 @@ export type ValidationReason = "canonical_type" | "canonical_value" | "out_of_ra
 /**
  * Domain input does not follow the domain's exchange format.
  */
-"invalid_input"
+"invalid_input" | 
+/**
+ * The setting or operation needs a platform capability this build does not have.
+ */
+"unsupported_platform"
 export type WindowsMicrophonePermissionStatus = { supported: boolean; overall_access: PermissionAccess; device_access: PermissionAccess; app_access: PermissionAccess; desktop_app_access: PermissionAccess }
 
 /** tauri-specta globals **/

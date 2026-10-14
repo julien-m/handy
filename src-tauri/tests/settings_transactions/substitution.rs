@@ -1,4 +1,5 @@
 //! Same-user parent and alias substitutions are detected and refused without writing.
+use handy_app_lib::settings_service::platform_capability::PlatformCapabilities;
 use handy_app_lib::settings_service::{
     errors::SettingsErrorCode,
     locator::StoreLocator,
@@ -21,6 +22,7 @@ fn disable_feedback(
         &ValidationContext {
             prompt_ids: &[],
             updates_allowed: true,
+            platform: PlatformCapabilities::current(),
         },
     )
 }
@@ -145,6 +147,7 @@ fn same_user_ancestor_symlink_resolves_to_its_canonical_directory() -> TestResul
         &ValidationContext {
             prompt_ids: &[],
             updates_allowed: true,
+            platform: PlatformCapabilities::current(),
         },
     )?;
     let committed = repository.commit_with_probe(start_hidden, None, &probe, &())?;

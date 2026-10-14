@@ -704,7 +704,8 @@
       "unavailable": "This setting cannot be changed right now. Try again later.",
       "persistenceFailed": "Settings could not be saved.",
       "generic": "The setting could not be changed.",
-      "readOnly": "Settings are read-only for this session: the settings file cannot be written safely, so changes will not be saved."
+      "readOnly": "Settings are read-only for this session: the settings file cannot be written safely, so changes will not be saved.",
+      "unsupportedPlatform": "This setting is not available on this system."
     }
   },
   "appLanguage": {

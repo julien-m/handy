@@ -1,4 +1,5 @@
 //! Test-only process driver links the exact production repository and coordinates stdin barriers.
+use handy_app_lib::settings_service::platform_capability::PlatformCapabilities;
 use handy_app_lib::settings_service::{
     ownership::LegacyPathProbe,
     store::SettingsRepository,
@@ -234,6 +235,7 @@ fn write_fixture(
         &ValidationContext {
             prompt_ids: &[],
             updates_allowed: true,
+            platform: PlatformCapabilities::current(),
         },
     )?;
     println!("COMMITTING");

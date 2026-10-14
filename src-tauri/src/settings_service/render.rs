@@ -201,6 +201,7 @@ fn error_text(error: &Value) -> String {
             issue["reason"].as_str().unwrap_or_default()
         ));
     }
+    text.push_str(&detail_reason_lines(details));
     if let Some(revision) = details["current_revision"].as_u64() {
         text.push_str(&format!("  current revision: {revision}\n"));
     }
@@ -210,6 +211,26 @@ fn error_text(error: &Value) -> String {
         _ if error["code"] == "usage_error" => "  Run `handy settings --help` for usage.\n",
         _ => "",
     });
+    text
+}
+/// `details.reason` and each refused position of `details.items`, one line each.
+fn detail_reason_lines(details: &Value) -> String {
+    let mut text = String::new();
+    if let Some(reason) = details["reason"].as_str() {
+        text.push_str(&format!("  reason: {reason}\n"));
+    }
+    for item in details["items"]
+        .as_array()
+        .map(Vec::as_slice)
+        .unwrap_or_default()
+    {
+        text.push_str(&format!(
+            "  item {}: {} ({})\n",
+            item["index"],
+            item["message"].as_str().unwrap_or_default(),
+            item["code"].as_str().unwrap_or_default()
+        ));
+    }
     text
 }
 #[cfg(test)]
@@ -241,5 +262,17 @@ mod tests {
                 .starts_with("Warning:"));
         }
         assert_eq!(render(View::OneSetting, &reply, false).stdout, "dark\n");
+    }
+    #[test]
+    fn human_errors_print_the_detail_reason_and_items_on_stderr() {
+        use crate::settings_service::errors::{ErrorItem, ErrorReason};
+        let error = SettingsError::unsupported_platform(Some("paste_method"))
+            .with_items([ErrorItem::new(5, ErrorReason::UnsupportedPlatform)]);
+        let output = render(View::Change, &Reply::failure(error), false);
+        assert!(output.stdout.is_empty());
+        assert!(output.stderr.contains("  reason: unsupported_platform\n"));
+        assert!(output
+            .stderr
+            .contains("  item 5: Not supported on this platform. (unsupported_platform)\n"));
     }
 }

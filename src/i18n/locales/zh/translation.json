@@ -701,7 +701,8 @@
       "unavailable": "目前无法更改此设置，请稍后再试。",
       "persistenceFailed": "无法保存设置。",
       "generic": "无法更改设置。",
-      "readOnly": "本次会话中设置为只读：无法安全写入设置文件，因此更改不会保存。"
+      "readOnly": "本次会话中设置为只读：无法安全写入设置文件，因此更改不会保存。",
+      "unsupportedPlatform": "此设置在此系统上不可用。"
     }
   },
   "appLanguage": {

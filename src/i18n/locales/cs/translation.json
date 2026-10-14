@@ -701,7 +701,8 @@
       "unavailable": "Toto nastavení teď nelze změnit. Zkuste to později.",
       "persistenceFailed": "Nastavení se nepodařilo uložit.",
       "generic": "Nastavení se nepodařilo změnit.",
-      "readOnly": "Nastavení je v této relaci jen pro čtení: soubor nastavení nelze bezpečně zapsat, změny se proto neuloží."
+      "readOnly": "Nastavení je v této relaci jen pro čtení: soubor nastavení nelze bezpečně zapsat, změny se proto neuloží.",
+      "unsupportedPlatform": "Toto nastavení není v tomto systému k dispozici."
     }
   },
   "appLanguage": {

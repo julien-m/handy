@@ -701,7 +701,8 @@
       "unavailable": "Diese Einstellung kann gerade nicht geändert werden. Versuchen Sie es später erneut.",
       "persistenceFailed": "Die Einstellungen konnten nicht gespeichert werden.",
       "generic": "Die Einstellung konnte nicht geändert werden.",
-      "readOnly": "Die Einstellungen sind in dieser Sitzung schreibgeschützt: Die Einstellungsdatei kann nicht sicher geschrieben werden, daher werden Änderungen nicht gespeichert."
+      "readOnly": "Die Einstellungen sind in dieser Sitzung schreibgeschützt: Die Einstellungsdatei kann nicht sicher geschrieben werden, daher werden Änderungen nicht gespeichert.",
+      "unsupportedPlatform": "Diese Einstellung ist auf diesem System nicht verfügbar."
     }
   },
   "appLanguage": {

@@ -3,16 +3,20 @@
 //! does the rest the same way for every domain: action aliases, live-only refusal, dry-run preview
 //! through the commit path's own validation, and one atomic commit through the shared backend.
 //! Only `output` is registered in this build; later features add their domain to `production`.
+pub mod live_operation;
 pub mod output;
 
 use super::{
     edit::{SettingsEdit, SettingsEditFn},
     errors::{SettingsError, SettingsErrorCode},
     operations::SettingsBackend,
+    platform_capability::PlatformCapabilities,
     protocol::Revision,
+    store::SettingsRead,
     validation::SettingsMutation,
 };
 use crate::settings::AppSettings;
+use live_operation::{LiveAnswer, LiveCall, LiveOperation};
 use serde_json::{json, Value};
 
 /// Typed edit closure a domain hands to the shared commit path.
@@ -52,12 +56,17 @@ pub enum DomainPlan {
     },
     /// Answer that only a running instance can give (live state); offline it is `unavailable`.
     LiveOnly(Value),
+    /// Operation run inside the running instance (native state, managers); offline it is
+    /// `unavailable` and it never runs in the CLI process.
+    Live(Box<dyn LiveOperation>),
 }
 /// One request to a domain; flags are already typed.
 pub struct DomainRequest<'a> {
     pub action: &'a str,
     pub arguments: &'a [String],
     pub input: Option<&'a str>,
+    /// Capabilities of the build, so `plan` decides a platform refusal before any live routing.
+    pub platform: PlatformCapabilities,
 }
 /// A registered domain.
 pub trait Domain: Sync {
@@ -96,6 +105,8 @@ pub struct DomainCall<'a> {
     pub input: Option<&'a str>,
     pub dry_run: bool,
     pub expected: Option<Revision>,
+    /// Capabilities of the build (production passes `PlatformCapabilities::current()`).
+    pub platform: PlatformCapabilities,
 }
 /// Successful result: revision, data and the recovery warning of the settings read.
 pub type Answer = (Revision, Value, bool);
@@ -117,6 +128,7 @@ pub fn execute(
         action,
         arguments: call.arguments,
         input: call.input,
+        platform: call.platform,
     };
     let plan = domain.plan(&request, &read.snapshot.settings)?;
     let answer = |data| Ok((read.snapshot.revision, data, read.warning));
@@ -124,16 +136,46 @@ pub fn execute(
         DomainPlan::Read(data) => answer(data),
         DomainPlan::LiveOnly(data) if backend.is_live() => answer(data),
         DomainPlan::LiveOnly(_) => Err(SettingsError::new(SettingsErrorCode::Unavailable)),
-        DomainPlan::Change { change, keys } if call.dry_run => {
-            let current = read.snapshot.revision;
-            let preview = dry_run(&read.snapshot.settings, &change, call.expected, current)?;
-            answer(json!({ "dry_run": true, "changes": public_keys(&preview, &keys)? }))
-        }
-        DomainPlan::Change { change, keys } => {
-            let committed = backend.commit_change(&change, call.expected)?;
-            let data = public_keys(&committed.snapshot.settings, &keys)?;
-            Ok((committed.snapshot.revision, data, committed.warning))
-        }
+        DomainPlan::Live(operation) => run_live(operation.as_ref(), call, backend, &read),
+        DomainPlan::Change { change, keys } => run_change(&change, &keys, call, backend, &read),
+    }
+}
+/// Preview (dry run) or commit one domain change through the shared path.
+fn run_change(
+    change: &DomainChange,
+    keys: &[&'static str],
+    call: &DomainCall<'_>,
+    backend: &dyn SettingsBackend,
+    read: &SettingsRead,
+) -> Result<Answer, SettingsError> {
+    if call.dry_run {
+        let current = read.snapshot.revision;
+        let preview = dry_run(&read.snapshot.settings, change, call.expected, current)?;
+        let data = json!({ "dry_run": true, "changes": public_keys(&preview, keys)? });
+        return Ok((current, data, read.warning));
+    }
+    let committed = backend.commit_change(change, call.expected)?;
+    let data = public_keys(&committed.snapshot.settings, keys)?;
+    Ok((committed.snapshot.revision, data, committed.warning))
+}
+/// Run a live operation inside the instance; offline, the same refusal as a live-only answer.
+// @spec FR-006: Live operations only inside the instance — .specs/features/006-destination-application/spec.md#fr-006
+fn run_live(
+    operation: &dyn LiveOperation,
+    call: &DomainCall<'_>,
+    backend: &dyn SettingsBackend,
+    read: &SettingsRead,
+) -> Result<Answer, SettingsError> {
+    let context = backend
+        .live_context()
+        .ok_or_else(|| SettingsError::new(SettingsErrorCode::Unavailable))?;
+    let live_call = LiveCall {
+        dry_run: call.dry_run,
+        expected: call.expected,
+    };
+    match operation.run(context, &live_call)? {
+        LiveAnswer::Read(data) => Ok((read.snapshot.revision, data, read.warning)),
+        LiveAnswer::Committed { read, data } => Ok((read.snapshot.revision, data, read.warning)),
     }
 }
 /// The registered domain and canonical action of `call`, or `usage_error`.
@@ -179,3 +221,6 @@ pub fn public_keys(settings: &AppSettings, keys: &[&'static str]) -> Result<Valu
 #[cfg(test)]
 #[path = "fixture_tests.rs"]
 mod fixture_tests;
+#[cfg(test)]
+#[path = "live_fixture_tests.rs"]
+mod live_fixture_tests;

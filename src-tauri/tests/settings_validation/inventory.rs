@@ -1,5 +1,6 @@
 //! Actual stored-field coverage compared with an independent access classification.
 
+use handy_app_lib::settings_service::platform_capability::PlatformCapabilities;
 use handy_app_lib::settings_service::{descriptor::descriptors, protocol::SettingsSnapshot};
 use std::collections::BTreeSet;
 
@@ -139,6 +140,7 @@ fn independent_enum_inventory_accepts_every_current_canonical_variant(
     let context = ValidationContext {
         prompt_ids: &[],
         updates_allowed: true,
+        platform: PlatformCapabilities::current(),
     };
     assert_eq!(ENUM_INVENTORY.len(), 17);
     for (key, values) in ENUM_INVENTORY {

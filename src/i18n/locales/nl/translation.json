@@ -704,7 +704,8 @@
       "unavailable": "Deze instelling kan nu niet worden gewijzigd. Probeer het later opnieuw.",
       "persistenceFailed": "De instellingen konden niet worden opgeslagen.",
       "generic": "De instelling kon niet worden gewijzigd.",
-      "readOnly": "De instellingen zijn in deze sessie alleen-lezen: het instellingenbestand kan niet veilig worden geschreven, dus wijzigingen worden niet opgeslagen."
+      "readOnly": "De instellingen zijn in deze sessie alleen-lezen: het instellingenbestand kan niet veilig worden geschreven, dus wijzigingen worden niet opgeslagen.",
+      "unsupportedPlatform": "Deze instelling is niet beschikbaar op dit systeem."
     }
   },
   "appLanguage": {

@@ -704,7 +704,8 @@
       "unavailable": "Aquesta configuració no es pot canviar ara. Torneu-ho a provar més tard.",
       "persistenceFailed": "No s'ha pogut desar la configuració.",
       "generic": "No s'ha pogut canviar la configuració.",
-      "readOnly": "La configuració és només de lectura en aquesta sessió: el fitxer de configuració no es pot escriure de manera segura, de manera que els canvis no es desaran."
+      "readOnly": "La configuració és només de lectura en aquesta sessió: el fitxer de configuració no es pot escriure de manera segura, de manera que els canvis no es desaran.",
+      "unsupportedPlatform": "Aquesta configuració no està disponible en aquest sistema."
     }
   },
   "appLanguage": {

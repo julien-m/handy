@@ -701,7 +701,8 @@
       "unavailable": "Không thể thay đổi cài đặt này ngay bây giờ. Hãy thử lại sau.",
       "persistenceFailed": "Không thể lưu cài đặt.",
       "generic": "Không thể thay đổi cài đặt.",
-      "readOnly": "Cài đặt chỉ đọc trong phiên này: không thể ghi tệp cài đặt một cách an toàn, vì vậy các thay đổi sẽ không được lưu."
+      "readOnly": "Cài đặt chỉ đọc trong phiên này: không thể ghi tệp cài đặt một cách an toàn, vì vậy các thay đổi sẽ không được lưu.",
+      "unsupportedPlatform": "Cài đặt này không khả dụng trên hệ thống này."
     }
   },
   "appLanguage": {

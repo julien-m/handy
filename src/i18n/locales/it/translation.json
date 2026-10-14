@@ -701,7 +701,8 @@
       "unavailable": "Questa impostazione non può essere modificata ora. Riprova più tardi.",
       "persistenceFailed": "Impossibile salvare le impostazioni.",
       "generic": "Impossibile modificare l'impostazione.",
-      "readOnly": "Le impostazioni sono di sola lettura in questa sessione: il file delle impostazioni non può essere scritto in modo sicuro, quindi le modifiche non verranno salvate."
+      "readOnly": "Le impostazioni sono di sola lettura in questa sessione: il file delle impostazioni non può essere scritto in modo sicuro, quindi le modifiche non verranno salvate.",
+      "unsupportedPlatform": "Questa impostazione non è disponibile su questo sistema."
     }
   },
   "appLanguage": {

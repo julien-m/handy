@@ -701,7 +701,8 @@
       "unavailable": "Esta configuración no se puede cambiar ahora. Inténtalo más tarde.",
       "persistenceFailed": "No se pudo guardar la configuración.",
       "generic": "No se pudo cambiar la configuración.",
-      "readOnly": "La configuración es de solo lectura en esta sesión: el archivo de configuración no se puede escribir de forma segura, así que los cambios no se guardarán."
+      "readOnly": "La configuración es de solo lectura en esta sesión: el archivo de configuración no se puede escribir de forma segura, así que los cambios no se guardarán.",
+      "unsupportedPlatform": "Este ajuste no está disponible en este sistema."
     }
   },
   "appLanguage": {

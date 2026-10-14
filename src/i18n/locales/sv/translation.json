@@ -701,7 +701,8 @@
       "unavailable": "Den här inställningen kan inte ändras just nu. Försök igen senare.",
       "persistenceFailed": "Inställningarna kunde inte sparas.",
       "generic": "Inställningen kunde inte ändras.",
-      "readOnly": "Inställningarna är skrivskyddade under den här sessionen: inställningsfilen kan inte skrivas säkert, så ändringar sparas inte."
+      "readOnly": "Inställningarna är skrivskyddade under den här sessionen: inställningsfilen kan inte skrivas säkert, så ändringar sparas inte.",
+      "unsupportedPlatform": "Den här inställningen är inte tillgänglig på det här systemet."
     }
   },
   "appLanguage": {

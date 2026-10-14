@@ -70,6 +70,8 @@ pub enum ValidationReason {
     InvalidEncoding,
     /// Domain input does not follow the domain's exchange format.
     InvalidInput,
+    /// The setting or operation needs a platform capability this build does not have.
+    UnsupportedPlatform,
 }
 impl ValidationReason {
     fn message(self) -> &'static str {
@@ -92,6 +94,7 @@ impl ValidationReason {
             Self::GpuDeviceRequired => "The GPU accelerator requires a selected GPU device.",
             Self::InvalidEncoding => "Input is not valid UTF-8 text.",
             Self::InvalidInput => "Input does not follow the exchange format.",
+            Self::UnsupportedPlatform => "This setting is not supported on this platform.",
         }
     }
 }
@@ -110,6 +113,63 @@ pub struct ErrorDetails {
     offset: Option<u64>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     issues: Vec<FieldIssue>,
+    /// Closed machine reason of the refusal (absent unless a constructor sets it).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    reason: Option<ErrorReason>,
+    /// Refused positions of a domain input, at most `MAX_ERROR_ITEMS`, sorted by index.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    items: Vec<ErrorItem>,
+}
+
+/// Most refused positions one error reports; the first ones by index are kept. 100 bounds the
+/// envelope well under one IPC frame while naming every line of a typical import.
+pub const MAX_ERROR_ITEMS: usize = 100;
+
+/// Closed snake_case reasons of `details.reason` and `details.items[].code`; later features add
+/// their own variants. Each has a fixed English message and never carries a candidate value.
+// @spec FR-006: Shared error details for the settings CLI — .specs/features/006-destination-application/spec.md#fr-006
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ErrorReason {
+    /// The operation or setting needs a platform capability this build does not have.
+    UnsupportedPlatform,
+}
+impl ErrorReason {
+    /// Every reason of this build, in wire-schema order.
+    pub const ALL: [Self; 1] = [Self::UnsupportedPlatform];
+    /// Fixed English message of this reason.
+    pub fn message(self) -> &'static str {
+        match self {
+            Self::UnsupportedPlatform => "Not supported on this platform.",
+        }
+    }
+}
+
+/// One refused position of a domain input: zero-based `index`, closed `code` and its fixed
+/// message; never the candidate value.
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+pub struct ErrorItem {
+    index: u64,
+    code: ErrorReason,
+    message: &'static str,
+}
+impl ErrorItem {
+    /// Refusal of the input at zero-based position `index` for `code`.
+    pub fn new(index: u64, code: ErrorReason) -> Self {
+        Self {
+            index,
+            code,
+            message: code.message(),
+        }
+    }
+    /// Zero-based position in the domain input.
+    pub fn index(&self) -> u64 {
+        self.index
+    }
+    /// Closed reason of this position.
+    pub fn code(&self) -> ErrorReason {
+        self.code
+    }
 }
 
 /// No input value, internal serde error or arbitrary key enters the public error.
@@ -118,7 +178,8 @@ pub struct ErrorDetails {
 pub struct SettingsError {
     code: SettingsErrorCode,
     message: &'static str,
-    details: ErrorDetails,
+    /// Boxed so a `Result<_, SettingsError>` stays small on every settings path.
+    details: Box<ErrorDetails>,
     /// Typed reason for the settings UI; the wire form keeps only its English message in `issues`.
     #[serde(skip)]
     reason: Option<ValidationReason>,
@@ -149,7 +210,7 @@ impl SettingsError {
         Self {
             code,
             message,
-            details: ErrorDetails::default(),
+            details: Box::default(),
             reason: None,
         }
     }
@@ -200,6 +261,43 @@ impl SettingsError {
         error.details.current_revision = Some(revision);
         error.details.field = super::descriptor::descriptor(key).map(|entry| entry.key);
         error
+    }
+    // @spec FR-006: Unsupported-platform refusal — .specs/features/006-destination-application/spec.md#fr-006
+    /// Setting `key` (or the operation, without a key) needs a platform capability this build
+    /// lacks: `validation_failed` (exit 2) with `details.reason = "unsupported_platform"`, decided
+    /// by the pure validator so that offline and routed calls refuse identically.
+    pub fn unsupported_platform(key: Option<&str>) -> Self {
+        let error = match key {
+            Some(key) => Self::validation(key, ValidationReason::UnsupportedPlatform),
+            None => {
+                let mut error = Self::new(SettingsErrorCode::ValidationFailed);
+                error.reason = Some(ValidationReason::UnsupportedPlatform);
+                error
+            }
+        };
+        error.with_reason(ErrorReason::UnsupportedPlatform)
+    }
+    /// Attach the closed machine reason `details.reason`.
+    pub fn with_reason(mut self, reason: ErrorReason) -> Self {
+        self.details.reason = Some(reason);
+        self
+    }
+    /// Attach refused input positions as `details.items`: sorted by index, the first
+    /// `MAX_ERROR_ITEMS` kept (lossy on purpose: the envelope stays bounded).
+    pub fn with_items(mut self, items: impl IntoIterator<Item = ErrorItem>) -> Self {
+        let mut items = items.into_iter().collect::<Vec<_>>();
+        items.sort_by_key(ErrorItem::index);
+        items.truncate(MAX_ERROR_ITEMS);
+        self.details.items = items;
+        self
+    }
+    /// Closed machine reason of `details.reason`, if any.
+    pub fn detail_reason(&self) -> Option<ErrorReason> {
+        self.details.reason
+    }
+    /// Refused input positions of `details.items`.
+    pub fn items(&self) -> &[ErrorItem] {
+        &self.details.items
     }
     /// Fixed English message of this error.
     pub fn message(&self) -> &'static str {

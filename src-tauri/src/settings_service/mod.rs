@@ -22,6 +22,7 @@ mod native_changes;
 mod normalization;
 pub mod operations;
 pub mod ownership;
+pub mod platform_capability;
 #[cfg(unix)]
 mod platform_unix;
 #[cfg(windows)]

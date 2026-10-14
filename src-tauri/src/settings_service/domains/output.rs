@@ -46,7 +46,7 @@ impl Domain for OutputDomain {
                 settings,
                 &[output_key(key)?],
             )?)),
-            ("set", [key, value]) => set(settings, output_key(key)?, value),
+            ("set", [key, value]) => set(request, settings, output_key(key)?, value),
             _ => Err(SettingsError::new(SettingsErrorCode::UsageError)),
         }
     }
@@ -59,8 +59,10 @@ fn output_key(key: &str) -> Result<&'static str, SettingsError> {
         .find(|known| *known == key)
         .ok_or_else(|| SettingsError::new(SettingsErrorCode::NotFound))
 }
-/// Same validator as `handy settings set` (prompt membership and build policy from `settings`).
+/// Same validator as `handy settings set` (prompt membership and build policy from `settings`,
+/// platform capabilities from the request).
 fn set(
+    request: &DomainRequest<'_>,
     settings: &AppSettings,
     key: &'static str,
     value: &str,
@@ -73,6 +75,7 @@ fn set(
     let context = ValidationContext {
         prompt_ids: &prompt_ids,
         updates_allowed: !crate::settings::update_checks_forced_disabled(),
+        platform: request.platform,
     };
     let mutation = validate_cli(key, value, &context)?;
     Ok(DomainPlan::Change {

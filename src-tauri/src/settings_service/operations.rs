@@ -44,6 +44,10 @@ pub trait SettingsBackend {
     fn is_live(&self) -> bool {
         false
     }
+    /// The running instance, for live domain operations; `None` offline (the default).
+    fn live_context(&self) -> Option<&dyn super::domains::live_operation::LiveContext> {
+        None
+    }
 }
 
 /// Result of one operation: its envelope, and whether the settings read were recovered.
@@ -139,6 +143,7 @@ fn domain(operation: &SettingsOperation, backend: &dyn SettingsBackend) -> Outco
         input: input.as_deref(),
         dry_run: *dry_run,
         expected: *expected_revision,
+        platform: super::platform_capability::PlatformCapabilities::current(),
     };
     super::domains::execute(&call, backend, super::domains::production())
 }
@@ -191,6 +196,7 @@ fn set(
     let context = ValidationContext {
         prompt_ids: &prompt_ids,
         updates_allowed: !crate::settings::update_checks_forced_disabled(),
+        platform: super::platform_capability::PlatformCapabilities::current(),
     };
     let mutation = validate_cli(key, value, &context)?;
     let key = mutation.key();

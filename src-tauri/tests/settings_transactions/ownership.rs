@@ -1,4 +1,5 @@
 //! Native isolated owner resources and startup leases prevent offline commits.
+use handy_app_lib::settings_service::platform_capability::PlatformCapabilities;
 use handy_app_lib::settings_service::{
     errors::SettingsErrorCode,
     ownership::LegacyPathProbe,
@@ -40,14 +41,12 @@ fn native_owner_appearing_after_temp_sync_refuses_before_replace(
         path: owner,
         listener: std::sync::Mutex::new(None),
     };
-    let mutation = validate_cli(
-        "audio_feedback",
-        "false",
-        &ValidationContext {
-            prompt_ids: &[],
-            updates_allowed: true,
-        },
-    )?;
+    let context = ValidationContext {
+        prompt_ids: &[],
+        updates_allowed: true,
+        platform: PlatformCapabilities::current(),
+    };
+    let mutation = validate_cli("audio_feedback", "false", &context)?;
     let error = SettingsRepository::new(path.clone())
         .commit_with_probe(mutation, None, &probe, &observer)
         .err()
@@ -90,6 +89,7 @@ fn startup_normalizes_once_preserves_raw_secrets_and_keeps_offline_fenced(
         &ValidationContext {
             prompt_ids: &[],
             updates_allowed: true,
+            platform: PlatformCapabilities::current(),
         },
     )?;
     let error = repository
@@ -121,6 +121,7 @@ fn passive_occupied_socket_refuses_without_connecting_or_deleting(
         &ValidationContext {
             prompt_ids: &[],
             updates_allowed: true,
+            platform: PlatformCapabilities::current(),
         },
     )?;
     let error = SettingsRepository::new(path.clone())
@@ -172,6 +173,7 @@ fn lease_holding_instance_commits_while_offline_writers_stay_refused(
     let context = ValidationContext {
         prompt_ids: &[],
         updates_allowed: true,
+        platform: PlatformCapabilities::current(),
     };
     let owned = repository.commit_owned(
         &lease,
@@ -235,6 +237,7 @@ fn default_noop(
         &ValidationContext {
             prompt_ids: &[],
             updates_allowed: true,
+            platform: PlatformCapabilities::current(),
         },
     )?)
 }

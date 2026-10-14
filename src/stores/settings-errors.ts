@@ -16,6 +16,7 @@ export const SETTINGS_ERROR_KEYS = {
   persistenceFailed: "errors.settings.persistenceFailed",
   generic: "errors.settings.generic",
   readOnly: "errors.settings.readOnly",
+  unsupportedPlatform: "errors.settings.unsupportedPlatform",
 } as const;
 
 export type SettingsErrorKey =
@@ -36,6 +37,9 @@ export const settingsErrorKey = (
     return SETTINGS_ERROR_KEYS.gpuDeviceRequired;
   }
   if (error.reason === "out_of_range") return SETTINGS_ERROR_KEYS.outOfRange;
+  if (error.reason === "unsupported_platform") {
+    return SETTINGS_ERROR_KEYS.unsupportedPlatform;
+  }
   switch (error.code) {
     case "validation_failed":
       return SETTINGS_ERROR_KEYS.validationFailed;

@@ -704,7 +704,8 @@
       "unavailable": "Denne indstilling kan ikke ændres lige nu. Prøv igen senere.",
       "persistenceFailed": "Indstillingerne kunne ikke gemmes.",
       "generic": "Indstillingen kunne ikke ændres.",
-      "readOnly": "Indstillingerne er skrivebeskyttede i denne session: indstillingsfilen kan ikke skrives sikkert, så ændringer gemmes ikke."
+      "readOnly": "Indstillingerne er skrivebeskyttede i denne session: indstillingsfilen kan ikke skrives sikkert, så ændringer gemmes ikke.",
+      "unsupportedPlatform": "Denne indstilling er ikke tilgængelig på dette system."
     }
   },
   "appLanguage": {

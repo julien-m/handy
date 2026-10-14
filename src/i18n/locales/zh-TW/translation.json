@@ -701,7 +701,8 @@
       "unavailable": "目前無法變更此設定，請稍後再試。",
       "persistenceFailed": "無法儲存設定。",
       "generic": "無法變更設定。",
-      "readOnly": "本次工作階段的設定為唯讀：無法安全寫入設定檔，因此變更不會儲存。"
+      "readOnly": "本次工作階段的設定為唯讀：無法安全寫入設定檔，因此變更不會儲存。",
+      "unsupportedPlatform": "此設定在此系統上無法使用。"
     }
   },
   "appLanguage": {

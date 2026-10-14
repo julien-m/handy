@@ -1,5 +1,6 @@
 //! Independent malformed-value and boundary assertions; no actual writer parity claim.
 
+use handy_app_lib::settings_service::platform_capability::PlatformCapabilities;
 use handy_app_lib::settings_service::{
     errors::{SettingsError, SettingsErrorCode},
     validation::{validate_cli, validate_ui, SettingsMutation, ValidationContext},
@@ -12,6 +13,7 @@ fn cli_rejects_noncanonical_boolean_and_out_of_range_numbers(
     let context = ValidationContext {
         prompt_ids: &["known"],
         updates_allowed: true,
+        platform: PlatformCapabilities::current(),
     };
     for (key, value) in [
         ("audio_feedback", "TRUE"),
@@ -34,6 +36,7 @@ fn unknown_and_protected_keys_are_refused_without_echoing_input(
     let context = ValidationContext {
         prompt_ids: &[],
         updates_allowed: true,
+        platform: PlatformCapabilities::current(),
     };
     let secret = "CANARY_NOT_A_SETTING_SECRET";
     let error = validate_cli(secret, secret, &context)
@@ -141,6 +144,7 @@ fn all_51_scalar_ports_accept_the_same_typed_values() -> Result<(), Box<dyn std:
     let context = ValidationContext {
         prompt_ids: &["known"],
         updates_allowed: true,
+        platform: PlatformCapabilities::current(),
     };
     let cases = canonical_cases();
     assert_eq!(cases.len(), 51);
@@ -168,6 +172,7 @@ fn every_nullable_scalar_preserves_strings_and_accepts_null_clear(
     let context = ValidationContext {
         prompt_ids: &["known"],
         updates_allowed: true,
+        platform: PlatformCapabilities::current(),
     };
     for key in [
         "selected_microphone",
@@ -217,6 +222,7 @@ fn numeric_boundaries_and_overflow_have_identical_safe_error_reasons(
     let context = ValidationContext {
         prompt_ids: &[],
         updates_allowed: true,
+        platform: PlatformCapabilities::current(),
     };
     for (key, min, max) in [
         ("hold_threshold_ms", 100, 1000),
@@ -265,6 +271,7 @@ fn legacy_aliases_are_disk_only_and_build_policy_is_shared(
     let context = ValidationContext {
         prompt_ids: &[],
         updates_allowed: true,
+        platform: PlatformCapabilities::current(),
     };
     for (key, raw, value) in [
         ("log_level", "WARN", json!("WARN")),
@@ -277,14 +284,11 @@ fn legacy_aliases_are_disk_only_and_build_policy_is_shared(
     let blocked = ValidationContext {
         prompt_ids: &[],
         updates_allowed: false,
+        platform: PlatformCapabilities::current(),
     };
-    for value in [true, false] {
+    for (value, text) in [(true, "true"), (false, "false")] {
         assert_validation_errors(
-            validate_cli(
-                "update_checks_enabled",
-                if value { "true" } else { "false" },
-                &blocked,
-            ),
+            validate_cli("update_checks_enabled", text, &blocked),
             validate_ui("update_checks_enabled", json!(value), &blocked),
         )?;
     }

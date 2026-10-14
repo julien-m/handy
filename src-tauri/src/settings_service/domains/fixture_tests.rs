@@ -139,6 +139,7 @@ fn call(
         input,
         dry_run,
         expected: None,
+        platform: crate::settings_service::platform_capability::PlatformCapabilities::current(),
     };
     match execute(&call, backend, &[&WordsDomain]) {
         Ok((revision, data, warning)) => Reply::success(revision, data, warning),

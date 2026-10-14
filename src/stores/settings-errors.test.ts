@@ -51,6 +51,12 @@ assert.equal(
   SETTINGS_ERROR_KEYS.committedNotApplied,
 );
 assert.equal(
+  settingsErrorKey(
+    refusal({ field: "paste_method", reason: "unsupported_platform" }),
+  ),
+  SETTINGS_ERROR_KEYS.unsupportedPlatform,
+);
+assert.equal(
   settingsErrorKey(refusal({ code: "unavailable", field: "vad_backend" })),
   SETTINGS_ERROR_KEYS.unavailable,
 );

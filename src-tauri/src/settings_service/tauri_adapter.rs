@@ -3,7 +3,7 @@
 //! notifies the UI, and publishes the private endpoint that answers routed CLI operations.
 use super::{
     command_error::SettingsCommandError,
-    domains::DomainChange,
+    domains::{live_operation::LiveContext, DomainChange},
     edit::SettingsEditFn,
     errors::{SettingsError, SettingsErrorCode},
     ipc::EndpointHandle,
@@ -278,6 +278,26 @@ impl SettingsBackend for RoutedBackend {
     }
     fn is_live(&self) -> bool {
         true
+    }
+    fn live_context(&self) -> Option<&dyn LiveContext> {
+        Some(self)
+    }
+}
+/// Live domain operations of routed CLI calls run here, inside the instance: the published
+/// snapshot, and the same ordered write, live effects and `settings-changed` event as the UI.
+impl LiveContext for RoutedBackend {
+    fn app(&self) -> Option<&AppHandle> {
+        Some(&self.app)
+    }
+    fn read(&self) -> Result<SettingsRead, SettingsError> {
+        live(&self.app)?.read()
+    }
+    fn commit_change(
+        &self,
+        change: &DomainChange,
+        expected: Option<Revision>,
+    ) -> Result<SettingsRead, SettingsError> {
+        SettingsBackend::commit_change(self, change, expected)
     }
 }
 fn routed_read(live: &LiveSettings, commit: LiveCommit) -> SettingsRead {
