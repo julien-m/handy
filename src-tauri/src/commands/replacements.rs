@@ -71,18 +71,22 @@ pub fn check_word_replacements(rules: Vec<RuleDraft>) -> Vec<RuleIssue> {
 // @spec FR-004: Merge/replace preview without writes — .specs/features/002-word-replacements/spec.md#fr-004
 #[tauri::command]
 #[specta::specta]
-/// Preview `input` (bulk text or imported file) in `mode` against the published rules.
+/// Preview `input` (bulk text or imported file) in `mode` against the published rules, on a
+/// blocking worker: a 1,000,000-byte input never stalls the main thread.
 ///
 /// # Errors
 /// `limit_exceeded` above 1,000,000 bytes, like Apply: nothing is previewed.
-pub fn preview_word_replacements(
+pub async fn preview_word_replacements(
     app: AppHandle,
     input: String,
     mode: ImportMode,
 ) -> Result<ReplacementPreviewView, SettingsCommandError> {
-    let (revision, settings) = tauri_adapter::view(&app);
-    preview_view(revision, &settings.word_replacements, &input, mode)
-        .map_err(SettingsCommandError::from)
+    tauri_adapter::blocking(move || {
+        let (revision, settings) = tauri_adapter::view(&app);
+        preview_view(revision, &settings.word_replacements, &input, mode)
+            .map_err(SettingsCommandError::from)
+    })
+    .await
 }
 
 /// The preview of `input` at `revision`, refused above the import size bound.

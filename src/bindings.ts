@@ -1082,7 +1082,8 @@ async checkWordReplacements(rules: RuleDraft[]) : Promise<RuleIssue[]> {
     return await TAURI_INVOKE("check_word_replacements", { rules });
 },
 /**
- * Preview `input` (bulk text or imported file) in `mode` against the published rules.
+ * Preview `input` (bulk text or imported file) in `mode` against the published rules, on a
+ * blocking worker: a 1,000,000-byte input never stalls the main thread.
  * 
  * # Errors
  * `limit_exceeded` above 1,000,000 bytes, like Apply: nothing is previewed.
