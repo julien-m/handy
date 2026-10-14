@@ -54,8 +54,20 @@ const { ShortcutList } = await import("./shortcut-list");
 const { LegacyConflictAlert, SystemRefusalAlert } = await import(
   "./shortcut-list-alerts"
 );
-const { DraftRow } = await import("./shortcut-list-rows");
-const { shortcutTestIds } = await import("./shortcut-list-feedback");
+const { DraftRow, ListMessages, ShortcutRow } = await import(
+  "./shortcut-list-rows"
+);
+const { actOnRecordRequest } = await import("./shortcut-chip");
+const {
+  NO_RECORD_REQUEST,
+  dropUnlistedRequest,
+  markRequestHandled,
+  requestFor,
+  requestRecording,
+} = await import("./record-request-model");
+const { describeStartFailure, shortcutTestIds } = await import(
+  "./shortcut-list-feedback"
+);
 
 const count = (markup: string, text: string): number =>
   markup.split(text).length - 1;
@@ -215,14 +227,22 @@ describe("alerts (shortcut-settings-conflict)", () => {
 });
 
 describe("draft recorder", () => {
-  const draft = (phase: "recording" | "invalid", shortcut: string | null) => ({
-    state: { phase, shortcut, refusal: null },
+  const draft = (
+    phase: "recording" | "blocked" | "invalid",
+    shortcut: string | null,
+  ) => ({
+    state: { phase, shortcut, refusal: null, startFailure: null },
     recordRequest: 0,
     open: () => undefined,
     capture: noop,
     stop: () => undefined,
     commit: noop,
     discard: () => undefined,
+    recorder: {
+      requestHandled: () => undefined,
+      started: () => undefined,
+      startFailed: () => undefined,
+    },
   });
   const ids = shortcutTestIds("transcribe");
 
@@ -261,5 +281,108 @@ describe("draft recorder", () => {
         'data-testid="shortcut-settings-dictation-recording-discard"',
       ),
     ).toBe(true);
+  });
+
+  test("a recorder the system refused to start stays empty and offers Discard", () => {
+    const markup = renderToStaticMarkup(
+      <DraftRow
+        actionId="transcribe"
+        ids={ids}
+        draft={draft("blocked", null)}
+        busy={false}
+      />,
+    );
+    expect(markup.includes('data-phase="blocked"')).toBe(true);
+    expect(markup.includes('data-validity="empty"')).toBe(true);
+    expect(markup.includes('data-state="idle"')).toBe(true);
+    expect(
+      markup.includes(
+        'data-testid="shortcut-settings-dictation-recording-discard"',
+      ),
+    ).toBe(true);
+  });
+});
+
+describe("list messages", () => {
+  test("the reason a recorder could not start is shown inline", () => {
+    const markup = renderToStaticMarkup(
+      <ListMessages
+        ids={shortcutTestIds("transcribe")}
+        conflictsFailed={false}
+        error={describeStartFailure({ kind: "secure_input" })}
+      />,
+    );
+    expect(markup.includes('role="alert"')).toBe(true);
+    expect(markup.includes("secureInput.recorderBlocked")).toBe(true);
+  });
+});
+
+describe("one-shot record requests (Change, Add)", () => {
+  const ids = shortcutTestIds("transcribe");
+  /** A mounted row chip: its own handled request, like `useListControl`'s ref. */
+  const mountChip = () => ({ handled: { current: 0 }, starts: 0 });
+  type Chip = ReturnType<typeof mountChip>;
+  /** Runs the chip's request effect for the request the list gives it. */
+  const runEffect = (
+    chip: Chip,
+    request: number,
+    onHandled: (n: number) => void,
+  ) =>
+    actOnRecordRequest(request, chip.handled, () => (chip.starts += 1), {
+      onRequestHandled: onHandled,
+    });
+
+  test("a row given a request renders idle until its chip handles it", () => {
+    const markup = renderToStaticMarkup(
+      <ShortcutRow
+        actionId="transcribe"
+        shortcut="alt+space"
+        ids={ids}
+        hasRemove
+        canRemove
+        busy={false}
+        recordRequest={1}
+        onRequestHandled={() => undefined}
+        onEdit={noop}
+      />,
+    );
+    expect(
+      markup.includes('data-testid="shortcut-settings-dictation-shortcut"'),
+    ).toBe(true);
+    expect(markup.includes('data-state="idle"')).toBe(true);
+  });
+
+  test("Change starts the row once; the row remounted with the same shortcut does not record", () => {
+    let list = requestRecording(NO_RECORD_REQUEST, "alt+space");
+    const handle = (n: number) => (list = markRequestHandled(list, n));
+    const first = mountChip();
+    expect(runEffect(first, requestFor(list, "alt+space"), handle)).toBe(true);
+    // StrictMode's second run and later re-renders never replay it.
+    expect(runEffect(first, requestFor(list, "alt+space"), handle)).toBe(false);
+    expect(first.starts).toBe(1);
+    // The row leaves the list (CLI, another window) and comes back.
+    list = dropUnlistedRequest(list, []);
+    const remounted = mountChip();
+    runEffect(remounted, requestFor(list, "alt+space"), handle);
+    expect(remounted.starts).toBe(0);
+  });
+
+  test("a request pending while its row is gone is dropped before the row returns", () => {
+    let list = requestRecording(NO_RECORD_REQUEST, "alt+space");
+    list = dropUnlistedRequest(list, ["f5"]);
+    const remounted = mountChip();
+    runEffect(remounted, requestFor(list, "alt+space"), () => undefined);
+    expect(remounted.starts).toBe(0);
+  });
+
+  test("the draft recorder remounted (keyboard implementation switch) does not record again", () => {
+    let draft = requestRecording(NO_RECORD_REQUEST, "draft");
+    const handle = (n: number) => (draft = markRequestHandled(draft, n));
+    const tauriChip = mountChip();
+    runEffect(tauriChip, requestFor(draft, "draft"), handle);
+    expect(tauriChip.starts).toBe(1);
+    const handyKeysChip = mountChip();
+    runEffect(handyKeysChip, requestFor(draft, "draft"), handle);
+    expect(handyKeysChip.starts).toBe(0);
   });
 });

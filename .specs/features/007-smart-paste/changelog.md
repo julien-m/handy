@@ -200,3 +200,23 @@ AppKit caching and delayed AX mutation counterexamples remain explicit: callback
 - **Code modified:** src/overlay/* (notices), src/hooks/use-overlay-none-notices.ts (replaces use-smart-paste-hand-over.ts), App.tsx, smart_paste/app.rs (comment)
 - **AC impacted:** AC-012 (presentation); browser-tested, native proof pending
 - **Author:** Claude Code (UI pass, feature/ui-overlay 69a6ee73)
+
+## 2026-10-14 — [Bugfix]: Recording indicator hardening
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** src/overlay/indicator-render.test.tsx (tests only); indicator code shared with 005/006
+- **AC impacted:** AC-012 (presentation, unchanged)
+- **Why:** indicator review warning: the closed-gate test froze the new markup instead of comparing with dev, and nothing guarded that the pill alone fits the base window.
+- **Tests:** indicator-render.test.tsx; [proofs](proofs/claude-hardening/summary.txt)
+- **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-14 — [Bugfix]: UI hardening, review round 1
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** src/overlay/indicator-render.test.tsx split with indicator-gates-render.test.tsx and indicator-test-fixtures.ts (tests only)
+- **AC impacted:** none (tests only)
+- **Why:** hardening review: the indicator test file exceeded 400 lines.
+- **Tests:** test:indicator; [proofs](proofs/claude-hardening-fix1/summary.txt)
+- **Author:** Claude Code (claude-opus-5-5)

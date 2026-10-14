@@ -8,6 +8,7 @@ import type {
   StoredShortcutConflict,
 } from "@/bindings";
 import type { OSType } from "../../lib/utils/keyboard";
+import type { DraftState, RecorderStartFailure } from "./shortcut-draft-model";
 import {
   MAX_SHORTCUTS_PER_ACTION,
   type TranslatedMessage,
@@ -117,6 +118,45 @@ export const feedbackAfterEdit = (
   const error = describeRefusal(refusal, candidateOf(edit), names);
   return { state: "error", error, systemRefusal: null };
 };
+
+/**
+ * The system refusal of the draft's last Add, while the draft still shows it
+ * (refused, not recorded again nor discarded): its alert and Try again stay
+ * available even after another edit of the list replaced the feedback.
+ * @param state The draft.
+ * @returns The refusal to show, or null.
+ */
+export const draftSystemRefusal = (state: DraftState): SystemRefusal | null => {
+  const { phase, refusal, shortcut } = state;
+  if (phase !== "invalid" || shortcut === null) return null;
+  if (refusal?.code !== "registration_failed") return null;
+  return { shortcut, reason: refusal.message, edit: { kind: "add", shortcut } };
+};
+
+/**
+ * Whether two edits are the same request (same kind and shortcuts).
+ * @param edit An edit.
+ * @param other Another edit, if any.
+ */
+export const isSameEdit = (
+  edit: ShortcutEdit,
+  other: ShortcutEdit | undefined,
+): boolean => JSON.stringify(edit) === JSON.stringify(other);
+
+/**
+ * Inline reason of a recorder that could not start: macOS Secure Input, or
+ * the backend's own message.
+ * @param failure Why the recorder did not start.
+ */
+export const describeStartFailure = (
+  failure: RecorderStartFailure,
+): TranslatedMessage =>
+  failure.kind === "secure_input"
+    ? { key: "secureInput.recorderBlocked", params: {} }
+    : {
+        key: "settings.general.shortcut.errors.set",
+        params: { error: failure.message },
+      };
 
 /** Warning of a stored shortcut that conflicts since before the update. */
 export interface LegacyWarning {

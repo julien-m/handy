@@ -15,7 +15,11 @@ describe("return to the dictation's application", () => {
     expect(returnToAppView({ state: "supported" }, false).checked).toBe(false);
   });
 
-  test("gate closed or Linux: unavailable, off, with the platform reason", () => {
+  test("gate closed: the build does not offer it, the row is hidden", () => {
+    expect(returnToAppView("not_offered", true).state).toBe("hidden");
+  });
+
+  test("Linux (gate open): unavailable, off, with the platform reason", () => {
     const view = returnToAppView(
       { state: "unsupported", reason: "platform_unsupported" },
       true,
@@ -36,7 +40,7 @@ describe("return to the dictation's application", () => {
     expect(view.checked).toBe(false);
   });
 
-  test("no destination manager: unavailable", () => {
+  test("support could not be read: unavailable, never guessed", () => {
     expect(returnToAppView(null, true).state).toBe("unavailable");
   });
 

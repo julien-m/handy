@@ -5,14 +5,14 @@
  */
 import { describe, expect, mock, test } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
-import type { DestinationSupport } from "@/bindings";
+import type { DestinationSupportState } from "../../hooks/use-destination-support";
 
 mock.module("react-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 mock.module("@tauri-apps/plugin-os", () => ({ type: () => "macos" }));
 
-let support: DestinationSupport | null | undefined = undefined;
+let support: DestinationSupportState = undefined;
 mock.module("../../hooks/use-destination-support", () => ({
   useDestinationSupport: () => support,
 }));
@@ -28,9 +28,14 @@ mock.module("../../hooks/useSettings", () => ({
   }),
 }));
 let revisionConflict = false;
+let conflictReloadFailed = false;
 mock.module("../../stores/settingsStore", () => ({
   useSettingsStore: (select: (state: object) => unknown) =>
-    select({ revisionConflict, reloadAfterConflict: async () => undefined }),
+    select({
+      revisionConflict,
+      conflictReloadFailed,
+      reloadAfterConflict: async () => undefined,
+    }),
 }));
 
 const { ReturnToAppSetting } = await import("./return-to-app-setting");
@@ -49,7 +54,18 @@ const toggleOf = (markup: string): string => {
 };
 
 describe("return to the dictation's application (006)", () => {
-  test("gate closed: unavailable, off, with the reason, info still offered", () => {
+  test("gate closed: no row at all, as on dev", () => {
+    support = "not_offered";
+    stored = { return_to_dictation_app: true };
+    expect(renderToStaticMarkup(<ReturnToAppSetting grouped />)).toBe("");
+  });
+
+  test("support not answered yet: no row", () => {
+    support = undefined;
+    expect(renderToStaticMarkup(<ReturnToAppSetting grouped />)).toBe("");
+  });
+
+  test("Linux (gate open): unavailable, off, with the reason, info still offered", () => {
     support = { state: "unsupported", reason: "platform_unsupported" };
     stored = { return_to_dictation_app: true };
     const markup = renderToStaticMarkup(<ReturnToAppSetting grouped />);
@@ -133,6 +149,23 @@ describe("settings write errors (008)", () => {
       true,
     );
     expect(markup.includes("errors.settings.conflictBody")).toBe(true);
+    expect(markup.includes("errors.settings.reloadFailed")).toBe(false);
+  });
+
+  test("a failed Reload: the alert stays with the failure, no false success", () => {
+    revisionConflict = true;
+    conflictReloadFailed = true;
+    const markup = renderToStaticMarkup(<SettingsConflictAlert />);
+    expect(
+      markup.includes('data-testid="settings-write-errors-conflict"'),
+    ).toBe(true);
+    expect(
+      markup.includes(
+        'data-testid="settings-write-errors-conflict-reload-failed"',
+      ),
+    ).toBe(true);
+    expect(markup.includes("errors.settings.reloadFailed")).toBe(true);
+    conflictReloadFailed = false;
   });
 
   test("a stored history limit shows no error", () => {

@@ -114,6 +114,26 @@
 - **Author:** Claude Code (claude-opus-5-5)
 - Own save no longer rolled back by a lagging library; failed reload shown with Retry; readiness fix inline in the editor for the resolved provider (contract navigation replaced, see implementation.md); typing during a save kept; Cancel during a creation honoured; `committed`/`unknown` outcomes reread; default-prompt failures shown; outdated test results flagged; invalid prompts highlighted at once; shortcut hint; focus and accessible names; function sizes reduced.
 
+## 2026-10-14 — [Bugfix]: Recording indicator hardening
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** src/overlay/menu-timer.ts (new, + test), prompt-pill.tsx, use-dictation-prompt.ts, indicator-stack.tsx, indicator-render.test.tsx, package.json
+- **AC impacted:** AC-003
+- **Why:** indicator audit warnings: the hover close timer was never cleared on unmount or at a new dictation; functions over 30 lines; the gate-closed test froze the new markup instead of comparing with dev.
+- **Tests:** menu-timer.test.ts (6), indicator-render.test.tsx; [proofs](proofs/claude-hardening/summary.txt)
+- **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-14 — [Bugfix]: UI hardening, review round 1
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** src/overlay/indicator-render.test.tsx split with indicator-gates-render.test.tsx and indicator-test-fixtures.ts (tests only)
+- **AC impacted:** none (tests only)
+- **Why:** hardening review: the indicator test file exceeded 400 lines.
+- **Tests:** test:indicator; [proofs](proofs/claude-hardening-fix1/summary.txt)
+- **Author:** Claude Code (claude-opus-5-5)
+
 ## 2026-10-14 — [Bugfix]: Prompt settings UI, hardening pass
 
 - **Type:** Bugfix

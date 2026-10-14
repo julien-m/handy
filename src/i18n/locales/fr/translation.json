@@ -202,9 +202,7 @@
           }
         },
         "errors": {
-          "restore": "Échec de la restauration du raccourci original",
-          "set": "Échec de la définition du raccourci : {{error}}",
-          "reset": "Échec de la réinitialisation du raccourci à sa valeur d'origine"
+          "set": "Échec de la définition du raccourci : {{error}}"
         },
         "list": {
           "add": "Ajouter un raccourci",
@@ -1209,7 +1207,8 @@
       "limitExceeded": "Le nombre maximum est atteint.",
       "conflictTitle": "Réglages modifiés ailleurs",
       "conflictBody": "La ligne de commande ou une autre fenêtre a enregistré une version plus récente. Rechargez pour la voir ; votre modification non enregistrée est abandonnée.",
-      "reload": "Recharger"
+      "reload": "Recharger",
+      "reloadFailed": "Impossible de recharger les réglages. Réessayez."
     }
   },
   "appLanguage": {

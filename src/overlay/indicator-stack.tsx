@@ -3,10 +3,10 @@
 // prompt pill and the open menu. Only one menu is open at a time; the stack reports its size so
 // the native window fits it. Without prompt, destination or notice it renders the pill alone.
 import type React from "react";
-import { useRef } from "react";
 import type { OSType } from "@/lib/utils/keyboard";
 import { DestinationBadge } from "./destination-badge";
 import { DestinationMenuPanel } from "./destination-menu";
+import { useDictationCount, useMenuTimer } from "./menu-timer";
 import type { OverlayNotice } from "./notice-model";
 import { OverlayNotices } from "./overlay-notices";
 import { PromptPill } from "./prompt-pill";
@@ -30,6 +30,8 @@ interface IndicatorStackProps {
   form: "compact" | "live";
   showIndicator: boolean;
   recording: boolean;
+  /** Number of the dictation shown; a new one cancels pending menu timers. */
+  dictation: number;
   destination: DestinationControls;
   prompt: PromptControls;
   notices: OverlayNotice[];
@@ -37,13 +39,16 @@ interface IndicatorStackProps {
   children: React.ReactNode;
 }
 
-/** The indicator pill, merged with the destination badge when there is one. */
-const Indicator: React.FC<{
+interface IndicatorProps {
   form: IndicatorStackProps["form"];
   destination: DestinationControls;
   onToggleMenu: () => void;
   children: React.ReactNode;
-}> = ({ form, destination, onToggleMenu, children }) => {
+}
+
+/** The indicator pill, merged with the destination badge when there is one. */
+const Indicator: React.FC<IndicatorProps> = (props) => {
+  const { form, destination, children } = props;
   const { badge } = destination;
   if (badge.kind === "hidden") {
     return form === "compact" ? (
@@ -52,15 +57,14 @@ const Indicator: React.FC<{
       <>{children}</>
     );
   }
+  const fade = form === "compact" ? "ov-fade show" : "";
   return (
-    <div
-      className={`sindicator with-dest ${form} ${form === "compact" ? "ov-fade show" : ""}`}
-    >
+    <div className={`sindicator with-dest ${form} ${fade}`}>
       <div className="sdest-segment">
         <DestinationBadge
           badge={badge}
           menuOpen={destination.menu.status !== "closed"}
-          onToggleMenu={onToggleMenu}
+          onToggleMenu={props.onToggleMenu}
           onRemove={destination.remove}
         />
       </div>
@@ -70,11 +74,16 @@ const Indicator: React.FC<{
   );
 };
 
+/**
+ * One menu open at a time, and the destination menu closing once the pointer has left the
+ * overlay for a while; that delayed close is cancelled on unmount and at each new dictation.
+ */
 const useMenuCoordination = (
   destination: DestinationControls,
   prompt: PromptControls,
+  dictation: number,
 ) => {
-  const leaveTimer = useRef<ReturnType<typeof setTimeout>>();
+  const leaveTimer = useMenuTimer(dictation);
   const promptControls: PromptControls = {
     ...prompt,
     openMenu: () => {
@@ -90,30 +99,30 @@ const useMenuCoordination = (
     destination.closeMenu();
     prompt.closeMenu();
   };
-  const onLeave = () => {
-    clearTimeout(leaveTimer.current);
-    leaveTimer.current = setTimeout(destination.closeMenu, LEAVE_CLOSE_MS);
-  };
-  const onEnter = () => clearTimeout(leaveTimer.current);
+  const onLeave = () =>
+    leaveTimer.schedule(destination.closeMenu, LEAVE_CLOSE_MS);
+  const onEnter = leaveTimer.cancel;
   return { promptControls, toggleDestination, closeAll, onLeave, onEnter };
 };
 
 type Menus = ReturnType<typeof useMenuCoordination>;
 
-/** The stack items, from the top of the screen down (reversed for a top placement). */
-const StackItems: React.FC<{ props: IndicatorStackProps; menus: Menus }> = ({
-  props,
-  menus,
-}) => {
+interface StackPartProps {
+  props: IndicatorStackProps;
+  menus: Menus;
+}
+
+/** The open destination menu and the prompt pill (with its menu), above the indicator. */
+const MenuItems: React.FC<StackPartProps> = ({ props, menus }) => {
   const { destination, prompt, showIndicator } = props;
-  const view = prompt.view;
-  const destinationMenu = destination.menu;
+  const { view } = prompt;
+  const { menu } = destination;
   const showPrompt = showIndicator && pillVisible(view, props.recording);
   return (
     <>
-      {showIndicator && destinationMenu.status !== "closed" && (
+      {showIndicator && menu.status !== "closed" && (
         <DestinationMenuPanel
-          menu={destinationMenu}
+          menu={menu}
           feedbackKey={destination.feedbackKey}
           onChoose={destination.choose}
         />
@@ -123,27 +132,36 @@ const StackItems: React.FC<{ props: IndicatorStackProps; menus: Menus }> = ({
           controls={menus.promptControls}
           view={view}
           osType={props.osType}
-          hoverOpens={destinationMenu.status === "closed"}
+          hoverOpens={menu.status === "closed"}
+          dictation={props.dictation}
         />
-      )}
-      <OverlayNotices notices={props.notices} />
-      {showIndicator && (
-        <Indicator
-          form={props.form}
-          destination={destination}
-          onToggleMenu={menus.toggleDestination}
-        >
-          {props.children}
-        </Indicator>
       )}
     </>
   );
 };
 
+/** The stack items, from the top of the screen down (reversed for a top placement). */
+const StackItems: React.FC<StackPartProps> = ({ props, menus }) => (
+  <>
+    <MenuItems props={props} menus={menus} />
+    <OverlayNotices notices={props.notices} />
+    {props.showIndicator && (
+      <Indicator
+        form={props.form}
+        destination={props.destination}
+        onToggleMenu={menus.toggleDestination}
+      >
+        {props.children}
+      </Indicator>
+    )}
+  </>
+);
+
 /** The full indicator stack inside the overlay stage. */
 export const IndicatorStack: React.FC<IndicatorStackProps> = (props) => {
   const extentRef = useOverlayExtent();
-  const menus = useMenuCoordination(props.destination, props.prompt);
+  const { destination, prompt, dictation } = props;
+  const menus = useMenuCoordination(destination, prompt, dictation);
   return (
     <div
       dir={props.direction}
@@ -188,11 +206,13 @@ export const useIndicatorExtras = (input: ExtrasInput) => {
   const prompt = useDictationPrompt(isVisible, recording);
   const notices = useOverlayNotices(destination.latest);
   const osType = useOsType();
+  const dictation = useDictationCount();
   const stack = {
     position: input.position,
     direction: input.direction,
     showIndicator: isVisible,
     recording,
+    dictation,
     destination,
     prompt,
     notices,

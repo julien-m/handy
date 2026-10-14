@@ -17,7 +17,6 @@ import type {
 } from "@/bindings";
 import { commands } from "@/bindings";
 import { toast } from "sonner";
-import { bindingFailure } from "@/lib/shortcut-edit-failure";
 import { keepStoredRefusals } from "@/components/settings/shortcut-list-model";
 import i18n from "@/i18n";
 import {
@@ -52,6 +51,8 @@ interface SettingsStore {
   // Another writer (CLI, other window) committed a newer revision than the one a write expected;
   // the settings window shows "Settings changed elsewhere" until Reload.
   revisionConflict: boolean;
+  // The last Reload of that alert could not read the settings: the alert stays, with an error.
+  conflictReloadFailed: boolean;
 
   // Actions
   reloadAfterConflict: () => Promise<void>;
@@ -66,8 +67,6 @@ interface SettingsStore {
   refreshSettings: () => Promise<void>;
   refreshAudioDevices: () => Promise<void>;
   refreshOutputDevices: () => Promise<void>;
-  updateBinding: (id: string, binding: string) => Promise<void>;
-  resetBinding: (id: string) => Promise<void>;
   editBindingShortcuts: (
     id: string,
     edit: ShortcutEdit,
@@ -117,7 +116,10 @@ const notifySettingsError = (error: unknown): void => {
   const key = detail ? settingsErrorKey(detail) : SETTINGS_ERROR_KEYS.generic;
   switch (settingsErrorDisplay(detail)) {
     case "conflict-alert":
-      useSettingsStore.setState({ revisionConflict: true });
+      useSettingsStore.setState({
+        revisionConflict: true,
+        conflictReloadFailed: false,
+      });
       return;
     case "save-failed-toast":
       // Test ids of the settings-write-errors contract on the notice and its text.
@@ -255,6 +257,46 @@ const settingUpdaters: {
     commands.setModelUnloadTimeout(value as ModelUnloadTimeout),
 };
 
+/**
+ * Reads the stored settings into the store; an older answer never rolls the window back.
+ * @param get Store state reader.
+ * @param set Store state writer.
+ * @returns True once the window shows the stored settings (this view, or a newer one already
+ * applied); false when they could not be read (logged).
+ */
+const loadSettingsView = async (
+  get: () => SettingsStore,
+  set: (partial: Partial<SettingsStore>) => void,
+): Promise<boolean> => {
+  try {
+    const view = await commands.getSettingsView();
+    const { revision, settings } = view;
+    if (view.read_only && !readOnlyWarned) {
+      readOnlyWarned = true;
+      toast.warning(i18n.t(SETTINGS_ERROR_KEYS.readOnly));
+    }
+    // An older refresh answering after a newer one must not roll the UI back.
+    if (!isCurrentRevision(revision, get().revision)) return true;
+    set({ settings: normalizedSettings(settings), revision, isLoading: false });
+    return true;
+  } catch (error) {
+    console.error("Failed to load settings:", error);
+    set({ isLoading: false });
+    return false;
+  }
+};
+
+/** Stored settings with the defaults the selectors expect. */
+const normalizedSettings = (settings: Settings): Settings => ({
+  ...settings,
+  always_on_microphone: settings.always_on_microphone ?? false,
+  // The channel selector reads the first priority choice (feature 001); an empty
+  // list is the system default.
+  selected_microphone: settings.microphone_priority?.[0] ?? "Default",
+  clamshell_microphone: settings.clamshell_microphone ?? "Default",
+  selected_output_device: settings.selected_output_device ?? "Default",
+});
+
 export const useSettingsStore = create<SettingsStore>()(
   subscribeWithSelector((set, get) => ({
     settings: null,
@@ -270,6 +312,7 @@ export const useSettingsStore = create<SettingsStore>()(
     updateChecksLocked: null,
     refusedShortcuts: [],
     revisionConflict: false,
+    conflictReloadFailed: false,
 
     // Internal setters
     setSettings: (settings) => set({ settings }),
@@ -289,29 +332,7 @@ export const useSettingsStore = create<SettingsStore>()(
 
     // Load settings from store
     refreshSettings: async () => {
-      try {
-        const view = await commands.getSettingsView();
-        const { revision, settings } = view;
-        if (view.read_only && !readOnlyWarned) {
-          readOnlyWarned = true;
-          toast.warning(i18n.t(SETTINGS_ERROR_KEYS.readOnly));
-        }
-        // An older refresh answering after a newer one must not roll the UI back.
-        if (!isCurrentRevision(revision, get().revision)) return;
-        const normalizedSettings: Settings = {
-          ...settings,
-          always_on_microphone: settings.always_on_microphone ?? false,
-          // The channel selector reads the first priority choice (feature 001); an empty
-          // list is the system default.
-          selected_microphone: settings.microphone_priority?.[0] ?? "Default",
-          clamshell_microphone: settings.clamshell_microphone ?? "Default",
-          selected_output_device: settings.selected_output_device ?? "Default",
-        };
-        set({ settings: normalizedSettings, revision, isLoading: false });
-      } catch (error) {
-        console.error("Failed to load settings:", error);
-        set({ isLoading: false });
-      }
+      await loadSettingsView(get, set);
     },
 
     // Load audio devices
@@ -430,103 +451,6 @@ export const useSettingsStore = create<SettingsStore>()(
       }
     },
 
-    // Update a specific binding
-    updateBinding: async (id, binding) => {
-      const { settings, setUpdating, revision: revisionAtStart } = get();
-      const updateKey = `binding_${id}`;
-      let refusal: SettingsCommandFailure | null = null;
-      const originalBinding = settings?.bindings?.[id]?.current_binding;
-
-      setUpdating(updateKey, true);
-
-      try {
-        // Optimistic update
-        set((state) => ({
-          settings: state.settings
-            ? {
-                ...state.settings,
-                bindings: {
-                  ...state.settings.bindings,
-                  [id]: {
-                    ...state.settings.bindings?.[id]!,
-                    current_binding: binding,
-                  },
-                },
-              }
-            : null,
-        }));
-
-        const result = await commands.changeBinding(id, binding);
-
-        // Check if the command executed successfully
-        if (result.status === "error") {
-          refusal = new SettingsCommandFailure(result.error);
-          throw new Error(i18n.t(settingsErrorKey(result.error)));
-        }
-
-        // Check if the binding change was successful; a typed refusal is
-        // thrown as ShortcutEditFailure so the caller can translate it.
-        if (!result.data.success) {
-          throw bindingFailure(result.data);
-        }
-      } catch (error) {
-        console.error(`Failed to update binding ${id}:`, error);
-
-        // A committed or possibly committed binding is reread; a refusal is rolled back.
-        const recovery = failedCommandRecovery(
-          refusal ?? error,
-          revisionAtStart,
-          get().revision,
-        );
-        if (recovery === "refresh") {
-          await get().refreshSettings();
-        } else if (originalBinding && get().settings) {
-          set((state) => ({
-            settings: state.settings
-              ? {
-                  ...state.settings,
-                  bindings: {
-                    ...state.settings.bindings,
-                    [id]: {
-                      ...state.settings.bindings?.[id]!,
-                      current_binding: originalBinding,
-                    },
-                  },
-                }
-              : null,
-          }));
-        }
-
-        // Re-throw to let the caller know it failed
-        throw error;
-      } finally {
-        setUpdating(updateKey, false);
-      }
-    },
-
-    // Reset a specific binding. A refusal (the default now belongs to
-    // another action) is thrown, as by updateBinding, for the caller to show.
-    resetBinding: async (id) => {
-      const { setUpdating, refreshSettings } = get();
-      const updateKey = `binding_${id}`;
-
-      setUpdating(updateKey, true);
-
-      try {
-        const result = await commands.resetBinding(id);
-        throwIfSettingsError(result);
-        if (result.status === "ok" && !result.data.success) {
-          throw bindingFailure(result.data);
-        }
-        await refreshSettings();
-      } catch (error) {
-        console.error(`Failed to reset binding ${id}:`, error);
-        throw error;
-      } finally {
-        setUpdating(updateKey, false);
-      }
-    },
-
     // Edit the shortcut list of one action; the backend validates, registers
     // and saves. Returns the typed refusal, if any (a refusal of the settings
     // service included), for the caller to show.
@@ -561,10 +485,15 @@ export const useSettingsStore = create<SettingsStore>()(
     clearRefusedShortcuts: () => set({ refusedShortcuts: [] }),
 
     // Reload after "Settings changed elsewhere": the store is authoritative, so the newer
-    // revision replaces whatever this window held; the alert closes once it is shown.
+    // revision replaces whatever this window held; the alert closes once it is shown. A failed
+    // read keeps the alert open with an error instead of claiming the window is current.
     reloadAfterConflict: async () => {
-      await get().refreshSettings();
-      set({ revisionConflict: false });
+      const isShown = await loadSettingsView(get, set);
+      set(
+        isShown
+          ? { revisionConflict: false, conflictReloadFailed: false }
+          : { conflictReloadFailed: true },
+      );
     },
 
     // Enable or disable post-processing; the backend always saves the

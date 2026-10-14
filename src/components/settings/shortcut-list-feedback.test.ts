@@ -3,10 +3,14 @@
 // `bun run test:shortcut-states`.
 import { describe, expect, test } from "bun:test";
 import type { StoredShortcutConflict } from "@/bindings";
+import { CLOSED_DRAFT, draftReducer } from "./shortcut-draft-model";
 import {
   type MessageNames,
   UNEXPECTED_FEEDBACK,
+  describeStartFailure,
+  draftSystemRefusal,
   feedbackAfterEdit,
+  isSameEdit,
   legacyWarningsOf,
   listHint,
   shortcutTestIds,
@@ -146,5 +150,73 @@ describe("hints, titles and test ids", () => {
     expect(shortcutTestIds("cancel").shortcut).toBe(
       "shortcut-settings-cancel-shortcut",
     );
+  });
+});
+
+describe("draft system refusal (Try again)", () => {
+  const SYSTEM = {
+    code: "registration_failed",
+    message: "HotKey already registered",
+  } as const;
+  const refused = [
+    { type: "open" },
+    { type: "captured", shortcut: "cmd+shift+5" },
+    { type: "checked", shortcut: "cmd+shift+5", refusal: null },
+    { type: "commit" },
+    { type: "commitFailed", refusal: SYSTEM },
+  ] as const;
+  const refusedDraft = refused.reduce(draftReducer, CLOSED_DRAFT);
+
+  test("a draft refused by the system keeps its alert and retry", () => {
+    expect(draftSystemRefusal(refusedDraft)).toEqual({
+      shortcut: "cmd+shift+5",
+      reason: "HotKey already registered",
+      edit: { kind: "add", shortcut: "cmd+shift+5" },
+    });
+  });
+
+  test("the alert ends once the draft is recorded again or discarded", () => {
+    const again = draftReducer(refusedDraft, {
+      type: "captured",
+      shortcut: "f13",
+    });
+    expect(draftSystemRefusal(again)).toBeNull();
+    const gone = draftReducer(refusedDraft, { type: "discard" });
+    expect(draftSystemRefusal(gone)).toBeNull();
+  });
+
+  test("a validation refusal is not a system refusal", () => {
+    const invalid = draftReducer(
+      draftReducer(draftReducer(CLOSED_DRAFT, { type: "open" }), {
+        type: "captured",
+        shortcut: "f13",
+      }),
+      {
+        type: "checked",
+        shortcut: "f13",
+        refusal: { code: "invalid_shortcut", message: "bad" },
+      },
+    );
+    expect(draftSystemRefusal(invalid)).toBeNull();
+  });
+
+  test("the draft's own Add is recognized among the edits", () => {
+    const edit = { kind: "add", shortcut: "cmd+shift+5" } as const;
+    expect(isSameEdit(edit, { ...edit })).toBe(true);
+    expect(isSameEdit(edit, { kind: "add", shortcut: "f13" })).toBe(false);
+    expect(isSameEdit(edit, undefined)).toBe(false);
+  });
+});
+
+describe("recorder start failures", () => {
+  test("Secure Input and other failures have their own reason", () => {
+    expect(describeStartFailure({ kind: "secure_input" })).toEqual({
+      key: "secureInput.recorderBlocked",
+      params: {},
+    });
+    expect(describeStartFailure({ kind: "failed", message: "boom" })).toEqual({
+      key: "settings.general.shortcut.errors.set",
+      params: { error: "boom" },
+    });
   });
 });

@@ -1,23 +1,84 @@
 // Key chip of a shortcut recorder in capture mode: shows a shortcut (or the
 // keys being recorded) and starts recording when activated. A shortcut list
 // can also start it (an "Add shortcut" draft, a "Change" action) and give it
-// a validation state through `ShortcutChipContext`.
+// a validation state through `ShortcutChipContext`; the chip reports back
+// each start request it handled, every recording change and a refused start.
 import React, { createContext, useContext, useEffect, useRef } from "react";
-import type { RecorderValidity } from "./shortcut-draft-model";
+import { useTranslation } from "react-i18next";
+import { useOsType } from "../../hooks/useOsType";
+import { formatKeyCombination } from "../../lib/utils/keyboard";
+import { isNewRecordRequest } from "./record-request-model";
+import type {
+  RecorderStartFailure,
+  RecorderValidity,
+} from "./shortcut-draft-model";
 
 /** What a shortcut list asks of the chips it renders. */
 export interface ShortcutChipControl {
   /** Each new non-zero value asks the chip to focus and start recording. */
   recordRequest: number;
+  /** Told once a request was handled (recording started, or not possible). */
+  onRequestHandled?: (request: number) => void;
   /** Validation state of a draft recorder, shown by its colors. */
   validity?: RecorderValidity;
   /** Told whenever recording starts or stops. */
   onRecordingChange?: (isRecording: boolean) => void;
+  /** Told when the system refused to start recording, with the reason. */
+  onStartFailed?: (failure: RecorderStartFailure) => void;
 }
 
 export const ShortcutChipContext = createContext<ShortcutChipControl>({
   recordRequest: 0,
 });
+
+/** Starts recording; resolves with the reason when it could not start. */
+export type StartRecording = () => Promise<RecorderStartFailure | null>;
+
+/**
+ * Text of a recorder chip: the keys being recorded ("Press keys…" before the
+ * first one), else the shortcut it shows, else the add label.
+ * @param isRecording Whether the chip records.
+ * @param keys Keys recorded so far, in stored syntax ("" for none).
+ * @param value Shortcut shown while idle, or null.
+ */
+export const useChipText = (
+  isRecording: boolean,
+  keys: string,
+  value: string | null,
+): string => {
+  const { t } = useTranslation();
+  const osType = useOsType();
+  const shown = isRecording ? keys : value;
+  if (shown) return formatKeyCombination(shown, osType);
+  return t(
+    isRecording
+      ? "settings.general.shortcut.pressKeys"
+      : "settings.general.shortcut.list.add",
+  );
+};
+
+/**
+ * Cancels a capture when the user clicks outside the chip.
+ * @param isRecording Whether the chip records (listens only then).
+ * @param chip The chip element.
+ * @param cancel Stops the capture without saving.
+ */
+export const useCancelOnClickOutside = (
+  isRecording: boolean,
+  chip: React.RefObject<HTMLElement | null>,
+  cancel: () => void,
+): void => {
+  useEffect(() => {
+    if (!isRecording) return;
+    const onClick = (event: MouseEvent) => {
+      if (chip.current && !chip.current.contains(event.target as Node)) {
+        cancel();
+      }
+    };
+    window.addEventListener("click", onClick);
+    return () => window.removeEventListener("click", onClick);
+  }, [isRecording, chip, cancel]);
+};
 
 interface ChipLook {
   isRecording: boolean;
@@ -52,15 +113,39 @@ interface ShortcutChipProps {
   disabled: boolean;
   label?: string;
   testId?: string;
-  onStart: () => void;
+  onStart: StartRecording;
   onLeave: () => void;
   chipRef: (element: HTMLButtonElement | null) => void;
 }
 
 /**
- * Starts recording whenever the list sends a new request, and reports
- * recording changes. The latest callbacks are read through a ref so a
- * re-render never replays a request.
+ * Effect body of a chip for the list's start request. Each request starts
+ * recording once, even when React runs the effect twice (StrictMode: a
+ * second start would ask the backend twice), then is reported handled so the
+ * list forgets it and a chip mounted later never replays it.
+ * @param request Request number the chip receives (0: none).
+ * @param handled Last request this chip instance handled.
+ * @param start Starts recording (a disabled chip ignores it).
+ * @param control Where the handled request is reported.
+ * @returns Whether the request was acted on.
+ */
+export const actOnRecordRequest = (
+  request: number,
+  handled: React.MutableRefObject<number>,
+  start: () => void,
+  control: Pick<ShortcutChipControl, "onRequestHandled">,
+): boolean => {
+  if (!isNewRecordRequest(request, handled.current)) return false;
+  handled.current = request;
+  start();
+  control.onRequestHandled?.(request);
+  return true;
+};
+
+/**
+ * Handles each new start request of the list once, then reports it handled
+ * so the list forgets it, and reports recording changes. The latest
+ * callbacks are read through a ref so a re-render never replays a request.
  */
 const useListControl = (
   control: ShortcutChipControl,
@@ -72,12 +157,8 @@ const useListControl = (
   const wasRecording = useRef(isRecording);
   const handledRequest = useRef(0);
   useEffect(() => {
-    // Each request starts recording once, even when React runs the effect
-    // twice (StrictMode): a second start would ask the backend twice.
-    const request = control.recordRequest;
-    if (request === 0 || request === handledRequest.current) return;
-    handledRequest.current = request;
-    latest.current.start();
+    const { start, control: current } = latest.current;
+    actOnRecordRequest(control.recordRequest, handledRequest, start, current);
   }, [control.recordRequest]);
   useEffect(() => {
     // Report changes only: the first render is not a stop, and reporting it
@@ -88,56 +169,54 @@ const useListControl = (
   }, [isRecording]);
 };
 
+/** Starts recording from a click or a list request; reports a refused start. */
+const useStart = (
+  props: ShortcutChipProps,
+  control: ShortcutChipControl,
+  button: React.RefObject<HTMLButtonElement | null>,
+): (() => void) => {
+  const { disabled, isRecording, onStart } = props;
+  return () => {
+    if (disabled || isRecording) return;
+    // Focus first: leaving the focused chip is what cancels a capture.
+    button.current?.focus();
+    void onStart().then((failure) => {
+      if (failure) control.onStartFailed?.(failure);
+    });
+  };
+};
+
 /**
  * Focusable chip used by both keyboard implementations' recorders. A
  * disabled chip stays focusable (`aria-disabled`) so its tooltip can
  * explain why it is unavailable.
  */
-export const ShortcutChip: React.FC<ShortcutChipProps> = ({
-  text,
-  isRecording,
-  disabled,
-  label,
-  testId,
-  onStart,
-  onLeave,
-  chipRef,
-}) => {
+export const ShortcutChip: React.FC<ShortcutChipProps> = (props) => {
+  const { isRecording, disabled, label } = props;
   const control = useContext(ShortcutChipContext);
   const button = useRef<HTMLButtonElement | null>(null);
-  useListControl(control, isRecording, () => {
-    if (disabled || isRecording) return;
-    // Focus first: leaving the focused chip is what cancels a capture.
-    button.current?.focus();
-    onStart();
-  });
+  const start = useStart(props, control, button);
+  useListControl(control, isRecording, start);
+  const { validity } = control;
   return (
     <button
       type="button"
       ref={(element) => {
         button.current = element;
-        chipRef(element);
+        props.chipRef(element);
       }}
-      data-testid={testId}
+      data-testid={props.testId}
       data-state={isRecording ? "recording" : "idle"}
-      data-validity={control.validity}
+      data-validity={validity}
       aria-label={label}
       aria-disabled={disabled}
-      aria-invalid={control.validity === "invalid" || undefined}
+      aria-invalid={validity === "invalid" || undefined}
       title={label}
-      className={shortcutChipClass({
-        isRecording,
-        disabled,
-        validity: control.validity,
-      })}
-      onClick={() => {
-        if (!disabled && !isRecording) onStart();
-      }}
-      onBlur={() => {
-        if (isRecording) onLeave();
-      }}
+      className={shortcutChipClass({ isRecording, disabled, validity })}
+      onClick={start}
+      onBlur={() => isRecording && props.onLeave()}
     >
-      {text}
+      {props.text}
     </button>
   );
 };

@@ -202,9 +202,7 @@
           }
         },
         "errors": {
-          "restore": "Orijinal kısayol geri yüklenemedi",
-          "set": "Kısayol ayarlanamadı: {{error}}",
-          "reset": "Kısayol orijinal değerine sıfırlanamadı"
+          "set": "Kısayol ayarlanamadı: {{error}}"
         },
         "list": {
           "add": "Kısayol ekle",
@@ -1209,7 +1207,8 @@
       "limitExceeded": "Azami sayıya ulaşıldı.",
       "conflictTitle": "Ayarlar başka bir yerde değiştirildi",
       "conflictBody": "Komut satırı veya başka bir pencere daha yeni bir sürüm kaydetti. Görmek için yeniden yükleyin; kaydedilmemiş değişikliğiniz atılır.",
-      "reload": "Yeniden yükle"
+      "reload": "Yeniden yükle",
+      "reloadFailed": "Ayarlar yeniden yüklenemedi. Tekrar deneyin."
     }
   },
   "appLanguage": {

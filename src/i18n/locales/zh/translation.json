@@ -202,9 +202,7 @@
           }
         },
         "errors": {
-          "restore": "无法恢复原始快捷键",
-          "set": "无法设置快捷键: {{error}}",
-          "reset": "无法将快捷键重置为原始值"
+          "set": "无法设置快捷键: {{error}}"
         },
         "list": {
           "add": "添加快捷键",
@@ -1209,7 +1207,8 @@
       "limitExceeded": "已达到最大数量。",
       "conflictTitle": "设置已在其他地方更改",
       "conflictBody": "命令行或其他窗口保存了更新的版本。重新加载即可查看；你未保存的修改将被丢弃。",
-      "reload": "重新加载"
+      "reload": "重新加载",
+      "reloadFailed": "无法重新加载设置。请重试。"
     }
   },
   "appLanguage": {

@@ -202,9 +202,7 @@
           }
         },
         "errors": {
-          "restore": "Ursprüngliches Tastenkürzel konnte nicht wiederhergestellt werden",
-          "set": "Tastenkürzel konnte nicht gesetzt werden: {{error}}",
-          "reset": "Tastenkürzel konnte nicht auf Originalwert zurückgesetzt werden"
+          "set": "Tastenkürzel konnte nicht gesetzt werden: {{error}}"
         },
         "list": {
           "add": "Tastenkürzel hinzufügen",
@@ -1209,7 +1207,8 @@
       "limitExceeded": "Die Höchstzahl ist erreicht.",
       "conflictTitle": "Einstellungen wurden an anderer Stelle geändert",
       "conflictBody": "Die Befehlszeile oder ein anderes Fenster hat eine neuere Version gespeichert. Laden Sie neu, um sie zu sehen; Ihre ungespeicherte Änderung wird verworfen.",
-      "reload": "Neu laden"
+      "reload": "Neu laden",
+      "reloadFailed": "Die Einstellungen konnten nicht neu geladen werden. Versuchen Sie es erneut."
     }
   },
   "appLanguage": {

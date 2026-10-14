@@ -182,9 +182,7 @@
           }
         },
         "errors": {
-          "restore": "Herstellen van originele sneltoets mislukt",
-          "set": "Instellen van sneltoets mislukt: {{error}}",
-          "reset": "Sneltoets terugzetten naar standaardwaarde mislukt"
+          "set": "Instellen van sneltoets mislukt: {{error}}"
         },
         "list": {
           "add": "Sneltoets toevoegen",
@@ -1212,7 +1210,8 @@
       "limitExceeded": "Het maximale aantal is bereikt.",
       "conflictTitle": "Instellingen elders gewijzigd",
       "conflictBody": "De opdrachtregel of een ander venster heeft een nieuwere versie opgeslagen. Laad opnieuw om die te zien; je niet-opgeslagen wijziging wordt verworpen.",
-      "reload": "Opnieuw laden"
+      "reload": "Opnieuw laden",
+      "reloadFailed": "De instellingen konden niet opnieuw worden geladen. Probeer het opnieuw."
     }
   },
   "appLanguage": {

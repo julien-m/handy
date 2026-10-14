@@ -147,3 +147,32 @@
 - **Code modified:** src/overlay/* (new indicator modules, RecordingOverlay.tsx), src-tauri/src/overlay.rs, overlay_surface.rs, commands/overlay.rs, lib.rs, bindings.ts, 26 locales
 - **AC impacted:** AC-003, AC-004, AC-005 (indicator part); browser-tested, native proof pending
 - **Author:** Claude Code (UI pass, feature/ui-overlay 69a6ee73)
+
+## 2026-10-14 — [Bugfix]: Return-to-app setting hidden while the gate is closed, support kept current
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** src-tauri/src/destination/rollout.rs, src-tauri/src/commands/destination.rs, src/bindings.ts (doc comment, Specta export), src/hooks/use-destination-support.ts (+ test), src/components/settings/return-to-app-model.ts, return-to-app-setting.tsx, tests, package.json
+- **AC impacted:** AC-007
+- **Why:** delivery audit warning: with the `destination-return` gate closed the Output settings showed a new disabled row ("Unavailable on this system"), unlike `dev` and inaccurate on macOS; review warning: the settings never followed `destination-support-changed`.
+- **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-14 — [Bugfix]: Recording indicator hardening
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** src-tauri/src/overlay.rs, overlay_indicator.rs (new, code moved from overlay.rs), overlay_surface.rs (+ tests), src/overlay/menu-timer.ts (new, + test), indicator-stack.tsx, destination-badge.tsx, use-destination.ts, indicator-render.test.tsx, package.json
+- **AC impacted:** AC-003, AC-004, FR-003
+- **Why:** indicator audit and review warnings: extent bounded only by a fixed maximum (Windows text scale could push the window off a small screen); timers left pending after unmount or into the next dictation; gate-closed test freezing the new markup; functions over 30 lines; overlay.rs grown to 977 lines; stale FR-003 status.
+- **Tests:** overlay::surface (4 new), menu-timer.test.ts, indicator-render.test.tsx; [proofs](proofs/claude-hardening/summary.txt)
+- **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-14 — [Bugfix]: UI hardening, review round 1
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** src-tauri/src/overlay_indicator.rs, src/components/settings/return-to-app-setting.tsx, src/overlay/indicator-render.test.tsx, indicator-gates-render.test.tsx (new), indicator-test-fixtures.ts (new), package.json
+- **AC impacted:** AC-003, AC-007 (unchanged behavior)
+- **Why:** hardening review: functions over 30 lines and a test file over 400 lines.
+- **Tests:** test:indicator, test:output-settings; [proofs](proofs/claude-hardening-fix1/summary.txt)
+- **Author:** Claude Code (claude-opus-5-5)

@@ -182,9 +182,7 @@
           }
         },
         "errors": {
-          "restore": "無法還原原始快捷鍵",
-          "set": "無法設定快捷鍵: {{error}}",
-          "reset": "無法將快捷鍵重設為原始值"
+          "set": "無法設定快捷鍵: {{error}}"
         },
         "list": {
           "add": "新增快速鍵",
@@ -1209,7 +1207,8 @@
       "limitExceeded": "已達到最大數量。",
       "conflictTitle": "設定已在其他地方變更",
       "conflictBody": "命令列或其他視窗儲存了較新的版本。重新載入即可查看；你未儲存的修改將被捨棄。",
-      "reload": "重新載入"
+      "reload": "重新載入",
+      "reloadFailed": "無法重新載入設定。請再試一次。"
     }
   },
   "appLanguage": {

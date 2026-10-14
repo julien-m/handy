@@ -1,6 +1,7 @@
 // State of one action's shortcut list: its stored conflicts, the edits sent
 // to the backend with their feedback, the "Add shortcut" draft, and the
-// requests to record a row again ("Change" on an inherited conflict).
+// one-shot requests to record a row again ("Change" on an inherited
+// conflict).
 import {
   type Dispatch,
   useCallback,
@@ -23,8 +24,17 @@ import {
   CLOSED_DRAFT,
   type DraftEvent,
   type DraftState,
+  type RecorderStartFailure,
+  canCommit,
   draftReducer,
 } from "./shortcut-draft-model";
+import {
+  NO_RECORD_REQUEST,
+  dropUnlistedRequest,
+  markRequestHandled,
+  requestFor,
+  requestRecording,
+} from "./record-request-model";
 import {
   IDLE_FEEDBACK,
   LOADING_FEEDBACK,
@@ -169,14 +179,62 @@ const checkDraft = async (
 /** The "Add shortcut" draft of one action and its controls. */
 export interface ShortcutDraft {
   state: DraftState;
-  /** Increments each time the recorder must start (Add pressed). */
+  /** Non-zero while the recorder must start (Add pressed), until handled. */
   recordRequest: number;
   open: () => void;
   capture: (shortcut: string) => Promise<void>;
   stop: () => void;
   commit: () => Promise<void>;
   discard: () => void;
+  /** The recorder reports a start request handled, started or refused. */
+  recorder: RecorderReports;
 }
+
+/** What the draft recorder reports back to the draft. */
+export interface RecorderReports {
+  requestHandled: (count: number) => void;
+  started: () => void;
+  startFailed: (failure: RecorderStartFailure) => void;
+}
+
+const DRAFT_TARGET = "draft";
+
+/** The draft recorder's start request (one-shot) and its reports. */
+const useDraftRecorder = (
+  dispatch: Dispatch<DraftEvent>,
+): [number, () => void, RecorderReports] => {
+  const [requests, setRequests] = useState(NO_RECORD_REQUEST);
+  const request = useCallback(
+    () => setRequests((state) => requestRecording(state, DRAFT_TARGET)),
+    [],
+  );
+  const reports = useMemo<RecorderReports>(
+    () => ({
+      requestHandled: (count) =>
+        setRequests((state) => markRequestHandled(state, count)),
+      started: () => dispatch({ type: "recordingStarted" }),
+      startFailed: (failure) => dispatch({ type: "startFailed", failure }),
+    }),
+    [dispatch],
+  );
+  return [requestFor(requests, DRAFT_TARGET), request, reports];
+};
+
+/** Records a combination in the draft, then has the backend check it. */
+const useDraftCapture = (
+  actionId: string,
+  clear: () => void,
+  dispatch: Dispatch<DraftEvent>,
+): ((shortcut: string) => Promise<void>) =>
+  useCallback(
+    async (shortcut: string) => {
+      clear();
+      dispatch({ type: "captured", shortcut });
+      const refusal = await checkDraft(actionId, shortcut);
+      dispatch({ type: "checked", shortcut, refusal });
+    },
+    [actionId, clear, dispatch],
+  );
 
 // @spec AC-001: Add records with the existing recorder — .specs/features/004-multiple-dictation-shortcuts/spec.md#ac-001
 /**
@@ -189,29 +247,22 @@ export const useShortcutDraft = (
   submitter: EditSubmitter,
 ): ShortcutDraft => {
   const [state, dispatch] = useReducer(draftReducer, CLOSED_DRAFT);
-  const [recordRequest, setRecordRequest] = useState(0);
+  const [recordRequest, requestStart, recorder] = useDraftRecorder(dispatch);
   const { submit, clear } = submitter;
   const open = useCallback(() => {
     clear();
     dispatch({ type: "open" });
-    setRecordRequest((count) => count + 1);
-  }, [clear]);
-  const capture = useCallback(
-    async (shortcut: string) => {
-      clear();
-      dispatch({ type: "captured", shortcut });
-      const refusal = await checkDraft(actionId, shortcut);
-      dispatch({ type: "checked", shortcut, refusal });
-    },
-    [actionId, clear],
-  );
+    requestStart();
+  }, [clear, requestStart]);
+  const capture = useDraftCapture(actionId, clear, dispatch);
   const commit = useDraftCommit(state, dispatch, submit);
   const stop = useCallback(() => dispatch({ type: "stopped" }), []);
   const discard = useCallback(() => {
     clear();
     dispatch({ type: "discard" });
   }, [clear]);
-  return { state, recordRequest, open, capture, stop, commit, discard };
+  const actions = { open, capture, stop, commit, discard };
+  return { state, recordRequest, ...actions, recorder };
 };
 
 /** Adds the draft; a refusal keeps it, with its reason, for a retry or a new recording. */
@@ -221,7 +272,9 @@ const useDraftCommit = (
   submit: EditSubmitter["submit"],
 ): (() => Promise<void>) =>
   useCallback(async () => {
-    if (state.shortcut === null) return;
+    // Only a committable draft is sent: two calls in one render (Add and
+    // Try again) never submit the same shortcut twice.
+    if (state.shortcut === null || !canCommit(state)) return;
     dispatch({ type: "commit" });
     const outcome = await submit({ kind: "add", shortcut: state.shortcut });
     if (outcome.saved) {
@@ -229,29 +282,36 @@ const useDraftCommit = (
     } else {
       dispatch({ type: "commitFailed", refusal: outcome.refusal });
     }
-  }, [state.shortcut, dispatch, submit]);
+  }, [state, dispatch, submit]);
 
-/** A request to record one stored shortcut again. */
-export interface RowRecordRequest {
-  shortcut: string;
-  count: number;
+/** Requests to record a stored shortcut again ("Change"). */
+export interface RowRecordRequests {
+  /** Request number of the row showing `shortcut` (0: none). */
+  requestFor: (shortcut: string) => number;
+  change: (shortcut: string) => void;
+  handled: (count: number) => void;
 }
 
 /**
  * Requests to record a stored shortcut again, sent by the "Change" button
- * of an inherited conflict warning.
- * @returns The current request and the function that sends one.
+ * of an inherited conflict warning. Each one is consumed once its row
+ * handled it, and dropped when its shortcut leaves the list.
+ * @param shortcuts Shortcuts the list shows.
  */
-export const useRowRecordRequest = (): [
-  RowRecordRequest | null,
-  (shortcut: string) => void,
-] => {
-  const [request, setRequest] = useState<RowRecordRequest | null>(null);
-  const change = useCallback((shortcut: string) => {
-    setRequest((previous) => ({
-      shortcut,
-      count: (previous?.count ?? 0) + 1,
-    }));
-  }, []);
-  return [request, change];
+export const useRowRecordRequests = (
+  shortcuts: ReadonlyArray<string>,
+): RowRecordRequests => {
+  const [requests, setRequests] = useState(NO_RECORD_REQUEST);
+  const listed = shortcuts.join("\n");
+  useEffect(() => {
+    setRequests((state) => dropUnlistedRequest(state, listed.split("\n")));
+  }, [listed]);
+  return {
+    requestFor: (shortcut) =>
+      shortcuts.includes(shortcut) ? requestFor(requests, shortcut) : 0,
+    change: (shortcut) =>
+      setRequests((state) => requestRecording(state, shortcut)),
+    handled: (count) =>
+      setRequests((state) => markRequestHandled(state, count)),
+  };
 };

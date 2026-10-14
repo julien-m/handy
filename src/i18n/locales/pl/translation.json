@@ -202,9 +202,7 @@
           }
         },
         "errors": {
-          "restore": "Nie udało się przywrócić oryginalnego skrótu",
-          "set": "Nie udało się ustawić skrótu: {{error}}",
-          "reset": "Nie udało się zresetować skrótu do wartości domyślnej"
+          "set": "Nie udało się ustawić skrótu: {{error}}"
         },
         "list": {
           "add": "Dodaj skrót",
@@ -1209,7 +1207,8 @@
       "limitExceeded": "Osiągnięto maksymalną liczbę.",
       "conflictTitle": "Ustawienia zmieniono gdzie indziej",
       "conflictBody": "Wiersz poleceń lub inne okno zapisało nowszą wersję. Odśwież, aby ją zobaczyć; niezapisana zmiana zostanie odrzucona.",
-      "reload": "Odśwież"
+      "reload": "Odśwież",
+      "reloadFailed": "Nie udało się ponownie wczytać ustawień. Spróbuj ponownie."
     }
   },
   "appLanguage": {

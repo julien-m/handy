@@ -7,11 +7,7 @@ import type {
   ShortcutEditError,
   StoredShortcutConflict,
 } from "@/bindings";
-import { ShortcutEditFailure } from "../../lib/shortcut-edit-failure";
-import {
-  SettingsCommandFailure,
-  settingsErrorKey,
-} from "../../stores/settings-errors";
+import { settingsErrorKey } from "../../stores/settings-errors";
 
 /** Mirrors MAX_SHORTCUTS_PER_ACTION in src-tauri/src/shortcut/action_shortcuts.rs. */
 export const MAX_SHORTCUTS_PER_ACTION = 4;
@@ -141,36 +137,6 @@ export const describeEditError = (
       return { key: `${LIST_KEY}.errors.generic`, params: {} };
   }
 };
-
-/**
- * Reason of a failed shortcut change for the legacy recorders: the typed
- * backend refusal when there is one, else the raw error text.
- * @param error Error thrown by `updateBinding` or `resetBinding`.
- * @param actionName Translated display name of an action id.
- * @returns A translation to show, or the untranslatable raw text.
- */
-export const describeShortcutFailure = (
-  error: unknown,
-  actionName: (actionId: string) => string,
-): TranslatedMessage | string => {
-  if (error instanceof ShortcutEditFailure) {
-    return describeEditError(error.editError, actionName);
-  }
-  if (error instanceof SettingsCommandFailure) {
-    return describeSettingsFailure(error);
-  }
-  return String(error);
-};
-
-/**
- * Message for a refusal of the settings service itself (busy, persistence),
- * translated from its typed code, never from its English text.
- * @param failure Typed settings command failure.
- * @returns The translation key, without values.
- */
-export const describeSettingsFailure = (
-  failure: SettingsCommandFailure,
-): TranslatedMessage => ({ key: settingsErrorKey(failure.detail), params: {} });
 
 /**
  * Message naming the action that already owns a combination.

@@ -91,3 +91,22 @@
 - **Author:** Claude Code (implementation agent, claude-opus-5-5)
 - **Scope:** Every former "Waiting for 008" item: list edits, the post-processing toggle and the keyboard switch are prepared changes of the 008 service (registration before one-revision commits, compensation on refusal, refused with `shortcut_session_busy` during a dictation through the coordinator quiescence lease); `handy settings shortcuts list/add/remove/reset` with `--json`, `--dry-run`, live-only changes (`instance_required` offline) and stable codes; startup HandyKeys fallback repairs the lists for Tauri. Decisions to confirm and remaining items in [progress](progress.md#integration-with-008-2026-10-14). Checks in [integration proofs](proofs/claude-integration/).
 
+## 2026-10-14 — [Bugfix]: Hardening of the shortcut lists
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** src/components/settings/shortcut-chip.tsx, record-request-model.ts (new), shortcut-draft-model.ts, shortcut-list-feedback.ts, shortcut-list.tsx, shortcut-list-rows.tsx, use-shortcut-list.ts, GlobalShortcutInput.tsx, HandyKeysShortcutInput.tsx, ShortcutInput.tsx, shortcut-list-model.ts, src/stores/settingsStore.ts, src/hooks/useSettings.ts; removed src/hooks/useShortcutFailureText.ts, src/lib/shortcut-edit-failure.ts
+- **AC impacted:** AC-001, AC-002, AC-004
+- **Why:** delivery review warnings: a recorder refused at start (Secure Input) left the draft stuck recording; Try again vanished with the next edit; a "Change" request could replay on a remounted row; dead non-capture recorders and store actions.
+- **Tests:** shortcut-draft-model, shortcut-list-feedback, record-request-model (new), shortcut-list-render; [proofs](proofs/claude-hardening/summary.txt)
+- **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-14 — [Bugfix]: UI hardening, review round 1
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** src/components/settings/recorder-lifecycle.ts (new, + test), GlobalShortcutInput.tsx, HandyKeysShortcutInput.tsx, shortcut-chip.tsx, shortcut-draft-model.ts, shortcut-list-render.test.tsx, package.json, 26 locales (two orphan keys removed)
+- **AC impacted:** AC-001, AC-004
+- **Why:** delivery audit and review of the hardening: a start answered after the chip unmounted could leave shortcuts suspended; the one-shot request wiring had no test; orphan translation keys.
+- **Tests:** recorder-lifecycle.test.ts (6), shortcut-list-render.test.tsx (4 new); [proofs](proofs/claude-hardening-fix1/summary.txt)
+- **Author:** Claude Code (claude-opus-5-5)

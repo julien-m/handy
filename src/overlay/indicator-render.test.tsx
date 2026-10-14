@@ -1,167 +1,27 @@
 /**
- * Markup of the recording indicator stack with the rollout gates closed (no destination
- * session, no notice: the Handy pill alone, as on `dev`) and open (badge, menus, notices), with
- * the contract test IDs and accessible names. Run with `bun run test:indicator`.
+ * Markup of the recording indicator stack with the rollout gates open: destination badge and
+ * menu (006), prompt pill and menu (005) and notices (005, 006, 007), with the contract test IDs
+ * and accessible names. The closed-gate markup is in `indicator-gates-render.test.tsx`. Run with
+ * `bun run test:indicator`.
  */
 import { beforeAll, describe, expect, test } from "bun:test";
-import i18n from "i18next";
-import { createElement, type ReactNode } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
-import { initReactI18next } from "react-i18next";
-import type {
-  DestinationMenu,
-  DestinationSnapshot,
-  DictationPromptView,
-  PromptLibraryView,
-} from "@/bindings";
-import en from "@/i18n/locales/en/translation.json";
-import { badgeView } from "./destination-model";
-import { IndicatorStack } from "./indicator-stack";
+import type { DestinationMenu } from "@/bindings";
+import {
+  chatgpt,
+  destination,
+  initIndicatorI18n,
+  prompt,
+  promptView,
+  render,
+  session,
+} from "./indicator-test-fixtures";
 import {
   aiFailureNotice,
   destinationNotice,
   handOverNotice,
-  type OverlayNotice,
 } from "./notice-model";
-import type {
-  DestinationControls,
-  DestinationMenuState,
-} from "./use-destination";
-import type { LibraryState, PromptControls } from "./use-dictation-prompt";
 
-beforeAll(async () => {
-  await i18n.use(initReactI18next).init({
-    lng: "en",
-    resources: { en: { translation: en } },
-    interpolation: { escapeValue: false },
-  });
-});
-
-const noop = () => undefined;
-const PILL =
-  '<div class="scard compact" data-testid="recording-indicator-pill">pill</div>';
-
-const session = (
-  selection: DestinationSnapshot["selection"],
-  phase = "recording",
-) =>
-  ({
-    dictation_id: 7,
-    destination_generation: 1,
-    selection_version: 1,
-    phase,
-    return_enabled: true,
-    support: { state: "supported" },
-    selection,
-    disposition: "pending",
-  }) as DestinationSnapshot;
-const chatgpt = {
-  kind: "application",
-  display_name: "ChatGPT",
-  icon_ref: null,
-} as const;
-
-const destination = (
-  snapshot: DestinationSnapshot | null,
-  menu: DestinationMenuState = { status: "closed" },
-): DestinationControls => ({
-  snapshot,
-  latest: { current: snapshot },
-  badge: badgeView(snapshot),
-  menu,
-  feedbackKey: null,
-  toggleMenu: noop,
-  closeMenu: noop,
-  choose: noop,
-  remove: noop,
-});
-
-const library: PromptLibraryView = {
-  default_prompt_id: "min",
-  post_process_enabled: true,
-  prompts: [
-    {
-      id: "min",
-      name: "Minimal correction",
-      prompt: "text",
-      provider_override: null,
-      starter: true,
-      issues: [],
-      shortcuts: ["ctrl+option+m"],
-      readiness: {
-        provider_id: null,
-        model: null,
-        is_override: false,
-        ready: true,
-        missing: null,
-      },
-    },
-  ],
-};
-const promptView: DictationPromptView = {
-  session_id: 3,
-  prompt_id: "min",
-  prompt_name: "Minimal correction",
-  selectable: true,
-};
-const prompt = (
-  view: DictationPromptView | null,
-  menuOpen = false,
-  state: LibraryState = { status: "ready", library },
-): PromptControls => ({
-  view,
-  library: state,
-  menuOpen,
-  feedbackKey: null,
-  openMenu: noop,
-  closeMenu: noop,
-  select: noop,
-});
-
-const render = (
-  options: {
-    destination?: DestinationControls;
-    prompt?: PromptControls;
-    notices?: OverlayNotice[];
-    showIndicator?: boolean;
-  } = {},
-): string => {
-  const pill: ReactNode = createElement(
-    "div",
-    { className: "scard compact", "data-testid": "recording-indicator-pill" },
-    "pill",
-  );
-  return renderToStaticMarkup(
-    createElement(IndicatorStack, {
-      position: "bottom",
-      direction: "ltr",
-      form: "compact",
-      showIndicator: options.showIndicator ?? true,
-      recording: true,
-      destination: options.destination ?? destination(null),
-      prompt: options.prompt ?? prompt(null),
-      notices: options.notices ?? [],
-      osType: "macos",
-      children: pill,
-    }),
-  );
-};
-
-describe("rollout gates closed (destination-return, smart-paste-dispatch)", () => {
-  test("no session, no prompt, no notice: the Handy pill alone, as on dev", () => {
-    expect(render()).toBe(
-      '<div dir="ltr" class="ov-stage bottom" data-testid="recording-indicator-screen">' +
-        '<div class="ov-stack" data-testid="recording-indicator-bar">' +
-        `<div class="ov-fade show">${PILL}</div></div></div>`,
-    );
-  });
-  test("a session with the setting off shows no badge either", () => {
-    const off = { ...session(chatgpt), return_enabled: false };
-    expect(render({ destination: destination(off) })).not.toContain(
-      "recording-indicator-destination",
-    );
-  });
-});
+beforeAll(initIndicatorI18n);
 
 describe("destination badge (006)", () => {
   test("an application shows icon, name, accessible name and the remove cross", () => {

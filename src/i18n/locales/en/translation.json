@@ -182,9 +182,7 @@
           }
         },
         "errors": {
-          "restore": "Failed to restore original shortcut",
-          "set": "Failed to set shortcut: {{error}}",
-          "reset": "Failed to reset shortcut to original value"
+          "set": "Failed to set shortcut: {{error}}"
         },
         "list": {
           "add": "Add shortcut",
@@ -1212,7 +1210,8 @@
       "limitExceeded": "The maximum number has been reached.",
       "conflictTitle": "Settings changed elsewhere",
       "conflictBody": "The command line or another window saved a newer version. Reload to see it; your unsaved edit is discarded.",
-      "reload": "Reload"
+      "reload": "Reload",
+      "reloadFailed": "The settings could not be reloaded. Try again."
     }
   },
   "appLanguage": {

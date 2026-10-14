@@ -1,13 +1,19 @@
 // Pure state machine of the "Add shortcut" draft of one action: the recorder
 // opens empty, captures a combination, is checked by the backend without
 // saving, and only a valid draft can be added. The settings list renders the
-// recorder and the Add control from these states.
+// recorder and the Add control from these states. A recorder the system
+// refuses to start (macOS Secure Input) leaves the draft "blocked": empty, with
+// the reason shown and Discard as a way out.
 import type { ShortcutEditError } from "@/bindings";
 
-/** Where the draft stands; `closed` means no recorder is shown. */
+/**
+ * Where the draft stands; `closed` means no recorder is shown and `blocked`
+ * that the recorder could not start.
+ */
 export type DraftPhase =
   | "closed"
   | "recording"
+  | "blocked"
   | "checking"
   | "valid"
   | "invalid"
@@ -20,13 +26,22 @@ export interface DraftState {
   shortcut: string | null;
   /** Why the draft cannot be added (check or commit refusal). */
   refusal: ShortcutEditError | null;
+  /** Why the recorder did not start on its last attempt, if it did not. */
+  startFailure: RecorderStartFailure | null;
 }
+
+/** Why a recorder could not start recording. */
+export type RecorderStartFailure =
+  | { kind: "secure_input" }
+  | { kind: "failed"; message: string };
 
 export type DraftEvent =
   | { type: "open" }
   | { type: "captured"; shortcut: string }
   | { type: "checked"; shortcut: string; refusal: ShortcutEditError | null }
   | { type: "stopped" }
+  | { type: "startFailed"; failure: RecorderStartFailure }
+  | { type: "recordingStarted" }
   | { type: "commit" }
   | { type: "committed" }
   // A null refusal means the call itself failed (no typed reason).
@@ -43,13 +58,10 @@ export const CLOSED_DRAFT: DraftState = {
   phase: "closed",
   shortcut: null,
   refusal: null,
+  startFailure: null,
 };
 
-const RECORDING_DRAFT: DraftState = {
-  phase: "recording",
-  shortcut: null,
-  refusal: null,
-};
+const RECORDING_DRAFT: DraftState = { ...CLOSED_DRAFT, phase: "recording" };
 
 /**
  * Next draft after `event`. Events that make no sense in the current phase
@@ -68,13 +80,40 @@ export const draftReducer = (
     case "captured":
       return state.phase === "closed" || state.phase === "committing"
         ? state
-        : { phase: "checking", shortcut: event.shortcut, refusal: null };
+        : { ...CLOSED_DRAFT, phase: "checking", shortcut: event.shortcut };
     case "checked":
       return afterCheck(state, event.shortcut, event.refusal);
     case "stopped":
       // Recording ended without a capture (focus left the recorder): an
       // empty draft closes, a captured one stays for Add or discard.
       return state.phase === "recording" ? CLOSED_DRAFT : state;
+    default:
+      return afterRecorderEvent(state, event);
+  }
+};
+
+/**
+ * Applies a recorder start answer. Business rule: a refused start never
+ * leaves an empty draft "recording" with no way out; it becomes `blocked`
+ * (empty, reason shown, Discard offered) until a start succeeds. A captured
+ * draft keeps its combination and only shows the reason.
+ */
+const afterRecorderEvent = (
+  state: DraftState,
+  event: DraftEvent,
+): DraftState => {
+  if (state.phase === "closed" || state.phase === "committing") {
+    return afterCommitEvent(state, event);
+  }
+  switch (event.type) {
+    case "startFailed":
+      return state.phase === "recording" || state.phase === "blocked"
+        ? { ...state, phase: "blocked", startFailure: event.failure }
+        : { ...state, startFailure: event.failure };
+    case "recordingStarted":
+      return state.phase === "blocked"
+        ? { ...state, phase: "recording", startFailure: null }
+        : { ...state, startFailure: null };
     default:
       return afterCommitEvent(state, event);
   }
@@ -90,14 +129,15 @@ const afterCheck = (
   refusal: ShortcutEditError | null,
 ): DraftState => {
   if (state.phase !== "checking" || state.shortcut !== shortcut) return state;
-  return { phase: refusal ? "invalid" : "valid", shortcut, refusal };
+  const phase = refusal ? "invalid" : "valid";
+  return { ...CLOSED_DRAFT, phase, shortcut, refusal };
 };
 
 const afterCommitEvent = (state: DraftState, event: DraftEvent): DraftState => {
   switch (event.type) {
     case "commit":
       return canCommit(state)
-        ? { ...state, phase: "committing", refusal: null }
+        ? { ...state, phase: "committing", refusal: null, startFailure: null }
         : state;
     case "committed":
     case "discard":
@@ -142,6 +182,7 @@ export const recorderValidity = (
 ): RecorderValidity | undefined => {
   switch (state.phase) {
     case "recording":
+    case "blocked":
       return "empty";
     case "valid":
       return "valid";

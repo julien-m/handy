@@ -40,6 +40,12 @@ impl Rollout {
     pub const fn opens_sessions(self) -> bool {
         self.wired
     }
+    /// True when the settings window shows the "Return to the dictation's application" row.
+    /// Business rule: a closed gate hides it so the settings stay as on `dev`; an open gate
+    /// shows it everywhere, unavailable with its reason where unsupported (Linux, AC-007).
+    pub const fn offers_setting(self) -> bool {
+        self.wired
+    }
 }
 
 #[cfg(test)]
@@ -57,6 +63,17 @@ mod tests {
             };
             assert!(closed.capabilities().is_empty());
             assert!(!closed.opens_sessions());
+            assert!(!closed.offers_setting());
+        }
+    }
+    #[test]
+    fn an_open_gate_offers_the_setting_even_where_it_is_unsupported() {
+        for platform_capable in [false, true] {
+            let open = Rollout {
+                platform_capable,
+                wired: true,
+            };
+            assert!(open.offers_setting(), "{open:?}");
         }
     }
     #[test]
