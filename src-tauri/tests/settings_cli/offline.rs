@@ -76,7 +76,7 @@ fn unreadable_store_reads_defaults_with_a_stderr_warning_and_refuses_writes() ->
     let read = app.run(&["settings", "get", "paste_method", "--json"])?;
     assert_eq!(
         (read.code, &read.envelope()?["data"]["paste_method"]),
-        (0, &json!("ctrl_v"))
+        (0, &json!(super::contract::default_paste_method()))
     );
     assert!(read
         .stderr

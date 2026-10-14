@@ -339,6 +339,7 @@
         "description": "Wybierz sposób wstawiania tekstu. Direct: symuluje wpisywanie. None: pomija wklejanie, tylko aktualizuje historię/clipboard.",
         "options": {
           "clipboard": "Schowek ({{modifier}}+V)",
+          "smartPaste": "Inteligentne wklejanie",
           "clipboardCtrlShiftV": "Schowek (Ctrl+Shift+V)",
           "clipboardShiftInsert": "Schowek (Shift+Insert)",
           "direct": "Bezpośrednio",
@@ -757,5 +758,8 @@
     "learnMore": "Jak to naprawić",
     "recorderBlocked": "Nie można teraz nagrać skrótu — Secure Input w macOS blokuje zdarzenia klawiszy. Najpierw rozwiąż ostrzeżenie o Secure Input.",
     "dismiss": "Odrzuć"
+  },
+  "smartPaste": {
+    "handOver": "Tekst umieszczono w schowku dla zdalnego ekranu"
   }
 }

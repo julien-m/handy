@@ -157,6 +157,7 @@ impl PublicAdvanced {
 #[derive(Serialize)]
 struct PublicReadonly {
     settings_schema_version: u32,
+    smart_paste_migration_version: u32,
     whats_new_last_seen_version: String,
     selected_model: String,
     onboarding_completed: bool,
@@ -169,6 +170,7 @@ impl PublicReadonly {
     fn from_settings(settings: &AppSettings) -> Self {
         Self {
             settings_schema_version: settings.settings_schema_version,
+            smart_paste_migration_version: settings.smart_paste_migration_version,
             whats_new_last_seen_version: settings.whats_new_last_seen_version.clone(),
             selected_model: settings.selected_model.clone(),
             onboarding_completed: settings.onboarding_completed,

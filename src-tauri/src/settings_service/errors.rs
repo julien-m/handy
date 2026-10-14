@@ -75,6 +75,10 @@ pub enum ValidationReason {
     ReplacementsDomain,
     /// Items of a domain list or exchange input failed validation; `details.items` locates them.
     InvalidItems,
+    /// Smart paste is not selectable on this platform or in this build (feature 007).
+    SmartPasteUnavailable,
+    /// On macOS, smart paste replaces the beta reliable paste (feature 007).
+    ReliablePasteReplaced,
     /// The setting or operation needs a platform capability this build does not have.
     UnsupportedPlatform,
     /// A dictation session (recording, processing, a held or remembered shortcut) is running;
@@ -102,6 +106,12 @@ impl ValidationReason {
             Self::InvalidInput => "Input does not follow the exchange format.",
             Self::ReplacementsDomain => "Use handy settings replacements.",
             Self::InvalidItems => "Items failed validation; see details.items.",
+            Self::SmartPasteUnavailable => {
+                "Smart paste is not available on this platform or in this build."
+            }
+            Self::ReliablePasteReplaced => {
+                "On macOS, smart paste replaces the beta reliable paste."
+            }
             Self::UnsupportedPlatform => "This setting is not supported on this platform.",
             Self::ShortcutSessionBusy => "A dictation is in progress; retry when it ends.",
         }

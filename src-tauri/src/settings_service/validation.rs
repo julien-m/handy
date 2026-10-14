@@ -133,6 +133,7 @@ pub(super) fn validate_value(
     context: &ValidationContext<'_>,
 ) -> Result<SettingsMutation, SettingsError> {
     let value = validate_type(entry, &candidate)?;
+    validate_rollout(entry.key, &candidate)?;
     if !entry.allowed_values.is_empty()
         && !candidate
             .as_str()
@@ -158,6 +159,16 @@ pub(super) fn validate_value(
         key: entry.key,
         value,
     })
+}
+
+/// Platform and rollout refusals of smart paste (feature 007), checked before the allowed values
+/// so they name their own reason.
+fn validate_rollout(key: &'static str, candidate: &serde_json::Value) -> Result<(), SettingsError> {
+    use crate::smart_paste::setting_policy::{refusal, Rollout};
+    match refusal(key, candidate, Rollout::CURRENT) {
+        Some(reason) => Err(SettingsError::validation(key, reason)),
+        None => Ok(()),
+    }
 }
 
 fn validate_context(

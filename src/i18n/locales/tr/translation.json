@@ -339,6 +339,7 @@
         "description": "Metnin nasıl ekleneceğini seçin. Doğrudan: sistem girişiyle yazmayı simüle eder. Yok: yapıştırmayı atlar, sadece geçmişi/panoyu günceller.",
         "options": {
           "clipboard": "Pano ({{modifier}}+V)",
+          "smartPaste": "Akıllı yapıştırma",
           "clipboardCtrlShiftV": "Pano (Ctrl+Shift+V)",
           "clipboardShiftInsert": "Pano (Shift+Insert)",
           "direct": "Doğrudan",
@@ -757,5 +758,8 @@
     "learnMore": "Bu nasıl düzeltilir",
     "recorderBlocked": "Şu anda kısayol kaydedilemiyor — macOS Secure Input tuş olaylarını engelliyor. Önce Secure Input uyarısını giderin.",
     "dismiss": "Kapat"
+  },
+  "smartPaste": {
+    "handOver": "Metin uzak ekran için panoya yerleştirildi"
   }
 }

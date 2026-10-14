@@ -1,0 +1,22 @@
+{
+  "feature_slug": "repo",
+  "receipt_path": ".specs/conventions/runs/20261014T044643Z/receipt.json",
+  "run_id": "20261014T044643Z",
+  "verdict": "PASS",
+  "baseline": {
+    "baselined_count": 657,
+    "new_count": 0,
+    "path": ".specs/conventions/baseline.json",
+    "resolved_count": 3525,
+    "sha256": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe"
+  },
+  "blockers": [],
+  "violations_count": 506,
+  "baselined_violations_count": 657,
+  "baseline_sha256_before": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe",
+  "baseline_sha256_after": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe",
+  "baseline_unchanged": true,
+  "trashed_run_dirs": [
+    "20261014T044643Z"
+  ]
+}

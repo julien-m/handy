@@ -129,6 +129,7 @@
             "paste_delay_ms",
             "paste_delay_after_ms",
             "reliable_paste",
+            "smart_paste_migration_version",
             "typing_tool",
             "external_script_path",
             "filler_word_removal_enabled",
@@ -202,6 +203,7 @@
                   "paste_delay_ms",
                   "paste_delay_after_ms",
                   "reliable_paste",
+                  "smart_paste_migration_version",
                   "typing_tool",
                   "external_script_path",
                   "filler_word_removal_enabled",
@@ -866,6 +868,11 @@
         "show_whats_new_on_update": {
           "type": "boolean"
         },
+        "smart_paste_migration_version": {
+          "maximum": 18446744073709551615,
+          "minimum": 0,
+          "type": "integer"
+        },
         "sound_theme": {
           "enum": [
             "marimba",
@@ -993,6 +1000,7 @@
         "paste_delay_ms",
         "paste_delay_after_ms",
         "reliable_paste",
+        "smart_paste_migration_version",
         "typing_tool",
         "external_script_path",
         "filler_word_removal_enabled",
@@ -1724,6 +1732,20 @@
       "runtime_effect": "none",
       "secret": false,
       "value_type": "boolean"
+    },
+    {
+      "allowed_values": [],
+      "key": "smart_paste_migration_version",
+      "nullable": false,
+      "owner_domain": "output",
+      "range": {
+        "max": 4294967295.0,
+        "min": 0.0
+      },
+      "read_only": true,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "integer"
     },
     {
       "allowed_values": [

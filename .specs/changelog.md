@@ -5,6 +5,20 @@
 
 ---
 
+## 2026-10-14 — [Feature 007] Smart paste wired into dictation through 006's insertion contract (006 guard context, method_outcome, disposition, Enter and late-read hooks), behind the smart-paste-dispatch gate closed by default; dev (004, 006) merged; native AC-016 matrix pending with Julien
+
+## 2026-10-14 — [Feature 007] Plan refined: history follows the 006 rule (no WAV gate, text-only row when the WAV fails, Julien's decision), delivered 008 settings names replace LiveSettingsEffects and commit_mutation as live commit
+<!-- finalize:spec-refine:2026-10-14:d424af86 -->
+
+## 2026-10-14 — [Feature 007] Smart paste settings on the 008 service: macOS migration, default, shared refusal, output CLI and selector implemented behind a rollout gate, inactive until step 7 wires the dictation dispatch; certification pending
+
+## 2026-10-13 — [Feature 007] Smart paste fix round 1: current-host-only restoration, concealed/transient content never restored (Julien's decision on AC-009), audit A/B minors fixed or documented; release blockers R-1/R-2 still open
+
+## 2026-10-13 — [Feature 007] Smart paste core implemented (steps 1–6): verified AX insertion, bounded multi-type snapshot helper, on-demand provider, serialized coordinator, per-app/keyboard strategies; settings (008) and destination wiring (006) pending; certification pending
+
+## 2026-10-13 — Smart Paste: record native feasibility and explicit cache/late-write limits; settings integration awaits 008
+<!-- finalize:spec-feature:2026-10-13:72e02927 -->
+
 ## 2026-10-14 — [Feature 006] Synced with `dev` (004 merged, one closed settings error reason enum shared by 004 and 006); settings UI command `change_return_to_dictation_app_setting` with a typed `unsupported_platform` refusal handled by the store; history rule delivered (text-only row when the WAV fails, nullable `file_name` migration shared with 005, `history_status` from the actual `save_entry` result). Full `cargo test` 681 passed / 20 ignored, frontend checks and repository conventions PASS; no visual UI, no AC certified.
 
 ## 2026-10-14 — [Feature 002] Integrated with the merged settings CLI (008): `handy settings replacements` (list, add, update/edit, remove/delete, import with dry run, export) on the shared rule-set edits, one compiled matcher per committed revision applied from the next dictation, settings window transaction commands (no UI yet), output-stage harness, and paged/staged transfer beyond one 1 MiB message. Full `cargo test` 642 passed / 0 failed / 19 ignored; conventions PASS, new 0; macOS real-app CLI check (debug). UI, real dictation, M1, Windows/Linux pending.
