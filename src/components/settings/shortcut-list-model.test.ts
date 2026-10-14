@@ -12,7 +12,6 @@ import {
   canAddShortcut,
   canRemoveShortcut,
   describeEditError,
-  describeShortcutFailure,
   keepStoredRefusals,
   limitsFor,
   promptIdOf,
@@ -22,11 +21,6 @@ import {
   shortcutsOf,
   storedConflictFor,
 } from "./shortcut-list-model";
-import {
-  ShortcutEditFailure,
-  bindingFailure,
-} from "../../lib/shortcut-edit-failure";
-import { SettingsCommandFailure } from "../../stores/settings-errors";
 
 const binding = (additional?: string[]): ShortcutBinding => ({
   id: "transcribe",
@@ -127,38 +121,6 @@ assert.equal(
 );
 assert.equal(storedConflictFor(conflicts, "transcribe", "f13"), undefined);
 
-// Legacy recorders (cancel): a typed refusal is translated, naming the
-// owning action; anything else keeps its raw text.
-const cancelConflict = bindingFailure({
-  success: false,
-  binding: null,
-  error: "Conflicts with 'option+space' of Transcribe",
-  edit_error: {
-    code: "shortcut_conflict",
-    conflict: {
-      kind: "duplicate",
-      owning_action: "transcribe",
-      owning_shortcut: "option+space",
-    },
-  },
-});
-assert.ok(cancelConflict instanceof ShortcutEditFailure);
-assert.deepEqual(describeShortcutFailure(cancelConflict, actionName), {
-  key: "settings.general.shortcut.list.errors.conflict",
-  params: { action: "name:transcribe", shortcut: "option+space" },
-});
-const untyped = bindingFailure({
-  success: false,
-  binding: null,
-  error: "Binding not found",
-  edit_error: null,
-});
-assert.ok(!(untyped instanceof ShortcutEditFailure));
-assert.equal(
-  describeShortcutFailure(untyped, actionName),
-  "Error: Binding not found",
-);
-
 // Enabling post-processing succeeds although the system refuses one of its
 // shortcuts: that row carries a warning and stays editable.
 const refused: RefusedShortcut[] = [
@@ -198,8 +160,8 @@ assert.deepEqual(
 );
 assert.deepEqual(keepStoredRefusals(refused, {}), []);
 
-// A refusal of the settings service is translated from its typed code, in
-// the list response and when a legacy recorder throws it.
+// A refusal of the settings service is translated from its typed code in the
+// list response.
 const persistenceFailed = {
   code: "persistence_failed",
   message: "Settings persistence failed.",
@@ -211,13 +173,6 @@ const persistenceFailed = {
 assert.deepEqual(
   describeEditError(
     { code: "settings_refused", error: persistenceFailed },
-    actionName,
-  ),
-  { key: "errors.settings.persistenceFailed", params: {} },
-);
-assert.deepEqual(
-  describeShortcutFailure(
-    new SettingsCommandFailure(persistenceFailed),
     actionName,
   ),
   { key: "errors.settings.persistenceFailed", params: {} },

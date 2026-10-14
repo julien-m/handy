@@ -54,8 +54,10 @@ const { ShortcutList } = await import("./shortcut-list");
 const { LegacyConflictAlert, SystemRefusalAlert } = await import(
   "./shortcut-list-alerts"
 );
-const { DraftRow } = await import("./shortcut-list-rows");
-const { shortcutTestIds } = await import("./shortcut-list-feedback");
+const { DraftRow, ListMessages } = await import("./shortcut-list-rows");
+const { describeStartFailure, shortcutTestIds } = await import(
+  "./shortcut-list-feedback"
+);
 
 const count = (markup: string, text: string): number =>
   markup.split(text).length - 1;
@@ -215,14 +217,22 @@ describe("alerts (shortcut-settings-conflict)", () => {
 });
 
 describe("draft recorder", () => {
-  const draft = (phase: "recording" | "invalid", shortcut: string | null) => ({
-    state: { phase, shortcut, refusal: null },
+  const draft = (
+    phase: "recording" | "blocked" | "invalid",
+    shortcut: string | null,
+  ) => ({
+    state: { phase, shortcut, refusal: null, startFailure: null },
     recordRequest: 0,
     open: () => undefined,
     capture: noop,
     stop: () => undefined,
     commit: noop,
     discard: () => undefined,
+    recorder: {
+      requestHandled: () => undefined,
+      started: () => undefined,
+      startFailed: () => undefined,
+    },
   });
   const ids = shortcutTestIds("transcribe");
 
@@ -261,5 +271,38 @@ describe("draft recorder", () => {
         'data-testid="shortcut-settings-dictation-recording-discard"',
       ),
     ).toBe(true);
+  });
+
+  test("a recorder the system refused to start stays empty and offers Discard", () => {
+    const markup = renderToStaticMarkup(
+      <DraftRow
+        actionId="transcribe"
+        ids={ids}
+        draft={draft("blocked", null)}
+        busy={false}
+      />,
+    );
+    expect(markup.includes('data-phase="blocked"')).toBe(true);
+    expect(markup.includes('data-validity="empty"')).toBe(true);
+    expect(markup.includes('data-state="idle"')).toBe(true);
+    expect(
+      markup.includes(
+        'data-testid="shortcut-settings-dictation-recording-discard"',
+      ),
+    ).toBe(true);
+  });
+});
+
+describe("list messages", () => {
+  test("the reason a recorder could not start is shown inline", () => {
+    const markup = renderToStaticMarkup(
+      <ListMessages
+        ids={shortcutTestIds("transcribe")}
+        conflictsFailed={false}
+        error={describeStartFailure({ kind: "secure_input" })}
+      />,
+    );
+    expect(markup.includes('role="alert"')).toBe(true);
+    expect(markup.includes("secureInput.recorderBlocked")).toBe(true);
   });
 });

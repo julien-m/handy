@@ -7,8 +7,16 @@ import { AlertTriangle, X } from "lucide-react";
 import type { ShortcutEdit } from "@/bindings";
 import { ResetButton } from "../ui/ResetButton";
 import { ShortcutInput } from "./ShortcutInput";
-import { ShortcutChipContext, shortcutChipClass } from "./shortcut-chip";
-import { type AddControlState, recorderValidity } from "./shortcut-draft-model";
+import {
+  type ShortcutChipControl,
+  ShortcutChipContext,
+  shortcutChipClass,
+} from "./shortcut-chip";
+import {
+  type AddControlState,
+  type DraftState,
+  recorderValidity,
+} from "./shortcut-draft-model";
 import {
   MAX_SHORTCUTS_PER_ACTION,
   type TranslatedMessage,
@@ -81,10 +89,17 @@ export interface ShortcutRowProps {
   conflict?: TranslatedMessage;
   /** The system refused this shortcut: it is stored but does nothing. */
   refusal?: TranslatedMessage;
-  /** Non-zero: start recording this row ("Change"). */
+  /** Non-zero: start recording this row ("Change"), once. */
   recordRequest: number;
+  onRequestHandled: (request: number) => void;
   onEdit: (edit: ShortcutEdit) => Promise<unknown>;
 }
+
+/** A stored row's chip: started once by "Change", never on its own. */
+const rowControl = (props: ShortcutRowProps): ShortcutChipControl => ({
+  recordRequest: props.recordRequest,
+  onRequestHandled: props.onRequestHandled,
+});
 
 /** One stored shortcut: record it again to replace it, or remove it. */
 export const ShortcutRow: React.FC<ShortcutRowProps> = (props) => {
@@ -98,9 +113,7 @@ export const ShortcutRow: React.FC<ShortcutRowProps> = (props) => {
       {props.conflict && (
         <RowWarning message={props.conflict} testId={ids.conflictIcon} />
       )}
-      <ShortcutChipContext.Provider
-        value={{ recordRequest: props.recordRequest }}
-      >
+      <ShortcutChipContext.Provider value={rowControl(props)}>
         <ShortcutInput
           shortcutId={props.actionId}
           value={shortcut}
@@ -135,37 +148,43 @@ interface DraftRowProps {
   busy: boolean;
 }
 
+/** What the draft recorder is told and reports back. */
+const draftControl = (draft: ShortcutDraft): ShortcutChipControl => ({
+  recordRequest: draft.recordRequest,
+  onRequestHandled: draft.recorder.requestHandled,
+  validity: recorderValidity(draft.state),
+  onRecordingChange: (isRecording) =>
+    isRecording ? draft.recorder.started() : draft.stop(),
+  onStartFailed: draft.recorder.startFailed,
+});
+
+/**
+ * Whether the draft offers Discard: once something was recorded, and when
+ * the recorder could not start (the only other exit is leaving the section).
+ */
+const hasDiscard = ({ phase, shortcut }: DraftState): boolean =>
+  shortcut !== null || phase === "blocked";
+
 // @spec AC-001: Adding records with the existing recorder — .specs/features/004-multiple-dictation-shortcuts/spec.md#ac-001
 /** The recorder opened by Add: empty, then valid or invalid once checked. */
-export const DraftRow: React.FC<DraftRowProps> = ({
-  actionId,
-  ids,
-  draft,
-  busy,
-}) => {
+export const DraftRow: React.FC<DraftRowProps> = (props) => {
   const { t } = useTranslation();
+  const { ids, draft } = props;
   const { state } = draft;
   if (state.phase === "closed") return null;
-  const control = {
-    recordRequest: draft.recordRequest,
-    validity: recorderValidity(state),
-    onRecordingChange: (isRecording: boolean) => {
-      if (!isRecording) draft.stop();
-    },
-  };
   return (
     <div className="flex items-center gap-1" data-phase={state.phase}>
-      <ShortcutChipContext.Provider value={control}>
+      <ShortcutChipContext.Provider value={draftControl(draft)}>
         <ShortcutInput
-          shortcutId={actionId}
+          shortcutId={props.actionId}
           value={state.shortcut}
-          disabled={busy || state.phase === "committing"}
+          disabled={props.busy || state.phase === "committing"}
           label={t(`${LIST_KEY}.change`)}
           testId={ids.recording}
           onCapture={draft.capture}
         />
       </ShortcutChipContext.Provider>
-      {state.shortcut !== null && (
+      {hasDiscard(state) && (
         <RowRemoveButton
           label={t(`${LIST_KEY}.discard`)}
           isEnabled={state.phase !== "committing"}

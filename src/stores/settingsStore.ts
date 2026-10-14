@@ -17,7 +17,6 @@ import type {
 } from "@/bindings";
 import { commands } from "@/bindings";
 import { toast } from "sonner";
-import { bindingFailure } from "@/lib/shortcut-edit-failure";
 import { keepStoredRefusals } from "@/components/settings/shortcut-list-model";
 import i18n from "@/i18n";
 import {
@@ -66,8 +65,6 @@ interface SettingsStore {
   refreshSettings: () => Promise<void>;
   refreshAudioDevices: () => Promise<void>;
   refreshOutputDevices: () => Promise<void>;
-  updateBinding: (id: string, binding: string) => Promise<void>;
-  resetBinding: (id: string) => Promise<void>;
   editBindingShortcuts: (
     id: string,
     edit: ShortcutEdit,
@@ -427,103 +424,6 @@ export const useSettingsStore = create<SettingsStore>()(
         if (defaultValue !== undefined) {
           await get().updateSetting(key, defaultValue as any);
         }
-      }
-    },
-
-    // Update a specific binding
-    updateBinding: async (id, binding) => {
-      const { settings, setUpdating, revision: revisionAtStart } = get();
-      const updateKey = `binding_${id}`;
-      let refusal: SettingsCommandFailure | null = null;
-      const originalBinding = settings?.bindings?.[id]?.current_binding;
-
-      setUpdating(updateKey, true);
-
-      try {
-        // Optimistic update
-        set((state) => ({
-          settings: state.settings
-            ? {
-                ...state.settings,
-                bindings: {
-                  ...state.settings.bindings,
-                  [id]: {
-                    ...state.settings.bindings?.[id]!,
-                    current_binding: binding,
-                  },
-                },
-              }
-            : null,
-        }));
-
-        const result = await commands.changeBinding(id, binding);
-
-        // Check if the command executed successfully
-        if (result.status === "error") {
-          refusal = new SettingsCommandFailure(result.error);
-          throw new Error(i18n.t(settingsErrorKey(result.error)));
-        }
-
-        // Check if the binding change was successful; a typed refusal is
-        // thrown as ShortcutEditFailure so the caller can translate it.
-        if (!result.data.success) {
-          throw bindingFailure(result.data);
-        }
-      } catch (error) {
-        console.error(`Failed to update binding ${id}:`, error);
-
-        // A committed or possibly committed binding is reread; a refusal is rolled back.
-        const recovery = failedCommandRecovery(
-          refusal ?? error,
-          revisionAtStart,
-          get().revision,
-        );
-        if (recovery === "refresh") {
-          await get().refreshSettings();
-        } else if (originalBinding && get().settings) {
-          set((state) => ({
-            settings: state.settings
-              ? {
-                  ...state.settings,
-                  bindings: {
-                    ...state.settings.bindings,
-                    [id]: {
-                      ...state.settings.bindings?.[id]!,
-                      current_binding: originalBinding,
-                    },
-                  },
-                }
-              : null,
-          }));
-        }
-
-        // Re-throw to let the caller know it failed
-        throw error;
-      } finally {
-        setUpdating(updateKey, false);
-      }
-    },
-
-    // Reset a specific binding. A refusal (the default now belongs to
-    // another action) is thrown, as by updateBinding, for the caller to show.
-    resetBinding: async (id) => {
-      const { setUpdating, refreshSettings } = get();
-      const updateKey = `binding_${id}`;
-
-      setUpdating(updateKey, true);
-
-      try {
-        const result = await commands.resetBinding(id);
-        throwIfSettingsError(result);
-        if (result.status === "ok" && !result.data.success) {
-          throw bindingFailure(result.data);
-        }
-        await refreshSettings();
-      } catch (error) {
-        console.error(`Failed to reset binding ${id}:`, error);
-        throw error;
-      } finally {
-        setUpdating(updateKey, false);
       }
     },
 

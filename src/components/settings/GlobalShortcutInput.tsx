@@ -1,358 +1,171 @@
-import React, { useEffect, useState, useRef } from "react";
-import { useTranslation } from "react-i18next";
+// Shortcut recorder of the Tauri keyboard implementation: while its chip
+// records, every global shortcut is suspended and the keys pressed in the
+// settings window are collected; once all are released the combination is
+// handed to `onCapture`, which saves it and reports refusals. Leaving the
+// chip (blur, or a click elsewhere) cancels without saving.
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
+  type OSType,
   getKeyName,
-  formatKeyCombination,
   normalizeKey,
 } from "../../lib/utils/keyboard";
-import { ResetButton } from "../ui/ResetButton";
-import { SettingContainer } from "../ui/SettingContainer";
-import { useSettings } from "../../hooks/useSettings";
-import { useShortcutFailureText } from "../../hooks/useShortcutFailureText";
 import { useOsType } from "../../hooks/useOsType";
 import { commands } from "@/bindings";
-import { toast } from "sonner";
-import { ShortcutChip } from "./shortcut-chip";
+import {
+  ShortcutChip,
+  useCancelOnClickOutside,
+  useChipText,
+} from "./shortcut-chip";
 
 interface GlobalShortcutInputProps {
-  descriptionMode?: "inline" | "tooltip";
-  grouped?: boolean;
   shortcutId: string;
   disabled?: boolean;
-  onCapture?: (shortcut: string) => Promise<void>;
+  /** Receives the recorded combination; saving it is the caller's job. */
+  onCapture: (shortcut: string) => Promise<void>;
+  /** The shortcut shown on the chip; null shows the add label. */
   value?: string | null;
   label?: string;
   testId?: string;
 }
 
-export const GlobalShortcutInput: React.FC<GlobalShortcutInputProps> = ({
-  descriptionMode = "tooltip",
-  grouped = false,
-  shortcutId,
-  disabled = false,
-  onCapture,
-  value = null,
-  label,
-  testId,
-}) => {
-  const { t } = useTranslation();
-  const { getSetting, updateBinding, resetBinding, isUpdating, isLoading } =
-    useSettings();
-  const failureText = useShortcutFailureText();
-  const [keyPressed, setKeyPressed] = useState<string[]>([]);
-  const [recordedKeys, setRecordedKeys] = useState<string[]>([]);
-  const [editingShortcutId, setEditingShortcutId] = useState<string | null>(
-    null,
-  );
-  const [originalBinding, setOriginalBinding] = useState<string>("");
-  const shortcutRefs = useRef<Map<string, HTMLElement | null>>(new Map());
+/** Keys held down and every key recorded during one capture. */
+interface CaptureKeys {
+  pressed: string[];
+  recorded: string[];
+}
+
+const NO_KEYS: CaptureKeys = { pressed: [], recorded: [] };
+
+const MODIFIERS = [
+  "ctrl",
+  "control",
+  "shift",
+  "alt",
+  "option",
+  "meta",
+  "command",
+  "cmd",
+  "super",
+  "win",
+  "windows",
+];
+
+/** Stored syntax of the recorded keys: modifiers first, then the main key. */
+const combinationOf = (recorded: ReadonlyArray<string>): string => {
+  const isModifier = (key: string) => MODIFIERS.includes(key.toLowerCase());
+  return [...recorded]
+    .sort((a, b) => Number(isModifier(b)) - Number(isModifier(a)))
+    .join("+");
+};
+
+const keyOf = (event: KeyboardEvent, osType: OSType): string =>
+  normalizeKey(getKeyName(event, osType));
+
+const keysAfterDown = (keys: CaptureKeys, key: string): CaptureKeys =>
+  keys.pressed.includes(key)
+    ? keys
+    : {
+        pressed: [...keys.pressed, key],
+        recorded: keys.recorded.includes(key)
+          ? keys.recorded
+          : [...keys.recorded, key],
+      };
+
+/** Window key listeners of one capture step (they see the current keys). */
+const captureListeners = (
+  keys: CaptureKeys,
+  osType: OSType,
+  setKeys: React.Dispatch<React.SetStateAction<CaptureKeys>>,
+  finish: (shortcut: string) => void,
+) => ({
+  keydown: (event: KeyboardEvent) => {
+    if (event.repeat) return; // ignore auto-repeat
+    event.preventDefault();
+    setKeys((current) => keysAfterDown(current, keyOf(event, osType)));
+  },
+  keyup: (event: KeyboardEvent) => {
+    event.preventDefault();
+    const key = keyOf(event, osType);
+    const pressed = keys.pressed.filter((held) => held !== key);
+    setKeys((current) => ({ ...current, pressed }));
+    // Every key released: the recorded combination is complete.
+    if (pressed.length === 0 && keys.recorded.length > 0) {
+      finish(combinationOf(keys.recorded));
+    }
+  },
+});
+
+/**
+ * Collects keys while `isRecording`; once every key is released, `finish`
+ * receives the combination. Window listeners live as long as the capture.
+ */
+const useKeyCapture = (
+  isRecording: boolean,
+  finish: (shortcut: string) => void,
+): CaptureKeys => {
   const osType = useOsType();
-
-  const bindings = getSetting("bindings") || {};
-
+  const [keys, setKeys] = useState<CaptureKeys>(NO_KEYS);
   useEffect(() => {
-    // Only add event listeners when we're in editing mode
-    if (editingShortcutId === null) return;
-
-    let cleanup = false;
-
-    // Keyboard event listeners
-    const handleKeyDown = async (e: KeyboardEvent) => {
-      if (cleanup) return;
-      if (e.repeat) return; // ignore auto-repeat
-      e.preventDefault();
-
-      // Get the key with OS-specific naming and normalize it
-      const rawKey = getKeyName(e, osType);
-      const key = normalizeKey(rawKey);
-
-      if (!keyPressed.includes(key)) {
-        setKeyPressed((prev) => [...prev, key]);
-        // Also add to recorded keys if not already there
-        if (!recordedKeys.includes(key)) {
-          setRecordedKeys((prev) => [...prev, key]);
-        }
-      }
-    };
-
-    const handleKeyUp = async (e: KeyboardEvent) => {
-      if (cleanup) return;
-      e.preventDefault();
-
-      // Get the key with OS-specific naming and normalize it
-      const rawKey = getKeyName(e, osType);
-      const key = normalizeKey(rawKey);
-
-      // Remove from currently pressed keys
-      setKeyPressed((prev) => prev.filter((k) => k !== key));
-
-      // If no keys are pressed anymore, commit the shortcut
-      const updatedKeyPressed = keyPressed.filter((k) => k !== key);
-      if (updatedKeyPressed.length === 0 && recordedKeys.length > 0) {
-        // Create the shortcut string from all recorded keys
-        // Sort keys so modifiers come first, then the main key
-        const modifiers = [
-          "ctrl",
-          "control",
-          "shift",
-          "alt",
-          "option",
-          "meta",
-          "command",
-          "cmd",
-          "super",
-          "win",
-          "windows",
-        ];
-        const sortedKeys = recordedKeys.sort((a, b) => {
-          const aIsModifier = modifiers.includes(a.toLowerCase());
-          const bIsModifier = modifiers.includes(b.toLowerCase());
-          if (aIsModifier && !bIsModifier) return -1;
-          if (!aIsModifier && bIsModifier) return 1;
-          return 0;
-        });
-        const newShortcut = sortedKeys.join("+");
-
-        if (editingShortcutId && onCapture) {
-          // Capture mode: the caller saves (and reports errors); nothing
-          // was written, so there is nothing to restore.
-          await onCapture(newShortcut);
-          await commands.resumeAllBindings().catch(console.error);
-          setEditingShortcutId(null);
-          setKeyPressed([]);
-          setRecordedKeys([]);
-          setOriginalBinding("");
-        } else if (editingShortcutId && bindings[editingShortcutId]) {
-          try {
-            await updateBinding(editingShortcutId, newShortcut);
-          } catch (error) {
-            console.error("Failed to change binding:", error);
-            toast.error(
-              t("settings.general.shortcut.errors.set", {
-                error: failureText(error),
-              }),
-            );
-
-            // Reset to original binding on error
-            if (originalBinding) {
-              try {
-                await updateBinding(editingShortcutId, originalBinding);
-              } catch (resetError) {
-                console.error("Failed to reset binding:", resetError);
-                toast.error(t("settings.general.shortcut.errors.reset"));
-              }
-            }
-          }
-
-          // Re-register all bindings (the one just committed is already
-          // registered; re-registering it fails cleanly and is ignored)
-          await commands.resumeAllBindings().catch(console.error);
-
-          // Exit editing mode and reset states
-          setEditingShortcutId(null);
-          setKeyPressed([]);
-          setRecordedKeys([]);
-          setOriginalBinding("");
-        }
-      }
-    };
-
-    // Add click outside handler
-    const handleClickOutside = async (e: MouseEvent) => {
-      if (cleanup) return;
-      const activeElement = shortcutRefs.current.get(editingShortcutId);
-      if (activeElement && !activeElement.contains(e.target as Node)) {
-        // Cancel shortcut recording and restore original binding
-        if (editingShortcutId && originalBinding && !onCapture) {
-          try {
-            await updateBinding(editingShortcutId, originalBinding);
-          } catch (error) {
-            console.error("Failed to restore original binding:", error);
-            toast.error(t("settings.general.shortcut.errors.restore"));
-          }
-        }
-        await commands.resumeAllBindings().catch(console.error);
-        setEditingShortcutId(null);
-        setKeyPressed([]);
-        setRecordedKeys([]);
-        setOriginalBinding("");
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
-    window.addEventListener("click", handleClickOutside);
-
+    if (!isRecording) return setKeys(NO_KEYS);
+    const { keydown, keyup } = captureListeners(keys, osType, setKeys, finish);
+    window.addEventListener("keydown", keydown);
+    window.addEventListener("keyup", keyup);
     return () => {
-      cleanup = true;
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
-      window.removeEventListener("click", handleClickOutside);
+      window.removeEventListener("keydown", keydown);
+      window.removeEventListener("keyup", keyup);
     };
-  }, [
-    keyPressed,
-    recordedKeys,
-    editingShortcutId,
-    bindings,
-    originalBinding,
-    updateBinding,
-    osType,
-    onCapture,
-    failureText,
-  ]);
+  }, [isRecording, keys, osType, finish]);
+  return keys;
+};
 
-  // Start recording a new shortcut
-  const startRecording = async (id: string) => {
-    if (editingShortcutId === id) return; // Already editing this shortcut
-
-    // Suspend all bindings so no shortcut fires (or swallows the
-    // keystrokes) while keys are being recorded
-    await commands.suspendAllBindings().catch(console.error);
-
-    // Store the original binding to restore if canceled
-    setOriginalBinding(bindings[id]?.current_binding || "");
-    setEditingShortcutId(id);
-    setKeyPressed([]);
-    setRecordedKeys([]);
-  };
-
-  // Format the current shortcut keys being recorded
-  const formatCurrentKeys = (): string => {
-    if (recordedKeys.length === 0)
-      return t("settings.general.shortcut.pressKeys");
-
-    // Use the same formatting as the display to ensure consistency
-    return formatKeyCombination(recordedKeys.join("+"), osType);
-  };
-
-  // Store references to shortcut elements
-  const setShortcutRef = (id: string, ref: HTMLElement | null) => {
-    shortcutRefs.current.set(id, ref);
-  };
-
-  // Leaving the chip (keyboard blur) cancels capture without saving.
-  const cancelCapture = async () => {
+/**
+ * Recording state of the chip: start suspends every global shortcut so none
+ * fires (or swallows the keys) while recording; stop resumes them.
+ */
+const useRecording = (onCapture: (shortcut: string) => Promise<void>) => {
+  const [isRecording, setIsRecording] = useState(false);
+  const stop = useCallback(async () => {
     await commands.resumeAllBindings().catch(console.error);
-    setEditingShortcutId(null);
-    setKeyPressed([]);
-    setRecordedKeys([]);
-  };
-
-  if (onCapture) {
-    const isEditing = editingShortcutId === shortcutId;
-    const idleText = value
-      ? formatKeyCombination(value, osType)
-      : t("settings.general.shortcut.list.add");
-    return (
-      <ShortcutChip
-        text={isEditing ? formatCurrentKeys() : idleText}
-        isRecording={isEditing}
-        disabled={disabled}
-        label={label}
-        testId={testId}
-        onStart={() => startRecording(shortcutId)}
-        onLeave={cancelCapture}
-        chipRef={(ref) => setShortcutRef(shortcutId, ref)}
-      />
-    );
-  }
-
-  // If still loading, show loading state
-  if (isLoading) {
-    return (
-      <SettingContainer
-        title={t("settings.general.shortcut.title")}
-        description={t("settings.general.shortcut.description")}
-        descriptionMode={descriptionMode}
-        grouped={grouped}
-      >
-        <div className="text-sm text-mid-gray">
-          {t("settings.general.shortcut.loading")}
-        </div>
-      </SettingContainer>
-    );
-  }
-
-  // If no bindings are loaded, show empty state
-  if (Object.keys(bindings).length === 0) {
-    return (
-      <SettingContainer
-        title={t("settings.general.shortcut.title")}
-        description={t("settings.general.shortcut.description")}
-        descriptionMode={descriptionMode}
-        grouped={grouped}
-      >
-        <div className="text-sm text-mid-gray">
-          {t("settings.general.shortcut.none")}
-        </div>
-      </SettingContainer>
-    );
-  }
-
-  const binding = bindings[shortcutId];
-  if (!binding) {
-    return (
-      <SettingContainer
-        title={t("settings.general.shortcut.title")}
-        description={t("settings.general.shortcut.notFound")}
-        descriptionMode={descriptionMode}
-        grouped={grouped}
-      >
-        <div className="text-sm text-mid-gray">
-          {t("settings.general.shortcut.none")}
-        </div>
-      </SettingContainer>
-    );
-  }
-
-  // Get translated name and description for the binding
-  const translatedName = t(
-    `settings.general.shortcut.bindings.${shortcutId}.name`,
-    binding.name,
+    setIsRecording(false);
+  }, []);
+  const start = useCallback(async () => {
+    await commands.suspendAllBindings().catch(console.error);
+    setIsRecording(true);
+    return null;
+  }, []);
+  const finish = useCallback(
+    (shortcut: string) => {
+      // Saving is the caller's job (it reports refusals); the shortcuts
+      // resume once it answered, even if it failed.
+      void onCapture(shortcut).catch(console.error).finally(stop);
+    },
+    [onCapture, stop],
   );
-  const translatedDescription = t(
-    `settings.general.shortcut.bindings.${shortcutId}.description`,
-    binding.description,
-  );
+  return { isRecording, start, stop, finish };
+};
 
+export const GlobalShortcutInput: React.FC<GlobalShortcutInputProps> = (
+  props,
+) => {
+  const chip = useRef<HTMLElement | null>(null);
+  const recording = useRecording(props.onCapture);
+  const { isRecording, stop } = recording;
+  const keys = useKeyCapture(isRecording, recording.finish);
+  useCancelOnClickOutside(isRecording, chip, stop);
+  const keysText = keys.recorded.join("+");
+  const text = useChipText(isRecording, keysText, props.value ?? null);
   return (
-    <SettingContainer
-      title={translatedName}
-      description={translatedDescription}
-      descriptionMode={descriptionMode}
-      grouped={grouped}
-      disabled={disabled}
-      layout="horizontal"
-    >
-      <div className="flex items-center space-x-1">
-        {editingShortcutId === shortcutId ? (
-          <div
-            ref={(ref) => setShortcutRef(shortcutId, ref)}
-            className="px-2 py-1 text-sm font-semibold border border-logo-primary bg-logo-primary/30 rounded-md"
-          >
-            {formatCurrentKeys()}
-          </div>
-        ) : (
-          <div
-            className="px-2 py-1 text-sm font-semibold bg-mid-gray/10 border border-mid-gray/80 hover:bg-logo-primary/10 rounded-md cursor-pointer hover:border-logo-primary"
-            onClick={() => startRecording(shortcutId)}
-          >
-            {formatKeyCombination(binding.current_binding, osType)}
-          </div>
-        )}
-        <ResetButton
-          onClick={() =>
-            resetBinding(shortcutId).catch((error) =>
-              toast.error(
-                t("settings.general.shortcut.errors.set", {
-                  error: failureText(error),
-                }),
-              ),
-            )
-          }
-          disabled={isUpdating(`binding_${shortcutId}`)}
-        />
-      </div>
-    </SettingContainer>
+    <ShortcutChip
+      text={text}
+      isRecording={isRecording}
+      disabled={props.disabled ?? false}
+      label={props.label}
+      testId={props.testId}
+      onStart={recording.start}
+      onLeave={stop}
+      chipRef={(element) => {
+        chip.current = element;
+      }}
+    />
   );
 };

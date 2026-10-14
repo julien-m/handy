@@ -4,27 +4,24 @@ import { GlobalShortcutInput } from "./GlobalShortcutInput";
 import { HandyKeysShortcutInput } from "./HandyKeysShortcutInput";
 
 interface ShortcutInputProps {
-  descriptionMode?: "inline" | "tooltip";
-  grouped?: boolean;
   shortcutId: string;
   disabled?: boolean;
   /**
-   * Capture mode: the recorder hands the recorded combination to this
-   * callback instead of saving it as the action's first shortcut, and
-   * renders only the key chip.
+   * Receives the recorded combination; the caller saves it (through the
+   * shortcut list's edit) and reports refusals.
    */
-  onCapture?: (shortcut: string) => Promise<void>;
-  /** Capture mode: the shortcut shown on the chip; null shows the add label. */
+  onCapture: (shortcut: string) => Promise<void>;
+  /** The shortcut shown on the chip; null shows the add label. */
   value?: string | null;
-  /** Capture mode: accessible name and tooltip of the chip. */
+  /** Accessible name and tooltip of the chip. */
   label?: string;
-  /** Capture mode: stable test identifier of the chip. */
+  /** Stable test identifier of the chip. */
   testId?: string;
 }
 
 /**
- * Wrapper component that selects the appropriate shortcut input implementation
- * based on the keyboard_implementation setting.
+ * Key chip of a shortcut recorder, using the implementation selected by the
+ * keyboard_implementation setting.
  *
  * - "tauri" (default): Uses GlobalShortcutInput with JS keyboard events
  * - "handy_keys": Uses HandyKeysShortcutInput with backend key events

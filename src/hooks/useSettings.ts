@@ -30,8 +30,6 @@ interface UseSettingsReturn {
   refreshOutputDevices: () => Promise<void>;
 
   // Binding-specific actions
-  updateBinding: (id: string, binding: string) => Promise<void>;
-  resetBinding: (id: string) => Promise<void>;
   editBindingShortcuts: (
     id: string,
     edit: ShortcutEdit,
@@ -81,8 +79,6 @@ export const useSettings = (): UseSettingsReturn => {
     refreshSettings: store.refreshSettings,
     refreshAudioDevices: store.refreshAudioDevices,
     refreshOutputDevices: store.refreshOutputDevices,
-    updateBinding: store.updateBinding,
-    resetBinding: store.resetBinding,
     editBindingShortcuts: store.editBindingShortcuts,
     setPostProcessEnabled: store.setPostProcessEnabled,
     refusedShortcuts: store.refusedShortcuts,

@@ -86,6 +86,7 @@ describe("draft life cycle", () => {
       phase: "checking",
       shortcut: "f14",
       refusal: null,
+      startFailure: null,
     });
   });
 
@@ -125,5 +126,58 @@ describe("draft life cycle", () => {
       { type: "checked", shortcut: "f13", refusal: null },
     );
     expect(discarded).toEqual(CLOSED_DRAFT);
+  });
+});
+
+describe("recorder refused to start (macOS Secure Input)", () => {
+  const SECURE_INPUT = { kind: "secure_input" } as const;
+
+  test("an empty draft becomes blocked: empty, Add unavailable, reason kept", () => {
+    const blocked = run(
+      { type: "open" },
+      { type: "startFailed", failure: SECURE_INPUT },
+    );
+    expect(blocked.phase).toBe("blocked");
+    expect(blocked.startFailure).toEqual(SECURE_INPUT);
+    expect(recorderValidity(blocked)).toBe("empty");
+    expect(addControlState(blocked, true, false)).toBe("disabled");
+  });
+
+  test("a blocked draft never closes by itself but Discard closes it", () => {
+    const blocked = run(
+      { type: "open" },
+      { type: "startFailed", failure: SECURE_INPUT },
+    );
+    expect(draftReducer(blocked, { type: "stopped" })).toEqual(blocked);
+    expect(draftReducer(blocked, { type: "discard" })).toEqual(CLOSED_DRAFT);
+  });
+
+  test("a later successful start records again and clears the reason", () => {
+    const restarted = run(
+      { type: "open" },
+      { type: "startFailed", failure: SECURE_INPUT },
+      { type: "recordingStarted" },
+    );
+    expect(restarted.phase).toBe("recording");
+    expect(restarted.startFailure).toBeNull();
+    expect(draftReducer(restarted, { type: "stopped" })).toEqual(CLOSED_DRAFT);
+  });
+
+  test("a refused restart keeps a captured draft and shows the reason", () => {
+    const failure = { kind: "failed", message: "no backend" } as const;
+    const kept = draftReducer(checked(null), { type: "startFailed", failure });
+    expect(kept.phase).toBe("valid");
+    expect(kept.shortcut).toBe("shift+option+space");
+    expect(kept.startFailure).toEqual(failure);
+    expect(addControlState(kept, true, false)).toBe("enabled");
+  });
+
+  test("a closed draft ignores a late start answer", () => {
+    expect(
+      draftReducer(CLOSED_DRAFT, {
+        type: "startFailed",
+        failure: SECURE_INPUT,
+      }),
+    ).toEqual(CLOSED_DRAFT);
   });
 });

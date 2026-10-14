@@ -123,7 +123,20 @@ Differences with the mockup, and why:
 - A captured draft gets a discard button (no exit otherwise).
 - Audit m4 (recorder states, Add, retry) is resolved by this pass; n3 (Tab during HandyKeys capture) is unchanged and stays with the native check.
 
-The legacy non-capture mode of `GlobalShortcutInput`/`HandyKeysShortcutInput` is no longer used by any screen; it is left in place.
+The legacy non-capture mode of `GlobalShortcutInput`/`HandyKeysShortcutInput` is no longer used by any screen; it is left in place (removed by the hardening pass below).
+
+## UI hardening (2026-10-14)
+
+Branch `fix/ui-hardening-b`, from the warnings of the delivery review and audit of the general and output settings. Proofs: [hardening proofs](proofs/claude-hardening/summary.txt).
+
+| Warning | Fix | Test |
+|---|---|---|
+| HandyKeys recorder refused at start (macOS Secure Input): the draft stayed "recording", empty, with Add disabled and no way out | The chip reports a refused start to the list (`onStartFailed`); the draft becomes `blocked`: empty (`data-validity="empty"`), the reason inline (`secureInput.recorderBlocked`, or the backend's message) and Discard offered. A later successful start (`recordingStarted`) records again; a captured draft keeps its combination and only shows the reason | `shortcut-draft-model.test.ts` (5 new), `shortcut-list-feedback.test.ts`, `shortcut-list-render.test.tsx` (blocked row, inline reason) |
+| After `registration_failed` on the draft, Try again disappeared as soon as another edit replaced the list feedback | The system alert of the draft is derived from the draft itself (`draftSystemRefusal`) while it stays refused; Try again commits the draft again. The alert of another edit keeps its own retry. The draft commit is guarded by `canCommit` (no double submit) | `shortcut-list-feedback.test.ts` (4 new) |
+| The "Change" request was never cleared: a row removed then re-added with the same shortcut started recording on mount | One-shot requests (`record-request-model.ts`): consumed once the chip handled them, dropped when the shortcut leaves the list, numbers never reused; the draft's Add request works the same way | `record-request-model.test.ts` (6) |
+| Dead code: non-capture recorders, `updateBinding`/`resetBinding`, `useShortcutFailureText` | Removed after grep (no screen and no test used them); with them `describeShortcutFailure`, `describeSettingsFailure` and `src/lib/shortcut-edit-failure.ts`, which only served those paths. The recorders keep the capture path only; click-outside and chip text are shared in `shortcut-chip.tsx`. The backend commands `change_binding`/`reset_binding` stay (bindings, CLI parity) | `shortcut-list-model.test.ts` (legacy assertions removed), every suite |
+
+Not changed: the native check of the Secure Input refusal (press Add with Secure Input on) stays pending, with Julien.
 
 ## Native evidence
 

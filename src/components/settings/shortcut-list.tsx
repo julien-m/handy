@@ -8,11 +8,15 @@ import { useTranslation } from "react-i18next";
 import type { RefusedShortcut, ShortcutBinding } from "@/bindings";
 import { useSettings } from "../../hooks/useSettings";
 import { SettingContainer } from "../ui/SettingContainer";
-import { addControlState, canCommit } from "./shortcut-draft-model";
+import { addControlState } from "./shortcut-draft-model";
 import {
   type MessageNames,
   type ShortcutTestIds,
+  type SystemRefusal,
   describeRefusal,
+  describeStartFailure,
+  draftSystemRefusal,
+  isSameEdit,
   legacyWarningsOf,
   listHint,
   shortcutTestIds,
@@ -39,12 +43,12 @@ import {
 } from "./shortcut-list-rows";
 import {
   type EditSubmitter,
-  type RowRecordRequest,
+  type RowRecordRequests,
   type ShortcutDraft,
   type StoredConflicts,
   useEditSubmitter,
   useMessageNames,
-  useRowRecordRequest,
+  useRowRecordRequests,
   useShortcutDraft,
   useStoredConflicts,
 } from "./use-shortcut-list";
@@ -67,8 +71,7 @@ interface ShortcutListModel {
   refused: RefusedShortcut[];
   submitter: EditSubmitter;
   draft: ShortcutDraft;
-  rowRequest: RowRecordRequest | null;
-  change: (shortcut: string) => void;
+  rows: RowRecordRequests;
 }
 
 interface ListPartProps {
@@ -87,8 +90,8 @@ const useShortcutList = (actionId: string): ShortcutListModel | null => {
   const names = useMessageNames();
   const submitter = useEditSubmitter(actionId, names);
   const draft = useShortcutDraft(actionId, submitter);
-  const [rowRequest, change] = useRowRecordRequest();
   const binding = bindings?.[actionId];
+  const rows = useRowRecordRequests(binding ? shortcutsOf(binding) : []);
   if (!binding) return null;
   const ids = shortcutTestIds(actionId);
   const refused = refusedShortcuts;
@@ -101,19 +104,20 @@ const useShortcutList = (actionId: string): ShortcutListModel | null => {
     refused,
     submitter,
     draft,
-    rowRequest,
-    change,
+    rows,
   };
 };
 
 /**
- * Inline message under the list: the refusal of the last edit, else the
- * refusal of the checked draft. A system refusal has its own alert.
+ * Inline message under the list: the refusal of the last edit, else why the
+ * draft recorder could not start, else the refusal of the checked draft. A
+ * system refusal has its own alert.
  */
 const inlineError = (list: ShortcutListModel): TranslatedMessage | null => {
   const { feedback } = list.submitter;
   if (feedback.error) return feedback.error;
   const { state } = list.draft;
+  if (state.startFailure) return describeStartFailure(state.startFailure);
   if (state.phase !== "invalid" || state.refusal === null) return null;
   if (state.refusal.code === "registration_failed") return null;
   return describeRefusal(state.refusal, state.shortcut, list.names);
@@ -141,7 +145,7 @@ const ShortcutRows: React.FC<ListPartProps & { busy: boolean }> = ({
   busy,
 }) => {
   const shortcuts = shortcutsOf(list.binding);
-  const { rowRequest } = list;
+  const { rows } = list;
   return (
     <>
       {shortcuts.map((shortcut) => (
@@ -155,9 +159,8 @@ const ShortcutRows: React.FC<ListPartProps & { busy: boolean }> = ({
           busy={busy}
           conflict={conflictOf(list, shortcut)}
           refusal={refusalFor(list.refused, list.actionId, shortcut)}
-          recordRequest={
-            rowRequest?.shortcut === shortcut ? rowRequest.count : 0
-          }
+          recordRequest={rows.requestFor(shortcut)}
+          onRequestHandled={rows.handled}
           onEdit={list.submitter.submit}
         />
       ))}
@@ -213,26 +216,38 @@ const ShortcutColumn: React.FC<ListPartProps> = ({ list, single }) => {
   );
 };
 
-/** Retries the refused draft, else the refused edit. */
-const retryOf = (list: ShortcutListModel) => (): void => {
+/** The system refusal the list shows, and how Try again repeats it. */
+interface ShownRefusal {
+  refusal: SystemRefusal;
+  retry: () => void;
+}
+
+/**
+ * The system refusal to show: the last edit's, unless it is the draft's own
+ * Add, in which case the draft's refusal is shown (it outlives the feedback
+ * of later edits) and Try again commits the draft again.
+ */
+const shownRefusalOf = (list: ShortcutListModel): ShownRefusal | null => {
   const { draft, submitter } = list;
-  if (draft.state.phase === "invalid" && canCommit(draft.state)) {
-    void draft.commit();
-    return;
+  const fromDraft = draftSystemRefusal(draft.state);
+  const fromEdit = submitter.feedback.systemRefusal;
+  if (fromEdit && !isSameEdit(fromEdit.edit, fromDraft?.edit)) {
+    return {
+      refusal: fromEdit,
+      retry: () => void submitter.submit(fromEdit.edit),
+    };
   }
-  const refusal = submitter.feedback.systemRefusal;
-  if (refusal) void submitter.submit(refusal.edit);
+  if (fromDraft)
+    return { refusal: fromDraft, retry: () => void draft.commit() };
+  return null;
 };
 
 /** Inherited conflict and system refusal alerts, inside the same card. */
 const ListAlerts: React.FC<Pick<ListPartProps, "list">> = ({ list }) => {
   const busy = list.submitter.feedback.state === "loading";
-  const refusal = list.submitter.feedback.systemRefusal;
-  const warnings = legacyWarningsOf(
-    list.stored.conflicts,
-    list.actionId,
-    list.names,
-  );
+  const shown = shownRefusalOf(list);
+  const { conflicts } = list.stored;
+  const warnings = legacyWarningsOf(conflicts, list.actionId, list.names);
   return (
     <>
       {warnings.map((warning) => (
@@ -241,16 +256,16 @@ const ListAlerts: React.FC<Pick<ListPartProps, "list">> = ({ list }) => {
           warning={warning}
           ids={list.ids}
           busy={busy}
-          onChange={list.change}
+          onChange={list.rows.change}
         />
       ))}
-      {refusal && (
+      {shown && (
         <SystemRefusalAlert
-          refusal={refusal}
+          refusal={shown.refusal}
           ids={list.ids}
           names={list.names}
           busy={busy}
-          onRetry={retryOf(list)}
+          onRetry={shown.retry}
         />
       )}
     </>
