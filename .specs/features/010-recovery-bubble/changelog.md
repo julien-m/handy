@@ -190,3 +190,20 @@
 - **Author:** Claude Code (spec-refine 010 plan, claude-opus-5-5)
 - The contract now states what the plan states: `ConsumerAck::ReasonPresented` only once the bubble is visible (300 ms budget, otherwise 006's `paste-error` and no bubble); Copy through 007's actor (`ActorMessage::DeliberateCopy`); the late-read diagnostic buffered before admission, through `FanOutDiagnostics`; the typed reason `no_text_field` (no correlation record); the setting refused outside macOS with the gate open (`KEY_CAPABILITIES`, `FocusedFieldDetection`, no toggle) and absent with it closed. The Enter veto row follows the per-element AX timeouts and the foreign-focus rule.
 - The plan sentence that let the plan prevail over the contract is removed: both say the same thing.
+
+## 2026-10-14 — [Plan Update]: round 6 plan review applied (presentation, Copy, setting)
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md and contracts/recovery-contract.md updated)
+- **AC impacted:** None (pre-implementation; AC-001, AC-002, AC-005, AC-006 and AC-007 planning only, IDs unchanged)
+- **Author:** Claude Code (spec-refine 010 plan, claude-opus-5-5)
+- Applies the round 6 independent plan review and the orchestrator decisions of 2026-10-14 taken under Julien's mandate. The spec stays unchanged.
+- **300 ms (blocking, business scope):** a QE target only. The bubble is never cancelled for slowness and no "toast only" fallback exists; `paste-error` appears only when the bubble cannot be presented at all (recovery window absent, or a confirmed creation or show error). New section "Presentation hand-off".
+- **No blocking wait on an async worker:** `consume` copies the transcript, admits the instance and returns at once a oneshot receipt (`ConsumerAck::PresentationPending`); `insert_final_text` awaits it with a 2 s guard (`tokio::time::timeout`) that never cancels the bubble. On expiry the bubble stays scheduled; 006's slot is released only after `Presented`, `Superseded` or a confirmed `Unpresentable`, so no text is lost.
+- **Copy (blocking):** through 007's actor (`ActorMessage::DeliberateCopy`, added by 010, unmarked `write_plain_text`) only when it runs; otherwise `clipboard::write_text_to_clipboard`, the "copy to clipboard" write of `dev`. Both paths are tested in the feature combinations. A failed Copy shows no dedicated message: the bubble stays open with its other actions and the failure is logged without text.
+- **Setting (blocking):** real `AppSettings` field (`Option<bool>`, exposed through Specta), value per state set by normalization without a write (macOS `true` by default, Windows and Linux `false`, closed build absent), gated descriptor row and `OUTPUT_KEYS` entry, `PublicSettings` option always filled in the open build, `FocusedFieldDetection` capability refusing writes outside macOS, toggle only on macOS.
+- **Warnings treated:** `recheck()` rerun after an `Insert` verdict; explicit per-application bundle list including Jump Desktop; Linux decision row no longer shadows macOS `FrontmostAtEnd`; surface arbiter defined in `overlay.rs`, `end_indicator` never hides the recovery window; the indicator's delivered 006 destination notice replaced by the bubble; non-activating foreign panel recorded as a known limit; one AX threshold explained; failed AX spike blocks Implemented pending the user; Close during Copy; Windows and Linux automated runs and the design comparison named; history fault through `HistorySink`; 007 timer boundaries left to 007's suite; Next Action gates; 008 `commit_mutation` statement corrected; owner deltas listed for 006 and 007; decisions under Julien's mandate relied on, with final confirmation.
+- **Fact found in code:** delivered 006 shows a ≥4 s destination notice on the indicator for a failed `insertion-outcome` (`src/overlay/notice-model.ts`), which the spec Clarification of 2026-10-14 does not mention; the plan replaces it with the bubble, as spec AC-001 requires.
+- Other features' documents are now cited as paths, not links.
+- Review: the plan review is stale until an independent reviewer refreshes it.
