@@ -57,3 +57,14 @@
 - **Budget:** each open attempt keeps its full 2 s; the 6 s total limits how many attempts start and reserves the default slot (start by t = 4 s)
 - **Review:** the plan review is stale; an independent reviewer refreshes it
 - **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
+
+## 2026-10-14 — [Plan Update]: make the plan review preparable and declare 006 step 0 for Step 2
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md updated)
+- **AC impacted:** None (pre-implementation)
+- **Review budget:** 008's plan and implementation record are cited as inline paths, not links, so the review no longer loads 008's whole document graph; the untracked program notes are no longer referenced and the D2/D3 names the plan uses are copied into the Summary (from the « Step 0 » section of 006's plan). Plan review preparation at 180,000 characters: 1 batch, no error (was `paired_review_batch_budget_exceeded`)
+- **Step 2:** prerequisite now names 006 step 0 merged (D3 `ErrorReason`, `ErrorItem`, `with_items`, `with_reason`); Summary and Next Action aligned
+- **Review:** the plan review is stale; an independent reviewer refreshes it
+- **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)

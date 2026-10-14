@@ -5,6 +5,10 @@
 
 ---
 
+## 2026-10-14 — [Feature 001] Plan refined: plan review preparable again, 006 step 0 before Step 2
+
+The plan cites 008's plan and implementation record and 006's plan as inline paths instead of links, so its review no longer loads 008's document graph (preparation at 180,000 characters: 1 batch, no error); it no longer references the untracked program notes and copies the D2/D3 names it uses. Step 2's prerequisite now names 006 step 0 (D3 variants). Spec unchanged; the plan review is stale until an independent reviewer refreshes it.
+
 ## 2026-10-14 — [Feature 010] Plan refined: one Enter veto with 009, method outcome from 006, late-read update
 
 The plan consumes `InsertionOutcome.method_outcome` from 006 instead of a separate 007 adapter, updates the existing bubble on 007's late-read diagnostic, shares 006's `RecoveryDisposition` as the single Enter veto (010 only answers `RecoveryPort::before_insertion`), uses the merged 008 names and records Windows/Linux native proof as pending release evidence. Spec unchanged; the plan review is stale until an independent reviewer refreshes it.
