@@ -43,7 +43,7 @@
 | 007 | Smart Paste | Planned | 2026-10-12 | 2026-10-13 | [spec](features/007-smart-paste/spec.md) |
 | 008 | Settings CLI | In Progress | 2026-10-12 | 2026-10-13 | [spec](features/008-settings-cli/spec.md) |
 | 009 | PIN Mode and Enter Rule | Planned | 2026-10-12 | 2026-10-14 | [spec](features/009-pin-mode-and-enter-rule/spec.md) |
-| 010 | Recovery Bubble | Planned | 2026-10-12 | 2026-10-13 | [spec](features/010-recovery-bubble/spec.md) |
+| 010 | Recovery Bubble | Planned | 2026-10-12 | 2026-10-14 | [spec](features/010-recovery-bubble/spec.md) |
 <!-- readme:features:end -->
 
 
@@ -68,6 +68,7 @@
 <!-- readme:activity:start -->
 | Date | Type | Description |
 |---|---|---|
+| 2026-10-14 | Feature | [Feature 010] Plan refined: 008 sources cited as code paths (plan review preparable in 18 batches), shared contracts cited from the 006 plan, pinned reasons aligned with 009 |
 | 2026-10-14 | Feature | [Feature 009] Plan refined: 008 sources cited as code paths (plan review preparable in 20 batches), explicit AC-006 (13/13), DestinationManager::claim_enter, pinned_app_not_running and activation_failed aligned with 010 |
 | 2026-10-14 | Feature | [Feature 006] Plan refined: 008 sources cited as code paths (plan review preparable in 1 batch), four ValidationContext constructions, DestinationManager::claim_enter for 009, pinned_app_not_running reason |
 | 2026-10-14 | Feature | [Feature 005] Plan refined: plan review preparable again, Step 2 ordered, offline prompt list justified |
@@ -77,7 +78,6 @@
 | 2026-10-14 | Feature | [Feature 005] Spec and plan refined: truthful failure notice, merged 008 names, live prompt list |
 | 2026-10-14 | Feature | [Feature 009] Spec and plan refined: pinned badge rule, D2 live pin operations, retired auto_submit, single Enter veto |
 | 2026-10-14 | Feature | [Feature 001] Spec and plan refined: literal "default" migration, live microphone list, full 2-second attempts |
-| 2026-10-14 | Feature | [Feature 006] Plan refined: settings framework Step 0 (D2–D4) and merged 008 names |
 <!-- readme:activity:end -->
 
 ---
@@ -169,3 +169,5 @@
 <!-- finalize:spec-refine:2026-10-14:8325a713 -->
 
 <!-- finalize:spec-refine:2026-10-14:f275f226 -->
+
+<!-- finalize:spec-refine:2026-10-14:61308064 -->

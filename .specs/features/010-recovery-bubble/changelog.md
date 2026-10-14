@@ -82,3 +82,17 @@
 - **008 names:** descriptor row, `OUTPUT_KEYS`, `validate_cli`/`validate_ui`, `tauri_adapter::write`; never-shipped names removed
 - **Review:** the plan review is stale; an independent reviewer refreshes it
 - **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
+
+## 2026-10-14 — [Plan Update]: 008 sources as code paths, pinned reasons aligned with 009
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md updated)
+- **AC impacted:** None (pre-implementation; structural coverage 15/15)
+- **Author:** Claude Code (spec-refine 010 plan, claude-opus-5-5)
+- Applies the round 2 independent review: 008's plan was a normative link ("[008's plan] is historical context") and pulled 008's whole document graph, so the plan review could not be prepared.
+- 008's implementation record and plan are cited as code paths; the shared contracts are cited from the 006 plan and its destination contract only, without the untracked program notes. Plan review preparation at 180,000 characters: 18 batches, no error (round 2 simulation: 33).
+- Pinned reasons aligned with the 009 plan (orchestrator decision 2026-10-14): `pinned_app_not_running` ("<App> is pinned but not open") and `activation_failed` with `destination_source = pinned` ("Could not bring <App> forward"), in the decision table, outcome mapping, sequence diagram and canonical reason table; the Enter claim is 006's `DestinationManager::claim_enter`.
+- Review: the plan review is stale until an independent reviewer refreshes it.
+
+<!-- finalize:spec-refine:2026-10-14:61308064 -->
