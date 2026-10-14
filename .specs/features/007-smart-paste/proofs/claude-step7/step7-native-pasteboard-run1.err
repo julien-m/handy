@@ -1,0 +1,10 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/007-smart-paste/src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 34.00s
+     Running tests/smart_paste_native_pasteboard.rs (/Users/julienm/projects/handy-wt/.target-007/debug/deps/smart_paste_native_pasteboard-bbbceeedf32f4de4)
+native pasteboard scenario failed: capture: SnapshotFailed(NoInventory)
+error: test failed, to rerun pass `--test smart_paste_native_pasteboard`
+
+Caused by:
+  process didn't exit successfully: `/Users/julienm/projects/handy-wt/.target-007/debug/deps/smart_paste_native_pasteboard-bbbceeedf32f4de4 --ignored --test-threads=1 --nocapture` (exit status: 1)

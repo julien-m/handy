@@ -208,6 +208,13 @@ async changePasteMethodSetting(method: string) : Promise<Result<null, SettingsCo
 async getAvailableTypingTools() : Promise<string[]> {
     return await TAURI_INVOKE("get_available_typing_tools");
 },
+/**
+ * Whether the paste method selector offers smart paste: macOS only, and only once dictation
+ * delivers through it (feature 007 rollout gate, `smart_paste::setting_policy`).
+ */
+async isSmartPasteAvailable() : Promise<boolean> {
+    return await TAURI_INVOKE("is_smart_paste_available");
+},
 async changeTypingToolSetting(tool: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_typing_tool_setting", { tool }) };
@@ -1076,6 +1083,68 @@ async updateRecordingRetentionPeriod(period: string) : Promise<Result<null, Sett
 }
 },
 /**
+ * The published rules and their revision.
+ */
+async getWordReplacements() : Promise<ReplacementRulesView> {
+    return await TAURI_INVOKE("get_word_replacements");
+},
+/**
+ * Issues of a draft list (fields, duplicate keys, set size), from the shared validator; empty
+ * when the draft can be saved.
+ */
+async checkWordReplacements(rules: RuleDraft[]) : Promise<RuleIssue[]> {
+    return await TAURI_INVOKE("check_word_replacements", { rules });
+},
+/**
+ * Preview `input` (bulk text or imported file) in `mode` against the published rules, on a
+ * blocking worker: a 1,000,000-byte input never stalls the main thread.
+ * 
+ * # Errors
+ * `limit_exceeded` above 1,000,000 bytes, like Apply: nothing is previewed.
+ */
+async previewWordReplacements(input: string, mode: ImportMode) : Promise<Result<ReplacementPreviewView, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("preview_word_replacements", { input, mode }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Save the complete draft list as the rule set, in one commit at `expected_revision`, and
+ * return the saved rules with their revision.
+ * 
+ * # Errors
+ * A `SettingsCommandError`, nothing saved: `validation_failed` (`invalid_items`; the fields
+ * come from `check_word_replacements`) for an invalid draft, `revision_conflict` with the
+ * current revision when the settings moved on, and every refusal of the settings service.
+ */
+async saveWordReplacements(rules: RuleDraft[], expectedRevision: number) : Promise<Result<ReplacementRulesView, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("save_word_replacements", { rules, expectedRevision }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Apply `input` in `mode` (the bulk editor's Apply or a file import) in one commit at
+ * `expected_revision`, the revision its preview was computed at, and return the saved rules.
+ * 
+ * # Errors
+ * A `SettingsCommandError`, nothing saved: `limit_exceeded` above 1,000,000 bytes,
+ * `validation_failed` (`invalid_items`; the lines come from `preview_word_replacements`), and
+ * the refusals of `save_word_replacements`.
+ */
+async applyWordReplacements(input: string, mode: ImportMode, expectedRevision: number) : Promise<Result<ReplacementRulesView, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("apply_word_replacements", { input, mode, expectedRevision }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
  * Checks if the Mac is a laptop by detecting battery presence
  * 
  * This uses pmset to check for battery information.
@@ -1161,7 +1230,11 @@ microphone_priority?: string[];
  * Which input channel to use on the selected microphone device.
  * None means "average all channels" (original behavior).
  */
-selected_channel?: number | null; clamshell_microphone?: string | null; selected_output_device?: string | null; translate_to_english?: boolean; selected_language?: string; overlay_position?: OverlayPosition; debug_mode?: boolean; log_level?: LogLevel; custom_words?: string[]; model_unload_timeout?: ModelUnloadTimeout; word_correction_threshold?: number; history_limit?: number; recording_retention_period?: RecordingRetentionPeriod; paste_method?: PasteMethod; clipboard_handling?: ClipboardHandling; auto_submit?: boolean; auto_submit_key?: AutoSubmitKey; post_process_enabled?: boolean; post_process_provider_id?: string; post_process_providers?: PostProcessProvider[]; post_process_api_keys?: SecretMap; post_process_models?: Partial<{ [key in string]: string }>; post_process_prompts?: LLMPrompt[]; post_process_selected_prompt_id?: string | null; mute_while_recording?: boolean; append_trailing_space?: boolean; 
+selected_channel?: number | null; clamshell_microphone?: string | null; selected_output_device?: string | null; translate_to_english?: boolean; selected_language?: string; overlay_position?: OverlayPosition; debug_mode?: boolean; log_level?: LogLevel; custom_words?: string[]; 
+/**
+ * Ordered explicit corrections, independent from approximate custom words.
+ */
+word_replacements?: ReplacementRule[]; model_unload_timeout?: ModelUnloadTimeout; word_correction_threshold?: number; history_limit?: number; recording_retention_period?: RecordingRetentionPeriod; paste_method?: PasteMethod; clipboard_handling?: ClipboardHandling; auto_submit?: boolean; auto_submit_key?: AutoSubmitKey; post_process_enabled?: boolean; post_process_provider_id?: string; post_process_providers?: PostProcessProvider[]; post_process_api_keys?: SecretMap; post_process_models?: Partial<{ [key in string]: string }>; post_process_prompts?: LLMPrompt[]; post_process_selected_prompt_id?: string | null; mute_while_recording?: boolean; append_trailing_space?: boolean; 
 /**
  * Return to the application where the dictation started before inserting (006).
  */
@@ -1171,7 +1244,13 @@ return_to_dictation_app?: boolean; app_language?: string; theme?: Theme; experim
  * after the target app actually reads the transcript, instead of after a
  * fixed delay. See `paste_tx`. macOS and Windows only.
  */
-reliable_paste?: boolean; typing_tool?: TypingTool; external_script_path?: string | null; filler_word_removal_enabled?: boolean; custom_filler_words?: string[] | null; 
+reliable_paste?: boolean; 
+/**
+ * Internal marker of the one-time macOS migration to smart paste (feature 007, see
+ * `smart_paste::setting_policy`); read-only on every settings surface. Stores missing it are
+ * treated as never migrated.
+ */
+smart_paste_migration_version?: number; typing_tool?: TypingTool; external_script_path?: string | null; filler_word_removal_enabled?: boolean; custom_filler_words?: string[] | null; 
 /**
  * Fresh installs default from the OS locale; existing stores are migrated
  * in `apply_settings_migrations`.
@@ -1225,6 +1304,10 @@ error: string | null;
  * Typed refusal, which the settings UI translates.
  */
 edit_error: ShortcutEditError | null }
+/**
+ * Candidate rule; new rules receive a durable ID only when committed.
+ */
+export type CandidateRule = { existing_id: RuleId | null; recognized: string; replacement: string }
 /**
  * Script applied to Mandarin and Cantonese output. Other languages are never
  * converted.
@@ -1335,12 +1418,28 @@ export type EngineType =
  * the file, so this one variant covers the whole transcribe-cpp family.
  */
 "TranscribeCpp" | "Parakeet" | "Moonshine" | "MoonshineStreaming" | "SenseVoice" | "GigaAM" | "Canary" | "Cohere"
+/**
+ * Stable field identifier translated at UI/CLI boundaries.
+ */
+export type Field = "id" | "recognized" | "replacement" | "rules" | 
+/**
+ * A whole exchange line, before it can be split into fields.
+ */
+"line"
+/**
+ * An issue in one input field before a rule has an ordered position.
+ */
+export type FieldIssue = { field: Field; kind: IssueKind }
 export type GpuDeviceOption = { id: string; name: string; total_vram_mb: number }
 /**
  * One history row. `file_name` is `None` for a text-only row (no audio recording).
  */
 export type HistoryEntry = { id: number; file_name: string | null; timestamp: number; saved: boolean; title: string; transcription_text: string; post_processed_text: string | null; post_process_prompt: string | null; post_process_requested: boolean }
 export type HistoryUpdatePayload = { action: "added"; entry: HistoryEntry } | { action: "updated"; entry: HistoryEntry } | { action: "deleted"; id: number } | { action: "toggled"; id: number }
+/**
+ * Why a line carries no rule.
+ */
+export type IgnoredLine = "blank" | "comment" | "header"
 /**
  * Result of changing keyboard implementation
  */
@@ -1356,6 +1455,35 @@ reset_bindings: string[];
  * the settings.
  */
 conflicts: StoredShortcutConflict[] }
+/**
+ * How imported rules combine with the saved set (AC-005).
+ */
+export type ImportMode = 
+/**
+ * Update matching keys in place and append new rules in input order.
+ */
+"merge" | 
+/**
+ * The input becomes the whole set; the bulk editor always uses this mode.
+ */
+"replace"
+/**
+ * Stable validation kind; diagnostics never contain user rule text.
+ */
+export type IssueKind = "empty_id" | "duplicate_id" | "too_short" | "too_long" | "forbidden_character" | "leading_comment" | "duplicate_key" | "too_many_rules" | "unicode_data_unavailable" | 
+/**
+ * An exchange line has neither a tab nor a `;` separator.
+ */
+"missing_separator" | 
+/**
+ * The saved base set is itself invalid, so no preview can be applied to it.
+ */
+"invalid_saved_rules" | 
+/**
+ * A control character (C0, DEL, C1) or a bidirectional embedding, override or isolate
+ * control, which the exchange format and the inserted text must not carry.
+ */
+"control_character"
 export type KeyboardDiagnosticReport = { secure_input_enabled: boolean; culprit_pid: number | null; culprit_name: string | null; 
 /**
  * Counts only — key identity is deliberately never captured.
@@ -1450,9 +1578,29 @@ export type OverlayPosition = "top" | "bottom"
  */
 export type OverlayStyle = "none" | "minimal" | "live"
 export type PaginatedHistory = { entries: HistoryEntry[]; has_more: boolean }
-export type PasteMethod = "ctrl_v" | "direct" | "none" | "shift_insert" | "ctrl_shift_v" | "external_script"
+export type PasteMethod = "ctrl_v" | "direct" | "none" | "shift_insert" | "ctrl_shift_v" | "external_script" | "smart_paste"
 export type PermissionAccess = "allowed" | "denied" | "unknown"
 export type PostProcessProvider = { id: string; label: string; base_url: string; allow_base_url_edit?: boolean; models_endpoint?: string | null; supports_structured_output?: boolean }
+/**
+ * One preview row; deletions have no input line number.
+ */
+export type PreviewLine = { line_number: number | null; status: PreviewStatus; ignored: IgnoredLine | null; 
+/**
+ * Existing rule updated, kept unchanged or deleted by this row.
+ */
+rule_id: RuleId | null; 
+/**
+ * Resulting content for add/update/unchanged, removed content for delete.
+ */
+recognized: string | null; replacement: string | null; issues: FieldIssue[]; 
+/**
+ * Other input lines sharing this line's normalized key.
+ */
+duplicate_lines: number[] }
+/**
+ * Per-line outcome shown before Apply (AC-003).
+ */
+export type PreviewStatus = "add" | "update" | "delete" | "unchanged" | "ignored" | "error"
 export type RecordingRetentionPeriod = "never" | "preserve_limit" | "days_3" | "weeks_2" | "months_3"
 /**
  * The single per-dictation decision "insert or recover", and the only Enter veto.
@@ -1464,6 +1612,57 @@ export type RecoveryDisposition = "pending" | "insert" | "recover" | "cancelled"
  * `reason` is the backend's message, in English.
  */
 export type RefusedShortcut = { action_id: string; shortcut: string; reason: string }
+/**
+ * Preview of an input; `candidate` is exactly the ordered set Apply would commit. Rule and
+ * deletion rows are always listed; ignored rows and error rows are each listed up to
+ * `MAX_LISTED_OTHER_LINES` and counted in full, so memory stays bounded for any input.
+ */
+export type ReplacementPreview = { mode: ImportMode; 
+/**
+ * SHA-256 of the exact input text, so Apply can prove it used this input.
+ */
+input_sha256: string; lines: PreviewLine[]; set_issues: IssueKind[]; candidate: CandidateRule[]; 
+/**
+ * The candidate equals the saved set in content, identity and order.
+ */
+is_noop: boolean; 
+/**
+ * Ignored input lines (blank, comment, header), listed or not.
+ */
+ignored_lines: number; 
+/**
+ * Input lines with an error, listed or not.
+ */
+error_lines: number; 
+/**
+ * Input lines left out of `lines`: ignored or error lines beyond the listed bound, and rule
+ * lines after the 1000th (which make the input too large anyway).
+ */
+omitted_lines: number }
+/**
+ * A bulk or import preview against the rules saved at `revision`.
+ */
+export type ReplacementPreviewView = { revision: number; preview: ReplacementPreview }
+/**
+ * Persisted content; normalized keys and positions are derived from the list.
+ */
+export type ReplacementRule = { id: RuleId; recognized: string; replacement: string }
+/**
+ * Saved rules in order, with the settings revision they were read at.
+ */
+export type ReplacementRulesView = { revision: number; rules: ReplacementRule[] }
+/**
+ * One rule of the editor's draft; a new rule has no id until it is saved.
+ */
+export type RuleDraft = { id: RuleId | null; recognized: string; replacement: string }
+/**
+ * Stable opaque rule identity; exchange files carry content rather than IDs.
+ */
+export type RuleId = string
+/**
+ * Ordered rule issue; index is zero-based or absent for a whole-set issue.
+ */
+export type RuleIssue = { rule_index: number | null; field: Field; kind: IssueKind }
 /**
  * Provider API keys: `Debug` is redacted and the public settings projection reports presence only.
  */
@@ -1723,6 +1922,22 @@ export type ValidationReason = "canonical_type" | "canonical_value" | "out_of_ra
  * Domain input does not follow the domain's exchange format.
  */
 "invalid_input" | 
+/**
+ * Collection owned by `handy settings replacements`.
+ */
+"replacements_domain" | 
+/**
+ * Items of a domain list or exchange input failed validation; `details.items` locates them.
+ */
+"invalid_items" | 
+/**
+ * Smart paste is not selectable on this platform or in this build (feature 007).
+ */
+"smart_paste_unavailable" | 
+/**
+ * On macOS, smart paste replaces the beta reliable paste (feature 007).
+ */
+"reliable_paste_replaced" | 
 /**
  * The setting or operation needs a platform capability this build does not have.
  */

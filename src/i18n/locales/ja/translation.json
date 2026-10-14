@@ -339,6 +339,7 @@
         "description": "テキストの挿入方法を選択。「直接」はシステム入力でタイピングをシミュレート。「なし」は貼り付けをスキップし、履歴/クリップボードのみ更新。",
         "options": {
           "clipboard": "クリップボード ({{modifier}}+V)",
+          "smartPaste": "スマート貼り付け",
           "clipboardCtrlShiftV": "クリップボード (Ctrl+Shift+V)",
           "clipboardShiftInsert": "クリップボード (Shift+Insert)",
           "direct": "直接",
@@ -759,5 +760,8 @@
     "learnMore": "解決方法",
     "recorderBlocked": "現在ショートカットを記録できません。macOS の Secure Input がキーイベントをブロックしています。先に Secure Input の警告を解消してください。",
     "dismiss": "閉じる"
+  },
+  "smartPaste": {
+    "handOver": "リモート画面用にテキストをクリップボードに置きました"
   }
 }

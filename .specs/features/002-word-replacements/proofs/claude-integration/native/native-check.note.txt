@@ -1,0 +1,19 @@
+macOS native check of `handy settings replacements` against the real running app.
+
+- Script: native-check.sh.txt (zsh; run from the scratchpad, kept here as text). Proof binary =
+  debug build of this tree with TAURI_CONFIG='{"identifier":"com.pais.handy.proof002"}' (its own
+  single-instance socket, so the user's running Handy is never contacted), copied with its
+  resources to a private `target/debug` layout with a `.cargo-lock` marker (Tauri resolves debug
+  resources only there); HOME isolated (the user's store is never read or written).
+- transcript.txt: every command, exit code, stdout (first 600 bytes) and stderr, with the time and
+  whether the app process was alive. While the app holds the startup lease an offline write is
+  impossible, so every "app alive" success was answered by the running app over its endpoint.
+- Result: list, add, import dry run, import, refused add (2), stale import (3), export to stdout,
+  staged import of a valid input whose escaped form exceeds one 1 MiB message (1000 rules), paged
+  list of that set (1,082,934 bytes of JSON on stdout) and export to a file all answered by the
+  running app; no live-effect failure in its log; rules persisted after the app stopped.
+- Two earlier attempts in the same session crashed the proof app at startup (tray icon resource
+  path `UnknownPath`) because the copied binary was not in a Cargo-like layout; their operations
+  ran offline after the crash and are not evidence. Fixed in the script, not in product code.
+- Not covered here (pending): a real dictation using the committed rules (needs a model and a
+  microphone), the settings window (no 002 UI yet), M1 release latency, Windows and Linux.

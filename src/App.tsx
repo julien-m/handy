@@ -27,6 +27,7 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 import { Sidebar, SidebarSection, SECTIONS_CONFIG } from "./components/Sidebar";
 import { WhatsNewGate } from "./components/whats-new";
 import { useSettings } from "./hooks/useSettings";
+import { useSmartPasteHandOver } from "./hooks/use-smart-paste-hand-over";
 import { useSettingsStore } from "./stores/settingsStore";
 import { commands } from "@/bindings";
 import { getLanguageDirection, initializeRTL } from "@/lib/utils/rtl";
@@ -63,6 +64,7 @@ function App() {
   const [currentSection, setCurrentSection] =
     useState<SidebarSection>("general");
   const { settings, updateSetting } = useSettings();
+  useSmartPasteHandOver();
   const direction = getLanguageDirection(i18n.language);
   const refreshAudioDevices = useSettingsStore(
     (state) => state.refreshAudioDevices,
@@ -150,12 +152,10 @@ function App() {
     };
   }, [t]);
 
-  // Listen for paste failures and show a toast.
-  // The technical error detail is logged to handy.log on the Rust side
-  // (see actions.rs `error!("Failed to paste transcription: ...")`),
-  // so we show a localized, user-friendly message here instead of the raw error.
-  // A destination failure (006) says whether the transcript is in history; it never carries
-  // the transcript itself.
+  // Listen for paste failures and show a localized toast; the technical detail is logged on
+  // the Rust side (`destination::delivery`, smart paste in `smart_paste::app`). A destination
+  // failure (006) says whether the transcript is in history; it never carries the transcript
+  // itself.
   useEffect(() => {
     const unlisten = listen<{ history_saved: boolean } | null>(
       "paste-error",

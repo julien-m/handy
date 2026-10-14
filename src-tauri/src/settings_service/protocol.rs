@@ -117,7 +117,7 @@ pub fn contract_schema() -> Result<serde_json::Value, SettingsError> {
       "error":{"type":"object","additionalProperties":false,"required":["code","message","details"],"properties":{"code":{"enum":code_values},"message":{"type":"string"},"details":{"$ref":"#/$defs/error_details"}}},
       "error_details":{"type":"object","additionalProperties":false,"properties":{"current_revision":{"$ref":"#/$defs/revision"},"outcome":{"enum":["unknown","committed"]},"field":{"enum":keys},"offset":{"type":"integer","minimum":0},"issues":{"type":"array","items":{"type":"object","additionalProperties":false,"required":["field","reason"],"properties":{"field":{"enum":keys},"reason":{"type":"string"}}}},"reason":{"enum":reasons},"items":error_items_schema(&reasons),"action_id":{"type":"string"},"owning_action":{"type":"string"},"owning_shortcut":{"type":"string"},"kind":{"enum":["duplicate","modifier_overlap"]},"limit":{"type":"integer","minimum":1}}},
       "public_settings":{"type":"object","additionalProperties":false,"required":keys,"properties":properties},
-      "provider":public_provider_schema(),"binding":public_binding_schema(),"prompt":public_prompt_schema(),
+      "provider":public_provider_schema(),"binding":public_binding_schema(),"prompt":public_prompt_schema(),"replacement_rule":public_replacement_rule_schema(),
       "operation_request":operation_request_schema()
     },"x-setting-descriptors":metadata}),
     )
@@ -145,24 +145,29 @@ fn public_field_schema(entry: &super::descriptor::SettingDescriptor) -> serde_js
         "post_process_api_keys" => {
             schema["additionalProperties"] = json!({"type":"object","additionalProperties":false,"required":["present"],"properties":{"present":{"type":"boolean"}}});
         }
-        "post_process_providers" => {
-            schema["items"] = json!({"$ref":"#/$defs/provider"});
-        }
         "bindings" => {
             schema["additionalProperties"] = json!({"$ref":"#/$defs/binding"});
-        }
-        "post_process_prompts" => {
-            schema["items"] = json!({"$ref":"#/$defs/prompt"});
         }
         "post_process_models" => {
             schema["additionalProperties"] = json!({"type":"string"});
         }
         _ if entry.value_type == SettingType::Array => {
-            schema["items"] = json!({"type":"string"});
+            schema["items"] = array_items_schema(entry.key);
         }
         _ => {}
     }
     schema
+}
+
+/// Item schema of a public list setting: a closed DTO for structured lists, else strings.
+fn array_items_schema(key: &str) -> serde_json::Value {
+    use serde_json::json;
+    match key {
+        "post_process_providers" => json!({"$ref":"#/$defs/provider"}),
+        "post_process_prompts" => json!({"$ref":"#/$defs/prompt"}),
+        "word_replacements" => json!({"$ref":"#/$defs/replacement_rule"}),
+        _ => json!({"type":"string"}),
+    }
 }
 
 fn apply_intrinsic_constraints(
@@ -205,6 +210,10 @@ fn public_binding_schema() -> serde_json::Value {
 }
 fn public_prompt_schema() -> serde_json::Value {
     serde_json::json!({"type":"object","additionalProperties":false,"required":["id","name","prompt"],"properties":{"id":{"type":"string"},"name":{"type":"string"},"prompt":{"type":"string"}}})
+}
+
+fn public_replacement_rule_schema() -> serde_json::Value {
+    serde_json::json!({"type":"object","additionalProperties":false,"required":["id","recognized","replacement"],"properties":{"id":{"type":"string"},"recognized":{"type":"string"},"replacement":{"type":"string"}}})
 }
 
 fn operation_request_schema() -> serde_json::Value {

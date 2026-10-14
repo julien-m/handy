@@ -1,0 +1,11 @@
+    Blocking waiting for file lock on artifact directory
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/002-word-replacements/src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 04s
+     Running tests/replacement_cli.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/replacement_cli-148d84f95c5578a9)
+     Running tests/replacement_exchange.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/replacement_exchange-0f2306b82a1214c0)
+     Running tests/replacement_pipeline.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/replacement_pipeline-0866a6ae95f8b8f4)
+     Running tests/settings_cli.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_cli-72004ee74b1f5400)
+     Running tests/settings_domains.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_domains-aa5408538288bb37)
+error: test failed, to rerun pass `--test settings_domains`

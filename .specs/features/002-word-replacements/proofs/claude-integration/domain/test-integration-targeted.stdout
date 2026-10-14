@@ -1,0 +1,104 @@
+
+running 14 tests
+test operations::help_lists_every_replacement_action ... ok
+test operations::generic_set_of_the_rules_names_the_replacements_domain ... ok
+test operations::an_empty_recognized_text_exits_two_with_a_stable_code_and_no_write ... ok
+test operations::human_errors_go_to_stderr_with_the_item_locations ... ok
+test exchange::import_files_are_bounded_at_one_million_bytes_and_must_exist ... ok
+test routed::with_an_older_handy_running_changes_are_unavailable_and_write_nothing ... ok
+test exchange::import_dry_run_previews_two_additions_and_leaves_the_rules_unchanged ... ok
+test exchange::stdin_import_accepts_bom_and_crlf_and_refuses_non_utf8_with_its_offset ... ok
+test exchange::an_unwritable_export_destination_is_refused_and_left_unchanged ... ok
+test operations::add_then_edit_alias_keep_the_id_and_position ... ok
+test operations::delete_alias_removes_and_an_unknown_id_is_not_found ... ok
+test operations::a_stale_expected_revision_is_a_conflict_that_writes_nothing ... ok
+test routed::operations_routed_to_a_running_instance_are_committed_and_published_by_it ... ok
+test exchange::export_then_replace_import_reproduces_1_100_and_1000_rules ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.88s
+
+
+running 5 tests
+test reject_invalid_utf8_file_with_byte_offset ... ok
+test import_windows_file_with_bom_and_crlf ... ok
+test merge_import_file_updates_in_place_and_appends ... ok
+test accept_files_up_to_the_cap_and_reject_one_byte_more ... ok
+test export_then_replace_import_reproduces_1_100_and_1000_rules ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+
+running 7 tests
+test current_settings_are_not_read_when_a_capture_exists ... ok
+test cancelled_finalize_never_starts_a_batch_run ... ok
+test stream_and_batch_fallback_share_one_compiled_matcher ... ok
+test missing_capture_falls_back_to_current_settings ... ok
+test usable_stream_text_skips_the_batch_run ... ok
+test rules_captured_at_start_win_over_a_commit_during_recording ... ok
+test next_dictation_uses_the_rules_committed_before_it_started ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 19 tests
+test contract::keys_describe_type_allowed_values_range_and_access ... ok
+test contract::help_lists_generic_operations_in_both_modes ... ok
+test offline::older_handy_holding_its_singleton_refuses_reads_and_writes_without_touching_the_store ... ok
+test contract::human_output_is_readable_and_diagnostics_stay_on_stderr ... ok
+test contract::list_secret_and_read_only_keys_point_to_their_owner ... ok
+test offline::concurrent_cli_writers_lose_no_field ... ok
+test routed::a_live_listener_on_the_endpoint_name_is_never_replaced ... ok
+test offline::unreadable_store_reads_defaults_with_a_stderr_warning_and_refuses_writes ... ok
+test offline::headless_read_never_creates_the_store_and_a_write_persists_one_revision ... ok
+test contract::secrets_and_rejected_arguments_never_reach_stdout_or_stderr ... ok
+test contract::json_get_prints_one_envelope_with_revision_and_every_public_key ... ok
+test contract::stale_expected_revision_reports_the_current_revision ... ok
+test routed::the_running_instance_answers_reads_and_commits_writes_with_its_live_state ... ok
+test routed::the_running_instance_refuses_stale_and_invalid_writes_without_committing ... ok
+test routed::a_stale_endpoint_name_is_reclaimed_under_the_lease_and_removed_at_close ... ok
+test contract::every_owned_error_code_has_its_documented_exit ... ok
+test offline::rejected_write_changes_nothing ... ok
+test offline::held_startup_lease_without_a_reachable_channel_refuses_and_never_writes_offline ... ok
+test routed::no_answer_within_five_seconds_is_an_unknown_outcome_resolved_by_a_new_read ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 10.58s
+
+
+running 8 tests
+test output_set_with_an_older_handy_running_is_unavailable_and_writes_nothing ... ok
+test invalid_output_dry_run_is_refused_with_exit_two_and_no_preview ... ok
+test help_lists_the_generic_operations_and_exactly_the_domains_of_this_build ... ok
+test output_get_reads_exactly_the_output_settings_without_creating_the_store ... ok
+test stale_output_set_is_a_revision_conflict_reported_on_stderr ... ok
+test output_dry_run_previews_with_exit_zero_and_never_writes ... ok
+test output_set_commits_through_the_shared_path ... ok
+test output_set_routed_to_a_running_instance_is_committed_by_the_instance ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.98s
+
+
+running 21 tests
+test contracts::all_documented_error_codes_have_fixed_exits_and_object_details ... ok
+test inventory::independent_access_inventory_covers_7_readonly_1_secret_5_collections_51_scalars ... ok
+test contracts::request_roundtrip_keeps_typed_operation_without_debug_or_secret_diagnostics ... ok
+test contracts::valid_get_keys_set_domain_shapes_roundtrip_with_optional_nulls ... ok
+test request_contracts::every_operation_refuses_fields_owned_by_other_variants ... ok
+test scalars::cli_rejects_noncanonical_boolean_and_out_of_range_numbers ... ok
+test scalars::all_51_scalar_ports_accept_the_same_typed_values ... ok
+test request_contracts::unsupported_request_versions_and_extra_fields_are_rejected_safely ... ok
+test scalars::every_nullable_scalar_preserves_strings_and_accepts_null_clear ... ok
+test scalars::legacy_aliases_are_disk_only_and_build_policy_is_shared ... ok
+test contracts::operation_schema_requires_the_same_variant_fields_as_serde ... ok
+test scalars::numeric_boundaries_and_overflow_have_identical_safe_error_reasons ... ok
+test scalars::unknown_and_protected_keys_are_refused_without_echoing_input ... ok
+test contracts::checked_schema_matches_the_actual_dto_generator ... ok
+test request_contracts::request_schema_closes_each_operation_to_its_own_fields ... ok
+test contracts::generated_schema_matches_wire_shapes_and_descriptor_inventory ... ok
+test inventory::every_actual_stored_field_has_exactly_one_descriptor ... ok
+test request_contracts::all_canonical_public_enums_and_required_keys_match_independent_inventory ... ok
+test request_contracts::public_schema_requires_all_fields_and_preserves_legacy_numeric_reads ... ok
+test contracts::explicit_projection_reports_secret_presence_without_any_raw_canary ... ok
+test inventory::independent_enum_inventory_accepts_every_current_canonical_variant ... ok
+
+test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+

@@ -149,6 +149,12 @@ pub(crate) fn encode(request: &OperationRequest) -> Result<EncodedRequest, Setti
         frame,
     })
 }
+/// True when `operation` fits one request frame once wrapped (same check as `encode`, with an
+/// identity of the real length).
+pub(crate) fn fits_frame(operation: &SettingsOperation) -> bool {
+    let identity = "0".repeat(64);
+    encode(&request(&identity, operation.clone())).is_ok()
+}
 /// Send one encoded request and wait until `deadline`. Once bytes may have left, every failure
 /// (timeout, broken or malformed reply) is `unavailable` with outcome `unknown`: no fallback, no
 /// replay.
@@ -224,9 +230,27 @@ pub(crate) fn answer_connection(
         return;
     };
     let reply = answer(&frame, identity, backend);
-    if let Ok(bytes) = serde_json::to_vec(&reply) {
+    if let Some(bytes) = framed_reply(reply) {
         let _ = write_frame(&mut stream, &bytes);
     }
+}
+/// `reply` encoded for one frame. A reply larger than a frame is never dropped: the client would
+/// wait for its deadline and report an unknown outcome. It becomes `limit_exceeded` with
+/// `details.reason = "reply_too_large"` for the same request. Only reads can grow that large:
+/// every write answers with a bounded report (one key, one rule, import counts).
+fn framed_reply(reply: WireReply) -> Option<Vec<u8>> {
+    let bytes = serde_json::to_vec(&reply).ok()?;
+    if bytes.len() <= MAX_FRAME_BYTES {
+        return Some(bytes);
+    }
+    let error = SettingsError::new(SettingsErrorCode::LimitExceeded)
+        .with_reason(super::errors::ErrorReason::ReplyTooLarge);
+    let refused = WireReply {
+        request_id: reply.request_id,
+        warning: false,
+        envelope: Reply::failure(error).envelope().clone(),
+    };
+    serde_json::to_vec(&refused).ok()
 }
 fn answer(frame: &[u8], identity: &str, backend: &dyn SettingsBackend) -> WireReply {
     let request = serde_json::from_slice::<Value>(frame)

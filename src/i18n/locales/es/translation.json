@@ -339,6 +339,7 @@
         "description": "Elige cómo se inserta el texto. Directo: simula escritura mediante entrada del sistema. Ninguno: omite el pegado, solo actualiza historial/portapapeles.",
         "options": {
           "clipboard": "Portapapeles ({{modifier}}+V)",
+          "smartPaste": "Pegado inteligente",
           "clipboardCtrlShiftV": "Portapapeles (Ctrl+Shift+V)",
           "clipboardShiftInsert": "Portapapeles (Shift+Insert)",
           "direct": "Directo",
@@ -759,5 +760,8 @@
     "learnMore": "Cómo solucionarlo",
     "recorderBlocked": "Ahora mismo no se pueden grabar atajos: Secure Input de macOS está bloqueando los eventos de teclado. Resuelve primero el aviso de Secure Input.",
     "dismiss": "Descartar"
+  },
+  "smartPaste": {
+    "handOver": "Texto colocado en el portapapeles para la pantalla remota"
   }
 }

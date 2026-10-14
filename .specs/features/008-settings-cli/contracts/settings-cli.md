@@ -6,7 +6,7 @@ Inspect [the functional source](../spec.md) and [typed protocol](../../../../src
 
 | Operation | Public contract |
 | --- | --- |
-| `settings get [KEY]` | All known fields (65 since 001) or one recognized field; API keys become provider `{present: bool}` entries |
+| `settings get [KEY]` | All known fields (67 in this build: 001 adds `microphone_priority`, 002 `word_replacements`, 007 `smart_paste_migration_version`) or one recognized field; API keys become provider `{present: bool}` entries |
 | `settings keys` | Key, canonical value type, nullable flag, allowed values/range, read-only/secret flags, owner and runtime effect category |
 | `settings set KEY VALUE` | One scalar value validated by descriptor; list fields name their owner command, readonly/secret fields direct the user to settings UI |
 | `settings set ... --expected-revision N` | Refused with `revision_conflict` (`details.current_revision`) unless the settings are at revision N |

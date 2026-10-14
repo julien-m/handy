@@ -339,6 +339,7 @@
         "description": "Välj hur text infogas. Direkt: simulerar skrivande via systeminmatning. Ingen: hoppar över klistra in, uppdaterar endast historik/urklipp.",
         "options": {
           "clipboard": "Urklipp ({{modifier}}+V)",
+          "smartPaste": "Smart inklistring",
           "clipboardCtrlShiftV": "Urklipp (Ctrl+Shift+V)",
           "clipboardShiftInsert": "Urklipp (Shift+Insert)",
           "direct": "Direkt",
@@ -759,5 +760,8 @@
     "learnMore": "Så här löser du det",
     "recorderBlocked": "Det går inte att spela in kortkommandon just nu — macOS Secure Input blockerar tangenthändelser. Lös varningen om Secure Input först.",
     "dismiss": "Avfärda"
+  },
+  "smartPaste": {
+    "handOver": "Texten har lagts i urklipp för den fjärranslutna skärmen"
   }
 }

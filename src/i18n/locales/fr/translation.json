@@ -339,6 +339,7 @@
         "description": "Choisissez comment le texte est inséré. Direct : simule la frappe via l'entrée système. Aucun : ignore le collage, met uniquement à jour l'historique/presse-papiers.",
         "options": {
           "clipboard": "Presse-papiers ({{modifier}}+V)",
+          "smartPaste": "Collage intelligent",
           "clipboardCtrlShiftV": "Presse-papiers (Ctrl+Shift+V)",
           "clipboardShiftInsert": "Presse-papiers (Shift+Insert)",
           "direct": "Direct",
@@ -759,5 +760,8 @@
     "learnMore": "Comment résoudre ce problème",
     "recorderBlocked": "Impossible d'enregistrer un raccourci pour le moment : Secure Input de macOS bloque les événements clavier. Résolvez d'abord l'avertissement Secure Input.",
     "dismiss": "Ignorer"
+  },
+  "smartPaste": {
+    "handOver": "Texte placé dans le presse-papiers pour l’écran distant"
   }
 }

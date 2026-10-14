@@ -185,10 +185,23 @@ pub fn write_change(
 /// # Errors
 /// Same as `set`, plus the edit's own refusal.
 pub fn edit(app: &AppHandle, edit: SettingsEditFn<'_>) -> Result<LiveCommit, SettingsCommandError> {
+    edit_at(app, edit, None)
+}
+/// Typed edit committed only while the settings are still at `expected` (when given): an editor
+/// that worked from a revision never overwrites a newer one.
+///
+/// # Errors
+/// Same as `edit`, plus `revision_conflict` (with the current revision) when they moved on.
+pub fn edit_at(
+    app: &AppHandle,
+    edit: SettingsEditFn<'_>,
+    expected: Option<Revision>,
+) -> Result<LiveCommit, SettingsCommandError> {
     Ok(sequence::write_edit(
         live(app)?.inner(),
         &TauriEffects(app),
         edit,
+        expected,
     )?)
 }
 /// Scalar write whose fallible native change is prepared first (from the settings published when

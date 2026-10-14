@@ -339,6 +339,7 @@
         "description": "Chọn cách chèn văn bản. Trực tiếp: mô phỏng gõ phím qua đầu vào hệ thống. Không có: bỏ qua dán, chỉ cập nhật lịch sử/clipboard.",
         "options": {
           "clipboard": "Bảng nhớ tạm ({{modifier}}+V)",
+          "smartPaste": "Dán thông minh",
           "clipboardCtrlShiftV": "Bảng nhớ tạm (Ctrl+Shift+V)",
           "clipboardShiftInsert": "Bảng nhớ tạm (Shift+Insert)",
           "direct": "Trực tiếp",
@@ -759,5 +760,8 @@
     "learnMore": "Cách khắc phục",
     "recorderBlocked": "Hiện không thể ghi phím tắt — Secure Input của macOS đang chặn các sự kiện phím. Hãy xử lý cảnh báo Secure Input trước.",
     "dismiss": "Bỏ qua"
+  },
+  "smartPaste": {
+    "handOver": "Đã đặt văn bản vào bộ nhớ tạm cho màn hình từ xa"
   }
 }

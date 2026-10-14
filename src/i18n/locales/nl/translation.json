@@ -339,6 +339,7 @@
         "description": "Kies hoe tekst wordt ingevoegd. 'Direct' simuleert typen via het systeem. 'Geen' slaat het plakken over en werkt alleen de geschiedenis en het klembord bij.",
         "options": {
           "clipboard": "Klembord ({{modifier}}+V)",
+          "smartPaste": "Slim plakken",
           "clipboardCtrlShiftV": "Klembord (Ctrl+Shift+V)",
           "clipboardShiftInsert": "Klembord (Shift+Insert)",
           "direct": "Direct",
@@ -759,5 +760,8 @@
     "learnMore": "Hoe je dit oplost",
     "recorderBlocked": "Sneltoetsen kunnen nu niet worden opgenomen — Secure Input van macOS blokkeert toetsgebeurtenissen. Los eerst de Secure Input-waarschuwing op.",
     "dismiss": "Sluiten"
+  },
+  "smartPaste": {
+    "handOver": "Tekst op het klembord gezet voor het externe scherm"
   }
 }

@@ -88,8 +88,18 @@ fn boolean_cases() -> Vec<(&'static str, &'static str, serde_json::Value)> {
         "vad_enabled",
     ]
     .into_iter()
-    .map(|key| (key, "true", json!(true)))
+    .map(boolean_case)
     .collect()
+}
+/// A valid change of `key`: on, except the macOS beta reliable paste once smart paste replaces
+/// it (feature 007 rollout gate), which can only stay off.
+fn boolean_case(key: &'static str) -> (&'static str, &'static str, serde_json::Value) {
+    let replaced = cfg!(all(target_os = "macos", feature = "smart-paste-dispatch"));
+    if key == "reliable_paste" && replaced {
+        (key, "false", json!(false))
+    } else {
+        (key, "true", json!(true))
+    }
 }
 fn enum_cases() -> Vec<(&'static str, &'static str, serde_json::Value)> {
     [

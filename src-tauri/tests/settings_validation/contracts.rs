@@ -21,7 +21,7 @@ fn explicit_projection_reports_secret_presence_without_any_raw_canary(
     );
     let rendered = serde_json::to_string(&public)?;
     assert!(!rendered.contains("CANARY_"));
-    assert_eq!(public.as_object().ok_or("public object")?.len(), 65);
+    assert_eq!(public.as_object().ok_or("public object")?.len(), 67);
     let envelope = serde_json::to_value(SettingsEnvelope::success(
         snapshot.revision,
         snapshot.public_settings(),
@@ -104,7 +104,7 @@ fn generated_schema_matches_wire_shapes_and_descriptor_inventory(
             .as_object()
             .ok_or("schema properties")?
             .len(),
-        65
+        67
     );
     assert_eq!(
         schema["$defs"]["success"]["properties"]["ok"]["const"],
@@ -139,11 +139,41 @@ fn checked_schema_matches_the_actual_dto_generator() -> Result<(), Box<dyn std::
     let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../.specs/features/008-settings-cli/contracts/settings-cli.schema.json");
     let checked: serde_json::Value = serde_json::from_slice(&std::fs::read(path)?)?;
-    assert_eq!(
-        checked,
-        handy_app_lib::settings_service::protocol::contract_schema()?
-    );
+    let mut actual = handy_app_lib::settings_service::protocol::contract_schema()?;
+    // The checked contract is the shipped build, smart paste gate closed (007). With the gate
+    // open the generator adds exactly `smart_paste` to the two `paste_method` value lists.
+    if handy_app_lib::smart_paste::setting_policy::Rollout::CURRENT.is_active() {
+        assert_eq!(remove_smart_paste(&mut actual), 2);
+    }
+    assert_eq!(checked, actual);
     Ok(())
+}
+
+/// Removes `smart_paste` from the public `paste_method` enum and its descriptor's allowed values;
+/// returns how many lists contained it.
+fn remove_smart_paste(schema: &mut serde_json::Value) -> usize {
+    let public = &mut schema["$defs"]["public_settings"]["properties"]["paste_method"]["enum"];
+    let mut removed = usize::from(retain_without_smart_paste(public));
+    if let Some(descriptors) = schema["x-setting-descriptors"].as_array_mut() {
+        for descriptor in descriptors.iter_mut() {
+            if descriptor["key"] == "paste_method" {
+                removed += usize::from(retain_without_smart_paste(
+                    &mut descriptor["allowed_values"],
+                ));
+            }
+        }
+    }
+    removed
+}
+
+/// Drops `smart_paste` from a JSON list; true when it was there.
+fn retain_without_smart_paste(list: &mut serde_json::Value) -> bool {
+    let Some(values) = list.as_array_mut() else {
+        return false;
+    };
+    let before = values.len();
+    values.retain(|value| value != "smart_paste");
+    values.len() < before
 }
 
 fn request_variant<'a>(

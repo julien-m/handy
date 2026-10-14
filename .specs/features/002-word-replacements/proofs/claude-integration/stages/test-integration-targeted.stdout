@@ -1,0 +1,22 @@
+
+running 7 tests
+test missing_capture_falls_back_to_current_settings ... ok
+test rules_captured_at_start_win_over_a_commit_during_recording ... ok
+test usable_stream_text_skips_the_batch_run ... ok
+test stream_and_batch_fallback_share_one_compiled_matcher ... ok
+test current_settings_are_not_read_when_a_capture_exists ... ok
+test cancelled_finalize_never_starts_a_batch_run ... ok
+test next_dictation_uses_the_rules_committed_before_it_started ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 5 tests
+test a_legacy_store_starts_without_rules_and_keeps_its_settings_and_revision ... ok
+test rules_survive_a_restart_in_their_order ... ok
+test a_no_op_import_returns_the_current_revision_without_writing ... ok
+test the_stop_path_keeps_the_matcher_captured_at_recording_start ... ok
+test a_cli_commit_applies_from_the_next_dictation_not_the_current_one ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.31s
+

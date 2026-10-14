@@ -86,18 +86,11 @@ fn public_schema_requires_all_fields_and_preserves_legacy_numeric_reads(
 ) -> Result<(), Box<dyn std::error::Error>> {
     let schema = handy_app_lib::settings_service::protocol::contract_schema()?;
     let public = &schema["$defs"]["public_settings"];
-    assert_eq!(public["required"].as_array().ok_or("required")?.len(), 65);
+    assert_eq!(public["required"].as_array().ok_or("required")?.len(), 67);
     let fields = &public["properties"];
     assert_eq!(
         fields["paste_method"]["enum"],
-        json!([
-            "ctrl_v",
-            "direct",
-            "none",
-            "shift_insert",
-            "ctrl_shift_v",
-            "external_script"
-        ])
+        json!(super::inventory::PASTE_METHODS)
     );
     assert_eq!(fields["hold_threshold_ms"]["minimum"], 0);
     assert_eq!(fields["hold_threshold_ms"]["maximum"], json!(u64::MAX));

@@ -339,6 +339,7 @@
         "description": "Escolha como o texto é inserido. Direto: simula digitação via entrada do sistema. Nenhum: ignora colar, apenas atualiza histórico/área de transferência.",
         "options": {
           "clipboard": "Área de Transferência ({{modifier}}+V)",
+          "smartPaste": "Colagem inteligente",
           "clipboardCtrlShiftV": "Área de Transferência (Ctrl+Shift+V)",
           "clipboardShiftInsert": "Área de Transferência (Shift+Insert)",
           "direct": "Direto",
@@ -759,5 +760,8 @@
     "learnMore": "Como resolver isso",
     "recorderBlocked": "Não é possível gravar atalhos agora — o Secure Input do macOS está bloqueando os eventos de tecla. Resolva primeiro o aviso do Secure Input.",
     "dismiss": "Dispensar"
+  },
+  "smartPaste": {
+    "handOver": "Texto colocado na área de transferência para o ecrã remoto"
   }
 }

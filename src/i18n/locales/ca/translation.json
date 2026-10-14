@@ -339,6 +339,7 @@
         "description": "Trieu com s'insereix el text. Directe: simula l'escriptura mitjançant l'entrada del sistema. Cap: no enganxa el text, només actualitza l'historial i el porta-retalls.",
         "options": {
           "clipboard": "Porta-retalls ({{modifier}}+V)",
+          "smartPaste": "Enganxat intel·ligent",
           "clipboardCtrlShiftV": "Porta-retalls (Ctrl+Maj+V)",
           "clipboardShiftInsert": "Porta-retalls (Maj+Insert)",
           "direct": "Directe",
@@ -759,5 +760,8 @@
     "learnMore": "Com es resol",
     "recorderBlocked": "Ara no se'n poden enregistrar dreceres: l'entrada segura del macOS bloca els esdeveniments de tecla. Resol primer l'avís d'entrada segura.",
     "dismiss": "Descarta"
+  },
+  "smartPaste": {
+    "handOver": "Text col·locat al porta-retalls per a la pantalla remota"
   }
 }

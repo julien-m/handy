@@ -4,6 +4,16 @@
 use super::harness::{Portable, TestResult};
 use serde_json::json;
 
+/// Default paste method of this build: smart paste is the macOS default only once dictation
+/// delivers through it (feature 007 rollout gate, Cargo feature `smart-paste-dispatch`).
+pub(super) fn default_paste_method() -> &'static str {
+    if cfg!(all(target_os = "macos", feature = "smart-paste-dispatch")) {
+        "smart_paste"
+    } else {
+        "ctrl_v"
+    }
+}
+
 #[test]
 fn json_get_prints_one_envelope_with_revision_and_every_public_key() -> TestResult {
     let app = Portable::new()?;
@@ -20,13 +30,13 @@ fn json_get_prints_one_envelope_with_revision_and_every_public_key() -> TestResu
         );
         assert_eq!(
             envelope["data"].as_object().map(|data| data.len()),
-            Some(65)
+            Some(67)
         );
     }
     let one = app
         .run(&["settings", "get", "paste_method", "--json"])?
         .envelope()?;
-    assert_eq!(one["data"], json!({"paste_method": "ctrl_v"}));
+    assert_eq!(one["data"], json!({"paste_method": default_paste_method()}));
     Ok(())
 }
 #[test]
@@ -35,7 +45,7 @@ fn human_output_is_readable_and_diagnostics_stay_on_stderr() -> TestResult {
     let get = app.run(&["settings", "get", "paste_method"])?;
     assert_eq!(
         (get.code, get.stdout.as_str(), get.stderr.as_str()),
-        (0, "ctrl_v\n", "")
+        (0, format!("{}\n", default_paste_method()).as_str(), "")
     );
     let set = app.run(&["settings", "set", "paste_method", "direct"])?;
     assert_eq!(

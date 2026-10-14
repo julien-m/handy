@@ -1,6 +1,7 @@
 //! Explicit field/nested DTO projection; AppSettings/SecretMap are never serialized here.
 
 use crate::settings::*;
+use crate::word_replacements::model::ReplacementRule;
 use serde::Serialize;
 use std::collections::BTreeMap;
 
@@ -156,6 +157,7 @@ impl PublicAdvanced {
 #[derive(Serialize)]
 struct PublicReadonly {
     settings_schema_version: u32,
+    smart_paste_migration_version: u32,
     whats_new_last_seen_version: String,
     selected_model: String,
     onboarding_completed: bool,
@@ -168,6 +170,7 @@ impl PublicReadonly {
     fn from_settings(settings: &AppSettings) -> Self {
         Self {
             settings_schema_version: settings.settings_schema_version,
+            smart_paste_migration_version: settings.smart_paste_migration_version,
             whats_new_last_seen_version: settings.whats_new_last_seen_version.clone(),
             selected_model: settings.selected_model.clone(),
             onboarding_completed: settings.onboarding_completed,
@@ -206,6 +209,7 @@ struct PublicCollections {
     post_process_prompts: Vec<PublicPrompt>,
     custom_filler_words: Option<Vec<String>>,
     microphone_priority: Vec<String>,
+    word_replacements: Vec<PublicReplacementRule>,
 }
 impl PublicCollections {
     fn from_settings(settings: &AppSettings) -> Self {
@@ -223,6 +227,11 @@ impl PublicCollections {
                 .collect(),
             custom_filler_words: settings.custom_filler_words.clone(),
             microphone_priority: settings.microphone_priority.clone(),
+            word_replacements: settings
+                .word_replacements
+                .iter()
+                .map(PublicReplacementRule::from)
+                .collect(),
         }
     }
 }
@@ -264,6 +273,22 @@ impl From<&LLMPrompt> for PublicPrompt {
             id: value.id.clone(),
             name: value.name.clone(),
             prompt: value.prompt.clone(),
+        }
+    }
+}
+/// One replacement rule in saved order; its position is its index in the list.
+#[derive(Serialize)]
+pub(crate) struct PublicReplacementRule {
+    id: String,
+    recognized: String,
+    replacement: String,
+}
+impl From<&ReplacementRule> for PublicReplacementRule {
+    fn from(value: &ReplacementRule) -> Self {
+        Self {
+            id: value.id.as_str().to_owned(),
+            recognized: value.recognized.clone(),
+            replacement: value.replacement.clone(),
         }
     }
 }
