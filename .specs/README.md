@@ -68,16 +68,16 @@
 <!-- readme:activity:start -->
 | Date | Type | Description |
 |---|---|---|
+| 2026-10-14 | Feature | [Feature 009] Plan refined: round 4 review ingested, 009 behind 006's destination-return gate (closed build keeps dev's auto_submit, migration never rewrites it), Enter keyed by dictation and generation, status limited to the pinned app |
 | 2026-10-14 | Feature | [Feature 007] Smart paste wired into dictation through 006's insertion contract (006 guard context, method_outcome, disposition, Enter and late-read hooks), behind the smart-paste-dispatch gate closed by default; dev (004, 006) merged; native AC-016 matrix pending with Julien |
 | 2026-10-14 | Feature | [Feature 007] Plan refined: history follows the 006 rule (no WAV gate, text-only row when the WAV fails, Julien's decision), delivered 008 settings names replace LiveSettingsEffects and commit_mutation as live commit |
 | 2026-10-14 | Feature | [Feature 007] Smart paste settings on the 008 service: macOS migration, default, shared refusal, output CLI and selector implemented behind a rollout gate, inactive until step 7 wires the dictation dispatch; certification pending |
-| 2026-10-14 | Feature | [Feature 009] Plan refined: history_status from 006's actual save_entry result, a WAV failure tested as a saved text-only row (Julien's decision), save_entry failure as failed |
-| 2026-10-14 | Feature | [Feature 010] Plan refined: history_status carried from 006's actual save_entry result, text-only row saved when the WAV fails (Julien's decision), not_saved no longer tied to a disabled or unavailable WAV |
-| 2026-10-14 | Feature | [Feature 005] Plan refined: text-only history row for every dictation whose WAV fails (Julien's decision), open WAV question removed, history change shared with 006 |
-| 2026-10-14 | Feature | [Feature 006] Spec and plan refined: text-only history entry when the WAV fails (Julien's decision), AC-005 history clause no longer tied to the audio-gated save, history_status from the actual save_entry result |
-| 2026-10-14 | Feature | [Feature 009] Plan refined: auto_submit refused by a plain not_found (retired-key hint removed), cross source FrontmostAtEnd and resolved_target aligned with 006, Windows full acceptance pending release evidence |
-| 2026-10-14 | Feature | [Feature 010] Plan refined: 008 sources cited as code paths (plan review preparable in 18 batches), shared contracts cited from the 006 plan, pinned reasons aligned with 009 |
-| 2026-10-14 | Feature | [Feature 009] Plan refined: 008 sources cited as code paths (plan review preparable in 20 batches), explicit AC-006 (13/13), DestinationManager::claim_enter, pinned_app_not_running and activation_failed aligned with 010 |
+| 2026-10-13 | Feature | [Feature 007] Smart paste fix round 1: current-host-only restoration, concealed/transient content never restored (Julien's decision on AC-009), audit A/B minors fixed or documented; release blockers R-1/R-2 still open |
+| 2026-10-13 | Feature | [Feature 007] Smart paste core implemented (steps 1–6): verified AX insertion, bounded multi-type snapshot helper, on-demand provider, serialized coordinator, per-app/keyboard strategies; settings (008) and destination wiring (006) pending; certification pending |
+| 2026-10-13 | Feature | Smart Paste: record native feasibility and explicit cache/late-write limits; settings integration awaits 008 |
+| 2026-10-14 | Feature | [Feature 006] Synced with `dev` (004 merged, one closed settings error reason enum shared by 004 and 006); settings UI command `change_return_to_dictation_app_setting` with a typed `unsupported_platform` refusal handled by the store; history rule delivered (text-only row when the WAV fails, nullable `file_name` migration shared with 005, `history_status` from the actual `save_entry` result). Full `cargo test` 681 passed / 20 ignored, frontend checks and repository conventions PASS; no visual UI, no AC certified. |
+| 2026-10-14 | Feature | [Feature 002] Integrated with the merged settings CLI (008): `handy settings replacements` (list, add, update/edit, remove/delete, import with dry run, export) on the shared rule-set edits, one compiled matcher per committed revision applied from the next dictation, settings window transaction commands (no UI yet), output-stage harness, and paged/staged transfer beyond one 1 MiB message. Full `cargo test` 642 passed / 0 failed / 19 ignored; conventions PASS, new 0; macOS real-app CLI check (debug). UI, real dictation, M1, Windows/Linux pending. |
+| 2026-10-13 | Feature | [Feature 002] Spec refined: AC-006 Korean rationale made factual (particles attach to the preceding word); halfwidth U+FF9E/U+FF9F and NFD hangul jamo documented as accepted CJK-side false positives with fixtures (1 Clarify decision, IDs preserved); spec/plan reviews to redo. |
 <!-- readme:activity:end -->
 
 ---
@@ -185,3 +185,5 @@
 <!-- finalize:spec-refine:2026-10-14:e2c204ed -->
 
 <!-- finalize:spec-refine:2026-10-14:48c67c3f -->
+
+<!-- finalize:spec-refine:2026-10-14:19f333f0 -->

@@ -135,3 +135,22 @@
 - Review: the plan review is stale until an independent reviewer refreshes it.
 
 <!-- finalize:spec-refine:2026-10-14:48c67c3f -->
+
+## 2026-10-14 — [Plan Update]: round 4 review ingested, 009 behind 006's destination-return gate, Enter keyed by dictation and generation
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md updated)
+- **AC impacted:** None (pre-implementation; AC-004, AC-005 and AC-006 planning only, IDs unchanged)
+- **Author:** Claude Code (spec-refine 009 plan, claude-opus-5-5)
+- Applies the round 4 independent plan review (synthesis of 18 batches, never ingested before) and the orchestrator decisions of 2026-10-14, checked against the delivered 006 and 007 code in `dev`.
+- **Rollout gate:** all of 009 (pin, three-value policy and migration, Enter authority, `destination pin|unpin|status`) ships behind 006's `destination-return` Cargo feature. Closed (default build): `dev` unchanged, with the legacy `auto_submit` emitters, `automatic_enter` answering `not_found`/4, pin commands refused `validation_failed`/2 `unsupported_platform`, and the checked 008 schema equal to `dev`'s. Open: the specified behavior. The full suite runs in both states.
+- **Return to a closed build:** the migration never deletes or rewrites `auto_submit` or `auto_submit_key`; `automatic_enter` is optional and never written by a closed build; a P0 test migrates in the open state and rereads in the closed state with an identical Enter decision.
+- **Enter key:** `EnterTransaction` is keyed by `(dictation_id, destination_generation)`, the `claim_enter` pair; `outcome_id`, allocated by `delivery::publish` after the method, is no longer used (text, sequence diagram, ER).
+- **Delivered-code warnings:** a claim after the next dictation's start is refused `Stale` with zero Enter (intended, tested); Windows chord failure becomes a method error in the open build instead of the outer `Ok`; a live CLI timeout is `unavailable`/5 with `details.outcome = "unknown"`; `pin`/`unpin` refuse `--expected-revision` with `usage_error`/2 and `status` ignores it.
+- **Scope:** `destination status` returns only the pinned application or null (AC-006); route, source, phase and support removed.
+- **Names and files:** delivered names (`delivery::HistoryRecord`, `history::save_dictation`, `outcome::DestinationFailure`, `clipboard::send_auto_submit`); Step 2 and Step 5 file lists completed with the 006 and 007 files they touch.
+- Plan review preparation at 180,000 characters: 18 batches, no error (round 4: 18).
+- Review: the plan review is stale until an independent reviewer refreshes it.
+
+<!-- finalize:spec-refine:2026-10-14:19f333f0 -->
