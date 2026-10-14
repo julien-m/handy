@@ -166,7 +166,7 @@ AppKit caching and delayed AX mutation counterexamples remain explicit: callback
 - **Code modified:** merge of `dev` (008) as `5b4e3e2`; `3b66ff1`: src-tauri/src/smart_paste/{setting_policy,setting_policy_tests,mod}.rs, src-tauri/src/{settings,lib}.rs, src-tauri/src/settings_service/{descriptor_data,validation,errors,public}.rs and domains/output.rs, src-tauri/src/shortcut/mod.rs, src-tauri/Cargo.toml (`smart-paste-dispatch` feature), src-tauri/tests/smart_paste_settings{.rs,/*}, 008 tests and checked schema, src/components/settings/{PasteMethod.tsx,paste-method-options.ts,debug/ReliablePaste.tsx}, src/components/ui/{Dropdown.tsx,dropdown-navigation.ts}, src/hooks/use-smart-paste-availability.ts, frontend tests, 26 locales, src/bindings.ts
 - **AC impacted:** AC-014, AC-015, has_dropdown, is_keyboard_navigable (implemented, certification pending)
 - **Author:** Claude Opus 5.5 (implementation agent, integration run)
-- **Notes:** The pipeline still refuses smart paste until step 7 (006), so the migration, the macOS default and the selector option are ready, tested in both states, and inactive until step 7 enables `smart-paste-dispatch` with the wiring. In the shipped build `smart_paste` is refused with `validation_failed` on every surface. See [the rollout gate](implementation.md#rollout-gate-default-and-migration-until-step-7) and [the proofs](proofs/claude-integration/).
+- **Notes:** The pipeline still refuses smart paste until step 7 (006), so the migration, the macOS default and the selector option are ready, tested in both states, and inactive until step 7 enables `smart-paste-dispatch` with the wiring. In the shipped build `smart_paste` is refused with `validation_failed` on every surface. See [the rollout gate](implementation.md#rollout-gates) and [the proofs](proofs/claude-integration/).
 
 ## 2026-10-14 — [Plan Update]: history without the WAV gate (006 rule) and delivered 008 settings names
 
@@ -183,3 +183,12 @@ AppKit caching and delayed AX mutation counterexamples remain explicit: callback
 - Review: the plan review is stale until an independent reviewer refreshes it.
 
 <!-- finalize:spec-refine:2026-10-14:d424af86 -->
+
+## 2026-10-14 — Feature: step 7, smart paste wired into dictation through 006 (behind its gate)
+
+- **Type:** Feature
+- **Spec modified:** No
+- **Code modified:** merge of `dev` as `e5c2b0f` (004, 006, bindings exclusion, clipboard test fix; inventory counts 65, one `[features]` table, regenerated `bindings.ts` and 008 checked schema); `e7fa570`: src-tauri/src/smart_paste/{app,destination_bridge,destination_bridge_tests,dispatch,dispatch_tests,exit_gate,macos_ports,mod,outcome,request,coordinator,direct,setting_policy,actor_tests}.rs, src-tauri/src/destination/delivery.rs, src-tauri/src/{clipboard,lib,settings}.rs, src-tauri/Cargo.toml (comment), src-tauri/tests/smart_paste{.rs,/pipeline.rs,/chain.rs,/rig.rs}, src-tauri/tests/settings_validation/contracts.rs, src/App.tsx, src/hooks/use-smart-paste-hand-over.ts, 26 locales
+- **AC impacted:** AC-010, AC-012, AC-013, AC-018 through dictation; AC-016 procedure written (implemented behind the gate, certification pending)
+- **Author:** Claude Opus 5.5 (implementation agent, step 7 run)
+- **Notes:** Smart paste is 006's `InsertionPort` (`dispatch(guard)`): the first guard check builds the context, 006's guard is registered for every later destination check of the actor, and the terminal `PasteOutcome` becomes `method_outcome`, status and disposition. Without a 006 session it inserts into the application in front through the same live foreground source. `smart-paste-dispatch` stays closed by default: closed, dictation is identical to `dev`. The four gate combinations, the exit settlement, the Enter (009) and late-read (010) hooks and the Screen Sharing toast are described in [the rollout gates](implementation.md#rollout-gates); the AC-016 matrix is [a procedure for Julien](implementation.md#native-acceptance-procedure-ac-016-with-julien), not run. Proofs: [claude-step7](proofs/claude-step7/).

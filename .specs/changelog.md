@@ -5,6 +5,8 @@
 
 ---
 
+## 2026-10-14 — [Feature 007] Smart paste wired into dictation through 006's insertion contract (006 guard context, method_outcome, disposition, Enter and late-read hooks), behind the smart-paste-dispatch gate closed by default; dev (004, 006) merged; native AC-016 matrix pending with Julien
+
 ## 2026-10-14 — [Feature 007] Plan refined: history follows the 006 rule (no WAV gate, text-only row when the WAV fails, Julien's decision), delivered 008 settings names replace LiveSettingsEffects and commit_mutation as live commit
 <!-- finalize:spec-refine:2026-10-14:d424af86 -->
 

@@ -68,6 +68,7 @@
 <!-- readme:activity:start -->
 | Date | Type | Description |
 |---|---|---|
+| 2026-10-14 | Feature | [Feature 007] Smart paste wired into dictation through 006's insertion contract (006 guard context, method_outcome, disposition, Enter and late-read hooks), behind the smart-paste-dispatch gate closed by default; dev (004, 006) merged; native AC-016 matrix pending with Julien |
 | 2026-10-14 | Feature | [Feature 007] Plan refined: history follows the 006 rule (no WAV gate, text-only row when the WAV fails, Julien's decision), delivered 008 settings names replace LiveSettingsEffects and commit_mutation as live commit |
 | 2026-10-14 | Feature | [Feature 007] Smart paste settings on the 008 service: macOS migration, default, shared refusal, output CLI and selector implemented behind a rollout gate, inactive until step 7 wires the dictation dispatch; certification pending |
 | 2026-10-14 | Feature | [Feature 009] Plan refined: history_status from 006's actual save_entry result, a WAV failure tested as a saved text-only row (Julien's decision), save_entry failure as failed |
@@ -77,7 +78,6 @@
 | 2026-10-14 | Feature | [Feature 009] Plan refined: auto_submit refused by a plain not_found (retired-key hint removed), cross source FrontmostAtEnd and resolved_target aligned with 006, Windows full acceptance pending release evidence |
 | 2026-10-14 | Feature | [Feature 010] Plan refined: 008 sources cited as code paths (plan review preparable in 18 batches), shared contracts cited from the 006 plan, pinned reasons aligned with 009 |
 | 2026-10-14 | Feature | [Feature 009] Plan refined: 008 sources cited as code paths (plan review preparable in 20 batches), explicit AC-006 (13/13), DestinationManager::claim_enter, pinned_app_not_running and activation_failed aligned with 010 |
-| 2026-10-14 | Feature | [Feature 006] Plan refined: 008 sources cited as code paths (plan review preparable in 1 batch), four ValidationContext constructions, DestinationManager::claim_enter for 009, pinned_app_not_running reason |
 <!-- readme:activity:end -->
 
 ---
