@@ -10,7 +10,7 @@ use crate::microphones::{
     boundary::{self, DeviceChange, LossAction, StreamFacts},
     catalog::Catalog,
     effective::{EffectiveInput, EffectiveView},
-    native,
+    failed_opens, native,
     policy::{self, Attempt, AttemptResult, OpenFailure, OpenTarget, Preferences, Resolution},
     status::{self, MicrophoneStatus},
 };
@@ -93,6 +93,7 @@ impl AudioRecordingManager {
         let Some(opened) = resolution.opened else {
             return Err(anyhow::anyhow!(resolution_error(&resolution.attempts)));
         };
+        lock(&self.failed_opens).record(&resolution.attempts, Instant::now());
         lock(&self.effective).stream_opened(EffectiveInput {
             name: opened.stream,
             choice: opened.choice,
@@ -101,8 +102,9 @@ impl AudioRecordingManager {
         });
         Ok(())
     }
-    /// Whether the open stream is still what the priority prefers now (fresh catalog, no open).
-    /// An unobservable catalog keeps the stream.
+    /// Whether the open stream is still what the priority prefers now (fresh catalog, no open),
+    /// or the preferred choice failed to open for it moments ago (`failed_opens`). An
+    /// unobservable catalog keeps the stream.
     fn stream_matches_preference(&self) -> bool {
         let settings = get_settings(&self.app_handle);
         let mut ports = NativePorts {
@@ -112,7 +114,13 @@ impl AudioRecordingManager {
         let Some(preferred) = policy::preferred(&preferences(&settings), &mut ports) else {
             return true;
         };
-        lock(&self.effective).current_choice() == Some(preferred.as_deref())
+        let effective = lock(&self.effective);
+        failed_opens::keeps_stream(
+            effective.current_choice(),
+            preferred.as_deref(),
+            &lock(&self.failed_opens),
+            Instant::now(),
+        )
     }
     /// At a recording start on an already-open stream (always-on, or warm after a lazy close):
     /// close it when the priority now prefers another input, so the start reopens on that one
@@ -137,10 +145,12 @@ const STATUS_ENUMERATION_BUDGET: Duration = Duration::from_secs(3);
 // @spec FR-002: Availability and effective input reported — .specs/features/001-microphone-priority/spec.md#fr-002
 impl AudioRecordingManager {
     /// The effective input to report: current while a recording runs or the always-on stream
-    /// is open, otherwise the last recording's (AC-002).
+    /// is open, otherwise the last recording's (AC-002). Reads the lock-free open mirror, so a
+    /// status read never waits for a stream opening in progress (it holds `is_open` for the
+    /// whole bounded resolution, up to about 6 s): `list` stays inside its 5 s answer window.
     pub fn effective_input(&self) -> EffectiveView {
-        let always_on_open =
-            matches!(*lock(&self.mode), MicrophoneMode::AlwaysOn) && *lock(&self.is_open);
+        let always_on_open = matches!(*lock(&self.mode), MicrophoneMode::AlwaysOn)
+            && self.stream_open.load(Ordering::Acquire);
         lock(&self.effective).view(self.is_recording() || always_on_open)
     }
     /// Status of `configured`: one fresh bounded observation (no device is opened) and the
@@ -204,6 +214,8 @@ impl AudioRecordingManager {
     /// keeps its device and audio).
     pub fn update_selected_device(&self) -> Result<(), anyhow::Error> {
         self.idle_recovery_armed.store(true, Ordering::Release);
+        // A new order is resolved from scratch: earlier open failures no longer keep the stream.
+        lock(&self.failed_opens).forget();
         self.queue_reopen();
         Ok(())
     }

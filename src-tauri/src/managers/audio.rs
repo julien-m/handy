@@ -7,6 +7,7 @@ use crate::audio_toolkit::{
 };
 use crate::managers::transcription::StreamRouter;
 use crate::microphones::effective::EffectiveState;
+use crate::microphones::failed_opens::FailedOpens;
 use crate::settings::{get_settings, VadBackend};
 use crate::utils;
 use log::{debug, error, info, trace, warn};
@@ -367,7 +368,13 @@ pub struct AudioRecordingManager {
     app_handle: tauri::AppHandle,
 
     recorder: Arc<Mutex<Option<AudioRecorder>>>,
+    /// Never assign through this directly — route every write through
+    /// `set_open()`, which keeps `stream_open` in sync.
     is_open: Arc<Mutex<bool>>,
+    /// Lock-free mirror of `is_open`, maintained by `set_open()`. Status reads
+    /// (`effective_input`) use it so they never wait for a stream opening in
+    /// progress, which holds `is_open` for the whole bounded resolution.
+    stream_open: Arc<AtomicBool>,
     is_recording: Arc<Mutex<bool>>,
     mute_state: Arc<Mutex<MuteState>>,
     close_generation: Arc<AtomicU64>,
@@ -385,6 +392,8 @@ pub struct AudioRecordingManager {
     capture_generation: Arc<AtomicU64>,
     /// Input actually used (feature 001): the open stream and the last recording's.
     effective: Arc<Mutex<EffectiveState>>,
+    /// Choices that failed to open when the current stream was opened (feature 001).
+    failed_opens: Arc<Mutex<FailedOpens>>,
     /// A committed priority change waits for the end of the recording in progress.
     pending_reopen: Arc<AtomicBool>,
     /// A reopen worker is queued and will read the latest committed settings.
@@ -414,6 +423,7 @@ impl AudioRecordingManager {
 
             recorder: Arc::new(Mutex::new(None)),
             is_open: Arc::new(Mutex::new(false)),
+            stream_open: Arc::new(AtomicBool::new(false)),
             is_recording: Arc::new(Mutex::new(false)),
             mute_state: Arc::new(Mutex::new(MuteState::default())),
             close_generation: Arc::new(AtomicU64::new(0)),
@@ -422,6 +432,7 @@ impl AudioRecordingManager {
             recording_active: Arc::new(AtomicBool::new(false)),
             capture_generation: Arc::new(AtomicU64::new(0)),
             effective: Arc::new(Mutex::new(EffectiveState::default())),
+            failed_opens: Arc::new(Mutex::new(FailedOpens::default())),
             pending_reopen: Arc::new(AtomicBool::new(false)),
             reopen_queued: Arc::new(AtomicBool::new(false)),
             idle_recovery_armed: Arc::new(AtomicBool::new(true)),
@@ -554,7 +565,7 @@ impl AudioRecordingManager {
                 let _ = rec.close();
             }
             *self.is_recording.lock().unwrap() = false;
-            *open_flag = false;
+            self.set_open(&mut open_flag, false);
             priority::lock(&self.effective).stream_closed();
             // Fall through to the same fresh resolution and fallback path used
             // when an on-demand stream opens after its device was unplugged.
@@ -593,7 +604,7 @@ impl AudioRecordingManager {
         );
         drop(recorder_opt);
 
-        *open_flag = true;
+        self.set_open(&mut open_flag, true);
         // This timing covers through cpal's stream.play() returning — i.e. the
         // point cpal surfaces as "stream running." It does NOT guarantee the
         // host audio device is producing samples yet; the first input callback
@@ -629,7 +640,7 @@ impl AudioRecordingManager {
             let _ = rec.close();
         }
 
-        *open_flag = false;
+        self.set_open(&mut open_flag, false);
         priority::lock(&self.effective).stream_closed();
         debug!("Microphone stream stopped");
     }
@@ -658,6 +669,12 @@ impl AudioRecordingManager {
     }
 
     /* ---------- recording --------------------------------------------------- */
+
+    /// The one place `is_open` is written; keeps its lock-free mirror in sync.
+    fn set_open(&self, guard: &mut bool, open: bool) {
+        *guard = open;
+        self.stream_open.store(open, Ordering::Release);
+    }
 
     /// The one place `state` is written. Derives `recording_active` (the
     /// lock-free mirror read by `is_recording()`) from the new value itself,
