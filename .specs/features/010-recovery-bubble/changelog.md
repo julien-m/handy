@@ -96,3 +96,18 @@
 - Review: the plan review is stale until an independent reviewer refreshes it.
 
 <!-- finalize:spec-refine:2026-10-14:61308064 -->
+
+## 2026-10-14 — [Plan Update]: history_status from the actual save_entry result, text-only row when the WAV fails
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md and contracts/recovery-contract.md updated)
+- **AC impacted:** None (pre-implementation; AC-005 planning only, ID unchanged)
+- **Author:** Claude Code (spec-refine 010 plan, claude-opus-5-5)
+- Aligns with Julien's decision 2026-10-14, carried by the 006 spec and plan (commit `306c368`, `.specs/features/006-destination-application/plan.md` and `contracts/destination-contract.md`): a dictation whose WAV cannot be saved still gets a text-only history entry.
+- The recovery instance carries 006's `history_status` unchanged: `saved` when save_entry committed the row, text-only included (WAV disabled, unavailable or failed); `failed` when save_entry was attempted and failed; `not_saved` only when no write was attempted. The plan no longer maps a disabled or unavailable WAV to `not_saved`. A recovery always follows a non-cancelled transcript, so `not_saved` is not expected there and gets the same no-history explanation as `failed`.
+- Current-state note (actions.rs `wav_saved` gate removed by the 006 plan), Step 4 inputs, execution evidence, P0 history integration row, risk row and the contract history line aligned.
+- Plan review preparation at 180,000 characters: 22 batches, no error (previous: 18; the growth comes from the cited 006 plan, which grew with the same decision).
+- Review: the plan review is stale until an independent reviewer refreshes it.
+
+<!-- finalize:spec-refine:2026-10-14:e2c204ed -->

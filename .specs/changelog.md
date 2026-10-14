@@ -5,6 +5,9 @@
 
 ---
 
+## 2026-10-14 — [Feature 010] Plan refined: history_status carried from 006's actual save_entry result, text-only row saved when the WAV fails (Julien's decision), not_saved no longer tied to a disabled or unavailable WAV
+<!-- finalize:spec-refine:2026-10-14:e2c204ed -->
+
 ## 2026-10-14 — [Feature 005] Plan refined: text-only history row for every dictation whose WAV fails (Julien's decision), open WAV question removed, history change shared with 006
 <!-- finalize:spec-refine:2026-10-14:d7cad1e7 -->
 

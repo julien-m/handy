@@ -68,6 +68,7 @@
 <!-- readme:activity:start -->
 | Date | Type | Description |
 |---|---|---|
+| 2026-10-14 | Feature | [Feature 010] Plan refined: history_status carried from 006's actual save_entry result, text-only row saved when the WAV fails (Julien's decision), not_saved no longer tied to a disabled or unavailable WAV |
 | 2026-10-14 | Feature | [Feature 005] Plan refined: text-only history row for every dictation whose WAV fails (Julien's decision), open WAV question removed, history change shared with 006 |
 | 2026-10-14 | Feature | [Feature 006] Spec and plan refined: text-only history entry when the WAV fails (Julien's decision), AC-005 history clause no longer tied to the audio-gated save, history_status from the actual save_entry result |
 | 2026-10-14 | Feature | [Feature 009] Plan refined: auto_submit refused by a plain not_found (retired-key hint removed), cross source FrontmostAtEnd and resolved_target aligned with 006, Windows full acceptance pending release evidence |
@@ -77,7 +78,6 @@
 | 2026-10-14 | Feature | [Feature 005] Plan refined: plan review preparable again, Step 2 ordered, offline prompt list justified |
 | 2026-10-14 | Feature | [Feature 003] Plan refined: plan review preparable again, durable-error rule renamed, offline status justified |
 | 2026-10-14 | Feature | [Feature 001] Plan refined: plan review preparable again, 006 step 0 before Step 2 |
-| 2026-10-14 | Feature | [Feature 010] Plan refined: one Enter veto with 009, method outcome from 006, late-read update |
 <!-- readme:activity:end -->
 
 ---
@@ -177,3 +177,5 @@
 <!-- finalize:spec-refine:2026-10-14:2190dbf9 -->
 
 <!-- finalize:spec-refine:2026-10-14:d7cad1e7 -->
+
+<!-- finalize:spec-refine:2026-10-14:e2c204ed -->
