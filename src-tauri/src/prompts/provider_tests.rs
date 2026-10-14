@@ -28,6 +28,7 @@ fn missing(settings: &AppSettings, prompt: &LLMPrompt) -> Option<ReadinessIssue>
     readiness(settings, prompt, &Apple(true)).missing
 }
 
+// @spec AC-004: Readiness names the missing item — .specs/features/005-custom-ai-prompts/spec.md#ac-004
 #[test]
 fn the_default_remote_provider_needs_a_model_and_a_key() {
     let (mut settings, prompt) = settings_with_prompt(None);
@@ -65,6 +66,7 @@ fn the_local_custom_override_needs_an_endpoint_and_a_model_but_no_key() {
         Some(ReadinessIssue::MissingEndpoint)
     );
 }
+// @spec AC-004: Override provider and model — .specs/features/005-custom-ai-prompts/spec.md#ac-004
 #[test]
 fn an_override_wins_over_the_default_provider_model() {
     let (mut settings, prompt) = settings_with_prompt(custom("override-model"));

@@ -32,6 +32,7 @@ fn frozen_id(sessions: &PromptSessions, id: u64) -> Option<String> {
     sessions.freeze(id).flatten().map(|prompt| prompt.id)
 }
 
+// @spec AC-003: Trigger decides the dictation prompt — .specs/features/005-custom-ai-prompts/spec.md#ac-003
 #[test]
 fn the_trigger_decides_the_starting_prompt() {
     assert_eq!(Trigger::of_binding("transcribe"), Trigger::Plain);
@@ -58,6 +59,7 @@ fn the_trigger_decides_the_starting_prompt() {
         (Some("notes"), Some("NOTES"))
     );
 }
+// @spec AC-003: AI switch off wins — .specs/features/005-custom-ai-prompts/spec.md#ac-003
 #[test]
 fn with_ai_off_no_trigger_processes_and_the_menu_is_hidden() {
     let mut off = settings();
@@ -68,6 +70,7 @@ fn with_ai_off_no_trigger_processes_and_the_menu_is_hidden() {
     let refused = sessions.select(view.session_id, Some("shorten"), &off);
     assert_eq!(refused, Err(PromptChoiceRefusal::ProcessingOff));
 }
+// @spec AC-003: Indicator choice for this dictation only — .specs/features/005-custom-ai-prompts/spec.md#ac-003
 #[test]
 fn an_indicator_choice_applies_to_this_dictation_only() {
     let settings = settings();

@@ -89,6 +89,7 @@ fn create_formal(app: &Portable) -> Fallible<String> {
         .ok_or("id")?
         .to_owned())
 }
+// @spec AC-008: CLI CRUD, default and override without keys — .specs/features/005-custom-ai-prompts/spec.md#ac-008
 #[test]
 fn offline_crud_with_aliases_returns_ids_and_revisions_without_any_key() -> TestResult {
     let app = Portable::new()?;
@@ -209,6 +210,7 @@ impl LiveContext for Instance {
         SettingsBackend::commit_change(&self.0, change, expected)
     }
 }
+// @spec AC-008: List reports readiness, never the key — .specs/features/005-custom-ai-prompts/spec.md#ac-008
 #[test]
 fn routed_list_reports_readiness_and_never_the_key() -> TestResult {
     let app = Portable::new()?;

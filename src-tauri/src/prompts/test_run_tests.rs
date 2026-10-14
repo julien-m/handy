@@ -67,6 +67,7 @@ fn run(
     tauri::async_runtime::block_on(run_test(&settings, request, ports, gate))
 }
 
+// @spec AC-007: Test shows result, provider, model, duration — .specs/features/005-custom-ai-prompts/spec.md#ac-007
 #[test]
 fn a_successful_test_reports_text_provider_model_and_duration() -> Result<(), PromptError> {
     let result = run(
@@ -119,6 +120,7 @@ fn an_invalid_draft_is_refused_before_any_request() {
     );
     assert_eq!(idle.calls.load(Ordering::SeqCst), 0);
 }
+// @spec AC-007: One test at a time — .specs/features/005-custom-ai-prompts/spec.md#ac-007
 #[test]
 fn a_second_test_while_one_runs_is_busy_and_cancel_ends_the_first() {
     let gate = std::sync::Arc::new(TestGate::default());

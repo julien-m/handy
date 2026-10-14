@@ -72,6 +72,7 @@ fn assert_kept_then_starters(prompts: &Value, fixture: &Value) -> TestResult {
     assert_eq!(names(&json!(&prompts[fixture.len()..])), STARTERS);
     Ok(())
 }
+// @spec AC-002: Upgrade keeps prompts, adds starters once — .specs/features/005-custom-ai-prompts/spec.md#ac-002
 #[test]
 fn upgrade_keeps_existing_prompts_and_selection_and_adds_the_starters_once() -> TestResult {
     let app = Portable::new()?;
@@ -93,6 +94,7 @@ fn upgrade_keeps_existing_prompts_and_selection_and_adds_the_starters_once() -> 
     );
     Ok(())
 }
+// @spec AC-002: Deleted starters never come back — .specs/features/005-custom-ai-prompts/spec.md#ac-002
 #[test]
 fn a_deleted_starter_never_comes_back() -> TestResult {
     let app = Portable::new()?;
@@ -110,6 +112,7 @@ fn a_deleted_starter_never_comes_back() -> TestResult {
     assert!(!after.contains(&"Shorten".to_owned()));
     Ok(())
 }
+// @spec AC-002: Starters only while there is room — .specs/features/005-custom-ai-prompts/spec.md#ac-002
 #[test]
 fn a_full_library_gets_no_starter() -> TestResult {
     let app = Portable::new()?;

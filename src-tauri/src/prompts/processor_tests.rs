@@ -119,6 +119,7 @@ fn a_structured_error_falls_back_to_the_legacy_request() {
     );
     assert_eq!(port.calls.load(Ordering::SeqCst), 2);
 }
+// @spec AC-005: Every failure keeps the raw transcript — .specs/features/005-custom-ai-prompts/spec.md#ac-005
 #[test]
 fn every_failure_class_is_a_failure_with_its_reason() {
     let error = FakePort::http(Reply::Error(0), Reply::Error(0));
@@ -173,6 +174,7 @@ fn a_reply_inside_the_budget_is_kept_and_one_past_it_is_abandoned() {
         "abandoned at the budget"
     );
 }
+// @spec AC-005: One 30-second budget for the whole step — .specs/features/005-custom-ai-prompts/spec.md#ac-005
 #[test]
 fn the_structured_attempt_and_the_legacy_fallback_share_one_budget() {
     // Each request alone fits in the 500 ms budget; together they exceed it.
@@ -184,6 +186,7 @@ fn the_structured_attempt_and_the_legacy_fallback_share_one_budget() {
     );
     assert_eq!(port.calls.load(Ordering::SeqCst), 2);
 }
+// @spec AC-005: Cancel inserts nothing — .specs/features/005-custom-ai-prompts/spec.md#ac-005
 #[test]
 fn cancellation_wins_over_a_pending_reply() {
     let cancelled = Arc::new(AtomicBool::new(false));

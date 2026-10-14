@@ -38,6 +38,7 @@ fn add(settings: &AppSettings, shortcut: &str) -> Result<ShortcutBinding, Shortc
     plan_shortcut_edit(settings, "prompt:notes", &edit).map(|(_, planned)| planned)
 }
 
+// @spec AC-006: 0-2 shortcuts, shared conflict check — .specs/features/005-custom-ai-prompts/spec.md#ac-006
 #[test]
 fn a_prompt_takes_up_to_two_shortcuts_checked_against_every_other_shortcut() {
     let empty = settings_with(&[], true);
@@ -91,6 +92,7 @@ fn prompt_shortcuts_follow_the_post_processing_switch() -> TestResult {
     assert!(backend.holder("f13").is_none());
     Ok(())
 }
+// @spec AC-006: Deleting a prompt removes its shortcuts — .specs/features/005-custom-ai-prompts/spec.md#ac-006
 #[test]
 fn deleting_a_prompt_releases_its_shortcuts_and_a_refused_commit_restores_them() -> TestResult {
     let before = settings_with(&["f13", "f14"], true);

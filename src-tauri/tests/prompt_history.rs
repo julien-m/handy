@@ -62,6 +62,7 @@ fn migration_six_keeps_every_row_and_adds_an_empty_processing_record() -> TestRe
     }
     Ok(())
 }
+// @spec AC-005: History keeps raw text, prompt and reason — .specs/features/005-custom-ai-prompts/spec.md#ac-005
 #[test]
 fn an_ai_failure_without_audio_keeps_the_raw_text_prompt_and_reason() -> TestResult {
     let directory = tempfile::tempdir()?;

@@ -21,6 +21,7 @@ fn override_of(provider_id: &str, model: &str) -> Option<PromptProviderOverride>
     })
 }
 
+// @spec AC-001: Name and text bounds — .specs/features/005-custom-ai-prompts/spec.md#ac-001
 #[test]
 fn names_count_unicode_characters_after_trimming() {
     let sixty = "é".repeat(60);
@@ -57,6 +58,7 @@ fn create_trims_the_name_keeps_the_text_and_refuses_duplicates_ignoring_case() {
     );
     assert_eq!(created.map(|p| p.prompt), Some(" ${output} ".to_string()));
 }
+// @spec AC-001: At most 50 prompts — .specs/features/005-custom-ai-prompts/spec.md#ac-001
 #[test]
 fn create_stops_at_fifty_prompts() {
     let ids: Vec<String> = (0..50).map(|index| format!("p{index}")).collect();
@@ -84,6 +86,7 @@ fn renaming_a_prompt_to_its_own_name_in_another_case_is_allowed() {
         Err(PromptError::NotFound)
     );
 }
+// @spec AC-002: Invalid legacy prompts kept and flagged — .specs/features/005-custom-ai-prompts/spec.md#ac-002
 #[test]
 fn legacy_issues_are_reported_and_kept_until_an_edit_repairs_them() {
     let long = "n".repeat(61);

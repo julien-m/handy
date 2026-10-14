@@ -1,0 +1,51 @@
+# Implementation — 005 Custom AI Prompts
+
+Status: **In Progress** — every non-UI step of the [plan](plan.md) is implemented on `feature/005-custom-ai-prompts` (Steps 2, 3, 4, 7 and the backend of Step 5); the visual UI (Steps 1 and 6), the native macOS evidence and the acceptance run (Step 8), and the end-of-feature delivery review (full lane) remain. Step-by-step evidence and every deviation from the plan text are in [progress.md](progress.md).
+
+## Commits
+
+| Step | Commit | Subject |
+|---|---|---|
+| 2 | `aeedb3f7` | validate the prompt library and add the starter prompts once |
+| 3 | `7ed149a7` | manage prompts and their shortcuts from the settings CLI |
+| 4 | `a3775ca7` | bound the AI step to 30 seconds and add a side-effect-free prompt test |
+| 7 | `17a2c11f` | record the prompt and AI failure of each dictation in history |
+| 5 (backend) | `02d654f3` | give each dictation its own prompt, chosen by its trigger |
+
+## Requirements
+
+| Requirement | Source | `@spec` anchor | Status | Updated |
+|---|---|---|---|---|
+| [FR-001: Prompt library, migration, starters](spec.md#fr-001) | `settings.rs` (`LLMPrompt`, `PromptProviderOverride`, schema version 3), `prompts/{library,migration,types,view}.rs`, `commands/prompts.rs` | `@spec FR-001: Validated prompt create`, `Migrate prompts and add starters once`, `Delete resets the default to None`, `Prompt library with stable ids and override`, `Prompt library read for the settings` | ✅ Backend implemented; settings UI pending | 2026-10-14 |
+| [FR-002: Prompt of each dictation](spec.md#fr-002) | `prompts/session.rs`, `prompts/dictation.rs`, `actions.rs`, `transcription_coordinator.rs` (`is_transcribe_binding`), `actions.rs` (`action_for`), `commands/prompts.rs` (`select_dictation_prompt`) | `@spec FR-002: Prompt of a dictation from its trigger`, `Per-dictation choice without changing the default`, `Indicator choice for this dictation only` | 🟡 Backend implemented; indicator menu (native, ≤200 ms, no focus steal) pending | 2026-10-14 |
+| [FR-003: Provider, readiness, 30 s budget](spec.md#fr-003) | `prompts/{provider,processor,native,formatting}.rs` | `@spec FR-003: Resolve provider and report readiness`, `Whole AI step bounded to 30 seconds` | ✅ Implemented (Apple Intelligence evidence on a real Apple Silicon run pending) | 2026-10-14 |
+| [FR-004: Raw transcript and failure on any AI failure](spec.md#fr-004) | `prompts/{processor,output,dictation}.rs`, `managers/history_store.rs` (migration 6), `actions.rs` | `@spec FR-004: Failure and cancellation outcomes`, `Original transcript on any AI failure`, `Raw transcript kept when the AI step fails`, `History keeps the prompt and the failure` | 🟡 Backend implemented; on-screen notice pending | 2026-10-14 |
+| [FR-005: Test without insertion or history](spec.md#fr-005) | `prompts/test_run.rs`, `commands/prompts.rs` (`test_post_process_prompt`, `cancel_post_process_prompt_test`) | `@spec FR-005: Test operation without insertion or history`, `Prompt test without insertion or history` | 🟡 Backend implemented; test panel pending | 2026-10-14 |
+| [FR-006: Prompts through the settings CLI](spec.md#fr-006) | `settings_service/domains/prompts.rs`, `settings_service/{cli,render,tauri_adapter}.rs`, `cli.rs`, `prompts/types.rs`, `prompts/library.rs` | `@spec FR-006: Prompts CLI list, create, update, delete, default, override`, `Shared prompt mutation validation`, `Set or clear the provider override`, `Per-prompt provider override` | ✅ Implemented | 2026-10-14 |
+
+## Acceptance criteria
+
+| AC | Evidence today (automated) | Missing for acceptance |
+|---|---|---|
+| [AC-001](spec.md#ac-001) | `prompts/library_tests.rs`, `settings_service/domains/prompts_tests.rs`, `tests/prompt_cli.rs` | Settings list/editor/confirmation UI and its Behavioral AC states |
+| [AC-002](spec.md#ac-002) | `prompts/migration.rs` tests, `tests/prompt_library.rs` (real store, byte-identical prompts and selection) | — (UI flagging of invalid legacy prompts) |
+| [AC-003](spec.md#ac-003) | `prompts/session_tests.rs`, `shortcut/prompt_shortcuts_tests.rs` | Indicator menu: native surface, 200 ms, no focus change (Step 1 spike, macOS evidence) |
+| [AC-004](spec.md#ac-004) | `prompts/provider_tests.rs`, `prompts/processing_http_tests.rs` (override routed to a loopback endpoint) | "Not ready" display in the settings |
+| [AC-005](spec.md#ac-005) | `prompts/processor_tests.rs`, `prompts/output.rs` tests, `tests/prompt_history.rs`, notice wording test in `prompts/dictation.rs` | Notice shown ≥4 s on the indicator; macOS end-to-end raw-text and notice evidence |
+| [AC-006](spec.md#ac-006) | `shortcut/prompt_shortcuts_tests.rs`, `prompts/session_tests.rs` (deletion takes the shortcut lease) | Shortcut rows in the prompt editor; native registration evidence |
+| [AC-007](spec.md#ac-007) | `prompts/test_run_tests.rs` | Test panel (sample prefill, busy, retry) |
+| [AC-008](spec.md#ac-008) | `tests/prompt_cli.rs` (real binary, offline and routed, key sentinel), `settings_service/domains/prompts_tests.rs` | — |
+
+**AC-001 precision to carry into the spec (orchestrator decision 2026-10-14):** a prompt text made only of whitespace is refused (`prompt_text_empty`); the text must be non-empty after trimming and have 1–8000 characters. The UI already disabled Save in that case.
+
+## Files
+
+- **Created:** `src-tauri/src/prompts/{mod,types,library,library_tests,migration,view,provider,provider_tests,formatting,processor,processor_tests,processing_http_tests,native,output,test_run,test_run_tests,session,session_tests,dictation}.rs`, `src-tauri/src/commands/prompts.rs`, `src-tauri/src/settings_service/domains/{prompts,prompts_tests}.rs`, `src-tauri/src/shortcut/{prompt_targets,prompt_shortcuts_tests,gated}.rs`, `src-tauri/tests/{prompt_library,prompt_cli,prompt_history}.rs`.
+- **Modified:** `src-tauri/src/{settings,actions,lib,main,cli,utils,secure_input,transcription_coordinator,llm_client,tray}.rs`, `src-tauri/src/settings_service/{errors,error_reason,platform_capability,public,protocol,cli,render,tauri_adapter}.rs`, `src-tauri/src/settings_service/domains/{mod,output,shortcuts,fixture_tests}.rs`, `src-tauri/src/shortcut/{mod,edits,edits/tests,action_shortcuts,bindings_change,keyboard_switch}.rs`, `src-tauri/src/managers/{history,history_store}.rs`, `src-tauri/src/commands/{mod,history}.rs`; tests `settings_transactions/ownership.rs`, `settings_validation/error_details.rs`, `settings_domains.rs`, `destination_recovery.rs`; `src/bindings.ts`, `src/stores/settings-errors.ts` (+test), 26 locales, `README.md`, 008 `contracts/settings-cli.{md,schema.json}`.
+
+## Remaining work
+
+1. **UI (Steps 1 and 6, waiting for the reworked Penflow pass):** prompt list/editor with confirmation and readiness, default selector, provider override, prompt shortcut rows, test panel (`test_post_process_prompt`), indicator prompt chip and menu (`get_dictation_prompt`, `select_dictation_prompt`, event `dictation-prompt-changed`), the ≥4 s failure notice (event `prompt-processing-failed`, key `overlay.fallbackNotice`, including the overlay style `none` case), history display of the processing record; native spike on macOS (NSPanel, 200 ms, no focus change).
+2. **Proofs (Step 8):** macOS release-binary evidence (menu latency/focus, notice, raw text handed to insertion, prompt shortcuts registered/released, Apple Intelligence deadline and busy worker), acceptance mapping (`livespec test --derive-mapping` from the `@spec AC-xxx` test anchors), Windows/Linux as pending release evidence.
+3. **Delivery review (full lane):** one `review` and one `audit` of the complete diff, recorded with `livespec delivery review`.
+4. **Spec:** report the AC-001 whitespace precision through `spec-refine`.
