@@ -158,3 +158,12 @@ AppKit caching and delayed AX mutation counterexamples remain explicit: callback
 - **AC impacted:** AC-008, AC-009, AC-012, AC-013, AC-017 (implemented, certification pending)
 - **Author:** Claude Opus 5.5 (implementation agent, fix round 1)
 - **Evidence:** [fix-round proofs](proofs/claude-fix1/), regenerated [pasteboard](evidence/native-pasteboard-adapter.json) and [AX](evidence/native-ax-adapter.json) receipts with run-time binary hashes. Per-finding dispositions are in [the implementation map](implementation.md#independent-audit-fix-round-1-2026-10-13). Release blockers R-1/R-2, unauthenticated receipts and late AX writes stay open.
+
+## 2026-10-14 — Feature: settings integration on 008, behind a rollout gate
+
+- **Type:** Feature
+- **Spec modified:** No
+- **Code modified:** merge of `dev` (008) as `5b4e3e2`; `3b66ff1`: src-tauri/src/smart_paste/{setting_policy,setting_policy_tests,mod}.rs, src-tauri/src/{settings,lib}.rs, src-tauri/src/settings_service/{descriptor_data,validation,errors,public}.rs and domains/output.rs, src-tauri/src/shortcut/mod.rs, src-tauri/Cargo.toml (`smart-paste-dispatch` feature), src-tauri/tests/smart_paste_settings{.rs,/*}, 008 tests and checked schema, src/components/settings/{PasteMethod.tsx,paste-method-options.ts,debug/ReliablePaste.tsx}, src/components/ui/{Dropdown.tsx,dropdown-navigation.ts}, src/hooks/use-smart-paste-availability.ts, frontend tests, 26 locales, src/bindings.ts
+- **AC impacted:** AC-014, AC-015, has_dropdown, is_keyboard_navigable (implemented, certification pending)
+- **Author:** Claude Opus 5.5 (implementation agent, integration run)
+- **Notes:** The pipeline still refuses smart paste until step 7 (006), so the migration, the macOS default and the selector option are ready, tested in both states, and inactive until step 7 enables `smart-paste-dispatch` with the wiring. In the shipped build `smart_paste` is refused with `validation_failed` on every surface. See [the rollout gate](implementation.md#rollout-gate-default-and-migration-until-step-7) and [the proofs](proofs/claude-integration/).
