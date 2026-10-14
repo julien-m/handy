@@ -492,6 +492,7 @@
       "deleteError": "No s'ha pogut suprimir l'entrada. Torneu-ho a provar.",
       "retranscribe": "Torneu a transcriure",
       "retranscribeError": "No s'ha pogut tornar a transcriure. Torneu-ho a provar.",
+      "noAudio": "No s'ha desat cap enregistrament d'àudio per a aquesta entrada, així que no es pot tornar a transcriure.",
       "transcribing": "S'està transcrivint...",
       "transcriptionFailed": "La transcripció ha fallat. Podeu tornar a transcriure amb la icona de reintent."
     },

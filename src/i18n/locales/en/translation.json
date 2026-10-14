@@ -492,6 +492,7 @@
       "deleteError": "Failed to delete entry. Please try again.",
       "retranscribe": "Re-transcribe",
       "retranscribeError": "Failed to re-transcribe. Please try again.",
+      "noAudio": "No audio recording was saved for this entry, so it cannot be re-transcribed.",
       "transcribing": "Transcribing...",
       "transcriptionFailed": "Transcription failed. You can re-transcribe using the retry icon."
     },

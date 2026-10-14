@@ -492,6 +492,7 @@
       "deleteError": "Error al eliminar la entrada. Por favor, intenta de nuevo.",
       "retranscribe": "Re-transcribir",
       "retranscribeError": "No se pudo re-transcribir. Por favor, inténtalo de nuevo.",
+      "noAudio": "No se guardó ninguna grabación de audio para esta entrada, por lo que no se puede re-transcribir.",
       "transcribing": "Transcribiendo...",
       "transcriptionFailed": "La transcripción falló. Puedes re-transcribir usando el icono de reintentar."
     },

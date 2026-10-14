@@ -492,6 +492,7 @@
       "deleteError": "Kayıt silinemedi. Lütfen tekrar deneyin.",
       "retranscribe": "Yeniden transkribe et",
       "retranscribeError": "Yeniden transkripsiyon başarısız oldu. Lütfen tekrar deneyin.",
+      "noAudio": "Bu kayıt için ses kaydı saklanmadı, bu yüzden yeniden yazıya dökülemez.",
       "transcribing": "Transkribe ediliyor...",
       "transcriptionFailed": "Transkripsiyon başarısız oldu. Yeniden deneme simgesini kullanarak tekrar transkribe edebilirsiniz."
     },

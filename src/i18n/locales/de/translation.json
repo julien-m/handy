@@ -492,6 +492,7 @@
       "deleteError": "Eintrag konnte nicht gelöscht werden. Bitte versuche es erneut.",
       "retranscribe": "Erneut transkribieren",
       "retranscribeError": "Erneute Transkription fehlgeschlagen. Bitte versuche es erneut.",
+      "noAudio": "Für diesen Eintrag wurde keine Audioaufnahme gespeichert, daher kann er nicht erneut transkribiert werden.",
       "transcribing": "Transkribiere...",
       "transcriptionFailed": "Transkription fehlgeschlagen. Du kannst über das Wiederholen-Symbol erneut transkribieren."
     },

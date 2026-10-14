@@ -10,6 +10,7 @@ pub mod delivery;
 #[cfg(test)]
 pub(crate) mod fake_workspace;
 pub mod guard;
+pub mod history;
 pub mod insertion;
 #[cfg(target_os = "macos")]
 pub mod macos;

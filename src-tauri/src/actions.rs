@@ -2,9 +2,10 @@
 use crate::apple_intelligence;
 use crate::audio_feedback::{play_feedback_sound, play_feedback_sound_blocking, SoundType};
 use crate::audio_toolkit::{is_microphone_access_denied, is_no_input_device_error, VadPolicy};
-use crate::destination::delivery::{insert_final_text, HistoryRecord};
+use crate::destination::delivery::insert_final_text;
 use crate::managers::audio::AudioRecordingManager;
 use crate::managers::history::HistoryManager;
+use crate::managers::history_store::NewHistoryEntry;
 use crate::managers::model::ModelManager;
 use crate::managers::transcription::StreamWorkKind;
 use crate::managers::transcription::TranscriptionManager;
@@ -385,35 +386,6 @@ pub(crate) async fn process_transcription_output(
     }
 }
 
-// @spec FR-004: History status from the actual save result — .specs/features/006-destination-application/spec.md#fr-004
-/// Save the history entry when the WAV was saved (`file_name`) and report the actual result.
-fn save_history(
-    hm: &HistoryManager,
-    file_name: Option<String>,
-    transcription: String,
-    post_process: bool,
-    processed: &ProcessedTranscription,
-) -> HistoryRecord {
-    let Some(file_name) = file_name else {
-        return HistoryRecord::NOT_SAVED;
-    };
-    let post_processed = processed.post_processed_text.clone();
-    let prompt = processed.post_process_prompt.clone();
-    match hm.save_entry(
-        file_name,
-        transcription,
-        post_process,
-        post_processed,
-        prompt,
-    ) {
-        Ok(entry) => HistoryRecord::saved(entry.id),
-        Err(err) => {
-            error!("Failed to save history entry: {}", err);
-            HistoryRecord::FAILED
-        }
-    }
-}
-
 impl ShortcutAction for TranscribeAction {
     fn start(&self, app: &AppHandle, binding_id: &str, _shortcut_str: &str) {
         let start_time = Instant::now();
@@ -762,13 +734,19 @@ impl ShortcutAction for TranscribeAction {
                                 return;
                             }
 
-                            // Save to history if WAV was saved; the actual result is reported.
-                            let history = save_history(
-                                &hm,
-                                wav_saved.then_some(file_name),
-                                transcription,
-                                post_process,
-                                &processed,
+                            // Saved with its audio, or text-only when the WAV failed; the
+                            // actual save_entry result is reported.
+                            let entry = NewHistoryEntry {
+                                file_name: wav_saved.then_some(file_name),
+                                transcription_text: transcription,
+                                post_process_requested: post_process,
+                                post_processed_text: processed.post_processed_text.clone(),
+                                post_process_prompt: processed.post_process_prompt.clone(),
+                            };
+                            let history = crate::destination::history::save_dictation(
+                                hm.as_ref(),
+                                entry,
+                                &|| rm.was_cancelled_since(cancel_generation),
                             );
 
                             if processed.final_text.is_empty() {
@@ -801,15 +779,14 @@ impl ShortcutAction for TranscribeAction {
                             // Surface the failure to the UI (toast). The full
                             // message is also in handy.log via the line above.
                             let _ = ah.emit("transcription-error", err.to_string());
-                            // Save entry with empty text so user can retry
+                            // Save entry with empty text so user can retry (needs the audio)
                             if wav_saved {
-                                if let Err(save_err) = hm.save_entry(
-                                    file_name,
-                                    String::new(),
-                                    post_process,
-                                    None,
-                                    None,
-                                ) {
+                                let entry = NewHistoryEntry {
+                                    file_name: Some(file_name),
+                                    post_process_requested: post_process,
+                                    ..NewHistoryEntry::default()
+                                };
+                                if let Err(save_err) = hm.save_entry(entry) {
                                     error!("Failed to save failed history entry: {}", save_err);
                                 }
                             }

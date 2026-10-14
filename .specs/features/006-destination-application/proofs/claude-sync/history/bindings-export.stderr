@@ -1,0 +1,104 @@
+[2026-10-14][05:34:05][handy_app_lib::managers::model][INFO] Seeded 69 catalog model(s) into the registry
+[2026-10-14][05:34:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_device_init: tensor API disabled for pre-M5 and pre-A19 devices
+[2026-10-14][05:34:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_library_init: using embedded metal library
+[2026-10-14][05:34:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_library_compile_all: loaded 20 libraries from embedded data in 0.075 sec (max single = 0.074 sec)
+[2026-10-14][05:34:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_device_init: GPU name:   MTL0 (Apple M4 Pro)
+[2026-10-14][05:34:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_device_init: GPU family: MTLGPUFamilyApple9  (1009)
+[2026-10-14][05:34:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)
+[2026-10-14][05:34:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_device_init: simdgroup reduction   = true
+[2026-10-14][05:34:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_device_init: simdgroup matrix mul. = true
+[2026-10-14][05:34:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_device_init: has unified memory    = true
+[2026-10-14][05:34:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_device_init: has bfloat            = true
+[2026-10-14][05:34:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_device_init: has tensor            = false
+[2026-10-14][05:34:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_device_init: use residency sets    = false
+[2026-10-14][05:34:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_device_init: use shared buffers    = true
+[2026-10-14][05:34:05][transcribe_worker][INFO] [transcribe_cpp] ggml_metal_device_init: recommendedMaxWorkingSetSize  = 19069.67 MB
+[2026-10-14][05:34:05][handy_app_lib::managers::transcription][INFO] transcribe-cpp initialized with 2 compute device(s): [MTL0 (metal), CPU (cpu)]
+[2026-10-14][05:34:05][handy_app_lib::managers::transcription][INFO] transcribe.cpp accelerator preference: Auto (applied on next model load)
+[2026-10-14][05:34:05][handy_app_lib::managers::transcription][INFO] ORT accelerator set to: auto
+Available models (✓ = installed):
+     handy-computer/parakeet-unified-en-0.6b-gguf/parakeet-unified-en-0.6b-Q8_0.gguf                              Parakeet Unified EN 0.6B  [recommended]
+     handy-computer/nemotron-3.5-asr-streaming-0.6b-gguf/nemotron-3.5-asr-streaming-0.6b-Q8_0.gguf                Nemotron Streaming 3.5  [recommended]
+     handy-computer/canary-180m-flash-gguf/canary-180m-flash-Q8_0.gguf                                            Canary 180M Flash  [recommended]
+     handy-computer/cohere-transcribe-03-2026-gguf/cohere-transcribe-03-2026-Q5_K_M.gguf                          Cohere Transcribe  [recommended]
+     handy-computer/whisper-medium-gguf/whisper-medium-Q8_0.gguf                                                  Whisper Medium  [recommended]
+     handy-computer/Voxtral-Mini-4B-Realtime-2602-gguf/Voxtral-Mini-4B-Realtime-2602-Q5_K_M.gguf                  Voxtral Mini 4B Realtime
+     handy-computer/parakeet-tdt-0.6b-v3-gguf/parakeet-tdt-0.6b-v3-Q8_0.gguf                                      Parakeet TDT 0.6B v3
+     handy-computer/parakeet-tdt-0.6b-v2-gguf/parakeet-tdt-0.6b-v2-Q8_0.gguf                                      Parakeet TDT 0.6B v2
+     handy-computer/Qwen3-ASR-0.6B-gguf/Qwen3-ASR-0.6B-Q8_0.gguf                                                  Qwen3-ASR 0.6B
+     handy-computer/Fun-ASR-MLT-Nano-2512-gguf/Fun-ASR-MLT-Nano-2512-Q8_0.gguf                                    Fun-ASR Nano Multilingual
+     parakeet-tdt-0.6b-v3                                                                                         Parakeet V3  [recommended]
+     handy-computer/granite-speech-4.1-2b-nar-gguf/granite-speech-4.1-2b-nar-Q5_K_M.gguf                          Granite Speech 4.1 2B NAR
+     handy-computer/granite-speech-4.1-2b-gguf/granite-speech-4.1-2b-Q5_K_M.gguf                                  Granite Speech 4.1 2B
+     handy-computer/parakeet-tdt-1.1b-gguf/parakeet-tdt-1.1b-Q5_K_M.gguf                                          Parakeet TDT 1.1B
+     handy-computer/parakeet-rnnt-1.1b-gguf/parakeet-rnnt-1.1b-Q5_K_M.gguf                                        Parakeet RNN-T 1.1B
+     handy-computer/granite-4.0-1b-speech-gguf/granite-4.0-1b-speech-Q5_K_M.gguf                                  Granite Speech 4.0 1B
+     handy-computer/parakeet-rnnt-0.6b-gguf/parakeet-rnnt-0.6b-Q8_0.gguf                                          Parakeet RNN-T 0.6B
+     handy-computer/canary-1b-flash-gguf/canary-1b-flash-Q5_K_M.gguf                                              Canary 1B Flash
+     handy-computer/canary-1b-gguf/canary-1b-Q5_K_M.gguf                                                          Canary 1B
+     cohere-int8                                                                                                  Cohere
+     handy-computer/canary-qwen-2.5b-gguf/canary-qwen-2.5b-Q5_K_M.gguf                                            Canary-Qwen 2.5B
+     handy-computer/Qwen3-ASR-1.7B-gguf/Qwen3-ASR-1.7B-Q5_K_M.gguf                                                Qwen3-ASR 1.7B
+     handy-computer/granite-speech-4.1-2b-plus-gguf/granite-speech-4.1-2b-plus-Q5_K_M.gguf                        Granite Speech 4.1 2B Plus
+     handy-computer/Voxtral-Small-24B-2507-gguf/Voxtral-Small-24B-2507-Q5_K_M.gguf                                Voxtral Small 24B
+     handy-computer/Fun-ASR-Nano-2512-gguf/Fun-ASR-Nano-2512-Q8_0.gguf                                            Fun-ASR Nano
+     handy-computer/whisper-large-v3-gguf/whisper-large-v3-Q5_K_M.gguf                                            Whisper Large v3
+     handy-computer/parakeet-ctc-0.6b-gguf/parakeet-ctc-0.6b-Q8_0.gguf                                            Parakeet CTC 0.6B
+     handy-computer/parakeet-ctc-1.1b-gguf/parakeet-ctc-1.1b-Q5_K_M.gguf                                          Parakeet CTC 1.1B
+     handy-computer/canary-1b-v2-gguf/canary-1b-v2-Q5_K_M.gguf                                                    Canary 1B v2
+     handy-computer/parakeet-tdt_ctc-1.1b-gguf/parakeet-tdt_ctc-1.1b-Q5_K_M.gguf                                  Parakeet TDT-CTC 1.1B
+     handy-computer/whisper-large-v3-turbo-gguf/whisper-large-v3-turbo-Q8_0.gguf                                  Whisper Large v3 Turbo
+     handy-computer/moss-transcribe-diarize-gguf/MOSS-Transcribe-Diarize-Q8_0.gguf                                MOSS-Transcribe-Diarize 0.9B
+     handy-computer/Voxtral-Mini-3B-2507-gguf/Voxtral-Mini-3B-2507-Q5_K_M.gguf                                    Voxtral Mini 3B
+     handy-computer/moonshine-streaming-medium-gguf/moonshine-streaming-medium-Q8_0.gguf                          Moonshine Streaming Medium
+     handy-computer/multitalker-parakeet-streaming-0.6b-v1-gguf/multitalker-parakeet-streaming-0.6b-v1-Q8_0.gguf  Multitalker Parakeet Streaming EN
+     handy-computer/nemotron-speech-streaming-en-0.6b-gguf/nemotron-speech-streaming-en-0.6b-Q8_0.gguf            Nemotron Speech Streaming EN
+     handy-computer/Breeze-ASR-25-gguf/Breeze-ASR-25-Q5_K_M.gguf                                                  Breeze-ASR-25
+     handy-computer/parakeet-tdt_ctc-110m-gguf/parakeet-tdt_ctc-110m-Q8_0.gguf                                    Parakeet TDT-CTC 110M
+     parakeet-tdt-0.6b-v2                                                                                         Parakeet V2
+     gigaam-v3-e2e-ctc                                                                                            GigaAM v3
+     canary-1b-v2                                                                                                 Canary 1B v2
+     breeze-asr                                                                                                   Breeze ASR
+     large                                                                                                        Whisper Large
+     handy-computer/moonshine-streaming-small-gguf/moonshine-streaming-small-Q8_0.gguf                            Moonshine Streaming Small
+     handy-computer/whisper-large-v2-gguf/whisper-large-v2-Q5_K_M.gguf                                            Whisper Large v2
+     handy-computer/whisper-medium.en-gguf/whisper-medium.en-Q8_0.gguf                                            Whisper Medium (English)
+     handy-computer/whisper-large-gguf/whisper-large-Q5_K_M.gguf                                                  Whisper Large
+     handy-computer/SenseVoiceSmall-gguf/SenseVoiceSmall-Q8_0.gguf                                                SenseVoice Small
+     handy-computer/whisper-small.en-gguf/whisper-small.en-Q8_0.gguf                                              Whisper Small (English)
+     handy-computer/moonshine-base-gguf/moonshine-base-Q8_0.gguf                                                  Moonshine Base
+     handy-computer/whisper-small-gguf/whisper-small-Q8_0.gguf                                                    Whisper Small
+     turbo                                                                                                        Whisper Turbo
+     handy-computer/whisper-base.en-gguf/whisper-base.en-Q8_0.gguf                                                Whisper Base (English)
+     canary-180m-flash                                                                                            Canary 180M Flash
+     moonshine-medium-streaming-en                                                                                Moonshine V2 Medium
+     medium                                                                                                       Whisper Medium
+     handy-computer/moonshine-streaming-tiny-gguf/moonshine-streaming-tiny-Q8_0.gguf                              Moonshine Streaming Tiny
+     handy-computer/moonshine-tiny-gguf/moonshine-tiny-Q8_0.gguf                                                  Moonshine Tiny
+     handy-computer/whisper-base-gguf/whisper-base-Q8_0.gguf                                                      Whisper Base
+     handy-computer/gigaam-v3-e2e-rnnt-gguf/gigaam-v3-e2e-rnnt-Q8_0.gguf                                          GigaAM v3 E2E-RNN-T
+     moonshine-base                                                                                               Moonshine Base
+     handy-computer/gigaam-v3-e2e-ctc-gguf/gigaam-v3-e2e-ctc-Q8_0.gguf                                            GigaAM v3 E2E-CTC
+     handy-computer/whisper-tiny.en-gguf/whisper-tiny.en-Q8_0.gguf                                                Whisper Tiny (English)
+     handy-computer/parakeet-primeline-gguf/parakeet-primeline-Q8_0.gguf                                          Parakeet TDT 0.6B primeLine (German-tuned)
+     sense-voice-int8                                                                                             SenseVoice
+     moonshine-small-streaming-en                                                                                 Moonshine V2 Small
+     handy-computer/whisper-tiny-gguf/whisper-tiny-Q8_0.gguf                                                      Whisper Tiny
+     small                                                                                                        Whisper Small
+     handy-computer/moonshine-base-ko-gguf/moonshine-base-ko-Q8_0.gguf                                            Moonshine Base (Korean)
+     handy-computer/gigaam-v3-rnnt-gguf/gigaam-v3-rnnt-Q8_0.gguf                                                  GigaAM v3 RNN-T
+     handy-computer/gigaam-v3-ctc-gguf/gigaam-v3-ctc-Q8_0.gguf                                                    GigaAM v3 CTC
+     handy-computer/moonshine-tiny-ko-gguf/moonshine-tiny-ko-Q8_0.gguf                                            Moonshine Tiny (Korean)
+     moonshine-tiny-streaming-en                                                                                  Moonshine V2 Tiny
+     handy-computer/moonshine-base-vi-gguf/moonshine-base-vi-Q8_0.gguf                                            Moonshine Base (Vietnamese)
+     handy-computer/moonshine-base-ja-gguf/moonshine-base-ja-Q8_0.gguf                                            Moonshine Base (Japanese)
+     handy-computer/cohere-transcribe-arabic-07-2026-gguf/cohere-transcribe-arabic-07-2026-Q5_K_M.gguf            Cohere Transcribe
+     handy-computer/moonshine-tiny-vi-gguf/moonshine-tiny-vi-Q8_0.gguf                                            Moonshine Tiny (Vietnamese)
+     handy-computer/moonshine-tiny-ja-gguf/moonshine-tiny-ja-Q8_0.gguf                                            Moonshine Tiny (Japanese)
+     handy-computer/moonshine-tiny-zh-gguf/moonshine-tiny-zh-Q8_0.gguf                                            Moonshine Tiny (Chinese)
+     handy-computer/moonshine-base-uk-gguf/moonshine-base-uk-Q8_0.gguf                                            Moonshine Base (Ukrainian)
+     handy-computer/moonshine-base-zh-gguf/moonshine-base-zh-Q8_0.gguf                                            Moonshine Base (Chinese)
+     handy-computer/medasr-gguf/medasr-Q8_0.gguf                                                                  MedASR
+     handy-computer/moonshine-tiny-uk-gguf/moonshine-tiny-uk-Q8_0.gguf                                            Moonshine Tiny (Ukrainian)
+     handy-computer/moonshine-base-ar-gguf/moonshine-base-ar-Q8_0.gguf                                            Moonshine Base (Arabic)
+     handy-computer/moonshine-tiny-ar-gguf/moonshine-tiny-ar-Q8_0.gguf                                            Moonshine Tiny (Arabic)

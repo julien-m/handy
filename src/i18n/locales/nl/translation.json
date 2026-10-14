@@ -492,6 +492,7 @@
       "deleteError": "Item verwijderen mislukt. Probeer het opnieuw.",
       "retranscribe": "Opnieuw transcriberen",
       "retranscribeError": "Opnieuw transcriberen mislukt. Probeer het opnieuw.",
+      "noAudio": "Voor dit item is geen audio-opname opgeslagen, dus het kan niet opnieuw worden getranscribeerd.",
       "transcribing": "Transcriberen...",
       "transcriptionFailed": "Transcriptie mislukt. Je kunt het opnieuw proberen via het herlaad-pictogram."
     },

@@ -15,6 +15,8 @@ mod helpers;
 mod input;
 mod llm_client;
 mod managers;
+/// History storage (text-only rows included), public for the history integration tests.
+pub use managers::history_store;
 mod memory;
 mod overlay;
 mod paste_tx;

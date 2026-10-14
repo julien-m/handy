@@ -73,7 +73,13 @@ pub async fn retry_history_entry_transcription(
         .map_err(|e| e.to_string())?
         .ok_or_else(|| format!("History entry {} not found", id))?;
 
-    let audio_path = history_manager.get_audio_file_path(&entry.file_name);
+    // A text-only row (its WAV could not be saved) has no audio to re-transcribe.
+    let audio_path = history_manager.audio_path(&entry).ok_or_else(|| {
+        format!(
+            "History entry {} has no audio recording to re-transcribe",
+            id
+        )
+    })?;
     let samples = crate::audio_toolkit::read_wav_samples(&audio_path)
         .map_err(|e| format!("Failed to load audio: {}", e))?;
 

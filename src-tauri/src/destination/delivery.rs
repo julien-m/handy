@@ -32,7 +32,7 @@ pub struct HistoryRecord {
     pub entry_id: Option<i64>,
 }
 impl HistoryRecord {
-    /// History was not attempted (no WAV).
+    /// No history write was attempted (cancellation observed before the write).
     pub const NOT_SAVED: Self = Self {
         status: HistoryStatus::NotSaved,
         entry_id: None,

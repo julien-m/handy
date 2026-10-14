@@ -492,6 +492,7 @@
       "deleteError": "Errore nell'eliminazione dell'elemento. Riprova.",
       "retranscribe": "Ri-trascrivere",
       "retranscribeError": "Impossibile ri-trascrivere. Riprova.",
+      "noAudio": "Per questa voce non è stata salvata alcuna registrazione audio, quindi non può essere ritrascritta.",
       "transcribing": "Trascrizione in corso...",
       "transcriptionFailed": "Trascrizione fallita. Puoi ri-trascrivere usando l'icona di ripetizione."
     },

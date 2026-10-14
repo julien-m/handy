@@ -36,12 +36,13 @@ pub enum MethodOutcome {
     ClipboardHandedOver,
     InsertionFailed,
 }
-/// History result of this dictation, from the actual WAV and `save_entry` results.
+/// History result of this dictation, from the actual `save_entry` result only (a WAV failure
+/// still saves a text-only row: `saved`).
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, specta::Type)]
 #[serde(rename_all = "snake_case")]
 pub enum HistoryStatus {
     Saved,
-    /// Not attempted (no WAV, or nothing to save).
+    /// No write attempted (cancellation observed before the write).
     NotSaved,
     Failed,
 }

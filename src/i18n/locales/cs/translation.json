@@ -492,6 +492,7 @@
       "deleteError": "Nepodařilo se smazat záznam. Zkuste to prosím znovu.",
       "retranscribe": "Přepsat znovu",
       "retranscribeError": "Opětovný přepis se nezdařil. Zkuste to prosím znovu.",
+      "noAudio": "Pro tuto položku nebyl uložen žádný zvukový záznam, nelze ji proto znovu přepsat.",
       "transcribing": "Přepisuji...",
       "transcriptionFailed": "Přepis selhal. Můžete zkusit přepis znovu pomocí ikony opakování."
     },

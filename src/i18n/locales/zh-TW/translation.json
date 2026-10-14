@@ -492,6 +492,7 @@
       "deleteError": "刪除條目失敗，請重試",
       "retranscribe": "重新轉錄",
       "retranscribeError": "重新轉錄失敗，請重試。",
+      "noAudio": "此項目未儲存音訊錄音，因此無法重新轉錄。",
       "transcribing": "轉錄中...",
       "transcriptionFailed": "轉錄失敗。您可以使用重試圖示重新轉錄。"
     },
