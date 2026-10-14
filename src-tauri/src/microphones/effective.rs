@@ -64,6 +64,13 @@ impl EffectiveState {
     pub fn current_choice(&self) -> Option<Option<&str>> {
         self.current.as_ref().map(|input| input.choice.as_deref())
     }
+    // @spec AC-004: A reconnected higher priority device is preferred on the next recording — .specs/features/001-microphone-priority/spec.md#ac-004
+    /// Whether the open stream is on `preferred`, the choice the priority resolves to now
+    /// (`None` for the system default). False without a stream: anything else reopens, so a
+    /// reconnected higher choice wins at the next recording start.
+    pub fn is_on(&self, preferred: Option<&str>) -> bool {
+        self.current_choice() == Some(preferred)
+    }
     /// What to report: the current input while `current_reported` (a recording runs or the
     /// always-on stream is open), otherwise the last recording's.
     pub fn view(&self, current_reported: bool) -> EffectiveView {

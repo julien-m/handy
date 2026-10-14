@@ -7,6 +7,7 @@ use crate::settings_service::{
     domains::{ChangeKind, DomainChange},
     errors::{ErrorItem, ErrorReason, SettingsError, ValidationReason},
 };
+use std::collections::HashSet;
 
 /// Settings key of the ordered list.
 pub const PRIORITY_KEY: &str = "microphone_priority";
@@ -17,12 +18,13 @@ pub const PRIORITY_KEY: &str = "microphone_priority";
 ///
 /// # Errors
 /// `validation_failed` on `microphone_priority`, with one `details.items` entry per refused
-/// position (empty or duplicate), never echoing a name.
+/// position (empty or duplicate), never echoing a name. Linear in the list length.
 pub fn validate_priority(names: Vec<String>) -> Result<Vec<String>, SettingsError> {
+    let mut earlier = HashSet::with_capacity(names.len());
     let refused = names
         .iter()
         .enumerate()
-        .filter_map(|(index, name)| refusal(&names[..index], name).map(|code| (index, code)))
+        .filter_map(|(index, name)| refusal(&mut earlier, name).map(|code| (index, code)))
         .map(|(index, code)| ErrorItem::new(index as u64, code))
         .collect::<Vec<_>>();
     if refused.is_empty() {
@@ -33,11 +35,12 @@ pub fn validate_priority(names: Vec<String>) -> Result<Vec<String>, SettingsErro
             .with_items(refused),
     )
 }
-/// Why `name` cannot follow `earlier` in the list, if it cannot.
-fn refusal(earlier: &[String], name: &str) -> Option<ErrorReason> {
+/// Why `name` cannot follow the non-blank names in `earlier`, if it cannot; an accepted or
+/// duplicate name joins `earlier` (exact bytes, no case folding).
+fn refusal<'a>(earlier: &mut HashSet<&'a str>, name: &'a str) -> Option<ErrorReason> {
     if name.trim().is_empty() {
         Some(ErrorReason::MicrophoneNameEmpty)
-    } else if earlier.iter().any(|previous| previous == name) {
+    } else if !earlier.insert(name) {
         Some(ErrorReason::MicrophoneNameDuplicate)
     } else {
         None

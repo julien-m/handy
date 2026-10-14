@@ -7,7 +7,6 @@ use crate::audio_toolkit::{
 };
 use crate::managers::transcription::StreamRouter;
 use crate::microphones::effective::EffectiveState;
-use crate::microphones::failed_opens::FailedOpens;
 use crate::settings::{get_settings, VadBackend};
 use crate::utils;
 use log::{debug, error, info, trace, warn};
@@ -392,8 +391,6 @@ pub struct AudioRecordingManager {
     capture_generation: Arc<AtomicU64>,
     /// Input actually used (feature 001): the open stream and the last recording's.
     effective: Arc<Mutex<EffectiveState>>,
-    /// Choices that failed to open when the current stream was opened (feature 001).
-    failed_opens: Arc<Mutex<FailedOpens>>,
     /// A committed priority change waits for the end of the recording in progress.
     pending_reopen: Arc<AtomicBool>,
     /// A reopen worker is queued and will read the latest committed settings.
@@ -432,7 +429,6 @@ impl AudioRecordingManager {
             recording_active: Arc::new(AtomicBool::new(false)),
             capture_generation: Arc::new(AtomicU64::new(0)),
             effective: Arc::new(Mutex::new(EffectiveState::default())),
-            failed_opens: Arc::new(Mutex::new(FailedOpens::default())),
             pending_reopen: Arc::new(AtomicBool::new(false)),
             reopen_queued: Arc::new(AtomicBool::new(false)),
             idle_recovery_armed: Arc::new(AtomicBool::new(true)),

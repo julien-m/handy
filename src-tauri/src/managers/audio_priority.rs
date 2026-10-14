@@ -10,7 +10,7 @@ use crate::microphones::{
     boundary::{self, DeviceChange, LossAction, StreamFacts},
     catalog::Catalog,
     effective::{EffectiveInput, EffectiveView},
-    failed_opens, native,
+    native,
     policy::{self, Attempt, AttemptResult, OpenFailure, OpenTarget, Preferences, Resolution},
     status::{self, MicrophoneStatus},
 };
@@ -93,7 +93,6 @@ impl AudioRecordingManager {
         let Some(opened) = resolution.opened else {
             return Err(anyhow::anyhow!(resolution_error(&resolution.attempts)));
         };
-        lock(&self.failed_opens).record(&resolution.attempts, Instant::now());
         lock(&self.effective).stream_opened(EffectiveInput {
             name: opened.stream,
             choice: opened.choice,
@@ -102,9 +101,8 @@ impl AudioRecordingManager {
         });
         Ok(())
     }
-    /// Whether the open stream is still what the priority prefers now (fresh catalog, no open),
-    /// or the preferred choice failed to open for it moments ago (`failed_opens`). An
-    /// unobservable catalog keeps the stream.
+    /// Whether the open stream is still what the priority prefers now (fresh catalog, no open).
+    /// An unobservable catalog keeps the stream.
     fn stream_matches_preference(&self) -> bool {
         let settings = get_settings(&self.app_handle);
         let mut ports = NativePorts {
@@ -114,13 +112,7 @@ impl AudioRecordingManager {
         let Some(preferred) = policy::preferred(&preferences(&settings), &mut ports) else {
             return true;
         };
-        let effective = lock(&self.effective);
-        failed_opens::keeps_stream(
-            effective.current_choice(),
-            preferred.as_deref(),
-            &lock(&self.failed_opens),
-            Instant::now(),
-        )
+        lock(&self.effective).is_on(preferred.as_deref())
     }
     /// At a recording start on an already-open stream (always-on, or warm after a lazy close):
     /// close it when the priority now prefers another input, so the start reopens on that one
@@ -214,8 +206,6 @@ impl AudioRecordingManager {
     /// keeps its device and audio).
     pub fn update_selected_device(&self) -> Result<(), anyhow::Error> {
         self.idle_recovery_armed.store(true, Ordering::Release);
-        // A new order is resolved from scratch: earlier open failures no longer keep the stream.
-        lock(&self.failed_opens).forget();
         self.queue_reopen();
         Ok(())
     }

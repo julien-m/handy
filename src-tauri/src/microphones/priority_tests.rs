@@ -38,3 +38,16 @@ fn exact_names_are_kept_byte_for_byte_including_default() -> TestResult {
     assert_eq!(validate_priority(Vec::new())?, Vec::<String>::new());
     Ok(())
 }
+#[test]
+fn a_long_list_is_checked_in_one_pass_and_refuses_only_the_repeated_position() -> TestResult {
+    let mut order = (0..200_000).map(|n| format!("Mic {n}")).collect::<Vec<_>>();
+    order.push("Mic 199999".to_owned());
+    let refused = validate_priority(order).err().ok_or("accepted")?;
+    let items = refused
+        .items()
+        .iter()
+        .map(|item| (item.index(), item.code()))
+        .collect::<Vec<_>>();
+    assert_eq!(items, [(200_000, ErrorReason::MicrophoneNameDuplicate)]);
+    Ok(())
+}

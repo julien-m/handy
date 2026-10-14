@@ -4,7 +4,6 @@
 pub mod boundary;
 pub mod catalog;
 pub mod effective;
-pub mod failed_opens;
 pub mod native;
 pub mod policy;
 pub mod priority;
