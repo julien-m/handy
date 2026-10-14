@@ -13,14 +13,15 @@ fn every_actual_stored_field_has_exactly_one_descriptor() -> Result<(), Box<dyn 
         .iter()
         .map(|entry| entry.key.to_owned())
         .collect();
-    assert_eq!(actual.len(), 63);
-    assert_eq!(descriptors().len(), 63);
+    assert_eq!(actual.len(), 64);
+    assert_eq!(descriptors().len(), 64);
     assert_eq!(actual, described);
     Ok(())
 }
 
-const READONLY: [&str; 7] = [
+const READONLY: [&str; 8] = [
     "settings_schema_version",
+    "smart_paste_migration_version",
     "whats_new_last_seen_version",
     "selected_model",
     "onboarding_completed",
@@ -36,7 +37,7 @@ const COLLECTIONS: [(&str, &str); 4] = [
 ];
 
 #[test]
-fn independent_access_inventory_covers_7_readonly_1_secret_4_collections_51_scalars(
+fn independent_access_inventory_covers_8_readonly_1_secret_4_collections_51_scalars(
 ) -> Result<(), Box<dyn std::error::Error>> {
     for key in READONLY {
         let entry = handy_app_lib::settings_service::descriptor::descriptor(key)
@@ -71,6 +72,30 @@ fn independent_access_inventory_covers_7_readonly_1_secret_4_collections_51_scal
     Ok(())
 }
 
+/// Paste methods of this build: smart paste is selectable only on macOS once dictation delivers
+/// through it (feature 007 rollout gate, Cargo feature `smart-paste-dispatch`).
+pub(super) const PASTE_METHODS: &[&str] =
+    if cfg!(all(target_os = "macos", feature = "smart-paste-dispatch")) {
+        &[
+            "ctrl_v",
+            "direct",
+            "none",
+            "shift_insert",
+            "ctrl_shift_v",
+            "external_script",
+            "smart_paste",
+        ]
+    } else {
+        &[
+            "ctrl_v",
+            "direct",
+            "none",
+            "shift_insert",
+            "ctrl_shift_v",
+            "external_script",
+        ]
+    };
+
 pub(super) const ENUM_INVENTORY: &[(&str, &[&str])] = &[
     (
         "shortcut_activation",
@@ -96,17 +121,7 @@ pub(super) const ENUM_INVENTORY: &[(&str, &[&str])] = &[
         "recording_retention_period",
         &["never", "preserve_limit", "days3", "weeks2", "months3"],
     ),
-    (
-        "paste_method",
-        &[
-            "ctrl_v",
-            "direct",
-            "none",
-            "shift_insert",
-            "ctrl_shift_v",
-            "external_script",
-        ],
-    ),
+    ("paste_method", PASTE_METHODS),
     ("clipboard_handling", &["dont_modify", "copy_to_clipboard"]),
     ("auto_submit_key", &["enter", "ctrl_enter", "cmd_enter"]),
     ("theme", &["system", "light", "dark"]),

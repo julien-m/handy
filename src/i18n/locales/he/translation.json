@@ -323,6 +323,7 @@
         "description": "בחר איך הטקסט יוכנס. ישיר: מדמה הקלדה דרך קלט המערכת. ללא: מדלג על הדבקה ומעדכן רק היסטוריה/לוח.",
         "options": {
           "clipboard": "לוח ({{modifier}}+V)",
+          "smartPaste": "הדבקה חכמה",
           "clipboardCtrlShiftV": "לוח (Ctrl+Shift+V)",
           "clipboardShiftInsert": "לוח (Shift+Insert)",
           "direct": "ישיר",

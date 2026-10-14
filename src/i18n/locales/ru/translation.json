@@ -323,6 +323,7 @@
         "description": "Выбрать способ вставки текста. Прямой: имитирует набор текста через системный ввод. Нет: пропуск вставки, обновление только истории/буфера обмена.",
         "options": {
           "clipboard": "Буфер обмена ({{modifier}}+V)",
+          "smartPaste": "Умная вставка",
           "clipboardCtrlShiftV": "Буфер обмена (Ctrl+Shift+V)",
           "clipboardShiftInsert": "Буфер обмена (Shift+Insert)",
           "direct": "Прямой",

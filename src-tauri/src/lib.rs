@@ -699,6 +699,7 @@ pub fn run(cli_args: CliArgs) {
             shortcut::change_reliable_paste_setting,
             shortcut::change_paste_method_setting,
             shortcut::get_available_typing_tools,
+            shortcut::is_smart_paste_available,
             shortcut::change_typing_tool_setting,
             shortcut::change_external_script_path_setting,
             shortcut::change_clipboard_handling_setting,

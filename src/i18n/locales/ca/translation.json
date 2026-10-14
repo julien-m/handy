@@ -323,6 +323,7 @@
         "description": "Trieu com s'insereix el text. Directe: simula l'escriptura mitjançant l'entrada del sistema. Cap: no enganxa el text, només actualitza l'historial i el porta-retalls.",
         "options": {
           "clipboard": "Porta-retalls ({{modifier}}+V)",
+          "smartPaste": "Enganxat intel·ligent",
           "clipboardCtrlShiftV": "Porta-retalls (Ctrl+Maj+V)",
           "clipboardShiftInsert": "Porta-retalls (Maj+Insert)",
           "direct": "Directe",

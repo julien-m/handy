@@ -323,6 +323,7 @@
         "description": "Изберете как се вмъква текстът. Директно: симулира писане чрез системния вход. Няма: пропуска поставянето, актуализира само историята/клипборда.",
         "options": {
           "clipboard": "Клипборд ({{modifier}}+V)",
+          "smartPaste": "Интелигентно поставяне",
           "clipboardCtrlShiftV": "Клипборд (Ctrl+Shift+V)",
           "clipboardShiftInsert": "Клипборд (Shift+Insert)",
           "direct": "Директно",

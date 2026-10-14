@@ -1,7 +1,9 @@
 //! `handy settings output`: the existing output settings (paste method, clipboard handling,
 //! automatic submit, paste delays, typing tool, external script, trailing space), read and changed
 //! through the same descriptors and validator as generic `get`/`set` and the settings UI. Feature
-//! 007 extends this domain (smart paste); 008 keeps the existing values only.
+//! 007 adds `paste_method smart_paste` through that shared validation: accepted only where
+//! `smart_paste::setting_policy` makes it selectable, refused elsewhere with `validation_failed`
+//! (exit 2) before any write, dry runs included.
 use super::{ChangeKind, Domain, DomainChange, DomainPlan, DomainRequest};
 use crate::settings::AppSettings;
 use crate::settings_service::{

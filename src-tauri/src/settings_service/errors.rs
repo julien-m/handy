@@ -70,6 +70,10 @@ pub enum ValidationReason {
     InvalidEncoding,
     /// Domain input does not follow the domain's exchange format.
     InvalidInput,
+    /// Smart paste is not selectable on this platform or in this build (feature 007).
+    SmartPasteUnavailable,
+    /// On macOS, smart paste replaces the beta reliable paste (feature 007).
+    ReliablePasteReplaced,
 }
 impl ValidationReason {
     fn message(self) -> &'static str {
@@ -92,6 +96,12 @@ impl ValidationReason {
             Self::GpuDeviceRequired => "The GPU accelerator requires a selected GPU device.",
             Self::InvalidEncoding => "Input is not valid UTF-8 text.",
             Self::InvalidInput => "Input does not follow the exchange format.",
+            Self::SmartPasteUnavailable => {
+                "Smart paste is not available on this platform or in this build."
+            }
+            Self::ReliablePasteReplaced => {
+                "On macOS, smart paste replaces the beta reliable paste."
+            }
         }
     }
 }

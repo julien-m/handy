@@ -323,6 +323,7 @@
         "description": "चुनें कि टेक्स्ट कैसे डाला जाए. 'डायरेक्ट': सिस्टम इनपुट के ज़रिए सीधे टाइप करता है. 'कोई नहीं': पेस्ट नहीं करता, केवल इतिहास/क्लिपबोर्ड अपडेट करता है.",
         "options": {
           "clipboard": "क्लिपबोर्ड ({{modifier}}+V)",
+          "smartPaste": "स्मार्ट पेस्ट",
           "clipboardCtrlShiftV": "क्लिपबोर्ड (Ctrl+Shift+V)",
           "clipboardShiftInsert": "क्लिपबोर्ड (Shift+Insert)",
           "direct": "डायरेक्ट",

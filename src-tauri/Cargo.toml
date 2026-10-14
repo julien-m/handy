@@ -19,6 +19,13 @@ incremental = true # Compile your binary in smaller steps.
 name = "handy_app_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
+[features]
+# Smart paste rollout gate (feature 007, `smart_paste::setting_policy`). Off: smart paste cannot be
+# selected, is not the macOS default and no migration moves anyone to it, because the paste
+# pipeline still refuses it. Step 7 enables it in the same change that wires smart paste into
+# dictation; before that, enable it only to test the settings behavior of that state.
+smart-paste-dispatch = []
+
 # [[bin]]
 # name = "cli"
 # path = "src/audio_toolkit/bin/cli.rs"

@@ -300,6 +300,7 @@
         "description": ".اختر كيفية إدراج النص. مباشر: يحاكي الكتابة عبر إدخال النظام. بلا: يتخطى اللصق، ويحدث السجل/الحافظة فقط",
         "options": {
           "clipboard": "الحافظة ({{modifier}}+V)",
+          "smartPaste": "لصق ذكي",
           "clipboardCtrlShiftV": "الحافظة (Ctrl+Shift+V)",
           "clipboardShiftInsert": "الحافظة (Shift+Insert)",
           "direct": "مباشر",

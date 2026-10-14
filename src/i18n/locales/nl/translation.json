@@ -323,6 +323,7 @@
         "description": "Kies hoe tekst wordt ingevoegd. 'Direct' simuleert typen via het systeem. 'Geen' slaat het plakken over en werkt alleen de geschiedenis en het klembord bij.",
         "options": {
           "clipboard": "Klembord ({{modifier}}+V)",
+          "smartPaste": "Slim plakken",
           "clipboardCtrlShiftV": "Klembord (Ctrl+Shift+V)",
           "clipboardShiftInsert": "Klembord (Shift+Insert)",
           "direct": "Direct",

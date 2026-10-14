@@ -323,6 +323,7 @@
         "description": "Vælg, hvordan tekst indsættes. Direkte: simulerer tastetryk via systeminput. Ingen: springer indsætning over, opdaterer kun historik/udklipsholder.",
         "options": {
           "clipboard": "Udklipsholder ({{modifier}}+V)",
+          "smartPaste": "Smart indsættelse",
           "clipboardCtrlShiftV": "Udklipsholder (Ctrl+Shift+V)",
           "clipboardShiftInsert": "Udklipsholder (Shift+Insert)",
           "direct": "Direkte",

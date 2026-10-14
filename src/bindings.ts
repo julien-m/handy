@@ -181,6 +181,13 @@ async changePasteMethodSetting(method: string) : Promise<Result<null, SettingsCo
 async getAvailableTypingTools() : Promise<string[]> {
     return await TAURI_INVOKE("get_available_typing_tools");
 },
+/**
+ * Whether the paste method selector offers smart paste: macOS only, and only once dictation
+ * delivers through it (feature 007 rollout gate, `smart_paste::setting_policy`).
+ */
+async isSmartPasteAvailable() : Promise<boolean> {
+    return await TAURI_INVOKE("is_smart_paste_available");
+},
 async changeTypingToolSetting(tool: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_typing_tool_setting", { tool }) };
@@ -1065,7 +1072,13 @@ selected_channel?: number | null; clamshell_microphone?: string | null; selected
  * after the target app actually reads the transcript, instead of after a
  * fixed delay. See `paste_tx`. macOS and Windows only.
  */
-reliable_paste?: boolean; typing_tool?: TypingTool; external_script_path?: string | null; filler_word_removal_enabled?: boolean; custom_filler_words?: string[] | null; 
+reliable_paste?: boolean; 
+/**
+ * Internal marker of the one-time macOS migration to smart paste (feature 007, see
+ * `smart_paste::setting_policy`); read-only on every settings surface. Stores missing it are
+ * treated as never migrated.
+ */
+smart_paste_migration_version?: number; typing_tool?: TypingTool; external_script_path?: string | null; filler_word_removal_enabled?: boolean; custom_filler_words?: string[] | null; 
 /**
  * Fresh installs default from the OS locale; existing stores are migrated
  * in `apply_settings_migrations`.
@@ -1338,7 +1351,15 @@ export type ValidationReason = "canonical_type" | "canonical_value" | "out_of_ra
 /**
  * Domain input does not follow the domain's exchange format.
  */
-"invalid_input"
+"invalid_input" | 
+/**
+ * Smart paste is not selectable on this platform or in this build (feature 007).
+ */
+"smart_paste_unavailable" | 
+/**
+ * On macOS, smart paste replaces the beta reliable paste (feature 007).
+ */
+"reliable_paste_replaced"
 export type WindowsMicrophonePermissionStatus = { supported: boolean; overall_access: PermissionAccess; device_access: PermissionAccess; app_access: PermissionAccess; desktop_app_access: PermissionAccess }
 
 /** tauri-specta globals **/

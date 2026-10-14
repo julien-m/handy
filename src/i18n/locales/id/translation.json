@@ -323,6 +323,7 @@
         "description": "Pilih cara teks dimasukkan. Langsung: mensimulasikan pengetikan melalui masukan sistem. Tidak Ada: melewati proses tempel dan hanya memperbarui riwayat/papan klip.",
         "options": {
           "clipboard": "Papan klip ({{modifier}}+V)",
+          "smartPaste": "Tempel cerdas",
           "clipboardCtrlShiftV": "Papan klip (Ctrl+Shift+V)",
           "clipboardShiftInsert": "Papan klip (Shift+Insert)",
           "direct": "Langsung",

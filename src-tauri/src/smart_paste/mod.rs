@@ -16,12 +16,15 @@
 //! - per-application strategy and keyboard: [`strategy`], [`keyboard`],
 //!   [`key_events`], and the macOS adapters in `macos_keyboard`;
 //! - the serialized insertion chain and clipboard lifecycle:
-//!   [`coordinator`] with its [`request`] ports, owned by one [`actor`] thread.
+//!   [`coordinator`] with its [`request`] ports, owned by one [`actor`] thread;
+//! - the paste-method setting (availability, macOS default, migration from
+//!   the beta reliable paste, shared refusals): [`setting_policy`].
 //!
 //! Native effects (pasteboard, accessibility, keyboard) stay behind
 //! injectable ports so the production decision code is exercised by tests
 //! with fakes. Wiring into the paste pipeline waits for the destination
-//! context of feature 006; settings integration waits for feature 008.
+//! context of feature 006; until then [`setting_policy`] keeps smart paste
+//! unselectable, so no installation is moved to a method dictation refuses.
 
 pub mod actor;
 pub mod ax_port;
@@ -49,6 +52,7 @@ pub mod pasteboard_port;
 pub mod pasteboard_types;
 mod pending;
 pub mod request;
+pub mod setting_policy;
 pub mod settlement;
 pub mod snapshot;
 #[cfg(target_os = "macos")]
