@@ -1,0 +1,39 @@
+# claude-sync — merge of dev (007 825598e9, 002 9b5df5de) into feature/001-microphone-priority
+# Merge commit 6c114bc7; follow-up test commit 4c664550. Format: [proof name] (cwd relative to the
+# worktree) exact command -> exit code. Each proof has <name>.stdout, <name>.stderr, <name>.exit.
+# Runs up to conventions-repo-merge are on the merge resolution (6c114bc7). The *-after-fix runs
+# are on 4c664550 (microphone_cli used the whole shared harness; clippy --all-targets then has
+# only the 4 lib-test warnings of code identical to dev: lib.rs headless_guard_tests,
+# engine_supervisor/supervisor.rs, managers/gguf_meta.rs, portable.rs). An earlier attempt with
+# `#[allow(dead_code)]` was refused by the conventions gate (builtin.suppression_directives,
+# new_count 1) and reverted before any commit; its proofs were discarded.
+# test-microphone-cli-after-fix appears twice: before and after the module header comment edit.
+[bindings-build] (cwd: /src-tauri) CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001 cargo build --bins && cp /Users/julienm/projects/handy-wt/.target-001/debug/handy /private/tmp/claude-501/-Users-julienm-projects-handy/6c63dd2f-66f1-4748-8d50-174f39c2881a/scratchpad/handy-sync -> exit 0
+[bindings-export] (cwd: /src-tauri) CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001 HOME=/private/tmp/claude-501/-Users-julienm-projects-handy/6c63dd2f-66f1-4748-8d50-174f39c2881a/scratchpad/export-home timeout 300 /private/tmp/claude-501/-Users-julienm-projects-handy/6c63dd2f-66f1-4748-8d50-174f39c2881a/scratchpad/handy-sync --list-models -> exit 0
+[bun-lint] (cwd: ) CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001 bun run lint -> exit 0
+[bun-format-check] (cwd: ) CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001 bun run format:check -> exit 0
+[cargo-fmt-check] (cwd: /src-tauri) CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001 cargo fmt -- --check -> exit 0
+[tsc] (cwd: ) CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001 bunx --no-install tsc --noEmit -> exit 0
+[check-translations] (cwd: ) CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001 bun run check:translations -> exit 0
+[bun-settings-store-test] (cwd: ) CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001 bun run test:settings-store -> exit 0
+[bun-settings-errors-test] (cwd: ) CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001 bun run test:settings-errors -> exit 0
+[cargo-test-full] (cwd: /src-tauri) CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001 cargo test --no-fail-fast -> exit 0
+[targeted-integration-smart-paste] (cwd: /src-tauri) CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001 cargo test --features smart-paste-dispatch --no-fail-fast --test 'microphone_*' --test 'settings_*' --test 'replacement_*' -> exit 0
+[targeted-lib-microphone-smart-paste] (cwd: /src-tauri) CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001 cargo test --features smart-paste-dispatch --no-fail-fast --lib -- microphone -> exit 0
+[targeted-lib-settings-smart-paste] (cwd: /src-tauri) CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001 cargo test --features smart-paste-dispatch --no-fail-fast --lib -- settings_ -> exit 0
+[targeted-lib-replacement-smart-paste] (cwd: /src-tauri) CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001 cargo test --features smart-paste-dispatch --no-fail-fast --lib -- replacement -> exit 0
+[clippy-lib-bins] (cwd: /src-tauri) CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001 cargo clippy --lib --bins -- -D warnings -> exit 0
+[clippy-all-targets] (cwd: /src-tauri) CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001 cargo clippy --all-targets -> exit 0
+[conventions-repo-merge] (cwd: ) CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001 livespec conventions verify --feature repo --json -> exit 0
+[test-microphone-cli-after-fix] (cwd: /src-tauri) CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001 cargo test --test microphone_cli -> exit 0
+[clippy-all-targets-after-fix] (cwd: /src-tauri) CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001 cargo clippy --all-targets -> exit 0
+[clippy-lib-bins-after-fix] (cwd: /src-tauri) CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001 cargo clippy --lib --bins -- -D warnings -> exit 0
+[cargo-fmt-check-after-fix] (cwd: /src-tauri) CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001 cargo fmt -- --check -> exit 0
+[test-microphone-cli-after-fix] (cwd: /src-tauri) CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001 cargo test --test microphone_cli -> exit 0
+[conventions-repo-fix] (cwd: ) CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001 livespec conventions verify --feature repo --json -> exit 0
+[validate-progression-implement] (cwd: ) CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001 livespec validate .specs/features/001-microphone-priority --progression implement --model claude-opus-5-5 --review-max-chars 180000 -> exit 0
+# Results: cargo-test-full 1133 passed, 0 failed, 28 ignored (all targets, default features =
+# rollout gates closed). Targeted with smart-paste-dispatch: integration microphone_*/settings_*/
+# replacement_* 17 targets 217 passed 6 ignored; lib filters microphone 14, settings_ 121 (1
+# ignored), replacement 130; 0 failed. microphone_cli after fix 8 passed. Conventions PASS
+# (new_count 0, blockers 0) at the merge and at 4c664550. Progression implement: READY.

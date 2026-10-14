@@ -709,6 +709,8 @@
     },
     "noInputDeviceTitle": "Mikrofon Tidak Ditemukan",
     "noInputDevice": "Tidak ada perangkat masukan audio yang terdeteksi. Hubungkan mikrofon atau headset lalu coba lagi.",
+    "inputLostTitle": "Rekaman terputus",
+    "inputLost": "Mikrofon terputus. Audio yang direkam hingga saat itu sedang ditranskripsikan.",
     "recordingFailed": "Gagal memulai perekaman: {{error}}",
     "modelLoadFailed": "Gagal memuat model: {{model}}",
     "modelLoadFailedUnknown": "model tidak dikenal",

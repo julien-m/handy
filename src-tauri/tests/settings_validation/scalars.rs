@@ -139,7 +139,6 @@ fn number_cases() -> Vec<(&'static str, &'static str, serde_json::Value)> {
 }
 fn string_cases() -> Vec<(&'static str, &'static str, serde_json::Value)> {
     [
-        ("selected_microphone", "  Microphone  "),
         ("clamshell_microphone", "  Microphone  "),
         ("selected_output_device", "  Output  "),
         ("selected_language", "auto"),
@@ -153,7 +152,7 @@ fn string_cases() -> Vec<(&'static str, &'static str, serde_json::Value)> {
     .collect()
 }
 #[test]
-fn all_52_scalar_ports_accept_the_same_typed_values() -> Result<(), Box<dyn std::error::Error>> {
+fn all_51_scalar_ports_accept_the_same_typed_values() -> Result<(), Box<dyn std::error::Error>> {
     // Every capability, so a platform-bound key is accepted on every build of this test.
     let context = ValidationContext {
         prompt_ids: &["known"],
@@ -161,7 +160,7 @@ fn all_52_scalar_ports_accept_the_same_typed_values() -> Result<(), Box<dyn std:
         platform: PlatformCapabilities::only(&[PlatformCapability::Destination]),
     };
     let cases = canonical_cases();
-    assert_eq!(cases.len(), 52);
+    assert_eq!(cases.len(), 51);
     for (key, raw, value) in cases {
         let cli = validate_cli(key, raw, &context)?;
         let ui = validate_ui(key, value.clone(), &context)?;
@@ -189,7 +188,6 @@ fn every_nullable_scalar_preserves_strings_and_accepts_null_clear(
         platform: PlatformCapabilities::current(),
     };
     for key in [
-        "selected_microphone",
         "selected_channel",
         "clamshell_microphone",
         "selected_output_device",
@@ -202,11 +200,7 @@ fn every_nullable_scalar_preserves_strings_and_accepts_null_clear(
         assert_eq!(cli, ui);
         assert!(serde_json::to_value(cli.value())?.is_null());
     }
-    for key in [
-        "selected_microphone",
-        "clamshell_microphone",
-        "selected_output_device",
-    ] {
+    for key in ["clamshell_microphone", "selected_output_device"] {
         // Null is the only system-default value; "default" is a device name (a real ALSA PCM on
         // Linux) kept byte for byte, so each intention has exactly one stored value.
         for name in [

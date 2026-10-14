@@ -92,6 +92,7 @@
             "onboarding_completed",
             "always_on_microphone",
             "selected_microphone",
+            "microphone_priority",
             "selected_channel",
             "clamshell_microphone",
             "selected_output_device",
@@ -166,6 +167,7 @@
                   "onboarding_completed",
                   "always_on_microphone",
                   "selected_microphone",
+                  "microphone_priority",
                   "selected_channel",
                   "clamshell_microphone",
                   "selected_output_device",
@@ -276,7 +278,10 @@
                   "prompt_text_too_long",
                   "override_incomplete",
                   "unknown_provider",
-                  "prompt_invalid"
+                  "prompt_invalid",
+                  "microphones_domain",
+                  "microphone_name_empty",
+                  "microphone_name_duplicate"
                 ]
               },
               "index": {
@@ -365,7 +370,10 @@
             "prompt_text_too_long",
             "override_incomplete",
             "unknown_provider",
-            "prompt_invalid"
+            "prompt_invalid",
+            "microphones_domain",
+            "microphone_name_empty",
+            "microphone_name_duplicate"
           ]
         }
       },
@@ -744,6 +752,12 @@
           ],
           "type": "string"
         },
+        "microphone_priority": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
         "model_unload_timeout": {
           "enum": [
             "never",
@@ -1010,6 +1024,7 @@
         "onboarding_completed",
         "always_on_microphone",
         "selected_microphone",
+        "microphone_priority",
         "selected_channel",
         "clamshell_microphone",
         "selected_output_device",
@@ -1308,10 +1323,21 @@
       "nullable": true,
       "owner_domain": "microphones",
       "range": null,
+      "read_only": true,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [],
+      "key": "microphone_priority",
+      "nullable": false,
+      "owner_domain": "microphones",
+      "range": null,
       "read_only": false,
       "runtime_effect": "audio_input",
       "secret": false,
-      "value_type": "string"
+      "value_type": "array"
     },
     {
       "allowed_values": [],

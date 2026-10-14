@@ -1,0 +1,18 @@
+
+running 1 test
+test a_reconnected_second_choice_reopens_a_default_stream_left_by_a_busy_first_choice ... FAILED
+
+failures:
+
+---- a_reconnected_second_choice_reopens_a_default_stream_left_by_a_busy_first_choice stdout ----
+
+thread 'a_reconnected_second_choice_reopens_a_default_stream_left_by_a_busy_first_choice' (54120712) panicked at tests/microphone_reopen.rs:83:5:
+AirPods are back: the next start must reopen the default stream
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    a_reconnected_second_choice_reopens_a_default_stream_left_by_a_busy_first_choice
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

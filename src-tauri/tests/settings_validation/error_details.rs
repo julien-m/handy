@@ -82,7 +82,7 @@ fn items_are_sorted_by_index_and_bounded_without_candidate_values() -> TestResul
     Ok(())
 }
 /// Every closed `details.reason` of this build, in wire-schema order.
-const REASONS: [&str; 41] = [
+const REASONS: [&str; 44] = [
     "unsupported_platform",
     "shortcut_session_busy",
     "instance_required",
@@ -124,6 +124,9 @@ const REASONS: [&str; 41] = [
     "override_incomplete",
     "unknown_provider",
     "prompt_invalid",
+    "microphones_domain",
+    "microphone_name_empty",
+    "microphone_name_duplicate",
 ];
 #[test]
 fn schema_closes_reason_and_items() -> TestResult {

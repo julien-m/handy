@@ -1,0 +1,14 @@
+
+running 9 tests
+test generic_set_of_either_microphone_key_is_refused_with_the_domain_reason ... ok
+test invalid_or_stale_orders_change_nothing ... ok
+test a_headless_read_migrates_in_memory_without_writing ... ok
+test a_legacy_name_becomes_the_only_choice_once_and_stays_for_a_downgrade ... ok
+test a_failed_write_leaves_the_legacy_store_recoverable ... ok
+test a_valid_complete_order_commits_once_and_a_repeat_is_a_no_op ... ok
+test the_legacy_selector_moves_its_choice_first_and_default_empties_the_list ... ok
+test an_explicit_list_wins_over_the_legacy_key_even_when_empty ... ok
+test null_absent_and_literal_default_legacy_values_migrate_exactly ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.23s
+

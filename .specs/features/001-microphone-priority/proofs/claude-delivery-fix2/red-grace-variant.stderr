@@ -1,0 +1,6 @@
+   Compiling handy v0.9.8 (/private/tmp/claude-501/-Users-julienm-projects-handy/6c63dd2f-66f1-4748-8d50-174f39c2881a/scratchpad/dr001-fix2/red-copy/src-tauri)
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 35.48s
+     Running tests/microphone_reopen.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_reopen-8951d3b21ffd5da3)
+error: test failed, to rerun pass `--test microphone_reopen`

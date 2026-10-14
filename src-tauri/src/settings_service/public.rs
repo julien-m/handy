@@ -208,6 +208,7 @@ struct PublicCollections {
     custom_words: Vec<String>,
     post_process_prompts: Vec<PublicPrompt>,
     custom_filler_words: Option<Vec<String>>,
+    microphone_priority: Vec<String>,
     word_replacements: Vec<PublicReplacementRule>,
 }
 impl PublicCollections {
@@ -225,6 +226,7 @@ impl PublicCollections {
                 .map(PublicPrompt::from)
                 .collect(),
             custom_filler_words: settings.custom_filler_words.clone(),
+            microphone_priority: settings.microphone_priority.clone(),
             word_replacements: settings
                 .word_replacements
                 .iter()

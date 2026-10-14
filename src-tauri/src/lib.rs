@@ -19,6 +19,7 @@ mod managers;
 /// History storage (text-only rows included), public for the history integration tests.
 pub use managers::history_store;
 mod memory;
+pub mod microphones;
 mod overlay;
 mod paste_tx;
 pub mod portable;
@@ -806,8 +807,8 @@ pub fn run(cli_args: CliArgs) {
             commands::audio::get_windows_microphone_permission_status,
             commands::audio::open_microphone_privacy_settings,
             commands::audio::get_available_microphones,
-            commands::audio::set_selected_microphone,
-            commands::audio::get_selected_microphone,
+            commands::audio::set_microphone_priority,
+            commands::audio::get_microphone_status,
             commands::audio::get_available_output_devices,
             commands::audio::set_selected_output_device,
             commands::audio::get_selected_output_device,

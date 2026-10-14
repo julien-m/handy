@@ -243,6 +243,8 @@ enum Command {
     Quiesce(Arc<LeaseRequest>),
     /// A quiescence lease was released.
     Resume,
+    /// The recording's input was lost (feature 001): end it through the normal stop.
+    InputLost,
 }
 
 /// Decide whether a key-up should be deferred (so auto-repeat can cancel it)
@@ -614,6 +616,15 @@ impl CoordinatorState {
         }
     }
 
+    // @spec FR-004: A lost input ends the recording once — .specs/features/001-microphone-priority/spec.md#fr-004
+    /// The recording's input was lost: stop it once through the normal stop effect, so its
+    /// captured audio is transcribed. The held key's later release finds no session (no-op);
+    /// a later press starts a new one.
+    fn on_input_lost(&mut self) -> Option<Effect> {
+        self.pending_release = None;
+        self.stop_recording()
+    }
+
     fn on_processing_finished(&mut self) -> Option<Effect> {
         self.stage = Stage::Idle;
         self.hold = None;
@@ -775,6 +786,13 @@ impl TranscriptionCoordinator {
         }
     }
 
+    /// Tells the coordinator that the recording's input was lost.
+    pub fn notify_input_lost(&self) {
+        if self.tx.send(Command::InputLost).is_err() {
+            warn!("Transcription coordinator channel closed");
+        }
+    }
+
     /// Tells the coordinator that the transcription pipeline drained.
     pub fn notify_processing_finished(&self) {
         if self.tx.send(Command::ProcessingFinished).is_err() {
@@ -850,6 +868,7 @@ fn dispatch(
             gate.release();
             None
         }
+        Command::InputLost => state.on_input_lost(),
     }
 }
 
@@ -917,6 +936,10 @@ fn stop(app: &AppHandle, binding_id: &str, hotkey_string: &str) {
     };
     action.stop(app, binding_id, hotkey_string);
 }
+
+#[cfg(test)]
+#[path = "transcription_coordinator/input_lost_tests.rs"]
+mod input_lost_tests;
 
 #[cfg(test)]
 mod tests {

@@ -76,19 +76,32 @@ fn editable_descriptor(
     use super::descriptor::SettingType;
     let entry = super::descriptor::descriptor(key)
         .ok_or_else(|| SettingsError::new(super::errors::SettingsErrorCode::NotFound))?;
+    // Business rule: the legacy microphone key is read-only because no surface writes it any
+    // more, not because the settings UI owns it; it gets the microphones refusal (001).
     if entry.read_only || entry.secret {
-        return Err(SettingsError::validation(
-            entry.key,
-            ValidationReason::UiOnly,
-        ));
+        let reason = match entry.owner_domain {
+            "microphones" => ValidationReason::MicrophonesDomain,
+            _ => ValidationReason::UiOnly,
+        };
+        return Err(domain_refusal(entry.key, reason));
     }
     if matches!(entry.value_type, SettingType::Array | SettingType::Object) {
-        return Err(SettingsError::validation(
-            entry.key,
-            collection_reason(entry),
-        ));
+        return Err(domain_refusal(entry.key, collection_reason(entry)));
     }
     Ok(entry)
+}
+
+// @spec FR-007: Generic writes of microphone keys refused — .specs/features/001-microphone-priority/spec.md#fr-007
+/// Refusal of a generic write of `key`, owned by another surface; the microphones domain also
+/// carries the machine reason `details.reason = "microphones_domain"`.
+fn domain_refusal(key: &str, reason: ValidationReason) -> SettingsError {
+    let error = SettingsError::validation(key, reason);
+    match reason {
+        ValidationReason::MicrophonesDomain => {
+            error.with_reason(super::errors::ErrorReason::MicrophonesDomain)
+        }
+        _ => error,
+    }
 }
 
 /// Refusal of a generic write to a list or map, naming the command that owns it.
@@ -100,6 +113,7 @@ fn collection_reason(entry: &super::descriptor::SettingDescriptor) -> Validation
         "vocabulary" if entry.key == "custom_filler_words" => ValidationReason::UiOnly,
         "vocabulary" => ValidationReason::VocabularyDomain,
         "prompts" => ValidationReason::PromptsDomain,
+        "microphones" => ValidationReason::MicrophonesDomain,
         "replacements" => ValidationReason::ReplacementsDomain,
         _ => ValidationReason::UiOnly,
     }

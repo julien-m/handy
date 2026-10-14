@@ -34,12 +34,11 @@ fn accepted_cases() -> Vec<(&'static str, Value, &'static str)> {
         ),
         ("external_script_path", Value::Null, "null"),
         ("recording_retention_period", json!("weeks2"), "weeks2"),
-        ("selected_microphone", Value::Null, "null"),
         ("clamshell_microphone", Value::Null, "null"),
         ("selected_output_device", Value::Null, "null"),
-        ("selected_microphone", json!("default"), "default"),
+        ("clamshell_microphone", json!("default"), "default"),
         (
-            "selected_microphone",
+            "clamshell_microphone",
             json!("USB Microphone"),
             "USB Microphone",
         ),
@@ -65,6 +64,12 @@ fn refused_cases() -> Vec<(&'static str, Value, &'static str)> {
             "missing",
         ),
         ("selected_model", json!("whisper-small"), "whisper-small"),
+        // Feature 001: the legacy single microphone key is read-only on every surface.
+        (
+            "selected_microphone",
+            json!("USB Microphone"),
+            "USB Microphone",
+        ),
     ]
 }
 fn store(directory: &tempfile::TempDir) -> PathBuf {
@@ -204,11 +209,7 @@ fn instance_fences_offline_writers_and_a_restart_sees_their_later_commit() -> Te
 }
 #[test]
 fn device_selectors_store_null_for_the_default_and_literal_names_otherwise() -> TestResult {
-    for key in [
-        "selected_microphone",
-        "clamshell_microphone",
-        "selected_output_device",
-    ] {
+    for key in ["clamshell_microphone", "selected_output_device"] {
         let (_, ui) = ui_path(key, Value::Null)?;
         let (_, cli) = cli_path(key, "null")?;
         assert!(ui[key].is_null() && cli[key].is_null(), "{key}");

@@ -2,9 +2,10 @@
 //! current settings and the request, what to answer or which typed change to make; the framework
 //! does the rest the same way for every domain: action aliases, live-only refusal, dry-run preview
 //! through the commit path's own validation, and one atomic commit through the shared backend.
-//! Registered: `output` (008), `replacements` (002), `shortcuts` (004), `vocabulary` (003) and
-//! `prompts` (005); later features add their domain to `production`.
+//! Registered: `output` (008), `replacements` (002), `shortcuts` (004), `vocabulary` (003),
+//! `prompts` (005) and `microphones` (001); later features add their domain to `production`.
 pub mod live_operation;
+pub mod microphones;
 pub mod output;
 pub mod prompts;
 pub mod replacements;
@@ -126,6 +127,7 @@ pub fn production() -> &'static [&'static dyn Domain] {
         &shortcuts::ShortcutsDomain,
         &vocabulary::VocabularyDomain,
         &prompts::PromptsDomain,
+        &microphones::MicrophonesDomain,
     ]
 }
 /// Shared verb aliases: every domain accepts `edit` for `update` and `delete` for `remove`.

@@ -706,6 +706,8 @@
     },
     "noInputDeviceTitle": "No se encontró micrófono",
     "noInputDevice": "No se detectó ningún dispositivo de entrada de audio. Conecta un micrófono o auriculares e inténtalo de nuevo.",
+    "inputLostTitle": "Grabación interrumpida",
+    "inputLost": "El micrófono se desconectó. Se está transcribiendo el audio grabado hasta ese momento.",
     "recordingFailed": "Error al iniciar la grabación: {{error}}",
     "modelLoadFailed": "Error al cargar el modelo: {{model}}",
     "modelLoadFailedUnknown": "modelo desconocido",

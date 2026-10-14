@@ -5,6 +5,8 @@ use super::{operations::Reply, protocol::SettingsOperation};
 use serde_json::Value;
 use std::io::Write;
 
+mod microphones;
+
 /// What the reply answers, for readable output only.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum View {
@@ -26,6 +28,8 @@ pub enum View {
     Terms,
     /// Prompt library (`handy settings prompts list`): one line per prompt.
     Prompts,
+    /// Microphone status (`handy settings microphones list`): one line per choice.
+    Microphones,
     Help,
 }
 impl View {
@@ -51,6 +55,7 @@ impl View {
             _ if domain == "shortcuts" => Self::Shortcuts,
             ("list", _) if domain == "vocabulary" => Self::Terms,
             ("list", _) if domain == "prompts" => Self::Prompts,
+            ("list", _) if domain == "microphones" => Self::Microphones,
             ("export", _) => Self::Export,
             ("list", _) => Self::List,
             ("get", 0) => Self::AllSettings,
@@ -133,6 +138,7 @@ fn success_text(view: View, envelope: &Value) -> String {
         View::Shortcuts => shortcut_lines(data),
         View::Terms => term_lines(&data["terms"]),
         View::Prompts => prompt_lines(data),
+        View::Microphones => microphones::microphone_lines(data),
         View::Help => data["help"].as_str().unwrap_or_default().to_owned(),
     }
 }

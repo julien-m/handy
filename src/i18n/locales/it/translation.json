@@ -706,6 +706,8 @@
     },
     "noInputDeviceTitle": "Nessun microfono trovato",
     "noInputDevice": "Non è stato rilevato alcun dispositivo di ingresso audio. Collega un microfono o delle cuffie e riprova.",
+    "inputLostTitle": "Registrazione interrotta",
+    "inputLost": "Il microfono è stato scollegato. L'audio registrato fino a quel momento viene trascritto.",
     "recordingFailed": "Impossibile avviare la registrazione: {{error}}",
     "modelLoadFailed": "Impossibile caricare il modello: {{model}}",
     "modelLoadFailedUnknown": "modello sconosciuto",

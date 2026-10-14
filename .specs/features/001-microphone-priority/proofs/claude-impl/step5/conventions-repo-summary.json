@@ -1,0 +1,17 @@
+{
+  "verdict": "PASS",
+  "receipt_path": ".specs/conventions/runs/20261014T101727Z/receipt.json",
+  "baseline": {
+    "baselined_count": 534,
+    "new_count": 0,
+    "path": ".specs/conventions/baseline.json",
+    "resolved_count": 3648,
+    "sha256": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe"
+  },
+  "blockers": [],
+  "warnings_by_rule": {
+    "builtin.doc_coverage": 313,
+    "builtin.max_function_lines": 147,
+    "builtin.max_file_lines": 12
+  }
+}

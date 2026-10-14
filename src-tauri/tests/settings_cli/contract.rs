@@ -30,7 +30,7 @@ fn json_get_prints_one_envelope_with_revision_and_every_public_key() -> TestResu
         );
         assert_eq!(
             envelope["data"].as_object().map(|data| data.len()),
-            Some(66)
+            Some(67)
         );
     }
     let one = app
@@ -173,7 +173,11 @@ fn stale_expected_revision_reports_the_current_revision() -> TestResult {
 }
 const UI_ONLY: &str = "This setting is changed in the settings UI.";
 /// Keys generic `set` refuses, with the reason naming where they are changed.
-const OWNED_ELSEWHERE: [(&str, &str); 5] = [
+const MICROPHONES: &str =
+    "Use handy settings microphones set-priority to change the microphone choices.";
+const OWNED_ELSEWHERE: [(&str, &str); 7] = [
+    ("selected_microphone", MICROPHONES),
+    ("microphone_priority", MICROPHONES),
     (
         "bindings",
         "Use handy settings shortcuts to change shortcuts.",

@@ -1,0 +1,10 @@
+
+running 5 tests
+test always_on_reopens_only_when_the_preferred_input_changed_or_was_lost ... ok
+test a_loss_ends_a_recording_and_recovers_an_idle_stream_once_per_user_action ... ok
+test a_change_during_a_recording_waits_whatever_the_mode_or_stream ... ok
+test on_demand_closes_a_warm_stream_and_resolves_at_the_next_recording ... ok
+test the_end_of_a_recording_applies_a_waiting_change_or_a_loss_in_always_on_only ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

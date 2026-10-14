@@ -1,0 +1,21 @@
+
+running 16 tests
+test a_closed_lid_with_an_empty_order_still_tries_the_override_first ... ok
+test a_failed_enumeration_is_retried_once_then_choices_count_as_unresolved ... ok
+test a_closed_lid_tries_only_the_override_then_the_default ... ok
+test an_empty_order_opens_the_default_without_enumerating ... ok
+test a_failed_default_reports_the_error_after_the_configured_attempts ... ok
+test a_name_shared_by_two_devices_is_a_failed_attempt_never_an_arbitrary_match ... ok
+test an_unplugged_first_choice_falls_back_to_the_next_without_an_open_call ... ok
+test a_reconnected_first_choice_is_preferred_at_the_next_opening ... ok
+test fast_failures_leave_room_for_every_choice ... ok
+test an_open_unknown_or_slow_lid_uses_the_saved_order ... ok
+test a_slow_enumeration_ends_by_four_seconds_and_keeps_the_default_slot ... ok
+test slow_devices_get_full_attempts_and_the_default_starts_by_four_seconds ... ok
+test the_default_is_attempted_only_after_every_configured_choice_failed ... ok
+test the_first_present_choice_opens_without_trying_the_others ... ok
+test the_preference_check_names_what_would_open_without_opening_it ... ok
+test without_an_override_the_lid_is_never_probed ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

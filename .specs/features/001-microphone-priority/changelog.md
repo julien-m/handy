@@ -68,3 +68,23 @@
 - **Step 2:** prerequisite now names 006 step 0 merged (D3 `ErrorReason`, `ErrorItem`, `with_items`, `with_reason`); Summary and Next Action aligned
 - **Review:** the plan review is stale; an independent reviewer refreshes it
 - **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
+
+## 2026-10-14 — [Feature]: Non-UI implementation (Steps 1–5), status In Progress
+
+- **Type:** Feature
+- **Spec modified:** No
+- **Code modified:** bounded native opens and loss handling (`audio_toolkit/audio/{attempt, recorder}.rs`), `microphone_priority` setting and migration (`settings.rs`, `settings_service/*`), ordered resolver and catalog (`microphones/*`), audio manager boundaries (`managers/{audio, audio_priority}.rs`, `transcription_coordinator.rs`), `handy settings microphones` domain and typed commands (`settings_service/domains/microphones.rs`, `cli.rs`, `commands/audio.rs`), interim selector bridge and cut-short toast (frontend), tests `microphone_{native, settings, resolution, sessions, cli}.rs`, `scripts/microphone-native-proof.ts`, README and contracts
+- **AC impacted:** AC-003, AC-004, AC-005, AC-006, AC-008 covered by automated tests; AC-001, AC-002, AC-007 backend only (UI editor not built). No native, UI or release evidence yet
+- **Commits:** `4c47acb`, `cc86127`, `046a4d0`, `22a592a`, `0b829ec`
+- **Remaining:** Step 6 settings editor (after the common Penflow pass), Step 7 macOS native proof and UI acceptance; Windows/Linux as pending release evidence; end-of-feature delivery review (full lane) by other agents
+- **Author:** Claude Code (spec-implement, claude-opus-5-5)
+
+## 2026-10-14 — [Sync]: Merge dev (smart paste 007, word replacements 002)
+
+- **Type:** Integration
+- **Spec modified:** No
+- **Code modified:** conflict resolution only (`settings_service/{error_reason, validation, public, cli}.rs`, `domains/mod.rs`, settings tests counters 65/66 → 67, README, 008 schema and contract doc); `tests/microphone_cli.rs` gains the older-Handy refusal case
+- **AC impacted:** None (behaviour of 001, 002 and 007 kept)
+- **Commits:** `6c114bc7` (merge), `4c664550`
+- **Proofs:** `proofs/claude-sync/summary.txt`; full cargo test 1133 passed, conventions PASS, progression implement READY
+- **Author:** Claude Code (claude-opus-5-5)

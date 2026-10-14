@@ -17,6 +17,9 @@ use clap::{error::ErrorKind, Parser};
 use serde_json::json;
 use std::ffi::OsString;
 
+mod microphones;
+use microphones::microphones_operation;
+
 /// What `main` does next.
 pub enum Dispatch {
     /// Not a settings invocation: start the app with these historical arguments (boxed: the
@@ -127,6 +130,7 @@ pub fn operation(command: &SettingsCommand) -> SettingsOperation {
         SettingsCommand::Shortcuts(shortcuts) => shortcuts_operation(&shortcuts.action),
         SettingsCommand::Prompts(prompts) => prompts_operation(&prompts.action, None),
         SettingsCommand::Vocabulary(vocabulary) => vocabulary_operation(&vocabulary.action),
+        SettingsCommand::Microphones(microphones) => microphones_operation(&microphones.action),
     }
 }
 /// Domain input named by the command (a replacements or vocabulary import source, or a prompt

@@ -15,7 +15,7 @@ fn missing_store_returns_defaults_without_creating_parent_or_store(
             .as_object()
             .ok_or("object")?
             .len(),
-        66
+        67
     );
     assert!(!path.parent().ok_or("parent")?.exists());
     Ok(())

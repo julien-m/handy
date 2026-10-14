@@ -96,10 +96,16 @@ pub enum ErrorReason {
     UnknownProvider,
     /// The prompt has issues and cannot be used until edited (005).
     PromptInvalid,
+    /// The microphone choices change only through `handy settings microphones` (001).
+    MicrophonesDomain,
+    /// A microphone choice is empty or only whitespace (001).
+    MicrophoneNameEmpty,
+    /// A microphone choice appears more than once (001).
+    MicrophoneNameDuplicate,
 }
 impl ErrorReason {
     /// Every reason of this build, in wire-schema order.
-    pub const ALL: [Self; 41] = [
+    pub const ALL: [Self; 44] = [
         Self::UnsupportedPlatform,
         Self::ShortcutSessionBusy,
         Self::InstanceRequired,
@@ -141,6 +147,9 @@ impl ErrorReason {
         Self::OverrideIncomplete,
         Self::UnknownProvider,
         Self::PromptInvalid,
+        Self::MicrophonesDomain,
+        Self::MicrophoneNameEmpty,
+        Self::MicrophoneNameDuplicate,
     ];
     /// Fixed English message of this reason.
     pub fn message(self) -> &'static str {
@@ -163,6 +172,7 @@ impl ErrorReason {
             other => other
                 .term_message()
                 .or_else(|| other.prompt_message())
+                .or_else(|| other.microphone_message())
                 .unwrap_or_else(|| other.rule_message()),
         }
     }
@@ -193,6 +203,16 @@ impl ErrorReason {
             Self::OverrideIncomplete => "A provider override needs a provider and a model.",
             Self::UnknownProvider => "The provider does not exist in this build.",
             Self::PromptInvalid => "The prompt is invalid and must be edited first.",
+            _ => return None,
+        };
+        Some(message)
+    }
+    /// Message of a microphone choice reason (001); `None` for every other reason.
+    fn microphone_message(self) -> Option<&'static str> {
+        let message = match self {
+            Self::MicrophonesDomain => "Use handy settings microphones set-priority.",
+            Self::MicrophoneNameEmpty => "A microphone name cannot be empty.",
+            Self::MicrophoneNameDuplicate => "Each microphone may appear only once.",
             _ => return None,
         };
         Some(message)

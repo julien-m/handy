@@ -706,6 +706,8 @@
     },
     "noInputDeviceTitle": "Kein Mikrofon gefunden",
     "noInputDevice": "Es wurde kein Audio-Eingabegerät erkannt. Bitte schließe ein Mikrofon oder Headset an und versuche es erneut.",
+    "inputLostTitle": "Aufnahme abgebrochen",
+    "inputLost": "Das Mikrofon wurde getrennt. Die bis dahin aufgenommene Audiospur wird transkribiert.",
     "recordingFailed": "Aufnahme konnte nicht gestartet werden: {{error}}",
     "modelLoadFailed": "Modell konnte nicht geladen werden: {{model}}",
     "modelLoadFailedUnknown": "unbekanntes Modell",
