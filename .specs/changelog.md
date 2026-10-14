@@ -5,6 +5,10 @@
 
 ---
 
+## 2026-10-14 — [Feature 005] Spec and plan refined: truthful failure notice, merged 008 names, live prompt list
+
+Spec: AC-005 notice says the AI step failed and the original text was used for insertion, never that insertion succeeded (Clarify decision). Plan: merged 008 names, canonical `remove`/`update` actions, shortcut removal through 008's native preparation, `prompts list` as a D2 live operation with the Apple Intelligence check, `unsupported_platform` refusal (D4), 004 merge as explicit dependency, QE aligned, Windows/Linux native proof as pending release evidence; history/WAV divergence with 006 signalled in ship.md. Spec and plan reviews are stale until an independent reviewer refreshes them.
+
 ## 2026-10-14 — [Feature 009] Spec and plan refined: pinned badge rule, D2 live pin operations, retired auto_submit, single Enter veto
 <!-- finalize:spec-refine:2026-10-14:0feee4a1 -->
 
