@@ -3,7 +3,10 @@
 //! typed edit of the settings service, decided by the same `prompts::library` rules as
 //! `handy settings prompts`, so both surfaces refuse with the same code and reason.
 use crate::prompts::library;
+use crate::prompts::native::NativeProviders;
+use crate::prompts::processor::{ProviderPort, PROCESSING_BUDGET};
 use crate::prompts::provider::NativeAvailability;
+use crate::prompts::test_run::{run_test, PromptTestRequest, PromptTestResult, TestGate};
 use crate::prompts::types::PromptError;
 use crate::prompts::view::{library_view, PromptLibraryView};
 use crate::settings::{AppSettings, LLMPrompt, PromptProviderOverride};
@@ -147,4 +150,39 @@ pub async fn set_post_process_prompt_provider_override(
         })
     })
     .await
+}
+
+/// The settings window's single prompt test slot.
+static TEST_GATE: TestGate = TestGate::new();
+
+// @spec FR-005: Prompt test without insertion or history — .specs/features/005-custom-ai-prompts/spec.md#fr-005
+#[tauri::command]
+#[specta::specta]
+/// Run the editor's draft prompt on the sample within the 30-second budget and return the
+/// result, provider, model and duration, or the typed failure. Never inserts text or writes
+/// history; a second test while one runs answers `busy`.
+///
+/// # Errors
+/// `validation_failed` for a draft the library would refuse (empty text, incomplete or unknown
+/// override, `unsupported_platform`).
+pub async fn test_post_process_prompt(
+    app: AppHandle,
+    request: PromptTestRequest,
+) -> CommandResult<PromptTestResult> {
+    let settings = live_settings::current(&app);
+    let ports = (
+        &NativeProviders as &dyn ProviderPort,
+        PROCESSING_BUDGET,
+        PlatformCapabilities::current(),
+    );
+    run_test(&settings, &request, ports, &TEST_GATE)
+        .await
+        .map_err(|error| SettingsError::from(error).into())
+}
+
+#[tauri::command]
+#[specta::specta]
+/// Cancel the running prompt test (closing the editor); its late result reads `cancelled`.
+pub fn cancel_post_process_prompt_test() {
+    TEST_GATE.cancel();
 }

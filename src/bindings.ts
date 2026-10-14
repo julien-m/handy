@@ -415,6 +415,29 @@ async setPostProcessPromptProviderOverride(id: string, providerOverride: PromptP
 }
 },
 /**
+ * Run the editor's draft prompt on the sample within the 30-second budget and return the
+ * result, provider, model and duration, or the typed failure. Never inserts text or writes
+ * history; a second test while one runs answers `busy`.
+ * 
+ * # Errors
+ * `validation_failed` for a draft the library would refuse (empty text, incomplete or unknown
+ * override, `unsupported_platform`).
+ */
+async testPostProcessPrompt(request: PromptTestRequest) : Promise<Result<PromptTestResult, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("test_post_process_prompt", { request }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Cancel the running prompt test (closing the editor); its late result reads `cancelled`.
+ */
+async cancelPostProcessPromptTest() : Promise<void> {
+    await TAURI_INVOKE("cancel_post_process_prompt_test");
+},
+/**
  * Vocabulary list owned by the settings UI until its CLI domain ships.
  */
 async updateCustomWords(words: string[]) : Promise<Result<null, SettingsCommandError>> {
@@ -1289,6 +1312,27 @@ export type EngineType =
  * the file, so this one variant covers the whole transcribe-cpp family.
  */
 "TranscribeCpp" | "Parakeet" | "Moonshine" | "MoonshineStreaming" | "SenseVoice" | "GigaAM" | "Canary" | "Cohere"
+/**
+ * Why the AI step produced no usable text. Codes are stored in history and shown translated;
+ * they never carry a provider message, a URL or a credential.
+ */
+export type FailureReason = 
+/**
+ * The provider or the HTTP request failed.
+ */
+"provider_error" | 
+/**
+ * The reply was empty or only whitespace once cleaned.
+ */
+"empty_result" | 
+/**
+ * The whole step exceeded `PROCESSING_BUDGET`.
+ */
+"timeout" | 
+/**
+ * The previous Apple Intelligence request is still running natively.
+ */
+"provider_busy" | "missing_endpoint" | "missing_model" | "missing_api_key" | "provider_unavailable" | "unknown_provider" | "invalid_prompt" | "prompt_missing"
 export type GpuDeviceOption = { id: string; name: string; total_vram_mb: number }
 /**
  * One history row. `file_name` is `None` for a text-only row (no audio recording).
@@ -1470,6 +1514,38 @@ post_process_enabled: boolean; prompts: ListedPrompt[] }
  * provider: an override names a provider id and a model, never a credential.
  */
 export type PromptProviderOverride = { provider_id: string; model: string }
+/**
+ * The editor's draft and the sample to process.
+ */
+export type PromptTestRequest = { 
+/**
+ * Prompt text as edited (not necessarily saved).
+ */
+text: string; 
+/**
+ * Provider override as edited; `None` uses the default provider.
+ */
+provider_override: PromptProviderOverride | null; 
+/**
+ * Sample text (prefilled by the UI with the last transcript, editable).
+ */
+sample: string }
+/**
+ * Result shown by the test panel; never a provider message or credential.
+ */
+export type PromptTestResult = { status: PromptTestStatus; text: string | null; failure: FailureReason | null; provider_id: string | null; model: string | null; duration_ms: number }
+/**
+ * How the test ended.
+ */
+export type PromptTestStatus = "success" | "failed" | 
+/**
+ * Another test is still running; this one did not start.
+ */
+"busy" | "cancelled" | 
+/**
+ * The sample is empty: nothing to process.
+ */
+"skipped"
 /**
  * Public readiness of a prompt: which provider and model it uses and what is missing.
  */

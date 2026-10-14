@@ -725,6 +725,8 @@ pub fn run(cli_args: CliArgs) {
             commands::prompts::delete_post_process_prompt,
             commands::prompts::set_post_process_selected_prompt,
             commands::prompts::set_post_process_prompt_provider_override,
+            commands::prompts::test_post_process_prompt,
+            commands::prompts::cancel_post_process_prompt_test,
             shortcut::update_custom_words,
             shortcut::suspend_all_bindings,
             shortcut::resume_all_bindings,

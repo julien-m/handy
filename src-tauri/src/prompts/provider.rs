@@ -4,7 +4,8 @@
 //! port and is only asked inside the running instance, never at startup.
 use super::library;
 use crate::settings::{
-    AppSettings, LLMPrompt, PostProcessProvider, APPLE_INTELLIGENCE_PROVIDER_ID,
+    AppSettings, LLMPrompt, PostProcessProvider, PromptProviderOverride,
+    APPLE_INTELLIGENCE_PROVIDER_ID,
 };
 use serde::Serialize;
 use specta::Type;
@@ -112,9 +113,12 @@ fn needs_api_key(provider_id: &str) -> bool {
     !matches!(provider_id, "custom" | APPLE_INTELLIGENCE_PROVIDER_ID)
 }
 
-/// Provider id and model of `prompt`: its override, else the default provider and its model.
-fn provider_and_model(settings: &AppSettings, prompt: &LLMPrompt) -> (String, String, bool) {
-    match &prompt.provider_override {
+/// Provider id and model of an override, else the default provider and its model.
+fn provider_and_model(
+    settings: &AppSettings,
+    choice: Option<&PromptProviderOverride>,
+) -> (String, String, bool) {
+    match choice {
         Some(choice) => (choice.provider_id.clone(), choice.model.clone(), true),
         None => {
             let id = settings.post_process_provider_id.clone();
@@ -132,8 +136,7 @@ fn provider_and_model(settings: &AppSettings, prompt: &LLMPrompt) -> (String, St
 /// Provider choice of `prompt` from `settings`, without the Apple availability check.
 ///
 /// # Errors
-/// The first missing item: an invalid prompt, an unknown provider, a missing endpoint, model or
-/// required API key.
+/// The first missing item: an invalid prompt, then as `resolve_provider`.
 pub fn resolve(
     settings: &AppSettings,
     prompt: &LLMPrompt,
@@ -141,7 +144,19 @@ pub fn resolve(
     if !library::is_usable(settings, prompt) {
         return Err(ReadinessIssue::InvalidPrompt);
     }
-    let (provider_id, model, is_override) = provider_and_model(settings, prompt);
+    resolve_provider(settings, prompt.provider_override.as_ref())
+}
+
+/// Provider choice of an override (or of the default provider) from `settings`; the test panel
+/// resolves an unsaved draft with it.
+///
+/// # Errors
+/// An unknown provider, a missing endpoint, model or required API key.
+pub fn resolve_provider(
+    settings: &AppSettings,
+    choice: Option<&PromptProviderOverride>,
+) -> Result<ProviderChoice, ReadinessIssue> {
+    let (provider_id, model, is_override) = provider_and_model(settings, choice);
     let provider = settings
         .post_process_provider(&provider_id)
         .cloned()
@@ -179,6 +194,11 @@ fn check_configuration(
     Ok(())
 }
 
+/// Whether `choice` runs on Apple Intelligence.
+pub fn is_apple(choice: &ProviderChoice) -> bool {
+    choice.provider.id == APPLE_INTELLIGENCE_PROVIDER_ID
+}
+
 /// Provider choice of `prompt`, checking Apple Intelligence availability through `probe`.
 ///
 /// # Errors
@@ -189,8 +209,7 @@ pub fn resolve_ready(
     probe: &dyn AvailabilityProbe,
 ) -> Result<ProviderChoice, ReadinessIssue> {
     let choice = resolve(settings, prompt)?;
-    let is_apple = choice.provider.id == APPLE_INTELLIGENCE_PROVIDER_ID;
-    if is_apple && !probe.apple_intelligence_available() {
+    if is_apple(&choice) && !probe.apple_intelligence_available() {
         return Err(ReadinessIssue::ProviderUnavailable);
     }
     Ok(choice)
@@ -202,7 +221,8 @@ pub fn readiness(
     prompt: &LLMPrompt,
     probe: &dyn AvailabilityProbe,
 ) -> Readiness {
-    let (provider_id, model, is_override) = provider_and_model(settings, prompt);
+    let (provider_id, model, is_override) =
+        provider_and_model(settings, prompt.provider_override.as_ref());
     let missing = resolve_ready(settings, prompt, probe).err();
     Readiness {
         provider_id: Some(provider_id).filter(|id| !id.is_empty()),
