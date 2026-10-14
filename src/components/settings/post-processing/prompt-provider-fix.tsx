@@ -2,11 +2,13 @@
 // it"): "Ready", or the missing item with an inline field that sets the API
 // key or the endpoint of the provider the prompt resolves to. The draft stays
 // in the editor and the default provider never changes (keys and endpoints
-// are stored per provider). The contract navigates to the page's provider
-// settings instead: see implementation.md.
+// are stored per provider); the endpoint fix keeps the provider's model. The
+// contract navigates to the page's provider settings instead: see
+// implementation.md.
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSettings } from "../../../hooks/useSettings";
+import { useSettingsStore } from "../../../stores/settingsStore";
 import { Alert } from "../../ui/Alert";
 import { Button } from "../../ui/Button";
 import { ApiKeyField } from "../PostProcessingSettingsApi/ApiKeyField";
@@ -17,6 +19,8 @@ import {
   type ProviderFixChange,
   type ProviderSettings,
   CUSTOM_PROVIDER_ID,
+  fixFieldKeyOf,
+  fixSettingOf,
   fixValueOf,
   providerFixChangeOf,
   readinessFixOf,
@@ -52,17 +56,16 @@ const ReadyLine: React.FC<ReadinessProps> = ({ testId, readiness }) => {
   );
 };
 
-/** Saves a fix to the resolved provider's own setting. */
+/**
+ * Saves a fix to the resolved provider's own setting, and only that setting:
+ * the endpoint fix does not clear the provider's model (see fixSettingOf).
+ */
 const useSaveFix = (): ((change: ProviderFixChange | null) => void) => {
-  const { updatePostProcessApiKey, updatePostProcessBaseUrl } = useSettings();
+  const write = useSettingsStore((state) => state.updatePostProcessSetting);
   return (change) => {
     if (!change) return;
-    const save =
-      change.fix === "api_key"
-        ? updatePostProcessApiKey
-        : updatePostProcessBaseUrl;
     // The store reports a refused write itself (translated toast).
-    void save(change.providerId, change.value);
+    void write(fixSettingOf(change.fix), change.providerId, change.value);
   };
 };
 
@@ -113,6 +116,23 @@ const ProviderFixField: React.FC<FixFieldProps> = (props) => {
   );
 };
 
+/**
+ * The inline field of `fix`, remounted when the provider changes, so a value
+ * typed for one provider is never saved for another one.
+ * @param props Readiness of the draft and the provider settings.
+ * @param fix Missing item the field sets.
+ */
+export const providerFixFieldOf = (
+  props: ReadinessProps,
+  fix: FixFieldProps["fix"],
+): React.ReactElement => (
+  <ProviderFixField
+    key={fixFieldKeyOf(fix, props.readiness.providerId)}
+    {...props}
+    fix={fix}
+  />
+);
+
 /** Opens the inline field of the missing item. */
 const FixButton: React.FC<{
   testId: string;
@@ -156,7 +176,7 @@ const NotReadyAlert: React.FC<ReadinessProps> = (props) => {
         </span>
         <span className="block">{t(`${KEY}.notReadyBody`)}</span>
       </Alert>
-      {fix && isFixing && <ProviderFixField {...props} fix={fix} />}
+      {fix && isFixing && providerFixFieldOf(props, fix)}
     </div>
   );
 };

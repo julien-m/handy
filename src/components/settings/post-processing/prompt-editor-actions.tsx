@@ -5,6 +5,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "../../ui/Button";
 import { SettingsGroup } from "../../ui/SettingsGroup";
+import { actionNoteKeyOf } from "./prompt-draft-model";
 import { PROMPT_KEYS } from "./prompt-library-model";
 import type { PromptDeletion } from "./prompt-delete-dialog";
 import type { PromptEditorModel } from "./use-prompt-editor";
@@ -118,7 +119,7 @@ export const PromptEditorActions: React.FC<PromptEditorActionsProps> = (
               className="flex-1 min-w-0 text-sm text-mid-gray"
               data-testid={`${testId}-actions-note`}
             >
-              {t(`${KEY}.${model.validation.valid ? "note" : "fixFields"}`)}
+              {t(`${KEY}.${actionNoteKeyOf(model)}`)}
             </p>
             <ActionButtons {...props} />
           </div>

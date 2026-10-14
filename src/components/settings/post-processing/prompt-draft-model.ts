@@ -231,3 +231,18 @@ export const fieldErrorOf = (
   if (issueKey && showIssue) return issueKey;
   return refusal?.field === field ? refusal.key : null;
 };
+
+/**
+ * Note of the editor's action bar: "Fix the highlighted fields" only while a
+ * field is actually shown in error (a new prompt's untouched empty text is
+ * not highlighted yet, so the neutral note stays); otherwise what saving does.
+ * @param fieldErrors Errors shown under the name and text fields.
+ * @returns The note's key under the editor's `actions` keys.
+ */
+export const actionNoteKeyOf = (fieldErrors: {
+  nameError: string | null;
+  textError: string | null;
+}): "note" | "fixFields" =>
+  fieldErrors.nameError !== null || fieldErrors.textError !== null
+    ? "fixFields"
+    : "note";

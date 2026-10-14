@@ -113,3 +113,13 @@
 - **AC impacted:** AC-001, AC-002, AC-004, AC-006, AC-007
 - **Author:** Claude Code (claude-opus-5-5)
 - Own save no longer rolled back by a lagging library; failed reload shown with Retry; readiness fix inline in the editor for the resolved provider (contract navigation replaced, see implementation.md); typing during a save kept; Cancel during a creation honoured; `committed`/`unknown` outcomes reread; default-prompt failures shown; outdated test results flagged; invalid prompts highlighted at once; shortcut hint; focus and accessible names; function sizes reduced.
+
+## 2026-10-14 — [Bugfix]: Prompt settings UI, hardening pass
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** `src/components/settings/post-processing/{prompt-provider-fix.tsx, prompt-provider-model.ts, prompt-draft-model.ts, prompt-editor-actions.tsx}`, `src/components/ui/Alert.tsx`, tests `prompt-editor-rules.test.ts`, `prompt-settings-render.test.tsx`
+- **AC impacted:** AC-004 (inline fix: per-provider field, endpoint fix keeps the model), AC-001 (action note only with a highlighted field)
+- **Author:** Claude Code (UI hardening pass)
+- Key typed for one provider never saved for another; "Set the endpoint" no longer clears the custom model from the editor (the API group keeps its pre-005 reset); "Fix the highlighted fields" only when a field is highlighted; an empty-string `Alert` action counts as absent. Proofs: [summary](proofs/claude-hardening/summary.txt).
+
