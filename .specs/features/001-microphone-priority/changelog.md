@@ -79,3 +79,12 @@
 - **Remaining:** Step 6 settings editor (after the common Penflow pass), Step 7 macOS native proof and UI acceptance; Windows/Linux as pending release evidence; end-of-feature delivery review (full lane) by other agents
 - **Author:** Claude Code (spec-implement, claude-opus-5-5)
 
+## 2026-10-14 — [Sync]: Merge dev (smart paste 007, word replacements 002)
+
+- **Type:** Integration
+- **Spec modified:** No
+- **Code modified:** conflict resolution only (`settings_service/{error_reason, validation, public, cli}.rs`, `domains/mod.rs`, settings tests counters 65/66 → 67, README, 008 schema and contract doc); `tests/microphone_cli.rs` gains the older-Handy refusal case
+- **AC impacted:** None (behaviour of 001, 002 and 007 kept)
+- **Commits:** `6c114bc7` (merge), `4c664550`
+- **Proofs:** `proofs/claude-sync/summary.txt`; full cargo test 1133 passed, conventions PASS, progression implement READY
+- **Author:** Claude Code (claude-opus-5-5)
