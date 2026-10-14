@@ -36,9 +36,10 @@ Feature: Recovery bubble on unavailable destination
     And a bubble appears in place of the live indicator with the beginning of the transcript
     And the bubble states "Notes is no longer open"
   Scenario: Activation not confirmed
-    Given the destination did not become frontmost within the 006 limit
+    Given a dictation started in Notes
+    And Notes did not become frontmost within the 006 limit
     When insertion is due
-    Then the bubble appears with the reason "Could not bring the app forward"
+    Then the bubble appears with the reason "Could not bring Notes forward"
   Scenario: No automatic Enter
     Given automatic Enter is "Always"
     When the bubble is shown instead of an insertion
@@ -51,9 +52,13 @@ flowchart TD
   B -- No --> C[Bubble: reason unavailable or uncertain]
   B -- Yes --> D{Focused element classified}
   D -- Not editable and setting on --> E[Bubble: no text field]
-  D -- Editable, undetermined, or permission missing --> F[Insert as usual]
+  D -- Not editable and setting off --> F[Insert as usual]
+  D -- Editable, undetermined, or permission missing --> F
   C --> G[No insertion, no Enter]
   E --> G
+  F --> H{Insertion method reports failure?}
+  H -- Yes --> I[Bubble: Insertion failed; no Enter]
+  H -- No --> J[Inserted; Enter per 009]
 ```
 
 ### Story 2 — Recover the text when no text field is focused `P1`
@@ -198,17 +203,17 @@ flowchart TD
 
 ### AC-001
 
-**Criterion:** Before insertion, Handy shows the bubble in place of the live indicator instead of inserting when the destination is unavailable (closed, or pinned app not running: `pinned_app_not_running`) or uncertain (not confirmed frontmost before insertion, as defined by 006, including a running pinned app not brought forward: `activation_failed`); nothing is inserted. After insertion, when the insertion method reports failure (including the smart paste outcomes "not read", "permission missing" and "uncertain" of 007), Handy shows the bubble with the reason "Insertion failed". The explanation adds "Some text may have reached the application" only for failures where input may have been sent: a failure reported by the classic, direct or script methods, and the smart paste outcomes "not read", "uncertain" and "insertion failed". For "permission missing", no keystroke is sent, so the explanation says nothing was sent to the application instead. Reasons decided before insertion never show this detail. In both cases no Enter is sent. The bubble is shown even when the overlay style is none, and it replaces the 006 reason display on the indicator.
+**Criterion:** Before insertion, Handy shows the bubble in place of the live indicator instead of inserting when the destination is unavailable (closed, or pinned app not running: `pinned_app_not_running`) or uncertain (not confirmed frontmost before insertion, as defined by 006, including a running pinned app not brought forward: `activation_failed`); nothing is inserted. After insertion, when the insertion method reports failure (including the smart paste outcomes "not read", "permission missing" and "uncertain" of 007), Handy shows the bubble with the reason "Insertion failed". The explanation adds "Some text may have reached the application" only for failures where input may have been sent: a failure reported by the classic, direct or script methods or by the Windows reliable paste, and the smart paste outcomes "not read", "uncertain" and "insertion failed". For "permission missing", no keystroke is sent, so the explanation says nothing was sent to the application instead. Reasons decided before insertion never show this detail. In both cases no Enter is sent. The bubble is shown even when the overlay style is none, and it replaces the 006 reason display on the indicator and the existing `paste-error` notification, so a failure is reported once. With the paste method "none", no insertion is due and no bubble appears.
 **Priority:** P1 | **Story:** Story 1
 
 ### AC-002
 
-**Criterion:** On macOS with accessibility permission, before insertion Handy classifies the destination's focused element as editable, not editable or undetermined. Keyboard focus owned by another process than the destination counts as undetermined. Only "not editable" with the setting "Show the bubble when no text field is focused" on (default on) shows the bubble with reason "No text field is focused". Undetermined, editable, missing permission, other platforms or setting off insert as usual.
+**Criterion:** On macOS with accessibility permission, before insertion Handy classifies the destination's focused element as editable, not editable or undetermined. Keyboard focus owned by another process than the destination counts as undetermined, whatever its role. No focused element, an Accessibility error or timeout, and the remote view of a destination that 007 handles with a per-application strategy (Screen Sharing, iPhone Mirroring, Windows App, Jump Desktop), whose field cannot be read locally, are undetermined too. Only "not editable" with the setting "Show the bubble when no text field is focused" on (default on) shows the bubble with reason "No text field is focused". Undetermined, editable, missing permission, other platforms or setting off insert as usual.
 **Priority:** P1 | **Story:** Story 2
 
 ### AC-003
 
-**Criterion:** The bubble shows the first two lines of the transcript (ellipsis when longer), the reason in one sentence ("<App> is no longer open", "<App> is pinned but not open", "Could not bring <App> forward", "Insertion failed", "No text field is focused"), a drag handle, Copy, Close and an explanation control. It does not take keyboard focus from other applications, accepts the first click, and has accessible names for every control.
+**Criterion:** The bubble shows the first two lines of the transcript (ellipsis when longer), the reason in one sentence ("<App> is no longer open", "<App> is pinned but not open", "Could not bring <App> forward", "Insertion failed", "No text field is focused"), a drag handle (macOS only, AC-006), Copy, Close and an explanation control. The transcript is exactly the text that would have been inserted. It does not take keyboard focus from other applications, accepts the first click, and has accessible names for every control.
 **Priority:** P1 | **Story:** Stories 1 and 4
 
 ### AC-004
@@ -233,7 +238,7 @@ flowchart TD
 
 ## Behavioral AC
 
-Signals extracted: drag-drop, copy button, dismiss, close button, tooltip, explanation, keyboard navigation. Official `detect_traits` returned dismissible_layer, has_drag_drop, has_tooltip, is_keyboard_navigable.
+Signals extracted: drag-drop, copy button, dismiss, close button, explanation, keyboard navigation. Official `detect_traits` returned dismissible_layer, has_drag_drop, has_tooltip, is_keyboard_navigable.
 
 ### dismissible_layer
 
@@ -243,13 +248,9 @@ Feature: Dismiss the bubble
     Given a recovery cause occurred
     When the bubble is shown
     Then the bubble matches visual state "open"
-  Scenario: Closing
-    Given the user activates Close
-    When the bubble animates out
-    Then the bubble matches visual state "closing"
   Scenario: Closed
-    Given the close animation finished
-    When the user looks at the screen
+    Given the bubble is visible
+    When the user activates Close
     Then the bubble matches visual state "closed"
 ```
 
@@ -277,11 +278,7 @@ Feature: Drag states
 <!-- WARNING: No visual states defined for trait "has_tooltip" in ui-behavioral-taxonomy.md -->
 
 ```gherkin
-Feature: Bubble control hints
-  Scenario: Hint on hover
-    Given the bubble is visible
-    When the pointer rests on the drag handle
-    Then a hint says "Drag into a text field"
+Feature: Bubble explanation
   Scenario: Explanation content
     Given the user opens the explanation
     When it is displayed
@@ -335,9 +332,9 @@ Feature: Keyboard access to bubble actions
 
 | Entity | Description | Key fields |
 |---|---|---|
-| Recovery state | One bubble instance | dictation id, transcript, reason, destination name, created at |
+| Recovery state | One bubble instance | dictation id, transcript (the text that would have been inserted), reason, destination name, created at |
 | Recovery reason | Why insertion was replaced | app closed, pinned app not running (`pinned_app_not_running`), activation not confirmed (`activation_failed`), insertion failed, no text field |
-| Focus classification | macOS focused element result | editable, not editable, undetermined (including keyboard focus owned by another process, AC-002; verdict `Insert`, no recovery reason), permission missing |
+| Focus classification | macOS focused element result | editable, not editable, undetermined (including keyboard focus owned by another process, no focused element, Accessibility error or timeout and a 007 per-application strategy destination, AC-002; verdict `Insert`, no recovery reason), permission missing |
 
 ## Clarifications
 
@@ -358,6 +355,16 @@ Feature: Keyboard access to bubble actions
 - Decision 2026-10-14 (program orchestrator, AC-001): the detail "Some text may have reached the application" is shown only for "Insertion failed" outcomes where input may have been sent: a failure reported by the classic, direct or script methods, and the smart paste outcomes "not read", "uncertain" and "insertion failed" of `.specs/features/007-smart-paste/spec.md`. It is not shown for "permission missing", where the permission check precedes any keystroke and the clipboard is unchanged; that explanation says nothing was sent to the application. Reasons decided before insertion (app closed, pinned app not running, activation not confirmed, no text field) never show it.
 - Decision 2026-10-14 (program orchestrator, delivery precision): all of 010 (bubble, focus classification, drag, Copy, Close, explanation, "Show the bubble when no text field is focused" setting and its CLI key) ships behind the `destination-return` gate of `.specs/features/006-destination-application/spec.md`. Gate closed, Handy behaves exactly as `dev`: no bubble, no classification, the existing `paste-error` notification on a paste failure, and no new setting. Gate open, this specification applies. No AC, FR or SC changes; the requirements describe the gate-open build.
 - Decision 2026-10-14 (program orchestrator, AC-005 and the 006 minimum display): a new dictation closes the bubble immediately, even if it has been visible for less than 4 seconds; Copy, Close and an accepted drop close it immediately too. The "at least 4 seconds" of `.specs/features/006-destination-application/spec.md` AC-005 applies to passive display, which the bubble satisfies since it has no timeout. Verified 2026-10-14: the 006 spec states the 4-second minimum without a new-dictation rule; the delivered 006 code builds no timed reason display (it hides the indicator after insertion and shows the `paste-error` notification, `src-tauri/src/destination/delivery.rs`), so no delivered behavior keeps a reason over a new dictation; the 006 plan's unbuilt rule that kept a reason across a new recording is replaced for the bubble, which 010 owns.
+- Decision 2026-10-14 (decided by the orchestrator under Julien's mandate, to be confirmed at the final review; Behavioral AC): the drag-handle hover hint "Drag into a text field" and the animated "closing" state are removed. No Input sentence, AC or FR asks for them; the bubble has the visual states "open" and "closed".
+- Decision 2026-10-14 (decided by the orchestrator under Julien's mandate, to be confirmed at the final review; AC-002): a destination that 007 handles with a per-application strategy (Screen Sharing, iPhone Mirroring, Windows App, Jump Desktop) shows a remote field that cannot be read locally. Its classification is therefore undetermined and Handy inserts as usual. This is a consequence of AC-002's undetermined rule, not a business exemption: an unavailable destination or an insertion failure still shows the bubble there.
+- Decision 2026-10-14 (decided by the orchestrator under Julien's mandate, to be confirmed at the final review; AC-001): a failure reported by the Windows reliable paste shows "Insertion failed" with the detail "Some text may have reached the application", since its keystroke may have been sent; this completes the list of the earlier AC-001 decision.
+- Decision 2026-10-14 (decided by the orchestrator under Julien's mandate, to be confirmed at the final review; AC-001 and AC-007): with the gate open, the bubble replaces the `paste-error` notification, so a failure is never reported by both. "Show the bubble when no text field is focused" exists only on macOS: with the gate open, Windows and Linux refuse it as unsupported on this platform and show no toggle; with the gate closed it does not exist (not found, as in `dev`). With 007's `smart-paste-dispatch` gate open and the `destination-return` gate closed, smart paste failures keep the existing `paste-error` notification, without bubble: this build combination is the closed build of 010.
+
+- Decision `010-recovery-bubble:AC-001` / `paste-method-none-recovery`: 2026-10-14, decided by the orchestrator under Julien's mandate, to be confirmed at the final review: with the paste method "none" no insertion is due, so 006 activates nothing and no recovery applies: no bubble appears, whatever the destination's state, and the existing clipboard handling applies as today.
+<!-- livespec-clarification:{"requirement_id": "010-recovery-bubble:AC-001", "decision_key": "paste-method-none-recovery", "evidence_hash": "6a75e101a855f7adde6c6378f6791004b8ce217dcac5d051f80fc75a7673763e", "answer": "2026-10-14, decided by the orchestrator under Julien's mandate, to be confirmed at the final review: with the paste method \"none\" no insertion is due, so 006 activates nothing and no recovery applies: no bubble appears, whatever the destination's state, and the existing clipboard handling applies as today."} -->
+
+- Decision `010-recovery-bubble:AC-002` / `no-focused-element-classification`: 2026-10-14, decided by the orchestrator under Julien's mandate, to be confirmed at the final review: no focused element, an Accessibility error or an Accessibility timeout is undetermined, so Handy inserts as usual. Only a positive "not editable" result shows the bubble.
+<!-- livespec-clarification:{"requirement_id": "010-recovery-bubble:AC-002", "decision_key": "no-focused-element-classification", "evidence_hash": "e0fb8dd5bf99da0a0e0dc124ef2d44fef8d7aefd7e681329243b0a9b47192cb9", "answer": "2026-10-14, decided by the orchestrator under Julien's mandate, to be confirmed at the final review: no focused element, an Accessibility error or an Accessibility timeout is undetermined, so Handy inserts as usual. Only a positive \"not editable\" result shows the bubble."} -->
 
 ## QE Analysis
 
@@ -365,7 +372,7 @@ Feature: Keyboard access to bubble actions
 - **Dimensions:** Functional correctness, data integrity, accessibility, platform compatibility, UX, regression of normal insertion.
 - **P0 gates/evidence:** Decision table tests for AC-001/AC-002 with fake destination and classification seams; state-machine tests for drag begin/refuse/accept, copy, close, new dictation; no Enter while the bubble is shown.
 - **P1 gates/evidence:** Native macOS drops into TextEdit, Notes, ChatGPT and Comet with recorded outcomes; focus-classification checks in Finder, a browser page without focus and a text field; screen-reader names for bubble controls; Windows/Linux reduced bubble check.
-- **Non-functional expectations:** Bubble shown within 300 ms of the recovery decision; full transcript transported regardless of length; no transcript text logged above debug level.
+- **Non-functional expectations:** Bubble shown within 300 ms of the recovery decision (a QE target measured by the plan's macOS timing samples, not an acceptance criterion); full transcript transported regardless of length; no transcript text logged above debug level.
 - **Missing evidence:** No native drag test; classification accuracy unknown per application; mockups deferred before `spec-ship`.
 - **Boundary:** QE defines risk and test sufficiency; the independent review judges requirements; Penflow governs UI design evidence; spec-test executes runtime proof.
 
@@ -393,6 +400,8 @@ Feature: Keyboard access to bubble actions
 - Drop into a field that filters input (for example a numeric field): the drop may be accepted with altered content; Handy only records "drop accepted".
 - Bubble visible when the screen locks: it stays until an explicit action or a new dictation.
 - Several recoveries in a row: each new dictation closes the previous bubble, even before 4 seconds; earlier transcripts remain in history when their history save succeeded.
+- A drag in progress when a new dictation starts: the bubble closes for good; the drag session the system already carries may still deliver its text to a drop target, and Handy ignores that drag's later callbacks (AC-004).
+- Destination handled by a 007 per-application strategy (Screen Sharing, iPhone Mirroring, Windows App, Jump Desktop): its remote field cannot be read locally, so the classification is undetermined and Handy inserts as usual (AC-002); unavailable destination and insertion failure still show the bubble.
 
 ## Success Criteria
 
