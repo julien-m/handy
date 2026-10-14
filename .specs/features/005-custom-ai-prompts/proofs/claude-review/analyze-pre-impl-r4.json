@@ -1,0 +1,152 @@
+{
+  "findings": [],
+  "coverage": [
+    {
+      "requirement_id": "005-custom-ai-prompts:AC-001",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:AC-002",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:AC-003",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:AC-004",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:AC-005",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:AC-006",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:AC-007",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:AC-008",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:FR-001",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:FR-002",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:FR-003",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:FR-004",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:FR-005",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:FR-006",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:SC-001",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:SC-002",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "005-custom-ai-prompts:SC-003",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    }
+  ],
+  "coverage_percent": 100.0,
+  "coverage_kind": "structural_reference",
+  "semantic_status": "covered",
+  "metrics": {
+    "total_requirements": 17,
+    "covered_requirements": 17,
+    "coverage_percent": 100.0,
+    "critical_count": 0,
+    "high_count": 0,
+    "implementation_present": 0
+  }
+}
