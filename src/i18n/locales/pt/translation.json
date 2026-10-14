@@ -185,6 +185,22 @@
           "restore": "Falha ao restaurar atalho original",
           "set": "Falha ao definir atalho: {{error}}",
           "reset": "Falha ao redefinir atalho para o valor original"
+        },
+        "list": {
+          "add": "Adicionar atalho",
+          "addLimit": "Até {{limit}} atalhos por ação",
+          "change": "Clique para gravar uma nova combinação",
+          "remove": "Remover este atalho",
+          "removeLast": "Cada ação mantém pelo menos um atalho",
+          "reset": "Restaurar o atalho padrão",
+          "errors": {
+            "conflict": "Já usado por {{action}} ({{shortcut}})",
+            "overlap": "Também acionaria {{action}} ({{shortcut}})",
+            "invalid": "Atalho inválido: {{error}}",
+            "registration": "O sistema recusou este atalho: {{error}}",
+            "generic": "Não foi possível salvar o atalho",
+            "conflictsUnavailable": "Não foi possível verificar os conflitos de atalhos"
+          }
         }
       },
       "language": {
@@ -538,7 +554,8 @@
       },
       "postProcessingToggle": {
         "label": "Pós-Processamento",
-        "description": "Habilitar refinamento de texto com IA após a transcrição"
+        "description": "Habilitar refinamento de texto com IA após a transcrição",
+        "shortcutRefused": "O Pós-Processamento está ativado, mas o sistema recusou o atalho {{shortcut}}. Altere-o nas configurações de Pós-Processamento."
       },
       "muteWhileRecording": {
         "label": "Silenciar Durante Gravação",
@@ -551,7 +568,8 @@
       "keyboardImplementation": {
         "title": "Implementação do Teclado",
         "description": "Escolha o sistema responsável pelos atalhos de teclado.",
-        "bindingsReset": "Os atalhos de teclado eram incompatíveis e foram redefinidos para os padrões"
+        "bindingsReset": "Alguns atalhos de teclado eram incompatíveis e foram redefinidos para o padrão ou removidos",
+        "conflictsKept": "Alguns atalhos agora entram em conflito com outra ação. Eles foram mantidos e estão marcados nas configurações de atalhos."
       },
       "paths": {
         "appData": "Dados do App:",
@@ -699,6 +717,7 @@
       "validationFailed": "Este valor não é aceito para esta configuração.",
       "revisionConflict": "As configurações foram alteradas em outro lugar. Recarregue e tente novamente.",
       "unavailable": "Esta configuração não pode ser alterada agora. Tente novamente mais tarde.",
+      "shortcutSessionBusy": "Um ditado está em andamento. Tente novamente quando terminar.",
       "persistenceFailed": "Não foi possível salvar as configurações.",
       "generic": "Não foi possível alterar a configuração.",
       "readOnly": "As configurações estão somente leitura nesta sessão: o arquivo de configurações não pode ser gravado com segurança, então as alterações não serão salvas.",

@@ -185,6 +185,22 @@
           "restore": "No s'ha pogut restaurar la drecera original",
           "set": "No s'ha pogut definir la drecera: {{error}}",
           "reset": "No s'ha pogut restablir la drecera al valor original"
+        },
+        "list": {
+          "add": "Afegeix una drecera",
+          "addLimit": "Fins a {{limit}} dreceres per acció",
+          "change": "Fes clic per enregistrar una combinació nova",
+          "remove": "Elimina aquesta drecera",
+          "removeLast": "Cada acció conserva almenys una drecera",
+          "reset": "Restableix la drecera per defecte",
+          "errors": {
+            "conflict": "Ja la fa servir {{action}} ({{shortcut}})",
+            "overlap": "També activaria {{action}} ({{shortcut}})",
+            "invalid": "Drecera no vàlida: {{error}}",
+            "registration": "El sistema ha rebutjat aquesta drecera: {{error}}",
+            "generic": "No s'ha pogut desar la drecera",
+            "conflictsUnavailable": "No s'han pogut comprovar els conflictes de dreceres"
+          }
         }
       },
       "language": {
@@ -552,7 +568,8 @@
       },
       "postProcessingToggle": {
         "label": "Postprocessament",
-        "description": "Activa la millora del text amb IA després de la transcripció"
+        "description": "Activa la millora del text amb IA després de la transcripció",
+        "shortcutRefused": "El postprocessament està activat, però el sistema ha rebutjat la drecera {{shortcut}}. Canvia-la a la configuració del postprocessament."
       },
       "muteWhileRecording": {
         "label": "Silencia durant l'enregistrament",
@@ -565,7 +582,8 @@
       "keyboardImplementation": {
         "title": "Implementació del teclat",
         "description": "Tria el motor de dreceres de teclat.",
-        "bindingsReset": "Les dreceres de teclat eren incompatibles i s'han restablert als valors per defecte"
+        "bindingsReset": "Algunes dreceres de teclat eren incompatibles i s'han restablert al valor per defecte o s'han eliminat",
+        "conflictsKept": "Algunes dreceres ara entren en conflicte amb una altra acció. S'han conservat i estan marcades a la configuració de les dreceres."
       },
       "paths": {
         "appData": "Dades de l'aplicació:",
@@ -702,6 +720,7 @@
       "validationFailed": "Aquest valor no s'accepta per a aquesta configuració.",
       "revisionConflict": "La configuració s'ha canviat en un altre lloc. Torneu a carregar i torneu-ho a provar.",
       "unavailable": "Aquesta configuració no es pot canviar ara. Torneu-ho a provar més tard.",
+      "shortcutSessionBusy": "Hi ha un dictat en curs. Torna-ho a provar quan acabi.",
       "persistenceFailed": "No s'ha pogut desar la configuració.",
       "generic": "No s'ha pogut canviar la configuració.",
       "readOnly": "La configuració és només de lectura en aquesta sessió: el fitxer de configuració no es pot escriure de manera segura, de manera que els canvis no es desaran.",

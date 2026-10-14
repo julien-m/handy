@@ -16,6 +16,8 @@ pub enum View {
     Preview,
     /// Export: the exchange content itself (`data.content`), nothing else on stdout.
     Export,
+    /// Shortcut lists (`handy settings shortcuts`): one line per action.
+    Shortcuts,
     Help,
 }
 impl View {
@@ -27,16 +29,18 @@ impl View {
             SettingsOperation::Keys => Self::Keys,
             SettingsOperation::Set { .. } => Self::Change,
             SettingsOperation::Domain {
+                domain,
                 action,
                 arguments,
                 dry_run,
                 ..
-            } => Self::of_domain(action, arguments.len(), *dry_run),
+            } => Self::of_domain(domain, action, arguments.len(), *dry_run),
         }
     }
-    fn of_domain(action: &str, arguments: usize, dry_run: bool) -> Self {
+    fn of_domain(domain: &str, action: &str, arguments: usize, dry_run: bool) -> Self {
         match (action, arguments) {
             _ if dry_run => Self::Preview,
+            _ if domain == "shortcuts" => Self::Shortcuts,
             ("export", _) => Self::Export,
             ("get", 0) => Self::AllSettings,
             ("get", _) => Self::OneSetting,
@@ -102,6 +106,7 @@ fn success_text(view: View, envelope: &Value) -> String {
             object_lines(&data["changes"])
         ),
         View::Export => data["content"].as_str().unwrap_or_default().to_owned(),
+        View::Shortcuts => shortcut_lines(data),
         View::Help => data["help"].as_str().unwrap_or_default().to_owned(),
     }
 }
@@ -113,6 +118,31 @@ fn change_lines(data: &Value, revision: &Value) -> String {
             .map(|(key, value)| format!("{key} = {} (revision {revision})\n", plain(value)))
             .collect()
     })
+}
+/// `action: first, second (default: shortcut)` per action of a list or of a change.
+fn shortcut_lines(data: &Value) -> String {
+    let actions = match data["actions"].as_array() {
+        Some(actions) => actions.clone(),
+        None => vec![data.clone()],
+    };
+    actions
+        .iter()
+        .map(|action| {
+            let shortcuts = action["shortcuts"]
+                .as_array()
+                .map(Vec::as_slice)
+                .unwrap_or_default()
+                .iter()
+                .map(plain)
+                .collect::<Vec<_>>()
+                .join(", ");
+            format!(
+                "{}: {shortcuts} (default: {})\n",
+                plain(&action["action_id"]),
+                plain(&action["default_shortcut"])
+            )
+        })
+        .collect()
 }
 /// Strings print as themselves; other values print as compact JSON.
 fn plain(value: &Value) -> String {
@@ -201,10 +231,10 @@ fn error_text(error: &Value) -> String {
             issue["reason"].as_str().unwrap_or_default()
         ));
     }
-    text.push_str(&detail_reason_lines(details));
     if let Some(revision) = details["current_revision"].as_u64() {
         text.push_str(&format!("  current revision: {revision}\n"));
     }
+    text.push_str(&reason_lines(details));
     text.push_str(match details["outcome"].as_str() {
         Some("unknown") => "  The outcome is unknown: read the settings again before retrying.\n",
         Some("committed") => "  The change was saved, but Handy could not apply it completely.\n",
@@ -213,8 +243,9 @@ fn error_text(error: &Value) -> String {
     });
     text
 }
-/// `details.reason` and each refused position of `details.items`, one line each.
-fn detail_reason_lines(details: &Value) -> String {
+/// Stable reason, refused positions, action and shortcut owner or limit of a refusal, when
+/// present, one line each.
+fn reason_lines(details: &Value) -> String {
     let mut text = String::new();
     if let Some(reason) = details["reason"].as_str() {
         text.push_str(&format!("  reason: {reason}\n"));
@@ -230,6 +261,16 @@ fn detail_reason_lines(details: &Value) -> String {
             item["message"].as_str().unwrap_or_default(),
             item["code"].as_str().unwrap_or_default()
         ));
+    }
+    if let Some(action) = details["action_id"].as_str() {
+        text.push_str(&format!("  action: {action}\n"));
+    }
+    if let Some(owner) = details["owning_action"].as_str() {
+        let shortcut = details["owning_shortcut"].as_str().unwrap_or_default();
+        text.push_str(&format!("  conflicts with: {shortcut} of {owner}\n"));
+    }
+    if let Some(limit) = details["limit"].as_u64() {
+        text.push_str(&format!("  limit: {limit} shortcuts per action\n"));
     }
     text
 }

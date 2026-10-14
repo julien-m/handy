@@ -103,3 +103,35 @@
 - Review: the plan review is stale until an independent reviewer refreshes it.
 
 <!-- finalize:spec-refine:2026-10-14:f275f226 -->
+
+## 2026-10-14 — [Plan Update]: plain not_found for auto_submit, cross source FrontmostAtEnd, resolved_target aligned with 006
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md updated)
+- **AC impacted:** None (pre-implementation; AC-004 and AC-005 planning only, IDs unchanged)
+- **Author:** Claude Code (spec-refine 009 plan, claude-opus-5-5)
+- Applies the round 3 independent review (`proofs/claude-review/independent-review-r3.md`).
+- Orchestrator decision 2026-10-14: the retired-key hint is removed (no `descriptor::RETIRED_KEYS`, `ErrorReason::RetiredKey`, `SettingsError::retired_key` or `details.field = "automatic_enter"`), since no 009 requirement asks for it. `auto_submit` is refused with 008's plain `not_found`/4, like any unknown key; the legacy value is still migrated by `settings::apply_settings_migrations` (contract table, Gherkin, Step 3 files, CLI test row, risks).
+- The Remove destination cross gives source `FrontmostAtEnd`, as in 006's route table (`.specs/features/006-destination-application/plan.md`), not `badge`; pin_only still sends no Enter for that dictation.
+- `resolved_target` is exactly 006's `DestinationContext.target`, recorded at the pre-dispatch guard: for `FrontmostAtEnd` the frontmost application read at the guard (`None` only if unreadable or Handy). Only captured, badge and pinned routes require it still frontmost before Enter, as AC-005 states.
+- The plan reads `RecoveryDisposition` through `claim_enter` and no longer lists it among extended types.
+- Full acceptance: Windows native evidence is pending release evidence (D1), never claimed.
+- Plan review preparation at 180,000 characters: 18 batches, no error (round 3: 20).
+- Review: the plan review is stale until an independent reviewer refreshes it.
+
+<!-- finalize:spec-refine:2026-10-14:86e43d44 -->
+
+## 2026-10-14 — [Plan Update]: history_status from the actual save_entry result, text-only row when the WAV fails
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md updated)
+- **AC impacted:** None (pre-implementation; AC-003 and AC-005 planning only, IDs unchanged)
+- **Author:** Claude Code (spec-refine 009 plan, claude-opus-5-5)
+- Aligns with Julien's decision 2026-10-14, carried by the 006 spec and plan (commit `306c368`, `.specs/features/006-destination-application/plan.md`): a dictation whose WAV cannot be saved still gets a text-only history entry; `history_status` comes only from the actual `save_entry` result (`saved` text-only included, `failed` on save_entry failure, `not_saved` only when no write was attempted).
+- The current-state note says the `wav_saved` gate is removed by the 006 plan; the retained-text paragraph, Step 5 action, P0 conservation test row, Conservation P0 gate and the refreshed WAV-gated conservation risk now test a WAV failure as a saved text-only row and a save_entry failure as `failed`, instead of "WAV disabled" or "WAV/save absence" treated as not saved.
+- Plan review preparation at 180,000 characters: 18 batches, no error (previous: 18).
+- Review: the plan review is stale until an independent reviewer refreshes it.
+
+<!-- finalize:spec-refine:2026-10-14:48c67c3f -->

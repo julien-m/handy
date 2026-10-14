@@ -82,3 +82,17 @@
 - **Offline list:** `prompts list` offline returns 008's delivered live-only refusal (`unavailable`/5, scenario « Live state without running app » of the 008 spec) applied to a D2 operation; justified in the plan, spec unchanged
 - **Review:** the plan review is stale; an independent reviewer refreshes it
 - **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
+
+## 2026-10-14 — [Plan Update]: Text-only history entry for every dictation whose WAV fails
+
+- **Type:** Spec Update
+- **Spec modified:** No (checked: no 005 requirement ties history to the WAV)
+- **Code modified:** None (plan.md updated)
+- **AC impacted:** None (pre-implementation; AC-005 unchanged)
+- **Author:** Claude Code (spec-refine 005 plan, claude-opus-5-5)
+- Julien's decision 2026-10-14 settles the open question "history without WAV": every noncancelled dictation that produced a transcript, not only an AI failure, gets a text-only row when its WAV fails, whatever the cause. The open question is removed from the history decision and the risk table.
+- Step 7 removes the `wav_saved` gate for every such dictation; its evidence and success criteria add an ordinary dictation saved text-only on WAV failure. The history change shared with 006 (nullable `file_name` rebuild, gate removal, guards for rows without audio) is built once by whichever of 005 Step 7 and 006 Step 6 runs first; 005's prompt metadata columns stay in Step 7.
+- Constitution check: the text-only row beyond AI failures is required by 006 AC-005, so 005 shares it rather than adding scope.
+- Review: the plan review is stale until an independent reviewer refreshes it.
+
+<!-- finalize:spec-refine:2026-10-14:d7cad1e7 -->

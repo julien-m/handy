@@ -5,6 +5,34 @@
 
 ---
 
+## 2026-10-14 — [Feature 009] Plan refined: history_status from 006's actual save_entry result, a WAV failure tested as a saved text-only row (Julien's decision), save_entry failure as failed
+<!-- finalize:spec-refine:2026-10-14:48c67c3f -->
+
+## 2026-10-14 — [Feature 010] Plan refined: history_status carried from 006's actual save_entry result, text-only row saved when the WAV fails (Julien's decision), not_saved no longer tied to a disabled or unavailable WAV
+<!-- finalize:spec-refine:2026-10-14:e2c204ed -->
+
+## 2026-10-14 — [Feature 005] Plan refined: text-only history row for every dictation whose WAV fails (Julien's decision), open WAV question removed, history change shared with 006
+<!-- finalize:spec-refine:2026-10-14:d7cad1e7 -->
+
+## 2026-10-14 — [Feature 006] Spec and plan refined: text-only history entry when the WAV fails (Julien's decision), AC-005 history clause no longer tied to the audio-gated save, history_status from the actual save_entry result
+<!-- finalize:spec-refine:2026-10-14:2190dbf9 -->
+
+## 2026-10-14 — [Feature 009] Plan refined: auto_submit refused by a plain not_found (retired-key hint removed), cross source FrontmostAtEnd and resolved_target aligned with 006, Windows full acceptance pending release evidence
+<!-- finalize:spec-refine:2026-10-14:86e43d44 -->
+
+## 2026-10-14 — [Feature 004] Integrated with 008: `dev` merged; shortcut lists, the post-processing toggle and the keyboard switch commit through the settings service with registration prepared before one revision and undone on refusal, refused during a dictation (coordinator quiescence lease); `handy settings shortcuts list/add/remove/reset` (live-only changes, dry run, stable codes). Full `cargo test`, frontend checks and repository conventions PASS; native CLI evidence pending; no AC certified.
+
+## 2026-10-13 — [Feature 004] Spec review fix: enabling post-processing always succeeds again, as the spec requires; a shortcut the OS refuses is reported by a translated toast and a warning on its row and stays editable; the shared-slot handover is kept. Rust 376 PASS / 16 ignored, frontend checks and repository conventions PASS, progression implement READY.
+
+## 2026-10-13 — [Feature 004] Re-audit fixes: disabling post-processing hands a shared Tauri slot back to Transcribe, a refused late activation keeps post-processing off with a translated message, OS probe of cancel outside recording, nits N1–N5 fixed and N6 documented, `implementation.md` structure valid. Rust 372 PASS / 16 ignored, frontend checks and repository conventions PASS.
+
+## 2026-10-13 — [Feature 004] Spec refined: Quality Engineering classification for the delivery lane
+
+`## Quality Engineering` added from the existing QE Analysis: criticality High, blast radius Shared, primary risk Regression; `livespec delivery lane` reads it (full). No AC, FR or SC changed; the spec review is stale until an independent reviewer refreshes it.
+
+## 2026-10-13 — [Feature 004] Audit fixes: inherited-conflict slots kept on Tauri edits, OS probe of disabled post-processing shortcuts, switch repair by destination parser with kept-and-reported conflicts, translated cancel refusals, live conflict warnings, rollback and Carbon shadow tests. Rust 363 PASS / 16 ignored, frontend checks and repository conventions PASS; recorder states stay with the UI pass.
+
+## 2026-10-13 — [Feature 004] Core: 1–4 shortcuts per dictation action with additive storage, action+shortcut identity in both backends and the coordinator (toggle/locked any shortcut, held starting shortcut only), shared conflict checker with legacy conflicts flagged, settings list UI. Rust 340 PASS / 16 ignored, Clippy as `dev`, frontend checks and repository conventions PASS. CLI and revision commit Waiting for 008; no acceptance certification claimed.
 ## 2026-10-14 — [Feature 010] Plan refined: 008 sources cited as code paths (plan review preparable in 18 batches), shared contracts cited from the 006 plan, pinned reasons aligned with 009
 <!-- finalize:spec-refine:2026-10-14:61308064 -->
 

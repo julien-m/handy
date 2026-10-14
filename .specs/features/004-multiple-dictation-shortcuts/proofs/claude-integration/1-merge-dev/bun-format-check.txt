@@ -1,0 +1,3 @@
+$ prettier --check . && cd src-tauri && cargo fmt -- --check
+Checking formatting...
+All matched files use Prettier code style!

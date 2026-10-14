@@ -1,0 +1,26 @@
+$ livespec conventions verify --feature repo --json
+Tue Oct 13 18:23:13 UTC 2026
+{
+  "verdict": "PASS",
+  "run_id": "20261013T182322Z",
+  "receipt_path": ".specs/conventions/runs/20261013T182322Z/receipt.json",
+  "blockers": [],
+  "baseline": {
+    "baselined_count": 669,
+    "new_count": 0,
+    "resolved_count": 3513
+  },
+  "violations_total": 399,
+  "violations_in_edits_registration_delta_shadow_store_hook_toggle": [],
+  "max_function_lines_warnings_in_shortcut_module (untouched functions)": [
+    "src-tauri/src/shortcut/handy_keys.rs:305 start_recording has 37 lines > 30",
+    "src-tauri/src/shortcut/handy_keys.rs:344 recording_loop has 34 lines > 30",
+    "src-tauri/src/shortcut/mod.rs:127 reconcile_cancel_shortcut has 33 lines > 30",
+    "src-tauri/src/shortcut/mod.rs:1366 fetch_post_process_models has 42 lines > 30",
+    "src-tauri/src/shortcut/tauri_impl.rs:26 key has 34 lines > 30",
+    "src-tauri/src/shortcut/tauri_impl.rs:27 validate_shortcut has 33 lines > 30"
+  ],
+  "stdout_sha256": "9bf255fd7dd8d522376151b4b63c06cc637d2b03bef1197039a23f064e04667a",
+  "note": "Full JSON (about 2 MB) summarized to avoid a redundant large file; the complete receipt is in receipt_path (not committed)."
+}
+EXIT=0

@@ -72,6 +72,9 @@ pub enum ValidationReason {
     InvalidInput,
     /// The setting or operation needs a platform capability this build does not have.
     UnsupportedPlatform,
+    /// A dictation session (recording, processing, a held or remembered shortcut) is running;
+    /// the shortcut registrations cannot change until it ends.
+    ShortcutSessionBusy,
 }
 impl ValidationReason {
     fn message(self) -> &'static str {
@@ -80,9 +83,7 @@ impl ValidationReason {
             Self::CanonicalValue => "Expected a canonical allowed value.",
             Self::OutOfRange => "Value is outside the allowed range.",
             Self::UiOnly => "This setting is changed in the settings UI.",
-            Self::ShortcutsDomain => {
-                "Use handy settings shortcuts; this domain is not available in this build."
-            }
+            Self::ShortcutsDomain => "Use handy settings shortcuts to change shortcuts.",
             Self::VocabularyDomain => {
                 "Use handy settings vocabulary; this domain is not available in this build."
             }
@@ -95,6 +96,7 @@ impl ValidationReason {
             Self::InvalidEncoding => "Input is not valid UTF-8 text.",
             Self::InvalidInput => "Input does not follow the exchange format.",
             Self::UnsupportedPlatform => "This setting is not supported on this platform.",
+            Self::ShortcutSessionBusy => "A dictation is in progress; retry when it ends.",
         }
     }
 }
@@ -119,6 +121,26 @@ pub struct ErrorDetails {
     /// Refused positions of a domain input, at most `MAX_ERROR_ITEMS`, sorted by index.
     #[serde(skip_serializing_if = "Vec::is_empty")]
     items: Vec<ErrorItem>,
+    /// Shortcut details of a refused shortcut change (all absent otherwise).
+    #[serde(flatten)]
+    shortcut: ShortcutDetails,
+}
+
+/// Allowlisted details of a refused shortcut change (see `ErrorDetails`): the action concerned,
+/// the owner of a conflicting stored shortcut and the kind of conflict, or the per-action limit.
+/// Only known action ids and stored shortcut texts enter them.
+#[derive(Clone, Debug, Default, PartialEq, Serialize)]
+pub struct ShortcutDetails {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub action_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub owning_action: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub owning_shortcut: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub kind: Option<&'static str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<u32>,
 }
 
 /// Most refused positions one error reports; the first ones by index are kept. 100 bounds the
@@ -133,14 +155,40 @@ pub const MAX_ERROR_ITEMS: usize = 100;
 pub enum ErrorReason {
     /// The operation or setting needs a platform capability this build does not have.
     UnsupportedPlatform,
+    /// A dictation session owns the shortcuts until it ends (004).
+    ShortcutSessionBusy,
+    /// A live-only change was asked without a running instance (004).
+    InstanceRequired,
+    /// The last shortcut of a dictation action cannot be removed (004).
+    LastShortcut,
+    /// The action keeps a single shortcut (004).
+    AlternativesUnsupported,
+    /// The system refused to register the shortcut (004).
+    RegistrationRefused,
+    /// The shortcut text is not valid for the active keyboard implementation (004).
+    InvalidShortcut,
 }
 impl ErrorReason {
     /// Every reason of this build, in wire-schema order.
-    pub const ALL: [Self; 1] = [Self::UnsupportedPlatform];
+    pub const ALL: [Self; 7] = [
+        Self::UnsupportedPlatform,
+        Self::ShortcutSessionBusy,
+        Self::InstanceRequired,
+        Self::LastShortcut,
+        Self::AlternativesUnsupported,
+        Self::RegistrationRefused,
+        Self::InvalidShortcut,
+    ];
     /// Fixed English message of this reason.
     pub fn message(self) -> &'static str {
         match self {
             Self::UnsupportedPlatform => "Not supported on this platform.",
+            Self::ShortcutSessionBusy => "A dictation is in progress.",
+            Self::InstanceRequired => "Needs a running Handy.",
+            Self::LastShortcut => "The last shortcut of an action cannot be removed.",
+            Self::AlternativesUnsupported => "This action keeps a single shortcut.",
+            Self::RegistrationRefused => "The system refused the shortcut.",
+            Self::InvalidShortcut => "Not a valid shortcut.",
         }
     }
 }
@@ -298,6 +346,33 @@ impl SettingsError {
     /// Refused input positions of `details.items`.
     pub fn items(&self) -> &[ErrorItem] {
         &self.details.items
+    }
+    /// A dictation session owns the shortcuts: the change of `key` was refused before anything
+    /// was registered or written.
+    pub fn session_busy(key: &str) -> Self {
+        let mut error = Self::live_state_refused(key);
+        error.reason = Some(ValidationReason::ShortcutSessionBusy);
+        error.with_reason(ErrorReason::ShortcutSessionBusy)
+    }
+    /// A live-only change was asked without a running instance: nothing was written.
+    pub fn instance_required() -> Self {
+        Self::shortcut(
+            SettingsErrorCode::Unavailable,
+            Some(ErrorReason::InstanceRequired),
+            ShortcutDetails::default(),
+        )
+    }
+    /// A refused shortcut change: `code` with the machine `reason` (if any) and the allowlisted
+    /// shortcut `details`.
+    pub fn shortcut(
+        code: SettingsErrorCode,
+        reason: Option<ErrorReason>,
+        details: ShortcutDetails,
+    ) -> Self {
+        let mut error = Self::new(code);
+        error.details.reason = reason;
+        error.details.shortcut = details;
+        error
     }
     /// Fixed English message of this error.
     pub fn message(&self) -> &'static str {

@@ -185,6 +185,22 @@
           "restore": "Kunne ikke gendanne den oprindelige genvej",
           "set": "Kunne ikke indstille genvej: {{error}}",
           "reset": "Kunne ikke nulstille genvej til oprindelig indstilling"
+        },
+        "list": {
+          "add": "Tilføj genvej",
+          "addLimit": "Op til {{limit}} genveje pr. handling",
+          "change": "Klik for at optage en ny kombination",
+          "remove": "Fjern denne genvej",
+          "removeLast": "Hver handling beholder mindst én genvej",
+          "reset": "Nulstil til standardgenvejen",
+          "errors": {
+            "conflict": "Bruges allerede af {{action}} ({{shortcut}})",
+            "overlap": "Ville også udløse {{action}} ({{shortcut}})",
+            "invalid": "Ugyldig genvej: {{error}}",
+            "registration": "Systemet afviste denne genvej: {{error}}",
+            "generic": "Genvejen kunne ikke gemmes",
+            "conflictsUnavailable": "Konflikter mellem genveje kunne ikke kontrolleres"
+          }
         }
       },
       "language": {
@@ -552,7 +568,8 @@
       },
       "postProcessingToggle": {
         "label": "Efterbehandling",
-        "description": "Aktivér AI-drevet tekstforbedring efter transskription"
+        "description": "Aktivér AI-drevet tekstforbedring efter transskription",
+        "shortcutRefused": "Efterbehandling er slået til, men systemet afviste genvejen {{shortcut}}. Skift den i indstillingerne for efterbehandling."
       },
       "muteWhileRecording": {
         "label": "Mute under optagelse",
@@ -565,7 +582,8 @@
       "keyboardImplementation": {
         "title": "Tastaturimplementering",
         "description": "Vælg backend til tastaturgenveje.",
-        "bindingsReset": "Tastaturgenveje var inkompatible og blev nulstillet til standard"
+        "bindingsReset": "Nogle tastaturgenveje var inkompatible og blev nulstillet til standard eller fjernet",
+        "conflictsKept": "Nogle genveje er nu i konflikt med en anden handling. De er bevaret og markeret i genvejsindstillingerne."
       },
       "paths": {
         "appData": "Appdata:",
@@ -702,6 +720,7 @@
       "validationFailed": "Værdien accepteres ikke for denne indstilling.",
       "revisionConflict": "Indstillingerne blev ændret et andet sted. Genindlæs, og prøv igen.",
       "unavailable": "Denne indstilling kan ikke ændres lige nu. Prøv igen senere.",
+      "shortcutSessionBusy": "En diktering er i gang. Prøv igen, når den er færdig.",
       "persistenceFailed": "Indstillingerne kunne ikke gemmes.",
       "generic": "Indstillingen kunne ikke ændres.",
       "readOnly": "Indstillingerne er skrivebeskyttede i denne session: indstillingsfilen kan ikke skrives sikkert, så ændringer gemmes ikke.",

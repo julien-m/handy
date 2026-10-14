@@ -13,6 +13,7 @@ export const SETTINGS_ERROR_KEYS = {
   validationFailed: "errors.settings.validationFailed",
   revisionConflict: "errors.settings.revisionConflict",
   unavailable: "errors.settings.unavailable",
+  shortcutSessionBusy: "errors.settings.shortcutSessionBusy",
   persistenceFailed: "errors.settings.persistenceFailed",
   generic: "errors.settings.generic",
   readOnly: "errors.settings.readOnly",
@@ -39,6 +40,9 @@ export const settingsErrorKey = (
   if (error.reason === "out_of_range") return SETTINGS_ERROR_KEYS.outOfRange;
   if (error.reason === "unsupported_platform") {
     return SETTINGS_ERROR_KEYS.unsupportedPlatform;
+  }
+  if (error.reason === "shortcut_session_busy") {
+    return SETTINGS_ERROR_KEYS.shortcutSessionBusy;
   }
   switch (error.code) {
     case "validation_failed":

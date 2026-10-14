@@ -115,6 +115,67 @@ pub enum SettingsCommand {
     /// Output settings: paste method, clipboard handling, automatic submit, delays, typing tool,
     /// return to the dictation's application
     Output(OutputArgs),
+    /// Shortcuts of each action: list them; add, remove or reset them in the running Handy
+    Shortcuts(ShortcutsArgs),
+}
+
+/// `handy settings shortcuts`: the shortcut lists, with the validation of the settings window.
+#[derive(Args, Debug, Clone)]
+#[command(
+    after_help = "SHORTCUT uses the syntax of the active keyboard implementation, as listed (for \
+example ctrl+option+d). add, remove and reset need a running Handy, which registers the change \
+at once; without one they fail with unavailable (reason instance_required). They also fail with \
+unavailable (reason shortcut_session_busy) while a dictation is in progress."
+)]
+pub struct ShortcutsArgs {
+    #[command(subcommand)]
+    pub action: ShortcutsAction,
+}
+
+/// Change options shared by the shortcut actions.
+#[derive(Args, Debug, Clone, Default)]
+pub struct ChangeOptions {
+    /// Refuse the change unless the settings are still at revision N
+    #[arg(long, value_name = "N")]
+    pub expected_revision: Option<u64>,
+    /// Validate and show the change without writing or registering it
+    #[arg(long)]
+    pub dry_run: bool,
+}
+
+/// Actions of the shortcuts domain.
+#[derive(Subcommand, Debug, Clone)]
+pub enum ShortcutsAction {
+    /// Print the shortcuts of every action, or only of ACTION
+    List {
+        /// Action id (transcribe, transcribe_with_post_process, cancel, ...)
+        action: Option<String>,
+    },
+    /// Add an alternative shortcut to ACTION (dictation actions, at most 4 shortcuts)
+    Add {
+        /// Action id
+        action: String,
+        /// Shortcut to add, in the active implementation's syntax
+        shortcut: String,
+        #[command(flatten)]
+        options: ChangeOptions,
+    },
+    /// Remove one shortcut of ACTION (the last one cannot be removed)
+    Remove {
+        /// Action id
+        action: String,
+        /// Stored shortcut to remove (same combination in any modifier order)
+        shortcut: String,
+        #[command(flatten)]
+        options: ChangeOptions,
+    },
+    /// Restore the single default shortcut of ACTION
+    Reset {
+        /// Action id
+        action: String,
+        #[command(flatten)]
+        options: ChangeOptions,
+    },
 }
 
 /// `handy settings output`: the existing output settings, with the validation of `set`.

@@ -61,6 +61,7 @@ exclusions:
 - '**/__pycache__/**'
 - '**/Generated/**'
 - '**/node_modules/**'
+- src/bindings.ts
 scope: repo
 ast_rules:
   mode: enforce

@@ -185,6 +185,22 @@
           "restore": "Gagal memulihkan pintasan asli",
           "set": "Gagal mengatur pintasan: {{error}}",
           "reset": "Gagal mengembalikan pintasan ke nilai awal"
+        },
+        "list": {
+          "add": "Tambah pintasan",
+          "addLimit": "Hingga {{limit}} pintasan per tindakan",
+          "change": "Klik untuk merekam kombinasi baru",
+          "remove": "Hapus pintasan ini",
+          "removeLast": "Setiap tindakan menyimpan setidaknya satu pintasan",
+          "reset": "Atur ulang ke pintasan bawaan",
+          "errors": {
+            "conflict": "Sudah digunakan oleh {{action}} ({{shortcut}})",
+            "overlap": "Juga akan memicu {{action}} ({{shortcut}})",
+            "invalid": "Pintasan tidak valid: {{error}}",
+            "registration": "Sistem menolak pintasan ini: {{error}}",
+            "generic": "Pintasan tidak dapat disimpan",
+            "conflictsUnavailable": "Bentrokan pintasan tidak dapat diperiksa"
+          }
         }
       },
       "language": {
@@ -552,7 +568,8 @@
       },
       "postProcessingToggle": {
         "label": "Pascaproses",
-        "description": "Aktifkan penyempurnaan teks berbasis AI setelah transkripsi"
+        "description": "Aktifkan penyempurnaan teks berbasis AI setelah transkripsi",
+        "shortcutRefused": "Pascaproses aktif, tetapi sistem menolak pintasan {{shortcut}}. Ubah pintasan itu di pengaturan Pascaproses."
       },
       "muteWhileRecording": {
         "label": "Bisukan Saat Merekam",
@@ -565,7 +582,8 @@
       "keyboardImplementation": {
         "title": "Implementasi Keyboard",
         "description": "Pilih backend pintasan keyboard.",
-        "bindingsReset": "Pintasan keyboard tidak kompatibel dan telah dikembalikan ke nilai awal"
+        "bindingsReset": "Beberapa pintasan keyboard tidak kompatibel dan telah dikembalikan ke nilai awal atau dihapus",
+        "conflictsKept": "Beberapa pintasan kini bentrok dengan tindakan lain. Pintasan tersebut dipertahankan dan ditandai di pengaturan pintasan."
       },
       "paths": {
         "appData": "Data Aplikasi:",
@@ -702,6 +720,7 @@
       "validationFailed": "Nilai ini tidak diterima untuk pengaturan ini.",
       "revisionConflict": "Pengaturan telah diubah di tempat lain. Muat ulang dan coba lagi.",
       "unavailable": "Pengaturan ini tidak dapat diubah sekarang. Coba lagi nanti.",
+      "shortcutSessionBusy": "Dikte sedang berlangsung. Coba lagi setelah selesai.",
       "persistenceFailed": "Pengaturan tidak dapat disimpan.",
       "generic": "Pengaturan tidak dapat diubah.",
       "readOnly": "Pengaturan hanya-baca untuk sesi ini: file pengaturan tidak dapat ditulis dengan aman, sehingga perubahan tidak akan disimpan.",

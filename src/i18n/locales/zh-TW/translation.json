@@ -185,6 +185,22 @@
           "restore": "無法還原原始快捷鍵",
           "set": "無法設定快捷鍵: {{error}}",
           "reset": "無法將快捷鍵重設為原始值"
+        },
+        "list": {
+          "add": "新增快速鍵",
+          "addLimit": "每個動作最多 {{limit}} 個快速鍵",
+          "change": "點擊以錄製新組合",
+          "remove": "移除此快速鍵",
+          "removeLast": "每個動作至少保留一個快速鍵",
+          "reset": "重設為預設快速鍵",
+          "errors": {
+            "conflict": "已被{{action}}使用（{{shortcut}}）",
+            "overlap": "也會觸發{{action}}（{{shortcut}}）",
+            "invalid": "無效的快速鍵：{{error}}",
+            "registration": "系統拒絕了此快速鍵：{{error}}",
+            "generic": "無法儲存快速鍵",
+            "conflictsUnavailable": "無法檢查快速鍵衝突"
+          }
         }
       },
       "language": {
@@ -538,7 +554,8 @@
       },
       "postProcessingToggle": {
         "label": "後處理",
-        "description": "啟用轉錄後的 AI 文字最佳化"
+        "description": "啟用轉錄後的 AI 文字最佳化",
+        "shortcutRefused": "後處理已開啟，但系統拒絕了快速鍵 {{shortcut}}。請在後處理設定中變更。"
       },
       "muteWhileRecording": {
         "label": "錄製時靜音",
@@ -551,7 +568,8 @@
       "keyboardImplementation": {
         "title": "鍵盤實作",
         "description": "選擇鍵盤快捷鍵的後端",
-        "bindingsReset": "鍵盤快捷鍵不相容，已重設為預設值"
+        "bindingsReset": "部分鍵盤快速鍵不相容，已重設為預設值或移除",
+        "conflictsKept": "部分快速鍵現在與其他動作衝突。這些快速鍵已保留，並在快速鍵設定中標示。"
       },
       "paths": {
         "appData": "應用程式資料:",
@@ -699,6 +717,7 @@
       "validationFailed": "此設定不接受這個值。",
       "revisionConflict": "設定已在其他地方變更。請重新載入後再試一次。",
       "unavailable": "目前無法變更此設定，請稍後再試。",
+      "shortcutSessionBusy": "正在進行聽寫。請在結束後再試一次。",
       "persistenceFailed": "無法儲存設定。",
       "generic": "無法變更設定。",
       "readOnly": "本次工作階段的設定為唯讀：無法安全寫入設定檔，因此變更不會儲存。",

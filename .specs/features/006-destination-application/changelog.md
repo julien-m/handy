@@ -105,3 +105,17 @@
 - **Author:** Claude Code (spec-implement 006, claude-opus-5-5)
 - Commits: `0867599` (Step 0), `7a95f0c` (Step 2, Step 1 read-only part), `b98ee80` (Step 3), `4823d8f` (Step 4 and the non-UI part of Step 6), `3645b28` (implementation map).
 - Not done: UI (badge, menu, reason display, settings toggle and its write command), 007/009/010 adapters, native activation/focus/timing evidence; Windows compile-only; Linux and Windows native checks pending release evidence. See [implementation](implementation.md) and [progress](progress.md).
+
+## 2026-10-14 — [Spec Update]: Text-only history entry when the audio recording fails
+
+- **Type:** Spec Update
+- **Spec modified:** Yes (sections: AC-005, Clarifications, frontmatter `updated`)
+- **Code modified:** None (plan.md and contracts/destination-contract.md updated)
+- **AC impacted:** AC-005 (history clause; ID unchanged)
+- **Author:** Claude Code (spec-refine 006 + plan, claude-opus-5-5)
+- Julien's decision 2026-10-14: a dictation whose WAV cannot be saved, whatever the cause, still gets a text-only history entry. Recorded as a dated decision under `## Clarifications` (Clarify inventory empty).
+- AC-005 now reads "the transcript stays in history whenever the history save succeeds, as a text-only entry when the audio recording could not be saved" instead of "whenever history saving succeeds as today". Story 4, SC-002 and the cancellation behavior are unchanged.
+- Plan: the history save no longer depends on the WAV; `InsertionOutcome.history_status` comes only from the actual `save_entry` result (`saved` includes a text-only row; `failed` on save_entry failure; `not_saved` when no write was attempted); Step 6 removes the `wav_saved` gate and its history matrix covers WAV failure saved text-only. The shared history change (nullable `file_name` migration, gate removal, guards for rows without audio) is built once by whichever of 006 Step 6 and 005 Step 7 runs first. Contract history line aligned.
+- Review: the spec and plan reviews are stale until an independent reviewer refreshes them.
+
+<!-- finalize:spec-refine:2026-10-14:2190dbf9 -->

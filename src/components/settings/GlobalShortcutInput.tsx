@@ -8,15 +8,21 @@ import {
 import { ResetButton } from "../ui/ResetButton";
 import { SettingContainer } from "../ui/SettingContainer";
 import { useSettings } from "../../hooks/useSettings";
+import { useShortcutFailureText } from "../../hooks/useShortcutFailureText";
 import { useOsType } from "../../hooks/useOsType";
 import { commands } from "@/bindings";
 import { toast } from "sonner";
+import { ShortcutChip } from "./shortcut-chip";
 
 interface GlobalShortcutInputProps {
   descriptionMode?: "inline" | "tooltip";
   grouped?: boolean;
   shortcutId: string;
   disabled?: boolean;
+  onCapture?: (shortcut: string) => Promise<void>;
+  value?: string | null;
+  label?: string;
+  testId?: string;
 }
 
 export const GlobalShortcutInput: React.FC<GlobalShortcutInputProps> = ({
@@ -24,17 +30,22 @@ export const GlobalShortcutInput: React.FC<GlobalShortcutInputProps> = ({
   grouped = false,
   shortcutId,
   disabled = false,
+  onCapture,
+  value = null,
+  label,
+  testId,
 }) => {
   const { t } = useTranslation();
   const { getSetting, updateBinding, resetBinding, isUpdating, isLoading } =
     useSettings();
+  const failureText = useShortcutFailureText();
   const [keyPressed, setKeyPressed] = useState<string[]>([]);
   const [recordedKeys, setRecordedKeys] = useState<string[]>([]);
   const [editingShortcutId, setEditingShortcutId] = useState<string | null>(
     null,
   );
   const [originalBinding, setOriginalBinding] = useState<string>("");
-  const shortcutRefs = useRef<Map<string, HTMLDivElement | null>>(new Map());
+  const shortcutRefs = useRef<Map<string, HTMLElement | null>>(new Map());
   const osType = useOsType();
 
   const bindings = getSetting("bindings") || {};
@@ -102,14 +113,23 @@ export const GlobalShortcutInput: React.FC<GlobalShortcutInputProps> = ({
         });
         const newShortcut = sortedKeys.join("+");
 
-        if (editingShortcutId && bindings[editingShortcutId]) {
+        if (editingShortcutId && onCapture) {
+          // Capture mode: the caller saves (and reports errors); nothing
+          // was written, so there is nothing to restore.
+          await onCapture(newShortcut);
+          await commands.resumeAllBindings().catch(console.error);
+          setEditingShortcutId(null);
+          setKeyPressed([]);
+          setRecordedKeys([]);
+          setOriginalBinding("");
+        } else if (editingShortcutId && bindings[editingShortcutId]) {
           try {
             await updateBinding(editingShortcutId, newShortcut);
           } catch (error) {
             console.error("Failed to change binding:", error);
             toast.error(
               t("settings.general.shortcut.errors.set", {
-                error: String(error),
+                error: failureText(error),
               }),
             );
 
@@ -143,7 +163,7 @@ export const GlobalShortcutInput: React.FC<GlobalShortcutInputProps> = ({
       const activeElement = shortcutRefs.current.get(editingShortcutId);
       if (activeElement && !activeElement.contains(e.target as Node)) {
         // Cancel shortcut recording and restore original binding
-        if (editingShortcutId && originalBinding) {
+        if (editingShortcutId && originalBinding && !onCapture) {
           try {
             await updateBinding(editingShortcutId, originalBinding);
           } catch (error) {
@@ -177,6 +197,8 @@ export const GlobalShortcutInput: React.FC<GlobalShortcutInputProps> = ({
     originalBinding,
     updateBinding,
     osType,
+    onCapture,
+    failureText,
   ]);
 
   // Start recording a new shortcut
@@ -204,9 +226,36 @@ export const GlobalShortcutInput: React.FC<GlobalShortcutInputProps> = ({
   };
 
   // Store references to shortcut elements
-  const setShortcutRef = (id: string, ref: HTMLDivElement | null) => {
+  const setShortcutRef = (id: string, ref: HTMLElement | null) => {
     shortcutRefs.current.set(id, ref);
   };
+
+  // Leaving the chip (keyboard blur) cancels capture without saving.
+  const cancelCapture = async () => {
+    await commands.resumeAllBindings().catch(console.error);
+    setEditingShortcutId(null);
+    setKeyPressed([]);
+    setRecordedKeys([]);
+  };
+
+  if (onCapture) {
+    const isEditing = editingShortcutId === shortcutId;
+    const idleText = value
+      ? formatKeyCombination(value, osType)
+      : t("settings.general.shortcut.list.add");
+    return (
+      <ShortcutChip
+        text={isEditing ? formatCurrentKeys() : idleText}
+        isRecording={isEditing}
+        disabled={disabled}
+        label={label}
+        testId={testId}
+        onStart={() => startRecording(shortcutId)}
+        onLeave={cancelCapture}
+        chipRef={(ref) => setShortcutRef(shortcutId, ref)}
+      />
+    );
+  }
 
   // If still loading, show loading state
   if (isLoading) {
@@ -292,7 +341,15 @@ export const GlobalShortcutInput: React.FC<GlobalShortcutInputProps> = ({
           </div>
         )}
         <ResetButton
-          onClick={() => resetBinding(shortcutId)}
+          onClick={() =>
+            resetBinding(shortcutId).catch((error) =>
+              toast.error(
+                t("settings.general.shortcut.errors.set", {
+                  error: failureText(error),
+                }),
+              ),
+            )
+          }
           disabled={isUpdating(`binding_${shortcutId}`)}
         />
       </div>

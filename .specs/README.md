@@ -38,7 +38,7 @@
 | 002 | Word Replacements | Planned | 2026-10-12 | 2026-10-12 | [spec](features/002-word-replacements/spec.md) |
 | 003 | Recognition Vocabulary | Planned | 2026-10-12 | 2026-10-12 | [spec](features/003-recognition-vocabulary/spec.md) |
 | 004 | Multiple Dictation Shortcuts | Planned | 2026-10-12 | 2026-10-12 | [spec](features/004-multiple-dictation-shortcuts/spec.md) |
-| 005 | Custom AI Prompts | Planned | 2026-10-12 | 2026-10-12 | [spec](features/005-custom-ai-prompts/spec.md) |
+| 005 | Custom AI Prompts | Planned | 2026-10-12 | 2026-10-14 | [spec](features/005-custom-ai-prompts/spec.md) |
 | 006 | Destination Application | Planned | 2026-10-12 | 2026-10-14 | [spec](features/006-destination-application/spec.md) |
 | 007 | Smart Paste | Planned | 2026-10-12 | 2026-10-13 | [spec](features/007-smart-paste/spec.md) |
 | 008 | Settings CLI | In Progress | 2026-10-12 | 2026-10-13 | [spec](features/008-settings-cli/spec.md) |
@@ -68,16 +68,16 @@
 <!-- readme:activity:start -->
 | Date | Type | Description |
 |---|---|---|
+| 2026-10-14 | Feature | [Feature 009] Plan refined: history_status from 006's actual save_entry result, a WAV failure tested as a saved text-only row (Julien's decision), save_entry failure as failed |
+| 2026-10-14 | Feature | [Feature 010] Plan refined: history_status carried from 006's actual save_entry result, text-only row saved when the WAV fails (Julien's decision), not_saved no longer tied to a disabled or unavailable WAV |
+| 2026-10-14 | Feature | [Feature 005] Plan refined: text-only history row for every dictation whose WAV fails (Julien's decision), open WAV question removed, history change shared with 006 |
+| 2026-10-14 | Feature | [Feature 006] Spec and plan refined: text-only history entry when the WAV fails (Julien's decision), AC-005 history clause no longer tied to the audio-gated save, history_status from the actual save_entry result |
+| 2026-10-14 | Feature | [Feature 009] Plan refined: auto_submit refused by a plain not_found (retired-key hint removed), cross source FrontmostAtEnd and resolved_target aligned with 006, Windows full acceptance pending release evidence |
 | 2026-10-14 | Feature | [Feature 010] Plan refined: 008 sources cited as code paths (plan review preparable in 18 batches), shared contracts cited from the 006 plan, pinned reasons aligned with 009 |
 | 2026-10-14 | Feature | [Feature 009] Plan refined: 008 sources cited as code paths (plan review preparable in 20 batches), explicit AC-006 (13/13), DestinationManager::claim_enter, pinned_app_not_running and activation_failed aligned with 010 |
 | 2026-10-14 | Feature | [Feature 006] Plan refined: 008 sources cited as code paths (plan review preparable in 1 batch), four ValidationContext constructions, DestinationManager::claim_enter for 009, pinned_app_not_running reason |
 | 2026-10-14 | Feature | [Feature 005] Plan refined: plan review preparable again, Step 2 ordered, offline prompt list justified |
 | 2026-10-14 | Feature | [Feature 003] Plan refined: plan review preparable again, durable-error rule renamed, offline status justified |
-| 2026-10-14 | Feature | [Feature 001] Plan refined: plan review preparable again, 006 step 0 before Step 2 |
-| 2026-10-14 | Feature | [Feature 010] Plan refined: one Enter veto with 009, method outcome from 006, late-read update |
-| 2026-10-14 | Feature | [Feature 005] Spec and plan refined: truthful failure notice, merged 008 names, live prompt list |
-| 2026-10-14 | Feature | [Feature 009] Spec and plan refined: pinned badge rule, D2 live pin operations, retired auto_submit, single Enter veto |
-| 2026-10-14 | Feature | [Feature 001] Spec and plan refined: literal "default" migration, live microphone list, full 2-second attempts |
 <!-- readme:activity:end -->
 
 ---
@@ -171,3 +171,13 @@
 <!-- finalize:spec-refine:2026-10-14:f275f226 -->
 
 <!-- finalize:spec-refine:2026-10-14:61308064 -->
+
+<!-- finalize:spec-refine:2026-10-14:86e43d44 -->
+
+<!-- finalize:spec-refine:2026-10-14:2190dbf9 -->
+
+<!-- finalize:spec-refine:2026-10-14:d7cad1e7 -->
+
+<!-- finalize:spec-refine:2026-10-14:e2c204ed -->
+
+<!-- finalize:spec-refine:2026-10-14:48c67c3f -->

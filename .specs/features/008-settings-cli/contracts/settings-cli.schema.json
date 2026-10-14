@@ -3,6 +3,13 @@
     "binding": {
       "additionalProperties": false,
       "properties": {
+        "additional_bindings": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
         "current_binding": {
           "type": "string"
         },
@@ -61,6 +68,9 @@
     "error_details": {
       "additionalProperties": false,
       "properties": {
+        "action_id": {
+          "type": "string"
+        },
         "current_revision": {
           "$ref": "#/$defs/revision"
         },
@@ -222,7 +232,13 @@
             "properties": {
               "code": {
                 "enum": [
-                  "unsupported_platform"
+                  "unsupported_platform",
+                  "shortcut_session_busy",
+                  "instance_required",
+                  "last_shortcut",
+                  "alternatives_unsupported",
+                  "registration_refused",
+                  "invalid_shortcut"
                 ]
               },
               "index": {
@@ -243,6 +259,16 @@
           "maxItems": 100,
           "type": "array"
         },
+        "kind": {
+          "enum": [
+            "duplicate",
+            "modifier_overlap"
+          ]
+        },
+        "limit": {
+          "minimum": 1,
+          "type": "integer"
+        },
         "offset": {
           "minimum": 0,
           "type": "integer"
@@ -253,9 +279,21 @@
             "committed"
           ]
         },
+        "owning_action": {
+          "type": "string"
+        },
+        "owning_shortcut": {
+          "type": "string"
+        },
         "reason": {
           "enum": [
-            "unsupported_platform"
+            "unsupported_platform",
+            "shortcut_session_busy",
+            "instance_required",
+            "last_shortcut",
+            "alternatives_unsupported",
+            "registration_refused",
+            "invalid_shortcut"
           ]
         }
       },

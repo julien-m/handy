@@ -205,6 +205,22 @@
           "restore": "Errore nel ripristino della scorciatoia originale",
           "set": "Errore nella configurazione della scorciatoia: {{error}}",
           "reset": "Errore nella reinizializzazione della scorciatoia al valore originale"
+        },
+        "list": {
+          "add": "Aggiungi scorciatoia",
+          "addLimit": "Fino a {{limit}} scorciatoie per azione",
+          "change": "Fai clic per registrare una nuova combinazione",
+          "remove": "Rimuovi questa scorciatoia",
+          "removeLast": "Ogni azione mantiene almeno una scorciatoia",
+          "reset": "Ripristina la scorciatoia predefinita",
+          "errors": {
+            "conflict": "Già usata da {{action}} ({{shortcut}})",
+            "overlap": "Attiverebbe anche {{action}} ({{shortcut}})",
+            "invalid": "Scorciatoia non valida: {{error}}",
+            "registration": "Il sistema ha rifiutato questa scorciatoia: {{error}}",
+            "generic": "Impossibile salvare la scorciatoia",
+            "conflictsUnavailable": "Impossibile verificare i conflitti tra scorciatoie"
+          }
         }
       },
       "language": {
@@ -538,7 +554,8 @@
       },
       "postProcessingToggle": {
         "label": "Post-Elaborazione",
-        "description": "Abilita il miglioramento della trascrizione con IA"
+        "description": "Abilita il miglioramento della trascrizione con IA",
+        "shortcutRefused": "La post-elaborazione è attiva, ma il sistema ha rifiutato la scorciatoia {{shortcut}}. Modificala nelle impostazioni della post-elaborazione."
       },
       "muteWhileRecording": {
         "label": "Silenzia durante la registrazione",
@@ -551,7 +568,8 @@
       "keyboardImplementation": {
         "title": "Implementazione tastiera",
         "description": "Scegli il backend per le scorciatoie da tastiera.",
-        "bindingsReset": "Le scorciatoie da tastiera erano incompatibili e sono state ripristinate ai valori predefiniti"
+        "bindingsReset": "Alcune scorciatoie da tastiera erano incompatibili e sono state ripristinate al valore predefinito o rimosse",
+        "conflictsKept": "Alcune scorciatoie ora sono in conflitto con un'altra azione. Sono state mantenute e sono segnalate nelle impostazioni delle scorciatoie."
       },
       "paths": {
         "appData": "Dati App:",
@@ -699,6 +717,7 @@
       "validationFailed": "Questo valore non è accettato per questa impostazione.",
       "revisionConflict": "Le impostazioni sono state modificate altrove. Ricarica e riprova.",
       "unavailable": "Questa impostazione non può essere modificata ora. Riprova più tardi.",
+      "shortcutSessionBusy": "È in corso una dettatura. Riprova al termine.",
       "persistenceFailed": "Impossibile salvare le impostazioni.",
       "generic": "Impossibile modificare l'impostazione.",
       "readOnly": "Le impostazioni sono di sola lettura in questa sessione: il file delle impostazioni non può essere scritto in modo sicuro, quindi le modifiche non verranno salvate.",

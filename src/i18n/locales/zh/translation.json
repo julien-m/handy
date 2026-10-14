@@ -205,6 +205,22 @@
           "restore": "无法恢复原始快捷键",
           "set": "无法设置快捷键: {{error}}",
           "reset": "无法将快捷键重置为原始值"
+        },
+        "list": {
+          "add": "添加快捷键",
+          "addLimit": "每个操作最多 {{limit}} 个快捷键",
+          "change": "点击以录制新组合",
+          "remove": "移除此快捷键",
+          "removeLast": "每个操作至少保留一个快捷键",
+          "reset": "重置为默认快捷键",
+          "errors": {
+            "conflict": "已被{{action}}使用（{{shortcut}}）",
+            "overlap": "也会触发{{action}}（{{shortcut}}）",
+            "invalid": "无效的快捷键：{{error}}",
+            "registration": "系统拒绝了此快捷键：{{error}}",
+            "generic": "无法保存快捷键",
+            "conflictsUnavailable": "无法检查快捷键冲突"
+          }
         }
       },
       "language": {
@@ -538,7 +554,8 @@
       },
       "postProcessingToggle": {
         "label": "后处理",
-        "description": "启用转录后的 AI 文本优化"
+        "description": "启用转录后的 AI 文本优化",
+        "shortcutRefused": "后处理已开启，但系统拒绝了快捷键 {{shortcut}}。请在后处理设置中更改。"
       },
       "muteWhileRecording": {
         "label": "录制时静音",
@@ -551,7 +568,8 @@
       "keyboardImplementation": {
         "title": "键盘实现",
         "description": "选择键盘快捷键的后端。",
-        "bindingsReset": "键盘快捷键不兼容，已重置为默认值"
+        "bindingsReset": "部分键盘快捷键不兼容，已重置为默认值或被移除",
+        "conflictsKept": "部分快捷键现在与其他操作冲突。它们已被保留，并在快捷键设置中标出。"
       },
       "paths": {
         "appData": "应用数据:",
@@ -699,6 +717,7 @@
       "validationFailed": "此设置不接受该值。",
       "revisionConflict": "设置已在其他地方更改。请重新加载后再试。",
       "unavailable": "目前无法更改此设置，请稍后再试。",
+      "shortcutSessionBusy": "正在进行听写。请在结束后重试。",
       "persistenceFailed": "无法保存设置。",
       "generic": "无法更改设置。",
       "readOnly": "本次会话中设置为只读：无法安全写入设置文件，因此更改不会保存。",

@@ -85,7 +85,20 @@ fn items_are_sorted_by_index_and_bounded_without_candidate_values() -> TestResul
 fn schema_closes_reason_and_items() -> TestResult {
     let schema = contract_schema()?;
     let details = &schema["$defs"]["error_details"]["properties"];
-    assert_eq!(details["reason"], json!({"enum": ["unsupported_platform"]}));
+    let reasons = json!([
+        "unsupported_platform",
+        "shortcut_session_busy",
+        "instance_required",
+        "last_shortcut",
+        "alternatives_unsupported",
+        "registration_refused",
+        "invalid_shortcut"
+    ]);
+    assert_eq!(details["reason"], json!({ "enum": reasons }));
+    assert_eq!(
+        details["items"]["items"]["properties"]["code"]["enum"],
+        reasons
+    );
     let items = &details["items"];
     assert_eq!(items["maxItems"], json!(MAX_ERROR_ITEMS));
     assert_eq!(

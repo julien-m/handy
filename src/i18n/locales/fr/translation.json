@@ -205,6 +205,22 @@
           "restore": "Échec de la restauration du raccourci original",
           "set": "Échec de la définition du raccourci : {{error}}",
           "reset": "Échec de la réinitialisation du raccourci à sa valeur d'origine"
+        },
+        "list": {
+          "add": "Ajouter un raccourci",
+          "addLimit": "Jusqu'à {{limit}} raccourcis par action",
+          "change": "Cliquez pour enregistrer une nouvelle combinaison",
+          "remove": "Supprimer ce raccourci",
+          "removeLast": "Chaque action garde au moins un raccourci",
+          "reset": "Rétablir le raccourci par défaut",
+          "errors": {
+            "conflict": "Déjà utilisé par {{action}} ({{shortcut}})",
+            "overlap": "Déclencherait aussi {{action}} ({{shortcut}})",
+            "invalid": "Raccourci invalide : {{error}}",
+            "registration": "Le système a refusé ce raccourci : {{error}}",
+            "generic": "Le raccourci n'a pas pu être enregistré",
+            "conflictsUnavailable": "Impossible de vérifier les conflits de raccourcis"
+          }
         }
       },
       "language": {
@@ -538,7 +554,8 @@
       },
       "postProcessingToggle": {
         "label": "Post-traitement",
-        "description": "Activer l'affinage du texte par IA après la transcription"
+        "description": "Activer l'affinage du texte par IA après la transcription",
+        "shortcutRefused": "Le post-traitement est activé, mais le système a refusé le raccourci {{shortcut}}. Modifiez-le dans les réglages du post-traitement."
       },
       "muteWhileRecording": {
         "label": "Muet pendant l'enregistrement",
@@ -551,7 +568,8 @@
       "keyboardImplementation": {
         "title": "Gestion du clavier",
         "description": "Choisissez le système des raccourcis clavier.",
-        "bindingsReset": "Raccourcis clavier étaient incompatibles et ont été réinitialisés aux valeurs par défaut"
+        "bindingsReset": "Certains raccourcis clavier étaient incompatibles et ont été réinitialisés à leur valeur par défaut ou supprimés",
+        "conflictsKept": "Certains raccourcis entrent désormais en conflit avec une autre action. Ils ont été conservés et sont signalés dans les réglages des raccourcis."
       },
       "paths": {
         "appData": "Données de l'application :",
@@ -699,6 +717,7 @@
       "validationFailed": "Cette valeur n'est pas acceptée pour ce réglage.",
       "revisionConflict": "Les réglages ont été modifiés ailleurs. Rechargez et réessayez.",
       "unavailable": "Ce réglage ne peut pas être modifié pour le moment. Réessayez plus tard.",
+      "shortcutSessionBusy": "Une dictée est en cours. Réessayez lorsqu'elle sera terminée.",
       "persistenceFailed": "Les réglages n'ont pas pu être enregistrés.",
       "generic": "Le réglage n'a pas pu être modifié.",
       "readOnly": "Les réglages sont en lecture seule pour cette session : le fichier de réglages ne peut pas être écrit en toute sécurité, les modifications ne seront donc pas enregistrées.",
