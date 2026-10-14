@@ -398,7 +398,8 @@ async changeVadEnabledSetting(enabled: boolean) : Promise<Result<null, SettingsC
 },
 /**
  * Swap the VAD detector (and reopen the microphone when needed) before committing, off the
- * webview thread; a refused commit restores the backend published when the write started.
+ * webview thread; a refused commit restores the backend published when the write started. The
+ * preparation is shared with routed CLI writes (`settings_service::native_changes`).
  */
 async changeVadBackendSetting(backend: VadBackend) : Promise<Result<null, SettingsCommandError>> {
     try {
@@ -573,6 +574,36 @@ async showMainWindowCommand() : Promise<Result<null, string>> {
 },
 async cancelOperation() : Promise<void> {
     await TAURI_INVOKE("cancel_operation");
+},
+/**
+ * Current session snapshot, if a dictation has started.
+ */
+async destinationSnapshot() : Promise<DestinationSnapshot | null> {
+    return await TAURI_INVOKE("destination_snapshot");
+},
+/**
+ * Runtime support of destination return in this instance (AC-007 reason).
+ */
+async destinationSupport() : Promise<DestinationSupport | null> {
+    return await TAURI_INVOKE("destination_support");
+},
+/**
+ * Badge menu of the exact dictation and version (frontmost first, then windowed apps).
+ */
+async destinationMenu(dictationId: DictationId, selectionVersion: number) : Promise<MenuAnswer> {
+    return await TAURI_INVOKE("destination_menu", { dictationId, selectionVersion });
+},
+/**
+ * Apply a badge choice for the exact dictation and version; refused unchanged otherwise.
+ */
+async chooseDestination(dictationId: DictationId, selectionVersion: number, choice: MenuChoice) : Promise<ChoiceAnswer> {
+    return await TAURI_INVOKE("choose_destination", { dictationId, selectionVersion, choice });
+},
+/**
+ * The badge cross: same mutation as "Frontmost app at the end"; the setting is untouched.
+ */
+async removeDestination(dictationId: DictationId, selectionVersion: number) : Promise<ChoiceAnswer> {
+    return await TAURI_INVOKE("remove_destination", { dictationId, selectionVersion });
 },
 async isPortable() : Promise<boolean> {
     return await TAURI_INVOKE("is_portable");
@@ -886,7 +917,8 @@ async getMicrophoneChannels(deviceName: string) : Promise<Result<number, string>
 /**
  * Restarting cpal can block, so the channel change runs off the webview/main run loop. The
  * runtime change is prepared before committing, so a rejected active-recording change is never
- * stored; a refused commit restores the channel published when the ordered write started.
+ * stored; a refused commit restores the channel published when the ordered write started. The
+ * preparation is shared with routed CLI writes (`settings_service::native_changes`).
  */
 async setSelectedChannel(channel: number | null) : Promise<Result<null, SettingsCommandError>> {
     try {
@@ -1057,7 +1089,11 @@ whats_new_last_seen_version?: string; selected_model?: string; onboarding_comple
  * Which input channel to use on the selected microphone device.
  * None means "average all channels" (original behavior).
  */
-selected_channel?: number | null; clamshell_microphone?: string | null; selected_output_device?: string | null; translate_to_english?: boolean; selected_language?: string; overlay_position?: OverlayPosition; debug_mode?: boolean; log_level?: LogLevel; custom_words?: string[]; model_unload_timeout?: ModelUnloadTimeout; word_correction_threshold?: number; history_limit?: number; recording_retention_period?: RecordingRetentionPeriod; paste_method?: PasteMethod; clipboard_handling?: ClipboardHandling; auto_submit?: boolean; auto_submit_key?: AutoSubmitKey; post_process_enabled?: boolean; post_process_provider_id?: string; post_process_providers?: PostProcessProvider[]; post_process_api_keys?: SecretMap; post_process_models?: Partial<{ [key in string]: string }>; post_process_prompts?: LLMPrompt[]; post_process_selected_prompt_id?: string | null; mute_while_recording?: boolean; append_trailing_space?: boolean; app_language?: string; theme?: Theme; experimental_enabled?: boolean; lazy_stream_close?: boolean; keyboard_implementation?: KeyboardImplementation; show_tray_icon?: boolean; paste_delay_ms?: number; paste_delay_after_ms?: number; 
+selected_channel?: number | null; clamshell_microphone?: string | null; selected_output_device?: string | null; translate_to_english?: boolean; selected_language?: string; overlay_position?: OverlayPosition; debug_mode?: boolean; log_level?: LogLevel; custom_words?: string[]; model_unload_timeout?: ModelUnloadTimeout; word_correction_threshold?: number; history_limit?: number; recording_retention_period?: RecordingRetentionPeriod; paste_method?: PasteMethod; clipboard_handling?: ClipboardHandling; auto_submit?: boolean; auto_submit_key?: AutoSubmitKey; post_process_enabled?: boolean; post_process_provider_id?: string; post_process_providers?: PostProcessProvider[]; post_process_api_keys?: SecretMap; post_process_models?: Partial<{ [key in string]: string }>; post_process_prompts?: LLMPrompt[]; post_process_selected_prompt_id?: string | null; mute_while_recording?: boolean; append_trailing_space?: boolean; 
+/**
+ * Return to the application where the dictation started before inserting (006).
+ */
+return_to_dictation_app?: boolean; app_language?: string; theme?: Theme; experimental_enabled?: boolean; lazy_stream_close?: boolean; keyboard_implementation?: KeyboardImplementation; show_tray_icon?: boolean; paste_delay_ms?: number; paste_delay_after_ms?: number; 
 /**
  * Debug-gated ("beta") receipt-sequenced paste: restore the clipboard only
  * after the target app actually reads the transcript, instead of after a
@@ -1098,8 +1134,32 @@ export type ChineseScript =
  * Keep whatever script the model produced.
  */
 "as_transcribed" | "simplified" | "traditional"
+/**
+ * Answer of a badge choice or removal: the updated session, or why it is refused unchanged.
+ */
+export type ChoiceAnswer = { status: "chosen"; value: DestinationSnapshot } | { status: "refused"; value: SelectionRefusal }
 export type ClipboardHandling = "dont_modify" | "copy_to_clipboard"
 export type CustomSounds = { start: boolean; stop: boolean }
+/**
+ * Badge menu of one dictation: applications, then "Frontmost app at the end".
+ */
+export type DestinationMenu = { dictation_id: DictationId; selection_version: number; entries: MenuEntry[]; 
+/**
+ * True when "Frontmost app at the end" is the current choice.
+ */
+frontmost_at_end_current: boolean }
+/**
+ * Session snapshot sent to the UI (`destination-changed`) and returned by session commands.
+ */
+export type DestinationSnapshot = { dictation_id: DictationId; destination_generation: number; selection_version: number; phase: SessionPhase; return_enabled: boolean; support: DestinationSupport; selection: SelectionView; disposition: RecoveryDisposition }
+/**
+ * Runtime support of destination return in the running instance.
+ */
+export type DestinationSupport = { state: "supported" } | { state: "unsupported"; reason: SupportReason }
+/**
+ * Immutable identity of one accepted dictation (the same value 007 puts in its `PasteOutcome`).
+ */
+export type DictationId = number
 export type EngineType = 
 /**
  * Any GGML/GGUF model loaded through transcribe-cpp (Whisper, Parakeet,
@@ -1126,6 +1186,27 @@ key_down: number; key_up: number; flags_changed: number; mouse: number; duration
 export type KeyboardImplementation = "tauri" | "handy_keys"
 export type LLMPrompt = { id: string; name: string; prompt: string }
 export type LogLevel = "trace" | "debug" | "info" | "warn" | "error"
+/**
+ * Answer of a menu request: the menu, or why it is refused (a typed value, not an error, so
+ * the badge handles both without exception paths).
+ */
+export type MenuAnswer = { status: "menu"; value: DestinationMenu } | { status: "refused"; value: SelectionRefusal }
+/**
+ * A badge choice: an entry token of the current menu, or "Frontmost app at the end" (the cross).
+ */
+export type MenuChoice = { kind: "application"; token: number } | { kind: "frontmost_at_end" }
+/**
+ * One application entry of the badge menu, addressed by an opaque manager token.
+ */
+export type MenuEntry = { token: number; display_name: string; icon_ref: string | null; 
+/**
+ * The current destination of this dictation.
+ */
+current: boolean; 
+/**
+ * The application frontmost when the menu opened (listed first).
+ */
+frontmost: boolean }
 export type ModelInfo = { id: string; name: string; description: string; filename: string; source: ModelSource; size_mb: number; is_downloaded: boolean; is_downloading: boolean; partial_size: number; is_directory: boolean; engine_type: EngineType; accuracy_score: number; speed_score: number; supports_translation: boolean; is_recommended: boolean; supported_languages: string[]; supports_language_selection: boolean; is_custom: boolean; supports_streaming: boolean; supports_language_detection: boolean }
 export type ModelLoadStatus = { is_loaded: boolean; current_model: string | null }
 /**
@@ -1180,6 +1261,10 @@ export type PermissionAccess = "allowed" | "denied" | "unknown"
 export type PostProcessProvider = { id: string; label: string; base_url: string; allow_base_url_edit?: boolean; models_endpoint?: string | null; supports_structured_output?: boolean }
 export type RecordingRetentionPeriod = "never" | "preserve_limit" | "days_3" | "weeks_2" | "months_3"
 /**
+ * The single per-dictation decision "insert or recover", and the only Enter veto.
+ */
+export type RecoveryDisposition = "pending" | "insert" | "recover" | "cancelled"
+/**
  * Provider API keys: `Debug` is redacted and the public settings projection reports presence only.
  */
 export type SecretMap = Partial<{ [key in string]: string }>
@@ -1215,6 +1300,30 @@ uncovered_bindings: string[];
  * warning banner appears and explains why recording refused.
  */
 recorder_blocked: boolean }
+/**
+ * A refused badge choice; the session is unchanged.
+ */
+export type SelectionRefusal = 
+/**
+ * Another dictation, or an older `selection_version`.
+ */
+"stale" | 
+/**
+ * Insertion has begun (or the session ended): choices are closed.
+ */
+"frozen" | 
+/**
+ * The chosen entry is unknown, closed or no longer running.
+ */
+"unavailable"
+/**
+ * What the badge shows for the current selection.
+ */
+export type SelectionView = { kind: "frontmost_at_end" } | { kind: "application"; display_name: string; icon_ref: string | null }
+/**
+ * Lifecycle of one dictation's session.
+ */
+export type SessionPhase = "recording" | "processing" | "inserting" | "finished" | "cancelled"
 /**
  * Error of a settings UI command: the stable code and English message shared with the CLI,
  * plus the field and typed reason the UI maps to a translation (never free-text parsing).
@@ -1316,6 +1425,18 @@ export type StreamTextEvent = { committed: string; tentative: string }
  * Semantic kind of "working" phase, used to localize the spinner label.
  */
 export type StreamWorkKind = "transcribing" | "polishing"
+/**
+ * Why destination return is unavailable.
+ */
+export type SupportReason = 
+/**
+ * This build has no destination capability (Linux).
+ */
+"platform_unsupported" | 
+/**
+ * The running instance cannot read the frontmost application.
+ */
+"frontmost_unreadable"
 /**
  * UI appearance mode. `System` follows the OS `prefers-color-scheme`; `Light`
  * and `Dark` force one of the two palettes Handy already ships.

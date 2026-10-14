@@ -4,6 +4,7 @@
 //! truthful outcome while keeping a failed transcript for the recovery features. Destination,
 //! insertion method and clipboard handling stay separate: this module only decides which
 //! application is activated.
+pub mod app;
 pub mod context;
 #[cfg(test)]
 pub(crate) mod fake_workspace;

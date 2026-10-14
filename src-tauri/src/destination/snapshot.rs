@@ -75,6 +75,22 @@ pub struct DestinationMenu {
     pub frontmost_at_end_current: bool,
 }
 
+/// Answer of a menu request: the menu, or why it is refused (a typed value, not an error, so
+/// the badge handles both without exception paths).
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, specta::Type)]
+#[serde(tag = "status", content = "value", rename_all = "snake_case")]
+pub enum MenuAnswer {
+    Menu(DestinationMenu),
+    Refused(super::session::SelectionRefusal),
+}
+/// Answer of a badge choice or removal: the updated session, or why it is refused unchanged.
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, specta::Type)]
+#[serde(tag = "status", content = "value", rename_all = "snake_case")]
+pub enum ChoiceAnswer {
+    Chosen(DestinationSnapshot),
+    Refused(super::session::SelectionRefusal),
+}
+
 /// A badge choice: an entry token of the current menu, or "Frontmost app at the end" (the cross).
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize, specta::Type)]
 #[serde(tag = "kind", content = "token", rename_all = "snake_case")]

@@ -112,7 +112,8 @@ pub enum SettingsCommand {
         #[arg(long, value_name = "N")]
         expected_revision: Option<u64>,
     },
-    /// Output settings: paste method, clipboard handling, automatic submit, delays, typing tool
+    /// Output settings: paste method, clipboard handling, automatic submit, delays, typing tool,
+    /// return to the dictation's application
     Output(OutputArgs),
 }
 

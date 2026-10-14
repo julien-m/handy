@@ -14,8 +14,8 @@ fn every_actual_stored_field_has_exactly_one_descriptor() -> Result<(), Box<dyn 
         .iter()
         .map(|entry| entry.key.to_owned())
         .collect();
-    assert_eq!(actual.len(), 63);
-    assert_eq!(descriptors().len(), 63);
+    assert_eq!(actual.len(), 64);
+    assert_eq!(descriptors().len(), 64);
     assert_eq!(actual, described);
     Ok(())
 }
@@ -37,7 +37,7 @@ const COLLECTIONS: [(&str, &str); 4] = [
 ];
 
 #[test]
-fn independent_access_inventory_covers_7_readonly_1_secret_4_collections_51_scalars(
+fn independent_access_inventory_covers_7_readonly_1_secret_4_collections_52_scalars(
 ) -> Result<(), Box<dyn std::error::Error>> {
     for key in READONLY {
         let entry = handy_app_lib::settings_service::descriptor::descriptor(key)
@@ -67,7 +67,7 @@ fn independent_access_inventory_covers_7_readonly_1_secret_4_collections_51_scal
         })
         .map(|entry| entry.key)
         .collect();
-    assert_eq!(scalar_keys.len(), 51);
+    assert_eq!(scalar_keys.len(), 52);
     assert_eq!(scalar_keys, actual_scalars);
     Ok(())
 }

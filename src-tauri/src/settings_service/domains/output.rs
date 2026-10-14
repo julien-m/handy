@@ -1,7 +1,8 @@
 //! `handy settings output`: the existing output settings (paste method, clipboard handling,
 //! automatic submit, paste delays, typing tool, external script, trailing space), read and changed
-//! through the same descriptors and validator as generic `get`/`set` and the settings UI. Feature
-//! 007 extends this domain (smart paste); 008 keeps the existing values only.
+//! through the same descriptors and validator as generic `get`/`set` and the settings UI, plus
+//! 006's destination return (`return_to_dictation_app`, refused on a platform without the
+//! destination capability). Feature 007 extends this domain (smart paste).
 use super::{ChangeKind, Domain, DomainChange, DomainPlan, DomainRequest};
 use crate::settings::AppSettings;
 use crate::settings_service::{
@@ -10,7 +11,7 @@ use crate::settings_service::{
 };
 
 /// Output settings of this build, in help order.
-pub const OUTPUT_KEYS: [&str; 10] = [
+pub const OUTPUT_KEYS: [&str; 11] = [
     "paste_method",
     "clipboard_handling",
     "auto_submit",
@@ -21,6 +22,7 @@ pub const OUTPUT_KEYS: [&str; 10] = [
     "typing_tool",
     "external_script_path",
     "append_trailing_space",
+    "return_to_dictation_app",
 ];
 
 /// The output domain.

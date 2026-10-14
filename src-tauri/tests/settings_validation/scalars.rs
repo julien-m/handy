@@ -1,6 +1,8 @@
 //! Independent malformed-value and boundary assertions; no actual writer parity claim.
 
-use handy_app_lib::settings_service::platform_capability::PlatformCapabilities;
+use handy_app_lib::settings_service::platform_capability::{
+    PlatformCapabilities, PlatformCapability,
+};
 use handy_app_lib::settings_service::{
     errors::{SettingsError, SettingsErrorCode},
     validation::{validate_cli, validate_ui, SettingsMutation, ValidationContext},
@@ -77,6 +79,7 @@ fn boolean_cases() -> Vec<(&'static str, &'static str, serde_json::Value)> {
         "post_process_enabled",
         "mute_while_recording",
         "append_trailing_space",
+        "return_to_dictation_app",
         "experimental_enabled",
         "lazy_stream_close",
         "show_tray_icon",
@@ -140,14 +143,15 @@ fn string_cases() -> Vec<(&'static str, &'static str, serde_json::Value)> {
     .collect()
 }
 #[test]
-fn all_51_scalar_ports_accept_the_same_typed_values() -> Result<(), Box<dyn std::error::Error>> {
+fn all_52_scalar_ports_accept_the_same_typed_values() -> Result<(), Box<dyn std::error::Error>> {
+    // Every capability, so a platform-bound key is accepted on every build of this test.
     let context = ValidationContext {
         prompt_ids: &["known"],
         updates_allowed: true,
-        platform: PlatformCapabilities::current(),
+        platform: PlatformCapabilities::only(&[PlatformCapability::Destination]),
     };
     let cases = canonical_cases();
-    assert_eq!(cases.len(), 51);
+    assert_eq!(cases.len(), 52);
     for (key, raw, value) in cases {
         let cli = validate_cli(key, raw, &context)?;
         let ui = validate_ui(key, value.clone(), &context)?;

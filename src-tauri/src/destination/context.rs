@@ -2,11 +2,11 @@
 //! policy (009) and to the recovery bubble (010): application identity, the per-insertion
 //! `DestinationContext`, the single insert-or-recover `RecoveryDisposition` and the optional
 //! pre-insertion check of 010.
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
 /// Immutable identity of one accepted dictation (the same value 007 puts in its `PasteOutcome`).
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Hash, Serialize, specta::Type)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Hash, Serialize, Deserialize, specta::Type)]
 #[serde(transparent)]
 pub struct DictationId(pub u64);
 

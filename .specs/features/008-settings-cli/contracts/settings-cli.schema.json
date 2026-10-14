@@ -108,6 +108,7 @@
             "post_process_selected_prompt_id",
             "mute_while_recording",
             "append_trailing_space",
+            "return_to_dictation_app",
             "app_language",
             "theme",
             "experimental_enabled",
@@ -179,6 +180,7 @@
                   "post_process_selected_prompt_id",
                   "mute_while_recording",
                   "append_trailing_space",
+                  "return_to_dictation_app",
                   "app_language",
                   "theme",
                   "experimental_enabled",
@@ -736,6 +738,9 @@
         "reliable_paste": {
           "type": "boolean"
         },
+        "return_to_dictation_app": {
+          "type": "boolean"
+        },
         "selected_channel": {
           "maximum": 65535,
           "minimum": 0,
@@ -891,6 +896,7 @@
         "post_process_selected_prompt_id",
         "mute_while_recording",
         "append_trailing_space",
+        "return_to_dictation_app",
         "app_language",
         "theme",
         "experimental_enabled",
@@ -1470,6 +1476,17 @@
     {
       "allowed_values": [],
       "key": "append_trailing_space",
+      "nullable": false,
+      "owner_domain": "output",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [],
+      "key": "return_to_dictation_app",
       "nullable": false,
       "owner_domain": "output",
       "range": null,

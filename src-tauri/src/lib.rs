@@ -242,6 +242,7 @@ fn initialize_core_logic(app_handle: &AppHandle) {
     app_handle.manage(transcription_manager.clone());
     app_handle.manage(history_manager.clone());
     app_handle.manage(tray::TrayState::new());
+    destination::app::install(app_handle);
 
     // Note: Shortcuts are NOT initialized here.
     // The frontend is responsible for calling the `initialize_shortcuts` command
@@ -743,6 +744,11 @@ pub fn run(cli_args: CliArgs) {
             trigger_update_check,
             show_main_window_command,
             commands::cancel_operation,
+            commands::destination::destination_snapshot,
+            commands::destination::destination_support,
+            commands::destination::destination_menu,
+            commands::destination::choose_destination,
+            commands::destination::remove_destination,
             commands::is_portable,
             commands::is_update_checks_locked,
             commands::get_app_dir_path,

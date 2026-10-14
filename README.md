@@ -133,6 +133,7 @@ handy settings keys                        # every key with its type, allowed va
 handy settings set paste_method direct     # change one setting
 handy settings set paste_delay_ms 120 --expected-revision 7   # only if nobody changed the settings since revision 7
 handy settings output get                  # the output settings (paste method, clipboard handling, auto submit, delays, typing tool...)
+handy settings output set return_to_dictation_app false   # insert into the app in front at the end, as before
 handy settings output set auto_submit true --dry-run          # validate and preview, write nothing
 handy settings --help                      # operations and the domains available in this build
 ```

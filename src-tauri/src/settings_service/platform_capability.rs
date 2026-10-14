@@ -26,7 +26,8 @@ const BUILD_CAPABILITIES: &[PlatformCapability] = &[PlatformCapability::Destinat
 const BUILD_CAPABILITIES: &[PlatformCapability] = &[];
 
 /// Setting keys that need a capability; each later feature adds its own row.
-const KEY_CAPABILITIES: &[(&str, PlatformCapability)] = &[];
+const KEY_CAPABILITIES: &[(&str, PlatformCapability)] =
+    &[("return_to_dictation_app", PlatformCapability::Destination)];
 
 impl PlatformCapabilities {
     /// Capabilities of the running build.
