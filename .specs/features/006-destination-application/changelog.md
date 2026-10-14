@@ -128,3 +128,14 @@
 - **AC impacted:** AC-005 (history clause), AC-007, AC-008 (UI command) — still partial, none certified
 - **Author:** Claude Code (spec-implement 006, claude-opus-5-5)
 - The history change shared with 005 Step 7 is built once here (nullable `file_name`, WAV gate removed for the transcript, guards for rows without audio). Not done: visual UI (badge, cross, menu, toggle, reason display), 007/009/010 adapters, native evidence. See [progress](progress.md#sync-run--notes-2026-10-14) and [implementation](implementation.md).
+
+## 2026-10-14 — [Fix]: Delivery review fix round 1 — rollout gate and review warnings
+
+- **Type:** Fix
+- **Spec modified:** No
+- **Code modified:** `422063a` (`Cargo.toml` feature `destination-return`; `destination/{rollout,macos_focus,delivery_tests}.rs` new; `destination/{app,delivery,guard,insertion,macos,windows,workspace,manager,context}.rs` and their tests; `settings_service/{error_reason.rs (new), errors.rs, platform_capability.rs, mod.rs}`; `settings.rs`, `clipboard.rs`, `actions.rs`; `tests/{destination_platform,destination_recovery}.rs`; `App.tsx`, 26 locales); `c2953cd` (`tests/destination_cli.rs`); contract updated (insertion method shape, live guard read, `NoTextField`)
+- **AC impacted:** AC-002, AC-005, AC-007, AC-008 — still partial, none certified
+- **Author:** Claude Code (delivery review corrections, claude-opus-5-5)
+- Destination return is now behind the `destination-return` Cargo feature, off by default: the default build dictates exactly as `dev` and refuses `return_to_dictation_app` as `unsupported_platform`; the text-only history rule stays active. Opening conditions: native macOS activation and guard proof with Julien, Penflow-certified UI ([implementation, Rollout gate](implementation.md#rollout-gate)).
+- Behind the gate: live Accessibility foreground read for the guard and the activation wait (macOS), one settings snapshot per insertion, truthful worker-failure outcome with the transcript retained, a "not saved" toast on a double failure, Windows hosted UWP apps resolved by their core window process. Also `RecoveryReason::NoTextField`, `errors.rs` split under 400 lines, the two new clippy warnings removed. Deviation recorded: `InsertionPort::dispatch(guard)` kept, contract updated. Details: [progress](progress.md#delivery-review-fix-round-1--notes-2026-10-14).
+
