@@ -85,7 +85,11 @@ const rowPropsAt = (
 /** Ordered, reorderable list of the configured microphones. */
 export const PriorityList: React.FC<PriorityListProps> = (props) => {
   const { t } = useTranslation();
-  const reorder = usePointerReorder(props.onMove);
+  const reorder = usePointerReorder({
+    order: props.order,
+    busy: props.busy,
+    onDrop: props.onMove,
+  });
   if (props.order.length === 0) return <EmptyPriority />;
   const { drag } = reorder;
   return (

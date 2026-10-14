@@ -12,8 +12,10 @@ import { ADD_FOCUS_KEY } from "./editor-focus";
 
 /** Props of the Add control. */
 export interface AddControlProps {
-  /** Enumerated device names, or null before the first listing. */
+  /** Enumerated device names, or null before a successful listing. */
   enumerated: readonly string[] | null;
+  /** The last device listing failed: there is nothing to offer until a Refresh succeeds. */
+  listingFailed: boolean;
   addError: AddError | null;
   /** The last choice was added (state "valid" until the next edit). */
   accepted: boolean;
@@ -63,18 +65,31 @@ const addState = (props: AddControlProps): "invalid" | "valid" | "empty" => {
 };
 
 /**
+ * Why the Add control has nothing to offer, as the key of its accessible name.
+ * @param props Add control props
+ * @returns `refreshFailed` after a failed listing (Refresh availability lists again), `noDevices`
+ *   when the listing found nothing, null when there are names to offer or none listed yet
+ */
+const unavailableKey = (props: AddControlProps): string | null => {
+  if (props.listingFailed) return "refreshFailed";
+  return props.enumerated !== null && props.enumerated.length === 0
+    ? "noDevices"
+    : null;
+};
+
+/**
  * Add microphone dropdown. A valid choice is added at once and the control empties again; a
  * duplicate stays shown with a red outline (states: empty, invalid, valid). Without any device to
- * add, the control is disabled and its accessible name says why.
+ * add (none found, or the listing failed), the control is disabled and its accessible name says
+ * why.
  */
 export const AddControl: React.FC<AddControlProps> = (props) => {
   const { t } = useTranslation();
   const names = props.enumerated ?? [];
-  const noDevices = props.enumerated !== null && names.length === 0;
+  const unavailable = unavailableKey(props);
+  const noDevices = unavailable !== null;
   const state = addState(props);
-  const label = t(
-    `${PRIORITY_KEY_ROOT}.${noDevices ? "noDevices" : "addLabel"}`,
-  );
+  const label = t(`${PRIORITY_KEY_ROOT}.${unavailable ?? "addLabel"}`);
   return (
     <div
       className={`rounded-md ${state === "invalid" ? "ring-1 ring-red-500" : ""}`}

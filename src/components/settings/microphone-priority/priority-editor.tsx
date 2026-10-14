@@ -29,6 +29,7 @@ const EditorCheckLine: React.FC<PrioritySectionProps> = ({ editor }) => (
 const EditorAddControl: React.FC<PrioritySectionProps> = ({ editor }) => (
   <AddControl
     enumerated={editor.enumerated}
+    listingFailed={editor.listingFailed}
     addError={editor.draft.addError}
     accepted={editor.draft.addAccepted}
     busy={editor.loading || editor.draft.savePhase === "saving"}

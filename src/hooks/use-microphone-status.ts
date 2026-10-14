@@ -1,6 +1,6 @@
 // Microphone status of the audio settings (feature 001, AC-002): read when the view opens or
-// becomes visible again, every 5 seconds while it stays visible (paused while the window is
-// hidden in the tray, see status-polling.ts) and on demand (Refresh, Retry). Each read takes a
+// becomes visible again, every 5 seconds while it stays visible (paused while the page or the Tauri
+// window is hidden in the tray, see status-polling.ts) and on demand (Refresh, Retry). Each read takes a
 // generation ticket and only the newest read may update the view, so a late answer never
 // overwrites a newer one and nothing is applied after the view is hidden or closes.
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -12,10 +12,15 @@ import {
   type StatusView,
 } from "@/components/settings/microphone-priority/availability";
 import {
+  allVisible,
   documentVisibility,
   startStatusPolling,
   windowClock,
 } from "@/components/settings/microphone-priority/status-polling";
+import {
+  tauriWindowPort,
+  windowVisibility,
+} from "@/components/settings/microphone-priority/window-visibility";
 
 /** Refresh period while the audio settings are open and visible, fixed by AC-002. */
 export const STATUS_REFRESH_MS = 5000;
@@ -43,7 +48,8 @@ const readStatus = async (): Promise<MicrophoneStatus | null> => {
 
 /**
  * Keep the microphone status of the open settings view up to date.
- * Side effects: polls every 5 s while the calling component is mounted and the page is visible.
+ * Side effects: polls every 5 s while the calling component is mounted and both the page and the
+ * window are visible.
  * @returns the last status view and a manual refresh
  */
 export const useMicrophoneStatus = (): MicrophoneStatusHandle => {
@@ -65,7 +71,10 @@ export const useMicrophoneStatus = (): MicrophoneStatusHandle => {
         read: () => void refresh(),
         invalidate: () => fence.current.invalidate(),
         clock: windowClock,
-        visibility: documentVisibility,
+        visibility: allVisible([
+          documentVisibility,
+          windowVisibility(tauriWindowPort),
+        ]),
         periodMs: STATUS_REFRESH_MS,
       }),
     [refresh],

@@ -1,5 +1,5 @@
-// Fake Tauri IPC and page visibility for the browser harness of the microphone priority editor
-// (feature 001). It answers the commands the editor and the settings store call from a scripted
+// Fake Tauri IPC, page visibility and window visibility for the browser harness of the microphone
+// priority editor (feature 001). It answers the commands the editor and the settings store call from a scripted
 // backend that `tests/microphone-priority.spec.ts` drives through `window.harness`. This is a
 // headless check of the real React code, not a native window proof.
 // Imported first by the harness, so the fakes exist before any Tauri module is evaluated.
@@ -39,6 +39,12 @@ export const backend = {
   saveCalls: [] as Array<{ order: string[]; expectedRevision: unknown }>,
   saveGate: null as Deferred | null,
   saveFailure: null as Record<string, unknown> | null,
+  /** The held write commits before it answers with `saveFailure` (an unknown outcome). */
+  commitBeforeFailure: false,
+  /** Answer of the window's `isVisible()`; the page visibility is set apart (`setVisible`). */
+  windowVisible: true,
+  windowVisibilityFails: false,
+  windowVisibilityChecks: 0,
   settingsGate: null as Deferred | null,
 };
 
@@ -106,7 +112,10 @@ const savePriority: Handler = async (args) => {
   const order = args.order as string[];
   backend.saveCalls.push({ order, expectedRevision: args.expectedRevision });
   if (backend.saveGate) await backend.saveGate.promise;
-  if (backend.saveFailure) throw backend.saveFailure;
+  if (backend.saveFailure) {
+    if (backend.commitBeforeFailure) commit(order);
+    throw backend.saveFailure;
+  }
   if (args.expectedRevision !== backend.revision) {
     throw settingsError("revision_conflict");
   }
@@ -140,6 +149,11 @@ const handlers: Record<string, Handler> = {
     return status();
   },
   set_microphone_priority: savePriority,
+  "plugin:window|is_visible": () => {
+    backend.windowVisibilityChecks += 1;
+    if (backend.windowVisibilityFails) throw "window unavailable";
+    return backend.windowVisible;
+  },
   "plugin:os|locale": () => "en-US",
   "plugin:event|listen": (args) => {
     listeners.push({
@@ -196,6 +210,16 @@ export const setVisible = (visible: boolean): void => {
   document.dispatchEvent(new Event("visibilitychange"));
 };
 
+/**
+ * Hide or show the Tauri window without touching the page visibility, as WebView2 does on Windows
+ * (the page stays "visible"). Showing it also focuses it, as `show_main_window` does; hiding it
+ * emits nothing, the polling must find out by asking.
+ */
+export const setWindowShown = (shown: boolean): void => {
+  backend.windowVisible = shown;
+  if (shown) emit("tauri://focus", null);
+};
+
 /** Hold the next writes until `releaseSave`, which settles them with `failure` or success. */
 export const holdSave = (): void => {
   backend.saveGate = deferred();
@@ -203,6 +227,18 @@ export const holdSave = (): void => {
 
 export const releaseSave = (failure: string | null): void => {
   backend.saveFailure = failure === null ? null : settingsError(failure);
+  backend.commitBeforeFailure = false;
+  backend.saveGate?.resolve();
+  backend.saveGate = null;
+};
+
+/**
+ * Settle the held write with an unknown outcome (code `unavailable`, outcome `unknown`, as the
+ * backend's `unknown_outcome`), after committing it or not.
+ */
+export const releaseSaveUnknown = (committed: boolean): void => {
+  backend.saveFailure = { ...settingsError("unavailable"), outcome: "unknown" };
+  backend.commitBeforeFailure = committed;
   backend.saveGate?.resolve();
   backend.saveGate = null;
 };

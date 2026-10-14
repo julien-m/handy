@@ -96,3 +96,11 @@
 - **Code modified:** status polling paused while the window is hidden (`status-polling.ts`, `use-microphone-status.ts`); focus kept or moved after Save, Retry, Remove, Discard and Reload (`editor-focus.ts`, views); Add and Save inactive while the settings load and no write without a revision; no phantom draft; interrupted drags cancelled; Unknown after a failed device listing (`settingsStore.ts`); `success` / `error` / `valid` state anchors; three functions brought under 30 lines; 3 orphaned locale keys removed
 - **AC impacted:** AC-001, AC-002, AC-007, SC-003 (automated: 75 bun tests, 15 headless Chromium tests in `tests/microphone-priority.spec.ts`); real-window and native evidence still pending with Julien
 - **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-14 — [Fix]: UI delivery review, correction round 2 (Step 6)
+
+- **Type:** Fix
+- **Spec modified:** No (the Reset scenario still needs a `spec-refine`; the bar position is still to check in the real window)
+- **Code modified:** status polling also asks the Tauri window (`window-visibility.ts`, `status-polling.ts`, `use-microphone-status.ts`) because WebView2 very probably keeps the page visible after `window.hide()`; drags cancelled when the dragged row leaves its place or a write starts (`use-pointer-reorder.ts`, `priority-list.tsx`); an unknown write outcome confirmed when the reread shows the sent order, and a lost focus moved to the title when the Unsaved changes bar closes on its own (`use-priority-editor.ts`, `editor-focus.ts`); Add inactive after a failed listing (`priority-controls.tsx`); Playwright spec split in three files with polling focus assertions
+- **AC impacted:** AC-001, AC-002, AC-007, SC-003 (automated: 88 bun tests, 23 headless Chromium tests; red run on HEAD `59992c7b`: 6 failed); native evidence of the polling pause still pending (macOS with Julien, Windows and Linux as release evidence)
+- **Author:** Claude Code (claude-opus-5-5)

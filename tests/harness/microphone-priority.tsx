@@ -8,8 +8,10 @@ import {
   holdSave,
   holdSettings,
   releaseSave,
+  releaseSaveUnknown,
   releaseSettings,
   setVisible,
+  setWindowShown,
 } from "./fake-tauri";
 import React from "react";
 import { createRoot, type Root } from "react-dom/client";
@@ -56,8 +58,10 @@ mount();
   commitElsewhere: commit,
   holdSave,
   releaseSave,
+  releaseSaveUnknown,
   releaseSettings,
   setVisible,
+  setWindowShown,
   mount,
   unmount,
 };

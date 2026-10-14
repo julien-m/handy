@@ -2,7 +2,13 @@
 // or moves the control that had focus, focus goes to a logical control and never falls on <body>.
 // Targets carry `data-focus-key`; a request lists them by preference and the first focusable one
 // wins, with the section title (tabIndex -1) as the stable fallback.
-import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import type { RefObject } from "react";
 
 /** Focus key of the priority section title, the stable target after Discard, Reload and Save. */
@@ -55,20 +61,31 @@ const focusableIn = (holder: HTMLElement): HTMLElement | null => {
   return target === null || target.matches(":disabled") ? null : target;
 };
 
+/** How a focus request treats a focus that is still on an element. */
+export interface FocusRequestOptions {
+  /**
+   * Move focus only when it was lost (on <body>), for example when the Unsaved changes bar that
+   * held it disappears without an action of the user; a focused element is left alone.
+   */
+  onlyIfLost?: boolean;
+}
+
 /**
  * Focus the first available target inside the editor. Focus that already moved outside the
- * editor (and is not on <body>) is left alone.
+ * editor (and is not on <body>) is left alone, and so is any focus with `onlyIfLost`.
  * @param root editor element
  * @param keys focus keys by preference; the section title is always tried last
+ * @param options whether only a lost focus is moved
  * @returns the focused element, or null when nothing was focused
  */
 export const focusFirstTarget = (
   root: HTMLElement,
   keys: readonly string[],
+  options: FocusRequestOptions = {},
 ): HTMLElement | null => {
   const active = root.ownerDocument.activeElement;
   const lost = active === null || active === root.ownerDocument.body;
-  if (!lost && !root.contains(active)) return null;
+  if (!lost && (options.onlyIfLost || !root.contains(active))) return null;
   const holders = Array.from(
     root.querySelectorAll<HTMLElement>("[data-focus-key]"),
   );
@@ -88,7 +105,7 @@ export interface EditorFocus {
   /** Element that contains every focus target (the editor screen). */
   rootRef: RefObject<HTMLDivElement>;
   /** Move focus once the next render is committed (the target may only exist then). */
-  request: (keys: readonly string[]) => void;
+  request: (keys: readonly string[], options?: FocusRequestOptions) => void;
 }
 
 /**
@@ -99,17 +116,39 @@ export interface EditorFocus {
 export const useEditorFocus = (): EditorFocus => {
   const rootRef = useRef<HTMLDivElement>(null);
   // A new object per request, so a request always renders, even when the draft did not change.
-  const [pending, setPending] = useState<{ keys: readonly string[] } | null>(
-    null,
-  );
+  const [pending, setPending] = useState<{
+    keys: readonly string[];
+    options?: FocusRequestOptions;
+  } | null>(null);
   useLayoutEffect(() => {
     if (pending !== null && rootRef.current !== null) {
-      focusFirstTarget(rootRef.current, pending.keys);
+      focusFirstTarget(rootRef.current, pending.keys, pending.options);
     }
   }, [pending]);
   const request = useCallback(
-    (keys: readonly string[]) => setPending({ keys }),
+    (keys: readonly string[], options?: FocusRequestOptions) =>
+      setPending({ keys, options }),
     [],
   );
   return { rootRef, request };
+};
+
+/**
+ * Keep focus off <body> when the Unsaved changes bar disappears on its own: the same order saved
+ * elsewhere while Save had focus, or a write whose outcome was unknown but that did commit. The
+ * section title then takes a lost focus; a focus still on an element is left alone. Actions that
+ * close the bar themselves (Save, Discard, Reload) have already placed focus by then.
+ * Side effects: may move the document focus after the bar is removed.
+ * @param barVisible whether the Unsaved changes bar is shown
+ * @param request focus request of the editor
+ */
+export const useFocusWhenBarCloses = (
+  barVisible: boolean,
+  request: EditorFocus["request"],
+): void => {
+  const wasVisible = useRef(barVisible);
+  useEffect(() => {
+    if (wasVisible.current && !barVisible) request([], { onlyIfLost: true });
+    wasVisible.current = barVisible;
+  }, [barVisible, request]);
 };

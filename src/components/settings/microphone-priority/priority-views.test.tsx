@@ -118,6 +118,7 @@ describe("empty list (microphone-settings-empty)", () => {
 
 const addProps = {
   enumerated: ["USB headset", "MacBook"],
+  listingFailed: false,
   addError: null,
   accepted: false,
   busy: false,
@@ -176,6 +177,23 @@ describe("Add control", () => {
     );
     expect(has(markup, `aria-label="${ROOT}.noDevices"`)).toBe(true);
     expect(count(markup, "disabled=")).toBe(1);
+  });
+
+  test("failed listing: disabled and named by the failure, not by an empty list", () => {
+    const markup = renderToStaticMarkup(
+      <AddControl {...addProps} enumerated={null} listingFailed />,
+    );
+    expect(has(markup, `aria-label="${ROOT}.refreshFailed"`)).toBe(true);
+    expect(has(markup, `${ROOT}.noDevices`)).toBe(false);
+    expect(count(markup, "disabled=")).toBe(1);
+  });
+
+  test("not listed yet: enabled, opening it lists the devices", () => {
+    const markup = renderToStaticMarkup(
+      <AddControl {...addProps} enumerated={null} />,
+    );
+    expect(has(markup, `aria-label="${ROOT}.addLabel"`)).toBe(true);
+    expect(count(markup, "disabled=")).toBe(0);
   });
 });
 

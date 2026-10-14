@@ -2,15 +2,28 @@
 // events with pointer capture on the row handle instead of HTML drag and drop, which the Tauri
 // webview can intercept for file drops; keyboard users reorder with Move up / Move down. An
 // interrupted drag (capture lost, pointer cancelled, window blurred or hidden, Escape) is dropped
-// without reordering.
+// without reordering, and so is a drag whose row is no longer at its place (its name removed or
+// moved by a change saved elsewhere) or that a starting write makes inert.
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { PointerEvent } from "react";
 
 /** Drag in progress: the pointer that started it, the dragged row and the row it would land on. */
 export interface DragState {
   pointerId: number;
+  /** Exact name of the dragged row, which must still be at `from` for the drag to go on. */
+  name: string;
   from: number;
   over: number;
+}
+
+/** What the drag follows besides the pointer. */
+export interface ReorderInputs {
+  /** Order shown in the list. */
+  order: readonly string[];
+  /** A write is in flight: the handles are inert and no drag may go on. */
+  busy: boolean;
+  /** Called once with the dragged and target indexes when the drag ends on a new row. */
+  onDrop: (from: number, to: number) => void;
 }
 
 /** Handlers and state the list and its handles bind to. */
@@ -76,38 +89,44 @@ const useDragInterruption = (dragging: boolean, cancel: () => void): void => {
 /**
  * Start a drag of row `index` with the primary button, capturing the pointer on the handle.
  * @param index row of the handle
+ * @param name exact name of that row
  * @param setDrag drag setter
  * @returns the pointerdown handler
  */
 const startDragAt =
-  (index: number, setDrag: SetDrag) => (event: PointerEvent<HTMLElement>) => {
+  (index: number, name: string, setDrag: SetDrag) =>
+  (event: PointerEvent<HTMLElement>) => {
     if (event.button !== 0) return;
     event.preventDefault();
     event.currentTarget.setPointerCapture?.(event.pointerId);
-    setDrag({ pointerId: event.pointerId, from: index, over: index });
+    setDrag({ pointerId: event.pointerId, name, from: index, over: index });
   };
+
+/** What the handles of every row share. */
+interface HandleContext {
+  /** Drag in progress that is still valid, or null. */
+  drag: DragState | null;
+  setDrag: SetDrag;
+  /** Drop index under a vertical pointer position. */
+  locate: (pointerY: number) => number;
+  inputs: ReorderInputs;
+}
 
 /**
  * Pointer handlers of the handle of row `index`.
  * @param index row of the handle
- * @param drag drag in progress, or null
- * @param setDrag drag setter
- * @param locate drop index under a vertical pointer position
- * @param onDrop called with the dragged and target indexes when the drag ends on a new row
+ * @param context drag, setter, locator and inputs
  * @returns the handle's pointer props
  */
 const handlePropsFor = (
   index: number,
-  drag: DragState | null,
-  setDrag: SetDrag,
-  locate: (pointerY: number) => number,
-  onDrop: (from: number, to: number) => void,
+  { drag, setDrag, locate, inputs }: HandleContext,
 ): HandleProps => {
   // Only the pointer that started the drag moves or drops it.
   const ownDrag = (event: PointerEvent<HTMLElement>) =>
     drag !== null && drag.pointerId === event.pointerId ? drag : null;
   return {
-    onPointerDown: startDragAt(index, setDrag),
+    onPointerDown: startDragAt(index, inputs.order[index], setDrag),
     onPointerMove: (event) => {
       const current = ownDrag(event);
       if (current === null) return;
@@ -117,7 +136,9 @@ const handlePropsFor = (
     onPointerUp: (event) => {
       const current = ownDrag(event);
       if (current === null) return;
-      if (current.over !== current.from) onDrop(current.from, current.over);
+      if (current.over !== current.from) {
+        inputs.onDrop(current.from, current.over);
+      }
       setDrag(null);
     },
     onPointerCancel: () => setDrag(null),
@@ -127,16 +148,38 @@ const handlePropsFor = (
 };
 
 /**
+ * The drag in progress, or null once it no longer applies: a write started (the handles are
+ * inert, so neither pointerup nor lostpointercapture would reach it), or the dragged row is no
+ * longer at its place (removed or moved by a change saved elsewhere; a removed handle never
+ * reports its lost capture). A stale drag is also cleared, so it never comes back.
+ * @param drag drag state
+ * @param setDrag drag setter
+ * @param inputs current order and write state
+ * @returns the valid drag, or null
+ */
+const useValidDrag = (
+  drag: DragState | null,
+  setDrag: SetDrag,
+  inputs: ReorderInputs,
+): DragState | null => {
+  const stale =
+    drag !== null && (inputs.busy || inputs.order[drag.from] !== drag.name);
+  useEffect(() => {
+    if (stale) setDrag(null);
+  }, [stale, setDrag]);
+  return stale ? null : drag;
+};
+
+/**
  * Track a pointer drag over the rows and report the drop.
  * Side effects: captures the pointer on the handle; while dragging, listens for Escape, window
  * blur and page visibility to cancel an interrupted drag.
- * @param onDrop called once with the dragged and target indexes when the drag ends on a new row
+ * @param inputs order shown, write state and drop callback
  * @returns the drag state and the props for rows and handles
  */
-export const usePointerReorder = (
-  onDrop: (from: number, to: number) => void,
-): PointerReorder => {
-  const [drag, setDrag] = useState<DragState | null>(null);
+export const usePointerReorder = (inputs: ReorderInputs): PointerReorder => {
+  const [state, setDrag] = useState<DragState | null>(null);
+  const drag = useValidDrag(state, setDrag, inputs);
   const rows = useRef<Array<HTMLElement | null>>([]);
   const cancel = useCallback(() => setDrag(null), []);
   useDragInterruption(drag !== null, cancel);
@@ -154,6 +197,6 @@ export const usePointerReorder = (
       pointerY,
     );
   const handleProps = (index: number) =>
-    handlePropsFor(index, drag, setDrag, locate, onDrop);
+    handlePropsFor(index, { drag, setDrag, locate, inputs });
   return { drag, rowRef, handleProps };
 };

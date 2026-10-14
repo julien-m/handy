@@ -27,13 +27,18 @@ import {
   moveChoice,
   rebaseDraft,
   removeChoice,
+  sameOrder,
   saveErrorMessage,
   shownOrder,
   startSave,
   type PriorityDraft,
   type SavedPriority,
 } from "./draft-state";
-import { useEditorFocus, type EditorFocus } from "./editor-focus";
+import {
+  useEditorFocus,
+  useFocusWhenBarCloses,
+  type EditorFocus,
+} from "./editor-focus";
 
 /** Draft edits; each one changes only the draft. */
 export interface DraftEdits {
@@ -59,6 +64,8 @@ export interface PriorityEditor extends DraftEdits, DraftView {
   draft: PriorityDraft;
   /** Names of the enumerated devices, or null before a successful listing. */
   enumerated: readonly string[] | null;
+  /** The last device listing failed (Add has nothing to offer until a Refresh succeeds). */
+  listingFailed: boolean;
   status: MicrophoneStatusHandle;
   /** Focus requests (SC-003) and the element that holds their targets. */
   focus: EditorFocus;
@@ -142,6 +149,8 @@ const useDraftEdits = (
 /** Store, status, notification and focus actions a write needs afterwards. */
 export interface WriteEffects {
   refreshSettings: () => Promise<void>;
+  /** Committed order in the settings store (after a reread), or null before the settings load. */
+  committedOrder: () => readonly string[] | null;
   refreshStatus: () => Promise<void>;
   notify: (key: string, kind: "success" | "error") => void;
   /** Move focus to the section title once the Unsaved changes bar is gone. */
@@ -149,34 +158,55 @@ export interface WriteEffects {
 }
 
 /**
- * Apply the outcome of a write. Success rereads the committed order before dropping the draft
- * (no flash of the old order) and marks the editor saved. A value stored with a failed live effect
- * is no longer a draft, so it is reported in a toast. Either way the bar that held focus is gone,
- * so focus moves to the section title. Other refusals keep the draft and the focused Save (now
- * Retry); a conflict or an unknown outcome rereads the settings so the base revision is current.
+ * Close the draft of a committed write, once the committed order is reread: the editor is marked
+ * saved (or, for a value stored with a failed live effect, the failure is reported in a toast).
+ * The bar that held focus is gone, so focus moves to the section title.
+ * @param error null for a confirmed write, else the refusal of a value that was still stored
+ * @param setDraft draft setter
+ * @param effects store and status actions
+ */
+const closeCommitted = (
+  error: SettingsCommandError | null,
+  setDraft: SetDraft,
+  effects: WriteEffects,
+): void => {
+  setDraft(error === null ? SAVED_DRAFT : EMPTY_DRAFT);
+  effects.focusStable();
+  if (error === null) effects.notify(SAVED_KEY, "success");
+  else effects.notify(saveErrorMessage(error).key, "error");
+  void effects.refreshStatus();
+};
+
+/**
+ * Apply the outcome of a write. Success rereads the committed order before dropping the draft (no
+ * flash of the old order). An unknown outcome rereads first: if the sent order is now committed,
+ * the write did happen and is confirmed like a success; otherwise it is a refusal. Refusals keep
+ * the draft and the focused Save (now Retry); a conflict rereads so the base revision is current.
  * @param outcome result of the write
+ * @param sent complete order the write sent
  * @param setDraft draft setter
  * @param effects store and status actions
  */
 export const settleWrite = async (
   outcome: WriteOutcome,
+  sent: readonly string[],
   setDraft: SetDraft,
   effects: WriteEffects,
 ): Promise<void> => {
-  if (outcome.ok || outcome.error?.outcome === "committed") {
+  const error = outcome.ok ? null : outcome.error;
+  if (outcome.ok || error?.outcome === "committed") {
     await effects.refreshSettings();
-    setDraft(outcome.ok ? SAVED_DRAFT : EMPTY_DRAFT);
-    effects.focusStable();
-    if (outcome.ok) effects.notify(SAVED_KEY, "success");
-    else effects.notify(saveErrorMessage(outcome.error).key, "error");
-    void effects.refreshStatus();
-    return;
+    return closeCommitted(error, setDraft, effects);
   }
-  const { error } = outcome;
+  if (error?.outcome === "unknown") {
+    await effects.refreshSettings();
+    const committed = effects.committedOrder();
+    if (committed !== null && sameOrder(committed, sent)) {
+      return closeCommitted(null, setDraft, effects);
+    }
+  }
   setDraft((draft) => failSave(draft, error));
-  if (error?.code === "revision_conflict" || error?.outcome === "unknown") {
-    await effects.refreshSettings();
-  }
+  if (error?.code === "revision_conflict") await effects.refreshSettings();
 };
 
 /**
@@ -199,11 +229,9 @@ const useSave = (
     if (inFlight.current || !canSave(draft, saved)) return;
     inFlight.current = true;
     setDraft(startSave);
-    const outcome = await writePriority(
-      draft.order ?? [],
-      baseRevision(draft, saved),
-    );
-    await settleWrite(outcome, setDraft, effects);
+    const sent = draft.order ?? [];
+    const outcome = await writePriority(sent, baseRevision(draft, saved));
+    await settleWrite(outcome, sent, setDraft, effects);
     inFlight.current = false;
   }, [draft, saved, setDraft, effects]);
 };
@@ -225,6 +253,8 @@ const useWriteEffects = (
   return useMemo(
     () => ({
       refreshSettings,
+      committedOrder: () =>
+        useSettingsStore.getState().settings?.microphone_priority ?? null,
       refreshStatus: refresh,
       notify: (key, kind) =>
         kind === "success" ? toast.success(t(key)) : toast.error(t(key)),
@@ -261,12 +291,22 @@ const useRefreshActions = (
 
 /**
  * Enumerated device names from the store, null while unknown (not listed yet, or listing failed).
- * @returns the names the Add control offers and draft-only choices are classified against
+ * @returns the names the Add control offers and draft-only choices are classified against, and
+ *   whether the last listing failed
  */
-const useEnumerated = (): readonly string[] | null => {
+const useEnumerated = (): Pick<
+  PriorityEditor,
+  "enumerated" | "listingFailed"
+> => {
   const devices = useSettingsStore((state) => state.audioDevices);
   const failed = useSettingsStore((state) => state.audioDevicesFailed);
-  return useMemo(() => enumeratedNames(devices, failed), [devices, failed]);
+  return useMemo(
+    () => ({
+      enumerated: enumeratedNames(devices, failed),
+      listingFailed: failed,
+    }),
+    [devices, failed],
+  );
 };
 
 /**
@@ -289,7 +329,8 @@ const draftView = (
 /**
  * Microphone priority editor state for the audio settings.
  * Side effects: reads the microphone status every 5 s while mounted and visible (see
- * useMicrophoneStatus) and moves focus after actions that remove the focused control.
+ * useMicrophoneStatus) and moves focus after actions that remove the focused control, or when the
+ * Unsaved changes bar closes on its own.
  * @returns the editor state and actions
  */
 export const usePriorityEditor = (): PriorityEditor => {
@@ -300,14 +341,16 @@ export const usePriorityEditor = (): PriorityEditor => {
   const [draft, setDraft] = useState<PriorityDraft>(EMPTY_DRAFT);
   useEffect(() => setDraft((current) => rebaseDraft(current, saved)), [saved]);
   const effects = useWriteEffects(status, focus);
+  const view = draftView(draft, saved, loading);
+  useFocusWhenBarCloses(view.dirty, focus.request);
   return {
     ...useDraftEdits(saved, setDraft, focus),
     ...useRefreshActions(status, effects, setDraft),
-    ...draftView(draft, saved, loading),
+    ...view,
+    ...useEnumerated(),
     loading,
     saved,
     draft,
-    enumerated: useEnumerated(),
     status,
     focus,
     save: useSave(draft, saved, setDraft, effects),
