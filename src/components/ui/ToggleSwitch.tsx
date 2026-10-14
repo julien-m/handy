@@ -11,6 +11,8 @@ interface ToggleSwitchProps {
   descriptionMode?: "inline" | "tooltip";
   grouped?: boolean;
   tooltipPosition?: "top" | "bottom";
+  /** Test identifier of the row; the switch gets `<testId>-toggle`. */
+  testId?: string;
 }
 
 interface SwitchControlProps {
@@ -61,6 +63,7 @@ export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
   descriptionMode = "tooltip",
   grouped = false,
   tooltipPosition = "top",
+  testId,
 }) => {
   return (
     <SettingContainer
@@ -70,11 +73,14 @@ export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
       grouped={grouped}
       disabled={disabled}
       tooltipPosition={tooltipPosition}
+      testId={testId}
     >
       <SwitchControl
         checked={checked}
         onChange={onChange}
         disabled={disabled || isUpdating}
+        ariaLabel={label}
+        testId={testId ? `${testId}-toggle` : undefined}
       />
       {isUpdating && (
         <div className="absolute inset-0 flex items-center justify-center">

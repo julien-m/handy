@@ -605,26 +605,128 @@
           "refreshModels": "重新整理模型"
         }
       },
-      "prompts": {
-        "title": "提示詞",
-        "selectedPrompt": {
-          "title": "已選提示詞",
-          "description": "選擇用於最佳化轉錄的範本或建立新範本。在提示詞文字中使用 ${output} 來引用轉錄結果"
+      "promptLibrary": {
+        "processing": {
+          "title": "AI 後處理",
+          "enabledDescription": "使用提示詞處理聽寫內容。關閉：不處理任何聽寫。",
+          "defaultTitle": "預設提示詞",
+          "defaultDescription": "由 AI 聽寫快速鍵使用。一般聽寫以「無」開始。",
+          "none": "無",
+          "invalidOption": "無效：請先編輯再使用"
         },
-        "noPrompts": "沒有可用的提示詞",
-        "selectPrompt": "選擇提示詞",
-        "createNew": "建立新提示詞",
-        "promptLabel": "提示詞名稱",
-        "promptLabelPlaceholder": "輸入提示詞名稱",
-        "promptInstructions": "提示詞指令",
-        "promptInstructionsPlaceholder": "撰寫轉錄後要執行的指令。範例：改善以下文字的語法和清晰度: ${output}",
-        "promptTip": "提示：使用 <code>${output}</code> 將轉錄文字插入到您的提示詞中",
-        "updatePrompt": "更新提示詞",
-        "deletePrompt": "刪除提示詞",
-        "createPrompt": "建立提示詞",
-        "cancel": "取消",
-        "selectToEdit": "選擇上方的提示詞以檢視和編輯其詳細資訊",
-        "createFirst": "點選上方的「建立新提示詞」來建立您的第一個後處理提示詞"
+        "list": {
+          "title": "提示詞",
+          "count": "{{count}} / {{limit}} 個提示詞",
+          "full": "{{limit}} / {{limit}} 個提示詞：刪除一個才能新增其他提示詞",
+          "new": "新增提示詞",
+          "empty": "尚無提示詞。建立一個來處理你的聽寫。",
+          "loading": "正在載入提示詞…",
+          "loadFailed": "無法載入提示詞。",
+          "retry": "重試",
+          "edit": "編輯 {{name}}",
+          "defaultProvider": "預設供應商",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "無快速鍵",
+          "notReady": "尚未就緒：{{reason}}",
+          "invalid": "無效：{{reason}}",
+          "reloadFailed": "無法重新整理提示詞。顯示的內容可能已過時。"
+        },
+        "issues": {
+          "name_empty": "缺少名稱",
+          "name_too_long": "名稱過長",
+          "name_duplicate": "名稱重複",
+          "text_empty": "缺少文字",
+          "text_too_long": "文字過長",
+          "override_incomplete": "缺少供應商或模型",
+          "unknown_provider": "未知的供應商"
+        },
+        "reasons": {
+          "provider_error": "供應商傳回了錯誤",
+          "empty_result": "供應商傳回了空白結果",
+          "timeout": "30 秒內沒有回應",
+          "provider_busy": "供應商仍在處理另一個請求",
+          "missing_endpoint": "缺少端點",
+          "missing_model": "缺少模型",
+          "missing_api_key": "缺少 API 金鑰",
+          "provider_unavailable": "此裝置無法使用該供應商",
+          "unknown_provider": "未知的供應商",
+          "invalid_prompt": "提示詞無效",
+          "prompt_missing": "提示詞已不存在"
+        },
+        "editor": {
+          "editTitle": "編輯提示詞",
+          "newTitle": "新增提示詞",
+          "name": "名稱",
+          "namePlaceholder": "提示詞名稱",
+          "text": "提示詞",
+          "textPlaceholder": "寫下要套用於轉錄文字的指示。範例：將轉錄文字精簡為重點。${output}",
+          "textHint": "<code>${output}</code> 會被替換為轉錄文字。",
+          "fieldErrors": {
+            "name_empty": "請輸入名稱（1–60 個字元）。",
+            "name_too_long": "最多使用 60 個字元。",
+            "name_duplicate": "已有提示詞使用此名稱。名稱必須是唯一的。",
+            "text_empty": "請輸入提示詞文字。",
+            "text_too_long": "最多使用 8,000 個字元。"
+          },
+          "provider": "供應商",
+          "defaultProviderOption": "預設供應商（{{provider}}）",
+          "model": "模型",
+          "modelPlaceholder": "輸入模型名稱",
+          "readyEndpoint": "端點 {{endpoint}} · 已就緒",
+          "readyProvider": "{{provider}} · {{model}} · 已就緒",
+          "notReadyTitle": "{{provider}} 尚未就緒：{{reason}}",
+          "notReadyBody": "使用此提示詞的聽寫會略過 AI 步驟並保留原始文字。",
+          "fix": {
+            "api_key": "新增 API 金鑰",
+            "endpoint": "設定端點"
+          },
+          "shortcuts": "快速鍵（最多 {{limit}} 個）",
+          "changedElsewhere": "此提示詞已在其他地方被修改。重新載入可查看變更，儲存則保留你的版本。",
+          "reload": "重新載入",
+          "deletedElsewhere": "此提示詞已在其他地方被刪除，無法再儲存。",
+          "shortcutsSavedImmediately": "快捷鍵變更會立即儲存。",
+          "fixField": {
+            "api_key": "{{provider}} 的 API 金鑰",
+            "endpoint": "{{provider}} 的端點",
+            "hint": "離開欄位時儲存。預設提供者不會改變。"
+          }
+        },
+        "actions": {
+          "note": "儲存後，變更會套用到下一次聽寫。",
+          "fixFields": "請修正標示的欄位後再儲存。",
+          "delete": "刪除提示詞",
+          "cancel": "取消",
+          "save": "儲存",
+          "saving": "正在儲存…",
+          "saved": "提示詞已儲存。"
+        },
+        "deleteDialog": {
+          "title": "要刪除「{{name}}」嗎？",
+          "shortcuts": "它的快速鍵將被移除：{{shortcuts}}。",
+          "default": "這是預設提示詞：預設值會變成「無」。",
+          "body": "此動作無法復原。",
+          "cancel": "取消",
+          "confirm": "刪除",
+          "close": "關閉",
+          "deleted": "已刪除提示詞「{{name}}」。",
+          "deletedWithShortcuts": "已刪除提示詞「{{name}}」。已移除的快速鍵：{{shortcuts}}。"
+        },
+        "test": {
+          "title": "測試",
+          "sampleLabel": "範例文字",
+          "samplePlaceholder": "輸入或貼上一段範例轉錄文字",
+          "run": "執行測試",
+          "running": "正在測試…",
+          "note": "不會插入任何內容，歷史記錄也不會改變。",
+          "meta": "{{model}} · {{provider}} · {{seconds}} 秒",
+          "failedTitle": "測試失敗：{{reason}}",
+          "failedHint": "請檢查供應商設定，然後再次執行測試。",
+          "retry": "再次執行",
+          "busy": "另一個測試仍在執行中。請在它結束後再試一次。",
+          "skipped": "請輸入範例文字來測試提示詞。",
+          "outdated": "此結果對應提示詞或範例的舊版本。請重新執行測試。"
+        },
+        "shortcutOwner": "提示詞「{{name}}」"
       }
     },
     "history": {

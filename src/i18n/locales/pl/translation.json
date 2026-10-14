@@ -605,26 +605,128 @@
           "refreshModels": "Odśwież modele"
         }
       },
-      "prompts": {
-        "title": "Prompt",
-        "selectedPrompt": {
-          "title": "Wybrany prompt",
-          "description": "Wybierz szablon do ulepszania transkrypcji lub utwórz nowy. Użyj ${output} w treści, aby odwołać się do przechwyconej transkrypcji."
+      "promptLibrary": {
+        "processing": {
+          "title": "Przetwarzanie końcowe AI",
+          "enabledDescription": "Przetwarzaj dyktowanie za pomocą promptu. Wyłączone: żadne dyktowanie nie jest przetwarzane.",
+          "defaultTitle": "Domyślny prompt",
+          "defaultDescription": "Używany przez skrót dyktowania z AI. Zwykłe dyktowanie zaczyna się od opcji Brak.",
+          "none": "Brak",
+          "invalidOption": "Nieprawidłowy: edytuj go przed użyciem"
         },
-        "noPrompts": "Brak dostępnych promptów",
-        "selectPrompt": "Wybierz prompt",
-        "createNew": "Utwórz nowy prompt",
-        "promptLabel": "Etykieta promptu",
-        "promptLabelPlaceholder": "Wpisz nazwę promptu",
-        "promptInstructions": "Instrukcje promptu",
-        "promptInstructionsPlaceholder": "Wpisz instrukcje do wykonania po transkrypcji. Przykład: Popraw gramatykę i jasność dla następującego tekstu: ${output}",
-        "promptTip": "Wskazówka: użyj <code>${output}</code>, aby wstawić transkrybowany tekst do promptu.",
-        "updatePrompt": "Zaktualizuj prompt",
-        "deletePrompt": "Usuń prompt",
-        "createPrompt": "Utwórz prompt",
-        "cancel": "Anuluj",
-        "selectToEdit": "Wybierz prompt powyżej, aby zobaczyć i edytować jego szczegóły.",
-        "createFirst": "Kliknij 'Utwórz nowy prompt' powyżej, aby utworzyć pierwszy prompt postprocessingu."
+        "list": {
+          "title": "Prompty",
+          "count": "{{count}} z {{limit}} promptów",
+          "full": "{{limit}} z {{limit}} promptów: usuń jeden, aby dodać kolejny",
+          "new": "Nowy prompt",
+          "empty": "Brak promptów. Utwórz prompt, aby przetwarzać dyktowanie.",
+          "loading": "Wczytywanie promptów…",
+          "loadFailed": "Nie udało się wczytać promptów.",
+          "retry": "Spróbuj ponownie",
+          "edit": "Edytuj {{name}}",
+          "defaultProvider": "Domyślny dostawca",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Brak skrótu",
+          "notReady": "Niegotowy: {{reason}}",
+          "invalid": "Nieprawidłowy: {{reason}}",
+          "reloadFailed": "Nie udało się odświeżyć promptów. Wyświetlane dane mogą być nieaktualne."
+        },
+        "issues": {
+          "name_empty": "brak nazwy",
+          "name_too_long": "za długa nazwa",
+          "name_duplicate": "powtórzona nazwa",
+          "text_empty": "brak tekstu",
+          "text_too_long": "za długi tekst",
+          "override_incomplete": "brak dostawcy lub modelu",
+          "unknown_provider": "nieznany dostawca"
+        },
+        "reasons": {
+          "provider_error": "dostawca zwrócił błąd",
+          "empty_result": "dostawca zwrócił pusty wynik",
+          "timeout": "brak odpowiedzi w ciągu 30 sekund",
+          "provider_busy": "dostawca wciąż obsługuje inne żądanie",
+          "missing_endpoint": "brak punktu końcowego",
+          "missing_model": "brak modelu",
+          "missing_api_key": "brak klucza API",
+          "provider_unavailable": "dostawca niedostępny na tym urządzeniu",
+          "unknown_provider": "nieznany dostawca",
+          "invalid_prompt": "prompt jest nieprawidłowy",
+          "prompt_missing": "prompt już nie istnieje"
+        },
+        "editor": {
+          "editTitle": "Edytuj prompt",
+          "newTitle": "Nowy prompt",
+          "name": "Nazwa",
+          "namePlaceholder": "Nazwa promptu",
+          "text": "Prompt",
+          "textPlaceholder": "Wpisz instrukcje do zastosowania na transkrypcji. Przykład: Skróć transkrypcję do najważniejszych informacji. ${output}",
+          "textHint": "<code>${output}</code> zostaje zastąpione transkrypcją.",
+          "fieldErrors": {
+            "name_empty": "Wpisz nazwę (od 1 do 60 znaków).",
+            "name_too_long": "Użyj najwyżej 60 znaków.",
+            "name_duplicate": "Inny prompt ma tę nazwę. Nazwy muszą być unikalne.",
+            "text_empty": "Wpisz tekst promptu.",
+            "text_too_long": "Użyj najwyżej 8000 znaków."
+          },
+          "provider": "Dostawca",
+          "defaultProviderOption": "Domyślny dostawca ({{provider}})",
+          "model": "Model",
+          "modelPlaceholder": "Wpisz nazwę modelu",
+          "readyEndpoint": "Punkt końcowy {{endpoint}} · Gotowy",
+          "readyProvider": "{{provider}} · {{model}} · Gotowy",
+          "notReadyTitle": "{{provider}} nie jest gotowy: {{reason}}",
+          "notReadyBody": "Dyktowanie z tym promptem pomija krok AI i zachowuje oryginalny tekst.",
+          "fix": {
+            "api_key": "Dodaj klucz API",
+            "endpoint": "Ustaw punkt końcowy"
+          },
+          "shortcuts": "Skróty (do {{limit}})",
+          "changedElsewhere": "Ten prompt został zmieniony w innym miejscu. Wczytaj go ponownie, aby zobaczyć zmianę, lub zapisz, aby zachować swoją wersję.",
+          "reload": "Wczytaj ponownie",
+          "deletedElsewhere": "Ten prompt został usunięty w innym miejscu i nie można go już zapisać.",
+          "shortcutsSavedImmediately": "Zmiany skrótów są zapisywane natychmiast.",
+          "fixField": {
+            "api_key": "Klucz API dla {{provider}}",
+            "endpoint": "Punkt końcowy {{provider}}",
+            "hint": "Zapisywane po opuszczeniu pola. Domyślny dostawca się nie zmienia."
+          }
+        },
+        "actions": {
+          "note": "Zmiany obowiązują od następnego dyktowania po zapisaniu.",
+          "fixFields": "Popraw zaznaczone pola, aby zapisać.",
+          "delete": "Usuń prompt",
+          "cancel": "Anuluj",
+          "save": "Zapisz",
+          "saving": "Zapisywanie…",
+          "saved": "Prompt zapisany."
+        },
+        "deleteDialog": {
+          "title": "Usunąć „{{name}}”?",
+          "shortcuts": "Jego skróty zostaną usunięte: {{shortcuts}}.",
+          "default": "To domyślny prompt: domyślną opcją stanie się Brak.",
+          "body": "Tej operacji nie można cofnąć.",
+          "cancel": "Anuluj",
+          "confirm": "Usuń",
+          "close": "Zamknij",
+          "deleted": "Usunięto prompt „{{name}}”.",
+          "deletedWithShortcuts": "Usunięto prompt „{{name}}”. Usunięte skróty: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Test",
+          "sampleLabel": "Przykładowy tekst",
+          "samplePlaceholder": "Wpisz lub wklej przykładową transkrypcję",
+          "run": "Uruchom test",
+          "running": "Testowanie…",
+          "note": "Nic nie zostanie wstawione, a historia się nie zmieni.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} s",
+          "failedTitle": "Test nie powiódł się: {{reason}}",
+          "failedHint": "Sprawdź ustawienia dostawcy, a następnie uruchom test ponownie.",
+          "retry": "Uruchom ponownie",
+          "busy": "Inny test wciąż trwa. Spróbuj ponownie po jego zakończeniu.",
+          "skipped": "Wpisz przykładowy tekst, aby przetestować prompt.",
+          "outdated": "Ten wynik dotyczy wcześniejszej wersji promptu lub próbki. Uruchom test ponownie."
+        },
+        "shortcutOwner": "prompt „{{name}}”"
       }
     },
     "history": {

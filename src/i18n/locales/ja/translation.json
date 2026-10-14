@@ -605,26 +605,128 @@
           "refreshModels": "モデルを更新"
         }
       },
-      "prompts": {
-        "title": "プロンプト",
-        "selectedPrompt": {
-          "title": "選択したプロンプト",
-          "description": "文字起こしを改善するテンプレートを選択するか、新しく作成します。プロンプトテキスト内で ${output} を使用して、キャプチャした文字起こしを参照します。"
+      "promptLibrary": {
+        "processing": {
+          "title": "AI 後処理",
+          "enabledDescription": "プロンプトで音声入力を処理します。オフ: どの音声入力も処理されません。",
+          "defaultTitle": "既定のプロンプト",
+          "defaultDescription": "AI 音声入力のショートカットで使われます。通常の音声入力は「なし」で始まります。",
+          "none": "なし",
+          "invalidOption": "無効: 使用する前に編集してください"
         },
-        "noPrompts": "プロンプトがありません",
-        "selectPrompt": "プロンプトを選択",
-        "createNew": "新しいプロンプトを作成",
-        "promptLabel": "プロンプト名",
-        "promptLabelPlaceholder": "プロンプト名を入力",
-        "promptInstructions": "プロンプトの指示",
-        "promptInstructionsPlaceholder": "文字起こし後に実行する指示を記述します。例: 以下のテキストの文法と明瞭さを改善してください: ${output}",
-        "promptTip": "ヒント: <code>${output}</code> を使用して、文字起こしテキストをプロンプトに挿入します。",
-        "updatePrompt": "プロンプトを更新",
-        "deletePrompt": "プロンプトを削除",
-        "createPrompt": "プロンプトを作成",
-        "cancel": "キャンセル",
-        "selectToEdit": "上からプロンプトを選択して、詳細を表示・編集します。",
-        "createFirst": "上の「新しいプロンプトを作成」をクリックして、最初の後処理プロンプトを作成してください。"
+        "list": {
+          "title": "プロンプト",
+          "count": "{{count}} / {{limit}} 件のプロンプト",
+          "full": "{{limit}} / {{limit}} 件: 追加するには 1 件削除してください",
+          "new": "新しいプロンプト",
+          "empty": "プロンプトはまだありません。音声入力を処理するには作成してください。",
+          "loading": "プロンプトを読み込み中…",
+          "loadFailed": "プロンプトを読み込めませんでした。",
+          "retry": "再試行",
+          "edit": "{{name}} を編集",
+          "defaultProvider": "既定のプロバイダー",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "ショートカットなし",
+          "notReady": "準備未完了: {{reason}}",
+          "invalid": "無効: {{reason}}",
+          "reloadFailed": "プロンプトを更新できませんでした。表示が古い可能性があります。"
+        },
+        "issues": {
+          "name_empty": "名前がありません",
+          "name_too_long": "名前が長すぎます",
+          "name_duplicate": "名前が重複しています",
+          "text_empty": "本文がありません",
+          "text_too_long": "本文が長すぎます",
+          "override_incomplete": "プロバイダーまたはモデルがありません",
+          "unknown_provider": "不明なプロバイダー"
+        },
+        "reasons": {
+          "provider_error": "プロバイダーがエラーを返しました",
+          "empty_result": "プロバイダーが空の結果を返しました",
+          "timeout": "30 秒以内に応答がありません",
+          "provider_busy": "プロバイダーは別のリクエストを処理中です",
+          "missing_endpoint": "エンドポイントがありません",
+          "missing_model": "モデルがありません",
+          "missing_api_key": "API キーがありません",
+          "provider_unavailable": "このデバイスではプロバイダーを利用できません",
+          "unknown_provider": "不明なプロバイダー",
+          "invalid_prompt": "プロンプトが無効です",
+          "prompt_missing": "プロンプトはもう存在しません"
+        },
+        "editor": {
+          "editTitle": "プロンプトを編集",
+          "newTitle": "新しいプロンプト",
+          "name": "名前",
+          "namePlaceholder": "プロンプト名",
+          "text": "プロンプト",
+          "textPlaceholder": "文字起こしに適用する指示を書いてください。例: 文字起こしを要点だけに短くしてください。${output}",
+          "textHint": "<code>${output}</code> は文字起こしに置き換えられます。",
+          "fieldErrors": {
+            "name_empty": "名前を入力してください (1〜60 文字)。",
+            "name_too_long": "60 文字以内にしてください。",
+            "name_duplicate": "同じ名前のプロンプトがあります。名前は一意にしてください。",
+            "text_empty": "プロンプトの本文を入力してください。",
+            "text_too_long": "8,000 文字以内にしてください。"
+          },
+          "provider": "プロバイダー",
+          "defaultProviderOption": "既定のプロバイダー ({{provider}})",
+          "model": "モデル",
+          "modelPlaceholder": "モデル名を入力",
+          "readyEndpoint": "エンドポイント {{endpoint}} · 準備完了",
+          "readyProvider": "{{provider}} · {{model}} · 準備完了",
+          "notReadyTitle": "{{provider}} は準備ができていません: {{reason}}",
+          "notReadyBody": "このプロンプトでの音声入力は AI の処理を省略し、元のテキストを保持します。",
+          "fix": {
+            "api_key": "API キーを追加",
+            "endpoint": "エンドポイントを設定"
+          },
+          "shortcuts": "ショートカット (最大 {{limit}} 件)",
+          "changedElsewhere": "このプロンプトは別の場所で変更されました。変更を見るには再読み込みし、自分の版を残すには保存してください。",
+          "reload": "再読み込み",
+          "deletedElsewhere": "このプロンプトは別の場所で削除されたため、保存できません。",
+          "shortcutsSavedImmediately": "ショートカットの変更はすぐに保存されます。",
+          "fixField": {
+            "api_key": "{{provider}} の API キー",
+            "endpoint": "{{provider}} のエンドポイント",
+            "hint": "フィールドを離れると保存されます。デフォルトのプロバイダーは変わりません。"
+          }
+        },
+        "actions": {
+          "note": "変更は保存後の次の音声入力から適用されます。",
+          "fixFields": "保存するには、強調表示された項目を修正してください。",
+          "delete": "プロンプトを削除",
+          "cancel": "キャンセル",
+          "save": "保存",
+          "saving": "保存中…",
+          "saved": "プロンプトを保存しました。"
+        },
+        "deleteDialog": {
+          "title": "「{{name}}」を削除しますか?",
+          "shortcuts": "このプロンプトのショートカットは削除されます: {{shortcuts}}。",
+          "default": "既定のプロンプトです。既定は「なし」になります。",
+          "body": "この操作は元に戻せません。",
+          "cancel": "キャンセル",
+          "confirm": "削除",
+          "close": "閉じる",
+          "deleted": "プロンプト「{{name}}」を削除しました。",
+          "deletedWithShortcuts": "プロンプト「{{name}}」を削除しました。削除したショートカット: {{shortcuts}}。"
+        },
+        "test": {
+          "title": "テスト",
+          "sampleLabel": "サンプルテキスト",
+          "samplePlaceholder": "サンプルの文字起こしを入力または貼り付け",
+          "run": "テストを実行",
+          "running": "テスト中…",
+          "note": "何も挿入されず、履歴も変更されません。",
+          "meta": "{{model}} · {{provider}} · {{seconds}} 秒",
+          "failedTitle": "テストに失敗しました: {{reason}}",
+          "failedHint": "プロバイダーの設定を確認してから、もう一度テストしてください。",
+          "retry": "もう一度実行",
+          "busy": "別のテストを実行中です。終了してからもう一度お試しください。",
+          "skipped": "プロンプトをテストするにはサンプルテキストを入力してください。",
+          "outdated": "この結果は以前のプロンプトまたはサンプルのものです。もう一度テストしてください。"
+        },
+        "shortcutOwner": "プロンプト「{{name}}」"
       }
     },
     "history": {

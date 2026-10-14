@@ -66,7 +66,8 @@ export const Alert: React.FC<AlertProps> = ({
 }) => {
   const styles = variantStyles[variant];
   const Icon = variantIcons[variant];
-  const isTitled = title !== undefined || action !== undefined;
+  const hasAction = action !== undefined && action !== null && action !== false;
+  const isTitled = title !== undefined || hasAction;
 
   return (
     <div
@@ -90,7 +91,7 @@ export const Alert: React.FC<AlertProps> = ({
       ) : (
         <p className={`text-sm ${styles.text}`}>{children}</p>
       )}
-      {action !== undefined && <div className="shrink-0">{action}</div>}
+      {hasAction && <div className="shrink-0">{action}</div>}
     </div>
   );
 };

@@ -605,26 +605,128 @@
           "refreshModels": "Opdater modeller"
         }
       },
-      "prompts": {
-        "title": "Prompt",
-        "selectedPrompt": {
-          "title": "Valgt prompt",
-          "description": "Vælg en skabelon til at forfine transskriptioner, eller opret en ny. Brug ${output} i promptteksten for at referere til den fangede transskription."
+      "promptLibrary": {
+        "processing": {
+          "title": "AI-efterbehandling",
+          "enabledDescription": "Behandl dikteringer med en prompt. Fra: ingen diktering behandles.",
+          "defaultTitle": "Standardprompt",
+          "defaultDescription": "Bruges af genvejen til AI-diktering. Almindelig diktering starter med Ingen.",
+          "none": "Ingen",
+          "invalidOption": "Ugyldig: rediger den, før du bruger den"
         },
-        "noPrompts": "Ingen prompts tilgængelige",
-        "selectPrompt": "Vælg en prompt",
-        "createNew": "Opret ny prompt",
-        "promptLabel": "Promptnavn",
-        "promptLabelPlaceholder": "Indtast promptnavn",
-        "promptInstructions": "Promptinstruktioner",
-        "promptInstructionsPlaceholder": "Skriv de instruktioner, der skal køres efter transskription. Eksempel: Forbedr grammatik og klarhed for følgende tekst: ${output}",
-        "promptTip": "Tip: Brug <code>${output}</code> til at indsætte den transskriberede tekst i din prompt.",
-        "updatePrompt": "Opdater prompt",
-        "deletePrompt": "Slet prompt",
-        "createPrompt": "Opret prompt",
-        "cancel": "Annuller",
-        "selectToEdit": "Vælg en prompt ovenfor for at se og redigere dens detaljer.",
-        "createFirst": "Klik på 'Opret ny prompt' ovenfor for at oprette din første efterbehandlingsprompt."
+        "list": {
+          "title": "Prompter",
+          "count": "{{count}} af {{limit}} prompter",
+          "full": "{{limit}} af {{limit}} prompter: slet en for at tilføje en anden",
+          "new": "Ny prompt",
+          "empty": "Ingen prompter endnu. Opret en for at behandle dine dikteringer.",
+          "loading": "Indlæser prompter…",
+          "loadFailed": "Prompterne kunne ikke indlæses.",
+          "retry": "Prøv igen",
+          "edit": "Rediger {{name}}",
+          "defaultProvider": "Standardudbyder",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Ingen genvej",
+          "notReady": "Ikke klar: {{reason}}",
+          "invalid": "Ugyldig: {{reason}}",
+          "reloadFailed": "Prompterne kunne ikke opdateres. Det viste kan være forældet."
+        },
+        "issues": {
+          "name_empty": "navn mangler",
+          "name_too_long": "navnet er for langt",
+          "name_duplicate": "dubleret navn",
+          "text_empty": "tekst mangler",
+          "text_too_long": "teksten er for lang",
+          "override_incomplete": "udbyder eller model mangler",
+          "unknown_provider": "ukendt udbyder"
+        },
+        "reasons": {
+          "provider_error": "udbyderen returnerede en fejl",
+          "empty_result": "udbyderen returnerede et tomt resultat",
+          "timeout": "intet svar inden for 30 sekunder",
+          "provider_busy": "udbyderen er stadig optaget af en anden anmodning",
+          "missing_endpoint": "endpoint mangler",
+          "missing_model": "model mangler",
+          "missing_api_key": "API-nøgle mangler",
+          "provider_unavailable": "udbyderen er ikke tilgængelig på denne enhed",
+          "unknown_provider": "ukendt udbyder",
+          "invalid_prompt": "prompten er ugyldig",
+          "prompt_missing": "prompten findes ikke længere"
+        },
+        "editor": {
+          "editTitle": "Rediger prompt",
+          "newTitle": "Ny prompt",
+          "name": "Navn",
+          "namePlaceholder": "Promptens navn",
+          "text": "Prompt",
+          "textPlaceholder": "Skriv de instruktioner, der skal anvendes på transskriptionen. Eksempel: Forkort transskriptionen til det væsentlige. ${output}",
+          "textHint": "<code>${output}</code> erstattes af transskriptionen.",
+          "fieldErrors": {
+            "name_empty": "Angiv et navn (1–60 tegn).",
+            "name_too_long": "Brug højst 60 tegn.",
+            "name_duplicate": "En anden prompt har dette navn. Navne skal være unikke.",
+            "text_empty": "Angiv promptens tekst.",
+            "text_too_long": "Brug højst 8.000 tegn."
+          },
+          "provider": "Udbyder",
+          "defaultProviderOption": "Standardudbyder ({{provider}})",
+          "model": "Model",
+          "modelPlaceholder": "Skriv et modelnavn",
+          "readyEndpoint": "Endpoint {{endpoint}} · Klar",
+          "readyProvider": "{{provider}} · {{model}} · Klar",
+          "notReadyTitle": "{{provider}} er ikke klar: {{reason}}",
+          "notReadyBody": "Dikteringer med denne prompt springer AI-trinnet over og beholder den oprindelige tekst.",
+          "fix": {
+            "api_key": "Tilføj API-nøgle",
+            "endpoint": "Angiv endpoint"
+          },
+          "shortcuts": "Genveje (op til {{limit}})",
+          "changedElsewhere": "Denne prompt er ændret et andet sted. Genindlæs den for at se ændringen, eller gem for at beholde din version.",
+          "reload": "Genindlæs",
+          "deletedElsewhere": "Denne prompt er slettet et andet sted og kan ikke længere gemmes.",
+          "shortcutsSavedImmediately": "Ændringer af genveje gemmes med det samme.",
+          "fixField": {
+            "api_key": "API-nøgle til {{provider}}",
+            "endpoint": "Endpoint for {{provider}}",
+            "hint": "Gemmes, når du forlader feltet. Standardudbyderen ændres ikke."
+          }
+        },
+        "actions": {
+          "note": "Ændringer gælder for næste diktering, efter du har gemt.",
+          "fixFields": "Ret de markerede felter for at gemme.",
+          "delete": "Slet prompt",
+          "cancel": "Annuller",
+          "save": "Gem",
+          "saving": "Gemmer…",
+          "saved": "Prompten er gemt."
+        },
+        "deleteDialog": {
+          "title": "Slet “{{name}}”?",
+          "shortcuts": "Dens genveje fjernes: {{shortcuts}}.",
+          "default": "Det er standardprompten: standarden bliver Ingen.",
+          "body": "Det kan ikke fortrydes.",
+          "cancel": "Annuller",
+          "confirm": "Slet",
+          "close": "Luk",
+          "deleted": "Prompten “{{name}}” er slettet.",
+          "deletedWithShortcuts": "Prompten “{{name}}” er slettet. Fjernede genveje: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Test",
+          "sampleLabel": "Eksempeltekst",
+          "samplePlaceholder": "Skriv eller indsæt en eksempeltransskription",
+          "run": "Kør test",
+          "running": "Tester…",
+          "note": "Intet indsættes, og historikken ændres ikke.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} s",
+          "failedTitle": "Testen mislykkedes: {{reason}}",
+          "failedHint": "Tjek udbyderindstillingerne, og kør testen igen.",
+          "retry": "Kør igen",
+          "busy": "En anden test kører stadig. Prøv igen, når den er færdig.",
+          "skipped": "Angiv en eksempeltekst for at teste prompten.",
+          "outdated": "Dette resultat hører til en tidligere version af prompten eller eksemplet. Kør testen igen."
+        },
+        "shortcutOwner": "prompten “{{name}}”"
       }
     },
     "history": {

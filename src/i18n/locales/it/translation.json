@@ -605,26 +605,128 @@
           "refreshModels": "Aggiorna modelli"
         }
       },
-      "prompts": {
-        "title": "Prompt",
-        "selectedPrompt": {
-          "title": "Prompt Selezionato",
-          "description": "Seleziona un template per migliorare le trascrizioni o creane uno nuovo. Usa ${output} nel prompt per fare riferimento alla trascrizione."
+      "promptLibrary": {
+        "processing": {
+          "title": "Post-elaborazione IA",
+          "enabledDescription": "Elabora le dettature con un prompt. Disattivata: nessuna dettatura viene elaborata.",
+          "defaultTitle": "Prompt predefinito",
+          "defaultDescription": "Usato dalla scorciatoia di dettatura IA. La dettatura semplice parte con Nessuno.",
+          "none": "Nessuno",
+          "invalidOption": "Non valido: modificalo prima di usarlo"
         },
-        "noPrompts": "Nessun prompt disponibile",
-        "selectPrompt": "Scegli un prompt",
-        "createNew": "Crea un nuovo prompt",
-        "promptLabel": "Etichetta del Prompt",
-        "promptLabelPlaceholder": "Inserisci il nome del prompt",
-        "promptInstructions": "Istruzioni del Prompt",
-        "promptInstructionsPlaceholder": "Scrivi le istruzioni da eseguire dopo la trascrizione. Esempio: Migliora la grammatica e la chiarezza per il seguente testo: ${output}",
-        "promptTip": "Suggerimento: Usa <code>${output}</code> per inserire il testo trascritto nel tuo prompt.",
-        "updatePrompt": "Aggiorna Prompt",
-        "deletePrompt": "Elimina Prompt",
-        "createPrompt": "Crea Prompt",
-        "cancel": "Annulla",
-        "selectToEdit": "Scegli un prompt qui sopra per visualizzare o modificare i dettagli.",
-        "createFirst": "Clicca 'Crea un nuovo prompt' qui sopra per creare il tuo primo prompt di post-elaborazione."
+        "list": {
+          "title": "Prompt",
+          "count": "{{count}} prompt su {{limit}}",
+          "full": "{{limit}} prompt su {{limit}}: eliminane uno per aggiungerne un altro",
+          "new": "Nuovo prompt",
+          "empty": "Ancora nessun prompt. Creane uno per elaborare le tue dettature.",
+          "loading": "Caricamento dei prompt…",
+          "loadFailed": "Impossibile caricare i prompt.",
+          "retry": "Riprova",
+          "edit": "Modifica {{name}}",
+          "defaultProvider": "Provider predefinito",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Nessuna scorciatoia",
+          "notReady": "Non pronto: {{reason}}",
+          "invalid": "Non valido: {{reason}}",
+          "reloadFailed": "Non è stato possibile aggiornare i prompt. Ciò che vedi potrebbe non essere aggiornato."
+        },
+        "issues": {
+          "name_empty": "nome mancante",
+          "name_too_long": "nome troppo lungo",
+          "name_duplicate": "nome duplicato",
+          "text_empty": "testo mancante",
+          "text_too_long": "testo troppo lungo",
+          "override_incomplete": "provider o modello mancante",
+          "unknown_provider": "provider sconosciuto"
+        },
+        "reasons": {
+          "provider_error": "il provider ha restituito un errore",
+          "empty_result": "il provider ha restituito un risultato vuoto",
+          "timeout": "nessuna risposta entro 30 secondi",
+          "provider_busy": "il provider è ancora occupato con un'altra richiesta",
+          "missing_endpoint": "endpoint mancante",
+          "missing_model": "modello mancante",
+          "missing_api_key": "chiave API mancante",
+          "provider_unavailable": "provider non disponibile su questo dispositivo",
+          "unknown_provider": "provider sconosciuto",
+          "invalid_prompt": "il prompt non è valido",
+          "prompt_missing": "il prompt non esiste più"
+        },
+        "editor": {
+          "editTitle": "Modifica prompt",
+          "newTitle": "Nuovo prompt",
+          "name": "Nome",
+          "namePlaceholder": "Nome del prompt",
+          "text": "Prompt",
+          "textPlaceholder": "Scrivi le istruzioni da applicare alla trascrizione. Esempio: Riduci la trascrizione all'essenziale. ${output}",
+          "textHint": "<code>${output}</code> viene sostituito dalla trascrizione.",
+          "fieldErrors": {
+            "name_empty": "Inserisci un nome (da 1 a 60 caratteri).",
+            "name_too_long": "Usa al massimo 60 caratteri.",
+            "name_duplicate": "Un altro prompt ha questo nome. I nomi devono essere unici.",
+            "text_empty": "Inserisci il testo del prompt.",
+            "text_too_long": "Usa al massimo 8.000 caratteri."
+          },
+          "provider": "Provider",
+          "defaultProviderOption": "Provider predefinito ({{provider}})",
+          "model": "Modello",
+          "modelPlaceholder": "Digita il nome di un modello",
+          "readyEndpoint": "Endpoint {{endpoint}} · Pronto",
+          "readyProvider": "{{provider}} · {{model}} · Pronto",
+          "notReadyTitle": "{{provider}} non è pronto: {{reason}}",
+          "notReadyBody": "Le dettature con questo prompt saltano il passaggio IA e mantengono il testo originale.",
+          "fix": {
+            "api_key": "Aggiungi chiave API",
+            "endpoint": "Imposta l'endpoint"
+          },
+          "shortcuts": "Scorciatoie (fino a {{limit}})",
+          "changedElsewhere": "Questo prompt è stato modificato altrove. Ricaricalo per vedere la modifica o salva per mantenere la tua versione.",
+          "reload": "Ricarica",
+          "deletedElsewhere": "Questo prompt è stato eliminato altrove e non può più essere salvato.",
+          "shortcutsSavedImmediately": "Le modifiche alle scorciatoie vengono salvate subito.",
+          "fixField": {
+            "api_key": "Chiave API di {{provider}}",
+            "endpoint": "Endpoint di {{provider}}",
+            "hint": "Salvato quando lasci il campo. Il provider predefinito non cambia."
+          }
+        },
+        "actions": {
+          "note": "Le modifiche si applicano alla dettatura successiva dopo il salvataggio.",
+          "fixFields": "Correggi i campi evidenziati per salvare.",
+          "delete": "Elimina prompt",
+          "cancel": "Annulla",
+          "save": "Salva",
+          "saving": "Salvataggio…",
+          "saved": "Prompt salvato."
+        },
+        "deleteDialog": {
+          "title": "Eliminare «{{name}}»?",
+          "shortcuts": "Le sue scorciatoie verranno rimosse: {{shortcuts}}.",
+          "default": "È il prompt predefinito: il predefinito diventa Nessuno.",
+          "body": "L'operazione non può essere annullata.",
+          "cancel": "Annulla",
+          "confirm": "Elimina",
+          "close": "Chiudi",
+          "deleted": "Prompt «{{name}}» eliminato.",
+          "deletedWithShortcuts": "Prompt «{{name}}» eliminato. Scorciatoie rimosse: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Test",
+          "sampleLabel": "Testo di esempio",
+          "samplePlaceholder": "Digita o incolla una trascrizione di esempio",
+          "run": "Esegui test",
+          "running": "Test in corso…",
+          "note": "Non viene inserito nulla e la cronologia non cambia.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} s",
+          "failedTitle": "Test non riuscito: {{reason}}",
+          "failedHint": "Controlla le impostazioni del provider, poi esegui di nuovo il test.",
+          "retry": "Esegui di nuovo",
+          "busy": "Un altro test è ancora in corso. Riprova quando sarà terminato.",
+          "skipped": "Inserisci un testo di esempio per provare il prompt.",
+          "outdated": "Questo risultato riguarda una versione precedente del prompt o dell’esempio. Esegui di nuovo il test."
+        },
+        "shortcutOwner": "il prompt «{{name}}»"
       }
     },
     "history": {

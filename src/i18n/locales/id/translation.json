@@ -605,26 +605,128 @@
           "refreshModels": "Segarkan model"
         }
       },
-      "prompts": {
-        "title": "Prompt",
-        "selectedPrompt": {
-          "title": "Prompt Terpilih",
-          "description": "Pilih templat untuk menyempurnakan transkripsi atau buat yang baru. Gunakan ${output} dalam teks prompt untuk merujuk ke hasil transkripsi."
+      "promptLibrary": {
+        "processing": {
+          "title": "Pascaproses AI",
+          "enabledDescription": "Proses dikte dengan prompt. Nonaktif: tidak ada dikte yang diproses.",
+          "defaultTitle": "Prompt bawaan",
+          "defaultDescription": "Digunakan oleh pintasan dikte AI. Dikte biasa dimulai dengan Tidak ada.",
+          "none": "Tidak ada",
+          "invalidOption": "Tidak valid: edit sebelum digunakan"
         },
-        "noPrompts": "Tidak ada prompt yang tersedia",
-        "selectPrompt": "Pilih prompt",
-        "createNew": "Buat Prompt Baru",
-        "promptLabel": "Label Prompt",
-        "promptLabelPlaceholder": "Masukkan nama prompt",
-        "promptInstructions": "Instruksi Prompt",
-        "promptInstructionsPlaceholder": "Tulis instruksi yang dijalankan setelah transkripsi. Contoh: Perbaiki tata bahasa dan kejelasan teks berikut: ${output}",
-        "promptTip": "Tips: Gunakan <code>${output}</code> untuk menyisipkan teks hasil transkripsi ke prompt Anda.",
-        "updatePrompt": "Perbarui Prompt",
-        "deletePrompt": "Hapus Prompt",
-        "createPrompt": "Buat Prompt",
-        "cancel": "Batal",
-        "selectToEdit": "Pilih prompt di atas untuk melihat dan mengedit detailnya.",
-        "createFirst": "Klik 'Buat Prompt Baru' di atas untuk membuat prompt pascaproses pertama Anda."
+        "list": {
+          "title": "Prompt",
+          "count": "{{count}} dari {{limit}} prompt",
+          "full": "{{limit}} dari {{limit}} prompt: hapus satu untuk menambahkan yang lain",
+          "new": "Prompt baru",
+          "empty": "Belum ada prompt. Buat satu untuk memproses dikte Anda.",
+          "loading": "Memuat prompt…",
+          "loadFailed": "Prompt tidak dapat dimuat.",
+          "retry": "Coba lagi",
+          "edit": "Ubah {{name}}",
+          "defaultProvider": "Penyedia bawaan",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Tanpa pintasan",
+          "notReady": "Belum siap: {{reason}}",
+          "invalid": "Tidak valid: {{reason}}",
+          "reloadFailed": "Prompt tidak dapat dimuat ulang. Yang ditampilkan mungkin sudah usang."
+        },
+        "issues": {
+          "name_empty": "nama kosong",
+          "name_too_long": "nama terlalu panjang",
+          "name_duplicate": "nama duplikat",
+          "text_empty": "teks kosong",
+          "text_too_long": "teks terlalu panjang",
+          "override_incomplete": "penyedia atau model belum diisi",
+          "unknown_provider": "penyedia tidak dikenal"
+        },
+        "reasons": {
+          "provider_error": "penyedia mengembalikan galat",
+          "empty_result": "penyedia mengembalikan hasil kosong",
+          "timeout": "tidak ada jawaban dalam 30 detik",
+          "provider_busy": "penyedia masih sibuk dengan permintaan lain",
+          "missing_endpoint": "endpoint belum diisi",
+          "missing_model": "model belum diisi",
+          "missing_api_key": "kunci API belum diisi",
+          "provider_unavailable": "penyedia tidak tersedia di perangkat ini",
+          "unknown_provider": "penyedia tidak dikenal",
+          "invalid_prompt": "prompt tidak valid",
+          "prompt_missing": "prompt sudah tidak ada"
+        },
+        "editor": {
+          "editTitle": "Edit prompt",
+          "newTitle": "Prompt baru",
+          "name": "Nama",
+          "namePlaceholder": "Nama prompt",
+          "text": "Prompt",
+          "textPlaceholder": "Tulis instruksi yang diterapkan pada transkrip. Contoh: Persingkat transkrip menjadi intinya saja. ${output}",
+          "textHint": "<code>${output}</code> diganti dengan transkrip.",
+          "fieldErrors": {
+            "name_empty": "Masukkan nama (1–60 karakter).",
+            "name_too_long": "Gunakan paling banyak 60 karakter.",
+            "name_duplicate": "Prompt lain sudah memakai nama ini. Nama harus unik.",
+            "text_empty": "Masukkan teks prompt.",
+            "text_too_long": "Gunakan paling banyak 8.000 karakter."
+          },
+          "provider": "Penyedia",
+          "defaultProviderOption": "Penyedia bawaan ({{provider}})",
+          "model": "Model",
+          "modelPlaceholder": "Ketik nama model",
+          "readyEndpoint": "Endpoint {{endpoint}} · Siap",
+          "readyProvider": "{{provider}} · {{model}} · Siap",
+          "notReadyTitle": "{{provider}} belum siap: {{reason}}",
+          "notReadyBody": "Dikte dengan prompt ini melewati langkah AI dan mempertahankan teks asli.",
+          "fix": {
+            "api_key": "Tambahkan kunci API",
+            "endpoint": "Atur endpoint"
+          },
+          "shortcuts": "Pintasan (maksimal {{limit}})",
+          "changedElsewhere": "Prompt ini diubah di tempat lain. Muat ulang untuk melihat perubahannya, atau simpan untuk mempertahankan versi Anda.",
+          "reload": "Muat ulang",
+          "deletedElsewhere": "Prompt ini dihapus di tempat lain dan tidak dapat disimpan lagi.",
+          "shortcutsSavedImmediately": "Perubahan pintasan langsung disimpan.",
+          "fixField": {
+            "api_key": "Kunci API untuk {{provider}}",
+            "endpoint": "Endpoint {{provider}}",
+            "hint": "Disimpan saat Anda meninggalkan kolom. Penyedia bawaan tidak berubah."
+          }
+        },
+        "actions": {
+          "note": "Perubahan berlaku untuk dikte berikutnya setelah Anda menyimpan.",
+          "fixFields": "Perbaiki kolom yang ditandai untuk menyimpan.",
+          "delete": "Hapus prompt",
+          "cancel": "Batal",
+          "save": "Simpan",
+          "saving": "Menyimpan…",
+          "saved": "Prompt disimpan."
+        },
+        "deleteDialog": {
+          "title": "Hapus “{{name}}”?",
+          "shortcuts": "Pintasannya akan dihapus: {{shortcuts}}.",
+          "default": "Ini prompt bawaan: bawaannya menjadi Tidak ada.",
+          "body": "Tindakan ini tidak dapat dibatalkan.",
+          "cancel": "Batal",
+          "confirm": "Hapus",
+          "close": "Tutup",
+          "deleted": "Prompt “{{name}}” dihapus.",
+          "deletedWithShortcuts": "Prompt “{{name}}” dihapus. Pintasan yang dihapus: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Uji",
+          "sampleLabel": "Teks contoh",
+          "samplePlaceholder": "Ketik atau tempel contoh transkrip",
+          "run": "Jalankan uji",
+          "running": "Menguji…",
+          "note": "Tidak ada yang disisipkan dan riwayat tidak berubah.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} dtk",
+          "failedTitle": "Uji gagal: {{reason}}",
+          "failedHint": "Periksa pengaturan penyedia, lalu jalankan uji lagi.",
+          "retry": "Jalankan lagi",
+          "busy": "Uji lain masih berjalan. Coba lagi setelah selesai.",
+          "skipped": "Masukkan teks contoh untuk menguji prompt.",
+          "outdated": "Hasil ini untuk versi prompt atau sampel sebelumnya. Jalankan pengujian lagi."
+        },
+        "shortcutOwner": "prompt “{{name}}”"
       }
     },
     "history": {

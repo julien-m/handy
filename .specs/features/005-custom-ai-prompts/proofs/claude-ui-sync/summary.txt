@@ -1,0 +1,33 @@
+Merge of dev (1797c2c0) into feature/ui-005-prompts (e5f0904b) — verification after conflict resolution
+Worktree: /Users/julienm/projects/handy-wt/ui-005-prompts
+Run: 2026-10-14, macOS, CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.shared-target
+Raw stdout/stderr kept outside the repository; only this summary is committed.
+
+command                                              exit  result
+bun install --frozen-lockfile                        0     no change
+bunx tsc --noEmit                                    0
+bun run lint                                         0
+bun run format:check                                 0     prettier + cargo fmt --check
+bun run check:translations                           0     all 25 languages complete
+bun run build                                        0
+bun run test:keyboard                                0     all assertions passed
+bun run test:shortcut-list                           0     all assertions passed
+bun run test:settings-errors                         0     all assertions passed
+bun run test:settings-store                          0     11 pass
+bun run test:prompt-settings                         0     55 pass (4 files) + 5 pass (prompt-settings-render.test.tsx, new)
+bun run test:indicator                               0     35 pass
+bun run test:vocabulary                              0     45 pass
+bun run test:shortcut-states                         0     20 pass + 9 pass
+bun run test:output-settings                         0     20 pass + 7 pass
+cargo fmt -- --check (src-tauri)                     0
+cargo clippy --lib --bins -- -D warnings             0
+cargo test --lib                                     0     903 passed, 17 ignored
+livespec conventions verify --feature repo --json    0     output not committed
+
+Not run: bun run test:playwright / test:playwright:ui (Playwright browser suite on a shared
+vite port 1420, not a bun suite; unchanged by this merge).
+
+New check: src/components/settings/post-processing/prompt-settings-render.test.tsx renders
+the Post Process page (prompt groups + 004 "Dictation with AI processing" row with its
+shortcut, Add and Reset) and the prompt:<id> shortcut list (0, 1 and 2 shortcuts, no Reset,
+add disabled at the limit of 2).

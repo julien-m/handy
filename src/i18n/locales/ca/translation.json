@@ -605,26 +605,128 @@
           "refreshModels": "Actualitzeu els models"
         }
       },
-      "prompts": {
-        "title": "Indicació",
-        "selectedPrompt": {
-          "title": "Indicació seleccionada",
-          "description": "Seleccioneu una plantilla per millorar les transcripcions o creeu-ne una de nova. Utilitzeu ${output} dins del text de la indicació per fer referència a la transcripció enregistrada."
+      "promptLibrary": {
+        "processing": {
+          "title": "Postprocessament amb IA",
+          "enabledDescription": "Processa els dictats amb un prompt. Desactivat: no es processa cap dictat.",
+          "defaultTitle": "Prompt per defecte",
+          "defaultDescription": "L'utilitza la drecera de dictat amb IA. El dictat simple comença amb Cap.",
+          "none": "Cap",
+          "invalidOption": "No vàlid: edita'l abans de fer-lo servir"
         },
-        "noPrompts": "No hi ha indicacions disponibles",
-        "selectPrompt": "Seleccioneu una indicació",
-        "createNew": "Creeu una indicació nova",
-        "promptLabel": "Nom de la indicació",
-        "promptLabelPlaceholder": "Introduïu el nom de la indicació",
-        "promptInstructions": "Instruccions de la indicació",
-        "promptInstructionsPlaceholder": "Escriviu les instruccions que s'executaran després de la transcripció. Exemple: Millora la gramàtica i la claredat del text següol: ${output}",
-        "promptTip": "Consell: utilitzeu <code>${output}</code> per inserir el text transcrit a la indicació.",
-        "updatePrompt": "Actualitzeu la indicació",
-        "deletePrompt": "Suprimiu la indicació",
-        "createPrompt": "Creeu la indicació",
-        "cancel": "Cancel·leu",
-        "selectToEdit": "Seleccioneu una indicació more amunt per veure'n i editar-ne els detalls.",
-        "createFirst": "Feu clic a «Creeu una indicació nova» més amunt per crear la primera indicació de postprocessament."
+        "list": {
+          "title": "Prompts",
+          "count": "{{count}} de {{limit}} prompts",
+          "full": "{{limit}} de {{limit}} prompts: elimina'n un per afegir-ne un altre",
+          "new": "Prompt nou",
+          "empty": "Encara no hi ha prompts. Crea'n un per processar els teus dictats.",
+          "loading": "S'estan carregant els prompts…",
+          "loadFailed": "No s'han pogut carregar els prompts.",
+          "retry": "Torna-ho a provar",
+          "edit": "Edita {{name}}",
+          "defaultProvider": "Proveïdor per defecte",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Sense drecera",
+          "notReady": "No està a punt: {{reason}}",
+          "invalid": "No vàlid: {{reason}}",
+          "reloadFailed": "No s’han pogut actualitzar els prompts. El que es mostra pot estar desactualitzat."
+        },
+        "issues": {
+          "name_empty": "falta el nom",
+          "name_too_long": "nom massa llarg",
+          "name_duplicate": "nom duplicat",
+          "text_empty": "falta el text",
+          "text_too_long": "text massa llarg",
+          "override_incomplete": "falta el proveïdor o el model",
+          "unknown_provider": "proveïdor desconegut"
+        },
+        "reasons": {
+          "provider_error": "el proveïdor ha retornat un error",
+          "empty_result": "el proveïdor ha retornat un resultat buit",
+          "timeout": "cap resposta en 30 segons",
+          "provider_busy": "el proveïdor encara està ocupat amb una altra sol·licitud",
+          "missing_endpoint": "falta el punt final",
+          "missing_model": "falta el model",
+          "missing_api_key": "falta la clau d'API",
+          "provider_unavailable": "proveïdor no disponible en aquest dispositiu",
+          "unknown_provider": "proveïdor desconegut",
+          "invalid_prompt": "el prompt no és vàlid",
+          "prompt_missing": "el prompt ja no existeix"
+        },
+        "editor": {
+          "editTitle": "Edita el prompt",
+          "newTitle": "Prompt nou",
+          "name": "Nom",
+          "namePlaceholder": "Nom del prompt",
+          "text": "Prompt",
+          "textPlaceholder": "Escriu les instruccions que s'aplicaran a la transcripció. Exemple: Escurça la transcripció a l'essencial. ${output}",
+          "textHint": "<code>${output}</code> se substitueix per la transcripció.",
+          "fieldErrors": {
+            "name_empty": "Introdueix un nom (d'1 a 60 caràcters).",
+            "name_too_long": "Fes servir 60 caràcters com a màxim.",
+            "name_duplicate": "Un altre prompt té aquest nom. Els noms han de ser únics.",
+            "text_empty": "Introdueix el text del prompt.",
+            "text_too_long": "Fes servir 8.000 caràcters com a màxim."
+          },
+          "provider": "Proveïdor",
+          "defaultProviderOption": "Proveïdor per defecte ({{provider}})",
+          "model": "Model",
+          "modelPlaceholder": "Escriu el nom d'un model",
+          "readyEndpoint": "Punt final {{endpoint}} · A punt",
+          "readyProvider": "{{provider}} · {{model}} · A punt",
+          "notReadyTitle": "{{provider}} no està a punt: {{reason}}",
+          "notReadyBody": "Els dictats amb aquest prompt ometen el pas d'IA i conserven el text original.",
+          "fix": {
+            "api_key": "Afegeix una clau d'API",
+            "endpoint": "Defineix el punt final"
+          },
+          "shortcuts": "Dreceres (fins a {{limit}})",
+          "changedElsewhere": "Aquest prompt s'ha modificat en un altre lloc. Torna'l a carregar per veure el canvi o desa per conservar la teva versió.",
+          "reload": "Torna a carregar",
+          "deletedElsewhere": "Aquest prompt s'ha eliminat en un altre lloc i ja no es pot desar.",
+          "shortcutsSavedImmediately": "Els canvis de dreceres es desen immediatament.",
+          "fixField": {
+            "api_key": "Clau API de {{provider}}",
+            "endpoint": "Endpoint de {{provider}}",
+            "hint": "Es desa quan surts del camp. El proveïdor per defecte no canvia."
+          }
+        },
+        "actions": {
+          "note": "Els canvis s'apliquen al següent dictat després de desar.",
+          "fixFields": "Corregeix els camps marcats per desar.",
+          "delete": "Elimina el prompt",
+          "cancel": "Cancel·la",
+          "save": "Desa",
+          "saving": "S'està desant…",
+          "saved": "S'ha desat el prompt."
+        },
+        "deleteDialog": {
+          "title": "Vols eliminar «{{name}}»?",
+          "shortcuts": "Se n'eliminaran les dreceres: {{shortcuts}}.",
+          "default": "És el prompt per defecte: el valor per defecte passa a ser Cap.",
+          "body": "Aquesta acció no es pot desfer.",
+          "cancel": "Cancel·la",
+          "confirm": "Elimina",
+          "close": "Tanca",
+          "deleted": "S'ha eliminat el prompt «{{name}}».",
+          "deletedWithShortcuts": "S'ha eliminat el prompt «{{name}}». Dreceres eliminades: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Prova",
+          "sampleLabel": "Text d'exemple",
+          "samplePlaceholder": "Escriu o enganxa una transcripció d'exemple",
+          "run": "Executa la prova",
+          "running": "S'està provant…",
+          "note": "No s'insereix res i l'historial no canvia.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} s",
+          "failedTitle": "La prova ha fallat: {{reason}}",
+          "failedHint": "Comprova la configuració del proveïdor i torna a executar la prova.",
+          "retry": "Torna a executar",
+          "busy": "Encara hi ha una altra prova en curs. Torna-ho a provar quan acabi.",
+          "skipped": "Introdueix un text d'exemple per provar el prompt.",
+          "outdated": "Aquest resultat correspon a una versió anterior del prompt o de la mostra. Torna a executar la prova."
+        },
+        "shortcutOwner": "el prompt «{{name}}»"
       }
     },
     "history": {

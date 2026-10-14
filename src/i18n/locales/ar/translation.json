@@ -582,26 +582,128 @@
           "refreshModels": "تحديث النماذج"
         }
       },
-      "prompts": {
-        "title": "المطالبة",
-        "selectedPrompt": {
-          "title": "المطالبة المختارة",
-          "description": ".اختر قالباً لتحسين التفريغ الصوتي أو أنشئ قالباً جديداً. استخدم ${output} داخل نص المطالبة للإشارة إلى النص الملتقط"
+      "promptLibrary": {
+        "processing": {
+          "title": "المعالجة اللاحقة بالذكاء الاصطناعي",
+          "enabledDescription": "معالجة الإملاءات باستخدام موجّه. عند الإيقاف: لا تتم معالجة أي إملاء.",
+          "defaultTitle": "الموجّه الافتراضي",
+          "defaultDescription": "يستخدمه اختصار الإملاء بالذكاء الاصطناعي. يبدأ الإملاء العادي بلا شيء.",
+          "none": "لا شيء",
+          "invalidOption": "غير صالح: عدّله قبل استخدامه"
         },
-        "noPrompts": "لا توجد مطالبات متاحة",
-        "selectPrompt": "اختر مطالبة",
-        "createNew": "إنشاء مطالبة جديدة",
-        "promptLabel": "تسمية المطالبة",
-        "promptLabelPlaceholder": "أدخل اسم المطالبة",
-        "promptInstructions": "تعليمات المطالبة",
-        "promptInstructionsPlaceholder": ".اكتب التعليمات المراد تشغيلها بعد التفريغ الصوتي. مثال: قم بتحسين القواعد والوضوح للنص التالي: ${output}",
-        "promptTip": "تلميح: استخدم <code>${output}</code> لإدراج النص المفرغ في مطالبتك.",
-        "updatePrompt": "تحديث المطالبة",
-        "deletePrompt": "حذف المطالبة",
-        "createPrompt": "إنشاء مطالبة",
-        "cancel": "إلغاء",
-        "selectToEdit": ".اختر مطالبة أعلاه لعرض وتعديل تفاصيلها",
-        "createFirst": ".انقر على 'إنشاء مطالبة جديدة' أعلاه لإنشاء أول مطالبة معالجة لاحقة لك"
+        "list": {
+          "title": "الموجّهات",
+          "count": "{{count}} من {{limit}} موجّه",
+          "full": "{{limit}} من {{limit}} موجّه: احذف واحدًا لإضافة آخر",
+          "new": "موجّه جديد",
+          "empty": "لا توجد موجّهات بعد. أنشئ موجّهًا لمعالجة إملاءاتك.",
+          "loading": "جارٍ تحميل الموجّهات…",
+          "loadFailed": "تعذّر تحميل الموجّهات.",
+          "retry": "إعادة المحاولة",
+          "edit": "تعديل {{name}}",
+          "defaultProvider": "المزوّد الافتراضي",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "بلا اختصار",
+          "notReady": "غير جاهز: {{reason}}",
+          "invalid": "غير صالح: {{reason}}",
+          "reloadFailed": "تعذّر تحديث الموجّهات. قد لا يكون المعروض محدّثًا."
+        },
+        "issues": {
+          "name_empty": "الاسم مفقود",
+          "name_too_long": "الاسم طويل جدًا",
+          "name_duplicate": "اسم مكرر",
+          "text_empty": "النص مفقود",
+          "text_too_long": "النص طويل جدًا",
+          "override_incomplete": "المزوّد أو النموذج مفقود",
+          "unknown_provider": "مزوّد غير معروف"
+        },
+        "reasons": {
+          "provider_error": "أعاد المزوّد خطأ",
+          "empty_result": "أعاد المزوّد نتيجة فارغة",
+          "timeout": "لا يوجد رد خلال 30 ثانية",
+          "provider_busy": "المزوّد لا يزال مشغولًا بطلب آخر",
+          "missing_endpoint": "نقطة النهاية مفقودة",
+          "missing_model": "النموذج مفقود",
+          "missing_api_key": "مفتاح API مفقود",
+          "provider_unavailable": "المزوّد غير متاح على هذا الجهاز",
+          "unknown_provider": "مزوّد غير معروف",
+          "invalid_prompt": "الموجّه غير صالح",
+          "prompt_missing": "الموجّه لم يعد موجودًا"
+        },
+        "editor": {
+          "editTitle": "تعديل الموجّه",
+          "newTitle": "موجّه جديد",
+          "name": "الاسم",
+          "namePlaceholder": "اسم الموجّه",
+          "text": "الموجّه",
+          "textPlaceholder": "اكتب التعليمات التي ستُطبَّق على النص المنسوخ. مثال: اختصر النص المنسوخ إلى الأساسيات. ${output}",
+          "textHint": "يُستبدل <code>${output}</code> بالنص المنسوخ.",
+          "fieldErrors": {
+            "name_empty": "أدخل اسمًا (من 1 إلى 60 حرفًا).",
+            "name_too_long": "استخدم 60 حرفًا على الأكثر.",
+            "name_duplicate": "يحمل موجّه آخر هذا الاسم. يجب أن تكون الأسماء فريدة.",
+            "text_empty": "أدخل نص الموجّه.",
+            "text_too_long": "استخدم 8000 حرف على الأكثر."
+          },
+          "provider": "المزوّد",
+          "defaultProviderOption": "المزوّد الافتراضي ({{provider}})",
+          "model": "النموذج",
+          "modelPlaceholder": "اكتب اسم نموذج",
+          "readyEndpoint": "نقطة النهاية {{endpoint}} · جاهز",
+          "readyProvider": "{{provider}} · {{model}} · جاهز",
+          "notReadyTitle": "{{provider}} غير جاهز: {{reason}}",
+          "notReadyBody": "تتخطى الإملاءات التي تستخدم هذا الموجّه خطوة الذكاء الاصطناعي وتحتفظ بالنص الأصلي.",
+          "fix": {
+            "api_key": "إضافة مفتاح API",
+            "endpoint": "تعيين نقطة النهاية"
+          },
+          "shortcuts": "الاختصارات (حتى {{limit}})",
+          "changedElsewhere": "تم تغيير هذا الموجّه في مكان آخر. أعد تحميله لرؤية التغيير، أو احفظ للاحتفاظ بنسختك.",
+          "reload": "إعادة التحميل",
+          "deletedElsewhere": "تم حذف هذا الموجّه في مكان آخر ولم يعد من الممكن حفظه.",
+          "shortcutsSavedImmediately": "تُحفظ تغييرات الاختصارات فورًا.",
+          "fixField": {
+            "api_key": "مفتاح API لـ {{provider}}",
+            "endpoint": "نقطة نهاية {{provider}}",
+            "hint": "يُحفظ عند مغادرة الحقل. لا يتغيّر المزوّد الافتراضي."
+          }
+        },
+        "actions": {
+          "note": "تُطبَّق التغييرات على الإملاء التالي بعد الحفظ.",
+          "fixFields": "صحّح الحقول المحددة للحفظ.",
+          "delete": "حذف الموجّه",
+          "cancel": "إلغاء",
+          "save": "حفظ",
+          "saving": "جارٍ الحفظ…",
+          "saved": "تم حفظ الموجّه."
+        },
+        "deleteDialog": {
+          "title": "حذف «{{name}}»؟",
+          "shortcuts": "ستُزال اختصاراته: {{shortcuts}}.",
+          "default": "إنه الموجّه الافتراضي: سيصبح الافتراضي «لا شيء».",
+          "body": "لا يمكن التراجع عن هذا الإجراء.",
+          "cancel": "إلغاء",
+          "confirm": "حذف",
+          "close": "إغلاق",
+          "deleted": "تم حذف الموجّه «{{name}}».",
+          "deletedWithShortcuts": "تم حذف الموجّه «{{name}}». الاختصارات المُزالة: {{shortcuts}}."
+        },
+        "test": {
+          "title": "اختبار",
+          "sampleLabel": "نص تجريبي",
+          "samplePlaceholder": "اكتب أو الصق نصًا منسوخًا تجريبيًا",
+          "run": "تشغيل الاختبار",
+          "running": "جارٍ الاختبار…",
+          "note": "لا يُدرج أي شيء ولا يتغيّر السجل.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} ث",
+          "failedTitle": "فشل الاختبار: {{reason}}",
+          "failedHint": "تحقّق من إعدادات المزوّد، ثم شغّل الاختبار مرة أخرى.",
+          "retry": "التشغيل مرة أخرى",
+          "busy": "لا يزال اختبار آخر قيد التشغيل. حاول مرة أخرى عند انتهائه.",
+          "skipped": "أدخل نصًا تجريبيًا لاختبار الموجّه.",
+          "outdated": "هذه النتيجة تخص نسخة سابقة من الموجّه أو العيّنة. شغّل الاختبار مجددًا."
+        },
+        "shortcutOwner": "الموجّه «{{name}}»"
       }
     },
     "history": {

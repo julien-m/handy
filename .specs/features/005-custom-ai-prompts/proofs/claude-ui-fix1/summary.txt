@@ -1,0 +1,25 @@
+005 custom AI prompts — settings UI, delivery-review fix round 1 (plan Step 6, settings part)
+Worktree: /Users/julienm/projects/handy-wt/ui-005-prompts, branch feature/ui-005-prompts, base 39bd00f6
+Run: 2026-10-14 17:10 CEST
+Reports addressed: drui005-review.json (BLOCKED), drui005-audit.json (BLOCKED)
+
+Command | exit | output
+bun run lint | 0 | bun-lint.stdout
+bun run format:check | 0 | bun-format-check.stdout
+bunx tsc --noEmit | 0 | tsc.stdout
+bun run check:translations | 0 | check-translations.stdout (25 languages complete)
+bun run build | 0 | build.stdout
+bun run test:prompt-settings | 0 | test-prompt-settings.stdout/.stderr (55 pass, 0 fail, 4 files)
+bun test src/components/settings/post-processing/prompt-editor-sync.test.ts (new) | 0 | test-prompt-editor-sync.stderr (13 pass)
+bun test src/components/settings/post-processing/prompt-editor-rules.test.ts (new) | 0 | test-prompt-editor-rules.stderr
+bun run test:shortcut-list | 0 | test-shortcut-list.stdout
+bun run test:settings-errors | 0 | test-settings-errors.stdout
+bun run test:settings-store | 0 | test-settings-store.stdout/.stderr
+bun run test:keyboard | 0 | test-keyboard.stdout
+livespec conventions verify --feature repo --json | 0 | conventions-repo-summary.json (verdict PASS, blockers 0, new_count 0; raw output not committed)
+
+No Rust file changed: no cargo test, clippy or cargo fmt run.
+
+Browser-mock pass (NOT a native window): Vite dev server with a scratch Tauri IPC mock (scratchpad, outside
+the repo), results in browser-mock/checks.txt. Pending, with Julien: Playwright spec
+tests/custom-ai-prompts.spec.ts (plan Step 6 evidence), real-window and native macOS evidence.

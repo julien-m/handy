@@ -1,0 +1,6 @@
+$ bun test src/components/settings/post-processing/prompt-settings-model.test.ts src/components/settings/post-processing/prompt-commands.test.ts src/components/settings/post-processing/prompt-editor-sync.test.ts src/components/settings/post-processing/prompt-editor-rules.test.ts
+
+ 55 pass
+ 0 fail
+ 137 expect() calls
+Ran 55 tests across 4 files. [15.00ms]

@@ -605,26 +605,128 @@
           "refreshModels": "Refresh models"
         }
       },
-      "prompts": {
-        "title": "Prompt",
-        "selectedPrompt": {
-          "title": "Selected Prompt",
-          "description": "Select a template for refining transcriptions or create a new one. Use ${output} inside the prompt text to reference the captured transcript."
+      "promptLibrary": {
+        "processing": {
+          "title": "AI post-processing",
+          "enabledDescription": "Process dictations with a prompt. Off: no dictation is processed.",
+          "defaultTitle": "Default prompt",
+          "defaultDescription": "Used by the AI dictation shortcut. Plain dictation starts with None.",
+          "none": "None",
+          "invalidOption": "Invalid: edit it before using it"
         },
-        "noPrompts": "No prompts available",
-        "selectPrompt": "Select a prompt",
-        "createNew": "Create New Prompt",
-        "promptLabel": "Prompt Label",
-        "promptLabelPlaceholder": "Enter prompt name",
-        "promptInstructions": "Prompt Instructions",
-        "promptInstructionsPlaceholder": "Write the instructions to run after transcription. Example: Improve grammar and clarity for the following text: ${output}",
-        "promptTip": "Tip: Use <code>${output}</code> to insert the transcribed text in your prompt.",
-        "updatePrompt": "Update Prompt",
-        "deletePrompt": "Delete Prompt",
-        "createPrompt": "Create Prompt",
-        "cancel": "Cancel",
-        "selectToEdit": "Select a prompt above to view and edit its details.",
-        "createFirst": "Click 'Create New Prompt' above to create your first post-processing prompt."
+        "list": {
+          "title": "Prompts",
+          "count": "{{count}} of {{limit}} prompts",
+          "full": "{{limit}} of {{limit}} prompts: delete one to add another",
+          "new": "New prompt",
+          "empty": "No prompts yet. Create one to process your dictations.",
+          "loading": "Loading prompts…",
+          "loadFailed": "The prompts could not be loaded.",
+          "retry": "Retry",
+          "edit": "Edit {{name}}",
+          "defaultProvider": "Default provider",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "No shortcut",
+          "notReady": "Not ready: {{reason}}",
+          "invalid": "Invalid: {{reason}}",
+          "reloadFailed": "The prompts could not be refreshed. What is shown may be out of date."
+        },
+        "issues": {
+          "name_empty": "name missing",
+          "name_too_long": "name too long",
+          "name_duplicate": "duplicate name",
+          "text_empty": "text missing",
+          "text_too_long": "text too long",
+          "override_incomplete": "provider or model missing",
+          "unknown_provider": "unknown provider"
+        },
+        "reasons": {
+          "provider_error": "the provider returned an error",
+          "empty_result": "the provider returned an empty result",
+          "timeout": "no answer within 30 seconds",
+          "provider_busy": "the provider is still busy with another request",
+          "missing_endpoint": "endpoint missing",
+          "missing_model": "model missing",
+          "missing_api_key": "API key missing",
+          "provider_unavailable": "provider unavailable on this device",
+          "unknown_provider": "unknown provider",
+          "invalid_prompt": "the prompt is invalid",
+          "prompt_missing": "the prompt no longer exists"
+        },
+        "editor": {
+          "editTitle": "Edit prompt",
+          "newTitle": "New prompt",
+          "name": "Name",
+          "namePlaceholder": "Prompt name",
+          "text": "Prompt",
+          "textPlaceholder": "Write the instructions to apply to the transcript. Example: Shorten the transcript to the essentials. ${output}",
+          "textHint": "<code>${output}</code> is replaced by the transcript.",
+          "fieldErrors": {
+            "name_empty": "Enter a name (1–60 characters).",
+            "name_too_long": "Use 60 characters or fewer.",
+            "name_duplicate": "Another prompt has this name. Names must be unique.",
+            "text_empty": "Enter the prompt text.",
+            "text_too_long": "Use 8,000 characters or fewer."
+          },
+          "provider": "Provider",
+          "defaultProviderOption": "Default provider ({{provider}})",
+          "model": "Model",
+          "modelPlaceholder": "Type a model name",
+          "readyEndpoint": "Endpoint {{endpoint}} · Ready",
+          "readyProvider": "{{provider}} · {{model}} · Ready",
+          "notReadyTitle": "{{provider}} is not ready: {{reason}}",
+          "notReadyBody": "Dictations with this prompt skip the AI step and keep the original text.",
+          "fix": {
+            "api_key": "Add API key",
+            "endpoint": "Set the endpoint"
+          },
+          "shortcuts": "Shortcuts (up to {{limit}})",
+          "changedElsewhere": "This prompt was changed elsewhere. Reload it to see the change, or save to keep your version.",
+          "reload": "Reload",
+          "deletedElsewhere": "This prompt was deleted elsewhere and can no longer be saved.",
+          "shortcutsSavedImmediately": "Shortcut changes are saved immediately.",
+          "fixField": {
+            "api_key": "API key for {{provider}}",
+            "endpoint": "Endpoint of {{provider}}",
+            "hint": "Saved when you leave the field. The default provider does not change."
+          }
+        },
+        "actions": {
+          "note": "Changes apply to the next dictation after you save.",
+          "fixFields": "Fix the highlighted fields to save.",
+          "delete": "Delete prompt",
+          "cancel": "Cancel",
+          "save": "Save",
+          "saving": "Saving…",
+          "saved": "Prompt saved."
+        },
+        "deleteDialog": {
+          "title": "Delete “{{name}}”?",
+          "shortcuts": "Its shortcuts will be removed: {{shortcuts}}.",
+          "default": "It is the default prompt: the default becomes None.",
+          "body": "This cannot be undone.",
+          "cancel": "Cancel",
+          "confirm": "Delete",
+          "close": "Close",
+          "deleted": "Prompt “{{name}}” deleted.",
+          "deletedWithShortcuts": "Prompt “{{name}}” deleted. Removed shortcuts: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Test",
+          "sampleLabel": "Sample text",
+          "samplePlaceholder": "Type or paste a sample transcript",
+          "run": "Run test",
+          "running": "Testing…",
+          "note": "Nothing is inserted and history is not changed.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} s",
+          "failedTitle": "Test failed: {{reason}}",
+          "failedHint": "Check the provider settings, then run the test again.",
+          "retry": "Run again",
+          "busy": "Another test is still running. Try again when it ends.",
+          "skipped": "Enter a sample text to test the prompt.",
+          "outdated": "This result is for an earlier version of the prompt or sample. Run the test again."
+        },
+        "shortcutOwner": "the prompt “{{name}}”"
       }
     },
     "history": {

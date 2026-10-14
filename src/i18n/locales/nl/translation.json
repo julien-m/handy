@@ -605,26 +605,128 @@
           "refreshModels": "Modellen verversen"
         }
       },
-      "prompts": {
-        "title": "Prompt",
-        "selectedPrompt": {
-          "title": "Geselecteerde prompt",
-          "description": "Selecteer een sjabloon voor het verfijnen van transcripties of maak een nieuwe aan. Gebruik ${output} in de prompttekst om naar de gemaakte transcriptie te verwijzen."
+      "promptLibrary": {
+        "processing": {
+          "title": "AI-naverwerking",
+          "enabledDescription": "Verwerk dictaten met een prompt. Uit: geen enkel dictaat wordt verwerkt.",
+          "defaultTitle": "Standaardprompt",
+          "defaultDescription": "Gebruikt door de sneltoets voor AI-dictaat. Gewoon dictaat begint met Geen.",
+          "none": "Geen",
+          "invalidOption": "Ongeldig: bewerk hem eerst"
         },
-        "noPrompts": "Geen prompts beschikbaar",
-        "selectPrompt": "Selecteer een prompt",
-        "createNew": "Nieuwe prompt maken",
-        "promptLabel": "Promptnaam",
-        "promptLabelPlaceholder": "Voer promptnaam in",
-        "promptInstructions": "Prompt-instructies",
-        "promptInstructionsPlaceholder": "Schrijf de instructies die na de transcriptie moeten worden uitgevoerd. Voorbeeld: Verbeter de grammatica en helderheid van de volgende tekst: ${output}",
-        "promptTip": "Tip: Gebruik <code>${output}</code> om de getranscribeerde tekst in je prompt in te voegen.",
-        "updatePrompt": "Prompt bijwerken",
-        "deletePrompt": "Prompt verwijderen",
-        "createPrompt": "Prompt maken",
-        "cancel": "Annuleren",
-        "selectToEdit": "Selecteer hierboven een prompt om de details te bekijken en te bewerken.",
-        "createFirst": "Klik hierboven op 'Nieuwe prompt maken' om je eerste naverwerkingsprompt aan te maken."
+        "list": {
+          "title": "Prompts",
+          "count": "{{count}} van {{limit}} prompts",
+          "full": "{{limit}} van {{limit}} prompts: verwijder er een om een andere toe te voegen",
+          "new": "Nieuwe prompt",
+          "empty": "Nog geen prompts. Maak er een om je dictaten te verwerken.",
+          "loading": "Prompts laden…",
+          "loadFailed": "De prompts konden niet worden geladen.",
+          "retry": "Opnieuw proberen",
+          "edit": "{{name}} bewerken",
+          "defaultProvider": "Standaardprovider",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Geen sneltoets",
+          "notReady": "Niet klaar: {{reason}}",
+          "invalid": "Ongeldig: {{reason}}",
+          "reloadFailed": "De prompts konden niet worden vernieuwd. Wat je ziet is mogelijk verouderd."
+        },
+        "issues": {
+          "name_empty": "naam ontbreekt",
+          "name_too_long": "naam te lang",
+          "name_duplicate": "dubbele naam",
+          "text_empty": "tekst ontbreekt",
+          "text_too_long": "tekst te lang",
+          "override_incomplete": "provider of model ontbreekt",
+          "unknown_provider": "onbekende provider"
+        },
+        "reasons": {
+          "provider_error": "de provider gaf een fout terug",
+          "empty_result": "de provider gaf een leeg resultaat terug",
+          "timeout": "geen antwoord binnen 30 seconden",
+          "provider_busy": "de provider is nog bezig met een ander verzoek",
+          "missing_endpoint": "endpoint ontbreekt",
+          "missing_model": "model ontbreekt",
+          "missing_api_key": "API-sleutel ontbreekt",
+          "provider_unavailable": "provider niet beschikbaar op dit apparaat",
+          "unknown_provider": "onbekende provider",
+          "invalid_prompt": "de prompt is ongeldig",
+          "prompt_missing": "de prompt bestaat niet meer"
+        },
+        "editor": {
+          "editTitle": "Prompt bewerken",
+          "newTitle": "Nieuwe prompt",
+          "name": "Naam",
+          "namePlaceholder": "Naam van de prompt",
+          "text": "Prompt",
+          "textPlaceholder": "Schrijf de instructies voor de transcriptie. Voorbeeld: Kort de transcriptie in tot de kern. ${output}",
+          "textHint": "<code>${output}</code> wordt vervangen door de transcriptie.",
+          "fieldErrors": {
+            "name_empty": "Voer een naam in (1–60 tekens).",
+            "name_too_long": "Gebruik maximaal 60 tekens.",
+            "name_duplicate": "Een andere prompt heeft deze naam. Namen moeten uniek zijn.",
+            "text_empty": "Voer de tekst van de prompt in.",
+            "text_too_long": "Gebruik maximaal 8.000 tekens."
+          },
+          "provider": "Provider",
+          "defaultProviderOption": "Standaardprovider ({{provider}})",
+          "model": "Model",
+          "modelPlaceholder": "Typ een modelnaam",
+          "readyEndpoint": "Endpoint {{endpoint}} · Klaar",
+          "readyProvider": "{{provider}} · {{model}} · Klaar",
+          "notReadyTitle": "{{provider}} is niet klaar: {{reason}}",
+          "notReadyBody": "Dictaten met deze prompt slaan de AI-stap over en behouden de oorspronkelijke tekst.",
+          "fix": {
+            "api_key": "API-sleutel toevoegen",
+            "endpoint": "Endpoint instellen"
+          },
+          "shortcuts": "Sneltoetsen (maximaal {{limit}})",
+          "changedElsewhere": "Deze prompt is elders gewijzigd. Laad hem opnieuw om de wijziging te zien, of sla op om je eigen versie te behouden.",
+          "reload": "Opnieuw laden",
+          "deletedElsewhere": "Deze prompt is elders verwijderd en kan niet meer worden opgeslagen.",
+          "shortcutsSavedImmediately": "Wijzigingen in sneltoetsen worden direct opgeslagen.",
+          "fixField": {
+            "api_key": "API-sleutel voor {{provider}}",
+            "endpoint": "Endpoint van {{provider}}",
+            "hint": "Opgeslagen zodra je het veld verlaat. De standaardprovider verandert niet."
+          }
+        },
+        "actions": {
+          "note": "Wijzigingen gelden voor het volgende dictaat na het opslaan.",
+          "fixFields": "Herstel de gemarkeerde velden om op te slaan.",
+          "delete": "Prompt verwijderen",
+          "cancel": "Annuleren",
+          "save": "Opslaan",
+          "saving": "Opslaan…",
+          "saved": "Prompt opgeslagen."
+        },
+        "deleteDialog": {
+          "title": "„{{name}}” verwijderen?",
+          "shortcuts": "De sneltoetsen worden verwijderd: {{shortcuts}}.",
+          "default": "Dit is de standaardprompt: de standaard wordt Geen.",
+          "body": "Dit kan niet ongedaan worden gemaakt.",
+          "cancel": "Annuleren",
+          "confirm": "Verwijderen",
+          "close": "Sluiten",
+          "deleted": "Prompt „{{name}}” verwijderd.",
+          "deletedWithShortcuts": "Prompt „{{name}}” verwijderd. Verwijderde sneltoetsen: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Test",
+          "sampleLabel": "Voorbeeldtekst",
+          "samplePlaceholder": "Typ of plak een voorbeeldtranscriptie",
+          "run": "Test uitvoeren",
+          "running": "Bezig met testen…",
+          "note": "Er wordt niets ingevoegd en de geschiedenis verandert niet.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} s",
+          "failedTitle": "Test mislukt: {{reason}}",
+          "failedHint": "Controleer de providerinstellingen en voer de test opnieuw uit.",
+          "retry": "Opnieuw uitvoeren",
+          "busy": "Er loopt nog een andere test. Probeer het opnieuw als die klaar is.",
+          "skipped": "Voer een voorbeeldtekst in om de prompt te testen.",
+          "outdated": "Dit resultaat hoort bij een eerdere versie van de prompt of het voorbeeld. Voer de test opnieuw uit."
+        },
+        "shortcutOwner": "de prompt „{{name}}”"
       }
     },
     "history": {
