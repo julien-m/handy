@@ -95,7 +95,7 @@ fn write_export(path: &str, reply: &Reply) -> Reply {
     Reply::success(super::protocol::Revision(revision), data, reply.warning())
 }
 /// Typed refusal of an export write; the reason never carries the path.
-fn export_failure(error: &exchange_file::ExportError) -> SettingsError {
+pub(crate) fn export_failure(error: &exchange_file::ExportError) -> SettingsError {
     let reason = match error {
         exchange_file::ExportError::SymbolicLink => ErrorReason::ExportSymbolicLink,
         exchange_file::ExportError::ReadOnly => ErrorReason::ExportReadOnly,

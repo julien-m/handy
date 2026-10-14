@@ -665,6 +665,167 @@
         "label": "Afficher les nouveautés",
         "description": "Afficher les notes de version après les mises à jour de Handy"
       }
+    },
+    "replacements": {
+      "group": "Remplacements",
+      "title": "Règles de remplacement",
+      "description": "Réécrivez le texte reconnu avec votre propre orthographe. Appliquées après la reconnaissance, contrairement au Vocabulaire.",
+      "loading": "Chargement des règles de remplacement…",
+      "loadFailed": "Impossible de charger les règles de remplacement.",
+      "retry": "Réessayer",
+      "views": {
+        "label": "Affichage des règles",
+        "list": "Liste",
+        "text": "Texte"
+      },
+      "import": "Importer…",
+      "export": {
+        "button": "Exporter…",
+        "done": "Règles exportées vers {{name}}.",
+        "notSynced": "Règles exportées vers {{name}}, mais le disque n'a pas encore confirmé l'écriture.",
+        "symbolicLink": "{{name}} est un lien : choisissez un autre fichier. Rien n'a été exporté.",
+        "readOnly": "{{name}} est en lecture seule : choisissez un autre fichier. Rien n'a été exporté.",
+        "notWritten": "Impossible d'écrire {{name}}. Le fichier est inchangé."
+      },
+      "add": {
+        "recognized": "Texte reconnu",
+        "replacement": "Remplacement",
+        "button": "Ajouter la règle",
+        "needsText": "Saisissez le texte reconnu et le remplacement pour ajouter une règle."
+      },
+      "rule": {
+        "edit": "Modifier la règle {{recognized}}",
+        "done": "Terminer la modification de la règle {{recognized}}",
+        "delete": "Supprimer la règle {{recognized}}",
+        "recognized": "Texte reconnu de la règle {{position}}",
+        "replacement": "Remplacement de la règle {{position}}"
+      },
+      "count": "Règles : {{count}} sur {{max}} · insensible à la casse, mots entiers",
+      "empty": {
+        "title": "Aucune règle de remplacement pour l'instant",
+        "body": "Ajoutez une règle ou collez des lignes comme",
+        "paste": "Coller des règles sous forme de texte"
+      },
+      "draft": {
+        "note": "Modifications non enregistrées. Les dictées utilisent les règles enregistrées jusqu'à ce que vous enregistriez.",
+        "discard": "Abandonner",
+        "save": "Enregistrer",
+        "saving": "Enregistrement…",
+        "saved": "Règles de remplacement enregistrées."
+      },
+      "commit": {
+        "invalid": "Certaines règles ne sont pas valides. Corrigez les lignes en surbrillance, puis réessayez.",
+        "unchanged": "Les règles enregistrées sont inchangées.",
+        "conflict": "Les règles ont été modifiées ailleurs, par exemple depuis la ligne de commande. Rechargez-les pour continuer.",
+        "reload": "Recharger"
+      },
+      "bulk": {
+        "editor": "Règles sous forme de texte",
+        "hint": "Une règle par ligne : recognized;replacement. Une tabulation fonctionne aussi pour coller depuis un tableur. Les lignes commençant par # sont ignorées.",
+        "cancel": "Annuler",
+        "apply": "Appliquer",
+        "applying": "Application…",
+        "applied": "Règles de remplacement appliquées.",
+        "fixLine": "Corrigez la ligne {{line}} pour appliquer. Les règles enregistrées sont inchangées.",
+        "fixLines": "Corrigez les {{count}} lignes en erreur pour appliquer. Les règles enregistrées sont inchangées.",
+        "ready": "Appliquer remplace les règles enregistrées par cet aperçu.",
+        "noChanges": "Rien à appliquer : le texte correspond aux règles enregistrées."
+      },
+      "preview": {
+        "title": "Aperçu",
+        "updating": "Mise à jour de l'aperçu…",
+        "errorOne": "1 erreur · Impossible d'appliquer",
+        "errorMany": "Erreurs : {{count}} · Impossible d'appliquer",
+        "changes": "À ajouter : {{adds}} · À mettre à jour : {{updates}} · À supprimer : {{deletes}}",
+        "noChanges": "Aucune modification",
+        "omitted": "Lignes non affichées : {{count}}",
+        "duplicateOf": "Même texte reconnu que la ligne {{lines}}",
+        "kinds": {
+          "add": "Ajout",
+          "update": "Mise à jour",
+          "delete": "Suppression",
+          "unchanged": "Inchangée",
+          "ignored": "Ignorée",
+          "error": "Erreur"
+        },
+        "ignored": {
+          "header": "Ligne d'en-tête",
+          "blank": "Ligne vide",
+          "comment": "Commentaire"
+        }
+      },
+      "importDialog": {
+        "title": "Importer des règles",
+        "close": "Fermer",
+        "fileOne": "{{name}} · 1 ligne · UTF-8",
+        "fileMany": "{{name}} · {{count}} lignes · UTF-8",
+        "mode": "Mode",
+        "merge": "Fusionner : mettre à jour les règles correspondantes, ajouter les nouvelles à la fin",
+        "replace": "Remplacer : le fichier devient l'ensemble complet des règles",
+        "previewing": "Lecture du fichier…",
+        "updateOne": "1 mise à jour",
+        "updateMany": "Mises à jour : {{count}}",
+        "addOne": "1 ajout",
+        "addMany": "Ajouts : {{count}}",
+        "deleteOne": "1 suppression",
+        "deleteMany": "Suppressions : {{count}}",
+        "errorOne": "1 erreur",
+        "errorMany": "Erreurs : {{count}}",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (mise à jour, conserve la position {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (ajoutée à la fin)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (supprimée)",
+        "noChanges": "Ce fichier correspond aux règles enregistrées : rien à importer.",
+        "firstError": "Ligne {{line}} : {{reason}}",
+        "cancel": "Annuler",
+        "apply": "Appliquer l'import",
+        "applying": "Importation…",
+        "imported": "Règles importées."
+      },
+      "importRefusal": {
+        "encodingTitle": "Impossible d'importer {{name}} : ce n'est pas du texte UTF-8",
+        "encodingBody": "Rien n'a été importé depuis ce fichier. Exportez-le en texte brut ou en CSV, puis importez-le à nouveau.",
+        "tooLargeTitle": "Impossible d'importer {{name}} : il dépasse 1 MB",
+        "tooLargeBody": "Rien n'a été importé. Divisez le fichier en fichiers plus petits, puis importez-les un par un.",
+        "unreadableTitle": "Impossible de lire {{name}}",
+        "unreadableBody": "Rien n'a été importé. Vérifiez que le fichier existe toujours et que Handy peut l'ouvrir.",
+        "dismiss": "Ignorer"
+      },
+      "deleteDialog": {
+        "title": "Supprimer cette règle ?",
+        "body": "{{recognized}} → {{replacement}} sera retirée de la liste. Enregistrez pour appliquer la modification.",
+        "cancel": "Annuler",
+        "confirm": "Supprimer"
+      },
+      "switchDialog": {
+        "title": "Enregistrer ou abandonner vos modifications",
+        "body": "La liste et le texte modifient les mêmes règles. Enregistrez ou abandonnez d'abord vos modifications non enregistrées.",
+        "cancel": "Annuler",
+        "discard": "Abandonner",
+        "save": "Enregistrer"
+      },
+      "issues": {
+        "recognizedEmpty": "Saisissez le texte reconnu.",
+        "recognizedTooLong": "Le texte reconnu est limité à 100 caractères.",
+        "recognizedForbidden": "Le texte reconnu ne peut pas contenir de saut de ligne, de tabulation ni de ;.",
+        "recognizedControl": "Le texte reconnu contient un caractère de contrôle invisible.",
+        "recognizedComment": "Le texte reconnu ne peut pas commencer par #.",
+        "duplicate": "Chaque texte reconnu ne peut apparaître qu'une fois ; celui-ci est déjà défini.",
+        "replacementEmpty": "Saisissez le remplacement.",
+        "replacementTooLong": "Le remplacement est limité à 500 caractères.",
+        "replacementForbidden": "Le remplacement ne peut pas contenir de saut de ligne ni de tabulation.",
+        "replacementControl": "Le remplacement contient un caractère de contrôle invisible.",
+        "missingSeparator": "Séparateur manquant : ajoutez ; puis le remplacement",
+        "tooManyRules": "Un ensemble de règles contient au maximum 1 000 règles.",
+        "invalidSavedRules": "Les règles enregistrées ne sont pas valides. Rechargez-les avant d'importer.",
+        "unicodeUnavailable": "Impossible de vérifier les règles pour le moment. Redémarrez Handy, puis réessayez.",
+        "invalidRule": "Cette règle n'est pas valide."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Modifications non enregistrées",
+      "description": "Certaines de vos règles de remplacement ne sont pas enregistrées. Restez pour les enregistrer, ou abandonnez-les et quittez.",
+      "stay": "Rester",
+      "discard": "Abandonner et quitter"
     }
   },
   "footer": {

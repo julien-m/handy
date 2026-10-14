@@ -665,6 +665,167 @@
         "label": "Visa nyheter",
         "description": "Visa versionsinformation efter Handy-uppdateringar"
       }
+    },
+    "replacements": {
+      "group": "Ersättningar",
+      "title": "Ersättningsregler",
+      "description": "Skriv om igenkänd text med din egen stavning. Tillämpas efter igenkänningen, till skillnad från Ordförråd.",
+      "loading": "Läser in ersättningsregler…",
+      "loadFailed": "Ersättningsreglerna kunde inte läsas in.",
+      "retry": "Försök igen",
+      "views": {
+        "label": "Regelvy",
+        "list": "Lista",
+        "text": "Text"
+      },
+      "import": "Importera…",
+      "export": {
+        "button": "Exportera…",
+        "done": "Reglerna exporterades till {{name}}.",
+        "notSynced": "Reglerna exporterades till {{name}}, men disken har ännu inte bekräftat skrivningen.",
+        "symbolicLink": "{{name}} är en länk: välj en annan fil. Inget exporterades.",
+        "readOnly": "{{name}} är skrivskyddad: välj en annan fil. Inget exporterades.",
+        "notWritten": "{{name}} kunde inte skrivas. Filen är oförändrad."
+      },
+      "add": {
+        "recognized": "Igenkänd text",
+        "replacement": "Ersättning",
+        "button": "Lägg till regel",
+        "needsText": "Ange den igenkända texten och ersättningen för att lägga till en regel."
+      },
+      "rule": {
+        "edit": "Redigera regeln {{recognized}}",
+        "done": "Klar med att redigera regeln {{recognized}}",
+        "delete": "Ta bort regeln {{recognized}}",
+        "recognized": "Igenkänd text för regel {{position}}",
+        "replacement": "Ersättning för regel {{position}}"
+      },
+      "count": "{{count}} av {{max}} regler · skiftlägesokänsligt, hela ord",
+      "empty": {
+        "title": "Inga ersättningsregler än",
+        "body": "Lägg till en regel eller klistra in rader som",
+        "paste": "Klistra in regler som text"
+      },
+      "draft": {
+        "note": "Osparade ändringar. Dikteringar använder de sparade reglerna tills du sparar.",
+        "discard": "Förkasta",
+        "save": "Spara",
+        "saving": "Sparar…",
+        "saved": "Ersättningsreglerna har sparats."
+      },
+      "commit": {
+        "invalid": "Vissa regler är ogiltiga. Rätta de markerade raderna och försök igen.",
+        "unchanged": "De sparade reglerna är oförändrade.",
+        "conflict": "Reglerna har ändrats på annat håll, till exempel från kommandoraden. Läs in dem igen för att fortsätta.",
+        "reload": "Läs in igen"
+      },
+      "bulk": {
+        "editor": "Regler som text",
+        "hint": "En regel per rad: recognized;replacement. Tabb fungerar också vid inklistring från kalkylark. Rader som börjar med # ignoreras.",
+        "cancel": "Avbryt",
+        "apply": "Tillämpa",
+        "applying": "Tillämpar…",
+        "applied": "Ersättningsreglerna har tillämpats.",
+        "fixLine": "Rätta rad {{line}} för att tillämpa. De sparade reglerna är oförändrade.",
+        "fixLines": "Rätta de {{count}} felaktiga raderna för att tillämpa. De sparade reglerna är oförändrade.",
+        "ready": "Tillämpa ersätter de sparade reglerna med den här förhandsvisningen.",
+        "noChanges": "Inget att tillämpa: texten stämmer med de sparade reglerna."
+      },
+      "preview": {
+        "title": "Förhandsvisning",
+        "updating": "Uppdaterar förhandsvisningen…",
+        "errorOne": "1 fel · Tillämpa är inte tillgängligt",
+        "errorMany": "{{count}} fel · Tillämpa är inte tillgängligt",
+        "changes": "{{adds}} att lägga till · {{updates}} att uppdatera · {{deletes}} att ta bort",
+        "noChanges": "Inga ändringar",
+        "omitted": "Rader som inte visas: {{count}}",
+        "duplicateOf": "Samma igenkända text som rad {{lines}}",
+        "kinds": {
+          "add": "Lägg till",
+          "update": "Uppdatera",
+          "delete": "Ta bort",
+          "unchanged": "Oförändrad",
+          "ignored": "Ignorerad",
+          "error": "Fel"
+        },
+        "ignored": {
+          "header": "Rubrikrad",
+          "blank": "Tom rad",
+          "comment": "Kommentar"
+        }
+      },
+      "importDialog": {
+        "title": "Importera regler",
+        "close": "Stäng",
+        "fileOne": "{{name}} · 1 rad · UTF-8",
+        "fileMany": "{{name}} · {{count}} rader · UTF-8",
+        "mode": "Läge",
+        "merge": "Sammanfoga: uppdatera matchande regler, lägg till nya i slutet",
+        "replace": "Ersätt: filen blir hela regeluppsättningen",
+        "previewing": "Läser filen…",
+        "updateOne": "1 uppdatering",
+        "updateMany": "{{count}} uppdateringar",
+        "addOne": "1 tillägg",
+        "addMany": "{{count}} tillägg",
+        "deleteOne": "1 borttagning",
+        "deleteMany": "{{count}} borttagningar",
+        "errorOne": "1 fel",
+        "errorMany": "{{count}} fel",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (uppdateras, behåller position {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (läggs till i slutet)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (tas bort)",
+        "noChanges": "Filen stämmer med de sparade reglerna: inget att importera.",
+        "firstError": "Rad {{line}}: {{reason}}",
+        "cancel": "Avbryt",
+        "apply": "Tillämpa import",
+        "applying": "Importerar…",
+        "imported": "Reglerna har importerats."
+      },
+      "importRefusal": {
+        "encodingTitle": "Det gick inte att importera {{name}}: filen är inte UTF-8-text",
+        "encodingBody": "Inget importerades från filen. Exportera vanlig text eller CSV och importera sedan igen.",
+        "tooLargeTitle": "Det gick inte att importera {{name}}: filen är större än 1 MB",
+        "tooLargeBody": "Inget importerades. Dela upp filen i mindre filer och importera sedan var och en.",
+        "unreadableTitle": "Det gick inte att läsa {{name}}",
+        "unreadableBody": "Inget importerades. Kontrollera att filen fortfarande finns och att Handy kan öppna den.",
+        "dismiss": "Avfärda"
+      },
+      "deleteDialog": {
+        "title": "Ta bort den här regeln?",
+        "body": "{{recognized}} → {{replacement}} tas bort från listan. Spara för att tillämpa ändringen.",
+        "cancel": "Avbryt",
+        "confirm": "Ta bort"
+      },
+      "switchDialog": {
+        "title": "Spara eller förkasta dina ändringar",
+        "body": "Listan och texten redigerar samma regler. Spara eller förkasta dina osparade ändringar först.",
+        "cancel": "Avbryt",
+        "discard": "Förkasta",
+        "save": "Spara"
+      },
+      "issues": {
+        "recognizedEmpty": "Ange den igenkända texten.",
+        "recognizedTooLong": "Den igenkända texten får vara högst 100 tecken.",
+        "recognizedForbidden": "Den igenkända texten får inte innehålla radbrytning, tabb eller ;.",
+        "recognizedControl": "Den igenkända texten innehåller ett osynligt kontrolltecken.",
+        "recognizedComment": "Den igenkända texten får inte börja med #.",
+        "duplicate": "Varje igenkänd text får bara förekomma en gång; den här är redan definierad.",
+        "replacementEmpty": "Ange ersättningen.",
+        "replacementTooLong": "Ersättningen får vara högst 500 tecken.",
+        "replacementForbidden": "Ersättningen får inte innehålla radbrytning eller tabb.",
+        "replacementControl": "Ersättningen innehåller ett osynligt kontrolltecken.",
+        "missingSeparator": "Avgränsare saknas: lägg till ; följt av ersättningen",
+        "tooManyRules": "En regeluppsättning rymmer högst 1 000 regler.",
+        "invalidSavedRules": "De sparade reglerna är ogiltiga. Läs in dem igen innan du importerar.",
+        "unicodeUnavailable": "Reglerna kan inte kontrolleras just nu. Starta om Handy och försök igen.",
+        "invalidRule": "Den här regeln är ogiltig."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Osparade ändringar",
+      "description": "Några av dina ersättningsregler är inte sparade. Stanna för att spara dem, eller förkasta dem och lämna.",
+      "stay": "Stanna",
+      "discard": "Förkasta och lämna"
     }
   },
   "footer": {

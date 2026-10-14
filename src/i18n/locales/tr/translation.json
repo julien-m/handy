@@ -665,6 +665,167 @@
         "label": "Yenilikleri Göster",
         "description": "Handy güncellemelerinden sonra sürüm notlarını göster"
       }
+    },
+    "replacements": {
+      "group": "Değiştirmeler",
+      "title": "Değiştirme kuralları",
+      "description": "Tanınan metni kendi yazımınızla yeniden yazın. Kelime Dağarcığı'ndan farklı olarak tanımadan sonra uygulanır.",
+      "loading": "Değiştirme kuralları yükleniyor…",
+      "loadFailed": "Değiştirme kuralları yüklenemedi.",
+      "retry": "Tekrar dene",
+      "views": {
+        "label": "Kural görünümü",
+        "list": "Liste",
+        "text": "Metin"
+      },
+      "import": "İçe aktar…",
+      "export": {
+        "button": "Dışa aktar…",
+        "done": "Kurallar {{name}} dosyasına aktarıldı.",
+        "notSynced": "Kurallar {{name}} dosyasına aktarıldı, ancak disk yazmayı henüz onaylamadı.",
+        "symbolicLink": "{{name}} bir bağlantıdır: başka bir dosya seçin. Hiçbir şey dışa aktarılmadı.",
+        "readOnly": "{{name}} salt okunurdur: başka bir dosya seçin. Hiçbir şey dışa aktarılmadı.",
+        "notWritten": "{{name}} dosyasına yazılamadı. Dosya değişmedi."
+      },
+      "add": {
+        "recognized": "Tanınan metin",
+        "replacement": "Yerine geçecek metin",
+        "button": "Kural ekle",
+        "needsText": "Kural eklemek için tanınan metni ve yerine geçecek metni girin."
+      },
+      "rule": {
+        "edit": "{{recognized}} kuralını düzenle",
+        "done": "{{recognized}} kuralının düzenlenmesi bitti",
+        "delete": "{{recognized}} kuralını sil",
+        "recognized": "{{position}}. kuralın tanınan metni",
+        "replacement": "{{position}}. kuralın yerine geçecek metni"
+      },
+      "count": "{{count}} / {{max}} kural · büyük/küçük harf duyarsız, tam kelimeler",
+      "empty": {
+        "title": "Henüz değiştirme kuralı yok",
+        "body": "Bir kural ekleyin veya şu gibi satırlar yapıştırın",
+        "paste": "Kuralları metin olarak yapıştır"
+      },
+      "draft": {
+        "note": "Kaydedilmemiş değişiklikler var. Siz kaydedene kadar dikteler kaydedilmiş kuralları kullanır.",
+        "discard": "Vazgeç",
+        "save": "Kaydet",
+        "saving": "Kaydediliyor…",
+        "saved": "Değiştirme kuralları kaydedildi."
+      },
+      "commit": {
+        "invalid": "Bazı kurallar geçersiz. Vurgulanan satırları düzeltip tekrar deneyin.",
+        "unchanged": "Kaydedilmiş kurallar değişmedi.",
+        "conflict": "Kurallar başka bir yerde, örneğin komut satırından değiştirildi. Devam etmek için kuralları yeniden yükleyin.",
+        "reload": "Yeniden yükle"
+      },
+      "bulk": {
+        "editor": "Metin olarak kurallar",
+        "hint": "Her satıra bir kural: recognized;replacement. Elektronik tablodan yapıştırma için sekme de kullanılabilir. # ile başlayan satırlar yok sayılır.",
+        "cancel": "İptal",
+        "apply": "Uygula",
+        "applying": "Uygulanıyor…",
+        "applied": "Değiştirme kuralları uygulandı.",
+        "fixLine": "Uygulamak için {{line}}. satırı düzeltin. Kaydedilmiş kurallar değişmedi.",
+        "fixLines": "Uygulamak için hatalı {{count}} satırı düzeltin. Kaydedilmiş kurallar değişmedi.",
+        "ready": "Uygula, kaydedilmiş kuralları bu önizlemeyle değiştirir.",
+        "noChanges": "Uygulanacak bir şey yok: metin kaydedilmiş kurallarla aynı."
+      },
+      "preview": {
+        "title": "Önizleme",
+        "updating": "Önizleme güncelleniyor…",
+        "errorOne": "1 hata · Uygula kullanılamıyor",
+        "errorMany": "{{count}} hata · Uygula kullanılamıyor",
+        "changes": "Eklenecek: {{adds}} · Güncellenecek: {{updates}} · Silinecek: {{deletes}}",
+        "noChanges": "Değişiklik yok",
+        "omitted": "Listelenmeyen satırlar: {{count}}",
+        "duplicateOf": "{{lines}}. satırla aynı tanınan metin",
+        "kinds": {
+          "add": "Ekle",
+          "update": "Güncelle",
+          "delete": "Sil",
+          "unchanged": "Değişmedi",
+          "ignored": "Yok sayıldı",
+          "error": "Hata"
+        },
+        "ignored": {
+          "header": "Başlık satırı",
+          "blank": "Boş satır",
+          "comment": "Yorum"
+        }
+      },
+      "importDialog": {
+        "title": "Kuralları içe aktar",
+        "close": "Kapat",
+        "fileOne": "{{name}} · 1 satır · UTF-8",
+        "fileMany": "{{name}} · {{count}} satır · UTF-8",
+        "mode": "Mod",
+        "merge": "Birleştir: eşleşen kuralları güncelle, yenilerini sona ekle",
+        "replace": "Değiştir: dosya kural kümesinin tamamı olur",
+        "previewing": "Dosya okunuyor…",
+        "updateOne": "1 güncelleme",
+        "updateMany": "{{count}} güncelleme",
+        "addOne": "1 ekleme",
+        "addMany": "{{count}} ekleme",
+        "deleteOne": "1 silme",
+        "deleteMany": "{{count}} silme",
+        "errorOne": "1 hata",
+        "errorMany": "{{count}} hata",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (güncelleme, {{position}}. konumunu korur)",
+        "exampleAdd": "{{recognized}} → {{replacement}} (sona eklendi)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (kaldırıldı)",
+        "noChanges": "Bu dosya kaydedilmiş kurallarla aynı: içe aktarılacak bir şey yok.",
+        "firstError": "Satır {{line}}: {{reason}}",
+        "cancel": "İptal",
+        "apply": "İçe aktarmayı uygula",
+        "applying": "İçe aktarılıyor…",
+        "imported": "Kurallar içe aktarıldı."
+      },
+      "importRefusal": {
+        "encodingTitle": "{{name}} içe aktarılamadı: UTF-8 metin değil",
+        "encodingBody": "Bu dosyadan hiçbir şey içe aktarılmadı. Düz metin veya CSV olarak dışa aktarıp yeniden içe aktarın.",
+        "tooLargeTitle": "{{name}} içe aktarılamadı: 1 MB'tan büyük",
+        "tooLargeBody": "Hiçbir şey içe aktarılmadı. Dosyayı daha küçük dosyalara bölüp her birini içe aktarın.",
+        "unreadableTitle": "{{name}} okunamadı",
+        "unreadableBody": "Hiçbir şey içe aktarılmadı. Dosyanın hâlâ mevcut olduğunu ve Handy'nin onu açabildiğini kontrol edin.",
+        "dismiss": "Kapat"
+      },
+      "deleteDialog": {
+        "title": "Bu kural silinsin mi?",
+        "body": "{{recognized}} → {{replacement}} listeden kaldırılacak. Değişikliği uygulamak için kaydedin.",
+        "cancel": "İptal",
+        "confirm": "Sil"
+      },
+      "switchDialog": {
+        "title": "Değişikliklerinizi kaydedin veya vazgeçin",
+        "body": "Liste ve metin aynı kuralları düzenler. Önce kaydedilmemiş değişikliklerinizi kaydedin veya onlardan vazgeçin.",
+        "cancel": "İptal",
+        "discard": "Vazgeç",
+        "save": "Kaydet"
+      },
+      "issues": {
+        "recognizedEmpty": "Tanınan metni girin.",
+        "recognizedTooLong": "Tanınan metin en fazla 100 karakter olabilir.",
+        "recognizedForbidden": "Tanınan metin satır sonu, sekme veya ; içeremez.",
+        "recognizedControl": "Tanınan metin görünmez bir kontrol karakteri içeriyor.",
+        "recognizedComment": "Tanınan metin # ile başlayamaz.",
+        "duplicate": "Her tanınan metin yalnızca bir kez yer alabilir; bu metin zaten tanımlı.",
+        "replacementEmpty": "Yerine geçecek metni girin.",
+        "replacementTooLong": "Yerine geçecek metin en fazla 500 karakter olabilir.",
+        "replacementForbidden": "Yerine geçecek metin satır sonu veya sekme içeremez.",
+        "replacementControl": "Yerine geçecek metin görünmez bir kontrol karakteri içeriyor.",
+        "missingSeparator": "Ayırıcı eksik: ; ve ardından yerine geçecek metni ekleyin",
+        "tooManyRules": "Bir kural kümesi en fazla 1.000 kural içerebilir.",
+        "invalidSavedRules": "Kaydedilmiş kurallar geçersiz. İçe aktarmadan önce kuralları yeniden yükleyin.",
+        "unicodeUnavailable": "Kurallar şu anda denetlenemiyor. Handy'yi yeniden başlatıp tekrar deneyin.",
+        "invalidRule": "Bu kural geçersiz."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Kaydedilmemiş değişiklikler",
+      "description": "Bazı değiştirme kurallarınız kaydedilmedi. Kaydetmek için kalın veya onlardan vazgeçip çıkın.",
+      "stay": "Kal",
+      "discard": "Vazgeç ve çık"
     }
   },
   "footer": {

@@ -665,6 +665,167 @@
         "label": "Pokaż nowości",
         "description": "Pokazuj informacje o wydaniu po aktualizacjach Handy"
       }
+    },
+    "replacements": {
+      "group": "Zamiany",
+      "title": "Reguły zamiany",
+      "description": "Przepisuj rozpoznany tekst zgodnie z własną pisownią. Stosowane po rozpoznaniu, w odróżnieniu od sekcji Słownictwo.",
+      "loading": "Wczytywanie reguł zamiany…",
+      "loadFailed": "Nie udało się wczytać reguł zamiany.",
+      "retry": "Spróbuj ponownie",
+      "views": {
+        "label": "Widok reguł",
+        "list": "Lista",
+        "text": "Tekst"
+      },
+      "import": "Importuj…",
+      "export": {
+        "button": "Eksportuj…",
+        "done": "Wyeksportowano reguły do {{name}}.",
+        "notSynced": "Wyeksportowano reguły do {{name}}, ale dysk nie potwierdził jeszcze zapisu.",
+        "symbolicLink": "{{name}} jest dowiązaniem: wybierz inny plik. Nic nie zostało wyeksportowane.",
+        "readOnly": "{{name}} jest tylko do odczytu: wybierz inny plik. Nic nie zostało wyeksportowane.",
+        "notWritten": "Nie udało się zapisać {{name}}. Plik pozostał bez zmian."
+      },
+      "add": {
+        "recognized": "Rozpoznany tekst",
+        "replacement": "Zamiennik",
+        "button": "Dodaj regułę",
+        "needsText": "Wpisz rozpoznany tekst i zamiennik, aby dodać regułę."
+      },
+      "rule": {
+        "edit": "Edytuj regułę {{recognized}}",
+        "done": "Zakończ edycję reguły {{recognized}}",
+        "delete": "Usuń regułę {{recognized}}",
+        "recognized": "Rozpoznany tekst reguły {{position}}",
+        "replacement": "Zamiennik reguły {{position}}"
+      },
+      "count": "Reguły: {{count}} z {{max}} · bez rozróżniania wielkości liter, całe słowa",
+      "empty": {
+        "title": "Brak reguł zamiany",
+        "body": "Dodaj regułę lub wklej wiersze, na przykład",
+        "paste": "Wklej reguły jako tekst"
+      },
+      "draft": {
+        "note": "Niezapisane zmiany. Dyktowanie korzysta z zapisanych reguł, dopóki nie zapiszesz zmian.",
+        "discard": "Odrzuć",
+        "save": "Zapisz",
+        "saving": "Zapisywanie…",
+        "saved": "Zapisano reguły zamiany."
+      },
+      "commit": {
+        "invalid": "Niektóre reguły są nieprawidłowe. Popraw wyróżnione wiersze i spróbuj ponownie.",
+        "unchanged": "Zapisane reguły nie zostały zmienione.",
+        "conflict": "Reguły zostały zmienione gdzie indziej, na przykład z wiersza poleceń. Wczytaj je ponownie, aby kontynuować.",
+        "reload": "Wczytaj ponownie"
+      },
+      "bulk": {
+        "editor": "Reguły jako tekst",
+        "hint": "Jedna reguła w wierszu: recognized;replacement. Przy wklejaniu z arkusza kalkulacyjnego działa też tabulator. Wiersze zaczynające się od # są pomijane.",
+        "cancel": "Anuluj",
+        "apply": "Zastosuj",
+        "applying": "Stosowanie…",
+        "applied": "Zastosowano reguły zamiany.",
+        "fixLine": "Popraw wiersz {{line}}, aby zastosować. Zapisane reguły nie zostały zmienione.",
+        "fixLines": "Popraw błędne wiersze (liczba: {{count}}), aby zastosować. Zapisane reguły nie zostały zmienione.",
+        "ready": "Zastosowanie zastąpi zapisane reguły tym podglądem.",
+        "noChanges": "Nic do zastosowania: tekst jest zgodny z zapisanymi regułami."
+      },
+      "preview": {
+        "title": "Podgląd",
+        "updating": "Aktualizowanie podglądu…",
+        "errorOne": "1 błąd · Zastosowanie niedostępne",
+        "errorMany": "Błędy: {{count}} · Zastosowanie niedostępne",
+        "changes": "Do dodania: {{adds}} · do aktualizacji: {{updates}} · do usunięcia: {{deletes}}",
+        "noChanges": "Brak zmian",
+        "omitted": "Niewyświetlone wiersze: {{count}}",
+        "duplicateOf": "Ten sam rozpoznany tekst co w wierszu {{lines}}",
+        "kinds": {
+          "add": "Dodanie",
+          "update": "Aktualizacja",
+          "delete": "Usunięcie",
+          "unchanged": "Bez zmian",
+          "ignored": "Pominięto",
+          "error": "Błąd"
+        },
+        "ignored": {
+          "header": "Wiersz nagłówka",
+          "blank": "Pusty wiersz",
+          "comment": "Komentarz"
+        }
+      },
+      "importDialog": {
+        "title": "Importuj reguły",
+        "close": "Zamknij",
+        "fileOne": "{{name}} · 1 wiersz · UTF-8",
+        "fileMany": "{{name}} · wiersze: {{count}} · UTF-8",
+        "mode": "Tryb",
+        "merge": "Scal: zaktualizuj pasujące reguły, dodaj nowe na końcu",
+        "replace": "Zastąp: plik staje się całym zestawem reguł",
+        "previewing": "Odczytywanie pliku…",
+        "updateOne": "1 aktualizacja",
+        "updateMany": "Aktualizacje: {{count}}",
+        "addOne": "1 dodanie",
+        "addMany": "Dodania: {{count}}",
+        "deleteOne": "1 usunięcie",
+        "deleteMany": "Usunięcia: {{count}}",
+        "errorOne": "1 błąd",
+        "errorMany": "Błędy: {{count}}",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (aktualizacja, zachowuje pozycję {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (dodana na końcu)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (usunięta)",
+        "noChanges": "Ten plik jest zgodny z zapisanymi regułami: nie ma nic do zaimportowania.",
+        "firstError": "Wiersz {{line}}: {{reason}}",
+        "cancel": "Anuluj",
+        "apply": "Zastosuj import",
+        "applying": "Importowanie…",
+        "imported": "Zaimportowano reguły."
+      },
+      "importRefusal": {
+        "encodingTitle": "Nie można zaimportować {{name}}: to nie jest tekst UTF-8",
+        "encodingBody": "Z tego pliku nic nie zaimportowano. Wyeksportuj zwykły tekst lub CSV, a następnie zaimportuj ponownie.",
+        "tooLargeTitle": "Nie można zaimportować {{name}}: plik jest większy niż 1 MB",
+        "tooLargeBody": "Nic nie zaimportowano. Podziel plik na mniejsze pliki, a następnie zaimportuj każdy z nich.",
+        "unreadableTitle": "Nie można odczytać {{name}}",
+        "unreadableBody": "Nic nie zaimportowano. Sprawdź, czy plik nadal istnieje i czy Handy może go otworzyć.",
+        "dismiss": "Zamknij"
+      },
+      "deleteDialog": {
+        "title": "Usunąć tę regułę?",
+        "body": "Reguła {{recognized}} → {{replacement}} zostanie usunięta z listy. Zapisz, aby zastosować zmianę.",
+        "cancel": "Anuluj",
+        "confirm": "Usuń"
+      },
+      "switchDialog": {
+        "title": "Zapisz lub odrzuć zmiany",
+        "body": "Lista i tekst edytują te same reguły. Najpierw zapisz lub odrzuć niezapisane zmiany.",
+        "cancel": "Anuluj",
+        "discard": "Odrzuć",
+        "save": "Zapisz"
+      },
+      "issues": {
+        "recognizedEmpty": "Wpisz rozpoznany tekst.",
+        "recognizedTooLong": "Rozpoznany tekst może mieć maksymalnie 100 znaków.",
+        "recognizedForbidden": "Rozpoznany tekst nie może zawierać podziału wiersza, tabulatora ani ;.",
+        "recognizedControl": "Rozpoznany tekst zawiera niewidoczny znak sterujący.",
+        "recognizedComment": "Rozpoznany tekst nie może zaczynać się od #.",
+        "duplicate": "Każdy rozpoznany tekst może wystąpić tylko raz; ten jest już zdefiniowany.",
+        "replacementEmpty": "Wpisz zamiennik.",
+        "replacementTooLong": "Zamiennik może mieć maksymalnie 500 znaków.",
+        "replacementForbidden": "Zamiennik nie może zawierać podziału wiersza ani tabulatora.",
+        "replacementControl": "Zamiennik zawiera niewidoczny znak sterujący.",
+        "missingSeparator": "Brak separatora: dodaj ;, a po nim zamiennik",
+        "tooManyRules": "Zestaw reguł może zawierać maksymalnie 1000 reguł.",
+        "invalidSavedRules": "Zapisane reguły są nieprawidłowe. Wczytaj je ponownie przed importem.",
+        "unicodeUnavailable": "Nie można teraz sprawdzić reguł. Uruchom ponownie Handy i spróbuj jeszcze raz.",
+        "invalidRule": "Ta reguła jest nieprawidłowa."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Niezapisane zmiany",
+      "description": "Niektóre reguły zamiany nie są zapisane. Zostań, aby je zapisać, lub odrzuć je i wyjdź.",
+      "stay": "Zostań",
+      "discard": "Odrzuć i wyjdź"
     }
   },
   "footer": {

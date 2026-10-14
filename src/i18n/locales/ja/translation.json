@@ -665,6 +665,167 @@
         "label": "新機能を表示",
         "description": "Handy のアップデート後にリリースノートを表示"
       }
+    },
+    "replacements": {
+      "group": "置換",
+      "title": "置換ルール",
+      "description": "認識されたテキストを独自の表記に書き換えます。語彙とは異なり、認識の後に適用されます。",
+      "loading": "置換ルールを読み込んでいます…",
+      "loadFailed": "置換ルールを読み込めませんでした。",
+      "retry": "再試行",
+      "views": {
+        "label": "ルールの表示",
+        "list": "リスト",
+        "text": "テキスト"
+      },
+      "import": "インポート…",
+      "export": {
+        "button": "エクスポート…",
+        "done": "ルールを{{name}}にエクスポートしました。",
+        "notSynced": "ルールを{{name}}にエクスポートしましたが、ディスクへの書き込みはまだ確認されていません。",
+        "symbolicLink": "{{name}}はリンクです。別のファイルを選択してください。何もエクスポートされていません。",
+        "readOnly": "{{name}}は読み取り専用です。別のファイルを選択してください。何もエクスポートされていません。",
+        "notWritten": "{{name}}に書き込めませんでした。ファイルは変更されていません。"
+      },
+      "add": {
+        "recognized": "認識されたテキスト",
+        "replacement": "置換後のテキスト",
+        "button": "ルールを追加",
+        "needsText": "ルールを追加するには、認識されたテキストと置換後のテキストを入力してください。"
+      },
+      "rule": {
+        "edit": "ルール{{recognized}}を編集",
+        "done": "ルール{{recognized}}の編集を完了",
+        "delete": "ルール{{recognized}}を削除",
+        "recognized": "ルール{{position}}の認識されたテキスト",
+        "replacement": "ルール{{position}}の置換後のテキスト"
+      },
+      "count": "ルール {{count}} / {{max}} 件 · 大文字と小文字を区別せず、単語全体で一致",
+      "empty": {
+        "title": "置換ルールはまだありません",
+        "body": "ルールを追加するか、次のような行を貼り付けてください",
+        "paste": "ルールをテキストとして貼り付け"
+      },
+      "draft": {
+        "note": "未保存の変更があります。保存するまで、音声入力には保存済みのルールが使われます。",
+        "discard": "破棄",
+        "save": "保存",
+        "saving": "保存中…",
+        "saved": "置換ルールを保存しました。"
+      },
+      "commit": {
+        "invalid": "無効なルールがあります。強調表示された行を修正してから、もう一度お試しください。",
+        "unchanged": "保存済みのルールは変更されていません。",
+        "conflict": "ルールが別の場所(コマンドラインなど)で変更されました。続けるには再読み込みしてください。",
+        "reload": "再読み込み"
+      },
+      "bulk": {
+        "editor": "テキスト形式のルール",
+        "hint": "1行に1ルール: recognized;replacement。スプレッドシートからの貼り付けにはタブも使えます。# で始まる行は無視されます。",
+        "cancel": "キャンセル",
+        "apply": "適用",
+        "applying": "適用中…",
+        "applied": "置換ルールを適用しました。",
+        "fixLine": "適用するには{{line}}行目を修正してください。保存済みのルールは変更されていません。",
+        "fixLines": "適用するにはエラーのある{{count}}行を修正してください。保存済みのルールは変更されていません。",
+        "ready": "適用すると、保存済みのルールがこのプレビューの内容に置き換わります。",
+        "noChanges": "適用する内容はありません。テキストは保存済みのルールと一致しています。"
+      },
+      "preview": {
+        "title": "プレビュー",
+        "updating": "プレビューを更新中…",
+        "errorOne": "エラー1件 · 適用できません",
+        "errorMany": "エラー{{count}}件 · 適用できません",
+        "changes": "追加 {{adds}} · 更新 {{updates}} · 削除 {{deletes}}",
+        "noChanges": "変更なし",
+        "omitted": "表示されていない行: {{count}}",
+        "duplicateOf": "{{lines}}行目と同じ認識テキストです",
+        "kinds": {
+          "add": "追加",
+          "update": "更新",
+          "delete": "削除",
+          "unchanged": "変更なし",
+          "ignored": "無視",
+          "error": "エラー"
+        },
+        "ignored": {
+          "header": "ヘッダー行",
+          "blank": "空行",
+          "comment": "コメント"
+        }
+      },
+      "importDialog": {
+        "title": "ルールをインポート",
+        "close": "閉じる",
+        "fileOne": "{{name}} · 1行 · UTF-8",
+        "fileMany": "{{name}} · {{count}}行 · UTF-8",
+        "mode": "モード",
+        "merge": "マージ: 一致するルールを更新し、新しいルールを末尾に追加",
+        "replace": "置き換え: ファイルの内容がルール全体になります",
+        "previewing": "ファイルを読み込んでいます…",
+        "updateOne": "更新1件",
+        "updateMany": "更新{{count}}件",
+        "addOne": "追加1件",
+        "addMany": "追加{{count}}件",
+        "deleteOne": "削除1件",
+        "deleteMany": "削除{{count}}件",
+        "errorOne": "エラー1件",
+        "errorMany": "エラー{{count}}件",
+        "exampleUpdate": "{{recognized}} → {{replacement}}(更新、位置{{position}}を維持)",
+        "exampleAdd": "{{recognized}} → {{replacement}}(末尾に追加)",
+        "exampleDelete": "{{recognized}} → {{replacement}}(削除)",
+        "noChanges": "このファイルは保存済みのルールと一致しています。インポートする内容はありません。",
+        "firstError": "{{line}}行目: {{reason}}",
+        "cancel": "キャンセル",
+        "apply": "インポートを適用",
+        "applying": "インポート中…",
+        "imported": "ルールをインポートしました。"
+      },
+      "importRefusal": {
+        "encodingTitle": "{{name}}をインポートできません: UTF-8テキストではありません",
+        "encodingBody": "このファイルからは何もインポートされていません。プレーンテキストまたはCSVでエクスポートしてから、もう一度インポートしてください。",
+        "tooLargeTitle": "{{name}}をインポートできません: 1 MBを超えています",
+        "tooLargeBody": "何もインポートされていません。ファイルを小さなファイルに分割してから、それぞれをインポートしてください。",
+        "unreadableTitle": "{{name}}を読み込めません",
+        "unreadableBody": "何もインポートされていません。ファイルがまだ存在し、Handyで開けることを確認してください。",
+        "dismiss": "閉じる"
+      },
+      "deleteDialog": {
+        "title": "このルールを削除しますか?",
+        "body": "{{recognized}} → {{replacement}} がリストから削除されます。変更を反映するには保存してください。",
+        "cancel": "キャンセル",
+        "confirm": "削除"
+      },
+      "switchDialog": {
+        "title": "変更を保存または破棄",
+        "body": "リストとテキストは同じルールを編集します。先に未保存の変更を保存または破棄してください。",
+        "cancel": "キャンセル",
+        "discard": "破棄",
+        "save": "保存"
+      },
+      "issues": {
+        "recognizedEmpty": "認識されたテキストを入力してください。",
+        "recognizedTooLong": "認識されたテキストは100文字以内にしてください。",
+        "recognizedForbidden": "認識されたテキストに改行、タブ、; は使用できません。",
+        "recognizedControl": "認識されたテキストに不可視の制御文字が含まれています。",
+        "recognizedComment": "認識されたテキストを # で始めることはできません。",
+        "duplicate": "同じ認識テキストは1回しか使用できません。このテキストは既に定義されています。",
+        "replacementEmpty": "置換後のテキストを入力してください。",
+        "replacementTooLong": "置換後のテキストは500文字以内にしてください。",
+        "replacementForbidden": "置換後のテキストに改行やタブは使用できません。",
+        "replacementControl": "置換後のテキストに不可視の制御文字が含まれています。",
+        "missingSeparator": "区切り文字がありません: ; に続けて置換後のテキストを追加してください",
+        "tooManyRules": "1つのルールセットに含められるルールは最大1,000件です。",
+        "invalidSavedRules": "保存済みのルールが無効です。インポートする前に再読み込みしてください。",
+        "unicodeUnavailable": "現在ルールを確認できません。Handyを再起動してから、もう一度お試しください。",
+        "invalidRule": "このルールは無効です。"
+      }
+    },
+    "unsavedChanges": {
+      "title": "未保存の変更",
+      "description": "保存されていない置換ルールがあります。このまま留まって保存するか、破棄して移動してください。",
+      "stay": "留まる",
+      "discard": "破棄して移動"
     }
   },
   "footer": {

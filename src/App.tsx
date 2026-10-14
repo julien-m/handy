@@ -24,6 +24,7 @@ import {
   type OnboardingPreviewStep,
 } from "./components/settings";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { useGuardedNavigation } from "./components/unsaved-changes-dialog";
 import { Sidebar, SidebarSection, SECTIONS_CONFIG } from "./components/Sidebar";
 import { WhatsNewGate } from "./components/whats-new";
 import { useSettings } from "./hooks/useSettings";
@@ -63,6 +64,8 @@ function App() {
   const [isReturningUser, setIsReturningUser] = useState(false);
   const [currentSection, setCurrentSection] =
     useState<SidebarSection>("general");
+  // Leaving a section whose editor holds unsaved edits asks first (feature 002).
+  const sectionNavigation = useGuardedNavigation(setCurrentSection);
   const { settings, updateSetting } = useSettings();
   useSmartPasteHandOver();
   const direction = getLanguageDirection(i18n.language);
@@ -354,8 +357,9 @@ function App() {
         <div className="flex-1 flex overflow-hidden">
           <Sidebar
             activeSection={currentSection}
-            onSectionChange={setCurrentSection}
+            onSectionChange={sectionNavigation.request}
           />
+          {sectionNavigation.dialog}
           {/* Scrollable content area */}
           <div className="flex-1 flex flex-col overflow-hidden">
             <div ref={settingsScrollRef} className="flex-1 overflow-y-auto">
