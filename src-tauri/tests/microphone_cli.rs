@@ -1,7 +1,8 @@
 //! Process tests of `handy settings microphones` (feature 001) on the real binary and an isolated
 //! portable store: set-priority offline and routed (complete order, empty order, exact and
-//! hyphen-leading names, refusals with items, compare-and-set, dry run), list refused without a
-//! running Handy's audio manager, generic `set` of either microphone key refused, one envelope.
+//! hyphen-leading names, refusals with items, compare-and-set, dry run, refused while an older
+//! Handy runs), list refused without a running Handy's audio manager, generic `set` of either
+//! microphone key refused, one envelope.
 #![cfg(unix)]
 
 #[path = "settings_cli/harness.rs"]
@@ -117,6 +118,21 @@ fn a_dry_run_previews_without_writing_and_help_lists_the_domain() -> TestResult 
     assert_eq!(app.store_bytes()?, None);
     let help = app.run(&["settings", "--help"])?;
     assert!(help.stdout.contains("microphones"));
+    Ok(())
+}
+#[test]
+fn set_priority_with_an_older_handy_running_is_unavailable_and_writes_nothing() -> TestResult {
+    let app = Portable::new()?;
+    let _older = std::os::unix::net::UnixListener::bind(app.legacy_socket())?;
+    let refused = microphones(&app, &["set-priority", "USB headset"])?;
+    assert_eq!(
+        (refused.code, &envelope(&refused)?["error"]["code"]),
+        (5, &json!("unavailable"))
+    );
+    let human = app.run(&["settings", "microphones", "set-priority", "USB headset"])?;
+    assert_eq!((human.code, human.stdout.as_str()), (5, ""));
+    assert!(human.stderr.contains("unavailable"), "{}", human.stderr);
+    assert_eq!(app.store_bytes()?, None);
     Ok(())
 }
 
