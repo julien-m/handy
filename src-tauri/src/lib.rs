@@ -21,6 +21,7 @@ mod memory;
 mod overlay;
 mod paste_tx;
 pub mod portable;
+pub mod recognition_vocabulary;
 mod secure_input;
 #[cfg(target_os = "macos")]
 mod secure_input_shadow;
