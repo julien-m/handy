@@ -975,41 +975,58 @@ e.g. 28:1 28:0 means pressing on the Enter button on a standard US keyboard.
         assert!(restored.get());
     }
 
+    /// The child outlives the bound by far, so a return within it proves the
+    /// caller never waits on inherited stdio; the bound itself only absorbs
+    /// slow process start-up on a loaded machine.
+    #[cfg(unix)]
+    const DETACHED_CHILD_SECONDS: u64 = 60;
+    #[cfg(unix)]
+    const SCRIPT_RETURN_BOUND: Duration = Duration::from_secs(20);
+
+    #[cfg(unix)]
+    fn write_detaching_script(dir: &std::path::Path) -> Result<std::path::PathBuf, String> {
+        use std::os::unix::fs::PermissionsExt;
+        let script = dir.join("detach.sh");
+        let pid_file = dir.join("child.pid");
+        let body = format!(
+            "#!/bin/sh\nsleep {DETACHED_CHILD_SECONDS} &\necho $! > '{}'\nexit 0\n",
+            pid_file.display()
+        );
+        std::fs::write(&script, body).map_err(|e| e.to_string())?;
+        std::fs::set_permissions(&script, std::fs::Permissions::from_mode(0o700))
+            .map_err(|e| e.to_string())?;
+        Ok(script)
+    }
+
+    #[cfg(unix)]
+    fn stop_detached_child(dir: &std::path::Path) {
+        if let Ok(pid) = std::fs::read_to_string(dir.join("child.pid")) {
+            let _ = Command::new("kill").arg(pid.trim()).status();
+        }
+        let _ = std::fs::remove_dir_all(dir);
+    }
+
     #[cfg(unix)]
     #[test]
-    fn external_script_does_not_wait_for_inherited_stdio() {
-        use std::fs;
-        use std::os::unix::fs::PermissionsExt;
-        use std::sync::mpsc;
-        use std::thread;
-
-        let script_path = std::env::temp_dir().join(format!(
-            "handy-external-script-{}-{}.sh",
-            std::process::id(),
-            std::time::SystemTime::now()
-                .duration_since(std::time::UNIX_EPOCH)
-                .expect("system clock should be after UNIX_EPOCH")
-                .as_nanos()
+    fn external_script_does_not_wait_for_inherited_stdio() -> Result<(), String> {
+        let nanos = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map_or(0, |elapsed| elapsed.as_nanos());
+        let dir = std::env::temp_dir().join(format!(
+            "handy-external-script-{}-{nanos}",
+            std::process::id()
         ));
-        fs::write(&script_path, "#!/bin/sh\nsleep 3 &\nexit 0\n").expect("write external script");
-        let mut permissions = fs::metadata(&script_path)
-            .expect("read external script metadata")
-            .permissions();
-        permissions.set_mode(0o700);
-        fs::set_permissions(&script_path, permissions).expect("make external script executable");
-
-        let (sender, receiver) = mpsc::channel();
-        let script_path_for_thread = script_path.clone();
-        thread::spawn(move || {
-            let result =
-                paste_via_external_script("test", script_path_for_thread.to_str().unwrap());
-            sender.send(result).expect("send script result");
+        std::fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
+        let script = write_detaching_script(&dir)?;
+        let (sender, receiver) = std::sync::mpsc::channel();
+        std::thread::spawn(move || {
+            let _ = sender.send(paste_via_external_script("test", &script.to_string_lossy()));
         });
-
-        let result = receiver
-            .recv_timeout(Duration::from_secs(1))
-            .expect("external script should return without waiting for its child");
-        fs::remove_file(script_path).expect("remove external script");
-        assert!(result.is_ok());
+        let result = receiver.recv_timeout(SCRIPT_RETURN_BOUND);
+        stop_detached_child(&dir);
+        match result {
+            Ok(outcome) => outcome,
+            Err(_) => Err("external script waited for its detached child".to_string()),
+        }
     }
 }
