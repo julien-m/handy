@@ -726,7 +726,16 @@
       "persistenceFailed": "설정을 저장할 수 없습니다.",
       "generic": "설정을 변경할 수 없습니다.",
       "readOnly": "이번 세션에서는 설정이 읽기 전용입니다. 설정 파일에 안전하게 쓸 수 없으므로 변경 사항이 저장되지 않습니다.",
-      "unsupportedPlatform": "이 설정은 이 시스템에서 사용할 수 없습니다."
+      "unsupportedPlatform": "이 설정은 이 시스템에서 사용할 수 없습니다.",
+      "promptNameEmpty": "프롬프트 이름을 입력하세요.",
+      "promptNameTooLong": "프롬프트 이름은 60자 이하여야 합니다.",
+      "promptNameDuplicate": "같은 이름의 프롬프트가 이미 있습니다. 이름은 고유해야 합니다.",
+      "promptTextEmpty": "프롬프트 내용을 입력하세요.",
+      "promptTextTooLong": "프롬프트 내용은 8,000자 이하여야 합니다.",
+      "promptOverrideIncomplete": "공급자와 모델을 모두 선택하거나 기본 공급자를 사용하세요.",
+      "promptUnknownProvider": "이 공급자는 사용할 수 없습니다.",
+      "promptNotUsable": "이 프롬프트는 유효하지 않습니다. 사용하기 전에 편집하세요.",
+      "limitExceeded": "최대 개수에 도달했습니다."
     }
   },
   "appLanguage": {
@@ -745,7 +754,8 @@
   "overlay": {
     "transcribing": "텍스트로 변환 중...",
     "processing": "처리 중...",
-    "loadingModel": "모델 로딩 중..."
+    "loadingModel": "모델 로딩 중...",
+    "fallbackNotice": "AI 처리에 실패했습니다. 원본 텍스트를 사용했습니다."
   },
   "whatsNew": {
     "title": "Handy v{{version}}의 새 소식"

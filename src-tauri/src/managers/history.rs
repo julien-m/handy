@@ -1,4 +1,4 @@
-use super::history_store::{HistoryStore, NewHistoryEntry};
+use super::history_store::{HistoryStore, NewHistoryEntry, RetriedText, ENTRY_COLUMNS};
 use anyhow::{anyhow, Result};
 use chrono::Utc;
 use log::{debug, error};
@@ -84,42 +84,12 @@ impl HistoryManager {
     }
 
     /// Update an existing history entry with new transcription results (used by retry).
-    pub fn update_transcription(
-        &self,
-        id: i64,
-        transcription_text: String,
-        post_processed_text: Option<String>,
-        post_process_prompt: Option<String>,
-    ) -> Result<HistoryEntry> {
-        let conn = self.get_connection()?;
-        let updated = conn.execute(
-            "UPDATE transcription_history
-             SET transcription_text = ?1,
-                 post_processed_text = ?2,
-                 post_process_prompt = ?3
-             WHERE id = ?4",
-            params![
-                transcription_text,
-                post_processed_text,
-                post_process_prompt,
-                id
-            ],
-        )?;
-
-        if updated == 0 {
-            return Err(anyhow!("History entry {} not found", id));
-        }
-
-        let entry = conn
-            .query_row(
-                "SELECT id, file_name, timestamp, saved, title, transcription_text, post_processed_text, post_process_prompt, post_process_requested
-                 FROM transcription_history WHERE id = ?1",
-                params![id],
-                HistoryStore::map_entry,
-            )?;
-
+    pub fn update_transcription(&self, id: i64, text: RetriedText) -> Result<HistoryEntry> {
+        let entry = self
+            .store
+            .update_text(id, text)?
+            .ok_or_else(|| anyhow!("History entry {} not found", id))?;
         debug!("Updated transcription for history entry {}", id);
-
         if let Err(e) = (HistoryUpdatePayload::Updated {
             entry: entry.clone(),
         })
@@ -127,7 +97,6 @@ impl HistoryManager {
         {
             error!("Failed to emit history-updated event: {}", e);
         }
-
         Ok(entry)
     }
 
@@ -268,13 +237,13 @@ impl HistoryManager {
         let mut entries: Vec<HistoryEntry> = match (cursor, limit) {
             (Some(cursor_id), Some(lim)) => {
                 let fetch_count = (lim + 1) as i64;
-                let mut stmt = conn.prepare(
-                    "SELECT id, file_name, timestamp, saved, title, transcription_text, post_processed_text, post_process_prompt, post_process_requested
+                let mut stmt = conn.prepare(&format!(
+                    "SELECT {ENTRY_COLUMNS}
                      FROM transcription_history
                      WHERE id < ?1
                      ORDER BY id DESC
-                     LIMIT ?2",
-                )?;
+                     LIMIT ?2"
+                ))?;
                 let result = stmt
                     .query_map(params![cursor_id, fetch_count], HistoryStore::map_entry)?
                     .collect::<std::result::Result<Vec<_>, _>>()?;
@@ -282,23 +251,23 @@ impl HistoryManager {
             }
             (None, Some(lim)) => {
                 let fetch_count = (lim + 1) as i64;
-                let mut stmt = conn.prepare(
-                    "SELECT id, file_name, timestamp, saved, title, transcription_text, post_processed_text, post_process_prompt, post_process_requested
+                let mut stmt = conn.prepare(&format!(
+                    "SELECT {ENTRY_COLUMNS}
                      FROM transcription_history
                      ORDER BY id DESC
-                     LIMIT ?1",
-                )?;
+                     LIMIT ?1"
+                ))?;
                 let result = stmt
                     .query_map(params![fetch_count], HistoryStore::map_entry)?
                     .collect::<std::result::Result<Vec<_>, _>>()?;
                 result
             }
             (_, None) => {
-                let mut stmt = conn.prepare(
-                    "SELECT id, file_name, timestamp, saved, title, transcription_text, post_processed_text, post_process_prompt, post_process_requested
+                let mut stmt = conn.prepare(&format!(
+                    "SELECT {ENTRY_COLUMNS}
                      FROM transcription_history
-                     ORDER BY id DESC",
-                )?;
+                     ORDER BY id DESC"
+                ))?;
                 let result = stmt
                     .query_map([], HistoryStore::map_entry)?
                     .collect::<std::result::Result<Vec<_>, _>>()?;
@@ -316,21 +285,12 @@ impl HistoryManager {
 
     #[cfg(test)]
     fn get_latest_entry_with_conn(conn: &Connection) -> Result<Option<HistoryEntry>> {
-        let mut stmt = conn.prepare(
-            "SELECT
-                id,
-                file_name,
-                timestamp,
-                saved,
-                title,
-                transcription_text,
-                post_processed_text,
-                post_process_prompt,
-                post_process_requested
+        let mut stmt = conn.prepare(&format!(
+            "SELECT {ENTRY_COLUMNS}
              FROM transcription_history
              ORDER BY timestamp DESC
-             LIMIT 1",
-        )?;
+             LIMIT 1"
+        ))?;
 
         let entry = stmt.query_row([], HistoryStore::map_entry).optional()?;
         Ok(entry)
@@ -343,22 +303,13 @@ impl HistoryManager {
     }
 
     fn get_latest_completed_entry_with_conn(conn: &Connection) -> Result<Option<HistoryEntry>> {
-        let mut stmt = conn.prepare(
-            "SELECT
-                id,
-                file_name,
-                timestamp,
-                saved,
-                title,
-                transcription_text,
-                post_processed_text,
-                post_process_prompt,
-                post_process_requested
+        let mut stmt = conn.prepare(&format!(
+            "SELECT {ENTRY_COLUMNS}
              FROM transcription_history
              WHERE transcription_text != ''
              ORDER BY timestamp DESC
-             LIMIT 1",
-        )?;
+             LIMIT 1"
+        ))?;
 
         let entry = stmt.query_row([], HistoryStore::map_entry).optional()?;
         Ok(entry)
@@ -402,20 +353,11 @@ impl HistoryManager {
 
     pub async fn get_entry_by_id(&self, id: i64) -> Result<Option<HistoryEntry>> {
         let conn = self.get_connection()?;
-        let mut stmt = conn.prepare(
-            "SELECT
-                id,
-                file_name,
-                timestamp,
-                saved,
-                title,
-                transcription_text,
-                post_processed_text,
-                post_process_prompt,
-                post_process_requested
+        let mut stmt = conn.prepare(&format!(
+            "SELECT {ENTRY_COLUMNS}
              FROM transcription_history
-             WHERE id = ?1",
-        )?;
+             WHERE id = ?1"
+        ))?;
 
         let entry = stmt.query_row([id], HistoryStore::map_entry).optional()?;
 
@@ -474,7 +416,12 @@ mod tests {
                 transcription_text TEXT NOT NULL,
                 post_processed_text TEXT,
                 post_process_prompt TEXT,
-                post_process_requested BOOLEAN NOT NULL DEFAULT 0
+                post_process_requested BOOLEAN NOT NULL DEFAULT 0,
+                post_process_prompt_id TEXT,
+                post_process_prompt_name TEXT,
+                post_process_provider_id TEXT,
+                post_process_model TEXT,
+                post_process_failure TEXT
             );",
         )
         .expect("create transcription_history table");

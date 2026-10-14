@@ -9,6 +9,7 @@ use log::error;
 
 use super::edits::Preparation;
 use super::identity::ShortcutRegistration;
+use super::prompt_targets::{empty_binding, is_live_target, prompt_of};
 use super::registration_delta::{
     apply_registration_delta, plan_registration_delta, probe_additions, RegistrationDelta,
     RegistrationPort,
@@ -25,13 +26,23 @@ pub(crate) struct ActionChange {
 
 /// Actions whose shortcut list differs between `before` and `after`, sorted by id. An action
 /// missing from a store is read from its default, as at startup.
+/// A prompt target (005) removed from `after` (its prompt deleted, or its last shortcut removed)
+/// changes to an empty list.
 pub(crate) fn changed_actions(before: &AppSettings, after: &AppSettings) -> Vec<ActionChange> {
-    let mut ids: Vec<&String> = after.bindings.keys().collect();
+    let removed_targets = before
+        .bindings
+        .keys()
+        .filter(|id| prompt_of(id).is_some() && !after.bindings.contains_key(*id));
+    let mut ids: Vec<&String> = after.bindings.keys().chain(removed_targets).collect();
     ids.sort();
     ids.into_iter()
         .filter_map(|id| {
             let previous = super::edits::current_binding_or_default(before, id)?;
-            let next = after.bindings.get(id)?.clone();
+            let next = match (after.bindings.get(id), prompt_of(id)) {
+                (Some(next), _) => next.clone(),
+                (None, Some(prompt_id)) => empty_binding(prompt_id),
+                (None, None) => return None,
+            };
             (previous.shortcuts() != next.shortcuts()).then_some(ActionChange {
                 before: previous,
                 after: next,
@@ -52,8 +63,9 @@ pub(crate) fn slot_sharing(
 }
 
 /// Registrations of every other known action registered outside recording.
-/// Unknown ids (a newer Handy's actions) are skipped, as at startup: they
-/// have no handler, so a slot must never be handed over to them.
+/// Unknown ids (a newer Handy's actions, a target of a deleted prompt) are
+/// skipped, as at startup: they have no handler, so a slot must never be
+/// handed over to them. Prompt targets of existing prompts are known (005).
 pub(crate) fn other_registered(settings: &AppSettings, id: &str) -> Vec<ShortcutRegistration> {
     let known = settings::get_default_settings().bindings;
     let mut actions: Vec<(&String, &ShortcutBinding)> = settings
@@ -61,7 +73,7 @@ pub(crate) fn other_registered(settings: &AppSettings, id: &str) -> Vec<Shortcut
         .iter()
         .filter(|(other, _)| {
             *other != id
-                && known.contains_key(*other)
+                && (known.contains_key(*other) || is_live_target(settings, other))
                 && super::is_statically_registered(other, settings)
         })
         .collect();

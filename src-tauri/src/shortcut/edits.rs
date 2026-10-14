@@ -14,21 +14,15 @@ use std::rc::Rc;
 use tauri::AppHandle;
 
 use super::action_shortcuts::{plan_edit, EditContext, ShortcutEdit, ShortcutEditError};
-use super::bindings_change::{other_registered, slot_sharing};
 use super::conflicts::{find_stored_conflicts, inventory_of, StoredShortcutConflict};
 use super::identity::ShortcutRegistration;
-use super::registration_delta::{
-    apply_registration_delta, plan_activation, plan_deactivation, register_activation,
-    RegistrationPort,
-};
+use super::prompt_targets::{empty_binding, is_live_target, prompt_of, store_binding};
+use super::registration_delta::RegistrationPort;
 use super::tauri_impl;
 use crate::settings::{self, AppSettings, KeyboardImplementation, ShortcutBinding};
 use crate::settings_service::{
     command_error::SettingsCommandError, tauri_adapter as live_settings,
 };
-
-/// Action id of "Transcribe with Post-Processing".
-const POST_PROCESS_ACTION: &str = "transcribe_with_post_process";
 
 /// Outcome of a shortcut list edit: the saved binding, or why nothing was
 /// saved.
@@ -81,7 +75,8 @@ pub fn get_shortcut_conflicts(app: AppHandle) -> Vec<StoredShortcutConflict> {
     )
 }
 
-/// The stored binding of `id`, or its default when the store lacks it.
+/// The stored binding of `id`, or its default when the store lacks it; a prompt target (005) of
+/// an existing prompt without shortcuts is its empty binding.
 pub(crate) fn current_binding_or_default(
     settings: &AppSettings,
     id: &str,
@@ -91,6 +86,10 @@ pub(crate) fn current_binding_or_default(
         .get(id)
         .cloned()
         .or_else(|| settings::get_default_settings().bindings.remove(id))
+        .or_else(|| {
+            let prompt_id = prompt_of(id).filter(|_| is_live_target(settings, id))?;
+            Some(empty_binding(prompt_id))
+        })
 }
 
 /// The current list of action `id` and the list `edit` would store, planned on `settings`.
@@ -151,9 +150,7 @@ fn commit_planned(
     let refusal = Rc::new(RefCell::new(None));
     let native = super::live_change::bindings(app.clone(), Some(Rc::clone(&refusal)));
     let apply = |settings: &mut AppSettings| {
-        settings
-            .bindings
-            .insert(planned.id.clone(), planned.clone());
+        store_binding(settings, planned.clone());
         Ok(())
     };
     match live_settings::edit_prepared(app, "bindings", &apply, native) {
@@ -286,9 +283,9 @@ pub(crate) fn toggle_post_process(
     enabled: bool,
 ) -> (AppSettings, Vec<RefusedShortcut>) {
     let refused = match (settings.post_process_enabled, enabled) {
-        (false, true) => register_post_process(port, settings),
+        (false, true) => super::gated::register_post_process(port, settings),
         (true, false) => {
-            release_post_process(port, settings);
+            super::gated::release_post_process(port, settings);
             Vec::new()
         }
         _ => Vec::new(),
@@ -296,48 +293,6 @@ pub(crate) fn toggle_post_process(
     let mut updated = settings.clone();
     updated.post_process_enabled = enabled;
     (updated, refused)
-}
-
-// @spec AC-002: Inherited conflicts keep their registration — .specs/features/004-multiple-dictation-shortcuts/spec.md#ac-002
-/// Registers the post-processing shortcuts. A slot that another action
-/// holds stays with that action (inherited conflict, flagged by the
-/// settings); every other shortcut is registered on its own, and the ones
-/// the backend refuses are returned.
-fn register_post_process(
-    port: &mut impl RegistrationPort,
-    settings: &AppSettings,
-) -> Vec<RefusedShortcut> {
-    let Some(binding) = current_binding_or_default(settings, POST_PROCESS_ACTION) else {
-        return Vec::new();
-    };
-    let others = other_registered(settings, POST_PROCESS_ACTION);
-    let same_slot = slot_sharing(settings.keyboard_implementation);
-    let delta = plan_activation(&ShortcutRegistration::all_of(&binding), &others, same_slot);
-    register_activation(port, &delta)
-        .into_iter()
-        .map(|refusal| RefusedShortcut {
-            action_id: refusal.registration.action_id,
-            shortcut: refusal.registration.shortcut_id,
-            reason: refusal.reason,
-        })
-        .collect()
-}
-
-// @spec AC-002: Inherited conflicts keep their registration — .specs/features/004-multiple-dictation-shortcuts/spec.md#ac-002
-/// Releases the post-processing shortcuts; a slot shared with another action
-/// is handed over to it instead of being unregistered.
-fn release_post_process(port: &mut impl RegistrationPort, settings: &AppSettings) {
-    let Some(binding) = current_binding_or_default(settings, POST_PROCESS_ACTION) else {
-        return;
-    };
-    let others = other_registered(settings, POST_PROCESS_ACTION);
-    let same_slot = slot_sharing(settings.keyboard_implementation);
-    let delta = plan_deactivation(&ShortcutRegistration::all_of(&binding), &others, same_slot);
-    // A release delta adds nothing, so it cannot be refused; failed releases
-    // are already logged by the delta.
-    if let Err(reason) = apply_registration_delta(port, &delta) {
-        warn!("Releasing the post-processing shortcuts failed: {}", reason);
-    }
 }
 
 /// The active keyboard backend, as used by shortcut edits.

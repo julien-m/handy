@@ -34,6 +34,7 @@ impl Domain for MicrophonesDomain {
             ("set-priority", names) => Ok(DomainPlan::Change {
                 change: priority_change(names.to_vec())?,
                 keys: vec![PRIORITY_KEY],
+                render: None,
             }),
             _ => Err(SettingsError::new(SettingsErrorCode::UsageError)),
         }

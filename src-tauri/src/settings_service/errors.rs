@@ -84,12 +84,30 @@ pub enum ValidationReason {
     /// A dictation session (recording, processing, a held or remembered shortcut) is running;
     /// the shortcut registrations cannot change until it ends.
     ShortcutSessionBusy,
+    /// The prompt name is empty after trimming (005).
+    PromptNameEmpty,
+    /// The prompt name is longer than 60 characters (005).
+    PromptNameTooLong,
+    /// Another prompt has the same name, ignoring case (005).
+    PromptNameDuplicate,
+    /// The prompt text is empty or only whitespace (005).
+    PromptTextEmpty,
+    /// The prompt text is longer than 8000 characters (005).
+    PromptTextTooLong,
+    /// A provider override needs both a provider and a model (005).
+    PromptOverrideIncomplete,
+    /// The override names a provider this build does not have (005).
+    PromptUnknownProvider,
+    /// The prompt has issues and cannot be used until edited (005).
+    PromptNotUsable,
     /// The microphone choices change only through the microphones domain (feature 001).
     MicrophonesDomain,
 }
 /// Refusal text of a generic write of a microphone key (feature 001).
 const MICROPHONES_DOMAIN_MESSAGE: &str =
     "Use handy settings microphones set-priority to change the microphone choices.";
+/// Fallback of `prompt_message` for a reason `message` should have answered; never reached.
+const UNMATCHED_MESSAGE: &str = "The settings change was refused.";
 
 impl ValidationReason {
     fn message(self) -> &'static str {
@@ -119,6 +137,21 @@ impl ValidationReason {
             Self::UnsupportedPlatform => "This setting is not supported on this platform.",
             Self::ShortcutSessionBusy => "A dictation is in progress; retry when it ends.",
             Self::MicrophonesDomain => MICROPHONES_DOMAIN_MESSAGE,
+            other => other.prompt_message(),
+        }
+    }
+    /// Message of a custom prompt refusal (005); `message` answers every other reason first.
+    fn prompt_message(self) -> &'static str {
+        match self {
+            Self::PromptNameEmpty => "The prompt name is empty.",
+            Self::PromptNameTooLong => "The prompt name is longer than 60 characters.",
+            Self::PromptNameDuplicate => "Another prompt already has this name.",
+            Self::PromptTextEmpty => "The prompt text is empty.",
+            Self::PromptTextTooLong => "The prompt text is longer than 8000 characters.",
+            Self::PromptOverrideIncomplete => "A provider override needs a provider and a model.",
+            Self::PromptUnknownProvider => "The provider does not exist in this build.",
+            Self::PromptNotUsable => "The prompt is invalid and must be edited first.",
+            _ => UNMATCHED_MESSAGE,
         }
     }
 }

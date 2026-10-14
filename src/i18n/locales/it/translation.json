@@ -726,7 +726,16 @@
       "persistenceFailed": "Impossibile salvare le impostazioni.",
       "generic": "Impossibile modificare l'impostazione.",
       "readOnly": "Le impostazioni sono di sola lettura in questa sessione: il file delle impostazioni non può essere scritto in modo sicuro, quindi le modifiche non verranno salvate.",
-      "unsupportedPlatform": "Questa impostazione non è disponibile su questo sistema."
+      "unsupportedPlatform": "Questa impostazione non è disponibile su questo sistema.",
+      "promptNameEmpty": "Inserisci un nome per il prompt.",
+      "promptNameTooLong": "Il nome del prompt deve avere al massimo 60 caratteri.",
+      "promptNameDuplicate": "Un altro prompt ha già questo nome. I nomi devono essere univoci.",
+      "promptTextEmpty": "Inserisci il testo del prompt.",
+      "promptTextTooLong": "Il testo del prompt deve avere al massimo 8.000 caratteri.",
+      "promptOverrideIncomplete": "Scegli un provider e un modello, oppure usa il provider predefinito.",
+      "promptUnknownProvider": "Questo provider non è disponibile.",
+      "promptNotUsable": "Questo prompt non è valido. Modificalo prima di usarlo.",
+      "limitExceeded": "È stato raggiunto il numero massimo."
     }
   },
   "appLanguage": {
@@ -745,7 +754,8 @@
   "overlay": {
     "transcribing": "Trascrizione...",
     "processing": "Elaborazione...",
-    "loadingModel": "Caricamento del modello..."
+    "loadingModel": "Caricamento del modello...",
+    "fallbackNotice": "L'elaborazione con l'IA non è riuscita. È stato usato il testo originale."
   },
   "whatsNew": {
     "title": "Novità in Handy v{{version}}"

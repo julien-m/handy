@@ -49,6 +49,7 @@ fn change(apply: super::BoxedEdit) -> DomainPlan {
     DomainPlan::Change {
         change: DomainChange(ChangeKind::Apply(apply)),
         keys: vec!["custom_words"],
+        render: None,
     }
 }
 /// One word per line; a tab anywhere refuses the whole import (all or nothing).

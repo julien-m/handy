@@ -57,6 +57,31 @@ assert.equal(
   SETTINGS_ERROR_KEYS.unsupportedPlatform,
 );
 assert.equal(
+  settingsErrorKey(
+    refusal({
+      field: "post_process_prompts",
+      reason: "prompt_name_duplicate",
+    }),
+  ),
+  SETTINGS_ERROR_KEYS.promptNameDuplicate,
+);
+assert.equal(
+  settingsErrorKey(
+    refusal({ field: "post_process_prompts", reason: "prompt_text_empty" }),
+  ),
+  SETTINGS_ERROR_KEYS.promptTextEmpty,
+);
+assert.equal(
+  settingsErrorKey(
+    refusal({ field: "post_process_prompts", reason: "prompt_not_usable" }),
+  ),
+  SETTINGS_ERROR_KEYS.promptNotUsable,
+);
+assert.equal(
+  settingsErrorKey(refusal({ code: "limit_exceeded" })),
+  SETTINGS_ERROR_KEYS.limitExceeded,
+);
+assert.equal(
   settingsErrorKey(refusal({ code: "unavailable", field: "vad_backend" })),
   SETTINGS_ERROR_KEYS.unavailable,
 );

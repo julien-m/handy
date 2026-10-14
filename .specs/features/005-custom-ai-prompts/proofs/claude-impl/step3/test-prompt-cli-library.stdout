@@ -1,0 +1,19 @@
+
+running 5 tests
+test text_dash_reads_the_prompt_from_stdin ... ok
+test offline_list_is_unavailable_but_the_library_stays_readable_without_keys ... ok
+test refusals_have_stable_codes_and_exits ... ok
+test routed_list_reports_readiness_and_never_the_key ... ok
+test offline_crud_with_aliases_returns_ids_and_revisions_without_any_key ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.84s
+
+
+running 4 tests
+test a_fresh_install_lists_the_historical_prompt_then_the_starters_without_a_default ... ok
+test a_full_library_gets_no_starter ... ok
+test upgrade_keeps_existing_prompts_and_selection_and_adds_the_starters_once ... ok
+test a_deleted_starter_never_comes_back ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.27s
+

@@ -10,11 +10,12 @@
 //! setting and can be changed at runtime.
 
 pub mod action_shortcuts;
-mod bindings_change;
+pub(crate) mod bindings_change;
 pub mod conflicts;
 pub mod edits;
 #[cfg(test)]
 mod fake_backend;
+mod gated;
 mod handler;
 pub mod handy_keys;
 pub mod identity;
@@ -23,6 +24,7 @@ mod keyboard_switch;
 pub(crate) mod live_change;
 #[cfg(test)]
 mod migration_tests;
+pub mod prompt_targets;
 mod registration_delta;
 pub mod tauri_impl;
 
@@ -35,8 +37,8 @@ use tauri::{AppHandle, Manager};
 #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
 use crate::settings::APPLE_INTELLIGENCE_DEFAULT_MODEL_ID;
 use crate::settings::{
-    self, get_settings, ChineseScript, KeyboardImplementation, LLMPrompt, ShortcutActivation,
-    ShortcutBinding, Theme, VadBackend, APPLE_INTELLIGENCE_PROVIDER_ID,
+    self, get_settings, ChineseScript, KeyboardImplementation, ShortcutActivation, ShortcutBinding,
+    Theme, VadBackend, APPLE_INTELLIGENCE_PROVIDER_ID,
 };
 use crate::settings_service::{
     command_error::SettingsCommandError,
@@ -168,11 +170,12 @@ fn reconcile_cancel_shortcut(app: &AppHandle) {
 // @spec AC-005: Cancel keeps its dynamic registration — .specs/features/004-multiple-dictation-shortcuts/spec.md#ac-005
 /// Whether `id`'s shortcuts are registered with the backend outside
 /// recording: cancel is registered dynamically while recording, and the
-/// post-processing action only while post-processing is enabled.
+/// post-processing action and the prompt shortcuts (005) only while
+/// post-processing is enabled.
 pub(crate) fn is_statically_registered(id: &str, settings: &settings::AppSettings) -> bool {
     match id {
         "cancel" => false,
-        "transcribe_with_post_process" => settings.post_process_enabled,
+        _ if prompt_targets::is_post_process_gated(id) => settings.post_process_enabled,
         _ => true,
     }
 }
@@ -384,10 +387,7 @@ pub fn suspend_all_shortcuts(app: &AppHandle) {
 pub fn resume_all_shortcuts(app: &AppHandle) {
     let settings = get_settings(app);
     for (id, binding) in &settings.bindings {
-        if id == "cancel" {
-            continue;
-        }
-        if id == "transcribe_with_post_process" && !settings.post_process_enabled {
+        if !is_statically_registered(id, &settings) {
             continue;
         }
         if let Err(e) = register_shortcut(app, binding.clone()) {
@@ -1012,92 +1012,6 @@ pub async fn set_post_process_provider(app: AppHandle, provider_id: String) -> S
     .await
 }
 
-/// Missing prompt ids name the prompt list with a fixed reason.
-fn unknown_prompt() -> SettingsError {
-    SettingsError::validation("post_process_prompts", ValidationReason::UnknownPrompt)
-}
-
-/// Append a prompt; its id is generated once, outside the (re-runnable) edit.
-#[tauri::command]
-#[specta::specta]
-pub async fn add_post_process_prompt(
-    app: AppHandle,
-    name: String,
-    prompt: String,
-) -> Result<LLMPrompt, SettingsCommandError> {
-    live_settings::blocking(move || {
-        // Unique id from the creation timestamp, as before the service existed.
-        let new_prompt = LLMPrompt {
-            id: format!("prompt_{}", chrono::Utc::now().timestamp_millis()),
-            name,
-            prompt,
-        };
-        live_settings::edit(&app, &|settings| {
-            settings.post_process_prompts.push(new_prompt.clone());
-            Ok(())
-        })?;
-        Ok(new_prompt)
-    })
-    .await
-}
-
-/// Rename or rewrite an existing prompt.
-#[tauri::command]
-#[specta::specta]
-pub async fn update_post_process_prompt(
-    app: AppHandle,
-    id: String,
-    name: String,
-    prompt: String,
-) -> SettingsResult {
-    live_settings::blocking(move || {
-        live_settings::edit(&app, &|settings| {
-            let existing = settings
-                .post_process_prompts
-                .iter_mut()
-                .find(|candidate| candidate.id == id)
-                .ok_or_else(unknown_prompt)?;
-            existing.name = name.clone();
-            existing.prompt = prompt.clone();
-            Ok(())
-        })
-        .map(|_| ())
-    })
-    .await
-}
-
-/// Delete a prompt; the last prompt is kept, and a deleted selection moves to the first prompt.
-#[tauri::command]
-#[specta::specta]
-pub async fn delete_post_process_prompt(app: AppHandle, id: String) -> SettingsResult {
-    live_settings::blocking(move || {
-        live_settings::edit(&app, &|settings| {
-            if settings.post_process_prompts.len() <= 1 {
-                return Err(SettingsError::validation(
-                    "post_process_prompts",
-                    ValidationReason::CanonicalValue,
-                ));
-            }
-            let original_len = settings.post_process_prompts.len();
-            settings
-                .post_process_prompts
-                .retain(|prompt| prompt.id != id);
-            if settings.post_process_prompts.len() == original_len {
-                return Err(unknown_prompt());
-            }
-            if settings.post_process_selected_prompt_id.as_ref() == Some(&id) {
-                settings.post_process_selected_prompt_id = settings
-                    .post_process_prompts
-                    .first()
-                    .map(|prompt| prompt.id.clone());
-            }
-            Ok(())
-        })
-        .map(|_| ())
-    })
-    .await
-}
-
 #[tauri::command]
 #[specta::specta]
 pub async fn fetch_post_process_models(
@@ -1141,15 +1055,6 @@ pub async fn fetch_post_process_models(
     }
 
     crate::llm_client::fetch_models(provider, api_key).await
-}
-
-#[tauri::command]
-#[specta::specta]
-pub async fn set_post_process_selected_prompt(
-    app: AppHandle,
-    id: UiValue<String>,
-) -> SettingsResult {
-    live_settings::write(app, "post_process_selected_prompt_id", id).await
 }
 
 #[tauri::command]

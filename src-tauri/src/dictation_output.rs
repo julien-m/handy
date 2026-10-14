@@ -7,15 +7,11 @@
 
 use std::future::Future;
 
-/// Text after the AI post-processing stage.
-pub(crate) struct ProcessedTranscription {
-    /// Text handed to insertion: the AI result, or the native text without AI.
-    pub final_text: String,
-    /// AI result recorded in history, if AI post-processing ran and answered.
-    pub post_processed_text: Option<String>,
-    /// Prompt of that AI result, recorded in history with it.
-    pub post_process_prompt: Option<String>,
-}
+/// Text after the AI post-processing stage (005): the text handed to insertion (the AI result,
+/// or the native text unchanged without AI or on an AI failure), the AI result and prompt
+/// recorded in history, the processing record and failure, and whether the AI step was
+/// cancelled.
+pub(crate) use crate::prompts::output::OutputDecision as ProcessedTranscription;
 
 /// Native side of the output stages.
 pub(crate) trait OutputPorts {
@@ -57,7 +53,7 @@ pub(crate) async fn deliver<P: OutputPorts>(ports: &P, native: String) -> Delive
     let Some(processed) = ports.post_process(&native).await else {
         return Delivery::Cancelled;
     };
-    if ports.is_cancelled() {
+    if ports.is_cancelled() || processed.cancelled {
         return Delivery::Cancelled;
     }
     let history = ports.save_history(native, &processed);

@@ -48,6 +48,7 @@ fn dictation(file_name: Option<&str>) -> NewHistoryEntry {
         post_process_requested: true,
         post_processed_text: Some("processed phrase".to_owned()),
         post_process_prompt: Some("prompt".to_owned()),
+        ..NewHistoryEntry::default()
     }
 }
 fn reread(store: &HistoryStore, record: HistoryRecord) -> Result<HistoryEntry, String> {
@@ -176,7 +177,8 @@ fn migration_keeps_rows_ids_saved_flags_and_the_id_counter() -> TestResult {
     );
     let conn = store.connection()?;
     let version: i64 = conn.pragma_query_value(None, "user_version", |row| row.get(0))?;
-    assert_eq!(version, 5);
+    // Version 6 (005) adds the processing record after the nullable-audio rebuild.
+    assert_eq!(version, 6);
     let not_null: i64 = conn.query_row(
         "SELECT \"notnull\" FROM pragma_table_info('transcription_history')
          WHERE name = 'file_name'",

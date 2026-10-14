@@ -51,9 +51,8 @@ impl OutputPorts for Recorded {
 }
 fn processed(final_text: &str, ai: Option<String>) -> ProcessedTranscription {
     ProcessedTranscription {
-        final_text: final_text.to_owned(),
         post_processed_text: ai,
-        post_process_prompt: None,
+        ..ProcessedTranscription::raw(final_text)
     }
 }
 fn shout(text: &str) -> String {

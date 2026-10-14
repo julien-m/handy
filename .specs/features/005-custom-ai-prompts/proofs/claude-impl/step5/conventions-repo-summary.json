@@ -1,0 +1,13 @@
+{
+ "verdict": "PASS",
+ "receipt_path": ".specs/conventions/runs/20261014T104315Z/receipt.json",
+ "baseline": {
+  "baselined_count": 537,
+  "new_count": 0,
+  "path": ".specs/conventions/baseline.json",
+  "resolved_count": 3645,
+  "sha256": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe"
+ },
+ "blockers": [],
+ "feature_violations": []
+}

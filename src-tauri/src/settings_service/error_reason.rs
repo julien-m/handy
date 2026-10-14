@@ -80,6 +80,22 @@ pub enum ErrorReason {
     /// The loaded model declares a recognition-context mechanism whose budget is not documented
     /// for this build (003): a durable internal defect, never a retryable state.
     ContextBudgetUnverified,
+    /// The prompt name is empty after trimming (005).
+    PromptNameEmpty,
+    /// The prompt name is longer than 60 characters (005).
+    PromptNameTooLong,
+    /// Another prompt has the same name, ignoring case (005).
+    PromptNameDuplicate,
+    /// The prompt text is empty or only whitespace (005).
+    PromptTextEmpty,
+    /// The prompt text is longer than 8000 characters (005).
+    PromptTextTooLong,
+    /// A provider override needs both a provider and a model (005).
+    OverrideIncomplete,
+    /// The override names a provider this build does not have (005).
+    UnknownProvider,
+    /// The prompt has issues and cannot be used until edited (005).
+    PromptInvalid,
     /// The microphone choices change only through `handy settings microphones` (001).
     MicrophonesDomain,
     /// A microphone choice is empty or only whitespace (001).
@@ -89,7 +105,7 @@ pub enum ErrorReason {
 }
 impl ErrorReason {
     /// Every reason of this build, in wire-schema order.
-    pub const ALL: [Self; 36] = [
+    pub const ALL: [Self; 44] = [
         Self::UnsupportedPlatform,
         Self::ShortcutSessionBusy,
         Self::InstanceRequired,
@@ -123,6 +139,14 @@ impl ErrorReason {
         Self::TermForbiddenCharacter,
         Self::TermDuplicate,
         Self::ContextBudgetUnverified,
+        Self::PromptNameEmpty,
+        Self::PromptNameTooLong,
+        Self::PromptNameDuplicate,
+        Self::PromptTextEmpty,
+        Self::PromptTextTooLong,
+        Self::OverrideIncomplete,
+        Self::UnknownProvider,
+        Self::PromptInvalid,
         Self::MicrophonesDomain,
         Self::MicrophoneNameEmpty,
         Self::MicrophoneNameDuplicate,
@@ -145,10 +169,11 @@ impl ErrorReason {
                 "The export destination is a symbolic link; nothing was written."
             }
             Self::ExportReadOnly => "The export destination is read-only; it is unchanged.",
-            Self::MicrophonesDomain => "Use handy settings microphones set-priority.",
-            Self::MicrophoneNameEmpty => "A microphone name cannot be empty.",
-            Self::MicrophoneNameDuplicate => "Each microphone may appear only once.",
-            other => other.term_message().unwrap_or_else(|| other.rule_message()),
+            other => other
+                .term_message()
+                .or_else(|| other.prompt_message())
+                .or_else(|| other.microphone_message())
+                .unwrap_or_else(|| other.rule_message()),
         }
     }
     /// Message of a vocabulary term or recognition context reason (003); `None` for every other
@@ -163,6 +188,31 @@ impl ErrorReason {
             Self::ContextBudgetUnverified => {
                 "The selected model's recognition context budget is not documented in this build."
             }
+            _ => return None,
+        };
+        Some(message)
+    }
+    /// Message of a custom prompt reason (005); `None` for every other reason.
+    fn prompt_message(self) -> Option<&'static str> {
+        let message = match self {
+            Self::PromptNameEmpty => "The prompt name is empty.",
+            Self::PromptNameTooLong => "The prompt name is longer than 60 characters.",
+            Self::PromptNameDuplicate => "Another prompt already has this name.",
+            Self::PromptTextEmpty => "The prompt text is empty.",
+            Self::PromptTextTooLong => "The prompt text is longer than 8000 characters.",
+            Self::OverrideIncomplete => "A provider override needs a provider and a model.",
+            Self::UnknownProvider => "The provider does not exist in this build.",
+            Self::PromptInvalid => "The prompt is invalid and must be edited first.",
+            _ => return None,
+        };
+        Some(message)
+    }
+    /// Message of a microphone choice reason (001); `None` for every other reason.
+    fn microphone_message(self) -> Option<&'static str> {
+        let message = match self {
+            Self::MicrophonesDomain => "Use handy settings microphones set-priority.",
+            Self::MicrophoneNameEmpty => "A microphone name cannot be empty.",
+            Self::MicrophoneNameDuplicate => "Each microphone may appear only once.",
             _ => return None,
         };
         Some(message)

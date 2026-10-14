@@ -10,6 +10,8 @@ use serde::{Deserialize, Serialize};
 use specta::Type;
 
 use super::conflicts::{find_conflict, InventoryEntry, ShortcutConflict};
+use super::prompt_targets::prompt_of;
+use crate::prompts::types::MAX_PROMPT_SHORTCUTS;
 use crate::settings::{KeyboardImplementation, ShortcutBinding};
 use crate::settings_service::command_error::SettingsCommandError;
 
@@ -24,7 +26,17 @@ const MULTI_SHORTCUT_ACTIONS: [&str; 2] = ["transcribe", "transcribe_with_post_p
 
 /// Whether `action_id` accepts more than one shortcut.
 pub fn accepts_alternatives(action_id: &str) -> bool {
-    MULTI_SHORTCUT_ACTIONS.contains(&action_id)
+    MULTI_SHORTCUT_ACTIONS.contains(&action_id) || prompt_of(action_id).is_some()
+}
+
+// @spec AC-006: 0-2 shortcuts per prompt — .specs/features/005-custom-ai-prompts/spec.md#ac-006
+/// Most shortcuts `action_id` may have: 2 for a prompt target (005), 4 otherwise.
+pub fn max_shortcuts(action_id: &str) -> usize {
+    if prompt_of(action_id).is_some() {
+        MAX_PROMPT_SHORTCUTS
+    } else {
+        MAX_SHORTCUTS_PER_ACTION
+    }
 }
 
 /// A requested change to the shortcut list of one action.
@@ -109,15 +121,17 @@ fn plan_add(
     if !accepts_alternatives(&binding.id) {
         return Err(ShortcutEditError::AlternativesUnsupported);
     }
-    if binding.shortcuts().len() >= MAX_SHORTCUTS_PER_ACTION {
+    let limit = max_shortcuts(&binding.id);
+    if binding.shortcuts().len() >= limit {
         return Err(ShortcutEditError::LimitExceeded {
-            limit: MAX_SHORTCUTS_PER_ACTION as u32,
+            limit: limit as u32,
         });
     }
     check_candidate(&binding.id, shortcut, &[], context)?;
-    let mut planned = binding.clone();
-    planned.additional_bindings.push(shortcut.to_string());
-    Ok(planned)
+    // `with_shortcuts` puts the first shortcut of an empty prompt target in `current_binding`.
+    let mut shortcuts = binding.shortcuts();
+    shortcuts.push(shortcut.to_string());
+    Ok(with_shortcuts(binding, shortcuts))
 }
 
 // @spec AC-005: No action left without a shortcut — .specs/features/004-multiple-dictation-shortcuts/spec.md#ac-005
@@ -131,7 +145,8 @@ fn plan_remove(
             shortcut: shortcut.to_string(),
         });
     };
-    if shortcuts.len() == 1 {
+    // A prompt target may have no shortcut (005); a dictation action keeps at least one.
+    if shortcuts.len() == 1 && prompt_of(&binding.id).is_none() {
         return Err(ShortcutEditError::LastShortcut);
     }
     shortcuts.remove(index);
@@ -164,6 +179,10 @@ fn plan_reset(
     binding: &ShortcutBinding,
     context: &EditContext,
 ) -> Result<ShortcutBinding, ShortcutEditError> {
+    // A prompt target has no default shortcut: reset removes them all (005).
+    if prompt_of(&binding.id).is_some() {
+        return Ok(with_shortcuts(binding, Vec::new()));
+    }
     let reset = with_shortcuts(binding, vec![binding.default_binding.clone()]);
     if reset.shortcuts() == binding.shortcuts() {
         return Ok(reset);

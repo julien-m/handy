@@ -43,20 +43,21 @@ fn switch_form(
 }
 
 /// Registrations of `settings` registered outside recording, using the default binding for any
-/// action missing from the store.
+/// action missing from the store, then the shortcuts of the prompts it has (005).
 pub(crate) fn static_registrations(settings: &AppSettings) -> Vec<ShortcutRegistration> {
+    let prompt_targets = super::prompt_targets::live_targets(settings)
+        .into_iter()
+        .filter_map(|id| settings.bindings.get(&id).cloned().map(|b| (id, b)));
     settings::get_default_settings()
         .bindings
         .into_iter()
-        .filter(|(id, _)| super::is_statically_registered(id, settings))
-        .flat_map(|(id, default_binding)| {
-            let binding = settings
-                .bindings
-                .get(&id)
-                .cloned()
-                .unwrap_or(default_binding);
-            ShortcutRegistration::all_of(&binding)
+        .map(|(id, default_binding)| {
+            let binding = settings.bindings.get(&id).cloned();
+            (id, binding.unwrap_or(default_binding))
         })
+        .chain(prompt_targets)
+        .filter(|(id, _)| super::is_statically_registered(id, settings))
+        .flat_map(|(_, binding)| ShortcutRegistration::all_of(&binding))
         .collect()
 }
 

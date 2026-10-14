@@ -23,6 +23,7 @@ pub mod microphones;
 mod overlay;
 mod paste_tx;
 pub mod portable;
+pub mod prompts;
 pub mod recognition_vocabulary;
 mod secure_input;
 #[cfg(target_os = "macos")]
@@ -250,6 +251,7 @@ fn initialize_core_logic(app_handle: &AppHandle) {
     app_handle.manage(model_manager.clone());
     app_handle.manage(transcription_manager.clone());
     app_handle.manage(history_manager.clone());
+    app_handle.manage(prompts::session::PromptSessions::default());
     app_handle.manage(tray::TrayState::new());
     destination::app::install(app_handle);
     smart_paste::app::install(app_handle);
@@ -726,10 +728,16 @@ pub fn run(cli_args: CliArgs) {
             shortcut::change_post_process_model_setting,
             shortcut::set_post_process_provider,
             shortcut::fetch_post_process_models,
-            shortcut::add_post_process_prompt,
-            shortcut::update_post_process_prompt,
-            shortcut::delete_post_process_prompt,
-            shortcut::set_post_process_selected_prompt,
+            commands::prompts::get_prompt_library,
+            commands::prompts::add_post_process_prompt,
+            commands::prompts::update_post_process_prompt,
+            commands::prompts::delete_post_process_prompt,
+            commands::prompts::set_post_process_selected_prompt,
+            commands::prompts::set_post_process_prompt_provider_override,
+            commands::prompts::test_post_process_prompt,
+            commands::prompts::cancel_post_process_prompt_test,
+            commands::prompts::get_dictation_prompt,
+            commands::prompts::select_dictation_prompt,
             shortcut::update_custom_words,
             commands::vocabulary::get_vocabulary,
             commands::vocabulary::preview_vocabulary_import,
@@ -832,6 +840,8 @@ pub fn run(cli_args: CliArgs) {
             managers::history::HistoryUpdatePayload,
             managers::transcription::StreamTextEvent,
             managers::transcription::StreamPhaseEvent,
+            prompts::dictation::DictationPromptChanged,
+            prompts::dictation::PromptProcessingFailed,
         ]);
 
     #[cfg(debug_assertions)] // <- Only export on non-release builds

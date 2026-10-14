@@ -78,6 +78,7 @@ fn change(settings: &AppSettings, edit: VocabularyEdit) -> Result<DomainPlan, Se
     Ok(DomainPlan::Change {
         change: edit.into_change(),
         keys: vec!["custom_words"],
+        render: None,
     })
 }
 

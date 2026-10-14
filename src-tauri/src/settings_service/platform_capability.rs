@@ -10,6 +10,8 @@ use super::errors::SettingsError;
 pub enum PlatformCapability {
     /// Capture and activation of the dictation's destination application (macOS, Windows).
     Destination,
+    /// Apple Intelligence as a post-processing provider (Apple silicon Macs, 005).
+    AppleIntelligence,
 }
 
 /// Capabilities of one build, or an injected set in tests.
@@ -20,8 +22,22 @@ pub struct PlatformCapabilities {
 
 // The build declares `Destination` only on macOS and Windows with the 006 rollout gate open
 // (`destination::rollout`); closed, every validator refuses `return_to_dictation_app`.
+const DESTINATION_BUILD: bool = !crate::destination::rollout::Rollout::CURRENT
+    .capabilities()
+    .is_empty();
+// Apple Intelligence exists only in Apple silicon macOS builds (the same condition that adds the
+// provider to the default list and compiles the native adapter).
+const APPLE_INTELLIGENCE_BUILD: bool = cfg!(all(target_os = "macos", target_arch = "aarch64"));
 const BUILD_CAPABILITIES: &[PlatformCapability] =
-    crate::destination::rollout::Rollout::CURRENT.capabilities();
+    match (DESTINATION_BUILD, APPLE_INTELLIGENCE_BUILD) {
+        (true, true) => &[
+            PlatformCapability::Destination,
+            PlatformCapability::AppleIntelligence,
+        ],
+        (true, false) => &[PlatformCapability::Destination],
+        (false, true) => &[PlatformCapability::AppleIntelligence],
+        (false, false) => &[],
+    };
 
 /// Setting keys that need a capability; each later feature adds its own row.
 const KEY_CAPABILITIES: &[(&str, PlatformCapability)] =
@@ -96,6 +112,13 @@ mod tests {
             .check(Some(PlatformCapability::Destination), None)
             .is_ok());
         assert!(PlatformCapabilities::only(&[]).check(None, None).is_ok());
+    }
+    #[test]
+    fn the_build_supports_apple_intelligence_exactly_on_apple_silicon() {
+        assert_eq!(
+            PlatformCapabilities::current().supports(PlatformCapability::AppleIntelligence),
+            cfg!(all(target_os = "macos", target_arch = "aarch64"))
+        );
     }
     #[test]
     fn the_build_supports_destination_exactly_on_macos_and_windows_with_the_gate_open() {

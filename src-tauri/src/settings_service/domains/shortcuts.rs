@@ -12,6 +12,7 @@ use crate::settings_service::errors::{
 use crate::shortcut::action_shortcuts::{ShortcutEdit, ShortcutEditError};
 use crate::shortcut::conflicts::{normalize_shortcut, ConflictKind, ShortcutConflict};
 use crate::shortcut::edits::{current_binding_or_default, plan_shortcut_edit};
+use crate::shortcut::prompt_targets::{is_live_target, live_targets, store_binding};
 use serde_json::{json, Value};
 
 /// The shortcuts domain.
@@ -31,17 +32,24 @@ impl Domain for ShortcutsDomain {
     ) -> Result<DomainPlan, SettingsError> {
         match (request.action, request.arguments) {
             ("list", []) => Ok(DomainPlan::Read(every_action(settings)?)),
-            ("list", [action]) => Ok(DomainPlan::Read(projection(settings, &known(action)?)?)),
+            ("list", [action]) => Ok(DomainPlan::Read(projection(
+                settings,
+                &known(settings, action)?,
+            )?)),
             ("add", [action, shortcut]) => {
                 let shortcut = shortcut.clone();
-                change(settings, known(action)?, ShortcutEdit::Add { shortcut })
+                change(
+                    settings,
+                    known(settings, action)?,
+                    ShortcutEdit::Add { shortcut },
+                )
             }
             ("remove", [action, shortcut]) => {
-                let action = known(action)?;
+                let action = known(settings, action)?;
                 let shortcut = stored_entry(settings, &action, shortcut);
                 change(settings, action, ShortcutEdit::Remove { shortcut })
             }
-            ("reset", [action]) => change(settings, known(action)?, ShortcutEdit::Reset),
+            ("reset", [action]) => change(settings, known(settings, action)?, ShortcutEdit::Reset),
             _ => Err(SettingsError::new(SettingsErrorCode::UsageError)),
         }
     }
@@ -56,18 +64,23 @@ fn action_ids() -> Vec<String> {
     ids.sort();
     ids
 }
-/// A known action id; an unknown one is `not_found`, without echoing it.
-fn known(action: &str) -> Result<String, SettingsError> {
+/// A known action id, or the shortcut target `prompt:<id>` of an existing prompt (005); an
+/// unknown one is `not_found`, without echoing it.
+fn known(settings: &AppSettings, action: &str) -> Result<String, SettingsError> {
+    if is_live_target(settings, action) {
+        return Ok(action.to_owned());
+    }
     action_ids()
         .into_iter()
         .find(|id| id == action)
         .ok_or_else(|| SettingsError::new(SettingsErrorCode::NotFound))
 }
-/// `{actions: [...]}`: the projection of every action.
+/// `{actions: [...]}`: the projection of every action, then of every prompt with shortcuts.
 fn every_action(settings: &AppSettings) -> Result<Value, SettingsError> {
     let actions = action_ids()
-        .iter()
-        .map(|id| projection(settings, id))
+        .into_iter()
+        .chain(live_targets(settings))
+        .map(|id| projection(settings, &id))
         .collect::<Result<Vec<_>, _>>()?;
     Ok(json!({ "actions": actions }))
 }
@@ -113,7 +126,7 @@ fn change(
         let (current, planned) =
             plan_shortcut_edit(locked, &target, &edit).map_err(|error| refusal(&target, error))?;
         if planned.shortcuts() != current.shortcuts() {
-            locked.bindings.insert(target.clone(), planned);
+            store_binding(locked, planned);
         }
         Ok(())
     });

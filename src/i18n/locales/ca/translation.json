@@ -729,7 +729,16 @@
       "persistenceFailed": "No s'ha pogut desar la configuració.",
       "generic": "No s'ha pogut canviar la configuració.",
       "readOnly": "La configuració és només de lectura en aquesta sessió: el fitxer de configuració no es pot escriure de manera segura, de manera que els canvis no es desaran.",
-      "unsupportedPlatform": "Aquesta configuració no està disponible en aquest sistema."
+      "unsupportedPlatform": "Aquesta configuració no està disponible en aquest sistema.",
+      "promptNameEmpty": "Introdueix un nom per al prompt.",
+      "promptNameTooLong": "El nom del prompt ha de tenir com a màxim 60 caràcters.",
+      "promptNameDuplicate": "Un altre prompt ja té aquest nom. Els noms han de ser únics.",
+      "promptTextEmpty": "Introdueix el text del prompt.",
+      "promptTextTooLong": "El text del prompt ha de tenir com a màxim 8.000 caràcters.",
+      "promptOverrideIncomplete": "Tria un proveïdor i un model, o fes servir el proveïdor predeterminat.",
+      "promptUnknownProvider": "Aquest proveïdor no està disponible.",
+      "promptNotUsable": "Aquest prompt no és vàlid. Edita'l abans de fer-lo servir.",
+      "limitExceeded": "S'ha arribat al nombre màxim."
     }
   },
   "appLanguage": {
@@ -748,7 +757,8 @@
   "overlay": {
     "transcribing": "S'està transcrivint...",
     "processing": "S'està processant...",
-    "loadingModel": "S'està carregant el model..."
+    "loadingModel": "S'està carregant el model...",
+    "fallbackNotice": "El processament amb IA ha fallat. S'ha fet servir el text original."
   },
   "secureInput": {
     "blockedWithCulprit_one": "{{name}} pot estar blocant 1 drecera",

@@ -333,7 +333,25 @@ async fetchPostProcessModels(providerId: string) : Promise<Result<string[], stri
 }
 },
 /**
- * Append a prompt; its id is generated once, outside the (re-runnable) edit.
+ * The library as published: each prompt with its issues, shortcuts and provider readiness, and
+ * the default prompt. Runs on the blocking pool (the Apple Intelligence check is synchronous).
+ * 
+ * # Errors
+ * `internal_error` if the worker could not run.
+ */
+async getPromptLibrary() : Promise<Result<PromptLibraryView, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("get_prompt_library") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Create a prompt; the id is generated once, outside the (re-runnable) edit.
+ * 
+ * # Errors
+ * `validation_failed` with a prompt reason, `limit_exceeded` at 50 prompts, or a commit refusal.
  */
 async addPostProcessPrompt(name: string, prompt: string) : Promise<Result<LLMPrompt, SettingsCommandError>> {
     try {
@@ -344,7 +362,10 @@ async addPostProcessPrompt(name: string, prompt: string) : Promise<Result<LLMPro
 }
 },
 /**
- * Rename or rewrite an existing prompt.
+ * Rename and rewrite a prompt; the edited prompt must be valid.
+ * 
+ * # Errors
+ * `not_found`, `validation_failed` with a prompt reason, or a commit refusal.
  */
 async updatePostProcessPrompt(id: string, name: string, prompt: string) : Promise<Result<null, SettingsCommandError>> {
     try {
@@ -355,9 +376,15 @@ async updatePostProcessPrompt(id: string, name: string, prompt: string) : Promis
 }
 },
 /**
- * Delete a prompt; the last prompt is kept, and a deleted selection moves to the first prompt.
+ * Delete a prompt and its shortcuts (the UI confirms first, naming them); a deleted default
+ * becomes None. Its shortcuts are released before the commit and registered again if the
+ * commit is refused. Returns the removed shortcuts.
+ * 
+ * # Errors
+ * `not_found`; `unavailable` (`shortcut_session_busy`) during a dictation when the prompt has
+ * shortcuts; or a commit refusal. Nothing is removed then.
  */
-async deletePostProcessPrompt(id: string) : Promise<Result<null, SettingsCommandError>> {
+async deletePostProcessPrompt(id: string) : Promise<Result<string[], SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("delete_post_process_prompt", { id }) };
 } catch (e) {
@@ -365,9 +392,75 @@ async deletePostProcessPrompt(id: string) : Promise<Result<null, SettingsCommand
     else return { status: "error", error: e  as any };
 }
 },
-async setPostProcessSelectedPrompt(id: string) : Promise<Result<null, SettingsCommandError>> {
+/**
+ * Choose the default prompt of the post-processing shortcut, or None.
+ * 
+ * # Errors
+ * `not_found`, `validation_failed` (`prompt_not_usable`) for a prompt with issues.
+ */
+async setPostProcessSelectedPrompt(id: string | null) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("set_post_process_selected_prompt", { id }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Set the provider and model a prompt uses, or return it to the default provider with `None`.
+ * 
+ * # Errors
+ * `not_found`; `validation_failed` with `prompt_override_incomplete`, `prompt_unknown_provider`
+ * or `unsupported_platform` (Apple Intelligence off Apple silicon).
+ */
+async setPostProcessPromptProviderOverride(id: string, providerOverride: PromptProviderOverride | null) : Promise<Result<null, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("set_post_process_prompt_provider_override", { id, providerOverride }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Run the editor's draft prompt on the sample within the 30-second budget and return the
+ * result, provider, model and duration, or the typed failure. Never inserts text or writes
+ * history; a second test while one runs answers `busy`.
+ * 
+ * # Errors
+ * `validation_failed` for a draft the library would refuse (empty text, incomplete or unknown
+ * override, `unsupported_platform`).
+ */
+async testPostProcessPrompt(request: PromptTestRequest) : Promise<Result<PromptTestResult, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("test_post_process_prompt", { request }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Cancel the running prompt test (closing the editor); its late result reads `cancelled`.
+ */
+async cancelPostProcessPromptTest() : Promise<void> {
+    await TAURI_INVOKE("cancel_post_process_prompt_test");
+},
+/**
+ * Prompt of the dictation in progress, for the indicator (`None`: no dictation).
+ */
+async getDictationPrompt() : Promise<DictationPromptView | null> {
+    return await TAURI_INVOKE("get_dictation_prompt");
+},
+/**
+ * Choose the prompt of recording `session_id` from the indicator (`None`: no processing); the
+ * default prompt is unchanged. The indicator shows the acknowledged view, never its own guess.
+ * 
+ * # Errors
+ * `session_ended` after the stop or for another session, `processing_off`, `prompt_missing`,
+ * `prompt_not_usable`; nothing changes.
+ */
+async selectDictationPrompt(sessionId: number, promptId: string | null) : Promise<Result<DictationPromptView, PromptChoiceRefusal>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("select_dictation_prompt", { sessionId, promptId }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -1228,11 +1321,15 @@ async isLaptop() : Promise<Result<boolean, string>> {
 
 
 export const events = __makeEvents__<{
+dictationPromptChanged: DictationPromptChanged,
 historyUpdatePayload: HistoryUpdatePayload,
+promptProcessingFailed: PromptProcessingFailed,
 streamPhaseEvent: StreamPhaseEvent,
 streamTextEvent: StreamTextEvent
 }>({
+dictationPromptChanged: "dictation-prompt-changed",
 historyUpdatePayload: "history-update-payload",
+promptProcessingFailed: "prompt-processing-failed",
 streamPhaseEvent: "stream-phase-event",
 streamTextEvent: "stream-text-event"
 })
@@ -1456,6 +1553,26 @@ export type DestinationSupport = { state: "supported" } | { state: "unsupported"
  */
 export type DictationId = number
 /**
+ * The indicator's prompt changed (`None`: no dictation in progress).
+ */
+export type DictationPromptChanged = { prompt: DictationPromptView | null }
+/**
+ * The indicator's view of the dictation prompt.
+ */
+export type DictationPromptView = { 
+/**
+ * Session the choice must name (stale UI events of another session are refused).
+ */
+session_id: number; 
+/**
+ * Prompt of this dictation; `None` means no AI processing.
+ */
+prompt_id: string | null; prompt_name: string | null; 
+/**
+ * False when AI post-processing is off: the menu is hidden and the prompt stays None.
+ */
+selectable: boolean }
+/**
  * Why the effective input was chosen.
  */
 export type EffectiveReason = 
@@ -1650,6 +1767,38 @@ export type ErrorReason =
  */
 "context_budget_unverified" | 
 /**
+ * The prompt name is empty after trimming (005).
+ */
+"prompt_name_empty" | 
+/**
+ * The prompt name is longer than 60 characters (005).
+ */
+"prompt_name_too_long" | 
+/**
+ * Another prompt has the same name, ignoring case (005).
+ */
+"prompt_name_duplicate" | 
+/**
+ * The prompt text is empty or only whitespace (005).
+ */
+"prompt_text_empty" | 
+/**
+ * The prompt text is longer than 8000 characters (005).
+ */
+"prompt_text_too_long" | 
+/**
+ * A provider override needs both a provider and a model (005).
+ */
+"override_incomplete" | 
+/**
+ * The override names a provider this build does not have (005).
+ */
+"unknown_provider" | 
+/**
+ * The prompt has issues and cannot be used until edited (005).
+ */
+"prompt_invalid" | 
+/**
  * The microphone choices change only through `handy settings microphones` (001).
  */
 "microphones_domain" | 
@@ -1686,6 +1835,27 @@ export type ExclusionReason = "empty" | "too_long" | "line_break" | "forbidden_c
  */
 "no_context"
 /**
+ * Why the AI step produced no usable text. Codes are stored in history and shown translated;
+ * they never carry a provider message, a URL or a credential.
+ */
+export type FailureReason = 
+/**
+ * The provider or the HTTP request failed.
+ */
+"provider_error" | 
+/**
+ * The reply was empty or only whitespace once cleaned.
+ */
+"empty_result" | 
+/**
+ * The whole step exceeded `PROCESSING_BUDGET`.
+ */
+"timeout" | 
+/**
+ * The previous Apple Intelligence request is still running natively.
+ */
+"provider_busy" | "missing_endpoint" | "missing_model" | "missing_api_key" | "provider_unavailable" | "unknown_provider" | "invalid_prompt" | "prompt_missing"
+/**
  * Stable field identifier translated at UI/CLI boundaries.
  */
 export type Field = "id" | "recognized" | "replacement" | "rules" | 
@@ -1701,7 +1871,11 @@ export type GpuDeviceOption = { id: string; name: string; total_vram_mb: number 
 /**
  * One history row. `file_name` is `None` for a text-only row (no audio recording).
  */
-export type HistoryEntry = { id: number; file_name: string | null; timestamp: number; saved: boolean; title: string; transcription_text: string; post_processed_text: string | null; post_process_prompt: string | null; post_process_requested: boolean }
+export type HistoryEntry = ({ post_process_prompt_id: string | null; post_process_prompt_name: string | null; post_process_provider_id: string | null; post_process_model: string | null; 
+/**
+ * Failure code (`timeout`, `provider_error`, ...) when the original text was used.
+ */
+post_process_failure: string | null }) & { id: number; file_name: string | null; timestamp: number; saved: boolean; title: string; transcription_text: string; post_processed_text: string | null; post_process_prompt: string | null; post_process_requested: boolean }
 export type HistoryUpdatePayload = { action: "added"; entry: HistoryEntry } | { action: "updated"; entry: HistoryEntry } | { action: "deleted"; id: number } | { action: "toggled"; id: number }
 /**
  * Why a line carries no rule.
@@ -1781,11 +1955,40 @@ export type KeyboardDiagnosticReport = { secure_input_enabled: boolean; culprit_
  */
 key_down: number; key_up: number; flags_changed: number; mouse: number; duration_ms: number }
 export type KeyboardImplementation = "tauri" | "handy_keys"
-export type LLMPrompt = { id: string; name: string; prompt: string }
+/**
+ * One prompt of the library. `id`, `name` and `prompt` keep their historical wire names; the
+ * fields added by 005 are absent from stores written before it and never serialized when
+ * unset, so a store without overrides or starters stays byte-identical for earlier versions.
+ */
+export type LLMPrompt = { id: string; name: string; prompt: string; 
+/**
+ * Provider and model override; `None` uses the default provider and its model.
+ */
+provider_override?: PromptProviderOverride | null; 
+/**
+ * Added by the one-time starter migration (still editable and deletable).
+ */
+starter?: boolean }
 /**
  * One refused input line.
  */
 export type LineIssue = { index: number; issue: TermIssue }
+/**
+ * One prompt of the library listing: its view, its 0–2 shortcuts and its readiness.
+ */
+export type ListedPrompt = ({ id: string; name: string; prompt: string; 
+/**
+ * Provider and model override; `None` uses the default provider.
+ */
+provider_override: PromptProviderOverride | null; 
+/**
+ * Added by the starter migration.
+ */
+starter: boolean; 
+/**
+ * Why the prompt cannot be used until edited; empty for a valid prompt.
+ */
+issues: PromptIssue[] }) & { shortcuts: string[]; readiness: Readiness }
 export type LogLevel = "trace" | "debug" | "info" | "warn" | "error"
 /**
  * Answer of a menu request: the menu, or why it is refused (a typed value, not an error, so
@@ -1912,6 +2115,154 @@ duplicate_lines: number[] }
  * Per-line outcome shown before Apply (AC-003).
  */
 export type PreviewStatus = "add" | "update" | "delete" | "unchanged" | "ignored" | "error"
+/**
+ * Why a choice on the indicator was refused; nothing changed.
+ */
+export type PromptChoiceRefusal = 
+/**
+ * No recording of that session any more (stopped, cancelled or another session).
+ */
+"session_ended" | 
+/**
+ * AI post-processing is off for this dictation.
+ */
+"processing_off" | 
+/**
+ * The prompt is not in the library.
+ */
+"prompt_missing" | 
+/**
+ * The prompt has issues and cannot be used until edited.
+ */
+"prompt_not_usable"
+/**
+ * Why a prompt is not valid (and cannot be used until edited). Legacy prompts that break a rule
+ * stay in the library with their issues listed.
+ */
+export type PromptIssue = 
+/**
+ * The trimmed name is empty.
+ */
+"name_empty" | 
+/**
+ * The trimmed name is longer than `MAX_NAME_CHARS`.
+ */
+"name_too_long" | 
+/**
+ * Another prompt has the same trimmed name, ignoring case.
+ */
+"name_duplicate" | 
+/**
+ * The text is empty or only whitespace (precision of AC-001, decision 2026-10-14).
+ */
+"text_empty" | 
+/**
+ * The text is longer than `MAX_TEXT_CHARS`.
+ */
+"text_too_long" | 
+/**
+ * The override names a provider but no model (or the reverse).
+ */
+"override_incomplete" | 
+/**
+ * The override names a provider this build does not have.
+ */
+"unknown_provider"
+/**
+ * The library with its default prompt (None when absent or no longer in the library).
+ */
+export type PromptLibraryView = { 
+/**
+ * Default prompt of the post-processing shortcut, or `None`.
+ */
+default_prompt_id: string | null; 
+/**
+ * The AI post-processing switch: off, no dictation is processed.
+ */
+post_process_enabled: boolean; prompts: ListedPrompt[] }
+/**
+ * The AI step of a dictation failed and the original text was used for insertion. The notice
+ * (translated key `overlay.fallbackNotice`, English source "AI processing failed. The original
+ * text was used.") never says whether the insertion succeeded: 006, 007 and 010 report that.
+ */
+export type PromptProcessingFailed = { session_id: number; prompt_name: string | null; reason: FailureReason; 
+/**
+ * Minimum display time of the notice, in milliseconds.
+ */
+notice_ms: number }
+/**
+ * Provider and model a prompt uses instead of the default ones (005). API keys stay per
+ * provider: an override names a provider id and a model, never a credential.
+ */
+export type PromptProviderOverride = { provider_id: string; model: string }
+/**
+ * The editor's draft and the sample to process.
+ */
+export type PromptTestRequest = { 
+/**
+ * Prompt text as edited (not necessarily saved).
+ */
+text: string; 
+/**
+ * Provider override as edited; `None` uses the default provider.
+ */
+provider_override: PromptProviderOverride | null; 
+/**
+ * Sample text (prefilled by the UI with the last transcript, editable).
+ */
+sample: string }
+/**
+ * Result shown by the test panel; never a provider message or credential.
+ */
+export type PromptTestResult = { status: PromptTestStatus; text: string | null; failure: FailureReason | null; provider_id: string | null; model: string | null; duration_ms: number }
+/**
+ * How the test ended.
+ */
+export type PromptTestStatus = "success" | "failed" | 
+/**
+ * Another test is still running; this one did not start.
+ */
+"busy" | "cancelled" | 
+/**
+ * The sample is empty: nothing to process.
+ */
+"skipped"
+/**
+ * Public readiness of a prompt: which provider and model it uses and what is missing.
+ */
+export type Readiness = { provider_id: string | null; model: string | null; is_override: boolean; ready: boolean; missing: ReadinessIssue | null }
+/**
+ * Why a prompt cannot process right now. Never carries a credential.
+ */
+export type ReadinessIssue = 
+/**
+ * The provider has no base URL.
+ */
+"missing_endpoint" | 
+/**
+ * No model is configured for the provider (or in the override).
+ */
+"missing_model" | 
+/**
+ * The provider needs an API key and has none.
+ */
+"missing_api_key" | 
+/**
+ * Apple Intelligence is not available on this device right now.
+ */
+"provider_unavailable" | 
+/**
+ * The provider does not exist in this build.
+ */
+"unknown_provider" | 
+/**
+ * The prompt has validation issues and must be edited first.
+ */
+"invalid_prompt" | 
+/**
+ * The prompt is no longer in the library.
+ */
+"prompt_missing"
 /**
  * Recognition mode of the selected model's dictations.
  */
@@ -2324,6 +2675,38 @@ export type ValidationReason = "canonical_type" | "canonical_value" | "out_of_ra
  * the shortcut registrations cannot change until it ends.
  */
 "shortcut_session_busy" | 
+/**
+ * The prompt name is empty after trimming (005).
+ */
+"prompt_name_empty" | 
+/**
+ * The prompt name is longer than 60 characters (005).
+ */
+"prompt_name_too_long" | 
+/**
+ * Another prompt has the same name, ignoring case (005).
+ */
+"prompt_name_duplicate" | 
+/**
+ * The prompt text is empty or only whitespace (005).
+ */
+"prompt_text_empty" | 
+/**
+ * The prompt text is longer than 8000 characters (005).
+ */
+"prompt_text_too_long" | 
+/**
+ * A provider override needs both a provider and a model (005).
+ */
+"prompt_override_incomplete" | 
+/**
+ * The override names a provider this build does not have (005).
+ */
+"prompt_unknown_provider" | 
+/**
+ * The prompt has issues and cannot be used until edited (005).
+ */
+"prompt_not_usable" | 
 /**
  * The microphone choices change only through the microphones domain (feature 001).
  */
