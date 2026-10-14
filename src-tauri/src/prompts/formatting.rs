@@ -102,7 +102,7 @@ mod tests {
     #[test]
     fn structured_replies_use_the_field_or_the_whole_non_json_reply() {
         assert_eq!(
-            structured_text(r#"{"transcription":"Hi​ there"}"#),
+            structured_text("{\"transcription\":\"Hi\u{200B} there\"}"),
             "Hi there"
         );
         assert_eq!(structured_text("plain reply"), "plain reply");
