@@ -5,6 +5,8 @@
 
 ---
 
+## 2026-10-14 — [Feature 002] Integrated with the merged settings CLI (008): `handy settings replacements` (list, add, update/edit, remove/delete, import with dry run, export) on the shared rule-set edits, one compiled matcher per committed revision applied from the next dictation, settings window transaction commands (no UI yet), output-stage harness, and paged/staged transfer beyond one 1 MiB message. Full `cargo test` 642 passed / 0 failed / 19 ignored; conventions PASS, new 0; macOS real-app CLI check (debug). UI, real dictation, M1, Windows/Linux pending.
+
 ## 2026-10-13 — [Feature 002] Spec refined: AC-006 Korean rationale made factual (particles attach to the preceding word); halfwidth U+FF9E/U+FF9F and NFD hangul jamo documented as accepted CJK-side false positives with fixtures (1 Clarify decision, IDs preserved); spec/plan reviews to redo.
 
 ## 2026-10-13 — [Feature 002] Spec refined: Quality Engineering classification for the delivery lane

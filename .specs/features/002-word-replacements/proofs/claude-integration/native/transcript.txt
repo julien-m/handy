@@ -1,0 +1,98 @@
+binary sha256: e3aa4f62e42aa40096c193e235588271a093e54ee84b8b7964414a42090c4121
+commit: d5911d783ff97f42c4d718c3ba37b7579d5f0e2c + working tree
+macOS: 26.5.2 arm64; identifier: com.pais.handy.proof002; HOME isolated: native-home
+
+### offline: start hidden (05:38:59, no app)
+$ handy settings set start_hidden true --json
+exit: 0
+stdout: {"data":{"start_hidden":true},"ok":true,"revision":1}
+stderr: 
+
+### offline: one rule before the app starts (05:38:59, no app)
+$ handy settings replacements add cloud\ code Claude\ Code --json
+exit: 0
+stdout: {"data":{"count":1,"position":1,"rule":{"id":"a508d5a0-ebbe-499b-8f33-4f45a99ec672","recognized":"cloud code","replacement":"Claude Code"}},"ok":true,"revision":2}
+stderr: 
+
+app pid: 78244
+app answered over the channel: 1
+
+### live: list (05:38:59, app alive)
+$ handy settings replacements list --json
+exit: 0
+stdout: {"data":{"rules":[{"id":"a508d5a0-ebbe-499b-8f33-4f45a99ec672","recognized":"cloud code","replacement":"Claude Code"}]},"ok":true,"revision":2}
+stderr: 
+
+### live: add (05:38:59, app alive)
+$ handy settings replacements add get\ hub GitHub --json
+exit: 0
+stdout: {"data":{"count":2,"position":2,"rule":{"id":"a9f3a4ed-a6a0-4183-aa9c-d8e4522b0a79","recognized":"get hub","replacement":"GitHub"}},"ok":true,"revision":3}
+stderr: 
+
+### live: import dry run (05:38:59, app alive)
+$ handy settings replacements import /private/tmp/claude-501/-Users-julienm-projects-handy/6c63dd2f-66f1-4748-8d50-174f39c2881a/scratchpad/team.txt --mode merge --dry-run --json
+exit: 0
+stdout: {"data":{"changes":{"added":1,"count":3,"deleted":0,"ignored":2,"lines":[{"line":2,"status":"add"},{"id":"a9f3a4ed-a6a0-4183-aa9c-d8e4522b0a79","line":3,"status":"update"}],"mode":"merge","unchanged":0,"updated":1},"dry_run":true},"ok":true,"revision":3}
+stderr: 
+
+### live: import (05:39:00, app alive)
+$ handy settings replacements import /private/tmp/claude-501/-Users-julienm-projects-handy/6c63dd2f-66f1-4748-8d50-174f39c2881a/scratchpad/team.txt --mode merge --json
+exit: 0
+stdout: {"data":{"added":1,"count":3,"deleted":0,"ignored":2,"lines":[{"line":2,"status":"add"},{"id":"a9f3a4ed-a6a0-4183-aa9c-d8e4522b0a79","line":3,"status":"update"}],"mode":"merge","unchanged":0,"updated":1},"ok":true,"revision":4}
+stderr: 
+
+### live: invalid add (05:39:00, app alive)
+$ handy settings replacements add '' x --json
+exit: 2
+stdout: {"error":{"code":"validation_failed","details":{"field":"word_replacements","issues":[{"field":"word_replacements","reason":"Items failed validation; see details.items."}],"items":[{"field":"recognized","kind":"too_short","position":4}]},"message":"Setting value failed validation."},"ok":false}
+stderr: Error: Setting value failed validation.
+  word_replacements: Items failed validation; see details.items.
+
+### live: stale import (05:39:00, app alive)
+$ handy settings replacements import /private/tmp/claude-501/-Users-julienm-projects-handy/6c63dd2f-66f1-4748-8d50-174f39c2881a/scratchpad/team.txt --mode merge --expected-revision 0 --json
+exit: 3
+stdout: {"error":{"code":"revision_conflict","details":{"current_revision":4},"message":"Settings revision changed."},"ok":false}
+stderr: Error: Settings revision changed.
+  current revision: 4
+
+### live: export to stdout (05:39:00, app alive)
+$ handy settings replacements export
+exit: 0
+stdout: recognized;replacement
+cloud code;Claude Code
+get hub;GitHub!
+type script;TypeScript
+stderr: 
+
+### live: staged import (escaped input above one 1 MiB message) (05:39:02, app alive)
+$ handy settings replacements import /private/tmp/claude-501/-Users-julienm-projects-handy/6c63dd2f-66f1-4748-8d50-174f39c2881a/scratchpad/heavy.txt --mode replace --json
+exit: 0
+stdout: {"data":{"added":1000,"count":1000,"deleted":3,"ignored":1,"lines":[{"line":2,"status":"add"},{"line":3,"status":"add"},{"line":4,"status":"add"},{"line":5,"status":"add"},{"line":6,"status":"add"},{"line":7,"status":"add"},{"line":8,"status":"add"},{"line":9,"status":"add"},{"line":10,"status":"add"},{"line":11,"status":"add"},{"line":12,"status":"add"},{"line":13,"status":"add"},{"line":14,"status":"add"},{"line":15,"status":"add"},{"line":16,"status":"add"},{"line":17,"status":"add"},{"line":18,"status":"add"},{"line":19,"status":"add"},{"line":20,"status":"add"},{"line":21,"status":"add"}, …(28224 bytes)
+stderr: 
+
+### live: paged list of the staged set (05:39:02, app alive)
+$ handy settings replacements list --json
+exit: 0
+stdout: {"data":{"rules":[{"id":"1c151d18-acf9-49fb-8303-b754805a2ef5","recognized":"r0","replacement":"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\" …(1082933 bytes)
+stderr: 
+
+listed rules: 1000 stdout bytes: 1082934
+### live: export to a file (05:39:02, app alive)
+$ handy settings replacements export /private/tmp/claude-501/-Users-julienm-projects-handy/6c63dd2f-66f1-4748-8d50-174f39c2881a/scratchpad/exported.txt --json
+exit: 0
+stdout: {"data":{"bytes":505913,"count":1000,"path":"/private/tmp/claude-501/-Users-julienm-projects-handy/6c63dd2f-66f1-4748-8d50-174f39c2881a/scratchpad/exported.txt"},"ok":true,"revision":5}
+stderr: 
+
+exported file sha256: 2e6da8803f3ae1119b76b6a795d244c3cab7d8d245d8876e43fbb211329c323f, lines: 1001
+
+app log lines mentioning live effects or replacements:
+(none)
+app stopped (SIGTERM)
+no panic in the app output
+### offline after stop: count (05:39:03, no app)
+$ handy settings replacements list --json
+exit: 0
+stdout: {"data":{"rules":[{"id":"1c151d18-acf9-49fb-8303-b754805a2ef5","recognized":"r0","replacement":"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\" …(1082933 bytes)
+stderr: 
+
+rules after restart of the CLI: 1000 revision: 5

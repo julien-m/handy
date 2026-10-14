@@ -1,0 +1,79 @@
+#!/bin/zsh
+# macOS native check of `handy settings replacements` against the real running app (debug proof
+# build with its own Tauri identifier and an isolated HOME). Usage: native.sh <proof-dir>
+set -u
+S=/private/tmp/claude-501/-Users-julienm-projects-handy/6c63dd2f-66f1-4748-8d50-174f39c2881a/scratchpad
+W=/Users/julienm/projects/handy-wt/002-word-replacements
+P=$1
+mkdir -p $P
+export CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.shared-target CMAKE_POLICY_VERSION_MINIMUM=3.5
+ID=com.pais.handy.proof002
+cd $W/src-tauri
+TAURI_CONFIG="{\"identifier\":\"$ID\"}" cargo build --bins > $P/proof-build.stdout 2> $P/proof-build.stderr; echo $? > $P/proof-build.exit
+# Private copy of the binary and its debug resources right after the build (shared target).
+# Tauri resolves debug resources from a target/debug layout next to the executable.
+trash $S/proof 2>/dev/null; mkdir -p $S/proof/target/debug
+cp $CARGO_TARGET_DIR/debug/handy $S/proof/target/debug/handy
+cp -R $CARGO_TARGET_DIR/debug/resources $S/proof/target/debug/resources
+# Tauri only treats an executable as a Cargo output (resources beside it) next to a .cargo-lock.
+touch $S/proof/target/debug/.cargo-lock
+H=$S/native-home; trash $H 2>/dev/null; mkdir -p $H
+B=$S/proof/target/debug/handy
+SEAM=$S/absent-legacy.sock
+log() { print -r -- "$@" >> $P/transcript.txt; }
+run() { # run <label> <args...>: CLI with isolated HOME; record command, exit, stdout, stderr
+  local label=$1; shift
+  local out err code
+  out=$(HOME=$H HANDY_SETTINGS_TEST_LEGACY_SOCKET=$SEAM $B "$@" 2>$S/err.txt); code=$?
+  err=$(cat $S/err.txt)
+  local alive="no app"; [ -n "${APP:-}" ] && { kill -0 $APP 2>/dev/null && alive="app alive" || alive="APP DEAD"; }
+  log "### $label ($(date +%H:%M:%S), $alive)"; log "\$ handy ${(j: :)${(q)@}}"; log "exit: $code"
+  log "stdout: ${out[1,600]}$([ ${#out} -gt 600 ] && echo " …(${#out} bytes)")"; log "stderr: $err"; log ""
+  print -r -- "$out" > $S/last.out
+  return $code
+}
+: > $P/transcript.txt
+log "binary sha256: $(shasum -a 256 $B | cut -d' ' -f1)"
+log "commit: $(git -C $W rev-parse HEAD) + working tree"
+log "macOS: $(sw_vers -productVersion) $(uname -m); identifier: $ID; HOME isolated: native-home"; log ""
+run "offline: start hidden" settings set start_hidden true --json
+run "offline: one rule before the app starts" settings replacements add "cloud code" "Claude Code" --json
+HOME=$H $B > $S/app-stdio.log 2>&1 &
+APP=$!
+log "app pid: $APP"
+ready=0
+# Ready once the app's private endpoint answers: with the startup lease held, a CLI read can
+# only succeed through it (an offline read is refused while an instance owns the store).
+for i in {1..150}; do
+  if kill -0 $APP 2>/dev/null && HOME=$H $B settings get start_hidden --json 2>/dev/null | grep -q '"ok":true' && kill -0 $APP 2>/dev/null; then ready=1; break; fi
+  sleep 0.2
+done
+log "app answered over the channel: $ready"; log ""
+# With the app holding the startup lease, an offline write is impossible: every success below
+# was answered by the running app.
+run "live: list" settings replacements list --json
+run "live: add" settings replacements add "get hub" "GitHub" --json
+print -r -- $'recognized;replacement\ntype script;TypeScript\nget hub;GitHub!\n' > $S/team.txt
+run "live: import dry run" settings replacements import $S/team.txt --mode merge --dry-run --json
+run "live: import" settings replacements import $S/team.txt --mode merge --json
+run "live: invalid add" settings replacements add "" "x" --json
+run "live: stale import" settings replacements import $S/team.txt --mode merge --expected-revision 0 --json
+run "live: export to stdout" settings replacements export
+python3 -c "
+import sys
+lines=['#'+'\x01'*100000]+['r%d;%s'%(i,'\"'*500) for i in range(1000)]
+open('$S/heavy.txt','w').write('\n'.join(lines)+'\n')"
+run "live: staged import (escaped input above one 1 MiB message)" settings replacements import $S/heavy.txt --mode replace --json
+run "live: paged list of the staged set" settings replacements list --json
+python3 -c "import json;d=json.load(open('$S/last.out'));print('listed rules:',len(d['data']['rules']),'stdout bytes:',len(open('$S/last.out').read()))" >> $P/transcript.txt
+run "live: export to a file" settings replacements export $S/exported.txt --json
+log "exported file sha256: $(shasum -a 256 $S/exported.txt | cut -d' ' -f1), lines: $(wc -l < $S/exported.txt)"
+LOGFILE=$H/Library/Logs/$ID/handy.log
+log ""; log "app log lines mentioning live effects or replacements:"
+grep -i "live effect\|replacement" $LOGFILE >> $P/transcript.txt 2>/dev/null || log "(none)"
+kill -TERM $APP 2>/dev/null && log "app stopped (SIGTERM)" || log "APP WAS NOT RUNNING AT THE END"
+wait $APP 2>/dev/null; APP=
+grep -n "panicked" $S/app-stdio.log >> $P/transcript.txt || log "no panic in the app output"
+run "offline after stop: count" settings replacements list --json
+python3 -c "import json;d=json.load(open('$S/last.out'));print('rules after restart of the CLI:',len(d['data']['rules']),'revision:',d['revision'])" >> $P/transcript.txt
+echo done

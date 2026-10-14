@@ -7,8 +7,10 @@ use crate::settings_service::{
     errors::SettingsError,
     live::LiveSettings,
     operations::SettingsBackend,
+    ownership::LegacyPathProbe,
     protocol::Revision,
-    store::SettingsRead,
+    store::{SettingsRead, SettingsRepository},
+    transaction::{PersistObserver, PersistStage},
     validation::{validate_cli, SettingsMutation, ValidationContext},
 };
 use serde_json::json;
@@ -147,5 +149,34 @@ fn a_full_import_report_stays_far_below_one_reply_frame() -> TestResult {
         .run(&service);
     assert_eq!(outcome(&reply).2["count"], 1000);
     assert!(reply.envelope().to_string().len() < 128 * 1024);
+    Ok(())
+}
+
+/// Fails the durable write at one stage.
+struct FailAt(PersistStage);
+impl PersistObserver for FailAt {
+    fn observe(&self, stage: PersistStage) -> std::io::Result<()> {
+        if stage == self.0 {
+            return Err(std::io::Error::other("injected filesystem failure"));
+        }
+        Ok(())
+    }
+}
+
+#[test]
+fn a_failed_durable_write_leaves_rules_store_and_revision_unchanged() -> TestResult {
+    let directory = tempfile::tempdir()?;
+    let store = directory.path().join("settings_store.json");
+    let probe = LegacyPathProbe::new(directory.path().join("absent.sock"));
+    let owned = LiveSettings::start_owned(SettingsRepository::new(store.clone()), &probe)?;
+    Call::new("add", &["kept", "Kept"]).run(&owned);
+    let (before, revision) = (std::fs::read(&store)?, owned.snapshot().revision);
+    let failing = owned.with_observer(Box::new(FailAt(PersistStage::BeforeReplace)));
+    let call = Call::new("import", &["replace"]).input("cloud code;Claude Code\n");
+    let (code, _, error) = outcome(&call.run(&failing));
+    assert_eq!((code, &error["code"]), (1, &json!("persistence_failed")));
+    assert_eq!(std::fs::read(&store)?, before);
+    assert_eq!(failing.snapshot().revision, revision);
+    assert_eq!(texts(&rules(&failing)), pairs(&[("kept", "Kept")]));
     Ok(())
 }
