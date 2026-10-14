@@ -1,6 +1,7 @@
 // "Settings changed elsewhere" (008): shown at the top of the settings when a
 // write expected an older revision than the one another writer (the command
-// line, another window) committed. Reload rereads the stored settings.
+// line, another window) committed. Reload rereads the stored settings; if
+// that read fails, the alert stays with the failure under its text.
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useSettingsStore } from "../../stores/settingsStore";
@@ -14,6 +15,7 @@ const TEST_ID = "settings-write-errors-conflict";
 export const SettingsConflictAlert: React.FC = () => {
   const { t } = useTranslation();
   const hasConflict = useSettingsStore((state) => state.revisionConflict);
+  const reloadFailed = useSettingsStore((state) => state.conflictReloadFailed);
   const reload = useSettingsStore((state) => state.reloadAfterConflict);
   if (!hasConflict) return null;
   return (
@@ -33,7 +35,15 @@ export const SettingsConflictAlert: React.FC = () => {
         </Button>
       }
     >
-      {t("errors.settings.conflictBody")}
+      <span className="block">{t("errors.settings.conflictBody")}</span>
+      {reloadFailed && (
+        <span
+          className="block text-xs"
+          data-testid={`${TEST_ID}-reload-failed`}
+        >
+          {t("errors.settings.reloadFailed")}
+        </span>
+      )}
     </Alert>
   );
 };

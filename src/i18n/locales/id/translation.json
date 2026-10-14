@@ -1212,7 +1212,8 @@
       "limitExceeded": "Jumlah maksimum telah tercapai.",
       "conflictTitle": "Pengaturan diubah di tempat lain",
       "conflictBody": "Baris perintah atau jendela lain menyimpan versi yang lebih baru. Muat ulang untuk melihatnya; perubahan Anda yang belum disimpan akan dibuang.",
-      "reload": "Muat ulang"
+      "reload": "Muat ulang",
+      "reloadFailed": "Pengaturan tidak dapat dimuat ulang. Coba lagi."
     }
   },
   "appLanguage": {

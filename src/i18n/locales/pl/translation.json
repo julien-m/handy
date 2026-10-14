@@ -1209,7 +1209,8 @@
       "limitExceeded": "Osiągnięto maksymalną liczbę.",
       "conflictTitle": "Ustawienia zmieniono gdzie indziej",
       "conflictBody": "Wiersz poleceń lub inne okno zapisało nowszą wersję. Odśwież, aby ją zobaczyć; niezapisana zmiana zostanie odrzucona.",
-      "reload": "Odśwież"
+      "reload": "Odśwież",
+      "reloadFailed": "Nie udało się ponownie wczytać ustawień. Spróbuj ponownie."
     }
   },
   "appLanguage": {

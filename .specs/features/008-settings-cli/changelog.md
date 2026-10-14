@@ -343,3 +343,14 @@ Inspect [the Step 7 checkpoint](progress.md#current-step-7-checkpoint--macos-nat
 - **Execution evidence:** RED parity on the previous routed path; full `cargo test` 490 passed/0 failed/18 ignored; strict clippy, fmt, lint, format check, tsc exit 0; Windows compile harness and clippy exit 0; conventions PASS/new 0. Commit `853bfeb`.
 
 Inspect [the round 1 checkpoint](progress.md#current-delivery-review-checkpoint--correction-round-1) and [the dispositions](implementation.md#delivery-review-correction-round-1).
+
+## 2026-10-14 — [Bugfix]: Reload never claims success; history limit saves tested
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** src/stores/settingsStore.ts, src/components/settings/settings-conflict-alert.tsx, HistoryLimit.tsx, history-limit-model.ts, tests (settings-store, history-limit-model, output-settings-render), 26 locales (`errors.settings.reloadFailed`)
+- **AC impacted:** AC-003, AC-004
+- **Why:** delivery audit warning: Reload after "Settings changed elsewhere" closed the alert even when the reread failed; review warning: the blur/Enter save of the history limit had no test.
+- **Tests:** [proofs](proofs/claude-hardening/summary.txt)
+- **Author:** Claude Code (claude-opus-5-5)
+

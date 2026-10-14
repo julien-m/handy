@@ -1209,7 +1209,8 @@
       "limitExceeded": "Se ha alcanzado el número máximo.",
       "conflictTitle": "La configuración cambió en otro lugar",
       "conflictBody": "La línea de comandos u otra ventana guardó una versión más reciente. Recarga para verla; tu cambio sin guardar se descarta.",
-      "reload": "Recargar"
+      "reload": "Recargar",
+      "reloadFailed": "No se pudo recargar la configuración. Inténtalo de nuevo."
     }
   },
   "appLanguage": {

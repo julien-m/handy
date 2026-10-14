@@ -1,7 +1,14 @@
 // Tests of the history limit field validation (008 validation display); run
 // with `bun run test:output-settings`.
 import { describe, expect, test } from "bun:test";
-import { HISTORY_LIMIT_RANGE, parseHistoryLimit } from "./history-limit-model";
+import {
+  HISTORY_LIMIT_RANGE,
+  type HistoryLimitEvent,
+  SHOWN_STORED,
+  historyLimitStep,
+  isCommitKey,
+  parseHistoryLimit,
+} from "./history-limit-model";
 
 describe("history limit field", () => {
   test("whole numbers in range are accepted", () => {
@@ -17,5 +24,61 @@ describe("history limit field", () => {
     for (const text of ["-5", "2.5", "", "abc", "1e3", "1001"]) {
       expect(parseHistoryLimit(text)).toEqual({ isValid: false });
     }
+  });
+});
+
+/** Plays events on the field as the component does; returns the saves and the last field. */
+const play = (stored: number, events: HistoryLimitEvent[]) => {
+  const saves: number[] = [];
+  let field = SHOWN_STORED;
+  for (const event of events) {
+    const step = historyLimitStep(field, event, stored);
+    field = step.field;
+    if (step.save !== null) saves.push(step.save);
+  }
+  return { saves, field };
+};
+const typed = (text: string): HistoryLimitEvent => ({ type: "typed", text });
+const COMMITTED: HistoryLimitEvent = { type: "committed" };
+
+describe("saving the history limit (blur or Enter)", () => {
+  test("typing 1 then 12 sends nothing until the field is left, then 12 once", () => {
+    const whileTyping = play(5, [typed("1"), typed("12")]);
+    expect(whileTyping.saves).toEqual([]);
+    expect(whileTyping.field).toEqual({ draft: "12" });
+    const left = play(5, [typed("1"), typed("12"), COMMITTED]);
+    expect(left.saves).toEqual([12]);
+    expect(left.field).toEqual(SHOWN_STORED);
+  });
+
+  test("a refused value stays in the field with its error and is never sent", () => {
+    const refused = play(5, [typed("-5"), COMMITTED, COMMITTED]);
+    expect(refused.saves).toEqual([]);
+    expect(refused.field).toEqual({ draft: "-5" });
+    expect(parseHistoryLimit(refused.field.draft ?? "").isValid).toBe(false);
+  });
+
+  test("Enter commits like leaving the field; other keys do not", () => {
+    expect(isCommitKey("Enter")).toBe(true);
+    expect(isCommitKey("1")).toBe(false);
+    expect(isCommitKey("Tab")).toBe(false);
+    // Enter, then the blur that follows: one save only.
+    expect(play(5, [typed("40"), COMMITTED, COMMITTED]).saves).toEqual([40]);
+  });
+
+  test("an unchanged value is not sent again", () => {
+    expect(play(5, [typed("5"), COMMITTED]).saves).toEqual([]);
+    expect(play(5, [COMMITTED]).saves).toEqual([]);
+    expect(play(5, [typed(" 5 "), COMMITTED]).field).toEqual(SHOWN_STORED);
+  });
+
+  test("a value corrected after a refusal is saved", () => {
+    const corrected = play(5, [
+      typed("1001"),
+      COMMITTED,
+      typed("100"),
+      COMMITTED,
+    ]);
+    expect(corrected.saves).toEqual([100]);
   });
 });

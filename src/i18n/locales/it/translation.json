@@ -1209,7 +1209,8 @@
       "limitExceeded": "È stato raggiunto il numero massimo.",
       "conflictTitle": "Impostazioni modificate altrove",
       "conflictBody": "La riga di comando o un'altra finestra ha salvato una versione più recente. Ricarica per vederla; la modifica non salvata viene scartata.",
-      "reload": "Ricarica"
+      "reload": "Ricarica",
+      "reloadFailed": "Impossibile ricaricare le impostazioni. Riprova."
     }
   },
   "appLanguage": {

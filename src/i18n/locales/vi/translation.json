@@ -1209,7 +1209,8 @@
       "limitExceeded": "Đã đạt số lượng tối đa.",
       "conflictTitle": "Cài đặt đã được thay đổi ở nơi khác",
       "conflictBody": "Dòng lệnh hoặc một cửa sổ khác đã lưu phiên bản mới hơn. Tải lại để xem; thay đổi chưa lưu của bạn sẽ bị bỏ.",
-      "reload": "Tải lại"
+      "reload": "Tải lại",
+      "reloadFailed": "Không thể tải lại cài đặt. Hãy thử lại."
     }
   },
   "appLanguage": {

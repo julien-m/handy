@@ -1209,7 +1209,8 @@
       "limitExceeded": "已達到最大數量。",
       "conflictTitle": "設定已在其他地方變更",
       "conflictBody": "命令列或其他視窗儲存了較新的版本。重新載入即可查看；你未儲存的修改將被捨棄。",
-      "reload": "重新載入"
+      "reload": "重新載入",
+      "reloadFailed": "無法重新載入設定。請再試一次。"
     }
   },
   "appLanguage": {

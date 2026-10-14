@@ -1209,7 +1209,8 @@
       "limitExceeded": "Bylo dosaženo maximálního počtu.",
       "conflictTitle": "Nastavení bylo změněno jinde",
       "conflictBody": "Příkazový řádek nebo jiné okno uložilo novější verzi. Načtěte ji znovu; vaše neuložená úprava bude zahozena.",
-      "reload": "Načíst znovu"
+      "reload": "Načíst znovu",
+      "reloadFailed": "Nastavení se nepodařilo znovu načíst. Zkuste to znovu."
     }
   },
   "appLanguage": {

@@ -1212,7 +1212,8 @@
       "limitExceeded": "S'ha arribat al nombre màxim.",
       "conflictTitle": "La configuració s'ha canviat en un altre lloc",
       "conflictBody": "La línia d'ordres o una altra finestra ha desat una versió més nova. Torneu a carregar per veure-la; la vostra modificació no desada es descarta.",
-      "reload": "Torna a carregar"
+      "reload": "Torna a carregar",
+      "reloadFailed": "No s'ha pogut tornar a carregar la configuració. Torneu-ho a provar."
     }
   },
   "appLanguage": {

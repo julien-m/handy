@@ -28,9 +28,14 @@ mock.module("../../hooks/useSettings", () => ({
   }),
 }));
 let revisionConflict = false;
+let conflictReloadFailed = false;
 mock.module("../../stores/settingsStore", () => ({
   useSettingsStore: (select: (state: object) => unknown) =>
-    select({ revisionConflict, reloadAfterConflict: async () => undefined }),
+    select({
+      revisionConflict,
+      conflictReloadFailed,
+      reloadAfterConflict: async () => undefined,
+    }),
 }));
 
 const { ReturnToAppSetting } = await import("./return-to-app-setting");
@@ -144,6 +149,23 @@ describe("settings write errors (008)", () => {
       true,
     );
     expect(markup.includes("errors.settings.conflictBody")).toBe(true);
+    expect(markup.includes("errors.settings.reloadFailed")).toBe(false);
+  });
+
+  test("a failed Reload: the alert stays with the failure, no false success", () => {
+    revisionConflict = true;
+    conflictReloadFailed = true;
+    const markup = renderToStaticMarkup(<SettingsConflictAlert />);
+    expect(
+      markup.includes('data-testid="settings-write-errors-conflict"'),
+    ).toBe(true);
+    expect(
+      markup.includes(
+        'data-testid="settings-write-errors-conflict-reload-failed"',
+      ),
+    ).toBe(true);
+    expect(markup.includes("errors.settings.reloadFailed")).toBe(true);
+    conflictReloadFailed = false;
   });
 
   test("a stored history limit shows no error", () => {

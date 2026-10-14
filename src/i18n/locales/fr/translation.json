@@ -1209,7 +1209,8 @@
       "limitExceeded": "Le nombre maximum est atteint.",
       "conflictTitle": "Réglages modifiés ailleurs",
       "conflictBody": "La ligne de commande ou une autre fenêtre a enregistré une version plus récente. Rechargez pour la voir ; votre modification non enregistrée est abandonnée.",
-      "reload": "Recharger"
+      "reload": "Recharger",
+      "reloadFailed": "Impossible de recharger les réglages. Réessayez."
     }
   },
   "appLanguage": {

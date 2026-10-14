@@ -1209,7 +1209,8 @@
       "limitExceeded": "O número máximo foi atingido.",
       "conflictTitle": "Configurações alteradas em outro lugar",
       "conflictBody": "A linha de comando ou outra janela salvou uma versão mais recente. Recarregue para vê-la; sua alteração não salva será descartada.",
-      "reload": "Recarregar"
+      "reload": "Recarregar",
+      "reloadFailed": "Não foi possível recarregar as configurações. Tente novamente."
     }
   },
   "appLanguage": {

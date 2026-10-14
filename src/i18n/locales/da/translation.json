@@ -1212,7 +1212,8 @@
       "limitExceeded": "Det maksimale antal er nået.",
       "conflictTitle": "Indstillingerne blev ændret et andet sted",
       "conflictBody": "Kommandolinjen eller et andet vindue gemte en nyere version. Genindlæs for at se den; din ikke-gemte ændring kasseres.",
-      "reload": "Genindlæs"
+      "reload": "Genindlæs",
+      "reloadFailed": "Indstillingerne kunne ikke genindlæses. Prøv igen."
     }
   },
   "appLanguage": {

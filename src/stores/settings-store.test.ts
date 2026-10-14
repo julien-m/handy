@@ -210,6 +210,7 @@ describe("settings write errors", () => {
       settings: null,
       revision: null,
       revisionConflict: false,
+      conflictReloadFailed: false,
     });
     views = [Promise.resolve(returnView(4, true))];
     toastErrors.length = 0;
@@ -226,6 +227,20 @@ describe("settings write errors", () => {
     await store().updateSetting("return_to_dictation_app", false);
     expect(store().revisionConflict).toBe(true);
     expect(toastErrors.length).toBe(0);
+  });
+
+  test("a failed Reload keeps the alert open with its error, then a retry closes it", async () => {
+    useSettingsStore.setState({ revisionConflict: true });
+    views = [Promise.reject(new Error("ipc down"))];
+    await store().reloadAfterConflict();
+    expect(store().revisionConflict).toBe(true);
+    expect(store().conflictReloadFailed).toBe(true);
+    expect(store().revision).toBe(4);
+    views = [Promise.resolve(returnView(9, false))];
+    await store().reloadAfterConflict();
+    expect(store().revisionConflict).toBe(false);
+    expect(store().conflictReloadFailed).toBe(false);
+    expect(store().revision).toBe(9);
   });
 
   test("Reload rereads the newer revision and closes the alert", async () => {

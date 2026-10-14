@@ -51,6 +51,8 @@ interface SettingsStore {
   // Another writer (CLI, other window) committed a newer revision than the one a write expected;
   // the settings window shows "Settings changed elsewhere" until Reload.
   revisionConflict: boolean;
+  // The last Reload of that alert could not read the settings: the alert stays, with an error.
+  conflictReloadFailed: boolean;
 
   // Actions
   reloadAfterConflict: () => Promise<void>;
@@ -114,7 +116,10 @@ const notifySettingsError = (error: unknown): void => {
   const key = detail ? settingsErrorKey(detail) : SETTINGS_ERROR_KEYS.generic;
   switch (settingsErrorDisplay(detail)) {
     case "conflict-alert":
-      useSettingsStore.setState({ revisionConflict: true });
+      useSettingsStore.setState({
+        revisionConflict: true,
+        conflictReloadFailed: false,
+      });
       return;
     case "save-failed-toast":
       // Test ids of the settings-write-errors contract on the notice and its text.
@@ -252,6 +257,46 @@ const settingUpdaters: {
     commands.setModelUnloadTimeout(value as ModelUnloadTimeout),
 };
 
+/**
+ * Reads the stored settings into the store; an older answer never rolls the window back.
+ * @param get Store state reader.
+ * @param set Store state writer.
+ * @returns True once the window shows the stored settings (this view, or a newer one already
+ * applied); false when they could not be read (logged).
+ */
+const loadSettingsView = async (
+  get: () => SettingsStore,
+  set: (partial: Partial<SettingsStore>) => void,
+): Promise<boolean> => {
+  try {
+    const view = await commands.getSettingsView();
+    const { revision, settings } = view;
+    if (view.read_only && !readOnlyWarned) {
+      readOnlyWarned = true;
+      toast.warning(i18n.t(SETTINGS_ERROR_KEYS.readOnly));
+    }
+    // An older refresh answering after a newer one must not roll the UI back.
+    if (!isCurrentRevision(revision, get().revision)) return true;
+    set({ settings: normalizedSettings(settings), revision, isLoading: false });
+    return true;
+  } catch (error) {
+    console.error("Failed to load settings:", error);
+    set({ isLoading: false });
+    return false;
+  }
+};
+
+/** Stored settings with the defaults the selectors expect. */
+const normalizedSettings = (settings: Settings): Settings => ({
+  ...settings,
+  always_on_microphone: settings.always_on_microphone ?? false,
+  // The channel selector reads the first priority choice (feature 001); an empty
+  // list is the system default.
+  selected_microphone: settings.microphone_priority?.[0] ?? "Default",
+  clamshell_microphone: settings.clamshell_microphone ?? "Default",
+  selected_output_device: settings.selected_output_device ?? "Default",
+});
+
 export const useSettingsStore = create<SettingsStore>()(
   subscribeWithSelector((set, get) => ({
     settings: null,
@@ -267,6 +312,7 @@ export const useSettingsStore = create<SettingsStore>()(
     updateChecksLocked: null,
     refusedShortcuts: [],
     revisionConflict: false,
+    conflictReloadFailed: false,
 
     // Internal setters
     setSettings: (settings) => set({ settings }),
@@ -286,29 +332,7 @@ export const useSettingsStore = create<SettingsStore>()(
 
     // Load settings from store
     refreshSettings: async () => {
-      try {
-        const view = await commands.getSettingsView();
-        const { revision, settings } = view;
-        if (view.read_only && !readOnlyWarned) {
-          readOnlyWarned = true;
-          toast.warning(i18n.t(SETTINGS_ERROR_KEYS.readOnly));
-        }
-        // An older refresh answering after a newer one must not roll the UI back.
-        if (!isCurrentRevision(revision, get().revision)) return;
-        const normalizedSettings: Settings = {
-          ...settings,
-          always_on_microphone: settings.always_on_microphone ?? false,
-          // The channel selector reads the first priority choice (feature 001); an empty
-          // list is the system default.
-          selected_microphone: settings.microphone_priority?.[0] ?? "Default",
-          clamshell_microphone: settings.clamshell_microphone ?? "Default",
-          selected_output_device: settings.selected_output_device ?? "Default",
-        };
-        set({ settings: normalizedSettings, revision, isLoading: false });
-      } catch (error) {
-        console.error("Failed to load settings:", error);
-        set({ isLoading: false });
-      }
+      await loadSettingsView(get, set);
     },
 
     // Load audio devices
@@ -461,10 +485,15 @@ export const useSettingsStore = create<SettingsStore>()(
     clearRefusedShortcuts: () => set({ refusedShortcuts: [] }),
 
     // Reload after "Settings changed elsewhere": the store is authoritative, so the newer
-    // revision replaces whatever this window held; the alert closes once it is shown.
+    // revision replaces whatever this window held; the alert closes once it is shown. A failed
+    // read keeps the alert open with an error instead of claiming the window is current.
     reloadAfterConflict: async () => {
-      await get().refreshSettings();
-      set({ revisionConflict: false });
+      const isShown = await loadSettingsView(get, set);
+      set(
+        isShown
+          ? { revisionConflict: false, conflictReloadFailed: false }
+          : { conflictReloadFailed: true },
+      );
     },
 
     // Enable or disable post-processing; the backend always saves the

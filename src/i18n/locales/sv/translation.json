@@ -1209,7 +1209,8 @@
       "limitExceeded": "Det högsta antalet har nåtts.",
       "conflictTitle": "Inställningarna ändrades någon annanstans",
       "conflictBody": "Kommandoraden eller ett annat fönster sparade en nyare version. Ladda om för att se den; din osparade ändring förkastas.",
-      "reload": "Ladda om"
+      "reload": "Ladda om",
+      "reloadFailed": "Inställningarna kunde inte läsas in igen. Försök igen."
     }
   },
   "appLanguage": {
