@@ -392,14 +392,6 @@
           "sec15": "After 15 seconds (Debug)"
         }
       },
-      "customWords": {
-        "title": "Custom Words",
-        "description": "Help supported models recognize names and specialized terms. Fuzzy correction is currently limited to words using A–Z and numbers.",
-        "placeholder": "Add a word",
-        "add": "Add",
-        "remove": "Remove {{word}}",
-        "duplicate": "\"{{word}}\" already exists"
-      },
       "voiceActivityDetection": {
         "title": "Voice Activity Detection",
         "description": "Filter silence from recordings. Streaming-capable models use a longer VAD tail; disabling VAD records raw audio."
@@ -424,6 +416,135 @@
           "simplified": "Simplified",
           "traditional": "Traditional"
         }
+      }
+    },
+    "vocabulary": {
+      "group": "Vocabulary",
+      "title": "Vocabulary",
+      "description": "Names and terms the model should recognize, when it supports it. Replacements rewrite text after recognition instead.",
+      "placeholder": "Add a term",
+      "inputLabel": "New vocabulary term",
+      "add": "Add",
+      "addHint": "Type a term to add it.",
+      "busy": "Wait for the current change to finish.",
+      "paste": "Paste a list…",
+      "count": "{{total}} of {{max}} terms",
+      "listLabel": "Vocabulary terms",
+      "remove": "Remove {{term}}",
+      "retry": "Retry",
+      "loading": "Loading the vocabulary…",
+      "listFailed": "Couldn't read the saved vocabulary. Nothing was changed; retry to load it.",
+      "empty": {
+        "title": "No terms yet",
+        "body": "Add names such as Claude Code or OpenClaw, one at a time or as a pasted list."
+      },
+      "flag": {
+        "empty": "Empty term, not sent. Remove it.",
+        "too_long": "Longer than 100 characters, not sent. Remove it and add a shorter version.",
+        "line_break": "Contains a line break, not sent. Remove it and add it again.",
+        "forbidden_character": "Contains < > or \", not sent. Remove it and add it without these characters.",
+        "duplicate": "Same as an earlier term, not sent. Remove it.",
+        "over_capacity": "Beyond the 500-term limit, not sent until the list is shorter.",
+        "over_budget": "Not sent: over the model limit."
+      },
+      "errors": {
+        "term_empty": "Enter a term.",
+        "term_too_long": "A term can have at most 100 characters.",
+        "term_line_break": "A term must fit on one line.",
+        "term_forbidden_character": "Remove < > or \" characters from the term.",
+        "term_duplicate": "Each term may appear once, and this one is already in the vocabulary.",
+        "limit": "The vocabulary holds at most 500 terms. Remove a term to add another.",
+        "conflict": "The vocabulary changed in the meantime and was reloaded. Try again.",
+        "notFound": "This term was already removed. The vocabulary was reloaded.",
+        "unknown": "Handy couldn't confirm the change. The vocabulary was reloaded; check it before trying again.",
+        "committed": "The vocabulary was saved, but Handy couldn't apply it right away. The list was reloaded.",
+        "saved": "Your saved vocabulary is unchanged."
+      },
+      "status": {
+        "loading": "Checking what the model supports…",
+        "selectedModel": "the selected model",
+        "used": {
+          "title": "Used during recognition by {{model}}",
+          "sent": "{{sent}} of {{total}} terms are sent.",
+          "sentOne": "{{sent}} of 1 term is sent."
+        },
+        "notSent": {
+          "over_budget": "Not sent, over the model limit: {{terms}}.",
+          "invalid": "Not sent, invalid: {{terms}}.",
+          "duplicate": "Not sent, duplicates: {{terms}}.",
+          "over_capacity": "Not sent, beyond 500 terms: {{terms}}."
+        },
+        "noTermSent": {
+          "title": "No term is sent to {{model}}",
+          "empty_vocabulary": "The vocabulary is empty. Add terms to use them during recognition.",
+          "invalid_terms_only": "Every saved term is invalid or a duplicate. Remove the flagged terms and add corrected ones.",
+          "over_budget": "The first term is over the model limit, so no term is sent. Remove it to send the terms after it."
+        },
+        "notSupported": {
+          "title": "{{model}} can't use the vocabulary during recognition",
+          "body": "Approximate correction after recognition applies instead. Choose a Whisper model to send terms to the recognizer."
+        },
+        "streaming": {
+          "title": "Not used in live streaming",
+          "body": "{{model}} transcribes live, which sends no recognition context. Approximate correction applies to the final text instead."
+        },
+        "unknown": {
+          "title": "Support unknown until the model loads",
+          "model_not_loaded": "Handy checks what {{model}} supports when it loads it.",
+          "capability_query_unanswered": "{{model}} didn't answer in time, for example during a dictation. Handy checks again afterwards."
+        },
+        "budgetUnverified": {
+          "title": "Vocabulary support can't be confirmed for {{model}}",
+          "body": "This model declares recognition context, but this build has no documented limit for it. No term is sent; approximate correction applies instead."
+        },
+        "failed": {
+          "title": "Couldn't read the vocabulary status",
+          "body": "Your vocabulary is saved. Retry to check what the model supports."
+        }
+      },
+      "pasteBox": {
+        "title": "Paste terms",
+        "description": "One term per line. Duplicates are skipped; invalid lines must be fixed before adding.",
+        "label": "Terms to paste, one per line",
+        "previewTitle": "Preview",
+        "previewEmpty": "Paste or type one term per line to see what will be added.",
+        "sameAs": "{{term}} — same as {{original}}",
+        "alreadyListed": "{{term}} — already in the list",
+        "summary": {
+          "add": "{{n}} to add",
+          "duplicateOne": "1 duplicate",
+          "duplicateMany": "{{n}} duplicates",
+          "errorOne": "1 error",
+          "errorMany": "{{n}} errors"
+        },
+        "kind": {
+          "add": "Add",
+          "duplicate": "Duplicate",
+          "error": "Error"
+        },
+        "line": {
+          "empty": "Line {{line}}: empty line, remove it",
+          "too_long": "Line {{line}}: use at most 100 characters",
+          "line_break": "Line {{line}}: keep the term on one line",
+          "forbidden_character": "Line {{line}}: remove < > or \" characters",
+          "duplicate": "Line {{line}}: same as an earlier term",
+          "over_capacity": "Line {{line}}: over the 500-term limit"
+        },
+        "note": {
+          "empty": "Your vocabulary is unchanged until you add the terms.",
+          "checking": "Checking the lines…",
+          "fixOne": "Fix line {{lines}} to add the terms. Your vocabulary is unchanged.",
+          "fixMany": "Fix lines {{lines}} to add the terms. Your vocabulary is unchanged.",
+          "overCapacity": "The vocabulary holds at most 500 terms. Shorten the list to add it. Your vocabulary is unchanged.",
+          "nothingToAdd": "Every line is already in the vocabulary.",
+          "ready": "Duplicates are skipped. Nothing is saved until you add the terms."
+        },
+        "cancel": "Cancel",
+        "applyOne": "Add 1 term",
+        "applyMany": "Add {{n}} terms",
+        "applyZero": "Add terms",
+        "applying": "Adding…",
+        "applied": "Terms added to the vocabulary."
       }
     },
     "postProcessing": {

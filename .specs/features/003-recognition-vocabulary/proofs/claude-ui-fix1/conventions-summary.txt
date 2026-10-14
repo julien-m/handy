@@ -1,0 +1,9 @@
+Command: livespec conventions verify --feature repo --json
+Exit: 0
+Verdict: PASS
+new_count: 0
+baselined_count: 527
+Blockers: 0
+Run id: 20261014T142922Z
+Receipt: .specs/conventions/runs/20261014T142922Z/receipt.json (ignored by git)
+Raw JSON stdout: 1,995,036 bytes, sha256 86a3851c8a5d39f6aa15bd6f5a71f45b142a19a805131d7f0900c32cc5a8e822; not committed.

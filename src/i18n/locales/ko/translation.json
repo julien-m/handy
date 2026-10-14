@@ -392,14 +392,6 @@
           "sec15": "15초 후 (디버그)"
         }
       },
-      "customWords": {
-        "title": "사용자 정의 단어",
-        "description": "지원되는 모델이 이름과 전문 용어를 인식하도록 도와줍니다. 퍼지 교정은 현재 A–Z 문자와 숫자를 사용하는 단어로 제한됩니다.",
-        "placeholder": "단어 추가",
-        "add": "추가",
-        "remove": "{{word}} 제거",
-        "duplicate": "\"{{word}}\"이(가) 이미 존재합니다"
-      },
       "voiceActivityDetection": {
         "title": "음성 활동 감지",
         "description": "녹음에서 무음 구간을 걸러냅니다. 스트리밍 지원 모델은 더 긴 VAD 테일을 사용하며, VAD를 끄면 원본 오디오가 그대로 녹음됩니다."
@@ -424,6 +416,135 @@
           "simplified": "간체",
           "traditional": "번체"
         }
+      }
+    },
+    "vocabulary": {
+      "group": "어휘",
+      "title": "어휘",
+      "description": "모델이 지원하는 경우 인식해야 할 이름과 용어입니다. 반면 대체 기능은 인식 후에 텍스트를 다시 씁니다.",
+      "placeholder": "용어 추가",
+      "inputLabel": "새 어휘 용어",
+      "add": "추가",
+      "addHint": "추가할 용어를 입력하세요.",
+      "busy": "현재 변경이 완료될 때까지 기다려 주세요.",
+      "paste": "목록 붙여넣기…",
+      "count": "{{total}}/{{max}}개 용어",
+      "listLabel": "어휘 용어",
+      "remove": "{{term}} 제거",
+      "retry": "다시 시도",
+      "loading": "어휘를 불러오는 중…",
+      "listFailed": "저장된 어휘를 읽을 수 없습니다. 변경된 내용은 없습니다. 다시 시도하여 불러오세요.",
+      "empty": {
+        "title": "아직 용어가 없습니다",
+        "body": "Claude Code나 OpenClaw 같은 이름을 하나씩 추가하거나 목록으로 붙여넣으세요."
+      },
+      "flag": {
+        "empty": "빈 용어이므로 전송되지 않습니다. 제거하세요.",
+        "too_long": "100자를 초과하여 전송되지 않습니다. 제거한 후 더 짧게 추가하세요.",
+        "line_break": "줄바꿈이 포함되어 전송되지 않습니다. 제거한 후 다시 추가하세요.",
+        "forbidden_character": "< > 또는 \"가 포함되어 전송되지 않습니다. 제거한 후 이 문자 없이 추가하세요.",
+        "duplicate": "앞의 용어와 같아 전송되지 않습니다. 제거하세요.",
+        "over_capacity": "500개 용어 제한을 넘어 목록이 줄어들 때까지 전송되지 않습니다.",
+        "over_budget": "전송되지 않음: 모델 한도를 초과했습니다."
+      },
+      "errors": {
+        "term_empty": "용어를 입력하세요.",
+        "term_too_long": "용어는 최대 100자까지 입력할 수 있습니다.",
+        "term_line_break": "용어는 한 줄로 입력해야 합니다.",
+        "term_forbidden_character": "용어에서 < > 또는 \" 문자를 제거하세요.",
+        "term_duplicate": "각 용어는 한 번만 넣을 수 있으며, 이 용어는 이미 어휘에 있습니다.",
+        "limit": "어휘에는 최대 500개의 용어를 넣을 수 있습니다. 다른 용어를 추가하려면 용어를 하나 제거하세요.",
+        "conflict": "그사이 어휘가 변경되어 다시 불러왔습니다. 다시 시도하세요.",
+        "notFound": "이 용어는 이미 제거되었습니다. 어휘를 다시 불러왔습니다.",
+        "unknown": "Handy가 변경 사항을 확인하지 못했습니다. 어휘를 다시 불러왔으니 확인한 후 다시 시도하세요.",
+        "committed": "어휘가 저장되었지만 Handy가 바로 적용하지 못했습니다. 목록을 다시 불러왔습니다.",
+        "saved": "저장된 어휘는 변경되지 않았습니다."
+      },
+      "status": {
+        "loading": "모델 지원 여부 확인 중…",
+        "selectedModel": "선택한 모델",
+        "used": {
+          "title": "{{model}}이(가) 인식 중에 사용합니다",
+          "sent": "{{total}}개 중 {{sent}}개 용어가 전송됩니다.",
+          "sentOne": "1개 중 {{sent}}개 용어가 전송됩니다."
+        },
+        "notSent": {
+          "over_budget": "전송되지 않음, 모델 한도 초과: {{terms}}.",
+          "invalid": "전송되지 않음, 유효하지 않음: {{terms}}.",
+          "duplicate": "전송되지 않음, 중복: {{terms}}.",
+          "over_capacity": "전송되지 않음, 500개 초과: {{terms}}."
+        },
+        "noTermSent": {
+          "title": "{{model}}에 전송되는 용어가 없습니다",
+          "empty_vocabulary": "어휘가 비어 있습니다. 인식 중에 사용하려면 용어를 추가하세요.",
+          "invalid_terms_only": "저장된 모든 용어가 유효하지 않거나 중복입니다. 표시된 용어를 제거하고 수정한 용어를 추가하세요.",
+          "over_budget": "첫 번째 용어가 모델 한도를 초과하여 어떤 용어도 전송되지 않습니다. 이 용어를 제거하면 그 뒤의 용어가 전송됩니다."
+        },
+        "notSupported": {
+          "title": "{{model}}은(는) 인식 중에 어휘를 사용할 수 없습니다",
+          "body": "대신 인식 후 퍼지 교정이 적용됩니다. 인식기에 용어를 전송하려면 Whisper 모델을 선택하세요."
+        },
+        "streaming": {
+          "title": "실시간 스트리밍에서는 사용되지 않음",
+          "body": "{{model}}은(는) 실시간으로 전사하며 인식 컨텍스트를 전송하지 않습니다. 대신 최종 텍스트에 퍼지 교정이 적용됩니다."
+        },
+        "unknown": {
+          "title": "모델이 로드될 때까지 지원 여부를 알 수 없음",
+          "model_not_loaded": "Handy는 {{model}}을(를) 로드할 때 지원 여부를 확인합니다.",
+          "capability_query_unanswered": "{{model}}이(가) 제때 응답하지 않았습니다(예: 받아쓰기 중). Handy가 나중에 다시 확인합니다."
+        },
+        "budgetUnverified": {
+          "title": "{{model}}의 어휘 지원을 확인할 수 없음",
+          "body": "이 모델은 인식 컨텍스트를 지원한다고 선언하지만, 이 빌드에는 문서화된 한도가 없습니다. 용어는 전송되지 않으며 대신 퍼지 교정이 적용됩니다."
+        },
+        "failed": {
+          "title": "어휘 상태를 읽을 수 없음",
+          "body": "어휘는 저장되어 있습니다. 다시 시도하여 모델 지원 여부를 확인하세요."
+        }
+      },
+      "pasteBox": {
+        "title": "용어 붙여넣기",
+        "description": "한 줄에 용어 하나씩 입력하세요. 중복은 건너뛰며, 유효하지 않은 줄은 추가하기 전에 수정해야 합니다.",
+        "label": "붙여넣을 용어, 한 줄에 하나씩",
+        "previewTitle": "미리보기",
+        "previewEmpty": "한 줄에 용어 하나씩 붙여넣거나 입력하면 추가될 내용을 볼 수 있습니다.",
+        "sameAs": "{{term}} — {{original}}와(과) 같음",
+        "alreadyListed": "{{term}} — 이미 목록에 있음",
+        "summary": {
+          "add": "추가 {{n}}개",
+          "duplicateOne": "중복 1개",
+          "duplicateMany": "중복 {{n}}개",
+          "errorOne": "오류 1개",
+          "errorMany": "오류 {{n}}개"
+        },
+        "kind": {
+          "add": "추가",
+          "duplicate": "중복",
+          "error": "오류"
+        },
+        "line": {
+          "empty": "{{line}}번째 줄: 빈 줄입니다. 제거하세요",
+          "too_long": "{{line}}번째 줄: 최대 100자까지 사용하세요",
+          "line_break": "{{line}}번째 줄: 용어를 한 줄로 유지하세요",
+          "forbidden_character": "{{line}}번째 줄: < > 또는 \" 문자를 제거하세요",
+          "duplicate": "{{line}}번째 줄: 앞의 용어와 같음",
+          "over_capacity": "{{line}}번째 줄: 500개 용어 제한 초과"
+        },
+        "note": {
+          "empty": "용어를 추가하기 전까지 어휘는 변경되지 않습니다.",
+          "checking": "줄 확인 중…",
+          "fixOne": "용어를 추가하려면 {{lines}}번째 줄을 수정하세요. 어휘는 변경되지 않았습니다.",
+          "fixMany": "용어를 추가하려면 {{lines}}번째 줄을 수정하세요. 어휘는 변경되지 않았습니다.",
+          "overCapacity": "어휘에는 최대 500개의 용어를 넣을 수 있습니다. 추가하려면 목록을 줄이세요. 어휘는 변경되지 않았습니다.",
+          "nothingToAdd": "모든 줄이 이미 어휘에 있습니다.",
+          "ready": "중복은 건너뜁니다. 용어를 추가하기 전까지 아무것도 저장되지 않습니다."
+        },
+        "cancel": "취소",
+        "applyOne": "용어 1개 추가",
+        "applyMany": "용어 {{n}}개 추가",
+        "applyZero": "용어 추가",
+        "applying": "추가 중…",
+        "applied": "용어를 어휘에 추가했습니다."
       }
     },
     "postProcessing": {

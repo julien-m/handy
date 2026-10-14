@@ -392,14 +392,6 @@
           "sec15": "Po 15 sekundách (Debug)"
         }
       },
-      "customWords": {
-        "title": "Vlastní slova",
-        "description": "Pomozte podporovaným modelům rozpoznávat jména a odborné termíny. Přibližné opravy jsou v současnosti omezeny na slova obsahující písmena A–Z a číslice.",
-        "placeholder": "Přidat slovo",
-        "add": "Přidat",
-        "remove": "Odebrat {{word}}",
-        "duplicate": "\"{{word}}\" již existuje"
-      },
       "voiceActivityDetection": {
         "title": "Detekce hlasové aktivity",
         "description": "Odfiltruje ticho z nahrávek. Modely podporující streaming používají delší doběh VAD; vypnutí VAD nahrává surový zvuk."
@@ -424,6 +416,135 @@
           "simplified": "Zjednodušené",
           "traditional": "Tradiční"
         }
+      }
+    },
+    "vocabulary": {
+      "group": "Slovník",
+      "title": "Slovník",
+      "description": "Jména a termíny, které má model rozpoznávat, pokud to podporuje. Náhrady naopak přepisují text až po rozpoznání.",
+      "placeholder": "Přidat termín",
+      "inputLabel": "Nový termín slovníku",
+      "add": "Přidat",
+      "addHint": "Napište termín, který chcete přidat.",
+      "busy": "Počkejte na dokončení aktuální změny.",
+      "paste": "Vložit seznam…",
+      "count": "Termíny: {{total}} z {{max}}",
+      "listLabel": "Termíny slovníku",
+      "remove": "Odebrat {{term}}",
+      "retry": "Zkusit znovu",
+      "loading": "Načítání slovníku…",
+      "listFailed": "Uložený slovník se nepodařilo načíst. Nic se nezměnilo; zkuste ho načíst znovu.",
+      "empty": {
+        "title": "Zatím žádné termíny",
+        "body": "Přidejte jména jako Claude Code nebo OpenClaw, po jednom nebo jako vložený seznam."
+      },
+      "flag": {
+        "empty": "Prázdný termín, neodesílá se. Odeberte ho.",
+        "too_long": "Delší než 100 znaků, neodesílá se. Odeberte ho a přidejte kratší verzi.",
+        "line_break": "Obsahuje zalomení řádku, neodesílá se. Odeberte ho a přidejte ho znovu.",
+        "forbidden_character": "Obsahuje < > nebo \", neodesílá se. Odeberte ho a přidejte ho bez těchto znaků.",
+        "duplicate": "Stejný jako dřívější termín, neodesílá se. Odeberte ho.",
+        "over_capacity": "Za limitem 500 termínů, neodesílá se, dokud se seznam nezkrátí.",
+        "over_budget": "Neodesílá se: nad limitem modelu."
+      },
+      "errors": {
+        "term_empty": "Zadejte termín.",
+        "term_too_long": "Termín může mít nejvýše 100 znaků.",
+        "term_line_break": "Termín se musí vejít na jeden řádek.",
+        "term_forbidden_character": "Odstraňte z termínu znaky < > nebo \".",
+        "term_duplicate": "Každý termín se může objevit jen jednou a tento už ve slovníku je.",
+        "limit": "Slovník pojme nejvýše 500 termínů. Odeberte termín, abyste mohli přidat jiný.",
+        "conflict": "Slovník se mezitím změnil a byl znovu načten. Zkuste to znovu.",
+        "notFound": "Tento termín už byl odebrán. Slovník byl znovu načten.",
+        "unknown": "Handy nemohl potvrdit změnu. Slovník byl znovu načten; před dalším pokusem ho zkontrolujte.",
+        "committed": "Slovník byl uložen, ale Handy ho nemohl hned použít. Seznam byl znovu načten.",
+        "saved": "Váš uložený slovník zůstal beze změny."
+      },
+      "status": {
+        "loading": "Zjišťování, co model podporuje…",
+        "selectedModel": "vybraný model",
+        "used": {
+          "title": "{{model}} ho používá při rozpoznávání",
+          "sent": "Odesílané termíny: {{sent}} z {{total}}.",
+          "sentOne": "Odesílané termíny: {{sent}} z 1."
+        },
+        "notSent": {
+          "over_budget": "Neodesílá se, nad limitem modelu: {{terms}}.",
+          "invalid": "Neodesílá se, neplatné: {{terms}}.",
+          "duplicate": "Neodesílá se, duplicity: {{terms}}.",
+          "over_capacity": "Neodesílá se, za hranicí 500 termínů: {{terms}}."
+        },
+        "noTermSent": {
+          "title": "{{model}} nedostává žádný termín",
+          "empty_vocabulary": "Slovník je prázdný. Přidejte termíny, aby se používaly při rozpoznávání.",
+          "invalid_terms_only": "Všechny uložené termíny jsou neplatné nebo duplicitní. Odeberte označené termíny a přidejte opravené.",
+          "over_budget": "První termín je nad limitem modelu, takže se neodesílá žádný termín. Odeberte ho, aby se odeslaly termíny za ním."
+        },
+        "notSupported": {
+          "title": "{{model}} nemůže slovník při rozpoznávání použít",
+          "body": "Místo toho se po rozpoznání použije přibližná oprava. Chcete-li posílat termíny do rozpoznávání, vyberte model Whisper."
+        },
+        "streaming": {
+          "title": "Nepoužívá se při živém přepisu",
+          "body": "{{model}} přepisuje živě, a neposílá tak žádný kontext pro rozpoznávání. Přibližná oprava se místo toho použije na výsledný text."
+        },
+        "unknown": {
+          "title": "Podpora není známa, dokud se model nenačte",
+          "model_not_loaded": "Handy zjistí, co {{model}} podporuje, když ho načte.",
+          "capability_query_unanswered": "{{model}} neodpověděl včas, například během diktování. Handy to později zkontroluje znovu."
+        },
+        "budgetUnverified": {
+          "title": "{{model}}: podporu slovníku nelze potvrdit",
+          "body": "Tento model deklaruje kontext pro rozpoznávání, ale tato verze pro něj nemá zdokumentovaný limit. Neodesílá se žádný termín; místo toho se použije přibližná oprava."
+        },
+        "failed": {
+          "title": "Stav slovníku se nepodařilo načíst",
+          "body": "Váš slovník je uložen. Zkuste to znovu a zjistěte, co model podporuje."
+        }
+      },
+      "pasteBox": {
+        "title": "Vložit termíny",
+        "description": "Jeden termín na řádek. Duplicity se přeskočí; neplatné řádky je nutné před přidáním opravit.",
+        "label": "Termíny k vložení, jeden na řádek",
+        "previewTitle": "Náhled",
+        "previewEmpty": "Vložte nebo napište jeden termín na řádek a uvidíte, co se přidá.",
+        "sameAs": "{{term}} — stejné jako {{original}}",
+        "alreadyListed": "{{term}} — už je v seznamu",
+        "summary": {
+          "add": "K přidání: {{n}}",
+          "duplicateOne": "1 duplicita",
+          "duplicateMany": "Duplicity: {{n}}",
+          "errorOne": "1 chyba",
+          "errorMany": "Chyby: {{n}}"
+        },
+        "kind": {
+          "add": "Přidat",
+          "duplicate": "Duplicita",
+          "error": "Chyba"
+        },
+        "line": {
+          "empty": "Řádek {{line}}: prázdný řádek, odeberte ho",
+          "too_long": "Řádek {{line}}: použijte nejvýše 100 znaků",
+          "line_break": "Řádek {{line}}: ponechte termín na jednom řádku",
+          "forbidden_character": "Řádek {{line}}: odstraňte znaky < > nebo \"",
+          "duplicate": "Řádek {{line}}: stejný jako dřívější termín",
+          "over_capacity": "Řádek {{line}}: nad limitem 500 termínů"
+        },
+        "note": {
+          "empty": "Váš slovník se nezmění, dokud termíny nepřidáte.",
+          "checking": "Kontrola řádků…",
+          "fixOne": "Opravte řádek {{lines}}, abyste mohli termíny přidat. Váš slovník je beze změny.",
+          "fixMany": "Opravte řádky {{lines}}, abyste mohli termíny přidat. Váš slovník je beze změny.",
+          "overCapacity": "Slovník pojme nejvýše 500 termínů. Zkraťte seznam, abyste ho mohli přidat. Váš slovník je beze změny.",
+          "nothingToAdd": "Všechny řádky už ve slovníku jsou.",
+          "ready": "Duplicity se přeskočí. Nic se neuloží, dokud termíny nepřidáte."
+        },
+        "cancel": "Zrušit",
+        "applyOne": "Přidat 1 termín",
+        "applyMany": "Přidat termíny ({{n}})",
+        "applyZero": "Přidat termíny",
+        "applying": "Přidávání…",
+        "applied": "Termíny byly přidány do slovníku."
       }
     },
     "postProcessing": {

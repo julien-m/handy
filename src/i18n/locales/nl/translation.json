@@ -392,14 +392,6 @@
           "sec15": "Na 15 seconden (Debug)"
         }
       },
-      "customWords": {
-        "title": "Eigen woordenlijst",
-        "description": "Help ondersteunde modellen namen en vaktermen te herkennen. Fuzzy-correctie is momenteel beperkt tot woorden met de letters A–Z en cijfers.",
-        "placeholder": "Woord toevoegen",
-        "add": "Toevoegen",
-        "remove": "{{word}} verwijderen",
-        "duplicate": "\"{{word}}\" bestaat al"
-      },
       "voiceActivityDetection": {
         "title": "Spraakactiviteitsdetectie (VAD)",
         "description": "Filter stilte uit opnames. Streaming-modellen gebruiken een langere VAD-uitloop; het uitschakelen van VAD neemt de ruwe audio op."
@@ -424,6 +416,135 @@
           "simplified": "Vereenvoudigd",
           "traditional": "Traditioneel"
         }
+      }
+    },
+    "vocabulary": {
+      "group": "Vocabulaire",
+      "title": "Vocabulaire",
+      "description": "Namen en termen die het model moet herkennen, als het dat ondersteunt. Vervangingen herschrijven de tekst juist na de herkenning.",
+      "placeholder": "Term toevoegen",
+      "inputLabel": "Nieuwe vocabulaireterm",
+      "add": "Toevoegen",
+      "addHint": "Typ een term om die toe te voegen.",
+      "busy": "Wacht tot de huidige wijziging klaar is.",
+      "paste": "Lijst plakken…",
+      "count": "{{total}} van {{max}} termen",
+      "listLabel": "Vocabulairetermen",
+      "remove": "{{term}} verwijderen",
+      "retry": "Opnieuw proberen",
+      "loading": "Vocabulaire laden…",
+      "listFailed": "Het opgeslagen vocabulaire kon niet worden gelezen. Er is niets gewijzigd; probeer het opnieuw om het te laden.",
+      "empty": {
+        "title": "Nog geen termen",
+        "body": "Voeg namen toe zoals Claude Code of OpenClaw, één voor één of als geplakte lijst."
+      },
+      "flag": {
+        "empty": "Lege term, niet verzonden. Verwijder deze.",
+        "too_long": "Langer dan 100 tekens, niet verzonden. Verwijder deze en voeg een kortere versie toe.",
+        "line_break": "Bevat een regeleinde, niet verzonden. Verwijder deze en voeg hem opnieuw toe.",
+        "forbidden_character": "Bevat < > of \", niet verzonden. Verwijder deze en voeg hem toe zonder deze tekens.",
+        "duplicate": "Gelijk aan een eerdere term, niet verzonden. Verwijder deze.",
+        "over_capacity": "Boven de limiet van 500 termen, niet verzonden tot de lijst korter is.",
+        "over_budget": "Niet verzonden: boven de modellimiet."
+      },
+      "errors": {
+        "term_empty": "Voer een term in.",
+        "term_too_long": "Een term mag maximaal 100 tekens hebben.",
+        "term_line_break": "Een term moet op één regel passen.",
+        "term_forbidden_character": "Verwijder de tekens < > of \" uit de term.",
+        "term_duplicate": "Elke term mag één keer voorkomen, en deze staat al in het vocabulaire.",
+        "limit": "Het vocabulaire bevat maximaal 500 termen. Verwijder een term om een andere toe te voegen.",
+        "conflict": "Het vocabulaire is intussen gewijzigd en opnieuw geladen. Probeer het opnieuw.",
+        "notFound": "Deze term was al verwijderd. Het vocabulaire is opnieuw geladen.",
+        "unknown": "Handy kon de wijziging niet bevestigen. Het vocabulaire is opnieuw geladen; controleer het voordat je het opnieuw probeert.",
+        "committed": "Het vocabulaire is opgeslagen, maar Handy kon het niet meteen toepassen. De lijst is opnieuw geladen.",
+        "saved": "Je opgeslagen vocabulaire is ongewijzigd."
+      },
+      "status": {
+        "loading": "Controleren wat het model ondersteunt…",
+        "selectedModel": "het geselecteerde model",
+        "used": {
+          "title": "Gebruikt tijdens herkenning door {{model}}",
+          "sent": "{{sent}} van {{total}} termen worden verzonden.",
+          "sentOne": "{{sent}} van 1 term wordt verzonden."
+        },
+        "notSent": {
+          "over_budget": "Niet verzonden, boven de modellimiet: {{terms}}.",
+          "invalid": "Niet verzonden, ongeldig: {{terms}}.",
+          "duplicate": "Niet verzonden, dubbel: {{terms}}.",
+          "over_capacity": "Niet verzonden, voorbij 500 termen: {{terms}}."
+        },
+        "noTermSent": {
+          "title": "Er wordt geen term naar {{model}} verzonden",
+          "empty_vocabulary": "Het vocabulaire is leeg. Voeg termen toe om ze tijdens de herkenning te gebruiken.",
+          "invalid_terms_only": "Elke opgeslagen term is ongeldig of dubbel. Verwijder de gemarkeerde termen en voeg gecorrigeerde toe.",
+          "over_budget": "De eerste term overschrijdt de modellimiet, dus er wordt geen term verzonden. Verwijder deze om de termen erna te verzenden."
+        },
+        "notSupported": {
+          "title": "{{model}} kan het vocabulaire niet gebruiken tijdens de herkenning",
+          "body": "In plaats daarvan wordt na de herkenning een benaderende correctie toegepast. Kies een Whisper-model om termen naar de herkenner te sturen."
+        },
+        "streaming": {
+          "title": "Niet gebruikt bij livestreaming",
+          "body": "{{model}} transcribeert live, waarbij geen herkenningscontext wordt verzonden. Benaderende correctie wordt in plaats daarvan op de eindtekst toegepast."
+        },
+        "unknown": {
+          "title": "Ondersteuning onbekend totdat het model is geladen",
+          "model_not_loaded": "Handy controleert wat {{model}} ondersteunt wanneer het model wordt geladen.",
+          "capability_query_unanswered": "{{model}} heeft niet op tijd geantwoord, bijvoorbeeld tijdens een dictaat. Handy controleert het daarna opnieuw."
+        },
+        "budgetUnverified": {
+          "title": "Vocabulaire-ondersteuning kan niet worden bevestigd voor {{model}}",
+          "body": "Dit model geeft aan herkenningscontext te ondersteunen, maar deze build heeft er geen gedocumenteerde limiet voor. Er wordt geen term verzonden; in plaats daarvan wordt benaderende correctie toegepast."
+        },
+        "failed": {
+          "title": "Kon de vocabulairestatus niet lezen",
+          "body": "Je vocabulaire is opgeslagen. Probeer het opnieuw om te controleren wat het model ondersteunt."
+        }
+      },
+      "pasteBox": {
+        "title": "Termen plakken",
+        "description": "Eén term per regel. Duplicaten worden overgeslagen; ongeldige regels moet je corrigeren voordat je toevoegt.",
+        "label": "Te plakken termen, één per regel",
+        "previewTitle": "Voorbeeld",
+        "previewEmpty": "Plak of typ één term per regel om te zien wat er wordt toegevoegd.",
+        "sameAs": "{{term}} — gelijk aan {{original}}",
+        "alreadyListed": "{{term}} — staat al in de lijst",
+        "summary": {
+          "add": "{{n}} toe te voegen",
+          "duplicateOne": "1 duplicaat",
+          "duplicateMany": "{{n}} duplicaten",
+          "errorOne": "1 fout",
+          "errorMany": "{{n}} fouten"
+        },
+        "kind": {
+          "add": "Toevoegen",
+          "duplicate": "Duplicaat",
+          "error": "Fout"
+        },
+        "line": {
+          "empty": "Regel {{line}}: lege regel, verwijder deze",
+          "too_long": "Regel {{line}}: gebruik maximaal 100 tekens",
+          "line_break": "Regel {{line}}: houd de term op één regel",
+          "forbidden_character": "Regel {{line}}: verwijder de tekens < > of \"",
+          "duplicate": "Regel {{line}}: gelijk aan een eerdere term",
+          "over_capacity": "Regel {{line}}: boven de limiet van 500 termen"
+        },
+        "note": {
+          "empty": "Je vocabulaire blijft ongewijzigd totdat je de termen toevoegt.",
+          "checking": "Regels controleren…",
+          "fixOne": "Corrigeer regel {{lines}} om de termen toe te voegen. Je vocabulaire is ongewijzigd.",
+          "fixMany": "Corrigeer regels {{lines}} om de termen toe te voegen. Je vocabulaire is ongewijzigd.",
+          "overCapacity": "Het vocabulaire bevat maximaal 500 termen. Maak de lijst korter om deze toe te voegen. Je vocabulaire is ongewijzigd.",
+          "nothingToAdd": "Elke regel staat al in het vocabulaire.",
+          "ready": "Duplicaten worden overgeslagen. Er wordt niets opgeslagen totdat je de termen toevoegt."
+        },
+        "cancel": "Annuleren",
+        "applyOne": "1 term toevoegen",
+        "applyMany": "{{n}} termen toevoegen",
+        "applyZero": "Termen toevoegen",
+        "applying": "Toevoegen…",
+        "applied": "Termen toegevoegd aan het vocabulaire."
       }
     },
     "postProcessing": {
