@@ -119,3 +119,12 @@
 - Review: the spec and plan reviews are stale until an independent reviewer refreshes them.
 
 <!-- finalize:spec-refine:2026-10-14:2190dbf9 -->
+
+## 2026-10-14 — [Feature]: Sync with dev, settings UI command and history rule (partial)
+
+- **Type:** Feature
+- **Spec modified:** No
+- **Code modified:** merge `3b3a27a` (`settings_service/{errors,protocol,render,domains/mod,domains/shortcuts}.rs`, `shortcut/live_change.rs`, `src/stores/settings-errors.ts`, `src/bindings.ts`, README, 008 schema and contract); `3fd745d` (`shortcut/mod.rs`, `lib.rs`, `settings_service/sequence_destination_tests.rs`, `src/stores/settingsStore.ts`, `settings-store.test.ts`, `bindings.ts`); `8f374d4` (`managers/{history,history_store,mod}.rs`, `destination/{history,delivery,outcome,mod}.rs`, `actions.rs`, `commands/history.rs`, `lib.rs`, `tray.rs`, `tests/destination_recovery.rs`, `HistorySettings.tsx`, `bindings.ts`, 26 locales)
+- **AC impacted:** AC-005 (history clause), AC-007, AC-008 (UI command) — still partial, none certified
+- **Author:** Claude Code (spec-implement 006, claude-opus-5-5)
+- The history change shared with 005 Step 7 is built once here (nullable `file_name`, WAV gate removed for the transcript, guards for rows without audio). Not done: visual UI (badge, cross, menu, toggle, reason display), 007/009/010 adapters, native evidence. See [progress](progress.md#sync-run--notes-2026-10-14) and [implementation](implementation.md).
