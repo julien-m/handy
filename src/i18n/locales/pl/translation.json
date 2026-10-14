@@ -492,6 +492,7 @@
       "deleteError": "Nie udało się usunąć wpisu. Spróbuj ponownie.",
       "retranscribe": "Transkrybuj ponownie",
       "retranscribeError": "Nie udało się ponownie transkrybować. Spróbuj ponownie.",
+      "noAudio": "Dla tego wpisu nie zapisano nagrania audio, więc nie można go ponownie przetranskrybować.",
       "transcribing": "Transkrybuję...",
       "transcriptionFailed": "Transkrypcja nie powiodła się. Możesz transkrybować ponownie za pomocą ikony ponowienia."
     },
@@ -709,6 +710,7 @@
     "modelLoadFailedUnknown": "nieznany model",
     "pasteFailedTitle": "Nie udało się wkleić tekstu",
     "pasteFailed": "Nie można było wkleić tekstu do aktywnej aplikacji.",
+    "pasteFailedNotSaved": "Nie udało się wkleić tekstu ani zapisać go w historii.",
     "transcriptionFailedTitle": "Transkrypcja nie powiodła się",
     "settings": {
       "committedNotApplied": "Ustawienie zostało zapisane, ale nie można go było od razu zastosować.",
@@ -720,7 +722,8 @@
       "shortcutSessionBusy": "Trwa dyktowanie. Spróbuj ponownie po jego zakończeniu.",
       "persistenceFailed": "Nie udało się zapisać ustawień.",
       "generic": "Nie udało się zmienić ustawienia.",
-      "readOnly": "Ustawienia są w tej sesji tylko do odczytu: pliku ustawień nie można bezpiecznie zapisać, więc zmiany nie zostaną zachowane."
+      "readOnly": "Ustawienia są w tej sesji tylko do odczytu: pliku ustawień nie można bezpiecznie zapisać, więc zmiany nie zostaną zachowane.",
+      "unsupportedPlatform": "To ustawienie nie jest dostępne w tym systemie."
     }
   },
   "appLanguage": {

@@ -30,16 +30,28 @@ const view = (revision: number, alwaysOn: boolean): SettingsView =>
 // Each scenario queues the replies the stubbed commands return, in call order.
 let views: Array<Promise<SettingsView>> = [];
 let modeReplies: Array<Promise<ModeReply>> = [];
+let returnReplies: Array<Promise<ModeReply>> = [];
+const returnCalls: unknown[] = [];
 const commands = {
   getSettingsView: () => views.shift() ?? Promise.resolve(view(0, false)),
   updateMicrophoneMode: () =>
     modeReplies.shift() ?? Promise.resolve({ status: "ok", data: null }),
+  changeReturnToDictationAppSetting: (enabled: unknown) => {
+    returnCalls.push(enabled);
+    return (
+      returnReplies.shift() ?? Promise.resolve({ status: "ok", data: null })
+    );
+  },
 };
 // The real modules need Tauri IPC and Vite's import.meta.glob; the store only needs these.
 mock.module("@/bindings", () => ({ commands }));
 mock.module("@tauri-apps/api/event", () => ({ listen: async () => () => {} }));
+const toastErrors: string[] = [];
 mock.module("sonner", () => ({
-  toast: { error: () => undefined, warning: () => undefined },
+  toast: {
+    error: (message: string) => toastErrors.push(message),
+    warning: () => undefined,
+  },
 }));
 mock.module("@/i18n", () => ({ default: { t: (key: string) => key } }));
 // Dynamic import: the store must load after the mocks above are registered.
@@ -117,5 +129,61 @@ describe("settings store ordering", () => {
     await update;
     expect(alwaysOn()).toBe(true);
     expect(store().revision).toBe(7);
+  });
+});
+
+// 006: the settings UI write of `return_to_dictation_app` and its typed refusal.
+describe("return to the dictation app", () => {
+  const returnView = (revision: number, enabled: boolean): SettingsView =>
+    ({
+      revision,
+      settings: { return_to_dictation_app: enabled },
+      read_only: false,
+    }) as unknown as SettingsView;
+  const returnTo = () => store().settings?.return_to_dictation_app;
+
+  beforeEach(async () => {
+    useSettingsStore.setState({ settings: null, revision: null });
+    views = [Promise.resolve(returnView(4, true))];
+    returnReplies = [];
+    returnCalls.length = 0;
+    toastErrors.length = 0;
+    await store().refreshSettings();
+  });
+
+  test("a change is sent to the typed command and kept", async () => {
+    expect(await store().updateSetting("return_to_dictation_app", false)).toBe(
+      true,
+    );
+    expect(returnCalls.join()).toBe("false");
+    expect(returnTo()).toBe(false);
+    expect(toastErrors.length).toBe(0);
+  });
+
+  test("an unsupported platform refusal is shown with its reason and rolled back", async () => {
+    returnReplies = [
+      Promise.resolve(
+        failure({
+          code: "validation_failed",
+          message: "Setting value is invalid.",
+          field: "return_to_dictation_app",
+          reason: "unsupported_platform",
+        }),
+      ),
+    ];
+    expect(await store().updateSetting("return_to_dictation_app", false)).toBe(
+      false,
+    );
+    expect(returnTo()).toBe(true);
+    expect(toastErrors.join()).toBe("errors.settings.unsupportedPlatform");
+  });
+
+  test("a busy instance is shown as unavailable and rolled back", async () => {
+    returnReplies = [
+      Promise.resolve(failure({ field: "return_to_dictation_app" })),
+    ];
+    await store().updateSetting("return_to_dictation_app", false);
+    expect(returnTo()).toBe(true);
+    expect(toastErrors.join()).toBe("errors.settings.unavailable");
   });
 });

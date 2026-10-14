@@ -492,6 +492,7 @@
       "deleteError": "Kunne ikke slette posten. Prøv igen.",
       "retranscribe": "Transskribér igen",
       "retranscribeError": "Kunne ikke transskribere igen. Prøv igen.",
+      "noAudio": "Der blev ikke gemt nogen lydoptagelse for denne post, så den kan ikke transskriberes igen.",
       "transcribing": "Transskriberer...",
       "transcriptionFailed": "Transskription mislykkedes. Du kan transskribere igen ved hjælp af genforsøgsikonet."
     },
@@ -712,6 +713,7 @@
     "modelLoadFailedUnknown": "ukendt model",
     "pasteFailedTitle": "Kunne ikke indsætte tekst",
     "pasteFailed": "Teksten kunne ikke indsættes i det aktive program.",
+    "pasteFailedNotSaved": "Teksten kunne hverken indsættes eller gemmes i historikken.",
     "transcriptionFailedTitle": "Transskription mislykkedes",
     "settings": {
       "committedNotApplied": "Indstillingen blev gemt, men kunne ikke anvendes med det samme.",
@@ -723,7 +725,8 @@
       "shortcutSessionBusy": "En diktering er i gang. Prøv igen, når den er færdig.",
       "persistenceFailed": "Indstillingerne kunne ikke gemmes.",
       "generic": "Indstillingen kunne ikke ændres.",
-      "readOnly": "Indstillingerne er skrivebeskyttede i denne session: indstillingsfilen kan ikke skrives sikkert, så ændringer gemmes ikke."
+      "readOnly": "Indstillingerne er skrivebeskyttede i denne session: indstillingsfilen kan ikke skrives sikkert, så ændringer gemmes ikke.",
+      "unsupportedPlatform": "Denne indstilling er ikke tilgængelig på dette system."
     }
   },
   "appLanguage": {

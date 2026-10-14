@@ -170,12 +170,20 @@ function App() {
   // The technical error detail is logged to handy.log on the Rust side
   // (see actions.rs `error!("Failed to paste transcription: ...")`),
   // so we show a localized, user-friendly message here instead of the raw error.
+  // A destination failure (006) says whether the transcript is in history; it never carries
+  // the transcript itself.
   useEffect(() => {
-    const unlisten = listen("paste-error", () => {
-      toast.error(t("errors.pasteFailedTitle"), {
-        description: t("errors.pasteFailed"),
-      });
-    });
+    const unlisten = listen<{ history_saved: boolean } | null>(
+      "paste-error",
+      (event) => {
+        const notSaved = event.payload?.history_saved === false;
+        toast.error(t("errors.pasteFailedTitle"), {
+          description: t(
+            notSaved ? "errors.pasteFailedNotSaved" : "errors.pasteFailed",
+          ),
+        });
+      },
+    );
     return () => {
       unlisten.then((fn) => fn());
     };

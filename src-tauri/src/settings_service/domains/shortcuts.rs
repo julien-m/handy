@@ -6,7 +6,9 @@
 //! dry run previews it anywhere without checking the system.
 use super::{ChangeKind, Domain, DomainChange, DomainPlan, DomainRequest, Render};
 use crate::settings::AppSettings;
-use crate::settings_service::errors::{SettingsError, SettingsErrorCode, ShortcutDetails};
+use crate::settings_service::errors::{
+    ErrorReason, SettingsError, SettingsErrorCode, ShortcutDetails,
+};
 use crate::shortcut::action_shortcuts::{ShortcutEdit, ShortcutEditError};
 use crate::shortcut::conflicts::{normalize_shortcut, ConflictKind, ShortcutConflict};
 use crate::shortcut::edits::{current_binding_or_default, plan_shortcut_edit};
@@ -154,12 +156,12 @@ pub(crate) fn refusal(action: &str, error: ShortcutEditError) -> SettingsError {
     }
 }
 /// Stable `validation_failed` reason of a refused edit.
-fn validation_reason(error: &ShortcutEditError) -> &'static str {
+fn validation_reason(error: &ShortcutEditError) -> ErrorReason {
     match error {
-        ShortcutEditError::LastShortcut => "last_shortcut",
-        ShortcutEditError::AlternativesUnsupported => "alternatives_unsupported",
-        ShortcutEditError::RegistrationFailed { .. } => "registration_refused",
-        _ => "invalid_shortcut",
+        ShortcutEditError::LastShortcut => ErrorReason::LastShortcut,
+        ShortcutEditError::AlternativesUnsupported => ErrorReason::AlternativesUnsupported,
+        ShortcutEditError::RegistrationFailed { .. } => ErrorReason::RegistrationRefused,
+        _ => ErrorReason::InvalidShortcut,
     }
 }
 /// `shortcut_conflict` naming the owning action, its stored shortcut and the kind of conflict.

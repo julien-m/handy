@@ -492,6 +492,7 @@
       "deleteError": "エントリーの削除に失敗しました。もう一度お試しください。",
       "retranscribe": "再文字起こし",
       "retranscribeError": "再文字起こしに失敗しました。もう一度お試しください。",
+      "noAudio": "このエントリには音声録音が保存されていないため、再文字起こしできません。",
       "transcribing": "文字起こし中…",
       "transcriptionFailed": "文字起こしに失敗しました。リトライアイコンを使用して再文字起こしできます。"
     },
@@ -709,6 +710,7 @@
     "modelLoadFailedUnknown": "不明なモデル",
     "pasteFailedTitle": "テキストの貼り付けに失敗しました",
     "pasteFailed": "アクティブなアプリにテキストを貼り付けられませんでした。",
+    "pasteFailedNotSaved": "テキストを貼り付けることも、履歴に保存することもできませんでした。",
     "transcriptionFailedTitle": "文字起こしに失敗しました",
     "settings": {
       "committedNotApplied": "設定は保存されましたが、すぐには適用できませんでした。",
@@ -720,7 +722,8 @@
       "shortcutSessionBusy": "音声入力中です。終了してからもう一度お試しください。",
       "persistenceFailed": "設定を保存できませんでした。",
       "generic": "設定を変更できませんでした。",
-      "readOnly": "このセッションでは設定は読み取り専用です。設定ファイルに安全に書き込めないため、変更は保存されません。"
+      "readOnly": "このセッションでは設定は読み取り専用です。設定ファイルに安全に書き込めないため、変更は保存されません。",
+      "unsupportedPlatform": "この設定はこのシステムでは利用できません。"
     }
   },
   "appLanguage": {

@@ -118,6 +118,7 @@
             "post_process_selected_prompt_id",
             "mute_while_recording",
             "append_trailing_space",
+            "return_to_dictation_app",
             "app_language",
             "theme",
             "experimental_enabled",
@@ -189,6 +190,7 @@
                   "post_process_selected_prompt_id",
                   "mute_while_recording",
                   "append_trailing_space",
+                  "return_to_dictation_app",
                   "app_language",
                   "theme",
                   "experimental_enabled",
@@ -224,6 +226,39 @@
           },
           "type": "array"
         },
+        "items": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "code": {
+                "enum": [
+                  "unsupported_platform",
+                  "shortcut_session_busy",
+                  "instance_required",
+                  "last_shortcut",
+                  "alternatives_unsupported",
+                  "registration_refused",
+                  "invalid_shortcut"
+                ]
+              },
+              "index": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "index",
+              "code",
+              "message"
+            ],
+            "type": "object"
+          },
+          "maxItems": 100,
+          "type": "array"
+        },
         "kind": {
           "enum": [
             "duplicate",
@@ -251,7 +286,15 @@
           "type": "string"
         },
         "reason": {
-          "type": "string"
+          "enum": [
+            "unsupported_platform",
+            "shortcut_session_busy",
+            "instance_required",
+            "last_shortcut",
+            "alternatives_unsupported",
+            "registration_refused",
+            "invalid_shortcut"
+          ]
         }
       },
       "type": "object"
@@ -733,6 +776,9 @@
         "reliable_paste": {
           "type": "boolean"
         },
+        "return_to_dictation_app": {
+          "type": "boolean"
+        },
         "selected_channel": {
           "maximum": 65535,
           "minimum": 0,
@@ -888,6 +934,7 @@
         "post_process_selected_prompt_id",
         "mute_while_recording",
         "append_trailing_space",
+        "return_to_dictation_app",
         "app_language",
         "theme",
         "experimental_enabled",
@@ -1467,6 +1514,17 @@
     {
       "allowed_values": [],
       "key": "append_trailing_space",
+      "nullable": false,
+      "owner_domain": "output",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [],
+      "key": "return_to_dictation_app",
       "nullable": false,
       "owner_domain": "output",
       "range": null,

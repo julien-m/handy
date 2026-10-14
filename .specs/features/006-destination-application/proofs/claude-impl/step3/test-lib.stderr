@@ -1,0 +1,17 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/006-destination-application/src-tauri)
+warning: method `activation_count` is never used
+  --> src/destination/fake_workspace.rs:50:19
+   |
+27 | impl FakeWorkspace {
+   | ------------------ method in this implementation
+...
+50 |     pub(crate) fn activation_count(&self) -> usize {
+   |                   ^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `handy` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 16.77s
+     Running unittests src/lib.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/handy_app_lib-7f5ac070b7e42d2e)

@@ -243,11 +243,24 @@ fn error_text(error: &Value) -> String {
     });
     text
 }
-/// Stable reason, action and shortcut owner or limit of a refusal, when present.
+/// Stable reason, refused positions, action and shortcut owner or limit of a refusal, when
+/// present, one line each.
 fn reason_lines(details: &Value) -> String {
     let mut text = String::new();
     if let Some(reason) = details["reason"].as_str() {
         text.push_str(&format!("  reason: {reason}\n"));
+    }
+    for item in details["items"]
+        .as_array()
+        .map(Vec::as_slice)
+        .unwrap_or_default()
+    {
+        text.push_str(&format!(
+            "  item {}: {} ({})\n",
+            item["index"],
+            item["message"].as_str().unwrap_or_default(),
+            item["code"].as_str().unwrap_or_default()
+        ));
     }
     if let Some(action) = details["action_id"].as_str() {
         text.push_str(&format!("  action: {action}\n"));
@@ -290,5 +303,17 @@ mod tests {
                 .starts_with("Warning:"));
         }
         assert_eq!(render(View::OneSetting, &reply, false).stdout, "dark\n");
+    }
+    #[test]
+    fn human_errors_print_the_detail_reason_and_items_on_stderr() {
+        use crate::settings_service::errors::{ErrorItem, ErrorReason};
+        let error = SettingsError::unsupported_platform(Some("paste_method"))
+            .with_items([ErrorItem::new(5, ErrorReason::UnsupportedPlatform)]);
+        let output = render(View::Change, &Reply::failure(error), false);
+        assert!(output.stdout.is_empty());
+        assert!(output.stderr.contains("  reason: unsupported_platform\n"));
+        assert!(output
+            .stderr
+            .contains("  item 5: Not supported on this platform. (unsupported_platform)\n"));
     }
 }

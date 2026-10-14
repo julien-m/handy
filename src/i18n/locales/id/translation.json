@@ -492,6 +492,7 @@
       "deleteError": "Gagal menghapus entri. Silakan coba lagi.",
       "retranscribe": "Transkripsikan ulang",
       "retranscribeError": "Gagal mentranskripsikan ulang. Silakan coba lagi.",
+      "noAudio": "Tidak ada rekaman audio yang disimpan untuk entri ini, jadi entri ini tidak dapat ditranskripsi ulang.",
       "transcribing": "Mentranskripsikan...",
       "transcriptionFailed": "Transkripsi gagal. Anda dapat mentranskripsikan ulang menggunakan ikon coba lagi."
     },
@@ -712,6 +713,7 @@
     "modelLoadFailedUnknown": "model tidak dikenal",
     "pasteFailedTitle": "Gagal Menempelkan Teks",
     "pasteFailed": "Teks tidak dapat ditempelkan ke aplikasi aktif.",
+    "pasteFailedNotSaved": "Teks tidak dapat ditempel maupun disimpan ke riwayat.",
     "transcriptionFailedTitle": "Transkripsi Gagal",
     "settings": {
       "committedNotApplied": "Pengaturan telah disimpan, tetapi tidak dapat langsung diterapkan.",
@@ -723,7 +725,8 @@
       "shortcutSessionBusy": "Dikte sedang berlangsung. Coba lagi setelah selesai.",
       "persistenceFailed": "Pengaturan tidak dapat disimpan.",
       "generic": "Pengaturan tidak dapat diubah.",
-      "readOnly": "Pengaturan hanya-baca untuk sesi ini: file pengaturan tidak dapat ditulis dengan aman, sehingga perubahan tidak akan disimpan."
+      "readOnly": "Pengaturan hanya-baca untuk sesi ini: file pengaturan tidak dapat ditulis dengan aman, sehingga perubahan tidak akan disimpan.",
+      "unsupportedPlatform": "Pengaturan ini tidak tersedia di sistem ini."
     }
   },
   "appLanguage": {

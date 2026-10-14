@@ -1,0 +1,11 @@
+
+running 6 tests
+test cancellation_before_the_write_is_not_saved_and_writes_nothing ... ok
+test rows_without_audio_never_remove_a_file_or_the_recordings_directory ... ok
+test a_failed_save_entry_is_reported_failed_and_writes_nothing ... ok
+test a_saved_wav_gives_a_row_with_its_audio ... ok
+test a_failed_wav_still_saves_a_text_only_row_reported_saved ... ok
+test migration_keeps_rows_ids_saved_flags_and_the_id_counter ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+

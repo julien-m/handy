@@ -1,5 +1,6 @@
 //! Stable English errors with allowlisted details and no candidate-value diagnostics.
 
+pub use super::error_reason::{ErrorItem, ErrorReason, MAX_ERROR_ITEMS};
 use super::protocol::Revision;
 use serde::{Deserialize, Serialize};
 
@@ -70,6 +71,8 @@ pub enum ValidationReason {
     InvalidEncoding,
     /// Domain input does not follow the domain's exchange format.
     InvalidInput,
+    /// The setting or operation needs a platform capability this build does not have.
+    UnsupportedPlatform,
     /// A dictation session (recording, processing, a held or remembered shortcut) is running;
     /// the shortcut registrations cannot change until it ends.
     ShortcutSessionBusy,
@@ -93,6 +96,7 @@ impl ValidationReason {
             Self::GpuDeviceRequired => "The GPU accelerator requires a selected GPU device.",
             Self::InvalidEncoding => "Input is not valid UTF-8 text.",
             Self::InvalidInput => "Input does not follow the exchange format.",
+            Self::UnsupportedPlatform => "This setting is not supported on this platform.",
             Self::ShortcutSessionBusy => "A dictation is in progress; retry when it ends.",
         }
     }
@@ -112,26 +116,20 @@ pub struct ErrorDetails {
     offset: Option<u64>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     issues: Vec<FieldIssue>,
-    /// Machine reason and shortcut details of a refusal, boxed so that the common error stays
-    /// small.
-    #[serde(flatten)]
-    refusal: Option<Box<RefusalDetails>>,
-}
-
-/// Stable machine reason of a refusal (`shortcut_session_busy`, `last_shortcut`...), never
-/// input text, with the shortcut details when a shortcut change was refused.
-#[derive(Clone, Debug, Default, PartialEq, Serialize)]
-struct RefusalDetails {
+    /// Closed machine reason of the refusal (absent unless a constructor sets it).
     #[serde(skip_serializing_if = "Option::is_none")]
-    reason: Option<&'static str>,
-    /// The action concerned, the owner of a conflicting stored shortcut and the kind of
-    /// conflict, or the per-action limit. Only known action ids and stored shortcut texts enter
-    /// them.
+    reason: Option<ErrorReason>,
+    /// Refused positions of a domain input, at most `MAX_ERROR_ITEMS`, sorted by index.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    items: Vec<ErrorItem>,
+    /// Shortcut details of a refused shortcut change (all absent otherwise).
     #[serde(flatten)]
     shortcut: ShortcutDetails,
 }
 
-/// Allowlisted details of a refused shortcut change (see `ErrorDetails`).
+/// Allowlisted details of a refused shortcut change (see `ErrorDetails`): the action concerned,
+/// the owner of a conflicting stored shortcut and the kind of conflict, or the per-action limit.
+/// Only known action ids and stored shortcut texts enter them.
 #[derive(Clone, Debug, Default, PartialEq, Serialize)]
 pub struct ShortcutDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -152,7 +150,8 @@ pub struct ShortcutDetails {
 pub struct SettingsError {
     code: SettingsErrorCode,
     message: &'static str,
-    details: ErrorDetails,
+    /// Boxed so a `Result<_, SettingsError>` stays small on every settings path.
+    details: Box<ErrorDetails>,
     /// Typed reason for the settings UI; the wire form keeps only its English message in `issues`.
     #[serde(skip)]
     reason: Option<ValidationReason>,
@@ -183,7 +182,7 @@ impl SettingsError {
         Self {
             code,
             message,
-            details: ErrorDetails::default(),
+            details: Box::default(),
             reason: None,
         }
     }
@@ -235,22 +234,55 @@ impl SettingsError {
         error.details.field = super::descriptor::descriptor(key).map(|entry| entry.key);
         error
     }
+    // @spec FR-006: Unsupported-platform refusal — .specs/features/006-destination-application/spec.md#fr-006
+    /// Setting `key` (or the operation, without a key) needs a platform capability this build
+    /// lacks: `validation_failed` (exit 2) with `details.reason = "unsupported_platform"`, decided
+    /// by the pure validator so that offline and routed calls refuse identically.
+    pub fn unsupported_platform(key: Option<&str>) -> Self {
+        let error = match key {
+            Some(key) => Self::validation(key, ValidationReason::UnsupportedPlatform),
+            None => {
+                let mut error = Self::new(SettingsErrorCode::ValidationFailed);
+                error.reason = Some(ValidationReason::UnsupportedPlatform);
+                error
+            }
+        };
+        error.with_reason(ErrorReason::UnsupportedPlatform)
+    }
+    /// Attach the closed machine reason `details.reason`.
+    pub fn with_reason(mut self, reason: ErrorReason) -> Self {
+        self.details.reason = Some(reason);
+        self
+    }
+    /// Attach refused input positions as `details.items`: sorted by index, the first
+    /// `MAX_ERROR_ITEMS` kept (lossy on purpose: the envelope stays bounded).
+    pub fn with_items(mut self, items: impl IntoIterator<Item = ErrorItem>) -> Self {
+        let mut items = items.into_iter().collect::<Vec<_>>();
+        items.sort_by_key(ErrorItem::index);
+        items.truncate(MAX_ERROR_ITEMS);
+        self.details.items = items;
+        self
+    }
+    /// Closed machine reason of `details.reason`, if any.
+    pub fn detail_reason(&self) -> Option<ErrorReason> {
+        self.details.reason
+    }
+    /// Refused input positions of `details.items`.
+    pub fn items(&self) -> &[ErrorItem] {
+        &self.details.items
+    }
     /// A dictation session owns the shortcuts: the change of `key` was refused before anything
     /// was registered or written.
     pub fn session_busy(key: &str) -> Self {
         let mut error = Self::live_state_refused(key);
         error.reason = Some(ValidationReason::ShortcutSessionBusy);
-        error.details.refusal = Some(Box::new(RefusalDetails {
-            reason: Some("shortcut_session_busy"),
-            ..RefusalDetails::default()
-        }));
-        error
+        error.with_reason(ErrorReason::ShortcutSessionBusy)
     }
     /// A live-only change was asked without a running instance: nothing was written.
     pub fn instance_required() -> Self {
         Self::shortcut(
             SettingsErrorCode::Unavailable,
-            Some("instance_required"),
+            Some(ErrorReason::InstanceRequired),
             ShortcutDetails::default(),
         )
     }
@@ -258,22 +290,13 @@ impl SettingsError {
     /// shortcut `details`.
     pub fn shortcut(
         code: SettingsErrorCode,
-        reason: Option<&'static str>,
+        reason: Option<ErrorReason>,
         details: ShortcutDetails,
     ) -> Self {
         let mut error = Self::new(code);
-        error.details.refusal = Some(Box::new(RefusalDetails {
-            reason,
-            shortcut: details,
-        }));
+        error.details.reason = reason;
+        error.details.shortcut = details;
         error
-    }
-    /// Stable machine reason in the details, if any.
-    pub fn detail_reason(&self) -> Option<&'static str> {
-        self.details
-            .refusal
-            .as_ref()
-            .and_then(|refusal| refusal.reason)
     }
     /// Fixed English message of this error.
     pub fn message(&self) -> &'static str {

@@ -1,0 +1,9 @@
+
+running 2 tests
+capture_ms=5.828 identity_kind=bundle_id
+test the_frontmost_application_is_read_with_its_identity_within_the_capture_budget ... ok
+menu_enumeration_ms=20.009 apps=17
+test running_applications_with_windows_are_listed_once_each_without_this_process ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+

@@ -1158,6 +1158,20 @@ pub async fn change_append_trailing_space_setting(
 
 #[tauri::command]
 #[specta::specta]
+// @spec FR-006: Settings UI write of the destination setting — .specs/features/006-destination-application/spec.md#fr-006
+/// Settings UI write of `return_to_dictation_app`: the shared UI validator (a build without the
+/// destination capability refuses `true` and `false` with `validation_failed` and the typed reason
+/// `unsupported_platform`), one durable commit, then `settings-changed`. The value is read when a
+/// dictation starts, so no live effect runs.
+pub async fn change_return_to_dictation_app_setting(
+    app: AppHandle,
+    enabled: UiValue<bool>,
+) -> SettingsResult {
+    live_settings::write(app, "return_to_dictation_app", enabled).await
+}
+
+#[tauri::command]
+#[specta::specta]
 pub async fn change_lazy_stream_close_setting(
     app: AppHandle,
     enabled: UiValue<bool>,

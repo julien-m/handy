@@ -112,7 +112,8 @@ pub enum SettingsCommand {
         #[arg(long, value_name = "N")]
         expected_revision: Option<u64>,
     },
-    /// Output settings: paste method, clipboard handling, automatic submit, delays, typing tool
+    /// Output settings: paste method, clipboard handling, automatic submit, delays, typing tool,
+    /// return to the dictation's application
     Output(OutputArgs),
     /// Shortcuts of each action: list them; add, remove or reset them in the running Handy
     Shortcuts(ShortcutsArgs),

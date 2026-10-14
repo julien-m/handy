@@ -1,4 +1,5 @@
 //! Durable revision/CAS/no-op/refusal contracts use real raw files.
+use handy_app_lib::settings_service::platform_capability::PlatformCapabilities;
 use handy_app_lib::settings_service::{
     errors::SettingsErrorCode,
     protocol::Revision,
@@ -19,6 +20,7 @@ fn mutation(
         &ValidationContext {
             prompt_ids: &[],
             updates_allowed: true,
+            platform: PlatformCapabilities::current(),
         },
     )
 }
@@ -149,6 +151,7 @@ fn prompt_mutation_revalidates_membership_against_the_locked_fresh_snapshot(
         &ValidationContext {
             prompt_ids: &["removed"],
             updates_allowed: true,
+            platform: PlatformCapabilities::current(),
         },
     )?;
     let error = SettingsRepository::new(path.clone())
@@ -195,6 +198,7 @@ fn refused_or_noop_commit_on_absent_store_creates_no_directory_or_lock(
         &ValidationContext {
             prompt_ids: &["removed"],
             updates_allowed: true,
+            platform: PlatformCapabilities::current(),
         },
     )?;
     let invalid = repository

@@ -492,6 +492,7 @@
       "deleteError": "Kayıt silinemedi. Lütfen tekrar deneyin.",
       "retranscribe": "Yeniden transkribe et",
       "retranscribeError": "Yeniden transkripsiyon başarısız oldu. Lütfen tekrar deneyin.",
+      "noAudio": "Bu kayıt için ses kaydı saklanmadı, bu yüzden yeniden yazıya dökülemez.",
       "transcribing": "Transkribe ediliyor...",
       "transcriptionFailed": "Transkripsiyon başarısız oldu. Yeniden deneme simgesini kullanarak tekrar transkribe edebilirsiniz."
     },
@@ -709,6 +710,7 @@
     "modelLoadFailedUnknown": "bilinmeyen model",
     "pasteFailedTitle": "Metin yapıştırılamadı",
     "pasteFailed": "Metin etkin uygulamaya yapıştırılamadı.",
+    "pasteFailedNotSaved": "Metin yapıştırılamadı ve geçmişe kaydedilemedi.",
     "transcriptionFailedTitle": "Transkripsiyon başarısız oldu",
     "settings": {
       "committedNotApplied": "Ayar kaydedildi ancak hemen uygulanamadı.",
@@ -720,7 +722,8 @@
       "shortcutSessionBusy": "Bir dikte devam ediyor. Bittiğinde tekrar deneyin.",
       "persistenceFailed": "Ayarlar kaydedilemedi.",
       "generic": "Ayar değiştirilemedi.",
-      "readOnly": "Ayarlar bu oturumda salt okunur: ayar dosyasına güvenli şekilde yazılamıyor, bu nedenle değişiklikler kaydedilmeyecek."
+      "readOnly": "Ayarlar bu oturumda salt okunur: ayar dosyasına güvenli şekilde yazılamıyor, bu nedenle değişiklikler kaydedilmeyecek.",
+      "unsupportedPlatform": "Bu ayar bu sistemde kullanılamaz."
     }
   },
   "appLanguage": {

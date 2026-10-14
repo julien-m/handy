@@ -1,5 +1,6 @@
 //! Actual stored-field coverage compared with an independent access classification.
 
+use handy_app_lib::settings_service::platform_capability::PlatformCapabilities;
 use handy_app_lib::settings_service::{descriptor::descriptors, protocol::SettingsSnapshot};
 use std::collections::BTreeSet;
 
@@ -13,8 +14,8 @@ fn every_actual_stored_field_has_exactly_one_descriptor() -> Result<(), Box<dyn 
         .iter()
         .map(|entry| entry.key.to_owned())
         .collect();
-    assert_eq!(actual.len(), 63);
-    assert_eq!(descriptors().len(), 63);
+    assert_eq!(actual.len(), 64);
+    assert_eq!(descriptors().len(), 64);
     assert_eq!(actual, described);
     Ok(())
 }
@@ -36,7 +37,7 @@ const COLLECTIONS: [(&str, &str); 4] = [
 ];
 
 #[test]
-fn independent_access_inventory_covers_7_readonly_1_secret_4_collections_51_scalars(
+fn independent_access_inventory_covers_7_readonly_1_secret_4_collections_52_scalars(
 ) -> Result<(), Box<dyn std::error::Error>> {
     for key in READONLY {
         let entry = handy_app_lib::settings_service::descriptor::descriptor(key)
@@ -57,7 +58,13 @@ fn independent_access_inventory_covers_7_readonly_1_secret_4_collections_51_scal
         .into_iter()
         .map(|(key, _, _)| key)
         .collect();
-    let actual_scalars: BTreeSet<_> = descriptors()
+    assert_eq!(scalar_keys.len(), 52);
+    assert_eq!(scalar_keys, actual_scalars());
+    Ok(())
+}
+/// Descriptor keys that are neither read-only, secret nor collections.
+fn actual_scalars() -> BTreeSet<&'static str> {
+    descriptors()
         .iter()
         .filter(|entry| {
             !READONLY.contains(&entry.key)
@@ -65,10 +72,7 @@ fn independent_access_inventory_covers_7_readonly_1_secret_4_collections_51_scal
                 && !COLLECTIONS.iter().any(|(key, _)| *key == entry.key)
         })
         .map(|entry| entry.key)
-        .collect();
-    assert_eq!(scalar_keys.len(), 51);
-    assert_eq!(scalar_keys, actual_scalars);
-    Ok(())
+        .collect()
 }
 
 pub(super) const ENUM_INVENTORY: &[(&str, &[&str])] = &[
@@ -139,6 +143,7 @@ fn independent_enum_inventory_accepts_every_current_canonical_variant(
     let context = ValidationContext {
         prompt_ids: &[],
         updates_allowed: true,
+        platform: PlatformCapabilities::current(),
     };
     assert_eq!(ENUM_INVENTORY.len(), 17);
     for (key, values) in ENUM_INVENTORY {

@@ -13,6 +13,7 @@ mod effects;
 mod endpoint_unix;
 #[cfg(windows)]
 mod endpoint_windows;
+pub mod error_reason;
 pub mod errors;
 pub mod input;
 pub mod ipc;
@@ -22,6 +23,7 @@ mod native_changes;
 mod normalization;
 pub mod operations;
 pub mod ownership;
+pub mod platform_capability;
 #[cfg(unix)]
 mod platform_unix;
 #[cfg(windows)]
