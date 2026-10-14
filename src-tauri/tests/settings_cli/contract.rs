@@ -163,7 +163,7 @@ fn stale_expected_revision_reports_the_current_revision() -> TestResult {
 }
 const UI_ONLY: &str = "This setting is changed in the settings UI.";
 /// Keys generic `set` refuses, with the reason naming where they are changed.
-const OWNED_ELSEWHERE: [(&str, &str); 4] = [
+const OWNED_ELSEWHERE: [(&str, &str); 5] = [
     (
         "bindings",
         "Use handy settings shortcuts to change shortcuts.",
@@ -171,6 +171,11 @@ const OWNED_ELSEWHERE: [(&str, &str); 4] = [
     (
         "custom_words",
         "Use handy settings vocabulary to change this list.",
+    ),
+    // The vocabulary domain does not manage filler words: the unregistered-owner refusal stays.
+    (
+        "custom_filler_words",
+        "Use handy settings vocabulary; this domain is not available in this build.",
     ),
     ("post_process_api_keys", UI_ONLY),
     ("selected_model", UI_ONLY),

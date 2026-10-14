@@ -63,6 +63,9 @@ pub enum ValidationReason {
     UiOnly,
     ShortcutsDomain,
     VocabularyDomain,
+    /// `custom_filler_words` belongs to the vocabulary domain in the 008 inventory, but this
+    /// build's vocabulary commands only manage `custom_words`.
+    FillerWordsUnavailable,
     PromptsDomain,
     UnknownPrompt,
     UpdaterDisabled,
@@ -86,6 +89,9 @@ impl ValidationReason {
             Self::UiOnly => "This setting is changed in the settings UI.",
             Self::ShortcutsDomain => "Use handy settings shortcuts to change shortcuts.",
             Self::VocabularyDomain => "Use handy settings vocabulary to change this list.",
+            Self::FillerWordsUnavailable => {
+                "Use handy settings vocabulary; this domain is not available in this build."
+            }
             Self::PromptsDomain => {
                 "Use handy settings prompts; this domain is not available in this build."
             }

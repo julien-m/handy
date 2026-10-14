@@ -1901,7 +1901,12 @@ export type VadBackend = "silero" | "earshot"
  * Closed canonical reasons prevent an arbitrary candidate/error string entering details. The
  * snake_case name is the stable key the settings UI maps to a translation.
  */
-export type ValidationReason = "canonical_type" | "canonical_value" | "out_of_range" | "ui_only" | "shortcuts_domain" | "vocabulary_domain" | "prompts_domain" | "unknown_prompt" | "updater_disabled" | "gpu_device_required" | 
+export type ValidationReason = "canonical_type" | "canonical_value" | "out_of_range" | "ui_only" | "shortcuts_domain" | "vocabulary_domain" | 
+/**
+ * `custom_filler_words` belongs to the vocabulary domain in the 008 inventory, but this
+ * build's vocabulary commands only manage `custom_words`.
+ */
+"filler_words_unavailable" | "prompts_domain" | "unknown_prompt" | "updater_disabled" | "gpu_device_required" | 
 /**
  * Domain input (file or stdin) is not UTF-8 text; `details.offset` names the first bad byte.
  */

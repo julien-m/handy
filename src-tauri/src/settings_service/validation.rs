@@ -83,15 +83,27 @@ fn editable_descriptor(
         ));
     }
     if matches!(entry.value_type, SettingType::Array | SettingType::Object) {
-        let reason = match entry.owner_domain {
-            "shortcuts" => ValidationReason::ShortcutsDomain,
-            "vocabulary" => ValidationReason::VocabularyDomain,
-            "prompts" => ValidationReason::PromptsDomain,
-            _ => ValidationReason::UiOnly,
-        };
-        return Err(SettingsError::validation(entry.key, reason));
+        return Err(SettingsError::validation(
+            entry.key,
+            collection_reason(entry),
+        ));
     }
     Ok(entry)
+}
+
+/// Refusal of a generic write to a list or map, naming the command that owns it.
+fn collection_reason(entry: &super::descriptor::SettingDescriptor) -> ValidationReason {
+    match entry.owner_domain {
+        "shortcuts" => ValidationReason::ShortcutsDomain,
+        // The vocabulary domain manages `custom_words` only; filler words keep the
+        // "not available in this build" refusal of an unregistered owner (008 plan).
+        "vocabulary" if entry.key == "custom_filler_words" => {
+            ValidationReason::FillerWordsUnavailable
+        }
+        "vocabulary" => ValidationReason::VocabularyDomain,
+        "prompts" => ValidationReason::PromptsDomain,
+        _ => ValidationReason::UiOnly,
+    }
 }
 
 fn parse_cli(
