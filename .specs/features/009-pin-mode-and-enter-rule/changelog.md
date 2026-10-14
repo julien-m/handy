@@ -121,3 +121,17 @@
 - Review: the plan review is stale until an independent reviewer refreshes it.
 
 <!-- finalize:spec-refine:2026-10-14:86e43d44 -->
+
+## 2026-10-14 — [Plan Update]: history_status from the actual save_entry result, text-only row when the WAV fails
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md updated)
+- **AC impacted:** None (pre-implementation; AC-003 and AC-005 planning only, IDs unchanged)
+- **Author:** Claude Code (spec-refine 009 plan, claude-opus-5-5)
+- Aligns with Julien's decision 2026-10-14, carried by the 006 spec and plan (commit `306c368`, `.specs/features/006-destination-application/plan.md`): a dictation whose WAV cannot be saved still gets a text-only history entry; `history_status` comes only from the actual `save_entry` result (`saved` text-only included, `failed` on save_entry failure, `not_saved` only when no write was attempted).
+- The current-state note says the `wav_saved` gate is removed by the 006 plan; the retained-text paragraph, Step 5 action, P0 conservation test row, Conservation P0 gate and the refreshed WAV-gated conservation risk now test a WAV failure as a saved text-only row and a save_entry failure as `failed`, instead of "WAV disabled" or "WAV/save absence" treated as not saved.
+- Plan review preparation at 180,000 characters: 18 batches, no error (previous: 18).
+- Review: the plan review is stale until an independent reviewer refreshes it.
+
+<!-- finalize:spec-refine:2026-10-14:48c67c3f -->

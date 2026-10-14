@@ -5,6 +5,9 @@
 
 ---
 
+## 2026-10-14 — [Feature 009] Plan refined: history_status from 006's actual save_entry result, a WAV failure tested as a saved text-only row (Julien's decision), save_entry failure as failed
+<!-- finalize:spec-refine:2026-10-14:48c67c3f -->
+
 ## 2026-10-14 — [Feature 010] Plan refined: history_status carried from 006's actual save_entry result, text-only row saved when the WAV fails (Julien's decision), not_saved no longer tied to a disabled or unavailable WAV
 <!-- finalize:spec-refine:2026-10-14:e2c204ed -->
 
