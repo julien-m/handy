@@ -2,7 +2,8 @@
 //! their revision, the shared validator, the bulk/import preview, and the two commits of the
 //! editor (list Save of the complete draft, bulk/import Apply of a previewed input). Each commit
 //! goes through the settings service once, only at the revision the editor started from, with
-//! the same rule-set edits and refusals as `handy settings replacements`.
+//! the same rule-set edits and refusals as `handy settings replacements`; a refusal reaches the
+//! editor as the shared typed settings error (`SettingsCommandError`), never as a value.
 
 use crate::settings::AppSettings;
 use crate::settings_service::{
@@ -36,31 +37,6 @@ pub struct RuleDraft {
     pub id: Option<RuleId>,
     pub recognized: String,
     pub replacement: String,
-}
-
-/// Outcome of an editor commit, returned as a value (never a rejected promise): the saved rules
-/// with their revision, or the typed refusal while nothing was saved.
-#[derive(Debug, Clone, PartialEq, Serialize, Type)]
-#[serde(tag = "status", rename_all = "snake_case")]
-pub enum ReplacementCommit {
-    Saved {
-        revision: u64,
-        rules: Vec<ReplacementRule>,
-    },
-    Refused {
-        error: SettingsCommandError,
-    },
-}
-impl From<Result<ReplacementRulesView, SettingsCommandError>> for ReplacementCommit {
-    fn from(result: Result<ReplacementRulesView, SettingsCommandError>) -> Self {
-        match result {
-            Ok(view) => Self::Saved {
-                revision: view.revision,
-                rules: view.rules,
-            },
-            Err(error) => Self::Refused { error },
-        }
-    }
 }
 
 /// A bulk or import preview against the rules saved at `revision`.
@@ -111,14 +87,18 @@ pub fn preview_word_replacements(
 // @spec AC-001: List draft saved once — .specs/features/002-word-replacements/spec.md#ac-001
 #[tauri::command]
 #[specta::specta]
-/// Save the complete draft list as the rule set, in one commit at `expected_revision`.
-/// Refused (nothing saved): `validation_failed` (`invalid_items`) for an invalid draft,
-/// `revision_conflict` when the settings moved on, and every refusal of the settings service.
+/// Save the complete draft list as the rule set, in one commit at `expected_revision`, and
+/// return the saved rules with their revision.
+///
+/// # Errors
+/// A `SettingsCommandError`, nothing saved: `validation_failed` (`invalid_items`; the fields
+/// come from `check_word_replacements`) for an invalid draft, `revision_conflict` with the
+/// current revision when the settings moved on, and every refusal of the settings service.
 pub async fn save_word_replacements(
     app: AppHandle,
     rules: Vec<RuleDraft>,
     expected_revision: u64,
-) -> ReplacementCommit {
+) -> Result<ReplacementRulesView, SettingsCommandError> {
     let rules = draft_rules(&rules, &fresh_ids(&rules));
     tauri_adapter::blocking(move || {
         let edit = save_edit(rules);
@@ -126,34 +106,31 @@ pub async fn save_word_replacements(
         Ok(rules_view(commit.revision, commit.after))
     })
     .await
-    .into()
 }
 
 // @spec AC-003: Apply commits exactly the previewed set — .specs/features/002-word-replacements/spec.md#ac-003
 #[tauri::command]
 #[specta::specta]
 /// Apply `input` in `mode` (the bulk editor's Apply or a file import) in one commit at
-/// `expected_revision`, the revision its preview was computed at. Refused (nothing saved):
-/// `limit_exceeded` above 1,000,000 bytes, `validation_failed` with every line issue, and the
-/// refusals of `save_word_replacements`.
+/// `expected_revision`, the revision its preview was computed at, and return the saved rules.
+///
+/// # Errors
+/// A `SettingsCommandError`, nothing saved: `limit_exceeded` above 1,000,000 bytes,
+/// `validation_failed` (`invalid_items`; the lines come from `preview_word_replacements`), and
+/// the refusals of `save_word_replacements`.
 pub async fn apply_word_replacements(
     app: AppHandle,
     input: String,
     mode: ImportMode,
     expected_revision: u64,
-) -> ReplacementCommit {
+) -> Result<ReplacementRulesView, SettingsCommandError> {
     tauri_adapter::blocking(move || {
-        let (revision, settings) = tauri_adapter::view(&app);
         let expected = Revision(expected_revision);
-        if revision != expected {
-            return Err(SettingsError::revision_conflict(revision).into());
-        }
-        let edit = import_edit(&settings.word_replacements, input, mode)?;
+        let edit = import_edit_at(tauri_adapter::view(&app), input, mode, expected)?;
         let commit = tauri_adapter::edit_at(&app, &edit, Some(expected))?;
         Ok(rules_view(commit.revision, commit.after))
     })
     .await
-    .into()
 }
 
 /// Edit replacing the rule set with `rules`, refused unless they pass the shared validator.
@@ -165,6 +142,23 @@ fn save_edit(
             validate_rules(&rules).map_err(|issues| refusal(RuleSetError::Invalid(issues)))?;
         Ok(())
     }
+}
+
+/// `import_edit` for an Apply computed at `expected`, refused with `revision_conflict` unless the
+/// published settings (`revision`, `settings`) are still at that revision.
+///
+/// # Errors
+/// `revision_conflict` with the current revision, otherwise those of `import_edit`.
+fn import_edit_at(
+    (revision, settings): (Revision, AppSettings),
+    input: String,
+    mode: ImportMode,
+    expected: Revision,
+) -> Result<impl Fn(&mut AppSettings) -> Result<(), SettingsError>, SettingsError> {
+    if revision != expected {
+        return Err(SettingsError::revision_conflict(revision));
+    }
+    import_edit(&settings.word_replacements, input, mode)
 }
 
 /// Edit applying `input` in `mode` to the locked rules, with the identities of its new rules

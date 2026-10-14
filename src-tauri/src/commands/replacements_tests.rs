@@ -1,11 +1,12 @@
 //! The settings window's replacement commits through the real settings service (an offline
 //! store): the list Save and bulk Apply edits, their revision binding and their refusals.
 use super::{
-    check_word_replacements, draft_rules, fresh_ids, import_edit, save_edit, ReplacementCommit,
-    ReplacementRulesView, RuleDraft,
+    check_word_replacements, draft_rules, fresh_ids, import_edit, import_edit_at, save_edit,
+    RuleDraft,
 };
 use crate::settings_service::{
-    errors::{SettingsError, SettingsErrorCode},
+    command_error::SettingsCommandError,
+    errors::{SettingsError, SettingsErrorCode, ValidationReason},
     live::LiveSettings,
     ownership::LegacyPathProbe,
     protocol::Revision,
@@ -117,20 +118,39 @@ fn check_reports_shared_validator_issues_of_a_draft() {
 }
 
 #[test]
-fn commit_outcomes_are_tagged_values_for_the_editor() -> TestResult {
-    let saved = ReplacementCommit::from(Ok(ReplacementRulesView {
-        revision: 4,
-        rules: Vec::new(),
-    }));
-    let saved = serde_json::to_value(saved)?;
-    assert_eq!(
-        saved,
-        serde_json::json!({"status": "saved", "revision": 4, "rules": []})
+fn apply_refuses_a_preview_of_an_older_revision_before_building_the_edit() -> TestResult {
+    let directory = tempfile::tempdir()?;
+    let live = offline(&directory)?;
+    let published = (live.snapshot().revision, live.snapshot().settings);
+    let stale = import_edit_at(published, "a;b\n".into(), ImportMode::Merge, Revision(3)).err();
+    let error = stale.map(SettingsCommandError::from);
+    let found = error.map(|error| (error.code, error.current_revision));
+    assert_eq!(found, Some((SettingsErrorCode::RevisionConflict, Some(0))));
+    let published = (live.snapshot().revision, live.snapshot().settings);
+    let edit = import_edit_at(published, "a;b\n".into(), ImportMode::Merge, Revision(0))?;
+    live.commit_edit(&edit, Some(Revision(0)))?;
+    assert_eq!(texts(&saved(&live)), vec![("a", "b")]);
+    Ok(())
+}
+
+#[test]
+fn refusals_reach_the_editor_as_the_shared_typed_settings_error() -> TestResult {
+    let refused = import_edit(&[], "a;1\nA;2\n".into(), ImportMode::Merge).err();
+    let error = refused.map(SettingsCommandError::from).ok_or("refusal")?;
+    let expected = (
+        SettingsErrorCode::ValidationFailed,
+        Some("word_replacements".to_owned()),
+        Some(ValidationReason::InvalidItems),
     );
-    let conflict = SettingsError::revision_conflict(Revision(5));
-    let refused = serde_json::to_value(ReplacementCommit::from(Err(conflict.into())))?;
-    assert_eq!(refused["status"], "refused");
-    assert_eq!(refused["error"]["code"], "revision_conflict");
-    assert_eq!(refused["error"]["current_revision"], 5);
+    assert_eq!((error.code, error.field.clone(), error.reason), expected);
+    let wire = serde_json::to_value(&error)?;
+    assert_eq!(wire["code"], "validation_failed");
+    assert_eq!(wire["reason"], "invalid_items");
+    let conflict = SettingsCommandError::from(SettingsError::revision_conflict(Revision(5)));
+    let wire = serde_json::to_value(conflict)?;
+    assert_eq!(
+        (&wire["code"], &wire["current_revision"]),
+        (&"revision_conflict".into(), &5.into())
+    );
     Ok(())
 }

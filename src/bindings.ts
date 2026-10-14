@@ -1044,21 +1044,38 @@ async previewWordReplacements(input: string, mode: ImportMode) : Promise<Replace
     return await TAURI_INVOKE("preview_word_replacements", { input, mode });
 },
 /**
- * Save the complete draft list as the rule set, in one commit at `expected_revision`.
- * Refused (nothing saved): `validation_failed` (`invalid_items`) for an invalid draft,
- * `revision_conflict` when the settings moved on, and every refusal of the settings service.
+ * Save the complete draft list as the rule set, in one commit at `expected_revision`, and
+ * return the saved rules with their revision.
+ * 
+ * # Errors
+ * A `SettingsCommandError`, nothing saved: `validation_failed` (`invalid_items`; the fields
+ * come from `check_word_replacements`) for an invalid draft, `revision_conflict` with the
+ * current revision when the settings moved on, and every refusal of the settings service.
  */
-async saveWordReplacements(rules: RuleDraft[], expectedRevision: number) : Promise<ReplacementCommit> {
-    return await TAURI_INVOKE("save_word_replacements", { rules, expectedRevision });
+async saveWordReplacements(rules: RuleDraft[], expectedRevision: number) : Promise<Result<ReplacementRulesView, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("save_word_replacements", { rules, expectedRevision }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
 },
 /**
  * Apply `input` in `mode` (the bulk editor's Apply or a file import) in one commit at
- * `expected_revision`, the revision its preview was computed at. Refused (nothing saved):
- * `limit_exceeded` above 1,000,000 bytes, `validation_failed` with every line issue, and the
- * refusals of `save_word_replacements`.
+ * `expected_revision`, the revision its preview was computed at, and return the saved rules.
+ * 
+ * # Errors
+ * A `SettingsCommandError`, nothing saved: `limit_exceeded` above 1,000,000 bytes,
+ * `validation_failed` (`invalid_items`; the lines come from `preview_word_replacements`), and
+ * the refusals of `save_word_replacements`.
  */
-async applyWordReplacements(input: string, mode: ImportMode, expectedRevision: number) : Promise<ReplacementCommit> {
-    return await TAURI_INVOKE("apply_word_replacements", { input, mode, expectedRevision });
+async applyWordReplacements(input: string, mode: ImportMode, expectedRevision: number) : Promise<Result<ReplacementRulesView, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("apply_word_replacements", { input, mode, expectedRevision }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
 },
 /**
  * Checks if the Mac is a laptop by detecting battery presence
@@ -1358,11 +1375,6 @@ export type RecordingRetentionPeriod = "never" | "preserve_limit" | "days_3" | "
  * `reason` is the backend's message, in English.
  */
 export type RefusedShortcut = { action_id: string; shortcut: string; reason: string }
-/**
- * Outcome of an editor commit, returned as a value (never a rejected promise): the saved rules
- * with their revision, or the typed refusal while nothing was saved.
- */
-export type ReplacementCommit = { status: "saved"; revision: number; rules: ReplacementRule[] } | { status: "refused"; error: SettingsCommandError }
 /**
  * Complete preview; `candidate` is exactly the ordered set Apply would commit.
  */

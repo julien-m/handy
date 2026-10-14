@@ -1,5 +1,14 @@
 # Changelog - 002-word-replacements
 
+## 2026-10-14 — [Refactor]: Sync with dev after 004 and typed errors for the editor commits
+
+- **Type:** Refactor (merge of `dev` with 004, then typed command errors)
+- **Spec modified:** No
+- **Code modified:** merge `0234e62` (002 and 004 extensions of the 008 framework kept side by side; checked schema and `src/bindings.ts` regenerated); `save_word_replacements` and `apply_word_replacements` return `Result<ReplacementRulesView, SettingsCommandError>` instead of a `ReplacementCommit` value.
+- **AC impacted:** AC-001, AC-003 (native commands only); no AC certified.
+- **Evidence:** `proofs/claude-sync/` (full `cargo test` 765 passed, 0 failed, 19 ignored; Clippy, fmt, lint, format, tsc and repo conventions PASS).
+- **Author:** Claude Code (implementation agent)
+
 ## 2026-10-14 — [Feature]: Steps waiting for 008 implemented on the merged settings service
 
 - **Type:** Feature (merge of `dev` with 008, then implementation of every step that was Waiting for 008)
