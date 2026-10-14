@@ -94,10 +94,7 @@ fn an_invalid_value_is_a_canonical_type_refusal_before_the_platform_check() -> T
     Ok(())
 }
 #[test]
-fn a_set_routed_to_the_running_instance_is_committed_by_it() -> TestResult {
-    if !supported() {
-        return Ok(());
-    }
+fn a_set_routed_to_the_running_instance_is_committed_or_refused_by_it() -> TestResult {
     let app = Portable::new()?;
     let probe = LegacyPathProbe::new(app.root.path().join("absent.sock"));
     let repository = SettingsRepository::new(app.store()?);
@@ -105,10 +102,18 @@ fn a_set_routed_to_the_running_instance_is_committed_by_it() -> TestResult {
     let endpoint = ipc::serve(&app.store()?, instance.clone())?;
     let start = instance.snapshot().revision.0;
     let routed = set(&app, "false", &[])?;
-    assert_eq!(routed.envelope()?["revision"], json!(start + 1));
+    let envelope = routed.envelope()?;
     let public = serde_json::to_value(instance.snapshot().public_settings())?;
-    assert_eq!(public[KEY], json!(false));
     endpoint.close();
+    if supported() {
+        assert_eq!(envelope["revision"], json!(start + 1));
+        assert_eq!(public[KEY], json!(false));
+    } else {
+        // Build without the capability (Linux, or the rollout gate closed): refused unchanged.
+        let reason = &envelope["error"]["details"]["reason"];
+        assert_eq!((routed.code, reason), (2, &json!("unsupported_platform")));
+        assert_eq!(instance.snapshot().revision.0, start);
+    }
     Ok(())
 }
 #[test]

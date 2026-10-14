@@ -1,4 +1,3 @@
-   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/006-destination-application/src-tauri)
 warning: handy@0.9.8: Building with Apple Intelligence support.
 warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
 warning: items after a test module
@@ -70,4 +69,5 @@ help: use `writeln!` instead
     |
 
 warning: `handy` (lib test) generated 5 warnings (run `cargo clippy --fix --lib -p handy --tests` to apply 5 suggestions)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 11.35s
+    Checking handy v0.9.8 (/Users/julienm/projects/handy-wt/006-destination-application/src-tauri)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.43s
