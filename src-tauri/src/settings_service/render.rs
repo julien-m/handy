@@ -5,6 +5,8 @@ use super::{operations::Reply, protocol::SettingsOperation};
 use serde_json::Value;
 use std::io::Write;
 
+mod microphones;
+
 /// What the reply answers, for readable output only.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum View {
@@ -132,39 +134,8 @@ fn success_text(view: View, envelope: &Value) -> String {
         View::List => rule_lines(&data["rules"]),
         View::Shortcuts => shortcut_lines(data),
         View::Terms => term_lines(&data["terms"]),
-        View::Microphones => microphone_lines(data),
+        View::Microphones => microphones::microphone_lines(data),
         View::Help => data["help"].as_str().unwrap_or_default().to_owned(),
-    }
-}
-/// `N. name: status` per saved choice, then the microphone in use (feature 001).
-fn microphone_lines(data: &Value) -> String {
-    let choices = data["availability"].as_array().cloned().unwrap_or_default();
-    let mut text = String::from("Microphone priority:\n");
-    for (index, choice) in choices.iter().enumerate() {
-        let status = choice["status"].as_str().unwrap_or("unknown");
-        text.push_str(&format!(
-            "{}. {}: {status}\n",
-            index + 1,
-            plain(&choice["name"])
-        ));
-    }
-    if choices.is_empty() {
-        text.push_str("(none: system default)\n");
-    }
-    if !data["warning"].is_null() {
-        text.push_str("Devices could not be listed: availability is unknown.\n");
-    }
-    text + &in_use_line(&data["effective_input"])
-}
-/// The microphone in use now, or used by the last recording, or "not used yet".
-fn in_use_line(input: &Value) -> String {
-    match input["scope"].as_str() {
-        Some(scope @ ("current" | "last_recording")) => format!(
-            "In use ({scope}): {} ({})\n",
-            plain(&input["name"]),
-            plain(&input["reason"])
-        ),
-        _ => "In use: not used yet\n".to_owned(),
     }
 }
 /// `key = value (revision N)` per changed key.

@@ -87,6 +87,10 @@ pub enum ValidationReason {
     /// The microphone choices change only through the microphones domain (feature 001).
     MicrophonesDomain,
 }
+/// Refusal text of a generic write of a microphone key (feature 001).
+const MICROPHONES_DOMAIN_MESSAGE: &str =
+    "Use handy settings microphones set-priority to change the microphone choices.";
+
 impl ValidationReason {
     fn message(self) -> &'static str {
         match self {
@@ -114,9 +118,7 @@ impl ValidationReason {
             }
             Self::UnsupportedPlatform => "This setting is not supported on this platform.",
             Self::ShortcutSessionBusy => "A dictation is in progress; retry when it ends.",
-            Self::MicrophonesDomain => {
-                "Use handy settings microphones set-priority to change the microphone choices."
-            }
+            Self::MicrophonesDomain => MICROPHONES_DOMAIN_MESSAGE,
         }
     }
 }
