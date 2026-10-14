@@ -1,4 +1,3 @@
-use crate::actions::process_transcription_output;
 use crate::managers::{
     history::{HistoryManager, PaginatedHistory},
     transcription::TranscriptionManager,
@@ -103,15 +102,15 @@ pub async fn retry_history_entry_transcription(
         return Err("Recording contains no speech".to_string());
     }
 
-    let processed =
-        process_transcription_output(&app, &transcription, entry.post_process_requested).await;
+    let settings = crate::settings::get_settings(&app);
+    let retry = crate::prompts::dictation::retried_text(
+        &settings,
+        transcription,
+        entry.post_process_requested,
+    );
+    let text = retry.await;
     history_manager
-        .update_transcription(
-            id,
-            transcription,
-            processed.post_processed_text,
-            processed.post_process_prompt,
-        )
+        .update_transcription(id, text)
         .map(|_| ())
         .map_err(|e| e.to_string())
 }

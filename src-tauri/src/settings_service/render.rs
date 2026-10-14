@@ -24,6 +24,8 @@ pub enum View {
     Shortcuts,
     /// Vocabulary list (`handy settings vocabulary list`): one line per stored term.
     Terms,
+    /// Prompt library (`handy settings prompts list`): one line per prompt.
+    Prompts,
     Help,
 }
 impl View {
@@ -48,6 +50,7 @@ impl View {
             _ if dry_run => Self::Preview,
             _ if domain == "shortcuts" => Self::Shortcuts,
             ("list", _) if domain == "vocabulary" => Self::Terms,
+            ("list", _) if domain == "prompts" => Self::Prompts,
             ("export", _) => Self::Export,
             ("list", _) => Self::List,
             ("get", 0) => Self::AllSettings,
@@ -129,6 +132,7 @@ fn success_text(view: View, envelope: &Value) -> String {
         View::List => rule_lines(&data["rules"]),
         View::Shortcuts => shortcut_lines(data),
         View::Terms => term_lines(&data["terms"]),
+        View::Prompts => prompt_lines(data),
         View::Help => data["help"].as_str().unwrap_or_default().to_owned(),
     }
 }
@@ -181,6 +185,35 @@ fn shortcut_lines(data: &Value) -> String {
                 plain(&action["action_id"]),
                 plain(&action["default_shortcut"])
             )
+        })
+        .collect()
+}
+/// `id: name (ready | not ready: missing item) [shortcuts]` per prompt, `*` marking the default.
+fn prompt_lines(data: &Value) -> String {
+    let prompts = data["prompts"]
+        .as_array()
+        .map(Vec::as_slice)
+        .unwrap_or_default();
+    prompts
+        .iter()
+        .map(|prompt| {
+            let marker = if prompt["id"] == data["default_prompt_id"] {
+                "* "
+            } else {
+                "  "
+            };
+            let readiness = match prompt["readiness"]["missing"].as_str() {
+                Some(missing) => format!("not ready: {missing}"),
+                None => "ready".to_owned(),
+            };
+            let shortcuts = prompt["shortcuts"]
+                .as_array()
+                .map(Vec::as_slice)
+                .unwrap_or_default();
+            let shortcuts = shortcuts.iter().map(plain).collect::<Vec<_>>().join(", ");
+            let id = plain(&prompt["id"]);
+            let name = plain(&prompt["name"]);
+            format!("{marker}{id}: {name} ({readiness}) [{shortcuts}]\n")
         })
         .collect()
 }

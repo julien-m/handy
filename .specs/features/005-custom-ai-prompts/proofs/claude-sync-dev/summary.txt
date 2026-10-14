@@ -1,0 +1,50 @@
+# Sync of dev into feature/005-custom-ai-prompts
+merge commit: 29962c2b (parents 672eb992 feature/005, c8cd2472 dev)
+verified HEAD: 4e01dd150e380df9fa5f2b6196a556ac38d5032d (merge + clone_on_copy fix 4e01dd15)
+env: CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-005; gates closed unless --features smart-paste-dispatch is shown
+date: 2026-10-14T11:36:27Z
+
+name	exit	cwd (relative to worktree)	command
+cargo-test-full	exit=0	cwd=/src-tauri	cargo test
+cargo-test-prompt	exit=0	cwd=/src-tauri	cargo test prompt
+cargo-test-replacement	exit=0	cwd=/src-tauri	cargo test replacement
+cargo-test-vocabulary	exit=0	cwd=/src-tauri	cargo test vocabulary
+cargo-test-settings_	exit=0	cwd=/src-tauri	cargo test settings_
+cargo-test-gate-open-prompt	exit=0	cwd=/src-tauri	cargo test --features smart-paste-dispatch prompt
+cargo-test-gate-open-replacement	exit=0	cwd=/src-tauri	cargo test --features smart-paste-dispatch replacement
+cargo-test-gate-open-vocabulary	exit=0	cwd=/src-tauri	cargo test --features smart-paste-dispatch vocabulary
+cargo-test-gate-open-settings_	exit=0	cwd=/src-tauri	cargo test --features smart-paste-dispatch settings_
+cargo-test-gate-open-smart_paste	exit=0	cwd=/src-tauri	cargo test --features smart-paste-dispatch smart_paste
+clippy-lib-bins	exit=0	cwd=/src-tauri	cargo clippy --lib --bins -- -D warnings
+clippy-lib-bins-gate-open	exit=0	cwd=/src-tauri	cargo clippy --features smart-paste-dispatch --lib --bins -- -D warnings
+clippy-all-targets	exit=0	cwd=/src-tauri	cargo clippy --all-targets
+cargo-fmt-check	exit=0	cwd=/src-tauri	cargo fmt --check
+bun-lint	exit=0	cwd=	bun run lint
+bun-format-check	exit=0	cwd=	bun run format:check
+tsc	exit=0	cwd=	bunx tsc --noEmit
+check-translations	exit=0	cwd=	bun run check:translations
+conventions	exit=0	cwd=	livespec conventions verify --feature repo --json
+
+## Test tallies (from each .stdout)
+cargo-test-full: passed 1213, failed 0, ignored 24
+cargo-test-gate-open-prompt: passed 86, failed 0, ignored 0
+cargo-test-gate-open-replacement: passed 136, failed 0, ignored 0
+cargo-test-gate-open-settings_: passed 145, failed 0, ignored 1
+cargo-test-gate-open-smart_paste: passed 196, failed 0, ignored 0
+cargo-test-gate-open-vocabulary: passed 44, failed 0, ignored 0
+cargo-test-prompt: passed 86, failed 0, ignored 0
+cargo-test-replacement: passed 136, failed 0, ignored 0
+cargo-test-settings_: passed 145, failed 0, ignored 1
+cargo-test-vocabulary: passed 44, failed 0, ignored 0
+No test failed, so no isolated rerun was needed. No output contains 'No space left on device'.
+
+## clippy --all-targets warnings (exit 0)
+warning: items after a test module	   --> src/lib.rs:450:1
+warning: this boolean expression can be simplified	    --> src/engine_supervisor/supervisor.rs:1568:15
+warning: this `repeat().take()` can be written more concisely	   --> src/managers/gguf_meta.rs:484:21
+warning: using `write!()` with a format string that ends in a single newline	   --> src/portable.rs:198:9
+All four come from code already on dev before this merge (commits 2203a826c, c8262ab3e, 31d8fc244, 214e22dc3); the merge adds none.
+An earlier run on the merge commit 29962c2b failed clippy -D warnings with clone_on_copy at settings_service/cli.rs:256 (dev made ChangeOptions Copy); fixed in 4e01dd15, then every command above was rerun.
+
+## Conventions
+verdict PASS blockers 0 new 0 receipt .specs/conventions/runs/20261014T114013Z/receipt.json

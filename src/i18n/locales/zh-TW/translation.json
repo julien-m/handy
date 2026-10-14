@@ -724,7 +724,16 @@
       "persistenceFailed": "無法儲存設定。",
       "generic": "無法變更設定。",
       "readOnly": "本次工作階段的設定為唯讀：無法安全寫入設定檔，因此變更不會儲存。",
-      "unsupportedPlatform": "此設定在此系統上無法使用。"
+      "unsupportedPlatform": "此設定在此系統上無法使用。",
+      "promptNameEmpty": "請輸入提示詞名稱。",
+      "promptNameTooLong": "提示詞名稱不能超過 60 個字元。",
+      "promptNameDuplicate": "已有同名的提示詞。名稱必須唯一。",
+      "promptTextEmpty": "請輸入提示詞內容。",
+      "promptTextTooLong": "提示詞內容不能超過 8000 個字元。",
+      "promptOverrideIncomplete": "請同時選擇服務提供者和模型，或使用預設服務提供者。",
+      "promptUnknownProvider": "此服務提供者無法使用。",
+      "promptNotUsable": "此提示詞無效。請先編輯後再使用。",
+      "limitExceeded": "已達到最大數量。"
     }
   },
   "appLanguage": {
@@ -743,7 +752,8 @@
   "overlay": {
     "transcribing": "正在轉錄...",
     "processing": "處理中...",
-    "loadingModel": "正在載入模型..."
+    "loadingModel": "正在載入模型...",
+    "fallbackNotice": "AI 處理失敗。已使用原始文字。"
   },
   "whatsNew": {
     "title": "Handy v{{version}} 新功能"

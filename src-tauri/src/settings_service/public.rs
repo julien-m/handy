@@ -259,11 +259,17 @@ impl From<&PostProcessProvider> for PublicProvider {
         }
     }
 }
+/// Public prompt: the stored fields, the provider override (a provider id and a model, never a
+/// credential) and the starter flag (005), both omitted when unset, as in the store.
 #[derive(Serialize)]
 struct PublicPrompt {
     id: String,
     name: String,
     prompt: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    provider_override: Option<PromptProviderOverride>,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    starter: bool,
 }
 impl From<&LLMPrompt> for PublicPrompt {
     fn from(value: &LLMPrompt) -> Self {
@@ -271,6 +277,8 @@ impl From<&LLMPrompt> for PublicPrompt {
             id: value.id.clone(),
             name: value.name.clone(),
             prompt: value.prompt.clone(),
+            provider_override: value.provider_override.clone(),
+            starter: value.starter,
         }
     }
 }

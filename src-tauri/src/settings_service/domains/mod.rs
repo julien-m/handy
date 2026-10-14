@@ -2,10 +2,11 @@
 //! current settings and the request, what to answer or which typed change to make; the framework
 //! does the rest the same way for every domain: action aliases, live-only refusal, dry-run preview
 //! through the commit path's own validation, and one atomic commit through the shared backend.
-//! Registered: `output` (008), `replacements` (002), `shortcuts` (004) and `vocabulary` (003);
-//! later features add their domain to `production`.
+//! Registered: `output` (008), `replacements` (002), `shortcuts` (004), `vocabulary` (003) and
+//! `prompts` (005); later features add their domain to `production`.
 pub mod live_operation;
 pub mod output;
+pub mod prompts;
 pub mod replacements;
 mod replacements_refusal;
 pub mod shortcuts;
@@ -57,10 +58,12 @@ pub enum DomainPlan {
     /// Answer from the current settings (get, export); nothing is written.
     Read(Value),
     /// Commit `change`; the reply shows the public value of `keys` after the commit (or, for a
-    /// dry run, the preview).
+    /// dry run, the preview), or what `render` builds from those settings when it is set (for
+    /// example the id of a created prompt, 005).
     Change {
         change: DomainChange,
         keys: Vec<&'static str>,
+        render: Option<Render>,
     },
     /// Answer that only a running instance can give (live state); offline it is `unavailable`.
     LiveOnly(Value),
@@ -122,6 +125,7 @@ pub fn production() -> &'static [&'static dyn Domain] {
         &replacements::ReplacementsDomain,
         &shortcuts::ShortcutsDomain,
         &vocabulary::VocabularyDomain,
+        &prompts::PromptsDomain,
     ]
 }
 /// Shared verb aliases: every domain accepts `edit` for `update` and `delete` for `remove`.
@@ -160,19 +164,35 @@ pub fn execute(
     let (domain, request) = resolve(call, registry)?;
     let read = backend.read()?;
     let plan = domain.plan(&request, &read.snapshot.settings)?;
+    answer_plan(plan, call, backend, &read)
+}
+/// Answer, run or commit `plan` for `call`, from the settings `read` it was planned on.
+fn answer_plan(
+    plan: DomainPlan,
+    call: &DomainCall<'_>,
+    backend: &dyn SettingsBackend,
+    read: &SettingsRead,
+) -> Result<Answer, SettingsError> {
     let answer = |data| Ok((read.snapshot.revision, data, read.warning));
     match plan {
         DomainPlan::Read(data) => answer(data),
         DomainPlan::LiveOnly(data) if backend.is_live() => answer(data),
         DomainPlan::LiveOnly(_) => Err(SettingsError::new(SettingsErrorCode::Unavailable)),
-        DomainPlan::Live(operation) => run_live(operation.as_ref(), call, backend, &read),
-        DomainPlan::Change { change, keys } => change_keys(call, backend, &read, &change, &keys),
+        DomainPlan::Live(operation) => run_live(operation.as_ref(), call, backend, read),
+        DomainPlan::Change {
+            change,
+            keys,
+            render,
+        } => {
+            let reply = (keys.as_slice(), render.as_ref());
+            change_keys(call, backend, read, &change, reply)
+        }
         DomainPlan::LiveChange {
             key,
             change,
             render,
-        } => live_change(call, backend, &read, (key, &change), &render),
-        DomainPlan::Reported(change) => reported(call, backend, &read, &change),
+        } => live_change(call, backend, read, (key, &change), &render),
+        DomainPlan::Reported(change) => reported(call, backend, read, &change),
     }
 }
 /// Run a live operation inside the instance; offline, the same refusal as a live-only answer.
@@ -195,23 +215,37 @@ fn run_live(
         LiveAnswer::Committed { read, data } => Ok((read.snapshot.revision, data, read.warning)),
     }
 }
-/// A change answered with the public values of `keys`: previewed by a dry run, otherwise
-/// committed through the shared path.
+/// How a change is answered: the public values of `keys`, or `render` when set.
+struct Reply<'a> {
+    keys: &'a [&'static str],
+    render: Option<&'a Render>,
+}
+impl Reply<'_> {
+    fn data(&self, settings: &AppSettings) -> Result<Value, SettingsError> {
+        match self.render {
+            Some(render) => render(settings),
+            None => public_keys(settings, self.keys),
+        }
+    }
+}
+/// A change answered with `reply`: previewed by a dry run, otherwise committed through the
+/// shared path.
 fn change_keys(
     call: &DomainCall<'_>,
     backend: &dyn SettingsBackend,
     read: &SettingsRead,
     change: &DomainChange,
-    keys: &[&'static str],
+    (keys, render): (&[&'static str], Option<&Render>),
 ) -> Result<Answer, SettingsError> {
+    let reply = Reply { keys, render };
     if call.dry_run {
         let current = read.snapshot.revision;
         let preview = dry_run(&read.snapshot.settings, change, call.expected, current)?;
-        let data = json!({ "dry_run": true, "changes": public_keys(&preview, keys)? });
+        let data = json!({ "dry_run": true, "changes": reply.data(&preview)? });
         return Ok((current, data, read.warning));
     }
     let committed = backend.commit_change(change, call.expected)?;
-    let data = public_keys(&committed.snapshot.settings, keys)?;
+    let data = reply.data(&committed.snapshot.settings)?;
     Ok((committed.snapshot.revision, data, committed.warning))
 }
 /// A live change: a dry run previews it anywhere (the native side unchecked); otherwise only a

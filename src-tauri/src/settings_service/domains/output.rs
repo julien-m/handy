@@ -85,5 +85,6 @@ fn set(
     Ok(DomainPlan::Change {
         change: DomainChange(ChangeKind::Scalar(mutation)),
         keys: vec![key],
+        render: None,
     })
 }

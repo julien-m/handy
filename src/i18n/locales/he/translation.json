@@ -724,7 +724,16 @@
       "persistenceFailed": "לא ניתן היה לשמור את ההגדרות.",
       "generic": "לא ניתן היה לשנות את ההגדרה.",
       "readOnly": "ההגדרות לקריאה בלבד בהפעלה זו: לא ניתן לכתוב את קובץ ההגדרות בבטחה, ולכן השינויים לא יישמרו.",
-      "unsupportedPlatform": "הגדרה זו אינה זמינה במערכת זו."
+      "unsupportedPlatform": "הגדרה זו אינה זמינה במערכת זו.",
+      "promptNameEmpty": "הזינו שם להנחיה.",
+      "promptNameTooLong": "שם ההנחיה יכול להכיל עד 60 תווים.",
+      "promptNameDuplicate": "להנחיה אחרת כבר יש שם זה. השמות חייבים להיות ייחודיים.",
+      "promptTextEmpty": "הזינו את טקסט ההנחיה.",
+      "promptTextTooLong": "טקסט ההנחיה יכול להכיל עד 8,000 תווים.",
+      "promptOverrideIncomplete": "בחרו ספק ומודל, או השתמשו בספק ברירת המחדל.",
+      "promptUnknownProvider": "ספק זה אינו זמין.",
+      "promptNotUsable": "ההנחיה אינה תקינה. ערכו אותה לפני השימוש.",
+      "limitExceeded": "הגעתם למספר המרבי."
     }
   },
   "appLanguage": {
@@ -743,7 +752,8 @@
   "overlay": {
     "transcribing": "מתמלל...",
     "processing": "מעבד...",
-    "loadingModel": "טוען מודל..."
+    "loadingModel": "טוען מודל...",
+    "fallbackNotice": "העיבוד באמצעות בינה מלאכותית נכשל. נעשה שימוש בטקסט המקורי."
   },
   "whatsNew": {
     "title": "חדש ב-Handy v{{version}}"

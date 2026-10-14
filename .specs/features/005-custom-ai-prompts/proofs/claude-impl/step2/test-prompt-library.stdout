@@ -1,0 +1,9 @@
+
+running 4 tests
+test a_fresh_install_lists_the_historical_prompt_then_the_starters_without_a_default ... ok
+test a_full_library_gets_no_starter ... ok
+test upgrade_keeps_existing_prompts_and_selection_and_adds_the_starters_once ... ok
+test a_deleted_starter_never_comes_back ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.04s
+

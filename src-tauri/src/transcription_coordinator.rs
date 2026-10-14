@@ -2,7 +2,7 @@
 //! decision for the transcription actions, whichever shortcut, signal or
 //! CLI flag produced the input.
 
-use crate::actions::ACTION_MAP;
+use crate::actions::action_for;
 use crate::managers::audio::AudioRecordingManager;
 use crate::settings::ShortcutActivation;
 use log::{debug, error, warn};
@@ -693,9 +693,12 @@ pub struct TranscriptionCoordinator {
     tx: Sender<Command>,
 }
 
-/// Whether `id` is one of the actions driven by the coordinator.
+/// Whether `id` is one of the actions driven by the coordinator: the two dictation actions and
+/// the prompt shortcuts (005), which follow the same global activation mode.
 pub fn is_transcribe_binding(id: &str) -> bool {
-    id == "transcribe" || id == "transcribe_with_post_process"
+    id == "transcribe"
+        || id == "transcribe_with_post_process"
+        || crate::shortcut::prompt_targets::prompt_of(id).is_some()
 }
 
 impl TranscriptionCoordinator {
@@ -893,7 +896,7 @@ fn run_effect(app: &AppHandle, state: &mut CoordinatorState, effect: Effect) {
 /// Execute a start effect; returns whether recording actually began, so the
 /// state machine can roll back its optimistic transition on failure.
 fn start(app: &AppHandle, binding_id: &str, hotkey_string: &str) -> bool {
-    let Some(action) = ACTION_MAP.get(binding_id) else {
+    let Some(action) = action_for(binding_id) else {
         warn!("No action in ACTION_MAP for '{binding_id}'");
         return false;
     };
@@ -908,7 +911,7 @@ fn start(app: &AppHandle, binding_id: &str, hotkey_string: &str) -> bool {
 }
 
 fn stop(app: &AppHandle, binding_id: &str, hotkey_string: &str) {
-    let Some(action) = ACTION_MAP.get(binding_id) else {
+    let Some(action) = action_for(binding_id) else {
         warn!("No action in ACTION_MAP for '{binding_id}'");
         return;
     };

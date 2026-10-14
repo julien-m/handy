@@ -18,10 +18,33 @@ export const SETTINGS_ERROR_KEYS = {
   generic: "errors.settings.generic",
   readOnly: "errors.settings.readOnly",
   unsupportedPlatform: "errors.settings.unsupportedPlatform",
+  limitExceeded: "errors.settings.limitExceeded",
+  promptNameEmpty: "errors.settings.promptNameEmpty",
+  promptNameTooLong: "errors.settings.promptNameTooLong",
+  promptNameDuplicate: "errors.settings.promptNameDuplicate",
+  promptTextEmpty: "errors.settings.promptTextEmpty",
+  promptTextTooLong: "errors.settings.promptTextTooLong",
+  promptOverrideIncomplete: "errors.settings.promptOverrideIncomplete",
+  promptUnknownProvider: "errors.settings.promptUnknownProvider",
+  promptNotUsable: "errors.settings.promptNotUsable",
 } as const;
 
 export type SettingsErrorKey =
   (typeof SETTINGS_ERROR_KEYS)[keyof typeof SETTINGS_ERROR_KEYS];
+
+/** Typed validation reasons with their own translation (custom AI prompts, 005). */
+const REASON_KEYS: Partial<
+  Record<NonNullable<SettingsCommandError["reason"]>, SettingsErrorKey>
+> = {
+  prompt_name_empty: SETTINGS_ERROR_KEYS.promptNameEmpty,
+  prompt_name_too_long: SETTINGS_ERROR_KEYS.promptNameTooLong,
+  prompt_name_duplicate: SETTINGS_ERROR_KEYS.promptNameDuplicate,
+  prompt_text_empty: SETTINGS_ERROR_KEYS.promptTextEmpty,
+  prompt_text_too_long: SETTINGS_ERROR_KEYS.promptTextTooLong,
+  prompt_override_incomplete: SETTINGS_ERROR_KEYS.promptOverrideIncomplete,
+  prompt_unknown_provider: SETTINGS_ERROR_KEYS.promptUnknownProvider,
+  prompt_not_usable: SETTINGS_ERROR_KEYS.promptNotUsable,
+};
 
 /**
  * Translation key for a refused settings command.
@@ -44,9 +67,13 @@ export const settingsErrorKey = (
   if (error.reason === "shortcut_session_busy") {
     return SETTINGS_ERROR_KEYS.shortcutSessionBusy;
   }
+  const reasonKey = error.reason ? REASON_KEYS[error.reason] : undefined;
+  if (reasonKey) return reasonKey;
   switch (error.code) {
     case "validation_failed":
       return SETTINGS_ERROR_KEYS.validationFailed;
+    case "limit_exceeded":
+      return SETTINGS_ERROR_KEYS.limitExceeded;
     case "revision_conflict":
       return SETTINGS_ERROR_KEYS.revisionConflict;
     case "unavailable":

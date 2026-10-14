@@ -727,7 +727,16 @@
       "persistenceFailed": "Settings could not be saved.",
       "generic": "The setting could not be changed.",
       "readOnly": "Settings are read-only for this session: the settings file cannot be written safely, so changes will not be saved.",
-      "unsupportedPlatform": "This setting is not available on this system."
+      "unsupportedPlatform": "This setting is not available on this system.",
+      "promptNameEmpty": "Enter a name for the prompt.",
+      "promptNameTooLong": "The prompt name must be 60 characters or fewer.",
+      "promptNameDuplicate": "Another prompt already has this name. Names must be unique.",
+      "promptTextEmpty": "Enter the prompt text.",
+      "promptTextTooLong": "The prompt text must be 8,000 characters or fewer.",
+      "promptOverrideIncomplete": "Choose both a provider and a model, or use the default provider.",
+      "promptUnknownProvider": "This provider is not available.",
+      "promptNotUsable": "This prompt is invalid. Edit it before using it.",
+      "limitExceeded": "The maximum number has been reached."
     }
   },
   "appLanguage": {
@@ -746,7 +755,8 @@
   "overlay": {
     "transcribing": "Transcribing...",
     "processing": "Processing...",
-    "loadingModel": "Loading model..."
+    "loadingModel": "Loading model...",
+    "fallbackNotice": "AI processing failed. The original text was used."
   },
   "secureInput": {
     "blockedWithCulprit_one": "{{name}} may be blocking 1 shortcut",

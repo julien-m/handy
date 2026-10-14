@@ -724,7 +724,16 @@
       "persistenceFailed": "Die Einstellungen konnten nicht gespeichert werden.",
       "generic": "Die Einstellung konnte nicht geändert werden.",
       "readOnly": "Die Einstellungen sind in dieser Sitzung schreibgeschützt: Die Einstellungsdatei kann nicht sicher geschrieben werden, daher werden Änderungen nicht gespeichert.",
-      "unsupportedPlatform": "Diese Einstellung ist auf diesem System nicht verfügbar."
+      "unsupportedPlatform": "Diese Einstellung ist auf diesem System nicht verfügbar.",
+      "promptNameEmpty": "Gib einen Namen für den Prompt ein.",
+      "promptNameTooLong": "Der Name des Prompts darf höchstens 60 Zeichen lang sein.",
+      "promptNameDuplicate": "Ein anderer Prompt hat bereits diesen Namen. Namen müssen eindeutig sein.",
+      "promptTextEmpty": "Gib den Text des Prompts ein.",
+      "promptTextTooLong": "Der Text des Prompts darf höchstens 8.000 Zeichen lang sein.",
+      "promptOverrideIncomplete": "Wähle einen Anbieter und ein Modell oder verwende den Standardanbieter.",
+      "promptUnknownProvider": "Dieser Anbieter ist nicht verfügbar.",
+      "promptNotUsable": "Dieser Prompt ist ungültig. Bearbeite ihn, bevor du ihn verwendest.",
+      "limitExceeded": "Die Höchstzahl ist erreicht."
     }
   },
   "appLanguage": {
@@ -743,7 +752,8 @@
   "overlay": {
     "transcribing": "Transkribiere...",
     "processing": "Verarbeite...",
-    "loadingModel": "Modell wird geladen..."
+    "loadingModel": "Modell wird geladen...",
+    "fallbackNotice": "Die KI-Verarbeitung ist fehlgeschlagen. Der Originaltext wurde verwendet."
   },
   "whatsNew": {
     "title": "Neu in Handy v{{version}}"

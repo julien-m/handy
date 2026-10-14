@@ -48,6 +48,7 @@ fn help_lists_the_generic_operations_and_exactly_the_domains_of_this_build() -> 
             "replacements",
             "shortcuts",
             "vocabulary",
+            "prompts",
             "help"
         ]
     );

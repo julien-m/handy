@@ -727,7 +727,16 @@
       "persistenceFailed": "Pengaturan tidak dapat disimpan.",
       "generic": "Pengaturan tidak dapat diubah.",
       "readOnly": "Pengaturan hanya-baca untuk sesi ini: file pengaturan tidak dapat ditulis dengan aman, sehingga perubahan tidak akan disimpan.",
-      "unsupportedPlatform": "Pengaturan ini tidak tersedia di sistem ini."
+      "unsupportedPlatform": "Pengaturan ini tidak tersedia di sistem ini.",
+      "promptNameEmpty": "Masukkan nama untuk prompt.",
+      "promptNameTooLong": "Nama prompt maksimal 60 karakter.",
+      "promptNameDuplicate": "Prompt lain sudah memakai nama ini. Nama harus unik.",
+      "promptTextEmpty": "Masukkan teks prompt.",
+      "promptTextTooLong": "Teks prompt maksimal 8.000 karakter.",
+      "promptOverrideIncomplete": "Pilih penyedia dan model, atau gunakan penyedia default.",
+      "promptUnknownProvider": "Penyedia ini tidak tersedia.",
+      "promptNotUsable": "Prompt ini tidak valid. Edit sebelum digunakan.",
+      "limitExceeded": "Jumlah maksimum telah tercapai."
     }
   },
   "appLanguage": {
@@ -746,7 +755,8 @@
   "overlay": {
     "transcribing": "Mentranskripsikan...",
     "processing": "Memproses...",
-    "loadingModel": "Memuat model..."
+    "loadingModel": "Memuat model...",
+    "fallbackNotice": "Pemrosesan AI gagal. Teks asli yang digunakan."
   },
   "secureInput": {
     "blockedWithCulprit_one": "{{name}} mungkin memblokir 1 pintasan",

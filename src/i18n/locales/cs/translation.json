@@ -724,7 +724,16 @@
       "persistenceFailed": "Nastavení se nepodařilo uložit.",
       "generic": "Nastavení se nepodařilo změnit.",
       "readOnly": "Nastavení je v této relaci jen pro čtení: soubor nastavení nelze bezpečně zapsat, změny se proto neuloží.",
-      "unsupportedPlatform": "Toto nastavení není v tomto systému k dispozici."
+      "unsupportedPlatform": "Toto nastavení není v tomto systému k dispozici.",
+      "promptNameEmpty": "Zadejte název promptu.",
+      "promptNameTooLong": "Název promptu může mít nejvýše 60 znaků.",
+      "promptNameDuplicate": "Jiný prompt už má tento název. Názvy musí být jedinečné.",
+      "promptTextEmpty": "Zadejte text promptu.",
+      "promptTextTooLong": "Text promptu může mít nejvýše 8 000 znaků.",
+      "promptOverrideIncomplete": "Zvolte poskytovatele i model, nebo použijte výchozího poskytovatele.",
+      "promptUnknownProvider": "Tento poskytovatel není k dispozici.",
+      "promptNotUsable": "Tento prompt je neplatný. Před použitím ho upravte.",
+      "limitExceeded": "Bylo dosaženo maximálního počtu."
     }
   },
   "appLanguage": {
@@ -743,7 +752,8 @@
   "overlay": {
     "transcribing": "Přepisuji...",
     "processing": "Zpracovávám...",
-    "loadingModel": "Načítání modelu..."
+    "loadingModel": "Načítání modelu...",
+    "fallbackNotice": "Zpracování pomocí AI selhalo. Byl použit původní text."
   },
   "whatsNew": {
     "title": "Novinky v Handy v{{version}}"

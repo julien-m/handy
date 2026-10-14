@@ -60,7 +60,7 @@ fn main() {
     // `handy settings` runs and exits here, before any Tauri, tray, window, model or
     // single-instance setup; every other invocation keeps its historical parse.
     let cli_args = match settings_cli::dispatch(argv) {
-        settings_cli::Dispatch::App(cli_args) => cli_args,
+        settings_cli::Dispatch::App(cli_args) => *cli_args,
         settings_cli::Dispatch::Exit(code) => std::process::exit(code),
     };
     #[cfg(target_os = "windows")]

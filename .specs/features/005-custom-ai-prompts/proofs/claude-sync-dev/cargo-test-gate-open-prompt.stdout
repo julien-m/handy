@@ -1,0 +1,223 @@
+
+running 81 tests
+test prompts::formatting::tests::leading_think_block_is_stripped ... ok
+test prompts::formatting::tests::content_without_think_block_is_unchanged ... ok
+test prompts::library::tests::generated_ids_are_unique_within_a_process ... ok
+test prompts::formatting::tests::prompts_without_placeholder_are_sent_as_before ... ok
+test prompts::library::tests::names_count_unicode_characters_after_trimming ... ok
+test prompts::library::tests::texts_count_characters_and_refuse_whitespace_only ... ok
+test prompts::dictation::tests::the_failure_notice_says_the_ai_failed_and_the_original_was_used_never_that_it_was_inserted ... ok
+test prompts::migration::tests::a_second_pass_adds_nothing ... ok
+test prompts::formatting::tests::structured_replies_use_the_field_or_the_whole_non_json_reply ... ok
+test prompts::migration::tests::an_over_full_legacy_library_is_kept_without_starters ... ok
+test prompts::migration::tests::a_starter_present_by_name_in_any_case_is_not_added_again ... ok
+test prompts::migration::tests::starters_follow_existing_prompts_in_the_fixed_order ... ok
+test prompts::migration::tests::starters_stop_at_the_library_limit ... ok
+test prompts::output::tests::cancellation_is_carried_for_the_caller_to_insert_nothing ... ok
+test prompts::output::tests::a_failure_keeps_the_exact_transcript_and_records_prompt_and_reason ... ok
+test prompts::output::tests::processed_text_replaces_the_transcript ... ok
+test prompts::library::tests::an_apple_intelligence_override_is_refused_without_the_capability ... ok
+test prompts::library::tests::create_stops_at_fifty_prompts ... ok
+test prompts::library::tests::an_override_needs_a_known_provider_and_a_model_and_clears_atomically ... ok
+test prompts::library::tests::deleting_another_prompt_keeps_the_default ... ok
+test prompts::library::tests::renaming_a_prompt_to_its_own_name_in_another_case_is_allowed ... ok
+test prompts::library::tests::create_trims_the_name_keeps_the_text_and_refuses_duplicates_ignoring_case ... ok
+test prompts::library::tests::deleting_the_default_prompt_resets_it_to_none_even_for_the_last_prompt ... ok
+test prompts::library::tests::only_a_usable_prompt_can_become_the_default ... ok
+test prompts::library::tests::legacy_issues_are_reported_and_kept_until_an_edit_repairs_them ... ok
+test prompts::processor::tests::a_blank_transcript_is_skipped_without_any_request ... ok
+test prompts::processor::tests::a_completed_operation_returns_its_output ... ok
+test prompts::processor::tests::a_prompt_that_is_not_ready_fails_without_any_request ... ok
+test prompts::processor::tests::apple_intelligence_reports_unavailable_busy_or_its_text ... ok
+test prompts::processor::tests::failure_codes_are_stable_snake_case ... ok
+test prompts::provider::tests::an_override_wins_over_the_default_provider_model ... ok
+test prompts::provider::tests::apple_intelligence_follows_the_probe ... ok
+test prompts::provider::tests::the_default_remote_provider_needs_a_model_and_a_key ... ok
+test prompts::provider::tests::the_local_custom_override_needs_an_endpoint_and_a_model_but_no_key ... ok
+test prompts::provider::tests::no_readiness_or_debug_output_contains_the_key ... ok
+test prompts::provider::tests::unknown_and_invalid_prompts_are_not_ready ... ok
+test prompts::session::tests::a_choice_after_the_stop_is_refused_and_the_frozen_prompt_stays ... ok
+test prompts::session::tests::a_plain_dictation_can_pick_a_prompt_and_none_skips_processing ... ok
+test prompts::session::tests::a_stale_session_cannot_change_or_end_the_current_one ... ok
+test prompts::session::tests::an_indicator_choice_applies_to_this_dictation_only ... ok
+test prompts::session::tests::editing_or_deleting_a_captured_prompt_never_changes_it ... ok
+test prompts::session::tests::missing_or_invalid_prompts_cannot_be_chosen_and_a_dangling_default_is_a_failure ... ok
+test prompts::session::tests::the_trigger_decides_the_starting_prompt ... ok
+test prompts::processor::tests::a_structured_reply_is_processed_text ... ok
+test prompts::session::tests::with_ai_off_no_trigger_processes_and_the_menu_is_hidden ... ok
+test prompts::session::tests::only_deleting_a_prompt_with_shortcuts_changes_shortcuts_and_so_waits_for_the_dictation ... ok
+test prompts::processor::tests::a_structured_error_falls_back_to_the_legacy_request ... ok
+test prompts::test_run::tests::a_provider_error_is_a_typed_failure ... ok
+test prompts::test_run::tests::an_invalid_draft_is_refused_before_any_request ... ok
+test recognition_vocabulary::context::tests::unsupported_and_unverified_models_never_get_a_prompt ... ok
+test recognition_vocabulary::context::tests::nothing_fitting_sends_no_prompt ... ok
+test recognition_vocabulary::context::tests::whisper_prompt_carries_exactly_the_fitted_terms ... ok
+test settings_service::domains::prompts::tests::an_incomplete_or_unknown_override_is_refused ... ok
+test prompts::processing_http_tests::an_http_error_is_a_provider_error_without_its_body ... ok
+test prompts::processing_http_tests::an_override_sends_the_request_to_the_local_endpoint_with_its_model ... ok
+test settings_service::domains::prompts::tests::apple_intelligence_override_off_apple_silicon_is_unsupported_platform ... ok
+test settings_service::domains::prompts::tests::offline_list_is_the_live_only_refusal ... ok
+test settings_service::domains::prompts::tests::refusals_are_typed_and_never_echo_the_candidate ... ok
+test prompts::processor::tests::every_failure_class_is_a_failure_with_its_reason ... ok
+test prompts::test_run::tests::a_successful_test_reports_text_provider_model_and_duration ... ok
+test prompts::processor::tests::a_pending_operation_stops_after_cancellation ... ok
+test shortcut::prompt_targets::shortcut_tests::a_prompt_may_lose_its_last_shortcut_and_reset_removes_them_all ... ok
+test shortcut::prompt_targets::shortcut_tests::a_prompt_takes_up_to_two_shortcuts_checked_against_every_other_shortcut ... ok
+test shortcut::prompt_targets::shortcut_tests::deleting_a_prompt_releases_its_shortcuts_and_a_refused_commit_restores_them ... ok
+test shortcut::prompt_targets::shortcut_tests::prompt_shortcuts_drive_a_post_processing_dictation ... ok
+test shortcut::prompt_targets::shortcut_tests::prompt_shortcuts_follow_the_post_processing_switch ... ok
+test prompts::processor::tests::cancellation_wins_over_a_pending_reply ... ok
+test shortcut::prompt_targets::tests::a_target_of_a_deleted_prompt_is_not_live ... ok
+test shortcut::prompt_targets::tests::a_target_without_shortcuts_has_no_entry ... ok
+test shortcut::prompt_targets::tests::prompt_targets_are_named_after_their_prompt_and_gated_like_post_processing ... ok
+test shortcut::prompt_targets::tests::removing_a_target_returns_its_shortcuts ... ok
+test settings_service::domains::prompts::tests::a_dry_run_and_a_stale_revision_write_nothing ... ok
+test settings_service::domains::prompts::tests::text_from_stdin_is_the_request_input ... ok
+test settings_service::domains::prompts::tests::the_live_list_reports_readiness_and_shortcuts_without_any_key ... ok
+test settings_service::domains::prompts::tests::an_override_is_set_then_cleared_atomically ... ok
+test prompts::test_run::tests::a_second_test_while_one_runs_is_busy_and_cancel_ends_the_first ... ok
+test settings_service::domains::prompts::tests::create_returns_the_prompt_id_and_revision_and_the_aliases_reach_update_and_remove ... ok
+test prompts::processing_http_tests::a_server_slower_than_the_budget_is_abandoned ... ok
+test prompts::processor::tests::the_structured_attempt_and_the_legacy_fallback_share_one_budget ... ok
+test prompts::processor::tests::a_reply_inside_the_budget_is_kept_and_one_past_it_is_abandoned ... ok
+test settings_service::domains::prompts::tests::the_fifty_first_prompt_is_limit_exceeded ... ok
+
+test result: ok. 81 passed; 0 failed; 0 ignored; 0 measured; 801 filtered out; finished in 0.89s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+
+running 1 test
+test text_dash_reads_the_prompt_from_stdin ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 2.67s
+
+
+running 1 test
+test an_ai_failure_without_audio_keeps_the_raw_text_prompt_and_reason ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.01s
+
+
+running 2 tests
+test a_fresh_install_lists_the_historical_prompt_then_the_starters_without_a_default ... ok
+test upgrade_keeps_existing_prompts_and_selection_and_adds_the_starters_once ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.84s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 20 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 19 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 10 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 33 filtered out; finished in 0.00s
+
+
+running 1 test
+test transactions::prompt_mutation_revalidates_membership_against_the_locked_fresh_snapshot ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 42 filtered out; finished in 0.09s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 25 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 109 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+smart_paste_native_keyboard: 1 ignored (opt-in: -- --ignored)
+smart_paste_native_pasteboard: 1 ignored (opt-in: -- --ignored)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 16 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+

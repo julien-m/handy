@@ -727,7 +727,16 @@
       "persistenceFailed": "Indstillingerne kunne ikke gemmes.",
       "generic": "Indstillingen kunne ikke ændres.",
       "readOnly": "Indstillingerne er skrivebeskyttede i denne session: indstillingsfilen kan ikke skrives sikkert, så ændringer gemmes ikke.",
-      "unsupportedPlatform": "Denne indstilling er ikke tilgængelig på dette system."
+      "unsupportedPlatform": "Denne indstilling er ikke tilgængelig på dette system.",
+      "promptNameEmpty": "Angiv et navn til prompten.",
+      "promptNameTooLong": "Promptens navn må højst være på 60 tegn.",
+      "promptNameDuplicate": "En anden prompt har allerede dette navn. Navne skal være unikke.",
+      "promptTextEmpty": "Angiv promptens tekst.",
+      "promptTextTooLong": "Promptens tekst må højst være på 8.000 tegn.",
+      "promptOverrideIncomplete": "Vælg både en udbyder og en model, eller brug standardudbyderen.",
+      "promptUnknownProvider": "Denne udbyder er ikke tilgængelig.",
+      "promptNotUsable": "Denne prompt er ugyldig. Rediger den, før du bruger den.",
+      "limitExceeded": "Det maksimale antal er nået."
     }
   },
   "appLanguage": {
@@ -746,7 +755,8 @@
   "overlay": {
     "transcribing": "Transskriberer...",
     "processing": "Behandler...",
-    "loadingModel": "Indlæser model..."
+    "loadingModel": "Indlæser model...",
+    "fallbackNotice": "AI-behandlingen mislykkedes. Den oprindelige tekst blev brugt."
   },
   "secureInput": {
     "blockedWithCulprit_one": "{{name}} blokerer muligvis 1 genvej",
