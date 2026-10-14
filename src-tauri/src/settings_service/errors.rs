@@ -76,6 +76,8 @@ pub enum ValidationReason {
     /// A dictation session (recording, processing, a held or remembered shortcut) is running;
     /// the shortcut registrations cannot change until it ends.
     ShortcutSessionBusy,
+    /// The microphone choices change only through the microphones domain (feature 001).
+    MicrophonesDomain,
 }
 impl ValidationReason {
     fn message(self) -> &'static str {
@@ -98,6 +100,9 @@ impl ValidationReason {
             Self::InvalidInput => "Input does not follow the exchange format.",
             Self::UnsupportedPlatform => "This setting is not supported on this platform.",
             Self::ShortcutSessionBusy => "A dictation is in progress; retry when it ends.",
+            Self::MicrophonesDomain => {
+                "Use handy settings microphones set-priority to change the microphone choices."
+            }
         }
     }
 }

@@ -31,7 +31,8 @@ inventory! {
  "selected_model" => (String,false,None,&[],true,false,"general",None);
  "onboarding_completed" => (Boolean,false,None,&[],true,false,"general",None);
  "always_on_microphone" => (Boolean,false,None,&[],false,false,"microphones",AudioInput);
- "selected_microphone" => (String,true,None,&[],false,false,"microphones",AudioInput);
+ "selected_microphone" => (String,true,None,&[],true,false,"microphones",None);
+ "microphone_priority" => (Array,false,None,&[],false,false,"microphones",AudioInput);
  "selected_channel" => (Integer,true,range(0.0,65535.0),&[],false,false,"microphones",AudioInput);
  "clamshell_microphone" => (String,true,None,&[],false,false,"microphones",AudioInput);
  "selected_output_device" => (String,true,None,&[],false,false,"microphones",AudioOutput);

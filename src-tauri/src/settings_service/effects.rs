@@ -43,7 +43,7 @@ fn live_effect(key: &str) -> Option<LiveEffect> {
         "post_process_enabled" => LiveEffect::PostProcessShortcut,
         "keyboard_implementation" => LiveEffect::KeyboardImplementation,
         "always_on_microphone" => LiveEffect::MicrophoneMode,
-        "selected_microphone" => LiveEffect::MicrophoneDevice,
+        "microphone_priority" => LiveEffect::MicrophoneDevice,
         "selected_channel" => LiveEffect::MicrophoneChannel,
         "vad_backend" => LiveEffect::VadBackend,
         "history_limit" | "recording_retention_period" => LiveEffect::HistoryCleanup,

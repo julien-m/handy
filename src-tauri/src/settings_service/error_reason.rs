@@ -27,10 +27,16 @@ pub enum ErrorReason {
     RegistrationRefused,
     /// The shortcut text is not valid for the active keyboard implementation (004).
     InvalidShortcut,
+    /// The microphone choices change only through `handy settings microphones` (001).
+    MicrophonesDomain,
+    /// A microphone choice is empty or only whitespace (001).
+    MicrophoneNameEmpty,
+    /// A microphone choice appears more than once (001).
+    MicrophoneNameDuplicate,
 }
 impl ErrorReason {
     /// Every reason of this build, in wire-schema order.
-    pub const ALL: [Self; 7] = [
+    pub const ALL: [Self; 10] = [
         Self::UnsupportedPlatform,
         Self::ShortcutSessionBusy,
         Self::InstanceRequired,
@@ -38,6 +44,9 @@ impl ErrorReason {
         Self::AlternativesUnsupported,
         Self::RegistrationRefused,
         Self::InvalidShortcut,
+        Self::MicrophonesDomain,
+        Self::MicrophoneNameEmpty,
+        Self::MicrophoneNameDuplicate,
     ];
     /// Fixed English message of this reason.
     pub fn message(self) -> &'static str {
@@ -49,6 +58,9 @@ impl ErrorReason {
             Self::AlternativesUnsupported => "This action keeps a single shortcut.",
             Self::RegistrationRefused => "The system refused the shortcut.",
             Self::InvalidShortcut => "Not a valid shortcut.",
+            Self::MicrophonesDomain => "Use handy settings microphones set-priority.",
+            Self::MicrophoneNameEmpty => "A microphone name cannot be empty.",
+            Self::MicrophoneNameDuplicate => "Each microphone may appear only once.",
         }
     }
 }

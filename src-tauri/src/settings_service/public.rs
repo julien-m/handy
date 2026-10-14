@@ -205,6 +205,7 @@ struct PublicCollections {
     custom_words: Vec<String>,
     post_process_prompts: Vec<PublicPrompt>,
     custom_filler_words: Option<Vec<String>>,
+    microphone_priority: Vec<String>,
 }
 impl PublicCollections {
     fn from_settings(settings: &AppSettings) -> Self {
@@ -221,6 +222,7 @@ impl PublicCollections {
                 .map(PublicPrompt::from)
                 .collect(),
             custom_filler_words: settings.custom_filler_words.clone(),
+            microphone_priority: settings.microphone_priority.clone(),
         }
     }
 }

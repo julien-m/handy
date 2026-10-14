@@ -1138,7 +1138,18 @@ hold_threshold_ms?: number; audio_feedback?: boolean; audio_feedback_volume?: nu
  * upgrading from before this key existed are blanked by the migration so they
  * see the current release's notes — see `apply_settings_migrations`.
  */
-whats_new_last_seen_version?: string; selected_model?: string; onboarding_completed?: boolean; always_on_microphone?: boolean; selected_microphone?: string | null; 
+whats_new_last_seen_version?: string; selected_model?: string; onboarding_completed?: boolean; always_on_microphone?: boolean; 
+/**
+ * Legacy single microphone choice, kept stored unchanged for a downgrade; replaced by
+ * `microphone_priority` (feature 001) and written by no surface.
+ */
+selected_microphone?: string | null; 
+/**
+ * Ordered microphone choices tried at every stream opening before the system default; the
+ * empty list means the system default. Stores without this key are migrated from
+ * `selected_microphone` in `apply_settings_migrations`.
+ */
+microphone_priority?: string[]; 
 /**
  * Which input channel to use on the selected microphone device.
  * None means "average all channels" (original behavior).
@@ -1613,7 +1624,11 @@ export type ValidationReason = "canonical_type" | "canonical_value" | "out_of_ra
  * A dictation session (recording, processing, a held or remembered shortcut) is running;
  * the shortcut registrations cannot change until it ends.
  */
-"shortcut_session_busy"
+"shortcut_session_busy" | 
+/**
+ * The microphone choices change only through the microphones domain (feature 001).
+ */
+"microphones_domain"
 export type WindowsMicrophonePermissionStatus = { supported: boolean; overall_access: PermissionAccess; device_access: PermissionAccess; app_access: PermissionAccess; desktop_app_access: PermissionAccess }
 
 /** tauri-specta globals **/

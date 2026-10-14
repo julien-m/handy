@@ -14,14 +14,16 @@ fn every_actual_stored_field_has_exactly_one_descriptor() -> Result<(), Box<dyn 
         .iter()
         .map(|entry| entry.key.to_owned())
         .collect();
-    assert_eq!(actual.len(), 64);
-    assert_eq!(descriptors().len(), 64);
+    assert_eq!(actual.len(), 65);
+    assert_eq!(descriptors().len(), 65);
     assert_eq!(actual, described);
     Ok(())
 }
 
-const READONLY: [&str; 7] = [
+const READONLY: [&str; 8] = [
     "settings_schema_version",
+    // Feature 001: the legacy single microphone key, replaced by `microphone_priority`.
+    "selected_microphone",
     "whats_new_last_seen_version",
     "selected_model",
     "onboarding_completed",
@@ -29,15 +31,16 @@ const READONLY: [&str; 7] = [
     "post_process_providers",
     "post_process_models",
 ];
-const COLLECTIONS: [(&str, &str); 4] = [
+const COLLECTIONS: [(&str, &str); 5] = [
     ("bindings", "shortcuts"),
+    ("microphone_priority", "microphones"),
     ("custom_words", "vocabulary"),
     ("custom_filler_words", "vocabulary"),
     ("post_process_prompts", "prompts"),
 ];
 
 #[test]
-fn independent_access_inventory_covers_7_readonly_1_secret_4_collections_52_scalars(
+fn independent_access_inventory_covers_8_readonly_1_secret_5_collections_51_scalars(
 ) -> Result<(), Box<dyn std::error::Error>> {
     for key in READONLY {
         let entry = handy_app_lib::settings_service::descriptor::descriptor(key)
@@ -58,7 +61,7 @@ fn independent_access_inventory_covers_7_readonly_1_secret_4_collections_52_scal
         .into_iter()
         .map(|(key, _, _)| key)
         .collect();
-    assert_eq!(scalar_keys.len(), 52);
+    assert_eq!(scalar_keys.len(), 51);
     assert_eq!(scalar_keys, actual_scalars());
     Ok(())
 }

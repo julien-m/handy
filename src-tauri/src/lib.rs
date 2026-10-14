@@ -18,6 +18,7 @@ mod managers;
 /// History storage (text-only rows included), public for the history integration tests.
 pub use managers::history_store;
 mod memory;
+pub mod microphones;
 mod overlay;
 mod paste_tx;
 pub mod portable;

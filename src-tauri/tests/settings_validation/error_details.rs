@@ -92,7 +92,10 @@ fn schema_closes_reason_and_items() -> TestResult {
         "last_shortcut",
         "alternatives_unsupported",
         "registration_refused",
-        "invalid_shortcut"
+        "invalid_shortcut",
+        "microphones_domain",
+        "microphone_name_empty",
+        "microphone_name_duplicate"
     ]);
     assert_eq!(details["reason"], json!({ "enum": reasons }));
     assert_eq!(

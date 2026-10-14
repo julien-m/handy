@@ -267,12 +267,10 @@ enum DesiredMicrophone {
 }
 
 /// Result of resolving the persisted preference to a live cpal device.
-/// `device: None` means cpal should open the system default. The unavailable
-/// name is populated only when enumeration succeeded and confirmed that the
-/// user's regular selected microphone is missing.
+/// `device: None` means cpal should open the system default. A missing choice
+/// is never erased from the settings (feature 001, AC-004).
 struct MicrophoneResolution {
     device: Option<cpal::Device>,
-    unavailable_selected_microphone: Option<String>,
 }
 
 /* ──────────────────────────────────────────────────────────────── */
@@ -461,7 +459,9 @@ impl AudioRecordingManager {
                 return DesiredMicrophone::Clamshell(clamshell_microphone.clone());
             }
         }
-        match &settings.selected_microphone {
+        // Until the ordered resolver opens each choice in turn, the first choice stands for
+        // the legacy single selection (feature 001, Step 2).
+        match settings.microphone_priority.first() {
             Some(name) => DesiredMicrophone::Selected(name.clone()),
             None => DesiredMicrophone::Default,
         }
@@ -473,16 +473,12 @@ impl AudioRecordingManager {
 
     fn resolve_microphone_device(&self, settings: &AppSettings) -> MicrophoneResolution {
         let desired = self.desired_microphone(settings);
-        let (device_name, selected_microphone) = match desired {
+        let device_name = match desired {
             DesiredMicrophone::Default => {
                 debug!("device resolve: no mic configured -> system default");
-                return MicrophoneResolution {
-                    device: None,
-                    unavailable_selected_microphone: None,
-                };
+                return MicrophoneResolution { device: None };
             }
-            DesiredMicrophone::Selected(name) => (name.clone(), Some(name)),
-            DesiredMicrophone::Clamshell(name) => (name, None),
+            DesiredMicrophone::Selected(name) | DesiredMicrophone::Clamshell(name) => name,
         };
 
         // Cache hit: skip the full enumeration. A stale device (unplugged)
@@ -492,26 +488,19 @@ impl AudioRecordingManager {
                 debug!("device resolve: cache hit for '{}'", device_name);
                 return MicrophoneResolution {
                     device: Some(device.clone()),
-                    unavailable_selected_microphone: None,
                 };
             }
         }
 
-        // Only report a selected microphone as unavailable when enumeration
-        // itself succeeded. A backend enumeration error may be transient and
-        // must not erase the user's persisted preference.
         let enumerate_started = Instant::now();
-        let (device, enumeration_succeeded) = match list_input_devices() {
-            Ok(devices) => (
-                devices
-                    .into_iter()
-                    .find(|d| d.name == device_name)
-                    .map(|d| d.device),
-                true,
-            ),
+        let device = match list_input_devices() {
+            Ok(devices) => devices
+                .into_iter()
+                .find(|d| d.name == device_name)
+                .map(|d| d.device),
             Err(e) => {
                 debug!("Failed to list devices, using default: {}", e);
-                (None, false)
+                None
             }
         };
         debug!(
@@ -522,36 +511,7 @@ impl AudioRecordingManager {
         if let Some(d) = &device {
             *self.cached_device.lock().unwrap() = Some((device_name, d.clone()));
         }
-
-        let unavailable_selected_microphone = if enumeration_succeeded && device.is_none() {
-            selected_microphone
-        } else {
-            None
-        };
-        MicrophoneResolution {
-            device,
-            unavailable_selected_microphone,
-        }
-    }
-
-    /// Keep persisted settings and the UI aligned with a successful runtime
-    /// fallback. Re-read first so recovery cannot clear a microphone the user
-    /// selected concurrently while the stream was being rebuilt.
-    ///
-    /// The condition is evaluated on the freshly locked settings; the settings service emits the
-    /// UI event. The live effect (device restart) is skipped: this repair follows the restart.
-    fn persist_default_microphone_after_fallback(&self, unavailable_name: &str) {
-        let edit = |settings: &mut AppSettings| {
-            if settings.selected_microphone.as_deref() == Some(unavailable_name) {
-                settings.selected_microphone = None;
-            }
-            Ok(())
-        };
-        crate::settings_service::tauri_adapter::repair(
-            &self.app_handle,
-            "the default microphone fallback",
-            &edit,
-        );
+        MicrophoneResolution { device }
     }
 
     fn schedule_lazy_close(&self) {
@@ -729,11 +689,6 @@ impl AudioRecordingManager {
         drop(recorder_opt);
 
         *open_flag = true;
-        if let Some(unavailable_name) = resolution.unavailable_selected_microphone {
-            // Do this only after the default stream opened successfully. A
-            // failed fallback must not erase the user's microphone preference.
-            self.persist_default_microphone_after_fallback(&unavailable_name);
-        }
         // This timing covers through cpal's stream.play() returning — i.e. the
         // point cpal surfaces as "stream running." It does NOT guarantee the
         // host audio device is producing samples yet; the first input callback

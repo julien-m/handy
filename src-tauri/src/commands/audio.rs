@@ -1,9 +1,10 @@
 use crate::audio_feedback;
 use crate::audio_toolkit::audio::{list_input_devices, list_output_devices, AudioRecorder};
 use crate::managers::audio::AudioRecordingManager;
+use crate::microphones::priority;
 use crate::settings::get_settings;
 use crate::settings_service::{
-    command_error::SettingsCommandError, tauri_adapter, ui_value::UiValue,
+    command_error::SettingsCommandError, errors::ValidationReason, tauri_adapter, ui_value::UiValue,
 };
 use log::warn;
 use serde::{Deserialize, Serialize};
@@ -201,23 +202,37 @@ pub async fn get_available_microphones() -> Result<Vec<AudioDevice>, String> {
     .map_err(|e| format!("audio task join failed: {}", e))?
 }
 
-/// `None` selects the system default device; a name is stored as is, "default" included. The
-/// device restart is the live effect, run off the webview thread.
+/// Legacy single selector of the settings window, kept until the priority editor replaces it
+/// (feature 001): a name moves to the front of the microphone priority (the other choices stay,
+/// "default" is an ordinary name) and `None`, the system default, empties it. Same validation
+/// and transaction as `handy settings microphones set-priority`; the device restart is the live
+/// effect, run off the webview thread.
 #[tauri::command]
 #[specta::specta]
 pub async fn set_selected_microphone(
     app: AppHandle,
     device_name: UiValue<Option<String>>,
 ) -> Result<(), SettingsCommandError> {
-    tauri_adapter::write(app, "selected_microphone", device_name).await
+    let choice =
+        serde_json::from_value::<Option<String>>(device_name.into_json()).map_err(|_| {
+            SettingsCommandError::invalid("microphone_priority", ValidationReason::CanonicalType)
+        })?;
+    tauri_adapter::blocking(move || {
+        let change = priority::selector_change(choice)?;
+        tauri_adapter::write_change(&app, &change, None).map(|_| ())
+    })
+    .await
 }
 
+/// First microphone choice, or "default" for the system default (legacy selector).
 #[tauri::command]
 #[specta::specta]
 pub fn get_selected_microphone(app: AppHandle) -> Result<String, String> {
     let settings = get_settings(&app);
     Ok(settings
-        .selected_microphone
+        .microphone_priority
+        .first()
+        .cloned()
         .unwrap_or_else(|| "default".to_string()))
 }
 

@@ -438,8 +438,15 @@ pub struct AppSettings {
     pub onboarding_completed: bool,
     #[serde(default = "default_always_on_microphone")]
     pub always_on_microphone: bool,
+    /// Legacy single microphone choice, kept stored unchanged for a downgrade; replaced by
+    /// `microphone_priority` (feature 001) and written by no surface.
     #[serde(default)]
     pub selected_microphone: Option<String>,
+    /// Ordered microphone choices tried at every stream opening before the system default; the
+    /// empty list means the system default. Stores without this key are migrated from
+    /// `selected_microphone` in `apply_settings_migrations`.
+    #[serde(default)]
+    pub microphone_priority: Vec<String>,
     /// Which input channel to use on the selected microphone device.
     /// None means "average all channels" (original behavior).
     #[serde(default)]
@@ -985,6 +992,7 @@ pub fn get_default_settings() -> AppSettings {
         onboarding_completed: false,
         always_on_microphone: false,
         selected_microphone: None,
+        microphone_priority: Vec::new(),
         selected_channel: None,
         clamshell_microphone: None,
         selected_output_device: None,
@@ -1091,7 +1099,7 @@ pub(crate) fn apply_settings_migrations(
     settings: &mut AppSettings,
     settings_value: &serde_json::Value,
 ) -> bool {
-    let mut updated = false;
+    let mut updated = migrate_microphone_priority(settings, settings_value);
 
     // One-time onboarding migration: users with an explicit selected model have
     // already made it through model selection. Users who merely have compatible
@@ -1193,6 +1201,23 @@ pub(crate) fn apply_settings_migrations(
     }
 
     updated
+}
+
+// @spec FR-006: Legacy selection migrated once, recoverably — .specs/features/001-microphone-priority/spec.md#fr-006
+/// One-time microphone priority migration (feature 001, AC-006), only while the new key is
+/// absent: a stored legacy name becomes the only priority entry with that exact name ("default"
+/// included: it is an ordinary device name, never a sentinel) and null, the system default,
+/// becomes the empty list. The legacy key stays stored unchanged so a downgrade keeps its
+/// choice; this migration can go once no supported build reads `selected_microphone`.
+fn migrate_microphone_priority(
+    settings: &mut AppSettings,
+    settings_value: &serde_json::Value,
+) -> bool {
+    if settings_value.get("microphone_priority").is_some() {
+        return false;
+    }
+    settings.microphone_priority = settings.selected_microphone.iter().cloned().collect();
+    true
 }
 
 /// Update checks are forced off (without touching the persisted setting) when
@@ -1610,6 +1635,7 @@ mod tests {
             "whats_new_last_seen_version": default_whats_new_last_seen_version(),
             "overlay_style": "live",
             "chinese_script": "as_transcribed",
+            "microphone_priority": [],
             "transcribe_accelerator": "gpu",
             "transcribe_gpu_device": settings.transcribe_gpu_device
         });
