@@ -1,0 +1,26 @@
+UI pass (Penflow shortcut-settings, -conflict, -limit) — code commit 6413b2ad, branch feature/ui-general-output, 2026-10-14
+Working directory: worktree root unless noted. CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.shared-target.
+
+Command                                                                 Exit  Output
+bun run lint                                                            0     bun-lint.*
+bun run format:check   (prettier + cargo fmt --check)                   0     bun-format-check.*
+npx tsc --noEmit                                                        0     tsc.*
+bun run check:translations   (25 languages complete)                    0     check-translations.*
+bun run build                                                           0     bun-build.*
+bun run test:shortcut-states   (draft model 11 + feedback 9 = 20 pass; render 9 pass)   0     test-shortcut-states.*
+bun run test:shortcut-list                                              0     test-shortcut-list.*
+bun run test:keyboard                                                   0     test-keyboard.*
+bun run test:settings-store   (11 pass)                                 0     test-settings-store.*
+bun run test:settings-errors                                            0     test-settings-errors.*
+bun run test:output-settings   (20 + 7 pass)                            0     test-output-settings.*
+bun test src/components/ui/dropdown-navigation.test.ts src/components/ui/dropdown-aria.test.tsx   (12 pass)   0   test-dropdown.*
+(src-tauri) cargo test --lib shortcut::   (93 passed, 2 new check tests)   0     cargo-test-lib-shortcut.*
+(src-tauri) cargo test --lib   (897 passed, 0 failed, 17 ignored)       0     cargo-test-lib.*
+(src-tauri) cargo clippy --lib --bins -- -D warnings                    0     clippy.*
+(src-tauri) cargo fmt -- --check                                        0     cargo-fmt-check.*
+Bindings export: cargo build (debug), binary copied to the scratchpad right after the build, then from src-tauri:
+  HOME=<isolated scratch dir> <copied binary> --list-models             0     bindings-export.*  (only change: checkBindingShortcutEdit)
+livespec conventions verify --feature repo --json                       0     conventions-repo-summary.json (PASS, 0 blockers, baseline new_count 0)
+
+Not run (pending, with Julien): rendered window screenshots against the mockups, Playwright Behavioral AC baselines,
+physical recorder use on macOS (Tauri and HandyKeys), OS refusal by another application.

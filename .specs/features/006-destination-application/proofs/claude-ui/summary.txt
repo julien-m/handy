@@ -1,0 +1,13 @@
+UI pass — settings toggle "Return to the dictation's application" (Penflow output-settings, output-settings-unavailable)
+Code commit 6413b2ad, branch feature/ui-general-output, 2026-10-14. Shared check run: ../../../004-multiple-dictation-shortcuts/proofs/claude-ui/summary.txt
+
+Command                                                     Exit  Output
+bun run test:output-settings   (models 20 pass, render 7 pass: unavailable with platform reason, unreadable reason, supported)   0   test-output-settings.*
+bun run test:settings-store   (11 pass, incl. the 006 typed refusal and rollback)   0   test-settings-store.*
+bun run test:settings-errors                                0     test-settings-errors.*
+bun run lint / format:check / tsc --noEmit / check:translations / build   0 each   bun-lint.*, bun-format-check.*, tsc.*, check-translations.*, bun-build.*
+livespec conventions verify --feature repo --json           0     conventions-repo-summary.json (PASS)
+
+Gate state: destination-return closed (default build) -> destination_support answers platform_unsupported -> the toggle is shown off,
+disabled, with "Unavailable on this system. Text goes to the app in front at the end."
+Not run (pending, with Julien): rendered window screenshot, macOS native toggle with the gate open, VoiceOver announcement.
