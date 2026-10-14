@@ -5,6 +5,10 @@
 
 ---
 
+## 2026-10-14 — [Feature 003] Plan refined: merged 008 names and program decisions D1–D4
+
+Plan QE aligned on the spec (Medium, light lane); `vocabulary status` as a D2 live operation (depends on 006 step 0); per-line errors in D3 `details.items`; `context_budget_unverified` as `internal_error`/1 (D4); stdout-only export; Whisper budget of 223 tokens sourced from the engine, other budgets measured in Step 1; Windows/Linux native proof as pending release evidence. Spec unchanged; the plan review is stale until an independent reviewer refreshes it.
+
 ## 2026-10-13 — [Feature 001] Spec refined: Quality Engineering classification for the delivery lane
 
 `## Quality Engineering` added from the existing QE Analysis: criticality High, blast radius Shared, primary risk Regression; `livespec delivery lane` reads it (full). No AC, FR or SC changed; the spec review is stale until an independent reviewer refreshes it.

@@ -34,3 +34,20 @@
 - **Classification:** criticality Medium, blast radius Shared, primary risk UX, taken from the existing QE Analysis; `livespec delivery lane`: light once the spec review is current
 - **Review:** the previous spec review is stale; an independent reviewer refreshes it
 - **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
+
+## 2026-10-14 — [Plan Update]: align the plan on the merged 008 and the program decisions D1–D4
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md updated)
+- **AC impacted:** None (pre-implementation)
+- **QE:** plan `## QE Analysis` aligned on the spec (Medium, Shared, UX then Regression); delivery lane stays light
+- **008 names:** `Domain`/`DomainPlan`/`DomainChange(ChangeKind::Apply)`, `SettingsBackend::commit_change`, `sequence::write_change`, `input::read_source`, `View::Export`; new `tauri_adapter::write_change` for the UI write with its base revision; `commit_mutation` and `LiveSettingsEffects` (never shipped) removed
+- **D2:** `vocabulary status` is a live operation of 006 step 0 (`DomainPlan::Live`, `VocabularyStatus`, `managed_state::<Arc<TranscriptionManager>>`); offline it returns the 008 live-only refusal (`unavailable`/5); Step 4 depends on 006 step 0
+- **D3:** per-line refusals in `details.items` (`ErrorItem`, ≤100) with new `ErrorReason` variants `term_empty`, `term_too_long`, `term_line_break`, `term_forbidden_character`, `term_duplicate`
+- **D4:** `context_budget_unverified` becomes `internal_error`/1 with `details.reason`, never exit 5 (not transient, not fixable by the user)
+- **Export:** stdout only (`vocabulary export -`), a file by shell redirection, because the merged 008 framework has no file output
+- **Budget:** Whisper 223 tokens sourced from the engine rule `n_text_ctx / 2 − 1` (OpenAI Whisper decoder, whisper.cpp); other mechanisms measured and documented in Step 1 (`contracts/context-budget.md`), no application ceiling
+- **D1:** Step 6 requires macOS native proof only; Windows/Linux observations are pending release evidence
+- **Review:** the plan review is stale; an independent reviewer refreshes it
+- **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
