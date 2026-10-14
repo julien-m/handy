@@ -813,6 +813,168 @@
           "details": "Handy's local speech-to-text is built on transcribe.cpp and ggml. Thanks to the amazing work by Georgi Gerganov and contributors."
         }
       }
+    },
+    "replacements": {
+      "group": "Replacements",
+      "title": "Replacement rules",
+      "description": "Rewrite recognized text with your own spelling. Applied after recognition, unlike Vocabulary.",
+      "loading": "Loading replacement rules…",
+      "loadFailed": "The replacement rules could not be loaded.",
+      "retry": "Retry",
+      "views": {
+        "label": "Rule view",
+        "list": "List",
+        "text": "Text"
+      },
+      "import": "Import…",
+      "export": {
+        "button": "Export…",
+        "done": "Rules exported to {{name}}.",
+        "notSynced": "Rules exported to {{name}}, but the disk has not confirmed the write yet.",
+        "symbolicLink": "{{name}} is a link: choose another file. Nothing was exported.",
+        "readOnly": "{{name}} is read-only: choose another file. Nothing was exported.",
+        "notWritten": "{{name}} could not be written. It is unchanged."
+      },
+      "add": {
+        "recognized": "Recognized text",
+        "replacement": "Replacement",
+        "button": "Add rule",
+        "needsText": "Enter the recognized text and the replacement to add a rule."
+      },
+      "rule": {
+        "edit": "Edit rule {{recognized}}",
+        "done": "Done editing rule {{recognized}}",
+        "delete": "Delete rule {{recognized}}",
+        "recognized": "Recognized text of rule {{position}}",
+        "replacement": "Replacement of rule {{position}}"
+      },
+      "count": "{{count}} of {{max}} rules · case-insensitive, whole words",
+      "empty": {
+        "title": "No replacement rules yet",
+        "body": "Add a rule, or paste lines such as",
+        "paste": "Paste rules as text"
+      },
+      "draft": {
+        "note": "Unsaved changes. Dictations use the saved rules until you save.",
+        "discard": "Discard",
+        "save": "Save",
+        "saving": "Saving…",
+        "saved": "Replacement rules saved."
+      },
+      "commit": {
+        "invalid": "Some rules are invalid. Fix the highlighted rows, then try again.",
+        "unchanged": "Saved rules are unchanged.",
+        "conflict": "The rules changed elsewhere, for example from the command line. Reload them to continue.",
+        "reload": "Reload",
+        "reloadDiscards": "Reloading shows the saved rules and discards your unsaved changes."
+      },
+      "bulk": {
+        "editor": "Rules as text",
+        "hint": "One rule per line: recognized;replacement. A tab also works for spreadsheet paste. Lines starting with # are ignored.",
+        "cancel": "Cancel",
+        "apply": "Apply",
+        "applying": "Applying…",
+        "applied": "Replacement rules applied.",
+        "fixLine": "Fix line {{line}} to apply. Saved rules are unchanged.",
+        "fixLines": "Fix the {{count}} lines in error to apply. Saved rules are unchanged.",
+        "ready": "Apply replaces the saved rules with this preview.",
+        "noChanges": "Nothing to apply: the text matches the saved rules."
+      },
+      "preview": {
+        "title": "Preview",
+        "updating": "Updating preview…",
+        "errorOne": "1 error · Apply unavailable",
+        "errorMany": "{{count}} errors · Apply unavailable",
+        "changes": "{{adds}} to add · {{updates}} to update · {{deletes}} to delete",
+        "noChanges": "No changes",
+        "omitted": "Lines not listed: {{count}}",
+        "duplicateOf": "Same recognized text as line {{lines}}",
+        "kinds": {
+          "add": "Add",
+          "update": "Update",
+          "delete": "Delete",
+          "unchanged": "Unchanged",
+          "ignored": "Ignored",
+          "error": "Error"
+        },
+        "ignored": {
+          "header": "Header line",
+          "blank": "Blank line",
+          "comment": "Comment"
+        }
+      },
+      "importDialog": {
+        "title": "Import rules",
+        "close": "Close",
+        "fileOne": "{{name}} · 1 line · UTF-8",
+        "fileMany": "{{name}} · {{count}} lines · UTF-8",
+        "mode": "Mode",
+        "merge": "Merge: update matching rules, add new ones at the end",
+        "replace": "Replace: the file becomes the whole rule set",
+        "previewing": "Reading the file…",
+        "updateOne": "1 update",
+        "updateMany": "{{count}} updates",
+        "addOne": "1 addition",
+        "addMany": "{{count}} additions",
+        "deleteOne": "1 deletion",
+        "deleteMany": "{{count}} deletions",
+        "errorOne": "1 error",
+        "errorMany": "{{count}} errors",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (update, keeps position {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (added at the end)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (removed)",
+        "noChanges": "This file matches the saved rules: nothing to import.",
+        "firstError": "Line {{line}}: {{reason}}",
+        "cancel": "Cancel",
+        "apply": "Apply import",
+        "applying": "Importing…",
+        "imported": "Rules imported."
+      },
+      "importRefusal": {
+        "encodingTitle": "Couldn't import {{name}}: it is not UTF-8 text",
+        "encodingBody": "Nothing was imported from that file. Export plain text or CSV, then import again.",
+        "tooLargeTitle": "Couldn't import {{name}}: it is larger than 1 MB",
+        "tooLargeBody": "Nothing was imported. Split the file into smaller files, then import each one.",
+        "unreadableTitle": "Couldn't read {{name}}",
+        "unreadableBody": "Nothing was imported. Check that the file still exists and that Handy can open it.",
+        "dismiss": "Dismiss"
+      },
+      "deleteDialog": {
+        "title": "Delete this rule?",
+        "body": "{{recognized}} → {{replacement}} will be removed from the list. Save to apply the change.",
+        "cancel": "Cancel",
+        "confirm": "Delete"
+      },
+      "switchDialog": {
+        "title": "Save or discard your changes",
+        "body": "The list and the text edit the same rules. Save or discard your unsaved changes first.",
+        "cancel": "Cancel",
+        "discard": "Discard",
+        "save": "Save"
+      },
+      "issues": {
+        "recognizedEmpty": "Enter the recognized text.",
+        "recognizedTooLong": "The recognized text is limited to 100 characters.",
+        "recognizedForbidden": "The recognized text cannot contain a line break, a tab or ;.",
+        "recognizedControl": "The recognized text contains an invisible control character.",
+        "recognizedComment": "The recognized text cannot start with #.",
+        "duplicate": "Each recognized text may appear only once; this one is already defined.",
+        "replacementEmpty": "Enter the replacement.",
+        "replacementTooLong": "The replacement is limited to 500 characters.",
+        "replacementForbidden": "The replacement cannot contain a line break or a tab.",
+        "replacementControl": "The replacement contains an invisible control character.",
+        "missingSeparator": "Missing separator: add ; then the replacement",
+        "tooManyRules": "A rule set holds at most 1,000 rules.",
+        "invalidSavedRules": "The saved rules are invalid. Reload them before importing.",
+        "unicodeUnavailable": "Rules can't be checked right now. Restart Handy, then try again.",
+        "invalidRule": "This rule is invalid."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Unsaved changes",
+      "description": "Some of your replacement rules are not saved. Stay to save them, or discard them and leave.",
+      "stay": "Stay",
+      "discard": "Discard and leave"
     }
   },
   "footer": {

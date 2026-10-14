@@ -813,6 +813,168 @@
         "label": "显示新功能",
         "description": "Handy 更新后显示发行说明"
       }
+    },
+    "replacements": {
+      "group": "替换",
+      "title": "替换规则",
+      "description": "按您自己的写法改写识别出的文本。与词汇表不同，替换在识别之后应用。",
+      "loading": "正在加载替换规则…",
+      "loadFailed": "无法加载替换规则。",
+      "retry": "重试",
+      "views": {
+        "label": "规则视图",
+        "list": "列表",
+        "text": "文本"
+      },
+      "import": "导入…",
+      "export": {
+        "button": "导出…",
+        "done": "规则已导出到 {{name}}。",
+        "notSynced": "规则已导出到 {{name}}，但磁盘尚未确认写入。",
+        "symbolicLink": "{{name}} 是一个链接：请选择其他文件。未导出任何内容。",
+        "readOnly": "{{name}} 为只读：请选择其他文件。未导出任何内容。",
+        "notWritten": "无法写入 {{name}}。该文件未更改。"
+      },
+      "add": {
+        "recognized": "识别文本",
+        "replacement": "替换文本",
+        "button": "添加规则",
+        "needsText": "请输入识别文本和替换文本以添加规则。"
+      },
+      "rule": {
+        "edit": "编辑规则 {{recognized}}",
+        "done": "完成编辑规则 {{recognized}}",
+        "delete": "删除规则 {{recognized}}",
+        "recognized": "第 {{position}} 条规则的识别文本",
+        "replacement": "第 {{position}} 条规则的替换文本"
+      },
+      "count": "{{count}} / {{max}} 条规则 · 不区分大小写，全词匹配",
+      "empty": {
+        "title": "暂无替换规则",
+        "body": "添加一条规则，或粘贴如下格式的行",
+        "paste": "以文本形式粘贴规则"
+      },
+      "draft": {
+        "note": "有未保存的更改。在您保存之前，听写仍使用已保存的规则。",
+        "discard": "放弃",
+        "save": "保存",
+        "saving": "正在保存…",
+        "saved": "替换规则已保存。"
+      },
+      "commit": {
+        "invalid": "部分规则无效。请修正高亮显示的行，然后重试。",
+        "unchanged": "已保存的规则未更改。",
+        "conflict": "规则已在其他地方被更改，例如通过命令行。请重新加载以继续。",
+        "reload": "重新加载",
+        "reloadDiscards": "重新加载会显示已保存的规则，并放弃你未保存的更改。"
+      },
+      "bulk": {
+        "editor": "文本形式的规则",
+        "hint": "每行一条规则：recognized;replacement。从电子表格粘贴时也可使用制表符。以 # 开头的行将被忽略。",
+        "cancel": "取消",
+        "apply": "应用",
+        "applying": "正在应用…",
+        "applied": "替换规则已应用。",
+        "fixLine": "请修正第 {{line}} 行后再应用。已保存的规则未更改。",
+        "fixLines": "请修正 {{count}} 个出错的行后再应用。已保存的规则未更改。",
+        "ready": "“应用”将用此预览替换已保存的规则。",
+        "noChanges": "无需应用：文本与已保存的规则一致。"
+      },
+      "preview": {
+        "title": "预览",
+        "updating": "正在更新预览…",
+        "errorOne": "1 个错误 · 无法应用",
+        "errorMany": "{{count}} 个错误 · 无法应用",
+        "changes": "新增 {{adds}} 条 · 更新 {{updates}} 条 · 删除 {{deletes}} 条",
+        "noChanges": "无更改",
+        "omitted": "未列出的行：{{count}}",
+        "duplicateOf": "识别文本与第 {{lines}} 行相同",
+        "kinds": {
+          "add": "新增",
+          "update": "更新",
+          "delete": "删除",
+          "unchanged": "未更改",
+          "ignored": "已忽略",
+          "error": "错误"
+        },
+        "ignored": {
+          "header": "标题行",
+          "blank": "空行",
+          "comment": "注释"
+        }
+      },
+      "importDialog": {
+        "title": "导入规则",
+        "close": "关闭",
+        "fileOne": "{{name}} · 1 行 · UTF-8",
+        "fileMany": "{{name}} · {{count}} 行 · UTF-8",
+        "mode": "模式",
+        "merge": "合并：更新匹配的规则，新规则添加到末尾",
+        "replace": "替换：文件将成为完整的规则集",
+        "previewing": "正在读取文件…",
+        "updateOne": "1 项更新",
+        "updateMany": "{{count}} 项更新",
+        "addOne": "1 项新增",
+        "addMany": "{{count}} 项新增",
+        "deleteOne": "1 项删除",
+        "deleteMany": "{{count}} 项删除",
+        "errorOne": "1 个错误",
+        "errorMany": "{{count}} 个错误",
+        "exampleUpdate": "{{recognized}} → {{replacement}}（更新，保留第 {{position}} 位）",
+        "exampleAdd": "{{recognized}} → {{replacement}}（添加到末尾）",
+        "exampleDelete": "{{recognized}} → {{replacement}}（已移除）",
+        "noChanges": "此文件与已保存的规则一致：无需导入。",
+        "firstError": "第 {{line}} 行：{{reason}}",
+        "cancel": "取消",
+        "apply": "应用导入",
+        "applying": "正在导入…",
+        "imported": "规则已导入。"
+      },
+      "importRefusal": {
+        "encodingTitle": "无法导入 {{name}}：它不是 UTF-8 文本",
+        "encodingBody": "未从该文件导入任何内容。请导出为纯文本或 CSV，然后重新导入。",
+        "tooLargeTitle": "无法导入 {{name}}：文件大于 1 MB",
+        "tooLargeBody": "未导入任何内容。请将文件拆分为较小的文件，然后逐个导入。",
+        "unreadableTitle": "无法读取 {{name}}",
+        "unreadableBody": "未导入任何内容。请检查该文件是否仍然存在，以及 Handy 能否打开它。",
+        "dismiss": "关闭"
+      },
+      "deleteDialog": {
+        "title": "删除此规则？",
+        "body": "{{recognized}} → {{replacement}} 将从列表中移除。保存后更改才会生效。",
+        "cancel": "取消",
+        "confirm": "删除"
+      },
+      "switchDialog": {
+        "title": "保存或放弃更改",
+        "body": "列表和文本编辑的是同一组规则。请先保存或放弃未保存的更改。",
+        "cancel": "取消",
+        "discard": "放弃",
+        "save": "保存"
+      },
+      "issues": {
+        "recognizedEmpty": "请输入识别文本。",
+        "recognizedTooLong": "识别文本最多 100 个字符。",
+        "recognizedForbidden": "识别文本不能包含换行符、制表符或 ;。",
+        "recognizedControl": "识别文本包含不可见的控制字符。",
+        "recognizedComment": "识别文本不能以 # 开头。",
+        "duplicate": "每个识别文本只能出现一次；此文本已定义。",
+        "replacementEmpty": "请输入替换文本。",
+        "replacementTooLong": "替换文本最多 500 个字符。",
+        "replacementForbidden": "替换文本不能包含换行符或制表符。",
+        "replacementControl": "替换文本包含不可见的控制字符。",
+        "missingSeparator": "缺少分隔符：请添加 ; 再填写替换文本",
+        "tooManyRules": "一个规则集最多包含 1,000 条规则。",
+        "invalidSavedRules": "已保存的规则无效。请在导入前重新加载。",
+        "unicodeUnavailable": "暂时无法检查规则。请重启 Handy 后重试。",
+        "invalidRule": "此规则无效。"
+      }
+    },
+    "unsavedChanges": {
+      "title": "未保存的更改",
+      "description": "您的部分替换规则尚未保存。留下以保存它们，或放弃更改并离开。",
+      "stay": "留下",
+      "discard": "放弃并离开"
     }
   },
   "footer": {

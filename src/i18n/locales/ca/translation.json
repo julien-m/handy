@@ -813,6 +813,168 @@
           "details": "La transcripció local de veu a text del Handy es basa en el transcribe.cpp i el ggml. Gràcies a la gran feina de Georgi Gerganov i dels col·laboradors."
         }
       }
+    },
+    "replacements": {
+      "group": "Substitucions",
+      "title": "Regles de substitució",
+      "description": "Reescriviu el text reconegut amb la vostra pròpia grafia. S'apliquen després del reconeixement, a diferència del Vocabulari.",
+      "loading": "S'estan carregant les regles de substitució…",
+      "loadFailed": "No s'han pogut carregar les regles de substitució.",
+      "retry": "Torna-ho a provar",
+      "views": {
+        "label": "Vista de les regles",
+        "list": "Llista",
+        "text": "Text"
+      },
+      "import": "Importa…",
+      "export": {
+        "button": "Exporta…",
+        "done": "S'han exportat les regles a {{name}}.",
+        "notSynced": "S'han exportat les regles a {{name}}, però el disc encara no ha confirmat l'escriptura.",
+        "symbolicLink": "{{name}} és un enllaç: trieu un altre fitxer. No s'ha exportat res.",
+        "readOnly": "{{name}} és només de lectura: trieu un altre fitxer. No s'ha exportat res.",
+        "notWritten": "No s'ha pogut escriure {{name}}. No s'ha modificat."
+      },
+      "add": {
+        "recognized": "Text reconegut",
+        "replacement": "Substitució",
+        "button": "Afegeix una regla",
+        "needsText": "Introduïu el text reconegut i la substitució per afegir una regla."
+      },
+      "rule": {
+        "edit": "Edita la regla {{recognized}}",
+        "done": "Acaba d'editar la regla {{recognized}}",
+        "delete": "Suprimeix la regla {{recognized}}",
+        "recognized": "Text reconegut de la regla {{position}}",
+        "replacement": "Substitució de la regla {{position}}"
+      },
+      "count": "{{count}} de {{max}} regles · sense distingir majúscules, paraules senceres",
+      "empty": {
+        "title": "Encara no hi ha cap regla de substitució",
+        "body": "Afegiu una regla o enganxeu línies com ara",
+        "paste": "Enganxa regles com a text"
+      },
+      "draft": {
+        "note": "Canvis no desats. Els dictats fan servir les regles desades fins que deseu.",
+        "discard": "Descarta",
+        "save": "Desa",
+        "saving": "S'està desant…",
+        "saved": "S'han desat les regles de substitució."
+      },
+      "commit": {
+        "invalid": "Algunes regles no són vàlides. Corregiu les files ressaltades i torneu-ho a provar.",
+        "unchanged": "Les regles desades no han canviat.",
+        "conflict": "Les regles s'han canviat en un altre lloc, per exemple des de la línia d'ordres. Torneu-les a carregar per continuar.",
+        "reload": "Torna a carregar",
+        "reloadDiscards": "En tornar a carregar es mostren les regles desades i es descarten els canvis no desats."
+      },
+      "bulk": {
+        "editor": "Regles com a text",
+        "hint": "Una regla per línia: recognized;replacement. També funciona una tabulació per enganxar des d'un full de càlcul. Les línies que comencen per # s'ignoren.",
+        "cancel": "Cancel·la",
+        "apply": "Aplica",
+        "applying": "S'està aplicant…",
+        "applied": "S'han aplicat les regles de substitució.",
+        "fixLine": "Corregiu la línia {{line}} per aplicar. Les regles desades no han canviat.",
+        "fixLines": "Corregiu les {{count}} línies amb errors per aplicar. Les regles desades no han canviat.",
+        "ready": "En aplicar, les regles desades se substitueixen per aquesta previsualització.",
+        "noChanges": "No hi ha res a aplicar: el text coincideix amb les regles desades."
+      },
+      "preview": {
+        "title": "Previsualització",
+        "updating": "S'està actualitzant la previsualització…",
+        "errorOne": "1 error · No es pot aplicar",
+        "errorMany": "{{count}} errors · No es pot aplicar",
+        "changes": "{{adds}} per afegir · {{updates}} per actualitzar · {{deletes}} per suprimir",
+        "noChanges": "Cap canvi",
+        "omitted": "Línies no mostrades: {{count}}",
+        "duplicateOf": "El mateix text reconegut que la línia {{lines}}",
+        "kinds": {
+          "add": "Addició",
+          "update": "Actualització",
+          "delete": "Supressió",
+          "unchanged": "Sense canvis",
+          "ignored": "Ignorada",
+          "error": "Error"
+        },
+        "ignored": {
+          "header": "Línia de capçalera",
+          "blank": "Línia en blanc",
+          "comment": "Comentari"
+        }
+      },
+      "importDialog": {
+        "title": "Importa regles",
+        "close": "Tanca",
+        "fileOne": "{{name}} · 1 línia · UTF-8",
+        "fileMany": "{{name}} · {{count}} línies · UTF-8",
+        "mode": "Mode",
+        "merge": "Combina: actualitza les regles coincidents i afegeix les noves al final",
+        "replace": "Substitueix: el fitxer esdevé tot el conjunt de regles",
+        "previewing": "S'està llegint el fitxer…",
+        "updateOne": "1 actualització",
+        "updateMany": "{{count}} actualitzacions",
+        "addOne": "1 addició",
+        "addMany": "{{count}} addicions",
+        "deleteOne": "1 supressió",
+        "deleteMany": "{{count}} supressions",
+        "errorOne": "1 error",
+        "errorMany": "{{count}} errors",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (actualització, manté la posició {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (afegida al final)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (suprimida)",
+        "noChanges": "Aquest fitxer coincideix amb les regles desades: no hi ha res a importar.",
+        "firstError": "Línia {{line}}: {{reason}}",
+        "cancel": "Cancel·la",
+        "apply": "Aplica la importació",
+        "applying": "S'està important…",
+        "imported": "S'han importat les regles."
+      },
+      "importRefusal": {
+        "encodingTitle": "No s'ha pogut importar {{name}}: no és text UTF-8",
+        "encodingBody": "No s'ha importat res d'aquest fitxer. Exporteu text pla o CSV i torneu a importar.",
+        "tooLargeTitle": "No s'ha pogut importar {{name}}: ocupa més d'1 MB",
+        "tooLargeBody": "No s'ha importat res. Dividiu el fitxer en fitxers més petits i importeu-los un per un.",
+        "unreadableTitle": "No s'ha pogut llegir {{name}}",
+        "unreadableBody": "No s'ha importat res. Comproveu que el fitxer encara existeix i que Handy el pot obrir.",
+        "dismiss": "Descarta"
+      },
+      "deleteDialog": {
+        "title": "Voleu suprimir aquesta regla?",
+        "body": "{{recognized}} → {{replacement}} se suprimirà de la llista. Deseu per aplicar el canvi.",
+        "cancel": "Cancel·la",
+        "confirm": "Suprimeix"
+      },
+      "switchDialog": {
+        "title": "Deseu o descarteu els canvis",
+        "body": "La llista i el text editen les mateixes regles. Primer deseu o descarteu els canvis no desats.",
+        "cancel": "Cancel·la",
+        "discard": "Descarta",
+        "save": "Desa"
+      },
+      "issues": {
+        "recognizedEmpty": "Introduïu el text reconegut.",
+        "recognizedTooLong": "El text reconegut està limitat a 100 caràcters.",
+        "recognizedForbidden": "El text reconegut no pot contenir cap salt de línia, tabulació ni ;.",
+        "recognizedControl": "El text reconegut conté un caràcter de control invisible.",
+        "recognizedComment": "El text reconegut no pot començar per #.",
+        "duplicate": "Cada text reconegut només pot aparèixer una vegada; aquest ja està definit.",
+        "replacementEmpty": "Introduïu la substitució.",
+        "replacementTooLong": "La substitució està limitada a 500 caràcters.",
+        "replacementForbidden": "La substitució no pot contenir cap salt de línia ni tabulació.",
+        "replacementControl": "La substitució conté un caràcter de control invisible.",
+        "missingSeparator": "Falta el separador: afegiu ; i després la substitució",
+        "tooManyRules": "Un conjunt de regles admet com a màxim 1.000 regles.",
+        "invalidSavedRules": "Les regles desades no són vàlides. Torneu-les a carregar abans d'importar.",
+        "unicodeUnavailable": "Ara no es poden comprovar les regles. Reinicieu Handy i torneu-ho a provar.",
+        "invalidRule": "Aquesta regla no és vàlida."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Canvis no desats",
+      "description": "Algunes de les regles de substitució no s'han desat. Quedeu-vos per desar-les o descarteu-les i sortiu.",
+      "stay": "Queda't",
+      "discard": "Descarta i surt"
     }
   },
   "footer": {

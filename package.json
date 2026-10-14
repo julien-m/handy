@@ -18,6 +18,7 @@
     "test:shortcut-list": "bun src/components/settings/shortcut-list-model.test.ts",
     "test:settings-errors": "bun src/stores/settings-errors.test.ts",
     "test:settings-store": "bun test src/stores/settings-store.test.ts",
+    "test:word-replacements": "bun test src/components/settings/word-replacements",
     "test:indicator": "bun test src/overlay/indicator-models.test.ts src/overlay/indicator-render.test.tsx",
     "test:vocabulary": "bun test src/stores/vocabulary-store.test.ts src/components/settings/vocabulary/vocabulary-model.test.ts src/components/settings/vocabulary/vocabulary-notices.test.tsx src/hooks/use-vocabulary.test.ts",
     "test:shortcut-states": "bun test src/components/settings/shortcut-draft-model.test.ts src/components/settings/shortcut-list-feedback.test.ts && bun test src/components/settings/shortcut-list-render.test.tsx",

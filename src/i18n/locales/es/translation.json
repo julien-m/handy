@@ -813,6 +813,168 @@
         "label": "Mostrar novedades",
         "description": "Mostrar notas de la versión después de las actualizaciones de Handy"
       }
+    },
+    "replacements": {
+      "group": "Reemplazos",
+      "title": "Reglas de reemplazo",
+      "description": "Reescribe el texto reconocido con tu propia ortografía. Se aplica después del reconocimiento, a diferencia del Vocabulario.",
+      "loading": "Cargando reglas de reemplazo…",
+      "loadFailed": "No se pudieron cargar las reglas de reemplazo.",
+      "retry": "Reintentar",
+      "views": {
+        "label": "Vista de reglas",
+        "list": "Lista",
+        "text": "Texto"
+      },
+      "import": "Importar…",
+      "export": {
+        "button": "Exportar…",
+        "done": "Reglas exportadas a {{name}}.",
+        "notSynced": "Reglas exportadas a {{name}}, pero el disco aún no ha confirmado la escritura.",
+        "symbolicLink": "{{name}} es un enlace: elige otro archivo. No se exportó nada.",
+        "readOnly": "{{name}} es de solo lectura: elige otro archivo. No se exportó nada.",
+        "notWritten": "No se pudo escribir {{name}}. No ha cambiado."
+      },
+      "add": {
+        "recognized": "Texto reconocido",
+        "replacement": "Reemplazo",
+        "button": "Agregar regla",
+        "needsText": "Introduce el texto reconocido y el reemplazo para agregar una regla."
+      },
+      "rule": {
+        "edit": "Editar la regla {{recognized}}",
+        "done": "Terminar de editar la regla {{recognized}}",
+        "delete": "Eliminar la regla {{recognized}}",
+        "recognized": "Texto reconocido de la regla {{position}}",
+        "replacement": "Reemplazo de la regla {{position}}"
+      },
+      "count": "{{count}} de {{max}} reglas · sin distinguir mayúsculas, palabras completas",
+      "empty": {
+        "title": "Aún no hay reglas de reemplazo",
+        "body": "Agrega una regla o pega líneas como",
+        "paste": "Pegar reglas como texto"
+      },
+      "draft": {
+        "note": "Cambios sin guardar. Los dictados usan las reglas guardadas hasta que guardes.",
+        "discard": "Descartar",
+        "save": "Guardar",
+        "saving": "Guardando…",
+        "saved": "Reglas de reemplazo guardadas."
+      },
+      "commit": {
+        "invalid": "Algunas reglas no son válidas. Corrige las filas resaltadas e inténtalo de nuevo.",
+        "unchanged": "Las reglas guardadas no han cambiado.",
+        "conflict": "Las reglas se cambiaron en otro lugar, por ejemplo desde la línea de comandos. Recárgalas para continuar.",
+        "reload": "Recargar",
+        "reloadDiscards": "Al recargar se muestran las reglas guardadas y se descartan los cambios sin guardar."
+      },
+      "bulk": {
+        "editor": "Reglas como texto",
+        "hint": "Una regla por línea: recognized;replacement. También sirve un tabulador para pegar desde una hoja de cálculo. Las líneas que empiezan por # se ignoran.",
+        "cancel": "Cancelar",
+        "apply": "Aplicar",
+        "applying": "Aplicando…",
+        "applied": "Reglas de reemplazo aplicadas.",
+        "fixLine": "Corrige la línea {{line}} para aplicar. Las reglas guardadas no han cambiado.",
+        "fixLines": "Corrige las {{count}} líneas con errores para aplicar. Las reglas guardadas no han cambiado.",
+        "ready": "Aplicar reemplaza las reglas guardadas por esta vista previa.",
+        "noChanges": "Nada que aplicar: el texto coincide con las reglas guardadas."
+      },
+      "preview": {
+        "title": "Vista previa",
+        "updating": "Actualizando la vista previa…",
+        "errorOne": "1 error · No se puede aplicar",
+        "errorMany": "{{count}} errores · No se puede aplicar",
+        "changes": "Para agregar: {{adds}} · Para actualizar: {{updates}} · Para eliminar: {{deletes}}",
+        "noChanges": "Sin cambios",
+        "omitted": "Líneas no mostradas: {{count}}",
+        "duplicateOf": "Mismo texto reconocido que la línea {{lines}}",
+        "kinds": {
+          "add": "Agregar",
+          "update": "Actualizar",
+          "delete": "Eliminar",
+          "unchanged": "Sin cambios",
+          "ignored": "Ignorada",
+          "error": "Error"
+        },
+        "ignored": {
+          "header": "Línea de encabezado",
+          "blank": "Línea en blanco",
+          "comment": "Comentario"
+        }
+      },
+      "importDialog": {
+        "title": "Importar reglas",
+        "close": "Cerrar",
+        "fileOne": "{{name}} · 1 línea · UTF-8",
+        "fileMany": "{{name}} · {{count}} líneas · UTF-8",
+        "mode": "Modo",
+        "merge": "Combinar: actualiza las reglas coincidentes y agrega las nuevas al final",
+        "replace": "Reemplazar: el archivo pasa a ser el conjunto completo de reglas",
+        "previewing": "Leyendo el archivo…",
+        "updateOne": "1 actualización",
+        "updateMany": "{{count}} actualizaciones",
+        "addOne": "1 adición",
+        "addMany": "{{count}} adiciones",
+        "deleteOne": "1 eliminación",
+        "deleteMany": "{{count}} eliminaciones",
+        "errorOne": "1 error",
+        "errorMany": "{{count}} errores",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (actualización, conserva la posición {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (agregada al final)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (eliminada)",
+        "noChanges": "Este archivo coincide con las reglas guardadas: no hay nada que importar.",
+        "firstError": "Línea {{line}}: {{reason}}",
+        "cancel": "Cancelar",
+        "apply": "Aplicar importación",
+        "applying": "Importando…",
+        "imported": "Reglas importadas."
+      },
+      "importRefusal": {
+        "encodingTitle": "No se pudo importar {{name}}: no es texto UTF-8",
+        "encodingBody": "No se importó nada de ese archivo. Expórtalo como texto sin formato o CSV y vuelve a importarlo.",
+        "tooLargeTitle": "No se pudo importar {{name}}: ocupa más de 1 MB",
+        "tooLargeBody": "No se importó nada. Divide el archivo en archivos más pequeños e impórtalos uno por uno.",
+        "unreadableTitle": "No se pudo leer {{name}}",
+        "unreadableBody": "No se importó nada. Comprueba que el archivo todavía existe y que Handy puede abrirlo.",
+        "dismiss": "Descartar"
+      },
+      "deleteDialog": {
+        "title": "¿Eliminar esta regla?",
+        "body": "{{recognized}} → {{replacement}} se quitará de la lista. Guarda para aplicar el cambio.",
+        "cancel": "Cancelar",
+        "confirm": "Eliminar"
+      },
+      "switchDialog": {
+        "title": "Guarda o descarta tus cambios",
+        "body": "La lista y el texto editan las mismas reglas. Primero guarda o descarta tus cambios sin guardar.",
+        "cancel": "Cancelar",
+        "discard": "Descartar",
+        "save": "Guardar"
+      },
+      "issues": {
+        "recognizedEmpty": "Introduce el texto reconocido.",
+        "recognizedTooLong": "El texto reconocido está limitado a 100 caracteres.",
+        "recognizedForbidden": "El texto reconocido no puede contener un salto de línea, un tabulador ni ;.",
+        "recognizedControl": "El texto reconocido contiene un carácter de control invisible.",
+        "recognizedComment": "El texto reconocido no puede empezar por #.",
+        "duplicate": "Cada texto reconocido solo puede aparecer una vez; este ya está definido.",
+        "replacementEmpty": "Introduce el reemplazo.",
+        "replacementTooLong": "El reemplazo está limitado a 500 caracteres.",
+        "replacementForbidden": "El reemplazo no puede contener un salto de línea ni un tabulador.",
+        "replacementControl": "El reemplazo contiene un carácter de control invisible.",
+        "missingSeparator": "Falta el separador: agrega ; y después el reemplazo",
+        "tooManyRules": "Un conjunto de reglas admite como máximo 1000 reglas.",
+        "invalidSavedRules": "Las reglas guardadas no son válidas. Recárgalas antes de importar.",
+        "unicodeUnavailable": "Ahora no se pueden comprobar las reglas. Reinicia Handy e inténtalo de nuevo.",
+        "invalidRule": "Esta regla no es válida."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Cambios sin guardar",
+      "description": "Algunas de tus reglas de reemplazo no están guardadas. Quédate para guardarlas, o descártalas y sal.",
+      "stay": "Quedarse",
+      "discard": "Descartar y salir"
     }
   },
   "footer": {

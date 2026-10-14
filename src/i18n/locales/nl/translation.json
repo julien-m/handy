@@ -813,6 +813,168 @@
           "details": "Handy's lokale spraak-naar-tekst is gebouwd op transcribe.cpp en ggml. Met dank aan het geweldige werk van Georgi Gerganov en alle bijdragers."
         }
       }
+    },
+    "replacements": {
+      "group": "Vervangingen",
+      "title": "Vervangingsregels",
+      "description": "Herschrijf herkende tekst met je eigen spelling. Wordt na de herkenning toegepast, in tegenstelling tot Woordenlijst.",
+      "loading": "Vervangingsregels laden…",
+      "loadFailed": "De vervangingsregels konden niet worden geladen.",
+      "retry": "Opnieuw proberen",
+      "views": {
+        "label": "Regelweergave",
+        "list": "Lijst",
+        "text": "Tekst"
+      },
+      "import": "Importeren…",
+      "export": {
+        "button": "Exporteren…",
+        "done": "Regels geëxporteerd naar {{name}}.",
+        "notSynced": "Regels geëxporteerd naar {{name}}, maar de schijf heeft het schrijven nog niet bevestigd.",
+        "symbolicLink": "{{name}} is een koppeling: kies een ander bestand. Er is niets geëxporteerd.",
+        "readOnly": "{{name}} is alleen-lezen: kies een ander bestand. Er is niets geëxporteerd.",
+        "notWritten": "{{name}} kon niet worden geschreven. Het bestand is ongewijzigd."
+      },
+      "add": {
+        "recognized": "Herkende tekst",
+        "replacement": "Vervanging",
+        "button": "Regel toevoegen",
+        "needsText": "Vul de herkende tekst en de vervanging in om een regel toe te voegen."
+      },
+      "rule": {
+        "edit": "Regel {{recognized}} bewerken",
+        "done": "Klaar met bewerken van regel {{recognized}}",
+        "delete": "Regel {{recognized}} verwijderen",
+        "recognized": "Herkende tekst van regel {{position}}",
+        "replacement": "Vervanging van regel {{position}}"
+      },
+      "count": "{{count}} van {{max}} regels · hoofdletterongevoelig, hele woorden",
+      "empty": {
+        "title": "Nog geen vervangingsregels",
+        "body": "Voeg een regel toe, of plak tekstregels zoals",
+        "paste": "Regels als tekst plakken"
+      },
+      "draft": {
+        "note": "Niet-opgeslagen wijzigingen. Dicteren gebruikt de opgeslagen regels totdat je opslaat.",
+        "discard": "Verwerpen",
+        "save": "Opslaan",
+        "saving": "Opslaan…",
+        "saved": "Vervangingsregels opgeslagen."
+      },
+      "commit": {
+        "invalid": "Sommige regels zijn ongeldig. Corrigeer de gemarkeerde rijen en probeer het opnieuw.",
+        "unchanged": "De opgeslagen regels zijn ongewijzigd.",
+        "conflict": "De regels zijn elders gewijzigd, bijvoorbeeld via de opdrachtregel. Laad ze opnieuw om verder te gaan.",
+        "reload": "Opnieuw laden",
+        "reloadDiscards": "Opnieuw laden toont de opgeslagen regels en verwijdert je niet-opgeslagen wijzigingen."
+      },
+      "bulk": {
+        "editor": "Regels als tekst",
+        "hint": "Eén regel per tekstregel: recognized;replacement. Een tab werkt ook voor plakken uit een spreadsheet. Tekstregels die met # beginnen worden genegeerd.",
+        "cancel": "Annuleren",
+        "apply": "Toepassen",
+        "applying": "Toepassen…",
+        "applied": "Vervangingsregels toegepast.",
+        "fixLine": "Corrigeer tekstregel {{line}} om toe te passen. De opgeslagen regels zijn ongewijzigd.",
+        "fixLines": "Corrigeer de {{count}} foutieve tekstregels om toe te passen. De opgeslagen regels zijn ongewijzigd.",
+        "ready": "Toepassen vervangt de opgeslagen regels door dit voorbeeld.",
+        "noChanges": "Niets toe te passen: de tekst komt overeen met de opgeslagen regels."
+      },
+      "preview": {
+        "title": "Voorbeeld",
+        "updating": "Voorbeeld bijwerken…",
+        "errorOne": "1 fout · Toepassen niet beschikbaar",
+        "errorMany": "{{count}} fouten · Toepassen niet beschikbaar",
+        "changes": "{{adds}} toe te voegen · {{updates}} bij te werken · {{deletes}} te verwijderen",
+        "noChanges": "Geen wijzigingen",
+        "omitted": "Niet weergegeven tekstregels: {{count}}",
+        "duplicateOf": "Zelfde herkende tekst als tekstregel {{lines}}",
+        "kinds": {
+          "add": "Toevoegen",
+          "update": "Bijwerken",
+          "delete": "Verwijderen",
+          "unchanged": "Ongewijzigd",
+          "ignored": "Genegeerd",
+          "error": "Fout"
+        },
+        "ignored": {
+          "header": "Kopregel",
+          "blank": "Lege regel",
+          "comment": "Opmerking"
+        }
+      },
+      "importDialog": {
+        "title": "Regels importeren",
+        "close": "Sluiten",
+        "fileOne": "{{name}} · 1 regel · UTF-8",
+        "fileMany": "{{name}} · {{count}} regels · UTF-8",
+        "mode": "Modus",
+        "merge": "Samenvoegen: overeenkomende regels bijwerken, nieuwe achteraan toevoegen",
+        "replace": "Vervangen: het bestand wordt de volledige regelset",
+        "previewing": "Bestand lezen…",
+        "updateOne": "1 wijziging",
+        "updateMany": "{{count}} wijzigingen",
+        "addOne": "1 toevoeging",
+        "addMany": "{{count}} toevoegingen",
+        "deleteOne": "1 verwijdering",
+        "deleteMany": "{{count}} verwijderingen",
+        "errorOne": "1 fout",
+        "errorMany": "{{count}} fouten",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (bijgewerkt, behoudt positie {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (achteraan toegevoegd)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (verwijderd)",
+        "noChanges": "Dit bestand komt overeen met de opgeslagen regels: niets te importeren.",
+        "firstError": "Tekstregel {{line}}: {{reason}}",
+        "cancel": "Annuleren",
+        "apply": "Import toepassen",
+        "applying": "Importeren…",
+        "imported": "Regels geïmporteerd."
+      },
+      "importRefusal": {
+        "encodingTitle": "Kan {{name}} niet importeren: het is geen UTF-8-tekst",
+        "encodingBody": "Er is niets uit dat bestand geïmporteerd. Exporteer platte tekst of CSV en importeer opnieuw.",
+        "tooLargeTitle": "Kan {{name}} niet importeren: het is groter dan 1 MB",
+        "tooLargeBody": "Er is niets geïmporteerd. Splits het bestand in kleinere bestanden en importeer ze één voor één.",
+        "unreadableTitle": "Kan {{name}} niet lezen",
+        "unreadableBody": "Er is niets geïmporteerd. Controleer of het bestand nog bestaat en of Handy het kan openen.",
+        "dismiss": "Sluiten"
+      },
+      "deleteDialog": {
+        "title": "Deze regel verwijderen?",
+        "body": "{{recognized}} → {{replacement}} wordt uit de lijst verwijderd. Sla op om de wijziging toe te passen.",
+        "cancel": "Annuleren",
+        "confirm": "Verwijderen"
+      },
+      "switchDialog": {
+        "title": "Wijzigingen opslaan of verwerpen",
+        "body": "De lijst en de tekst bewerken dezelfde regels. Sla je niet-opgeslagen wijzigingen eerst op of verwerp ze.",
+        "cancel": "Annuleren",
+        "discard": "Verwerpen",
+        "save": "Opslaan"
+      },
+      "issues": {
+        "recognizedEmpty": "Vul de herkende tekst in.",
+        "recognizedTooLong": "De herkende tekst is beperkt tot 100 tekens.",
+        "recognizedForbidden": "De herkende tekst mag geen regeleinde, tab of ; bevatten.",
+        "recognizedControl": "De herkende tekst bevat een onzichtbaar stuurteken.",
+        "recognizedComment": "De herkende tekst mag niet met # beginnen.",
+        "duplicate": "Elke herkende tekst mag maar één keer voorkomen; deze is al gedefinieerd.",
+        "replacementEmpty": "Vul de vervanging in.",
+        "replacementTooLong": "De vervanging is beperkt tot 500 tekens.",
+        "replacementForbidden": "De vervanging mag geen regeleinde of tab bevatten.",
+        "replacementControl": "De vervanging bevat een onzichtbaar stuurteken.",
+        "missingSeparator": "Scheidingsteken ontbreekt: voeg ; toe, gevolgd door de vervanging",
+        "tooManyRules": "Een regelset bevat maximaal 1.000 regels.",
+        "invalidSavedRules": "De opgeslagen regels zijn ongeldig. Laad ze opnieuw voordat je importeert.",
+        "unicodeUnavailable": "De regels kunnen nu niet worden gecontroleerd. Start Handy opnieuw en probeer het nog eens.",
+        "invalidRule": "Deze regel is ongeldig."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Niet-opgeslagen wijzigingen",
+      "description": "Sommige van je vervangingsregels zijn niet opgeslagen. Blijf om ze op te slaan, of verwerp ze en ga weg.",
+      "stay": "Blijven",
+      "discard": "Verwerpen en weggaan"
     }
   },
   "footer": {

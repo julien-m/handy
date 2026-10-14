@@ -837,6 +837,8 @@ pub fn run(cli_args: CliArgs) {
             commands::replacements::preview_word_replacements,
             commands::replacements::save_word_replacements,
             commands::replacements::apply_word_replacements,
+            commands::replacements_files::import_word_replacements_file,
+            commands::replacements_files::export_word_replacements_file,
             helpers::clamshell::is_laptop,
         ])
         .events(collect_events![

@@ -813,6 +813,168 @@
         "label": "Mostrar novidades",
         "description": "Mostrar notas de versão após atualizações do Handy"
       }
+    },
+    "replacements": {
+      "group": "Substituições",
+      "title": "Regras de substituição",
+      "description": "Reescreva o texto reconhecido com a sua própria grafia. Aplicadas após o reconhecimento, ao contrário do Vocabulário.",
+      "loading": "Carregando regras de substituição…",
+      "loadFailed": "Não foi possível carregar as regras de substituição.",
+      "retry": "Tentar novamente",
+      "views": {
+        "label": "Visualização das regras",
+        "list": "Lista",
+        "text": "Texto"
+      },
+      "import": "Importar…",
+      "export": {
+        "button": "Exportar…",
+        "done": "Regras exportadas para {{name}}.",
+        "notSynced": "Regras exportadas para {{name}}, mas o disco ainda não confirmou a gravação.",
+        "symbolicLink": "{{name}} é um link: escolha outro arquivo. Nada foi exportado.",
+        "readOnly": "{{name}} é somente leitura: escolha outro arquivo. Nada foi exportado.",
+        "notWritten": "Não foi possível gravar {{name}}. O arquivo não foi alterado."
+      },
+      "add": {
+        "recognized": "Texto reconhecido",
+        "replacement": "Substituição",
+        "button": "Adicionar regra",
+        "needsText": "Insira o texto reconhecido e a substituição para adicionar uma regra."
+      },
+      "rule": {
+        "edit": "Editar regra {{recognized}}",
+        "done": "Concluir edição da regra {{recognized}}",
+        "delete": "Excluir regra {{recognized}}",
+        "recognized": "Texto reconhecido da regra {{position}}",
+        "replacement": "Substituição da regra {{position}}"
+      },
+      "count": "{{count}} de {{max}} regras · sem diferenciar maiúsculas, palavras inteiras",
+      "empty": {
+        "title": "Nenhuma regra de substituição ainda",
+        "body": "Adicione uma regra ou cole linhas como",
+        "paste": "Colar regras como texto"
+      },
+      "draft": {
+        "note": "Alterações não salvas. Os ditados usam as regras salvas até você salvar.",
+        "discard": "Descartar",
+        "save": "Salvar",
+        "saving": "Salvando…",
+        "saved": "Regras de substituição salvas."
+      },
+      "commit": {
+        "invalid": "Algumas regras são inválidas. Corrija as linhas destacadas e tente novamente.",
+        "unchanged": "As regras salvas não foram alteradas.",
+        "conflict": "As regras foram alteradas em outro lugar, por exemplo pela linha de comando. Recarregue-as para continuar.",
+        "reload": "Recarregar",
+        "reloadDiscards": "Recarregar mostra as regras salvas e descarta as alterações não salvas."
+      },
+      "bulk": {
+        "editor": "Regras como texto",
+        "hint": "Uma regra por linha: recognized;replacement. Uma tabulação também funciona ao colar de uma planilha. Linhas que começam com # são ignoradas.",
+        "cancel": "Cancelar",
+        "apply": "Aplicar",
+        "applying": "Aplicando…",
+        "applied": "Regras de substituição aplicadas.",
+        "fixLine": "Corrija a linha {{line}} para aplicar. As regras salvas não foram alteradas.",
+        "fixLines": "Corrija as {{count}} linhas com erro para aplicar. As regras salvas não foram alteradas.",
+        "ready": "Aplicar substitui as regras salvas por esta pré-visualização.",
+        "noChanges": "Nada a aplicar: o texto corresponde às regras salvas."
+      },
+      "preview": {
+        "title": "Pré-visualização",
+        "updating": "Atualizando a pré-visualização…",
+        "errorOne": "1 erro · Aplicar indisponível",
+        "errorMany": "{{count}} erros · Aplicar indisponível",
+        "changes": "{{adds}} a adicionar · {{updates}} a atualizar · {{deletes}} a excluir",
+        "noChanges": "Nenhuma alteração",
+        "omitted": "Linhas não listadas: {{count}}",
+        "duplicateOf": "Mesmo texto reconhecido da linha {{lines}}",
+        "kinds": {
+          "add": "Adicionar",
+          "update": "Atualizar",
+          "delete": "Excluir",
+          "unchanged": "Inalterada",
+          "ignored": "Ignorada",
+          "error": "Erro"
+        },
+        "ignored": {
+          "header": "Linha de cabeçalho",
+          "blank": "Linha em branco",
+          "comment": "Comentário"
+        }
+      },
+      "importDialog": {
+        "title": "Importar regras",
+        "close": "Fechar",
+        "fileOne": "{{name}} · 1 linha · UTF-8",
+        "fileMany": "{{name}} · {{count}} linhas · UTF-8",
+        "mode": "Modo",
+        "merge": "Mesclar: atualiza as regras correspondentes e adiciona as novas no final",
+        "replace": "Substituir: o arquivo passa a ser o conjunto completo de regras",
+        "previewing": "Lendo o arquivo…",
+        "updateOne": "1 atualização",
+        "updateMany": "{{count}} atualizações",
+        "addOne": "1 adição",
+        "addMany": "{{count}} adições",
+        "deleteOne": "1 exclusão",
+        "deleteMany": "{{count}} exclusões",
+        "errorOne": "1 erro",
+        "errorMany": "{{count}} erros",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (atualizada, mantém a posição {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (adicionada no final)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (removida)",
+        "noChanges": "Este arquivo corresponde às regras salvas: nada a importar.",
+        "firstError": "Linha {{line}}: {{reason}}",
+        "cancel": "Cancelar",
+        "apply": "Aplicar importação",
+        "applying": "Importando…",
+        "imported": "Regras importadas."
+      },
+      "importRefusal": {
+        "encodingTitle": "Não foi possível importar {{name}}: não é texto UTF-8",
+        "encodingBody": "Nada foi importado desse arquivo. Exporte como texto simples ou CSV e importe novamente.",
+        "tooLargeTitle": "Não foi possível importar {{name}}: é maior que 1 MB",
+        "tooLargeBody": "Nada foi importado. Divida o arquivo em arquivos menores e importe cada um deles.",
+        "unreadableTitle": "Não foi possível ler {{name}}",
+        "unreadableBody": "Nada foi importado. Verifique se o arquivo ainda existe e se o Handy consegue abri-lo.",
+        "dismiss": "Dispensar"
+      },
+      "deleteDialog": {
+        "title": "Excluir esta regra?",
+        "body": "{{recognized}} → {{replacement}} será removida da lista. Salve para aplicar a alteração.",
+        "cancel": "Cancelar",
+        "confirm": "Excluir"
+      },
+      "switchDialog": {
+        "title": "Salve ou descarte suas alterações",
+        "body": "A lista e o texto editam as mesmas regras. Salve ou descarte primeiro as alterações não salvas.",
+        "cancel": "Cancelar",
+        "discard": "Descartar",
+        "save": "Salvar"
+      },
+      "issues": {
+        "recognizedEmpty": "Insira o texto reconhecido.",
+        "recognizedTooLong": "O texto reconhecido é limitado a 100 caracteres.",
+        "recognizedForbidden": "O texto reconhecido não pode conter quebra de linha, tabulação ou ;.",
+        "recognizedControl": "O texto reconhecido contém um caractere de controle invisível.",
+        "recognizedComment": "O texto reconhecido não pode começar com #.",
+        "duplicate": "Cada texto reconhecido só pode aparecer uma vez; este já está definido.",
+        "replacementEmpty": "Insira a substituição.",
+        "replacementTooLong": "A substituição é limitada a 500 caracteres.",
+        "replacementForbidden": "A substituição não pode conter quebra de linha ou tabulação.",
+        "replacementControl": "A substituição contém um caractere de controle invisível.",
+        "missingSeparator": "Separador ausente: adicione ; seguido da substituição",
+        "tooManyRules": "Um conjunto de regras comporta no máximo 1.000 regras.",
+        "invalidSavedRules": "As regras salvas são inválidas. Recarregue-as antes de importar.",
+        "unicodeUnavailable": "Não é possível verificar as regras agora. Reinicie o Handy e tente novamente.",
+        "invalidRule": "Esta regra é inválida."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Alterações não salvas",
+      "description": "Algumas das suas regras de substituição não foram salvas. Fique para salvá-las ou descarte-as e saia.",
+      "stay": "Ficar",
+      "discard": "Descartar e sair"
     }
   },
   "footer": {

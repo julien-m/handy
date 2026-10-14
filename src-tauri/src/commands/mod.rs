@@ -5,6 +5,7 @@ pub mod models;
 pub mod overlay;
 pub mod prompts;
 pub mod replacements;
+pub mod replacements_files;
 pub mod transcription;
 pub mod vocabulary;
 

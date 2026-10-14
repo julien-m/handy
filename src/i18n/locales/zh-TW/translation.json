@@ -813,6 +813,168 @@
         "label": "顯示新功能",
         "description": "Handy 更新後顯示版本資訊"
       }
+    },
+    "replacements": {
+      "group": "取代",
+      "title": "取代規則",
+      "description": "依照您自己的寫法改寫辨識出的文字。與詞彙表不同，取代會在辨識之後套用。",
+      "loading": "正在載入取代規則…",
+      "loadFailed": "無法載入取代規則。",
+      "retry": "重試",
+      "views": {
+        "label": "規則檢視",
+        "list": "清單",
+        "text": "文字"
+      },
+      "import": "匯入…",
+      "export": {
+        "button": "匯出…",
+        "done": "規則已匯出至 {{name}}。",
+        "notSynced": "規則已匯出至 {{name}}，但磁碟尚未確認寫入。",
+        "symbolicLink": "{{name}} 是一個連結：請選擇其他檔案。未匯出任何內容。",
+        "readOnly": "{{name}} 為唯讀：請選擇其他檔案。未匯出任何內容。",
+        "notWritten": "無法寫入 {{name}}。該檔案未變更。"
+      },
+      "add": {
+        "recognized": "辨識文字",
+        "replacement": "取代文字",
+        "button": "新增規則",
+        "needsText": "請輸入辨識文字和取代文字以新增規則。"
+      },
+      "rule": {
+        "edit": "編輯規則 {{recognized}}",
+        "done": "完成編輯規則 {{recognized}}",
+        "delete": "刪除規則 {{recognized}}",
+        "recognized": "第 {{position}} 條規則的辨識文字",
+        "replacement": "第 {{position}} 條規則的取代文字"
+      },
+      "count": "{{count}} / {{max}} 條規則 · 不分大小寫，全字比對",
+      "empty": {
+        "title": "尚無取代規則",
+        "body": "新增一條規則，或貼上如下格式的行",
+        "paste": "以文字形式貼上規則"
+      },
+      "draft": {
+        "note": "有未儲存的變更。在您儲存之前，聽寫仍使用已儲存的規則。",
+        "discard": "捨棄",
+        "save": "儲存",
+        "saving": "正在儲存…",
+        "saved": "取代規則已儲存。"
+      },
+      "commit": {
+        "invalid": "部分規則無效。請修正醒目標示的行，然後再試一次。",
+        "unchanged": "已儲存的規則未變更。",
+        "conflict": "規則已在其他地方遭到變更，例如透過命令列。請重新載入以繼續。",
+        "reload": "重新載入",
+        "reloadDiscards": "重新載入會顯示已儲存的規則，並捨棄你尚未儲存的變更。"
+      },
+      "bulk": {
+        "editor": "文字形式的規則",
+        "hint": "每行一條規則：recognized;replacement。從試算表貼上時也可使用 Tab 字元。以 # 開頭的行會被忽略。",
+        "cancel": "取消",
+        "apply": "套用",
+        "applying": "正在套用…",
+        "applied": "取代規則已套用。",
+        "fixLine": "請修正第 {{line}} 行後再套用。已儲存的規則未變更。",
+        "fixLines": "請修正 {{count}} 個出錯的行後再套用。已儲存的規則未變更。",
+        "ready": "「套用」會以此預覽取代已儲存的規則。",
+        "noChanges": "無需套用：文字與已儲存的規則相符。"
+      },
+      "preview": {
+        "title": "預覽",
+        "updating": "正在更新預覽…",
+        "errorOne": "1 個錯誤 · 無法套用",
+        "errorMany": "{{count}} 個錯誤 · 無法套用",
+        "changes": "新增 {{adds}} 條 · 更新 {{updates}} 條 · 刪除 {{deletes}} 條",
+        "noChanges": "沒有變更",
+        "omitted": "未列出的行：{{count}}",
+        "duplicateOf": "辨識文字與第 {{lines}} 行相同",
+        "kinds": {
+          "add": "新增",
+          "update": "更新",
+          "delete": "刪除",
+          "unchanged": "未變更",
+          "ignored": "已忽略",
+          "error": "錯誤"
+        },
+        "ignored": {
+          "header": "標題行",
+          "blank": "空白行",
+          "comment": "註解"
+        }
+      },
+      "importDialog": {
+        "title": "匯入規則",
+        "close": "關閉",
+        "fileOne": "{{name}} · 1 行 · UTF-8",
+        "fileMany": "{{name}} · {{count}} 行 · UTF-8",
+        "mode": "模式",
+        "merge": "合併：更新相符的規則，新規則加到最後",
+        "replace": "取代：檔案將成為完整的規則集",
+        "previewing": "正在讀取檔案…",
+        "updateOne": "1 項更新",
+        "updateMany": "{{count}} 項更新",
+        "addOne": "1 項新增",
+        "addMany": "{{count}} 項新增",
+        "deleteOne": "1 項刪除",
+        "deleteMany": "{{count}} 項刪除",
+        "errorOne": "1 個錯誤",
+        "errorMany": "{{count}} 個錯誤",
+        "exampleUpdate": "{{recognized}} → {{replacement}}（更新，保留第 {{position}} 位）",
+        "exampleAdd": "{{recognized}} → {{replacement}}（加到最後）",
+        "exampleDelete": "{{recognized}} → {{replacement}}（已移除）",
+        "noChanges": "此檔案與已儲存的規則相符：無需匯入。",
+        "firstError": "第 {{line}} 行：{{reason}}",
+        "cancel": "取消",
+        "apply": "套用匯入",
+        "applying": "正在匯入…",
+        "imported": "規則已匯入。"
+      },
+      "importRefusal": {
+        "encodingTitle": "無法匯入 {{name}}：它不是 UTF-8 文字",
+        "encodingBody": "未從該檔案匯入任何內容。請匯出為純文字或 CSV，然後重新匯入。",
+        "tooLargeTitle": "無法匯入 {{name}}：檔案大於 1 MB",
+        "tooLargeBody": "未匯入任何內容。請將檔案分割成較小的檔案，然後逐一匯入。",
+        "unreadableTitle": "無法讀取 {{name}}",
+        "unreadableBody": "未匯入任何內容。請確認該檔案仍然存在，且 Handy 可以開啟它。",
+        "dismiss": "關閉"
+      },
+      "deleteDialog": {
+        "title": "刪除此規則？",
+        "body": "{{recognized}} → {{replacement}} 將從清單中移除。儲存後變更才會生效。",
+        "cancel": "取消",
+        "confirm": "刪除"
+      },
+      "switchDialog": {
+        "title": "儲存或捨棄變更",
+        "body": "清單和文字編輯的是同一組規則。請先儲存或捨棄未儲存的變更。",
+        "cancel": "取消",
+        "discard": "捨棄",
+        "save": "儲存"
+      },
+      "issues": {
+        "recognizedEmpty": "請輸入辨識文字。",
+        "recognizedTooLong": "辨識文字最多 100 個字元。",
+        "recognizedForbidden": "辨識文字不能包含換行、Tab 字元或 ;。",
+        "recognizedControl": "辨識文字包含不可見的控制字元。",
+        "recognizedComment": "辨識文字不能以 # 開頭。",
+        "duplicate": "每個辨識文字只能出現一次；此文字已定義。",
+        "replacementEmpty": "請輸入取代文字。",
+        "replacementTooLong": "取代文字最多 500 個字元。",
+        "replacementForbidden": "取代文字不能包含換行或 Tab 字元。",
+        "replacementControl": "取代文字包含不可見的控制字元。",
+        "missingSeparator": "缺少分隔符號：請加上 ; 再填寫取代文字",
+        "tooManyRules": "一個規則集最多包含 1,000 條規則。",
+        "invalidSavedRules": "已儲存的規則無效。請在匯入前重新載入。",
+        "unicodeUnavailable": "目前無法檢查規則。請重新啟動 Handy 後再試一次。",
+        "invalidRule": "此規則無效。"
+      }
+    },
+    "unsavedChanges": {
+      "title": "未儲存的變更",
+      "description": "您的部分取代規則尚未儲存。留下以儲存，或捨棄變更並離開。",
+      "stay": "留下",
+      "discard": "捨棄並離開"
     }
   },
   "footer": {

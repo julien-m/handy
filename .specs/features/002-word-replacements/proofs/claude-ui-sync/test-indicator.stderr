@@ -1,0 +1,6 @@
+$ bun test src/overlay/indicator-models.test.ts src/overlay/indicator-render.test.tsx
+
+ 35 pass
+ 0 fail
+ 131 expect() calls
+Ran 35 tests across 2 files. [71.00ms]
