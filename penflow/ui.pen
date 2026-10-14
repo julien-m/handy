@@ -12055,7 +12055,7 @@
     },
     {
       "type": "frame",
-      "id": "bUVrO",
+      "id": "bxC0P",
       "x": 0,
       "y": 4099,
       "name": "Recording indicator",
@@ -12072,282 +12072,51 @@
       "children": [
         {
           "type": "frame",
-          "id": "qpwZG",
+          "id": "gL6PV",
           "name": "bar",
           "context": "classification=semantic; semantic_id=recording-indicator.bar; test_id=recording-indicator-bar; role=container",
-          "gap": 7.5,
+          "layout": "vertical",
+          "gap": 8,
           "alignItems": "center",
           "children": [
             {
               "type": "frame",
-              "id": "vksiJ",
-              "name": "pill",
-              "context": "classification=semantic; semantic_id=recording-indicator.pill; test_id=recording-indicator-pill; role=container",
-              "height": 42,
-              "fill": "$pf-palette-overlay-surface",
-              "cornerRadius": 24,
-              "stroke": "$pf-palette-overlay-border",
-              "strokeWidth": 1,
-              "strokeAlignment": "inner",
-              "padding": [
-                1,
-                11
-              ],
-              "justifyContent": "space_between",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "j7JHqR",
-                  "name": "Left",
-                  "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=overlay-grid",
-                  "width": 57,
-                  "padding": [
-                    0,
-                    0,
-                    0,
-                    5
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "ellipse",
-                      "id": "gX6UD",
-                      "name": "Live dot",
-                      "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 7,
-                      "height": 7
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "dOIBV",
-                  "name": "Waveform",
-                  "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=status-visual",
-                  "height": 18,
-                  "gap": 3,
-                  "padding": [
-                    0,
-                    8,
-                    0,
-                    0
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "B0hKk",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 5
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "LsoLM",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 9
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "hFwqX",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 14
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "dUQBz",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 18
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "gROPg",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "luR1x",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 16
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "CMTjy",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 8
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "qxcTm",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 11
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "g5T3Z",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 6
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "SMOjM",
-                  "name": "Right",
-                  "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=overlay-grid",
-                  "width": 57,
-                  "gap": 10,
-                  "justifyContent": "end",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "jAbwF",
-                      "name": "0:07",
-                      "context": "classification=semantic; semantic_id=recording-indicator.pill.timer; test_id=recording-indicator-pill-timer; role=text",
-                      "fill": "$pf-palette-overlay-faint",
-                      "content": "0:07",
-                      "lineHeight": 1.3333,
-                      "fontFamily": "$pf-font-sans",
-                      "fontSize": 12
-                    },
-                    {
-                      "id": "JSCzS",
-                      "type": "ref",
-                      "ref": "UljSg",
-                      "name": "Cancel",
-                      "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=handy-overlay-cancel"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "f6iavt",
+              "id": "taDDV",
               "name": "Minimal correction",
               "context": "classification=semantic; semantic_id=recording-indicator.prompt; test_id=recording-indicator-prompt; role=button; intent=recording-indicator.prompt",
-              "height": 42,
+              "width": 192,
+              "height": 49,
               "fill": "$pf-palette-overlay-surface",
-              "cornerRadius": 24,
+              "cornerRadius": 16,
               "stroke": "$pf-palette-overlay-border",
               "strokeWidth": 1,
               "strokeAlignment": "inner",
-              "gap": 7.5,
-              "padding": [
-                1,
-                15
-              ],
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "icon",
-                  "id": "SVmXI",
-                  "name": "Icon sparkles",
-                  "context": "classification=inherited; inherits_from=recording-indicator.prompt; relation=icon",
-                  "width": 14,
-                  "height": 14,
-                  "icon": "sparkles",
-                  "library": "lucide",
-                  "fill": "$pf-palette-logo"
-                },
-                {
-                  "type": "text",
-                  "id": "gYjP7",
-                  "name": "Label",
-                  "context": "classification=inherited; inherits_from=recording-indicator.prompt; relation=content",
-                  "fill": "$pf-palette-overlay-text",
-                  "content": "Minimal correction",
-                  "lineHeight": 1.3333,
-                  "fontFamily": "$pf-font-sans",
-                  "fontSize": 12,
-                  "fontWeight": "500"
-                },
-                {
-                  "id": "hgYWj",
-                  "type": "ref",
-                  "ref": "BMrSO",
-                  "name": "Chevron",
-                  "stroke": "$pf-palette-overlay-muted",
-                  "context": "classification=inherited; inherits_from=recording-indicator.prompt; relation=icon"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "T0ni9y",
-              "name": "destination",
-              "context": "classification=semantic; semantic_id=recording-indicator.destination; test_id=recording-indicator-destination; role=button; intent=recording-indicator.destination",
-              "height": 42,
-              "fill": "$pf-palette-overlay-surface",
-              "cornerRadius": 24,
-              "stroke": "$pf-palette-overlay-border",
-              "strokeWidth": 1,
-              "strokeAlignment": "inner",
-              "gap": 7.5,
-              "padding": [
-                1,
-                15
-              ],
-              "alignItems": "center",
+              "layout": "none",
               "children": [
                 {
                   "type": "frame",
-                  "id": "w0IeFu",
-                  "name": "App icon C",
-                  "context": "classification=decorative; decorative_owner=recording-indicator.destination; decorative_reason=app-icon",
-                  "width": 20,
-                  "height": 20,
-                  "fill": "$pf-palette-app-green",
+                  "id": "gq9GS",
+                  "x": 12,
+                  "y": 15,
+                  "name": "Shortcut badge",
+                  "context": "classification=decorative; decorative_owner=recording-indicator.prompt; decorative_reason=layout",
                   "cornerRadius": 5.625,
-                  "justifyContent": "center",
+                  "stroke": "$pf-palette-overlay-border",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "padding": [
+                    2,
+                    6
+                  ],
                   "alignItems": "center",
                   "children": [
                     {
                       "type": "text",
-                      "id": "qzW6j",
-                      "name": "Letter",
-                      "context": "classification=decorative; decorative_owner=recording-indicator.destination; decorative_reason=app-icon",
-                      "fill": "$pf-primary-foreground",
-                      "content": "C",
+                      "id": "V94r1I",
+                      "name": "⌃ ⌥ M",
+                      "context": "classification=semantic; semantic_id=recording-indicator.prompt.shortcut; test_id=recording-indicator-prompt-shortcut; role=text",
+                      "fill": "$pf-palette-overlay-muted",
+                      "content": "⌃ ⌥ M",
                       "lineHeight": 1.3333,
                       "fontFamily": "$pf-font-sans",
                       "fontSize": 11.25,
@@ -12357,33 +12126,310 @@
                 },
                 {
                   "type": "text",
-                  "id": "xob7Y",
-                  "name": "ChatGPT",
-                  "context": "classification=semantic; semantic_id=recording-indicator.destination.name; test_id=recording-indicator-destination-name; role=text",
+                  "id": "N8eGv",
+                  "x": 69,
+                  "y": 8,
+                  "name": "Label",
+                  "context": "classification=inherited; inherits_from=recording-indicator.prompt; relation=content",
                   "fill": "$pf-palette-overlay-text",
-                  "content": "ChatGPT",
+                  "content": "Minimal correction",
                   "lineHeight": 1.3333,
                   "fontFamily": "$pf-font-sans",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "600"
                 },
                 {
+                  "type": "text",
+                  "id": "hz3PN",
+                  "x": 69,
+                  "y": 26,
+                  "name": "Hover hint",
+                  "context": "classification=semantic; semantic_id=recording-indicator.prompt.hint; test_id=recording-indicator-prompt-hint; role=text",
+                  "fill": "$pf-palette-overlay-muted",
+                  "content": "Hover to see options",
+                  "lineHeight": 1.3333,
+                  "fontFamily": "$pf-font-sans",
+                  "fontSize": 11.25,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "KPziu",
+              "name": "Indicator",
+              "context": "classification=decorative; decorative_owner=recording-indicator.bar; decorative_reason=layout",
+              "fill": "$pf-palette-overlay-surface",
+              "cornerRadius": 24,
+              "stroke": "$pf-palette-overlay-border",
+              "strokeWidth": 1,
+              "strokeAlignment": "inner",
+              "gap": 4,
+              "padding": 3,
+              "alignItems": "center",
+              "children": [
+                {
                   "type": "frame",
-                  "id": "IUNU0",
-                  "name": "destination.remove",
-                  "context": "classification=semantic; semantic_id=recording-indicator.destination.remove; test_id=recording-indicator-destination-remove; role=button; intent=recording-indicator.destination.remove",
-                  "width": 22,
-                  "height": 22,
-                  "fill": "$pf-palette-overlay-hair",
-                  "cornerRadius": 11,
-                  "justifyContent": "center",
+                  "id": "EctBj",
+                  "name": "destination",
+                  "context": "classification=semantic; semantic_id=recording-indicator.destination; test_id=recording-indicator-destination; role=button; intent=recording-indicator.destination",
+                  "height": 36,
+                  "cornerRadius": 18,
+                  "gap": 7.5,
+                  "padding": [
+                    0,
+                    7.5,
+                    0,
+                    8
+                  ],
                   "alignItems": "center",
                   "children": [
                     {
-                      "id": "braaO",
-                      "type": "ref",
-                      "ref": "gqaL9",
-                      "name": "X",
-                      "context": "classification=inherited; inherits_from=recording-indicator.destination.remove; relation=icon"
+                      "type": "frame",
+                      "id": "fJEvo",
+                      "name": "App icon C",
+                      "context": "classification=decorative; decorative_owner=recording-indicator.destination; decorative_reason=app-icon",
+                      "width": 20,
+                      "height": 20,
+                      "fill": "$pf-palette-app-green",
+                      "cornerRadius": 5.625,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "W5w53",
+                          "name": "Letter",
+                          "context": "classification=decorative; decorative_owner=recording-indicator.destination; decorative_reason=app-icon",
+                          "fill": "$pf-primary-foreground",
+                          "content": "C",
+                          "lineHeight": 1.3333,
+                          "fontFamily": "$pf-font-sans",
+                          "fontSize": 11.25,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "zsDo8",
+                      "name": "ChatGPT",
+                      "context": "classification=semantic; semantic_id=recording-indicator.destination.name; test_id=recording-indicator-destination-name; role=text",
+                      "fill": "$pf-palette-overlay-text",
+                      "content": "ChatGPT",
+                      "lineHeight": 1.3333,
+                      "fontFamily": "$pf-font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "jecBb",
+                      "name": "destination.remove",
+                      "context": "classification=semantic; semantic_id=recording-indicator.destination.remove; test_id=recording-indicator-destination-remove; role=button; intent=recording-indicator.destination.remove",
+                      "width": 22,
+                      "height": 22,
+                      "fill": "$pf-palette-overlay-hair",
+                      "cornerRadius": 11,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "pVYyE",
+                          "type": "ref",
+                          "ref": "gqaL9",
+                          "name": "X",
+                          "context": "classification=inherited; inherits_from=recording-indicator.destination.remove; relation=icon"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "pL44w",
+                  "name": "Divider",
+                  "context": "classification=decorative; decorative_owner=recording-indicator.bar; decorative_reason=divider",
+                  "fill": "$pf-palette-overlay-border",
+                  "width": 1,
+                  "height": 20
+                },
+                {
+                  "type": "frame",
+                  "id": "BDopZ",
+                  "name": "pill",
+                  "context": "classification=semantic; semantic_id=recording-indicator.pill; test_id=recording-indicator-pill; role=container",
+                  "height": 36,
+                  "cornerRadius": 24,
+                  "gap": 8,
+                  "padding": [
+                    0,
+                    7.5,
+                    0,
+                    4
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "OmGhN",
+                      "name": "Left",
+                      "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=overlay-grid",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        5
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "ellipse",
+                          "id": "s4MfB",
+                          "name": "Live dot",
+                          "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 7,
+                          "height": 7
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "IMVml",
+                      "name": "Waveform",
+                      "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=status-visual",
+                      "height": 18,
+                      "gap": 3,
+                      "padding": [
+                        0,
+                        8,
+                        0,
+                        0
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "v2Q0P",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 5
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "U4qVR",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 9
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "Q91XM",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 14
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "G40DKg",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 18
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "oXhS2",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "ra8zX",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 16
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "Nn4wP",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 8
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "L16gz",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 11
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "G9l1Qs",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 6
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "CEOh9",
+                      "name": "Right",
+                      "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=overlay-grid",
+                      "gap": 10,
+                      "justifyContent": "end",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "y4du7T",
+                          "name": "0:07",
+                          "context": "classification=semantic; semantic_id=recording-indicator.pill.timer; test_id=recording-indicator-pill-timer; role=text",
+                          "fill": "$pf-palette-overlay-faint",
+                          "content": "0:07",
+                          "lineHeight": 1.3333,
+                          "fontFamily": "$pf-font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "id": "pXlOi",
+                          "type": "ref",
+                          "ref": "UljSg",
+                          "name": "Cancel",
+                          "context": "classification=decorative; decorative_owner=recording-indicator.pill; decorative_reason=handy-overlay-cancel"
+                        }
+                      ]
                     }
                   ]
                 }
@@ -12395,7 +12441,7 @@
     },
     {
       "type": "frame",
-      "id": "LIs41",
+      "id": "Vd7ee",
       "x": 640,
       "y": 4099,
       "name": "Recording indicator — destination menu",
@@ -12412,7 +12458,7 @@
       "children": [
         {
           "type": "frame",
-          "id": "j2Ffh",
+          "id": "SeRrU",
           "name": "menu",
           "context": "classification=semantic; semantic_id=recording-indicator-destination-menu.menu; test_id=recording-indicator-destination-menu-menu; role=container",
           "width": 260,
@@ -12427,7 +12473,7 @@
           "children": [
             {
               "type": "frame",
-              "id": "gwnJq",
+              "id": "jOSx8",
               "name": "Frontmost now",
               "context": "classification=semantic; semantic_id=recording-indicator-destination-menu.menu.now-label; test_id=recording-indicator-destination-menu-menu-now-label; role=text",
               "padding": [
@@ -12439,7 +12485,7 @@
               "children": [
                 {
                   "type": "text",
-                  "id": "X8zYPw",
+                  "id": "nxufM",
                   "name": "Section label",
                   "context": "classification=inherited; inherits_from=recording-indicator-destination-menu.menu.now-label; relation=content",
                   "fill": "$pf-palette-overlay-muted",
@@ -12453,7 +12499,7 @@
             },
             {
               "type": "frame",
-              "id": "uxda3",
+              "id": "L8njCb",
               "name": "Comet",
               "context": "classification=semantic; semantic_id=recording-indicator-destination-menu.menu.frontmost; test_id=recording-indicator-destination-menu-menu-frontmost; role=button; intent=recording-indicator-destination-menu.menu.frontmost",
               "width": "fill_container",
@@ -12464,7 +12510,7 @@
               "children": [
                 {
                   "type": "frame",
-                  "id": "zAYDZ",
+                  "id": "OTYEL",
                   "name": "App icon M",
                   "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.menu.frontmost; decorative_reason=app-icon",
                   "width": 20,
@@ -12476,7 +12522,7 @@
                   "children": [
                     {
                       "type": "text",
-                      "id": "dRDyl",
+                      "id": "FwkCE",
                       "name": "Letter",
                       "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.menu.frontmost; decorative_reason=app-icon",
                       "fill": "$pf-primary-foreground",
@@ -12490,7 +12536,7 @@
                 },
                 {
                   "type": "text",
-                  "id": "NKJhc",
+                  "id": "FwO9R",
                   "name": "Item label",
                   "context": "classification=inherited; inherits_from=recording-indicator-destination-menu.menu.frontmost; relation=content",
                   "fill": "$pf-palette-overlay-text",
@@ -12506,7 +12552,7 @@
             },
             {
               "type": "frame",
-              "id": "j8EPD",
+              "id": "K3AWUk",
               "name": "Other apps",
               "context": "classification=semantic; semantic_id=recording-indicator-destination-menu.menu.others-label; test_id=recording-indicator-destination-menu-menu-others-label; role=text",
               "padding": [
@@ -12518,7 +12564,7 @@
               "children": [
                 {
                   "type": "text",
-                  "id": "Y1pd3",
+                  "id": "Ct27k",
                   "name": "Section label",
                   "context": "classification=inherited; inherits_from=recording-indicator-destination-menu.menu.others-label; relation=content",
                   "fill": "$pf-palette-overlay-muted",
@@ -12532,7 +12578,7 @@
             },
             {
               "type": "frame",
-              "id": "x6Y669",
+              "id": "cMYyW",
               "name": "ChatGPT",
               "context": "classification=semantic; semantic_id=recording-indicator-destination-menu.menu.app; test_id=recording-indicator-destination-menu-menu-app; role=button; intent=recording-indicator-destination-menu.menu.app; repeat=bundle_id in destination_menu.apps",
               "width": "fill_container",
@@ -12544,7 +12590,7 @@
               "children": [
                 {
                   "type": "frame",
-                  "id": "dP1l2",
+                  "id": "BS8M8",
                   "name": "App icon C",
                   "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.menu.app; decorative_reason=app-icon",
                   "width": 20,
@@ -12556,7 +12602,7 @@
                   "children": [
                     {
                       "type": "text",
-                      "id": "BKW94",
+                      "id": "s9n9t",
                       "name": "Letter",
                       "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.menu.app; decorative_reason=app-icon",
                       "fill": "$pf-primary-foreground",
@@ -12570,7 +12616,7 @@
                 },
                 {
                   "type": "text",
-                  "id": "xAJ7N",
+                  "id": "XDMXk",
                   "name": "Item label",
                   "context": "classification=inherited; inherits_from=recording-indicator-destination-menu.menu.app; relation=content",
                   "fill": "$pf-palette-overlay-text",
@@ -12584,7 +12630,7 @@
                 },
                 {
                   "type": "icon",
-                  "id": "AwXwl",
+                  "id": "zFhtK",
                   "name": "Icon check",
                   "context": "classification=inherited; inherits_from=recording-indicator-destination-menu.menu.app; relation=icon",
                   "width": 14,
@@ -12597,7 +12643,7 @@
             },
             {
               "type": "frame",
-              "id": "JHAf4",
+              "id": "csd7k",
               "name": "Notes",
               "context": "classification=inherited; inherits_from=recording-indicator-destination-menu.menu; relation=repeat-instance",
               "width": "fill_container",
@@ -12608,7 +12654,7 @@
               "children": [
                 {
                   "type": "frame",
-                  "id": "umN1y",
+                  "id": "LvgcO",
                   "name": "App icon N",
                   "context": "classification=inherited; inherits_from=recording-indicator-destination-menu.menu; relation=repeat-instance",
                   "width": 20,
@@ -12620,7 +12666,7 @@
                   "children": [
                     {
                       "type": "text",
-                      "id": "F9luN",
+                      "id": "NnwCi",
                       "name": "Letter",
                       "context": "classification=inherited; inherits_from=recording-indicator-destination-menu.menu; relation=repeat-instance",
                       "fill": "$pf-primary-foreground",
@@ -12634,7 +12680,7 @@
                 },
                 {
                   "type": "text",
-                  "id": "n6ryv",
+                  "id": "RJHCr",
                   "name": "Item label",
                   "context": "classification=inherited; inherits_from=recording-indicator-destination-menu.menu; relation=repeat-instance",
                   "fill": "$pf-palette-overlay-text",
@@ -12650,7 +12696,7 @@
             },
             {
               "type": "frame",
-              "id": "I7jPt1",
+              "id": "tyXQq",
               "name": "TextEdit",
               "context": "classification=inherited; inherits_from=recording-indicator-destination-menu.menu; relation=repeat-instance",
               "width": "fill_container",
@@ -12661,7 +12707,7 @@
               "children": [
                 {
                   "type": "frame",
-                  "id": "Yy4t4",
+                  "id": "n1KwR",
                   "name": "App icon T",
                   "context": "classification=inherited; inherits_from=recording-indicator-destination-menu.menu; relation=repeat-instance",
                   "width": 20,
@@ -12673,7 +12719,7 @@
                   "children": [
                     {
                       "type": "text",
-                      "id": "WzZax",
+                      "id": "m83kT",
                       "name": "Letter",
                       "context": "classification=inherited; inherits_from=recording-indicator-destination-menu.menu; relation=repeat-instance",
                       "fill": "$pf-primary-foreground",
@@ -12687,7 +12733,7 @@
                 },
                 {
                   "type": "text",
-                  "id": "osuCD",
+                  "id": "pXghj",
                   "name": "Item label",
                   "context": "classification=inherited; inherits_from=recording-indicator-destination-menu.menu; relation=repeat-instance",
                   "fill": "$pf-palette-overlay-text",
@@ -12703,7 +12749,7 @@
             },
             {
               "type": "rectangle",
-              "id": "G9zSFd",
+              "id": "pBgNP",
               "name": "Divider",
               "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.menu; decorative_reason=divider",
               "fill": "$pf-palette-overlay-hair",
@@ -12712,7 +12758,7 @@
             },
             {
               "type": "frame",
-              "id": "P98TFv",
+              "id": "IoGN4",
               "name": "Frontmost app at the end",
               "context": "classification=semantic; semantic_id=recording-indicator-destination-menu.menu.frontmost-at-end; test_id=recording-indicator-destination-menu-menu-frontmost-at-end; role=button; intent=recording-indicator-destination-menu.menu.frontmost-at-end",
               "width": "fill_container",
@@ -12723,7 +12769,7 @@
               "children": [
                 {
                   "type": "icon",
-                  "id": "GoZ9D",
+                  "id": "elsdC",
                   "name": "Icon app-window",
                   "context": "classification=inherited; inherits_from=recording-indicator-destination-menu.menu.frontmost-at-end; relation=icon",
                   "width": 14,
@@ -12734,7 +12780,7 @@
                 },
                 {
                   "type": "text",
-                  "id": "C9cRL",
+                  "id": "ORN2E",
                   "name": "Item label",
                   "context": "classification=inherited; inherits_from=recording-indicator-destination-menu.menu.frontmost-at-end; relation=content",
                   "fill": "$pf-palette-overlay-text",
@@ -12750,7 +12796,7 @@
             },
             {
               "type": "frame",
-              "id": "SX3Z7",
+              "id": "VYFRs",
               "name": "Pin ChatGPT",
               "context": "classification=semantic; semantic_id=recording-indicator-destination-menu.menu.pin; test_id=recording-indicator-destination-menu-menu-pin; role=button; intent=recording-indicator-destination-menu.menu.pin",
               "width": "fill_container",
@@ -12761,7 +12807,7 @@
               "children": [
                 {
                   "type": "icon",
-                  "id": "ARyNL",
+                  "id": "B19ONU",
                   "name": "Icon pin",
                   "context": "classification=inherited; inherits_from=recording-indicator-destination-menu.menu.pin; relation=icon",
                   "width": 14,
@@ -12772,7 +12818,7 @@
                 },
                 {
                   "type": "text",
-                  "id": "WHoA1",
+                  "id": "Kf69b",
                   "name": "Item label",
                   "context": "classification=inherited; inherits_from=recording-indicator-destination-menu.menu.pin; relation=content",
                   "fill": "$pf-palette-overlay-text",
@@ -12790,282 +12836,51 @@
         },
         {
           "type": "frame",
-          "id": "Q3iiE",
+          "id": "a2ttVr",
           "name": "bar",
           "context": "classification=semantic; semantic_id=recording-indicator-destination-menu.bar; test_id=recording-indicator-destination-menu-bar; role=container",
-          "gap": 7.5,
+          "layout": "vertical",
+          "gap": 8,
           "alignItems": "center",
           "children": [
             {
               "type": "frame",
-              "id": "xZcEi",
-              "name": "pill",
-              "context": "classification=semantic; semantic_id=recording-indicator-destination-menu.pill; test_id=recording-indicator-destination-menu-pill; role=container",
-              "height": 42,
-              "fill": "$pf-palette-overlay-surface",
-              "cornerRadius": 24,
-              "stroke": "$pf-palette-overlay-border",
-              "strokeWidth": 1,
-              "strokeAlignment": "inner",
-              "padding": [
-                1,
-                11
-              ],
-              "justifyContent": "space_between",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "G9nbj",
-                  "name": "Left",
-                  "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=overlay-grid",
-                  "width": 57,
-                  "padding": [
-                    0,
-                    0,
-                    0,
-                    5
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "ellipse",
-                      "id": "jzAL2",
-                      "name": "Live dot",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 7,
-                      "height": 7
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "folrx",
-                  "name": "Waveform",
-                  "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=status-visual",
-                  "height": 18,
-                  "gap": 3,
-                  "padding": [
-                    0,
-                    8,
-                    0,
-                    0
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "MF20i",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 5
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "k1xVXL",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 9
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "YRofV",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 14
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "LtEXn",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 18
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "UPxpY",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "yv7vW",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 16
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "tOo3X",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 8
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "J4uqDz",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 11
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "IcYhz",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 6
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "J5SlD",
-                  "name": "Right",
-                  "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=overlay-grid",
-                  "width": 57,
-                  "gap": 10,
-                  "justifyContent": "end",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "xfb3j",
-                      "name": "0:07",
-                      "context": "classification=semantic; semantic_id=recording-indicator-destination-menu.pill.timer; test_id=recording-indicator-destination-menu-pill-timer; role=text",
-                      "fill": "$pf-palette-overlay-faint",
-                      "content": "0:07",
-                      "lineHeight": 1.3333,
-                      "fontFamily": "$pf-font-sans",
-                      "fontSize": 12
-                    },
-                    {
-                      "id": "FtG3P",
-                      "type": "ref",
-                      "ref": "UljSg",
-                      "name": "Cancel",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=handy-overlay-cancel"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "Yrn1Y",
+              "id": "p4Apt",
               "name": "Minimal correction",
               "context": "classification=semantic; semantic_id=recording-indicator-destination-menu.prompt; test_id=recording-indicator-destination-menu-prompt; role=button; intent=recording-indicator-destination-menu.prompt",
-              "height": 42,
+              "width": 192,
+              "height": 49,
               "fill": "$pf-palette-overlay-surface",
-              "cornerRadius": 24,
+              "cornerRadius": 16,
               "stroke": "$pf-palette-overlay-border",
               "strokeWidth": 1,
               "strokeAlignment": "inner",
-              "gap": 7.5,
-              "padding": [
-                1,
-                15
-              ],
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "icon",
-                  "id": "SXUnJ",
-                  "name": "Icon sparkles",
-                  "context": "classification=inherited; inherits_from=recording-indicator-destination-menu.prompt; relation=icon",
-                  "width": 14,
-                  "height": 14,
-                  "icon": "sparkles",
-                  "library": "lucide",
-                  "fill": "$pf-palette-logo"
-                },
-                {
-                  "type": "text",
-                  "id": "hA93U",
-                  "name": "Label",
-                  "context": "classification=inherited; inherits_from=recording-indicator-destination-menu.prompt; relation=content",
-                  "fill": "$pf-palette-overlay-text",
-                  "content": "Minimal correction",
-                  "lineHeight": 1.3333,
-                  "fontFamily": "$pf-font-sans",
-                  "fontSize": 12,
-                  "fontWeight": "500"
-                },
-                {
-                  "id": "eKOdT",
-                  "type": "ref",
-                  "ref": "BMrSO",
-                  "name": "Chevron",
-                  "stroke": "$pf-palette-overlay-muted",
-                  "context": "classification=inherited; inherits_from=recording-indicator-destination-menu.prompt; relation=icon"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "bprzB",
-              "name": "destination",
-              "context": "classification=semantic; semantic_id=recording-indicator-destination-menu.destination; test_id=recording-indicator-destination-menu-destination; role=button; intent=recording-indicator-destination-menu.destination",
-              "height": 42,
-              "fill": "$pf-palette-overlay-surface",
-              "cornerRadius": 24,
-              "stroke": "$pf-palette-overlay-border",
-              "strokeWidth": 1,
-              "strokeAlignment": "inner",
-              "gap": 7.5,
-              "padding": [
-                1,
-                15
-              ],
-              "alignItems": "center",
+              "layout": "none",
               "children": [
                 {
                   "type": "frame",
-                  "id": "BvKFZ",
-                  "name": "App icon C",
-                  "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.destination; decorative_reason=app-icon",
-                  "width": 20,
-                  "height": 20,
-                  "fill": "$pf-palette-app-green",
+                  "id": "LX52y",
+                  "x": 12,
+                  "y": 15,
+                  "name": "Shortcut badge",
+                  "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.prompt; decorative_reason=layout",
                   "cornerRadius": 5.625,
-                  "justifyContent": "center",
+                  "stroke": "$pf-palette-overlay-border",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "padding": [
+                    2,
+                    6
+                  ],
                   "alignItems": "center",
                   "children": [
                     {
                       "type": "text",
-                      "id": "vdql6",
-                      "name": "Letter",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.destination; decorative_reason=app-icon",
-                      "fill": "$pf-primary-foreground",
-                      "content": "C",
+                      "id": "ySQ6F",
+                      "name": "⌃ ⌥ M",
+                      "context": "classification=semantic; semantic_id=recording-indicator-destination-menu.prompt.shortcut; test_id=recording-indicator-destination-menu-prompt-shortcut; role=text",
+                      "fill": "$pf-palette-overlay-muted",
+                      "content": "⌃ ⌥ M",
                       "lineHeight": 1.3333,
                       "fontFamily": "$pf-font-sans",
                       "fontSize": 11.25,
@@ -13075,33 +12890,310 @@
                 },
                 {
                   "type": "text",
-                  "id": "ugzEm",
-                  "name": "ChatGPT",
-                  "context": "classification=semantic; semantic_id=recording-indicator-destination-menu.destination.name; test_id=recording-indicator-destination-menu-destination-name; role=text",
+                  "id": "EgDYI",
+                  "x": 69,
+                  "y": 8,
+                  "name": "Label",
+                  "context": "classification=inherited; inherits_from=recording-indicator-destination-menu.prompt; relation=content",
                   "fill": "$pf-palette-overlay-text",
-                  "content": "ChatGPT",
+                  "content": "Minimal correction",
                   "lineHeight": 1.3333,
                   "fontFamily": "$pf-font-sans",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "600"
                 },
                 {
+                  "type": "text",
+                  "id": "qo1kN",
+                  "x": 69,
+                  "y": 26,
+                  "name": "Hover hint",
+                  "context": "classification=semantic; semantic_id=recording-indicator-destination-menu.prompt.hint; test_id=recording-indicator-destination-menu-prompt-hint; role=text",
+                  "fill": "$pf-palette-overlay-muted",
+                  "content": "Hover to see options",
+                  "lineHeight": 1.3333,
+                  "fontFamily": "$pf-font-sans",
+                  "fontSize": 11.25,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "mq2OS",
+              "name": "Indicator",
+              "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.bar; decorative_reason=layout",
+              "fill": "$pf-palette-overlay-surface",
+              "cornerRadius": 24,
+              "stroke": "$pf-palette-overlay-border",
+              "strokeWidth": 1,
+              "strokeAlignment": "inner",
+              "gap": 4,
+              "padding": 3,
+              "alignItems": "center",
+              "children": [
+                {
                   "type": "frame",
-                  "id": "BXnOQ",
-                  "name": "destination.remove",
-                  "context": "classification=semantic; semantic_id=recording-indicator-destination-menu.destination.remove; test_id=recording-indicator-destination-menu-destination-remove; role=button; intent=recording-indicator-destination-menu.destination.remove",
-                  "width": 22,
-                  "height": 22,
-                  "fill": "$pf-palette-overlay-hair",
-                  "cornerRadius": 11,
-                  "justifyContent": "center",
+                  "id": "Vwo4O",
+                  "name": "destination",
+                  "context": "classification=semantic; semantic_id=recording-indicator-destination-menu.destination; test_id=recording-indicator-destination-menu-destination; role=button; intent=recording-indicator-destination-menu.destination",
+                  "height": 36,
+                  "cornerRadius": 18,
+                  "gap": 7.5,
+                  "padding": [
+                    0,
+                    7.5,
+                    0,
+                    8
+                  ],
                   "alignItems": "center",
                   "children": [
                     {
-                      "id": "UvNH9",
-                      "type": "ref",
-                      "ref": "gqaL9",
-                      "name": "X",
-                      "context": "classification=inherited; inherits_from=recording-indicator-destination-menu.destination.remove; relation=icon"
+                      "type": "frame",
+                      "id": "xGEo1",
+                      "name": "App icon C",
+                      "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.destination; decorative_reason=app-icon",
+                      "width": 20,
+                      "height": 20,
+                      "fill": "$pf-palette-app-green",
+                      "cornerRadius": 5.625,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "fayZ9",
+                          "name": "Letter",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.destination; decorative_reason=app-icon",
+                          "fill": "$pf-primary-foreground",
+                          "content": "C",
+                          "lineHeight": 1.3333,
+                          "fontFamily": "$pf-font-sans",
+                          "fontSize": 11.25,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "I0j65r",
+                      "name": "ChatGPT",
+                      "context": "classification=semantic; semantic_id=recording-indicator-destination-menu.destination.name; test_id=recording-indicator-destination-menu-destination-name; role=text",
+                      "fill": "$pf-palette-overlay-text",
+                      "content": "ChatGPT",
+                      "lineHeight": 1.3333,
+                      "fontFamily": "$pf-font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "T0sh4U",
+                      "name": "destination.remove",
+                      "context": "classification=semantic; semantic_id=recording-indicator-destination-menu.destination.remove; test_id=recording-indicator-destination-menu-destination-remove; role=button; intent=recording-indicator-destination-menu.destination.remove",
+                      "width": 22,
+                      "height": 22,
+                      "fill": "$pf-palette-overlay-hair",
+                      "cornerRadius": 11,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "eq8lN",
+                          "type": "ref",
+                          "ref": "gqaL9",
+                          "name": "X",
+                          "context": "classification=inherited; inherits_from=recording-indicator-destination-menu.destination.remove; relation=icon"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "dqGyw",
+                  "name": "Divider",
+                  "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.bar; decorative_reason=divider",
+                  "fill": "$pf-palette-overlay-border",
+                  "width": 1,
+                  "height": 20
+                },
+                {
+                  "type": "frame",
+                  "id": "u8ytK",
+                  "name": "pill",
+                  "context": "classification=semantic; semantic_id=recording-indicator-destination-menu.pill; test_id=recording-indicator-destination-menu-pill; role=container",
+                  "height": 36,
+                  "cornerRadius": 24,
+                  "gap": 8,
+                  "padding": [
+                    0,
+                    7.5,
+                    0,
+                    4
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "I9WC1",
+                      "name": "Left",
+                      "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=overlay-grid",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        5
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "ellipse",
+                          "id": "mcwho",
+                          "name": "Live dot",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 7,
+                          "height": 7
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "W3PdA",
+                      "name": "Waveform",
+                      "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=status-visual",
+                      "height": 18,
+                      "gap": 3,
+                      "padding": [
+                        0,
+                        8,
+                        0,
+                        0
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "grPYy",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 5
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "XL6dg",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 9
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "U9Rnt",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 14
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "BRZxj",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 18
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "p6Svw",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "YHvpy",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 16
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "giDIn",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 8
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "Anyp4",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 11
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "YdKB8",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 6
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "q7MWRG",
+                      "name": "Right",
+                      "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=overlay-grid",
+                      "gap": 10,
+                      "justifyContent": "end",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "flptV",
+                          "name": "0:07",
+                          "context": "classification=semantic; semantic_id=recording-indicator-destination-menu.pill.timer; test_id=recording-indicator-destination-menu-pill-timer; role=text",
+                          "fill": "$pf-palette-overlay-faint",
+                          "content": "0:07",
+                          "lineHeight": 1.3333,
+                          "fontFamily": "$pf-font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "id": "wDDvF",
+                          "type": "ref",
+                          "ref": "UljSg",
+                          "name": "Cancel",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-destination-menu.pill; decorative_reason=handy-overlay-cancel"
+                        }
+                      ]
                     }
                   ]
                 }
@@ -13113,7 +13205,7 @@
     },
     {
       "type": "frame",
-      "id": "NASF3",
+      "id": "xNRo2",
       "x": 1280,
       "y": 4099,
       "name": "Recording indicator — frontmost app",
@@ -13130,226 +13222,63 @@
       "children": [
         {
           "type": "frame",
-          "id": "z46hRJ",
+          "id": "B9oQl",
           "name": "bar",
           "context": "classification=semantic; semantic_id=recording-indicator-no-destination.bar; test_id=recording-indicator-no-destination-bar; role=container",
-          "gap": 7.5,
+          "layout": "vertical",
+          "gap": 8,
           "alignItems": "center",
           "children": [
             {
               "type": "frame",
-              "id": "e9Qmf",
-              "name": "pill",
-              "context": "classification=semantic; semantic_id=recording-indicator-no-destination.pill; test_id=recording-indicator-no-destination-pill; role=container",
-              "height": 42,
+              "id": "Xc9fH",
+              "name": "Minimal correction",
+              "context": "classification=semantic; semantic_id=recording-indicator-no-destination.prompt; test_id=recording-indicator-no-destination-prompt; role=button; intent=recording-indicator-no-destination.prompt",
+              "width": 192,
+              "height": 49,
               "fill": "$pf-palette-overlay-surface",
-              "cornerRadius": 24,
+              "cornerRadius": 16,
               "stroke": "$pf-palette-overlay-border",
               "strokeWidth": 1,
               "strokeAlignment": "inner",
-              "padding": [
-                1,
-                11
-              ],
-              "justifyContent": "space_between",
-              "alignItems": "center",
+              "layout": "none",
               "children": [
                 {
                   "type": "frame",
-                  "id": "lts0S",
-                  "name": "Left",
-                  "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=overlay-grid",
-                  "width": 57,
+                  "id": "rN8E9",
+                  "x": 12,
+                  "y": 15,
+                  "name": "Shortcut badge",
+                  "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.prompt; decorative_reason=layout",
+                  "cornerRadius": 5.625,
+                  "stroke": "$pf-palette-overlay-border",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
                   "padding": [
-                    0,
-                    0,
-                    0,
-                    5
+                    2,
+                    6
                   ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "ellipse",
-                      "id": "cGCOj",
-                      "name": "Live dot",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 7,
-                      "height": 7
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "trrRq",
-                  "name": "Waveform",
-                  "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=status-visual",
-                  "height": 18,
-                  "gap": 3,
-                  "padding": [
-                    0,
-                    8,
-                    0,
-                    0
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "L768T",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 5
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "SytWn",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 9
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "vmJEJ",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 14
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "w8cbtb",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 18
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "U6yN5",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "Dkwju",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 16
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "g0G8J",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 8
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "suVmv",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 11
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "zOtIB",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 6
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "IxpIH",
-                  "name": "Right",
-                  "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=overlay-grid",
-                  "width": 57,
-                  "gap": 10,
-                  "justifyContent": "end",
                   "alignItems": "center",
                   "children": [
                     {
                       "type": "text",
-                      "id": "uOfgX",
-                      "name": "0:07",
-                      "context": "classification=semantic; semantic_id=recording-indicator-no-destination.pill.timer; test_id=recording-indicator-no-destination-pill-timer; role=text",
-                      "fill": "$pf-palette-overlay-faint",
-                      "content": "0:07",
+                      "id": "epBgL",
+                      "name": "⌃ ⌥ M",
+                      "context": "classification=semantic; semantic_id=recording-indicator-no-destination.prompt.shortcut; test_id=recording-indicator-no-destination-prompt-shortcut; role=text",
+                      "fill": "$pf-palette-overlay-muted",
+                      "content": "⌃ ⌥ M",
                       "lineHeight": 1.3333,
                       "fontFamily": "$pf-font-sans",
-                      "fontSize": 12
-                    },
-                    {
-                      "id": "wlzgM",
-                      "type": "ref",
-                      "ref": "UljSg",
-                      "name": "Cancel",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=handy-overlay-cancel"
+                      "fontSize": 11.25,
+                      "fontWeight": "600"
                     }
                   ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "Eu7kc",
-              "name": "Minimal correction",
-              "context": "classification=semantic; semantic_id=recording-indicator-no-destination.prompt; test_id=recording-indicator-no-destination-prompt; role=button; intent=recording-indicator-no-destination.prompt",
-              "height": 42,
-              "fill": "$pf-palette-overlay-surface",
-              "cornerRadius": 24,
-              "stroke": "$pf-palette-overlay-border",
-              "strokeWidth": 1,
-              "strokeAlignment": "inner",
-              "gap": 7.5,
-              "padding": [
-                1,
-                15
-              ],
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "icon",
-                  "id": "N3g86H",
-                  "name": "Icon sparkles",
-                  "context": "classification=inherited; inherits_from=recording-indicator-no-destination.prompt; relation=icon",
-                  "width": 14,
-                  "height": 14,
-                  "icon": "sparkles",
-                  "library": "lucide",
-                  "fill": "$pf-palette-logo"
                 },
                 {
                   "type": "text",
-                  "id": "FUMnT",
+                  "id": "GrA8J",
+                  "x": 69,
+                  "y": 8,
                   "name": "Label",
                   "context": "classification=inherited; inherits_from=recording-indicator-no-destination.prompt; relation=content",
                   "fill": "$pf-palette-overlay-text",
@@ -13357,57 +13286,266 @@
                   "lineHeight": 1.3333,
                   "fontFamily": "$pf-font-sans",
                   "fontSize": 12,
-                  "fontWeight": "500"
+                  "fontWeight": "600"
                 },
                 {
-                  "id": "NnAbf",
-                  "type": "ref",
-                  "ref": "BMrSO",
-                  "name": "Chevron",
-                  "stroke": "$pf-palette-overlay-muted",
-                  "context": "classification=inherited; inherits_from=recording-indicator-no-destination.prompt; relation=icon"
+                  "type": "text",
+                  "id": "a9BGh",
+                  "x": 69,
+                  "y": 26,
+                  "name": "Hover hint",
+                  "context": "classification=semantic; semantic_id=recording-indicator-no-destination.prompt.hint; test_id=recording-indicator-no-destination-prompt-hint; role=text",
+                  "fill": "$pf-palette-overlay-muted",
+                  "content": "Hover to see options",
+                  "lineHeight": 1.3333,
+                  "fontFamily": "$pf-font-sans",
+                  "fontSize": 11.25,
+                  "fontWeight": "normal"
                 }
               ]
             },
             {
               "type": "frame",
-              "id": "teGBj",
-              "name": "destination",
-              "context": "classification=semantic; semantic_id=recording-indicator-no-destination.destination; test_id=recording-indicator-no-destination-destination; role=button; intent=recording-indicator-no-destination.destination",
-              "height": 42,
+              "id": "uLWMA",
+              "name": "Indicator",
+              "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.bar; decorative_reason=layout",
               "fill": "$pf-palette-overlay-surface",
               "cornerRadius": 24,
               "stroke": "$pf-palette-overlay-border",
               "strokeWidth": 1,
               "strokeAlignment": "inner",
-              "gap": 7.5,
-              "padding": [
-                1,
-                15
-              ],
+              "gap": 4,
+              "padding": 3,
               "alignItems": "center",
               "children": [
                 {
-                  "type": "icon",
-                  "id": "Ra4us",
-                  "name": "Icon app-window",
-                  "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.destination; decorative_reason=icon",
-                  "width": 14,
-                  "height": 14,
-                  "icon": "app-window",
-                  "library": "lucide",
-                  "fill": "$pf-palette-overlay-muted"
+                  "type": "frame",
+                  "id": "RxOsL",
+                  "name": "destination",
+                  "context": "classification=semantic; semantic_id=recording-indicator-no-destination.destination; test_id=recording-indicator-no-destination-destination; role=button; intent=recording-indicator-no-destination.destination",
+                  "height": 36,
+                  "cornerRadius": 18,
+                  "gap": 7.5,
+                  "padding": [
+                    0,
+                    12,
+                    0,
+                    11
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "k77Mk",
+                      "name": "Icon app-window",
+                      "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.destination; decorative_reason=icon",
+                      "width": 14,
+                      "height": 14,
+                      "icon": "app-window",
+                      "library": "lucide",
+                      "fill": "$pf-palette-overlay-muted"
+                    },
+                    {
+                      "type": "text",
+                      "id": "r1saC",
+                      "name": "Frontmost app",
+                      "context": "classification=semantic; semantic_id=recording-indicator-no-destination.destination.name; test_id=recording-indicator-no-destination-destination-name; role=text",
+                      "fill": "$pf-palette-overlay-text",
+                      "content": "Frontmost app",
+                      "lineHeight": 1.3333,
+                      "fontFamily": "$pf-font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
                 },
                 {
-                  "type": "text",
-                  "id": "lrLnE",
-                  "name": "Frontmost app",
-                  "context": "classification=semantic; semantic_id=recording-indicator-no-destination.destination.name; test_id=recording-indicator-no-destination-destination-name; role=text",
-                  "fill": "$pf-palette-overlay-text",
-                  "content": "Frontmost app",
-                  "lineHeight": 1.3333,
-                  "fontFamily": "$pf-font-sans",
-                  "fontSize": 12
+                  "type": "rectangle",
+                  "id": "N0wbEg",
+                  "name": "Divider",
+                  "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.bar; decorative_reason=divider",
+                  "fill": "$pf-palette-overlay-border",
+                  "width": 1,
+                  "height": 20
+                },
+                {
+                  "type": "frame",
+                  "id": "EZ98l",
+                  "name": "pill",
+                  "context": "classification=semantic; semantic_id=recording-indicator-no-destination.pill; test_id=recording-indicator-no-destination-pill; role=container",
+                  "height": 36,
+                  "cornerRadius": 24,
+                  "gap": 8,
+                  "padding": [
+                    0,
+                    7.5,
+                    0,
+                    4
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "i2bwZ",
+                      "name": "Left",
+                      "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=overlay-grid",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        5
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "ellipse",
+                          "id": "W4H9E1",
+                          "name": "Live dot",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 7,
+                          "height": 7
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "AnmZx",
+                      "name": "Waveform",
+                      "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=status-visual",
+                      "height": 18,
+                      "gap": 3,
+                      "padding": [
+                        0,
+                        8,
+                        0,
+                        0
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "yRcdD",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 5
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "UEo0v",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 9
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "CrJvS",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 14
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "DCvA0",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 18
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "TTU53",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "YVEmL",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 16
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "XowwP",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 8
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "keBZy",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 11
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "gGsXx",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 6
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "YEdNx",
+                      "name": "Right",
+                      "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=overlay-grid",
+                      "gap": 10,
+                      "justifyContent": "end",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "ITdXI",
+                          "name": "0:07",
+                          "context": "classification=semantic; semantic_id=recording-indicator-no-destination.pill.timer; test_id=recording-indicator-no-destination-pill-timer; role=text",
+                          "fill": "$pf-palette-overlay-faint",
+                          "content": "0:07",
+                          "lineHeight": 1.3333,
+                          "fontFamily": "$pf-font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "id": "u9t2M",
+                          "type": "ref",
+                          "ref": "UljSg",
+                          "name": "Cancel",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-no-destination.pill; decorative_reason=handy-overlay-cancel"
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             }
@@ -13480,7 +13618,7 @@
     },
     {
       "type": "frame",
-      "id": "XlUUl",
+      "id": "KgtZY",
       "x": 2280,
       "y": 3052,
       "name": "Recording indicator — prompt menu",
@@ -13497,7 +13635,7 @@
       "children": [
         {
           "type": "frame",
-          "id": "tV3vQ",
+          "id": "TDDoB",
           "name": "menu",
           "context": "classification=semantic; semantic_id=recording-indicator-prompt-menu.menu; test_id=recording-indicator-prompt-menu-menu; role=container",
           "width": 280,
@@ -13512,7 +13650,7 @@
           "children": [
             {
               "type": "frame",
-              "id": "VNV0J",
+              "id": "qNkVy",
               "name": "Prompt for this dictation",
               "context": "classification=semantic; semantic_id=recording-indicator-prompt-menu.menu.label; test_id=recording-indicator-prompt-menu-menu-label; role=text",
               "padding": [
@@ -13524,7 +13662,7 @@
               "children": [
                 {
                   "type": "text",
-                  "id": "eLSiK",
+                  "id": "ZiH2l",
                   "name": "Section label",
                   "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.menu.label; relation=content",
                   "fill": "$pf-palette-overlay-muted",
@@ -13538,7 +13676,7 @@
             },
             {
               "type": "frame",
-              "id": "R04Ey",
+              "id": "NI6S5",
               "name": "None (no AI processing)",
               "context": "classification=semantic; semantic_id=recording-indicator-prompt-menu.menu.none; test_id=recording-indicator-prompt-menu-menu-none; role=button; intent=recording-indicator-prompt-menu.menu.none",
               "width": "fill_container",
@@ -13548,19 +13686,30 @@
               "alignItems": "center",
               "children": [
                 {
-                  "type": "icon",
-                  "id": "BUHxb",
-                  "name": "Icon circle-slash",
-                  "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.menu.none; relation=icon",
-                  "width": 14,
-                  "height": 14,
-                  "icon": "circle-slash",
-                  "library": "lucide",
-                  "fill": "$pf-palette-overlay-muted"
+                  "type": "frame",
+                  "id": "mcvVc",
+                  "name": "Shortcut slot",
+                  "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.menu.none; decorative_reason=layout",
+                  "width": 48,
+                  "height": 19,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "CXrDt",
+                      "name": "Icon circle-slash",
+                      "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.menu.none; relation=icon",
+                      "width": 14,
+                      "height": 14,
+                      "icon": "circle-slash",
+                      "library": "lucide",
+                      "fill": "$pf-palette-overlay-muted"
+                    }
+                  ]
                 },
                 {
                   "type": "text",
-                  "id": "g8wi6",
+                  "id": "j7WvP6",
                   "name": "Item label",
                   "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.menu.none; relation=content",
                   "fill": "$pf-palette-overlay-text",
@@ -13576,7 +13725,7 @@
             },
             {
               "type": "frame",
-              "id": "Rkmk2",
+              "id": "JNFkM",
               "name": "Minimal correction",
               "context": "classification=semantic; semantic_id=recording-indicator-prompt-menu.menu.prompt; test_id=recording-indicator-prompt-menu-menu-prompt; role=button; intent=recording-indicator-prompt-menu.menu.prompt; repeat=id in prompt_library.prompts",
               "width": "fill_container",
@@ -13587,19 +13736,47 @@
               "alignItems": "center",
               "children": [
                 {
-                  "type": "icon",
-                  "id": "INgWz",
-                  "name": "Icon sparkles",
-                  "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.menu.prompt; relation=icon",
-                  "width": 14,
-                  "height": 14,
-                  "icon": "sparkles",
-                  "library": "lucide",
-                  "fill": "$pf-palette-overlay-muted"
+                  "type": "frame",
+                  "id": "Rks0I",
+                  "name": "Shortcut slot",
+                  "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.menu.prompt; decorative_reason=layout",
+                  "width": 48,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "lBNUP",
+                      "name": "Shortcut badge",
+                      "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.menu.prompt; decorative_reason=layout",
+                      "cornerRadius": 5.625,
+                      "stroke": "$pf-palette-overlay-border",
+                      "strokeWidth": 1,
+                      "strokeAlignment": "inner",
+                      "padding": [
+                        2,
+                        6
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "e407j",
+                          "name": "⌃ ⌥ M",
+                          "context": "classification=semantic; semantic_id=recording-indicator-prompt-menu.menu.prompt.shortcut; test_id=recording-indicator-prompt-menu-menu-prompt-shortcut; role=text",
+                          "fill": "$pf-palette-overlay-text",
+                          "content": "⌃ ⌥ M",
+                          "lineHeight": 1.3333,
+                          "fontFamily": "$pf-font-sans",
+                          "fontSize": 11.25,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
                 },
                 {
                   "type": "text",
-                  "id": "Jte8g",
+                  "id": "YNx0f",
                   "name": "Item label",
                   "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.menu.prompt; relation=content",
                   "fill": "$pf-palette-overlay-text",
@@ -13613,7 +13790,7 @@
                 },
                 {
                   "type": "icon",
-                  "id": "tGnrK",
+                  "id": "zKSKP",
                   "name": "Icon check",
                   "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.menu.prompt; relation=icon",
                   "width": 14,
@@ -13626,7 +13803,7 @@
             },
             {
               "type": "frame",
-              "id": "Luk9S",
+              "id": "KQLhO",
               "name": "Friendly rephrasing",
               "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.menu; relation=repeat-instance",
               "width": "fill_container",
@@ -13636,19 +13813,17 @@
               "alignItems": "center",
               "children": [
                 {
-                  "type": "icon",
-                  "id": "i4x7e3",
-                  "name": "Icon sparkles",
+                  "type": "frame",
+                  "id": "NChXL",
+                  "name": "Shortcut slot",
                   "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.menu; relation=repeat-instance",
-                  "width": 14,
-                  "height": 14,
-                  "icon": "sparkles",
-                  "library": "lucide",
-                  "fill": "$pf-palette-overlay-muted"
+                  "width": 48,
+                  "height": 19,
+                  "alignItems": "center"
                 },
                 {
                   "type": "text",
-                  "id": "CZkH8",
+                  "id": "INpKo",
                   "name": "Item label",
                   "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.menu; relation=repeat-instance",
                   "fill": "$pf-palette-overlay-text",
@@ -13664,7 +13839,7 @@
             },
             {
               "type": "frame",
-              "id": "WGcTE",
+              "id": "i99AlZ",
               "name": "Clarify",
               "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.menu; relation=repeat-instance",
               "width": "fill_container",
@@ -13674,19 +13849,17 @@
               "alignItems": "center",
               "children": [
                 {
-                  "type": "icon",
-                  "id": "Q7c9Y",
-                  "name": "Icon sparkles",
+                  "type": "frame",
+                  "id": "COluo",
+                  "name": "Shortcut slot",
                   "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.menu; relation=repeat-instance",
-                  "width": 14,
-                  "height": 14,
-                  "icon": "sparkles",
-                  "library": "lucide",
-                  "fill": "$pf-palette-overlay-muted"
+                  "width": 48,
+                  "height": 19,
+                  "alignItems": "center"
                 },
                 {
                   "type": "text",
-                  "id": "RqZCv",
+                  "id": "skqaS",
                   "name": "Item label",
                   "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.menu; relation=repeat-instance",
                   "fill": "$pf-palette-overlay-text",
@@ -13702,7 +13875,7 @@
             },
             {
               "type": "frame",
-              "id": "ALPdm",
+              "id": "f1rD77",
               "name": "Shorten",
               "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.menu; relation=repeat-instance",
               "width": "fill_container",
@@ -13712,19 +13885,17 @@
               "alignItems": "center",
               "children": [
                 {
-                  "type": "icon",
-                  "id": "DB6bv",
-                  "name": "Icon sparkles",
+                  "type": "frame",
+                  "id": "tXiLl",
+                  "name": "Shortcut slot",
                   "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.menu; relation=repeat-instance",
-                  "width": 14,
-                  "height": 14,
-                  "icon": "sparkles",
-                  "library": "lucide",
-                  "fill": "$pf-palette-overlay-muted"
+                  "width": 48,
+                  "height": 19,
+                  "alignItems": "center"
                 },
                 {
                   "type": "text",
-                  "id": "bUafU",
+                  "id": "ioa6M",
                   "name": "Item label",
                   "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.menu; relation=repeat-instance",
                   "fill": "$pf-palette-overlay-text",
@@ -13740,7 +13911,7 @@
             },
             {
               "type": "frame",
-              "id": "C6SyOE",
+              "id": "dKoc5",
               "name": "Notes",
               "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.menu; relation=repeat-instance",
               "width": "fill_container",
@@ -13750,19 +13921,47 @@
               "alignItems": "center",
               "children": [
                 {
-                  "type": "icon",
-                  "id": "qE5aT",
-                  "name": "Icon sparkles",
+                  "type": "frame",
+                  "id": "WuBd1",
+                  "name": "Shortcut slot",
                   "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.menu; relation=repeat-instance",
-                  "width": 14,
-                  "height": 14,
-                  "icon": "sparkles",
-                  "library": "lucide",
-                  "fill": "$pf-palette-overlay-muted"
+                  "width": 48,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "ntY5h",
+                      "name": "Shortcut badge",
+                      "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.menu; relation=repeat-instance",
+                      "cornerRadius": 5.625,
+                      "stroke": "$pf-palette-overlay-border",
+                      "strokeWidth": 1,
+                      "strokeAlignment": "inner",
+                      "padding": [
+                        2,
+                        6
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "v6bMOA",
+                          "name": "⌃ ⌥ N",
+                          "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.menu; relation=repeat-instance",
+                          "fill": "$pf-palette-overlay-muted",
+                          "content": "⌃ ⌥ N",
+                          "lineHeight": 1.3333,
+                          "fontFamily": "$pf-font-sans",
+                          "fontSize": 11.25,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
                 },
                 {
                   "type": "text",
-                  "id": "oQEsi",
+                  "id": "bzGRG",
                   "name": "Item label",
                   "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.menu; relation=repeat-instance",
                   "fill": "$pf-palette-overlay-text",
@@ -13778,7 +13977,7 @@
             },
             {
               "type": "frame",
-              "id": "VhmdX",
+              "id": "f8tqS",
               "name": "Translate to English",
               "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.menu; relation=repeat-instance",
               "width": "fill_container",
@@ -13788,19 +13987,17 @@
               "alignItems": "center",
               "children": [
                 {
-                  "type": "icon",
-                  "id": "HDxWF",
-                  "name": "Icon sparkles",
+                  "type": "frame",
+                  "id": "U5spZd",
+                  "name": "Shortcut slot",
                   "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.menu; relation=repeat-instance",
-                  "width": 14,
-                  "height": 14,
-                  "icon": "sparkles",
-                  "library": "lucide",
-                  "fill": "$pf-palette-overlay-muted"
+                  "width": 48,
+                  "height": 19,
+                  "alignItems": "center"
                 },
                 {
                   "type": "text",
-                  "id": "iaS44",
+                  "id": "t0xq0k",
                   "name": "Item label",
                   "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.menu; relation=repeat-instance",
                   "fill": "$pf-palette-overlay-text",
@@ -13816,7 +14013,7 @@
             },
             {
               "type": "frame",
-              "id": "xaOIu",
+              "id": "E6ndrB",
               "name": "Menu note",
               "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.menu; decorative_reason=layout",
               "width": "fill_container",
@@ -13830,7 +14027,7 @@
               "children": [
                 {
                   "type": "text",
-                  "id": "TXF2N",
+                  "id": "QBQVj",
                   "name": "Applies to this dictation only. Default ",
                   "context": "classification=semantic; semantic_id=recording-indicator-prompt-menu.menu.note; test_id=recording-indicator-prompt-menu-menu-note; role=text",
                   "fill": "$pf-palette-overlay-muted",
@@ -13847,282 +14044,52 @@
         },
         {
           "type": "frame",
-          "id": "t3VPN",
+          "id": "wSTnN",
           "name": "bar",
           "context": "classification=semantic; semantic_id=recording-indicator-prompt-menu.bar; test_id=recording-indicator-prompt-menu-bar; role=container",
-          "gap": 7.5,
+          "layout": "vertical",
+          "gap": 8,
           "alignItems": "center",
           "children": [
             {
               "type": "frame",
-              "id": "qkuW3",
-              "name": "pill",
-              "context": "classification=semantic; semantic_id=recording-indicator-prompt-menu.pill; test_id=recording-indicator-prompt-menu-pill; role=container",
-              "height": 42,
-              "fill": "$pf-palette-overlay-surface",
-              "cornerRadius": 24,
-              "stroke": "$pf-palette-overlay-border",
-              "strokeWidth": 1,
-              "strokeAlignment": "inner",
-              "padding": [
-                1,
-                11
-              ],
-              "justifyContent": "space_between",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "om9sc",
-                  "name": "Left",
-                  "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=overlay-grid",
-                  "width": 57,
-                  "padding": [
-                    0,
-                    0,
-                    0,
-                    5
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "ellipse",
-                      "id": "R0jcS",
-                      "name": "Live dot",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 7,
-                      "height": 7
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "a0ScF",
-                  "name": "Waveform",
-                  "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=status-visual",
-                  "height": 18,
-                  "gap": 3,
-                  "padding": [
-                    0,
-                    8,
-                    0,
-                    0
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "hdf8v",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 5
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "pe1KG",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 9
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "fo6dY",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 14
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "bOCGz",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 18
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "ZPaTR",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "gWApR",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 16
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "bP8Z9",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 8
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "Vp7TN",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 11
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "pjLeA",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 6
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "g1d1j",
-                  "name": "Right",
-                  "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=overlay-grid",
-                  "width": 57,
-                  "gap": 10,
-                  "justifyContent": "end",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "jh8Tb",
-                      "name": "0:07",
-                      "context": "classification=semantic; semantic_id=recording-indicator-prompt-menu.pill.timer; test_id=recording-indicator-prompt-menu-pill-timer; role=text",
-                      "fill": "$pf-palette-overlay-faint",
-                      "content": "0:07",
-                      "lineHeight": 1.3333,
-                      "fontFamily": "$pf-font-sans",
-                      "fontSize": 12
-                    },
-                    {
-                      "id": "a8vfu",
-                      "type": "ref",
-                      "ref": "UljSg",
-                      "name": "Cancel",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=handy-overlay-cancel"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "L3syfc",
+              "id": "i8IHKG",
               "name": "Minimal correction",
               "context": "classification=semantic; semantic_id=recording-indicator-prompt-menu.prompt; test_id=recording-indicator-prompt-menu-prompt; role=button; intent=recording-indicator-prompt-menu.prompt",
-              "height": 42,
               "fill": "$pf-palette-overlay-surface",
-              "cornerRadius": 24,
-              "stroke": "$pf-palette-overlay-border",
+              "cornerRadius": 16,
+              "stroke": "$pf-palette-logo",
               "strokeWidth": 1,
               "strokeAlignment": "inner",
-              "gap": 7.5,
+              "gap": 12,
               "padding": [
-                1,
-                15
-              ],
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "icon",
-                  "id": "E8XDi",
-                  "name": "Icon sparkles",
-                  "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.prompt; relation=icon",
-                  "width": 14,
-                  "height": 14,
-                  "icon": "sparkles",
-                  "library": "lucide",
-                  "fill": "$pf-palette-logo"
-                },
-                {
-                  "type": "text",
-                  "id": "h7CHR",
-                  "name": "Label",
-                  "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.prompt; relation=content",
-                  "fill": "$pf-palette-overlay-text",
-                  "content": "Minimal correction",
-                  "lineHeight": 1.3333,
-                  "fontFamily": "$pf-font-sans",
-                  "fontSize": 12,
-                  "fontWeight": "500"
-                },
-                {
-                  "id": "Wj0IT",
-                  "type": "ref",
-                  "ref": "BMrSO",
-                  "name": "Chevron",
-                  "stroke": "$pf-palette-overlay-muted",
-                  "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.prompt; relation=icon"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "Ud6N8",
-              "name": "destination",
-              "context": "classification=semantic; semantic_id=recording-indicator-prompt-menu.destination; test_id=recording-indicator-prompt-menu-destination; role=button; intent=recording-indicator-prompt-menu.destination",
-              "height": 42,
-              "fill": "$pf-palette-overlay-surface",
-              "cornerRadius": 24,
-              "stroke": "$pf-palette-overlay-border",
-              "strokeWidth": 1,
-              "strokeAlignment": "inner",
-              "gap": 7.5,
-              "padding": [
-                1,
-                15
+                8,
+                12
               ],
               "alignItems": "center",
               "children": [
                 {
                   "type": "frame",
-                  "id": "UZJxn",
-                  "name": "App icon C",
-                  "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.destination; decorative_reason=app-icon",
-                  "width": 20,
-                  "height": 20,
-                  "fill": "$pf-palette-app-green",
+                  "id": "ARkvJ",
+                  "name": "Shortcut badge",
+                  "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.prompt; decorative_reason=layout",
                   "cornerRadius": 5.625,
-                  "justifyContent": "center",
+                  "stroke": "$pf-palette-overlay-border",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "padding": [
+                    2,
+                    6
+                  ],
                   "alignItems": "center",
                   "children": [
                     {
                       "type": "text",
-                      "id": "FfAcR",
-                      "name": "Letter",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.destination; decorative_reason=app-icon",
-                      "fill": "$pf-primary-foreground",
-                      "content": "C",
+                      "id": "v1pxs",
+                      "name": "⌃ ⌥ M",
+                      "context": "classification=semantic; semantic_id=recording-indicator-prompt-menu.prompt.shortcut; test_id=recording-indicator-prompt-menu-prompt-shortcut; role=text",
+                      "fill": "$pf-palette-overlay-muted",
+                      "content": "⌃ ⌥ M",
                       "lineHeight": 1.3333,
                       "fontFamily": "$pf-font-sans",
                       "fontSize": 11.25,
@@ -14132,33 +14099,294 @@
                 },
                 {
                   "type": "text",
-                  "id": "j2kwOe",
-                  "name": "ChatGPT",
-                  "context": "classification=semantic; semantic_id=recording-indicator-prompt-menu.destination.name; test_id=recording-indicator-prompt-menu-destination-name; role=text",
+                  "id": "l3dsp",
+                  "name": "Label",
+                  "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.prompt; relation=content",
                   "fill": "$pf-palette-overlay-text",
-                  "content": "ChatGPT",
+                  "content": "Minimal correction",
                   "lineHeight": 1.3333,
                   "fontFamily": "$pf-font-sans",
-                  "fontSize": 12
-                },
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "KhvqM",
+              "name": "Indicator",
+              "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.bar; decorative_reason=layout",
+              "fill": "$pf-palette-overlay-surface",
+              "cornerRadius": 24,
+              "stroke": "$pf-palette-overlay-border",
+              "strokeWidth": 1,
+              "strokeAlignment": "inner",
+              "gap": 4,
+              "padding": 3,
+              "alignItems": "center",
+              "children": [
                 {
                   "type": "frame",
-                  "id": "k20jBb",
-                  "name": "destination.remove",
-                  "context": "classification=semantic; semantic_id=recording-indicator-prompt-menu.destination.remove; test_id=recording-indicator-prompt-menu-destination-remove; role=button; intent=recording-indicator-prompt-menu.destination.remove",
-                  "width": 22,
-                  "height": 22,
-                  "fill": "$pf-palette-overlay-hair",
-                  "cornerRadius": 11,
-                  "justifyContent": "center",
+                  "id": "oTz0x",
+                  "name": "destination",
+                  "context": "classification=semantic; semantic_id=recording-indicator-prompt-menu.destination; test_id=recording-indicator-prompt-menu-destination; role=button; intent=recording-indicator-prompt-menu.destination",
+                  "height": 36,
+                  "cornerRadius": 18,
+                  "gap": 7.5,
+                  "padding": [
+                    0,
+                    7.5,
+                    0,
+                    8
+                  ],
                   "alignItems": "center",
                   "children": [
                     {
-                      "id": "UqGTK",
-                      "type": "ref",
-                      "ref": "gqaL9",
-                      "name": "X",
-                      "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.destination.remove; relation=icon"
+                      "type": "frame",
+                      "id": "QmXo5",
+                      "name": "App icon C",
+                      "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.destination; decorative_reason=app-icon",
+                      "width": 20,
+                      "height": 20,
+                      "fill": "$pf-palette-app-green",
+                      "cornerRadius": 5.625,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "CE0Fp",
+                          "name": "Letter",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.destination; decorative_reason=app-icon",
+                          "fill": "$pf-primary-foreground",
+                          "content": "C",
+                          "lineHeight": 1.3333,
+                          "fontFamily": "$pf-font-sans",
+                          "fontSize": 11.25,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "a3R8f",
+                      "name": "ChatGPT",
+                      "context": "classification=semantic; semantic_id=recording-indicator-prompt-menu.destination.name; test_id=recording-indicator-prompt-menu-destination-name; role=text",
+                      "fill": "$pf-palette-overlay-text",
+                      "content": "ChatGPT",
+                      "lineHeight": 1.3333,
+                      "fontFamily": "$pf-font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "uq7cu",
+                      "name": "destination.remove",
+                      "context": "classification=semantic; semantic_id=recording-indicator-prompt-menu.destination.remove; test_id=recording-indicator-prompt-menu-destination-remove; role=button; intent=recording-indicator-prompt-menu.destination.remove",
+                      "width": 22,
+                      "height": 22,
+                      "fill": "$pf-palette-overlay-hair",
+                      "cornerRadius": 11,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "XiXmW",
+                          "type": "ref",
+                          "ref": "gqaL9",
+                          "name": "X",
+                          "context": "classification=inherited; inherits_from=recording-indicator-prompt-menu.destination.remove; relation=icon"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "S7Zvs",
+                  "name": "Divider",
+                  "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.bar; decorative_reason=divider",
+                  "fill": "$pf-palette-overlay-border",
+                  "width": 1,
+                  "height": 20
+                },
+                {
+                  "type": "frame",
+                  "id": "Ef1OZ",
+                  "name": "pill",
+                  "context": "classification=semantic; semantic_id=recording-indicator-prompt-menu.pill; test_id=recording-indicator-prompt-menu-pill; role=container",
+                  "height": 36,
+                  "cornerRadius": 24,
+                  "gap": 8,
+                  "padding": [
+                    0,
+                    7.5,
+                    0,
+                    4
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "bsq3L",
+                      "name": "Left",
+                      "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=overlay-grid",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        5
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "ellipse",
+                          "id": "Bqftl",
+                          "name": "Live dot",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 7,
+                          "height": 7
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "D31DB",
+                      "name": "Waveform",
+                      "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=status-visual",
+                      "height": 18,
+                      "gap": 3,
+                      "padding": [
+                        0,
+                        8,
+                        0,
+                        0
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "YJLvy",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 5
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "JwkjN",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 9
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "L9GJW8",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 14
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "gFRYx",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 18
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "sID10",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "mQqS9",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 16
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "jPASw",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 8
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "no4Kt",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 11
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "Mo9fd",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 6
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "XtkGu",
+                      "name": "Right",
+                      "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=overlay-grid",
+                      "gap": 10,
+                      "justifyContent": "end",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "RmYqq",
+                          "name": "0:07",
+                          "context": "classification=semantic; semantic_id=recording-indicator-prompt-menu.pill.timer; test_id=recording-indicator-prompt-menu-pill-timer; role=text",
+                          "fill": "$pf-palette-overlay-faint",
+                          "content": "0:07",
+                          "lineHeight": 1.3333,
+                          "fontFamily": "$pf-font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "id": "Bi9Lf",
+                          "type": "ref",
+                          "ref": "UljSg",
+                          "name": "Cancel",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-prompt-menu.pill; decorative_reason=handy-overlay-cancel"
+                        }
+                      ]
                     }
                   ]
                 }
@@ -14233,7 +14461,7 @@
     },
     {
       "type": "frame",
-      "id": "iuUkJ",
+      "id": "K2jLyx",
       "x": 0,
       "y": 6289,
       "name": "Recording indicator — pinned destination",
@@ -14250,7 +14478,7 @@
       "children": [
         {
           "type": "frame",
-          "id": "A6pvHK",
+          "id": "sajPj",
           "name": "menu",
           "context": "classification=semantic; semantic_id=recording-indicator-pinned.menu; test_id=recording-indicator-pinned-menu; role=container",
           "width": 260,
@@ -14265,7 +14493,7 @@
           "children": [
             {
               "type": "frame",
-              "id": "mmkcq",
+              "id": "i3R8L",
               "name": "Frontmost now",
               "context": "classification=semantic; semantic_id=recording-indicator-pinned.menu.now-label; test_id=recording-indicator-pinned-menu-now-label; role=text",
               "padding": [
@@ -14277,7 +14505,7 @@
               "children": [
                 {
                   "type": "text",
-                  "id": "g3Mwx",
+                  "id": "EuYJX",
                   "name": "Section label",
                   "context": "classification=inherited; inherits_from=recording-indicator-pinned.menu.now-label; relation=content",
                   "fill": "$pf-palette-overlay-muted",
@@ -14291,7 +14519,7 @@
             },
             {
               "type": "frame",
-              "id": "gH0Im",
+              "id": "AWj98",
               "name": "Comet",
               "context": "classification=semantic; semantic_id=recording-indicator-pinned.menu.frontmost; test_id=recording-indicator-pinned-menu-frontmost; role=button; intent=recording-indicator-pinned.menu.frontmost",
               "width": "fill_container",
@@ -14302,7 +14530,7 @@
               "children": [
                 {
                   "type": "frame",
-                  "id": "Evskw",
+                  "id": "p6yaaz",
                   "name": "App icon M",
                   "context": "classification=decorative; decorative_owner=recording-indicator-pinned.menu.frontmost; decorative_reason=app-icon",
                   "width": 20,
@@ -14314,7 +14542,7 @@
                   "children": [
                     {
                       "type": "text",
-                      "id": "fVlh2",
+                      "id": "esWPJ",
                       "name": "Letter",
                       "context": "classification=decorative; decorative_owner=recording-indicator-pinned.menu.frontmost; decorative_reason=app-icon",
                       "fill": "$pf-primary-foreground",
@@ -14328,7 +14556,7 @@
                 },
                 {
                   "type": "text",
-                  "id": "SGjCR",
+                  "id": "r0iYOd",
                   "name": "Item label",
                   "context": "classification=inherited; inherits_from=recording-indicator-pinned.menu.frontmost; relation=content",
                   "fill": "$pf-palette-overlay-text",
@@ -14342,7 +14570,7 @@
                 },
                 {
                   "type": "text",
-                  "id": "z9ZaR",
+                  "id": "a7P4aL",
                   "name": "Item hint",
                   "context": "classification=inherited; inherits_from=recording-indicator-pinned.menu.frontmost; relation=description",
                   "fill": "$pf-palette-overlay-muted",
@@ -14356,7 +14584,7 @@
             },
             {
               "type": "frame",
-              "id": "pR9MQ",
+              "id": "gSHlL",
               "name": "Other apps",
               "context": "classification=semantic; semantic_id=recording-indicator-pinned.menu.others-label; test_id=recording-indicator-pinned-menu-others-label; role=text",
               "padding": [
@@ -14368,7 +14596,7 @@
               "children": [
                 {
                   "type": "text",
-                  "id": "hoTrZ",
+                  "id": "h24Ss6",
                   "name": "Section label",
                   "context": "classification=inherited; inherits_from=recording-indicator-pinned.menu.others-label; relation=content",
                   "fill": "$pf-palette-overlay-muted",
@@ -14382,7 +14610,7 @@
             },
             {
               "type": "frame",
-              "id": "yliDM",
+              "id": "M4esgR",
               "name": "ChatGPT",
               "context": "classification=semantic; semantic_id=recording-indicator-pinned.menu.app; test_id=recording-indicator-pinned-menu-app; role=button; intent=recording-indicator-pinned.menu.app; repeat=bundle_id in destination_menu.apps",
               "width": "fill_container",
@@ -14394,7 +14622,7 @@
               "children": [
                 {
                   "type": "frame",
-                  "id": "dx0Tt",
+                  "id": "QcbqN",
                   "name": "App icon C",
                   "context": "classification=decorative; decorative_owner=recording-indicator-pinned.menu.app; decorative_reason=app-icon",
                   "width": 20,
@@ -14406,7 +14634,7 @@
                   "children": [
                     {
                       "type": "text",
-                      "id": "HzVO5",
+                      "id": "FLUAt",
                       "name": "Letter",
                       "context": "classification=decorative; decorative_owner=recording-indicator-pinned.menu.app; decorative_reason=app-icon",
                       "fill": "$pf-primary-foreground",
@@ -14420,7 +14648,7 @@
                 },
                 {
                   "type": "text",
-                  "id": "CKoV3",
+                  "id": "pcvzZ",
                   "name": "Item label",
                   "context": "classification=inherited; inherits_from=recording-indicator-pinned.menu.app; relation=content",
                   "fill": "$pf-palette-overlay-text",
@@ -14434,7 +14662,7 @@
                 },
                 {
                   "type": "icon",
-                  "id": "LXcqN",
+                  "id": "HRIaj",
                   "name": "Icon check",
                   "context": "classification=inherited; inherits_from=recording-indicator-pinned.menu.app; relation=icon",
                   "width": 14,
@@ -14447,7 +14675,7 @@
             },
             {
               "type": "frame",
-              "id": "pYKoz",
+              "id": "u9fVhk",
               "name": "Notes",
               "context": "classification=inherited; inherits_from=recording-indicator-pinned.menu; relation=repeat-instance",
               "width": "fill_container",
@@ -14458,7 +14686,7 @@
               "children": [
                 {
                   "type": "frame",
-                  "id": "L23JX",
+                  "id": "Q2YBu",
                   "name": "App icon N",
                   "context": "classification=inherited; inherits_from=recording-indicator-pinned.menu; relation=repeat-instance",
                   "width": 20,
@@ -14470,7 +14698,7 @@
                   "children": [
                     {
                       "type": "text",
-                      "id": "ODV30",
+                      "id": "t0XNy4",
                       "name": "Letter",
                       "context": "classification=inherited; inherits_from=recording-indicator-pinned.menu; relation=repeat-instance",
                       "fill": "$pf-primary-foreground",
@@ -14484,7 +14712,7 @@
                 },
                 {
                   "type": "text",
-                  "id": "FLg1Q",
+                  "id": "RzV3Z",
                   "name": "Item label",
                   "context": "classification=inherited; inherits_from=recording-indicator-pinned.menu; relation=repeat-instance",
                   "fill": "$pf-palette-overlay-text",
@@ -14500,7 +14728,7 @@
             },
             {
               "type": "rectangle",
-              "id": "NeqBu",
+              "id": "M7hASe",
               "name": "Divider",
               "context": "classification=decorative; decorative_owner=recording-indicator-pinned.menu; decorative_reason=divider",
               "fill": "$pf-palette-overlay-hair",
@@ -14509,7 +14737,7 @@
             },
             {
               "type": "frame",
-              "id": "w6mrJ",
+              "id": "U3EP1c",
               "name": "Unpin ChatGPT",
               "context": "classification=semantic; semantic_id=recording-indicator-pinned.menu.unpin; test_id=recording-indicator-pinned-menu-unpin; role=button; intent=recording-indicator-pinned.menu.unpin",
               "width": "fill_container",
@@ -14520,7 +14748,7 @@
               "children": [
                 {
                   "type": "icon",
-                  "id": "HLM22",
+                  "id": "jZKYo",
                   "name": "Icon pin-off",
                   "context": "classification=inherited; inherits_from=recording-indicator-pinned.menu.unpin; relation=icon",
                   "width": 14,
@@ -14531,7 +14759,7 @@
                 },
                 {
                   "type": "text",
-                  "id": "W6Q5gK",
+                  "id": "x6J1Sn",
                   "name": "Item label",
                   "context": "classification=inherited; inherits_from=recording-indicator-pinned.menu.unpin; relation=content",
                   "fill": "$pf-palette-overlay-text",
@@ -14549,282 +14777,51 @@
         },
         {
           "type": "frame",
-          "id": "zFkaL",
+          "id": "F0PS8",
           "name": "bar",
           "context": "classification=semantic; semantic_id=recording-indicator-pinned.bar; test_id=recording-indicator-pinned-bar; role=container",
-          "gap": 7.5,
+          "layout": "vertical",
+          "gap": 8,
           "alignItems": "center",
           "children": [
             {
               "type": "frame",
-              "id": "uvS1n",
-              "name": "pill",
-              "context": "classification=semantic; semantic_id=recording-indicator-pinned.pill; test_id=recording-indicator-pinned-pill; role=container",
-              "height": 42,
-              "fill": "$pf-palette-overlay-surface",
-              "cornerRadius": 24,
-              "stroke": "$pf-palette-overlay-border",
-              "strokeWidth": 1,
-              "strokeAlignment": "inner",
-              "padding": [
-                1,
-                11
-              ],
-              "justifyContent": "space_between",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "P1S0Cf",
-                  "name": "Left",
-                  "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=overlay-grid",
-                  "width": 57,
-                  "padding": [
-                    0,
-                    0,
-                    0,
-                    5
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "ellipse",
-                      "id": "z4kDSL",
-                      "name": "Live dot",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 7,
-                      "height": 7
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "Aa6ZD",
-                  "name": "Waveform",
-                  "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=status-visual",
-                  "height": 18,
-                  "gap": 3,
-                  "padding": [
-                    0,
-                    8,
-                    0,
-                    0
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "UAPWv",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 5
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "h56JJN",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 9
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "I5iSdW",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 14
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "u8wzuB",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 18
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "U5KDgU",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "f3f1nS",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 16
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "kR6Fj",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 8
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "RZhMK",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 11
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "PZiR1",
-                      "name": "Bar",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=status-visual",
-                      "fill": "$pf-palette-logo",
-                      "width": 4,
-                      "height": 6
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "Ckw8A",
-                  "name": "Right",
-                  "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=overlay-grid",
-                  "width": 57,
-                  "gap": 10,
-                  "justifyContent": "end",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "KQtKT",
-                      "name": "0:07",
-                      "context": "classification=semantic; semantic_id=recording-indicator-pinned.pill.timer; test_id=recording-indicator-pinned-pill-timer; role=text",
-                      "fill": "$pf-palette-overlay-faint",
-                      "content": "0:07",
-                      "lineHeight": 1.3333,
-                      "fontFamily": "$pf-font-sans",
-                      "fontSize": 12
-                    },
-                    {
-                      "id": "yJtiS",
-                      "type": "ref",
-                      "ref": "UljSg",
-                      "name": "Cancel",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=handy-overlay-cancel"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "LC5ry",
+              "id": "vfvTg",
               "name": "Minimal correction",
               "context": "classification=semantic; semantic_id=recording-indicator-pinned.prompt; test_id=recording-indicator-pinned-prompt; role=button; intent=recording-indicator-pinned.prompt",
-              "height": 42,
+              "width": 192,
+              "height": 49,
               "fill": "$pf-palette-overlay-surface",
-              "cornerRadius": 24,
+              "cornerRadius": 16,
               "stroke": "$pf-palette-overlay-border",
               "strokeWidth": 1,
               "strokeAlignment": "inner",
-              "gap": 7.5,
-              "padding": [
-                1,
-                15
-              ],
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "icon",
-                  "id": "bxNN5",
-                  "name": "Icon sparkles",
-                  "context": "classification=inherited; inherits_from=recording-indicator-pinned.prompt; relation=icon",
-                  "width": 14,
-                  "height": 14,
-                  "icon": "sparkles",
-                  "library": "lucide",
-                  "fill": "$pf-palette-logo"
-                },
-                {
-                  "type": "text",
-                  "id": "Cn7nK",
-                  "name": "Label",
-                  "context": "classification=inherited; inherits_from=recording-indicator-pinned.prompt; relation=content",
-                  "fill": "$pf-palette-overlay-text",
-                  "content": "Minimal correction",
-                  "lineHeight": 1.3333,
-                  "fontFamily": "$pf-font-sans",
-                  "fontSize": 12,
-                  "fontWeight": "500"
-                },
-                {
-                  "id": "wjw2Y",
-                  "type": "ref",
-                  "ref": "BMrSO",
-                  "name": "Chevron",
-                  "stroke": "$pf-palette-overlay-muted",
-                  "context": "classification=inherited; inherits_from=recording-indicator-pinned.prompt; relation=icon"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "CNvoa",
-              "name": "destination",
-              "context": "classification=semantic; semantic_id=recording-indicator-pinned.destination; test_id=recording-indicator-pinned-destination; role=button; intent=recording-indicator-pinned.destination",
-              "height": 42,
-              "fill": "$pf-palette-overlay-surface",
-              "cornerRadius": 24,
-              "stroke": "$pf-palette-overlay-border",
-              "strokeWidth": 1,
-              "strokeAlignment": "inner",
-              "gap": 7.5,
-              "padding": [
-                1,
-                15
-              ],
-              "alignItems": "center",
+              "layout": "none",
               "children": [
                 {
                   "type": "frame",
-                  "id": "HguMv",
-                  "name": "App icon C",
-                  "context": "classification=decorative; decorative_owner=recording-indicator-pinned.destination; decorative_reason=app-icon",
-                  "width": 20,
-                  "height": 20,
-                  "fill": "$pf-palette-app-green",
+                  "id": "N23Qd",
+                  "x": 12,
+                  "y": 15,
+                  "name": "Shortcut badge",
+                  "context": "classification=decorative; decorative_owner=recording-indicator-pinned.prompt; decorative_reason=layout",
                   "cornerRadius": 5.625,
-                  "justifyContent": "center",
+                  "stroke": "$pf-palette-overlay-border",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "padding": [
+                    2,
+                    6
+                  ],
                   "alignItems": "center",
                   "children": [
                     {
                       "type": "text",
-                      "id": "j3DO0V",
-                      "name": "Letter",
-                      "context": "classification=decorative; decorative_owner=recording-indicator-pinned.destination; decorative_reason=app-icon",
-                      "fill": "$pf-primary-foreground",
-                      "content": "C",
+                      "id": "RmLxx",
+                      "name": "⌃ ⌥ M",
+                      "context": "classification=semantic; semantic_id=recording-indicator-pinned.prompt.shortcut; test_id=recording-indicator-pinned-prompt-shortcut; role=text",
+                      "fill": "$pf-palette-overlay-muted",
+                      "content": "⌃ ⌥ M",
                       "lineHeight": 1.3333,
                       "fontFamily": "$pf-font-sans",
                       "fontSize": 11.25,
@@ -14834,44 +14831,321 @@
                 },
                 {
                   "type": "text",
-                  "id": "KqYOJ",
-                  "name": "ChatGPT",
-                  "context": "classification=semantic; semantic_id=recording-indicator-pinned.destination.name; test_id=recording-indicator-pinned-destination-name; role=text",
+                  "id": "Jsi4O",
+                  "x": 69,
+                  "y": 8,
+                  "name": "Label",
+                  "context": "classification=inherited; inherits_from=recording-indicator-pinned.prompt; relation=content",
                   "fill": "$pf-palette-overlay-text",
-                  "content": "ChatGPT",
+                  "content": "Minimal correction",
                   "lineHeight": 1.3333,
                   "fontFamily": "$pf-font-sans",
-                  "fontSize": 12
+                  "fontSize": 12,
+                  "fontWeight": "600"
                 },
                 {
-                  "type": "icon",
-                  "id": "gHhTR",
-                  "name": "Icon pin",
-                  "context": "classification=decorative; decorative_owner=recording-indicator-pinned.destination; decorative_reason=icon",
-                  "width": 14,
-                  "height": 14,
-                  "icon": "pin",
-                  "library": "lucide",
-                  "fill": "$pf-palette-overlay-muted"
-                },
+                  "type": "text",
+                  "id": "lqLdD",
+                  "x": 69,
+                  "y": 26,
+                  "name": "Hover hint",
+                  "context": "classification=semantic; semantic_id=recording-indicator-pinned.prompt.hint; test_id=recording-indicator-pinned-prompt-hint; role=text",
+                  "fill": "$pf-palette-overlay-muted",
+                  "content": "Hover to see options",
+                  "lineHeight": 1.3333,
+                  "fontFamily": "$pf-font-sans",
+                  "fontSize": 11.25,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ANhJE",
+              "name": "Indicator",
+              "context": "classification=decorative; decorative_owner=recording-indicator-pinned.bar; decorative_reason=layout",
+              "fill": "$pf-palette-overlay-surface",
+              "cornerRadius": 24,
+              "stroke": "$pf-palette-overlay-border",
+              "strokeWidth": 1,
+              "strokeAlignment": "inner",
+              "gap": 4,
+              "padding": 3,
+              "alignItems": "center",
+              "children": [
                 {
                   "type": "frame",
-                  "id": "BQk5T",
-                  "name": "destination.remove",
-                  "context": "classification=semantic; semantic_id=recording-indicator-pinned.destination.remove; test_id=recording-indicator-pinned-destination-remove; role=button; intent=recording-indicator-pinned.destination.remove",
-                  "width": 22,
-                  "height": 22,
-                  "fill": "$pf-palette-overlay-hair",
-                  "cornerRadius": 11,
-                  "justifyContent": "center",
+                  "id": "R5zj2b",
+                  "name": "destination",
+                  "context": "classification=semantic; semantic_id=recording-indicator-pinned.destination; test_id=recording-indicator-pinned-destination; role=button; intent=recording-indicator-pinned.destination",
+                  "height": 36,
+                  "cornerRadius": 18,
+                  "gap": 7.5,
+                  "padding": [
+                    0,
+                    7.5,
+                    0,
+                    8
+                  ],
                   "alignItems": "center",
                   "children": [
                     {
-                      "id": "EATk3",
-                      "type": "ref",
-                      "ref": "gqaL9",
-                      "name": "X",
-                      "context": "classification=inherited; inherits_from=recording-indicator-pinned.destination.remove; relation=icon"
+                      "type": "frame",
+                      "id": "Y9P1B6",
+                      "name": "App icon C",
+                      "context": "classification=decorative; decorative_owner=recording-indicator-pinned.destination; decorative_reason=app-icon",
+                      "width": 20,
+                      "height": 20,
+                      "fill": "$pf-palette-app-green",
+                      "cornerRadius": 5.625,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "M07v6",
+                          "name": "Letter",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-pinned.destination; decorative_reason=app-icon",
+                          "fill": "$pf-primary-foreground",
+                          "content": "C",
+                          "lineHeight": 1.3333,
+                          "fontFamily": "$pf-font-sans",
+                          "fontSize": 11.25,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "mIEgv",
+                      "name": "ChatGPT",
+                      "context": "classification=semantic; semantic_id=recording-indicator-pinned.destination.name; test_id=recording-indicator-pinned-destination-name; role=text",
+                      "fill": "$pf-palette-overlay-text",
+                      "content": "ChatGPT",
+                      "lineHeight": 1.3333,
+                      "fontFamily": "$pf-font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "icon",
+                      "id": "K45P9a",
+                      "name": "Icon pin",
+                      "context": "classification=decorative; decorative_owner=recording-indicator-pinned.destination; decorative_reason=icon",
+                      "width": 14,
+                      "height": 14,
+                      "icon": "pin",
+                      "library": "lucide",
+                      "fill": "$pf-palette-overlay-muted"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "nNSKd",
+                      "name": "destination.remove",
+                      "context": "classification=semantic; semantic_id=recording-indicator-pinned.destination.remove; test_id=recording-indicator-pinned-destination-remove; role=button; intent=recording-indicator-pinned.destination.remove",
+                      "width": 22,
+                      "height": 22,
+                      "fill": "$pf-palette-overlay-hair",
+                      "cornerRadius": 11,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "p5WK95",
+                          "type": "ref",
+                          "ref": "gqaL9",
+                          "name": "X",
+                          "context": "classification=inherited; inherits_from=recording-indicator-pinned.destination.remove; relation=icon"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "rectangle",
+                  "id": "iFx5Y",
+                  "name": "Divider",
+                  "context": "classification=decorative; decorative_owner=recording-indicator-pinned.bar; decorative_reason=divider",
+                  "fill": "$pf-palette-overlay-border",
+                  "width": 1,
+                  "height": 20
+                },
+                {
+                  "type": "frame",
+                  "id": "LFTvK",
+                  "name": "pill",
+                  "context": "classification=semantic; semantic_id=recording-indicator-pinned.pill; test_id=recording-indicator-pinned-pill; role=container",
+                  "height": 36,
+                  "cornerRadius": 24,
+                  "gap": 8,
+                  "padding": [
+                    0,
+                    7.5,
+                    0,
+                    4
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "tmGuA",
+                      "name": "Left",
+                      "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=overlay-grid",
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        5
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "ellipse",
+                          "id": "IX6cX",
+                          "name": "Live dot",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 7,
+                          "height": 7
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "O4TpK",
+                      "name": "Waveform",
+                      "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=status-visual",
+                      "height": 18,
+                      "gap": 3,
+                      "padding": [
+                        0,
+                        8,
+                        0,
+                        0
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "vYxBU",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 5
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "yssMv",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 9
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "KX2X4",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 14
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "en5Zo",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 18
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "J3oWSh",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "e3MgG6",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 16
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "a1EQTe",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 8
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "cv2eg",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 11
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "T6QD7o",
+                          "name": "Bar",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=status-visual",
+                          "fill": "$pf-palette-logo",
+                          "width": 4,
+                          "height": 6
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "xVDMc",
+                      "name": "Right",
+                      "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=overlay-grid",
+                      "gap": 10,
+                      "justifyContent": "end",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "E3vlZz",
+                          "name": "0:07",
+                          "context": "classification=semantic; semantic_id=recording-indicator-pinned.pill.timer; test_id=recording-indicator-pinned-pill-timer; role=text",
+                          "fill": "$pf-palette-overlay-faint",
+                          "content": "0:07",
+                          "lineHeight": 1.3333,
+                          "fontFamily": "$pf-font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "id": "noJPE",
+                          "type": "ref",
+                          "ref": "UljSg",
+                          "name": "Cancel",
+                          "context": "classification=decorative; decorative_owner=recording-indicator-pinned.pill; decorative_reason=handy-overlay-cancel"
+                        }
+                      ]
                     }
                   ]
                 }

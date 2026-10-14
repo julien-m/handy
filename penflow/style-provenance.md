@@ -142,6 +142,7 @@ Every off-scale value below comes from Handy:
 | 3.75 | most `gap-1`, `p-1` | Tailwind `1` at 15px |
 | 4.75 | chips, reset button, small buttons | `p-1`/`py-1` + 1px border |
 | 5 | overlay pill left column | `.sbase-l` padding-left 5px (:308) |
+| 6 | overlay shortcut badge (horizontal) | derived from the shortcut chip at overlay scale (indicator revision) |
 | 6 | dropdown, buttons (vertical) | `py-[5px]` + 1px border |
 | 7.5 | rows, gaps, nav items | Tailwind `2` at 15px |
 | 8.5 | dropdown, chips (horizontal) | `px-2` + 1px border |
@@ -170,7 +171,36 @@ Feature elements that Handy does not have yet are built from the primitives abov
 - Status pills: `Badge` geometry; warning, error and info badges reuse the `*-500/20` + `*-400` recipe of the success badge.
 - List / Text switch: Button `primary-soft` (selected) and `ghost`.
 - Import mode radio: 15px circle with the Input border and the logo-pink focus color (Handy has no radio control).
-- Overlay prompt and destination chips: the overlay card (surface, border, radius 24, 42px high); labels use the overlay 12px label style.
+- Recording indicator layout (revision of 2026-10-14, requested by Julien from two Spokenly captures; only the
+  layout is borrowed, never Spokenly's brand or colors). It applies to every screen that shows the indicator:
+  `recording-indicator`, `-destination-menu`, `-no-destination`, `-prompt-menu` and `-pinned`.
+  - The `bar` is a vertical stack (`gap` 8, centered): the prompt pill sits **above** the indicator.
+  - Prompt pill (`<screen>.prompt`): overlay open card (surface, border, radius 16), padding 8/12. It shows the
+    prompt shortcut badge, the prompt name (12px, semibold, `--s-text`) and a secondary line
+    "Hover to see options" (11.25px, `--s-muted`). The shortcut shown is the prompt's own shortcut from
+    feature 005 (the `prompt:<id>` target of feature 004): "⌃ ⌥ M" for Minimal correction, "⌃ ⌥ N" for Notes,
+    nothing for prompts without a shortcut, as listed on the AI prompts screen.
+  - The prompt pill uses `layout: none` (absolute children) on purpose: Penflow derives the button copy from a
+    *direct* inherited `content` child, so the name cannot be wrapped in a text-column frame. The badge sits at
+    12/15, the name at 69/8 and the secondary line at 69/26 (pill 192 × 49).
+  - Shortcut badge: Handy shortcut-chip recipe at overlay scale — border `--s-border`, radius 5.625
+    (`rounded-md`), padding 2/6, text 11.25px semibold `--s-muted` (no fill, so the muted text keeps WCAG AA on
+    the overlay surface; on the selected menu row the badge text uses `--s-text`).
+  - Indicator: one overlay pill (surface, border, radius 24, 42px high, padding 3, gap 4) holding the
+    destination (feature 006: app icon and name, remove button) on the left, a 1 × 20 hairline divider
+    (`--s-border`), then the Handy recording pill content (live dot, level bars, timer, cancel). The destination
+    keeps its click target (destination menu) without a chip fill.
+  - Hover state (`recording-indicator-prompt-menu`, state `prompt-menu-open`): the prompt pill takes the
+    Handy dropdown open style (border `logo-primary`, `Dropdown.tsx`) and drops the secondary line; the list
+    opens above it (`gap` 8) and gives every row a fixed 48px shortcut slot, then the name; the active prompt
+    keeps `--s-accent-soft` and the check. The contract schema only accepts `click`/`submit` triggers, so the
+    action stays `click`; opening on hover is a presentation rule for the implementation (click remains the
+    keyboard-free fallback).
+  - No new screen was needed: the expanded state already exists as `recording-indicator-prompt-menu`
+    (`prompt-menu-open`); the collapsed state is the prompt pill of the other indicator screens. New contract
+    nodes: `<screen>.prompt.shortcut`, `<screen>.prompt.hint` (not on the expanded screen) and
+    `recording-indicator-prompt-menu.menu.prompt.shortcut`; `bar` children are reordered to the visual order
+    (prompt, destination, pill).
 - Overlay menus and recovery bubble: overlay open card (radius 16); selected item uses `--s-accent-soft`; inner corner radius 12 is derived (16 minus the 4px padding), not read from the code.
 - The desktop behind the overlay (`#1E1D1C`) and the third-party app icons are scenery, not Handy styles.
 

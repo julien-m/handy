@@ -68,9 +68,9 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "children": [
-        "recording-indicator-prompt-menu.pill",
         "recording-indicator-prompt-menu.prompt",
-        "recording-indicator-prompt-menu.destination"
+        "recording-indicator-prompt-menu.destination",
+        "recording-indicator-prompt-menu.pill"
       ],
       "id": "recording-indicator-prompt-menu.bar",
       "role": "container",
@@ -146,6 +146,9 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "action": "recording-indicator-prompt-menu.menu.prompt",
+      "children": [
+        "recording-indicator-prompt-menu.menu.prompt.shortcut"
+      ],
       "id": "recording-indicator-prompt-menu.menu.prompt",
       "repeat_model": {
         "collection": "prompt_library.prompts",
@@ -158,6 +161,14 @@ Generator: `penflow.flow-docs/1`
       "semantic_id": "recording-indicator-prompt-menu.menu.prompt",
       "test_id": "recording-indicator-prompt-menu-menu-prompt",
       "text": "Minimal correction"
+    },
+    {
+      "id": "recording-indicator-prompt-menu.menu.prompt.shortcut",
+      "role": "text",
+      "screen_id": "recording-indicator-prompt-menu",
+      "semantic_id": "recording-indicator-prompt-menu.menu.prompt.shortcut",
+      "test_id": "recording-indicator-prompt-menu-menu-prompt-shortcut",
+      "text": "⌃ ⌥ M"
     },
     {
       "children": [
@@ -179,12 +190,23 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "action": "recording-indicator-prompt-menu.prompt",
+      "children": [
+        "recording-indicator-prompt-menu.prompt.shortcut"
+      ],
       "id": "recording-indicator-prompt-menu.prompt",
       "role": "button",
       "screen_id": "recording-indicator-prompt-menu",
       "semantic_id": "recording-indicator-prompt-menu.prompt",
       "test_id": "recording-indicator-prompt-menu-prompt",
       "text": "Minimal correction"
+    },
+    {
+      "id": "recording-indicator-prompt-menu.prompt.shortcut",
+      "role": "text",
+      "screen_id": "recording-indicator-prompt-menu",
+      "semantic_id": "recording-indicator-prompt-menu.prompt.shortcut",
+      "test_id": "recording-indicator-prompt-menu-prompt-shortcut",
+      "text": "⌃ ⌥ M"
     }
   ],
   "relations": [],

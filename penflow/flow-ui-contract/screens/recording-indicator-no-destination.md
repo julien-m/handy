@@ -40,9 +40,9 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "children": [
-        "recording-indicator-no-destination.pill",
         "recording-indicator-no-destination.prompt",
-        "recording-indicator-no-destination.destination"
+        "recording-indicator-no-destination.destination",
+        "recording-indicator-no-destination.pill"
       ],
       "id": "recording-indicator-no-destination.bar",
       "role": "container",
@@ -89,12 +89,32 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "action": "recording-indicator-no-destination.prompt",
+      "children": [
+        "recording-indicator-no-destination.prompt.shortcut",
+        "recording-indicator-no-destination.prompt.hint"
+      ],
       "id": "recording-indicator-no-destination.prompt",
       "role": "button",
       "screen_id": "recording-indicator-no-destination",
       "semantic_id": "recording-indicator-no-destination.prompt",
       "test_id": "recording-indicator-no-destination-prompt",
       "text": "Minimal correction"
+    },
+    {
+      "id": "recording-indicator-no-destination.prompt.hint",
+      "role": "text",
+      "screen_id": "recording-indicator-no-destination",
+      "semantic_id": "recording-indicator-no-destination.prompt.hint",
+      "test_id": "recording-indicator-no-destination-prompt-hint",
+      "text": "Hover to see options"
+    },
+    {
+      "id": "recording-indicator-no-destination.prompt.shortcut",
+      "role": "text",
+      "screen_id": "recording-indicator-no-destination",
+      "semantic_id": "recording-indicator-no-destination.prompt.shortcut",
+      "test_id": "recording-indicator-no-destination-prompt-shortcut",
+      "text": "⌃ ⌥ M"
     }
   ],
   "relations": [],

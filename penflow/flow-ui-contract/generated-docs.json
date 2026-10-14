@@ -1,7 +1,7 @@
 {
   "contract": {
     "path": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-    "sha256": "cfb31c1088185ce6bfa3e9a33485d27a19f4fdbc1624b8de5ac35b393392364b"
+    "sha256": "996dd76fae2f6a1365d66aa6ac5807a19acfa41010910ce3828efddc2bf3a411"
   },
   "files": [
     {
@@ -98,7 +98,7 @@
     },
     {
       "path": "screens/recording-indicator-destination-menu.md",
-      "sha256": "927f144661c25e17063ba9153731bec726a54baedb14aaabd366bbc3814831a9"
+      "sha256": "e6db501a2110b55f22745fa329cbba09825230c2404445b18383ec4596c789e8"
     },
     {
       "path": "screens/recording-indicator-destination-unavailable.md",
@@ -106,19 +106,19 @@
     },
     {
       "path": "screens/recording-indicator-no-destination.md",
-      "sha256": "4acb10517f698032ba3f60af2b5a0972b6eddb70c465dc4f50654be1efb47379"
+      "sha256": "79fa826352a9adf7dd4539011a2ff33ff144b4720b5c1d2ca4ee59138d90ff29"
     },
     {
       "path": "screens/recording-indicator-pinned.md",
-      "sha256": "4106bc445b27dcab9048a181bca1415fe7dc9a2f208fcfe7d52fdf813bc4b80c"
+      "sha256": "528d7ce614a62d1b4f16a9a48b0fc27b01f5419a2e681291ee9a47090bfb548a"
     },
     {
       "path": "screens/recording-indicator-prompt-menu.md",
-      "sha256": "c310ca4a8bf8e32101f71931d0f7c1c66e6858574b10007141a541198c9d6686"
+      "sha256": "61dd5a2238a9a33530775c366292c0da720d11e0ede983c642d014da584a5b3d"
     },
     {
       "path": "screens/recording-indicator.md",
-      "sha256": "c2540f92a7eb1c010ecca32b0abfb7fdab7814700aa83ea437f5c98d5e64b261"
+      "sha256": "992a9969660e10fb59f971d6ba9922d2b0e538e353b2da3532460e354578f349"
     },
     {
       "path": "screens/recovery-bubble-explanation.md",

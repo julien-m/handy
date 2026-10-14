@@ -132,6 +132,9 @@
 | [006-destination-application](../features/006-destination-application/spec.md) | 2026-10-14 | [PNG](screens/006-destination-application/recording-indicator.png) | Pass B: faithful Handy style rebuilt from the source code (dark theme, Handy components, same semantic IDs) — pending validation |
 | [009-pin-mode-and-enter-rule](../features/009-pin-mode-and-enter-rule/spec.md) | 2026-10-14 | [PNG](screens/009-pin-mode-and-enter-rule/recording-indicator.png) | Composite indicator: prompt chip (005), destination badge (006) — Penflow pass A, pending validation |
 | [009-pin-mode-and-enter-rule](../features/009-pin-mode-and-enter-rule/spec.md) | 2026-10-14 | [PNG](screens/009-pin-mode-and-enter-rule/recording-indicator.png) | Pass B: faithful Handy style rebuilt from the source code (dark theme, Handy components, same semantic IDs) — pending validation |
+| [005-custom-ai-prompts](../features/005-custom-ai-prompts/spec.md) | 2026-10-14 | [PNG](screens/005-custom-ai-prompts/recording-indicator.png) | Indicator revision (Julien, Spokenly layout in Handy style): prompt pill with the prompt shortcut and "Hover to see options" above a single indicator pill (destination left, level bars right) |
+| [006-destination-application](../features/006-destination-application/spec.md) | 2026-10-14 | [PNG](screens/006-destination-application/recording-indicator.png) | Indicator revision (Julien, Spokenly layout in Handy style): prompt pill with the prompt shortcut and "Hover to see options" above a single indicator pill (destination left, level bars right) |
+| [009-pin-mode-and-enter-rule](../features/009-pin-mode-and-enter-rule/spec.md) | 2026-10-14 | [PNG](screens/009-pin-mode-and-enter-rule/recording-indicator.png) | Indicator revision (Julien, Spokenly layout in Handy style): prompt pill with the prompt shortcut and "Hover to see options" above a single indicator pill (destination left, level bars right) |
 
 **Latest:** [recording-indicator.png](screens/recording-indicator.png)
 
@@ -150,6 +153,7 @@
 |------|------|--------|-------|
 | [006-destination-application](../features/006-destination-application/spec.md) | 2026-10-14 | [PNG](screens/006-destination-application/recording-indicator-destination-menu.png) | Recording indicator — destination menu — Penflow pass A, pending validation |
 | [006-destination-application](../features/006-destination-application/spec.md) | 2026-10-14 | [PNG](screens/006-destination-application/recording-indicator-destination-menu.png) | Pass B: faithful Handy style rebuilt from the source code (dark theme, Handy components, same semantic IDs) — pending validation |
+| [006-destination-application](../features/006-destination-application/spec.md) | 2026-10-14 | [PNG](screens/006-destination-application/recording-indicator-destination-menu.png) | Indicator revision (Julien, Spokenly layout in Handy style): prompt pill with the prompt shortcut and "Hover to see options" above a single indicator pill (destination left, level bars right) |
 
 **Latest:** [recording-indicator-destination-menu.png](screens/recording-indicator-destination-menu.png)
 
@@ -168,6 +172,7 @@
 |------|------|--------|-------|
 | [006-destination-application](../features/006-destination-application/spec.md) | 2026-10-14 | [PNG](screens/006-destination-application/recording-indicator-no-destination.png) | Recording indicator — frontmost app — Penflow pass A, pending validation |
 | [006-destination-application](../features/006-destination-application/spec.md) | 2026-10-14 | [PNG](screens/006-destination-application/recording-indicator-no-destination.png) | Pass B: faithful Handy style rebuilt from the source code (dark theme, Handy components, same semantic IDs) — pending validation |
+| [006-destination-application](../features/006-destination-application/spec.md) | 2026-10-14 | [PNG](screens/006-destination-application/recording-indicator-no-destination.png) | Indicator revision (Julien, Spokenly layout in Handy style): prompt pill with the prompt shortcut and "Hover to see options" above a single indicator pill (destination left, level bars right) |
 
 **Latest:** [recording-indicator-no-destination.png](screens/recording-indicator-no-destination.png)
 
@@ -177,6 +182,7 @@
 |------|------|--------|-------|
 | [009-pin-mode-and-enter-rule](../features/009-pin-mode-and-enter-rule/spec.md) | 2026-10-14 | [PNG](screens/009-pin-mode-and-enter-rule/recording-indicator-pinned.png) | Recording indicator — pinned destination — Penflow pass A, pending validation |
 | [009-pin-mode-and-enter-rule](../features/009-pin-mode-and-enter-rule/spec.md) | 2026-10-14 | [PNG](screens/009-pin-mode-and-enter-rule/recording-indicator-pinned.png) | Pass B: faithful Handy style rebuilt from the source code (dark theme, Handy components, same semantic IDs) — pending validation |
+| [009-pin-mode-and-enter-rule](../features/009-pin-mode-and-enter-rule/spec.md) | 2026-10-14 | [PNG](screens/009-pin-mode-and-enter-rule/recording-indicator-pinned.png) | Indicator revision (Julien, Spokenly layout in Handy style): prompt pill with the prompt shortcut and "Hover to see options" above a single indicator pill (destination left, level bars right) |
 
 **Latest:** [recording-indicator-pinned.png](screens/recording-indicator-pinned.png)
 
@@ -186,6 +192,7 @@
 |------|------|--------|-------|
 | [005-custom-ai-prompts](../features/005-custom-ai-prompts/spec.md) | 2026-10-14 | [PNG](screens/005-custom-ai-prompts/recording-indicator-prompt-menu.png) | Recording indicator — prompt menu — Penflow pass A, pending validation |
 | [005-custom-ai-prompts](../features/005-custom-ai-prompts/spec.md) | 2026-10-14 | [PNG](screens/005-custom-ai-prompts/recording-indicator-prompt-menu.png) | Pass B: faithful Handy style rebuilt from the source code (dark theme, Handy components, same semantic IDs) — pending validation |
+| [005-custom-ai-prompts](../features/005-custom-ai-prompts/spec.md) | 2026-10-14 | [PNG](screens/005-custom-ai-prompts/recording-indicator-prompt-menu.png) | Indicator revision: hover state of the prompt pill — list of all prompts with their shortcut badges, active prompt highlighted with a check, pill in Handy dropdown open style |
 
 **Latest:** [recording-indicator-prompt-menu.png](screens/recording-indicator-prompt-menu.png)
 

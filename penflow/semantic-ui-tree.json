@@ -7631,27 +7631,6 @@
           {
             "children": [
               {
-                "children": [
-                  {
-                    "role": "text",
-                    "semantic_id": "recording-indicator.pill.timer",
-                    "source_map": {
-                      "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[312]"
-                    },
-                    "test_id": "recording-indicator-pill-timer",
-                    "text": "0:07"
-                  }
-                ],
-                "role": "container",
-                "semantic_id": "recording-indicator.pill",
-                "source_map": {
-                  "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[311]"
-                },
-                "test_id": "recording-indicator-pill"
-              },
-              {
                 "actions": [
                   {
                     "event": "submit",
@@ -7661,6 +7640,28 @@
                     "node": "recording-indicator.prompt",
                     "success_transition": "recording-indicator.prompt.prompt-menu-open",
                     "trigger": "click"
+                  }
+                ],
+                "children": [
+                  {
+                    "role": "text",
+                    "semantic_id": "recording-indicator.prompt.shortcut",
+                    "source_map": {
+                      "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                      "contract_path": "$.nodes[314]"
+                    },
+                    "test_id": "recording-indicator-prompt-shortcut",
+                    "text": "\u2303 \u2325 M"
+                  },
+                  {
+                    "role": "text",
+                    "semantic_id": "recording-indicator.prompt.hint",
+                    "source_map": {
+                      "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                      "contract_path": "$.nodes[315]"
+                    },
+                    "test_id": "recording-indicator-prompt-hint",
+                    "text": "Hover to see options"
                   }
                 ],
                 "intent": "recording-indicator.prompt",
@@ -7691,7 +7692,7 @@
                     "semantic_id": "recording-indicator.destination.name",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[315]"
+                      "contract_path": "$.nodes[317]"
                     },
                     "test_id": "recording-indicator-destination-name",
                     "text": "ChatGPT"
@@ -7713,7 +7714,7 @@
                     "semantic_id": "recording-indicator.destination.remove",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[316]"
+                      "contract_path": "$.nodes[318]"
                     },
                     "test_id": "recording-indicator-destination-remove"
                   }
@@ -7723,9 +7724,30 @@
                 "semantic_id": "recording-indicator.destination",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[314]"
+                  "contract_path": "$.nodes[316]"
                 },
                 "test_id": "recording-indicator-destination"
+              },
+              {
+                "children": [
+                  {
+                    "role": "text",
+                    "semantic_id": "recording-indicator.pill.timer",
+                    "source_map": {
+                      "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                      "contract_path": "$.nodes[312]"
+                    },
+                    "test_id": "recording-indicator-pill-timer",
+                    "text": "0:07"
+                  }
+                ],
+                "role": "container",
+                "semantic_id": "recording-indicator.pill",
+                "source_map": {
+                  "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                  "contract_path": "$.nodes[311]"
+                },
+                "test_id": "recording-indicator-pill"
               }
             ],
             "role": "container",
@@ -7817,7 +7839,7 @@
                 "semantic_id": "recording-indicator-destination-menu.menu.now-label",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[319]"
+                  "contract_path": "$.nodes[321]"
                 },
                 "test_id": "recording-indicator-destination-menu-menu-now-label",
                 "text": "Frontmost now"
@@ -7839,7 +7861,7 @@
                 "semantic_id": "recording-indicator-destination-menu.menu.frontmost",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[320]"
+                  "contract_path": "$.nodes[322]"
                 },
                 "test_id": "recording-indicator-destination-menu-menu-frontmost",
                 "text": "Comet"
@@ -7849,7 +7871,7 @@
                 "semantic_id": "recording-indicator-destination-menu.menu.others-label",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[321]"
+                  "contract_path": "$.nodes[323]"
                 },
                 "test_id": "recording-indicator-destination-menu-menu-others-label",
                 "text": "Other apps"
@@ -7872,7 +7894,7 @@
                 "semantic_id": "recording-indicator-destination-menu.menu.app",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[322]"
+                  "contract_path": "$.nodes[324]"
                 },
                 "test_id": "recording-indicator-destination-menu-menu-app",
                 "text": "ChatGPT"
@@ -7894,7 +7916,7 @@
                 "semantic_id": "recording-indicator-destination-menu.menu.frontmost-at-end",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[323]"
+                  "contract_path": "$.nodes[325]"
                 },
                 "test_id": "recording-indicator-destination-menu-menu-frontmost-at-end",
                 "text": "Frontmost app at the end"
@@ -7916,7 +7938,7 @@
                 "semantic_id": "recording-indicator-destination-menu.menu.pin",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[324]"
+                  "contract_path": "$.nodes[326]"
                 },
                 "test_id": "recording-indicator-destination-menu-menu-pin",
                 "text": "Pin ChatGPT"
@@ -7926,33 +7948,12 @@
             "semantic_id": "recording-indicator-destination-menu.menu",
             "source_map": {
               "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-              "contract_path": "$.nodes[318]"
+              "contract_path": "$.nodes[320]"
             },
             "test_id": "recording-indicator-destination-menu-menu"
           },
           {
             "children": [
-              {
-                "children": [
-                  {
-                    "role": "text",
-                    "semantic_id": "recording-indicator-destination-menu.pill.timer",
-                    "source_map": {
-                      "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[327]"
-                    },
-                    "test_id": "recording-indicator-destination-menu-pill-timer",
-                    "text": "0:07"
-                  }
-                ],
-                "role": "container",
-                "semantic_id": "recording-indicator-destination-menu.pill",
-                "source_map": {
-                  "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[326]"
-                },
-                "test_id": "recording-indicator-destination-menu-pill"
-              },
               {
                 "actions": [
                   {
@@ -7965,12 +7966,34 @@
                     "trigger": "click"
                   }
                 ],
+                "children": [
+                  {
+                    "role": "text",
+                    "semantic_id": "recording-indicator-destination-menu.prompt.shortcut",
+                    "source_map": {
+                      "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                      "contract_path": "$.nodes[331]"
+                    },
+                    "test_id": "recording-indicator-destination-menu-prompt-shortcut",
+                    "text": "\u2303 \u2325 M"
+                  },
+                  {
+                    "role": "text",
+                    "semantic_id": "recording-indicator-destination-menu.prompt.hint",
+                    "source_map": {
+                      "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                      "contract_path": "$.nodes[332]"
+                    },
+                    "test_id": "recording-indicator-destination-menu-prompt-hint",
+                    "text": "Hover to see options"
+                  }
+                ],
                 "intent": "recording-indicator-destination-menu.prompt",
                 "role": "button",
                 "semantic_id": "recording-indicator-destination-menu.prompt",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[328]"
+                  "contract_path": "$.nodes[330]"
                 },
                 "test_id": "recording-indicator-destination-menu-prompt",
                 "text": "Minimal correction"
@@ -7993,7 +8016,7 @@
                     "semantic_id": "recording-indicator-destination-menu.destination.name",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[330]"
+                      "contract_path": "$.nodes[334]"
                     },
                     "test_id": "recording-indicator-destination-menu-destination-name",
                     "text": "ChatGPT"
@@ -8015,7 +8038,7 @@
                     "semantic_id": "recording-indicator-destination-menu.destination.remove",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[331]"
+                      "contract_path": "$.nodes[335]"
                     },
                     "test_id": "recording-indicator-destination-menu-destination-remove"
                   }
@@ -8025,16 +8048,37 @@
                 "semantic_id": "recording-indicator-destination-menu.destination",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[329]"
+                  "contract_path": "$.nodes[333]"
                 },
                 "test_id": "recording-indicator-destination-menu-destination"
+              },
+              {
+                "children": [
+                  {
+                    "role": "text",
+                    "semantic_id": "recording-indicator-destination-menu.pill.timer",
+                    "source_map": {
+                      "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                      "contract_path": "$.nodes[329]"
+                    },
+                    "test_id": "recording-indicator-destination-menu-pill-timer",
+                    "text": "0:07"
+                  }
+                ],
+                "role": "container",
+                "semantic_id": "recording-indicator-destination-menu.pill",
+                "source_map": {
+                  "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                  "contract_path": "$.nodes[328]"
+                },
+                "test_id": "recording-indicator-destination-menu-pill"
               }
             ],
             "role": "container",
             "semantic_id": "recording-indicator-destination-menu.bar",
             "source_map": {
               "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-              "contract_path": "$.nodes[325]"
+              "contract_path": "$.nodes[327]"
             },
             "test_id": "recording-indicator-destination-menu-bar"
           }
@@ -8043,7 +8087,7 @@
         "semantic_id": "recording-indicator-destination-menu",
         "source_map": {
           "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-          "contract_path": "$.nodes[317]"
+          "contract_path": "$.nodes[319]"
         },
         "test_id": "recording-indicator-destination-menu-screen"
       },
@@ -8165,27 +8209,6 @@
           {
             "children": [
               {
-                "children": [
-                  {
-                    "role": "text",
-                    "semantic_id": "recording-indicator-no-destination.pill.timer",
-                    "source_map": {
-                      "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[335]"
-                    },
-                    "test_id": "recording-indicator-no-destination-pill-timer",
-                    "text": "0:07"
-                  }
-                ],
-                "role": "container",
-                "semantic_id": "recording-indicator-no-destination.pill",
-                "source_map": {
-                  "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[334]"
-                },
-                "test_id": "recording-indicator-no-destination-pill"
-              },
-              {
                 "actions": [
                   {
                     "event": "submit",
@@ -8197,12 +8220,34 @@
                     "trigger": "click"
                   }
                 ],
+                "children": [
+                  {
+                    "role": "text",
+                    "semantic_id": "recording-indicator-no-destination.prompt.shortcut",
+                    "source_map": {
+                      "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                      "contract_path": "$.nodes[341]"
+                    },
+                    "test_id": "recording-indicator-no-destination-prompt-shortcut",
+                    "text": "\u2303 \u2325 M"
+                  },
+                  {
+                    "role": "text",
+                    "semantic_id": "recording-indicator-no-destination.prompt.hint",
+                    "source_map": {
+                      "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                      "contract_path": "$.nodes[342]"
+                    },
+                    "test_id": "recording-indicator-no-destination-prompt-hint",
+                    "text": "Hover to see options"
+                  }
+                ],
                 "intent": "recording-indicator-no-destination.prompt",
                 "role": "button",
                 "semantic_id": "recording-indicator-no-destination.prompt",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[336]"
+                  "contract_path": "$.nodes[340]"
                 },
                 "test_id": "recording-indicator-no-destination-prompt",
                 "text": "Minimal correction"
@@ -8225,7 +8270,7 @@
                     "semantic_id": "recording-indicator-no-destination.destination.name",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[338]"
+                      "contract_path": "$.nodes[344]"
                     },
                     "test_id": "recording-indicator-no-destination-destination-name",
                     "text": "Frontmost app"
@@ -8236,16 +8281,37 @@
                 "semantic_id": "recording-indicator-no-destination.destination",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[337]"
+                  "contract_path": "$.nodes[343]"
                 },
                 "test_id": "recording-indicator-no-destination-destination"
+              },
+              {
+                "children": [
+                  {
+                    "role": "text",
+                    "semantic_id": "recording-indicator-no-destination.pill.timer",
+                    "source_map": {
+                      "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                      "contract_path": "$.nodes[339]"
+                    },
+                    "test_id": "recording-indicator-no-destination-pill-timer",
+                    "text": "0:07"
+                  }
+                ],
+                "role": "container",
+                "semantic_id": "recording-indicator-no-destination.pill",
+                "source_map": {
+                  "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                  "contract_path": "$.nodes[338]"
+                },
+                "test_id": "recording-indicator-no-destination-pill"
               }
             ],
             "role": "container",
             "semantic_id": "recording-indicator-no-destination.bar",
             "source_map": {
               "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-              "contract_path": "$.nodes[333]"
+              "contract_path": "$.nodes[337]"
             },
             "test_id": "recording-indicator-no-destination-bar"
           }
@@ -8254,7 +8320,7 @@
         "semantic_id": "recording-indicator-no-destination",
         "source_map": {
           "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-          "contract_path": "$.nodes[332]"
+          "contract_path": "$.nodes[336]"
         },
         "test_id": "recording-indicator-no-destination-screen"
       },
@@ -8314,7 +8380,7 @@
             "semantic_id": "recording-indicator-destination-unavailable.notice",
             "source_map": {
               "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-              "contract_path": "$.nodes[340]"
+              "contract_path": "$.nodes[346]"
             },
             "test_id": "recording-indicator-destination-unavailable-notice",
             "text": "Notes is closed. Nothing was inserted; the transcript is kept in History."
@@ -8324,7 +8390,7 @@
         "semantic_id": "recording-indicator-destination-unavailable",
         "source_map": {
           "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-          "contract_path": "$.nodes[339]"
+          "contract_path": "$.nodes[345]"
         },
         "test_id": "recording-indicator-destination-unavailable-screen"
       },
@@ -8357,7 +8423,7 @@
                 "semantic_id": "recording-indicator-prompt-menu.menu.label",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[343]"
+                  "contract_path": "$.nodes[349]"
                 },
                 "test_id": "recording-indicator-prompt-menu-menu-label",
                 "text": "Prompt for this dictation"
@@ -8379,7 +8445,7 @@
                 "semantic_id": "recording-indicator-prompt-menu.menu.none",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[344]"
+                  "contract_path": "$.nodes[350]"
                 },
                 "test_id": "recording-indicator-prompt-menu-menu-none",
                 "text": "None (no AI processing)"
@@ -8396,13 +8462,25 @@
                     "trigger": "click"
                   }
                 ],
+                "children": [
+                  {
+                    "role": "text",
+                    "semantic_id": "recording-indicator-prompt-menu.menu.prompt.shortcut",
+                    "source_map": {
+                      "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                      "contract_path": "$.nodes[352]"
+                    },
+                    "test_id": "recording-indicator-prompt-menu-menu-prompt-shortcut",
+                    "text": "\u2303 \u2325 M"
+                  }
+                ],
                 "intent": "recording-indicator-prompt-menu.menu.prompt",
                 "repeat": "id in prompt_library.prompts",
                 "role": "button",
                 "semantic_id": "recording-indicator-prompt-menu.menu.prompt",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[345]"
+                  "contract_path": "$.nodes[351]"
                 },
                 "test_id": "recording-indicator-prompt-menu-menu-prompt",
                 "text": "Minimal correction"
@@ -8412,7 +8490,7 @@
                 "semantic_id": "recording-indicator-prompt-menu.menu.note",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[346]"
+                  "contract_path": "$.nodes[353]"
                 },
                 "test_id": "recording-indicator-prompt-menu-menu-note",
                 "text": "Applies to this dictation only. Default stays Minimal correction."
@@ -8422,33 +8500,12 @@
             "semantic_id": "recording-indicator-prompt-menu.menu",
             "source_map": {
               "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-              "contract_path": "$.nodes[342]"
+              "contract_path": "$.nodes[348]"
             },
             "test_id": "recording-indicator-prompt-menu-menu"
           },
           {
             "children": [
-              {
-                "children": [
-                  {
-                    "role": "text",
-                    "semantic_id": "recording-indicator-prompt-menu.pill.timer",
-                    "source_map": {
-                      "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[349]"
-                    },
-                    "test_id": "recording-indicator-prompt-menu-pill-timer",
-                    "text": "0:07"
-                  }
-                ],
-                "role": "container",
-                "semantic_id": "recording-indicator-prompt-menu.pill",
-                "source_map": {
-                  "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[348]"
-                },
-                "test_id": "recording-indicator-prompt-menu-pill"
-              },
               {
                 "actions": [
                   {
@@ -8461,12 +8518,24 @@
                     "trigger": "click"
                   }
                 ],
+                "children": [
+                  {
+                    "role": "text",
+                    "semantic_id": "recording-indicator-prompt-menu.prompt.shortcut",
+                    "source_map": {
+                      "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                      "contract_path": "$.nodes[358]"
+                    },
+                    "test_id": "recording-indicator-prompt-menu-prompt-shortcut",
+                    "text": "\u2303 \u2325 M"
+                  }
+                ],
                 "intent": "recording-indicator-prompt-menu.prompt",
                 "role": "button",
                 "semantic_id": "recording-indicator-prompt-menu.prompt",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[350]"
+                  "contract_path": "$.nodes[357]"
                 },
                 "test_id": "recording-indicator-prompt-menu-prompt",
                 "text": "Minimal correction"
@@ -8489,7 +8558,7 @@
                     "semantic_id": "recording-indicator-prompt-menu.destination.name",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[352]"
+                      "contract_path": "$.nodes[360]"
                     },
                     "test_id": "recording-indicator-prompt-menu-destination-name",
                     "text": "ChatGPT"
@@ -8511,7 +8580,7 @@
                     "semantic_id": "recording-indicator-prompt-menu.destination.remove",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[353]"
+                      "contract_path": "$.nodes[361]"
                     },
                     "test_id": "recording-indicator-prompt-menu-destination-remove"
                   }
@@ -8521,16 +8590,37 @@
                 "semantic_id": "recording-indicator-prompt-menu.destination",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[351]"
+                  "contract_path": "$.nodes[359]"
                 },
                 "test_id": "recording-indicator-prompt-menu-destination"
+              },
+              {
+                "children": [
+                  {
+                    "role": "text",
+                    "semantic_id": "recording-indicator-prompt-menu.pill.timer",
+                    "source_map": {
+                      "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                      "contract_path": "$.nodes[356]"
+                    },
+                    "test_id": "recording-indicator-prompt-menu-pill-timer",
+                    "text": "0:07"
+                  }
+                ],
+                "role": "container",
+                "semantic_id": "recording-indicator-prompt-menu.pill",
+                "source_map": {
+                  "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                  "contract_path": "$.nodes[355]"
+                },
+                "test_id": "recording-indicator-prompt-menu-pill"
               }
             ],
             "role": "container",
             "semantic_id": "recording-indicator-prompt-menu.bar",
             "source_map": {
               "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-              "contract_path": "$.nodes[347]"
+              "contract_path": "$.nodes[354]"
             },
             "test_id": "recording-indicator-prompt-menu-bar"
           }
@@ -8539,7 +8629,7 @@
         "semantic_id": "recording-indicator-prompt-menu",
         "source_map": {
           "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-          "contract_path": "$.nodes[341]"
+          "contract_path": "$.nodes[347]"
         },
         "test_id": "recording-indicator-prompt-menu-screen"
       },
@@ -8638,7 +8728,7 @@
             "semantic_id": "recording-indicator-ai-failed.notice",
             "source_map": {
               "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-              "contract_path": "$.nodes[355]"
+              "contract_path": "$.nodes[363]"
             },
             "test_id": "recording-indicator-ai-failed-notice",
             "text": "The AI step failed. The original text was used for insertion."
@@ -8648,7 +8738,7 @@
         "semantic_id": "recording-indicator-ai-failed",
         "source_map": {
           "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-          "contract_path": "$.nodes[354]"
+          "contract_path": "$.nodes[362]"
         },
         "test_id": "recording-indicator-ai-failed-screen"
       },
@@ -8681,7 +8771,7 @@
                 "semantic_id": "recording-indicator-pinned.menu.now-label",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[358]"
+                  "contract_path": "$.nodes[366]"
                 },
                 "test_id": "recording-indicator-pinned-menu-now-label",
                 "text": "Frontmost now"
@@ -8703,7 +8793,7 @@
                 "semantic_id": "recording-indicator-pinned.menu.frontmost",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[359]"
+                  "contract_path": "$.nodes[367]"
                 },
                 "test_id": "recording-indicator-pinned-menu-frontmost",
                 "text": "Comet"
@@ -8713,7 +8803,7 @@
                 "semantic_id": "recording-indicator-pinned.menu.others-label",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[360]"
+                  "contract_path": "$.nodes[368]"
                 },
                 "test_id": "recording-indicator-pinned-menu-others-label",
                 "text": "Other apps"
@@ -8736,7 +8826,7 @@
                 "semantic_id": "recording-indicator-pinned.menu.app",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[361]"
+                  "contract_path": "$.nodes[369]"
                 },
                 "test_id": "recording-indicator-pinned-menu-app",
                 "text": "ChatGPT"
@@ -8758,7 +8848,7 @@
                 "semantic_id": "recording-indicator-pinned.menu.unpin",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[362]"
+                  "contract_path": "$.nodes[370]"
                 },
                 "test_id": "recording-indicator-pinned-menu-unpin",
                 "text": "Unpin ChatGPT"
@@ -8768,33 +8858,12 @@
             "semantic_id": "recording-indicator-pinned.menu",
             "source_map": {
               "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-              "contract_path": "$.nodes[357]"
+              "contract_path": "$.nodes[365]"
             },
             "test_id": "recording-indicator-pinned-menu"
           },
           {
             "children": [
-              {
-                "children": [
-                  {
-                    "role": "text",
-                    "semantic_id": "recording-indicator-pinned.pill.timer",
-                    "source_map": {
-                      "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[365]"
-                    },
-                    "test_id": "recording-indicator-pinned-pill-timer",
-                    "text": "0:07"
-                  }
-                ],
-                "role": "container",
-                "semantic_id": "recording-indicator-pinned.pill",
-                "source_map": {
-                  "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[364]"
-                },
-                "test_id": "recording-indicator-pinned-pill"
-              },
               {
                 "actions": [
                   {
@@ -8807,12 +8876,34 @@
                     "trigger": "click"
                   }
                 ],
+                "children": [
+                  {
+                    "role": "text",
+                    "semantic_id": "recording-indicator-pinned.prompt.shortcut",
+                    "source_map": {
+                      "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                      "contract_path": "$.nodes[375]"
+                    },
+                    "test_id": "recording-indicator-pinned-prompt-shortcut",
+                    "text": "\u2303 \u2325 M"
+                  },
+                  {
+                    "role": "text",
+                    "semantic_id": "recording-indicator-pinned.prompt.hint",
+                    "source_map": {
+                      "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                      "contract_path": "$.nodes[376]"
+                    },
+                    "test_id": "recording-indicator-pinned-prompt-hint",
+                    "text": "Hover to see options"
+                  }
+                ],
                 "intent": "recording-indicator-pinned.prompt",
                 "role": "button",
                 "semantic_id": "recording-indicator-pinned.prompt",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[366]"
+                  "contract_path": "$.nodes[374]"
                 },
                 "test_id": "recording-indicator-pinned-prompt",
                 "text": "Minimal correction"
@@ -8835,7 +8926,7 @@
                     "semantic_id": "recording-indicator-pinned.destination.name",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[368]"
+                      "contract_path": "$.nodes[378]"
                     },
                     "test_id": "recording-indicator-pinned-destination-name",
                     "text": "ChatGPT"
@@ -8857,7 +8948,7 @@
                     "semantic_id": "recording-indicator-pinned.destination.remove",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[369]"
+                      "contract_path": "$.nodes[379]"
                     },
                     "test_id": "recording-indicator-pinned-destination-remove"
                   }
@@ -8867,16 +8958,37 @@
                 "semantic_id": "recording-indicator-pinned.destination",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[367]"
+                  "contract_path": "$.nodes[377]"
                 },
                 "test_id": "recording-indicator-pinned-destination"
+              },
+              {
+                "children": [
+                  {
+                    "role": "text",
+                    "semantic_id": "recording-indicator-pinned.pill.timer",
+                    "source_map": {
+                      "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                      "contract_path": "$.nodes[373]"
+                    },
+                    "test_id": "recording-indicator-pinned-pill-timer",
+                    "text": "0:07"
+                  }
+                ],
+                "role": "container",
+                "semantic_id": "recording-indicator-pinned.pill",
+                "source_map": {
+                  "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+                  "contract_path": "$.nodes[372]"
+                },
+                "test_id": "recording-indicator-pinned-pill"
               }
             ],
             "role": "container",
             "semantic_id": "recording-indicator-pinned.bar",
             "source_map": {
               "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-              "contract_path": "$.nodes[363]"
+              "contract_path": "$.nodes[371]"
             },
             "test_id": "recording-indicator-pinned-bar"
           }
@@ -8885,7 +8997,7 @@
         "semantic_id": "recording-indicator-pinned",
         "source_map": {
           "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-          "contract_path": "$.nodes[356]"
+          "contract_path": "$.nodes[364]"
         },
         "test_id": "recording-indicator-pinned-screen"
       },
@@ -9002,7 +9114,7 @@
                     "semantic_id": "output-settings.paste-method.title",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[373]"
+                      "contract_path": "$.nodes[383]"
                     },
                     "test_id": "output-settings-paste-method-title",
                     "text": "Paste method"
@@ -9029,7 +9141,7 @@
                     "semantic_id": "output-settings.paste-method.select",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[374]"
+                      "contract_path": "$.nodes[384]"
                     },
                     "test_id": "output-settings-paste-method-select",
                     "text": "Smart paste"
@@ -9039,7 +9151,7 @@
                 "semantic_id": "output-settings.paste-method",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[372]"
+                  "contract_path": "$.nodes[382]"
                 },
                 "test_id": "output-settings-paste-method"
               },
@@ -9050,7 +9162,7 @@
                     "semantic_id": "output-settings.clipboard.title",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[376]"
+                      "contract_path": "$.nodes[386]"
                     },
                     "test_id": "output-settings-clipboard-title",
                     "text": "Clipboard handling"
@@ -9077,7 +9189,7 @@
                     "semantic_id": "output-settings.clipboard.select",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[377]"
+                      "contract_path": "$.nodes[387]"
                     },
                     "test_id": "output-settings-clipboard-select",
                     "text": "Don't modify clipboard"
@@ -9087,7 +9199,7 @@
                 "semantic_id": "output-settings.clipboard",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[375]"
+                  "contract_path": "$.nodes[385]"
                 },
                 "test_id": "output-settings-clipboard"
               },
@@ -9098,7 +9210,7 @@
                     "semantic_id": "output-settings.return-app.title",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[379]"
+                      "contract_path": "$.nodes[389]"
                     },
                     "test_id": "output-settings-return-app-title",
                     "text": "Return to the dictation's application"
@@ -9120,7 +9232,7 @@
                     "semantic_id": "output-settings.return-app.info",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[380]"
+                      "contract_path": "$.nodes[390]"
                     },
                     "test_id": "output-settings-return-app-info"
                   },
@@ -9146,7 +9258,7 @@
                     "semantic_id": "output-settings.return-app.toggle",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[381]"
+                      "contract_path": "$.nodes[391]"
                     },
                     "test_id": "output-settings-return-app-toggle"
                   }
@@ -9155,7 +9267,7 @@
                 "semantic_id": "output-settings.return-app",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[378]"
+                  "contract_path": "$.nodes[388]"
                 },
                 "test_id": "output-settings-return-app"
               },
@@ -9166,7 +9278,7 @@
                     "semantic_id": "output-settings.auto-enter.title",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[383]"
+                      "contract_path": "$.nodes[393]"
                     },
                     "test_id": "output-settings-auto-enter-title",
                     "text": "Automatic Enter"
@@ -9193,7 +9305,7 @@
                     "semantic_id": "output-settings.auto-enter.mode",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[384]"
+                      "contract_path": "$.nodes[394]"
                     },
                     "test_id": "output-settings-auto-enter-mode",
                     "text": "Only in PIN mode"
@@ -9220,7 +9332,7 @@
                     "semantic_id": "output-settings.auto-enter.key",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[385]"
+                      "contract_path": "$.nodes[395]"
                     },
                     "test_id": "output-settings-auto-enter-key",
                     "text": "Enter"
@@ -9230,7 +9342,7 @@
                 "semantic_id": "output-settings.auto-enter",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[382]"
+                  "contract_path": "$.nodes[392]"
                 },
                 "test_id": "output-settings-auto-enter"
               },
@@ -9241,7 +9353,7 @@
                     "semantic_id": "output-settings.no-field-bubble.title",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[387]"
+                      "contract_path": "$.nodes[397]"
                     },
                     "test_id": "output-settings-no-field-bubble-title",
                     "text": "Show the bubble when no text field is focused"
@@ -9268,7 +9380,7 @@
                     "semantic_id": "output-settings.no-field-bubble.toggle",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[388]"
+                      "contract_path": "$.nodes[398]"
                     },
                     "test_id": "output-settings-no-field-bubble-toggle"
                   }
@@ -9277,7 +9389,7 @@
                 "semantic_id": "output-settings.no-field-bubble",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[386]"
+                  "contract_path": "$.nodes[396]"
                 },
                 "test_id": "output-settings-no-field-bubble"
               }
@@ -9286,7 +9398,7 @@
             "semantic_id": "output-settings.output",
             "source_map": {
               "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-              "contract_path": "$.nodes[371]"
+              "contract_path": "$.nodes[381]"
             },
             "test_id": "output-settings-output",
             "text": "Output"
@@ -9296,7 +9408,7 @@
         "semantic_id": "output-settings",
         "source_map": {
           "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-          "contract_path": "$.nodes[370]"
+          "contract_path": "$.nodes[380]"
         },
         "test_id": "output-settings-screen"
       },
@@ -9344,7 +9456,7 @@
                 "semantic_id": "output-settings-paste-methods.permission.title",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[391]"
+                  "contract_path": "$.nodes[401]"
                 },
                 "test_id": "output-settings-paste-methods-permission-title",
                 "text": "Accessibility permission is off"
@@ -9366,7 +9478,7 @@
                 "semantic_id": "output-settings-paste-methods.permission.open",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[392]"
+                  "contract_path": "$.nodes[402]"
                 },
                 "test_id": "output-settings-paste-methods-permission-open",
                 "text": "Open System Settings"
@@ -9376,7 +9488,7 @@
             "semantic_id": "output-settings-paste-methods.permission",
             "source_map": {
               "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-              "contract_path": "$.nodes[390]"
+              "contract_path": "$.nodes[400]"
             },
             "test_id": "output-settings-paste-methods-permission"
           },
@@ -9389,7 +9501,7 @@
                     "semantic_id": "output-settings-paste-methods.paste-method.title",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[395]"
+                      "contract_path": "$.nodes[405]"
                     },
                     "test_id": "output-settings-paste-methods-paste-method-title",
                     "text": "Paste method"
@@ -9416,7 +9528,7 @@
                     "semantic_id": "output-settings-paste-methods.paste-method.select",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[396]"
+                      "contract_path": "$.nodes[406]"
                     },
                     "test_id": "output-settings-paste-methods-paste-method-select",
                     "text": "Smart paste"
@@ -9440,7 +9552,7 @@
                         "semantic_id": "output-settings-paste-methods.paste-method.smart",
                         "source_map": {
                           "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                          "contract_path": "$.nodes[398]"
+                          "contract_path": "$.nodes[408]"
                         },
                         "test_id": "output-settings-paste-methods-paste-method-smart",
                         "text": "Smart paste"
@@ -9462,7 +9574,7 @@
                         "semantic_id": "output-settings-paste-methods.paste-method.clipboard",
                         "source_map": {
                           "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                          "contract_path": "$.nodes[399]"
+                          "contract_path": "$.nodes[409]"
                         },
                         "test_id": "output-settings-paste-methods-paste-method-clipboard",
                         "text": "Clipboard (\u2318V)"
@@ -9484,7 +9596,7 @@
                         "semantic_id": "output-settings-paste-methods.paste-method.direct",
                         "source_map": {
                           "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                          "contract_path": "$.nodes[400]"
+                          "contract_path": "$.nodes[410]"
                         },
                         "test_id": "output-settings-paste-methods-paste-method-direct",
                         "text": "Direct typing"
@@ -9506,7 +9618,7 @@
                         "semantic_id": "output-settings-paste-methods.paste-method.script",
                         "source_map": {
                           "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                          "contract_path": "$.nodes[401]"
+                          "contract_path": "$.nodes[411]"
                         },
                         "test_id": "output-settings-paste-methods-paste-method-script",
                         "text": "External script"
@@ -9528,7 +9640,7 @@
                         "semantic_id": "output-settings-paste-methods.paste-method.none",
                         "source_map": {
                           "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                          "contract_path": "$.nodes[402]"
+                          "contract_path": "$.nodes[412]"
                         },
                         "test_id": "output-settings-paste-methods-paste-method-none",
                         "text": "None"
@@ -9538,7 +9650,7 @@
                     "semantic_id": "output-settings-paste-methods.paste-method.options",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[397]"
+                      "contract_path": "$.nodes[407]"
                     },
                     "test_id": "output-settings-paste-methods-paste-method-options"
                   }
@@ -9547,7 +9659,7 @@
                 "semantic_id": "output-settings-paste-methods.paste-method",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[394]"
+                  "contract_path": "$.nodes[404]"
                 },
                 "test_id": "output-settings-paste-methods-paste-method"
               },
@@ -9558,7 +9670,7 @@
                     "semantic_id": "output-settings-paste-methods.clipboard.title",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[404]"
+                      "contract_path": "$.nodes[414]"
                     },
                     "test_id": "output-settings-paste-methods-clipboard-title",
                     "text": "Clipboard handling"
@@ -9585,7 +9697,7 @@
                     "semantic_id": "output-settings-paste-methods.clipboard.select",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[405]"
+                      "contract_path": "$.nodes[415]"
                     },
                     "test_id": "output-settings-paste-methods-clipboard-select",
                     "text": "Don't modify clipboard"
@@ -9595,7 +9707,7 @@
                 "semantic_id": "output-settings-paste-methods.clipboard",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[403]"
+                  "contract_path": "$.nodes[413]"
                 },
                 "test_id": "output-settings-paste-methods-clipboard"
               }
@@ -9604,7 +9716,7 @@
             "semantic_id": "output-settings-paste-methods.output",
             "source_map": {
               "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-              "contract_path": "$.nodes[393]"
+              "contract_path": "$.nodes[403]"
             },
             "test_id": "output-settings-paste-methods-output",
             "text": "Output"
@@ -9614,7 +9726,7 @@
         "semantic_id": "output-settings-paste-methods",
         "source_map": {
           "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-          "contract_path": "$.nodes[389]"
+          "contract_path": "$.nodes[399]"
         },
         "test_id": "output-settings-paste-methods-screen"
       },
@@ -9722,7 +9834,7 @@
                     "semantic_id": "output-settings-unavailable.paste-method.title",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[409]"
+                      "contract_path": "$.nodes[419]"
                     },
                     "test_id": "output-settings-unavailable-paste-method-title",
                     "text": "Paste method"
@@ -9749,7 +9861,7 @@
                     "semantic_id": "output-settings-unavailable.paste-method.select",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[410]"
+                      "contract_path": "$.nodes[420]"
                     },
                     "test_id": "output-settings-unavailable-paste-method-select",
                     "text": "Clipboard (Ctrl+V)"
@@ -9759,7 +9871,7 @@
                 "semantic_id": "output-settings-unavailable.paste-method",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[408]"
+                  "contract_path": "$.nodes[418]"
                 },
                 "test_id": "output-settings-unavailable-paste-method"
               },
@@ -9770,7 +9882,7 @@
                     "semantic_id": "output-settings-unavailable.clipboard.title",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[412]"
+                      "contract_path": "$.nodes[422]"
                     },
                     "test_id": "output-settings-unavailable-clipboard-title",
                     "text": "Clipboard handling"
@@ -9797,7 +9909,7 @@
                     "semantic_id": "output-settings-unavailable.clipboard.select",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[413]"
+                      "contract_path": "$.nodes[423]"
                     },
                     "test_id": "output-settings-unavailable-clipboard-select",
                     "text": "Don't modify clipboard"
@@ -9807,7 +9919,7 @@
                 "semantic_id": "output-settings-unavailable.clipboard",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[411]"
+                  "contract_path": "$.nodes[421]"
                 },
                 "test_id": "output-settings-unavailable-clipboard"
               },
@@ -9818,7 +9930,7 @@
                     "semantic_id": "output-settings-unavailable.return-app.title",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[415]"
+                      "contract_path": "$.nodes[425]"
                     },
                     "test_id": "output-settings-unavailable-return-app-title",
                     "text": "Return to the dictation's application"
@@ -9840,7 +9952,7 @@
                     "semantic_id": "output-settings-unavailable.return-app.info",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[416]"
+                      "contract_path": "$.nodes[426]"
                     },
                     "test_id": "output-settings-unavailable-return-app-info"
                   },
@@ -9866,7 +9978,7 @@
                     "semantic_id": "output-settings-unavailable.return-app.toggle",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[417]"
+                      "contract_path": "$.nodes[427]"
                     },
                     "test_id": "output-settings-unavailable-return-app-toggle"
                   }
@@ -9875,7 +9987,7 @@
                 "semantic_id": "output-settings-unavailable.return-app",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[414]"
+                  "contract_path": "$.nodes[424]"
                 },
                 "test_id": "output-settings-unavailable-return-app"
               },
@@ -9886,7 +9998,7 @@
                     "semantic_id": "output-settings-unavailable.auto-enter.title",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[419]"
+                      "contract_path": "$.nodes[429]"
                     },
                     "test_id": "output-settings-unavailable-auto-enter-title",
                     "text": "Automatic Enter"
@@ -9913,7 +10025,7 @@
                     "semantic_id": "output-settings-unavailable.auto-enter.mode",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[420]"
+                      "contract_path": "$.nodes[430]"
                     },
                     "test_id": "output-settings-unavailable-auto-enter-mode",
                     "text": "Only in PIN mode"
@@ -9940,7 +10052,7 @@
                     "semantic_id": "output-settings-unavailable.auto-enter.key",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[421]"
+                      "contract_path": "$.nodes[431]"
                     },
                     "test_id": "output-settings-unavailable-auto-enter-key",
                     "text": "Enter"
@@ -9950,7 +10062,7 @@
                 "semantic_id": "output-settings-unavailable.auto-enter",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[418]"
+                  "contract_path": "$.nodes[428]"
                 },
                 "test_id": "output-settings-unavailable-auto-enter"
               },
@@ -9961,7 +10073,7 @@
                     "semantic_id": "output-settings-unavailable.no-field-bubble.title",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[423]"
+                      "contract_path": "$.nodes[433]"
                     },
                     "test_id": "output-settings-unavailable-no-field-bubble-title",
                     "text": "Show the bubble when no text field is focused"
@@ -9988,7 +10100,7 @@
                     "semantic_id": "output-settings-unavailable.no-field-bubble.toggle",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[424]"
+                      "contract_path": "$.nodes[434]"
                     },
                     "test_id": "output-settings-unavailable-no-field-bubble-toggle"
                   }
@@ -9997,7 +10109,7 @@
                 "semantic_id": "output-settings-unavailable.no-field-bubble",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[422]"
+                  "contract_path": "$.nodes[432]"
                 },
                 "test_id": "output-settings-unavailable-no-field-bubble"
               }
@@ -10006,7 +10118,7 @@
             "semantic_id": "output-settings-unavailable.output",
             "source_map": {
               "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-              "contract_path": "$.nodes[407]"
+              "contract_path": "$.nodes[417]"
             },
             "test_id": "output-settings-unavailable-output",
             "text": "Output"
@@ -10016,7 +10128,7 @@
         "semantic_id": "output-settings-unavailable",
         "source_map": {
           "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-          "contract_path": "$.nodes[406]"
+          "contract_path": "$.nodes[416]"
         },
         "test_id": "output-settings-unavailable-screen"
       },
@@ -10066,7 +10178,7 @@
                     "semantic_id": "output-settings-enter-options.auto-enter.title",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[428]"
+                      "contract_path": "$.nodes[438]"
                     },
                     "test_id": "output-settings-enter-options-auto-enter-title",
                     "text": "Automatic Enter"
@@ -10093,7 +10205,7 @@
                     "semantic_id": "output-settings-enter-options.auto-enter.mode",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[429]"
+                      "contract_path": "$.nodes[439]"
                     },
                     "test_id": "output-settings-enter-options-auto-enter-mode",
                     "text": "Only in PIN mode"
@@ -10120,7 +10232,7 @@
                     "semantic_id": "output-settings-enter-options.auto-enter.key",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[430]"
+                      "contract_path": "$.nodes[440]"
                     },
                     "test_id": "output-settings-enter-options-auto-enter-key",
                     "text": "Enter"
@@ -10144,7 +10256,7 @@
                         "semantic_id": "output-settings-enter-options.auto-enter.never",
                         "source_map": {
                           "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                          "contract_path": "$.nodes[432]"
+                          "contract_path": "$.nodes[442]"
                         },
                         "test_id": "output-settings-enter-options-auto-enter-never",
                         "text": "Never"
@@ -10166,7 +10278,7 @@
                         "semantic_id": "output-settings-enter-options.auto-enter.always",
                         "source_map": {
                           "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                          "contract_path": "$.nodes[433]"
+                          "contract_path": "$.nodes[443]"
                         },
                         "test_id": "output-settings-enter-options-auto-enter-always",
                         "text": "Always"
@@ -10188,7 +10300,7 @@
                         "semantic_id": "output-settings-enter-options.auto-enter.pin-only",
                         "source_map": {
                           "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                          "contract_path": "$.nodes[434]"
+                          "contract_path": "$.nodes[444]"
                         },
                         "test_id": "output-settings-enter-options-auto-enter-pin-only",
                         "text": "Only in PIN mode"
@@ -10198,7 +10310,7 @@
                     "semantic_id": "output-settings-enter-options.auto-enter.options",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[431]"
+                      "contract_path": "$.nodes[441]"
                     },
                     "test_id": "output-settings-enter-options-auto-enter-options"
                   }
@@ -10207,7 +10319,7 @@
                 "semantic_id": "output-settings-enter-options.auto-enter",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[427]"
+                  "contract_path": "$.nodes[437]"
                 },
                 "test_id": "output-settings-enter-options-auto-enter"
               }
@@ -10216,7 +10328,7 @@
             "semantic_id": "output-settings-enter-options.output",
             "source_map": {
               "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-              "contract_path": "$.nodes[426]"
+              "contract_path": "$.nodes[436]"
             },
             "test_id": "output-settings-enter-options-output",
             "text": "Output"
@@ -10226,7 +10338,7 @@
             "semantic_id": "output-settings-enter-options.auto-enter.note",
             "source_map": {
               "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-              "contract_path": "$.nodes[435]"
+              "contract_path": "$.nodes[445]"
             },
             "test_id": "output-settings-enter-options-auto-enter-note",
             "text": "Replaces Auto Submit. No Enter after a failed or unconfirmed insertion, with paste method None, or when the app lost focus."
@@ -10236,7 +10348,7 @@
         "semantic_id": "output-settings-enter-options",
         "source_map": {
           "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-          "contract_path": "$.nodes[425]"
+          "contract_path": "$.nodes[435]"
         },
         "test_id": "output-settings-enter-options-screen"
       },
@@ -10306,7 +10418,7 @@
                 "semantic_id": "settings-write-errors.conflict.title",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[438]"
+                  "contract_path": "$.nodes[448]"
                 },
                 "test_id": "settings-write-errors-conflict-title",
                 "text": "Settings changed elsewhere"
@@ -10328,7 +10440,7 @@
                 "semantic_id": "settings-write-errors.reload",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[439]"
+                  "contract_path": "$.nodes[449]"
                 },
                 "test_id": "settings-write-errors-reload",
                 "text": "Reload"
@@ -10338,7 +10450,7 @@
             "semantic_id": "settings-write-errors.conflict",
             "source_map": {
               "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-              "contract_path": "$.nodes[437]"
+              "contract_path": "$.nodes[447]"
             },
             "test_id": "settings-write-errors-conflict"
           },
@@ -10351,7 +10463,7 @@
                     "semantic_id": "settings-write-errors.history-limit.title",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[442]"
+                      "contract_path": "$.nodes[452]"
                     },
                     "test_id": "settings-write-errors-history-limit-title",
                     "text": "History limit"
@@ -10378,7 +10490,7 @@
                     "semantic_id": "settings-write-errors.history-limit.input",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[443]"
+                      "contract_path": "$.nodes[453]"
                     },
                     "test_id": "settings-write-errors-history-limit-input",
                     "text": "-5"
@@ -10388,7 +10500,7 @@
                     "semantic_id": "settings-write-errors.history-limit.error",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[444]"
+                      "contract_path": "$.nodes[454]"
                     },
                     "test_id": "settings-write-errors-history-limit-error",
                     "text": "Enter a whole number from 0 to 10000."
@@ -10398,7 +10510,7 @@
                 "semantic_id": "settings-write-errors.history-limit",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[441]"
+                  "contract_path": "$.nodes[451]"
                 },
                 "test_id": "settings-write-errors-history-limit"
               }
@@ -10407,7 +10519,7 @@
             "semantic_id": "settings-write-errors.history",
             "source_map": {
               "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-              "contract_path": "$.nodes[440]"
+              "contract_path": "$.nodes[450]"
             },
             "test_id": "settings-write-errors-history",
             "text": "History"
@@ -10419,7 +10531,7 @@
                 "semantic_id": "settings-write-errors.save-failed.title",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[446]"
+                  "contract_path": "$.nodes[456]"
                 },
                 "test_id": "settings-write-errors-save-failed-title",
                 "text": "Couldn't save settings: the settings file is read-only. Nothing was changed."
@@ -10429,7 +10541,7 @@
             "semantic_id": "settings-write-errors.save-failed",
             "source_map": {
               "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-              "contract_path": "$.nodes[445]"
+              "contract_path": "$.nodes[455]"
             },
             "test_id": "settings-write-errors-save-failed"
           }
@@ -10438,7 +10550,7 @@
         "semantic_id": "settings-write-errors",
         "source_map": {
           "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-          "contract_path": "$.nodes[436]"
+          "contract_path": "$.nodes[446]"
         },
         "test_id": "settings-write-errors-screen"
       },
@@ -10486,7 +10598,7 @@
                 "semantic_id": "recovery-bubble.reason",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[449]"
+                  "contract_path": "$.nodes[459]"
                 },
                 "test_id": "recovery-bubble-reason",
                 "text": "Notes is no longer open"
@@ -10508,7 +10620,7 @@
                 "semantic_id": "recovery-bubble.close",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[450]"
+                  "contract_path": "$.nodes[460]"
                 },
                 "test_id": "recovery-bubble-close"
               },
@@ -10517,7 +10629,7 @@
                 "semantic_id": "recovery-bubble.preview",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[451]"
+                  "contract_path": "$.nodes[461]"
                 },
                 "test_id": "recovery-bubble-preview",
                 "text": "Hi Marie, the release moves to Thursday. I'll send the checklist tonight so we can review the\u2026"
@@ -10539,7 +10651,7 @@
                 "semantic_id": "recovery-bubble.drag-handle",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[452]"
+                  "contract_path": "$.nodes[462]"
                 },
                 "test_id": "recovery-bubble-drag-handle",
                 "text": "Drag into a field"
@@ -10561,7 +10673,7 @@
                 "semantic_id": "recovery-bubble.copy",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[453]"
+                  "contract_path": "$.nodes[463]"
                 },
                 "test_id": "recovery-bubble-copy",
                 "text": "Copy"
@@ -10583,7 +10695,7 @@
                 "semantic_id": "recovery-bubble.why",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[454]"
+                  "contract_path": "$.nodes[464]"
                 },
                 "test_id": "recovery-bubble-why",
                 "text": "Why?"
@@ -10593,7 +10705,7 @@
             "semantic_id": "recovery-bubble.bubble",
             "source_map": {
               "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-              "contract_path": "$.nodes[448]"
+              "contract_path": "$.nodes[458]"
             },
             "test_id": "recovery-bubble-bubble"
           }
@@ -10602,7 +10714,7 @@
         "semantic_id": "recovery-bubble",
         "source_map": {
           "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-          "contract_path": "$.nodes[447]"
+          "contract_path": "$.nodes[457]"
         },
         "test_id": "recovery-bubble-screen"
       },
@@ -10692,7 +10804,7 @@
                 "semantic_id": "recovery-bubble-explanation.reason",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[457]"
+                  "contract_path": "$.nodes[467]"
                 },
                 "test_id": "recovery-bubble-explanation-reason",
                 "text": "ChatGPT is pinned but not open"
@@ -10714,7 +10826,7 @@
                 "semantic_id": "recovery-bubble-explanation.close",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[458]"
+                  "contract_path": "$.nodes[468]"
                 },
                 "test_id": "recovery-bubble-explanation-close"
               },
@@ -10723,7 +10835,7 @@
                 "semantic_id": "recovery-bubble-explanation.preview",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[459]"
+                  "contract_path": "$.nodes[469]"
                 },
                 "test_id": "recovery-bubble-explanation-preview",
                 "text": "Hi Marie, the release moves to Thursday. I'll send the checklist tonight so we can review the\u2026"
@@ -10735,7 +10847,7 @@
                     "semantic_id": "recovery-bubble-explanation.explanation.text",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[461]"
+                      "contract_path": "$.nodes[471]"
                     },
                     "test_id": "recovery-bubble-explanation-explanation-text",
                     "text": "Handy didn't insert anything and sent no Enter. The transcript is kept in History. Open ChatGPT, then drag or copy the text."
@@ -10745,7 +10857,7 @@
                 "semantic_id": "recovery-bubble-explanation.explanation",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[460]"
+                  "contract_path": "$.nodes[470]"
                 },
                 "test_id": "recovery-bubble-explanation-explanation"
               },
@@ -10766,7 +10878,7 @@
                 "semantic_id": "recovery-bubble-explanation.drag-handle",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[462]"
+                  "contract_path": "$.nodes[472]"
                 },
                 "test_id": "recovery-bubble-explanation-drag-handle",
                 "text": "Drag into a field"
@@ -10788,7 +10900,7 @@
                 "semantic_id": "recovery-bubble-explanation.copy",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[463]"
+                  "contract_path": "$.nodes[473]"
                 },
                 "test_id": "recovery-bubble-explanation-copy",
                 "text": "Copy"
@@ -10810,7 +10922,7 @@
                 "semantic_id": "recovery-bubble-explanation.why",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[464]"
+                  "contract_path": "$.nodes[474]"
                 },
                 "test_id": "recovery-bubble-explanation-why",
                 "text": "Hide details"
@@ -10820,7 +10932,7 @@
             "semantic_id": "recovery-bubble-explanation.bubble",
             "source_map": {
               "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-              "contract_path": "$.nodes[456]"
+              "contract_path": "$.nodes[466]"
             },
             "test_id": "recovery-bubble-explanation-bubble"
           }
@@ -10829,7 +10941,7 @@
         "semantic_id": "recovery-bubble-explanation",
         "source_map": {
           "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-          "contract_path": "$.nodes[455]"
+          "contract_path": "$.nodes[465]"
         },
         "test_id": "recovery-bubble-explanation-screen"
       },
@@ -10919,7 +11031,7 @@
                 "semantic_id": "recovery-bubble-no-field.reason",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[467]"
+                  "contract_path": "$.nodes[477]"
                 },
                 "test_id": "recovery-bubble-no-field-reason",
                 "text": "No text field is focused"
@@ -10941,7 +11053,7 @@
                 "semantic_id": "recovery-bubble-no-field.close",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[468]"
+                  "contract_path": "$.nodes[478]"
                 },
                 "test_id": "recovery-bubble-no-field-close"
               },
@@ -10950,7 +11062,7 @@
                 "semantic_id": "recovery-bubble-no-field.preview",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[469]"
+                  "contract_path": "$.nodes[479]"
                 },
                 "test_id": "recovery-bubble-no-field-preview",
                 "text": "Hi Marie, the release moves to Thursday. I'll send the checklist tonight so we can review the\u2026"
@@ -10972,7 +11084,7 @@
                 "semantic_id": "recovery-bubble-no-field.drag-handle",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[470]"
+                  "contract_path": "$.nodes[480]"
                 },
                 "test_id": "recovery-bubble-no-field-drag-handle",
                 "text": "Drag into a field"
@@ -10994,7 +11106,7 @@
                 "semantic_id": "recovery-bubble-no-field.copy",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[471]"
+                  "contract_path": "$.nodes[481]"
                 },
                 "test_id": "recovery-bubble-no-field-copy",
                 "text": "Copy"
@@ -11016,7 +11128,7 @@
                 "semantic_id": "recovery-bubble-no-field.why",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[472]"
+                  "contract_path": "$.nodes[482]"
                 },
                 "test_id": "recovery-bubble-no-field-why",
                 "text": "Why?"
@@ -11026,7 +11138,7 @@
             "semantic_id": "recovery-bubble-no-field.bubble",
             "source_map": {
               "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-              "contract_path": "$.nodes[466]"
+              "contract_path": "$.nodes[476]"
             },
             "test_id": "recovery-bubble-no-field-bubble"
           }
@@ -11035,7 +11147,7 @@
         "semantic_id": "recovery-bubble-no-field",
         "source_map": {
           "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-          "contract_path": "$.nodes[465]"
+          "contract_path": "$.nodes[475]"
         },
         "test_id": "recovery-bubble-no-field-screen"
       },
@@ -11125,7 +11237,7 @@
                 "semantic_id": "recovery-bubble-insertion-failed.reason",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[475]"
+                  "contract_path": "$.nodes[485]"
                 },
                 "test_id": "recovery-bubble-insertion-failed-reason",
                 "text": "Insertion failed"
@@ -11147,7 +11259,7 @@
                 "semantic_id": "recovery-bubble-insertion-failed.close",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[476]"
+                  "contract_path": "$.nodes[486]"
                 },
                 "test_id": "recovery-bubble-insertion-failed-close"
               },
@@ -11156,7 +11268,7 @@
                 "semantic_id": "recovery-bubble-insertion-failed.preview",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[477]"
+                  "contract_path": "$.nodes[487]"
                 },
                 "test_id": "recovery-bubble-insertion-failed-preview",
                 "text": "Hi Marie, the release moves to Thursday. I'll send the checklist tonight so we can review the\u2026"
@@ -11168,7 +11280,7 @@
                     "semantic_id": "recovery-bubble-insertion-failed.explanation.text",
                     "source_map": {
                       "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                      "contract_path": "$.nodes[479]"
+                      "contract_path": "$.nodes[489]"
                     },
                     "test_id": "recovery-bubble-insertion-failed-explanation-text",
                     "text": "Some text may have reached the application. The full transcript is kept in History."
@@ -11178,7 +11290,7 @@
                 "semantic_id": "recovery-bubble-insertion-failed.explanation",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[478]"
+                  "contract_path": "$.nodes[488]"
                 },
                 "test_id": "recovery-bubble-insertion-failed-explanation"
               },
@@ -11199,7 +11311,7 @@
                 "semantic_id": "recovery-bubble-insertion-failed.copy",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[480]"
+                  "contract_path": "$.nodes[490]"
                 },
                 "test_id": "recovery-bubble-insertion-failed-copy",
                 "text": "Copy"
@@ -11221,7 +11333,7 @@
                 "semantic_id": "recovery-bubble-insertion-failed.why",
                 "source_map": {
                   "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-                  "contract_path": "$.nodes[481]"
+                  "contract_path": "$.nodes[491]"
                 },
                 "test_id": "recovery-bubble-insertion-failed-why",
                 "text": "Hide details"
@@ -11231,7 +11343,7 @@
             "semantic_id": "recovery-bubble-insertion-failed.bubble",
             "source_map": {
               "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-              "contract_path": "$.nodes[474]"
+              "contract_path": "$.nodes[484]"
             },
             "test_id": "recovery-bubble-insertion-failed-bubble"
           }
@@ -11240,7 +11352,7 @@
         "semantic_id": "recovery-bubble-insertion-failed",
         "source_map": {
           "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-          "contract_path": "$.nodes[473]"
+          "contract_path": "$.nodes[483]"
         },
         "test_id": "recovery-bubble-insertion-failed-screen"
       },
@@ -11312,7 +11424,7 @@
         "semantic_id": "handy-reference",
         "source_map": {
           "contract": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
-          "contract_path": "$.nodes[482]"
+          "contract_path": "$.nodes[492]"
         },
         "test_id": "handy-reference-screen"
       },
