@@ -25,6 +25,8 @@ enum LiveEffect {
     MicrophoneChannel,
     VadBackend,
     HistoryCleanup,
+    /// Compile the committed replacement rules for the next dictation (feature 002).
+    Replacements,
 }
 
 /// Business rule per key; keys absent here are read at use time (paste, language, prompts,
@@ -47,6 +49,7 @@ fn live_effect(key: &str) -> Option<LiveEffect> {
         "selected_channel" => LiveEffect::MicrophoneChannel,
         "vad_backend" => LiveEffect::VadBackend,
         "history_limit" | "recording_retention_period" => LiveEffect::HistoryCleanup,
+        "word_replacements" => LiveEffect::Replacements,
         _ => return None,
     })
 }
@@ -102,9 +105,15 @@ fn apply_effect(app: &AppHandle, effect: LiveEffect, commit: &LiveCommit) -> Res
             )
         }
         LiveEffect::HistoryCleanup => return cleanup_history(app),
+        LiveEffect::Replacements => publish_replacements(app, commit),
         audio => return apply_audio(app, audio, after),
     }
     Ok(())
+}
+/// Compile the committed rules now, so the next dictation starts with them.
+fn publish_replacements(app: &AppHandle, commit: &LiveCommit) {
+    let rules = &commit.after.word_replacements;
+    crate::word_replacements::published::publish_committed(app, commit.revision.0, rules);
 }
 fn apply_audio(app: &AppHandle, effect: LiveEffect, after: &AppSettings) -> Result<(), String> {
     use crate::managers::audio::MicrophoneMode;

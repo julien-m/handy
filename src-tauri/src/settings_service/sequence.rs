@@ -140,9 +140,10 @@ pub(crate) fn write_edit(
     live: &LiveSettings,
     port: &dyn LiveEffectsPort,
     edit: SettingsEditFn<'_>,
+    expected: Option<Revision>,
 ) -> Result<LiveCommit, SettingsError> {
     ordered(live, port, || {
-        commit_and_apply(live, port, &SettingsEdit::Apply(edit), None)
+        commit_and_apply(live, port, &SettingsEdit::Apply(edit), expected)
     })
 }
 /// Settings-UI scalar write whose fallible native change is prepared from the current settings

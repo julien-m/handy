@@ -1,0 +1,226 @@
+//! Settings window commands of the replacement rules (feature 002): the published rules with
+//! their revision, the shared validator, the bulk/import preview, and the two commits of the
+//! editor (list Save of the complete draft, bulk/import Apply of a previewed input). Each commit
+//! goes through the settings service once, only at the revision the editor started from, with
+//! the same rule-set edits and refusals as `handy settings replacements`.
+
+use crate::settings::AppSettings;
+use crate::settings_service::{
+    command_error::SettingsCommandError,
+    domains::replacements::refusal,
+    errors::{SettingsError, SettingsErrorCode},
+    protocol::Revision,
+    tauri_adapter,
+};
+use crate::word_replacements::{
+    exchange::MAX_IMPORT_BYTES,
+    model::{ReplacementRule, RuleId, RuleIdSource, UuidRuleIdSource},
+    preview::{preview_exchange, ImportMode, ReplacementPreview},
+    service::{import_rules, new_rule_count, PreallocatedIds, RuleSetError},
+    validation::{validate_rules, RuleIssue},
+};
+use serde::{Deserialize, Serialize};
+use specta::Type;
+use tauri::AppHandle;
+
+/// Saved rules in order, with the settings revision they were read at.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Type)]
+pub struct ReplacementRulesView {
+    pub revision: u64,
+    pub rules: Vec<ReplacementRule>,
+}
+
+/// One rule of the editor's draft; a new rule has no id until it is saved.
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Type)]
+pub struct RuleDraft {
+    pub id: Option<RuleId>,
+    pub recognized: String,
+    pub replacement: String,
+}
+
+/// Outcome of an editor commit, returned as a value (never a rejected promise): the saved rules
+/// with their revision, or the typed refusal while nothing was saved.
+#[derive(Debug, Clone, PartialEq, Serialize, Type)]
+#[serde(tag = "status", rename_all = "snake_case")]
+pub enum ReplacementCommit {
+    Saved {
+        revision: u64,
+        rules: Vec<ReplacementRule>,
+    },
+    Refused {
+        error: SettingsCommandError,
+    },
+}
+impl From<Result<ReplacementRulesView, SettingsCommandError>> for ReplacementCommit {
+    fn from(result: Result<ReplacementRulesView, SettingsCommandError>) -> Self {
+        match result {
+            Ok(view) => Self::Saved {
+                revision: view.revision,
+                rules: view.rules,
+            },
+            Err(error) => Self::Refused { error },
+        }
+    }
+}
+
+/// A bulk or import preview against the rules saved at `revision`.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Type)]
+pub struct ReplacementPreviewView {
+    pub revision: u64,
+    pub preview: ReplacementPreview,
+}
+
+#[tauri::command]
+#[specta::specta]
+/// The published rules and their revision.
+pub fn get_word_replacements(app: AppHandle) -> ReplacementRulesView {
+    let (revision, settings) = tauri_adapter::view(&app);
+    ReplacementRulesView {
+        revision: revision.0,
+        rules: settings.word_replacements,
+    }
+}
+
+// @spec FR-002: Shared typed field validation — .specs/features/002-word-replacements/spec.md#fr-002
+#[tauri::command]
+#[specta::specta]
+/// Issues of a draft list (fields, duplicate keys, set size), from the shared validator; empty
+/// when the draft can be saved.
+pub fn check_word_replacements(rules: Vec<RuleDraft>) -> Vec<RuleIssue> {
+    validate_rules(&draft_rules(&rules, &fresh_ids(&rules)))
+        .err()
+        .unwrap_or_default()
+}
+
+// @spec FR-004: Merge/replace preview without writes — .specs/features/002-word-replacements/spec.md#fr-004
+#[tauri::command]
+#[specta::specta]
+/// Preview `input` (bulk text or imported file) in `mode` against the published rules.
+pub fn preview_word_replacements(
+    app: AppHandle,
+    input: String,
+    mode: ImportMode,
+) -> ReplacementPreviewView {
+    let (revision, settings) = tauri_adapter::view(&app);
+    ReplacementPreviewView {
+        revision: revision.0,
+        preview: preview_exchange(&settings.word_replacements, &input, mode),
+    }
+}
+
+// @spec AC-001: List draft saved once — .specs/features/002-word-replacements/spec.md#ac-001
+#[tauri::command]
+#[specta::specta]
+/// Save the complete draft list as the rule set, in one commit at `expected_revision`.
+/// Refused (nothing saved): `validation_failed` (`invalid_items`) for an invalid draft,
+/// `revision_conflict` when the settings moved on, and every refusal of the settings service.
+pub async fn save_word_replacements(
+    app: AppHandle,
+    rules: Vec<RuleDraft>,
+    expected_revision: u64,
+) -> ReplacementCommit {
+    let rules = draft_rules(&rules, &fresh_ids(&rules));
+    tauri_adapter::blocking(move || {
+        let edit = save_edit(rules);
+        let commit = tauri_adapter::edit_at(&app, &edit, Some(Revision(expected_revision)))?;
+        Ok(rules_view(commit.revision, commit.after))
+    })
+    .await
+    .into()
+}
+
+// @spec AC-003: Apply commits exactly the previewed set — .specs/features/002-word-replacements/spec.md#ac-003
+#[tauri::command]
+#[specta::specta]
+/// Apply `input` in `mode` (the bulk editor's Apply or a file import) in one commit at
+/// `expected_revision`, the revision its preview was computed at. Refused (nothing saved):
+/// `limit_exceeded` above 1,000,000 bytes, `validation_failed` with every line issue, and the
+/// refusals of `save_word_replacements`.
+pub async fn apply_word_replacements(
+    app: AppHandle,
+    input: String,
+    mode: ImportMode,
+    expected_revision: u64,
+) -> ReplacementCommit {
+    tauri_adapter::blocking(move || {
+        let (revision, settings) = tauri_adapter::view(&app);
+        let expected = Revision(expected_revision);
+        if revision != expected {
+            return Err(SettingsError::revision_conflict(revision).into());
+        }
+        let edit = import_edit(&settings.word_replacements, input, mode)?;
+        let commit = tauri_adapter::edit_at(&app, &edit, Some(expected))?;
+        Ok(rules_view(commit.revision, commit.after))
+    })
+    .await
+    .into()
+}
+
+/// Edit replacing the rule set with `rules`, refused unless they pass the shared validator.
+fn save_edit(
+    rules: Vec<ReplacementRule>,
+) -> impl Fn(&mut AppSettings) -> Result<(), SettingsError> {
+    move |settings| {
+        settings.word_replacements =
+            validate_rules(&rules).map_err(|issues| refusal(RuleSetError::Invalid(issues)))?;
+        Ok(())
+    }
+}
+
+/// Edit applying `input` in `mode` to the locked rules, with the identities of its new rules
+/// allocated now from the preview of `saved` (the rules at the expected revision).
+///
+/// # Errors
+/// `limit_exceeded` above 1,000,000 bytes; `validation_failed` when the preview cannot apply.
+fn import_edit(
+    saved: &[ReplacementRule],
+    input: String,
+    mode: ImportMode,
+) -> Result<impl Fn(&mut AppSettings) -> Result<(), SettingsError>, SettingsError> {
+    if input.len() > MAX_IMPORT_BYTES {
+        return Err(SettingsError::new(SettingsErrorCode::LimitExceeded));
+    }
+    let preview = preview_exchange(saved, &input, mode);
+    if !preview.can_apply() {
+        return Err(refusal(RuleSetError::InvalidInput(Box::new(preview))));
+    }
+    let ids = (0..new_rule_count(&preview))
+        .map(|_| UuidRuleIdSource.next_id())
+        .collect::<Vec<_>>();
+    Ok(move |settings: &mut AppSettings| {
+        let mut source = PreallocatedIds::new(&ids);
+        let outcome = import_rules(&settings.word_replacements, &input, mode, &mut source);
+        settings.word_replacements = outcome.map_err(refusal)?.rules;
+        Ok(())
+    })
+}
+
+/// One fresh identity per draft rule without one, in draft order.
+fn fresh_ids(rules: &[RuleDraft]) -> Vec<RuleId> {
+    let count = rules.iter().filter(|rule| rule.id.is_none()).count();
+    (0..count).map(|_| UuidRuleIdSource.next_id()).collect()
+}
+
+/// The draft as rules, new rules taking `ids` in order.
+fn draft_rules(drafts: &[RuleDraft], ids: &[RuleId]) -> Vec<ReplacementRule> {
+    let mut source = PreallocatedIds::new(ids);
+    drafts
+        .iter()
+        .map(|draft| ReplacementRule {
+            id: draft.id.clone().unwrap_or_else(|| source.next_id()),
+            recognized: draft.recognized.clone(),
+            replacement: draft.replacement.clone(),
+        })
+        .collect()
+}
+
+fn rules_view(revision: Revision, settings: AppSettings) -> ReplacementRulesView {
+    ReplacementRulesView {
+        revision: revision.0,
+        rules: settings.word_replacements,
+    }
+}
+
+#[cfg(test)]
+#[path = "replacements_tests.rs"]
+mod tests;

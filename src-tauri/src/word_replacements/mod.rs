@@ -7,6 +7,7 @@ pub mod matcher;
 pub mod materialize;
 pub mod model;
 pub mod preview;
+pub mod published;
 pub mod service;
 pub mod unicode;
 pub mod validation;

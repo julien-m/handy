@@ -13,9 +13,8 @@ use crate::tray::{set_tray_state, TrayIconState};
 use crate::utils::{
     self, show_processing_overlay, show_recording_overlay, show_transcribing_overlay,
 };
-use crate::word_replacements::dictation::{
-    compile_for_dictation, finalize_or_transcribe, DictationRuleCapture,
-};
+use crate::word_replacements::dictation::{finalize_or_transcribe, DictationRuleCapture};
+use crate::word_replacements::published::current_matcher;
 use crate::TranscriptionCoordinator;
 use log::{debug, error, warn};
 use once_cell::sync::Lazy;
@@ -485,7 +484,7 @@ impl ShortcutAction for TranscribeAction {
                 );
                 // AC-007: this dictation uses the rules committed before it started.
                 self.rules_at_start
-                    .capture(&binding_id, settings.word_replacements.clone());
+                    .capture(&binding_id, current_matcher(app));
                 let generation = readiness.generation();
                 let app_clone = app.clone();
                 let rm_clone = Arc::clone(&rm);
@@ -611,7 +610,7 @@ impl ShortcutAction for TranscribeAction {
         let post_process = self.post_process;
         let captured_rules = self
             .rules_at_start
-            .rules_for_stop(&binding_id, || get_settings(app).word_replacements);
+            .rules_for_stop(&binding_id, || current_matcher(app));
         let cancel_generation = rm.cancel_generation();
 
         tauri::async_runtime::spawn(async move {
@@ -661,9 +660,8 @@ impl ShortcutAction for TranscribeAction {
                     let transcription_time = Instant::now();
                     // One compiled matcher serves the stream finalize and its batch
                     // fallback (worker crash or empty stream) of the same audio.
-                    let replacements = compile_for_dictation(&captured_rules);
                     let transcription_result = finalize_or_transcribe(
-                        &replacements,
+                        &captured_rules,
                         |replacements| tm.finalize_stream(replacements),
                         |replacements| tm.transcribe(samples, replacements),
                     );

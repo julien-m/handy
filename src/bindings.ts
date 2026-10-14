@@ -985,6 +985,42 @@ async updateRecordingRetentionPeriod(period: string) : Promise<Result<null, Sett
 }
 },
 /**
+ * The published rules and their revision.
+ */
+async getWordReplacements() : Promise<ReplacementRulesView> {
+    return await TAURI_INVOKE("get_word_replacements");
+},
+/**
+ * Issues of a draft list (fields, duplicate keys, set size), from the shared validator; empty
+ * when the draft can be saved.
+ */
+async checkWordReplacements(rules: RuleDraft[]) : Promise<RuleIssue[]> {
+    return await TAURI_INVOKE("check_word_replacements", { rules });
+},
+/**
+ * Preview `input` (bulk text or imported file) in `mode` against the published rules.
+ */
+async previewWordReplacements(input: string, mode: ImportMode) : Promise<ReplacementPreviewView> {
+    return await TAURI_INVOKE("preview_word_replacements", { input, mode });
+},
+/**
+ * Save the complete draft list as the rule set, in one commit at `expected_revision`.
+ * Refused (nothing saved): `validation_failed` (`invalid_items`) for an invalid draft,
+ * `revision_conflict` when the settings moved on, and every refusal of the settings service.
+ */
+async saveWordReplacements(rules: RuleDraft[], expectedRevision: number) : Promise<ReplacementCommit> {
+    return await TAURI_INVOKE("save_word_replacements", { rules, expectedRevision });
+},
+/**
+ * Apply `input` in `mode` (the bulk editor's Apply or a file import) in one commit at
+ * `expected_revision`, the revision its preview was computed at. Refused (nothing saved):
+ * `limit_exceeded` above 1,000,000 bytes, `validation_failed` with every line issue, and the
+ * refusals of `save_word_replacements`.
+ */
+async applyWordReplacements(input: string, mode: ImportMode, expectedRevision: number) : Promise<ReplacementCommit> {
+    return await TAURI_INVOKE("apply_word_replacements", { input, mode, expectedRevision });
+},
+/**
  * Checks if the Mac is a laptop by detecting battery presence
  * 
  * This uses pmset to check for battery information.
@@ -1096,6 +1132,10 @@ export type AutoSubmitKey = "enter" | "ctrl_enter" | "cmd_enter"
 export type AvailableAccelerators = { transcribe: string[]; ort: string[]; gpu_devices: GpuDeviceOption[] }
 export type BindingResponse = { success: boolean; binding: ShortcutBinding | null; error: string | null }
 /**
+ * Candidate rule; new rules receive a durable ID only when committed.
+ */
+export type CandidateRule = { existing_id: RuleId | null; recognized: string; replacement: string }
+/**
  * Script applied to Mandarin and Cantonese output. Other languages are never
  * converted.
  */
@@ -1113,9 +1153,25 @@ export type EngineType =
  * the file, so this one variant covers the whole transcribe-cpp family.
  */
 "TranscribeCpp" | "Parakeet" | "Moonshine" | "MoonshineStreaming" | "SenseVoice" | "GigaAM" | "Canary" | "Cohere"
+/**
+ * Stable field identifier translated at UI/CLI boundaries.
+ */
+export type Field = "id" | "recognized" | "replacement" | "rules" | 
+/**
+ * A whole exchange line, before it can be split into fields.
+ */
+"line"
+/**
+ * An issue in one input field before a rule has an ordered position.
+ */
+export type FieldIssue = { field: Field; kind: IssueKind }
 export type GpuDeviceOption = { id: string; name: string; total_vram_mb: number }
 export type HistoryEntry = { id: number; file_name: string; timestamp: number; saved: boolean; title: string; transcription_text: string; post_processed_text: string | null; post_process_prompt: string | null; post_process_requested: boolean }
 export type HistoryUpdatePayload = { action: "added"; entry: HistoryEntry } | { action: "updated"; entry: HistoryEntry } | { action: "deleted"; id: number } | { action: "toggled"; id: number }
+/**
+ * Why a line carries no rule.
+ */
+export type IgnoredLine = "blank" | "comment" | "header"
 /**
  * Result of changing keyboard implementation
  */
@@ -1124,6 +1180,30 @@ export type ImplementationChangeResult = { success: boolean;
  * List of binding IDs that were reset to defaults due to incompatibility
  */
 reset_bindings: string[] }
+/**
+ * How imported rules combine with the saved set (AC-005).
+ */
+export type ImportMode = 
+/**
+ * Update matching keys in place and append new rules in input order.
+ */
+"merge" | 
+/**
+ * The input becomes the whole set; the bulk editor always uses this mode.
+ */
+"replace"
+/**
+ * Stable validation kind; diagnostics never contain user rule text.
+ */
+export type IssueKind = "empty_id" | "duplicate_id" | "too_short" | "too_long" | "forbidden_character" | "leading_comment" | "duplicate_key" | "too_many_rules" | "unicode_data_unavailable" | 
+/**
+ * An exchange line has neither a tab nor a `;` separator.
+ */
+"missing_separator" | 
+/**
+ * The saved base set is itself invalid, so no preview can be applied to it.
+ */
+"invalid_saved_rules"
 export type KeyboardDiagnosticReport = { secure_input_enabled: boolean; culprit_pid: number | null; culprit_name: string | null; 
 /**
  * Counts only — key identity is deliberately never captured.
@@ -1184,15 +1264,68 @@ export type PaginatedHistory = { entries: HistoryEntry[]; has_more: boolean }
 export type PasteMethod = "ctrl_v" | "direct" | "none" | "shift_insert" | "ctrl_shift_v" | "external_script"
 export type PermissionAccess = "allowed" | "denied" | "unknown"
 export type PostProcessProvider = { id: string; label: string; base_url: string; allow_base_url_edit?: boolean; models_endpoint?: string | null; supports_structured_output?: boolean }
+/**
+ * One preview row; deletions have no input line number.
+ */
+export type PreviewLine = { line_number: number | null; status: PreviewStatus; ignored: IgnoredLine | null; 
+/**
+ * Existing rule updated, kept unchanged or deleted by this row.
+ */
+rule_id: RuleId | null; 
+/**
+ * Resulting content for add/update/unchanged, removed content for delete.
+ */
+recognized: string | null; replacement: string | null; issues: FieldIssue[]; 
+/**
+ * Other input lines sharing this line's normalized key.
+ */
+duplicate_lines: number[] }
+/**
+ * Per-line outcome shown before Apply (AC-003).
+ */
+export type PreviewStatus = "add" | "update" | "delete" | "unchanged" | "ignored" | "error"
 export type RecordingRetentionPeriod = "never" | "preserve_limit" | "days_3" | "weeks_2" | "months_3"
+/**
+ * Outcome of an editor commit, returned as a value (never a rejected promise): the saved rules
+ * with their revision, or the typed refusal while nothing was saved.
+ */
+export type ReplacementCommit = { status: "saved"; revision: number; rules: ReplacementRule[] } | { status: "refused"; error: SettingsCommandError }
+/**
+ * Complete preview; `candidate` is exactly the ordered set Apply would commit.
+ */
+export type ReplacementPreview = { mode: ImportMode; 
+/**
+ * SHA-256 of the exact input text, so Apply can prove it used this input.
+ */
+input_sha256: string; lines: PreviewLine[]; set_issues: IssueKind[]; candidate: CandidateRule[]; 
+/**
+ * The candidate equals the saved set in content, identity and order.
+ */
+is_noop: boolean }
+/**
+ * A bulk or import preview against the rules saved at `revision`.
+ */
+export type ReplacementPreviewView = { revision: number; preview: ReplacementPreview }
 /**
  * Persisted content; normalized keys and positions are derived from the list.
  */
 export type ReplacementRule = { id: RuleId; recognized: string; replacement: string }
 /**
+ * Saved rules in order, with the settings revision they were read at.
+ */
+export type ReplacementRulesView = { revision: number; rules: ReplacementRule[] }
+/**
+ * One rule of the editor's draft; a new rule has no id until it is saved.
+ */
+export type RuleDraft = { id: RuleId | null; recognized: string; replacement: string }
+/**
  * Stable opaque rule identity; exchange files carry content rather than IDs.
  */
 export type RuleId = string
+/**
+ * Ordered rule issue; index is zero-based or absent for a whole-set issue.
+ */
+export type RuleIssue = { rule_index: number | null; field: Field; kind: IssueKind }
 /**
  * Provider API keys: `Debug` is redacted and the public settings projection reports presence only.
  */

@@ -3,8 +3,7 @@ use crate::managers::{
     history::{HistoryManager, PaginatedHistory},
     transcription::TranscriptionManager,
 };
-use crate::settings::get_settings;
-use crate::word_replacements::dictation::compile_for_dictation;
+use crate::word_replacements::published::current_matcher;
 use std::sync::Arc;
 use tauri::{AppHandle, State};
 
@@ -87,7 +86,7 @@ pub async fn retry_history_entry_transcription(
 
     let tm = Arc::clone(&transcription_manager);
     // A retry is a new dictation of saved audio: it uses the rules committed now.
-    let rules = compile_for_dictation(&get_settings(&app).word_replacements);
+    let rules = current_matcher(&app);
     let transcription =
         tauri::async_runtime::spawn_blocking(move || tm.transcribe(samples, &rules))
             .await

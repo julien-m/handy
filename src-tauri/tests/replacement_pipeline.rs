@@ -7,6 +7,7 @@
 //! application is built.
 
 use std::cell::Cell;
+use std::sync::Arc;
 
 use handy_app_lib::word_replacements::{
     dictation::{compile_for_dictation, finalize_or_transcribe, DictationRuleCapture},
@@ -19,7 +20,7 @@ const RECOGNIZED: &str = "open cloud code now";
 
 type TestResult = Result<(), String>;
 
-fn rules(replacement: &str) -> Vec<ReplacementRule> {
+fn rule_list(replacement: &str) -> Vec<ReplacementRule> {
     vec![ReplacementRule {
         id: "rule-1".into(),
         recognized: "cloud code".into(),
@@ -27,14 +28,18 @@ fn rules(replacement: &str) -> Vec<ReplacementRule> {
     }]
 }
 
-/// Simulate the stop path: select rules, compile once, finalize or batch.
+/// The compiled snapshot a recording start captures.
+fn rules(replacement: &str) -> Arc<CompiledReplacements> {
+    Arc::new(compile_for_dictation(&rule_list(replacement)))
+}
+
+/// Simulate the stop path: select the compiled rules, finalize or batch.
 fn stop_dictation(
     capture: &DictationRuleCapture,
-    current: Vec<ReplacementRule>,
+    current: Arc<CompiledReplacements>,
     stream: Result<Option<&str>, String>,
 ) -> Result<String, String> {
-    let selected = capture.rules_for_stop(BINDING, || current);
-    let replacements = compile_for_dictation(&selected);
+    let replacements = capture.rules_for_stop(BINDING, || current);
     finalize_or_transcribe(
         &replacements,
         |matcher| stream.map(|text| text.map(|text| matcher.apply(text).text())),
@@ -48,9 +53,8 @@ fn rules_captured_at_start_win_over_a_commit_during_recording() -> TestResult {
     capture.capture(BINDING, rules("Claude Code"));
     let output = stop_dictation(&capture, rules("Claude Code CLI"), Ok(None))?;
     assert_eq!(output, "open Claude Code now");
-    assert_eq!(
-        capture.take(BINDING),
-        None,
+    assert!(
+        capture.take(BINDING).is_none(),
         "the stop path consumes the capture"
     );
     Ok(())
@@ -73,7 +77,7 @@ fn current_settings_are_not_read_when_a_capture_exists() {
         reads.set(reads.get() + 1);
         rules("unused")
     });
-    assert_eq!(selected, rules("Claude Code"));
+    assert_eq!(selected.apply("cloud code").text(), "Claude Code");
     assert_eq!(reads.get(), 0);
 }
 
@@ -90,7 +94,7 @@ fn next_dictation_uses_the_rules_committed_before_it_started() -> TestResult {
 
 #[test]
 fn stream_and_batch_fallback_share_one_compiled_matcher() -> TestResult {
-    let replacements = compile_for_dictation(&rules("Claude Code"));
+    let replacements = compile_for_dictation(&rule_list("Claude Code"));
     let finalize_seen = Cell::new(std::ptr::null::<CompiledReplacements>());
     let output = finalize_or_transcribe(
         &replacements,
@@ -112,7 +116,7 @@ fn stream_and_batch_fallback_share_one_compiled_matcher() -> TestResult {
 fn usable_stream_text_skips_the_batch_run() -> TestResult {
     let capture = DictationRuleCapture::default();
     capture.capture(BINDING, rules("Claude Code"));
-    let output = stop_dictation(&capture, Vec::new(), Ok(Some("cloud code streamed")))?;
+    let output = stop_dictation(&capture, rules("unused"), Ok(Some("cloud code streamed")))?;
     assert_eq!(output, "Claude Code streamed");
     let batch_runs = Cell::new(0);
     let replacements = CompiledReplacements::empty();
@@ -132,6 +136,6 @@ fn usable_stream_text_skips_the_batch_run() -> TestResult {
 fn cancelled_finalize_never_starts_a_batch_run() {
     let capture = DictationRuleCapture::default();
     capture.capture(BINDING, rules("Claude Code"));
-    let result = stop_dictation(&capture, Vec::new(), Err("cancelled".to_owned()));
+    let result = stop_dictation(&capture, rules("unused"), Err("cancelled".to_owned()));
     assert_eq!(result, Err("cancelled".to_owned()));
 }
