@@ -100,6 +100,7 @@ fn collection_reason(entry: &super::descriptor::SettingDescriptor) -> Validation
         "vocabulary" if entry.key == "custom_filler_words" => ValidationReason::UiOnly,
         "vocabulary" => ValidationReason::VocabularyDomain,
         "prompts" => ValidationReason::PromptsDomain,
+        "replacements" => ValidationReason::ReplacementsDomain,
         _ => ValidationReason::UiOnly,
     }
 }

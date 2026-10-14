@@ -1,0 +1,8 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/002-word-replacements/src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.14s
+     Running tests/replacement_cli.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/replacement_cli-148d84f95c5578a9)
+     Running tests/replacement_transactions.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/replacement_transactions-33267347c000f7ed)
+     Running tests/settings_cli.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_cli-72004ee74b1f5400)
+     Running tests/settings_domains.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_domains-aa5408538288bb37)

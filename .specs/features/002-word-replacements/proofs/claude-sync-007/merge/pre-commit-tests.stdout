@@ -1,0 +1,102 @@
+
+running 19 tests
+test contract::keys_describe_type_allowed_values_range_and_access ... ok
+test contract::help_lists_generic_operations_in_both_modes ... ok
+test offline::older_handy_holding_its_singleton_refuses_reads_and_writes_without_touching_the_store ... ok
+test contract::json_get_prints_one_envelope_with_revision_and_every_public_key ... ok
+test contract::list_secret_and_read_only_keys_point_to_their_owner ... ok
+test offline::unreadable_store_reads_defaults_with_a_stderr_warning_and_refuses_writes ... ok
+test contract::every_owned_error_code_has_its_documented_exit ... ok
+test routed::a_live_listener_on_the_endpoint_name_is_never_replaced ... ok
+test offline::concurrent_cli_writers_lose_no_field ... ok
+test contract::human_output_is_readable_and_diagnostics_stay_on_stderr ... ok
+test offline::headless_read_never_creates_the_store_and_a_write_persists_one_revision ... ok
+test offline::rejected_write_changes_nothing ... ok
+test contract::secrets_and_rejected_arguments_never_reach_stdout_or_stderr ... ok
+test contract::stale_expected_revision_reports_the_current_revision ... ok
+test routed::the_running_instance_refuses_stale_and_invalid_writes_without_committing ... ok
+test routed::the_running_instance_answers_reads_and_commits_writes_with_its_live_state ... ok
+test routed::a_stale_endpoint_name_is_reclaimed_under_the_lease_and_removed_at_close ... ok
+test offline::held_startup_lease_without_a_reachable_channel_refuses_and_never_writes_offline ... ok
+test routed::no_answer_within_five_seconds_is_an_unknown_outcome_resolved_by_a_new_read ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 10.96s
+
+
+running 43 tests
+test driver::repository_subprocess_fixture ... ignored, test-only subprocess entry point; executed by process/crash contracts with stdin barriers
+test locator::unreadable_or_non_utf8_legacy_marker_beside_data_selects_portable_like_startup ... ok
+test locator::missing_ancestor_is_canonicalized_and_parent_traversal_is_refused ... ok
+test locator::same_user_symlink_chain_resolves_hop_by_hop_to_its_final_directory ... ok
+test locator::installed_resolution_appends_identifier_store_without_creating_it ... ok
+test locator::portable_magic_and_legacy_markers_are_read_without_mutation ... ok
+test locator::symlink_loops_and_overlong_chains_are_refused ... ok
+test normalized_writes::startup_on_unreadable_json_or_malformed_revision_recovers_read_only_with_lease ... ok
+test normalized_writes::store_without_settings_object_reads_as_a_fresh_install ... ok
+test normalized_writes::overlay_position_write_on_legacy_hidden_overlay_keeps_overlay_style ... ok
+test faults::replaced_temporary_path_never_replaces_store_or_deletes_substitute ... ok
+test normalized_writes::chinese_script_write_on_legacy_language_intent_keeps_selected_language ... ok
+test ownership::passive_occupied_socket_refuses_without_connecting_or_deleting ... ok
+test normalized_writes::gpu_accelerator_without_device_is_refused_and_changes_nothing ... ok
+test normalized_writes::gpu_device_write_on_schema_one_store_survives_the_next_read ... ok
+test faults::stable_lock_inode_survives_replacement_and_is_retained_after_release ... ok
+test ownership::foreign_lease_noop_on_absent_store_is_unavailable ... ok
+test ownership::native_owner_appearing_after_temp_sync_refuses_before_replace ... ok
+test normalized_writes::normalized_write_changes_only_the_mutated_visible_field ... ok
+test reads::missing_store_returns_defaults_without_creating_parent_or_store ... ok
+test reads::broken_json_read_recovers_defaults_without_overwriting ... ok
+test substitution::ancestor_symlink_into_another_users_directory_is_refused ... ok
+test reads::salvage_keeps_valid_revision_valid_fields_and_store_bytes ... ok
+test substitution::parent_substituted_before_read_and_restored_before_replace_is_refused ... ok
+test substitution::store_and_locks_moved_into_a_substituted_parent_are_refused_by_parent_identity ... ok
+test substitution::store_file_symlink_is_refused_for_reads_and_writes ... ok
+test ownership::offline_noop_on_deleted_store_while_instance_runs_is_unavailable ... ok
+test ownership::startup_normalizes_once_preserves_raw_secrets_and_keeps_offline_fenced ... ok
+test ownership::startup_merge_never_copies_unknown_fields_between_items_with_duplicate_ids ... ok
+test transactions::prompt_mutation_revalidates_membership_against_the_locked_fresh_snapshot ... ok
+test transactions::refused_or_noop_commit_on_absent_store_creates_no_directory_or_lock ... ok
+test transactions::corrupt_or_overflow_revision_and_broken_json_refuse_write ... ok
+test transactions::stale_compare_and_set_refuses_without_changing_bytes ... ok
+test substitution::same_user_ancestor_symlink_resolves_to_its_canonical_directory ... ok
+test ownership::lease_holding_instance_commits_while_offline_writers_stay_refused ... ok
+test transactions::changed_patch_is_durable_increments_once_and_preserves_unknowns_and_secrets ... ok
+test processes::barrier_started_startup_and_writer_respect_real_lease_ownership ... ok
+test transactions::semantic_noop_does_not_rewrite_or_increment_and_first_change_is_one ... ok
+test normalized_writes::gpu_accelerator_with_device_is_reread_as_returned_and_device_cannot_be_cleared ... ok
+test faults::every_durable_fault_preserves_a_complete_generation_and_reports_uncertainty ... ok
+test processes::forced_process_termination_before_and_after_replace_preserves_complete_generations_and_releases_locks ... ok
+test processes::overlapping_subprocess_writers_serialize_under_the_lock_and_preserve_disjoint_fields ... ok
+test processes::independent_raw_reader_observes_only_complete_old_or_new_generations ... ok
+
+test result: ok. 42 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.92s
+
+
+running 25 tests
+test error_details::unsupported_platform_is_validation_failed_exit_two_with_reason_and_field ... ok
+test error_details::items_are_sorted_by_index_and_bounded_without_candidate_values ... ok
+test error_details::existing_errors_carry_neither_reason_nor_items ... ok
+test contracts::all_documented_error_codes_have_fixed_exits_and_object_details ... ok
+test contracts::request_roundtrip_keeps_typed_operation_without_debug_or_secret_diagnostics ... ok
+test contracts::valid_get_keys_set_domain_shapes_roundtrip_with_optional_nulls ... ok
+test request_contracts::every_operation_refuses_fields_owned_by_other_variants ... ok
+test inventory::independent_access_inventory_covers_8_readonly_1_secret_5_collections_52_scalars ... ok
+test error_details::schema_closes_reason_and_items ... ok
+test contracts::operation_schema_requires_the_same_variant_fields_as_serde ... ok
+test request_contracts::unsupported_request_versions_and_extra_fields_are_rejected_safely ... ok
+test scalars::cli_rejects_noncanonical_boolean_and_out_of_range_numbers ... ok
+test scalars::every_nullable_scalar_preserves_strings_and_accepts_null_clear ... ok
+test scalars::legacy_aliases_are_disk_only_and_build_policy_is_shared ... ok
+test scalars::unknown_and_protected_keys_are_refused_without_echoing_input ... ok
+test scalars::all_52_scalar_ports_accept_the_same_typed_values ... ok
+test request_contracts::request_schema_closes_each_operation_to_its_own_fields ... ok
+test scalars::numeric_boundaries_and_overflow_have_identical_safe_error_reasons ... ok
+test contracts::checked_schema_matches_the_actual_dto_generator ... ok
+test contracts::generated_schema_matches_wire_shapes_and_descriptor_inventory ... ok
+test inventory::every_actual_stored_field_has_exactly_one_descriptor ... ok
+test contracts::explicit_projection_reports_secret_presence_without_any_raw_canary ... ok
+test request_contracts::public_schema_requires_all_fields_and_preserves_legacy_numeric_reads ... ok
+test request_contracts::all_canonical_public_enums_and_required_keys_match_independent_inventory ... ok
+test inventory::independent_enum_inventory_accepts_every_current_canonical_variant ... ok
+
+test result: ok. 25 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+

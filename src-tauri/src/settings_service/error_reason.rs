@@ -27,6 +27,46 @@ pub enum ErrorReason {
     RegistrationRefused,
     /// The shortcut text is not valid for the active keyboard implementation (004).
     InvalidShortcut,
+    /// A replacement rule has no recognized text (002).
+    RecognizedEmpty,
+    /// A recognized text is longer than 100 characters (002).
+    RecognizedTooLong,
+    /// A recognized text holds a line break, a tab or `;` (002).
+    RecognizedForbiddenCharacter,
+    /// A recognized text holds a control or bidirectional formatting character (002).
+    RecognizedControlCharacter,
+    /// A recognized text starts with `#`, like an exchange comment (002).
+    RecognizedLeadingComment,
+    /// Two rules have the same normalized recognized text (002).
+    DuplicateRecognized,
+    /// A replacement rule has no replacement text (002).
+    ReplacementEmpty,
+    /// A replacement text is longer than 500 characters (002).
+    ReplacementTooLong,
+    /// A replacement text holds a line break or a tab (002).
+    ReplacementForbiddenCharacter,
+    /// A replacement text holds a control or bidirectional formatting character (002).
+    ReplacementControlCharacter,
+    /// A replacement rule has an empty id (002).
+    EmptyRuleId,
+    /// Two replacement rules share an id (002).
+    DuplicateRuleId,
+    /// An exchange line has neither a tab nor a `;` separator (002).
+    MissingSeparator,
+    /// The rule set would hold more than 1000 rules (002).
+    TooManyRules,
+    /// The saved rules are invalid, so no import can be previewed on them (002).
+    InvalidSavedRules,
+    /// The Unicode data needed to validate rules is unavailable (002).
+    UnicodeDataUnavailable,
+    /// The running instance's answer does not fit one channel message (002).
+    ReplyTooLarge,
+    /// The export file could not be written; the destination is unchanged (002).
+    ExportNotWritten,
+    /// The export destination is a symbolic link, refused; nothing is written (002).
+    ExportSymbolicLink,
+    /// The export destination is a file the user cannot write; it is unchanged (002).
+    ExportReadOnly,
     /// A vocabulary term is empty once trimmed (003).
     TermEmpty,
     /// A vocabulary term exceeds 100 characters (003).
@@ -43,7 +83,7 @@ pub enum ErrorReason {
 }
 impl ErrorReason {
     /// Every reason of this build, in wire-schema order.
-    pub const ALL: [Self; 13] = [
+    pub const ALL: [Self; 33] = [
         Self::UnsupportedPlatform,
         Self::ShortcutSessionBusy,
         Self::InstanceRequired,
@@ -51,6 +91,26 @@ impl ErrorReason {
         Self::AlternativesUnsupported,
         Self::RegistrationRefused,
         Self::InvalidShortcut,
+        Self::RecognizedEmpty,
+        Self::RecognizedTooLong,
+        Self::RecognizedForbiddenCharacter,
+        Self::RecognizedControlCharacter,
+        Self::RecognizedLeadingComment,
+        Self::DuplicateRecognized,
+        Self::ReplacementEmpty,
+        Self::ReplacementTooLong,
+        Self::ReplacementForbiddenCharacter,
+        Self::ReplacementControlCharacter,
+        Self::EmptyRuleId,
+        Self::DuplicateRuleId,
+        Self::MissingSeparator,
+        Self::TooManyRules,
+        Self::InvalidSavedRules,
+        Self::UnicodeDataUnavailable,
+        Self::ReplyTooLarge,
+        Self::ExportNotWritten,
+        Self::ExportSymbolicLink,
+        Self::ExportReadOnly,
         Self::TermEmpty,
         Self::TermTooLong,
         Self::TermLineBreak,
@@ -68,6 +128,21 @@ impl ErrorReason {
             Self::AlternativesUnsupported => "This action keeps a single shortcut.",
             Self::RegistrationRefused => "The system refused the shortcut.",
             Self::InvalidShortcut => "Not a valid shortcut.",
+            Self::ReplyTooLarge => {
+                "The answer is larger than one message; read large lists with their domain command."
+            }
+            Self::ExportNotWritten => "The export file could not be written; it is unchanged.",
+            Self::ExportSymbolicLink => {
+                "The export destination is a symbolic link; nothing was written."
+            }
+            Self::ExportReadOnly => "The export destination is read-only; it is unchanged.",
+            other => other.term_message().unwrap_or_else(|| other.rule_message()),
+        }
+    }
+    /// Message of a vocabulary term or recognition context reason (003); `None` for every other
+    /// reason.
+    fn term_message(self) -> Option<&'static str> {
+        let message = match self {
             Self::TermEmpty => "A term cannot be empty.",
             Self::TermTooLong => "A term has at most 100 characters.",
             Self::TermLineBreak => "A term cannot contain a line break.",
@@ -76,9 +151,45 @@ impl ErrorReason {
             Self::ContextBudgetUnverified => {
                 "The selected model's recognition context budget is not documented in this build."
             }
+            _ => return None,
+        };
+        Some(message)
+    }
+    /// Message of a replacement rule or rule set reason (002); `message` answers every other
+    /// reason first, and a test checks that no reason reaches the fallback.
+    fn rule_message(self) -> &'static str {
+        match self {
+            Self::RecognizedEmpty => "The recognized text is empty.",
+            Self::RecognizedTooLong => "The recognized text is longer than 100 characters.",
+            Self::RecognizedForbiddenCharacter => {
+                "The recognized text contains a line break, a tab or a semicolon."
+            }
+            Self::RecognizedControlCharacter => {
+                "The recognized text contains a control or bidirectional formatting character."
+            }
+            Self::RecognizedLeadingComment => "The recognized text cannot start with #.",
+            Self::DuplicateRecognized => "Another rule has the same recognized text.",
+            Self::ReplacementEmpty => "The replacement is empty.",
+            Self::ReplacementTooLong => "The replacement is longer than 500 characters.",
+            Self::ReplacementForbiddenCharacter => {
+                "The replacement contains a line break or a tab."
+            }
+            Self::ReplacementControlCharacter => {
+                "The replacement contains a control or bidirectional formatting character."
+            }
+            Self::EmptyRuleId => "The rule id is empty.",
+            Self::DuplicateRuleId => "Another rule has the same id.",
+            Self::MissingSeparator => "The line has no tab or semicolon separator.",
+            Self::TooManyRules => "More than 1000 rules.",
+            Self::InvalidSavedRules => "The saved rules are invalid; repair them first.",
+            Self::UnicodeDataUnavailable => "Unicode data is unavailable.",
+            _ => UNMATCHED_MESSAGE,
         }
     }
 }
+
+/// Fallback of `rule_message` for a reason `message` should have answered; never reached.
+const UNMATCHED_MESSAGE: &str = "The settings change was refused.";
 
 /// One refused position of a domain input: zero-based `index`, closed `code` and its fixed
 /// message; never the candidate value.
@@ -104,5 +215,21 @@ impl ErrorItem {
     /// Closed reason of this position.
     pub fn code(&self) -> ErrorReason {
         self.code
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{ErrorReason, UNMATCHED_MESSAGE};
+
+    #[test]
+    fn every_reason_has_its_own_message() {
+        let messages: Vec<&str> = ErrorReason::ALL
+            .iter()
+            .map(|reason| reason.message())
+            .collect();
+        assert!(!messages.contains(&UNMATCHED_MESSAGE));
+        let unique: std::collections::HashSet<_> = messages.iter().collect();
+        assert_eq!(unique.len(), ErrorReason::ALL.len());
     }
 }

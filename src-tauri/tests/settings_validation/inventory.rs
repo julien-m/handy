@@ -14,8 +14,8 @@ fn every_actual_stored_field_has_exactly_one_descriptor() -> Result<(), Box<dyn 
         .iter()
         .map(|entry| entry.key.to_owned())
         .collect();
-    assert_eq!(actual.len(), 65);
-    assert_eq!(descriptors().len(), 65);
+    assert_eq!(actual.len(), 66);
+    assert_eq!(descriptors().len(), 66);
     assert_eq!(actual, described);
     Ok(())
 }
@@ -30,15 +30,16 @@ const READONLY: [&str; 8] = [
     "post_process_providers",
     "post_process_models",
 ];
-const COLLECTIONS: [(&str, &str); 4] = [
+const COLLECTIONS: [(&str, &str); 5] = [
     ("bindings", "shortcuts"),
     ("custom_words", "vocabulary"),
     ("custom_filler_words", "vocabulary"),
     ("post_process_prompts", "prompts"),
+    ("word_replacements", "replacements"),
 ];
 
 #[test]
-fn independent_access_inventory_covers_8_readonly_1_secret_4_collections_52_scalars(
+fn independent_access_inventory_covers_8_readonly_1_secret_5_collections_52_scalars(
 ) -> Result<(), Box<dyn std::error::Error>> {
     for key in READONLY {
         let entry = handy_app_lib::settings_service::descriptor::descriptor(key)

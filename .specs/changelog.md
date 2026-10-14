@@ -21,6 +21,24 @@
 
 ## 2026-10-14 — [Feature 006] Synced with `dev` (004 merged, one closed settings error reason enum shared by 004 and 006); settings UI command `change_return_to_dictation_app_setting` with a typed `unsupported_platform` refusal handled by the store; history rule delivered (text-only row when the WAV fails, nullable `file_name` migration shared with 005, `history_status` from the actual `save_entry` result). Full `cargo test` 681 passed / 20 ignored, frontend checks and repository conventions PASS; no visual UI, no AC certified.
 
+## 2026-10-14 — [Feature 002] Integrated with the merged settings CLI (008): `handy settings replacements` (list, add, update/edit, remove/delete, import with dry run, export) on the shared rule-set edits, one compiled matcher per committed revision applied from the next dictation, settings window transaction commands (no UI yet), output-stage harness, and paged/staged transfer beyond one 1 MiB message. Full `cargo test` 642 passed / 0 failed / 19 ignored; conventions PASS, new 0; macOS real-app CLI check (debug). UI, real dictation, M1, Windows/Linux pending.
+
+## 2026-10-13 — [Feature 002] Spec refined: AC-006 Korean rationale made factual (particles attach to the preceding word); halfwidth U+FF9E/U+FF9F and NFD hangul jamo documented as accepted CJK-side false positives with fixtures (1 Clarify decision, IDs preserved); spec/plan reviews to redo.
+
+## 2026-10-13 — [Feature 002] Spec refined: Quality Engineering classification for the delivery lane
+
+`## Quality Engineering` added from the existing QE Analysis: criticality High, blast radius Shared, primary risk Data; `livespec delivery lane` reads it (full). No AC, FR or SC changed; the spec review is stale until an independent reviewer refreshes it.
+
+## 2026-10-13 — [Feature 002] Spec and plan refined, re-audit fixes: AC-006 word characters include ZWNJ/ZWJ and a CJK side still rejects an adjacent combining mark; AC-004 header recognized with tab or `;`; AC-005 1 MB = 1,000,000 bytes; AC-007 guarantee scoped before AI post-processing (6 Clarify decisions, IDs preserved); plan aligned; spec/plan reviews to redo.
+
+## 2026-10-13 — [Feature 002] Spec refined and audit fixes: AC-006 word characters now include combining marks (Clarify decision, IDs preserved); matcher, BOM, stop-path harness and scope fixes; lib 348 PASS, pipeline harness 7 PASS, conventions PASS.
+
+## 2026-10-13 — [Feature 002] Step 4 core: compiled single-pass replacement matcher (40 fixtures) applied after script conversion with protected spans in both final transcription paths, rules captured at recording start; release benchmark 1.78 ms max on M4 Pro (M1 pending).
+
+## 2026-10-13 — [Feature 002] Step 2 core: two-column exchange parser/serializer with bounded UTF-8 input and deterministic merge/replace previews; commit and revisions remain Waiting for 008.
+
+## 2026-10-13 — [Feature 002] Step 1 core: ordered replacement model, pinned Unicode 17 offsets/properties and shared scalar/ID validation; additive empty settings and native-generated bindings. Rust target 20 PASS, regression 306 PASS / 17 ignored, generator boundary tests 6 PASS, Clippy/frontend checks and repository conventions PASS. Complete UI/transactions/CLI remain Waiting for 008; no acceptance certification claimed.
+
 ## 2026-10-14 — [Feature 009] Plan refined: history_status from 006's actual save_entry result, a WAV failure tested as a saved text-only row (Julien's decision), save_entry failure as failed
 <!-- finalize:spec-refine:2026-10-14:48c67c3f -->
 

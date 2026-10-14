@@ -468,6 +468,10 @@ pub struct AppSettings {
     pub log_level: LogLevel,
     #[serde(default)]
     pub custom_words: Vec<String>,
+    // @spec FR-001: Ordered replacement settings — .specs/features/002-word-replacements/spec.md#fr-001
+    /// Ordered explicit corrections, independent from approximate custom words.
+    #[serde(default)]
+    pub word_replacements: Vec<crate::word_replacements::model::ReplacementRule>,
     #[serde(default)]
     pub model_unload_timeout: ModelUnloadTimeout,
     #[serde(default = "default_word_correction_threshold")]
@@ -1011,6 +1015,7 @@ pub fn get_default_settings() -> AppSettings {
         debug_mode: false,
         log_level: default_log_level(),
         custom_words: Vec::new(),
+        word_replacements: Vec::new(),
         model_unload_timeout: ModelUnloadTimeout::default(),
         word_correction_threshold: default_word_correction_threshold(),
         history_limit: default_history_limit(),

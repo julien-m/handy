@@ -1,0 +1,20 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/002-word-replacements/src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 13.93s
+     Running unittests src/lib.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/handy_app_lib-98098f02853eda75)
+     Running unittests src/main.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/handy-77004b50e38ad3db)
+     Running tests/replacement_cli.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/replacement_cli-148d84f95c5578a9)
+     Running tests/replacement_exchange.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/replacement_exchange-0f2306b82a1214c0)
+     Running tests/replacement_performance.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/replacement_performance-41f014062e143f2d)
+     Running tests/replacement_pipeline.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/replacement_pipeline-0866a6ae95f8b8f4)
+     Running tests/replacement_transactions.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/replacement_transactions-33267347c000f7ed)
+     Running tests/settings_cli.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_cli-72004ee74b1f5400)
+     Running tests/settings_domains.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_domains-aa5408538288bb37)
+     Running tests/settings_live.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_live-2a3b848cc67dfe3f)
+     Running tests/settings_platform.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_platform-463ac58b4e293991)
+     Running tests/settings_transactions.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_transactions-6d02037e2110ef74)
+     Running tests/settings_validation.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_validation-b2da366f4b1dda66)
+     Running tests/settings_writers.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_writers-695c7d279ea9c2c8)
+     Running tests/shortcuts_cli.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/shortcuts_cli-19d24b59a3ea9608)
+   Doc-tests handy_app_lib

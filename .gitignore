@@ -58,6 +58,10 @@ __pycache__/
 .specs/.livespec-path
 .specs/preflight-report.md
 .specs/.runs/
+# Generated verification receipts stay local; the conventions baseline is versioned.
+.specs/conventions/runs/
+.specs/features/*/run/
+.specs/hooks/.commit-context.json
 .livespec-backups/
 
 # LiveSpec verify-output --preview/--save output (feature 040)

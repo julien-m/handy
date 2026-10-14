@@ -1,7 +1,8 @@
 //! Domain framework through the real binary: `handy settings --help` lists exactly the domains of
-//! this build (`output`, and `shortcuts` from feature 004), and the output domain reads and changes the existing output
-//! settings with the validation, dry run, revision and channels of the settings contract, offline
-//! and routed to a running instance.
+//! this build (`output`, `replacements` tested in `replacement_cli`, and `shortcuts` from feature
+//! 004), and the output domain reads and changes the existing output settings with the
+//! validation, dry run, revision and channels of the settings contract, offline and routed to a
+//! running instance.
 #![cfg(unix)]
 
 #[path = "settings_cli/harness.rs"]
@@ -44,6 +45,7 @@ fn help_lists_the_generic_operations_and_exactly_the_domains_of_this_build() -> 
             "keys",
             "set",
             "output",
+            "replacements",
             "shortcuts",
             "vocabulary",
             "help"

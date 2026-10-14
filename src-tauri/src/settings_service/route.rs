@@ -26,7 +26,12 @@ pub const TEST_LEGACY_SOCKET_ENV: &str = "HANDY_SETTINGS_TEST_LEGACY_SOCKET";
 /// Run `operation` where the settings live; every refusal is a failure reply.
 // @spec FR-004: Authenticated live and offline routing — .specs/features/008-settings-cli/spec.md#fr-004
 pub fn route(operation: &SettingsOperation) -> Reply {
-    match StoreLocator::current().and_then(|store| route_store(&store, operation)) {
+    route_until(operation, Instant::now() + ipc::DEADLINE)
+}
+/// Same as `route`, within `deadline`: the several requests of one CLI operation (a paged read,
+/// a staged import) share one total deadline instead of one each.
+pub fn route_until(operation: &SettingsOperation, deadline: Instant) -> Reply {
+    match StoreLocator::current().and_then(|store| route_store(&store, operation, deadline)) {
         Ok(reply) => reply,
         Err(error) => Reply::failure(error),
     }
@@ -36,11 +41,14 @@ pub fn route(operation: &SettingsOperation) -> Reply {
 /// store is never written behind it; only a free lease allows the offline path. The request is
 /// encoded first, so one too large for a frame is refused (`limit_exceeded`) whatever the route,
 /// before anything is sent or written.
-fn route_store(store: &Path, operation: &SettingsOperation) -> Result<Reply, SettingsError> {
+fn route_store(
+    store: &Path,
+    operation: &SettingsOperation,
+    deadline: Instant,
+) -> Result<Reply, SettingsError> {
     let identity = ipc::store_identity(store)?;
     let request = ipc::encode(&ipc::request(&identity, operation.clone()))?;
     let endpoint = ipc::endpoint(&identity)?;
-    let deadline = Instant::now() + ipc::DEADLINE;
     loop {
         match endpoint.connect() {
             Connection::Connected(stream) => {
@@ -161,7 +169,7 @@ mod tests {
             dry_run: false,
             expected_revision: None,
         };
-        let refused = route_store(&store, &operation)
+        let refused = route_store(&store, &operation, Instant::now() + ipc::DEADLINE)
             .err()
             .ok_or("oversized request routed")?;
         assert_eq!(

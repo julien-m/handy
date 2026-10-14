@@ -115,6 +115,7 @@ mod tests {
     use super::super::post_process_transcription_text;
     use crate::audio_toolkit::OutputLanguageEvidence;
     use crate::settings::AppSettings;
+    use crate::word_replacements::matcher::CompiledReplacements;
 
     fn corrected(words: &[&str], context_applied: bool) -> String {
         let settings = AppSettings {
@@ -127,6 +128,7 @@ mod tests {
         post_process_transcription_text(
             "we use charge bee".to_owned(),
             &settings,
+            &CompiledReplacements::empty(),
             context_applied,
             &evidence,
             &[],

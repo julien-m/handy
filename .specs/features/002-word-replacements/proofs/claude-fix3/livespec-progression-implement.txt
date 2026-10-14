@@ -1,0 +1,4 @@
+$ livespec validate .specs/features/002-word-replacements --progression implement --model claude-opus-5-5 --review-max-chars 180000
+Tue Oct 13 18:11:26 UTC 2026
+BLOCKED: clarify_not_ready:stale_or_incomplete_spec_review
+EXIT=1

@@ -10,6 +10,7 @@ pub mod cli;
 mod clipboard;
 mod commands;
 pub mod destination;
+mod dictation_output;
 pub mod engine_supervisor;
 mod helpers;
 mod input;
@@ -34,6 +35,7 @@ mod transcription_coordinator;
 mod tray;
 mod tray_i18n;
 mod utils;
+pub mod word_replacements;
 
 pub use cli::CliArgs;
 #[cfg(debug_assertions)]
@@ -596,6 +598,7 @@ fn run_headless_transcription(app: &AppHandle, args: &CliArgs) -> i32 {
     let bound_backend = tm.current_backend();
 
     let runs = args.repeat.unwrap_or(1).max(1);
+    let replacements = crate::word_replacements::published::current_matcher(app);
     let mut times_ms: Vec<u64> = Vec::new();
     let mut text = String::new();
     for i in 0..runs {
@@ -609,7 +612,7 @@ fn run_headless_transcription(app: &AppHandle, args: &CliArgs) -> i32 {
             }
         }
         let t = Instant::now();
-        match tm.transcribe(samples.clone()) {
+        match tm.transcribe(samples.clone(), &replacements) {
             Ok(out) => text = out,
             Err(e) => {
                 eprintln!("error: transcribe failed: {}", e);
@@ -817,6 +820,11 @@ pub fn run(cli_args: CliArgs) {
             commands::history::retry_history_entry_transcription,
             commands::history::update_history_limit,
             commands::history::update_recording_retention_period,
+            commands::replacements::get_word_replacements,
+            commands::replacements::check_word_replacements,
+            commands::replacements::preview_word_replacements,
+            commands::replacements::save_word_replacements,
+            commands::replacements::apply_word_replacements,
             helpers::clamshell::is_laptop,
         ])
         .events(collect_events![
@@ -939,6 +947,7 @@ pub fn run(cli_args: CliArgs) {
             Some(vec![]),
         ))
         .manage(cli_args.clone())
+        .manage(word_replacements::published::PublishedReplacements::default())
         .setup(move |app| {
             #[cfg(target_os = "windows")]
             log::info!(
