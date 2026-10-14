@@ -392,14 +392,6 @@
           "sec15": "Setelah 15 detik (Debug)"
         }
       },
-      "customWords": {
-        "title": "Kata Khusus",
-        "description": "Bantu model yang didukung mengenali nama dan istilah khusus. Koreksi fuzzy saat ini terbatas pada kata yang menggunakan huruf A–Z dan angka.",
-        "placeholder": "Tambahkan kata",
-        "add": "Tambah",
-        "remove": "Hapus {{word}}",
-        "duplicate": "\"{{word}}\" sudah ada"
-      },
       "voiceActivityDetection": {
         "title": "Deteksi Aktivitas Suara",
         "description": "Saring keheningan dari rekaman. Model yang mendukung streaming menggunakan ekor VAD yang lebih panjang; menonaktifkan VAD akan merekam audio mentah."
@@ -424,6 +416,132 @@
           "simplified": "Sederhana",
           "traditional": "Tradisional"
         }
+      }
+    },
+    "vocabulary": {
+      "group": "Kosakata",
+      "title": "Kosakata",
+      "description": "Nama dan istilah yang perlu dikenali model, jika model mendukungnya. Sebaliknya, penggantian menulis ulang teks setelah pengenalan.",
+      "placeholder": "Tambahkan istilah",
+      "inputLabel": "Istilah kosakata baru",
+      "add": "Tambah",
+      "addHint": "Ketik istilah untuk menambahkannya.",
+      "busy": "Tunggu hingga perubahan saat ini selesai.",
+      "paste": "Tempel daftar…",
+      "count": "{{total}} dari {{max}} istilah",
+      "listLabel": "Istilah kosakata",
+      "remove": "Hapus {{term}}",
+      "retry": "Coba lagi",
+      "empty": {
+        "title": "Belum ada istilah",
+        "body": "Tambahkan nama seperti Claude Code atau OpenClaw, satu per satu atau sebagai daftar yang ditempel."
+      },
+      "flag": {
+        "empty": "Istilah kosong, tidak dikirim. Hapus istilah ini.",
+        "too_long": "Lebih dari 100 karakter, tidak dikirim. Hapus lalu tambahkan versi yang lebih pendek.",
+        "line_break": "Berisi jeda baris, tidak dikirim. Hapus lalu tambahkan lagi.",
+        "forbidden_character": "Berisi < > atau \", tidak dikirim. Hapus lalu tambahkan tanpa karakter tersebut.",
+        "duplicate": "Sama dengan istilah sebelumnya, tidak dikirim. Hapus istilah ini.",
+        "over_capacity": "Melebihi batas 500 istilah, tidak dikirim sampai daftar lebih pendek.",
+        "over_budget": "Tidak dikirim: melebihi batas model."
+      },
+      "errors": {
+        "term_empty": "Masukkan istilah.",
+        "term_too_long": "Istilah boleh berisi maksimal 100 karakter.",
+        "term_line_break": "Istilah harus muat dalam satu baris.",
+        "term_forbidden_character": "Hapus karakter < > atau \" dari istilah.",
+        "term_duplicate": "Setiap istilah hanya boleh muncul sekali, dan istilah ini sudah ada di kosakata.",
+        "limit": "Kosakata menampung maksimal 500 istilah. Hapus satu istilah untuk menambahkan yang lain.",
+        "conflict": "Kosakata berubah sementara itu dan telah dimuat ulang. Coba lagi.",
+        "notFound": "Istilah ini sudah dihapus. Kosakata telah dimuat ulang.",
+        "unknown": "Handy tidak dapat memastikan perubahan. Kosakata telah dimuat ulang; periksa sebelum mencoba lagi.",
+        "saved": "Kosakata yang tersimpan tidak berubah."
+      },
+      "status": {
+        "loading": "Memeriksa dukungan model…",
+        "selectedModel": "model yang dipilih",
+        "used": {
+          "title": "Digunakan saat pengenalan oleh {{model}}",
+          "sent": "{{sent}} dari {{total}} istilah dikirim.",
+          "sentOne": "{{sent}} dari 1 istilah dikirim."
+        },
+        "notSent": {
+          "over_budget": "Tidak dikirim, melebihi batas model: {{terms}}.",
+          "invalid": "Tidak dikirim, tidak valid: {{terms}}.",
+          "duplicate": "Tidak dikirim, duplikat: {{terms}}.",
+          "over_capacity": "Tidak dikirim, melebihi 500 istilah: {{terms}}."
+        },
+        "noTermSent": {
+          "title": "Tidak ada istilah yang dikirim ke {{model}}",
+          "empty_vocabulary": "Kosakata kosong. Tambahkan istilah untuk menggunakannya saat pengenalan.",
+          "invalid_terms_only": "Semua istilah tersimpan tidak valid atau duplikat. Hapus istilah yang ditandai dan tambahkan versi yang sudah diperbaiki.",
+          "over_budget": "Istilah pertama melebihi batas model, sehingga tidak ada istilah yang dikirim. Hapus istilah itu agar istilah setelahnya terkirim."
+        },
+        "notSupported": {
+          "title": "{{model}} tidak dapat menggunakan kosakata saat pengenalan",
+          "body": "Sebagai gantinya, koreksi fuzzy diterapkan setelah pengenalan. Pilih model Whisper untuk mengirim istilah ke pengenal."
+        },
+        "streaming": {
+          "title": "Tidak digunakan dalam streaming langsung",
+          "body": "{{model}} mentranskripsi secara langsung, sehingga tidak mengirim konteks pengenalan. Sebagai gantinya, koreksi fuzzy diterapkan pada teks akhir."
+        },
+        "unknown": {
+          "title": "Dukungan belum diketahui sampai model dimuat",
+          "model_not_loaded": "Handy memeriksa dukungan {{model}} saat memuatnya.",
+          "capability_query_unanswered": "{{model}} tidak menjawab tepat waktu, misalnya saat dikte berlangsung. Handy akan memeriksa lagi setelahnya."
+        },
+        "budgetUnverified": {
+          "title": "Dukungan kosakata untuk {{model}} tidak dapat dipastikan",
+          "body": "Model ini mendeklarasikan konteks pengenalan, tetapi build ini tidak memiliki batas terdokumentasi untuknya. Tidak ada istilah yang dikirim; sebagai gantinya, koreksi fuzzy diterapkan."
+        },
+        "failed": {
+          "title": "Tidak dapat membaca status kosakata",
+          "body": "Kosakata Anda tersimpan. Coba lagi untuk memeriksa dukungan model."
+        }
+      },
+      "pasteBox": {
+        "title": "Tempel istilah",
+        "description": "Satu istilah per baris. Duplikat dilewati; baris yang tidak valid harus diperbaiki sebelum ditambahkan.",
+        "label": "Istilah untuk ditempel, satu per baris",
+        "previewTitle": "Pratinjau",
+        "previewEmpty": "Tempel atau ketik satu istilah per baris untuk melihat apa yang akan ditambahkan.",
+        "sameAs": "{{term}} — sama dengan {{original}}",
+        "alreadyListed": "{{term}} — sudah ada di daftar",
+        "summary": {
+          "add": "{{n}} untuk ditambahkan",
+          "duplicateOne": "1 duplikat",
+          "duplicateMany": "{{n}} duplikat",
+          "errorOne": "1 kesalahan",
+          "errorMany": "{{n}} kesalahan"
+        },
+        "kind": {
+          "add": "Tambah",
+          "duplicate": "Duplikat",
+          "error": "Kesalahan"
+        },
+        "line": {
+          "empty": "Baris {{line}}: baris kosong, hapus",
+          "too_long": "Baris {{line}}: gunakan maksimal 100 karakter",
+          "line_break": "Baris {{line}}: tulis istilah dalam satu baris",
+          "forbidden_character": "Baris {{line}}: hapus karakter < > atau \"",
+          "duplicate": "Baris {{line}}: sama dengan istilah sebelumnya",
+          "over_capacity": "Baris {{line}}: melebihi batas 500 istilah"
+        },
+        "note": {
+          "empty": "Kosakata Anda tidak berubah sampai Anda menambahkan istilah.",
+          "checking": "Memeriksa baris…",
+          "fixOne": "Perbaiki baris {{lines}} untuk menambahkan istilah. Kosakata Anda tidak berubah.",
+          "fixMany": "Perbaiki baris {{lines}} untuk menambahkan istilah. Kosakata Anda tidak berubah.",
+          "overCapacity": "Kosakata menampung maksimal 500 istilah. Persingkat daftar untuk menambahkannya. Kosakata Anda tidak berubah.",
+          "nothingToAdd": "Semua baris sudah ada di kosakata.",
+          "ready": "Duplikat dilewati. Tidak ada yang disimpan sampai Anda menambahkan istilah."
+        },
+        "cancel": "Batal",
+        "applyOne": "Tambah 1 istilah",
+        "applyMany": "Tambah {{n}} istilah",
+        "applyZero": "Tambah istilah",
+        "applying": "Menambahkan…",
+        "applied": "Istilah ditambahkan ke kosakata."
       }
     },
     "postProcessing": {

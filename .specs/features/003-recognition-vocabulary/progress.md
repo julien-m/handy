@@ -8,12 +8,12 @@ Penflow pass and is not started. Per-step evidence lives in `proofs/claude-impl/
 
 | Step | Status | Files | Tests run | Result | Updated at |
 |---|---|---|---|---|---|
-| 0a Behavioral TDD | Todo | — (UI tests of the Behavioral AC, written with Step 5) | — | Deferred with the UI | 2026-10-14 |
+| 0a Behavioral TDD | Done (unit level) | `src/stores/vocabulary-store.test.ts`, `src/components/settings/vocabulary/vocabulary-model.test.ts` | `bun run test:vocabulary` | Pass (30): visual states of the editor, term input and Apply, busy commit, refusals, conflicts, stale answers, contract test IDs. No Playwright run (the Tauri commands have no browser backend) | 2026-10-14 |
 | 1 Capability and budget | Done | `recognition_vocabulary/{mod,capability,budget,context}.rs`, `engine_supervisor/{protocol,worker,supervisor,supervisor_context}.rs`, `contracts/context-budget.md` | `cargo test --lib -- recognition_vocabulary engine_supervisor::protocol engine_supervisor::supervisor::context` | Pass (18) | 2026-10-14 |
 | 2 Validation and transactions | Done | `recognition_vocabulary/{validation,occurrences,preview,edits,edits_tests}.rs`, `settings_service/{error_reason,errors,command_error,tauri_adapter}.rs` (`write_change`), `commands/vocabulary.rs`, `shortcut/mod.rs` (`update_custom_words`), `Cargo.toml` (`caseless = "=0.2.2"`), `tests/vocabulary_transactions.rs`, `src/bindings.ts`, `src/stores/settingsStore.ts`, 008 contract schema and doc | `cargo test --lib -- recognition_vocabulary settings_service`; `cargo test --test vocabulary_transactions --test settings_validation --test settings_cli`; `bun run test:settings-errors`, `test:settings-store`, `test:shortcut-list` | Pass | 2026-10-14 |
 | 3 Request snapshot, status and correction routing | Done | `recognition_vocabulary/{status,status_tests}.rs`, `managers/{transcription,transcription_vocabulary}.rs`, `commands/vocabulary.rs` (`get_vocabulary_status`), `src/bindings.ts`; refactor of `edits.rs`, `preview.rs`, `budget.rs`, `occurrences.rs` to functions of at most 30 lines | `cargo test --lib -- recognition_vocabulary managers::transcription audio_toolkit::text engine_supervisor::protocol engine_supervisor::supervisor::context`; `cargo test --test vocabulary_transactions` | Pass (111 + 4) | 2026-10-14 |
 | 4 CLI contract and native routing | Done | `settings_service/domains/{vocabulary,vocabulary_tests,mod}.rs`, `settings_service/{cli,render}.rs`, `src/cli.rs`, `tests/{vocabulary_cli,settings_domains}.rs`, `README.md`, 008 contract doc | `cargo test --lib -- settings_service recognition_vocabulary`; `cargo test --test vocabulary_cli --test settings_domains --test settings_cli --test settings_validation --test vocabulary_transactions --test shortcuts_cli` | Pass (132 + 70) | 2026-10-14 |
-| 5 Settings screen | Todo | — | — | Not started: waits for the Penflow pass (code-ir, semantic and test IDs, design certification) | 2026-10-14 |
+| 5 Settings screen | Done, native proof pending | `src/components/settings/CustomWords.tsx` (Vocabulary group), `src/components/settings/vocabulary/*`, `src/stores/vocabulary-store.ts`, `src/hooks/use-vocabulary.ts`, `advanced/AdvancedSettings.tsx`, 26 locales, `package.json` (`test:vocabulary`) | lint, format:check, tsc, check:translations, build, `test:vocabulary` and the existing frontend suites; conventions verify | Pass (`proofs/claude-ui/summary.txt`). Browser check with mocked IPC only (`proofs/claude-ui/harness/`); real window and native evidence pending, with Julien | 2026-10-14 |
 | 6 Acceptance, performance, regressions | In Progress | `proofs/claude-impl/final/` | `cargo test` (all targets); `bun run test:keyboard`, `test:shortcut-list`, `test:settings-errors`, `test:settings-store` | Automated suites pass (749 Rust tests, 21 ignored); native proof, SC-003, performance and UI not run | 2026-10-14 |
 
 ## Sync with dev (2026-10-14)
@@ -32,6 +32,15 @@ clippy `--all-targets` exit 0 with the 5 pre-existing upstream warnings only; `c
 exit 0; repository conventions PASS, new 0, baseline unchanged. `livespec validate
 --progression implement --model claude-opus-5-5 --review-max-chars 180000` after the sync:
 `Progression: READY`, exit 0 (`proofs/claude-sync/validate-implement.*`); no review was rerun.
+
+## UI pass (2026-10-14, branch `feature/ui-003-vocabulary`)
+
+The editor follows the approved mockups (`vocabulary-settings`, `-paste`, `-unsupported`, `-empty`) and every
+contract test ID of these four screens (a unit test checks the source emits them). The "Custom Words" row of
+Advanced > Transcription is replaced by a "Vocabulary" settings group under it; its keys
+`settings.advanced.customWords.*` are removed. Evidence in `proofs/claude-ui/` (`summary.txt`). The screen
+was checked in a browser with mocked IPC (`harness/`, harness not committed); no real Handy window, no
+native capture, no keyboard check in the app yet: pending, with Julien.
 
 ## Resume point
 

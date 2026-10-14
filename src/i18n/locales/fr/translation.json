@@ -392,14 +392,6 @@
           "sec15": "Après 15 secondes (Débogage)"
         }
       },
-      "customWords": {
-        "title": "Mots personnalisés",
-        "description": "Aidez les modèles compatibles à reconnaître les noms et les termes spécialisés. La correction approximative est actuellement limitée aux mots utilisant les lettres A à Z et des chiffres.",
-        "placeholder": "Ajouter un mot",
-        "add": "Ajouter",
-        "remove": "Supprimer {{word}}",
-        "duplicate": "\"{{word}}\" existe déjà"
-      },
       "voiceActivityDetection": {
         "title": "Détection d'activité vocale (VAD)",
         "description": "Filtre le silence des enregistrements. Les modèles compatibles avec le streaming utilisent une marge de détection VAD plus longue ; désactiver le VAD enregistre l'audio brut."
@@ -424,6 +416,132 @@
           "simplified": "Simplifié",
           "traditional": "Traditionnel"
         }
+      }
+    },
+    "vocabulary": {
+      "group": "Vocabulaire",
+      "title": "Vocabulaire",
+      "description": "Noms et termes que le modèle doit reconnaître, s’il le permet. Les remplacements, eux, réécrivent le texte après la reconnaissance.",
+      "placeholder": "Ajouter un terme",
+      "inputLabel": "Nouveau terme du vocabulaire",
+      "add": "Ajouter",
+      "addHint": "Saisissez un terme pour l’ajouter.",
+      "busy": "Attendez la fin de la modification en cours.",
+      "paste": "Coller une liste…",
+      "count": "Termes : {{total}} sur {{max}}",
+      "listLabel": "Termes du vocabulaire",
+      "remove": "Supprimer {{term}}",
+      "retry": "Réessayer",
+      "empty": {
+        "title": "Aucun terme pour l’instant",
+        "body": "Ajoutez des noms comme Claude Code ou OpenClaw, un par un ou en collant une liste."
+      },
+      "flag": {
+        "empty": "Terme vide, non envoyé. Supprimez-le.",
+        "too_long": "Plus de 100 caractères, non envoyé. Supprimez-le et ajoutez une version plus courte.",
+        "line_break": "Contient un saut de ligne, non envoyé. Supprimez-le et ajoutez-le de nouveau.",
+        "forbidden_character": "Contient < > ou \", non envoyé. Supprimez-le et ajoutez-le sans ces caractères.",
+        "duplicate": "Identique à un terme précédent, non envoyé. Supprimez-le.",
+        "over_capacity": "Au-delà de la limite de 500 termes, non envoyé tant que la liste n’est pas plus courte.",
+        "over_budget": "Non envoyé : dépasse la limite du modèle."
+      },
+      "errors": {
+        "term_empty": "Saisissez un terme.",
+        "term_too_long": "Un terme peut contenir au maximum 100 caractères.",
+        "term_line_break": "Un terme doit tenir sur une seule ligne.",
+        "term_forbidden_character": "Retirez les caractères < > ou \" du terme.",
+        "term_duplicate": "Chaque terme ne peut figurer qu’une fois, et celui-ci est déjà dans le vocabulaire.",
+        "limit": "Le vocabulaire contient au maximum 500 termes. Supprimez un terme pour en ajouter un autre.",
+        "conflict": "Le vocabulaire a changé entre-temps et a été rechargé. Réessayez.",
+        "notFound": "Ce terme a déjà été supprimé. Le vocabulaire a été rechargé.",
+        "unknown": "Handy n’a pas pu confirmer la modification. Le vocabulaire a été rechargé ; vérifiez-le avant de réessayer.",
+        "saved": "Votre vocabulaire enregistré n’a pas changé."
+      },
+      "status": {
+        "loading": "Vérification de ce que le modèle prend en charge…",
+        "selectedModel": "le modèle sélectionné",
+        "used": {
+          "title": "Utilisé pendant la reconnaissance par {{model}}",
+          "sent": "Termes envoyés : {{sent}} sur {{total}}.",
+          "sentOne": "Termes envoyés : {{sent}} sur 1."
+        },
+        "notSent": {
+          "over_budget": "Non envoyés, au-delà de la limite du modèle : {{terms}}.",
+          "invalid": "Non envoyés, non valides : {{terms}}.",
+          "duplicate": "Non envoyés, doublons : {{terms}}.",
+          "over_capacity": "Non envoyés, au-delà de 500 termes : {{terms}}."
+        },
+        "noTermSent": {
+          "title": "{{model}} ne reçoit aucun terme",
+          "empty_vocabulary": "Le vocabulaire est vide. Ajoutez des termes pour les utiliser pendant la reconnaissance.",
+          "invalid_terms_only": "Tous les termes enregistrés sont non valides ou en double. Supprimez les termes signalés et ajoutez des versions corrigées.",
+          "over_budget": "Le premier terme dépasse la limite du modèle, donc aucun terme n’est envoyé. Supprimez-le pour envoyer les termes suivants."
+        },
+        "notSupported": {
+          "title": "{{model}} ne peut pas utiliser le vocabulaire pendant la reconnaissance",
+          "body": "La correction approximative après la reconnaissance s’applique à la place. Choisissez un modèle Whisper pour envoyer des termes à la reconnaissance."
+        },
+        "streaming": {
+          "title": "Non utilisé en transcription en direct",
+          "body": "{{model}} transcrit en direct, ce qui n’envoie aucun contexte de reconnaissance. La correction approximative s’applique plutôt au texte final."
+        },
+        "unknown": {
+          "title": "Prise en charge inconnue jusqu’au chargement du modèle",
+          "model_not_loaded": "Handy vérifie ce que {{model}} prend en charge au moment de le charger.",
+          "capability_query_unanswered": "{{model}} n’a pas répondu à temps, par exemple pendant une dictée. Handy vérifiera de nouveau ensuite."
+        },
+        "budgetUnverified": {
+          "title": "Prise en charge du vocabulaire non confirmée pour {{model}}",
+          "body": "Ce modèle déclare un contexte de reconnaissance, mais cette version n’a aucune limite documentée pour celui-ci. Aucun terme n’est envoyé ; la correction approximative s’applique à la place."
+        },
+        "failed": {
+          "title": "Impossible de lire l’état du vocabulaire",
+          "body": "Votre vocabulaire est enregistré. Réessayez pour vérifier ce que le modèle prend en charge."
+        }
+      },
+      "pasteBox": {
+        "title": "Coller des termes",
+        "description": "Un terme par ligne. Les doublons sont ignorés ; les lignes non valides doivent être corrigées avant l’ajout.",
+        "label": "Termes à coller, un par ligne",
+        "previewTitle": "Aperçu",
+        "previewEmpty": "Collez ou saisissez un terme par ligne pour voir ce qui sera ajouté.",
+        "sameAs": "{{term}} — identique à {{original}}",
+        "alreadyListed": "{{term}} — déjà dans la liste",
+        "summary": {
+          "add": "À ajouter : {{n}}",
+          "duplicateOne": "1 doublon",
+          "duplicateMany": "Doublons : {{n}}",
+          "errorOne": "1 erreur",
+          "errorMany": "Erreurs : {{n}}"
+        },
+        "kind": {
+          "add": "Ajout",
+          "duplicate": "Doublon",
+          "error": "Erreur"
+        },
+        "line": {
+          "empty": "Ligne {{line}} : ligne vide, supprimez-la",
+          "too_long": "Ligne {{line}} : 100 caractères au maximum",
+          "line_break": "Ligne {{line}} : gardez le terme sur une seule ligne",
+          "forbidden_character": "Ligne {{line}} : retirez les caractères < > ou \"",
+          "duplicate": "Ligne {{line}} : identique à un terme précédent",
+          "over_capacity": "Ligne {{line}} : au-delà de la limite de 500 termes"
+        },
+        "note": {
+          "empty": "Votre vocabulaire reste inchangé tant que vous n’ajoutez pas les termes.",
+          "checking": "Vérification des lignes…",
+          "fixOne": "Corrigez la ligne {{lines}} pour ajouter les termes. Votre vocabulaire n’a pas changé.",
+          "fixMany": "Corrigez les lignes {{lines}} pour ajouter les termes. Votre vocabulaire n’a pas changé.",
+          "overCapacity": "Le vocabulaire contient au maximum 500 termes. Raccourcissez la liste pour l’ajouter. Votre vocabulaire n’a pas changé.",
+          "nothingToAdd": "Toutes les lignes figurent déjà dans le vocabulaire.",
+          "ready": "Les doublons sont ignorés. Rien n’est enregistré tant que vous n’ajoutez pas les termes."
+        },
+        "cancel": "Annuler",
+        "applyOne": "Ajouter 1 terme",
+        "applyMany": "Ajouter les termes ({{n}})",
+        "applyZero": "Ajouter des termes",
+        "applying": "Ajout en cours…",
+        "applied": "Termes ajoutés au vocabulaire."
       }
     },
     "postProcessing": {

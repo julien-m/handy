@@ -392,14 +392,6 @@
           "sec15": "Sau 15 giây (Gỡ lỗi)"
         }
       },
-      "customWords": {
-        "title": "Từ tùy chỉnh",
-        "description": "Giúp các mô hình được hỗ trợ nhận dạng tên và thuật ngữ chuyên ngành. Tính năng sửa gần đúng hiện chỉ áp dụng cho các từ sử dụng chữ cái A–Z và chữ số.",
-        "placeholder": "Thêm một từ",
-        "add": "Thêm",
-        "remove": "Xóa {{word}}",
-        "duplicate": "\"{{word}}\" đã tồn tại"
-      },
       "voiceActivityDetection": {
         "title": "Phát hiện hoạt động giọng nói",
         "description": "Lọc bỏ khoảng lặng khỏi bản ghi. Các mô hình hỗ trợ truyền trực tiếp dùng đuôi VAD dài hơn; tắt VAD sẽ ghi âm thanh thô."
@@ -424,6 +416,132 @@
           "simplified": "Giản thể",
           "traditional": "Phồn thể"
         }
+      }
+    },
+    "vocabulary": {
+      "group": "Từ vựng",
+      "title": "Từ vựng",
+      "description": "Tên và thuật ngữ mà mô hình nên nhận dạng, nếu mô hình hỗ trợ. Còn tính năng thay thế sẽ viết lại văn bản sau khi nhận dạng.",
+      "placeholder": "Thêm một thuật ngữ",
+      "inputLabel": "Thuật ngữ mới",
+      "add": "Thêm",
+      "addHint": "Nhập một thuật ngữ để thêm.",
+      "busy": "Hãy chờ thay đổi hiện tại hoàn tất.",
+      "paste": "Dán danh sách…",
+      "count": "{{total}}/{{max}} thuật ngữ",
+      "listLabel": "Các thuật ngữ trong từ vựng",
+      "remove": "Xóa {{term}}",
+      "retry": "Thử lại",
+      "empty": {
+        "title": "Chưa có thuật ngữ nào",
+        "body": "Thêm các tên như Claude Code hoặc OpenClaw, từng cái một hoặc dán cả danh sách."
+      },
+      "flag": {
+        "empty": "Thuật ngữ trống, không được gửi. Hãy xóa nó.",
+        "too_long": "Dài hơn 100 ký tự, không được gửi. Hãy xóa và thêm phiên bản ngắn hơn.",
+        "line_break": "Chứa ký tự xuống dòng, không được gửi. Hãy xóa và thêm lại.",
+        "forbidden_character": "Chứa < > hoặc \", không được gửi. Hãy xóa và thêm lại mà không có các ký tự này.",
+        "duplicate": "Trùng với một thuật ngữ trước đó, không được gửi. Hãy xóa nó.",
+        "over_capacity": "Vượt quá giới hạn 500 thuật ngữ, không được gửi cho đến khi danh sách ngắn hơn.",
+        "over_budget": "Không được gửi: vượt quá giới hạn của mô hình."
+      },
+      "errors": {
+        "term_empty": "Hãy nhập một thuật ngữ.",
+        "term_too_long": "Một thuật ngữ có tối đa 100 ký tự.",
+        "term_line_break": "Một thuật ngữ phải nằm trên một dòng.",
+        "term_forbidden_character": "Xóa các ký tự < > hoặc \" khỏi thuật ngữ.",
+        "term_duplicate": "Mỗi thuật ngữ chỉ xuất hiện một lần, và thuật ngữ này đã có trong từ vựng.",
+        "limit": "Từ vựng chứa tối đa 500 thuật ngữ. Hãy xóa một thuật ngữ để thêm thuật ngữ khác.",
+        "conflict": "Từ vựng đã thay đổi trong lúc đó và đã được tải lại. Hãy thử lại.",
+        "notFound": "Thuật ngữ này đã bị xóa. Từ vựng đã được tải lại.",
+        "unknown": "Handy không thể xác nhận thay đổi. Từ vựng đã được tải lại; hãy kiểm tra trước khi thử lại.",
+        "saved": "Từ vựng đã lưu của bạn không thay đổi."
+      },
+      "status": {
+        "loading": "Đang kiểm tra những gì mô hình hỗ trợ…",
+        "selectedModel": "mô hình đã chọn",
+        "used": {
+          "title": "Được {{model}} dùng khi nhận dạng",
+          "sent": "Đã gửi {{sent}}/{{total}} thuật ngữ.",
+          "sentOne": "Đã gửi {{sent}}/1 thuật ngữ."
+        },
+        "notSent": {
+          "over_budget": "Không được gửi, vượt quá giới hạn của mô hình: {{terms}}.",
+          "invalid": "Không được gửi, không hợp lệ: {{terms}}.",
+          "duplicate": "Không được gửi, trùng lặp: {{terms}}.",
+          "over_capacity": "Không được gửi, vượt quá 500 thuật ngữ: {{terms}}."
+        },
+        "noTermSent": {
+          "title": "Không có thuật ngữ nào được gửi tới {{model}}",
+          "empty_vocabulary": "Từ vựng đang trống. Hãy thêm thuật ngữ để dùng chúng khi nhận dạng.",
+          "invalid_terms_only": "Mọi thuật ngữ đã lưu đều không hợp lệ hoặc bị trùng. Hãy xóa các thuật ngữ được đánh dấu và thêm bản đã sửa.",
+          "over_budget": "Thuật ngữ đầu tiên vượt quá giới hạn của mô hình nên không có thuật ngữ nào được gửi. Hãy xóa nó để gửi các thuật ngữ phía sau."
+        },
+        "notSupported": {
+          "title": "{{model}} không thể dùng từ vựng khi nhận dạng",
+          "body": "Thay vào đó, tính năng sửa gần đúng sẽ được áp dụng sau khi nhận dạng. Hãy chọn một mô hình Whisper để gửi thuật ngữ tới bộ nhận dạng."
+        },
+        "streaming": {
+          "title": "Không dùng khi phiên âm trực tiếp",
+          "body": "{{model}} phiên âm trực tiếp, không gửi ngữ cảnh nhận dạng. Thay vào đó, tính năng sửa gần đúng được áp dụng cho văn bản cuối cùng."
+        },
+        "unknown": {
+          "title": "Chưa rõ khả năng hỗ trợ cho đến khi mô hình được tải",
+          "model_not_loaded": "Handy kiểm tra những gì {{model}} hỗ trợ khi tải mô hình đó.",
+          "capability_query_unanswered": "{{model}} không phản hồi kịp, ví dụ trong lúc đọc chính tả. Handy sẽ kiểm tra lại sau đó."
+        },
+        "budgetUnverified": {
+          "title": "Không thể xác nhận hỗ trợ từ vựng cho {{model}}",
+          "body": "Mô hình này khai báo ngữ cảnh nhận dạng, nhưng bản dựng này không có giới hạn được ghi nhận cho nó. Không có thuật ngữ nào được gửi; thay vào đó, tính năng sửa gần đúng được áp dụng."
+        },
+        "failed": {
+          "title": "Không thể đọc trạng thái từ vựng",
+          "body": "Từ vựng của bạn đã được lưu. Hãy thử lại để kiểm tra những gì mô hình hỗ trợ."
+        }
+      },
+      "pasteBox": {
+        "title": "Dán thuật ngữ",
+        "description": "Mỗi dòng một thuật ngữ. Các mục trùng lặp sẽ bị bỏ qua; các dòng không hợp lệ phải được sửa trước khi thêm.",
+        "label": "Thuật ngữ cần dán, mỗi dòng một thuật ngữ",
+        "previewTitle": "Xem trước",
+        "previewEmpty": "Dán hoặc nhập mỗi dòng một thuật ngữ để xem những gì sẽ được thêm.",
+        "sameAs": "{{term}} — giống với {{original}}",
+        "alreadyListed": "{{term}} — đã có trong danh sách",
+        "summary": {
+          "add": "{{n}} sẽ được thêm",
+          "duplicateOne": "1 mục trùng lặp",
+          "duplicateMany": "{{n}} mục trùng lặp",
+          "errorOne": "1 lỗi",
+          "errorMany": "{{n}} lỗi"
+        },
+        "kind": {
+          "add": "Thêm",
+          "duplicate": "Trùng lặp",
+          "error": "Lỗi"
+        },
+        "line": {
+          "empty": "Dòng {{line}}: dòng trống, hãy xóa nó",
+          "too_long": "Dòng {{line}}: dùng tối đa 100 ký tự",
+          "line_break": "Dòng {{line}}: giữ thuật ngữ trên một dòng",
+          "forbidden_character": "Dòng {{line}}: xóa các ký tự < > hoặc \"",
+          "duplicate": "Dòng {{line}}: trùng với một thuật ngữ trước đó",
+          "over_capacity": "Dòng {{line}}: vượt quá giới hạn 500 thuật ngữ"
+        },
+        "note": {
+          "empty": "Từ vựng của bạn sẽ không thay đổi cho đến khi bạn thêm các thuật ngữ.",
+          "checking": "Đang kiểm tra các dòng…",
+          "fixOne": "Sửa dòng {{lines}} để thêm các thuật ngữ. Từ vựng của bạn không thay đổi.",
+          "fixMany": "Sửa các dòng {{lines}} để thêm các thuật ngữ. Từ vựng của bạn không thay đổi.",
+          "overCapacity": "Từ vựng chứa tối đa 500 thuật ngữ. Hãy rút ngắn danh sách để thêm. Từ vựng của bạn không thay đổi.",
+          "nothingToAdd": "Mọi dòng đều đã có trong từ vựng.",
+          "ready": "Các mục trùng lặp sẽ bị bỏ qua. Không có gì được lưu cho đến khi bạn thêm các thuật ngữ."
+        },
+        "cancel": "Hủy",
+        "applyOne": "Thêm 1 thuật ngữ",
+        "applyMany": "Thêm {{n}} thuật ngữ",
+        "applyZero": "Thêm thuật ngữ",
+        "applying": "Đang thêm…",
+        "applied": "Đã thêm thuật ngữ vào từ vựng."
       }
     },
     "postProcessing": {

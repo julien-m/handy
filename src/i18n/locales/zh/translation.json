@@ -392,14 +392,6 @@
           "sec15": "15 秒后（调试）"
         }
       },
-      "customWords": {
-        "title": "自定义词汇",
-        "description": "帮助受支持的模型识别名称和专业术语。目前，模糊纠错仅适用于使用 A–Z 字母和数字的词语。",
-        "placeholder": "添加词汇",
-        "add": "添加",
-        "remove": "删除 {{word}}",
-        "duplicate": "\"{{word}}\" 已存在"
-      },
       "voiceActivityDetection": {
         "title": "语音活动检测",
         "description": "过滤录音中的静音。支持流式的模型会使用更长的 VAD 尾段；停用 VAD 则会录制原始音频。"
@@ -424,6 +416,132 @@
           "simplified": "简体",
           "traditional": "繁体"
         }
+      }
+    },
+    "vocabulary": {
+      "group": "词汇表",
+      "title": "词汇表",
+      "description": "模型应识别的名称和术语（在模型支持时生效）。替换规则则是在识别后改写文本。",
+      "placeholder": "添加术语",
+      "inputLabel": "新词汇术语",
+      "add": "添加",
+      "addHint": "输入术语即可添加。",
+      "busy": "请等待当前更改完成。",
+      "paste": "粘贴列表…",
+      "count": "{{total}} / {{max}} 个术语",
+      "listLabel": "词汇表术语",
+      "remove": "删除 {{term}}",
+      "retry": "重试",
+      "empty": {
+        "title": "暂无术语",
+        "body": "添加 Claude Code 或 OpenClaw 等名称，可逐个添加，也可粘贴列表。"
+      },
+      "flag": {
+        "empty": "空术语，未发送。请将其删除。",
+        "too_long": "超过 100 个字符，未发送。请删除后添加更短的版本。",
+        "line_break": "包含换行符，未发送。请删除后重新添加。",
+        "forbidden_character": "包含 < > 或 \"，未发送。请删除后去掉这些字符再添加。",
+        "duplicate": "与前面的术语相同，未发送。请将其删除。",
+        "over_capacity": "超出 500 个术语的上限，在列表缩短前不会发送。",
+        "over_budget": "未发送：超出模型限制。"
+      },
+      "errors": {
+        "term_empty": "请输入术语。",
+        "term_too_long": "术语最多 100 个字符。",
+        "term_line_break": "术语必须在一行内。",
+        "term_forbidden_character": "请从术语中删除 < > 或 \" 字符。",
+        "term_duplicate": "每个术语只能出现一次，而此术语已在词汇表中。",
+        "limit": "词汇表最多容纳 500 个术语。请删除一个术语后再添加。",
+        "conflict": "词汇表在此期间已更改并重新加载。请重试。",
+        "notFound": "此术语已被删除。词汇表已重新加载。",
+        "unknown": "Handy 无法确认此更改。词汇表已重新加载；请先检查后再重试。",
+        "saved": "您已保存的词汇表未更改。"
+      },
+      "status": {
+        "loading": "正在检查模型支持的功能…",
+        "selectedModel": "所选模型",
+        "used": {
+          "title": "{{model}} 在识别时使用",
+          "sent": "已发送 {{sent}} / {{total}} 个术语。",
+          "sentOne": "已发送 {{sent}} / 1 个术语。"
+        },
+        "notSent": {
+          "over_budget": "未发送，超出模型限制：{{terms}}。",
+          "invalid": "未发送，无效：{{terms}}。",
+          "duplicate": "未发送，重复：{{terms}}。",
+          "over_capacity": "未发送，超出 500 个术语：{{terms}}。"
+        },
+        "noTermSent": {
+          "title": "没有术语发送给 {{model}}",
+          "empty_vocabulary": "词汇表为空。添加术语以在识别时使用。",
+          "invalid_terms_only": "所有已保存的术语都无效或重复。请删除已标记的术语并添加更正后的术语。",
+          "over_budget": "第一个术语超出模型限制，因此不会发送任何术语。删除它即可发送其后的术语。"
+        },
+        "notSupported": {
+          "title": "{{model}} 无法在识别时使用词汇表",
+          "body": "将改为在识别后进行近似纠错。选择 Whisper 模型即可将术语发送给识别器。"
+        },
+        "streaming": {
+          "title": "实时流式转录时不使用",
+          "body": "{{model}} 进行实时转录，不会发送识别上下文。将改为对最终文本进行近似纠错。"
+        },
+        "unknown": {
+          "title": "模型加载前支持情况未知",
+          "model_not_loaded": "Handy 会在加载 {{model}} 时检查其支持的功能。",
+          "capability_query_unanswered": "{{model}} 未及时响应，例如在听写期间。Handy 稍后会再次检查。"
+        },
+        "budgetUnverified": {
+          "title": "无法确认 {{model}} 是否支持词汇表",
+          "body": "此模型声明支持识别上下文，但此版本没有为其记录限制。不会发送任何术语；将改为进行近似纠错。"
+        },
+        "failed": {
+          "title": "无法读取词汇表状态",
+          "body": "您的词汇表已保存。请重试以检查模型支持的功能。"
+        }
+      },
+      "pasteBox": {
+        "title": "粘贴术语",
+        "description": "每行一个术语。重复项将被跳过；无效行必须在添加前修正。",
+        "label": "要粘贴的术语，每行一个",
+        "previewTitle": "预览",
+        "previewEmpty": "每行粘贴或输入一个术语，即可查看将要添加的内容。",
+        "sameAs": "{{term}} — 与 {{original}} 相同",
+        "alreadyListed": "{{term}} — 已在列表中",
+        "summary": {
+          "add": "待添加 {{n}} 个",
+          "duplicateOne": "1 个重复项",
+          "duplicateMany": "{{n}} 个重复项",
+          "errorOne": "1 个错误",
+          "errorMany": "{{n}} 个错误"
+        },
+        "kind": {
+          "add": "添加",
+          "duplicate": "重复",
+          "error": "错误"
+        },
+        "line": {
+          "empty": "第 {{line}} 行：空行，请删除",
+          "too_long": "第 {{line}} 行：最多使用 100 个字符",
+          "line_break": "第 {{line}} 行：术语须保持在一行内",
+          "forbidden_character": "第 {{line}} 行：请删除 < > 或 \" 字符",
+          "duplicate": "第 {{line}} 行：与前面的术语相同",
+          "over_capacity": "第 {{line}} 行：超出 500 个术语的上限"
+        },
+        "note": {
+          "empty": "在您添加术语之前，词汇表不会更改。",
+          "checking": "正在检查各行…",
+          "fixOne": "修正第 {{lines}} 行即可添加术语。您的词汇表未更改。",
+          "fixMany": "修正第 {{lines}} 行即可添加术语。您的词汇表未更改。",
+          "overCapacity": "词汇表最多容纳 500 个术语。请缩短列表后再添加。您的词汇表未更改。",
+          "nothingToAdd": "所有行都已在词汇表中。",
+          "ready": "重复项将被跳过。在您添加术语之前不会保存任何内容。"
+        },
+        "cancel": "取消",
+        "applyOne": "添加 1 个术语",
+        "applyMany": "添加 {{n}} 个术语",
+        "applyZero": "添加术语",
+        "applying": "正在添加…",
+        "applied": "术语已添加到词汇表。"
       }
     },
     "postProcessing": {

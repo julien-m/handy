@@ -392,14 +392,6 @@
           "sec15": "Nach 15 Sekunden (Debug)"
         }
       },
-      "customWords": {
-        "title": "Benutzerdefinierte Wörter",
-        "description": "Hilf unterstützten Modellen, Namen und Fachbegriffe zu erkennen. Die unscharfe Korrektur ist derzeit auf Wörter mit den Buchstaben A–Z und Zahlen beschränkt.",
-        "placeholder": "Wort hinzufügen",
-        "add": "Hinzufügen",
-        "remove": "{{word}} entfernen",
-        "duplicate": "\"{{word}}\" existiert bereits"
-      },
       "voiceActivityDetection": {
         "title": "Sprachaktivitätserkennung (VAD)",
         "description": "Filtert Stille aus Aufnahmen. Streamingfähige Modelle verwenden ein längeres VAD-Ende; das Deaktivieren von VAD nimmt Rohaudio auf."
@@ -424,6 +416,132 @@
           "simplified": "Vereinfacht",
           "traditional": "Traditionell"
         }
+      }
+    },
+    "vocabulary": {
+      "group": "Vokabular",
+      "title": "Vokabular",
+      "description": "Namen und Begriffe, die das Modell erkennen soll, sofern es das unterstützt. Ersetzungen ändern den Text dagegen erst nach der Erkennung.",
+      "placeholder": "Begriff hinzufügen",
+      "inputLabel": "Neuer Vokabularbegriff",
+      "add": "Hinzufügen",
+      "addHint": "Gib einen Begriff ein, um ihn hinzuzufügen.",
+      "busy": "Warte, bis die aktuelle Änderung abgeschlossen ist.",
+      "paste": "Liste einfügen…",
+      "count": "{{total}} von {{max}} Begriffen",
+      "listLabel": "Vokabularbegriffe",
+      "remove": "{{term}} entfernen",
+      "retry": "Erneut versuchen",
+      "empty": {
+        "title": "Noch keine Begriffe",
+        "body": "Füge Namen wie Claude Code oder OpenClaw hinzu, einzeln oder als eingefügte Liste."
+      },
+      "flag": {
+        "empty": "Leerer Begriff, nicht gesendet. Entferne ihn.",
+        "too_long": "Länger als 100 Zeichen, nicht gesendet. Entferne ihn und füge eine kürzere Version hinzu.",
+        "line_break": "Enthält einen Zeilenumbruch, nicht gesendet. Entferne ihn und füge ihn erneut hinzu.",
+        "forbidden_character": "Enthält < > oder \", nicht gesendet. Entferne ihn und füge ihn ohne diese Zeichen hinzu.",
+        "duplicate": "Identisch mit einem früheren Begriff, nicht gesendet. Entferne ihn.",
+        "over_capacity": "Über dem Limit von 500 Begriffen, wird erst gesendet, wenn die Liste kürzer ist.",
+        "over_budget": "Nicht gesendet: über dem Modelllimit."
+      },
+      "errors": {
+        "term_empty": "Gib einen Begriff ein.",
+        "term_too_long": "Ein Begriff darf höchstens 100 Zeichen haben.",
+        "term_line_break": "Ein Begriff muss in eine Zeile passen.",
+        "term_forbidden_character": "Entferne die Zeichen < > oder \" aus dem Begriff.",
+        "term_duplicate": "Jeder Begriff darf nur einmal vorkommen, und dieser ist bereits im Vokabular.",
+        "limit": "Das Vokabular fasst höchstens 500 Begriffe. Entferne einen Begriff, um einen anderen hinzuzufügen.",
+        "conflict": "Das Vokabular wurde zwischenzeitlich geändert und neu geladen. Versuche es erneut.",
+        "notFound": "Dieser Begriff wurde bereits entfernt. Das Vokabular wurde neu geladen.",
+        "unknown": "Handy konnte die Änderung nicht bestätigen. Das Vokabular wurde neu geladen; prüfe es, bevor du es erneut versuchst.",
+        "saved": "Dein gespeichertes Vokabular ist unverändert."
+      },
+      "status": {
+        "loading": "Unterstützung des Modells wird geprüft…",
+        "selectedModel": "das ausgewählte Modell",
+        "used": {
+          "title": "{{model}} nutzt das Vokabular bei der Erkennung",
+          "sent": "Gesendet: {{sent}} von {{total}} Begriffen.",
+          "sentOne": "Gesendet: {{sent}} von 1 Begriff."
+        },
+        "notSent": {
+          "over_budget": "Nicht gesendet, über dem Modelllimit: {{terms}}.",
+          "invalid": "Nicht gesendet, ungültig: {{terms}}.",
+          "duplicate": "Nicht gesendet, Duplikate: {{terms}}.",
+          "over_capacity": "Nicht gesendet, über 500 Begriffe hinaus: {{terms}}."
+        },
+        "noTermSent": {
+          "title": "{{model}} erhält keinen Begriff",
+          "empty_vocabulary": "Das Vokabular ist leer. Füge Begriffe hinzu, um sie bei der Erkennung zu nutzen.",
+          "invalid_terms_only": "Jeder gespeicherte Begriff ist ungültig oder ein Duplikat. Entferne die markierten Begriffe und füge korrigierte hinzu.",
+          "over_budget": "Der erste Begriff überschreitet das Modelllimit, daher wird kein Begriff gesendet. Entferne ihn, um die nachfolgenden Begriffe zu senden."
+        },
+        "notSupported": {
+          "title": "{{model}} kann das Vokabular bei der Erkennung nicht nutzen",
+          "body": "Stattdessen gilt die ungefähre Korrektur nach der Erkennung. Wähle ein Whisper-Modell, um Begriffe an die Erkennung zu senden."
+        },
+        "streaming": {
+          "title": "Beim Live-Streaming nicht genutzt",
+          "body": "{{model}} transkribiert live und sendet dabei keinen Erkennungskontext. Die ungefähre Korrektur gilt stattdessen für den endgültigen Text."
+        },
+        "unknown": {
+          "title": "Unterstützung unbekannt, bis das Modell geladen ist",
+          "model_not_loaded": "Handy prüft beim Laden, was {{model}} unterstützt.",
+          "capability_query_unanswered": "{{model}} hat nicht rechtzeitig geantwortet, zum Beispiel während eines Diktats. Handy prüft danach erneut."
+        },
+        "budgetUnverified": {
+          "title": "Vokabularunterstützung für {{model}} kann nicht bestätigt werden",
+          "body": "Dieses Modell gibt Erkennungskontext an, aber für diese Version ist kein Limit dafür dokumentiert. Es wird kein Begriff gesendet; stattdessen gilt die ungefähre Korrektur."
+        },
+        "failed": {
+          "title": "Vokabularstatus konnte nicht gelesen werden",
+          "body": "Dein Vokabular ist gespeichert. Versuche es erneut, um zu prüfen, was das Modell unterstützt."
+        }
+      },
+      "pasteBox": {
+        "title": "Begriffe einfügen",
+        "description": "Ein Begriff pro Zeile. Duplikate werden übersprungen; ungültige Zeilen müssen vor dem Hinzufügen korrigiert werden.",
+        "label": "Einzufügende Begriffe, einer pro Zeile",
+        "previewTitle": "Vorschau",
+        "previewEmpty": "Füge einen Begriff pro Zeile ein oder tippe ihn, um zu sehen, was hinzugefügt wird.",
+        "sameAs": "{{term}} — identisch mit {{original}}",
+        "alreadyListed": "{{term}} — bereits in der Liste",
+        "summary": {
+          "add": "Hinzuzufügen: {{n}}",
+          "duplicateOne": "1 Duplikat",
+          "duplicateMany": "Duplikate: {{n}}",
+          "errorOne": "1 Fehler",
+          "errorMany": "Fehler: {{n}}"
+        },
+        "kind": {
+          "add": "Hinzufügen",
+          "duplicate": "Duplikat",
+          "error": "Fehler"
+        },
+        "line": {
+          "empty": "Zeile {{line}}: leere Zeile, entferne sie",
+          "too_long": "Zeile {{line}}: höchstens 100 Zeichen verwenden",
+          "line_break": "Zeile {{line}}: Begriff in einer Zeile halten",
+          "forbidden_character": "Zeile {{line}}: Zeichen < > oder \" entfernen",
+          "duplicate": "Zeile {{line}}: identisch mit einem früheren Begriff",
+          "over_capacity": "Zeile {{line}}: über dem Limit von 500 Begriffen"
+        },
+        "note": {
+          "empty": "Dein Vokabular bleibt unverändert, bis du die Begriffe hinzufügst.",
+          "checking": "Zeilen werden geprüft…",
+          "fixOne": "Korrigiere Zeile {{lines}}, um die Begriffe hinzuzufügen. Dein Vokabular ist unverändert.",
+          "fixMany": "Korrigiere die Zeilen {{lines}}, um die Begriffe hinzuzufügen. Dein Vokabular ist unverändert.",
+          "overCapacity": "Das Vokabular fasst höchstens 500 Begriffe. Kürze die Liste, um sie hinzuzufügen. Dein Vokabular ist unverändert.",
+          "nothingToAdd": "Jede Zeile ist bereits im Vokabular.",
+          "ready": "Duplikate werden übersprungen. Nichts wird gespeichert, bis du die Begriffe hinzufügst."
+        },
+        "cancel": "Abbrechen",
+        "applyOne": "1 Begriff hinzufügen",
+        "applyMany": "{{n}} Begriffe hinzufügen",
+        "applyZero": "Begriffe hinzufügen",
+        "applying": "Wird hinzugefügt…",
+        "applied": "Begriffe zum Vokabular hinzugefügt."
       }
     },
     "postProcessing": {

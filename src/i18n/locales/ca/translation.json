@@ -392,14 +392,6 @@
           "sec15": "Al cap de 15 segons (depuració)"
         }
       },
-      "customWords": {
-        "title": "Paraules personalitzades",
-        "description": "Ajudeu els models compatibles a reconèixer noms i termes especialitzats. Actualment, la correcció per similitu es limita a paraules amb lletres de la A a la Z i números.",
-        "placeholder": "Afegiu una paraula",
-        "add": "Afegiu",
-        "remove": "Suprimiu {{word}}",
-        "duplicate": "«{{word}}» ja existeix"
-      },
       "voiceActivityDetection": {
         "title": "Detecció d'activitat de veu",
         "description": "Filtra els silencis dels enregistraments. Els models compatibles amb la transcripció en temps real utilitzen un marge final de detecció de veu més llarg; si desactiveu la detecció, s'enregistra l'àudio sense filtrar."
@@ -424,6 +416,132 @@
           "simplified": "Simplificat",
           "traditional": "Tradicional"
         }
+      }
+    },
+    "vocabulary": {
+      "group": "Vocabulari",
+      "title": "Vocabulari",
+      "description": "Noms i termes que el model hauria de reconèixer, si ho admet. Els reemplaçaments, en canvi, reescriuen el text després del reconeixement.",
+      "placeholder": "Afegiu un terme",
+      "inputLabel": "Terme nou del vocabulari",
+      "add": "Afegeix",
+      "addHint": "Escriviu un terme per afegir-lo.",
+      "busy": "Espereu que acabi el canvi actual.",
+      "paste": "Enganxa una llista…",
+      "count": "Termes: {{total}} de {{max}}",
+      "listLabel": "Termes del vocabulari",
+      "remove": "Elimina {{term}}",
+      "retry": "Torna-ho a provar",
+      "empty": {
+        "title": "Encara no hi ha termes",
+        "body": "Afegiu noms com Claude Code o OpenClaw, d'un en un o com una llista enganxada."
+      },
+      "flag": {
+        "empty": "Terme buit, no s'envia. Elimineu-lo.",
+        "too_long": "Té més de 100 caràcters, no s'envia. Elimineu-lo i afegiu-ne una versió més curta.",
+        "line_break": "Conté un salt de línia, no s'envia. Elimineu-lo i torneu-lo a afegir.",
+        "forbidden_character": "Conté < > o \", no s'envia. Elimineu-lo i afegiu-lo sense aquests caràcters.",
+        "duplicate": "Igual que un terme anterior, no s'envia. Elimineu-lo.",
+        "over_capacity": "Supera el límit de 500 termes, no s'envia fins que la llista sigui més curta.",
+        "over_budget": "No s'envia: supera el límit del model."
+      },
+      "errors": {
+        "term_empty": "Introduïu un terme.",
+        "term_too_long": "Un terme pot tenir com a màxim 100 caràcters.",
+        "term_line_break": "Un terme ha de cabre en una sola línia.",
+        "term_forbidden_character": "Traieu els caràcters < > o \" del terme.",
+        "term_duplicate": "Cada terme només pot aparèixer una vegada, i aquest ja és al vocabulari.",
+        "limit": "El vocabulari admet com a màxim 500 termes. Elimineu-ne un per afegir-ne un altre.",
+        "conflict": "El vocabulari ha canviat mentrestant i s'ha tornat a carregar. Torneu-ho a provar.",
+        "notFound": "Aquest terme ja s'havia eliminat. S'ha tornat a carregar el vocabulari.",
+        "unknown": "Handy no ha pogut confirmar el canvi. S'ha tornat a carregar el vocabulari; reviseu-lo abans de tornar-ho a provar.",
+        "saved": "El vocabulari desat no ha canviat."
+      },
+      "status": {
+        "loading": "S'està comprovant què admet el model…",
+        "selectedModel": "el model seleccionat",
+        "used": {
+          "title": "Utilitzat durant el reconeixement per {{model}}",
+          "sent": "Termes enviats: {{sent}} de {{total}}.",
+          "sentOne": "Termes enviats: {{sent}} d'1."
+        },
+        "notSent": {
+          "over_budget": "No s'envien, superen el límit del model: {{terms}}.",
+          "invalid": "No s'envien, no vàlids: {{terms}}.",
+          "duplicate": "No s'envien, duplicats: {{terms}}.",
+          "over_capacity": "No s'envien, més enllà de 500 termes: {{terms}}."
+        },
+        "noTermSent": {
+          "title": "No s'envia cap terme a {{model}}",
+          "empty_vocabulary": "El vocabulari és buit. Afegiu termes per utilitzar-los durant el reconeixement.",
+          "invalid_terms_only": "Tots els termes desats són no vàlids o duplicats. Elimineu els termes marcats i afegiu-ne versions corregides.",
+          "over_budget": "El primer terme supera el límit del model, així que no s'envia cap terme. Elimineu-lo per enviar els termes que el segueixen."
+        },
+        "notSupported": {
+          "title": "{{model}} no pot utilitzar el vocabulari durant el reconeixement",
+          "body": "En canvi, s'aplica una correcció aproximada després del reconeixement. Trieu un model Whisper per enviar termes al reconeixedor."
+        },
+        "streaming": {
+          "title": "No s'utilitza en la transcripció en temps real",
+          "body": "{{model}} transcriu en temps real, cosa que no envia cap context de reconeixement. En canvi, s'aplica una correcció aproximada al text final."
+        },
+        "unknown": {
+          "title": "Compatibilitat desconeguda fins que es carregui el model",
+          "model_not_loaded": "Handy comprova què admet {{model}} quan el carrega.",
+          "capability_query_unanswered": "{{model}} no ha respost a temps, per exemple durant un dictat. Handy ho tornarà a comprovar després."
+        },
+        "budgetUnverified": {
+          "title": "No es pot confirmar la compatibilitat del vocabulari amb {{model}}",
+          "body": "Aquest model declara context de reconeixement, però aquesta versió no hi té cap límit documentat. No s'envia cap terme; en canvi, s'aplica una correcció aproximada."
+        },
+        "failed": {
+          "title": "No s'ha pogut llegir l'estat del vocabulari",
+          "body": "El vocabulari està desat. Torneu-ho a provar per comprovar què admet el model."
+        }
+      },
+      "pasteBox": {
+        "title": "Enganxa termes",
+        "description": "Un terme per línia. Els duplicats s'ometen; cal corregir les línies no vàlides abans d'afegir-les.",
+        "label": "Termes per enganxar, un per línia",
+        "previewTitle": "Previsualització",
+        "previewEmpty": "Enganxeu o escriviu un terme per línia per veure què s'afegirà.",
+        "sameAs": "{{term}} — igual que {{original}}",
+        "alreadyListed": "{{term}} — ja és a la llista",
+        "summary": {
+          "add": "Per afegir: {{n}}",
+          "duplicateOne": "1 duplicat",
+          "duplicateMany": "Duplicats: {{n}}",
+          "errorOne": "1 error",
+          "errorMany": "Errors: {{n}}"
+        },
+        "kind": {
+          "add": "Afegir",
+          "duplicate": "Duplicat",
+          "error": "Error"
+        },
+        "line": {
+          "empty": "Línia {{line}}: línia buida, elimineu-la",
+          "too_long": "Línia {{line}}: feu servir com a màxim 100 caràcters",
+          "line_break": "Línia {{line}}: manteniu el terme en una sola línia",
+          "forbidden_character": "Línia {{line}}: traieu els caràcters < > o \"",
+          "duplicate": "Línia {{line}}: igual que un terme anterior",
+          "over_capacity": "Línia {{line}}: supera el límit de 500 termes"
+        },
+        "note": {
+          "empty": "El vocabulari no canvia fins que afegiu els termes.",
+          "checking": "S'estan comprovant les línies…",
+          "fixOne": "Corregiu la línia {{lines}} per afegir els termes. El vocabulari no ha canviat.",
+          "fixMany": "Corregiu les línies {{lines}} per afegir els termes. El vocabulari no ha canviat.",
+          "overCapacity": "El vocabulari admet com a màxim 500 termes. Escurceu la llista per afegir-la. El vocabulari no ha canviat.",
+          "nothingToAdd": "Totes les línies ja són al vocabulari.",
+          "ready": "Els duplicats s'ometen. No es desa res fins que afegiu els termes."
+        },
+        "cancel": "Cancel·la",
+        "applyOne": "Afegeix 1 terme",
+        "applyMany": "Afegeix {{n}} termes",
+        "applyZero": "Afegeix termes",
+        "applying": "S'està afegint…",
+        "applied": "S'han afegit els termes al vocabulari."
       }
     },
     "postProcessing": {

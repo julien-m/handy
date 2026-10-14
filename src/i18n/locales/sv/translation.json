@@ -392,14 +392,6 @@
           "sec15": "Efter 15 sekunder (Felsökning)"
         }
       },
-      "customWords": {
-        "title": "Anpassade ord",
-        "description": "Hjälp modeller som stöds att känna igen namn och specialtermer. Ungefärlig korrigering är för närvarande begränsad till ord med bokstäverna A–Z och siffror.",
-        "placeholder": "Lägg till ett ord",
-        "add": "Lägg till",
-        "remove": "Ta bort {{word}}",
-        "duplicate": "\"{{word}}\" finns redan"
-      },
       "voiceActivityDetection": {
         "title": "Röstaktivitetsdetektering",
         "description": "Filtrerar bort tystnad från inspelningar. Modeller med streamingstöd använder en längre VAD-svans; om VAD inaktiveras spelas rått ljud in."
@@ -424,6 +416,132 @@
           "simplified": "Förenklad",
           "traditional": "Traditionell"
         }
+      }
+    },
+    "vocabulary": {
+      "group": "Vokabulär",
+      "title": "Vokabulär",
+      "description": "Namn och termer som modellen ska känna igen, när den stöder det. Ersättningar skriver i stället om texten efter igenkänningen.",
+      "placeholder": "Lägg till en term",
+      "inputLabel": "Ny vokabulärterm",
+      "add": "Lägg till",
+      "addHint": "Skriv en term för att lägga till den.",
+      "busy": "Vänta tills den pågående ändringen är klar.",
+      "paste": "Klistra in en lista…",
+      "count": "{{total}} av {{max}} termer",
+      "listLabel": "Vokabulärtermer",
+      "remove": "Ta bort {{term}}",
+      "retry": "Försök igen",
+      "empty": {
+        "title": "Inga termer än",
+        "body": "Lägg till namn som Claude Code eller OpenClaw, en i taget eller som en inklistrad lista."
+      },
+      "flag": {
+        "empty": "Tom term, skickas inte. Ta bort den.",
+        "too_long": "Längre än 100 tecken, skickas inte. Ta bort den och lägg till en kortare version.",
+        "line_break": "Innehåller en radbrytning, skickas inte. Ta bort den och lägg till den igen.",
+        "forbidden_character": "Innehåller < > eller \", skickas inte. Ta bort den och lägg till den utan dessa tecken.",
+        "duplicate": "Samma som en tidigare term, skickas inte. Ta bort den.",
+        "over_capacity": "Över gränsen på 500 termer, skickas inte förrän listan är kortare.",
+        "over_budget": "Skickas inte: över modellens gräns."
+      },
+      "errors": {
+        "term_empty": "Ange en term.",
+        "term_too_long": "En term får ha högst 100 tecken.",
+        "term_line_break": "En term måste rymmas på en rad.",
+        "term_forbidden_character": "Ta bort tecknen < > eller \" från termen.",
+        "term_duplicate": "Varje term får förekomma en gång, och den här finns redan i vokabulären.",
+        "limit": "Vokabulären rymmer högst 500 termer. Ta bort en term för att lägga till en annan.",
+        "conflict": "Vokabulären ändrades under tiden och har lästs in igen. Försök igen.",
+        "notFound": "Den här termen var redan borttagen. Vokabulären har lästs in igen.",
+        "unknown": "Handy kunde inte bekräfta ändringen. Vokabulären har lästs in igen; kontrollera den innan du försöker igen.",
+        "saved": "Din sparade vokabulär är oförändrad."
+      },
+      "status": {
+        "loading": "Kontrollerar vad modellen stöder…",
+        "selectedModel": "den valda modellen",
+        "used": {
+          "title": "Används vid igenkänning av {{model}}",
+          "sent": "{{sent}} av {{total}} termer skickas.",
+          "sentOne": "{{sent}} av 1 term skickas."
+        },
+        "notSent": {
+          "over_budget": "Skickas inte, över modellens gräns: {{terms}}.",
+          "invalid": "Skickas inte, ogiltiga: {{terms}}.",
+          "duplicate": "Skickas inte, dubbletter: {{terms}}.",
+          "over_capacity": "Skickas inte, utöver 500 termer: {{terms}}."
+        },
+        "noTermSent": {
+          "title": "Ingen term skickas till {{model}}",
+          "empty_vocabulary": "Vokabulären är tom. Lägg till termer för att använda dem vid igenkänning.",
+          "invalid_terms_only": "Alla sparade termer är ogiltiga eller dubbletter. Ta bort de markerade termerna och lägg till rättade.",
+          "over_budget": "Den första termen är över modellens gräns, så ingen term skickas. Ta bort den för att skicka termerna efter den."
+        },
+        "notSupported": {
+          "title": "{{model}} kan inte använda vokabulären vid igenkänning",
+          "body": "Ungefärlig korrigering efter igenkänningen används i stället. Välj en Whisper-modell för att skicka termer till igenkännaren."
+        },
+        "streaming": {
+          "title": "Används inte vid livestreaming",
+          "body": "{{model}} transkriberar live, vilket inte skickar någon igenkänningskontext. Ungefärlig korrigering tillämpas i stället på den slutliga texten."
+        },
+        "unknown": {
+          "title": "Stöd okänt tills modellen laddas",
+          "model_not_loaded": "Handy kontrollerar vad {{model}} stöder när den laddas.",
+          "capability_query_unanswered": "{{model}} svarade inte i tid, till exempel under en diktering. Handy kontrollerar igen efteråt."
+        },
+        "budgetUnverified": {
+          "title": "Vokabulärstöd kan inte bekräftas för {{model}}",
+          "body": "Den här modellen anger stöd för igenkänningskontext, men den här versionen har ingen dokumenterad gräns för den. Ingen term skickas; ungefärlig korrigering används i stället."
+        },
+        "failed": {
+          "title": "Det gick inte att läsa vokabulärens status",
+          "body": "Din vokabulär är sparad. Försök igen för att kontrollera vad modellen stöder."
+        }
+      },
+      "pasteBox": {
+        "title": "Klistra in termer",
+        "description": "En term per rad. Dubbletter hoppas över; ogiltiga rader måste rättas innan du lägger till.",
+        "label": "Termer att klistra in, en per rad",
+        "previewTitle": "Förhandsvisning",
+        "previewEmpty": "Klistra in eller skriv en term per rad för att se vad som läggs till.",
+        "sameAs": "{{term}} — samma som {{original}}",
+        "alreadyListed": "{{term}} — finns redan i listan",
+        "summary": {
+          "add": "{{n}} att lägga till",
+          "duplicateOne": "1 dubblett",
+          "duplicateMany": "{{n}} dubbletter",
+          "errorOne": "1 fel",
+          "errorMany": "{{n}} fel"
+        },
+        "kind": {
+          "add": "Lägg till",
+          "duplicate": "Dubblett",
+          "error": "Fel"
+        },
+        "line": {
+          "empty": "Rad {{line}}: tom rad, ta bort den",
+          "too_long": "Rad {{line}}: använd högst 100 tecken",
+          "line_break": "Rad {{line}}: håll termen på en rad",
+          "forbidden_character": "Rad {{line}}: ta bort tecknen < > eller \"",
+          "duplicate": "Rad {{line}}: samma som en tidigare term",
+          "over_capacity": "Rad {{line}}: över gränsen på 500 termer"
+        },
+        "note": {
+          "empty": "Din vokabulär är oförändrad tills du lägger till termerna.",
+          "checking": "Kontrollerar raderna…",
+          "fixOne": "Rätta rad {{lines}} för att lägga till termerna. Din vokabulär är oförändrad.",
+          "fixMany": "Rätta raderna {{lines}} för att lägga till termerna. Din vokabulär är oförändrad.",
+          "overCapacity": "Vokabulären rymmer högst 500 termer. Korta listan för att lägga till den. Din vokabulär är oförändrad.",
+          "nothingToAdd": "Alla rader finns redan i vokabulären.",
+          "ready": "Dubbletter hoppas över. Inget sparas förrän du lägger till termerna."
+        },
+        "cancel": "Avbryt",
+        "applyOne": "Lägg till 1 term",
+        "applyMany": "Lägg till {{n}} termer",
+        "applyZero": "Lägg till termer",
+        "applying": "Lägger till…",
+        "applied": "Termer tillagda i vokabulären."
       }
     },
     "postProcessing": {
