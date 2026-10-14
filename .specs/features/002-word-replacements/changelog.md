@@ -1,5 +1,14 @@
 # Changelog - 002-word-replacements
 
+## 2026-10-14 — [Bugfix]: Delivery review correction round 1 (merge of 006, bounded get, control characters, bounded previews, export file)
+
+- **Type:** Bugfix (merge of `dev` with 006, then the blocking finding and the warnings of the delivery review and audit)
+- **Spec modified:** No (AC-002 control-character decision and W1/W2 recorded as follow-ups in implementation.md)
+- **Code modified:** merge `47a7523`; routed `get` and `get word_replacements` read the rules in revision-pinned pages; oversized instance replies are `limit_exceeded`/`reply_too_large`; control and bidi formatting characters refused in both fields; previews bounded with counters and the planned import reused under the lock; UI preview size bound; export keeps permissions, follows links, fails with `persistence_failed`/`export_not_written`.
+- **AC impacted:** AC-002, AC-003, AC-004, AC-005, AC-008; no AC certified.
+- **Evidence:** `proofs/claude-delivery-fix1/` (full `cargo test` 856 passed, 0 failed, 22 ignored; Clippy, fmt, lint, format, tsc and repo conventions PASS).
+- **Author:** Claude Code (implementation agent)
+
 ## 2026-10-14 — [Refactor]: Sync with dev after 004 and typed errors for the editor commits
 
 - **Type:** Refactor (merge of `dev` with 004, then typed command errors)
