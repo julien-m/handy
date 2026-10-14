@@ -5,6 +5,10 @@
 
 ---
 
+## 2026-10-14 — [Feature 003] Plan refined: plan review preparable again, durable-error rule renamed, offline status justified
+
+The plan cites other features' documents as inline paths instead of links and writes `Inspect [Whisper model documentation](…)`, so its review no longer loads 008's document graph nor an external contract (preparation at 180,000 characters: 1 batch, no error); it no longer references the untracked program notes and copies the D2 names it uses. "Rule D4" becomes the durable-error rule (program D4 is the unsupported-platform refusal). Offline `vocabulary status` is justified as 008's delivered live-only refusal applied to a D2 operation. Spec unchanged; the plan review is stale until an independent reviewer refreshes it.
+
 ## 2026-10-14 — [Feature 001] Plan refined: plan review preparable again, 006 step 0 before Step 2
 
 The plan cites 008's plan and implementation record and 006's plan as inline paths instead of links, so its review no longer loads 008's document graph (preparation at 180,000 characters: 1 batch, no error); it no longer references the untracked program notes and copies the D2/D3 names it uses. Step 2's prerequisite now names 006 step 0 (D3 variants). Spec unchanged; the plan review is stale until an independent reviewer refreshes it.

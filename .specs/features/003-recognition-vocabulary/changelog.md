@@ -51,3 +51,15 @@
 - **D1:** Step 6 requires macOS native proof only; Windows/Linux observations are pending release evidence
 - **Review:** the plan review is stale; an independent reviewer refreshes it
 - **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
+
+## 2026-10-14 — [Plan Update]: make the plan review preparable, rename the durable-error rule, justify offline status
+
+- **Type:** Spec Update
+- **Spec modified:** No
+- **Code modified:** None (plan.md updated)
+- **AC impacted:** None (pre-implementation)
+- **Review budget:** 008's plan and implementation record are cited as inline paths, not links; the untracked program notes are no longer referenced and the D2 names are copied into the CLI section; `Inspect [Whisper model documentation](…)` so the external link is context, not a normative contract. Plan review preparation at 180,000 characters: 1 batch, no error (was `paired_review_batch_budget_exceeded` and `external_contract_not_loaded`)
+- **Durable-error rule:** the plan's "Rule D4" (never `unavailable`/5 for `context_budget_unverified`) is renamed, since program D4 is the unsupported-platform refusal; behavior unchanged
+- **Offline status:** `vocabulary status` offline returns 008's delivered live-only refusal (`unavailable`/5, scenario « Live state without running app » of the 008 spec) applied to a D2 operation; justified in the plan, spec unchanged
+- **Review:** the plan review is stale; an independent reviewer refreshes it
+- **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
