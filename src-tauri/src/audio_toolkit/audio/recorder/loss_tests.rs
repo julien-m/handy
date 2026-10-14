@@ -87,9 +87,24 @@ fn a_lost_stream_returns_its_prefix_without_waiting_for_the_pause() -> TestResul
 fn the_processed_prefix_survives_a_consumer_ending_without_stop() -> TestResult {
     let mut consumer = consumer();
     record_prefix(&mut consumer)?;
+    // Readiness follows the first drained chunk, which may hold only part of the prefix: wait
+    // until the whole prefix is processed so the oracle does not depend on thread scheduling.
+    wait_for_processed(&consumer.samples, PREFIX)?;
     consumer.commands.send(Cmd::Shutdown)?;
     consumer.worker.join().map_err(|_| "consumer panicked")?;
-    assert!(lock_samples(&consumer.samples).len() >= PREFIX / 2);
+    assert_eq!(lock_samples(&consumer.samples).len(), PREFIX);
+    Ok(())
+}
+
+/// Wait (at most 5 s) until `samples` holds at least `count` processed samples.
+fn wait_for_processed(samples: &Mutex<Vec<f32>>, count: usize) -> TestResult {
+    let deadline = Instant::now() + Duration::from_secs(5);
+    while lock_samples(samples).len() < count {
+        if Instant::now() >= deadline {
+            return Err(format!("fewer than {count} samples processed within 5 s").into());
+        }
+        thread::sleep(Duration::from_millis(1));
+    }
     Ok(())
 }
 
