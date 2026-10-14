@@ -1,5 +1,5 @@
 //! Shared validation of the ordered list and the legacy selector's order (pure).
-use super::{promoted, validate_priority};
+use super::validate_priority;
 use crate::settings_service::errors::{ErrorReason, SettingsErrorCode};
 
 type TestResult = Result<(), Box<dyn std::error::Error>>;
@@ -37,18 +37,4 @@ fn exact_names_are_kept_byte_for_byte_including_default() -> TestResult {
     assert_eq!(validate_priority(order.clone())?, order);
     assert_eq!(validate_priority(Vec::new())?, Vec::<String>::new());
     Ok(())
-}
-#[test]
-fn the_legacy_selector_moves_its_choice_first_and_keeps_the_others() {
-    let current = names(&["USB", "Mac", "Dock"]);
-    assert_eq!(
-        promoted(&current, Some("Dock")),
-        names(&["Dock", "USB", "Mac"])
-    );
-    assert_eq!(
-        promoted(&current, Some("New")),
-        names(&["New", "USB", "Mac", "Dock"])
-    );
-    assert_eq!(promoted(&current, Some("USB")), current);
-    assert!(promoted(&current, None).is_empty());
 }

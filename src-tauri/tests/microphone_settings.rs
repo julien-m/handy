@@ -2,7 +2,7 @@
 //! the legacy single selection (absent key only, exact names, idempotent, legacy key kept for a
 //! downgrade, original recoverable), whole-list commits through the shared transaction (one
 //! revision, no-op repeat, compare-and-set) and the refusal of generic writes.
-use handy_app_lib::microphones::priority::{priority_change, selector_change};
+use handy_app_lib::microphones::priority::priority_change;
 use handy_app_lib::settings_service::{
     descriptor::descriptor,
     errors::SettingsErrorCode,
@@ -214,33 +214,5 @@ fn generic_set_of_either_microphone_key_is_refused_with_the_domain_reason() -> T
     }
     let legacy = descriptor("selected_microphone").ok_or("missing descriptor")?;
     assert!(legacy.read_only);
-    Ok(())
-}
-/// Review r3, warning 1: until the priority editor ships, the legacy single selector writes the
-/// priority through the same transaction instead of the now read-only legacy key.
-#[test]
-fn the_legacy_selector_moves_its_choice_first_and_default_empties_the_list() -> TestResult {
-    let directory = tempfile::tempdir()?;
-    seeded(
-        &directory,
-        json!({"microphone_priority": ["USB", "Mac"], "selected_microphone": "USB"}),
-    )?;
-    let backend = offline(&directory)?;
-    backend.commit_change(&selector_change(Some("Dock".to_owned()))?, None)?;
-    let settings = stored(&directory)?["settings"].clone();
-    assert_eq!(
-        settings["microphone_priority"],
-        json!(["Dock", "USB", "Mac"])
-    );
-    assert_eq!(
-        settings["selected_microphone"], "USB",
-        "legacy key never written"
-    );
-    backend.commit_change(&selector_change(None)?, None)?;
-    assert_eq!(
-        stored(&directory)?["settings"]["microphone_priority"],
-        json!([])
-    );
-    assert!(selector_change(Some("  ".to_owned())).is_err());
     Ok(())
 }

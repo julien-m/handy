@@ -1,0 +1,26 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/001-microphone-priority/src-tauri)
+warning: field `stderr` is never read
+  --> tests/settings_cli/harness.rs:24:9
+   |
+21 | pub struct Run {
+   |            --- field in this struct
+...
+24 |     pub stderr: String,
+   |         ^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `legacy_socket` is never used
+  --> tests/settings_cli/harness.rs:75:12
+   |
+48 | impl Portable {
+   | ------------- method in this implementation
+...
+75 |     pub fn legacy_socket(&self) -> &Path {
+   |            ^^^^^^^^^^^^^
+
+warning: `handy` (test "microphone_cli") generated 2 warnings
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.01s
+     Running tests/microphone_cli.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_cli-d764717a30422889)

@@ -8,8 +8,8 @@ use super::{
     route::route,
 };
 use crate::cli::{
-    ChangeOptions, CliArgs, CliCommand, OutputAction, SettingsArgs, SettingsCommand,
-    ShortcutsAction,
+    ChangeOptions, CliArgs, CliCommand, MicrophonesAction, OutputAction, SettingsArgs,
+    SettingsCommand, ShortcutsAction,
 };
 use clap::{error::ErrorKind, Parser};
 use serde_json::json;
@@ -62,6 +62,25 @@ pub fn operation(command: &SettingsCommand) -> SettingsOperation {
         },
         SettingsCommand::Output(output) => output_operation(&output.action),
         SettingsCommand::Shortcuts(shortcuts) => shortcuts_operation(&shortcuts.action),
+        SettingsCommand::Microphones(microphones) => microphones_operation(&microphones.action),
+    }
+}
+/// Wire operation of a microphones-domain action.
+fn microphones_operation(action: &MicrophonesAction) -> SettingsOperation {
+    let none = ChangeOptions::default();
+    let (name, arguments, options) = match action {
+        MicrophonesAction::List => ("list", Vec::new(), &none),
+        MicrophonesAction::SetPriority { names, options } => {
+            ("set-priority", names.clone(), options)
+        }
+    };
+    SettingsOperation::Domain {
+        domain: "microphones".to_owned(),
+        action: name.to_owned(),
+        arguments,
+        input: None,
+        dry_run: options.dry_run,
+        expected_revision: options.expected_revision.map(super::protocol::Revision),
     }
 }
 /// Wire operation of a shortcuts-domain action.

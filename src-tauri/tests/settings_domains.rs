@@ -39,7 +39,20 @@ fn help_lists_the_generic_operations_and_exactly_the_domains_of_this_build() -> 
     assert_eq!(help.code, 0);
     assert_eq!(
         commands(&help.stdout),
-        ["get", "keys", "set", "output", "shortcuts", "help"]
+        [
+            "get",
+            "keys",
+            "set",
+            "output",
+            "shortcuts",
+            "microphones",
+            "help"
+        ]
+    );
+    let microphones = app.run(&["settings", "microphones", "--help"])?;
+    assert_eq!(
+        commands(&microphones.stdout),
+        ["list", "set-priority", "help"]
     );
     let output = app.run(&["settings", "output", "--help"])?;
     assert_eq!(commands(&output.stdout), ["get", "set", "help"]);

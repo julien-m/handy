@@ -886,20 +886,27 @@ async getAvailableMicrophones() : Promise<Result<AudioDevice[], string>> {
 }
 },
 /**
- * `None` selects the system default device; a name is stored as is, "default" included. The
- * device restart is the live effect, run off the webview thread.
+ * Save the complete microphone priority (feature 001) with the revision the editor started
+ * from: the same validation, transaction and refusals as `handy settings microphones
+ * set-priority`, so a stale revision is `revision_conflict` and nothing partial is written.
+ * The live effect is queued; a recording in progress keeps its microphone. Returns the
+ * committed revision (unchanged for an identical order).
  */
-async setSelectedMicrophone(deviceName: string | null) : Promise<Result<null, SettingsCommandError>> {
+async setMicrophonePriority(order: string[], expectedRevision: number | null) : Promise<Result<number, SettingsCommandError>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("set_selected_microphone", { deviceName }) };
+    return { status: "ok", data: await TAURI_INVOKE("set_microphone_priority", { order, expectedRevision }) };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
 }
 },
-async getSelectedMicrophone() : Promise<Result<string, string>> {
+/**
+ * Saved order, availability of each choice and the microphone in use, from one bounded device
+ * observation taken off the webview thread (the same projection as `microphones list`).
+ */
+async getMicrophoneStatus() : Promise<Result<MicrophoneStatus, string>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("get_selected_microphone") };
+    return { status: "ok", data: await TAURI_INVOKE("get_microphone_status") };
 } catch (e) {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
@@ -1188,6 +1195,26 @@ vad_backend?: VadBackend;
 overlay_style?: OverlayStyle }
 export type AudioDevice = { index: string; name: string; is_default: boolean }
 export type AutoSubmitKey = "enter" | "ctrl_enter" | "cmd_enter"
+/**
+ * Availability of one configured choice, observed separately from the saved order.
+ */
+export type Availability = 
+/**
+ * Exactly one present device has this name.
+ */
+"available" | 
+/**
+ * A complete enumeration found no device with this name.
+ */
+"unavailable" | 
+/**
+ * Several present devices share this name; none is chosen arbitrarily.
+ */
+"ambiguous" | 
+/**
+ * The enumeration failed or timed out: absence is not proven.
+ */
+"unknown"
 export type AvailableAccelerators = { transcribe: string[]; ort: string[]; gpu_devices: GpuDeviceOption[] }
 export type BindingResponse = { success: boolean; binding: ShortcutBinding | null; 
 /**
@@ -1211,6 +1238,18 @@ export type ChineseScript =
  * Answer of a badge choice or removal: the updated session, or why it is refused unchanged.
  */
 export type ChoiceAnswer = { status: "chosen"; value: DestinationSnapshot } | { status: "refused"; value: SelectionRefusal }
+/**
+ * Availability of one configured choice.
+ */
+export type ChoiceStatus = { 
+/**
+ * Configured exact name.
+ */
+name: string; 
+/**
+ * Observed status.
+ */
+status: Availability }
 export type ClipboardHandling = "dont_modify" | "copy_to_clipboard"
 /**
  * Why a candidate cannot be used.
@@ -1245,6 +1284,50 @@ export type DestinationSupport = { state: "supported" } | { state: "unsupported"
  * Immutable identity of one accepted dictation (the same value 007 puts in its `PasteOutcome`).
  */
 export type DictationId = number
+/**
+ * Why the effective input was chosen.
+ */
+export type EffectiveReason = 
+/**
+ * The first configured choice opened.
+ */
+"first_choice" | 
+/**
+ * A later configured choice opened after earlier ones failed.
+ */
+"fallback" | 
+/**
+ * The clamshell override opened while the lid is confirmed closed.
+ */
+"clamshell" | 
+/**
+ * The system default opened.
+ */
+"system_default"
+/**
+ * The input in use, or the last one used, as reported to the user.
+ */
+export type EffectiveReport = { scope: EffectiveScope; 
+/**
+ * Device name read from the opened stream (null when not used yet or unnamed).
+ */
+name: string | null; reason: EffectiveReason | null; capture_generation: number | null }
+/**
+ * What the effective input describes.
+ */
+export type EffectiveScope = 
+/**
+ * A recording is running, or the always-on stream is open, on this input.
+ */
+"current" | 
+/**
+ * No current stream: the input of the last recording since launch.
+ */
+"last_recording" | 
+/**
+ * No recording since launch.
+ */
+"not_used_yet"
 export type EngineType = 
 /**
  * Any GGML/GGUF model loaded through transcribe-cpp (Whisper, Parakeet,
@@ -1302,6 +1385,22 @@ current: boolean;
  * The application frontmost when the menu opened (listed first).
  */
 frontmost: boolean }
+/**
+ * One status read.
+ */
+export type MicrophoneStatus = { 
+/**
+ * Committed order of normal choices.
+ */
+configured_order: string[]; 
+/**
+ * Status of each configured choice, in saved order.
+ */
+availability: ChoiceStatus[]; 
+/**
+ * RFC 3339 time of the device observation.
+ */
+availability_observed_at: string; effective_input: EffectiveReport; warning: StatusWarning | null }
 export type ModelInfo = { id: string; name: string; description: string; filename: string; source: ModelSource; size_mb: number; is_downloaded: boolean; is_downloading: boolean; partial_size: number; is_directory: boolean; engine_type: EngineType; accuracy_score: number; speed_score: number; supports_translation: boolean; is_recommended: boolean; supported_languages: string[]; supports_language_selection: boolean; is_custom: boolean; supports_streaming: boolean; supports_language_detection: boolean }
 export type ModelLoadStatus = { is_loaded: boolean; current_model: string | null }
 /**
@@ -1546,6 +1645,14 @@ export type ShortcutEditError = { code: "shortcut_conflict"; conflict: ShortcutC
  */
 export type ShortcutEditResponse = { binding: ShortcutBinding | null; error: ShortcutEditError | null }
 export type SoundTheme = "marimba" | "pop" | "custom"
+/**
+ * Typed warning of a status read.
+ */
+export type StatusWarning = 
+/**
+ * The devices could not be listed in time: every status is unknown.
+ */
+"enumeration_failed"
 /**
  * A conflict between two stored shortcuts, reported as a warning. Upgrades
  * keep such shortcuts registered exactly as before (decision 2026-10-12).

@@ -59,34 +59,6 @@ pub fn priority_change(names: Vec<String>) -> Result<DomainChange, SettingsError
     Ok(DomainChange(ChangeKind::Apply(apply)))
 }
 
-/// Order chosen by the legacy single selector, applied to the locked `current` order: the chosen
-/// device moves first and the other choices keep their order; the system default (`None`) means
-/// an empty list. Backward compatibility for the selector of the settings window until the
-/// priority editor replaces it (Step 6 of feature 001).
-pub fn promoted(current: &[String], choice: Option<&str>) -> Vec<String> {
-    let Some(choice) = choice else {
-        return Vec::new();
-    };
-    std::iter::once(choice.to_owned())
-        .chain(current.iter().filter(|name| *name != choice).cloned())
-        .collect()
-}
-/// The legacy selector's change (see `promoted`), validated now and on the locked settings.
-///
-/// # Errors
-/// `validation_failed` for a blank name.
-pub fn selector_change(choice: Option<String>) -> Result<DomainChange, SettingsError> {
-    if let Some(name) = &choice {
-        validate_priority(vec![name.clone()])?;
-    }
-    let apply = Box::new(move |locked: &mut AppSettings| {
-        let order = promoted(&locked.microphone_priority, choice.as_deref());
-        locked.microphone_priority = validate_priority(order)?;
-        Ok(())
-    });
-    Ok(DomainChange(ChangeKind::Apply(apply)))
-}
-
 #[cfg(test)]
 #[path = "priority_tests.rs"]
 mod tests;

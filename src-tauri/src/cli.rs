@@ -117,6 +117,37 @@ pub enum SettingsCommand {
     Output(OutputArgs),
     /// Shortcuts of each action: list them; add, remove or reset them in the running Handy
     Shortcuts(ShortcutsArgs),
+    /// Microphone choices: list the saved order, availability and microphone in use; replace it
+    Microphones(MicrophonesArgs),
+}
+
+/// `handy settings microphones`: the ordered microphone choices (feature 001).
+#[derive(Args, Debug, Clone)]
+#[command(
+    after_help = "Recording tries the choices in order and uses the first one present, then the \
+system default; unavailable choices stay saved. list needs a running Handy (it reads the devices \
+and the microphone in use); without one it fails with unavailable and `handy settings get \
+microphone_priority` still prints the saved order. set-priority replaces the whole order, with \
+or without a running Handy; no NAME sets the empty order (system default). Quote names with \
+spaces; put -- before a name starting with a hyphen."
+)]
+pub struct MicrophonesArgs {
+    #[command(subcommand)]
+    pub action: MicrophonesAction,
+}
+
+/// Actions of the microphones domain.
+#[derive(Subcommand, Debug, Clone)]
+pub enum MicrophonesAction {
+    /// Print the saved order, each choice's availability and the microphone in use
+    List,
+    /// Replace the whole order of microphone choices, first choice first
+    SetPriority {
+        /// Exact device names, as listed by the settings window or the system
+        names: Vec<String>,
+        #[command(flatten)]
+        options: ChangeOptions,
+    },
 }
 
 /// `handy settings shortcuts`: the shortcut lists, with the validation of the settings window.

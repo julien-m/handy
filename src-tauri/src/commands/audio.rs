@@ -1,10 +1,11 @@
 use crate::audio_feedback;
 use crate::audio_toolkit::audio::{list_input_devices, list_output_devices, AudioRecorder};
 use crate::managers::audio::AudioRecordingManager;
-use crate::microphones::priority;
+use crate::microphones::{priority, status::MicrophoneStatus};
 use crate::settings::get_settings;
 use crate::settings_service::{
-    command_error::SettingsCommandError, errors::ValidationReason, tauri_adapter, ui_value::UiValue,
+    command_error::SettingsCommandError, errors::ValidationReason, protocol::Revision,
+    tauri_adapter, ui_value::UiValue,
 };
 use log::warn;
 use serde::{Deserialize, Serialize};
@@ -202,38 +203,44 @@ pub async fn get_available_microphones() -> Result<Vec<AudioDevice>, String> {
     .map_err(|e| format!("audio task join failed: {}", e))?
 }
 
-/// Legacy single selector of the settings window, kept until the priority editor replaces it
-/// (feature 001): a name moves to the front of the microphone priority (the other choices stay,
-/// "default" is an ordinary name) and `None`, the system default, empties it. Same validation
-/// and transaction as `handy settings microphones set-priority`; the device restart is the live
-/// effect, run off the webview thread.
+// @spec FR-007: UI saves through the CLI's validation and transaction — .specs/features/001-microphone-priority/spec.md#fr-007
+/// Save the complete microphone priority (feature 001) with the revision the editor started
+/// from: the same validation, transaction and refusals as `handy settings microphones
+/// set-priority`, so a stale revision is `revision_conflict` and nothing partial is written.
+/// The live effect is queued; a recording in progress keeps its microphone. Returns the
+/// committed revision (unchanged for an identical order).
 #[tauri::command]
 #[specta::specta]
-pub async fn set_selected_microphone(
+pub async fn set_microphone_priority(
     app: AppHandle,
-    device_name: UiValue<Option<String>>,
-) -> Result<(), SettingsCommandError> {
-    let choice =
-        serde_json::from_value::<Option<String>>(device_name.into_json()).map_err(|_| {
-            SettingsCommandError::invalid("microphone_priority", ValidationReason::CanonicalType)
-        })?;
+    order: UiValue<Vec<String>>,
+    expected_revision: Option<u64>,
+) -> Result<u64, SettingsCommandError> {
+    let order = serde_json::from_value::<Vec<String>>(order.into_json()).map_err(|_| {
+        SettingsCommandError::invalid(priority::PRIORITY_KEY, ValidationReason::CanonicalType)
+    })?;
     tauri_adapter::blocking(move || {
-        let change = priority::selector_change(choice)?;
-        tauri_adapter::write_change(&app, &change, None).map(|_| ())
+        let change = priority::priority_change(order)?;
+        let expected = expected_revision.map(Revision);
+        Ok(tauri_adapter::write_change(&app, &change, expected)?
+            .revision
+            .0)
     })
     .await
 }
 
-/// First microphone choice, or "default" for the system default (legacy selector).
+/// Saved order, availability of each choice and the microphone in use, from one bounded device
+/// observation taken off the webview thread (the same projection as `microphones list`).
 #[tauri::command]
 #[specta::specta]
-pub fn get_selected_microphone(app: AppHandle) -> Result<String, String> {
-    let settings = get_settings(&app);
-    Ok(settings
-        .microphone_priority
-        .first()
-        .cloned()
-        .unwrap_or_else(|| "default".to_string()))
+pub async fn get_microphone_status(app: AppHandle) -> Result<MicrophoneStatus, String> {
+    tokio::task::spawn_blocking(move || {
+        let configured = get_settings(&app).microphone_priority;
+        let manager = app.state::<Arc<AudioRecordingManager>>();
+        manager.microphone_status(configured)
+    })
+    .await
+    .map_err(|e| format!("audio task join failed: {e}"))
 }
 
 #[tauri::command]

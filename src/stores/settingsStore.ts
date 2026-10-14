@@ -27,6 +27,7 @@ import {
   settingsErrorKey,
   throwIfSettingsError,
 } from "./settings-errors";
+import { promotedOrder } from "./microphone-priority";
 
 interface SettingsStore {
   settings: Settings | null;
@@ -151,8 +152,14 @@ const settingUpdaters: {
     commands.changeShortcutActivationSetting(value as ShortcutActivation),
   hold_threshold_ms: (value) =>
     commands.changeHoldThresholdMsSetting(value as number),
-  selected_microphone: (value) =>
-    commands.setSelectedMicrophone(toStoredDevice(value)),
+  // Feature 001: the single selector writes the priority list (compare-and-set on the
+  // revision this window shows), never the read-only legacy key.
+  selected_microphone: (value) => {
+    const { settings, revision } = useSettingsStore.getState();
+    const current = settings?.microphone_priority ?? [];
+    const order = promotedOrder(current, toStoredDevice(value));
+    return commands.setMicrophonePriority(order, revision);
+  },
   selected_channel: (value) =>
     commands.setSelectedChannel((value as number | null | undefined) ?? null),
   clamshell_microphone: (value) =>

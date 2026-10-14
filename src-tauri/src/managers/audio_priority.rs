@@ -9,9 +9,10 @@ use crate::audio_toolkit::AudioRecorder;
 use crate::microphones::{
     boundary::{self, DeviceChange, LossAction, StreamFacts},
     catalog::Catalog,
-    effective::EffectiveInput,
+    effective::{EffectiveInput, EffectiveView},
     native,
     policy::{self, Attempt, AttemptResult, OpenFailure, OpenTarget, Preferences, Resolution},
+    status::{self, MicrophoneStatus},
 };
 use crate::settings::{get_settings, AppSettings};
 use log::{debug, error, info, warn};
@@ -126,6 +127,33 @@ impl AudioRecordingManager {
             self.close_generation.fetch_add(1, Ordering::SeqCst);
             self.stop_microphone_stream();
         }
+    }
+}
+
+/// Most time a status read waits for the device enumeration: well inside the 5 s answer window
+/// of a routed CLI call (008), so `list` answers even when the enumeration hangs.
+const STATUS_ENUMERATION_BUDGET: Duration = Duration::from_secs(3);
+
+// @spec FR-002: Availability and effective input reported — .specs/features/001-microphone-priority/spec.md#fr-002
+impl AudioRecordingManager {
+    /// The effective input to report: current while a recording runs or the always-on stream
+    /// is open, otherwise the last recording's (AC-002).
+    pub fn effective_input(&self) -> EffectiveView {
+        let always_on_open =
+            matches!(*lock(&self.mode), MicrophoneMode::AlwaysOn) && *lock(&self.is_open);
+        lock(&self.effective).view(self.is_recording() || always_on_open)
+    }
+    /// Status of `configured`: one fresh bounded observation (no device is opened) and the
+    /// effective input. Blocks up to `STATUS_ENUMERATION_BUDGET`: call it off the main loop.
+    pub fn microphone_status(&self, configured: Vec<String>) -> MicrophoneStatus {
+        let catalog = native::enumerate_within(STATUS_ENUMERATION_BUDGET);
+        let observed_at = chrono::Utc::now().to_rfc3339();
+        status::status(
+            configured,
+            catalog.as_ref(),
+            observed_at,
+            self.effective_input(),
+        )
     }
 }
 
