@@ -7,7 +7,10 @@ use super::{
     render::{emit, View},
     route::route,
 };
-use crate::cli::{CliArgs, CliCommand, OutputAction, SettingsArgs, SettingsCommand};
+use crate::cli::{
+    ChangeOptions, CliArgs, CliCommand, ImportModeArg, OutputAction, ReplacementsAction,
+    SettingsArgs, SettingsCommand,
+};
 use clap::{error::ErrorKind, Parser};
 use serde_json::json;
 use std::ffi::OsString;
@@ -36,12 +39,70 @@ pub fn dispatch(argv: Vec<OsString>) -> Dispatch {
 
 fn run(args: &CliArgs, settings: &SettingsArgs) -> i32 {
     let operation = operation(&settings.operation);
+    let destination = export_destination(&settings.operation);
+    let view = destination.map_or_else(|| View::of(&operation), |_| View::ExportFile);
     let reply = if mixes_app_flags(args) {
         Reply::failure(SettingsError::new(SettingsErrorCode::UsageError))
     } else {
-        route(&operation)
+        // Files and stdin belong to this process: read before routing, written after the reply.
+        let routed = match with_input(operation, &settings.operation) {
+            Ok(operation) => route(&operation),
+            Err(error) => Reply::failure(error),
+        };
+        match destination {
+            Some(path) => write_export(path, &routed),
+            None => routed,
+        }
     };
-    emit(View::of(&operation), &reply, args.json || settings.json)
+    emit(view, &reply, args.json || settings.json)
+}
+/// Domain input named by the command (an import source), read as bounded UTF-8 text.
+fn with_input(
+    mut operation: SettingsOperation,
+    command: &SettingsCommand,
+) -> Result<SettingsOperation, SettingsError> {
+    let SettingsCommand::Replacements(replacements) = command else {
+        return Ok(operation);
+    };
+    let ReplacementsAction::Import { source, .. } = &replacements.action else {
+        return Ok(operation);
+    };
+    if let SettingsOperation::Domain { input, .. } = &mut operation {
+        *input = Some(super::input::read_source(source)?);
+    }
+    Ok(operation)
+}
+/// File destination of an export; `-` (stdout) is rendered from the reply itself.
+fn export_destination(command: &SettingsCommand) -> Option<&str> {
+    match command {
+        SettingsCommand::Replacements(replacements) => match &replacements.action {
+            ReplacementsAction::Export { destination } if destination != "-" => {
+                Some(destination.as_str())
+            }
+            _ => None,
+        },
+        _ => None,
+    }
+}
+/// Write the exported content of a successful `reply` to `path` (atomically) and answer with
+/// `{path, count, bytes}`; an unwritable destination is `usage_error` and leaves it unchanged.
+fn write_export(path: &str, reply: &Reply) -> Reply {
+    let envelope = reply.envelope();
+    let (Some(revision), Some(content)) = (
+        envelope["revision"].as_u64(),
+        envelope["data"]["content"].as_str(),
+    ) else {
+        return reply.clone();
+    };
+    let written = crate::word_replacements::exchange_file::write_exchange_file(
+        std::path::Path::new(path),
+        content,
+    );
+    if written.is_err() {
+        return Reply::failure(SettingsError::new(SettingsErrorCode::UsageError));
+    }
+    let data = json!({ "path": path, "count": envelope["data"]["count"], "bytes": content.len() });
+    Reply::success(super::protocol::Revision(revision), data, reply.warning())
 }
 /// The wire operation of a parsed command.
 pub fn operation(command: &SettingsCommand) -> SettingsOperation {
@@ -58,6 +119,57 @@ pub fn operation(command: &SettingsCommand) -> SettingsOperation {
             expected_revision: expected_revision.map(super::protocol::Revision),
         },
         SettingsCommand::Output(output) => output_operation(&output.action),
+        SettingsCommand::Replacements(replacements) => replacements_operation(&replacements.action),
+    }
+}
+/// Wire operation of a replacements action. An import's input is attached by `run` (it reads a
+/// file or stdin); an export always asks for the content, which `run` writes to a file if named.
+fn replacements_operation(action: &ReplacementsAction) -> SettingsOperation {
+    let (name, arguments, options) = replacements_parts(action);
+    SettingsOperation::Domain {
+        domain: "replacements".to_owned(),
+        action: name.to_owned(),
+        arguments,
+        input: None,
+        dry_run: options.dry_run,
+        expected_revision: options.expected_revision.map(super::protocol::Revision),
+    }
+}
+/// Action name, positional arguments and change options of a replacements action.
+fn replacements_parts(action: &ReplacementsAction) -> (&'static str, Vec<String>, ChangeOptions) {
+    let none = ChangeOptions::default();
+    match action {
+        ReplacementsAction::List => ("list", Vec::new(), none),
+        ReplacementsAction::Export { .. } => ("export", Vec::new(), none),
+        ReplacementsAction::Add {
+            recognized,
+            replacement,
+            options,
+        } => (
+            "add",
+            vec![recognized.clone(), replacement.clone()],
+            *options,
+        ),
+        ReplacementsAction::Update {
+            id,
+            recognized,
+            replacement,
+            options,
+        } => (
+            "update",
+            vec![id.clone(), recognized.clone(), replacement.clone()],
+            *options,
+        ),
+        ReplacementsAction::Remove { id, options } => ("remove", vec![id.clone()], *options),
+        ReplacementsAction::Import { mode, options, .. } => {
+            ("import", vec![import_mode(*mode).to_owned()], *options)
+        }
+    }
+}
+fn import_mode(mode: ImportModeArg) -> &'static str {
+    match mode {
+        ImportModeArg::Merge => "merge",
+        ImportModeArg::Replace => "replace",
     }
 }
 /// Wire operation of an output-domain action (no file or stdin input in this domain).

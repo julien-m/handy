@@ -216,8 +216,19 @@
           },
           "type": "array"
         },
+        "items": {
+          "items": {
+            "$ref": "#/$defs/item_issue"
+          },
+          "maxItems": 1000,
+          "type": "array"
+        },
         "offset": {
           "minimum": 0,
+          "type": "integer"
+        },
+        "omitted_items": {
+          "minimum": 1,
           "type": "integer"
         },
         "outcome": {
@@ -242,6 +253,30 @@
       "required": [
         "ok",
         "error"
+      ],
+      "type": "object"
+    },
+    "item_issue": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "line": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "position": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "field",
+        "kind"
       ],
       "type": "object"
     },

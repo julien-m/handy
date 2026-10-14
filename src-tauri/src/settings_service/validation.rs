@@ -84,6 +84,7 @@ fn editable_descriptor(
             "shortcuts" => ValidationReason::ShortcutsDomain,
             "vocabulary" => ValidationReason::VocabularyDomain,
             "prompts" => ValidationReason::PromptsDomain,
+            "replacements" => ValidationReason::ReplacementsDomain,
             _ => ValidationReason::UiOnly,
         };
         return Err(SettingsError::validation(entry.key, reason));

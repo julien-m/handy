@@ -29,6 +29,19 @@ pub enum Field {
     Line,
 }
 
+impl Field {
+    /// Stable snake_case name, identical to its serialized form.
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Id => "id",
+            Self::Recognized => "recognized",
+            Self::Replacement => "replacement",
+            Self::Rules => "rules",
+            Self::Line => "line",
+        }
+    }
+}
+
 /// Stable validation kind; diagnostics never contain user rule text.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Type)]
 #[serde(rename_all = "snake_case")]
@@ -46,6 +59,25 @@ pub enum IssueKind {
     MissingSeparator,
     /// The saved base set is itself invalid, so no preview can be applied to it.
     InvalidSavedRules,
+}
+
+impl IssueKind {
+    /// Stable snake_case name, identical to its serialized form.
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::EmptyId => "empty_id",
+            Self::DuplicateId => "duplicate_id",
+            Self::TooShort => "too_short",
+            Self::TooLong => "too_long",
+            Self::ForbiddenCharacter => "forbidden_character",
+            Self::LeadingComment => "leading_comment",
+            Self::DuplicateKey => "duplicate_key",
+            Self::TooManyRules => "too_many_rules",
+            Self::UnicodeDataUnavailable => "unicode_data_unavailable",
+            Self::MissingSeparator => "missing_separator",
+            Self::InvalidSavedRules => "invalid_saved_rules",
+        }
+    }
 }
 
 /// An issue in one input field before a rule has an ordered position.

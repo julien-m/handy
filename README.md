@@ -154,6 +154,25 @@ handy settings --help                      # operations and the domains availabl
 
 An error with `details.outcome = "committed"` means the value was saved but Handy could not apply it immediately; it retries before the next change.
 
+#### Word replacements (`handy settings replacements`)
+
+Replacement rules turn a recognized text into exactly the text you want (`cloud code` → `Claude Code`), in every dictation, before custom-word correction, filler removal and AI post-processing. They use the same validation, preview and atomic save as the settings window, and a change applies from the next dictation of the running app.
+
+```bash
+handy settings replacements list                                   # id<TAB>recognized<TAB>replacement, in saved order
+handy settings replacements add "cloud code" "Claude Code"         # append a rule (prints its id)
+handy settings replacements update ID "cloud code" "Claude Code CLI"   # alias: edit; keeps the id and position
+handy settings replacements remove ID                              # alias: delete
+handy settings replacements import rules.txt --mode merge --dry-run    # preview, write nothing
+handy settings replacements import - --mode replace < rules.txt    # the input becomes the whole set
+handy settings replacements export rules.txt                       # or `-` (default) for stdout
+```
+
+- **Exchange format.** UTF-8 text, one rule per line: `recognized;replacement`, or `recognized<TAB>replacement` (a line with a tab splits on its first tab, so spreadsheet copy and paste works). Blank lines and lines starting with `#` are ignored. A first line `recognized;replacement` or `texte_reconnu;remplacement` (either separator, any case) is a header. A replacement may contain `;`; quotes are literal (no CSV quoting). Export writes the header `recognized;replacement`, then the rules in order, so an export re-imports with `--mode replace` to the same rules and order.
+- **Rules.** Recognized text: 1–100 characters, no `;`, tab or line break, not starting with `#`, unique ignoring case and repeated spaces. Replacement: 1–500 characters, no tab or line break. At most 1000 rules.
+- **Import.** At most 1,000,000 bytes (`limit_exceeded` above). `merge` updates the replacement of rules with the same recognized text in place and appends the new ones in file order; `replace` makes the input the whole set in input order (rules with an unchanged recognized text keep their id). Duplicate recognized texts inside one input are errors. An import is all or nothing, and it is saved only at the revision it previewed: if the settings changed meanwhile it is refused with `revision_conflict`, so preview again.
+- **JSON data.** `list`: `{"rules":[{"id","recognized","replacement"}…]}`. `add`/`update`: `{"rule":{…},"position":N,"count":N}`. `remove`: `{"removed":ID,"count":N}`. `import`: `{"mode","added","updated","deleted","unchanged","ignored","count","lines":[{"line"?,"status","id"?}…]}` (ignored lines are only counted). `export -`: `{"content","count"}`; `export FILE`: `{"path","count","bytes"}`. With `--dry-run` the same report is in `data.changes` with `"dry_run": true`; the id of a rule added by a dry run is provisional. A refused rule or input lists every problem in `details.items` (`line` of the input or `position` in the list, `field`, `kind` such as `duplicate_key`, `too_long`, `missing_separator`), without the rule text.
+
 ## Known Issues & Current Limitations
 
 This project is actively being developed and has some [known issues](https://github.com/cjpais/Handy/issues). We believe in transparency about the current state:

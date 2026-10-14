@@ -114,6 +114,8 @@ pub enum SettingsCommand {
     },
     /// Output settings: paste method, clipboard handling, automatic submit, delays, typing tool
     Output(OutputArgs),
+    /// Word replacement rules: list, add, update, remove, import and export
+    Replacements(ReplacementsArgs),
 }
 
 /// `handy settings output`: the existing output settings, with the validation of `set`.
@@ -144,6 +146,86 @@ pub enum OutputAction {
         /// Validate and show the change without writing it
         #[arg(long)]
         dry_run: bool,
+    },
+}
+
+/// `handy settings replacements`: ordered rules applied to every dictation (exchange format:
+/// `recognized;replacement` or `recognized<TAB>replacement`, one rule per line).
+#[derive(Args, Debug, Clone)]
+pub struct ReplacementsArgs {
+    #[command(subcommand)]
+    pub action: ReplacementsAction,
+}
+
+/// Change options shared by the replacement actions that write.
+#[derive(Args, Debug, Clone, Copy, Default)]
+pub struct ChangeOptions {
+    /// Refuse the change unless the settings are still at revision N
+    #[arg(long, value_name = "N")]
+    pub expected_revision: Option<u64>,
+    /// Validate and show the change without writing it
+    #[arg(long)]
+    pub dry_run: bool,
+}
+
+/// How an import combines with the saved rules.
+#[derive(clap::ValueEnum, Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ImportModeArg {
+    /// Update the replacement of rules with the same recognized text, append the new ones
+    Merge,
+    /// Make the input the whole rule set, in input order
+    Replace,
+}
+
+/// Actions of the replacements domain.
+#[derive(Subcommand, Debug, Clone)]
+pub enum ReplacementsAction {
+    /// Print the rules in their saved order (id, recognized text, replacement)
+    List,
+    /// Append a rule
+    Add {
+        /// Text as recognized by the speech model (1-100 characters, no `;`, tab or line break)
+        recognized: String,
+        /// Text inserted instead, exactly as written (1-500 characters, no tab or line break)
+        replacement: String,
+        #[command(flatten)]
+        options: ChangeOptions,
+    },
+    /// Change both texts of a rule, keeping its id and position
+    #[command(alias = "edit")]
+    Update {
+        /// Rule id, as printed by `list`
+        id: String,
+        /// New recognized text
+        recognized: String,
+        /// New replacement
+        replacement: String,
+        #[command(flatten)]
+        options: ChangeOptions,
+    },
+    /// Remove a rule
+    #[command(alias = "delete")]
+    Remove {
+        /// Rule id, as printed by `list`
+        id: String,
+        #[command(flatten)]
+        options: ChangeOptions,
+    },
+    /// Import rules from a file, or `-` for stdin (UTF-8, at most 1,000,000 bytes), atomically
+    Import {
+        /// File path, or `-` to read stdin
+        source: String,
+        /// merge: update matching rules and append new ones; replace: the input becomes the set
+        #[arg(long, value_enum)]
+        mode: ImportModeArg,
+        #[command(flatten)]
+        options: ChangeOptions,
+    },
+    /// Export the rules to a file, or `-` (default) for stdout
+    Export {
+        /// File path, or `-` for stdout
+        #[arg(default_value = "-")]
+        destination: String,
     },
 }
 

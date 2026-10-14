@@ -1,0 +1,5 @@
+Run 1 failed one test (settings_domains help listing) because the `handy` binary under test was not
+this worktree's: CARGO_TARGET_DIR is shared with the 004 and 007 worktrees, which build their own
+`handy` into the same `debug/handy` path while this run was in progress (replacement_cli, run first
+in the same command, saw the 002 binary and passed). Run 2 (test-integration-targeted.*) recompiled
+the 002 binary ("Compiling handy" in its stderr, no source change in between) and passed 73/73.

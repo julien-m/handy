@@ -1350,7 +1350,15 @@ export type ValidationReason = "canonical_type" | "canonical_value" | "out_of_ra
 /**
  * Domain input does not follow the domain's exchange format.
  */
-"invalid_input"
+"invalid_input" | 
+/**
+ * Collection owned by `handy settings replacements`.
+ */
+"replacements_domain" | 
+/**
+ * Items of a domain list or exchange input failed validation; `details.items` locates them.
+ */
+"invalid_items"
 export type WindowsMicrophonePermissionStatus = { supported: boolean; overall_access: PermissionAccess; device_access: PermissionAccess; app_access: PermissionAccess; desktop_app_access: PermissionAccess }
 
 /** tauri-specta globals **/

@@ -2,10 +2,12 @@
 
 pub mod dictation;
 pub mod exchange;
+pub mod exchange_file;
 pub mod matcher;
 pub mod materialize;
 pub mod model;
 pub mod preview;
+pub mod service;
 pub mod unicode;
 pub mod validation;
 
@@ -17,6 +19,8 @@ mod matcher_script_tests;
 mod matcher_tests;
 #[cfg(test)]
 mod preview_tests;
+#[cfg(test)]
+mod service_tests;
 
 #[cfg(test)]
 mod tests {

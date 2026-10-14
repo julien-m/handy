@@ -70,6 +70,10 @@ pub enum ValidationReason {
     InvalidEncoding,
     /// Domain input does not follow the domain's exchange format.
     InvalidInput,
+    /// Collection owned by `handy settings replacements`.
+    ReplacementsDomain,
+    /// Items of a domain list or exchange input failed validation; `details.items` locates them.
+    InvalidItems,
 }
 impl ValidationReason {
     fn message(self) -> &'static str {
@@ -92,9 +96,28 @@ impl ValidationReason {
             Self::GpuDeviceRequired => "The GPU accelerator requires a selected GPU device.",
             Self::InvalidEncoding => "Input is not valid UTF-8 text.",
             Self::InvalidInput => "Input does not follow the exchange format.",
+            Self::ReplacementsDomain => "Use handy settings replacements.",
+            Self::InvalidItems => "Items failed validation; see details.items.",
         }
     }
 }
+
+/// One refused item of a domain list or exchange input: where it is and fixed field and kind
+/// names, never its text.
+#[derive(Clone, Debug, PartialEq, Serialize)]
+pub struct ItemIssue {
+    /// 1-based line of the exchange input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line: Option<u64>,
+    /// 1-based position in the resulting ordered list.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub position: Option<u64>,
+    pub field: &'static str,
+    pub kind: &'static str,
+}
+/// Item issues kept in one error. The reply must fit one channel frame (1 MiB); an issue takes
+/// under 100 bytes, so 1000 of them stay far below it, and `omitted_items` counts the rest.
+pub const MAX_ITEM_ISSUES: usize = 1000;
 
 /// Details always serialize as an object; only fixed typed evidence is admitted.
 #[derive(Clone, Debug, Default, PartialEq, Serialize)]
@@ -110,6 +133,17 @@ pub struct ErrorDetails {
     offset: Option<u64>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     issues: Vec<FieldIssue>,
+    /// Boxed: most errors have none, and every `Result` carrying this error stays small.
+    #[serde(flatten, skip_serializing_if = "Option::is_none")]
+    item_issues: Option<Box<ItemIssues>>,
+}
+/// Located item issues of a validation refusal.
+#[derive(Clone, Debug, PartialEq, Serialize)]
+struct ItemIssues {
+    items: Vec<ItemIssue>,
+    /// Item issues beyond `MAX_ITEM_ISSUES`, counted but not listed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    omitted_items: Option<u64>,
 }
 
 /// No input value, internal serde error or arbitrary key enters the public error.
@@ -172,6 +206,25 @@ impl SettingsError {
         error.reason = Some(reason);
         error.details.offset = offset;
         error
+    }
+    /// Items of the collection `key` refused with their locations (at most `MAX_ITEM_ISSUES`).
+    pub fn invalid_items(key: &str, mut items: Vec<ItemIssue>) -> Self {
+        let mut error = Self::validation(key, ValidationReason::InvalidItems);
+        let omitted_items =
+            (items.len() > MAX_ITEM_ISSUES).then(|| (items.len() - MAX_ITEM_ISSUES) as u64);
+        items.truncate(MAX_ITEM_ISSUES);
+        error.details.item_issues = Some(Box::new(ItemIssues {
+            items,
+            omitted_items,
+        }));
+        error
+    }
+    /// Item issues of a validation refusal, in input order.
+    pub fn items(&self) -> &[ItemIssue] {
+        self.details
+            .item_issues
+            .as_ref()
+            .map_or(&[], |issues| issues.items.as_slice())
     }
     /// Report a stale compare-and-set with the observed revision.
     pub fn revision_conflict(revision: Revision) -> Self {

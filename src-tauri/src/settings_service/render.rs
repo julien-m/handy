@@ -16,6 +16,10 @@ pub enum View {
     Preview,
     /// Export: the exchange content itself (`data.content`), nothing else on stdout.
     Export,
+    /// Export written to a file by the CLI process (`data.path`, `data.count`).
+    ExportFile,
+    /// Ordered list items (`data.rules`), one tab-separated line each.
+    List,
     Help,
 }
 impl View {
@@ -38,6 +42,7 @@ impl View {
         match (action, arguments) {
             _ if dry_run => Self::Preview,
             ("export", _) => Self::Export,
+            ("list", _) => Self::List,
             ("get", 0) => Self::AllSettings,
             ("get", _) => Self::OneSetting,
             _ => Self::Change,
@@ -102,6 +107,12 @@ fn success_text(view: View, envelope: &Value) -> String {
             object_lines(&data["changes"])
         ),
         View::Export => data["content"].as_str().unwrap_or_default().to_owned(),
+        View::ExportFile => format!(
+            "Exported {} rules to {}\n",
+            data["count"],
+            data["path"].as_str().unwrap_or_default()
+        ),
+        View::List => rule_lines(&data["rules"]),
         View::Help => data["help"].as_str().unwrap_or_default().to_owned(),
     }
 }
@@ -113,6 +124,24 @@ fn change_lines(data: &Value, revision: &Value) -> String {
             .map(|(key, value)| format!("{key} = {} (revision {revision})\n", plain(value)))
             .collect()
     })
+}
+/// `id<TAB>recognized<TAB>replacement` per rule: rule texts never contain a tab or line break.
+fn rule_lines(rules: &Value) -> String {
+    let field = |rule: &Value, name: &str| rule[name].as_str().unwrap_or_default().to_owned();
+    rules
+        .as_array()
+        .map(Vec::as_slice)
+        .unwrap_or_default()
+        .iter()
+        .map(|rule| {
+            format!(
+                "{}\t{}\t{}\n",
+                field(rule, "id"),
+                field(rule, "recognized"),
+                field(rule, "replacement")
+            )
+        })
+        .collect()
 }
 /// Strings print as themselves; other values print as compact JSON.
 fn plain(value: &Value) -> String {

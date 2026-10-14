@@ -2,8 +2,9 @@
 //! current settings and the request, what to answer or which typed change to make; the framework
 //! does the rest the same way for every domain: action aliases, live-only refusal, dry-run preview
 //! through the commit path's own validation, and one atomic commit through the shared backend.
-//! Only `output` is registered in this build; later features add their domain to `production`.
+//! Registered: `output` (008) and `replacements` (002); later features add theirs to `production`.
 pub mod output;
+pub mod replacements;
 
 use super::{
     edit::{SettingsEdit, SettingsEditFn},
@@ -17,6 +18,9 @@ use serde_json::{json, Value};
 
 /// Typed edit closure a domain hands to the shared commit path.
 pub type BoxedEdit = Box<dyn Fn(&mut AppSettings) -> Result<(), SettingsError> + Send + Sync>;
+
+/// Reply of a reported change, built from the settings it produced (or would produce).
+pub type ReportFn = Box<dyn Fn(&AppSettings) -> Result<Value, SettingsError> + Send + Sync>;
 
 /// One typed change, committed atomically on the latest settings by the shared path.
 pub struct DomainChange(pub ChangeKind);
@@ -52,6 +56,17 @@ pub enum DomainPlan {
     },
     /// Answer that only a running instance can give (live state); offline it is `unavailable`.
     LiveOnly(Value),
+    /// Commit a change and answer with its report (see `ReportedChange`).
+    Reported(ReportedChange),
+}
+/// A change answered with `report` of the resulting settings rather than public keys, so a
+/// large collection never has to fit in one reply. When `bound`, the change is committed only at
+/// the revision the plan was decided on (its report describes that read): a concurrent write is
+/// then a revision conflict, never a silently different result.
+pub struct ReportedChange {
+    pub change: DomainChange,
+    pub report: ReportFn,
+    pub bound: bool,
 }
 /// One request to a domain; flags are already typed.
 pub struct DomainRequest<'a> {
@@ -78,7 +93,7 @@ pub trait Domain: Sync {
 
 /// Domains of this build, in help order.
 pub fn production() -> &'static [&'static dyn Domain] {
-    &[&output::OutputDomain]
+    &[&output::OutputDomain, &replacements::ReplacementsDomain]
 }
 /// Shared verb aliases: every domain accepts `edit` for `update` and `delete` for `remove`.
 pub fn canonical_action(action: &str) -> &str {
@@ -111,13 +126,8 @@ pub fn execute(
     backend: &dyn SettingsBackend,
     registry: &[&'static dyn Domain],
 ) -> Result<Answer, SettingsError> {
-    let (domain, action) = resolve(call, registry)?;
+    let (domain, request) = resolve(call, registry)?;
     let read = backend.read()?;
-    let request = DomainRequest {
-        action,
-        arguments: call.arguments,
-        input: call.input,
-    };
     let plan = domain.plan(&request, &read.snapshot.settings)?;
     let answer = |data| Ok((read.snapshot.revision, data, read.warning));
     match plan {
@@ -134,13 +144,32 @@ pub fn execute(
             let data = public_keys(&committed.snapshot.settings, &keys)?;
             Ok((committed.snapshot.revision, data, committed.warning))
         }
+        DomainPlan::Reported(change) => reported(call, backend, &read, &change),
     }
 }
-/// The registered domain and canonical action of `call`, or `usage_error`.
+/// A reported change: dry run (`{"dry_run": true, "changes": report}`) or commit (`report`).
+fn reported(
+    call: &DomainCall<'_>,
+    backend: &dyn SettingsBackend,
+    read: &super::store::SettingsRead,
+    planned: &ReportedChange,
+) -> Result<Answer, SettingsError> {
+    let current = read.snapshot.revision;
+    let expected = call.expected.or(planned.bound.then_some(current));
+    if call.dry_run {
+        let preview = dry_run(&read.snapshot.settings, &planned.change, expected, current)?;
+        let data = json!({ "dry_run": true, "changes": (planned.report)(&preview)? });
+        return Ok((current, data, read.warning));
+    }
+    let committed = backend.commit_change(&planned.change, expected)?;
+    let data = (planned.report)(&committed.snapshot.settings)?;
+    Ok((committed.snapshot.revision, data, committed.warning))
+}
+/// The registered domain of `call` and its request with the canonical action, or `usage_error`.
 fn resolve<'a>(
     call: &'a DomainCall<'_>,
     registry: &[&'static dyn Domain],
-) -> Result<(&'static dyn Domain, &'a str), SettingsError> {
+) -> Result<(&'static dyn Domain, DomainRequest<'a>), SettingsError> {
     let usage = || SettingsError::new(SettingsErrorCode::UsageError);
     let domain = registry
         .iter()
@@ -151,7 +180,12 @@ fn resolve<'a>(
     if !domain.actions().contains(&action) {
         return Err(usage());
     }
-    Ok((domain, action))
+    let request = DomainRequest {
+        action,
+        arguments: call.arguments,
+        input: call.input,
+    };
+    Ok((domain, request))
 }
 /// Business rule: a dry run validates exactly like the commit (same edit pipeline, same
 /// compare-and-set) but writes nothing and runs no live effect.
