@@ -2,7 +2,8 @@
 //! for (prompt pill and menu of 005, destination badge and menu of 006, notices of 005, 006 and
 //! 007) and the hold that keeps the window up while a notice must stay visible after the
 //! dictation ended. The window grows to the requested extent, never below the base size of its
-//! state, and stays anchored to its screen edge (`overlay.rs`). Pure state only: no window call.
+//! state and never beyond the monitor that hosts it, and stays anchored to its screen edge
+//! (`overlay.rs`). Pure state and geometry only: no window call.
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Mutex, PoisonError};
 use std::time::Duration;
@@ -111,6 +112,39 @@ pub(crate) fn sanitize_extent(width: f64, height: f64) -> Option<(f64, f64)> {
         width.clamp(0.0, MAX_EXTENT.0),
         height.clamp(0.0, MAX_EXTENT.1),
     ))
+}
+
+/// Room a monitor offers the overlay, in the window's logical points: its size in physical
+/// pixels divided by the content scale (`scale` × `text_scale`, the Windows accessibility text
+/// size that WebView2 applies as a zoom, 1.0 elsewhere), minus the edge offset (logical points
+/// scaled by DPI only, as the placement applies it). A degenerate scale leaves no room.
+pub(crate) fn monitor_room(
+    physical: (u32, u32),
+    scale: f64,
+    text_scale: f64,
+    edge_offset: f64,
+) -> (f64, f64) {
+    let content_scale = scale * text_scale;
+    if !content_scale.is_finite() || content_scale <= 0.0 {
+        return (0.0, 0.0);
+    }
+    let width = f64::from(physical.0) / content_scale;
+    let height = (f64::from(physical.1) - edge_offset * scale) / content_scale;
+    (width.max(0.0), height.max(0.0))
+}
+
+/// `requested` (logical) bounded by the monitor `room`. Business rule: the growth for badges,
+/// menus and notices never leaves the screen, but the base size of the form (`base`) is kept even
+/// on a monitor smaller than it, so the pill alone is placed exactly as before 005/006.
+pub(crate) fn fit_to_monitor(
+    requested: (f64, f64),
+    base: (f64, f64),
+    room: (f64, f64),
+) -> (f64, f64) {
+    (
+        requested.0.min(room.0.max(base.0)),
+        requested.1.min(room.1.max(base.1)),
+    )
 }
 
 /// How long a hold of `duration_ms` keeps the window up: capped, plus the fade-out grace.

@@ -4,6 +4,7 @@
 import { Ban, Check } from "lucide-react";
 import type React from "react";
 import { useRef } from "react";
+import { useMenuTimer } from "./menu-timer";
 import { useTranslation } from "react-i18next";
 import type { DictationPromptView, PromptLibraryView } from "@/bindings";
 import type { OSType } from "@/lib/utils/keyboard";
@@ -134,25 +135,27 @@ const PromptMenu: React.FC<{
 /**
  * Hover opens the menu and leaving closes it after a grace period. A click opens it too (the
  * pointer fallback where hover events do not reach a non-key panel) and closes only a menu that
- * a click opened, so a click on a hover-opened menu never folds it under the pointer.
+ * a click opened, so a click on a hover-opened menu never folds it under the pointer. The
+ * pending close is cancelled on unmount and when a new dictation starts.
  */
-const useHoverMenu = (controls: PromptControls, hoverOpens: boolean) => {
-  const timer = useRef<ReturnType<typeof setTimeout>>();
+const useHoverMenu = (
+  controls: PromptControls,
+  hoverOpens: boolean,
+  dictation: number,
+) => {
+  const timer = useMenuTimer(dictation);
   const openedByClick = useRef(false);
   const enter = () => {
-    clearTimeout(timer.current);
+    timer.cancel();
     // While the destination menu is open the pointer crosses the pill to reach it.
     if (controls.menuOpen || !hoverOpens) return;
     openedByClick.current = false;
     controls.openMenu();
   };
-  const leave = () => {
-    clearTimeout(timer.current);
-    timer.current = setTimeout(controls.closeMenu, HOVER_CLOSE_MS);
-  };
+  const leave = () => timer.schedule(controls.closeMenu, HOVER_CLOSE_MS);
   const click = () => {
     if (controls.menuOpen && openedByClick.current) return controls.closeMenu();
-    clearTimeout(timer.current);
+    timer.cancel();
     openedByClick.current = !controls.menuOpen;
     if (!controls.menuOpen) controls.openMenu();
   };
@@ -179,45 +182,70 @@ const PillLabel: React.FC<{ name: string; hint: boolean }> = ({
   );
 };
 
-/** The prompt pill and, while hovered, its menu (unfolding above it at the bottom of the screen). */
-export const PromptPill: React.FC<{
+interface PromptPillProps {
   controls: PromptControls;
   view: DictationPromptView;
   osType: OSType;
   hoverOpens: boolean;
-}> = ({ controls, view, osType, hoverOpens }) => {
+  /** Number of the dictation shown; a new one cancels a pending close. */
+  dictation: number;
+}
+
+/** Shortcut of the dictation's prompt, once the library is read. */
+const pillShortcut = (
+  controls: PromptControls,
+  view: DictationPromptView,
+  osType: OSType,
+): string | null => {
+  const { library } = controls;
+  const prompts = library.status === "ready" ? library.library : null;
+  return promptShortcut(findPrompt(prompts, view.prompt_id), osType);
+};
+
+/** The pill itself: the prompt's shortcut badge, its name and the hover hint. */
+const PillButton: React.FC<PromptPillProps & { onClick: () => void }> = (
+  props,
+) => {
   const { t } = useTranslation();
-  const hover = useHoverMenu(controls, hoverOpens);
-  const library =
-    controls.library.status === "ready" ? controls.library.library : null;
-  const shortcut = promptShortcut(findPrompt(library, view.prompt_id), osType);
-  const name = view.prompt_name ?? t("overlay.prompt.none");
-  const open = controls.menuOpen;
+  const shortcut = pillShortcut(props.controls, props.view, props.osType);
+  const name = props.view.prompt_name ?? t("overlay.prompt.none");
+  const open = props.controls.menuOpen;
+  return (
+    <button
+      type="button"
+      className={`sprompt ${open ? "open" : ""}`}
+      data-testid="recording-indicator-prompt"
+      aria-label={t("overlay.prompt.label", { name })}
+      aria-haspopup="menu"
+      aria-expanded={open}
+      onMouseDown={keepFocus}
+      onClick={props.onClick}
+    >
+      {shortcut && (
+        <ShortcutBadge
+          text={shortcut}
+          testId="recording-indicator-prompt-shortcut"
+        />
+      )}
+      <PillLabel name={name} hint={!open} />
+    </button>
+  );
+};
+
+/** The prompt pill and, while hovered, its menu (unfolding above it at the bottom of the screen). */
+export const PromptPill: React.FC<PromptPillProps> = (props) => {
+  const { controls, view, osType } = props;
+  const hover = useHoverMenu(controls, props.hoverOpens, props.dictation);
   return (
     <div
       className="sprompt-zone"
       onMouseEnter={hover.enter}
       onMouseLeave={hover.leave}
     >
-      {open && <PromptMenu controls={controls} view={view} osType={osType} />}
-      <button
-        type="button"
-        className={`sprompt ${open ? "open" : ""}`}
-        data-testid="recording-indicator-prompt"
-        aria-label={t("overlay.prompt.label", { name })}
-        aria-haspopup="menu"
-        aria-expanded={open}
-        onMouseDown={keepFocus}
-        onClick={hover.click}
-      >
-        {shortcut && (
-          <ShortcutBadge
-            text={shortcut}
-            testId="recording-indicator-prompt-shortcut"
-          />
-        )}
-        <PillLabel name={name} hint={!open} />
-      </button>
+      {controls.menuOpen && (
+        <PromptMenu controls={controls} view={view} osType={osType} />
+      )}
+      <PillButton {...props} onClick={hover.click} />
     </div>
   );
 };

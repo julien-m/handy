@@ -172,6 +172,33 @@ const useChoices = (
   return { choose, remove };
 };
 
+/**
+ * Controls of the destination menu: closed whenever choices end (insertion begun, overlay
+ * hidden) or when its version is stale. The toggle reads the rendered state, so the first click
+ * after a stale menu opens a fresh one instead of closing the hidden one.
+ */
+const useMenuControls = (
+  menu: DestinationMenuState,
+  snapshot: DestinationSnapshot | null,
+  canChange: boolean,
+  shown: boolean,
+  ports: MenuPorts,
+) => {
+  const { setMenu, setKey } = ports;
+  useEffect(() => {
+    if (!canChange || !shown) setMenu(CLOSED);
+  }, [canChange, shown, setMenu]);
+  const stale = menu.status === "open" && !menuMatches(menu.menu, snapshot);
+  const rendered = stale ? CLOSED : menu;
+  const toggleMenu = useCallback(() => {
+    setKey(null);
+    if (rendered.status !== "closed") return setMenu(CLOSED);
+    if (snapshot && canChange) void loadMenuOf(snapshot, ports);
+  }, [rendered.status, snapshot, canChange, ports, setKey, setMenu]);
+  const closeMenu = useCallback(() => setMenu(CLOSED), [setMenu]);
+  return { menu: rendered, toggleMenu, closeMenu };
+};
+
 // @spec AC-004: Cross, pointer menu, versioned choices — .specs/features/006-destination-application/spec.md#ac-004
 /**
  * Destination badge state and actions for the indicator; `shown` is true while a dictation
@@ -185,27 +212,6 @@ export const useDestination = (shown: boolean): DestinationControls => {
   const badge = badgeView(snapshot);
   const canChange = badge.kind !== "hidden" && badge.canChange;
   const { choose, remove } = useChoices(snapshot, canChange, ports);
-
-  useEffect(() => {
-    if (!canChange || !shown) setMenu(CLOSED);
-  }, [canChange, shown]);
-
-  const toggleMenu = useCallback(() => {
-    setKey(null);
-    if (menu.status !== "closed") return setMenu(CLOSED);
-    if (snapshot && canChange) void loadMenuOf(snapshot, ports);
-  }, [menu.status, snapshot, canChange, ports]);
-  const closeMenu = useCallback(() => setMenu(CLOSED), []);
-  const stale = menu.status === "open" && !menuMatches(menu.menu, snapshot);
-  return {
-    snapshot,
-    latest,
-    badge,
-    menu: stale ? CLOSED : menu,
-    feedbackKey,
-    toggleMenu,
-    closeMenu,
-    choose,
-    remove,
-  };
+  const controls = useMenuControls(menu, snapshot, canChange, shown, ports);
+  return { snapshot, latest, badge, feedbackKey, ...controls, choose, remove };
 };

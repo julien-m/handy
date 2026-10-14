@@ -157,3 +157,13 @@
 - **Why:** delivery audit warning: with the `destination-return` gate closed the Output settings showed a new disabled row ("Unavailable on this system"), unlike `dev` and inaccurate on macOS; review warning: the settings never followed `destination-support-changed`.
 - **Author:** Claude Code (claude-opus-5-5)
 
+## 2026-10-14 — [Bugfix]: Recording indicator hardening
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** src-tauri/src/overlay.rs, overlay_indicator.rs (new, code moved from overlay.rs), overlay_surface.rs (+ tests), src/overlay/menu-timer.ts (new, + test), indicator-stack.tsx, destination-badge.tsx, use-destination.ts, indicator-render.test.tsx, package.json
+- **AC impacted:** AC-003, AC-004, FR-003
+- **Why:** indicator audit and review warnings: extent bounded only by a fixed maximum (Windows text scale could push the window off a small screen); timers left pending after unmount or into the next dictation; gate-closed test freezing the new markup; functions over 30 lines; overlay.rs grown to 977 lines; stale FR-003 status.
+- **Tests:** overlay::surface (4 new), menu-timer.test.ts, indicator-render.test.tsx; [proofs](proofs/claude-hardening/summary.txt)
+- **Author:** Claude Code (claude-opus-5-5)
+

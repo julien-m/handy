@@ -75,6 +75,56 @@ const useView = (shown: boolean) => {
   return { view, accept };
 };
 
+/** Open state of the prompt menu and the feedback shown in it. */
+const useMenu = (recording: boolean, selectable: boolean) => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [feedbackKey, setFeedbackKey] = useState<string | null>(null);
+  useEffect(() => {
+    // Choices end with the recording, and need a selectable prompt.
+    if (!recording || !selectable) setMenuOpen(false);
+  }, [recording, selectable]);
+  const openMenu = useCallback(() => {
+    setFeedbackKey(null);
+    setMenuOpen(true);
+  }, []);
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+  return { menuOpen, feedbackKey, setFeedbackKey, openMenu, closeMenu };
+};
+
+type PromptMenu = ReturnType<typeof useMenu>;
+
+/**
+ * Applies a menu choice through `select_dictation_prompt`: an accepted choice updates the pill
+ * and closes the menu; a refusal is explained, and either closes the menu or rereads the
+ * library so the menu shows what can still be chosen.
+ */
+const useSelect = (
+  view: DictationPromptView | null,
+  accept: (incoming: DictationPromptView | null) => void,
+  reload: () => Promise<void>,
+  menu: PromptMenu,
+) => {
+  const { setFeedbackKey, closeMenu } = menu;
+  return useCallback(
+    async (promptId: string | null) => {
+      if (!view) return;
+      const answer = await commands.selectDictationPrompt(
+        view.session_id,
+        promptId,
+      );
+      if (answer.status === "ok") {
+        accept(answer.data);
+        setFeedbackKey(null);
+        return closeMenu();
+      }
+      setFeedbackKey(promptRefusalKey(answer.error));
+      if (refusalClosesMenu(answer.error)) return closeMenu();
+      await reload();
+    },
+    [view, accept, reload, setFeedbackKey, closeMenu],
+  );
+};
+
 // @spec FR-002: Choice for this dictation only — .specs/features/005-custom-ai-prompts/spec.md#fr-002
 /**
  * Prompt pill state and actions; `shown` is true while a dictation shows the overlay and
@@ -85,53 +135,20 @@ export const useDictationPrompt = (
   recording: boolean,
 ): PromptControls => {
   const { view, accept } = useView(shown);
-  const { library, reload } = useLibrary(shown, view?.selectable ?? false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [feedbackKey, setFeedbackKey] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!recording || !view?.selectable) setMenuOpen(false);
-  }, [recording, view?.selectable]);
-
-  const select = useCallback(
-    async (promptId: string | null) => {
-      if (!view) return;
-      const answer = await commands.selectDictationPrompt(
-        view.session_id,
-        promptId,
-      );
-      if (answer.status === "ok") {
-        accept(answer.data);
-        setFeedbackKey(null);
-        return setMenuOpen(false);
-      }
-      setFeedbackKey(promptRefusalKey(answer.error));
-      if (refusalClosesMenu(answer.error)) return setMenuOpen(false);
-      await reload();
-    },
-    [view, accept, reload],
-  );
-
-  const openMenu = useCallback(() => {
-    setFeedbackKey(null);
-    setMenuOpen(true);
-  }, []);
-  const closeMenu = useCallback(() => setMenuOpen(false), []);
+  const selectable = view?.selectable ?? false;
+  const { library, reload } = useLibrary(shown, selectable);
+  const menu = useMenu(recording, selectable);
+  const select = useSelect(view, accept, reload, menu);
+  const { setFeedbackKey } = menu;
   const choose = useCallback(
     (promptId: string | null) =>
       void select(promptId).catch((error: unknown) => {
         console.warn("Indicator prompt choice failed", error);
         setFeedbackKey("overlay.prompt.choiceFailed");
       }),
-    [select],
+    [select, setFeedbackKey],
   );
-  return {
-    view,
-    library,
-    menuOpen,
-    feedbackKey,
-    openMenu,
-    closeMenu,
-    select: choose,
-  };
+  const { menuOpen, feedbackKey, openMenu, closeMenu } = menu;
+  const menuControls = { menuOpen, feedbackKey, openMenu, closeMenu };
+  return { view, library, ...menuControls, select: choose };
 };

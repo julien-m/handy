@@ -45,46 +45,61 @@ interface DestinationBadgeProps {
   onRemove: () => void;
 }
 
-// @spec FR-003: Badge, accessible name and remove cross — .specs/features/006-destination-application/spec.md#fr-003
-/** The badge (opens the destination menu) and, for an application, its remove cross. */
-export const DestinationBadge: React.FC<DestinationBadgeProps> = ({
+/** Icon of the badge: the application's, or the window glyph for "Frontmost app". */
+const BadgeIcon: React.FC<Pick<DestinationBadgeProps, "badge">> = ({
   badge,
+}) =>
+  badge.kind === "application" ? (
+    <AppIcon name={badge.name} iconRef={badge.iconRef} />
+  ) : (
+    <AppWindow className="sdest-window" aria-hidden="true" />
+  );
+
+/** The badge button: icon and name; opens the destination menu while choices are open. */
+const BadgeButton: React.FC<DestinationBadgeProps & { name: string }> = ({
+  badge,
+  name,
   menuOpen,
   onToggleMenu,
-  onRemove,
 }) => {
   const { t } = useTranslation();
+  return (
+    <button
+      type="button"
+      className="sdest-btn"
+      data-testid="recording-indicator-destination"
+      aria-label={t("overlay.destination.label", { name })}
+      aria-haspopup="menu"
+      aria-expanded={menuOpen}
+      disabled={!badge.canChange}
+      onMouseDown={keepFocus}
+      onClick={onToggleMenu}
+    >
+      <BadgeIcon badge={badge} />
+      <span
+        className="sdest-name"
+        data-testid="recording-indicator-destination-name"
+      >
+        {name}
+      </span>
+    </button>
+  );
+};
+
+// @spec FR-003: Badge, accessible name and remove cross — .specs/features/006-destination-application/spec.md#fr-003
+/** The badge (opens the destination menu) and, for an application, its remove cross. */
+export const DestinationBadge: React.FC<DestinationBadgeProps> = (props) => {
+  const { t } = useTranslation();
+  const { badge } = props;
   const name =
     badge.kind === "application"
       ? badge.name
       : t("overlay.destination.frontmostApp");
   return (
     <div className="sdest">
-      <button
-        type="button"
-        className="sdest-btn"
-        data-testid="recording-indicator-destination"
-        aria-label={t("overlay.destination.label", { name })}
-        aria-haspopup="menu"
-        aria-expanded={menuOpen}
-        disabled={!badge.canChange}
-        onMouseDown={keepFocus}
-        onClick={onToggleMenu}
-      >
-        {badge.kind === "application" ? (
-          <AppIcon name={badge.name} iconRef={badge.iconRef} />
-        ) : (
-          <AppWindow className="sdest-window" aria-hidden="true" />
-        )}
-        <span
-          className="sdest-name"
-          data-testid="recording-indicator-destination-name"
-        >
-          {name}
-        </span>
-      </button>
+      <BadgeButton {...props} name={name} />
       {badge.kind === "application" && badge.canChange && (
-        <RemoveCross onRemove={onRemove} />
+        <RemoveCross onRemove={props.onRemove} />
       )}
     </div>
   );
