@@ -171,19 +171,29 @@ Feature: Enter after a successful insertion only
     Given automatic Enter is "Always" and the text was inserted into ChatGPT
     When another application becomes frontmost before the Enter press
     Then no Enter key press is sent
+  Scenario: Next dictation starts before the Enter press
+    Given automatic Enter is "Always" and dictation A was inserted successfully
+    When dictation B starts before the Enter press of dictation A is decided
+    Then no Enter key press is sent for dictation A
 ```
 
 ```mermaid
 flowchart TD
-  A[Insertion step] --> B{Destination frontmost?}
-  B -- No --> X[No Enter]
-  B -- Yes --> C{Method reported success?}
-  C -- No --> X
-  C -- Yes --> D{Smart paste read observed, or Windows reliable paste read confirmed, if used?}
-  D -- No --> X
-  D -- Yes --> E{Recovery shown instead of insertion?}
+  A[Insertion step] --> M{Paste method none?}
+  M -- Yes --> X[No Enter]
+  M -- No --> E{Recovery shown instead of insertion?}
   E -- Yes --> X
-  E -- No --> F[Apply Enter option]
+  E -- No --> C{Method reported success?}
+  C -- No --> X
+  C -- Yes --> D{Smart paste inserted verified, read observed or typed, Windows reliable paste read confirmed, or its classic fallback succeeded?}
+  D -- No --> X
+  D -- Yes --> N{Next dictation already started?}
+  N -- Yes --> X
+  N -- No --> B{Dictation has a destination?}
+  B -- No, frontmost app at the end --> F[Apply Enter option]
+  B -- Yes --> G{Destination still frontmost just before Enter?}
+  G -- No --> X
+  G -- Yes --> F
 ```
 
 ### Story 5 — PIN and Enter from the CLI `P2`
@@ -226,7 +236,7 @@ flowchart TD
 
 ### AC-002
 
-**Criterion:** While an app is pinned, choosing another application in the badge menu changes the destination of the current dictation only; the pin is unchanged. Unpinning before insertion begins makes the current dictation's destination the application captured at its start as in 006 (source "captured", so "Only in PIN mode" sends no Enter for it); the next dictation captures the frontmost application as in 006. Pinning is an explicit choice: a pinned destination is activated even when the 006 "Return to the dictation's application" setting is off.
+**Criterion:** While an app is pinned, choosing another application in the badge menu changes the destination of the current dictation only; the pin is unchanged. Unpinning before insertion begins makes the current dictation's destination the application captured at its start as in 006 (source "captured", so "Only in PIN mode" sends no Enter for it); when the 006 setting "Return to the dictation's application" is off, 006 captured nothing, so the dictation has no destination and inserts into the frontmost application at the end, as in 006. The next dictation captures the frontmost application as in 006. Pinning is an explicit choice: a pinned destination is activated even when the 006 "Return to the dictation's application" setting is off.
 **Priority:** P1 | **Story:** Story 1
 
 ### AC-003
@@ -236,17 +246,17 @@ flowchart TD
 
 ### AC-004
 
-**Criterion:** A single setting "Automatic Enter" with values Never, Always and Only in PIN mode replaces the existing auto-submit switch; the existing key choice (Enter, Ctrl+Enter, Cmd+Enter) is kept as the key to press. Upgrade maps auto-submit off to Never and on to Always and keeps the key. No other automatic Enter or auto-submit control remains, so at most one Enter press is sent per dictation.
+**Criterion:** A single setting "Automatic Enter" with values Never, Always and Only in PIN mode replaces the existing auto-submit switch; the existing key choice (Enter, Ctrl+Enter, Cmd+Enter) is kept as the key to press. Upgrade maps auto-submit off to Never and on to Always and keeps the key. The upgrade leaves the stored auto-submit switch and key unchanged, so a build with the `destination-return` gate closed, or an older Handy, keeps the user's Enter behavior; once Automatic Enter is stored, it is the only value a gate-open build reads. No other automatic Enter or auto-submit control remains, so at most one Enter press is sent per dictation.
 **Priority:** P1 | **Story:** Story 3
 
 ### AC-005
 
-**Criterion:** The Enter press is sent at most once, after the insertion step, only when: the dictation has a destination and it is still frontmost immediately before the Enter press, or the dictation has no destination (insertion targets the frontmost application as today); the insertion method reported success; with smart paste (007), its outcome was "inserted, verified", "insertion attempted, read observed" or "typed"; with the Windows reliable paste, the target's read was confirmed, and when it fell back to the classic paste, the classic paste reported success; no recovery display (010) replaced the insertion; and the paste method is not "none". "Only in PIN mode" additionally requires that the dictation's destination came from the pin. Otherwise no Enter is sent.
+**Criterion:** The Enter press is sent at most once, after the insertion step, only when: the dictation has a destination and it is still frontmost immediately before the Enter press, or the dictation has no destination (insertion targets the frontmost application as today); the insertion method reported success; with smart paste (007), its outcome was "inserted, verified", "insertion attempted, read observed" or "typed"; with the Windows reliable paste, the target's read was confirmed, and when it fell back to the classic paste, the classic paste reported success; no recovery display (010) replaced the insertion; and the paste method is not "none". "Only in PIN mode" additionally requires that the dictation's destination came from the pin. Otherwise no Enter is sent. When the next dictation starts before the Enter press of the previous one is decided (for example while smart paste still waits for the clipboard read), the previous dictation sends no Enter, even after a successful insertion.
 **Priority:** P1 | **Story:** Stories 3 and 4
 
 ### AC-006
 
-**Criterion:** The settings CLI (008) offers `destination pin <identifier|current>` (`current` pins the destination of the dictation in progress, or the frontmost application other than Handy when idle; an identifier must belong to a running application, otherwise `not_found`), `destination unpin` and `destination status` (pinned app or none) against a running instance, returning `unavailable` without one, and reads and sets the Automatic Enter option and key with the UI validation (`never`, `always`, `pin_only`). With `--json`, stdout contains only the JSON envelope.
+**Criterion:** The settings CLI (008) offers `destination pin <identifier|current>` (`current` pins the destination of the dictation in progress, or the frontmost application other than Handy when idle; an identifier must belong to a running application, otherwise `not_found`), `destination unpin` and `destination status` (pinned app or none) against a running instance, returning `unavailable` without one, and reads and sets the Automatic Enter option and key with the UI validation (`never`, `always`, `pin_only`). The keys are `automatic_enter` and the existing `auto_submit_key`; `auto_submit` is refused with `not_found` like any unknown key. A pin or unpin through the CLI has the same effect on the current dictation as the badge menu. With `--json`, stdout contains only the JSON envelope.
 **Priority:** P2 | **Story:** Story 5
 
 ## Behavioral AC
@@ -318,8 +328,8 @@ Feature: Keyboard access to Automatic Enter
 ## Clarifications
 
 - Current code (2026-10-12): `auto_submit` (on/off) with `auto_submit_key` (Enter, Ctrl+Enter, Cmd+Enter); on the normal path Enter fires 50 ms after the paste returns whenever auto-submit is on and the paste method is not none; on the beta reliable path it fires only after a confirmed read.
-- `[ASSUMED]` The pin lasts until unpinned or until Handy quits; it is not restored after a restart, so a forgotten pin never sends text after a reboot.
-- `[ASSUMED]` Pinning requires destination support (006, macOS and Windows); where unsupported, pin entries are not offered and the CLI returns `validation_failed` with the platform reason. With the overlay style none, pinning is available through the CLI only.
+- Decision 2026-10-14 (decided by the orchestrator under Julien's mandate, to be confirmed at the final review; AC-001): the pin lasts until it is unpinned or until Handy quits; it is not restored after a restart. Interpretation: the Input's "despite application switches and transcription stops/restarts" is about stopping and restarting the transcription (successive dictations), not about quitting and relaunching Handy, so the pin survives every dictation but not the end of the Handy process; a forgotten pin never sends text after a reboot.
+- `[ASSUMED]` Pinning requires destination support (006, macOS and Windows, with the frontmost application readable as 006 AC-007 defines); where unsupported, pin entries are not offered and the CLI returns `validation_failed` with the platform reason. With the overlay style none, pinning is available through the CLI only.
 - `[ASSUMED]` New installations default to Automatic Enter "Never", matching today's auto-submit default (off).
 - Decision 2026-10-14 (program orchestrator, after the independent review): 006 AC-003 hides the badge when "Return to the dictation's application" is off, but a pin activates its application even then (AC-002) and the badge menu is where Unpin is offered. Rule: an active pin shows the badge whatever that setting is; without a pin, 006 AC-003 applies unchanged. 006's spec is not modified; this feature owns the exception.
 - The migration covers every current auto-submit path (classic paste, smart paste of 007 on macOS, reliable paste on Windows, settings commands and UI) so that no second Enter mechanism remains.
@@ -327,6 +337,20 @@ Feature: Keyboard access to Automatic Enter
 - Program context: specified in list order (001–010); depends on 006 (destination, badge) and 008 (CLI); 010 recovery display suppresses Enter.
 - Decision 2026-10-14 (program orchestrator, before the independent review): the single reason "pinned app unavailable" of AC-003 is split in two. `pinned_app_not_running`: no application with the pinned identity is running. `activation_failed`: it is running but does not become frontmost within the 006 limit. These are the reasons expected by `.specs/features/010-recovery-bubble/spec.md` ("<App> is pinned but not open" and "Could not bring <App> forward"). No other pinned reason exists.
 - Decision 2026-10-14 (program orchestrator, delivery precision): all of 009 (pin, pin badge, Automatic Enter setting and its migration, Enter authority, CLI `destination` operations and Automatic Enter keys) ships behind the `destination-return` gate of `.specs/features/006-destination-application/spec.md`. Gate closed, Handy behaves exactly as `dev`: the existing auto-submit switch, key and Enter paths, no pin entries, no Automatic Enter setting. Gate open, this specification applies. No AC, FR or SC changes; the requirements describe the gate-open build.
+- Decision 2026-10-14 (decided by the orchestrator under Julien's mandate, to be confirmed at the final review; build with the gate closed): the closed build is identical to `dev` and gains nothing from 009. The settings CLI has no `destination` commands (`handy settings destination …` is a `usage_error`, as in `dev`), `automatic_enter` is `not_found` like any unknown key, and no migration runs; an open build's migration never modifies `auto_submit` or `auto_submit_key` (AC-004).
+- Decision 2026-10-14 (decided by the orchestrator under Julien's mandate, to be confirmed at the final review; AC-005): when the next dictation starts before the Enter press of the previous one is decided, the previous dictation sends no Enter, even after a successful insertion. This is an accepted limit case: the user has moved on and an Enter would land in the new dictation's context; AC-005 allows at most one Enter and never requires one.
+
+- Decision `009-pin-mode-and-enter-rule:AC-002` / `unpin_with_return_setting_off`: 2026-10-14, decided by the orchestrator under Julien's mandate, to be confirmed at the final review: unpinning restores the route that 006 gave the dictation at its start. With "Return to the dictation's application" on, that is the application captured at its start (source "captured"). With that setting off, 006 captures nothing, so the dictation has no destination and its text goes to the frontmost application at the end, as in 006; "Only in PIN mode" sends no Enter for it. 009 adds no capture of its own.
+<!-- livespec-clarification:{"requirement_id": "009-pin-mode-and-enter-rule:AC-002", "decision_key": "unpin_with_return_setting_off", "evidence_hash": "fd4bfc0e2301e768c304af618e2375608ea3f7413f0fc9506f26e5aa9ec94f29", "answer": "2026-10-14, decided by the orchestrator under Julien's mandate, to be confirmed at the final review: unpinning restores the route that 006 gave the dictation at its start. With \"Return to the dictation's application\" on, that is the application captured at its start (source \"captured\"). With that setting off, 006 captures nothing, so the dictation has no destination and its text goes to the frontmost application at the end, as in 006; \"Only in PIN mode\" sends no Enter for it. 009 adds no capture of its own."} -->
+
+- Decision `009-pin-mode-and-enter-rule:AC-004` / `legacy_auto_submit_after_migration`: 2026-10-14, decided by the orchestrator under Julien's mandate, to be confirmed at the final review: the upgrade only adds the Automatic Enter value; it never deletes or rewrites the stored auto-submit switch and key. A build with the `destination-return` gate closed, or an older Handy, therefore reads exactly the previous auto-submit value and key and keeps the user's Enter behavior. Once the Automatic Enter value exists, a gate-open build uses it and no longer reads auto-submit.
+<!-- livespec-clarification:{"requirement_id": "009-pin-mode-and-enter-rule:AC-004", "decision_key": "legacy_auto_submit_after_migration", "evidence_hash": "91685e4a989eac202ec4fca62c32c4abb0289a52d99e372fdeabcb9e2ed2de33", "answer": "2026-10-14, decided by the orchestrator under Julien's mandate, to be confirmed at the final review: the upgrade only adds the Automatic Enter value; it never deletes or rewrites the stored auto-submit switch and key. A build with the `destination-return` gate closed, or an older Handy, therefore reads exactly the previous auto-submit value and key and keeps the user's Enter behavior. Once the Automatic Enter value exists, a gate-open build uses it and no longer reads auto-submit."} -->
+
+- Decision `009-pin-mode-and-enter-rule:AC-006` / `cli_legacy_auto_submit_key`: 2026-10-14, decided by the orchestrator under Julien's mandate, to be confirmed at the final review: with the gate open, the CLI keys are `automatic_enter` (`never`, `always`, `pin_only`) and the existing `auto_submit_key` (`enter`, `ctrl_enter`, `cmd_enter`); `auto_submit` is no longer a key and is refused with `not_found` like any unknown key, without alias or hint. With the gate closed, the keys are those of `dev` (`auto_submit`, `auto_submit_key`) and `automatic_enter` is `not_found`.
+<!-- livespec-clarification:{"requirement_id": "009-pin-mode-and-enter-rule:AC-006", "decision_key": "cli_legacy_auto_submit_key", "evidence_hash": "4af7c5f6bf345eeab201de66d6500b83a344c48c9d925bdac509c0e370fcac73", "answer": "2026-10-14, decided by the orchestrator under Julien's mandate, to be confirmed at the final review: with the gate open, the CLI keys are `automatic_enter` (`never`, `always`, `pin_only`) and the existing `auto_submit_key` (`enter`, `ctrl_enter`, `cmd_enter`); `auto_submit` is no longer a key and is refused with `not_found` like any unknown key, without alias or hint. With the gate closed, the keys are those of `dev` (`auto_submit`, `auto_submit_key`) and `automatic_enter` is `not_found`."} -->
+
+- Decision `009-pin-mode-and-enter-rule:AC-006` / `cli_pin_during_dictation`: 2026-10-14, decided by the orchestrator under Julien's mandate, to be confirmed at the final review: a CLI pin or unpin has the same effect as the badge menu. Accepted before the dictation's insertion begins, it changes that dictation's destination (AC-001, AC-002); accepted later, it applies from the next dictation.
+<!-- livespec-clarification:{"requirement_id": "009-pin-mode-and-enter-rule:AC-006", "decision_key": "cli_pin_during_dictation", "evidence_hash": "470879930f7d974ad895cf0df920a69c2eb97a123bd82fc52497e5d022de776c", "answer": "2026-10-14, decided by the orchestrator under Julien's mandate, to be confirmed at the final review: a CLI pin or unpin has the same effect as the badge menu. Accepted before the dictation's insertion begins, it changes that dictation's destination (AC-001, AC-002); accepted later, it applies from the next dictation."} -->
 
 ## QE Analysis
 
@@ -334,7 +358,7 @@ Feature: Keyboard access to Automatic Enter
 - **Dimensions:** Functional correctness, safety of automatic actions, data migration, regression, accessibility, UX.
 - **P0 gates/evidence:** Gate table tests for AC-005 (each condition false blocks Enter); option × pin matrix tests; migration tests from auto-submit on/off with each key; pin resolution and unpin timing tests.
 - **P1 gates/evidence:** Native checks pinning ChatGPT and Comet with application switches; Enter count measured by a test field; CLI pin operations against a running instance.
-- **Non-functional expectations:** Exactly zero or one Enter per dictation; Enter sent within 100 ms after a successful insertion step; no window titles or text logged above debug level.
+- **Non-functional expectations:** Exactly zero or one Enter per dictation; Enter sent within 100 ms after a successful insertion step (a QE target measured by the plan's macOS native timing samples, not an acceptance criterion); no window titles or text logged above debug level.
 - **Missing evidence:** No runtime test; mockups deferred before `spec-ship`.
 - **Boundary:** QE defines risk and test sufficiency; the independent review judges requirements; Penflow governs UI design evidence; spec-test executes runtime proof.
 
@@ -360,7 +384,11 @@ Feature: Keyboard access to Automatic Enter
 
 - Pinned application is Handy's own window: not possible, Handy is excluded from destinations.
 - Pin set while no dictation is running (CLI): applies from the next dictation.
-- Two instances of the pinned application (same identity): the one activation brings forward is used, as in 006.
+- Pin or unpin through the CLI during a dictation: same effect as the badge menu (AC-002, AC-006).
+- "Return to the dictation's application" off and nothing pinned: no badge is shown (AC-001), so pinning starts from the CLI.
+- Several instances of the pinned application (same identity): resolved as in 006: the pinned instance while it runs, otherwise the only running instance; with several and none of them the pinned one, the reason is `activation_failed` (AC-003).
+- Next dictation started before the previous dictation's Enter press is decided: no Enter for the previous dictation (AC-005).
+- "Only in PIN mode" where pinning is unsupported (Linux): kept as chosen; no pin can exist there, so it sends no Enter; 006 AC-007 already shows destination return as unavailable with its reason.
 - Automatic Enter key Cmd+Enter on Windows/Linux: kept as stored; the key choice behaves as today per platform.
 
 ## Success Criteria
@@ -371,7 +399,7 @@ Across the full option × pin × outcome matrix in automated tests, the number o
 
 ### SC-002
 
-Upgrade tests map every existing auto-submit combination to the documented Automatic Enter value with the same key.
+Upgrade tests map every existing auto-submit combination to the documented Automatic Enter value with the same key, and a build with the gate closed rereads the upgraded settings with an unchanged auto-submit switch, key and Enter behavior.
 
 ### SC-003
 
