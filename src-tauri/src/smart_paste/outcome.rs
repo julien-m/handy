@@ -6,6 +6,7 @@
 //! separate [`PasteDiagnostic`] instead (AC-012).
 
 use super::ids::{DestinationGeneration, DictationId, TransactionId};
+use crate::destination::outcome::{MethodOutcome, MethodResult};
 
 // @spec FR-008: Truthful outcome contract — .specs/features/007-smart-paste/spec.md#fr-008
 
@@ -107,6 +108,35 @@ pub struct PasteDiagnostic {
     pub late_read_observed: bool,
 }
 
+// @spec FR-008: Outcome mapped to the 006 method result — .specs/features/007-smart-paste/spec.md#fr-008
+impl PasteOutcomeKind {
+    /// The 006 `method_outcome` wire value carrying this kind unchanged
+    /// (006 destination contract, "insertion method").
+    pub fn method_outcome(self) -> MethodOutcome {
+        match self {
+            Self::InsertedVerified => MethodOutcome::InsertedVerified,
+            Self::ReadObserved => MethodOutcome::ReadObserved,
+            Self::NotRead => MethodOutcome::NotRead,
+            Self::PermissionMissing => MethodOutcome::PermissionMissing,
+            Self::Uncertain => MethodOutcome::Uncertain,
+            Self::Typed => MethodOutcome::Typed,
+            Self::ClipboardHandedOver => MethodOutcome::ClipboardHandedOver,
+            Self::InsertionFailed => MethodOutcome::InsertionFailed,
+        }
+    }
+}
+
+impl PasteOutcome {
+    /// The typed result 006 maps to its insertion status, failure reason
+    /// and recovery disposition; the transaction id is carried as text.
+    pub fn method_result(&self) -> MethodResult {
+        MethodResult::Detailed {
+            outcome: self.kind.method_outcome(),
+            transaction_id: self.transaction_id.map(|id| id.0.to_string()),
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::PasteOutcomeKind::*;
@@ -157,6 +187,44 @@ mod tests {
             .filter(|kind| kind.claims_field_content())
             .collect();
         assert_eq!(claims, vec![InsertedVerified]);
+    }
+
+    #[test]
+    fn every_kind_keeps_its_wire_value_as_the_006_method_outcome() -> Result<(), serde_json::Error>
+    {
+        for kind in ALL {
+            assert_eq!(
+                serde_json::to_value(kind.method_outcome())?,
+                serde_json::to_value(kind)?
+            );
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn destination_maps_enter_eligible_kinds_to_attempts_and_failures_to_recovery() {
+        use crate::destination::context::RecoveryDisposition::Recover;
+        use crate::destination::outcome::{map_method_result, InsertionStatus as Status};
+        for kind in ALL {
+            let outcome = PasteOutcome {
+                dictation_id: DictationId(1),
+                transaction_id: Some(TransactionId(9)),
+                destination_generation: DestinationGeneration(2),
+                path: InsertionPath::ClipboardPaste,
+                kind,
+            };
+            let result = outcome.method_result();
+            assert_eq!(result.transaction_id().as_deref(), Some("9"));
+            let (status, reason, disposition) = map_method_result(&result);
+            let expected = match kind {
+                ClipboardHandedOver => Status::ClipboardHandedOver,
+                _ if kind.is_auto_submit_eligible() => Status::InsertionAttempted,
+                _ => Status::Failed,
+            };
+            assert_eq!(status, expected, "{kind:?}");
+            assert_eq!(reason.is_some(), kind.requires_recovery(), "{kind:?}");
+            assert_eq!(disposition == Some(Recover), kind.requires_recovery());
+        }
     }
 
     #[test]

@@ -758,5 +758,8 @@
     "learnMore": "Bu nasıl düzeltilir",
     "recorderBlocked": "Şu anda kısayol kaydedilemiyor — macOS Secure Input tuş olaylarını engelliyor. Önce Secure Input uyarısını giderin.",
     "dismiss": "Kapat"
+  },
+  "smartPaste": {
+    "handOver": "Metin uzak ekran için panoya yerleştirildi"
   }
 }

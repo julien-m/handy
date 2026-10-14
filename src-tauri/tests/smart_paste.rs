@@ -10,6 +10,7 @@ mod smart_paste {
     pub mod fakes;
     pub mod keyboard;
     pub mod lifecycle;
+    pub mod pipeline;
     pub mod privacy;
     pub mod restoration_policy;
     pub mod rig;

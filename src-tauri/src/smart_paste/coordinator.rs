@@ -19,7 +19,9 @@ use std::time::Instant;
 
 use super::ax_port::AxTextPort;
 use super::clock::Clock;
-use super::direct::{attempt_direct_insertion, DirectAttempt, FallbackGuard, GuardVerdict};
+use super::direct::{
+    attempt_direct_insertion, DirectAttempt, FallbackGuard, GuardVerdict, SkipReason,
+};
 use super::ids::TransactionId;
 use super::key_events::{KeyEventPort, PasteKey, CHORD_HOLD};
 use super::keyboard::{restore_after_chord, switch_for_paste, InputSourcePort, LayoutSwitch};
@@ -181,10 +183,7 @@ impl SmartPasteCoordinator {
         // a capture is actually needed.
         let budget = SnapshotBudget::default();
         self.ports.pasteboard.prepare_capture(budget);
-        let transcript = request.transcript.to_utf16();
-        let pid = request.destination.pid;
-        let clock = Arc::clone(&self.ports.clock);
-        match attempt_direct_insertion(clock.as_ref(), self.ports.ax.as_mut(), pid, &transcript) {
+        match self.attempt_direct(request) {
             DirectAttempt::Verified => self.verified(request),
             DirectAttempt::Uncertain(reason) => {
                 log::info!("[smart-paste] direct insertion uncertain: {reason:?}");
@@ -199,6 +198,17 @@ impl SmartPasteCoordinator {
                 self.clipboard_paste(request, timings, Some(guard), events)
             }
         }
+    }
+
+    /// Business rule (006 contract): without a named target process, direct
+    /// insertion cannot check the focused field's owner, so it is skipped.
+    fn attempt_direct(&mut self, request: &InsertionRequest) -> DirectAttempt {
+        let Some(pid) = request.destination.pid else {
+            return DirectAttempt::Skipped(SkipReason::NoTarget);
+        };
+        let transcript = request.transcript.to_utf16();
+        let clock = Arc::clone(&self.ports.clock);
+        attempt_direct_insertion(clock.as_ref(), self.ports.ax.as_mut(), pid, &transcript)
     }
 
     fn verified(&mut self, request: &InsertionRequest) -> PasteOutcome {

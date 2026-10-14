@@ -758,5 +758,8 @@
     "learnMore": "איך לתקן את זה",
     "recorderBlocked": "לא ניתן להקליט קיצורים כרגע — Secure Input של macOS חוסם אירועי מקשים. פתור תחילה את אזהרת Secure Input.",
     "dismiss": "התעלם"
+  },
+  "smartPaste": {
+    "handOver": "הטקסט הועבר ללוח עבור המסך המרוחק"
   }
 }

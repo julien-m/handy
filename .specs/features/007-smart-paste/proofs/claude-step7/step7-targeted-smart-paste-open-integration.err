@@ -1,0 +1,9 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/007-smart-paste/src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 14.76s
+     Running tests/destination_cli.rs (/Users/julienm/projects/handy-wt/.target-007/debug/deps/destination_cli-393057796bc3a181)
+     Running tests/destination_recovery.rs (/Users/julienm/projects/handy-wt/.target-007/debug/deps/destination_recovery-9b1328f2beb485b2)
+     Running tests/settings_validation.rs (/Users/julienm/projects/handy-wt/.target-007/debug/deps/settings_validation-aca6d6cdd856ad0d)
+     Running tests/smart_paste.rs (/Users/julienm/projects/handy-wt/.target-007/debug/deps/smart_paste-0b0438d28565ebf9)
+     Running tests/smart_paste_settings.rs (/Users/julienm/projects/handy-wt/.target-007/debug/deps/smart_paste_settings-51a571a785519eaa)

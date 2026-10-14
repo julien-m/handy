@@ -38,6 +38,9 @@ pub const MAX_FIELD_UTF16_UNITS: usize = 1_000_000;
 /// Why direct insertion was skipped before any write (clipboard fallback).
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SkipReason {
+    /// The destination names no process (006 found no application in front),
+    /// so the focused field's owner cannot be checked.
+    NoTarget,
     /// No focused element could be read.
     FieldUnavailable,
     /// The focused element belongs to another process than the destination.

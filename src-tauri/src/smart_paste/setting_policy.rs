@@ -3,18 +3,17 @@
 //! the refusals shared by the settings UI and the settings CLI. Pure: the platform and the rollout
 //! state are passed in, so both states are tested on every platform.
 //!
-//! Rollout gate: the paste pipeline refuses `PasteMethod::SmartPaste` until feature 007 step 7
-//! wires it into dictation (destination context of feature 006). Until then the gate stays closed:
-//! smart paste is neither selectable, nor a default, nor a migration target, and the beta reliable
-//! paste stays available on macOS, so every installation keeps a paste method that dictation can
-//! use. Step 7 opens the gate by enabling the `smart-paste-dispatch` Cargo feature in the same
-//! change that wires the dispatch.
+//! Rollout gate (`smart-paste-dispatch` Cargo feature, closed by default): open, dictation
+//! dispatches smart paste (step 7, `smart_paste::dispatch`) and smart paste is selectable, the
+//! macOS default and the migration target; closed, it is none of these, the beta reliable paste
+//! stays available on macOS and dictation is unchanged. The gate opens for release only after the
+//! native AC-016 proof with the maintainer (implementation.md, "Rollout gates").
 
 use crate::settings::{AppSettings, PasteMethod};
 use crate::settings_service::errors::ValidationReason;
 
-/// True once dictation delivers through smart paste: the `smart-paste-dispatch` Cargo feature,
-/// enabled by step 7 only. Enabling it earlier makes macOS dictation fail with the default method.
+/// True when dictation delivers through smart paste: the `smart-paste-dispatch` Cargo feature.
+/// The dispatch is wired (step 7); the gate stays closed until the native release proof.
 pub const DICTATION_DISPATCH_WIRED: bool = cfg!(feature = "smart-paste-dispatch");
 
 /// Stored `smart_paste_migration_version` once the macOS migration has run.

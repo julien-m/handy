@@ -21,9 +21,10 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 
 [features]
 # Smart paste rollout gate (feature 007, `smart_paste::setting_policy`). Off: smart paste cannot be
-# selected, is not the macOS default and no migration moves anyone to it, because the paste
-# pipeline still refuses it. Step 7 enables it in the same change that wires smart paste into
-# dictation; before that, enable it only to test the settings behavior of that state.
+# selected, is not the macOS default, no migration moves anyone to it and dictation is unchanged.
+# On: dictation dispatches it (with 006's destination session when `destination-return` is on,
+# into the application in front otherwise). Open it only after the native AC-016 proof with the
+# maintainer (feature 007 implementation.md, "Rollout gates").
 smart-paste-dispatch = []
 
 # Destination return rollout gate (feature 006, `destination::rollout`). Off: dictation inserts as

@@ -286,3 +286,18 @@ fn layout_is_restored_even_when_the_chord_fails() {
         .map(|(id, _)| id.clone());
     assert_eq!(last.as_deref(), Some(french));
 }
+
+#[test]
+fn no_named_target_skips_direct_insertion_and_pastes_from_the_clipboard() {
+    let mut rig = Rig::new();
+    let field = with_field(&mut rig, WriteBehavior::ApplyAfter(Duration::ZERO));
+    let mut unnamed = request(1, "hello world", TEXTEDIT, DontModify);
+    unnamed.destination.pid = None;
+    let mut coordinator = rig.coordinator();
+    let mut reads = ScriptedReads::new(&rig, &[20]);
+    let outcome = coordinator.insert(&unnamed, &mut reads);
+    assert_eq!(outcome.kind, PasteOutcomeKind::ReadObserved);
+    assert_eq!(outcome.path, InsertionPath::ClipboardPaste);
+    assert_eq!(rig.ax.focus_request_count(), 0);
+    assert_eq!(field.value_text(), "note: ");
+}

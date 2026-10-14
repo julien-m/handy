@@ -758,5 +758,8 @@
     "learnMore": "如何解決",
     "recorderBlocked": "目前無法錄製快捷鍵——macOS 的 Secure Input 正在阻擋按鍵事件。請先解決 Secure Input 警告。",
     "dismiss": "關閉"
+  },
+  "smartPaste": {
+    "handOver": "已將文字放入剪貼簿，供遠端螢幕使用"
   }
 }

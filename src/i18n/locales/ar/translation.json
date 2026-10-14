@@ -758,5 +758,8 @@
     "learnMore": "كيفية الإصلاح",
     "recorderBlocked": "لا يمكن تسجيل الاختصارات الآن — يحجب Secure Input في macOS أحداث المفاتيح. عالج تحذير Secure Input أولاً.",
     "dismiss": "تجاهل"
+  },
+  "smartPaste": {
+    "handOver": "تم وضع النص في الحافظة للشاشة البعيدة"
   }
 }

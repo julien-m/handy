@@ -8,12 +8,15 @@ use super::outcome::PasteDiagnostic;
 use super::pasteboard_port::ReadEvent;
 use super::settlement::ClipboardPolicy;
 
-/// Destination captured by the destination feature (006): the process and
-/// generation smart paste must insert into. 007 only carries and checks it.
+/// Destination resolved by the destination feature (006) at its pre-dispatch
+/// guard: the process and generation smart paste must insert into. 007 only
+/// carries and checks it (`destination_bridge` builds it).
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DestinationContext {
-    /// Destination process identifier.
-    pub pid: i32,
+    /// Destination process identifier; `None` when no application can be
+    /// named (foreground unreadable, or Handy itself): direct accessibility
+    /// insertion is then skipped (006 contract).
+    pub pid: Option<i32>,
     /// Destination bundle identifier, which selects the strategy.
     pub bundle_id: Option<String>,
     /// Destination generation, owned by 006.

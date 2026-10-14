@@ -758,5 +758,8 @@
     "learnMore": "Come risolvere",
     "recorderBlocked": "Non è possibile registrare scorciatoie in questo momento: Secure Input di macOS sta bloccando gli eventi dei tasti. Risolvi prima l'avviso di Secure Input.",
     "dismiss": "Ignora"
+  },
+  "smartPaste": {
+    "handOver": "Testo inserito negli appunti per lo schermo remoto"
   }
 }

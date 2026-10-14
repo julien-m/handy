@@ -175,8 +175,8 @@ pub enum PasteMethod {
     CtrlShiftV,
     ExternalScript,
     // macOS smart paste (feature 007, `crate::smart_paste`). Selectable, macOS
-    // default and migration target only once the paste pipeline dispatches it
-    // (step 7, destination context of 006): see
+    // default and migration target only while its rollout gate is open
+    // (`smart-paste-dispatch`): see
     // `smart_paste::setting_policy`. A plain comment, not a doc comment, so
     // specta's generated `bindings.ts` stays exactly as committed.
     SmartPaste,

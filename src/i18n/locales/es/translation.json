@@ -758,5 +758,8 @@
     "learnMore": "Cómo solucionarlo",
     "recorderBlocked": "Ahora mismo no se pueden grabar atajos: Secure Input de macOS está bloqueando los eventos de teclado. Resuelve primero el aviso de Secure Input.",
     "dismiss": "Descartar"
+  },
+  "smartPaste": {
+    "handOver": "Texto colocado en el portapapeles para la pantalla remota"
   }
 }

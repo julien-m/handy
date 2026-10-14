@@ -307,7 +307,7 @@ pub fn request(
         dictation_id: DictationId(id),
         transcript: Transcript::new(text),
         destination: DestinationContext {
-            pid: 7,
+            pid: Some(7),
             bundle_id: bundle.map(str::to_string),
             generation: DestinationGeneration(1),
         },

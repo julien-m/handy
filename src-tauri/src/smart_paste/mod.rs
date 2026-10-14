@@ -18,19 +18,27 @@
 //! - the serialized insertion chain and clipboard lifecycle:
 //!   [`coordinator`] with its [`request`] ports, owned by one [`actor`] thread;
 //! - the paste-method setting (availability, macOS default, migration from
-//!   the beta reliable paste, shared refusals): [`setting_policy`].
+//!   the beta reliable paste, shared refusals): [`setting_policy`];
+//! - dictation wiring (step 7): [`destination_bridge`] (006 context and
+//!   destination checks), [`dispatch`] (006 insertion method, insertion
+//!   without a 006 session, follow-ups, gate routes), [`exit_gate`] and the
+//!   Tauri glue [`app`] (with the macOS ports in `macos_ports`).
 //!
 //! Native effects (pasteboard, accessibility, keyboard) stay behind
 //! injectable ports so the production decision code is exercised by tests
-//! with fakes. Wiring into the paste pipeline waits for the destination
-//! context of feature 006; until then [`setting_policy`] keeps smart paste
-//! unselectable, so no installation is moved to a method dictation refuses.
+//! with fakes. Dictation dispatches smart paste only while its rollout gate
+//! (`smart-paste-dispatch`, see [`setting_policy`]) is open; closed, smart
+//! paste is unselectable and dictation is unchanged.
 
 pub mod actor;
+pub mod app;
 pub mod ax_port;
 pub mod clock;
 pub mod coordinator;
+pub mod destination_bridge;
 pub mod direct;
+pub mod dispatch;
+pub mod exit_gate;
 pub mod ids;
 pub mod key_events;
 pub mod keyboard;
@@ -43,6 +51,8 @@ mod macos_cf;
 pub mod macos_keyboard;
 #[cfg(target_os = "macos")]
 pub mod macos_pasteboard;
+#[cfg(target_os = "macos")]
+mod macos_ports;
 #[cfg(target_os = "macos")]
 mod macos_snapshot_stream;
 #[cfg(target_os = "macos")]

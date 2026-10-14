@@ -758,5 +758,8 @@
     "learnMore": "Como resolver isso",
     "recorderBlocked": "Não é possível gravar atalhos agora — o Secure Input do macOS está bloqueando os eventos de tecla. Resolva primeiro o aviso do Secure Input.",
     "dismiss": "Dispensar"
+  },
+  "smartPaste": {
+    "handOver": "Texto colocado na área de transferência para o ecrã remoto"
   }
 }

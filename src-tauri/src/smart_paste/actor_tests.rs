@@ -43,7 +43,7 @@ fn insert_message() -> ActorMessage {
         dictation_id: DictationId(1),
         transcript: Transcript::new("x"),
         destination: DestinationContext {
-            pid: 1,
+            pid: Some(1),
             bundle_id: None,
             generation: DestinationGeneration(1),
         },
