@@ -53,7 +53,7 @@ const ReloadButton: React.FC<Omit<ConflictAlertProps, "visible">> = (props) => {
   );
 };
 
-/** The committed order changed elsewhere: the draft is kept until Reload or Save. */
+/** The committed order changed elsewhere: the draft is kept, and Save is inactive, until Reload or Discard. */
 export const ConflictAlert: React.FC<ConflictAlertProps> = (props) => {
   const { t } = useTranslation();
   if (!props.visible) return null;

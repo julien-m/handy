@@ -123,29 +123,60 @@ test.describe("focus after each action (SC-003)", () => {
   test("Reload is inactive while a Save is in flight", async ({ page }) => {
     await open(page);
     await editFromKeyboard(page);
+    const save = await startHeldSave(page);
+    // Saved elsewhere while the write is held: the banner shows, Reload is inactive meanwhile.
     await page.evaluate(
       (name) => window.harness.commitElsewhere([name]),
       STUDIO,
     );
     const reload = page.getByTestId("microphone-settings-error-reload");
-    await expect(reload).toBeVisible();
-    await page.evaluate(() => window.harness.holdSave());
-    await page.getByTestId("microphone-settings-save").click();
     await expect(reload).toHaveAttribute("aria-disabled", "true");
     // Still focusable (aria-disabled), but activating it does nothing during the write.
     await reload.focus();
     await page.keyboard.press("Enter");
     await expectFocus(page, "microphone-settings-error-reload");
     await expect(page.getByTestId("microphone-settings-draft")).toBeVisible();
+    // The held write was sent at the old revision: it is refused, nothing is replaced.
     await page.evaluate(() => window.harness.releaseSave(null));
-    await expect(
-      page.getByTestId("microphone-settings-screen"),
-    ).toHaveAttribute("data-state", "success");
+    await expect(reload).not.toHaveAttribute("aria-disabled", "true");
+    await expect(save).toHaveAttribute("aria-disabled", "true");
+    expect(await order(page)).toEqual([MACBOOK, USB, STUDIO]);
+    await page.keyboard.press("Enter");
     await expect(
       page.getByTestId("microphone-settings-error-conflict"),
     ).toBeHidden();
     await expectFocus(page, TITLE);
-    expect(await order(page)).toEqual([MACBOOK, USB, STUDIO]);
+    expect(await order(page)).toEqual([STUDIO]);
+  });
+
+  test("after a change saved elsewhere, Save stays inactive until Reload or Discard", async ({
+    page,
+  }) => {
+    await open(page);
+    await editFromKeyboard(page);
+    await page.evaluate(() => window.harness.commitElsewhere(["Dock"]));
+    await expect(
+      page.getByTestId("microphone-settings-error-conflict"),
+    ).toBeVisible();
+    const save = page.getByTestId("microphone-settings-save");
+    await expect(save).toHaveAttribute("aria-disabled", "true");
+    await expect(save).toHaveAttribute("data-state", "disabled");
+    // Another edit keeps it inactive, and activating it writes nothing.
+    await control(page, USB, "move-up").focus();
+    await page.keyboard.press("Enter");
+    await expect(save).toHaveAttribute("aria-disabled", "true");
+    await save.focus();
+    await page.keyboard.press("Enter");
+    await save.click({ force: true });
+    const calls = () => page.evaluate(() => window.harness.backend.saveCalls);
+    expect((await calls()).length).toBe(0);
+    // Discard ends the conflict: the order saved elsewhere is shown, nothing was written.
+    await page.getByTestId("microphone-settings-discard").click();
+    await expect(
+      page.getByTestId("microphone-settings-error-conflict"),
+    ).toBeHidden();
+    expect(await order(page)).toEqual(["Dock"]);
+    expect((await calls()).length).toBe(0);
   });
 
   test("an unknown outcome that did commit is confirmed and focus moves to the title", async ({

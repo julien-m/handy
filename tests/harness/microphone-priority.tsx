@@ -11,7 +11,9 @@ import {
   releaseSaveUnknown,
   releaseSettings,
   setVisible,
+  setWindowMinimized,
   setWindowShown,
+  showWindowWithoutFocus,
 } from "./fake-tauri";
 import React from "react";
 import { createRoot, type Root } from "react-dom/client";
@@ -61,7 +63,9 @@ mount();
   releaseSaveUnknown,
   releaseSettings,
   setVisible,
+  setWindowMinimized,
   setWindowShown,
+  showWindowWithoutFocus,
   mount,
   unmount,
 };

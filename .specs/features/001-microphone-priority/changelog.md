@@ -104,3 +104,13 @@
 - **Code modified:** status polling also asks the Tauri window (`window-visibility.ts`, `status-polling.ts`, `use-microphone-status.ts`) because WebView2 very probably keeps the page visible after `window.hide()`; drags cancelled when the dragged row leaves its place or a write starts (`use-pointer-reorder.ts`, `priority-list.tsx`); an unknown write outcome confirmed when the reread shows the sent order, and a lost focus moved to the title when the Unsaved changes bar closes on its own (`use-priority-editor.ts`, `editor-focus.ts`); Add inactive after a failed listing (`priority-controls.tsx`); Playwright spec split in three files with polling focus assertions
 - **AC impacted:** AC-001, AC-002, AC-007, SC-003 (automated: 88 bun tests, 23 headless Chromium tests; red run on HEAD `59992c7b`: 6 failed); native evidence of the polling pause still pending (macOS with Julien, Windows and Linux as release evidence)
 - **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-14 — [Bugfix]: UI hardening of the microphone priority editor
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** src-tauri/src/lib.rs, src/components/settings/microphone-priority/{window-visibility.ts, status-polling.ts, draft-state.ts, draft-feedback.tsx, editor-focus.ts}, their tests, tests/microphone-priority{,-polling}.spec.ts, tests/harness/{fake-tauri.ts, microphone-priority.tsx, microphone-priority-page.ts}
+- **AC impacted:** AC-002 (polling resumes on `main-window-shown`, pauses while minimized), AC-007 (Save inactive during a conflict until Reload or Discard), SC-003 (title focus without scroll)
+- **Summary:** warnings of the UI delivery review round 3; proofs in [proofs/claude-hardening/summary.txt](proofs/claude-hardening/summary.txt)
+- **Author:** Claude Code (UI hardening pass)
+

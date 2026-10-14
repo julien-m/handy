@@ -61,6 +61,16 @@ const focusableIn = (holder: HTMLElement): HTMLElement | null => {
   return target === null || target.matches(":disabled") ? null : target;
 };
 
+/**
+ * Options of the focus call for a target. The section title is a landmark, not a control: moving
+ * focus back to it must not scroll the Sound page away from what the user is reading (for
+ * example when the Unsaved changes bar closes because the order was saved elsewhere).
+ * @param key focus key of the target
+ * @returns `preventScroll` for the section title, nothing for the other controls
+ */
+export const focusOptionsOf = (key: string): FocusOptions | undefined =>
+  key === STABLE_FOCUS_KEY ? { preventScroll: true } : undefined;
+
 /** How a focus request treats a focus that is still on an element. */
 export interface FocusRequestOptions {
   /**
@@ -93,7 +103,7 @@ export const focusFirstTarget = (
     const holder = holders.find((element) => element.dataset.focusKey === key);
     const target = holder ? focusableIn(holder) : null;
     if (target !== null) {
-      target.focus();
+      target.focus(focusOptionsOf(key));
       return target;
     }
   }

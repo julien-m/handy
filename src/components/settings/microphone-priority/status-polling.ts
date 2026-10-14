@@ -7,10 +7,11 @@
 // Visibility sources, all required (see `allVisible`):
 // - the Page Visibility API (`document.visibilityState` and `visibilitychange`), which a webview
 //   may update when its window is hidden;
-// - the Tauri window itself (`window-visibility.ts`): `isVisible()` is asked before every read and
-//   a focus change asks again. This covers a webview that keeps reporting "visible" after
-//   `window.hide()`: wry 0.55 does not call `ICoreWebView2Controller::SetIsVisible` on a window
-//   hide, so WebView2 on Windows very probably never reports the page hidden.
+// - the Tauri window itself (`window-visibility.ts`): `isVisible()` and `isMinimized()` are asked
+//   before every read, and a focus change or the backend's `main-window-shown` event asks again.
+//   This covers a webview that keeps reporting "visible" after `window.hide()` or a minimize:
+//   wry 0.55 does not call `ICoreWebView2Controller::SetIsVisible` on a window hide, so WebView2
+//   on Windows very probably never reports the page hidden.
 // Neither source has been observed in a real window yet: macOS is pending with Julien, Windows and
 // Linux are pending release evidence (`document.visibilityState` and the status calls after
 // closing the window to the tray, then after reopening it from the tray).

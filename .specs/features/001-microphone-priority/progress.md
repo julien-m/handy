@@ -129,6 +129,19 @@ Round 2 of the UI delivery review was BLOCKED (`review`: 1 blocking) and the `au
 | Info: Add active without options after a failed listing | Fixed: inactive, named "Couldn't check devices", re-enabled by a successful Refresh |
 | Info: focus assertions without polling | Fixed: `expect.poll` everywhere; spec split in three files |
 
+## UI hardening pass (2026-10-14, branch `fix/ui-hardening-a`)
+
+Warnings of the UI delivery review round 3 (`review` PASS, `audit` PASS) fixed in a separate pass. Details in [implementation.md](implementation.md#ui-hardening-pass-2026-10-14-branch-fixui-hardening-a); proofs in [proofs/claude-hardening/summary.txt](proofs/claude-hardening/summary.txt).
+
+| Finding | Disposition |
+| --- | --- |
+| Review/audit warning: polling resumes only on a focus event or `visibilitychange` | Fixed: `show_main_window` (`lib.rs`) emits `main-window-shown` after showing the window; `window-visibility.ts` listens to it besides `onFocusChanged`. Tests: bun (fake window), Playwright (`showWindowWithoutFocus`), name shared with `lib.rs` |
+| Audit warning: a minimized window keeps polling on Windows (`IsWindowVisible` stays true) | Fixed: `isMinimized()` (`@tauri-apps/api` 2.11, permission in `core:window:default`) is asked after `isVisible()`; a minimized window counts as hidden on every platform. Tests: bun and Playwright |
+| Audit info: Save after the conflict banner replaces the order saved elsewhere | Fixed: `canSave` is false during a conflict; Reload or Discard ends it. Tests: `draft-state.test.ts`, Playwright (`Save stays inactive until Reload or Discard`, reworked `Reload is inactive while a Save is in flight`) |
+| Review info: focus returned to the title scrolls the page | Fixed: `focus({ preventScroll: true })` for the section title (`focusOptionsOf`). Test: `editor-focus.test.ts` |
+
+Still pending with Julien: the native checks of the polling (tray, dock, second launch, minimize) on macOS, then Windows and Linux as release evidence; the bar position; the Reset `spec-refine`.
+
 ## Remaining work and resume point
 
 Step 6 is implemented on `feature/ui-001-microphones` (see "Step 6 — settings UI" below); resume at Step 7.
@@ -142,7 +155,7 @@ Step 6 is implemented on `feature/ui-001-microphones` (see "Step 6 — settings 
 
 - **Placement:** the editor wraps the Sound group of the General settings. The conflict banner sits above the group, the rows (Microphone priority, In use now, Closed-lid microphone) are its first rows, the other Sound rows are unchanged, and the Unsaved changes bar sits below the group, as in the mockups.
 - **Draft:** edits (add, remove, Move up/down, pointer drag) change only the draft; Save sends the complete order once with the base revision through `set_microphone_priority`. Save is busy during the write and edits are ignored meanwhile. Success rereads the settings, drops the draft and shows a toast. A refusal keeps the draft with a translated error and Retry; `items[].code` `microphone_name_duplicate` / `microphone_name_empty` have their own messages, other codes use the shared settings messages; a value committed with a failed live effect is reported in a toast.
-- **Revisions:** a change to another setting only advances the base revision; a change of the order elsewhere (or a `revision_conflict` refusal) keeps the draft and shows "Settings changed elsewhere" with Reload (rereads and discards the draft). After the banner, Save knowingly replaces the order with the current revision.
+- **Revisions:** a change to another setting only advances the base revision; a change of the order elsewhere (or a `revision_conflict` refusal) keeps the draft and shows "Settings changed elsewhere" with Reload (rereads and discards the draft). Since the UI hardening pass, Save stays inactive during the conflict, until Reload or Discard (it previously replaced the order saved elsewhere with the current revision).
 - **Availability:** `get_microphone_status` on open, when the window becomes visible again, every 5 s while it stays visible, and on Refresh/Retry; the timer stops while the window is hidden in the tray (Page Visibility API, and since UI round 2 the Tauri window's `isVisible()` asked before each read, with focus changes as a signal); a generation fence drops late replies, replies after the window is hidden and replies after unmount. A failed device listing makes draft-only names Unknown. A failed read or `enumeration_failed` shows every status as Unknown with "Couldn't check devices" and Retry. A name only in the draft is classified from the enumerated devices (one match available, several ambiguous, none unavailable).
 - **In use now:** current input with its reason (first choice, fallback — naming the first saved choice observed unavailable or ambiguous —, closed-lid, system default), the last recording labelled as such, "Not used yet since launch", Loading before the first read, Unknown after a failed first read.
 - **Closed-lid row:** the existing `clamshell_microphone` setting, saved immediately as before (not part of the draft), shown on laptops only like the debug selector, which stays where it is.
