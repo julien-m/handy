@@ -13,3 +13,48 @@ Penflow pass and is not started. Per-step evidence lives in `proofs/claude-impl/
 | 2 Validation and transactions | Done | `recognition_vocabulary/{validation,occurrences,preview,edits,edits_tests}.rs`, `settings_service/{error_reason,errors,command_error,tauri_adapter}.rs` (`write_change`), `commands/vocabulary.rs`, `shortcut/mod.rs` (`update_custom_words`), `Cargo.toml` (`caseless = "=0.2.2"`), `tests/vocabulary_transactions.rs`, `src/bindings.ts`, `src/stores/settingsStore.ts`, 008 contract schema and doc | `cargo test --lib -- recognition_vocabulary settings_service`; `cargo test --test vocabulary_transactions --test settings_validation --test settings_cli`; `bun run test:settings-errors`, `test:settings-store`, `test:shortcut-list` | Pass | 2026-10-14 |
 | 3 Request snapshot, status and correction routing | Done | `recognition_vocabulary/{status,status_tests}.rs`, `managers/{transcription,transcription_vocabulary}.rs`, `commands/vocabulary.rs` (`get_vocabulary_status`), `src/bindings.ts`; refactor of `edits.rs`, `preview.rs`, `budget.rs`, `occurrences.rs` to functions of at most 30 lines | `cargo test --lib -- recognition_vocabulary managers::transcription audio_toolkit::text engine_supervisor::protocol engine_supervisor::supervisor::context`; `cargo test --test vocabulary_transactions` | Pass (111 + 4) | 2026-10-14 |
 | 4 CLI contract and native routing | Done | `settings_service/domains/{vocabulary,vocabulary_tests,mod}.rs`, `settings_service/{cli,render}.rs`, `src/cli.rs`, `tests/{vocabulary_cli,settings_domains}.rs`, `README.md`, 008 contract doc | `cargo test --lib -- settings_service recognition_vocabulary`; `cargo test --test vocabulary_cli --test settings_domains --test settings_cli --test settings_validation --test vocabulary_transactions --test shortcuts_cli` | Pass (132 + 70) | 2026-10-14 |
+| 5 Settings screen | Todo | — | — | Not started: waits for the Penflow pass (code-ir, semantic and test IDs, design certification) | 2026-10-14 |
+| 6 Acceptance, performance, regressions | In Progress | `proofs/claude-impl/final/` | `cargo test` (all targets); `bun run test:keyboard`, `test:shortcut-list`, `test:settings-errors`, `test:settings-store` | Automated suites pass (749 Rust tests, 21 ignored); native proof, SC-003, performance and UI not run | 2026-10-14 |
+
+## Resume point
+
+Resume at Step 0a and Step 5 once the Penflow pass for `recognition-vocabulary` / `vocabulary-settings`
+is certified, then run Step 6. The light-lane delivery review (one `combined` report) runs on the
+complete diff after that, by other agents.
+
+## What remains
+
+1. **UI (Steps 0a and 5).**
+   - Turn `CustomWords.tsx` into the "Vocabulary" editor: ordered rows with their legacy flags,
+     add and per-row remove, paste box with preview and Apply, one status, terms sent and not sent,
+     the error `context_budget_unverified`, and the vocabulary versus replacements explanation.
+   - Supporting code: `use-vocabulary.ts` hook, revision-aware store, en/fr keys, keyboard and
+     Behavioral AC tests (Playwright).
+   - Already available: the typed commands `getVocabulary`, `previewVocabularyImport`,
+     `applyVocabularyImport`, `addVocabularyTerm`, `removeVocabularyOccurrence`,
+     `getVocabularyStatus`, and `updateCustomWords(words, expectedRevision)`.
+2. **Generic mechanisms.** Generic vocabulary and context prompt (Qwen3-ASR, Fun-ASR-Nano, Granite
+   Speech, MOSS) are disabled (`context_budget_unverified`). Under the plan this blocks AC-004 for
+   these families until the engine exposes the room or the number of terms kept
+   (`contracts/context-budget.md`).
+3. **macOS native evidence (Step 6).** None of it has been executed:
+   - `scripts/vocabulary-native-proof.ts`;
+   - Whisper tokenizer measurement of a real prompt;
+   - the request actually sent;
+   - SC-003 on a "Claude Code" sample;
+   - preparation time under 5 ms;
+   - the capabilities read from catalog models (Granite GGUF);
+   - live `vocabulary status` in the running app (model loaded and not loaded);
+   - no model reload after an edit.
+
+   Windows and Linux evidence is recorded as pending release evidence.
+4. **Closure.** Light-lane delivery review, changelogs, `finalize` (spec status) and the README
+   activity row. Spec status not changed in this run.
+
+## Notes
+
+- The pre-existing `cargo clippy --tests` errors on `dev` (lib.rs, supervisor.rs, gguf_meta.rs,
+  transcription.rs, portable.rs) are unchanged. The step gate is `clippy --lib --bins -D warnings`
+  (PASS).
+- The conventions baseline was never rewritten. Every step's conventions verdict is PASS (receipts
+  under `.specs/conventions/runs/`, ignored by git, and their stdout in `proofs/claude-impl/<step>/`).
