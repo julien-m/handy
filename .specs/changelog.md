@@ -5,6 +5,11 @@
 
 ---
 
+## 2026-10-14 — [Feature 009] Spec and plan refined: pinned badge rule, D2 live pin operations, retired auto_submit, single Enter veto
+<!-- finalize:spec-refine:2026-10-14:0feee4a1 -->
+
+Spec AC-001 now shows the badge while an app is pinned even with 006 destination return off (decision in Clarifications; 006 spec unchanged). Plan: `destination pin|unpin|status` as 006 Step 0 live operations with precedence `unsupported_platform` (2) → no instance (5) → `not_found` (4); retired `auto_submit` is `not_found`/4 with `details.reason = "retired_key"`; the Enter veto is 006's single `RecoveryDisposition`; Windows/Linux native proof as pending release evidence; QE aligned on the spec. Spec and plan reviews are stale until an independent reviewer refreshes them.
+
 ## 2026-10-14 — [Feature 001] Spec and plan refined: literal "default" migration, live microphone list, full 2-second attempts
 
 Spec: AC-006 maps only a null legacy selection to an empty list (the device name "default" becomes an exact entry); Clarifications record the live-only `microphones list` (configured order readable with `get microphone_priority`) and the read-only legacy `selected_microphone` (`validation_failed`, `details.reason = "microphones_domain"`). Plan: merged 008 names, D2 live list (depends on 006 step 0), D3 per-name items, full 2-second attempts within the 6-second total, Windows/Linux native proof as pending release evidence. Spec and plan reviews are stale until an independent reviewer refreshes them.

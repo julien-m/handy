@@ -70,3 +70,20 @@
 - **Classification:** criticality High, blast radius Shared, primary risk Functional, taken from the existing QE Analysis; `livespec delivery lane`: full
 - **Review:** the previous spec review is stale; an independent reviewer refreshes it
 - **Author:** Claude Code (spec-refine --auto, claude-opus-5-5)
+
+## 2026-10-14 — [Spec Update]: Pinned badge rule, D2 live pin operations, retired auto_submit and single Enter veto
+
+- **Type:** Spec Update
+- **Spec modified:** Yes (sections: AC-001 badge visibility sentence added; Clarifications decision 2026-10-14; frontmatter `updated`)
+- **Code modified:** None (plan.md updated)
+- **AC impacted:** AC-001 (badge shown while an app is pinned even with 006 destination return off; IDs unchanged); AC-004, AC-005, AC-006 plan alignment
+- **Author:** Claude Code (spec-refine 009 and 009 plan, claude-opus-5-5)
+- Applies the 2026-10-14 independent review and orchestrator decisions D1–D4.
+- Spec: the contradiction with 006 AC-003 is resolved in this feature: an active pin shows the badge whatever "Return to the dictation's application" is; without a pin 006 AC-003 applies unchanged; 006's spec is not modified.
+- Plan: `destination pin|unpin|status` are D2 live operations (`DestinationDomain`, `PinOperation`, `UnpinOperation`, `StatusOperation` returning `DomainPlan::Live`, `managed_state`), never writing settings; precedence usage → `unsupported_platform` (`validation_failed`/2, D4) → no instance (`unavailable`/5, delivered live-only refusal) → `not_found`/4.
+- Plan: retired `auto_submit` is `not_found`/4 (008 resolves keys before validation) with D3 `details.reason = "retired_key"` and `details.field = "automatic_enter"`; migration in `settings::apply_settings_migrations`, persisted once by `SettingsRepository::initialize`.
+- Plan: the Enter veto is 006's single `RecoveryDisposition {Pending, Insert, Recover, Cancelled}` read at the atomic claim; `RecoverInstead` retired; identifiers `dictation_id`/`destination_generation` from 006/007; delivered 008 names only (`LiveSettingsEffects` removed).
+- Plan: D1 Windows/Linux/older-binary native checks as pending release evidence; QE aligned with the spec (High, Shared, Functional); Next Action no longer pins a model.
+- Review: the spec and plan reviews are stale until an independent reviewer refreshes them.
+
+<!-- finalize:spec-refine:2026-10-14:0feee4a1 -->

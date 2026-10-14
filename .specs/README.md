@@ -42,7 +42,7 @@
 | 006 | Destination Application | Planned | 2026-10-12 | 2026-10-14 | [spec](features/006-destination-application/spec.md) |
 | 007 | Smart Paste | Planned | 2026-10-12 | 2026-10-13 | [spec](features/007-smart-paste/spec.md) |
 | 008 | Settings CLI | In Progress | 2026-10-12 | 2026-10-13 | [spec](features/008-settings-cli/spec.md) |
-| 009 | PIN Mode and Enter Rule | Planned | 2026-10-12 | 2026-10-13 | [spec](features/009-pin-mode-and-enter-rule/spec.md) |
+| 009 | PIN Mode and Enter Rule | Planned | 2026-10-12 | 2026-10-14 | [spec](features/009-pin-mode-and-enter-rule/spec.md) |
 | 010 | Recovery Bubble | Planned | 2026-10-12 | 2026-10-13 | [spec](features/010-recovery-bubble/spec.md) |
 <!-- readme:features:end -->
 
@@ -68,6 +68,8 @@
 <!-- readme:activity:start -->
 | Date | Type | Description |
 |---|---|---|
+| 2026-10-14 | Feature | [Feature 009] Spec and plan refined: pinned badge rule, D2 live pin operations, retired auto_submit, single Enter veto |
+| 2026-10-14 | Feature | [Feature 001] Spec and plan refined: literal "default" migration, live microphone list, full 2-second attempts |
 | 2026-10-14 | Feature | [Feature 006] Plan refined: settings framework Step 0 (D2–D4) and merged 008 names |
 | 2026-10-14 | Feature | [Feature 003] Plan refined: merged 008 names and program decisions D1–D4 |
 | 2026-10-13 | Feature | [Feature 001] Spec refined: Quality Engineering classification for the delivery lane |
@@ -76,8 +78,6 @@
 | 2026-10-13 | Feature | [Feature 006] Spec refined: Quality Engineering classification for the delivery lane |
 | 2026-10-13 | Feature | [Feature 009] Spec refined: Quality Engineering classification for the delivery lane |
 | 2026-10-13 | Feature | [Feature 010] Spec refined: Quality Engineering classification for the delivery lane |
-| 2026-10-13 | Feature | 008-settings-cli: final delivery review correction round 1 Done |
-| 2026-10-13 | Feature | 008-settings-cli: Step 7 macOS native proof (debug build) Done; release evidence pending |
 <!-- readme:activity:end -->
 
 ---
@@ -163,3 +163,5 @@
 <!-- finalize:spec-plan:2026-10-13:1953f656 -->
 
 <!-- finalize:spec-refine:2026-10-14:b0be88bc -->
+
+<!-- finalize:spec-refine:2026-10-14:0feee4a1 -->
