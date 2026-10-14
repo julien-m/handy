@@ -1,5 +1,6 @@
 //! Tauri glue of the insertion step: run the orchestrator on a blocking worker, dispatch the
-//! existing insertion method on the main thread with the pre-dispatch guard, then publish one
+//! existing insertion method on the main thread with the pre-dispatch guard (smart paste, 007,
+//! from the worker through its actor, also without a session), then publish one
 //! terminal outcome (metadata event `insertion-outcome`, optional consumers) and keep a failed
 //! transcript in the recovery slot. History is saved by the caller; its actual result is passed
 //! in and never overstated. The transcript never enters an event or a log. Without a session
@@ -98,18 +99,30 @@ pub async fn deliver(
         paste_method_none: settings.paste_method == crate::settings::PasteMethod::None,
         cancelled,
     };
-    let method = MainThreadPaste {
-        app: app.clone(),
-        text: text.clone(),
-        settings,
-    };
+    let method = insertion_method(&app, &text, settings);
     let worker_manager = Arc::clone(&manager);
     let joined = tauri::async_runtime::spawn_blocking(move || {
-        orchestrator(worker_manager).deliver(request, &method)
+        orchestrator(worker_manager).deliver(request, method.as_ref())
     })
     .await;
     let report = joined.unwrap_or_else(|error| worker_failed(&manager, ticket, &error));
     Some(publish(&app, &manager, ticket, report, text, history))
+}
+/// The configured method with the settings snapshot of this insertion: smart paste (007) runs
+/// off the main thread through its actor; every other method runs on the main thread as before.
+fn insertion_method(
+    app: &AppHandle,
+    text: &str,
+    settings: crate::settings::AppSettings,
+) -> Box<dyn InsertionPort> {
+    match crate::smart_paste::app::session_method(app, text, &settings) {
+        Some(smart_paste) => Box::new(smart_paste),
+        None => Box::new(MainThreadPaste {
+            app: app.clone(),
+            text: text.to_owned(),
+            settings,
+        }),
+    }
 }
 /// The insertion worker ended without a report (a panic in the orchestrator or the method): the
 /// dictation is reported as an insertion failure, so `publish` keeps its transcript for recovery
@@ -144,6 +157,11 @@ pub async fn insert_final_text(
     cancelled: Box<dyn Fn() -> bool + Send + Sync>,
 ) {
     let Some(ticket) = ticket else {
+        // Without a session, smart paste (007) inserts into the application in front itself.
+        if let Some(settings) = crate::smart_paste::app::foreground_settings(app) {
+            crate::smart_paste::app::insert_at_foreground(app, text, settings, cancelled).await;
+            return end_indicator(app);
+        }
         return paste_as_before(app, text, cancelled);
     };
     let started = std::time::Instant::now();

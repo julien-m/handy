@@ -208,6 +208,13 @@ async changePasteMethodSetting(method: string) : Promise<Result<null, SettingsCo
 async getAvailableTypingTools() : Promise<string[]> {
     return await TAURI_INVOKE("get_available_typing_tools");
 },
+/**
+ * Whether the paste method selector offers smart paste: macOS only, and only once dictation
+ * delivers through it (feature 007 rollout gate, `smart_paste::setting_policy`).
+ */
+async isSmartPasteAvailable() : Promise<boolean> {
+    return await TAURI_INVOKE("is_smart_paste_available");
+},
 async changeTypingToolSetting(tool: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_typing_tool_setting", { tool }) };
@@ -1153,7 +1160,13 @@ return_to_dictation_app?: boolean; app_language?: string; theme?: Theme; experim
  * after the target app actually reads the transcript, instead of after a
  * fixed delay. See `paste_tx`. macOS and Windows only.
  */
-reliable_paste?: boolean; typing_tool?: TypingTool; external_script_path?: string | null; filler_word_removal_enabled?: boolean; custom_filler_words?: string[] | null; 
+reliable_paste?: boolean; 
+/**
+ * Internal marker of the one-time macOS migration to smart paste (feature 007, see
+ * `smart_paste::setting_policy`); read-only on every settings surface. Stores missing it are
+ * treated as never migrated.
+ */
+smart_paste_migration_version?: number; typing_tool?: TypingTool; external_script_path?: string | null; filler_word_removal_enabled?: boolean; custom_filler_words?: string[] | null; 
 /**
  * Fresh installs default from the OS locale; existing stores are migrated
  * in `apply_settings_migrations`.
@@ -1340,7 +1353,7 @@ export type OverlayPosition = "top" | "bottom"
  */
 export type OverlayStyle = "none" | "minimal" | "live"
 export type PaginatedHistory = { entries: HistoryEntry[]; has_more: boolean }
-export type PasteMethod = "ctrl_v" | "direct" | "none" | "shift_insert" | "ctrl_shift_v" | "external_script"
+export type PasteMethod = "ctrl_v" | "direct" | "none" | "shift_insert" | "ctrl_shift_v" | "external_script" | "smart_paste"
 export type PermissionAccess = "allowed" | "denied" | "unknown"
 export type PostProcessProvider = { id: string; label: string; base_url: string; allow_base_url_edit?: boolean; models_endpoint?: string | null; supports_structured_output?: boolean }
 export type RecordingRetentionPeriod = "never" | "preserve_limit" | "days_3" | "weeks_2" | "months_3"
@@ -1605,6 +1618,14 @@ export type ValidationReason = "canonical_type" | "canonical_value" | "out_of_ra
  * Domain input does not follow the domain's exchange format.
  */
 "invalid_input" | 
+/**
+ * Smart paste is not selectable on this platform or in this build (feature 007).
+ */
+"smart_paste_unavailable" | 
+/**
+ * On macOS, smart paste replaces the beta reliable paste (feature 007).
+ */
+"reliable_paste_replaced" | 
 /**
  * The setting or operation needs a platform capability this build does not have.
  */

@@ -1,0 +1,5 @@
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/007-smart-paste/src-tauri)
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 33.60s
+     Running tests/smart_paste_native_ax.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/smart_paste_native_ax-3682536ee679bd4f)

@@ -28,6 +28,7 @@ mod settings;
 pub mod settings_service;
 mod shortcut;
 mod signal_handle;
+pub mod smart_paste;
 mod transcription_coordinator;
 mod tray;
 mod tray_i18n;
@@ -247,6 +248,7 @@ fn initialize_core_logic(app_handle: &AppHandle) {
     app_handle.manage(history_manager.clone());
     app_handle.manage(tray::TrayState::new());
     destination::app::install(app_handle);
+    smart_paste::app::install(app_handle);
 
     // Note: Shortcuts are NOT initialized here.
     // The frontend is responsible for calling the `initialize_shortcuts` command
@@ -706,6 +708,7 @@ pub fn run(cli_args: CliArgs) {
             shortcut::change_reliable_paste_setting,
             shortcut::change_paste_method_setting,
             shortcut::get_available_typing_tools,
+            shortcut::is_smart_paste_available,
             shortcut::change_typing_tool_setting,
             shortcut::change_external_script_path_setting,
             shortcut::change_clipboard_handling_setting,
@@ -1158,6 +1161,9 @@ pub fn run(cli_args: CliArgs) {
                 tray::recreate_tray_icon(app);
             }
             show_main_window(app);
+        }
+        tauri::RunEvent::ExitRequested { code, api, .. } => {
+            smart_paste::app::settle_before_exit(app, *code, api)
         }
         tauri::RunEvent::Exit => settings_service::tauri_adapter::close_endpoint(app),
         // No transcription teardown on exit: transcribe.cpp runs only in the
