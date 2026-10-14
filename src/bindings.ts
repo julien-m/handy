@@ -1337,7 +1337,11 @@ export type GpuDeviceOption = { id: string; name: string; total_vram_mb: number 
 /**
  * One history row. `file_name` is `None` for a text-only row (no audio recording).
  */
-export type HistoryEntry = { id: number; file_name: string | null; timestamp: number; saved: boolean; title: string; transcription_text: string; post_processed_text: string | null; post_process_prompt: string | null; post_process_requested: boolean }
+export type HistoryEntry = ({ post_process_prompt_id: string | null; post_process_prompt_name: string | null; post_process_provider_id: string | null; post_process_model: string | null; 
+/**
+ * Failure code (`timeout`, `provider_error`, ...) when the original text was used.
+ */
+post_process_failure: string | null }) & { id: number; file_name: string | null; timestamp: number; saved: boolean; title: string; transcription_text: string; post_processed_text: string | null; post_process_prompt: string | null; post_process_requested: boolean }
 export type HistoryUpdatePayload = { action: "added"; entry: HistoryEntry } | { action: "updated"; entry: HistoryEntry } | { action: "deleted"; id: number } | { action: "toggled"; id: number }
 /**
  * Result of changing keyboard implementation

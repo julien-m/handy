@@ -7,8 +7,9 @@ use crate::managers::history_store::NewHistoryEntry;
 use crate::managers::model::ModelManager;
 use crate::managers::transcription::StreamWorkKind;
 use crate::managers::transcription::TranscriptionManager;
+use crate::prompts::output::OutputDecision;
 use crate::prompts::processor::{
-    complete_unless_cancelled, process, ProcessingOutcome, ResolvedPrompt, PROCESSING_BUDGET,
+    complete_unless_cancelled, process, ResolvedPrompt, PROCESSING_BUDGET,
 };
 use crate::settings::{get_settings, AppSettings, OverlayStyle};
 use crate::shortcut;
@@ -62,22 +63,6 @@ fn should_use_streaming_overlay(style: OverlayStyle, is_streaming: bool) -> bool
     style == OverlayStyle::Live && is_streaming
 }
 
-pub(crate) struct ProcessedTranscription {
-    pub final_text: String,
-    pub post_processed_text: Option<String>,
-    pub post_process_prompt: Option<String>,
-}
-impl ProcessedTranscription {
-    /// The transcript as is, without AI processing.
-    fn raw(transcription: &str) -> Self {
-        Self {
-            final_text: transcription.to_string(),
-            post_processed_text: None,
-            post_process_prompt: None,
-        }
-    }
-}
-
 // @spec FR-004: Raw transcript kept when the AI step fails — .specs/features/005-custom-ai-prompts/spec.md#fr-004
 /// Output of a transcription: the AI step with the default prompt when `post_process` is set
 /// (005 processor: one 30-second budget, typed failure), otherwise the transcript as is. Any
@@ -86,31 +71,23 @@ pub(crate) async fn process_transcription_output(
     app: &AppHandle,
     transcription: &str,
     post_process: bool,
-) -> ProcessedTranscription {
-    let raw = ProcessedTranscription::raw(transcription);
+) -> OutputDecision {
     let Some(prompt) = post_process
         .then(|| default_prompt(&get_settings(app)))
         .flatten()
     else {
-        return raw;
+        return OutputDecision::raw(transcription);
     };
     let port = crate::prompts::native::NativeProviders;
     let report = process(&prompt, transcription, &port, PROCESSING_BUDGET, &|| false).await;
-    match report.outcome {
-        ProcessingOutcome::Processed(text) => ProcessedTranscription {
-            final_text: text.clone(),
-            post_processed_text: Some(text),
-            post_process_prompt: Some(prompt.text),
-        },
-        ProcessingOutcome::Failed(reason) => {
-            warn!(
-                "AI processing failed ({}); the original text is used",
-                reason.code()
-            );
-            raw
-        }
-        ProcessingOutcome::Skipped | ProcessingOutcome::Cancelled => raw,
+    let decision = OutputDecision::after(transcription, &prompt, report);
+    if let Some(reason) = decision.failure {
+        warn!(
+            "AI processing failed ({}); the original text is used",
+            reason.code()
+        );
     }
+    decision
 }
 
 /// The default prompt frozen from `settings`, or `None` when the default is None (no
@@ -490,6 +467,7 @@ impl ShortcutAction for TranscribeAction {
                                 post_process_requested: post_process,
                                 post_processed_text: processed.post_processed_text.clone(),
                                 post_process_prompt: processed.post_process_prompt.clone(),
+                                processing: processed.processing.clone(),
                             };
                             let history = crate::destination::history::save_dictation(
                                 hm.as_ref(),

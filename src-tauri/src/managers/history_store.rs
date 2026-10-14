@@ -43,6 +43,18 @@ DROP TABLE transcription_history;
 ALTER TABLE transcription_history_rebuilt RENAME TO transcription_history;
 ";
 
+// @spec FR-004: History keeps the prompt and the failure — .specs/features/005-custom-ai-prompts/spec.md#fr-004
+/// Version 6 (005 Step 7): the AI step of a row — prompt id and name, provider and model, and
+/// the failure code when the original text was used. Nullable columns, so existing rows keep
+/// every value and simply have no processing record.
+const PROCESSING_RECORD: &str = "
+ALTER TABLE transcription_history ADD COLUMN post_process_prompt_id TEXT;
+ALTER TABLE transcription_history ADD COLUMN post_process_prompt_name TEXT;
+ALTER TABLE transcription_history ADD COLUMN post_process_provider_id TEXT;
+ALTER TABLE transcription_history ADD COLUMN post_process_model TEXT;
+ALTER TABLE transcription_history ADD COLUMN post_process_failure TEXT;
+";
+
 /// Database migrations for transcription history, applied in order and tracked with SQLite's
 /// `user_version` pragma (see `adopt_tauri_plugin_sql_version` for databases created by
 /// tauri-plugin-sql).
@@ -61,11 +73,38 @@ static MIGRATIONS: &[M] = &[
     M::up("ALTER TABLE transcription_history ADD COLUMN post_process_prompt TEXT;"),
     M::up("ALTER TABLE transcription_history ADD COLUMN post_process_requested BOOLEAN NOT NULL DEFAULT 0;"),
     M::up(NULLABLE_AUDIO),
+    M::up(PROCESSING_RECORD),
 ];
 
 /// Columns of a history row, in mapping order.
 pub(crate) const ENTRY_COLUMNS: &str = "id, file_name, timestamp, saved, title, \
-    transcription_text, post_processed_text, post_process_prompt, post_process_requested";
+    transcription_text, post_processed_text, post_process_prompt, post_process_requested, \
+    post_process_prompt_id, post_process_prompt_name, post_process_provider_id, \
+    post_process_model, post_process_failure";
+
+/// The AI step of a row (005): which prompt, provider and model processed it, and why the
+/// original text was used when the step failed (a stable failure code, never a provider
+/// message). All absent for a row without AI processing.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Type)]
+pub struct ProcessingRecord {
+    pub post_process_prompt_id: Option<String>,
+    pub post_process_prompt_name: Option<String>,
+    pub post_process_provider_id: Option<String>,
+    pub post_process_model: Option<String>,
+    /// Failure code (`timeout`, `provider_error`, ...) when the original text was used.
+    pub post_process_failure: Option<String>,
+}
+impl ProcessingRecord {
+    fn from_row(row: &rusqlite::Row<'_>) -> rusqlite::Result<Self> {
+        Ok(Self {
+            post_process_prompt_id: row.get("post_process_prompt_id")?,
+            post_process_prompt_name: row.get("post_process_prompt_name")?,
+            post_process_provider_id: row.get("post_process_provider_id")?,
+            post_process_model: row.get("post_process_model")?,
+            post_process_failure: row.get("post_process_failure")?,
+        })
+    }
+}
 
 /// One history row. `file_name` is `None` for a text-only row (no audio recording).
 #[derive(Clone, Debug, Serialize, Deserialize, Type)]
@@ -79,6 +118,8 @@ pub struct HistoryEntry {
     pub post_processed_text: Option<String>,
     pub post_process_prompt: Option<String>,
     pub post_process_requested: bool,
+    #[serde(flatten)]
+    pub processing: ProcessingRecord,
 }
 
 /// A row to write: `file_name` is the verified WAV of the dictation, or `None` when the audio
@@ -90,6 +131,17 @@ pub struct NewHistoryEntry {
     pub post_process_requested: bool,
     pub post_processed_text: Option<String>,
     pub post_process_prompt: Option<String>,
+    pub processing: ProcessingRecord,
+}
+
+/// New text of an existing row (retry): the transcript, the processed text with its prompt, and
+/// the processing record of the new AI step.
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub struct RetriedText {
+    pub transcription_text: String,
+    pub post_processed_text: Option<String>,
+    pub post_process_prompt: Option<String>,
+    pub processing: ProcessingRecord,
 }
 
 /// Where a dictation's history row is written: `HistoryManager` in the app (retention cleanup
@@ -169,6 +221,7 @@ impl HistoryStore {
             post_processed_text: row.get("post_processed_text")?,
             post_process_prompt: row.get("post_process_prompt")?,
             post_process_requested: row.get("post_process_requested")?,
+            processing: ProcessingRecord::from_row(row)?,
         })
     }
 
@@ -183,8 +236,9 @@ impl HistoryStore {
         conn.execute(
             "INSERT INTO transcription_history (file_name, timestamp, saved, title,
                 transcription_text, post_processed_text, post_process_prompt,
-                post_process_requested)
-             VALUES (?1, ?2, 0, ?3, ?4, ?5, ?6, ?7)",
+                post_process_requested, post_process_prompt_id, post_process_prompt_name,
+                post_process_provider_id, post_process_model, post_process_failure)
+             VALUES (?1, ?2, 0, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)",
             params![
                 entry.file_name,
                 timestamp,
@@ -193,12 +247,49 @@ impl HistoryStore {
                 entry.post_processed_text,
                 entry.post_process_prompt,
                 entry.post_process_requested,
+                entry.processing.post_process_prompt_id,
+                entry.processing.post_process_prompt_name,
+                entry.processing.post_process_provider_id,
+                entry.processing.post_process_model,
+                entry.processing.post_process_failure,
             ],
         )?;
         let id = conn.last_insert_rowid();
         debug!("Saved history entry with id {id}");
         self.entry_with(&conn, id)?
             .ok_or_else(|| anyhow::anyhow!("History entry {id} vanished after insert"))
+    }
+
+    /// Replace the text and processing record of row `id`; the updated row, or `None` when the
+    /// row does not exist (nothing written).
+    ///
+    /// # Errors
+    /// The database cannot be opened or written.
+    pub fn update_text(&self, id: i64, text: RetriedText) -> Result<Option<HistoryEntry>> {
+        let conn = self.connection()?;
+        let record = &text.processing;
+        let updated = conn.execute(
+            "UPDATE transcription_history SET transcription_text = ?1, post_processed_text = ?2,
+                post_process_prompt = ?3, post_process_prompt_id = ?4,
+                post_process_prompt_name = ?5, post_process_provider_id = ?6,
+                post_process_model = ?7, post_process_failure = ?8
+             WHERE id = ?9",
+            params![
+                text.transcription_text,
+                text.post_processed_text,
+                text.post_process_prompt,
+                record.post_process_prompt_id,
+                record.post_process_prompt_name,
+                record.post_process_provider_id,
+                record.post_process_model,
+                record.post_process_failure,
+                id
+            ],
+        )?;
+        if updated == 0 {
+            return Ok(None);
+        }
+        self.entry_with(&conn, id)
     }
 
     /// The row `id`, if it exists.

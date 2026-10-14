@@ -1,6 +1,7 @@
 use crate::actions::process_transcription_output;
 use crate::managers::{
     history::{HistoryManager, PaginatedHistory},
+    history_store::RetriedText,
     transcription::TranscriptionManager,
 };
 use std::sync::Arc;
@@ -101,13 +102,14 @@ pub async fn retry_history_entry_transcription(
 
     let processed =
         process_transcription_output(&app, &transcription, entry.post_process_requested).await;
+    let text = RetriedText {
+        transcription_text: transcription,
+        post_processed_text: processed.post_processed_text,
+        post_process_prompt: processed.post_process_prompt,
+        processing: processed.processing,
+    };
     history_manager
-        .update_transcription(
-            id,
-            transcription,
-            processed.post_processed_text,
-            processed.post_process_prompt,
-        )
+        .update_transcription(id, text)
         .map(|_| ())
         .map_err(|e| e.to_string())
 }

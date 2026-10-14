@@ -5,6 +5,7 @@ pub mod formatting;
 pub mod library;
 pub mod migration;
 pub mod native;
+pub mod output;
 pub mod processor;
 pub mod provider;
 pub mod test_run;
