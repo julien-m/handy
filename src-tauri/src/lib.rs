@@ -20,6 +20,7 @@ mod paste_tx;
 pub mod portable;
 mod secure_input;
 mod settings;
+pub mod settings_service;
 mod shortcut;
 mod signal_handle;
 pub mod smart_paste;
@@ -60,8 +61,13 @@ pub static FILE_LOG_LEVEL: AtomicU8 = AtomicU8::new(log::LevelFilter::Debug as u
 /// mode — the live log viewer is its only consumer and only exists in debug
 /// mode — so normal runs never broadcast log records (which can include file
 /// paths or transcribed text) onto the frontend event bus. Synced at startup
-/// and whenever debug mode is toggled (see `shortcut::change_debug_mode_setting`).
+/// and by the live effect of `debug_mode`/`log_level` (`settings_service::effects`).
 pub static WEBVIEW_LOG_STREAMING: AtomicBool = AtomicBool::new(false);
+
+/// True when this run was launched with `--debug`: Trace file logs and webview log streaming
+/// stay on for the whole run, whatever `debug_mode`/`log_level` changes (runtime-only override,
+/// never persisted).
+pub static DEBUG_OVERRIDE: AtomicBool = AtomicBool::new(false);
 
 fn level_filter_from_u8(value: u8) -> log::LevelFilter {
     match value {
@@ -122,6 +128,25 @@ fn show_main_window(app: &AppHandle) {
         "Main window not found. Webview labels: {:?}",
         webview_labels
     );
+}
+
+/// Install the settings service right after `build()`: by then the single-instance plugin has
+/// exited this process (another Handy, old or new, is alive) or claimed the singleton for it.
+/// The GUI instance takes the startup lease and normalizes once; a store it cannot own leaves it
+/// read-only. A headless run is not the instance: it reads now and writes later as an offline
+/// writer. Only a real lease conflict (another instance owns this store although the
+/// single-instance check let this launch through) stops this process, with a message.
+fn install_settings_service(app: &tauri::App, headless_mode: bool) {
+    if headless_mode {
+        settings_service::tauri_adapter::install_offline(app.handle());
+        return;
+    }
+    if let Err(error) = settings_service::tauri_adapter::install_owned(app.handle()) {
+        log::error!("Another Handy instance owns this settings store: {error}");
+        eprintln!("Handy is already running with this settings store; this launch exits.");
+        // process::exit: the event loop has not started, nothing else needs unwinding.
+        std::process::exit(1);
+    }
 }
 
 /// Choose the macOS activation policy the process *launches* with.
@@ -722,6 +747,7 @@ pub fn run(cli_args: CliArgs) {
             commands::is_update_checks_locked,
             commands::get_app_dir_path,
             commands::get_app_settings,
+            commands::get_settings_view,
             commands::get_default_settings,
             commands::get_log_dir_path,
             commands::set_log_level,
@@ -884,7 +910,6 @@ pub fn run(cli_args: CliArgs) {
         .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_macos_permissions::init())
         .plugin(tauri_plugin_opener::init())
-        .plugin(tauri_plugin_store::Builder::default().build())
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .plugin(tauri_plugin_autostart::init(
             MacosLauncher::LaunchAgent,
@@ -942,6 +967,9 @@ pub fn run(cli_args: CliArgs) {
                 return Ok(());
             }
 
+            // The GUI instance owns the store: answer `handy settings` over the private channel.
+            settings_service::tauri_adapter::publish_endpoint(app.handle());
+
             // Create main window programmatically so we can set data_directory
             // for portable mode (redirects WebView2 cache to portable Data dir)
             let mut win_builder =
@@ -994,20 +1022,16 @@ pub fn run(cli_args: CliArgs) {
             #[cfg(any(target_os = "windows", target_os = "macos"))]
             shortcut::apply_window_theme(app.handle(), settings.theme);
 
-            // CLI --debug flag overrides debug_mode and log level (runtime-only, not persisted)
+            // CLI --debug flag overrides debug_mode and log level for the whole run (runtime-only,
+            // not persisted); later debug_mode/log_level changes keep it (see DEBUG_OVERRIDE).
+            DEBUG_OVERRIDE.store(cli_args.debug, Ordering::Relaxed);
             if cli_args.debug {
                 settings.debug_mode = true;
                 settings.log_level = settings::LogLevel::Trace;
             }
-
-            let tauri_log_level: tauri_plugin_log::LogLevel = settings.log_level.into();
-            let file_log_level: log::Level = tauri_log_level.into();
-            // Store the file log level in the atomic for the filter to use
-            FILE_LOG_LEVEL.store(file_log_level.to_level_filter() as u8, Ordering::Relaxed);
-            // Only forward logs to the webview while debug mode is on (the live log
-            // viewer is the sole consumer and only exists in debug mode). This also
-            // honors the runtime `--debug` override applied to `settings` above.
-            WEBVIEW_LOG_STREAMING.store(settings.debug_mode, Ordering::Relaxed);
+            // Only forward logs to the webview while debug mode is on (the live log viewer is the
+            // sole consumer and only exists in debug mode).
+            settings_service::apply_runtime_logging(&settings);
             let app_handle = app.handle().clone();
             app.manage(TranscriptionCoordinator::new(app_handle.clone()));
 
@@ -1096,12 +1120,14 @@ pub fn run(cli_args: CliArgs) {
         .build(tauri::generate_context!())
         .expect("error while building tauri application");
 
+    // Order matters: the settings service must own settings_store.json before any reader, and
+    // the first reader is the macOS activation policy below, which runs before `setup`.
+    install_settings_service(&app, headless_mode);
+
     // Must sit between build() and run(): see the doc comment.
     #[cfg(target_os = "macos")]
     apply_startup_activation_policy(&mut app, headless_mode);
 
-    // `app` is only used by the macOS arm.
-    #[cfg_attr(not(target_os = "macos"), allow(unused_variables))]
     app.run(|app, event| match &event {
         #[cfg(target_os = "macos")]
         tauri::RunEvent::Reopen { .. } => {
@@ -1120,6 +1146,7 @@ pub fn run(cli_args: CliArgs) {
             }
             show_main_window(app);
         }
+        tauri::RunEvent::Exit => settings_service::tauri_adapter::close_endpoint(app),
         // No transcription teardown on exit: transcribe.cpp runs only in the
         // worker process, which exits by itself as soon as this process's end
         // of its stdin closes, even if it is hung. Waiting on an unload here

@@ -1,0 +1,36 @@
+
+running 6 tests
+test locator::same_user_symlink_chain_resolves_hop_by_hop_to_its_final_directory ... ok
+test locator::symlink_loops_and_overlong_chains_are_refused ... FAILED
+test ownership::offline_noop_on_deleted_store_while_instance_runs_is_unavailable ... FAILED
+test ownership::foreign_lease_noop_on_absent_store_is_unavailable ... FAILED
+test normalized_writes::gpu_accelerator_without_device_is_refused_and_changes_nothing ... FAILED
+test normalized_writes::gpu_accelerator_with_device_is_reread_as_returned_and_device_cannot_be_cleared ... FAILED
+
+failures:
+
+---- locator::symlink_loops_and_overlong_chains_are_refused stdout ----
+Error: "overlong chain resolved"
+
+---- ownership::offline_noop_on_deleted_store_while_instance_runs_is_unavailable stdout ----
+Error: "offline no-op accepted while the instance holds the lease"
+
+---- ownership::foreign_lease_noop_on_absent_store_is_unavailable stdout ----
+Error: "foreign lease accepted on an absent store"
+
+---- normalized_writes::gpu_accelerator_without_device_is_refused_and_changes_nothing stdout ----
+Error: "gpu without device accepted"
+
+---- normalized_writes::gpu_accelerator_with_device_is_reread_as_returned_and_device_cannot_be_cleared stdout ----
+Error: "device cleared under the GPU accelerator"
+
+
+failures:
+    locator::symlink_loops_and_overlong_chains_are_refused
+    normalized_writes::gpu_accelerator_with_device_is_reread_as_returned_and_device_cannot_be_cleared
+    normalized_writes::gpu_accelerator_without_device_is_refused_and_changes_nothing
+    ownership::foreign_lease_noop_on_absent_store_is_unavailable
+    ownership::offline_noop_on_deleted_store_while_instance_runs_is_unavailable
+
+test result: FAILED. 1 passed; 5 failed; 0 ignored; 0 measured; 37 filtered out; finished in 0.25s
+

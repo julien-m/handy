@@ -1,0 +1,52 @@
+    Checking handy-windows-settings-check v0.0.0 (/Users/julienm/projects/handy/.specs/features/008-settings-cli/proofs/current-run-step3/windows-check)
+warning: unused import: `ReplaceError`
+ --> /Users/julienm/projects/handy/src-tauri/src/settings_service/windows_store.rs:7:41
+  |
+7 | pub(super) use replace::{replace_owned, ReplaceError};
+  |                                         ^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `0` is never read
+  --> /Users/julienm/projects/handy/src-tauri/src/settings_service/windows_store/replace.rs:11:12
+   |
+11 |     Before(io::Error),
+   |     ------ ^^^^^^^^^
+   |     |
+   |     field in this variant
+   |
+   = note: `ReplaceError` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
+   |
+11 -     Before(io::Error),
+11 +     Before(()),
+   |
+
+warning: field `0` is never read
+  --> /Users/julienm/projects/handy/src-tauri/src/settings_service/windows_store/replace.rs:12:11
+   |
+12 |     After(io::Error),
+   |     ----- ^^^^^^^^^
+   |     |
+   |     field in this variant
+   |
+   = note: `ReplaceError` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
+   |
+12 -     After(io::Error),
+12 +     After(()),
+   |
+
+warning: variant `SameUser` is never constructed
+  --> /Users/julienm/projects/handy/src-tauri/src/settings_service/instance_probe.rs:22:5
+   |
+21 | pub(crate) enum ProbeScope {
+   |                 ---------- variant in this enum
+22 |     SameUser,
+   |     ^^^^^^^^
+   |
+   = note: `ProbeScope` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: `handy-windows-settings-check` (bin "handy-windows-settings-check") generated 4 warnings (run `cargo fix --bin "handy-windows-settings-check" -p handy-windows-settings-check` to apply 1 suggestion)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.34s

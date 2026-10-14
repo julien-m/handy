@@ -1,0 +1,35 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy/src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.87s
+     Running unittests src/lib.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/handy_app_lib-7f5ac070b7e42d2e)
+
+running 2 tests
+test settings_service::sequence::tests::races::concurrent_effect_writes_of_one_key_leave_native_state_equal_to_disk ... FAILED
+test settings_service::sequence::tests::races::concurrent_prepared_writes_of_one_key_leave_native_state_equal_to_disk ... FAILED
+
+failures:
+
+---- settings_service::sequence::tests::races::concurrent_effect_writes_of_one_key_leave_native_state_equal_to_disk stdout ----
+
+thread 'settings_service::sequence::tests::races::concurrent_effect_writes_of_one_key_leave_native_state_equal_to_disk' (43554120) panicked at src/settings_service/sequence_race_tests.rs:116:5:
+assertion `left == right` failed
+  left: Some(Bool(true))
+ right: Some(Bool(false))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- settings_service::sequence::tests::races::concurrent_prepared_writes_of_one_key_leave_native_state_equal_to_disk stdout ----
+
+thread 'settings_service::sequence::tests::races::concurrent_prepared_writes_of_one_key_leave_native_state_equal_to_disk' (43554121) panicked at src/settings_service/sequence_race_tests.rs:76:5:
+assertion `left == right` failed
+  left: Some(Number(2))
+ right: Some(Number(1))
+
+
+failures:
+    settings_service::sequence::tests::races::concurrent_effect_writes_of_one_key_leave_native_state_equal_to_disk
+    settings_service::sequence::tests::races::concurrent_prepared_writes_of_one_key_leave_native_state_equal_to_disk
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 344 filtered out; finished in 0.24s
+
+error: test failed, to rerun pass `--lib`

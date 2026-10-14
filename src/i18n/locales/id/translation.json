@@ -694,7 +694,18 @@
     "modelLoadFailedUnknown": "model tidak dikenal",
     "pasteFailedTitle": "Gagal Menempelkan Teks",
     "pasteFailed": "Teks tidak dapat ditempelkan ke aplikasi aktif.",
-    "transcriptionFailedTitle": "Transkripsi Gagal"
+    "transcriptionFailedTitle": "Transkripsi Gagal",
+    "settings": {
+      "committedNotApplied": "Pengaturan telah disimpan, tetapi tidak dapat langsung diterapkan.",
+      "gpuDeviceRequired": "Pilih perangkat GPU sebelum memilih akselerator GPU.",
+      "outOfRange": "Nilai ini berada di luar rentang yang diizinkan.",
+      "validationFailed": "Nilai ini tidak diterima untuk pengaturan ini.",
+      "revisionConflict": "Pengaturan telah diubah di tempat lain. Muat ulang dan coba lagi.",
+      "unavailable": "Pengaturan ini tidak dapat diubah sekarang. Coba lagi nanti.",
+      "persistenceFailed": "Pengaturan tidak dapat disimpan.",
+      "generic": "Pengaturan tidak dapat diubah.",
+      "readOnly": "Pengaturan hanya-baca untuk sesi ini: file pengaturan tidak dapat ditulis dengan aman, sehingga perubahan tidak akan disimpan."
+    }
   },
   "appLanguage": {
     "title": "Bahasa Aplikasi",

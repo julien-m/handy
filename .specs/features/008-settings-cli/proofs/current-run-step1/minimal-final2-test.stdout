@@ -1,0 +1,27 @@
+
+running 22 tests
+test cli_console::detach_success_including_no_attached_console_is_accepted ... ok
+test cli_console::detach_failure_retains_error_kind_and_safe_operation_context ... ok
+test cli_console::historical_startup_and_recording_flags_remain_combinable ... ok
+test unix::absent_probe_creates_nothing ... ok
+test cli_console::historical_value_flags_keep_values_and_transcription_combinations ... ok
+test cli_console::historical_boolean_flags_keep_their_parser_values ... ok
+test cli_console::parsed_gui_detaches_console_and_headless_keeps_it ... ok
+test platform_unix::tests::native_peer_identity_mismatch_never_returns_stream ... ok
+test platform_unix::tests::bind_rejects_socket_replacement_with_matching_owner_and_mode ... ok
+test platform_unix::tests::bind_rejects_regular_replacement_without_changing_permissions ... ok
+test windows::rejected_pipe_authentication_never_returns_resource_and_closes_peer ... ok
+test windows::session_negative_cannot_prove_other_sessions_absent ... ok
+test windows::pipe_identity_rejects_injection_and_isolates_user_and_store ... ok
+test windows::uncertainty_does_not_authorize_offline_operation ... ok
+test unix::lock_and_file_refuse_hostile_aliases ... ok
+test unix::new_socket_authenticates_peer_and_refuses_replaced_path ... ok
+test unix::ambiguous_legacy_resources_fail_closed ... ok
+test windows::successful_pipe_authentication_precedes_resource_transfer ... ok
+test unix::occupied_probe_never_notifies_or_modifies_store ... ok
+test unix::private_directory_refuses_permissions_alias_and_replacement ... ok
+test unix::close_retains_socket_and_releases_lock_by_lifetime ... ok
+test platform_unix::tests::concurrent_socket_binds_preserve_unrelated_file_creation_permissions ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+

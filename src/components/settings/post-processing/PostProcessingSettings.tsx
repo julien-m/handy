@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { RefreshCcw } from "lucide-react";
 import { commands } from "@/bindings";
+import { toast } from "sonner";
+import { settingsErrorKey } from "@/stores/settings-errors";
 
 import { Alert } from "../../ui/Alert";
 import {
@@ -191,6 +193,8 @@ const PostProcessingSettingsPromptsComponent: React.FC = () => {
         await refreshSettings();
         updateSetting("post_process_selected_prompt_id", result.data.id);
         setIsCreating(false);
+      } else {
+        toast.error(t(settingsErrorKey(result.error)));
       }
     } catch (error) {
       console.error("Failed to create prompt:", error);
@@ -201,11 +205,14 @@ const PostProcessingSettingsPromptsComponent: React.FC = () => {
     if (!selectedPromptId || !draftName.trim() || !draftText.trim()) return;
 
     try {
-      await commands.updatePostProcessPrompt(
+      const result = await commands.updatePostProcessPrompt(
         selectedPromptId,
         draftName.trim(),
         draftText.trim(),
       );
+      if (result.status === "error") {
+        toast.error(t(settingsErrorKey(result.error)));
+      }
       await refreshSettings();
     } catch (error) {
       console.error("Failed to update prompt:", error);
@@ -216,7 +223,10 @@ const PostProcessingSettingsPromptsComponent: React.FC = () => {
     if (!promptId) return;
 
     try {
-      await commands.deletePostProcessPrompt(promptId);
+      const result = await commands.deletePostProcessPrompt(promptId);
+      if (result.status === "error") {
+        toast.error(t(settingsErrorKey(result.error)));
+      }
       await refreshSettings();
       setIsCreating(false);
     } catch (error) {

@@ -691,7 +691,18 @@
     "modelLoadFailedUnknown": "modelo desconhecido",
     "pasteFailedTitle": "Falha ao colar o texto",
     "pasteFailed": "Não foi possível colar o texto no aplicativo ativo.",
-    "transcriptionFailedTitle": "Falha na transcrição"
+    "transcriptionFailedTitle": "Falha na transcrição",
+    "settings": {
+      "committedNotApplied": "A configuração foi salva, mas não pôde ser aplicada imediatamente.",
+      "gpuDeviceRequired": "Selecione um dispositivo de GPU antes de escolher o acelerador de GPU.",
+      "outOfRange": "Este valor está fora do intervalo permitido.",
+      "validationFailed": "Este valor não é aceito para esta configuração.",
+      "revisionConflict": "As configurações foram alteradas em outro lugar. Recarregue e tente novamente.",
+      "unavailable": "Esta configuração não pode ser alterada agora. Tente novamente mais tarde.",
+      "persistenceFailed": "Não foi possível salvar as configurações.",
+      "generic": "Não foi possível alterar a configuração.",
+      "readOnly": "As configurações estão somente leitura nesta sessão: o arquivo de configurações não pode ser gravado com segurança, então as alterações não serão salvas."
+    }
   },
   "appLanguage": {
     "title": "Idioma da Aplicação",

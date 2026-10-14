@@ -103,23 +103,36 @@ pub fn resolve_app_data(app: &tauri::AppHandle, relative: &str) -> Result<PathBu
     Ok(app_data_dir(app)?.join(relative))
 }
 
-/// Get the path to use with `tauri-plugin-store`.
-/// Returns an absolute path in portable mode (so the store plugin writes to
-/// the portable Data dir) or the original relative path otherwise.
-pub fn store_path(relative: &str) -> PathBuf {
-    if let Some(dir) = data_dir() {
-        dir.join(relative)
-    } else {
-        PathBuf::from(relative)
-    }
+/// Resolve marker semantics without upgrading it, creating Data or changing environment.
+///
+/// Same rule as `init`: a marker holding the magic string enables portable mode; any other
+/// existing marker (empty, invalid, non-UTF-8 or unreadable legacy v0.8.0 marker) enables it only
+/// beside an existing `Data` directory.
+pub(crate) fn resolve_data_dir(
+    marker: &Path,
+    data: &Path,
+) -> Result<Option<PathBuf>, crate::settings_service::errors::SettingsError> {
+    let has_magic = match std::fs::read(marker) {
+        Ok(bytes) => std::str::from_utf8(&bytes).is_ok_and(has_portable_magic),
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(None),
+        // An existing but unreadable marker is still an existing marker for `init`.
+        Err(_) => false,
+    };
+    let enabled = has_magic || data.exists();
+    Ok(enabled.then(|| data.to_path_buf()))
 }
 
 /// Check if a marker file path contains the portable magic string.
 /// Extracted for testability.
 fn is_valid_portable_marker(path: &std::path::Path) -> bool {
     std::fs::read_to_string(path)
-        .map(|s| s.trim().starts_with("Handy Portable Mode"))
+        .map(|s| has_portable_magic(&s))
         .unwrap_or(false)
+}
+
+/// Marker contents that enable portable mode on their own (leading/trailing whitespace allowed).
+fn has_portable_magic(text: &str) -> bool {
+    text.trim().starts_with("Handy Portable Mode")
 }
 
 #[cfg(test)]

@@ -41,7 +41,7 @@
 | 005 | Custom AI Prompts | Planned | 2026-10-12 | 2026-10-12 | [spec](features/005-custom-ai-prompts/spec.md) |
 | 006 | Destination Application | Planned | 2026-10-12 | 2026-10-13 | [spec](features/006-destination-application/spec.md) |
 | 007 | Smart Paste | In Progress | 2026-10-12 | 2026-10-13 | [spec](features/007-smart-paste/spec.md) |
-| 008 | Settings CLI | Planned | 2026-10-12 | 2026-10-12 | [spec](features/008-settings-cli/spec.md) |
+| 008 | Settings CLI | In Progress | 2026-10-12 | 2026-10-13 | [spec](features/008-settings-cli/spec.md) |
 | 009 | PIN Mode and Enter Rule | Planned | 2026-10-12 | 2026-10-13 | [spec](features/009-pin-mode-and-enter-rule/spec.md) |
 | 010 | Recovery Bubble | Planned | 2026-10-12 | 2026-10-13 | [spec](features/010-recovery-bubble/spec.md) |
 <!-- readme:features:end -->
@@ -78,6 +78,16 @@
 | 2026-10-12 | Feature | [Feature 009] Plan refined: align Enter with smart paste outcomes, shared output smart_paste configuration and changeCount restoration guard; preserve Windows reliable paste |
 | 2026-10-12 | Feature | Smart Paste — 9 implementation steps, 4 diagrams, 008 output domain, bounded snapshots and truthful outcomes |
 | 2026-10-12 | Feature | [Feature 006] Plan refined: smart-paste terminal results replace retired clipboard-window integration; Windows reliable paste preserved |
+| 2026-10-13 | Bugfix | 008-settings-cli: Step 3 audit corrections applied; Done pending independent audit |
+| 2026-10-13 | Feature | 008-settings-cli: Step 3 Blocked by platform refusal; feature delivery incomplete |
+| 2026-10-13 | Feature | 008-settings-cli: Step3 pure repository resumes; app adoption moved into Step4 all-writer cutover |
+| 2026-10-13 | Feature | 008-settings-cli: Step 2 pure foundation Done;21 tests pass, whole acceptance remains partial |
+| 2026-10-13 | Feature | 008-settings-cli: Step 1 primitive gate Done; 22 tests pass, complete acceptance remains partial |
+| 2026-10-13 | Feature | 008-settings-cli: Bounded Unix mechanism refined; current-source proof pending |
+| 2026-10-13 | Feature | 008-settings-cli: Registry activity refreshed; socket failure-path retention recorded |
+| 2026-10-13 | Feature | 008-settings-cli: Root corrects whole-AC step-block interpretation; Step 1 audit pending |
+| 2026-10-13 | Feature | 008-settings-cli: Superseded whole-AC step-block interpretation |
+| 2026-10-13 | Feature | 008-settings-cli: Step 1 local parser/console tests 17/17; mandatory audit Blocked without verdict; Steps 2–7 Todo, all ACs uncertified |
 <!-- readme:activity:end -->
 
 ---
@@ -153,3 +163,13 @@
 <!-- finalize:spec-plan:2026-10-13:17322c07 -->
 
 <!-- finalize:spec-feature:2026-10-13:72e02927 -->
+
+<!-- finalize:spec-plan:2026-10-13:e428ba3d -->
+
+<!-- finalize:spec-implement:2026-10-13:61bf0cb4 -->
+
+<!-- finalize:spec-implement:2026-10-13:9b1995bc -->
+
+<!-- finalize:spec-plan:2026-10-13:ff08720c -->
+
+<!-- finalize:spec-plan:2026-10-13:1953f656 -->

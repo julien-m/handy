@@ -1978,6 +1978,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "fs2"
+version = "0.4.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9564fc758e15025b46aa6643b1b77d047d1a56a1aea6e01002ac0c7026876213"
+dependencies = [
+ "libc",
+ "winapi",
+]
+
+[[package]]
 name = "fst"
 version = "0.4.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2507,11 +2517,13 @@ dependencies = [
  "chrono",
  "clap",
  "cpal",
+ "dirs 6.0.0",
  "earshot",
  "enigo",
  "env_filter",
  "ferrous-opencc",
  "flate2",
+ "fs2",
  "futures-util",
  "gtk",
  "gtk-layer-shell",
@@ -2558,7 +2570,6 @@ dependencies = [
  "tauri-plugin-os",
  "tauri-plugin-process",
  "tauri-plugin-single-instance",
- "tauri-plugin-store",
  "tauri-plugin-updater",
  "tauri-specta",
  "tempfile",
@@ -2569,7 +2580,9 @@ dependencies = [
  "webview2-com",
  "whatlang",
  "windows 0.61.3",
+ "windows-sys 0.60.2",
  "winreg 0.55.0",
+ "zbus",
 ]
 
 [[package]]
@@ -6712,22 +6725,6 @@ dependencies = [
  "tracing",
  "windows-sys 0.60.2",
  "zbus",
-]
-
-[[package]]
-name = "tauri-plugin-store"
-version = "2.4.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5ca1a8ff83c269b115e98726ffc13f9e548a10161544a92ad121d6d0a96e16ea"
-dependencies = [
- "dunce",
- "serde",
- "serde_json",
- "tauri",
- "tauri-plugin",
- "thiserror 2.0.18",
- "tokio",
- "tracing",
 ]
 
 [[package]]

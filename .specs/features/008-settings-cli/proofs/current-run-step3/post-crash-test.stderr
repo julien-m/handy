@@ -1,0 +1,21 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy/src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 10.95s
+     Running tests/settings_transactions.rs (src-tauri/target/debug/deps/settings_transactions-05314483cc7219f2)
+NESTED 19546 READY
+NESTED 19545 READY
+NESTED 19547 READY
+NESTED 19549 READY
+NESTED 19551 READY
+NESTED 19545 CRASH_READY
+NESTED_KILL 19545 None
+CRASH_GENERATION crash_before revision=7 fingerprint=7ae727f5f31d700c
+NESTED 19552 READY
+NESTED 19546 RESULT {"ok":true,"revision":2}
+NESTED 19547 RESULT {"ok":true,"revision":1}
+NESTED 19552 CRASH_READY
+NESTED_KILL 19552 None
+CRASH_GENERATION crash_after revision=8 fingerprint=251922a1b694eb59
+NESTED 19549 RESULT {"ok":true,"revision":1}
+NESTED 19551 RESULT {"ok":true,"revision":1}

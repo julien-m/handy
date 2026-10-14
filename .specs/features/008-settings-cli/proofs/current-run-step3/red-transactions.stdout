@@ -1,0 +1,39 @@
+
+running 4 tests
+test transactions::corrupt_or_overflow_revision_and_broken_json_refuse_write ... FAILED
+test transactions::changed_patch_is_durable_increments_once_and_preserves_unknowns_and_secrets ... FAILED
+test transactions::semantic_noop_does_not_rewrite_or_increment_and_first_change_is_one ... FAILED
+test transactions::stale_compare_and_set_refuses_without_changing_bytes ... FAILED
+
+failures:
+
+---- transactions::corrupt_or_overflow_revision_and_broken_json_refuse_write stdout ----
+Error: "unsafe continuity accepted"
+
+---- transactions::changed_patch_is_durable_increments_once_and_preserves_unknowns_and_secrets stdout ----
+
+thread 'transactions::changed_patch_is_durable_increments_once_and_preserves_unknowns_and_secrets' (39592994) panicked at tests/settings_transactions/transactions.rs:34:5:
+assertion `left == right` failed
+  left: Revision(7)
+ right: Revision(8)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- transactions::semantic_noop_does_not_rewrite_or_increment_and_first_change_is_one stdout ----
+
+thread 'transactions::semantic_noop_does_not_rewrite_or_increment_and_first_change_is_one' (39592996) panicked at tests/settings_transactions/transactions.rs:104:5:
+assertion `left == right` failed
+  left: Revision(0)
+ right: Revision(1)
+
+---- transactions::stale_compare_and_set_refuses_without_changing_bytes stdout ----
+Error: "stale CAS accepted"
+
+
+failures:
+    transactions::changed_patch_is_durable_increments_once_and_preserves_unknowns_and_secrets
+    transactions::corrupt_or_overflow_revision_and_broken_json_refuse_write
+    transactions::semantic_noop_does_not_rewrite_or_increment_and_first_change_is_one
+    transactions::stale_compare_and_set_refuses_without_changing_bytes
+
+test result: FAILED. 0 passed; 4 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.03s
+
