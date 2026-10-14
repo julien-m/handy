@@ -96,3 +96,11 @@
 - Review: the plan review is stale until an independent reviewer refreshes it.
 
 <!-- finalize:spec-refine:2026-10-14:d7cad1e7 -->
+
+## 2026-10-14 — [Feature]: Indicator prompt pill, menu and failure notice (UI pass)
+
+- **Type:** Feature
+- **Spec modified:** No
+- **Code modified:** src/overlay/* (prompt pill and menu, notices), src/hooks/use-overlay-none-notices.ts, App.tsx, 26 locales
+- **AC impacted:** AC-003, AC-005 (indicator part); browser-tested, native proof pending
+- **Author:** Claude Code (UI pass, feature/ui-overlay 69a6ee73)

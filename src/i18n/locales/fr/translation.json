@@ -220,7 +220,21 @@
             "registration": "Le système a refusé ce raccourci : {{error}}",
             "generic": "Le raccourci n'a pas pu être enregistré",
             "conflictsUnavailable": "Impossible de vérifier les conflits de raccourcis"
-          }
+          },
+          "changeButton": "Modifier",
+          "discard": "Abandonner ce raccourci",
+          "lastHint": "Chaque action garde au moins un raccourci. Modifiez-le ou réinitialisez-le plutôt.",
+          "limitHint": "{{count}} raccourcis sur {{limit}}. Supprimez-en un pour en ajouter un autre.",
+          "draftConflict": "{{shortcut}} est déjà utilisé par {{action}}. Rien n'a été enregistré.",
+          "draftOverlap": "{{shortcut}} déclencherait aussi {{action}}. Rien n'a été enregistré.",
+          "legacyOverlap": "{{shortcut}} chevauche {{action}}",
+          "legacyDuplicate": "{{shortcut}} est aussi utilisé par {{action}}",
+          "legacyBody": "Il fonctionne toujours comme avant la mise à jour. Modifiez-le pour faire disparaître cet avertissement.",
+          "systemRefused": "{{system}} a refusé {{shortcut}}",
+          "systemRefusedGeneric": "Le système a refusé ce raccourci",
+          "systemRefusedBody": "Une autre app a peut-être enregistré cette combinaison. Choisissez-en une autre ou réessayez.",
+          "systemReason": "Message du système : {{error}}",
+          "retry": "Réessayer"
         }
       },
       "language": {
@@ -344,9 +358,13 @@
           "clipboardShiftInsert": "Presse-papiers (Shift+Insert)",
           "direct": "Direct",
           "none": "Aucun",
-          "externalScript": "Script externe"
+          "externalScript": "Script externe",
+          "clipboardMac": "Presse-papiers (⌘V)",
+          "smartPasteDescription": "Par défaut sur macOS",
+          "noneDescription": "Historique et presse-papiers uniquement"
         },
-        "externalScriptPlaceholder": "/chemin/vers/votre/script.sh"
+        "externalScriptPlaceholder": "/chemin/vers/votre/script.sh",
+        "descriptionSmart": "Le collage intelligent écrit directement dans le champ, sinon il colle puis restaure votre presse-papiers."
       },
       "typingTool": {
         "title": "Outil de frappe",
@@ -392,14 +410,6 @@
           "sec15": "Après 15 secondes (Débogage)"
         }
       },
-      "customWords": {
-        "title": "Mots personnalisés",
-        "description": "Aidez les modèles compatibles à reconnaître les noms et les termes spécialisés. La correction approximative est actuellement limitée aux mots utilisant les lettres A à Z et des chiffres.",
-        "placeholder": "Ajouter un mot",
-        "add": "Ajouter",
-        "remove": "Supprimer {{word}}",
-        "duplicate": "\"{{word}}\" existe déjà"
-      },
       "voiceActivityDetection": {
         "title": "Détection d'activité vocale (VAD)",
         "description": "Filtre le silence des enregistrements. Les modèles compatibles avec le streaming utilisent une marge de détection VAD plus longue ; désactiver le VAD enregistre l'audio brut."
@@ -424,6 +434,143 @@
           "simplified": "Simplifié",
           "traditional": "Traditionnel"
         }
+      },
+      "returnToApp": {
+        "title": "Revenir à l'application de la dictée",
+        "description": "Insérer dans l'app où la dictée a commencé, même si vous changez d'app entre-temps.",
+        "unavailableUnreadable": "Indisponible sur ce système : Handy ne peut pas lire l'app au premier plan ici. Le texte va à l'app au premier plan à la fin.",
+        "unavailablePlatform": "Indisponible sur ce système. Le texte va à l'app au premier plan à la fin.",
+        "details": "Handy retient l'app au premier plan au début d'une dictée et y revient avant d'insérer le texte. Désactivé, le texte va à l'app au premier plan à la fin de la dictée.",
+        "detailsLabel": "À propos du retour à l'application de la dictée"
+      }
+    },
+    "vocabulary": {
+      "group": "Vocabulaire",
+      "title": "Vocabulaire",
+      "description": "Noms et termes que le modèle doit reconnaître, s’il le permet. Les remplacements, eux, réécrivent le texte après la reconnaissance.",
+      "placeholder": "Ajouter un terme",
+      "inputLabel": "Nouveau terme du vocabulaire",
+      "add": "Ajouter",
+      "addHint": "Saisissez un terme pour l’ajouter.",
+      "busy": "Attendez la fin de la modification en cours.",
+      "paste": "Coller une liste…",
+      "count": "Termes : {{total}} sur {{max}}",
+      "listLabel": "Termes du vocabulaire",
+      "remove": "Supprimer {{term}}",
+      "retry": "Réessayer",
+      "loading": "Chargement du vocabulaire…",
+      "listFailed": "Impossible de lire le vocabulaire enregistré. Rien n’a été modifié ; réessayez pour le charger.",
+      "empty": {
+        "title": "Aucun terme pour l’instant",
+        "body": "Ajoutez des noms comme Claude Code ou OpenClaw, un par un ou en collant une liste."
+      },
+      "flag": {
+        "empty": "Terme vide, non envoyé. Supprimez-le.",
+        "too_long": "Plus de 100 caractères, non envoyé. Supprimez-le et ajoutez une version plus courte.",
+        "line_break": "Contient un saut de ligne, non envoyé. Supprimez-le et ajoutez-le de nouveau.",
+        "forbidden_character": "Contient < > ou \", non envoyé. Supprimez-le et ajoutez-le sans ces caractères.",
+        "duplicate": "Identique à un terme précédent, non envoyé. Supprimez-le.",
+        "over_capacity": "Au-delà de la limite de 500 termes, non envoyé tant que la liste n’est pas plus courte.",
+        "over_budget": "Non envoyé : dépasse la limite du modèle."
+      },
+      "errors": {
+        "term_empty": "Saisissez un terme.",
+        "term_too_long": "Un terme peut contenir au maximum 100 caractères.",
+        "term_line_break": "Un terme doit tenir sur une seule ligne.",
+        "term_forbidden_character": "Retirez les caractères < > ou \" du terme.",
+        "term_duplicate": "Chaque terme ne peut figurer qu’une fois, et celui-ci est déjà dans le vocabulaire.",
+        "limit": "Le vocabulaire contient au maximum 500 termes. Supprimez un terme pour en ajouter un autre.",
+        "conflict": "Le vocabulaire a changé entre-temps et a été rechargé. Réessayez.",
+        "notFound": "Ce terme a déjà été supprimé. Le vocabulaire a été rechargé.",
+        "unknown": "Handy n’a pas pu confirmer la modification. Le vocabulaire a été rechargé ; vérifiez-le avant de réessayer.",
+        "committed": "Le vocabulaire a été enregistré, mais Handy n’a pas pu l’appliquer tout de suite. La liste a été rechargée.",
+        "saved": "Votre vocabulaire enregistré n’a pas changé."
+      },
+      "status": {
+        "loading": "Vérification de ce que le modèle prend en charge…",
+        "selectedModel": "le modèle sélectionné",
+        "used": {
+          "title": "Utilisé pendant la reconnaissance par {{model}}",
+          "sent": "Termes envoyés : {{sent}} sur {{total}}.",
+          "sentOne": "Termes envoyés : {{sent}} sur 1."
+        },
+        "notSent": {
+          "over_budget": "Non envoyés, au-delà de la limite du modèle : {{terms}}.",
+          "invalid": "Non envoyés, non valides : {{terms}}.",
+          "duplicate": "Non envoyés, doublons : {{terms}}.",
+          "over_capacity": "Non envoyés, au-delà de 500 termes : {{terms}}."
+        },
+        "noTermSent": {
+          "title": "{{model}} ne reçoit aucun terme",
+          "empty_vocabulary": "Le vocabulaire est vide. Ajoutez des termes pour les utiliser pendant la reconnaissance.",
+          "invalid_terms_only": "Tous les termes enregistrés sont non valides ou en double. Supprimez les termes signalés et ajoutez des versions corrigées.",
+          "over_budget": "Le premier terme dépasse la limite du modèle, donc aucun terme n’est envoyé. Supprimez-le pour envoyer les termes suivants."
+        },
+        "notSupported": {
+          "title": "{{model}} ne peut pas utiliser le vocabulaire pendant la reconnaissance",
+          "body": "La correction approximative après la reconnaissance s’applique à la place. Choisissez un modèle Whisper pour envoyer des termes à la reconnaissance."
+        },
+        "streaming": {
+          "title": "Non utilisé en transcription en direct",
+          "body": "{{model}} transcrit en direct, ce qui n’envoie aucun contexte de reconnaissance. La correction approximative s’applique plutôt au texte final."
+        },
+        "unknown": {
+          "title": "Prise en charge inconnue jusqu’au chargement du modèle",
+          "model_not_loaded": "Handy vérifie ce que {{model}} prend en charge au moment de le charger.",
+          "capability_query_unanswered": "{{model}} n’a pas répondu à temps, par exemple pendant une dictée. Handy vérifiera de nouveau ensuite."
+        },
+        "budgetUnverified": {
+          "title": "Prise en charge du vocabulaire non confirmée pour {{model}}",
+          "body": "Ce modèle déclare un contexte de reconnaissance, mais cette version n’a aucune limite documentée pour celui-ci. Aucun terme n’est envoyé ; la correction approximative s’applique à la place."
+        },
+        "failed": {
+          "title": "Impossible de lire l’état du vocabulaire",
+          "body": "Votre vocabulaire est enregistré. Réessayez pour vérifier ce que le modèle prend en charge."
+        }
+      },
+      "pasteBox": {
+        "title": "Coller des termes",
+        "description": "Un terme par ligne. Les doublons sont ignorés ; les lignes non valides doivent être corrigées avant l’ajout.",
+        "label": "Termes à coller, un par ligne",
+        "previewTitle": "Aperçu",
+        "previewEmpty": "Collez ou saisissez un terme par ligne pour voir ce qui sera ajouté.",
+        "sameAs": "{{term}} — identique à {{original}}",
+        "alreadyListed": "{{term}} — déjà dans la liste",
+        "summary": {
+          "add": "À ajouter : {{n}}",
+          "duplicateOne": "1 doublon",
+          "duplicateMany": "Doublons : {{n}}",
+          "errorOne": "1 erreur",
+          "errorMany": "Erreurs : {{n}}"
+        },
+        "kind": {
+          "add": "Ajout",
+          "duplicate": "Doublon",
+          "error": "Erreur"
+        },
+        "line": {
+          "empty": "Ligne {{line}} : ligne vide, supprimez-la",
+          "too_long": "Ligne {{line}} : 100 caractères au maximum",
+          "line_break": "Ligne {{line}} : gardez le terme sur une seule ligne",
+          "forbidden_character": "Ligne {{line}} : retirez les caractères < > ou \"",
+          "duplicate": "Ligne {{line}} : identique à un terme précédent",
+          "over_capacity": "Ligne {{line}} : au-delà de la limite de 500 termes"
+        },
+        "note": {
+          "empty": "Votre vocabulaire reste inchangé tant que vous n’ajoutez pas les termes.",
+          "checking": "Vérification des lignes…",
+          "fixOne": "Corrigez la ligne {{lines}} pour ajouter les termes. Votre vocabulaire n’a pas changé.",
+          "fixMany": "Corrigez les lignes {{lines}} pour ajouter les termes. Votre vocabulaire n’a pas changé.",
+          "overCapacity": "Le vocabulaire contient au maximum 500 termes. Raccourcissez la liste pour l’ajouter. Votre vocabulaire n’a pas changé.",
+          "nothingToAdd": "Toutes les lignes figurent déjà dans le vocabulaire.",
+          "ready": "Les doublons sont ignorés. Rien n’est enregistré tant que vous n’ajoutez pas les termes."
+        },
+        "cancel": "Annuler",
+        "applyOne": "Ajouter 1 terme",
+        "applyMany": "Ajouter les termes ({{n}})",
+        "applyZero": "Ajouter des termes",
+        "applying": "Ajout en cours…",
+        "applied": "Termes ajoutés au vocabulaire."
       }
     },
     "postProcessing": {
@@ -534,7 +681,8 @@
       "historyLimit": {
         "title": "Limite d'historique",
         "description": "Nombre maximum d'entrées d'historique à conserver",
-        "entries": "entrées"
+        "entries": "entrées",
+        "invalid": "Saisissez un nombre entier de {{min}} à {{max}}."
       },
       "recordingRetention": {
         "title": "Suppression automatique des enregistrements",
@@ -855,7 +1003,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy a besoin des autorisations d'accessibilité pour taper le texte transcrit.",
-    "openSettings": "Ouvrir les Préférences Système"
+    "openSettings": "Ouvrir les Préférences Système",
+    "offTitle": "L'autorisation d'accessibilité est désactivée",
+    "smartPasteOff": "Le collage intelligent ne peut ni insérer ni coller. Vos transcriptions sont conservées pour être récupérées."
   },
   "errors": {
     "loadDirectory": "Erreur lors du chargement du répertoire : {{error}}",
@@ -885,7 +1035,7 @@
       "revisionConflict": "Les réglages ont été modifiés ailleurs. Rechargez et réessayez.",
       "unavailable": "Ce réglage ne peut pas être modifié pour le moment. Réessayez plus tard.",
       "shortcutSessionBusy": "Une dictée est en cours. Réessayez lorsqu'elle sera terminée.",
-      "persistenceFailed": "Les réglages n'ont pas pu être enregistrés.",
+      "persistenceFailed": "Impossible d'enregistrer les réglages : le fichier de réglages n'a pas pu être écrit. Rien n'a été modifié.",
       "generic": "Le réglage n'a pas pu être modifié.",
       "readOnly": "Les réglages sont en lecture seule pour cette session : le fichier de réglages ne peut pas être écrit en toute sécurité, les modifications ne seront donc pas enregistrées.",
       "unsupportedPlatform": "Ce réglage n'est pas disponible sur ce système.",
@@ -897,7 +1047,10 @@
       "promptOverrideIncomplete": "Choisissez un fournisseur et un modèle, ou utilisez le fournisseur par défaut.",
       "promptUnknownProvider": "Ce fournisseur n'est pas disponible.",
       "promptNotUsable": "Ce prompt est invalide. Modifiez-le avant de l'utiliser.",
-      "limitExceeded": "Le nombre maximum est atteint."
+      "limitExceeded": "Le nombre maximum est atteint.",
+      "conflictTitle": "Réglages modifiés ailleurs",
+      "conflictBody": "La ligne de commande ou une autre fenêtre a enregistré une version plus récente. Rechargez pour la voir ; votre modification non enregistrée est abandonnée.",
+      "reload": "Recharger"
     }
   },
   "appLanguage": {
@@ -917,7 +1070,51 @@
     "transcribing": "Transcription...",
     "processing": "Traitement...",
     "loadingModel": "Chargement du modèle...",
-    "fallbackNotice": "Le traitement par l'IA a échoué. Le texte original a été utilisé."
+    "fallbackNotice": "Le traitement par l'IA a échoué. Le texte original a été utilisé.",
+    "destination": {
+      "label": "Destination : {{name}}",
+      "frontmostApp": "App au premier plan",
+      "remove": "Retirer la destination",
+      "unknownApp": "L'app de destination",
+      "choiceFailed": "La destination n'a pas pu être modifiée.",
+      "menu": {
+        "title": "Destination de cette dictée",
+        "frontmostNow": "Au premier plan maintenant",
+        "otherApps": "Autres apps",
+        "frontmostAtEnd": "App au premier plan à la fin",
+        "loading": "Chargement des apps…",
+        "failed": "La liste des apps n'a pas pu être chargée."
+      },
+      "refused": {
+        "stale": "La destination a changé entre-temps ; la liste a été actualisée.",
+        "frozen": "L'insertion a commencé ; la destination ne peut plus changer.",
+        "unavailable": "Cette app n'est plus disponible ; la liste a été actualisée."
+      },
+      "notice": {
+        "appClosedKept": "{{app}} est fermée. Rien n'a été inséré ; la transcription est conservée dans l'Historique.",
+        "appClosedNotKept": "{{app}} est fermée. Rien n'a été inséré, et la transcription n'a pas pu être enregistrée dans l'Historique.",
+        "activationFailedKept": "{{app}} n'est pas passée au premier plan. Rien n'a été inséré ; la transcription est conservée dans l'Historique.",
+        "activationFailedNotKept": "{{app}} n'est pas passée au premier plan. Rien n'a été inséré, et la transcription n'a pas pu être enregistrée dans l'Historique.",
+        "insertionFailedKept": "{{app}} n'a peut-être pas reçu le texte ; la transcription est conservée dans l'Historique.",
+        "insertionFailedNotKept": "{{app}} n'a peut-être pas reçu le texte, et la transcription n'a pas pu être enregistrée dans l'Historique."
+      }
+    },
+    "prompt": {
+      "label": "Prompt de cette dictée : {{name}}",
+      "hint": "Survolez pour voir les options",
+      "none": "Aucun (sans traitement IA)",
+      "menuTitle": "Prompt de cette dictée",
+      "note": "S'applique à cette dictée uniquement. Le prompt par défaut reste {{name}}.",
+      "loading": "Chargement des prompts…",
+      "failed": "Les prompts n'ont pas pu être chargés.",
+      "choiceFailed": "Le prompt n'a pas pu être modifié.",
+      "refused": {
+        "sessionEnded": "L'enregistrement est terminé ; le prompt ne peut plus changer.",
+        "processingOff": "Le traitement IA est désactivé pour cette dictée.",
+        "promptMissing": "Ce prompt n'existe plus.",
+        "promptNotUsable": "Ce prompt comporte des erreurs ; modifiez-le d'abord dans les réglages."
+      }
+    }
   },
   "whatsNew": {
     "title": "Nouveautés de Handy v{{version}}"

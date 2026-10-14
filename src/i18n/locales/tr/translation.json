@@ -220,7 +220,21 @@
             "registration": "Sistem bu kısayolu reddetti: {{error}}",
             "generic": "Kısayol kaydedilemedi",
             "conflictsUnavailable": "Kısayol çakışmaları denetlenemedi"
-          }
+          },
+          "changeButton": "Değiştir",
+          "discard": "Bu kısayolu at",
+          "lastHint": "Her eylem en az bir kısayolu korur. Bunun yerine onu değiştirin veya sıfırlayın.",
+          "limitHint": "{{count}}/{{limit}} kısayol. Başka bir tane eklemek için birini kaldırın.",
+          "draftConflict": "{{shortcut}} zaten {{action}} tarafından kullanılıyor. Hiçbir şey kaydedilmedi.",
+          "draftOverlap": "{{shortcut}} ayrıca {{action}} eylemini de tetikler. Hiçbir şey kaydedilmedi.",
+          "legacyOverlap": "{{shortcut}}, {{action}} ile çakışıyor",
+          "legacyDuplicate": "{{shortcut}}, {{action}} tarafından da kullanılıyor",
+          "legacyBody": "Güncellemeden önceki gibi çalışmaya devam etti. Bu uyarıyı kaldırmak için değiştirin.",
+          "systemRefused": "{{system}}, {{shortcut}} kısayolunu reddetti",
+          "systemRefusedGeneric": "Sistem bu kısayolu reddetti",
+          "systemRefusedBody": "Bu kombinasyonu başka bir uygulama kaydetmiş olabilir. Başka bir tane seçin veya tekrar deneyin.",
+          "systemReason": "Sistem iletisi: {{error}}",
+          "retry": "Tekrar dene"
         }
       },
       "language": {
@@ -344,9 +358,13 @@
           "clipboardShiftInsert": "Pano (Shift+Insert)",
           "direct": "Doğrudan",
           "none": "Yok",
-          "externalScript": "Harici Betik"
+          "externalScript": "Harici Betik",
+          "clipboardMac": "Pano (⌘V)",
+          "smartPasteDescription": "macOS'ta varsayılan",
+          "noneDescription": "Yalnızca geçmiş ve pano"
         },
-        "externalScriptPlaceholder": "/dosya/yolu/betik.sh"
+        "externalScriptPlaceholder": "/dosya/yolu/betik.sh",
+        "descriptionSmart": "Akıllı yapıştırma doğrudan alana yazar; aksi halde yapıştırır ve panonuzu geri yükler."
       },
       "typingTool": {
         "title": "Yazma Aracı",
@@ -392,14 +410,6 @@
           "sec15": "15 saniye sonra (Debug)"
         }
       },
-      "customWords": {
-        "title": "Özel Kelimeler",
-        "description": "Desteklenen modellerin adları ve özel terimleri tanımasına yardımcı olun. Bulanık düzeltme şu anda A–Z harflerini ve rakamları kullanan sözcüklerle sınırlıdır.",
-        "placeholder": "Kelime ekle",
-        "add": "Ekle",
-        "remove": "{{word}} Kaldır",
-        "duplicate": "\"{{word}}\" zaten mevcut"
-      },
       "voiceActivityDetection": {
         "title": "Ses Etkinliği Algılama",
         "description": "Kayıtlardaki sessizliği filtreler. Akış destekli modeller daha uzun bir VAD kuyruğu kullanır; VAD devre dışı bırakıldığında ham ses kaydedilir."
@@ -424,6 +434,143 @@
           "simplified": "Basitleştirilmiş",
           "traditional": "Geleneksel"
         }
+      },
+      "returnToApp": {
+        "title": "Dikte uygulamasına dön",
+        "description": "Bu arada uygulama değiştirseniz bile metni diktenin başladığı uygulamaya ekler.",
+        "unavailableUnreadable": "Bu sistemde kullanılamıyor: Handy burada öndeki uygulamayı okuyamıyor. Metin sonunda öndeki uygulamaya gider.",
+        "unavailablePlatform": "Bu sistemde kullanılamıyor. Metin sonunda öndeki uygulamaya gider.",
+        "details": "Handy, dikte başladığında öndeki uygulamayı hatırlar ve metni eklemeden önce ona geri döner. Kapalıyken metin, dikte bittiğinde öndeki uygulamaya gider.",
+        "detailsLabel": "Dikte uygulamasına dönme hakkında"
+      }
+    },
+    "vocabulary": {
+      "group": "Kelime Dağarcığı",
+      "title": "Kelime Dağarcığı",
+      "description": "Modelin, destekliyorsa, tanıması gereken adlar ve terimler. Değiştirmeler ise metni tanımadan sonra yeniden yazar.",
+      "placeholder": "Terim ekle",
+      "inputLabel": "Yeni terim",
+      "add": "Ekle",
+      "addHint": "Eklemek için bir terim yazın.",
+      "busy": "Geçerli değişikliğin bitmesini bekleyin.",
+      "paste": "Liste yapıştır…",
+      "count": "{{total}} / {{max}} terim",
+      "listLabel": "Kelime dağarcığı terimleri",
+      "remove": "{{term}} Kaldır",
+      "retry": "Yeniden dene",
+      "loading": "Kelime dağarcığı yükleniyor…",
+      "listFailed": "Kayıtlı kelime dağarcığı okunamadı. Hiçbir şey değişmedi; yüklemek için yeniden deneyin.",
+      "empty": {
+        "title": "Henüz terim yok",
+        "body": "Claude Code veya OpenClaw gibi adları tek tek ya da yapıştırılmış bir liste olarak ekleyin."
+      },
+      "flag": {
+        "empty": "Boş terim, gönderilmedi. Kaldırın.",
+        "too_long": "100 karakterden uzun, gönderilmedi. Kaldırıp daha kısa bir sürümünü ekleyin.",
+        "line_break": "Satır sonu içeriyor, gönderilmedi. Kaldırıp yeniden ekleyin.",
+        "forbidden_character": "< > veya \" içeriyor, gönderilmedi. Kaldırıp bu karakterler olmadan ekleyin.",
+        "duplicate": "Önceki bir terimle aynı, gönderilmedi. Kaldırın.",
+        "over_capacity": "500 terim sınırının ötesinde, liste kısalana kadar gönderilmez.",
+        "over_budget": "Gönderilmedi: model sınırını aşıyor."
+      },
+      "errors": {
+        "term_empty": "Bir terim girin.",
+        "term_too_long": "Bir terim en fazla 100 karakter olabilir.",
+        "term_line_break": "Bir terim tek satıra sığmalıdır.",
+        "term_forbidden_character": "Terimden < > veya \" karakterlerini kaldırın.",
+        "term_duplicate": "Her terim yalnızca bir kez yer alabilir ve bu terim zaten kelime dağarcığında.",
+        "limit": "Kelime dağarcığı en fazla 500 terim içerir. Yenisini eklemek için bir terimi kaldırın.",
+        "conflict": "Kelime dağarcığı bu arada değişti ve yeniden yüklendi. Tekrar deneyin.",
+        "notFound": "Bu terim zaten kaldırılmış. Kelime dağarcığı yeniden yüklendi.",
+        "unknown": "Handy değişikliği doğrulayamadı. Kelime dağarcığı yeniden yüklendi; tekrar denemeden önce kontrol edin.",
+        "committed": "Kelime dağarcığı kaydedildi ancak Handy bunu hemen uygulayamadı. Liste yeniden yüklendi.",
+        "saved": "Kayıtlı kelime dağarcığınız değişmedi."
+      },
+      "status": {
+        "loading": "Modelin neyi desteklediği kontrol ediliyor…",
+        "selectedModel": "seçili model",
+        "used": {
+          "title": "{{model}} tarafından tanıma sırasında kullanılıyor",
+          "sent": "{{total}} terimden {{sent}} tanesi gönderiliyor.",
+          "sentOne": "1 terimden {{sent}} tanesi gönderiliyor."
+        },
+        "notSent": {
+          "over_budget": "Gönderilmedi, model sınırını aşıyor: {{terms}}.",
+          "invalid": "Gönderilmedi, geçersiz: {{terms}}.",
+          "duplicate": "Gönderilmedi, yinelenen: {{terms}}.",
+          "over_capacity": "Gönderilmedi, 500 terimin ötesinde: {{terms}}."
+        },
+        "noTermSent": {
+          "title": "{{model}} modeline hiçbir terim gönderilmiyor",
+          "empty_vocabulary": "Kelime dağarcığı boş. Tanıma sırasında kullanmak için terim ekleyin.",
+          "invalid_terms_only": "Kayıtlı her terim geçersiz veya yinelenen. İşaretli terimleri kaldırıp düzeltilmiş hâllerini ekleyin.",
+          "over_budget": "İlk terim model sınırını aşıyor, bu yüzden hiçbir terim gönderilmiyor. Sonraki terimleri göndermek için onu kaldırın."
+        },
+        "notSupported": {
+          "title": "{{model}} tanıma sırasında kelime dağarcığını kullanamaz",
+          "body": "Bunun yerine tanımadan sonra yaklaşık düzeltme uygulanır. Terimleri tanıyıcıya göndermek için bir Whisper modeli seçin."
+        },
+        "streaming": {
+          "title": "Canlı akışta kullanılmaz",
+          "body": "{{model}} canlı transkripsiyon yapar ve tanıma bağlamı göndermez. Bunun yerine son metne yaklaşık düzeltme uygulanır."
+        },
+        "unknown": {
+          "title": "Model yüklenene kadar destek bilinmiyor",
+          "model_not_loaded": "Handy, {{model}} modelini yüklediğinde neyi desteklediğini kontrol eder.",
+          "capability_query_unanswered": "{{model}} zamanında yanıt vermedi, örneğin bir dikte sırasında. Handy daha sonra yeniden kontrol eder."
+        },
+        "budgetUnverified": {
+          "title": "{{model}} için kelime dağarcığı desteği doğrulanamıyor",
+          "body": "Bu model tanıma bağlamı bildiriyor, ancak bu sürümde bunun için belgelenmiş bir sınır yok. Hiçbir terim gönderilmez; bunun yerine yaklaşık düzeltme uygulanır."
+        },
+        "failed": {
+          "title": "Kelime dağarcığı durumu okunamadı",
+          "body": "Kelime dağarcığınız kaydedildi. Modelin neyi desteklediğini kontrol etmek için yeniden deneyin."
+        }
+      },
+      "pasteBox": {
+        "title": "Terimleri yapıştır",
+        "description": "Her satıra bir terim. Yinelenenler atlanır; geçersiz satırlar eklemeden önce düzeltilmelidir.",
+        "label": "Yapıştırılacak terimler, her satıra bir tane",
+        "previewTitle": "Önizleme",
+        "previewEmpty": "Nelerin ekleneceğini görmek için her satıra bir terim yapıştırın veya yazın.",
+        "sameAs": "{{term}} — {{original}} ile aynı",
+        "alreadyListed": "{{term}} — zaten listede",
+        "summary": {
+          "add": "Eklenecek: {{n}}",
+          "duplicateOne": "1 yinelenen",
+          "duplicateMany": "{{n}} yinelenen",
+          "errorOne": "1 hata",
+          "errorMany": "{{n}} hata"
+        },
+        "kind": {
+          "add": "Ekle",
+          "duplicate": "Yinelenen",
+          "error": "Hata"
+        },
+        "line": {
+          "empty": "Satır {{line}}: boş satır, kaldırın",
+          "too_long": "Satır {{line}}: en fazla 100 karakter kullanın",
+          "line_break": "Satır {{line}}: terimi tek satırda tutun",
+          "forbidden_character": "Satır {{line}}: < > veya \" karakterlerini kaldırın",
+          "duplicate": "Satır {{line}}: önceki bir terimle aynı",
+          "over_capacity": "Satır {{line}}: 500 terim sınırını aşıyor"
+        },
+        "note": {
+          "empty": "Terimleri ekleyene kadar kelime dağarcığınız değişmez.",
+          "checking": "Satırlar kontrol ediliyor…",
+          "fixOne": "Terimleri eklemek için {{lines}}. satırı düzeltin. Kelime dağarcığınız değişmedi.",
+          "fixMany": "Terimleri eklemek için şu satırları düzeltin: {{lines}}. Kelime dağarcığınız değişmedi.",
+          "overCapacity": "Kelime dağarcığı en fazla 500 terim içerir. Eklemek için listeyi kısaltın. Kelime dağarcığınız değişmedi.",
+          "nothingToAdd": "Her satır zaten kelime dağarcığında.",
+          "ready": "Yinelenenler atlanır. Terimleri ekleyene kadar hiçbir şey kaydedilmez."
+        },
+        "cancel": "İptal",
+        "applyOne": "1 terim ekle",
+        "applyMany": "{{n}} terim ekle",
+        "applyZero": "Terimleri ekle",
+        "applying": "Ekleniyor…",
+        "applied": "Terimler kelime dağarcığına eklendi."
       }
     },
     "postProcessing": {
@@ -534,7 +681,8 @@
       "historyLimit": {
         "title": "Geçmiş Limiti",
         "description": "Saklanacak maksimum geçmiş kaydı sayısı",
-        "entries": "kayıt"
+        "entries": "kayıt",
+        "invalid": "{{min}} ile {{max}} arasında bir tam sayı girin."
       },
       "recordingRetention": {
         "title": "Kayıtları Otomatik Sil",
@@ -855,7 +1003,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy, transkribe edilen metni yazabilmek için erişilebilirlik izinlerine ihtiyaç duyar.",
-    "openSettings": "Sistem Ayarlarını Aç"
+    "openSettings": "Sistem Ayarlarını Aç",
+    "offTitle": "Erişilebilirlik izni kapalı",
+    "smartPasteOff": "Akıllı yapıştırma ekleme veya yapıştırma yapamaz. Dökümleriniz kurtarma için saklanır."
   },
   "errors": {
     "loadDirectory": "Dizin yüklenirken hata oluştu: {{error}}",
@@ -885,7 +1035,7 @@
       "revisionConflict": "Ayarlar başka bir yerde değiştirildi. Yeniden yükleyip tekrar deneyin.",
       "unavailable": "Bu ayar şu anda değiştirilemiyor. Daha sonra tekrar deneyin.",
       "shortcutSessionBusy": "Bir dikte devam ediyor. Bittiğinde tekrar deneyin.",
-      "persistenceFailed": "Ayarlar kaydedilemedi.",
+      "persistenceFailed": "Ayarlar kaydedilemedi: ayar dosyasına yazılamadı. Hiçbir şey değiştirilmedi.",
       "generic": "Ayar değiştirilemedi.",
       "readOnly": "Ayarlar bu oturumda salt okunur: ayar dosyasına güvenli şekilde yazılamıyor, bu nedenle değişiklikler kaydedilmeyecek.",
       "unsupportedPlatform": "Bu ayar bu sistemde kullanılamaz.",
@@ -897,7 +1047,10 @@
       "promptOverrideIncomplete": "Bir sağlayıcı ve bir model seçin ya da varsayılan sağlayıcıyı kullanın.",
       "promptUnknownProvider": "Bu sağlayıcı kullanılamıyor.",
       "promptNotUsable": "Bu istem geçersiz. Kullanmadan önce düzenleyin.",
-      "limitExceeded": "Azami sayıya ulaşıldı."
+      "limitExceeded": "Azami sayıya ulaşıldı.",
+      "conflictTitle": "Ayarlar başka bir yerde değiştirildi",
+      "conflictBody": "Komut satırı veya başka bir pencere daha yeni bir sürüm kaydetti. Görmek için yeniden yükleyin; kaydedilmemiş değişikliğiniz atılır.",
+      "reload": "Yeniden yükle"
     }
   },
   "appLanguage": {
@@ -917,7 +1070,51 @@
     "transcribing": "Transkribe ediliyor...",
     "processing": "İşleniyor...",
     "loadingModel": "Model yükleniyor...",
-    "fallbackNotice": "Yapay zekâ işlemi başarısız oldu. Özgün metin kullanıldı."
+    "fallbackNotice": "Yapay zekâ işlemi başarısız oldu. Özgün metin kullanıldı.",
+    "destination": {
+      "label": "Hedef: {{name}}",
+      "frontmostApp": "Öndeki uygulama",
+      "remove": "Hedefi kaldır",
+      "unknownApp": "Hedef uygulama",
+      "choiceFailed": "Hedef değiştirilemedi.",
+      "menu": {
+        "title": "Bu dikte için hedef",
+        "frontmostNow": "Şu anda önde",
+        "otherApps": "Diğer uygulamalar",
+        "frontmostAtEnd": "Sonda öndeki uygulama",
+        "loading": "Uygulamalar yükleniyor…",
+        "failed": "Uygulama listesi yüklenemedi."
+      },
+      "refused": {
+        "stale": "Hedef bu arada değişti; liste yenilendi.",
+        "frozen": "Ekleme başladı; hedef artık değiştirilemez.",
+        "unavailable": "Bu uygulama artık kullanılamıyor; liste yenilendi."
+      },
+      "notice": {
+        "appClosedKept": "{{app}} kapalı. Hiçbir şey eklenmedi; transkript Geçmiş'te tutuluyor.",
+        "appClosedNotKept": "{{app}} kapalı. Hiçbir şey eklenmedi ve transkript Geçmiş'e kaydedilemedi.",
+        "activationFailedKept": "{{app}} öne gelmedi. Hiçbir şey eklenmedi; transkript Geçmiş'te tutuluyor.",
+        "activationFailedNotKept": "{{app}} öne gelmedi. Hiçbir şey eklenmedi ve transkript Geçmiş'e kaydedilemedi.",
+        "insertionFailedKept": "{{app}} metni almamış olabilir; transkript Geçmiş'te tutuluyor.",
+        "insertionFailedNotKept": "{{app}} metni almamış olabilir ve transkript Geçmiş'e kaydedilemedi."
+      }
+    },
+    "prompt": {
+      "label": "Bu dikte için prompt: {{name}}",
+      "hint": "Seçenekleri görmek için üzerine gelin",
+      "none": "Yok (yapay zekâ işlemi yok)",
+      "menuTitle": "Bu dikte için prompt",
+      "note": "Yalnızca bu dikte için geçerli. Varsayılan {{name}} olarak kalır.",
+      "loading": "Promptlar yükleniyor…",
+      "failed": "Promptlar yüklenemedi.",
+      "choiceFailed": "Prompt değiştirilemedi.",
+      "refused": {
+        "sessionEnded": "Kayıt durdu; prompt artık değiştirilemez.",
+        "processingOff": "Bu dikte için yapay zekâ işlemi kapalı.",
+        "promptMissing": "Bu prompt artık yok.",
+        "promptNotUsable": "Bu promptta hatalar var; önce ayarlarda düzenleyin."
+      }
+    }
   },
   "whatsNew": {
     "title": "Handy v{{version}} yenilikleri"

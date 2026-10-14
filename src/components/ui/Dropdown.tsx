@@ -7,6 +7,7 @@ export interface DropdownOption {
   label: string;
   description?: string;
   disabled?: boolean;
+  testId?: string;
 }
 
 interface DropdownProps {
@@ -20,6 +21,10 @@ interface DropdownProps {
   onOpen?: () => void;
   /** Accessible name of the control (the setting title). */
   ariaLabel?: string;
+  /** Test id of the control button. */
+  testId?: string;
+  /** Test id of the open option list. */
+  menuTestId?: string;
 }
 
 export const Dropdown: React.FC<DropdownProps> = ({
@@ -32,6 +37,8 @@ export const Dropdown: React.FC<DropdownProps> = ({
   disabled = false,
   onOpen,
   ariaLabel,
+  testId,
+  menuTestId,
 }) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
@@ -107,6 +114,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
         onKeyDown={handleKeyDown}
         disabled={disabled}
         role="combobox"
+        data-testid={testId}
         aria-label={ariaLabel}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
@@ -134,6 +142,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
         <div
           id={listId}
           role="listbox"
+          data-testid={menuTestId}
           aria-label={ariaLabel}
           className={`absolute top-full mt-1 bg-background border border-mid-gray/80 rounded-md shadow-lg z-50 max-h-60 overflow-y-auto ${
             menuClassName ?? "left-0 right-0"
@@ -150,6 +159,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                 id={`${listId}-${index}`}
                 type="button"
                 role="option"
+                data-testid={option.testId}
                 aria-selected={selectedValue === option.value}
                 aria-disabled={option.disabled}
                 tabIndex={-1}

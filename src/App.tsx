@@ -16,6 +16,7 @@ import {
 import { ModelStateEvent, RecordingErrorEvent } from "./lib/types/events";
 import "./App.css";
 import AccessibilityPermissions from "./components/AccessibilityPermissions";
+import { SettingsConflictAlert } from "./components/settings/settings-conflict-alert";
 import SecureInputWarning from "./components/SecureInputWarning";
 import Footer from "./components/footer";
 import Onboarding, { AccessibilityOnboarding } from "./components/onboarding";
@@ -28,7 +29,7 @@ import { useGuardedNavigation } from "./components/unsaved-changes-dialog";
 import { Sidebar, SidebarSection, SECTIONS_CONFIG } from "./components/Sidebar";
 import { WhatsNewGate } from "./components/whats-new";
 import { useSettings } from "./hooks/useSettings";
-import { useSmartPasteHandOver } from "./hooks/use-smart-paste-hand-over";
+import { useOverlayNoneNotices } from "./hooks/use-overlay-none-notices";
 import { useSettingsStore } from "./stores/settingsStore";
 import { commands } from "@/bindings";
 import { getLanguageDirection, initializeRTL } from "@/lib/utils/rtl";
@@ -67,7 +68,7 @@ function App() {
   // Leaving a section whose editor holds unsaved edits asks first (feature 002).
   const sectionNavigation = useGuardedNavigation(setCurrentSection);
   const { settings, updateSetting } = useSettings();
-  useSmartPasteHandOver();
+  useOverlayNoneNotices(settings?.overlay_style);
   const direction = getLanguageDirection(i18n.language);
   const refreshAudioDevices = useSettingsStore(
     (state) => state.refreshAudioDevices,
@@ -364,6 +365,7 @@ function App() {
           <div className="flex-1 flex flex-col overflow-hidden">
             <div ref={settingsScrollRef} className="flex-1 overflow-y-auto">
               <div className="flex flex-col items-center p-4 gap-4">
+                <SettingsConflictAlert />
                 <AccessibilityPermissions />
                 <SecureInputWarning />
                 {renderSettingsContent(currentSection, setOnboardingPreview)}

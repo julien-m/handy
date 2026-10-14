@@ -182,8 +182,8 @@ fn follow_without_session(app: &AppHandle, outcome: &PasteOutcome, settings: &Ap
     }
 }
 
-/// AC-012 message for Screen Sharing; 006's indicator presentation waits
-/// for the Penflow pass, so the UI shows it as a toast meanwhile.
+/// AC-012 message for Screen Sharing: the recording indicator shows it (`src/overlay`), or the
+/// settings window as a toast when the overlay style is none.
 fn present_hand_over(app: &AppHandle, follow: FollowUps, outcome: &PasteOutcome) {
     if !follow.hand_over_message {
         return;

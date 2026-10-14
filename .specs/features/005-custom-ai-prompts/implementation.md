@@ -29,9 +29,9 @@ Status: **In Progress** — every non-UI step of the [plan](plan.md) is implemen
 |---|---|---|
 | [AC-001](spec.md#ac-001) | `prompts/library_tests.rs`, `settings_service/domains/prompts_tests.rs`, `tests/prompt_cli.rs` | Settings list/editor/confirmation UI and its Behavioral AC states |
 | [AC-002](spec.md#ac-002) | `prompts/migration.rs` tests, `tests/prompt_library.rs` (real store, byte-identical prompts and selection) | — (UI flagging of invalid legacy prompts) |
-| [AC-003](spec.md#ac-003) | `prompts/session_tests.rs`, `shortcut/prompt_shortcuts_tests.rs` | Indicator menu: native surface, 200 ms, no focus change (Step 1 spike, macOS evidence) |
+| [AC-003](spec.md#ac-003) | `prompts/session_tests.rs`, `shortcut/prompt_shortcuts_tests.rs`, [indicator models](../../../src/overlay/indicator-models.test.ts), [indicator markup](../../../src/overlay/indicator-render.test.tsx) | Indicator pill and menu built (browser-tested, `feature/ui-overlay`); native surface, 200 ms, no focus change pending (macOS evidence) |
 | [AC-004](spec.md#ac-004) | `prompts/provider_tests.rs`, `prompts/processing_http_tests.rs` (override routed to a loopback endpoint) | "Not ready" display in the settings |
-| [AC-005](spec.md#ac-005) | `prompts/processor_tests.rs`, `prompts/output.rs` tests, `tests/prompt_history.rs`, notice wording test in `prompts/dictation.rs` | Notice shown ≥4 s on the indicator; macOS end-to-end raw-text and notice evidence |
+| [AC-005](spec.md#ac-005) | `prompts/processor_tests.rs`, `prompts/output.rs` tests, `tests/prompt_history.rs`, notice wording test in `prompts/dictation.rs`, [indicator models](../../../src/overlay/indicator-models.test.ts) | Notice ≥4 s on the indicator held after the hide (browser-tested), toast with style none; macOS end-to-end raw-text and notice evidence pending |
 | [AC-006](spec.md#ac-006) | `shortcut/prompt_shortcuts_tests.rs`, `prompts/session_tests.rs` (deletion takes the shortcut lease) | Shortcut rows in the prompt editor; native registration evidence |
 | [AC-007](spec.md#ac-007) | `prompts/test_run_tests.rs` | Test panel (sample prefill, busy, retry) |
 | [AC-008](spec.md#ac-008) | `tests/prompt_cli.rs` (real binary, offline and routed, key sentinel), `settings_service/domains/prompts_tests.rs` | — |

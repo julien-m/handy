@@ -1,0 +1,26 @@
+// Screenshots of the overlay preview harness (browser, mocked IPC).
+const { chromium } = require("playwright");
+const out = process.argv[2];
+const scenarios = process.argv.slice(3);
+(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage({ viewport: { width: 560, height: 460 }, deviceScaleFactor: 2, colorScheme: "dark" });
+  page.on("console", (m) => { if (m.type() === "error" || m.type() === "warning") console.log(`[${m.type()}]`, m.text()); });
+  page.on("pageerror", (e) => console.log("[pageerror]", e.message));
+  for (const spec of scenarios) {
+    const [name, action] = spec.split(":");
+    const query = name.includes("?") ? name : `s=${name}`;
+    await page.goto(`http://localhost:1499/?${query}`);
+    await page.waitForSelector("body[data-ready='1']", { timeout: 10000 });
+    await page.waitForTimeout(700);
+    if (action === "hover-prompt") await page.hover("[data-testid='recording-indicator-prompt']");
+    if (action === "click-dest") await page.click("[data-testid='recording-indicator-destination']");
+    if (action === "remove") await page.click("[data-testid='recording-indicator-destination-remove']");
+    await page.waitForTimeout(700);
+    const file = `${out}/${spec.replace(/[^a-z0-9-]+/gi, "_")}.png`;
+    await page.screenshot({ path: file });
+    const calls = await page.evaluate(() => window.__previewCalls.filter((c) => !c.startsWith("plugin:event")));
+    console.log(spec, "->", file, "|", calls.join(" ; "));
+  }
+  await browser.close();
+})();

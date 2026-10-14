@@ -1,0 +1,11 @@
+$ bun test src/components/settings/return-to-app-model.test.ts src/components/settings/history-limit-model.test.ts src/components/settings/paste-method-options.test.ts && bun test src/components/settings/output-settings-render.test.tsx
+
+ 20 pass
+ 0 fail
+ 33 expect() calls
+Ran 20 tests across 3 files. [10.00ms]
+
+ 7 pass
+ 0 fail
+ 22 expect() calls
+Ran 7 tests across 1 file. [60.00ms]

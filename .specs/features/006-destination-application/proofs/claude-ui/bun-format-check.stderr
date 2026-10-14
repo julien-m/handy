@@ -1,0 +1,1 @@
+$ prettier --check . && cd src-tauri && cargo fmt -- --check

@@ -1,0 +1,93 @@
+// Browser preview of the recording indicator with mocked Tauri IPC (not shipped).
+import { mockIPC } from "@tauri-apps/api/mocks";
+import { emit } from "@tauri-apps/api/event";
+
+const params = new URLSearchParams(location.search);
+const scenario = params.get("s") ?? "default";
+const gateOpen = scenario !== "gate-closed" && scenario !== "prompt-only";
+(window as unknown as Record<string, unknown>).__TAURI_OS_PLUGIN_INTERNALS__ = {
+  os_type: "macos", platform: "macos", family: "unix", version: "15", eol: "\n",
+};
+
+const snapshot = (selection: unknown, version = 1) => ({
+  dictation_id: 7, destination_generation: 1, selection_version: version,
+  phase: "recording", return_enabled: true, support: { state: "supported" },
+  selection, disposition: "pending",
+});
+const chatgpt = { kind: "application", display_name: "ChatGPT", icon_ref: null };
+const frontmost = { kind: "frontmost_at_end" };
+const initialSelection = scenario === "no-destination" ? frontmost : chatgpt;
+let current = gateOpen ? snapshot(initialSelection) : null;
+const promptView = { session_id: 3, prompt_id: "min", prompt_name: "Minimal correction", selectable: true };
+const prompt = (id: string, name: string, shortcuts: string[] = []) => ({
+  id, name, prompt: "x", provider_override: null, starter: true, issues: [], shortcuts,
+  readiness: { provider_id: null, model: null, is_override: false, ready: true, missing: null },
+});
+const library = {
+  default_prompt_id: "min", post_process_enabled: true,
+  prompts: [
+    prompt("min", "Minimal correction", ["ctrl+option+m"]), prompt("friendly", "Friendly rephrasing"),
+    prompt("clarify", "Clarify"), prompt("shorten", "Shorten"),
+    prompt("notes", "Notes", ["ctrl+option+n"]), prompt("translate", "Translate to English"),
+  ],
+};
+const menu = {
+  dictation_id: 7, selection_version: 1, frontmost_at_end_current: false,
+  entries: [
+    { token: 1, display_name: "Comet", icon_ref: null, current: false, frontmost: true },
+    { token: 2, display_name: "ChatGPT", icon_ref: null, current: true, frontmost: false },
+    { token: 3, display_name: "Notes", icon_ref: null, current: false, frontmost: false },
+    { token: 4, display_name: "TextEdit", icon_ref: null, current: false, frontmost: false },
+  ],
+};
+const calls: string[] = [];
+(window as unknown as Record<string, unknown>).__previewCalls = calls;
+mockIPC((cmd, args) => {
+  calls.push(`${cmd} ${JSON.stringify(args ?? {})}`);
+  switch (cmd) {
+    case "get_app_settings": return { overlay_position: params.get("pos") ?? "bottom", app_language: params.get("lang") ?? "en" };
+    case "plugin:os|locale": return "en-US";
+    case "destination_snapshot": return current;
+    case "get_dictation_prompt": return scenario === "no-prompt" ? null : promptView;
+    case "get_prompt_library": return library;
+    case "destination_menu": return { status: "menu", value: menu };
+    case "remove_destination":
+      current = snapshot(frontmost, 2);
+      return { status: "chosen", value: current };
+    case "choose_destination": return { status: "chosen", value: current };
+    case "select_dictation_prompt": return { ...promptView, prompt_id: (args as { promptId: string }).promptId };
+    default: return null;
+  }
+}, { shouldMockEvents: true });
+
+const start = async () => {
+  await import("@/i18n");
+  const { default: React } = await import("react");
+  const { createRoot } = await import("react-dom/client");
+  const { default: RecordingOverlay } = await import("@/overlay/RecordingOverlay");
+  createRoot(document.getElementById("root")!).render(React.createElement(RecordingOverlay));
+  await new Promise((r) => setTimeout(r, 300));
+  const form = scenario === "live" ? "streaming" : "recording";
+  await emit("show-overlay", form);
+  await new Promise((r) => setTimeout(r, 300));
+  await emit("recording-ready", null);
+  if (gateOpen && current) await emit("destination-changed", current);
+  await emit("mic-level", [0.2, 0.5, 0.8, 1, 0.9, 0.7, 0.5, 0.3, 0.2, 0, 0, 0, 0, 0, 0, 0]);
+  if (scenario === "ai-failed" || scenario === "unavailable") {
+    await new Promise((r) => setTimeout(r, 200));
+    if (scenario === "ai-failed") {
+      await emit("prompt-processing-failed", { session_id: 3, prompt_name: "Minimal correction", reason: "timeout", notice_ms: 4000 });
+    } else {
+      current = { ...snapshot({ kind: "application", display_name: "Notes", icon_ref: null }), phase: "inserting" };
+      await emit("destination-changed", current);
+      await emit("insertion-outcome", { dictation_id: 7, status: "failed", reason: "app_closed", history_status: "saved" });
+    }
+    await emit("hide-overlay", null);
+  }
+  if (scenario === "hand-over") {
+    await emit("smart-paste-hand-over", { dictation_id: 7 });
+    await emit("hide-overlay", null);
+  }
+  document.body.dataset.ready = "1";
+};
+void start();
