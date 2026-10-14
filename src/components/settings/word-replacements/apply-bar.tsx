@@ -8,10 +8,9 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Button } from "../../ui/Button";
 import { useReplacementEditor } from "./editor-store";
-import { firstErrorLine, hasPreviewErrors } from "./preview-model";
+import { type ApplyNote, applyNote } from "./preview-model";
 import { SCREEN_IDS } from "./rules-model";
 import {
-  type TextStore,
   canApplyText,
   isPreviewCurrent,
   useReplacementText,
@@ -22,15 +21,8 @@ const BAR_ID = `${SCREEN_IDS.text}-apply-bar`;
 
 export const ApplyBar: React.FC = () => {
   const { t } = useTranslation();
-  const enabled = useReplacementText(canApplyText);
-  const applying = useReplacementText((state) => state.applying);
   const failure = useReplacementText((state) => state.failure);
-  const note = useReplacementText((state) => applyNote(state, t));
-  const apply = async () => {
-    if (await useReplacementText.getState().apply()) {
-      toast.success(t("settings.replacements.bulk.applied"));
-    }
-  };
+  const note = useApplyNote();
   return (
     <div
       className="bg-background border border-mid-gray/20 rounded-lg p-4 space-y-3"
@@ -42,30 +34,50 @@ export const ApplyBar: React.FC = () => {
           className="flex-1 min-w-48 text-sm text-mid-gray"
           data-testid={`${BAR_ID}-note`}
         >
-          {note}
+          {t(note.key, note.options)}
         </p>
-        <Button
-          variant="secondary"
-          disabled={applying}
-          data-testid={`${SCREEN_IDS.text}-cancel`}
-          onClick={cancelText}
-        >
-          {t("settings.replacements.bulk.cancel")}
-        </Button>
-        <Button
-          variant="primary"
-          disabled={!enabled}
-          aria-busy={applying}
-          data-testid={`${SCREEN_IDS.text}-apply`}
-          onClick={() => void apply()}
-        >
-          {applying
-            ? t("settings.replacements.bulk.applying")
-            : t("settings.replacements.bulk.apply")}
-        </Button>
+        <ApplyButtons />
       </div>
     </div>
   );
+};
+
+/** Cancel and Apply; Apply shows its loading state while committing. */
+const ApplyButtons: React.FC = () => {
+  const { t } = useTranslation();
+  const enabled = useReplacementText(canApplyText);
+  const applying = useReplacementText((state) => state.applying);
+  const handleApply = () => void applyWithToast(t);
+  return (
+    <>
+      <Button
+        variant="secondary"
+        disabled={applying}
+        data-testid={`${SCREEN_IDS.text}-cancel`}
+        onClick={cancelText}
+      >
+        {t("settings.replacements.bulk.cancel")}
+      </Button>
+      <Button
+        variant="primary"
+        disabled={!enabled}
+        aria-busy={applying}
+        data-testid={`${SCREEN_IDS.text}-apply`}
+        onClick={handleApply}
+      >
+        {applying
+          ? t("settings.replacements.bulk.applying")
+          : t("settings.replacements.bulk.apply")}
+      </Button>
+    </>
+  );
+};
+
+/** Apply the previewed text and confirm a successful Apply with a toast. */
+const applyWithToast = async (t: (key: string) => string): Promise<void> => {
+  if (await useReplacementText.getState().apply()) {
+    toast.success(t("settings.replacements.bulk.applied"));
+  }
 };
 
 /** Drop the text edits and return to the list. */
@@ -81,31 +93,13 @@ const reloadText = async (): Promise<void> => {
 };
 
 /**
- * What the apply bar says about the current preview.
- * @param state text state
- * @param t translation function
- * @returns the note
+ * Note of the apply bar for the current text state (see `applyNote`). Each selector returns a
+ * stable value, so the bar re-renders only when the note can change.
+ * @returns the note's translation key and options
  */
-const applyNote = (
-  state: TextStore,
-  t: (key: string, options?: Record<string, unknown>) => string,
-): string => {
-  const preview = state.preview?.preview;
-  if (state.previewFailure !== null) {
-    return t("settings.replacements.commit.unchanged");
-  }
-  if (!isPreviewCurrent(state) || preview === undefined) {
-    return t("settings.replacements.preview.updating");
-  }
-  if (hasPreviewErrors(preview)) {
-    const line = firstErrorLine(preview);
-    return preview.error_lines === 1 && line !== null
-      ? t("settings.replacements.bulk.fixLine", { line })
-      : t("settings.replacements.bulk.fixLines", {
-          count: Math.max(preview.error_lines, 1),
-        });
-  }
-  return preview.is_noop
-    ? t("settings.replacements.bulk.noChanges")
-    : t("settings.replacements.bulk.ready");
+const useApplyNote = (): ApplyNote => {
+  const refused = useReplacementText((state) => state.previewFailure !== null);
+  const current = useReplacementText(isPreviewCurrent);
+  const preview = useReplacementText((state) => state.preview?.preview ?? null);
+  return applyNote({ refused, current, preview });
 };

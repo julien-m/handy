@@ -717,7 +717,8 @@
         "invalid": "Algumas regras são inválidas. Corrija as linhas destacadas e tente novamente.",
         "unchanged": "As regras salvas não foram alteradas.",
         "conflict": "As regras foram alteradas em outro lugar, por exemplo pela linha de comando. Recarregue-as para continuar.",
-        "reload": "Recarregar"
+        "reload": "Recarregar",
+        "reloadDiscards": "Recarregar mostra as regras salvas e descarta as alterações não salvas."
       },
       "bulk": {
         "editor": "Regras como texto",

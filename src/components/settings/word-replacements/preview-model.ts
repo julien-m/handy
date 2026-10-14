@@ -222,3 +222,56 @@ export const UNEXPECTED_FAILURE: CommitFailure = {
   uncertain: true,
   items: [],
 };
+
+/**
+ * Whether two previews of the same input describe the same outcome: same rows, issues and
+ * resulting candidate set in order. Previews are plain data serialized by serde in a fixed field
+ * order and candidates carry no fresh ids, so their JSON text is a faithful comparison. An equal
+ * preview at a newer revision means the rules did not change in a way that matters to this input:
+ * Apply may commit at that revision without silently applying anything the user did not see.
+ * @param left preview shown to the user
+ * @param right fresh preview of the same input
+ * @returns true when both describe the same outcome
+ */
+export const samePreview = (
+  left: ReplacementPreview,
+  right: ReplacementPreview,
+): boolean => JSON.stringify(left) === JSON.stringify(right);
+
+/** Translation key and options of the apply bar's note. */
+export interface ApplyNote {
+  readonly key: string;
+  readonly options?: Readonly<Record<string, number>>;
+}
+
+/** Facts of the text view that decide the apply bar's note. */
+export interface ApplyNoteInput {
+  readonly refused: boolean;
+  readonly current: boolean;
+  readonly preview: ReplacementPreview | null;
+}
+
+/**
+ * What the apply bar says about the current preview: a refused preview, a preview on its way,
+ * the error lines to fix ("Fix line 4 to apply"), nothing to apply, or ready.
+ * @param input text view facts
+ * @returns the note's translation key and options
+ */
+export const applyNote = (input: ApplyNoteInput): ApplyNote => {
+  const { preview } = input;
+  if (input.refused) return { key: "settings.replacements.commit.unchanged" };
+  if (!input.current || preview === null) {
+    return { key: "settings.replacements.preview.updating" };
+  }
+  if (hasPreviewErrors(preview)) {
+    const line = firstErrorLine(preview);
+    return preview.error_lines === 1 && line !== null
+      ? { key: "settings.replacements.bulk.fixLine", options: { line } }
+      : {
+          key: "settings.replacements.bulk.fixLines",
+          options: { count: Math.max(preview.error_lines, 1) },
+        };
+  }
+  const key = preview.is_noop ? "noChanges" : "ready";
+  return { key: `settings.replacements.bulk.${key}` };
+};

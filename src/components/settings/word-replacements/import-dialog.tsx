@@ -57,21 +57,27 @@ const ImportRefusalAlert: React.FC = () => {
           {t(`settings.replacements.importRefusal.${refusal.kind}Body`)}
         </span>
       </Alert>
-      <Button
-        variant="secondary"
-        size="sm"
-        onClick={() => useReplacementFiles.getState().dismissRefusal()}
-      >
-        {t("settings.replacements.importRefusal.dismiss")}
-      </Button>
+      <DismissRefusalButton />
     </div>
+  );
+};
+
+const DismissRefusalButton: React.FC = () => {
+  const { t } = useTranslation();
+  return (
+    <Button
+      variant="secondary"
+      size="sm"
+      onClick={() => useReplacementFiles.getState().dismissRefusal()}
+    >
+      {t("settings.replacements.importRefusal.dismiss")}
+    </Button>
   );
 };
 
 const ImportDialog: React.FC = () => {
   const { t } = useTranslation();
   const file = useReplacementFiles((state) => state.file);
-  const failure = useReplacementFiles((state) => state.failure);
   const busy = useReplacementFiles((state) => state.phase === "applying");
   return (
     <Dialog
@@ -90,14 +96,21 @@ const ImportDialog: React.FC = () => {
         )}
         <ImportMode />
         <ImportSummary />
-        {failure && (
-          <CommitFailureNote
-            failure={failure}
-            onReload={() => void reloadImportPreview()}
-          />
-        )}
+        <ImportFailureNote />
       </div>
     </Dialog>
+  );
+};
+
+/** The failed Apply import, with a reload of the preview; nothing when the last commit did not fail. */
+const ImportFailureNote: React.FC = () => {
+  const failure = useReplacementFiles((state) => state.failure);
+  if (!failure) return null;
+  return (
+    <CommitFailureNote
+      failure={failure}
+      onReload={() => void reloadImportPreview()}
+    />
   );
 };
 
@@ -129,14 +142,7 @@ const ImportActions: React.FC = () => {
   };
   return (
     <>
-      <Button
-        variant="secondary"
-        disabled={applying}
-        data-testid={`${DIALOG_ID}-cancel`}
-        onClick={() => useReplacementFiles.getState().closeImport()}
-      >
-        {t("settings.replacements.importDialog.cancel")}
-      </Button>
+      <CancelImportButton disabled={applying} />
       <Button
         variant="primary"
         disabled={!enabled}
@@ -149,5 +155,19 @@ const ImportActions: React.FC = () => {
           : t("settings.replacements.importDialog.apply")}
       </Button>
     </>
+  );
+};
+
+const CancelImportButton: React.FC<{ disabled: boolean }> = ({ disabled }) => {
+  const { t } = useTranslation();
+  return (
+    <Button
+      variant="secondary"
+      disabled={disabled}
+      data-testid={`${DIALOG_ID}-cancel`}
+      onClick={() => useReplacementFiles.getState().closeImport()}
+    >
+      {t("settings.replacements.importDialog.cancel")}
+    </Button>
   );
 };

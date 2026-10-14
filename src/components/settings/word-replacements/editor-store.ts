@@ -1,15 +1,21 @@
 /**
  * List editor state of the replacement rules (feature 002, AC-001/AC-002): the saved rules with
  * the revision they were read at, the draft edited by the list, its shared-validator issues and
- * the single Save commit. Save is always bound to the revision the draft started from, so a
- * change made elsewhere (CLI, another window) is a revision conflict, never a silent overwrite.
+ * the single Save commit. Save is bound to the revision the draft started from, so a change of
+ * the rules made elsewhere (CLI, another window) is a revision conflict, never a silent
+ * overwrite. The backend compares the global settings revision: a committed change of another
+ * setting moves the base revision (`followSettingsChange`), and a Save refused by such a change
+ * is retried once, so only a real change of the rules is reported as a conflict.
  */
 import { create } from "zustand";
 import {
   commands,
   type ReplacementRule,
   type ReplacementRulesView,
+  type Result,
+  type RuleDraft,
   type RuleIssue,
+  type SettingsCommandError,
 } from "@/bindings";
 import {
   type DraftRule,
@@ -28,6 +34,13 @@ import {
   UNEXPECTED_FAILURE,
   commitFailure,
 } from "./preview-model";
+import {
+  failureAfterEdit,
+  followDecision,
+  sameRules,
+  settledFailure,
+  uncertainOutcome,
+} from "./editor-model";
 
 /** Loading of the saved rules. */
 export type LoadState = "loading" | "ready" | "failed";
@@ -49,7 +62,7 @@ export interface EditorStore {
   failure: CommitFailure | null;
   view: EditorView;
   loadRules: () => Promise<void>;
-  refreshAfterChange: (revision: number) => Promise<void>;
+  followSettingsChange: (revision: number) => Promise<void>;
   checkCandidate: (
     rule: Readonly<Pick<DraftRule, RuleField>>,
   ) => Promise<RuleIssue[]>;
@@ -76,7 +89,7 @@ export const useReplacementEditor = create<EditorStore>()(() => ({
   failure: null,
   view: "list",
   loadRules,
-  refreshAfterChange,
+  followSettingsChange,
   checkCandidate,
   addRule,
   editRule,
@@ -114,6 +127,15 @@ export const canSave = (state: EditorStore): boolean =>
   state.failure?.conflict !== true;
 
 /**
+ * Whether the draft is locked: a Save in flight replaces it with what it committed, so edits
+ * typed meanwhile would be lost (fields are read-only and the store ignores edits).
+ * @param state editor state
+ * @returns true while a Save is in flight
+ */
+export const isDraftLocked = (state: Pick<EditorStore, "commit">): boolean =>
+  state.commit === "saving";
+
+/**
  * Read the saved rules and reset the draft to them.
  * Side effects: one `get_word_replacements` call.
  */
@@ -129,24 +151,38 @@ async function loadRules(): Promise<void> {
 }
 
 /**
- * React to a committed settings change of `word_replacements`. A clean editor shows the new
- * rules; a dirty one keeps its draft and base revision, so its Save reports the conflict.
+ * Follow a committed settings change (any key): the rules are reread and, per
+ * `followDecision`, the base revision moves (rules unchanged), a clean list shows the new rules,
+ * or a changed draft keeps its base revision so its Save reports the conflict.
+ * Side effects: one `get_word_replacements` call unless the event is older than the editor.
  * @param revision revision carried by the `settings-changed` event
  */
-async function refreshAfterChange(revision: number): Promise<void> {
+async function followSettingsChange(revision: number): Promise<void> {
   const state = editor();
-  // A commit in flight applies its own result; an older event changes nothing.
-  if (state.commit === "saving") return;
   if (state.revision !== null && revision <= state.revision) return;
-  if (isListDirty(state)) return;
   try {
-    const view = await commands.getWordReplacements();
-    const latest = editor();
-    if (isListDirty(latest) || latest.commit === "saving") return;
-    if (latest.revision !== null && view.revision < latest.revision) return;
-    acceptView(view, latest.commit === "saved" ? "saved" : "idle");
+    applyFollow(await commands.getWordReplacements());
   } catch (error) {
     console.error("Failed to refresh replacement rules:", error);
+  }
+}
+
+/** Apply the follow decision to the editor as it is now (it may have changed meanwhile). */
+function applyFollow(view: ReplacementRulesView): void {
+  const latest = editor();
+  const decision = followDecision(
+    {
+      ready: latest.load === "ready",
+      saving: latest.commit === "saving",
+      dirty: isListDirty(latest),
+      revision: latest.revision,
+      saved: latest.saved,
+    },
+    view,
+  );
+  if (decision === "rebase") patch({ revision: view.revision });
+  if (decision === "replace") {
+    acceptView(view, latest.commit === "saved" ? "saved" : "idle");
   }
 }
 
@@ -200,21 +236,32 @@ async function addRule(
     console.error("Failed to check a replacement rule:", error);
     return false;
   }
+  // A Save started during the check owns the draft; the form keeps the typed rule.
+  if (isDraftLocked(editor())) return false;
   newRuleSequence += 1;
   setDraft(withAddedRule(editor().draft, rule, `new-${newRuleSequence}`));
   return true;
 }
 
 function editRule(key: string, field: RuleField, value: string): void {
+  if (isDraftLocked(editor())) return;
   setDraft(withEditedRule(editor().draft, key, field, value));
 }
 
 function removeRule(key: string): void {
+  if (isDraftLocked(editor())) return;
   setDraft(withoutRule(editor().draft, key));
 }
 
-/** Drop the unsaved draft: the list shows the saved rules again. */
+/**
+ * Drop the unsaved draft: the list shows the saved rules again. After a conflict the rules known
+ * here are stale, so they are read again (like Reload).
+ */
 function discard(): void {
+  if (editor().failure?.conflict === true) {
+    void loadRules();
+    return;
+  }
   checkSequence += 1;
   const { saved } = editor();
   patch({
@@ -230,7 +277,12 @@ function discard(): void {
 function setDraft(draft: DraftRule[]): void {
   checkSequence += 1;
   const sequence = checkSequence;
-  patch({ draft, checking: true, commit: "idle", failure: null });
+  patch({
+    draft,
+    checking: true,
+    commit: "idle",
+    failure: failureAfterEdit(editor().failure),
+  });
   commands
     .checkWordReplacements(ruleDrafts(draft))
     .then((issues) => {
@@ -244,41 +296,83 @@ function setDraft(draft: DraftRule[]): void {
 
 /**
  * Save the complete draft in one commit at the revision it started from (AC-001).
- * Side effects: one `save_word_replacements` call; on an uncertain outcome the rules are reread.
+ * Side effects: `save_word_replacements` (retried once after a conflict caused by another
+ * setting); on an uncertain outcome the rules are reread to settle it.
  * @returns true when the rules were saved
  */
 async function save(): Promise<boolean> {
   const state = editor();
   if (!canSave(state) || state.revision === null) return false;
   patch({ commit: "saving", failure: null });
+  const sent = ruleDrafts(state.draft);
   try {
-    const result = await commands.saveWordReplacements(
-      ruleDrafts(state.draft),
+    const result = await saveAtCurrentRevision(
+      sent,
       state.revision,
+      state.saved,
     );
     if (result.status === "ok") {
       acceptCommitted(result.data);
       return true;
     }
-    return failSave(commitFailure(result.error));
+    return failSave(commitFailure(result.error), sent, state.saved);
   } catch (error) {
     console.error("Failed to save replacement rules:", error);
-    return failSave(UNEXPECTED_FAILURE);
+    return failSave(UNEXPECTED_FAILURE, sent, state.saved);
   }
 }
 
-/** Keep the draft and show why Save failed; an uncertain outcome rereads the saved rules. */
-function failSave(failure: CommitFailure): false {
+/**
+ * Save `sent` at `revision`. A conflict while the saved rules are still `saved` comes from
+ * another setting (the backend compares the global revision): the Save is retried once at the
+ * current revision. A real change of the rules stays a conflict.
+ * @param sent draft to save
+ * @param revision base revision of the draft
+ * @param saved rules the draft started from
+ * @returns the reply of the last Save
+ */
+async function saveAtCurrentRevision(
+  sent: RuleDraft[],
+  revision: number,
+  saved: ReadonlyArray<ReplacementRule>,
+): Promise<Result<ReplacementRulesView, SettingsCommandError>> {
+  const first = await commands.saveWordReplacements(sent, revision);
+  if (first.status === "ok" || first.error.code !== "revision_conflict") {
+    return first;
+  }
+  const current = await commands.getWordReplacements();
+  if (!sameRules(current.rules, saved)) return first;
+  return commands.saveWordReplacements(sent, current.revision);
+}
+
+/** Keep the draft and show why Save failed; an uncertain outcome is settled by a reread. */
+function failSave(
+  failure: CommitFailure,
+  sent: RuleDraft[],
+  before: ReadonlyArray<ReplacementRule>,
+): false {
   patch({ commit: "failed", failure });
-  if (failure.uncertain) void rereadSaved();
+  if (failure.uncertain) void settleUncertainSave(failure, sent, before);
   return false;
 }
 
-/** Reread the saved rules without touching the draft (an uncertain commit outcome). */
-async function rereadSaved(): Promise<void> {
+/**
+ * Reread the rules after an uncertain Save and settle it (`uncertainOutcome`): the sent draft
+ * is accepted as committed; otherwise the draft keeps its base revision (never the reread one,
+ * which could silently overwrite another writer) and a change made elsewhere is a conflict.
+ * Nothing happens if the user moved on (edit, Discard, Reload) before the answer.
+ */
+async function settleUncertainSave(
+  failure: CommitFailure,
+  sent: RuleDraft[],
+  before: ReadonlyArray<ReplacementRule>,
+): Promise<void> {
   try {
     const view = await commands.getWordReplacements();
-    patch({ saved: view.rules, revision: view.revision });
+    if (editor().failure !== failure) return;
+    const outcome = uncertainOutcome(sent, before, view.rules);
+    if (outcome === "committed") acceptCommitted(view);
+    else patch({ failure: settledFailure(failure, outcome) });
   } catch (error) {
     console.error("Failed to reread replacement rules:", error);
   }

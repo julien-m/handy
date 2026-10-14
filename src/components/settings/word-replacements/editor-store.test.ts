@@ -5,95 +5,10 @@
  * Run with `bun run test:word-replacements` (Bun's test runner, for its module mocking).
  */
 import assert from "node:assert/strict";
-import { beforeEach, describe, mock, test } from "bun:test";
-import type {
-  ImportMode,
-  ReplacementPreview,
-  ReplacementRule,
-  ReplacementRulesView,
-  RuleDraft,
-  RuleIssue,
-  SettingsCommandError,
-} from "@/bindings";
+import { beforeEach, describe, test } from "bun:test";
+import { conflict, resetStubs, rule, stub, view } from "./editor-test-stubs";
 
-type Reply<T> =
-  | { status: "ok"; data: T }
-  | { status: "error"; error: SettingsCommandError };
-
-const rule = (id: string, recognized: string, replacement: string) => ({
-  id,
-  recognized,
-  replacement,
-});
-const view = (
-  revision: number,
-  rules: ReplacementRule[],
-): ReplacementRulesView => ({
-  revision,
-  rules,
-});
-const emptyPreview = (
-  overrides: Partial<ReplacementPreview>,
-): ReplacementPreview => ({
-  mode: "replace",
-  input_sha256: "0",
-  lines: [],
-  set_issues: [],
-  candidate: [],
-  is_noop: false,
-  ignored_lines: 0,
-  error_lines: 0,
-  omitted_lines: 0,
-  ...overrides,
-});
-const conflict = (current: number): SettingsCommandError => ({
-  code: "revision_conflict",
-  message: "Settings changed since the expected revision.",
-  field: null,
-  reason: null,
-  outcome: null,
-  current_revision: current,
-});
-
-// Each scenario sets the stubbed replies; calls are recorded in order.
-let current = view(4, [rule("a", "Cloud Code", "Claude Code")]);
-let checkIssues: RuleIssue[] = [];
-let saveReply: Reply<ReplacementRulesView> | null = null;
-let applyReply: Reply<ReplacementRulesView> | null = null;
-let previewRevision = 4;
-let pickReply: unknown = { status: "ok", data: null };
-let exportReply: unknown = { status: "ok", data: null };
-const saveCalls: Array<[RuleDraft[], number]> = [];
-const applyCalls: Array<[string, ImportMode, number]> = [];
-const previewCalls: Array<[string, ImportMode]> = [];
-
-const commands = {
-  getWordReplacements: async () => current,
-  checkWordReplacements: async () => checkIssues,
-  saveWordReplacements: async (rules: RuleDraft[], revision: number) => {
-    saveCalls.push([rules, revision]);
-    return (
-      saveReply ?? { status: "ok", data: view(revision + 1, current.rules) }
-    );
-  },
-  previewWordReplacements: async (input: string, mode: ImportMode) => {
-    previewCalls.push([input, mode]);
-    const preview = emptyPreview({ mode, is_noop: input.endsWith("same") });
-    return { status: "ok", data: { revision: previewRevision, preview } };
-  },
-  applyWordReplacements: async (
-    input: string,
-    mode: ImportMode,
-    revision: number,
-  ) => {
-    applyCalls.push([input, mode, revision]);
-    return applyReply ?? { status: "ok", data: view(revision + 1, []) };
-  },
-  importWordReplacementsFile: async () => pickReply,
-  exportWordReplacementsFile: async () => exportReply,
-};
-mock.module("@/bindings", () => ({ commands }));
-// Dynamic imports: the stores must load after the mock above is registered.
+// Dynamic imports: the stores must load after the stubs module registered its mock.
 const { canSave, isListDirty, useReplacementEditor } = await import(
   "./editor-store"
 );
@@ -106,14 +21,9 @@ const last = <T>(calls: T[]): T | undefined => calls[calls.length - 1];
 const settle = () => new Promise((done) => setTimeout(done, 0));
 
 beforeEach(async () => {
-  current = view(4, [rule("a", "Cloud Code", "Claude Code")]);
-  checkIssues = [];
-  saveReply = null;
-  applyReply = null;
-  previewRevision = 4;
-  saveCalls.length = 0;
-  applyCalls.length = 0;
-  previewCalls.length = 0;
+  resetStubs();
+  stub.pickReply = { status: "ok", data: null };
+  stub.exportReply = { status: "ok", data: null };
   useReplacementEditor.setState({
     revision: null,
     commit: "idle",
@@ -132,7 +42,7 @@ describe("list draft", () => {
   });
 
   test("a rule the shared validator refuses is not added", async () => {
-    checkIssues = [
+    stub.checkIssues = [
       { rule_index: 1, field: "recognized", kind: "duplicate_key" },
     ];
     const added = await editor().addRule({
@@ -153,11 +63,14 @@ describe("list draft", () => {
     );
     await settle();
     assert.equal(canSave(editor()), true);
-    current = view(5, [...current.rules, rule("n", "Open Claw", "OpenClaw")]);
+    stub.current = view(5, [
+      ...stub.current.rules,
+      rule("n", "Open Claw", "OpenClaw"),
+    ]);
     assert.equal(await editor().save(), true);
-    assert.equal(saveCalls.length, 1);
-    assert.equal(saveCalls[0][1], 4);
-    assert.deepEqual(saveCalls[0][0][1], {
+    assert.equal(stub.saveCalls.length, 1);
+    assert.equal(stub.saveCalls[0][1], 4);
+    assert.deepEqual(stub.saveCalls[0][0][1], {
       id: null,
       recognized: "Open Claw",
       replacement: "OpenClaw",
@@ -167,18 +80,22 @@ describe("list draft", () => {
   });
 
   test("an invalid draft disables Save", async () => {
-    checkIssues = [{ rule_index: 0, field: "replacement", kind: "too_short" }];
+    stub.checkIssues = [
+      { rule_index: 0, field: "replacement", kind: "too_short" },
+    ];
     editor().editRule("a", "replacement", "");
     await settle();
     assert.equal(canSave(editor()), false);
     assert.equal(await editor().save(), false);
-    assert.equal(saveCalls.length, 0);
+    assert.equal(stub.saveCalls.length, 0);
   });
 
   test("a revision conflict keeps the draft and its base revision", async () => {
     editor().editRule("a", "replacement", "Claude Code CLI");
     await settle();
-    saveReply = { status: "error", error: conflict(6) };
+    // The rules really changed elsewhere, so the conflict stands.
+    stub.current = view(6, [rule("z", "Cloud Opus", "Claude Opus")]);
+    stub.saveReplies.push({ status: "error", error: conflict(6) });
     assert.equal(await editor().save(), false);
     assert.equal(editor().failure?.conflict, true);
     assert.equal(editor().revision, 4);
@@ -195,8 +112,8 @@ describe("list draft", () => {
 
 describe("changes made elsewhere", () => {
   test("a clean editor shows the newer rules", async () => {
-    current = view(7, [rule("z", "Cloud Opus", "Claude Opus")]);
-    await editor().refreshAfterChange(7);
+    stub.current = view(7, [rule("z", "Cloud Opus", "Claude Opus")]);
+    await editor().followSettingsChange(7);
     assert.equal(editor().revision, 7);
     assert.equal(editor().draft[0].recognized, "Cloud Opus");
   });
@@ -204,8 +121,8 @@ describe("changes made elsewhere", () => {
   test("a dirty editor keeps its draft, so Save reports the conflict", async () => {
     editor().editRule("a", "replacement", "Mine");
     await settle();
-    current = view(7, []);
-    await editor().refreshAfterChange(7);
+    stub.current = view(7, []);
+    await editor().followSettingsChange(7);
     assert.equal(editor().revision, 4);
     assert.equal(editor().draft[0].replacement, "Mine");
   });
@@ -220,7 +137,7 @@ describe("text view", () => {
     await useReplacementText.getState().requestPreview();
     assert.equal(canApplyText(useReplacementText.getState()), true);
     assert.equal(await useReplacementText.getState().apply(), true);
-    assert.deepEqual(applyCalls[0], [
+    assert.deepEqual(stub.applyCalls[0], [
       "recognized;replacement\nOpen Claw;OpenClaw",
       "replace",
       4,
@@ -242,7 +159,9 @@ describe("text view", () => {
     assert.equal(canApplyText(useReplacementText.getState()), false);
     useReplacementText.getState().setText("other");
     await useReplacementText.getState().requestPreview();
-    applyReply = { status: "error", error: conflict(9) };
+    // The same text now previews differently: the rules changed elsewhere.
+    stub.previewExtra = { ignored_lines: 1 };
+    stub.applyReplies.push({ status: "error", error: conflict(9) });
     assert.equal(await useReplacementText.getState().apply(), false);
     assert.equal(useReplacementText.getState().failure?.conflict, true);
     assert.equal(useReplacementText.getState().text, "other");
@@ -251,7 +170,7 @@ describe("text view", () => {
 
 describe("files", () => {
   test("a file that is not UTF-8 is refused with its name", async () => {
-    pickReply = {
+    stub.pickReply = {
       status: "error",
       error: {
         file_name: "notes.rtf",
@@ -271,31 +190,35 @@ describe("files", () => {
   });
 
   test("merge preview, replace re-preview, then Apply at the preview revision", async () => {
-    pickReply = {
+    stub.pickReply = {
       status: "ok",
       data: { file_name: "rules-team.csv", text: "a;b\n" },
     };
     await useReplacementFiles.getState().pickImport();
-    assert.deepEqual(last(previewCalls), ["a;b\n", "merge"]);
+    assert.deepEqual(last(stub.previewCalls), ["a;b\n", "merge"]);
     await useReplacementFiles.getState().setMode("replace");
-    assert.deepEqual(last(previewCalls), ["a;b\n", "replace"]);
+    assert.deepEqual(last(stub.previewCalls), ["a;b\n", "replace"]);
     assert.equal(canApplyImport(useReplacementFiles.getState()), true);
     assert.equal(await useReplacementFiles.getState().applyImport(), true);
-    assert.deepEqual(last(applyCalls), ["a;b\n", "replace", 4]);
+    assert.deepEqual(last(stub.applyCalls), ["a;b\n", "replace", 4]);
     assert.equal(useReplacementFiles.getState().file, null);
   });
 
   test("an import conflict keeps the dialog open", async () => {
-    pickReply = { status: "ok", data: { file_name: "r.txt", text: "a;b\n" } };
+    stub.pickReply = {
+      status: "ok",
+      data: { file_name: "r.txt", text: "a;b\n" },
+    };
     await useReplacementFiles.getState().pickImport();
-    applyReply = { status: "error", error: conflict(8) };
+    stub.previewExtra = { ignored_lines: 1 };
+    stub.applyReplies.push({ status: "error", error: conflict(8) });
     assert.equal(await useReplacementFiles.getState().applyImport(), false);
     assert.equal(useReplacementFiles.getState().failure?.conflict, true);
     assert.notEqual(useReplacementFiles.getState().file, null);
   });
 
   test("export reports the written file or the typed refusal", async () => {
-    exportReply = {
+    stub.exportReply = {
       status: "ok",
       data: { file_name: "r.txt", count: 1, durable: true },
     };
@@ -305,7 +228,7 @@ describe("files", () => {
       count: 1,
       durable: true,
     });
-    exportReply = {
+    stub.exportReply = {
       status: "error",
       error: {
         file_name: "link.txt",
@@ -318,7 +241,7 @@ describe("files", () => {
     };
     const failed = await useReplacementFiles.getState().exportRules();
     assert.equal(failed.status, "failed");
-    exportReply = { status: "ok", data: null };
+    stub.exportReply = { status: "ok", data: null };
     assert.equal(
       (await useReplacementFiles.getState().exportRules()).status,
       "cancelled",

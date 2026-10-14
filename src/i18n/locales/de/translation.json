@@ -717,7 +717,8 @@
         "invalid": "Einige Regeln sind ungültig. Korrigiere die markierten Zeilen und versuche es erneut.",
         "unchanged": "Die gespeicherten Regeln sind unverändert.",
         "conflict": "Die Regeln wurden an anderer Stelle geändert, zum Beispiel über die Befehlszeile. Lade sie neu, um fortzufahren.",
-        "reload": "Neu laden"
+        "reload": "Neu laden",
+        "reloadDiscards": "Beim Neuladen werden die gespeicherten Regeln angezeigt und deine nicht gespeicherten Änderungen verworfen."
       },
       "bulk": {
         "editor": "Regeln als Text",

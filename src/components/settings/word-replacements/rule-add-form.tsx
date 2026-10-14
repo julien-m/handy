@@ -1,7 +1,8 @@
 /**
  * Add form of the replacement list (contract nodes `replacement-settings.new-recognized`,
  * `.new-replacement`, `.add`). The candidate is checked by the shared Rust validator; Add stays
- * unavailable, with an accessible explanation, until both fields are valid (has_validation).
+ * unavailable, with an accessible explanation, until both fields are valid (has_validation); the
+ * form is read-only while a Save is in flight.
  */
 import React, { useEffect, useId, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -9,7 +10,7 @@ import { Plus } from "lucide-react";
 import type { RuleIssue } from "@/bindings";
 import { Button } from "../../ui/Button";
 import { Input } from "../../ui/Input";
-import { useReplacementEditor } from "./editor-store";
+import { isDraftLocked, useReplacementEditor } from "./editor-store";
 import { SCREEN_IDS, issueKey } from "./rules-model";
 
 /** Delay before the candidate is checked while typing; one check per pause, not per key. */
@@ -22,26 +23,13 @@ interface RuleAddFormProps {
   onAdded: () => void;
 }
 
-export const RuleAddForm: React.FC<RuleAddFormProps> = ({
-  recognizedRef,
-  focusOnOpen,
-  onAdded,
-}) => {
+export const RuleAddForm: React.FC<RuleAddFormProps> = (props) => {
+  const { recognizedRef, focusOnOpen, onAdded } = props;
   const { t } = useTranslation();
   const form = useCandidate();
   const hintId = useId();
-  useEffect(() => {
-    // Runs when the form opens from the empty state, not on later renders.
-    if (focusOnOpen) recognizedRef.current?.focus();
-  }, [focusOnOpen, recognizedRef]);
-  const submit = async () => {
-    if (!form.ready) return;
-    if (await useReplacementEditor.getState().addRule(form.values)) {
-      form.reset();
-      onAdded();
-      recognizedRef.current?.focus();
-    }
-  };
+  useFocusOnOpen(focusOnOpen, recognizedRef);
+  const handleSubmit = useAddSubmit(form, recognizedRef, onAdded);
   return (
     <div className="space-y-1">
       <div className="flex items-center gap-2">
@@ -49,20 +37,14 @@ export const RuleAddForm: React.FC<RuleAddFormProps> = ({
           form={form}
           field="recognized"
           inputRef={recognizedRef}
-          onSubmit={submit}
+          onSubmit={handleSubmit}
         />
-        <CandidateField form={form} field="replacement" onSubmit={submit} />
-        <Button
-          variant="secondary"
-          className="flex items-center gap-2 shrink-0"
-          disabled={!form.ready}
-          aria-describedby={form.ready ? undefined : hintId}
-          data-testid={`${SCREEN_IDS.list}-add`}
-          onClick={() => void submit()}
-        >
-          <Plus className="w-4 h-4" aria-hidden="true" />
-          {t("settings.replacements.add.button")}
-        </Button>
+        <CandidateField
+          form={form}
+          field="replacement"
+          onSubmit={handleSubmit}
+        />
+        <AddButton form={form} hintId={hintId} onSubmit={handleSubmit} />
       </div>
       <span id={hintId} className="sr-only">
         {t("settings.replacements.add.needsText")}
@@ -72,17 +54,80 @@ export const RuleAddForm: React.FC<RuleAddFormProps> = ({
   );
 };
 
+/**
+ * Focus the recognized field when the form opens from the empty state, not on later renders.
+ * @param focusOnOpen whether the form was opened by Add rule
+ * @param recognizedRef recognized field
+ */
+const useFocusOnOpen = (
+  focusOnOpen: boolean,
+  recognizedRef: React.RefObject<HTMLInputElement>,
+): void => {
+  useEffect(() => {
+    if (focusOnOpen) recognizedRef.current?.focus();
+  }, [focusOnOpen, recognizedRef]);
+};
+
+/**
+ * Add the candidate to the draft, then clear the form and return the focus to its first field.
+ * @returns the submit handler (ignored until the candidate is ready)
+ */
+const useAddSubmit = (
+  form: Candidate,
+  recognizedRef: React.RefObject<HTMLInputElement>,
+  onAdded: () => void,
+): (() => Promise<void>) => {
+  return async () => {
+    if (!form.ready) return;
+    if (await useReplacementEditor.getState().addRule(form.values)) {
+      form.reset();
+      onAdded();
+      recognizedRef.current?.focus();
+    }
+  };
+};
+
+interface AddButtonProps {
+  form: Candidate;
+  hintId: string;
+  onSubmit: () => Promise<void>;
+}
+
+/** Add, unavailable with an accessible explanation until the candidate is valid. */
+const AddButton: React.FC<AddButtonProps> = ({ form, hintId, onSubmit }) => {
+  const { t } = useTranslation();
+  return (
+    <Button
+      variant="secondary"
+      className="flex items-center gap-2 shrink-0"
+      disabled={!form.ready}
+      aria-describedby={form.ready ? undefined : hintId}
+      data-testid={`${SCREEN_IDS.list}-add`}
+      onClick={() => void onSubmit()}
+    >
+      <Plus className="w-4 h-4" aria-hidden="true" />
+      {t("settings.replacements.add.button")}
+    </Button>
+  );
+};
+
 type CandidateFieldName = "recognized" | "replacement";
 
 interface Candidate {
   values: { recognized: string; replacement: string };
   ready: boolean;
+  /** A Save is in flight: the fields are read-only. */
+  locked: boolean;
   visibleIssues: RuleIssue[];
   invalid: (field: CandidateFieldName) => boolean;
   change: (field: CandidateFieldName, value: string) => void;
   touch: (field: CandidateFieldName) => void;
   reset: () => void;
 }
+
+/** Both fields hold text. */
+const isFilled = (values: Candidate["values"]): boolean =>
+  values.recognized.trim() !== "" && values.replacement.trim() !== "";
 
 /** Candidate fields, their shared-validator issues and which fields were left (blurred). */
 const useCandidate = (): Candidate => {
@@ -92,8 +137,7 @@ const useCandidate = (): Candidate => {
     replacement: false,
   });
   const issues = useCandidateIssues(values);
-  const filled =
-    values.recognized.trim() !== "" && values.replacement.trim() !== "";
+  const locked = useReplacementEditor(isDraftLocked);
   // A field's error shows once the user leaves it (duplicate AC), and clears as soon as fixed.
   const visibleIssues = (issues ?? []).filter(
     (issue) =>
@@ -101,7 +145,9 @@ const useCandidate = (): Candidate => {
   );
   return {
     values,
-    ready: filled && issues !== null && issues.length === 0,
+    // A Save in flight owns the draft: nothing is added until it ends.
+    ready: isFilled(values) && issues?.length === 0 && !locked,
+    locked,
     visibleIssues,
     invalid: (field) => visibleIssues.some((issue) => issue.field === field),
     change: (field, value) =>
@@ -173,6 +219,7 @@ const CandidateField: React.FC<CandidateFieldProps> = ({
       placeholder={label}
       aria-label={label}
       aria-invalid={invalid}
+      readOnly={form.locked}
       value={form.values[field]}
       data-testid={`${SCREEN_IDS.list}-new-${field}`}
       onChange={(event) => form.change(field, event.target.value)}

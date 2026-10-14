@@ -717,7 +717,8 @@
         "invalid": "Vissa regler är ogiltiga. Rätta de markerade raderna och försök igen.",
         "unchanged": "De sparade reglerna är oförändrade.",
         "conflict": "Reglerna har ändrats på annat håll, till exempel från kommandoraden. Läs in dem igen för att fortsätta.",
-        "reload": "Läs in igen"
+        "reload": "Läs in igen",
+        "reloadDiscards": "Om du läser in igen visas de sparade reglerna och dina osparade ändringar försvinner."
       },
       "bulk": {
         "editor": "Regler som text",

@@ -717,7 +717,8 @@
         "invalid": "Beberapa aturan tidak valid. Perbaiki baris yang ditandai, lalu coba lagi.",
         "unchanged": "Aturan tersimpan tidak berubah.",
         "conflict": "Aturan diubah di tempat lain, misalnya dari baris perintah. Muat ulang untuk melanjutkan.",
-        "reload": "Muat ulang"
+        "reload": "Muat ulang",
+        "reloadDiscards": "Memuat ulang akan menampilkan aturan yang tersimpan dan membuang perubahan yang belum disimpan."
       },
       "bulk": {
         "editor": "Aturan sebagai teks",

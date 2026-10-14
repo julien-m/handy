@@ -717,7 +717,8 @@
         "invalid": "Sommige regels zijn ongeldig. Corrigeer de gemarkeerde rijen en probeer het opnieuw.",
         "unchanged": "De opgeslagen regels zijn ongewijzigd.",
         "conflict": "De regels zijn elders gewijzigd, bijvoorbeeld via de opdrachtregel. Laad ze opnieuw om verder te gaan.",
-        "reload": "Opnieuw laden"
+        "reload": "Opnieuw laden",
+        "reloadDiscards": "Opnieuw laden toont de opgeslagen regels en verwijdert je niet-opgeslagen wijzigingen."
       },
       "bulk": {
         "editor": "Regels als tekst",

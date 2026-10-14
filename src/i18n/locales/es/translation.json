@@ -717,7 +717,8 @@
         "invalid": "Algunas reglas no son válidas. Corrige las filas resaltadas e inténtalo de nuevo.",
         "unchanged": "Las reglas guardadas no han cambiado.",
         "conflict": "Las reglas se cambiaron en otro lugar, por ejemplo desde la línea de comandos. Recárgalas para continuar.",
-        "reload": "Recargar"
+        "reload": "Recargar",
+        "reloadDiscards": "Al recargar se muestran las reglas guardadas y se descartan los cambios sin guardar."
       },
       "bulk": {
         "editor": "Reglas como texto",

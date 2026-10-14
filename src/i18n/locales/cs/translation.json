@@ -717,7 +717,8 @@
         "invalid": "Některá pravidla jsou neplatná. Opravte zvýrazněné řádky a zkuste to znovu.",
         "unchanged": "Uložená pravidla se nezměnila.",
         "conflict": "Pravidla byla změněna jinde, například z příkazového řádku. Chcete-li pokračovat, načtěte je znovu.",
-        "reload": "Načíst znovu"
+        "reload": "Načíst znovu",
+        "reloadDiscards": "Opětovné načtení zobrazí uložená pravidla a zahodí vaše neuložené změny."
       },
       "bulk": {
         "editor": "Pravidla jako text",

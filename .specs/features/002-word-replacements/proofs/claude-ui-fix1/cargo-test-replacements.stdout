@@ -1,0 +1,21 @@
+
+running 16 tests
+test commands::replacements_files::tests::a_missing_file_is_unreadable ... ok
+test commands::replacements_files::tests::a_directory_is_refused ... ok
+test commands::replacements_files::tests::a_file_that_is_not_utf8_is_refused_with_its_name ... ok
+test commands::replacements_files::tests::a_utf8_file_is_read_with_its_name ... ok
+test commands::replacements_files::tests::a_fifo_is_refused_without_blocking ... ok
+test commands::replacements_files::tests::export_refuses_a_symbolic_link_and_names_the_file ... ok
+test commands::replacements_files::tests::the_import_cap_is_inclusive ... ok
+test commands::replacements::tests::the_ui_preview_lists_an_error_line_after_a_thousand_ignored_lines ... ok
+test commands::replacements::tests::check_reports_shared_validator_issues_of_a_draft ... ok
+test commands::replacements::tests::refusals_reach_the_editor_as_the_shared_typed_settings_error ... ok
+test commands::replacements::tests::save_refuses_an_invalid_draft_or_a_stale_revision_without_writing ... ok
+test commands::replacements_files::tests::export_writes_the_canonical_rules_in_order ... ok
+test commands::replacements::tests::apply_refuses_a_preview_of_an_older_revision_before_building_the_edit ... ok
+test commands::replacements::tests::apply_commits_the_previewed_import_at_its_revision ... ok
+test commands::replacements::tests::save_commits_the_whole_draft_once_and_keeps_existing_ids ... ok
+test commands::replacements::tests::preview_is_bounded_like_apply_and_counts_every_line ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 904 filtered out; finished in 0.18s
+

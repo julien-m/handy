@@ -2,8 +2,9 @@
  * Unsaved-changes bar of the list (contract nodes `replacement-settings.draft`, `.discard`,
  * `.save`): shown while the draft differs from the saved rules. Save is enabled only for a valid
  * changed draft, shows its loading state while committing, and a refusal keeps the draft with
- * its reason; a revision conflict offers Reload instead of overwriting (has_dirty_state,
- * is_submittable, async_action).
+ * its reason; a revision conflict keeps Save disabled, even after further edits, and offers
+ * Reload, which the note says drops the unsaved edits (has_dirty_state, is_submittable,
+ * async_action).
  */
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -18,15 +19,8 @@ const DRAFT_ID = `${SCREEN_IDS.list}-draft`;
 export const DraftBar: React.FC = () => {
   const { t } = useTranslation();
   const dirty = useReplacementEditor(isListDirty);
-  const enabled = useReplacementEditor(canSave);
-  const saving = useReplacementEditor((state) => state.commit === "saving");
   const failure = useReplacementEditor((state) => state.failure);
   if (!dirty && failure === null) return null;
-  const save = async () => {
-    if (await useReplacementEditor.getState().save()) {
-      toast.success(t("settings.replacements.draft.saved"));
-    }
-  };
   return (
     <div
       className="bg-background border border-mid-gray/20 rounded-lg p-4 space-y-3"
@@ -35,6 +29,7 @@ export const DraftBar: React.FC = () => {
       {failure && (
         <CommitFailureNote
           failure={failure}
+          discardsOnReload
           onReload={() => void useReplacementEditor.getState().loadRules()}
         />
       )}
@@ -45,26 +40,46 @@ export const DraftBar: React.FC = () => {
         >
           {t("settings.replacements.draft.note")}
         </p>
-        <Button
-          variant="secondary"
-          disabled={saving}
-          data-testid={`${SCREEN_IDS.list}-discard`}
-          onClick={() => useReplacementEditor.getState().discard()}
-        >
-          {t("settings.replacements.draft.discard")}
-        </Button>
-        <Button
-          variant="primary"
-          disabled={!enabled}
-          aria-busy={saving}
-          data-testid={`${SCREEN_IDS.list}-save`}
-          onClick={() => void save()}
-        >
-          {saving
-            ? t("settings.replacements.draft.saving")
-            : t("settings.replacements.draft.save")}
-        </Button>
+        <DraftButtons />
       </div>
     </div>
   );
+};
+
+/** Discard and Save; Save shows its loading state while committing. */
+const DraftButtons: React.FC = () => {
+  const { t } = useTranslation();
+  const enabled = useReplacementEditor(canSave);
+  const saving = useReplacementEditor((state) => state.commit === "saving");
+  const handleSave = () => void saveWithToast(t);
+  return (
+    <>
+      <Button
+        variant="secondary"
+        disabled={saving}
+        data-testid={`${SCREEN_IDS.list}-discard`}
+        onClick={() => useReplacementEditor.getState().discard()}
+      >
+        {t("settings.replacements.draft.discard")}
+      </Button>
+      <Button
+        variant="primary"
+        disabled={!enabled}
+        aria-busy={saving}
+        data-testid={`${SCREEN_IDS.list}-save`}
+        onClick={handleSave}
+      >
+        {saving
+          ? t("settings.replacements.draft.saving")
+          : t("settings.replacements.draft.save")}
+      </Button>
+    </>
+  );
+};
+
+/** Save the draft and confirm a successful Save with a toast. */
+const saveWithToast = async (t: (key: string) => string): Promise<void> => {
+  if (await useReplacementEditor.getState().save()) {
+    toast.success(t("settings.replacements.draft.saved"));
+  }
 };

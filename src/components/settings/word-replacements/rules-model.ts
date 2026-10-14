@@ -118,22 +118,6 @@ export const withoutRule = (
 ): DraftRule[] => draft.filter((rule) => rule.key !== key);
 
 /**
- * Row that takes the focus after a deletion (keyboard AC): the next rule, else the previous one,
- * else none (the add form).
- * @param draft draft before the deletion
- * @param key deleted row key
- * @returns key of the row to focus, or null for the add form
- */
-export const focusAfterDelete = (
-  draft: ReadonlyArray<DraftRule>,
-  key: string,
-): string | null => {
-  const index = draft.findIndex((rule) => rule.key === key);
-  if (index < 0) return null;
-  return draft[index + 1]?.key ?? draft[index - 1]?.key ?? null;
-};
-
-/**
  * Exchange text of saved rules, as the bulk view shows it: the header, then one
  * `recognized;replacement` line per rule in list order. AC-002 forbids `;` and tabs in
  * recognized text, so the first `;` always separates the fields.

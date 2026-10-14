@@ -717,7 +717,8 @@
         "invalid": "Algunes regles no són vàlides. Corregiu les files ressaltades i torneu-ho a provar.",
         "unchanged": "Les regles desades no han canviat.",
         "conflict": "Les regles s'han canviat en un altre lloc, per exemple des de la línia d'ordres. Torneu-les a carregar per continuar.",
-        "reload": "Torna a carregar"
+        "reload": "Torna a carregar",
+        "reloadDiscards": "En tornar a carregar es mostren les regles desades i es descarten els canvis no desats."
       },
       "bulk": {
         "editor": "Regles com a text",

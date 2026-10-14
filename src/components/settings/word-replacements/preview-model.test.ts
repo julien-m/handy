@@ -1,6 +1,7 @@
 /**
  * Preview reading of the replacement editor (feature 002, AC-003/AC-005): counts, Apply
- * availability, row keys, the import example, file line counts and typed file refusals.
+ * availability, row keys, the import example, file line counts, typed file refusals, the
+ * comparison of a fresh preview with the one shown, and the apply bar's note.
  * Run with `bun run test:word-replacements`.
  */
 import assert from "node:assert/strict";
@@ -11,6 +12,7 @@ import type {
   SettingsCommandError,
 } from "@/bindings";
 import {
+  applyNote,
   canApplyPreview,
   commitFailure,
   exportFailureKey,
@@ -21,6 +23,7 @@ import {
   lineCount,
   previewCounts,
   previewLineKey,
+  samePreview,
 } from "./preview-model";
 
 const line = (overrides: Partial<PreviewLine>): PreviewLine => ({
@@ -224,6 +227,61 @@ describe("commit failures", () => {
       commitFailure(refusal({ code: "unavailable", outcome: "unknown" }))
         .uncertain,
       true,
+    );
+  });
+});
+
+describe("fresh preview of the same input", () => {
+  test("an identical outcome is the same preview; any difference is not", () => {
+    assert.equal(samePreview(bulk, preview([...bulk.lines])), true);
+    assert.equal(samePreview(bulk, { ...bulk, ignored_lines: 9 }), false);
+    const updated = preview([line({ status: "update", rule_id: "a" })]);
+    assert.equal(samePreview(bulk, updated), false);
+  });
+});
+
+describe("apply bar note", () => {
+  const ready = { refused: false, current: true };
+
+  test("a refused preview, then a preview on its way", () => {
+    assert.equal(
+      applyNote({ ...ready, refused: true, preview: bulk }).key,
+      "settings.replacements.commit.unchanged",
+    );
+    assert.equal(
+      applyNote({ ...ready, current: false, preview: bulk }).key,
+      "settings.replacements.preview.updating",
+    );
+    assert.equal(
+      applyNote({ ...ready, preview: null }).key,
+      "settings.replacements.preview.updating",
+    );
+  });
+
+  test("one error line is named; several are counted", () => {
+    const one = preview([line({ status: "error", line_number: 4 })], {
+      error_lines: 1,
+    });
+    assert.deepEqual(applyNote({ ...ready, preview: one }), {
+      key: "settings.replacements.bulk.fixLine",
+      options: { line: 4 },
+    });
+    const many = preview([], { error_lines: 3 });
+    assert.deepEqual(applyNote({ ...ready, preview: many }), {
+      key: "settings.replacements.bulk.fixLines",
+      options: { count: 3 },
+    });
+  });
+
+  test("nothing to apply, or ready", () => {
+    const noop = preview([], { is_noop: true });
+    assert.equal(
+      applyNote({ ...ready, preview: noop }).key,
+      "settings.replacements.bulk.noChanges",
+    );
+    assert.equal(
+      applyNote({ ...ready, preview: preview([line({})]) }).key,
+      "settings.replacements.bulk.ready",
     );
   });
 });

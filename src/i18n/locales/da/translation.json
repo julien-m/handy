@@ -717,7 +717,8 @@
         "invalid": "Nogle regler er ugyldige. Ret de fremhævede rækker, og prøv igen.",
         "unchanged": "De gemte regler er uændrede.",
         "conflict": "Reglerne blev ændret et andet sted, for eksempel fra kommandolinjen. Genindlæs dem for at fortsætte.",
-        "reload": "Genindlæs"
+        "reload": "Genindlæs",
+        "reloadDiscards": "Genindlæsning viser de gemte regler og kasserer dine ikke-gemte ændringer."
       },
       "bulk": {
         "editor": "Regler som tekst",

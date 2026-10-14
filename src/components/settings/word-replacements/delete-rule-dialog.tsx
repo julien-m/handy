@@ -28,16 +28,7 @@ export const DeleteRuleDialog: React.FC<DeleteRuleDialogProps> = ({
       onOpenChange={(open) => {
         if (!open) onCancel();
       }}
-      footer={
-        <>
-          <Button variant="secondary" onClick={onCancel}>
-            {t("settings.replacements.deleteDialog.cancel")}
-          </Button>
-          <Button variant="danger" onClick={onConfirm}>
-            {t("settings.replacements.deleteDialog.confirm")}
-          </Button>
-        </>
-      }
+      footer={<DeleteRuleFooter onCancel={onCancel} onConfirm={onConfirm} />}
     >
       <p className="text-sm">
         {t("settings.replacements.deleteDialog.body", {
@@ -46,5 +37,21 @@ export const DeleteRuleDialog: React.FC<DeleteRuleDialogProps> = ({
         })}
       </p>
     </Dialog>
+  );
+};
+
+const DeleteRuleFooter: React.FC<
+  Pick<DeleteRuleDialogProps, "onCancel" | "onConfirm">
+> = ({ onCancel, onConfirm }) => {
+  const { t } = useTranslation();
+  return (
+    <>
+      <Button variant="secondary" onClick={onCancel}>
+        {t("settings.replacements.deleteDialog.cancel")}
+      </Button>
+      <Button variant="danger" onClick={onConfirm}>
+        {t("settings.replacements.deleteDialog.confirm")}
+      </Button>
+    </>
   );
 };

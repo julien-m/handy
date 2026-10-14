@@ -11,11 +11,13 @@ import { EXAMPLE_LINE, SCREEN_IDS } from "./rules-model";
 const EMPTY_ID = `${SCREEN_IDS.empty}-empty`;
 
 interface RulesEmptyProps {
+  /** Add rule, which takes the focus when the last rule is deleted and the list closes. */
+  addRef: React.RefObject<HTMLButtonElement>;
   onAdd: () => void;
   onPaste: () => void;
 }
 
-export const RulesEmpty: React.FC<RulesEmptyProps> = ({ onAdd, onPaste }) => {
+export const RulesEmpty: React.FC<RulesEmptyProps> = (props) => {
   const { t } = useTranslation();
   return (
     <div
@@ -29,24 +31,36 @@ export const RulesEmpty: React.FC<RulesEmptyProps> = ({ onAdd, onPaste }) => {
       <p className="text-sm text-mid-gray" data-testid={`${EMPTY_ID}-body`}>
         {t("settings.replacements.empty.body")} <span>{EXAMPLE_LINE}</span>
       </p>
-      <div className="flex flex-wrap justify-center gap-2">
-        <Button
-          variant="primary"
-          className="flex items-center gap-2"
-          data-testid={`${EMPTY_ID}-add`}
-          onClick={onAdd}
-        >
-          <Plus className="w-4 h-4" aria-hidden="true" />
-          {t("settings.replacements.add.button")}
-        </Button>
-        <Button
-          variant="secondary"
-          data-testid={`${EMPTY_ID}-paste`}
-          onClick={onPaste}
-        >
-          {t("settings.replacements.empty.paste")}
-        </Button>
-      </div>
+      <EmptyActions {...props} />
+    </div>
+  );
+};
+
+const EmptyActions: React.FC<RulesEmptyProps> = ({
+  addRef,
+  onAdd,
+  onPaste,
+}) => {
+  const { t } = useTranslation();
+  return (
+    <div className="flex flex-wrap justify-center gap-2">
+      <Button
+        ref={addRef}
+        variant="primary"
+        className="flex items-center gap-2"
+        data-testid={`${EMPTY_ID}-add`}
+        onClick={onAdd}
+      >
+        <Plus className="w-4 h-4" aria-hidden="true" />
+        {t("settings.replacements.add.button")}
+      </Button>
+      <Button
+        variant="secondary"
+        data-testid={`${EMPTY_ID}-paste`}
+        onClick={onPaste}
+      >
+        {t("settings.replacements.empty.paste")}
+      </Button>
     </div>
   );
 };

@@ -717,7 +717,8 @@
         "invalid": "Một số quy tắc không hợp lệ. Hãy sửa các dòng được đánh dấu rồi thử lại.",
         "unchanged": "Các quy tắc đã lưu không thay đổi.",
         "conflict": "Các quy tắc đã bị thay đổi ở nơi khác, ví dụ từ dòng lệnh. Hãy tải lại để tiếp tục.",
-        "reload": "Tải lại"
+        "reload": "Tải lại",
+        "reloadDiscards": "Tải lại sẽ hiển thị các quy tắc đã lưu và hủy các thay đổi chưa lưu của bạn."
       },
       "bulk": {
         "editor": "Quy tắc dạng văn bản",

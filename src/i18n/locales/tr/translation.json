@@ -717,7 +717,8 @@
         "invalid": "Bazı kurallar geçersiz. Vurgulanan satırları düzeltip tekrar deneyin.",
         "unchanged": "Kaydedilmiş kurallar değişmedi.",
         "conflict": "Kurallar başka bir yerde, örneğin komut satırından değiştirildi. Devam etmek için kuralları yeniden yükleyin.",
-        "reload": "Yeniden yükle"
+        "reload": "Yeniden yükle",
+        "reloadDiscards": "Yeniden yükleme kaydedilmiş kuralları gösterir ve kaydedilmemiş değişikliklerinizi siler."
       },
       "bulk": {
         "editor": "Metin olarak kurallar",

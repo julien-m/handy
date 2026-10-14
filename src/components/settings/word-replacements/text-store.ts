@@ -1,7 +1,9 @@
 /**
  * Text view of the replacement rules (feature 002, AC-003): the exchange text, its line-by-line
  * preview from `preview_word_replacements` (replace mode, bounded to 1,000,000 bytes) and Apply,
- * which commits exactly that input at the revision its preview was computed at.
+ * which commits exactly that input at the revision its preview was computed at (`applyPreviewed`
+ * moves to a newer revision only when the preview is unchanged). The text is read-only while
+ * Apply runs, so nothing typed meanwhile is overwritten by the applied rules.
  */
 import { create } from "zustand";
 import {
@@ -17,6 +19,8 @@ import {
   commitFailure,
 } from "./preview-model";
 import { useReplacementEditor } from "./editor-store";
+import { failureAfterEdit } from "./editor-model";
+import { applyPreviewed } from "./preview-apply";
 
 export interface TextStore {
   /** Text being edited. */
@@ -52,7 +56,7 @@ export const useReplacementText = create<TextStore>()(() => ({
   applied: false,
   failure: null,
   open,
-  setText: (text) => patch({ text, applied: false, failure: null }),
+  setText,
   requestPreview,
   apply,
   cancel: () => open(useReplacementEditor.getState().saved),
@@ -91,6 +95,16 @@ export const canApplyText = (store: TextStore): boolean =>
   !store.applying &&
   // After a revision conflict, Reload previews again before any Apply.
   store.failure?.conflict !== true;
+
+/**
+ * Replace the text; ignored while Apply runs. A revision conflict stays shown until a new
+ * preview of the text, against the rules saved now, replaces it.
+ * @param text new text
+ */
+function setText(text: string): void {
+  if (state().applying) return;
+  patch({ text, applied: false, failure: failureAfterEdit(state().failure) });
+}
 
 /**
  * Start the view on the text of `rules`, discarding any text edit.
@@ -146,10 +160,10 @@ async function apply(): Promise<boolean> {
   if (!canApplyText(current) || current.preview === null) return false;
   patch({ applying: true, failure: null });
   try {
-    const result = await commands.applyWordReplacements(
+    const result = await applyPreviewed(
       current.text,
       "replace",
-      current.preview.revision,
+      current.preview,
     );
     if (result.status === "error")
       return failApply(commitFailure(result.error));

@@ -57,14 +57,19 @@ interface SaveOrDiscardDialogProps {
   onSave: () => Promise<void>;
 }
 
-const SaveOrDiscardDialog: React.FC<SaveOrDiscardDialogProps> = (props) => {
-  const { t } = useTranslation();
+/** Whether the current view (list or text) can be saved or applied right now. */
+const useCurrentViewSavable = (): boolean => {
   const listSavable = useReplacementEditor(
     (state) => state.view === "list" && canSave(state),
   );
   const textSavable = useReplacementText(canApplyText);
   const view = useReplacementEditor((state) => state.view);
-  const savable = view === "list" ? listSavable : textSavable;
+  return view === "list" ? listSavable : textSavable;
+};
+
+const SaveOrDiscardDialog: React.FC<SaveOrDiscardDialogProps> = (props) => {
+  const { t } = useTranslation();
+  const savable = useCurrentViewSavable();
   return (
     <Dialog
       open={props.open}
@@ -74,24 +79,38 @@ const SaveOrDiscardDialog: React.FC<SaveOrDiscardDialogProps> = (props) => {
         if (!open) props.onCancel();
       }}
       footer={
-        <>
-          <Button variant="secondary" onClick={props.onCancel}>
-            {t("settings.replacements.switchDialog.cancel")}
-          </Button>
-          <Button variant="secondary" onClick={props.onDiscard}>
-            {t("settings.replacements.switchDialog.discard")}
-          </Button>
-          <Button
-            variant="primary"
-            disabled={!savable}
-            onClick={() => void props.onSave()}
-          >
-            {t("settings.replacements.switchDialog.save")}
-          </Button>
-        </>
+        <SaveOrDiscardFooter
+          onCancel={props.onCancel}
+          onDiscard={props.onDiscard}
+          onSave={props.onSave}
+          savable={savable}
+        />
       }
     >
       <p className="text-sm">{t("settings.replacements.switchDialog.body")}</p>
     </Dialog>
+  );
+};
+
+const SaveOrDiscardFooter: React.FC<
+  Omit<SaveOrDiscardDialogProps, "open"> & { savable: boolean }
+> = ({ onCancel, onDiscard, onSave, savable }) => {
+  const { t } = useTranslation();
+  return (
+    <>
+      <Button variant="secondary" onClick={onCancel}>
+        {t("settings.replacements.switchDialog.cancel")}
+      </Button>
+      <Button variant="secondary" onClick={onDiscard}>
+        {t("settings.replacements.switchDialog.discard")}
+      </Button>
+      <Button
+        variant="primary"
+        disabled={!savable}
+        onClick={() => void onSave()}
+      >
+        {t("settings.replacements.switchDialog.save")}
+      </Button>
+    </>
   );
 };

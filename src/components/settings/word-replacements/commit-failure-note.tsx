@@ -1,6 +1,7 @@
 /**
  * Why a Save, Apply or import did not commit (visual state "error"): the translated typed
  * refusal, a reminder that the saved rules are unchanged, and Reload for a revision conflict.
+ * When Reload replaces unsaved edits (the list), the note says so before the user chooses it.
  */
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -11,15 +12,22 @@ import type { CommitFailure } from "./preview-model";
 interface CommitFailureNoteProps {
   failure: CommitFailure;
   onReload: () => void;
+  /** Reload drops the unsaved edits (list draft) instead of keeping them (text, import). */
+  discardsOnReload?: boolean;
 }
 
 export const CommitFailureNote: React.FC<CommitFailureNoteProps> = ({
   failure,
   onReload,
+  discardsOnReload = false,
 }) => {
   const { t } = useTranslation();
+  const discards =
+    failure.conflict && discardsOnReload
+      ? ` ${t("settings.replacements.commit.reloadDiscards")}`
+      : "";
   const message = failure.conflict
-    ? t("settings.replacements.commit.conflict")
+    ? `${t("settings.replacements.commit.conflict")}${discards}`
     : t(failure.key);
   // A refusal changed nothing; an uncertain outcome must not claim that.
   const unchanged = failure.uncertain

@@ -717,7 +717,8 @@
         "invalid": "Niektóre reguły są nieprawidłowe. Popraw wyróżnione wiersze i spróbuj ponownie.",
         "unchanged": "Zapisane reguły nie zostały zmienione.",
         "conflict": "Reguły zostały zmienione gdzie indziej, na przykład z wiersza poleceń. Wczytaj je ponownie, aby kontynuować.",
-        "reload": "Wczytaj ponownie"
+        "reload": "Wczytaj ponownie",
+        "reloadDiscards": "Ponowne wczytanie pokaże zapisane reguły i odrzuci niezapisane zmiany."
       },
       "bulk": {
         "editor": "Reguły jako tekst",

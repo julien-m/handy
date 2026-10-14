@@ -20,6 +20,7 @@ import {
   fileRefusal,
 } from "./preview-model";
 import { useReplacementEditor } from "./editor-store";
+import { applyPreviewed } from "./preview-apply";
 
 /** Import dialog lifecycle. */
 export type ImportPhase =
@@ -161,8 +162,9 @@ async function previewImport(): Promise<void> {
 }
 
 /**
- * Apply the previewed import in one commit at the preview's revision (AC-005). A conflict keeps
- * the dialog open: the file is previewed again against the new rules before any Apply.
+ * Apply the previewed import in one commit at the preview's revision (AC-005), or at a newer one
+ * when the same file previews unchanged (`applyPreviewed`). A real conflict keeps the dialog
+ * open: the file is previewed again against the new rules before any Apply.
  * Side effects: one `apply_word_replacements` call; the list editor takes the saved rules.
  * @returns true when the rules were imported
  */
@@ -173,11 +175,7 @@ async function applyImport(): Promise<boolean> {
   }
   patch({ phase: "applying", failure: null });
   try {
-    const result = await commands.applyWordReplacements(
-      file.text,
-      mode,
-      preview.revision,
-    );
+    const result = await applyPreviewed(file.text, mode, preview);
     if (result.status === "error")
       return failImport(commitFailure(result.error));
     useReplacementEditor.getState().acceptCommitted(result.data);

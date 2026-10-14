@@ -717,7 +717,8 @@
         "invalid": "Alcune regole non sono valide. Correggi le righe evidenziate, poi riprova.",
         "unchanged": "Le regole salvate non sono cambiate.",
         "conflict": "Le regole sono state modificate altrove, ad esempio dalla riga di comando. Ricaricale per continuare.",
-        "reload": "Ricarica"
+        "reload": "Ricarica",
+        "reloadDiscards": "Ricaricando vengono mostrate le regole salvate e le modifiche non salvate vengono scartate."
       },
       "bulk": {
         "editor": "Regole come testo",

@@ -72,6 +72,39 @@ fn a_missing_file_is_unreadable() -> TestResult {
     Ok(())
 }
 
+#[cfg(unix)]
+#[test]
+fn a_fifo_is_refused_without_blocking() -> TestResult {
+    use std::os::unix::ffi::OsStrExt;
+    let directory = tempfile::tempdir()?;
+    let path = directory.path().join("rules.fifo");
+    let c_path = std::ffi::CString::new(path.as_os_str().as_bytes())?;
+    // SAFETY: `c_path` is a valid NUL-terminated path that outlives the call; mkfifo only reads it.
+    let created = unsafe { libc::mkfifo(c_path.as_ptr(), 0o600) };
+    assert_eq!(created, 0, "mkfifo failed");
+    // Without a writer, a blocking open of a FIFO never returns: read on a thread and give up
+    // after five seconds so a regression fails instead of hanging the suite.
+    let (sender, receiver) = std::sync::mpsc::channel();
+    let reader_path = path.clone();
+    std::thread::spawn(move || {
+        // The receiver is gone only after the timeout already failed the test.
+        let _ = sender.send(read_import_file(&reader_path));
+    });
+    let outcome = receiver.recv_timeout(std::time::Duration::from_secs(5))?;
+    let refused = outcome.err().ok_or("accepted")?;
+    assert_eq!(refused.file_name, "rules.fifo");
+    assert_eq!(refused.error.code, SettingsErrorCode::UsageError);
+    Ok(())
+}
+
+#[test]
+fn a_directory_is_refused() -> TestResult {
+    let directory = tempfile::tempdir()?;
+    let refused = read_import_file(directory.path()).err().ok_or("accepted")?;
+    assert_eq!(refused.error.code, SettingsErrorCode::UsageError);
+    Ok(())
+}
+
 #[test]
 fn export_writes_the_canonical_rules_in_order() -> TestResult {
     let directory = tempfile::tempdir()?;

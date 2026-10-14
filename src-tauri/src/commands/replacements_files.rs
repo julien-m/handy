@@ -16,12 +16,15 @@ use crate::word_replacements::{
 };
 use serde::Serialize;
 use specta::Type;
+use std::fs::{File, OpenOptions};
 use std::path::{Path, PathBuf};
 use tauri::{AppHandle, Manager};
 use tauri_plugin_dialog::DialogExt;
 
 /// File name proposed by the export dialog; the user can change it.
 const DEFAULT_EXPORT_NAME: &str = "replacement-rules.txt";
+/// `io_kind` of an import source that is not a regular file (FIFO, device, directory).
+const NOT_A_REGULAR_FILE: &str = "NotARegularFile";
 
 /// A rule file chosen in the import dialog, read as bounded UTF-8 text.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Type)]
@@ -130,18 +133,49 @@ fn pick_export_path(app: &AppHandle) -> Option<PathBuf> {
 /// Read `path` as bounded UTF-8 exchange text.
 ///
 /// # Errors
-/// See `import_word_replacements_file`.
+/// See `import_word_replacements_file`; anything other than a regular file (a FIFO, a device, a
+/// directory) is refused as unreadable (`usage_error`).
 pub fn read_import_file(path: &Path) -> Result<ReplacementImportFile, ReplacementFileError> {
-    let text = std::fs::File::open(path)
-        .map_err(|error| ExchangeInputError::Unreadable {
-            io_kind: format!("{:?}", error.kind()),
-        })
+    let text = open_regular_file(path)
         .and_then(read_exchange_input)
         .map_err(|error| file_error(path, input_refusal(&error)))?;
     Ok(ReplacementImportFile {
         file_name: file_name(path),
         text,
     })
+}
+
+/// Open `path` for reading only if it is a regular file.
+///
+/// On Unix the open uses `O_NONBLOCK`, so a FIFO chosen in the dialog is opened at once instead
+/// of blocking the worker until a writer appears; the flag changes nothing for the reads of a
+/// regular file. The type is checked on the opened handle (`fstat`), so the file cannot be
+/// swapped between the check and the read.
+///
+/// # Errors
+/// `ExchangeInputError::Unreadable` when the open or the type check fails, or the file is not
+/// regular (`io_kind` `NotARegularFile`).
+fn open_regular_file(path: &Path) -> Result<File, ExchangeInputError> {
+    let mut options = OpenOptions::new();
+    options.read(true);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt;
+        options.custom_flags(libc::O_NONBLOCK);
+    }
+    let file = options.open(path).map_err(unreadable)?;
+    if !file.metadata().map_err(unreadable)?.is_file() {
+        return Err(ExchangeInputError::Unreadable {
+            io_kind: NOT_A_REGULAR_FILE.to_owned(),
+        });
+    }
+    Ok(file)
+}
+
+fn unreadable(error: std::io::Error) -> ExchangeInputError {
+    ExchangeInputError::Unreadable {
+        io_kind: format!("{:?}", error.kind()),
+    }
 }
 
 /// Write `rules` in the canonical exchange format to `path`, atomically.

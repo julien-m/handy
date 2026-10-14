@@ -1,7 +1,8 @@
 /**
  * One rule of the replacement list: recognized text → replacement, with Edit (inline, in the
  * draft) and Delete. Enter or Done leaves the inline edit; Escape restores the row as it was
- * when the edit started.
+ * when the edit started. While a Save is in flight the row is locked: its fields are read-only
+ * and its buttons disabled, so nothing typed is overwritten by the saved rules.
  */
 import React, { useRef } from "react";
 import { useTranslation } from "react-i18next";
@@ -12,13 +13,15 @@ import { type DraftRule, type RuleField, SCREEN_IDS } from "./rules-model";
 
 const ROW_ID = `${SCREEN_IDS.list}-rule`;
 const ICON_BUTTON =
-  "p-1 rounded-md hover:bg-logo-primary/30 cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-logo-primary";
+  "p-1 rounded-md hover:bg-logo-primary/30 cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-logo-primary disabled:opacity-50 disabled:cursor-not-allowed";
 
 interface RuleRowProps {
   rule: DraftRule;
   position: number;
   errors: string[];
   editing: boolean;
+  /** A Save is in flight. */
+  locked: boolean;
   onEditing: (editing: boolean) => void;
   onDelete: () => void;
   deleteRef: (button: HTMLButtonElement | null) => void;
@@ -66,33 +69,10 @@ const RowText: React.FC<{ rule: DraftRule }> = ({ rule }) => (
 );
 
 /** Inline edit of both fields, written to the draft as the user types. */
-const RowEditor: React.FC<RuleRowProps> = ({ rule, position, onEditing }) => {
-  const { t } = useTranslation();
-  const before = useRef({
-    recognized: rule.recognized,
-    replacement: rule.replacement,
-  });
-  const edit = useReplacementEditor((state) => state.editRule);
-  const keys = (event: React.KeyboardEvent) => {
-    if (event.key === "Enter") onEditing(false);
-    if (event.key !== "Escape") return;
-    // Escape must not also close an enclosing dialog or leave the section.
-    event.stopPropagation();
-    edit(rule.key, "recognized", before.current.recognized);
-    edit(rule.key, "replacement", before.current.replacement);
-    onEditing(false);
-  };
+const RowEditor: React.FC<RuleRowProps> = (props) => {
+  const handleKeyDown = useEditorKeys(props);
   const field = (name: RuleField) => (
-    <Input
-      type="text"
-      variant="compact"
-      className="flex-1 min-w-0"
-      autoFocus={name === "recognized"}
-      aria-label={t(`settings.replacements.rule.${name}`, { position })}
-      value={rule[name]}
-      onChange={(event) => edit(rule.key, name, event.target.value)}
-      onKeyDown={keys}
-    />
+    <RowField {...props} name={name} onKeyDown={handleKeyDown} />
   );
   return (
     <>
@@ -106,13 +86,63 @@ const RowEditor: React.FC<RuleRowProps> = ({ rule, position, onEditing }) => {
   );
 };
 
+/**
+ * Keys of the inline edit: Enter leaves it; Escape restores the row as it was when the edit
+ * started, then leaves it.
+ * @returns the key handler of both fields
+ */
+const useEditorKeys = ({
+  rule,
+  onEditing,
+}: RuleRowProps): ((event: React.KeyboardEvent) => void) => {
+  const before = useRef({
+    recognized: rule.recognized,
+    replacement: rule.replacement,
+  });
+  const edit = useReplacementEditor((state) => state.editRule);
+  return (event) => {
+    if (event.key === "Enter") onEditing(false);
+    if (event.key !== "Escape") return;
+    // Escape must not also close an enclosing dialog or leave the section.
+    event.stopPropagation();
+    edit(rule.key, "recognized", before.current.recognized);
+    edit(rule.key, "replacement", before.current.replacement);
+    onEditing(false);
+  };
+};
+
+interface RowFieldProps extends RuleRowProps {
+  name: RuleField;
+  onKeyDown: (event: React.KeyboardEvent) => void;
+}
+
+const RowField: React.FC<RowFieldProps> = (props) => {
+  const { t } = useTranslation();
+  const { rule, name } = props;
+  const edit = useReplacementEditor((state) => state.editRule);
+  return (
+    <Input
+      type="text"
+      variant="compact"
+      className="flex-1 min-w-0"
+      autoFocus={name === "recognized"}
+      readOnly={props.locked}
+      aria-label={t(`settings.replacements.rule.${name}`, {
+        position: props.position,
+      })}
+      value={rule[name]}
+      onChange={(event) => edit(rule.key, name, event.target.value)}
+      onKeyDown={props.onKeyDown}
+    />
+  );
+};
+
 const RowActions: React.FC<RuleRowProps> = (props) => {
   const { t } = useTranslation();
   const recognized = props.rule.recognized;
   const editLabel = props.editing
     ? t("settings.replacements.rule.done", { recognized })
     : t("settings.replacements.rule.edit", { recognized });
-  const deleteLabel = t("settings.replacements.rule.delete", { recognized });
   return (
     <div className="flex items-center gap-1 shrink-0">
       <button
@@ -121,22 +151,34 @@ const RowActions: React.FC<RuleRowProps> = (props) => {
         aria-label={editLabel}
         title={editLabel}
         aria-pressed={props.editing}
+        disabled={props.locked}
         data-testid={`${ROW_ID}-edit`}
         onClick={() => props.onEditing(!props.editing)}
       >
         {props.editing ? <Check size={18} /> : <Pencil size={18} />}
       </button>
-      <button
-        type="button"
-        ref={props.deleteRef}
-        className={ICON_BUTTON}
-        aria-label={deleteLabel}
-        title={deleteLabel}
-        data-testid={`${ROW_ID}-delete`}
-        onClick={props.onDelete}
-      >
-        <Trash2 size={18} />
-      </button>
+      <DeleteButton {...props} />
     </div>
+  );
+};
+
+const DeleteButton: React.FC<RuleRowProps> = (props) => {
+  const { t } = useTranslation();
+  const label = t("settings.replacements.rule.delete", {
+    recognized: props.rule.recognized,
+  });
+  return (
+    <button
+      type="button"
+      ref={props.deleteRef}
+      className={ICON_BUTTON}
+      aria-label={label}
+      title={label}
+      disabled={props.locked}
+      data-testid={`${ROW_ID}-delete`}
+      onClick={props.onDelete}
+    >
+      <Trash2 size={18} />
+    </button>
   );
 };

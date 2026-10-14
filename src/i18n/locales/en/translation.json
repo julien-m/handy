@@ -717,7 +717,8 @@
         "invalid": "Some rules are invalid. Fix the highlighted rows, then try again.",
         "unchanged": "Saved rules are unchanged.",
         "conflict": "The rules changed elsewhere, for example from the command line. Reload them to continue.",
-        "reload": "Reload"
+        "reload": "Reload",
+        "reloadDiscards": "Reloading shows the saved rules and discards your unsaved changes."
       },
       "bulk": {
         "editor": "Rules as text",

@@ -717,7 +717,8 @@
         "invalid": "Certaines règles ne sont pas valides. Corrigez les lignes en surbrillance, puis réessayez.",
         "unchanged": "Les règles enregistrées sont inchangées.",
         "conflict": "Les règles ont été modifiées ailleurs, par exemple depuis la ligne de commande. Rechargez-les pour continuer.",
-        "reload": "Recharger"
+        "reload": "Recharger",
+        "reloadDiscards": "Le rechargement affiche les règles enregistrées et abandonne vos modifications non enregistrées."
       },
       "bulk": {
         "editor": "Règles sous forme de texte",

@@ -37,23 +37,43 @@ export const ImportMode: React.FC = () => {
         {t("settings.replacements.importDialog.mode")}
       </legend>
       {MODES.map((value) => (
-        <label
+        <ModeOption
           key={value}
-          className="flex items-center gap-2 text-sm cursor-pointer"
-        >
-          <input
-            type="radio"
-            name="replacement-import-mode"
-            className="appearance-none w-4 h-4 shrink-0 rounded-full border border-mid-gray/80 bg-mid-gray/10 checked:border-4 checked:border-logo-primary cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-logo-primary"
-            checked={mode === value}
-            disabled={busy}
-            data-testid={`${DIALOG_ID}-${value}`}
-            onChange={() => void useReplacementFiles.getState().setMode(value)}
-          />
-          {t(`settings.replacements.importDialog.${value}`)}
-        </label>
+          value={value}
+          checked={mode === value}
+          disabled={busy}
+        />
       ))}
     </fieldset>
+  );
+};
+
+interface ModeOptionProps {
+  value: Mode;
+  checked: boolean;
+  disabled: boolean;
+}
+
+/** One merge/replace radio; choosing it previews the file again in that mode. */
+const ModeOption: React.FC<ModeOptionProps> = ({
+  value,
+  checked,
+  disabled,
+}) => {
+  const { t } = useTranslation();
+  return (
+    <label className="flex items-center gap-2 text-sm cursor-pointer">
+      <input
+        type="radio"
+        name="replacement-import-mode"
+        className="appearance-none w-4 h-4 shrink-0 rounded-full border border-mid-gray/80 bg-mid-gray/10 checked:border-4 checked:border-logo-primary cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-logo-primary"
+        checked={checked}
+        disabled={disabled}
+        data-testid={`${DIALOG_ID}-${value}`}
+        onChange={() => void useReplacementFiles.getState().setMode(value)}
+      />
+      {t(`settings.replacements.importDialog.${value}`)}
+    </label>
   );
 };
 

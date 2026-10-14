@@ -1,6 +1,6 @@
 /**
- * Replacement editor rules (feature 002): draft edits, dirty state, focus after deletion, the
- * bulk text, issue translation keys and contract screen ids.
+ * Replacement editor rules (feature 002): draft edits, dirty state, the bulk text, issue
+ * translation keys and contract screen ids.
  * Run with `bun run test:word-replacements`.
  */
 import assert from "node:assert/strict";
@@ -10,7 +10,6 @@ import {
   EXCHANGE_HEADER,
   draftOf,
   exchangeText,
-  focusAfterDelete,
   isDraftDirty,
   issueKey,
   itemKey,
@@ -75,14 +74,6 @@ describe("draft", () => {
     assert.equal(isDraftDirty(saved, draft), true);
     const reordered = [...draftOf(saved)].reverse();
     assert.equal(isDraftDirty(saved, reordered), true);
-  });
-
-  test("focus moves to the next rule, else the previous, else the add form", () => {
-    const draft = draftOf(saved);
-    assert.equal(focusAfterDelete(draft, "a"), "b");
-    assert.equal(focusAfterDelete(draft, "c"), "b");
-    assert.equal(focusAfterDelete(draftOf(saved.slice(0, 1)), "a"), null);
-    assert.equal(focusAfterDelete(draft, "missing"), null);
   });
 });
 

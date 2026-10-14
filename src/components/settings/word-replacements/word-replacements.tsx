@@ -9,10 +9,15 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Button } from "../../ui/Button";
 import { SettingsGroup } from "../../ui/SettingsGroup";
-import { type EditorView, useReplacementEditor } from "./editor-store";
+import {
+  type EditorView,
+  isListDirty,
+  useReplacementEditor,
+} from "./editor-store";
 import { useReplacementFiles } from "./file-store";
 import { useReplacementText } from "./text-store";
 import { screenId, type ScreenId } from "./rules-model";
+import { showsRuleList } from "./editor-model";
 import { useEditorLifecycle } from "./use-editor-lifecycle";
 import { useDraftGate } from "./draft-gate";
 import { RulesHeader } from "./rules-header";
@@ -28,9 +33,8 @@ export const WordReplacements: React.FC = () => {
   const { t } = useTranslation();
   useEditorLifecycle();
   const view = useReplacementEditor((state) => state.view);
-  const ruleCount = useReplacementEditor((state) => state.draft.length);
   const [adding, setAdding] = useState(false);
-  const screen = screenId(view, ruleCount > 0 || adding);
+  const screen = useScreen(view, adding);
   const { gate, dialog } = useDraftGate();
   const actions = useEditorActions(gate);
   return (
@@ -52,6 +56,19 @@ export const WordReplacements: React.FC = () => {
       {dialog}
     </div>
   );
+};
+
+/**
+ * Contract screen shown: the list stays while it has rules, an add form was opened or the draft
+ * changed (`showsRuleList`), else the empty state.
+ * @param view rule view
+ * @param adding whether the add form was opened
+ * @returns the screen's test-id prefix
+ */
+const useScreen = (view: EditorView, adding: boolean): ScreenId => {
+  const ruleCount = useReplacementEditor((state) => state.draft.length);
+  const dirty = useReplacementEditor(isListDirty);
+  return screenId(view, showsRuleList(ruleCount, adding, dirty));
 };
 
 interface EditorActions {
@@ -112,21 +129,19 @@ const EditorBody: React.FC<EditorBodyProps> = ({
   onAdding,
   onPaste,
 }) => {
-  const { t } = useTranslation();
   const load = useReplacementEditor((state) => state.load);
   const hasRules = useReplacementEditor((state) => state.draft.length > 0);
   const recognizedRef = useRef<HTMLInputElement>(null);
-  if (load === "loading") {
-    return (
-      <p className="text-sm text-mid-gray">
-        {t("settings.replacements.loading")}
-      </p>
-    );
-  }
-  if (load === "failed") return <LoadFailed />;
+  const emptyAddRef = useRef<HTMLButtonElement>(null);
+  // The add form's field, or Add rule when the list gave way to the empty state.
+  const focusAddForm = () =>
+    (recognizedRef.current ?? emptyAddRef.current)?.focus();
+  if (load !== "ready") return <LoadState load={load} />;
   if (screen === "replacement-settings-bulk") return <BulkEditor />;
   if (screen === "replacement-settings-empty") {
-    return <RulesEmpty onAdd={onAdding} onPaste={onPaste} />;
+    return (
+      <RulesEmpty addRef={emptyAddRef} onAdd={onAdding} onPaste={onPaste} />
+    );
   }
   return (
     <>
@@ -135,8 +150,19 @@ const EditorBody: React.FC<EditorBodyProps> = ({
         focusOnOpen={screen === "replacement-settings" && !hasRules}
         onAdded={onAdding}
       />
-      <RuleList recognizedRef={recognizedRef} />
+      <RuleList onFocusAddForm={focusAddForm} />
     </>
+  );
+};
+
+/** Saved rules being read, or the failed read with Retry. */
+const LoadState: React.FC<{ load: "loading" | "failed" }> = ({ load }) => {
+  const { t } = useTranslation();
+  if (load === "failed") return <LoadFailed />;
+  return (
+    <p className="text-sm text-mid-gray">
+      {t("settings.replacements.loading")}
+    </p>
   );
 };
 

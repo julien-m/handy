@@ -1,17 +1,14 @@
 /**
- * Lifecycle of the replacement editor while it is mounted: read the saved rules, follow
- * committed changes of `word_replacements` (CLI, another window) through `settings-changed`, keep
- * an untouched text view on the saved rules, and register the unsaved-edit guard of the settings
- * window's navigation.
+ * Lifecycle of the replacement editor while it is mounted: read the saved rules, follow every
+ * committed settings change through `settings-changed` (any key: the base revision of a Save is
+ * the global settings revision), keep an untouched text view on the saved rules, and register the
+ * unsaved-edit guard of the settings window's navigation.
  */
 import { useEffect } from "react";
 import { listen } from "@tauri-apps/api/event";
 import { registerUnsavedChangesGuard } from "@/stores/unsaved-changes";
 import { isListDirty, useReplacementEditor } from "./editor-store";
 import { isTextDirty, useReplacementText } from "./text-store";
-
-/** Settings key of the rules in `settings-changed` events. */
-const RULES_KEY = "word_replacements";
 
 /**
  * Whether the editor's current view holds unsaved edits.
@@ -39,13 +36,12 @@ export const useEditorLifecycle = (): void => {
       isDirty: isEditorDirty,
       discard: discardEditor,
     });
-    const unlisten = listen<{ revision: number; keys: string[] }>(
+    const unlisten = listen<{ revision: number }>(
       "settings-changed",
       (event) => {
-        if (!event.payload.keys.includes(RULES_KEY)) return;
         void useReplacementEditor
           .getState()
-          .refreshAfterChange(event.payload.revision);
+          .followSettingsChange(event.payload.revision);
       },
     );
     return () => {
