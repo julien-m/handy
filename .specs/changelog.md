@@ -5,6 +5,9 @@
 
 ---
 
+## 2026-10-14 — [Feature 009] Plan refined: auto_submit refused by a plain not_found (retired-key hint removed), cross source FrontmostAtEnd and resolved_target aligned with 006, Windows full acceptance pending release evidence
+<!-- finalize:spec-refine:2026-10-14:86e43d44 -->
+
 ## 2026-10-14 — [Feature 010] Plan refined: 008 sources cited as code paths (plan review preparable in 18 batches), shared contracts cited from the 006 plan, pinned reasons aligned with 009
 <!-- finalize:spec-refine:2026-10-14:61308064 -->
 
