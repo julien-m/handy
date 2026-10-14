@@ -343,3 +343,27 @@ fn a_reconnected_first_choice_is_preferred_at_the_next_opening() {
         Some(("USB headset".into(), EffectiveReason::FirstChoice))
     );
 }
+#[test]
+fn the_preference_check_names_what_would_open_without_opening_it() {
+    use handy_app_lib::microphones::policy::preferred;
+    let priority = order(&["USB headset", "MacBook microphone"]);
+    let preferences = Preferences {
+        priority: &priority,
+        clamshell: None,
+    };
+    let mut fake = Fake::present(&["MacBook microphone"]);
+    assert_eq!(
+        preferred(&preferences, &mut fake),
+        Some(Some("MacBook microphone".into()))
+    );
+    assert!(!fake.calls.iter().any(|call| call.starts_with("open")));
+    let mut absent = Fake::present(&[]);
+    assert_eq!(preferred(&preferences, &mut absent), Some(None));
+    let mut failing = Fake::default();
+    assert_eq!(preferred(&preferences, &mut failing), None);
+    let empty = Preferences {
+        priority: &[],
+        clamshell: None,
+    };
+    assert_eq!(preferred(&empty, &mut Fake::default()), Some(None));
+}

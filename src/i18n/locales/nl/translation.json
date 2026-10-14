@@ -708,6 +708,8 @@
     },
     "noInputDeviceTitle": "Geen microfoon gevonden",
     "noInputDevice": "Er is geen audio-invoerapparaat gedetecteerd. Sluit een microfoon of headset aan en probeer het opnieuw.",
+    "inputLostTitle": "Opname onderbroken",
+    "inputLost": "De microfoon is losgekoppeld. De audio die tot dan is opgenomen, wordt getranscribeerd.",
     "recordingFailed": "Opname starten mislukt: {{error}}",
     "modelLoadFailed": "Model laden mislukt: {{model}}",
     "modelLoadFailedUnknown": "onbekend model",

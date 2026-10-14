@@ -147,6 +147,24 @@ pub fn resolve<P: ResolutionPorts>(
     }
     resolution
 }
+// @spec FR-004: Priority re-resolved at each stream boundary — .specs/features/001-microphone-priority/spec.md#fr-004
+/// What a resolution would open first right now, without opening anything: `Some(Some(name))`
+/// for the first present and unambiguous candidate, `Some(None)` for the system default, `None`
+/// when no catalog could be observed (an open stream is then kept rather than churned).
+pub fn preferred<P: ResolutionPorts>(
+    preferences: &Preferences<'_>,
+    ports: &mut P,
+) -> Option<Option<String>> {
+    let candidates = candidates(preferences, ports);
+    if candidates.is_empty() {
+        return Some(None);
+    }
+    let catalog = observe(ports)?;
+    let usable = candidates
+        .into_iter()
+        .find(|(name, _)| matches!(catalog.lookup(name), Lookup::Unique(_)));
+    Some(usable.map(|(name, _)| name.to_owned()))
+}
 /// The first configured candidate that opens, from one fresh catalog; each failure is recorded
 /// in `resolution`.
 fn configured<P: ResolutionPorts>(

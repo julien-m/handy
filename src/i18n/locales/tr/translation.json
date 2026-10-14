@@ -705,6 +705,8 @@
     },
     "noInputDeviceTitle": "Mikrofon bulunamadı",
     "noInputDevice": "Ses giriş aygıtı algılanamadı. Lütfen bir mikrofon veya kulaklık bağlayın ve tekrar deneyin.",
+    "inputLostTitle": "Kayıt yarıda kesildi",
+    "inputLost": "Mikrofonun bağlantısı kesildi. O ana kadar kaydedilen ses yazıya dökülüyor.",
     "recordingFailed": "Kayıt başlatılamadı: {{error}}",
     "modelLoadFailed": "Model yüklenemedi: {{model}}",
     "modelLoadFailedUnknown": "bilinmeyen model",

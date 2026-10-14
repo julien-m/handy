@@ -708,6 +708,8 @@
     },
     "noInputDeviceTitle": "Ingen mikrofon fundet",
     "noInputDevice": "Ingen lydinputenhed blev registreret. Tilslut en mikrofon eller et headset, og prøv igen.",
+    "inputLostTitle": "Optagelsen blev afbrudt",
+    "inputLost": "Mikrofonen blev frakoblet. Lyden, der var optaget indtil da, bliver transskriberet.",
     "recordingFailed": "Kunne ikke starte optagelse: {{error}}",
     "modelLoadFailed": "Kunne ikke indlæse model: {{model}}",
     "modelLoadFailedUnknown": "ukendt model",

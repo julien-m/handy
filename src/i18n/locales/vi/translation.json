@@ -705,6 +705,8 @@
     },
     "noInputDeviceTitle": "Không tìm thấy micrô",
     "noInputDevice": "Không phát hiện thiết bị đầu vào âm thanh nào. Vui lòng kết nối micrô hoặc tai nghe và thử lại.",
+    "inputLostTitle": "Ghi âm bị gián đoạn",
+    "inputLost": "Micrô đã bị ngắt kết nối. Âm thanh đã ghi đến lúc đó đang được chuyển thành văn bản.",
     "recordingFailed": "Không thể bắt đầu ghi âm: {{error}}",
     "modelLoadFailed": "Không thể tải mô hình: {{model}}",
     "modelLoadFailedUnknown": "mô hình không xác định",
