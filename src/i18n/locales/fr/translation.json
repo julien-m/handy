@@ -447,6 +447,20 @@
           "ctrlEnter": "Ctrl+Entrée"
         }
       },
+      "automaticEnter": {
+        "title": "Entrée automatique",
+        "description": "Envoyée une seule fois, uniquement après une insertion réussie.",
+        "keyLabel": "Touche à envoyer",
+        "announced": "Entrée automatique : {{value}}",
+        "note": "Remplace l'envoi automatique. Pas d'Entrée après une insertion échouée ou non confirmée, avec la méthode de collage Aucune, ou quand l'app a perdu le focus.",
+        "options": {
+          "never": "Jamais",
+          "always": "Toujours",
+          "alwaysDescription": "Chaque insertion réussie",
+          "pinOnly": "Seulement en mode PIN",
+          "pinOnlyDescription": "Apps épinglées uniquement"
+        }
+      },
       "translateToEnglish": {
         "label": "Traduire en anglais",
         "description": "Traduire automatiquement la parole d'autres langues vers l'anglais pendant la transcription."
@@ -1231,6 +1245,7 @@
     "fallbackNotice": "Le traitement par l'IA a échoué. Le texte original a été utilisé.",
     "destination": {
       "label": "Destination : {{name}}",
+      "pinnedLabel": "Destination : {{name}}, épinglée",
       "frontmostApp": "App au premier plan",
       "remove": "Retirer la destination",
       "unknownApp": "L'app de destination",
@@ -1241,7 +1256,9 @@
         "otherApps": "Autres apps",
         "frontmostAtEnd": "App au premier plan à la fin",
         "loading": "Chargement des apps…",
-        "failed": "La liste des apps n'a pas pu être chargée."
+        "failed": "La liste des apps n'a pas pu être chargée.",
+        "pin": "Épingler {{name}}",
+        "unpin": "Désépingler {{name}}"
       },
       "refused": {
         "stale": "La destination a changé entre-temps ; la liste a été actualisée.",
@@ -1254,7 +1271,9 @@
         "activationFailedKept": "{{app}} n'est pas passée au premier plan. Rien n'a été inséré ; la transcription est conservée dans l'Historique.",
         "activationFailedNotKept": "{{app}} n'est pas passée au premier plan. Rien n'a été inséré, et la transcription n'a pas pu être enregistrée dans l'Historique.",
         "insertionFailedKept": "{{app}} n'a peut-être pas reçu le texte ; la transcription est conservée dans l'Historique.",
-        "insertionFailedNotKept": "{{app}} n'a peut-être pas reçu le texte, et la transcription n'a pas pu être enregistrée dans l'Historique."
+        "insertionFailedNotKept": "{{app}} n'a peut-être pas reçu le texte, et la transcription n'a pas pu être enregistrée dans l'Historique.",
+        "pinnedAppNotRunningKept": "{{app}} est épinglée mais pas ouverte. Rien n'a été inséré ; la transcription est conservée dans l'Historique.",
+        "pinnedAppNotRunningNotKept": "{{app}} est épinglée mais pas ouverte. Rien n'a été inséré, et la transcription n'a pas pu être enregistrée dans l'Historique."
       }
     },
     "prompt": {

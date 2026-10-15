@@ -447,6 +447,20 @@
           "ctrlEnter": "Ctrl+Enter"
         }
       },
+      "automaticEnter": {
+        "title": "Automatický Enter",
+        "description": "Odešle se jednou, jen po úspěšném vložení.",
+        "keyLabel": "Klávesa ke stisknutí",
+        "announced": "Automatický Enter: {{value}}",
+        "note": "Nahrazuje automatické odeslání. Žádný Enter po neúspěšném nebo nepotvrzeném vložení, s metodou vložení Žádná ani když aplikace ztratila fokus.",
+        "options": {
+          "never": "Nikdy",
+          "always": "Vždy",
+          "alwaysDescription": "Každé úspěšné vložení",
+          "pinOnly": "Jen v režimu PIN",
+          "pinOnlyDescription": "Jen připnuté aplikace"
+        }
+      },
       "translateToEnglish": {
         "label": "Překládat do angličtiny",
         "description": "Během přepisu automaticky překládat řeč z jiných jazyků do angličtiny."
@@ -1231,6 +1245,7 @@
     "fallbackNotice": "Zpracování pomocí AI selhalo. Byl použit původní text.",
     "destination": {
       "label": "Cíl: {{name}}",
+      "pinnedLabel": "Cíl: {{name}}, připnuto",
       "frontmostApp": "Aplikace v popředí",
       "remove": "Odebrat cíl",
       "unknownApp": "Cílová aplikace",
@@ -1241,7 +1256,9 @@
         "otherApps": "Další aplikace",
         "frontmostAtEnd": "Aplikace v popředí na konci",
         "loading": "Načítání aplikací…",
-        "failed": "Seznam aplikací se nepodařilo načíst."
+        "failed": "Seznam aplikací se nepodařilo načíst.",
+        "pin": "Připnout {{name}}",
+        "unpin": "Odepnout {{name}}"
       },
       "refused": {
         "stale": "Cíl se mezitím změnil; seznam byl obnoven.",
@@ -1254,7 +1271,9 @@
         "activationFailedKept": "{{app}} se nedostala do popředí. Nic nebylo vloženo; přepis zůstává v Historii.",
         "activationFailedNotKept": "{{app}} se nedostala do popředí. Nic nebylo vloženo a přepis se nepodařilo uložit do Historie.",
         "insertionFailedKept": "{{app}} možná text nepřijala; přepis zůstává v Historii.",
-        "insertionFailedNotKept": "{{app}} možná text nepřijala a přepis se nepodařilo uložit do Historie."
+        "insertionFailedNotKept": "{{app}} možná text nepřijala a přepis se nepodařilo uložit do Historie.",
+        "pinnedAppNotRunningKept": "{{app}} je připnutá, ale není otevřená. Nic nebylo vloženo; přepis zůstává v Historii.",
+        "pinnedAppNotRunningNotKept": "{{app}} je připnutá, ale není otevřená. Nic nebylo vloženo a přepis se nepodařilo uložit do Historie."
       }
     },
     "prompt": {

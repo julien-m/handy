@@ -123,6 +123,13 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* Pin mark of a pinned destination (009, mockup recording-indicator-pinned). */
+.sdest-pin {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  color: var(--s-muted);
+}
 .sdest-window {
   width: 18px;
   height: 18px;

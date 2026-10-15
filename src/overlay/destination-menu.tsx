@@ -1,12 +1,13 @@
 // Destination menu of the recording indicator (feature 006): the application frontmost now,
 // the other running applications with windows, then "Frontmost app at the end", the current
 // choice checked. Pointer-operated: no item takes keyboard focus from the user's application.
-import { AppWindow, Check } from "lucide-react";
+import { AppWindow, Check, Pin, PinOff } from "lucide-react";
 import type React from "react";
 import { useTranslation } from "react-i18next";
 import type { MenuChoice, MenuEntry } from "@/bindings";
 import { AppIcon, keepFocus } from "./destination-badge";
 import { menuSections } from "./destination-model";
+import type { PinEntry } from "./pin-state";
 import type { DestinationMenuState } from "./use-destination";
 
 const TEST_ID = "recording-indicator-destination-menu-menu";
@@ -15,7 +16,46 @@ interface DestinationMenuProps {
   menu: Exclude<DestinationMenuState, { status: "closed" }>;
   feedbackKey: string | null;
   onChoose: (choice: MenuChoice) => void;
+  /** Pin entries of 009, listed above the application list. */
+  pinEntries?: PinEntry[];
+  onPin?: () => void;
+  onUnpin?: () => void;
 }
+
+// @spec AC-001: Pin entries above the application list — .specs/features/009-pin-mode-and-enter-rule/spec.md#ac-001
+/** "Pin <destination>" and "Unpin <app>" (009), above the application list, then a divider. */
+const PinRows: React.FC<{
+  entries: PinEntry[];
+  onPin: () => void;
+  onUnpin: () => void;
+}> = ({ entries, onPin, onUnpin }) => {
+  const { t } = useTranslation();
+  if (entries.length === 0) return null;
+  return (
+    <>
+      {entries.map((entry) => {
+        const Glyph = entry.kind === "pin" ? Pin : PinOff;
+        return (
+          <button
+            key={entry.kind}
+            type="button"
+            role="menuitem"
+            className="smenu-item"
+            data-testid={entry.testId}
+            onMouseDown={keepFocus}
+            onClick={entry.kind === "pin" ? onPin : onUnpin}
+          >
+            <Glyph className="smenu-glyph" aria-hidden="true" />
+            <span className="smenu-name">
+              {t(entry.labelKey, { name: entry.name })}
+            </span>
+          </button>
+        );
+      })}
+      <hr className="smenu-divider" />
+    </>
+  );
+};
 
 const AppRow: React.FC<{
   entry: MenuEntry;
@@ -120,6 +160,9 @@ export const DestinationMenuPanel: React.FC<DestinationMenuProps> = ({
   menu,
   feedbackKey,
   onChoose,
+  pinEntries = [],
+  onPin = () => undefined,
+  onUnpin = () => undefined,
 }) => {
   const { t } = useTranslation();
   return (
@@ -136,7 +179,10 @@ export const DestinationMenuPanel: React.FC<DestinationMenuProps> = ({
         <p className="smenu-status">{t("overlay.destination.menu.failed")}</p>
       )}
       {menu.status === "open" && (
-        <MenuEntries menu={menu.menu} onChoose={onChoose} />
+        <>
+          <PinRows entries={pinEntries} onPin={onPin} onUnpin={onUnpin} />
+          <MenuEntries menu={menu.menu} onChoose={onChoose} />
+        </>
       )}
       {feedbackKey && (
         <p className="smenu-feedback" role="status">

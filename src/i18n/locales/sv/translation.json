@@ -447,6 +447,20 @@
           "ctrlEnter": "Ctrl+Enter"
         }
       },
+      "automaticEnter": {
+        "title": "Automatisk Enter",
+        "description": "Skickas en gång, bara efter en lyckad infogning.",
+        "keyLabel": "Tangent att trycka",
+        "announced": "Automatisk Enter: {{value}}",
+        "note": "Ersätter Skicka automatiskt. Ingen Enter efter en misslyckad eller obekräftad infogning, med inklistringsmetoden Ingen, eller när appen tappade fokus.",
+        "options": {
+          "never": "Aldrig",
+          "always": "Alltid",
+          "alwaysDescription": "Varje lyckad infogning",
+          "pinOnly": "Bara i PIN-läge",
+          "pinOnlyDescription": "Bara fästa appar"
+        }
+      },
       "translateToEnglish": {
         "label": "Översätt till engelska",
         "description": "Översätt automatiskt tal från andra språk till engelska under transkription."
@@ -1231,6 +1245,7 @@
     "fallbackNotice": "AI-bearbetningen misslyckades. Originaltexten användes.",
     "destination": {
       "label": "Mål: {{name}}",
+      "pinnedLabel": "Mål: {{name}}, fäst",
       "frontmostApp": "App i förgrunden",
       "remove": "Ta bort mål",
       "unknownApp": "Målappen",
@@ -1241,7 +1256,9 @@
         "otherApps": "Andra appar",
         "frontmostAtEnd": "App i förgrunden vid slutet",
         "loading": "Läser in appar…",
-        "failed": "Listan över appar kunde inte läsas in."
+        "failed": "Listan över appar kunde inte läsas in.",
+        "pin": "Fäst {{name}}",
+        "unpin": "Lossa {{name}}"
       },
       "refused": {
         "stale": "Målet ändrades under tiden; listan har uppdaterats.",
@@ -1254,7 +1271,9 @@
         "activationFailedKept": "{{app}} kom inte till förgrunden. Inget infogades; transkriptionen finns kvar i Historik.",
         "activationFailedNotKept": "{{app}} kom inte till förgrunden. Inget infogades, och transkriptionen kunde inte sparas i Historik.",
         "insertionFailedKept": "{{app}} kanske inte tog emot texten; transkriptionen finns kvar i Historik.",
-        "insertionFailedNotKept": "{{app}} kanske inte tog emot texten, och transkriptionen kunde inte sparas i Historik."
+        "insertionFailedNotKept": "{{app}} kanske inte tog emot texten, och transkriptionen kunde inte sparas i Historik.",
+        "pinnedAppNotRunningKept": "{{app}} är fäst men inte öppen. Inget infogades; transkriptionen finns kvar i Historik.",
+        "pinnedAppNotRunningNotKept": "{{app}} är fäst men inte öppen. Inget infogades och transkriptionen kunde inte sparas i Historik."
       }
     },
     "prompt": {

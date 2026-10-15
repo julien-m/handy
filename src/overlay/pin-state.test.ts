@@ -56,7 +56,10 @@ const translate = (key: string, values?: Record<string, string>): string => {
     node = (node as Record<string, unknown> | undefined)?.[part];
   }
   if (typeof node !== "string") throw new Error(`missing translation ${key}`);
-  return node.replace(/\{\{(\w+)\}\}/g, (_, name: string) => values?.[name]);
+  return node.replace(
+    /\{\{(\w+)\}\}/g,
+    (_, name: string) => values?.[name] ?? "",
+  );
 };
 
 describe("pin entries in the badge menu (has_dropdown)", () => {
@@ -70,9 +73,7 @@ describe("pin entries in the badge menu (has_dropdown)", () => {
         testId: PIN_TEST_IDS.pin,
       },
     ]);
-    expect(translate(entries[0].labelKey, { name: "Comet" })).toBe(
-      "Pin Comet",
-    );
+    expect(translate(entries[0].labelKey, { name: "Comet" })).toBe("Pin Comet");
   });
 
   test("the current destination pinned: only Unpin is offered", () => {
@@ -97,7 +98,10 @@ describe("pin entries in the badge menu (has_dropdown)", () => {
   });
 
   test("another app pinned: Pin the current destination and Unpin the pinned app", () => {
-    const entries = pinEntries(snapshot({ source: "badge", pin: chatgptPin }), menu);
+    const entries = pinEntries(
+      snapshot({ source: "badge", pin: chatgptPin }),
+      menu,
+    );
     expect(entries.map((entry) => [entry.kind, entry.name])).toEqual([
       ["pin", "Comet"],
       ["unpin", "ChatGPT"],

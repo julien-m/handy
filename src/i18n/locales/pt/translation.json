@@ -447,6 +447,20 @@
           "ctrlEnter": "Ctrl+Enter"
         }
       },
+      "automaticEnter": {
+        "title": "Enter automático",
+        "description": "Enviado uma vez, só após uma inserção bem-sucedida.",
+        "keyLabel": "Tecla a premir",
+        "announced": "Enter automático: {{value}}",
+        "note": "Substitui o envio automático. Sem Enter após uma inserção falhada ou não confirmada, com o método de colagem Nenhum, ou quando a app perdeu o foco.",
+        "options": {
+          "never": "Nunca",
+          "always": "Sempre",
+          "alwaysDescription": "Cada inserção bem-sucedida",
+          "pinOnly": "Só no modo PIN",
+          "pinOnlyDescription": "Só apps fixadas"
+        }
+      },
       "translateToEnglish": {
         "label": "Traduzir para Inglês",
         "description": "Traduzir automaticamente fala de outros idiomas para inglês durante a transcrição."
@@ -1231,6 +1245,7 @@
     "fallbackNotice": "O processamento por IA falhou. O texto original foi usado.",
     "destination": {
       "label": "Destino: {{name}}",
+      "pinnedLabel": "Destino: {{name}}, fixado",
       "frontmostApp": "App em primeiro plano",
       "remove": "Remover destino",
       "unknownApp": "A app de destino",
@@ -1241,7 +1256,9 @@
         "otherApps": "Outras apps",
         "frontmostAtEnd": "App em primeiro plano no fim",
         "loading": "A carregar apps…",
-        "failed": "Não foi possível carregar a lista de apps."
+        "failed": "Não foi possível carregar a lista de apps.",
+        "pin": "Fixar {{name}}",
+        "unpin": "Desafixar {{name}}"
       },
       "refused": {
         "stale": "O destino mudou entretanto; a lista foi atualizada.",
@@ -1254,7 +1271,9 @@
         "activationFailedKept": "{{app}} não passou para primeiro plano. Nada foi inserido; a transcrição fica guardada no Histórico.",
         "activationFailedNotKept": "{{app}} não passou para primeiro plano. Nada foi inserido e não foi possível guardar a transcrição no Histórico.",
         "insertionFailedKept": "{{app}} pode não ter recebido o texto; a transcrição fica guardada no Histórico.",
-        "insertionFailedNotKept": "{{app}} pode não ter recebido o texto e não foi possível guardar a transcrição no Histórico."
+        "insertionFailedNotKept": "{{app}} pode não ter recebido o texto e não foi possível guardar a transcrição no Histórico.",
+        "pinnedAppNotRunningKept": "{{app}} está fixada mas não aberta. Nada foi inserido; a transcrição fica guardada no Histórico.",
+        "pinnedAppNotRunningNotKept": "{{app}} está fixada mas não aberta. Nada foi inserido e não foi possível guardar a transcrição no Histórico."
       }
     },
     "prompt": {

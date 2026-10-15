@@ -447,6 +447,20 @@
           "ctrlEnter": "Ctrl+Enter"
         }
       },
+      "automaticEnter": {
+        "title": "自動 Enter",
+        "description": "挿入に成功したときだけ、1 回送信します。",
+        "keyLabel": "押すキー",
+        "announced": "自動 Enter: {{value}}",
+        "note": "自動送信に代わる設定です。挿入に失敗した・確認できないとき、貼り付け方法が「なし」のとき、アプリがフォーカスを失ったときは Enter を送信しません。",
+        "options": {
+          "never": "しない",
+          "always": "常に",
+          "alwaysDescription": "挿入に成功するたび",
+          "pinOnly": "ピン留めモードのみ",
+          "pinOnlyDescription": "ピン留めしたアプリのみ"
+        }
+      },
       "translateToEnglish": {
         "label": "英語に翻訳",
         "description": "文字起こし中に他の言語から英語に自動的に翻訳。"
@@ -1231,6 +1245,7 @@
     "fallbackNotice": "AI 処理に失敗しました。元のテキストを使用しました。",
     "destination": {
       "label": "挿入先: {{name}}",
+      "pinnedLabel": "挿入先: {{name}}（ピン留め）",
       "frontmostApp": "最前面のアプリ",
       "remove": "挿入先を解除",
       "unknownApp": "挿入先のアプリ",
@@ -1241,7 +1256,9 @@
         "otherApps": "その他のアプリ",
         "frontmostAtEnd": "終了時に最前面のアプリ",
         "loading": "アプリを読み込み中…",
-        "failed": "アプリの一覧を読み込めませんでした。"
+        "failed": "アプリの一覧を読み込めませんでした。",
+        "pin": "{{name}} をピン留め",
+        "unpin": "{{name}} のピン留めを解除"
       },
       "refused": {
         "stale": "その間に挿入先が変わりました。一覧を更新しました。",
@@ -1254,7 +1271,9 @@
         "activationFailedKept": "{{app}} が最前面になりませんでした。何も挿入されていません。文字起こしは履歴に保存されています。",
         "activationFailedNotKept": "{{app}} が最前面になりませんでした。何も挿入されておらず、文字起こしを履歴に保存できませんでした。",
         "insertionFailedKept": "{{app}} がテキストを受け取っていない可能性があります。文字起こしは履歴に保存されています。",
-        "insertionFailedNotKept": "{{app}} がテキストを受け取っていない可能性があり、文字起こしを履歴に保存できませんでした。"
+        "insertionFailedNotKept": "{{app}} がテキストを受け取っていない可能性があり、文字起こしを履歴に保存できませんでした。",
+        "pinnedAppNotRunningKept": "{{app}} はピン留めされていますが開いていません。何も挿入されていません。文字起こしは履歴に保存されています。",
+        "pinnedAppNotRunningNotKept": "{{app}} はピン留めされていますが開いていません。何も挿入されておらず、文字起こしを履歴に保存できませんでした。"
       }
     },
     "prompt": {

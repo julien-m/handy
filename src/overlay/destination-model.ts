@@ -18,6 +18,8 @@ export type BadgeView =
       name: string;
       iconRef: string | null;
       canChange: boolean;
+      /** The route comes from the session pin (009): the badge shows the pin mark. */
+      pinned: boolean;
     };
 
 /** Destination menu split as the mockup lists it. */
@@ -49,13 +51,15 @@ const VISIBLE_PHASES: ReadonlySet<SessionPhase> = new Set([
 ]);
 
 // @spec AC-003: Badge icon, name or Frontmost app — .specs/features/006-destination-application/spec.md#ac-003
+// @spec AC-001: Pinned badge, shown even with return off — .specs/features/009-pin-mode-and-enter-rule/spec.md#ac-001
 /**
  * Badge content for a snapshot (AC-003, AC-004). No session (rollout gate closed), the setting
- * off, an unsupported system or a finished session hide the badge; the cross and the menu are
- * offered only before insertion begins.
+ * off with nothing pinned (009 keeps the badge for a pin), an unsupported system or a finished
+ * session hide the badge; the cross and the menu are offered only before insertion begins.
  */
 export const badgeView = (snapshot: DestinationSnapshot | null): BadgeView => {
-  if (!snapshot || !snapshot.return_enabled) return { kind: "hidden" };
+  if (!snapshot) return { kind: "hidden" };
+  if (!snapshot.return_enabled && !snapshot.pin) return { kind: "hidden" };
   if (snapshot.support.state !== "supported") return { kind: "hidden" };
   if (!VISIBLE_PHASES.has(snapshot.phase)) return { kind: "hidden" };
   const canChange = CHANGEABLE_PHASES.has(snapshot.phase);
@@ -68,6 +72,7 @@ export const badgeView = (snapshot: DestinationSnapshot | null): BadgeView => {
     name: selection.display_name,
     iconRef: selection.icon_ref,
     canChange,
+    pinned: snapshot.source === "pinned",
   };
 };
 

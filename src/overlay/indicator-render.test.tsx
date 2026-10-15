@@ -104,6 +104,65 @@ describe("destination badge (006)", () => {
   });
 });
 
+// @spec AC-001: Pinned badge and pin entries render — .specs/features/009-pin-mode-and-enter-rule/spec.md#ac-001
+describe("pinned destination (009)", () => {
+  const pinnedSession = (returnEnabled = true) => ({
+    ...session(chatgpt),
+    return_enabled: returnEnabled,
+    source: "pinned" as const,
+    pin: { display_name: "ChatGPT", icon_ref: null },
+  });
+  const menu: DestinationMenu = {
+    dictation_id: 7,
+    selection_version: 1,
+    frontmost_at_end_current: false,
+    entries: [
+      {
+        token: 1,
+        display_name: "Comet",
+        icon_ref: null,
+        current: false,
+        frontmost: true,
+      },
+    ],
+  };
+  test("the pinned badge shows the pin mark and announces it", () => {
+    const html = render({ destination: destination(pinnedSession()) });
+    expect(html).toContain('aria-label="Destination: ChatGPT, pinned"');
+    expect(html).toContain(
+      'data-testid="recording-indicator-pinned-destination-mark"',
+    );
+    expect(html).toContain('aria-label="Remove destination"');
+  });
+  test("with return off, an active pin still shows the badge", () => {
+    const html = render({ destination: destination(pinnedSession(false)) });
+    expect(html).toContain('data-testid="recording-indicator-destination"');
+  });
+  test("the open menu lists Unpin above the application list", () => {
+    const html = render({
+      destination: destination(pinnedSession(), { status: "open", menu }),
+    });
+    const unpin = html.indexOf(
+      'data-testid="recording-indicator-pinned-menu-unpin"',
+    );
+    expect(unpin).toBeGreaterThan(-1);
+    expect(html).toContain(">Unpin ChatGPT<");
+    expect(unpin).toBeLessThan(html.indexOf(">Comet<"));
+    expect(html).not.toContain("recording-indicator-pinned-menu-pin");
+  });
+  test("nothing pinned: Pin <destination> is listed above the application list", () => {
+    const html = render({
+      destination: destination(session(chatgpt), { status: "open", menu }),
+    });
+    const pin = html.indexOf(
+      'data-testid="recording-indicator-pinned-menu-pin"',
+    );
+    expect(pin).toBeGreaterThan(-1);
+    expect(html).toContain(">Pin ChatGPT<");
+    expect(pin).toBeLessThan(html.indexOf(">Comet<"));
+  });
+});
+
 describe("prompt pill (005)", () => {
   test("the pill shows the prompt, its shortcut badge and the hover hint", () => {
     const html = render({ prompt: prompt(promptView) });

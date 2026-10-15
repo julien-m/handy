@@ -45,7 +45,7 @@ describe("Automatic Enter selector (has_dropdown)", () => {
       "Always",
       "Only in PIN mode",
     ]);
-    expect(options.filter((option) => option.selected)).toHaveLength(1);
+    expect(options.filter((option) => option.selected).length).toBe(1);
     expect(options.find((option) => option.selected)?.value).toBe("pin_only");
     expect(options.map((option) => option.testId)).toEqual([
       AUTOMATIC_ENTER_TEST_IDS.never,
@@ -82,9 +82,21 @@ describe("keyboard access to Automatic Enter (is_keyboard_navigable)", () => {
     const opened = dropdownKeyAction("ArrowDown", false, -1, options, "never");
     expect(opened.kind).toBe("open");
     const highlighted = opened.kind === "open" ? opened.highlighted : -1;
-    const down1 = dropdownKeyAction("ArrowDown", true, highlighted, options, "never");
+    const down1 = dropdownKeyAction(
+      "ArrowDown",
+      true,
+      highlighted,
+      options,
+      "never",
+    );
     const index1 = down1.kind === "move" ? down1.highlighted : -1;
-    const down2 = dropdownKeyAction("ArrowDown", true, index1, options, "never");
+    const down2 = dropdownKeyAction(
+      "ArrowDown",
+      true,
+      index1,
+      options,
+      "never",
+    );
     const index2 = down2.kind === "move" ? down2.highlighted : -1;
     expect(dropdownKeyAction("Enter", true, index2, options, "never")).toEqual({
       kind: "select",

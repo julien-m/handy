@@ -447,6 +447,20 @@
           "ctrlEnter": "Ctrl+Enter"
         }
       },
+      "automaticEnter": {
+        "title": "Automatische Enter",
+        "description": "Eén keer verzonden, alleen na een geslaagde invoeging.",
+        "keyLabel": "Toets om in te drukken",
+        "announced": "Automatische Enter: {{value}}",
+        "note": "Vervangt Automatisch verzenden. Geen Enter na een mislukte of onbevestigde invoeging, met plakmethode Geen, of als de app de focus verloor.",
+        "options": {
+          "never": "Nooit",
+          "always": "Altijd",
+          "alwaysDescription": "Elke geslaagde invoeging",
+          "pinOnly": "Alleen in PIN-modus",
+          "pinOnlyDescription": "Alleen vastgezette apps"
+        }
+      },
       "translateToEnglish": {
         "label": "Vertalen naar het Engels",
         "description": "Vertaal spraak uit andere talen tijdens het transcriberen automatisch naar het Engels."
@@ -1234,6 +1248,7 @@
     "fallbackNotice": "De AI-verwerking is mislukt. De oorspronkelijke tekst is gebruikt.",
     "destination": {
       "label": "Bestemming: {{name}}",
+      "pinnedLabel": "Bestemming: {{name}}, vastgezet",
       "frontmostApp": "App op de voorgrond",
       "remove": "Bestemming verwijderen",
       "unknownApp": "De bestemmingsapp",
@@ -1244,7 +1259,9 @@
         "otherApps": "Andere apps",
         "frontmostAtEnd": "App op de voorgrond aan het einde",
         "loading": "Apps laden…",
-        "failed": "De lijst met apps kon niet worden geladen."
+        "failed": "De lijst met apps kon niet worden geladen.",
+        "pin": "{{name}} vastzetten",
+        "unpin": "{{name}} losmaken"
       },
       "refused": {
         "stale": "De bestemming is intussen gewijzigd; de lijst is vernieuwd.",
@@ -1257,7 +1274,9 @@
         "activationFailedKept": "{{app}} kwam niet naar de voorgrond. Er is niets ingevoegd; de transcriptie blijft bewaard in Geschiedenis.",
         "activationFailedNotKept": "{{app}} kwam niet naar de voorgrond. Er is niets ingevoegd en de transcriptie kon niet in Geschiedenis worden opgeslagen.",
         "insertionFailedKept": "{{app}} heeft de tekst mogelijk niet ontvangen; de transcriptie blijft bewaard in Geschiedenis.",
-        "insertionFailedNotKept": "{{app}} heeft de tekst mogelijk niet ontvangen en de transcriptie kon niet in Geschiedenis worden opgeslagen."
+        "insertionFailedNotKept": "{{app}} heeft de tekst mogelijk niet ontvangen en de transcriptie kon niet in Geschiedenis worden opgeslagen.",
+        "pinnedAppNotRunningKept": "{{app}} is vastgezet maar niet geopend. Er is niets ingevoegd; de transcriptie blijft bewaard in Geschiedenis.",
+        "pinnedAppNotRunningNotKept": "{{app}} is vastgezet maar niet geopend. Er is niets ingevoegd en de transcriptie kon niet in Geschiedenis worden opgeslagen."
       }
     },
     "prompt": {

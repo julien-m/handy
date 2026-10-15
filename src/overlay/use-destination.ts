@@ -1,7 +1,8 @@
 // Destination session of the recording indicator (feature 006): follows `destination-changed`,
 // opens the pointer-operated menu and applies badge choices through the delivered commands
-// (`destination_menu`, `choose_destination`, `remove_destination`). Without a session (rollout
-// gate `destination-return` closed) the snapshot stays `null` and nothing is shown.
+// (`destination_menu`, `choose_destination`, `remove_destination`) and the pin entries of 009
+// (`pin_destination`, `unpin_destination`). Without a session (rollout gate
+// `destination-return` closed) the snapshot stays `null` and nothing is shown.
 import { listen } from "@tauri-apps/api/event";
 import {
   useCallback,
@@ -47,6 +48,10 @@ export interface DestinationControls {
   closeMenu: () => void;
   choose: (choice: MenuChoice) => void;
   remove: () => void;
+  /** Pin the current destination (009). */
+  pin: () => void;
+  /** Unpin the pinned application (009). */
+  unpin: () => void;
 }
 
 /** State setters shared by the menu loader and the choice settlement. */
@@ -169,7 +174,20 @@ const useChoices = (
     const pending = commands.removeDestination(id, version);
     void settleChoice(snapshot, pending, ports, false);
   }, [snapshot, canChange, ports]);
-  return { choose, remove };
+  // @spec AC-001: Pin and Unpin from the badge menu — .specs/features/009-pin-mode-and-enter-rule/spec.md#ac-001
+  const pin = useCallback(() => {
+    if (!snapshot || !canChange) return;
+    const { dictation_id: id, selection_version: version } = snapshot;
+    const pending = commands.pinDestination(id, version);
+    void settleChoice(snapshot, pending, ports, true);
+  }, [snapshot, canChange, ports]);
+  const unpin = useCallback(() => {
+    if (!snapshot || !canChange) return;
+    const { dictation_id: id, selection_version: version } = snapshot;
+    const pending = commands.unpinDestination(id, version);
+    void settleChoice(snapshot, pending, ports, true);
+  }, [snapshot, canChange, ports]);
+  return { choose, remove, pin, unpin };
 };
 
 /**
@@ -211,7 +229,17 @@ export const useDestination = (shown: boolean): DestinationControls => {
   const [ports] = useState<MenuPorts>(() => ({ accept, setMenu, setKey }));
   const badge = badgeView(snapshot);
   const canChange = badge.kind !== "hidden" && badge.canChange;
-  const { choose, remove } = useChoices(snapshot, canChange, ports);
+  const { choose, remove, pin, unpin } = useChoices(snapshot, canChange, ports);
   const controls = useMenuControls(menu, snapshot, canChange, shown, ports);
-  return { snapshot, latest, badge, feedbackKey, ...controls, choose, remove };
+  return {
+    snapshot,
+    latest,
+    badge,
+    feedbackKey,
+    ...controls,
+    choose,
+    remove,
+    pin,
+    unpin,
+  };
 };

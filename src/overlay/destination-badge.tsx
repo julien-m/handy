@@ -1,10 +1,11 @@
 // Destination badge of the recording indicator (feature 006): the application icon and name, or
 // "Frontmost app", with the cross that removes the destination of this dictation. Both controls
 // are pointer-operated and never take keyboard focus from the user's application.
-import { AppWindow } from "lucide-react";
+import { AppWindow, Pin } from "lucide-react";
 import type React from "react";
 import { useTranslation } from "react-i18next";
 import { monogram, safeIconSource, type BadgeView } from "./destination-model";
+import { badgeLabel, PIN_TEST_IDS } from "./pin-state";
 
 /** Keep a pointer press from focusing the control (the user's app keeps the keyboard). */
 export const keepFocus = (event: React.MouseEvent): void =>
@@ -63,12 +64,14 @@ const BadgeButton: React.FC<DestinationBadgeProps & { name: string }> = ({
   onToggleMenu,
 }) => {
   const { t } = useTranslation();
+  const label = badgeLabel(badge, (key, values) => t(key, values));
+  const pinned = badge.kind === "application" && badge.pinned;
   return (
     <button
       type="button"
       className="sdest-btn"
       data-testid="recording-indicator-destination"
-      aria-label={t("overlay.destination.label", { name })}
+      aria-label={label}
       aria-haspopup="menu"
       aria-expanded={menuOpen}
       disabled={!badge.canChange}
@@ -82,6 +85,13 @@ const BadgeButton: React.FC<DestinationBadgeProps & { name: string }> = ({
       >
         {name}
       </span>
+      {pinned && (
+        <Pin
+          className="sdest-pin"
+          data-testid={PIN_TEST_IDS.mark}
+          aria-hidden="true"
+        />
+      )}
     </button>
   );
 };
