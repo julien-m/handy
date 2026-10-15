@@ -145,7 +145,7 @@ describe("pinned destination (009)", () => {
     const unpin = html.indexOf(
       'data-testid="recording-indicator-pinned-menu-unpin"',
     );
-    expect(unpin).toBeGreaterThan(-1);
+    expect(unpin > -1).toBe(true);
     expect(html).toContain(">Unpin ChatGPT<");
     expect(unpin).toBeLessThan(html.indexOf(">Comet<"));
     expect(html).not.toContain("recording-indicator-pinned-menu-pin");
@@ -157,7 +157,7 @@ describe("pinned destination (009)", () => {
     const pin = html.indexOf(
       'data-testid="recording-indicator-pinned-menu-pin"',
     );
-    expect(pin).toBeGreaterThan(-1);
+    expect(pin > -1).toBe(true);
     expect(html).toContain(">Pin ChatGPT<");
     expect(pin).toBeLessThan(html.indexOf(">Comet<"));
   });

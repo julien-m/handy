@@ -213,8 +213,8 @@ describe("Automatic Enter (009, gate destination-return open)", () => {
       "output-settings-enter-options-auto-enter-mode",
     );
     const key = markup.indexOf("output-settings-enter-options-auto-enter-key");
-    expect(mode).toBeGreaterThan(-1);
-    expect(key).toBeGreaterThan(mode);
+    expect(mode > -1).toBe(true);
+    expect(key > mode).toBe(true);
     expect((markup.match(/role="combobox"/g) ?? []).length).toBe(2);
     expect(markup.includes('role="status"')).toBe(true);
   });
