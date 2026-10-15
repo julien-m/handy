@@ -216,6 +216,7 @@ fn close_during_a_slow_copy_closes_at_once_and_the_completion_is_ignored() -> Te
     );
     Ok(())
 }
+// @spec AC-004: Drag hides, refusal restores, drop accepted closes — .specs/features/010-recovery-bubble/spec.md#ac-004
 #[test]
 fn a_refused_drag_shows_the_same_bubble_again_and_an_accepted_one_closes() -> TestResult {
     let bench = Bench::new(RecoveryPlatform::MacOs);

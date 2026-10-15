@@ -56,9 +56,7 @@ mod macos {
             worst = worst.max(started.elapsed());
         }
         println!("pid={pid} classification={last:?} worst={worst:?} budget={CLASSIFY_BUDGET:?}");
-        if worst > SAMPLE_LIMIT {
-            return Err(format!("a classification took {worst:?}"));
-        }
+        assert!(worst <= SAMPLE_LIMIT, "a classification took {worst:?}");
         Ok(())
     }
 
