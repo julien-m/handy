@@ -16,6 +16,8 @@ struct Retained {
     reference: TranscriptRef,
     dictation_id: DictationId,
     text: String,
+    /// What the method would have inserted when it differs from `text` (trailing space).
+    inserted: Option<String>,
 }
 #[derive(Default)]
 struct SlotState {
@@ -30,6 +32,19 @@ pub struct RecoverySlot {
 impl RecoverySlot {
     /// Retain `text` of `dictation_id`, superseding any older transcript.
     pub fn retain(&self, dictation_id: DictationId, text: String) -> TranscriptRef {
+        self.retain_final(dictation_id, text, false)
+    }
+    /// Retain `text` of `dictation_id` and the exact text its method would have inserted: `text`
+    /// plus a trailing space when `append_trailing_space` was on for this insertion. Supersedes
+    /// any older transcript.
+    pub fn retain_final(
+        &self,
+        dictation_id: DictationId,
+        text: String,
+        append_trailing_space: bool,
+    ) -> TranscriptRef {
+        let inserted = append_trailing_space
+            .then(|| crate::clipboard::trailing_spaced(text.clone(), append_trailing_space));
         let mut state = self.state.lock().unwrap_or_else(PoisonError::into_inner);
         state.last_reference += 1;
         let reference = TranscriptRef(state.last_reference);
@@ -37,6 +52,7 @@ impl RecoverySlot {
             reference,
             dictation_id,
             text,
+            inserted,
         });
         reference
     }
@@ -48,6 +64,20 @@ impl RecoverySlot {
         let state = self.state.lock().unwrap_or_else(PoisonError::into_inner);
         match &state.retained {
             Some(retained) if retained.reference == reference => Ok(retained.text.clone()),
+            _ => Err(ExpiredReference),
+        }
+    }
+    /// The exact text the method would have inserted for `reference` (Copy and drag payload).
+    ///
+    /// # Errors
+    /// `ExpiredReference` once superseded or released.
+    pub fn read_inserted(&self, reference: TranscriptRef) -> Result<String, ExpiredReference> {
+        let state = self.state.lock().unwrap_or_else(PoisonError::into_inner);
+        match &state.retained {
+            Some(retained) if retained.reference == reference => Ok(retained
+                .inserted
+                .clone()
+                .unwrap_or_else(|| retained.text.clone())),
             _ => Err(ExpiredReference),
         }
     }

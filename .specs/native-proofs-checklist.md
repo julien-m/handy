@@ -470,14 +470,14 @@ Preuves natives en attente avec Julien : aucune n'est déclarée réussie. Harna
 - [ ] **Échecs de méthode et smart paste.**
   - Étapes : smart paste sans lecture (« not read », ex. un champ qui ignore Cmd+V) ; puis une lecture tardive ; permission Accessibilité retirée (`permission_missing`) ; méthode classique en échec.
   - Attendu : « Insertion failed » ; détail « Some text may have reached the application » (not read, uncertain, échec de méthode) ; « Nothing was sent to the application » (permission absente) ; après la lecture tardive, la même bulle affiche « may have been pasted after all » dans son texte principal, sans ouvrir « Why? », et VoiceOver l'annonce ; aucune Entrée.
-- [ ] **Avis de l'indicateur conservés.**
-  - Étapes : un prompt IA qui échoue (clé invalide) puis une insertion qui échoue (app quittée) ; Screen Sharing en remise de presse-papiers puis une bulle.
-  - Attendu : l'avis IA (005) reste au moins 4 s et l'avis de remise (007) toute sa durée, même quand la bulle apparaît dans sa propre fenêtre.
-  - Couvre : 005 AC-005, 007 AC-012, 010 FR-002. Preuve : `proofs/native-macos/notices/`.
   - Couvre : AC-001. Preuve : `proofs/native-macos/method-failures/`.
+- [ ] **Avis de l'indicateur conservés.**
+  - Étapes : un prompt IA qui échoue (clé invalide) puis une insertion qui échoue (app quittée) ; Screen Sharing en remise de presse-papiers puis une bulle ; refaire avec l'indicateur en haut puis en bas de l'écran.
+  - Attendu : l'avis IA (005) reste au moins 4 s et l'avis de remise (007) toute sa durée, même quand la bulle apparaît dans sa propre fenêtre ; l'avis et la bulle sont lisibles tous les deux : la bulle est au-dessus de l'avis (indicateur en bas) ou au-dessous (indicateur en haut), 8 pt plus loin, sans chevauchement et sans sortir de l'écran ; elle ne bouge plus à la fin de l'avis.
+  - Couvre : 005 AC-005, 007 AC-012, 010 FR-002. Preuve : `proofs/native-macos/notices/`.
 - [ ] **Glisser-déposer natif (étape 6, SC-002).**
   - Étapes : glisser la bulle vers TextEdit, Notes, ChatGPT (champ vide) et Comet (champ de recherche) ; puis relâcher sur le bureau, et appuyer sur Échap pendant un glisser ; essayer avec Option et Cmd enfoncés ; démarrer une dictée pendant un glisser.
-  - Attendu : la transcription complète dans TextEdit et Notes (obligatoire), résultat noté pour ChatGPT et Comet ; la bulle est cachée pendant le glisser, revient inchangée après un refus ou Échap, se ferme après un dépôt accepté (log « drop accepted » sans texte) ; toujours une copie, quels que soient les modificateurs ; le presse-papiers général est inchangé ; une nouvelle dictée ferme la bulle pour de bon et le dépôt tardif ne la rouvre pas.
+  - Attendu : la transcription complète dans TextEdit et Notes (obligatoire), résultat noté pour ChatGPT et Comet ; la bulle est cachée pendant le glisser, revient inchangée après un refus ou Échap, se ferme après un dépôt accepté (log « drop accepted » sans texte) ; toujours une copie, quels que soient les modificateurs ; le presse-papiers général est inchangé ; une nouvelle dictée ferme la bulle pour de bon et le dépôt tardif ne la rouvre pas ; avec « espace final » actif, le texte déposé et celui de Copy finissent par l'espace comme une insertion, l'aperçu non.
   - Couvre : AC-004, FR-003, SC-002. Preuve : `proofs/native-macos/drag/`.
 - [ ] **Copy contre la restauration du smart paste.**
   - Étapes : dictée A insérée par smart paste avec une restauration en attente ; dictée B qui ouvre une bulle ; Copy pendant la période calme ; attendre 9 s.
@@ -558,11 +558,10 @@ Preuves natives en attente avec Julien : aucune n'est déclarée réussie. Harna
   - ancien binaire : un Handy antérieur avec `auto_submit` vrai, puis un premier lancement de la build ouverte : `handy settings output get automatic_enter --json` vaut `always` et `auto_submit_key` est gardé ; l'ancien binaire relancé garde son comportement ;
   - `cargo check` Windows et Linux en CI (le code `paste_tx/windows.rs` de la 009 n'est compilé que sur Windows).
 - [ ] **010 :**
-  - la bulle ne coupe plus les avis 005 et 007 (revue de livraison, 2026-10-15) : vérifier natif que la bulle et un avis encore affiché ne se gênent pas à la même position ;
+  - la bulle ne coupe plus les avis 005 et 007 et se place à côté de la fenêtre de l'indicateur tant qu'un avis la tient (revue de livraison, tour 2) : position calculée et testée hors natif (`overlay_surface::stack_beside`), lisibilité des deux fenêtres à prouver en natif (item « Avis de l'indicateur conservés ») ;
   - en mode « copy to clipboard », 007 n'émet pas de lecture tardive : la bulle garde le texte « not read » simple (limite 007 à décider par son propriétaire) ;
   - classification (revue de livraison, 2026-10-15) : « non éditable » seulement sur preuve positive ; tout attribut illisible et les conteneurs `AXWebArea`, `AXWindow`, `AXGroup`, `AXApplication`, `AXScrollArea` sont indéterminés ; à revoir après la matrice de calibration ;
   - la poignée de glisser est un bouton sans action au clavier ni pour VoiceOver (Copy reste l'alternative) ; le glisser part de l'événement souris courant d'AppKit, à prouver avec un geste court (revue de livraison) ;
-  - Copy et le glisser transportent la transcription sans l'espace final de `append_trailing_space` ;
   - les commandes de la bulle sont enregistrées dans les deux états du verrou (un seul `bindings.ts`) et inertes sans le service.
 - [ ] **008 :**
   - store illisible : lecture seule à chaque lancement, onboarding répété, aucune voie de sortie documentée ;

@@ -1,6 +1,6 @@
 /**
  * Markup of the recording indicator stack with the rollout gates open: destination badge and
- * menu (006), prompt pill and menu (005) and notices (005, 006, 007), with the contract test IDs
+ * menu (006), prompt pill and menu (005) and notices (005, 007), with the contract test IDs
  * and accessible names. The closed-gate markup is in `indicator-gates-render.test.tsx`. Run with
  * `bun run test:indicator`.
  */
@@ -212,7 +212,7 @@ describe("prompt pill (005)", () => {
   });
 });
 
-describe("notices (005, 006, 007)", () => {
+describe("notices (005, 007)", () => {
   const failure = {
     session_id: 3,
     prompt_name: null,

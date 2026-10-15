@@ -59,7 +59,15 @@ fn failed(app: &AppHandle, bubble_id: BubbleId) {
     }
 }
 
-/// Size and place the window at the indicator's place.
+/// A notice started holding the indicator: a bubble already shown moves beside it so that
+/// neither covers the other. Without a recovery window (gate closed) nothing happens.
+pub fn follow_indicator(app: &AppHandle) {
+    if let Some(window) = window(app).filter(|window| window.is_visible().unwrap_or(false)) {
+        place(app, &window);
+    }
+}
+
+/// Size and place the window at the indicator's place (beside it while a notice holds it).
 fn place(app: &AppHandle, window: &WebviewWindow) {
     let (width, height) = *SIZE.lock().unwrap_or_else(PoisonError::into_inner);
     let _ = window.set_size(tauri::Size::Logical(tauri::LogicalSize { width, height }));

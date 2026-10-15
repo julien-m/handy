@@ -4,7 +4,7 @@
 // 010's recovery bubble instead.
 import type { PromptProcessingFailed } from "@/bindings";
 
-/** Minimum display time of every indicator notice (005 AC-005, 006 AC-005). */
+/** Minimum display time of every indicator notice (005 AC-005, 007 AC-012). */
 export const NOTICE_MIN_MS = 4000;
 
 /** Which feature raised a notice; a newer notice of the same kind replaces the older one. */

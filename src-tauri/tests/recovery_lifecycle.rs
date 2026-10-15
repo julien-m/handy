@@ -217,6 +217,37 @@ fn close_during_a_slow_copy_closes_at_once_and_the_completion_is_ignored() -> Te
     );
     Ok(())
 }
+// @spec AC-003: Copy and drag carry exactly the inserted text — .specs/features/010-recovery-bubble/spec.md#ac-003
+#[test]
+fn copy_and_drag_carry_the_paste_trailing_space_and_the_preview_never_shows_it() -> TestResult {
+    const SHORT: &str = "short safe phrase";
+    for append_trailing_space in [true, false] {
+        let inserted = if append_trailing_space {
+            format!("{SHORT} ")
+        } else {
+            SHORT.to_owned()
+        };
+        let bench = Bench::new(RecoveryPlatform::MacOs);
+        let outcome = bench.failed_final(1, SHORT, append_trailing_space);
+        bench.service.consume(&outcome);
+        let view = bench.surface.presented().pop().ok_or("not presented")?;
+        assert_eq!(
+            view.preview, SHORT,
+            "the preview never shows the paste space"
+        );
+        bench.service.rendered(view.bubble_id);
+        bench.service.begin_drag(view.bubble_id);
+        let begun = SurfaceCall::BeginDrag(view.bubble_id, inserted.clone());
+        assert!(bench.surface.calls().contains(&begun), "drag payload");
+        bench.service.drag_ended(view.bubble_id, false);
+        let copied = bench
+            .service
+            .copy(view.bubble_id, view.destination_generation);
+        assert!(copied.is_ok());
+        assert_eq!(lock(&bench.copier.written).clone(), vec![inserted]);
+    }
+    Ok(())
+}
 // @spec AC-004: Drag hides, refusal restores, drop accepted closes — .specs/features/010-recovery-bubble/spec.md#ac-004
 #[test]
 fn a_refused_drag_shows_the_same_bubble_again_and_an_accepted_one_closes() -> TestResult {

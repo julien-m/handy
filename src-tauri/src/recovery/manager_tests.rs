@@ -20,6 +20,7 @@ fn admission(manager: &RecoveryManager, dictation: u64) -> Admission {
             detail: ReasonDetail::MayHaveReached,
         },
         transcript: TEXT.to_owned(),
+        inserted: TEXT.to_owned(),
         transaction_id: Some("7".to_owned()),
         history: HistoryStatus::Saved,
         app_name: Some("Notes".to_owned()),

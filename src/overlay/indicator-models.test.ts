@@ -1,6 +1,6 @@
 /**
  * Rules of the recording indicator additions: destination badge and menu (006), prompt pill
- * and menu (005), notices (005, 006, 007) and the window extent. Run with
+ * and menu (005), notices (005, 007) and the window extent. Run with
  * `bun run test:indicator`.
  */
 import { describe, expect, test } from "bun:test";

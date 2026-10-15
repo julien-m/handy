@@ -6,7 +6,7 @@ use super::decision::decide_recovery;
 use super::instance::Admission;
 use super::manager::{CopyEnd, DragEnd, LateReadEnd, RecoveryManager, Resolved, Retired};
 use super::ports::{
-    CopyError, CopyPort, FallbackPort, RecoverySurfacePort, SessionFacts, TimerPort,
+    CopyError, CopyPort, FallbackPort, RecoverySurfacePort, RetainedText, SessionFacts, TimerPort,
     TranscriptSource,
 };
 use super::types::{BubbleId, BubbleSpec, RecoveryBubbleView, RecoveryPlatform};
@@ -183,8 +183,8 @@ impl RecoveryService {
             return None;
         }
         // The full copy exists before anything else; an expired reference admits nothing.
-        let transcript = self.ports.transcripts.read(outcome.transcript_ref?)?;
-        let admission = self.admission(outcome, spec, transcript);
+        let retained = self.ports.transcripts.read(outcome.transcript_ref?)?;
+        let admission = self.admission(outcome, spec, retained);
         let (receipt, view, replaced) = self.manager.admit(admission)?;
         if let Some(reference) = replaced.and_then(|retired| retired.release) {
             self.ports.transcripts.release(reference);
@@ -198,7 +198,7 @@ impl RecoveryService {
         &self,
         outcome: &InsertionOutcome,
         spec: BubbleSpec,
-        transcript: String,
+        retained: RetainedText,
     ) -> Admission {
         let key = self
             .manager
@@ -206,7 +206,8 @@ impl RecoveryService {
         Admission {
             key,
             spec,
-            transcript,
+            transcript: retained.transcript,
+            inserted: retained.inserted,
             transaction_id: outcome.transaction_id.clone(),
             history: outcome.history_status,
             app_name: self.ports.facts.app_name(outcome),

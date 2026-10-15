@@ -32,6 +32,19 @@ Review PASS and audit PASS (`.reviews/delivery.json`), with warnings corrected b
 | Functions over 30 lines | `RecoveryBubble`, `Actions`, `Header` split into small components; `useActions` extracted | conventions |
 | Info: CF type and drag source lifetime | Focused element checked as `AXUIElement` before any AX call; drag source autoreleased at the end of the run-loop turn | build, clippy |
 
+## Delivery review round 2 — corrections
+
+Review BLOCKED on one point and audit PASS (`.reviews/delivery.json`, round 2); corrected on the coordinator's instruction. Verification in `proofs/impl-20261015-fix2/summary.txt`. 38/39 exit 0; the implement progression gate is BLOCKED (`analyze_not_ready:incomplete`) by the LiveSpec update `4a5ac29` merged during the run, which rebuilds the round-8 plan review receipt as incomplete with unchanged context and sources (the unchanged parent `929277a6` is blocked the same way): the plan review is to be refreshed by the orchestrator.
+
+| Finding | Correction | Tests |
+|---|---|---|
+| Blocking: Copy and drag without the paste's trailing space (AC-003) | 006's slot keeps the exact inserted text beside the transcript (`retain_final` with the `append_trailing_space` of the insertion's settings snapshot, `read_inserted`); Copy and drag carry it, the preview stays the transcript | `recovery_tests::the_slot_keeps_the_exact_inserted_text_with_and_without_the_trailing_space`, `recovery_lifecycle::copy_and_drag_carry_the_paste_trailing_space_and_the_preview_never_shows_it` (both setting states) |
+| Bubble over a held 005/007 notice (`overlay.rs`) | While a notice holds the indicator, the bubble is placed beside its window (above at the bottom edge, below at the top edge, 8 pt, the other side without room, inside the indicator's monitor); a hold that starts while the bubble is shown moves it the same way | `overlay::surface::tests::{the_bubble_stacks_above_a_held_bottom_notice_and_below_a_held_top_one, without_room_on_its_side_the_bubble_takes_the_other_and_never_leaves_the_screen}`; visual proof native (checklist) |
+| 009 traceability still citing `notice-model.ts` | `.specs/features/009-pin-mode-and-enter-rule/implementation.md` FR-002 and AC-003 rows point to the Rust anchors; 009 row added to the 010 deltas | documentation |
+| Checklist line displaced | "Couvre : AC-001 … method-failures/" back under its item; the notices item asks that both stay readable | documentation |
+| Comments citing the removed 006 notice | `overlay.rs`, `RecordingOverlay.tsx`, `notice-model.ts` (`NOTICE_MIN_MS`: 005 AC-005, 007 AC-012) and the indicator test headers | lint |
+| Sentinel test comment | Successful Copy and accepted drop added (one dictation each); helpers split; comment aligned | `recovery_privacy` |
+
 ## Step 1 — feasibility notes
 
 - The native read-only tests are written and ignored by default; they need a logged-in session and Accessibility for the runner, never activate an application, type or touch the clipboard.
@@ -49,7 +62,7 @@ None is declared passed. Exact procedure: `.specs/native-proofs-checklist.md`, s
 6. Native drag (SC-002): TextEdit and Notes full transcript, ChatGPT and Comet recorded; refusal and Escape; modifiers; new dictation during the drag.
 7. Copy against a pending smart paste restoration.
 8. Lifetime: 60 s, screen lock, Close, new dictation after 1 s, a start that fails keeps the bubble.
-8b. The 005 and 007 notices keep their duration when the bubble appears.
+8b. The 005 and 007 notices keep their duration when the bubble appears, and both stay readable (bubble beside the indicator, top and bottom).
 9. VoiceOver names and activation; settings toggle with Tab and Space.
 10. Decision-to-visible samples against the 300 ms QE target.
 11. CLI with Handy running.

@@ -96,6 +96,7 @@ pub async fn deliver(
 ) -> Option<(InsertionOutcome, Option<PresentationReceipt>)> {
     let manager = super::app::manager(&app)?;
     let settings = crate::settings::get_settings(&app);
+    let trailing_space = settings.append_trailing_space;
     let request = InsertionRequest {
         dictation_id: ticket.dictation_id,
         destination_generation: ticket.destination_generation,
@@ -114,6 +115,7 @@ pub async fn deliver(
     })
     .await;
     let report = joined.unwrap_or_else(|error| worker_failed(&manager, ticket, &error));
+    let text = (text, trailing_space);
     Some(publish(&app, &manager, ticket, report, text, history))
 }
 /// The configured method with the settings snapshot of this insertion: smart paste (007) runs
@@ -325,12 +327,14 @@ fn publish(
     manager: &DestinationManager,
     ticket: DictationTicket,
     report: InsertionReport,
-    text: String,
+    text: (String, bool),
     history: HistoryRecord,
 ) -> (InsertionOutcome, Option<PresentationReceipt>) {
-    let transcript_ref = (report.status == InsertionStatus::Failed)
-        .then(|| retain(app, ticket.dictation_id, text))
-        .flatten();
+    // The transcript, and the exact inserted text (trailing space of this snapshot) for 010.
+    let slot = app.try_state::<Arc<RecoverySlot>>();
+    let transcript_ref = slot
+        .filter(|_| report.status == InsertionStatus::Failed)
+        .map(|slot| slot.retain_final(ticket.dictation_id, text.0, text.1));
     let outcome = outcome(ticket, report, history, transcript_ref);
     let receipt = match app.try_state::<Arc<OutcomeRegistry>>() {
         Some(registry) => match registry.publish(&outcome) {
@@ -347,10 +351,6 @@ fn publish(
         super::app::emit_changed(app, &snapshot);
     }
     (outcome, receipt)
-}
-fn retain(app: &AppHandle, dictation_id: DictationId, text: String) -> Option<TranscriptRef> {
-    let slot = app.try_state::<Arc<RecoverySlot>>()?;
-    Some(slot.retain(dictation_id, text))
 }
 fn outcome(
     ticket: DictationTicket,

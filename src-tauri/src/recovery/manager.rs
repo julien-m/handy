@@ -206,7 +206,8 @@ impl RecoveryManager {
             .is_some_and(|frozen| frozen.enabled && frozen.dictation_id == Some(dictation_id))
     }
 
-    /// Admit a deliberate Copy of the visible bubble; returns the full transcript to write.
+    /// Admit a deliberate Copy of the visible bubble; returns the exact text that would have
+    /// been inserted, to write.
     pub fn begin_copy(&self, bubble_id: BubbleId, generation: u64) -> Option<(CopyTicket, String)> {
         let mut state = self.lock();
         let instance = current_in(&mut state, bubble_id, &[Phase::Visible])?;
@@ -219,7 +220,7 @@ impl RecoveryManager {
             bubble_id,
             seq: instance.copy_seq,
         };
-        Some((ticket, instance.admission.transcript.clone()))
+        Some((ticket, instance.admission.inserted.clone()))
     }
     /// The Copy of `ticket` finished: success closes, failure keeps the bubble unchanged.
     pub fn finish_copy(&self, ticket: CopyTicket, written: bool) -> CopyEnd {
@@ -238,7 +239,8 @@ impl RecoveryManager {
     }
 
     // @spec AC-004: Identity guarded native drag — .specs/features/010-recovery-bubble/spec.md#ac-004
-    /// Admit a native drag of the visible bubble (macOS); returns the full transcript.
+    /// Admit a native drag of the visible bubble (macOS); returns the exact text that would
+    /// have been inserted.
     pub fn begin_drag(&self, bubble_id: BubbleId) -> Option<String> {
         if !self.platform.offers_drag() {
             return None;
@@ -246,7 +248,7 @@ impl RecoveryManager {
         let mut state = self.lock();
         let instance = current_in(&mut state, bubble_id, &[Phase::Visible])?;
         instance.phase = Phase::Dragging;
-        Some(instance.admission.transcript.clone())
+        Some(instance.admission.inserted.clone())
     }
     /// The drag could not start: the bubble stays visible and unchanged.
     pub fn drag_failed(&self, bubble_id: BubbleId) -> bool {

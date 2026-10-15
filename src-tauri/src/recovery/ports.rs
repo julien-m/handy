@@ -23,10 +23,19 @@ pub trait RecoverySurfacePort: Send + Sync {
     fn show_again(&self, view: RecoveryBubbleView);
 }
 
+/// A retained failed dictation, read from 006's slot.
+pub struct RetainedText {
+    /// The transcript, shown in the preview without the paste's trailing space.
+    pub transcript: String,
+    /// Exactly what the method would have inserted (trailing space included when enabled),
+    /// carried by Copy and the drag.
+    pub inserted: String,
+}
+
 /// 006's volatile recovery slot.
 pub trait TranscriptSource: Send + Sync {
-    /// The retained transcript behind `reference`, `None` once expired.
-    fn read(&self, reference: TranscriptRef) -> Option<String>;
+    /// The retained text behind `reference`, `None` once expired.
+    fn read(&self, reference: TranscriptRef) -> Option<RetainedText>;
     /// Release `reference` (harmless when a later dictation already superseded it).
     fn release(&self, reference: TranscriptRef);
 }

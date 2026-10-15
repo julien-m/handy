@@ -12,8 +12,11 @@ use tokio::sync::oneshot::Sender;
 pub struct Admission {
     pub key: BubbleKey,
     pub spec: BubbleSpec,
-    /// Full text that would have been inserted (never logged, never broadcast).
+    /// Full transcript, source of the preview (never logged, never broadcast).
     pub transcript: String,
+    /// Exactly the text that would have been inserted (the transcript plus the paste's trailing
+    /// space when enabled): the payload of Copy and the drag, never logged, never broadcast.
+    pub inserted: String,
     /// 007 transaction as 006 carries it (decimal string), for the late read.
     pub transaction_id: Option<String>,
     pub history: HistoryStatus,

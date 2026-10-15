@@ -1,9 +1,10 @@
 //! State of the recording overlay surface beyond its base card: the extent the indicator asks
-//! for (prompt pill and menu of 005, destination badge and menu of 006, notices of 005, 006 and
+//! for (prompt pill and menu of 005, destination badge and menu of 006, notices of 005 and
 //! 007) and the hold that keeps the window up while a notice must stay visible after the
 //! dictation ended. The window grows to the requested extent, never below the base size of its
 //! state and never beyond the monitor that hosts it, and stays anchored to its screen edge
-//! (`overlay.rs`). Pure state and geometry only: no window call.
+//! (`overlay.rs`). 010's recovery bubble stacks beside the window while a notice holds it.
+//! Pure state and geometry only: no window call.
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Mutex, PoisonError};
 use std::time::Duration;
@@ -145,6 +146,56 @@ pub(crate) fn fit_to_monitor(
         requested.0.min(room.0.max(base.0)),
         requested.1.min(room.1.max(base.1)),
     )
+}
+
+/// Gap between the recovery bubble and an indicator notice still held (Handy spacing scale).
+pub(crate) const STACK_GAP: f64 = 8.0;
+
+/// A logical rectangle in points: origin and size.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub(crate) struct Frame {
+    pub(crate) x: f64,
+    pub(crate) y: f64,
+    pub(crate) width: f64,
+    pub(crate) height: f64,
+}
+
+// @spec FR-002: The bubble never covers a held indicator notice — .specs/features/010-recovery-bubble/spec.md#fr-002
+/// Origin of a `size` surface (010's recovery bubble) stacked next to the `indicator` window
+/// that a notice still holds, so the two never overlap: above it when the indicator sits at the
+/// bottom edge, below it at the top edge, on the other side when the first lacks room, centred
+/// on the indicator and always inside `bounds` (the indicator's monitor). Without room on
+/// either side the surface is kept inside `bounds` on its preferred side.
+pub(crate) fn stack_beside(
+    indicator: Frame,
+    size: (f64, f64),
+    bounds: Frame,
+    at_bottom: bool,
+) -> (f64, f64) {
+    let (width, height) = size;
+    let centred = indicator.x + (indicator.width - width) / 2.0;
+    let x = inside(centred, bounds.x, bounds.width, width);
+    let above = indicator.y - STACK_GAP - height;
+    let below = indicator.y + indicator.height + STACK_GAP;
+    let fits = |y: f64| y >= bounds.y && y + height <= bounds.y + bounds.height;
+    let (first, second) = if at_bottom {
+        (above, below)
+    } else {
+        (below, above)
+    };
+    let y = if fits(first) {
+        first
+    } else if fits(second) {
+        second
+    } else {
+        inside(first, bounds.y, bounds.height, height)
+    };
+    (x, y)
+}
+
+/// `start` moved so that `length` stays within `[low, low + span]` (at `low` when it is longer).
+fn inside(start: f64, low: f64, span: f64, length: f64) -> f64 {
+    start.min(low + span - length).max(low)
 }
 
 /// How long a hold of `duration_ms` keeps the window up: capped, plus the fade-out grace.

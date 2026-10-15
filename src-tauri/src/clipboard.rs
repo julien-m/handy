@@ -786,7 +786,11 @@ pub(crate) fn send_auto_submit(app_handle: &AppHandle, key: AutoSubmitKey) -> Re
 
 /// The text a paste method inserts: the transcript, plus a trailing space when enabled.
 pub fn with_trailing_space(text: String, settings: &AppSettings) -> String {
-    if settings.append_trailing_space {
+    trailing_spaced(text, settings.append_trailing_space)
+}
+/// `text`, plus a trailing space when `append_trailing_space` is on.
+pub fn trailing_spaced(text: String, append_trailing_space: bool) -> String {
+    if append_trailing_space {
         format!("{text} ")
     } else {
         text

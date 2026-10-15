@@ -3,7 +3,9 @@
 //! of a starting dictation, and the production ports (006 slot, session facts, Copy, timers,
 //! `paste-error`). Gate closed, nothing is installed and `dev`'s path runs unchanged.
 use super::platform;
-use super::ports::{CopyError, CopyPort, FallbackPort, SessionFacts, TimerPort, TranscriptSource};
+use super::ports::{
+    CopyError, CopyPort, FallbackPort, RetainedText, SessionFacts, TimerPort, TranscriptSource,
+};
 use super::service::{RecoveryPorts, RecoveryService};
 use super::surface::TauriSurface;
 use super::types::RecoveryPlatform;
@@ -73,9 +75,12 @@ pub fn dictation_started(app: &AppHandle) {
 /// 006's recovery slot.
 struct SlotTranscripts(AppHandle);
 impl TranscriptSource for SlotTranscripts {
-    fn read(&self, reference: TranscriptRef) -> Option<String> {
+    fn read(&self, reference: TranscriptRef) -> Option<RetainedText> {
         let slot = self.0.try_state::<Arc<RecoverySlot>>()?;
-        slot.read(reference).ok()
+        Some(RetainedText {
+            transcript: slot.read(reference).ok()?,
+            inserted: slot.read_inserted(reference).ok()?,
+        })
     }
     fn release(&self, reference: TranscriptRef) {
         if let Some(slot) = self.0.try_state::<Arc<RecoverySlot>>() {

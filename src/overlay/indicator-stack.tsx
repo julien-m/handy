@@ -203,7 +203,7 @@ interface ExtrasInput {
 }
 
 /**
- * Prompt (005), destination (006) and notice (005, 006, 007) state of the overlay, packed as
+ * Prompt (005), destination (006) and notice (005, 007) state of the overlay, packed as
  * the props of [`IndicatorStack`] (all but `form` and `children`).
  */
 export const useIndicatorExtras = (input: ExtrasInput) => {

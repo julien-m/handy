@@ -15,7 +15,7 @@ use handy_app_lib::recovery::classifier::{
     AxQueryError, EditAttribute, FocusedElement, FocusedElementPort,
 };
 use handy_app_lib::recovery::ports::{
-    CopyError, CopyPort, FallbackPort, RecoverySurfacePort, SessionFacts, TimerPort,
+    CopyError, CopyPort, FallbackPort, RecoverySurfacePort, RetainedText, SessionFacts, TimerPort,
     TranscriptSource,
 };
 use handy_app_lib::recovery::service::{RecoveryPorts, RecoveryService};
@@ -99,8 +99,11 @@ pub struct Slot {
     pub released: Mutex<Vec<TranscriptRef>>,
 }
 impl TranscriptSource for Slot {
-    fn read(&self, reference: TranscriptRef) -> Option<String> {
-        self.slot.read(reference).ok()
+    fn read(&self, reference: TranscriptRef) -> Option<RetainedText> {
+        Some(RetainedText {
+            transcript: self.slot.read(reference).ok()?,
+            inserted: self.slot.read_inserted(reference).ok()?,
+        })
     }
     fn release(&self, reference: TranscriptRef) {
         lock(&self.released).push(reference);
@@ -314,6 +317,21 @@ impl Bench {
             .slot
             .retain(DictationId(dictation), text.to_owned());
         outcome(dictation, None, method_outcome, Some(reference))
+    }
+    /// A failed outcome of `dictation` retained as 006 retains it: `text`, plus the paste's
+    /// trailing space in the inserted text when `append_trailing_space` was on.
+    pub fn failed_final(
+        &self,
+        dictation: u64,
+        text: &str,
+        append_trailing_space: bool,
+    ) -> InsertionOutcome {
+        let reference = self.slot.slot.retain_final(
+            DictationId(dictation),
+            text.to_owned(),
+            append_trailing_space,
+        );
+        outcome(dictation, None, None, Some(reference))
     }
     /// Toasts emitted by 010 so far.
     pub fn toasts(&self) -> Vec<HistoryStatus> {

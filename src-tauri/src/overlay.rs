@@ -290,9 +290,22 @@ fn calculate_overlay_position(
 }
 
 /// Position (logical) of a `width` × `height` surface at the indicator's place: 010's recovery
-/// bubble appears there, in place of the indicator.
+/// bubble appears there, in place of the indicator, or beside it while a notice holds it.
 pub fn indicator_place(app_handle: &AppHandle, width: f64, height: f64) -> Option<(f64, f64)> {
-    calculate_overlay_position(app_handle, width, height)
+    let place = calculate_overlay_position(app_handle, width, height)?;
+    let held = SURFACE
+        .is_held()
+        .then(|| indicator::visible_frame(app_handle));
+    let Some((frame, bounds)) = held.flatten() else {
+        return Some(place);
+    };
+    let at_bottom = settings::get_settings(app_handle).overlay_position == OverlayPosition::Bottom;
+    Some(surface::stack_beside(
+        frame,
+        (width, height),
+        bounds,
+        at_bottom,
+    ))
 }
 
 // @spec FR-002: The bubble takes the indicator's place — .specs/features/010-recovery-bubble/spec.md#fr-002
@@ -672,8 +685,8 @@ pub fn hide_recording_overlay(app_handle: &AppHandle) {
                 log::debug!("Skipping stale overlay hide: a newer session is showing the overlay");
                 return;
             }
-            // A notice (AI failure, destination reason, hand-over) keeps the window up; the
-            // end of its hold hides it.
+            // A notice (005 AI failure, 007 hand-over) keeps the window up; the end of its hold
+            // hides it.
             if SURFACE.is_held() {
                 log::debug!("Overlay hide deferred: a notice holds the indicator");
                 return;
