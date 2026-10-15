@@ -107,27 +107,37 @@ flowchart TD
 
 ### Story 3 — Never lose the text, never paste elsewhere, never overwrite a draft `P1`
 
-**As a** Handy user, **I want to** keep today's behavior when Handy's return attempt changed nothing, and get the recovery bubble with my text otherwise, **so that** my text is never lost, never typed into a field I did not choose and never written over my draft.
+**As a** Handy user, **I want to** keep today's behavior only when Handy made a return attempt that changed nothing, and get the recovery bubble with my text in every other case where the remembered input cannot be used, including when its caret could not be read at the start, even if I never switched application, **so that** my text is never lost, never typed into a field I did not choose and never written over my draft.
 
 **Priority reason:** Giving focus to a stale or wrong element could put the text in the wrong place or replace a draft.
-**Independent test:** Reload the Comet page during a dictation, stop, and check that Handy inserts into Comet as today; select another Comet tab during a dictation, stop, and check that nothing is pasted and the recovery bubble shows the text.
+**Independent test:** Reload the Comet page during a dictation, stop, and check that Handy inserts into Comet as today; select another Comet tab during a dictation, stop, and check that nothing is pasted and the recovery bubble shows the text; dictate from an input whose caret cannot be read, without switching application, and check that the bubble shows the text.
 
 ```gherkin
 Feature: Safe fallback
   Scenario: Input destroyed and attempt changed nothing
     Given the ChatGPT input of Comet was remembered
     When the page is reloaded before the dictation stops
-    And giving focus to the input fails, no window is raised and Comet's focused element is still the one noted before the attempt
+    And giving focus to the input fails at once, no window is raised, no focus or range write expired its deadline and Comet's focused element is still the one noted before the attempt
     Then Handy inserts into Comet as in feature 006, with the classification and bubble of feature 010
+  Scenario: Selection range unreadable at the start
+    Given an editable input of Comet was remembered but its selection range could not be read at the start
+    When the user stops the dictation, with or without switching application
+    Then Handy makes no return attempt and pastes nothing
+    And the bubble of feature 010 shows the transcript with the reason "Insertion failed"
+  Scenario: Focus or range write without an answer in time
+    Given Handy gave focus back or restored the range and the target did not answer before the deadline
+    When Handy decides at the guard
+    Then the attempt counts as having changed something, since the target may still apply it later
+    And nothing is pasted and the bubble of feature 010 appears
   Scenario: Attempt moved the focus
     Given the remembered input is in a Comet tab that is no longer selected
     When Handy gives focus back and Comet's focused element is then neither the remembered input nor the element noted before the attempt
     Then nothing is pasted
     And the bubble of feature 010 shows the transcript with the reason "Insertion failed" and the explanation that nothing was sent to the application
   Scenario: Selection range not restored
-    Given the remembered input was given focus back
+    Given the remembered input is focused, given focus back by Handy or already focused when Handy noted the focused element
     When its selection range cannot be restored or verified
-    Then nothing is pasted into the input and the bubble of feature 010 appears
+    Then nothing is pasted, even when the focused element did not change, and the bubble of feature 010 appears
   Scenario: Bubble unavailable
     Given Handy's attempt moved the focus and the verification failed
     When feature 010 cannot present the bubble
@@ -152,7 +162,8 @@ flowchart TD
   D --> E{At the guard: remembered input focused with its range?}
   E -- Yes --> G[010 counts it editable; paste; Enter decided by 009]
   E -- Input focused, range not verified --> X
-  E -- Other element or unreadable --> H{No window raised and focused element unchanged?}
+  E -- Focused element unreadable --> X
+  E -- Another element --> H{No window raised, no expired focus or range write, and focused element still the one noted?}
   H -- Yes --> F
   H -- No --> X
 ```
@@ -200,7 +211,7 @@ flowchart TD
 
 ### AC-002
 
-**Criterion:** At insertion, after 006 has confirmed the destination frontmost, and only when an input with its selection range is remembered for the running instance (same identity and process) that 006 brought forward, Handy, once and without retry: (1) notes the application's focused element; (2) gives keyboard focus back to the remembered element (`kAXFocusedAttribute` set to true); (3) raises its window (`AXRaise` on its `AXWindow`) when that window is not the application's focused window; (4) restores the remembered selection range (`AXSelectedTextRange` set to the remembered position and length); (5) immediately before the first dispatch, at 006's pre-dispatch guard, verifies that the application's focused element is the remembered element and that its selection range is the remembered one; (6) then inserts with the configured insertion method, unchanged, so the text lands at the remembered caret or replaces the selection made before the start, as it would have then. Steps (1) to (4) share one 50 ms deadline and step (5) a 10 ms deadline, with per-element timeouts as in AC-001. A step that fails ends the attempt without the following steps; when step (1) fails, no attempt is made. AC-004 then decides. The outcome is reported as 006 reports it: "insertion attempted" unless the method itself verified the text.
+**Criterion:** At insertion, after 006 has confirmed the destination frontmost, and only when an input with its selection range is remembered for the running instance (same identity and process) that 006 brought forward, Handy, once and without retry: (1) notes the application's focused element; (2) gives keyboard focus back to the remembered element (`kAXFocusedAttribute` set to true); (3) raises its window (`AXRaise` on its `AXWindow`) when that window is not the application's focused window; (4) restores the remembered selection range (`AXSelectedTextRange` set to the remembered position and length); (5) immediately before the first dispatch, at 006's pre-dispatch guard, verifies that the application's focused element is the remembered element and that its selection range is the remembered one; (6) then inserts with the configured insertion method, unchanged, so the text lands at the remembered caret or replaces the selection made before the start, as it would have then. Steps (1) to (4) share one 50 ms deadline and step (5) a 10 ms deadline, with per-element timeouts as in AC-001. A step that fails ends the attempt without the following steps; when step (1) fails, no attempt is made. AC-004 then decides. The attempt has changed something as soon as a window raise is sent, whatever its result, or a focus or range write (steps 2 and 4) gets no answer before its deadline or its messaging timeout, because the target may still apply it later; a focus or range write refused at once with an error changes nothing. The outcome is reported as 006 reports it: "insertion attempted" unless the method itself verified the text.
 **Priority:** P1 | **Story:** Story 1
 
 ### AC-003
@@ -210,7 +221,7 @@ flowchart TD
 
 ### AC-004
 
-**Criterion:** When the remembered input of the running instance cannot be used, Handy decides once, at 006's pre-dispatch guard, without retry and without giving focus to any other element. (a) When its attempt changed nothing, that is no window was raised and the application's focused element is still the one noted in AC-002 step (1) (for example the element no longer exists and giving it focus failed), Handy inserts exactly as without this feature: into the destination application (006), with 010's classification and recovery bubble. (b) Otherwise, when the focused element differs from the one noted, a window was raised, the focused element cannot be read or could not be noted, the range was not read at the start (no attempt is then made), or the remembered input is focused but its range could not be restored or verified, Handy pastes nothing and presents 010's recovery bubble with the transcript, the existing reason "Insertion failed" and 010's existing explanation that nothing was sent to the application. When 010 cannot present the bubble (presentation confirmed impossible: lock, platform or overlay), the existing 006 failure applies: the `paste-error` notification, with the transcript in history as today; nothing is pasted. No reason or message is added, no Enter is sent after (b), and the transcript is never lost. 006's own guard refusals are unchanged.
+**Criterion:** When an input with its selection range, or with a range that could not be read, is remembered for the running instance that 006 brought forward and is not verified as in AC-002 step (5), Handy decides once, at 006's pre-dispatch guard, without retry and without giving focus to any other element. Exactly one of the two branches applies. (a) Unchanged attempt, only when all of the following hold: the range was read at the start, the focused element was noted in AC-002 step (1), no window was raised, every focus or range write sent was answered in time (AC-002), and the application's focused element read at the guard is not the remembered input and is the element noted in step (1) (for example the element no longer exists and giving it focus failed at once): Handy inserts exactly as without this feature, into the destination application (006), with 010's classification and recovery bubble. (b) Every other case, in particular: the range was not read at the start (no attempt is then made), the focused element could not be noted, the focused element cannot be read at the guard, the remembered input is focused (given focus back, or already focused when noted) but its range could not be restored or verified, the focused element differs from the one noted, a window was raised, or a focus or range write got no answer in time: Handy pastes nothing and presents 010's recovery bubble with the transcript, the existing reason "Insertion failed" and 010's existing explanation that nothing was sent to the application. When 010 cannot present the bubble (presentation confirmed impossible: lock, platform or overlay), the existing 006 failure applies: the `paste-error` notification, with the transcript in history as today; nothing is pasted. No reason or message is added, no Enter is sent after (b), and the transcript is never lost. 006's own guard refusals are unchanged.
 **Priority:** P1 | **Story:** Story 3
 
 ### AC-005
@@ -225,12 +236,12 @@ flowchart TD
 
 ### AC-007
 
-**Criterion:** On Windows, the same behavior uses UI Automation: the focused element is remembered only when it belongs to the destination's process and is a text input that is neither a password nor read-only, with its selection read through `TextPattern` (`GetSelection`, endpoints only, never `GetText`); when `TextPattern` is unavailable, the selection is not read and AC-004 (b) applies. At insertion Handy notes the focused element, calls `SetFocus` on the remembered element, restores its selection (`Select`), then verifies the focused element and its selection before inserting, with the fallback of AC-004. Every UI Automation call is bounded by the deadlines of AC-001 and AC-002; a call that does not answer in time counts as an expired deadline and its late answer is ignored. Its native observation is pending release evidence, never a gate. On Linux, where 006 captures no destination, nothing is remembered and 006's behavior applies.
+**Criterion:** On Windows, the same behavior uses UI Automation: the focused element is remembered only when it belongs to the destination's process and is a text input that is neither a password nor read-only. A text input is an element whose UI Automation `ControlType` is Edit or Document and that exposes `ValuePattern` or `TextPattern`; it is a password when `IsPassword` is true and read-only when its `ValuePattern` reports `IsReadOnly` (010 classifies on macOS only, so this definition is 011's own on Windows). Its selection is read through `TextPattern` (`GetSelection`, endpoints only, never `GetText`); when `TextPattern` is unavailable, the selection is not read and AC-004 (b) applies. At insertion Handy notes the focused element, calls `SetFocus` on the remembered element, restores its selection (`Select`), then verifies the focused element and its selection before inserting, with the fallback of AC-004. Every UI Automation call is bounded by the deadlines of AC-001 and AC-002; a call that does not answer in time counts as an expired deadline and its late answer is ignored; when that call is `SetFocus` or `Select`, the attempt has changed something, as in AC-002, and AC-004 (b) applies. Its native observation is pending release evidence, never a gate. On Linux, where 006 captures no destination, nothing is remembered and 006's behavior applies.
 **Priority:** P2 | **Story:** Story 4
 
 ### AC-008
 
-**Criterion:** Handy never reads, stores or logs the content of the remembered element (its value, selected text or title). It holds only an opaque reference with the dictation's identity, process and application identity, the selection's position and length, and, during insertion, an opaque reference to the element noted before the attempt. These live only for the current dictation and are released when its outcome is published, when it is cancelled or superseded, or when Handy quits; none of them, the range included, appears in an event, the settings CLI, history or a log.
+**Criterion:** Handy never reads, stores or logs the content of the remembered element (its value, selected text or title). It holds only the fields of the Remembered input entity: an opaque reference to the element, the dictation's identity and destination generation, the destination's application identity and process id, the selection's position and length or the fact that it could not be read (on Windows, an opaque copy of the selection's endpoints), and the capture time; during insertion, it adds an opaque reference to the element noted before the attempt and the attempt's facts (stage reached, window raised, focus or range write without an answer in time). These live only for the current dictation and are released when its outcome is published, when it is cancelled or superseded, or when Handy quits; none of them, the range included, appears in an event, the settings CLI, history or a log. Only the Input return result (its outcome, the stage that failed and elapsed times) is logged, without content or range.
 **Priority:** P1 | **Story:** Story 1
 
 ## Functional Requirements
@@ -252,7 +263,7 @@ flowchart TD
 
 ### FR-004
 
-**Requirement:** Whenever the remembered input cannot be used, insert through the existing 006/010 path only when Handy's attempt changed nothing; otherwise paste nothing and present 010's recovery bubble with its existing reason, or 006's failure when the bubble cannot be presented. Never paste into the input without its verified range, never into an element reached by the attempt, never lose the transcript.
+**Requirement:** Whenever the remembered input cannot be used, insert through the existing 006/010 path only when Handy's attempt changed nothing (a raised window or a focus or range write without an answer in time is a change; an unread range or an unverified range on the focused input never qualifies); otherwise paste nothing and present 010's recovery bubble with its existing reason, or 006's failure when the bubble cannot be presented. Never paste into the input without its verified range, never into an element reached by the attempt, never lose the transcript.
 **AC References:** AC-004, AC-005
 
 ### FR-005
@@ -264,8 +275,8 @@ flowchart TD
 
 | Entity | Description | Key fields |
 |---|---|---|
-| Remembered input | Opaque reference to the destination's focused input, held for one dictation | dictation id, destination generation, application identity, process id, opaque element reference, selection position and length (or not read), captured at; never content |
-| Input return result | What happened at insertion, logged without content | verified; not remembered (with its miss); fallback through 006/010 because the attempt changed nothing; recovery bubble or 006 failure because the attempt changed something, the range is missing or unverified, or the focus could not be read; each with the stage that failed |
+| Remembered input | Opaque reference to the destination's focused input, held for one dictation | dictation id, destination generation, application identity, process id, opaque element reference, selection position and length (or not read; on Windows an opaque copy of the selection's endpoints), captured at; during insertion, the noted element and the attempt's facts (stage, window raised, write without an answer in time); never content |
+| Input return result | What happened at insertion, logged without content or range | verified; not remembered (with its miss); fallback through 006/010 because the attempt changed nothing; recovery bubble or 006 failure because the attempt changed something (focus moved, window raised, focus or range write without an answer in time), the range is missing or unverified, or the focus could not be read or noted; each with the stage that failed and elapsed times |
 | Destination (006) and Pin (009) | Application the dictation goes to, captured or pinned | identity, process id, source |
 | Focus classification (010) | Editable, not editable or undetermined | used at capture to decide whether to remember; a verified input counts as editable |
 
@@ -291,7 +302,7 @@ flowchart TD
 
 - **Criticality:** High; **Blast radius:** Every dictation with a destination on macOS and Windows; **Primary risk:** Text pasted into a wrong field or over a draft (privacy, data loss) or lost; **Confidence:** Low-medium (no native prototype; browser focus and Chromium Accessibility exposure unverified).
 - **Dimensions:** Functional correctness, security/privacy (wrong field, draft overwrite, no content read), reliability, performance (start latency, main-thread Accessibility time), platform compatibility, regression of 006/009/010.
-- **P0 gates/evidence:** Decision tests for capture (editable, password field, other process, undetermined, permission, error, deadline, range read or not read) and for insertion (verified with range, element gone with nothing changed, focus moved, window raised, range not read at the start, range not restored or not verified, focused element unreadable or not noted, destination changed, method none, cancelled, bubble unpresentable); proof that an unchanged attempt reaches the 006/010 path and every other failure pastes nothing and reaches 010's bubble or 006's `paste-error`; a start path that completes while the field port does not answer; gate-closed build with zero focused-element reads.
+- **P0 gates/evidence:** Decision tests for capture (editable, password field, other process, undetermined, permission, error, deadline, range read or not read) and for insertion (verified with range, element gone with nothing changed, focus moved, window raised, focus or range write without an answer in time, range not read at the start, range not restored or not verified (including on an input already focused when noted), focused element unreadable or not noted, destination changed, method none, cancelled, bubble unpresentable); proof that an unchanged attempt reaches the 006/010 path and every other failure pastes nothing and reaches 010's bubble or 006's `paste-error`; a start path that completes while the field port does not answer; gate-closed build with zero focused-element reads.
 - **P1 gates/evidence:** Native macOS checks with Comet (ChatGPT page), Notes and ChatGPT desktop, with a draft and the caret inside it, including a reloaded page, a changed tab, a second window and a pinned application; the native proof records whether Chromium exposes Comet's web input to Accessibility; Windows UI Automation run recorded as pending release evidence.
 - **Non-functional expectations:** The start read runs off the recording start path within 50 ms; the restoration within 50 ms and the verification within 10 ms; Accessibility and UI Automation calls bounded per element; no element content, range, window title or transcript logged at any level.
 - **Missing evidence:** No runtime test; Chromium tab, focus and Accessibility exposure unknown; Windows native behavior unverified.
@@ -317,12 +328,13 @@ None. This feature adds no screen, control or visual state, so no mockup is prod
 - Input in another window of the destination: its window is raised (AC-002); if the verification then fails, a window was raised, so nothing is pasted and the bubble appears (AC-004 b).
 - Another field of the same application clicked during the recording: the remembered input wins (Clarifications); its focus and range are restored before the paste.
 - Draft in the input: the caret or selection of the start is restored, so the text lands at the caret, or replaces the selection made before the start as it would have then.
-- Range not exposed (no readable `AXSelectedTextRange`, or no `TextPattern` on Windows): no attempt, nothing pasted, the bubble (AC-004 b).
+- Range not exposed (no readable `AXSelectedTextRange`, or no `TextPattern` on Windows): no attempt, nothing pasted, the bubble (AC-004 b), even when the user never switched application (decision `caret-after-focus-restore`).
 - Focused element unreadable before the attempt or at the guard: nothing can prove the attempt changed nothing; the bubble (AC-004 b).
 - Chromium (Comet) not exposing its web input to Accessibility: the focused element is not an editable input, nothing is remembered and 006 applies (AC-001); Handy does not change the application's accessibility mode.
 - 010 cannot present the bubble: 006's `paste-error`, nothing pasted (AC-004).
 - Input disabled or read-only after the start but still focusable: the verification checks focus and range, not editability; the method's own result decides, and a failure reaches 010's bubble.
-- Slow or busy destination: a deadline expires; at the start nothing is remembered (or the range is not read), at insertion AC-004 decides.
+- Slow or busy destination: a deadline expires; at the start nothing is remembered when it expires before the classification, or the input is remembered without its range when it expires during the range read (then the bubble at insertion); at insertion, a focus or range write without an answer in time counts as a change, since the target may still apply it, so nothing is pasted and the bubble appears (AC-004 b).
+- Remembered input still focused when Handy notes the focused element, but its range cannot be restored or verified: the focused element did not change, yet nothing is pasted and the bubble appears (AC-004 b).
 - Smart paste (007) direct insertion reads the destination's focused element: after a verified return, that element is the remembered input with its restored range.
 
 ## Success Criteria
@@ -333,7 +345,7 @@ In native macOS checks, starting in the input holding a draft with the caret ins
 
 ### SC-002
 
-In fault-injection tests (element gone, focus refused, window raised, focus moved, range not read at the start, range not restored, range not verified, focused element unreadable, deadline expired, password field, destination changed, bubble unpresentable), zero insertions target an element other than the verified remembered input or, when the attempt changed nothing, the 006/010 target; 100% of the unchanged cases follow the 006/010 path, 100% of the other cases paste nothing and show 010's bubble (or 006's `paste-error` when it cannot be presented), and the transcript is preserved in every case.
+In fault-injection tests (element gone, focus refused, window raised, focus moved, range not read at the start, remembered input already focused with its range not restored, range not restored, range not verified, focused element unreadable or not noted, focus or range write without an answer in time, deadline expired, password field, destination changed, bubble unpresentable), zero insertions target an element other than the verified remembered input or, when the attempt changed nothing, the 006/010 target; 100% of the unchanged cases follow the 006/010 path, 100% of the other cases paste nothing and show 010's bubble (or 006's `paste-error` when it cannot be presented), and the transcript is preserved in every case.
 
 ### SC-003
 
@@ -341,7 +353,7 @@ With the `destination-return` gate closed, automated tests observe zero focused-
 
 ### SC-004
 
-A sentinel text placed in the remembered input never appears in logs, events or CLI output during automated and native checks.
+A sentinel text placed in the remembered input never appears in logs, events or CLI output during automated and native checks. In automated checks whose fake port remembers a selection with distinctive sentinel position and length values, neither value appears in captured logs (all levels), events or CLI output.
 
 ### SC-005
 

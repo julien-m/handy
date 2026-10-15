@@ -39,7 +39,7 @@ Other features' documents are cited as paths for context only and import no obli
 | Preserve native/frontend boundaries | PASS: Rust only; no event, command or UI change; the bubble is 010's |
 | Derive stack/manager choices from manifests | PASS: extends the existing `DestinationManager`, `Orchestrator` and `DispatchGuard`; the only manifest change adds two features of the existing `windows` crate |
 | Tool availability differs from runtime | PASS: versions below certify availability only; native focus, raise, range restoration and verification remain mandatory macOS evidence |
-| Specify changed behavior before code | PASS: spec corrected on 2026-10-15 after review round 1 with Julien's two decisions; every FR/AC mapped below; no spec change in this plan |
+| Specify changed behavior before code | PASS: spec corrected on 2026-10-15 after review rounds 1 and 2 with Julien's two decisions; every FR/AC mapped below; no spec change in this plan |
 | Meaningful tests/current source verification | PASS: real manager, orchestrator and guard with injected `WorkspacePort`, `FieldPort` and `RecoveryPort`; native harness on real applications |
 | Naming/tooling | PASS: Rust snake_case modules in the existing `destination/` domain; no new top-level folder |
 | Privacy | PASS: no element value, selected text, title or transcript is read or logged; the range (position and length) is held in RAM and never logged; only the stage and elapsed time at debug level |
@@ -106,14 +106,14 @@ Main-thread bound: in the guard, 011's verification (≤10 ms) is followed by an
 
 ### Attempt after activation, decision at the guard
 
-`Orchestrator` gains `field: Arc<dyn FieldPort>`. In `deliver`, after `activate` returns the running instance in front (with or without an activation request), and only when `frozen.field` names that instance's identity and PID, the worker calls `FieldPort::attempt(field, FIELD_RESTORE_BUDGET)` once and builds `FieldAttempt { field, noted: Option<FieldElement>, raised: bool, stage }`:
+`Orchestrator` gains `field: Arc<dyn FieldPort>`. In `deliver`, after `activate` returns the running instance in front (with or without an activation request), and only when `frozen.field` names that instance's identity and PID, the worker calls `FieldPort::attempt(field, FIELD_RESTORE_BUDGET)` once and builds `FieldAttempt { field, noted: Option<FieldElement>, raised: bool, unsettled: bool, stage }`, where `unsettled` records a focus or range write sent without an answer in time (spec AC-002: the target may still apply it later, so the attempt has changed something):
 
 1. When `field.range` is `None`, nothing is called: `stage = NotAttempted(RangeMissing)`.
 2. Note: the application's `AXFocusedUIElement`, retained as `noted`. A failure gives `stage = NotAttempted(NotNoted)` and stops.
-3. Focus: `AXUIElementSetAttributeValue(element, kAXFocusedAttribute, kCFBooleanTrue)`. An error gives `Failed(FocusRefused | ElementGone)` and stops.
+3. Focus: `AXUIElementSetAttributeValue(element, kAXFocusedAttribute, kCFBooleanTrue)`. An error answered by the target gives `Failed(FocusRefused | ElementGone)` and stops. `kAXErrorCannotComplete` (the answer AX gives when the messaging timeout set to the remaining budget elapses) gives `Failed(WriteUnanswered)`, sets `unsettled = true` and stops; it is never read as a refusal, since the write may still be applied.
 4. Window: read the element's `AXWindow` and the application's `AXFocusedWindow`; when they differ (`CFEqual` false), `AXUIElementPerformAction(window, kAXRaiseAction)` and `raised = true` as soon as the action is sent, whatever its result. An error gives `Failed(RaiseFailed)` and stops.
-5. Range: `AXUIElementSetAttributeValue(element, AXSelectedTextRange, AXValueCreate(kAXValueCFRangeType, range))`. An error gives `Failed(RangeNotRestored)`.
-6. All steps done: `stage = Restored`. An expired deadline at any step gives `Failed(BudgetSpent)` and stops.
+5. Range: `AXUIElementSetAttributeValue(element, AXSelectedTextRange, AXValueCreate(kAXValueCFRangeType, range))`. An error answered by the target gives `Failed(RangeNotRestored)`; `kAXErrorCannotComplete` gives `Failed(WriteUnanswered)` with `unsettled = true`.
+6. All steps done: `stage = Restored`. A deadline that expires before a step's call is sent (less than `MIN_AX_TIMEOUT` left) gives `Failed(BudgetSpent)` and stops, without `unsettled` since nothing was sent.
 
 The attempt is handed to `DispatchGuard::new` as `expected_field`. No step is retried and no other element ever receives focus. `activation_route` returning `None` (paste method "none", `FrontmostAtEnd`, return off without pin, unsupported) never attempts. The order focus → raise follows the validated technical frame; Step 1 records whether focus survives `AXRaise`, and a reversed order is escalated to Julien, never changed silently.
 
@@ -125,9 +125,9 @@ In `first_pass`, after 006's `recheck()` and before `RecoveryPort::before_insert
 | `NotAttempted(RangeMissing)` or `NotAttempted(NotNoted)` (no AX query at the guard) | `Diverted(stage)` | 010 answers `Recover(FieldReturnFailed)` |
 | Focused element unreadable (error, deadline) | `Diverted(FocusUnreadable)` | Same |
 | Focused element is the remembered one (`CFEqual` and PID) and its `AXSelectedTextRange` equals the remembered range, with `stage = Restored` | `Verified` | 010 answers `Insert` without AX query; the method pastes |
-| Focused element is the remembered one, but the range differs, cannot be read or was not restored | `Diverted(RangeNotVerified)` | 010 answers `Recover(FieldReturnFailed)` |
-| Focused element is another element, `raised` false and it equals `noted` (`CFEqual` and PID) | `Unchanged(stage)` | 010 classifies as delivered; insertion as without 011 |
-| Any other case (another element than `noted`, or a window raised) | `Diverted(stage)` | 010 answers `Recover(FieldReturnFailed)` |
+| Focused element is the remembered one, but the range differs, cannot be read or was not restored, including when `noted` is that same element (the focused element did not change, but this row precedes `Unchanged`) | `Diverted(RangeNotVerified)` | 010 answers `Recover(FieldReturnFailed)` |
+| Focused element is another element than the remembered one, `raised` false, `unsettled` false and it equals `noted` (`CFEqual` and PID) | `Unchanged(stage)` | 010 classifies as delivered; insertion as without 011 |
+| Any other case (another element than `noted`, a window raised, or a focus or range write without an answer in time) | `Diverted(stage)` | 010 answers `Recover(FieldReturnFailed)` |
 
 `Recover(FieldReturnFailed)` travels 010's delivered pre-insertion path: `GuardRefusal::RecoverInstead(RecoveryReason::FieldReturnFailed)`, `refusal_report` maps it to `DestinationFailure::FieldReturnFailed` (wire `field_return_failed`), 006 sets the disposition to `Recover`, publishes the outcome with the retained transcript and history status, and 010 presents its bubble with `BubbleReason::InsertionFailed` and the explanation that nothing was sent to the application (its existing permission-missing wording; a reason decided before insertion never shows the partial-insertion detail). No Enter is sent (010's veto through the shared disposition). When 010 confirms `Unpresentable`, it emits 006's existing `paste-error` through `delivery::emit_paste_error(app, history_status)`, as its plan states; nothing is pasted in any `Diverted` case. `field_return_failed` is an internal wire value only; no user-visible string is added. 006's own refusals (`recheck()`: cancellation, supersession, foreground) keep precedence as delivered. Later `check()` calls of the same method (a fallback path) only rerun `recheck()`, as delivered.
 
@@ -142,7 +142,7 @@ With `Verified`, the method pastes unchanged: classic, direct, script and Window
 
 ### Windows adapter (pending release evidence)
 
-`windows_field.rs` owns one COM MTA thread created on first use, holding Handy's own `IUIAutomation` client, with `IUIAutomation2::{SetConnectionTimeout, SetTransactionTimeout}` set on that client object to the operation budget (never 0; no system-wide state exists on Windows). `FieldPort` calls post a request and wait with `recv_timeout(budget)` using the budgets of [Budgets and Accessibility timeouts](#budgets-and-accessibility-timeouts); an expired wait is `BudgetSpent` and the late answer is discarded without effect. A request that arrives while an earlier call still occupies the thread fails at once with `BudgetSpent`, so a hung UI Automation call never queues or blocks later dictations, the UI thread or the guard. Capture uses `GetFocusedElement`, accepted only when `CurrentProcessId` equals the destination PID, `CurrentControlType` is Edit or Document, `CurrentIsPassword` is false and the `ValuePattern` is not read-only when present; the range is the first range of `IUIAutomationTextPattern::GetSelection`, cloned and kept as an opaque endpoint holder (`GetText` is never called), or `None` when `TextPattern` is unavailable. Because UI Automation exposes only the system focus, a pinned application that is not frontmost at the start remembers nothing on Windows (AC-007's process rule). The attempt notes `GetFocusedElement`, calls `SetFocus` (no separate raise, so `raised` stays false) and `Select()` on the kept range; verification uses `GetFocusedElement` with `CompareElements`, then compares the current selection's start and end with the kept range through `CompareEndpoints`, with the same `FieldCheck` table. The adapter compiles and its pure mapping and timeout handling are unit-tested on every CI run; its native observation is pending release evidence.
+`windows_field.rs` owns one COM MTA thread created on first use, holding Handy's own `IUIAutomation` client, with `IUIAutomation2::{SetConnectionTimeout, SetTransactionTimeout}` set on that client object to the operation budget (never 0; no system-wide state exists on Windows). `FieldPort` calls post a request and wait with `recv_timeout(budget)` using the budgets of [Budgets and Accessibility timeouts](#budgets-and-accessibility-timeouts); an expired wait is `BudgetSpent` and the late answer is discarded without effect; when the expired request is `SetFocus` or `Select`, the attempt records `Failed(WriteUnanswered)` with `unsettled = true`, since the call may still be applied (spec AC-007). A request that arrives while an earlier call still occupies the thread fails at once with `BudgetSpent`, so a hung UI Automation call never queues or blocks later dictations, the UI thread or the guard. Capture uses `GetFocusedElement`, accepted only when `CurrentProcessId` equals the destination PID, the element is a text input as spec AC-007 defines it (`CurrentControlType` Edit or Document, with `ValuePattern` or `TextPattern` available), `CurrentIsPassword` is false and the `ValuePattern` is not read-only when present; 010 classifies on macOS only, so this mapping is 011's own; the range is the first range of `IUIAutomationTextPattern::GetSelection`, cloned and kept as an opaque endpoint holder (`GetText` is never called), or `None` when `TextPattern` is unavailable. Because UI Automation exposes only the system focus, a pinned application that is not frontmost at the start remembers nothing on Windows (AC-007's process rule). The attempt notes `GetFocusedElement`, calls `SetFocus` (no separate raise, so `raised` stays false) and `Select()` on the kept range; verification uses `GetFocusedElement` with `CompareElements`, then compares the current selection's start and end with the kept range through `CompareEndpoints`, with the same `FieldCheck` table. The adapter compiles and its pure mapping and timeout handling are unit-tested on every CI run; its native observation is pending release evidence.
 
 ## Gherkin Scenarios and Sequence Diagrams
 
@@ -224,6 +224,14 @@ Feature: Return to the input at insertion
     Given the input is focused at the guard but its range differs from the remembered one
     When the guard decides
     Then DestinationContext.field is Diverted and nothing is pasted
+  Scenario: Input already focused when noted, range not restored
+    Given the noted element is the remembered input and restoring its range fails
+    When the guard finds the input focused with another range
+    Then DestinationContext.field is Diverted(RangeNotVerified), never Unchanged, and nothing is pasted
+  Scenario: Focus write without an answer in time
+    Given setting kAXFocusedAttribute returns kAXErrorCannotComplete
+    When the guard finds Comet's focused element equal to the noted one
+    Then the attempt is unsettled, DestinationContext.field is Diverted and nothing is pasted
   Scenario: Range missing at the start
     Given the field was remembered with no range
     When insertion is due
@@ -256,7 +264,7 @@ sequenceDiagram
             F->>D: AXWindow vs AXFocusedWindow, AXRaise if different
             F->>D: set AXSelectedTextRange
         end
-        F-->>O: FieldAttempt (noted, raised, stage)
+        F-->>O: FieldAttempt (noted, raised, unsettled, stage)
     end
     O->>X: dispatch(guard with expected field or none)
     X->>X: configured paste delay
@@ -318,8 +326,8 @@ stateDiagram-v2
     Frozen --> Attempted: range present, element noted, focus, raise if needed, range restored or a step failed
     Frozen --> NotAttempted: range missing or focused element not noted
     Attempted --> Verified: guard finds the input focused with its range
-    Attempted --> Unchanged: another element, equal to the noted one, no raise
-    Attempted --> Diverted: focus moved, window raised, range not verified, focus unreadable
+    Attempted --> Unchanged: another element, equal to the noted one, no raise, no unanswered write
+    Attempted --> Diverted: focus moved, window raised, write unanswered, range not verified, focus unreadable
     NotAttempted --> Diverted
     Verified --> Released: method pasted, outcome published
     Unchanged --> Released: 006/010 path, outcome published
@@ -350,6 +358,7 @@ erDiagram
     FIELD_ATTEMPT {
         string noted_handle "opaque, nullable"
         boolean raised
+        boolean unsettled "focus or range write without an answer in time"
         string stage "restored, not_attempted, failed stage"
     }
     FIELD_CHECK {
@@ -397,9 +406,9 @@ erDiagram
 
 **Prerequisite:** Step 3.
 **Required inputs:** `insertion.rs`, `guard.rs`, `delivery.rs`, 010's `RecoveryPort` implementation, `BubbleReason` mapping and presentation hand-off.
-**Action:** Modify `insertion.rs`: `Orchestrator.field`, attempt after `activate` when the frozen field names the activated instance, `refusal_report` mapping of `RecoverInstead(FieldReturnFailed)`; modify `guard.rs`: `expected_field`, verification in `first_pass` before `before_insertion`, `DestinationContext.field`; modify `delivery.rs::orchestrator` to pass the platform port; modify 010's `before_insertion` to answer `Insert` without AX for `Verified` and `Recover(FieldReturnFailed)` without AX for `Diverted`, and 010's reason mapping to show `BubbleReason::InsertionFailed` with its "nothing was sent" explanation for `field_return_failed` (delta below). Extend `src-tauri/tests/destination_field.rs`: verified path with range, element gone with nothing changed (`Unchanged`, 006/010 insertion), focus moved, window raised then verification failed, range not restored, range not verified, range missing at the start (no AX call at insertion), focused element not noted, focused element unreadable at the guard, destination already in front, method none, cancellation during the attempt, 006 refusals unchanged, 010 verdict per `FieldCheck`, bubble presented with "Insertion failed" and nothing pasted, `Unpresentable` giving exactly one `paste-error` and nothing pasted, 009 Enter count unchanged (zero after `Recover`; zero with another app in front before Enter), 007 direct insertion targeting the verified element.
+**Action:** Modify `insertion.rs`: `Orchestrator.field`, attempt after `activate` when the frozen field names the activated instance, `refusal_report` mapping of `RecoverInstead(FieldReturnFailed)`; modify `guard.rs`: `expected_field`, verification in `first_pass` before `before_insertion`, `DestinationContext.field`; modify `delivery.rs::orchestrator` to pass the platform port; modify 010's `before_insertion` to answer `Insert` without AX for `Verified` and `Recover(FieldReturnFailed)` without AX for `Diverted`, and 010's reason mapping to show `BubbleReason::InsertionFailed` with its "nothing was sent" explanation for `field_return_failed` (delta below). Extend `src-tauri/tests/destination_field.rs`: verified path with range, element gone with nothing changed (`Unchanged`, 006/010 insertion), focus moved, window raised then verification failed, focus write unanswered (`unsettled`, `Diverted` even when the focused element equals `noted`), range write unanswered, noted element equal to the remembered input with its range not restored (`Diverted`, never `Unchanged`), range not restored, range not verified, range missing at the start (no AX call at insertion), focused element not noted, focused element unreadable at the guard, destination already in front, method none, cancellation during the attempt, 006 refusals unchanged, 010 verdict per `FieldCheck`, bubble presented with "Insertion failed" and nothing pasted, `Unpresentable` giving exactly one `paste-error` and nothing pasted, 009 Enter count unchanged (zero after `Recover`; zero with another app in front before Enter), 007 direct insertion targeting the verified element.
 **FR covered:** FR-002.2: Attempt and guard verification, FR-004.3: Unchanged fallback, diverted bubble and paste-error, FR-002.3: Verified counts editable for 010
-**Execution evidence:** Integration tests in the four combinations; debug log assertions without content or range.
+**Execution evidence:** Integration tests in the four combinations; debug log assertions without content or range, with sentinel range values.
 **Success criteria:** SC-002: zero insertions into another element than the verified input or, for `Unchanged`, the 006/010 target; every `Unchanged` case reaches 010's unchanged verdict; every `Diverted` case pastes nothing and ends with the bubble or one `paste-error`; outcome identical to 006's for the same method result when verified.
 **Failure handling:** Any path where a `Diverted` case pastes, an `Unchanged` case changes 010's verdict, or Enter changes blocks Step 5.
 
@@ -407,7 +416,7 @@ erDiagram
 
 **Prerequisite:** Step 4.
 **Required inputs:** `destination/windows.rs`, `windows` crate.
-**Action:** New `destination/windows_field.rs` (COM MTA thread, UIA client timeouts, busy-thread refusal, capture/attempt/verify with `TextPattern` per [Windows adapter](#windows-adapter-pending-release-evidence)); add `Win32_UI_Accessibility` and `Win32_System_Com` to the `windows` features in `src-tauri/Cargo.toml`; pure mapping tests (control type, password, read-only, process, `TextPattern` missing → no range) and bounded-wait tests with a fake request executor that hangs (budget expiry, late answer discarded, next request refused while busy) run on every platform.
+**Action:** New `destination/windows_field.rs` (COM MTA thread, UIA client timeouts, busy-thread refusal, capture/attempt/verify with `TextPattern` per [Windows adapter](#windows-adapter-pending-release-evidence)); add `Win32_UI_Accessibility` and `Win32_System_Com` to the `windows` features in `src-tauri/Cargo.toml`; pure mapping tests (control type Edit or Document, `ValuePattern` or `TextPattern` presence, password, read-only, process, `TextPattern` missing → no range) and bounded-wait tests with a fake request executor that hangs (budget expiry, late answer discarded, expired `SetFocus` or `Select` → `unsettled`, next request refused while busy) run on every platform.
 **FR covered:** FR-005.3: UIA adapter, bounded calls and pure mapping
 **Execution evidence:** Windows compilation in `.github/workflows/pr-test-build.yml`; mapping and bounded-wait tests on the Linux CI job.
 **Success criteria:** Builds and tests pass; Windows native run recorded as pending release evidence with its exact command.
@@ -445,7 +454,7 @@ Availability checked 2026-10-15: Cargo 1.94.0 and Bun 1.3.9. Planned tests do no
 |---|---|---|
 | P0 unit | Capture miss mapping (permission, password by role and subrole, other process, not editable, undetermined, error, deadline), range read or not, per-element timeout equal to the remaining budget, no call below 5 ms, never system-wide; every row of the guard table (`decide_field_check`); lifetime rows; `field_tests.rs`, `manager_tests.rs` | FR-001/003/004; AC-001/003/004/008 |
 | P0 integration | Orchestrator and guard with fake workspace, field port and 010 port: verified path, unchanged element-gone path, every diverted case, range missing, already in front, method none, cancel during the attempt, 006 refusals unchanged, 010 verdict per `FieldCheck`, bubble and `Unpresentable` → one `paste-error`, nothing pasted when diverted, 009 Enter count, closed-gate zero calls, start path with a port that never answers; `tests/destination_field.rs` | FR-002/004/005; AC-002/004/005/006; SC-002/003/005 |
-| P0 privacy | Fake element whose value and selected-text accessors panic; captured debug logs contain stage names only, no range; sentinel absent from logs and events | FR-001; AC-008; SC-004 |
+| P0 privacy | Fake element whose value and selected-text accessors panic; captured logs at every level contain stage names and elapsed times only; the sentinel text and a remembered range with distinctive sentinel position and length values are absent from logs, events and CLI output | FR-001; AC-008; SC-004 |
 | P1 native macOS | Spike and acceptance matrix with drafts (Notes, ChatGPT desktop, Comet tabs, reload and Accessibility exposure, second window, password, pin, badge change, forced bubble), main-thread timing with heartbeat; `tests/destination_field_native.rs` plus manual matrix with Julien | FR-001/002/003/004; AC-001–AC-005; SC-001 |
 | P1 Windows (pending release evidence) | UIA capture with `TextPattern`, `SetFocus`, `Select`, `CompareElements`, `CompareEndpoints` with Notepad and a browser; pure mapping and bounded-wait tests are P0 on every CI | FR-005; AC-007 |
 

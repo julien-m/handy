@@ -34,3 +34,13 @@
 - **Other corrections (round-1 warnings):** cancellation and paste method "none" drop the start reference unused instead of claiming no read; 50 ms start deadline aligned with 010's per-element timeout, 50 ms attempt and 10 ms verification, start path never waits (SC-005); Windows UI Automation calls bounded with the same deadlines and a `TextPattern` range; Chromium Accessibility exposure stated as a precondition of SC-001 verified by native proof, with the safe fallback otherwise; focus-then-raise order checked natively
 - **Review:** round 1 spec receipt not ready (1 blocking, 4 warnings); round 2 to run on this version
 - **Author:** Claude Code (spec-refine, orchestrated correction)
+
+## 2026-10-15 — [Spec Update]: Corrected after spec review round 2
+
+- **Type:** Spec Update
+- **Spec modified:** Yes (Story 3 statement, independent test, Gherkin and diagram; AC-002, AC-004, AC-007, AC-008, FR-004, Key Entities, QE Analysis, Edge Cases, SC-002, SC-004); plan realigned (attempt steps and `unsettled` flag, guard table precedence, Windows text input and expired writes, diagrams, ER, Steps 4 and 5 tests, privacy tests)
+- **Code modified:** None
+- **AC impacted:** AC-002, AC-004, AC-007, AC-008
+- **Corrections (faithful to Julien's decisions of 2026-10-15, never paste without a restored and verified caret, never paste elsewhere than the element noted before the attempt when the attempt changed something):** AC-004 now has two non-overlapping branches and excludes from (a) the remembered input already focused when noted with its range not restored or verified, which goes to (b) as the plan's table already did; Story 3 states that an unreadable range at the start gives the bubble even without an application switch; a focus or range write without an answer in time counts as a change (AC-002, AC-007); AC-008 lists every field of the Remembered input entity; SC-004 also checks that the range never reaches logs; a Windows text input is defined through UI Automation (`ControlType` Edit or Document with `ValuePattern` or `TextPattern`)
+- **Review:** round 2 spec receipt not ready (1 blocking, 3 warnings, 2 info); round 3, the last authorized, to run on this version
+- **Author:** Claude Code (spec-refine, orchestrated correction)
