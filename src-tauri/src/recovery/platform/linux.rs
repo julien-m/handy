@@ -4,7 +4,7 @@
 //! (spec AC-006). Its X11/Wayland/Orca observation is pending release evidence.
 use super::{INITIAL_SIZE, RECOVERY_PAGE, RECOVERY_WINDOW};
 use gtk_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
-use tauri::{AppHandle, WebviewUrl, WebviewWindow, WebviewWindowBuilder};
+use tauri::{AppHandle, Manager, WebviewUrl, WebviewWindow, WebviewWindowBuilder};
 
 /// Build the hidden window and make it a layer surface when the compositor supports it.
 pub(super) fn create_window(app: &AppHandle) -> Result<WebviewWindow, String> {
