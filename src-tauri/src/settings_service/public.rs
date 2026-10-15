@@ -57,7 +57,12 @@ struct PublicGeneral {
     recording_retention_period: RecordingRetentionPeriod,
     paste_method: PasteMethod,
     clipboard_handling: ClipboardHandling,
+    /// Closed `destination-return` gate: the auto-submit switch, as on `dev`.
+    #[cfg(not(feature = "destination-return"))]
     auto_submit: bool,
+    /// Open gate (009): Automatic Enter in its place (`never` when absent, never guessed).
+    #[cfg(feature = "destination-return")]
+    automatic_enter: AutomaticEnterPolicy,
 }
 impl PublicGeneral {
     fn from_settings(settings: &AppSettings) -> Self {
@@ -87,7 +92,10 @@ impl PublicGeneral {
             recording_retention_period: settings.recording_retention_period,
             paste_method: settings.paste_method,
             clipboard_handling: settings.clipboard_handling,
+            #[cfg(not(feature = "destination-return"))]
             auto_submit: settings.auto_submit,
+            #[cfg(feature = "destination-return")]
+            automatic_enter: crate::automatic_enter::policy_of(settings),
         }
     }
 }

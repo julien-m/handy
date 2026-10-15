@@ -127,6 +127,40 @@ pub enum SettingsCommand {
     Prompts(PromptsArgs),
     /// Microphone choices: list the saved order, availability and microphone in use; replace it
     Microphones(MicrophonesArgs),
+    /// Pinned destination application (running Handy): pin one by identifier, unpin, status
+    #[cfg(feature = "destination-return")]
+    Destination(DestinationArgs),
+}
+
+/// `handy settings destination` (009): the session pin of the running Handy.
+#[cfg(feature = "destination-return")]
+#[derive(Args, Debug, Clone)]
+#[command(
+    after_help = "IDENTIFIER is the application's stable identity: its bundle identifier on \
+macOS; on Windows its application user model ID or, without one, its executable path. The \
+application must be running. The pin lasts until unpin or until Handy quits, and a pin or unpin \
+changes the current dictation like the badge menu until its insertion begins. All three actions \
+need a running Handy; without one they fail with unavailable (exit 5). Unsupported on Linux \
+(validation_failed, exit 2)."
+)]
+pub struct DestinationArgs {
+    #[command(subcommand)]
+    pub action: DestinationAction,
+}
+
+/// Actions of the destination domain.
+#[cfg(feature = "destination-return")]
+#[derive(Subcommand, Debug, Clone)]
+pub enum DestinationAction {
+    /// Pin the running application with this identifier
+    Pin {
+        /// Bundle identifier (macOS), AUMID or executable path (Windows)
+        identifier: String,
+    },
+    /// Unpin: the next dictations go to the application they start in again
+    Unpin,
+    /// Print the pinned application, or null
+    Status,
 }
 
 /// `handy settings vocabulary`: the recognition vocabulary, with the validation of the settings

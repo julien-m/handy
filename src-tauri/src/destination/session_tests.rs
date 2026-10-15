@@ -22,6 +22,8 @@ fn session() -> DestinationSession {
         return_enabled: true,
         support: DestinationSupport::Supported,
         selection: destination("com.openai.chat", DestinationSource::Captured),
+        start_selection: destination("com.openai.chat", DestinationSource::Captured),
+        pin: None,
         captured_at: Instant::now(),
         disposition: Pending,
         enter_claimed: false,
@@ -144,25 +146,30 @@ fn enter_is_claimed_once_on_insert_and_a_later_recover_does_not_revoke_it() {
 #[test]
 fn badge_is_visible_only_when_on_supported_and_shown() {
     let unreadable = DestinationSupport::Unsupported(SupportReason::FrontmostUnreadable);
-    assert!(badge_visible(
-        true,
-        DestinationSupport::Supported,
-        OverlayStyle::Minimal
-    ));
-    assert!(badge_visible(
-        true,
-        DestinationSupport::Supported,
-        OverlayStyle::Live
-    ));
+    let supported = DestinationSupport::Supported;
+    assert!(badge_visible(true, false, supported, OverlayStyle::Minimal));
+    assert!(badge_visible(true, false, supported, OverlayStyle::Live));
     assert!(!badge_visible(
         false,
-        DestinationSupport::Supported,
+        false,
+        supported,
         OverlayStyle::Minimal
     ));
-    assert!(!badge_visible(true, unreadable, OverlayStyle::Minimal));
     assert!(!badge_visible(
         true,
-        DestinationSupport::Supported,
-        OverlayStyle::None
+        false,
+        unreadable,
+        OverlayStyle::Minimal
     ));
+    assert!(!badge_visible(true, false, supported, OverlayStyle::None));
+}
+// @spec AC-001: Pinned badge with return off — .specs/features/009-pin-mode-and-enter-rule/spec.md#ac-001
+#[test]
+fn a_pin_shows_the_badge_with_return_off_but_never_unsupported_or_with_overlay_none() {
+    let unreadable = DestinationSupport::Unsupported(SupportReason::FrontmostUnreadable);
+    let supported = DestinationSupport::Supported;
+    assert!(badge_visible(false, true, supported, OverlayStyle::Minimal));
+    assert!(badge_visible(false, true, supported, OverlayStyle::Live));
+    assert!(!badge_visible(false, true, unreadable, OverlayStyle::Live));
+    assert!(!badge_visible(false, true, supported, OverlayStyle::None));
 }

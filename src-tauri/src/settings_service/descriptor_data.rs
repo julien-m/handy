@@ -4,8 +4,8 @@ use super::descriptor::{NumericRange, RuntimeEffect, SettingDescriptor, SettingT
 
 // Rows keep all policy dimensions together; no classification derives from names/types at runtime.
 macro_rules! inventory {
- ($($key:literal => ($ty:ident,$nullable:literal,$range:expr,$values:expr,$readonly:literal,$secret:literal,$owner:literal,$effect:ident);)*) => {
-  pub(super) const DESCRIPTORS:&[SettingDescriptor]=&[$(SettingDescriptor {key:$key,value_type:SettingType::$ty,nullable:$nullable,range:$range,allowed_values:$values,read_only:$readonly,secret:$secret,owner_domain:$owner,runtime_effect:RuntimeEffect::$effect}),*];
+ ($($(#[$gate:meta])? $key:literal => ($ty:ident,$nullable:literal,$range:expr,$values:expr,$readonly:literal,$secret:literal,$owner:literal,$effect:ident);)*) => {
+  pub(super) const DESCRIPTORS:&[SettingDescriptor]=&[$($(#[$gate])? SettingDescriptor {key:$key,value_type:SettingType::$ty,nullable:$nullable,range:$range,allowed_values:$values,read_only:$readonly,secret:$secret,owner_domain:$owner,runtime_effect:RuntimeEffect::$effect}),*];
  };
 }
 // Mutation bounds match current UI controls (hold threshold, volume, history,
@@ -49,7 +49,12 @@ inventory! {
  "recording_retention_period" => (String,false,None,&["never","preserve_limit","days3","weeks2","months3"],false,false,"general",History);
  "paste_method" => (String,false,None,crate::smart_paste::setting_policy::PASTE_METHOD_VALUES,false,false,"output",None);
  "clipboard_handling" => (String,false,None,&["dont_modify","copy_to_clipboard"],false,false,"output",None);
+ #[cfg(not(feature = "destination-return"))]
  "auto_submit" => (Boolean,false,None,&[],false,false,"output",None);
+ // 009 (gate `destination-return` open): Automatic Enter replaces the auto-submit switch, which
+ // stays stored unchanged without a descriptor for a closed build.
+ #[cfg(feature = "destination-return")]
+ "automatic_enter" => (String,false,None,&["never","always","pin_only"],false,false,"output",None);
  "auto_submit_key" => (String,false,None,&["enter","ctrl_enter","cmd_enter"],false,false,"output",None);
  "post_process_enabled" => (Boolean,false,None,&[],false,false,"general",Shortcuts);
  "post_process_provider_id" => (String,false,None,&[],true,false,"general",None);

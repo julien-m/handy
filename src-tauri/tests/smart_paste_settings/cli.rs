@@ -164,7 +164,7 @@ fn offline_upgrade_reads_normalized_and_the_next_write_persists_the_migration() 
         (&json!(3), &json!(method))
     );
     assert_eq!(app.store_bytes()?, before);
-    app.run(&["settings", "output", "set", "auto_submit", "true"])?;
+    app.run(&["settings", "output", "set", "append_trailing_space", "true"])?;
     let stored: Value = serde_json::from_slice(&app.store_bytes()?.ok_or("store")?)?;
     assert_eq!(stored["settings_revision"], 4);
     assert_eq!(stored["settings"]["paste_method"], method);

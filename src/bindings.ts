@@ -255,6 +255,19 @@ async changeAutoSubmitSetting(enabled: boolean) : Promise<Result<null, SettingsC
     else return { status: "error", error: e  as any };
 }
 },
+/**
+ * Automatic Enter (009): `never`, `always` or `pin_only`, with the validation shared with the CLI.
+ * Registered in both gate states; a closed build has no descriptor for it and refuses it with
+ * `not_found`, as an open build refuses `change_auto_submit_setting`.
+ */
+async changeAutomaticEnterSetting(policy: string) : Promise<Result<null, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_automatic_enter_setting", { policy }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async changeAutoSubmitKeySetting(key: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_auto_submit_key_setting", { key }) };
@@ -831,6 +844,19 @@ async chooseDestination(dictationId: DictationId, selectionVersion: number, choi
  */
 async removeDestination(dictationId: DictationId, selectionVersion: number) : Promise<ChoiceAnswer> {
     return await TAURI_INVOKE("remove_destination", { dictationId, selectionVersion });
+},
+/**
+ * Badge "Pin <destination>" (009): pin the current destination of the exact dictation and
+ * version; it stays the destination of the next dictations until unpinned or Handy quits.
+ */
+async pinDestination(dictationId: DictationId, selectionVersion: number) : Promise<ChoiceAnswer> {
+    return await TAURI_INVOKE("pin_destination", { dictationId, selectionVersion });
+},
+/**
+ * Badge "Unpin" (009): before insertion this dictation gets back the route of its start.
+ */
+async unpinDestination(dictationId: DictationId, selectionVersion: number) : Promise<ChoiceAnswer> {
+    return await TAURI_INVOKE("unpin_destination", { dictationId, selectionVersion });
 },
 /**
  * Grow (or shrink back) the overlay window to `width` × `height` logical points, never below
@@ -1451,7 +1477,13 @@ selected_channel?: number | null; clamshell_microphone?: string | null; selected
 /**
  * Ordered explicit corrections, independent from approximate custom words.
  */
-word_replacements?: ReplacementRule[]; model_unload_timeout?: ModelUnloadTimeout; word_correction_threshold?: number; history_limit?: number; recording_retention_period?: RecordingRetentionPeriod; paste_method?: PasteMethod; clipboard_handling?: ClipboardHandling; auto_submit?: boolean; auto_submit_key?: AutoSubmitKey; post_process_enabled?: boolean; post_process_provider_id?: string; post_process_providers?: PostProcessProvider[]; post_process_api_keys?: SecretMap; post_process_models?: Partial<{ [key in string]: string }>; post_process_prompts?: LLMPrompt[]; post_process_selected_prompt_id?: string | null; mute_while_recording?: boolean; append_trailing_space?: boolean; 
+word_replacements?: ReplacementRule[]; model_unload_timeout?: ModelUnloadTimeout; word_correction_threshold?: number; history_limit?: number; recording_retention_period?: RecordingRetentionPeriod; paste_method?: PasteMethod; clipboard_handling?: ClipboardHandling; auto_submit?: boolean; auto_submit_key?: AutoSubmitKey; 
+/**
+ * Automatic Enter of 009, filled only by a build with the `destination-return` gate open
+ * (fresh install `never`, upgrade from `auto_submit`); absent from a closed build, which
+ * never writes it. An invalid stored value reads as absent (see `automatic_enter::migration`).
+ */
+automatic_enter?: AutomaticEnterPolicy | null; post_process_enabled?: boolean; post_process_provider_id?: string; post_process_providers?: PostProcessProvider[]; post_process_api_keys?: SecretMap; post_process_models?: Partial<{ [key in string]: string }>; post_process_prompts?: LLMPrompt[]; post_process_selected_prompt_id?: string | null; mute_while_recording?: boolean; append_trailing_space?: boolean; 
 /**
  * Return to the application where the dictation started before inserting (006).
  */
@@ -1491,6 +1523,23 @@ vad_backend?: VadBackend;
 overlay_style?: OverlayStyle }
 export type AudioDevice = { index: string; name: string; is_default: boolean }
 export type AutoSubmitKey = "enter" | "ctrl_enter" | "cmd_enter"
+/**
+ * The single automatic Enter option of 009 (gate `destination-return` open): replaces the
+ * auto-submit switch; the key stays `auto_submit_key`.
+ */
+export type AutomaticEnterPolicy = 
+/**
+ * No automatic Enter.
+ */
+"never" | 
+/**
+ * One Enter after every successful insertion.
+ */
+"always" | 
+/**
+ * One Enter only when the dictation's destination came from the pin.
+ */
+"pin_only"
 /**
  * Availability of one configured choice, observed separately from the saved order.
  */
@@ -1599,7 +1648,35 @@ frontmost_at_end_current: boolean }
 /**
  * Session snapshot sent to the UI (`destination-changed`) and returned by session commands.
  */
-export type DestinationSnapshot = { dictation_id: DictationId; destination_generation: number; selection_version: number; phase: SessionPhase; return_enabled: boolean; support: DestinationSupport; selection: SelectionView; disposition: RecoveryDisposition }
+export type DestinationSnapshot = { dictation_id: DictationId; destination_generation: number; selection_version: number; phase: SessionPhase; return_enabled: boolean; support: DestinationSupport; selection: SelectionView; 
+/**
+ * Where the current selection comes from; `pinned` shows the pin mark (009).
+ */
+source: DestinationSource; 
+/**
+ * The session pin, if an application is pinned (009); the badge menu offers Unpin then.
+ */
+pin: PinView | null; disposition: RecoveryDisposition }
+/**
+ * Where the destination of a dictation comes from (009 adds `Pinned`).
+ */
+export type DestinationSource = 
+/**
+ * Frontmost application when the recording actually started.
+ */
+"captured" | 
+/**
+ * Chosen explicitly from the badge menu during the dictation.
+ */
+"badge" | 
+/**
+ * No destination: the application frontmost at insertion, as before this feature.
+ */
+"frontmost_at_end" | 
+/**
+ * The session pin of 009: activated even with destination return off.
+ */
+"pinned"
 /**
  * Runtime support of destination return in the running instance.
  */
@@ -2150,6 +2227,10 @@ export type OverlayStyle = "none" | "minimal" | "live"
 export type PaginatedHistory = { entries: HistoryEntry[]; has_more: boolean }
 export type PasteMethod = "ctrl_v" | "direct" | "none" | "shift_insert" | "ctrl_shift_v" | "external_script" | "smart_paste"
 export type PermissionAccess = "allowed" | "denied" | "unknown"
+/**
+ * What the badge shows of the pin (name and icon reference only).
+ */
+export type PinView = { display_name: string; icon_ref: string | null }
 export type PostProcessProvider = { id: string; label: string; base_url: string; allow_base_url_edit?: boolean; models_endpoint?: string | null; supports_structured_output?: boolean }
 /**
  * One preview row; deletions have no input line number.

@@ -129,9 +129,24 @@ pub(super) fn choose(
         MenuChoice::Application(token) => chosen_application(manager, token)?,
     };
     let mut state = manager.lock();
+    let selection = back_to_pin(&state, selection);
     let session = state.session.as_mut().ok_or(SelectionRefusal::Stale)?;
     session.choose(dictation_id, version, selection)?;
     Ok(DestinationSnapshot::from(&*session))
+}
+
+/// Business rule (009): choosing the pinned application itself in the menu returns this
+/// dictation to its pinned route (source `pinned`); any other choice stays a badge choice.
+fn back_to_pin(state: &ManagerState, selection: Selection) -> Selection {
+    match (&state.pin, selection) {
+        (Some(pin), Selection::Application(chosen)) if chosen.identity == pin.identity => {
+            Selection::Application(Destination {
+                source: DestinationSource::Pinned,
+                ..chosen
+            })
+        }
+        (_, selection) => selection,
+    }
 }
 
 /// The still-running application behind `token`, as a badge destination.

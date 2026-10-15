@@ -17,6 +17,7 @@ fn report(status: InsertionStatus, method_result: Option<MethodResult>) -> Inser
         method_result,
         target: Some(ApplicationIdentity::BundleId("com.apple.Notes".to_owned())),
         source: DestinationSource::Captured,
+        context: None,
     }
 }
 

@@ -97,7 +97,7 @@ fn concurrent_cli_writers_lose_no_field() -> TestResult {
         "audio_feedback",
         "start_hidden",
         "translate_to_english",
-        "auto_submit",
+        "lazy_stream_close",
     ];
     let writers = keys.map(|key| {
         let app = std::sync::Arc::clone(&app);

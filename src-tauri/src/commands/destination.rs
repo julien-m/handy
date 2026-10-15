@@ -80,3 +80,41 @@ pub async fn remove_destination(
     )
     .await
 }
+// @spec AC-001: Pin and Unpin from the badge menu — .specs/features/009-pin-mode-and-enter-rule/spec.md#ac-001
+#[tauri::command]
+#[specta::specta]
+/// Badge "Pin <destination>" (009): pin the current destination of the exact dictation and
+/// version; it stays the destination of the next dictations until unpinned or Handy quits.
+pub async fn pin_destination(
+    app: AppHandle,
+    dictation_id: DictationId,
+    selection_version: u64,
+) -> ChoiceAnswer {
+    let pinned = manager(&app)
+        .ok_or(SelectionRefusal::Stale)
+        .and_then(|manager| manager.pin_current(dictation_id, selection_version));
+    answer(&app, pinned)
+}
+#[tauri::command]
+#[specta::specta]
+/// Badge "Unpin" (009): before insertion this dictation gets back the route of its start.
+pub async fn unpin_destination(
+    app: AppHandle,
+    dictation_id: DictationId,
+    selection_version: u64,
+) -> ChoiceAnswer {
+    let unpinned = manager(&app)
+        .ok_or(SelectionRefusal::Stale)
+        .and_then(|manager| manager.unpin_from_badge(dictation_id, selection_version));
+    answer(&app, unpinned)
+}
+/// Notify the UI of an accepted change and answer it.
+fn answer(app: &AppHandle, changed: Result<DestinationSnapshot, SelectionRefusal>) -> ChoiceAnswer {
+    match changed {
+        Ok(snapshot) => {
+            emit_changed(app, &snapshot);
+            ChoiceAnswer::Chosen(snapshot)
+        }
+        Err(refusal) => ChoiceAnswer::Refused(refusal),
+    }
+}

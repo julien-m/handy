@@ -133,7 +133,7 @@ const CONCURRENT_KEYS: [&str; 8] = [
     "audio_feedback",
     "start_hidden",
     "translate_to_english",
-    "auto_submit",
+    "lazy_stream_close",
     "mute_while_recording",
     "append_trailing_space",
     "experimental_enabled",

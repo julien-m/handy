@@ -871,6 +871,19 @@ pub async fn change_auto_submit_setting(app: AppHandle, enabled: UiValue<bool>) 
     live_settings::write(app, "auto_submit", enabled).await
 }
 
+// @spec AC-004: One Automatic Enter setting in the UI — .specs/features/009-pin-mode-and-enter-rule/spec.md#ac-004
+#[tauri::command]
+#[specta::specta]
+/// Automatic Enter (009): `never`, `always` or `pin_only`, with the validation shared with the CLI.
+/// Registered in both gate states; a closed build has no descriptor for it and refuses it with
+/// `not_found`, as an open build refuses `change_auto_submit_setting`.
+pub async fn change_automatic_enter_setting(
+    app: AppHandle,
+    policy: UiValue<String>,
+) -> SettingsResult {
+    live_settings::write(app, "automatic_enter", policy).await
+}
+
 #[tauri::command]
 #[specta::specta]
 pub async fn change_auto_submit_key_setting(

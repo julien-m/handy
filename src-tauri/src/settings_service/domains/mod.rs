@@ -3,7 +3,10 @@
 //! does the rest the same way for every domain: action aliases, live-only refusal, dry-run preview
 //! through the commit path's own validation, and one atomic commit through the shared backend.
 //! Registered: `output` (008), `replacements` (002), `shortcuts` (004), `vocabulary` (003),
-//! `prompts` (005) and `microphones` (001); later features add their domain to `production`.
+//! `prompts` (005), `microphones` (001) and, with the `destination-return` gate open only,
+//! `destination` (009); later features add their domain to `production`.
+#[cfg(feature = "destination-return")]
+pub mod destination;
 pub mod live_operation;
 pub mod microphones;
 pub mod output;
@@ -128,6 +131,9 @@ pub fn production() -> &'static [&'static dyn Domain] {
         &vocabulary::VocabularyDomain,
         &prompts::PromptsDomain,
         &microphones::MicrophonesDomain,
+        // 009: gate closed, no `destination` domain exists (`usage_error`, exactly as on `dev`).
+        #[cfg(feature = "destination-return")]
+        &destination::DestinationDomain,
     ]
 }
 /// Shared verb aliases: every domain accepts `edit` for `update` and `delete` for `remove`.

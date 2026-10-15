@@ -75,7 +75,6 @@ fn boolean_cases() -> Vec<(&'static str, &'static str, serde_json::Value)> {
         "always_on_microphone",
         "translate_to_english",
         "debug_mode",
-        "auto_submit",
         "post_process_enabled",
         "mute_while_recording",
         "append_trailing_space",
@@ -88,6 +87,8 @@ fn boolean_cases() -> Vec<(&'static str, &'static str, serde_json::Value)> {
         "vad_enabled",
     ]
     .into_iter()
+    // 009: the auto-submit switch is a setting only with the `destination-return` gate closed.
+    .chain((!cfg!(feature = "destination-return")).then_some("auto_submit"))
     .map(boolean_case)
     .collect()
 }
@@ -122,6 +123,8 @@ fn enum_cases() -> Vec<(&'static str, &'static str, serde_json::Value)> {
         ("overlay_style", "live"),
     ]
     .into_iter()
+    // 009: Automatic Enter replaces it with the `destination-return` gate open.
+    .chain(cfg!(feature = "destination-return").then_some(("automatic_enter", "pin_only")))
     .map(|(key, value)| (key, value, json!(value)))
     .collect()
 }

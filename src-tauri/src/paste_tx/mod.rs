@@ -156,6 +156,9 @@ pub(crate) fn evaluate(state: &TxState, now: Instant) -> WaitDecision {
     WaitDecision::KeepWaiting
 }
 
+/// Signals of a reliable transfer for 009's Enter authority (`automatic_enter::rendezvous`).
+pub(crate) use crate::automatic_enter::rendezvous::ReceiptSink;
+
 /// Modifier hold for the receipt-sequenced chord, kept at parity with the
 /// legacy path (100ms) for the beta: that hold was added in #165 because real
 /// users' systems dropped chords released too quickly, and the beta should
@@ -189,16 +192,17 @@ pub(crate) fn send_chord(
 /// been published when the platform transaction cannot start, in which case
 /// the caller should fall back to the legacy paste path. On `Ok`, publishing
 /// and chord injection have completed and the guarded restore (plus
-/// auto-submit) finishes asynchronously.
+/// auto-submit) finishes asynchronously. With `receipts` (009), `auto_submit`
+/// must be false: the signals go to the Enter authority instead.
 #[cfg(any(target_os = "macos", target_os = "windows"))]
 pub(crate) fn try_reliable_paste(
     text: &str,
     app_handle: &tauri::AppHandle,
     paste_method: &crate::settings::PasteMethod,
     enigo: &mut enigo::Enigo,
-    auto_submit: bool,
-    auto_submit_key: crate::settings::AutoSubmitKey,
+    auto_submit: (bool, crate::settings::AutoSubmitKey),
     clipboard_handling: crate::settings::ClipboardHandling,
+    receipts: Option<std::sync::Arc<dyn ReceiptSink>>,
 ) -> Result<(), String> {
     platform::run(
         text,
@@ -206,8 +210,8 @@ pub(crate) fn try_reliable_paste(
         paste_method,
         enigo,
         auto_submit,
-        auto_submit_key,
         clipboard_handling,
+        receipts,
     )
 }
 

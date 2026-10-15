@@ -107,6 +107,11 @@ pub struct DestinationSession {
     pub return_enabled: bool,
     pub support: DestinationSupport,
     pub selection: Selection,
+    /// The route 006 gave this dictation at its start (captured app, or frontmost at the end):
+    /// what an Unpin before insertion restores (009 AC-002). Never recaptured.
+    pub start_selection: Selection,
+    /// The session pin of 009 as last seen by this session (for the badge menu entries).
+    pub pin: Option<super::pin::PinView>,
     pub captured_at: Instant,
     pub disposition: RecoveryDisposition,
     pub enter_claimed: bool,
@@ -240,13 +245,16 @@ fn same_target(current: &Selection, next: &Selection) -> bool {
 }
 
 // @spec FR-003: Badge visibility predicate — .specs/features/006-destination-application/spec.md#fr-003
-/// The badge is shown when destination return is on and supported and the overlay is shown.
+// @spec AC-001: Pinned badge shown with return off — .specs/features/009-pin-mode-and-enter-rule/spec.md#ac-001
+/// The badge is shown when destination return is on, or an application is pinned (009, the only
+/// exception to 006 AC-003), on a supported system with the overlay shown.
 pub fn badge_visible(
     return_enabled: bool,
+    pinned: bool,
     support: DestinationSupport,
     overlay_style: OverlayStyle,
 ) -> bool {
-    return_enabled
+    (return_enabled || pinned)
         && support == DestinationSupport::Supported
         && overlay_style != OverlayStyle::None
 }

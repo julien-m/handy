@@ -46,6 +46,8 @@ pub enum DestinationSource {
     Badge,
     /// No destination: the application frontmost at insertion, as before this feature.
     FrontmostAtEnd,
+    /// The session pin of 009: activated even with destination return off.
+    Pinned,
 }
 
 // @spec FR-005: Destination context for insertion methods — .specs/features/006-destination-application/spec.md#fr-005

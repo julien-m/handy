@@ -41,13 +41,16 @@ pub(super) struct ManagerState {
     pub(super) menu: Vec<(u64, RunningApp)>,
     pub(super) next_token: u64,
     pub(super) support: Option<DestinationSupport>,
+    /// Session pin of 009 (RAM only, ends with the process).
+    pub(super) pin: Option<super::pin::PinState>,
+    pub(super) pin_version: u64,
 }
 
 /// Session owner shared by the recording lifecycle, the session commands and 009/010.
 pub struct DestinationManager {
     pub(super) state: Mutex<ManagerState>,
     pub(super) workspace: Arc<dyn WorkspacePort>,
-    clock: Arc<dyn Clock>,
+    pub(super) clock: Arc<dyn Clock>,
     platform: PlatformCapabilities,
 }
 
@@ -94,14 +97,25 @@ impl DestinationManager {
             elapsed: self.clock.now().saturating_duration_since(captured_at),
         }
     }
+    // @spec FR-001: The pin wins over the capture, kept for unpin — .specs/features/009-pin-mode-and-enter-rule/spec.md#fr-001
     /// Commit the session of a recording that actually started; a new dictation and
-    /// generation invalidate every callback of the previous one.
+    /// generation invalidate every callback of the previous one. A session pin (009) becomes
+    /// its route; 006's capture is kept as the start route an Unpin restores.
     pub fn commit_start(&self, capture: TentativeCapture) -> DestinationSnapshot {
         let mut state = self.lock();
         state.last_dictation += 1;
         state.generation += 1;
         state.menu.clear();
         state.support = Some(capture.support);
+        let pin = state
+            .pin
+            .as_ref()
+            .filter(|_| self.platform.supports(PlatformCapability::Destination));
+        let selection = pin.map_or_else(
+            || capture.selection.clone(),
+            |pin| Selection::Application(pin.destination()),
+        );
+        let pin_view = pin.map(super::pin::PinState::view);
         let session = DestinationSession {
             dictation_id: DictationId(state.last_dictation),
             destination_generation: state.generation,
@@ -109,7 +123,9 @@ impl DestinationManager {
             phase: SessionPhase::Recording,
             return_enabled: capture.return_enabled,
             support: capture.support,
-            selection: capture.selection,
+            selection,
+            start_selection: capture.selection,
+            pin: pin_view,
             captured_at: capture.captured_at,
             disposition: RecoveryDisposition::Pending,
             enter_claimed: false,
@@ -253,7 +269,9 @@ impl DestinationManager {
         let session = state.session.as_mut().ok_or(DispositionRefusal::Stale)?;
         session.set_disposition(dictation_id, generation, next)
     }
-    /// 009's atomic Enter claim, under the same lock as `set_disposition`.
+    /// 009's atomic Enter claim, under the same lock as `set_disposition`. A cancellation after
+    /// the outcome was published moves the manager's generation on, so a late claim (Windows
+    /// reliable paste) is stale too.
     ///
     /// # Errors
     /// `Stale`, `Disposition(current)` unless `Insert`, or `AlreadyClaimed`.
@@ -263,7 +281,13 @@ impl DestinationManager {
         generation: u64,
     ) -> Result<EnterClaim, EnterRefusal> {
         let mut state = self.lock();
+        let moved_on = state.generation != generation;
         let session = state.session.as_mut().ok_or(EnterRefusal::Stale)?;
+        // A published dictation keeps `Insert`; only the manager's generation records a later
+        // cancellation (a live session's cancellation already reports `Cancelled`).
+        if moved_on && session.disposition == RecoveryDisposition::Insert {
+            return Err(EnterRefusal::Stale);
+        }
         session.claim_enter(dictation_id, generation)
     }
     /// Current menu of the exact dictation/version; see `menu::build`.

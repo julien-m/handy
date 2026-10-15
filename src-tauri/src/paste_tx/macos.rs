@@ -24,7 +24,7 @@ use objc2_foundation::{NSArray, NSInteger, NSObject, NSString};
 use tauri::{AppHandle, Manager};
 use tauri_plugin_clipboard_manager::ClipboardExt;
 
-use super::{evaluate, send_chord, TxState, WaitDecision};
+use super::{evaluate, send_chord, ReceiptSink, TxState, WaitDecision};
 use crate::clipboard::send_return_key;
 use crate::input::EnigoState;
 use crate::settings::{AutoSubmitKey, ClipboardHandling, PasteMethod};
@@ -42,6 +42,8 @@ const CONCEALMENT_TYPES: [&str; 3] = [
 pub struct ProviderIvars {
     state: Arc<Mutex<TxState>>,
     text: String,
+    /// 009's Enter authority, told of every target read (see `paste_tx::ReceiptSink`).
+    receipts: Option<Arc<dyn ReceiptSink>>,
 }
 
 define_class!(
@@ -64,8 +66,17 @@ define_class!(
             // concealment marker types is a clipboard manager inspecting the
             // markers, not the paste target reading the transcript.
             if is_text {
-                if let Ok(mut state) = ivars.state.lock() {
-                    state.record_receipt(Instant::now());
+                let now = Instant::now();
+                let qualified = match ivars.state.lock() {
+                    Ok(mut state) => {
+                        state.record_receipt(now);
+                        state.injected_at.is_some_and(|injected| now >= injected)
+                    }
+                    Err(_) => false,
+                };
+                // Outside the state lock: the authority may start its Enter worker.
+                if let (true, Some(receipts)) = (qualified, &ivars.receipts) {
+                    receipts.target_read(now);
                 }
             }
             let payload = if is_text {
@@ -87,8 +98,16 @@ define_class!(
 );
 
 impl HandyPasteProvider {
-    fn new(state: Arc<Mutex<TxState>>, text: String) -> Retained<Self> {
-        let this = Self::alloc().set_ivars(ProviderIvars { state, text });
+    fn new(
+        state: Arc<Mutex<TxState>>,
+        text: String,
+        receipts: Option<Arc<dyn ReceiptSink>>,
+    ) -> Retained<Self> {
+        let this = Self::alloc().set_ivars(ProviderIvars {
+            state,
+            text,
+            receipts,
+        });
         unsafe { msg_send![super(this), init] }
     }
 }
@@ -258,9 +277,9 @@ pub(super) fn run(
     app_handle: &AppHandle,
     paste_method: &PasteMethod,
     enigo: &mut enigo::Enigo,
-    auto_submit: bool,
-    auto_submit_key: AutoSubmitKey,
+    (auto_submit, auto_submit_key): (bool, AutoSubmitKey),
     clipboard_handling: ClipboardHandling,
+    receipts: Option<Arc<dyn ReceiptSink>>,
 ) -> Result<(), String> {
     // Settle any previous transaction first so the snapshot below captures the
     // user's original clipboard, not the previous transcript.
@@ -277,7 +296,7 @@ pub(super) fn run(
     };
 
     let state = Arc::new(Mutex::new(TxState::new()));
-    let provider = HandyPasteProvider::new(state.clone(), text.to_string());
+    let provider = HandyPasteProvider::new(state.clone(), text.to_string(), receipts.clone());
     let pasteboard = NSPasteboard::generalPasteboard();
 
     let mut types: Vec<Retained<NSString>> = Vec::with_capacity(1 + CONCEALMENT_TYPES.len());
@@ -298,10 +317,19 @@ pub(super) fn run(
 
     // Mark injection *before* sending: enigo holds the chord for ~100ms and a
     // fast target may legitimately read while the chord is still held.
+    let injected_at = Instant::now();
     if let Ok(mut st) = state.lock() {
-        st.injected_at = Some(Instant::now());
+        st.injected_at = Some(injected_at);
     }
-    match send_chord(enigo, paste_method) {
+    if let Some(receipts) = &receipts {
+        receipts.injection_started(injected_at);
+    }
+    let chord = send_chord(enigo, paste_method);
+    // The actual chord result (never the outer `Ok` below) is the authority's signal.
+    if let Some(receipts) = &receipts {
+        receipts.chord_completed(chord.is_ok(), Instant::now());
+    }
+    match chord {
         Ok(()) => {
             info!("[reliable-paste] paste chord sent ({paste_method:?})");
         }
