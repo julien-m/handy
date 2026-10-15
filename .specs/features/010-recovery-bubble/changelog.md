@@ -207,3 +207,18 @@
 - **Fact found in code:** delivered 006 shows a ≥4 s destination notice on the indicator for a failed `insertion-outcome` (`src/overlay/notice-model.ts`), which the spec Clarification of 2026-10-14 does not mention; the plan replaces it with the bubble, as spec AC-001 requires.
 - Other features' documents are now cited as paths, not links.
 - Review: the plan review is stale until an independent reviewer refreshes it.
+
+## 2026-10-15 — [Spec Update]: Julien's decisions and round 7 plan review applied
+
+- **Type:** Spec Update
+- **Spec modified:** Yes (Clarifications, Edge Cases; normative AC text unchanged)
+- **Code modified:** None (spec.md, plan.md and contracts/recovery-contract.md updated)
+- **AC impacted:** AC-001, AC-002, AC-007 (decisions; IDs unchanged)
+- **Author:** Claude Code (spec-refine 010 and 010 plan, claude-opus-5-5)
+- Applies the round 7 plan review with the decisions validated by Julien (maintainer) on 2026-10-15, who also approved an exceptional review round beyond the plan's round cap. Each decision is written in `## Clarifications` with its `livespec-clarification` marker.
+- **AC-002, foreign non-activating panel (blocking):** accepted limit. When a non-activating panel of another process (Spotlight, a launcher) has keyboard focus while the destination stays frontmost, the classifier, which queries only the destination application and never the system-wide element, cannot see it and may show the bubble instead of inserting. No text is lost; no system-wide query, so Handy cannot freeze. Also an Edge Case; the plan's Step 1 calibration matrix refers to it.
+- **AC-001, late read (unapproved business scope):** new clarification adopting `.specs/features/007-smart-paste/spec.md` AC-012: after "not read", a late clipboard read makes the bubble state that the text may have been pasted after all; the outcome stays "not read" for automatic Enter. The plan's bubble update is now required by 010's spec.
+- **AC-007 (ambiguities):** with the gate open on Windows and Linux, reading the key returns `false`; writes are refused `validation_failed` with the platform reason (`unsupported_platform`).
+- **Earlier decisions** marked "to be confirmed at the final review" (hover hint and closing state, per-application strategies, Windows reliable paste detail, `paste-error` replacement and macOS-only setting, paste method none, no focused element) are now "validated by Julien on 2026-10-15".
+- **Plan warnings and infos treated:** `PRESENTATION_HANG_LIMIT` (10 s) gives a surface that never answers a terminal `Unpresentable` (window destroyed, one `paste-error`, late render ignored), with a test; Step 7 modifies `.github/workflows/test.yml` (four feature combinations on Linux, gate-open `cargo check` on Windows); the 008 names row says only `LiveSettingsEffects` was never shipped; the 300 ms latency is measured from the recovery decision in plan and contract; `OUTPUT_KEYS` has its own fixed length per gate state.
+- Review: the spec and plan reviews are stale until the round 8 independent review refreshes them.
