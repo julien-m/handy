@@ -5,6 +5,9 @@
 
 ---
 
+## 2026-10-15 — [Feature 011] Plan created: Dictation Field Return — 6 implementation steps, 4 diagrams (input read after 006's session commit, focus restored after activation, verified in 006's guard before 010's verdict)
+<!-- finalize:spec-plan:2026-10-15:67c12fe0 -->
+
 ## 2026-10-15 — [Feature 011] Spec created: Dictation Field Return — 4 stories, 8 AC, 5 FR (the dictation's input remembered at start, focused, raised and verified before the paste, fallback to 006/010)
 <!-- finalize:spec-specify:2026-10-15:5625200d -->
 
