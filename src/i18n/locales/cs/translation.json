@@ -511,6 +511,10 @@
         "unavailablePlatform": "V tomto systému není k dispozici. Text se na konci vloží do aplikace v popředí.",
         "details": "Handy si při zahájení diktování zapamatuje aplikaci v popředí a před vložením textu se do ní vrátí. Když je volba vypnutá, text se vloží do aplikace v popředí na konci diktování.",
         "detailsLabel": "O návratu do aplikace diktování"
+      },
+      "noFieldBubble": {
+        "title": "Zobrazit bublinu, když není aktivní žádné textové pole",
+        "description": "Ponechá text v bublině místo vložení do prázdna."
       }
     },
     "vocabulary": {
@@ -1265,16 +1269,6 @@
         "stale": "Cíl se mezitím změnil; seznam byl obnoven.",
         "frozen": "Vkládání už začalo; cíl už nelze změnit.",
         "unavailable": "Tato aplikace už není dostupná; seznam byl obnoven."
-      },
-      "notice": {
-        "appClosedKept": "{{app}} je zavřená. Nic nebylo vloženo; přepis zůstává v Historii.",
-        "appClosedNotKept": "{{app}} je zavřená. Nic nebylo vloženo a přepis se nepodařilo uložit do Historie.",
-        "activationFailedKept": "{{app}} se nedostala do popředí. Nic nebylo vloženo; přepis zůstává v Historii.",
-        "activationFailedNotKept": "{{app}} se nedostala do popředí. Nic nebylo vloženo a přepis se nepodařilo uložit do Historie.",
-        "insertionFailedKept": "{{app}} možná text nepřijala; přepis zůstává v Historii.",
-        "insertionFailedNotKept": "{{app}} možná text nepřijala a přepis se nepodařilo uložit do Historie.",
-        "pinnedAppNotRunningKept": "{{app}} je připnutá, ale není otevřená. Nic nebylo vloženo; přepis zůstává v Historii.",
-        "pinnedAppNotRunningNotKept": "{{app}} je připnutá, ale není otevřená. Nic nebylo vloženo a přepis se nepodařilo uložit do Historie."
       }
     },
     "prompt": {
@@ -1310,5 +1304,42 @@
   },
   "smartPaste": {
     "handOver": "Text byl vložen do schránky pro vzdálenou obrazovku"
+  },
+  "recoveryBubble": {
+    "label": "Přepis uchovaný aplikací Handy",
+    "previewLabel": "Přepis",
+    "reason": {
+      "appClosed": "{{app}} už není otevřená",
+      "appClosedUnnamed": "Aplikace už není otevřená",
+      "pinnedAppNotRunning": "{{app}} je připnutá, ale není otevřená",
+      "pinnedAppNotRunningUnnamed": "Připnutá aplikace není otevřená",
+      "activationFailed": "{{app}} se nepodařilo přenést do popředí",
+      "activationFailedUnnamed": "Aplikaci se nepodařilo přenést do popředí",
+      "insertionFailed": "Vložení se nezdařilo",
+      "noTextField": "Žádné textové pole není aktivní"
+    },
+    "explanation": {
+      "notInserted": "Handy nic nevložil a neodeslal žádný Enter.",
+      "mayHaveReached": "Část textu se možná dostala do aplikace.",
+      "nothingSent": "Do aplikace nebylo nic odesláno.",
+      "lateRead": "Aplikace přečetla schránku pozdě: text možná nakonec vložen byl. Zkontrolujte to, než budete kopírovat znovu.",
+      "historyKept": "Přepis zůstává uložený v Historii.",
+      "historyKeptFull": "Celý přepis zůstává uložený v Historii.",
+      "historyNotKept": "Přepis není v Historii.",
+      "openAppDrag": "Otevřete {{app}} a potom text přetáhněte nebo zkopírujte.",
+      "openAppCopy": "Otevřete {{app}} a potom text zkopírujte.",
+      "openUnnamedDrag": "Otevřete aplikaci a potom text přetáhněte nebo zkopírujte.",
+      "openUnnamedCopy": "Otevřete aplikaci a potom text zkopírujte.",
+      "focusFieldDrag": "Klikněte do textového pole a potom text přetáhněte nebo zkopírujte.",
+      "focusFieldCopy": "Klikněte do textového pole a potom text zkopírujte.",
+      "noFieldSetting": "Tuto kontrolu můžete vypnout v Nastavení, Pokročilé, Výstup."
+    },
+    "actions": {
+      "drag": "Přetáhnout do pole",
+      "copy": "Kopírovat",
+      "why": "Proč?",
+      "hideDetails": "Skrýt podrobnosti",
+      "close": "Zavřít"
+    }
   }
 }

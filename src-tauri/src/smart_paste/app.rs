@@ -7,7 +7,7 @@
 //! recovery bubble (the 010 hook). Events carry identifiers only, never the
 //! transcript.
 
-use std::sync::mpsc;
+use std::sync::mpsc::{self, RecvTimeoutError};
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -20,7 +20,9 @@ use super::dispatch::{
     InsertionRoute, SmartPasteMethod,
 };
 use super::exit_gate::{ExitDecision, ExitGate};
+use super::ids::Transcript;
 use super::outcome::{PasteDiagnostic, PasteOutcome};
+use super::pasteboard_port::PasteboardError;
 use super::request::DiagnosticSink;
 use super::setting_policy::Rollout;
 use crate::automatic_enter::policy::Completion;
@@ -79,7 +81,10 @@ pub fn install(app: &AppHandle) {
 
 #[cfg(target_os = "macos")]
 fn spawn_actor(app: &AppHandle, checks: Arc<DestinationChecks>) -> std::io::Result<ActorSlot> {
-    let diagnostics = Box::new(EventDiagnostics(app.clone()));
+    let diagnostics = Box::new(FanOutDiagnostics {
+        event: EventDiagnostics(app.clone()),
+        app: app.clone(),
+    });
     super::macos_ports::spawn_actor(checks, diagnostics).map(ActorSlot::new)
 }
 #[cfg(not(target_os = "macos"))]
@@ -208,6 +213,55 @@ fn submit_enter(app: &AppHandle, key: AutoSubmitKey) {
     });
     if let Err(error) = result {
         log::warn!("Smart paste inserted, but auto-submit failed: {error}");
+    }
+}
+
+/// Why 010's deliberate Copy through the actor did not complete.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum DeliberateCopyError {
+    /// The pasteboard refused the write.
+    Pasteboard(PasteboardError),
+    /// The actor stopped (or dropped the queued Copy at exit).
+    ActorStopped,
+    /// No answer within `shutdown_allowance(paste_delay)`; the write may still happen.
+    TimedOut,
+}
+
+// @spec AC-005: Copy through 007's actor when it runs — .specs/features/010-recovery-bubble/spec.md#ac-005
+/// 010's deliberate Copy through the actor, when smart paste runs it; `None` without the
+/// actor (the caller then uses `dev`'s clipboard write). Blocks the calling worker at most
+/// `shutdown_allowance(paste_delay)`, 007's bound on an insertion in progress.
+pub fn deliberate_copy(app: &AppHandle, text: &str) -> Option<Result<(), DeliberateCopyError>> {
+    let runtime = runtime(app)?;
+    let delay = Duration::from_millis(crate::settings::get_settings(app).paste_delay_ms);
+    let queued = runtime.slot.deliberate_copy(Transcript::new(text));
+    let Ok(reply) = queued else {
+        return Some(Err(DeliberateCopyError::ActorStopped));
+    };
+    Some(match reply.recv_timeout(shutdown_allowance(delay)) {
+        Ok(written) => written.map_err(DeliberateCopyError::Pasteboard),
+        Err(RecvTimeoutError::Timeout) => Err(DeliberateCopyError::TimedOut),
+        Err(RecvTimeoutError::Disconnected) => Err(DeliberateCopyError::ActorStopped),
+    })
+}
+
+/// A native listener of late reads, managed by 010 with the `destination-return` gate open.
+pub struct LateReadListener(pub Box<dyn Fn(&PasteDiagnostic) + Send + Sync>);
+
+/// The actor's single diagnostic sink: each diagnostic goes unchanged to the
+/// `smart-paste-late-read` event and to 010's native listener when one is installed.
+#[cfg(target_os = "macos")]
+struct FanOutDiagnostics {
+    event: EventDiagnostics,
+    app: AppHandle,
+}
+#[cfg(target_os = "macos")]
+impl DiagnosticSink for FanOutDiagnostics {
+    fn late_read(&mut self, diagnostic: PasteDiagnostic) {
+        self.event.late_read(diagnostic);
+        if let Some(listener) = self.app.try_state::<LateReadListener>() {
+            (listener.0)(&diagnostic);
+        }
     }
 }
 

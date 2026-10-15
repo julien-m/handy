@@ -21,10 +21,11 @@ use std::time::{Duration, Instant};
 use super::clock::Clock;
 use super::coordinator::{SmartPasteCoordinator, SmartPastePorts};
 use super::direct::TOTAL_DIRECT_BUDGET;
+use super::ids::Transcript;
 use super::key_events::CHORD_HOLD;
 use super::keyboard::{LAYOUT_RESTORE_DELAY, LAYOUT_SETTLE_DELAY};
 use super::outcome::PasteOutcome;
-use super::pasteboard_port::{ReadEvent, ReadSink};
+use super::pasteboard_port::{PasteboardError, ReadEvent, ReadSink};
 use super::request::{InsertionRequest, ReadEvents};
 use super::snapshot::SNAPSHOT_DEADLINE;
 use super::timing::JUMP_NO_READ_DECISION;
@@ -61,6 +62,8 @@ pub fn shutdown_allowance(paste_delay: Duration) -> Duration {
 enum ActorMessage {
     Insert(Box<InsertionRequest>, Sender<PasteOutcome>),
     Read(ReadEvent),
+    /// 010's deliberate Copy, serialized with insertions, reads, restoration and timers.
+    DeliberateCopy(Transcript, Sender<Result<(), PasteboardError>>),
     Shutdown(Sender<()>),
 }
 
@@ -130,6 +133,25 @@ impl SmartPasteActor {
             .send(ActorMessage::Insert(Box::new(request), reply))
             .map_err(|_| ActorStopped)?;
         Ok(outcome)
+    }
+
+    // @spec AC-005: Deliberate Copy dominates restoration — .specs/features/010-recovery-bubble/spec.md#ac-005
+    /// Queues 010's deliberate Copy of `transcript` as unmarked plain text, behind an
+    /// insertion in progress. A successful write changes the `changeCount`, so a pending
+    /// restoration abandons through its own guard. The result arrives on the receiver; a
+    /// Copy still queued at shutdown is dropped and its receiver disconnects.
+    ///
+    /// # Errors
+    /// [`ActorStopped`] once the actor has shut down.
+    pub fn deliberate_copy(
+        &self,
+        transcript: Transcript,
+    ) -> Result<Receiver<Result<(), PasteboardError>>, ActorStopped> {
+        let (reply, written) = mpsc::channel();
+        self.sender
+            .send(ActorMessage::DeliberateCopy(transcript, reply))
+            .map_err(|_| ActorStopped)?;
+        Ok(written)
     }
 
     /// Settles the pending transaction for a normal exit and stops the
@@ -303,6 +325,10 @@ fn run(ports: SmartPastePorts, receiver: Receiver<ActorMessage>) {
                 let _ = reply.send(outcome);
             }
             Next::Message(ActorMessage::Read(event)) => coordinator.handle_read(event),
+            Next::Message(ActorMessage::DeliberateCopy(transcript, reply)) => {
+                // The requester may have given up waiting; the write stands.
+                let _ = reply.send(coordinator.deliberate_copy(&transcript));
+            }
             Next::Message(ActorMessage::Shutdown(reply)) => {
                 coordinator.shutdown();
                 let _ = reply.send(());

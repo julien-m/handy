@@ -70,7 +70,7 @@ const RecordingOverlay: React.FC = () => {
   const capRef = useRef<HTMLDivElement>(null);
   const pinnedRef = useRef(true);
   const direction = getLanguageDirection(i18n.language);
-  // Prompt (005), destination (006) and notices (005, 006, 007) around the Handy pill.
+  // Prompt (005), destination (006) and notices (005, 007) around the Handy pill.
   const extras = useIndicatorExtras({
     isVisible,
     state,

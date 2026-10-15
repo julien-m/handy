@@ -46,7 +46,7 @@ pub mod lifecycle;
 #[cfg(target_os = "macos")]
 pub mod macos_ax;
 #[cfg(target_os = "macos")]
-mod macos_cf;
+pub(crate) mod macos_cf;
 #[cfg(target_os = "macos")]
 pub mod macos_keyboard;
 #[cfg(target_os = "macos")]

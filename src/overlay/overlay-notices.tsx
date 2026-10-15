@@ -1,5 +1,4 @@
-// Notices of the recording indicator: AI failure (005), destination reason (006) and Screen
-// Sharing hand-over (007). Static cards without controls, announced to assistive technology.
+// Notices of the recording indicator: AI failure (005) and Screen Sharing hand-over (007). Static cards without controls, announced to assistive technology.
 import { AlertTriangle, Info } from "lucide-react";
 import type React from "react";
 import { useTranslation } from "react-i18next";

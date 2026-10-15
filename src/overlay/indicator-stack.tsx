@@ -203,7 +203,7 @@ interface ExtrasInput {
 }
 
 /**
- * Prompt (005), destination (006) and notice (005, 006, 007) state of the overlay, packed as
+ * Prompt (005), destination (006) and notice (005, 007) state of the overlay, packed as
  * the props of [`IndicatorStack`] (all but `form` and `children`).
  */
 export const useIndicatorExtras = (input: ExtrasInput) => {
@@ -213,7 +213,7 @@ export const useIndicatorExtras = (input: ExtrasInput) => {
     (state === "recording" || (state === "streaming" && phase !== "working"));
   const destination = useDestination(isVisible);
   const prompt = useDictationPrompt(isVisible, recording);
-  const notices = useOverlayNotices(destination.latest);
+  const notices = useOverlayNotices();
   const osType = useOsType();
   const dictation = useDictationCount();
   const stack = {

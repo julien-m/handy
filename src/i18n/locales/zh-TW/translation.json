@@ -511,6 +511,10 @@
         "unavailablePlatform": "此系統上無法使用。文字會在結束時進入位於前景的 App。",
         "details": "Handy 會在聽寫開始時記住前景 App，並在插入文字前切換回該 App。關閉時，文字會進入聽寫結束時位於前景的 App。",
         "detailsLabel": "關於返回聽寫所在的 App"
+      },
+      "noFieldBubble": {
+        "title": "沒有聚焦的文字欄位時顯示泡泡",
+        "description": "將文字保留在泡泡中，而不是貼到空處。"
       }
     },
     "vocabulary": {
@@ -1265,16 +1269,6 @@
         "stale": "目標在這段期間已變更；列表已重新整理。",
         "frozen": "插入已開始；目標無法再變更。",
         "unavailable": "此 App 已無法使用；列表已重新整理。"
-      },
-      "notice": {
-        "appClosedKept": "{{app}} 已關閉。未插入任何內容；轉錄文字保留在歷史紀錄中。",
-        "appClosedNotKept": "{{app}} 已關閉。未插入任何內容，且轉錄文字無法儲存到歷史紀錄。",
-        "activationFailedKept": "{{app}} 未切換到最前方。未插入任何內容；轉錄文字保留在歷史紀錄中。",
-        "activationFailedNotKept": "{{app}} 未切換到最前方。未插入任何內容，且轉錄文字無法儲存到歷史紀錄。",
-        "insertionFailedKept": "{{app}} 可能未收到文字；轉錄文字保留在歷史紀錄中。",
-        "insertionFailedNotKept": "{{app}} 可能未收到文字，且轉錄文字無法儲存到歷史紀錄。",
-        "pinnedAppNotRunningKept": "{{app}} 已釘選但未開啟。未插入任何內容；轉錄文字保留在歷史紀錄中。",
-        "pinnedAppNotRunningNotKept": "{{app}} 已釘選但未開啟。未插入任何內容，且轉錄文字無法儲存到歷史紀錄。"
       }
     },
     "prompt": {
@@ -1310,5 +1304,42 @@
   },
   "smartPaste": {
     "handOver": "已將文字放入剪貼簿，供遠端螢幕使用"
+  },
+  "recoveryBubble": {
+    "label": "Handy 保留的聽寫文字",
+    "previewLabel": "聽寫文字",
+    "reason": {
+      "appClosed": "{{app}} 已不再開啟",
+      "appClosedUnnamed": "該 App 已不再開啟",
+      "pinnedAppNotRunning": "{{app}} 已釘選但未開啟",
+      "pinnedAppNotRunningUnnamed": "已釘選的 App 未開啟",
+      "activationFailed": "無法將 {{app}} 移到最前面",
+      "activationFailedUnnamed": "無法將該 App 移到最前面",
+      "insertionFailed": "插入失敗",
+      "noTextField": "沒有聚焦的文字欄位"
+    },
+    "explanation": {
+      "notInserted": "Handy 沒有插入任何內容，也沒有送出 Enter。",
+      "mayHaveReached": "部分文字可能已傳到該 App。",
+      "nothingSent": "沒有傳送任何內容給該 App。",
+      "lateRead": "該 App 較晚讀取了剪貼簿：文字可能最後還是被貼上了。再次拷貝前請先確認。",
+      "historyKept": "聽寫文字保留在歷史記錄中。",
+      "historyKeptFull": "完整的聽寫文字保留在歷史記錄中。",
+      "historyNotKept": "聽寫文字不在歷史記錄中。",
+      "openAppDrag": "開啟 {{app}}，然後拖移或拷貝文字。",
+      "openAppCopy": "開啟 {{app}}，然後拷貝文字。",
+      "openUnnamedDrag": "開啟該 App，然後拖移或拷貝文字。",
+      "openUnnamedCopy": "開啟該 App，然後拷貝文字。",
+      "focusFieldDrag": "點一下文字欄位，然後拖移或拷貝文字。",
+      "focusFieldCopy": "點一下文字欄位，然後拷貝文字。",
+      "noFieldSetting": "你可以在「設定 > 進階 > 輸出」中關閉此檢查。"
+    },
+    "actions": {
+      "drag": "拖移到欄位",
+      "copy": "拷貝",
+      "why": "為什麼？",
+      "hideDetails": "隱藏詳細資訊",
+      "close": "關閉"
+    }
   }
 }

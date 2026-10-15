@@ -1,6 +1,6 @@
 /**
  * Rules of the recording indicator additions: destination badge and menu (006), prompt pill
- * and menu (005), notices (005, 006, 007) and the window extent. Run with
+ * and menu (005), notices (005, 007) and the window extent. Run with
  * `bun run test:indicator`.
  */
 import { describe, expect, test } from "bun:test";
@@ -22,18 +22,15 @@ import {
   newerSnapshot,
   refusalKey,
   safeIconSource,
-  selectionName,
 } from "./destination-model";
 import {
   addNotice,
   aiFailureNotice,
-  destinationNotice,
   handOverNotice,
   holdRemaining,
   liveNotices,
   nextExpiry,
   NOTICE_MIN_MS,
-  parseOutcome,
 } from "./notice-model";
 import {
   compactShortcut,
@@ -168,13 +165,6 @@ describe("destination menu (006 AC-004)", () => {
       "unavailable",
     ]);
   });
-  test("notice names come from the snapshot of the same dictation", () => {
-    expect(selectionName(snapshot(), 7)).toBe("ChatGPT");
-    expect(selectionName(snapshot(), 8)).toBeNull();
-    expect(
-      selectionName(snapshot({ selection: { kind: "frontmost_at_end" } }), 7),
-    ).toBeNull();
-  });
   test("icons render only inline images, else a monogram", () => {
     expect(safeIconSource("data:image/png;base64,AA")).toBe(
       "data:image/png;base64,AA",
@@ -283,64 +273,13 @@ const failure: PromptProcessingFailed = {
   notice_ms: 1000,
 };
 
-describe("indicator notices (005 AC-005, 006 AC-005, 007 AC-012)", () => {
+describe("indicator notices (005 AC-005, 007 AC-012)", () => {
   test("the AI notice lasts at least 4 s and never claims a successful insertion", () => {
     const notice = aiFailureNotice(failure, 100);
     expect(notice.until).toBe(100 + NOTICE_MIN_MS);
     expect(notice.testId).toBe("recording-indicator-ai-failed-notice");
     expect(en.overlay.fallbackNotice).toContain("failed");
     expect(en.overlay.fallbackNotice).not.toMatch(/success|succeeded/i);
-  });
-  test("outcome payloads are validated before use", () => {
-    expect(parseOutcome(null)).toBeNull();
-    expect(parseOutcome({ status: "failed" })).toBeNull();
-    expect(
-      parseOutcome({
-        dictation_id: 7,
-        status: "failed",
-        reason: "app_closed",
-        history_status: "saved",
-      }),
-    ).toEqual({
-      dictationId: 7,
-      failed: true,
-      reason: "app_closed",
-      historySaved: true,
-    });
-    expect(
-      parseOutcome({ dictation_id: 7, reason: "other" })?.reason,
-    ).toBeNull();
-  });
-  test("each destination reason says whether the transcript is in History", () => {
-    for (const reason of [
-      "app_closed",
-      "activation_failed",
-      "insertion_failed",
-    ] as const) {
-      for (const historySaved of [true, false]) {
-        const facts = { dictationId: 7, failed: true, reason, historySaved };
-        const notice = destinationNotice(facts, "Notes", 0);
-        const key =
-          notice?.key.replace("overlay.destination.notice.", "") ?? "";
-        const text = (en.overlay.destination.notice as Record<string, string>)[
-          key
-        ];
-        expect(text).toContain("{{app}}");
-        expect(text).toContain(
-          historySaved ? "kept in History" : "could not be saved",
-        );
-        expect(notice?.until).toBe(NOTICE_MIN_MS);
-      }
-    }
-  });
-  test("attempted or cancelled insertions raise no destination notice", () => {
-    const attempted = {
-      dictationId: 7,
-      failed: false,
-      reason: null,
-      historySaved: true,
-    };
-    expect(destinationNotice(attempted, "Notes", 0)).toBeNull();
   });
   test("a newer notice of the same kind replaces the older one; expired ones drop", () => {
     const first = addNotice([], aiFailureNotice(failure, 0), 0);

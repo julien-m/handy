@@ -2,7 +2,7 @@
 feature: recovery-bubble
 title: Recovery Bubble
 priority: P1
-status: Planned
+status: In Progress
 created: 2026-10-12
 updated: 2026-10-15
 ---
@@ -14,7 +14,7 @@ updated: 2026-10-15
 - **Feature:** Recovery Bubble
 - **Branch:** None — specification only (program specified before `spec-ship`)
 - **Date:** 2026-10-12
-- **Status:** Planned
+- **Status:** In Progress
 - **Input:** Program item 10: if the destination is unavailable, uncertain or has no editable field, keep the text and show a small bubble in place of the live indicator. It lets the user drag the transcript into a field, copy it, close the panel and understand why it appears. The Spokenly analysis shows a native AppKit mechanism: text payload in an `NSPasteboardItem`, preview image in an `NSDraggingItem`, then a drag session in copy mode; the source window is hidden during the drag and a refused drop shows it again for another attempt. Spokenly may show this panel before attempting a paste. An accepted drop does not by itself prove the final field content. Its 60-second timeout is a statically observed behavior, not a duration decided for Handy. The independent AppKit example was only typechecked, not tested in real fields. Program item 8 requires the settings CLI to read and modify output behaviors.
 - **Feature Number:** 010
 

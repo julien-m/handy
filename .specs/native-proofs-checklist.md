@@ -447,6 +447,59 @@ Preuves natives en attente avec Julien : aucune n'est déclarée réussie. Harna
   - Attendu : réponses `{pinned: …}` ; même effet que le badge sur la dictée en cours ; `not_found`/4 sans changement.
   - Couvre : AC-006. Preuve : `proofs/native-macos/cli/`.
 
+### 010 — Bulle de récupération (`handy-gates-open.app`, et `handy-gates-closed.app` pour le verrou fermé)
+
+Preuves natives en attente avec Julien : aucune n'est déclarée réussie. Harnais : `bun scripts/recovery-native-proof.ts --binary <absolu>/handy-gates-open.app/Contents/MacOS/handy --platform macos --out .specs/features/010-recovery-bubble/proofs/native-macos/ --interactive` (il lance `tests/recovery_native.rs` en lecture seule — classification de l'app au premier plan sur 30 échantillons et lecture du premier plan de la 006 inchangée —, puis enregistre les observations tapées ; il n'affiche aucune bulle, n'active aucune app, n'envoie aucune touche et ne touche pas au presse-papiers). Activer le log debug pour les temps (`Recovery bubble N presented … after the recovery decision`, `Focused element classified …`). Phrase de test sûre, champs de test vides ; aucun message réel ne doit partir.
+
+- [ ] **Verrou fermé** (`handy-gates-closed.app`).
+  - Étapes : quitter TextEdit pendant une dictée commencée dedans ; `handy settings output get show_recovery_bubble_without_text_field --json` ; ouvrir les réglages de sortie.
+  - Attendu : le toast `paste-error` comme sur dev, aucune bulle ; `not_found`/4 ; aucun réglage « Show the bubble… ».
+  - Couvre : verrou fermé identique à dev (Clarifications). Preuve : `proofs/native-macos-gate-closed/`.
+- [ ] **Spike de surface : premier clic sans activation (étape 1).**
+  - Étapes : TextEdit au premier plan avec un document actif ; provoquer une bulle (Notes quittée pendant la dictée) ; cliquer une fois Copy, Close et Why? ; noter le PID au premier plan et la fenêtre clé avant/après (`lsappinfo front`, Accessibility Inspector).
+  - Attendu : chaque contrôle agit au premier clic ; TextEdit reste au premier plan avec sa fenêtre clé ; la bulle apparaît à la place de l'indicateur, y compris avec le style `none`.
+  - Couvre : AC-003, FR-002. Preuve : `proofs/native-macos/surface/`.
+- [ ] **Classification du champ (étape 1, matrice de calibration).**
+  - Étapes : réglage activé, permission Accessibilité accordée ; dicter vers : liste d'une fenêtre Finder, bureau Finder, page Safari sans champ focalisé, document TextEdit, note Notes, champ de recherche, contrôle personnalisé inconnu ; puis, avec un champ focalisé, Comet, Chrome, ChatGPT (app), Slack et VS Code (éditeur et barre de recherche), chacun aussi juste après son lancement (arbre d'accessibilité Chromium/Electron pas encore activé) ; puis Spotlight ouvert au-dessus de Finder, puis au-dessus de TextEdit ; lancer `recovery_native` (30 échantillons).
+  - Attendu : bulle « No text field is focused » seulement sur preuve positive (rôle non textuel connu — liste, bouton, image… — dont les attributs d'édition sont lus et non réglables) ; insertion pour un champ éditable, un rôle inconnu ou conteneur (`AXWebArea`, `AXWindow`, `AXGroup`, `AXApplication`, `AXScrollArea`), un attribut illisible, un champ sécurisé ou un focus d'un autre processus ; **jamais de bulle à tort dans Comet, Chrome, ChatGPT, Slack et VS Code** ; Spotlight (limite acceptée le 2026-10-15) : résultat noté ; aucun échantillon au-dessus de 60 ms, pas de gel d'UI ; lecture du premier plan de la 006 inchangée.
+  - Couvre : AC-002, FR-001. Si le critère des 60 ms échoue, la détection de champ n'est pas livrée (verdict `Insert`) et la feature ne passe pas Implemented sans décision de Julien. Preuve : `proofs/native-macos/classification/`.
+- [ ] **Raisons avant insertion et Entrée.**
+  - Étapes : Entrée automatique `always` ; Notes quittée pendant la dictée ; Notes épinglée puis quittée ; Notes non ramenée au premier plan (plein écran sur un autre Space) ; Finder sans champ.
+  - Attendu : « Notes is no longer open », « Notes is pinned but not open », « Could not bring Notes forward », « No text field is focused » ; rien n'est inséré ; aucune Entrée ; aucun toast `paste-error` ; « Why? » dit « Handy didn't insert anything and sent no Enter. », l'Historique selon la sauvegarde, et le conseil.
+  - Couvre : AC-001, AC-003, SC-003. Preuve : `proofs/native-macos/reasons/`.
+- [ ] **Échecs de méthode et smart paste.**
+  - Étapes : smart paste sans lecture (« not read », ex. un champ qui ignore Cmd+V) ; puis une lecture tardive ; permission Accessibilité retirée (`permission_missing`) ; méthode classique en échec.
+  - Attendu : « Insertion failed » ; détail « Some text may have reached the application » (not read, uncertain, échec de méthode) ; « Nothing was sent to the application » (permission absente) ; après la lecture tardive, la même bulle affiche « may have been pasted after all » dans son texte principal, sans ouvrir « Why? », et VoiceOver l'annonce ; aucune Entrée.
+  - Couvre : AC-001. Preuve : `proofs/native-macos/method-failures/`.
+- [ ] **Avis de l'indicateur conservés.**
+  - Étapes : un prompt IA qui échoue (clé invalide) puis une insertion qui échoue (app quittée) ; Screen Sharing en remise de presse-papiers puis une bulle ; refaire avec l'indicateur en haut puis en bas de l'écran.
+  - Attendu : l'avis IA (005) reste au moins 4 s et l'avis de remise (007) toute sa durée, même quand la bulle apparaît dans sa propre fenêtre ; l'avis et la bulle sont lisibles tous les deux : la bulle est au-dessus de l'avis (indicateur en bas) ou au-dessous (indicateur en haut), 8 pt plus loin, sans chevauchement et sans sortir de l'écran ; elle ne bouge plus à la fin de l'avis.
+  - Couvre : 005 AC-005, 007 AC-012, 010 FR-002. Preuve : `proofs/native-macos/notices/`.
+- [ ] **Glisser-déposer natif (étape 6, SC-002).**
+  - Étapes : glisser la bulle vers TextEdit, Notes, ChatGPT (champ vide) et Comet (champ de recherche) ; puis relâcher sur le bureau, et appuyer sur Échap pendant un glisser ; essayer avec Option et Cmd enfoncés ; démarrer une dictée pendant un glisser.
+  - Attendu : la transcription complète dans TextEdit et Notes (obligatoire), résultat noté pour ChatGPT et Comet ; la bulle est cachée pendant le glisser, revient inchangée après un refus ou Échap, se ferme après un dépôt accepté (log « drop accepted » sans texte) ; toujours une copie, quels que soient les modificateurs ; le presse-papiers général est inchangé ; une nouvelle dictée ferme la bulle pour de bon et le dépôt tardif ne la rouvre pas ; avec « espace final » actif, le texte déposé et celui de Copy finissent par l'espace comme une insertion, l'aperçu non.
+  - Couvre : AC-004, FR-003, SC-002. Preuve : `proofs/native-macos/drag/`.
+- [ ] **Copy contre la restauration du smart paste.**
+  - Étapes : dictée A insérée par smart paste avec une restauration en attente ; dictée B qui ouvre une bulle ; Copy pendant la période calme ; attendre 9 s.
+  - Attendu : la transcription de B reste dans le presse-papiers ; la bulle se ferme ; aucune restauration ne l'écrase.
+  - Couvre : AC-005. Preuve : `proofs/native-macos/copy/`.
+- [ ] **Durée de vie.**
+  - Étapes : laisser une bulle 60 s, verrouiller puis déverrouiller l'écran ; Close ; nouvelle dictée sur une bulle affichée depuis 1 s ; nouvelle dictée dont l'enregistrement échoue (micro débranché ou refusé).
+  - Attendu : la bulle reste jusqu'à une action ; Close la ferme sans toucher l'Historique ; la nouvelle dictée la ferme dès que l'enregistrement démarre et l'indicateur apparaît ; si l'enregistrement ne démarre pas, la bulle reste avec son texte.
+  - Couvre : AC-005. Preuve : `proofs/native-macos/lifetime/`.
+- [ ] **VoiceOver et clavier.**
+  - Étapes : VoiceOver sur la bulle (sans lui donner le focus clavier) ; réglages de sortie : Tab jusqu'à « Show the bubble when no text field is focused », Espace.
+  - Attendu : noms « Close », « Drag into a field », « Copy », « Why? » et la raison ; chaque contrôle s'active au curseur VoiceOver ; le réglage bascule et est annoncé.
+  - Couvre : AC-003, Behavioral AC, AC-007. Preuve : `proofs/native-macos-ui/`.
+- [ ] **Temps de présentation (cible QE de 300 ms).**
+  - Étapes : relever dans le log debug chaque échantillon décision → bulle visible (froid : première bulle après lancement ; chaud : les suivantes).
+  - Attendu : tous les échantillons notés ; ceux au-dessus de 300 ms sont un constat QE à remonter, jamais un échec de la bulle.
+  - Couvre : QE (spec). Preuve : `proofs/native-macos/latency/`.
+- [ ] **CLI avec Handy lancé.**
+  - Étapes : `handy settings output set show_recovery_bubble_without_text_field false --json`, puis Finder sans champ ; `get --json`.
+  - Attendu : enveloppe JSON seule ; la dictée suivante s'insère (pas de bulle) ; parité avec le réglage affiché.
+  - Couvre : AC-007. Preuve : `proofs/native-macos/cli/`.
+
 ### UI en vraie fenêtre (transverse)
 
 - [ ] **Indicateur** (`handy-gates-open.app`).
@@ -504,6 +557,12 @@ Preuves natives en attente avec Julien : aucune n'est déclarée réussie. Harna
   - Linux (build verrou ouvert) : `handy settings destination status --json` renvoie `validation_failed`/2 `unsupported_platform` ; Always et Never insèrent comme aujourd'hui ; `pin_only` n'envoie aucune Entrée ;
   - ancien binaire : un Handy antérieur avec `auto_submit` vrai, puis un premier lancement de la build ouverte : `handy settings output get automatic_enter --json` vaut `always` et `auto_submit_key` est gardé ; l'ancien binaire relancé garde son comportement ;
   - `cargo check` Windows et Linux en CI (le code `paste_tx/windows.rs` de la 009 n'est compilé que sur Windows).
+- [ ] **010 :**
+  - la bulle ne coupe plus les avis 005 et 007 et se place à côté de la fenêtre de l'indicateur tant qu'un avis la tient (revue de livraison, tour 2) : position calculée et testée hors natif (`overlay_surface::stack_beside`), lisibilité des deux fenêtres à prouver en natif (item « Avis de l'indicateur conservés ») ;
+  - en mode « copy to clipboard », 007 n'émet pas de lecture tardive : la bulle garde le texte « not read » simple (limite 007 à décider par son propriétaire) ;
+  - classification (revue de livraison, 2026-10-15) : « non éditable » seulement sur preuve positive ; tout attribut illisible et les conteneurs `AXWebArea`, `AXWindow`, `AXGroup`, `AXApplication`, `AXScrollArea` sont indéterminés ; à revoir après la matrice de calibration ;
+  - la poignée de glisser est un bouton sans action au clavier ni pour VoiceOver (Copy reste l'alternative) ; le glisser part de l'événement souris courant d'AppKit, à prouver avec un geste court (revue de livraison) ;
+  - les commandes de la bulle sont enregistrées dans les deux états du verrou (un seul `bindings.ts`) et inertes sans le service.
 - [ ] **008 :**
   - store illisible : lecture seule à chaque lancement, onboarding répété, aucune voie de sortie documentée ;
   - plancher Windows supporté (Windows 10 ?) ;
@@ -539,7 +598,7 @@ Fermé, une dictée s'insère comme sur dev : pas de capture, pas d'activation, 
   - ligne FR-003 « UI not implemented » périmée dans `implementation.md` de la 006 ;
   - test « verrous fermés » comparé à dev ;
   - `cargo check` Windows et Linux en CI.
-- [ ] 009 et 010 implémentées et prouvées (elles dépendent de ce verrou).
+- [ ] 009 et 010 implémentées et prouvées (elles dépendent de ce verrou) ; pour la 010 : preuves macOS du §2, contrat Penflow certifié pour `recovery-bubble` et `output-settings`, et réalignement des documents 006 et 007 (`/spec-refine 006-destination-application plan`, `/spec-refine 007-smart-paste plan`) sur les deltas listés dans `implementation.md` de la 010.
 - [ ] Changement séparé : activer la feature par défaut (ou retirer le verrou et `rollout.rs`), relancer toute la suite, puis noter dans le changelog que `return_to_dictation_app` passe à `true` sur macOS et Windows.
 
 ### `smart-paste-dispatch` (007)
@@ -594,6 +653,10 @@ Fermé : smart paste n'est ni proposé ni migré, et la dictée est inchangée. 
   - Linux : la ligne indisponible avec sa raison, et `handy settings output set return_to_dictation_app true --json` qui renvoie `validation_failed`/2 `unsupported_platform` ;
   - ancien binaire : `DatabaseTooFarAhead`.
 - [ ] **007 :** reliable paste de Windows et méthodes Linux inchangés ; `handy settings output set paste_method smart_paste --json` refusé (exit 2) et smart paste absent du sélecteur, dans les deux états du verrou.
+- [ ] **010 :**
+  - Windows : `bun scripts/recovery-native-proof.ts --binary <absolute-windows-release-binary> --platform windows --out <proof-directory> --interactive` : bulle réduite (Copy, Close, Why?, sans glisser) pour app fermée, activation non confirmée et échec de méthode ; premier clic sans voler le focus ; Narrator ; `cargo test --manifest-path src-tauri/Cargo.toml --features destination-return` ;
+  - Linux : `bun scripts/recovery-native-proof.ts --binary <absolute-linux-release-binary> --platform linux --out <proof-directory> --interactive` : bulle seulement pour un échec de méthode, sous X11, Wayland et avec `HANDY_NO_GTK_LAYER_SHELL=1` ; Orca ; style `none` ; `handy settings output set show_recovery_bubble_without_text_field true --json` refusé `validation_failed`/2 `unsupported_platform` et la lecture vaut `false` ;
+  - CI : le job `windows-check` (`cargo check --all-targets --features destination-return`) et la matrice Linux des quatre combinaisons de `test.yml` doivent passer (le code Linux de la fenêtre n'est compilé qu'en CI).
 - [ ] **008 :**
   - Windows 10 et 11 24H2 : pas de console au lancement ; dans cmd et PowerShell, sorties, redirections et codes 0, 2 ou 5 (`start /wait`, `Start-Process -Wait -PassThru`) ; pipe bloqué fermé après 5 s ; écriture hors ligne ; `FreeConsole` non fatal en release ; logs debug ; squat du pipe par un autre compte ; `SECURITY_SQOS_PRESENT` ;
   - Linux : socket privé et D-Bus sous X11 et Wayland ; `handy settings set paste_method direct --json` hors ligne, exit 0 ; refus `unavailable`/5 avec un Handy 008 dans une autre session ;

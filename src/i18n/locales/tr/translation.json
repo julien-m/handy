@@ -511,6 +511,10 @@
         "unavailablePlatform": "Bu sistemde kullanılamıyor. Metin sonunda öndeki uygulamaya gider.",
         "details": "Handy, dikte başladığında öndeki uygulamayı hatırlar ve metni eklemeden önce ona geri döner. Kapalıyken metin, dikte bittiğinde öndeki uygulamaya gider.",
         "detailsLabel": "Dikte uygulamasına dönme hakkında"
+      },
+      "noFieldBubble": {
+        "title": "Odaklanmış metin alanı yokken baloncuğu göster",
+        "description": "Metni boşluğa yapıştırmak yerine bir baloncukta tutar."
       }
     },
     "vocabulary": {
@@ -1265,16 +1269,6 @@
         "stale": "Hedef bu arada değişti; liste yenilendi.",
         "frozen": "Ekleme başladı; hedef artık değiştirilemez.",
         "unavailable": "Bu uygulama artık kullanılamıyor; liste yenilendi."
-      },
-      "notice": {
-        "appClosedKept": "{{app}} kapalı. Hiçbir şey eklenmedi; transkript Geçmiş'te tutuluyor.",
-        "appClosedNotKept": "{{app}} kapalı. Hiçbir şey eklenmedi ve transkript Geçmiş'e kaydedilemedi.",
-        "activationFailedKept": "{{app}} öne gelmedi. Hiçbir şey eklenmedi; transkript Geçmiş'te tutuluyor.",
-        "activationFailedNotKept": "{{app}} öne gelmedi. Hiçbir şey eklenmedi ve transkript Geçmiş'e kaydedilemedi.",
-        "insertionFailedKept": "{{app}} metni almamış olabilir; transkript Geçmiş'te tutuluyor.",
-        "insertionFailedNotKept": "{{app}} metni almamış olabilir ve transkript Geçmiş'e kaydedilemedi.",
-        "pinnedAppNotRunningKept": "{{app}} sabitlendi ancak açık değil. Hiçbir şey eklenmedi; transkript Geçmiş'te tutuluyor.",
-        "pinnedAppNotRunningNotKept": "{{app}} sabitlendi ancak açık değil. Hiçbir şey eklenmedi ve transkript Geçmiş'e kaydedilemedi."
       }
     },
     "prompt": {
@@ -1310,5 +1304,42 @@
   },
   "smartPaste": {
     "handOver": "Metin uzak ekran için panoya yerleştirildi"
+  },
+  "recoveryBubble": {
+    "label": "Handy tarafından saklanan transkript",
+    "previewLabel": "Transkript",
+    "reason": {
+      "appClosed": "{{app}} artık açık değil",
+      "appClosedUnnamed": "Uygulama artık açık değil",
+      "pinnedAppNotRunning": "{{app}} sabitlendi ama açık değil",
+      "pinnedAppNotRunningUnnamed": "Sabitlenen uygulama açık değil",
+      "activationFailed": "{{app}} öne getirilemedi",
+      "activationFailedUnnamed": "Uygulama öne getirilemedi",
+      "insertionFailed": "Ekleme başarısız oldu",
+      "noTextField": "Odaklanmış metin alanı yok"
+    },
+    "explanation": {
+      "notInserted": "Handy hiçbir şey eklemedi ve Enter göndermedi.",
+      "mayHaveReached": "Metnin bir kısmı uygulamaya ulaşmış olabilir.",
+      "nothingSent": "Uygulamaya hiçbir şey gönderilmedi.",
+      "lateRead": "Uygulama panoyu geç okudu: metin yine de yapıştırılmış olabilir. Yeniden kopyalamadan önce kontrol edin.",
+      "historyKept": "Transkript Geçmiş'te saklanıyor.",
+      "historyKeptFull": "Transkriptin tamamı Geçmiş'te saklanıyor.",
+      "historyNotKept": "Transkript Geçmiş'te değil.",
+      "openAppDrag": "{{app}} uygulamasını açın, ardından metni sürükleyin veya kopyalayın.",
+      "openAppCopy": "{{app}} uygulamasını açın, ardından metni kopyalayın.",
+      "openUnnamedDrag": "Uygulamayı açın, ardından metni sürükleyin veya kopyalayın.",
+      "openUnnamedCopy": "Uygulamayı açın, ardından metni kopyalayın.",
+      "focusFieldDrag": "Bir metin alanına tıklayın, ardından metni sürükleyin veya kopyalayın.",
+      "focusFieldCopy": "Bir metin alanına tıklayın, ardından metni kopyalayın.",
+      "noFieldSetting": "Bu denetimi Ayarlar, Gelişmiş, Çıktı bölümünden kapatabilirsiniz."
+    },
+    "actions": {
+      "drag": "Bir alana sürükle",
+      "copy": "Kopyala",
+      "why": "Neden?",
+      "hideDetails": "Ayrıntıları gizle",
+      "close": "Kapat"
+    }
   }
 }

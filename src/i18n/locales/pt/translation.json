@@ -511,6 +511,10 @@
         "unavailablePlatform": "Indisponível neste sistema. O texto vai para o app em primeiro plano no final.",
         "details": "O Handy lembra o app em primeiro plano quando um ditado começa e volta a ele antes de inserir o texto. Desativado, o texto vai para o app em primeiro plano quando o ditado termina.",
         "detailsLabel": "Sobre voltar ao aplicativo do ditado"
+      },
+      "noFieldBubble": {
+        "title": "Mostrar a bolha quando nenhum campo de texto estiver em foco",
+        "description": "Mantém o texto em uma bolha em vez de colá-lo no vazio."
       }
     },
     "vocabulary": {
@@ -1265,16 +1269,6 @@
         "stale": "O destino mudou entretanto; a lista foi atualizada.",
         "frozen": "A inserção já começou; o destino já não pode mudar.",
         "unavailable": "Esta app já não está disponível; a lista foi atualizada."
-      },
-      "notice": {
-        "appClosedKept": "{{app}} está fechada. Nada foi inserido; a transcrição fica guardada no Histórico.",
-        "appClosedNotKept": "{{app}} está fechada. Nada foi inserido e não foi possível guardar a transcrição no Histórico.",
-        "activationFailedKept": "{{app}} não passou para primeiro plano. Nada foi inserido; a transcrição fica guardada no Histórico.",
-        "activationFailedNotKept": "{{app}} não passou para primeiro plano. Nada foi inserido e não foi possível guardar a transcrição no Histórico.",
-        "insertionFailedKept": "{{app}} pode não ter recebido o texto; a transcrição fica guardada no Histórico.",
-        "insertionFailedNotKept": "{{app}} pode não ter recebido o texto e não foi possível guardar a transcrição no Histórico.",
-        "pinnedAppNotRunningKept": "{{app}} está fixada mas não aberta. Nada foi inserido; a transcrição fica guardada no Histórico.",
-        "pinnedAppNotRunningNotKept": "{{app}} está fixada mas não aberta. Nada foi inserido e não foi possível guardar a transcrição no Histórico."
       }
     },
     "prompt": {
@@ -1310,5 +1304,42 @@
   },
   "smartPaste": {
     "handOver": "Texto colocado na área de transferência para o ecrã remoto"
+  },
+  "recoveryBubble": {
+    "label": "Transcrição guardada pelo Handy",
+    "previewLabel": "Transcrição",
+    "reason": {
+      "appClosed": "{{app}} já não está aberto",
+      "appClosedUnnamed": "O aplicativo já não está aberto",
+      "pinnedAppNotRunning": "{{app}} está fixado, mas não está aberto",
+      "pinnedAppNotRunningUnnamed": "O aplicativo fixado não está aberto",
+      "activationFailed": "Não foi possível trazer {{app}} para a frente",
+      "activationFailedUnnamed": "Não foi possível trazer o aplicativo para a frente",
+      "insertionFailed": "Falha na inserção",
+      "noTextField": "Nenhum campo de texto está em foco"
+    },
+    "explanation": {
+      "notInserted": "O Handy não inseriu nada e não enviou nenhum Enter.",
+      "mayHaveReached": "Parte do texto pode ter chegado ao aplicativo.",
+      "nothingSent": "Nada foi enviado ao aplicativo.",
+      "lateRead": "O aplicativo leu a área de transferência com atraso: o texto pode ter sido colado afinal. Verifique antes de copiar novamente.",
+      "historyKept": "A transcrição fica guardada no Histórico.",
+      "historyKeptFull": "A transcrição completa fica guardada no Histórico.",
+      "historyNotKept": "A transcrição não está no Histórico.",
+      "openAppDrag": "Abra {{app}} e depois arraste ou copie o texto.",
+      "openAppCopy": "Abra {{app}} e depois copie o texto.",
+      "openUnnamedDrag": "Abra o aplicativo e depois arraste ou copie o texto.",
+      "openUnnamedCopy": "Abra o aplicativo e depois copie o texto.",
+      "focusFieldDrag": "Clique em um campo de texto e depois arraste ou copie o texto.",
+      "focusFieldCopy": "Clique em um campo de texto e depois copie o texto.",
+      "noFieldSetting": "Você pode desativar esta verificação em Configurações, Avançado, Saída."
+    },
+    "actions": {
+      "drag": "Arrastar para um campo",
+      "copy": "Copiar",
+      "why": "Por quê?",
+      "hideDetails": "Ocultar detalhes",
+      "close": "Fechar"
+    }
   }
 }

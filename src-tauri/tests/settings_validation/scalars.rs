@@ -89,6 +89,10 @@ fn boolean_cases() -> Vec<(&'static str, &'static str, serde_json::Value)> {
     .into_iter()
     // 009: the auto-submit switch is a setting only with the `destination-return` gate closed.
     .chain((!cfg!(feature = "destination-return")).then_some("auto_submit"))
+    // 010: the no-text-field bubble setting exists only with the gate open.
+    .chain(
+        cfg!(feature = "destination-return").then_some("show_recovery_bubble_without_text_field"),
+    )
     .map(boolean_case)
     .collect()
 }
@@ -160,10 +164,16 @@ fn all_51_scalar_ports_accept_the_same_typed_values() -> Result<(), Box<dyn std:
     let context = ValidationContext {
         prompt_ids: &["known"],
         updates_allowed: true,
-        platform: PlatformCapabilities::only(&[PlatformCapability::Destination]),
+        platform: PlatformCapabilities::only(&[
+            PlatformCapability::Destination,
+            PlatformCapability::FocusedFieldDetection,
+        ]),
     };
     let cases = canonical_cases();
-    assert_eq!(cases.len(), 51);
+    assert_eq!(
+        cases.len(),
+        51 + usize::from(cfg!(feature = "destination-return"))
+    );
     for (key, raw, value) in cases {
         let cli = validate_cli(key, raw, &context)?;
         let ui = validate_ui(key, value.clone(), &context)?;

@@ -511,6 +511,10 @@
         "unavailablePlatform": "Ikke tilgængelig på dette system. Teksten går til appen forrest, når du er færdig.",
         "details": "Handy husker den forreste app, når en diktering starter, og skifter tilbage til den, før teksten indsættes. Når den er slået fra, går teksten til appen forrest, når dikteringen slutter.",
         "detailsLabel": "Om at vende tilbage til dikteringens app"
+      },
+      "noFieldBubble": {
+        "title": "Vis boblen, når intet tekstfelt har fokus",
+        "description": "Beholder teksten i en boble i stedet for at indsætte den i ingenting."
       }
     },
     "vocabulary": {
@@ -1268,16 +1272,6 @@
         "stale": "Destinationen er ændret i mellemtiden; listen er opdateret.",
         "frozen": "Indsættelsen er begyndt; destinationen kan ikke længere ændres.",
         "unavailable": "Denne app er ikke længere tilgængelig; listen er opdateret."
-      },
-      "notice": {
-        "appClosedKept": "{{app}} er lukket. Intet blev indsat; transskriptionen gemmes i Historik.",
-        "appClosedNotKept": "{{app}} er lukket. Intet blev indsat, og transskriptionen kunne ikke gemmes i Historik.",
-        "activationFailedKept": "{{app}} kom ikke i forgrunden. Intet blev indsat; transskriptionen gemmes i Historik.",
-        "activationFailedNotKept": "{{app}} kom ikke i forgrunden. Intet blev indsat, og transskriptionen kunne ikke gemmes i Historik.",
-        "insertionFailedKept": "{{app}} har muligvis ikke modtaget teksten; transskriptionen gemmes i Historik.",
-        "insertionFailedNotKept": "{{app}} har muligvis ikke modtaget teksten, og transskriptionen kunne ikke gemmes i Historik.",
-        "pinnedAppNotRunningKept": "{{app}} er fastgjort, men ikke åben. Intet blev indsat; transskriptionen gemmes i Historik.",
-        "pinnedAppNotRunningNotKept": "{{app}} er fastgjort, men ikke åben. Intet blev indsat, og transskriptionen kunne ikke gemmes i Historik."
       }
     },
     "prompt": {
@@ -1310,5 +1304,42 @@
   },
   "smartPaste": {
     "handOver": "Teksten er lagt på udklipsholderen til den eksterne skærm"
+  },
+  "recoveryBubble": {
+    "label": "Transskription gemt af Handy",
+    "previewLabel": "Transskription",
+    "reason": {
+      "appClosed": "{{app}} er ikke længere åben",
+      "appClosedUnnamed": "Appen er ikke længere åben",
+      "pinnedAppNotRunning": "{{app}} er fastgjort, men ikke åben",
+      "pinnedAppNotRunningUnnamed": "Den fastgjorte app er ikke åben",
+      "activationFailed": "Kunne ikke hente {{app}} frem",
+      "activationFailedUnnamed": "Kunne ikke hente appen frem",
+      "insertionFailed": "Indsættelse mislykkedes",
+      "noTextField": "Intet tekstfelt har fokus"
+    },
+    "explanation": {
+      "notInserted": "Handy indsatte intet og sendte ingen Enter.",
+      "mayHaveReached": "Noget af teksten kan være nået frem til appen.",
+      "nothingSent": "Intet blev sendt til appen.",
+      "lateRead": "Appen læste udklipsholderen for sent: teksten er måske alligevel blevet indsat. Tjek det, før du kopierer igen.",
+      "historyKept": "Transskriptionen er gemt i Historik.",
+      "historyKeptFull": "Hele transskriptionen er gemt i Historik.",
+      "historyNotKept": "Transskriptionen er ikke i Historik.",
+      "openAppDrag": "Åbn {{app}}, og træk eller kopiér derefter teksten.",
+      "openAppCopy": "Åbn {{app}}, og kopiér derefter teksten.",
+      "openUnnamedDrag": "Åbn appen, og træk eller kopiér derefter teksten.",
+      "openUnnamedCopy": "Åbn appen, og kopiér derefter teksten.",
+      "focusFieldDrag": "Klik i et tekstfelt, og træk eller kopiér derefter teksten.",
+      "focusFieldCopy": "Klik i et tekstfelt, og kopiér derefter teksten.",
+      "noFieldSetting": "Du kan slå denne kontrol fra under Indstillinger, Avanceret, Output."
+    },
+    "actions": {
+      "drag": "Træk til et felt",
+      "copy": "Kopiér",
+      "why": "Hvorfor?",
+      "hideDetails": "Skjul detaljer",
+      "close": "Luk"
+    }
   }
 }

@@ -511,6 +511,10 @@
         "unavailablePlatform": "Không khả dụng trên hệ thống này. Văn bản sẽ vào ứng dụng ở phía trước khi kết thúc.",
         "details": "Handy ghi nhớ ứng dụng ở phía trước khi bắt đầu đọc chính tả và quay lại ứng dụng đó trước khi chèn văn bản. Khi tắt, văn bản sẽ vào ứng dụng ở phía trước lúc kết thúc đọc chính tả.",
         "detailsLabel": "Giới thiệu về việc quay lại ứng dụng đọc chính tả"
+      },
+      "noFieldBubble": {
+        "title": "Hiển thị bong bóng khi không có ô văn bản nào được chọn",
+        "description": "Giữ văn bản trong bong bóng thay vì dán vào chỗ trống."
       }
     },
     "vocabulary": {
@@ -1265,16 +1269,6 @@
         "stale": "Đích đã thay đổi trong lúc đó; danh sách đã được làm mới.",
         "frozen": "Việc chèn đã bắt đầu; không thể đổi đích nữa.",
         "unavailable": "Ứng dụng này không còn khả dụng; danh sách đã được làm mới."
-      },
-      "notice": {
-        "appClosedKept": "{{app}} đã đóng. Không có gì được chèn; bản chép lời được giữ trong Lịch sử.",
-        "appClosedNotKept": "{{app}} đã đóng. Không có gì được chèn và không thể lưu bản chép lời vào Lịch sử.",
-        "activationFailedKept": "{{app}} không lên phía trước. Không có gì được chèn; bản chép lời được giữ trong Lịch sử.",
-        "activationFailedNotKept": "{{app}} không lên phía trước. Không có gì được chèn và không thể lưu bản chép lời vào Lịch sử.",
-        "insertionFailedKept": "{{app}} có thể chưa nhận được văn bản; bản chép lời được giữ trong Lịch sử.",
-        "insertionFailedNotKept": "{{app}} có thể chưa nhận được văn bản và không thể lưu bản chép lời vào Lịch sử.",
-        "pinnedAppNotRunningKept": "{{app}} đã được ghim nhưng chưa mở. Không có gì được chèn; bản chép lời được giữ trong Lịch sử.",
-        "pinnedAppNotRunningNotKept": "{{app}} đã được ghim nhưng chưa mở. Không có gì được chèn, và không thể lưu bản chép lời vào Lịch sử."
       }
     },
     "prompt": {
@@ -1310,5 +1304,42 @@
   },
   "smartPaste": {
     "handOver": "Đã đặt văn bản vào bộ nhớ tạm cho màn hình từ xa"
+  },
+  "recoveryBubble": {
+    "label": "Bản chép lời do Handy giữ lại",
+    "previewLabel": "Bản chép lời",
+    "reason": {
+      "appClosed": "{{app}} không còn mở",
+      "appClosedUnnamed": "Ứng dụng không còn mở",
+      "pinnedAppNotRunning": "{{app}} đã được ghim nhưng chưa mở",
+      "pinnedAppNotRunningUnnamed": "Ứng dụng đã ghim chưa mở",
+      "activationFailed": "Không thể đưa {{app}} lên trước",
+      "activationFailedUnnamed": "Không thể đưa ứng dụng lên trước",
+      "insertionFailed": "Chèn không thành công",
+      "noTextField": "Không có ô văn bản nào được chọn"
+    },
+    "explanation": {
+      "notInserted": "Handy không chèn gì và không gửi phím Enter.",
+      "mayHaveReached": "Một phần văn bản có thể đã đến ứng dụng.",
+      "nothingSent": "Không có gì được gửi đến ứng dụng.",
+      "lateRead": "Ứng dụng đã đọc bộ nhớ tạm muộn: văn bản có thể rốt cuộc đã được dán. Hãy kiểm tra trước khi sao chép lại.",
+      "historyKept": "Bản chép lời được giữ trong Lịch sử.",
+      "historyKeptFull": "Toàn bộ bản chép lời được giữ trong Lịch sử.",
+      "historyNotKept": "Bản chép lời không có trong Lịch sử.",
+      "openAppDrag": "Mở {{app}}, rồi kéo hoặc sao chép văn bản.",
+      "openAppCopy": "Mở {{app}}, rồi sao chép văn bản.",
+      "openUnnamedDrag": "Mở ứng dụng, rồi kéo hoặc sao chép văn bản.",
+      "openUnnamedCopy": "Mở ứng dụng, rồi sao chép văn bản.",
+      "focusFieldDrag": "Nhấp vào một ô văn bản, rồi kéo hoặc sao chép văn bản.",
+      "focusFieldCopy": "Nhấp vào một ô văn bản, rồi sao chép văn bản.",
+      "noFieldSetting": "Bạn có thể tắt kiểm tra này trong Cài đặt, Nâng cao, Đầu ra."
+    },
+    "actions": {
+      "drag": "Kéo vào ô",
+      "copy": "Sao chép",
+      "why": "Tại sao?",
+      "hideDetails": "Ẩn chi tiết",
+      "close": "Đóng"
+    }
   }
 }

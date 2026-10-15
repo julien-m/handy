@@ -1,0 +1,17 @@
+livespec-shim-notice: dev mode executes the LiveSpec checkout /Users/julienm/projects/livespec
+OK      .specs/features/010-recovery-bubble/changelog.md Score: 100/100
+OK      .specs/features/010-recovery-bubble/contracts/recovery-contract.md 
+Score: 100/100
+OK      .specs/features/010-recovery-bubble/implementation.md Score: 100/100
+OK      .specs/features/010-recovery-bubble/plan.md Score: 100/100
+OK      .specs/features/010-recovery-bubble/progress.md Score: 100/100
+OK      
+.specs/features/010-recovery-bubble/proofs/claude-review/independent-review-r2.m
+d Score: 100/100
+OK      
+.specs/features/010-recovery-bubble/proofs/claude-review/independent-review-r3.m
+d Score: 100/100
+OK      
+.specs/features/010-recovery-bubble/proofs/claude-review/independent-review.md 
+Score: 100/100
+OK      .specs/features/010-recovery-bubble/spec.md Score: 100/100

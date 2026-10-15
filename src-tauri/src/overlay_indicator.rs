@@ -134,13 +134,48 @@ pub fn hold_overlay_for_notice(app_handle: &AppHandle, duration_ms: u32) {
     }
     let token = SURFACE.start_hold();
     let handle = app_handle.clone();
-    let _ = app_handle.run_on_main_thread(move || reveal_for_notice(&handle));
+    let _ = app_handle.run_on_main_thread(move || {
+        reveal_for_notice(&handle);
+        // 010: a recovery bubble already shown moves beside the notice (no window without it).
+        crate::recovery::surface::follow_indicator(&handle);
+    });
     let handle = app_handle.clone();
     let wait = surface::hold_duration(duration_ms);
     std::thread::spawn(move || {
         std::thread::sleep(wait);
         release_notice_hold(&handle, Some(token));
     });
+}
+
+/// Logical frame of the indicator window while it is visible, and the bounds of its monitor
+/// (work area on macOS, as the indicator's own placement), for 010's recovery bubble.
+pub(super) fn visible_frame(app_handle: &AppHandle) -> Option<(surface::Frame, surface::Frame)> {
+    let window = app_handle.get_webview_window("recording_overlay")?;
+    if !window.is_visible().unwrap_or(false) {
+        return None;
+    }
+    let scale = window.scale_factor().ok()?;
+    let (position, size) = (window.outer_position().ok()?, window.outer_size().ok()?);
+    let monitor = window.current_monitor().ok()??;
+    #[cfg(target_os = "macos")]
+    let (origin, extent) = (monitor.work_area().position, monitor.work_area().size);
+    #[cfg(not(target_os = "macos"))]
+    let (origin, extent) = (*monitor.position(), *monitor.size());
+    let logical = |x: i32, y: i32, width: u32, height: u32, scale: f64| surface::Frame {
+        x: f64::from(x) / scale,
+        y: f64::from(y) / scale,
+        width: f64::from(width) / scale,
+        height: f64::from(height) / scale,
+    };
+    let indicator = logical(position.x, position.y, size.width, size.height, scale);
+    let bounds = logical(
+        origin.x,
+        origin.y,
+        extent.width,
+        extent.height,
+        monitor.scale_factor(),
+    );
+    Some((indicator, bounds))
 }
 
 /// Window size of the last shown indicator form (compact or Live), grown to the extent.

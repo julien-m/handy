@@ -19,8 +19,10 @@ fn every_actual_stored_field_has_exactly_one_descriptor() -> Result<(), Box<dyn 
         .iter()
         .map(|entry| entry.key.to_owned())
         .collect();
-    assert_eq!(actual.len(), 67);
-    assert_eq!(descriptors().len(), 67);
+    // 010: `show_recovery_bubble_without_text_field` is stored and described with the gate open.
+    let keys = 67 + usize::from(cfg!(feature = "destination-return"));
+    assert_eq!(actual.len(), keys);
+    assert_eq!(descriptors().len(), keys);
     assert_eq!(actual, described);
     Ok(())
 }
@@ -68,7 +70,10 @@ fn independent_access_inventory_covers_9_readonly_1_secret_6_collections_51_scal
         .into_iter()
         .map(|(key, _, _)| key)
         .collect();
-    assert_eq!(scalar_keys.len(), 51);
+    assert_eq!(
+        scalar_keys.len(),
+        51 + usize::from(cfg!(feature = "destination-return"))
+    );
     assert_eq!(scalar_keys, actual_scalars());
     Ok(())
 }

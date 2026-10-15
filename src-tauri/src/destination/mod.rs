@@ -20,6 +20,7 @@ pub mod manager;
 mod menu;
 pub mod outcome;
 pub mod pin;
+pub mod presentation;
 pub mod recovery;
 pub mod rollout;
 pub mod session;

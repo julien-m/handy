@@ -5,7 +5,7 @@
 //! transcript in the recovery slot. History is saved by the caller; its actual result is passed
 //! in and never overstated. The transcript never enters an event or a log. Without a session
 //! (rollout gate closed, see `rollout`) the insertion of `dev` before 006 runs unchanged.
-use super::context::{DestinationSource, DictationId, NoRecoveryConsumer};
+use super::context::{DestinationSource, DictationId};
 use super::guard::DispatchGuard;
 use super::insertion::{InsertionPort, InsertionReport, InsertionRequest, Orchestrator};
 use super::manager::DestinationManager;
@@ -13,7 +13,8 @@ use super::outcome::{
     DestinationFailure, HistoryStatus, InsertionOutcome, InsertionStatus, MethodResult,
     TranscriptRef,
 };
-use super::recovery::{OutcomeRegistry, RecoverySlot};
+use super::presentation::{await_presentation, toast_needed, ReasonShown, PRESENTATION_GUARD};
+use super::recovery::{Delivery, OutcomeRegistry, PresentationReceipt, RecoverySlot};
 use super::workspace::SystemClock;
 use crate::automatic_enter::transaction::EnterTransaction;
 use std::sync::atomic::{AtomicU64, Ordering};
@@ -82,7 +83,8 @@ pub fn abandon(app: &AppHandle) {
 }
 
 // @spec FR-002: Async activation, then the configured method — .specs/features/006-destination-application/spec.md#fr-002
-/// Insert `text` for `ticket` and publish its outcome; `None` only without a destination manager.
+/// Insert `text` for `ticket` and publish its outcome, with the receipt of a recovery
+/// presentation when 010 took the reason; `None` only without a destination manager.
 /// The insertion settings are read once here and the same snapshot drives the activation route
 /// and the insertion method, so a concurrent settings change cannot split them.
 pub async fn deliver(
@@ -91,9 +93,10 @@ pub async fn deliver(
     text: String,
     history: HistoryRecord,
     cancelled: Box<dyn Fn() -> bool + Send + Sync>,
-) -> Option<InsertionOutcome> {
+) -> Option<(InsertionOutcome, Option<PresentationReceipt>)> {
     let manager = super::app::manager(&app)?;
     let settings = crate::settings::get_settings(&app);
+    let trailing_space = settings.append_trailing_space;
     let request = InsertionRequest {
         dictation_id: ticket.dictation_id,
         destination_generation: ticket.destination_generation,
@@ -103,14 +106,16 @@ pub async fn deliver(
     let enter = crate::automatic_enter::app::transaction(&app, &manager, ticket, &settings);
     let method = insertion_method(&app, &text, settings, Arc::clone(&enter));
     let worker_manager = Arc::clone(&manager);
+    let recovery = super::app::recovery_port(&app);
     let joined = tauri::async_runtime::spawn_blocking(move || {
-        let report = orchestrator(worker_manager).deliver(request, method.as_ref());
+        let report = orchestrator(worker_manager, recovery).deliver(request, method.as_ref());
         // 009: the Enter of a legacy method is decided here, before the outcome is published.
         enter.after_insertion(&report);
         report
     })
     .await;
     let report = joined.unwrap_or_else(|error| worker_failed(&manager, ticket, &error));
+    let text = (text, trailing_space);
     Some(publish(&app, &manager, ticket, report, text, history))
 }
 /// The configured method with the settings snapshot of this insertion: smart paste (007) runs
@@ -175,7 +180,10 @@ pub async fn insert_final_text(
     };
     let started = std::time::Instant::now();
     match deliver(app.clone(), ticket, text, history, cancelled).await {
-        Some(outcome) => report_outcome(app, &outcome, started.elapsed()),
+        Some((outcome, receipt)) => {
+            let presentation = await_presentation(receipt).await;
+            report_outcome(app, &outcome, started.elapsed(), presentation);
+        }
         None => {
             log::error!(
                 "Destination manager missing: transcription not inserted (history {:?})",
@@ -192,21 +200,37 @@ pub async fn insert_final_text(
 struct PasteErrorPayload {
     history_saved: bool,
 }
-/// Log the outcome truthfully and show the interim failure toast (010 presents reasons later).
-fn report_outcome(app: &AppHandle, outcome: &InsertionOutcome, elapsed: std::time::Duration) {
+/// Log the outcome truthfully; report a failure once: by the bubble, or by `paste-error` when
+/// no consumer took it or the bubble cannot be presented.
+fn report_outcome(
+    app: &AppHandle,
+    outcome: &InsertionOutcome,
+    elapsed: std::time::Duration,
+    shown: ReasonShown,
+) {
     if outcome.status != InsertionStatus::Failed {
         log::debug!("Insertion finished as {:?} in {elapsed:?}", outcome.status);
         return;
     }
     log::error!(
-        "Transcription not inserted ({:?}); retained for recovery: {}; history: {:?}",
+        "Transcription not inserted ({:?}); retained for recovery: {}; history: {:?}; reason: {shown:?}",
         outcome.reason,
         outcome.transcript_ref.is_some(),
         outcome.history_status
     );
-    // Double failure (not inserted and not in history): until 010 reads the retained transcript,
-    // the user cannot reach it, so the toast says it was not saved either (text never shown).
-    let history_saved = outcome.history_status == HistoryStatus::Saved;
+    if shown == ReasonShown::Pending {
+        log::warn!(
+            "Recovery bubble not presented within {PRESENTATION_GUARD:?}; it stays scheduled"
+        );
+    }
+    if toast_needed(shown) {
+        emit_paste_error(app, outcome.history_status);
+    }
+}
+/// The existing failure toast with whether the transcript is in history (text never shown);
+/// also 010's fallback for a bubble confirmed unpresentable after the guard.
+pub fn emit_paste_error(app: &AppHandle, history: HistoryStatus) {
+    let history_saved = history == HistoryStatus::Saved;
     let _ = app.emit(PASTE_ERROR, PasteErrorPayload { history_saved });
 }
 /// Hide the recording overlay and set the tray back to idle.
@@ -240,12 +264,15 @@ fn paste_as_before(app: &AppHandle, text: String, cancelled: Box<dyn Fn() -> boo
         end_indicator(app);
     }
 }
-fn orchestrator(manager: Arc<DestinationManager>) -> Orchestrator {
+fn orchestrator(
+    manager: Arc<DestinationManager>,
+    recovery: Arc<dyn super::context::RecoveryPort>,
+) -> Orchestrator {
     Orchestrator {
         manager,
         clock: Arc::new(SystemClock),
         pause: Arc::new(SystemClock),
-        recovery: Arc::new(NoRecoveryConsumer),
+        recovery,
     }
 }
 
@@ -293,22 +320,29 @@ impl InsertionPort for MainThreadPaste {
 static LAST_OUTCOME: AtomicU64 = AtomicU64::new(0);
 
 // @spec FR-004: Preserve the transcript and report the reason — .specs/features/006-destination-application/spec.md#fr-004
-/// Build, conserve and publish the terminal outcome, then end the session.
+/// Build, conserve and publish the terminal outcome, then end the session. Returns the
+/// presentation receipt of a consumer that took the reason (010).
 fn publish(
     app: &AppHandle,
     manager: &DestinationManager,
     ticket: DictationTicket,
     report: InsertionReport,
-    text: String,
+    text: (String, bool),
     history: HistoryRecord,
-) -> InsertionOutcome {
-    let transcript_ref = (report.status == InsertionStatus::Failed)
-        .then(|| retain(app, ticket.dictation_id, text))
-        .flatten();
+) -> (InsertionOutcome, Option<PresentationReceipt>) {
+    // The transcript, and the exact inserted text (trailing space of this snapshot) for 010.
+    let slot = app.try_state::<Arc<RecoverySlot>>();
+    let transcript_ref = slot
+        .filter(|_| report.status == InsertionStatus::Failed)
+        .map(|slot| slot.retain_final(ticket.dictation_id, text.0, text.1));
     let outcome = outcome(ticket, report, history, transcript_ref);
-    if let Some(registry) = app.try_state::<Arc<OutcomeRegistry>>() {
-        registry.publish(&outcome);
-    }
+    let receipt = match app.try_state::<Arc<OutcomeRegistry>>() {
+        Some(registry) => match registry.publish(&outcome) {
+            Delivery::Delivered { presentation } => presentation,
+            Delivery::Duplicate => None,
+        },
+        None => None,
+    };
     if let Err(error) = app.emit(INSERTION_OUTCOME, &outcome) {
         log::warn!("Could not notify the UI of the insertion outcome: {error}");
     }
@@ -316,11 +350,7 @@ fn publish(
     if let Some(snapshot) = manager.snapshot() {
         super::app::emit_changed(app, &snapshot);
     }
-    outcome
-}
-fn retain(app: &AppHandle, dictation_id: DictationId, text: String) -> Option<TranscriptRef> {
-    let slot = app.try_state::<Arc<RecoverySlot>>()?;
-    Some(slot.retain(dictation_id, text))
+    (outcome, receipt)
 }
 fn outcome(
     ticket: DictationTicket,

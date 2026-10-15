@@ -1,0 +1,22 @@
+
+
+Running 10 tests using 6 workers
+
+
+
+
+
+
+
+
+[1A[2K[1/10] [chromium] › tests/recovery-bubble.spec.ts:196:1 › the drag starts past the threshold with the button held, never on a click
+[1A[2K[2/10] [chromium] › tests/recovery-bubble.spec.ts:215:1 › without drag the handle is absent and Copy, Why? and Close remain
+[1A[2K[3/10] [chromium] › tests/recovery-bubble.spec.ts:137:1 › the explanation shows and hides, saying History only when saved
+[1A[2K[4/10] [chromium] › tests/recovery-bubble.spec.ts:114:1 › Copy and Close send the exact bubble identity; hidden means closed
+[1A[2K[5/10] [chromium] › tests/recovery-bubble.spec.ts:169:1 › a late read updates the same bubble, reported rendered only once
+[1A[2K[6/10] [chromium] › tests/recovery-bubble.spec.ts:80:1 › open state: reason, two-line preview, actions and one first-render report
+[1A[2K[7/10] [chromium] › tests/recovery-bubble.spec.ts:224:1 › every control is reachable by Tab and Space activates Copy
+[1A[2K[8/10] [chromium] › tests/recovery-bubble.spec.ts:244:1 › a long right-to-left text stays two lines in the preview
+[1A[2K[9/10] [chromium] › tests/recovery-bubble.spec.ts:256:1 › the setting toggles with Tab and Space and is announced
+[1A[2K[10/10] [chromium] › tests/recovery-bubble.spec.ts:290:1 › the setting row is absent with the gate closed and off macOS
+[1A[2K  10 passed (4.3s)

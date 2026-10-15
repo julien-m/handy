@@ -5,7 +5,7 @@
 //! Later calls by the same method (a fallback path) only recheck foreground and cancellation.
 use super::context::{
     DestinationContext, DestinationSource, PreInsertionVerdict, RecoveryDisposition, RecoveryPort,
-    ResolvedTarget,
+    RecoveryReason, ResolvedTarget,
 };
 use super::manager::{DestinationManager, FrozenDestination};
 use super::workspace::{Foreground, RunningApp};
@@ -18,8 +18,8 @@ pub enum GuardRefusal {
     Cancelled,
     /// The activated destination is no longer frontmost (counts as an activation failure).
     TargetLost,
-    /// The 010 pre-insertion check asked to recover instead.
-    RecoverInstead,
+    /// The 010 pre-insertion check asked to recover instead, for this reason.
+    RecoverInstead(RecoveryReason),
 }
 impl std::fmt::Display for GuardRefusal {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -133,19 +133,27 @@ impl DispatchGuard {
             (None, front) => Ok(front),
         }
     }
-    /// Business rule (plan "DestinationContext and RecoveryDisposition"): the 010 verdict comes
-    /// first, then the disposition becomes `Insert` immediately before the first dispatch.
+    // @spec FR-001: Verdict, then a fresh recheck before Insert — .specs/features/010-recovery-bubble/spec.md#fr-001
+    /// Business rule (plan "DestinationContext and RecoveryDisposition", 010 round 6): the 010
+    /// verdict comes first; after an `Insert` verdict cancellation, supersession and the
+    /// foreground are read once more, then the disposition becomes `Insert` immediately before
+    /// the first dispatch. A `Recover` verdict dispatches nothing and keeps its reason.
     fn first_pass(&self, context: DestinationContext) -> Result<DestinationContext, GuardRefusal> {
         let (id, generation) = (context.dictation_id, context.destination_generation);
-        let next = match self.recovery.before_insertion(&context) {
-            PreInsertionVerdict::Insert => RecoveryDisposition::Insert,
-            PreInsertionVerdict::Recover(_) => RecoveryDisposition::Recover,
+        let (next, context) = match self.recovery.before_insertion(&context) {
+            PreInsertionVerdict::Insert => (RecoveryDisposition::Insert, self.recheck()?),
+            PreInsertionVerdict::Recover(reason) => {
+                let set =
+                    self.manager
+                        .set_disposition(id, generation, RecoveryDisposition::Recover);
+                return Err(set.map_or(GuardRefusal::Cancelled, |_| {
+                    GuardRefusal::RecoverInstead(reason)
+                }));
+            }
         };
-        let set = self.manager.set_disposition(id, generation, next);
-        match (next, set) {
-            (RecoveryDisposition::Insert, Ok(_)) => Ok(context),
-            (_, Ok(_)) => Err(GuardRefusal::RecoverInstead),
-            (_, Err(_)) => Err(GuardRefusal::Cancelled),
+        match self.manager.set_disposition(id, generation, next) {
+            Ok(_) => Ok(context),
+            Err(_) => Err(GuardRefusal::Cancelled),
         }
     }
 }

@@ -1,0 +1,170 @@
+{
+  "schema_version": "1",
+  "feature": "010-recovery-bubble",
+  "reviewer_model": "",
+  "review_max_chars": 60000,
+  "review_receipt_path": "",
+  "bindings": [
+    {
+      "requirement_id": "010-recovery-bubble:AC-001",
+      "test_id": "recovery::decision_tests::a_reason_decided_before_insertion_never_shows_the_partial_insertion_detail",
+      "expected": "AC-001: Reasons and the partial-insertion detail — .specs/features/010-recovery-bubble/spec.md#ac-001",
+      "assertion_path": "src-tauri/src/recovery/decision_tests.rs",
+      "start_line": 113,
+      "end_line": 116,
+      "source_sha256": "8c23dbfa0db5aef9debb72f6090d028604ce6014c11d07899f6445f75889ee43",
+      "justification": "Derived from the @spec anchor at src-tauri/src/recovery/decision_tests.rs:93"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:AC-001",
+      "test_id": "the_registry_hands_a_receipt_only_when_010_takes_the_reason",
+      "expected": "AC-001: The bubble takes the reason from 006's registry — .specs/features/010-recovery-bubble/spec.md#ac-001",
+      "assertion_path": "src-tauri/tests/recovery_output.rs",
+      "start_line": 174,
+      "end_line": 177,
+      "source_sha256": "8b2ca7382b9c74572774c65c88b3e815a046c6d9f6b8ff6e294963fdc717db3c",
+      "justification": "Derived from the @spec anchor at src-tauri/tests/recovery_output.rs:157"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:AC-002",
+      "test_id": "recovery::classifier_tests::focus_in_another_process_is_undetermined_even_with_a_non_text_role",
+      "expected": "AC-002: Undetermined and foreign focus insert as usual — .specs/features/010-recovery-bubble/spec.md#ac-002",
+      "assertion_path": "src-tauri/src/recovery/classifier_tests.rs",
+      "start_line": 154,
+      "end_line": 154,
+      "source_sha256": "fb704de588610f9d75d31bd6e9625c4dc29db57b831f82b1f9534dbea8f70ef5",
+      "justification": "Derived from the @spec anchor at src-tauri/src/recovery/classifier_tests.rs:144"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:AC-002",
+      "test_id": "recovery::classifier_tests::chromium_and_electron_containers_are_undetermined",
+      "expected": "AC-002: Chromium and Electron containers never show the bubble — .specs/features/010-recovery-bubble/spec.md#ac-002",
+      "assertion_path": "src-tauri/src/recovery/classifier_tests.rs",
+      "start_line": 191,
+      "end_line": 195,
+      "source_sha256": "fb704de588610f9d75d31bd6e9625c4dc29db57b831f82b1f9534dbea8f70ef5",
+      "justification": "Derived from the @spec anchor at src-tauri/src/recovery/classifier_tests.rs:179"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:AC-002",
+      "test_id": "macos::classify_the_front_application_within_the_budget",
+      "expected": "AC-002: Bounded classification of the real front app — .specs/features/010-recovery-bubble/spec.md#ac-002",
+      "assertion_path": "src-tauri/tests/recovery_native.rs",
+      "start_line": 160,
+      "end_line": 160,
+      "source_sha256": "8780ac6eef2cfc4ff9060b02119e58c13ea464d8c59c2c3819854c5026709932",
+      "justification": "Derived from the @spec anchor at src-tauri/tests/recovery_native.rs:146"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:AC-002",
+      "test_id": "a_not_editable_focus_recovers_before_any_dispatch_with_its_typed_reason_and_no_enter",
+      "expected": "AC-002: No text field recovers before dispatch, no Enter — .specs/features/010-recovery-bubble/spec.md#ac-002",
+      "assertion_path": "src-tauri/tests/recovery_output.rs",
+      "start_line": 69,
+      "end_line": 73,
+      "source_sha256": "8b2ca7382b9c74572774c65c88b3e815a046c6d9f6b8ff6e294963fdc717db3c",
+      "justification": "Derived from the @spec anchor at src-tauri/tests/recovery_output.rs:59"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:AC-003",
+      "test_id": "destination::recovery_tests::the_slot_keeps_the_exact_inserted_text_with_and_without_the_trailing_space",
+      "expected": "AC-003: Copy and drag carry exactly the text that would have been inserted — .specs/features/010-recovery-bubble/spec.md#ac-003",
+      "assertion_path": "src-tauri/src/destination/recovery_tests.rs",
+      "start_line": 156,
+      "end_line": 156,
+      "source_sha256": "748e0a0a127395675bc8044b2fbc809356a8d7d018fc29b12d5a2b068710ebbc",
+      "justification": "Derived from the @spec anchor at src-tauri/src/destination/recovery_tests.rs:146"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:AC-003",
+      "test_id": "consume_copies_the_transcript_presents_a_preview_and_holds_the_slot_until_rendered",
+      "expected": "AC-003: Preview, reason and actions of the bubble — .specs/features/010-recovery-bubble/spec.md#ac-003",
+      "assertion_path": "src-tauri/tests/recovery_lifecycle.rs",
+      "start_line": 66,
+      "end_line": 66,
+      "source_sha256": "5c05658373834ed0cecdcc68d429dcfdaf1688669cbe977e379b9e9bf85609b1",
+      "justification": "Derived from the @spec anchor at src-tauri/tests/recovery_lifecycle.rs:45"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:AC-003",
+      "test_id": "copy_and_drag_carry_the_paste_trailing_space_and_the_preview_never_shows_it",
+      "expected": "AC-003: Copy and drag carry exactly the inserted text — .specs/features/010-recovery-bubble/spec.md#ac-003",
+      "assertion_path": "src-tauri/tests/recovery_lifecycle.rs",
+      "start_line": 247,
+      "end_line": 247,
+      "source_sha256": "5c05658373834ed0cecdcc68d429dcfdaf1688669cbe977e379b9e9bf85609b1",
+      "justification": "Derived from the @spec anchor at src-tauri/tests/recovery_lifecycle.rs:220"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:AC-003",
+      "test_id": "the_sentinel_reaches_only_the_bubble_window_and_the_copy_and_drag_payloads",
+      "expected": "AC-003: The transcript reaches only the bubble window and its payloads — .specs/features/010-recovery-bubble/spec.md#ac-003",
+      "assertion_path": "src-tauri/tests/recovery_privacy.rs",
+      "start_line": 155,
+      "end_line": 159,
+      "source_sha256": "60e8aeb61c74664d054d29e624b35539725be870998600610ea2effecd12c210",
+      "justification": "Derived from the @spec anchor at src-tauri/tests/recovery_privacy.rs:135"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:AC-004",
+      "test_id": "a_refused_drag_shows_the_same_bubble_again_and_an_accepted_one_closes",
+      "expected": "AC-004: Drag hides, refusal restores, drop accepted closes — .specs/features/010-recovery-bubble/spec.md#ac-004",
+      "assertion_path": "src-tauri/tests/recovery_lifecycle.rs",
+      "start_line": 276,
+      "end_line": 281,
+      "source_sha256": "5c05658373834ed0cecdcc68d429dcfdaf1688669cbe977e379b9e9bf85609b1",
+      "justification": "Derived from the @spec anchor at src-tauri/tests/recovery_lifecycle.rs:251"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:AC-005",
+      "test_id": "copy_of_the_identical_transcript_before_the_quiet_period_wins_over_restoration",
+      "expected": "AC-005: Deliberate Copy dominates restoration — .specs/features/010-recovery-bubble/spec.md#ac-005",
+      "assertion_path": "src-tauri/tests/recovery_clipboard.rs",
+      "start_line": 67,
+      "end_line": 70,
+      "source_sha256": "ffbbec9586441254f90c47d1656aa4e7a139c9bc6a144750c0465dfdb3e9b166",
+      "justification": "Derived from the @spec anchor at src-tauri/tests/recovery_clipboard.rs:47"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:AC-005",
+      "test_id": "copy_writes_the_full_transcript_and_closes_and_a_failure_keeps_the_bubble",
+      "expected": "AC-005: Copy, Close and new dictation — .specs/features/010-recovery-bubble/spec.md#ac-005",
+      "assertion_path": "src-tauri/tests/recovery_lifecycle.rs",
+      "start_line": 182,
+      "end_line": 182,
+      "source_sha256": "5c05658373834ed0cecdcc68d429dcfdaf1688669cbe977e379b9e9bf85609b1",
+      "justification": "Derived from the @spec anchor at src-tauri/tests/recovery_lifecycle.rs:155"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:AC-005",
+      "test_id": "a_dictation_whose_recording_fails_to_start_keeps_the_bubble_and_its_text",
+      "expected": "AC-005: A refused start keeps the bubble and its text — .specs/features/010-recovery-bubble/spec.md#ac-005",
+      "assertion_path": "src-tauri/tests/recovery_lifecycle.rs",
+      "start_line": 348,
+      "end_line": 348,
+      "source_sha256": "5c05658373834ed0cecdcc68d429dcfdaf1688669cbe977e379b9e9bf85609b1",
+      "justification": "Derived from the @spec anchor at src-tauri/tests/recovery_lifecycle.rs:334"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:AC-006",
+      "test_id": "windows_and_linux_bubbles_have_no_drag_and_linux_recovers_only_insertion_failures",
+      "expected": "AC-006: Reduced bubble on Windows and Linux — .specs/features/010-recovery-bubble/spec.md#ac-006",
+      "assertion_path": "src-tauri/tests/recovery_lifecycle.rs",
+      "start_line": 374,
+      "end_line": 374,
+      "source_sha256": "5c05658373834ed0cecdcc68d429dcfdaf1688669cbe977e379b9e9bf85609b1",
+      "justification": "Derived from the @spec anchor at src-tauri/tests/recovery_lifecycle.rs:351"
+    },
+    {
+      "requirement_id": "010-recovery-bubble:AC-007",
+      "test_id": "off_macos_the_value_reads_false_and_open_macos_keeps_the_choice",
+      "expected": "AC-007: The setting through the settings CLI — .specs/features/010-recovery-bubble/spec.md#ac-007",
+      "assertion_path": "src-tauri/tests/recovery_settings.rs",
+      "start_line": 36,
+      "end_line": 36,
+      "source_sha256": "b7263c01d6e91d38e74130a4661aa70d799f66a9114e1a5d318de1ff91e05085",
+      "justification": "Derived from the @spec anchor at src-tauri/tests/recovery_settings.rs:21"
+    }
+  ],
+  "derivation": "anchors"
+}

@@ -1,0 +1,8 @@
+[package]
+name = "handy-recovery-windows-check"
+version = "0.0.0"
+edition = "2021"
+publish = false
+[workspace]
+[dependencies]
+tauri = { version = "2.11.5", features = ["macos-private-api", "tray-icon", "image-png"] }

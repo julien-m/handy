@@ -511,6 +511,10 @@
         "unavailablePlatform": "Unavailable on this system. Text goes to the app in front at the end.",
         "details": "Handy remembers the app in front when a dictation starts and switches back to it before inserting the text. When off, the text goes to the app in front when the dictation ends.",
         "detailsLabel": "About returning to the dictation's application"
+      },
+      "noFieldBubble": {
+        "title": "Show the bubble when no text field is focused",
+        "description": "Keeps the text in a bubble instead of pasting into nothing."
       }
     },
     "vocabulary": {
@@ -1268,16 +1272,6 @@
         "stale": "The destination changed meanwhile; the list was refreshed.",
         "frozen": "Insertion has started; the destination can no longer change.",
         "unavailable": "This app is no longer available; the list was refreshed."
-      },
-      "notice": {
-        "appClosedKept": "{{app}} is closed. Nothing was inserted; the transcript is kept in History.",
-        "appClosedNotKept": "{{app}} is closed. Nothing was inserted, and the transcript could not be saved to History.",
-        "activationFailedKept": "{{app}} did not come to the front. Nothing was inserted; the transcript is kept in History.",
-        "activationFailedNotKept": "{{app}} did not come to the front. Nothing was inserted, and the transcript could not be saved to History.",
-        "insertionFailedKept": "{{app}} may not have received the text; the transcript is kept in History.",
-        "insertionFailedNotKept": "{{app}} may not have received the text, and the transcript could not be saved to History.",
-        "pinnedAppNotRunningKept": "{{app}} is pinned but not open. Nothing was inserted; the transcript is kept in History.",
-        "pinnedAppNotRunningNotKept": "{{app}} is pinned but not open. Nothing was inserted, and the transcript could not be saved to History."
       }
     },
     "prompt": {
@@ -1310,5 +1304,42 @@
   },
   "smartPaste": {
     "handOver": "Text placed on the clipboard for the remote screen"
+  },
+  "recoveryBubble": {
+    "label": "Transcript kept by Handy",
+    "previewLabel": "Transcript",
+    "reason": {
+      "appClosed": "{{app}} is no longer open",
+      "appClosedUnnamed": "The application is no longer open",
+      "pinnedAppNotRunning": "{{app}} is pinned but not open",
+      "pinnedAppNotRunningUnnamed": "The pinned application is not open",
+      "activationFailed": "Could not bring {{app}} forward",
+      "activationFailedUnnamed": "Could not bring the application forward",
+      "insertionFailed": "Insertion failed",
+      "noTextField": "No text field is focused"
+    },
+    "explanation": {
+      "notInserted": "Handy didn't insert anything and sent no Enter.",
+      "mayHaveReached": "Some text may have reached the application.",
+      "nothingSent": "Nothing was sent to the application.",
+      "lateRead": "The application read the clipboard late: the text may have been pasted after all. Check it before copying again.",
+      "historyKept": "The transcript is kept in History.",
+      "historyKeptFull": "The full transcript is kept in History.",
+      "historyNotKept": "The transcript is not in History.",
+      "openAppDrag": "Open {{app}}, then drag or copy the text.",
+      "openAppCopy": "Open {{app}}, then copy the text.",
+      "openUnnamedDrag": "Open the application, then drag or copy the text.",
+      "openUnnamedCopy": "Open the application, then copy the text.",
+      "focusFieldDrag": "Click in a text field, then drag or copy the text.",
+      "focusFieldCopy": "Click in a text field, then copy the text.",
+      "noFieldSetting": "You can turn this check off in Settings, Advanced, Output."
+    },
+    "actions": {
+      "drag": "Drag into a field",
+      "copy": "Copy",
+      "why": "Why?",
+      "hideDetails": "Hide details",
+      "close": "Close"
+    }
   }
 }

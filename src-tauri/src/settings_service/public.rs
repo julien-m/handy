@@ -129,6 +129,9 @@ struct PublicAdvanced {
     mute_while_recording: bool,
     append_trailing_space: bool,
     return_to_dictation_app: bool,
+    /// 010: a boolean on every platform with the gate open, absent with it closed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    show_recovery_bubble_without_text_field: Option<bool>,
     app_language: String,
     theme: Theme,
     experimental_enabled: bool,
@@ -159,6 +162,8 @@ impl PublicAdvanced {
             mute_while_recording: settings.mute_while_recording,
             append_trailing_space: settings.append_trailing_space,
             return_to_dictation_app: settings.return_to_dictation_app,
+            show_recovery_bubble_without_text_field: settings
+                .show_recovery_bubble_without_text_field,
             app_language: settings.app_language.clone(),
             theme: settings.theme,
             experimental_enabled: settings.experimental_enabled,
