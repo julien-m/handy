@@ -500,6 +500,63 @@ Preuves natives en attente avec Julien : aucune n'est déclarée réussie. Harna
   - Attendu : enveloppe JSON seule ; la dictée suivante s'insère (pas de bulle) ; parité avec le réglage affiché.
   - Couvre : AC-007. Preuve : `proofs/native-macos/cli/`.
 
+### 011 — Retour au champ de la dictée (`handy-gates-open.app`, et `handy-gates-closed.app` pour le verrou fermé)
+
+Preuves natives en attente avec Julien : aucune n'est déclarée réussie. Harnais : `bun scripts/field-return-native-proof.ts --binary <absolu>/handy-gates-open.app/Contents/MacOS/handy --platform macos --out .specs/features/011-dictation-field-return/proofs/native-macos/ --interactive --log <fichier de log Handy> --sentinel <phrase sentinelle>`. Il lance `tests/destination_field_native.rs` en lecture seule (lecture du champ focalisé de l'app au premier plan, ou du PID donné par `HANDY_FIELD_PID` pour une app en arrière-plan ; lectures de vérification ; lecture du premier plan de la 006 inchangée), puis enregistre les observations tapées et vérifie que la phrase sentinelle tapée dans le brouillon n'apparaît pas dans le log. Le harnais ne donne jamais le focus, ne restaure aucune plage, ne lève aucune fenêtre, n'active aucune app, n'envoie aucune touche et ne touche pas au presse-papiers : c'est Julien qui dicte. Activer le log debug (`field_return …`). Brouillons de test sûrs, aucun message réel ne doit partir (Entrée automatique « Never » sauf pour l'item Entrée). Résultats de l'étape 1 à ranger dans `proofs/macos/native-spike.md` (OS, hash du binaire, matrice par app, temps).
+
+- [ ] **Verrou fermé** (`handy-gates-closed.app`).
+  - Étapes : dicter depuis le champ ChatGPT de Comet, passer à Notes, arrêter.
+  - Attendu : comportement de dev (texte collé dans l'app au premier plan à la fin) ; aucune ligne `field_return` dans le log.
+  - Couvre : AC-006, SC-003. Preuve : `proofs/native-macos-gate-closed/`.
+- [ ] **Exposition de Comet (étape 1, précondition de SC-001).**
+  - Étapes : Comet au premier plan, page ChatGPT, curseur dans un brouillon ; lancer le harnais (sans `--interactive` d'abord).
+  - Attendu : `remembered(range_read: true)` ou un `not_remembered(...)` noté ; aucun changement du mode d'accessibilité de Comet (`AXManualAccessibility`, `AXEnhancedUserInterface` jamais posés). Si l'input n'est pas exposé, les 5 essais Comet de SC-001 doivent suivre le repli sûr (rien de mémorisé, 006) et le résultat est remonté à Julien.
+  - Couvre : AC-001, SC-001. Preuve : `proofs/macos/native-spike.md`.
+- [ ] **Retour au curseur avec brouillon (SC-001, 5 essais par app).**
+  - Étapes : Comet (page ChatGPT, même onglet), Notes et ChatGPT desktop : un brouillon avec la sentinelle, curseur au milieu ; dicter ; passer à une autre app ; arrêter. Refaire avec une sélection non vide avant le départ.
+  - Attendu : le texte complet au curseur, brouillon intact (ou remplacement de la sélection faite avant le départ) ; 5/5 par app ; noter si donner le focus sélectionne tout ou déplace le curseur avant la restauration de la plage.
+  - Couvre : AC-001, AC-002, FR-001, FR-002, SC-001. Preuve : `proofs/native-macos/caret/`.
+- [ ] **Deuxième fenêtre.**
+  - Étapes : Notes avec deux fenêtres ; dicter depuis l'éditeur de la fenêtre A ; amener la fenêtre B ; arrêter.
+  - Attendu : la fenêtre A est levée et le texte arrive dans son éditeur ; sinon la bulle, jamais un collage dans la fenêtre B ; noter si le focus survit à `AXRaise` (un ordre inversé est remonté à Julien, jamais changé en silence).
+  - Couvre : AC-002, AC-004. Preuve : `proofs/native-macos/second-window/`.
+- [ ] **Onglet changé en arrière-plan.**
+  - Étapes : Comet, dicter depuis le champ ChatGPT ; sélectionner un autre onglet de Comet pendant l'enregistrement ; arrêter.
+  - Attendu : rien n'est collé ; bulle 010 « Insertion failed » avec l'explication que rien n'a été envoyé ; aucune Entrée. Un collage dans un onglet caché est un constat à remonter à Julien.
+  - Couvre : AC-004 (b), SC-002. Preuve : `proofs/native-macos/changed-tab/`.
+- [ ] **Page rechargée.**
+  - Étapes : Comet, dicter depuis le champ ChatGPT ; recharger la page pendant l'enregistrement ; arrêter.
+  - Attendu : insertion comme aujourd'hui (006/010) si la tentative n'a rien changé, sinon la bulle ; jamais un collage ailleurs. Noter lequel, et si Comet expose alors un élément focalisé (le cas « aucun élément focalisé » est traité comme non noté : bulle).
+  - Couvre : AC-004 (a) et (b). Preuve : `proofs/native-macos/reload/`.
+- [ ] **Frappe dans le même champ pendant l'enregistrement.**
+  - Étapes : dicter depuis un champ avec brouillon et continuer à taper dans ce même champ pendant l'enregistrement ; arrêter. Refaire avec une sélection non vide au départ.
+  - Attendu : noter où arrive le texte et si du texte tapé est remplacé (la plage du départ est restaurée telle quelle) ; constat à trancher par Julien (ambiguïté de la revue de spec r3, AC-002).
+  - Couvre : AC-002. Preuve : `proofs/native-macos/same-field-typing/`.
+- [ ] **Champ mot de passe.**
+  - Étapes : dicter depuis un champ mot de passe (page de connexion Safari de test) ; passer à une autre app ; arrêter.
+  - Attendu : rien de mémorisé, comportement 006 ; rien n'est tapé dans le champ mot de passe.
+  - Couvre : AC-001. Preuve : `proofs/native-macos/password/`.
+- [ ] **App épinglée en arrière-plan.**
+  - Étapes : épingler Comet avec son champ ChatGPT focalisé ; amener Notes ; dicter deux fois (harnais avec `HANDY_FIELD_PID=<pid de Comet>` pour la lecture seule).
+  - Attendu : chaque texte dans le champ ChatGPT après le retour de Comet.
+  - Couvre : AC-003, FR-003. Preuve : `proofs/native-macos/pin/`.
+- [ ] **Changement de destination par le badge, méthode « none ».**
+  - Étapes : dicter depuis le champ de Comet puis choisir TextEdit dans le badge ; puis méthode de collage « none ».
+  - Attendu : texte dans TextEdit comme en 006, rien dans Comet ; avec « none », aucune activation ni changement de focus, transcription dans l'historique seulement.
+  - Couvre : AC-003, AC-006. Preuve : `proofs/native-macos/destination-change/`.
+- [ ] **Bulle forcée, Entrée et `paste-error`.**
+  - Étapes : provoquer un cas dévié (onglet changé) avec l'Entrée automatique « Always » ; puis le même cas écran verrouillé pendant la présentation.
+  - Attendu : bulle avec Copy fonctionnel, aucune Entrée, aucun toast `paste-error` ; si la bulle ne peut pas être présentée, un seul `paste-error` et la transcription dans l'historique.
+  - Couvre : AC-004, AC-005, SC-002. Preuve : `proofs/native-macos/bubble/`.
+- [ ] **Temps et thread principal.**
+  - Étapes : relever dans le log debug `field_return … (attempt …, verify …)` et `not_remembered(...) in …` ; 30 échantillons de `check()` sur le thread principal avec la méthode classique.
+  - Attendu : lecture de départ sous 50 ms, tentative sous 50 ms, vérification sous 10 ms ; aucun échantillon de `check()` au-dessus de 70 ms ; pas de gel d'UI. Un dépassement est remonté à Julien, jamais élargi en silence.
+  - Couvre : QE (performance), AC-001, AC-002, SC-005. Preuve : `proofs/native-macos/timing/`.
+- [ ] **Sentinelle absente des logs et des événements.**
+  - Étapes : `--log` et `--sentinel` du harnais sur toute la séance ; `handy settings output get return_to_dictation_app --json`.
+  - Attendu : la sentinelle du brouillon n'apparaît ni dans le log ni dans la sortie CLI ; aucune clé de réglage nouvelle.
+  - Couvre : AC-008, SC-004. Preuve : `proofs/native-macos/privacy/`.
+
 ### UI en vraie fenêtre (transverse)
 
 - [ ] **Indicateur** (`handy-gates-open.app`).
@@ -563,6 +620,11 @@ Preuves natives en attente avec Julien : aucune n'est déclarée réussie. Harna
   - classification (revue de livraison, 2026-10-15) : « non éditable » seulement sur preuve positive ; tout attribut illisible et les conteneurs `AXWebArea`, `AXWindow`, `AXGroup`, `AXApplication`, `AXScrollArea` sont indéterminés ; à revoir après la matrice de calibration ;
   - la poignée de glisser est un bouton sans action au clavier ni pour VoiceOver (Copy reste l'alternative) ; le glisser part de l'événement souris courant d'AppKit, à prouver avec un geste court (revue de livraison) ;
   - les commandes de la bulle sont enregistrées dans les deux états du verrou (un seul `bindings.ts`) et inertes sans le service.
+- [ ] **011 :**
+  - un élément focalisé absent (`AXFocusedUIElement` sans valeur) à la note de l'étape (1) est traité comme « non noté » : bulle, jamais branche (a) (ambiguïté AC-004 de la revue r3, choix sûr du plan) ;
+  - la plage du départ est restaurée même si l'utilisateur a tapé dans le même champ pendant l'enregistrement (ambiguïté AC-002 de la revue r3) : à trancher après l'item « Frappe dans le même champ » ;
+  - Windows : une app épinglée qui n'est pas au premier plan au départ ne mémorise rien (UI Automation n'expose que le focus système ; avertissement de la revue de plan sur AC-003) ;
+  - les documents 006 et 010 sont à réaligner sur les deltas listés dans `implementation.md` de la 011 (`/spec-refine 006-destination-application plan`, `/spec-refine 010-recovery-bubble plan`).
 - [ ] **008 :**
   - store illisible : lecture seule à chaque lancement, onboarding répété, aucune voie de sortie documentée ;
   - plancher Windows supporté (Windows 10 ?) ;
@@ -582,7 +644,7 @@ Preuves natives en attente avec Julien : aucune n'est déclarée réussie. Harna
 
 Les deux verrous sont des features Cargo fermées par défaut (`src-tauri/Cargo.toml`, `[features]`).
 
-### `destination-return` (006 ; 009 et 010 sont aussi derrière ce verrou)
+### `destination-return` (006 ; 009, 010 et 011 sont aussi derrière ce verrou)
 
 Fermé, une dictée s'insère comme sur dev : pas de capture, pas d'activation, pas de garde. La ligne de réglage est masquée, et `return_to_dictation_app` est refusé avec `unsupported_platform` (`src-tauri/src/destination/rollout.rs`).
 
@@ -599,6 +661,7 @@ Fermé, une dictée s'insère comme sur dev : pas de capture, pas d'activation, 
   - test « verrous fermés » comparé à dev ;
   - `cargo check` Windows et Linux en CI.
 - [ ] 009 et 010 implémentées et prouvées (elles dépendent de ce verrou) ; pour la 010 : preuves macOS du §2, contrat Penflow certifié pour `recovery-bubble` et `output-settings`, et réalignement des documents 006 et 007 (`/spec-refine 006-destination-application plan`, `/spec-refine 007-smart-paste plan`) sur les deltas listés dans `implementation.md` de la 010.
+- [ ] 011 implémentée et prouvée : preuves macOS du §2 (section 011) et réalignement des documents 006 et 010 sur les deltas listés dans `implementation.md` de la 011.
 - [ ] Changement séparé : activer la feature par défaut (ou retirer le verrou et `rollout.rs`), relancer toute la suite, puis noter dans le changelog que `return_to_dictation_app` passe à `true` sur macOS et Windows.
 
 ### `smart-paste-dispatch` (007)
@@ -657,6 +720,10 @@ Fermé : smart paste n'est ni proposé ni migré, et la dictée est inchangée. 
   - Windows : `bun scripts/recovery-native-proof.ts --binary <absolute-windows-release-binary> --platform windows --out <proof-directory> --interactive` : bulle réduite (Copy, Close, Why?, sans glisser) pour app fermée, activation non confirmée et échec de méthode ; premier clic sans voler le focus ; Narrator ; `cargo test --manifest-path src-tauri/Cargo.toml --features destination-return` ;
   - Linux : `bun scripts/recovery-native-proof.ts --binary <absolute-linux-release-binary> --platform linux --out <proof-directory> --interactive` : bulle seulement pour un échec de méthode, sous X11, Wayland et avec `HANDY_NO_GTK_LAYER_SHELL=1` ; Orca ; style `none` ; `handy settings output set show_recovery_bubble_without_text_field true --json` refusé `validation_failed`/2 `unsupported_platform` et la lecture vaut `false` ;
   - CI : le job `windows-check` (`cargo check --all-targets --features destination-return`) et la matrice Linux des quatre combinaisons de `test.yml` doivent passer (le code Linux de la fenêtre n'est compilé qu'en CI).
+- [ ] **011 :**
+  - Windows : `bun scripts/field-return-native-proof.ts --binary <absolute-windows-release-binary> --platform windows --out <proof-directory> --interactive` : Notepad et un champ de navigateur avec brouillon, curseur au milieu (UI Automation `SetFocus` et `Select`, texte au curseur) ; un champ sans `TextPattern` donne la bulle, jamais un collage ; une app épinglée en arrière-plan ne mémorise rien ; `cargo test --manifest-path src-tauri/Cargo.toml --features destination-return` ;
+  - CI : `cargo clippy --target x86_64-pc-windows-msvc -- -D warnings` du harnais `proofs/impl-20261015/windows-check/` (adaptateur compilé seul) et le job `windows-check` de la CI ;
+  - Linux : rien n'est mémorisé (aucune destination 006) ; comportement 006 inchangé.
 - [ ] **008 :**
   - Windows 10 et 11 24H2 : pas de console au lancement ; dans cmd et PowerShell, sorties, redirections et codes 0, 2 ou 5 (`start /wait`, `Start-Process -Wait -PassThru`) ; pipe bloqué fermé après 5 s ; écriture hors ligne ; `FreeConsole` non fatal en release ; logs debug ; squat du pipe par un autre compte ; `SECURITY_SQOS_PRESENT` ;
   - Linux : socket privé et D-Bus sous X11 et Wayland ; `handy settings set paste_method direct --json` hors ligne, exit 0 ; refus `unavailable`/5 avec un Handy 008 dans une autre session ;

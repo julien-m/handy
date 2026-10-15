@@ -44,3 +44,17 @@
 - **Corrections (faithful to Julien's decisions of 2026-10-15, never paste without a restored and verified caret, never paste elsewhere than the element noted before the attempt when the attempt changed something):** AC-004 now has two non-overlapping branches and excludes from (a) the remembered input already focused when noted with its range not restored or verified, which goes to (b) as the plan's table already did; Story 3 states that an unreadable range at the start gives the bubble even without an application switch; a focus or range write without an answer in time counts as a change (AC-002, AC-007); AC-008 lists every field of the Remembered input entity; SC-004 also checks that the range never reaches logs; a Windows text input is defined through UI Automation (`ControlType` Edit or Document with `ValuePattern` or `TextPattern`)
 - **Review:** round 2 spec receipt not ready (1 blocking, 3 warnings, 2 info); round 3, the last authorized, to run on this version
 - **Author:** Claude Code (spec-refine, orchestrated correction)
+
+## 2026-10-15 — [Feature]: Dictation field return implemented behind the destination-return gate (automated evidence; native proofs pending with Julien)
+
+- **Type:** Feature
+- **Spec modified:** No (status Planned → In Progress through finalize; requirements unchanged)
+- **Code modified:** field model, port, bounded start read, return attempt, guard verification and lifetime in `src-tauri/src/destination/{field,field_capture,field_attempt,field_check,field_lifetime}.rs`; macOS adapter `destination/macos_field.rs`; Windows UI Automation adapter `destination/{windows_field,windows_uia,bounded_worker,uia_mapping}.rs` and two `windows` crate features; 006 integration (`destination/{app,context,guard,insertion,manager,menu,mod,outcome,pin}.rs`: `field_return_failed`, `with_field`, `freeze_with_field`, drop rules); 010 integration (`recovery/{classifier,decision,service,platform/macos_ax}.rs`: shared editable rule and AX helpers, verdict without query for a verified or diverted return, "Insertion failed" with "nothing was sent"); tests `src-tauri/tests/destination_field_*.rs`; native harness `scripts/field-return-native-proof.ts`; native checklist section 011
+- **AC impacted:** AC-001 to AC-008 partial (automated evidence only), SC-002 to SC-005 automated, SC-001 pending (native)
+- **Author:** Claude Code (spec-implement, claude-opus-5-5)
+- Commits on `feature/011-dictation-field-return`: `ffc9ebdb`, `9809ff61` and the documentation commit of this entry.
+- Gate closed (default build): identical to `dev`, no focused element is ever read; tested in the four feature combinations.
+- Differences from the plan (code is the reference): port held by the destination manager, primitives plus shared bounded sequences, `freeze_with_field`, guard safety net for a diverted return, integration tests over one scripted accessibility world, capture budget from the request with late answers refused, Windows identity by runtime id; listed in `implementation.md`.
+- Native macOS proofs (required before Implemented) and the Windows release evidence are listed in `progress.md` and `.specs/native-proofs-checklist.md` (section 011); none is claimed. Deltas for 006 and 010 await their own `/spec-refine`.
+
+<!-- finalize:spec-implement:2026-10-15:28770870 -->

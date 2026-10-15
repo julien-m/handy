@@ -2,7 +2,7 @@
 feature: dictation-field-return
 title: Dictation Field Return
 priority: P1
-status: Planned
+status: In Progress
 created: 2026-10-15
 updated: 2026-10-15
 ---
@@ -14,7 +14,7 @@ updated: 2026-10-15
 - **Feature:** Dictation Field Return
 - **Branch:** None — specification only (committed on `dev`)
 - **Date:** 2026-10-15
-- **Status:** Planned
+- **Status:** In Progress
 - **Input:** Request from Julien, 2026-10-15: "I often click in the application's input field, for example the input of the ChatGPT session in Comet, then I start the transcription. When I start the transcription, we already record which application it is; we must also record whether we are already in an input, in the component that receives the text. That way, if I then go to another application, when I stop the transcription the text is pasted directly back into that input. It also works when an application is pinned (PIN)."
 - **Feature Number:** 011
 
