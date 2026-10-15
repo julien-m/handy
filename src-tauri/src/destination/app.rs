@@ -21,11 +21,12 @@ pub const DESTINATION_SUPPORT_CHANGED: &str = "destination-support-changed";
 ///
 /// Side effects: manages three Tauri states and spawns one short-lived thread.
 pub fn install(app: &AppHandle) {
-    let manager = Arc::new(DestinationManager::new(
+    let manager = DestinationManager::new(
         super::native_workspace(),
         Arc::new(SystemClock),
         PlatformCapabilities::current(),
-    ));
+    );
+    let manager = Arc::new(manager.with_field_access(super::native_field_access()));
     app.manage(Arc::clone(&manager));
     app.manage(Arc::new(RecoverySlot::default()));
     app.manage(Arc::new(OutcomeRegistry::default()));
@@ -50,10 +51,18 @@ pub fn capture_at_start(app: &AppHandle, return_enabled: bool) -> Option<Pending
     Some(PendingCapture { manager, capture })
 }
 impl PendingCapture {
-    /// The recording started: commit the session and tell the UI (support too, if it changed).
+    /// The recording started: commit the session, start 011's read of the destination's focused
+    /// input on its own worker (never waited for), and tell the UI (support too, if it changed).
     pub fn commit(self, app: &AppHandle) {
         let previous = self.manager.support();
         let snapshot = self.manager.commit_start(self.capture);
+        let (id, generation) = (snapshot.dictation_id, snapshot.destination_generation);
+        let target = self.manager.field_target(id, generation);
+        // Detached on purpose: the read is bounded and the recording never waits for it.
+        drop(super::field_capture::spawn_start_read(
+            &self.manager,
+            target,
+        ));
         if snapshot.support != previous {
             emit_support(app, snapshot.support);
         }

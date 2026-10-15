@@ -10,13 +10,14 @@ const STATUSES: [InsertionStatus; 5] = [
     InsertionStatus::Skipped,
     InsertionStatus::Cancelled,
 ];
-const REASONS: [Option<Failure>; 6] = [
+const REASONS: [Option<Failure>; 7] = [
     None,
     Some(Failure::AppClosed),
     Some(Failure::ActivationFailed),
     Some(Failure::InsertionFailed),
     Some(Failure::PinnedAppNotRunning),
     Some(Failure::NoTextField),
+    Some(Failure::FieldReturnFailed),
 ];
 const KINDS: [Option<Kind>; 9] = [
     None,
@@ -51,7 +52,9 @@ fn expected(
         (Some(Kind::NotRead | Kind::Uncertain | Kind::InsertionFailed), _) => {
             (R::InsertionFailed, D::MayHaveReached)
         }
-        (Some(Kind::PermissionMissing), _) => (R::InsertionFailed, D::NothingSent),
+        (Some(Kind::PermissionMissing), _) | (None, Some(Failure::FieldReturnFailed)) => {
+            (R::InsertionFailed, D::NothingSent)
+        }
         (Some(_), _) => return None,
         (None, Some(Failure::AppClosed)) => (R::AppClosed, D::NotInserted),
         (None, Some(Failure::PinnedAppNotRunning)) => (R::PinnedAppNotRunning, D::NotInserted),
@@ -87,7 +90,7 @@ fn every_status_reason_outcome_and_platform_matches_the_spec_table() {
             }
         }
     }
-    assert_eq!(cases, 5 * 6 * 9 * 3);
+    assert_eq!(cases, 5 * 7 * 9 * 3);
 }
 
 // @spec AC-001: Reasons and the partial-insertion detail — .specs/features/010-recovery-bubble/spec.md#ac-001

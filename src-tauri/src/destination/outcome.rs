@@ -15,7 +15,8 @@ pub enum InsertionStatus {
     Skipped,
     Cancelled,
 }
-/// Why the destination flow failed (009 adds `pinned_app_not_running`, 010 `no_text_field`).
+/// Why the destination flow failed (009 adds `pinned_app_not_running`, 010 `no_text_field`,
+/// 011 `field_return_failed`).
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, specta::Type)]
 #[serde(rename_all = "snake_case")]
 pub enum DestinationFailure {
@@ -28,6 +29,9 @@ pub enum DestinationFailure {
     /// 010: the pre-insertion check found no editable field focused ("No text field is
     /// focused"); nothing was dispatched.
     NoTextField,
+    /// 011: the remembered input could not be verified and nothing was pasted (010 shows
+    /// "Insertion failed" with "nothing was sent to the application"). Internal wire value.
+    FieldReturnFailed,
 }
 /// 007's `PasteOutcome.kind` wire values, carried unchanged.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, specta::Type)]

@@ -91,6 +91,7 @@ fn classification_path(bench: &Bench, dictation: u64) {
             pid: 42,
             identity: ApplicationIdentity::BundleId("com.apple.Notes".to_owned()),
         }),
+        field: Default::default(),
     };
     bench.service.dictation_starting(true);
     bench.service.dictation_started(DictationId(dictation));

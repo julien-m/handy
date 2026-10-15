@@ -88,6 +88,7 @@ pub(super) fn fixture(source: DestinationSource, fails: bool) -> Fixture {
         destination_generation: generation,
         source,
         target,
+        field: Default::default(),
     };
     Fixture {
         clock,

@@ -60,6 +60,9 @@ pub struct DestinationContext {
     pub source: DestinationSource,
     /// `None` when no application can be named (foreground unreadable or Handy itself).
     pub target: Option<ResolvedTarget>,
+    /// 011's decision on the input remembered at the start; internal, never serialized.
+    #[serde(skip)]
+    pub field: super::field_check::FieldCheck,
 }
 
 /// The single per-dictation decision "insert or recover", and the only Enter veto.
@@ -91,6 +94,9 @@ impl RecoveryDisposition {
 pub enum RecoveryReason {
     /// No text field is focused in the target (010 spec reason "No text field is focused").
     NoTextField,
+    /// 011: the input remembered at the start could not be verified after an attempt that may
+    /// have changed something, or its range is missing or unverified: paste nothing.
+    FieldReturnFailed,
 }
 
 /// Answer of the optional 010 pre-insertion check.
