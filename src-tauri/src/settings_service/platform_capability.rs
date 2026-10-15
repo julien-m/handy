@@ -12,6 +12,9 @@ pub enum PlatformCapability {
     Destination,
     /// Apple Intelligence as a post-processing provider (Apple silicon Macs, 005).
     AppleIntelligence,
+    /// Classification of the destination's focused field (macOS with the `destination-return`
+    /// gate open, 010).
+    FocusedFieldDetection,
 }
 
 /// Capabilities of one build, or an injected set in tests.
@@ -28,20 +31,40 @@ const DESTINATION_BUILD: bool = !crate::destination::rollout::Rollout::CURRENT
 // Apple Intelligence exists only in Apple silicon macOS builds (the same condition that adds the
 // provider to the default list and compiles the native adapter).
 const APPLE_INTELLIGENCE_BUILD: bool = cfg!(all(target_os = "macos", target_arch = "aarch64"));
-const BUILD_CAPABILITIES: &[PlatformCapability] =
-    match (DESTINATION_BUILD, APPLE_INTELLIGENCE_BUILD) {
-        (true, true) => &[
-            PlatformCapability::Destination,
-            PlatformCapability::AppleIntelligence,
-        ],
-        (true, false) => &[PlatformCapability::Destination],
-        (false, true) => &[PlatformCapability::AppleIntelligence],
-        (false, false) => &[],
-    };
+// Field detection (010) exists only in macOS builds with the 006 rollout gate open.
+const FOCUSED_FIELD_BUILD: bool =
+    cfg!(target_os = "macos") && crate::destination::rollout::DESTINATION_RETURN_WIRED;
+const BUILD_CAPABILITIES: &[PlatformCapability] = match (
+    DESTINATION_BUILD,
+    APPLE_INTELLIGENCE_BUILD,
+    FOCUSED_FIELD_BUILD,
+) {
+    (true, true, true) => &[
+        PlatformCapability::Destination,
+        PlatformCapability::AppleIntelligence,
+        PlatformCapability::FocusedFieldDetection,
+    ],
+    (true, false, true) => &[
+        PlatformCapability::Destination,
+        PlatformCapability::FocusedFieldDetection,
+    ],
+    (true, true, false) => &[
+        PlatformCapability::Destination,
+        PlatformCapability::AppleIntelligence,
+    ],
+    (true, false, false) => &[PlatformCapability::Destination],
+    (false, true, _) => &[PlatformCapability::AppleIntelligence],
+    (false, false, _) => &[],
+};
 
 /// Setting keys that need a capability; each later feature adds its own row.
-const KEY_CAPABILITIES: &[(&str, PlatformCapability)] =
-    &[("return_to_dictation_app", PlatformCapability::Destination)];
+const KEY_CAPABILITIES: &[(&str, PlatformCapability)] = &[
+    ("return_to_dictation_app", PlatformCapability::Destination),
+    (
+        "show_recovery_bubble_without_text_field",
+        PlatformCapability::FocusedFieldDetection,
+    ),
+];
 
 impl PlatformCapabilities {
     /// Capabilities of the running build.
@@ -118,6 +141,18 @@ mod tests {
         assert_eq!(
             PlatformCapabilities::current().supports(PlatformCapability::AppleIntelligence),
             cfg!(all(target_os = "macos", target_arch = "aarch64"))
+        );
+    }
+    #[test]
+    fn the_build_detects_focused_fields_exactly_on_macos_with_the_gate_open() {
+        let expected = cfg!(feature = "destination-return") && cfg!(target_os = "macos");
+        assert_eq!(
+            PlatformCapabilities::current().supports(PlatformCapability::FocusedFieldDetection),
+            expected
+        );
+        assert_eq!(
+            required_capability("show_recovery_bubble_without_text_field"),
+            Some(PlatformCapability::FocusedFieldDetection)
         );
     }
     #[test]

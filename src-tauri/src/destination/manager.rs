@@ -44,6 +44,8 @@ pub(super) struct ManagerState {
     /// Session pin of 009 (RAM only, ends with the process).
     pub(super) pin: Option<super::pin::PinState>,
     pub(super) pin_version: u64,
+    /// When the disposition of a dictation became `Recover` (010 latency start).
+    pub(super) recovery_decided: Option<(DictationId, Instant)>,
 }
 
 /// Session owner shared by the recording lifecycle, the session commands and 009/010.
@@ -269,9 +271,23 @@ impl DestinationManager {
         generation: u64,
         next: RecoveryDisposition,
     ) -> Result<RecoveryDisposition, DispositionRefusal> {
+        let now = self.clock.now();
         let mut state = self.lock();
         let session = state.session.as_mut().ok_or(DispositionRefusal::Stale)?;
-        session.set_disposition(dictation_id, generation, next)
+        let previous = session.disposition;
+        let set = session.set_disposition(dictation_id, generation, next)?;
+        if set == RecoveryDisposition::Recover && previous != RecoveryDisposition::Recover {
+            // 010's QE latency starts at this decision (text-free timing only).
+            state.recovery_decided = Some((dictation_id, now));
+        }
+        Ok(set)
+    }
+    /// When `dictation_id`'s disposition became `Recover`, if it did (010 latency start).
+    pub fn recovery_decided_at(&self, dictation_id: DictationId) -> Option<Instant> {
+        self.lock()
+            .recovery_decided
+            .filter(|(decided, _)| *decided == dictation_id)
+            .map(|(_, at)| at)
     }
     /// 009's atomic Enter claim, under the same lock as `set_disposition`. A cancellation after
     /// the outcome was published moves the manager's generation on, so a late claim (Windows

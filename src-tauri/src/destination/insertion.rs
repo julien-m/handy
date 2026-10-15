@@ -264,7 +264,10 @@ fn refusal_report(refusal: GuardRefusal, source: DestinationSource) -> Insertion
     match refusal {
         GuardRefusal::Cancelled => InsertionReport::ended(InsertionStatus::Cancelled, None, source),
         GuardRefusal::TargetLost => failed(DestinationFailure::ActivationFailed),
-        GuardRefusal::RecoverInstead => failed(DestinationFailure::InsertionFailed),
+        // 010: a pre-insertion verdict keeps its typed reason (never a generic failure).
+        GuardRefusal::RecoverInstead(super::context::RecoveryReason::NoTextField) => {
+            failed(DestinationFailure::NoTextField)
+        }
     }
 }
 

@@ -18,6 +18,7 @@ use super::actor::{shutdown_allowance, ActorStopped, SmartPasteActor};
 use super::destination_bridge::{DestinationChecks, ForegroundCheck, RequestCheck, SessionCheck};
 use super::ids::{DestinationGeneration, DictationId, Transcript};
 use super::outcome::{InsertionPath, PasteOutcome, PasteOutcomeKind};
+use super::pasteboard_port::PasteboardError;
 use super::request::{DestinationContext, InsertionRequest};
 use super::setting_policy::Rollout;
 use super::settlement::ClipboardPolicy;
@@ -49,6 +50,20 @@ impl ActorSlot {
     /// Takes the actor out (normal exit); later submissions are refused.
     pub fn take(&self) -> Option<SmartPasteActor> {
         self.0.lock().unwrap_or_else(PoisonError::into_inner).take()
+    }
+    /// Queues 010's deliberate Copy on the actor (see [`SmartPasteActor::deliberate_copy`]).
+    ///
+    /// # Errors
+    /// [`ActorStopped`] once the actor is gone.
+    pub fn deliberate_copy(
+        &self,
+        transcript: Transcript,
+    ) -> Result<Receiver<Result<(), PasteboardError>>, ActorStopped> {
+        let actor = self.0.lock().unwrap_or_else(PoisonError::into_inner);
+        actor
+            .as_ref()
+            .ok_or(ActorStopped)?
+            .deliberate_copy(transcript)
     }
 }
 

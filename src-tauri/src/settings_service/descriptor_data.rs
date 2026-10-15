@@ -66,6 +66,9 @@ inventory! {
  "mute_while_recording" => (Boolean,false,None,&[],false,false,"general",None);
  "append_trailing_space" => (Boolean,false,None,&[],false,false,"output",None);
  "return_to_dictation_app" => (Boolean,false,None,&[],false,false,"output",None);
+ // 010 (gate `destination-return` open): read at dictation start, refused off macOS.
+ #[cfg(feature = "destination-return")]
+ "show_recovery_bubble_without_text_field" => (Boolean,false,None,&[],false,false,"output",None);
  "app_language" => (String,false,None,&[],false,false,"general",Language);
  "theme" => (String,false,None,&["system","light","dark"],false,false,"general",Theme);
  "experimental_enabled" => (Boolean,false,None,&[],false,false,"general",None);

@@ -22,7 +22,7 @@ use super::clock::Clock;
 use super::direct::{
     attempt_direct_insertion, DirectAttempt, FallbackGuard, GuardVerdict, SkipReason,
 };
-use super::ids::TransactionId;
+use super::ids::{TransactionId, Transcript};
 use super::key_events::{KeyEventPort, PasteKey, CHORD_HOLD};
 use super::keyboard::{restore_after_chord, switch_for_paste, InputSourcePort, LayoutSwitch};
 use super::lifecycle::{DeadlineOutcome, ReadClassification, ReadLifecycle, ReadUpdate};
@@ -89,6 +89,16 @@ impl SmartPasteCoordinator {
     /// Next instant at which [`Self::handle_deadline`] has work to do.
     pub fn next_deadline(&self) -> Option<Instant> {
         self.pending.as_ref()?.lifecycle.next_deadline()
+    }
+
+    /// 010's deliberate Copy: `transcript` as unmarked plain text (the primitive of the "copy
+    /// to clipboard" setting). It changes the `changeCount` even for identical text, so the
+    /// pending restoration, guarded by its publication count, abandons on its own.
+    ///
+    /// # Errors
+    /// The pasteboard error; the bubble then stays open.
+    pub fn deliberate_copy(&mut self, transcript: &Transcript) -> Result<(), PasteboardError> {
+        self.ports.pasteboard.write_plain_text(transcript)
     }
 
     /// Runs one insertion and returns its single terminal outcome. Reads are

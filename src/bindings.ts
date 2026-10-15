@@ -872,6 +872,55 @@ async setOverlayExtent(width: number, height: number) : Promise<void> {
 async holdOverlayForNotice(durationMs: number) : Promise<void> {
     await TAURI_INVOKE("hold_overlay_for_notice", { durationMs });
 },
+/**
+ * The current bubble's projection (preview, reason, metadata), for the recovery window only.
+ */
+async recoveryBubbleView() : Promise<RecoveryBubbleView | null> {
+    return await TAURI_INVOKE("recovery_bubble_view");
+},
+/**
+ * The recovery view rendered bubble `bubble_id` for the first time (it is now presented).
+ */
+async recoveryBubbleRendered(bubbleId: BubbleId) : Promise<void> {
+    await TAURI_INVOKE("recovery_bubble_rendered", { bubbleId });
+},
+/**
+ * Close bubble `bubble_id`; the history entry is untouched.
+ */
+async recoveryBubbleClose(bubbleId: BubbleId) : Promise<void> {
+    await TAURI_INVOKE("recovery_bubble_close", { bubbleId });
+},
+/**
+ * Copy the full transcript of bubble `bubble_id` (deliberate Copy), written on a blocking
+ * worker; success closes the bubble, a failure leaves it open (logged without the text).
+ */
+async recoveryBubbleCopy(bubbleId: BubbleId, destinationGeneration: number) : Promise<void> {
+    await TAURI_INVOKE("recovery_bubble_copy", { bubbleId, destinationGeneration });
+},
+/**
+ * Start the native drag of bubble `bubble_id` from the mouse event in progress (macOS).
+ */
+async recoveryBubbleBeginDrag(bubbleId: BubbleId) : Promise<void> {
+    await TAURI_INVOKE("recovery_bubble_begin_drag", { bubbleId });
+},
+/**
+ * The recovery view needs `width` × `height` logical points.
+ */
+async recoveryBubbleResize(width: number, height: number) : Promise<void> {
+    await TAURI_INVOKE("recovery_bubble_resize", { width, height });
+},
+/**
+ * "Show the bubble when no text field is focused" (010), through the shared settings service:
+ * refused off macOS (`unsupported_platform`) and unknown with the gate closed (`not_found`).
+ */
+async changeShowRecoveryBubbleWithoutTextFieldSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_show_recovery_bubble_without_text_field_setting", { enabled }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async isPortable() : Promise<boolean> {
     return await TAURI_INVOKE("is_portable");
 },
@@ -1487,7 +1536,13 @@ automatic_enter?: AutomaticEnterPolicy | null; post_process_enabled?: boolean; p
 /**
  * Return to the application where the dictation started before inserting (006).
  */
-return_to_dictation_app?: boolean; app_language?: string; theme?: Theme; experimental_enabled?: boolean; lazy_stream_close?: boolean; keyboard_implementation?: KeyboardImplementation; show_tray_icon?: boolean; paste_delay_ms?: number; paste_delay_after_ms?: number; 
+return_to_dictation_app?: boolean; 
+/**
+ * "Show the bubble when no text field is focused" (010): set in memory by the
+ * normalization for this build (`recovery::setting`); absent with the `destination-return`
+ * gate closed, which never writes it.
+ */
+show_recovery_bubble_without_text_field?: boolean | null; app_language?: string; theme?: Theme; experimental_enabled?: boolean; lazy_stream_close?: boolean; keyboard_implementation?: KeyboardImplementation; show_tray_icon?: boolean; paste_delay_ms?: number; paste_delay_after_ms?: number; 
 /**
  * Debug-gated ("beta") receipt-sequenced paste: restore the clipboard only
  * after the target app actually reads the transcript, instead of after a
@@ -1570,6 +1625,35 @@ error: string | null;
  * Typed refusal, which the settings UI translates.
  */
 edit_error: ShortcutEditError | null }
+/**
+ * Identity of one bubble; a closed bubble's identity is never reused.
+ */
+export type BubbleId = number
+/**
+ * Why the bubble appears (spec AC-003 reasons). Distinct from 006's `context::RecoveryReason`,
+ * which is only the reason of a pre-insertion verdict.
+ */
+export type BubbleReason = 
+/**
+ * "<App> is no longer open".
+ */
+"app_closed" | 
+/**
+ * "<App> is pinned but not open".
+ */
+"pinned_app_not_running" | 
+/**
+ * "Could not bring <App> forward".
+ */
+"activation_failed" | 
+/**
+ * "Insertion failed".
+ */
+"insertion_failed" | 
+/**
+ * "No text field is focused".
+ */
+"no_text_field"
 /**
  * Unit of a context budget.
  */
@@ -2009,6 +2093,10 @@ export type HistoryEntry = ({ post_process_prompt_id: string | null; post_proces
  * Failure code (`timeout`, `provider_error`, ...) when the original text was used.
  */
 post_process_failure: string | null }) & { id: number; file_name: string | null; timestamp: number; saved: boolean; title: string; transcription_text: string; post_processed_text: string | null; post_process_prompt: string | null; post_process_requested: boolean }
+/**
+ * Whether the explanation may say the transcript is in History (saved only).
+ */
+export type HistoryNote = "kept" | "not_kept"
 export type HistoryUpdatePayload = { action: "added"; entry: HistoryEntry } | { action: "updated"; entry: HistoryEntry } | { action: "deleted"; id: number } | { action: "toggled"; id: number }
 /**
  * Why a line carries no rule.
@@ -2406,10 +2494,52 @@ export type ReadinessIssue =
  */
 "prompt_missing"
 /**
+ * What the explanation adds about input that may have been sent (spec AC-001).
+ */
+export type ReasonDetail = 
+/**
+ * Decided before insertion: nothing was dispatched.
+ */
+"not_inserted" | 
+/**
+ * "Some text may have reached the application" (a method that may have sent input).
+ */
+"may_have_reached" | 
+/**
+ * Smart paste `permission_missing`: nothing was sent to the application.
+ */
+"nothing_sent"
+/**
  * Recognition mode of the selected model's dictations.
  */
 export type RecognitionMode = "batch" | "streaming"
 export type RecordingRetentionPeriod = "never" | "preserve_limit" | "days_3" | "weeks_2" | "months_3"
+/**
+ * Targeted projection rendered by the recovery window (event `recovery-bubble-changed` and
+ * command `recovery_bubble_view`). No full transcript, no window title.
+ */
+export type RecoveryBubbleView = { bubble_id: BubbleId; destination_generation: number; reason: BubbleReason; 
+/**
+ * Destination name, `None` when no application can be named (localized noun then).
+ */
+app_name: string | null; 
+/**
+ * Beginning of the transcript, at most `PREVIEW_MAX_CHARS` characters; the view shows
+ * its first two lines with an ellipsis.
+ */
+preview: string; 
+/**
+ * True when the transcript is longer than `preview`.
+ */
+truncated: boolean; detail: ReasonDetail; 
+/**
+ * 007 reported a read after "not read": the text may have been pasted after all.
+ */
+late_read: boolean; history: HistoryNote; 
+/**
+ * The macOS drag handle is offered.
+ */
+can_drag: boolean }
 /**
  * The single per-dictation decision "insert or recover", and the only Enter veto.
  */

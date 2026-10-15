@@ -28,9 +28,11 @@ fn json_get_prints_one_envelope_with_revision_and_every_public_key() -> TestResu
             (run.code, &envelope["ok"], &envelope["revision"]),
             (0, &json!(true), &json!(0))
         );
+        // 010 adds `show_recovery_bubble_without_text_field` with the gate open.
+        let keys = 67 + usize::from(cfg!(feature = "destination-return"));
         assert_eq!(
             envelope["data"].as_object().map(|data| data.len()),
-            Some(67)
+            Some(keys)
         );
     }
     let one = app

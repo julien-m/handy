@@ -1,5 +1,5 @@
 //! Conservation of a failed dictation and hand-off to optional consumers (009 Enter policy, 010
-//! recovery bubble). The final text stays in one bounded volatile slot behind an opaque
+//! recovery bubble, whose presentation is answered later through a `PresentationReceipt`). The final text stays in one bounded volatile slot behind an opaque
 //! reference until a later final result supersedes it, a consumer releases it or the process
 //! exits; it is never broadcast in an event or a log. Consumers are optional: a missing one
 //! never prevents the terminal outcome.
@@ -74,27 +74,79 @@ impl RecoverySlot {
     }
 }
 
-/// What a consumer did with an outcome.
+/// What the recovery surface answered for one presented reason (010 "Presentation hand-off").
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum PresentationResult {
+    /// The recovery window is shown and its view reported the first render of that bubble.
+    Presented,
+    /// Confirmed impossibility (no window, creation or show error, hung surface destroyed).
+    Unpresentable,
+    /// A new dictation closed the bubble before it became visible.
+    Superseded,
+}
+/// How the wait for a presentation ended.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum PresentationWait {
+    /// The surface answered before the guard.
+    Resolved(PresentationResult),
+    /// The consumer dropped its end without an answer: treated as a confirmed failure.
+    Abandoned,
+    /// The guard expired first; the presentation goes on without this waiter.
+    GuardExpired,
+}
+/// The waiting end of one pending presentation, handed to 006 by the consumer.
+#[derive(Debug)]
+pub struct PresentationReceipt(tokio::sync::oneshot::Receiver<PresentationResult>);
+impl PresentationReceipt {
+    /// A receipt and the sender the consumer resolves later.
+    pub fn pending() -> (tokio::sync::oneshot::Sender<PresentationResult>, Self) {
+        let (sender, receiver) = tokio::sync::oneshot::channel();
+        (sender, Self(receiver))
+    }
+    /// A receipt already resolved with `result` (a consumer that presented synchronously).
+    pub fn resolved(result: PresentationResult) -> Self {
+        let (sender, receipt) = Self::pending();
+        // The receiver is alive in `receipt`, so this send cannot fail.
+        let _ = sender.send(result);
+        receipt
+    }
+    /// Wait for the answer at most `guard`, without blocking a thread. Dropping the receipt
+    /// at expiry tells the consumer that nobody waits any more.
+    pub async fn wait(self, guard: std::time::Duration) -> PresentationWait {
+        match tokio::time::timeout(guard, self.0).await {
+            Ok(Ok(result)) => PresentationWait::Resolved(result),
+            Ok(Err(_)) => PresentationWait::Abandoned,
+            Err(_) => PresentationWait::GuardExpired,
+        }
+    }
+}
+
+/// What a consumer did with an outcome.
+#[derive(Debug)]
 pub enum ConsumerAck {
-    /// The consumer took ownership of presenting the failure reason (010).
+    /// The consumer presented the failure reason synchronously.
     ReasonPresented,
     /// Received; the consumer does not present the reason.
     Received,
+    /// The consumer took the reason and answers its presentation through the receipt (010).
+    PresentationPending(PresentationReceipt),
 }
 /// A registered consumer of terminal outcomes (009, 010).
 pub trait OutcomeConsumer: Send + Sync {
-    /// Receive one terminal outcome (each `outcome_id` at most once).
+    /// Receive one terminal outcome (each `outcome_id` at most once). Never waits: a consumer
+    /// that presents later returns `PresentationPending`.
     fn consume(&self, outcome: &InsertionOutcome) -> ConsumerAck;
 }
 /// Result of one publication.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[derive(Debug)]
 pub enum Delivery {
     /// Already published under this `outcome_id`: nothing was delivered again.
     Duplicate,
-    /// Delivered; `reason_presented` when a consumer acknowledged presenting the reason, so the
-    /// indicator's own reason may be suppressed.
-    Delivered { reason_presented: bool },
+    /// Delivered; `presentation` when a consumer took the reason, so the caller waits for its
+    /// answer before deciding on the `paste-error` fallback.
+    Delivered {
+        presentation: Option<PresentationReceipt>,
+    },
 }
 
 // Remember this many recent outcome ids for deduplication: far more than the outcomes that can
@@ -132,11 +184,23 @@ impl OutcomeRegistry {
             .consumers
             .read()
             .unwrap_or_else(PoisonError::into_inner);
-        let acks = consumers.iter().map(|consumer| consumer.consume(outcome));
-        let reason_presented = acks.fold(false, |presented, ack| {
-            presented | (ack == ConsumerAck::ReasonPresented)
-        });
-        Delivery::Delivered { reason_presented }
+        // Every consumer receives the outcome; the first one that takes the reason answers it.
+        let presentation = consumers
+            .iter()
+            .map(|consumer| consumer.consume(outcome))
+            .fold(None, |taken, ack| taken.or_else(|| receipt_of(ack)));
+        Delivery::Delivered { presentation }
+    }
+}
+
+/// The receipt of a consumer that took the reason, if it did.
+fn receipt_of(ack: ConsumerAck) -> Option<PresentationReceipt> {
+    match ack {
+        ConsumerAck::ReasonPresented => {
+            Some(PresentationReceipt::resolved(PresentationResult::Presented))
+        }
+        ConsumerAck::PresentationPending(receipt) => Some(receipt),
+        ConsumerAck::Received => None,
     }
 }
 

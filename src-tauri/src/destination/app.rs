@@ -60,6 +60,28 @@ impl PendingCapture {
         emit_changed(app, &snapshot);
     }
 }
+/// The pre-insertion check of 010, managed only when the recovery bubble is installed.
+struct InstalledRecovery(Arc<dyn super::context::RecoveryPort>);
+
+/// Install 010's recovery bubble: its pre-insertion check for the guard and its outcome
+/// consumer in the registry (rollout gate open only; see `recovery::app`).
+pub fn install_recovery(
+    app: &AppHandle,
+    check: Arc<dyn super::context::RecoveryPort>,
+    consumer: Arc<dyn super::recovery::OutcomeConsumer>,
+) {
+    app.manage(InstalledRecovery(check));
+    if let Some(registry) = app.try_state::<Arc<OutcomeRegistry>>() {
+        registry.register(consumer);
+    }
+}
+/// The pre-insertion check: 010's when installed, otherwise the one that always inserts.
+pub fn recovery_port(app: &AppHandle) -> Arc<dyn super::context::RecoveryPort> {
+    match app.try_state::<InstalledRecovery>() {
+        Some(installed) => Arc::clone(&installed.0),
+        None => Arc::new(super::context::NoRecoveryConsumer),
+    }
+}
 /// The destination manager, once installed.
 pub fn manager(app: &AppHandle) -> Option<Arc<DestinationManager>> {
     app.try_state::<Arc<DestinationManager>>()

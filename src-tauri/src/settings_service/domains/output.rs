@@ -5,7 +5,8 @@
 //! 006's destination return (`return_to_dictation_app`, refused on a platform without the
 //! destination capability). Feature 007 adds `paste_method smart_paste` through that shared
 //! validation: accepted only where `smart_paste::setting_policy` makes it selectable, refused
-//! elsewhere with `validation_failed` (exit 2) before any write, dry runs included.
+//! elsewhere with `validation_failed` (exit 2) before any write, dry runs included. Feature
+//! 010 adds `show_recovery_bubble_without_text_field` with the gate open (refused off macOS).
 use super::{ChangeKind, Domain, DomainChange, DomainPlan, DomainRequest};
 use crate::settings::AppSettings;
 use crate::settings_service::{
@@ -20,7 +21,9 @@ const ENTER_KEY: &str = "auto_submit";
 #[cfg(feature = "destination-return")]
 const ENTER_KEY: &str = "automatic_enter";
 
-/// Output settings of this build, in help order.
+/// Output settings of this build, in help order (010 adds its no-text-field key when the
+/// `destination-return` gate is open).
+#[cfg(not(feature = "destination-return"))]
 pub const OUTPUT_KEYS: [&str; 11] = [
     "paste_method",
     "clipboard_handling",
@@ -33,6 +36,22 @@ pub const OUTPUT_KEYS: [&str; 11] = [
     "external_script_path",
     "append_trailing_space",
     "return_to_dictation_app",
+];
+/// Output settings of this build, in help order.
+#[cfg(feature = "destination-return")]
+pub const OUTPUT_KEYS: [&str; 12] = [
+    "paste_method",
+    "clipboard_handling",
+    ENTER_KEY,
+    "auto_submit_key",
+    "paste_delay_ms",
+    "paste_delay_after_ms",
+    "reliable_paste",
+    "typing_tool",
+    "external_script_path",
+    "append_trailing_space",
+    "return_to_dictation_app",
+    "show_recovery_bubble_without_text_field",
 ];
 
 /// The output domain.

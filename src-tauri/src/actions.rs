@@ -212,6 +212,8 @@ impl ShortcutAction for TranscribeAction {
         // doesn't stream (or whose capability is not known yet) gets the compact
         // pill instead of an oversized transparent live window.
         let overlay_started = Instant::now();
+        // 010: a new dictation closes the recovery bubble before the indicator shows.
+        crate::recovery::app::dictation_starting(app, &settings);
         match settings.overlay_style {
             OverlayStyle::Live if model_supports_streaming => utils::show_streaming_overlay(app),
             OverlayStyle::Live | OverlayStyle::Minimal => show_recording_overlay(app),
@@ -241,6 +243,7 @@ impl ShortcutAction for TranscribeAction {
                     .capture(&binding_id, current_matcher(app));
                 if let Some(destination) = destination {
                     destination.commit(app);
+                    crate::recovery::app::dictation_started(app);
                 }
                 dictation::start_session(app, &settings, &binding_id);
                 let generation = readiness.generation();

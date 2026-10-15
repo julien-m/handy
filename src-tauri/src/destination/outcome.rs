@@ -15,7 +15,7 @@ pub enum InsertionStatus {
     Skipped,
     Cancelled,
 }
-/// Why the destination flow failed (009 adds `pinned_app_not_running`).
+/// Why the destination flow failed (009 adds `pinned_app_not_running`, 010 `no_text_field`).
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, specta::Type)]
 #[serde(rename_all = "snake_case")]
 pub enum DestinationFailure {
@@ -25,6 +25,9 @@ pub enum DestinationFailure {
     /// 009 AC-003: no running application has the pinned identity (010: "<App> is pinned but
     /// not open"); a running pin that does not come forward stays `activation_failed`.
     PinnedAppNotRunning,
+    /// 010: the pre-insertion check found no editable field focused ("No text field is
+    /// focused"); nothing was dispatched.
+    NoTextField,
 }
 /// 007's `PasteOutcome.kind` wire values, carried unchanged.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, specta::Type)]

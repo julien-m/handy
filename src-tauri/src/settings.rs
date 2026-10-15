@@ -574,6 +574,11 @@ pub struct AppSettings {
     /// Return to the application where the dictation started before inserting (006).
     #[serde(default = "default_return_to_dictation_app")]
     pub return_to_dictation_app: bool,
+    /// "Show the bubble when no text field is focused" (010): set in memory by the
+    /// normalization for this build (`recovery::setting`); absent with the `destination-return`
+    /// gate closed, which never writes it.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub show_recovery_bubble_without_text_field: Option<bool>,
     #[serde(default = "default_app_language")]
     pub app_language: String,
     #[serde(default = "default_theme")]
@@ -1122,6 +1127,7 @@ pub fn get_default_settings() -> AppSettings {
         mute_while_recording: false,
         append_trailing_space: false,
         return_to_dictation_app: default_return_to_dictation_app(),
+        show_recovery_bubble_without_text_field: crate::recovery::setting::fresh_value(),
         app_language: default_app_language(),
         theme: default_theme(),
         experimental_enabled: false,
@@ -1320,6 +1326,9 @@ pub(crate) fn apply_settings_migrations(
     ) {
         updated = true;
     }
+
+    // 010: the no-text-field bubble setting of this build, in memory only (never a write).
+    crate::recovery::setting::normalize(settings);
 
     // One-time macOS migration to smart paste (AC-014), inactive until the
     // paste pipeline dispatches smart paste; see `smart_paste::setting_policy`.

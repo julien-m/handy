@@ -5,16 +5,16 @@ use std::ffi::c_void;
 use std::ptr;
 
 /// Untyped CoreFoundation reference.
-pub(super) type CfTypeRef = *const c_void;
+pub(crate) type CfTypeRef = *const c_void;
 /// CoreFoundation signed index.
-pub(super) type CfIndex = isize;
+pub(crate) type CfIndex = isize;
 
 /// CoreFoundation range, also used by AX selected-text ranges.
 #[repr(C)]
 #[derive(Debug, Default, Clone, Copy)]
-pub(super) struct CfRange {
-    pub(super) location: CfIndex,
-    pub(super) length: CfIndex,
+pub(crate) struct CfRange {
+    pub(crate) location: CfIndex,
+    pub(crate) length: CfIndex,
 }
 
 #[link(name = "CoreFoundation", kind = "framework")]
@@ -32,7 +32,7 @@ unsafe extern "C" {
 }
 
 /// Owned (+1) CoreFoundation reference, released on drop.
-pub(super) struct CfOwned(CfTypeRef);
+pub(crate) struct CfOwned(CfTypeRef);
 
 // SAFETY: CoreFoundation retain/release are thread-safe; AX elements may be
 // messaged from any thread and other references are only used by their
@@ -41,12 +41,12 @@ unsafe impl Send for CfOwned {}
 
 impl CfOwned {
     /// Takes ownership of a reference obtained under the Create/Copy Rule.
-    pub(super) fn from_create_rule(reference: CfTypeRef) -> Option<Self> {
+    pub(crate) fn from_create_rule(reference: CfTypeRef) -> Option<Self> {
         (!reference.is_null()).then_some(Self(reference))
     }
 
     /// Creates a CFString from UTF-16 code units.
-    pub(super) fn string(units: &[u16]) -> Option<Self> {
+    pub(crate) fn string(units: &[u16]) -> Option<Self> {
         let count = CfIndex::try_from(units.len()).ok()?;
         // SAFETY: `units` is a valid buffer of `count` UTF-16 code units for
         // the duration of the call; the result follows the Create Rule.
@@ -55,12 +55,12 @@ impl CfOwned {
     }
 
     /// Creates a CFString from Rust text.
-    pub(super) fn from_text(text: &str) -> Option<Self> {
+    pub(crate) fn from_text(text: &str) -> Option<Self> {
         Self::string(&text.encode_utf16().collect::<Vec<_>>())
     }
 
     /// Borrowed raw reference, valid while `self` lives.
-    pub(super) fn as_ptr(&self) -> CfTypeRef {
+    pub(crate) fn as_ptr(&self) -> CfTypeRef {
         self.0
     }
 }
@@ -75,7 +75,7 @@ impl Drop for CfOwned {
 
 /// Why a CF value could not be read as a string.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub(super) enum CfStringError {
+pub(crate) enum CfStringError {
     /// The value is not a CFString.
     NotAString,
     /// The string is longer than the caller's limit (in UTF-16 units).
@@ -84,7 +84,7 @@ pub(super) enum CfStringError {
 
 /// Copies a CFString's UTF-16 code units, refusing strings longer than
 /// `max_units` before copying anything.
-pub(super) fn string_units(value: CfTypeRef, max_units: usize) -> Result<Vec<u16>, CfStringError> {
+pub(crate) fn string_units(value: CfTypeRef, max_units: usize) -> Result<Vec<u16>, CfStringError> {
     // SAFETY: `value` is a live CF object; its type is checked first.
     if value.is_null() || unsafe { CFGetTypeID(value) != CFStringGetTypeID() } {
         return Err(CfStringError::NotAString);
@@ -106,7 +106,7 @@ pub(super) fn string_units(value: CfTypeRef, max_units: usize) -> Result<Vec<u16
 }
 
 /// Returns the CF type identifier of a live value.
-pub(super) fn type_id(value: CfTypeRef) -> usize {
+pub(crate) fn type_id(value: CfTypeRef) -> usize {
     // SAFETY: callers pass live CF objects.
     unsafe { CFGetTypeID(value) }
 }

@@ -4,6 +4,7 @@ pub mod history;
 pub mod models;
 pub mod overlay;
 pub mod prompts;
+pub mod recovery;
 pub mod replacements;
 pub mod replacements_files;
 pub mod transcription;

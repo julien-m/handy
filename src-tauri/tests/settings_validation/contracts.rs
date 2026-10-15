@@ -104,7 +104,8 @@ fn generated_schema_matches_wire_shapes_and_descriptor_inventory(
             .as_object()
             .ok_or("schema properties")?
             .len(),
-        67
+        // 010 adds `show_recovery_bubble_without_text_field` with the gate open.
+        67 + usize::from(cfg!(feature = "destination-return"))
     );
     assert_eq!(
         schema["$defs"]["success"]["properties"]["ok"]["const"],
@@ -150,6 +151,7 @@ fn checked_schema_matches_the_actual_dto_generator() -> Result<(), Box<dyn std::
     let mut checked = checked;
     if cfg!(feature = "destination-return") {
         assert_eq!(with_automatic_enter(&mut checked), 5);
+        assert_eq!(with_recovery_bubble_key(&mut checked), 5);
     }
     assert_eq!(checked, actual);
     Ok(())
@@ -187,6 +189,63 @@ fn with_automatic_enter(schema: &mut serde_json::Value) -> usize {
     changed
 }
 
+/// 010 with the gate open: `show_recovery_bubble_without_text_field`, a plain boolean output
+/// setting, added right after `return_to_dictation_app` in the public properties, the key
+/// lists and the descriptors (the only difference from the checked contract); returns how many
+/// places changed.
+fn with_recovery_bubble_key(schema: &mut serde_json::Value) -> usize {
+    use serde_json::{json, Value};
+    const KEY: &str = "show_recovery_bubble_without_text_field";
+    let mut changed = 0;
+    let properties = &mut schema["$defs"]["public_settings"]["properties"];
+    if let Some(properties) = properties.as_object_mut() {
+        let boolean = properties.get("return_to_dictation_app").cloned();
+        properties.insert(
+            KEY.to_owned(),
+            boolean.unwrap_or(json!({"type": "boolean"})),
+        );
+        changed += 1;
+    }
+    changed += insert_after_return(schema, &Value::from(KEY));
+    if let Some(descriptors) = schema["x-setting-descriptors"].as_array_mut() {
+        if let Some(index) = descriptors
+            .iter()
+            .position(|entry| entry["key"] == "return_to_dictation_app")
+        {
+            let mut descriptor = descriptors[index].clone();
+            descriptor["key"] = Value::from(KEY);
+            descriptors.insert(index + 1, descriptor);
+            changed += 1;
+        }
+    }
+    changed
+}
+/// Insert `key` after each string `return_to_dictation_app` of the arrays of `value`.
+fn insert_after_return(value: &mut serde_json::Value, key: &serde_json::Value) -> usize {
+    match value {
+        serde_json::Value::Array(items) => {
+            let nested: usize = items
+                .iter_mut()
+                .map(|item| insert_after_return(item, key))
+                .sum();
+            match items
+                .iter()
+                .position(|item| item == "return_to_dictation_app")
+            {
+                Some(index) => {
+                    items.insert(index + 1, key.clone());
+                    nested + 1
+                }
+                None => nested,
+            }
+        }
+        serde_json::Value::Object(fields) => fields
+            .values_mut()
+            .map(|field| insert_after_return(field, key))
+            .sum(),
+        _ => 0,
+    }
+}
 /// Replace the string `auto_submit` by `automatic_enter` in every array of `value`.
 fn rename_in_lists(value: &mut serde_json::Value) -> usize {
     match value {

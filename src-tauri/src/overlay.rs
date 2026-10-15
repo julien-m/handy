@@ -289,6 +289,21 @@ fn calculate_overlay_position(
     Some((x, y))
 }
 
+/// Position (logical) of a `width` × `height` surface at the indicator's place: 010's recovery
+/// bubble appears there, in place of the indicator.
+pub fn indicator_place(app_handle: &AppHandle, width: f64, height: f64) -> Option<(f64, f64)> {
+    calculate_overlay_position(app_handle, width, height)
+}
+
+// @spec FR-002: The bubble takes the indicator's place — .specs/features/010-recovery-bubble/spec.md#fr-002
+/// The surface arbiter of 010: the recording indicator and the recovery bubble are mutually
+/// exclusive at the indicator position, so presenting the bubble ends any notice hold and hides
+/// the indicator (a new dictation closes the bubble before the indicator shows).
+pub fn yield_to_recovery(app_handle: &AppHandle) {
+    SURFACE.release_hold(None);
+    hide_recording_overlay(app_handle);
+}
+
 /// Current overlay window size in logical units (points), for repositioning
 /// without assuming a fixed size (compact vs. streaming).
 #[cfg(not(target_os = "windows"))]

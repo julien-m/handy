@@ -26,6 +26,7 @@ mod paste_tx;
 pub mod portable;
 pub mod prompts;
 pub mod recognition_vocabulary;
+pub mod recovery;
 mod secure_input;
 #[cfg(target_os = "macos")]
 mod secure_input_shadow;
@@ -265,6 +266,7 @@ fn initialize_core_logic(app_handle: &AppHandle) {
     app_handle.manage(prompts::session::PromptSessions::default());
     app_handle.manage(tray::TrayState::new());
     destination::app::install(app_handle);
+    recovery::app::install(app_handle);
     smart_paste::app::install(app_handle);
 
     // Note: Shortcuts are NOT initialized here.
@@ -771,6 +773,13 @@ macro_rules! handy_commands {
             commands::destination::unpin_destination,
             commands::overlay::set_overlay_extent,
             commands::overlay::hold_overlay_for_notice,
+            commands::recovery::recovery_bubble_view,
+            commands::recovery::recovery_bubble_rendered,
+            commands::recovery::recovery_bubble_close,
+            commands::recovery::recovery_bubble_copy,
+            commands::recovery::recovery_bubble_begin_drag,
+            commands::recovery::recovery_bubble_resize,
+            commands::recovery::change_show_recovery_bubble_without_text_field_setting,
             commands::is_portable,
             commands::is_update_checks_locked,
             commands::get_app_dir_path,
