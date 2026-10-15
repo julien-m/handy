@@ -57,6 +57,8 @@ const snapshot = (
   return_enabled: true,
   support: { state: "supported" },
   selection: app as DestinationSnapshot["selection"],
+  source: "captured",
+  pin: null,
   disposition: "pending",
   ...over,
 });
@@ -81,6 +83,7 @@ describe("destination badge (006 AC-003, AC-004)", () => {
       name: "ChatGPT",
       iconRef: null,
       canChange: true,
+      pinned: false,
     });
     expect(badgeView(snapshot({ phase: "processing" }))).toMatchObject({
       canChange: true,
@@ -129,6 +132,7 @@ const menu: DestinationMenu = {
       icon_ref: null,
       current: true,
       frontmost: false,
+      pinned: false,
     },
     {
       token: 1,
@@ -136,6 +140,7 @@ const menu: DestinationMenu = {
       icon_ref: null,
       current: false,
       frontmost: true,
+      pinned: false,
     },
   ],
 };

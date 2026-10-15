@@ -447,6 +447,20 @@
           "ctrlEnter": "Ctrl+Enter"
         }
       },
+      "automaticEnter": {
+        "title": "Automatic Enter",
+        "description": "Sent once, only after a successful insertion.",
+        "keyLabel": "Key to press",
+        "announced": "Automatic Enter: {{value}}",
+        "note": "Replaces Auto Submit. No Enter after a failed or unconfirmed insertion, with paste method None, or when the app lost focus.",
+        "options": {
+          "never": "Never",
+          "always": "Always",
+          "alwaysDescription": "Every successful insertion",
+          "pinOnly": "Only in PIN mode",
+          "pinOnlyDescription": "Pinned apps only"
+        }
+      },
       "translateToEnglish": {
         "label": "Translate to English",
         "description": "Automatically translate speech from other languages to English during transcription."
@@ -1234,6 +1248,7 @@
     "fallbackNotice": "AI processing failed. The original text was used.",
     "destination": {
       "label": "Destination: {{name}}",
+      "pinnedLabel": "Destination: {{name}}, pinned",
       "frontmostApp": "Frontmost app",
       "remove": "Remove destination",
       "unknownApp": "The destination app",
@@ -1244,7 +1259,10 @@
         "otherApps": "Other apps",
         "frontmostAtEnd": "Frontmost app at the end",
         "loading": "Loading apps…",
-        "failed": "The app list could not be loaded."
+        "failed": "The app list could not be loaded.",
+        "pin": "Pin {{name}}",
+        "unpin": "Unpin {{name}}",
+        "thisDictationOnly": "This dictation only"
       },
       "refused": {
         "stale": "The destination changed meanwhile; the list was refreshed.",
@@ -1257,7 +1275,9 @@
         "activationFailedKept": "{{app}} did not come to the front. Nothing was inserted; the transcript is kept in History.",
         "activationFailedNotKept": "{{app}} did not come to the front. Nothing was inserted, and the transcript could not be saved to History.",
         "insertionFailedKept": "{{app}} may not have received the text; the transcript is kept in History.",
-        "insertionFailedNotKept": "{{app}} may not have received the text, and the transcript could not be saved to History."
+        "insertionFailedNotKept": "{{app}} may not have received the text, and the transcript could not be saved to History.",
+        "pinnedAppNotRunningKept": "{{app}} is pinned but not open. Nothing was inserted; the transcript is kept in History.",
+        "pinnedAppNotRunningNotKept": "{{app}} is pinned but not open. Nothing was inserted, and the transcript could not be saved to History."
       }
     },
     "prompt": {

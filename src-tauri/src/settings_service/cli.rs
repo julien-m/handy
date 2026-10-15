@@ -17,6 +17,8 @@ use clap::{error::ErrorKind, Parser};
 use serde_json::json;
 use std::ffi::OsString;
 
+#[cfg(feature = "destination-return")]
+mod destination;
 mod microphones;
 use microphones::microphones_operation;
 
@@ -131,6 +133,10 @@ pub fn operation(command: &SettingsCommand) -> SettingsOperation {
         SettingsCommand::Prompts(prompts) => prompts_operation(&prompts.action, None),
         SettingsCommand::Vocabulary(vocabulary) => vocabulary_operation(&vocabulary.action),
         SettingsCommand::Microphones(microphones) => microphones_operation(&microphones.action),
+        #[cfg(feature = "destination-return")]
+        SettingsCommand::Destination(destination) => {
+            destination::destination_operation(&destination.action)
+        }
     }
 }
 /// Domain input named by the command (a replacements or vocabulary import source, or a prompt

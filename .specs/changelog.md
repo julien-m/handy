@@ -5,6 +5,9 @@
 
 ---
 
+## 2026-10-15 — [Feature 009] Implementation in progress: session pin, single Automatic Enter authority and destination CLI behind destination-return (automated evidence in four feature combinations; macOS native proofs pending with Julien)
+<!-- finalize:spec-implement:2026-10-15:851e4c61 -->
+
 ## 2026-10-15 — [Feature 011] Plan created: Dictation Field Return — 6 implementation steps, 4 diagrams (input read after 006's session commit, focus restored after activation, verified in 006's guard before 010's verdict)
 <!-- finalize:spec-plan:2026-10-15:67c12fe0 -->
 

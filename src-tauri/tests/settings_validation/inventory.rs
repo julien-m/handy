@@ -7,9 +7,14 @@ use std::collections::BTreeSet;
 #[test]
 fn every_actual_stored_field_has_exactly_one_descriptor() -> Result<(), Box<dyn std::error::Error>>
 {
-    let actual: BTreeSet<_> = SettingsSnapshot::default_field_inventory()?
+    let mut actual: BTreeSet<_> = SettingsSnapshot::default_field_inventory()?
         .into_iter()
         .collect();
+    // 009: with the `destination-return` gate open, `auto_submit` stays stored without a
+    // descriptor (a closed build still reads it) and `automatic_enter` is described instead.
+    if cfg!(feature = "destination-return") {
+        assert!(actual.remove("auto_submit"));
+    }
     let described: BTreeSet<_> = descriptors()
         .iter()
         .map(|entry| entry.key.to_owned())
@@ -132,6 +137,8 @@ pub(super) const ENUM_INVENTORY: &[(&str, &[&str])] = &[
     ("paste_method", PASTE_METHODS),
     ("clipboard_handling", &["dont_modify", "copy_to_clipboard"]),
     ("auto_submit_key", &["enter", "ctrl_enter", "cmd_enter"]),
+    #[cfg(feature = "destination-return")]
+    ("automatic_enter", &["never", "always", "pin_only"]),
     ("theme", &["system", "light", "dark"]),
     ("keyboard_implementation", &["tauri", "handy_keys"]),
     (
@@ -164,7 +171,8 @@ fn independent_enum_inventory_accepts_every_current_canonical_variant(
         updates_allowed: true,
         platform: PlatformCapabilities::current(),
     };
-    assert_eq!(ENUM_INVENTORY.len(), 17);
+    let automatic_enter = usize::from(cfg!(feature = "destination-return"));
+    assert_eq!(ENUM_INVENTORY.len(), 17 + automatic_enter);
     for (key, values) in ENUM_INVENTORY {
         assert_eq!(
             descriptor(key).ok_or("enum descriptor")?.allowed_values,

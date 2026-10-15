@@ -1,6 +1,7 @@
 //! `handy settings output`: the existing output settings (paste method, clipboard handling,
 //! automatic submit, paste delays, typing tool, external script, trailing space), read and changed
-//! through the same descriptors and validator as generic `get`/`set` and the settings UI, plus
+//! through the same descriptors and validator as generic `get`/`set` and the settings UI (with the
+//! `destination-return` gate open, 009's `automatic_enter` replaces `auto_submit`), plus
 //! 006's destination return (`return_to_dictation_app`, refused on a platform without the
 //! destination capability). Feature 007 adds `paste_method smart_paste` through that shared
 //! validation: accepted only where `smart_paste::setting_policy` makes it selectable, refused
@@ -12,11 +13,18 @@ use crate::settings_service::{
     validation::{validate_cli, ValidationContext},
 };
 
+/// The automatic Enter key of this build: `auto_submit` as on `dev` with the `destination-return`
+/// gate closed, `automatic_enter` (009) with it open.
+#[cfg(not(feature = "destination-return"))]
+const ENTER_KEY: &str = "auto_submit";
+#[cfg(feature = "destination-return")]
+const ENTER_KEY: &str = "automatic_enter";
+
 /// Output settings of this build, in help order.
 pub const OUTPUT_KEYS: [&str; 11] = [
     "paste_method",
     "clipboard_handling",
-    "auto_submit",
+    ENTER_KEY,
     "auto_submit_key",
     "paste_delay_ms",
     "paste_delay_after_ms",

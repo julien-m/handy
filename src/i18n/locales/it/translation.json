@@ -447,6 +447,20 @@
           "ctrlEnter": "Ctrl+Invio"
         }
       },
+      "automaticEnter": {
+        "title": "Invio automatico del tasto Invio",
+        "description": "Inviato una volta, solo dopo un inserimento riuscito.",
+        "keyLabel": "Tasto da premere",
+        "announced": "Invio automatico: {{value}}",
+        "note": "Sostituisce l'invio automatico. Nessun Invio dopo un inserimento non riuscito o non confermato, con il metodo di incolla Nessuno o se l'app ha perso il focus.",
+        "options": {
+          "never": "Mai",
+          "always": "Sempre",
+          "alwaysDescription": "Ogni inserimento riuscito",
+          "pinOnly": "Solo in modalità PIN",
+          "pinOnlyDescription": "Solo app fissate"
+        }
+      },
       "translateToEnglish": {
         "label": "Traduci in inglese",
         "description": "Traduci automaticamente in inglese la voce in altre lingue durante la trascrizione."
@@ -1231,6 +1245,7 @@
     "fallbackNotice": "L'elaborazione con l'IA non è riuscita. È stato usato il testo originale.",
     "destination": {
       "label": "Destinazione: {{name}}",
+      "pinnedLabel": "Destinazione: {{name}}, fissata",
       "frontmostApp": "App in primo piano",
       "remove": "Rimuovi destinazione",
       "unknownApp": "L'app di destinazione",
@@ -1241,7 +1256,10 @@
         "otherApps": "Altre app",
         "frontmostAtEnd": "App in primo piano alla fine",
         "loading": "Caricamento delle app…",
-        "failed": "Impossibile caricare l'elenco delle app."
+        "failed": "Impossibile caricare l'elenco delle app.",
+        "pin": "Fissa {{name}}",
+        "unpin": "Rimuovi {{name}} dai fissati",
+        "thisDictationOnly": "Solo questa dettatura"
       },
       "refused": {
         "stale": "La destinazione è cambiata nel frattempo; l'elenco è stato aggiornato.",
@@ -1254,7 +1272,9 @@
         "activationFailedKept": "{{app}} non è passata in primo piano. Non è stato inserito nulla; la trascrizione è conservata nella Cronologia.",
         "activationFailedNotKept": "{{app}} non è passata in primo piano. Non è stato inserito nulla e non è stato possibile salvare la trascrizione nella Cronologia.",
         "insertionFailedKept": "{{app}} potrebbe non aver ricevuto il testo; la trascrizione è conservata nella Cronologia.",
-        "insertionFailedNotKept": "{{app}} potrebbe non aver ricevuto il testo e non è stato possibile salvare la trascrizione nella Cronologia."
+        "insertionFailedNotKept": "{{app}} potrebbe non aver ricevuto il testo e non è stato possibile salvare la trascrizione nella Cronologia.",
+        "pinnedAppNotRunningKept": "{{app}} è fissata ma non aperta. Non è stato inserito nulla; la trascrizione è conservata nella Cronologia.",
+        "pinnedAppNotRunningNotKept": "{{app}} è fissata ma non aperta. Non è stato inserito nulla e la trascrizione non è stata salvata nella Cronologia."
       }
     },
     "prompt": {

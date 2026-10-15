@@ -15,6 +15,7 @@ use super::outcome::{
 };
 use super::recovery::{OutcomeRegistry, RecoverySlot};
 use super::workspace::SystemClock;
+use crate::automatic_enter::transaction::EnterTransaction;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
 use tauri::{AppHandle, Emitter, Manager};
@@ -99,10 +100,14 @@ pub async fn deliver(
         paste_method_none: settings.paste_method == crate::settings::PasteMethod::None,
         cancelled,
     };
-    let method = insertion_method(&app, &text, settings);
+    let enter = crate::automatic_enter::app::transaction(&app, &manager, ticket, &settings);
+    let method = insertion_method(&app, &text, settings, Arc::clone(&enter));
     let worker_manager = Arc::clone(&manager);
     let joined = tauri::async_runtime::spawn_blocking(move || {
-        orchestrator(worker_manager).deliver(request, method.as_ref())
+        let report = orchestrator(worker_manager).deliver(request, method.as_ref());
+        // 009: the Enter of a legacy method is decided here, before the outcome is published.
+        enter.after_insertion(&report);
+        report
     })
     .await;
     let report = joined.unwrap_or_else(|error| worker_failed(&manager, ticket, &error));
@@ -110,17 +115,20 @@ pub async fn deliver(
 }
 /// The configured method with the settings snapshot of this insertion: smart paste (007) runs
 /// off the main thread through its actor; every other method runs on the main thread as before.
+/// Both hand their Enter decision to 009's transaction `enter`.
 fn insertion_method(
     app: &AppHandle,
     text: &str,
     settings: crate::settings::AppSettings,
+    enter: Arc<EnterTransaction>,
 ) -> Box<dyn InsertionPort> {
-    match crate::smart_paste::app::session_method(app, text, &settings) {
+    match crate::smart_paste::app::session_method(app, text, &settings, Arc::clone(&enter)) {
         Some(smart_paste) => Box::new(smart_paste),
         None => Box::new(MainThreadPaste {
             app: app.clone(),
             text: text.to_owned(),
             settings,
+            enter,
         }),
     }
 }
@@ -147,6 +155,7 @@ fn worker_failed(
         method_result: None,
         target: None,
         source: source.unwrap_or(DestinationSource::FrontmostAtEnd),
+        context: None,
     }
 }
 /// Insert the final text of a stopped dictation, then end the recording indicator: through its
@@ -215,7 +224,8 @@ fn paste_as_before(app: &AppHandle, text: String, cancelled: Box<dyn Fn() -> boo
             log::debug!("Transcription operation cancelled before paste");
             return end_indicator(&handle);
         }
-        let settings = crate::settings::get_settings(&handle);
+        // Gate open, the legacy emitters read only Automatic Enter (009 AC-004); identity closed.
+        let settings = crate::automatic_enter::legacy_view(crate::settings::get_settings(&handle));
         match crate::utils::paste(text, handle.clone(), &settings, &|| Ok(())) {
             Ok(()) => log::debug!("Text pasted successfully in {:?}", paste_time.elapsed()),
             Err(error) => {
@@ -241,16 +251,20 @@ fn orchestrator(manager: Arc<DestinationManager>) -> Orchestrator {
 
 /// The existing insertion method, run on the main thread like before with the settings snapshot
 /// of `deliver`; the guard is called by `clipboard::paste` after its configured delay. The
-/// worker waits for its result.
+/// worker waits for its result. It sends no Enter itself: 009's transaction decides it, after
+/// the method returns, or at the reliable paste's rendezvous when a transfer took place.
 struct MainThreadPaste {
     app: AppHandle,
     text: String,
     settings: crate::settings::AppSettings,
+    enter: Arc<EnterTransaction>,
 }
 impl InsertionPort for MainThreadPaste {
     fn dispatch(&self, guard: Arc<DispatchGuard>) -> MethodResult {
         let (sender, receiver) = std::sync::mpsc::channel();
         let (app, text, settings) = (self.app.clone(), self.text.clone(), self.settings.clone());
+        let rendezvous = crate::automatic_enter::app::rendezvous(&self.enter, &guard);
+        let route = crate::clipboard::EnterRoute::Authority(rendezvous.clone());
         let scheduled = self.app.run_on_main_thread(move || {
             let check = || {
                 guard
@@ -258,8 +272,9 @@ impl InsertionPort for MainThreadPaste {
                     .map(|_| ())
                     .map_err(|refusal| refusal.to_string())
             };
+            let pasted = crate::clipboard::paste_routed(text, app, &settings, &check, &route);
             // A dropped receiver means the worker is gone; there is nobody left to inform.
-            let _ = sender.send(crate::utils::paste(text, app, &settings, &check));
+            let _ = sender.send(pasted);
         });
         let result = match scheduled {
             Ok(()) => receiver
@@ -267,6 +282,10 @@ impl InsertionPort for MainThreadPaste {
                 .unwrap_or_else(|_| Err("Paste did not report a result".to_owned())),
             Err(error) => Err(format!("Failed to run paste on main thread: {error}")),
         };
+        if rendezvous.engaged() {
+            // A reliable transfer happened: its method return is not a classic success for Enter.
+            self.enter.await_receipt();
+        }
         MethodResult::Legacy(result)
     }
 }

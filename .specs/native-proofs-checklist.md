@@ -394,6 +394,59 @@ Suivre la procédure détaillée de `.specs/features/007-smart-paste/implementat
   - Attendu : aucune icône Dock en `--start-hidden` ; chaque lecture ≤ 2000 ms dans `latency.json`. Le Mac est un M4 Pro : le seuil M1 reste une preuve de release.
   - Couvre : AC-001, régression #1787. Preuve : `proofs/native-macos-release/`.
 
+### 009 — Mode PIN et règle Entrée (`handy-gates-open.app`, et `handy-gates-closed.app` pour le verrou fermé)
+
+Preuves natives en attente avec Julien : aucune n'est déclarée réussie. Harnais : `bun scripts/pin-enter-native-proof.ts --binary <absolu>/handy-gates-open.app/Contents/MacOS/handy --platform macos --out .specs/features/009-pin-mode-and-enter-rule/proofs/native-macos/ --interactive` (il lance les tests natifs ignorés en lecture seule, puis enregistre les observations tapées ; il n'envoie aucune touche et n'active aucune app). Utiliser un champ de test et une phrase de test sûre ; aucun message réel ne doit partir (ChatGPT : nouvelle conversation vide ; Comet : champ de recherche).
+
+- [ ] **Verrou fermé** (`handy-gates-closed.app`).
+  - Étapes : `handy settings destination status --json` ; `handy settings output set automatic_enter always --json` ; ouvrir les réglages de sortie ; avec `auto_submit` vrai, dicter dans TextEdit.
+  - Attendu : `usage_error`/2 ; `not_found`/4 ; seul « Auto Submit » est affiché ; une Entrée 50 ms après le collage, comme sur dev ; aucun badge d'épingle.
+  - Couvre : verrou fermé identique à dev (Clarifications), AC-004. Preuve : `proofs/native-macos-gate-closed/`.
+- [ ] **Migration réelle.**
+  - Étapes : avec `auto_submit` vrai et `auto_submit_key` `ctrl_enter` réglés par la build fermée, lancer une fois `handy-gates-open.app`, puis `handy settings output get automatic_enter --json` et `handy settings output get auto_submit_key --json` ; relancer ensuite la build fermée et dicter.
+  - Attendu : `always` et `ctrl_enter` ; la build fermée garde `auto_submit` vrai, Ctrl+Entrée et son comportement.
+  - Couvre : AC-004, SC-002. Preuve : `proofs/native-macos/migration/`.
+- [ ] **Épingler depuis le badge, puis cinq dictées (SC-003).**
+  - Étapes : dicter dans ChatGPT, ouvrir le menu du badge, choisir « Pin ChatGPT » ; puis dicter cinq fois depuis Safari, Notes, TextEdit, Safari, Notes.
+  - Attendu : le badge montre ChatGPT avec l'épingle et VoiceOver lit « Destination: ChatGPT, pinned » ; chaque texte arrive dans ChatGPT ; le menu s'ouvre sans voler le focus.
+  - Couvre : AC-001, SC-003, FR-001. Preuve : `proofs/native-macos/sc-003/`.
+- [ ] **Autre app pour cette dictée, croix, Unpin.**
+  - Étapes : épinglé sur ChatGPT, choisir Comet dans le menu ; dictée suivante ; puis la croix ; puis « Unpin ChatGPT » avant la fin d'une dictée commencée dans Safari.
+  - Attendu : Comet pour cette dictée seulement, ChatGPT à la suivante ; la croix envoie à l'app au premier plan à la fin et garde l'épingle ; Unpin renvoie à Safari (app capturée au départ) et la dictée suivante capture l'app au premier plan.
+  - Couvre : AC-002. Preuve : `proofs/native-macos/override/`.
+- [ ] **Retour à l'app désactivé.**
+  - Étapes : `handy settings output set return_to_dictation_app false --json` ; sans épingle, dicter ; puis épingler ChatGPT par `handy settings destination pin com.openai.chat --json` et dicter depuis Safari.
+  - Attendu : sans épingle, pas de badge et insertion dans l'app au premier plan ; avec épingle, le badge s'affiche et ChatGPT est activé et reçoit le texte.
+  - Couvre : AC-001, AC-002 (`return_off_and_pin`). Preuve : `proofs/native-macos/return-off/`.
+- [ ] **App épinglée fermée, non ramenée, rouverte.**
+  - Étapes : épingler Notes, quitter Notes, dicter ; rouvrir Notes, dicter ; puis rendre Notes impossible à activer (fenêtre sur un autre Space en plein écran, ou l'activation refusée) et dicter.
+  - Attendu : rien n'est inséré nulle part, l'avis « Notes is pinned but not open » reste au moins 4 s, le texte est dans l'Historique, l'épingle reste ; Notes rouverte reçoit le texte ; non ramenée : `activation_failed`, rien d'inséré, épingle gardée.
+  - Couvre : AC-003, FR-002. Preuve : `proofs/native-macos/unavailable/`.
+- [ ] **Entrée automatique : options et compte.**
+  - Étapes : pour Never, Always, Only in PIN mode, dicter une fois épinglé et une fois non épinglé dans un champ de test qui compte les Entrées ; noter le t0 et l'instant de la touche dans le log debug (`Automatic Enter of dictation …`).
+  - Attendu : 0,0 ; 1,1 ; 0 non épinglé et 1 épinglé ; chaque Entrée éligible entre 50 et 100 ms après t0 (cible QE, mesurée, pas un critère d'acceptation).
+  - Couvre : AC-005, SC-001 (natif), FR-004. Preuve : `proofs/native-macos/enter-matrix/`.
+- [ ] **Pas d'Entrée sans insertion réussie.**
+  - Étapes : méthode `none` ; smart paste sans lecture (« not read ») ; app quittée avant l'insertion ; Cmd+Tab vers une autre app juste après l'insertion ; démarrer une deuxième dictée avant l'Entrée de la première (smart paste qui attend la lecture).
+  - Attendu : aucune Entrée dans chaque cas ; une seule Entrée au plus par dictée.
+  - Couvre : AC-005. Preuve : `proofs/native-macos/no-enter/`.
+- [ ] **Chromium (ChatGPT, Comet) qui lisent deux fois à 150 ms.**
+  - Étapes : Always, épinglé sur ChatGPT puis Comet, smart paste ; dicter une phrase longue.
+  - Attendu : tout le texte est dans le champ quand l'Entrée arrive. Si l'Entrée part avant la vraie lecture (007 publie « read observed » à la première lecture), c'est un échec à remonter (risque de la revue r8), sans correctif dans cette implémentation.
+  - Couvre : AC-005. Preuve : `proofs/native-macos/chromium/`.
+- [ ] **Paste fiable (bêta) macOS sur la session.**
+  - Étapes : `smart-paste-dispatch` fermé (`handy-destination-only.app`), `reliable_paste` vrai, Always.
+  - Attendu : une Entrée après la lecture du presse-papiers par la cible, aucune sans lecture.
+  - Couvre : AC-005. Preuve : `proofs/native-macos/reliable/`.
+- [ ] **Réglages : sélecteur et clavier.**
+  - Étapes : ouvrir les réglages de sortie ; Tab, flèches, Entrée ; VoiceOver.
+  - Attendu : seul « Automatic Enter » (Never, Always, Only in PIN mode) et la touche ; le choix est enregistré et annoncé ; focus visible dans l'ordre de lecture.
+  - Couvre : AC-004, Behavioral AC. Preuve : `proofs/native-macos-ui/`.
+- [ ] **CLI avec Handy lancé.**
+  - Étapes : `handy settings destination pin com.openai.chat --json`, `status --json`, `unpin --json` pendant et hors dictée ; `pin com.example.absent --json`.
+  - Attendu : réponses `{pinned: …}` ; même effet que le badge sur la dictée en cours ; `not_found`/4 sans changement.
+  - Couvre : AC-006. Preuve : `proofs/native-macos/cli/`.
+
 ### UI en vraie fenêtre (transverse)
 
 - [ ] **Indicateur** (`handy-gates-open.app`).
@@ -446,6 +499,11 @@ Suivre la procédure détaillée de `.specs/features/007-smart-paste/implementat
   - un collage interrompu laisse la transcription dans le presse-papiers ;
   - B NIT-4 : matérialiser ou restaurer après une perte de destination ou une écriture AX tardive ;
   - `[ASSUMED]` : les lectures avant la frappe ne comptent pas, et Screen Sharing garde la transcription.
+- [ ] **009 :**
+  - Windows : `bun scripts/pin-enter-native-proof.ts --binary <absolute-windows-release-binary> --platform windows --out <proof-directory> --interactive`, avec l'activation de l'app épinglée, la confirmation de lecture du paste fiable, le compte d'Entrées et le menu sans activation ;
+  - Linux (build verrou ouvert) : `handy settings destination status --json` renvoie `validation_failed`/2 `unsupported_platform` ; Always et Never insèrent comme aujourd'hui ; `pin_only` n'envoie aucune Entrée ;
+  - ancien binaire : un Handy antérieur avec `auto_submit` vrai, puis un premier lancement de la build ouverte : `handy settings output get automatic_enter --json` vaut `always` et `auto_submit_key` est gardé ; l'ancien binaire relancé garde son comportement ;
+  - `cargo check` Windows et Linux en CI (le code `paste_tx/windows.rs` de la 009 n'est compilé que sur Windows).
 - [ ] **008 :**
   - store illisible : lecture seule à chaque lancement, onboarding répété, aucune voie de sortie documentée ;
   - plancher Windows supporté (Windows 10 ?) ;

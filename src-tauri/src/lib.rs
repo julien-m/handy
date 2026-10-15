@@ -3,6 +3,7 @@ mod actions;
 mod apple_intelligence;
 mod audio_feedback;
 pub mod audio_toolkit;
+pub mod automatic_enter;
 mod autostart;
 mod catalog;
 mod chinese_script;
@@ -42,7 +43,7 @@ pub mod word_replacements;
 pub use cli::CliArgs;
 #[cfg(debug_assertions)]
 use specta_typescript::{BigIntExportBehavior, Typescript};
-use tauri_specta::{collect_commands, collect_events, Builder};
+use tauri_specta::{collect_events, Builder};
 pub use utils::env_flag_enabled;
 
 use env_filter::Builder as EnvFilterBuilder;
@@ -672,35 +673,11 @@ fn run_headless_transcription(app: &AppHandle, args: &CliArgs) -> i32 {
     0
 }
 
-#[cfg_attr(mobile, tauri::mobile_entry_point)]
-pub fn run(cli_args: CliArgs) {
-    // Avoid ggml-metal residency-set teardown assertions when a native engine
-    // outlives the Tauri shutdown sequence (#1902). This must happen before
-    // transcribe-cpp initializes its Metal device. Advanced users can restore
-    // upstream residency behavior with HANDY_METAL_RESIDENCY=1.
-    #[cfg(target_os = "macos")]
-    if std::env::var("HANDY_METAL_RESIDENCY").as_deref() == Ok("1") {
-        // ggml treats GGML_METAL_NO_RESIDENCY as presence-based, so remove an
-        // inherited value as well when explicitly opting back in.
-        std::env::remove_var("GGML_METAL_NO_RESIDENCY");
-    } else {
-        std::env::set_var("GGML_METAL_NO_RESIDENCY", "1");
-    }
-
-    // Pin glibc's dynamic mmap threshold before the first large allocation,
-    // so per-dictation transient buffers are returned to the OS on free
-    // instead of accumulating in malloc arenas (#1792). No-op off Linux/glibc.
-    memory::init_allocator();
-
-    // Detect portable mode before anything else
-    portable::init();
-
-    // Parse console logging directives from RUST_LOG, falling back to info-level logging
-    // when the variable is unset
-    let console_filter = build_console_filter();
-
-    let specta_builder = Builder::<tauri::Wry>::new()
-        .commands(collect_commands![
+/// The typed commands of the app, in registration order: one list for the app and the bindings
+/// check (a macro, so the registry stays a single short builder).
+macro_rules! handy_commands {
+    () => {
+        tauri_specta::collect_commands![
             shortcut::change_binding,
             shortcut::reset_binding,
             shortcut::edits::edit_binding_shortcuts,
@@ -731,6 +708,7 @@ pub fn run(cli_args: CliArgs) {
             shortcut::change_external_script_path_setting,
             shortcut::change_clipboard_handling_setting,
             shortcut::change_auto_submit_setting,
+            shortcut::change_automatic_enter_setting,
             shortcut::change_auto_submit_key_setting,
             shortcut::change_post_process_enabled_setting,
             shortcut::change_experimental_enabled_setting,
@@ -789,6 +767,8 @@ pub fn run(cli_args: CliArgs) {
             commands::destination::destination_menu,
             commands::destination::choose_destination,
             commands::destination::remove_destination,
+            commands::destination::pin_destination,
+            commands::destination::unpin_destination,
             commands::overlay::set_overlay_extent,
             commands::overlay::hold_overlay_for_notice,
             commands::is_portable,
@@ -850,14 +830,52 @@ pub fn run(cli_args: CliArgs) {
             commands::replacements_files::import_word_replacements_file,
             commands::replacements_files::export_word_replacements_file,
             helpers::clamshell::is_laptop,
-        ])
+        ]
+    };
+}
+
+/// The typed command and event registry (tauri-specta) shared by the app and the bindings
+/// check: `src/bindings.ts` is generated from it, identical in every rollout gate state.
+fn specta_builder() -> Builder<tauri::Wry> {
+    Builder::<tauri::Wry>::new()
+        .commands(handy_commands!())
         .events(collect_events![
             managers::history::HistoryUpdatePayload,
             managers::transcription::StreamTextEvent,
             managers::transcription::StreamPhaseEvent,
             prompts::dictation::DictationPromptChanged,
             prompts::dictation::PromptProcessingFailed,
-        ]);
+        ])
+}
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run(cli_args: CliArgs) {
+    // Avoid ggml-metal residency-set teardown assertions when a native engine
+    // outlives the Tauri shutdown sequence (#1902). This must happen before
+    // transcribe-cpp initializes its Metal device. Advanced users can restore
+    // upstream residency behavior with HANDY_METAL_RESIDENCY=1.
+    #[cfg(target_os = "macos")]
+    if std::env::var("HANDY_METAL_RESIDENCY").as_deref() == Ok("1") {
+        // ggml treats GGML_METAL_NO_RESIDENCY as presence-based, so remove an
+        // inherited value as well when explicitly opting back in.
+        std::env::remove_var("GGML_METAL_NO_RESIDENCY");
+    } else {
+        std::env::set_var("GGML_METAL_NO_RESIDENCY", "1");
+    }
+
+    // Pin glibc's dynamic mmap threshold before the first large allocation,
+    // so per-dictation transient buffers are returned to the OS on free
+    // instead of accumulating in malloc arenas (#1792). No-op off Linux/glibc.
+    memory::init_allocator();
+
+    // Detect portable mode before anything else
+    portable::init();
+
+    // Parse console logging directives from RUST_LOG, falling back to info-level logging
+    // when the variable is unset
+    let console_filter = build_console_filter();
+
+    let specta_builder = specta_builder();
 
     #[cfg(debug_assertions)] // <- Only export on non-release builds
     specta_builder
@@ -1214,4 +1232,29 @@ pub fn run(cli_args: CliArgs) {
         // could block quitting behind a hung model load.
         _ => {}
     });
+}
+
+#[cfg(test)]
+mod bindings_tests {
+    /// `src/bindings.ts` is exactly what the registry generates, so a command or type change
+    /// cannot ship with stale bindings. `HANDY_WRITE_BINDINGS=1` regenerates the file instead
+    /// (the same export the debug app performs at startup).
+    #[test]
+    fn committed_bindings_match_the_registry() -> Result<(), Box<dyn std::error::Error>> {
+        use specta_typescript::{BigIntExportBehavior, Typescript};
+        let committed = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../src/bindings.ts");
+        let directory = tempfile::tempdir()?;
+        let generated = directory.path().join("bindings.ts");
+        let language = Typescript::default().bigint(BigIntExportBehavior::Number);
+        super::specta_builder().export(language, &generated)?;
+        let generated = std::fs::read_to_string(generated)?;
+        if std::env::var_os("HANDY_WRITE_BINDINGS").is_some() {
+            std::fs::write(&committed, &generated)?;
+        }
+        assert!(
+            std::fs::read_to_string(committed)? == generated,
+            "src/bindings.ts is stale: run with HANDY_WRITE_BINDINGS=1"
+        );
+        Ok(())
+    }
 }

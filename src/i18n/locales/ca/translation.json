@@ -447,6 +447,20 @@
           "ctrlEnter": "Ctrl+Enter"
         }
       },
+      "automaticEnter": {
+        "title": "Retorn automàtic",
+        "description": "S'envia una vegada, només després d'una inserció correcta.",
+        "keyLabel": "Tecla que es prem",
+        "announced": "Retorn automàtic: {{value}}",
+        "note": "Substitueix l'enviament automàtic. Cap Retorn després d'una inserció fallida o no confirmada, amb el mètode d'enganxar Cap, o si l'app ha perdut el focus.",
+        "options": {
+          "never": "Mai",
+          "always": "Sempre",
+          "alwaysDescription": "Cada inserció correcta",
+          "pinOnly": "Només en mode PIN",
+          "pinOnlyDescription": "Només apps fixades"
+        }
+      },
       "translateToEnglish": {
         "label": "Traduïu a l'anglès",
         "description": "Tradueix automàticament la parla d'altres llengües a l'anglès durant la transcripció."
@@ -1234,6 +1248,7 @@
     "fallbackNotice": "El processament amb IA ha fallat. S'ha fet servir el text original.",
     "destination": {
       "label": "Destinació: {{name}}",
+      "pinnedLabel": "Destinació: {{name}}, fixada",
       "frontmostApp": "App en primer pla",
       "remove": "Treu la destinació",
       "unknownApp": "L'app de destinació",
@@ -1244,7 +1259,10 @@
         "otherApps": "Altres apps",
         "frontmostAtEnd": "App en primer pla al final",
         "loading": "S'estan carregant les apps…",
-        "failed": "No s'ha pogut carregar la llista d'apps."
+        "failed": "No s'ha pogut carregar la llista d'apps.",
+        "pin": "Fixa {{name}}",
+        "unpin": "Deixa de fixar {{name}}",
+        "thisDictationOnly": "Només aquest dictat"
       },
       "refused": {
         "stale": "La destinació ha canviat mentrestant; s'ha actualitzat la llista.",
@@ -1257,7 +1275,9 @@
         "activationFailedKept": "{{app}} no ha passat al primer pla. No s'ha inserit res; la transcripció es conserva a l'Historial.",
         "activationFailedNotKept": "{{app}} no ha passat al primer pla. No s'ha inserit res i no s'ha pogut desar la transcripció a l'Historial.",
         "insertionFailedKept": "És possible que {{app}} no hagi rebut el text; la transcripció es conserva a l'Historial.",
-        "insertionFailedNotKept": "És possible que {{app}} no hagi rebut el text i no s'ha pogut desar la transcripció a l'Historial."
+        "insertionFailedNotKept": "És possible que {{app}} no hagi rebut el text i no s'ha pogut desar la transcripció a l'Historial.",
+        "pinnedAppNotRunningKept": "{{app}} està fixada però no oberta. No s'ha inserit res; la transcripció es conserva a l'Historial.",
+        "pinnedAppNotRunningNotKept": "{{app}} està fixada però no oberta. No s'ha inserit res i la transcripció no s'ha pogut desar a l'Historial."
       }
     },
     "prompt": {

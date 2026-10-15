@@ -260,6 +260,21 @@ pub enum AutoSubmitKey {
     CmdEnter,
 }
 
+// @spec FR-003: One three-value Automatic Enter setting — .specs/features/009-pin-mode-and-enter-rule/spec.md#fr-003
+/// The single automatic Enter option of 009 (gate `destination-return` open): replaces the
+/// auto-submit switch; the key stays `auto_submit_key`.
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, Type, Default)]
+#[serde(rename_all = "snake_case")]
+pub enum AutomaticEnterPolicy {
+    /// No automatic Enter.
+    #[default]
+    Never,
+    /// One Enter after every successful insertion.
+    Always,
+    /// One Enter only when the dictation's destination came from the pin.
+    PinOnly,
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, Type)]
 #[serde(rename_all = "snake_case")]
 pub enum RecordingRetentionPeriod {
@@ -529,6 +544,15 @@ pub struct AppSettings {
     pub auto_submit: bool,
     #[serde(default)]
     pub auto_submit_key: AutoSubmitKey,
+    /// Automatic Enter of 009, filled only by a build with the `destination-return` gate open
+    /// (fresh install `never`, upgrade from `auto_submit`); absent from a closed build, which
+    /// never writes it. An invalid stored value reads as absent (see `automatic_enter::migration`).
+    #[serde(
+        default,
+        deserialize_with = "deserialize_automatic_enter",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub automatic_enter: Option<AutomaticEnterPolicy>,
     #[serde(default = "default_post_process_enabled")]
     pub post_process_enabled: bool,
     #[serde(default = "default_post_process_provider_id")]
@@ -916,6 +940,19 @@ where
     }
 }
 
+/// Lenient reading of `automatic_enter`: an unknown value becomes `None` instead of failing the
+/// whole store, so a closed build never rewrites the store because of a value it does not read,
+/// and an open build's migration turns it into `never` (never a silent Enter).
+fn deserialize_automatic_enter<'de, D>(
+    deserializer: D,
+) -> Result<Option<AutomaticEnterPolicy>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let value = Option::<serde_json::Value>::deserialize(deserializer)?;
+    Ok(value.and_then(|value| serde_json::from_value(value).ok()))
+}
+
 fn default_typing_tool() -> TypingTool {
     TypingTool::Auto
 }
@@ -1074,6 +1111,7 @@ pub fn get_default_settings() -> AppSettings {
         clipboard_handling: ClipboardHandling::default(),
         auto_submit: default_auto_submit(),
         auto_submit_key: AutoSubmitKey::default(),
+        automatic_enter: crate::automatic_enter::fresh_install_policy(),
         post_process_enabled: default_post_process_enabled(),
         post_process_provider_id: default_post_process_provider_id(),
         post_process_providers: default_post_process_providers(),
@@ -1270,6 +1308,16 @@ pub(crate) fn apply_settings_migrations(
         } else {
             OverlayStyle::Live
         };
+        updated = true;
+    }
+
+    // One-time Automatic Enter migration of 009 (gate `destination-return` open only); it never
+    // rewrites `auto_submit` or `auto_submit_key`. See `automatic_enter::migration`.
+    if crate::automatic_enter::migration::migrate(
+        settings,
+        settings_value,
+        crate::destination::rollout::Rollout::CURRENT,
+    ) {
         updated = true;
     }
 
@@ -1747,7 +1795,8 @@ mod tests {
             "microphone_priority": [],
             "transcribe_accelerator": "gpu",
             "transcribe_gpu_device": settings.transcribe_gpu_device,
-            "smart_paste_migration_version": 1
+            "smart_paste_migration_version": 1,
+            "automatic_enter": "never"
         });
 
         assert!(!apply_settings_migrations(&mut settings, &raw));

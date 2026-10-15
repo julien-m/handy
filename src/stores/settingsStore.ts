@@ -214,6 +214,10 @@ const settingUpdaters: {
   auto_submit: (value) => commands.changeAutoSubmitSetting(value as boolean),
   auto_submit_key: (value) =>
     commands.changeAutoSubmitKeySetting(value as string),
+  // 009 (gate `destination-return` open): refused `not_found` by a closed build, which never
+  // shows this control.
+  automatic_enter: (value) =>
+    commands.changeAutomaticEnterSetting(value as string),
   history_limit: (value) => commands.updateHistoryLimit(value as number),
   post_process_enabled: (value) => togglePostProcess(value as boolean),
   post_process_selected_prompt_id: (value) =>

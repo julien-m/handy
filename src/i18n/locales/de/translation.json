@@ -447,6 +447,20 @@
           "ctrlEnter": "Ctrl+Enter"
         }
       },
+      "automaticEnter": {
+        "title": "Automatische Eingabetaste",
+        "description": "Einmal gesendet, nur nach erfolgreichem Einfügen.",
+        "keyLabel": "Zu drückende Taste",
+        "announced": "Automatische Eingabetaste: {{value}}",
+        "note": "Ersetzt Automatisch absenden. Keine Eingabetaste nach fehlgeschlagenem oder unbestätigtem Einfügen, mit Einfügemethode Keine oder wenn die App den Fokus verloren hat.",
+        "options": {
+          "never": "Nie",
+          "always": "Immer",
+          "alwaysDescription": "Jedes erfolgreiche Einfügen",
+          "pinOnly": "Nur im PIN-Modus",
+          "pinOnlyDescription": "Nur angeheftete Apps"
+        }
+      },
       "translateToEnglish": {
         "label": "Ins Englische übersetzen",
         "description": "Sprache aus anderen Sprachen automatisch während der Transkription ins Englische übersetzen."
@@ -1231,6 +1245,7 @@
     "fallbackNotice": "Die KI-Verarbeitung ist fehlgeschlagen. Der Originaltext wurde verwendet.",
     "destination": {
       "label": "Ziel: {{name}}",
+      "pinnedLabel": "Ziel: {{name}}, angeheftet",
       "frontmostApp": "App im Vordergrund",
       "remove": "Ziel entfernen",
       "unknownApp": "Die Ziel-App",
@@ -1241,7 +1256,10 @@
         "otherApps": "Andere Apps",
         "frontmostAtEnd": "App im Vordergrund am Ende",
         "loading": "Apps werden geladen…",
-        "failed": "Die App-Liste konnte nicht geladen werden."
+        "failed": "Die App-Liste konnte nicht geladen werden.",
+        "pin": "{{name}} anheften",
+        "unpin": "{{name}} lösen",
+        "thisDictationOnly": "Nur dieses Diktat"
       },
       "refused": {
         "stale": "Das Ziel hat sich inzwischen geändert; die Liste wurde aktualisiert.",
@@ -1254,7 +1272,9 @@
         "activationFailedKept": "{{app}} kam nicht in den Vordergrund. Es wurde nichts eingefügt; das Transkript bleibt im Verlauf.",
         "activationFailedNotKept": "{{app}} kam nicht in den Vordergrund. Es wurde nichts eingefügt, und das Transkript konnte nicht im Verlauf gespeichert werden.",
         "insertionFailedKept": "{{app}} hat den Text möglicherweise nicht erhalten; das Transkript bleibt im Verlauf.",
-        "insertionFailedNotKept": "{{app}} hat den Text möglicherweise nicht erhalten, und das Transkript konnte nicht im Verlauf gespeichert werden."
+        "insertionFailedNotKept": "{{app}} hat den Text möglicherweise nicht erhalten, und das Transkript konnte nicht im Verlauf gespeichert werden.",
+        "pinnedAppNotRunningKept": "{{app}} ist angeheftet, aber nicht geöffnet. Es wurde nichts eingefügt; das Transkript bleibt im Verlauf.",
+        "pinnedAppNotRunningNotKept": "{{app}} ist angeheftet, aber nicht geöffnet. Es wurde nichts eingefügt, und das Transkript konnte nicht im Verlauf gespeichert werden."
       }
     },
     "prompt": {

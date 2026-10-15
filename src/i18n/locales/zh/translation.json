@@ -447,6 +447,20 @@
           "ctrlEnter": "Ctrl+回车"
         }
       },
+      "automaticEnter": {
+        "title": "自动回车",
+        "description": "仅在插入成功后发送一次。",
+        "keyLabel": "要按的键",
+        "announced": "自动回车：{{value}}",
+        "note": "取代自动提交。插入失败或未确认、粘贴方式为“无”、或应用失去焦点时，不发送回车。",
+        "options": {
+          "never": "从不",
+          "always": "始终",
+          "alwaysDescription": "每次插入成功",
+          "pinOnly": "仅在固定模式下",
+          "pinOnlyDescription": "仅限已固定的应用"
+        }
+      },
       "translateToEnglish": {
         "label": "翻译为英语",
         "description": "在转录过程中自动将其他语言的语音翻译为英语。"
@@ -1231,6 +1245,7 @@
     "fallbackNotice": "AI 处理失败。已使用原始文本。",
     "destination": {
       "label": "目标：{{name}}",
+      "pinnedLabel": "目标：{{name}}，已固定",
       "frontmostApp": "最前面的应用",
       "remove": "移除目标",
       "unknownApp": "目标应用",
@@ -1241,7 +1256,10 @@
         "otherApps": "其他应用",
         "frontmostAtEnd": "结束时最前面的应用",
         "loading": "正在加载应用…",
-        "failed": "无法加载应用列表。"
+        "failed": "无法加载应用列表。",
+        "pin": "固定 {{name}}",
+        "unpin": "取消固定 {{name}}",
+        "thisDictationOnly": "仅限本次听写"
       },
       "refused": {
         "stale": "目标在此期间已更改；列表已刷新。",
@@ -1254,7 +1272,9 @@
         "activationFailedKept": "{{app}} 未切换到最前面。未插入任何内容；转录文本保留在历史记录中。",
         "activationFailedNotKept": "{{app}} 未切换到最前面。未插入任何内容，且转录文本无法保存到历史记录。",
         "insertionFailedKept": "{{app}} 可能未收到文本；转录文本保留在历史记录中。",
-        "insertionFailedNotKept": "{{app}} 可能未收到文本，且转录文本无法保存到历史记录。"
+        "insertionFailedNotKept": "{{app}} 可能未收到文本，且转录文本无法保存到历史记录。",
+        "pinnedAppNotRunningKept": "{{app}} 已固定但未打开。未插入任何内容；转录文本保留在历史记录中。",
+        "pinnedAppNotRunningNotKept": "{{app}} 已固定但未打开。未插入任何内容，且转录文本未能保存到历史记录。"
       }
     },
     "prompt": {

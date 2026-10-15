@@ -3,7 +3,9 @@
 //! for at most 1 s by bounded sampling (never on the main thread), then hand the existing
 //! insertion method a `DispatchGuard` it calls after its configured delay. A failed destination
 //! never falls back to another application and is never retried.
-use super::context::{ApplicationIdentity, DestinationSource, RecoveryDisposition, RecoveryPort};
+use super::context::{
+    ApplicationIdentity, DestinationContext, DestinationSource, RecoveryDisposition, RecoveryPort,
+};
 use super::guard::{DispatchGuard, GuardRefusal};
 use super::manager::{DestinationManager, FrozenDestination};
 use super::outcome::{map_method_result, DestinationFailure, InsertionStatus, MethodResult};
@@ -49,6 +51,10 @@ pub struct InsertionReport {
     pub method_result: Option<MethodResult>,
     pub target: Option<ApplicationIdentity>,
     pub source: DestinationSource,
+    /// The context of the guard's last accepted check (the route actually dispatched, with the
+    /// activated instance), read by 009's Enter authority; `None` when nothing was dispatched.
+    /// Boxed so the report (also an early-return error value) stays small.
+    pub context: Option<Box<DestinationContext>>,
 }
 impl InsertionReport {
     fn ended(
@@ -56,13 +62,14 @@ impl InsertionReport {
         reason: Option<DestinationFailure>,
         source: DestinationSource,
     ) -> Self {
-        let (method_result, target) = (None, None);
+        let (method_result, target, context) = (None, None, None);
         Self {
             status,
             reason,
             method_result,
             target,
             source,
+            context,
         }
     }
 }
@@ -142,7 +149,7 @@ impl Orchestrator {
         let instances = self.manager.workspace.instances(&destination.identity);
         match resolve_instance(&destination.identity, destination.captured_pid, &instances) {
             Resolution::Running(app) => Ok(app),
-            Resolution::Closed => Err(failed(destination, DestinationFailure::AppClosed)),
+            Resolution::Closed => Err(failed(destination, closed_reason(destination))),
             Resolution::Ambiguous => Err(failed(destination, DestinationFailure::ActivationFailed)),
         }
     }
@@ -200,7 +207,11 @@ impl Orchestrator {
         let report = match (guard.refusal(), skipped) {
             (Some(refusal), _) => refusal_report(refusal, source),
             (None, true) => InsertionReport::ended(InsertionStatus::Skipped, None, source),
-            (None, false) => method_report(result, context, source),
+            (None, false) => method_report(result, context.clone(), source),
+        };
+        let report = InsertionReport {
+            context: context.map(Box::new),
+            ..report
         };
         if guard.refusal().is_some() || report.reason.is_some() {
             return self.fail(frozen, report);
@@ -217,14 +228,26 @@ fn method_report(
 ) -> InsertionReport {
     let (status, reason, _) = map_method_result(&result);
     let target = context
-        .and_then(|context| context.target)
-        .map(|target| target.identity);
+        .as_ref()
+        .and_then(|context| context.target.as_ref())
+        .map(|target| target.identity.clone());
     InsertionReport {
         status,
         reason,
         method_result: Some(result),
         target,
         source,
+        context: context.map(Box::new),
+    }
+}
+
+// @spec FR-002: Unavailable pin, typed reason, pin kept — .specs/features/009-pin-mode-and-enter-rule/spec.md#fr-002
+/// Reason of a destination with no running instance: a pinned one is `pinned_app_not_running`
+/// (009 AC-003), any other 006's `app_closed`.
+fn closed_reason(destination: &Destination) -> DestinationFailure {
+    match destination.source {
+        DestinationSource::Pinned => DestinationFailure::PinnedAppNotRunning,
+        _ => DestinationFailure::AppClosed,
     }
 }
 
@@ -251,23 +274,27 @@ enum WaitResult {
     TimedOut,
 }
 
+// @spec AC-002: Pinned and badge-chosen apps are activated with return off — .specs/features/009-pin-mode-and-enter-rule/spec.md#ac-002
 /// The application to activate, or `None` for the frontmost-at-the-end route: destination
-/// return off or unsupported for this dictation, no destination, or paste method "none".
+/// return off or unsupported for a captured destination, no destination, or paste method "none".
+/// Business rule (009, orchestrator decision of the delivery review): a pin and an application
+/// chosen in the badge during the dictation are explicit choices, so both are activated even with
+/// return off (the badge is shown then only because an app is pinned); a pinned route with an
+/// unreadable foreground fails closed with `activation_failed`. Only the capture at start
+/// depends on the setting and the runtime support.
 fn activation_route(
     frozen: &FrozenDestination,
     paste_method_none: bool,
 ) -> Option<super::session::Destination> {
-    match (
-        &frozen.selection,
-        frozen.return_enabled,
-        frozen.support,
-        paste_method_none,
-    ) {
-        (Selection::Application(destination), true, DestinationSupport::Supported, false) => {
-            Some(destination.clone())
-        }
-        _ => None,
-    }
+    let Selection::Application(destination) = &frozen.selection else {
+        return None;
+    };
+    let explicit = matches!(
+        destination.source,
+        DestinationSource::Pinned | DestinationSource::Badge
+    );
+    let captured_route = frozen.return_enabled && frozen.support == DestinationSupport::Supported;
+    (!paste_method_none && (explicit || captured_route)).then(|| destination.clone())
 }
 
 #[cfg(test)]

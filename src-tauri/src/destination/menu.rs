@@ -30,7 +30,13 @@ pub(super) fn open(
     if !still_open {
         return Err(SelectionRefusal::Stale);
     }
-    let entries = store_entries(&mut state, apps, &current, frontmost.as_ref());
+    let pinned = state.pin.as_ref().map(|pin| pin.identity.clone());
+    let marks = Marks {
+        current: &current,
+        frontmost: frontmost.as_ref(),
+        pinned: pinned.as_ref(),
+    };
+    let entries = store_entries(&mut state, apps, &marks);
     let frontmost_at_end_current = current == Selection::FrontmostAtEnd;
     Ok(DestinationMenu {
         dictation_id,
@@ -40,19 +46,25 @@ pub(super) fn open(
     })
 }
 
+/// What marks a menu entry: the current selection, the frontmost application and the pin.
+struct Marks<'a> {
+    current: &'a Selection,
+    frontmost: Option<&'a RunningApp>,
+    pinned: Option<&'a super::context::ApplicationIdentity>,
+}
+
 /// Replace the menu tokens with fresh ones for `apps` and describe each entry.
 fn store_entries(
     state: &mut ManagerState,
     apps: Vec<RunningApp>,
-    current: &Selection,
-    frontmost: Option<&RunningApp>,
+    marks: &Marks<'_>,
 ) -> Vec<MenuEntry> {
     state.menu.clear();
     apps.into_iter()
         .map(|app| {
             state.next_token += 1;
             let token = state.next_token;
-            let described = entry(token, &app, current, frontmost);
+            let described = entry(token, &app, marks);
             state.menu.push((token, app));
             described
         })
@@ -93,20 +105,18 @@ fn ordered_apps(frontmost: Option<RunningApp>, running: Vec<RunningApp>) -> Vec<
     apps
 }
 
-fn entry(
-    token: u64,
-    app: &RunningApp,
-    current: &Selection,
-    frontmost: Option<&RunningApp>,
-) -> MenuEntry {
-    let is_current =
-        matches!(current, Selection::Application(chosen) if chosen.identity == app.identity);
+fn entry(token: u64, app: &RunningApp, marks: &Marks<'_>) -> MenuEntry {
+    let is_current = matches!(marks.current, Selection::Application(chosen)
+        if chosen.identity == app.identity);
     MenuEntry {
         token,
         display_name: app.display_name.clone(),
         icon_ref: app.icon_ref.clone(),
         current: is_current,
-        frontmost: frontmost.is_some_and(|front| front.identity == app.identity),
+        frontmost: marks
+            .frontmost
+            .is_some_and(|front| front.identity == app.identity),
+        pinned: marks.pinned == Some(&app.identity),
     }
 }
 
@@ -129,9 +139,24 @@ pub(super) fn choose(
         MenuChoice::Application(token) => chosen_application(manager, token)?,
     };
     let mut state = manager.lock();
+    let selection = back_to_pin(&state, selection);
     let session = state.session.as_mut().ok_or(SelectionRefusal::Stale)?;
     session.choose(dictation_id, version, selection)?;
     Ok(DestinationSnapshot::from(&*session))
+}
+
+/// Business rule (009): choosing the pinned application itself in the menu returns this
+/// dictation to its pinned route (source `pinned`); any other choice stays a badge choice.
+fn back_to_pin(state: &ManagerState, selection: Selection) -> Selection {
+    match (&state.pin, selection) {
+        (Some(pin), Selection::Application(chosen)) if chosen.identity == pin.identity => {
+            Selection::Application(Destination {
+                source: DestinationSource::Pinned,
+                ..chosen
+            })
+        }
+        (_, selection) => selection,
+    }
 }
 
 /// The still-running application behind `token`, as a badge destination.

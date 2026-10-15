@@ -6,6 +6,7 @@ import type React from "react";
 import type { OSType } from "@/lib/utils/keyboard";
 import { DestinationBadge } from "./destination-badge";
 import { DestinationMenuPanel } from "./destination-menu";
+import { pinEntries } from "./pin-state";
 import { useDictationCount, useMenuTimer } from "./menu-timer";
 import type { OverlayNotice } from "./notice-model";
 import { OverlayNotices } from "./overlay-notices";
@@ -125,6 +126,14 @@ const MenuItems: React.FC<StackPartProps> = ({ props, menus }) => {
           menu={menu}
           feedbackKey={destination.feedbackKey}
           onChoose={destination.choose}
+          pinEntries={
+            menu.status === "open"
+              ? pinEntries(destination.snapshot, menu.menu)
+              : []
+          }
+          pinActive={Boolean(destination.snapshot?.pin)}
+          onPin={destination.pin}
+          onUnpin={destination.unpin}
         />
       )}
       {showPrompt && view && (

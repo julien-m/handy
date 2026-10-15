@@ -12,6 +12,8 @@ import { TypingToolSetting } from "../TypingTool";
 import { ClipboardHandlingSetting } from "../ClipboardHandling";
 import { ReturnToAppSetting } from "../return-to-app-setting";
 import { AutoSubmit } from "../AutoSubmit";
+import { AutomaticEnter } from "../automatic-enter";
+import { enterControl } from "../automatic-enter-state";
 import { PostProcessingToggle } from "../PostProcessingToggle";
 import { AppendTrailingSpace } from "../AppendTrailingSpace";
 import { HistoryLimit } from "../HistoryLimit";
@@ -31,6 +33,10 @@ export const AdvancedSettings: React.FC = () => {
   const { t } = useTranslation();
   const { getSetting } = useSettings();
   const experimentalEnabled = getSetting("experimental_enabled") || false;
+  // 009: exactly one Enter control per build (Automatic Enter when the gate is open).
+  const automaticEnter =
+    enterControl({ automatic_enter: getSetting("automatic_enter") }) ===
+    "automatic_enter";
 
   return (
     <div
@@ -52,7 +58,11 @@ export const AdvancedSettings: React.FC = () => {
           <TypingToolSetting descriptionMode="tooltip" grouped={true} />
           <ClipboardHandlingSetting descriptionMode="tooltip" grouped={true} />
           <ReturnToAppSetting grouped={true} />
-          <AutoSubmit descriptionMode="tooltip" grouped={true} />
+          {automaticEnter ? (
+            <AutomaticEnter grouped={true} />
+          ) : (
+            <AutoSubmit descriptionMode="tooltip" grouped={true} />
+          )}
         </SettingsGroup>
       </div>
 

@@ -447,6 +447,20 @@
           "ctrlEnter": "Ctrl+Enter"
         }
       },
+      "automaticEnter": {
+        "title": "Enter tự động",
+        "description": "Gửi một lần, chỉ sau khi chèn thành công.",
+        "keyLabel": "Phím cần nhấn",
+        "announced": "Enter tự động: {{value}}",
+        "note": "Thay thế Gửi tự động. Không nhấn Enter sau khi chèn thất bại hoặc chưa xác nhận, với phương thức dán Không, hoặc khi ứng dụng mất tiêu điểm.",
+        "options": {
+          "never": "Không bao giờ",
+          "always": "Luôn luôn",
+          "alwaysDescription": "Mỗi lần chèn thành công",
+          "pinOnly": "Chỉ ở chế độ ghim",
+          "pinOnlyDescription": "Chỉ ứng dụng đã ghim"
+        }
+      },
       "translateToEnglish": {
         "label": "Dịch sang tiếng Anh",
         "description": "Tự động dịch giọng nói từ các ngôn ngữ khác sang tiếng Anh trong quá trình chuyển đổi."
@@ -1231,6 +1245,7 @@
     "fallbackNotice": "Xử lý bằng AI thất bại. Đã dùng văn bản gốc.",
     "destination": {
       "label": "Đích: {{name}}",
+      "pinnedLabel": "Đích: {{name}}, đã ghim",
       "frontmostApp": "Ứng dụng ở phía trước",
       "remove": "Gỡ đích",
       "unknownApp": "Ứng dụng đích",
@@ -1241,7 +1256,10 @@
         "otherApps": "Ứng dụng khác",
         "frontmostAtEnd": "Ứng dụng ở phía trước khi kết thúc",
         "loading": "Đang tải ứng dụng…",
-        "failed": "Không thể tải danh sách ứng dụng."
+        "failed": "Không thể tải danh sách ứng dụng.",
+        "pin": "Ghim {{name}}",
+        "unpin": "Bỏ ghim {{name}}",
+        "thisDictationOnly": "Chỉ lần đọc chép này"
       },
       "refused": {
         "stale": "Đích đã thay đổi trong lúc đó; danh sách đã được làm mới.",
@@ -1254,7 +1272,9 @@
         "activationFailedKept": "{{app}} không lên phía trước. Không có gì được chèn; bản chép lời được giữ trong Lịch sử.",
         "activationFailedNotKept": "{{app}} không lên phía trước. Không có gì được chèn và không thể lưu bản chép lời vào Lịch sử.",
         "insertionFailedKept": "{{app}} có thể chưa nhận được văn bản; bản chép lời được giữ trong Lịch sử.",
-        "insertionFailedNotKept": "{{app}} có thể chưa nhận được văn bản và không thể lưu bản chép lời vào Lịch sử."
+        "insertionFailedNotKept": "{{app}} có thể chưa nhận được văn bản và không thể lưu bản chép lời vào Lịch sử.",
+        "pinnedAppNotRunningKept": "{{app}} đã được ghim nhưng chưa mở. Không có gì được chèn; bản chép lời được giữ trong Lịch sử.",
+        "pinnedAppNotRunningNotKept": "{{app}} đã được ghim nhưng chưa mở. Không có gì được chèn, và không thể lưu bản chép lời vào Lịch sử."
       }
     },
     "prompt": {

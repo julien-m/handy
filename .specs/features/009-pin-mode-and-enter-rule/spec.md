@@ -2,7 +2,7 @@
 feature: pin-mode-and-enter-rule
 title: PIN Mode and Enter Rule
 priority: P1
-status: Planned
+status: In Progress
 created: 2026-10-12
 updated: 2026-10-15
 ---
@@ -14,7 +14,7 @@ updated: 2026-10-15
 - **Feature:** PIN Mode and Enter Rule
 - **Branch:** None — specification only (program specified before `spec-ship`)
 - **Date:** 2026-10-12
-- **Status:** Planned
+- **Status:** In Progress
 - **Input:** Program item 9: from the destination badge, pin an application so that following dictations keep being sent to it, despite application switches and transcription stops/restarts, until it is unpinned. Provide a single automatic Enter option: Never; Always; Only in PIN mode. Avoid any duplicate with the existing automatic Enter mechanism. Trigger Enter only after a successful insertion according to the chosen contract. Program item 8 requires the settings CLI to read and modify destination/PIN and output behaviors.
 - **Feature Number:** 009
 

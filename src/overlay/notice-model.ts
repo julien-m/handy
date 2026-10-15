@@ -22,7 +22,12 @@ export interface OverlayNotice {
 export interface OutcomeFacts {
   dictationId: number;
   failed: boolean;
-  reason: "app_closed" | "activation_failed" | "insertion_failed" | null;
+  reason:
+    | "app_closed"
+    | "activation_failed"
+    | "insertion_failed"
+    | "pinned_app_not_running"
+    | null;
   historySaved: boolean;
 }
 
@@ -30,12 +35,15 @@ const REASONS = [
   "app_closed",
   "activation_failed",
   "insertion_failed",
+  "pinned_app_not_running",
 ] as const;
 
+// @spec AC-003: Pinned app not running reason shown — .specs/features/009-pin-mode-and-enter-rule/spec.md#ac-003
 const REASON_KEYS: Record<NonNullable<OutcomeFacts["reason"]>, string> = {
   app_closed: "appClosed",
   activation_failed: "activationFailed",
   insertion_failed: "insertionFailed",
+  pinned_app_not_running: "pinnedAppNotRunning",
 };
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
@@ -72,7 +80,8 @@ export const aiFailureNotice = (
 
 // @spec AC-005: Reason shown at least 4 s — .specs/features/006-destination-application/spec.md#ac-005
 /**
- * Notice of a destination failure (app closed, activation failed, insertion failed) saying
+ * Notice of a destination failure (app closed, pinned app not running (009), activation failed,
+ * insertion failed) saying
  * whether the transcript is in History; `null` when the outcome is not such a failure.
  */
 export const destinationNotice = (

@@ -447,6 +447,20 @@
           "ctrlEnter": "Ctrl+Enter"
         }
       },
+      "automaticEnter": {
+        "title": "自動 Enter",
+        "description": "僅在插入成功後送出一次。",
+        "keyLabel": "要按的鍵",
+        "announced": "自動 Enter：{{value}}",
+        "note": "取代自動送出。插入失敗或未確認、貼上方式為「無」、或 App 失去焦點時，不送出 Enter。",
+        "options": {
+          "never": "永不",
+          "always": "一律",
+          "alwaysDescription": "每次插入成功",
+          "pinOnly": "僅限釘選模式",
+          "pinOnlyDescription": "僅限已釘選的 App"
+        }
+      },
       "translateToEnglish": {
         "label": "翻譯為英語",
         "description": "在轉錄過程中自動將其他語言的語音翻譯為英語"
@@ -1231,6 +1245,7 @@
     "fallbackNotice": "AI 處理失敗。已使用原始文字。",
     "destination": {
       "label": "目標：{{name}}",
+      "pinnedLabel": "目標：{{name}}，已釘選",
       "frontmostApp": "最前方的 App",
       "remove": "移除目標",
       "unknownApp": "目標 App",
@@ -1241,7 +1256,10 @@
         "otherApps": "其他 App",
         "frontmostAtEnd": "結束時最前方的 App",
         "loading": "正在載入 App…",
-        "failed": "無法載入 App 列表。"
+        "failed": "無法載入 App 列表。",
+        "pin": "釘選 {{name}}",
+        "unpin": "取消釘選 {{name}}",
+        "thisDictationOnly": "僅限本次聽寫"
       },
       "refused": {
         "stale": "目標在這段期間已變更；列表已重新整理。",
@@ -1254,7 +1272,9 @@
         "activationFailedKept": "{{app}} 未切換到最前方。未插入任何內容；轉錄文字保留在歷史紀錄中。",
         "activationFailedNotKept": "{{app}} 未切換到最前方。未插入任何內容，且轉錄文字無法儲存到歷史紀錄。",
         "insertionFailedKept": "{{app}} 可能未收到文字；轉錄文字保留在歷史紀錄中。",
-        "insertionFailedNotKept": "{{app}} 可能未收到文字，且轉錄文字無法儲存到歷史紀錄。"
+        "insertionFailedNotKept": "{{app}} 可能未收到文字，且轉錄文字無法儲存到歷史紀錄。",
+        "pinnedAppNotRunningKept": "{{app}} 已釘選但未開啟。未插入任何內容；轉錄文字保留在歷史紀錄中。",
+        "pinnedAppNotRunningNotKept": "{{app}} 已釘選但未開啟。未插入任何內容，且轉錄文字無法儲存到歷史紀錄。"
       }
     },
     "prompt": {

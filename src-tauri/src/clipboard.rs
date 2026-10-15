@@ -793,14 +793,52 @@ pub fn with_trailing_space(text: String, settings: &AppSettings) -> String {
     }
 }
 
+/// Who decides the automatic Enter of one paste.
+pub(crate) enum EnterRoute {
+    /// As on `dev`: `settings.auto_submit` drives the classic 50 ms block and the reliable
+    /// paste's receipt Enter.
+    Legacy,
+    /// 009's Enter authority (gate `destination-return` open, dictation with a destination
+    /// session): this paste sends no Enter; a reliable transfer reports its signals here.
+    Authority(std::sync::Arc<dyn crate::paste_tx::ReceiptSink>),
+}
+impl EnterRoute {
+    /// The reliable paste's auto-submit switch and receipt sink for this route.
+    #[cfg_attr(not(any(target_os = "macos", target_os = "windows")), allow(dead_code))]
+    fn reliable(
+        &self,
+        auto_submit: bool,
+    ) -> (
+        bool,
+        Option<std::sync::Arc<dyn crate::paste_tx::ReceiptSink>>,
+    ) {
+        match self {
+            Self::Legacy => (auto_submit, None),
+            Self::Authority(receipts) => (false, Some(receipts.clone())),
+        }
+    }
+}
+
 // @spec FR-002: Guard after the configured delay, before input — .specs/features/006-destination-application/spec.md#fr-002
 /// Insert `text` with the method of `settings`, a snapshot the caller read once for this
-/// insertion; `check` runs right before the first dispatch.
+/// insertion; `check` runs right before the first dispatch. The automatic Enter is `dev`'s.
 pub fn paste(
     text: String,
     app_handle: AppHandle,
     settings: &AppSettings,
     check: DispatchCheck<'_>,
+) -> Result<(), String> {
+    paste_routed(text, app_handle, settings, check, &EnterRoute::Legacy)
+}
+
+// @spec FR-004: One Enter authority on the session path — .specs/features/009-pin-mode-and-enter-rule/spec.md#fr-004
+/// [`paste`] with the automatic Enter decided by `route`.
+pub(crate) fn paste_routed(
+    text: String,
+    app_handle: AppHandle,
+    settings: &AppSettings,
+    check: DispatchCheck<'_>,
+    route: &EnterRoute,
 ) -> Result<(), String> {
     let paste_method = settings.paste_method;
     let paste_delay_ms = settings.paste_delay_ms;
@@ -837,15 +875,16 @@ pub fn paste(
             if settings.reliable_paste {
                 // The reliable path publishes the clipboard and types at once: check first.
                 check()?;
+                let (submit, receipts) = route.reliable(settings.auto_submit);
                 let reliable_result = with_enigo(&app_handle, |enigo| {
                     crate::paste_tx::try_reliable_paste(
                         &text,
                         &app_handle,
                         &paste_method,
                         enigo,
-                        settings.auto_submit,
-                        settings.auto_submit_key,
+                        (submit, settings.auto_submit_key),
                         settings.clipboard_handling,
+                        receipts,
                     )
                 });
                 match reliable_result {
@@ -885,7 +924,9 @@ pub fn paste(
         }
     }
 
-    if should_send_auto_submit(settings.auto_submit, paste_method) {
+    // The authority route decides its Enter after this method returns (009).
+    let legacy_enter = matches!(route, EnterRoute::Legacy);
+    if legacy_enter && should_send_auto_submit(settings.auto_submit, paste_method) {
         std::thread::sleep(Duration::from_millis(50));
         if let Err(error) = send_auto_submit(&app_handle, settings.auto_submit_key) {
             log::warn!("Paste succeeded, but auto-submit failed: {error}");

@@ -447,6 +447,20 @@
           "ctrlEnter": "Ctrl+Enter"
         }
       },
+      "automaticEnter": {
+        "title": "Otomatik Enter",
+        "description": "Yalnızca başarılı bir eklemeden sonra bir kez gönderilir.",
+        "keyLabel": "Basılacak tuş",
+        "announced": "Otomatik Enter: {{value}}",
+        "note": "Otomatik Gönder'in yerini alır. Başarısız veya onaylanmamış eklemeden sonra, Hiçbiri yapıştırma yöntemiyle ya da uygulama odağı kaybettiğinde Enter gönderilmez.",
+        "options": {
+          "never": "Asla",
+          "always": "Her zaman",
+          "alwaysDescription": "Her başarılı ekleme",
+          "pinOnly": "Yalnızca PIN modunda",
+          "pinOnlyDescription": "Yalnızca sabitlenmiş uygulamalar"
+        }
+      },
       "translateToEnglish": {
         "label": "İngilizce'ye Çevir",
         "description": "Transkripsiyon sırasında diğer dillerden İngilizce'ye otomatik olarak çevirir."
@@ -1231,6 +1245,7 @@
     "fallbackNotice": "Yapay zekâ işlemi başarısız oldu. Özgün metin kullanıldı.",
     "destination": {
       "label": "Hedef: {{name}}",
+      "pinnedLabel": "Hedef: {{name}}, sabitlendi",
       "frontmostApp": "Öndeki uygulama",
       "remove": "Hedefi kaldır",
       "unknownApp": "Hedef uygulama",
@@ -1241,7 +1256,10 @@
         "otherApps": "Diğer uygulamalar",
         "frontmostAtEnd": "Sonda öndeki uygulama",
         "loading": "Uygulamalar yükleniyor…",
-        "failed": "Uygulama listesi yüklenemedi."
+        "failed": "Uygulama listesi yüklenemedi.",
+        "pin": "{{name}} uygulamasını sabitle",
+        "unpin": "{{name}} sabitlemesini kaldır",
+        "thisDictationOnly": "Yalnızca bu dikte"
       },
       "refused": {
         "stale": "Hedef bu arada değişti; liste yenilendi.",
@@ -1254,7 +1272,9 @@
         "activationFailedKept": "{{app}} öne gelmedi. Hiçbir şey eklenmedi; transkript Geçmiş'te tutuluyor.",
         "activationFailedNotKept": "{{app}} öne gelmedi. Hiçbir şey eklenmedi ve transkript Geçmiş'e kaydedilemedi.",
         "insertionFailedKept": "{{app}} metni almamış olabilir; transkript Geçmiş'te tutuluyor.",
-        "insertionFailedNotKept": "{{app}} metni almamış olabilir ve transkript Geçmiş'e kaydedilemedi."
+        "insertionFailedNotKept": "{{app}} metni almamış olabilir ve transkript Geçmiş'e kaydedilemedi.",
+        "pinnedAppNotRunningKept": "{{app}} sabitlendi ancak açık değil. Hiçbir şey eklenmedi; transkript Geçmiş'te tutuluyor.",
+        "pinnedAppNotRunningNotKept": "{{app}} sabitlendi ancak açık değil. Hiçbir şey eklenmedi ve transkript Geçmiş'e kaydedilemedi."
       }
     },
     "prompt": {

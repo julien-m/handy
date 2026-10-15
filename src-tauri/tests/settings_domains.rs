@@ -38,21 +38,23 @@ fn help_lists_the_generic_operations_and_exactly_the_domains_of_this_build() -> 
     let app = Portable::new()?;
     let help = app.run(&["settings", "--help"])?;
     assert_eq!(help.code, 0);
-    assert_eq!(
-        commands(&help.stdout),
-        [
-            "get",
-            "keys",
-            "set",
-            "output",
-            "replacements",
-            "shortcuts",
-            "vocabulary",
-            "prompts",
-            "microphones",
-            "help"
-        ]
-    );
+    let mut expected = vec![
+        "get",
+        "keys",
+        "set",
+        "output",
+        "replacements",
+        "shortcuts",
+        "vocabulary",
+        "prompts",
+        "microphones",
+    ];
+    // 009: the `destination` domain exists only with the `destination-return` gate open.
+    if cfg!(feature = "destination-return") {
+        expected.push("destination");
+    }
+    expected.push("help");
+    assert_eq!(commands(&help.stdout), expected);
     let microphones = app.run(&["settings", "microphones", "--help"])?;
     assert_eq!(
         commands(&microphones.stdout),
@@ -101,7 +103,7 @@ const DRY_RUN: [&str; 7] = [
 #[test]
 fn output_dry_run_previews_with_exit_zero_and_never_writes() -> TestResult {
     let app = Portable::new()?;
-    app.run(&["settings", "set", "auto_submit", "true"])?;
+    app.run(&["settings", "set", "mute_while_recording", "true"])?;
     let before = app.store_bytes()?;
     let preview = app.run(&DRY_RUN)?.envelope()?;
     let expected = json!({"dry_run": true, "changes": {"paste_method": "direct"}});
@@ -192,7 +194,14 @@ fn output_set_routed_to_a_running_instance_is_committed_by_the_instance() -> Tes
 fn output_set_with_an_older_handy_running_is_unavailable_and_writes_nothing() -> TestResult {
     let app = Portable::new()?;
     let _older = std::os::unix::net::UnixListener::bind(app.legacy_socket())?;
-    let refused = app.run(&["settings", "output", "set", "auto_submit", "true", "--json"])?;
+    let refused = app.run(&[
+        "settings",
+        "output",
+        "set",
+        "append_trailing_space",
+        "true",
+        "--json",
+    ])?;
     assert_eq!(
         (refused.code, &refused.envelope()?["error"]["code"]),
         (5, &json!("unavailable"))

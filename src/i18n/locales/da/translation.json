@@ -447,6 +447,20 @@
           "ctrlEnter": "Ctrl+Enter"
         }
       },
+      "automaticEnter": {
+        "title": "Automatisk Enter",
+        "description": "Sendes én gang, kun efter en vellykket indsættelse.",
+        "keyLabel": "Tast der trykkes",
+        "announced": "Automatisk Enter: {{value}}",
+        "note": "Erstatter Automatisk indsendelse. Ingen Enter efter en mislykket eller ubekræftet indsættelse, med indsætningsmetoden Ingen, eller når appen mistede fokus.",
+        "options": {
+          "never": "Aldrig",
+          "always": "Altid",
+          "alwaysDescription": "Hver vellykket indsættelse",
+          "pinOnly": "Kun i PIN-tilstand",
+          "pinOnlyDescription": "Kun fastgjorte apps"
+        }
+      },
       "translateToEnglish": {
         "label": "Oversæt til engelsk",
         "description": "Oversæt automatisk tale fra andre sprog til engelsk under transskription."
@@ -1234,6 +1248,7 @@
     "fallbackNotice": "AI-behandlingen mislykkedes. Den oprindelige tekst blev brugt.",
     "destination": {
       "label": "Destination: {{name}}",
+      "pinnedLabel": "Destination: {{name}}, fastgjort",
       "frontmostApp": "App i forgrunden",
       "remove": "Fjern destination",
       "unknownApp": "Destinationsappen",
@@ -1244,7 +1259,10 @@
         "otherApps": "Andre apps",
         "frontmostAtEnd": "App i forgrunden til sidst",
         "loading": "Indlæser apps…",
-        "failed": "Listen over apps kunne ikke indlæses."
+        "failed": "Listen over apps kunne ikke indlæses.",
+        "pin": "Fastgør {{name}}",
+        "unpin": "Frigør {{name}}",
+        "thisDictationOnly": "Kun denne diktering"
       },
       "refused": {
         "stale": "Destinationen er ændret i mellemtiden; listen er opdateret.",
@@ -1257,7 +1275,9 @@
         "activationFailedKept": "{{app}} kom ikke i forgrunden. Intet blev indsat; transskriptionen gemmes i Historik.",
         "activationFailedNotKept": "{{app}} kom ikke i forgrunden. Intet blev indsat, og transskriptionen kunne ikke gemmes i Historik.",
         "insertionFailedKept": "{{app}} har muligvis ikke modtaget teksten; transskriptionen gemmes i Historik.",
-        "insertionFailedNotKept": "{{app}} har muligvis ikke modtaget teksten, og transskriptionen kunne ikke gemmes i Historik."
+        "insertionFailedNotKept": "{{app}} har muligvis ikke modtaget teksten, og transskriptionen kunne ikke gemmes i Historik.",
+        "pinnedAppNotRunningKept": "{{app}} er fastgjort, men ikke åben. Intet blev indsat; transskriptionen gemmes i Historik.",
+        "pinnedAppNotRunningNotKept": "{{app}} er fastgjort, men ikke åben. Intet blev indsat, og transskriptionen kunne ikke gemmes i Historik."
       }
     },
     "prompt": {

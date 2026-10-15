@@ -42,6 +42,7 @@ const { ReturnToAppSetting } = await import("./return-to-app-setting");
 const { PasteMethodSetting } = await import("./PasteMethod");
 const { SettingsConflictAlert } = await import("./settings-conflict-alert");
 const { HistoryLimit } = await import("./HistoryLimit");
+const { AutomaticEnter } = await import("./automatic-enter");
 
 const TOGGLE = 'data-testid="output-settings-return-app-toggle"';
 /** The toggle's input element, whatever its attribute order. */
@@ -180,5 +181,41 @@ describe("settings write errors (008)", () => {
       false,
     );
     expect(markup.includes("aria-invalid")).toBe(false);
+  });
+});
+
+// @spec AC-004: One Automatic Enter control with its key — .specs/features/009-pin-mode-and-enter-rule/spec.md#ac-004
+describe("Automatic Enter (009, gate destination-return open)", () => {
+  test("the selector, the key selector and the note carry the contract test ids", () => {
+    stored = { automatic_enter: "pin_only", auto_submit_key: "ctrl_enter" };
+    const markup = renderToStaticMarkup(<AutomaticEnter grouped />);
+    for (const id of [
+      "output-settings-enter-options-auto-enter",
+      "output-settings-enter-options-auto-enter-title",
+      "output-settings-enter-options-auto-enter-mode",
+      "output-settings-enter-options-auto-enter-key",
+      "output-settings-enter-options-auto-enter-note",
+    ]) {
+      expect(markup.includes(`data-testid="${id}"`)).toBe(true);
+    }
+    expect(
+      markup.includes("settings.advanced.automaticEnter.options.pinOnly"),
+    ).toBe(true);
+    expect(
+      markup.includes("settings.advanced.autoSubmit.options.ctrlEnter"),
+    ).toBe(true);
+    expect(markup.includes("settings.advanced.autoSubmit.title")).toBe(false);
+  });
+  test("both selectors are focusable comboboxes in reading order", () => {
+    stored = { automatic_enter: "never", auto_submit_key: "enter" };
+    const markup = renderToStaticMarkup(<AutomaticEnter grouped />);
+    const mode = markup.indexOf(
+      "output-settings-enter-options-auto-enter-mode",
+    );
+    const key = markup.indexOf("output-settings-enter-options-auto-enter-key");
+    expect(mode > -1).toBe(true);
+    expect(key > mode).toBe(true);
+    expect((markup.match(/role="combobox"/g) ?? []).length).toBe(2);
+    expect(markup.includes('role="status"')).toBe(true);
   });
 });

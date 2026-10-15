@@ -1,7 +1,8 @@
 //! UI-facing destination DTOs: session snapshot, menu entries with opaque tokens, and the
 //! choice a badge sends back. They carry names, icon references and versions only — never a
 //! transcript, a window title or a caller-supplied process id.
-use super::context::{DictationId, RecoveryDisposition};
+use super::context::{DestinationSource, DictationId, RecoveryDisposition};
+use super::pin::PinView;
 use super::session::{DestinationSession, DestinationSupport, Selection, SessionPhase};
 use serde::{Deserialize, Serialize};
 
@@ -37,6 +38,10 @@ pub struct DestinationSnapshot {
     pub return_enabled: bool,
     pub support: DestinationSupport,
     pub selection: SelectionView,
+    /// Where the current selection comes from; `pinned` shows the pin mark (009).
+    pub source: DestinationSource,
+    /// The session pin, if an application is pinned (009); the badge menu offers Unpin then.
+    pub pin: Option<PinView>,
     pub disposition: RecoveryDisposition,
 }
 impl From<&DestinationSession> for DestinationSnapshot {
@@ -49,6 +54,8 @@ impl From<&DestinationSession> for DestinationSnapshot {
             return_enabled: session.return_enabled,
             support: session.support,
             selection: SelectionView::from(&session.selection),
+            source: session.selection.source(),
+            pin: session.pin.clone(),
             disposition: session.disposition,
         }
     }
@@ -64,6 +71,9 @@ pub struct MenuEntry {
     pub current: bool,
     /// The application frontmost when the menu opened (listed first).
     pub frontmost: bool,
+    /// The application of the session pin (009); the others are "This dictation only" while
+    /// an application is pinned.
+    pub pinned: bool,
 }
 /// Badge menu of one dictation: applications, then "Frontmost app at the end".
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, specta::Type)]

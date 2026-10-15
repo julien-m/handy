@@ -447,6 +447,20 @@
           "ctrlEnter": "Ctrl+Enter"
         }
       },
+      "automaticEnter": {
+        "title": "Automatyczny Enter",
+        "description": "Wysyłany raz, tylko po udanym wstawieniu.",
+        "keyLabel": "Klawisz do naciśnięcia",
+        "announced": "Automatyczny Enter: {{value}}",
+        "note": "Zastępuje automatyczne wysyłanie. Brak Entera po nieudanym lub niepotwierdzonym wstawieniu, przy metodzie wklejania Brak lub gdy aplikacja straciła fokus.",
+        "options": {
+          "never": "Nigdy",
+          "always": "Zawsze",
+          "alwaysDescription": "Każde udane wstawienie",
+          "pinOnly": "Tylko w trybie PIN",
+          "pinOnlyDescription": "Tylko przypięte aplikacje"
+        }
+      },
       "translateToEnglish": {
         "label": "Tłumacz na angielski",
         "description": "Automatycznie tłumacz mowę z innych języków na angielski podczas transkrypcji."
@@ -1231,6 +1245,7 @@
     "fallbackNotice": "Przetwarzanie przez AI nie powiodło się. Użyto oryginalnego tekstu.",
     "destination": {
       "label": "Cel: {{name}}",
+      "pinnedLabel": "Cel: {{name}}, przypięta",
       "frontmostApp": "Aplikacja na pierwszym planie",
       "remove": "Usuń cel",
       "unknownApp": "Aplikacja docelowa",
@@ -1241,7 +1256,10 @@
         "otherApps": "Inne aplikacje",
         "frontmostAtEnd": "Aplikacja na pierwszym planie na końcu",
         "loading": "Wczytywanie aplikacji…",
-        "failed": "Nie udało się wczytać listy aplikacji."
+        "failed": "Nie udało się wczytać listy aplikacji.",
+        "pin": "Przypnij {{name}}",
+        "unpin": "Odepnij {{name}}",
+        "thisDictationOnly": "Tylko to dyktowanie"
       },
       "refused": {
         "stale": "Cel zmienił się w międzyczasie; lista została odświeżona.",
@@ -1254,7 +1272,9 @@
         "activationFailedKept": "{{app}} nie przeszła na pierwszy plan. Nic nie wstawiono; transkrypcja jest zachowana w Historii.",
         "activationFailedNotKept": "{{app}} nie przeszła na pierwszy plan. Nic nie wstawiono, a transkrypcji nie udało się zapisać w Historii.",
         "insertionFailedKept": "{{app}} mogła nie otrzymać tekstu; transkrypcja jest zachowana w Historii.",
-        "insertionFailedNotKept": "{{app}} mogła nie otrzymać tekstu, a transkrypcji nie udało się zapisać w Historii."
+        "insertionFailedNotKept": "{{app}} mogła nie otrzymać tekstu, a transkrypcji nie udało się zapisać w Historii.",
+        "pinnedAppNotRunningKept": "{{app}} jest przypięta, ale nie jest otwarta. Nic nie wstawiono; transkrypcja jest zachowana w Historii.",
+        "pinnedAppNotRunningNotKept": "{{app}} jest przypięta, ale nie jest otwarta. Nic nie wstawiono i nie udało się zapisać transkrypcji w Historii."
       }
     },
     "prompt": {

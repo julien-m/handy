@@ -145,8 +145,65 @@ fn checked_schema_matches_the_actual_dto_generator() -> Result<(), Box<dyn std::
     if handy_app_lib::smart_paste::setting_policy::Rollout::CURRENT.is_active() {
         assert_eq!(remove_smart_paste(&mut actual), 2);
     }
+    // 009: the checked contract is also the `destination-return` gate closed; open, the generator
+    // has `automatic_enter` exactly where the checked contract has `auto_submit`.
+    let mut checked = checked;
+    if cfg!(feature = "destination-return") {
+        assert_eq!(with_automatic_enter(&mut checked), 5);
+    }
     assert_eq!(checked, actual);
     Ok(())
+}
+
+/// The checked (gate closed) contract turned into the gate-open one: `auto_submit` replaced by
+/// `automatic_enter` (`never`, `always`, `pin_only`) in the public properties, the key lists and
+/// the descriptors; returns how many places changed.
+fn with_automatic_enter(schema: &mut serde_json::Value) -> usize {
+    use serde_json::{json, Value};
+    let values = json!(["never", "always", "pin_only"]);
+    let mut changed = 0;
+    let properties = &mut schema["$defs"]["public_settings"]["properties"];
+    if let Some(properties) = properties.as_object_mut() {
+        if properties.remove("auto_submit").is_some() {
+            properties.insert(
+                "automatic_enter".to_owned(),
+                json!({"enum": values, "type": "string"}),
+            );
+            changed += 1;
+        }
+    }
+    changed += rename_in_lists(schema);
+    if let Some(descriptors) = schema["x-setting-descriptors"].as_array_mut() {
+        for descriptor in descriptors
+            .iter_mut()
+            .filter(|entry| entry["key"] == "auto_submit")
+        {
+            descriptor["key"] = Value::from("automatic_enter");
+            descriptor["value_type"] = Value::from("string");
+            descriptor["allowed_values"] = values.clone();
+            changed += 1;
+        }
+    }
+    changed
+}
+
+/// Replace the string `auto_submit` by `automatic_enter` in every array of `value`.
+fn rename_in_lists(value: &mut serde_json::Value) -> usize {
+    match value {
+        serde_json::Value::Array(items) => items
+            .iter_mut()
+            .map(|item| {
+                if item == "auto_submit" {
+                    *item = serde_json::Value::from("automatic_enter");
+                    1
+                } else {
+                    rename_in_lists(item)
+                }
+            })
+            .sum(),
+        serde_json::Value::Object(fields) => fields.values_mut().map(rename_in_lists).sum(),
+        _ => 0,
+    }
 }
 
 /// Removes `smart_paste` from the public `paste_method` enum and its descriptor's allowed values;

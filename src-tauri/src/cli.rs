@@ -127,7 +127,16 @@ pub enum SettingsCommand {
     Prompts(PromptsArgs),
     /// Microphone choices: list the saved order, availability and microphone in use; replace it
     Microphones(MicrophonesArgs),
+    /// Pinned destination application (running Handy): pin one by identifier, unpin, status
+    #[cfg(feature = "destination-return")]
+    Destination(DestinationArgs),
 }
+
+#[cfg(feature = "destination-return")]
+#[path = "cli_destination.rs"]
+pub mod destination;
+#[cfg(feature = "destination-return")]
+pub use destination::DestinationArgs;
 
 /// `handy settings vocabulary`: the recognition vocabulary, with the validation of the settings
 /// window.
@@ -371,7 +380,15 @@ pub struct OutputArgs {
 pub enum OutputAction {
     /// Print the output settings, or only KEY
     Get {
-        /// Output setting key (paste_method, clipboard_handling, auto_submit, ...)
+        // 009: with the `destination-return` gate open, `auto_submit` is no key there.
+        #[cfg_attr(
+            not(feature = "destination-return"),
+            doc = "Output setting key (paste_method, clipboard_handling, auto_submit, ...)"
+        )]
+        #[cfg_attr(
+            feature = "destination-return",
+            doc = "Output setting key (paste_method, clipboard_handling, automatic_enter, ...)"
+        )]
         key: Option<String>,
     },
     /// Change one output setting; with --dry-run, validate and preview without writing

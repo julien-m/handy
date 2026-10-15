@@ -447,6 +447,20 @@
           "ctrlEnter": "Ctrl+Enter"
         }
       },
+      "automaticEnter": {
+        "title": "Enter Otomatis",
+        "description": "Dikirim sekali, hanya setelah penyisipan berhasil.",
+        "keyLabel": "Tombol yang ditekan",
+        "announced": "Enter Otomatis: {{value}}",
+        "note": "Menggantikan Kirim Otomatis. Tidak ada Enter setelah penyisipan gagal atau tidak terkonfirmasi, dengan metode tempel Tidak Ada, atau saat aplikasi kehilangan fokus.",
+        "options": {
+          "never": "Tidak pernah",
+          "always": "Selalu",
+          "alwaysDescription": "Setiap penyisipan berhasil",
+          "pinOnly": "Hanya dalam mode PIN",
+          "pinOnlyDescription": "Hanya aplikasi yang disematkan"
+        }
+      },
       "translateToEnglish": {
         "label": "Terjemahkan ke Bahasa Inggris",
         "description": "Terjemahkan ucapan dari bahasa lain ke bahasa Inggris secara otomatis selama transkripsi."
@@ -1234,6 +1248,7 @@
     "fallbackNotice": "Pemrosesan AI gagal. Teks asli yang digunakan.",
     "destination": {
       "label": "Tujuan: {{name}}",
+      "pinnedLabel": "Tujuan: {{name}}, disematkan",
       "frontmostApp": "Aplikasi di depan",
       "remove": "Hapus tujuan",
       "unknownApp": "Aplikasi tujuan",
@@ -1244,7 +1259,10 @@
         "otherApps": "Aplikasi lain",
         "frontmostAtEnd": "Aplikasi di depan saat selesai",
         "loading": "Memuat aplikasi…",
-        "failed": "Daftar aplikasi tidak dapat dimuat."
+        "failed": "Daftar aplikasi tidak dapat dimuat.",
+        "pin": "Sematkan {{name}}",
+        "unpin": "Lepas sematan {{name}}",
+        "thisDictationOnly": "Hanya dikte ini"
       },
       "refused": {
         "stale": "Tujuan berubah sementara itu; daftar telah diperbarui.",
@@ -1257,7 +1275,9 @@
         "activationFailedKept": "{{app}} tidak muncul di depan. Tidak ada yang disisipkan; transkrip disimpan di Riwayat.",
         "activationFailedNotKept": "{{app}} tidak muncul di depan. Tidak ada yang disisipkan, dan transkrip tidak dapat disimpan di Riwayat.",
         "insertionFailedKept": "{{app}} mungkin tidak menerima teks; transkrip disimpan di Riwayat.",
-        "insertionFailedNotKept": "{{app}} mungkin tidak menerima teks, dan transkrip tidak dapat disimpan di Riwayat."
+        "insertionFailedNotKept": "{{app}} mungkin tidak menerima teks, dan transkrip tidak dapat disimpan di Riwayat.",
+        "pinnedAppNotRunningKept": "{{app}} disematkan tetapi tidak terbuka. Tidak ada yang disisipkan; transkrip disimpan di Riwayat.",
+        "pinnedAppNotRunningNotKept": "{{app}} disematkan tetapi tidak terbuka. Tidak ada yang disisipkan, dan transkrip tidak dapat disimpan di Riwayat."
       }
     },
     "prompt": {

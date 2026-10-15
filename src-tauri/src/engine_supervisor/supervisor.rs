@@ -1565,9 +1565,9 @@ mod tests {
     /// after it, however fast the model is.
     fn wait_in_flight(engine: &EngineSupervisor, what: &str) {
         let started = Instant::now();
-        while !lock(&engine.shared.in_flight)
+        while lock(&engine.shared.in_flight)
             .as_ref()
-            .is_some_and(|call| call.what == what)
+            .is_none_or(|call| call.what != what)
         {
             assert!(
                 started.elapsed() < Duration::from_secs(60),

@@ -48,6 +48,8 @@ export const session = (
     return_enabled: true,
     support: { state: "supported" },
     selection,
+    source: selection.kind === "application" ? "captured" : "frontmost_at_end",
+    pin: null,
     disposition: "pending",
   }) as DestinationSnapshot;
 export const chatgpt = {
@@ -69,6 +71,8 @@ export const destination = (
   closeMenu: noop,
   choose: noop,
   remove: noop,
+  pin: noop,
+  unpin: noop,
 });
 
 export const library: PromptLibraryView = {

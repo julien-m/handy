@@ -120,7 +120,12 @@ fn all_canonical_public_enums_and_required_keys_match_independent_inventory(
             .map(|entry| entry.key)
             .collect::<Vec<_>>())
     );
-    for key in actual {
+    // 009: with the `destination-return` gate open, `auto_submit` stays stored but is no setting.
+    let retired = cfg!(feature = "destination-return").then_some("auto_submit");
+    for key in actual
+        .into_iter()
+        .filter(|key| Some(key.as_str()) != retired)
+    {
         assert!(public["required"]
             .as_array()
             .ok_or("required")?

@@ -2,6 +2,9 @@
 
 pub use super::error_reason::{ErrorItem, ErrorReason, MAX_ERROR_ITEMS};
 use super::protocol::Revision;
+
+#[path = "errors_pin_enter.rs"]
+mod pin_enter;
 use serde::{Deserialize, Serialize};
 
 /// Stable wire categories; their fixed exit meanings never depend on input text.
@@ -248,7 +251,7 @@ impl SettingsError {
             error.details.field = Some(entry.key);
             error.details.issues.push(FieldIssue {
                 field: entry.key,
-                reason: reason.message(),
+                reason: pin_enter::issue_message(entry.key, reason),
             });
         }
         error

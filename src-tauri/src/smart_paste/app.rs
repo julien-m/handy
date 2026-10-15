@@ -2,9 +2,10 @@
 //! (started at setup when the rollout gate makes smart paste active, settled
 //! at a normal exit), the insertion method handed to 006, the insertion
 //! without a 006 session, and the outcome follow-ups: the Screen Sharing
-//! hand-over message, the automatic Enter (the 009 hook) and the late-read
-//! diagnostic for the recovery bubble (the 010 hook). Events carry
-//! identifiers only, never the transcript.
+//! hand-over message, the automatic Enter (009's authority with a session,
+//! the legacy auto-submit without one) and the late-read diagnostic for the
+//! recovery bubble (the 010 hook). Events carry identifiers only, never the
+//! transcript.
 
 use std::sync::mpsc;
 use std::sync::Arc;
@@ -22,7 +23,8 @@ use super::exit_gate::{ExitDecision, ExitGate};
 use super::outcome::{PasteDiagnostic, PasteOutcome};
 use super::request::DiagnosticSink;
 use super::setting_policy::Rollout;
-use crate::destination::context::DestinationContext as SessionContext;
+use crate::automatic_enter::policy::Completion;
+use crate::automatic_enter::transaction::EnterTransaction;
 use crate::destination::workspace::WorkspacePort;
 use crate::settings::{AppSettings, AutoSubmitKey};
 
@@ -92,41 +94,32 @@ fn runtime(app: &AppHandle) -> Option<Arc<SmartPasteRuntime>> {
         .map(|state| Arc::clone(state.inner()))
 }
 
+// @spec FR-004: Smart-paste Enter decided by 009's authority — .specs/features/009-pin-mode-and-enter-rule/spec.md#fr-004
 /// 006's insertion method for this dictation when smart paste applies
-/// (both gates open), with `settings` read once for the insertion.
+/// (both gates open), with `settings` read once for the insertion. Its
+/// terminal outcome goes to 009's transaction `enter`, the only emitter of
+/// the dictation's Enter.
 pub fn session_method(
     app: &AppHandle,
     text: &str,
     settings: &AppSettings,
+    enter: Arc<EnterTransaction>,
 ) -> Option<SmartPasteMethod> {
     let route = insertion_route(Rollout::CURRENT, true, settings.paste_method);
     let runtime = runtime(app).filter(|_| route == InsertionRoute::SmartPasteInSession)?;
     let final_text = crate::clipboard::with_trailing_space(text.to_owned(), settings);
-    let (handle, auto_submit) = (
-        app.clone(),
-        (settings.auto_submit, settings.auto_submit_key),
-    );
+    let handle = app.clone();
     Some(SmartPasteMethod {
         submitter: Arc::new(runtime.slot.clone()),
         checks: Arc::clone(&runtime.checks),
         inputs: InsertionInputs::new(final_text, settings),
         follow_up: Box::new(move |outcome, context| {
-            let follow = follow_ups(outcome.kind, auto_submit.0);
-            present_hand_over(&handle, follow, outcome);
-            if follow.auto_submit && claim_enter(&handle, context) {
-                submit_enter(&handle, auto_submit.1);
-            }
+            // `false`: the session path never uses the legacy auto-submit.
+            present_hand_over(&handle, follow_ups(outcome.kind, false), outcome);
+            // t0: the terminal outcome is published now (007's AX readback, read or typing done).
+            let completion = Completion::SmartPaste(outcome.kind.method_outcome());
+            enter.complete(completion, Some(context), std::time::Instant::now());
         }),
-    })
-}
-
-/// 009 hook: the Enter of an eligible outcome is claimed through 006's
-/// single disposition veto; 009 replaces this rule when delivered.
-fn claim_enter(app: &AppHandle, context: &SessionContext) -> bool {
-    let manager = crate::destination::app::manager(app);
-    manager.is_some_and(|manager| {
-        let claim = manager.claim_enter(context.dictation_id, context.destination_generation);
-        claim.is_ok()
     })
 }
 
@@ -170,7 +163,9 @@ pub async fn insert_at_foreground(
 }
 
 fn follow_without_session(app: &AppHandle, outcome: &PasteOutcome, settings: &AppSettings) {
-    let follow = follow_ups(outcome.kind, settings.auto_submit);
+    // Gate closed: the stored `auto_submit`, as on `dev`; gate open: Automatic Enter (009).
+    let auto_submit = crate::automatic_enter::legacy_auto_submit(settings);
+    let follow = follow_ups(outcome.kind, auto_submit);
     present_hand_over(app, follow, outcome);
     if follow.failure_notice {
         // 010 hook: until the recovery bubble exists, the classic failure toast (best effort,
