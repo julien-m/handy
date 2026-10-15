@@ -2,7 +2,7 @@
 
 > Specification registry for Handy. All artifacts produced by LiveSpec are indexed here.
 >
-> Last updated: 2026-10-14
+> Last updated: 2026-10-15
 
 ---
 
@@ -44,6 +44,7 @@
 | 008 | Settings CLI | In Progress | 2026-10-12 | 2026-10-13 | [spec](features/008-settings-cli/spec.md) |
 | 009 | PIN Mode and Enter Rule | Planned | 2026-10-12 | 2026-10-14 | [spec](features/009-pin-mode-and-enter-rule/spec.md) |
 | 010 | Recovery Bubble | Planned | 2026-10-12 | 2026-10-14 | [spec](features/010-recovery-bubble/spec.md) |
+| 011 | Dictation Field Return | Draft | 2026-10-15 | 2026-10-15 | [spec](features/011-dictation-field-return/spec.md) |
 <!-- readme:features:end -->
 
 
@@ -68,6 +69,8 @@
 <!-- readme:activity:start -->
 | Date | Type | Description |
 |---|---|---|
+| 2026-10-15 | Spec | [Feature 011] Spec created: Dictation Field Return — 4 stories, 8 AC, 5 FR (the dictation's input remembered at start, focused, raised and verified before the paste, fallback to 006/010) |
+| 2026-10-14 | Feature | [Features 004, 005, 006, 007, 008] UI hardening: shortcut draft exit and one-shot record requests (004), return-to-app row hidden while its gate is closed (006), Reload failure kept in the conflict alert and history limit saves tested (008), indicator window bounded by its monitor, menu timers cleaned, closed-gate test compared with dev (005/006/007) |
 | 2026-10-14 | Feature | [Feature 010] Plan refined: permission_missing aligned on the spec (no keystroke sent, so no possible-partial-insertion detail) |
 | 2026-10-14 | Feature | [Feature 010] Spec refined: focus in another process inserts (Key Entities), history claim conditional on a successful save, no 'some text' detail for permission_missing, destination-return gate recorded, a new dictation closes the bubble even before 4 s |
 | 2026-10-14 | Feature | [Feature 009] Spec refined: AC-003 reasons split into pinned_app_not_running and activation_failed, destination-return gate recorded; plan keeps dev's 50 ms pause before Enter |
@@ -76,8 +79,6 @@
 | 2026-10-14 | Feature | [Feature 007] Smart paste wired into dictation through 006's insertion contract (006 guard context, method_outcome, disposition, Enter and late-read hooks), behind the smart-paste-dispatch gate closed by default; dev (004, 006) merged; native AC-016 matrix pending with Julien |
 | 2026-10-14 | Feature | [Feature 007] Plan refined: history follows the 006 rule (no WAV gate, text-only row when the WAV fails, Julien's decision), delivered 008 settings names replace LiveSettingsEffects and commit_mutation as live commit |
 | 2026-10-14 | Feature | [Feature 007] Smart paste settings on the 008 service: macOS migration, default, shared refusal, output CLI and selector implemented behind a rollout gate, inactive until step 7 wires the dictation dispatch; certification pending |
-| 2026-10-13 | Feature | [Feature 007] Smart paste fix round 1: current-host-only restoration, concealed/transient content never restored (Julien's decision on AC-009), audit A/B minors fixed or documented; release blockers R-1/R-2 still open |
-| 2026-10-13 | Feature | [Feature 007] Smart paste core implemented (steps 1–6): verified AX insertion, bounded multi-type snapshot helper, on-demand provider, serialized coordinator, per-app/keyboard strategies; settings (008) and destination wiring (006) pending; certification pending |
 <!-- readme:activity:end -->
 
 ---
@@ -195,3 +196,5 @@
 <!-- finalize:spec-refine:2026-10-14:8ecc2640 -->
 
 <!-- finalize:spec-refine:2026-10-14:3d66e47e -->
+
+<!-- finalize:spec-specify:2026-10-15:5625200d -->
