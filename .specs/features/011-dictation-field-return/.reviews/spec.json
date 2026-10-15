@@ -1,10 +1,10 @@
 {
   "schema_version": "1",
   "policy_version": "078.1",
-  "context_hash": "e6f1009ada13ec0380627b523ca86afdaae6931f8abdf03b2904b5ad6d3ba351",
+  "context_hash": "d1aa6f3d154d933c40f74a3f09a7bcb9dacc0cb7948ef86498f0e1d12d039df8",
   "source_hashes": {
     ".specs/constitution.md": "f65acb99e00dfab5f8ce418aae1b5979265f2b2eb3c399666b09c4c2caf82067",
-    ".specs/features/011-dictation-field-return/spec.md": "4e0b76b2332785794e898555066c522ebbf422a07e3127c56bfd9629a71820f1",
+    ".specs/features/011-dictation-field-return/spec.md": "1a597fd0d3faa6afe3c4bfd1dcc57e74f525489572dd2c1a5f8b8107a9b671bf",
     ".specs/project.md": "cd935573446ed94fa43256de0a4d14b9474c4356fa66623f3c8c32a80572b699",
     ".specs/stacks/_default.md": "4df92d16eef38a57c8c2bf1fff8425852b86a41e86c6b7c16423ec166ddfc0f8",
     ".specs/testing/strategy.md": "bfe0dd480a9d3cf2575cba8407a984add02dcbdad2a17fcb4fc560def9058934"
@@ -17,11 +17,11 @@
     {
       "requirement_id": "011-dictation-field-return:AC-001",
       "disposition": "covered",
-      "rationale": "Start read target, per-element timeout, process/editability/password filters and every no-remember case are enumerated and testable with fake AX seams.",
+      "rationale": "Capture read, 50 ms shared deadline off the start path, per-element timeouts, 010 editable rule, exclusions and range-or-not-read are explicit and testable (SC-005).",
       "source_citations": [
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L189-L193",
-          "excerpt": "an Accessibility error and an expired budget remember nothing"
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L196-L200",
+          "excerpt": "These reads share one deadline of 50 ms"
         }
       ],
       "plan_citations": [],
@@ -29,12 +29,12 @@
     },
     {
       "requirement_id": "011-dictation-field-return:AC-002",
-      "disposition": "ambiguous",
-      "rationale": "Ordered steps, same-instance condition, single attempt and outcome reporting are clear, but where the text lands inside a focus-restored input (caret/selection) is undecided.",
+      "disposition": "covered",
+      "rationale": "Six ordered steps, single attempt, 50 ms and 10 ms deadlines, stop-on-failure and hand-off to AC-004 are clear; consistent with the caret decision.",
       "source_citations": [
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L194-L198",
-          "excerpt": "(4) inserts with the configured insertion method, unchanged."
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L201-L205",
+          "excerpt": "Steps (1) to (4) share one 50 ms deadline"
         }
       ],
       "plan_citations": [],
@@ -43,11 +43,11 @@
     {
       "requirement_id": "011-dictation-field-return:AC-003",
       "disposition": "covered",
-      "rationale": "Pinned-instance read, not-running case and drop conditions (badge choice, removal, unpin) are explicit and backed by a validated decision.",
+      "rationale": "Pinned-instance read, not-running case and drop on badge choice, removal or unpin match Story 2 and the validated decision.",
       "source_citations": [
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L199-L203",
-          "excerpt": "nothing is remembered and 009's failure applies unchanged"
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L206-L210",
+          "excerpt": "When the pinned application is not running at the start, nothing is remembered"
         }
       ],
       "plan_citations": [],
@@ -56,11 +56,15 @@
     {
       "requirement_id": "011-dictation-field-return:AC-004",
       "disposition": "contradictory",
-      "rationale": "Claims insertion 'exactly as without this feature' after AC-002 steps may already have moved focus or raised another window, so the fallback target can differ from today.",
+      "rationale": "Branch (a) takes precedence ('Otherwise'), so when the noted element is the remembered input and range restore/verify fails, (a) pastes into it; (b), FR-004 and the caret decision forbid it.",
       "source_citations": [
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L204-L208",
-          "excerpt": "Handy inserts exactly as without this feature"
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L211-L215",
+          "excerpt": "(a) When its attempt changed nothing, that is no window was raised"
+        },
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L211-L215",
+          "excerpt": "or the remembered input is focused but its range could not be restored or verified"
         }
       ],
       "plan_citations": [],
@@ -69,11 +73,11 @@
     {
       "requirement_id": "011-dictation-field-return:AC-005",
       "disposition": "covered",
-      "rationale": "Verified element counts editable for 010 and 009's frontmost check before Enter is kept unchanged; observable and testable.",
+      "rationale": "Verified element counts editable for 010; 009 Enter rule unchanged; testable via Story 3 scenarios.",
       "source_citations": [
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L209-L213",
-          "excerpt": "010's classification counts it as editable"
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L216-L220",
+          "excerpt": "this feature adds no Enter condition and removes none"
         }
       ],
       "plan_citations": [],
@@ -82,10 +86,10 @@
     {
       "requirement_id": "011-dictation-field-return:AC-006",
       "disposition": "covered",
-      "rationale": "Gate-closed, setting-off-without-pin, no destination, method none and no-new-setting cases are enumerated; see warning on the cancelled wording.",
+      "rationale": "Gate closed, return off without pin, no destination, cancel and method none are enumerated; no new setting or UI.",
       "source_citations": [
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L214-L218",
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L221-L225",
           "excerpt": "No setting, settings CLI key, screen, control or visual state is added"
         }
       ],
@@ -95,11 +99,11 @@
     {
       "requirement_id": "011-dictation-field-return:AC-007",
       "disposition": "covered",
-      "rationale": "Windows UIA rule and pending release evidence conform to the constitution; Linux explicitly falls back to 006.",
+      "rationale": "Windows UIA path, no-TextPattern fallback, bounded calls and pending release evidence match the constitution; Linux excluded.",
       "source_citations": [
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L219-L223",
-          "excerpt": "Its native observation is pending release evidence, never a gate."
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L226-L230",
+          "excerpt": "when `TextPattern` is unavailable, the selection is not read and AC-004 (b) applies"
         }
       ],
       "plan_citations": [],
@@ -108,11 +112,11 @@
     {
       "requirement_id": "011-dictation-field-return:AC-008",
       "disposition": "covered",
-      "rationale": "Content never read/stored/logged, opaque reference fields and release points are explicit; SC-004 gives the sentinel test.",
+      "rationale": "No content read, opaque reference, lifetime and no range in events/CLI/history/logs are explicit (Key Entities field list differs slightly, see finding).",
       "source_citations": [
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L224-L228",
-          "excerpt": "it holds only an opaque reference with the dictation's identity"
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L231-L235",
+          "excerpt": "Handy never reads, stores or logs the content of the remembered element"
         }
       ],
       "plan_citations": [],
@@ -121,11 +125,11 @@
     {
       "requirement_id": "011-dictation-field-return:FR-001",
       "disposition": "covered",
-      "rationale": "Matches AC-001/AC-008: editable, same process, not password, bounded reads, no content.",
+      "rationale": "Restates AC-001/AC-008 capture conditions and bounds consistently.",
       "source_citations": [
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L231-L235",
-          "excerpt": "with bounded Accessibility reads and without reading its content"
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L238-L242",
+          "excerpt": "with Accessibility reads bounded to 50 ms off the recording start path"
         }
       ],
       "plan_citations": [],
@@ -134,11 +138,11 @@
     {
       "requirement_id": "011-dictation-field-return:FR-002",
       "disposition": "covered",
-      "rationale": "Focus, raise when needed, verify at the pre-dispatch guard, then configured method; detailed by AC-002.",
+      "rationale": "Ordered insertion steps match AC-002.",
       "source_citations": [
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L236-L240",
-          "excerpt": "verify it at the pre-dispatch guard, then insert with the configured method"
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L243-L247",
+          "excerpt": "verify input and range at the pre-dispatch guard, then insert with the configured method"
         }
       ],
       "plan_citations": [],
@@ -147,10 +151,10 @@
     {
       "requirement_id": "011-dictation-field-return:FR-003",
       "disposition": "covered",
-      "rationale": "Pinned read and same-instance retention are stated and detailed by AC-003.",
+      "rationale": "Pinned read and retention condition match AC-003.",
       "source_citations": [
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L241-L245",
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L248-L252",
           "excerpt": "keep it only while the dictation's destination stays that running instance"
         }
       ],
@@ -159,12 +163,12 @@
     },
     {
       "requirement_id": "011-dictation-field-return:FR-004",
-      "disposition": "ambiguous",
-      "rationale": "'Never inserting into any other field' is undecided once a raise or focus change happened and the 006/010 path pastes into whatever is now focused.",
+      "disposition": "covered",
+      "rationale": "Self-consistent if 'never paste into the input without its verified range' bounds the unchanged path; AC-004 ordering conflicts with it (see AC-004).",
       "source_citations": [
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L246-L250",
-          "excerpt": "never inserting into any other field and never losing the transcript"
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L253-L257",
+          "excerpt": "Never paste into the input without its verified range"
         }
       ],
       "plan_citations": [],
@@ -173,10 +177,10 @@
     {
       "requirement_id": "011-dictation-field-return:FR-005",
       "disposition": "covered",
-      "rationale": "Gate-open build, destination on macOS/Windows, no setting/CLI/UI; matches AC-006/AC-007.",
+      "rationale": "Scope limits match AC-006 and AC-007 and the no-new-setting decision.",
       "source_citations": [
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L251-L255",
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L258-L262",
           "excerpt": "without a new setting, CLI key or user interface"
         }
       ],
@@ -186,10 +190,10 @@
     {
       "requirement_id": "011-dictation-field-return:SC-001",
       "disposition": "covered",
-      "rationale": "Measurable 5/5 native macOS runs per named application, with runs and fallbacks recorded.",
+      "rationale": "5 of 5 native runs per app with an explicit, recorded fallback when Chromium does not expose its input; measurable.",
       "source_citations": [
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L312-L315",
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L330-L333",
           "excerpt": "in 5 of 5 runs for Notes and ChatGPT desktop"
         }
       ],
@@ -199,11 +203,11 @@
     {
       "requirement_id": "011-dictation-field-return:SC-002",
       "disposition": "covered",
-      "rationale": "Enumerated fault-injection cases with zero wrong-element insertions and 100% fallback with transcript kept.",
+      "rationale": "Fault list and 100% outcomes are measurable; the 'range not restored' expectation inherits the AC-004 precedence issue.",
       "source_citations": [
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L316-L319",
-          "excerpt": "zero insertions target another element and 100% of the cases"
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L334-L337",
+          "excerpt": "100% of the unchanged cases follow the 006/010 path"
         }
       ],
       "plan_citations": [],
@@ -212,11 +216,11 @@
     {
       "requirement_id": "011-dictation-field-return:SC-003",
       "disposition": "covered",
-      "rationale": "Gate-closed build: zero focused-element reads and dev-identical insertion, observable in automated tests.",
+      "rationale": "Zero reads and same insertion as dev with the gate closed; testable.",
       "source_citations": [
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L320-L323",
-          "excerpt": "automated tests observe zero focused-element reads and the same insertion as"
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L338-L341",
+          "excerpt": "automated tests observe zero focused-element reads and the same insertion as `dev`"
         }
       ],
       "plan_citations": [],
@@ -225,80 +229,92 @@
     {
       "requirement_id": "011-dictation-field-return:SC-004",
       "disposition": "covered",
-      "rationale": "Sentinel-based check over logs, events and CLI output is concrete and measurable.",
+      "rationale": "Sentinel content check across logs, events and CLI is measurable.",
       "source_citations": [
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L324-L326",
-          "excerpt": "never appears in logs, events or CLI output"
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L342-L345",
+          "excerpt": "A sentinel text placed in the remembered input never appears in logs"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "011-dictation-field-return:SC-005",
+      "disposition": "covered",
+      "rationale": "Non-answering port, non-blocking start and 50 ms abandonment are measurable.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L346-L348",
+          "excerpt": "the start read is abandoned at its 50 ms deadline with nothing remembered"
         }
       ],
       "plan_citations": [],
       "searched_plan_sections": []
     }
   ],
-  "ambiguities": [
-    {
-      "requirement_id": "011-dictation-field-return:AC-002",
-      "decision_key": "caret-after-focus-restore",
-      "question": "After focus is given back, where must the text go when the input holds a draft: programmatic focus may select all (NSTextField) so a paste replaces the user's draft. Accept, or require caret at end?",
-      "critical": false,
-      "citations": [
-        {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L194-L198",
-          "excerpt": "(4) inserts with the configured insertion method, unchanged."
-        }
-      ],
-      "resolution": "",
-      "resolution_citations": []
-    },
-    {
-      "requirement_id": "011-dictation-field-return:FR-004",
-      "decision_key": "fallback-after-partial-return",
-      "question": "When focus was set or a window raised and verification then fails, may Handy paste into whatever is now focused (006/010 path), or must it avoid that field (e.g. show the 010 bubble)?",
-      "critical": false,
-      "citations": [
-        {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L246-L250",
-          "excerpt": "never inserting into any other field and never losing the transcript"
-        }
-      ],
-      "resolution": "",
-      "resolution_citations": []
-    }
-  ],
+  "ambiguities": [],
   "extra_scope": [
     {
-      "description": "Windows support through UI Automation (SetFocus, verification) beyond the macOS request.",
-      "justification": "Asked by the technical frame validated by Julien on 2026-10-15, as pending release evidence.",
+      "description": "Caret/selection range capture, restoration and verification before pasting (request only asked to paste back into the input).",
+      "justification": "Validated decision caret-after-focus-restore asks for it.",
       "approved": true,
       "citations": [
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L265-L276",
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L272-L289",
+          "excerpt": "After giving focus back it restores that range, verifies it, then pastes"
+        }
+      ],
+      "kind": "business"
+    },
+    {
+      "description": "No paste and 010 recovery bubble (or 006 paste-error) when the return attempt changed something.",
+      "justification": "Validated decision fallback-after-partial-return asks for it.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L272-L289",
+          "excerpt": "Handy does not paste and shows the 010 bubble with the transcript"
+        }
+      ],
+      "kind": "business"
+    },
+    {
+      "description": "Windows support through UI Automation and drop of the input on badge choice, removal or unpin.",
+      "justification": "Technical frame and AC-003 decision validated by Julien on 2026-10-15.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L272-L289",
           "excerpt": "Windows through UI Automation (`SetFocus`) as pending release evidence"
+        },
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L272-L289",
+          "excerpt": "Handy does not read the focused element of the newly chosen application"
         }
       ],
       "kind": "business"
     },
     {
-      "description": "Raising another window of the destination that holds the remembered input.",
-      "justification": "Needed to paste back into that input; in the technical frame validated by Julien.",
+      "description": "Raising the remembered input's window, 50/10 ms deadlines and a start read off the recording path.",
+      "justification": "Needed to reach an input in another window and to never delay or freeze dictation; in the validated technical frame.",
       "approved": true,
       "citations": [
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L23-L67",
-          "excerpt": "Then Handy gives focus back to the remembered editor and raises its window"
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L196-L200",
+          "excerpt": "The recording starts without waiting for this read."
         }
       ],
-      "kind": "business"
+      "kind": "technical"
     },
     {
-      "description": "010 classification treats a verified remembered input as editable.",
-      "justification": "Prevents 010's bubble from replacing a verified return; required for consistent 010 integration.",
+      "description": "Password fields, other-process and undetermined elements never remembered; content never read.",
+      "justification": "Privacy and safety constraints of the technical frame and the 010 editable-rule decision.",
       "approved": true,
       "citations": [
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L209-L213",
-          "excerpt": "010's classification counts it as editable"
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L196-L200",
+          "excerpt": "A password field (role or subrole `AXSecureTextField`)"
         }
       ],
       "kind": "technical"
@@ -306,97 +322,93 @@
   ],
   "findings": [
     {
-      "category": "consistency",
+      "category": "contradiction",
       "severity": "blocking",
-      "description": "AC-004 promises insertion 'exactly as without this feature', but AC-002 steps 1-2 run before the verification: a raised window or moved focus means the 006/010 fallback pastes into the focused element of a window Handy raised, a field neither chosen nor frontmost today, i.e. the feature's primary wrong-field risk.",
-      "suggestion": "Decide the fallback after a partial attempt (e.g. paste only if the focused element is unchanged from before the attempt, else 010 bubble) and reword AC-004/FR-004 and SC-002.",
+      "description": "AC-004 checks (a) first: 'no window raised and focused element still the one noted'. When the noted element already is the remembered input (common: the app kept focus in it) and range restore/verify fails, (a) inserts into that input at an unverified caret, while (b), the Story 3 diagram, FR-004 and the caret decision say paste nothing.",
+      "suggestion": "State in AC-004 that (b)'s 'remembered input focused, range not restored or verified' takes precedence over (a), or exclude from (a) the case where the focused element is the remembered input.",
       "citations": [
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L204-L208",
-          "excerpt": "Handy inserts exactly as without this feature"
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L211-L215",
+          "excerpt": "(a) When its attempt changed nothing, that is no window was raised"
         },
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L194-L198",
-          "excerpt": "raises its window (`AXRaise` on its `AXWindow`)"
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L108-L159",
+          "excerpt": "E -- Input focused, range not verified --> X"
         }
       ]
     },
     {
-      "category": "completeness",
+      "category": "consistency",
       "severity": "warning",
-      "description": "Caret/selection after focus restoration is unspecified and content cannot be read (AC-008). Programmatic focus can select all text (NSTextField) or reset the caret, so pasting may overwrite or misplace an existing draft in the input; no edge case or test covers it.",
-      "suggestion": "Add an edge case and a decision on caret/selection after focus return, with a native check on an input holding a draft.",
+      "description": "Range unread at start, or step (1) failing at insertion, yields the bubble even when no attempt was made and the user never left the input, though Story 3 promises today's behavior when the attempt changed nothing. Outcome also depends on timing: a deadline before classification gives 006 insertion, after it the bubble.",
+      "suggestion": "Confirm this regression vs dev is intended, or do not remember an input whose range is unreadable so 006 applies; align the Story 3 wording either way.",
       "citations": [
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L194-L198",
-          "excerpt": "(4) inserts with the configured insertion method, unchanged."
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L108-L159",
+          "excerpt": "keep today's behavior when Handy's return attempt changed nothing"
+        },
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L211-L215",
+          "excerpt": "the range was not read at the start (no attempt is then made)"
         }
       ]
     },
     {
-      "category": "feasibility",
+      "category": "safety",
       "severity": "warning",
-      "description": "The headline Comet/ChatGPT case relies on Chromium exposing its web input through AXFocusedUIElement; Chromium may expose no web AX tree unless accessibility is enabled (e.g. AXManualAccessibility). The spec neither allows nor forbids enabling it, yet SC-001 requires 5/5 with Comet.",
-      "suggestion": "State whether Handy may enable Chromium accessibility; if not, define the Comet outcome (fallback) and adapt SC-001 after a native spike.",
+      "description": "A focus or range write (AX set or UIA SetFocus/Select) that times out on Handy's side may still be applied by the target later. Counting it as 'failed' can let (a) pick the 006 path while focus moves into the remembered input afterwards, pasting at an unverified caret.",
+      "suggestion": "Treat a timed-out or late write in steps (2)-(4) as 'attempt changed something' (AC-004 b), and add this case to SC-002 fault injection.",
       "citations": [
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L277-L286",
-          "excerpt": "Chromium tab and focus behavior unknown"
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L226-L230",
+          "excerpt": "a call that does not answer in time counts as an expired deadline"
+        }
+      ]
+    },
+    {
+      "category": "consistency",
+      "severity": "warning",
+      "description": "AC-008 says Handy 'holds only' dictation identity, process, application identity, range and the noted element; Key Entities also holds destination generation and a captured-at timestamp.",
+      "suggestion": "Add destination generation and captured-at to AC-008's list, or remove them from Key Entities.",
+      "citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L231-L235",
+          "excerpt": "It holds only an opaque reference with the dictation's identity"
         },
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L312-L315",
-          "excerpt": "and for Comet with the ChatGPT page in the same tab"
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L263-L271",
+          "excerpt": "dictation id, destination generation, application identity, process id"
         }
       ]
     },
     {
       "category": "testability",
-      "severity": "warning",
-      "description": "The start budget and per-element timeout have no value and no SC measures that recording start is not delayed; AC-007 gives Windows UIA calls (read, SetFocus, verify) no bound, though cross-process UIA calls can block.",
-      "suggestion": "Quantify the budget/timeout (or reference 010's value), add a measurable start-latency criterion, and bound Windows UIA calls as in AC-001.",
-      "citations": [
-        {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L189-L193",
-          "excerpt": "within a bounded budget that does not delay the start of recording"
-        },
-        {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L219-L223",
-          "excerpt": "at insertion Handy calls `SetFocus` on it"
-        }
-      ]
-    },
-    {
-      "category": "consistency",
-      "severity": "warning",
-      "description": "AC-006 says no focused element is read when the dictation is cancelled, but AC-001 reads at start before any cancel is known; a test asserting zero reads on cancel cannot pass. AC-008 already releases the reference on cancel.",
-      "suggestion": "Reword: a cancelled dictation performs no insertion-time AX call and releases the reference (AC-008).",
-      "citations": [
-        {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L214-L218",
-          "excerpt": "or when the dictation is cancelled"
-        },
-        {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L189-L193",
-          "excerpt": "reads at the same time as the 006 capture the focused element"
-        }
-      ]
-    },
-    {
-      "category": "feasibility",
       "severity": "info",
-      "description": "AC-002 sets focus before raising the window; setting kAXFocused on an element of a background window may not take effect or may be reset by AXRaise. Native evidence should confirm the order.",
-      "suggestion": "Allow raise before focus when the window is not focused, keeping one attempt per step.",
+      "description": "AC-008 forbids the range in events, CLI, history and logs, but SC-004 measures only a content sentinel; no success criterion checks the range's absence.",
+      "suggestion": "Extend SC-004 to assert that the remembered position and length never appear in logs, events or CLI output.",
       "citations": [
         {
-          "section_id": ".specs/features/011-dictation-field-return/spec.md:L194-L198",
-          "excerpt": "(1) gives keyboard focus back to the remembered element"
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L342-L345",
+          "excerpt": "A sentinel text placed in the remembered input never appears in logs"
+        }
+      ]
+    },
+    {
+      "category": "ambiguity",
+      "severity": "info",
+      "description": "On Windows, 'a text input' is not defined (no UIA control types or patterns listed) while macOS relies on 010's rule, which 010 limits to macOS.",
+      "suggestion": "Name the UIA control types/patterns that count as a text input (e.g. Edit/Document with ValuePattern or TextPattern, not IsPassword, not IsReadOnly).",
+      "citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L226-L230",
+          "excerpt": "is a text input that is neither a password nor read-only"
         }
       ]
     }
   ],
   "confidence": 4,
   "raw_results": [
-    "{\"batch_id\":\"batch-001\",\"reviewed_section_ids\":[\".specs/constitution.md:L1-L2\",\".specs/constitution.md:L3-L17\",\".specs/constitution.md:L18-L26\",\".specs/constitution.md:L27-L30\",\".specs/constitution.md:L31-L36\",\".specs/features/011-dictation-field-return/spec.md:L1-L9\",\".specs/features/011-dictation-field-return/spec.md:L10-L11\",\".specs/features/011-dictation-field-return/spec.md:L12-L20\",\".specs/features/011-dictation-field-return/spec.md:L21-L22\",\".specs/features/011-dictation-field-return/spec.md:L23-L67\",\".specs/features/011-dictation-field-return/spec.md:L68-L108\",\".specs/features/011-dictation-field-return/spec.md:L109-L152\",\".specs/features/011-dictation-field-return/spec.md:L153-L186\",\".specs/features/011-dictation-field-return/spec.md:L187-L188\",\".specs/features/011-dictation-field-return/spec.md:L189-L193\",\".specs/features/011-dictation-field-return/spec.md:L194-L198\",\".specs/features/011-dictation-field-return/spec.md:L199-L203\",\".specs/features/011-dictation-field-return/spec.md:L204-L208\",\".specs/features/011-dictation-field-return/spec.md:L209-L213\",\".specs/features/011-dictation-field-return/spec.md:L214-L218\",\".specs/features/011-dictation-field-return/spec.md:L219-L223\",\".specs/features/011-dictation-field-return/spec.md:L224-L228\",\".specs/features/011-dictation-field-return/spec.md:L229-L230\",\".specs/features/011-dictation-field-return/spec.md:L231-L235\",\".specs/features/011-dictation-field-return/spec.md:L236-L240\",\".specs/features/011-dictation-field-return/spec.md:L241-L245\",\".specs/features/011-dictation-field-return/spec.md:L246-L250\",\".specs/features/011-dictation-field-return/spec.md:L251-L255\",\".specs/features/011-dictation-field-return/spec.md:L256-L264\",\".specs/features/011-dictation-field-return/spec.md:L265-L276\",\".specs/features/011-dictation-field-return/spec.md:L277-L286\",\".specs/features/011-dictation-field-return/spec.md:L287-L293\",\".specs/features/011-dictation-field-return/spec.md:L294-L297\",\".specs/features/011-dictation-field-return/spec.md:L298-L309\",\".specs/features/011-dictation-field-return/spec.md:L310-L311\",\".specs/features/011-dictation-field-return/spec.md:L312-L315\",\".specs/features/011-dictation-field-return/spec.md:L316-L319\",\".specs/features/011-dictation-field-return/spec.md:L320-L323\",\".specs/features/011-dictation-field-return/spec.md:L324-L326\",\".specs/project.md:L1-L2\",\".specs/project.md:L3-L7\",\".specs/project.md:L8-L16\",\".specs/project.md:L17-L20\",\".specs/project.md:L21-L24\",\".specs/project.md:L25-L28\",\".specs/project.md:L29-L36\",\".specs/stacks/_default.md:L1-L5\",\".specs/stacks/_default.md:L6-L7\",\".specs/stacks/_default.md:L8-L21\",\".specs/stacks/_default.md:L22-L31\",\".specs/testing/strategy.md:L1-L2\",\".specs/testing/strategy.md:L3-L6\",\".specs/testing/strategy.md:L7-L12\",\".specs/testing/strategy.md:L13-L16\"],\"conclusions\":[{\"requirement_id\":\"011-dictation-field-return:AC-001\",\"disposition\":\"covered\",\"rationale\":\"Start read target, per-element timeout, process/editability/password filters and every no-remember case are enumerated and testable with fake AX seams.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L189-L193\",\"excerpt\":\"an Accessibility error and an expired budget remember nothing\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:AC-002\",\"disposition\":\"ambiguous\",\"rationale\":\"Ordered steps, same-instance condition, single attempt and outcome reporting are clear, but where the text lands inside a focus-restored input (caret/selection) is undecided.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L194-L198\",\"excerpt\":\"(4) inserts with the configured insertion method, unchanged.\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:AC-003\",\"disposition\":\"covered\",\"rationale\":\"Pinned-instance read, not-running case and drop conditions (badge choice, removal, unpin) are explicit and backed by a validated decision.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L199-L203\",\"excerpt\":\"nothing is remembered and 009's failure applies unchanged\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:AC-004\",\"disposition\":\"contradictory\",\"rationale\":\"Claims insertion 'exactly as without this feature' after AC-002 steps may already have moved focus or raised another window, so the fallback target can differ from today.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L204-L208\",\"excerpt\":\"Handy inserts exactly as without this feature\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:AC-005\",\"disposition\":\"covered\",\"rationale\":\"Verified element counts editable for 010 and 009's frontmost check before Enter is kept unchanged; observable and testable.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L209-L213\",\"excerpt\":\"010's classification counts it as editable\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:AC-006\",\"disposition\":\"covered\",\"rationale\":\"Gate-closed, setting-off-without-pin, no destination, method none and no-new-setting cases are enumerated; see warning on the cancelled wording.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L214-L218\",\"excerpt\":\"No setting, settings CLI key, screen, control or visual state is added\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:AC-007\",\"disposition\":\"covered\",\"rationale\":\"Windows UIA rule and pending release evidence conform to the constitution; Linux explicitly falls back to 006.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L219-L223\",\"excerpt\":\"Its native observation is pending release evidence, never a gate.\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:AC-008\",\"disposition\":\"covered\",\"rationale\":\"Content never read/stored/logged, opaque reference fields and release points are explicit; SC-004 gives the sentinel test.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L224-L228\",\"excerpt\":\"it holds only an opaque reference with the dictation's identity\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:FR-001\",\"disposition\":\"covered\",\"rationale\":\"Matches AC-001/AC-008: editable, same process, not password, bounded reads, no content.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L231-L235\",\"excerpt\":\"with bounded Accessibility reads and without reading its content\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:FR-002\",\"disposition\":\"covered\",\"rationale\":\"Focus, raise when needed, verify at the pre-dispatch guard, then configured method; detailed by AC-002.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L236-L240\",\"excerpt\":\"verify it at the pre-dispatch guard, then insert with the configured method\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:FR-003\",\"disposition\":\"covered\",\"rationale\":\"Pinned read and same-instance retention are stated and detailed by AC-003.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L241-L245\",\"excerpt\":\"keep it only while the dictation's destination stays that running instance\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:FR-004\",\"disposition\":\"ambiguous\",\"rationale\":\"'Never inserting into any other field' is undecided once a raise or focus change happened and the 006/010 path pastes into whatever is now focused.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L246-L250\",\"excerpt\":\"never inserting into any other field and never losing the transcript\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:FR-005\",\"disposition\":\"covered\",\"rationale\":\"Gate-open build, destination on macOS/Windows, no setting/CLI/UI; matches AC-006/AC-007.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L251-L255\",\"excerpt\":\"without a new setting, CLI key or user interface\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:SC-001\",\"disposition\":\"covered\",\"rationale\":\"Measurable 5/5 native macOS runs per named application, with runs and fallbacks recorded.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L312-L315\",\"excerpt\":\"in 5 of 5 runs for Notes and ChatGPT desktop\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:SC-002\",\"disposition\":\"covered\",\"rationale\":\"Enumerated fault-injection cases with zero wrong-element insertions and 100% fallback with transcript kept.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L316-L319\",\"excerpt\":\"zero insertions target another element and 100% of the cases\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:SC-003\",\"disposition\":\"covered\",\"rationale\":\"Gate-closed build: zero focused-element reads and dev-identical insertion, observable in automated tests.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L320-L323\",\"excerpt\":\"automated tests observe zero focused-element reads and the same insertion as\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:SC-004\",\"disposition\":\"covered\",\"rationale\":\"Sentinel-based check over logs, events and CLI output is concrete and measurable.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L324-L326\",\"excerpt\":\"never appears in logs, events or CLI output\"}],\"plan_citations\":[],\"searched_plan_sections\":[]}],\"ambiguities\":[{\"requirement_id\":\"011-dictation-field-return:AC-002\",\"decision_key\":\"caret-after-focus-restore\",\"question\":\"After focus is given back, where must the text go when the input holds a draft: programmatic focus may select all (NSTextField) so a paste replaces the user's draft. Accept, or require caret at end?\",\"critical\":false,\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L194-L198\",\"excerpt\":\"(4) inserts with the configured insertion method, unchanged.\"}]},{\"requirement_id\":\"011-dictation-field-return:FR-004\",\"decision_key\":\"fallback-after-partial-return\",\"question\":\"When focus was set or a window raised and verification then fails, may Handy paste into whatever is now focused (006/010 path), or must it avoid that field (e.g. show the 010 bubble)?\",\"critical\":false,\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L246-L250\",\"excerpt\":\"never inserting into any other field and never losing the transcript\"}]}],\"extra_scope\":[{\"description\":\"Windows support through UI Automation (SetFocus, verification) beyond the macOS request.\",\"justification\":\"Asked by the technical frame validated by Julien on 2026-10-15, as pending release evidence.\",\"approved\":true,\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L265-L276\",\"excerpt\":\"Windows through UI Automation (`SetFocus`) as pending release evidence\"}],\"kind\":\"business\"},{\"description\":\"Raising another window of the destination that holds the remembered input.\",\"justification\":\"Needed to paste back into that input; in the technical frame validated by Julien.\",\"approved\":true,\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L23-L67\",\"excerpt\":\"Then Handy gives focus back to the remembered editor and raises its window\"}],\"kind\":\"business\"},{\"description\":\"010 classification treats a verified remembered input as editable.\",\"justification\":\"Prevents 010's bubble from replacing a verified return; required for consistent 010 integration.\",\"approved\":true,\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L209-L213\",\"excerpt\":\"010's classification counts it as editable\"}],\"kind\":\"technical\"}],\"findings\":[{\"category\":\"consistency\",\"severity\":\"blocking\",\"description\":\"AC-004 promises insertion 'exactly as without this feature', but AC-002 steps 1-2 run before the verification: a raised window or moved focus means the 006/010 fallback pastes into the focused element of a window Handy raised, a field neither chosen nor frontmost today, i.e. the feature's primary wrong-field risk.\",\"suggestion\":\"Decide the fallback after a partial attempt (e.g. paste only if the focused element is unchanged from before the attempt, else 010 bubble) and reword AC-004/FR-004 and SC-002.\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L204-L208\",\"excerpt\":\"Handy inserts exactly as without this feature\"},{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L194-L198\",\"excerpt\":\"raises its window (`AXRaise` on its `AXWindow`)\"}]},{\"category\":\"completeness\",\"severity\":\"warning\",\"description\":\"Caret/selection after focus restoration is unspecified and content cannot be read (AC-008). Programmatic focus can select all text (NSTextField) or reset the caret, so pasting may overwrite or misplace an existing draft in the input; no edge case or test covers it.\",\"suggestion\":\"Add an edge case and a decision on caret/selection after focus return, with a native check on an input holding a draft.\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L194-L198\",\"excerpt\":\"(4) inserts with the configured insertion method, unchanged.\"}]},{\"category\":\"feasibility\",\"severity\":\"warning\",\"description\":\"The headline Comet/ChatGPT case relies on Chromium exposing its web input through AXFocusedUIElement; Chromium may expose no web AX tree unless accessibility is enabled (e.g. AXManualAccessibility). The spec neither allows nor forbids enabling it, yet SC-001 requires 5/5 with Comet.\",\"suggestion\":\"State whether Handy may enable Chromium accessibility; if not, define the Comet outcome (fallback) and adapt SC-001 after a native spike.\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L277-L286\",\"excerpt\":\"Chromium tab and focus behavior unknown\"},{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L312-L315\",\"excerpt\":\"and for Comet with the ChatGPT page in the same tab\"}]},{\"category\":\"testability\",\"severity\":\"warning\",\"description\":\"The start budget and per-element timeout have no value and no SC measures that recording start is not delayed; AC-007 gives Windows UIA calls (read, SetFocus, verify) no bound, though cross-process UIA calls can block.\",\"suggestion\":\"Quantify the budget/timeout (or reference 010's value), add a measurable start-latency criterion, and bound Windows UIA calls as in AC-001.\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L189-L193\",\"excerpt\":\"within a bounded budget that does not delay the start of recording\"},{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L219-L223\",\"excerpt\":\"at insertion Handy calls `SetFocus` on it\"}]},{\"category\":\"consistency\",\"severity\":\"warning\",\"description\":\"AC-006 says no focused element is read when the dictation is cancelled, but AC-001 reads at start before any cancel is known; a test asserting zero reads on cancel cannot pass. AC-008 already releases the reference on cancel.\",\"suggestion\":\"Reword: a cancelled dictation performs no insertion-time AX call and releases the reference (AC-008).\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L214-L218\",\"excerpt\":\"or when the dictation is cancelled\"},{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L189-L193\",\"excerpt\":\"reads at the same time as the 006 capture the focused element\"}]},{\"category\":\"feasibility\",\"severity\":\"info\",\"description\":\"AC-002 sets focus before raising the window; setting kAXFocused on an element of a background window may not take effect or may be reset by AXRaise. Native evidence should confirm the order.\",\"suggestion\":\"Allow raise before focus when the window is not focused, keeping one attempt per step.\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L194-L198\",\"excerpt\":\"(1) gives keyboard focus back to the remembered element\"}]}],\"confidence\":4}"
+    "{\"batch_id\":\"batch-001\",\"reviewed_section_ids\":[\".specs/constitution.md:L1-L2\",\".specs/constitution.md:L3-L17\",\".specs/constitution.md:L18-L26\",\".specs/constitution.md:L27-L30\",\".specs/constitution.md:L31-L36\",\".specs/features/011-dictation-field-return/spec.md:L1-L9\",\".specs/features/011-dictation-field-return/spec.md:L10-L11\",\".specs/features/011-dictation-field-return/spec.md:L12-L20\",\".specs/features/011-dictation-field-return/spec.md:L21-L22\",\".specs/features/011-dictation-field-return/spec.md:L23-L66\",\".specs/features/011-dictation-field-return/spec.md:L67-L107\",\".specs/features/011-dictation-field-return/spec.md:L108-L159\",\".specs/features/011-dictation-field-return/spec.md:L160-L193\",\".specs/features/011-dictation-field-return/spec.md:L194-L195\",\".specs/features/011-dictation-field-return/spec.md:L196-L200\",\".specs/features/011-dictation-field-return/spec.md:L201-L205\",\".specs/features/011-dictation-field-return/spec.md:L206-L210\",\".specs/features/011-dictation-field-return/spec.md:L211-L215\",\".specs/features/011-dictation-field-return/spec.md:L216-L220\",\".specs/features/011-dictation-field-return/spec.md:L221-L225\",\".specs/features/011-dictation-field-return/spec.md:L226-L230\",\".specs/features/011-dictation-field-return/spec.md:L231-L235\",\".specs/features/011-dictation-field-return/spec.md:L236-L237\",\".specs/features/011-dictation-field-return/spec.md:L238-L242\",\".specs/features/011-dictation-field-return/spec.md:L243-L247\",\".specs/features/011-dictation-field-return/spec.md:L248-L252\",\".specs/features/011-dictation-field-return/spec.md:L253-L257\",\".specs/features/011-dictation-field-return/spec.md:L258-L262\",\".specs/features/011-dictation-field-return/spec.md:L263-L271\",\".specs/features/011-dictation-field-return/spec.md:L272-L289\",\".specs/features/011-dictation-field-return/spec.md:L290-L299\",\".specs/features/011-dictation-field-return/spec.md:L300-L306\",\".specs/features/011-dictation-field-return/spec.md:L307-L310\",\".specs/features/011-dictation-field-return/spec.md:L311-L327\",\".specs/features/011-dictation-field-return/spec.md:L328-L329\",\".specs/features/011-dictation-field-return/spec.md:L330-L333\",\".specs/features/011-dictation-field-return/spec.md:L334-L337\",\".specs/features/011-dictation-field-return/spec.md:L338-L341\",\".specs/features/011-dictation-field-return/spec.md:L342-L345\",\".specs/features/011-dictation-field-return/spec.md:L346-L348\",\".specs/project.md:L1-L2\",\".specs/project.md:L3-L7\",\".specs/project.md:L8-L16\",\".specs/project.md:L17-L20\",\".specs/project.md:L21-L24\",\".specs/project.md:L25-L28\",\".specs/project.md:L29-L36\",\".specs/stacks/_default.md:L1-L5\",\".specs/stacks/_default.md:L6-L7\",\".specs/stacks/_default.md:L8-L21\",\".specs/stacks/_default.md:L22-L31\",\".specs/testing/strategy.md:L1-L2\",\".specs/testing/strategy.md:L3-L6\",\".specs/testing/strategy.md:L7-L12\",\".specs/testing/strategy.md:L13-L16\"],\"conclusions\":[{\"requirement_id\":\"011-dictation-field-return:AC-001\",\"disposition\":\"covered\",\"rationale\":\"Capture read, 50 ms shared deadline off the start path, per-element timeouts, 010 editable rule, exclusions and range-or-not-read are explicit and testable (SC-005).\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L196-L200\",\"excerpt\":\"These reads share one deadline of 50 ms\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:AC-002\",\"disposition\":\"covered\",\"rationale\":\"Six ordered steps, single attempt, 50 ms and 10 ms deadlines, stop-on-failure and hand-off to AC-004 are clear; consistent with the caret decision.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L201-L205\",\"excerpt\":\"Steps (1) to (4) share one 50 ms deadline\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:AC-003\",\"disposition\":\"covered\",\"rationale\":\"Pinned-instance read, not-running case and drop on badge choice, removal or unpin match Story 2 and the validated decision.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L206-L210\",\"excerpt\":\"When the pinned application is not running at the start, nothing is remembered\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:AC-004\",\"disposition\":\"contradictory\",\"rationale\":\"Branch (a) takes precedence ('Otherwise'), so when the noted element is the remembered input and range restore/verify fails, (a) pastes into it; (b), FR-004 and the caret decision forbid it.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L211-L215\",\"excerpt\":\"(a) When its attempt changed nothing, that is no window was raised\"},{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L211-L215\",\"excerpt\":\"or the remembered input is focused but its range could not be restored or verified\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:AC-005\",\"disposition\":\"covered\",\"rationale\":\"Verified element counts editable for 010; 009 Enter rule unchanged; testable via Story 3 scenarios.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L216-L220\",\"excerpt\":\"this feature adds no Enter condition and removes none\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:AC-006\",\"disposition\":\"covered\",\"rationale\":\"Gate closed, return off without pin, no destination, cancel and method none are enumerated; no new setting or UI.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L221-L225\",\"excerpt\":\"No setting, settings CLI key, screen, control or visual state is added\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:AC-007\",\"disposition\":\"covered\",\"rationale\":\"Windows UIA path, no-TextPattern fallback, bounded calls and pending release evidence match the constitution; Linux excluded.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L226-L230\",\"excerpt\":\"when `TextPattern` is unavailable, the selection is not read and AC-004 (b) applies\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:AC-008\",\"disposition\":\"covered\",\"rationale\":\"No content read, opaque reference, lifetime and no range in events/CLI/history/logs are explicit (Key Entities field list differs slightly, see finding).\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L231-L235\",\"excerpt\":\"Handy never reads, stores or logs the content of the remembered element\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:FR-001\",\"disposition\":\"covered\",\"rationale\":\"Restates AC-001/AC-008 capture conditions and bounds consistently.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L238-L242\",\"excerpt\":\"with Accessibility reads bounded to 50 ms off the recording start path\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:FR-002\",\"disposition\":\"covered\",\"rationale\":\"Ordered insertion steps match AC-002.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L243-L247\",\"excerpt\":\"verify input and range at the pre-dispatch guard, then insert with the configured method\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:FR-003\",\"disposition\":\"covered\",\"rationale\":\"Pinned read and retention condition match AC-003.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L248-L252\",\"excerpt\":\"keep it only while the dictation's destination stays that running instance\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:FR-004\",\"disposition\":\"covered\",\"rationale\":\"Self-consistent if 'never paste into the input without its verified range' bounds the unchanged path; AC-004 ordering conflicts with it (see AC-004).\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L253-L257\",\"excerpt\":\"Never paste into the input without its verified range\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:FR-005\",\"disposition\":\"covered\",\"rationale\":\"Scope limits match AC-006 and AC-007 and the no-new-setting decision.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L258-L262\",\"excerpt\":\"without a new setting, CLI key or user interface\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:SC-001\",\"disposition\":\"covered\",\"rationale\":\"5 of 5 native runs per app with an explicit, recorded fallback when Chromium does not expose its input; measurable.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L330-L333\",\"excerpt\":\"in 5 of 5 runs for Notes and ChatGPT desktop\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:SC-002\",\"disposition\":\"covered\",\"rationale\":\"Fault list and 100% outcomes are measurable; the 'range not restored' expectation inherits the AC-004 precedence issue.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L334-L337\",\"excerpt\":\"100% of the unchanged cases follow the 006/010 path\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:SC-003\",\"disposition\":\"covered\",\"rationale\":\"Zero reads and same insertion as dev with the gate closed; testable.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L338-L341\",\"excerpt\":\"automated tests observe zero focused-element reads and the same insertion as `dev`\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:SC-004\",\"disposition\":\"covered\",\"rationale\":\"Sentinel content check across logs, events and CLI is measurable.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L342-L345\",\"excerpt\":\"A sentinel text placed in the remembered input never appears in logs\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:SC-005\",\"disposition\":\"covered\",\"rationale\":\"Non-answering port, non-blocking start and 50 ms abandonment are measurable.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L346-L348\",\"excerpt\":\"the start read is abandoned at its 50 ms deadline with nothing remembered\"}],\"plan_citations\":[],\"searched_plan_sections\":[]}],\"ambiguities\":[],\"extra_scope\":[{\"description\":\"Caret/selection range capture, restoration and verification before pasting (request only asked to paste back into the input).\",\"justification\":\"Validated decision caret-after-focus-restore asks for it.\",\"approved\":true,\"kind\":\"business\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L272-L289\",\"excerpt\":\"After giving focus back it restores that range, verifies it, then pastes\"}]},{\"description\":\"No paste and 010 recovery bubble (or 006 paste-error) when the return attempt changed something.\",\"justification\":\"Validated decision fallback-after-partial-return asks for it.\",\"approved\":true,\"kind\":\"business\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L272-L289\",\"excerpt\":\"Handy does not paste and shows the 010 bubble with the transcript\"}]},{\"description\":\"Windows support through UI Automation and drop of the input on badge choice, removal or unpin.\",\"justification\":\"Technical frame and AC-003 decision validated by Julien on 2026-10-15.\",\"approved\":true,\"kind\":\"business\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L272-L289\",\"excerpt\":\"Windows through UI Automation (`SetFocus`) as pending release evidence\"},{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L272-L289\",\"excerpt\":\"Handy does not read the focused element of the newly chosen application\"}]},{\"description\":\"Raising the remembered input's window, 50/10 ms deadlines and a start read off the recording path.\",\"justification\":\"Needed to reach an input in another window and to never delay or freeze dictation; in the validated technical frame.\",\"approved\":true,\"kind\":\"technical\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L196-L200\",\"excerpt\":\"The recording starts without waiting for this read.\"}]},{\"description\":\"Password fields, other-process and undetermined elements never remembered; content never read.\",\"justification\":\"Privacy and safety constraints of the technical frame and the 010 editable-rule decision.\",\"approved\":true,\"kind\":\"technical\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L196-L200\",\"excerpt\":\"A password field (role or subrole `AXSecureTextField`)\"}]}],\"findings\":[{\"category\":\"contradiction\",\"severity\":\"blocking\",\"description\":\"AC-004 checks (a) first: 'no window raised and focused element still the one noted'. When the noted element already is the remembered input (common: the app kept focus in it) and range restore/verify fails, (a) inserts into that input at an unverified caret, while (b), the Story 3 diagram, FR-004 and the caret decision say paste nothing.\",\"suggestion\":\"State in AC-004 that (b)'s 'remembered input focused, range not restored or verified' takes precedence over (a), or exclude from (a) the case where the focused element is the remembered input.\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L211-L215\",\"excerpt\":\"(a) When its attempt changed nothing, that is no window was raised\"},{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L108-L159\",\"excerpt\":\"E -- Input focused, range not verified --> X\"}]},{\"category\":\"consistency\",\"severity\":\"warning\",\"description\":\"Range unread at start, or step (1) failing at insertion, yields the bubble even when no attempt was made and the user never left the input, though Story 3 promises today's behavior when the attempt changed nothing. Outcome also depends on timing: a deadline before classification gives 006 insertion, after it the bubble.\",\"suggestion\":\"Confirm this regression vs dev is intended, or do not remember an input whose range is unreadable so 006 applies; align the Story 3 wording either way.\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L108-L159\",\"excerpt\":\"keep today's behavior when Handy's return attempt changed nothing\"},{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L211-L215\",\"excerpt\":\"the range was not read at the start (no attempt is then made)\"}]},{\"category\":\"safety\",\"severity\":\"warning\",\"description\":\"A focus or range write (AX set or UIA SetFocus/Select) that times out on Handy's side may still be applied by the target later. Counting it as 'failed' can let (a) pick the 006 path while focus moves into the remembered input afterwards, pasting at an unverified caret.\",\"suggestion\":\"Treat a timed-out or late write in steps (2)-(4) as 'attempt changed something' (AC-004 b), and add this case to SC-002 fault injection.\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L226-L230\",\"excerpt\":\"a call that does not answer in time counts as an expired deadline\"}]},{\"category\":\"consistency\",\"severity\":\"warning\",\"description\":\"AC-008 says Handy 'holds only' dictation identity, process, application identity, range and the noted element; Key Entities also holds destination generation and a captured-at timestamp.\",\"suggestion\":\"Add destination generation and captured-at to AC-008's list, or remove them from Key Entities.\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L231-L235\",\"excerpt\":\"It holds only an opaque reference with the dictation's identity\"},{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L263-L271\",\"excerpt\":\"dictation id, destination generation, application identity, process id\"}]},{\"category\":\"testability\",\"severity\":\"info\",\"description\":\"AC-008 forbids the range in events, CLI, history and logs, but SC-004 measures only a content sentinel; no success criterion checks the range's absence.\",\"suggestion\":\"Extend SC-004 to assert that the remembered position and length never appear in logs, events or CLI output.\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L342-L345\",\"excerpt\":\"A sentinel text placed in the remembered input never appears in logs\"}]},{\"category\":\"ambiguity\",\"severity\":\"info\",\"description\":\"On Windows, 'a text input' is not defined (no UIA control types or patterns listed) while macOS relies on 010's rule, which 010 limits to macOS.\",\"suggestion\":\"Name the UIA control types/patterns that count as a text input (e.g. Edit/Document with ValuePattern or TextPattern, not IsPassword, not IsReadOnly).\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L226-L230\",\"excerpt\":\"is a text input that is neither a password nor read-only\"}]}],\"confidence\":4}\n"
   ],
   "synthesis": null,
   "synthesis_transport_version": null
