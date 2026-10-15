@@ -98,6 +98,43 @@ fn the_live_focused_application_read_names_the_focused_application_within_the_bu
     assert!(elapsed < CAPTURE_BUDGET, "live read took {elapsed:?}");
     Ok(())
 }
+// @spec FR-001: Pin lookup on the real workspace — .specs/features/009-pin-mode-and-enter-rule/spec.md#fr-001
+/// 009 Step 1 (read-only part): the frontmost application can be pinned by its stable identity
+/// on the real workspace, a starting dictation takes it as its pinned route while 006's capture
+/// of the start is kept, and nothing is activated, typed or persisted (the manager is local to
+/// this test process and never runs an insertion).
+#[test]
+#[ignore = "native: needs a logged-in macOS desktop session"]
+fn the_frontmost_application_is_pinned_by_identity_without_any_activation() -> TestResult {
+    use handy_app_lib::destination::{
+        context::DestinationSource, manager::DestinationManager, workspace::SystemClock,
+    };
+    use handy_app_lib::settings_service::platform_capability::{
+        PlatformCapabilities, PlatformCapability,
+    };
+    let workspace = std::sync::Arc::new(MacWorkspace::new());
+    let Foreground::Application(front) = workspace.frontmost() else {
+        return Err("foreground not readable as another app".into());
+    };
+    let ApplicationIdentity::BundleId(bundle) = front.identity.clone() else {
+        return Err("macOS identities are bundle identifiers".into());
+    };
+    let platform = PlatformCapabilities::only(&[PlatformCapability::Destination]);
+    let manager = DestinationManager::new(workspace, std::sync::Arc::new(SystemClock), platform);
+    let started = Instant::now();
+    let change = manager.pin_identifier(&bundle)?;
+    println!(
+        "pin_lookup_ms={:.3} identity_kind={}",
+        started.elapsed().as_secs_f64() * 1000.0,
+        kind(&front)
+    );
+    assert_eq!(change.pinned.identity, front.identity);
+    let dictation = manager.commit_start(manager.capture(true));
+    assert_eq!(dictation.source, DestinationSource::Pinned);
+    manager.unpin();
+    assert_eq!(manager.pinned(), None);
+    Ok(())
+}
 /// Identity variant only (the identity itself is not logged).
 fn kind(app: &handy_app_lib::destination::workspace::RunningApp) -> &'static str {
     match app.identity {
