@@ -159,6 +159,49 @@ pub(crate) fn evaluate(state: &TxState, now: Instant) -> WaitDecision {
 /// Signals of a reliable transfer for 009's Enter authority (`automatic_enter::rendezvous`).
 pub(crate) use crate::automatic_enter::rendezvous::ReceiptSink;
 
+/// Record a consumer read at `now`, then tell 009's authority (outside the state lock) when the
+/// read counts as the target's: at or after the injection start.
+pub(crate) fn record_read(
+    state: &std::sync::Mutex<TxState>,
+    receipts: Option<&std::sync::Arc<dyn ReceiptSink>>,
+    now: Instant,
+) {
+    let qualified = match state.lock() {
+        Ok(mut state) => {
+            state.record_receipt(now);
+            state.injected_at.is_some_and(|injected| now >= injected)
+        }
+        Err(_) => false,
+    };
+    if let (true, Some(receipts)) = (qualified, receipts) {
+        receipts.target_read(now);
+    }
+}
+
+/// Mark the injection start, send the chord and report both to 009's authority; the returned
+/// result is the actual chord result (the platform's outer `Ok` can coexist with a failure).
+/// Order matters: injection is marked *before* sending, because enigo holds the chord for about
+/// 100 ms and a fast target may legitimately read while it is still held.
+pub(crate) fn inject(
+    state: &std::sync::Mutex<TxState>,
+    enigo: &mut enigo::Enigo,
+    paste_method: &crate::settings::PasteMethod,
+    receipts: Option<&std::sync::Arc<dyn ReceiptSink>>,
+) -> Result<(), String> {
+    let injected_at = Instant::now();
+    if let Ok(mut state) = state.lock() {
+        state.injected_at = Some(injected_at);
+    }
+    if let Some(receipts) = receipts {
+        receipts.injection_started(injected_at);
+    }
+    let chord = send_chord(enigo, paste_method);
+    if let Some(receipts) = receipts {
+        receipts.chord_completed(chord.is_ok(), Instant::now());
+    }
+    chord
+}
+
 /// Modifier hold for the receipt-sequenced chord, kept at parity with the
 /// legacy path (100ms) for the beta: that hold was added in #165 because real
 /// users' systems dropped chords released too quickly, and the beta should

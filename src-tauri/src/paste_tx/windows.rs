@@ -25,7 +25,7 @@ use windows::Win32::Foundation::{
     SetLastError, ERROR_SUCCESS, HANDLE, HGLOBAL, HINSTANCE, HWND, LPARAM, LRESULT, WPARAM,
 };
 
-use super::{evaluate, send_chord, ReceiptSink, TxState, WaitDecision};
+use super::{evaluate, inject, record_read, ReceiptSink, TxState, WaitDecision};
 use crate::clipboard::send_return_key;
 use crate::input::EnigoState;
 use crate::settings::{AutoSubmitKey, ClipboardHandling, PasteMethod};
@@ -150,18 +150,7 @@ unsafe extern "system" fn paste_wnd_proc(
         WM_RENDERFORMAT => {
             if !shared.is_null() {
                 let shared = &*shared;
-                let now = Instant::now();
-                let qualified = match shared.state.lock() {
-                    Ok(mut st) => {
-                        st.record_receipt(now);
-                        st.injected_at.is_some_and(|injected| now >= injected)
-                    }
-                    Err(_) => false,
-                };
-                // Outside the state lock: the authority may start its Enter worker.
-                if let (true, Some(receipts)) = (qualified, &shared.receipts) {
-                    receipts.target_read(now);
-                }
+                record_read(&shared.state, shared.receipts.as_ref(), Instant::now());
                 if wparam.0 as u32 == CF_UNICODETEXT.0 as u32 {
                     render_text(shared);
                 }
@@ -617,20 +606,7 @@ pub(super) fn run(
     }
     info!("[reliable-paste] published transcript (delayed render)");
 
-    // Mark injection *before* sending: enigo holds the chord for ~100ms and a
-    // fast target may legitimately read while the chord is still held.
-    let injected_at = Instant::now();
-    shared.state.lock().unwrap().injected_at = Some(injected_at);
-    if let Some(receipts) = &receipts {
-        receipts.injection_started(injected_at);
-    }
-    let chord = send_chord(enigo, paste_method);
-    // The actual chord result (the outer `Ok` below can coexist with a failed
-    // injection) is the authority's signal.
-    if let Some(receipts) = &receipts {
-        receipts.chord_completed(chord.is_ok(), Instant::now());
-    }
-    match chord {
+    match inject(&shared.state, enigo, paste_method, receipts.as_ref()) {
         Ok(()) => {
             info!("[reliable-paste] paste chord sent ({paste_method:?})");
         }

@@ -78,10 +78,9 @@ fn fixture(source: DestinationSource, fails: bool) -> Fixture {
     let started = manager.commit_start(manager.capture(true));
     let (id, generation) = (started.dictation_id, started.destination_generation);
     manager.mark_processing();
-    manager.freeze(id, generation).expect("frozen");
-    manager
-        .set_disposition(id, generation, RecoveryDisposition::Insert)
-        .expect("insert");
+    assert!(manager.freeze(id, generation).is_ok(), "frozen");
+    let insert = manager.set_disposition(id, generation, RecoveryDisposition::Insert);
+    assert!(insert.is_ok(), "insert");
     let keys = Arc::new(Keys {
         clock: clock.clone(),
         pressed: Mutex::new(Vec::new()),
@@ -209,11 +208,11 @@ fn the_next_dictation_started_before_the_claim_makes_this_enter_stale() {
     // The next dictation's own claim is unaffected.
     let (id, generation) = (next.dictation_id, next.destination_generation);
     fixture.manager.mark_processing();
-    fixture.manager.freeze(id, generation).expect("frozen");
-    fixture
+    assert!(fixture.manager.freeze(id, generation).is_ok(), "frozen");
+    let insert = fixture
         .manager
-        .set_disposition(id, generation, RecoveryDisposition::Insert)
-        .expect("insert");
+        .set_disposition(id, generation, RecoveryDisposition::Insert);
+    assert!(insert.is_ok(), "insert");
     assert!(fixture.manager.claim_enter(id, generation).is_ok());
 }
 #[test]
@@ -224,10 +223,8 @@ fn recovery_or_cancellation_before_the_claim_suppresses() {
             fixture.context.dictation_id,
             fixture.context.destination_generation,
         );
-        fixture
-            .manager
-            .set_disposition(id, generation, next)
-            .expect("forward");
+        let forward = fixture.manager.set_disposition(id, generation, next);
+        assert!(forward.is_ok(), "forward");
         let enter = transaction(&fixture, AutomaticEnterPolicy::Always, None);
         let result = enter.complete(CLASSIC, Some(&fixture.context), fixture.clock.now());
         assert_eq!(

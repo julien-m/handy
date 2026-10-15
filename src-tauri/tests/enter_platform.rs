@@ -12,7 +12,9 @@ use handy_app_lib::automatic_enter::transaction::{
     EnterPorts, EnterResult, EnterSnapshot, EnterTransaction, KeyEmitter,
 };
 use handy_app_lib::automatic_enter::{AutoSubmitKey, AutomaticEnterPolicy};
-use handy_app_lib::destination::context::RecoveryDisposition;
+use handy_app_lib::destination::context::{
+    DestinationContext, RecoveryDisposition, ResolvedTarget,
+};
 use handy_app_lib::destination::macos::MacWorkspace;
 use handy_app_lib::destination::manager::DestinationManager;
 use handy_app_lib::destination::workspace::{Foreground, SystemClock, WorkspacePort};
@@ -43,16 +45,11 @@ unsafe extern "C" {
     fn NSApplicationLoad() -> u8;
 }
 
-// @spec AC-005: Focus check then key within the QE budget — .specs/features/009-pin-mode-and-enter-rule/spec.md#ac-005
-#[test]
-#[ignore = "native: needs a logged-in macOS desktop session and Accessibility for the runner"]
-fn the_final_focus_check_on_the_real_workspace_fits_the_100_ms_budget() -> TestResult {
-    // SAFETY: no arguments; idempotent AppKit initialisation of this test process.
-    unsafe { NSApplicationLoad() };
-    let workspace = Arc::new(MacWorkspace::new());
-    let Foreground::Application(_) = workspace.frontmost() else {
-        return Err("foreground not readable as another app".into());
-    };
+/// A dictation of the frontmost application, frozen and accepted by the guard (`Insert`), and
+/// the context its method would be dispatched with.
+fn inserting_dictation(
+    workspace: &Arc<MacWorkspace>,
+) -> Result<(Arc<DestinationManager>, DestinationContext), Box<dyn std::error::Error>> {
     let platform = PlatformCapabilities::only(&[PlatformCapability::Destination]);
     let manager = Arc::new(DestinationManager::new(
         workspace.clone(),
@@ -67,15 +64,27 @@ fn the_final_focus_check_on_the_real_workspace_fits_the_100_ms_budget() -> TestR
     let Foreground::Application(front) = workspace.frontmost_now() else {
         return Err("live foreground not readable".into());
     };
-    let context = handy_app_lib::destination::context::DestinationContext {
+    let target = ResolvedTarget {
+        pid: front.pid,
+        identity: front.identity,
+    };
+    let context = DestinationContext {
         dictation_id: id,
         destination_generation: generation,
         source: started.source,
-        target: Some(handy_app_lib::destination::context::ResolvedTarget {
-            pid: front.pid,
-            identity: front.identity,
-        }),
+        target: Some(target),
     };
+    Ok((manager, context))
+}
+
+// @spec AC-005: Focus check then key within the QE budget — .specs/features/009-pin-mode-and-enter-rule/spec.md#ac-005
+#[test]
+#[ignore = "native: needs a logged-in macOS desktop session and Accessibility for the runner"]
+fn the_final_focus_check_on_the_real_workspace_fits_the_100_ms_budget() -> TestResult {
+    // SAFETY: no arguments; idempotent AppKit initialisation of this test process.
+    unsafe { NSApplicationLoad() };
+    let workspace = Arc::new(MacWorkspace::new());
+    let (manager, context) = inserting_dictation(&workspace)?;
     let keys = Arc::new(KeySpy::default());
     let ports = EnterPorts {
         claims: manager.clone(),
@@ -85,8 +94,8 @@ fn the_final_focus_check_on_the_real_workspace_fits_the_100_ms_budget() -> TestR
         pause: Arc::new(SystemClock),
     };
     let frozen = EnterSnapshot {
-        dictation_id: id,
-        destination_generation: generation,
+        dictation_id: context.dictation_id,
+        destination_generation: context.destination_generation,
         policy: AutomaticEnterPolicy::Always,
         key: AutoSubmitKey::Enter,
     };

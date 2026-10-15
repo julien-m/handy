@@ -7,7 +7,6 @@
 #![cfg(unix)]
 
 #[path = "settings_cli/harness.rs"]
-#[allow(dead_code)]
 mod harness;
 
 use harness::{Portable, TestResult};
@@ -207,6 +206,26 @@ mod open_gate {
         }
         Ok(())
     }
+}
+
+// @spec AC-004: An older Handy running keeps its store untouched — .specs/features/009-pin-mode-and-enter-rule/spec.md#ac-004
+#[test]
+fn with_an_older_handy_running_the_enter_setting_is_never_written_behind_it() -> TestResult {
+    let app = Portable::new()?;
+    let _older = std::os::unix::net::UnixListener::bind(app.legacy_socket())?;
+    let key = if cfg!(feature = "destination-return") {
+        ["automatic_enter", "always"]
+    } else {
+        ["auto_submit", "true"]
+    };
+    let run = app.run(&["settings", "output", "set", key[0], key[1], "--json"])?;
+    assert_eq!(
+        (run.code, &run.envelope()?["error"]["code"]),
+        (5, &json!("unavailable"))
+    );
+    assert!(!run.stderr.contains(key[1]), "no value echoed on stderr");
+    assert_eq!(app.store_bytes()?, None);
+    Ok(())
 }
 
 /// A running instance that answers only after the CLI deadline (open gate).

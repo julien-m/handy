@@ -53,11 +53,12 @@ fn usage_errors_come_before_the_platform_refusal() {
     }
 }
 #[test]
-fn linux_refuses_all_three_actions_as_unsupported_platform_before_liveness() {
+fn linux_refuses_all_three_actions_as_unsupported_platform_before_liveness(
+) -> Result<(), Box<dyn std::error::Error>> {
     let comet = ["ai.perplexity.comet".to_owned()];
     for (action, arguments) in [("pin", &comet[..]), ("unpin", &[][..]), ("status", &[][..])] {
         let Err(error) = plan(action, arguments, false) else {
-            panic!("{action} accepted on a platform without destination support");
+            return Err(format!("{action} accepted without destination support").into());
         };
         assert_eq!(error.code(), SettingsErrorCode::ValidationFailed);
         assert_eq!(error.exit_code(), 2);
@@ -66,6 +67,7 @@ fn linux_refuses_all_three_actions_as_unsupported_platform_before_liveness() {
             Some(ErrorReason::UnsupportedPlatform)
         );
     }
+    Ok(())
 }
 #[test]
 fn supported_actions_are_live_operations_only() {

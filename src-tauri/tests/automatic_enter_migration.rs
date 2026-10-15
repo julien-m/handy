@@ -7,7 +7,6 @@
 #![cfg(unix)]
 
 #[path = "settings_cli/harness.rs"]
-#[allow(dead_code)]
 mod harness;
 
 use harness::{Fallible, Portable, TestResult};
@@ -65,6 +64,20 @@ fn every_switch_and_key_reads_as_documented_and_is_persisted_once() -> TestResul
             assert_eq!(written, OPEN.then(|| json!(policy)));
         }
     }
+    Ok(())
+}
+#[test]
+fn an_older_handy_running_never_gets_the_migration_written_behind_it() -> TestResult {
+    let app = seeded(json!({"auto_submit": true, "auto_submit_key": "ctrl_enter"}))?;
+    let before = app.store_bytes()?;
+    let _older = std::os::unix::net::UnixListener::bind(app.legacy_socket())?;
+    let run = app.run(&["settings", "set", "mute_while_recording", "true", "--json"])?;
+    assert_eq!(run.code, 5, "{}", run.stderr);
+    assert_eq!(
+        app.store_bytes()?,
+        before,
+        "the older Handy keeps its store"
+    );
     Ok(())
 }
 #[test]

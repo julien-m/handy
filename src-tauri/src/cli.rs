@@ -136,12 +136,10 @@ pub enum SettingsCommand {
 #[cfg(feature = "destination-return")]
 #[derive(Args, Debug, Clone)]
 #[command(
-    after_help = "IDENTIFIER is the application's stable identity: its bundle identifier on \
-macOS; on Windows its application user model ID or, without one, its executable path. The \
-application must be running. The pin lasts until unpin or until Handy quits, and a pin or unpin \
-changes the current dictation like the badge menu until its insertion begins. All three actions \
-need a running Handy; without one they fail with unavailable (exit 5). Unsupported on Linux \
-(validation_failed, exit 2)."
+    after_help = "IDENTIFIER: bundle identifier (macOS), application user model ID or \
+executable path (Windows) of a running application. The pin lasts until unpin or until Handy \
+quits and changes the current dictation like the badge menu. Needs a running Handy (else \
+unavailable, exit 5); unsupported on Linux (validation_failed, exit 2)."
 )]
 pub struct DestinationArgs {
     #[command(subcommand)]

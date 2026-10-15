@@ -5,6 +5,8 @@ use super::*;
 use crate::settings::{get_default_settings, AutoSubmitKey};
 use serde_json::json;
 
+type TestResult = Result<(), Box<dyn std::error::Error>>;
+
 const OPEN: Rollout = Rollout {
     platform_capable: true,
     wired: true,
@@ -71,15 +73,16 @@ fn a_stored_policy_wins_and_a_second_pass_is_a_no_op() {
     assert_eq!(again.automatic_enter, Some(AutomaticEnterPolicy::Never));
 }
 #[test]
-fn an_invalid_or_null_stored_policy_becomes_never_without_legacy_remapping() {
+fn an_invalid_or_null_stored_policy_becomes_never_without_legacy_remapping() -> TestResult {
     for invalid in [json!("sometimes"), json!(3), Value::Null] {
         let stored = json!({"auto_submit": true, "automatic_enter": invalid});
-        let mut settings: AppSettings = serde_json::from_value(stored.clone())
-            .expect("the lenient field never fails the whole store");
+        // The lenient field never fails the whole store.
+        let mut settings: AppSettings = serde_json::from_value(stored.clone())?;
         assert_eq!(settings.automatic_enter, None);
         assert!(migrate(&mut settings, &stored, OPEN));
         assert_eq!(settings.automatic_enter, Some(AutomaticEnterPolicy::Never));
     }
+    Ok(())
 }
 #[test]
 fn a_salvaged_store_still_migrates_from_the_raw_legacy_switch() {
@@ -92,7 +95,7 @@ fn a_salvaged_store_still_migrates_from_the_raw_legacy_switch() {
     assert_eq!(salvaged.automatic_enter, Some(AutomaticEnterPolicy::Always));
 }
 #[test]
-fn a_closed_gate_never_creates_or_reads_automatic_enter() {
+fn a_closed_gate_never_creates_or_reads_automatic_enter() -> TestResult {
     let stored = json!({"auto_submit": true, "auto_submit_key": "ctrl_enter"});
     let mut settings = decoded(&stored);
     assert!(!migrate(&mut settings, &stored, CLOSED));
@@ -104,14 +107,15 @@ fn a_closed_gate_never_creates_or_reads_automatic_enter() {
         "nothing to persist"
     );
     assert_eq!(reread.automatic_enter, None, "not read by the closed build");
-    let serialized = serde_json::to_value(&reread).expect("serializable");
+    let serialized = serde_json::to_value(&reread)?;
     assert!(
         serialized.get(KEY).is_none(),
         "the closed build never writes it"
     );
+    Ok(())
 }
 #[test]
-fn open_then_closed_reread_keeps_auto_submit_key_and_the_legacy_enter_decision() {
+fn open_then_closed_reread_keeps_auto_submit_key_and_the_legacy_enter_decision() -> TestResult {
     for (switch, wire, key) in [
         (true, "ctrl_enter", AutoSubmitKey::CtrlEnter),
         (false, "cmd_enter", AutoSubmitKey::CmdEnter),
@@ -122,7 +126,7 @@ fn open_then_closed_reread_keeps_auto_submit_key_and_the_legacy_enter_decision()
         migrate(&mut open, &stored, OPEN);
         // What an open build persists: its typed settings merged over the raw store; the legacy
         // switch has no descriptor there, so its raw value is the one kept.
-        let mut persisted = serde_json::to_value(&open).expect("serializable");
+        let mut persisted = serde_json::to_value(&open)?;
         persisted[LEGACY_SWITCH] = json!(switch);
         let mut closed = decoded(&persisted);
         migrate(&mut closed, &persisted, CLOSED);
@@ -133,6 +137,7 @@ fn open_then_closed_reread_keeps_auto_submit_key_and_the_legacy_enter_decision()
             crate::automatic_enter::legacy_auto_submit_for(&before, false)
         );
     }
+    Ok(())
 }
 #[test]
 fn open_closed_open_keeps_the_stored_policy_authoritative() {

@@ -24,7 +24,7 @@ use objc2_foundation::{NSArray, NSInteger, NSObject, NSString};
 use tauri::{AppHandle, Manager};
 use tauri_plugin_clipboard_manager::ClipboardExt;
 
-use super::{evaluate, send_chord, ReceiptSink, TxState, WaitDecision};
+use super::{evaluate, inject, record_read, ReceiptSink, TxState, WaitDecision};
 use crate::clipboard::send_return_key;
 use crate::input::EnigoState;
 use crate::settings::{AutoSubmitKey, ClipboardHandling, PasteMethod};
@@ -66,18 +66,7 @@ define_class!(
             // concealment marker types is a clipboard manager inspecting the
             // markers, not the paste target reading the transcript.
             if is_text {
-                let now = Instant::now();
-                let qualified = match ivars.state.lock() {
-                    Ok(mut state) => {
-                        state.record_receipt(now);
-                        state.injected_at.is_some_and(|injected| now >= injected)
-                    }
-                    Err(_) => false,
-                };
-                // Outside the state lock: the authority may start its Enter worker.
-                if let (true, Some(receipts)) = (qualified, &ivars.receipts) {
-                    receipts.target_read(now);
-                }
+                record_read(&ivars.state, ivars.receipts.as_ref(), Instant::now());
             }
             let payload = if is_text {
                 NSString::from_str(&ivars.text)
@@ -315,21 +304,7 @@ pub(super) fn run(
     }
     info!("[reliable-paste] published transcript as lazy promise (changeCount {change_count})");
 
-    // Mark injection *before* sending: enigo holds the chord for ~100ms and a
-    // fast target may legitimately read while the chord is still held.
-    let injected_at = Instant::now();
-    if let Ok(mut st) = state.lock() {
-        st.injected_at = Some(injected_at);
-    }
-    if let Some(receipts) = &receipts {
-        receipts.injection_started(injected_at);
-    }
-    let chord = send_chord(enigo, paste_method);
-    // The actual chord result (never the outer `Ok` below) is the authority's signal.
-    if let Some(receipts) = &receipts {
-        receipts.chord_completed(chord.is_ok(), Instant::now());
-    }
-    match chord {
+    match inject(&state, enigo, paste_method, receipts.as_ref()) {
         Ok(()) => {
             info!("[reliable-paste] paste chord sent ({paste_method:?})");
         }
