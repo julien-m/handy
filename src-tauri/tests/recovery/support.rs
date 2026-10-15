@@ -24,6 +24,7 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex, MutexGuard, PoisonError};
 use std::time::{Duration, Instant};
 
+/// Result of a test.
 pub type TestResult = Result<(), Box<dyn std::error::Error>>;
 /// A safe phrase; long enough to be cut in the preview.
 pub const PHRASE: &str = "safe test phrase kept by the recovery bubble while Handy could not \
@@ -31,6 +32,7 @@ insert it, long enough to need more than two lines of the bubble so the preview 
 the full transcript stays complete for Copy and drag, with accents éèà and an emoji 🎙️ at the \
 very end of the dictation that only the full payload carries ✅";
 
+/// Lock a test mutex, ignoring poisoning.
 pub fn lock<T>(mutex: &Mutex<T>) -> MutexGuard<'_, T> {
     mutex.lock().unwrap_or_else(PoisonError::into_inner)
 }
@@ -45,14 +47,17 @@ pub enum SurfaceCall {
     BeginDrag(BubbleId, String),
     ShowAgain(RecoveryBubbleView),
 }
+/// Surface double recording every call.
 #[derive(Default)]
 pub struct RecordingSurface {
     pub calls: Mutex<Vec<SurfaceCall>>,
 }
 impl RecordingSurface {
+    /// Every call so far.
     pub fn calls(&self) -> Vec<SurfaceCall> {
         lock(&self.calls).clone()
     }
+    /// The views presented so far.
     pub fn presented(&self) -> Vec<RecoveryBubbleView> {
         self.calls()
             .into_iter()
@@ -87,7 +92,7 @@ impl RecoverySurfacePort for RecordingSurface {
     }
 }
 
-/// 006's real slot behind the port, with a release log.
+/// 006's real slot behind the transcript port, with a release log.
 #[derive(Default)]
 pub struct Slot {
     pub slot: RecoverySlot,
@@ -103,6 +108,7 @@ impl TranscriptSource for Slot {
     }
 }
 
+/// Session facts double: a fixed name, no decision instant.
 pub struct Facts {
     pub name: Option<String>,
 }
@@ -144,6 +150,7 @@ pub struct ManualTimers {
     pub tasks: Mutex<Vec<Scheduled>>,
 }
 impl ManualTimers {
+    /// Run every scheduled task; returns their delays.
     pub fn fire_all(&self) -> Vec<Duration> {
         let tasks: Vec<_> = lock(&self.tasks).drain(..).collect();
         tasks
@@ -161,6 +168,7 @@ impl TimerPort for ManualTimers {
     }
 }
 
+/// `paste-error` double counting the toasts.
 #[derive(Default)]
 pub struct Fallback {
     pub toasts: Mutex<Vec<HistoryStatus>>,
@@ -182,6 +190,7 @@ pub struct Focus {
     pub during: Option<Arc<dyn Fn() + Send + Sync>>,
 }
 impl Focus {
+    /// A trusted focus of `role` in process `pid`.
     pub fn role(role: &'static str, pid: u32) -> Self {
         Self {
             trusted: true,
@@ -191,6 +200,7 @@ impl Focus {
             during: None,
         }
     }
+    /// Accessibility queries made so far.
     pub fn queries(&self) -> usize {
         self.queries.load(Ordering::SeqCst)
     }
@@ -242,9 +252,11 @@ pub struct Bench {
     pub fallback: Arc<Fallback>,
 }
 impl Bench {
+    /// A bench on `platform` whose focus is a not-editable list of pid 42.
     pub fn new(platform: RecoveryPlatform) -> Self {
         Self::with_focus(platform, Focus::role("AXList", 42))
     }
+    /// A bench on `platform` with the scripted `focus`.
     pub fn with_focus(platform: RecoveryPlatform, focus: Focus) -> Self {
         let surface = Arc::new(RecordingSurface::default());
         let slot = Arc::new(Slot::default());
@@ -290,14 +302,17 @@ impl Bench {
             .retain(DictationId(dictation), PHRASE.to_owned());
         outcome(dictation, reason, method_outcome, Some(reference))
     }
+    /// Toasts emitted by 010 so far.
     pub fn toasts(&self) -> Vec<HistoryStatus> {
         lock(&self.fallback.toasts).clone()
     }
+    /// Slot references released so far.
     pub fn released(&self) -> Vec<TranscriptRef> {
         lock(&self.slot.released).clone()
     }
 }
 
+/// A failed outcome of `dictation` with `reason`, `method_outcome` and its slot reference.
 pub fn outcome(
     dictation: u64,
     reason: Option<DestinationFailure>,

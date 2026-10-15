@@ -511,6 +511,10 @@
         "unavailablePlatform": "이 시스템에서는 사용할 수 없습니다. 텍스트는 마지막에 앞에 있는 앱으로 들어갑니다.",
         "details": "Handy는 받아쓰기를 시작할 때 맨 앞의 앱을 기억하고 텍스트를 입력하기 전에 그 앱으로 돌아갑니다. 끄면 받아쓰기가 끝날 때 앞에 있는 앱으로 텍스트가 들어갑니다.",
         "detailsLabel": "받아쓰기한 앱으로 돌아가기 정보"
+      },
+      "noFieldBubble": {
+        "title": "포커스된 텍스트 필드가 없을 때 말풍선 표시",
+        "description": "아무 곳에나 붙여넣는 대신 텍스트를 말풍선에 보관합니다."
       }
     },
     "vocabulary": {
@@ -1310,5 +1314,42 @@
   },
   "smartPaste": {
     "handOver": "원격 화면을 위해 텍스트를 클립보드에 넣었습니다"
+  },
+  "recoveryBubble": {
+    "label": "Handy가 보관한 받아쓰기",
+    "previewLabel": "받아쓰기",
+    "reason": {
+      "appClosed": "{{app}}이(가) 더 이상 열려 있지 않습니다",
+      "appClosedUnnamed": "앱이 더 이상 열려 있지 않습니다",
+      "pinnedAppNotRunning": "{{app}}이(가) 고정되어 있지만 열려 있지 않습니다",
+      "pinnedAppNotRunningUnnamed": "고정된 앱이 열려 있지 않습니다",
+      "activationFailed": "{{app}}을(를) 앞으로 가져올 수 없습니다",
+      "activationFailedUnnamed": "앱을 앞으로 가져올 수 없습니다",
+      "insertionFailed": "삽입 실패",
+      "noTextField": "포커스된 텍스트 필드가 없습니다"
+    },
+    "explanation": {
+      "notInserted": "Handy는 아무것도 삽입하지 않았고 Enter도 보내지 않았습니다.",
+      "mayHaveReached": "텍스트 일부가 앱에 전달되었을 수 있습니다.",
+      "nothingSent": "앱에 아무것도 보내지 않았습니다.",
+      "lateRead": "앱이 클립보드를 늦게 읽었습니다. 텍스트가 결국 붙여넣어졌을 수 있습니다. 다시 복사하기 전에 확인하세요.",
+      "historyKept": "받아쓰기는 기록에 보관되어 있습니다.",
+      "historyKeptFull": "받아쓰기 전체가 기록에 보관되어 있습니다.",
+      "historyNotKept": "받아쓰기가 기록에 없습니다.",
+      "openAppDrag": "{{app}}을(를) 연 다음 텍스트를 드래그하거나 복사하세요.",
+      "openAppCopy": "{{app}}을(를) 연 다음 텍스트를 복사하세요.",
+      "openUnnamedDrag": "앱을 연 다음 텍스트를 드래그하거나 복사하세요.",
+      "openUnnamedCopy": "앱을 연 다음 텍스트를 복사하세요.",
+      "focusFieldDrag": "텍스트 필드를 클릭한 다음 텍스트를 드래그하거나 복사하세요.",
+      "focusFieldCopy": "텍스트 필드를 클릭한 다음 텍스트를 복사하세요.",
+      "noFieldSetting": "이 확인은 설정 > 고급 > 출력에서 끌 수 있습니다."
+    },
+    "actions": {
+      "drag": "필드로 드래그",
+      "copy": "복사",
+      "why": "이유",
+      "hideDetails": "세부 정보 숨기기",
+      "close": "닫기"
+    }
   }
 }

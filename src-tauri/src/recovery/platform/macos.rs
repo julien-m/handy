@@ -17,6 +17,18 @@ tauri_panel! {
     })
 }
 
+/// The webview window under the panel: borderless, transparent, never focused, and accepting
+/// the first click so a control acts without activating Handy.
+fn window_options<'a>(
+    window: tauri::WebviewWindowBuilder<'a, tauri::Wry, AppHandle>,
+) -> tauri::WebviewWindowBuilder<'a, tauri::Wry, AppHandle> {
+    window
+        .decorations(false)
+        .transparent(true)
+        .focusable(false)
+        .accept_first_mouse(true)
+}
+
 // @spec AC-003: Nonactivating bubble accepting the first click — .specs/features/010-recovery-bubble/spec.md#ac-003
 /// Build the hidden panel; must run on the main thread.
 pub(super) fn create_window(app: &AppHandle) -> Result<WebviewWindow, String> {
@@ -31,13 +43,7 @@ pub(super) fn create_window(app: &AppHandle) -> Result<WebviewWindow, String> {
         .no_activate(true)
         .corner_radius(0.0)
         .style_mask(StyleMask::empty().borderless().nonactivating_panel())
-        .with_window(|window| {
-            window
-                .decorations(false)
-                .transparent(true)
-                .focusable(false)
-                .accept_first_mouse(true)
-        })
+        .with_window(window_options)
         .collection_behavior(
             CollectionBehavior::new()
                 .can_join_all_spaces()

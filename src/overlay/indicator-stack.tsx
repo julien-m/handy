@@ -213,7 +213,7 @@ export const useIndicatorExtras = (input: ExtrasInput) => {
     (state === "recording" || (state === "streaming" && phase !== "working"));
   const destination = useDestination(isVisible);
   const prompt = useDictationPrompt(isVisible, recording);
-  const notices = useOverlayNotices(destination.latest);
+  const notices = useOverlayNotices();
   const osType = useOsType();
   const dictation = useDictationCount();
   const stack = {

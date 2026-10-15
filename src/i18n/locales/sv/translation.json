@@ -511,6 +511,10 @@
         "unavailablePlatform": "Inte tillgängligt på det här systemet. Texten hamnar i appen i förgrunden när du är klar.",
         "details": "Handy kommer ihåg appen i förgrunden när en diktering startar och växlar tillbaka till den innan texten infogas. När inställningen är av hamnar texten i appen i förgrunden när dikteringen slutar.",
         "detailsLabel": "Om att återgå till dikteringens app"
+      },
+      "noFieldBubble": {
+        "title": "Visa bubblan när inget textfält har fokus",
+        "description": "Behåller texten i en bubbla i stället för att klistra in den i tomma intet."
       }
     },
     "vocabulary": {
@@ -1310,5 +1314,42 @@
   },
   "smartPaste": {
     "handOver": "Texten har lagts i urklipp för den fjärranslutna skärmen"
+  },
+  "recoveryBubble": {
+    "label": "Transkription sparad av Handy",
+    "previewLabel": "Transkription",
+    "reason": {
+      "appClosed": "{{app}} är inte längre öppen",
+      "appClosedUnnamed": "Appen är inte längre öppen",
+      "pinnedAppNotRunning": "{{app}} är fäst men inte öppen",
+      "pinnedAppNotRunningUnnamed": "Den fästa appen är inte öppen",
+      "activationFailed": "Det gick inte att ta fram {{app}}",
+      "activationFailedUnnamed": "Det gick inte att ta fram appen",
+      "insertionFailed": "Infogningen misslyckades",
+      "noTextField": "Inget textfält har fokus"
+    },
+    "explanation": {
+      "notInserted": "Handy infogade ingenting och skickade ingen Retur.",
+      "mayHaveReached": "En del av texten kan ha nått appen.",
+      "nothingSent": "Ingenting skickades till appen.",
+      "lateRead": "Appen läste urklippet sent: texten kan ha klistrats in ändå. Kontrollera innan du kopierar igen.",
+      "historyKept": "Transkriptionen sparas i Historik.",
+      "historyKeptFull": "Hela transkriptionen sparas i Historik.",
+      "historyNotKept": "Transkriptionen finns inte i Historik.",
+      "openAppDrag": "Öppna {{app}} och dra eller kopiera sedan texten.",
+      "openAppCopy": "Öppna {{app}} och kopiera sedan texten.",
+      "openUnnamedDrag": "Öppna appen och dra eller kopiera sedan texten.",
+      "openUnnamedCopy": "Öppna appen och kopiera sedan texten.",
+      "focusFieldDrag": "Klicka i ett textfält och dra eller kopiera sedan texten.",
+      "focusFieldCopy": "Klicka i ett textfält och kopiera sedan texten.",
+      "noFieldSetting": "Du kan stänga av den här kontrollen under Inställningar, Avancerat, Utdata."
+    },
+    "actions": {
+      "drag": "Dra till ett fält",
+      "copy": "Kopiera",
+      "why": "Varför?",
+      "hideDetails": "Dölj detaljer",
+      "close": "Stäng"
+    }
   }
 }

@@ -11,6 +11,7 @@ import { PasteMethodSetting } from "../PasteMethod";
 import { TypingToolSetting } from "../TypingTool";
 import { ClipboardHandlingSetting } from "../ClipboardHandling";
 import { ReturnToAppSetting } from "../return-to-app-setting";
+import { NoFieldBubbleToggle } from "../recovery-bubble-toggle";
 import { AutoSubmit } from "../AutoSubmit";
 import { AutomaticEnter } from "../automatic-enter";
 import { enterControl } from "../automatic-enter-state";
@@ -63,6 +64,7 @@ export const AdvancedSettings: React.FC = () => {
           ) : (
             <AutoSubmit descriptionMode="tooltip" grouped={true} />
           )}
+          <NoFieldBubbleToggle grouped={true} />
         </SettingsGroup>
       </div>
 

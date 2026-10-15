@@ -511,6 +511,10 @@
         "unavailablePlatform": "このシステムでは利用できません。テキストは最後に最前面にあるアプリに入力されます。",
         "details": "Handy は音声入力の開始時に最前面のアプリを記憶し、テキストを挿入する前にそのアプリに戻ります。オフの場合、テキストは音声入力の終了時に最前面にあるアプリに入力されます。",
         "detailsLabel": "音声入力を始めたアプリに戻る機能について"
+      },
+      "noFieldBubble": {
+        "title": "テキストフィールドが選択されていないときにバブルを表示",
+        "description": "何もない場所に貼り付ける代わりに、テキストをバブルに保持します。"
       }
     },
     "vocabulary": {
@@ -1310,5 +1314,42 @@
   },
   "smartPaste": {
     "handOver": "リモート画面用にテキストをクリップボードに置きました"
+  },
+  "recoveryBubble": {
+    "label": "Handy が保持した文字起こし",
+    "previewLabel": "文字起こし",
+    "reason": {
+      "appClosed": "{{app}} は開いていません",
+      "appClosedUnnamed": "アプリは開いていません",
+      "pinnedAppNotRunning": "{{app}} はピン留めされていますが開いていません",
+      "pinnedAppNotRunningUnnamed": "ピン留めしたアプリは開いていません",
+      "activationFailed": "{{app}} を前面に出せませんでした",
+      "activationFailedUnnamed": "アプリを前面に出せませんでした",
+      "insertionFailed": "挿入に失敗しました",
+      "noTextField": "テキストフィールドが選択されていません"
+    },
+    "explanation": {
+      "notInserted": "Handy は何も挿入せず、Enter も送信していません。",
+      "mayHaveReached": "テキストの一部がアプリに届いた可能性があります。",
+      "nothingSent": "アプリには何も送信されていません。",
+      "lateRead": "アプリがクリップボードを遅れて読み取りました。テキストは結局貼り付けられた可能性があります。もう一度コピーする前に確認してください。",
+      "historyKept": "文字起こしは履歴に保存されています。",
+      "historyKeptFull": "文字起こしの全文は履歴に保存されています。",
+      "historyNotKept": "文字起こしは履歴にありません。",
+      "openAppDrag": "{{app}} を開いてから、テキストをドラッグまたはコピーしてください。",
+      "openAppCopy": "{{app}} を開いてから、テキストをコピーしてください。",
+      "openUnnamedDrag": "アプリを開いてから、テキストをドラッグまたはコピーしてください。",
+      "openUnnamedCopy": "アプリを開いてから、テキストをコピーしてください。",
+      "focusFieldDrag": "テキストフィールドをクリックしてから、テキストをドラッグまたはコピーしてください。",
+      "focusFieldCopy": "テキストフィールドをクリックしてから、テキストをコピーしてください。",
+      "noFieldSetting": "このチェックは「設定」>「詳細」>「出力」でオフにできます。"
+    },
+    "actions": {
+      "drag": "フィールドにドラッグ",
+      "copy": "コピー",
+      "why": "理由",
+      "hideDetails": "詳細を隠す",
+      "close": "閉じる"
+    }
   }
 }

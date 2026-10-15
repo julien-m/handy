@@ -511,6 +511,10 @@
         "unavailablePlatform": "Niedostępne w tym systemie. Tekst trafi na końcu do aplikacji na pierwszym planie.",
         "details": "Handy zapamiętuje aplikację na pierwszym planie w chwili rozpoczęcia dyktowania i wraca do niej przed wstawieniem tekstu. Gdy opcja jest wyłączona, tekst trafia do aplikacji na pierwszym planie po zakończeniu dyktowania.",
         "detailsLabel": "Informacje o powrocie do aplikacji dyktowania"
+      },
+      "noFieldBubble": {
+        "title": "Pokazuj dymek, gdy żadne pole tekstowe nie jest aktywne",
+        "description": "Zachowuje tekst w dymku zamiast wklejać go w próżnię."
       }
     },
     "vocabulary": {
@@ -1310,5 +1314,42 @@
   },
   "smartPaste": {
     "handOver": "Tekst umieszczono w schowku dla zdalnego ekranu"
+  },
+  "recoveryBubble": {
+    "label": "Transkrypcja zachowana przez Handy",
+    "previewLabel": "Transkrypcja",
+    "reason": {
+      "appClosed": "{{app}} nie jest już otwarta",
+      "appClosedUnnamed": "Aplikacja nie jest już otwarta",
+      "pinnedAppNotRunning": "{{app}} jest przypięta, ale nie jest otwarta",
+      "pinnedAppNotRunningUnnamed": "Przypięta aplikacja nie jest otwarta",
+      "activationFailed": "Nie udało się przenieść {{app}} na pierwszy plan",
+      "activationFailedUnnamed": "Nie udało się przenieść aplikacji na pierwszy plan",
+      "insertionFailed": "Wstawianie nie powiodło się",
+      "noTextField": "Żadne pole tekstowe nie jest aktywne"
+    },
+    "explanation": {
+      "notInserted": "Handy niczego nie wstawił i nie wysłał klawisza Enter.",
+      "mayHaveReached": "Część tekstu mogła dotrzeć do aplikacji.",
+      "nothingSent": "Do aplikacji nic nie zostało wysłane.",
+      "lateRead": "Aplikacja odczytała schowek z opóźnieniem: tekst mógł jednak zostać wklejony. Sprawdź to przed ponownym kopiowaniem.",
+      "historyKept": "Transkrypcja jest zachowana w Historii.",
+      "historyKeptFull": "Pełna transkrypcja jest zachowana w Historii.",
+      "historyNotKept": "Transkrypcji nie ma w Historii.",
+      "openAppDrag": "Otwórz {{app}}, a następnie przeciągnij lub skopiuj tekst.",
+      "openAppCopy": "Otwórz {{app}}, a następnie skopiuj tekst.",
+      "openUnnamedDrag": "Otwórz aplikację, a następnie przeciągnij lub skopiuj tekst.",
+      "openUnnamedCopy": "Otwórz aplikację, a następnie skopiuj tekst.",
+      "focusFieldDrag": "Kliknij pole tekstowe, a następnie przeciągnij lub skopiuj tekst.",
+      "focusFieldCopy": "Kliknij pole tekstowe, a następnie skopiuj tekst.",
+      "noFieldSetting": "Możesz wyłączyć to sprawdzanie w Ustawieniach, Zaawansowane, Wyjście."
+    },
+    "actions": {
+      "drag": "Przeciągnij do pola",
+      "copy": "Kopiuj",
+      "why": "Dlaczego?",
+      "hideDetails": "Ukryj szczegóły",
+      "close": "Zamknij"
+    }
   }
 }

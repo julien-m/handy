@@ -511,6 +511,10 @@
         "unavailablePlatform": "Non disponibile su questo sistema. Il testo va all'app in primo piano alla fine.",
         "details": "Handy ricorda l'app in primo piano all'inizio della dettatura e torna a quella prima di inserire il testo. Se disattivato, il testo va all'app in primo piano al termine della dettatura.",
         "detailsLabel": "Informazioni sul ritorno all'app della dettatura"
+      },
+      "noFieldBubble": {
+        "title": "Mostra la bolla quando nessun campo di testo è attivo",
+        "description": "Tiene il testo in una bolla invece di incollarlo nel vuoto."
       }
     },
     "vocabulary": {
@@ -1310,5 +1314,42 @@
   },
   "smartPaste": {
     "handOver": "Testo inserito negli appunti per lo schermo remoto"
+  },
+  "recoveryBubble": {
+    "label": "Trascrizione conservata da Handy",
+    "previewLabel": "Trascrizione",
+    "reason": {
+      "appClosed": "{{app}} non è più aperta",
+      "appClosedUnnamed": "L'app non è più aperta",
+      "pinnedAppNotRunning": "{{app}} è fissata ma non aperta",
+      "pinnedAppNotRunningUnnamed": "L'app fissata non è aperta",
+      "activationFailed": "Impossibile portare {{app}} in primo piano",
+      "activationFailedUnnamed": "Impossibile portare l'app in primo piano",
+      "insertionFailed": "Inserimento non riuscito",
+      "noTextField": "Nessun campo di testo è attivo"
+    },
+    "explanation": {
+      "notInserted": "Handy non ha inserito nulla e non ha inviato alcun Invio.",
+      "mayHaveReached": "Parte del testo potrebbe essere arrivata all'app.",
+      "nothingSent": "Non è stato inviato nulla all'app.",
+      "lateRead": "L'app ha letto gli appunti in ritardo: il testo potrebbe essere stato incollato comunque. Controlla prima di copiare di nuovo.",
+      "historyKept": "La trascrizione è conservata nella Cronologia.",
+      "historyKeptFull": "La trascrizione completa è conservata nella Cronologia.",
+      "historyNotKept": "La trascrizione non è nella Cronologia.",
+      "openAppDrag": "Apri {{app}}, poi trascina o copia il testo.",
+      "openAppCopy": "Apri {{app}}, poi copia il testo.",
+      "openUnnamedDrag": "Apri l'app, poi trascina o copia il testo.",
+      "openUnnamedCopy": "Apri l'app, poi copia il testo.",
+      "focusFieldDrag": "Fai clic in un campo di testo, poi trascina o copia il testo.",
+      "focusFieldCopy": "Fai clic in un campo di testo, poi copia il testo.",
+      "noFieldSetting": "Puoi disattivare questo controllo in Impostazioni, Avanzate, Output."
+    },
+    "actions": {
+      "drag": "Trascina in un campo",
+      "copy": "Copia",
+      "why": "Perché?",
+      "hideDetails": "Nascondi dettagli",
+      "close": "Chiudi"
+    }
   }
 }

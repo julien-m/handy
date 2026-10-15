@@ -511,6 +511,10 @@
         "unavailablePlatform": "No disponible en aquest sistema. El text va a l'aplicació en primer pla al final.",
         "details": "Handy recorda l'aplicació en primer pla quan comença un dictat i hi torna abans d'inserir el text. Si està desactivat, el text va a l'aplicació en primer pla quan acaba el dictat.",
         "detailsLabel": "Quant a tornar a l'aplicació del dictat"
+      },
+      "noFieldBubble": {
+        "title": "Mostra la bombolla quan cap camp de text no té el focus",
+        "description": "Guarda el text en una bombolla en lloc d'enganxar-lo enlloc."
       }
     },
     "vocabulary": {
@@ -1310,5 +1314,42 @@
   },
   "smartPaste": {
     "handOver": "Text col·locat al porta-retalls per a la pantalla remota"
+  },
+  "recoveryBubble": {
+    "label": "Transcripció guardada per Handy",
+    "previewLabel": "Transcripció",
+    "reason": {
+      "appClosed": "{{app}} ja no està oberta",
+      "appClosedUnnamed": "L'aplicació ja no està oberta",
+      "pinnedAppNotRunning": "{{app}} està fixada però no està oberta",
+      "pinnedAppNotRunningUnnamed": "L'aplicació fixada no està oberta",
+      "activationFailed": "No s'ha pogut portar {{app}} al davant",
+      "activationFailedUnnamed": "No s'ha pogut portar l'aplicació al davant",
+      "insertionFailed": "Error en inserir",
+      "noTextField": "Cap camp de text no té el focus"
+    },
+    "explanation": {
+      "notInserted": "Handy no ha inserit res ni ha enviat cap Retorn.",
+      "mayHaveReached": "Potser una part del text ha arribat a l'aplicació.",
+      "nothingSent": "No s'ha enviat res a l'aplicació.",
+      "lateRead": "L'aplicació ha llegit el porta-retalls tard: potser el text s'ha enganxat igualment. Comproveu-ho abans de tornar a copiar.",
+      "historyKept": "La transcripció es conserva a l'historial.",
+      "historyKeptFull": "La transcripció completa es conserva a l'historial.",
+      "historyNotKept": "La transcripció no és a l'historial.",
+      "openAppDrag": "Obriu {{app}} i després arrossegueu o copieu el text.",
+      "openAppCopy": "Obriu {{app}} i després copieu el text.",
+      "openUnnamedDrag": "Obriu l'aplicació i després arrossegueu o copieu el text.",
+      "openUnnamedCopy": "Obriu l'aplicació i després copieu el text.",
+      "focusFieldDrag": "Feu clic en un camp de text i després arrossegueu o copieu el text.",
+      "focusFieldCopy": "Feu clic en un camp de text i després copieu el text.",
+      "noFieldSetting": "Podeu desactivar aquesta comprovació a Configuració, Avançat, Sortida."
+    },
+    "actions": {
+      "drag": "Arrossega a un camp",
+      "copy": "Copia",
+      "why": "Per què?",
+      "hideDetails": "Amaga els detalls",
+      "close": "Tanca"
+    }
   }
 }

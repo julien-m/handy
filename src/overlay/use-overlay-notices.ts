@@ -1,25 +1,22 @@
-// Transient notices of the recording indicator: the AI failure (005 `prompt-processing-failed`),
-// the destination reason (006 `insertion-outcome`) and the Screen Sharing hand-over (007
-// `smart-paste-hand-over`). Each stays at least four seconds, and the overlay window is held up
-// meanwhile even when the dictation already ended (`hold_overlay_for_notice`).
+// Transient notices of the recording indicator: the AI failure (005 `prompt-processing-failed`)
+// and the Screen Sharing hand-over (007 `smart-paste-hand-over`). Each stays at least four
+// seconds, and the overlay window is held up meanwhile even when the dictation already ended
+// (`hold_overlay_for_notice`). The destination reason of 006 (`insertion-outcome`, emitted only
+// with the `destination-return` gate open) is presented by 010's recovery bubble instead, so a
+// failure is never reported twice.
 import { listen } from "@tauri-apps/api/event";
-import { useEffect, useRef, useState, type MutableRefObject } from "react";
-import { commands, events, type DestinationSnapshot } from "@/bindings";
-import { selectionName } from "./destination-model";
+import { useEffect, useRef, useState } from "react";
+import { commands, events } from "@/bindings";
 import {
   addNotice,
   aiFailureNotice,
-  destinationNotice,
   handOverNotice,
   holdRemaining,
   liveNotices,
   nextExpiry,
-  parseOutcome,
   type OverlayNotice,
 } from "./notice-model";
 
-/** 006 terminal outcome event (`destination::delivery::INSERTION_OUTCOME`). */
-export const INSERTION_OUTCOME_EVENT = "insertion-outcome";
 /** 007 hand-over event (`smart_paste::app::HAND_OVER_EVENT`). */
 export const HAND_OVER_EVENT = "smart-paste-hand-over";
 
@@ -31,36 +28,23 @@ const holdWindow = (milliseconds: number) => {
   });
 };
 
-const useNoticeSources = (
-  push: Push,
-  snapshotRef: MutableRefObject<DestinationSnapshot | null>,
-) => {
+// @spec FR-002: The bubble replaces the indicator's destination notice — .specs/features/010-recovery-bubble/spec.md#fr-002
+const useNoticeSources = (push: Push) => {
   useEffect(() => {
     const stops = [
       events.promptProcessingFailed.listen((event) =>
         push((now) => aiFailureNotice(event.payload, now)),
       ),
-      listen<unknown>(INSERTION_OUTCOME_EVENT, (event) => {
-        const facts = parseOutcome(event.payload);
-        if (!facts) return;
-        const name = selectionName(snapshotRef.current, facts.dictationId);
-        push((now) => destinationNotice(facts, name, now));
-      }),
       listen(HAND_OVER_EVENT, () => push(handOverNotice)),
     ];
     return () => {
       stops.forEach((stop) => void stop.then((unlisten) => unlisten()));
     };
-  }, [push, snapshotRef]);
+  }, [push]);
 };
 
-/**
- * Notices currently shown on the indicator. `snapshotRef` holds the newest destination
- * session, used to name the application of a destination notice.
- */
-export const useOverlayNotices = (
-  snapshotRef: MutableRefObject<DestinationSnapshot | null>,
-): OverlayNotice[] => {
+/** Notices currently shown on the indicator. */
+export const useOverlayNotices = (): OverlayNotice[] => {
   const [notices, setNotices] = useState<OverlayNotice[]>([]);
   const noticesRef = useRef<OverlayNotice[]>([]);
   const pushRef = useRef<Push>((build) => {
@@ -72,7 +56,7 @@ export const useOverlayNotices = (
     setNotices(next);
     holdWindow(holdRemaining(next, now));
   });
-  useNoticeSources(pushRef.current, snapshotRef);
+  useNoticeSources(pushRef.current);
 
   useEffect(() => {
     const wait = nextExpiry(notices, Date.now());

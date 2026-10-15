@@ -511,6 +511,10 @@
         "unavailablePlatform": "Niet beschikbaar op dit systeem. De tekst gaat aan het einde naar de app op de voorgrond.",
         "details": "Handy onthoudt de voorste app wanneer het dicteren begint en schakelt daar terug voordat de tekst wordt ingevoegd. Staat dit uit, dan gaat de tekst naar de app die op de voorgrond staat als het dicteren eindigt.",
         "detailsLabel": "Over teruggaan naar de app van het dicteren"
+      },
+      "noFieldBubble": {
+        "title": "Toon de bubbel als er geen tekstveld actief is",
+        "description": "Bewaart de tekst in een bubbel in plaats van hem nergens te plakken."
       }
     },
     "vocabulary": {
@@ -1310,5 +1314,42 @@
   },
   "smartPaste": {
     "handOver": "Tekst op het klembord gezet voor het externe scherm"
+  },
+  "recoveryBubble": {
+    "label": "Transcriptie bewaard door Handy",
+    "previewLabel": "Transcriptie",
+    "reason": {
+      "appClosed": "{{app}} is niet meer geopend",
+      "appClosedUnnamed": "De app is niet meer geopend",
+      "pinnedAppNotRunning": "{{app}} is vastgezet maar niet geopend",
+      "pinnedAppNotRunningUnnamed": "De vastgezette app is niet geopend",
+      "activationFailed": "Kan {{app}} niet naar voren halen",
+      "activationFailedUnnamed": "Kan de app niet naar voren halen",
+      "insertionFailed": "Invoegen mislukt",
+      "noTextField": "Er is geen tekstveld actief"
+    },
+    "explanation": {
+      "notInserted": "Handy heeft niets ingevoegd en geen Enter verstuurd.",
+      "mayHaveReached": "Mogelijk is een deel van de tekst in de app terechtgekomen.",
+      "nothingSent": "Er is niets naar de app verstuurd.",
+      "lateRead": "De app las het klembord te laat: de tekst is misschien toch geplakt. Controleer dit voordat je opnieuw kopieert.",
+      "historyKept": "De transcriptie blijft bewaard in de Geschiedenis.",
+      "historyKeptFull": "De volledige transcriptie blijft bewaard in de Geschiedenis.",
+      "historyNotKept": "De transcriptie staat niet in de Geschiedenis.",
+      "openAppDrag": "Open {{app}} en sleep of kopieer daarna de tekst.",
+      "openAppCopy": "Open {{app}} en kopieer daarna de tekst.",
+      "openUnnamedDrag": "Open de app en sleep of kopieer daarna de tekst.",
+      "openUnnamedCopy": "Open de app en kopieer daarna de tekst.",
+      "focusFieldDrag": "Klik in een tekstveld en sleep of kopieer daarna de tekst.",
+      "focusFieldCopy": "Klik in een tekstveld en kopieer daarna de tekst.",
+      "noFieldSetting": "Je kunt deze controle uitzetten in Instellingen, Geavanceerd, Uitvoer."
+    },
+    "actions": {
+      "drag": "In een veld slepen",
+      "copy": "Kopiëren",
+      "why": "Waarom?",
+      "hideDetails": "Details verbergen",
+      "close": "Sluiten"
+    }
   }
 }

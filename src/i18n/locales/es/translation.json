@@ -511,6 +511,10 @@
         "unavailablePlatform": "No disponible en este sistema. El texto va a la app en primer plano al final.",
         "details": "Handy recuerda la app en primer plano al empezar un dictado y vuelve a ella antes de insertar el texto. Si está desactivado, el texto va a la app en primer plano cuando termina el dictado.",
         "detailsLabel": "Acerca de volver a la aplicación del dictado"
+      },
+      "noFieldBubble": {
+        "title": "Mostrar la burbuja cuando ningún campo de texto tiene el foco",
+        "description": "Guarda el texto en una burbuja en lugar de pegarlo en ninguna parte."
       }
     },
     "vocabulary": {
@@ -1310,5 +1314,42 @@
   },
   "smartPaste": {
     "handOver": "Texto colocado en el portapapeles para la pantalla remota"
+  },
+  "recoveryBubble": {
+    "label": "Transcripción guardada por Handy",
+    "previewLabel": "Transcripción",
+    "reason": {
+      "appClosed": "{{app}} ya no está abierta",
+      "appClosedUnnamed": "La aplicación ya no está abierta",
+      "pinnedAppNotRunning": "{{app}} está fijada pero no está abierta",
+      "pinnedAppNotRunningUnnamed": "La aplicación fijada no está abierta",
+      "activationFailed": "No se pudo traer {{app}} al frente",
+      "activationFailedUnnamed": "No se pudo traer la aplicación al frente",
+      "insertionFailed": "Error al insertar",
+      "noTextField": "Ningún campo de texto tiene el foco"
+    },
+    "explanation": {
+      "notInserted": "Handy no insertó nada ni envió ningún Intro.",
+      "mayHaveReached": "Es posible que parte del texto haya llegado a la aplicación.",
+      "nothingSent": "No se envió nada a la aplicación.",
+      "lateRead": "La aplicación leyó el portapapeles tarde: puede que el texto sí se haya pegado. Compruébalo antes de volver a copiar.",
+      "historyKept": "La transcripción se conserva en el historial.",
+      "historyKeptFull": "La transcripción completa se conserva en el historial.",
+      "historyNotKept": "La transcripción no está en el historial.",
+      "openAppDrag": "Abre {{app}} y luego arrastra o copia el texto.",
+      "openAppCopy": "Abre {{app}} y luego copia el texto.",
+      "openUnnamedDrag": "Abre la aplicación y luego arrastra o copia el texto.",
+      "openUnnamedCopy": "Abre la aplicación y luego copia el texto.",
+      "focusFieldDrag": "Haz clic en un campo de texto y luego arrastra o copia el texto.",
+      "focusFieldCopy": "Haz clic en un campo de texto y luego copia el texto.",
+      "noFieldSetting": "Puedes desactivar esta comprobación en Ajustes, Avanzado, Salida."
+    },
+    "actions": {
+      "drag": "Arrastrar a un campo",
+      "copy": "Copiar",
+      "why": "¿Por qué?",
+      "hideDetails": "Ocultar detalles",
+      "close": "Cerrar"
+    }
   }
 }

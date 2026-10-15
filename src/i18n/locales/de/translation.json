@@ -511,6 +511,10 @@
         "unavailablePlatform": "Auf diesem System nicht verfügbar. Der Text geht am Ende an die App im Vordergrund.",
         "details": "Handy merkt sich beim Start eines Diktats die App im Vordergrund und wechselt vor dem Einfügen zu ihr zurück. Ist die Option aus, geht der Text an die App, die am Ende des Diktats im Vordergrund ist.",
         "detailsLabel": "Über die Rückkehr zur App des Diktats"
+      },
+      "noFieldBubble": {
+        "title": "Blase anzeigen, wenn kein Textfeld ausgewählt ist",
+        "description": "Behält den Text in einer Blase, statt ihn ins Leere einzufügen."
       }
     },
     "vocabulary": {
@@ -1310,5 +1314,42 @@
   },
   "smartPaste": {
     "handOver": "Text für den entfernten Bildschirm in die Zwischenablage gelegt"
+  },
+  "recoveryBubble": {
+    "label": "Von Handy aufbewahrte Transkription",
+    "previewLabel": "Transkription",
+    "reason": {
+      "appClosed": "{{app}} ist nicht mehr geöffnet",
+      "appClosedUnnamed": "Die App ist nicht mehr geöffnet",
+      "pinnedAppNotRunning": "{{app}} ist angeheftet, aber nicht geöffnet",
+      "pinnedAppNotRunningUnnamed": "Die angeheftete App ist nicht geöffnet",
+      "activationFailed": "{{app}} konnte nicht in den Vordergrund geholt werden",
+      "activationFailedUnnamed": "Die App konnte nicht in den Vordergrund geholt werden",
+      "insertionFailed": "Einfügen fehlgeschlagen",
+      "noTextField": "Kein Textfeld ist ausgewählt"
+    },
+    "explanation": {
+      "notInserted": "Handy hat nichts eingefügt und keine Eingabetaste gesendet.",
+      "mayHaveReached": "Möglicherweise ist ein Teil des Textes in der App angekommen.",
+      "nothingSent": "An die App wurde nichts gesendet.",
+      "lateRead": "Die App hat die Zwischenablage verspätet gelesen: Der Text wurde möglicherweise doch eingefügt. Prüfe das, bevor du erneut kopierst.",
+      "historyKept": "Die Transkription bleibt im Verlauf gespeichert.",
+      "historyKeptFull": "Die vollständige Transkription bleibt im Verlauf gespeichert.",
+      "historyNotKept": "Die Transkription ist nicht im Verlauf.",
+      "openAppDrag": "Öffne {{app}} und ziehe oder kopiere dann den Text.",
+      "openAppCopy": "Öffne {{app}} und kopiere dann den Text.",
+      "openUnnamedDrag": "Öffne die App und ziehe oder kopiere dann den Text.",
+      "openUnnamedCopy": "Öffne die App und kopiere dann den Text.",
+      "focusFieldDrag": "Klicke in ein Textfeld und ziehe oder kopiere dann den Text.",
+      "focusFieldCopy": "Klicke in ein Textfeld und kopiere dann den Text.",
+      "noFieldSetting": "Du kannst diese Prüfung unter Einstellungen, Erweitert, Ausgabe ausschalten."
+    },
+    "actions": {
+      "drag": "In ein Feld ziehen",
+      "copy": "Kopieren",
+      "why": "Warum?",
+      "hideDetails": "Details ausblenden",
+      "close": "Schließen"
+    }
   }
 }

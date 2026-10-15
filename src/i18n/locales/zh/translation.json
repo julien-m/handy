@@ -511,6 +511,10 @@
         "unavailablePlatform": "此系统上不可用。文本会在结束时进入位于前台的应用。",
         "details": "Handy 会在听写开始时记住前台应用，并在插入文本前切换回该应用。关闭时，文本会进入听写结束时位于前台的应用。",
         "detailsLabel": "关于返回听写所在的应用"
+      },
+      "noFieldBubble": {
+        "title": "没有聚焦的文本框时显示气泡",
+        "description": "将文本保留在气泡中，而不是粘贴到空处。"
       }
     },
     "vocabulary": {
@@ -1310,5 +1314,42 @@
   },
   "smartPaste": {
     "handOver": "已将文本放入剪贴板，供远程屏幕使用"
+  },
+  "recoveryBubble": {
+    "label": "Handy 保留的转写文本",
+    "previewLabel": "转写文本",
+    "reason": {
+      "appClosed": "{{app}} 已不再打开",
+      "appClosedUnnamed": "该应用已不再打开",
+      "pinnedAppNotRunning": "{{app}} 已固定但未打开",
+      "pinnedAppNotRunningUnnamed": "已固定的应用未打开",
+      "activationFailed": "无法将 {{app}} 置于前台",
+      "activationFailedUnnamed": "无法将该应用置于前台",
+      "insertionFailed": "插入失败",
+      "noTextField": "没有聚焦的文本框"
+    },
+    "explanation": {
+      "notInserted": "Handy 没有插入任何内容，也没有发送回车键。",
+      "mayHaveReached": "部分文本可能已到达该应用。",
+      "nothingSent": "没有向该应用发送任何内容。",
+      "lateRead": "该应用较晚读取了剪贴板：文本可能最终已被粘贴。再次复制前请先检查。",
+      "historyKept": "转写文本保留在历史记录中。",
+      "historyKeptFull": "完整的转写文本保留在历史记录中。",
+      "historyNotKept": "转写文本不在历史记录中。",
+      "openAppDrag": "打开 {{app}}，然后拖动或复制文本。",
+      "openAppCopy": "打开 {{app}}，然后复制文本。",
+      "openUnnamedDrag": "打开该应用，然后拖动或复制文本。",
+      "openUnnamedCopy": "打开该应用，然后复制文本。",
+      "focusFieldDrag": "点击一个文本框，然后拖动或复制文本。",
+      "focusFieldCopy": "点击一个文本框，然后复制文本。",
+      "noFieldSetting": "你可以在“设置 > 高级 > 输出”中关闭此检查。"
+    },
+    "actions": {
+      "drag": "拖入文本框",
+      "copy": "复制",
+      "why": "为什么？",
+      "hideDetails": "隐藏详情",
+      "close": "关闭"
+    }
   }
 }

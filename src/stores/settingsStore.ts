@@ -230,6 +230,10 @@ const settingUpdaters: {
   // capability; the refusal is shown and the optimistic value rolled back like any other.
   return_to_dictation_app: (value) =>
     commands.changeReturnToDictationAppSetting(value as boolean),
+  // 010 (gate `destination-return` open): refused `unsupported_platform` off macOS and
+  // `not_found` by a closed build, which never shows this control.
+  show_recovery_bubble_without_text_field: (value) =>
+    commands.changeShowRecoveryBubbleWithoutTextFieldSetting(value as boolean),
   log_level: (value) => commands.setLogLevel(value as any),
   app_language: (value) => commands.changeAppLanguageSetting(value as string),
   theme: (value) => commands.changeThemeSetting(value as string),

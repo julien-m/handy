@@ -511,6 +511,10 @@
         "unavailablePlatform": "Tidak tersedia di sistem ini. Teks masuk ke aplikasi yang berada di depan saat selesai.",
         "details": "Handy mengingat aplikasi di depan saat dikte dimulai dan kembali ke aplikasi itu sebelum menyisipkan teks. Jika nonaktif, teks masuk ke aplikasi yang berada di depan saat dikte selesai.",
         "detailsLabel": "Tentang kembali ke aplikasi dikte"
+      },
+      "noFieldBubble": {
+        "title": "Tampilkan gelembung saat tidak ada kolom teks yang difokuskan",
+        "description": "Menyimpan teks dalam gelembung alih-alih menempelkannya ke mana-mana."
       }
     },
     "vocabulary": {
@@ -1310,5 +1314,42 @@
   },
   "smartPaste": {
     "handOver": "Teks ditempatkan di papan klip untuk layar jarak jauh"
+  },
+  "recoveryBubble": {
+    "label": "Transkrip yang disimpan oleh Handy",
+    "previewLabel": "Transkrip",
+    "reason": {
+      "appClosed": "{{app}} tidak lagi terbuka",
+      "appClosedUnnamed": "Aplikasi tidak lagi terbuka",
+      "pinnedAppNotRunning": "{{app}} disematkan tetapi tidak terbuka",
+      "pinnedAppNotRunningUnnamed": "Aplikasi yang disematkan tidak terbuka",
+      "activationFailed": "Tidak dapat membawa {{app}} ke depan",
+      "activationFailedUnnamed": "Tidak dapat membawa aplikasi ke depan",
+      "insertionFailed": "Gagal menyisipkan",
+      "noTextField": "Tidak ada kolom teks yang difokuskan"
+    },
+    "explanation": {
+      "notInserted": "Handy tidak menyisipkan apa pun dan tidak mengirim Enter.",
+      "mayHaveReached": "Sebagian teks mungkin sudah sampai ke aplikasi.",
+      "nothingSent": "Tidak ada yang dikirim ke aplikasi.",
+      "lateRead": "Aplikasi membaca papan klip terlambat: teks mungkin akhirnya sudah ditempel. Periksa sebelum menyalin lagi.",
+      "historyKept": "Transkrip disimpan di Riwayat.",
+      "historyKeptFull": "Transkrip lengkap disimpan di Riwayat.",
+      "historyNotKept": "Transkrip tidak ada di Riwayat.",
+      "openAppDrag": "Buka {{app}}, lalu seret atau salin teksnya.",
+      "openAppCopy": "Buka {{app}}, lalu salin teksnya.",
+      "openUnnamedDrag": "Buka aplikasinya, lalu seret atau salin teksnya.",
+      "openUnnamedCopy": "Buka aplikasinya, lalu salin teksnya.",
+      "focusFieldDrag": "Klik di kolom teks, lalu seret atau salin teksnya.",
+      "focusFieldCopy": "Klik di kolom teks, lalu salin teksnya.",
+      "noFieldSetting": "Anda dapat mematikan pemeriksaan ini di Pengaturan, Lanjutan, Output."
+    },
+    "actions": {
+      "drag": "Seret ke kolom",
+      "copy": "Salin",
+      "why": "Mengapa?",
+      "hideDetails": "Sembunyikan detail",
+      "close": "Tutup"
+    }
   }
 }

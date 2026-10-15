@@ -511,6 +511,10 @@
         "unavailablePlatform": "Indisponible sur ce système. Le texte va à l'app au premier plan à la fin.",
         "details": "Handy retient l'app au premier plan au début d'une dictée et y revient avant d'insérer le texte. Désactivé, le texte va à l'app au premier plan à la fin de la dictée.",
         "detailsLabel": "À propos du retour à l'application de la dictée"
+      },
+      "noFieldBubble": {
+        "title": "Afficher la bulle quand aucun champ de texte n'est actif",
+        "description": "Garde le texte dans une bulle au lieu de le coller dans le vide."
       }
     },
     "vocabulary": {
@@ -1310,5 +1314,42 @@
   },
   "smartPaste": {
     "handOver": "Texte placé dans le presse-papiers pour l’écran distant"
+  },
+  "recoveryBubble": {
+    "label": "Transcription gardée par Handy",
+    "previewLabel": "Transcription",
+    "reason": {
+      "appClosed": "{{app}} n'est plus ouverte",
+      "appClosedUnnamed": "L'application n'est plus ouverte",
+      "pinnedAppNotRunning": "{{app}} est épinglée mais pas ouverte",
+      "pinnedAppNotRunningUnnamed": "L'application épinglée n'est pas ouverte",
+      "activationFailed": "Impossible de mettre {{app}} au premier plan",
+      "activationFailedUnnamed": "Impossible de mettre l'application au premier plan",
+      "insertionFailed": "Échec de l'insertion",
+      "noTextField": "Aucun champ de texte n'est actif"
+    },
+    "explanation": {
+      "notInserted": "Handy n'a rien inséré et n'a envoyé aucune Entrée.",
+      "mayHaveReached": "Une partie du texte a peut-être atteint l'application.",
+      "nothingSent": "Rien n'a été envoyé à l'application.",
+      "lateRead": "L'application a lu le presse-papiers en retard : le texte a peut-être été collé finalement. Vérifiez avant de copier à nouveau.",
+      "historyKept": "La transcription est conservée dans l'historique.",
+      "historyKeptFull": "La transcription complète est conservée dans l'historique.",
+      "historyNotKept": "La transcription n'est pas dans l'historique.",
+      "openAppDrag": "Ouvrez {{app}}, puis faites glisser ou copiez le texte.",
+      "openAppCopy": "Ouvrez {{app}}, puis copiez le texte.",
+      "openUnnamedDrag": "Ouvrez l'application, puis faites glisser ou copiez le texte.",
+      "openUnnamedCopy": "Ouvrez l'application, puis copiez le texte.",
+      "focusFieldDrag": "Cliquez dans un champ de texte, puis faites glisser ou copiez le texte.",
+      "focusFieldCopy": "Cliquez dans un champ de texte, puis copiez le texte.",
+      "noFieldSetting": "Vous pouvez désactiver cette vérification dans Réglages, Avancé, Sortie."
+    },
+    "actions": {
+      "drag": "Glisser dans un champ",
+      "copy": "Copier",
+      "why": "Pourquoi ?",
+      "hideDetails": "Masquer les détails",
+      "close": "Fermer"
+    }
   }
 }
