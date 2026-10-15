@@ -426,4 +426,4 @@ Criticality **High**; blast radius every insertion with a destination on macOS a
 
 ## Next Action
 
-After an independent plan review that is complete and ready and a progression whose implement outcome is READY, the next command is `/spec-implement 011-dictation-field-return` with `--review-max-chars 180000` and the model resolved at implementation time, only after 009 and 010 are merged into `dev`. No implementation, commit of code, push or mockup is performed by this plan command.
+After an independent plan review that is complete and ready and a progression whose implement outcome is READY (the spec Clarifications' four former assumptions, editable-only capture, input remembered once at the start, input dropped on a change of destination application and silent fallback, were validated by Julien (maintainer) on 2026-10-15; none is left to confirm), the next command is `/spec-implement 011-dictation-field-return` with `--review-max-chars 180000` and the model resolved at implementation time, only after 009 and 010 are merged into `dev`. No implementation, commit of code, push or mockup is performed by this plan command.

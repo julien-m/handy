@@ -268,10 +268,10 @@ flowchart TD
 - Decision 2026-10-15 (Julien): no new setting. The behavior is part of 006's "Return to the dictation's application" and of 009's pin.
 - Decision 2026-10-15 (Julien): no Penflow mockup. The feature adds no screen, control, badge mark or visual state.
 - Current behavior (2026-10-15): 006 records an application, not a field (`.specs/features/006-destination-application/spec.md`, Clarifications); activation returns to the application's last active window and the application decides which element has focus. 011 adds the field level only for the input focused at the start.
-- `[ASSUMED]` Only an element that 010's rule finds editable is remembered; an undetermined element is not, so an uncertain read never changes where the text goes.
-- `[ASSUMED]` The input is remembered once, at the start. A different field of the same application clicked during the recording does not replace it, as application switches do not change the 006 destination.
-- `[ASSUMED]` A badge choice of another application, the removal of the destination or an unpin that changes the destination's application drops the remembered input; Handy does not read the focused element of the newly chosen application.
-- `[ASSUMED]` The fallback is silent: no new reason, message or bubble; only a log without content records the stage that failed.
+- Decision 2026-10-15 (validated by Julien (maintainer) on 2026-10-15; AC-001): only an element that 010's rule finds editable is remembered; an undetermined element is not, so an uncertain read never changes where the text goes.
+- Decision 2026-10-15 (validated by Julien (maintainer) on 2026-10-15; AC-001 and AC-003): the input is remembered once, at the start. A different field of the same application clicked during the recording does not replace it, as application switches do not change the 006 destination.
+- Decision 2026-10-15 (validated by Julien (maintainer) on 2026-10-15; AC-003): a badge choice of another application, the removal of the destination or an unpin that changes the destination's application drops the remembered input; Handy does not read the focused element of the newly chosen application.
+- Decision 2026-10-15 (validated by Julien (maintainer) on 2026-10-15; AC-004 and AC-008): the fallback is silent: no new reason, message or bubble; only a log without content records the stage that failed.
 - Program context: depends on 006 (capture, `DestinationContext`, pre-dispatch guard), 009 (pin, foreground check before Enter) and 010 (focus classification, bubble). 011 is implemented after 009 and 010 are merged into `dev`.
 
 ## QE Analysis
