@@ -1,13 +1,15 @@
 // Destination menu of the recording indicator (feature 006): the application frontmost now,
 // the other running applications with windows, then "Frontmost app at the end", the current
-// choice checked. Pointer-operated: no item takes keyboard focus from the user's application.
+// choice checked. 009 adds "Pin <destination>" above the list, "Unpin <app>" at the bottom and,
+// while an application is pinned, "This dictation only" on the other applications.
+// Pointer-operated: no item takes keyboard focus from the user's application.
 import { AppWindow, Check, Pin, PinOff } from "lucide-react";
 import type React from "react";
 import { useTranslation } from "react-i18next";
 import type { MenuChoice, MenuEntry } from "@/bindings";
 import { AppIcon, keepFocus } from "./destination-badge";
 import { menuSections } from "./destination-model";
-import type { PinEntry } from "./pin-state";
+import { PIN_TEST_IDS, type PinEntry } from "./pin-state";
 import type { DestinationMenuState } from "./use-destination";
 
 const TEST_ID = "recording-indicator-destination-menu-menu";
@@ -16,52 +18,73 @@ interface DestinationMenuProps {
   menu: Exclude<DestinationMenuState, { status: "closed" }>;
   feedbackKey: string | null;
   onChoose: (choice: MenuChoice) => void;
-  /** Pin entries of 009, listed above the application list. */
+  /** Pin entries of 009: Pin above the application list, Unpin at the bottom. */
   pinEntries?: PinEntry[];
+  /** An application is pinned: the other applications are "This dictation only". */
+  pinActive?: boolean;
   onPin?: () => void;
   onUnpin?: () => void;
 }
 
-// @spec AC-001: Pin entries above the application list — .specs/features/009-pin-mode-and-enter-rule/spec.md#ac-001
-/** "Pin <destination>" and "Unpin <app>" (009), above the application list, then a divider. */
-const PinRows: React.FC<{
-  entries: PinEntry[];
-  onPin: () => void;
-  onUnpin: () => void;
-}> = ({ entries, onPin, onUnpin }) => {
+/** One pin entry of 009 (Pin or Unpin). */
+const PinRow: React.FC<{ entry: PinEntry; onClick: () => void }> = ({
+  entry,
+  onClick,
+}) => {
   const { t } = useTranslation();
-  if (entries.length === 0) return null;
+  const Glyph = entry.kind === "pin" ? Pin : PinOff;
+  return (
+    <button
+      type="button"
+      role="menuitem"
+      className="smenu-item"
+      data-testid={entry.testId}
+      onMouseDown={keepFocus}
+      onClick={onClick}
+    >
+      <Glyph className="smenu-glyph" aria-hidden="true" />
+      <span className="smenu-name">
+        {t(entry.labelKey, { name: entry.name })}
+      </span>
+    </button>
+  );
+};
+
+// @spec AC-001: Pin above the list, Unpin at the bottom — .specs/features/009-pin-mode-and-enter-rule/spec.md#ac-001
+/** The pin entry of `kind` with its divider: Pin above the list, Unpin below it. */
+const PinSection: React.FC<{
+  entries: PinEntry[];
+  kind: PinEntry["kind"];
+  onClick: () => void;
+}> = ({ entries, kind, onClick }) => {
+  const entry = entries.find((candidate) => candidate.kind === kind);
+  if (!entry) return null;
+  const divider = <hr className="smenu-divider" />;
   return (
     <>
-      {entries.map((entry) => {
-        const Glyph = entry.kind === "pin" ? Pin : PinOff;
-        return (
-          <button
-            key={entry.kind}
-            type="button"
-            role="menuitem"
-            className="smenu-item"
-            data-testid={entry.testId}
-            onMouseDown={keepFocus}
-            onClick={entry.kind === "pin" ? onPin : onUnpin}
-          >
-            <Glyph className="smenu-glyph" aria-hidden="true" />
-            <span className="smenu-name">
-              {t(entry.labelKey, { name: entry.name })}
-            </span>
-          </button>
-        );
-      })}
-      <hr className="smenu-divider" />
+      {kind === "unpin" && divider}
+      <PinRow entry={entry} onClick={onClick} />
+      {kind === "pin" && divider}
     </>
+  );
+};
+
+/** "This dictation only" (009): this choice does not move the pin. */
+const DictationOnlyHint: React.FC = () => {
+  const { t } = useTranslation();
+  return (
+    <span className="smenu-hint" data-testid={PIN_TEST_IDS.hint}>
+      {t("overlay.destination.menu.thisDictationOnly")}
+    </span>
   );
 };
 
 const AppRow: React.FC<{
   entry: MenuEntry;
   testId: string;
+  pinActive: boolean;
   onChoose: (choice: MenuChoice) => void;
-}> = ({ entry, testId, onChoose }) => (
+}> = ({ entry, testId, pinActive, onChoose }) => (
   <button
     type="button"
     role="menuitemradio"
@@ -74,6 +97,7 @@ const AppRow: React.FC<{
   >
     <AppIcon name={entry.display_name} iconRef={entry.icon_ref} />
     <span className="smenu-name">{entry.display_name}</span>
+    {pinActive && !entry.pinned && <DictationOnlyHint />}
     {entry.current && <Check className="smenu-check" aria-hidden="true" />}
   </button>
 );
@@ -89,8 +113,9 @@ const MenuLabel: React.FC<{ testId: string; text: string }> = ({
 
 const MenuEntries: React.FC<{
   menu: Extract<DestinationMenuState, { status: "open" }>["menu"];
+  pinActive: boolean;
   onChoose: (choice: MenuChoice) => void;
-}> = ({ menu, onChoose }) => {
+}> = ({ menu, pinActive, onChoose }) => {
   const { t } = useTranslation();
   const sections = menuSections(menu);
   return (
@@ -104,6 +129,7 @@ const MenuEntries: React.FC<{
           <AppRow
             entry={sections.frontmost}
             testId={`${TEST_ID}-frontmost`}
+            pinActive={pinActive}
             onChoose={onChoose}
           />
         </>
@@ -119,6 +145,7 @@ const MenuEntries: React.FC<{
           key={entry.token}
           entry={entry}
           testId={`${TEST_ID}-app`}
+          pinActive={pinActive}
           onChoose={onChoose}
         />
       ))}
@@ -161,6 +188,7 @@ export const DestinationMenuPanel: React.FC<DestinationMenuProps> = ({
   feedbackKey,
   onChoose,
   pinEntries = [],
+  pinActive = false,
   onPin = () => undefined,
   onUnpin = () => undefined,
 }) => {
@@ -180,8 +208,13 @@ export const DestinationMenuPanel: React.FC<DestinationMenuProps> = ({
       )}
       {menu.status === "open" && (
         <>
-          <PinRows entries={pinEntries} onPin={onPin} onUnpin={onUnpin} />
-          <MenuEntries menu={menu.menu} onChoose={onChoose} />
+          <PinSection entries={pinEntries} kind="pin" onClick={onPin} />
+          <MenuEntries
+            menu={menu.menu}
+            pinActive={pinActive}
+            onChoose={onChoose}
+          />
+          <PinSection entries={pinEntries} kind="unpin" onClick={onUnpin} />
         </>
       )}
       {feedbackKey && (

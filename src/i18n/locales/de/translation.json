@@ -1258,7 +1258,8 @@
         "loading": "Apps werden geladen…",
         "failed": "Die App-Liste konnte nicht geladen werden.",
         "pin": "{{name}} anheften",
-        "unpin": "{{name}} lösen"
+        "unpin": "{{name}} lösen",
+        "thisDictationOnly": "Nur dieses Diktat"
       },
       "refused": {
         "stale": "Das Ziel hat sich inzwischen geändert; die Liste wurde aktualisiert.",

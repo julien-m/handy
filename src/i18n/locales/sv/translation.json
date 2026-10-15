@@ -1258,7 +1258,8 @@
         "loading": "Läser in appar…",
         "failed": "Listan över appar kunde inte läsas in.",
         "pin": "Fäst {{name}}",
-        "unpin": "Lossa {{name}}"
+        "unpin": "Lossa {{name}}",
+        "thisDictationOnly": "Bara den här dikteringen"
       },
       "refused": {
         "stale": "Målet ändrades under tiden; listan har uppdaterats.",

@@ -6,11 +6,12 @@
 #![allow(dead_code)]
 
 use handy_app_lib::automatic_enter::transaction::{
-    EnterPorts, EnterSnapshot, EnterTransaction, KeyEmitter,
+    EnterPorts, EnterSnapshot, EnterTransaction, KeyEmitter, KeyOutcome,
 };
 use handy_app_lib::automatic_enter::{AutoSubmitKey, AutomaticEnterPolicy};
 use handy_app_lib::destination::context::{
     ApplicationIdentity, DestinationContext, NoRecoveryConsumer, RecoveryDisposition,
+    ResolvedTarget,
 };
 use handy_app_lib::destination::guard::DispatchGuard;
 use handy_app_lib::destination::insertion::{
@@ -153,9 +154,9 @@ impl Keys {
     }
 }
 impl KeyEmitter for Keys {
-    fn send(&self, _key: AutoSubmitKey) -> Result<(), String> {
+    fn send(&self, _key: AutoSubmitKey, _expected: Option<&ResolvedTarget>) -> KeyOutcome {
         lock(&self.pressed).push(self.clock.now());
-        Ok(())
+        KeyOutcome::Sent
     }
 }
 

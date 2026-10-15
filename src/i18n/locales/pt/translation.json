@@ -1258,7 +1258,8 @@
         "loading": "A carregar apps…",
         "failed": "Não foi possível carregar a lista de apps.",
         "pin": "Fixar {{name}}",
-        "unpin": "Desafixar {{name}}"
+        "unpin": "Desafixar {{name}}",
+        "thisDictationOnly": "Só este ditado"
       },
       "refused": {
         "stale": "O destino mudou entretanto; a lista foi atualizada.",

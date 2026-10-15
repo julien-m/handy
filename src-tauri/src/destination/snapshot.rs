@@ -71,6 +71,9 @@ pub struct MenuEntry {
     pub current: bool,
     /// The application frontmost when the menu opened (listed first).
     pub frontmost: bool,
+    /// The application of the session pin (009); the others are "This dictation only" while
+    /// an application is pinned.
+    pub pinned: bool,
 }
 /// Badge menu of one dictation: applications, then "Frontmost app at the end".
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, specta::Type)]

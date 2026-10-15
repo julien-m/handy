@@ -1261,7 +1261,8 @@
         "loading": "Memuat aplikasi…",
         "failed": "Daftar aplikasi tidak dapat dimuat.",
         "pin": "Sematkan {{name}}",
-        "unpin": "Lepas sematan {{name}}"
+        "unpin": "Lepas sematan {{name}}",
+        "thisDictationOnly": "Hanya dikte ini"
       },
       "refused": {
         "stale": "Tujuan berubah sementara itu; daftar telah diperbarui.",

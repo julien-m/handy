@@ -274,32 +274,27 @@ enum WaitResult {
     TimedOut,
 }
 
-// @spec AC-002: A pinned destination is activated even with return off — .specs/features/009-pin-mode-and-enter-rule/spec.md#ac-002
+// @spec AC-002: Pinned and badge-chosen apps are activated with return off — .specs/features/009-pin-mode-and-enter-rule/spec.md#ac-002
 /// The application to activate, or `None` for the frontmost-at-the-end route: destination
-/// return off or unsupported for this dictation, no destination, or paste method "none".
-/// Business rule (009): a pin is an explicit choice, so a pinned route is activated even with
-/// return off or an unreadable foreground (which then fails closed with `activation_failed`).
+/// return off or unsupported for a captured destination, no destination, or paste method "none".
+/// Business rule (009, orchestrator decision of the delivery review): a pin and an application
+/// chosen in the badge during the dictation are explicit choices, so both are activated even with
+/// return off (the badge is shown then only because an app is pinned); a pinned route with an
+/// unreadable foreground fails closed with `activation_failed`. Only the capture at start
+/// depends on the setting and the runtime support.
 fn activation_route(
     frozen: &FrozenDestination,
     paste_method_none: bool,
 ) -> Option<super::session::Destination> {
-    match (
-        &frozen.selection,
-        frozen.return_enabled,
-        frozen.support,
-        paste_method_none,
-    ) {
-        (_, _, _, true) => None,
-        (Selection::Application(destination), _, _, false)
-            if destination.source == DestinationSource::Pinned =>
-        {
-            Some(destination.clone())
-        }
-        (Selection::Application(destination), true, DestinationSupport::Supported, false) => {
-            Some(destination.clone())
-        }
-        _ => None,
-    }
+    let Selection::Application(destination) = &frozen.selection else {
+        return None;
+    };
+    let explicit = matches!(
+        destination.source,
+        DestinationSource::Pinned | DestinationSource::Badge
+    );
+    let captured_route = frozen.return_enabled && frozen.support == DestinationSupport::Supported;
+    (!paste_method_none && (explicit || captured_route)).then(|| destination.clone())
 }
 
 #[cfg(test)]

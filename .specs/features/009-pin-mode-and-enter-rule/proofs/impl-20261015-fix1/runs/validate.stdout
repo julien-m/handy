@@ -1,0 +1,16 @@
+livespec-shim-notice: dev mode executes the LiveSpec checkout /Users/julienm/projects/livespec
+OK      .specs/features/009-pin-mode-and-enter-rule/changelog.md Score: 100/100
+OK      .specs/features/009-pin-mode-and-enter-rule/implementation.md Score: 
+100/100
+OK      .specs/features/009-pin-mode-and-enter-rule/plan.md Score: 100/100
+OK      .specs/features/009-pin-mode-and-enter-rule/progress.md Score: 100/100
+OK      
+.specs/features/009-pin-mode-and-enter-rule/proofs/claude-review/independent-rev
+iew-r2.md Score: 100/100
+OK      
+.specs/features/009-pin-mode-and-enter-rule/proofs/claude-review/independent-rev
+iew-r3.md Score: 100/100
+OK      
+.specs/features/009-pin-mode-and-enter-rule/proofs/claude-review/independent-rev
+iew.md Score: 100/100
+OK      .specs/features/009-pin-mode-and-enter-rule/spec.md Score: 100/100

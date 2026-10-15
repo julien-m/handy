@@ -137,3 +137,48 @@ fn a_new_handy_process_starts_without_a_pin() -> TestResult {
     assert_eq!(started.source, DestinationSource::Captured);
     Ok(())
 }
+// @spec AC-005: Badge choice with return off keeps the focus check — .specs/features/009-pin-mode-and-enter-rule/spec.md#ac-005
+#[test]
+fn a_badge_choice_with_return_off_while_pinned_gets_its_enter_only_in_front() -> TestResult {
+    use handy_app_lib::automatic_enter::policy::{Completion, Suppression};
+    use handy_app_lib::automatic_enter::transaction::EnterResult;
+    use handy_app_lib::automatic_enter::AutomaticEnterPolicy;
+    use handy_app_lib::destination::snapshot::MenuChoice;
+    for focus_stays in [true, false] {
+        let rig = Rig::new(safari(), vec![chatgpt(), comet(), safari()]);
+        rig.manager.pin_identifier("com.openai.chat")?;
+        let started = rig.start(false);
+        let menu = rig.manager.menu(started.dictation_id, 0)?;
+        let token = menu
+            .entries
+            .iter()
+            .find(|entry| entry.display_name == "Comet")
+            .map(|entry| entry.token)
+            .ok_or("no Comet")?;
+        rig.manager
+            .choose(started.dictation_id, 0, MenuChoice::Application(token))?;
+        let method = Method::succeeding();
+        let report = rig.deliver(&started, &method, false);
+        let context = report.context.as_deref().cloned().ok_or("not dispatched")?;
+        assert_eq!(context.source, DestinationSource::Badge);
+        assert_eq!(
+            context.target.as_ref().map(|target| target.pid),
+            Some(comet().pid)
+        );
+        assert_eq!(rig.workspace.activations(), vec![comet().pid]);
+        if !focus_stays {
+            rig.workspace.bring(safari());
+        }
+        let enter = rig.enter(&started, AutomaticEnterPolicy::Always);
+        let completion = Completion::Classic { succeeded: true };
+        let result = enter.complete(completion, Some(&context), rig.clock_now());
+        let expected = if focus_stays {
+            EnterResult::Sent
+        } else {
+            EnterResult::Suppressed(Suppression::FocusLost)
+        };
+        assert_eq!(result, expected);
+        assert_eq!(rig.keys.count(), usize::from(focus_stays));
+    }
+    Ok(())
+}

@@ -107,15 +107,7 @@ impl DestinationManager {
         state.generation += 1;
         state.menu.clear();
         state.support = Some(capture.support);
-        let pin = state
-            .pin
-            .as_ref()
-            .filter(|_| self.platform.supports(PlatformCapability::Destination));
-        let selection = pin.map_or_else(
-            || capture.selection.clone(),
-            |pin| Selection::Application(pin.destination()),
-        );
-        let pin_view = pin.map(super::pin::PinState::view);
+        let (selection, pin_view) = self.start_route(state.pin.as_ref(), &capture.selection);
         let session = DestinationSession {
             dictation_id: DictationId(state.last_dictation),
             destination_generation: state.generation,
@@ -133,6 +125,18 @@ impl DestinationManager {
         let snapshot = DestinationSnapshot::from(&session);
         state.session = Some(session);
         snapshot
+    }
+    /// The route of a starting dictation and the pin it shows: the pin when one exists on a
+    /// build with destination support, otherwise 006's capture.
+    fn start_route(
+        &self,
+        pin: Option<&super::pin::PinState>,
+        captured: &Selection,
+    ) -> (Selection, Option<super::pin::PinView>) {
+        match pin.filter(|_| self.platform.supports(PlatformCapability::Destination)) {
+            Some(pin) => (Selection::Application(pin.destination()), Some(pin.view())),
+            None => (captured.clone(), None),
+        }
     }
     /// Last runtime support observed (supported until a read fails, on a capable build).
     pub fn support(&self) -> DestinationSupport {

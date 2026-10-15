@@ -132,6 +132,7 @@ const menu: DestinationMenu = {
       icon_ref: null,
       current: true,
       frontmost: false,
+      pinned: false,
     },
     {
       token: 1,
@@ -139,6 +140,7 @@ const menu: DestinationMenu = {
       icon_ref: null,
       current: false,
       frontmost: true,
+      pinned: false,
     },
   ],
 };

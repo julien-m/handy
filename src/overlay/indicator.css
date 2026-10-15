@@ -281,6 +281,13 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* "This dictation only" on the other apps while one is pinned (009 mockup). */
+.smenu-hint {
+  margin-inline-start: auto;
+  font-size: 12px;
+  color: var(--s-muted);
+  white-space: nowrap;
+}
 .smenu-glyph {
   width: 16px;
   height: 16px;

@@ -4,6 +4,7 @@
 //! gate open; with it closed, the legacy `auto_submit` emitters of `dev` run unchanged and only
 //! [`legacy_auto_submit`] is consulted (it returns the stored `auto_submit`).
 pub mod app;
+pub mod key_press;
 pub mod migration;
 pub mod policy;
 pub mod rendezvous;

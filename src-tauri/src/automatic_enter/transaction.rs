@@ -5,7 +5,7 @@
 //! a key whose delivery fails or is unknown is never sent again.
 use super::policy::{evaluate_enter, route_has_destination, Completion, EnterFacts, Suppression};
 use super::PRE_ENTER_SETTLE;
-use crate::destination::context::{DestinationContext, DictationId};
+use crate::destination::context::{DestinationContext, DictationId, ResolvedTarget};
 use crate::destination::insertion::InsertionReport;
 use crate::destination::manager::DestinationManager;
 use crate::destination::outcome::{InsertionStatus, MethodResult};
@@ -37,13 +37,24 @@ impl EnterClaims for DestinationManager {
     }
 }
 
+/// What became of one key press request.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum KeyOutcome {
+    /// The key was pressed once.
+    Sent,
+    /// The destination was no longer in front on the input thread: not pressed.
+    FocusLost,
+    /// The input thread could not run the press within its bound: not pressed.
+    Late,
+    /// The press failed or could not be scheduled; never retried.
+    Failed(String),
+}
+
 /// The native key press (the only new seam of 009).
 pub trait KeyEmitter: Send + Sync {
-    /// Press `key` once.
-    ///
-    /// # Errors
-    /// The input failed or its delivery is unknown; the caller never retries.
-    fn send(&self, key: AutoSubmitKey) -> Result<(), String>;
+    /// Press `key` once, after checking that `expected` (the destination of a route that has
+    /// one) is still in front immediately before the key.
+    fn send(&self, key: AutoSubmitKey, expected: Option<&ResolvedTarget>) -> KeyOutcome;
 }
 
 /// The ports of a transaction.
@@ -191,9 +202,15 @@ impl EnterTransaction {
         if context.is_some_and(|context| !self.still_in_front(context)) {
             return EnterResult::Suppressed(Suppression::FocusLost);
         }
-        match self.ports.keys.send(self.frozen.key) {
-            Ok(()) => EnterResult::Sent,
-            Err(error) => EnterResult::EmissionFailed(error),
+        // Checked again by the emitter on the input thread, immediately before the key.
+        let expected = context
+            .filter(|context| route_has_destination(context.source))
+            .and_then(|context| context.target.as_ref());
+        match self.ports.keys.send(self.frozen.key, expected) {
+            KeyOutcome::Sent => EnterResult::Sent,
+            KeyOutcome::FocusLost => EnterResult::Suppressed(Suppression::FocusLost),
+            KeyOutcome::Late => EnterResult::Suppressed(Suppression::KeyLate),
+            KeyOutcome::Failed(error) => EnterResult::EmissionFailed(error),
         }
     }
     /// Wait until `PRE_ENTER_SETTLE` has elapsed since `t0` (through the clock, on this worker).
@@ -235,6 +252,12 @@ fn log_result(dictation_id: DictationId, result: &EnterResult) {
     }
 }
 
+#[cfg(test)]
+#[path = "transaction_fixture.rs"]
+mod fixture;
+#[cfg(test)]
+#[path = "transaction_flow_tests.rs"]
+mod flow_tests;
 #[cfg(test)]
 #[path = "transaction_tests.rs"]
 mod tests;

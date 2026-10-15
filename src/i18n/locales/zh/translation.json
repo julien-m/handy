@@ -1258,7 +1258,8 @@
         "loading": "正在加载应用…",
         "failed": "无法加载应用列表。",
         "pin": "固定 {{name}}",
-        "unpin": "取消固定 {{name}}"
+        "unpin": "取消固定 {{name}}",
+        "thisDictationOnly": "仅限本次听写"
       },
       "refused": {
         "stale": "目标在此期间已更改；列表已刷新。",

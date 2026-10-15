@@ -14,6 +14,18 @@ Gates before code: `livespec validate --pre-impl` exit 0 (semantic readiness cov
 | 6 | Done (automated) | `src/overlay/{pin-state.ts,destination-model.ts,destination-badge.tsx,destination-menu.tsx,use-destination.ts,indicator-stack.tsx,notice-model.ts,indicator.css}`, `src/components/settings/{automatic-enter.tsx,automatic-enter-state.ts,advanced/AdvancedSettings.tsx}`, `src/stores/settingsStore.ts`, 26 locales, `tests/pin-enter-ui.spec.ts`, `tests/harness/automatic-enter*` | `bun run test:indicator`, `bun run test:output-settings`, `bun run test:pin-enter-ui`, `bun run check:translations` | Pass; native window, VoiceOver and Penflow visual certification pending | 2026-10-15 |
 | 7 | In Progress (native acceptance pending with Julien) | `proofs/impl-20261015/final/`, conventions fixes `69afc00b` | Final verification (see `proofs/impl-20261015/summary.txt`: tsc, lint, format, translations, build, 13 bun suites, all Playwright specs, cargo fmt, clippy lib/bins and all-targets, cargo test --lib and the full cargo test in the four feature combinations, conventions repo, progression, feature validation, doctor) | 40/40 exit 0; macOS native acceptance not run | 2026-10-15 |
 
+## Delivery review round 1 — corrections
+
+Review BLOCKED (one blocking finding), audit PASS; reports in `.reviews/delivery.json`. Fixed in the worktree, verification in `proofs/impl-20261015-fix1/summary.txt`:
+
+| Finding | Correction | Tests |
+|---|---|---|
+| Badge choice with return off while pinned went to the frontmost app (blocking) | `insertion::activation_route` activates any badge choice and the pin, whatever the setting | `pin_route_tests::another_app_chosen_in_the_badge_with_return_off_while_pinned_is_activated`, `pin_destination::a_badge_choice_with_return_off_while_pinned_gets_its_enter_only_in_front` |
+| Focus checked on the worker, key up to 1 s later on the main thread | `automatic_enter::key_press::GuardedKeyPress`: PID and identity checked again on the main thread right before the key, refused past 100 ms, one shared state so the result is exact | `key_press_tests` (6), `transaction_tests::the_emitter_outcome_is_reported_as_is_and_gets_the_expected_destination` |
+| `output get` help names `auto_submit` with the gate open | gated help text, unchanged closed | build in both states |
+| Unpin above the list, no "This dictation only" | Unpin at the bottom, hint on the other apps (26 locales), `MenuEntry.pinned` | `indicator-render.test.tsx`, `pin_tests::the_menu_marks_the_pinned_app_so_the_others_read_this_dictation_only` |
+| Files over 400 lines, long functions | `pin_route_tests.rs`, `transaction_fixture.rs`/`transaction_flow_tests.rs`, `errors_pin_enter.rs`, `cli_destination.rs`; `commit_start` 25, `from_settings` 30, `AutomaticEnter` 27 lines | unchanged suites |
+
 ## Step 1 — feasibility notes
 
 - The native read-only tests are written, compiled and ignored by default; they need a logged-in session and Accessibility for the runner, and they press no key: the Enter authority's key emitter is a spy there.

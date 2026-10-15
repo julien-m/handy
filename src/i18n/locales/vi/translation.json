@@ -1258,7 +1258,8 @@
         "loading": "Đang tải ứng dụng…",
         "failed": "Không thể tải danh sách ứng dụng.",
         "pin": "Ghim {{name}}",
-        "unpin": "Bỏ ghim {{name}}"
+        "unpin": "Bỏ ghim {{name}}",
+        "thisDictationOnly": "Chỉ lần đọc chép này"
       },
       "refused": {
         "stale": "Đích đã thay đổi trong lúc đó; danh sách đã được làm mới.",

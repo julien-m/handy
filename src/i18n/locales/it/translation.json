@@ -1258,7 +1258,8 @@
         "loading": "Caricamento delle app…",
         "failed": "Impossibile caricare l'elenco delle app.",
         "pin": "Fissa {{name}}",
-        "unpin": "Rimuovi {{name}} dai fissati"
+        "unpin": "Rimuovi {{name}} dai fissati",
+        "thisDictationOnly": "Solo questa dettatura"
       },
       "refused": {
         "stale": "La destinazione è cambiata nel frattempo; l'elenco è stato aggiornato.",

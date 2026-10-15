@@ -1,0 +1,23 @@
+$ bun test src/components/settings/return-to-app-model.test.ts src/components/settings/history-limit-model.test.ts src/components/settings/paste-method-options.test.ts src/components/settings/automatic-enter-state.test.ts && bun test src/hooks/use-destination-support.test.ts && bun test src/components/settings/output-settings-render.test.tsx
+
+ 37 pass
+ 0 fail
+ 73 expect() calls
+Ran 37 tests across 4 files. [11.00ms]
+
+src/hooks/use-destination-support.test.ts:
+Destination support unavailable: warn: ipc
+      at answer (/Users/julienm/projects/handy-wt/009-pin-mode/src/hooks/use-destination-support.test.ts:60:17)
+      at readSupport (/Users/julienm/projects/handy-wt/009-pin-mode/src/hooks/use-destination-support.ts:47:6)
+      at <anonymous> (/Users/julienm/projects/handy-wt/009-pin-mode/src/hooks/use-destination-support.test.ts:63:5)
+
+
+ 7 pass
+ 0 fail
+ 10 expect() calls
+Ran 7 tests across 1 file. [15.00ms]
+
+ 12 pass
+ 0 fail
+ 40 expect() calls
+Ran 12 tests across 1 file. [65.00ms]

@@ -1258,7 +1258,8 @@
         "loading": "Uygulamalar yükleniyor…",
         "failed": "Uygulama listesi yüklenemedi.",
         "pin": "{{name}} uygulamasını sabitle",
-        "unpin": "{{name}} sabitlemesini kaldır"
+        "unpin": "{{name}} sabitlemesini kaldır",
+        "thisDictationOnly": "Yalnızca bu dikte"
       },
       "refused": {
         "stale": "Hedef bu arada değişti; liste yenilendi.",

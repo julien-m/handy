@@ -1258,7 +1258,8 @@
         "loading": "Cargando apps…",
         "failed": "No se pudo cargar la lista de apps.",
         "pin": "Fijar {{name}}",
-        "unpin": "Dejar de fijar {{name}}"
+        "unpin": "Dejar de fijar {{name}}",
+        "thisDictationOnly": "Solo este dictado"
       },
       "refused": {
         "stale": "El destino cambió mientras tanto; la lista se actualizó.",

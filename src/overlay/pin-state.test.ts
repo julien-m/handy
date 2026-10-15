@@ -44,6 +44,7 @@ const menu: DestinationMenu = {
       icon_ref: null,
       current: true,
       frontmost: true,
+      pinned: false,
     },
   ],
   frontmost_at_end_current: false,

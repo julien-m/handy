@@ -1,22 +1,18 @@
 //! Tauri glue of 009's Enter authority: the transaction of one dictation built from the
-//! insertion's settings snapshot, the native key press on the main thread (Enigo's home), and the
+//! insertion's settings snapshot, the guarded key press on the main thread (Enigo's home), and the
 //! reliable-paste rendezvous that starts the Enter worker off the thread delivering the read.
+use super::key_press::{GuardedKeyPress, MainThreadRunner, MAIN_THREAD_BOUND};
 use super::policy::Completion;
 use super::rendezvous::ReliableRendezvous;
-use super::transaction::{EnterPorts, EnterSnapshot, EnterTransaction, KeyEmitter};
+use super::transaction::{EnterPorts, EnterSnapshot, EnterTransaction};
 use crate::destination::delivery::DictationTicket;
 use crate::destination::guard::DispatchGuard;
 use crate::destination::manager::DestinationManager;
 use crate::destination::workspace::SystemClock;
-use crate::settings::{AppSettings, AutoSubmitKey};
-use std::sync::mpsc;
+use crate::settings::AppSettings;
 use std::sync::Arc;
-use std::time::{Duration, Instant};
+use std::time::Instant;
 use tauri::AppHandle;
-
-/// A responsive main thread runs one key press well within a second; a later run is refused
-/// (an Enter late by more than this would land in another context).
-const MAIN_THREAD_WAIT: Duration = Duration::from_secs(1);
 
 // @spec FR-004: Policy and key frozen at insertion entry — .specs/features/009-pin-mode-and-enter-rule/spec.md#fr-004
 /// The Enter transaction of `ticket`, with the policy and key of the insertion's `settings`
@@ -33,10 +29,17 @@ pub fn transaction(
         policy: super::policy_of(settings),
         key: settings.auto_submit_key,
     };
+    let handle = app.clone();
+    let keys = GuardedKeyPress {
+        runner: Arc::new(MainThread(app.clone())),
+        workspace: manager.workspace(),
+        press: Arc::new(move |key| crate::clipboard::send_auto_submit(&handle, key)),
+        bound: MAIN_THREAD_BOUND,
+    };
     let ports = EnterPorts {
         claims: Arc::clone(manager) as Arc<dyn super::transaction::EnterClaims>,
         workspace: manager.workspace(),
-        keys: Arc::new(MainThreadKeys(app.clone())),
+        keys: Arc::new(keys),
         clock: Arc::new(SystemClock),
         pause: Arc::new(SystemClock),
     };
@@ -59,27 +62,12 @@ pub fn rendezvous(
     })))
 }
 
-/// Presses the key on the main thread through the shared Enigo instance.
-struct MainThreadKeys(AppHandle);
-impl KeyEmitter for MainThreadKeys {
-    fn send(&self, key: AutoSubmitKey) -> Result<(), String> {
-        let (sender, receiver) = mpsc::channel();
-        let handle = self.0.clone();
-        let deadline = Instant::now() + MAIN_THREAD_WAIT;
+/// The app's main thread.
+struct MainThread(AppHandle);
+impl MainThreadRunner for MainThread {
+    fn run(&self, task: Box<dyn FnOnce() + Send>) -> Result<(), String> {
         self.0
-            .run_on_main_thread(move || {
-                // Too late: the worker already reported a failure; never press it now.
-                let sent = if Instant::now() > deadline {
-                    Err("the main thread ran the Enter press too late".to_owned())
-                } else {
-                    crate::clipboard::send_auto_submit(&handle, key)
-                };
-                // A dropped receiver means the worker stopped waiting.
-                let _ = sender.send(sent);
-            })
-            .map_err(|error| error.to_string())?;
-        receiver
-            .recv_timeout(MAIN_THREAD_WAIT)
-            .map_err(|error| format!("Enter press not confirmed: {error}"))?
+            .run_on_main_thread(task)
+            .map_err(|error| error.to_string())
     }
 }

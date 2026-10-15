@@ -7,9 +7,12 @@
 //! Ignored by default because it depends on the desktop session.
 #![cfg(target_os = "macos")]
 
+use handy_app_lib::automatic_enter::key_press::{
+    GuardedKeyPress, MainThreadRunner, MAIN_THREAD_BOUND,
+};
 use handy_app_lib::automatic_enter::policy::Completion;
 use handy_app_lib::automatic_enter::transaction::{
-    EnterPorts, EnterResult, EnterSnapshot, EnterTransaction, KeyEmitter,
+    EnterPorts, EnterResult, EnterSnapshot, EnterTransaction,
 };
 use handy_app_lib::automatic_enter::{AutoSubmitKey, AutomaticEnterPolicy};
 use handy_app_lib::destination::context::{
@@ -26,15 +29,12 @@ use std::time::{Duration, Instant};
 
 type TestResult = Result<(), Box<dyn std::error::Error>>;
 
-/// Records the instant of the would-be key press instead of pressing it.
-#[derive(Default)]
-struct KeySpy(Mutex<Vec<Instant>>);
-impl KeyEmitter for KeySpy {
-    fn send(&self, _key: AutoSubmitKey) -> Result<(), String> {
-        self.0
-            .lock()
-            .unwrap_or_else(PoisonError::into_inner)
-            .push(Instant::now());
+/// Runs the press task inline: the real guarded press checks the real foreground right before
+/// its (spied) key.
+struct Inline;
+impl MainThreadRunner for Inline {
+    fn run(&self, task: Box<dyn FnOnce() + Send>) -> Result<(), String> {
+        task();
         Ok(())
     }
 }
@@ -85,11 +85,23 @@ fn the_final_focus_check_on_the_real_workspace_fits_the_100_ms_budget() -> TestR
     unsafe { NSApplicationLoad() };
     let workspace = Arc::new(MacWorkspace::new());
     let (manager, context) = inserting_dictation(&workspace)?;
-    let keys = Arc::new(KeySpy::default());
+    let pressed = Arc::new(Mutex::new(Vec::new()));
+    let spy = Arc::clone(&pressed);
+    let keys = GuardedKeyPress {
+        runner: Arc::new(Inline),
+        workspace: workspace.clone(),
+        press: Arc::new(move |_| {
+            spy.lock()
+                .unwrap_or_else(PoisonError::into_inner)
+                .push(Instant::now());
+            Ok(())
+        }),
+        bound: MAIN_THREAD_BOUND,
+    };
     let ports = EnterPorts {
         claims: manager.clone(),
         workspace,
-        keys: keys.clone(),
+        keys: Arc::new(keys),
         clock: Arc::new(SystemClock),
         pause: Arc::new(SystemClock),
     };
@@ -103,8 +115,7 @@ fn the_final_focus_check_on_the_real_workspace_fits_the_100_ms_budget() -> TestR
     let t0 = Instant::now();
     let result = enter.complete(Completion::Classic { succeeded: true }, Some(&context), t0);
     assert_eq!(result, EnterResult::Sent, "the spy, never a real key");
-    let pressed = keys
-        .0
+    let pressed = pressed
         .lock()
         .unwrap_or_else(PoisonError::into_inner)
         .clone();

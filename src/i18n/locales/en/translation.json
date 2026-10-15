@@ -1261,7 +1261,8 @@
         "loading": "Loading apps…",
         "failed": "The app list could not be loaded.",
         "pin": "Pin {{name}}",
-        "unpin": "Unpin {{name}}"
+        "unpin": "Unpin {{name}}",
+        "thisDictationOnly": "This dictation only"
       },
       "refused": {
         "stale": "The destination changed meanwhile; the list was refreshed.",

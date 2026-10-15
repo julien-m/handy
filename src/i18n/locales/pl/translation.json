@@ -1258,7 +1258,8 @@
         "loading": "Wczytywanie aplikacji…",
         "failed": "Nie udało się wczytać listy aplikacji.",
         "pin": "Przypnij {{name}}",
-        "unpin": "Odepnij {{name}}"
+        "unpin": "Odepnij {{name}}",
+        "thisDictationOnly": "Tylko to dyktowanie"
       },
       "refused": {
         "stale": "Cel zmienił się w międzyczasie; lista została odświeżona.",

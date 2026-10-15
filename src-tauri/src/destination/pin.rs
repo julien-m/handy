@@ -237,5 +237,8 @@ fn running_application(manager: &DestinationManager, identifier: &str) -> Option
 }
 
 #[cfg(test)]
+#[path = "pin_route_tests.rs"]
+mod route_tests;
+#[cfg(test)]
 #[path = "pin_tests.rs"]
 mod tests;

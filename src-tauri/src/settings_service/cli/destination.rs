@@ -1,5 +1,5 @@
 //! Wire operation of `handy settings destination` (009, gate `destination-return` open).
-use crate::cli::DestinationAction;
+use crate::cli::destination::DestinationAction;
 use crate::settings_service::protocol::SettingsOperation;
 
 /// Wire operation of a destination-domain action: no change option exists.

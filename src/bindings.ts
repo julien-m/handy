@@ -2143,7 +2143,12 @@ current: boolean;
 /**
  * The application frontmost when the menu opened (listed first).
  */
-frontmost: boolean }
+frontmost: boolean; 
+/**
+ * The application of the session pin (009); the others are "This dictation only" while
+ * an application is pinned.
+ */
+pinned: boolean }
 /**
  * One status read.
  */

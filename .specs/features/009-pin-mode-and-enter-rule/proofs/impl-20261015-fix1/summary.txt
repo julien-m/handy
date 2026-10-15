@@ -1,0 +1,46 @@
+009 delivery review round 1 fix — verification on feature/009-pin-mode (macOS arm64, CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-009)
+Per-command outputs: runs/NN.stdout, runs/NN.stderr
+
+01	exit 0	3s	bunx --no-install tsc --noEmit
+02	exit 0	1s	bun run lint
+03	exit 0	3s	bun run format:check
+04	exit 0	0s	bun run check:translations
+05	exit 0	4s	bun run build
+06	exit 0	0s	bun run test:keyboard
+07	exit 0	0s	bun run test:shortcut-list
+08	exit 0	0s	bun run test:settings-errors
+09	exit 0	0s	bun run test:settings-store
+10	exit 0	1s	bun run test:microphone-priority
+11	exit 0	0s	bun run test:word-replacements
+12	exit 0	0s	bun run test:prompt-settings
+13	exit 0	0s	bun run test:indicator
+14	exit 0	0s	bun run test:vocabulary
+15	exit 0	0s	bun run test:shortcut-states
+16	exit 0	0s	bun run test:output-settings
+17	exit 0	8s	bun run test:microphone-priority-ui
+18	exit 0	4s	bun run test:pin-enter-ui
+19	exit 0	6s	bunx --no-install playwright test --reporter=line
+20	exit 0	1s	cd src-tauri && cargo fmt -- --check
+21	exit 0	1s	cd src-tauri && cargo clippy --lib --bins  -- -D warnings
+22	exit 0	1s	cd src-tauri && cargo clippy --all-targets  -- -D warnings
+23	exit 0	14s	cd src-tauri && cargo test --lib 
+24	exit 0	92s	cd src-tauri && cargo test  --no-fail-fast
+25	exit 0	7s	cd src-tauri && cargo clippy --lib --bins --features smart-paste-dispatch -- -D warnings
+26	exit 0	7s	cd src-tauri && cargo clippy --all-targets --features smart-paste-dispatch -- -D warnings
+27	exit 0	13s	cd src-tauri && cargo test --lib --features smart-paste-dispatch
+28	exit 0	89s	cd src-tauri && cargo test --features smart-paste-dispatch --no-fail-fast
+29	exit 0	2s	cd src-tauri && cargo clippy --lib --bins --features destination-return -- -D warnings
+30	exit 0	0s	cd src-tauri && cargo clippy --all-targets --features destination-return -- -D warnings
+31	exit 0	12s	cd src-tauri && cargo test --lib --features destination-return
+32	exit 0	99s	cd src-tauri && cargo test --features destination-return --no-fail-fast
+33	exit 0	1s	cd src-tauri && cargo clippy --lib --bins --features destination-return,smart-paste-dispatch -- -D warnings
+34	exit 0	0s	cd src-tauri && cargo clippy --all-targets --features destination-return,smart-paste-dispatch -- -D warnings
+35	exit 101	14s	cd src-tauri && cargo test --lib --features destination-return,smart-paste-dispatch
+36	exit 0	97s	cd src-tauri && cargo test --features destination-return,smart-paste-dispatch --no-fail-fast
+35b	exit 0	cd src-tauri && cargo test --lib --features destination-return,smart-paste-dispatch (rerun x3, runs/35-rerun1..3: all exit 0; the one failure of line 35 is the existing flaky 008 test settings_service::ipc::server::tests::unix::a_removed_runtime_directory_is_published_again_and_close_stays_bounded, DirectoryNotEmpty race, files untouched by 009; the full suite of line 36 passed it)
+37	exit 0	livespec conventions verify --feature repo --json (PASS new_count 0; baseline diff vs 09cc1ea2: 0 lines)
+38	exit 0	livespec validate .specs/features/009-pin-mode-and-enter-rule --progression implement --model claude-opus-5-5 --review-max-chars 180000
+39	exit 0	livespec validate .specs/features/009-pin-mode-and-enter-rule
+40	exit 0	livespec doctor --format json
+
+Not run (pending with Julien, never claimed): macOS native proofs of .specs/native-proofs-checklist.md section 009; Windows/Linux/older-binary release evidence.

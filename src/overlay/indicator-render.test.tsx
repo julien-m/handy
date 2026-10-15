@@ -62,6 +62,7 @@ describe("destination badge (006)", () => {
           icon_ref: null,
           current: false,
           frontmost: true,
+          pinned: false,
         },
         {
           token: 2,
@@ -69,6 +70,7 @@ describe("destination badge (006)", () => {
           icon_ref: null,
           current: true,
           frontmost: false,
+          pinned: false,
         },
       ],
     };
@@ -123,6 +125,7 @@ describe("pinned destination (009)", () => {
         icon_ref: null,
         current: false,
         frontmost: true,
+        pinned: false,
       },
     ],
   };
@@ -138,7 +141,7 @@ describe("pinned destination (009)", () => {
     const html = render({ destination: destination(pinnedSession(false)) });
     expect(html).toContain('data-testid="recording-indicator-destination"');
   });
-  test("the open menu lists Unpin above the application list", () => {
+  test("the open menu lists Unpin at the bottom and marks the other apps", () => {
     const html = render({
       destination: destination(pinnedSession(), { status: "open", menu }),
     });
@@ -147,8 +150,17 @@ describe("pinned destination (009)", () => {
     );
     expect(unpin > -1).toBe(true);
     expect(html).toContain(">Unpin ChatGPT<");
-    expect(unpin).toBeLessThan(html.indexOf(">Comet<"));
+    expect(unpin > html.indexOf(">Comet<")).toBe(true);
+    expect(
+      unpin >
+        html.indexOf(
+          'data-testid="recording-indicator-destination-menu-menu-frontmost-at-end"',
+        ),
+    ).toBe(true);
     expect(html).not.toContain("recording-indicator-pinned-menu-pin");
+    expect(html).toContain(
+      'data-testid="recording-indicator-pinned-menu-hint">This dictation only<',
+    );
   });
   test("nothing pinned: Pin <destination> is listed above the application list", () => {
     const html = render({
@@ -160,6 +172,7 @@ describe("pinned destination (009)", () => {
     expect(pin > -1).toBe(true);
     expect(html).toContain(">Pin ChatGPT<");
     expect(pin).toBeLessThan(html.indexOf(">Comet<"));
+    expect(html).not.toContain("recording-indicator-pinned-menu-hint");
   });
 });
 

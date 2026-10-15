@@ -1261,7 +1261,8 @@
         "loading": "S'estan carregant les apps…",
         "failed": "No s'ha pogut carregar la llista d'apps.",
         "pin": "Fixa {{name}}",
-        "unpin": "Deixa de fixar {{name}}"
+        "unpin": "Deixa de fixar {{name}}",
+        "thisDictationOnly": "Només aquest dictat"
       },
       "refused": {
         "stale": "La destinació ha canviat mentrestant; s'ha actualitzat la llista.",

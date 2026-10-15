@@ -11,6 +11,8 @@ export const PIN_TEST_IDS = {
   unpin: "recording-indicator-pinned-menu-unpin",
   /** Pin mark of the badge; derived from the contract's `recording-indicator-pinned` screen. */
   mark: "recording-indicator-pinned-destination-mark",
+  /** "This dictation only" hint of the other applications while pinned; derived as well. */
+  hint: "recording-indicator-pinned-menu-hint",
 } as const;
 
 /** One pin entry of the badge menu. */
@@ -26,9 +28,10 @@ const CHOICE_PHASES = new Set(["recording", "processing"]);
 
 // @spec AC-001: Pin <destination> and Unpin in the badge menu — .specs/features/009-pin-mode-and-enter-rule/spec.md#ac-001
 /**
- * Pin entries listed above the application list: "Pin <destination>" when the current
- * destination is an application that is not the pinned one, "Unpin <pinned app>" when an
- * application is pinned; nothing once insertion began.
+ * Pin entries of the badge menu: "Pin <destination>" (listed above the application list) when
+ * the current destination is an application that is not the pinned one, "Unpin <pinned app>"
+ * (listed at the bottom, as in the mockup) when an application is pinned; nothing once
+ * insertion began.
  * @param snapshot Session snapshot of the badge.
  * @param menu The open menu (it must belong to the same dictation).
  */

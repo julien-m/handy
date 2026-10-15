@@ -57,12 +57,36 @@ struct PublicGeneral {
     recording_retention_period: RecordingRetentionPeriod,
     paste_method: PasteMethod,
     clipboard_handling: ClipboardHandling,
-    /// Closed `destination-return` gate: the auto-submit switch, as on `dev`.
-    #[cfg(not(feature = "destination-return"))]
+    #[serde(flatten)]
+    enter: PublicEnter,
+}
+
+/// The automatic Enter key of the build: the auto-submit switch with the `destination-return`
+/// gate closed, as on `dev`; 009's Automatic Enter in its place with the gate open (`never` when
+/// absent, never guessed).
+#[cfg(not(feature = "destination-return"))]
+#[derive(Serialize)]
+struct PublicEnter {
     auto_submit: bool,
-    /// Open gate (009): Automatic Enter in its place (`never` when absent, never guessed).
-    #[cfg(feature = "destination-return")]
+}
+#[cfg(feature = "destination-return")]
+#[derive(Serialize)]
+struct PublicEnter {
     automatic_enter: AutomaticEnterPolicy,
+}
+impl PublicEnter {
+    #[cfg(not(feature = "destination-return"))]
+    fn from_settings(settings: &AppSettings) -> Self {
+        Self {
+            auto_submit: settings.auto_submit,
+        }
+    }
+    #[cfg(feature = "destination-return")]
+    fn from_settings(settings: &AppSettings) -> Self {
+        Self {
+            automatic_enter: crate::automatic_enter::policy_of(settings),
+        }
+    }
 }
 impl PublicGeneral {
     fn from_settings(settings: &AppSettings) -> Self {
@@ -92,10 +116,7 @@ impl PublicGeneral {
             recording_retention_period: settings.recording_retention_period,
             paste_method: settings.paste_method,
             clipboard_handling: settings.clipboard_handling,
-            #[cfg(not(feature = "destination-return"))]
-            auto_submit: settings.auto_submit,
-            #[cfg(feature = "destination-return")]
-            automatic_enter: crate::automatic_enter::policy_of(settings),
+            enter: PublicEnter::from_settings(settings),
         }
     }
 }

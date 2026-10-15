@@ -132,34 +132,11 @@ pub enum SettingsCommand {
     Destination(DestinationArgs),
 }
 
-/// `handy settings destination` (009): the session pin of the running Handy.
 #[cfg(feature = "destination-return")]
-#[derive(Args, Debug, Clone)]
-#[command(
-    after_help = "IDENTIFIER: bundle identifier (macOS), application user model ID or \
-executable path (Windows) of a running application. The pin lasts until unpin or until Handy \
-quits and changes the current dictation like the badge menu. Needs a running Handy (else \
-unavailable, exit 5); unsupported on Linux (validation_failed, exit 2)."
-)]
-pub struct DestinationArgs {
-    #[command(subcommand)]
-    pub action: DestinationAction,
-}
-
-/// Actions of the destination domain.
+#[path = "cli_destination.rs"]
+pub mod destination;
 #[cfg(feature = "destination-return")]
-#[derive(Subcommand, Debug, Clone)]
-pub enum DestinationAction {
-    /// Pin the running application with this identifier
-    Pin {
-        /// Bundle identifier (macOS), AUMID or executable path (Windows)
-        identifier: String,
-    },
-    /// Unpin: the next dictations go to the application they start in again
-    Unpin,
-    /// Print the pinned application, or null
-    Status,
-}
+pub use destination::DestinationArgs;
 
 /// `handy settings vocabulary`: the recognition vocabulary, with the validation of the settings
 /// window.
@@ -403,7 +380,15 @@ pub struct OutputArgs {
 pub enum OutputAction {
     /// Print the output settings, or only KEY
     Get {
-        /// Output setting key (paste_method, clipboard_handling, auto_submit, ...)
+        // 009: with the `destination-return` gate open, `auto_submit` is no key there.
+        #[cfg_attr(
+            not(feature = "destination-return"),
+            doc = "Output setting key (paste_method, clipboard_handling, auto_submit, ...)"
+        )]
+        #[cfg_attr(
+            feature = "destination-return",
+            doc = "Output setting key (paste_method, clipboard_handling, automatic_enter, ...)"
+        )]
         key: Option<String>,
     },
     /// Change one output setting; with --dry-run, validate and preview without writing

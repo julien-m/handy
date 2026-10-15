@@ -1258,7 +1258,8 @@
         "loading": "Načítání aplikací…",
         "failed": "Seznam aplikací se nepodařilo načíst.",
         "pin": "Připnout {{name}}",
-        "unpin": "Odepnout {{name}}"
+        "unpin": "Odepnout {{name}}",
+        "thisDictationOnly": "Jen tento diktát"
       },
       "refused": {
         "stale": "Cíl se mezitím změnil; seznam byl obnoven.",

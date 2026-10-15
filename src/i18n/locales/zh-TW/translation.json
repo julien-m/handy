@@ -1258,7 +1258,8 @@
         "loading": "正在載入 App…",
         "failed": "無法載入 App 列表。",
         "pin": "釘選 {{name}}",
-        "unpin": "取消釘選 {{name}}"
+        "unpin": "取消釘選 {{name}}",
+        "thisDictationOnly": "僅限本次聽寫"
       },
       "refused": {
         "stale": "目標在這段期間已變更；列表已重新整理。",

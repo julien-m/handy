@@ -1258,7 +1258,8 @@
         "loading": "Chargement des apps…",
         "failed": "La liste des apps n'a pas pu être chargée.",
         "pin": "Épingler {{name}}",
-        "unpin": "Désépingler {{name}}"
+        "unpin": "Désépingler {{name}}",
+        "thisDictationOnly": "Cette dictée seulement"
       },
       "refused": {
         "stale": "La destination a changé entre-temps ; la liste a été actualisée.",
