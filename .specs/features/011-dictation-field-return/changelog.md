@@ -23,3 +23,14 @@
 - **Summary:** 6 implementation steps, 2 sequence diagrams, 1 state diagram, 1 logical ER diagram; capture on a worker right after 006's session commit, restore after activation on the insertion worker, verification inside 006's guard before 010's verdict, budgets 50/50/10 ms with per-element AX timeouts, Windows UIA adapter as pending release evidence, deltas listed for 006 and 010.
 
 <!-- finalize:spec-plan:2026-10-15:67c12fe0 -->
+
+## 2026-10-15 — [Spec Update]: Corrected after spec review round 1
+
+- **Type:** Spec Update
+- **Spec modified:** Yes (Stories 1–3, AC-001, AC-002, AC-004, AC-005, AC-006, AC-007, AC-008, FR-001, FR-002, FR-004, FR-005, Key Entities, Clarifications, QE Analysis, Quality Engineering, Screens, Edge Cases, SC-001, SC-002, new SC-005); plan realigned (summary, capture, budgets, lifetime, attempt and guard decision table, 010 articulation, Windows adapter, diagrams, steps, tests, QE, risks, deltas)
+- **Code modified:** None
+- **AC impacted:** AC-001, AC-002, AC-004, AC-005, AC-006, AC-007, AC-008
+- **Decisions:** `fallback-after-partial-return` (FR-004) and `caret-after-focus-restore` (AC-002), validated by Julien (maintainer) on 2026-10-15 and traced in Clarifications: Handy notes the focused element before its attempt and inserts through 006/010 only when the attempt changed nothing, otherwise pastes nothing and shows 010's bubble with the existing reason "Insertion failed" (or 006's `paste-error` when the bubble cannot be presented); the selection range (position and length only) is remembered at the start, restored and verified before the paste, and an unreadable or unverified range never leads to a paste into the input
+- **Other corrections (round-1 warnings):** cancellation and paste method "none" drop the start reference unused instead of claiming no read; 50 ms start deadline aligned with 010's per-element timeout, 50 ms attempt and 10 ms verification, start path never waits (SC-005); Windows UI Automation calls bounded with the same deadlines and a `TextPattern` range; Chromium Accessibility exposure stated as a precondition of SC-001 verified by native proof, with the safe fallback otherwise; focus-then-raise order checked natively
+- **Review:** round 1 spec receipt not ready (1 blocking, 4 warnings); round 2 to run on this version
+- **Author:** Claude Code (spec-refine, orchestrated correction)
