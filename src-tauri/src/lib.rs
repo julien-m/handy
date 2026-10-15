@@ -43,7 +43,7 @@ pub mod word_replacements;
 pub use cli::CliArgs;
 #[cfg(debug_assertions)]
 use specta_typescript::{BigIntExportBehavior, Typescript};
-use tauri_specta::{collect_commands, collect_events, Builder};
+use tauri_specta::{collect_events, Builder};
 pub use utils::env_flag_enabled;
 
 use env_filter::Builder as EnvFilterBuilder;
@@ -673,11 +673,11 @@ fn run_headless_transcription(app: &AppHandle, args: &CliArgs) -> i32 {
     0
 }
 
-/// The typed command and event registry (tauri-specta) shared by the app and the bindings
-/// check: `src/bindings.ts` is generated from it, identical in every rollout gate state.
-fn specta_builder() -> Builder<tauri::Wry> {
-    Builder::<tauri::Wry>::new()
-        .commands(collect_commands![
+/// The typed commands of the app, in registration order: one list for the app and the bindings
+/// check (a macro, so the registry stays a single short builder).
+macro_rules! handy_commands {
+    () => {
+        tauri_specta::collect_commands![
             shortcut::change_binding,
             shortcut::reset_binding,
             shortcut::edits::edit_binding_shortcuts,
@@ -830,7 +830,15 @@ fn specta_builder() -> Builder<tauri::Wry> {
             commands::replacements_files::import_word_replacements_file,
             commands::replacements_files::export_word_replacements_file,
             helpers::clamshell::is_laptop,
-        ])
+        ]
+    };
+}
+
+/// The typed command and event registry (tauri-specta) shared by the app and the bindings
+/// check: `src/bindings.ts` is generated from it, identical in every rollout gate state.
+fn specta_builder() -> Builder<tauri::Wry> {
+    Builder::<tauri::Wry>::new()
+        .commands(handy_commands!())
         .events(collect_events![
             managers::history::HistoryUpdatePayload,
             managers::transcription::StreamTextEvent,

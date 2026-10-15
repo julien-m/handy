@@ -487,12 +487,11 @@
       "rule_ids": []
     },
     {
-      "count": 4,
+      "count": 3,
       "messages": [
         "initialize_core_logic has 180 lines > 60",
-        "run has 384 lines > 60",
-        "run_headless_transcription has 194 lines > 60",
-        "specta_builder has 164 lines > 60"
+        "run has 503 lines > 60",
+        "run_headless_transcription has 194 lines > 60"
       ],
       "path": "src-tauri/src/lib.rs",
       "rule_id": "builtin.max_function_lines",
@@ -5300,6 +5299,6 @@
   "scope": "repo",
   "summary": {
     "entries": 139,
-    "violations": 4183
+    "violations": 4182
   }
 }

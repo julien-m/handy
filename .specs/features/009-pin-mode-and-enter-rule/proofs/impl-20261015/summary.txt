@@ -43,3 +43,24 @@ Per-command stdout/stderr: final/NN.stdout, final/NN.stderr
 40	exit 0	livespec doctor --format json
 
 Not run (pending with Julien, never claimed): macOS native proofs of .specs/native-proofs-checklist.md section 009; Windows/Linux/older-binary release evidence.
+
+Rerun after moving the command list into handy_commands! with the baseline restored to 09cc1ea2 (outputs: rerun-commands-macro/NN.*)
+41	exit 0	livespec conventions verify --feature repo --json > /dev/null
+42	exit 0	bunx --no-install tsc --noEmit
+43	exit 0	bun run format:check
+44	exit 0	cd src-tauri && cargo clippy --lib --bins  -- -D warnings
+45	exit 0	cd src-tauri && cargo clippy --all-targets  -- -D warnings
+46	exit 0	cd src-tauri && cargo test --lib 
+47	exit 0	cd src-tauri && cargo test --lib  bindings_tests -- --nocapture
+48	exit 0	cd src-tauri && cargo clippy --lib --bins --features smart-paste-dispatch -- -D warnings
+49	exit 0	cd src-tauri && cargo clippy --all-targets --features smart-paste-dispatch -- -D warnings
+50	exit 0	cd src-tauri && cargo test --lib --features smart-paste-dispatch
+51	exit 0	cd src-tauri && cargo test --lib --features smart-paste-dispatch bindings_tests -- --nocapture
+52	exit 0	cd src-tauri && cargo clippy --lib --bins --features destination-return -- -D warnings
+53	exit 0	cd src-tauri && cargo clippy --all-targets --features destination-return -- -D warnings
+54	exit 0	cd src-tauri && cargo test --lib --features destination-return
+55	exit 0	cd src-tauri && cargo test --lib --features destination-return bindings_tests -- --nocapture
+56	exit 0	cd src-tauri && cargo clippy --lib --bins --features destination-return,smart-paste-dispatch -- -D warnings
+57	exit 0	cd src-tauri && cargo clippy --all-targets --features destination-return,smart-paste-dispatch -- -D warnings
+58	exit 0	cd src-tauri && cargo test --lib --features destination-return,smart-paste-dispatch
+59	exit 0	cd src-tauri && cargo test --lib --features destination-return,smart-paste-dispatch bindings_tests -- --nocapture

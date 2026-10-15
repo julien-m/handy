@@ -53,7 +53,7 @@ Commits: `dad3819d` (existing clippy test lints), `a92d931d` (backend, Steps 2â€
 - `src/bindings.ts` is generated from one `specta_builder()` with a drift test (`bindings_tests`), identical in both gate states.
 - UI versus mockup: Pin and Unpin are listed above the application list (spec Behavioral AC), where the mockup shows Unpin at the bottom; the mockup's "This dictation only" hint is not shown; the Pin entry and the pin mark use test ids derived from the contract (`recording-indicator-pinned-menu-pin`, `recording-indicator-pinned-destination-mark`), which has no node for them.
 - The reliable paste's read and injection signalling is one shared helper of `paste_tx` (`record_read`, `inject`), used by the macOS and Windows transactions.
-- The conventions baseline (`.specs/conventions/baseline.json`) records the command registry moved out of `run` into `specta_builder` and the shorter `run`; no new violation otherwise.
+- The command list lives in the `handy_commands!` macro, used by the short `specta_builder()` that both the app's Specta export and the bindings drift test call; the conventions baseline is unchanged from `09cc1ea2` (`livespec conventions verify --feature repo`: PASS, `new_count` 0).
 - Three existing test lints of `dev` (engine supervisor, GGUF metadata, portable marker) were fixed so `cargo clippy --all-targets -D warnings` passes.
 
 ## Pending
