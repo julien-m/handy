@@ -23,6 +23,27 @@ fn the_classifier_adapter_never_uses_the_system_wide_element_or_a_zero_timeout()
     );
 }
 
+/// Privacy (plan Step 5, QE): the projection goes only to the recovery window (`emit_to`),
+/// never in an app-wide event, and no recovery module logs the transcript.
+#[test]
+fn the_projection_is_emitted_only_to_the_recovery_window_and_never_logged() {
+    let surface = include_str!("../src/recovery/surface.rs");
+    assert!(surface.contains("app.emit_to(RECOVERY_WINDOW, VIEW_EVENT, view)"));
+    assert!(!surface.contains(".emit(VIEW_EVENT"));
+    for source in [
+        surface,
+        include_str!("../src/recovery/service.rs"),
+        include_str!("../src/recovery/manager.rs"),
+        include_str!("../src/recovery/app.rs"),
+        include_str!("../src/recovery/platform/macos_drag.rs"),
+    ] {
+        for line in source.lines().filter(|line| line.contains("log::")) {
+            assert!(!line.contains("transcript"), "{line}");
+            assert!(!line.contains("preview"), "{line}");
+        }
+    }
+}
+
 #[cfg(target_os = "macos")]
 mod macos {
     use handy_app_lib::destination::native_workspace;

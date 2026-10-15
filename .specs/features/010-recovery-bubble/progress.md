@@ -1,14 +1,38 @@
 # Progress — 010-recovery-bubble
 
 Run `impl-20261015` (Claude Code, `/spec-implement`, model claude-opus-5-5), branch `feature/010-recovery-bubble` from `dev` `5bd1a7cd` (009 merged).
-Gates before code: `livespec validate --pre-impl` exit 0 (semantic readiness covered, 16/16, no finding) and `livespec validate --progression implement` exit 0 (`Progression: READY`), both with `--model claude-opus-5-5 --review-max-chars 180000`; proofs under `proofs/impl-20261015/`.
+Gates before code: `livespec validate --pre-impl` exit 0 (semantic readiness covered, 16/16, no finding) and `livespec validate --progression implement` exit 0 (`Progression: READY`), both with `--model claude-opus-5-5 --review-max-chars 180000`; proofs under `proofs/impl-20261015/`. The review receipts (`.reviews/spec.json`, `.reviews/plan.json`) carry no `carry_over` field; the r8 synthesis findings are answered in `implementation.md` ("Differences from the plan"). Delivery lane: full (High criticality); the end-of-feature delivery review is run by the orchestrator, not by this run. Penflow design profile: BLOCKED (`penflow/code-ir.json` absent), as for 009; the UI follows the mockups and the contract test IDs.
 
 | Step | Status | Files | Tests run | Result | Updated at |
 |---|---|---|---|---|---|
-| 1 | In Progress | — | — | — | 2026-10-15 |
-| 2 | In Progress | — | — | — | 2026-10-15 |
-| 3 | In Progress | — | — | — | 2026-10-15 |
-| 4 | In Progress | — | — | — | 2026-10-15 |
-| 5 | Todo | — | — | — | 2026-10-15 |
-| 6 | Todo | — | — | — | 2026-10-15 |
-| 7 | Todo | — | — | — | 2026-10-15 |
+| 0a | Done | `src/overlay/recovery-preview.test.ts`, `src/overlay/recovery-bubble-render.test.tsx`, `src/components/settings/recovery-bubble-toggle-state.test.ts` | `bun test` of the three files before any UI code | RED as required (modules absent, exit 1, `proofs/impl-20261015/step0a-red.*`), GREEN after Step 5 | 2026-10-15 |
+| 1 | In Progress (native part pending with Julien) | `src-tauri/src/recovery/platform/{mod.rs,macos.rs,macos_ax.rs,macos_drag.rs,windows.rs,linux.rs}`, `src-tauri/tests/recovery_native.rs`, `scripts/recovery-native-proof.ts`, `proofs/impl-20261015/windows-check/` | `cargo test --test recovery_native` (source check pass, 2 native tests ignored), Windows adapter `cargo clippy --target x86_64-pc-windows-msvc -D warnings` (exit 0) | Adapters written and compiled (macOS; Windows by the harness; Linux only in CI); the spike (first click, AX matrix and 60 ms criterion, drop matrix, VoiceOver, latency) is not run: no app activation, key, clipboard or bubble on Julien's Mac | 2026-10-15 |
+| 2 | Done (automated) | `src-tauri/src/recovery/{types.rs,decision.rs,classifier.rs,verdict.rs,instance.rs,manager.rs,ports.rs,service.rs}` and their tests, `src-tauri/src/destination/recovery.rs` (receipt), `src-tauri/tests/{recovery_lifecycle.rs,recovery/support.rs}` | `cargo test --lib recovery`, `cargo test --test recovery_lifecycle` | Pass (810-case decision table, classifier deadline at 49/50/51 ms, 15 lifecycle cases) | 2026-10-15 |
+| 3 | Done (automated) | `src-tauri/src/settings.rs`, `src-tauri/src/recovery/setting.rs`, `src-tauri/src/settings_service/{descriptor_data.rs,public.rs,platform_capability.rs,domains/output.rs}`, gate-aware 008 tests, `src/bindings.ts`, `README.md` | `cargo test --test recovery_settings --test settings_validation --test settings_cli --test settings_transactions` (both gate states) | Pass | 2026-10-15 |
+| 4 | Done (automated) | `src-tauri/src/destination/{delivery.rs,presentation.rs,guard.rs,insertion.rs,outcome.rs,manager.rs,app.rs}`, `src-tauri/src/smart_paste/{actor.rs,coordinator.rs,dispatch.rs,app.rs,macos_cf.rs}`, `src-tauri/src/{clipboard.rs,overlay.rs,actions.rs,lib.rs}`, `src-tauri/src/recovery/{app.rs,surface.rs}`, `src-tauri/src/commands/recovery.rs`, `src/overlay/use-overlay-notices.ts`, `src-tauri/tests/{recovery_output.rs,recovery_clipboard.rs}` | `cargo test --test recovery_output --test recovery_clipboard --lib destination::` | Pass (zero Enter with Always, typed `no_text_field`, recheck after `Insert`, Copy through 007's real actor and coordinator) | 2026-10-15 |
+| 5 | Done (automated; native window and Penflow certification pending) | `src/overlay/{recovery.html,recovery-main.tsx,recovery-window.tsx,recovery-bubble.tsx,recovery-bubble.css,recovery-preview.ts,use-recovery-bubble.ts}`, `src/components/settings/{recovery-bubble-toggle.tsx,recovery-bubble-toggle-state.ts,advanced/AdvancedSettings.tsx}`, `src/stores/settingsStore.ts`, 26 locales, `vite.config.ts`, `tests/recovery-bubble.spec.ts`, `tests/harness/recovery-*`, baselines | `bun run test:recovery-bubble`, `bun run test:output-settings`, `bun run test:recovery-bubble-ui`, `bun run check:translations` | Pass (10 Chromium cases, 5 baselines compared by eye with the mockups) | 2026-10-15 |
+| 6 | In Progress (native drag pending with Julien) | `src-tauri/src/recovery/platform/macos_drag.rs`, `src-tauri/src/recovery/{manager.rs,service.rs,surface.rs}`, `src/overlay/use-recovery-bubble.ts` | lifecycle and gesture tests above | Identity-guarded drag lifecycle and gesture pass; the AppKit session (full payload, copy only, hidden while dragging, TextEdit/Notes/ChatGPT/Comet) is not run | 2026-10-15 |
+| 7 | In Progress (native acceptance pending with Julien) | `.github/workflows/test.yml`, `proofs/impl-20261015/` (`summary.txt`, `final/`, `acceptance-mapping.json`) | Final verification (`proofs/impl-20261015/summary.txt`: tsc, lint, format, translations, build, 12 bun suites, every Playwright spec, cargo fmt, clippy lib/bins and all-targets and the full cargo test in the four feature combinations, conventions repo, progression, feature validation, acceptance mapping; addendum: privacy source check in the four combinations) | 39/39 exit 0, addendum 8/8 exit 0; macOS native acceptance not run | 2026-10-15 |
+
+## Step 1 — feasibility notes
+
+- The native read-only tests are written and ignored by default; they need a logged-in session and Accessibility for the runner, never activate an application, type or touch the clipboard.
+- The plan's macOS gate of Step 1 (first click without activation, full TextEdit/Notes drop, AX within 50 ms with no sample above 60 ms on the main thread, 006's foreground read unchanged, presentation delays recorded) is not evidenced: Steps 2 to 7 were implemented on the automated evidence, as for 009, by instruction (native proofs with Julien). If the AX criterion fails natively, field detection is not delivered (verdict `Insert`) and the feature stays out of Implemented until Julien decides (plan).
+
+## Native proofs pending with Julien
+
+None is declared passed. Exact procedure: `.specs/native-proofs-checklist.md`, section "010 — Bulle de récupération", with `bun scripts/recovery-native-proof.ts --binary <absolute release binary> --platform macos --out .specs/features/010-recovery-bubble/proofs/native-macos/ --interactive` on `bun run tauri build --bundles app --features destination-return,smart-paste-dispatch`.
+
+1. Closed gate identical to `dev` (`handy-gates-closed.app`): `paste-error`, no bubble, key `not_found`, no toggle.
+2. Surface spike: first click on Copy, Close and Why? without activating Handy; bubble in place of the indicator, also with overlay style none.
+3. Classification matrix (Finder list and desktop, Safari page without field, TextEdit, Notes, search field, unknown control, Spotlight over Finder and over TextEdit) and `recovery_native` (30 samples, none above 60 ms; 006's foreground read unchanged).
+4. Reasons before insertion with Automatic Enter Always (closed, pinned not running, not brought forward, no text field): texts, no Enter, no `paste-error`.
+5. Method failures: smart paste not read then late read, permission missing, classic failure.
+6. Native drag (SC-002): TextEdit and Notes full transcript, ChatGPT and Comet recorded; refusal and Escape; modifiers; new dictation during the drag.
+7. Copy against a pending smart paste restoration.
+8. Lifetime: 60 s, screen lock, Close, new dictation after 1 s.
+9. VoiceOver names and activation; settings toggle with Tab and Space.
+10. Decision-to-visible samples against the 300 ms QE target.
+11. CLI with Handy running.
+
+Pending release evidence (never a gate): Windows reduced bubble and Narrator, Linux method-failure bubble on X11, Wayland and with layer shell disabled, Orca, the Windows `cargo test --features destination-return`, and the CI jobs of `test.yml` (checklist §5).

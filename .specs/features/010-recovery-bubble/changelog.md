@@ -222,3 +222,17 @@
 - **Earlier decisions** marked "to be confirmed at the final review" (hover hint and closing state, per-application strategies, Windows reliable paste detail, `paste-error` replacement and macOS-only setting, paste method none, no focused element) are now "validated by Julien on 2026-10-15".
 - **Plan warnings and infos treated:** `PRESENTATION_HANG_LIMIT` (10 s) gives a surface that never answers a terminal `Unpresentable` (window destroyed, one `paste-error`, late render ignored), with a test; Step 7 modifies `.github/workflows/test.yml` (four feature combinations on Linux, gate-open `cargo check` on Windows); the 008 names row says only `LiveSettingsEffects` was never shipped; the 300 ms latency is measured from the recovery decision in plan and contract; `OUTPUT_KEYS` has its own fixed length per gate state.
 - Review: the spec and plan reviews are stale until the round 8 independent review refreshes them.
+
+## 2026-10-15 — [Feature]: Recovery bubble implemented behind the destination-return gate (automated evidence; native proofs pending with Julien)
+
+- **Type:** Feature
+- **Spec modified:** No (status Planned → In Progress through finalize; requirements unchanged)
+- **Code modified:** recovery service, manager, decision table, bounded AX classifier, Tauri surface and macOS/Windows/Linux window adapters with the macOS drag source in `src-tauri/src/recovery/`; 006 integration (`destination/{recovery,presentation,delivery,guard,insertion,outcome,manager,app}.rs`: presentation receipt, typed `no_text_field`, recheck after `Insert`, one report per failure); 007 deliberate Copy through the actor and late-read listener (`smart_paste/{actor,coordinator,dispatch,app}.rs`); 008 setting `show_recovery_bubble_without_text_field` with `FocusedFieldDetection` (`settings.rs`, `settings_service/`); indicator arbiter in `overlay.rs`; recovery commands; recovery window UI in `src/overlay/recovery-*`, setting row in the output settings, 26 locales; README; CI four combinations and Windows check
+- **AC impacted:** AC-001 to AC-007 partial (automated evidence only), SC-001 automated, SC-002 pending (native), SC-003 automated form only
+- **Author:** Claude Code (spec-implement, claude-opus-5-5)
+- Commits on `feature/010-recovery-bubble`: `6d8288e9`, `52dbf1eb`, `1510e59d`, `c2a95ed2` and the documentation commit of this entry.
+- Gate closed (default build): identical to `dev` (`paste-error`, no bubble, no classification, key `not_found`, no toggle); tested in the four feature combinations.
+- Differences from the plan: commands registered in both gate states (one `bindings.ts`); drag started from the webview handle on the panel's content view; setting frozen at the dictation start and bound at commit; unsupported edit attributes count as not settable for a known non-text role; the bubble ends notice holds and hides the indicator (precedence to confirm); presentation hand-off in `destination/presentation.rs`; Penflow design profile BLOCKED (`code-ir.json` absent), UI built from the mockups and contract test IDs.
+- Native macOS proofs (required before Implemented) and the Windows and Linux release evidence are listed in `progress.md` and `.specs/native-proofs-checklist.md` (section 010); none is claimed.
+
+<!-- finalize:spec-implement:2026-10-15:0ab0ed79 -->
