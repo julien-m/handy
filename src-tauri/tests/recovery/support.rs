@@ -302,6 +302,19 @@ impl Bench {
             .retain(DictationId(dictation), PHRASE.to_owned());
         outcome(dictation, reason, method_outcome, Some(reference))
     }
+    /// A failed outcome of `dictation` whose retained transcript is `text`.
+    pub fn failed_with(
+        &self,
+        dictation: u64,
+        text: &str,
+        method_outcome: Option<MethodOutcome>,
+    ) -> InsertionOutcome {
+        let reference = self
+            .slot
+            .slot
+            .retain(DictationId(dictation), text.to_owned());
+        outcome(dictation, None, method_outcome, Some(reference))
+    }
     /// Toasts emitted by 010 so far.
     pub fn toasts(&self) -> Vec<HistoryStatus> {
         lock(&self.fallback.toasts).clone()

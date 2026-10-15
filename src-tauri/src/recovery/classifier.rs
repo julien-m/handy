@@ -12,21 +12,17 @@ pub const CLASSIFY_BUDGET: Duration = Duration::from_millis(50);
 
 /// Roles of a field that takes text when one of its edit attributes is settable.
 const TEXT_ROLES: [&str; 4] = ["AXTextField", "AXTextArea", "AXComboBox", "AXSearchField"];
-/// Roles that never take typed text in the destination's own process (initial list, calibrated
-/// by the native matrix of Step 1: Finder lists, an unfocused browser page, buttons...).
-const NON_TEXT_ROLES: [&str; 22] = [
-    "AXApplication",
-    "AXWindow",
+/// Roles that never take typed text in the destination's own process: controls and lists only
+/// (initial list, calibrated by the native matrix of Step 1). Containers that Chromium and
+/// Electron report while a web or custom field has the focus (`AXWebArea`, `AXWindow`,
+/// `AXGroup`, `AXApplication`, `AXScrollArea`) are deliberately absent: they stay undetermined.
+const NON_TEXT_ROLES: [&str; 15] = [
     "AXList",
     "AXOutline",
     "AXTable",
     "AXBrowser",
-    "AXScrollArea",
-    "AXSplitGroup",
     "AXRow",
     "AXCell",
-    "AXWebArea",
-    "AXStaticText",
     "AXImage",
     "AXButton",
     "AXCheckBox",
@@ -36,7 +32,6 @@ const NON_TEXT_ROLES: [&str; 22] = [
     "AXSlider",
     "AXTabGroup",
     "AXLink",
-    "AXToolbar",
 ];
 /// Password fields, as a role or a subrole.
 const SECURE_TEXT_FIELD: &str = "AXSecureTextField";
@@ -205,7 +200,10 @@ fn text_field(
     }
 }
 
-/// A known non-text role with successful checks and no edit affordance is not editable.
+// @spec AC-002: Not editable only on positive proof — .specs/features/010-recovery-bubble/spec.md#ac-002
+/// Business rule (delivery review 2026-10-15): "not editable" needs positive proof, a known
+/// non-text role whose every edit attribute was read and found not settable. An attribute the
+/// element does not support, has no value for, or that could not be read is a doubt.
 fn non_text(
     element: &mut dyn FocusedElement,
     deadline: &Deadline<'_>,
@@ -216,8 +214,8 @@ fn non_text(
     Ok(FocusClassification::NotEditable)
 }
 
-/// True when one edit attribute is settable. An attribute the element does not support (or
-/// has no value for) is not settable; a timeout or another error is a doubt.
+/// True when one edit attribute is settable; any attribute that cannot be read (unsupported,
+/// no value, timeout or another error) makes the classification undetermined.
 fn any_settable(
     element: &mut dyn FocusedElement,
     deadline: &Deadline<'_>,
@@ -225,7 +223,7 @@ fn any_settable(
     for attribute in EDIT_ATTRIBUTES {
         match element.is_settable(attribute, deadline.remaining()?) {
             Ok(true) => return Ok(true),
-            Ok(false) | Err(AxQueryError::Unsupported | AxQueryError::NoValue) => {}
+            Ok(false) => {}
             Err(error) => return Err(undetermined(error)),
         }
     }

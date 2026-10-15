@@ -94,13 +94,17 @@ describe("explanation (AC-001, AC-005)", () => {
       "recoveryBubble.explanation.historyKeptFull",
     ]);
   });
-  test("a late read adds that the text may have been pasted after all", () => {
-    const late = keys({
+  test("a late read is said in the bubble itself, not only in the explanation", () => {
+    const late = {
       reason: "insertion_failed",
       detail: "may_have_reached",
       late_read: true,
-    });
-    expect(late).toContain("recoveryBubble.explanation.lateRead");
+    } as const;
+    expect(bubbleTexts(view(late)).lateReadKey).toBe(
+      "recoveryBubble.explanation.lateRead",
+    );
+    expect(keys(late)).not.toContain("recoveryBubble.explanation.lateRead");
+    expect(bubbleTexts(view()).lateReadKey).toBeNull();
   });
   test("without drag (Windows, Linux) the advice only mentions Copy", () => {
     expect(keys({ can_drag: false })).toContain(

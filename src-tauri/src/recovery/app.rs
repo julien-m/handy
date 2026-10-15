@@ -54,15 +54,15 @@ pub fn service(app: &AppHandle) -> Option<Arc<RecoveryService>> {
         .map(|state| Arc::clone(state.inner()))
 }
 
-// @spec AC-005: New dictation closes the bubble before the indicator — .specs/features/010-recovery-bubble/spec.md#ac-005
-/// A dictation is starting: close the bubble before the indicator shows, and freeze "Show the
-/// bubble when no text field is focused" from the settings read at this start.
+/// A dictation is starting: freeze "Show the bubble when no text field is focused" from the
+/// settings read at this start (the bubble stays until the recording really starts).
 pub fn dictation_starting(app: &AppHandle, settings: &crate::settings::AppSettings) {
     if let Some(service) = service(app) {
         service.dictation_starting(super::setting::enabled(settings));
     }
 }
-/// The recording started: bind the frozen setting to its dictation.
+// @spec AC-005: A started dictation closes the bubble — .specs/features/010-recovery-bubble/spec.md#ac-005
+/// The recording really started: close the bubble and bind the frozen setting to it.
 pub fn dictation_started(app: &AppHandle) {
     let snapshot = crate::destination::app::manager(app).and_then(|manager| manager.snapshot());
     if let (Some(service), Some(snapshot)) = (service(app), snapshot) {

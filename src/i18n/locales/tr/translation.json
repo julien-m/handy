@@ -1269,16 +1269,6 @@
         "stale": "Hedef bu arada değişti; liste yenilendi.",
         "frozen": "Ekleme başladı; hedef artık değiştirilemez.",
         "unavailable": "Bu uygulama artık kullanılamıyor; liste yenilendi."
-      },
-      "notice": {
-        "appClosedKept": "{{app}} kapalı. Hiçbir şey eklenmedi; transkript Geçmiş'te tutuluyor.",
-        "appClosedNotKept": "{{app}} kapalı. Hiçbir şey eklenmedi ve transkript Geçmiş'e kaydedilemedi.",
-        "activationFailedKept": "{{app}} öne gelmedi. Hiçbir şey eklenmedi; transkript Geçmiş'te tutuluyor.",
-        "activationFailedNotKept": "{{app}} öne gelmedi. Hiçbir şey eklenmedi ve transkript Geçmiş'e kaydedilemedi.",
-        "insertionFailedKept": "{{app}} metni almamış olabilir; transkript Geçmiş'te tutuluyor.",
-        "insertionFailedNotKept": "{{app}} metni almamış olabilir ve transkript Geçmiş'e kaydedilemedi.",
-        "pinnedAppNotRunningKept": "{{app}} sabitlendi ancak açık değil. Hiçbir şey eklenmedi; transkript Geçmiş'te tutuluyor.",
-        "pinnedAppNotRunningNotKept": "{{app}} sabitlendi ancak açık değil. Hiçbir şey eklenmedi ve transkript Geçmiş'e kaydedilemedi."
       }
     },
     "prompt": {

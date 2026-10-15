@@ -125,7 +125,7 @@ fn run(script: Script) -> (FocusClassification, Vec<Duration>) {
 
 #[test]
 fn a_known_non_text_focus_without_edit_affordance_is_not_editable() {
-    for role in ["AXList", "AXOutline", "AXWebArea", "AXButton"] {
+    for role in ["AXList", "AXOutline", "AXImage", "AXButton"] {
         assert_eq!(
             run(script(role)).0,
             FocusClassification::NotEditable,
@@ -176,15 +176,40 @@ fn no_focused_element_errors_secure_unknown_and_read_only_text_are_undetermined(
         assert_eq!(run(case).0, FocusClassification::Undetermined(cause));
     }
 }
+// @spec AC-002: Chromium and Electron containers never show the bubble — .specs/features/010-recovery-bubble/spec.md#ac-002
 #[test]
-fn an_unsupported_edit_attribute_counts_as_not_settable() {
-    let mut list = script("AXList");
-    list.settable = [
-        Err(AxQueryError::Unsupported),
-        Err(AxQueryError::NoValue),
-        Ok(false),
-    ];
-    assert_eq!(run(list).0, FocusClassification::NotEditable);
+fn chromium_and_electron_containers_are_undetermined() {
+    // Comet, Chrome, ChatGPT, Slack and VS Code may report the window, the web area or a group
+    // while a web field has the DOM focus: never a "no text field" bubble for them.
+    for role in [
+        "AXWebArea",
+        "AXWindow",
+        "AXGroup",
+        "AXApplication",
+        "AXScrollArea",
+    ] {
+        assert_eq!(
+            run(script(role)).0,
+            FocusClassification::Undetermined(Undetermined::UnknownRole),
+            "{role}"
+        );
+    }
+}
+#[test]
+fn an_unreadable_edit_attribute_is_a_doubt_never_a_proof() {
+    for error in [
+        AxQueryError::Unsupported,
+        AxQueryError::NoValue,
+        AxQueryError::Failed,
+    ] {
+        let mut list = script("AXList");
+        list.settable[1] = Err(error);
+        assert_eq!(
+            run(list).0,
+            FocusClassification::Undetermined(Undetermined::AxError),
+            "{error:?}"
+        );
+    }
     let mut slider = script("AXSlider");
     slider.settable[0] = Ok(true);
     assert_eq!(

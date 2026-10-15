@@ -1269,16 +1269,6 @@
         "stale": "Đích đã thay đổi trong lúc đó; danh sách đã được làm mới.",
         "frozen": "Việc chèn đã bắt đầu; không thể đổi đích nữa.",
         "unavailable": "Ứng dụng này không còn khả dụng; danh sách đã được làm mới."
-      },
-      "notice": {
-        "appClosedKept": "{{app}} đã đóng. Không có gì được chèn; bản chép lời được giữ trong Lịch sử.",
-        "appClosedNotKept": "{{app}} đã đóng. Không có gì được chèn và không thể lưu bản chép lời vào Lịch sử.",
-        "activationFailedKept": "{{app}} không lên phía trước. Không có gì được chèn; bản chép lời được giữ trong Lịch sử.",
-        "activationFailedNotKept": "{{app}} không lên phía trước. Không có gì được chèn và không thể lưu bản chép lời vào Lịch sử.",
-        "insertionFailedKept": "{{app}} có thể chưa nhận được văn bản; bản chép lời được giữ trong Lịch sử.",
-        "insertionFailedNotKept": "{{app}} có thể chưa nhận được văn bản và không thể lưu bản chép lời vào Lịch sử.",
-        "pinnedAppNotRunningKept": "{{app}} đã được ghim nhưng chưa mở. Không có gì được chèn; bản chép lời được giữ trong Lịch sử.",
-        "pinnedAppNotRunningNotKept": "{{app}} đã được ghim nhưng chưa mở. Không có gì được chèn, và không thể lưu bản chép lời vào Lịch sử."
       }
     },
     "prompt": {

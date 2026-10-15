@@ -1272,16 +1272,6 @@
         "stale": "Destinationen er ændret i mellemtiden; listen er opdateret.",
         "frozen": "Indsættelsen er begyndt; destinationen kan ikke længere ændres.",
         "unavailable": "Denne app er ikke længere tilgængelig; listen er opdateret."
-      },
-      "notice": {
-        "appClosedKept": "{{app}} er lukket. Intet blev indsat; transskriptionen gemmes i Historik.",
-        "appClosedNotKept": "{{app}} er lukket. Intet blev indsat, og transskriptionen kunne ikke gemmes i Historik.",
-        "activationFailedKept": "{{app}} kom ikke i forgrunden. Intet blev indsat; transskriptionen gemmes i Historik.",
-        "activationFailedNotKept": "{{app}} kom ikke i forgrunden. Intet blev indsat, og transskriptionen kunne ikke gemmes i Historik.",
-        "insertionFailedKept": "{{app}} har muligvis ikke modtaget teksten; transskriptionen gemmes i Historik.",
-        "insertionFailedNotKept": "{{app}} har muligvis ikke modtaget teksten, og transskriptionen kunne ikke gemmes i Historik.",
-        "pinnedAppNotRunningKept": "{{app}} er fastgjort, men ikke åben. Intet blev indsat; transskriptionen gemmes i Historik.",
-        "pinnedAppNotRunningNotKept": "{{app}} er fastgjort, men ikke åben. Intet blev indsat, og transskriptionen kunne ikke gemmes i Historik."
       }
     },
     "prompt": {

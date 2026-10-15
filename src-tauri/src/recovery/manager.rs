@@ -169,16 +169,21 @@ impl RecoveryManager {
     }
 
     // @spec AC-005: New dictation, Close, no timeout — .specs/features/010-recovery-bubble/spec.md#ac-005
-    /// A new dictation starts: the bubble closes at once, whatever its age or phase, and a
-    /// buffered late read is dropped.
-    pub fn new_dictation(&self, setting_enabled: bool) -> Option<Retired> {
+    /// A new dictation really started: the bubble closes at once, whatever its age or phase,
+    /// and a buffered late read is dropped. Called only once the recording started, so a
+    /// refused start never loses the transcript of the bubble.
+    pub fn new_dictation(&self) -> Option<Retired> {
         let mut state = self.lock();
         state.buffered_late_read = None;
-        state.frozen_setting = Some(FrozenSetting {
-            dictation_id: None,
-            enabled: setting_enabled,
-        });
         retire(&mut state, PresentationResult::Superseded)
+    }
+    /// "Show the bubble when no text field is focused" read at a dictation start, bound later
+    /// to the dictation that actually starts (`bind_setting`).
+    pub fn freeze_setting(&self, enabled: bool) {
+        self.lock().frozen_setting = Some(FrozenSetting {
+            dictation_id: None,
+            enabled,
+        });
     }
     /// Close the shown bubble `bubble_id` (Close, also during Copy or drag).
     pub fn close(&self, bubble_id: BubbleId) -> Option<Retired> {

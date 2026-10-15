@@ -1272,16 +1272,6 @@
         "stale": "Tujuan berubah sementara itu; daftar telah diperbarui.",
         "frozen": "Penyisipan sudah dimulai; tujuan tidak dapat diubah lagi.",
         "unavailable": "Aplikasi ini tidak tersedia lagi; daftar telah diperbarui."
-      },
-      "notice": {
-        "appClosedKept": "{{app}} tertutup. Tidak ada yang disisipkan; transkrip disimpan di Riwayat.",
-        "appClosedNotKept": "{{app}} tertutup. Tidak ada yang disisipkan, dan transkrip tidak dapat disimpan di Riwayat.",
-        "activationFailedKept": "{{app}} tidak muncul di depan. Tidak ada yang disisipkan; transkrip disimpan di Riwayat.",
-        "activationFailedNotKept": "{{app}} tidak muncul di depan. Tidak ada yang disisipkan, dan transkrip tidak dapat disimpan di Riwayat.",
-        "insertionFailedKept": "{{app}} mungkin tidak menerima teks; transkrip disimpan di Riwayat.",
-        "insertionFailedNotKept": "{{app}} mungkin tidak menerima teks, dan transkrip tidak dapat disimpan di Riwayat.",
-        "pinnedAppNotRunningKept": "{{app}} disematkan tetapi tidak terbuka. Tidak ada yang disisipkan; transkrip disimpan di Riwayat.",
-        "pinnedAppNotRunningNotKept": "{{app}} disematkan tetapi tidak terbuka. Tidak ada yang disisipkan, dan transkrip tidak dapat disimpan di Riwayat."
       }
     },
     "prompt": {

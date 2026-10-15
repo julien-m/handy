@@ -119,6 +119,7 @@ fn a_new_dictation_before_the_render_supersedes_and_releases_the_slot() -> TestR
     let bench = Bench::new(RecoveryPlatform::MacOs);
     let (receipt, _) = consume(&bench, 1, None)?;
     bench.service.dictation_starting(true);
+    bench.service.dictation_started(DictationId(2));
     assert_eq!(
         wait(receipt)?,
         PresentationWait::Resolved(PresentationResult::Superseded)
@@ -294,8 +295,26 @@ fn a_new_dictation_closes_a_bubble_shown_for_less_than_four_seconds() -> TestRes
     let (_, view) = consume(&bench, 1, None)?;
     bench.service.rendered(view.bubble_id);
     bench.service.dictation_starting(true);
+    bench.service.dictation_started(DictationId(2));
     assert_eq!(bench.service.view(), None);
     assert_eq!(bench.surface.calls().last(), Some(&SurfaceCall::Hide));
+    Ok(())
+}
+// @spec AC-005: A refused start keeps the bubble and its text — .specs/features/010-recovery-bubble/spec.md#ac-005
+#[test]
+fn a_dictation_whose_recording_fails_to_start_keeps_the_bubble_and_its_text() -> TestResult {
+    let bench = Bench::new(RecoveryPlatform::MacOs);
+    let (_, view) = consume(&bench, 1, None)?;
+    bench.service.rendered(view.bubble_id);
+    // The start is refused (microphone unavailable): `dictation_started` is never called.
+    bench.service.dictation_starting(true);
+    assert_eq!(bench.service.view(), Some(view.clone()));
+    assert!(!bench.surface.calls().contains(&SurfaceCall::Hide));
+    assert!(bench
+        .service
+        .copy(view.bubble_id, view.destination_generation)
+        .is_ok());
+    assert_eq!(lock(&bench.copier.written).clone(), vec![PHRASE.to_owned()]);
     Ok(())
 }
 // @spec AC-006: Reduced bubble on Windows and Linux — .specs/features/010-recovery-bubble/spec.md#ac-006

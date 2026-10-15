@@ -99,6 +99,13 @@ body {
   overflow: hidden;
 }
 
+.rb-late-read {
+  margin: 0;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--rb-text);
+}
+
 .rb-explanation {
   padding: 11.25px;
   border-radius: 12px;

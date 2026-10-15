@@ -59,16 +59,18 @@ impl RecoveryService {
         self.manager.view()
     }
 
-    // @spec AC-005: A new dictation closes the bubble at once — .specs/features/010-recovery-bubble/spec.md#ac-005
-    /// A new dictation is starting: close the bubble (before the indicator shows) and freeze
-    /// "Show the bubble when no text field is focused" for it.
+    /// A dictation is starting: freeze "Show the bubble when no text field is focused" for it.
+    /// The bubble stays until the recording really starts.
     pub fn dictation_starting(&self, setting_enabled: bool) {
-        if let Some(retired) = self.manager.new_dictation(setting_enabled) {
+        self.manager.freeze_setting(setting_enabled);
+    }
+    // @spec AC-005: A new dictation closes the bubble at once — .specs/features/010-recovery-bubble/spec.md#ac-005
+    /// The recording of `dictation_id` started: close the bubble at once and bind the frozen
+    /// setting to this dictation. A refused start never reaches here, so its bubble stays.
+    pub fn dictation_started(&self, dictation_id: DictationId) {
+        if let Some(retired) = self.manager.new_dictation() {
             self.retire(retired);
         }
-    }
-    /// The dictation that started is `dictation_id` (binds the frozen setting to it).
-    pub fn dictation_started(&self, dictation_id: DictationId) {
         self.manager.bind_setting(dictation_id);
     }
 

@@ -1269,16 +1269,6 @@
         "stale": "Cel zmienił się w międzyczasie; lista została odświeżona.",
         "frozen": "Wstawianie już się rozpoczęło; celu nie można już zmienić.",
         "unavailable": "Ta aplikacja nie jest już dostępna; lista została odświeżona."
-      },
-      "notice": {
-        "appClosedKept": "{{app}} jest zamknięta. Nic nie wstawiono; transkrypcja jest zachowana w Historii.",
-        "appClosedNotKept": "{{app}} jest zamknięta. Nic nie wstawiono, a transkrypcji nie udało się zapisać w Historii.",
-        "activationFailedKept": "{{app}} nie przeszła na pierwszy plan. Nic nie wstawiono; transkrypcja jest zachowana w Historii.",
-        "activationFailedNotKept": "{{app}} nie przeszła na pierwszy plan. Nic nie wstawiono, a transkrypcji nie udało się zapisać w Historii.",
-        "insertionFailedKept": "{{app}} mogła nie otrzymać tekstu; transkrypcja jest zachowana w Historii.",
-        "insertionFailedNotKept": "{{app}} mogła nie otrzymać tekstu, a transkrypcji nie udało się zapisać w Historii.",
-        "pinnedAppNotRunningKept": "{{app}} jest przypięta, ale nie jest otwarta. Nic nie wstawiono; transkrypcja jest zachowana w Historii.",
-        "pinnedAppNotRunningNotKept": "{{app}} jest przypięta, ale nie jest otwarta. Nic nie wstawiono i nie udało się zapisać transkrypcji w Historii."
       }
     },
     "prompt": {

@@ -61,7 +61,10 @@ define_class!(
         fn ended(&self, _session: &NSDraggingSession, _point: NSPoint, operation: NSDragOperation) {
             let ivars = self.ivars();
             (ivars.ended)(ivars.bubble_id, !operation.is_empty());
-            ACTIVE_SOURCE.with(|source| source.borrow_mut().take());
+            // Released at the end of this run-loop turn, never while AppKit ends the session.
+            if let Some(source) = ACTIVE_SOURCE.with(|source| source.borrow_mut().take()) {
+                let _ = Retained::autorelease_ptr(source);
+            }
         }
     }
 );

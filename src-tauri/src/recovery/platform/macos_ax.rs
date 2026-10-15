@@ -6,7 +6,7 @@
 use crate::recovery::classifier::{
     AxQueryError, EditAttribute, FocusedElement, FocusedElementPort,
 };
-use crate::smart_paste::macos_cf::{string_units, CfOwned, CfStringError, CfTypeRef};
+use crate::smart_paste::macos_cf::{string_units, type_id, CfOwned, CfStringError, CfTypeRef};
 use std::ptr;
 use std::time::Duration;
 
@@ -35,6 +35,7 @@ unsafe extern "C" {
         settable: *mut u8,
     ) -> i32;
     fn AXUIElementGetPid(element: CfTypeRef, pid: *mut i32) -> i32;
+    fn AXUIElementGetTypeID() -> usize;
 }
 
 fn ax_result(code: i32) -> Result<(), AxQueryError> {
@@ -104,6 +105,10 @@ impl FocusedElementPort for MacFocusedElementPort {
         let application = CfOwned::from_create_rule(unsafe { AXUIElementCreateApplication(pid) })
             .ok_or(AxQueryError::Failed)?;
         let element = copy_attribute(&application, "AXFocusedUIElement", timeout)?;
+        // SAFETY: AXUIElementGetTypeID takes no arguments; `element` is a live CF object.
+        if type_id(element.as_ptr()) != unsafe { AXUIElementGetTypeID() } {
+            return Err(AxQueryError::Failed);
+        }
         Ok(Box::new(MacFocusedElement { element }))
     }
 }

@@ -1269,16 +1269,6 @@
         "stale": "O destino mudou entretanto; a lista foi atualizada.",
         "frozen": "A inserção já começou; o destino já não pode mudar.",
         "unavailable": "Esta app já não está disponível; a lista foi atualizada."
-      },
-      "notice": {
-        "appClosedKept": "{{app}} está fechada. Nada foi inserido; a transcrição fica guardada no Histórico.",
-        "appClosedNotKept": "{{app}} está fechada. Nada foi inserido e não foi possível guardar a transcrição no Histórico.",
-        "activationFailedKept": "{{app}} não passou para primeiro plano. Nada foi inserido; a transcrição fica guardada no Histórico.",
-        "activationFailedNotKept": "{{app}} não passou para primeiro plano. Nada foi inserido e não foi possível guardar a transcrição no Histórico.",
-        "insertionFailedKept": "{{app}} pode não ter recebido o texto; a transcrição fica guardada no Histórico.",
-        "insertionFailedNotKept": "{{app}} pode não ter recebido o texto e não foi possível guardar a transcrição no Histórico.",
-        "pinnedAppNotRunningKept": "{{app}} está fixada mas não aberta. Nada foi inserido; a transcrição fica guardada no Histórico.",
-        "pinnedAppNotRunningNotKept": "{{app}} está fixada mas não aberta. Nada foi inserido e não foi possível guardar a transcrição no Histórico."
       }
     },
     "prompt": {

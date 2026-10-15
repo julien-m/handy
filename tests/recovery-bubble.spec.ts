@@ -177,10 +177,16 @@ test("a late read updates the same bubble, reported rendered only once", async (
   await open(page, failed);
   await page.getByTestId("recovery-bubble-why").click();
   await baseline(page, "recovery-bubble-insertion-failed");
+  await page.getByTestId("recovery-bubble-why").click();
   await show(page, { ...failed, late_read: true });
+  // Visible in the bubble itself, without opening "Why?", and announced.
   await expect(
-    page.getByTestId("recovery-bubble-explanation-explanation-text"),
-  ).toContainText("may have been pasted after all");
+    page.getByTestId("recovery-bubble-explanation-explanation"),
+  ).toHaveCount(0);
+  const late = page.getByTestId("recovery-bubble-late-read");
+  await expect(late).toBeVisible();
+  await expect(late).toHaveAttribute("role", "status");
+  await expect(late).toContainText("may have been pasted after all");
   await expect
     .poll(() => calls(page, "recovery_bubble_rendered"))
     .toHaveLength(1);

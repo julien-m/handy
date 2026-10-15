@@ -1269,16 +1269,6 @@
         "stale": "Målet ändrades under tiden; listan har uppdaterats.",
         "frozen": "Infogningen har börjat; målet kan inte längre ändras.",
         "unavailable": "Den här appen är inte längre tillgänglig; listan har uppdaterats."
-      },
-      "notice": {
-        "appClosedKept": "{{app}} är stängd. Inget infogades; transkriptionen finns kvar i Historik.",
-        "appClosedNotKept": "{{app}} är stängd. Inget infogades, och transkriptionen kunde inte sparas i Historik.",
-        "activationFailedKept": "{{app}} kom inte till förgrunden. Inget infogades; transkriptionen finns kvar i Historik.",
-        "activationFailedNotKept": "{{app}} kom inte till förgrunden. Inget infogades, och transkriptionen kunde inte sparas i Historik.",
-        "insertionFailedKept": "{{app}} kanske inte tog emot texten; transkriptionen finns kvar i Historik.",
-        "insertionFailedNotKept": "{{app}} kanske inte tog emot texten, och transkriptionen kunde inte sparas i Historik.",
-        "pinnedAppNotRunningKept": "{{app}} är fäst men inte öppen. Inget infogades; transkriptionen finns kvar i Historik.",
-        "pinnedAppNotRunningNotKept": "{{app}} är fäst men inte öppen. Inget infogades och transkriptionen kunde inte sparas i Historik."
       }
     },
     "prompt": {

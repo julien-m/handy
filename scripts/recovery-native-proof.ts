@@ -61,7 +61,7 @@ const MACOS_PROTOCOL: [string, string][] = [
   ],
   [
     "AC-002 matrix",
-    "Classification per destination (bubble or insertion): Finder window list, Finder desktop, Safari page without a focused field, TextEdit document, Notes note, a search field, an unknown custom control",
+    "Classification per destination (bubble or insertion): Finder window list, Finder desktop, Safari page without a focused field, TextEdit document, Notes note, a search field, an unknown custom control; with a focused field (also right after launch): Comet, Chrome, ChatGPT, Slack, VS Code (never a bubble)",
   ],
   [
     "AC-002 Spotlight",
@@ -77,7 +77,7 @@ const MACOS_PROTOCOL: [string, string][] = [
   ],
   [
     "AC-004 refusal",
-    "Drop on the desktop and press Escape during a drag: the bubble reappears unchanged? Hidden while dragging? Modifier keys never change copy?",
+    "Drop on the desktop and press Escape during a drag: the bubble reappears unchanged? Hidden while dragging? Modifier keys never change copy? A short fast gesture still starts the drag?",
   ],
   [
     "AC-004 stale",
@@ -97,7 +97,7 @@ const MACOS_PROTOCOL: [string, string][] = [
   ],
   [
     "AC-005 lifetime",
-    "Bubble left 60 s, then the screen locked and unlocked: still there? A new dictation closes it at once?",
+    "Bubble left 60 s, then the screen locked and unlocked: still there? A new dictation closes it once recording starts? A start that fails (microphone refused) keeps it with its text?",
   ],
   [
     "AC-007 settings",

@@ -1269,16 +1269,6 @@
         "stale": "La destinazione è cambiata nel frattempo; l'elenco è stato aggiornato.",
         "frozen": "L'inserimento è iniziato; la destinazione non può più cambiare.",
         "unavailable": "Questa app non è più disponibile; l'elenco è stato aggiornato."
-      },
-      "notice": {
-        "appClosedKept": "{{app}} è chiusa. Non è stato inserito nulla; la trascrizione è conservata nella Cronologia.",
-        "appClosedNotKept": "{{app}} è chiusa. Non è stato inserito nulla e non è stato possibile salvare la trascrizione nella Cronologia.",
-        "activationFailedKept": "{{app}} non è passata in primo piano. Non è stato inserito nulla; la trascrizione è conservata nella Cronologia.",
-        "activationFailedNotKept": "{{app}} non è passata in primo piano. Non è stato inserito nulla e non è stato possibile salvare la trascrizione nella Cronologia.",
-        "insertionFailedKept": "{{app}} potrebbe non aver ricevuto il testo; la trascrizione è conservata nella Cronologia.",
-        "insertionFailedNotKept": "{{app}} potrebbe non aver ricevuto il testo e non è stato possibile salvare la trascrizione nella Cronologia.",
-        "pinnedAppNotRunningKept": "{{app}} è fissata ma non aperta. Non è stato inserito nulla; la trascrizione è conservata nella Cronologia.",
-        "pinnedAppNotRunningNotKept": "{{app}} è fissata ma non aperta. Non è stato inserito nulla e la trascrizione non è stata salvata nella Cronologia."
       }
     },
     "prompt": {

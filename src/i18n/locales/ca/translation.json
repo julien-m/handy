@@ -1272,16 +1272,6 @@
         "stale": "La destinació ha canviat mentrestant; s'ha actualitzat la llista.",
         "frozen": "La inserció ja ha començat; la destinació ja no pot canviar.",
         "unavailable": "Aquesta app ja no està disponible; s'ha actualitzat la llista."
-      },
-      "notice": {
-        "appClosedKept": "{{app}} està tancada. No s'ha inserit res; la transcripció es conserva a l'Historial.",
-        "appClosedNotKept": "{{app}} està tancada. No s'ha inserit res i no s'ha pogut desar la transcripció a l'Historial.",
-        "activationFailedKept": "{{app}} no ha passat al primer pla. No s'ha inserit res; la transcripció es conserva a l'Historial.",
-        "activationFailedNotKept": "{{app}} no ha passat al primer pla. No s'ha inserit res i no s'ha pogut desar la transcripció a l'Historial.",
-        "insertionFailedKept": "És possible que {{app}} no hagi rebut el text; la transcripció es conserva a l'Historial.",
-        "insertionFailedNotKept": "És possible que {{app}} no hagi rebut el text i no s'ha pogut desar la transcripció a l'Historial.",
-        "pinnedAppNotRunningKept": "{{app}} està fixada però no oberta. No s'ha inserit res; la transcripció es conserva a l'Historial.",
-        "pinnedAppNotRunningNotKept": "{{app}} està fixada però no oberta. No s'ha inserit res i la transcripció no s'ha pogut desar a l'Historial."
       }
     },
     "prompt": {

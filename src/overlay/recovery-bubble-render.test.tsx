@@ -111,6 +111,18 @@ describe("explanation (has_tooltip: tooltip-show / tooltip-hide)", () => {
     expect(html).toContain("The transcript is not in History.");
     expect(html).not.toContain("kept in History");
   });
+  test("a late read is visible and announced without opening the explanation", () => {
+    const late = view({
+      reason: "insertion_failed",
+      detail: "may_have_reached",
+      late_read: true,
+    });
+    const html = render(late, false);
+    expect(html).toContain('data-testid="recovery-bubble-late-read"');
+    expect(html).toContain('role="status"');
+    expect(html).toContain("may have been pasted after all");
+    expect(render(view(), false)).not.toContain("recovery-bubble-late-read");
+  });
 });
 
 describe("platform actions (has_drag_drop: drag-start, AC-006)", () => {

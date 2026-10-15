@@ -1269,16 +1269,6 @@
         "stale": "目標在這段期間已變更；列表已重新整理。",
         "frozen": "插入已開始；目標無法再變更。",
         "unavailable": "此 App 已無法使用；列表已重新整理。"
-      },
-      "notice": {
-        "appClosedKept": "{{app}} 已關閉。未插入任何內容；轉錄文字保留在歷史紀錄中。",
-        "appClosedNotKept": "{{app}} 已關閉。未插入任何內容，且轉錄文字無法儲存到歷史紀錄。",
-        "activationFailedKept": "{{app}} 未切換到最前方。未插入任何內容；轉錄文字保留在歷史紀錄中。",
-        "activationFailedNotKept": "{{app}} 未切換到最前方。未插入任何內容，且轉錄文字無法儲存到歷史紀錄。",
-        "insertionFailedKept": "{{app}} 可能未收到文字；轉錄文字保留在歷史紀錄中。",
-        "insertionFailedNotKept": "{{app}} 可能未收到文字，且轉錄文字無法儲存到歷史紀錄。",
-        "pinnedAppNotRunningKept": "{{app}} 已釘選但未開啟。未插入任何內容；轉錄文字保留在歷史紀錄中。",
-        "pinnedAppNotRunningNotKept": "{{app}} 已釘選但未開啟。未插入任何內容，且轉錄文字無法儲存到歷史紀錄。"
       }
     },
     "prompt": {

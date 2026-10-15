@@ -110,14 +110,28 @@ impl PresentationReceipt {
         let _ = sender.send(result);
         receipt
     }
-    /// Wait for the answer at most `guard`, without blocking a thread. Dropping the receipt
-    /// at expiry tells the consumer that nobody waits any more.
-    pub async fn wait(self, guard: std::time::Duration) -> PresentationWait {
-        match tokio::time::timeout(guard, self.0).await {
+    /// Wait for the answer at most `guard`, without blocking a thread. At expiry the receipt
+    /// is closed and drained, so an answer sent at the very boundary is still reported here
+    /// and a later one fails on the consumer's side, which then reports it itself.
+    pub async fn wait(mut self, guard: std::time::Duration) -> PresentationWait {
+        match tokio::time::timeout(guard, &mut self.0).await {
             Ok(Ok(result)) => PresentationWait::Resolved(result),
             Ok(Err(_)) => PresentationWait::Abandoned,
-            Err(_) => PresentationWait::GuardExpired,
+            Err(_) => after_guard(&mut self.0),
         }
+    }
+}
+
+// @spec FR-002: No failure lost at the guard boundary — .specs/features/010-recovery-bubble/spec.md#fr-002
+/// The guard expired: close the channel first, then take an answer that arrived meanwhile.
+/// Once closed, every later send fails, so exactly one side reports the failure.
+fn after_guard(
+    receiver: &mut tokio::sync::oneshot::Receiver<PresentationResult>,
+) -> PresentationWait {
+    receiver.close();
+    match receiver.try_recv() {
+        Ok(result) => PresentationWait::Resolved(result),
+        Err(_) => PresentationWait::GuardExpired,
     }
 }
 

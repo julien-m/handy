@@ -1272,16 +1272,6 @@
         "stale": "The destination changed meanwhile; the list was refreshed.",
         "frozen": "Insertion has started; the destination can no longer change.",
         "unavailable": "This app is no longer available; the list was refreshed."
-      },
-      "notice": {
-        "appClosedKept": "{{app}} is closed. Nothing was inserted; the transcript is kept in History.",
-        "appClosedNotKept": "{{app}} is closed. Nothing was inserted, and the transcript could not be saved to History.",
-        "activationFailedKept": "{{app}} did not come to the front. Nothing was inserted; the transcript is kept in History.",
-        "activationFailedNotKept": "{{app}} did not come to the front. Nothing was inserted, and the transcript could not be saved to History.",
-        "insertionFailedKept": "{{app}} may not have received the text; the transcript is kept in History.",
-        "insertionFailedNotKept": "{{app}} may not have received the text, and the transcript could not be saved to History.",
-        "pinnedAppNotRunningKept": "{{app}} is pinned but not open. Nothing was inserted; the transcript is kept in History.",
-        "pinnedAppNotRunningNotKept": "{{app}} is pinned but not open. Nothing was inserted, and the transcript could not be saved to History."
       }
     },
     "prompt": {

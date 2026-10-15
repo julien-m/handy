@@ -460,8 +460,8 @@ Preuves natives en attente avec Julien : aucune n'est déclarée réussie. Harna
   - Attendu : chaque contrôle agit au premier clic ; TextEdit reste au premier plan avec sa fenêtre clé ; la bulle apparaît à la place de l'indicateur, y compris avec le style `none`.
   - Couvre : AC-003, FR-002. Preuve : `proofs/native-macos/surface/`.
 - [ ] **Classification du champ (étape 1, matrice de calibration).**
-  - Étapes : réglage activé, permission Accessibilité accordée ; dicter vers : liste d'une fenêtre Finder, bureau Finder, page Safari sans champ focalisé, document TextEdit, note Notes, champ de recherche, contrôle personnalisé inconnu ; puis Spotlight ouvert au-dessus de Finder, puis au-dessus de TextEdit ; lancer `recovery_native` (30 échantillons).
-  - Attendu : bulle « No text field is focused » seulement pour un élément non éditable connu du processus de destination ; insertion pour un champ éditable, un rôle inconnu, un champ sécurisé ou un focus d'un autre processus ; Spotlight (limite acceptée le 2026-10-15) : résultat noté ; aucun échantillon au-dessus de 60 ms, pas de gel d'UI ; lecture du premier plan de la 006 inchangée.
+  - Étapes : réglage activé, permission Accessibilité accordée ; dicter vers : liste d'une fenêtre Finder, bureau Finder, page Safari sans champ focalisé, document TextEdit, note Notes, champ de recherche, contrôle personnalisé inconnu ; puis, avec un champ focalisé, Comet, Chrome, ChatGPT (app), Slack et VS Code (éditeur et barre de recherche), chacun aussi juste après son lancement (arbre d'accessibilité Chromium/Electron pas encore activé) ; puis Spotlight ouvert au-dessus de Finder, puis au-dessus de TextEdit ; lancer `recovery_native` (30 échantillons).
+  - Attendu : bulle « No text field is focused » seulement sur preuve positive (rôle non textuel connu — liste, bouton, image… — dont les attributs d'édition sont lus et non réglables) ; insertion pour un champ éditable, un rôle inconnu ou conteneur (`AXWebArea`, `AXWindow`, `AXGroup`, `AXApplication`, `AXScrollArea`), un attribut illisible, un champ sécurisé ou un focus d'un autre processus ; **jamais de bulle à tort dans Comet, Chrome, ChatGPT, Slack et VS Code** ; Spotlight (limite acceptée le 2026-10-15) : résultat noté ; aucun échantillon au-dessus de 60 ms, pas de gel d'UI ; lecture du premier plan de la 006 inchangée.
   - Couvre : AC-002, FR-001. Si le critère des 60 ms échoue, la détection de champ n'est pas livrée (verdict `Insert`) et la feature ne passe pas Implemented sans décision de Julien. Preuve : `proofs/native-macos/classification/`.
 - [ ] **Raisons avant insertion et Entrée.**
   - Étapes : Entrée automatique `always` ; Notes quittée pendant la dictée ; Notes épinglée puis quittée ; Notes non ramenée au premier plan (plein écran sur un autre Space) ; Finder sans champ.
@@ -469,7 +469,11 @@ Preuves natives en attente avec Julien : aucune n'est déclarée réussie. Harna
   - Couvre : AC-001, AC-003, SC-003. Preuve : `proofs/native-macos/reasons/`.
 - [ ] **Échecs de méthode et smart paste.**
   - Étapes : smart paste sans lecture (« not read », ex. un champ qui ignore Cmd+V) ; puis une lecture tardive ; permission Accessibilité retirée (`permission_missing`) ; méthode classique en échec.
-  - Attendu : « Insertion failed » ; détail « Some text may have reached the application » (not read, uncertain, échec de méthode) ; « Nothing was sent to the application » (permission absente) ; après la lecture tardive, la même bulle ajoute « may have been pasted after all » ; aucune Entrée.
+  - Attendu : « Insertion failed » ; détail « Some text may have reached the application » (not read, uncertain, échec de méthode) ; « Nothing was sent to the application » (permission absente) ; après la lecture tardive, la même bulle affiche « may have been pasted after all » dans son texte principal, sans ouvrir « Why? », et VoiceOver l'annonce ; aucune Entrée.
+- [ ] **Avis de l'indicateur conservés.**
+  - Étapes : un prompt IA qui échoue (clé invalide) puis une insertion qui échoue (app quittée) ; Screen Sharing en remise de presse-papiers puis une bulle.
+  - Attendu : l'avis IA (005) reste au moins 4 s et l'avis de remise (007) toute sa durée, même quand la bulle apparaît dans sa propre fenêtre.
+  - Couvre : 005 AC-005, 007 AC-012, 010 FR-002. Preuve : `proofs/native-macos/notices/`.
   - Couvre : AC-001. Preuve : `proofs/native-macos/method-failures/`.
 - [ ] **Glisser-déposer natif (étape 6, SC-002).**
   - Étapes : glisser la bulle vers TextEdit, Notes, ChatGPT (champ vide) et Comet (champ de recherche) ; puis relâcher sur le bureau, et appuyer sur Échap pendant un glisser ; essayer avec Option et Cmd enfoncés ; démarrer une dictée pendant un glisser.
@@ -480,8 +484,8 @@ Preuves natives en attente avec Julien : aucune n'est déclarée réussie. Harna
   - Attendu : la transcription de B reste dans le presse-papiers ; la bulle se ferme ; aucune restauration ne l'écrase.
   - Couvre : AC-005. Preuve : `proofs/native-macos/copy/`.
 - [ ] **Durée de vie.**
-  - Étapes : laisser une bulle 60 s, verrouiller puis déverrouiller l'écran ; Close ; nouvelle dictée sur une bulle affichée depuis 1 s.
-  - Attendu : la bulle reste jusqu'à une action ; Close la ferme sans toucher l'Historique ; la nouvelle dictée la ferme aussitôt et l'indicateur apparaît.
+  - Étapes : laisser une bulle 60 s, verrouiller puis déverrouiller l'écran ; Close ; nouvelle dictée sur une bulle affichée depuis 1 s ; nouvelle dictée dont l'enregistrement échoue (micro débranché ou refusé).
+  - Attendu : la bulle reste jusqu'à une action ; Close la ferme sans toucher l'Historique ; la nouvelle dictée la ferme dès que l'enregistrement démarre et l'indicateur apparaît ; si l'enregistrement ne démarre pas, la bulle reste avec son texte.
   - Couvre : AC-005. Preuve : `proofs/native-macos/lifetime/`.
 - [ ] **VoiceOver et clavier.**
   - Étapes : VoiceOver sur la bulle (sans lui donner le focus clavier) ; réglages de sortie : Tab jusqu'à « Show the bubble when no text field is focused », Espace.
@@ -554,10 +558,11 @@ Preuves natives en attente avec Julien : aucune n'est déclarée réussie. Harna
   - ancien binaire : un Handy antérieur avec `auto_submit` vrai, puis un premier lancement de la build ouverte : `handy settings output get automatic_enter --json` vaut `always` et `auto_submit_key` est gardé ; l'ancien binaire relancé garde son comportement ;
   - `cargo check` Windows et Linux en CI (le code `paste_tx/windows.rs` de la 009 n'est compilé que sur Windows).
 - [ ] **010 :**
-  - priorité de la bulle sur les avis de l'indicateur : présenter la bulle lève le maintien des avis 005 (échec IA) et 007 (remise Screen Sharing) et cache l'indicateur (`overlay::yield_to_recovery`) ; à valider ;
+  - la bulle ne coupe plus les avis 005 et 007 (revue de livraison, 2026-10-15) : vérifier natif que la bulle et un avis encore affiché ne se gênent pas à la même position ;
   - en mode « copy to clipboard », 007 n'émet pas de lecture tardive : la bulle garde le texte « not read » simple (limite 007 à décider par son propriétaire) ;
-  - interprétation de la classification : un attribut d'édition non pris en charge (ou sans valeur) compte comme « non modifiable » pour un rôle non textuel connu ; un délai, une autre erreur ou un rôle inconnu restent indéterminés ;
-  - `AXGroup` est classé indéterminé (éditeurs dessinés à la main), à revoir après la matrice de calibration ;
+  - classification (revue de livraison, 2026-10-15) : « non éditable » seulement sur preuve positive ; tout attribut illisible et les conteneurs `AXWebArea`, `AXWindow`, `AXGroup`, `AXApplication`, `AXScrollArea` sont indéterminés ; à revoir après la matrice de calibration ;
+  - la poignée de glisser est un bouton sans action au clavier ni pour VoiceOver (Copy reste l'alternative) ; le glisser part de l'événement souris courant d'AppKit, à prouver avec un geste court (revue de livraison) ;
+  - Copy et le glisser transportent la transcription sans l'espace final de `append_trailing_space` ;
   - les commandes de la bulle sont enregistrées dans les deux états du verrou (un seul `bindings.ts`) et inertes sans le service.
 - [ ] **008 :**
   - store illisible : lecture seule à chaque lancement, onboarding répété, aucune voie de sortie documentée ;

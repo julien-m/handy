@@ -1269,16 +1269,6 @@
         "stale": "Das Ziel hat sich inzwischen geändert; die Liste wurde aktualisiert.",
         "frozen": "Das Einfügen hat begonnen; das Ziel kann nicht mehr geändert werden.",
         "unavailable": "Diese App ist nicht mehr verfügbar; die Liste wurde aktualisiert."
-      },
-      "notice": {
-        "appClosedKept": "{{app}} ist geschlossen. Es wurde nichts eingefügt; das Transkript bleibt im Verlauf.",
-        "appClosedNotKept": "{{app}} ist geschlossen. Es wurde nichts eingefügt, und das Transkript konnte nicht im Verlauf gespeichert werden.",
-        "activationFailedKept": "{{app}} kam nicht in den Vordergrund. Es wurde nichts eingefügt; das Transkript bleibt im Verlauf.",
-        "activationFailedNotKept": "{{app}} kam nicht in den Vordergrund. Es wurde nichts eingefügt, und das Transkript konnte nicht im Verlauf gespeichert werden.",
-        "insertionFailedKept": "{{app}} hat den Text möglicherweise nicht erhalten; das Transkript bleibt im Verlauf.",
-        "insertionFailedNotKept": "{{app}} hat den Text möglicherweise nicht erhalten, und das Transkript konnte nicht im Verlauf gespeichert werden.",
-        "pinnedAppNotRunningKept": "{{app}} ist angeheftet, aber nicht geöffnet. Es wurde nichts eingefügt; das Transkript bleibt im Verlauf.",
-        "pinnedAppNotRunningNotKept": "{{app}} ist angeheftet, aber nicht geöffnet. Es wurde nichts eingefügt, und das Transkript konnte nicht im Verlauf gespeichert werden."
       }
     },
     "prompt": {

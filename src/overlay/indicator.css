@@ -318,7 +318,7 @@
   color: var(--color-warning);
 }
 
-/* ---- Notices (AI failure, destination reason, hand-over) ---- */
+/* ---- Notices (AI failure, hand-over) ---- */
 .snotice {
   width: var(--ov-notice-w);
   box-sizing: border-box;

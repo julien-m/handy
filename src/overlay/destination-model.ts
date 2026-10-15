@@ -122,20 +122,6 @@ export const menuMatches = (
 export const refusalKey = (refusal: SelectionRefusal): string =>
   `overlay.destination.refused.${refusal}`;
 
-/**
- * The application a destination notice names: the selection of the snapshot of that dictation
- * (`null` when the snapshot belongs to another dictation or targets the frontmost app).
- */
-export const selectionName = (
-  snapshot: DestinationSnapshot | null,
-  dictationId: number,
-): string | null => {
-  if (!snapshot || snapshot.dictation_id !== dictationId) return null;
-  return snapshot.selection.kind === "application"
-    ? snapshot.selection.display_name
-    : null;
-};
-
 /** An icon reference the badge can render safely (an inline image), or `null` for a monogram. */
 export const safeIconSource = (iconRef: string | null): string | null =>
   iconRef !== null && iconRef.startsWith("data:image/") ? iconRef : null;

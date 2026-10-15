@@ -101,7 +101,7 @@ fn after_the_guard_expired_the_late_answer_finds_no_waiter() -> TestResult {
 fn a_new_dictation_supersedes_a_bubble_not_yet_shown_and_releases_its_slot() -> TestResult {
     let manager = manager();
     let (_, receipt) = admit(&manager, 1).ok_or("admitted")?;
-    let retired = manager.new_dictation(true).ok_or("retired")?;
+    let retired = manager.new_dictation().ok_or("retired")?;
     assert_eq!(retired.release, Some(TranscriptRef(1)));
     assert_eq!(
         answer(receipt),
@@ -114,7 +114,7 @@ fn a_new_dictation_closes_a_visible_bubble_at_once_and_its_late_actions_are_igno
 {
     let manager = manager();
     let bubble = visible(&manager, 1).ok_or("visible")?;
-    let retired = manager.new_dictation(true).ok_or("closed")?;
+    let retired = manager.new_dictation().ok_or("closed")?;
     assert_eq!(retired.release, None, "released when it was shown");
     assert!(manager.begin_copy(bubble, 11).is_none());
     assert!(manager.close(bubble).is_none());
@@ -196,7 +196,7 @@ fn a_new_dictation_while_dragging_closes_for_good_and_ignores_the_late_drop() ->
     let manager = manager();
     let first = visible(&manager, 1).ok_or("visible")?;
     manager.begin_drag(first).ok_or("drag")?;
-    manager.new_dictation(true).ok_or("closed")?;
+    manager.new_dictation().ok_or("closed")?;
     let second = visible(&manager, 2).ok_or("second")?;
     assert_eq!(manager.drag_ended(first, false), DragEnd::Ignored);
     assert_eq!(manager.drag_ended(first, true), DragEnd::Ignored);
@@ -255,7 +255,7 @@ fn a_buffered_late_read_is_dropped_at_the_next_dictation_and_stale_ones_are_igno
         manager.late_read(DictationId(3), "7"),
         LateReadEnd::Buffered
     );
-    manager.new_dictation(true);
+    manager.new_dictation();
     let (_, view, _) = manager.admit(admission(&manager, 3)).ok_or("admitted")?;
     assert!(!view.late_read);
     assert_eq!(manager.late_read(DictationId(2), "7"), LateReadEnd::Ignored);
@@ -265,12 +265,12 @@ fn a_buffered_late_read_is_dropped_at_the_next_dictation_and_stale_ones_are_igno
 fn the_setting_is_frozen_at_the_dictation_start_and_bound_to_that_dictation() {
     let manager = manager();
     assert!(!manager.setting_for(DictationId(1)), "unknown: off");
-    manager.new_dictation(true);
+    manager.freeze_setting(true);
     manager.bind_setting(DictationId(1));
     manager.bind_setting(DictationId(2));
     assert!(manager.setting_for(DictationId(1)));
     assert!(!manager.setting_for(DictationId(2)));
-    manager.new_dictation(false);
+    manager.freeze_setting(false);
     manager.bind_setting(DictationId(2));
     assert!(!manager.setting_for(DictationId(2)));
 }

@@ -1269,16 +1269,6 @@
         "stale": "Cíl se mezitím změnil; seznam byl obnoven.",
         "frozen": "Vkládání už začalo; cíl už nelze změnit.",
         "unavailable": "Tato aplikace už není dostupná; seznam byl obnoven."
-      },
-      "notice": {
-        "appClosedKept": "{{app}} je zavřená. Nic nebylo vloženo; přepis zůstává v Historii.",
-        "appClosedNotKept": "{{app}} je zavřená. Nic nebylo vloženo a přepis se nepodařilo uložit do Historie.",
-        "activationFailedKept": "{{app}} se nedostala do popředí. Nic nebylo vloženo; přepis zůstává v Historii.",
-        "activationFailedNotKept": "{{app}} se nedostala do popředí. Nic nebylo vloženo a přepis se nepodařilo uložit do Historie.",
-        "insertionFailedKept": "{{app}} možná text nepřijala; přepis zůstává v Historii.",
-        "insertionFailedNotKept": "{{app}} možná text nepřijala a přepis se nepodařilo uložit do Historie.",
-        "pinnedAppNotRunningKept": "{{app}} je připnutá, ale není otevřená. Nic nebylo vloženo; přepis zůstává v Historii.",
-        "pinnedAppNotRunningNotKept": "{{app}} je připnutá, ale není otevřená. Nic nebylo vloženo a přepis se nepodařilo uložit do Historie."
       }
     },
     "prompt": {

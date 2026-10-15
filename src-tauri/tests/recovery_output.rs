@@ -60,7 +60,7 @@ fn live() -> Arc<AtomicBool> {
 #[test]
 fn a_not_editable_focus_recovers_before_any_dispatch_with_its_typed_reason_and_no_enter() {
     let rig = Rig::new(chatgpt(), vec![chatgpt()]);
-    let bench = Bench::with_focus(RecoveryPlatform::MacOs, Focus::role("AXWebArea", 11));
+    let bench = Bench::with_focus(RecoveryPlatform::MacOs, Focus::role("AXList", 11));
     let (report, method, _) = deliver(&rig, &bench, true, true, live());
     assert_eq!(report.status, InsertionStatus::Failed);
     assert_eq!(report.reason, Some(DestinationFailure::NoTextField));
@@ -77,6 +77,8 @@ fn an_editable_or_undetermined_focus_inserts_as_usual() {
     for focus in [
         Focus::role("AXTextArea", 11),
         Focus::role("AXGroup", 11),
+        Focus::role("AXWebArea", 11),
+        Focus::role("AXWindow", 11),
         Focus::role("AXList", 99),
     ] {
         let rig = Rig::new(chatgpt(), vec![chatgpt()]);

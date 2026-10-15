@@ -127,3 +127,19 @@ fn a_receipt_reports_the_answer_a_dropped_sender_or_the_guard_expiry() -> std::i
     );
     Ok(())
 }
+#[test]
+fn an_answer_at_the_guard_boundary_is_never_lost() {
+    let (sender, mut receipt) = PresentationReceipt::pending();
+    assert_eq!(sender.send(PresentationResult::Unpresentable), Ok(()));
+    assert_eq!(
+        after_guard(&mut receipt.0),
+        PresentationWait::Resolved(PresentationResult::Unpresentable),
+        "sent just before expiry: 006 reports it"
+    );
+    let (sender, mut receipt) = PresentationReceipt::pending();
+    assert_eq!(after_guard(&mut receipt.0), PresentationWait::GuardExpired);
+    assert!(
+        sender.send(PresentationResult::Unpresentable).is_err(),
+        "sent after expiry: refused, so 010 reports it"
+    );
+}

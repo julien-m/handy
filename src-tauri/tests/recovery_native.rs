@@ -44,6 +44,86 @@ fn the_projection_is_emitted_only_to_the_recovery_window_and_never_logged() {
     }
 }
 
+/// Every `.ts` and `.tsx` source under `directory`, recursively.
+fn frontend_sources(directory: &std::path::Path, found: &mut Vec<(String, String)>) {
+    let Ok(entries) = std::fs::read_dir(directory) else {
+        return;
+    };
+    for path in entries.flatten().map(|entry| entry.path()) {
+        if path.is_dir() {
+            frontend_sources(&path, found);
+        } else if path
+            .extension()
+            .is_some_and(|ext| ext == "ts" || ext == "tsx")
+        {
+            let text = std::fs::read_to_string(&path).unwrap_or_default();
+            found.push((path.display().to_string(), text));
+        }
+    }
+}
+
+/// The projection is emitted to the recovery window only, and Tauri also delivers a targeted
+/// event to `Any` listeners: no other frontend source may listen to the bubble's events.
+#[test]
+fn only_the_recovery_window_listens_to_the_bubble_events() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../src");
+    let mut sources = Vec::new();
+    frontend_sources(&root, &mut sources);
+    assert!(!sources.is_empty());
+    for (path, text) in sources {
+        let listens = text.contains("\"recovery-bubble-changed\"");
+        let allowed = path.ends_with("use-recovery-bubble.ts");
+        assert!(
+            !listens || allowed,
+            "{path} listens to the bubble projection"
+        );
+    }
+}
+
+/// The text of `source` from `name` to the first `end` after it (the end of that function).
+fn body<'a>(source: &'a str, name: &str, end: &str) -> &'a str {
+    let start = source.find(name).unwrap_or(source.len());
+    let rest = &source[start..];
+    &rest[..rest.find(end).unwrap_or(rest.len())]
+}
+
+/// 005 AC-005 and 007: presenting the bubble hides the indicator as at the end of a dictation
+/// and never ends a notice hold, so an AI-failure or hand-over notice keeps its duration.
+#[test]
+fn presenting_the_bubble_never_cuts_an_indicator_notice() {
+    let overlay = include_str!("../src/overlay.rs");
+    let yielding = body(overlay, "pub fn yield_to_recovery", "\n}");
+    assert!(yielding.contains("hide_recording_overlay(app_handle)"));
+    assert!(!yielding.contains("release_hold"), "{yielding}");
+    assert!(
+        overlay.contains("if SURFACE.is_held()"),
+        "the delayed hide keeps a held notice"
+    );
+}
+
+/// AC-005 with no text loss: the bubble closes only after the recording really started.
+#[test]
+fn the_bubble_closes_only_after_the_recording_started() {
+    let actions = include_str!("../src/actions.rs");
+    let started = actions
+        .find("rm.try_start_recording(")
+        .unwrap_or(usize::MAX);
+    let accepted = actions[started..]
+        .find("Ok(readiness) =>")
+        .map(|at| started + at);
+    let closed = actions.find("recovery::app::dictation_started(app)");
+    assert!(
+        accepted.is_some() && closed > accepted,
+        "closed inside the accepted start"
+    );
+    let starting = body(
+        include_str!("../src/recovery/service.rs"),
+        "pub fn dictation_starting",
+        "\n    }",
+    );
+    assert!(!starting.contains("retire"), "{starting}");
+}
+
 #[cfg(target_os = "macos")]
 mod macos {
     use handy_app_lib::destination::native_workspace;

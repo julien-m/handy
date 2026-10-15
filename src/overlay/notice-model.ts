@@ -1,13 +1,14 @@
 // Pure rules of the transient notices on the recording indicator: the AI failure of 005
-// (AC-005), the destination reason of 006 (AC-005) and the Screen Sharing hand-over of 007
-// (AC-012). Each stays at least four seconds; none ever claims that an insertion succeeded.
+// (AC-005) and the Screen Sharing hand-over of 007 (AC-012). Each stays at least four seconds;
+// none ever claims that an insertion succeeded. The destination reason of 006 is presented by
+// 010's recovery bubble instead.
 import type { PromptProcessingFailed } from "@/bindings";
 
 /** Minimum display time of every indicator notice (005 AC-005, 006 AC-005). */
 export const NOTICE_MIN_MS = 4000;
 
 /** Which feature raised a notice; a newer notice of the same kind replaces the older one. */
-export type NoticeKind = "ai_failed" | "destination" | "hand_over";
+export type NoticeKind = "ai_failed" | "hand_over";
 
 /** One notice on the indicator. `appName` fills `{{app}}`; `null` names no application. */
 export interface OverlayNotice {
@@ -17,53 +18,6 @@ export interface OverlayNotice {
   until: number;
   testId: string;
 }
-
-/** The fields of 006's `insertion-outcome` event the indicator reads (metadata only). */
-export interface OutcomeFacts {
-  dictationId: number;
-  failed: boolean;
-  reason:
-    | "app_closed"
-    | "activation_failed"
-    | "insertion_failed"
-    | "pinned_app_not_running"
-    | null;
-  historySaved: boolean;
-}
-
-const REASONS = [
-  "app_closed",
-  "activation_failed",
-  "insertion_failed",
-  "pinned_app_not_running",
-] as const;
-
-// @spec AC-003: Pinned app not running reason shown — .specs/features/009-pin-mode-and-enter-rule/spec.md#ac-003
-const REASON_KEYS: Record<NonNullable<OutcomeFacts["reason"]>, string> = {
-  app_closed: "appClosed",
-  activation_failed: "activationFailed",
-  insertion_failed: "insertionFailed",
-  pinned_app_not_running: "pinnedAppNotRunning",
-};
-
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === "object" && value !== null;
-
-const reasonOf = (value: unknown): OutcomeFacts["reason"] =>
-  REASONS.find((reason) => reason === value) ?? null;
-
-/** Read an `insertion-outcome` payload; `null` when it is not one (never trusted blindly). */
-export const parseOutcome = (payload: unknown): OutcomeFacts | null => {
-  if (!isRecord(payload) || typeof payload.dictation_id !== "number") {
-    return null;
-  }
-  return {
-    dictationId: payload.dictation_id,
-    failed: payload.status === "failed",
-    reason: reasonOf(payload.reason),
-    historySaved: payload.history_status === "saved",
-  };
-};
 
 // @spec AC-005: AI failure notice at least 4 s — .specs/features/005-custom-ai-prompts/spec.md#ac-005
 /** Notice of the AI step failure: the original text was used; nothing about the insertion. */
@@ -77,28 +31,6 @@ export const aiFailureNotice = (
   until: now + Math.max(event.notice_ms, NOTICE_MIN_MS),
   testId: "recording-indicator-ai-failed-notice",
 });
-
-// @spec AC-005: Reason shown at least 4 s — .specs/features/006-destination-application/spec.md#ac-005
-/**
- * Notice of a destination failure (app closed, pinned app not running (009), activation failed,
- * insertion failed) saying
- * whether the transcript is in History; `null` when the outcome is not such a failure.
- */
-export const destinationNotice = (
-  facts: OutcomeFacts,
-  appName: string | null,
-  now: number,
-): OverlayNotice | null => {
-  if (!facts.failed || facts.reason === null) return null;
-  const history = facts.historySaved ? "Kept" : "NotKept";
-  return {
-    kind: "destination",
-    key: `overlay.destination.notice.${REASON_KEYS[facts.reason]}${history}`,
-    appName,
-    until: now + NOTICE_MIN_MS,
-    testId: "recording-indicator-destination-unavailable-notice",
-  };
-};
 
 // @spec AC-012: Hand-over message on the indicator — .specs/features/007-smart-paste/spec.md#ac-012
 /** Notice of the Screen Sharing hand-over (007): text placed on the clipboard. */

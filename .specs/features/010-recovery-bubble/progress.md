@@ -14,6 +14,24 @@ Gates before code: `livespec validate --pre-impl` exit 0 (semantic readiness cov
 | 6 | In Progress (native drag pending with Julien) | `src-tauri/src/recovery/platform/macos_drag.rs`, `src-tauri/src/recovery/{manager.rs,service.rs,surface.rs}`, `src/overlay/use-recovery-bubble.ts` | lifecycle and gesture tests above | Identity-guarded drag lifecycle and gesture pass; the AppKit session (full payload, copy only, hidden while dragging, TextEdit/Notes/ChatGPT/Comet) is not run | 2026-10-15 |
 | 7 | In Progress (native acceptance pending with Julien) | `.github/workflows/test.yml`, `proofs/impl-20261015/` (`summary.txt`, `final/`, `acceptance-mapping.json`) | Final verification (`proofs/impl-20261015/summary.txt`: tsc, lint, format, translations, build, 12 bun suites, every Playwright spec, cargo fmt, clippy lib/bins and all-targets and the full cargo test in the four feature combinations, conventions repo, progression, feature validation, acceptance mapping; addendum: privacy source check in the four combinations) | 39/39 exit 0, addendum 8/8 exit 0; macOS native acceptance not run | 2026-10-15 |
 
+## Delivery review round 1 — corrections
+
+Review PASS and audit PASS (`.reviews/delivery.json`), with warnings corrected before the merge on the coordinator's instruction. Verification in `proofs/impl-20261015-fix1/summary.txt`.
+
+| Finding | Correction | Tests |
+|---|---|---|
+| False bubbles in Chromium and Electron (`classifier.rs`) | "Not editable" only on positive proof: a known non-text role (list, button, image…) whose three edit attributes are read and not settable; `AXWebArea`, `AXWindow`, `AXGroup`, `AXApplication`, `AXScrollArea` and any unreadable attribute are undetermined (`Insert`); Comet, Chrome, ChatGPT, Slack and VS Code added to the native matrix | `classifier_tests::{chromium_and_electron_containers_are_undetermined, an_unreadable_edit_attribute_is_a_doubt_never_a_proof}`, `recovery_output::an_editable_or_undetermined_focus_inserts_as_usual` |
+| Text lost when a new recording fails to start (`actions.rs`) | The setting is frozen at the start; the bubble closes only in `dictation_started`, after `try_start_recording` accepted the recording | `recovery_lifecycle::a_dictation_whose_recording_fails_to_start_keeps_the_bubble_and_its_text`, `recovery_native::the_bubble_closes_only_after_the_recording_started` |
+| 005 AI notice cut (`overlay.rs`) | `yield_to_recovery` no longer ends notice holds; the 005 and 007 notices keep their duration | `recovery_native::presenting_the_bubble_never_cuts_an_indicator_notice` |
+| Late read only behind "Why?" | Shown in the bubble body (`role="status"`, same key, no i18n change) | `recovery-preview.test.ts`, `recovery-bubble-render.test.tsx`, `tests/recovery-bubble.spec.ts` |
+| Answer lost at the 2 s guard (`recovery.rs`) | At expiry the receipt is closed then drained (`after_guard`): one side reports, never none | `recovery_tests::an_answer_at_the_guard_boundary_is_never_lost` |
+| Sentinel test was a source grep | Runtime test with a capturing logger and the recording surface over every bubble path | `tests/recovery_privacy.rs` |
+| Emit isolation by convention | Documented; a test checks no other frontend source listens to the bubble events | `recovery_native::only_the_recovery_window_listens_to_the_bubble_events` |
+| Bubble window in the `default` capability | Own capability `recovery-bubble` (`core:event:default`, `os:allow-locale`) | build (capability schema), Playwright |
+| Dead 006 notice code | `destinationNotice`, `parseOutcome`, `OutcomeFacts`, `selectionName`, their tests and `overlay.destination.notice.*` in 26 locales removed | `bun run test:indicator`, `check:translations` |
+| Functions over 30 lines | `RecoveryBubble`, `Actions`, `Header` split into small components; `useActions` extracted | conventions |
+| Info: CF type and drag source lifetime | Focused element checked as `AXUIElement` before any AX call; drag source autoreleased at the end of the run-loop turn | build, clippy |
+
 ## Step 1 — feasibility notes
 
 - The native read-only tests are written and ignored by default; they need a logged-in session and Accessibility for the runner, never activate an application, type or touch the clipboard.
@@ -25,12 +43,13 @@ None is declared passed. Exact procedure: `.specs/native-proofs-checklist.md`, s
 
 1. Closed gate identical to `dev` (`handy-gates-closed.app`): `paste-error`, no bubble, key `not_found`, no toggle.
 2. Surface spike: first click on Copy, Close and Why? without activating Handy; bubble in place of the indicator, also with overlay style none.
-3. Classification matrix (Finder list and desktop, Safari page without field, TextEdit, Notes, search field, unknown control, Spotlight over Finder and over TextEdit) and `recovery_native` (30 samples, none above 60 ms; 006's foreground read unchanged).
+3. Classification matrix (Finder list and desktop, Safari page without field, TextEdit, Notes, search field, unknown control; Comet, Chrome, ChatGPT, Slack and VS Code with a focused field, never a bubble; Spotlight over Finder and over TextEdit) and `recovery_native` (30 samples, none above 60 ms; 006's foreground read unchanged).
 4. Reasons before insertion with Automatic Enter Always (closed, pinned not running, not brought forward, no text field): texts, no Enter, no `paste-error`.
 5. Method failures: smart paste not read then late read, permission missing, classic failure.
 6. Native drag (SC-002): TextEdit and Notes full transcript, ChatGPT and Comet recorded; refusal and Escape; modifiers; new dictation during the drag.
 7. Copy against a pending smart paste restoration.
-8. Lifetime: 60 s, screen lock, Close, new dictation after 1 s.
+8. Lifetime: 60 s, screen lock, Close, new dictation after 1 s, a start that fails keeps the bubble.
+8b. The 005 and 007 notices keep their duration when the bubble appears.
 9. VoiceOver names and activation; settings toggle with Tab and Space.
 10. Decision-to-visible samples against the 300 ms QE target.
 11. CLI with Handy running.

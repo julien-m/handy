@@ -296,11 +296,10 @@ pub fn indicator_place(app_handle: &AppHandle, width: f64, height: f64) -> Optio
 }
 
 // @spec FR-002: The bubble takes the indicator's place — .specs/features/010-recovery-bubble/spec.md#fr-002
-/// The surface arbiter of 010: the recording indicator and the recovery bubble are mutually
-/// exclusive at the indicator position, so presenting the bubble ends any notice hold and hides
-/// the indicator (a new dictation closes the bubble before the indicator shows).
+/// The bubble takes the indicator's place: the indicator is hidden as at the end of a
+/// dictation, which keeps any notice hold (005 AI failure, 007 hand-over) until its duration
+/// ends; the bubble shows in its own window without cutting those notices.
 pub fn yield_to_recovery(app_handle: &AppHandle) {
-    SURFACE.release_hold(None);
     hide_recording_overlay(app_handle);
 }
 

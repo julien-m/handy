@@ -1,6 +1,10 @@
 //! Tauri adapter of the recovery surface: the dedicated recovery window, created on first use
 //! and driven on the main thread, sized to what its view reports and placed where the indicator
-//! is. The view projection goes only to that window (`emit_to`); the full transcript never does.
+//! is. The full transcript never leaves the native side. The projection is emitted with
+//! `emit_to(RECOVERY_WINDOW, …)`; in Tauri 2 a webview listener created with the default
+//! target (`Any`) would still receive it, so the isolation also rests on a convention checked
+//! by `tests/recovery_native.rs`: only the recovery window listens to its events. The
+//! label-checked `recovery_bubble_view` command remains the source of truth.
 use super::platform::{self, INITIAL_SIZE, RECOVERY_WINDOW};
 use super::ports::RecoverySurfacePort;
 use super::service::RecoveryService;

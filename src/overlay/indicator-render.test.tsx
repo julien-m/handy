@@ -15,11 +15,7 @@ import {
   render,
   session,
 } from "./indicator-test-fixtures";
-import {
-  aiFailureNotice,
-  destinationNotice,
-  handOverNotice,
-} from "./notice-model";
+import { aiFailureNotice, handOverNotice } from "./notice-model";
 
 beforeAll(initIndicatorI18n);
 
@@ -223,17 +219,8 @@ describe("notices (005, 006, 007)", () => {
     reason: "timeout",
     notice_ms: 4000,
   } as const;
-  const closed = destinationNotice(
-    { dictationId: 7, failed: true, reason: "app_closed", historySaved: true },
-    "Notes",
-    0,
-  );
   test("each notice has its test ID and text, and outlives the indicator", () => {
-    const notices = [
-      aiFailureNotice(failure, 0),
-      handOverNotice(0),
-      ...(closed ? [closed] : []),
-    ];
+    const notices = [aiFailureNotice(failure, 0), handOverNotice(0)];
     const html = render({ notices, showIndicator: false });
     expect(html).toContain(
       'data-testid="recording-indicator-ai-failed-notice"',
@@ -244,9 +231,6 @@ describe("notices (005, 006, 007)", () => {
     );
     expect(html).toContain(
       "Text placed on the clipboard for the remote screen",
-    );
-    expect(html).toContain(
-      "Notes is closed. Nothing was inserted; the transcript is kept in History.",
     );
     expect(html).not.toContain("recording-indicator-pill");
   });

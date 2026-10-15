@@ -1272,16 +1272,6 @@
         "stale": "De bestemming is intussen gewijzigd; de lijst is vernieuwd.",
         "frozen": "Het invoegen is begonnen; de bestemming kan niet meer veranderen.",
         "unavailable": "Deze app is niet meer beschikbaar; de lijst is vernieuwd."
-      },
-      "notice": {
-        "appClosedKept": "{{app}} is gesloten. Er is niets ingevoegd; de transcriptie blijft bewaard in Geschiedenis.",
-        "appClosedNotKept": "{{app}} is gesloten. Er is niets ingevoegd en de transcriptie kon niet in Geschiedenis worden opgeslagen.",
-        "activationFailedKept": "{{app}} kwam niet naar de voorgrond. Er is niets ingevoegd; de transcriptie blijft bewaard in Geschiedenis.",
-        "activationFailedNotKept": "{{app}} kwam niet naar de voorgrond. Er is niets ingevoegd en de transcriptie kon niet in Geschiedenis worden opgeslagen.",
-        "insertionFailedKept": "{{app}} heeft de tekst mogelijk niet ontvangen; de transcriptie blijft bewaard in Geschiedenis.",
-        "insertionFailedNotKept": "{{app}} heeft de tekst mogelijk niet ontvangen en de transcriptie kon niet in Geschiedenis worden opgeslagen.",
-        "pinnedAppNotRunningKept": "{{app}} is vastgezet maar niet geopend. Er is niets ingevoegd; de transcriptie blijft bewaard in Geschiedenis.",
-        "pinnedAppNotRunningNotKept": "{{app}} is vastgezet maar niet geopend. Er is niets ingevoegd en de transcriptie kon niet in Geschiedenis worden opgeslagen."
       }
     },
     "prompt": {

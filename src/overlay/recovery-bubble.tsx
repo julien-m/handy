@@ -1,12 +1,17 @@
 // Recovery bubble (010): the transcript Handy kept when it could not insert it, shown in place
-// of the live indicator in its own nonactivating window. Reason, two-line preview, macOS drag
-// handle, Copy, Close and the explanation; every control is a native button for the pointer
-// and assistive technologies (the window never takes keyboard focus from other apps).
+// of the live indicator in its own nonactivating window. Reason, two-line preview, a late-read
+// warning, macOS drag handle, Copy, Close and the explanation; every control is a native button
+// for the pointer and assistive technologies (the window never takes keyboard focus).
 import { Copy, GripVertical, Info, TriangleAlert, X } from "lucide-react";
 import React, { useId } from "react";
 import { useTranslation } from "react-i18next";
 import type { RecoveryBubbleView } from "@/bindings";
-import { bubbleTexts, type Point, type ReasonIcon } from "./recovery-preview";
+import {
+  bubbleTexts,
+  type BubbleTexts,
+  type Point,
+  type ReasonIcon,
+} from "./recovery-preview";
 import "./recovery-bubble.css";
 
 /** A pointer event on the drag handle, reduced to what the gesture needs. */
@@ -40,117 +45,162 @@ const pointer =
       buttons: event.buttons,
     });
 
-interface HandleProps {
-  label: string;
-  onDragPointer: (pointer: DragPointer) => void;
-}
-
 // @spec FR-003: macOS drag handle of the bubble — .specs/features/010-recovery-bubble/spec.md#fr-003
 /** The drag handle: a pointer gesture past the threshold starts the native drag. */
-const DragHandle: React.FC<HandleProps> = ({ label, onDragPointer }) => (
-  <button
-    type="button"
-    className="rb-pill"
-    data-testid="recovery-bubble-drag-handle"
-    data-semantic-id="recovery-bubble.drag-handle"
-    onPointerDown={pointer("down", onDragPointer)}
-    onPointerMove={pointer("move", onDragPointer)}
-    onPointerUp={pointer("up", onDragPointer)}
-  >
-    <GripVertical className="rb-pill-icon" aria-hidden="true" />
-    {label}
-  </button>
-);
+const DragHandle: React.FC<Pick<RecoveryBubbleProps, "onDragPointer">> = ({
+  onDragPointer,
+}) => {
+  const { t } = useTranslation();
+  return (
+    <button
+      type="button"
+      className="rb-pill"
+      data-testid="recovery-bubble-drag-handle"
+      data-semantic-id="recovery-bubble.drag-handle"
+      onPointerDown={pointer("down", onDragPointer)}
+      onPointerMove={pointer("move", onDragPointer)}
+      onPointerUp={pointer("up", onDragPointer)}
+    >
+      <GripVertical className="rb-pill-icon" aria-hidden="true" />
+      {t("recoveryBubble.actions.drag")}
+    </button>
+  );
+};
 
-interface HeaderProps {
-  icon: ReasonIcon;
-  reason: string;
-  closeLabel: string;
-  onClose: () => void;
-}
+/** The Close button of the header. */
+const CloseButton: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+  const { t } = useTranslation();
+  return (
+    <button
+      type="button"
+      className="rb-close"
+      data-testid="recovery-bubble-close"
+      data-semantic-id="recovery-bubble.close"
+      aria-label={t("recoveryBubble.actions.close")}
+      onClick={onClose}
+    >
+      <X className="rb-close-icon" aria-hidden="true" />
+    </button>
+  );
+};
 
 /** Reason line with its icon, and the Close button. */
-const Header: React.FC<HeaderProps> = ({
-  icon,
-  reason,
-  closeLabel,
+const Header: React.FC<{ texts: BubbleTexts; onClose: () => void }> = ({
+  texts,
   onClose,
 }) => {
-  const Icon = ICONS[icon];
+  const { t } = useTranslation();
+  const Icon = ICONS[texts.icon];
   return (
     <div className="rb-row">
-      <Icon className={`rb-icon rb-icon-${icon}`} aria-hidden="true" />
+      <Icon className={`rb-icon rb-icon-${texts.icon}`} aria-hidden="true" />
       <p
         className="rb-reason"
         data-testid="recovery-bubble-reason"
         data-semantic-id="recovery-bubble.reason"
         aria-live="polite"
       >
-        {reason}
+        {t(texts.reasonKey, texts.reasonValues)}
       </p>
-      <button
-        type="button"
-        className="rb-close"
-        data-testid="recovery-bubble-close"
-        data-semantic-id="recovery-bubble.close"
-        aria-label={closeLabel}
-        onClick={onClose}
-      >
-        <X className="rb-close-icon" aria-hidden="true" />
-      </button>
+      <CloseButton onClose={onClose} />
     </div>
   );
 };
 
-interface ActionsProps {
-  canDrag: boolean;
-  explained: boolean;
-  explanationId: string;
-  props: RecoveryBubbleProps;
-}
-
-/** Drag handle (macOS), Copy, and the explanation control. */
-const Actions: React.FC<ActionsProps> = ({
-  canDrag,
-  explained,
-  explanationId,
-  props,
-}) => {
+/** The first two lines of the transcript, in the direction of its own text. */
+const Preview: React.FC<{ view: RecoveryBubbleView }> = ({ view }) => {
   const { t } = useTranslation();
   return (
-    <div className="rb-row rb-actions">
-      {canDrag && (
-        <DragHandle
-          label={t("recoveryBubble.actions.drag")}
-          onDragPointer={props.onDragPointer}
-        />
-      )}
-      <button
-        type="button"
-        className="rb-pill rb-strong"
-        data-testid="recovery-bubble-copy"
-        data-semantic-id="recovery-bubble.copy"
-        onClick={props.onCopy}
-      >
-        <Copy className="rb-pill-icon" aria-hidden="true" />
-        {t("recoveryBubble.actions.copy")}
-      </button>
-      <button
-        type="button"
-        className="rb-link rb-strong"
-        data-testid="recovery-bubble-why"
-        data-semantic-id="recovery-bubble.why"
-        aria-expanded={explained}
-        aria-controls={explained ? explanationId : undefined}
-        onClick={props.onToggleExplanation}
-      >
-        {t(
-          explained
-            ? "recoveryBubble.actions.hideDetails"
-            : "recoveryBubble.actions.why",
-        )}
-      </button>
+    <div
+      className="rb-preview"
+      data-testid="recovery-bubble-preview"
+      data-semantic-id="recovery-bubble.preview"
+      data-truncated={view.truncated ? "true" : "false"}
+      role="group"
+      aria-label={t("recoveryBubble.previewLabel")}
+    >
+      <p className="rb-preview-text" dir="auto">
+        {view.preview}
+      </p>
     </div>
+  );
+};
+
+/** The late-read warning, visible and announced without opening the explanation. */
+const LateRead: React.FC<{ textKey: string | null }> = ({ textKey }) => {
+  const { t } = useTranslation();
+  if (textKey === null) return null;
+  return (
+    <p
+      className="rb-late-read"
+      data-testid="recovery-bubble-late-read"
+      role="status"
+    >
+      {t(textKey)}
+    </p>
+  );
+};
+
+/** The explanation sentences, when shown. */
+const Explanation: React.FC<{ id: string; texts: BubbleTexts }> = ({
+  id,
+  texts,
+}) => {
+  const { t } = useTranslation();
+  const text = texts.explanation.map((line) => t(line.key, line.values));
+  return (
+    <div
+      id={id}
+      className="rb-explanation"
+      data-testid="recovery-bubble-explanation-explanation"
+      data-semantic-id="recovery-bubble-explanation.explanation"
+    >
+      <p data-testid="recovery-bubble-explanation-explanation-text">
+        {text.join(" ")}
+      </p>
+    </div>
+  );
+};
+
+/** Copy, the main action. */
+const CopyButton: React.FC<{ onCopy: () => void }> = ({ onCopy }) => {
+  const { t } = useTranslation();
+  return (
+    <button
+      type="button"
+      className="rb-pill rb-strong"
+      data-testid="recovery-bubble-copy"
+      data-semantic-id="recovery-bubble.copy"
+      onClick={onCopy}
+    >
+      <Copy className="rb-pill-icon" aria-hidden="true" />
+      {t("recoveryBubble.actions.copy")}
+    </button>
+  );
+};
+
+interface WhyProps {
+  explained: boolean;
+  controls: string;
+  onToggle: () => void;
+}
+
+/** The explanation control: "Why?" or "Hide details". */
+const WhyButton: React.FC<WhyProps> = ({ explained, controls, onToggle }) => {
+  const { t } = useTranslation();
+  const label = explained ? "hideDetails" : "why";
+  return (
+    <button
+      type="button"
+      className="rb-link rb-strong"
+      data-testid="recovery-bubble-why"
+      data-semantic-id="recovery-bubble.why"
+      aria-expanded={explained}
+      aria-controls={explained ? controls : undefined}
+      onClick={onToggle}
+    >
+      {t(`recoveryBubble.actions.${label}`)}
+    </button>
   );
 };
 
@@ -162,9 +212,6 @@ export const RecoveryBubble: React.FC<RecoveryBubbleProps> = (props) => {
   const { view, explained } = props;
   if (view === null) return null;
   const texts = bubbleTexts(view);
-  const explanation = texts.explanation
-    .map((line) => t(line.key, line.values))
-    .join(" ");
   return (
     <section
       className="rb-bubble"
@@ -174,40 +221,19 @@ export const RecoveryBubble: React.FC<RecoveryBubbleProps> = (props) => {
       data-reason={view.reason}
       aria-label={t("recoveryBubble.label")}
     >
-      <Header
-        icon={texts.icon}
-        reason={t(texts.reasonKey, texts.reasonValues)}
-        closeLabel={t("recoveryBubble.actions.close")}
-        onClose={props.onClose}
-      />
-      <div
-        className="rb-preview"
-        data-testid="recovery-bubble-preview"
-        data-semantic-id="recovery-bubble.preview"
-        data-truncated={view.truncated ? "true" : "false"}
-        role="group"
-        aria-label={t("recoveryBubble.previewLabel")}
-      >
-        <p className="rb-preview-text">{view.preview}</p>
+      <Header texts={texts} onClose={props.onClose} />
+      <Preview view={view} />
+      <LateRead textKey={texts.lateReadKey} />
+      {explained && <Explanation id={explanationId} texts={texts} />}
+      <div className="rb-row rb-actions">
+        {view.can_drag && <DragHandle onDragPointer={props.onDragPointer} />}
+        <CopyButton onCopy={props.onCopy} />
+        <WhyButton
+          explained={explained}
+          controls={explanationId}
+          onToggle={props.onToggleExplanation}
+        />
       </div>
-      {explained && (
-        <div
-          id={explanationId}
-          className="rb-explanation"
-          data-testid="recovery-bubble-explanation-explanation"
-          data-semantic-id="recovery-bubble-explanation.explanation"
-        >
-          <p data-testid="recovery-bubble-explanation-explanation-text">
-            {explanation}
-          </p>
-        </div>
-      )}
-      <Actions
-        canDrag={view.can_drag}
-        explained={explained}
-        explanationId={explanationId}
-        props={props}
-      />
     </section>
   );
 };

@@ -15,6 +15,9 @@ export interface BubbleTexts {
   reasonKey: string;
   reasonValues: Record<string, string>;
   icon: ReasonIcon;
+  /** Shown in the bubble itself, not only in the explanation: a late read means the text may
+   * have been pasted after all, so the user checks before copying again. */
+  lateReadKey: string | null;
   explanation: ExplanationLine[];
 }
 
@@ -80,8 +83,7 @@ const explanation = (view: RecoveryBubbleView): ExplanationLine[] => {
   }
   const sent =
     view.detail === "nothing_sent" ? "nothingSent" : "mayHaveReached";
-  const late = view.late_read ? [line("lateRead")] : [];
-  return [line(sent), ...late, history(view, true)];
+  return [line(sent), history(view, true)];
 };
 
 /** The texts of `view`. */
@@ -91,6 +93,8 @@ export const bubbleTexts = (view: RecoveryBubbleView): BubbleTexts => {
     reasonKey: reason.key,
     reasonValues: reason.values,
     icon: ICONS[view.reason],
+    // @spec AC-001: Late read visible in the bubble — .specs/features/010-recovery-bubble/spec.md#ac-001
+    lateReadKey: view.late_read ? `${KEY}.explanation.lateRead` : null,
     explanation: explanation(view),
   };
 };

@@ -100,15 +100,8 @@ const useDragGesture = (view: RecoveryBubbleView | null) => {
   );
 };
 
-/** Everything the recovery window renders and does. */
-export const useRecoveryBubble = () => {
-  const view = useProjection();
-  const [explained, setExplained] = useState(false);
-  const bubbleId = view?.bubble_id ?? null;
-  useEffect(() => setExplained(false), [bubbleId]);
-  useRenderedReport(view);
-  const ref = useWindowSize();
-  const onDragPointer = useDragGesture(view);
+/** Copy and Close of the current bubble, sent with its exact identity. */
+const useActions = (view: RecoveryBubbleView | null) => {
   const onCopy = useCallback(() => {
     if (view === null) return;
     commands
@@ -119,6 +112,19 @@ export const useRecoveryBubble = () => {
     if (view === null) return;
     commands.recoveryBubbleClose(view.bubble_id).catch(warn("closing"));
   }, [view]);
+  return { onCopy, onClose };
+};
+
+/** Everything the recovery window renders and does. */
+export const useRecoveryBubble = () => {
+  const view = useProjection();
+  const [explained, setExplained] = useState(false);
+  const bubbleId = view?.bubble_id ?? null;
+  useEffect(() => setExplained(false), [bubbleId]);
+  useRenderedReport(view);
+  const ref = useWindowSize();
+  const onDragPointer = useDragGesture(view);
+  const { onCopy, onClose } = useActions(view);
   const onToggleExplanation = useCallback(
     () => setExplained((shown) => !shown),
     [],
