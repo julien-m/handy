@@ -1,0 +1,5 @@
+$ bun test src/components/settings/word-replacements
+
+ 79 pass
+ 0 fail
+Ran 79 tests across 6 files. [65.00ms]
