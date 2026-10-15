@@ -14,6 +14,7 @@ mod rig;
 use destination::notes;
 use fake::{Element, Write};
 use handy_app_lib::destination::context::RecoveryDisposition;
+use handy_app_lib::destination::field::MIN_AX_TIMEOUT;
 use handy_app_lib::destination::field_attempt::AttemptStage;
 use handy_app_lib::destination::field_check::FieldCheck;
 use handy_app_lib::destination::insertion::InsertionReport;
@@ -22,6 +23,7 @@ use handy_app_lib::recovery::classifier::AxQueryError;
 use rig::{FieldRig, PasteSpy, CARET, INPUT, OTHER, WINDOW};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
+use std::time::Duration;
 
 const PID: u32 = 22;
 const TAB: u32 = 3;
@@ -223,6 +225,29 @@ fn every_attempt_that_may_have_changed_something_pastes_nothing() {
             "{name}"
         );
     }
+}
+#[test]
+fn an_attempt_out_of_budget_stops_without_sending_and_pastes_nothing() {
+    let field = remembered();
+    field
+        .world
+        .edit(INPUT, |input| input.window = Some(SECOND_WINDOW));
+    let spy = PasteSpy::new(&field.world);
+    // 20 ms per call: note, focus and window fit the 50 ms budget, the focused window does not.
+    let report = dictate(
+        &field,
+        |field| field.world.cost(Duration::from_millis(20)),
+        &spy,
+    );
+    assert_diverted(&field, &report, &spy);
+    assert_eq!(field.calls("focused_window"), 0, "not sent below 5 ms");
+    assert_eq!(field.calls("select"), 0);
+    let late = field
+        .world
+        .calls()
+        .into_iter()
+        .filter(|call| call.op != "focused_element");
+    assert!(late.into_iter().all(|call| call.timeout >= MIN_AX_TIMEOUT));
 }
 #[test]
 fn a_range_missing_at_the_start_makes_no_call_at_insertion_and_pastes_nothing() {
