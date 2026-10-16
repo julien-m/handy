@@ -15,31 +15,23 @@ on:
       - "tsconfig*"
       - "tailwind.config.*"
       - ".github/workflows/**"
-  pull_request:
-    paths:
-      - "src/**"
-      - "src-tauri/src/catalog/catalog.json"
-      - "scripts/**"
-      - "package.json"
-      - "bun.lock"
-      - ".eslintrc*"
-      - "eslint.config.*"
-      - ".prettierrc*"
-      - "tsconfig*"
-      - "tailwind.config.*"
-      - ".github/workflows/**"
+  workflow_call:
+
+permissions:
+  contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: code-quality-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   code-quality:
+    timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
-      - uses: oven-sh/setup-bun@v2
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
           bun-version: latest
 
@@ -60,3 +52,6 @@ jobs:
 
       - name: Run prettier
         run: bun run format:check
+
+      - name: Build frontend
+        run: bun run build

@@ -1,0 +1,87 @@
+name: PR Checks
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: pr-checks-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      quality: ${{ steps.paths.outputs.quality }}
+      rust: ${{ steps.paths.outputs.rust }}
+      browser: ${{ steps.paths.outputs.browser }}
+    steps:
+      - uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+        id: paths
+        with:
+          script: |
+            if (context.eventName === 'workflow_dispatch') {
+              for (const key of ['quality', 'rust', 'browser']) core.setOutput(key, 'true');
+              return;
+            }
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              ...context.repo,
+              pull_number: context.issue.number,
+              per_page: 100,
+            });
+            // GitHub caps this endpoint at 3,000 files. Run everything at the cap.
+            const all = files.length >= 3000;
+            // Renames must also test the path from which a file was removed.
+            const paths = files.flatMap(file => [file.filename, file.previous_filename].filter(Boolean));
+            const shared = /^(\.github\/workflows\/|package\.json$|bun\.lock$)/;
+            core.setOutput('quality', all || paths.some(path => shared.test(path) || /^(src\/|src-tauri\/src\/catalog\/catalog\.json$|scripts\/|\.eslintrc|eslint\.config\.|\.prettierrc|\.prettierignore$|tsconfig|tailwind\.config\.|vite\.config\.|index\.html$)/.test(path)));
+            core.setOutput('rust', all || paths.some(path => /^src-tauri\//.test(path) || /^\.github\/workflows\//.test(path)));
+            core.setOutput('browser', all || paths.some(path => shared.test(path) || /^(src\/|tests\/|playwright\.config\.|vite\.config\.|index\.html$)/.test(path)));
+
+  quality:
+    needs: changes
+    if: needs.changes.outputs.quality == 'true'
+    uses: ./.github/workflows/code-quality.yml
+
+  rust:
+    needs: changes
+    if: needs.changes.outputs.rust == 'true'
+    uses: ./.github/workflows/test.yml
+
+  browser:
+    needs: changes
+    if: needs.changes.outputs.browser == 'true'
+    uses: ./.github/workflows/playwright.yml
+
+  ci:
+    name: CI
+    if: always()
+    needs: [changes, quality, rust, browser]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify required jobs
+        env:
+          CHANGES_RESULT: ${{ needs.changes.result }}
+          QUALITY_REQUIRED: ${{ needs.changes.outputs.quality }}
+          QUALITY_RESULT: ${{ needs.quality.result }}
+          RUST_REQUIRED: ${{ needs.changes.outputs.rust }}
+          RUST_RESULT: ${{ needs.rust.result }}
+          BROWSER_REQUIRED: ${{ needs.changes.outputs.browser }}
+          BROWSER_RESULT: ${{ needs.browser.result }}
+        run: |
+          test "$CHANGES_RESULT" = success
+          verify_job() {
+            case "$1:$2" in
+              true:success|false:skipped) ;;
+              *) echo "Unexpected CI result: required=$1 result=$2"; return 1 ;;
+            esac
+          }
+          verify_job "$QUALITY_REQUIRED" "$QUALITY_RESULT"
+          verify_job "$RUST_REQUIRED" "$RUST_RESULT"
+          verify_job "$BROWSER_REQUIRED" "$BROWSER_RESULT"
