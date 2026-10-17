@@ -72,3 +72,10 @@ This run follows [the approved scope](spec.md) and [the technical plan](plan.md)
 ## Visual and release evidence
 
 The settings window editor is implemented from the validated Penflow contract and mockups; no Penflow certification, visual baseline in a real window, native dialog observation, real user dictation or complete AC is claimed (pending with Julien). The macOS real-app check covers the CLI against a running debug build only ([native](proofs/claude-integration/native/)). M1 release, Windows/Linux, a real dictation and the settings window stay pending release evidence, with the exact checks listed in [progress](progress.md#pending-release-evidence-never-claimed-as-passed).
+
+## Penflow test ID alignment (2026-10-17, branch `fix/ui-test-ids`)
+
+Decision of Julien of 2026-10-17 (inventory 002-02, « aligner le code »). No Rust change.
+
+- **Import dialog test id (002-02):** `replacement-settings-import-dialog` moved from the dialog body to the modal element itself, through the new optional `testId` prop of the shared [Dialog](../../../src/components/ui/Dialog.tsx) ([import dialog](../../../src/components/settings/word-replacements/import-dialog.tsx)), so the node now holds the title, Cancel and Apply like the contract's `modal`. Same test id, wider scope.
+- **Test:** [dialog-test-id.test.tsx](../../../src/components/ui/dialog-test-id.test.tsx), added to `test:word-replacements`.

@@ -26,6 +26,8 @@ interface DialogProps {
   className?: string;
   contentClassName?: string;
   contentFades?: boolean;
+  /** Test id of the whole dialog (title, body and footer). */
+  testId?: string;
 }
 
 const isVisible = (element: HTMLElement) => {
@@ -58,6 +60,7 @@ export const Dialog: React.FC<DialogProps> = ({
   className = "",
   contentClassName = "",
   contentFades = true,
+  testId,
 }) => {
   const titleId = useId();
   const descriptionId = useId();
@@ -168,6 +171,7 @@ export const Dialog: React.FC<DialogProps> = ({
         aria-labelledby={titleId}
         aria-describedby={description ? descriptionId : undefined}
         tabIndex={-1}
+        data-testid={testId}
         className={`flex max-h-[calc(100dvh-2rem)] w-full max-w-lg flex-col overflow-hidden rounded-lg border border-mid-gray/20 bg-background shadow-xl outline-none sm:max-h-[calc(100dvh-3rem)] ${className}`}
       >
         <div className="flex shrink-0 items-start justify-between gap-3 border-b border-mid-gray/20 px-4 py-2.5">

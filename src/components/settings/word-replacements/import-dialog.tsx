@@ -89,8 +89,9 @@ const ImportDialog: React.FC = () => {
         if (!open) useReplacementFiles.getState().closeImport();
       }}
       footer={<ImportActions />}
+      testId={DIALOG_ID}
     >
-      <div className="space-y-4" data-testid={DIALOG_ID}>
+      <div className="space-y-4">
         {file && (
           <FileSummary name={file.file_name} lines={lineCount(file.text)} />
         )}
