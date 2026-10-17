@@ -83,27 +83,32 @@ describe("dictation list at the limit (shortcut-settings-limit)", () => {
   );
 
   test("row, title and every shortcut carry the contract ids", () => {
-    expect(markup.includes('data-testid="shortcut-settings-dictation"')).toBe(
-      true,
-    );
     expect(
-      markup.includes('data-testid="shortcut-settings-dictation-title"'),
+      markup.includes('data-testid="shortcut-settings-limit-dictation"'),
     ).toBe(true);
     expect(
-      count(markup, 'data-testid="shortcut-settings-dictation-shortcut"'),
+      markup.includes('data-testid="shortcut-settings-limit-dictation-title"'),
+    ).toBe(true);
+    expect(
+      count(markup, 'data-testid="shortcut-settings-limit-dictation-shortcut"'),
     ).toBe(4);
     expect(
       count(
         markup,
-        'data-testid="shortcut-settings-dictation-shortcut-remove"',
+        'data-testid="shortcut-settings-limit-dictation-shortcut-remove"',
       ),
     ).toBe(4);
+  });
+
+  test("every shortcut carries its instance id (shortcut-{keys})", () => {
+    expect(count(markup, 'data-instance-id="shortcut-')).toBe(4);
+    expect(markup.includes("shortcut-settings-dictation")).toBe(false);
   });
 
   test("Add is disabled and the limit hint explains why", () => {
     expect(
       markup.includes(
-        'data-testid="shortcut-settings-dictation-add" data-state="disabled"',
+        'data-testid="shortcut-settings-limit-dictation-add" data-state="disabled"',
       ),
     ).toBe(true);
     expect(
@@ -117,10 +122,10 @@ describe("dictation list at the limit (shortcut-settings-limit)", () => {
   test("the list starts idle with no draft recorder", () => {
     expect(
       markup.includes(
-        'data-testid="shortcut-settings-dictation-list" data-state="idle"',
+        'data-testid="shortcut-settings-limit-dictation-list" data-state="idle"',
       ),
     ).toBe(true);
-    expect(markup.includes("shortcut-settings-dictation-recording")).toBe(
+    expect(markup.includes("shortcut-settings-limit-dictation-recording")).toBe(
       false,
     );
   });
@@ -176,7 +181,7 @@ describe("alerts (shortcut-settings-conflict)", () => {
     const markup = renderToStaticMarkup(
       <LegacyConflictAlert
         warning={warning}
-        ids={shortcutTestIds("cancel")}
+        ids={shortcutTestIds("cancel", "shortcut-settings-conflict")}
         busy={false}
         onChange={() => undefined}
       />,
@@ -204,7 +209,7 @@ describe("alerts (shortcut-settings-conflict)", () => {
     const markup = renderToStaticMarkup(
       <SystemRefusalAlert
         refusal={refusal}
-        ids={shortcutTestIds("transcribe")}
+        ids={shortcutTestIds("transcribe", "shortcut-settings-conflict")}
         names={names}
         busy={false}
         onRetry={() => undefined}

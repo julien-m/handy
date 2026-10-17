@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { type } from "@tauri-apps/plugin-os";
 import { ChannelSelector } from "../ChannelSelector";
 import { ShortcutList } from "../shortcut-list";
+import { ShortcutScreenRoot } from "../shortcut-screen-root";
 import { SettingsGroup } from "../../ui/SettingsGroup";
 import { OutputDeviceSelector } from "../OutputDeviceSelector";
 import { ShortcutActivationSetting } from "../ShortcutActivation";
@@ -17,24 +18,23 @@ import {
 } from "../microphone-priority/microphone-priority-settings";
 
 // Feature 001: the microphone priority editor wraps the Sound group (conflict banner above it,
-// Unsaved changes bar below it); the other Sound rows are unchanged.
+// Unsaved changes bar below it); the other Sound rows are unchanged. Feature 004: the root's test
+// ids follow the shortcut screen shown (`ShortcutScreenRoot`).
 export const GeneralSettings: React.FC = () => {
   const { t } = useTranslation();
   const { audioFeedbackEnabled } = useSettings();
   const isLinux = type() === "linux";
   return (
-    <div
-      className="max-w-3xl w-full mx-auto space-y-6"
-      data-testid="shortcut-settings-screen"
-    >
-      <div data-testid="shortcut-settings-general">
+    <ShortcutScreenRoot
+      general={
         <SettingsGroup title={t("settings.general.title")}>
           <ShortcutList actionId="transcribe" grouped={true} />
           <ShortcutActivationSetting descriptionMode="tooltip" grouped={true} />
           {/* Cancel shortcut remains hidden on Linux because of dynamic shortcut instability. */}
           {!isLinux && <ShortcutList actionId="cancel" grouped single />}
         </SettingsGroup>
-      </div>
+      }
+    >
       <ModelSettingsCard />
       <MicrophonePrioritySettings>
         <SettingsGroup title={t("settings.sound.title")}>
@@ -50,6 +50,6 @@ export const GeneralSettings: React.FC = () => {
           <VolumeSlider disabled={!audioFeedbackEnabled} />
         </SettingsGroup>
       </MicrophonePrioritySettings>
-    </div>
+    </ShortcutScreenRoot>
   );
 };

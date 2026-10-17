@@ -13,9 +13,11 @@ import {
   isSameEdit,
   legacyWarningsOf,
   listHint,
+  shortcutInstanceId,
   shortcutTestIds,
   systemRefusalTitle,
 } from "./shortcut-list-feedback";
+import { shortcutScreenOf } from "./shortcut-screen";
 
 const LIST_KEY = "settings.general.shortcut.list";
 const names: MessageNames = {
@@ -139,11 +141,26 @@ describe("hints, titles and test ids", () => {
     const dictation = shortcutTestIds("transcribe");
     expect(dictation.list).toBe("shortcut-settings-dictation-list");
     expect(dictation.recording).toBe("shortcut-settings-dictation-recording");
-    expect(dictation.limit).toBe("shortcut-settings-limit-dictation-limit");
-    expect(dictation.legacy).toBe(
-      "shortcut-settings-conflict-dictation-legacy",
+    const limit = shortcutTestIds("transcribe", "shortcut-settings-limit");
+    expect(limit.limit).toBe("shortcut-settings-limit-dictation-limit");
+    expect(limit.list).toBe("shortcut-settings-limit-dictation-list");
+    expect(limit.add).toBe("shortcut-settings-limit-dictation-add");
+    const conflict = shortcutTestIds(
+      "transcribe",
+      "shortcut-settings-conflict",
     );
-    expect(dictation.system).toBe("shortcut-settings-conflict-dictation-os");
+    expect(conflict.legacy).toBe("shortcut-settings-conflict-dictation-legacy");
+    expect(conflict.system).toBe("shortcut-settings-conflict-dictation-os");
+    expect(conflict.error).toBe(
+      "shortcut-settings-conflict-dictation-conflict",
+    );
+    expect(conflict.shortcut).toBe(
+      "shortcut-settings-conflict-dictation-shortcut",
+    );
+    expect(conflict.recording).toBe(
+      "shortcut-settings-conflict-dictation-recording",
+    );
+    expect(shortcutInstanceId("option+space")).toBe("shortcut-option+space");
     expect(shortcutTestIds("transcribe_with_post_process").last).toBe(
       "shortcut-settings-ai-dictation-last",
     );
@@ -218,5 +235,15 @@ describe("recorder start failures", () => {
       key: "settings.general.shortcut.errors.set",
       params: { error: "boom" },
     });
+  });
+});
+
+describe("screen shown by the shortcut lists", () => {
+  test("a conflict wins over a full list, which wins over the base screen", () => {
+    expect(shortcutScreenOf([null, null])).toBe("shortcut-settings");
+    expect(shortcutScreenOf(["limit", null])).toBe("shortcut-settings-limit");
+    expect(shortcutScreenOf(["limit", "conflict"])).toBe(
+      "shortcut-settings-conflict",
+    );
   });
 });
