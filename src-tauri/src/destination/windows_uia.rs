@@ -17,7 +17,8 @@ use windows::Win32::System::Ole::{
 };
 use windows::Win32::UI::Accessibility::{
     CUIAutomation8, IUIAutomation, IUIAutomation2, IUIAutomationElement, IUIAutomationTextPattern,
-    IUIAutomationTextRange, IUIAutomationValuePattern, UIA_TextPatternId, UIA_ValuePatternId,
+    IUIAutomationTextRange, IUIAutomationValuePattern, TextPatternRangeEndpoint_End,
+    TextPatternRangeEndpoint_Start, UIA_TextPatternId, UIA_ValuePatternId,
 };
 
 /// Longest runtime id read (runtime ids are a handful of integers).
@@ -83,6 +84,20 @@ pub(super) fn call_error(error: CallError) -> AxQueryError {
         CallError::Busy => AxQueryError::Failed,
         CallError::Expired => AxQueryError::Timeout,
         CallError::Stopped => AxQueryError::Unsupported,
+    }
+}
+
+/// Undo of an abandoned `focused` call: the element it kept is released on the thread.
+pub(super) fn forget_seen(uia: &mut Uia, seen: Result<Seen, AxQueryError>) {
+    if let Ok(seen) = seen {
+        uia.elements.remove(&seen.id);
+    }
+}
+
+/// Undo of an abandoned range read: the range it kept is released on the thread.
+pub(super) fn forget_range(uia: &mut Uia, kept: Result<u64, AxQueryError>) {
+    if let Ok(id) = kept {
+        uia.ranges.remove(&id);
     }
 }
 

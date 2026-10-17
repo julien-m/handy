@@ -43,7 +43,7 @@ impl DestinationManager {
     /// Attach the start read's `field`. Refused, and the reference released at once, when the
     /// dictation is no longer current or open to choices, its selection no longer names this
     /// instance, or the answer came after `FIELD_CAPTURE_BUDGET` (spec SC-005).
-    pub fn attach_field(&self, field: RememberedField) -> bool {
+    pub(crate) fn attach_field(&self, field: RememberedField) -> bool {
         let late = self
             .clock
             .now()
@@ -72,11 +72,14 @@ impl DestinationManager {
         dictation_id: DictationId,
         generation: u64,
     ) -> Result<(FrozenDestination, Option<RememberedField>), DispositionRefusal> {
-        let frozen = self.freeze_session(dictation_id, generation);
-        let field = self.lock().field.take();
-        let frozen = frozen?;
-        let field = field
-            .filter(|field| field.dictation_id == dictation_id && field.serves(&frozen.selection));
+        // A refused freeze (stale or superseded dictation) never touches the current field.
+        let frozen = self.freeze_session(dictation_id, generation)?;
+        let mut state = self.lock();
+        let own = state.field.as_ref().is_some_and(|field| {
+            field.dictation_id == dictation_id && field.destination_generation == generation
+        });
+        let field = own.then(|| state.field.take()).flatten();
+        let field = field.filter(|field| field.serves(&frozen.selection));
         Ok((frozen, field))
     }
 }

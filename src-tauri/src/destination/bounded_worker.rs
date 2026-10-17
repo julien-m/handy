@@ -4,8 +4,8 @@
 //! one still occupies the thread is refused at once, so a hung cross-process call never queues
 //! or blocks later dictations, the UI thread or the guard. Releases are posted without waiting.
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::mpsc::{channel, Sender};
-use std::sync::Arc;
+use std::sync::mpsc::{channel, RecvTimeoutError, Sender, TryRecvError};
+use std::sync::{Arc, Mutex, MutexGuard, PoisonError};
 use std::time::Duration;
 
 type Job<S> = Box<dyn FnOnce(&mut S) + Send>;
@@ -19,6 +19,10 @@ pub enum CallError {
     Expired,
     /// The thread is gone or its state could not be created.
     Stopped,
+}
+
+fn lock<T>(mutex: &Mutex<T>) -> MutexGuard<'_, T> {
+    mutex.lock().unwrap_or_else(PoisonError::into_inner)
 }
 
 /// Marks the thread occupied until the call's job ends, or is dropped without running.
@@ -67,25 +71,61 @@ impl<S: 'static> BoundedWorker<S> {
         timeout: Duration,
         job: impl FnOnce(&mut S) -> T + Send + 'static,
     ) -> Result<T, CallError> {
+        self.call_or_undo(timeout, job, |_, _| {})
+    }
+
+    /// [`Self::call`] whose late answer, once the caller gave up, is handed to `undo` on the
+    /// thread, so an object the job kept (a UI Automation element) is released there and never
+    /// stays in the thread's tables.
+    ///
+    /// # Errors
+    /// As [`Self::call`].
+    pub fn call_or_undo<T: Send + 'static>(
+        &self,
+        timeout: Duration,
+        job: impl FnOnce(&mut S) -> T + Send + 'static,
+        undo: impl FnOnce(&mut S, T) + Send + 'static,
+    ) -> Result<T, CallError> {
         // Business rule (plan): one answer-awaited call at a time; never queue behind a hang.
         if self.busy.swap(true, Ordering::SeqCst) {
             return Err(CallError::Busy);
         }
         let (answer, answered) = channel();
+        // Under this lock, the job answers unless the caller already gave up, and the caller
+        // gives up only if no answer is there yet: a result is either received or undone.
+        let abandoned = Arc::new(Mutex::new(false));
+        let gave_up = Arc::clone(&abandoned);
         let occupied = Occupied(Arc::clone(&self.busy));
         let sent = self.jobs.send(Box::new(move |state: &mut S| {
             let result = job(state);
             drop(occupied);
-            // A dropped receiver means the caller gave up: the late answer is discarded.
-            let _ = answer.send(result);
+            let gave_up = lock(&gave_up);
+            if *gave_up {
+                undo(state, result);
+            } else {
+                // The caller holds the receiver until it gives up under this same lock.
+                let _ = answer.send(result);
+            }
         }));
         if sent.is_err() {
             return Err(CallError::Stopped);
         }
-        answered.recv_timeout(timeout).map_err(|error| match error {
-            std::sync::mpsc::RecvTimeoutError::Timeout => CallError::Expired,
-            std::sync::mpsc::RecvTimeoutError::Disconnected => CallError::Stopped,
-        })
+        match answered.recv_timeout(timeout) {
+            Ok(result) => Ok(result),
+            Err(RecvTimeoutError::Disconnected) => Err(CallError::Stopped),
+            Err(RecvTimeoutError::Timeout) => {
+                let mut gave_up = lock(&abandoned);
+                match answered.try_recv() {
+                    // The answer arrived right at the deadline: the call was answered.
+                    Ok(result) => Ok(result),
+                    Err(TryRecvError::Disconnected) => Err(CallError::Stopped),
+                    Err(TryRecvError::Empty) => {
+                        *gave_up = true;
+                        Err(CallError::Expired)
+                    }
+                }
+            }
+        }
     }
 
     /// Queue `job` without waiting (releases of platform references).
@@ -137,6 +177,28 @@ mod tests {
             }
             answer
         })
+    }
+
+    // @spec AC-008: An abandoned answer is released on the thread — .specs/features/011-dictation-field-return/spec.md#ac-008
+    #[test]
+    fn an_object_kept_by_an_expired_call_is_released_when_the_late_job_ends() {
+        let worker = BoundedWorker::spawn("test", || Some(Vec::<u32>::new()));
+        let (release, hold) = channel::<()>();
+        let kept = worker.call_or_undo(
+            SHORT,
+            move |table: &mut Vec<u32>| {
+                let _ = hold.recv();
+                table.push(7);
+                table.len() - 1
+            },
+            |table, index| {
+                table.remove(index);
+            },
+        );
+        assert_eq!(kept, Err(CallError::Expired));
+        drop(release);
+        let left = poll(|| worker.call(SHORT, |table: &mut Vec<u32>| table.len()).ok());
+        assert_eq!(left, Some(0), "nothing stays in the table");
     }
 
     #[test]

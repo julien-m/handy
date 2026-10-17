@@ -522,7 +522,7 @@ Preuves natives en attente avec Julien : aucune n'est déclarée réussie. Harna
   - Couvre : AC-002, AC-004. Preuve : `proofs/native-macos/second-window/`.
 - [ ] **Onglet changé en arrière-plan.**
   - Étapes : Comet, dicter depuis le champ ChatGPT ; sélectionner un autre onglet de Comet pendant l'enregistrement ; arrêter.
-  - Attendu : rien n'est collé ; bulle 010 « Insertion failed » avec l'explication que rien n'a été envoyé ; aucune Entrée. Un collage dans un onglet caché est un constat à remonter à Julien.
+  - Attendu : rien n'est collé ; bulle 010 « Insertion failed » avec l'explication que rien n'a été envoyé ; aucune Entrée. Un collage dans un onglet caché est un constat à remonter à Julien. Noter aussi le cas où les écritures de focus et de plage sont acquittées mais où le focus n'a pas encore bougé à la garde (Chromium peut appliquer après coup) : la branche (a) colle alors dans l'élément noté ; remonter tout collage inattendu (audit de livraison, tour 1).
   - Couvre : AC-004 (b), SC-002. Preuve : `proofs/native-macos/changed-tab/`.
 - [ ] **Page rechargée.**
   - Étapes : Comet, dicter depuis le champ ChatGPT ; recharger la page pendant l'enregistrement ; arrêter.
@@ -622,8 +622,8 @@ Preuves natives en attente avec Julien : aucune n'est déclarée réussie. Harna
   - les commandes de la bulle sont enregistrées dans les deux états du verrou (un seul `bindings.ts`) et inertes sans le service.
 - [ ] **011 :**
   - un élément focalisé absent (`AXFocusedUIElement` sans valeur) à la note de l'étape (1) est traité comme « non noté » : bulle, jamais branche (a) (ambiguïté AC-004 de la revue r3, choix sûr du plan) ;
-  - la plage du départ est restaurée même si l'utilisateur a tapé dans le même champ pendant l'enregistrement (ambiguïté AC-002 de la revue r3) : à trancher après l'item « Frappe dans le même champ » ;
-  - Windows : une app épinglée qui n'est pas au premier plan au départ ne mémorise rien (UI Automation n'expose que le focus système ; avertissement de la revue de plan sur AC-003) ;
+  - la plage du départ est restaurée même si l'utilisateur a tapé dans le même champ pendant l'enregistrement (ambiguïté AC-002 de la revue r3 ; avertissement de la revue de livraison, tour 1) : à trancher après l'item « Frappe dans le même champ ». Proposition de la revue : retenir aussi le nombre de caractères du champ au départ (une longueur seule, jamais le contenu, par exemple `AXNumberOfCharacters`) et passer en AC-004 (b) à la garde s'il a changé, au moins quand la sélection du départ n'était pas vide ; cela demande d'amender AC-008 (champs retenus) par `/spec-refine`. Comportement actuel inchangé en attendant ;
+  - Windows : une app épinglée qui n'est pas au premier plan au départ ne mémorise rien (UI Automation n'expose que le focus système ; avertissement de la revue de plan sur AC-003, repris par la revue de livraison, tour 1). Proposition de la revue : acter cette exception Windows d'AC-003 dans AC-007 (ou AC-003) par `/spec-refine`, ou lire le focus du processus épinglé autrement ; l'item natif Windows reste. Comportement actuel inchangé en attendant ;
   - les documents 006 et 010 sont à réaligner sur les deltas listés dans `implementation.md` de la 011 (`/spec-refine 006-destination-application plan`, `/spec-refine 010-recovery-bubble plan`).
 - [ ] **008 :**
   - store illisible : lecture seule à chaque lancement, onboarding répété, aucune voie de sortie documentée ;

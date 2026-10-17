@@ -97,7 +97,9 @@ impl Orchestrator {
         // 011: return to the input remembered at the start, only in its activated instance.
         let access = self.manager.field_access();
         let clock = Arc::clone(&self.clock);
-        let field = super::field_attempt::begin(access, clock, field, target.as_ref());
+        let cancelled: &dyn Fn() -> bool = &*request.cancelled;
+        let route = (target.as_ref(), cancelled);
+        let field = super::field_attempt::begin(access, clock, field, route);
         let manager = Arc::clone(&self.manager);
         let recovery = Arc::clone(&self.recovery);
         let guard =

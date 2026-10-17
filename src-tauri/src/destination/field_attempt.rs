@@ -155,16 +155,22 @@ fn remaining(deadline: &Deadline<'_>) -> Result<Duration, AttemptStage> {
     deadline.remaining().map_err(|_| AttemptStage::BudgetSpent)
 }
 
-/// The attempt of `field` when 006 brought its very instance forward (`target`); `None` drops
-/// the field unused: no activation route (paste method "none", frontmost at the end, return
-/// off without pin), or another instance than the one read (spec AC-002, AC-006).
+/// The attempt of `field` when 006 brought its very instance forward (`target`) and the
+/// dictation is not `cancelled`; `None` drops the field unused: no activation route (paste
+/// method "none", frontmost at the end, return off without pin), another instance than the one
+/// read, or a cancellation (spec AC-002, AC-006).
 pub fn begin(
     access: Arc<dyn FieldAccess>,
     clock: Arc<dyn Clock>,
     field: Option<RememberedField>,
-    target: Option<&RunningApp>,
+    (target, cancelled): (Option<&RunningApp>, &dyn Fn() -> bool),
 ) -> Option<FieldReturn> {
     let field = field?;
+    // A dictation cancelled since its activation never gets a focus change (spec AC-006).
+    if cancelled() {
+        log::debug!("field_return dropped(cancelled)");
+        return None;
+    }
     if !target.is_some_and(|app| app.pid == field.pid && app.identity == field.identity) {
         log::debug!("field_return dropped(no_matching_activation)");
         return None;

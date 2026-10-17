@@ -5,7 +5,8 @@
 //! insertion method and clipboard handling stay separate: this module only decides which
 //! application is activated. 011 adds the input focused at the start (`field*` modules).
 pub mod app;
-pub mod bounded_worker;
+#[cfg_attr(not(target_os = "windows"), allow(dead_code))]
+mod bounded_worker;
 pub mod context;
 pub mod delivery;
 #[cfg(test)]
@@ -33,7 +34,8 @@ pub mod recovery;
 pub mod rollout;
 pub mod session;
 pub mod snapshot;
-pub mod uia_mapping;
+#[cfg_attr(not(target_os = "windows"), allow(dead_code))]
+mod uia_mapping;
 #[cfg(target_os = "windows")]
 pub mod windows;
 #[cfg(target_os = "windows")]

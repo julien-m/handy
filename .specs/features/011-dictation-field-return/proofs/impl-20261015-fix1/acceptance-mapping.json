@@ -1,0 +1,150 @@
+{
+  "schema_version": "1",
+  "feature": "011-dictation-field-return",
+  "reviewer_model": "",
+  "review_max_chars": 60000,
+  "review_receipt_path": "",
+  "bindings": [
+    {
+      "requirement_id": "011-dictation-field-return:AC-001",
+      "test_id": "an_editable_input_is_remembered_with_its_range_and_nothing_else_is_read",
+      "expected": "AC-001: Editable input remembered with its range — .specs/features/011-dictation-field-return/spec.md#ac-001",
+      "assertion_path": "src-tauri/tests/destination_field_capture.rs",
+      "start_line": 58,
+      "end_line": 68,
+      "source_sha256": "ba4f6dc7b0cca7bd6cb48ff2b814d113161d8c953a592ea0f5e592da3afce5eb",
+      "justification": "Derived from the @spec anchor at src-tauri/tests/destination_field_capture.rs:44"
+    },
+    {
+      "requirement_id": "011-dictation-field-return:AC-001",
+      "test_id": "macos::capture_the_input_of_the_target_within_the_budget",
+      "expected": "AC-001: Bounded start read of a real application — .specs/features/011-dictation-field-return/spec.md#ac-001",
+      "assertion_path": "src-tauri/tests/destination_field_native.rs",
+      "start_line": 93,
+      "end_line": 93,
+      "source_sha256": "268defeed614f2d0c1f7194d2013af954a6a9d173cc750594705a64a209284d2",
+      "justification": "Derived from the @spec anchor at src-tauri/tests/destination_field_native.rs:75"
+    },
+    {
+      "requirement_id": "011-dictation-field-return:AC-002",
+      "test_id": "macos::the_verification_reads_of_a_remembered_input_fit_their_budget",
+      "expected": "AC-002: Verification reads within 10 ms — .specs/features/011-dictation-field-return/spec.md#ac-002",
+      "assertion_path": "src-tauri/tests/destination_field_native.rs",
+      "start_line": 127,
+      "end_line": 127,
+      "source_sha256": "268defeed614f2d0c1f7194d2013af954a6a9d173cc750594705a64a209284d2",
+      "justification": "Derived from the @spec anchor at src-tauri/tests/destination_field_native.rs:97"
+    },
+    {
+      "requirement_id": "011-dictation-field-return:AC-002",
+      "test_id": "the_verified_input_receives_the_paste_at_its_restored_caret",
+      "expected": "AC-002: Focus back and range restored then verified — .specs/features/011-dictation-field-return/spec.md#ac-002",
+      "assertion_path": "src-tauri/tests/destination_field_return.rs",
+      "start_line": 91,
+      "end_line": 91,
+      "source_sha256": "057ae9b0fa03fc491ea767fea29130fe6fef3d56b96b42b2619e0f7cd8961192",
+      "justification": "Derived from the @spec anchor at src-tauri/tests/destination_field_return.rs:70"
+    },
+    {
+      "requirement_id": "011-dictation-field-return:AC-003",
+      "test_id": "a_pinned_application_in_the_background_has_its_input_read",
+      "expected": "AC-003: The pinned instance is read whatever is in front — .specs/features/011-dictation-field-return/spec.md#ac-003",
+      "assertion_path": "src-tauri/tests/destination_field_capture.rs",
+      "start_line": 202,
+      "end_line": 205,
+      "source_sha256": "ba4f6dc7b0cca7bd6cb48ff2b814d113161d8c953a592ea0f5e592da3afce5eb",
+      "justification": "Derived from the @spec anchor at src-tauri/tests/destination_field_capture.rs:187"
+    },
+    {
+      "requirement_id": "011-dictation-field-return:AC-003",
+      "test_id": "another_application_from_the_badge_or_the_cross_releases_the_input",
+      "expected": "AC-003: Dropped by a badge choice or an unpin — .specs/features/011-dictation-field-return/spec.md#ac-003",
+      "assertion_path": "src-tauri/tests/destination_field_lifetime.rs",
+      "start_line": 85,
+      "end_line": 85,
+      "source_sha256": "6d93eac7e5eddb0c9c7243da730028ab3b0de5233fdb3103b4157807259188f3",
+      "justification": "Derived from the @spec anchor at src-tauri/tests/destination_field_lifetime.rs:58"
+    },
+    {
+      "requirement_id": "011-dictation-field-return:AC-004",
+      "test_id": "a_diverted_return_recovers_without_any_010_query_and_sends_no_enter",
+      "expected": "AC-004: Diverted return shows the 010 bubble — .specs/features/011-dictation-field-return/spec.md#ac-004",
+      "assertion_path": "src-tauri/tests/destination_field_recovery.rs",
+      "start_line": 113,
+      "end_line": 113,
+      "source_sha256": "97c42f6aca41c4cc76c43d637c74a02cdc03752d9dcdc26af754c15aefb2d8a4",
+      "justification": "Derived from the @spec anchor at src-tauri/tests/destination_field_recovery.rs:99"
+    },
+    {
+      "requirement_id": "011-dictation-field-return:AC-004",
+      "test_id": "an_input_gone_with_nothing_changed_inserts_as_without_011",
+      "expected": "AC-004: Branch (a) when the attempt changed nothing — .specs/features/011-dictation-field-return/spec.md#ac-004",
+      "assertion_path": "src-tauri/tests/destination_field_return.rs",
+      "start_line": 125,
+      "end_line": 128,
+      "source_sha256": "057ae9b0fa03fc491ea767fea29130fe6fef3d56b96b42b2619e0f7cd8961192",
+      "justification": "Derived from the @spec anchor at src-tauri/tests/destination_field_return.rs:116"
+    },
+    {
+      "requirement_id": "011-dictation-field-return:AC-005",
+      "test_id": "a_verified_input_inserts_without_any_010_query_and_enter_follows_009",
+      "expected": "AC-005: Verified counts editable; Enter rule unchanged — .specs/features/011-dictation-field-return/spec.md#ac-005",
+      "assertion_path": "src-tauri/tests/destination_field_recovery.rs",
+      "start_line": 68,
+      "end_line": 72,
+      "source_sha256": "97c42f6aca41c4cc76c43d637c74a02cdc03752d9dcdc26af754c15aefb2d8a4",
+      "justification": "Derived from the @spec anchor at src-tauri/tests/destination_field_recovery.rs:53"
+    },
+    {
+      "requirement_id": "011-dictation-field-return:AC-006",
+      "test_id": "a_cancellation_a_new_dictation_or_the_end_releases_the_input",
+      "expected": "AC-006: Cancel or method none drop it unused — .specs/features/011-dictation-field-return/spec.md#ac-006",
+      "assertion_path": "src-tauri/tests/destination_field_lifetime.rs",
+      "start_line": 144,
+      "end_line": 144,
+      "source_sha256": "6d93eac7e5eddb0c9c7243da730028ab3b0de5233fdb3103b4157807259188f3",
+      "justification": "Derived from the @spec anchor at src-tauri/tests/destination_field_lifetime.rs:125"
+    },
+    {
+      "requirement_id": "011-dictation-field-return:AC-007",
+      "test_id": "destination::bounded_worker::tests::a_hung_call_expires_refuses_the_next_one_and_its_late_answer_is_dropped",
+      "expected": "AC-007: Bounded UI Automation calls — .specs/features/011-dictation-field-return/spec.md#ac-007",
+      "assertion_path": "src-tauri/src/destination/bounded_worker.rs",
+      "start_line": 164,
+      "end_line": 168,
+      "source_sha256": "abe3553c65fefb7dee4c5e37c7283d4036727e4b111a753612f47e68ff8abcfc",
+      "justification": "Derived from the @spec anchor at src-tauri/src/destination/bounded_worker.rs:150"
+    },
+    {
+      "requirement_id": "011-dictation-field-return:AC-007",
+      "test_id": "destination::uia_mapping::tests::edit_or_document_with_a_value_or_text_pattern_is_a_text_input",
+      "expected": "AC-007: Windows text input rules — .specs/features/011-dictation-field-return/spec.md#ac-007",
+      "assertion_path": "src-tauri/src/destination/uia_mapping.rs",
+      "start_line": 113,
+      "end_line": 113,
+      "source_sha256": "a29b5b301117b98816b2879e016b555a8e23762a4df5ec6a45668bf0551cc490",
+      "justification": "Derived from the @spec anchor at src-tauri/src/destination/uia_mapping.rs:100"
+    },
+    {
+      "requirement_id": "011-dictation-field-return:AC-008",
+      "test_id": "destination::bounded_worker::tests::an_object_kept_by_an_expired_call_is_released_when_the_late_job_ends",
+      "expected": "AC-008: An abandoned answer is released on the thread — .specs/features/011-dictation-field-return/spec.md#ac-008",
+      "assertion_path": "src-tauri/src/destination/bounded_worker.rs",
+      "start_line": 201,
+      "end_line": 201,
+      "source_sha256": "abe3553c65fefb7dee4c5e37c7283d4036727e4b111a753612f47e68ff8abcfc",
+      "justification": "Derived from the @spec anchor at src-tauri/src/destination/bounded_worker.rs:182"
+    },
+    {
+      "requirement_id": "011-dictation-field-return:AC-008",
+      "test_id": "the_sentinel_range_never_reaches_a_log_or_an_event",
+      "expected": "AC-008: No content or range in logs or events — .specs/features/011-dictation-field-return/spec.md#ac-008",
+      "assertion_path": "src-tauri/tests/destination_field_privacy.rs",
+      "start_line": 106,
+      "end_line": 109,
+      "source_sha256": "caaffe345a43b01c94edd3648930da0035dfafb81e367ba33391dae161179dc7",
+      "justification": "Derived from the @spec anchor at src-tauri/tests/destination_field_privacy.rs:85"
+    }
+  ],
+  "derivation": "anchors"
+}

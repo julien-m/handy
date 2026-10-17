@@ -1,0 +1,43 @@
+01	exit 0	3s	bunx --no-install tsc --noEmit
+02	exit 0	2s	bun run lint
+03	exit 0	4s	bun run format:check
+04	exit 0	0s	bun run check:translations
+05	exit 0	6s	bun run build
+06	exit 0	0s	bun run test:keyboard
+07	exit 0	0s	bun run test:shortcut-list
+08	exit 0	0s	bun run test:settings-errors
+09	exit 0	1s	bun run test:settings-store
+10	exit 0	0s	bun run test:microphone-priority
+11	exit 0	0s	bun run test:word-replacements
+12	exit 0	0s	bun run test:prompt-settings
+13	exit 0	0s	bun run test:indicator
+14	exit 0	0s	bun run test:recovery-bubble
+15	exit 0	1s	bun run test:vocabulary
+16	exit 0	0s	bun run test:shortcut-states
+17	exit 0	0s	bun run test:output-settings
+18	exit 0	1s	! lsof -i :1420
+19	exit 0	9s	bun run test:microphone-priority-ui
+20	exit 0	4s	bun run test:pin-enter-ui
+21	exit 0	4s	bun run test:recovery-bubble-ui
+22	exit 1	13s	bunx --no-install playwright test --reporter=line
+22	exit 0	9s	bunx --no-install playwright test --reporter=line (rerun: the first run, 22-first.*, failed once on recovery-bubble.spec.ts:290 'harness-start' not visible in 5 s, a spec this fix does not touch and that passed in 21)
+23	exit 0	1s	cd src-tauri && cargo fmt -- --check
+24	exit 0	15s	cd src-tauri && cargo clippy --lib --bins -- -D warnings
+25	exit 0	12s	cd src-tauri && cargo clippy --all-targets -- -D warnings
+26	exit 0	252s	cd src-tauri && cargo test --no-fail-fast
+27	exit 0	57s	cd src-tauri && cargo clippy --lib --bins --features smart-paste-dispatch -- -D warnings
+28	exit 0	13s	cd src-tauri && cargo clippy --all-targets --features smart-paste-dispatch -- -D warnings
+29	exit 0	309s	cd src-tauri && cargo test --features smart-paste-dispatch --no-fail-fast
+30	exit 0	16s	cd src-tauri && cargo clippy --lib --bins --features destination-return -- -D warnings
+31	exit 0	13s	cd src-tauri && cargo clippy --all-targets --features destination-return -- -D warnings
+32	exit 0	302s	cd src-tauri && cargo test --features destination-return --no-fail-fast
+33	exit 0	25s	cd src-tauri && cargo clippy --lib --bins --features destination-return,smart-paste-dispatch -- -D warnings
+34	exit 0	21s	cd src-tauri && cargo clippy --all-targets --features destination-return,smart-paste-dispatch -- -D warnings
+35	exit 0	343s	cd src-tauri && cargo test --features destination-return,smart-paste-dispatch --no-fail-fast
+36	exit 0	29s	livespec conventions verify --feature repo --json > /dev/null
+37	exit 0	0s	livespec validate .specs/features/011-dictation-field-return --progression implement --model claude-opus-5-5 --review-max-chars 180000
+38	exit 0	0s	livespec validate .specs/features/011-dictation-field-return
+39	exit 0	40s	cd .specs/features/011-dictation-field-return/proofs/impl-20261015/windows-check && touch src/lib.rs && cargo clippy --target x86_64-pc-windows-msvc -- -D warnings
+40	exit 0	0s	cd .specs/features/011-dictation-field-return/proofs/impl-20261015/windows-check && touch src/lib.rs && cargo check --target x86_64-pc-windows-msvc
+41	exit 0	3s	livespec conventions verify --feature 011-dictation-field-return --json > /dev/null
+42	exit 0	3s	bun run format:check (after the documentation)

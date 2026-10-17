@@ -312,3 +312,33 @@ fn a_cancellation_during_the_attempt_and_006_refusals_keep_their_precedence() {
     assert_eq!(field.calls("range_is"), 0);
     assert_eq!(field.world.alive(), 0);
 }
+#[test]
+fn a_cancellation_after_the_activation_never_moves_the_focus() {
+    let field = remembered();
+    let started = field.start(true);
+    field.rig.workspace.bring(notes());
+    // Read once at the freeze, once in the activation wait, then cancelled before the attempt.
+    let reads = Arc::new(std::sync::atomic::AtomicUsize::new(0));
+    let spy = PasteSpy::new(&field.world);
+    field.rig.manager.mark_processing();
+    let counter = Arc::clone(&reads);
+    let request = handy_app_lib::destination::insertion::InsertionRequest {
+        dictation_id: started.dictation_id,
+        destination_generation: started.destination_generation,
+        paste_method_none: false,
+        cancelled: Box::new(move || counter.fetch_add(1, Ordering::SeqCst) >= 2),
+    };
+    let report = field.rig.orchestrator().deliver(request, &spy);
+    assert_eq!(report.status, InsertionStatus::Cancelled);
+    let seen = reads.load(Ordering::SeqCst);
+    assert!(
+        seen >= 4,
+        "cancelled at the attempt, then seen by the guard ({seen})"
+    );
+    assert_eq!(
+        field.calls("focus"),
+        0,
+        "no focus change for a cancelled dictation"
+    );
+    assert_eq!(field.world.alive(), 0);
+}

@@ -1,6 +1,9 @@
 //! Windows UI Automation adapter of 011's field port (spec AC-007, plan "Windows adapter"). One
-//! COM MTA thread, created on first use, owns Handy's own `IUIAutomation` client and every
-//! element and text range it obtained (`windows_uia`); callers hold opaque ids. Each call waits
+//! COM MTA thread, created on the first field call only (never at startup, never with the
+//! `destination-return` gate closed, which makes no field call and installs no port), owns
+//! Handy's own `IUIAutomation` client and every element and text range it obtained
+//! (`windows_uia`); callers hold opaque ids. A call that expires releases on the thread what its
+//! late job kept, so nothing stays in the tables. Each call waits
 //! at most the remaining budget (`BoundedWorker`): an expired wait is `Timeout` (for `SetFocus`
 //! or `Select`, the write may still apply: unsettled), a call while the thread is still occupied
 //! is refused at once, and the client's connection and transaction timeouts are set to the same
@@ -12,24 +15,29 @@ use super::bounded_worker::BoundedWorker;
 use super::field::{FieldAccess, FieldNode, SelectionRange};
 use super::uia_mapping::FactsView;
 use super::windows_uia::{
-    call_error, create_client, first_selection, focused, selection_is, Uia, Worker,
+    call_error, create_client, first_selection, focused, forget_range, forget_seen, selection_is,
+    Uia, Worker,
 };
 use crate::recovery::classifier::{AxQueryError, EditAttribute, FocusedElement};
 use std::any::Any;
-use std::sync::Arc;
+use std::sync::{Arc, OnceLock};
 use std::time::Duration;
 use windows::Win32::UI::Accessibility::IUIAutomationElement;
 
 /// Production [`FieldAccess`] of Windows.
 pub struct WindowsFieldAccess {
-    worker: Worker,
+    worker: OnceLock<Worker>,
 }
 impl WindowsFieldAccess {
-    /// The adapter and its UI Automation thread.
+    /// The adapter; its UI Automation thread and client start on the first field call.
     pub fn new() -> Self {
         Self {
-            worker: Arc::new(BoundedWorker::spawn("handy-uia-field", create_client)),
+            worker: OnceLock::new(),
         }
+    }
+    fn worker(&self) -> &Worker {
+        self.worker
+            .get_or_init(|| Arc::new(BoundedWorker::spawn("handy-uia-field", create_client)))
     }
 }
 impl Default for WindowsFieldAccess {
@@ -51,8 +59,12 @@ impl FieldAccess for WindowsFieldAccess {
         // `_pid` is unused: UI Automation exposes the system focus only; 010's rule then
         // refuses an element of another process.
         let seen = self
-            .worker
-            .call(timeout, move |uia: &mut Uia| focused(uia, timeout))
+            .worker()
+            .call_or_undo(
+                timeout,
+                move |uia: &mut Uia| focused(uia, timeout),
+                forget_seen,
+            )
             .map_err(call_error)??;
         Ok(Box::new(WindowsFieldNode {
             id: seen.id,
@@ -61,7 +73,7 @@ impl FieldAccess for WindowsFieldAccess {
                 facts: seen.facts,
             },
             runtime_id: seen.runtime_id,
-            worker: Arc::clone(&self.worker),
+            worker: Arc::clone(self.worker()),
         }))
     }
     fn focused_window(
@@ -153,12 +165,20 @@ impl FocusedElement for WindowsFieldNode {
 
 impl FieldNode for WindowsFieldNode {
     fn read_range(&mut self, timeout: Duration) -> Result<SelectionRange, AxQueryError> {
-        let id = self.on_element(timeout, |element, uia| {
+        let element_id = self.id;
+        let read = move |uia: &mut Uia| {
+            uia.bound(timeout);
+            let element = uia.elements.get(&element_id).cloned();
+            let element = element.ok_or(AxQueryError::NoValue)?;
             // SAFETY: COM calls on the thread's own objects; `GetText` is never called.
             let kept =
-                unsafe { first_selection(element)?.Clone() }.map_err(|_| AxQueryError::Failed)?;
+                unsafe { first_selection(&element)?.Clone() }.map_err(|_| AxQueryError::Failed)?;
             Ok(uia.keep_range(kept))
-        })?;
+        };
+        let id = self
+            .worker
+            .call_or_undo(timeout, read, forget_range)
+            .map_err(call_error)??;
         let handle = RangeHandle {
             id,
             worker: Arc::clone(&self.worker),

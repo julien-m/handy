@@ -81,11 +81,7 @@ pub(crate) fn copy_attribute(
 }
 
 /// A short string attribute (a role or subrole), at most `MAX_ROLE_UNITS` long.
-pub(crate) fn short_string(
-    element: &CfOwned,
-    name: &str,
-    timeout: Duration,
-) -> Result<String, AxQueryError> {
+fn short_string(element: &CfOwned, name: &str, timeout: Duration) -> Result<String, AxQueryError> {
     let value = copy_attribute(element, name, timeout)?;
     string_units(value.as_ptr(), MAX_ROLE_UNITS)
         .map(|units| String::from_utf16_lossy(&units))

@@ -10,7 +10,7 @@ updated: 2026-10-15
 
 Status: In Progress. Steps 1 to 5 of the plan are implemented on `feature/011-dictation-field-return` (from `dev` `4e3e5143`, 009 and 010 merged), behind 006's closed `destination-return` rollout gate; Step 1 (native spike) and Step 6 (acceptance with Julien) have their automated part only, and every native macOS proof is pending with Julien (`.specs/native-proofs-checklist.md`, section 011). With the gate closed, which is the default build, Handy is `dev`: no session, so no focused-element read, no attempt and no verification. No AC or SC is certified complete. Read [the functional source](spec.md), [the plan](plan.md) and the step checkpoints in [progress](progress.md).
 
-Commits: `ffc9ebdb` (Steps 1–5: model, capture, attempt, guard verification, 010 hand-off, macOS and Windows adapters, tests, native harness), `9809ff61` (spent-budget fault test), then the documentation commit. Final verification: `proofs/impl-20261015/summary.txt`.
+Commits: `ffc9ebdb` (Steps 1–5: model, capture, attempt, guard verification, 010 hand-off, macOS and Windows adapters, tests, native harness), `9809ff61` (spent-budget fault test), `256cf4f9` (documentation), then the fix commit of delivery review round 1 (see "Delivery review round 1 — corrections"). Final verification: `proofs/impl-20261015-fix1/summary.txt` (earlier: `proofs/impl-20261015/summary.txt`, whose Windows harness proof predates `ffc9ebdb` and is superseded).
 
 ## Requirement Mapping
 
@@ -41,7 +41,7 @@ Derived from the `@spec AC-xxx` anchors of the Rust tests: `proofs/impl-20261015
 | --- | --- | --- |
 | SC-001 | Native matrix (checklist section 011) | ❌ Pending with Julien |
 | SC-002 | `destination_field_capture.rs`, `destination_field_return.rs`, `destination_field_recovery.rs` | ⚠️ Automated cases pass; native fallback cases pending |
-| SC-003 | `destination_field_capture.rs::with_the_gate_closed_no_start_read_is_ever_spawned` (closed builds), final cargo tests in the four combinations | ⚠️ Automated pass; native closed-gate run pending |
+| SC-003 | `destination_field_capture.rs::with_the_gate_closed_no_start_read_is_ever_spawned` and `::with_the_gate_closed_a_whole_dictation_reads_nothing_and_pastes_as_without_011` (closed builds: a whole dictation with the scripted port installed makes zero call, `FieldCheck::Absent`, same report and target as without 011's port); the closed gate's absence of any session (`dev`'s paste) is 006's closed-gate rollout tests; final cargo tests in the four combinations | ⚠️ Automated pass; native closed-gate run pending |
 | SC-004 | `destination_field_privacy.rs`, harness `--log --sentinel` | ⚠️ Automated pass; native sentinel pending |
 | SC-005 | `destination_field_capture.rs::the_start_path_returns_while_the_port_never_answers_and_a_late_answer_is_dropped` (open builds) | ⚠️ Automated pass |
 
@@ -100,4 +100,21 @@ Not edited by 011: to be realigned through their own LiveSpec flow (`/spec-refin
 
 | Step | Name | Proof or receipt |
 | --- | --- | --- |
-| 5 | Windows adapter | `proofs/impl-20261015/windows-check-clippy.*` (compile and clippy for `x86_64-pc-windows-msvc`, exit 0); native Windows run pending (checklist §5) |
+| 5 | Windows adapter | `proofs/impl-20261015-fix1/final/39.*` (harness `cargo clippy --target x86_64-pc-windows-msvc -- -D warnings`, exit 0) and `final/40.*` (harness `cargo check --target x86_64-pc-windows-msvc`, exit 0), both from the fix commit's tree: they compile the real `windows_field.rs`, `windows_uia.rs`, `bounded_worker.rs`, `uia_mapping.rs` and `field.rs` with stubs of the 006/010 types they import. The whole crate cannot be cross-compiled locally: `cargo check --target x86_64-pc-windows-msvc` in `src-tauri` stops at the `ring` build script (`'assert.h' file not found`, no Windows SDK headers; `proofs/impl-20261015-fix1/windows-crate-check.log`, exit 101). The CI `windows-check` job and the Windows build workflows compile the whole crate. The round-0 proof `proofs/impl-20261015/windows-check-clippy.*` predates `ffc9ebdb` and is superseded. Native Windows run pending (checklist §5) |
+
+## Delivery review round 1 — corrections
+
+Review BLOCKED and audit BLOCKED (`.reviews/delivery.json`, round 1) for one blocking point: the Windows build did not compile. Corrected on the coordinator's instruction; verification in `proofs/impl-20261015-fix1/summary.txt`.
+
+| Finding | Correction | Tests |
+| --- | --- | --- |
+| Blocking: `TextPatternRangeEndpoint_Start`/`_End` not imported (`windows_uia.rs`); the Windows proof predated the code | Imported; Windows harness clippy and check rerun from the fix tree (exit 0); stale proof marked superseded; whole-crate cross-check impossible locally, stated in Release Evidence | `final/39`, `final/40` |
+| Closed gate on Windows not identical to `dev`: the UI Automation thread and COM client started at launch | The worker is created on the first field call only (`OnceLock`); with the gate closed no field call happens; module documentation aligned | Windows harness compile; closed-gate test below |
+| COM leak after an expired call | `BoundedWorker::call_or_undo`: whoever takes the answer slot first decides; a late job whose caller gave up hands its result to an undo run on the thread, which removes the element or range it kept (`forget_seen`, `forget_range`) | `bounded_worker::tests::an_object_kept_by_an_expired_call_is_released_when_the_late_job_ends` |
+| A stale `freeze` took the next dictation's field | `freeze_with_field` acts only after a successful freeze and only on the field of that dictation and generation | `destination_field_lifetime::a_stale_freeze_never_takes_the_input_of_the_next_dictation` |
+| `std::thread::spawn` on the start path | `thread::Builder` named `handy-field-read`; on failure nothing is remembered, a warning is logged, no panic | build, clippy |
+| Widened visibility | `short_string` private again; `bounded_worker` and `uia_mapping` private modules (dead-code allowed off Windows); `capture_since` private; `attach_field` and `decide_field_check` crate-visible | clippy in the four combinations |
+| SC-003 needed a whole dictation | Closed-gate test over a whole dictation with the scripted port installed (see SC-003 row) | `destination_field_capture::with_the_gate_closed_a_whole_dictation_reads_nothing_and_pastes_as_without_011` |
+| Info: a cancellation between activation and attempt moved the focus | `field_attempt::begin` reads the cancellation first and drops the field | `destination_field_return::a_cancellation_after_the_activation_never_moves_the_focus` |
+| Info: `expected()` over 30 lines | Split into `expected` and `row_of` | `decision_tests` |
+| Same-field typing, Windows pinned background, Chromium late focus | Behavior unchanged; the two review proposals (character count with an AC-008 amendment, a Windows exception of AC-003) and the Chromium case are in `.specs/native-proofs-checklist.md` (§2 item "Onglet changé", §3) | documentation |

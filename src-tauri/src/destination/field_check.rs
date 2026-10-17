@@ -59,7 +59,7 @@ pub enum FocusAtGuard {
 /// and verified pastes; the remembered input focused otherwise never pastes, even when it was
 /// already focused when noted; the noted element still focused with no window raised and no
 /// write left unanswered is branch (a); everything else is branch (b).
-pub fn decide_field_check(
+pub(crate) fn decide_field_check(
     stage: AttemptStage,
     raised: bool,
     unsettled: bool,

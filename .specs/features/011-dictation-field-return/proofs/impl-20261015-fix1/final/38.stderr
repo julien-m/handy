@@ -1,0 +1,7 @@
+livespec-shim-notice: dev mode executes the LiveSpec checkout /Users/julienm/projects/livespec
+OK      .specs/features/011-dictation-field-return/changelog.md Score: 100/100
+OK      .specs/features/011-dictation-field-return/implementation.md Score: 
+100/100
+OK      .specs/features/011-dictation-field-return/plan.md Score: 100/100
+OK      .specs/features/011-dictation-field-return/progress.md Score: 100/100
+OK      .specs/features/011-dictation-field-return/spec.md Score: 100/100

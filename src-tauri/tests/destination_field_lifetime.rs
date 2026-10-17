@@ -179,3 +179,14 @@ fn return_off_with_nothing_pinned_remembers_nothing_and_pastes_at_the_end() {
     );
     assert!(field.world.calls().is_empty());
 }
+#[test]
+fn a_stale_freeze_never_takes_the_input_of_the_next_dictation() -> TestResult {
+    let field = rig();
+    let first = field.start(true);
+    let next = field.start(true);
+    let (id, generation) = (first.dictation_id, first.destination_generation);
+    assert!(field.rig.manager.freeze_with_field(id, generation).is_err());
+    assert_eq!(field.world.alive(), 1, "the next dictation keeps its input");
+    assert!(kept(&field, &next)?);
+    Ok(())
+}

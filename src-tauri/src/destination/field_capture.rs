@@ -53,7 +53,7 @@ pub fn capture(access: &dyn FieldAccess, pid: u32, clock: &dyn Clock) -> FieldCa
 
 /// [`capture`] for a read requested at `requested_at`: the budget runs from the request, so a
 /// worker that starts late has less time, never more.
-pub fn capture_since(
+fn capture_since(
     access: &dyn FieldAccess,
     pid: u32,
     clock: &dyn Clock,
@@ -128,9 +128,13 @@ pub fn spawn_start_read(
     let target = target?;
     let manager = Arc::clone(manager);
     let requested_at = manager.clock.now();
-    Some(std::thread::spawn(move || {
-        read_and_attach(&manager, target, requested_at);
-    }))
+    let spawned = std::thread::Builder::new()
+        .name("handy-field-read".to_owned())
+        .spawn(move || read_and_attach(&manager, target, requested_at));
+    // Without a thread nothing is remembered: the dictation behaves as in 006.
+    spawned
+        .map_err(|error| log::warn!("field_return not_remembered(no_thread: {error})"))
+        .ok()
 }
 
 /// The worker's body: resolve the running instance of `target`, read its focused input, then

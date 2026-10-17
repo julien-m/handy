@@ -274,6 +274,46 @@ fn the_start_path_returns_while_the_port_never_answers_and_a_late_answer_is_drop
     assert_eq!(field.world.alive(), 0, "the late reference is released");
     Ok(())
 }
+// @spec SC-003: Gate closed means zero focused-element reads — .specs/features/011-dictation-field-return/spec.md#sc-003
+#[cfg(not(feature = "destination-return"))]
+#[test]
+fn with_the_gate_closed_a_whole_dictation_reads_nothing_and_pastes_as_without_011() -> TestResult {
+    use handy_app_lib::destination::field_capture::spawn_start_read;
+    use handy_app_lib::destination::field_check::FieldCheck;
+    let field = FieldRig::comet();
+    let started = field.rig.start(true);
+    let (id, generation) = (started.dictation_id, started.destination_generation);
+    let target = field.rig.manager.field_target(id, generation);
+    assert!(
+        spawn_start_read(&field.rig.manager, target).is_none(),
+        "no start read"
+    );
+    field.rig.workspace.bring(notes());
+    let spy = rig::PasteSpy::new(&field.world);
+    let report = field.deliver_plain(&started, &spy);
+    assert!(
+        field.world.calls().is_empty(),
+        "no read, no attempt, no verification"
+    );
+    let context = spy.contexts().pop().ok_or("dispatched")?;
+    assert_eq!(context.field, FieldCheck::Absent);
+    // The same dictation without 011's port: the same report and the same target.
+    let plain = destination::Rig::new(comet(), vec![comet(), notes()]);
+    let without = plain.start(true);
+    plain.workspace.bring(notes());
+    let method = destination::Method::succeeding();
+    let reference = plain.deliver(&without, &method, false);
+    assert_eq!(
+        (report.status, report.reason),
+        (reference.status, reference.reason)
+    );
+    let reference_target = method.dispatched().pop().and_then(|context| context.target);
+    assert_eq!(
+        context.target.map(|target| target.pid),
+        reference_target.map(|target| target.pid)
+    );
+    Ok(())
+}
 #[cfg(not(feature = "destination-return"))]
 // @spec SC-003: Gate closed means zero focused-element reads — .specs/features/011-dictation-field-return/spec.md#sc-003
 #[test]
