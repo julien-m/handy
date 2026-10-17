@@ -241,9 +241,14 @@ describe("recorder start failures", () => {
 describe("screen shown by the shortcut lists", () => {
   test("a conflict wins over a full list, which wins over the base screen", () => {
     expect(shortcutScreenOf([null, null])).toBe("shortcut-settings");
-    expect(shortcutScreenOf(["limit", null])).toBe("shortcut-settings-limit");
-    expect(shortcutScreenOf(["limit", "conflict"])).toBe(
-      "shortcut-settings-conflict",
+    expect(shortcutScreenOf(["shortcut-settings-limit", null])).toBe(
+      "shortcut-settings-limit",
     );
+    expect(
+      shortcutScreenOf([
+        "shortcut-settings-limit",
+        "shortcut-settings-conflict",
+      ]),
+    ).toBe("shortcut-settings-conflict");
   });
 });

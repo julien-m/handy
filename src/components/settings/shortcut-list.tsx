@@ -133,9 +133,10 @@ const listState = (
     inlineError(parts) !== null ||
     shownRefusalOf(parts) !== null ||
     legacyWarningsOf(stored.conflicts, actionId, names).length > 0;
-  if (shown) return "conflict";
+  if (shown) return "shortcut-settings-conflict";
   const count = shortcutsOf(parts.binding).length;
-  return !single && listHint(count) === "limit" ? "limit" : null;
+  const full = !single && listHint(count) === "limit";
+  return full ? "shortcut-settings-limit" : null;
 };
 
 /**

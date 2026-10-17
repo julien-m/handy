@@ -1,11 +1,8 @@
 // Root of the shortcut settings page (feature 004): gathers the state reported by each shortcut
 // list and gives every part of the page the test-id prefix of the contract screen shown.
-import React, { useCallback, useMemo, useState } from "react";
-import {
-  type ShortcutListState,
-  ShortcutScreenContext,
-  shortcutScreenOf,
-} from "./shortcut-screen";
+import React from "react";
+import { useScreenScope } from "./page-screen";
+import { SHORTCUT_SCREENS, ShortcutScreenContext } from "./shortcut-screen";
 
 /**
  * Screen root with its `-screen` and `-general` test ids.
@@ -16,15 +13,8 @@ export const ShortcutScreenRoot: React.FC<{
   general: React.ReactNode;
   children: React.ReactNode;
 }> = ({ general, children }) => {
-  const [states, setStates] = useState<Record<string, ShortcutListState>>({});
-  const report = useCallback((actionId: string, state: ShortcutListState) => {
-    // Same state: keep the object so the page does not render again.
-    setStates((current) =>
-      current[actionId] === state ? current : { ...current, [actionId]: state },
-    );
-  }, []);
-  const screen = shortcutScreenOf(Object.values(states));
-  const scope = useMemo(() => ({ screen, report }), [screen, report]);
+  const scope = useScreenScope(SHORTCUT_SCREENS);
+  const { screen } = scope;
   return (
     <ShortcutScreenContext.Provider value={scope}>
       <div
