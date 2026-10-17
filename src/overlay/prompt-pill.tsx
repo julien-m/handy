@@ -17,8 +17,13 @@ import {
   type PromptMenuRow,
 } from "./prompt-model";
 import type { PromptControls } from "./use-dictation-prompt";
+import { useIndicatorScreen } from "./indicator-screen";
 
-const MENU_ID = "recording-indicator-prompt-menu-menu";
+/**
+ * Test id of the prompt menu, under the screen shown (`<screen>-menu`).
+ * @returns the menu's test id
+ */
+const useMenuId = (): string => `${useIndicatorScreen()}-menu`;
 /** Grace period before a hover menu closes, so the pointer can travel to it. */
 const HOVER_CLOSE_MS = 250;
 
@@ -36,6 +41,7 @@ const PromptRow: React.FC<{
   onSelect: (promptId: string | null) => void;
 }> = ({ row, onSelect }) => {
   const { t } = useTranslation();
+  const menuId = useMenuId();
   const isNone = row.id === null;
   return (
     <button
@@ -44,7 +50,7 @@ const PromptRow: React.FC<{
       aria-checked={row.current}
       disabled={!row.usable}
       className={`smenu-item ${row.current ? "current" : ""}`}
-      data-testid={isNone ? `${MENU_ID}-none` : `${MENU_ID}-prompt`}
+      data-testid={isNone ? `${menuId}-none` : `${menuId}-prompt`}
       data-instance-id={isNone ? undefined : `prompt-${row.id}`}
       onMouseDown={keepFocus}
       onClick={() => onSelect(row.id)}
@@ -54,7 +60,7 @@ const PromptRow: React.FC<{
         {row.shortcut && (
           <ShortcutBadge
             text={row.shortcut}
-            testId={`${MENU_ID}-prompt-shortcut`}
+            testId={`${menuId}-prompt-shortcut`}
           />
         )}
       </span>
@@ -71,6 +77,7 @@ const PromptRows: React.FC<{
   osType: OSType;
 }> = ({ controls, library, view, osType }) => {
   const { t } = useTranslation();
+  const menuId = useMenuId();
   const defaultName = defaultPromptName(library) ?? t("overlay.prompt.none");
   return (
     <>
@@ -83,7 +90,7 @@ const PromptRows: React.FC<{
           />
         ))}
       </div>
-      <p className="smenu-note" data-testid={`${MENU_ID}-note`}>
+      <p className="smenu-note" data-testid={`${menuId}-note`}>
         {t("overlay.prompt.note", { name: defaultName })}
       </p>
     </>
@@ -96,15 +103,16 @@ const PromptMenu: React.FC<{
   osType: OSType;
 }> = ({ controls, view, osType }) => {
   const { t } = useTranslation();
+  const menuId = useMenuId();
   const library = controls.library;
   return (
     <div
       className="smenu"
       role="menu"
       aria-label={t("overlay.prompt.menuTitle")}
-      data-testid={MENU_ID}
+      data-testid={menuId}
     >
-      <p className="smenu-label" data-testid={`${MENU_ID}-label`}>
+      <p className="smenu-label" data-testid={`${menuId}-label`}>
         {t("overlay.prompt.menuTitle")}
       </p>
       {library.status === "ready" ? (
@@ -167,14 +175,12 @@ const PillLabel: React.FC<{ name: string; hint: boolean }> = ({
   hint,
 }) => {
   const { t } = useTranslation();
+  const screen = useIndicatorScreen();
   return (
     <span className="sprompt-text">
       <span className="sprompt-name">{name}</span>
       {hint && (
-        <span
-          className="sprompt-hint"
-          data-testid="recording-indicator-prompt-hint"
-        >
+        <span className="sprompt-hint" data-testid={`${screen}-prompt-hint`}>
           {t("overlay.prompt.hint")}
         </span>
       )}
@@ -210,11 +216,12 @@ const PillButton: React.FC<PromptPillProps & { onClick: () => void }> = (
   const shortcut = pillShortcut(props.controls, props.view, props.osType);
   const name = props.view.prompt_name ?? t("overlay.prompt.none");
   const open = props.controls.menuOpen;
+  const screen = useIndicatorScreen();
   return (
     <button
       type="button"
       className={`sprompt ${open ? "open" : ""}`}
-      data-testid="recording-indicator-prompt"
+      data-testid={`${screen}-prompt`}
       aria-label={t("overlay.prompt.label", { name })}
       aria-haspopup="menu"
       aria-expanded={open}
@@ -222,10 +229,7 @@ const PillButton: React.FC<PromptPillProps & { onClick: () => void }> = (
       onClick={props.onClick}
     >
       {shortcut && (
-        <ShortcutBadge
-          text={shortcut}
-          testId="recording-indicator-prompt-shortcut"
-        />
+        <ShortcutBadge text={shortcut} testId={`${screen}-prompt-shortcut`} />
       )}
       <PillLabel name={name} hint={!open} />
     </button>

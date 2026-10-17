@@ -282,7 +282,7 @@ const RecordingOverlay: React.FC = () => {
       {waveform}
       <div className="sbase-r">
         {showTimer && (
-          <span className="stimer" data-testid="recording-indicator-pill-timer">
+          <span className="stimer" data-testid={`${extras.screen}-pill-timer`}>
             {fmtTime(elapsed)}
           </span>
         )}
@@ -322,7 +322,7 @@ const RecordingOverlay: React.FC = () => {
       <IndicatorStack {...stack} form="live">
         <div
           key={session}
-          data-testid="recording-indicator-pill"
+          data-testid={`${extras.screen}-pill`}
           className={`scard ${open ? "open" : ""} ${collapsed ? "working" : ""} ${
             isVisible ? "" : "leaving"
           }`}
@@ -375,7 +375,7 @@ const RecordingOverlay: React.FC = () => {
     <IndicatorStack {...stack} form="compact">
       <div
         className={`scard compact ${working && isVisible ? "cworking" : ""}`}
-        data-testid="recording-indicator-pill"
+        data-testid={`${extras.screen}-pill`}
       >
         {working
           ? workingRow(workLabel, true)

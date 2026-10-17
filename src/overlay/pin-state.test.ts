@@ -14,7 +14,7 @@ import type {
 } from "@/bindings";
 import en from "@/i18n/locales/en/translation.json";
 import { badgeView } from "./destination-model";
-import { badgeLabel, pinEntries, PIN_TEST_IDS } from "./pin-state";
+import { badgeLabel, pinEntries, pinTestIds } from "./pin-state";
 
 const chatgptPin: PinView = { display_name: "ChatGPT", icon_ref: null };
 
@@ -71,7 +71,6 @@ describe("pin entries in the badge menu (has_dropdown)", () => {
         kind: "pin",
         name: "Comet",
         labelKey: "overlay.destination.menu.pin",
-        testId: PIN_TEST_IDS.pin,
       },
     ]);
     expect(translate(entries[0].labelKey, { name: "Comet" })).toBe("Pin Comet");
@@ -92,10 +91,15 @@ describe("pin entries in the badge menu (has_dropdown)", () => {
         kind: "unpin",
         name: "ChatGPT",
         labelKey: "overlay.destination.menu.unpin",
-        testId: PIN_TEST_IDS.unpin,
       },
     ]);
-    expect(PIN_TEST_IDS.unpin).toBe("recording-indicator-pinned-menu-unpin");
+    expect(pinTestIds("recording-indicator-pinned").unpin).toBe(
+      "recording-indicator-pinned-menu-unpin",
+    );
+    // 009-01: Pin is offered while nothing is pinned, on the destination menu screen.
+    expect(pinTestIds("recording-indicator-destination-menu").pin).toBe(
+      "recording-indicator-destination-menu-menu-pin",
+    );
   });
 
   test("another app pinned: Pin the current destination and Unpin the pinned app", () => {
