@@ -6,6 +6,7 @@ import { AlertTriangle, X } from "lucide-react";
 import type { ShortcutEdit } from "@/bindings";
 import { ShortcutInput } from "./ShortcutInput";
 import type { TranslatedMessage } from "./shortcut-list-model";
+import { shortcutInstanceId } from "./shortcut-list-feedback";
 
 interface ShortcutRowProps {
   actionId: string;
@@ -87,6 +88,7 @@ export const ShortcutRow: React.FC<ShortcutRowProps> = (props) => {
     <div
       className="flex items-center gap-1"
       data-testid={rowId}
+      data-instance-id={shortcutInstanceId(shortcut)}
       data-key={shortcut}
     >
       {refusal && <RowWarning message={refusal} testId={`${rowId}-refused`} />}
