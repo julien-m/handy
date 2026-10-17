@@ -53,7 +53,10 @@ const ImportRefusalAlert: React.FC = () => {
             name,
           })}
         </span>
-        <span className="block">
+        <span
+          className="block"
+          data-testid={`${SCREEN_IDS.import}-unreadable-body`}
+        >
           {t(`settings.replacements.importRefusal.${refusal.kind}Body`)}
         </span>
       </Alert>
@@ -68,6 +71,7 @@ const DismissRefusalButton: React.FC = () => {
     <Button
       variant="secondary"
       size="sm"
+      data-testid={`${SCREEN_IDS.import}-unreadable-dismiss`}
       onClick={() => useReplacementFiles.getState().dismissRefusal()}
     >
       {t("settings.replacements.importRefusal.dismiss")}
@@ -110,6 +114,7 @@ const ImportFailureNote: React.FC = () => {
   return (
     <CommitFailureNote
       failure={failure}
+      testId={`${DIALOG_ID}-commit-failure`}
       onReload={() => void reloadImportPreview()}
     />
   );

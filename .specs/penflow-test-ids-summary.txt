@@ -206,3 +206,48 @@ Old -> new (an old id still exists on its own screen; the new one replaces it on
 | 010 | `recovery-bubble-explanation-explanation-text` | `recovery-bubble-insertion-failed-explanation-text` | `src/overlay/recovery-bubble.tsx` |
 | 010 | `recovery-bubble-copy` | `recovery-bubble-insertion-failed-copy` | `src/overlay/recovery-bubble.tsx` |
 | 010 | `recovery-bubble-why` | `recovery-bubble-insertion-failed-why` | `src/overlay/recovery-bubble.tsx` |
+
+== Round 2 (2026-10-17): merge of dev (d9747c54, 0d8ba93c; contract of 609 nodes) ==
+
+Merge: 7f4af20b, no conflict.
+IDs added in the code for the contract additions:
+- 002: replacement-settings-import-unreadable-body, -unreadable-dismiss; replacement-settings-commit-failure{,-message,-reload}; replacement-settings-bulk-commit-failure{,-message,-reload}; replacement-settings-unsaved{,-body,-stay,-discard}; replacement-settings-delete-dialog{,-body,-cancel,-confirm}.
+- 006: <screen>-menu-loading, <screen>-menu-failed, <screen>-menu-feedback (recording-indicator-destination-menu-menu-... while nothing is pinned).
+- 004-05/06 (Post Process page): nothing to add; shortcut-settings-ai-dictation{,-title,-list,-shortcut,-shortcut-remove,-last,-add,-reset} are already rendered there.
+- Test fixed by the merge: vocabulary-model.test.ts now also reads vocabulary-notices.tsx, which renders the loading, list-error and error nodes the contract added for 003.
+
+Code / contract check (scratchpad script check_test_ids.py, not in the repo): every string or template literal used as a test id in src/ (non-test files) becomes a regex, resolved constants inlined, ternaries of literals as alternatives, the action slugs of shortcut-list-feedback.ts as a closed set, any other ${...} as a wildcard. Static and lenient: a wildcard part (for example ${screen} or ${testId}) can match more screens than the code renders, so 'present' means 'a code pattern can produce it', not 'rendered in that state'. Validated against dev 0d8ba93c (before this branch): it lists the D1 ids and the 002/006 additions as missing there.
+contract nodes: 609, code patterns: 311
+
+== Code ids absent from the contract, by screen ==
+[replacement-settings-import]
+  replacement-settings-import-dialog-commit-failure  (src/components/settings/word-replacements/import-dialog.tsx)
+
+== Contract ids absent from the code, by screen ==
+Remaining gap: replacement-settings-import-dialog-commit-failure (failed Apply import note) is rendered but not drawn in the contract. No contract id is missing from the code.
+
+Verification commands, round 2 (exit codes):
+  0  npx tsc --noEmit
+  0  bun run lint
+  0  npx prettier --check .
+  0  bun run check:translations
+  0  bun run build
+  0  bun run test:keyboard
+  0  bun run test:shortcut-list
+  0  bun run test:settings-errors
+  0  bun run test:settings-store
+  0  bun run test:microphone-priority
+  0  bun run test:word-replacements
+  0  bun run test:prompt-settings
+  0  bun run test:indicator
+  0  bun run test:recovery-bubble
+  0  bun run test:vocabulary
+  0  bun run test:shortcut-states
+  0  bun run test:output-settings
+  0  bun test src/components/settings/history/clipboard.test.ts
+  0  bun test src/components/ui/dropdown-aria.test.tsx
+  0  bun test src/components/ui/dropdown-navigation.test.ts
+  0  bun test src/components/update-checker/portableInstaller.test.ts
+  0  npx playwright test --reporter=line
+  0  zsh -c livespec conventions verify --feature repo --json > /dev/null
+Playwright: 41 passed. format:check: prettier part only, cargo fmt not run (no Rust change).

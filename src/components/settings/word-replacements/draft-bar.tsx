@@ -30,6 +30,7 @@ export const DraftBar: React.FC = () => {
         <CommitFailureNote
           failure={failure}
           discardsOnReload
+          testId={`${SCREEN_IDS.list}-commit-failure`}
           onReload={() => void useReplacementEditor.getState().loadRules()}
         />
       )}

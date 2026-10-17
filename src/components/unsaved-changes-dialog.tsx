@@ -14,6 +14,10 @@ import {
   hasUnsavedChanges,
 } from "@/stores/unsaved-changes";
 
+// Contract node `replacement-settings.unsaved`: only the replacement editor (002) registers a
+// draft with the guard, so the dialog is drawn on its screen.
+const DIALOG_ID = "replacement-settings-unsaved";
+
 /** Navigation request and the confirmation dialog to render with it. */
 export interface GuardedNavigation<T> {
   readonly request: (target: T) => void;
@@ -73,18 +77,29 @@ const UnsavedChangesDialog: React.FC<UnsavedChangesDialogProps> = ({
       onOpenChange={(next) => {
         if (!next) onStay();
       }}
+      testId={DIALOG_ID}
       footer={
         <>
-          <Button variant="secondary" onClick={onStay}>
+          <Button
+            variant="secondary"
+            onClick={onStay}
+            data-testid={`${DIALOG_ID}-stay`}
+          >
             {t("settings.unsavedChanges.stay")}
           </Button>
-          <Button variant="danger" onClick={onDiscard}>
+          <Button
+            variant="danger"
+            onClick={onDiscard}
+            data-testid={`${DIALOG_ID}-discard`}
+          >
             {t("settings.unsavedChanges.discard")}
           </Button>
         </>
       }
     >
-      <p className="text-sm">{t("settings.unsavedChanges.description")}</p>
+      <p className="text-sm" data-testid={`${DIALOG_ID}-body`}>
+        {t("settings.unsavedChanges.description")}
+      </p>
     </Dialog>
   );
 };

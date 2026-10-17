@@ -211,10 +211,14 @@ export const DestinationMenuPanel: React.FC<DestinationMenuProps> = ({
       data-testid={menuId}
     >
       {menu.status === "loading" && (
-        <p className="smenu-status">{t("overlay.destination.menu.loading")}</p>
+        <p className="smenu-status" data-testid={`${menuId}-loading`}>
+          {t("overlay.destination.menu.loading")}
+        </p>
       )}
       {menu.status === "error" && (
-        <p className="smenu-status">{t("overlay.destination.menu.failed")}</p>
+        <p className="smenu-status" data-testid={`${menuId}-failed`}>
+          {t("overlay.destination.menu.failed")}
+        </p>
       )}
       {menu.status === "open" && (
         <>
@@ -228,7 +232,11 @@ export const DestinationMenuPanel: React.FC<DestinationMenuProps> = ({
         </>
       )}
       {feedbackKey && (
-        <p className="smenu-feedback" role="status">
+        <p
+          className="smenu-feedback"
+          role="status"
+          data-testid={`${menuId}-feedback`}
+        >
           {t(feedbackKey)}
         </p>
       )}

@@ -110,16 +110,31 @@ describe("destination badge (006)", () => {
     expect(html).toContain('aria-checked="true"');
   });
   test("loading and error states of the menu", () => {
-    expect(
-      render({
-        destination: destination(session(chatgpt), { status: "loading" }),
-      }),
-    ).toContain("Loading apps…");
-    expect(
-      render({
-        destination: destination(session(chatgpt), { status: "error" }),
-      }),
-    ).toContain("The app list could not be loaded.");
+    const loading = render({
+      destination: destination(session(chatgpt), { status: "loading" }),
+    });
+    expect(loading).toContain("Loading apps…");
+    expect(loading).toContain(
+      'data-testid="recording-indicator-destination-menu-menu-loading"',
+    );
+    const failed = render({
+      destination: destination(session(chatgpt), { status: "error" }),
+    });
+    expect(failed).toContain("The app list could not be loaded.");
+    expect(failed).toContain(
+      'data-testid="recording-indicator-destination-menu-menu-failed"',
+    );
+  });
+  test("a refused choice shows its feedback in the open menu", () => {
+    const html = render({
+      destination: {
+        ...destination(session(chatgpt), { status: "loading" }),
+        feedbackKey: "overlay.destination.menu.failed",
+      },
+    });
+    expect(html).toContain(
+      'data-testid="recording-indicator-destination-menu-menu-feedback"',
+    );
   });
 });
 
