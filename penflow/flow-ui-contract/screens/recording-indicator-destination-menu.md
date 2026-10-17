@@ -126,12 +126,15 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "children": [
+        "recording-indicator-destination-menu.menu.pin",
         "recording-indicator-destination-menu.menu.now-label",
         "recording-indicator-destination-menu.menu.frontmost",
         "recording-indicator-destination-menu.menu.others-label",
         "recording-indicator-destination-menu.menu.app",
         "recording-indicator-destination-menu.menu.frontmost-at-end",
-        "recording-indicator-destination-menu.menu.pin"
+        "recording-indicator-destination-menu.menu.loading",
+        "recording-indicator-destination-menu.menu.failed",
+        "recording-indicator-destination-menu.menu.feedback"
       ],
       "id": "recording-indicator-destination-menu.menu",
       "role": "container",
@@ -144,8 +147,8 @@ Generator: `penflow.flow-docs/1`
       "id": "recording-indicator-destination-menu.menu.app",
       "repeat_model": {
         "collection": "destination_menu.apps",
-        "instance_id_template": "app-{bundle_id}",
-        "item_key": "bundle_id",
+        "instance_id_template": "app-{token}",
+        "item_key": "token",
         "item_model": "running_app"
       },
       "role": "button",
@@ -153,6 +156,28 @@ Generator: `penflow.flow-docs/1`
       "semantic_id": "recording-indicator-destination-menu.menu.app",
       "test_id": "recording-indicator-destination-menu-menu-app",
       "text": "ChatGPT"
+    },
+    {
+      "id": "recording-indicator-destination-menu.menu.failed",
+      "role": "text",
+      "screen_id": "recording-indicator-destination-menu",
+      "semantic_id": "recording-indicator-destination-menu.menu.failed",
+      "states": [
+        "menu-failed"
+      ],
+      "test_id": "recording-indicator-destination-menu-menu-failed",
+      "text": "The app list could not be loaded."
+    },
+    {
+      "id": "recording-indicator-destination-menu.menu.feedback",
+      "role": "text",
+      "screen_id": "recording-indicator-destination-menu",
+      "semantic_id": "recording-indicator-destination-menu.menu.feedback",
+      "states": [
+        "choice-refused"
+      ],
+      "test_id": "recording-indicator-destination-menu-menu-feedback",
+      "text": "That app is no longer available. Choose another one."
     },
     {
       "action": "recording-indicator-destination-menu.menu.frontmost",
@@ -171,6 +196,17 @@ Generator: `penflow.flow-docs/1`
       "semantic_id": "recording-indicator-destination-menu.menu.frontmost-at-end",
       "test_id": "recording-indicator-destination-menu-menu-frontmost-at-end",
       "text": "Frontmost app at the end"
+    },
+    {
+      "id": "recording-indicator-destination-menu.menu.loading",
+      "role": "text",
+      "screen_id": "recording-indicator-destination-menu",
+      "semantic_id": "recording-indicator-destination-menu.menu.loading",
+      "states": [
+        "menu-loading"
+      ],
+      "test_id": "recording-indicator-destination-menu-menu-loading",
+      "text": "Loading apps…"
     },
     {
       "id": "recording-indicator-destination-menu.menu.now-label",

@@ -9,12 +9,14 @@ Generator: `penflow.flow-docs/1`
 {
   "actions": [
     {
-      "event": "submit",
-      "guard": "control-enabled",
+      "destination": {
+        "screen": "replacement-settings",
+        "state": "default"
+      },
+      "event": "navigate",
       "id": "replacement-settings-empty.empty.add",
-      "kind": "state_change",
+      "kind": "navigation",
       "node": "replacement-settings-empty.empty.add",
-      "success_transition": "replacement-settings-empty.empty.add.adding",
       "trigger": "click"
     },
     {
@@ -218,9 +220,6 @@ Generator: `penflow.flow-docs/1`
     "states": [
       {
         "id": "default"
-      },
-      {
-        "id": "adding"
       },
       {
         "id": "exporting"

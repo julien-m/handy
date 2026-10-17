@@ -291,9 +291,21 @@ Generator: `penflow.flow-docs/1`
       "text": "In use now"
     },
     {
+      "id": "microphone-settings.loading",
+      "role": "text",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.loading",
+      "states": [
+        "loading"
+      ],
+      "test_id": "microphone-settings-loading",
+      "text": "Loading..."
+    },
+    {
       "children": [
         "microphone-settings.priority.title",
         "microphone-settings.choices",
+        "microphone-settings.loading",
         "microphone-settings.add",
         "microphone-settings.refresh",
         "microphone-settings.checked"
@@ -370,6 +382,9 @@ Generator: `penflow.flow-docs/1`
       },
       {
         "id": "saving"
+      },
+      {
+        "id": "loading"
       }
     ],
     "surface": "desktop",

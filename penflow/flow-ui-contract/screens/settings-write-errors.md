@@ -46,6 +46,7 @@ Generator: `penflow.flow-docs/1`
     {
       "children": [
         "settings-write-errors.conflict.title",
+        "settings-write-errors.conflict.reload-failed",
         "settings-write-errors.reload"
       ],
       "id": "settings-write-errors.conflict",
@@ -53,6 +54,17 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "settings-write-errors",
       "semantic_id": "settings-write-errors.conflict",
       "test_id": "settings-write-errors-conflict"
+    },
+    {
+      "id": "settings-write-errors.conflict.reload-failed",
+      "role": "text",
+      "screen_id": "settings-write-errors",
+      "semantic_id": "settings-write-errors.conflict.reload-failed",
+      "states": [
+        "reload-failed"
+      ],
+      "test_id": "settings-write-errors-conflict-reload-failed",
+      "text": "The settings could not be reloaded. Try again."
     },
     {
       "id": "settings-write-errors.conflict.title",
@@ -91,7 +103,7 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "settings-write-errors",
       "semantic_id": "settings-write-errors.history-limit.error",
       "test_id": "settings-write-errors-history-limit-error",
-      "text": "Enter a whole number from 0 to 10000."
+      "text": "Enter a whole number from 0 to 1000."
     },
     {
       "action": "settings-write-errors.history-limit.input",
@@ -109,7 +121,7 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "settings-write-errors",
       "semantic_id": "settings-write-errors.history-limit.title",
       "test_id": "settings-write-errors-history-limit-title",
-      "text": "History limit"
+      "text": "History Limit"
     },
     {
       "action": "settings-write-errors.reload",
@@ -136,7 +148,7 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "settings-write-errors",
       "semantic_id": "settings-write-errors.save-failed.title",
       "test_id": "settings-write-errors-save-failed-title",
-      "text": "Couldn't save settings: the settings file is read-only. Nothing was changed."
+      "text": "Couldn't save settings: the settings file could not be written. Nothing was changed."
     }
   ],
   "relations": [],

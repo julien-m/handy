@@ -46,6 +46,15 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "event": "submit",
+      "guard": "control-enabled",
+      "id": "recording-indicator-pinned.menu.frontmost-at-end",
+      "kind": "state_change",
+      "node": "recording-indicator-pinned.menu.frontmost-at-end",
+      "success_transition": "recording-indicator-pinned.menu.frontmost-at-end.destination-cleared",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
       "guard": "dictation-in-progress",
       "id": "recording-indicator-pinned.menu.unpin",
       "kind": "state_change",
@@ -91,6 +100,7 @@ Generator: `penflow.flow-docs/1`
       "action": "recording-indicator-pinned.destination",
       "children": [
         "recording-indicator-pinned.destination.name",
+        "recording-indicator-pinned.destination.mark",
         "recording-indicator-pinned.destination.remove"
       ],
       "id": "recording-indicator-pinned.destination",
@@ -98,6 +108,13 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "recording-indicator-pinned",
       "semantic_id": "recording-indicator-pinned.destination",
       "test_id": "recording-indicator-pinned-destination"
+    },
+    {
+      "id": "recording-indicator-pinned.destination.mark",
+      "role": "icon",
+      "screen_id": "recording-indicator-pinned",
+      "semantic_id": "recording-indicator-pinned.destination.mark",
+      "test_id": "recording-indicator-pinned-destination-mark"
     },
     {
       "id": "recording-indicator-pinned.destination.name",
@@ -121,6 +138,7 @@ Generator: `penflow.flow-docs/1`
         "recording-indicator-pinned.menu.frontmost",
         "recording-indicator-pinned.menu.others-label",
         "recording-indicator-pinned.menu.app",
+        "recording-indicator-pinned.menu.frontmost-at-end",
         "recording-indicator-pinned.menu.unpin"
       ],
       "id": "recording-indicator-pinned.menu",
@@ -134,8 +152,8 @@ Generator: `penflow.flow-docs/1`
       "id": "recording-indicator-pinned.menu.app",
       "repeat_model": {
         "collection": "destination_menu.apps",
-        "instance_id_template": "app-{bundle_id}",
-        "item_key": "bundle_id",
+        "instance_id_template": "app-{token}",
+        "item_key": "token",
         "item_model": "running_app"
       },
       "role": "button",
@@ -146,12 +164,32 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "action": "recording-indicator-pinned.menu.frontmost",
+      "children": [
+        "recording-indicator-pinned.menu.hint"
+      ],
       "id": "recording-indicator-pinned.menu.frontmost",
       "role": "button",
       "screen_id": "recording-indicator-pinned",
       "semantic_id": "recording-indicator-pinned.menu.frontmost",
       "test_id": "recording-indicator-pinned-menu-frontmost",
       "text": "Comet"
+    },
+    {
+      "action": "recording-indicator-pinned.menu.frontmost-at-end",
+      "id": "recording-indicator-pinned.menu.frontmost-at-end",
+      "role": "button",
+      "screen_id": "recording-indicator-pinned",
+      "semantic_id": "recording-indicator-pinned.menu.frontmost-at-end",
+      "test_id": "recording-indicator-pinned-menu-frontmost-at-end",
+      "text": "Frontmost app at the end"
+    },
+    {
+      "id": "recording-indicator-pinned.menu.hint",
+      "role": "text",
+      "screen_id": "recording-indicator-pinned",
+      "semantic_id": "recording-indicator-pinned.menu.hint",
+      "test_id": "recording-indicator-pinned-menu-hint",
+      "text": "This dictation only"
     },
     {
       "id": "recording-indicator-pinned.menu.now-label",

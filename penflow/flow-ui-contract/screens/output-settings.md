@@ -15,6 +15,7 @@ Generator: `penflow.flow-docs/1`
         "field": "auto_enter_key"
       },
       "event": "change",
+      "guard": "automatic-enter-available",
       "id": "output-settings.auto-enter.key",
       "kind": "state_change",
       "node": "output-settings.auto-enter.key",
@@ -27,6 +28,7 @@ Generator: `penflow.flow-docs/1`
         "field": "auto_enter_mode"
       },
       "event": "change",
+      "guard": "automatic-enter-available",
       "id": "output-settings.auto-enter.mode",
       "kind": "state_change",
       "node": "output-settings.auto-enter.mode",
@@ -42,6 +44,18 @@ Generator: `penflow.flow-docs/1`
       "id": "output-settings.clipboard.select",
       "kind": "state_change",
       "node": "output-settings.clipboard.select",
+      "trigger": "change"
+    },
+    {
+      "binding_ref": {
+        "access": "write",
+        "entity": "history",
+        "field": "limit"
+      },
+      "event": "change",
+      "id": "output-settings.history-limit.input",
+      "kind": "state_change",
+      "node": "output-settings.history-limit.input",
       "trigger": "change"
     },
     {
@@ -70,7 +84,7 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "event": "submit",
-      "guard": "control-enabled",
+      "guard": "destination-return-available",
       "id": "output-settings.return-app.info",
       "kind": "state_change",
       "node": "output-settings.return-app.info",
@@ -84,6 +98,7 @@ Generator: `penflow.flow-docs/1`
         "field": "return_to_app"
       },
       "event": "change",
+      "guard": "destination-return-available",
       "id": "output-settings.return-app.toggle",
       "kind": "state_change",
       "node": "output-settings.return-app.toggle",
@@ -93,7 +108,8 @@ Generator: `penflow.flow-docs/1`
   "nodes": [
     {
       "children": [
-        "output-settings.output"
+        "output-settings.output",
+        "output-settings.history"
       ],
       "id": "output-settings",
       "role": "screen",
@@ -105,7 +121,8 @@ Generator: `penflow.flow-docs/1`
       "children": [
         "output-settings.auto-enter.title",
         "output-settings.auto-enter.mode",
-        "output-settings.auto-enter.key"
+        "output-settings.auto-enter.key",
+        "output-settings.auto-enter.note"
       ],
       "id": "output-settings.auto-enter",
       "role": "container",
@@ -134,6 +151,14 @@ Generator: `penflow.flow-docs/1`
       "text": "Only in PIN mode"
     },
     {
+      "id": "output-settings.auto-enter.note",
+      "role": "text",
+      "screen_id": "output-settings",
+      "semantic_id": "output-settings.auto-enter.note",
+      "test_id": "output-settings-auto-enter-note",
+      "text": "Replaces Auto Submit. No Enter after a failed or unconfirmed insertion, with paste method None, or when the app lost focus."
+    },
+    {
       "id": "output-settings.auto-enter.title",
       "role": "text",
       "screen_id": "output-settings",
@@ -160,7 +185,7 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "output-settings",
       "semantic_id": "output-settings.clipboard.select",
       "test_id": "output-settings-clipboard-select",
-      "text": "Don't modify clipboard"
+      "text": "Don't Modify Clipboard"
     },
     {
       "id": "output-settings.clipboard.title",
@@ -168,7 +193,50 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "output-settings",
       "semantic_id": "output-settings.clipboard.title",
       "test_id": "output-settings-clipboard-title",
-      "text": "Clipboard handling"
+      "text": "Clipboard Handling"
+    },
+    {
+      "children": [
+        "output-settings.history-limit"
+      ],
+      "id": "output-settings.history",
+      "role": "container",
+      "screen_id": "output-settings",
+      "semantic_id": "output-settings.history",
+      "states": [
+        "no-refused-write"
+      ],
+      "test_id": "output-settings-history",
+      "text": "History"
+    },
+    {
+      "children": [
+        "output-settings.history-limit.title",
+        "output-settings.history-limit.input"
+      ],
+      "id": "output-settings.history-limit",
+      "role": "container",
+      "screen_id": "output-settings",
+      "semantic_id": "output-settings.history-limit",
+      "test_id": "output-settings-history-limit"
+    },
+    {
+      "action": "output-settings.history-limit.input",
+      "binding": "history.limit",
+      "id": "output-settings.history-limit.input",
+      "role": "input",
+      "screen_id": "output-settings",
+      "semantic_id": "output-settings.history-limit.input",
+      "test_id": "output-settings-history-limit-input",
+      "text": "500"
+    },
+    {
+      "id": "output-settings.history-limit.title",
+      "role": "text",
+      "screen_id": "output-settings",
+      "semantic_id": "output-settings.history-limit.title",
+      "test_id": "output-settings-history-limit-title",
+      "text": "History Limit"
     },
     {
       "children": [
@@ -240,7 +308,7 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "output-settings",
       "semantic_id": "output-settings.paste-method.title",
       "test_id": "output-settings-paste-method-title",
-      "text": "Paste method"
+      "text": "Paste Method"
     },
     {
       "children": [

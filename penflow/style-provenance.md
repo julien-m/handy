@@ -202,7 +202,9 @@ Feature elements that Handy does not have yet are built from the primitives abov
     `recording-indicator-prompt-menu.menu.prompt.shortcut`; `bar` children are reordered to the visual order
     (prompt, destination, pill).
 - Overlay menus and recovery bubble: overlay open card (radius 16); selected item uses `--s-accent-soft`; inner corner radius 12 is derived (16 minus the 4px padding), not read from the code.
-- The desktop behind the overlay (`#1E1D1C`) and the third-party app icons are scenery, not Handy styles.
+- The desktop behind the overlay (`#1E1D1C`) is scenery, not a Handy style.
+- App icons (006, decision of 2026-10-17): the monogram tile Handy draws while `icon_ref` is empty, `src/overlay/indicator.css:139-154` (20 × 20, radius 5.625, `--s-accent-soft` = `$pf-palette-overlay-accent-soft`, first letter at 11.25 / 600 in the text colour).
+- State variants (alignment of 2026-10-17): states that the delivered UI shows one at a time (loading, refusals, dialogs, platform options, gate-dependent rows) are hidden layers (`enabled: false`) carrying their own `context`, built from the same Handy styles. The screen PNGs show the default state; toggle a layer in pen.dev to see its variant.
 
 ## What pen.dev cannot reproduce
 
@@ -210,5 +212,6 @@ Feature elements that Handy does not have yet are built from the primitives abov
 - **`uppercase`.** pen.dev has no text transform. Group titles keep the DOM string ("General") in a hidden inherited text node, and a decorative twin shows the rendered capitals ("GENERAL").
 - **Truncation.** `truncate` (ellipsis) is approximated: dropdown values clip to one line; the footer model name is written "Parakeet TDT 0.6...".
 - **Window chrome.** The macOS title bar is native, outside the webview; the mockups show the 680 × 570 webview only.
-- **Shortcut labels.** Handy formats shortcuts as words ("Option + Space"); the contract keeps the pass A glyph strings ("⌥ Space"), so the feature screens show glyphs. Only the reference frame uses Handy's wording.
+- **Shortcut labels.** Handy formats shortcuts as words ("Option + Space"). The prompt list and the prompt editor use Handy's wording ("Ctrl + Option + M") since the 2026-10-17 alignment; the dictation shortcut screens and the overlay still show the pass A glyph strings ("⌥ Space").
+- **Archive lifecycle.** pen.dev 1.2 rejects the `penflow.lifecycle` property on a frame ("unexpected property"), so a region cannot be archived inside `ui.pen`; an obsolete screen is removed from the canvas and kept in git history.
 - **Light mode.** Handy supports it (`src/styles/theme.css:7-10,20-21`), but the mockups are dark only, like the reference capture.

@@ -109,7 +109,7 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "shortcut-settings-limit",
       "semantic_id": "shortcut-settings-limit.dictation.title",
       "test_id": "shortcut-settings-limit-dictation-title",
-      "text": "Dictation"
+      "text": "Transcribe Shortcut"
     },
     {
       "children": [

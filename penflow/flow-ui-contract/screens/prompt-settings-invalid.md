@@ -20,15 +20,43 @@ Generator: `penflow.flow-docs/1`
       "trigger": "click"
     },
     {
-      "destination": {
-        "screen": "prompt-settings",
-        "state": "default"
-      },
-      "event": "navigate",
-      "id": "prompt-settings-invalid.form.fix",
-      "kind": "navigation",
-      "node": "prompt-settings-invalid.form.fix",
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "prompt-settings-invalid.delete",
+      "kind": "state_change",
+      "node": "prompt-settings-invalid.delete",
+      "success_transition": "prompt-settings-invalid.delete.confirm-delete",
       "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "prompt-settings-invalid.delete-confirm",
+      "kind": "state_change",
+      "node": "prompt-settings-invalid.delete-confirm",
+      "success_transition": "prompt-settings-invalid.delete-confirm.deleted",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "prompt-settings-invalid.form.fix",
+      "kind": "state_change",
+      "node": "prompt-settings-invalid.form.fix",
+      "success_transition": "prompt-settings-invalid.form.fix.fix-field-open",
+      "trigger": "click"
+    },
+    {
+      "binding_ref": {
+        "access": "write",
+        "entity": "provider_fix",
+        "field": "api_key"
+      },
+      "event": "change",
+      "id": "prompt-settings-invalid.form.fix-field",
+      "kind": "state_change",
+      "node": "prompt-settings-invalid.form.fix-field",
+      "trigger": "change"
     },
     {
       "binding_ref": {
@@ -67,6 +95,15 @@ Generator: `penflow.flow-docs/1`
       "trigger": "change"
     },
     {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "prompt-settings-invalid.form.shortcut-recorder",
+      "kind": "state_change",
+      "node": "prompt-settings-invalid.form.shortcut-recorder",
+      "success_transition": "prompt-settings-invalid.form.shortcut-recorder.recording",
+      "trigger": "click"
+    },
+    {
       "binding_ref": {
         "access": "write",
         "entity": "prompt_draft",
@@ -80,11 +117,31 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "event": "submit",
-      "guard": "draft-valid",
-      "id": "prompt-settings-invalid.save",
+      "guard": "control-enabled",
+      "id": "prompt-settings-invalid.reload-retry",
       "kind": "state_change",
+      "node": "prompt-settings-invalid.reload-retry",
+      "success_transition": "prompt-settings-invalid.reload-retry.reloaded",
+      "trigger": "click"
+    },
+    {
+      "destination": {
+        "screen": "prompt-settings-editor",
+        "state": "saved"
+      },
+      "event": "navigate",
+      "id": "prompt-settings-invalid.save",
+      "kind": "navigation",
       "node": "prompt-settings-invalid.save",
-      "success_transition": "prompt-settings-invalid.save.saved",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "prompt-settings-invalid.test.retry",
+      "kind": "state_change",
+      "node": "prompt-settings-invalid.test.retry",
+      "success_transition": "prompt-settings-invalid.test.retry.tested",
       "trigger": "click"
     },
     {
@@ -114,7 +171,12 @@ Generator: `penflow.flow-docs/1`
       "children": [
         "prompt-settings-invalid.editor",
         "prompt-settings-invalid.test",
-        "prompt-settings-invalid.actions"
+        "prompt-settings-invalid.actions",
+        "prompt-settings-invalid.deleted-elsewhere",
+        "prompt-settings-invalid.changed-elsewhere",
+        "prompt-settings-invalid.delete-dialog",
+        "prompt-settings-invalid.reload-error",
+        "prompt-settings-invalid.reload-retry"
       ],
       "id": "prompt-settings-invalid",
       "role": "screen",
@@ -126,13 +188,23 @@ Generator: `penflow.flow-docs/1`
       "children": [
         "prompt-settings-invalid.actions.note",
         "prompt-settings-invalid.cancel",
-        "prompt-settings-invalid.save"
+        "prompt-settings-invalid.save",
+        "prompt-settings-invalid.delete",
+        "prompt-settings-invalid.saved",
+        "prompt-settings-invalid.actions-error"
       ],
       "id": "prompt-settings-invalid.actions",
       "role": "container",
       "screen_id": "prompt-settings-invalid",
       "semantic_id": "prompt-settings-invalid.actions",
       "test_id": "prompt-settings-invalid-actions"
+    },
+    {
+      "id": "prompt-settings-invalid.actions-error",
+      "role": "alert",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.actions-error",
+      "test_id": "prompt-settings-invalid-actions-error"
     },
     {
       "id": "prompt-settings-invalid.actions.note",
@@ -150,6 +222,46 @@ Generator: `penflow.flow-docs/1`
       "semantic_id": "prompt-settings-invalid.cancel",
       "test_id": "prompt-settings-invalid-cancel",
       "text": "Cancel"
+    },
+    {
+      "id": "prompt-settings-invalid.changed-elsewhere",
+      "role": "alert",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.changed-elsewhere",
+      "test_id": "prompt-settings-invalid-changed-elsewhere"
+    },
+    {
+      "action": "prompt-settings-invalid.delete",
+      "id": "prompt-settings-invalid.delete",
+      "role": "button",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.delete",
+      "test_id": "prompt-settings-invalid-delete"
+    },
+    {
+      "action": "prompt-settings-invalid.delete-confirm",
+      "id": "prompt-settings-invalid.delete-confirm",
+      "role": "button",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.delete-confirm",
+      "test_id": "prompt-settings-invalid-delete-confirm"
+    },
+    {
+      "children": [
+        "prompt-settings-invalid.delete-confirm"
+      ],
+      "id": "prompt-settings-invalid.delete-dialog",
+      "role": "modal",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.delete-dialog",
+      "test_id": "prompt-settings-invalid-delete-dialog"
+    },
+    {
+      "id": "prompt-settings-invalid.deleted-elsewhere",
+      "role": "alert",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.deleted-elsewhere",
+      "test_id": "prompt-settings-invalid-deleted-elsewhere"
     },
     {
       "children": [
@@ -173,13 +285,32 @@ Generator: `penflow.flow-docs/1`
         "prompt-settings-invalid.form.provider",
         "prompt-settings-invalid.form.model-label",
         "prompt-settings-invalid.form.model",
-        "prompt-settings-invalid.form.not-ready"
+        "prompt-settings-invalid.form.not-ready",
+        "prompt-settings-invalid.form.text-hint",
+        "prompt-settings-invalid.form.endpoint",
+        "prompt-settings-invalid.form.fix-field",
+        "prompt-settings-invalid.form.text-error",
+        "prompt-settings-invalid.form.provider-error",
+        "prompt-settings-invalid.form.shortcuts-hint",
+        "prompt-settings-invalid.form.shortcut-recorder",
+        "prompt-settings-invalid.form.shortcut-refused",
+        "prompt-settings-invalid.form.shortcut-conflict",
+        "prompt-settings-invalid.form.shortcuts-conflicts-unavailable",
+        "prompt-settings-invalid.form.shortcuts-error"
       ],
       "id": "prompt-settings-invalid.form",
       "role": "container",
       "screen_id": "prompt-settings-invalid",
       "semantic_id": "prompt-settings-invalid.form",
       "test_id": "prompt-settings-invalid-form"
+    },
+    {
+      "id": "prompt-settings-invalid.form.endpoint",
+      "role": "text",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.form.endpoint",
+      "test_id": "prompt-settings-invalid-form-endpoint",
+      "text": "Endpoint https://api.openai.com/v1"
     },
     {
       "action": "prompt-settings-invalid.form.fix",
@@ -189,6 +320,15 @@ Generator: `penflow.flow-docs/1`
       "semantic_id": "prompt-settings-invalid.form.fix",
       "test_id": "prompt-settings-invalid-form-fix",
       "text": "Add API key"
+    },
+    {
+      "action": "prompt-settings-invalid.form.fix-field",
+      "binding": "provider_fix.api_key",
+      "id": "prompt-settings-invalid.form.fix-field",
+      "role": "input",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.form.fix-field",
+      "test_id": "prompt-settings-invalid-form-fix-field"
     },
     {
       "action": "prompt-settings-invalid.form.model",
@@ -264,12 +404,62 @@ Generator: `penflow.flow-docs/1`
       "text": "OpenAI"
     },
     {
+      "id": "prompt-settings-invalid.form.provider-error",
+      "role": "text",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.form.provider-error",
+      "test_id": "prompt-settings-invalid-form-provider-error"
+    },
+    {
       "id": "prompt-settings-invalid.form.provider-label",
       "role": "text",
       "screen_id": "prompt-settings-invalid",
       "semantic_id": "prompt-settings-invalid.form.provider-label",
       "test_id": "prompt-settings-invalid-form-provider-label",
       "text": "Provider"
+    },
+    {
+      "id": "prompt-settings-invalid.form.shortcut-conflict",
+      "role": "icon",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.form.shortcut-conflict",
+      "test_id": "prompt-settings-invalid-form-shortcut-conflict"
+    },
+    {
+      "action": "prompt-settings-invalid.form.shortcut-recorder",
+      "id": "prompt-settings-invalid.form.shortcut-recorder",
+      "role": "button",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.form.shortcut-recorder",
+      "test_id": "prompt-settings-invalid-form-shortcut-recorder"
+    },
+    {
+      "id": "prompt-settings-invalid.form.shortcut-refused",
+      "role": "icon",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.form.shortcut-refused",
+      "test_id": "prompt-settings-invalid-form-shortcut-refused"
+    },
+    {
+      "id": "prompt-settings-invalid.form.shortcuts-conflicts-unavailable",
+      "role": "text",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.form.shortcuts-conflicts-unavailable",
+      "test_id": "prompt-settings-invalid-form-shortcuts-conflicts-unavailable"
+    },
+    {
+      "id": "prompt-settings-invalid.form.shortcuts-error",
+      "role": "alert",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.form.shortcuts-error",
+      "test_id": "prompt-settings-invalid-form-shortcuts-error"
+    },
+    {
+      "id": "prompt-settings-invalid.form.shortcuts-hint",
+      "role": "text",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.form.shortcuts-hint",
+      "test_id": "prompt-settings-invalid-form-shortcuts-hint"
     },
     {
       "action": "prompt-settings-invalid.form.text",
@@ -282,12 +472,42 @@ Generator: `penflow.flow-docs/1`
       "text": "Translate the transcript into English.\n\n${output}"
     },
     {
+      "id": "prompt-settings-invalid.form.text-error",
+      "role": "text",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.form.text-error",
+      "test_id": "prompt-settings-invalid-form-text-error"
+    },
+    {
+      "id": "prompt-settings-invalid.form.text-hint",
+      "role": "text",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.form.text-hint",
+      "test_id": "prompt-settings-invalid-form-text-hint",
+      "text": "${output} is replaced by the transcript."
+    },
+    {
       "id": "prompt-settings-invalid.form.text-label",
       "role": "text",
       "screen_id": "prompt-settings-invalid",
       "semantic_id": "prompt-settings-invalid.form.text-label",
       "test_id": "prompt-settings-invalid-form-text-label",
       "text": "Prompt"
+    },
+    {
+      "id": "prompt-settings-invalid.reload-error",
+      "role": "alert",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.reload-error",
+      "test_id": "prompt-settings-invalid-reload-error"
+    },
+    {
+      "action": "prompt-settings-invalid.reload-retry",
+      "id": "prompt-settings-invalid.reload-retry",
+      "role": "button",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.reload-retry",
+      "test_id": "prompt-settings-invalid-reload-retry"
     },
     {
       "action": "prompt-settings-invalid.save",
@@ -299,10 +519,20 @@ Generator: `penflow.flow-docs/1`
       "text": "Save"
     },
     {
+      "id": "prompt-settings-invalid.saved",
+      "role": "text",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.saved",
+      "test_id": "prompt-settings-invalid-saved"
+    },
+    {
       "children": [
         "prompt-settings-invalid.test.sample",
         "prompt-settings-invalid.test.run",
-        "prompt-settings-invalid.test.error"
+        "prompt-settings-invalid.test.error",
+        "prompt-settings-invalid.test.result",
+        "prompt-settings-invalid.test.retry",
+        "prompt-settings-invalid.test.outdated"
       ],
       "id": "prompt-settings-invalid.test",
       "role": "container",
@@ -327,7 +557,47 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "prompt-settings-invalid",
       "semantic_id": "prompt-settings-invalid.test.error.title",
       "test_id": "prompt-settings-invalid-test-error-title",
-      "text": "Test failed: provider returned HTTP 401"
+      "text": "Test failed: the provider returned an error"
+    },
+    {
+      "id": "prompt-settings-invalid.test.meta",
+      "role": "text",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.test.meta",
+      "test_id": "prompt-settings-invalid-test-meta"
+    },
+    {
+      "id": "prompt-settings-invalid.test.outdated",
+      "role": "text",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.test.outdated",
+      "test_id": "prompt-settings-invalid-test-outdated"
+    },
+    {
+      "id": "prompt-settings-invalid.test.output",
+      "role": "text",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.test.output",
+      "test_id": "prompt-settings-invalid-test-output"
+    },
+    {
+      "children": [
+        "prompt-settings-invalid.test.output",
+        "prompt-settings-invalid.test.meta"
+      ],
+      "id": "prompt-settings-invalid.test.result",
+      "role": "container",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.test.result",
+      "test_id": "prompt-settings-invalid-test-result"
+    },
+    {
+      "action": "prompt-settings-invalid.test.retry",
+      "id": "prompt-settings-invalid.test.retry",
+      "role": "button",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.test.retry",
+      "test_id": "prompt-settings-invalid-test-retry"
     },
     {
       "action": "prompt-settings-invalid.test.run",
@@ -359,10 +629,22 @@ Generator: `penflow.flow-docs/1`
         "id": "default"
       },
       {
-        "id": "saved"
+        "id": "tested"
       },
       {
-        "id": "tested"
+        "id": "deleted"
+      },
+      {
+        "id": "reloaded"
+      },
+      {
+        "id": "recording"
+      },
+      {
+        "id": "confirm-delete"
+      },
+      {
+        "id": "fix-field-open"
       }
     ],
     "surface": "desktop",

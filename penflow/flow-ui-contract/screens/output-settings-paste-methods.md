@@ -32,6 +32,24 @@ Generator: `penflow.flow-docs/1`
     {
       "event": "submit",
       "guard": "control-enabled",
+      "id": "output-settings-paste-methods.paste-method.clipboard-ctrl-shift-v",
+      "kind": "state_change",
+      "node": "output-settings-paste-methods.paste-method.clipboard-ctrl-shift-v",
+      "success_transition": "output-settings-paste-methods.paste-method.clipboard-ctrl-shift-v.method-chosen",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "output-settings-paste-methods.paste-method.clipboard-shift-insert",
+      "kind": "state_change",
+      "node": "output-settings-paste-methods.paste-method.clipboard-shift-insert",
+      "success_transition": "output-settings-paste-methods.paste-method.clipboard-shift-insert.method-chosen",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
       "id": "output-settings-paste-methods.paste-method.direct",
       "kind": "state_change",
       "node": "output-settings-paste-methods.paste-method.direct",
@@ -118,7 +136,7 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "output-settings-paste-methods",
       "semantic_id": "output-settings-paste-methods.clipboard.select",
       "test_id": "output-settings-paste-methods-clipboard-select",
-      "text": "Don't modify clipboard"
+      "text": "Don't Modify Clipboard"
     },
     {
       "id": "output-settings-paste-methods.clipboard.title",
@@ -126,7 +144,7 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "output-settings-paste-methods",
       "semantic_id": "output-settings-paste-methods.clipboard.title",
       "test_id": "output-settings-paste-methods-clipboard-title",
-      "text": "Clipboard handling"
+      "text": "Clipboard Handling"
     },
     {
       "children": [
@@ -162,13 +180,41 @@ Generator: `penflow.flow-docs/1`
       "text": "Clipboard (⌘V)"
     },
     {
+      "action": "output-settings-paste-methods.paste-method.clipboard-ctrl-shift-v",
+      "id": "output-settings-paste-methods.paste-method.clipboard-ctrl-shift-v",
+      "role": "button",
+      "screen_id": "output-settings-paste-methods",
+      "semantic_id": "output-settings-paste-methods.paste-method.clipboard-ctrl-shift-v",
+      "states": [
+        "linux"
+      ],
+      "test_id": "output-settings-paste-methods-paste-method-clipboard-ctrl-shift-v",
+      "text": "Clipboard (Ctrl+Shift+V)"
+    },
+    {
+      "action": "output-settings-paste-methods.paste-method.clipboard-shift-insert",
+      "id": "output-settings-paste-methods.paste-method.clipboard-shift-insert",
+      "role": "button",
+      "screen_id": "output-settings-paste-methods",
+      "semantic_id": "output-settings-paste-methods.paste-method.clipboard-shift-insert",
+      "states": [
+        "linux"
+      ],
+      "test_id": "output-settings-paste-methods-paste-method-clipboard-shift-insert",
+      "text": "Clipboard (Shift+Insert)"
+    },
+    {
       "action": "output-settings-paste-methods.paste-method.direct",
       "id": "output-settings-paste-methods.paste-method.direct",
       "role": "button",
       "screen_id": "output-settings-paste-methods",
       "semantic_id": "output-settings-paste-methods.paste-method.direct",
+      "states": [
+        "linux",
+        "windows"
+      ],
       "test_id": "output-settings-paste-methods-paste-method-direct",
-      "text": "Direct typing"
+      "text": "Direct"
     },
     {
       "action": "output-settings-paste-methods.paste-method.none",
@@ -183,6 +229,8 @@ Generator: `penflow.flow-docs/1`
       "children": [
         "output-settings-paste-methods.paste-method.smart",
         "output-settings-paste-methods.paste-method.clipboard",
+        "output-settings-paste-methods.paste-method.clipboard-shift-insert",
+        "output-settings-paste-methods.paste-method.clipboard-ctrl-shift-v",
         "output-settings-paste-methods.paste-method.direct",
         "output-settings-paste-methods.paste-method.script",
         "output-settings-paste-methods.paste-method.none"
@@ -199,8 +247,12 @@ Generator: `penflow.flow-docs/1`
       "role": "button",
       "screen_id": "output-settings-paste-methods",
       "semantic_id": "output-settings-paste-methods.paste-method.script",
+      "states": [
+        "linux",
+        "windows"
+      ],
       "test_id": "output-settings-paste-methods-paste-method-script",
-      "text": "External script"
+      "text": "External Script"
     },
     {
       "action": "output-settings-paste-methods.paste-method.select",
@@ -227,7 +279,7 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "output-settings-paste-methods",
       "semantic_id": "output-settings-paste-methods.paste-method.title",
       "test_id": "output-settings-paste-methods-paste-method-title",
-      "text": "Paste method"
+      "text": "Paste Method"
     },
     {
       "children": [

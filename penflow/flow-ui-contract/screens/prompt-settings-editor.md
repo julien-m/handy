@@ -31,11 +31,41 @@ Generator: `penflow.flow-docs/1`
     {
       "event": "submit",
       "guard": "control-enabled",
+      "id": "prompt-settings-editor.delete-confirm",
+      "kind": "state_change",
+      "node": "prompt-settings-editor.delete-confirm",
+      "success_transition": "prompt-settings-editor.delete-confirm.deleted",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
       "id": "prompt-settings-editor.form.add-shortcut",
       "kind": "state_change",
       "node": "prompt-settings-editor.form.add-shortcut",
       "success_transition": "prompt-settings-editor.form.add-shortcut.recording",
       "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "prompt-settings-editor.form.fix",
+      "kind": "state_change",
+      "node": "prompt-settings-editor.form.fix",
+      "success_transition": "prompt-settings-editor.form.fix.fix-field-open",
+      "trigger": "click"
+    },
+    {
+      "binding_ref": {
+        "access": "write",
+        "entity": "provider_fix",
+        "field": "api_key"
+      },
+      "event": "change",
+      "id": "prompt-settings-editor.form.fix-field",
+      "kind": "state_change",
+      "node": "prompt-settings-editor.form.fix-field",
+      "trigger": "change"
     },
     {
       "binding_ref": {
@@ -76,6 +106,15 @@ Generator: `penflow.flow-docs/1`
     {
       "event": "submit",
       "guard": "control-enabled",
+      "id": "prompt-settings-editor.form.shortcut-recorder",
+      "kind": "state_change",
+      "node": "prompt-settings-editor.form.shortcut-recorder",
+      "success_transition": "prompt-settings-editor.form.shortcut-recorder.recording",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
       "id": "prompt-settings-editor.form.shortcut.remove",
       "kind": "state_change",
       "node": "prompt-settings-editor.form.shortcut.remove",
@@ -96,11 +135,29 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "event": "submit",
+      "guard": "control-enabled",
+      "id": "prompt-settings-editor.reload-retry",
+      "kind": "state_change",
+      "node": "prompt-settings-editor.reload-retry",
+      "success_transition": "prompt-settings-editor.reload-retry.reloaded",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
       "guard": "draft-valid",
       "id": "prompt-settings-editor.save",
       "kind": "state_change",
       "node": "prompt-settings-editor.save",
       "success_transition": "prompt-settings-editor.save.saved",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "prompt-settings-editor.test.retry",
+      "kind": "state_change",
+      "node": "prompt-settings-editor.test.retry",
+      "success_transition": "prompt-settings-editor.test.retry.tested",
       "trigger": "click"
     },
     {
@@ -130,7 +187,12 @@ Generator: `penflow.flow-docs/1`
       "children": [
         "prompt-settings-editor.editor",
         "prompt-settings-editor.test",
-        "prompt-settings-editor.actions"
+        "prompt-settings-editor.actions",
+        "prompt-settings-editor.deleted-elsewhere",
+        "prompt-settings-editor.changed-elsewhere",
+        "prompt-settings-editor.delete-dialog",
+        "prompt-settings-editor.reload-error",
+        "prompt-settings-editor.reload-retry"
       ],
       "id": "prompt-settings-editor",
       "role": "screen",
@@ -143,13 +205,22 @@ Generator: `penflow.flow-docs/1`
         "prompt-settings-editor.actions.note",
         "prompt-settings-editor.delete",
         "prompt-settings-editor.cancel",
-        "prompt-settings-editor.save"
+        "prompt-settings-editor.save",
+        "prompt-settings-editor.saved",
+        "prompt-settings-editor.actions-error"
       ],
       "id": "prompt-settings-editor.actions",
       "role": "container",
       "screen_id": "prompt-settings-editor",
       "semantic_id": "prompt-settings-editor.actions",
       "test_id": "prompt-settings-editor-actions"
+    },
+    {
+      "id": "prompt-settings-editor.actions-error",
+      "role": "alert",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.actions-error",
+      "test_id": "prompt-settings-editor-actions-error"
     },
     {
       "id": "prompt-settings-editor.actions.note",
@@ -169,6 +240,13 @@ Generator: `penflow.flow-docs/1`
       "text": "Cancel"
     },
     {
+      "id": "prompt-settings-editor.changed-elsewhere",
+      "role": "alert",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.changed-elsewhere",
+      "test_id": "prompt-settings-editor-changed-elsewhere"
+    },
+    {
       "action": "prompt-settings-editor.delete",
       "id": "prompt-settings-editor.delete",
       "role": "button",
@@ -176,6 +254,31 @@ Generator: `penflow.flow-docs/1`
       "semantic_id": "prompt-settings-editor.delete",
       "test_id": "prompt-settings-editor-delete",
       "text": "Delete prompt"
+    },
+    {
+      "action": "prompt-settings-editor.delete-confirm",
+      "id": "prompt-settings-editor.delete-confirm",
+      "role": "button",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.delete-confirm",
+      "test_id": "prompt-settings-editor-delete-confirm"
+    },
+    {
+      "children": [
+        "prompt-settings-editor.delete-confirm"
+      ],
+      "id": "prompt-settings-editor.delete-dialog",
+      "role": "modal",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.delete-dialog",
+      "test_id": "prompt-settings-editor-delete-dialog"
+    },
+    {
+      "id": "prompt-settings-editor.deleted-elsewhere",
+      "role": "alert",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.deleted-elsewhere",
+      "test_id": "prompt-settings-editor-deleted-elsewhere"
     },
     {
       "children": [
@@ -202,7 +305,16 @@ Generator: `penflow.flow-docs/1`
         "prompt-settings-editor.form.endpoint",
         "prompt-settings-editor.form.shortcuts-label",
         "prompt-settings-editor.form.shortcuts",
-        "prompt-settings-editor.form.add-shortcut"
+        "prompt-settings-editor.form.add-shortcut",
+        "prompt-settings-editor.form.name-error",
+        "prompt-settings-editor.form.not-ready",
+        "prompt-settings-editor.form.fix-field",
+        "prompt-settings-editor.form.text-error",
+        "prompt-settings-editor.form.provider-error",
+        "prompt-settings-editor.form.shortcuts-hint",
+        "prompt-settings-editor.form.shortcut-recorder",
+        "prompt-settings-editor.form.shortcuts-conflicts-unavailable",
+        "prompt-settings-editor.form.shortcuts-error"
       ],
       "id": "prompt-settings-editor.form",
       "role": "container",
@@ -226,6 +338,23 @@ Generator: `penflow.flow-docs/1`
       "semantic_id": "prompt-settings-editor.form.endpoint",
       "test_id": "prompt-settings-editor-form-endpoint",
       "text": "Endpoint http://localhost:11434/v1 · Ready"
+    },
+    {
+      "action": "prompt-settings-editor.form.fix",
+      "id": "prompt-settings-editor.form.fix",
+      "role": "button",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.fix",
+      "test_id": "prompt-settings-editor-form-fix"
+    },
+    {
+      "action": "prompt-settings-editor.form.fix-field",
+      "binding": "provider_fix.api_key",
+      "id": "prompt-settings-editor.form.fix-field",
+      "role": "input",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.fix-field",
+      "test_id": "prompt-settings-editor-form-fix-field"
     },
     {
       "action": "prompt-settings-editor.form.model",
@@ -256,12 +385,38 @@ Generator: `penflow.flow-docs/1`
       "text": "Shorten"
     },
     {
+      "id": "prompt-settings-editor.form.name-error",
+      "role": "text",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.name-error",
+      "test_id": "prompt-settings-editor-form-name-error",
+      "text": "Enter a name (1–60 characters)."
+    },
+    {
       "id": "prompt-settings-editor.form.name-label",
       "role": "text",
       "screen_id": "prompt-settings-editor",
       "semantic_id": "prompt-settings-editor.form.name-label",
       "test_id": "prompt-settings-editor-form-name-label",
       "text": "Name"
+    },
+    {
+      "children": [
+        "prompt-settings-editor.form.not-ready.title",
+        "prompt-settings-editor.form.fix"
+      ],
+      "id": "prompt-settings-editor.form.not-ready",
+      "role": "alert",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.not-ready",
+      "test_id": "prompt-settings-editor-form-not-ready"
+    },
+    {
+      "id": "prompt-settings-editor.form.not-ready.title",
+      "role": "text",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.not-ready.title",
+      "test_id": "prompt-settings-editor-form-not-ready-title"
     },
     {
       "action": "prompt-settings-editor.form.provider",
@@ -272,6 +427,13 @@ Generator: `penflow.flow-docs/1`
       "semantic_id": "prompt-settings-editor.form.provider",
       "test_id": "prompt-settings-editor-form-provider",
       "text": "Custom endpoint"
+    },
+    {
+      "id": "prompt-settings-editor.form.provider-error",
+      "role": "text",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.provider-error",
+      "test_id": "prompt-settings-editor-form-provider-error"
     },
     {
       "id": "prompt-settings-editor.form.provider-label",
@@ -290,7 +452,29 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "prompt-settings-editor",
       "semantic_id": "prompt-settings-editor.form.shortcut",
       "test_id": "prompt-settings-editor-form-shortcut",
-      "text": "⌃ ⌥ S"
+      "text": "Ctrl + Option + S"
+    },
+    {
+      "id": "prompt-settings-editor.form.shortcut-conflict",
+      "role": "icon",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.shortcut-conflict",
+      "test_id": "prompt-settings-editor-form-shortcut-conflict"
+    },
+    {
+      "action": "prompt-settings-editor.form.shortcut-recorder",
+      "id": "prompt-settings-editor.form.shortcut-recorder",
+      "role": "button",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.shortcut-recorder",
+      "test_id": "prompt-settings-editor-form-shortcut-recorder"
+    },
+    {
+      "id": "prompt-settings-editor.form.shortcut-refused",
+      "role": "icon",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.shortcut-refused",
+      "test_id": "prompt-settings-editor-form-shortcut-refused"
     },
     {
       "action": "prompt-settings-editor.form.shortcut.remove",
@@ -302,7 +486,9 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "children": [
-        "prompt-settings-editor.form.shortcut"
+        "prompt-settings-editor.form.shortcut",
+        "prompt-settings-editor.form.shortcut-refused",
+        "prompt-settings-editor.form.shortcut-conflict"
       ],
       "id": "prompt-settings-editor.form.shortcuts",
       "repeat_model": {
@@ -315,6 +501,27 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "prompt-settings-editor",
       "semantic_id": "prompt-settings-editor.form.shortcuts",
       "test_id": "prompt-settings-editor-form-shortcuts"
+    },
+    {
+      "id": "prompt-settings-editor.form.shortcuts-conflicts-unavailable",
+      "role": "text",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.shortcuts-conflicts-unavailable",
+      "test_id": "prompt-settings-editor-form-shortcuts-conflicts-unavailable"
+    },
+    {
+      "id": "prompt-settings-editor.form.shortcuts-error",
+      "role": "alert",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.shortcuts-error",
+      "test_id": "prompt-settings-editor-form-shortcuts-error"
+    },
+    {
+      "id": "prompt-settings-editor.form.shortcuts-hint",
+      "role": "text",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.shortcuts-hint",
+      "test_id": "prompt-settings-editor-form-shortcuts-hint"
     },
     {
       "id": "prompt-settings-editor.form.shortcuts-label",
@@ -335,6 +542,13 @@ Generator: `penflow.flow-docs/1`
       "text": "Shorten the transcript to the essentials. Keep names and numbers.\n\n${output}"
     },
     {
+      "id": "prompt-settings-editor.form.text-error",
+      "role": "text",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.text-error",
+      "test_id": "prompt-settings-editor-form-text-error"
+    },
+    {
       "id": "prompt-settings-editor.form.text-hint",
       "role": "text",
       "screen_id": "prompt-settings-editor",
@@ -351,6 +565,21 @@ Generator: `penflow.flow-docs/1`
       "text": "Prompt"
     },
     {
+      "id": "prompt-settings-editor.reload-error",
+      "role": "alert",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.reload-error",
+      "test_id": "prompt-settings-editor-reload-error"
+    },
+    {
+      "action": "prompt-settings-editor.reload-retry",
+      "id": "prompt-settings-editor.reload-retry",
+      "role": "button",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.reload-retry",
+      "test_id": "prompt-settings-editor-reload-retry"
+    },
+    {
       "action": "prompt-settings-editor.save",
       "id": "prompt-settings-editor.save",
       "role": "button",
@@ -360,11 +589,21 @@ Generator: `penflow.flow-docs/1`
       "text": "Save"
     },
     {
+      "id": "prompt-settings-editor.saved",
+      "role": "text",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.saved",
+      "test_id": "prompt-settings-editor-saved"
+    },
+    {
       "children": [
         "prompt-settings-editor.test.sample",
         "prompt-settings-editor.test.run",
         "prompt-settings-editor.test.note",
-        "prompt-settings-editor.test.result"
+        "prompt-settings-editor.test.result",
+        "prompt-settings-editor.test.error",
+        "prompt-settings-editor.test.retry",
+        "prompt-settings-editor.test.outdated"
       ],
       "id": "prompt-settings-editor.test",
       "role": "container",
@@ -372,6 +611,24 @@ Generator: `penflow.flow-docs/1`
       "semantic_id": "prompt-settings-editor.test",
       "test_id": "prompt-settings-editor-test",
       "text": "Test"
+    },
+    {
+      "children": [
+        "prompt-settings-editor.test.error.title"
+      ],
+      "id": "prompt-settings-editor.test.error",
+      "role": "alert",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.test.error",
+      "test_id": "prompt-settings-editor-test-error"
+    },
+    {
+      "id": "prompt-settings-editor.test.error.title",
+      "role": "text",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.test.error.title",
+      "test_id": "prompt-settings-editor-test-error-title",
+      "text": "Test failed: the provider returned an error"
     },
     {
       "id": "prompt-settings-editor.test.meta",
@@ -388,6 +645,13 @@ Generator: `penflow.flow-docs/1`
       "semantic_id": "prompt-settings-editor.test.note",
       "test_id": "prompt-settings-editor-test-note",
       "text": "Nothing is inserted and history is not changed."
+    },
+    {
+      "id": "prompt-settings-editor.test.outdated",
+      "role": "text",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.test.outdated",
+      "test_id": "prompt-settings-editor-test-outdated"
     },
     {
       "id": "prompt-settings-editor.test.output",
@@ -407,6 +671,14 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "prompt-settings-editor",
       "semantic_id": "prompt-settings-editor.test.result",
       "test_id": "prompt-settings-editor-test-result"
+    },
+    {
+      "action": "prompt-settings-editor.test.retry",
+      "id": "prompt-settings-editor.test.retry",
+      "role": "button",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.test.retry",
+      "test_id": "prompt-settings-editor-test-retry"
     },
     {
       "action": "prompt-settings-editor.test.run",
@@ -451,6 +723,15 @@ Generator: `penflow.flow-docs/1`
       },
       {
         "id": "tested"
+      },
+      {
+        "id": "deleted"
+      },
+      {
+        "id": "reloaded"
+      },
+      {
+        "id": "fix-field-open"
       }
     ],
     "surface": "desktop",

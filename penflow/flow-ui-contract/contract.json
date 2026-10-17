@@ -217,7 +217,7 @@
       "id": "running_app",
       "fields": [
         {
-          "id": "bundle_id",
+          "id": "token",
           "type": "string"
         }
       ]
@@ -244,6 +244,10 @@
         },
         {
           "id": "dictation",
+          "type": "array"
+        },
+        {
+          "id": "cancel",
           "type": "array"
         }
       ]
@@ -292,7 +296,16 @@
       "id": "vocabulary_term",
       "fields": [
         {
-          "id": "key",
+          "id": "index",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "id": "provider_fix",
+      "fields": [
+        {
+          "id": "api_key",
           "type": "string"
         }
       ]
@@ -326,6 +339,9 @@
         },
         {
           "id": "saving"
+        },
+        {
+          "id": "loading"
         }
       ],
       "viewport": {
@@ -413,6 +429,21 @@
         },
         {
           "id": "saved"
+        },
+        {
+          "id": "reloaded"
+        },
+        {
+          "id": "stayed"
+        },
+        {
+          "id": "left"
+        },
+        {
+          "id": "delete-cancelled"
+        },
+        {
+          "id": "rule-removed"
         }
       ],
       "viewport": {
@@ -429,9 +460,6 @@
       "states": [
         {
           "id": "default"
-        },
-        {
-          "id": "adding"
         },
         {
           "id": "exporting"
@@ -457,6 +485,9 @@
         },
         {
           "id": "exporting"
+        },
+        {
+          "id": "reloaded"
         }
       ],
       "viewport": {
@@ -467,7 +498,7 @@
     {
       "id": "replacement-settings-import",
       "flow_id": "word-replacements",
-      "title": "Word replacements — import preview",
+      "title": "Word replacements — import preview (over the list)",
       "surface": "desktop",
       "root_node": "replacement-settings-import",
       "states": [
@@ -475,7 +506,7 @@
           "id": "default"
         },
         {
-          "id": "imported"
+          "id": "refusal-dismissed"
         }
       ],
       "viewport": {
@@ -498,6 +529,15 @@
         },
         {
           "id": "term-removed"
+        },
+        {
+          "id": "loading"
+        },
+        {
+          "id": "list-error"
+        },
+        {
+          "id": "error"
         }
       ],
       "viewport": {
@@ -516,7 +556,13 @@
           "id": "default"
         },
         {
-          "id": "applied"
+          "id": "loading"
+        },
+        {
+          "id": "list-error"
+        },
+        {
+          "id": "error"
         }
       ],
       "viewport": {
@@ -539,6 +585,15 @@
         },
         {
           "id": "term-removed"
+        },
+        {
+          "id": "loading"
+        },
+        {
+          "id": "list-error"
+        },
+        {
+          "id": "error"
         }
       ],
       "viewport": {
@@ -558,6 +613,15 @@
         },
         {
           "id": "term-added"
+        },
+        {
+          "id": "loading"
+        },
+        {
+          "id": "list-error"
+        },
+        {
+          "id": "error"
         }
       ],
       "viewport": {
@@ -586,6 +650,9 @@
         },
         {
           "id": "shortcut-removed"
+        },
+        {
+          "id": "recording-discarded"
         }
       ],
       "viewport": {
@@ -611,6 +678,12 @@
         },
         {
           "id": "shortcut-removed"
+        },
+        {
+          "id": "recording-discarded"
+        },
+        {
+          "id": "retried"
         }
       ],
       "viewport": {
@@ -649,6 +722,18 @@
       "states": [
         {
           "id": "default"
+        },
+        {
+          "id": "shortcut-removed"
+        },
+        {
+          "id": "recording"
+        },
+        {
+          "id": "reset"
+        },
+        {
+          "id": "reloaded"
         }
       ],
       "viewport": {
@@ -680,6 +765,15 @@
         },
         {
           "id": "tested"
+        },
+        {
+          "id": "deleted"
+        },
+        {
+          "id": "reloaded"
+        },
+        {
+          "id": "fix-field-open"
         }
       ],
       "viewport": {
@@ -698,10 +792,22 @@
           "id": "default"
         },
         {
-          "id": "saved"
+          "id": "tested"
         },
         {
-          "id": "tested"
+          "id": "deleted"
+        },
+        {
+          "id": "reloaded"
+        },
+        {
+          "id": "recording"
+        },
+        {
+          "id": "confirm-delete"
+        },
+        {
+          "id": "fix-field-open"
         }
       ],
       "viewport": {
@@ -786,24 +892,6 @@
         "width": 560,
         "height": 200
       }
-    },
-    {
-      "id": "recording-indicator-destination-unavailable",
-      "flow_id": "destination-application",
-      "title": "Recording indicator — destination unavailable",
-      "surface": "desktop",
-      "root_node": "recording-indicator-destination-unavailable",
-      "states": [
-        {
-          "id": "default"
-        }
-      ],
-      "viewport": {
-        "width": 560,
-        "height": 200
-      },
-      "static": true,
-      "static_reason": "Transient reason notice shown for at least 4 seconds in place of the indicator; it has no controls."
     },
     {
       "id": "recording-indicator-prompt-menu",
@@ -1082,6 +1170,9 @@
         },
         {
           "id": "explained"
+        },
+        {
+          "id": "dragging"
         }
       ],
       "viewport": {
@@ -1106,6 +1197,24 @@
       },
       "static": true,
       "static_reason": "Design reference only: the current Handy General settings window recomposed from the source code, and the reusable pen.dev components every feature screen is built from. It is not a feature screen and adds no behavior."
+    },
+    {
+      "id": "recording-indicator-hand-over",
+      "flow_id": "smart-paste",
+      "title": "Recording indicator — hand-over to a remote screen",
+      "surface": "desktop",
+      "root_node": "recording-indicator-hand-over",
+      "states": [
+        {
+          "id": "default"
+        }
+      ],
+      "viewport": {
+        "width": 560,
+        "height": 200
+      },
+      "static": true,
+      "static_reason": "Transient notice shown for at least 4 seconds on the indicator when the text goes to a remote screen; it has no controls."
     }
   ],
   "nodes": [
@@ -1142,9 +1251,21 @@
       "children": [
         "microphone-settings.priority.title",
         "microphone-settings.choices",
+        "microphone-settings.loading",
         "microphone-settings.add",
         "microphone-settings.refresh",
         "microphone-settings.checked"
+      ]
+    },
+    {
+      "id": "microphone-settings.loading",
+      "screen_id": "microphone-settings",
+      "semantic_id": "microphone-settings.loading",
+      "test_id": "microphone-settings-loading",
+      "role": "text",
+      "text": "Loading...",
+      "states": [
+        "loading"
       ]
     },
     {
@@ -1397,7 +1518,19 @@
         "microphone-settings-empty.priority.title",
         "microphone-settings-empty.empty",
         "microphone-settings-empty.add",
-        "microphone-settings-empty.refresh"
+        "microphone-settings-empty.refresh",
+        "microphone-settings-empty.checked"
+      ]
+    },
+    {
+      "id": "microphone-settings-empty.checked",
+      "screen_id": "microphone-settings-empty",
+      "semantic_id": "microphone-settings-empty.checked",
+      "test_id": "microphone-settings-empty-checked",
+      "role": "text",
+      "text": "Checked 3 s ago",
+      "states": [
+        "checked"
       ]
     },
     {
@@ -1531,7 +1664,8 @@
       "children": [
         "microphone-settings-error.conflict.title",
         "microphone-settings-error.reload"
-      ]
+      ],
+      "text": "The order changed elsewhere. Reload to see it; your edits will be discarded."
     },
     {
       "id": "microphone-settings-error.conflict.title",
@@ -1573,7 +1707,19 @@
         "microphone-settings-error.refresh-error",
         "microphone-settings-error.retry",
         "microphone-settings-error.add",
-        "microphone-settings-error.add-error"
+        "microphone-settings-error.add-error",
+        "microphone-settings-error.checked"
+      ]
+    },
+    {
+      "id": "microphone-settings-error.checked",
+      "screen_id": "microphone-settings-error",
+      "semantic_id": "microphone-settings-error.checked",
+      "test_id": "microphone-settings-error-checked",
+      "role": "text",
+      "text": "Checked 3 s ago",
+      "states": [
+        "checked"
       ]
     },
     {
@@ -1744,8 +1890,117 @@
       "role": "screen",
       "children": [
         "replacement-settings.replacements",
-        "replacement-settings.draft"
+        "replacement-settings.draft",
+        "replacement-settings.commit-failure",
+        "replacement-settings.unsaved",
+        "replacement-settings.delete-dialog"
       ]
+    },
+    {
+      "id": "replacement-settings.delete-dialog",
+      "screen_id": "replacement-settings",
+      "semantic_id": "replacement-settings.delete-dialog",
+      "test_id": "replacement-settings-delete-dialog",
+      "role": "modal",
+      "text": "Delete this rule?",
+      "children": [
+        "replacement-settings.delete-dialog.body",
+        "replacement-settings.delete-dialog.cancel",
+        "replacement-settings.delete-dialog.confirm"
+      ]
+    },
+    {
+      "id": "replacement-settings.delete-dialog.confirm",
+      "screen_id": "replacement-settings",
+      "semantic_id": "replacement-settings.delete-dialog.confirm",
+      "test_id": "replacement-settings-delete-dialog-confirm",
+      "role": "button",
+      "text": "Delete",
+      "action": "replacement-settings.delete-dialog.confirm"
+    },
+    {
+      "id": "replacement-settings.delete-dialog.cancel",
+      "screen_id": "replacement-settings",
+      "semantic_id": "replacement-settings.delete-dialog.cancel",
+      "test_id": "replacement-settings-delete-dialog-cancel",
+      "role": "button",
+      "text": "Cancel",
+      "action": "replacement-settings.delete-dialog.cancel"
+    },
+    {
+      "id": "replacement-settings.delete-dialog.body",
+      "screen_id": "replacement-settings",
+      "semantic_id": "replacement-settings.delete-dialog.body",
+      "test_id": "replacement-settings-delete-dialog-body",
+      "role": "text",
+      "text": "Cloud Code → Claude Code will be removed from the list. Save to apply the change."
+    },
+    {
+      "id": "replacement-settings.unsaved",
+      "screen_id": "replacement-settings",
+      "semantic_id": "replacement-settings.unsaved",
+      "test_id": "replacement-settings-unsaved",
+      "role": "modal",
+      "text": "Unsaved changes",
+      "children": [
+        "replacement-settings.unsaved.body",
+        "replacement-settings.unsaved.stay",
+        "replacement-settings.unsaved.discard"
+      ]
+    },
+    {
+      "id": "replacement-settings.unsaved.discard",
+      "screen_id": "replacement-settings",
+      "semantic_id": "replacement-settings.unsaved.discard",
+      "test_id": "replacement-settings-unsaved-discard",
+      "role": "button",
+      "text": "Discard and leave",
+      "action": "replacement-settings.unsaved.discard"
+    },
+    {
+      "id": "replacement-settings.unsaved.stay",
+      "screen_id": "replacement-settings",
+      "semantic_id": "replacement-settings.unsaved.stay",
+      "test_id": "replacement-settings-unsaved-stay",
+      "role": "button",
+      "text": "Stay",
+      "action": "replacement-settings.unsaved.stay"
+    },
+    {
+      "id": "replacement-settings.unsaved.body",
+      "screen_id": "replacement-settings",
+      "semantic_id": "replacement-settings.unsaved.body",
+      "test_id": "replacement-settings-unsaved-body",
+      "role": "text",
+      "text": "Some of your replacement rules are not saved. Stay to save them, or discard them and leave."
+    },
+    {
+      "id": "replacement-settings.commit-failure",
+      "screen_id": "replacement-settings",
+      "semantic_id": "replacement-settings.commit-failure",
+      "test_id": "replacement-settings-commit-failure",
+      "role": "alert",
+      "children": [
+        "replacement-settings.commit-failure.message",
+        "replacement-settings.commit-failure.reload"
+      ]
+    },
+    {
+      "id": "replacement-settings.commit-failure.reload",
+      "screen_id": "replacement-settings",
+      "semantic_id": "replacement-settings.commit-failure.reload",
+      "test_id": "replacement-settings-commit-failure-reload",
+      "role": "button",
+      "text": "Reload",
+      "action": "replacement-settings.commit-failure.reload"
+    },
+    {
+      "id": "replacement-settings.commit-failure.message",
+      "screen_id": "replacement-settings",
+      "semantic_id": "replacement-settings.commit-failure.message",
+      "test_id": "replacement-settings-commit-failure-message",
+      "role": "text",
+      "text": "The rules changed elsewhere, for example from the command line. Reload them to continue. Reloading shows the saved rules and discards your unsaved changes. Saved rules are unchanged."
     },
     {
       "id": "replacement-settings.replacements",
@@ -2112,8 +2367,37 @@
       "role": "screen",
       "children": [
         "replacement-settings-bulk.replacements",
-        "replacement-settings-bulk.apply-bar"
+        "replacement-settings-bulk.apply-bar",
+        "replacement-settings-bulk.commit-failure"
       ]
+    },
+    {
+      "id": "replacement-settings-bulk.commit-failure",
+      "screen_id": "replacement-settings-bulk",
+      "semantic_id": "replacement-settings-bulk.commit-failure",
+      "test_id": "replacement-settings-bulk-commit-failure",
+      "role": "alert",
+      "children": [
+        "replacement-settings-bulk.commit-failure.message",
+        "replacement-settings-bulk.commit-failure.reload"
+      ]
+    },
+    {
+      "id": "replacement-settings-bulk.commit-failure.reload",
+      "screen_id": "replacement-settings-bulk",
+      "semantic_id": "replacement-settings-bulk.commit-failure.reload",
+      "test_id": "replacement-settings-bulk-commit-failure-reload",
+      "role": "button",
+      "text": "Reload",
+      "action": "replacement-settings-bulk.commit-failure.reload"
+    },
+    {
+      "id": "replacement-settings-bulk.commit-failure.message",
+      "screen_id": "replacement-settings-bulk",
+      "semantic_id": "replacement-settings-bulk.commit-failure.message",
+      "test_id": "replacement-settings-bulk-commit-failure-message",
+      "role": "text",
+      "text": "The rules changed elsewhere, for example from the command line. Reload them to continue. Saved rules are unchanged."
     },
     {
       "id": "replacement-settings-bulk.replacements",
@@ -2351,8 +2635,27 @@
       "test_id": "replacement-settings-import-unreadable",
       "role": "alert",
       "children": [
-        "replacement-settings-import.unreadable.title"
+        "replacement-settings-import.unreadable.title",
+        "replacement-settings-import.unreadable.body",
+        "replacement-settings-import.unreadable.dismiss"
       ]
+    },
+    {
+      "id": "replacement-settings-import.unreadable.dismiss",
+      "screen_id": "replacement-settings-import",
+      "semantic_id": "replacement-settings-import.unreadable.dismiss",
+      "test_id": "replacement-settings-import-unreadable-dismiss",
+      "role": "button",
+      "text": "Dismiss",
+      "action": "replacement-settings-import.unreadable.dismiss"
+    },
+    {
+      "id": "replacement-settings-import.unreadable.body",
+      "screen_id": "replacement-settings-import",
+      "semantic_id": "replacement-settings-import.unreadable.body",
+      "test_id": "replacement-settings-import-unreadable-body",
+      "role": "text",
+      "text": "Nothing was imported from that file. Export plain text or CSV, then import again."
     },
     {
       "id": "replacement-settings-import.unreadable.title",
@@ -2512,7 +2815,43 @@
         "vocabulary-settings.new-term",
         "vocabulary-settings.add",
         "vocabulary-settings.paste",
-        "vocabulary-settings.count"
+        "vocabulary-settings.count",
+        "vocabulary-settings.loading",
+        "vocabulary-settings.list-error",
+        "vocabulary-settings.error"
+      ]
+    },
+    {
+      "id": "vocabulary-settings.error",
+      "screen_id": "vocabulary-settings",
+      "semantic_id": "vocabulary-settings.error",
+      "test_id": "vocabulary-settings-error",
+      "role": "alert",
+      "text": "The vocabulary changed in the meantime and was reloaded. Try again.",
+      "states": [
+        "error"
+      ]
+    },
+    {
+      "id": "vocabulary-settings.list-error",
+      "screen_id": "vocabulary-settings",
+      "semantic_id": "vocabulary-settings.list-error",
+      "test_id": "vocabulary-settings-list-error",
+      "role": "alert",
+      "text": "Couldn't read the saved vocabulary. Nothing was changed; retry to load it.",
+      "states": [
+        "list-error"
+      ]
+    },
+    {
+      "id": "vocabulary-settings.loading",
+      "screen_id": "vocabulary-settings",
+      "semantic_id": "vocabulary-settings.loading",
+      "test_id": "vocabulary-settings-loading",
+      "role": "text",
+      "text": "Loading the vocabulary…",
+      "states": [
+        "loading"
       ]
     },
     {
@@ -2528,7 +2867,7 @@
       "screen_id": "vocabulary-settings",
       "semantic_id": "vocabulary-settings.status",
       "test_id": "vocabulary-settings-status",
-      "role": "alert",
+      "role": "container",
       "children": [
         "vocabulary-settings.status.title"
       ]
@@ -2550,8 +2889,8 @@
       "repeat_model": {
         "collection": "vocabulary.terms",
         "item_model": "vocabulary_term",
-        "item_key": "key",
-        "instance_id_template": "term-{key}"
+        "item_key": "index",
+        "instance_id_template": "term-{index}"
       },
       "children": [
         "vocabulary-settings.term"
@@ -2643,7 +2982,43 @@
       "children": [
         "vocabulary-settings-paste.terms.title",
         "vocabulary-settings-paste.editor",
-        "vocabulary-settings-paste.preview"
+        "vocabulary-settings-paste.preview",
+        "vocabulary-settings-paste.loading",
+        "vocabulary-settings-paste.list-error",
+        "vocabulary-settings-paste.error"
+      ]
+    },
+    {
+      "id": "vocabulary-settings-paste.error",
+      "screen_id": "vocabulary-settings-paste",
+      "semantic_id": "vocabulary-settings-paste.error",
+      "test_id": "vocabulary-settings-paste-error",
+      "role": "alert",
+      "text": "The vocabulary changed in the meantime and was reloaded. Try again.",
+      "states": [
+        "error"
+      ]
+    },
+    {
+      "id": "vocabulary-settings-paste.list-error",
+      "screen_id": "vocabulary-settings-paste",
+      "semantic_id": "vocabulary-settings-paste.list-error",
+      "test_id": "vocabulary-settings-paste-list-error",
+      "role": "alert",
+      "text": "Couldn't read the saved vocabulary. Nothing was changed; retry to load it.",
+      "states": [
+        "list-error"
+      ]
+    },
+    {
+      "id": "vocabulary-settings-paste.loading",
+      "screen_id": "vocabulary-settings-paste",
+      "semantic_id": "vocabulary-settings-paste.loading",
+      "test_id": "vocabulary-settings-paste-loading",
+      "role": "text",
+      "text": "Loading the vocabulary…",
+      "states": [
+        "loading"
       ]
     },
     {
@@ -2806,7 +3181,52 @@
         "vocabulary-settings-unsupported.list",
         "vocabulary-settings-unsupported.new-term",
         "vocabulary-settings-unsupported.add",
-        "vocabulary-settings-unsupported.paste"
+        "vocabulary-settings-unsupported.paste",
+        "vocabulary-settings-unsupported.loading",
+        "vocabulary-settings-unsupported.list-error",
+        "vocabulary-settings-unsupported.error",
+        "vocabulary-settings-unsupported.count"
+      ]
+    },
+    {
+      "id": "vocabulary-settings-unsupported.count",
+      "screen_id": "vocabulary-settings-unsupported",
+      "semantic_id": "vocabulary-settings-unsupported.count",
+      "test_id": "vocabulary-settings-unsupported-count",
+      "role": "text",
+      "text": "3 of 500 terms"
+    },
+    {
+      "id": "vocabulary-settings-unsupported.error",
+      "screen_id": "vocabulary-settings-unsupported",
+      "semantic_id": "vocabulary-settings-unsupported.error",
+      "test_id": "vocabulary-settings-unsupported-error",
+      "role": "alert",
+      "text": "The vocabulary changed in the meantime and was reloaded. Try again.",
+      "states": [
+        "error"
+      ]
+    },
+    {
+      "id": "vocabulary-settings-unsupported.list-error",
+      "screen_id": "vocabulary-settings-unsupported",
+      "semantic_id": "vocabulary-settings-unsupported.list-error",
+      "test_id": "vocabulary-settings-unsupported-list-error",
+      "role": "alert",
+      "text": "Couldn't read the saved vocabulary. Nothing was changed; retry to load it.",
+      "states": [
+        "list-error"
+      ]
+    },
+    {
+      "id": "vocabulary-settings-unsupported.loading",
+      "screen_id": "vocabulary-settings-unsupported",
+      "semantic_id": "vocabulary-settings-unsupported.loading",
+      "test_id": "vocabulary-settings-unsupported-loading",
+      "role": "text",
+      "text": "Loading the vocabulary…",
+      "states": [
+        "loading"
       ]
     },
     {
@@ -2822,7 +3242,7 @@
       "screen_id": "vocabulary-settings-unsupported",
       "semantic_id": "vocabulary-settings-unsupported.status",
       "test_id": "vocabulary-settings-unsupported-status",
-      "role": "alert",
+      "role": "container",
       "children": [
         "vocabulary-settings-unsupported.status.title"
       ]
@@ -2844,8 +3264,8 @@
       "repeat_model": {
         "collection": "vocabulary.terms",
         "item_model": "vocabulary_term",
-        "item_key": "key",
-        "instance_id_template": "term-{key}"
+        "item_key": "index",
+        "instance_id_template": "term-{index}"
       },
       "children": [
         "vocabulary-settings-unsupported.term"
@@ -2931,7 +3351,43 @@
         "vocabulary-settings-empty.empty",
         "vocabulary-settings-empty.new-term",
         "vocabulary-settings-empty.add",
-        "vocabulary-settings-empty.paste"
+        "vocabulary-settings-empty.paste",
+        "vocabulary-settings-empty.loading",
+        "vocabulary-settings-empty.list-error",
+        "vocabulary-settings-empty.error"
+      ]
+    },
+    {
+      "id": "vocabulary-settings-empty.error",
+      "screen_id": "vocabulary-settings-empty",
+      "semantic_id": "vocabulary-settings-empty.error",
+      "test_id": "vocabulary-settings-empty-error",
+      "role": "alert",
+      "text": "The vocabulary changed in the meantime and was reloaded. Try again.",
+      "states": [
+        "error"
+      ]
+    },
+    {
+      "id": "vocabulary-settings-empty.list-error",
+      "screen_id": "vocabulary-settings-empty",
+      "semantic_id": "vocabulary-settings-empty.list-error",
+      "test_id": "vocabulary-settings-empty-list-error",
+      "role": "alert",
+      "text": "Couldn't read the saved vocabulary. Nothing was changed; retry to load it.",
+      "states": [
+        "list-error"
+      ]
+    },
+    {
+      "id": "vocabulary-settings-empty.loading",
+      "screen_id": "vocabulary-settings-empty",
+      "semantic_id": "vocabulary-settings-empty.loading",
+      "test_id": "vocabulary-settings-empty-loading",
+      "role": "text",
+      "text": "Loading the vocabulary…",
+      "states": [
+        "loading"
       ]
     },
     {
@@ -2947,7 +3403,7 @@
       "screen_id": "vocabulary-settings-empty",
       "semantic_id": "vocabulary-settings-empty.status",
       "test_id": "vocabulary-settings-empty-status",
-      "role": "alert",
+      "role": "container",
       "children": [
         "vocabulary-settings-empty.status.title"
       ]
@@ -3034,7 +3490,6 @@
       "text": "General",
       "children": [
         "shortcut-settings.dictation",
-        "shortcut-settings.ai-dictation",
         "shortcut-settings.activation",
         "shortcut-settings.cancel"
       ]
@@ -3049,8 +3504,44 @@
         "shortcut-settings.dictation.title",
         "shortcut-settings.dictation.list",
         "shortcut-settings.dictation.recording",
+        "shortcut-settings.dictation.recording-discard",
         "shortcut-settings.dictation.add",
-        "shortcut-settings.dictation.reset"
+        "shortcut-settings.dictation.reset",
+        "shortcut-settings.dictation.last",
+        "shortcut-settings.dictation.conflicts-unavailable"
+      ]
+    },
+    {
+      "id": "shortcut-settings.dictation.conflicts-unavailable",
+      "screen_id": "shortcut-settings",
+      "semantic_id": "shortcut-settings.dictation.conflicts-unavailable",
+      "test_id": "shortcut-settings-dictation-conflicts-unavailable",
+      "role": "text",
+      "text": "Shortcut conflicts could not be checked",
+      "states": [
+        "conflicts-unavailable"
+      ]
+    },
+    {
+      "id": "shortcut-settings.dictation.recording-discard",
+      "screen_id": "shortcut-settings",
+      "semantic_id": "shortcut-settings.dictation.recording-discard",
+      "test_id": "shortcut-settings-dictation-recording-discard",
+      "role": "button",
+      "states": [
+        "recording"
+      ],
+      "action": "shortcut-settings.dictation.recording-discard"
+    },
+    {
+      "id": "shortcut-settings.dictation.last",
+      "screen_id": "shortcut-settings",
+      "semantic_id": "shortcut-settings.dictation.last",
+      "test_id": "shortcut-settings-dictation-last",
+      "role": "text",
+      "text": "Each action keeps at least one shortcut. Change or reset it instead.",
+      "states": [
+        "last-shortcut"
       ]
     },
     {
@@ -3059,7 +3550,7 @@
       "semantic_id": "shortcut-settings.dictation.title",
       "test_id": "shortcut-settings-dictation-title",
       "role": "text",
-      "text": "Dictation"
+      "text": "Transcribe Shortcut"
     },
     {
       "id": "shortcut-settings.dictation.list",
@@ -3074,7 +3565,29 @@
         "instance_id_template": "shortcut-{keys}"
       },
       "children": [
-        "shortcut-settings.dictation.shortcut"
+        "shortcut-settings.dictation.shortcut",
+        "shortcut-settings.dictation.shortcut-refused",
+        "shortcut-settings.dictation.shortcut-conflict"
+      ]
+    },
+    {
+      "id": "shortcut-settings.dictation.shortcut-conflict",
+      "screen_id": "shortcut-settings",
+      "semantic_id": "shortcut-settings.dictation.shortcut-conflict",
+      "test_id": "shortcut-settings-dictation-shortcut-conflict",
+      "role": "icon",
+      "states": [
+        "conflict"
+      ]
+    },
+    {
+      "id": "shortcut-settings.dictation.shortcut-refused",
+      "screen_id": "shortcut-settings",
+      "semantic_id": "shortcut-settings.dictation.shortcut-refused",
+      "test_id": "shortcut-settings-dictation-shortcut-refused",
+      "role": "icon",
+      "states": [
+        "refused"
       ]
     },
     {
@@ -3125,7 +3638,7 @@
     },
     {
       "id": "shortcut-settings.ai-dictation",
-      "screen_id": "shortcut-settings",
+      "screen_id": "prompt-settings",
       "semantic_id": "shortcut-settings.ai-dictation",
       "test_id": "shortcut-settings-ai-dictation",
       "role": "container",
@@ -3133,20 +3646,29 @@
         "shortcut-settings.ai-dictation.title",
         "shortcut-settings.ai-dictation.list",
         "shortcut-settings.ai-dictation.last",
-        "shortcut-settings.ai-dictation.add"
+        "shortcut-settings.ai-dictation.add",
+        "shortcut-settings.ai-dictation.reset"
       ]
     },
     {
+      "id": "shortcut-settings.ai-dictation.reset",
+      "screen_id": "prompt-settings",
+      "semantic_id": "shortcut-settings.ai-dictation.reset",
+      "test_id": "shortcut-settings-ai-dictation-reset",
+      "role": "button",
+      "action": "shortcut-settings.ai-dictation.reset"
+    },
+    {
       "id": "shortcut-settings.ai-dictation.title",
-      "screen_id": "shortcut-settings",
+      "screen_id": "prompt-settings",
       "semantic_id": "shortcut-settings.ai-dictation.title",
       "test_id": "shortcut-settings-ai-dictation-title",
       "role": "text",
-      "text": "Dictation with AI processing"
+      "text": "Post-Processing Hotkey"
     },
     {
       "id": "shortcut-settings.ai-dictation.list",
-      "screen_id": "shortcut-settings",
+      "screen_id": "prompt-settings",
       "semantic_id": "shortcut-settings.ai-dictation.list",
       "test_id": "shortcut-settings-ai-dictation-list",
       "role": "list",
@@ -3162,7 +3684,7 @@
     },
     {
       "id": "shortcut-settings.ai-dictation.shortcut",
-      "screen_id": "shortcut-settings",
+      "screen_id": "prompt-settings",
       "semantic_id": "shortcut-settings.ai-dictation.shortcut",
       "test_id": "shortcut-settings-ai-dictation-shortcut",
       "role": "text",
@@ -3173,7 +3695,7 @@
     },
     {
       "id": "shortcut-settings.ai-dictation.shortcut.remove",
-      "screen_id": "shortcut-settings",
+      "screen_id": "prompt-settings",
       "semantic_id": "shortcut-settings.ai-dictation.shortcut.remove",
       "test_id": "shortcut-settings-ai-dictation-shortcut-remove",
       "role": "button",
@@ -3181,7 +3703,7 @@
     },
     {
       "id": "shortcut-settings.ai-dictation.last",
-      "screen_id": "shortcut-settings",
+      "screen_id": "prompt-settings",
       "semantic_id": "shortcut-settings.ai-dictation.last",
       "test_id": "shortcut-settings-ai-dictation-last",
       "role": "text",
@@ -3189,7 +3711,7 @@
     },
     {
       "id": "shortcut-settings.ai-dictation.add",
-      "screen_id": "shortcut-settings",
+      "screen_id": "prompt-settings",
       "semantic_id": "shortcut-settings.ai-dictation.add",
       "test_id": "shortcut-settings-ai-dictation-add",
       "role": "button",
@@ -3213,7 +3735,7 @@
       "semantic_id": "shortcut-settings.activation.title",
       "test_id": "shortcut-settings-activation-title",
       "role": "text",
-      "text": "Activation mode"
+      "text": "Shortcut Behavior"
     },
     {
       "id": "shortcut-settings.activation.select",
@@ -3233,6 +3755,44 @@
       "role": "container",
       "children": [
         "shortcut-settings.cancel.title",
+        "shortcut-settings.cancel.list",
+        "shortcut-settings.cancel.recording",
+        "shortcut-settings.cancel.reset"
+      ]
+    },
+    {
+      "id": "shortcut-settings.cancel.reset",
+      "screen_id": "shortcut-settings",
+      "semantic_id": "shortcut-settings.cancel.reset",
+      "test_id": "shortcut-settings-cancel-reset",
+      "role": "button",
+      "action": "shortcut-settings.cancel.reset"
+    },
+    {
+      "id": "shortcut-settings.cancel.recording",
+      "screen_id": "shortcut-settings",
+      "semantic_id": "shortcut-settings.cancel.recording",
+      "test_id": "shortcut-settings-cancel-recording",
+      "role": "button",
+      "text": "Press keys…",
+      "states": [
+        "recording"
+      ],
+      "action": "shortcut-settings.cancel.recording"
+    },
+    {
+      "id": "shortcut-settings.cancel.list",
+      "screen_id": "shortcut-settings",
+      "semantic_id": "shortcut-settings.cancel.list",
+      "test_id": "shortcut-settings-cancel-list",
+      "role": "list",
+      "repeat_model": {
+        "collection": "shortcuts.cancel",
+        "item_model": "shortcut_binding",
+        "item_key": "keys",
+        "instance_id_template": "shortcut-{keys}"
+      },
+      "children": [
         "shortcut-settings.cancel.shortcut"
       ]
     },
@@ -3242,7 +3802,7 @@
       "semantic_id": "shortcut-settings.cancel.title",
       "test_id": "shortcut-settings-cancel-title",
       "role": "text",
-      "text": "Cancel"
+      "text": "Cancel Shortcut"
     },
     {
       "id": "shortcut-settings.cancel.shortcut",
@@ -3284,10 +3844,22 @@
         "shortcut-settings-conflict.dictation.title",
         "shortcut-settings-conflict.dictation.list",
         "shortcut-settings-conflict.dictation.recording",
+        "shortcut-settings-conflict.dictation.recording-discard",
         "shortcut-settings-conflict.dictation.conflict",
         "shortcut-settings-conflict.dictation.legacy",
         "shortcut-settings-conflict.dictation.os"
       ]
+    },
+    {
+      "id": "shortcut-settings-conflict.dictation.recording-discard",
+      "screen_id": "shortcut-settings-conflict",
+      "semantic_id": "shortcut-settings-conflict.dictation.recording-discard",
+      "test_id": "shortcut-settings-conflict-dictation-recording-discard",
+      "role": "button",
+      "states": [
+        "recording"
+      ],
+      "action": "shortcut-settings-conflict.dictation.recording-discard"
     },
     {
       "id": "shortcut-settings-conflict.dictation.title",
@@ -3295,7 +3867,7 @@
       "semantic_id": "shortcut-settings-conflict.dictation.title",
       "test_id": "shortcut-settings-conflict-dictation-title",
       "role": "text",
-      "text": "Dictation"
+      "text": "Transcribe Shortcut"
     },
     {
       "id": "shortcut-settings-conflict.dictation.list",
@@ -3347,7 +3919,7 @@
       "semantic_id": "shortcut-settings-conflict.dictation.conflict",
       "test_id": "shortcut-settings-conflict-dictation-conflict",
       "role": "text",
-      "text": "⇧ ⌥ Space is already used by Dictation with AI processing. Nothing was saved."
+      "text": "⇧ ⌥ Space is already used by Post-Processing Hotkey. Nothing was saved."
     },
     {
       "id": "shortcut-settings-conflict.dictation.legacy",
@@ -3366,7 +3938,7 @@
       "semantic_id": "shortcut-settings-conflict.dictation.legacy.title",
       "test_id": "shortcut-settings-conflict-dictation-legacy-title",
       "role": "text",
-      "text": "⌃ ⌥ D overlaps with Cancel"
+      "text": "⌃ ⌥ D overlaps with Cancel Shortcut"
     },
     {
       "id": "shortcut-settings-conflict.dictation.change",
@@ -3384,8 +3956,18 @@
       "test_id": "shortcut-settings-conflict-dictation-os",
       "role": "alert",
       "children": [
-        "shortcut-settings-conflict.dictation.os.title"
+        "shortcut-settings-conflict.dictation.os.title",
+        "shortcut-settings-conflict.dictation.os.retry"
       ]
+    },
+    {
+      "id": "shortcut-settings-conflict.dictation.os.retry",
+      "screen_id": "shortcut-settings-conflict",
+      "semantic_id": "shortcut-settings-conflict.dictation.os.retry",
+      "test_id": "shortcut-settings-conflict-dictation-os-retry",
+      "role": "button",
+      "text": "Try again",
+      "action": "shortcut-settings-conflict.dictation.os.retry"
     },
     {
       "id": "shortcut-settings-conflict.dictation.os.title",
@@ -3435,7 +4017,7 @@
       "semantic_id": "shortcut-settings-limit.dictation.title",
       "test_id": "shortcut-settings-limit-dictation-title",
       "role": "text",
-      "text": "Dictation"
+      "text": "Transcribe Shortcut"
     },
     {
       "id": "shortcut-settings-limit.dictation.list",
@@ -3497,7 +4079,8 @@
       "role": "screen",
       "children": [
         "prompt-settings.processing",
-        "prompt-settings.library"
+        "prompt-settings.library",
+        "shortcut-settings.ai-dictation"
       ]
     },
     {
@@ -3579,8 +4162,49 @@
       "children": [
         "prompt-settings.list",
         "prompt-settings.new",
-        "prompt-settings.count"
+        "prompt-settings.count",
+        "prompt-settings.load-error",
+        "prompt-settings.loading",
+        "prompt-settings.empty",
+        "prompt-settings.reload-error",
+        "prompt-settings.reload-retry"
       ]
+    },
+    {
+      "id": "prompt-settings.reload-retry",
+      "screen_id": "prompt-settings",
+      "semantic_id": "prompt-settings.reload-retry",
+      "test_id": "prompt-settings-reload-retry",
+      "role": "button",
+      "action": "prompt-settings.reload-retry"
+    },
+    {
+      "id": "prompt-settings.reload-error",
+      "screen_id": "prompt-settings",
+      "semantic_id": "prompt-settings.reload-error",
+      "test_id": "prompt-settings-reload-error",
+      "role": "alert"
+    },
+    {
+      "id": "prompt-settings.empty",
+      "screen_id": "prompt-settings",
+      "semantic_id": "prompt-settings.empty",
+      "test_id": "prompt-settings-empty",
+      "role": "text"
+    },
+    {
+      "id": "prompt-settings.loading",
+      "screen_id": "prompt-settings",
+      "semantic_id": "prompt-settings.loading",
+      "test_id": "prompt-settings-loading",
+      "role": "text"
+    },
+    {
+      "id": "prompt-settings.load-error",
+      "screen_id": "prompt-settings",
+      "semantic_id": "prompt-settings.load-error",
+      "test_id": "prompt-settings-load-error",
+      "role": "alert"
     },
     {
       "id": "prompt-settings.list",
@@ -3608,8 +4232,16 @@
         "prompt-settings.prompt.name",
         "prompt-settings.prompt.provider",
         "prompt-settings.prompt.shortcut",
-        "prompt-settings.prompt.edit"
+        "prompt-settings.prompt.edit",
+        "prompt-settings.prompt.status"
       ]
+    },
+    {
+      "id": "prompt-settings.prompt.status",
+      "screen_id": "prompt-settings",
+      "semantic_id": "prompt-settings.prompt.status",
+      "test_id": "prompt-settings-prompt-status",
+      "role": "text"
     },
     {
       "id": "prompt-settings.prompt.name",
@@ -3633,7 +4265,7 @@
       "semantic_id": "prompt-settings.prompt.shortcut",
       "test_id": "prompt-settings-prompt-shortcut",
       "role": "text",
-      "text": "⌃ ⌥ M"
+      "text": "Ctrl + Option + M"
     },
     {
       "id": "prompt-settings.prompt.edit",
@@ -3669,8 +4301,60 @@
       "children": [
         "prompt-settings-editor.editor",
         "prompt-settings-editor.test",
-        "prompt-settings-editor.actions"
+        "prompt-settings-editor.actions",
+        "prompt-settings-editor.deleted-elsewhere",
+        "prompt-settings-editor.changed-elsewhere",
+        "prompt-settings-editor.delete-dialog",
+        "prompt-settings-editor.reload-error",
+        "prompt-settings-editor.reload-retry"
       ]
+    },
+    {
+      "id": "prompt-settings-editor.reload-retry",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.reload-retry",
+      "test_id": "prompt-settings-editor-reload-retry",
+      "role": "button",
+      "action": "prompt-settings-editor.reload-retry"
+    },
+    {
+      "id": "prompt-settings-editor.reload-error",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.reload-error",
+      "test_id": "prompt-settings-editor-reload-error",
+      "role": "alert"
+    },
+    {
+      "id": "prompt-settings-editor.delete-dialog",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.delete-dialog",
+      "test_id": "prompt-settings-editor-delete-dialog",
+      "role": "modal",
+      "children": [
+        "prompt-settings-editor.delete-confirm"
+      ]
+    },
+    {
+      "id": "prompt-settings-editor.delete-confirm",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.delete-confirm",
+      "test_id": "prompt-settings-editor-delete-confirm",
+      "role": "button",
+      "action": "prompt-settings-editor.delete-confirm"
+    },
+    {
+      "id": "prompt-settings-editor.changed-elsewhere",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.changed-elsewhere",
+      "test_id": "prompt-settings-editor-changed-elsewhere",
+      "role": "alert"
+    },
+    {
+      "id": "prompt-settings-editor.deleted-elsewhere",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.deleted-elsewhere",
+      "test_id": "prompt-settings-editor-deleted-elsewhere",
+      "role": "alert"
     },
     {
       "id": "prompt-settings-editor.editor",
@@ -3702,8 +4386,103 @@
         "prompt-settings-editor.form.endpoint",
         "prompt-settings-editor.form.shortcuts-label",
         "prompt-settings-editor.form.shortcuts",
-        "prompt-settings-editor.form.add-shortcut"
+        "prompt-settings-editor.form.add-shortcut",
+        "prompt-settings-editor.form.name-error",
+        "prompt-settings-editor.form.not-ready",
+        "prompt-settings-editor.form.fix-field",
+        "prompt-settings-editor.form.text-error",
+        "prompt-settings-editor.form.provider-error",
+        "prompt-settings-editor.form.shortcuts-hint",
+        "prompt-settings-editor.form.shortcut-recorder",
+        "prompt-settings-editor.form.shortcuts-conflicts-unavailable",
+        "prompt-settings-editor.form.shortcuts-error"
       ]
+    },
+    {
+      "id": "prompt-settings-editor.form.shortcuts-error",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.shortcuts-error",
+      "test_id": "prompt-settings-editor-form-shortcuts-error",
+      "role": "alert"
+    },
+    {
+      "id": "prompt-settings-editor.form.shortcuts-conflicts-unavailable",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.shortcuts-conflicts-unavailable",
+      "test_id": "prompt-settings-editor-form-shortcuts-conflicts-unavailable",
+      "role": "text"
+    },
+    {
+      "id": "prompt-settings-editor.form.shortcut-recorder",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.shortcut-recorder",
+      "test_id": "prompt-settings-editor-form-shortcut-recorder",
+      "role": "button",
+      "action": "prompt-settings-editor.form.shortcut-recorder"
+    },
+    {
+      "id": "prompt-settings-editor.form.shortcuts-hint",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.shortcuts-hint",
+      "test_id": "prompt-settings-editor-form-shortcuts-hint",
+      "role": "text"
+    },
+    {
+      "id": "prompt-settings-editor.form.provider-error",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.provider-error",
+      "test_id": "prompt-settings-editor-form-provider-error",
+      "role": "text"
+    },
+    {
+      "id": "prompt-settings-editor.form.text-error",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.text-error",
+      "test_id": "prompt-settings-editor-form-text-error",
+      "role": "text"
+    },
+    {
+      "id": "prompt-settings-editor.form.fix-field",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.fix-field",
+      "test_id": "prompt-settings-editor-form-fix-field",
+      "role": "input",
+      "action": "prompt-settings-editor.form.fix-field",
+      "binding": "provider_fix.api_key"
+    },
+    {
+      "id": "prompt-settings-editor.form.not-ready",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.not-ready",
+      "test_id": "prompt-settings-editor-form-not-ready",
+      "role": "alert",
+      "children": [
+        "prompt-settings-editor.form.not-ready.title",
+        "prompt-settings-editor.form.fix"
+      ]
+    },
+    {
+      "id": "prompt-settings-editor.form.fix",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.fix",
+      "test_id": "prompt-settings-editor-form-fix",
+      "role": "button",
+      "action": "prompt-settings-editor.form.fix"
+    },
+    {
+      "id": "prompt-settings-editor.form.not-ready.title",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.not-ready.title",
+      "test_id": "prompt-settings-editor-form-not-ready-title",
+      "role": "text"
+    },
+    {
+      "id": "prompt-settings-editor.form.name-error",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.name-error",
+      "test_id": "prompt-settings-editor-form-name-error",
+      "role": "text",
+      "text": "Enter a name (1–60 characters)."
     },
     {
       "id": "prompt-settings-editor.form.name-label",
@@ -3814,8 +4593,24 @@
         "instance_id_template": "shortcut-{keys}"
       },
       "children": [
-        "prompt-settings-editor.form.shortcut"
+        "prompt-settings-editor.form.shortcut",
+        "prompt-settings-editor.form.shortcut-refused",
+        "prompt-settings-editor.form.shortcut-conflict"
       ]
+    },
+    {
+      "id": "prompt-settings-editor.form.shortcut-conflict",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.shortcut-conflict",
+      "test_id": "prompt-settings-editor-form-shortcut-conflict",
+      "role": "icon"
+    },
+    {
+      "id": "prompt-settings-editor.form.shortcut-refused",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.form.shortcut-refused",
+      "test_id": "prompt-settings-editor-form-shortcut-refused",
+      "role": "icon"
     },
     {
       "id": "prompt-settings-editor.form.shortcut",
@@ -3823,7 +4618,7 @@
       "semantic_id": "prompt-settings-editor.form.shortcut",
       "test_id": "prompt-settings-editor-form-shortcut",
       "role": "text",
-      "text": "⌃ ⌥ S",
+      "text": "Ctrl + Option + S",
       "children": [
         "prompt-settings-editor.form.shortcut.remove"
       ]
@@ -3856,8 +4651,44 @@
         "prompt-settings-editor.test.sample",
         "prompt-settings-editor.test.run",
         "prompt-settings-editor.test.note",
-        "prompt-settings-editor.test.result"
+        "prompt-settings-editor.test.result",
+        "prompt-settings-editor.test.error",
+        "prompt-settings-editor.test.retry",
+        "prompt-settings-editor.test.outdated"
       ]
+    },
+    {
+      "id": "prompt-settings-editor.test.outdated",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.test.outdated",
+      "test_id": "prompt-settings-editor-test-outdated",
+      "role": "text"
+    },
+    {
+      "id": "prompt-settings-editor.test.retry",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.test.retry",
+      "test_id": "prompt-settings-editor-test-retry",
+      "role": "button",
+      "action": "prompt-settings-editor.test.retry"
+    },
+    {
+      "id": "prompt-settings-editor.test.error",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.test.error",
+      "test_id": "prompt-settings-editor-test-error",
+      "role": "alert",
+      "children": [
+        "prompt-settings-editor.test.error.title"
+      ]
+    },
+    {
+      "id": "prompt-settings-editor.test.error.title",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.test.error.title",
+      "test_id": "prompt-settings-editor-test-error-title",
+      "role": "text",
+      "text": "Test failed: the provider returned an error"
     },
     {
       "id": "prompt-settings-editor.test.sample",
@@ -3923,8 +4754,24 @@
         "prompt-settings-editor.actions.note",
         "prompt-settings-editor.delete",
         "prompt-settings-editor.cancel",
-        "prompt-settings-editor.save"
+        "prompt-settings-editor.save",
+        "prompt-settings-editor.saved",
+        "prompt-settings-editor.actions-error"
       ]
+    },
+    {
+      "id": "prompt-settings-editor.actions-error",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.actions-error",
+      "test_id": "prompt-settings-editor-actions-error",
+      "role": "alert"
+    },
+    {
+      "id": "prompt-settings-editor.saved",
+      "screen_id": "prompt-settings-editor",
+      "semantic_id": "prompt-settings-editor.saved",
+      "test_id": "prompt-settings-editor-saved",
+      "role": "text"
     },
     {
       "id": "prompt-settings-editor.actions.note",
@@ -3970,8 +4817,60 @@
       "children": [
         "prompt-settings-invalid.editor",
         "prompt-settings-invalid.test",
-        "prompt-settings-invalid.actions"
+        "prompt-settings-invalid.actions",
+        "prompt-settings-invalid.deleted-elsewhere",
+        "prompt-settings-invalid.changed-elsewhere",
+        "prompt-settings-invalid.delete-dialog",
+        "prompt-settings-invalid.reload-error",
+        "prompt-settings-invalid.reload-retry"
       ]
+    },
+    {
+      "id": "prompt-settings-invalid.reload-retry",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.reload-retry",
+      "test_id": "prompt-settings-invalid-reload-retry",
+      "role": "button",
+      "action": "prompt-settings-invalid.reload-retry"
+    },
+    {
+      "id": "prompt-settings-invalid.reload-error",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.reload-error",
+      "test_id": "prompt-settings-invalid-reload-error",
+      "role": "alert"
+    },
+    {
+      "id": "prompt-settings-invalid.delete-dialog",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.delete-dialog",
+      "test_id": "prompt-settings-invalid-delete-dialog",
+      "role": "modal",
+      "children": [
+        "prompt-settings-invalid.delete-confirm"
+      ]
+    },
+    {
+      "id": "prompt-settings-invalid.delete-confirm",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.delete-confirm",
+      "test_id": "prompt-settings-invalid-delete-confirm",
+      "role": "button",
+      "action": "prompt-settings-invalid.delete-confirm"
+    },
+    {
+      "id": "prompt-settings-invalid.changed-elsewhere",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.changed-elsewhere",
+      "test_id": "prompt-settings-invalid-changed-elsewhere",
+      "role": "alert"
+    },
+    {
+      "id": "prompt-settings-invalid.deleted-elsewhere",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.deleted-elsewhere",
+      "test_id": "prompt-settings-invalid-deleted-elsewhere",
+      "role": "alert"
     },
     {
       "id": "prompt-settings-invalid.editor",
@@ -4000,8 +4899,101 @@
         "prompt-settings-invalid.form.provider",
         "prompt-settings-invalid.form.model-label",
         "prompt-settings-invalid.form.model",
-        "prompt-settings-invalid.form.not-ready"
+        "prompt-settings-invalid.form.not-ready",
+        "prompt-settings-invalid.form.text-hint",
+        "prompt-settings-invalid.form.endpoint",
+        "prompt-settings-invalid.form.fix-field",
+        "prompt-settings-invalid.form.text-error",
+        "prompt-settings-invalid.form.provider-error",
+        "prompt-settings-invalid.form.shortcuts-hint",
+        "prompt-settings-invalid.form.shortcut-recorder",
+        "prompt-settings-invalid.form.shortcut-refused",
+        "prompt-settings-invalid.form.shortcut-conflict",
+        "prompt-settings-invalid.form.shortcuts-conflicts-unavailable",
+        "prompt-settings-invalid.form.shortcuts-error"
       ]
+    },
+    {
+      "id": "prompt-settings-invalid.form.shortcuts-error",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.form.shortcuts-error",
+      "test_id": "prompt-settings-invalid-form-shortcuts-error",
+      "role": "alert"
+    },
+    {
+      "id": "prompt-settings-invalid.form.shortcuts-conflicts-unavailable",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.form.shortcuts-conflicts-unavailable",
+      "test_id": "prompt-settings-invalid-form-shortcuts-conflicts-unavailable",
+      "role": "text"
+    },
+    {
+      "id": "prompt-settings-invalid.form.shortcut-conflict",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.form.shortcut-conflict",
+      "test_id": "prompt-settings-invalid-form-shortcut-conflict",
+      "role": "icon"
+    },
+    {
+      "id": "prompt-settings-invalid.form.shortcut-refused",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.form.shortcut-refused",
+      "test_id": "prompt-settings-invalid-form-shortcut-refused",
+      "role": "icon"
+    },
+    {
+      "id": "prompt-settings-invalid.form.shortcut-recorder",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.form.shortcut-recorder",
+      "test_id": "prompt-settings-invalid-form-shortcut-recorder",
+      "role": "button",
+      "action": "prompt-settings-invalid.form.shortcut-recorder"
+    },
+    {
+      "id": "prompt-settings-invalid.form.shortcuts-hint",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.form.shortcuts-hint",
+      "test_id": "prompt-settings-invalid-form-shortcuts-hint",
+      "role": "text"
+    },
+    {
+      "id": "prompt-settings-invalid.form.provider-error",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.form.provider-error",
+      "test_id": "prompt-settings-invalid-form-provider-error",
+      "role": "text"
+    },
+    {
+      "id": "prompt-settings-invalid.form.text-error",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.form.text-error",
+      "test_id": "prompt-settings-invalid-form-text-error",
+      "role": "text"
+    },
+    {
+      "id": "prompt-settings-invalid.form.fix-field",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.form.fix-field",
+      "test_id": "prompt-settings-invalid-form-fix-field",
+      "role": "input",
+      "action": "prompt-settings-invalid.form.fix-field",
+      "binding": "provider_fix.api_key"
+    },
+    {
+      "id": "prompt-settings-invalid.form.endpoint",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.form.endpoint",
+      "test_id": "prompt-settings-invalid-form-endpoint",
+      "role": "text",
+      "text": "Endpoint https://api.openai.com/v1"
+    },
+    {
+      "id": "prompt-settings-invalid.form.text-hint",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.form.text-hint",
+      "test_id": "prompt-settings-invalid-form-text-hint",
+      "role": "text",
+      "text": "${output} is replaced by the transcript."
     },
     {
       "id": "prompt-settings-invalid.form.name-label",
@@ -4121,8 +5113,51 @@
       "children": [
         "prompt-settings-invalid.test.sample",
         "prompt-settings-invalid.test.run",
-        "prompt-settings-invalid.test.error"
+        "prompt-settings-invalid.test.error",
+        "prompt-settings-invalid.test.result",
+        "prompt-settings-invalid.test.retry",
+        "prompt-settings-invalid.test.outdated"
       ]
+    },
+    {
+      "id": "prompt-settings-invalid.test.outdated",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.test.outdated",
+      "test_id": "prompt-settings-invalid-test-outdated",
+      "role": "text"
+    },
+    {
+      "id": "prompt-settings-invalid.test.retry",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.test.retry",
+      "test_id": "prompt-settings-invalid-test-retry",
+      "role": "button",
+      "action": "prompt-settings-invalid.test.retry"
+    },
+    {
+      "id": "prompt-settings-invalid.test.result",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.test.result",
+      "test_id": "prompt-settings-invalid-test-result",
+      "role": "container",
+      "children": [
+        "prompt-settings-invalid.test.output",
+        "prompt-settings-invalid.test.meta"
+      ]
+    },
+    {
+      "id": "prompt-settings-invalid.test.meta",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.test.meta",
+      "test_id": "prompt-settings-invalid-test-meta",
+      "role": "text"
+    },
+    {
+      "id": "prompt-settings-invalid.test.output",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.test.output",
+      "test_id": "prompt-settings-invalid-test-output",
+      "role": "text"
     },
     {
       "id": "prompt-settings-invalid.test.sample",
@@ -4159,7 +5194,7 @@
       "semantic_id": "prompt-settings-invalid.test.error.title",
       "test_id": "prompt-settings-invalid-test-error-title",
       "role": "text",
-      "text": "Test failed: provider returned HTTP 401"
+      "text": "Test failed: the provider returned an error"
     },
     {
       "id": "prompt-settings-invalid.actions",
@@ -4170,8 +5205,33 @@
       "children": [
         "prompt-settings-invalid.actions.note",
         "prompt-settings-invalid.cancel",
-        "prompt-settings-invalid.save"
+        "prompt-settings-invalid.save",
+        "prompt-settings-invalid.delete",
+        "prompt-settings-invalid.saved",
+        "prompt-settings-invalid.actions-error"
       ]
+    },
+    {
+      "id": "prompt-settings-invalid.actions-error",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.actions-error",
+      "test_id": "prompt-settings-invalid-actions-error",
+      "role": "alert"
+    },
+    {
+      "id": "prompt-settings-invalid.saved",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.saved",
+      "test_id": "prompt-settings-invalid-saved",
+      "role": "text"
+    },
+    {
+      "id": "prompt-settings-invalid.delete",
+      "screen_id": "prompt-settings-invalid",
+      "semantic_id": "prompt-settings-invalid.delete",
+      "test_id": "prompt-settings-invalid-delete",
+      "role": "button",
+      "action": "prompt-settings-invalid.delete"
     },
     {
       "id": "prompt-settings-invalid.actions.note",
@@ -4314,12 +5374,48 @@
       "test_id": "recording-indicator-destination-menu-menu",
       "role": "container",
       "children": [
+        "recording-indicator-destination-menu.menu.pin",
         "recording-indicator-destination-menu.menu.now-label",
         "recording-indicator-destination-menu.menu.frontmost",
         "recording-indicator-destination-menu.menu.others-label",
         "recording-indicator-destination-menu.menu.app",
         "recording-indicator-destination-menu.menu.frontmost-at-end",
-        "recording-indicator-destination-menu.menu.pin"
+        "recording-indicator-destination-menu.menu.loading",
+        "recording-indicator-destination-menu.menu.failed",
+        "recording-indicator-destination-menu.menu.feedback"
+      ]
+    },
+    {
+      "id": "recording-indicator-destination-menu.menu.feedback",
+      "screen_id": "recording-indicator-destination-menu",
+      "semantic_id": "recording-indicator-destination-menu.menu.feedback",
+      "test_id": "recording-indicator-destination-menu-menu-feedback",
+      "role": "text",
+      "text": "That app is no longer available. Choose another one.",
+      "states": [
+        "choice-refused"
+      ]
+    },
+    {
+      "id": "recording-indicator-destination-menu.menu.failed",
+      "screen_id": "recording-indicator-destination-menu",
+      "semantic_id": "recording-indicator-destination-menu.menu.failed",
+      "test_id": "recording-indicator-destination-menu-menu-failed",
+      "role": "text",
+      "text": "The app list could not be loaded.",
+      "states": [
+        "menu-failed"
+      ]
+    },
+    {
+      "id": "recording-indicator-destination-menu.menu.loading",
+      "screen_id": "recording-indicator-destination-menu",
+      "semantic_id": "recording-indicator-destination-menu.menu.loading",
+      "test_id": "recording-indicator-destination-menu-menu-loading",
+      "role": "text",
+      "text": "Loading apps…",
+      "states": [
+        "menu-loading"
       ]
     },
     {
@@ -4358,8 +5454,8 @@
       "repeat_model": {
         "collection": "destination_menu.apps",
         "item_model": "running_app",
-        "item_key": "bundle_id",
-        "instance_id_template": "app-{bundle_id}"
+        "item_key": "token",
+        "instance_id_template": "app-{token}"
       }
     },
     {
@@ -4556,24 +5652,6 @@
       "text": "Frontmost app"
     },
     {
-      "id": "recording-indicator-destination-unavailable",
-      "screen_id": "recording-indicator-destination-unavailable",
-      "semantic_id": "recording-indicator-destination-unavailable",
-      "test_id": "recording-indicator-destination-unavailable-screen",
-      "role": "screen",
-      "children": [
-        "recording-indicator-destination-unavailable.notice"
-      ]
-    },
-    {
-      "id": "recording-indicator-destination-unavailable.notice",
-      "screen_id": "recording-indicator-destination-unavailable",
-      "semantic_id": "recording-indicator-destination-unavailable.notice",
-      "test_id": "recording-indicator-destination-unavailable-notice",
-      "role": "alert",
-      "text": "Notes is closed. Nothing was inserted; the transcript is kept in History."
-    },
-    {
       "id": "recording-indicator-prompt-menu",
       "screen_id": "recording-indicator-prompt-menu",
       "semantic_id": "recording-indicator-prompt-menu",
@@ -4742,7 +5820,7 @@
       "semantic_id": "recording-indicator-ai-failed.notice",
       "test_id": "recording-indicator-ai-failed-notice",
       "role": "alert",
-      "text": "The AI step failed. The original text was used for insertion."
+      "text": "AI processing failed. The original text was used."
     },
     {
       "id": "recording-indicator-pinned",
@@ -4766,8 +5844,18 @@
         "recording-indicator-pinned.menu.frontmost",
         "recording-indicator-pinned.menu.others-label",
         "recording-indicator-pinned.menu.app",
+        "recording-indicator-pinned.menu.frontmost-at-end",
         "recording-indicator-pinned.menu.unpin"
       ]
+    },
+    {
+      "id": "recording-indicator-pinned.menu.frontmost-at-end",
+      "screen_id": "recording-indicator-pinned",
+      "semantic_id": "recording-indicator-pinned.menu.frontmost-at-end",
+      "test_id": "recording-indicator-pinned-menu-frontmost-at-end",
+      "role": "button",
+      "text": "Frontmost app at the end",
+      "action": "recording-indicator-pinned.menu.frontmost-at-end"
     },
     {
       "id": "recording-indicator-pinned.menu.now-label",
@@ -4784,7 +5872,18 @@
       "test_id": "recording-indicator-pinned-menu-frontmost",
       "role": "button",
       "text": "Comet",
-      "action": "recording-indicator-pinned.menu.frontmost"
+      "action": "recording-indicator-pinned.menu.frontmost",
+      "children": [
+        "recording-indicator-pinned.menu.hint"
+      ]
+    },
+    {
+      "id": "recording-indicator-pinned.menu.hint",
+      "screen_id": "recording-indicator-pinned",
+      "semantic_id": "recording-indicator-pinned.menu.hint",
+      "test_id": "recording-indicator-pinned-menu-hint",
+      "role": "text",
+      "text": "This dictation only"
     },
     {
       "id": "recording-indicator-pinned.menu.others-label",
@@ -4805,8 +5904,8 @@
       "repeat_model": {
         "collection": "destination_menu.apps",
         "item_model": "running_app",
-        "item_key": "bundle_id",
-        "instance_id_template": "app-{bundle_id}"
+        "item_key": "token",
+        "instance_id_template": "app-{token}"
       }
     },
     {
@@ -4886,8 +5985,16 @@
       "action": "recording-indicator-pinned.destination",
       "children": [
         "recording-indicator-pinned.destination.name",
+        "recording-indicator-pinned.destination.mark",
         "recording-indicator-pinned.destination.remove"
       ]
+    },
+    {
+      "id": "recording-indicator-pinned.destination.mark",
+      "screen_id": "recording-indicator-pinned",
+      "semantic_id": "recording-indicator-pinned.destination.mark",
+      "test_id": "recording-indicator-pinned-destination-mark",
+      "role": "icon"
     },
     {
       "id": "recording-indicator-pinned.destination.name",
@@ -4912,8 +6019,52 @@
       "test_id": "output-settings-screen",
       "role": "screen",
       "children": [
-        "output-settings.output"
+        "output-settings.output",
+        "output-settings.history"
       ]
+    },
+    {
+      "id": "output-settings.history",
+      "screen_id": "output-settings",
+      "semantic_id": "output-settings.history",
+      "test_id": "output-settings-history",
+      "role": "container",
+      "text": "History",
+      "states": [
+        "no-refused-write"
+      ],
+      "children": [
+        "output-settings.history-limit"
+      ]
+    },
+    {
+      "id": "output-settings.history-limit",
+      "screen_id": "output-settings",
+      "semantic_id": "output-settings.history-limit",
+      "test_id": "output-settings-history-limit",
+      "role": "container",
+      "children": [
+        "output-settings.history-limit.title",
+        "output-settings.history-limit.input"
+      ]
+    },
+    {
+      "id": "output-settings.history-limit.input",
+      "screen_id": "output-settings",
+      "semantic_id": "output-settings.history-limit.input",
+      "test_id": "output-settings-history-limit-input",
+      "role": "input",
+      "text": "500",
+      "action": "output-settings.history-limit.input",
+      "binding": "history.limit"
+    },
+    {
+      "id": "output-settings.history-limit.title",
+      "screen_id": "output-settings",
+      "semantic_id": "output-settings.history-limit.title",
+      "test_id": "output-settings-history-limit-title",
+      "role": "text",
+      "text": "History Limit"
     },
     {
       "id": "output-settings.output",
@@ -4947,7 +6098,7 @@
       "semantic_id": "output-settings.paste-method.title",
       "test_id": "output-settings-paste-method-title",
       "role": "text",
-      "text": "Paste method"
+      "text": "Paste Method"
     },
     {
       "id": "output-settings.paste-method.select",
@@ -4976,7 +6127,7 @@
       "semantic_id": "output-settings.clipboard.title",
       "test_id": "output-settings-clipboard-title",
       "role": "text",
-      "text": "Clipboard handling"
+      "text": "Clipboard Handling"
     },
     {
       "id": "output-settings.clipboard.select",
@@ -4984,7 +6135,7 @@
       "semantic_id": "output-settings.clipboard.select",
       "test_id": "output-settings-clipboard-select",
       "role": "select",
-      "text": "Don't modify clipboard",
+      "text": "Don't Modify Clipboard",
       "binding": "output.clipboard_handling",
       "action": "output-settings.clipboard.select"
     },
@@ -5034,8 +6185,17 @@
       "children": [
         "output-settings.auto-enter.title",
         "output-settings.auto-enter.mode",
-        "output-settings.auto-enter.key"
+        "output-settings.auto-enter.key",
+        "output-settings.auto-enter.note"
       ]
+    },
+    {
+      "id": "output-settings.auto-enter.note",
+      "screen_id": "output-settings",
+      "semantic_id": "output-settings.auto-enter.note",
+      "test_id": "output-settings-auto-enter-note",
+      "role": "text",
+      "text": "Replaces Auto Submit. No Enter after a failed or unconfirmed insertion, with paste method None, or when the app lost focus."
     },
     {
       "id": "output-settings.auto-enter.title",
@@ -5162,7 +6322,7 @@
       "semantic_id": "output-settings-paste-methods.paste-method.title",
       "test_id": "output-settings-paste-methods-paste-method-title",
       "role": "text",
-      "text": "Paste method"
+      "text": "Paste Method"
     },
     {
       "id": "output-settings-paste-methods.paste-method.select",
@@ -5183,10 +6343,36 @@
       "children": [
         "output-settings-paste-methods.paste-method.smart",
         "output-settings-paste-methods.paste-method.clipboard",
+        "output-settings-paste-methods.paste-method.clipboard-shift-insert",
+        "output-settings-paste-methods.paste-method.clipboard-ctrl-shift-v",
         "output-settings-paste-methods.paste-method.direct",
         "output-settings-paste-methods.paste-method.script",
         "output-settings-paste-methods.paste-method.none"
       ]
+    },
+    {
+      "id": "output-settings-paste-methods.paste-method.clipboard-shift-insert",
+      "screen_id": "output-settings-paste-methods",
+      "semantic_id": "output-settings-paste-methods.paste-method.clipboard-shift-insert",
+      "test_id": "output-settings-paste-methods-paste-method-clipboard-shift-insert",
+      "role": "button",
+      "text": "Clipboard (Shift+Insert)",
+      "states": [
+        "linux"
+      ],
+      "action": "output-settings-paste-methods.paste-method.clipboard-shift-insert"
+    },
+    {
+      "id": "output-settings-paste-methods.paste-method.clipboard-ctrl-shift-v",
+      "screen_id": "output-settings-paste-methods",
+      "semantic_id": "output-settings-paste-methods.paste-method.clipboard-ctrl-shift-v",
+      "test_id": "output-settings-paste-methods-paste-method-clipboard-ctrl-shift-v",
+      "role": "button",
+      "text": "Clipboard (Ctrl+Shift+V)",
+      "states": [
+        "linux"
+      ],
+      "action": "output-settings-paste-methods.paste-method.clipboard-ctrl-shift-v"
     },
     {
       "id": "output-settings-paste-methods.paste-method.smart",
@@ -5212,8 +6398,12 @@
       "semantic_id": "output-settings-paste-methods.paste-method.direct",
       "test_id": "output-settings-paste-methods-paste-method-direct",
       "role": "button",
-      "text": "Direct typing",
-      "action": "output-settings-paste-methods.paste-method.direct"
+      "text": "Direct",
+      "action": "output-settings-paste-methods.paste-method.direct",
+      "states": [
+        "linux",
+        "windows"
+      ]
     },
     {
       "id": "output-settings-paste-methods.paste-method.script",
@@ -5221,8 +6411,12 @@
       "semantic_id": "output-settings-paste-methods.paste-method.script",
       "test_id": "output-settings-paste-methods-paste-method-script",
       "role": "button",
-      "text": "External script",
-      "action": "output-settings-paste-methods.paste-method.script"
+      "text": "External Script",
+      "action": "output-settings-paste-methods.paste-method.script",
+      "states": [
+        "linux",
+        "windows"
+      ]
     },
     {
       "id": "output-settings-paste-methods.paste-method.none",
@@ -5250,7 +6444,7 @@
       "semantic_id": "output-settings-paste-methods.clipboard.title",
       "test_id": "output-settings-paste-methods-clipboard-title",
       "role": "text",
-      "text": "Clipboard handling"
+      "text": "Clipboard Handling"
     },
     {
       "id": "output-settings-paste-methods.clipboard.select",
@@ -5258,7 +6452,7 @@
       "semantic_id": "output-settings-paste-methods.clipboard.select",
       "test_id": "output-settings-paste-methods-clipboard-select",
       "role": "select",
-      "text": "Don't modify clipboard",
+      "text": "Don't Modify Clipboard",
       "binding": "output.clipboard_handling",
       "action": "output-settings-paste-methods.clipboard.select"
     },
@@ -5304,7 +6498,7 @@
       "semantic_id": "output-settings-unavailable.paste-method.title",
       "test_id": "output-settings-unavailable-paste-method-title",
       "role": "text",
-      "text": "Paste method"
+      "text": "Paste Method"
     },
     {
       "id": "output-settings-unavailable.paste-method.select",
@@ -5333,7 +6527,7 @@
       "semantic_id": "output-settings-unavailable.clipboard.title",
       "test_id": "output-settings-unavailable-clipboard-title",
       "role": "text",
-      "text": "Clipboard handling"
+      "text": "Clipboard Handling"
     },
     {
       "id": "output-settings-unavailable.clipboard.select",
@@ -5341,7 +6535,7 @@
       "semantic_id": "output-settings-unavailable.clipboard.select",
       "test_id": "output-settings-unavailable-clipboard-select",
       "role": "select",
-      "text": "Don't modify clipboard",
+      "text": "Don't Modify Clipboard",
       "binding": "output.clipboard_handling",
       "action": "output-settings-unavailable.clipboard.select"
     },
@@ -5391,8 +6585,17 @@
       "children": [
         "output-settings-unavailable.auto-enter.title",
         "output-settings-unavailable.auto-enter.mode",
-        "output-settings-unavailable.auto-enter.key"
+        "output-settings-unavailable.auto-enter.key",
+        "output-settings-unavailable.auto-enter.note"
       ]
+    },
+    {
+      "id": "output-settings-unavailable.auto-enter.note",
+      "screen_id": "output-settings-unavailable",
+      "semantic_id": "output-settings-unavailable.auto-enter.note",
+      "test_id": "output-settings-unavailable-auto-enter-note",
+      "role": "text",
+      "text": "Replaces Auto Submit. No Enter after a failed or unconfirmed insertion, with paste method None, or when the app lost focus."
     },
     {
       "id": "output-settings-unavailable.auto-enter.title",
@@ -5580,7 +6783,19 @@
       "role": "alert",
       "children": [
         "settings-write-errors.conflict.title",
+        "settings-write-errors.conflict.reload-failed",
         "settings-write-errors.reload"
+      ]
+    },
+    {
+      "id": "settings-write-errors.conflict.reload-failed",
+      "screen_id": "settings-write-errors",
+      "semantic_id": "settings-write-errors.conflict.reload-failed",
+      "test_id": "settings-write-errors-conflict-reload-failed",
+      "role": "text",
+      "text": "The settings could not be reloaded. Try again.",
+      "states": [
+        "reload-failed"
       ]
     },
     {
@@ -5629,7 +6844,7 @@
       "semantic_id": "settings-write-errors.history-limit.title",
       "test_id": "settings-write-errors-history-limit-title",
       "role": "text",
-      "text": "History limit"
+      "text": "History Limit"
     },
     {
       "id": "settings-write-errors.history-limit.input",
@@ -5647,7 +6862,7 @@
       "semantic_id": "settings-write-errors.history-limit.error",
       "test_id": "settings-write-errors-history-limit-error",
       "role": "text",
-      "text": "Enter a whole number from 0 to 10000."
+      "text": "Enter a whole number from 0 to 1000."
     },
     {
       "id": "settings-write-errors.save-failed",
@@ -5665,7 +6880,7 @@
       "semantic_id": "settings-write-errors.save-failed.title",
       "test_id": "settings-write-errors-save-failed-title",
       "role": "text",
-      "text": "Couldn't save settings: the settings file is read-only. Nothing was changed."
+      "text": "Couldn't save settings: the settings file could not be written. Nothing was changed."
     },
     {
       "id": "recovery-bubble",
@@ -5934,10 +7149,35 @@
         "recovery-bubble-insertion-failed.reason",
         "recovery-bubble-insertion-failed.close",
         "recovery-bubble-insertion-failed.preview",
+        "recovery-bubble-insertion-failed.late-read",
         "recovery-bubble-insertion-failed.explanation",
+        "recovery-bubble-insertion-failed.drag-handle",
         "recovery-bubble-insertion-failed.copy",
         "recovery-bubble-insertion-failed.why"
       ]
+    },
+    {
+      "id": "recovery-bubble-insertion-failed.late-read",
+      "screen_id": "recovery-bubble-insertion-failed",
+      "semantic_id": "recovery-bubble-insertion-failed.late-read",
+      "test_id": "recovery-bubble-insertion-failed-late-read",
+      "role": "text",
+      "text": "The application read the clipboard late: the text may have been pasted after all. Check it before copying again.",
+      "states": [
+        "late-read"
+      ]
+    },
+    {
+      "id": "recovery-bubble-insertion-failed.drag-handle",
+      "screen_id": "recovery-bubble-insertion-failed",
+      "semantic_id": "recovery-bubble-insertion-failed.drag-handle",
+      "test_id": "recovery-bubble-insertion-failed-drag-handle",
+      "role": "button",
+      "text": "Drag into a field",
+      "states": [
+        "macos"
+      ],
+      "action": "recovery-bubble-insertion-failed.drag-handle"
     },
     {
       "id": "recovery-bubble-insertion-failed.reason",
@@ -6005,6 +7245,24 @@
       "semantic_id": "handy-reference",
       "test_id": "handy-reference-screen",
       "role": "screen"
+    },
+    {
+      "id": "recording-indicator-hand-over",
+      "screen_id": "recording-indicator-hand-over",
+      "semantic_id": "recording-indicator-hand-over",
+      "test_id": "recording-indicator-hand-over-screen",
+      "role": "screen",
+      "children": [
+        "recording-indicator-hand-over.notice"
+      ]
+    },
+    {
+      "id": "recording-indicator-hand-over.notice",
+      "screen_id": "recording-indicator-hand-over",
+      "semantic_id": "recording-indicator-hand-over.notice",
+      "test_id": "recording-indicator-hand-over-notice",
+      "role": "alert",
+      "text": "Text placed on the clipboard for the remote screen"
     }
   ],
   "guards": [
@@ -6042,6 +7300,34 @@
       "operator": "equals",
       "value": "true",
       "source": "runtime_result"
+    },
+    {
+      "id": "settings-conflict-cleared",
+      "variable": "settings.conflict_pending",
+      "operator": "equals",
+      "value": "false",
+      "source": "runtime_result"
+    },
+    {
+      "id": "recorder-has-keys",
+      "variable": "shortcut_recorder.has_keys",
+      "operator": "equals",
+      "value": "true",
+      "source": "user_input"
+    },
+    {
+      "id": "destination-return-available",
+      "variable": "features.destination_return",
+      "operator": "equals",
+      "value": "true",
+      "source": "session"
+    },
+    {
+      "id": "automatic-enter-available",
+      "variable": "features.automatic_enter",
+      "operator": "equals",
+      "value": "true",
+      "source": "session"
     }
   ],
   "permissions": [],
@@ -6129,12 +7415,11 @@
       "id": "microphone-settings-empty.add",
       "node": "microphone-settings-empty.add",
       "trigger": "change",
-      "kind": "state_change",
-      "event": "change",
-      "binding_ref": {
-        "entity": "microphone_priority",
-        "field": "new_choice",
-        "access": "write"
+      "kind": "navigation",
+      "event": "navigate",
+      "destination": {
+        "screen": "microphone-settings",
+        "state": "default"
       }
     },
     {
@@ -6230,7 +7515,7 @@
       "trigger": "click",
       "kind": "state_change",
       "event": "submit",
-      "guard": "draft-valid",
+      "guard": "settings-conflict-cleared",
       "success_transition": "microphone-settings-error.save.saved"
     },
     {
@@ -6390,10 +7675,12 @@
       "id": "replacement-settings-empty.empty.add",
       "node": "replacement-settings-empty.empty.add",
       "trigger": "click",
-      "kind": "state_change",
-      "event": "submit",
-      "guard": "control-enabled",
-      "success_transition": "replacement-settings-empty.empty.add.adding"
+      "kind": "navigation",
+      "event": "navigate",
+      "destination": {
+        "screen": "replacement-settings",
+        "state": "default"
+      }
     },
     {
       "id": "replacement-settings-empty.empty.paste",
@@ -6519,10 +7806,12 @@
       "id": "replacement-settings-import.dialog.apply",
       "node": "replacement-settings-import.dialog.apply",
       "trigger": "click",
-      "kind": "state_change",
-      "event": "submit",
-      "guard": "draft-valid",
-      "success_transition": "replacement-settings-import.dialog.apply.imported"
+      "kind": "navigation",
+      "event": "navigate",
+      "destination": {
+        "screen": "replacement-settings",
+        "state": "default"
+      }
     },
     {
       "id": "vocabulary-settings.term.remove",
@@ -6592,10 +7881,12 @@
       "id": "vocabulary-settings-paste.apply",
       "node": "vocabulary-settings-paste.apply",
       "trigger": "click",
-      "kind": "state_change",
-      "event": "submit",
-      "guard": "draft-valid",
-      "success_transition": "vocabulary-settings-paste.apply.applied"
+      "kind": "navigation",
+      "event": "navigate",
+      "destination": {
+        "screen": "vocabulary-settings",
+        "state": "default"
+      }
     },
     {
       "id": "vocabulary-settings-unsupported.term.remove",
@@ -6694,7 +7985,7 @@
       "trigger": "click",
       "kind": "state_change",
       "event": "submit",
-      "guard": "control-enabled",
+      "guard": "recorder-has-keys",
       "success_transition": "shortcut-settings.dictation.add.recording"
     },
     {
@@ -6832,7 +8123,7 @@
       "kind": "navigation",
       "event": "navigate",
       "destination": {
-        "screen": "prompt-settings-editor",
+        "screen": "prompt-settings-invalid",
         "state": "default"
       }
     },
@@ -7004,12 +8295,10 @@
       "id": "prompt-settings-invalid.form.fix",
       "node": "prompt-settings-invalid.form.fix",
       "trigger": "click",
-      "kind": "navigation",
-      "event": "navigate",
-      "destination": {
-        "screen": "prompt-settings",
-        "state": "default"
-      }
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "prompt-settings-invalid.form.fix.fix-field-open"
     },
     {
       "id": "prompt-settings-invalid.test.sample",
@@ -7047,10 +8336,12 @@
       "id": "prompt-settings-invalid.save",
       "node": "prompt-settings-invalid.save",
       "trigger": "click",
-      "kind": "state_change",
-      "event": "submit",
-      "guard": "draft-valid",
-      "success_transition": "prompt-settings-invalid.save.saved"
+      "kind": "navigation",
+      "event": "navigate",
+      "destination": {
+        "screen": "prompt-settings-editor",
+        "state": "saved"
+      }
     },
     {
       "id": "recording-indicator.prompt",
@@ -7289,7 +8580,7 @@
       "trigger": "click",
       "kind": "state_change",
       "event": "submit",
-      "guard": "control-enabled",
+      "guard": "destination-return-available",
       "success_transition": "output-settings.return-app.info.details-shown"
     },
     {
@@ -7302,7 +8593,8 @@
         "entity": "output",
         "field": "return_to_app",
         "access": "write"
-      }
+      },
+      "guard": "destination-return-available"
     },
     {
       "id": "output-settings.auto-enter.mode",
@@ -7314,7 +8606,8 @@
         "entity": "output",
         "field": "auto_enter_mode",
         "access": "write"
-      }
+      },
+      "guard": "automatic-enter-available"
     },
     {
       "id": "output-settings.auto-enter.key",
@@ -7326,7 +8619,8 @@
         "entity": "output",
         "field": "auto_enter_key",
         "access": "write"
-      }
+      },
+      "guard": "automatic-enter-available"
     },
     {
       "id": "output-settings.no-field-bubble.toggle",
@@ -7705,6 +8999,294 @@
       "event": "submit",
       "guard": "recovery-bubble-visible",
       "success_transition": "recovery-bubble-insertion-failed.why.explained"
+    },
+    {
+      "id": "replacement-settings-import.unreadable.dismiss",
+      "node": "replacement-settings-import.unreadable.dismiss",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "replacement-settings-import.unreadable.dismiss.refusal-dismissed"
+    },
+    {
+      "id": "replacement-settings.commit-failure.reload",
+      "node": "replacement-settings.commit-failure.reload",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "replacement-settings.commit-failure.reload.reloaded"
+    },
+    {
+      "id": "replacement-settings-bulk.commit-failure.reload",
+      "node": "replacement-settings-bulk.commit-failure.reload",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "replacement-settings-bulk.commit-failure.reload.reloaded"
+    },
+    {
+      "id": "replacement-settings.unsaved.stay",
+      "node": "replacement-settings.unsaved.stay",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "replacement-settings.unsaved.stay.stayed"
+    },
+    {
+      "id": "replacement-settings.unsaved.discard",
+      "node": "replacement-settings.unsaved.discard",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "replacement-settings.unsaved.discard.left"
+    },
+    {
+      "id": "replacement-settings.delete-dialog.cancel",
+      "node": "replacement-settings.delete-dialog.cancel",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "replacement-settings.delete-dialog.cancel.delete-cancelled"
+    },
+    {
+      "id": "replacement-settings.delete-dialog.confirm",
+      "node": "replacement-settings.delete-dialog.confirm",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "replacement-settings.delete-dialog.confirm.rule-removed"
+    },
+    {
+      "id": "shortcut-settings.ai-dictation.reset",
+      "node": "shortcut-settings.ai-dictation.reset",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "shortcut-settings.ai-dictation.reset.reset"
+    },
+    {
+      "id": "shortcut-settings.cancel.recording",
+      "node": "shortcut-settings.cancel.recording",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "shortcut-settings.cancel.recording.activated"
+    },
+    {
+      "id": "shortcut-settings.cancel.reset",
+      "node": "shortcut-settings.cancel.reset",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "shortcut-settings.cancel.reset.reset"
+    },
+    {
+      "id": "shortcut-settings.dictation.recording-discard",
+      "node": "shortcut-settings.dictation.recording-discard",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "shortcut-settings.dictation.recording-discard.recording-discarded"
+    },
+    {
+      "id": "shortcut-settings-conflict.dictation.recording-discard",
+      "node": "shortcut-settings-conflict.dictation.recording-discard",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "shortcut-settings-conflict.dictation.recording-discard.recording-discarded"
+    },
+    {
+      "id": "shortcut-settings-conflict.dictation.os.retry",
+      "node": "shortcut-settings-conflict.dictation.os.retry",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "shortcut-settings-conflict.dictation.os.retry.retried"
+    },
+    {
+      "id": "prompt-settings-editor.form.fix-field",
+      "node": "prompt-settings-editor.form.fix-field",
+      "trigger": "change",
+      "kind": "state_change",
+      "event": "change",
+      "binding_ref": {
+        "entity": "provider_fix",
+        "field": "api_key",
+        "access": "write"
+      }
+    },
+    {
+      "id": "prompt-settings-editor.test.retry",
+      "node": "prompt-settings-editor.test.retry",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "prompt-settings-editor.test.retry.tested"
+    },
+    {
+      "id": "prompt-settings-editor.delete-confirm",
+      "node": "prompt-settings-editor.delete-confirm",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "prompt-settings-editor.delete-confirm.deleted"
+    },
+    {
+      "id": "prompt-settings-editor.reload-retry",
+      "node": "prompt-settings-editor.reload-retry",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "prompt-settings-editor.reload-retry.reloaded"
+    },
+    {
+      "id": "prompt-settings-editor.form.shortcut-recorder",
+      "node": "prompt-settings-editor.form.shortcut-recorder",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "prompt-settings-editor.form.shortcut-recorder.recording"
+    },
+    {
+      "id": "prompt-settings-invalid.form.fix-field",
+      "node": "prompt-settings-invalid.form.fix-field",
+      "trigger": "change",
+      "kind": "state_change",
+      "event": "change",
+      "binding_ref": {
+        "entity": "provider_fix",
+        "field": "api_key",
+        "access": "write"
+      }
+    },
+    {
+      "id": "prompt-settings-invalid.test.retry",
+      "node": "prompt-settings-invalid.test.retry",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "prompt-settings-invalid.test.retry.tested"
+    },
+    {
+      "id": "prompt-settings-invalid.delete-confirm",
+      "node": "prompt-settings-invalid.delete-confirm",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "prompt-settings-invalid.delete-confirm.deleted"
+    },
+    {
+      "id": "prompt-settings-invalid.reload-retry",
+      "node": "prompt-settings-invalid.reload-retry",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "prompt-settings-invalid.reload-retry.reloaded"
+    },
+    {
+      "id": "prompt-settings-invalid.form.shortcut-recorder",
+      "node": "prompt-settings-invalid.form.shortcut-recorder",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "prompt-settings-invalid.form.shortcut-recorder.recording"
+    },
+    {
+      "id": "prompt-settings-invalid.delete",
+      "node": "prompt-settings-invalid.delete",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "prompt-settings-invalid.delete.confirm-delete"
+    },
+    {
+      "id": "prompt-settings-editor.form.fix",
+      "node": "prompt-settings-editor.form.fix",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "prompt-settings-editor.form.fix.fix-field-open"
+    },
+    {
+      "id": "prompt-settings.reload-retry",
+      "node": "prompt-settings.reload-retry",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "prompt-settings.reload-retry.reloaded"
+    },
+    {
+      "id": "recording-indicator-pinned.menu.frontmost-at-end",
+      "node": "recording-indicator-pinned.menu.frontmost-at-end",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "recording-indicator-pinned.menu.frontmost-at-end.destination-cleared"
+    },
+    {
+      "id": "output-settings-paste-methods.paste-method.clipboard-ctrl-shift-v",
+      "node": "output-settings-paste-methods.paste-method.clipboard-ctrl-shift-v",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "output-settings-paste-methods.paste-method.clipboard-ctrl-shift-v.method-chosen"
+    },
+    {
+      "id": "output-settings-paste-methods.paste-method.clipboard-shift-insert",
+      "node": "output-settings-paste-methods.paste-method.clipboard-shift-insert",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "output-settings-paste-methods.paste-method.clipboard-shift-insert.method-chosen"
+    },
+    {
+      "id": "recovery-bubble-insertion-failed.drag-handle",
+      "node": "recovery-bubble-insertion-failed.drag-handle",
+      "trigger": "click",
+      "kind": "state_change",
+      "event": "submit",
+      "guard": "control-enabled",
+      "success_transition": "recovery-bubble-insertion-failed.drag-handle.dragging"
+    },
+    {
+      "id": "output-settings.history-limit.input",
+      "node": "output-settings.history-limit.input",
+      "trigger": "change",
+      "kind": "state_change",
+      "event": "change",
+      "binding_ref": {
+        "entity": "history",
+        "field": "limit",
+        "access": "write"
+      }
     }
   ],
   "flows": [
@@ -8196,27 +9778,6 @@
       }
     },
     {
-      "id": "replacement-settings-empty.empty.add.adding",
-      "flow": "word-replacements",
-      "kind": "state",
-      "from_screen": "replacement-settings-empty",
-      "from_state": "default",
-      "to_screen": "replacement-settings-empty",
-      "to_state": "adding",
-      "trigger": "replacement-settings-empty.empty.add",
-      "action": "replacement-settings-empty.empty.add",
-      "label": "Add rule → adding",
-      "causal": {
-        "version": 1,
-        "action_visibility": "user-visible",
-        "outcome": "adding",
-        "fanout": {
-          "group": "replacement-settings-empty.empty.add",
-          "policy": "exclusive"
-        }
-      }
-    },
-    {
       "id": "replacement-settings-bulk.export.exporting",
       "flow": "word-replacements",
       "kind": "state",
@@ -8259,27 +9820,6 @@
       }
     },
     {
-      "id": "replacement-settings-import.dialog.apply.imported",
-      "flow": "word-replacements",
-      "kind": "state",
-      "from_screen": "replacement-settings-import",
-      "from_state": "default",
-      "to_screen": "replacement-settings-import",
-      "to_state": "imported",
-      "trigger": "replacement-settings-import.dialog.apply",
-      "action": "replacement-settings-import.dialog.apply",
-      "label": "Apply import → imported",
-      "causal": {
-        "version": 1,
-        "action_visibility": "user-visible",
-        "outcome": "imported",
-        "fanout": {
-          "group": "replacement-settings-import.dialog.apply",
-          "policy": "exclusive"
-        }
-      }
-    },
-    {
       "id": "vocabulary-settings.term.remove.term-removed",
       "flow": "recognition-vocabulary",
       "kind": "state",
@@ -8317,27 +9857,6 @@
         "outcome": "term-added",
         "fanout": {
           "group": "vocabulary-settings.add",
-          "policy": "exclusive"
-        }
-      }
-    },
-    {
-      "id": "vocabulary-settings-paste.apply.applied",
-      "flow": "recognition-vocabulary",
-      "kind": "state",
-      "from_screen": "vocabulary-settings-paste",
-      "from_state": "default",
-      "to_screen": "vocabulary-settings-paste",
-      "to_state": "applied",
-      "trigger": "vocabulary-settings-paste.apply",
-      "action": "vocabulary-settings-paste.apply",
-      "label": "Add 3 terms → applied",
-      "causal": {
-        "version": 1,
-        "action_visibility": "user-visible",
-        "outcome": "applied",
-        "fanout": {
-          "group": "vocabulary-settings-paste.apply",
           "policy": "exclusive"
         }
       }
@@ -8491,11 +10010,11 @@
     },
     {
       "id": "shortcut-settings.ai-dictation.shortcut.remove.shortcut-removed",
-      "flow": "multiple-dictation-shortcuts",
+      "flow": "custom-ai-prompts",
       "kind": "state",
-      "from_screen": "shortcut-settings",
+      "from_screen": "prompt-settings",
       "from_state": "default",
-      "to_screen": "shortcut-settings",
+      "to_screen": "prompt-settings",
       "to_state": "shortcut-removed",
       "trigger": "shortcut-settings.ai-dictation.shortcut.remove",
       "action": "shortcut-settings.ai-dictation.shortcut.remove",
@@ -8512,11 +10031,11 @@
     },
     {
       "id": "shortcut-settings.ai-dictation.add.recording",
-      "flow": "multiple-dictation-shortcuts",
+      "flow": "custom-ai-prompts",
       "kind": "state",
-      "from_screen": "shortcut-settings",
+      "from_screen": "prompt-settings",
       "from_state": "default",
-      "to_screen": "shortcut-settings",
+      "to_screen": "prompt-settings",
       "to_state": "recording",
       "trigger": "shortcut-settings.ai-dictation.add",
       "action": "shortcut-settings.ai-dictation.add",
@@ -8779,27 +10298,6 @@
         "outcome": "tested",
         "fanout": {
           "group": "prompt-settings-invalid.test.run",
-          "policy": "exclusive"
-        }
-      }
-    },
-    {
-      "id": "prompt-settings-invalid.save.saved",
-      "flow": "custom-ai-prompts",
-      "kind": "state",
-      "from_screen": "prompt-settings-invalid",
-      "from_state": "default",
-      "to_screen": "prompt-settings-invalid",
-      "to_state": "saved",
-      "trigger": "prompt-settings-invalid.save",
-      "action": "prompt-settings-invalid.save",
-      "label": "Save → saved",
-      "causal": {
-        "version": 1,
-        "action_visibility": "user-visible",
-        "outcome": "saved",
-        "fanout": {
-          "group": "prompt-settings-invalid.save",
           "policy": "exclusive"
         }
       }
@@ -9850,6 +11348,615 @@
         "outcome": "explained",
         "fanout": {
           "group": "recovery-bubble-insertion-failed.why",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "replacement-settings-import.unreadable.dismiss.refusal-dismissed",
+      "flow": "word-replacements",
+      "kind": "state",
+      "from_screen": "replacement-settings-import",
+      "from_state": "default",
+      "to_screen": "replacement-settings-import",
+      "to_state": "refusal-dismissed",
+      "trigger": "replacement-settings-import.unreadable.dismiss",
+      "action": "replacement-settings-import.unreadable.dismiss",
+      "label": "unreadable.dismiss → refusal-dismissed",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "refusal-dismissed",
+        "fanout": {
+          "group": "replacement-settings-import.unreadable.dismiss",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "replacement-settings.commit-failure.reload.reloaded",
+      "flow": "word-replacements",
+      "kind": "state",
+      "from_screen": "replacement-settings",
+      "from_state": "default",
+      "to_screen": "replacement-settings",
+      "to_state": "reloaded",
+      "trigger": "replacement-settings.commit-failure.reload",
+      "action": "replacement-settings.commit-failure.reload",
+      "label": "commit-failure.reload → reloaded",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "reloaded",
+        "fanout": {
+          "group": "replacement-settings.commit-failure.reload",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "replacement-settings-bulk.commit-failure.reload.reloaded",
+      "flow": "word-replacements",
+      "kind": "state",
+      "from_screen": "replacement-settings-bulk",
+      "from_state": "default",
+      "to_screen": "replacement-settings-bulk",
+      "to_state": "reloaded",
+      "trigger": "replacement-settings-bulk.commit-failure.reload",
+      "action": "replacement-settings-bulk.commit-failure.reload",
+      "label": "commit-failure.reload → reloaded",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "reloaded",
+        "fanout": {
+          "group": "replacement-settings-bulk.commit-failure.reload",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "replacement-settings.unsaved.stay.stayed",
+      "flow": "word-replacements",
+      "kind": "state",
+      "from_screen": "replacement-settings",
+      "from_state": "default",
+      "to_screen": "replacement-settings",
+      "to_state": "stayed",
+      "trigger": "replacement-settings.unsaved.stay",
+      "action": "replacement-settings.unsaved.stay",
+      "label": "unsaved.stay → stayed",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "stayed",
+        "fanout": {
+          "group": "replacement-settings.unsaved.stay",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "replacement-settings.unsaved.discard.left",
+      "flow": "word-replacements",
+      "kind": "state",
+      "from_screen": "replacement-settings",
+      "from_state": "default",
+      "to_screen": "replacement-settings",
+      "to_state": "left",
+      "trigger": "replacement-settings.unsaved.discard",
+      "action": "replacement-settings.unsaved.discard",
+      "label": "unsaved.discard → left",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "left",
+        "fanout": {
+          "group": "replacement-settings.unsaved.discard",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "replacement-settings.delete-dialog.cancel.delete-cancelled",
+      "flow": "word-replacements",
+      "kind": "state",
+      "from_screen": "replacement-settings",
+      "from_state": "default",
+      "to_screen": "replacement-settings",
+      "to_state": "delete-cancelled",
+      "trigger": "replacement-settings.delete-dialog.cancel",
+      "action": "replacement-settings.delete-dialog.cancel",
+      "label": "delete-dialog.cancel → delete-cancelled",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "delete-cancelled",
+        "fanout": {
+          "group": "replacement-settings.delete-dialog.cancel",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "replacement-settings.delete-dialog.confirm.rule-removed",
+      "flow": "word-replacements",
+      "kind": "state",
+      "from_screen": "replacement-settings",
+      "from_state": "default",
+      "to_screen": "replacement-settings",
+      "to_state": "rule-removed",
+      "trigger": "replacement-settings.delete-dialog.confirm",
+      "action": "replacement-settings.delete-dialog.confirm",
+      "label": "delete-dialog.confirm → rule-removed",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "rule-removed",
+        "fanout": {
+          "group": "replacement-settings.delete-dialog.confirm",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "shortcut-settings.ai-dictation.reset.reset",
+      "flow": "custom-ai-prompts",
+      "kind": "state",
+      "from_screen": "prompt-settings",
+      "from_state": "default",
+      "to_screen": "prompt-settings",
+      "to_state": "reset",
+      "trigger": "shortcut-settings.ai-dictation.reset",
+      "action": "shortcut-settings.ai-dictation.reset",
+      "label": "ai-dictation.reset → reset",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "reset",
+        "fanout": {
+          "group": "shortcut-settings.ai-dictation.reset",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "shortcut-settings.cancel.recording.activated",
+      "flow": "multiple-dictation-shortcuts",
+      "kind": "state",
+      "from_screen": "shortcut-settings",
+      "from_state": "default",
+      "to_screen": "shortcut-settings",
+      "to_state": "activated",
+      "trigger": "shortcut-settings.cancel.recording",
+      "action": "shortcut-settings.cancel.recording",
+      "label": "cancel.recording → activated",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "activated",
+        "fanout": {
+          "group": "shortcut-settings.cancel.recording",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "shortcut-settings.cancel.reset.reset",
+      "flow": "multiple-dictation-shortcuts",
+      "kind": "state",
+      "from_screen": "shortcut-settings",
+      "from_state": "default",
+      "to_screen": "shortcut-settings",
+      "to_state": "reset",
+      "trigger": "shortcut-settings.cancel.reset",
+      "action": "shortcut-settings.cancel.reset",
+      "label": "cancel.reset → reset",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "reset",
+        "fanout": {
+          "group": "shortcut-settings.cancel.reset",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "shortcut-settings.dictation.recording-discard.recording-discarded",
+      "flow": "multiple-dictation-shortcuts",
+      "kind": "state",
+      "from_screen": "shortcut-settings",
+      "from_state": "default",
+      "to_screen": "shortcut-settings",
+      "to_state": "recording-discarded",
+      "trigger": "shortcut-settings.dictation.recording-discard",
+      "action": "shortcut-settings.dictation.recording-discard",
+      "label": "dictation.recording-discard → recording-discarded",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "recording-discarded",
+        "fanout": {
+          "group": "shortcut-settings.dictation.recording-discard",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "shortcut-settings-conflict.dictation.recording-discard.recording-discarded",
+      "flow": "multiple-dictation-shortcuts",
+      "kind": "state",
+      "from_screen": "shortcut-settings-conflict",
+      "from_state": "default",
+      "to_screen": "shortcut-settings-conflict",
+      "to_state": "recording-discarded",
+      "trigger": "shortcut-settings-conflict.dictation.recording-discard",
+      "action": "shortcut-settings-conflict.dictation.recording-discard",
+      "label": "dictation.recording-discard → recording-discarded",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "recording-discarded",
+        "fanout": {
+          "group": "shortcut-settings-conflict.dictation.recording-discard",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "shortcut-settings-conflict.dictation.os.retry.retried",
+      "flow": "multiple-dictation-shortcuts",
+      "kind": "state",
+      "from_screen": "shortcut-settings-conflict",
+      "from_state": "default",
+      "to_screen": "shortcut-settings-conflict",
+      "to_state": "retried",
+      "trigger": "shortcut-settings-conflict.dictation.os.retry",
+      "action": "shortcut-settings-conflict.dictation.os.retry",
+      "label": "dictation.os.retry → retried",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "retried",
+        "fanout": {
+          "group": "shortcut-settings-conflict.dictation.os.retry",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "prompt-settings-editor.test.retry.tested",
+      "flow": "custom-ai-prompts",
+      "kind": "state",
+      "from_screen": "prompt-settings-editor",
+      "from_state": "default",
+      "to_screen": "prompt-settings-editor",
+      "to_state": "tested",
+      "trigger": "prompt-settings-editor.test.retry",
+      "action": "prompt-settings-editor.test.retry",
+      "label": "test.retry → tested",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "tested",
+        "fanout": {
+          "group": "prompt-settings-editor.test.retry",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "prompt-settings-editor.delete-confirm.deleted",
+      "flow": "custom-ai-prompts",
+      "kind": "state",
+      "from_screen": "prompt-settings-editor",
+      "from_state": "default",
+      "to_screen": "prompt-settings-editor",
+      "to_state": "deleted",
+      "trigger": "prompt-settings-editor.delete-confirm",
+      "action": "prompt-settings-editor.delete-confirm",
+      "label": "delete-confirm → deleted",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "deleted",
+        "fanout": {
+          "group": "prompt-settings-editor.delete-confirm",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "prompt-settings-editor.reload-retry.reloaded",
+      "flow": "custom-ai-prompts",
+      "kind": "state",
+      "from_screen": "prompt-settings-editor",
+      "from_state": "default",
+      "to_screen": "prompt-settings-editor",
+      "to_state": "reloaded",
+      "trigger": "prompt-settings-editor.reload-retry",
+      "action": "prompt-settings-editor.reload-retry",
+      "label": "reload-retry → reloaded",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "reloaded",
+        "fanout": {
+          "group": "prompt-settings-editor.reload-retry",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "prompt-settings-editor.form.shortcut-recorder.recording",
+      "flow": "custom-ai-prompts",
+      "kind": "state",
+      "from_screen": "prompt-settings-editor",
+      "from_state": "default",
+      "to_screen": "prompt-settings-editor",
+      "to_state": "recording",
+      "trigger": "prompt-settings-editor.form.shortcut-recorder",
+      "action": "prompt-settings-editor.form.shortcut-recorder",
+      "label": "form.shortcut-recorder → recording",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "recording",
+        "fanout": {
+          "group": "prompt-settings-editor.form.shortcut-recorder",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "prompt-settings-invalid.test.retry.tested",
+      "flow": "custom-ai-prompts",
+      "kind": "state",
+      "from_screen": "prompt-settings-invalid",
+      "from_state": "default",
+      "to_screen": "prompt-settings-invalid",
+      "to_state": "tested",
+      "trigger": "prompt-settings-invalid.test.retry",
+      "action": "prompt-settings-invalid.test.retry",
+      "label": "test.retry → tested",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "tested",
+        "fanout": {
+          "group": "prompt-settings-invalid.test.retry",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "prompt-settings-invalid.delete-confirm.deleted",
+      "flow": "custom-ai-prompts",
+      "kind": "state",
+      "from_screen": "prompt-settings-invalid",
+      "from_state": "default",
+      "to_screen": "prompt-settings-invalid",
+      "to_state": "deleted",
+      "trigger": "prompt-settings-invalid.delete-confirm",
+      "action": "prompt-settings-invalid.delete-confirm",
+      "label": "delete-confirm → deleted",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "deleted",
+        "fanout": {
+          "group": "prompt-settings-invalid.delete-confirm",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "prompt-settings-invalid.reload-retry.reloaded",
+      "flow": "custom-ai-prompts",
+      "kind": "state",
+      "from_screen": "prompt-settings-invalid",
+      "from_state": "default",
+      "to_screen": "prompt-settings-invalid",
+      "to_state": "reloaded",
+      "trigger": "prompt-settings-invalid.reload-retry",
+      "action": "prompt-settings-invalid.reload-retry",
+      "label": "reload-retry → reloaded",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "reloaded",
+        "fanout": {
+          "group": "prompt-settings-invalid.reload-retry",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "prompt-settings-invalid.form.shortcut-recorder.recording",
+      "flow": "custom-ai-prompts",
+      "kind": "state",
+      "from_screen": "prompt-settings-invalid",
+      "from_state": "default",
+      "to_screen": "prompt-settings-invalid",
+      "to_state": "recording",
+      "trigger": "prompt-settings-invalid.form.shortcut-recorder",
+      "action": "prompt-settings-invalid.form.shortcut-recorder",
+      "label": "form.shortcut-recorder → recording",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "recording",
+        "fanout": {
+          "group": "prompt-settings-invalid.form.shortcut-recorder",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "prompt-settings-invalid.delete.confirm-delete",
+      "flow": "custom-ai-prompts",
+      "kind": "state",
+      "from_screen": "prompt-settings-invalid",
+      "from_state": "default",
+      "to_screen": "prompt-settings-invalid",
+      "to_state": "confirm-delete",
+      "trigger": "prompt-settings-invalid.delete",
+      "action": "prompt-settings-invalid.delete",
+      "label": "delete → confirm-delete",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "confirm-delete",
+        "fanout": {
+          "group": "prompt-settings-invalid.delete",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "prompt-settings-editor.form.fix.fix-field-open",
+      "flow": "custom-ai-prompts",
+      "kind": "state",
+      "from_screen": "prompt-settings-editor",
+      "from_state": "default",
+      "to_screen": "prompt-settings-editor",
+      "to_state": "fix-field-open",
+      "trigger": "prompt-settings-editor.form.fix",
+      "action": "prompt-settings-editor.form.fix",
+      "label": "form.fix → fix-field-open",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "fix-field-open",
+        "fanout": {
+          "group": "prompt-settings-editor.form.fix",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "prompt-settings.reload-retry.reloaded",
+      "flow": "custom-ai-prompts",
+      "kind": "state",
+      "from_screen": "prompt-settings",
+      "from_state": "default",
+      "to_screen": "prompt-settings",
+      "to_state": "reloaded",
+      "trigger": "prompt-settings.reload-retry",
+      "action": "prompt-settings.reload-retry",
+      "label": "reload-retry → reloaded",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "reloaded",
+        "fanout": {
+          "group": "prompt-settings.reload-retry",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "prompt-settings-invalid.form.fix.fix-field-open",
+      "flow": "custom-ai-prompts",
+      "kind": "state",
+      "from_screen": "prompt-settings-invalid",
+      "from_state": "default",
+      "to_screen": "prompt-settings-invalid",
+      "to_state": "fix-field-open",
+      "trigger": "prompt-settings-invalid.form.fix",
+      "action": "prompt-settings-invalid.form.fix",
+      "label": "form.fix → fix-field-open",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "fix-field-open",
+        "fanout": {
+          "group": "prompt-settings-invalid.form.fix",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "recording-indicator-pinned.menu.frontmost-at-end.destination-cleared",
+      "flow": "pin-mode-and-enter-rule",
+      "kind": "state",
+      "from_screen": "recording-indicator-pinned",
+      "from_state": "default",
+      "to_screen": "recording-indicator-pinned",
+      "to_state": "destination-cleared",
+      "trigger": "recording-indicator-pinned.menu.frontmost-at-end",
+      "action": "recording-indicator-pinned.menu.frontmost-at-end",
+      "label": "menu.frontmost-at-end → destination-cleared",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "destination-cleared",
+        "fanout": {
+          "group": "recording-indicator-pinned.menu.frontmost-at-end",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "output-settings-paste-methods.paste-method.clipboard-ctrl-shift-v.method-chosen",
+      "flow": "smart-paste",
+      "kind": "state",
+      "from_screen": "output-settings-paste-methods",
+      "from_state": "default",
+      "to_screen": "output-settings-paste-methods",
+      "to_state": "method-chosen",
+      "trigger": "output-settings-paste-methods.paste-method.clipboard-ctrl-shift-v",
+      "action": "output-settings-paste-methods.paste-method.clipboard-ctrl-shift-v",
+      "label": "paste-method.clipboard-ctrl-shift-v → method-chosen",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "method-chosen",
+        "fanout": {
+          "group": "output-settings-paste-methods.paste-method.clipboard-ctrl-shift-v",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "output-settings-paste-methods.paste-method.clipboard-shift-insert.method-chosen",
+      "flow": "smart-paste",
+      "kind": "state",
+      "from_screen": "output-settings-paste-methods",
+      "from_state": "default",
+      "to_screen": "output-settings-paste-methods",
+      "to_state": "method-chosen",
+      "trigger": "output-settings-paste-methods.paste-method.clipboard-shift-insert",
+      "action": "output-settings-paste-methods.paste-method.clipboard-shift-insert",
+      "label": "paste-method.clipboard-shift-insert → method-chosen",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "method-chosen",
+        "fanout": {
+          "group": "output-settings-paste-methods.paste-method.clipboard-shift-insert",
+          "policy": "exclusive"
+        }
+      }
+    },
+    {
+      "id": "recovery-bubble-insertion-failed.drag-handle.dragging",
+      "flow": "recovery-bubble",
+      "kind": "state",
+      "from_screen": "recovery-bubble-insertion-failed",
+      "from_state": "default",
+      "to_screen": "recovery-bubble-insertion-failed",
+      "to_state": "dragging",
+      "trigger": "recovery-bubble-insertion-failed.drag-handle",
+      "action": "recovery-bubble-insertion-failed.drag-handle",
+      "label": "drag-handle → dragging",
+      "causal": {
+        "version": 1,
+        "action_visibility": "user-visible",
+        "outcome": "dragging",
+        "fanout": {
+          "group": "recovery-bubble-insertion-failed.drag-handle",
           "policy": "exclusive"
         }
       }

@@ -9,14 +9,13 @@ Generator: `penflow.flow-docs/1`
 {
   "actions": [
     {
-      "binding_ref": {
-        "access": "write",
-        "entity": "microphone_priority",
-        "field": "new_choice"
+      "destination": {
+        "screen": "microphone-settings",
+        "state": "default"
       },
-      "event": "change",
+      "event": "navigate",
       "id": "microphone-settings-empty.add",
-      "kind": "state_change",
+      "kind": "navigation",
       "node": "microphone-settings-empty.add",
       "trigger": "change"
     },
@@ -109,7 +108,7 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "event": "submit",
-      "guard": "draft-valid",
+      "guard": "settings-conflict-cleared",
       "id": "microphone-settings-error.save",
       "kind": "state_change",
       "node": "microphone-settings-error.save",
@@ -269,6 +268,24 @@ Generator: `penflow.flow-docs/1`
     {
       "event": "submit",
       "guard": "control-enabled",
+      "id": "output-settings-paste-methods.paste-method.clipboard-ctrl-shift-v",
+      "kind": "state_change",
+      "node": "output-settings-paste-methods.paste-method.clipboard-ctrl-shift-v",
+      "success_transition": "output-settings-paste-methods.paste-method.clipboard-ctrl-shift-v.method-chosen",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "output-settings-paste-methods.paste-method.clipboard-shift-insert",
+      "kind": "state_change",
+      "node": "output-settings-paste-methods.paste-method.clipboard-shift-insert",
+      "success_transition": "output-settings-paste-methods.paste-method.clipboard-shift-insert.method-chosen",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
       "id": "output-settings-paste-methods.paste-method.direct",
       "kind": "state_change",
       "node": "output-settings-paste-methods.paste-method.direct",
@@ -411,6 +428,7 @@ Generator: `penflow.flow-docs/1`
         "field": "auto_enter_key"
       },
       "event": "change",
+      "guard": "automatic-enter-available",
       "id": "output-settings.auto-enter.key",
       "kind": "state_change",
       "node": "output-settings.auto-enter.key",
@@ -423,6 +441,7 @@ Generator: `penflow.flow-docs/1`
         "field": "auto_enter_mode"
       },
       "event": "change",
+      "guard": "automatic-enter-available",
       "id": "output-settings.auto-enter.mode",
       "kind": "state_change",
       "node": "output-settings.auto-enter.mode",
@@ -438,6 +457,18 @@ Generator: `penflow.flow-docs/1`
       "id": "output-settings.clipboard.select",
       "kind": "state_change",
       "node": "output-settings.clipboard.select",
+      "trigger": "change"
+    },
+    {
+      "binding_ref": {
+        "access": "write",
+        "entity": "history",
+        "field": "limit"
+      },
+      "event": "change",
+      "id": "output-settings.history-limit.input",
+      "kind": "state_change",
+      "node": "output-settings.history-limit.input",
       "trigger": "change"
     },
     {
@@ -466,7 +497,7 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "event": "submit",
-      "guard": "control-enabled",
+      "guard": "destination-return-available",
       "id": "output-settings.return-app.info",
       "kind": "state_change",
       "node": "output-settings.return-app.info",
@@ -480,6 +511,7 @@ Generator: `penflow.flow-docs/1`
         "field": "return_to_app"
       },
       "event": "change",
+      "guard": "destination-return-available",
       "id": "output-settings.return-app.toggle",
       "kind": "state_change",
       "node": "output-settings.return-app.toggle",
@@ -508,11 +540,41 @@ Generator: `penflow.flow-docs/1`
     {
       "event": "submit",
       "guard": "control-enabled",
+      "id": "prompt-settings-editor.delete-confirm",
+      "kind": "state_change",
+      "node": "prompt-settings-editor.delete-confirm",
+      "success_transition": "prompt-settings-editor.delete-confirm.deleted",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
       "id": "prompt-settings-editor.form.add-shortcut",
       "kind": "state_change",
       "node": "prompt-settings-editor.form.add-shortcut",
       "success_transition": "prompt-settings-editor.form.add-shortcut.recording",
       "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "prompt-settings-editor.form.fix",
+      "kind": "state_change",
+      "node": "prompt-settings-editor.form.fix",
+      "success_transition": "prompt-settings-editor.form.fix.fix-field-open",
+      "trigger": "click"
+    },
+    {
+      "binding_ref": {
+        "access": "write",
+        "entity": "provider_fix",
+        "field": "api_key"
+      },
+      "event": "change",
+      "id": "prompt-settings-editor.form.fix-field",
+      "kind": "state_change",
+      "node": "prompt-settings-editor.form.fix-field",
+      "trigger": "change"
     },
     {
       "binding_ref": {
@@ -553,6 +615,15 @@ Generator: `penflow.flow-docs/1`
     {
       "event": "submit",
       "guard": "control-enabled",
+      "id": "prompt-settings-editor.form.shortcut-recorder",
+      "kind": "state_change",
+      "node": "prompt-settings-editor.form.shortcut-recorder",
+      "success_transition": "prompt-settings-editor.form.shortcut-recorder.recording",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
       "id": "prompt-settings-editor.form.shortcut.remove",
       "kind": "state_change",
       "node": "prompt-settings-editor.form.shortcut.remove",
@@ -573,11 +644,29 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "event": "submit",
+      "guard": "control-enabled",
+      "id": "prompt-settings-editor.reload-retry",
+      "kind": "state_change",
+      "node": "prompt-settings-editor.reload-retry",
+      "success_transition": "prompt-settings-editor.reload-retry.reloaded",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
       "guard": "draft-valid",
       "id": "prompt-settings-editor.save",
       "kind": "state_change",
       "node": "prompt-settings-editor.save",
       "success_transition": "prompt-settings-editor.save.saved",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "prompt-settings-editor.test.retry",
+      "kind": "state_change",
+      "node": "prompt-settings-editor.test.retry",
+      "success_transition": "prompt-settings-editor.test.retry.tested",
       "trigger": "click"
     },
     {
@@ -613,15 +702,43 @@ Generator: `penflow.flow-docs/1`
       "trigger": "click"
     },
     {
-      "destination": {
-        "screen": "prompt-settings",
-        "state": "default"
-      },
-      "event": "navigate",
-      "id": "prompt-settings-invalid.form.fix",
-      "kind": "navigation",
-      "node": "prompt-settings-invalid.form.fix",
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "prompt-settings-invalid.delete",
+      "kind": "state_change",
+      "node": "prompt-settings-invalid.delete",
+      "success_transition": "prompt-settings-invalid.delete.confirm-delete",
       "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "prompt-settings-invalid.delete-confirm",
+      "kind": "state_change",
+      "node": "prompt-settings-invalid.delete-confirm",
+      "success_transition": "prompt-settings-invalid.delete-confirm.deleted",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "prompt-settings-invalid.form.fix",
+      "kind": "state_change",
+      "node": "prompt-settings-invalid.form.fix",
+      "success_transition": "prompt-settings-invalid.form.fix.fix-field-open",
+      "trigger": "click"
+    },
+    {
+      "binding_ref": {
+        "access": "write",
+        "entity": "provider_fix",
+        "field": "api_key"
+      },
+      "event": "change",
+      "id": "prompt-settings-invalid.form.fix-field",
+      "kind": "state_change",
+      "node": "prompt-settings-invalid.form.fix-field",
+      "trigger": "change"
     },
     {
       "binding_ref": {
@@ -660,6 +777,15 @@ Generator: `penflow.flow-docs/1`
       "trigger": "change"
     },
     {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "prompt-settings-invalid.form.shortcut-recorder",
+      "kind": "state_change",
+      "node": "prompt-settings-invalid.form.shortcut-recorder",
+      "success_transition": "prompt-settings-invalid.form.shortcut-recorder.recording",
+      "trigger": "click"
+    },
+    {
       "binding_ref": {
         "access": "write",
         "entity": "prompt_draft",
@@ -673,11 +799,31 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "event": "submit",
-      "guard": "draft-valid",
-      "id": "prompt-settings-invalid.save",
+      "guard": "control-enabled",
+      "id": "prompt-settings-invalid.reload-retry",
       "kind": "state_change",
+      "node": "prompt-settings-invalid.reload-retry",
+      "success_transition": "prompt-settings-invalid.reload-retry.reloaded",
+      "trigger": "click"
+    },
+    {
+      "destination": {
+        "screen": "prompt-settings-editor",
+        "state": "saved"
+      },
+      "event": "navigate",
+      "id": "prompt-settings-invalid.save",
+      "kind": "navigation",
       "node": "prompt-settings-invalid.save",
-      "success_transition": "prompt-settings-invalid.save.saved",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "prompt-settings-invalid.test.retry",
+      "kind": "state_change",
+      "node": "prompt-settings-invalid.test.retry",
+      "success_transition": "prompt-settings-invalid.test.retry.tested",
       "trigger": "click"
     },
     {
@@ -727,7 +873,7 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "destination": {
-        "screen": "prompt-settings-editor",
+        "screen": "prompt-settings-invalid",
         "state": "default"
       },
       "event": "navigate",
@@ -745,6 +891,15 @@ Generator: `penflow.flow-docs/1`
       "id": "prompt-settings.prompt.edit",
       "kind": "navigation",
       "node": "prompt-settings.prompt.edit",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "prompt-settings.reload-retry",
+      "kind": "state_change",
+      "node": "prompt-settings.reload-retry",
+      "success_transition": "prompt-settings.reload-retry.reloaded",
       "trigger": "click"
     },
     {
@@ -862,6 +1017,15 @@ Generator: `penflow.flow-docs/1`
       "kind": "state_change",
       "node": "recording-indicator-pinned.menu.frontmost",
       "success_transition": "recording-indicator-pinned.menu.frontmost.destination-changed",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "recording-indicator-pinned.menu.frontmost-at-end",
+      "kind": "state_change",
+      "node": "recording-indicator-pinned.menu.frontmost-at-end",
+      "success_transition": "recording-indicator-pinned.menu.frontmost-at-end.destination-cleared",
       "trigger": "click"
     },
     {
@@ -1010,6 +1174,15 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "event": "submit",
+      "guard": "control-enabled",
+      "id": "recovery-bubble-insertion-failed.drag-handle",
+      "kind": "state_change",
+      "node": "recovery-bubble-insertion-failed.drag-handle",
+      "success_transition": "recovery-bubble-insertion-failed.drag-handle.dragging",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
       "guard": "recovery-bubble-visible",
       "id": "recovery-bubble-insertion-failed.why",
       "kind": "state_change",
@@ -1110,6 +1283,15 @@ Generator: `penflow.flow-docs/1`
       "trigger": "click"
     },
     {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "replacement-settings-bulk.commit-failure.reload",
+      "kind": "state_change",
+      "node": "replacement-settings-bulk.commit-failure.reload",
+      "success_transition": "replacement-settings-bulk.commit-failure.reload.reloaded",
+      "trigger": "click"
+    },
+    {
       "binding_ref": {
         "access": "write",
         "entity": "replacement_draft",
@@ -1164,12 +1346,14 @@ Generator: `penflow.flow-docs/1`
       "trigger": "click"
     },
     {
-      "event": "submit",
-      "guard": "control-enabled",
+      "destination": {
+        "screen": "replacement-settings",
+        "state": "default"
+      },
+      "event": "navigate",
       "id": "replacement-settings-empty.empty.add",
-      "kind": "state_change",
+      "kind": "navigation",
       "node": "replacement-settings-empty.empty.add",
-      "success_transition": "replacement-settings-empty.empty.add.adding",
       "trigger": "click"
     },
     {
@@ -1226,12 +1410,14 @@ Generator: `penflow.flow-docs/1`
       "trigger": "click"
     },
     {
-      "event": "submit",
-      "guard": "draft-valid",
+      "destination": {
+        "screen": "replacement-settings",
+        "state": "default"
+      },
+      "event": "navigate",
       "id": "replacement-settings-import.dialog.apply",
-      "kind": "state_change",
+      "kind": "navigation",
       "node": "replacement-settings-import.dialog.apply",
-      "success_transition": "replacement-settings-import.dialog.apply.imported",
       "trigger": "click"
     },
     {
@@ -1272,10 +1458,46 @@ Generator: `penflow.flow-docs/1`
     {
       "event": "submit",
       "guard": "control-enabled",
+      "id": "replacement-settings-import.unreadable.dismiss",
+      "kind": "state_change",
+      "node": "replacement-settings-import.unreadable.dismiss",
+      "success_transition": "replacement-settings-import.unreadable.dismiss.refusal-dismissed",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
       "id": "replacement-settings.add",
       "kind": "state_change",
       "node": "replacement-settings.add",
       "success_transition": "replacement-settings.add.rule-added",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "replacement-settings.commit-failure.reload",
+      "kind": "state_change",
+      "node": "replacement-settings.commit-failure.reload",
+      "success_transition": "replacement-settings.commit-failure.reload.reloaded",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "replacement-settings.delete-dialog.cancel",
+      "kind": "state_change",
+      "node": "replacement-settings.delete-dialog.cancel",
+      "success_transition": "replacement-settings.delete-dialog.cancel.delete-cancelled",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "replacement-settings.delete-dialog.confirm",
+      "kind": "state_change",
+      "node": "replacement-settings.delete-dialog.confirm",
+      "success_transition": "replacement-settings.delete-dialog.confirm.rule-removed",
       "trigger": "click"
     },
     {
@@ -1359,6 +1581,24 @@ Generator: `penflow.flow-docs/1`
       "trigger": "click"
     },
     {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "replacement-settings.unsaved.discard",
+      "kind": "state_change",
+      "node": "replacement-settings.unsaved.discard",
+      "success_transition": "replacement-settings.unsaved.discard.left",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "replacement-settings.unsaved.stay",
+      "kind": "state_change",
+      "node": "replacement-settings.unsaved.stay",
+      "success_transition": "replacement-settings.unsaved.stay.stayed",
+      "trigger": "click"
+    },
+    {
       "destination": {
         "screen": "replacement-settings",
         "state": "default"
@@ -1413,10 +1653,28 @@ Generator: `penflow.flow-docs/1`
     {
       "event": "submit",
       "guard": "control-enabled",
+      "id": "shortcut-settings-conflict.dictation.os.retry",
+      "kind": "state_change",
+      "node": "shortcut-settings-conflict.dictation.os.retry",
+      "success_transition": "shortcut-settings-conflict.dictation.os.retry.retried",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
       "id": "shortcut-settings-conflict.dictation.recording",
       "kind": "state_change",
       "node": "shortcut-settings-conflict.dictation.recording",
       "success_transition": "shortcut-settings-conflict.dictation.recording.activated",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "shortcut-settings-conflict.dictation.recording-discard",
+      "kind": "state_change",
+      "node": "shortcut-settings-conflict.dictation.recording-discard",
+      "success_transition": "shortcut-settings-conflict.dictation.recording-discard.recording-discarded",
       "trigger": "click"
     },
     {
@@ -1470,10 +1728,37 @@ Generator: `penflow.flow-docs/1`
     {
       "event": "submit",
       "guard": "control-enabled",
+      "id": "shortcut-settings.ai-dictation.reset",
+      "kind": "state_change",
+      "node": "shortcut-settings.ai-dictation.reset",
+      "success_transition": "shortcut-settings.ai-dictation.reset.reset",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
       "id": "shortcut-settings.ai-dictation.shortcut.remove",
       "kind": "state_change",
       "node": "shortcut-settings.ai-dictation.shortcut.remove",
       "success_transition": "shortcut-settings.ai-dictation.shortcut.remove.shortcut-removed",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "shortcut-settings.cancel.recording",
+      "kind": "state_change",
+      "node": "shortcut-settings.cancel.recording",
+      "success_transition": "shortcut-settings.cancel.recording.activated",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "shortcut-settings.cancel.reset",
+      "kind": "state_change",
+      "node": "shortcut-settings.cancel.reset",
+      "success_transition": "shortcut-settings.cancel.reset.reset",
       "trigger": "click"
     },
     {
@@ -1487,7 +1772,7 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "event": "submit",
-      "guard": "control-enabled",
+      "guard": "recorder-has-keys",
       "id": "shortcut-settings.dictation.add",
       "kind": "state_change",
       "node": "shortcut-settings.dictation.add",
@@ -1501,6 +1786,15 @@ Generator: `penflow.flow-docs/1`
       "kind": "state_change",
       "node": "shortcut-settings.dictation.recording",
       "success_transition": "shortcut-settings.dictation.recording.activated",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "shortcut-settings.dictation.recording-discard",
+      "kind": "state_change",
+      "node": "shortcut-settings.dictation.recording-discard",
+      "success_transition": "shortcut-settings.dictation.recording-discard.recording-discarded",
       "trigger": "click"
     },
     {
@@ -1554,12 +1848,14 @@ Generator: `penflow.flow-docs/1`
       "trigger": "click"
     },
     {
-      "event": "submit",
-      "guard": "draft-valid",
+      "destination": {
+        "screen": "vocabulary-settings",
+        "state": "default"
+      },
+      "event": "navigate",
       "id": "vocabulary-settings-paste.apply",
-      "kind": "state_change",
+      "kind": "navigation",
       "node": "vocabulary-settings-paste.apply",
-      "success_transition": "vocabulary-settings-paste.apply.applied",
       "trigger": "click"
     },
     {
@@ -1699,6 +1995,21 @@ Generator: `penflow.flow-docs/1`
         },
         {
           "id": "saved"
+        },
+        {
+          "id": "reloaded"
+        },
+        {
+          "id": "stayed"
+        },
+        {
+          "id": "left"
+        },
+        {
+          "id": "delete-cancelled"
+        },
+        {
+          "id": "rule-removed"
         }
       ],
       "surface": "desktop",
@@ -1721,6 +2032,9 @@ Generator: `penflow.flow-docs/1`
         },
         {
           "id": "exporting"
+        },
+        {
+          "id": "reloaded"
         }
       ],
       "surface": "desktop",
@@ -1737,9 +2051,6 @@ Generator: `penflow.flow-docs/1`
       "states": [
         {
           "id": "default"
-        },
-        {
-          "id": "adding"
         },
         {
           "id": "exporting"
@@ -1761,11 +2072,11 @@ Generator: `penflow.flow-docs/1`
           "id": "default"
         },
         {
-          "id": "imported"
+          "id": "refusal-dismissed"
         }
       ],
       "surface": "desktop",
-      "title": "Word replacements — import preview",
+      "title": "Word replacements — import preview (over the list)",
       "viewport": {
         "height": 570,
         "width": 680
@@ -1795,6 +2106,27 @@ Generator: `penflow.flow-docs/1`
       "trigger": "replacement-settings-bulk.apply"
     },
     {
+      "action": "replacement-settings-bulk.commit-failure.reload",
+      "causal": {
+        "action_visibility": "user-visible",
+        "fanout": {
+          "group": "replacement-settings-bulk.commit-failure.reload",
+          "policy": "exclusive"
+        },
+        "outcome": "reloaded",
+        "version": 1
+      },
+      "flow": "word-replacements",
+      "from_screen": "replacement-settings-bulk",
+      "from_state": "default",
+      "id": "replacement-settings-bulk.commit-failure.reload.reloaded",
+      "kind": "state",
+      "label": "commit-failure.reload → reloaded",
+      "to_screen": "replacement-settings-bulk",
+      "to_state": "reloaded",
+      "trigger": "replacement-settings-bulk.commit-failure.reload"
+    },
+    {
       "action": "replacement-settings-bulk.export",
       "causal": {
         "action_visibility": "user-visible",
@@ -1814,27 +2146,6 @@ Generator: `penflow.flow-docs/1`
       "to_screen": "replacement-settings-bulk",
       "to_state": "exporting",
       "trigger": "replacement-settings-bulk.export"
-    },
-    {
-      "action": "replacement-settings-empty.empty.add",
-      "causal": {
-        "action_visibility": "user-visible",
-        "fanout": {
-          "group": "replacement-settings-empty.empty.add",
-          "policy": "exclusive"
-        },
-        "outcome": "adding",
-        "version": 1
-      },
-      "flow": "word-replacements",
-      "from_screen": "replacement-settings-empty",
-      "from_state": "default",
-      "id": "replacement-settings-empty.empty.add.adding",
-      "kind": "state",
-      "label": "Add rule → adding",
-      "to_screen": "replacement-settings-empty",
-      "to_state": "adding",
-      "trigger": "replacement-settings-empty.empty.add"
     },
     {
       "action": "replacement-settings-empty.export",
@@ -1858,25 +2169,25 @@ Generator: `penflow.flow-docs/1`
       "trigger": "replacement-settings-empty.export"
     },
     {
-      "action": "replacement-settings-import.dialog.apply",
+      "action": "replacement-settings-import.unreadable.dismiss",
       "causal": {
         "action_visibility": "user-visible",
         "fanout": {
-          "group": "replacement-settings-import.dialog.apply",
+          "group": "replacement-settings-import.unreadable.dismiss",
           "policy": "exclusive"
         },
-        "outcome": "imported",
+        "outcome": "refusal-dismissed",
         "version": 1
       },
       "flow": "word-replacements",
       "from_screen": "replacement-settings-import",
       "from_state": "default",
-      "id": "replacement-settings-import.dialog.apply.imported",
+      "id": "replacement-settings-import.unreadable.dismiss.refusal-dismissed",
       "kind": "state",
-      "label": "Apply import → imported",
+      "label": "unreadable.dismiss → refusal-dismissed",
       "to_screen": "replacement-settings-import",
-      "to_state": "imported",
-      "trigger": "replacement-settings-import.dialog.apply"
+      "to_state": "refusal-dismissed",
+      "trigger": "replacement-settings-import.unreadable.dismiss"
     },
     {
       "action": "replacement-settings.add",
@@ -1898,6 +2209,69 @@ Generator: `penflow.flow-docs/1`
       "to_screen": "replacement-settings",
       "to_state": "rule-added",
       "trigger": "replacement-settings.add"
+    },
+    {
+      "action": "replacement-settings.commit-failure.reload",
+      "causal": {
+        "action_visibility": "user-visible",
+        "fanout": {
+          "group": "replacement-settings.commit-failure.reload",
+          "policy": "exclusive"
+        },
+        "outcome": "reloaded",
+        "version": 1
+      },
+      "flow": "word-replacements",
+      "from_screen": "replacement-settings",
+      "from_state": "default",
+      "id": "replacement-settings.commit-failure.reload.reloaded",
+      "kind": "state",
+      "label": "commit-failure.reload → reloaded",
+      "to_screen": "replacement-settings",
+      "to_state": "reloaded",
+      "trigger": "replacement-settings.commit-failure.reload"
+    },
+    {
+      "action": "replacement-settings.delete-dialog.cancel",
+      "causal": {
+        "action_visibility": "user-visible",
+        "fanout": {
+          "group": "replacement-settings.delete-dialog.cancel",
+          "policy": "exclusive"
+        },
+        "outcome": "delete-cancelled",
+        "version": 1
+      },
+      "flow": "word-replacements",
+      "from_screen": "replacement-settings",
+      "from_state": "default",
+      "id": "replacement-settings.delete-dialog.cancel.delete-cancelled",
+      "kind": "state",
+      "label": "delete-dialog.cancel → delete-cancelled",
+      "to_screen": "replacement-settings",
+      "to_state": "delete-cancelled",
+      "trigger": "replacement-settings.delete-dialog.cancel"
+    },
+    {
+      "action": "replacement-settings.delete-dialog.confirm",
+      "causal": {
+        "action_visibility": "user-visible",
+        "fanout": {
+          "group": "replacement-settings.delete-dialog.confirm",
+          "policy": "exclusive"
+        },
+        "outcome": "rule-removed",
+        "version": 1
+      },
+      "flow": "word-replacements",
+      "from_screen": "replacement-settings",
+      "from_state": "default",
+      "id": "replacement-settings.delete-dialog.confirm.rule-removed",
+      "kind": "state",
+      "label": "delete-dialog.confirm → rule-removed",
+      "to_screen": "replacement-settings",
+      "to_state": "rule-removed",
+      "trigger": "replacement-settings.delete-dialog.confirm"
     },
     {
       "action": "replacement-settings.discard",
@@ -2003,6 +2377,48 @@ Generator: `penflow.flow-docs/1`
       "to_screen": "replacement-settings",
       "to_state": "saved",
       "trigger": "replacement-settings.save"
+    },
+    {
+      "action": "replacement-settings.unsaved.discard",
+      "causal": {
+        "action_visibility": "user-visible",
+        "fanout": {
+          "group": "replacement-settings.unsaved.discard",
+          "policy": "exclusive"
+        },
+        "outcome": "left",
+        "version": 1
+      },
+      "flow": "word-replacements",
+      "from_screen": "replacement-settings",
+      "from_state": "default",
+      "id": "replacement-settings.unsaved.discard.left",
+      "kind": "state",
+      "label": "unsaved.discard → left",
+      "to_screen": "replacement-settings",
+      "to_state": "left",
+      "trigger": "replacement-settings.unsaved.discard"
+    },
+    {
+      "action": "replacement-settings.unsaved.stay",
+      "causal": {
+        "action_visibility": "user-visible",
+        "fanout": {
+          "group": "replacement-settings.unsaved.stay",
+          "policy": "exclusive"
+        },
+        "outcome": "stayed",
+        "version": 1
+      },
+      "flow": "word-replacements",
+      "from_screen": "replacement-settings",
+      "from_state": "default",
+      "id": "replacement-settings.unsaved.stay.stayed",
+      "kind": "state",
+      "label": "unsaved.stay → stayed",
+      "to_screen": "replacement-settings",
+      "to_state": "stayed",
+      "trigger": "replacement-settings.unsaved.stay"
     }
   ]
 }

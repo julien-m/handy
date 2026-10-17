@@ -105,7 +105,8 @@ Generator: `penflow.flow-docs/1`
       "children": [
         "output-settings-unavailable.auto-enter.title",
         "output-settings-unavailable.auto-enter.mode",
-        "output-settings-unavailable.auto-enter.key"
+        "output-settings-unavailable.auto-enter.key",
+        "output-settings-unavailable.auto-enter.note"
       ],
       "id": "output-settings-unavailable.auto-enter",
       "role": "container",
@@ -134,6 +135,14 @@ Generator: `penflow.flow-docs/1`
       "text": "Only in PIN mode"
     },
     {
+      "id": "output-settings-unavailable.auto-enter.note",
+      "role": "text",
+      "screen_id": "output-settings-unavailable",
+      "semantic_id": "output-settings-unavailable.auto-enter.note",
+      "test_id": "output-settings-unavailable-auto-enter-note",
+      "text": "Replaces Auto Submit. No Enter after a failed or unconfirmed insertion, with paste method None, or when the app lost focus."
+    },
+    {
       "id": "output-settings-unavailable.auto-enter.title",
       "role": "text",
       "screen_id": "output-settings-unavailable",
@@ -160,7 +169,7 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "output-settings-unavailable",
       "semantic_id": "output-settings-unavailable.clipboard.select",
       "test_id": "output-settings-unavailable-clipboard-select",
-      "text": "Don't modify clipboard"
+      "text": "Don't Modify Clipboard"
     },
     {
       "id": "output-settings-unavailable.clipboard.title",
@@ -168,7 +177,7 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "output-settings-unavailable",
       "semantic_id": "output-settings-unavailable.clipboard.title",
       "test_id": "output-settings-unavailable-clipboard-title",
-      "text": "Clipboard handling"
+      "text": "Clipboard Handling"
     },
     {
       "children": [
@@ -240,7 +249,7 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "output-settings-unavailable",
       "semantic_id": "output-settings-unavailable.paste-method.title",
       "test_id": "output-settings-unavailable-paste-method-title",
-      "text": "Paste method"
+      "text": "Paste Method"
     },
     {
       "children": [

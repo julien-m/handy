@@ -23,19 +23,19 @@ Generator: `penflow.flow-docs/1`
     {
       "event": "submit",
       "guard": "control-enabled",
-      "id": "shortcut-settings.ai-dictation.add",
+      "id": "shortcut-settings.cancel.recording",
       "kind": "state_change",
-      "node": "shortcut-settings.ai-dictation.add",
-      "success_transition": "shortcut-settings.ai-dictation.add.recording",
+      "node": "shortcut-settings.cancel.recording",
+      "success_transition": "shortcut-settings.cancel.recording.activated",
       "trigger": "click"
     },
     {
       "event": "submit",
       "guard": "control-enabled",
-      "id": "shortcut-settings.ai-dictation.shortcut.remove",
+      "id": "shortcut-settings.cancel.reset",
       "kind": "state_change",
-      "node": "shortcut-settings.ai-dictation.shortcut.remove",
-      "success_transition": "shortcut-settings.ai-dictation.shortcut.remove.shortcut-removed",
+      "node": "shortcut-settings.cancel.reset",
+      "success_transition": "shortcut-settings.cancel.reset.reset",
       "trigger": "click"
     },
     {
@@ -49,7 +49,7 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "event": "submit",
-      "guard": "control-enabled",
+      "guard": "recorder-has-keys",
       "id": "shortcut-settings.dictation.add",
       "kind": "state_change",
       "node": "shortcut-settings.dictation.add",
@@ -63,6 +63,15 @@ Generator: `penflow.flow-docs/1`
       "kind": "state_change",
       "node": "shortcut-settings.dictation.recording",
       "success_transition": "shortcut-settings.dictation.recording.activated",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "shortcut-settings.dictation.recording-discard",
+      "kind": "state_change",
+      "node": "shortcut-settings.dictation.recording-discard",
+      "success_transition": "shortcut-settings.dictation.recording-discard.recording-discarded",
       "trigger": "click"
     },
     {
@@ -122,91 +131,56 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "shortcut-settings",
       "semantic_id": "shortcut-settings.activation.title",
       "test_id": "shortcut-settings-activation-title",
-      "text": "Activation mode"
-    },
-    {
-      "children": [
-        "shortcut-settings.ai-dictation.title",
-        "shortcut-settings.ai-dictation.list",
-        "shortcut-settings.ai-dictation.last",
-        "shortcut-settings.ai-dictation.add"
-      ],
-      "id": "shortcut-settings.ai-dictation",
-      "role": "container",
-      "screen_id": "shortcut-settings",
-      "semantic_id": "shortcut-settings.ai-dictation",
-      "test_id": "shortcut-settings-ai-dictation"
-    },
-    {
-      "action": "shortcut-settings.ai-dictation.add",
-      "id": "shortcut-settings.ai-dictation.add",
-      "role": "button",
-      "screen_id": "shortcut-settings",
-      "semantic_id": "shortcut-settings.ai-dictation.add",
-      "test_id": "shortcut-settings-ai-dictation-add",
-      "text": "Add shortcut"
-    },
-    {
-      "id": "shortcut-settings.ai-dictation.last",
-      "role": "text",
-      "screen_id": "shortcut-settings",
-      "semantic_id": "shortcut-settings.ai-dictation.last",
-      "test_id": "shortcut-settings-ai-dictation-last",
-      "text": "Each action keeps at least one shortcut. Change or reset it instead."
-    },
-    {
-      "children": [
-        "shortcut-settings.ai-dictation.shortcut"
-      ],
-      "id": "shortcut-settings.ai-dictation.list",
-      "repeat_model": {
-        "collection": "shortcuts.ai_dictation",
-        "instance_id_template": "shortcut-{keys}",
-        "item_key": "keys",
-        "item_model": "shortcut_binding"
-      },
-      "role": "list",
-      "screen_id": "shortcut-settings",
-      "semantic_id": "shortcut-settings.ai-dictation.list",
-      "test_id": "shortcut-settings-ai-dictation-list"
-    },
-    {
-      "children": [
-        "shortcut-settings.ai-dictation.shortcut.remove"
-      ],
-      "id": "shortcut-settings.ai-dictation.shortcut",
-      "role": "text",
-      "screen_id": "shortcut-settings",
-      "semantic_id": "shortcut-settings.ai-dictation.shortcut",
-      "test_id": "shortcut-settings-ai-dictation-shortcut",
-      "text": "⌥ ⇧ Space"
-    },
-    {
-      "action": "shortcut-settings.ai-dictation.shortcut.remove",
-      "id": "shortcut-settings.ai-dictation.shortcut.remove",
-      "role": "button",
-      "screen_id": "shortcut-settings",
-      "semantic_id": "shortcut-settings.ai-dictation.shortcut.remove",
-      "test_id": "shortcut-settings-ai-dictation-shortcut-remove"
-    },
-    {
-      "id": "shortcut-settings.ai-dictation.title",
-      "role": "text",
-      "screen_id": "shortcut-settings",
-      "semantic_id": "shortcut-settings.ai-dictation.title",
-      "test_id": "shortcut-settings-ai-dictation-title",
-      "text": "Dictation with AI processing"
+      "text": "Shortcut Behavior"
     },
     {
       "children": [
         "shortcut-settings.cancel.title",
-        "shortcut-settings.cancel.shortcut"
+        "shortcut-settings.cancel.list",
+        "shortcut-settings.cancel.recording",
+        "shortcut-settings.cancel.reset"
       ],
       "id": "shortcut-settings.cancel",
       "role": "container",
       "screen_id": "shortcut-settings",
       "semantic_id": "shortcut-settings.cancel",
       "test_id": "shortcut-settings-cancel"
+    },
+    {
+      "children": [
+        "shortcut-settings.cancel.shortcut"
+      ],
+      "id": "shortcut-settings.cancel.list",
+      "repeat_model": {
+        "collection": "shortcuts.cancel",
+        "instance_id_template": "shortcut-{keys}",
+        "item_key": "keys",
+        "item_model": "shortcut_binding"
+      },
+      "role": "list",
+      "screen_id": "shortcut-settings",
+      "semantic_id": "shortcut-settings.cancel.list",
+      "test_id": "shortcut-settings-cancel-list"
+    },
+    {
+      "action": "shortcut-settings.cancel.recording",
+      "id": "shortcut-settings.cancel.recording",
+      "role": "button",
+      "screen_id": "shortcut-settings",
+      "semantic_id": "shortcut-settings.cancel.recording",
+      "states": [
+        "recording"
+      ],
+      "test_id": "shortcut-settings-cancel-recording",
+      "text": "Press keys…"
+    },
+    {
+      "action": "shortcut-settings.cancel.reset",
+      "id": "shortcut-settings.cancel.reset",
+      "role": "button",
+      "screen_id": "shortcut-settings",
+      "semantic_id": "shortcut-settings.cancel.reset",
+      "test_id": "shortcut-settings-cancel-reset"
     },
     {
       "action": "shortcut-settings.cancel.shortcut",
@@ -223,15 +197,18 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "shortcut-settings",
       "semantic_id": "shortcut-settings.cancel.title",
       "test_id": "shortcut-settings-cancel-title",
-      "text": "Cancel"
+      "text": "Cancel Shortcut"
     },
     {
       "children": [
         "shortcut-settings.dictation.title",
         "shortcut-settings.dictation.list",
         "shortcut-settings.dictation.recording",
+        "shortcut-settings.dictation.recording-discard",
         "shortcut-settings.dictation.add",
-        "shortcut-settings.dictation.reset"
+        "shortcut-settings.dictation.reset",
+        "shortcut-settings.dictation.last",
+        "shortcut-settings.dictation.conflicts-unavailable"
       ],
       "id": "shortcut-settings.dictation",
       "role": "container",
@@ -249,8 +226,32 @@ Generator: `penflow.flow-docs/1`
       "text": "Add shortcut"
     },
     {
+      "id": "shortcut-settings.dictation.conflicts-unavailable",
+      "role": "text",
+      "screen_id": "shortcut-settings",
+      "semantic_id": "shortcut-settings.dictation.conflicts-unavailable",
+      "states": [
+        "conflicts-unavailable"
+      ],
+      "test_id": "shortcut-settings-dictation-conflicts-unavailable",
+      "text": "Shortcut conflicts could not be checked"
+    },
+    {
+      "id": "shortcut-settings.dictation.last",
+      "role": "text",
+      "screen_id": "shortcut-settings",
+      "semantic_id": "shortcut-settings.dictation.last",
+      "states": [
+        "last-shortcut"
+      ],
+      "test_id": "shortcut-settings-dictation-last",
+      "text": "Each action keeps at least one shortcut. Change or reset it instead."
+    },
+    {
       "children": [
-        "shortcut-settings.dictation.shortcut"
+        "shortcut-settings.dictation.shortcut",
+        "shortcut-settings.dictation.shortcut-refused",
+        "shortcut-settings.dictation.shortcut-conflict"
       ],
       "id": "shortcut-settings.dictation.list",
       "repeat_model": {
@@ -274,6 +275,17 @@ Generator: `penflow.flow-docs/1`
       "text": "Press keys…"
     },
     {
+      "action": "shortcut-settings.dictation.recording-discard",
+      "id": "shortcut-settings.dictation.recording-discard",
+      "role": "button",
+      "screen_id": "shortcut-settings",
+      "semantic_id": "shortcut-settings.dictation.recording-discard",
+      "states": [
+        "recording"
+      ],
+      "test_id": "shortcut-settings-dictation-recording-discard"
+    },
+    {
       "action": "shortcut-settings.dictation.reset",
       "id": "shortcut-settings.dictation.reset",
       "role": "button",
@@ -294,6 +306,26 @@ Generator: `penflow.flow-docs/1`
       "text": "⌥ Space"
     },
     {
+      "id": "shortcut-settings.dictation.shortcut-conflict",
+      "role": "icon",
+      "screen_id": "shortcut-settings",
+      "semantic_id": "shortcut-settings.dictation.shortcut-conflict",
+      "states": [
+        "conflict"
+      ],
+      "test_id": "shortcut-settings-dictation-shortcut-conflict"
+    },
+    {
+      "id": "shortcut-settings.dictation.shortcut-refused",
+      "role": "icon",
+      "screen_id": "shortcut-settings",
+      "semantic_id": "shortcut-settings.dictation.shortcut-refused",
+      "states": [
+        "refused"
+      ],
+      "test_id": "shortcut-settings-dictation-shortcut-refused"
+    },
+    {
       "action": "shortcut-settings.dictation.shortcut.remove",
       "id": "shortcut-settings.dictation.shortcut.remove",
       "role": "button",
@@ -307,12 +339,11 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "shortcut-settings",
       "semantic_id": "shortcut-settings.dictation.title",
       "test_id": "shortcut-settings-dictation-title",
-      "text": "Dictation"
+      "text": "Transcribe Shortcut"
     },
     {
       "children": [
         "shortcut-settings.dictation",
-        "shortcut-settings.ai-dictation",
         "shortcut-settings.activation",
         "shortcut-settings.cancel"
       ],
@@ -344,6 +375,9 @@ Generator: `penflow.flow-docs/1`
       },
       {
         "id": "shortcut-removed"
+      },
+      {
+        "id": "recording-discarded"
       }
     ],
     "surface": "desktop",

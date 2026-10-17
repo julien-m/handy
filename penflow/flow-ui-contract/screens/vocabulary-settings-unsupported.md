@@ -71,20 +71,61 @@ Generator: `penflow.flow-docs/1`
       "text": "Add"
     },
     {
+      "id": "vocabulary-settings-unsupported.count",
+      "role": "text",
+      "screen_id": "vocabulary-settings-unsupported",
+      "semantic_id": "vocabulary-settings-unsupported.count",
+      "test_id": "vocabulary-settings-unsupported-count",
+      "text": "3 of 500 terms"
+    },
+    {
+      "id": "vocabulary-settings-unsupported.error",
+      "role": "alert",
+      "screen_id": "vocabulary-settings-unsupported",
+      "semantic_id": "vocabulary-settings-unsupported.error",
+      "states": [
+        "error"
+      ],
+      "test_id": "vocabulary-settings-unsupported-error",
+      "text": "The vocabulary changed in the meantime and was reloaded. Try again."
+    },
+    {
       "children": [
         "vocabulary-settings-unsupported.term"
       ],
       "id": "vocabulary-settings-unsupported.list",
       "repeat_model": {
         "collection": "vocabulary.terms",
-        "instance_id_template": "term-{key}",
-        "item_key": "key",
+        "instance_id_template": "term-{index}",
+        "item_key": "index",
         "item_model": "vocabulary_term"
       },
       "role": "list",
       "screen_id": "vocabulary-settings-unsupported",
       "semantic_id": "vocabulary-settings-unsupported.list",
       "test_id": "vocabulary-settings-unsupported-list"
+    },
+    {
+      "id": "vocabulary-settings-unsupported.list-error",
+      "role": "alert",
+      "screen_id": "vocabulary-settings-unsupported",
+      "semantic_id": "vocabulary-settings-unsupported.list-error",
+      "states": [
+        "list-error"
+      ],
+      "test_id": "vocabulary-settings-unsupported-list-error",
+      "text": "Couldn't read the saved vocabulary. Nothing was changed; retry to load it."
+    },
+    {
+      "id": "vocabulary-settings-unsupported.loading",
+      "role": "text",
+      "screen_id": "vocabulary-settings-unsupported",
+      "semantic_id": "vocabulary-settings-unsupported.loading",
+      "states": [
+        "loading"
+      ],
+      "test_id": "vocabulary-settings-unsupported-loading",
+      "text": "Loading the vocabulary…"
     },
     {
       "action": "vocabulary-settings-unsupported.new-term",
@@ -110,7 +151,7 @@ Generator: `penflow.flow-docs/1`
         "vocabulary-settings-unsupported.status.title"
       ],
       "id": "vocabulary-settings-unsupported.status",
-      "role": "alert",
+      "role": "container",
       "screen_id": "vocabulary-settings-unsupported",
       "semantic_id": "vocabulary-settings-unsupported.status",
       "test_id": "vocabulary-settings-unsupported-status"
@@ -149,7 +190,11 @@ Generator: `penflow.flow-docs/1`
         "vocabulary-settings-unsupported.list",
         "vocabulary-settings-unsupported.new-term",
         "vocabulary-settings-unsupported.add",
-        "vocabulary-settings-unsupported.paste"
+        "vocabulary-settings-unsupported.paste",
+        "vocabulary-settings-unsupported.loading",
+        "vocabulary-settings-unsupported.list-error",
+        "vocabulary-settings-unsupported.error",
+        "vocabulary-settings-unsupported.count"
       ],
       "id": "vocabulary-settings-unsupported.terms",
       "role": "container",
@@ -191,6 +236,15 @@ Generator: `penflow.flow-docs/1`
       },
       {
         "id": "term-removed"
+      },
+      {
+        "id": "loading"
+      },
+      {
+        "id": "list-error"
+      },
+      {
+        "id": "error"
       }
     ],
     "surface": "desktop",

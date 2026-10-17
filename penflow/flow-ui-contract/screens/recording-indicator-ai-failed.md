@@ -25,7 +25,7 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "recording-indicator-ai-failed",
       "semantic_id": "recording-indicator-ai-failed.notice",
       "test_id": "recording-indicator-ai-failed-notice",
-      "text": "The AI step failed. The original text was used for insertion."
+      "text": "AI processing failed. The original text was used."
     }
   ],
   "relations": [],

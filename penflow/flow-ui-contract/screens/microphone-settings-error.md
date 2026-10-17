@@ -76,7 +76,7 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "event": "submit",
-      "guard": "draft-valid",
+      "guard": "settings-conflict-cleared",
       "id": "microphone-settings-error.save",
       "kind": "state_change",
       "node": "microphone-settings-error.save",
@@ -114,6 +114,17 @@ Generator: `penflow.flow-docs/1`
       "semantic_id": "microphone-settings-error.add-error",
       "test_id": "microphone-settings-error-add-error",
       "text": "USB headset is already in the list."
+    },
+    {
+      "id": "microphone-settings-error.checked",
+      "role": "text",
+      "screen_id": "microphone-settings-error",
+      "semantic_id": "microphone-settings-error.checked",
+      "states": [
+        "checked"
+      ],
+      "test_id": "microphone-settings-error-checked",
+      "text": "Checked 3 s ago"
     },
     {
       "children": [
@@ -203,7 +214,8 @@ Generator: `penflow.flow-docs/1`
       "role": "alert",
       "screen_id": "microphone-settings-error",
       "semantic_id": "microphone-settings-error.conflict",
-      "test_id": "microphone-settings-error-conflict"
+      "test_id": "microphone-settings-error-conflict",
+      "text": "The order changed elsewhere. Reload to see it; your edits will be discarded."
     },
     {
       "id": "microphone-settings-error.conflict.title",
@@ -249,7 +261,8 @@ Generator: `penflow.flow-docs/1`
         "microphone-settings-error.refresh-error",
         "microphone-settings-error.retry",
         "microphone-settings-error.add",
-        "microphone-settings-error.add-error"
+        "microphone-settings-error.add-error",
+        "microphone-settings-error.checked"
       ],
       "id": "microphone-settings-error.priority",
       "role": "container",
