@@ -314,7 +314,7 @@
         },
         "conflict": {
           "title": "La configuración cambió en otro lugar",
-          "body": "Tus cambios se conservan. Recargar muestra el orden guardado y descarta tus cambios.",
+          "body": "El orden cambió en otro lugar. Recarga para verlo; tus cambios se descartarán.",
           "reload": "Recargar"
         },
         "errors": {

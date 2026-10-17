@@ -47,6 +47,13 @@ export const MACBOOK = "MacBook Pro Microphone";
 export const STUDIO = "Studio Display Microphone";
 export const ORIGINAL = [USB, MACBOOK, STUDIO];
 
+/**
+ * Test id `suffix` under whichever contract screen is shown: the base screen, `-empty` or
+ * `-error`. Each test id carries the prefix of the screen shown, so it is unique in the tree.
+ */
+export const anyScreen = (suffix: string): RegExp =>
+  new RegExp(`^microphone-settings(-empty|-error)?-${suffix}$`);
+
 /** Open the harness and wait for the editor. */
 export const open = async (page: Page, query = ""): Promise<void> => {
   await page.goto(`${HARNESS}${query}`);
@@ -59,12 +66,12 @@ export const row = (page: Page, name: string): Locator =>
 
 /** One control (`move-up`, `move-down`, `remove`, ...) of the row of `name`. */
 export const control = (page: Page, name: string, id: string): Locator =>
-  row(page, name).getByTestId(`microphone-settings-choice-${id}`);
+  row(page, name).getByTestId(anyScreen(`choice-${id}`));
 
 /** The order shown in the list. */
 export const order = (page: Page): Promise<string[]> =>
   page
-    .getByTestId("microphone-settings-choice")
+    .getByTestId(anyScreen("choice"))
     .evaluateAll((rows) =>
       rows.map((item) => item.getAttribute("data-name") ?? ""),
     );
@@ -100,7 +107,7 @@ export const editFromKeyboard = async (page: Page): Promise<void> => {
 
 /** Hold the next write, then press Enter on a focused Save: Save is busy and keeps focus. */
 export const startHeldSave = async (page: Page): Promise<Locator> => {
-  const save = page.getByTestId("microphone-settings-save");
+  const save = page.getByTestId(anyScreen("save"));
   await page.evaluate(() => window.harness.holdSave());
   await save.focus();
   await page.keyboard.press("Enter");

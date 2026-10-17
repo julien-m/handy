@@ -314,7 +314,7 @@
         },
         "conflict": {
           "title": "La configuració s'ha canviat en un altre lloc",
-          "body": "Les vostres edicions es conserven. Torna a carregar mostra l'ordre desat i descarta les vostres edicions.",
+          "body": "L'ordre s'ha canviat en un altre lloc. Torneu a carregar per veure'l; les vostres edicions es descartaran.",
           "reload": "Torna a carregar"
         },
         "errors": {

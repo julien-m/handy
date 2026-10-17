@@ -314,7 +314,7 @@
         },
         "conflict": {
           "title": "Ayarlar başka bir yerde değiştirildi",
-          "body": "Düzenlemeleriniz korunuyor. Yeniden yükle, kayıtlı sırayı gösterir ve düzenlemelerinizi atar.",
+          "body": "Sıra başka bir yerde değiştirildi. Görmek için yeniden yükleyin; düzenlemeleriniz atılacak.",
           "reload": "Yeniden yükle"
         },
         "errors": {

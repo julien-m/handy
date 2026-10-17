@@ -11,6 +11,7 @@ import {
   type SavePhase,
   type TranslatedMessage,
 } from "./draft-state";
+import { useMicrophoneScreen } from "./screen-id";
 
 /** Props of the conflict banner. */
 export interface ConflictAlertProps {
@@ -38,6 +39,7 @@ const INACTIVE_CLASSES =
 /** Reload of the conflict banner; inactive (still focusable) while a write is in flight. */
 const ReloadButton: React.FC<Omit<ConflictAlertProps, "visible">> = (props) => {
   const { t } = useTranslation();
+  const screen = useMicrophoneScreen();
   return (
     <Button
       variant="warning"
@@ -46,7 +48,7 @@ const ReloadButton: React.FC<Omit<ConflictAlertProps, "visible">> = (props) => {
         if (!props.busy) props.onReload();
       }}
       aria-disabled={props.busy}
-      data-testid="microphone-settings-error-reload"
+      data-testid={`${screen}-reload`}
     >
       {t(`${PRIORITY_KEY_ROOT}.conflict.reload`)}
     </Button>
@@ -56,19 +58,17 @@ const ReloadButton: React.FC<Omit<ConflictAlertProps, "visible">> = (props) => {
 /** The committed order changed elsewhere: the draft is kept, and Save is inactive, until Reload or Discard. */
 export const ConflictAlert: React.FC<ConflictAlertProps> = (props) => {
   const { t } = useTranslation();
+  const screen = useMicrophoneScreen();
   if (!props.visible) return null;
   return (
     <div
       role="alert"
       className="flex items-start gap-3 p-4 rounded-lg bg-yellow-500/10"
-      data-testid="microphone-settings-error-conflict"
+      data-testid={`${screen}-conflict`}
     >
       <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5 text-yellow-500" />
       <div className="flex-1 text-sm text-yellow-400">
-        <p
-          className="font-medium"
-          data-testid="microphone-settings-error-conflict-title"
-        >
+        <p className="font-medium" data-testid={`${screen}-conflict-title`}>
           {t(`${PRIORITY_KEY_ROOT}.conflict.title`)}
         </p>
         <p>{t(`${PRIORITY_KEY_ROOT}.conflict.body`)}</p>
@@ -93,6 +93,7 @@ const saveControl = (props: DraftBarProps) => {
 /** Discard and Save; Save is busy (and cannot dispatch again) while a write is in flight. */
 const DraftActions: React.FC<DraftBarProps> = (props) => {
   const { t } = useTranslation();
+  const screen = useMicrophoneScreen();
   const save = saveControl(props);
   const saving = props.phase === "saving";
   return (
@@ -101,7 +102,7 @@ const DraftActions: React.FC<DraftBarProps> = (props) => {
         variant="secondary"
         onClick={props.onDiscard}
         disabled={saving}
-        data-testid="microphone-settings-discard"
+        data-testid={`${screen}-discard`}
       >
         {t(`${PRIORITY_KEY_ROOT}.draft.discard`)}
       </Button>
@@ -114,7 +115,7 @@ const DraftActions: React.FC<DraftBarProps> = (props) => {
         aria-disabled={!props.saveEnabled}
         aria-busy={saving}
         data-state={save.state}
-        data-testid="microphone-settings-save"
+        data-testid={`${screen}-save`}
       >
         {t(`${PRIORITY_KEY_ROOT}.${save.label}`)}
       </Button>
@@ -125,17 +126,18 @@ const DraftActions: React.FC<DraftBarProps> = (props) => {
 /** Unsaved changes: the next recording keeps the saved order until Save succeeds. */
 export const DraftBar: React.FC<DraftBarProps> = (props) => {
   const { t } = useTranslation();
+  const screen = useMicrophoneScreen();
   if (!props.visible) return null;
   return (
     <div
       className="flex items-center justify-between gap-3 px-4 py-3 bg-background border border-mid-gray/20 rounded-lg"
-      data-testid="microphone-settings-draft"
+      data-testid={`${screen}-draft`}
       data-state={props.phase === "failed" ? "error" : props.phase}
     >
       <p
         role={props.error ? "alert" : undefined}
         className={`text-sm ${props.error ? "text-red-400" : "text-mid-gray"}`}
-        data-testid="microphone-settings-draft-note"
+        data-testid={`${screen}-draft-note`}
       >
         {props.error
           ? t(props.error.key, props.error.params)

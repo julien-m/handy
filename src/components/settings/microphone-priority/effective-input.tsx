@@ -11,6 +11,7 @@ import {
   type StatusView,
 } from "./availability";
 import { PRIORITY_KEY_ROOT } from "./draft-state";
+import { useMicrophoneScreen } from "./screen-id";
 
 /** Props of the In use now row. */
 export interface EffectiveInputProps {
@@ -21,13 +22,14 @@ export interface EffectiveInputProps {
 /** Reason pill: in use now, or the last recording's reason labelled as such. */
 const ReasonPill: React.FC<{ view: EffectiveView }> = ({ view }) => {
   const { t } = useTranslation();
+  const screen = useMicrophoneScreen();
   if (view.reason === null) return null;
   const reason = t(view.reason.key, view.reason.params);
   const text = view.current
     ? reason
     : t(`${PRIORITY_KEY_ROOT}.inUse.lastRecording`, { reason });
   return (
-    <span data-testid="microphone-settings-in-use-reason">
+    <span data-testid={`${screen}-in-use-reason`}>
       <Badge variant={view.current ? "info" : "secondary"}>{text}</Badge>
     </span>
   );
@@ -37,6 +39,7 @@ const ReasonPill: React.FC<{ view: EffectiveView }> = ({ view }) => {
 export const EffectiveInputRow: React.FC<EffectiveInputProps> = (props) => {
   const { t } = useTranslation();
   const view = describeEffective(props.view);
+  const screen = useMicrophoneScreen();
   const muted = view.name === null && view.reason === null;
   return (
     <SettingContainer
@@ -44,13 +47,13 @@ export const EffectiveInputRow: React.FC<EffectiveInputProps> = (props) => {
       description={t(`${PRIORITY_KEY_ROOT}.inUse.description`)}
       descriptionMode="tooltip"
       grouped={true}
-      testId="microphone-settings-in-use"
-      titleTestId="microphone-settings-in-use-title"
+      testId={`${screen}-in-use`}
+      titleTestId={`${screen}-in-use-title`}
     >
       <div className="flex flex-col items-end gap-1 text-end">
         <span
           className={`text-sm ${muted ? "text-mid-gray" : ""}`}
-          data-testid="microphone-settings-in-use-device"
+          data-testid={`${screen}-in-use-device`}
         >
           {view.name ?? (view.label ? t(view.label.key) : "")}
         </span>

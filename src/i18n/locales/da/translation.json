@@ -314,7 +314,7 @@
         },
         "conflict": {
           "title": "Indstillingerne blev ændret et andet sted",
-          "body": "Dine ændringer bevares. Genindlæs viser den gemte rækkefølge og kasserer dine ændringer.",
+          "body": "Rækkefølgen blev ændret et andet sted. Genindlæs for at se den; dine ændringer kasseres.",
           "reload": "Genindlæs"
         },
         "errors": {

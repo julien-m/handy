@@ -9,6 +9,7 @@ import { Dropdown } from "../../ui/Dropdown";
 import { SettingContainer } from "../../ui/SettingContainer";
 import { addableNames } from "./availability";
 import { PRIORITY_KEY_ROOT } from "./draft-state";
+import { useMicrophoneScreen } from "./screen-id";
 
 // The settings store shows a missing override (null) as this value and stores it back as null.
 const NO_OVERRIDE = "Default";
@@ -40,6 +41,7 @@ const useIsLaptop = (): boolean => {
 /** Override dropdown: None (no override) or one of the enumerated devices. */
 const ClamshellSelect: React.FC<{ title: string }> = ({ title }) => {
   const { t } = useTranslation();
+  const screen = useMicrophoneScreen();
   const settings = useSettings();
   const options = [
     { value: NO_OVERRIDE, label: t(`${PRIORITY_KEY_ROOT}.clamshell.none`) },
@@ -49,7 +51,7 @@ const ClamshellSelect: React.FC<{ title: string }> = ({ title }) => {
     })),
   ];
   return (
-    <div data-testid="microphone-settings-clamshell-select">
+    <div data-testid={`${screen}-clamshell-select`}>
       <Dropdown
         options={options}
         selectedValue={
@@ -72,6 +74,7 @@ const ClamshellSelect: React.FC<{ title: string }> = ({ title }) => {
 export const ClamshellRow: React.FC = () => {
   const { t } = useTranslation();
   const isLaptop = useIsLaptop();
+  const screen = useMicrophoneScreen();
   if (!isLaptop) return null;
   const title = t(`${PRIORITY_KEY_ROOT}.clamshell.title`);
   return (
@@ -80,8 +83,8 @@ export const ClamshellRow: React.FC = () => {
       description={t(`${PRIORITY_KEY_ROOT}.clamshell.description`)}
       descriptionMode="inline"
       grouped={true}
-      testId="microphone-settings-clamshell"
-      titleTestId="microphone-settings-clamshell-title"
+      testId={`${screen}-clamshell`}
+      titleTestId={`${screen}-clamshell-title`}
     >
       <ClamshellSelect title={title} />
     </SettingContainer>

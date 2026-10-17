@@ -314,7 +314,7 @@
         },
         "conflict": {
           "title": "Einstellungen an anderer Stelle geändert",
-          "body": "Ihre Änderungen bleiben erhalten. „Neu laden“ zeigt die gespeicherte Reihenfolge und verwirft Ihre Änderungen.",
+          "body": "Die Reihenfolge wurde an anderer Stelle geändert. Laden Sie neu, um sie zu sehen; Ihre Änderungen werden verworfen.",
           "reload": "Neu laden"
         },
         "errors": {

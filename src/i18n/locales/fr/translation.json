@@ -314,7 +314,7 @@
         },
         "conflict": {
           "title": "Réglages modifiés ailleurs",
-          "body": "Vos modifications sont conservées. Recharger affiche l'ordre enregistré et abandonne vos modifications.",
+          "body": "L'ordre a été modifié ailleurs. Rechargez pour le voir ; vos modifications seront abandonnées.",
           "reload": "Recharger"
         },
         "errors": {

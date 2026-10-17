@@ -9,6 +9,7 @@ import { PRIORITY_KEY_ROOT } from "./draft-state";
 import { focusAfterRemove, rowFocusKey } from "./editor-focus";
 import { PriorityRow, type PriorityRowProps } from "./priority-row";
 import { usePointerReorder, type PointerReorder } from "./use-pointer-reorder";
+import { useMicrophoneScreen } from "./screen-id";
 
 /** Props of the priority list. */
 export interface PriorityListProps {
@@ -25,22 +26,17 @@ export interface PriorityListProps {
 /** Empty normal list: recordings use the system default (after any closed-lid override). */
 export const EmptyPriority: React.FC = () => {
   const { t } = useTranslation();
+  const screen = useMicrophoneScreen();
   return (
     <div
       className="flex flex-col items-center gap-2 px-4 py-6 text-center border border-mid-gray/20 rounded-lg"
-      data-testid="microphone-settings-empty-empty"
+      data-testid={`${screen}-empty`}
     >
       <Mic size={20} className="text-mid-gray" aria-hidden="true" />
-      <p
-        className="text-sm font-medium"
-        data-testid="microphone-settings-empty-empty-title"
-      >
+      <p className="text-sm font-medium" data-testid={`${screen}-empty-title`}>
         {t(`${PRIORITY_KEY_ROOT}.emptyTitle`)}
       </p>
-      <p
-        className="text-sm text-mid-gray"
-        data-testid="microphone-settings-empty-empty-body"
-      >
+      <p className="text-sm text-mid-gray" data-testid={`${screen}-empty-body`}>
         {t(`${PRIORITY_KEY_ROOT}.emptyBody`)}
       </p>
     </div>
@@ -85,6 +81,7 @@ const rowPropsAt = (
 /** Ordered, reorderable list of the configured microphones. */
 export const PriorityList: React.FC<PriorityListProps> = (props) => {
   const { t } = useTranslation();
+  const screen = useMicrophoneScreen();
   const reorder = usePointerReorder({
     order: props.order,
     busy: props.busy,
@@ -96,7 +93,7 @@ export const PriorityList: React.FC<PriorityListProps> = (props) => {
     <ol
       aria-label={t(`${PRIORITY_KEY_ROOT}.title`)}
       className="border border-mid-gray/20 rounded-lg divide-y divide-mid-gray/20"
-      data-testid="microphone-settings-choices"
+      data-testid={`${screen}-choices`}
       data-state={drag && drag.over !== drag.from ? "drop-target" : undefined}
     >
       {props.order.map((name, index) => (

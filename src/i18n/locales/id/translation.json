@@ -314,7 +314,7 @@
         },
         "conflict": {
           "title": "Pengaturan diubah di tempat lain",
-          "body": "Suntingan Anda tetap ada. Muat ulang menampilkan urutan yang tersimpan dan membuang suntingan Anda.",
+          "body": "Urutan diubah di tempat lain. Muat ulang untuk melihatnya; suntingan Anda akan dibuang.",
           "reload": "Muat ulang"
         },
         "errors": {

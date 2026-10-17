@@ -8,6 +8,11 @@ import Badge from "../../ui/Badge";
 import { AVAILABILITY_TONE } from "./availability";
 import { PRIORITY_KEY_ROOT } from "./draft-state";
 import { rowFocusKey } from "./editor-focus";
+import {
+  microphoneInstanceId,
+  useMicrophoneScreen,
+  type MicrophoneScreen,
+} from "./screen-id";
 import type { PointerReorder } from "./use-pointer-reorder";
 
 /** Row control that keeps focus after a keyboard move. */
@@ -77,19 +82,21 @@ type Translate = ReturnType<typeof useTranslation>["t"];
  * @param props row props
  * @param t translation function
  * @param control direction of the move
+ * @param screen test-id prefix of the screen shown
  * @returns the control's props
  */
 const moveSpec = (
   props: PriorityRowProps,
   t: Translate,
   control: RowControl,
+  screen: MicrophoneScreen,
 ): RowButtonProps => {
   const { name, index, count, busy } = props;
   const up = control === "up";
   const to = up ? index - 1 : index + 1;
   return {
     label: t(`${PRIORITY_KEY_ROOT}.${up ? "moveUp" : "moveDown"}`, { name }),
-    testId: `microphone-settings-choice-${up ? "move-up" : "move-down"}`,
+    testId: `${screen}-choice-${up ? "move-up" : "move-down"}`,
     focusKey: rowFocusKey(name, control),
     inert: busy || (up ? index === 0 : index === count - 1),
     onActivate: () => props.onMove(index, to, control),
@@ -101,17 +108,19 @@ const moveSpec = (
  * Move up, Move down and Remove of one row; nothing acts while a write is in flight.
  * @param props row props
  * @param t translation function
+ * @param screen test-id prefix of the screen shown
  * @returns the three controls, in reading order
  */
 const controlSpecs = (
   props: PriorityRowProps,
   t: Translate,
+  screen: MicrophoneScreen,
 ): RowButtonProps[] => [
-  moveSpec(props, t, "up"),
-  moveSpec(props, t, "down"),
+  moveSpec(props, t, "up", screen),
+  moveSpec(props, t, "down", screen),
   {
     label: t(`${PRIORITY_KEY_ROOT}.remove`, { name: props.name }),
-    testId: "microphone-settings-choice-remove",
+    testId: `${screen}-choice-remove`,
     focusKey: rowFocusKey(props.name, "remove"),
     inert: props.busy,
     onActivate: () => props.onRemove(props.index),
@@ -122,9 +131,10 @@ const controlSpecs = (
 /** Controls of one row. */
 const RowControls: React.FC<PriorityRowProps> = (props) => {
   const { t } = useTranslation();
+  const screen = useMicrophoneScreen();
   return (
     <div className="flex items-center gap-1">
-      {controlSpecs(props, t).map((spec) => (
+      {controlSpecs(props, t, screen).map((spec) => (
         <RowButton key={spec.testId} {...spec} />
       ))}
     </div>
@@ -145,22 +155,23 @@ const RowHandle: React.FC<PriorityRowProps> = ({ busy, handle }) => (
 /** Rank, exact name and availability of one row. */
 const RowLabel: React.FC<PriorityRowProps> = (props) => {
   const { t } = useTranslation();
+  const screen = useMicrophoneScreen();
   return (
     <>
       <span
         className="w-4 text-sm text-mid-gray"
-        data-testid="microphone-settings-choice-rank"
+        data-testid={`${screen}-choice-rank`}
       >
         {props.index + 1}
       </span>
       <span
         className="flex-1 min-w-0 truncate text-sm"
-        data-testid="microphone-settings-choice-name"
+        data-testid={`${screen}-choice-name`}
         title={props.name}
       >
         {props.name}
       </span>
-      <span data-testid="microphone-settings-choice-status">
+      <span data-testid={`${screen}-choice-status`}>
         <Badge variant={AVAILABILITY_TONE[props.availability]}>
           {t(`${PRIORITY_KEY_ROOT}.status.${props.availability}`)}
         </Badge>
@@ -172,11 +183,13 @@ const RowLabel: React.FC<PriorityRowProps> = (props) => {
 /** One configured microphone with its status and controls. */
 export const PriorityRow: React.FC<PriorityRowProps> = (props) => {
   const { state, classes } = rowState(props);
+  const screen = useMicrophoneScreen();
   return (
     <li
       ref={props.rowRef}
       className={`flex items-center gap-3 px-4 py-2 ${classes}`}
-      data-testid="microphone-settings-choice"
+      data-testid={`${screen}-choice`}
+      data-instance-id={microphoneInstanceId(props.name)}
       data-name={props.name}
       data-state={state}
     >
