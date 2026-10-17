@@ -9,7 +9,7 @@ use handy_app_lib::destination::outcome::{
     DestinationFailure, HistoryStatus, InsertionOutcome, InsertionStatus, MethodOutcome,
     TranscriptRef,
 };
-use handy_app_lib::destination::recovery::RecoverySlot;
+use handy_app_lib::destination::recovery::{FinalText, RecoverySlot};
 use handy_app_lib::destination::workspace::SystemClock;
 use handy_app_lib::recovery::classifier::{
     AxQueryError, EditAttribute, FocusedElement, FocusedElementPort,
@@ -326,11 +326,11 @@ impl Bench {
         text: &str,
         append_trailing_space: bool,
     ) -> InsertionOutcome {
-        let reference = self.slot.slot.retain_final(
-            DictationId(dictation),
-            text.to_owned(),
+        let text = FinalText {
+            text: text.to_owned(),
             append_trailing_space,
-        );
+        };
+        let reference = self.slot.slot.retain_final(DictationId(dictation), text);
         outcome(dictation, None, None, Some(reference))
     }
     /// Toasts emitted by 010 so far.

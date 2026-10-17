@@ -102,6 +102,15 @@ impl SurfaceState {
     pub(crate) fn is_held(&self) -> bool {
         self.held.load(Ordering::SeqCst)
     }
+
+    // @spec FR-002: The bubble follows a held notice that grows — .specs/features/010-recovery-bubble/spec.md#fr-002
+    /// True when a changed indicator extent must also move 010's recovery bubble: while a notice
+    /// holds the indicator, its window grows toward the bubble stacked beside it (a notice is
+    /// measured after the hold started). Moving the bubble never changes the indicator's
+    /// extent, so the two placements cannot relaunch each other.
+    pub(crate) fn bubble_follows_extent(&self) -> bool {
+        self.is_held()
+    }
 }
 
 /// A finite, non-negative extent clamped to [`MAX_EXTENT`]; `None` for a non-finite request.

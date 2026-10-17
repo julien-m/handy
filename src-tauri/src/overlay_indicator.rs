@@ -117,6 +117,10 @@ pub fn set_overlay_extent(app_handle: &AppHandle, width: f64, height: f64) {
         if window.is_visible().unwrap_or(false) {
             let (width, height) = current_form_dimensions();
             place_overlay(&handle, &window, width, height);
+            // 010: a held notice that grew must not reach the bubble stacked beside it.
+            if SURFACE.bubble_follows_extent() {
+                crate::recovery::surface::follow_indicator(&handle);
+            }
         }
     });
 }

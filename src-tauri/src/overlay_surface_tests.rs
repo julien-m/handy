@@ -169,3 +169,42 @@ fn without_room_on_its_side_the_bubble_takes_the_other_and_never_leaves_the_scre
     let placed = stack_beside(huge, (400.0, 250.0), tiny, true);
     assert!(placed.0 >= 0.0 && placed.1 >= 0.0 && placed.1 + 250.0 <= 300.0);
 }
+
+// @spec FR-002: The bubble follows a held notice that grows — .specs/features/010-recovery-bubble/spec.md#fr-002
+#[test]
+fn only_a_held_indicator_moves_the_bubble_when_its_extent_changes() {
+    let state = SurfaceState::new();
+    assert!(!state.bubble_follows_extent(), "no hold: the bubble stays");
+    let token = state.start_hold();
+    assert!(state.bubble_follows_extent(), "held: the bubble follows");
+    assert!(state.release_hold(Some(token)));
+    assert!(!state.bubble_follows_extent(), "released: the bubble stays");
+}
+
+#[test]
+fn a_notice_measured_after_the_hold_would_cover_the_bubble_until_it_is_stacked_again() {
+    // AI failure then a refusal decided in milliseconds: the bubble is stacked beside the pill
+    // held at its base size, then the notice's extent grows the window toward the bubble.
+    for (pill, grown, at_bottom) in [
+        (
+            frame(592.0, 840.0, 256.0, 50.0),
+            frame(500.0, 720.0, 440.0, 170.0),
+            true,
+        ),
+        (
+            frame(592.0, 71.0, 256.0, 50.0),
+            frame(500.0, 71.0, 440.0, 170.0),
+            false,
+        ),
+    ] {
+        let early = bubble_at(stack_beside(pill, BUBBLE, SCREEN, at_bottom));
+        assert!(
+            !overlap(early, pill) && overlap(early, grown),
+            "stale place"
+        );
+        let followed = stack_beside(grown, BUBBLE, SCREEN, at_bottom);
+        assert!(!overlap(bubble_at(followed), grown) && on_screen(bubble_at(followed)));
+        // Stacking again on the same frame gives the same place: nothing to relaunch.
+        assert_eq!(stack_beside(grown, BUBBLE, SCREEN, at_bottom), followed);
+    }
+}

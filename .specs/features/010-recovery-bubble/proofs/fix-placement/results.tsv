@@ -1,0 +1,33 @@
+01	exit 0	2s	bunx --no-install tsc --noEmit
+02	exit 0	2s	bun run lint
+03	exit 0	3s	bun run format:check
+04	exit 0	0s	bun run check:translations
+05	exit 0	7s	bun run build
+06	exit 0	0s	bun run test:keyboard
+07	exit 0	0s	bun run test:shortcut-list
+08	exit 0	0s	bun run test:settings-errors
+09	exit 0	0s	bun run test:settings-store
+10	exit 0	0s	bun run test:microphone-priority
+11	exit 0	0s	bun run test:word-replacements
+12	exit 0	0s	bun run test:prompt-settings
+13	exit 0	1s	bun run test:indicator
+14	exit 0	0s	bun run test:recovery-bubble
+15	exit 0	0s	bun run test:vocabulary
+16	exit 0	0s	bun run test:shortcut-states
+17	exit 0	0s	bun run test:output-settings
+18	exit 0	0s	! lsof -nP -iTCP:1420 -sTCP:LISTEN
+19	exit 0	10s	bun run test:microphone-priority-ui
+20	exit 0	4s	bun run test:pin-enter-ui
+21	exit 0	6s	bun run test:recovery-bubble-ui
+22	exit 0	14s	bunx --no-install playwright test --reporter=line
+23	exit 0	1s	cd src-tauri && cargo fmt -- --check
+24	exit 0	26s	cd src-tauri && cargo clippy --all-targets  -- -D warnings
+25	exit 0	139s	cd src-tauri && cargo test  --no-fail-fast
+26	exit 0	19s	cd src-tauri && cargo clippy --all-targets --features smart-paste-dispatch -- -D warnings
+27	exit 0	119s	cd src-tauri && cargo test --features smart-paste-dispatch --no-fail-fast
+28	exit 0	25s	cd src-tauri && cargo clippy --all-targets --features destination-return -- -D warnings
+29	exit 0	136s	cd src-tauri && cargo test --features destination-return --no-fail-fast
+30	exit 0	3s	cd src-tauri && cargo clippy --all-targets --features destination-return,smart-paste-dispatch -- -D warnings
+31	exit 0	101s	cd src-tauri && cargo test --features destination-return,smart-paste-dispatch --no-fail-fast
+32	exit 0	25s	livespec conventions verify --feature repo --json > /dev/null
+DONE

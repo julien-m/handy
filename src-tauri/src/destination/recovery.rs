@@ -4,13 +4,34 @@
 //! exits; it is never broadcast in an event or a log. Consumers are optional: a missing one
 //! never prevents the terminal outcome.
 use super::context::DictationId;
-use super::outcome::{InsertionOutcome, TranscriptRef};
+use super::outcome::{InsertionOutcome, InsertionStatus, TranscriptRef};
 use std::collections::VecDeque;
 use std::sync::{Arc, Mutex, PoisonError, RwLock};
 
 /// A reference that no longer names the retained transcript (superseded or released).
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct ExpiredReference;
+
+/// The final text of one insertion: the transcript, and whether its paste appends a trailing
+/// space (read from the settings snapshot of that insertion).
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct FinalText {
+    pub text: String,
+    pub append_trailing_space: bool,
+}
+impl FinalText {
+    /// `text` as the insertion driven by the `settings` snapshot would type it.
+    pub(crate) fn of(text: String, settings: &crate::settings::AppSettings) -> Self {
+        Self {
+            text,
+            append_trailing_space: settings.append_trailing_space,
+        }
+    }
+    /// Exactly what the paste method inserts.
+    fn inserted(&self) -> String {
+        crate::clipboard::trailing_spaced(self.text.clone(), self.append_trailing_space)
+    }
+}
 
 struct Retained {
     reference: TranscriptRef,
@@ -32,19 +53,32 @@ pub struct RecoverySlot {
 impl RecoverySlot {
     /// Retain `text` of `dictation_id`, superseding any older transcript.
     pub fn retain(&self, dictation_id: DictationId, text: String) -> TranscriptRef {
-        self.retain_final(dictation_id, text, false)
+        let append_trailing_space = false;
+        self.retain_final(
+            dictation_id,
+            FinalText {
+                text,
+                append_trailing_space,
+            },
+        )
     }
-    /// Retain `text` of `dictation_id` and the exact text its method would have inserted: `text`
-    /// plus a trailing space when `append_trailing_space` was on for this insertion. Supersedes
-    /// any older transcript.
-    pub fn retain_final(
+    /// Retain the final text of a failed insertion of `dictation_id`; any other `status` keeps
+    /// nothing (and leaves an older transcript in place).
+    pub fn retain_failed(
         &self,
         dictation_id: DictationId,
-        text: String,
-        append_trailing_space: bool,
-    ) -> TranscriptRef {
-        let inserted = append_trailing_space
-            .then(|| crate::clipboard::trailing_spaced(text.clone(), append_trailing_space));
+        status: InsertionStatus,
+        text: FinalText,
+    ) -> Option<TranscriptRef> {
+        (status == InsertionStatus::Failed).then(|| self.retain_final(dictation_id, text))
+    }
+    /// Retain the transcript of `dictation_id` and the exact text its method would have inserted
+    /// (with the trailing space when it was on for this insertion). Supersedes any older one.
+    pub fn retain_final(&self, dictation_id: DictationId, final_text: FinalText) -> TranscriptRef {
+        let inserted = final_text
+            .append_trailing_space
+            .then(|| final_text.inserted());
+        let text = final_text.text;
         let mut state = self.state.lock().unwrap_or_else(PoisonError::into_inner);
         state.last_reference += 1;
         let reference = TranscriptRef(state.last_reference);

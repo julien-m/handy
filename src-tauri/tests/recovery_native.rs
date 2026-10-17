@@ -177,3 +177,23 @@ mod macos {
         }
     }
 }
+
+/// FR-002: the bubble is placed again whenever the held indicator changes its extent (a notice
+/// measured after its hold started), and before a refused drag shows it again; the indicator
+/// is placed first, so the bubble reads its grown frame.
+#[test]
+fn the_bubble_is_placed_again_after_a_held_extent_change_and_a_refused_drag() {
+    let indicator = include_str!("../src/overlay_indicator.rs");
+    let extent = body(indicator, "fn set_overlay_extent(", "\n}");
+    let placed = extent.find("place_overlay(&handle, &window, width, height)");
+    let followed = extent.find("if SURFACE.bubble_follows_extent() {");
+    assert!(placed.is_some() && followed > placed, "{extent}");
+    assert!(extent.contains("crate::recovery::surface::follow_indicator(&handle)"));
+    let surface = include_str!("../src/recovery/surface.rs");
+    let again = body(surface, "fn show_again", "\n    }\n");
+    let place = again.find("place(app, &window)");
+    assert!(
+        place.is_some() && again.find("platform::restore_after_drag(&window)") > place,
+        "{again}"
+    );
+}

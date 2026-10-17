@@ -14,7 +14,7 @@ use super::outcome::{
     TranscriptRef,
 };
 use super::presentation::{await_presentation, toast_needed, ReasonShown, PRESENTATION_GUARD};
-use super::recovery::{Delivery, OutcomeRegistry, PresentationReceipt, RecoverySlot};
+use super::recovery::{Delivery, FinalText, OutcomeRegistry, PresentationReceipt, RecoverySlot};
 use super::workspace::SystemClock;
 use crate::automatic_enter::transaction::EnterTransaction;
 use std::sync::atomic::{AtomicU64, Ordering};
@@ -96,7 +96,7 @@ pub async fn deliver(
 ) -> Option<(InsertionOutcome, Option<PresentationReceipt>)> {
     let manager = super::app::manager(&app)?;
     let settings = crate::settings::get_settings(&app);
-    let trailing_space = settings.append_trailing_space;
+    let text = FinalText::of(text, &settings);
     let request = InsertionRequest {
         dictation_id: ticket.dictation_id,
         destination_generation: ticket.destination_generation,
@@ -104,7 +104,7 @@ pub async fn deliver(
         cancelled,
     };
     let enter = crate::automatic_enter::app::transaction(&app, &manager, ticket, &settings);
-    let method = insertion_method(&app, &text, settings, Arc::clone(&enter));
+    let method = insertion_method(&app, &text.text, settings, Arc::clone(&enter));
     let worker_manager = Arc::clone(&manager);
     let recovery = super::app::recovery_port(&app);
     let joined = tauri::async_runtime::spawn_blocking(move || {
@@ -115,7 +115,6 @@ pub async fn deliver(
     })
     .await;
     let report = joined.unwrap_or_else(|error| worker_failed(&manager, ticket, &error));
-    let text = (text, trailing_space);
     Some(publish(&app, &manager, ticket, report, text, history))
 }
 /// The configured method with the settings snapshot of this insertion: smart paste (007) runs
@@ -327,14 +326,13 @@ fn publish(
     manager: &DestinationManager,
     ticket: DictationTicket,
     report: InsertionReport,
-    text: (String, bool),
+    text: FinalText,
     history: HistoryRecord,
 ) -> (InsertionOutcome, Option<PresentationReceipt>) {
     // The transcript, and the exact inserted text (trailing space of this snapshot) for 010.
-    let slot = app.try_state::<Arc<RecoverySlot>>();
-    let transcript_ref = slot
-        .filter(|_| report.status == InsertionStatus::Failed)
-        .map(|slot| slot.retain_final(ticket.dictation_id, text.0, text.1));
+    let transcript_ref = app
+        .try_state::<Arc<RecoverySlot>>()
+        .and_then(|slot| slot.retain_failed(ticket.dictation_id, report.status, text));
     let outcome = outcome(ticket, report, history, transcript_ref);
     let receipt = match app.try_state::<Arc<OutcomeRegistry>>() {
         Some(registry) => match registry.publish(&outcome) {

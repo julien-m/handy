@@ -124,3 +124,34 @@ fn a_failed_worker_of_a_cancelled_dictation_is_reported_cancelled() {
         (InsertionStatus::Cancelled, None)
     );
 }
+// @spec AC-003: Copy and drag carry exactly the inserted text — .specs/features/010-recovery-bubble/spec.md#ac-003
+#[test]
+fn the_insertion_settings_carry_the_trailing_space_to_the_recovery_slot() {
+    for append_trailing_space in [true, false] {
+        let (manager, ticket) = processing_manager();
+        let mut settings = crate::settings::get_default_settings();
+        settings.append_trailing_space = append_trailing_space;
+        let slot = RecoverySlot::default();
+        // As `deliver` then `publish`: one snapshot, a failed report, the real slot.
+        let text = FinalText::of("short safe phrase".to_owned(), &settings);
+        let report = report(InsertionStatus::Failed, None);
+        let retained = slot.retain_failed(ticket.dictation_id, report.status, text.clone());
+        let built = outcome(ticket, report, HistoryRecord::FAILED, retained);
+        let reference = built.transcript_ref.unwrap_or(TranscriptRef(0));
+        let expected = if append_trailing_space {
+            "short safe phrase "
+        } else {
+            "short safe phrase"
+        };
+        assert_eq!(slot.read_inserted(reference).as_deref(), Ok(expected));
+        assert_eq!(slot.read(reference).as_deref(), Ok("short safe phrase"));
+        // A dictation that did not fail keeps nothing and leaves the retained text in place.
+        let attempted = InsertionStatus::InsertionAttempted;
+        assert_eq!(
+            slot.retain_failed(ticket.dictation_id, attempted, text),
+            None
+        );
+        assert_eq!(slot.read_inserted(reference).as_deref(), Ok(expected));
+        manager.finish(ticket.dictation_id, ticket.destination_generation);
+    }
+}
