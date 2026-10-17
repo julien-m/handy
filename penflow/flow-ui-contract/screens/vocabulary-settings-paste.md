@@ -9,12 +9,14 @@ Generator: `penflow.flow-docs/1`
 {
   "actions": [
     {
-      "event": "submit",
-      "guard": "draft-valid",
+      "destination": {
+        "screen": "vocabulary-settings",
+        "state": "default"
+      },
+      "event": "navigate",
       "id": "vocabulary-settings-paste.apply",
-      "kind": "state_change",
+      "kind": "navigation",
       "node": "vocabulary-settings-paste.apply",
-      "success_transition": "vocabulary-settings-paste.apply.applied",
       "trigger": "click"
     },
     {
@@ -102,6 +104,39 @@ Generator: `penflow.flow-docs/1`
       "text": "Claude Code\nClaude Sonnet\nclaude code\nOpenClaw\n<prompt> template"
     },
     {
+      "id": "vocabulary-settings-paste.error",
+      "role": "alert",
+      "screen_id": "vocabulary-settings-paste",
+      "semantic_id": "vocabulary-settings-paste.error",
+      "states": [
+        "error"
+      ],
+      "test_id": "vocabulary-settings-paste-error",
+      "text": "The vocabulary changed in the meantime and was reloaded. Try again."
+    },
+    {
+      "id": "vocabulary-settings-paste.list-error",
+      "role": "alert",
+      "screen_id": "vocabulary-settings-paste",
+      "semantic_id": "vocabulary-settings-paste.list-error",
+      "states": [
+        "list-error"
+      ],
+      "test_id": "vocabulary-settings-paste-list-error",
+      "text": "Couldn't read the saved vocabulary. Nothing was changed; retry to load it."
+    },
+    {
+      "id": "vocabulary-settings-paste.loading",
+      "role": "text",
+      "screen_id": "vocabulary-settings-paste",
+      "semantic_id": "vocabulary-settings-paste.loading",
+      "states": [
+        "loading"
+      ],
+      "test_id": "vocabulary-settings-paste-loading",
+      "text": "Loading the vocabulary…"
+    },
+    {
       "children": [
         "vocabulary-settings-paste.preview.title",
         "vocabulary-settings-paste.preview.summary",
@@ -176,7 +211,10 @@ Generator: `penflow.flow-docs/1`
       "children": [
         "vocabulary-settings-paste.terms.title",
         "vocabulary-settings-paste.editor",
-        "vocabulary-settings-paste.preview"
+        "vocabulary-settings-paste.preview",
+        "vocabulary-settings-paste.loading",
+        "vocabulary-settings-paste.list-error",
+        "vocabulary-settings-paste.error"
       ],
       "id": "vocabulary-settings-paste.terms",
       "role": "container",
@@ -214,7 +252,13 @@ Generator: `penflow.flow-docs/1`
         "id": "default"
       },
       {
-        "id": "applied"
+        "id": "loading"
+      },
+      {
+        "id": "list-error"
+      },
+      {
+        "id": "error"
       }
     ],
     "surface": "desktop",

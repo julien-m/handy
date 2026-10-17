@@ -89,6 +89,39 @@ Generator: `penflow.flow-docs/1`
       "text": "No terms yet"
     },
     {
+      "id": "vocabulary-settings-empty.error",
+      "role": "alert",
+      "screen_id": "vocabulary-settings-empty",
+      "semantic_id": "vocabulary-settings-empty.error",
+      "states": [
+        "error"
+      ],
+      "test_id": "vocabulary-settings-empty-error",
+      "text": "The vocabulary changed in the meantime and was reloaded. Try again."
+    },
+    {
+      "id": "vocabulary-settings-empty.list-error",
+      "role": "alert",
+      "screen_id": "vocabulary-settings-empty",
+      "semantic_id": "vocabulary-settings-empty.list-error",
+      "states": [
+        "list-error"
+      ],
+      "test_id": "vocabulary-settings-empty-list-error",
+      "text": "Couldn't read the saved vocabulary. Nothing was changed; retry to load it."
+    },
+    {
+      "id": "vocabulary-settings-empty.loading",
+      "role": "text",
+      "screen_id": "vocabulary-settings-empty",
+      "semantic_id": "vocabulary-settings-empty.loading",
+      "states": [
+        "loading"
+      ],
+      "test_id": "vocabulary-settings-empty-loading",
+      "text": "Loading the vocabulary…"
+    },
+    {
       "action": "vocabulary-settings-empty.new-term",
       "binding": "vocabulary_draft.term",
       "id": "vocabulary-settings-empty.new-term",
@@ -112,7 +145,7 @@ Generator: `penflow.flow-docs/1`
         "vocabulary-settings-empty.status.title"
       ],
       "id": "vocabulary-settings-empty.status",
-      "role": "alert",
+      "role": "container",
       "screen_id": "vocabulary-settings-empty",
       "semantic_id": "vocabulary-settings-empty.status",
       "test_id": "vocabulary-settings-empty-status"
@@ -132,7 +165,10 @@ Generator: `penflow.flow-docs/1`
         "vocabulary-settings-empty.empty",
         "vocabulary-settings-empty.new-term",
         "vocabulary-settings-empty.add",
-        "vocabulary-settings-empty.paste"
+        "vocabulary-settings-empty.paste",
+        "vocabulary-settings-empty.loading",
+        "vocabulary-settings-empty.list-error",
+        "vocabulary-settings-empty.error"
       ],
       "id": "vocabulary-settings-empty.terms",
       "role": "container",
@@ -171,6 +207,15 @@ Generator: `penflow.flow-docs/1`
       },
       {
         "id": "term-added"
+      },
+      {
+        "id": "loading"
+      },
+      {
+        "id": "list-error"
+      },
+      {
+        "id": "error"
       }
     ],
     "surface": "desktop",

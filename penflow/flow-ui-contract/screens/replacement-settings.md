@@ -19,6 +19,33 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "event": "submit",
+      "guard": "control-enabled",
+      "id": "replacement-settings.commit-failure.reload",
+      "kind": "state_change",
+      "node": "replacement-settings.commit-failure.reload",
+      "success_transition": "replacement-settings.commit-failure.reload.reloaded",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "replacement-settings.delete-dialog.cancel",
+      "kind": "state_change",
+      "node": "replacement-settings.delete-dialog.cancel",
+      "success_transition": "replacement-settings.delete-dialog.cancel.delete-cancelled",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "replacement-settings.delete-dialog.confirm",
+      "kind": "state_change",
+      "node": "replacement-settings.delete-dialog.confirm",
+      "success_transition": "replacement-settings.delete-dialog.confirm.rule-removed",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
       "guard": "draft-dirty",
       "id": "replacement-settings.discard",
       "kind": "state_change",
@@ -98,6 +125,24 @@ Generator: `penflow.flow-docs/1`
       "trigger": "click"
     },
     {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "replacement-settings.unsaved.discard",
+      "kind": "state_change",
+      "node": "replacement-settings.unsaved.discard",
+      "success_transition": "replacement-settings.unsaved.discard.left",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "replacement-settings.unsaved.stay",
+      "kind": "state_change",
+      "node": "replacement-settings.unsaved.stay",
+      "success_transition": "replacement-settings.unsaved.stay.stayed",
+      "trigger": "click"
+    },
+    {
       "destination": {
         "screen": "replacement-settings",
         "state": "default"
@@ -124,7 +169,10 @@ Generator: `penflow.flow-docs/1`
     {
       "children": [
         "replacement-settings.replacements",
-        "replacement-settings.draft"
+        "replacement-settings.draft",
+        "replacement-settings.commit-failure",
+        "replacement-settings.unsaved",
+        "replacement-settings.delete-dialog"
       ],
       "id": "replacement-settings",
       "role": "screen",
@@ -142,12 +190,79 @@ Generator: `penflow.flow-docs/1`
       "text": "Add rule"
     },
     {
+      "children": [
+        "replacement-settings.commit-failure.message",
+        "replacement-settings.commit-failure.reload"
+      ],
+      "id": "replacement-settings.commit-failure",
+      "role": "alert",
+      "screen_id": "replacement-settings",
+      "semantic_id": "replacement-settings.commit-failure",
+      "test_id": "replacement-settings-commit-failure"
+    },
+    {
+      "id": "replacement-settings.commit-failure.message",
+      "role": "text",
+      "screen_id": "replacement-settings",
+      "semantic_id": "replacement-settings.commit-failure.message",
+      "test_id": "replacement-settings-commit-failure-message",
+      "text": "The rules changed elsewhere, for example from the command line. Reload them to continue. Reloading shows the saved rules and discards your unsaved changes. Saved rules are unchanged."
+    },
+    {
+      "action": "replacement-settings.commit-failure.reload",
+      "id": "replacement-settings.commit-failure.reload",
+      "role": "button",
+      "screen_id": "replacement-settings",
+      "semantic_id": "replacement-settings.commit-failure.reload",
+      "test_id": "replacement-settings-commit-failure-reload",
+      "text": "Reload"
+    },
+    {
       "id": "replacement-settings.count",
       "role": "text",
       "screen_id": "replacement-settings",
       "semantic_id": "replacement-settings.count",
       "test_id": "replacement-settings-count",
       "text": "3 of 1,000 rules · case-insensitive, whole words"
+    },
+    {
+      "children": [
+        "replacement-settings.delete-dialog.body",
+        "replacement-settings.delete-dialog.cancel",
+        "replacement-settings.delete-dialog.confirm"
+      ],
+      "id": "replacement-settings.delete-dialog",
+      "role": "modal",
+      "screen_id": "replacement-settings",
+      "semantic_id": "replacement-settings.delete-dialog",
+      "test_id": "replacement-settings-delete-dialog",
+      "text": "Delete this rule?"
+    },
+    {
+      "id": "replacement-settings.delete-dialog.body",
+      "role": "text",
+      "screen_id": "replacement-settings",
+      "semantic_id": "replacement-settings.delete-dialog.body",
+      "test_id": "replacement-settings-delete-dialog-body",
+      "text": "Cloud Code → Claude Code will be removed from the list. Save to apply the change."
+    },
+    {
+      "action": "replacement-settings.delete-dialog.cancel",
+      "id": "replacement-settings.delete-dialog.cancel",
+      "role": "button",
+      "screen_id": "replacement-settings",
+      "semantic_id": "replacement-settings.delete-dialog.cancel",
+      "test_id": "replacement-settings-delete-dialog-cancel",
+      "text": "Cancel"
+    },
+    {
+      "action": "replacement-settings.delete-dialog.confirm",
+      "id": "replacement-settings.delete-dialog.confirm",
+      "role": "button",
+      "screen_id": "replacement-settings",
+      "semantic_id": "replacement-settings.delete-dialog.confirm",
+      "test_id": "replacement-settings-delete-dialog-confirm",
+      "text": "Delete"
     },
     {
       "action": "replacement-settings.discard",
@@ -324,6 +439,45 @@ Generator: `penflow.flow-docs/1`
       "text": "Save"
     },
     {
+      "children": [
+        "replacement-settings.unsaved.body",
+        "replacement-settings.unsaved.stay",
+        "replacement-settings.unsaved.discard"
+      ],
+      "id": "replacement-settings.unsaved",
+      "role": "modal",
+      "screen_id": "replacement-settings",
+      "semantic_id": "replacement-settings.unsaved",
+      "test_id": "replacement-settings-unsaved",
+      "text": "Unsaved changes"
+    },
+    {
+      "id": "replacement-settings.unsaved.body",
+      "role": "text",
+      "screen_id": "replacement-settings",
+      "semantic_id": "replacement-settings.unsaved.body",
+      "test_id": "replacement-settings-unsaved-body",
+      "text": "Some of your replacement rules are not saved. Stay to save them, or discard them and leave."
+    },
+    {
+      "action": "replacement-settings.unsaved.discard",
+      "id": "replacement-settings.unsaved.discard",
+      "role": "button",
+      "screen_id": "replacement-settings",
+      "semantic_id": "replacement-settings.unsaved.discard",
+      "test_id": "replacement-settings-unsaved-discard",
+      "text": "Discard and leave"
+    },
+    {
+      "action": "replacement-settings.unsaved.stay",
+      "id": "replacement-settings.unsaved.stay",
+      "role": "button",
+      "screen_id": "replacement-settings",
+      "semantic_id": "replacement-settings.unsaved.stay",
+      "test_id": "replacement-settings-unsaved-stay",
+      "text": "Stay"
+    },
+    {
       "action": "replacement-settings.view-list",
       "id": "replacement-settings.view-list",
       "role": "button",
@@ -379,6 +533,21 @@ Generator: `penflow.flow-docs/1`
       },
       {
         "id": "saved"
+      },
+      {
+        "id": "reloaded"
+      },
+      {
+        "id": "stayed"
+      },
+      {
+        "id": "left"
+      },
+      {
+        "id": "delete-cancelled"
+      },
+      {
+        "id": "rule-removed"
       }
     ],
     "surface": "desktop",

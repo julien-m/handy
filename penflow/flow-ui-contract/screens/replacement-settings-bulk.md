@@ -29,6 +29,15 @@ Generator: `penflow.flow-docs/1`
       "trigger": "click"
     },
     {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "replacement-settings-bulk.commit-failure.reload",
+      "kind": "state_change",
+      "node": "replacement-settings-bulk.commit-failure.reload",
+      "success_transition": "replacement-settings-bulk.commit-failure.reload.reloaded",
+      "trigger": "click"
+    },
+    {
       "binding_ref": {
         "access": "write",
         "entity": "replacement_draft",
@@ -87,7 +96,8 @@ Generator: `penflow.flow-docs/1`
     {
       "children": [
         "replacement-settings-bulk.replacements",
-        "replacement-settings-bulk.apply-bar"
+        "replacement-settings-bulk.apply-bar",
+        "replacement-settings-bulk.commit-failure"
       ],
       "id": "replacement-settings-bulk",
       "role": "screen",
@@ -132,6 +142,34 @@ Generator: `penflow.flow-docs/1`
       "semantic_id": "replacement-settings-bulk.cancel",
       "test_id": "replacement-settings-bulk-cancel",
       "text": "Cancel"
+    },
+    {
+      "children": [
+        "replacement-settings-bulk.commit-failure.message",
+        "replacement-settings-bulk.commit-failure.reload"
+      ],
+      "id": "replacement-settings-bulk.commit-failure",
+      "role": "alert",
+      "screen_id": "replacement-settings-bulk",
+      "semantic_id": "replacement-settings-bulk.commit-failure",
+      "test_id": "replacement-settings-bulk-commit-failure"
+    },
+    {
+      "id": "replacement-settings-bulk.commit-failure.message",
+      "role": "text",
+      "screen_id": "replacement-settings-bulk",
+      "semantic_id": "replacement-settings-bulk.commit-failure.message",
+      "test_id": "replacement-settings-bulk-commit-failure-message",
+      "text": "The rules changed elsewhere, for example from the command line. Reload them to continue. Saved rules are unchanged."
+    },
+    {
+      "action": "replacement-settings-bulk.commit-failure.reload",
+      "id": "replacement-settings-bulk.commit-failure.reload",
+      "role": "button",
+      "screen_id": "replacement-settings-bulk",
+      "semantic_id": "replacement-settings-bulk.commit-failure.reload",
+      "test_id": "replacement-settings-bulk-commit-failure-reload",
+      "text": "Reload"
     },
     {
       "action": "replacement-settings-bulk.editor",
@@ -328,6 +366,9 @@ Generator: `penflow.flow-docs/1`
       },
       {
         "id": "exporting"
+      },
+      {
+        "id": "reloaded"
       }
     ],
     "surface": "desktop",

@@ -34,7 +34,7 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "destination": {
-        "screen": "prompt-settings-editor",
+        "screen": "prompt-settings-invalid",
         "state": "default"
       },
       "event": "navigate",
@@ -53,13 +53,50 @@ Generator: `penflow.flow-docs/1`
       "kind": "navigation",
       "node": "prompt-settings.prompt.edit",
       "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "prompt-settings.reload-retry",
+      "kind": "state_change",
+      "node": "prompt-settings.reload-retry",
+      "success_transition": "prompt-settings.reload-retry.reloaded",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "shortcut-settings.ai-dictation.add",
+      "kind": "state_change",
+      "node": "shortcut-settings.ai-dictation.add",
+      "success_transition": "shortcut-settings.ai-dictation.add.recording",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "shortcut-settings.ai-dictation.reset",
+      "kind": "state_change",
+      "node": "shortcut-settings.ai-dictation.reset",
+      "success_transition": "shortcut-settings.ai-dictation.reset.reset",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "shortcut-settings.ai-dictation.shortcut.remove",
+      "kind": "state_change",
+      "node": "shortcut-settings.ai-dictation.shortcut.remove",
+      "success_transition": "shortcut-settings.ai-dictation.shortcut.remove.shortcut-removed",
+      "trigger": "click"
     }
   ],
   "nodes": [
     {
       "children": [
         "prompt-settings.processing",
-        "prompt-settings.library"
+        "prompt-settings.library",
+        "shortcut-settings.ai-dictation"
       ],
       "id": "prompt-settings",
       "role": "screen",
@@ -105,6 +142,13 @@ Generator: `penflow.flow-docs/1`
       "text": "Default prompt"
     },
     {
+      "id": "prompt-settings.empty",
+      "role": "text",
+      "screen_id": "prompt-settings",
+      "semantic_id": "prompt-settings.empty",
+      "test_id": "prompt-settings-empty"
+    },
+    {
       "children": [
         "prompt-settings.enabled.title",
         "prompt-settings.enabled.toggle"
@@ -136,7 +180,12 @@ Generator: `penflow.flow-docs/1`
       "children": [
         "prompt-settings.list",
         "prompt-settings.new",
-        "prompt-settings.count"
+        "prompt-settings.count",
+        "prompt-settings.load-error",
+        "prompt-settings.loading",
+        "prompt-settings.empty",
+        "prompt-settings.reload-error",
+        "prompt-settings.reload-retry"
       ],
       "id": "prompt-settings.library",
       "role": "container",
@@ -160,6 +209,20 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "prompt-settings",
       "semantic_id": "prompt-settings.list",
       "test_id": "prompt-settings-list"
+    },
+    {
+      "id": "prompt-settings.load-error",
+      "role": "alert",
+      "screen_id": "prompt-settings",
+      "semantic_id": "prompt-settings.load-error",
+      "test_id": "prompt-settings-load-error"
+    },
+    {
+      "id": "prompt-settings.loading",
+      "role": "text",
+      "screen_id": "prompt-settings",
+      "semantic_id": "prompt-settings.loading",
+      "test_id": "prompt-settings-loading"
     },
     {
       "action": "prompt-settings.new",
@@ -187,7 +250,8 @@ Generator: `penflow.flow-docs/1`
         "prompt-settings.prompt.name",
         "prompt-settings.prompt.provider",
         "prompt-settings.prompt.shortcut",
-        "prompt-settings.prompt.edit"
+        "prompt-settings.prompt.edit",
+        "prompt-settings.prompt.status"
       ],
       "id": "prompt-settings.prompt",
       "role": "container",
@@ -225,7 +289,111 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "prompt-settings",
       "semantic_id": "prompt-settings.prompt.shortcut",
       "test_id": "prompt-settings-prompt-shortcut",
-      "text": "⌃ ⌥ M"
+      "text": "Ctrl + Option + M"
+    },
+    {
+      "id": "prompt-settings.prompt.status",
+      "role": "text",
+      "screen_id": "prompt-settings",
+      "semantic_id": "prompt-settings.prompt.status",
+      "test_id": "prompt-settings-prompt-status"
+    },
+    {
+      "id": "prompt-settings.reload-error",
+      "role": "alert",
+      "screen_id": "prompt-settings",
+      "semantic_id": "prompt-settings.reload-error",
+      "test_id": "prompt-settings-reload-error"
+    },
+    {
+      "action": "prompt-settings.reload-retry",
+      "id": "prompt-settings.reload-retry",
+      "role": "button",
+      "screen_id": "prompt-settings",
+      "semantic_id": "prompt-settings.reload-retry",
+      "test_id": "prompt-settings-reload-retry"
+    },
+    {
+      "children": [
+        "shortcut-settings.ai-dictation.title",
+        "shortcut-settings.ai-dictation.list",
+        "shortcut-settings.ai-dictation.last",
+        "shortcut-settings.ai-dictation.add",
+        "shortcut-settings.ai-dictation.reset"
+      ],
+      "id": "shortcut-settings.ai-dictation",
+      "role": "container",
+      "screen_id": "prompt-settings",
+      "semantic_id": "shortcut-settings.ai-dictation",
+      "test_id": "shortcut-settings-ai-dictation"
+    },
+    {
+      "action": "shortcut-settings.ai-dictation.add",
+      "id": "shortcut-settings.ai-dictation.add",
+      "role": "button",
+      "screen_id": "prompt-settings",
+      "semantic_id": "shortcut-settings.ai-dictation.add",
+      "test_id": "shortcut-settings-ai-dictation-add",
+      "text": "Add shortcut"
+    },
+    {
+      "id": "shortcut-settings.ai-dictation.last",
+      "role": "text",
+      "screen_id": "prompt-settings",
+      "semantic_id": "shortcut-settings.ai-dictation.last",
+      "test_id": "shortcut-settings-ai-dictation-last",
+      "text": "Each action keeps at least one shortcut. Change or reset it instead."
+    },
+    {
+      "children": [
+        "shortcut-settings.ai-dictation.shortcut"
+      ],
+      "id": "shortcut-settings.ai-dictation.list",
+      "repeat_model": {
+        "collection": "shortcuts.ai_dictation",
+        "instance_id_template": "shortcut-{keys}",
+        "item_key": "keys",
+        "item_model": "shortcut_binding"
+      },
+      "role": "list",
+      "screen_id": "prompt-settings",
+      "semantic_id": "shortcut-settings.ai-dictation.list",
+      "test_id": "shortcut-settings-ai-dictation-list"
+    },
+    {
+      "action": "shortcut-settings.ai-dictation.reset",
+      "id": "shortcut-settings.ai-dictation.reset",
+      "role": "button",
+      "screen_id": "prompt-settings",
+      "semantic_id": "shortcut-settings.ai-dictation.reset",
+      "test_id": "shortcut-settings-ai-dictation-reset"
+    },
+    {
+      "children": [
+        "shortcut-settings.ai-dictation.shortcut.remove"
+      ],
+      "id": "shortcut-settings.ai-dictation.shortcut",
+      "role": "text",
+      "screen_id": "prompt-settings",
+      "semantic_id": "shortcut-settings.ai-dictation.shortcut",
+      "test_id": "shortcut-settings-ai-dictation-shortcut",
+      "text": "⌥ ⇧ Space"
+    },
+    {
+      "action": "shortcut-settings.ai-dictation.shortcut.remove",
+      "id": "shortcut-settings.ai-dictation.shortcut.remove",
+      "role": "button",
+      "screen_id": "prompt-settings",
+      "semantic_id": "shortcut-settings.ai-dictation.shortcut.remove",
+      "test_id": "shortcut-settings-ai-dictation-shortcut-remove"
+    },
+    {
+      "id": "shortcut-settings.ai-dictation.title",
+      "role": "text",
+      "screen_id": "prompt-settings",
+      "semantic_id": "shortcut-settings.ai-dictation.title",
+      "test_id": "shortcut-settings-ai-dictation-title",
+      "text": "Post-Processing Hotkey"
     }
   ],
   "relations": [],
@@ -236,6 +404,18 @@ Generator: `penflow.flow-docs/1`
     "states": [
       {
         "id": "default"
+      },
+      {
+        "id": "shortcut-removed"
+      },
+      {
+        "id": "recording"
+      },
+      {
+        "id": "reset"
+      },
+      {
+        "id": "reloaded"
       }
     ],
     "surface": "desktop",

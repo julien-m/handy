@@ -9,12 +9,14 @@ Generator: `penflow.flow-docs/1`
 {
   "actions": [
     {
-      "event": "submit",
-      "guard": "draft-valid",
+      "destination": {
+        "screen": "replacement-settings",
+        "state": "default"
+      },
+      "event": "navigate",
       "id": "replacement-settings-import.dialog.apply",
-      "kind": "state_change",
+      "kind": "navigation",
       "node": "replacement-settings-import.dialog.apply",
-      "success_transition": "replacement-settings-import.dialog.apply.imported",
       "trigger": "click"
     },
     {
@@ -51,6 +53,15 @@ Generator: `penflow.flow-docs/1`
       "kind": "state_change",
       "node": "replacement-settings-import.dialog.replace",
       "trigger": "change"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "replacement-settings-import.unreadable.dismiss",
+      "kind": "state_change",
+      "node": "replacement-settings-import.unreadable.dismiss",
+      "success_transition": "replacement-settings-import.unreadable.dismiss.refusal-dismissed",
+      "trigger": "click"
     }
   ],
   "nodes": [
@@ -183,13 +194,32 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "children": [
-        "replacement-settings-import.unreadable.title"
+        "replacement-settings-import.unreadable.title",
+        "replacement-settings-import.unreadable.body",
+        "replacement-settings-import.unreadable.dismiss"
       ],
       "id": "replacement-settings-import.unreadable",
       "role": "alert",
       "screen_id": "replacement-settings-import",
       "semantic_id": "replacement-settings-import.unreadable",
       "test_id": "replacement-settings-import-unreadable"
+    },
+    {
+      "id": "replacement-settings-import.unreadable.body",
+      "role": "text",
+      "screen_id": "replacement-settings-import",
+      "semantic_id": "replacement-settings-import.unreadable.body",
+      "test_id": "replacement-settings-import-unreadable-body",
+      "text": "Nothing was imported from that file. Export plain text or CSV, then import again."
+    },
+    {
+      "action": "replacement-settings-import.unreadable.dismiss",
+      "id": "replacement-settings-import.unreadable.dismiss",
+      "role": "button",
+      "screen_id": "replacement-settings-import",
+      "semantic_id": "replacement-settings-import.unreadable.dismiss",
+      "test_id": "replacement-settings-import-unreadable-dismiss",
+      "text": "Dismiss"
     },
     {
       "id": "replacement-settings-import.unreadable.title",
@@ -210,11 +240,11 @@ Generator: `penflow.flow-docs/1`
         "id": "default"
       },
       {
-        "id": "imported"
+        "id": "refusal-dismissed"
       }
     ],
     "surface": "desktop",
-    "title": "Word replacements — import preview",
+    "title": "Word replacements — import preview (over the list)",
     "viewport": {
       "height": 570,
       "width": 680

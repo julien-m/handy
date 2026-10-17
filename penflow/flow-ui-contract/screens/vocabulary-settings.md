@@ -79,20 +79,53 @@ Generator: `penflow.flow-docs/1`
       "text": "45 of 500 terms"
     },
     {
+      "id": "vocabulary-settings.error",
+      "role": "alert",
+      "screen_id": "vocabulary-settings",
+      "semantic_id": "vocabulary-settings.error",
+      "states": [
+        "error"
+      ],
+      "test_id": "vocabulary-settings-error",
+      "text": "The vocabulary changed in the meantime and was reloaded. Try again."
+    },
+    {
       "children": [
         "vocabulary-settings.term"
       ],
       "id": "vocabulary-settings.list",
       "repeat_model": {
         "collection": "vocabulary.terms",
-        "instance_id_template": "term-{key}",
-        "item_key": "key",
+        "instance_id_template": "term-{index}",
+        "item_key": "index",
         "item_model": "vocabulary_term"
       },
       "role": "list",
       "screen_id": "vocabulary-settings",
       "semantic_id": "vocabulary-settings.list",
       "test_id": "vocabulary-settings-list"
+    },
+    {
+      "id": "vocabulary-settings.list-error",
+      "role": "alert",
+      "screen_id": "vocabulary-settings",
+      "semantic_id": "vocabulary-settings.list-error",
+      "states": [
+        "list-error"
+      ],
+      "test_id": "vocabulary-settings-list-error",
+      "text": "Couldn't read the saved vocabulary. Nothing was changed; retry to load it."
+    },
+    {
+      "id": "vocabulary-settings.loading",
+      "role": "text",
+      "screen_id": "vocabulary-settings",
+      "semantic_id": "vocabulary-settings.loading",
+      "states": [
+        "loading"
+      ],
+      "test_id": "vocabulary-settings-loading",
+      "text": "Loading the vocabulary…"
     },
     {
       "action": "vocabulary-settings.new-term",
@@ -118,7 +151,7 @@ Generator: `penflow.flow-docs/1`
         "vocabulary-settings.status.title"
       ],
       "id": "vocabulary-settings.status",
-      "role": "alert",
+      "role": "container",
       "screen_id": "vocabulary-settings",
       "semantic_id": "vocabulary-settings.status",
       "test_id": "vocabulary-settings-status"
@@ -158,7 +191,10 @@ Generator: `penflow.flow-docs/1`
         "vocabulary-settings.new-term",
         "vocabulary-settings.add",
         "vocabulary-settings.paste",
-        "vocabulary-settings.count"
+        "vocabulary-settings.count",
+        "vocabulary-settings.loading",
+        "vocabulary-settings.list-error",
+        "vocabulary-settings.error"
       ],
       "id": "vocabulary-settings.terms",
       "role": "container",
@@ -200,6 +236,15 @@ Generator: `penflow.flow-docs/1`
       },
       {
         "id": "term-removed"
+      },
+      {
+        "id": "loading"
+      },
+      {
+        "id": "list-error"
+      },
+      {
+        "id": "error"
       }
     ],
     "surface": "desktop",

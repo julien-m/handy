@@ -28,6 +28,15 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "event": "submit",
+      "guard": "control-enabled",
+      "id": "recovery-bubble-insertion-failed.drag-handle",
+      "kind": "state_change",
+      "node": "recovery-bubble-insertion-failed.drag-handle",
+      "success_transition": "recovery-bubble-insertion-failed.drag-handle.dragging",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
       "guard": "recovery-bubble-visible",
       "id": "recovery-bubble-insertion-failed.why",
       "kind": "state_change",
@@ -52,7 +61,9 @@ Generator: `penflow.flow-docs/1`
         "recovery-bubble-insertion-failed.reason",
         "recovery-bubble-insertion-failed.close",
         "recovery-bubble-insertion-failed.preview",
+        "recovery-bubble-insertion-failed.late-read",
         "recovery-bubble-insertion-failed.explanation",
+        "recovery-bubble-insertion-failed.drag-handle",
         "recovery-bubble-insertion-failed.copy",
         "recovery-bubble-insertion-failed.why"
       ],
@@ -80,6 +91,18 @@ Generator: `penflow.flow-docs/1`
       "text": "Copy"
     },
     {
+      "action": "recovery-bubble-insertion-failed.drag-handle",
+      "id": "recovery-bubble-insertion-failed.drag-handle",
+      "role": "button",
+      "screen_id": "recovery-bubble-insertion-failed",
+      "semantic_id": "recovery-bubble-insertion-failed.drag-handle",
+      "states": [
+        "macos"
+      ],
+      "test_id": "recovery-bubble-insertion-failed-drag-handle",
+      "text": "Drag into a field"
+    },
+    {
       "children": [
         "recovery-bubble-insertion-failed.explanation.text"
       ],
@@ -96,6 +119,17 @@ Generator: `penflow.flow-docs/1`
       "semantic_id": "recovery-bubble-insertion-failed.explanation.text",
       "test_id": "recovery-bubble-insertion-failed-explanation-text",
       "text": "Some text may have reached the application. The full transcript is kept in History."
+    },
+    {
+      "id": "recovery-bubble-insertion-failed.late-read",
+      "role": "text",
+      "screen_id": "recovery-bubble-insertion-failed",
+      "semantic_id": "recovery-bubble-insertion-failed.late-read",
+      "states": [
+        "late-read"
+      ],
+      "test_id": "recovery-bubble-insertion-failed-late-read",
+      "text": "The application read the clipboard late: the text may have been pasted after all. Check it before copying again."
     },
     {
       "id": "recovery-bubble-insertion-failed.preview",
@@ -140,6 +174,9 @@ Generator: `penflow.flow-docs/1`
       },
       {
         "id": "explained"
+      },
+      {
+        "id": "dragging"
       }
     ],
     "surface": "desktop",

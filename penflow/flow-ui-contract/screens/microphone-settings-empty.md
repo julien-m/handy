@@ -9,14 +9,13 @@ Generator: `penflow.flow-docs/1`
 {
   "actions": [
     {
-      "binding_ref": {
-        "access": "write",
-        "entity": "microphone_priority",
-        "field": "new_choice"
+      "destination": {
+        "screen": "microphone-settings",
+        "state": "default"
       },
-      "event": "change",
+      "event": "navigate",
       "id": "microphone-settings-empty.add",
-      "kind": "state_change",
+      "kind": "navigation",
       "node": "microphone-settings-empty.add",
       "trigger": "change"
     },
@@ -62,6 +61,17 @@ Generator: `penflow.flow-docs/1`
       "semantic_id": "microphone-settings-empty.add",
       "test_id": "microphone-settings-empty-add",
       "text": "Add microphone…"
+    },
+    {
+      "id": "microphone-settings-empty.checked",
+      "role": "text",
+      "screen_id": "microphone-settings-empty",
+      "semantic_id": "microphone-settings-empty.checked",
+      "states": [
+        "checked"
+      ],
+      "test_id": "microphone-settings-empty-checked",
+      "text": "Checked 3 s ago"
     },
     {
       "children": [
@@ -151,7 +161,8 @@ Generator: `penflow.flow-docs/1`
         "microphone-settings-empty.priority.title",
         "microphone-settings-empty.empty",
         "microphone-settings-empty.add",
-        "microphone-settings-empty.refresh"
+        "microphone-settings-empty.refresh",
+        "microphone-settings-empty.checked"
       ],
       "id": "microphone-settings-empty.priority",
       "role": "container",

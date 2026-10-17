@@ -20,10 +20,28 @@ Generator: `penflow.flow-docs/1`
     {
       "event": "submit",
       "guard": "control-enabled",
+      "id": "shortcut-settings-conflict.dictation.os.retry",
+      "kind": "state_change",
+      "node": "shortcut-settings-conflict.dictation.os.retry",
+      "success_transition": "shortcut-settings-conflict.dictation.os.retry.retried",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
       "id": "shortcut-settings-conflict.dictation.recording",
       "kind": "state_change",
       "node": "shortcut-settings-conflict.dictation.recording",
       "success_transition": "shortcut-settings-conflict.dictation.recording.activated",
+      "trigger": "click"
+    },
+    {
+      "event": "submit",
+      "guard": "control-enabled",
+      "id": "shortcut-settings-conflict.dictation.recording-discard",
+      "kind": "state_change",
+      "node": "shortcut-settings-conflict.dictation.recording-discard",
+      "success_transition": "shortcut-settings-conflict.dictation.recording-discard.recording-discarded",
       "trigger": "click"
     },
     {
@@ -52,6 +70,7 @@ Generator: `penflow.flow-docs/1`
         "shortcut-settings-conflict.dictation.title",
         "shortcut-settings-conflict.dictation.list",
         "shortcut-settings-conflict.dictation.recording",
+        "shortcut-settings-conflict.dictation.recording-discard",
         "shortcut-settings-conflict.dictation.conflict",
         "shortcut-settings-conflict.dictation.legacy",
         "shortcut-settings-conflict.dictation.os"
@@ -77,7 +96,7 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "shortcut-settings-conflict",
       "semantic_id": "shortcut-settings-conflict.dictation.conflict",
       "test_id": "shortcut-settings-conflict-dictation-conflict",
-      "text": "⇧ ⌥ Space is already used by Dictation with AI processing. Nothing was saved."
+      "text": "⇧ ⌥ Space is already used by Post-Processing Hotkey. Nothing was saved."
     },
     {
       "children": [
@@ -96,7 +115,7 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "shortcut-settings-conflict",
       "semantic_id": "shortcut-settings-conflict.dictation.legacy.title",
       "test_id": "shortcut-settings-conflict-dictation-legacy-title",
-      "text": "⌃ ⌥ D overlaps with Cancel"
+      "text": "⌃ ⌥ D overlaps with Cancel Shortcut"
     },
     {
       "children": [
@@ -116,13 +135,23 @@ Generator: `penflow.flow-docs/1`
     },
     {
       "children": [
-        "shortcut-settings-conflict.dictation.os.title"
+        "shortcut-settings-conflict.dictation.os.title",
+        "shortcut-settings-conflict.dictation.os.retry"
       ],
       "id": "shortcut-settings-conflict.dictation.os",
       "role": "alert",
       "screen_id": "shortcut-settings-conflict",
       "semantic_id": "shortcut-settings-conflict.dictation.os",
       "test_id": "shortcut-settings-conflict-dictation-os"
+    },
+    {
+      "action": "shortcut-settings-conflict.dictation.os.retry",
+      "id": "shortcut-settings-conflict.dictation.os.retry",
+      "role": "button",
+      "screen_id": "shortcut-settings-conflict",
+      "semantic_id": "shortcut-settings-conflict.dictation.os.retry",
+      "test_id": "shortcut-settings-conflict-dictation-os-retry",
+      "text": "Try again"
     },
     {
       "id": "shortcut-settings-conflict.dictation.os.title",
@@ -140,6 +169,17 @@ Generator: `penflow.flow-docs/1`
       "semantic_id": "shortcut-settings-conflict.dictation.recording",
       "test_id": "shortcut-settings-conflict-dictation-recording",
       "text": "⇧ ⌥ Space"
+    },
+    {
+      "action": "shortcut-settings-conflict.dictation.recording-discard",
+      "id": "shortcut-settings-conflict.dictation.recording-discard",
+      "role": "button",
+      "screen_id": "shortcut-settings-conflict",
+      "semantic_id": "shortcut-settings-conflict.dictation.recording-discard",
+      "states": [
+        "recording"
+      ],
+      "test_id": "shortcut-settings-conflict-dictation-recording-discard"
     },
     {
       "children": [
@@ -166,7 +206,7 @@ Generator: `penflow.flow-docs/1`
       "screen_id": "shortcut-settings-conflict",
       "semantic_id": "shortcut-settings-conflict.dictation.title",
       "test_id": "shortcut-settings-conflict-dictation-title",
-      "text": "Dictation"
+      "text": "Transcribe Shortcut"
     },
     {
       "children": [
@@ -197,6 +237,12 @@ Generator: `penflow.flow-docs/1`
       },
       {
         "id": "shortcut-removed"
+      },
+      {
+        "id": "recording-discarded"
+      },
+      {
+        "id": "retried"
       }
     ],
     "surface": "desktop",
