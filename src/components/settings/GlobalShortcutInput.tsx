@@ -31,6 +31,8 @@ interface GlobalShortcutInputProps {
   value?: string | null;
   label?: string;
   testId?: string;
+  /** Instance id of a repeated chip (`shortcut-{keys}` of the Penflow contract). */
+  instanceId?: string;
 }
 
 /** Keys held down and every key recorded during one capture. */
@@ -172,6 +174,7 @@ export const GlobalShortcutInput: React.FC<GlobalShortcutInputProps> = (
       disabled={props.disabled ?? false}
       label={props.label}
       testId={props.testId}
+      instanceId={props.instanceId}
       onStart={recording.start}
       onLeave={stop}
       chipRef={(element) => {

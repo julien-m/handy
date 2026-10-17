@@ -76,7 +76,10 @@ test.describe("focus after each action (SC-003)", () => {
     await expect(
       page.getByTestId("microphone-settings-empty-empty"),
     ).toBeVisible();
-    await expectFocus(page, "microphone-settings-add (combobox)");
+    await expect(
+      page.getByTestId("microphone-settings-empty-screen"),
+    ).toBeVisible();
+    await expectFocus(page, "microphone-settings-empty-add (combobox)");
   });
 
   test("a keyboard move keeps focus on the moved row's control", async ({
@@ -135,7 +138,13 @@ test.describe("focus after each action (SC-003)", () => {
     await reload.focus();
     await page.keyboard.press("Enter");
     await expectFocus(page, "microphone-settings-error-reload");
-    await expect(page.getByTestId("microphone-settings-draft")).toBeVisible();
+    await expect(
+      page.getByTestId("microphone-settings-error-draft"),
+    ).toBeVisible();
+    await expect(save).toHaveAttribute(
+      "data-testid",
+      "microphone-settings-error-save",
+    );
     // The held write was sent at the old revision: it is refused, nothing is replaced.
     await page.evaluate(() => window.harness.releaseSave(null));
     await expect(reload).not.toHaveAttribute("aria-disabled", "true");
@@ -155,10 +164,16 @@ test.describe("focus after each action (SC-003)", () => {
     await open(page);
     await editFromKeyboard(page);
     await page.evaluate(() => window.harness.commitElsewhere(["Dock"]));
+    const conflict = page.getByTestId("microphone-settings-error-conflict");
+    await expect(conflict).toBeVisible();
+    // The banner says the truth: Reload shows the other order and discards the edits.
+    await expect(conflict).toContainText(text.conflict.body);
+    // Every test id of the shown screen carries the error prefix, so none is duplicated.
     await expect(
-      page.getByTestId("microphone-settings-error-conflict"),
+      page.getByTestId("microphone-settings-error-screen"),
     ).toBeVisible();
-    const save = page.getByTestId("microphone-settings-save");
+    await expect(page.getByTestId("microphone-settings-screen")).toHaveCount(0);
+    const save = page.getByTestId("microphone-settings-error-save");
     await expect(save).toHaveAttribute("aria-disabled", "true");
     await expect(save).toHaveAttribute("data-state", "disabled");
     // Another edit keeps it inactive, and activating it writes nothing.
@@ -171,7 +186,7 @@ test.describe("focus after each action (SC-003)", () => {
     const calls = () => page.evaluate(() => window.harness.backend.saveCalls);
     expect((await calls()).length).toBe(0);
     // Discard ends the conflict: the order saved elsewhere is shown, nothing was written.
-    await page.getByTestId("microphone-settings-discard").click();
+    await page.getByTestId("microphone-settings-error-discard").click();
     await expect(
       page.getByTestId("microphone-settings-error-conflict"),
     ).toBeHidden();

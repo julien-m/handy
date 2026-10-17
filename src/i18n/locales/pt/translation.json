@@ -314,7 +314,7 @@
         },
         "conflict": {
           "title": "Configurações alteradas em outro lugar",
-          "body": "Suas edições são mantidas. Recarregar mostra a ordem salva e descarta suas edições.",
+          "body": "A ordem foi alterada em outro lugar. Recarregue para vê-la; suas edições serão descartadas.",
           "reload": "Recarregar"
         },
         "errors": {

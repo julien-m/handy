@@ -8,6 +8,7 @@ import { ConflictAlert, DraftBar } from "./draft-feedback";
 import { orderError, type SavePhase } from "./draft-state";
 import { EffectiveInputRow } from "./effective-input";
 import { PrioritySection } from "./priority-editor";
+import { MicrophoneScreenContext, microphoneScreen } from "./screen-id";
 import { usePriorityEditor, type PriorityEditor } from "./use-priority-editor";
 
 const EditorContext = createContext<PriorityEditor | null>(null);
@@ -40,22 +41,31 @@ export const MicrophonePrioritySettings: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
   const editor = usePriorityEditor();
+  const screen = microphoneScreen({
+    loading: editor.loading,
+    conflict: editor.draft.conflict,
+    checkFailed: editor.status.failed,
+    addRefused: editor.draft.addError !== null,
+    count: editor.order.length,
+  });
   return (
     <EditorContext.Provider value={editor}>
-      <div
-        ref={editor.focus.rootRef}
-        className="space-y-6"
-        data-testid="microphone-settings-screen"
-        data-state={EDITOR_STATE[editor.draft.savePhase]}
-      >
-        <ConflictAlert
-          visible={editor.draft.conflict}
-          busy={editor.draft.savePhase === "saving"}
-          onReload={() => void editor.reload()}
-        />
-        <div data-testid="microphone-settings-sound">{children}</div>
-        <EditorDraftBar editor={editor} />
-      </div>
+      <MicrophoneScreenContext.Provider value={screen}>
+        <div
+          ref={editor.focus.rootRef}
+          className="space-y-6"
+          data-testid={`${screen}-screen`}
+          data-state={EDITOR_STATE[editor.draft.savePhase]}
+        >
+          <ConflictAlert
+            visible={editor.draft.conflict}
+            busy={editor.draft.savePhase === "saving"}
+            onReload={() => void editor.reload()}
+          />
+          <div data-testid={`${screen}-sound`}>{children}</div>
+          <EditorDraftBar editor={editor} />
+        </div>
+      </MicrophoneScreenContext.Provider>
     </EditorContext.Provider>
   );
 };

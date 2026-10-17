@@ -314,7 +314,7 @@
         },
         "conflict": {
           "title": "Inställningarna ändrades någon annanstans",
-          "body": "Dina ändringar behålls. Ladda om visar den sparade ordningen och förkastar dina ändringar.",
+          "body": "Ordningen ändrades någon annanstans. Ladda om för att se den; dina ändringar förkastas.",
           "reload": "Ladda om"
         },
         "errors": {

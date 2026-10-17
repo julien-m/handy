@@ -10,9 +10,9 @@ import { SettingContainer } from "../ui/SettingContainer";
 import { SwitchControl } from "../ui/ToggleSwitch";
 import { Tooltip } from "../ui/Tooltip";
 import { type ReturnToAppView, returnToAppView } from "./return-to-app-model";
+import { useReportedOutputScreen } from "./output-screen";
 
 const KEY = "settings.advanced.returnToApp";
-const TEST_ID = "output-settings-return-app";
 
 interface InfoButtonProps {
   label: string;
@@ -69,13 +69,19 @@ interface ReturnToAppSettingProps {
 interface ReturnToggleProps {
   view: ReturnToAppView;
   description: string;
+  /** Test id of the row, under the output screen shown. */
+  testId: string;
 }
 
 /**
  * The toggle, off and disabled with its reason where unsupported; screen
  * readers get the description (or the reason) through a hidden copy.
  */
-const ReturnToggle: React.FC<ReturnToggleProps> = ({ view, description }) => {
+const ReturnToggle: React.FC<ReturnToggleProps> = ({
+  view,
+  description,
+  testId,
+}) => {
   const { t } = useTranslation();
   const { updateSetting, isUpdating } = useSettings();
   const descriptionId = useId();
@@ -90,7 +96,7 @@ const ReturnToggle: React.FC<ReturnToggleProps> = ({ view, description }) => {
         disabled={view.state !== "available" || isBusy}
         ariaLabel={t(`${KEY}.title`)}
         ariaDescribedBy={descriptionId}
-        testId={`${TEST_ID}-toggle`}
+        testId={`${testId}-toggle`}
         onChange={(enabled) =>
           void updateSetting("return_to_dictation_app", enabled)
         }
@@ -111,6 +117,12 @@ export const ReturnToAppSetting: React.FC<ReturnToAppSettingProps> = (
   const { t } = useTranslation();
   const stored = useSettings().getSetting("return_to_dictation_app");
   const view = returnToAppView(useDestinationSupport(), stored);
+  // Unavailable destination return is the output-settings-unavailable screen (006).
+  const screen = useReportedOutputScreen(
+    "return-app",
+    view.state === "unavailable" ? "output-settings-unavailable" : null,
+  );
+  const testId = `${screen}-return-app`;
   if (view.state === "hidden" || view.state === "loading") return null;
   const description = t(view.descriptionKey);
   return (
@@ -119,15 +131,15 @@ export const ReturnToAppSetting: React.FC<ReturnToAppSettingProps> = (
       description={description}
       descriptionMode="inline"
       grouped={props.grouped ?? false}
-      testId={TEST_ID}
+      testId={testId}
     >
       <div className="flex items-center gap-3" data-state={view.state}>
         <InfoButton
           label={t(`${KEY}.detailsLabel`)}
           details={t(`${KEY}.details`)}
-          testId={`${TEST_ID}-info`}
+          testId={`${testId}-info`}
         />
-        <ReturnToggle view={view} description={description} />
+        <ReturnToggle view={view} description={description} testId={testId} />
       </div>
     </SettingContainer>
   );

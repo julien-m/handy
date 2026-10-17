@@ -314,7 +314,7 @@
         },
         "conflict": {
           "title": "Nastavení bylo změněno jinde",
-          "body": "Vaše úpravy zůstávají zachovány. Načíst znovu zobrazí uložené pořadí a zahodí vaše úpravy.",
+          "body": "Pořadí bylo změněno jinde. Načtěte znovu, abyste ho viděli; vaše úpravy budou zahozeny.",
           "reload": "Načíst znovu"
         },
         "errors": {

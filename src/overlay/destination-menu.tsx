@@ -9,10 +9,15 @@ import { useTranslation } from "react-i18next";
 import type { MenuChoice, MenuEntry } from "@/bindings";
 import { AppIcon, keepFocus } from "./destination-badge";
 import { menuSections } from "./destination-model";
-import { PIN_TEST_IDS, type PinEntry } from "./pin-state";
+import { pinTestIds, type PinEntry } from "./pin-state";
 import type { DestinationMenuState } from "./use-destination";
+import { useIndicatorScreen } from "./indicator-screen";
 
-const TEST_ID = "recording-indicator-destination-menu-menu";
+/**
+ * Test id of the destination menu, under the screen shown (`<screen>-menu`).
+ * @returns the menu's test id
+ */
+const useMenuId = (): string => `${useIndicatorScreen()}-menu`;
 
 interface DestinationMenuProps {
   menu: Exclude<DestinationMenuState, { status: "closed" }>;
@@ -32,13 +37,14 @@ const PinRow: React.FC<{ entry: PinEntry; onClick: () => void }> = ({
   onClick,
 }) => {
   const { t } = useTranslation();
+  const screen = useIndicatorScreen();
   const Glyph = entry.kind === "pin" ? Pin : PinOff;
   return (
     <button
       type="button"
       role="menuitem"
       className="smenu-item"
-      data-testid={entry.testId}
+      data-testid={pinTestIds(screen)[entry.kind]}
       onMouseDown={keepFocus}
       onClick={onClick}
     >
@@ -72,8 +78,9 @@ const PinSection: React.FC<{
 /** "This dictation only" (009): this choice does not move the pin. */
 const DictationOnlyHint: React.FC = () => {
   const { t } = useTranslation();
+  const screen = useIndicatorScreen();
   return (
-    <span className="smenu-hint" data-testid={PIN_TEST_IDS.hint}>
+    <span className="smenu-hint" data-testid={pinTestIds(screen).hint}>
       {t("overlay.destination.menu.thisDictationOnly")}
     </span>
   );
@@ -117,18 +124,19 @@ const MenuEntries: React.FC<{
   onChoose: (choice: MenuChoice) => void;
 }> = ({ menu, pinActive, onChoose }) => {
   const { t } = useTranslation();
+  const menuId = useMenuId();
   const sections = menuSections(menu);
   return (
     <>
       {sections.frontmost && (
         <>
           <MenuLabel
-            testId={`${TEST_ID}-now-label`}
+            testId={`${menuId}-now-label`}
             text={t("overlay.destination.menu.frontmostNow")}
           />
           <AppRow
             entry={sections.frontmost}
-            testId={`${TEST_ID}-frontmost`}
+            testId={`${menuId}-frontmost`}
             pinActive={pinActive}
             onChoose={onChoose}
           />
@@ -136,7 +144,7 @@ const MenuEntries: React.FC<{
       )}
       {sections.others.length > 0 && (
         <MenuLabel
-          testId={`${TEST_ID}-others-label`}
+          testId={`${menuId}-others-label`}
           text={t("overlay.destination.menu.otherApps")}
         />
       )}
@@ -144,7 +152,7 @@ const MenuEntries: React.FC<{
         <AppRow
           key={entry.token}
           entry={entry}
-          testId={`${TEST_ID}-app`}
+          testId={`${menuId}-app`}
           pinActive={pinActive}
           onChoose={onChoose}
         />
@@ -163,13 +171,14 @@ const FrontmostAtEnd: React.FC<{
   onChoose: (choice: MenuChoice) => void;
 }> = ({ current, onChoose }) => {
   const { t } = useTranslation();
+  const menuId = useMenuId();
   return (
     <button
       type="button"
       role="menuitemradio"
       aria-checked={current}
       className={`smenu-item ${current ? "current" : ""}`}
-      data-testid={`${TEST_ID}-frontmost-at-end`}
+      data-testid={`${menuId}-frontmost-at-end`}
       onMouseDown={keepFocus}
       onClick={() => onChoose({ kind: "frontmost_at_end" })}
     >
@@ -193,18 +202,23 @@ export const DestinationMenuPanel: React.FC<DestinationMenuProps> = ({
   onUnpin = () => undefined,
 }) => {
   const { t } = useTranslation();
+  const menuId = useMenuId();
   return (
     <div
       className="smenu"
       role="menu"
       aria-label={t("overlay.destination.menu.title")}
-      data-testid={TEST_ID}
+      data-testid={menuId}
     >
       {menu.status === "loading" && (
-        <p className="smenu-status">{t("overlay.destination.menu.loading")}</p>
+        <p className="smenu-status" data-testid={`${menuId}-loading`}>
+          {t("overlay.destination.menu.loading")}
+        </p>
       )}
       {menu.status === "error" && (
-        <p className="smenu-status">{t("overlay.destination.menu.failed")}</p>
+        <p className="smenu-status" data-testid={`${menuId}-failed`}>
+          {t("overlay.destination.menu.failed")}
+        </p>
       )}
       {menu.status === "open" && (
         <>
@@ -218,7 +232,11 @@ export const DestinationMenuPanel: React.FC<DestinationMenuProps> = ({
         </>
       )}
       {feedbackKey && (
-        <p className="smenu-feedback" role="status">
+        <p
+          className="smenu-feedback"
+          role="status"
+          data-testid={`${menuId}-feedback`}
+        >
           {t(feedbackKey)}
         </p>
       )}

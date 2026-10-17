@@ -29,13 +29,22 @@ describe("destination badge (006)", () => {
     );
     expect(html).toContain('aria-label="Remove destination"');
     expect(html).toContain("sindicator with-dest compact");
+    expect(html).toContain('data-testid="recording-indicator-screen"');
+    expect(html).toContain('data-testid="recording-indicator-bar"');
   });
   test("without destination: Frontmost app and no cross", () => {
     const html = render({
       destination: destination(session({ kind: "frontmost_at_end" })),
     });
     expect(html).toContain('aria-label="Destination: Frontmost app"');
-    expect(html).not.toContain("recording-indicator-destination-remove");
+    expect(html).not.toContain("destination-remove");
+    // D1: every test id carries the no-destination screen's prefix.
+    for (const id of ["screen", "bar", "destination", "destination-name"]) {
+      expect(html).toContain(
+        `data-testid="recording-indicator-no-destination-${id}"`,
+      );
+    }
+    expect(html).not.toContain('data-testid="recording-indicator-destination"');
   });
   test("once insertion begins the badge is frozen and the cross is gone", () => {
     const html = render({
@@ -85,20 +94,47 @@ describe("destination badge (006)", () => {
       expect(html).toContain(`data-testid="${id}${suffix}"`);
     }
     expect(html).toContain('data-instance-id="app-2"');
+    // D1: the badge and the bar carry the destination-menu screen's prefix too.
+    for (const shared of [
+      "screen",
+      "bar",
+      "destination",
+      "destination-remove",
+    ]) {
+      expect(html).toContain(
+        `data-testid="recording-indicator-destination-menu-${shared}"`,
+      );
+    }
+    expect(html).not.toContain('data-testid="recording-indicator-destination"');
     expect(html.indexOf("Comet")).toBeLessThan(html.indexOf(">ChatGPT<"));
     expect(html).toContain('aria-checked="true"');
   });
   test("loading and error states of the menu", () => {
-    expect(
-      render({
-        destination: destination(session(chatgpt), { status: "loading" }),
-      }),
-    ).toContain("Loading apps…");
-    expect(
-      render({
-        destination: destination(session(chatgpt), { status: "error" }),
-      }),
-    ).toContain("The app list could not be loaded.");
+    const loading = render({
+      destination: destination(session(chatgpt), { status: "loading" }),
+    });
+    expect(loading).toContain("Loading apps…");
+    expect(loading).toContain(
+      'data-testid="recording-indicator-destination-menu-menu-loading"',
+    );
+    const failed = render({
+      destination: destination(session(chatgpt), { status: "error" }),
+    });
+    expect(failed).toContain("The app list could not be loaded.");
+    expect(failed).toContain(
+      'data-testid="recording-indicator-destination-menu-menu-failed"',
+    );
+  });
+  test("a refused choice shows its feedback in the open menu", () => {
+    const html = render({
+      destination: {
+        ...destination(session(chatgpt), { status: "loading" }),
+        feedbackKey: "overlay.destination.menu.failed",
+      },
+    });
+    expect(html).toContain(
+      'data-testid="recording-indicator-destination-menu-menu-feedback"',
+    );
   });
 });
 
@@ -135,7 +171,9 @@ describe("pinned destination (009)", () => {
   });
   test("with return off, an active pin still shows the badge", () => {
     const html = render({ destination: destination(pinnedSession(false)) });
-    expect(html).toContain('data-testid="recording-indicator-destination"');
+    expect(html).toContain(
+      'data-testid="recording-indicator-pinned-destination"',
+    );
   });
   test("the open menu lists Unpin at the bottom and marks the other apps", () => {
     const html = render({
@@ -147,12 +185,23 @@ describe("pinned destination (009)", () => {
     expect(unpin > -1).toBe(true);
     expect(html).toContain(">Unpin ChatGPT<");
     expect(unpin > html.indexOf(">Comet<")).toBe(true);
-    expect(
-      unpin >
-        html.indexOf(
-          'data-testid="recording-indicator-destination-menu-menu-frontmost-at-end"',
-        ),
-    ).toBe(true);
+    const atEnd = html.indexOf(
+      'data-testid="recording-indicator-pinned-menu-frontmost-at-end"',
+    );
+    expect(atEnd > -1 && unpin > atEnd).toBe(true);
+    // D1: the menu, the badge and the bar carry the pinned screen's prefix.
+    for (const shared of [
+      "screen",
+      "bar",
+      "menu",
+      "menu-frontmost",
+      "destination",
+    ]) {
+      expect(html).toContain(
+        `data-testid="recording-indicator-pinned-${shared}"`,
+      );
+    }
+    expect(html).not.toContain("recording-indicator-destination-menu-menu");
     expect(html).not.toContain("recording-indicator-pinned-menu-pin");
     expect(html).toContain(
       'data-testid="recording-indicator-pinned-menu-hint">This dictation only<',
@@ -162,13 +211,14 @@ describe("pinned destination (009)", () => {
     const html = render({
       destination: destination(session(chatgpt), { status: "open", menu }),
     });
+    // 009-01: the contract's Pin entry of the destination menu screen.
     const pin = html.indexOf(
-      'data-testid="recording-indicator-pinned-menu-pin"',
+      'data-testid="recording-indicator-destination-menu-menu-pin"',
     );
     expect(pin > -1).toBe(true);
     expect(html).toContain(">Pin ChatGPT<");
     expect(pin).toBeLessThan(html.indexOf(">Comet<"));
-    expect(html).not.toContain("recording-indicator-pinned-menu-hint");
+    expect(html).not.toContain("recording-indicator-pinned");
   });
 });
 
@@ -205,6 +255,13 @@ describe("prompt pill (005)", () => {
       expect(html).toContain(`data-testid="${id}${suffix}"`);
     }
     expect(html).toContain('data-instance-id="prompt-min"');
+    // D1: the pill and the bar carry the prompt-menu screen's prefix.
+    for (const shared of ["screen", "bar", "prompt", "prompt-shortcut"]) {
+      expect(html).toContain(
+        `data-testid="recording-indicator-prompt-menu-${shared}"`,
+      );
+    }
+    expect(html).not.toContain('data-testid="recording-indicator-prompt"');
     expect(html).toContain(
       "Applies to this dictation only. Default stays Minimal correction.",
     );
@@ -233,5 +290,9 @@ describe("notices (005, 007)", () => {
       "Text placed on the clipboard for the remote screen",
     );
     expect(html).not.toContain("recording-indicator-pill");
+    // Shown alone, the newest notice names the screen.
+    expect(html).toContain(
+      'data-testid="recording-indicator-hand-over-screen"',
+    );
   });
 });

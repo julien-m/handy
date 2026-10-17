@@ -19,6 +19,8 @@ interface DropdownProps {
   placeholder?: string;
   disabled?: boolean;
   onOpen?: () => void;
+  /** Called with true when the option list shows, false when it hides. */
+  onOpenChange?: (open: boolean) => void;
   /** Accessible name of the control (the setting title). */
   ariaLabel?: string;
   /** Test id of the control button. */
@@ -36,6 +38,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   placeholder = "Select an option...",
   disabled = false,
   onOpen,
+  onOpenChange,
   ariaLabel,
   testId,
   menuTestId,
@@ -45,6 +48,13 @@ export const Dropdown: React.FC<DropdownProps> = ({
   const [highlighted, setHighlighted] = useState(-1);
   const listId = useId();
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const shown = isOpen && !disabled;
+  // The latest callback, read when the list shows or hides, so a new callback never reports again.
+  const openChange = useRef(onOpenChange);
+  openChange.current = onOpenChange;
+  useEffect(() => {
+    openChange.current?.(shown);
+  }, [shown]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

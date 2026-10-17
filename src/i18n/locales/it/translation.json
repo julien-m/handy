@@ -314,7 +314,7 @@
         },
         "conflict": {
           "title": "Impostazioni modificate altrove",
-          "body": "Le tue modifiche sono conservate. Ricarica mostra l'ordine salvato e scarta le tue modifiche.",
+          "body": "L'ordine è stato modificato altrove. Ricarica per vederlo; le tue modifiche verranno scartate.",
           "reload": "Ricarica"
         },
         "errors": {

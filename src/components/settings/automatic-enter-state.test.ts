@@ -8,7 +8,7 @@ import { describe, expect, test } from "bun:test";
 import en from "@/i18n/locales/en/translation.json";
 import { dropdownKeyAction } from "../ui/dropdown-navigation";
 import {
-  AUTOMATIC_ENTER_TEST_IDS,
+  automaticEnterTestIds,
   automaticEnterOptions,
   enterControl,
   enterKeyOptions,
@@ -48,9 +48,9 @@ describe("Automatic Enter selector (has_dropdown)", () => {
     expect(options.filter((option) => option.selected).length).toBe(1);
     expect(options.find((option) => option.selected)?.value).toBe("pin_only");
     expect(options.map((option) => option.testId)).toEqual([
-      AUTOMATIC_ENTER_TEST_IDS.never,
-      AUTOMATIC_ENTER_TEST_IDS.always,
-      AUTOMATIC_ENTER_TEST_IDS.pinOnly,
+      "output-settings-enter-options-auto-enter-never",
+      "output-settings-enter-options-auto-enter-always",
+      "output-settings-enter-options-auto-enter-pin-only",
     ]);
   });
   test("the key selector keeps Enter, Ctrl+Enter and Cmd/Super+Enter", () => {
@@ -63,12 +63,15 @@ describe("Automatic Enter selector (has_dropdown)", () => {
       "settings.advanced.autoSubmit.options.superEnter",
     );
   });
-  test("contract test ids of the output-settings-enter-options screen", () => {
-    expect(AUTOMATIC_ENTER_TEST_IDS.mode).toBe(
-      "output-settings-enter-options-auto-enter-mode",
-    );
-    expect(AUTOMATIC_ENTER_TEST_IDS.key).toBe(
-      "output-settings-enter-options-auto-enter-key",
+  test("contract test ids follow the output screen shown", () => {
+    const base = automaticEnterTestIds("output-settings");
+    expect(base.row).toBe("output-settings-auto-enter");
+    expect(base.mode).toBe("output-settings-auto-enter-mode");
+    expect(base.key).toBe("output-settings-auto-enter-key");
+    const open = automaticEnterTestIds("output-settings-enter-options");
+    expect(open.mode).toBe("output-settings-enter-options-auto-enter-mode");
+    expect(open.options).toBe(
+      "output-settings-enter-options-auto-enter-options",
     );
   });
 });

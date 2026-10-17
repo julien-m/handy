@@ -115,3 +115,31 @@ export const dragStarts = (
   if (start === null || (buttons & 1) === 0) return false;
   return Math.hypot(point.x - start.x, point.y - start.y) > DRAG_THRESHOLD_PX;
 };
+
+/** Test-id prefix of a contract screen of the recovery bubble. */
+export type RecoveryScreen =
+  | "recovery-bubble"
+  | "recovery-bubble-explanation"
+  | "recovery-bubble-no-field"
+  | "recovery-bubble-insertion-failed";
+
+/**
+ * Contract screen the bubble shows (`penflow/flow-ui-contract/contract.json`): every test id
+ * carries its prefix, so each one is unique in the tree. A failed insertion and a missing text
+ * field have their own screens, explanation open or not; another reason with its explanation
+ * open is the explanation screen.
+ * @param view the projection shown, or null when closed
+ * @param explained whether the explanation is open
+ * @returns the test-id prefix of the screen shown
+ */
+export const recoveryScreen = (
+  view: RecoveryBubbleView | null,
+  explained: boolean,
+): RecoveryScreen => {
+  if (view?.reason === "insertion_failed") {
+    return "recovery-bubble-insertion-failed";
+  }
+  if (view?.reason === "no_text_field") return "recovery-bubble-no-field";
+  if (view !== null && explained) return "recovery-bubble-explanation";
+  return "recovery-bubble";
+};

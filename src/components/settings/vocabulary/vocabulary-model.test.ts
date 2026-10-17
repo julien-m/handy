@@ -117,6 +117,8 @@ describe("screens and test IDs", () => {
       "vocabulary-terms.tsx",
       "vocabulary-status.tsx",
       "vocabulary-paste.tsx",
+      // The contract draws the loading, list-error and error notices since the Penflow alignment.
+      "vocabulary-notices.tsx",
     ]
       .map((file) => fs.readFileSync(path.join(here, file), "utf8"))
       .join("\n");

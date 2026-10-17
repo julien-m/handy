@@ -9,6 +9,7 @@ import { STABLE_FOCUS_KEY } from "./editor-focus";
 import { AddControl, AddErrorText, CheckLine } from "./priority-controls";
 import { PriorityList } from "./priority-list";
 import type { PriorityEditor } from "./use-priority-editor";
+import { useMicrophoneScreen } from "./screen-id";
 
 /** Props of the priority section. */
 export interface PrioritySectionProps {
@@ -41,11 +42,12 @@ const EditorAddControl: React.FC<PrioritySectionProps> = ({ editor }) => (
 /** The list with the availability of each draft entry, or a loading line before the settings. */
 const EditorList: React.FC<PrioritySectionProps> = ({ editor }) => {
   const { t } = useTranslation();
+  const screen = useMicrophoneScreen();
   if (editor.loading) {
     return (
       <p
         className="text-sm text-mid-gray"
-        data-testid="microphone-settings-loading"
+        data-testid={`${screen}-loading`}
         role="status"
       >
         {t("common.loading")}
@@ -72,6 +74,7 @@ const EditorList: React.FC<PrioritySectionProps> = ({ editor }) => {
  */
 export const PrioritySection: React.FC<PrioritySectionProps> = ({ editor }) => {
   const { t } = useTranslation();
+  const screen = useMicrophoneScreen();
   const failed = editor.status.failed;
   return (
     <SettingContainer
@@ -80,8 +83,8 @@ export const PrioritySection: React.FC<PrioritySectionProps> = ({ editor }) => {
       descriptionMode="inline"
       layout="stacked"
       grouped={true}
-      testId="microphone-settings-priority"
-      titleTestId="microphone-settings-priority-title"
+      testId={`${screen}-priority`}
+      titleTestId={`${screen}-priority-title`}
       titleFocusKey={STABLE_FOCUS_KEY}
     >
       <div className="space-y-3">

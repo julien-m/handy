@@ -314,7 +314,7 @@
         },
         "conflict": {
           "title": "Settings changed elsewhere",
-          "body": "Your edits are kept. Reload shows the saved order and discards your edits.",
+          "body": "The order changed elsewhere. Reload to see it; your edits will be discarded.",
           "reload": "Reload"
         },
         "errors": {

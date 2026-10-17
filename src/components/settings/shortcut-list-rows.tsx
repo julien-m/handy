@@ -21,7 +21,11 @@ import {
   MAX_SHORTCUTS_PER_ACTION,
   type TranslatedMessage,
 } from "./shortcut-list-model";
-import type { ListHint, ShortcutTestIds } from "./shortcut-list-feedback";
+import {
+  type ListHint,
+  type ShortcutTestIds,
+  shortcutInstanceId,
+} from "./shortcut-list-feedback";
 import type { ShortcutDraft } from "./use-shortcut-list";
 
 const LIST_KEY = "settings.general.shortcut.list";
@@ -120,6 +124,7 @@ export const ShortcutRow: React.FC<ShortcutRowProps> = (props) => {
           disabled={busy}
           label={t(`${LIST_KEY}.change`)}
           testId={ids.shortcut}
+          instanceId={shortcutInstanceId(shortcut)}
           onCapture={async (next) => {
             await onEdit({
               kind: "replace",

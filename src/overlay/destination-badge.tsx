@@ -5,7 +5,8 @@ import { AppWindow, Pin } from "lucide-react";
 import type React from "react";
 import { useTranslation } from "react-i18next";
 import { monogram, safeIconSource, type BadgeView } from "./destination-model";
-import { badgeLabel, PIN_TEST_IDS } from "./pin-state";
+import { badgeLabel, pinTestIds } from "./pin-state";
+import { useIndicatorScreen } from "./indicator-screen";
 
 /** Keep a pointer press from focusing the control (the user's app keeps the keyboard). */
 export const keepFocus = (event: React.MouseEvent): void =>
@@ -66,11 +67,12 @@ const BadgeButton: React.FC<DestinationBadgeProps & { name: string }> = ({
   const { t } = useTranslation();
   const label = badgeLabel(badge, (key, values) => t(key, values));
   const pinned = badge.kind === "application" && badge.pinned;
+  const screen = useIndicatorScreen();
   return (
     <button
       type="button"
       className="sdest-btn"
-      data-testid="recording-indicator-destination"
+      data-testid={`${screen}-destination`}
       aria-label={label}
       aria-haspopup="menu"
       aria-expanded={menuOpen}
@@ -79,16 +81,13 @@ const BadgeButton: React.FC<DestinationBadgeProps & { name: string }> = ({
       onClick={onToggleMenu}
     >
       <BadgeIcon badge={badge} />
-      <span
-        className="sdest-name"
-        data-testid="recording-indicator-destination-name"
-      >
+      <span className="sdest-name" data-testid={`${screen}-destination-name`}>
         {name}
       </span>
       {pinned && (
         <Pin
           className="sdest-pin"
-          data-testid={PIN_TEST_IDS.mark}
+          data-testid={pinTestIds(screen).mark}
           aria-hidden="true"
         />
       )}
@@ -117,11 +116,12 @@ export const DestinationBadge: React.FC<DestinationBadgeProps> = (props) => {
 
 const RemoveCross: React.FC<{ onRemove: () => void }> = ({ onRemove }) => {
   const { t } = useTranslation();
+  const screen = useIndicatorScreen();
   return (
     <button
       type="button"
       className="sx sdest-remove"
-      data-testid="recording-indicator-destination-remove"
+      data-testid={`${screen}-destination-remove`}
       aria-label={t("overlay.destination.remove")}
       onMouseDown={keepFocus}
       onClick={(event) => {

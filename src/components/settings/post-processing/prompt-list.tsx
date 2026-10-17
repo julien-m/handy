@@ -110,6 +110,7 @@ const PromptRow: React.FC<PromptRowProps> = (props) => {
     <li
       className={`flex items-center gap-3 px-4 py-2 ${isDefault ? "bg-logo-primary/20" : ""}`}
       data-testid={`${TEST_ID}-prompt`}
+      data-instance-id={`prompt-${prompt.id}`}
       data-key={`prompt-${prompt.id}`}
       aria-current={isDefault ? "true" : undefined}
     >

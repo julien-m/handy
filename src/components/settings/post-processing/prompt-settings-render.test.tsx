@@ -111,6 +111,10 @@ describe("Post Process page", () => {
     expect(markup).toContain("Notes");
   });
 
+  test("each prompt row carries its instance id (prompt-{id})", () => {
+    expect(markup).toContain('data-instance-id="prompt-one"');
+  });
+
   test("keeps the AI dictation shortcut row of 004", () => {
     expect(has(markup, "shortcut-settings-ai-dictation")).toBe(true);
     expect(has(markup, "shortcut-settings-ai-dictation-shortcut")).toBe(true);
@@ -134,6 +138,7 @@ describe("prompt shortcut list (prompt:<id>)", () => {
     const markup = renderPromptList("prompt:one");
     expect(has(markup, editorIds.list)).toBe(true);
     expect(has(markup, "prompt-settings-editor-form-shortcut")).toBe(true);
+    expect(markup).toContain('data-instance-id="shortcut-ctrl+alt+m"');
     expect(markup).toMatch(
       /data-testid="prompt-settings-editor-form-shortcut-remove" aria-label="settings.general.shortcut.list.remove" aria-disabled="false"/,
     );

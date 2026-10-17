@@ -113,6 +113,8 @@ interface ShortcutChipProps {
   disabled: boolean;
   label?: string;
   testId?: string;
+  /** Instance id of a repeated chip (`shortcut-{keys}` of the Penflow contract). */
+  instanceId?: string;
   onStart: StartRecording;
   onLeave: () => void;
   chipRef: (element: HTMLButtonElement | null) => void;
@@ -206,6 +208,7 @@ export const ShortcutChip: React.FC<ShortcutChipProps> = (props) => {
         props.chipRef(element);
       }}
       data-testid={props.testId}
+      data-instance-id={props.instanceId}
       data-state={isRecording ? "recording" : "idle"}
       data-validity={validity}
       aria-label={label}

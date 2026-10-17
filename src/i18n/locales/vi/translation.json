@@ -314,7 +314,7 @@
         },
         "conflict": {
           "title": "Cài đặt đã thay đổi ở nơi khác",
-          "body": "Các chỉnh sửa của bạn được giữ lại. Tải lại sẽ hiển thị thứ tự đã lưu và hủy các chỉnh sửa của bạn.",
+          "body": "Thứ tự đã thay đổi ở nơi khác. Tải lại để xem; các chỉnh sửa của bạn sẽ bị hủy.",
           "reload": "Tải lại"
         },
         "errors": {

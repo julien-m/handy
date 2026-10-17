@@ -14,12 +14,15 @@ interface CommitFailureNoteProps {
   onReload: () => void;
   /** Reload drops the unsaved edits (list draft) instead of keeping them (text, import). */
   discardsOnReload?: boolean;
+  /** Test id of the note (`<screen>-commit-failure`); its message and Reload derive from it. */
+  testId: string;
 }
 
 export const CommitFailureNote: React.FC<CommitFailureNoteProps> = ({
   failure,
   onReload,
   discardsOnReload = false,
+  testId,
 }) => {
   const { t } = useTranslation();
   const discards =
@@ -34,10 +37,19 @@ export const CommitFailureNote: React.FC<CommitFailureNoteProps> = ({
     ? ""
     : ` ${t("settings.replacements.commit.unchanged")}`;
   return (
-    <div className="space-y-2" role="alert">
-      <Alert variant="error">{`${message}${unchanged}`}</Alert>
+    <div className="space-y-2" role="alert" data-testid={testId}>
+      <Alert variant="error">
+        <span
+          data-testid={`${testId}-message`}
+        >{`${message}${unchanged}`}</span>
+      </Alert>
       {failure.conflict && (
-        <Button variant="secondary" size="sm" onClick={onReload}>
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={onReload}
+          data-testid={`${testId}-reload`}
+        >
           {t("settings.replacements.commit.reload")}
         </Button>
       )}

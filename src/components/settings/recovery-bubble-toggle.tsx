@@ -7,6 +7,7 @@ import { useSettings } from "../../hooks/useSettings";
 import { useOsType } from "../../hooks/useOsType";
 import { ToggleSwitch } from "../ui/ToggleSwitch";
 import { showsNoFieldBubbleToggle } from "./recovery-bubble-toggle-state";
+import { useOutputScreen } from "./output-screen";
 
 const KEY = "show_recovery_bubble_without_text_field";
 
@@ -22,7 +23,10 @@ export const NoFieldBubbleToggle: React.FC<NoFieldBubbleToggleProps> = ({
   const { t } = useTranslation();
   const { getSetting, updateSetting, isUpdating } = useSettings();
   const value = getSetting(KEY);
-  if (!showsNoFieldBubbleToggle(value, useOsType())) return null;
+  const osType = useOsType();
+  // The row's test ids follow the output screen shown (006).
+  const screen = useOutputScreen();
+  if (!showsNoFieldBubbleToggle(value, osType)) return null;
   return (
     <ToggleSwitch
       checked={value === true}
@@ -32,7 +36,7 @@ export const NoFieldBubbleToggle: React.FC<NoFieldBubbleToggleProps> = ({
       description={t("settings.advanced.noFieldBubble.description")}
       descriptionMode="inline"
       grouped={grouped}
-      testId="output-settings-no-field-bubble"
+      testId={`${screen}-no-field-bubble`}
     />
   );
 };

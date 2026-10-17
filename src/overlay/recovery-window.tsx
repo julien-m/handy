@@ -4,18 +4,21 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { getLanguageDirection } from "@/lib/utils/rtl";
 import { RecoveryBubble } from "./recovery-bubble";
+import { recoveryScreen } from "./recovery-preview";
 import { useRecoveryBubble } from "./use-recovery-bubble";
 
 /** The recovery window content. */
 export const RecoveryWindow: React.FC = () => {
   const bubble = useRecoveryBubble();
   const { i18n } = useTranslation();
+  // The root's ids follow the contract screen the bubble shows (010).
+  const screen = recoveryScreen(bubble.view, bubble.explained);
   return (
     <div
       ref={bubble.ref}
       className="rb-stage"
-      data-testid="recovery-bubble-screen"
-      data-semantic-id="recovery-bubble"
+      data-testid={`${screen}-screen`}
+      data-semantic-id={screen}
       dir={getLanguageDirection(i18n.language)}
     >
       <RecoveryBubble

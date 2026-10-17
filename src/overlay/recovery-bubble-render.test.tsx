@@ -16,6 +16,7 @@ import { initReactI18next } from "react-i18next";
 import type { RecoveryBubbleView } from "@/bindings";
 import en from "@/i18n/locales/en/translation.json";
 import { RecoveryBubble } from "./recovery-bubble";
+import { recoveryScreen } from "./recovery-preview";
 
 const noop = () => undefined;
 const view = (patch: Partial<RecoveryBubbleView> = {}): RecoveryBubbleView => ({
@@ -94,6 +95,13 @@ describe("explanation (has_tooltip: tooltip-show / tooltip-hide)", () => {
     expect(html).toContain("Open Notes, then drag or copy the text.");
     expect(html).toContain('aria-expanded="true"');
     expect(html).toContain(">Hide details<");
+    // D1: explained, every element carries the explanation screen's prefix.
+    for (const id of ["bubble", "reason", "close", "preview", "copy", "why"]) {
+      expect(html).toContain(`data-testid="recovery-bubble-explanation-${id}"`);
+    }
+    expect(html).toContain(
+      'data-semantic-id="recovery-bubble-explanation.close"',
+    );
     expect(render(view(), false)).not.toContain(
       "recovery-bubble-explanation-explanation",
     );
@@ -110,6 +118,12 @@ describe("explanation (has_tooltip: tooltip-show / tooltip-hide)", () => {
     expect(html).toContain("may have been pasted after all");
     expect(html).toContain("The transcript is not in History.");
     expect(html).not.toContain("kept in History");
+    expect(html).toContain(
+      'data-testid="recovery-bubble-insertion-failed-explanation"',
+    );
+    expect(html).toContain(
+      'data-testid="recovery-bubble-insertion-failed-explanation-text"',
+    );
   });
   test("a late read is visible and announced without opening the explanation", () => {
     const late = view({
@@ -118,10 +132,13 @@ describe("explanation (has_tooltip: tooltip-show / tooltip-hide)", () => {
       late_read: true,
     });
     const html = render(late, false);
-    expect(html).toContain('data-testid="recovery-bubble-late-read"');
+    // D1: the late read shows on the insertion-failed screen, with its prefix.
+    expect(html).toContain(
+      'data-testid="recovery-bubble-insertion-failed-late-read"',
+    );
     expect(html).toContain('role="status"');
     expect(html).toContain("may have been pasted after all");
-    expect(render(view(), false)).not.toContain("recovery-bubble-late-read");
+    expect(render(view(), false)).not.toContain("late-read");
   });
 });
 
@@ -146,5 +163,27 @@ describe("keyboard and assistive technology (is_keyboard_navigable: keyboard-foc
     const buttons = html.match(/<button /g) ?? [];
     expect(buttons.length).toBe(4);
     expect(html).not.toContain('tabindex="-1"');
+  });
+});
+
+describe("contract screen shown (D1)", () => {
+  test("each reason and the explanation pick their screen", () => {
+    expect(recoveryScreen(null, false)).toBe("recovery-bubble");
+    expect(recoveryScreen(view(), false)).toBe("recovery-bubble");
+    expect(recoveryScreen(view(), true)).toBe("recovery-bubble-explanation");
+    expect(recoveryScreen(view({ reason: "no_text_field" }), true)).toBe(
+      "recovery-bubble-no-field",
+    );
+    expect(recoveryScreen(view({ reason: "insertion_failed" }), false)).toBe(
+      "recovery-bubble-insertion-failed",
+    );
+  });
+
+  test("no text field: every element carries the no-field prefix", () => {
+    const html = render(view({ reason: "no_text_field" }));
+    for (const id of ["bubble", "reason", "drag-handle", "copy", "why"]) {
+      expect(html).toContain(`data-testid="recovery-bubble-no-field-${id}"`);
+    }
+    expect(html).not.toContain('data-testid="recovery-bubble-bubble"');
   });
 });

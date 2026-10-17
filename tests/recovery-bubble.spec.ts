@@ -21,6 +21,14 @@ const PREVIEW =
   "Hi Marie, the release moves to Thursday. I'll send the checklist tonight so we can review the plan together tomorrow morning before the meeting with the whole team.";
 
 type Call = { command: string; args: Record<string, unknown> };
+/**
+ * Test id `suffix` under whichever contract screen the bubble shows (D1: the base screen,
+ * `-explanation`, `-no-field` or `-insertion-failed`).
+ */
+const anyScreen = (suffix: string): RegExp =>
+  new RegExp(
+    `^recovery-bubble(-explanation|-no-field|-insertion-failed)?-${suffix}$`,
+  );
 const view = (patch: Record<string, unknown> = {}) => ({
   bubble_id: 3,
   destination_generation: 9,
@@ -43,7 +51,7 @@ const show = async (page: Page, shown: Record<string, unknown>) => {
     ).harness;
     harness.emit("recovery-bubble-changed", payload);
   }, shown);
-  await expect(page.getByTestId("recovery-bubble-bubble")).toBeVisible();
+  await expect(page.getByTestId(anyScreen("bubble"))).toBeVisible();
 };
 const calls = (page: Page, command: string): Promise<Call[]> =>
   page.evaluate(
@@ -61,7 +69,7 @@ const open = async (page: Page, shown = view()) => {
 const baseline = async (page: Page, name: string) => {
   if (process.env.RECOVERY_BUBBLE_BASELINES !== "1") return;
   await page
-    .getByTestId("recovery-bubble-bubble")
+    .getByTestId(anyScreen("bubble"))
     .screenshot({ path: `${BASELINES}/${name}.png` });
 };
 
@@ -142,27 +150,36 @@ test("the explanation shows and hides, saying History only when saved", async ({
     view({ reason: "pinned_app_not_running", app_name: "ChatGPT" }),
   );
   await page.getByTestId("recovery-bubble-why").click();
+  // D1: explained, the bubble shows the explanation screen and every id carries its prefix.
   const text = page.getByTestId("recovery-bubble-explanation-explanation-text");
   await expect(text).toHaveText(
     "Handy didn't insert anything and sent no Enter. The transcript is kept in History. Open ChatGPT, then drag or copy the text.",
   );
-  await expect(page.getByTestId("recovery-bubble-why")).toHaveText(
-    "Hide details",
-  );
-  await expect(page.getByTestId("recovery-bubble-bubble")).toHaveAttribute(
-    "data-state",
-    "explained",
-  );
+  const why = page.getByTestId("recovery-bubble-explanation-why");
+  await expect(why).toHaveText("Hide details");
+  await expect(
+    page.getByTestId("recovery-bubble-explanation-bubble"),
+  ).toHaveAttribute("data-state", "explained");
+  await expect(
+    page.getByTestId("recovery-bubble-explanation-screen"),
+  ).toBeAttached();
+  await expect(page.getByTestId("recovery-bubble-bubble")).toHaveCount(0);
   await baseline(page, "recovery-bubble-explanation");
-  await page.getByTestId("recovery-bubble-why").click();
+  await why.click();
   await expect(text).toHaveCount(0);
+  await expect(page.getByTestId("recovery-bubble-bubble")).toBeVisible();
   await show(
     page,
     view({ bubble_id: 4, reason: "no_text_field", history: "not_kept" }),
   );
+  await expect(
+    page.getByTestId("recovery-bubble-no-field-bubble"),
+  ).toBeVisible();
   await baseline(page, "recovery-bubble-no-field");
-  await page.getByTestId("recovery-bubble-why").click();
-  await expect(text).toContainText("The transcript is not in History.");
+  await page.getByTestId("recovery-bubble-no-field-why").click();
+  await expect(
+    page.getByTestId("recovery-bubble-no-field-explanation-text"),
+  ).toContainText("The transcript is not in History.");
 });
 
 // @spec AC-001: Late read and partial-insertion detail — .specs/features/010-recovery-bubble/spec.md#ac-001
@@ -175,15 +192,17 @@ test("a late read updates the same bubble, reported rendered only once", async (
     can_drag: false,
   });
   await open(page, failed);
-  await page.getByTestId("recovery-bubble-why").click();
+  const why = page.getByTestId("recovery-bubble-insertion-failed-why");
+  await why.click();
+  await expect(
+    page.getByTestId("recovery-bubble-insertion-failed-explanation"),
+  ).toBeVisible();
   await baseline(page, "recovery-bubble-insertion-failed");
-  await page.getByTestId("recovery-bubble-why").click();
+  await why.click();
   await show(page, { ...failed, late_read: true });
   // Visible in the bubble itself, without opening "Why?", and announced.
-  await expect(
-    page.getByTestId("recovery-bubble-explanation-explanation"),
-  ).toHaveCount(0);
-  const late = page.getByTestId("recovery-bubble-late-read");
+  await expect(page.getByTestId(anyScreen("explanation"))).toHaveCount(0);
+  const late = page.getByTestId("recovery-bubble-insertion-failed-late-read");
   await expect(late).toBeVisible();
   await expect(late).toHaveAttribute("role", "status");
   await expect(late).toContainText("may have been pasted after all");

@@ -8,9 +8,7 @@ import { useOsType } from "../../hooks/useOsType";
 import { useSmartPasteAvailability } from "../../hooks/use-smart-paste-availability";
 import type { PasteMethod } from "@/bindings";
 import { pasteMethodChoices } from "./paste-method-options";
-
-/** Prefix of the option test ids (output-settings-paste-methods screen). */
-const OPTION_TEST_ID = "output-settings-paste-methods-paste-method";
+import { useReportedOutputScreen } from "./output-screen";
 
 interface PasteMethodProps {
   descriptionMode?: "inline" | "tooltip";
@@ -22,6 +20,13 @@ export const PasteMethodSetting: React.FC<PasteMethodProps> = React.memo(
     const { t } = useTranslation();
     const { getSetting, updateSetting, isUpdating } = useSettings();
     const osType = useOsType();
+    // The open option list is the output-settings-paste-methods screen (007).
+    const [isListOpen, setListOpen] = React.useState(false);
+    const screen = useReportedOutputScreen(
+      "paste-method",
+      isListOpen ? "output-settings-paste-methods" : null,
+    );
+    const optionTestId = `${screen}-paste-method`;
 
     const smartPasteAvailable = useSmartPasteAvailability();
     // No fallback value while the settings load: the selector shows the stored method only.
@@ -37,7 +42,7 @@ export const PasteMethodSetting: React.FC<PasteMethodProps> = React.memo(
       label: t(choice.labelKey, { modifier }),
       description: choice.descriptionKey && t(choice.descriptionKey),
       disabled: choice.disabled,
-      testId: `${OPTION_TEST_ID}-${choice.slug}`,
+      testId: `${optionTestId}-${choice.slug}`,
     }));
     // The description explains smart paste only where it is offered.
     const isSmartPasteOffered = pasteMethodOptions.some(
@@ -57,13 +62,14 @@ export const PasteMethodSetting: React.FC<PasteMethodProps> = React.memo(
         descriptionMode={descriptionMode}
         grouped={grouped}
         tooltipPosition="bottom"
-        testId="output-settings-paste-method"
+        testId={`${screen}-paste-method`}
       >
         <div className="flex flex-col gap-2">
           <Dropdown
             ariaLabel={t("settings.advanced.pasteMethod.title")}
-            testId="output-settings-paste-method-select"
-            menuTestId={`${OPTION_TEST_ID}-options`}
+            testId={`${screen}-paste-method-select`}
+            menuTestId={`${optionTestId}-options`}
+            onOpenChange={setListOpen}
             options={pasteMethodOptions}
             selectedValue={selectedMethod}
             onSelect={(value) =>

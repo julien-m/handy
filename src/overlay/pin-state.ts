@@ -4,16 +4,22 @@
 import type { DestinationMenu, DestinationSnapshot } from "@/bindings";
 import type { BadgeView } from "./destination-model";
 
-/** Test ids of the pin entries (contract screen `recording-indicator-pinned`). */
-export const PIN_TEST_IDS = {
-  /** Not in the Penflow contract (its pinned screen shows Unpin only); derived from it. */
-  pin: "recording-indicator-pinned-menu-pin",
-  unpin: "recording-indicator-pinned-menu-unpin",
+/**
+ * Test ids of the pin entries under the contract screen shown: Pin is
+ * `recording-indicator-destination-menu-menu-pin` (nothing pinned yet), Unpin, the badge's pin
+ * mark and the "This dictation only" hint are `recording-indicator-pinned-…` (an application is
+ * pinned).
+ * @param screen test-id prefix of the screen shown
+ * @returns the test id of each pin element
+ */
+export const pinTestIds = (screen: string) => ({
+  pin: `${screen}-menu-pin`,
+  unpin: `${screen}-menu-unpin`,
   /** Pin mark of the badge; derived from the contract's `recording-indicator-pinned` screen. */
-  mark: "recording-indicator-pinned-destination-mark",
+  mark: `${screen}-destination-mark`,
   /** "This dictation only" hint of the other applications while pinned; derived as well. */
-  hint: "recording-indicator-pinned-menu-hint",
-} as const;
+  hint: `${screen}-menu-hint`,
+});
 
 /** One pin entry of the badge menu. */
 export interface PinEntry {
@@ -21,7 +27,6 @@ export interface PinEntry {
   /** Application the entry names (`{{name}}` of its label). */
   name: string;
   labelKey: string;
-  testId: string;
 }
 
 const CHOICE_PHASES = new Set(["recording", "processing"]);
@@ -48,7 +53,6 @@ export const pinEntries = (
       kind: "pin",
       name: selection.display_name,
       labelKey: "overlay.destination.menu.pin",
-      testId: PIN_TEST_IDS.pin,
     });
   }
   if (snapshot.pin) {
@@ -56,7 +60,6 @@ export const pinEntries = (
       kind: "unpin",
       name: snapshot.pin.display_name,
       labelKey: "overlay.destination.menu.unpin",
-      testId: PIN_TEST_IDS.unpin,
     });
   }
   return entries;

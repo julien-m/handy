@@ -63,3 +63,12 @@ Status: **In Progress** — every non-UI step of the [plan](plan.md) is implemen
 2. **Proofs (Step 8):** macOS release-binary evidence (menu latency/focus, notice, raw text handed to insertion, prompt shortcuts registered/released, Apple Intelligence deadline and busy worker), acceptance mapping (`livespec test --derive-mapping` from the `@spec AC-xxx` test anchors), Windows/Linux as pending release evidence.
 3. **Delivery review (full lane):** one `review` and one `audit` of the complete diff, recorded with `livespec delivery review`.
 4. **Spec:** report the AC-001 whitespace precision through `spec-refine`.
+
+## Penflow test ID alignment (2026-10-17, branch `fix/ui-test-ids`)
+
+Decisions of Julien of 2026-10-17 (inventory 005-09, 005-11 and D1 for 005-12). No Rust change.
+
+- **Instance ids (005-11):** each prompt row of the library carries `data-instance-id="prompt-<id>"` (`prompt-{id}` of `prompt-settings-list`, the prompt's technical id, as on the indicator) in [the prompt list](../../../src/components/settings/post-processing/prompt-list.tsx); each stored shortcut row of the editor carries `data-instance-id="shortcut-<keys>"` (`shortcut-{keys}` of `-editor-form-shortcuts`) in [the shared shortcut row](../../../src/components/settings/shortcut-row.tsx). `data-key` is kept.
+- **AI notice text (005-09):** verified unchanged, `overlay.fallbackNotice` is already « AI processing failed. The original text was used. »; nothing changed.
+- **Tests:** `prompt-settings-render.test.tsx` (both instance ids).
+- **D1 — indicator prompt menu (005-12):** while the prompt menu is open, the bar, the pill, the prompt, its shortcut and the destination badge carry `recording-indicator-prompt-menu-…` (screen chosen by [indicator-screen](../../../src/overlay/indicator-screen.ts)); details in the 006 and 009 implementation notes. Test: `indicator-render.test.tsx`.

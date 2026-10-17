@@ -314,7 +314,7 @@
         },
         "conflict": {
           "title": "Instellingen elders gewijzigd",
-          "body": "Je wijzigingen blijven bewaard. Opnieuw laden toont de opgeslagen volgorde en verwijdert je wijzigingen.",
+          "body": "De volgorde is elders gewijzigd. Laad opnieuw om die te zien; je wijzigingen worden verwijderd.",
           "reload": "Opnieuw laden"
         },
         "errors": {

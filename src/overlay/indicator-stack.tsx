@@ -20,6 +20,11 @@ import {
 } from "./use-dictation-prompt";
 import { useOverlayExtent } from "./use-overlay-extent";
 import { useOverlayNotices } from "./use-overlay-notices";
+import {
+  type IndicatorScreen,
+  IndicatorScreenContext,
+  indicatorScreen,
+} from "./indicator-screen";
 import "./indicator.css";
 
 /** Grace period before the destination menu closes once the pointer left the overlay. */
@@ -166,30 +171,51 @@ const StackItems: React.FC<StackPartProps> = ({ props, menus }) => (
   </>
 );
 
+/**
+ * Contract screen the stack shows (its test-id prefix).
+ * @param props stack props
+ * @returns the screen shown
+ */
+export const stackScreen = (
+  props: Pick<
+    IndicatorStackProps,
+    "showIndicator" | "recording" | "destination" | "prompt" | "notices"
+  >,
+): IndicatorScreen =>
+  indicatorScreen({
+    showIndicator: props.showIndicator,
+    recording: props.recording,
+    promptView: props.prompt.view,
+    promptMenuOpen: props.prompt.menuOpen,
+    destinationMenuOpen: props.destination.menu.status !== "closed",
+    pinned: Boolean(props.destination.snapshot?.pin),
+    badge: props.destination.badge,
+    notices: props.notices,
+  });
+
 /** The full indicator stack inside the overlay stage. */
 export const IndicatorStack: React.FC<IndicatorStackProps> = (props) => {
   const extentRef = useOverlayExtent();
   const { destination, prompt, dictation } = props;
   const menus = useMenuCoordination(destination, prompt, dictation);
+  const screen = stackScreen(props);
   return (
-    <div
-      dir={props.direction}
-      className={`ov-stage ${props.position}`}
-      data-testid="recording-indicator-screen"
-      onMouseDown={(event) =>
-        event.target === event.currentTarget && menus.closeAll()
-      }
-      onMouseLeave={menus.onLeave}
-      onMouseEnter={menus.onEnter}
-    >
+    <IndicatorScreenContext.Provider value={screen}>
       <div
-        ref={extentRef}
-        className="ov-stack"
-        data-testid="recording-indicator-bar"
+        dir={props.direction}
+        className={`ov-stage ${props.position}`}
+        data-testid={`${screen}-screen`}
+        onMouseDown={(event) =>
+          event.target === event.currentTarget && menus.closeAll()
+        }
+        onMouseLeave={menus.onLeave}
+        onMouseEnter={menus.onEnter}
       >
-        <StackItems props={props} menus={menus} />
+        <div ref={extentRef} className="ov-stack" data-testid={`${screen}-bar`}>
+          <StackItems props={props} menus={menus} />
+        </div>
       </div>
-    </div>
+    </IndicatorScreenContext.Provider>
   );
 };
 
@@ -229,6 +255,8 @@ export const useIndicatorExtras = (input: ExtrasInput) => {
   };
   return {
     stack,
+    /** Contract screen shown, for the test ids of the Handy pill rendered by the caller. */
+    screen: stackScreen(stack),
     withDestination: destination.badge.kind !== "hidden",
     hasNotices: notices.length > 0,
   };

@@ -10,8 +10,11 @@
 import { expect, test, type Page } from "@playwright/test";
 
 const HARNESS = "/tests/harness/automatic-enter.html";
-const MODE = "output-settings-enter-options-auto-enter-mode";
-const KEY = "output-settings-enter-options-auto-enter-key";
+// Closed, the row is on the output-settings screen; its open list is the
+// output-settings-enter-options screen, whose prefix every id of the row then carries (D1).
+const MODE = "output-settings-auto-enter-mode";
+const KEY = "output-settings-auto-enter-key";
+const OPEN = "output-settings-enter-options-auto-enter";
 
 const open = async (page: Page): Promise<void> => {
   await page.goto(HARNESS);
@@ -36,18 +39,19 @@ test("the selector lists the three values with the current one marked", async ({
   await open(page);
   await expect(page.getByTestId(MODE)).toHaveText("Never");
   await page.getByTestId(MODE).click();
-  const list = page.getByTestId(
-    "output-settings-enter-options-auto-enter-options",
-  );
+  const list = page.getByTestId(`${OPEN}-options`);
+  await expect(page.getByTestId(`${OPEN}-mode`)).toBeVisible();
+  await expect(page.getByTestId(MODE)).toHaveCount(0);
   await expect(list.getByRole("option")).toHaveText([
     "Never",
     /^Always/,
     /^Only in PIN mode/,
   ]);
-  await expect(
-    page.getByTestId("output-settings-enter-options-auto-enter-never"),
-  ).toHaveAttribute("aria-selected", "true");
-  await expect(page.getByTestId(KEY)).toHaveText("Enter");
+  await expect(page.getByTestId(`${OPEN}-never`)).toHaveAttribute(
+    "aria-selected",
+    "true",
+  );
+  await expect(page.getByTestId(`${OPEN}-key`)).toHaveText("Enter");
 });
 
 test("arrow keys and Enter save Only in PIN mode and announce it", async ({

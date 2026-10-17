@@ -1,27 +1,39 @@
 // Pure rules of the Automatic Enter setting of the output settings (009 AC-004): which control
 // the build shows (the three-value selector when the settings snapshot carries
 // `automatic_enter`, gate `destination-return` open; dev's auto-submit control otherwise), the
-// options of both selectors and the Penflow test ids of `output-settings-enter-options`.
+// options of both selectors and the Penflow test ids of the row, under the output screen shown
+// (`output-settings`, or `output-settings-enter-options` while its option list is open).
 import type {
   AppSettings,
   AutoSubmitKey,
   AutomaticEnterPolicy,
 } from "@/bindings";
 
-const BASE = "output-settings-enter-options-auto-enter";
+/** Screen whose test ids the open option list carries (009). */
+const OPTIONS_SCREEN = "output-settings-enter-options";
 
-/** Test ids of the Automatic Enter row (contract screen `output-settings-enter-options`). */
-export const AUTOMATIC_ENTER_TEST_IDS = {
-  row: BASE,
-  title: `${BASE}-title`,
-  mode: `${BASE}-mode`,
-  key: `${BASE}-key`,
-  options: `${BASE}-options`,
-  never: `${BASE}-never`,
-  always: `${BASE}-always`,
-  pinOnly: `${BASE}-pin-only`,
-  note: `${BASE}-note`,
-} as const;
+/**
+ * Test ids of the Automatic Enter row under the screen shown (`<screen>-auto-enter-…`).
+ * @param screen test-id prefix of the screen shown
+ * @returns the row's test ids
+ */
+export const automaticEnterTestIds = (screen: string) => {
+  const base = `${screen}-auto-enter`;
+  return {
+    row: base,
+    title: `${base}-title`,
+    mode: `${base}-mode`,
+    key: `${base}-key`,
+    options: `${base}-options`,
+    never: `${base}-never`,
+    always: `${base}-always`,
+    pinOnly: `${base}-pin-only`,
+    note: `${base}-note`,
+  };
+};
+
+/** Test ids of the options, which only show while the list is open (`-enter-options`). */
+const OPTION_TEST_IDS = automaticEnterTestIds(OPTIONS_SCREEN);
 
 const KEY = "settings.advanced.automaticEnter";
 
@@ -59,12 +71,12 @@ const POLICIES: {
   name: string;
   testId: string;
 }[] = [
-  { value: "never", name: "never", testId: AUTOMATIC_ENTER_TEST_IDS.never },
-  { value: "always", name: "always", testId: AUTOMATIC_ENTER_TEST_IDS.always },
+  { value: "never", name: "never", testId: OPTION_TEST_IDS.never },
+  { value: "always", name: "always", testId: OPTION_TEST_IDS.always },
   {
     value: "pin_only",
     name: "pinOnly",
-    testId: AUTOMATIC_ENTER_TEST_IDS.pinOnly,
+    testId: OPTION_TEST_IDS.pinOnly,
   },
 ];
 

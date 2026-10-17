@@ -314,7 +314,7 @@
         },
         "conflict": {
           "title": "Ustawienia zmieniono gdzie indziej",
-          "body": "Twoje zmiany zostały zachowane. Ponowne wczytanie pokaże zapisaną kolejność i odrzuci Twoje zmiany.",
+          "body": "Kolejność zmieniono gdzie indziej. Wczytaj ponownie, aby ją zobaczyć; Twoje zmiany zostaną odrzucone.",
           "reload": "Wczytaj ponownie"
         },
         "errors": {

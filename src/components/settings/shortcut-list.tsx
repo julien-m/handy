@@ -52,6 +52,10 @@ import {
   useShortcutDraft,
   useStoredConflicts,
 } from "./use-shortcut-list";
+import {
+  type ShortcutListState,
+  useReportedShortcutScreen,
+} from "./shortcut-screen";
 
 interface ShortcutListProps {
   actionId: string;
@@ -80,7 +84,10 @@ interface ListPartProps {
 }
 
 /** Gathers the list model; null while the action's binding is unknown. */
-const useShortcutList = (actionId: string): ShortcutListModel | null => {
+const useShortcutList = (
+  actionId: string,
+  single: boolean,
+): ShortcutListModel | null => {
   const { getSetting, refusedShortcuts } = useSettings();
   const bindings = getSetting("bindings");
   const stored = useStoredConflicts(
@@ -92,20 +99,44 @@ const useShortcutList = (actionId: string): ShortcutListModel | null => {
   const draft = useShortcutDraft(actionId, submitter);
   const binding = bindings?.[actionId];
   const rows = useRowRecordRequests(binding ? shortcutsOf(binding) : []);
-  if (!binding) return null;
-  const ids = shortcutTestIds(actionId);
-  const refused = refusedShortcuts;
-  return {
+  const parts = binding
+    ? { actionId, binding, names, stored, submitter, draft, rows }
+    : null;
+  const screen = useReportedShortcutScreen(
     actionId,
-    binding,
-    ids,
-    names,
-    stored,
-    refused,
-    submitter,
-    draft,
-    rows,
+    parts ? listState(parts, single) : null,
+  );
+  if (!parts) return null;
+  return {
+    ...parts,
+    ids: shortcutTestIds(actionId, screen),
+    refused: refusedShortcuts,
   };
+};
+
+/** What decides a list's screen: the model without its test ids and refusals. */
+type ListStateParts = Omit<ShortcutListModel, "ids" | "refused">;
+
+/**
+ * State of one list for the contract screens: an inline refusal, a system refusal or an
+ * inherited conflict shows the conflict screen; a full list shows the limit screen.
+ * @param parts the list model
+ * @param single the action keeps one shortcut (no limit hint)
+ * @returns the list's state
+ */
+const listState = (
+  parts: ListStateParts,
+  single: boolean,
+): ShortcutListState => {
+  const { actionId, names, stored } = parts;
+  const shown =
+    inlineError(parts) !== null ||
+    shownRefusalOf(parts) !== null ||
+    legacyWarningsOf(stored.conflicts, actionId, names).length > 0;
+  if (shown) return "shortcut-settings-conflict";
+  const count = shortcutsOf(parts.binding).length;
+  const full = !single && listHint(count) === "limit";
+  return full ? "shortcut-settings-limit" : null;
 };
 
 /**
@@ -113,7 +144,7 @@ const useShortcutList = (actionId: string): ShortcutListModel | null => {
  * draft recorder could not start, else the refusal of the checked draft. A
  * system refusal has its own alert.
  */
-const inlineError = (list: ShortcutListModel): TranslatedMessage | null => {
+const inlineError = (list: ListStateParts): TranslatedMessage | null => {
   const { feedback } = list.submitter;
   if (feedback.error) return feedback.error;
   const { state } = list.draft;
@@ -227,7 +258,7 @@ interface ShownRefusal {
  * Add, in which case the draft's refusal is shown (it outlives the feedback
  * of later edits) and Try again commits the draft again.
  */
-const shownRefusalOf = (list: ShortcutListModel): ShownRefusal | null => {
+const shownRefusalOf = (list: ListStateParts): ShownRefusal | null => {
   const { draft, submitter } = list;
   const fromDraft = draftSystemRefusal(draft.state);
   const fromEdit = submitter.feedback.systemRefusal;
@@ -284,7 +315,7 @@ export const ShortcutList: React.FC<ShortcutListProps> = ({
   single = false,
 }) => {
   const { t } = useTranslation();
-  const list = useShortcutList(actionId);
+  const list = useShortcutList(actionId, single);
   if (!list) return null;
   return (
     <>

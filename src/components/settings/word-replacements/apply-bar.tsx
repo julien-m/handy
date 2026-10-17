@@ -28,7 +28,13 @@ export const ApplyBar: React.FC = () => {
       className="bg-background border border-mid-gray/20 rounded-lg p-4 space-y-3"
       data-testid={BAR_ID}
     >
-      {failure && <CommitFailureNote failure={failure} onReload={reloadText} />}
+      {failure && (
+        <CommitFailureNote
+          failure={failure}
+          onReload={reloadText}
+          testId={`${SCREEN_IDS.text}-commit-failure`}
+        />
+      )}
       <div className="flex flex-wrap items-center justify-end gap-2">
         <p
           className="flex-1 min-w-48 text-sm text-mid-gray"

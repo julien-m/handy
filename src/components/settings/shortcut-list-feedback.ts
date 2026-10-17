@@ -9,6 +9,7 @@ import type {
 } from "@/bindings";
 import type { OSType } from "../../lib/utils/keyboard";
 import type { DraftState, RecorderStartFailure } from "./shortcut-draft-model";
+import type { ShortcutScreen } from "./shortcut-screen";
 import {
   MAX_SHORTCUTS_PER_ACTION,
   type TranslatedMessage,
@@ -239,15 +240,18 @@ const ACTION_SLUGS: Record<string, string> = {
 };
 
 /**
- * Stable test ids of one action's list. Elements of the default screen use
- * `shortcut-settings-<action>-…`; elements that only exist in the conflict
- * and limit screens keep those screens' prefixes, as in the contract.
+ * Stable test ids of one action's list, `<screen>-<action>-…`: every element
+ * carries the prefix of the contract screen shown (base, conflict or limit),
+ * so each test id is unique in the tree.
  * @param actionId Action id.
+ * @param screen Test-id prefix of the screen shown.
  */
-export const shortcutTestIds = (actionId: string) => {
+export const shortcutTestIds = (
+  actionId: string,
+  screen: ShortcutScreen = "shortcut-settings",
+) => {
   const slug = ACTION_SLUGS[actionId] ?? actionId;
-  const base = `shortcut-settings-${slug}`;
-  const conflict = `shortcut-settings-conflict-${slug}`;
+  const base = `${screen}-${slug}`;
   return {
     container: base,
     list: `${base}-list`,
@@ -261,13 +265,21 @@ export const shortcutTestIds = (actionId: string) => {
     reset: `${base}-reset`,
     last: `${base}-last`,
     conflictsUnavailable: `${base}-conflicts-unavailable`,
-    limit: `shortcut-settings-limit-${slug}-limit`,
-    error: `${conflict}-conflict`,
-    legacy: `${conflict}-legacy`,
-    change: `${conflict}-change`,
-    system: `${conflict}-os`,
-    retry: `${conflict}-os-retry`,
+    limit: `${base}-limit`,
+    error: `${base}-conflict`,
+    legacy: `${base}-legacy`,
+    change: `${base}-change`,
+    system: `${base}-os`,
+    retry: `${base}-os-retry`,
   };
 };
 
 export type ShortcutTestIds = ReturnType<typeof shortcutTestIds>;
+
+/**
+ * Instance id of one stored shortcut (`instance_id_template` `shortcut-{keys}`
+ * of the contract): the stored binding, never text typed by the user.
+ * @param shortcut Stored shortcut, for example `option+space`.
+ */
+export const shortcutInstanceId = (shortcut: string): string =>
+  `shortcut-${shortcut}`;

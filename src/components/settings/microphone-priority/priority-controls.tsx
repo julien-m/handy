@@ -9,6 +9,7 @@ import { Dropdown } from "../../ui/Dropdown";
 import { secondsSince } from "./availability";
 import { PRIORITY_KEY_ROOT, type AddError } from "./draft-state";
 import { ADD_FOCUS_KEY } from "./editor-focus";
+import { useMicrophoneScreen } from "./screen-id";
 
 /** Props of the Add control. */
 export interface AddControlProps {
@@ -90,10 +91,11 @@ export const AddControl: React.FC<AddControlProps> = (props) => {
   const noDevices = unavailable !== null;
   const state = addState(props);
   const label = t(`${PRIORITY_KEY_ROOT}.${unavailable ?? "addLabel"}`);
+  const screen = useMicrophoneScreen();
   return (
     <div
       className={`rounded-md ${state === "invalid" ? "ring-1 ring-red-500" : ""}`}
-      data-testid="microphone-settings-add"
+      data-testid={`${screen}-add`}
       data-state={state}
       data-focus-key={ADD_FOCUS_KEY}
     >
@@ -115,11 +117,12 @@ export const AddControl: React.FC<AddControlProps> = (props) => {
 /** Refusal of the Add control, announced when it appears. */
 export const AddErrorText: React.FC<{ error: AddError }> = ({ error }) => {
   const { t } = useTranslation();
+  const screen = useMicrophoneScreen();
   return (
     <p
       role="alert"
       className="text-sm text-red-400"
-      data-testid="microphone-settings-error-add-error"
+      data-testid={`${screen}-add-error`}
     >
       {t(error.message.key, error.message.params)}
     </p>
@@ -129,15 +132,16 @@ export const AddErrorText: React.FC<{ error: AddError }> = ({ error }) => {
 /** Failed availability check: the pill and Retry. */
 const CheckFailed: React.FC<{ onRetry: () => void }> = ({ onRetry }) => {
   const { t } = useTranslation();
+  const screen = useMicrophoneScreen();
   return (
     <div className="flex items-center gap-3">
-      <span data-testid="microphone-settings-error-refresh-error" role="status">
+      <span data-testid={`${screen}-refresh-error`} role="status">
         <Badge variant="error">{t(`${PRIORITY_KEY_ROOT}.refreshFailed`)}</Badge>
       </span>
       <button
         type="button"
         className={LINK_CLASSES}
-        data-testid="microphone-settings-error-retry"
+        data-testid={`${screen}-retry`}
         onClick={onRetry}
       >
         {t(`${PRIORITY_KEY_ROOT}.retry`)}
@@ -150,6 +154,7 @@ const CheckFailed: React.FC<{ onRetry: () => void }> = ({ onRetry }) => {
 export const CheckLine: React.FC<CheckLineProps> = (props) => {
   const { t } = useTranslation();
   const now = useNow();
+  const screen = useMicrophoneScreen();
   if (props.failed) return <CheckFailed onRetry={props.onRefresh} />;
   const seconds =
     props.observedAt === null ? null : secondsSince(props.observedAt, now);
@@ -158,7 +163,7 @@ export const CheckLine: React.FC<CheckLineProps> = (props) => {
       <button
         type="button"
         className={LINK_CLASSES}
-        data-testid="microphone-settings-refresh"
+        data-testid={`${screen}-refresh`}
         onClick={props.onRefresh}
       >
         {t(`${PRIORITY_KEY_ROOT}.refresh`)}
@@ -166,7 +171,7 @@ export const CheckLine: React.FC<CheckLineProps> = (props) => {
       {props.showChecked && seconds !== null && (
         <span
           className="text-sm text-mid-gray"
-          data-testid="microphone-settings-checked"
+          data-testid={`${screen}-checked`}
         >
           {t(`${PRIORITY_KEY_ROOT}.checked`, { seconds: String(seconds) })}
         </span>

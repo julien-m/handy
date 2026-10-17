@@ -29,6 +29,8 @@ interface HandyKeysShortcutInputProps {
   value?: string | null;
   label?: string;
   testId?: string;
+  /** Instance id of a repeated chip (`shortcut-{keys}` of the Penflow contract). */
+  instanceId?: string;
 }
 
 interface HandyKeysEvent {
@@ -207,6 +209,7 @@ export const HandyKeysShortcutInput: React.FC<HandyKeysShortcutInputProps> = (
       disabled={props.disabled ?? false}
       label={props.label}
       testId={props.testId}
+      instanceId={props.instanceId}
       onStart={recording.start}
       onLeave={stop}
       chipRef={(element) => {

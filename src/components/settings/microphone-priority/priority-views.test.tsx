@@ -5,7 +5,9 @@
  */
 import { describe, expect, mock, test } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
+import type { ReactElement } from "react";
 import type { MicrophoneStatus } from "@/bindings";
+import type { MicrophoneScreen } from "./screen-id";
 
 // Keys are rendered with their values so the markup shows which message and name are used.
 mock.module("react-i18next", () => ({
@@ -20,11 +22,20 @@ const { AddControl, AddErrorText, CheckLine } = await import(
 );
 const { EffectiveInputRow } = await import("./effective-input");
 const { ConflictAlert, DraftBar } = await import("./draft-feedback");
+const { MicrophoneScreenContext, microphoneInstanceId, microphoneScreen } =
+  await import("./screen-id");
 
 const ROOT = "settings.sound.microphonePriority";
 const has = (markup: string, text: string) => markup.includes(text);
 const count = (markup: string, text: string) => markup.split(text).length - 1;
 const noop = () => undefined;
+/** Markup of `node` rendered inside the contract screen `screen`. */
+const renderIn = (screen: MicrophoneScreen, node: ReactElement) =>
+  renderToStaticMarkup(
+    <MicrophoneScreenContext.Provider value={screen}>
+      {node}
+    </MicrophoneScreenContext.Provider>,
+  );
 
 const list = renderToStaticMarkup(
   <PriorityList
@@ -84,6 +95,12 @@ describe("priority list (microphone-settings)", () => {
     expect(has(list, 'data-focus-key="Studio Display\nup"')).toBe(true);
   });
 
+  test("each row carries its instance id (microphone-{name})", () => {
+    expect(has(list, 'data-instance-id="microphone-USB headset"')).toBe(true);
+    expect(count(list, "data-instance-id=")).toBe(3);
+    expect(microphoneInstanceId("Dock")).toBe("microphone-Dock");
+  });
+
   test("ranks follow the order", () => {
     expect(has(list, 'data-testid="microphone-settings-choice-rank">1<')).toBe(
       true,
@@ -95,7 +112,8 @@ describe("priority list (microphone-settings)", () => {
 });
 
 describe("empty list (microphone-settings-empty)", () => {
-  const markup = renderToStaticMarkup(
+  const markup = renderIn(
+    "microphone-settings-empty",
     <PriorityList
       order={[]}
       availability={[]}
@@ -143,7 +161,8 @@ describe("Add control", () => {
         params: { name: "USB headset" },
       },
     };
-    const markup = renderToStaticMarkup(
+    const markup = renderIn(
+      "microphone-settings-error",
       <>
         <AddControl {...addProps} addError={addError} />
         <AddErrorText error={addError} />
@@ -156,6 +175,9 @@ describe("Add control", () => {
     expect(
       has(markup, 'data-testid="microphone-settings-error-add-error"'),
     ).toBe(true);
+    expect(has(markup, 'data-testid="microphone-settings-error-add"')).toBe(
+      true,
+    );
   });
 
   test("valid: a corrected choice was added, the control is empty again", () => {
@@ -216,7 +238,8 @@ describe("availability check line", () => {
   });
 
   test("failure pill and Retry (microphone-settings-error)", () => {
-    const markup = renderToStaticMarkup(
+    const markup = renderIn(
+      "microphone-settings-error",
       <CheckLine failed observedAt={null} showChecked onRefresh={noop} />,
     );
     expect(
@@ -301,7 +324,8 @@ describe("draft feedback", () => {
   };
 
   test("conflict banner (microphone-settings-error)", () => {
-    const markup = renderToStaticMarkup(
+    const markup = renderIn(
+      "microphone-settings-error",
       <ConflictAlert visible busy={false} onReload={noop} />,
     );
     expect(has(markup, 'role="alert"')).toBe(true);
@@ -377,5 +401,55 @@ describe("draft feedback", () => {
     expect(renderToStaticMarkup(<DraftBar {...bar} visible={false} />)).toBe(
       "",
     );
+  });
+});
+
+// @spec AC-001: Test ids follow the contract screen shown — .specs/features/001-microphone-priority/spec.md#ac-001
+describe("contract screen shown", () => {
+  const base = {
+    loading: false,
+    conflict: false,
+    checkFailed: false,
+    addRefused: false,
+    count: 2,
+  };
+
+  test("a loaded list is the base screen", () => {
+    expect(microphoneScreen(base)).toBe("microphone-settings");
+  });
+
+  test("an empty loaded list is the empty screen", () => {
+    expect(microphoneScreen({ ...base, count: 0 })).toBe(
+      "microphone-settings-empty",
+    );
+    expect(microphoneScreen({ ...base, count: 0, loading: true })).toBe(
+      "microphone-settings",
+    );
+  });
+
+  test("a conflict, a failed check or a refused Add is the error screen", () => {
+    for (const fact of ["conflict", "checkFailed", "addRefused"]) {
+      expect(microphoneScreen({ ...base, count: 0, [fact]: true })).toBe(
+        "microphone-settings-error",
+      );
+    }
+  });
+
+  test("shared rows take the prefix of the screen shown", () => {
+    const markup = renderIn(
+      "microphone-settings-error",
+      <DraftBar
+        visible
+        phase="idle"
+        error={null}
+        saveEnabled={false}
+        onDiscard={noop}
+        onSave={noop}
+      />,
+    );
+    expect(has(markup, 'data-testid="microphone-settings-error-save"')).toBe(
+      true,
+    );
+    expect(has(markup, 'data-testid="microphone-settings-save"')).toBe(false);
   });
 });

@@ -9,10 +9,7 @@ import { AutomaticEnter } from "@/components/settings/automatic-enter";
 import { useSettingsStore } from "@/stores/settingsStore";
 
 const Row = () => (
-  <div
-    className="p-4 max-w-3xl"
-    data-testid="output-settings-enter-options-screen"
-  >
+  <div className="p-4 max-w-3xl" data-testid="output-settings-screen">
     <button type="button" data-testid="harness-start">
       start
     </button>

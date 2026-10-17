@@ -17,6 +17,8 @@ interface ShortcutInputProps {
   label?: string;
   /** Stable test identifier of the chip. */
   testId?: string;
+  /** Instance id of a repeated chip (`shortcut-{keys}` of the Penflow contract). */
+  instanceId?: string;
 }
 
 /**
