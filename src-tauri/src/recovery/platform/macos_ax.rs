@@ -11,7 +11,7 @@ use std::ptr;
 use std::time::Duration;
 
 // AXError codes from HIServices/AXError.h.
-const AX_SUCCESS: i32 = 0;
+pub(crate) const AX_SUCCESS: i32 = 0;
 const AX_ERROR_CANNOT_COMPLETE: i32 = -25204;
 const AX_ERROR_ATTRIBUTE_UNSUPPORTED: i32 = -25205;
 const AX_ERROR_NOT_IMPLEMENTED: i32 = -25208;
@@ -38,7 +38,8 @@ unsafe extern "C" {
     fn AXUIElementGetTypeID() -> usize;
 }
 
-fn ax_result(code: i32) -> Result<(), AxQueryError> {
+/// The `AXError` `code` as a query result (never carrying a value).
+pub(crate) fn ax_result(code: i32) -> Result<(), AxQueryError> {
     match code {
         AX_SUCCESS => Ok(()),
         AX_ERROR_CANNOT_COMPLETE => Err(AxQueryError::Timeout),
@@ -49,7 +50,7 @@ fn ax_result(code: i32) -> Result<(), AxQueryError> {
 }
 
 /// Business rule (plan): the timeout is per element and never 0, which would mean the default.
-fn set_timeout(element: &CfOwned, timeout: Duration) -> Result<(), AxQueryError> {
+pub(crate) fn set_timeout(element: &CfOwned, timeout: Duration) -> Result<(), AxQueryError> {
     if timeout.is_zero() {
         return Err(AxQueryError::Timeout);
     }
@@ -57,11 +58,13 @@ fn set_timeout(element: &CfOwned, timeout: Duration) -> Result<(), AxQueryError>
     ax_result(unsafe { AXUIElementSetMessagingTimeout(element.as_ptr(), timeout.as_secs_f32()) })
 }
 
-fn attribute(name: &str) -> Result<CfOwned, AxQueryError> {
+/// The attribute or action name `name` as a `CFString`.
+pub(crate) fn attribute(name: &str) -> Result<CfOwned, AxQueryError> {
     CfOwned::from_text(name).ok_or(AxQueryError::Failed)
 }
 
-fn copy_attribute(
+/// `name` of `element` (Copy Rule), with `timeout` set on `element` first.
+pub(crate) fn copy_attribute(
     element: &CfOwned,
     name: &str,
     timeout: Duration,
@@ -77,6 +80,7 @@ fn copy_attribute(
     CfOwned::from_create_rule(value).ok_or(AxQueryError::NoValue)
 }
 
+/// A short string attribute (a role or subrole), at most `MAX_ROLE_UNITS` long.
 fn short_string(element: &CfOwned, name: &str, timeout: Duration) -> Result<String, AxQueryError> {
     let value = copy_attribute(element, name, timeout)?;
     string_units(value.as_ptr(), MAX_ROLE_UNITS)
@@ -84,6 +88,15 @@ fn short_string(element: &CfOwned, name: &str, timeout: Duration) -> Result<Stri
         .map_err(|error| match error {
             CfStringError::NotAString | CfStringError::TooLarge(_) => AxQueryError::Failed,
         })
+}
+
+/// `value` when it is an `AXUIElement`, checked before any accessibility call is made on it.
+pub(crate) fn ax_element(value: CfOwned) -> Result<CfOwned, AxQueryError> {
+    // SAFETY: AXUIElementGetTypeID takes no arguments; `value` is a live CF object.
+    if type_id(value.as_ptr()) != unsafe { AXUIElementGetTypeID() } {
+        return Err(AxQueryError::Failed);
+    }
+    Ok(value)
 }
 
 /// Production [`FocusedElementPort`].
@@ -106,16 +119,15 @@ impl FocusedElementPort for MacFocusedElementPort {
             .ok_or(AxQueryError::Failed)?;
         let element = copy_attribute(&application, "AXFocusedUIElement", timeout)?;
         // SAFETY: AXUIElementGetTypeID takes no arguments; `element` is a live CF object.
-        if type_id(element.as_ptr()) != unsafe { AXUIElementGetTypeID() } {
-            return Err(AxQueryError::Failed);
-        }
-        Ok(Box::new(MacFocusedElement { element }))
+        Ok(Box::new(MacFocusedElement {
+            element: ax_element(element)?,
+        }))
     }
 }
 
-/// The destination's focused element.
-struct MacFocusedElement {
-    element: CfOwned,
+/// The destination's focused element (also the base of 011's remembered field element).
+pub(crate) struct MacFocusedElement {
+    pub(crate) element: CfOwned,
 }
 
 impl FocusedElement for MacFocusedElement {

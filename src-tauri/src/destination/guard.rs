@@ -1,12 +1,15 @@
 //! Pre-dispatch guard: called by the insertion method after its configured delay, immediately
 //! before the first key, text or script. It refuses a cancelled or superseded dictation and a
 //! destination that is no longer frontmost (no retry, no reactivation), builds the
-//! `DestinationContext`, asks the optional 010 check, and sets the disposition to `Insert`.
-//! Later calls by the same method (a fallback path) only recheck foreground and cancellation.
+//! `DestinationContext`, decides 011's field return, asks the optional 010 check, and sets the
+//! disposition to `Insert`. Later calls by the same method (a fallback path) only recheck
+//! foreground and cancellation.
 use super::context::{
     DestinationContext, DestinationSource, PreInsertionVerdict, RecoveryDisposition, RecoveryPort,
     RecoveryReason, ResolvedTarget,
 };
+use super::field_attempt::FieldReturn;
+use super::field_check::FieldCheck;
 use super::manager::{DestinationManager, FrozenDestination};
 use super::workspace::{Foreground, RunningApp};
 use std::sync::{Arc, Mutex, PoisonError};
@@ -32,6 +35,8 @@ impl std::error::Error for GuardRefusal {}
 struct GuardState {
     context: Option<DestinationContext>,
     refusal: Option<GuardRefusal>,
+    /// 011's decision of the first pass (`Absent` without a remembered input).
+    field: FieldCheck,
 }
 
 /// One dictation's guard, shared with the insertion method (it may run on the main thread).
@@ -43,6 +48,8 @@ pub struct DispatchGuard {
     target: Option<RunningApp>,
     cancelled: Box<dyn Fn() -> bool + Send + Sync>,
     state: Mutex<GuardState>,
+    /// 011's attempt, verified once by the first pass then released.
+    field: Mutex<Option<FieldReturn>>,
 }
 
 impl DispatchGuard {
@@ -61,7 +68,14 @@ impl DispatchGuard {
             target,
             cancelled,
             state: Mutex::new(GuardState::default()),
+            field: Mutex::new(None),
         }
+    }
+    #[must_use]
+    /// The same guard verifying 011's `field` attempt at its first pass (none: as delivered).
+    pub fn with_field(self, field: Option<FieldReturn>) -> Self {
+        *self.field.lock().unwrap_or_else(PoisonError::into_inner) = field;
+        self
     }
     // @spec FR-002: Re-check the destination before inserting — .specs/features/006-destination-application/spec.md#fr-002
     /// The check run right before the first dispatch; see the module documentation.
@@ -70,15 +84,28 @@ impl DispatchGuard {
     /// The refusal, also recorded for the orchestrator; no input may follow it.
     pub fn check(&self) -> Result<DestinationContext, GuardRefusal> {
         let mut state = self.state.lock().unwrap_or_else(PoisonError::into_inner);
-        let checked = self.recheck().and_then(|context| match &state.context {
-            Some(_) => Ok(context),
-            None => self.first_pass(context),
-        });
-        match &checked {
-            Ok(context) => state.context = Some(context.clone()),
-            Err(refusal) => state.refusal = Some(*refusal),
+        let checked = match self.recheck() {
+            Ok(context) if state.context.is_some() => Ok(context),
+            Ok(context) => {
+                state.field = self.field_check();
+                self.first_pass(context, state.field)
+            }
+            Err(refusal) => Err(refusal),
+        };
+        match checked {
+            Ok(context) => {
+                let context = DestinationContext {
+                    field: state.field,
+                    ..context
+                };
+                state.context = Some(context.clone());
+                Ok(context)
+            }
+            Err(refusal) => {
+                state.refusal = Some(refusal);
+                Err(refusal)
+            }
         }
-        checked
     }
     /// The first refusal, if any check refused.
     pub fn refusal(&self) -> Option<GuardRefusal> {
@@ -114,7 +141,19 @@ impl DispatchGuard {
                 pid: app.pid,
                 identity: app.identity,
             }),
+            field: FieldCheck::Absent,
         })
+    }
+    // @spec FR-004: Verify the remembered input before any paste — .specs/features/011-dictation-field-return/spec.md#fr-004
+    /// 011's verification of the attempt handed to this guard, once; `Absent` without one. The
+    /// attempt's references are released right after the decision (spec AC-008).
+    fn field_check(&self) -> FieldCheck {
+        let field = self
+            .field
+            .lock()
+            .unwrap_or_else(PoisonError::into_inner)
+            .take();
+        field.map_or(FieldCheck::Absent, super::field_check::verify)
     }
     /// The activated instance must still be in front; without one, whatever app is in front.
     fn target_in_front(&self) -> Result<Option<RunningApp>, GuardRefusal> {
@@ -138,9 +177,14 @@ impl DispatchGuard {
     /// verdict comes first; after an `Insert` verdict cancellation, supersession and the
     /// foreground are read once more, then the disposition becomes `Insert` immediately before
     /// the first dispatch. A `Recover` verdict dispatches nothing and keeps its reason.
-    fn first_pass(&self, context: DestinationContext) -> Result<DestinationContext, GuardRefusal> {
+    fn first_pass(
+        &self,
+        context: DestinationContext,
+        field: FieldCheck,
+    ) -> Result<DestinationContext, GuardRefusal> {
         let (id, generation) = (context.dictation_id, context.destination_generation);
-        let (next, context) = match self.recovery.before_insertion(&context) {
+        let context = DestinationContext { field, ..context };
+        let (next, context) = match self.verdict(&context) {
             PreInsertionVerdict::Insert => (RecoveryDisposition::Insert, self.recheck()?),
             PreInsertionVerdict::Recover(reason) => {
                 let set =
@@ -154,6 +198,20 @@ impl DispatchGuard {
         match self.manager.set_disposition(id, generation, next) {
             Ok(_) => Ok(context),
             Err(_) => Err(GuardRefusal::Cancelled),
+        }
+    }
+    // @spec AC-005: A verified input counts as editable for 010 — .specs/features/011-dictation-field-return/spec.md#ac-005
+    /// Business rule (spec 011 AC-004, AC-005): a diverted field return never pastes, whatever
+    /// the recovery port answers (010's answers the same, without any accessibility query);
+    /// otherwise the port decides from the context, where a verified input counts as editable.
+    fn verdict(&self, context: &DestinationContext) -> PreInsertionVerdict {
+        match context.field {
+            FieldCheck::Diverted(_) => {
+                PreInsertionVerdict::Recover(RecoveryReason::FieldReturnFailed)
+            }
+            FieldCheck::Absent | FieldCheck::Verified | FieldCheck::Unchanged(_) => {
+                self.recovery.before_insertion(context)
+            }
         }
     }
 }

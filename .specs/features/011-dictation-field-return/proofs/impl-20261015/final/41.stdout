@@ -1,0 +1,14 @@
+
+running 9 tests
+test an_attempt_out_of_budget_stops_without_sending_and_pastes_nothing ... ok
+test an_input_in_another_window_has_its_window_raised_then_verified ... ok
+test a_cancellation_during_the_attempt_and_006_refusals_keep_their_precedence ... ok
+test the_destination_already_in_front_still_returns_to_its_input ... ok
+test a_range_missing_at_the_start_makes_no_call_at_insertion_and_pastes_nothing ... ok
+test an_input_gone_with_nothing_changed_inserts_as_without_011 ... ok
+test the_verified_input_receives_the_paste_at_its_restored_caret ... ok
+test a_range_or_focus_changed_during_the_paste_delay_pastes_nothing ... ok
+test every_attempt_that_may_have_changed_something_pastes_nothing ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

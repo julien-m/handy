@@ -1,0 +1,5 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/011-dictation-field-return/src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 21.09s
+     Running tests/destination_field_return.rs (/Users/julienm/projects/handy-wt/.target-009/debug/deps/destination_field_return-06f5681fee396976)

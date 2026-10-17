@@ -1,0 +1,38 @@
+livespec-shim-notice: dev mode executes the LiveSpec checkout /Users/julienm/projects/livespec
+## Specification Analysis Report
+
+Semantic readiness: covered
+
+### Findings
+_No findings._
+
+### Structural Reference Coverage Matrix
+| Requirement Key | Has Plan Task? | Task IDs | Notes |
+|-----------------|----------------|----------|-------|
+| 011-dictation-field-return:AC-001 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 011-dictation-field-return:AC-003 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 011-dictation-field-return:AC-002 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 011-dictation-field-return:AC-004 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 011-dictation-field-return:AC-005 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 011-dictation-field-return:AC-006 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 011-dictation-field-return:AC-007 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 011-dictation-field-return:AC-008 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 011-dictation-field-return:FR-001 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 011-dictation-field-return:FR-002 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 011-dictation-field-return:FR-003 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 011-dictation-field-return:FR-004 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 011-dictation-field-return:FR-005 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 011-dictation-field-return:SC-002 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 011-dictation-field-return:SC-001 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 011-dictation-field-return:SC-003 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 011-dictation-field-return:SC-004 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 011-dictation-field-return:SC-005 | yes | plan.md | structural reference present; semantic compliance is separate |
+
+### Metrics
+- total_requirements: 18
+- covered_requirements: 18
+- coverage_percent: 100.0
+- critical_count: 0
+- high_count: 0
+- implementation_present: 0
+

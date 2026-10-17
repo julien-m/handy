@@ -5,6 +5,9 @@
 
 ---
 
+## 2026-10-15 — [Feature 011] Implementation in progress: input focused at the dictation start remembered, given focus back, range restored and verified before the paste, behind destination-return (automated evidence in four feature combinations; macOS native proofs pending with Julien)
+<!-- finalize:spec-implement:2026-10-15:28770870 -->
+
 ## 2026-10-15 — [Feature 010] Implementation in progress: recovery bubble, bounded field classification, deliberate Copy and the no-text-field setting behind destination-return (automated evidence in four feature combinations; macOS native proofs pending with Julien)
 <!-- finalize:spec-implement:2026-10-15:0ab0ed79 -->
 

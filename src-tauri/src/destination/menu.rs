@@ -142,7 +142,10 @@ pub(super) fn choose(
     let selection = back_to_pin(&state, selection);
     let session = state.session.as_mut().ok_or(SelectionRefusal::Stale)?;
     session.choose(dictation_id, version, selection)?;
-    Ok(DestinationSnapshot::from(&*session))
+    let snapshot = DestinationSnapshot::from(&*session);
+    // 011 AC-003: another application or the cross releases the remembered input.
+    super::field_lifetime::reconcile_field(&mut state);
+    Ok(snapshot)
 }
 
 /// Business rule (009): choosing the pinned application itself in the menu returns this

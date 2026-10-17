@@ -109,16 +109,26 @@ pub enum FocusClassification {
     PermissionMissing,
 }
 
-/// The single deadline of one classification.
-struct Deadline<'a> {
+/// The single deadline of one classification (also 011's capture, with its own floor).
+pub(crate) struct Deadline<'a> {
     clock: &'a dyn Clock,
     end: Instant,
+    /// Smallest timeout still worth sending: below it the budget counts as spent (0 for 010).
+    floor: Duration,
 }
-impl Deadline<'_> {
+impl<'a> Deadline<'a> {
+    /// A deadline `budget` from now on `clock`, spent once less than `floor` remains.
+    pub(crate) fn new(clock: &'a dyn Clock, budget: Duration, floor: Duration) -> Self {
+        Self::ending(clock, clock.now() + budget, floor)
+    }
+    /// A deadline at `end` on `clock` (a budget that started earlier).
+    pub(crate) fn ending(clock: &'a dyn Clock, end: Instant, floor: Duration) -> Self {
+        Self { clock, end, floor }
+    }
     /// Remaining budget, `None` once spent: a timeout of 0 would mean the default timeout.
-    fn remaining(&self) -> Result<Duration, Undetermined> {
+    pub(crate) fn remaining(&self) -> Result<Duration, Undetermined> {
         let left = self.end.saturating_duration_since(self.clock.now());
-        if left.is_zero() {
+        if left.is_zero() || left < self.floor {
             Err(Undetermined::BudgetSpent)
         } else {
             Ok(left)
@@ -145,10 +155,7 @@ pub fn classify(
     if !port.is_trusted() {
         return FocusClassification::PermissionMissing;
     }
-    let deadline = Deadline {
-        clock,
-        end: clock.now() + CLASSIFY_BUDGET,
-    };
+    let deadline = Deadline::new(clock, CLASSIFY_BUDGET, Duration::ZERO);
     classify_within(port, pid, &deadline).unwrap_or_else(FocusClassification::Undetermined)
 }
 
@@ -163,6 +170,17 @@ fn classify_within(
                 AxQueryError::NoValue => Undetermined::NoFocusedElement,
                 other => undetermined(other),
             })?;
+    classify_focused(element.as_mut(), pid, deadline)
+}
+
+// @spec AC-001: 010's editable rule decides what 011 remembers — .specs/features/011-dictation-field-return/spec.md#ac-001
+/// 010's editable rule over an element already obtained: shared with 011's capture, which keeps
+/// a reference to the element it classifies (spec 011 AC-001).
+pub(crate) fn classify_focused(
+    element: &mut dyn FocusedElement,
+    pid: u32,
+    deadline: &Deadline<'_>,
+) -> Result<FocusClassification, Undetermined> {
     // Business rule (spec AC-002): focus owned by another process is undetermined, before any
     // role check, whatever its role.
     if element.pid().map_err(undetermined)? != pid {
@@ -173,10 +191,10 @@ fn classify_within(
         return Err(Undetermined::SecureField);
     }
     if TEXT_ROLES.contains(&role.as_str()) {
-        return text_field(element.as_mut(), deadline);
+        return text_field(element, deadline);
     }
     if NON_TEXT_ROLES.contains(&role.as_str()) {
-        return non_text(element.as_mut(), deadline);
+        return non_text(element, deadline);
     }
     Err(Undetermined::UnknownRole)
 }

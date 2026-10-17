@@ -12,8 +12,9 @@ use super::ports::{
 use super::types::{BubbleId, BubbleSpec, RecoveryBubbleView, RecoveryPlatform};
 use super::verdict::{classification_target, verdict_of};
 use crate::destination::context::{
-    DestinationContext, DictationId, PreInsertionVerdict, RecoveryPort,
+    DestinationContext, DictationId, PreInsertionVerdict, RecoveryPort, RecoveryReason,
 };
+use crate::destination::field_check::FieldCheck;
 use crate::destination::outcome::InsertionOutcome;
 use crate::destination::recovery::{ConsumerAck, OutcomeConsumer, PresentationReceipt};
 use crate::destination::workspace::Clock;
@@ -265,6 +266,15 @@ impl OutcomeConsumer for RecoveryService {
 // @spec FR-001: Pre-insertion verdict within the guard check — .specs/features/010-recovery-bubble/spec.md#fr-001
 impl RecoveryPort for RecoveryService {
     fn before_insertion(&self, context: &DestinationContext) -> PreInsertionVerdict {
+        // 011 (AC-004, AC-005): a verified input is editable and a diverted return never
+        // pastes; both are answered without any accessibility query.
+        match context.field {
+            FieldCheck::Verified => return PreInsertionVerdict::Insert,
+            FieldCheck::Diverted(_) => {
+                return PreInsertionVerdict::Recover(RecoveryReason::FieldReturnFailed)
+            }
+            FieldCheck::Absent | FieldCheck::Unchanged(_) => {}
+        }
         let setting_enabled = self.manager.setting_for(context.dictation_id);
         let target = context.target.as_ref();
         match classification_target(self.platform, setting_enabled, target) {

@@ -73,6 +73,7 @@ fn inserting_dictation(
         destination_generation: generation,
         source: started.source,
         target: Some(target),
+        field: Default::default(),
     };
     Ok((manager, context))
 }

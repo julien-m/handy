@@ -46,6 +46,8 @@ pub(super) struct ManagerState {
     pub(super) pin_version: u64,
     /// When the disposition of a dictation became `Recover` (010 latency start).
     pub(super) recovery_decided: Option<(DictationId, Instant)>,
+    /// 011's input remembered for the current dictation (never content; see `field_lifetime`).
+    pub(super) field: Option<super::field::RememberedField>,
 }
 
 /// Session owner shared by the recording lifecycle, the session commands and 009/010.
@@ -54,6 +56,8 @@ pub struct DestinationManager {
     pub(super) workspace: Arc<dyn WorkspacePort>,
     pub(super) clock: Arc<dyn Clock>,
     platform: PlatformCapabilities,
+    /// 011's field port (unsupported until `with_field_access`).
+    pub(super) field_access: Arc<dyn super::field::FieldAccess>,
 }
 
 impl DestinationManager {
@@ -68,6 +72,7 @@ impl DestinationManager {
             workspace,
             clock,
             platform,
+            field_access: Arc::new(super::field::UnsupportedFieldAccess),
         }
     }
     /// Session state, recovered after a poisoning panic (the state stays consistent per call).
@@ -108,6 +113,7 @@ impl DestinationManager {
         state.last_dictation += 1;
         state.generation += 1;
         state.menu.clear();
+        state.field = None;
         state.support = Some(capture.support);
         let (selection, pin_view) = self.start_route(state.pin.as_ref(), &capture.selection);
         let session = DestinationSession {
@@ -189,6 +195,7 @@ impl DestinationManager {
         let mut state = self.lock();
         state.generation += 1;
         state.menu.clear();
+        state.field = None;
         let session = state.session.as_mut()?;
         if matches!(
             session.phase,
@@ -210,6 +217,15 @@ impl DestinationManager {
     /// # Errors
     /// `Stale` when the dictation is no longer current (cancelled, superseded, already frozen).
     pub fn freeze(
+        &self,
+        dictation_id: DictationId,
+        generation: u64,
+    ) -> Result<FrozenDestination, DispositionRefusal> {
+        self.freeze_with_field(dictation_id, generation)
+            .map(|(frozen, _released)| frozen)
+    }
+    /// 006's freeze itself; 011's remembered input is handled by `freeze_with_field`.
+    pub(super) fn freeze_session(
         &self,
         dictation_id: DictationId,
         generation: u64,
@@ -242,6 +258,7 @@ impl DestinationManager {
             return None;
         }
         state.menu.clear();
+        state.field = None;
         let session = state.session.as_mut()?;
         if !session.is(dictation_id, generation) || session.phase == SessionPhase::Finished {
             return None;
@@ -254,7 +271,15 @@ impl DestinationManager {
     }
     /// The terminal outcome of this dictation was published.
     pub fn finish(&self, dictation_id: DictationId, generation: u64) {
-        if let Some(session) = self.lock().session.as_mut() {
+        let mut state = self.lock();
+        if state
+            .field
+            .as_ref()
+            .is_some_and(|field| field.dictation_id == dictation_id)
+        {
+            state.field = None;
+        }
+        if let Some(session) = state.session.as_mut() {
             if session.is(dictation_id, generation) && session.phase == SessionPhase::Inserting {
                 session.phase = SessionPhase::Finished;
             }

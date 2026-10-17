@@ -54,6 +54,13 @@ fn from_reason(reason: Option<DestinationFailure>) -> BubbleSpec {
         Some(DestinationFailure::PinnedAppNotRunning) => before(BubbleReason::PinnedAppNotRunning),
         Some(DestinationFailure::ActivationFailed) => before(BubbleReason::ActivationFailed),
         Some(DestinationFailure::NoTextField) => before(BubbleReason::NoTextField),
+        // @spec AC-004: Field return failed and nothing sent — .specs/features/011-dictation-field-return/spec.md#ac-004
+        // 011: decided at the guard before any dispatch; 010's existing "Insertion failed" with
+        // its explanation that nothing was sent to the application.
+        Some(DestinationFailure::FieldReturnFailed) => BubbleSpec {
+            reason: BubbleReason::InsertionFailed,
+            detail: ReasonDetail::NothingSent,
+        },
         // A failure without a reason is still a failure: keep the text rather than lose it.
         Some(DestinationFailure::InsertionFailed) | None => BubbleSpec {
             reason: BubbleReason::InsertionFailed,

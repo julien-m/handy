@@ -181,7 +181,10 @@ fn unpin_locked(state: &mut ManagerState) -> Option<DestinationSnapshot> {
         session.selection = session.start_selection.clone();
         session.selection_version += 1;
     }
-    Some(DestinationSnapshot::from(&*session))
+    let snapshot = DestinationSnapshot::from(&*session);
+    // 011 AC-003: an unpin that changes the destination's instance releases the input.
+    super::field_lifetime::reconcile_field(state);
+    Some(snapshot)
 }
 
 /// Store `app` as the pin and make it the route of a dictation still open to choices. Pinning
@@ -211,7 +214,10 @@ fn install(state: &mut ManagerState, app: RunningApp, now: Instant) -> Option<De
         session.selection = route;
         session.selection_version += 1;
     }
-    Some(DestinationSnapshot::from(&*session))
+    let snapshot = DestinationSnapshot::from(&*session);
+    // 011 AC-003: pinning another application releases the remembered input.
+    super::field_lifetime::reconcile_field(state);
+    Some(snapshot)
 }
 
 /// The running instance named by `identifier`, Handy's own process excluded. Business rule: the

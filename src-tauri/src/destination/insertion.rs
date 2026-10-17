@@ -6,6 +6,7 @@
 use super::context::{
     ApplicationIdentity, DestinationContext, DestinationSource, RecoveryDisposition, RecoveryPort,
 };
+use super::field::RememberedField;
 use super::guard::{DispatchGuard, GuardRefusal};
 use super::manager::{DestinationManager, FrozenDestination};
 use super::outcome::{map_method_result, DestinationFailure, InsertionStatus, MethodResult};
@@ -82,7 +83,7 @@ impl Orchestrator {
         request: InsertionRequest,
         method: &dyn InsertionPort,
     ) -> InsertionReport {
-        let frozen = match self.freeze(&request) {
+        let (frozen, field) = match self.freeze(&request) {
             Ok(frozen) => frozen,
             Err(report) => return report,
         };
@@ -93,16 +94,26 @@ impl Orchestrator {
             },
             None => None,
         };
+        // 011: return to the input remembered at the start, only in its activated instance.
+        let access = self.manager.field_access();
+        let clock = Arc::clone(&self.clock);
+        let cancelled: &dyn Fn() -> bool = &*request.cancelled;
+        let route = (target.as_ref(), cancelled);
+        let field = super::field_attempt::begin(access, clock, field, route);
         let manager = Arc::clone(&self.manager);
         let recovery = Arc::clone(&self.recovery);
         let guard =
             DispatchGuard::new(manager, recovery, frozen.clone(), target, request.cancelled);
-        let guard = Arc::new(guard);
+        let guard = Arc::new(guard.with_field(field));
         let result = method.dispatch(Arc::clone(&guard));
         self.conclude(&frozen, &guard, result, request.paste_method_none)
     }
-    /// Insertion entry: a cancelled or superseded dictation ends here without activation.
-    fn freeze(&self, request: &InsertionRequest) -> Result<FrozenDestination, InsertionReport> {
+    /// Insertion entry: a cancelled or superseded dictation ends here without activation; the
+    /// input 011 remembered comes out with the frozen selection when it still serves it.
+    fn freeze(
+        &self,
+        request: &InsertionRequest,
+    ) -> Result<(FrozenDestination, Option<RememberedField>), InsertionReport> {
         let (id, generation) = (request.dictation_id, request.destination_generation);
         let cancelled = InsertionReport::ended(
             InsertionStatus::Cancelled,
@@ -115,7 +126,9 @@ impl Orchestrator {
                 .set_disposition(id, generation, RecoveryDisposition::Cancelled);
             return Err(cancelled);
         }
-        self.manager.freeze(id, generation).map_err(|_| cancelled)
+        self.manager
+            .freeze_with_field(id, generation)
+            .map_err(|_| cancelled)
     }
     // @spec FR-004: No fallback when the destination is unavailable — .specs/features/006-destination-application/spec.md#fr-004
     /// Resolve, request once, and wait for the destination in front within the deadline.
@@ -267,6 +280,10 @@ fn refusal_report(refusal: GuardRefusal, source: DestinationSource) -> Insertion
         // 010: a pre-insertion verdict keeps its typed reason (never a generic failure).
         GuardRefusal::RecoverInstead(super::context::RecoveryReason::NoTextField) => {
             failed(DestinationFailure::NoTextField)
+        }
+        // 011 AC-004 (b): nothing was pasted; 010 shows "Insertion failed", nothing sent.
+        GuardRefusal::RecoverInstead(super::context::RecoveryReason::FieldReturnFailed) => {
+            failed(DestinationFailure::FieldReturnFailed)
         }
     }
 }

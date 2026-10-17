@@ -18,6 +18,7 @@ fn session_context(target: Option<ResolvedTarget>) -> SessionContext {
         destination_generation: 9,
         source: DestinationSource::FrontmostAtEnd,
         target,
+        field: Default::default(),
     }
 }
 
