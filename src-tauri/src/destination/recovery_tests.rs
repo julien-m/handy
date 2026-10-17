@@ -147,10 +147,14 @@ fn an_answer_at_the_guard_boundary_is_never_lost() {
 #[test]
 fn the_slot_keeps_the_exact_inserted_text_with_and_without_the_trailing_space() {
     let slot = RecoverySlot::default();
-    let spaced = slot.retain_final(DictationId(1), "kept phrase".to_owned(), true);
+    let final_text = |append_trailing_space| FinalText {
+        text: "kept phrase".to_owned(),
+        append_trailing_space,
+    };
+    let spaced = slot.retain_final(DictationId(1), final_text(true));
     assert_eq!(slot.read(spaced), Ok("kept phrase".to_owned()));
     assert_eq!(slot.read_inserted(spaced), Ok("kept phrase ".to_owned()));
-    let plain = slot.retain_final(DictationId(2), "kept phrase".to_owned(), false);
+    let plain = slot.retain_final(DictationId(2), final_text(false));
     assert_eq!(slot.read(plain), Ok("kept phrase".to_owned()));
     assert_eq!(slot.read_inserted(plain), Ok("kept phrase".to_owned()));
     assert_eq!(slot.read_inserted(spaced), Err(ExpiredReference));

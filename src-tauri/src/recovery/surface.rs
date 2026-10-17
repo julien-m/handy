@@ -59,8 +59,9 @@ fn failed(app: &AppHandle, bubble_id: BubbleId) {
     }
 }
 
-/// A notice started holding the indicator: a bubble already shown moves beside it so that
-/// neither covers the other. Without a recovery window (gate closed) nothing happens.
+/// A notice started holding the indicator, or the held indicator changed its extent: a bubble
+/// already shown moves beside it so that neither covers the other. Without a recovery window
+/// (gate closed) nothing happens.
 pub fn follow_indicator(app: &AppHandle) {
     if let Some(window) = window(app).filter(|window| window.is_visible().unwrap_or(false)) {
         place(app, &window);
@@ -166,6 +167,8 @@ impl RecoverySurfacePort for TauriSurface {
     fn show_again(&self, view: RecoveryBubbleView) {
         let work = move |app: &AppHandle| {
             if let Some(window) = window(app) {
+                // Placed again first: a notice may have started holding during the drag.
+                place(app, &window);
                 platform::restore_after_drag(&window);
             }
             emit_view(app, &view);

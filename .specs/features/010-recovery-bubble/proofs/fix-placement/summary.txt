@@ -1,0 +1,40 @@
+010 fix-placement — round 3 delivery review fixes on fix/010-bubble-placement (from dev 96eb3e1e), macOS arm64, CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-009, one cargo at a time
+Run on the working tree of the fix commit (parent 96eb3e1e). Per-command stdout/stderr: final/NN.stdout, final/NN.stderr
+
+01	exit 0	2s	bunx --no-install tsc --noEmit
+02	exit 0	2s	bun run lint
+03	exit 0	3s	bun run format:check
+04	exit 0	0s	bun run check:translations
+05	exit 0	7s	bun run build
+06	exit 0	0s	bun run test:keyboard
+07	exit 0	0s	bun run test:shortcut-list
+08	exit 0	0s	bun run test:settings-errors
+09	exit 0	0s	bun run test:settings-store
+10	exit 0	0s	bun run test:microphone-priority
+11	exit 0	0s	bun run test:word-replacements
+12	exit 0	0s	bun run test:prompt-settings
+13	exit 0	1s	bun run test:indicator
+14	exit 0	0s	bun run test:recovery-bubble
+15	exit 0	0s	bun run test:vocabulary
+16	exit 0	0s	bun run test:shortcut-states
+17	exit 0	0s	bun run test:output-settings
+18	exit 0	0s	! lsof -nP -iTCP:1420 -sTCP:LISTEN
+19	exit 0	10s	bun run test:microphone-priority-ui
+20	exit 0	4s	bun run test:pin-enter-ui
+21	exit 0	6s	bun run test:recovery-bubble-ui
+22	exit 0	14s	bunx --no-install playwright test --reporter=line
+23	exit 0	1s	cd src-tauri && cargo fmt -- --check
+24	exit 0	26s	cd src-tauri && cargo clippy --all-targets  -- -D warnings
+25	exit 0	139s	cd src-tauri && cargo test  --no-fail-fast
+26	exit 0	19s	cd src-tauri && cargo clippy --all-targets --features smart-paste-dispatch -- -D warnings
+27	exit 0	119s	cd src-tauri && cargo test --features smart-paste-dispatch --no-fail-fast
+28	exit 0	25s	cd src-tauri && cargo clippy --all-targets --features destination-return -- -D warnings
+29	exit 0	136s	cd src-tauri && cargo test --features destination-return --no-fail-fast
+30	exit 0	3s	cd src-tauri && cargo clippy --all-targets --features destination-return,smart-paste-dispatch -- -D warnings
+31	exit 0	101s	cd src-tauri && cargo test --features destination-return,smart-paste-dispatch --no-fail-fast
+32	exit 0	25s	livespec conventions verify --feature repo --json > /dev/null
+
+32/32 exit 0. cargo test: 0 failed in the four combinations (default 1537, smart-paste-dispatch 1537, destination-return 1546, both 1546 passed). Port 1420 free before Playwright. Conventions baseline unchanged (git diff --quiet HEAD -- .specs/conventions/baseline.json).
+Fixed: (1) set_overlay_extent places the bubble again (follow_indicator) after the indicator while a notice holds it (SurfaceState::bubble_follows_extent); no loop, the bubble never changes the indicator extent. (2) show_again places the bubble before restore_after_drag. (3) deliver back to 30 lines, FinalText { text, append_trailing_space } replaces (String, bool), RecoverySlot::retain_failed. (4) AC-003 payload test moved to tests/recovery_payload.rs; recovery_lifecycle.rs 375 lines. (5) delivery::tests::the_insertion_settings_carry_the_trailing_space_to_the_recovery_slot (setting on and off, simulated workspace and clock, real slot).
+New tests: overlay::surface::tests::{only_a_held_indicator_moves_the_bubble_when_its_extent_changes, a_notice_measured_after_the_hold_would_cover_the_bubble_until_it_is_stacked_again}, recovery_native::the_bubble_is_placed_again_after_a_held_extent_change_and_a_refused_drag, delivery::tests::the_insertion_settings_carry_the_trailing_space_to_the_recovery_slot, recovery_payload (moved).
+Not run (pending with Julien, never claimed): native macOS item 'Avis de l'indicateur conservés' (app quit right after the AI failure, indicator top and bottom) and the drag refusal beside a held notice; no window, app activation, key or clipboard on Julien's Mac.

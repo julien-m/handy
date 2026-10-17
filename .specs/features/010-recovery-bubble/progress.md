@@ -45,6 +45,20 @@ Review BLOCKED on one point and audit PASS (`.reviews/delivery.json`, round 2); 
 | Comments citing the removed 006 notice | `overlay.rs`, `RecordingOverlay.tsx`, `notice-model.ts` (`NOTICE_MIN_MS`: 005 AC-005, 007 AC-012) and the indicator test headers | lint |
 | Sentinel test comment | Successful Copy and accepted drop added (one dictation each); helpers split; comment aligned | `recovery_privacy` |
 
+## Delivery review round 3 — placement fix
+
+Review PASS and audit PASS with warnings (`dr010-review-r3.json`, `dr010-audit-r3.json`); corrected on `fix/010-bubble-placement` (from `dev` `96eb3e1e`) on the coordinator's instruction. Verification in `proofs/fix-placement/summary.txt`.
+
+| Finding | Correction | Tests |
+|---|---|---|
+| Bubble covered by a notice measured after its hold (`overlay_indicator.rs:108`) | `set_overlay_extent` places the indicator, then calls `recovery::surface::follow_indicator` while a notice holds it (`SurfaceState::bubble_follows_extent`); moving the bubble never changes the indicator's extent, so no placement loop; without a recovery window (gate closed) nothing happens | `overlay::surface::tests::{only_a_held_indicator_moves_the_bubble_when_its_extent_changes, a_notice_measured_after_the_hold_would_cover_the_bubble_until_it_is_stacked_again}`, `recovery_native::the_bubble_is_placed_again_after_a_held_extent_change_and_a_refused_drag` |
+| `show_again` after a refused drag not placed (`surface.rs:166`) | `place` before `restore_after_drag`, same rule as above | `recovery_native::the_bubble_is_placed_again_after_a_held_extent_change_and_a_refused_drag` |
+| `deliver` 31 lines and anonymous `(String, bool)` (`delivery.rs:90`) | `FinalText { text, append_trailing_space }` read once from the settings snapshot; `publish` hands it to `RecoverySlot::retain_failed`; `deliver` back to 30 lines | `delivery::tests::the_insertion_settings_carry_the_trailing_space_to_the_recovery_slot`, `recovery::tests::the_slot_keeps_the_exact_inserted_text_with_and_without_the_trailing_space` |
+| `tests/recovery_lifecycle.rs` 406 lines | AC-003 payload test moved to `tests/recovery_payload.rs` (375 lines left) | `recovery_payload::copy_and_drag_carry_the_paste_trailing_space_and_the_preview_never_shows_it` |
+| `append_trailing_space` to the slot not tested end to end | settings snapshot with the setting on and off → `FinalText::of` → `retain_failed` of a failed report → outcome reference → `read_inserted` (simulated workspace and clock, real slot); a non-failed status keeps nothing | `delivery::tests::the_insertion_settings_carry_the_trailing_space_to_the_recovery_slot` |
+
+The native proof of both windows readable (item "Avis de l'indicateur conservés", now with an app quit right after the AI failure) stays pending with Julien; nothing was shown, activated, typed or copied on his Mac.
+
 ## Step 1 — feasibility notes
 
 - The native read-only tests are written and ignored by default; they need a logged-in session and Accessibility for the runner, never activate an application, type or touch the clipboard.

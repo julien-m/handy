@@ -236,3 +236,15 @@
 - Native macOS proofs (required before Implemented) and the Windows and Linux release evidence are listed in `progress.md` and `.specs/native-proofs-checklist.md` (section 010); none is claimed.
 
 <!-- finalize:spec-implement:2026-10-15:0ab0ed79 -->
+
+## 2026-10-17 — [Bugfix]: the bubble follows a held notice that grows, and a refused drag is placed again
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** `src-tauri/src/{overlay_indicator.rs,overlay_surface.rs,overlay_surface_tests.rs}`, `src-tauri/src/recovery/surface.rs`, `src-tauri/src/destination/{delivery.rs,delivery_tests.rs,recovery.rs,recovery_tests.rs}`, `src-tauri/tests/{recovery_lifecycle.rs,recovery_payload.rs,recovery_native.rs,recovery/support.rs}`
+- **AC impacted:** FR-002 (placement beside a held notice), AC-003 (inserted text kept with the trailing space); requirements unchanged
+- **Author:** Claude Code (claude-opus-5-5), branch `fix/010-bubble-placement` from `dev` `96eb3e1e`
+- Answers the round 3 delivery review and audit. A 005/007 notice is measured after its hold started, so a refusal decided in milliseconds (AI failure, then the app quit) could present the bubble beside the base pill, then the notice's extent grew the indicator over it. `set_overlay_extent` now places the indicator then the bubble while a notice holds it; moving the bubble never changes the indicator's extent, so there is no placement loop. `show_again` places the bubble with the same rule after a refused drag.
+- `deliver` reads its settings snapshot into a named `FinalText { text, append_trailing_space }` (no anonymous tuple) and is back to 30 lines; `publish` hands it to `RecoverySlot::retain_failed`. The setting is tested from the settings snapshot to the slot, on and off.
+- The AC-003 payload test moved from `tests/recovery_lifecycle.rs` (now 375 lines) to `tests/recovery_payload.rs`.
+- Native checklist (section 010): the notices item now also quits the app right after the AI failure and expects the bubble to follow a growing notice; the drag item expects a refused drag to come back beside a held notice. Native proofs stay pending with Julien. Verification: `proofs/fix-placement/summary.txt`.
