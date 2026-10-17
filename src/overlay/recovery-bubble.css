@@ -150,7 +150,7 @@ body {
   height: 14px;
   color: var(--s-muted);
 }
-.rb-pill[data-testid="recovery-bubble-drag-handle"] {
+.rb-drag {
   cursor: grab;
 }
 
