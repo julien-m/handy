@@ -4,6 +4,7 @@ import { Dropdown } from "../ui/Dropdown";
 import { SettingContainer } from "../ui/SettingContainer";
 import { useSettings } from "../../hooks/useSettings";
 import type { ClipboardHandling } from "@/bindings";
+import { useOutputScreen } from "./output-screen";
 
 interface ClipboardHandlingProps {
   descriptionMode?: "inline" | "tooltip";
@@ -14,6 +15,8 @@ export const ClipboardHandlingSetting: React.FC<ClipboardHandlingProps> =
   React.memo(({ descriptionMode = "tooltip", grouped = false }) => {
     const { t } = useTranslation();
     const { getSetting, updateSetting, isUpdating } = useSettings();
+    // The row's test ids follow the output screen shown (006, 007).
+    const screen = useOutputScreen();
 
     const clipboardHandlingOptions = [
       {
@@ -35,11 +38,11 @@ export const ClipboardHandlingSetting: React.FC<ClipboardHandlingProps> =
         description={t("settings.advanced.clipboardHandling.description")}
         descriptionMode={descriptionMode}
         grouped={grouped}
-        testId="output-settings-clipboard"
+        testId={`${screen}-clipboard`}
       >
         <Dropdown
           options={clipboardHandlingOptions}
-          testId="output-settings-clipboard-select"
+          testId={`${screen}-clipboard-select`}
           ariaLabel={t("settings.advanced.clipboardHandling.title")}
           selectedValue={selectedHandling}
           onSelect={(value) =>

@@ -5,7 +5,9 @@
  */
 import { describe, expect, mock, test } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
+import type { ReactElement } from "react";
 import type { DestinationSupportState } from "../../hooks/use-destination-support";
+import type { OutputScreen } from "./output-screen";
 
 mock.module("react-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key }),
@@ -43,8 +45,18 @@ const { PasteMethodSetting } = await import("./PasteMethod");
 const { SettingsConflictAlert } = await import("./settings-conflict-alert");
 const { HistoryLimit } = await import("./HistoryLimit");
 const { AutomaticEnter } = await import("./automatic-enter");
+const { OUTPUT_SCREENS, OutputScreenContext } = await import("./output-screen");
+const { firstReported } = await import("./page-screen");
 
-const TOGGLE = 'data-testid="output-settings-return-app-toggle"';
+/** Markup of `node` inside an Advanced settings page that shows `screen`. */
+const renderIn = (screen: OutputScreen, node: ReactElement): string =>
+  renderToStaticMarkup(
+    <OutputScreenContext.Provider value={{ screen, report: () => undefined }}>
+      {node}
+    </OutputScreenContext.Provider>,
+  );
+
+const TOGGLE = '-return-app-toggle"';
 /** The toggle's input element, whatever its attribute order. */
 const toggleOf = (markup: string): string => {
   const end = markup.indexOf(TOGGLE);
@@ -70,17 +82,27 @@ describe("return to the dictation's application (006)", () => {
     support = { state: "unsupported", reason: "platform_unsupported" };
     stored = { return_to_dictation_app: true };
     const markup = renderToStaticMarkup(<ReturnToAppSetting grouped />);
-    expect(markup.includes('data-testid="output-settings-return-app"')).toBe(
-      true,
-    );
+    // D1: the row carries the output-settings-unavailable screen's prefix.
     expect(
-      markup.includes('data-testid="output-settings-return-app-title"'),
+      markup.includes('data-testid="output-settings-unavailable-return-app"'),
+    ).toBe(true);
+    expect(
+      markup.includes(
+        'data-testid="output-settings-unavailable-return-app-title"',
+      ),
+    ).toBe(true);
+    expect(
+      markup.includes(
+        'data-testid="output-settings-unavailable-return-app-toggle"',
+      ),
     ).toBe(true);
     expect(
       markup.includes("settings.advanced.returnToApp.unavailablePlatform"),
     ).toBe(true);
     expect(
-      markup.includes('data-testid="output-settings-return-app-info"'),
+      markup.includes(
+        'data-testid="output-settings-unavailable-return-app-info"',
+      ),
     ).toBe(true);
     const toggle = toggleOf(markup);
     expect(toggle.includes("disabled")).toBe(true);
@@ -100,6 +122,9 @@ describe("return to the dictation's application (006)", () => {
     stored = { return_to_dictation_app: true };
     const markup = renderToStaticMarkup(<ReturnToAppSetting grouped />);
     expect(markup.includes("settings.advanced.returnToApp.description")).toBe(
+      true,
+    );
+    expect(markup.includes('data-testid="output-settings-return-app"')).toBe(
       true,
     );
     const toggle = toggleOf(markup);
@@ -173,14 +198,23 @@ describe("settings write errors (008)", () => {
     stored = { history_limit: 5 };
     const markup = renderToStaticMarkup(<HistoryLimit grouped />);
     expect(
+      markup.includes('data-testid="output-settings-history-limit-input"'),
+    ).toBe(true);
+    expect(markup.includes("history-limit-error")).toBe(false);
+    expect(markup.includes("aria-invalid")).toBe(false);
+  });
+
+  test("on the refused-write screen the history limit takes its prefix", () => {
+    stored = { history_limit: 5 };
+    const markup = renderIn("settings-write-errors", <HistoryLimit grouped />);
+    expect(
+      markup.includes('data-testid="settings-write-errors-history-limit"'),
+    ).toBe(true);
+    expect(
       markup.includes(
         'data-testid="settings-write-errors-history-limit-input"',
       ),
     ).toBe(true);
-    expect(markup.includes("settings-write-errors-history-limit-error")).toBe(
-      false,
-    );
-    expect(markup.includes("aria-invalid")).toBe(false);
   });
 });
 
@@ -189,12 +223,13 @@ describe("Automatic Enter (009, gate destination-return open)", () => {
   test("the selector, the key selector and the note carry the contract test ids", () => {
     stored = { automatic_enter: "pin_only", auto_submit_key: "ctrl_enter" };
     const markup = renderToStaticMarkup(<AutomaticEnter grouped />);
+    // D1: closed, the row is on the base screen (009-07).
     for (const id of [
-      "output-settings-enter-options-auto-enter",
-      "output-settings-enter-options-auto-enter-title",
-      "output-settings-enter-options-auto-enter-mode",
-      "output-settings-enter-options-auto-enter-key",
-      "output-settings-enter-options-auto-enter-note",
+      "output-settings-auto-enter",
+      "output-settings-auto-enter-title",
+      "output-settings-auto-enter-mode",
+      "output-settings-auto-enter-key",
+      "output-settings-auto-enter-note",
     ]) {
       expect(markup.includes(`data-testid="${id}"`)).toBe(true);
     }
@@ -209,13 +244,45 @@ describe("Automatic Enter (009, gate destination-return open)", () => {
   test("both selectors are focusable comboboxes in reading order", () => {
     stored = { automatic_enter: "never", auto_submit_key: "enter" };
     const markup = renderToStaticMarkup(<AutomaticEnter grouped />);
-    const mode = markup.indexOf(
-      "output-settings-enter-options-auto-enter-mode",
-    );
-    const key = markup.indexOf("output-settings-enter-options-auto-enter-key");
+    const mode = markup.indexOf("output-settings-auto-enter-mode");
+    const key = markup.indexOf("output-settings-auto-enter-key");
     expect(mode > -1).toBe(true);
     expect(key > mode).toBe(true);
     expect((markup.match(/role="combobox"/g) ?? []).length).toBe(2);
     expect(markup.includes('role="status"')).toBe(true);
+  });
+});
+
+describe("output screen shown (D1)", () => {
+  test("an open list wins, then a refused write, then the unavailable return", () => {
+    expect(firstReported(OUTPUT_SCREENS, [null])).toBe("output-settings");
+    expect(
+      firstReported(OUTPUT_SCREENS, [
+        "output-settings-unavailable",
+        "settings-write-errors",
+      ]),
+    ).toBe("settings-write-errors");
+    expect(
+      firstReported(OUTPUT_SCREENS, [
+        "settings-write-errors",
+        "output-settings-paste-methods",
+      ]),
+    ).toBe("output-settings-paste-methods");
+  });
+
+  test("rows without a state of their own follow the page's screen", () => {
+    stored = { automatic_enter: "never", auto_submit_key: "enter" };
+    const markup = renderIn(
+      "output-settings-unavailable",
+      <AutomaticEnter grouped />,
+    );
+    expect(
+      markup.includes('data-testid="output-settings-unavailable-auto-enter"'),
+    ).toBe(true);
+    expect(
+      markup.includes(
+        'data-testid="output-settings-unavailable-auto-enter-mode"',
+      ),
+    ).toBe(true);
   });
 });

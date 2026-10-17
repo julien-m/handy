@@ -16,8 +16,8 @@ import {
   isCommitKey,
   parseHistoryLimit,
 } from "./history-limit-model";
+import { useReportedOutputScreen } from "./output-screen";
 
-const TEST_ID = "settings-write-errors-history-limit";
 // Shown until the settings are loaded, as before 008.
 const DEFAULT_LIMIT = 5;
 
@@ -42,14 +42,17 @@ const useHistoryLimitField = () => {
 };
 
 /** The inline error of a refused value. */
-const HistoryLimitError: React.FC<{ id: string }> = ({ id }) => {
+const HistoryLimitError: React.FC<{ id: string; testId: string }> = ({
+  id,
+  testId,
+}) => {
   const { t } = useTranslation();
   return (
     <p
       id={id}
       role="alert"
       className="text-sm text-red-500 text-right"
-      data-testid={`${TEST_ID}-error`}
+      data-testid={`${testId}-error`}
     >
       {t("settings.debug.historyLimit.invalid", HISTORY_LIMIT_RANGE)}
     </p>
@@ -61,12 +64,15 @@ type HistoryLimitFieldState = ReturnType<typeof useHistoryLimitField>;
 interface NumberFieldProps {
   field: HistoryLimitFieldState;
   errorId: string;
+  /** Test id of the row, under the output screen shown. */
+  testId: string;
 }
 
 /** The number field: typing keeps a draft, Enter or leaving it inside the window saves. */
 const HistoryLimitNumberField: React.FC<NumberFieldProps> = ({
   field,
   errorId,
+  testId,
 }) => (
   <Input
     type="number"
@@ -89,24 +95,24 @@ const HistoryLimitNumberField: React.FC<NumberFieldProps> = ({
     disabled={field.isBusy}
     invalid={!field.isValid}
     aria-describedby={field.isValid ? undefined : errorId}
-    data-testid={`${TEST_ID}-input`}
+    data-testid={`${testId}-input`}
     className="w-20"
   />
 );
 
 /** The number field with its unit, and the error under them. */
-const HistoryLimitInput: React.FC<{ errorId: string }> = ({ errorId }) => {
+const HistoryLimitInput: React.FC<NumberFieldProps> = (props) => {
   const { t } = useTranslation();
-  const field = useHistoryLimitField();
+  const { field, errorId, testId } = props;
   return (
     <div className="flex flex-col items-end gap-1">
       <div className="flex items-center space-x-2">
-        <HistoryLimitNumberField field={field} errorId={errorId} />
+        <HistoryLimitNumberField {...props} />
         <span className="text-sm text-text">
           {t("settings.debug.historyLimit.entries")}
         </span>
       </div>
-      {!field.isValid && <HistoryLimitError id={errorId} />}
+      {!field.isValid && <HistoryLimitError id={errorId} testId={testId} />}
     </div>
   );
 };
@@ -118,6 +124,13 @@ export const HistoryLimit: React.FC<HistoryLimitProps> = ({
 }) => {
   const { t } = useTranslation();
   const errorId = useId();
+  const field = useHistoryLimitField();
+  // A refused value is the settings-write-errors screen (008).
+  const screen = useReportedOutputScreen(
+    "history-limit",
+    field.isValid ? null : "settings-write-errors",
+  );
+  const testId = `${screen}-history-limit`;
   return (
     <SettingContainer
       title={t("settings.debug.historyLimit.title")}
@@ -125,9 +138,9 @@ export const HistoryLimit: React.FC<HistoryLimitProps> = ({
       descriptionMode={descriptionMode}
       grouped={grouped}
       layout="horizontal"
-      testId={TEST_ID}
+      testId={testId}
     >
-      <HistoryLimitInput errorId={errorId} />
+      <HistoryLimitInput field={field} errorId={errorId} testId={testId} />
     </SettingContainer>
   );
 };
