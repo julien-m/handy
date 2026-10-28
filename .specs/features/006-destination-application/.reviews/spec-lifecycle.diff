@@ -1,0 +1,20 @@
+--- spec-before
++++ spec-current
+@@ -2,7 +2,7 @@
+ feature: destination-application
+ title: Destination Application
+ priority: P1
+-status: Draft
++status: Planned
+ created: 2026-10-12
+ updated: 2026-10-12
+ ---
+@@ -14,7 +14,7 @@
+ - **Feature:** Destination Application
+ - **Branch:** None — specification only (program specified before `spec-ship`)
+ - **Date:** 2026-10-12
+-- **Status:** Draft
++- **Status:** Planned
+ - **Input:** Program item 6: remember the application at dictation start. Show its logo and name near the live indicator. Switching applications during the recording must not change this destination. At the end, return to the chosen application to insert the text. During the dictation, allow a deliberate change of destination from the badge: for example, start in ChatGPT, move to Comet, then explicitly choose Comet as the destination. Preserve the transcript if the application or the target field is no longer available. Program guidance: separate destination, insertion method and clipboard management; Spokenly analyses are static and real compatibility with ChatGPT, Comet and other fields remains to be verified. Program item 8 requires the settings CLI to read and modify output behaviors.
+ - **Feature Number:** 006
+ 

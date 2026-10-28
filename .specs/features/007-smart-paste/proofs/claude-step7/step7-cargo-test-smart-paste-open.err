@@ -1,0 +1,24 @@
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/007-smart-paste/src-tauri)
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 26.40s
+     Running unittests src/lib.rs (/Users/julienm/projects/handy-wt/.target-007/debug/deps/handy_app_lib-6ac8270d6fa8bf85)
+     Running unittests src/main.rs (/Users/julienm/projects/handy-wt/.target-007/debug/deps/handy-48b6c017f63a3782)
+     Running tests/destination_cli.rs (/Users/julienm/projects/handy-wt/.target-007/debug/deps/destination_cli-393057796bc3a181)
+     Running tests/destination_platform.rs (/Users/julienm/projects/handy-wt/.target-007/debug/deps/destination_platform-1dbfb77c113c7d16)
+     Running tests/destination_recovery.rs (/Users/julienm/projects/handy-wt/.target-007/debug/deps/destination_recovery-9b1328f2beb485b2)
+     Running tests/settings_cli.rs (/Users/julienm/projects/handy-wt/.target-007/debug/deps/settings_cli-b66b84de5ce8572f)
+     Running tests/settings_domains.rs (/Users/julienm/projects/handy-wt/.target-007/debug/deps/settings_domains-6d3ec8454c06b9f2)
+     Running tests/settings_live.rs (/Users/julienm/projects/handy-wt/.target-007/debug/deps/settings_live-c605d7de4975856b)
+     Running tests/settings_platform.rs (/Users/julienm/projects/handy-wt/.target-007/debug/deps/settings_platform-b48233f904522ead)
+     Running tests/settings_transactions.rs (/Users/julienm/projects/handy-wt/.target-007/debug/deps/settings_transactions-8345c5f3c4e3e36b)
+     Running tests/settings_validation.rs (/Users/julienm/projects/handy-wt/.target-007/debug/deps/settings_validation-aca6d6cdd856ad0d)
+     Running tests/settings_writers.rs (/Users/julienm/projects/handy-wt/.target-007/debug/deps/settings_writers-78e07b9aaea7d586)
+     Running tests/shortcuts_cli.rs (/Users/julienm/projects/handy-wt/.target-007/debug/deps/shortcuts_cli-00e9f1a5b083a867)
+     Running tests/smart_paste.rs (/Users/julienm/projects/handy-wt/.target-007/debug/deps/smart_paste-0b0438d28565ebf9)
+     Running tests/smart_paste_native.rs (/Users/julienm/projects/handy-wt/.target-007/debug/deps/smart_paste_native-4591d55a594b4be3)
+     Running tests/smart_paste_native_ax.rs (/Users/julienm/projects/handy-wt/.target-007/debug/deps/smart_paste_native_ax-1f98698a4841e2cf)
+     Running tests/smart_paste_native_keyboard.rs (/Users/julienm/projects/handy-wt/.target-007/debug/deps/smart_paste_native_keyboard-0f9e48c7e8bc9d26)
+     Running tests/smart_paste_native_pasteboard.rs (/Users/julienm/projects/handy-wt/.target-007/debug/deps/smart_paste_native_pasteboard-45a4b9b2a503d9cf)
+     Running tests/smart_paste_settings.rs (/Users/julienm/projects/handy-wt/.target-007/debug/deps/smart_paste_settings-51a571a785519eaa)
+   Doc-tests handy_app_lib

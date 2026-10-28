@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Accessibility Access",
-        "description": "Required to type transcribed text into your applications."
+        "description": "Required to type transcribed text into your applications.",
+        "openSettings": "Open System Settings",
+        "retry": "Try again",
+        "alreadyCheckedHint": "If Handy is already checked, remove it, then add it again."
       },
       "grant": "Grant Permission",
       "granted": "Granted",
@@ -182,9 +185,40 @@
           }
         },
         "errors": {
-          "restore": "Failed to restore original shortcut",
-          "set": "Failed to set shortcut: {{error}}",
-          "reset": "Failed to reset shortcut to original value"
+          "set": "Failed to set shortcut: {{error}}"
+        },
+        "list": {
+          "add": "Add shortcut",
+          "addLimit": "Up to {{limit}} shortcuts per action",
+          "change": "Click to record a new combination",
+          "remove": "Remove this shortcut",
+          "removeLast": "Each action keeps at least one shortcut",
+          "reset": "Reset to the default shortcut",
+          "errors": {
+            "conflict": "Already used by {{action}} ({{shortcut}})",
+            "overlap": "Would also trigger {{action}} ({{shortcut}})",
+            "invalid": "Invalid shortcut: {{error}}",
+            "registration": "The system refused this shortcut: {{error}}",
+            "generic": "The shortcut could not be saved",
+            "conflictsUnavailable": "Shortcut conflicts could not be checked"
+          },
+          "changeButton": "Change",
+          "discard": "Discard this shortcut",
+          "discardDraft": "Discard",
+          "save": "Save",
+          "unsaved": "Not saved",
+          "lastHint": "Each action keeps at least one shortcut. Change or reset it instead.",
+          "limitHint": "{{count}} of {{limit}} shortcuts. Remove one to add another.",
+          "draftConflict": "{{shortcut}} is already used by {{action}}. Nothing was saved.",
+          "draftOverlap": "{{shortcut}} would also trigger {{action}}. Nothing was saved.",
+          "legacyOverlap": "{{shortcut}} overlaps with {{action}}",
+          "legacyDuplicate": "{{shortcut}} is also used by {{action}}",
+          "legacyBody": "It kept working as before the update. Change it to clear this warning.",
+          "systemRefused": "{{system}} refused {{shortcut}}",
+          "systemRefusedGeneric": "The system refused this shortcut",
+          "systemRefusedBody": "Another app may have registered this combination. Pick another one or try again.",
+          "systemReason": "System message: {{error}}",
+          "retry": "Try again"
         }
       },
       "language": {
@@ -232,10 +266,66 @@
     "sound": {
       "title": "Sound",
       "microphone": {
-        "title": "Microphone",
-        "description": "Select your preferred microphone device",
-        "placeholder": "Select microphone...",
-        "loading": "Loading..."
+        "placeholder": "Select microphone..."
+      },
+      "microphonePriority": {
+        "title": "Microphone priority",
+        "description": "Handy records with the first available microphone in this order, then the system default. Unavailable microphones keep their place.",
+        "emptyTitle": "No preferred microphone",
+        "emptyBody": "Handy uses the system default microphone until you add one.",
+        "status": {
+          "available": "Available",
+          "unavailable": "Unavailable",
+          "ambiguous": "Ambiguous",
+          "unknown": "Unknown"
+        },
+        "moveUp": "Move {{name}} up",
+        "moveDown": "Move {{name}} down",
+        "remove": "Remove {{name}}",
+        "addLabel": "Add microphone",
+        "addPlaceholder": "Add microphone…",
+        "noDevices": "No microphone detected to add",
+        "duplicateChoice": "{{name}} is already in the list.",
+        "refresh": "Refresh availability",
+        "checked": "Checked {{seconds}} s ago",
+        "refreshFailed": "Couldn't check devices",
+        "retry": "Retry",
+        "inUse": {
+          "title": "In use now",
+          "description": "The microphone Handy is recording with, or the one used by the last recording. It can differ from your first choice.",
+          "notUsedYet": "Not used yet since launch",
+          "systemDefault": "System default microphone",
+          "unnamed": "Unnamed microphone",
+          "lastRecording": "Last recording · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "First choice",
+          "fallback": "Fallback",
+          "fallbackUnavailable": "Fallback · {{name}} unavailable",
+          "fallbackAmbiguous": "Fallback · {{name}} ambiguous",
+          "clamshell": "Closed-lid microphone",
+          "system_default": "System default"
+        },
+        "clamshell": {
+          "title": "Closed-lid microphone",
+          "description": "Tried first when the lid is closed. Your priority order stays unchanged.",
+          "none": "None"
+        },
+        "draft": {
+          "discard": "Discard",
+          "save": "Save",
+          "saving": "Saving…",
+          "saved": "Microphone priority saved"
+        },
+        "conflict": {
+          "title": "Settings changed elsewhere",
+          "body": "The order changed elsewhere. Reload to see it; your edits will be discarded.",
+          "reload": "Reload"
+        },
+        "errors": {
+          "duplicate": "Each microphone may appear only once.",
+          "empty": "A microphone name can't be empty."
+        }
       },
       "channel": {
         "title": "Input Channel",
@@ -323,13 +413,18 @@
         "description": "Choose how text is inserted. Direct: simulates typing via system input. None: skips paste, only updates history/clipboard.",
         "options": {
           "clipboard": "Clipboard ({{modifier}}+V)",
+          "smartPaste": "Smart paste",
           "clipboardCtrlShiftV": "Clipboard (Ctrl+Shift+V)",
           "clipboardShiftInsert": "Clipboard (Shift+Insert)",
           "direct": "Direct",
           "none": "None",
-          "externalScript": "External Script"
+          "externalScript": "External Script",
+          "clipboardMac": "Clipboard (⌘V)",
+          "smartPasteDescription": "Default on macOS",
+          "noneDescription": "History and clipboard only"
         },
-        "externalScriptPlaceholder": "/path/to/your/script.sh"
+        "externalScriptPlaceholder": "/path/to/your/script.sh",
+        "descriptionSmart": "Smart paste writes into the field directly, otherwise pastes and restores your clipboard."
       },
       "typingTool": {
         "title": "Typing Tool",
@@ -357,6 +452,20 @@
           "ctrlEnter": "Ctrl+Enter"
         }
       },
+      "automaticEnter": {
+        "title": "Automatic Enter",
+        "description": "Sent once, only after a successful insertion.",
+        "keyLabel": "Key to press",
+        "announced": "Automatic Enter: {{value}}",
+        "note": "Replaces Auto Submit. No Enter after a failed or unconfirmed insertion, with paste method None, or when the app lost focus.",
+        "options": {
+          "never": "Never",
+          "always": "Always",
+          "alwaysDescription": "Every successful insertion",
+          "pinOnly": "Only in PIN mode",
+          "pinOnlyDescription": "Pinned apps only"
+        }
+      },
       "translateToEnglish": {
         "label": "Translate to English",
         "description": "Automatically translate speech from other languages to English during transcription."
@@ -374,14 +483,6 @@
           "hour1": "After 1 hour",
           "sec15": "After 15 seconds (Debug)"
         }
-      },
-      "customWords": {
-        "title": "Custom Words",
-        "description": "Help supported models recognize names and specialized terms. Fuzzy correction is currently limited to words using A–Z and numbers.",
-        "placeholder": "Add a word",
-        "add": "Add",
-        "remove": "Remove {{word}}",
-        "duplicate": "\"{{word}}\" already exists"
       },
       "voiceActivityDetection": {
         "title": "Voice Activity Detection",
@@ -407,6 +508,148 @@
           "simplified": "Simplified",
           "traditional": "Traditional"
         }
+      },
+      "returnToApp": {
+        "title": "Return to the dictation's application",
+        "description": "Insert into the app where the dictation started, even if you switch apps meanwhile.",
+        "unavailableUnreadable": "Unavailable on this system: Handy can't read the frontmost app here. Text goes to the app in front at the end.",
+        "unavailablePlatform": "Unavailable on this system. Text goes to the app in front at the end.",
+        "details": "Handy remembers the app in front when a dictation starts and switches back to it before inserting the text. When off, the text goes to the app in front when the dictation ends.",
+        "detailsLabel": "About returning to the dictation's application"
+      },
+      "noFieldBubble": {
+        "title": "Show the bubble when no text field is focused",
+        "description": "Keeps the text in a bubble instead of pasting into nothing."
+      }
+    },
+    "vocabulary": {
+      "group": "Vocabulary",
+      "title": "Vocabulary",
+      "description": "Names and terms the model should recognize, when it supports it. Replacements rewrite text after recognition instead.",
+      "placeholder": "Add a term",
+      "inputLabel": "New vocabulary term",
+      "add": "Add",
+      "addHint": "Type a term to add it.",
+      "busy": "Wait for the current change to finish.",
+      "paste": "Paste a list…",
+      "count": "{{total}} of {{max}} terms",
+      "listLabel": "Vocabulary terms",
+      "remove": "Remove {{term}}",
+      "retry": "Retry",
+      "loading": "Loading the vocabulary…",
+      "listFailed": "Couldn't read the saved vocabulary. Nothing was changed; retry to load it.",
+      "empty": {
+        "title": "No terms yet",
+        "body": "Add names such as Claude Code or OpenClaw, one at a time or as a pasted list."
+      },
+      "flag": {
+        "empty": "Empty term, not sent. Remove it.",
+        "too_long": "Longer than 100 characters, not sent. Remove it and add a shorter version.",
+        "line_break": "Contains a line break, not sent. Remove it and add it again.",
+        "forbidden_character": "Contains < > or \", not sent. Remove it and add it without these characters.",
+        "duplicate": "Same as an earlier term, not sent. Remove it.",
+        "over_capacity": "Beyond the 5,000-term limit, not sent until the list is shorter.",
+        "over_budget": "Not sent: over the model limit."
+      },
+      "errors": {
+        "term_empty": "Enter a term.",
+        "term_too_long": "A term can have at most 100 characters.",
+        "term_line_break": "A term must fit on one line.",
+        "term_forbidden_character": "Remove < > or \" characters from the term.",
+        "term_duplicate": "Each term may appear once, and this one is already in the vocabulary.",
+        "limit": "The vocabulary holds at most 5,000 terms. Remove a term to add another.",
+        "conflict": "The vocabulary changed in the meantime and was reloaded. Try again.",
+        "notFound": "This term was already removed. The vocabulary was reloaded.",
+        "unknown": "Handy couldn't confirm the change. The vocabulary was reloaded; check it before trying again.",
+        "committed": "The vocabulary was saved, but Handy couldn't apply it right away. The list was reloaded.",
+        "saved": "Your saved vocabulary is unchanged."
+      },
+      "status": {
+        "loading": "Checking what the model supports…",
+        "selectedModel": "the selected model",
+        "used": {
+          "title": "Used during recognition by {{model}}",
+          "sent": "{{sent}} of {{total}} terms are sent.",
+          "sentOne": "{{sent}} of 1 term is sent."
+        },
+        "notSent": {
+          "over_budget": "Not sent, over the model limit: {{terms}}.",
+          "invalid": "Not sent, invalid: {{terms}}.",
+          "duplicate": "Not sent, duplicates: {{terms}}.",
+          "over_capacity": "Not sent, beyond 5,000 terms: {{terms}}.",
+          "more": "and {{hidden}} more"
+        },
+        "noTermSent": {
+          "title": "No term is sent to {{model}}",
+          "empty_vocabulary": "The vocabulary is empty. Add terms to use them during recognition.",
+          "invalid_terms_only": "Every saved term is invalid or a duplicate. Remove the flagged terms and add corrected ones.",
+          "over_budget": "The first term is over the model limit, so no term is sent. Remove it to send the terms after it."
+        },
+        "notSupported": {
+          "title": "{{model}} can't use the vocabulary during recognition",
+          "body": "Approximate correction after recognition applies instead. Choose a Whisper model to send terms to the recognizer."
+        },
+        "streaming": {
+          "title": "Not used in live streaming",
+          "body": "{{model}} transcribes live, which sends no recognition context. Approximate correction applies to the final text instead."
+        },
+        "unknown": {
+          "title": "Support unknown until the model loads",
+          "model_not_loaded": "Handy checks what {{model}} supports when it loads it.",
+          "capability_query_unanswered": "{{model}} didn't answer in time, for example during a dictation. Handy checks again afterwards."
+        },
+        "budgetUnverified": {
+          "title": "Vocabulary support can't be confirmed for {{model}}",
+          "body": "This model declares recognition context, but this build has no documented limit for it. No term is sent; approximate correction applies instead."
+        },
+        "failed": {
+          "title": "Couldn't read the vocabulary status",
+          "body": "Your vocabulary is saved. Retry to check what the model supports."
+        }
+      },
+      "pasteBox": {
+        "title": "Paste terms",
+        "description": "One term per line. Duplicates are skipped; invalid lines must be fixed before adding.",
+        "label": "Terms to paste, one per line",
+        "previewTitle": "Preview",
+        "previewEmpty": "Paste or type one term per line to see what will be added.",
+        "sameAs": "{{term}} — same as {{original}}",
+        "alreadyListed": "{{term}} — already in the list",
+        "summary": {
+          "add": "{{n}} to add",
+          "duplicateOne": "1 duplicate",
+          "duplicateMany": "{{n}} duplicates",
+          "errorOne": "1 error",
+          "errorMany": "{{n}} errors"
+        },
+        "kind": {
+          "add": "Add",
+          "duplicate": "Duplicate",
+          "error": "Error"
+        },
+        "line": {
+          "empty": "Line {{line}}: empty line, remove it",
+          "too_long": "Line {{line}}: use at most 100 characters",
+          "line_break": "Line {{line}}: keep the term on one line",
+          "forbidden_character": "Line {{line}}: remove < > or \" characters",
+          "duplicate": "Line {{line}}: same as an earlier term",
+          "over_capacity": "Line {{line}}: over the 5,000-term limit"
+        },
+        "note": {
+          "empty": "Your vocabulary is unchanged until you add the terms.",
+          "checking": "Checking the lines…",
+          "fixOne": "Fix line {{lines}} to add the terms. Your vocabulary is unchanged.",
+          "fixMany": "Fix lines {{lines}} to add the terms. Your vocabulary is unchanged.",
+          "overCapacity": "The vocabulary holds at most 5,000 terms. Shorten the list to add it. Your vocabulary is unchanged.",
+          "nothingToAdd": "Every line is already in the vocabulary.",
+          "ready": "Duplicates are skipped. Nothing is saved until you add the terms."
+        },
+        "cancel": "Cancel",
+        "applyOne": "Add 1 term",
+        "applyMany": "Add {{n}} terms",
+        "applyZero": "Add terms",
+        "applying": "Adding…",
+        "applied": "Terms added to the vocabulary."
       }
     },
     "postProcessing": {
@@ -441,26 +684,128 @@
           "refreshModels": "Refresh models"
         }
       },
-      "prompts": {
-        "title": "Prompt",
-        "selectedPrompt": {
-          "title": "Selected Prompt",
-          "description": "Select a template for refining transcriptions or create a new one. Use ${output} inside the prompt text to reference the captured transcript."
+      "promptLibrary": {
+        "processing": {
+          "title": "AI post-processing",
+          "enabledDescription": "Process dictations with a prompt. Off: no dictation is processed.",
+          "defaultTitle": "Default prompt",
+          "defaultDescription": "Used by the AI dictation shortcut. Plain dictation starts with None.",
+          "none": "None",
+          "invalidOption": "Invalid: edit it before using it"
         },
-        "noPrompts": "No prompts available",
-        "selectPrompt": "Select a prompt",
-        "createNew": "Create New Prompt",
-        "promptLabel": "Prompt Label",
-        "promptLabelPlaceholder": "Enter prompt name",
-        "promptInstructions": "Prompt Instructions",
-        "promptInstructionsPlaceholder": "Write the instructions to run after transcription. Example: Improve grammar and clarity for the following text: ${output}",
-        "promptTip": "Tip: Use <code>${output}</code> to insert the transcribed text in your prompt.",
-        "updatePrompt": "Update Prompt",
-        "deletePrompt": "Delete Prompt",
-        "createPrompt": "Create Prompt",
-        "cancel": "Cancel",
-        "selectToEdit": "Select a prompt above to view and edit its details.",
-        "createFirst": "Click 'Create New Prompt' above to create your first post-processing prompt."
+        "list": {
+          "title": "Prompts",
+          "count": "{{count}} of {{limit}} prompts",
+          "full": "{{limit}} of {{limit}} prompts: delete one to add another",
+          "new": "New prompt",
+          "empty": "No prompts yet. Create one to process your dictations.",
+          "loading": "Loading prompts…",
+          "loadFailed": "The prompts could not be loaded.",
+          "retry": "Retry",
+          "edit": "Edit {{name}}",
+          "defaultProvider": "Default provider",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "No shortcut",
+          "notReady": "Not ready: {{reason}}",
+          "invalid": "Invalid: {{reason}}",
+          "reloadFailed": "The prompts could not be refreshed. What is shown may be out of date."
+        },
+        "issues": {
+          "name_empty": "name missing",
+          "name_too_long": "name too long",
+          "name_duplicate": "duplicate name",
+          "text_empty": "text missing",
+          "text_too_long": "text too long",
+          "override_incomplete": "provider or model missing",
+          "unknown_provider": "unknown provider"
+        },
+        "reasons": {
+          "provider_error": "the provider returned an error",
+          "empty_result": "the provider returned an empty result",
+          "timeout": "no answer within 30 seconds",
+          "provider_busy": "the provider is still busy with another request",
+          "missing_endpoint": "endpoint missing",
+          "missing_model": "model missing",
+          "missing_api_key": "API key missing",
+          "provider_unavailable": "provider unavailable on this device",
+          "unknown_provider": "unknown provider",
+          "invalid_prompt": "the prompt is invalid",
+          "prompt_missing": "the prompt no longer exists"
+        },
+        "editor": {
+          "editTitle": "Edit prompt",
+          "newTitle": "New prompt",
+          "name": "Name",
+          "namePlaceholder": "Prompt name",
+          "text": "Prompt",
+          "textPlaceholder": "Write the instructions to apply to the transcript. Example: Shorten the transcript to the essentials. ${output}",
+          "textHint": "<code>${output}</code> is replaced by the transcript.",
+          "fieldErrors": {
+            "name_empty": "Enter a name (1–60 characters).",
+            "name_too_long": "Use 60 characters or fewer.",
+            "name_duplicate": "Another prompt has this name. Names must be unique.",
+            "text_empty": "Enter the prompt text.",
+            "text_too_long": "Use 8,000 characters or fewer."
+          },
+          "provider": "Provider",
+          "defaultProviderOption": "Default provider ({{provider}})",
+          "model": "Model",
+          "modelPlaceholder": "Type a model name",
+          "readyEndpoint": "Endpoint {{endpoint}} · Ready",
+          "readyProvider": "{{provider}} · {{model}} · Ready",
+          "notReadyTitle": "{{provider}} is not ready: {{reason}}",
+          "notReadyBody": "Dictations with this prompt skip the AI step and keep the original text.",
+          "fix": {
+            "api_key": "Add API key",
+            "endpoint": "Set the endpoint"
+          },
+          "shortcuts": "Shortcuts (up to {{limit}})",
+          "changedElsewhere": "This prompt was changed elsewhere. Reload it to see the change, or save to keep your version.",
+          "reload": "Reload",
+          "deletedElsewhere": "This prompt was deleted elsewhere and can no longer be saved.",
+          "shortcutsSavedImmediately": "Shortcut changes are saved immediately.",
+          "fixField": {
+            "api_key": "API key for {{provider}}",
+            "endpoint": "Endpoint of {{provider}}",
+            "hint": "Saved when you leave the field. The default provider does not change."
+          }
+        },
+        "actions": {
+          "note": "Changes apply to the next dictation after you save.",
+          "fixFields": "Fix the highlighted fields to save.",
+          "delete": "Delete prompt",
+          "cancel": "Cancel",
+          "save": "Save",
+          "saving": "Saving…",
+          "saved": "Prompt saved."
+        },
+        "deleteDialog": {
+          "title": "Delete “{{name}}”?",
+          "shortcuts": "Its shortcuts will be removed: {{shortcuts}}.",
+          "default": "It is the default prompt: the default becomes None.",
+          "body": "This cannot be undone.",
+          "cancel": "Cancel",
+          "confirm": "Delete",
+          "close": "Close",
+          "deleted": "Prompt “{{name}}” deleted.",
+          "deletedWithShortcuts": "Prompt “{{name}}” deleted. Removed shortcuts: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Test",
+          "sampleLabel": "Sample text",
+          "samplePlaceholder": "Type or paste a sample transcript",
+          "run": "Run test",
+          "running": "Testing…",
+          "note": "Nothing is inserted and history is not changed.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} s",
+          "failedTitle": "Test failed: {{reason}}",
+          "failedHint": "Check the provider settings, then run the test again.",
+          "retry": "Run again",
+          "busy": "Another test is still running. Try again when it ends.",
+          "skipped": "Enter a sample text to test the prompt.",
+          "outdated": "This result is for an earlier version of the prompt or sample. Run the test again."
+        },
+        "shortcutOwner": "the prompt “{{name}}”"
       }
     },
     "history": {
@@ -476,6 +821,7 @@
       "deleteError": "Failed to delete entry. Please try again.",
       "retranscribe": "Re-transcribe",
       "retranscribeError": "Failed to re-transcribe. Please try again.",
+      "noAudio": "No audio recording was saved for this entry, so it cannot be re-transcribed.",
       "transcribing": "Transcribing...",
       "transcriptionFailed": "Transcription failed. You can re-transcribe using the retry icon."
     },
@@ -530,7 +876,8 @@
       "historyLimit": {
         "title": "History Limit",
         "description": "Maximum number of history entries to keep",
-        "entries": "entries"
+        "entries": "entries",
+        "invalid": "Enter a whole number from {{min}} to {{max}}."
       },
       "recordingRetention": {
         "title": "Auto-Delete Recordings",
@@ -552,7 +899,8 @@
       },
       "postProcessingToggle": {
         "label": "Post Processing",
-        "description": "Enable AI-powered text refinement after transcription"
+        "description": "Enable AI-powered text refinement after transcription",
+        "shortcutRefused": "Post Processing is on, but the system refused the shortcut {{shortcut}}. Change it in the Post Processing settings."
       },
       "muteWhileRecording": {
         "label": "Mute While Recording",
@@ -565,7 +913,8 @@
       "keyboardImplementation": {
         "title": "Keyboard Implementation",
         "description": "Choose the keyboard shortcut backend.",
-        "bindingsReset": "Keyboard shortcuts were incompatible and reset to defaults"
+        "bindingsReset": "Some keyboard shortcuts were incompatible and were reset to their defaults or removed",
+        "conflictsKept": "Some shortcuts now conflict with another action. They were kept and are marked in the shortcut settings."
       },
       "paths": {
         "appData": "App Data:",
@@ -645,6 +994,168 @@
           "details": "Handy's local speech-to-text is built on transcribe.cpp and ggml. Thanks to the amazing work by Georgi Gerganov and contributors."
         }
       }
+    },
+    "replacements": {
+      "group": "Replacements",
+      "title": "Replacement rules",
+      "description": "Rewrite recognized text with your own spelling. Applied after recognition, unlike Vocabulary.",
+      "loading": "Loading replacement rules…",
+      "loadFailed": "The replacement rules could not be loaded.",
+      "retry": "Retry",
+      "views": {
+        "label": "Rule view",
+        "list": "List",
+        "text": "Text"
+      },
+      "import": "Import…",
+      "export": {
+        "button": "Export…",
+        "done": "Rules exported to {{name}}.",
+        "notSynced": "Rules exported to {{name}}, but the disk has not confirmed the write yet.",
+        "symbolicLink": "{{name}} is a link: choose another file. Nothing was exported.",
+        "readOnly": "{{name}} is read-only: choose another file. Nothing was exported.",
+        "notWritten": "{{name}} could not be written. It is unchanged."
+      },
+      "add": {
+        "recognized": "Recognized text",
+        "replacement": "Replacement",
+        "button": "Add rule",
+        "needsText": "Enter the recognized text and the replacement to add a rule."
+      },
+      "rule": {
+        "edit": "Edit rule {{recognized}}",
+        "done": "Done editing rule {{recognized}}",
+        "delete": "Delete rule {{recognized}}",
+        "recognized": "Recognized text of rule {{position}}",
+        "replacement": "Replacement of rule {{position}}"
+      },
+      "count": "{{count}} of {{max}} rules · case-insensitive, whole words",
+      "empty": {
+        "title": "No replacement rules yet",
+        "body": "Add a rule, or paste lines such as",
+        "paste": "Paste rules as text"
+      },
+      "draft": {
+        "note": "Unsaved changes. Dictations use the saved rules until you save.",
+        "discard": "Discard",
+        "save": "Save",
+        "saving": "Saving…",
+        "saved": "Replacement rules saved."
+      },
+      "commit": {
+        "invalid": "Some rules are invalid. Fix the highlighted rows, then try again.",
+        "unchanged": "Saved rules are unchanged.",
+        "conflict": "The rules changed elsewhere, for example from the command line. Reload them to continue.",
+        "reload": "Reload",
+        "reloadDiscards": "Reloading shows the saved rules and discards your unsaved changes."
+      },
+      "bulk": {
+        "editor": "Rules as text",
+        "hint": "One rule per line: recognized;replacement. A tab also works for spreadsheet paste. Lines starting with # are ignored.",
+        "cancel": "Cancel",
+        "apply": "Apply",
+        "applying": "Applying…",
+        "applied": "Replacement rules applied.",
+        "fixLine": "Fix line {{line}} to apply. Saved rules are unchanged.",
+        "fixLines": "Fix the {{count}} lines in error to apply. Saved rules are unchanged.",
+        "ready": "Apply replaces the saved rules with this preview.",
+        "noChanges": "Nothing to apply: the text matches the saved rules."
+      },
+      "preview": {
+        "title": "Preview",
+        "updating": "Updating preview…",
+        "errorOne": "1 error · Apply unavailable",
+        "errorMany": "{{count}} errors · Apply unavailable",
+        "changes": "{{adds}} to add · {{updates}} to update · {{deletes}} to delete",
+        "noChanges": "No changes",
+        "omitted": "Lines not listed: {{count}}",
+        "duplicateOf": "Same recognized text as line {{lines}}",
+        "kinds": {
+          "add": "Add",
+          "update": "Update",
+          "delete": "Delete",
+          "unchanged": "Unchanged",
+          "ignored": "Ignored",
+          "error": "Error"
+        },
+        "ignored": {
+          "header": "Header line",
+          "blank": "Blank line",
+          "comment": "Comment"
+        }
+      },
+      "importDialog": {
+        "title": "Import rules",
+        "close": "Close",
+        "fileOne": "{{name}} · 1 line · UTF-8",
+        "fileMany": "{{name}} · {{count}} lines · UTF-8",
+        "mode": "Mode",
+        "merge": "Merge: update matching rules, add new ones at the end",
+        "replace": "Replace: the file becomes the whole rule set",
+        "previewing": "Reading the file…",
+        "updateOne": "1 update",
+        "updateMany": "{{count}} updates",
+        "addOne": "1 addition",
+        "addMany": "{{count}} additions",
+        "deleteOne": "1 deletion",
+        "deleteMany": "{{count}} deletions",
+        "errorOne": "1 error",
+        "errorMany": "{{count}} errors",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (update, keeps position {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (added at the end)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (removed)",
+        "noChanges": "This file matches the saved rules: nothing to import.",
+        "firstError": "Line {{line}}: {{reason}}",
+        "cancel": "Cancel",
+        "apply": "Apply import",
+        "applying": "Importing…",
+        "imported": "Rules imported."
+      },
+      "importRefusal": {
+        "encodingTitle": "Couldn't import {{name}}: it is not UTF-8 text",
+        "encodingBody": "Nothing was imported from that file. Export plain text or CSV, then import again.",
+        "tooLargeTitle": "Couldn't import {{name}}: it is larger than 1 MB",
+        "tooLargeBody": "Nothing was imported. Split the file into smaller files, then import each one.",
+        "unreadableTitle": "Couldn't read {{name}}",
+        "unreadableBody": "Nothing was imported. Check that the file still exists and that Handy can open it.",
+        "dismiss": "Dismiss"
+      },
+      "deleteDialog": {
+        "title": "Delete this rule?",
+        "body": "{{recognized}} → {{replacement}} will be removed from the list. Save to apply the change.",
+        "cancel": "Cancel",
+        "confirm": "Delete"
+      },
+      "switchDialog": {
+        "title": "Save or discard your changes",
+        "body": "The list and the text edit the same rules. Save or discard your unsaved changes first.",
+        "cancel": "Cancel",
+        "discard": "Discard",
+        "save": "Save"
+      },
+      "issues": {
+        "recognizedEmpty": "Enter the recognized text.",
+        "recognizedTooLong": "The recognized text is limited to 100 characters.",
+        "recognizedForbidden": "The recognized text cannot contain a line break, a tab or ;.",
+        "recognizedControl": "The recognized text contains an invisible control character.",
+        "recognizedComment": "The recognized text cannot start with #.",
+        "duplicate": "Each recognized text may appear only once; this one is already defined.",
+        "replacementEmpty": "Enter the replacement.",
+        "replacementTooLong": "The replacement is limited to 500 characters.",
+        "replacementForbidden": "The replacement cannot contain a line break or a tab.",
+        "replacementControl": "The replacement contains an invisible control character.",
+        "missingSeparator": "Missing separator: add ; then the replacement",
+        "tooManyRules": "A rule set holds at most 1,000 rules.",
+        "invalidSavedRules": "The saved rules are invalid. Reload them before importing.",
+        "unicodeUnavailable": "Rules can't be checked right now. Restart Handy, then try again.",
+        "invalidRule": "This rule is invalid."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Unsaved changes",
+      "description": "Some of your replacement rules are not saved. Stay to save them, or discard them and leave.",
+      "stay": "Stay",
+      "discard": "Discard and leave"
     }
   },
   "footer": {
@@ -676,7 +1187,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy needs accessibility permissions to type transcribed text.",
-    "openSettings": "Open System Settings"
+    "openSettings": "Open System Settings",
+    "offTitle": "Accessibility permission is off",
+    "smartPasteOff": "Smart paste can't insert or paste. Your transcripts are kept for recovery."
   },
   "errors": {
     "loadDirectory": "Error loading directory: {{error}}",
@@ -689,12 +1202,41 @@
     },
     "noInputDeviceTitle": "No Microphone Found",
     "noInputDevice": "No audio input device was detected. Please connect a microphone or headset and try again.",
+    "inputLostTitle": "Recording Cut Short",
+    "inputLost": "The microphone was disconnected. The audio recorded until then is being transcribed.",
     "recordingFailed": "Failed to start recording: {{error}}",
     "modelLoadFailed": "Failed to load model: {{model}}",
     "modelLoadFailedUnknown": "unknown model",
     "pasteFailedTitle": "Failed to Paste Text",
     "pasteFailed": "Text could not be pasted into the active application.",
-    "transcriptionFailedTitle": "Transcription Failed"
+    "pasteFailedNotSaved": "The text could not be pasted or saved to history.",
+    "transcriptionFailedTitle": "Transcription Failed",
+    "settings": {
+      "committedNotApplied": "The setting was saved, but it could not be applied right away.",
+      "gpuDeviceRequired": "Select a GPU device before choosing the GPU accelerator.",
+      "outOfRange": "This value is outside the allowed range.",
+      "validationFailed": "This value is not accepted for this setting.",
+      "revisionConflict": "Settings were changed elsewhere. Reload and try again.",
+      "unavailable": "This setting cannot be changed right now. Try again later.",
+      "shortcutSessionBusy": "A dictation is in progress. Try again when it ends.",
+      "persistenceFailed": "Couldn't save settings: the settings file could not be written. Nothing was changed.",
+      "generic": "The setting could not be changed.",
+      "readOnly": "Settings are read-only for this session: the settings file cannot be written safely, so changes will not be saved.",
+      "unsupportedPlatform": "This setting is not available on this system.",
+      "promptNameEmpty": "Enter a name for the prompt.",
+      "promptNameTooLong": "The prompt name must be 60 characters or fewer.",
+      "promptNameDuplicate": "Another prompt already has this name. Names must be unique.",
+      "promptTextEmpty": "Enter the prompt text.",
+      "promptTextTooLong": "The prompt text must be 8,000 characters or fewer.",
+      "promptOverrideIncomplete": "Choose both a provider and a model, or use the default provider.",
+      "promptUnknownProvider": "This provider is not available.",
+      "promptNotUsable": "This prompt is invalid. Edit it before using it.",
+      "limitExceeded": "The maximum number has been reached.",
+      "conflictTitle": "Settings changed elsewhere",
+      "conflictBody": "The command line or another window saved a newer version. Reload to see it; your unsaved edit is discarded.",
+      "reload": "Reload",
+      "reloadFailed": "The settings could not be reloaded. Try again."
+    }
   },
   "appLanguage": {
     "title": "Application Language",
@@ -712,7 +1254,48 @@
   "overlay": {
     "transcribing": "Transcribing...",
     "processing": "Processing...",
-    "loadingModel": "Loading model..."
+    "loadingModel": "Loading model...",
+    "fallbackNotice": "AI processing failed. The original text was used.",
+    "destination": {
+      "label": "Destination: {{name}}",
+      "pinnedLabel": "Destination: {{name}}, pinned",
+      "frontmostApp": "Frontmost app",
+      "remove": "Remove destination",
+      "unknownApp": "The destination app",
+      "choiceFailed": "The destination could not be changed.",
+      "menu": {
+        "title": "Destination for this dictation",
+        "frontmostNow": "Frontmost now",
+        "otherApps": "Other apps",
+        "frontmostAtEnd": "Frontmost app at the end",
+        "loading": "Loading apps…",
+        "failed": "The app list could not be loaded.",
+        "pin": "Pin {{name}}",
+        "unpin": "Unpin {{name}}",
+        "thisDictationOnly": "This dictation only"
+      },
+      "refused": {
+        "stale": "The destination changed meanwhile; the list was refreshed.",
+        "frozen": "Insertion has started; the destination can no longer change.",
+        "unavailable": "This app is no longer available; the list was refreshed."
+      }
+    },
+    "prompt": {
+      "label": "Prompt for this dictation: {{name}}",
+      "hint": "Hover to see options",
+      "none": "None (no AI processing)",
+      "menuTitle": "Prompt for this dictation",
+      "note": "Applies to this dictation only. Default stays {{name}}.",
+      "loading": "Loading prompts…",
+      "failed": "The prompts could not be loaded.",
+      "choiceFailed": "The prompt could not be changed.",
+      "refused": {
+        "sessionEnded": "The recording has stopped; the prompt can no longer change.",
+        "processingOff": "AI processing is off for this dictation.",
+        "promptMissing": "This prompt no longer exists.",
+        "promptNotUsable": "This prompt has issues; edit it in settings first."
+      }
+    }
   },
   "secureInput": {
     "blockedWithCulprit_one": "{{name}} may be blocking 1 shortcut",
@@ -724,5 +1307,45 @@
     "learnMore": "How to fix",
     "recorderBlocked": "Can't record shortcuts right now — macOS Secure Input is blocking key events. Resolve the Secure Input warning first.",
     "dismiss": "Dismiss"
+  },
+  "smartPaste": {
+    "handOver": "Text placed on the clipboard for the remote screen"
+  },
+  "recoveryBubble": {
+    "label": "Transcript kept by Handy",
+    "previewLabel": "Transcript",
+    "reason": {
+      "appClosed": "{{app}} is no longer open",
+      "appClosedUnnamed": "The application is no longer open",
+      "pinnedAppNotRunning": "{{app}} is pinned but not open",
+      "pinnedAppNotRunningUnnamed": "The pinned application is not open",
+      "activationFailed": "Could not bring {{app}} forward",
+      "activationFailedUnnamed": "Could not bring the application forward",
+      "insertionFailed": "Insertion failed",
+      "noTextField": "No text field is focused"
+    },
+    "explanation": {
+      "notInserted": "Handy didn't insert anything and sent no Enter.",
+      "mayHaveReached": "Some text may have reached the application.",
+      "nothingSent": "Nothing was sent to the application.",
+      "lateRead": "The application read the clipboard late: the text may have been pasted after all. Check it before copying again.",
+      "historyKept": "The transcript is kept in History.",
+      "historyKeptFull": "The full transcript is kept in History.",
+      "historyNotKept": "The transcript is not in History.",
+      "openAppDrag": "Open {{app}}, then drag or copy the text.",
+      "openAppCopy": "Open {{app}}, then copy the text.",
+      "openUnnamedDrag": "Open the application, then drag or copy the text.",
+      "openUnnamedCopy": "Open the application, then copy the text.",
+      "focusFieldDrag": "Click in a text field, then drag or copy the text.",
+      "focusFieldCopy": "Click in a text field, then copy the text.",
+      "noFieldSetting": "You can turn this check off in Settings, Advanced, Output."
+    },
+    "actions": {
+      "drag": "Drag into a field",
+      "copy": "Copy",
+      "why": "Why?",
+      "hideDetails": "Hide details",
+      "close": "Close"
+    }
   }
 }

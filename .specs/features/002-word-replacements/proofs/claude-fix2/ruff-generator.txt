@@ -1,0 +1,4 @@
+$ ruff check src-tauri/src/word_replacements/unicode_generate.py
+Tue Oct 13 16:06:27 UTC 2026
+All checks passed!
+EXIT=0

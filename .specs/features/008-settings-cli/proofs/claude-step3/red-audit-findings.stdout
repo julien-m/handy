@@ -1,0 +1,55 @@
+
+running 26 tests
+test driver::repository_subprocess_fixture ... ignored, test-only subprocess entry point; executed by process/crash contracts with stdin barriers
+test ownership::passive_occupied_socket_refuses_without_connecting_or_deleting ... ok
+test locator::missing_ancestor_is_canonicalized_and_parent_traversal_is_refused ... ok
+test locator::installed_resolution_uses_the_same_directory_provider_as_tauri ... ok
+test locator::portable_magic_and_legacy_markers_are_read_without_mutation ... ok
+test reads::missing_store_returns_defaults_without_creating_parent_or_store ... ok
+test reads::broken_json_read_recovers_defaults_without_overwriting ... ok
+test substitution::ancestor_directory_symlink_is_refused_by_locator_and_repository ... FAILED
+test ownership::native_owner_appearing_after_temp_sync_refuses_before_replace ... ok
+test reads::salvage_keeps_valid_revision_valid_fields_and_store_bytes ... ok
+test substitution::store_file_symlink_is_refused_for_reads_and_writes ... FAILED
+test faults::replaced_temporary_path_never_replaces_store_or_deletes_substitute ... ok
+test transactions::prompt_mutation_revalidates_membership_against_the_locked_fresh_snapshot ... ok
+test transactions::changed_patch_is_durable_increments_once_and_preserves_unknowns_and_secrets ... ok
+test substitution::parent_substituted_before_read_and_restored_before_replace_is_refused ... FAILED
+test transactions::stale_compare_and_set_refuses_without_changing_bytes ... ok
+test transactions::corrupt_or_overflow_revision_and_broken_json_refuse_write ... ok
+test processes::two_barrier_started_subprocess_writers_preserve_disjoint_fields ... ok
+test faults::every_durable_fault_preserves_a_complete_generation_and_reports_uncertainty ... ok
+test ownership::startup_normalizes_once_preserves_raw_secrets_and_keeps_offline_fenced ... ok
+test faults::stable_lock_inode_survives_replacement_and_is_retained_after_release ... ok
+test processes::forced_process_termination_before_and_after_replace_preserves_complete_generations_and_releases_locks ... ok
+test ownership::startup_merge_never_copies_unknown_fields_between_items_with_duplicate_ids ... FAILED
+test transactions::semantic_noop_does_not_rewrite_or_increment_and_first_change_is_one ... ok
+test processes::barrier_started_startup_and_writer_respect_real_lease_ownership ... ok
+test processes::independent_raw_reader_observes_only_complete_old_or_new_generations ... ok
+
+failures:
+
+---- substitution::ancestor_directory_symlink_is_refused_by_locator_and_repository stdout ----
+Error: "ancestor alias resolved"
+
+---- substitution::store_file_symlink_is_refused_for_reads_and_writes stdout ----
+Error: "store alias read"
+
+---- substitution::parent_substituted_before_read_and_restored_before_replace_is_refused stdout ----
+Error: "candidate derived from a substituted parent was committed"
+
+---- ownership::startup_merge_never_copies_unknown_fields_between_items_with_duplicate_ids stdout ----
+
+thread 'ownership::startup_merge_never_copies_unknown_fields_between_items_with_duplicate_ids' (40669067) panicked at tests/settings_transactions/ownership.rs:159:5:
+assertion failed: prompts[1].get("extra").is_none()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    ownership::startup_merge_never_copies_unknown_fields_between_items_with_duplicate_ids
+    substitution::ancestor_directory_symlink_is_refused_by_locator_and_repository
+    substitution::parent_substituted_before_read_and_restored_before_replace_is_refused
+    substitution::store_file_symlink_is_refused_for_reads_and_writes
+
+test result: FAILED. 21 passed; 4 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.58s
+

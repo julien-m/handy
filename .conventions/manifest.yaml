@@ -1,0 +1,10 @@
+ai_resources_path: /Users/julienm/projects/ai-ressources
+project: Handy
+domains:
+  code:
+    sources:
+      - code-conventions/general.md
+      - code-conventions/python.md
+      - code-conventions/javascript.md
+      - code-conventions/cli.md
+      - code-conventions/stack-commands.md

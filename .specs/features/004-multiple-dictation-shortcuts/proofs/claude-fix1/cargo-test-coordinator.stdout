@@ -1,0 +1,55 @@
+
+running 50 tests
+test transcription_coordinator::multi_shortcut_tests::failed_start_from_a_lets_b_start_a_new_session ... ok
+test transcription_coordinator::multi_shortcut_tests::hold_mode_busy_press_belongs_to_the_pressed_shortcut ... ok
+test transcription_coordinator::multi_shortcut_tests::hold_or_toggle_locked_phase_stops_on_b ... ok
+test transcription_coordinator::multi_shortcut_tests::external_toggle_flips_a_press_remembered_by_a_shortcut ... ok
+test transcription_coordinator::multi_shortcut_tests::hold_or_toggle_busy_tap_keeps_shortcut_ownership_until_the_drain ... ok
+test transcription_coordinator::multi_shortcut_tests::hold_or_toggle_held_phase_ignores_b ... ok
+test transcription_coordinator::multi_shortcut_tests::push_to_talk_ignores_b_while_a_is_held ... ok
+test transcription_coordinator::multi_shortcut_tests::toggle_b_inside_the_debounce_window_is_dropped ... ok
+test transcription_coordinator::multi_shortcut_tests::toggle_b_stops_a_session_with_the_starting_metadata ... ok
+test transcription_coordinator::multi_shortcut_tests::simultaneous_presses_start_only_once ... ok
+test transcription_coordinator::multi_shortcut_tests::push_to_talk_b_press_does_not_cancel_a_deferred_release ... ok
+test transcription_coordinator::multi_shortcut_tests::other_action_stays_ignored_while_a_records ... ok
+test transcription_coordinator::multi_shortcut_tests::toggle_presses_of_a_and_b_while_busy_net_to_no_op ... ok
+test transcription_coordinator::multi_shortcut_tests::toggle_remembered_press_belongs_to_the_action_for_hold_inputs ... ok
+test transcription_coordinator::tests::cancel_during_processing_drops_remembered_press ... ok
+test transcription_coordinator::tests::different_binding_does_not_replace_pending_press ... ok
+test transcription_coordinator::tests::drain_starts_the_pending_binding_not_a_later_one ... ok
+test transcription_coordinator::tests::external_edges_inside_debounce_window_are_not_dropped ... ok
+test transcription_coordinator::tests::failed_start_rolls_back_to_idle ... ok
+test transcription_coordinator::tests::genuine_release_after_grace_stops_recording_once ... ok
+test transcription_coordinator::tests::hold_modes_classify_busy_inputs_by_pending_state ... ok
+test transcription_coordinator::tests::hold_or_toggle_autorepeat_burst_is_one_long_hold ... ok
+test transcription_coordinator::tests::hold_or_toggle_cancel_clears_locked_session ... ok
+test transcription_coordinator::tests::hold_or_toggle_completed_hold_during_processing_nets_noop ... ok
+test transcription_coordinator::tests::hold_or_toggle_autorepeat_burst_straddling_drain_measures_from_first_press ... ok
+test transcription_coordinator::tests::hold_or_toggle_drain_inside_busy_release_grace_still_classifies_tap ... ok
+test transcription_coordinator::tests::hold_or_toggle_locked_session_ignores_release ... ok
+test transcription_coordinator::tests::hold_or_toggle_long_hold_stops_on_release ... ok
+test transcription_coordinator::tests::hold_or_toggle_press_while_held_is_ignored ... ok
+test transcription_coordinator::tests::hold_or_toggle_remembered_press_measures_hold_from_real_key_down ... ok
+test transcription_coordinator::tests::hold_or_toggle_tap_during_processing_queues_locked_start ... ok
+test transcription_coordinator::tests::hold_or_toggle_tap_locks_recording_until_next_press ... ok
+test transcription_coordinator::tests::hold_or_toggle_two_taps_during_processing_net_noop ... ok
+test transcription_coordinator::tests::keyboard_press_inside_debounce_window_is_still_dropped ... ok
+test transcription_coordinator::tests::press_during_processing_starts_after_drain ... ok
+test transcription_coordinator::tests::press_for_different_binding_than_pending_release_passes_through ... ok
+test transcription_coordinator::tests::press_matching_pending_release_cancels_without_recording_state ... ok
+test transcription_coordinator::tests::ptt_tap_inside_busy_window_nets_noop ... ok
+test transcription_coordinator::tests::push_to_talk_press_matching_pending_release_cancels_release ... ok
+test transcription_coordinator::tests::push_to_talk_release_while_recording_defers_release ... ok
+test transcription_coordinator::tests::push_to_talk_short_press_still_stops_on_release ... ok
+test transcription_coordinator::tests::second_toggle_press_during_processing_forgets_press ... ok
+test transcription_coordinator::tests::toggle_mode_ignores_release_and_stops_on_next_press ... ok
+test transcription_coordinator::tests::toggle_mode_press_and_release_pass_through ... ok
+test transcription_coordinator::tests::toggle_press_during_processing_remembers_start ... ok
+test transcription_coordinator::tests::toggle_press_stops_recording_started_as_hold ... ok
+test transcription_coordinator::tests::toggle_presses_alternate_remember_and_forget_while_busy ... ok
+test transcription_coordinator::tests::toggle_presses_during_processing_net_noop_after_drain ... ok
+test transcription_coordinator::tests::toggle_release_during_processing_is_ignored ... ok
+test transcription_coordinator::tests::x11_autorepeat_burst_does_not_toggle_recording ... ok
+
+test result: ok. 50 passed; 0 failed; 0 ignored; 0 measured; 329 filtered out; finished in 0.00s
+

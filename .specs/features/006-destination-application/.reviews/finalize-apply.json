@@ -1,0 +1,11 @@
+{
+  "outcome": "applied",
+  "receipt_path": "/Users/julienm/projects/handy/.specs/features/006-destination-application/run/20261012T183205Z/finalize/receipt.json",
+  "written": [
+    "feature_changelog",
+    "global_changelog",
+    "readme",
+    "spec_status"
+  ],
+  "skipped": []
+}

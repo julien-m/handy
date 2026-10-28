@@ -19,6 +19,7 @@ use super::protocol::{
 };
 use super::worker::LOG_LINE_PREFIX;
 use super::{CPU_ONLY_FLAG, LOG_LEVEL_ENV, WORKER_FLAG};
+use crate::recognition_vocabulary::context::ContextPreparation;
 use log::{debug, error, info, warn, Level};
 use std::collections::VecDeque;
 use std::fmt;
@@ -31,6 +32,9 @@ use std::sync::{mpsc, Arc, Mutex, MutexGuard};
 use std::thread;
 use std::time::{Duration, Instant};
 use transcribe_cpp::{Backend, RunOptions, StreamOptions, StreamText, StreamUpdate, Transcript};
+
+#[path = "supervisor_context.rs"]
+mod context;
 
 /// Spawn, backend init and device listing. Listing first opens the GPU,
 /// which on macOS compiles ggml's Metal library when the system shader cache
@@ -201,6 +205,11 @@ enum Command {
     },
     StreamReset {
         id: u64,
+    },
+    PrepareContext {
+        terms: Vec<String>,
+        start_worker: bool,
+        reply: Reply<Result<ContextPreparation, EngineError>>,
     },
 }
 
@@ -654,6 +663,13 @@ impl Owner {
                     reply,
                 } => {
                     let _ = reply.send(self.finalize(id, want_language, epoch));
+                }
+                Command::PrepareContext {
+                    terms,
+                    start_worker,
+                    reply,
+                } => {
+                    let _ = reply.send(self.prepare_context(terms, start_worker));
                 }
                 Command::StreamReset { id } => {
                     if self.stream.as_ref().is_some_and(|s| s.id == id) {
@@ -1423,6 +1439,7 @@ fn request_name(request: &Request) -> &'static str {
         Request::Feed => "stream feed",
         Request::Finalize { .. } => "stream finalize",
         Request::StreamReset => "stream reset",
+        Request::PrepareContext { .. } => "context preparation",
     }
 }
 
@@ -1548,9 +1565,9 @@ mod tests {
     /// after it, however fast the model is.
     fn wait_in_flight(engine: &EngineSupervisor, what: &str) {
         let started = Instant::now();
-        while !lock(&engine.shared.in_flight)
+        while lock(&engine.shared.in_flight)
             .as_ref()
-            .is_some_and(|call| call.what == what)
+            .is_none_or(|call| call.what != what)
         {
             assert!(
                 started.elapsed() < Duration::from_secs(60),

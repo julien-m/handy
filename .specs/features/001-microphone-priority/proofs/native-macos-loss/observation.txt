@@ -1,0 +1,2 @@
+Julien 2026-10-28: dictée arrêtée à la déconnexion, début transcrit et collé dans l'éditeur.
+Julien : mode bascule (pas de touche maintenue) ; toast « input lost » vu une seule fois, uniquement dans la fenêtre des réglages (N1).

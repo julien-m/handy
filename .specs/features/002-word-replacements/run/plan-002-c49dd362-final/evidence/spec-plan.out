@@ -1,0 +1,42 @@
+Plan generated: .specs/features/002-word-replacements/plan.md
+7 implementation steps; 2 sequence, 1 state, 1 conceptual ER diagram.
+Plan Review: complete=true ready=true; confidence 4/5; 4 nonblocking warnings and 1 info.
+Penflow contract: deferred before spec-ship by explicit user decision 2026-10-12.
+Penflow Contract Verdict: BLOCKED (required preparation artifacts missing; certified=false).
+## Specification Analysis Report
+
+Semantic readiness: covered
+
+### Findings
+_No findings._
+
+### Structural Reference Coverage Matrix
+| Requirement Key | Has Plan Task? | Task IDs | Notes |
+|-----------------|----------------|----------|-------|
+| 002-word-replacements:AC-001 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 002-word-replacements:AC-002 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 002-word-replacements:AC-003 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 002-word-replacements:AC-004 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 002-word-replacements:AC-005 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 002-word-replacements:AC-006 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 002-word-replacements:AC-007 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 002-word-replacements:AC-008 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 002-word-replacements:FR-001 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 002-word-replacements:FR-002 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 002-word-replacements:FR-003 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 002-word-replacements:FR-004 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 002-word-replacements:FR-005 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 002-word-replacements:FR-006 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 002-word-replacements:SC-001 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 002-word-replacements:SC-002 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 002-word-replacements:SC-003 | yes | plan.md | structural reference present; semantic compliance is separate |
+
+### Metrics
+- total_requirements: 17
+- covered_requirements: 17
+- coverage_percent: 100.0
+- critical_count: 0
+- high_count: 0
+- implementation_present: 0
+
+Progression: READY

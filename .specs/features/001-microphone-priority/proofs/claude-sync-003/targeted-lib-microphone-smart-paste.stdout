@@ -1,0 +1,19 @@
+
+running 14 tests
+test microphones::effective::tests::the_current_choice_distinguishes_no_stream_from_the_system_default ... ok
+test microphones::effective::tests::a_recording_is_remembered_and_idle_openings_never_overwrite_it ... ok
+test microphones::status::tests::the_effective_input_is_reported_with_its_scope_and_reason ... ok
+test microphones::catalog::tests::a_failed_or_partial_observation_never_proves_absence ... ok
+test microphones::catalog::tests::each_configured_choice_gets_one_of_four_statuses_in_saved_order ... ok
+test microphones::catalog::tests::names_lists_each_present_name_once_in_enumeration_order ... ok
+test microphones::priority::tests::exact_names_are_kept_byte_for_byte_including_default ... ok
+test microphones::status::tests::a_failed_observation_reports_unknown_statuses_with_a_warning ... ok
+test microphones::priority::tests::duplicate_and_blank_names_are_refused_per_position_without_echo ... ok
+test microphones::native::tests::slow_probes_are_abandoned_and_capped_until_they_end ... ok
+test settings_service::domains::microphones::tests::list_is_refused_offline_and_without_an_audio_manager ... ok
+test settings_service::domains::microphones::tests::refused_orders_name_positions_and_write_nothing ... ok
+test settings_service::domains::microphones::tests::a_dry_run_previews_without_writing ... ok
+test settings_service::domains::microphones::tests::set_priority_commits_the_complete_order_and_zero_names_empty_it ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 821 filtered out; finished in 0.12s
+

@@ -1,0 +1,35 @@
+$ ~/projects/livespec/.venv/bin/python persist_decisions.py  (persist_clarification_decision x6)
+Tue Oct 13 15:51:33 UTC 2026
+[
+  {
+    "requirement_id": "002-word-replacements:AC-006",
+    "decision_key": "decision:ac-006:join-controls-are-word-characters",
+    "source_hash_after": "9f9f0840c8428802ec44818b6a028aa87c0aeba78e044607cb04c605c4a17305"
+  },
+  {
+    "requirement_id": "002-word-replacements:AC-006",
+    "decision_key": "decision:ac-006:cjk-exemption-applies-to-base-characters",
+    "source_hash_after": "86fe83329aa7d3048ddd07a755ac5ae934582d8d342a4618796f20f56cadd46c"
+  },
+  {
+    "requirement_id": "002-word-replacements:AC-006",
+    "decision_key": "decision:ac-006:emoji-variation-selector-accepted-false-negative",
+    "source_hash_after": "f3cc7b7bdedd567b1588adfcb3e47c9772aa1defa34926ba6b7665d1bce85a55"
+  },
+  {
+    "requirement_id": "002-word-replacements:AC-005",
+    "decision_key": "decision:ac-005:one-megabyte-is-decimal-bytes",
+    "source_hash_after": "e4fc656c1063460772f7af5def847ebc105fa4e7b848a3102782795c47724375"
+  },
+  {
+    "requirement_id": "002-word-replacements:AC-004",
+    "decision_key": "decision:ac-004:header-recognized-with-either-separator",
+    "source_hash_after": "310407a8859e5d97c21b15a148d90923930e0642f6f35046161e1cb608cfab14"
+  },
+  {
+    "requirement_id": "002-word-replacements:AC-007",
+    "decision_key": "decision:ac-007:inserted-text-guarantee-before-ai-post-processing",
+    "source_hash_after": "4a7c8ff1a736ff39fbbe037b2f4295e6f3d589aac067e051566f6eaa76934c2e"
+  }
+]
+EXIT=0

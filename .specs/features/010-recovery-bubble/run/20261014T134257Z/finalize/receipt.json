@@ -1,0 +1,27 @@
+{
+  "command": "spec-refine",
+  "created_at": "2026-10-14T13:42:57.754952+00:00",
+  "feature_slug": "010-recovery-bubble",
+  "files": [
+    {
+      "path": ".specs/features/010-recovery-bubble/changelog.md",
+      "sha256": "de6815eec2e0ac5bcb00aab8a0608bc1737626de84e5c56bda59ee2e8df0a13b"
+    },
+    {
+      "path": ".specs/changelog.md",
+      "sha256": "078be9b5e2cd904b1912c1fb09a9d1a129f554dafe22a355ef50152edc610863"
+    },
+    {
+      "path": ".specs/README.md",
+      "sha256": "f5c97d54b5448bf4e274eb3eb822ca6396aed7d6dd52fc73b82399b1e8b8a84b"
+    }
+  ],
+  "oracle": "livespec-finalize-evidence",
+  "oracle_version": "1",
+  "outcome": "applied",
+  "payload_hash": "fb255547703e9b9cebf1298fdbc702ac06767953e81f131c98b2e5280df7f6f6",
+  "receipt_hash": "c7070d4b63ec1406855ac34fe01eb2f288c41e32981ec307287e82a733484c09",
+  "schema_version": "1",
+  "verdict": "PASS",
+  "violations": []
+}

@@ -1,0 +1,12 @@
+
+running 1 test
+{"mode":"small","warm":false,"warmup_ms":0.000,"attempt":"Skipped(FieldUnavailable)","elapsed_ms":56.225}
+{"mode":"small","warm":true,"warmup_ms":16.552,"attempt":"Verified","elapsed_ms":40.764}
+{"mode":"large","warm":true,"warmup_ms":18.523,"attempt":"Skipped(TooLarge)","elapsed_ms":3.688}
+{"mode":"delayed","warm":true,"warmup_ms":12.759,"attempt":"Unchanged(FallbackGuard(<field values redacted>))","elapsed_ms":146.170}
+{"mode":"delayed","late_guard":"AppliedLate"}
+{"mode":"secure","warm":true,"warmup_ms":11.186,"attempt":"Skipped(SecureField)","elapsed_ms":0.095}
+test production_ax_adapter_verifies_skips_and_detects_late_writes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.60s
+

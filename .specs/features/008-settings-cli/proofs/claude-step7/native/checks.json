@@ -1,0 +1,92 @@
+[
+  {
+    "name": "older: read and write refused with exit 5",
+    "passed": true,
+    "detail": "exits 5,5"
+  },
+  {
+    "name": "older: store untouched",
+    "passed": true,
+    "detail": "store absent"
+  },
+  {
+    "name": "older: older app not activated",
+    "passed": true,
+    "detail": "ApplicationType UIElement -> UIElement"
+  },
+  {
+    "name": "offline: 30 reads succeed",
+    "passed": true,
+    "detail": "30/30 ok"
+  },
+  {
+    "name": "offline: every successful read <= 2000 ms (this machine, this build)",
+    "passed": true,
+    "detail": "max 20.2 ms, median 12.3 ms"
+  },
+  {
+    "name": "offline: writes commit (start_hidden, show_tray_icon)",
+    "passed": true,
+    "detail": "{\"data\":{\"start_hidden\":true},\"ok\":true,\"revision\":1} {\"data\":{\"show_tray_icon\":true},\"ok\":true,\"revision\":1}"
+  },
+  {
+    "name": "offline: no model or app data created by the CLI",
+    "passed": true,
+    "detail": "settings.instance.lock, settings.lock, settings_store.json"
+  },
+  {
+    "name": "app: started hidden without Dock icon (Accessory)",
+    "passed": true,
+    "detail": "ApplicationType UIElement"
+  },
+  {
+    "name": "app: no visible main window",
+    "passed": true,
+    "detail": "[]"
+  },
+  {
+    "name": "app: no settings read before the service is installed",
+    "passed": true,
+    "detail": "log mentions it: false"
+  },
+  {
+    "name": "live: 30 reads succeed",
+    "passed": true,
+    "detail": "30/30 ok"
+  },
+  {
+    "name": "live: every successful read <= 2000 ms (this machine, this build)",
+    "passed": true,
+    "detail": "max 85.6 ms, median 10.9 ms"
+  },
+  {
+    "name": "live: writes answered by the instance and read back",
+    "passed": true,
+    "detail": "{\"data\":{\"paste_delay_ms\":120},\"ok\":true,\"revision\":2} {\"data\":{\"auto_submit\":true},\"ok\":true,\"revision\":3}"
+  },
+  {
+    "name": "live: show_tray_icon routed writes ran the tray live effect in the app",
+    "passed": true,
+    "detail": "app log \"Tray visibility set to\" false/true: 0,0 -> 1,1"
+  },
+  {
+    "name": "live: CLI calls never showed the app (still Accessory)",
+    "passed": true,
+    "detail": "ApplicationType UIElement"
+  },
+  {
+    "name": "restart: stale endpoint reclaimed, channel answers again",
+    "passed": true,
+    "detail": "new pid 50611"
+  },
+  {
+    "name": "restart: offline access returns once the app is gone",
+    "passed": true,
+    "detail": "exit 0"
+  },
+  {
+    "name": "cli: no CLI process registered as an application (the app itself is seen)",
+    "passed": true,
+    "detail": "89 CLI runs, registered 0; app registration seen: true"
+  }
+]

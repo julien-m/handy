@@ -1,0 +1,23 @@
+709:[2026-10-28][17:12:20][handy_app_lib::shortcut::handy_keys][DEBUG] handy-keys event: binding=transcribe, hotkey=command_right, state=Released
+733:[2026-10-28][17:12:28][handy_app_lib::shortcut::handy_keys][DEBUG] handy-keys event: binding=transcribe, hotkey=command_right, state=Pressed
+757:[2026-10-28][17:12:28][handy_app_lib::shortcut::handy_keys][DEBUG] Registered handy-keys shortcut: cancel -> Hotkey { modifiers: Modifiers(0x0), key: Some(Escape) }
+758:[2026-10-28][17:12:29][handy_app_lib::shortcut::handy_keys][DEBUG] handy-keys event: binding=transcribe, hotkey=command_right, state=Released
+763:[2026-10-28][17:12:29][handy_app_lib::shortcut::handy_keys][DEBUG] handy-keys event: binding=transcribe, hotkey=command_right, state=Pressed
+765:[2026-10-28][17:12:29][handy_app_lib::shortcut::handy_keys][DEBUG] Unregistered handy-keys shortcut: cancel
+789:[2026-10-28][17:12:30][handy_app_lib::shortcut::handy_keys][DEBUG] handy-keys event: binding=transcribe, hotkey=command_right, state=Released
+813:[2026-10-28][17:12:33][handy_app_lib::shortcut::handy_keys][DEBUG] handy-keys event: binding=transcribe, hotkey=command_left+j, state=Pressed
+823:[2026-10-28][17:12:33][handy_app_lib::shortcut::handy_keys][DEBUG] handy-keys event: binding=transcribe, hotkey=command_left+j, state=Released
+838:[2026-10-28][17:12:33][handy_app_lib::shortcut::handy_keys][DEBUG] Registered handy-keys shortcut: cancel -> Hotkey { modifiers: Modifiers(0x0), key: Some(Escape) }
+843:[2026-10-28][17:12:35][handy_app_lib::shortcut::handy_keys][DEBUG] handy-keys event: binding=transcribe, hotkey=command_left+j, state=Pressed
+845:[2026-10-28][17:12:35][handy_app_lib::shortcut::handy_keys][DEBUG] Unregistered handy-keys shortcut: cancel
+853:[2026-10-28][17:12:35][handy_app_lib::shortcut::handy_keys][DEBUG] handy-keys event: binding=transcribe, hotkey=command_left+j, state=Released
+893:[2026-10-28][17:12:37][handy_app_lib::shortcut::handy_keys][DEBUG] handy-keys event: binding=transcribe, hotkey=command_left+j, state=Pressed
+894:[2026-10-28][17:12:37][handy_app_lib::shortcut::handy_keys][DEBUG] handy-keys event: binding=transcribe, hotkey=command_left+j, state=Released
+918:[2026-10-28][17:12:37][handy_app_lib::shortcut::handy_keys][DEBUG] Registered handy-keys shortcut: cancel -> Hotkey { modifiers: Modifiers(0x0), key: Some(Escape) }
+923:[2026-10-28][17:12:38][handy_app_lib::shortcut::handy_keys][DEBUG] handy-keys event: binding=transcribe, hotkey=command_left+j, state=Pressed
+925:[2026-10-28][17:12:38][handy_app_lib::shortcut::handy_keys][DEBUG] Unregistered handy-keys shortcut: cancel
+933:[2026-10-28][17:12:38][handy_app_lib::shortcut::handy_keys][DEBUG] handy-keys event: binding=transcribe, hotkey=command_left+j, state=Released
+975:[2026-10-28][17:12:45][handy_app_lib::shortcut::handy_keys][DEBUG] handy-keys event: binding=transcribe, hotkey=command_left+j, state=Pressed
+983:[2026-10-28][17:12:45][handy_app_lib::shortcut::handy_keys][DEBUG] handy-keys event: binding=transcribe, hotkey=command_left+j, state=Released
+1000:[2026-10-28][17:12:45][handy_app_lib::shortcut::handy_keys][DEBUG] Registered handy-keys shortcut: cancel -> Hotkey { modifiers: Modifiers(0x0), key: Some(Escape) }
+1135:[2026-10-28][17:13:11][handy_app_lib::shortcut::handy_keys][DEBUG] Registered handy-keys shortcut: transcribe -> Hotkey { modifiers: Modifiers(CTRL_LEFT | OPT_LEFT | CTRL_RIGHT | OPT_RIGHT), key: Some(D) }

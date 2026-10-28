@@ -1,0 +1,15 @@
+
+running 1 test
+test ownership::native_owner_appearing_after_temp_sync_refuses_before_replace ... FAILED
+
+failures:
+
+---- ownership::native_owner_appearing_after_temp_sync_refuses_before_replace stdout ----
+Error: "native owner ignored at commit"
+
+
+failures:
+    ownership::native_owner_appearing_after_temp_sync_refuses_before_replace
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.05s
+

@@ -45,3 +45,29 @@ result
 
 # Python bytecode (scripts/)
 __pycache__/
+
+# LiveSpec local files (personal, not committed)
+.specs/hooks/*.local.md
+.agents/skills/spec-*
+.agents/skills/source-command-cli
+.claude/skills/spec-*
+.claude/skills/source-command-cli
+.claude/rules/*.md
+.claude/rules/livespec/
+.codex/agents/livespec-*.toml
+.specs/.livespec-path
+.specs/preflight-report.md
+.specs/.runs/
+# Generated verification receipts stay local; the conventions baseline is versioned.
+.specs/conventions/runs/
+.specs/features/*/run/
+.specs/hooks/.commit-context.json
+.livespec-backups/
+
+# LiveSpec verify-output --preview/--save output (feature 040)
+.specs/.previews/
+# >>> Penflow managed temporary artifacts v1 >>>
+.penflow-tmp/
+.penflow-run/
+.mockup-validation/
+# <<< Penflow managed temporary artifacts v1 <<<

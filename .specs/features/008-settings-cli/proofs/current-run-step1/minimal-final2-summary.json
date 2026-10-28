@@ -1,0 +1,147 @@
+{
+  "scope": "Step1 targeted audit3 pipe-ownership correction and tiny minors only; no full-AC certification/nativeWindowsPASS",
+  "files": [
+    {
+      "path": "src-tauri/src/main.rs",
+      "lines": 49,
+      "sha256": "361b34864c240518379a2ee1c238ec06399fbd99aebfc7d2dbfc7f11240decbd"
+    },
+    {
+      "path": "src-tauri/src/cli.rs",
+      "lines": 73,
+      "sha256": "df76015f57a16c6574e4c15865e1181240e1e50683a4de97a8993c43a0406559"
+    },
+    {
+      "path": "src-tauri/src/settings_service/console_windows.rs",
+      "lines": 27,
+      "sha256": "defe2c8555168d61f90a174240fc686f3d961088ad0afbb0bda29aaa8d0c237f"
+    },
+    {
+      "path": "src-tauri/src/settings_service/instance_probe.rs",
+      "lines": 70,
+      "sha256": "ac7acd7161763c89d751eb8103f2f14979870529616adba954d41e5cf5d653c4"
+    },
+    {
+      "path": "src-tauri/src/settings_service/platform_unix/resources.rs",
+      "lines": 132,
+      "sha256": "f4e886d52bf462691f78f200653e45b1ab78c43bfe84778a56044e98ec7252f3"
+    },
+    {
+      "path": "src-tauri/src/settings_service/platform_unix/socket.rs",
+      "lines": 158,
+      "sha256": "e85b7eab7808e15149d7e57bf3d7e28e876ceb4ff41b35403720a35ff2cffedf"
+    },
+    {
+      "path": "src-tauri/src/settings_service/platform_unix/startup_fence.rs",
+      "lines": 67,
+      "sha256": "a330749224dc4f17d0766d9a70bff4187002d691fe91539dd1cee25003a3db53"
+    },
+    {
+      "path": "src-tauri/src/settings_service/platform_unix/tests.rs",
+      "lines": 95,
+      "sha256": "f9ead6544edc01c9e5d1979da6ba7b80c8c7161d95456262560afd8a87381943"
+    },
+    {
+      "path": "src-tauri/src/settings_service/platform_unix.rs",
+      "lines": 18,
+      "sha256": "7abf2bc65bce82a8cd5eca68131f29494315a24c350307c6c9dbe144bc2742af"
+    },
+    {
+      "path": "src-tauri/src/settings_service/platform_windows.rs",
+      "lines": 294,
+      "sha256": "3805a308a2729c2418bd42cad9fd7700349ddd7e3a8ff77a86d19447deae5f25"
+    },
+    {
+      "path": "src-tauri/tests/settings_platform.rs",
+      "lines": 21,
+      "sha256": "bc9a5d76f456812e146b53683f74d018cba0b3ee42770eb12e9899b6ea006e0c"
+    },
+    {
+      "path": "src-tauri/tests/settings_platform/cli_console.rs",
+      "lines": 173,
+      "sha256": "8f6f25264f5a5f19530cebcca5982de64fe6e41904e87e0c28f7eefc9992ad8b"
+    },
+    {
+      "path": "src-tauri/tests/settings_platform/unix.rs",
+      "lines": 156,
+      "sha256": "46b767ffdfb7b6e2031f545558ed52214af67ee13c3c181a65d0ba80c3b0b2a1"
+    },
+    {
+      "path": "src-tauri/tests/settings_platform/windows.rs",
+      "lines": 76,
+      "sha256": "7cbf648fc37b8de7b9bac11b709887e0d9e4104f3529eb16588260446b7d4060"
+    }
+  ],
+  "commands": [
+    {
+      "command": "cargo test --manifest-path src-tauri/Cargo.toml --test settings_platform pipe_authentication",
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step1/minimal-final2-red.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step1/minimal-final2-red.stderr",
+      "exit": 101
+    },
+    {
+      "command": "cargo test --manifest-path src-tauri/Cargo.toml --test settings_platform",
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step1/minimal-final2-test.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step1/minimal-final2-test.stderr",
+      "exit": 0
+    },
+    {
+      "command": "cargo clippy --manifest-path src-tauri/Cargo.toml --test settings_platform -- -D warnings",
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step1/minimal-final2-clippy.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step1/minimal-final2-clippy.stderr",
+      "exit": 0
+    },
+    {
+      "command": "cargo fmt --manifest-path src-tauri/Cargo.toml -- --check",
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step1/minimal-final2-format.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step1/minimal-final2-format.stderr",
+      "exit": 0
+    }
+  ],
+  "tests": {
+    "passed": 22,
+    "failed": 0,
+    "ignored": 0,
+    "ids": [
+      "handy/test/settings_platform::cli_console::detach_success_including_no_attached_console_is_accepted",
+      "handy/test/settings_platform::cli_console::detach_failure_retains_error_kind_and_safe_operation_context",
+      "handy/test/settings_platform::cli_console::historical_startup_and_recording_flags_remain_combinable",
+      "handy/test/settings_platform::unix::absent_probe_creates_nothing",
+      "handy/test/settings_platform::cli_console::historical_value_flags_keep_values_and_transcription_combinations",
+      "handy/test/settings_platform::cli_console::historical_boolean_flags_keep_their_parser_values",
+      "handy/test/settings_platform::cli_console::parsed_gui_detaches_console_and_headless_keeps_it",
+      "handy/test/settings_platform::platform_unix::tests::native_peer_identity_mismatch_never_returns_stream",
+      "handy/test/settings_platform::platform_unix::tests::bind_rejects_socket_replacement_with_matching_owner_and_mode",
+      "handy/test/settings_platform::platform_unix::tests::bind_rejects_regular_replacement_without_changing_permissions",
+      "handy/test/settings_platform::windows::rejected_pipe_authentication_never_returns_resource_and_closes_peer",
+      "handy/test/settings_platform::windows::session_negative_cannot_prove_other_sessions_absent",
+      "handy/test/settings_platform::windows::pipe_identity_rejects_injection_and_isolates_user_and_store",
+      "handy/test/settings_platform::windows::uncertainty_does_not_authorize_offline_operation",
+      "handy/test/settings_platform::unix::lock_and_file_refuse_hostile_aliases",
+      "handy/test/settings_platform::unix::new_socket_authenticates_peer_and_refuses_replaced_path",
+      "handy/test/settings_platform::unix::ambiguous_legacy_resources_fail_closed",
+      "handy/test/settings_platform::windows::successful_pipe_authentication_precedes_resource_transfer",
+      "handy/test/settings_platform::unix::occupied_probe_never_notifies_or_modifies_store",
+      "handy/test/settings_platform::unix::private_directory_refuses_permissions_alias_and_replacement",
+      "handy/test/settings_platform::unix::close_retains_socket_and_releases_lock_by_lifetime",
+      "handy/test/settings_platform::platform_unix::tests::concurrent_socket_binds_preserve_unrelated_file_creation_permissions"
+    ]
+  },
+  "prior_frontend_gate": {
+    "artifact": ".specs/features/008-settings-cli/proofs/current-run-step1/minimal-summary.json",
+    "types_lint_format": "exit0; no frontend files changed by final2"
+  },
+  "real_swift_bridge": {
+    "support_in_test": true,
+    "support_in_clippy": true,
+    "HANDY_FORCE_AI_STUB": null,
+    "archive_proof": ".specs/features/008-settings-cli/proofs/current-run-step1/bridge.json"
+  },
+  "console_unchanged_sha256": "defe2c8555168d61f90a174240fc686f3d961088ad0afbb0bda29aaa8d0c237f",
+  "audit3_disposition": {
+    "effective_major": "PrivatePipe.accept consumes self; owned File is transferred only after real native SID verification; no unauthenticated getter, errors drop file",
+    "false_positive": "FreeConsole unchanged: official Microsoft documentation says an unattached process still succeeds; ERROR_INVALID_PARAMETER classification was not added",
+    "tiny_minors": "Immediate zeroed-ucred SAFETY comment; truthful replacement-refusal test name;32-sample fixture rationale"
+  },
+  "native_evidence": "Owned File policy tested with actual macOS Unix-pair EOF on denial and real tempfile transfer, injected verifier port; not a native Windows SID observation. Windows/Linux/older app/second account remain pending release evidence."
+}

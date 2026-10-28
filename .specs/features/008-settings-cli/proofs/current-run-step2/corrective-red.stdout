@@ -1,0 +1,37 @@
+
+running 10 tests
+test contracts::valid_get_keys_set_domain_shapes_roundtrip_with_optional_nulls ... ok
+test contracts::request_roundtrip_keeps_typed_operation_without_debug_or_secret_diagnostics ... ok
+test contracts::all_documented_error_codes_have_fixed_exits_and_object_details ... ok
+test contracts::unsupported_request_versions_and_extra_fields_are_rejected_safely ... FAILED
+test contracts::public_schema_requires_all_fields_and_preserves_legacy_numeric_reads ... FAILED
+test contracts::operation_schema_requires_the_same_variant_fields_as_serde ... ok
+test contracts::request_schema_closes_each_operation_to_its_own_fields ... FAILED
+test contracts::checked_schema_matches_the_actual_dto_generator ... ok
+test contracts::generated_schema_matches_wire_shapes_and_descriptor_inventory ... ok
+test contracts::explicit_projection_reports_secret_presence_without_any_raw_canary ... ok
+
+failures:
+
+---- contracts::unsupported_request_versions_and_extra_fields_are_rejected_safely stdout ----
+Error: "malformed request accepted"
+
+---- contracts::public_schema_requires_all_fields_and_preserves_legacy_numeric_reads stdout ----
+Error: "required"
+
+---- contracts::request_schema_closes_each_operation_to_its_own_fields stdout ----
+
+thread 'contracts::request_schema_closes_each_operation_to_its_own_fields' (39461782) panicked at tests/settings_validation/contracts.rs:237:9:
+assertion `left == right` failed
+  left: Null
+ right: false
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    contracts::public_schema_requires_all_fields_and_preserves_legacy_numeric_reads
+    contracts::request_schema_closes_each_operation_to_its_own_fields
+    contracts::unsupported_request_versions_and_extra_fields_are_rejected_safely
+
+test result: FAILED. 7 passed; 3 failed; 0 ignored; 0 measured; 9 filtered out; finished in 0.02s
+

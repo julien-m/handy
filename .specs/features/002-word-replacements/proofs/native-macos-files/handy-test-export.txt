@@ -1,0 +1,3 @@
+recognized;replacement
+CloudCode;Claude Code (CLI)
+cloud code;Claude Code

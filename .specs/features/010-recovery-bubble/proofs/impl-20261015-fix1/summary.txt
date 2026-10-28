@@ -1,0 +1,47 @@
+010 impl-20261015-fix1 — verification after the delivery review fixes on feature/010-recovery-bubble (macOS arm64, CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-009), HEAD 5459be70
+Per-command stdout/stderr: final/NN.stdout, final/NN.stderr
+
+01	exit 0	2s	bunx --no-install tsc --noEmit
+02	exit 0	1s	bun run lint
+03	exit 0	3s	bun run format:check
+04	exit 0	0s	bun run check:translations
+05	exit 0	6s	bun run build
+06	exit 0	0s	bun run test:keyboard
+07	exit 0	0s	bun run test:shortcut-list
+08	exit 0	0s	bun run test:settings-errors
+09	exit 0	0s	bun run test:settings-store
+10	exit 0	0s	bun run test:microphone-priority
+11	exit 0	0s	bun run test:word-replacements
+12	exit 0	0s	bun run test:prompt-settings
+13	exit 0	0s	bun run test:indicator
+14	exit 0	0s	bun run test:recovery-bubble
+15	exit 0	0s	bun run test:vocabulary
+16	exit 0	1s	bun run test:shortcut-states
+17	exit 0	0s	bun run test:output-settings
+18	exit 0	0s	port 1420 free before Playwright (lsof -i :1420 finds nothing)
+19	exit 0	8s	bun run test:microphone-priority-ui
+20	exit 0	4s	bun run test:pin-enter-ui
+21	exit 0	5s	bun run test:recovery-bubble-ui
+22	exit 0	8s	bunx --no-install playwright test --reporter=line (all specs)
+23	exit 0	1s	cd src-tauri && cargo fmt -- --check
+24	exit 0	16s	cd src-tauri && cargo clippy --lib --bins  -- -D warnings
+25	exit 0	9s	cd src-tauri && cargo clippy --all-targets  -- -D warnings
+26	exit 0	146s	cd src-tauri && cargo test  --no-fail-fast
+27	exit 0	12s	cd src-tauri && cargo clippy --lib --bins --features smart-paste-dispatch -- -D warnings
+28	exit 0	9s	cd src-tauri && cargo clippy --all-targets --features smart-paste-dispatch -- -D warnings
+29	exit 0	149s	cd src-tauri && cargo test --features smart-paste-dispatch --no-fail-fast
+30	exit 0	11s	cd src-tauri && cargo clippy --lib --bins --features destination-return -- -D warnings
+31	exit 0	21s	cd src-tauri && cargo clippy --all-targets --features destination-return -- -D warnings
+32	exit 0	250s	cd src-tauri && cargo test --features destination-return --no-fail-fast
+33	exit 0	16s	cd src-tauri && cargo clippy --lib --bins --features destination-return,smart-paste-dispatch -- -D warnings
+34	exit 0	13s	cd src-tauri && cargo clippy --all-targets --features destination-return,smart-paste-dispatch -- -D warnings
+35	exit 0	241s	cd src-tauri && cargo test --features destination-return,smart-paste-dispatch --no-fail-fast
+36	exit 0	29s	livespec conventions verify --feature repo --json > /dev/null (output not committed)
+37	exit 0	1s	livespec validate .specs/features/010-recovery-bubble --progression implement --model claude-opus-5-5 --review-max-chars 180000
+38	exit 0	0s	livespec validate .specs/features/010-recovery-bubble
+39	exit 0	1s	livespec test --feature 010-recovery-bubble --acceptance-mapping proofs/impl-20261015-fix1/acceptance-mapping.json --derive-mapping
+
+Run on the working tree of the fix commit (HEAD above is its parent; the commit adds only these proofs and the documentation updates on top of the verified tree).
+New or changed tests of the fix: classifier_tests (containers and unreadable attributes undetermined), recovery_tests::an_answer_at_the_guard_boundary_is_never_lost, recovery_lifecycle::a_dictation_whose_recording_fails_to_start_keeps_the_bubble_and_its_text, recovery_privacy (runtime sentinel with a capturing logger), recovery_native source checks (notice holds kept, bubble closed after the recording started, only the recovery window listens to its events), recovery-bubble-render / recovery-preview / Playwright late read visible in the body.
+Conventions after the fix: PASS, new_count 0; the bubble components and useRecoveryBubble are within 30 lines (remaining 30-line warnings are test helpers only).
+Not run (pending with Julien, never claimed): macOS native proofs of .specs/native-proofs-checklist.md section 010 (matrix now with Comet, Chrome, ChatGPT, Slack, VS Code); Windows/Linux release evidence.

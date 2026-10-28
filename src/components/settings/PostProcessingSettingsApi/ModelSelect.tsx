@@ -8,6 +8,8 @@ type ModelSelectProps = {
   disabled?: boolean;
   placeholder?: string;
   isLoading?: boolean;
+  /** Accessible name when no label element is tied to the control. */
+  ariaLabel?: string;
   onSelect: (value: string) => void;
   onCreate: (value: string) => void;
   onBlur: () => void;
@@ -21,6 +23,7 @@ export const ModelSelect: React.FC<ModelSelectProps> = React.memo(
     disabled,
     placeholder,
     isLoading,
+    ariaLabel,
     onSelect,
     onCreate,
     onBlur,
@@ -45,6 +48,7 @@ export const ModelSelect: React.FC<ModelSelectProps> = React.memo(
         placeholder={placeholder}
         disabled={disabled}
         isLoading={isLoading}
+        ariaLabel={ariaLabel}
         isCreatable
         formatCreateLabel={(input) => `Use "${input}"`}
       />

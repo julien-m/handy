@@ -1,0 +1,177 @@
+{
+  "findings": [
+    {
+      "finding_id": "AN-SEMANTIC-5308cc3e",
+      "category": "semantic",
+      "severity": "HIGH",
+      "locations": [],
+      "summary": "Stale, invalid or incomplete semantic review",
+      "recommendation": "Refresh the complete independent plan review and resolve its findings"
+    }
+  ],
+  "coverage": [
+    {
+      "requirement_id": "001-microphone-priority:AC-001",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "001-microphone-priority:AC-002",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "001-microphone-priority:AC-003",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "001-microphone-priority:AC-004",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "001-microphone-priority:AC-005",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "001-microphone-priority:AC-006",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "001-microphone-priority:AC-007",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "001-microphone-priority:AC-008",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "001-microphone-priority:FR-001",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "001-microphone-priority:FR-002",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "001-microphone-priority:FR-003",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "001-microphone-priority:FR-004",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "001-microphone-priority:FR-005",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "001-microphone-priority:FR-006",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "001-microphone-priority:FR-007",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "001-microphone-priority:FR-008",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "001-microphone-priority:SC-001",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "001-microphone-priority:SC-002",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    },
+    {
+      "requirement_id": "001-microphone-priority:SC-003",
+      "has_plan_task": true,
+      "task_refs": [
+        "plan.md"
+      ],
+      "notes": "structural reference present; semantic compliance is separate"
+    }
+  ],
+  "coverage_percent": 100.0,
+  "coverage_kind": "structural_reference",
+  "semantic_status": "incomplete",
+  "metrics": {
+    "total_requirements": 19,
+    "covered_requirements": 19,
+    "coverage_percent": 100.0,
+    "critical_count": 0,
+    "high_count": 1,
+    "implementation_present": 0
+  }
+}

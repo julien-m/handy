@@ -1,0 +1,6 @@
+test clipboard::tests::external_script_does_not_wait_for_inherited_stdio ... FAILED
+---- clipboard::tests::external_script_does_not_wait_for_inherited_stdio stdout ----
+thread 'clipboard::tests::external_script_does_not_wait_for_inherited_stdio' (43046646) panicked at src/clipboard.rs:1011:14:
+external script should return without waiting for its child: Timeout
+    clipboard::tests::external_script_does_not_wait_for_inherited_stdio
+test result: FAILED. 371 passed; 1 failed; 16 ignored; 0 measured; 0 filtered out; finished in 2.00s

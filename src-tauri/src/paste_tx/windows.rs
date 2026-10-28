@@ -25,7 +25,7 @@ use windows::Win32::Foundation::{
     SetLastError, ERROR_SUCCESS, HANDLE, HGLOBAL, HINSTANCE, HWND, LPARAM, LRESULT, WPARAM,
 };
 
-use super::{evaluate, send_chord, TxState, WaitDecision};
+use super::{evaluate, inject, record_read, ReceiptSink, TxState, WaitDecision};
 use crate::clipboard::send_return_key;
 use crate::input::EnigoState;
 use crate::settings::{AutoSubmitKey, ClipboardHandling, PasteMethod};
@@ -76,6 +76,8 @@ pub(super) struct WinTxShared {
     /// ClipboardHandling::CopyToClipboard — settle by leaving the transcript
     /// on the clipboard as plain text instead of restoring the snapshot.
     preserve_transcript: bool,
+    /// 009's Enter authority, told of every target read (see `paste_tx::ReceiptSink`).
+    receipts: Option<Arc<dyn ReceiptSink>>,
 }
 
 /// The transaction currently holding the clipboard, if any. A new
@@ -148,9 +150,7 @@ unsafe extern "system" fn paste_wnd_proc(
         WM_RENDERFORMAT => {
             if !shared.is_null() {
                 let shared = &*shared;
-                if let Ok(mut st) = shared.state.lock() {
-                    st.record_receipt(Instant::now());
-                }
+                record_read(&shared.state, shared.receipts.as_ref(), Instant::now());
                 if wparam.0 as u32 == CF_UNICODETEXT.0 as u32 {
                     render_text(shared);
                 }
@@ -576,9 +576,9 @@ pub(super) fn run(
     app_handle: &tauri::AppHandle,
     paste_method: &PasteMethod,
     enigo: &mut enigo::Enigo,
-    auto_submit: bool,
-    auto_submit_key: AutoSubmitKey,
+    (auto_submit, auto_submit_key): (bool, AutoSubmitKey),
     clipboard_handling: ClipboardHandling,
+    receipts: Option<Arc<dyn ReceiptSink>>,
 ) -> Result<(), String> {
     let shared = Arc::new(WinTxShared {
         state: Mutex::new(TxState::new()),
@@ -590,6 +590,7 @@ pub(super) fn run(
         auto_submit,
         auto_submit_key,
         preserve_transcript: clipboard_handling == ClipboardHandling::CopyToClipboard,
+        receipts: receipts.clone(),
     });
 
     let (ready_tx, ready_rx) = std::sync::mpsc::channel();
@@ -605,10 +606,7 @@ pub(super) fn run(
     }
     info!("[reliable-paste] published transcript (delayed render)");
 
-    // Mark injection *before* sending: enigo holds the chord for ~100ms and a
-    // fast target may legitimately read while the chord is still held.
-    shared.state.lock().unwrap().injected_at = Some(Instant::now());
-    match send_chord(enigo, paste_method) {
+    match inject(&shared.state, enigo, paste_method, receipts.as_ref()) {
         Ok(()) => {
             info!("[reliable-paste] paste chord sent ({paste_method:?})");
         }

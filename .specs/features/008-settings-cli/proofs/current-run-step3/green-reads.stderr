@@ -1,0 +1,21 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy/src-tauri)
+warning: fields `raw`, `writable`, and `missing` are never read
+  --> src/settings_service/store.rs:21:9
+   |
+20 | pub(super) struct Document {
+   |                   -------- fields in this struct
+21 |     pub raw: Value,
+   |         ^^^
+22 |     pub read: SettingsRead,
+23 |     pub writable: bool,
+   |         ^^^^^^^^
+24 |     pub missing: bool,
+   |         ^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `handy` (lib) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 16.66s
+     Running tests/settings_transactions.rs (src-tauri/target/debug/deps/settings_transactions-6df248b6049f51fe)

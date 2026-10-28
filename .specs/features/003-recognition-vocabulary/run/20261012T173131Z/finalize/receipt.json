@@ -1,0 +1,35 @@
+{
+  "command": "spec-specify",
+  "created_at": "2026-10-12T17:31:31.694697+00:00",
+  "feature_slug": "003-recognition-vocabulary",
+  "files": [
+    {
+      "path": ".specs/features/003-recognition-vocabulary/changelog.md",
+      "sha256": "de7bff59f17f181c5a06fde0f4315e2e7925ceca5c280302f7a2ae4e780f8337"
+    },
+    {
+      "path": ".specs/changelog.md",
+      "sha256": "fe580f2ec324feedcd681d5d5e9cb17111718a3bd14d2f2d8d7c37a9ff97f7e4"
+    },
+    {
+      "path": ".specs/README.md",
+      "sha256": "0cd6d687210ecdaf8b624625c990b37e8e48a7272cc9a558f9b8d5222fef5820"
+    },
+    {
+      "path": ".specs/features/003-recognition-vocabulary/spec.md",
+      "sha256": "acff456f5049b8a16f601401cb63ccdd9b083713babec1e6a5b53feeaec26728"
+    },
+    {
+      "path": ".specs/roadmap.md",
+      "sha256": "b47c510a2e59741053e6de5a064c6ae0019081dc6dab6b8875170382c9adeef1"
+    }
+  ],
+  "oracle": "livespec-finalize-evidence",
+  "oracle_version": "1",
+  "outcome": "verified",
+  "payload_hash": "3cfcaa1c21261d1f0db3fe48faf005445bbaf3338f3bf88ae2cc630d92f49889",
+  "receipt_hash": "1283cca92da64c3a1ffee158324cd63f2397d2a44ed0dc74d0aafcd8afffe9c3",
+  "schema_version": "1",
+  "verdict": "PASS",
+  "violations": []
+}

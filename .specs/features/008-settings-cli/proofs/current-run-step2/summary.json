@@ -1,0 +1,203 @@
+{
+  "scope": "Step2 pure service foundation; no migrated Tauri writers, persistence transaction, liveIPC, actual CLI reachability or full feature/AC certification",
+  "files": [
+    {
+      "path": "src-tauri/src/lib.rs",
+      "lines": 1129,
+      "sha256": "8f3466063c69e417a8ce36d82134e4a170c4fa9df0e7790187bbcc686b4f10d1"
+    },
+    {
+      "path": "src-tauri/src/settings_service/mod.rs",
+      "lines": 8,
+      "sha256": "1c2315312e14b7e877fb4ba7dd051c72c7f5e1e1ad37f094223f0dece4816034"
+    },
+    {
+      "path": "src-tauri/src/settings_service/descriptor.rs",
+      "lines": 67,
+      "sha256": "7c5cd43750a7e7758a093a230a7cf33e1c420e4c00ddd6cebd876c781ee92712"
+    },
+    {
+      "path": "src-tauri/src/settings_service/descriptor_data.rs",
+      "lines": 80,
+      "sha256": "44b8f0b28cc6acad60ba256e2d3120239675dca1d985a176368cf48b86e046ee"
+    },
+    {
+      "path": "src-tauri/src/settings_service/validation.rs",
+      "lines": 211,
+      "sha256": "95ed466cf8273632cfdd65ea7a036a70f5fc9a48290494ddb727e750e3a18563"
+    },
+    {
+      "path": "src-tauri/src/settings_service/protocol.rs",
+      "lines": 221,
+      "sha256": "829eefea2e7c9bbcd3a3ba7e506b94a167fb72756844defe7c20f4d45ea77c13"
+    },
+    {
+      "path": "src-tauri/src/settings_service/errors.rs",
+      "lines": 167,
+      "sha256": "29f69563acf36f4bb036dc45231fc9a9e7e248475c4fca7066e7aa3d10d62a40"
+    },
+    {
+      "path": "src-tauri/src/settings_service/public.rs",
+      "lines": 283,
+      "sha256": "c24b7a43616501b7db354bd2b78ff5e6e0468f7e6b35dc1e88ead295824f4784"
+    },
+    {
+      "path": "src-tauri/tests/settings_validation.rs",
+      "lines": 8,
+      "sha256": "3fd2150ae84979b5b85d6ea3a68b75a4e443833951f0d3b9f51fcdfd412eaf34"
+    },
+    {
+      "path": "src-tauri/tests/settings_validation/contracts.rs",
+      "lines": 218,
+      "sha256": "74985c9706e8cd11ee9fd73c69887aada3a9fe3f718a21d5e8592688c6591894"
+    },
+    {
+      "path": "src-tauri/tests/settings_validation/inventory.rs",
+      "lines": 163,
+      "sha256": "0f9c667b2c42d1d411bc0bed69c49709a4f3fe4f2f617e2be56d961fe9bfcd57"
+    },
+    {
+      "path": "src-tauri/tests/settings_validation/scalars.rs",
+      "lines": 289,
+      "sha256": "52fae220ce4c3aaa6635887134cf66b07b49829ee3d8ee0f9f78c8f58f6af22d"
+    },
+    {
+      "path": ".specs/features/008-settings-cli/contracts/settings-cli.schema.json",
+      "lines": 1499,
+      "sha256": "3581671c51ea3d99665954c24e1308fef76cde109c5c191e564e27586821f28b"
+    },
+    {
+      "path": ".specs/features/008-settings-cli/contracts/settings-cli.md",
+      "lines": 31,
+      "sha256": "2cc346e1ded89ee7a3df5ecd424d835842a25b9ade01ccdedca8ee1df433c71c"
+    }
+  ],
+  "new_paths": [
+    "src-tauri/src/settings_service/mod.rs",
+    "src-tauri/src/settings_service/descriptor.rs",
+    "src-tauri/src/settings_service/descriptor_data.rs",
+    "src-tauri/src/settings_service/validation.rs",
+    "src-tauri/src/settings_service/protocol.rs",
+    "src-tauri/src/settings_service/errors.rs",
+    "src-tauri/src/settings_service/public.rs",
+    "src-tauri/tests/settings_validation.rs",
+    "src-tauri/tests/settings_validation/contracts.rs",
+    "src-tauri/tests/settings_validation/inventory.rs",
+    "src-tauri/tests/settings_validation/scalars.rs",
+    ".specs/features/008-settings-cli/contracts/settings-cli.schema.json",
+    ".specs/features/008-settings-cli/contracts/settings-cli.md"
+  ],
+  "commands": [
+    {
+      "command": "cargo test --manifest-path src-tauri/Cargo.toml --test settings_validation",
+      "exit": 101,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step2/red.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step2/red.stderr"
+    },
+    {
+      "command": "cargo test --manifest-path src-tauri/Cargo.toml --test settings_validation operation_schema_requires",
+      "exit": 101,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step2/schema-red.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step2/schema-red.stderr"
+    },
+    {
+      "command": "cargo test --manifest-path src-tauri/Cargo.toml --test settings_validation generated_schema -- --nocapture",
+      "exit": 0,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step2/schema-generator2.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step2/schema-generator2.stderr"
+    },
+    {
+      "command": "cargo test --manifest-path src-tauri/Cargo.toml --test settings_validation",
+      "exit": 0,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step2/final3-test.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step2/final3-test.stderr"
+    },
+    {
+      "command": "cargo clippy --manifest-path src-tauri/Cargo.toml --test settings_validation -- -D warnings",
+      "exit": 0,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step2/final3-clippy.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step2/final3-clippy.stderr"
+    },
+    {
+      "command": "bun run format:check",
+      "exit": 0,
+      "stdout": ".specs/features/008-settings-cli/proofs/current-run-step2/final3-format.stdout",
+      "stderr": ".specs/features/008-settings-cli/proofs/current-run-step2/final3-format.stderr"
+    }
+  ],
+  "tests": {
+    "passed": 16,
+    "failed": 0,
+    "ignored": 0,
+    "ids": [
+      "handy/test/settings_validation::scalars::cli_rejects_noncanonical_boolean_and_out_of_range_numbers",
+      "handy/test/settings_validation::contracts::valid_get_keys_set_domain_shapes_roundtrip_with_optional_nulls",
+      "handy/test/settings_validation::contracts::all_documented_error_codes_have_fixed_exits_and_object_details",
+      "handy/test/settings_validation::inventory::independent_access_inventory_covers_7_readonly_1_secret_4_collections_51_scalars",
+      "handy/test/settings_validation::scalars::every_nullable_scalar_preserves_strings_and_accepts_null_clear",
+      "handy/test/settings_validation::contracts::request_roundtrip_keeps_typed_operation_without_debug_or_secret_diagnostics",
+      "handy/test/settings_validation::scalars::legacy_aliases_are_disk_only_and_build_policy_is_shared",
+      "handy/test/settings_validation::scalars::all_51_scalar_ports_accept_the_same_typed_values",
+      "handy/test/settings_validation::scalars::unknown_and_protected_keys_are_refused_without_echoing_input",
+      "handy/test/settings_validation::scalars::numeric_boundaries_and_overflow_have_identical_safe_error_reasons",
+      "handy/test/settings_validation::contracts::operation_schema_requires_the_same_variant_fields_as_serde",
+      "handy/test/settings_validation::contracts::checked_schema_matches_the_actual_dto_generator",
+      "handy/test/settings_validation::contracts::generated_schema_matches_wire_shapes_and_descriptor_inventory",
+      "handy/test/settings_validation::inventory::every_actual_stored_field_has_exactly_one_descriptor",
+      "handy/test/settings_validation::contracts::explicit_projection_reports_secret_presence_without_any_raw_canary",
+      "handy/test/settings_validation::inventory::independent_enum_inventory_accepts_every_current_canonical_variant"
+    ]
+  },
+  "platform_regression": {
+    "passed": 22,
+    "failed": 0,
+    "ids": [
+      "handy/test/settings_platform::cli_console::detach_success_including_no_attached_console_is_accepted",
+      "handy/test/settings_platform::cli_console::detach_failure_retains_error_kind_and_safe_operation_context",
+      "handy/test/settings_platform::cli_console::historical_startup_and_recording_flags_remain_combinable",
+      "handy/test/settings_platform::unix::absent_probe_creates_nothing",
+      "handy/test/settings_platform::platform_unix::tests::native_peer_identity_mismatch_never_returns_stream",
+      "handy/test/settings_platform::cli_console::historical_value_flags_keep_values_and_transcription_combinations",
+      "handy/test/settings_platform::platform_unix::tests::bind_rejects_socket_replacement_with_matching_owner_and_mode",
+      "handy/test/settings_platform::windows::pipe_identity_rejects_injection_and_isolates_user_and_store",
+      "handy/test/settings_platform::windows::rejected_pipe_authentication_never_returns_resource_and_closes_peer",
+      "handy/test/settings_platform::cli_console::historical_boolean_flags_keep_their_parser_values",
+      "handy/test/settings_platform::cli_console::parsed_gui_detaches_console_and_headless_keeps_it",
+      "handy/test/settings_platform::windows::session_negative_cannot_prove_other_sessions_absent",
+      "handy/test/settings_platform::unix::ambiguous_legacy_resources_fail_closed",
+      "handy/test/settings_platform::platform_unix::tests::bind_rejects_regular_replacement_without_changing_permissions",
+      "handy/test/settings_platform::windows::uncertainty_does_not_authorize_offline_operation",
+      "handy/test/settings_platform::windows::successful_pipe_authentication_precedes_resource_transfer",
+      "handy/test/settings_platform::unix::lock_and_file_refuse_hostile_aliases",
+      "handy/test/settings_platform::unix::new_socket_authenticates_peer_and_refuses_replaced_path",
+      "handy/test/settings_platform::unix::occupied_probe_never_notifies_or_modifies_store",
+      "handy/test/settings_platform::unix::private_directory_refuses_permissions_alias_and_replacement",
+      "handy/test/settings_platform::unix::close_retains_socket_and_releases_lock_by_lifetime",
+      "handy/test/settings_platform::platform_unix::tests::concurrent_socket_binds_preserve_unrelated_file_creation_permissions"
+    ],
+    "command": "cargo test --manifest-path src-tauri/Cargo.toml --test settings_validation --test settings_platform",
+    "stdout": ".specs/features/008-settings-cli/proofs/current-run-step2/final2-test.stdout",
+    "stderr": ".specs/features/008-settings-cli/proofs/current-run-step2/final2-test.stderr",
+    "exit": 0,
+    "scope": "All Step1platformsourcehashes unchanged by final schema-only correction"
+  },
+  "coverage": {
+    "actual_fields": 63,
+    "readonly_nonsecret": 7,
+    "secret_readonly": 1,
+    "collections": 4,
+    "scalar_ports": 51,
+    "canonical_enum_keys": 17,
+    "parity": "Pure UI/CLI validation ports only; actual corresponding Tauri adapters are NOT yet wired (Step4)",
+    "canaries": "Synthetic APIkey/unknownfield/nestedprovider/error sentinels; no real store read"
+  },
+  "real_swift_bridge": {
+    "support_test": true,
+    "support_clippy": true,
+    "HANDY_FORCE_AI_STUB": null
+  },
+  "dependencies": "No Cargo manifest/lock changes or new dependencies",
+  "frontend": "No frontend source changes; prior types/lint0 unchanged. Current fullformatcheck0",
+  "schema": "Generated solely from actual contract_schema producer; checked-file equality test passes; operation variants enforce serde-required keys and nullability",
+  "native_pending": "Windows/Linux/older app/second account remain pending release evidence; no broader native acceptance claimed"
+}

@@ -1,0 +1,79 @@
+// TEMPORARY browser harness for visual checks of the vocabulary editor; never committed.
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { mockIPC } from "@tauri-apps/api/mocks";
+import "./App.css";
+import "./i18n";
+import { applyTheme } from "./lib/utils/theme";
+import { CustomWords } from "./components/settings/CustomWords";
+
+const scenario = new URLSearchParams(location.search).get("s") ?? "default";
+const lists: Record<string, string[]> = {
+  default: ["Claude Code", "Claude Sonnet", "Claude Opus", "OpenClaw", "Penflow", "Jump Desktop"],
+  unsupported: ["Claude Code", "Claude Sonnet", "OpenClaw"],
+  empty: [],
+  paste: [],
+  legacy: ["Claude Code", "a<b legacy", "claude code", "OpenClaw"],
+  streaming: ["Claude Code"],
+  nosent: ["Claude Code"],
+  budget: ["Claude Code"],
+};
+let revision = 1;
+let terms = [...(lists[scenario] ?? [])];
+const issueOf = (t: string, i: number) => {
+  if (/[<>"]/.test(t)) return "forbidden_character";
+  if (terms.slice(0, i).some((x) => x.toLowerCase() === t.toLowerCase())) return "duplicate";
+  return null;
+};
+const view = () => ({ revision, terms: terms.map((term, index) => ({ index, term, issue: issueOf(term, index) })) });
+const status = () => {
+  const base = { mode: "batch", reason: null, mechanism: "whisper_initial_prompt", budget: { value: 223, unit: "tokens" }, evidence_kind: "prepared", terms_not_sent: [] as unknown[] };
+  if (scenario === "unsupported") return { ...base, model_id: "Parakeet V3", status: "not_supported", terms_sent: [], terms_not_sent: terms.map((term, index) => ({ index, term, reason: "no_context" })) };
+  if (scenario === "empty" || scenario === "paste") return { ...base, model_id: "Whisper Small", status: "unknown_until_model_loads", reason: "model_not_loaded", terms_sent: [] };
+  if (scenario === "streaming") return { ...base, model_id: "Parakeet V3", status: "not_used_streaming", terms_sent: [] };
+  if (scenario === "nosent") return { ...base, model_id: "Whisper Small", status: "no_term_sent", reason: "over_budget", terms_sent: [] };
+  if (scenario === "budget") throw { code: "internal_error", message: "x", field: null, reason: null, outcome: null, current_revision: null, detail_reason: "context_budget_unverified" };
+  const v = view().terms;
+  const sent = v.filter((t) => !t.issue && t.term !== "Jump Desktop");
+  const notSent = v.filter((t) => t.issue || t.term === "Jump Desktop").map((t) => ({ index: t.index, term: t.term, reason: t.issue ?? "over_budget" }));
+  return { ...base, model_id: "Whisper Small", status: "used_during_recognition", terms_sent: sent.map((t) => t.term), terms_not_sent: notSent };
+};
+const preview = (input: string) => {
+  const lines = input.replace(/\n$/, "").split("\n");
+  const seen = new Set(terms.map((t) => t.toLowerCase()));
+  const p = { mode: "merge", added: [] as unknown[], duplicates: [] as unknown[], issues: [] as unknown[], candidate: [...terms], over_capacity: false };
+  lines.forEach((raw, index) => {
+    const term = raw.trim();
+    if (!term) return p.issues.push({ index, issue: "empty" });
+    if (/[<>"]/.test(term)) return p.issues.push({ index, issue: "forbidden_character" });
+    if (seen.has(term.toLowerCase())) return p.duplicates.push({ index, term });
+    seen.add(term.toLowerCase());
+    p.added.push({ index, term });
+    p.candidate.push(term);
+  });
+  return { revision, preview: p, applicable: p.issues.length === 0 };
+};
+mockIPC((cmd, args) => {
+  const a = (args ?? {}) as Record<string, unknown>;
+  switch (cmd) {
+    case "get_vocabulary": return view();
+    case "get_vocabulary_status": return status();
+    case "preview_vocabulary_import": return preview(String(a.input));
+    case "add_vocabulary_term": {
+      const t = String(a.term).trim();
+      if (terms.some((x) => x.toLowerCase() === t.toLowerCase())) throw { code: "validation_failed", message: "x", field: null, reason: null, outcome: null, current_revision: null, items: [{ index: 0, code: "term_duplicate", message: "x" }] };
+      terms.push(t); revision++; return view();
+    }
+    case "remove_vocabulary_occurrence": terms.splice(Number(a.index), 1); revision++; return view();
+    case "apply_vocabulary_import": { const p = preview(String(a.input)); terms = p.preview.candidate as string[]; revision++; return view(); }
+    default: return null;
+  }
+});
+applyTheme("dark");
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+  <div className="bg-background text-text min-h-screen">
+    <div className="w-[530px] p-4">
+      <CustomWords />
+    </div>
+  </div>,
+);

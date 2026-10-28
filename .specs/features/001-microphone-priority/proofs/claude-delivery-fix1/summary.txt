@@ -1,0 +1,13 @@
+Delivery review 001, correction round 1, 2026-10-14. Code commits 06e1a8c2, 734ee8f6, 7037b649, 2c590763 (tree tested before they were committed, unchanged since).
+CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001
+cargo test --manifest-path src-tauri/Cargo.toml --no-fail-fast -> exit 0; 1198 passed, 0 failed, 28 ignored
+cargo clippy --manifest-path src-tauri/Cargo.toml --lib --bins -- -D warnings -> exit 0
+cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -> exit 0; 4 warnings in lib tests, the same as proofs/claude-sync-003 (none new)
+cargo fmt --manifest-path src-tauri/Cargo.toml --check -> exit 0
+bun run lint -> exit 0
+bun run format:check -> exit 0
+node_modules/.bin/tsc --noEmit -> exit 0
+livespec conventions verify --feature repo --json -> exit 0, PASS
+stress-001.sh <lib test binary> 8 40 audio_toolkit::audio::recorder::loss_tests::the_processed_prefix_survives_a_consumer_ending_without_stop --exact -> runs=320 failures=0, exit 0
+stress-001.sh <lib test binary> 8 40 audio_toolkit::audio::recorder:: (26 recorder tests, including loss and opening) -> runs=320 failures=0, exit 0
+Mutation check (not kept as a file): with one flag shared by every attempt again, an_abandoned_attempt_failing_late_leaves_the_opened_stream_healthy fails, and passes once the fix is restored.

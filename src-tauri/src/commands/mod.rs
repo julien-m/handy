@@ -1,10 +1,18 @@
 pub mod audio;
+pub mod destination;
 pub mod history;
 pub mod models;
+pub mod overlay;
+pub mod prompts;
+pub mod recovery;
+pub mod replacements;
+pub mod replacements_files;
 pub mod transcription;
+pub mod vocabulary;
 
-use crate::settings::{
-    get_settings, update_checks_forced_disabled, write_settings, AppSettings, LogLevel,
+use crate::settings::{get_settings, update_checks_forced_disabled, AppSettings, LogLevel};
+use crate::settings_service::{
+    command_error::SettingsCommandError, tauri_adapter, ui_value::UiValue,
 };
 use crate::utils::cancel_current_operation;
 use tauri::{AppHandle, Manager};
@@ -43,10 +51,32 @@ pub fn get_app_settings(app: AppHandle) -> Result<AppSettings, String> {
     Ok(get_settings(&app))
 }
 
+/// Published settings with their revision, so the UI can discard refreshes older than an event.
+#[derive(serde::Serialize, specta::Type)]
+pub struct SettingsView {
+    /// Durable revision of `settings`.
+    pub revision: u64,
+    /// Settings as every reader of this process sees them.
+    pub settings: AppSettings,
+    /// True when this process could not own the settings store: every change is refused.
+    pub read_only: bool,
+}
+
 #[tauri::command]
 #[specta::specta]
-pub fn get_default_settings() -> Result<AppSettings, String> {
-    Ok(crate::settings::get_default_settings())
+pub fn get_settings_view(app: AppHandle) -> SettingsView {
+    let (revision, settings) = tauri_adapter::view(&app);
+    SettingsView {
+        revision: revision.0,
+        settings,
+        read_only: tauri_adapter::read_only(&app),
+    }
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn get_default_settings() -> AppSettings {
+    crate::settings::get_default_settings()
 }
 
 #[tauri::command]
@@ -58,22 +88,14 @@ pub fn get_log_dir_path(app: AppHandle) -> Result<String, String> {
     Ok(log_dir.to_string_lossy().to_string())
 }
 
+/// The file log level follows the committed value (live effect of `log_level`).
 #[specta::specta]
 #[tauri::command]
-pub fn set_log_level(app: AppHandle, level: LogLevel) -> Result<(), String> {
-    let tauri_log_level: tauri_plugin_log::LogLevel = level.into();
-    let log_level: log::Level = tauri_log_level.into();
-    // Update the file log level atomic so the filter picks up the new level
-    crate::FILE_LOG_LEVEL.store(
-        log_level.to_level_filter() as u8,
-        std::sync::atomic::Ordering::Relaxed,
-    );
-
-    let mut settings = get_settings(&app);
-    settings.log_level = level;
-    write_settings(&app, settings);
-
-    Ok(())
+pub async fn set_log_level(
+    app: AppHandle,
+    level: UiValue<LogLevel>,
+) -> Result<(), SettingsCommandError> {
+    tauri_adapter::write(app, "log_level", level).await
 }
 
 #[specta::specta]

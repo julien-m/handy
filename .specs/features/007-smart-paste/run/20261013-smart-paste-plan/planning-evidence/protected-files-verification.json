@@ -1,0 +1,6 @@
+{
+  "changed_protected_files": [],
+  "scope": "007 spec, 008 plan, all src and src-tauri source files baseline",
+  "application_tests_executed": false,
+  "commit_push_executed": false
+}

@@ -1,0 +1,9 @@
+
+running 4 tests
+test stale_revision_is_refused_and_a_no_op_writes_nothing ... ok
+test deduplicated_paste_commits_once_and_invalid_paste_writes_nothing ... ok
+test legacy_terms_order_and_threshold_survive_upgrade_and_unrelated_writes ... ok
+test removal_shrinks_an_over_capacity_legacy_list_one_occurrence_at_a_time ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s
+

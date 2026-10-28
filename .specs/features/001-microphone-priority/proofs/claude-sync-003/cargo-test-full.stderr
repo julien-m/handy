@@ -1,0 +1,39 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/001-microphone-priority/src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 55.84s
+     Running unittests src/lib.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/handy_app_lib-6db0d6780b034a0a)
+error: test failed, to rerun pass `--lib`
+     Running unittests src/main.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/handy-e63b999944f6b9ea)
+     Running tests/destination_cli.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/destination_cli-5893351090588d22)
+     Running tests/destination_platform.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/destination_platform-b1c95074cc95beeb)
+     Running tests/destination_recovery.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/destination_recovery-feefb795cfcbf6ef)
+     Running tests/microphone_cli.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_cli-65a8fd1a1c200f05)
+     Running tests/microphone_native.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_native-e19f1e8b08f4e815)
+     Running tests/microphone_resolution.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_resolution-79dde7a785c2c4fc)
+     Running tests/microphone_sessions.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_sessions-c7567e2e67d5c383)
+     Running tests/microphone_settings.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_settings-0e9b6d2aecad0062)
+     Running tests/replacement_cli.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/replacement_cli-3b0495f0d4724097)
+     Running tests/replacement_exchange.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/replacement_exchange-372f407182a7533b)
+     Running tests/replacement_performance.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/replacement_performance-f5d4cbba062be898)
+     Running tests/replacement_pipeline.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/replacement_pipeline-f32d27483e9670f4)
+     Running tests/replacement_transactions.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/replacement_transactions-c1890c9abd5b1794)
+     Running tests/settings_cli.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_cli-749aa2a9ca43b6ab)
+     Running tests/settings_domains.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_domains-d693375757aece9d)
+     Running tests/settings_live.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_live-c5742655b9ed2fd0)
+     Running tests/settings_platform.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_platform-7b725cdb95ce232f)
+     Running tests/settings_transactions.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_transactions-752fad66e305c40b)
+     Running tests/settings_validation.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_validation-b62fda378bc7eb83)
+     Running tests/settings_writers.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_writers-8bc872d2aa0edf9b)
+     Running tests/shortcuts_cli.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/shortcuts_cli-b3cae2c7943f010b)
+     Running tests/smart_paste.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/smart_paste-67b8d8c89e6c56f2)
+     Running tests/smart_paste_native.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/smart_paste_native-b314e1f2411a46be)
+     Running tests/smart_paste_native_ax.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/smart_paste_native_ax-a184b722c0d62769)
+     Running tests/smart_paste_native_keyboard.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/smart_paste_native_keyboard-b41ceb33314adb54)
+     Running tests/smart_paste_native_pasteboard.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/smart_paste_native_pasteboard-08a670d947fba3f1)
+     Running tests/smart_paste_settings.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/smart_paste_settings-0b74657848c34bc0)
+     Running tests/vocabulary_cli.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/vocabulary_cli-d48bcda3f25a788a)
+     Running tests/vocabulary_transactions.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/vocabulary_transactions-648274ef5a45cbca)
+   Doc-tests handy_app_lib
+error: 1 target failed:
+    `--lib`

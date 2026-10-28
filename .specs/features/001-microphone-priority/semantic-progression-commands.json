@@ -1,0 +1,33 @@
+[
+  {
+    "argv": [
+      "livespec",
+      "validate",
+      "/Users/julienm/projects/handy/.specs/features/001-microphone-priority",
+      "--clarify",
+      "--model",
+      "gpt-6.1-sol"
+    ],
+    "cwd": "/Users/julienm/projects/handy",
+    "timeout": 90,
+    "exit_code": 0,
+    "stdout": "{\"inventory\": [], \"presented\": [], \"source_hash\": \"3bacb7343919e8a9ee8984380efdb5c3d7a64813c0084e3f5505bbfb71aac074\", \"review_complete\": true, \"errors\": [], \"blocking\": false}\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "livespec",
+      "validate",
+      "/Users/julienm/projects/handy/.specs/features/001-microphone-priority",
+      "--progression",
+      "plan",
+      "--model",
+      "gpt-6.1-sol"
+    ],
+    "cwd": "/Users/julienm/projects/handy",
+    "timeout": 90,
+    "exit_code": 0,
+    "stdout": "Progression: READY\n",
+    "stderr": ""
+  }
+]

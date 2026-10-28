@@ -1,0 +1,40 @@
+    Blocking waiting for file lock on artifact directory
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/004-multiple-dictation-shortcuts/src-tauri)
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 25s
+     Running tests/settings_cli.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/settings_cli-116f00d547bdbe3d)
+
+running 19 tests
+test contract::keys_describe_type_allowed_values_range_and_access ... ok
+test contract::help_lists_generic_operations_in_both_modes ... ok
+test contract::list_secret_and_read_only_keys_point_to_their_owner ... FAILED
+test routed::a_live_listener_on_the_endpoint_name_is_never_replaced ... ok
+test contract::human_output_is_readable_and_diagnostics_stay_on_stderr ... ok
+test contract::secrets_and_rejected_arguments_never_reach_stdout_or_stderr ... ok
+test offline::unreadable_store_reads_defaults_with_a_stderr_warning_and_refuses_writes ... ok
+test contract::stale_expected_revision_reports_the_current_revision ... ok
+test offline::older_handy_holding_its_singleton_refuses_reads_and_writes_without_touching_the_store ... ok
+test contract::every_owned_error_code_has_its_documented_exit ... ok
+test contract::json_get_prints_one_envelope_with_revision_and_every_public_key ... ok
+test offline::headless_read_never_creates_the_store_and_a_write_persists_one_revision ... ok
+test offline::concurrent_cli_writers_lose_no_field ... ok
+test offline::rejected_write_changes_nothing ... ok
+test routed::the_running_instance_refuses_stale_and_invalid_writes_without_committing ... ok
+test routed::the_running_instance_answers_reads_and_commits_writes_with_its_live_state ... ok
+test routed::a_stale_endpoint_name_is_reclaimed_under_the_lease_and_removed_at_close ... ok
+test offline::held_startup_lease_without_a_reachable_channel_refuses_and_never_writes_offline ... ok
+test routed::no_answer_within_five_seconds_is_an_unknown_outcome_resolved_by_a_new_read ... ok
+
+failures:
+
+---- contract::list_secret_and_read_only_keys_point_to_their_owner stdout ----
+Error: "expected one stdout line, got []"
+
+
+failures:
+    contract::list_secret_and_read_only_keys_point_to_their_owner
+
+test result: FAILED. 18 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 11.72s
+
+error: test failed, to rerun pass `--test settings_cli`

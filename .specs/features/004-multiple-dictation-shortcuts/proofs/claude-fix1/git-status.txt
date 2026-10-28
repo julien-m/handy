@@ -1,0 +1,20 @@
+ D .specs/features/004-multiple-dictation-shortcuts/proofs/claude/commit-1-core/conventions.stdout
+ D .specs/features/004-multiple-dictation-shortcuts/proofs/claude/commit-2-busy-ownership/conventions.stdout
+ D .specs/features/004-multiple-dictation-shortcuts/proofs/claude/commit-3-docs/conventions.stdout
+?? .specs/conventions/runs/20261013T145753Z/
+?? .specs/conventions/runs/20261013T145851Z/
+?? .specs/conventions/runs/20261013T151501Z/
+?? .specs/conventions/runs/20261013T151640Z/
+?? .specs/conventions/runs/20261013T152703Z/
+?? .specs/conventions/runs/20261013T153052Z/
+?? .specs/conventions/runs/20261013T153149Z/
+?? .specs/conventions/runs/20261013T153409Z/
+?? .specs/conventions/runs/20261013T155149Z/
+?? .specs/conventions/runs/20261013T160758Z/
+?? .specs/conventions/runs/20261013T160900Z/
+?? .specs/features/004-multiple-dictation-shortcuts/pipeline.md
+?? .specs/features/004-multiple-dictation-shortcuts/proofs/claude-fix1/
+?? .specs/features/004-multiple-dictation-shortcuts/proofs/claude/commit-1-core/conventions.summary.json
+?? .specs/features/004-multiple-dictation-shortcuts/proofs/claude/commit-2-busy-ownership/conventions.summary.json
+?? .specs/features/004-multiple-dictation-shortcuts/proofs/claude/commit-3-docs/conventions.summary.json
+?? .specs/features/004-multiple-dictation-shortcuts/proofs/claude/independent-audit.md

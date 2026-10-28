@@ -1,0 +1,21 @@
+# 002 word replacements — UI delivery review correction round 1 (2026-10-14T14:48Z)
+# HEAD 465a275f + working tree. Raw outputs: <name>.stdout / .stderr / .exit in this folder.
+# Rust commands ran with CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-002.
+exit=0  bun run lint
+exit=0  bun run format:check
+exit=0  bunx tsc --noEmit
+exit=0  bun run check:translations
+exit=0  bun run build
+exit=0  bun run test:word-replacements   -> 68 pass, 0 fail, 5 files (new: editor-model.test.ts, editor-revision.test.ts; extended: preview-model.test.ts)
+exit=0  bun run test:settings-store
+exit=0  bun run test:settings-errors
+exit=0  bun run test:shortcut-list
+exit=0  cd src-tauri && cargo test --lib commands::replacements   -> 16 passed (new: a_fifo_is_refused_without_blocking, a_directory_is_refused)
+exit=0  cd src-tauri && cargo clippy --lib --bins -- -D warnings
+exit=0  cd src-tauri && cargo fmt -- --check
+exit=0  livespec conventions verify --feature repo --json  -> verdict PASS, baseline.new_count 0, blockers 0, receipt .specs/conventions/runs/20261014T144830Z/receipt.json (raw output not committed)
+# Function length: every function and component of src/components/settings/word-replacements/*.ts(x) (tests excluded)
+# and src/components/ui/Button.tsx is 30 lines or fewer (TypeScript AST measure, start to end line of each function node).
+# bindings.ts unchanged: no command signature changed.
+# Pending with Julien: tests/word-replacements.spec.ts (Playwright, Vite + mocked IPC) for the rendered behavior,
+# the keyboard focus ring and the editor in a real window, native dialogs.

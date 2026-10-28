@@ -1,0 +1,20 @@
+
+running 1 test
+test exchange::an_invalid_line_after_a_thousand_ignored_lines_is_located_by_import_and_dry_run ... FAILED
+
+failures:
+
+---- exchange::an_invalid_line_after_a_thousand_ignored_lines_is_located_by_import_and_dry_run stdout ----
+
+thread 'exchange::an_invalid_line_after_a_thousand_ignored_lines_is_located_by_import_and_dry_run' (50749695) panicked at tests/replacement_cli/exchange.rs:169:9:
+assertion `left == right` failed: dry run: false
+  left: Null
+ right: Array [Object {"code": String("missing_separator"), "index": Number(1000), "message": String("The line has no tab or semicolon separator.")}]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    exchange::an_invalid_line_after_a_thousand_ignored_lines_is_located_by_import_and_dry_run
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 17 filtered out; finished in 3.12s
+

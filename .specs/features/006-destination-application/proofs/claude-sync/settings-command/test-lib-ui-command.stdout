@@ -1,0 +1,22 @@
+
+running 17 tests
+test settings_service::sequence::tests::destination::without_the_capability_the_ui_receives_unsupported_platform_for_both_values ... ok
+test settings_service::sequence::tests::refused_commit_compensates_the_prepared_native_change ... ok
+test settings_service::sequence::tests::a_refused_edit_prepares_nothing ... ok
+test settings_service::sequence::tests::destination::an_invalid_ui_value_is_a_typed_refusal_and_writes_nothing ... ok
+test settings_service::sequence::tests::refused_prepared_edit_compensates_and_notifies_nothing ... ok
+test settings_service::sequence::tests::refused_preparation_leaves_disk_revision_native_and_ui_unchanged ... ok
+test settings_service::sequence::tests::parity::routed_prepared_write_checks_the_revision_before_preparing_and_skips_the_key_effect ... ok
+test settings_service::sequence::tests::failed_effect_after_commit_is_committed_with_revision_field_and_event ... ok
+test settings_service::sequence::tests::destination::the_ui_write_commits_once_notifies_and_a_no_op_keeps_the_revision ... ok
+test settings_service::sequence::tests::a_prepared_scalar_commits_its_extension_in_the_same_revision ... ok
+test settings_service::sequence::tests::parity::routed_cli_and_ui_writes_of_a_prepared_key_reach_the_same_refusal ... ok
+test settings_service::sequence::tests::live_effects_run_before_the_ui_event_and_both_before_the_result ... ok
+test settings_service::sequence::tests::unknown_outcome_that_landed_keeps_the_preparation_and_notifies_the_reread ... ok
+test settings_service::sequence::tests::unapplied_effect_is_retried_before_the_next_write_and_on_resubmission ... ok
+test settings_service::sequence::tests::races::concurrent_prepared_writes_of_one_key_leave_native_state_equal_to_disk ... ok
+test settings_service::sequence::tests::races::concurrent_effect_writes_of_one_key_leave_native_state_equal_to_disk ... ok
+test settings_service::sequence::tests::concurrent_manager_repair_and_user_selection_lose_no_update ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 516 filtered out; finished in 0.83s
+

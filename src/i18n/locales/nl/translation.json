@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Toegankelijkheid",
-        "description": "Vereist om getranscribeerde tekst in je applicaties te kunnen typen."
+        "description": "Vereist om getranscribeerde tekst in je applicaties te kunnen typen.",
+        "openSettings": "Open Systeeminstellingen",
+        "retry": "Opnieuw proberen",
+        "alreadyCheckedHint": "Als Handy al is aangevinkt, verwijder het en voeg het opnieuw toe."
       },
       "grant": "Machtiging verlenen",
       "granted": "Verleend",
@@ -182,9 +185,40 @@
           }
         },
         "errors": {
-          "restore": "Herstellen van originele sneltoets mislukt",
-          "set": "Instellen van sneltoets mislukt: {{error}}",
-          "reset": "Sneltoets terugzetten naar standaardwaarde mislukt"
+          "set": "Instellen van sneltoets mislukt: {{error}}"
+        },
+        "list": {
+          "add": "Sneltoets toevoegen",
+          "addLimit": "Maximaal {{limit}} sneltoetsen per actie",
+          "change": "Klik om een nieuwe combinatie op te nemen",
+          "remove": "Deze sneltoets verwijderen",
+          "removeLast": "Elke actie houdt minstens één sneltoets",
+          "reset": "Standaardsneltoets herstellen",
+          "errors": {
+            "conflict": "Al in gebruik door {{action}} ({{shortcut}})",
+            "overlap": "Zou ook {{action}} activeren ({{shortcut}})",
+            "invalid": "Ongeldige sneltoets: {{error}}",
+            "registration": "Het systeem heeft deze sneltoets geweigerd: {{error}}",
+            "generic": "De sneltoets kon niet worden opgeslagen",
+            "conflictsUnavailable": "Conflicten tussen sneltoetsen konden niet worden gecontroleerd"
+          },
+          "changeButton": "Wijzigen",
+          "discard": "Deze sneltoets verwerpen",
+          "discardDraft": "Verwerpen",
+          "save": "Opslaan",
+          "unsaved": "Niet opgeslagen",
+          "lastHint": "Elke actie houdt minstens één sneltoets. Wijzig of herstel deze in plaats daarvan.",
+          "limitHint": "{{count}} van {{limit}} sneltoetsen. Verwijder er een om een andere toe te voegen.",
+          "draftConflict": "{{shortcut}} wordt al gebruikt door {{action}}. Er is niets opgeslagen.",
+          "draftOverlap": "{{shortcut}} zou ook {{action}} activeren. Er is niets opgeslagen.",
+          "legacyOverlap": "{{shortcut}} overlapt met {{action}}",
+          "legacyDuplicate": "{{shortcut}} wordt ook gebruikt door {{action}}",
+          "legacyBody": "Hij werkt nog zoals vóór de update. Wijzig hem om deze waarschuwing te wissen.",
+          "systemRefused": "{{system}} weigerde {{shortcut}}",
+          "systemRefusedGeneric": "Het systeem weigerde deze sneltoets",
+          "systemRefusedBody": "Mogelijk heeft een andere app deze combinatie geregistreerd. Kies een andere of probeer het opnieuw.",
+          "systemReason": "Systeembericht: {{error}}",
+          "retry": "Opnieuw proberen"
         }
       },
       "language": {
@@ -232,10 +266,66 @@
     "sound": {
       "title": "Geluid",
       "microphone": {
-        "title": "Microfoon",
-        "description": "Selecteer de gewenste microfoon",
-        "placeholder": "Microfoon selecteren...",
-        "loading": "Laden..."
+        "placeholder": "Microfoon selecteren..."
+      },
+      "microphonePriority": {
+        "title": "Microfoonprioriteit",
+        "description": "Handy neemt op met de eerste beschikbare microfoon in deze volgorde, daarna met de systeemstandaard. Niet-beschikbare microfoons behouden hun plaats.",
+        "emptyTitle": "Geen voorkeursmicrofoon",
+        "emptyBody": "Handy gebruikt de standaardmicrofoon van het systeem totdat je er een toevoegt.",
+        "status": {
+          "available": "Beschikbaar",
+          "unavailable": "Niet beschikbaar",
+          "ambiguous": "Dubbelzinnig",
+          "unknown": "Onbekend"
+        },
+        "moveUp": "{{name}} omhoog verplaatsen",
+        "moveDown": "{{name}} omlaag verplaatsen",
+        "remove": "{{name}} verwijderen",
+        "addLabel": "Microfoon toevoegen",
+        "addPlaceholder": "Microfoon toevoegen…",
+        "noDevices": "Geen microfoon gedetecteerd om toe te voegen",
+        "duplicateChoice": "{{name}} staat al in de lijst.",
+        "refresh": "Beschikbaarheid verversen",
+        "checked": "{{seconds}} s geleden gecontroleerd",
+        "refreshFailed": "Kan apparaten niet controleren",
+        "retry": "Opnieuw proberen",
+        "inUse": {
+          "title": "Nu in gebruik",
+          "description": "De microfoon waarmee Handy opneemt, of die van de laatste opname. Dit kan afwijken van je eerste keuze.",
+          "notUsedYet": "Nog niet gebruikt sinds het starten",
+          "systemDefault": "Standaardmicrofoon van het systeem",
+          "unnamed": "Naamloze microfoon",
+          "lastRecording": "Laatste opname · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "Eerste keuze",
+          "fallback": "Terugval",
+          "fallbackUnavailable": "Terugval · {{name}} niet beschikbaar",
+          "fallbackAmbiguous": "Terugval · {{name}} dubbelzinnig",
+          "clamshell": "Microfoon bij gesloten deksel",
+          "system_default": "Systeemstandaard"
+        },
+        "clamshell": {
+          "title": "Microfoon bij gesloten deksel",
+          "description": "Wordt eerst geprobeerd als het deksel gesloten is. Je prioriteitsvolgorde blijft ongewijzigd.",
+          "none": "Geen"
+        },
+        "draft": {
+          "discard": "Negeren",
+          "save": "Opslaan",
+          "saving": "Opslaan…",
+          "saved": "Microfoonprioriteit opgeslagen"
+        },
+        "conflict": {
+          "title": "Instellingen elders gewijzigd",
+          "body": "De volgorde is elders gewijzigd. Laad opnieuw om die te zien; je wijzigingen worden verwijderd.",
+          "reload": "Opnieuw laden"
+        },
+        "errors": {
+          "duplicate": "Elke microfoon mag maar één keer voorkomen.",
+          "empty": "Een microfoonnaam mag niet leeg zijn."
+        }
       },
       "channel": {
         "title": "Ingangskanaal",
@@ -323,13 +413,18 @@
         "description": "Kies hoe tekst wordt ingevoegd. 'Direct' simuleert typen via het systeem. 'Geen' slaat het plakken over en werkt alleen de geschiedenis en het klembord bij.",
         "options": {
           "clipboard": "Klembord ({{modifier}}+V)",
+          "smartPaste": "Slim plakken",
           "clipboardCtrlShiftV": "Klembord (Ctrl+Shift+V)",
           "clipboardShiftInsert": "Klembord (Shift+Insert)",
           "direct": "Direct",
           "none": "Geen",
-          "externalScript": "Extern script"
+          "externalScript": "Extern script",
+          "clipboardMac": "Klembord (⌘V)",
+          "smartPasteDescription": "Standaard op macOS",
+          "noneDescription": "Alleen geschiedenis en klembord"
         },
-        "externalScriptPlaceholder": "/pad/naar/je/script.sh"
+        "externalScriptPlaceholder": "/pad/naar/je/script.sh",
+        "descriptionSmart": "Slim plakken schrijft rechtstreeks in het veld, of plakt anders en herstelt je klembord."
       },
       "typingTool": {
         "title": "Typgereedschap",
@@ -357,6 +452,20 @@
           "ctrlEnter": "Ctrl+Enter"
         }
       },
+      "automaticEnter": {
+        "title": "Automatische Enter",
+        "description": "Eén keer verzonden, alleen na een geslaagde invoeging.",
+        "keyLabel": "Toets om in te drukken",
+        "announced": "Automatische Enter: {{value}}",
+        "note": "Vervangt Automatisch verzenden. Geen Enter na een mislukte of onbevestigde invoeging, met plakmethode Geen, of als de app de focus verloor.",
+        "options": {
+          "never": "Nooit",
+          "always": "Altijd",
+          "alwaysDescription": "Elke geslaagde invoeging",
+          "pinOnly": "Alleen in PIN-modus",
+          "pinOnlyDescription": "Alleen vastgezette apps"
+        }
+      },
       "translateToEnglish": {
         "label": "Vertalen naar het Engels",
         "description": "Vertaal spraak uit andere talen tijdens het transcriberen automatisch naar het Engels."
@@ -374,14 +483,6 @@
           "hour1": "Na 1 uur",
           "sec15": "Na 15 seconden (Debug)"
         }
-      },
-      "customWords": {
-        "title": "Eigen woordenlijst",
-        "description": "Help ondersteunde modellen namen en vaktermen te herkennen. Fuzzy-correctie is momenteel beperkt tot woorden met de letters A–Z en cijfers.",
-        "placeholder": "Woord toevoegen",
-        "add": "Toevoegen",
-        "remove": "{{word}} verwijderen",
-        "duplicate": "\"{{word}}\" bestaat al"
       },
       "voiceActivityDetection": {
         "title": "Spraakactiviteitsdetectie (VAD)",
@@ -407,6 +508,148 @@
           "simplified": "Vereenvoudigd",
           "traditional": "Traditioneel"
         }
+      },
+      "returnToApp": {
+        "title": "Terug naar de app van het dicteren",
+        "description": "Invoegen in de app waar het dicteren begon, ook als je intussen van app wisselt.",
+        "unavailableUnreadable": "Niet beschikbaar op dit systeem: Handy kan de voorste app hier niet lezen. De tekst gaat aan het einde naar de app op de voorgrond.",
+        "unavailablePlatform": "Niet beschikbaar op dit systeem. De tekst gaat aan het einde naar de app op de voorgrond.",
+        "details": "Handy onthoudt de voorste app wanneer het dicteren begint en schakelt daar terug voordat de tekst wordt ingevoegd. Staat dit uit, dan gaat de tekst naar de app die op de voorgrond staat als het dicteren eindigt.",
+        "detailsLabel": "Over teruggaan naar de app van het dicteren"
+      },
+      "noFieldBubble": {
+        "title": "Toon de bubbel als er geen tekstveld actief is",
+        "description": "Bewaart de tekst in een bubbel in plaats van hem nergens te plakken."
+      }
+    },
+    "vocabulary": {
+      "group": "Vocabulaire",
+      "title": "Vocabulaire",
+      "description": "Namen en termen die het model moet herkennen, als het dat ondersteunt. Vervangingen herschrijven de tekst juist na de herkenning.",
+      "placeholder": "Term toevoegen",
+      "inputLabel": "Nieuwe vocabulaireterm",
+      "add": "Toevoegen",
+      "addHint": "Typ een term om die toe te voegen.",
+      "busy": "Wacht tot de huidige wijziging klaar is.",
+      "paste": "Lijst plakken…",
+      "count": "{{total}} van {{max}} termen",
+      "listLabel": "Vocabulairetermen",
+      "remove": "{{term}} verwijderen",
+      "retry": "Opnieuw proberen",
+      "loading": "Vocabulaire laden…",
+      "listFailed": "Het opgeslagen vocabulaire kon niet worden gelezen. Er is niets gewijzigd; probeer het opnieuw om het te laden.",
+      "empty": {
+        "title": "Nog geen termen",
+        "body": "Voeg namen toe zoals Claude Code of OpenClaw, één voor één of als geplakte lijst."
+      },
+      "flag": {
+        "empty": "Lege term, niet verzonden. Verwijder deze.",
+        "too_long": "Langer dan 100 tekens, niet verzonden. Verwijder deze en voeg een kortere versie toe.",
+        "line_break": "Bevat een regeleinde, niet verzonden. Verwijder deze en voeg hem opnieuw toe.",
+        "forbidden_character": "Bevat < > of \", niet verzonden. Verwijder deze en voeg hem toe zonder deze tekens.",
+        "duplicate": "Gelijk aan een eerdere term, niet verzonden. Verwijder deze.",
+        "over_capacity": "Boven de limiet van 5.000 termen, niet verzonden tot de lijst korter is.",
+        "over_budget": "Niet verzonden: boven de modellimiet."
+      },
+      "errors": {
+        "term_empty": "Voer een term in.",
+        "term_too_long": "Een term mag maximaal 100 tekens hebben.",
+        "term_line_break": "Een term moet op één regel passen.",
+        "term_forbidden_character": "Verwijder de tekens < > of \" uit de term.",
+        "term_duplicate": "Elke term mag één keer voorkomen, en deze staat al in het vocabulaire.",
+        "limit": "Het vocabulaire bevat maximaal 5.000 termen. Verwijder een term om een andere toe te voegen.",
+        "conflict": "Het vocabulaire is intussen gewijzigd en opnieuw geladen. Probeer het opnieuw.",
+        "notFound": "Deze term was al verwijderd. Het vocabulaire is opnieuw geladen.",
+        "unknown": "Handy kon de wijziging niet bevestigen. Het vocabulaire is opnieuw geladen; controleer het voordat je het opnieuw probeert.",
+        "committed": "Het vocabulaire is opgeslagen, maar Handy kon het niet meteen toepassen. De lijst is opnieuw geladen.",
+        "saved": "Je opgeslagen vocabulaire is ongewijzigd."
+      },
+      "status": {
+        "loading": "Controleren wat het model ondersteunt…",
+        "selectedModel": "het geselecteerde model",
+        "used": {
+          "title": "Gebruikt tijdens herkenning door {{model}}",
+          "sent": "{{sent}} van {{total}} termen worden verzonden.",
+          "sentOne": "{{sent}} van 1 term wordt verzonden."
+        },
+        "notSent": {
+          "over_budget": "Niet verzonden, boven de modellimiet: {{terms}}.",
+          "invalid": "Niet verzonden, ongeldig: {{terms}}.",
+          "duplicate": "Niet verzonden, dubbel: {{terms}}.",
+          "over_capacity": "Niet verzonden, voorbij 5.000 termen: {{terms}}.",
+          "more": "en nog {{hidden}}"
+        },
+        "noTermSent": {
+          "title": "Er wordt geen term naar {{model}} verzonden",
+          "empty_vocabulary": "Het vocabulaire is leeg. Voeg termen toe om ze tijdens de herkenning te gebruiken.",
+          "invalid_terms_only": "Elke opgeslagen term is ongeldig of dubbel. Verwijder de gemarkeerde termen en voeg gecorrigeerde toe.",
+          "over_budget": "De eerste term overschrijdt de modellimiet, dus er wordt geen term verzonden. Verwijder deze om de termen erna te verzenden."
+        },
+        "notSupported": {
+          "title": "{{model}} kan het vocabulaire niet gebruiken tijdens de herkenning",
+          "body": "In plaats daarvan wordt na de herkenning een benaderende correctie toegepast. Kies een Whisper-model om termen naar de herkenner te sturen."
+        },
+        "streaming": {
+          "title": "Niet gebruikt bij livestreaming",
+          "body": "{{model}} transcribeert live, waarbij geen herkenningscontext wordt verzonden. Benaderende correctie wordt in plaats daarvan op de eindtekst toegepast."
+        },
+        "unknown": {
+          "title": "Ondersteuning onbekend totdat het model is geladen",
+          "model_not_loaded": "Handy controleert wat {{model}} ondersteunt wanneer het model wordt geladen.",
+          "capability_query_unanswered": "{{model}} heeft niet op tijd geantwoord, bijvoorbeeld tijdens een dictaat. Handy controleert het daarna opnieuw."
+        },
+        "budgetUnverified": {
+          "title": "Vocabulaire-ondersteuning kan niet worden bevestigd voor {{model}}",
+          "body": "Dit model geeft aan herkenningscontext te ondersteunen, maar deze build heeft er geen gedocumenteerde limiet voor. Er wordt geen term verzonden; in plaats daarvan wordt benaderende correctie toegepast."
+        },
+        "failed": {
+          "title": "Kon de vocabulairestatus niet lezen",
+          "body": "Je vocabulaire is opgeslagen. Probeer het opnieuw om te controleren wat het model ondersteunt."
+        }
+      },
+      "pasteBox": {
+        "title": "Termen plakken",
+        "description": "Eén term per regel. Duplicaten worden overgeslagen; ongeldige regels moet je corrigeren voordat je toevoegt.",
+        "label": "Te plakken termen, één per regel",
+        "previewTitle": "Voorbeeld",
+        "previewEmpty": "Plak of typ één term per regel om te zien wat er wordt toegevoegd.",
+        "sameAs": "{{term}} — gelijk aan {{original}}",
+        "alreadyListed": "{{term}} — staat al in de lijst",
+        "summary": {
+          "add": "{{n}} toe te voegen",
+          "duplicateOne": "1 duplicaat",
+          "duplicateMany": "{{n}} duplicaten",
+          "errorOne": "1 fout",
+          "errorMany": "{{n}} fouten"
+        },
+        "kind": {
+          "add": "Toevoegen",
+          "duplicate": "Duplicaat",
+          "error": "Fout"
+        },
+        "line": {
+          "empty": "Regel {{line}}: lege regel, verwijder deze",
+          "too_long": "Regel {{line}}: gebruik maximaal 100 tekens",
+          "line_break": "Regel {{line}}: houd de term op één regel",
+          "forbidden_character": "Regel {{line}}: verwijder de tekens < > of \"",
+          "duplicate": "Regel {{line}}: gelijk aan een eerdere term",
+          "over_capacity": "Regel {{line}}: boven de limiet van 5.000 termen"
+        },
+        "note": {
+          "empty": "Je vocabulaire blijft ongewijzigd totdat je de termen toevoegt.",
+          "checking": "Regels controleren…",
+          "fixOne": "Corrigeer regel {{lines}} om de termen toe te voegen. Je vocabulaire is ongewijzigd.",
+          "fixMany": "Corrigeer regels {{lines}} om de termen toe te voegen. Je vocabulaire is ongewijzigd.",
+          "overCapacity": "Het vocabulaire bevat maximaal 5.000 termen. Maak de lijst korter om deze toe te voegen. Je vocabulaire is ongewijzigd.",
+          "nothingToAdd": "Elke regel staat al in het vocabulaire.",
+          "ready": "Duplicaten worden overgeslagen. Er wordt niets opgeslagen totdat je de termen toevoegt."
+        },
+        "cancel": "Annuleren",
+        "applyOne": "1 term toevoegen",
+        "applyMany": "{{n}} termen toevoegen",
+        "applyZero": "Termen toevoegen",
+        "applying": "Toevoegen…",
+        "applied": "Termen toegevoegd aan het vocabulaire."
       }
     },
     "postProcessing": {
@@ -441,26 +684,128 @@
           "refreshModels": "Modellen verversen"
         }
       },
-      "prompts": {
-        "title": "Prompt",
-        "selectedPrompt": {
-          "title": "Geselecteerde prompt",
-          "description": "Selecteer een sjabloon voor het verfijnen van transcripties of maak een nieuwe aan. Gebruik ${output} in de prompttekst om naar de gemaakte transcriptie te verwijzen."
+      "promptLibrary": {
+        "processing": {
+          "title": "AI-naverwerking",
+          "enabledDescription": "Verwerk dictaten met een prompt. Uit: geen enkel dictaat wordt verwerkt.",
+          "defaultTitle": "Standaardprompt",
+          "defaultDescription": "Gebruikt door de sneltoets voor AI-dictaat. Gewoon dictaat begint met Geen.",
+          "none": "Geen",
+          "invalidOption": "Ongeldig: bewerk hem eerst"
         },
-        "noPrompts": "Geen prompts beschikbaar",
-        "selectPrompt": "Selecteer een prompt",
-        "createNew": "Nieuwe prompt maken",
-        "promptLabel": "Promptnaam",
-        "promptLabelPlaceholder": "Voer promptnaam in",
-        "promptInstructions": "Prompt-instructies",
-        "promptInstructionsPlaceholder": "Schrijf de instructies die na de transcriptie moeten worden uitgevoerd. Voorbeeld: Verbeter de grammatica en helderheid van de volgende tekst: ${output}",
-        "promptTip": "Tip: Gebruik <code>${output}</code> om de getranscribeerde tekst in je prompt in te voegen.",
-        "updatePrompt": "Prompt bijwerken",
-        "deletePrompt": "Prompt verwijderen",
-        "createPrompt": "Prompt maken",
-        "cancel": "Annuleren",
-        "selectToEdit": "Selecteer hierboven een prompt om de details te bekijken en te bewerken.",
-        "createFirst": "Klik hierboven op 'Nieuwe prompt maken' om je eerste naverwerkingsprompt aan te maken."
+        "list": {
+          "title": "Prompts",
+          "count": "{{count}} van {{limit}} prompts",
+          "full": "{{limit}} van {{limit}} prompts: verwijder er een om een andere toe te voegen",
+          "new": "Nieuwe prompt",
+          "empty": "Nog geen prompts. Maak er een om je dictaten te verwerken.",
+          "loading": "Prompts laden…",
+          "loadFailed": "De prompts konden niet worden geladen.",
+          "retry": "Opnieuw proberen",
+          "edit": "{{name}} bewerken",
+          "defaultProvider": "Standaardprovider",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Geen sneltoets",
+          "notReady": "Niet klaar: {{reason}}",
+          "invalid": "Ongeldig: {{reason}}",
+          "reloadFailed": "De prompts konden niet worden vernieuwd. Wat je ziet is mogelijk verouderd."
+        },
+        "issues": {
+          "name_empty": "naam ontbreekt",
+          "name_too_long": "naam te lang",
+          "name_duplicate": "dubbele naam",
+          "text_empty": "tekst ontbreekt",
+          "text_too_long": "tekst te lang",
+          "override_incomplete": "provider of model ontbreekt",
+          "unknown_provider": "onbekende provider"
+        },
+        "reasons": {
+          "provider_error": "de provider gaf een fout terug",
+          "empty_result": "de provider gaf een leeg resultaat terug",
+          "timeout": "geen antwoord binnen 30 seconden",
+          "provider_busy": "de provider is nog bezig met een ander verzoek",
+          "missing_endpoint": "endpoint ontbreekt",
+          "missing_model": "model ontbreekt",
+          "missing_api_key": "API-sleutel ontbreekt",
+          "provider_unavailable": "provider niet beschikbaar op dit apparaat",
+          "unknown_provider": "onbekende provider",
+          "invalid_prompt": "de prompt is ongeldig",
+          "prompt_missing": "de prompt bestaat niet meer"
+        },
+        "editor": {
+          "editTitle": "Prompt bewerken",
+          "newTitle": "Nieuwe prompt",
+          "name": "Naam",
+          "namePlaceholder": "Naam van de prompt",
+          "text": "Prompt",
+          "textPlaceholder": "Schrijf de instructies voor de transcriptie. Voorbeeld: Kort de transcriptie in tot de kern. ${output}",
+          "textHint": "<code>${output}</code> wordt vervangen door de transcriptie.",
+          "fieldErrors": {
+            "name_empty": "Voer een naam in (1–60 tekens).",
+            "name_too_long": "Gebruik maximaal 60 tekens.",
+            "name_duplicate": "Een andere prompt heeft deze naam. Namen moeten uniek zijn.",
+            "text_empty": "Voer de tekst van de prompt in.",
+            "text_too_long": "Gebruik maximaal 8.000 tekens."
+          },
+          "provider": "Provider",
+          "defaultProviderOption": "Standaardprovider ({{provider}})",
+          "model": "Model",
+          "modelPlaceholder": "Typ een modelnaam",
+          "readyEndpoint": "Endpoint {{endpoint}} · Klaar",
+          "readyProvider": "{{provider}} · {{model}} · Klaar",
+          "notReadyTitle": "{{provider}} is niet klaar: {{reason}}",
+          "notReadyBody": "Dictaten met deze prompt slaan de AI-stap over en behouden de oorspronkelijke tekst.",
+          "fix": {
+            "api_key": "API-sleutel toevoegen",
+            "endpoint": "Endpoint instellen"
+          },
+          "shortcuts": "Sneltoetsen (maximaal {{limit}})",
+          "changedElsewhere": "Deze prompt is elders gewijzigd. Laad hem opnieuw om de wijziging te zien, of sla op om je eigen versie te behouden.",
+          "reload": "Opnieuw laden",
+          "deletedElsewhere": "Deze prompt is elders verwijderd en kan niet meer worden opgeslagen.",
+          "shortcutsSavedImmediately": "Wijzigingen in sneltoetsen worden direct opgeslagen.",
+          "fixField": {
+            "api_key": "API-sleutel voor {{provider}}",
+            "endpoint": "Endpoint van {{provider}}",
+            "hint": "Opgeslagen zodra je het veld verlaat. De standaardprovider verandert niet."
+          }
+        },
+        "actions": {
+          "note": "Wijzigingen gelden voor het volgende dictaat na het opslaan.",
+          "fixFields": "Herstel de gemarkeerde velden om op te slaan.",
+          "delete": "Prompt verwijderen",
+          "cancel": "Annuleren",
+          "save": "Opslaan",
+          "saving": "Opslaan…",
+          "saved": "Prompt opgeslagen."
+        },
+        "deleteDialog": {
+          "title": "„{{name}}” verwijderen?",
+          "shortcuts": "De sneltoetsen worden verwijderd: {{shortcuts}}.",
+          "default": "Dit is de standaardprompt: de standaard wordt Geen.",
+          "body": "Dit kan niet ongedaan worden gemaakt.",
+          "cancel": "Annuleren",
+          "confirm": "Verwijderen",
+          "close": "Sluiten",
+          "deleted": "Prompt „{{name}}” verwijderd.",
+          "deletedWithShortcuts": "Prompt „{{name}}” verwijderd. Verwijderde sneltoetsen: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Test",
+          "sampleLabel": "Voorbeeldtekst",
+          "samplePlaceholder": "Typ of plak een voorbeeldtranscriptie",
+          "run": "Test uitvoeren",
+          "running": "Bezig met testen…",
+          "note": "Er wordt niets ingevoegd en de geschiedenis verandert niet.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} s",
+          "failedTitle": "Test mislukt: {{reason}}",
+          "failedHint": "Controleer de providerinstellingen en voer de test opnieuw uit.",
+          "retry": "Opnieuw uitvoeren",
+          "busy": "Er loopt nog een andere test. Probeer het opnieuw als die klaar is.",
+          "skipped": "Voer een voorbeeldtekst in om de prompt te testen.",
+          "outdated": "Dit resultaat hoort bij een eerdere versie van de prompt of het voorbeeld. Voer de test opnieuw uit."
+        },
+        "shortcutOwner": "de prompt „{{name}}”"
       }
     },
     "history": {
@@ -476,6 +821,7 @@
       "deleteError": "Item verwijderen mislukt. Probeer het opnieuw.",
       "retranscribe": "Opnieuw transcriberen",
       "retranscribeError": "Opnieuw transcriberen mislukt. Probeer het opnieuw.",
+      "noAudio": "Voor dit item is geen audio-opname opgeslagen, dus het kan niet opnieuw worden getranscribeerd.",
       "transcribing": "Transcriberen...",
       "transcriptionFailed": "Transcriptie mislukt. Je kunt het opnieuw proberen via het herlaad-pictogram."
     },
@@ -530,7 +876,8 @@
       "historyLimit": {
         "title": "Geschiedenislimiet",
         "description": "Maximum aantal te bewaren geschiedenisitems",
-        "entries": "items"
+        "entries": "items",
+        "invalid": "Voer een geheel getal in van {{min}} tot {{max}}."
       },
       "recordingRetention": {
         "title": "Opnames automatisch verwijderen",
@@ -552,7 +899,8 @@
       },
       "postProcessingToggle": {
         "label": "Naverwerking",
-        "description": "Schakel AI-gestuurde tekstverfijning in na transcriptie"
+        "description": "Schakel AI-gestuurde tekstverfijning in na transcriptie",
+        "shortcutRefused": "Naverwerking staat aan, maar het systeem heeft de sneltoets {{shortcut}} geweigerd. Wijzig deze in de instellingen voor naverwerking."
       },
       "muteWhileRecording": {
         "label": "Dempen tijdens opname",
@@ -565,7 +913,8 @@
       "keyboardImplementation": {
         "title": "Toetsenbord-implementatie",
         "description": "Kies de backend voor sneltoetsen.",
-        "bindingsReset": "Sneltoetsen waren incompatibel en zijn teruggezet naar de standaardwaarden"
+        "bindingsReset": "Sommige sneltoetsen waren incompatibel en zijn teruggezet naar hun standaardwaarde of verwijderd",
+        "conflictsKept": "Sommige sneltoetsen conflicteren nu met een andere actie. Ze zijn behouden en gemarkeerd in de sneltoetsinstellingen."
       },
       "paths": {
         "appData": "App-data:",
@@ -645,6 +994,168 @@
           "details": "Handy's lokale spraak-naar-tekst is gebouwd op transcribe.cpp en ggml. Met dank aan het geweldige werk van Georgi Gerganov en alle bijdragers."
         }
       }
+    },
+    "replacements": {
+      "group": "Vervangingen",
+      "title": "Vervangingsregels",
+      "description": "Herschrijf herkende tekst met je eigen spelling. Wordt na de herkenning toegepast, in tegenstelling tot Woordenlijst.",
+      "loading": "Vervangingsregels laden…",
+      "loadFailed": "De vervangingsregels konden niet worden geladen.",
+      "retry": "Opnieuw proberen",
+      "views": {
+        "label": "Regelweergave",
+        "list": "Lijst",
+        "text": "Tekst"
+      },
+      "import": "Importeren…",
+      "export": {
+        "button": "Exporteren…",
+        "done": "Regels geëxporteerd naar {{name}}.",
+        "notSynced": "Regels geëxporteerd naar {{name}}, maar de schijf heeft het schrijven nog niet bevestigd.",
+        "symbolicLink": "{{name}} is een koppeling: kies een ander bestand. Er is niets geëxporteerd.",
+        "readOnly": "{{name}} is alleen-lezen: kies een ander bestand. Er is niets geëxporteerd.",
+        "notWritten": "{{name}} kon niet worden geschreven. Het bestand is ongewijzigd."
+      },
+      "add": {
+        "recognized": "Herkende tekst",
+        "replacement": "Vervanging",
+        "button": "Regel toevoegen",
+        "needsText": "Vul de herkende tekst en de vervanging in om een regel toe te voegen."
+      },
+      "rule": {
+        "edit": "Regel {{recognized}} bewerken",
+        "done": "Klaar met bewerken van regel {{recognized}}",
+        "delete": "Regel {{recognized}} verwijderen",
+        "recognized": "Herkende tekst van regel {{position}}",
+        "replacement": "Vervanging van regel {{position}}"
+      },
+      "count": "{{count}} van {{max}} regels · hoofdletterongevoelig, hele woorden",
+      "empty": {
+        "title": "Nog geen vervangingsregels",
+        "body": "Voeg een regel toe, of plak tekstregels zoals",
+        "paste": "Regels als tekst plakken"
+      },
+      "draft": {
+        "note": "Niet-opgeslagen wijzigingen. Dicteren gebruikt de opgeslagen regels totdat je opslaat.",
+        "discard": "Verwerpen",
+        "save": "Opslaan",
+        "saving": "Opslaan…",
+        "saved": "Vervangingsregels opgeslagen."
+      },
+      "commit": {
+        "invalid": "Sommige regels zijn ongeldig. Corrigeer de gemarkeerde rijen en probeer het opnieuw.",
+        "unchanged": "De opgeslagen regels zijn ongewijzigd.",
+        "conflict": "De regels zijn elders gewijzigd, bijvoorbeeld via de opdrachtregel. Laad ze opnieuw om verder te gaan.",
+        "reload": "Opnieuw laden",
+        "reloadDiscards": "Opnieuw laden toont de opgeslagen regels en verwijdert je niet-opgeslagen wijzigingen."
+      },
+      "bulk": {
+        "editor": "Regels als tekst",
+        "hint": "Eén regel per tekstregel: recognized;replacement. Een tab werkt ook voor plakken uit een spreadsheet. Tekstregels die met # beginnen worden genegeerd.",
+        "cancel": "Annuleren",
+        "apply": "Toepassen",
+        "applying": "Toepassen…",
+        "applied": "Vervangingsregels toegepast.",
+        "fixLine": "Corrigeer tekstregel {{line}} om toe te passen. De opgeslagen regels zijn ongewijzigd.",
+        "fixLines": "Corrigeer de {{count}} foutieve tekstregels om toe te passen. De opgeslagen regels zijn ongewijzigd.",
+        "ready": "Toepassen vervangt de opgeslagen regels door dit voorbeeld.",
+        "noChanges": "Niets toe te passen: de tekst komt overeen met de opgeslagen regels."
+      },
+      "preview": {
+        "title": "Voorbeeld",
+        "updating": "Voorbeeld bijwerken…",
+        "errorOne": "1 fout · Toepassen niet beschikbaar",
+        "errorMany": "{{count}} fouten · Toepassen niet beschikbaar",
+        "changes": "{{adds}} toe te voegen · {{updates}} bij te werken · {{deletes}} te verwijderen",
+        "noChanges": "Geen wijzigingen",
+        "omitted": "Niet weergegeven tekstregels: {{count}}",
+        "duplicateOf": "Zelfde herkende tekst als tekstregel {{lines}}",
+        "kinds": {
+          "add": "Toevoegen",
+          "update": "Bijwerken",
+          "delete": "Verwijderen",
+          "unchanged": "Ongewijzigd",
+          "ignored": "Genegeerd",
+          "error": "Fout"
+        },
+        "ignored": {
+          "header": "Kopregel",
+          "blank": "Lege regel",
+          "comment": "Opmerking"
+        }
+      },
+      "importDialog": {
+        "title": "Regels importeren",
+        "close": "Sluiten",
+        "fileOne": "{{name}} · 1 regel · UTF-8",
+        "fileMany": "{{name}} · {{count}} regels · UTF-8",
+        "mode": "Modus",
+        "merge": "Samenvoegen: overeenkomende regels bijwerken, nieuwe achteraan toevoegen",
+        "replace": "Vervangen: het bestand wordt de volledige regelset",
+        "previewing": "Bestand lezen…",
+        "updateOne": "1 wijziging",
+        "updateMany": "{{count}} wijzigingen",
+        "addOne": "1 toevoeging",
+        "addMany": "{{count}} toevoegingen",
+        "deleteOne": "1 verwijdering",
+        "deleteMany": "{{count}} verwijderingen",
+        "errorOne": "1 fout",
+        "errorMany": "{{count}} fouten",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (bijgewerkt, behoudt positie {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (achteraan toegevoegd)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (verwijderd)",
+        "noChanges": "Dit bestand komt overeen met de opgeslagen regels: niets te importeren.",
+        "firstError": "Tekstregel {{line}}: {{reason}}",
+        "cancel": "Annuleren",
+        "apply": "Import toepassen",
+        "applying": "Importeren…",
+        "imported": "Regels geïmporteerd."
+      },
+      "importRefusal": {
+        "encodingTitle": "Kan {{name}} niet importeren: het is geen UTF-8-tekst",
+        "encodingBody": "Er is niets uit dat bestand geïmporteerd. Exporteer platte tekst of CSV en importeer opnieuw.",
+        "tooLargeTitle": "Kan {{name}} niet importeren: het is groter dan 1 MB",
+        "tooLargeBody": "Er is niets geïmporteerd. Splits het bestand in kleinere bestanden en importeer ze één voor één.",
+        "unreadableTitle": "Kan {{name}} niet lezen",
+        "unreadableBody": "Er is niets geïmporteerd. Controleer of het bestand nog bestaat en of Handy het kan openen.",
+        "dismiss": "Sluiten"
+      },
+      "deleteDialog": {
+        "title": "Deze regel verwijderen?",
+        "body": "{{recognized}} → {{replacement}} wordt uit de lijst verwijderd. Sla op om de wijziging toe te passen.",
+        "cancel": "Annuleren",
+        "confirm": "Verwijderen"
+      },
+      "switchDialog": {
+        "title": "Wijzigingen opslaan of verwerpen",
+        "body": "De lijst en de tekst bewerken dezelfde regels. Sla je niet-opgeslagen wijzigingen eerst op of verwerp ze.",
+        "cancel": "Annuleren",
+        "discard": "Verwerpen",
+        "save": "Opslaan"
+      },
+      "issues": {
+        "recognizedEmpty": "Vul de herkende tekst in.",
+        "recognizedTooLong": "De herkende tekst is beperkt tot 100 tekens.",
+        "recognizedForbidden": "De herkende tekst mag geen regeleinde, tab of ; bevatten.",
+        "recognizedControl": "De herkende tekst bevat een onzichtbaar stuurteken.",
+        "recognizedComment": "De herkende tekst mag niet met # beginnen.",
+        "duplicate": "Elke herkende tekst mag maar één keer voorkomen; deze is al gedefinieerd.",
+        "replacementEmpty": "Vul de vervanging in.",
+        "replacementTooLong": "De vervanging is beperkt tot 500 tekens.",
+        "replacementForbidden": "De vervanging mag geen regeleinde of tab bevatten.",
+        "replacementControl": "De vervanging bevat een onzichtbaar stuurteken.",
+        "missingSeparator": "Scheidingsteken ontbreekt: voeg ; toe, gevolgd door de vervanging",
+        "tooManyRules": "Een regelset bevat maximaal 1.000 regels.",
+        "invalidSavedRules": "De opgeslagen regels zijn ongeldig. Laad ze opnieuw voordat je importeert.",
+        "unicodeUnavailable": "De regels kunnen nu niet worden gecontroleerd. Start Handy opnieuw en probeer het nog eens.",
+        "invalidRule": "Deze regel is ongeldig."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Niet-opgeslagen wijzigingen",
+      "description": "Sommige van je vervangingsregels zijn niet opgeslagen. Blijf om ze op te slaan, of verwerp ze en ga weg.",
+      "stay": "Blijven",
+      "discard": "Verwerpen en weggaan"
     }
   },
   "footer": {
@@ -676,7 +1187,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy heeft toegankelijkheidsmachtigingen nodig om getranscribeerde tekst te kunnen typen.",
-    "openSettings": "Systeeminstellingen openen"
+    "openSettings": "Systeeminstellingen openen",
+    "offTitle": "De toegankelijkheidstoestemming staat uit",
+    "smartPasteOff": "Slim plakken kan niet invoegen of plakken. Je transcripties worden bewaard zodat je ze kunt terughalen."
   },
   "errors": {
     "loadDirectory": "Fout bij laden van map: {{error}}",
@@ -689,12 +1202,41 @@
     },
     "noInputDeviceTitle": "Geen microfoon gevonden",
     "noInputDevice": "Er is geen audio-invoerapparaat gedetecteerd. Sluit een microfoon of headset aan en probeer het opnieuw.",
+    "inputLostTitle": "Opname onderbroken",
+    "inputLost": "De microfoon is losgekoppeld. De audio die tot dan is opgenomen, wordt getranscribeerd.",
     "recordingFailed": "Opname starten mislukt: {{error}}",
     "modelLoadFailed": "Model laden mislukt: {{model}}",
     "modelLoadFailedUnknown": "onbekend model",
     "pasteFailedTitle": "Tekst plakken mislukt",
     "pasteFailed": "Tekst kon niet worden geplakt in de actieve applicatie.",
-    "transcriptionFailedTitle": "Transcriptie mislukt"
+    "pasteFailedNotSaved": "De tekst kon niet worden geplakt of in de geschiedenis worden opgeslagen.",
+    "transcriptionFailedTitle": "Transcriptie mislukt",
+    "settings": {
+      "committedNotApplied": "De instelling is opgeslagen, maar kon niet direct worden toegepast.",
+      "gpuDeviceRequired": "Selecteer een GPU-apparaat voordat u de GPU-versneller kiest.",
+      "outOfRange": "Deze waarde valt buiten het toegestane bereik.",
+      "validationFailed": "Deze waarde wordt niet geaccepteerd voor deze instelling.",
+      "revisionConflict": "De instellingen zijn elders gewijzigd. Laad opnieuw en probeer het nog eens.",
+      "unavailable": "Deze instelling kan nu niet worden gewijzigd. Probeer het later opnieuw.",
+      "shortcutSessionBusy": "Er loopt een dictaat. Probeer het opnieuw wanneer het is afgelopen.",
+      "persistenceFailed": "Kan instellingen niet opslaan: het instellingenbestand kon niet worden geschreven. Er is niets gewijzigd.",
+      "generic": "De instelling kon niet worden gewijzigd.",
+      "readOnly": "De instellingen zijn in deze sessie alleen-lezen: het instellingenbestand kan niet veilig worden geschreven, dus wijzigingen worden niet opgeslagen.",
+      "unsupportedPlatform": "Deze instelling is niet beschikbaar op dit systeem.",
+      "promptNameEmpty": "Voer een naam in voor de prompt.",
+      "promptNameTooLong": "De naam van de prompt mag maximaal 60 tekens lang zijn.",
+      "promptNameDuplicate": "Een andere prompt heeft al deze naam. Namen moeten uniek zijn.",
+      "promptTextEmpty": "Voer de tekst van de prompt in.",
+      "promptTextTooLong": "De tekst van de prompt mag maximaal 8.000 tekens lang zijn.",
+      "promptOverrideIncomplete": "Kies een provider en een model, of gebruik de standaardprovider.",
+      "promptUnknownProvider": "Deze provider is niet beschikbaar.",
+      "promptNotUsable": "Deze prompt is ongeldig. Bewerk hem voordat je hem gebruikt.",
+      "limitExceeded": "Het maximale aantal is bereikt.",
+      "conflictTitle": "Instellingen elders gewijzigd",
+      "conflictBody": "De opdrachtregel of een ander venster heeft een nieuwere versie opgeslagen. Laad opnieuw om die te zien; je niet-opgeslagen wijziging wordt verworpen.",
+      "reload": "Opnieuw laden",
+      "reloadFailed": "De instellingen konden niet opnieuw worden geladen. Probeer het opnieuw."
+    }
   },
   "appLanguage": {
     "title": "Interfacetaal",
@@ -712,7 +1254,48 @@
   "overlay": {
     "transcribing": "Transcriberen...",
     "processing": "Verwerken...",
-    "loadingModel": "Model laden..."
+    "loadingModel": "Model laden...",
+    "fallbackNotice": "De AI-verwerking is mislukt. De oorspronkelijke tekst is gebruikt.",
+    "destination": {
+      "label": "Bestemming: {{name}}",
+      "pinnedLabel": "Bestemming: {{name}}, vastgezet",
+      "frontmostApp": "App op de voorgrond",
+      "remove": "Bestemming verwijderen",
+      "unknownApp": "De bestemmingsapp",
+      "choiceFailed": "De bestemming kon niet worden gewijzigd.",
+      "menu": {
+        "title": "Bestemming van dit dictaat",
+        "frontmostNow": "Nu op de voorgrond",
+        "otherApps": "Andere apps",
+        "frontmostAtEnd": "App op de voorgrond aan het einde",
+        "loading": "Apps laden…",
+        "failed": "De lijst met apps kon niet worden geladen.",
+        "pin": "{{name}} vastzetten",
+        "unpin": "{{name}} losmaken",
+        "thisDictationOnly": "Alleen dit dictaat"
+      },
+      "refused": {
+        "stale": "De bestemming is intussen gewijzigd; de lijst is vernieuwd.",
+        "frozen": "Het invoegen is begonnen; de bestemming kan niet meer veranderen.",
+        "unavailable": "Deze app is niet meer beschikbaar; de lijst is vernieuwd."
+      }
+    },
+    "prompt": {
+      "label": "Prompt voor dit dictaat: {{name}}",
+      "hint": "Beweeg erover om de opties te zien",
+      "none": "Geen (geen AI-verwerking)",
+      "menuTitle": "Prompt voor dit dictaat",
+      "note": "Geldt alleen voor dit dictaat. De standaard blijft {{name}}.",
+      "loading": "Prompts laden…",
+      "failed": "De prompts konden niet worden geladen.",
+      "choiceFailed": "De prompt kon niet worden gewijzigd.",
+      "refused": {
+        "sessionEnded": "De opname is gestopt; de prompt kan niet meer veranderen.",
+        "processingOff": "AI-verwerking staat uit voor dit dictaat.",
+        "promptMissing": "Deze prompt bestaat niet meer.",
+        "promptNotUsable": "Deze prompt bevat fouten; bewerk hem eerst in de instellingen."
+      }
+    }
   },
   "secureInput": {
     "blockedWithCulprit_one": "{{name}} blokkeert mogelijk 1 sneltoets",
@@ -724,5 +1307,45 @@
     "learnMore": "Hoe je dit oplost",
     "recorderBlocked": "Sneltoetsen kunnen nu niet worden opgenomen — Secure Input van macOS blokkeert toetsgebeurtenissen. Los eerst de Secure Input-waarschuwing op.",
     "dismiss": "Sluiten"
+  },
+  "smartPaste": {
+    "handOver": "Tekst op het klembord gezet voor het externe scherm"
+  },
+  "recoveryBubble": {
+    "label": "Transcriptie bewaard door Handy",
+    "previewLabel": "Transcriptie",
+    "reason": {
+      "appClosed": "{{app}} is niet meer geopend",
+      "appClosedUnnamed": "De app is niet meer geopend",
+      "pinnedAppNotRunning": "{{app}} is vastgezet maar niet geopend",
+      "pinnedAppNotRunningUnnamed": "De vastgezette app is niet geopend",
+      "activationFailed": "Kan {{app}} niet naar voren halen",
+      "activationFailedUnnamed": "Kan de app niet naar voren halen",
+      "insertionFailed": "Invoegen mislukt",
+      "noTextField": "Er is geen tekstveld actief"
+    },
+    "explanation": {
+      "notInserted": "Handy heeft niets ingevoegd en geen Enter verstuurd.",
+      "mayHaveReached": "Mogelijk is een deel van de tekst in de app terechtgekomen.",
+      "nothingSent": "Er is niets naar de app verstuurd.",
+      "lateRead": "De app las het klembord te laat: de tekst is misschien toch geplakt. Controleer dit voordat je opnieuw kopieert.",
+      "historyKept": "De transcriptie blijft bewaard in de Geschiedenis.",
+      "historyKeptFull": "De volledige transcriptie blijft bewaard in de Geschiedenis.",
+      "historyNotKept": "De transcriptie staat niet in de Geschiedenis.",
+      "openAppDrag": "Open {{app}} en sleep of kopieer daarna de tekst.",
+      "openAppCopy": "Open {{app}} en kopieer daarna de tekst.",
+      "openUnnamedDrag": "Open de app en sleep of kopieer daarna de tekst.",
+      "openUnnamedCopy": "Open de app en kopieer daarna de tekst.",
+      "focusFieldDrag": "Klik in een tekstveld en sleep of kopieer daarna de tekst.",
+      "focusFieldCopy": "Klik in een tekstveld en kopieer daarna de tekst.",
+      "noFieldSetting": "Je kunt deze controle uitzetten in Instellingen, Geavanceerd, Uitvoer."
+    },
+    "actions": {
+      "drag": "In een veld slepen",
+      "copy": "Kopiëren",
+      "why": "Waarom?",
+      "hideDetails": "Details verbergen",
+      "close": "Sluiten"
+    }
   }
 }

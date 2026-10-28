@@ -1,0 +1,29 @@
+{
+  "kind": "plan",
+  "rounds": [
+    {
+      "context_hash": "cd00d943831ee53f0e909bc3a96c2fa7056ffd816629e12ff8544fa3ffc84447",
+      "ready": false
+    },
+    {
+      "context_hash": "db49fe1d6cee65bf31306891eeb89e27d6c39608342b562f8284a9b70d047381",
+      "ready": true
+    },
+    {
+      "context_hash": "d84d8ae4e5ce4f2d2ac12cc44423b8937f62689aae8639072e5b4ef4e5ea6eda",
+      "ready": false
+    },
+    {
+      "context_hash": "57c9b15a1e8e140dc9674ff9261aa588e5b1ae97d2d525be5430010b54863c61",
+      "ready": false
+    },
+    {
+      "context_hash": "c6d77f5f3180f1071bcc7efe694d77540b9b938ece4f053cfc5c7f651d268a04",
+      "ready": false
+    },
+    {
+      "context_hash": "7cc4c8aeef69ec7de5823b77909df730ea5959cf34fe471f8539f51a3f14c2bd",
+      "ready": true
+    }
+  ]
+}

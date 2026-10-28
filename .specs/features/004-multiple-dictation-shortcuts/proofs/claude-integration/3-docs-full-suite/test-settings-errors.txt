@@ -1,0 +1,2 @@
+$ bun src/stores/settings-errors.test.ts
+settings-errors: all assertions passed

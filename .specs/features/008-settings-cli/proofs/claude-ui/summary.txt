@@ -1,0 +1,12 @@
+UI pass — settings write errors (Penflow settings-write-errors)
+Code commit 6413b2ad, branch feature/ui-general-output, 2026-10-14. Shared check run: ../../../004-multiple-dictation-shortcuts/proofs/claude-ui/summary.txt
+
+Command                                                     Exit  Output
+bun run test:settings-store   (11 pass: revision conflict opens the alert without toast; Reload rereads and closes it; failed save notice with its test id)   0   test-settings-store.*
+bun run test:settings-errors   (display rule: conflict-alert / save-failed-toast / toast)   0   test-settings-errors.*
+bun run test:output-settings   (history limit parsing 2 tests; render: conflict alert ids, history limit without error)   0   test-output-settings.*
+bun run lint / format:check / tsc --noEmit / check:translations / build   0 each   bun-lint.*, bun-format-check.*, tsc.*, check-translations.*, bun-build.*
+livespec conventions verify --feature repo --json           0     conventions-repo-summary.json (PASS)
+
+Not run (pending, with Julien): rendered window screenshots of the three errors (a real revision conflict from the CLI,
+a read-only settings file, a typed -5 in the history limit).

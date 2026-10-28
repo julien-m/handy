@@ -1,0 +1,72 @@
+$ bun test src/stores/settings-store.test.ts
+bun test v1.3.9 (cf6cdbbb)
+
+src/stores/settings-store.test.ts:
+Failed to update setting always_on_microphone: 84 |     typeof result === "object" &&
+85 |     result !== null &&
+86 |     (result as { status?: unknown }).status === "error"
+87 |   ) {
+88 |     const error = (result as { error?: unknown }).error;
+89 |     if (isSettingsCommandError(error)) throw new SettingsCommandFailure(error);
+                                                  ^
+SettingsCommandFailure: Settings operation failed.
+ detail: {
+  code: "internal_error",
+  message: "Settings operation failed.",
+  field: "always_on_microphone",
+  reason: null,
+  outcome: "committed",
+  current_revision: 5,
+},
+
+      at throwIfSettingsError (/Users/julienm/projects/handy-wt/004-multiple-dictation-shortcuts/src/stores/settings-errors.ts:89:46)
+      at <anonymous> (/Users/julienm/projects/handy-wt/004-multiple-dictation-shortcuts/src/stores/settingsStore.ts:357:11)
+      at async <anonymous> (/Users/julienm/projects/handy-wt/004-multiple-dictation-shortcuts/src/stores/settings-store.test.ts:97:11)
+
+Failed to update setting always_on_microphone: 84 |     typeof result === "object" &&
+85 |     result !== null &&
+86 |     (result as { status?: unknown }).status === "error"
+87 |   ) {
+88 |     const error = (result as { error?: unknown }).error;
+89 |     if (isSettingsCommandError(error)) throw new SettingsCommandFailure(error);
+                                                  ^
+SettingsCommandFailure: Settings operation is unavailable.
+ detail: {
+  code: "unavailable",
+  message: "Settings operation is unavailable.",
+  field: "always_on_microphone",
+  reason: null,
+  outcome: null,
+  current_revision: null,
+},
+
+      at throwIfSettingsError (/Users/julienm/projects/handy-wt/004-multiple-dictation-shortcuts/src/stores/settings-errors.ts:89:46)
+      at <anonymous> (/Users/julienm/projects/handy-wt/004-multiple-dictation-shortcuts/src/stores/settingsStore.ts:357:11)
+      at async <anonymous> (/Users/julienm/projects/handy-wt/004-multiple-dictation-shortcuts/src/stores/settings-store.test.ts:104:19)
+
+Failed to update setting always_on_microphone: 84 |     typeof result === "object" &&
+85 |     result !== null &&
+86 |     (result as { status?: unknown }).status === "error"
+87 |   ) {
+88 |     const error = (result as { error?: unknown }).error;
+89 |     if (isSettingsCommandError(error)) throw new SettingsCommandFailure(error);
+                                                  ^
+SettingsCommandFailure: Settings operation is unavailable.
+ detail: {
+  code: "unavailable",
+  message: "Settings operation is unavailable.",
+  field: "always_on_microphone",
+  reason: null,
+  outcome: null,
+  current_revision: null,
+},
+
+      at throwIfSettingsError (/Users/julienm/projects/handy-wt/004-multiple-dictation-shortcuts/src/stores/settings-errors.ts:89:46)
+      at <anonymous> (/Users/julienm/projects/handy-wt/004-multiple-dictation-shortcuts/src/stores/settingsStore.ts:357:11)
+      at async <anonymous> (/Users/julienm/projects/handy-wt/004-multiple-dictation-shortcuts/src/stores/settings-store.test.ts:117:11)
+
+
+ 4 pass
+ 0 fail
+ 8 expect() calls
+Ran 4 tests across 1 file. [160.00ms]

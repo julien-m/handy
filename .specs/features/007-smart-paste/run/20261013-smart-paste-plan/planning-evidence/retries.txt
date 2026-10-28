@@ -1,0 +1,5 @@
+retry_hypothesis="goal render accepts model only inside --flags" retry_evidence="goal render --help; runtime turn_context model=gpt-6.1-sol" retry_result="PASS: actual-model contract 6f1c2709 rendered"
+retry_hypothesis="progression plan rejects spec receipt bound to claude-opus-5-5" retry_evidence="BLOCKED clarify_not_ready:stale_or_incomplete_spec_review; new prepared spec context and independent raw review" retry_result="PASS: spec independent complete+ready; progression plan READY"
+review_budget_evidence="default 60000 char preparation yielded 60 overlapping batches; explicit 200000 budget gives one full 185608 char plan prompt; spec prompt unchanged byte-for-byte"
+native_goal_note="native goal already active; update_goal cannot amend objective, so retain mirror; active CLI contract fd8b7214 has explicit review budget"
+retry_hypothesis="archive drift is missing Penflow contract summary in selected Analyze-only stdout" retry_evidence="actual archive verify_result shows substring Penflow contract FAIL; fresh truthful closure transcript includes deferred noncertified UI status" retry_result="PASS: current archive outcome success"

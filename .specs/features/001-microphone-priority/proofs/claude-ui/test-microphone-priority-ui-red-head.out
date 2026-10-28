@@ -1,0 +1,301 @@
+
+
+Running 14 tests using 6 workers
+
+[WebServer] [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+
+
+
+
+
+
+
+[1/14] [chromium] › tests/microphone-priority.spec.ts:117:3 › focus after each action (SC-003) › Remove moves focus to the next row, else the previous one, else Add
+[2/14] [chromium] › tests/microphone-priority.spec.ts:85:3 › focus after each action (SC-003) › Save keeps focus while busy and as Retry; success moves it to the title
+[3/14] [chromium] › tests/microphone-priority.spec.ts:154:3 › focus after each action (SC-003) › Discard moves focus to the section title
+[4/14] [chromium] › tests/microphone-priority.spec.ts:164:3 › focus after each action (SC-003) › Reload moves focus to the section title
+[5/14] [chromium] › tests/microphone-priority.spec.ts:180:3 › focus after each action (SC-003) › Reload is inactive while a Save is in flight
+[6/14] [chromium] › tests/microphone-priority.spec.ts:138:3 › focus after each action (SC-003) › a keyboard move keeps focus on the moved row's control
+[7/14] [chromium] › tests/microphone-priority.spec.ts:210:3 › loading guard and failed listing › Add and Save are inactive until the settings are loaded
+  1) [chromium] › tests/microphone-priority.spec.ts:117:3 › focus after each action (SC-003) › Remove moves focus to the next row, else the previous one, else Add 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "microphone-settings-choice-remove of MacBook Pro Microphone"
+    Received: "body"
+
+      121 |     await control(page, USB, "remove").focus();
+      122 |     await page.keyboard.press("Enter");
+    > 123 |     expect(await focused(page)).toBe(
+          |                                 ^
+      124 |       `microphone-settings-choice-remove of ${MACBOOK}`,
+      125 |     );
+      126 |     await control(page, STUDIO, "remove").focus();
+        at /Users/julienm/projects/handy-wt/ui-001-microphones/tests/microphone-priority.spec.ts:123:33
+
+    Error Context: test-results/microphone-priority-focus--2658f-e-the-previous-one-else-Add-chromium/error-context.md
+
+
+  2) [chromium] › tests/microphone-priority.spec.ts:164:3 › focus after each action (SC-003) › Reload moves focus to the section title 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "microphone-settings-priority-title"
+    Received: "body"
+
+      174 |     ).toBeHidden();
+      175 |     await expect(page.getByTestId("microphone-settings-draft")).toBeHidden();
+    > 176 |     expect(await focused(page)).toBe("microphone-settings-priority-title");
+          |                                 ^
+      177 |     expect(await order(page)).toEqual(["Dock"]);
+      178 |   });
+      179 |
+        at /Users/julienm/projects/handy-wt/ui-001-microphones/tests/microphone-priority.spec.ts:176:33
+
+    Error Context: test-results/microphone-priority-focus--16a78--focus-to-the-section-title-chromium/error-context.md
+
+
+  3) [chromium] › tests/microphone-priority.spec.ts:154:3 › focus after each action (SC-003) › Discard moves focus to the section title 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "microphone-settings-priority-title"
+    Received: "body"
+
+      158 |     await page.keyboard.press("Enter");
+      159 |     await expect(page.getByTestId("microphone-settings-draft")).toBeHidden();
+    > 160 |     expect(await focused(page)).toBe("microphone-settings-priority-title");
+          |                                 ^
+      161 |     expect(await order(page)).toEqual(ORIGINAL);
+      162 |   });
+      163 |
+        at /Users/julienm/projects/handy-wt/ui-001-microphones/tests/microphone-priority.spec.ts:160:33
+
+    Error Context: test-results/microphone-priority-focus--1cb6f--focus-to-the-section-title-chromium/error-context.md
+
+
+
+
+
+[8/14] [chromium] › tests/microphone-priority.spec.ts:224:3 › loading guard and failed listing › a draft-only name shows Unknown when the device listing fails (FR-002)
+[9/14] [chromium] › tests/microphone-priority.spec.ts:252:1 › status polling: on open, every 5 s while visible, paused while hidden, cleared on unmount (AC-002)
+[10/14] [chromium] › tests/microphone-priority.spec.ts:343:5 › interrupted pointer drag › window blur cancels the drag without reordering
+  4) [chromium] › tests/microphone-priority.spec.ts:252:1 › status polling: on open, every 5 s while visible, paused while hidden, cleared on unmount (AC-002) 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 1
+    Received: 13
+
+      263 |   const base = await reads();
+      264 |   await page.clock.runFor(60_000);
+    > 265 |   expect(await reads()).toBe(base);
+          |                         ^
+      266 |   // Shown again: a read at once, then one every 5 s.
+      267 |   await page.evaluate(() => window.harness.setVisible(true));
+      268 |   await expect.poll(reads).toBe(base + 1);
+        at /Users/julienm/projects/handy-wt/ui-001-microphones/tests/microphone-priority.spec.ts:265:25
+
+    Error Context: test-results/microphone-priority-status-0ba96--cleared-on-unmount-AC-002--chromium/error-context.md
+
+
+
+[11/14] [chromium] › tests/microphone-priority.spec.ts:343:5 › interrupted pointer drag › page hidden cancels the drag without reordering
+  5) [chromium] › tests/microphone-priority.spec.ts:85:3 › focus after each action (SC-003) › Save keeps focus while busy and as Retry; success moves it to the title 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('microphone-settings-save')
+    Expected: "true"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" with timeout 5000ms
+      - waiting for getByTestId('microphone-settings-save')
+        9 × locator resolved to <button disabled aria-busy="true" data-state="loading" data-testid="microphone-settings-save" class="font-medium rounded-lg border focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-white bg-background-ui border-background-ui hover:bg-background-ui/80 hover:border-background-ui/80 focus:ring-1 focus:ring-background-ui px-4 py-[5px] text-sm ">Saving…</button>
+          - unexpected value "null"
+
+
+      93 |     await page.keyboard.press("Enter");
+      94 |     await expect(save).toHaveAttribute("data-state", "loading");
+    > 95 |     await expect(save).toHaveAttribute("aria-disabled", "true");
+         |                        ^
+      96 |     expect(await focused(page)).toBe("microphone-settings-save");
+      97 |     await page.keyboard.press("Enter");
+      98 |     expect(
+        at /Users/julienm/projects/handy-wt/ui-001-microphones/tests/microphone-priority.spec.ts:95:24
+
+    Error Context: test-results/microphone-priority-focus--0b752-ccess-moves-it-to-the-title-chromium/error-context.md
+
+
+  6) [chromium] › tests/microphone-priority.spec.ts:180:3 › focus after each action (SC-003) › Reload is inactive while a Save is in flight 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('microphone-settings-error-reload')
+    Expected: "true"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" with timeout 5000ms
+      - waiting for getByTestId('microphone-settings-error-reload')
+        9 × locator resolved to <button data-testid="microphone-settings-error-reload" class="font-medium rounded-lg border focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-text bg-mid-gray/10 border-mid-gray/20 hover:bg-warning/15 hover:border-warning focus:ring-1 focus:ring-warning px-4 py-[5px] text-sm ">Reload</button>
+          - unexpected value "null"
+
+
+      189 |     await page.evaluate(() => window.harness.holdSave());
+      190 |     await page.getByTestId("microphone-settings-save").click();
+    > 191 |     await expect(reload).toHaveAttribute("aria-disabled", "true");
+          |                          ^
+      192 |     // Still focusable (aria-disabled), but activating it does nothing during the write.
+      193 |     await reload.focus();
+      194 |     await page.keyboard.press("Enter");
+        at /Users/julienm/projects/handy-wt/ui-001-microphones/tests/microphone-priority.spec.ts:191:26
+
+    Error Context: test-results/microphone-priority-focus--9b646-e-while-a-Save-is-in-flight-chromium/error-context.md
+
+
+  7) [chromium] › tests/microphone-priority.spec.ts:210:3 › loading guard and failed listing › Add and Save are inactive until the settings are loaded 
+
+    Error: expect(locator).toBeDisabled() failed
+
+    Locator:  getByTestId('microphone-settings-add').getByRole('combobox')
+    Expected: disabled
+    Received: enabled
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeDisabled" with timeout 5000ms
+      - waiting for getByTestId('microphone-settings-add').getByRole('combobox')
+        9 × locator resolved to <button type="button" role="combobox" aria-controls=":r0:" aria-expanded="false" aria-haspopup="listbox" aria-label="Add microphone" class="px-2 py-[5px] text-sm font-semibold bg-mid-gray/10 border border-mid-gray/80 rounded-md min-w-[200px] w-full text-start grid grid-cols-[1fr_auto] gap-2 items-center transition-all duration-150 hover:bg-logo-primary/10 cursor-pointer hover:border-logo-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-logo-primary">…</button>
+          - unexpected value "enabled"
+
+
+      216 |       .getByTestId("microphone-settings-add")
+      217 |       .getByRole("combobox");
+    > 218 |     await expect(add).toBeDisabled();
+          |                       ^
+      219 |     await page.evaluate(() => window.harness.releaseSettings());
+      220 |     await expect(page.getByTestId("microphone-settings-choices")).toBeVisible();
+      221 |     await expect(add).toBeEnabled();
+        at /Users/julienm/projects/handy-wt/ui-001-microphones/tests/microphone-priority.spec.ts:218:23
+
+    Error Context: test-results/microphone-priority-loadin-f9f7b-til-the-settings-are-loaded-chromium/error-context.md
+
+
+
+[12/14] [chromium] › tests/microphone-priority.spec.ts:343:5 › interrupted pointer drag › lost pointer capture cancels the drag without reordering
+
+
+[13/14] [chromium] › tests/microphone-priority.spec.ts:351:3 › interrupted pointer drag › an uninterrupted drag still drops
+[14/14] [chromium] › tests/microphone-priority.spec.ts:343:5 › interrupted pointer drag › pointer cancel cancels the drag without reordering
+  8) [chromium] › tests/microphone-priority.spec.ts:343:5 › interrupted pointer drag › window blur cancels the drag without reordering 
+
+    Error: expect(received).toBeNull()
+
+    Received: "drop-target"
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      307 |   const expectCancelled = async (page: Page): Promise<void> => {
+      308 |     const list = page.getByTestId("microphone-settings-choices");
+    > 309 |     await expect.poll(() => list.getAttribute("data-state")).toBeNull();
+          |     ^
+      310 |     await expect
+      311 |       .poll(() => row(page, USB).getAttribute("data-state"))
+      312 |       .toBeNull();
+        at expectCancelled (/Users/julienm/projects/handy-wt/ui-001-microphones/tests/microphone-priority.spec.ts:309:5)
+        at /Users/julienm/projects/handy-wt/ui-001-microphones/tests/microphone-priority.spec.ts:347:7
+
+    Error Context: test-results/microphone-priority-interr-d505b-the-drag-without-reordering-chromium/error-context.md
+
+
+  9) [chromium] › tests/microphone-priority.spec.ts:224:3 › loading guard and failed listing › a draft-only name shows Unknown when the device listing fails (FR-002) 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByTestId('microphone-settings-add')
+    Expected: "valid"
+    Received: "empty"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" with timeout 5000ms
+      - waiting for getByTestId('microphone-settings-add')
+        9 × locator resolved to <div data-state="empty" class="rounded-md " data-testid="microphone-settings-add">…</div>
+          - unexpected value "empty"
+
+
+      235 |     );
+      236 |     await expect(dock).toHaveText(text.status.available);
+    > 237 |     await expect(page.getByTestId("microphone-settings-add")).toHaveAttribute(
+          |                                                               ^
+      238 |       "data-state",
+      239 |       "valid",
+      240 |     );
+        at /Users/julienm/projects/handy-wt/ui-001-microphones/tests/microphone-priority.spec.ts:237:63
+
+    Error Context: test-results/microphone-priority-loadin-8ec92-evice-listing-fails-FR-002--chromium/error-context.md
+
+
+  10) [chromium] › tests/microphone-priority.spec.ts:343:5 › interrupted pointer drag › page hidden cancels the drag without reordering 
+
+    Error: expect(received).toBeNull()
+
+    Received: "drop-target"
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      307 |   const expectCancelled = async (page: Page): Promise<void> => {
+      308 |     const list = page.getByTestId("microphone-settings-choices");
+    > 309 |     await expect.poll(() => list.getAttribute("data-state")).toBeNull();
+          |     ^
+      310 |     await expect
+      311 |       .poll(() => row(page, USB).getAttribute("data-state"))
+      312 |       .toBeNull();
+        at expectCancelled (/Users/julienm/projects/handy-wt/ui-001-microphones/tests/microphone-priority.spec.ts:309:5)
+        at /Users/julienm/projects/handy-wt/ui-001-microphones/tests/microphone-priority.spec.ts:347:7
+
+    Error Context: test-results/microphone-priority-interr-2a9a8-the-drag-without-reordering-chromium/error-context.md
+
+
+  11) [chromium] › tests/microphone-priority.spec.ts:343:5 › interrupted pointer drag › lost pointer capture cancels the drag without reordering 
+
+    Error: expect(received).toBeNull()
+
+    Received: "drop-target"
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      307 |   const expectCancelled = async (page: Page): Promise<void> => {
+      308 |     const list = page.getByTestId("microphone-settings-choices");
+    > 309 |     await expect.poll(() => list.getAttribute("data-state")).toBeNull();
+          |     ^
+      310 |     await expect
+      311 |       .poll(() => row(page, USB).getAttribute("data-state"))
+      312 |       .toBeNull();
+        at expectCancelled (/Users/julienm/projects/handy-wt/ui-001-microphones/tests/microphone-priority.spec.ts:309:5)
+        at /Users/julienm/projects/handy-wt/ui-001-microphones/tests/microphone-priority.spec.ts:347:7
+
+    Error Context: test-results/microphone-priority-interr-cb2f3-the-drag-without-reordering-chromium/error-context.md
+
+
+  11 failed
+    [chromium] › tests/microphone-priority.spec.ts:85:3 › focus after each action (SC-003) › Save keeps focus while busy and as Retry; success moves it to the title 
+    [chromium] › tests/microphone-priority.spec.ts:117:3 › focus after each action (SC-003) › Remove moves focus to the next row, else the previous one, else Add 
+    [chromium] › tests/microphone-priority.spec.ts:154:3 › focus after each action (SC-003) › Discard moves focus to the section title 
+    [chromium] › tests/microphone-priority.spec.ts:164:3 › focus after each action (SC-003) › Reload moves focus to the section title 
+    [chromium] › tests/microphone-priority.spec.ts:180:3 › focus after each action (SC-003) › Reload is inactive while a Save is in flight 
+    [chromium] › tests/microphone-priority.spec.ts:210:3 › loading guard and failed listing › Add and Save are inactive until the settings are loaded 
+    [chromium] › tests/microphone-priority.spec.ts:224:3 › loading guard and failed listing › a draft-only name shows Unknown when the device listing fails (FR-002) 
+    [chromium] › tests/microphone-priority.spec.ts:252:1 › status polling: on open, every 5 s while visible, paused while hidden, cleared on unmount (AC-002) 
+    [chromium] › tests/microphone-priority.spec.ts:343:5 › interrupted pointer drag › window blur cancels the drag without reordering 
+    [chromium] › tests/microphone-priority.spec.ts:343:5 › interrupted pointer drag › page hidden cancels the drag without reordering 
+    [chromium] › tests/microphone-priority.spec.ts:343:5 › interrupted pointer drag › lost pointer capture cancels the drag without reordering 
+  3 passed (14.4s)
+exit=1

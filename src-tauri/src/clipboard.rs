@@ -1,7 +1,7 @@
 use crate::input::{self, EnigoState};
 #[cfg(target_os = "linux")]
 use crate::settings::TypingTool;
-use crate::settings::{get_settings, AutoSubmitKey, ClipboardHandling, PasteMethod};
+use crate::settings::{AppSettings, AutoSubmitKey, ClipboardHandling, PasteMethod};
 use enigo::{Direction, Enigo, Key, Keyboard};
 use log::info;
 use std::process::Command;
@@ -28,7 +28,7 @@ fn with_enigo<T>(
     f(&mut enigo)
 }
 
-fn write_text_to_clipboard(app_handle: &AppHandle, text: &str) -> Result<(), String> {
+pub(crate) fn write_text_to_clipboard(app_handle: &AppHandle, text: &str) -> Result<(), String> {
     #[cfg(target_os = "linux")]
     if is_wayland() && is_wl_copy_available() {
         info!("Using wl-copy for clipboard write on Wayland");
@@ -51,13 +51,17 @@ fn finish_clipboard_paste(
     paste_result
 }
 
+/// Pre-dispatch check run immediately before the first emitted key, text or script (006
+/// destination guard); an error stops the method before any input.
+pub type DispatchCheck<'a> = &'a dyn Fn() -> Result<(), String>;
+
 /// Pastes text using the clipboard: saves current content, writes text, sends paste keystroke, restores clipboard.
 fn paste_via_clipboard(
     text: &str,
     app_handle: &AppHandle,
     paste_method: &PasteMethod,
-    paste_delay_ms: u64,
-    paste_delay_after_ms: u64,
+    (paste_delay_ms, paste_delay_after_ms): (u64, u64),
+    check: DispatchCheck<'_>,
 ) -> Result<(), String> {
     let clipboard = app_handle.clipboard();
     let saved_text = clipboard.read_text().ok().filter(|t| !t.is_empty());
@@ -78,6 +82,9 @@ fn paste_via_clipboard(
     // Capture key injection errors so the original clipboard is restored before
     // propagating them to the caller.
     let paste_result = (|| -> Result<(), String> {
+        // Order matters: the destination is rechecked after the configured delay, right before
+        // the keystroke; a refusal still restores the clipboard below.
+        check()?;
         // Send paste key combo
         #[cfg(target_os = "linux")]
         let key_combo_sent = try_send_key_combo_linux(paste_method)?;
@@ -771,18 +778,77 @@ fn should_send_auto_submit(auto_submit: bool, paste_method: PasteMethod) -> bool
     auto_submit && paste_method != PasteMethod::None
 }
 
-pub fn paste(text: String, app_handle: AppHandle) -> Result<(), String> {
-    let settings = get_settings(&app_handle);
+/// Press the automatic-submit key once through the shared Enigo instance (classic methods after
+/// their paste; smart paste after an Enter-eligible outcome).
+pub(crate) fn send_auto_submit(app_handle: &AppHandle, key: AutoSubmitKey) -> Result<(), String> {
+    with_enigo(app_handle, |enigo| send_return_key(enigo, key))
+}
+
+/// The text a paste method inserts: the transcript, plus a trailing space when enabled.
+pub fn with_trailing_space(text: String, settings: &AppSettings) -> String {
+    trailing_spaced(text, settings.append_trailing_space)
+}
+/// `text`, plus a trailing space when `append_trailing_space` is on.
+pub fn trailing_spaced(text: String, append_trailing_space: bool) -> String {
+    if append_trailing_space {
+        format!("{text} ")
+    } else {
+        text
+    }
+}
+
+/// Who decides the automatic Enter of one paste.
+pub(crate) enum EnterRoute {
+    /// As on `dev`: `settings.auto_submit` drives the classic 50 ms block and the reliable
+    /// paste's receipt Enter.
+    Legacy,
+    /// 009's Enter authority (gate `destination-return` open, dictation with a destination
+    /// session): this paste sends no Enter; a reliable transfer reports its signals here.
+    Authority(std::sync::Arc<dyn crate::paste_tx::ReceiptSink>),
+}
+impl EnterRoute {
+    /// The reliable paste's auto-submit switch and receipt sink for this route.
+    #[cfg_attr(not(any(target_os = "macos", target_os = "windows")), allow(dead_code))]
+    fn reliable(
+        &self,
+        auto_submit: bool,
+    ) -> (
+        bool,
+        Option<std::sync::Arc<dyn crate::paste_tx::ReceiptSink>>,
+    ) {
+        match self {
+            Self::Legacy => (auto_submit, None),
+            Self::Authority(receipts) => (false, Some(receipts.clone())),
+        }
+    }
+}
+
+// @spec FR-002: Guard after the configured delay, before input — .specs/features/006-destination-application/spec.md#fr-002
+/// Insert `text` with the method of `settings`, a snapshot the caller read once for this
+/// insertion; `check` runs right before the first dispatch. The automatic Enter is `dev`'s.
+pub fn paste(
+    text: String,
+    app_handle: AppHandle,
+    settings: &AppSettings,
+    check: DispatchCheck<'_>,
+) -> Result<(), String> {
+    paste_routed(text, app_handle, settings, check, &EnterRoute::Legacy)
+}
+
+// @spec FR-004: One Enter authority on the session path — .specs/features/009-pin-mode-and-enter-rule/spec.md#fr-004
+/// [`paste`] with the automatic Enter decided by `route`.
+pub(crate) fn paste_routed(
+    text: String,
+    app_handle: AppHandle,
+    settings: &AppSettings,
+    check: DispatchCheck<'_>,
+    route: &EnterRoute,
+) -> Result<(), String> {
     let paste_method = settings.paste_method;
     let paste_delay_ms = settings.paste_delay_ms;
     let paste_delay_after_ms = settings.paste_delay_after_ms;
 
-    // Append trailing space if setting is enabled
-    let text = if settings.append_trailing_space {
-        format!("{} ", text)
-    } else {
-        text
-    };
+    let text = with_trailing_space(text, settings);
 
     info!(
         "Using paste method: {:?}, delay before: {}ms, delay after: {}ms",
@@ -795,6 +861,7 @@ pub fn paste(text: String, app_handle: AppHandle) -> Result<(), String> {
             info!("PasteMethod::None selected - skipping paste action");
         }
         PasteMethod::Direct => {
+            check()?;
             paste_direct(
                 &text,
                 &app_handle,
@@ -810,15 +877,18 @@ pub fn paste(text: String, app_handle: AppHandle) -> Result<(), String> {
             // the legacy path untouched.
             #[cfg(any(target_os = "macos", target_os = "windows"))]
             if settings.reliable_paste {
+                // The reliable path publishes the clipboard and types at once: check first.
+                check()?;
+                let (submit, receipts) = route.reliable(settings.auto_submit);
                 let reliable_result = with_enigo(&app_handle, |enigo| {
                     crate::paste_tx::try_reliable_paste(
                         &text,
                         &app_handle,
                         &paste_method,
                         enigo,
-                        settings.auto_submit,
-                        settings.auto_submit_key,
+                        (submit, settings.auto_submit_key),
                         settings.clipboard_handling,
+                        receipts,
                     )
                 });
                 match reliable_result {
@@ -832,9 +902,20 @@ pub fn paste(text: String, app_handle: AppHandle) -> Result<(), String> {
                 &text,
                 &app_handle,
                 &paste_method,
-                paste_delay_ms,
-                paste_delay_after_ms,
+                (paste_delay_ms, paste_delay_after_ms),
+                check,
             )?
+        }
+        PasteMethod::SmartPaste => {
+            // Smart paste never runs on this synchronous main-thread path: its actor needs the
+            // main run loop, so dictation dispatches it from a worker (`smart_paste::dispatch`,
+            // routed by `destination::delivery`). This branch is only reached when its rollout
+            // gate is closed. Never fall back to the classic fixed-delay paste here: it could
+            // paste the previous clipboard. "Copy to clipboard" still leaves the transcript.
+            if settings.clipboard_handling == ClipboardHandling::CopyToClipboard {
+                write_text_to_clipboard(&app_handle, &text)?;
+            }
+            return Err("Smart paste is not available in this build".into());
         }
         PasteMethod::ExternalScript => {
             let script_path = settings
@@ -842,15 +923,16 @@ pub fn paste(text: String, app_handle: AppHandle) -> Result<(), String> {
                 .as_ref()
                 .filter(|p| !p.is_empty())
                 .ok_or("External script path is not configured")?;
+            check()?;
             paste_via_external_script(&text, script_path)?;
         }
     }
 
-    if should_send_auto_submit(settings.auto_submit, paste_method) {
+    // The authority route decides its Enter after this method returns (009).
+    let legacy_enter = matches!(route, EnterRoute::Legacy);
+    if legacy_enter && should_send_auto_submit(settings.auto_submit, paste_method) {
         std::thread::sleep(Duration::from_millis(50));
-        if let Err(error) = with_enigo(&app_handle, |enigo| {
-            send_return_key(enigo, settings.auto_submit_key)
-        }) {
+        if let Err(error) = send_auto_submit(&app_handle, settings.auto_submit_key) {
             log::warn!("Paste succeeded, but auto-submit failed: {error}");
         }
     }
@@ -975,41 +1057,58 @@ e.g. 28:1 28:0 means pressing on the Enter button on a standard US keyboard.
         assert!(restored.get());
     }
 
+    /// The child outlives the bound by far, so a return within it proves the
+    /// caller never waits on inherited stdio; the bound itself only absorbs
+    /// slow process start-up on a loaded machine.
+    #[cfg(unix)]
+    const DETACHED_CHILD_SECONDS: u64 = 60;
+    #[cfg(unix)]
+    const SCRIPT_RETURN_BOUND: Duration = Duration::from_secs(20);
+
+    #[cfg(unix)]
+    fn write_detaching_script(dir: &std::path::Path) -> Result<std::path::PathBuf, String> {
+        use std::os::unix::fs::PermissionsExt;
+        let script = dir.join("detach.sh");
+        let pid_file = dir.join("child.pid");
+        let body = format!(
+            "#!/bin/sh\nsleep {DETACHED_CHILD_SECONDS} &\necho $! > '{}'\nexit 0\n",
+            pid_file.display()
+        );
+        std::fs::write(&script, body).map_err(|e| e.to_string())?;
+        std::fs::set_permissions(&script, std::fs::Permissions::from_mode(0o700))
+            .map_err(|e| e.to_string())?;
+        Ok(script)
+    }
+
+    #[cfg(unix)]
+    fn stop_detached_child(dir: &std::path::Path) {
+        if let Ok(pid) = std::fs::read_to_string(dir.join("child.pid")) {
+            let _ = Command::new("kill").arg(pid.trim()).status();
+        }
+        let _ = std::fs::remove_dir_all(dir);
+    }
+
     #[cfg(unix)]
     #[test]
-    fn external_script_does_not_wait_for_inherited_stdio() {
-        use std::fs;
-        use std::os::unix::fs::PermissionsExt;
-        use std::sync::mpsc;
-        use std::thread;
-
-        let script_path = std::env::temp_dir().join(format!(
-            "handy-external-script-{}-{}.sh",
-            std::process::id(),
-            std::time::SystemTime::now()
-                .duration_since(std::time::UNIX_EPOCH)
-                .expect("system clock should be after UNIX_EPOCH")
-                .as_nanos()
+    fn external_script_does_not_wait_for_inherited_stdio() -> Result<(), String> {
+        let nanos = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map_or(0, |elapsed| elapsed.as_nanos());
+        let dir = std::env::temp_dir().join(format!(
+            "handy-external-script-{}-{nanos}",
+            std::process::id()
         ));
-        fs::write(&script_path, "#!/bin/sh\nsleep 3 &\nexit 0\n").expect("write external script");
-        let mut permissions = fs::metadata(&script_path)
-            .expect("read external script metadata")
-            .permissions();
-        permissions.set_mode(0o700);
-        fs::set_permissions(&script_path, permissions).expect("make external script executable");
-
-        let (sender, receiver) = mpsc::channel();
-        let script_path_for_thread = script_path.clone();
-        thread::spawn(move || {
-            let result =
-                paste_via_external_script("test", script_path_for_thread.to_str().unwrap());
-            sender.send(result).expect("send script result");
+        std::fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
+        let script = write_detaching_script(&dir)?;
+        let (sender, receiver) = std::sync::mpsc::channel();
+        std::thread::spawn(move || {
+            let _ = sender.send(paste_via_external_script("test", &script.to_string_lossy()));
         });
-
-        let result = receiver
-            .recv_timeout(Duration::from_secs(1))
-            .expect("external script should return without waiting for its child");
-        fs::remove_file(script_path).expect("remove external script");
-        assert!(result.is_ok());
+        let result = receiver.recv_timeout(SCRIPT_RETURN_BOUND);
+        stop_detached_child(&dir);
+        match result {
+            Ok(outcome) => outcome,
+            Err(_) => Err("external script waited for its detached child".to_string()),
+        }
     }
 }

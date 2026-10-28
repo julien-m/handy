@@ -16,20 +16,25 @@ import {
 import { ModelStateEvent, RecordingErrorEvent } from "./lib/types/events";
 import "./App.css";
 import AccessibilityPermissions from "./components/AccessibilityPermissions";
+import { SettingsConflictAlert } from "./components/settings/settings-conflict-alert";
 import SecureInputWarning from "./components/SecureInputWarning";
 import Footer from "./components/footer";
+import { SettingsWindowLayout } from "./components/settings-window-layout";
 import Onboarding, { AccessibilityOnboarding } from "./components/onboarding";
 import {
   DebugSettings,
   type OnboardingPreviewStep,
 } from "./components/settings";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { useGuardedNavigation } from "./components/unsaved-changes-dialog";
 import { Sidebar, SidebarSection, SECTIONS_CONFIG } from "./components/Sidebar";
 import { WhatsNewGate } from "./components/whats-new";
 import { useSettings } from "./hooks/useSettings";
+import { useOverlayNoneNotices } from "./hooks/use-overlay-none-notices";
 import { useSettingsStore } from "./stores/settingsStore";
 import { commands } from "@/bindings";
 import { getLanguageDirection, initializeRTL } from "@/lib/utils/rtl";
+import { showRecordingErrorToast } from "@/lib/recording-error-toast";
 
 type OnboardingStep = "accessibility" | "model" | "done";
 
@@ -61,7 +66,10 @@ function App() {
   const [isReturningUser, setIsReturningUser] = useState(false);
   const [currentSection, setCurrentSection] =
     useState<SidebarSection>("general");
+  // Leaving a section whose editor holds unsaved edits asks first (feature 002).
+  const sectionNavigation = useGuardedNavigation(setCurrentSection);
   const { settings, updateSetting } = useSettings();
+  useOverlayNoneNotices(settings?.overlay_style);
   const direction = getLanguageDirection(i18n.language);
   const refreshAudioDevices = useSettingsStore(
     (state) => state.refreshAudioDevices,
@@ -141,41 +149,30 @@ function App() {
 
   // Listen for recording errors from the backend and show a toast
   useEffect(() => {
-    const unlisten = listen<RecordingErrorEvent>("recording-error", (event) => {
-      const { error_type, detail } = event.payload;
-
-      if (error_type === "microphone_permission_denied") {
-        const currentPlatform = platform();
-        const platformKey = `errors.micPermissionDenied.${currentPlatform}`;
-        const description = t(platformKey, {
-          defaultValue: t("errors.micPermissionDenied.generic"),
-        });
-        toast.error(t("errors.micPermissionDeniedTitle"), { description });
-      } else if (error_type === "no_input_device") {
-        toast.error(t("errors.noInputDeviceTitle"), {
-          description: t("errors.noInputDevice"),
-        });
-      } else {
-        toast.error(
-          t("errors.recordingFailed", { error: detail ?? "Unknown error" }),
-        );
-      }
-    });
+    const unlisten = listen<RecordingErrorEvent>("recording-error", (event) =>
+      showRecordingErrorToast(event.payload, t),
+    );
     return () => {
       unlisten.then((fn) => fn());
     };
   }, [t]);
 
-  // Listen for paste failures and show a toast.
-  // The technical error detail is logged to handy.log on the Rust side
-  // (see actions.rs `error!("Failed to paste transcription: ...")`),
-  // so we show a localized, user-friendly message here instead of the raw error.
+  // Listen for paste failures and show a localized toast; the technical detail is logged on
+  // the Rust side (`destination::delivery`, smart paste in `smart_paste::app`). A destination
+  // failure (006) says whether the transcript is in history; it never carries the transcript
+  // itself.
   useEffect(() => {
-    const unlisten = listen("paste-error", () => {
-      toast.error(t("errors.pasteFailedTitle"), {
-        description: t("errors.pasteFailed"),
-      });
-    });
+    const unlisten = listen<{ history_saved: boolean } | null>(
+      "paste-error",
+      (event) => {
+        const notSaved = event.payload?.history_saved === false;
+        toast.error(t("errors.pasteFailedTitle"), {
+          description: t(
+            notSaved ? "errors.pasteFailedNotSaved" : "errors.pasteFailed",
+          ),
+        });
+      },
+    );
     return () => {
       unlisten.then((fn) => fn());
     };
@@ -351,33 +348,30 @@ function App() {
     content = <Onboarding onModelSelected={handleModelSelected} />;
   } else {
     content = (
-      <div
-        dir={direction}
-        className="h-screen flex flex-col select-none cursor-default"
+      <SettingsWindowLayout
+        direction={direction}
+        banner={
+          <ErrorBoundary context="What's New">
+            <WhatsNewGate />
+          </ErrorBoundary>
+        }
+        sidebar={
+          <>
+            <Sidebar
+              activeSection={currentSection}
+              onSectionChange={sectionNavigation.request}
+            />
+            {sectionNavigation.dialog}
+          </>
+        }
+        footer={<Footer />}
+        scrollRef={settingsScrollRef}
       >
-        <ErrorBoundary context="What's New">
-          <WhatsNewGate />
-        </ErrorBoundary>
-        {/* Main content area that takes remaining space */}
-        <div className="flex-1 flex overflow-hidden">
-          <Sidebar
-            activeSection={currentSection}
-            onSectionChange={setCurrentSection}
-          />
-          {/* Scrollable content area */}
-          <div className="flex-1 flex flex-col overflow-hidden">
-            <div ref={settingsScrollRef} className="flex-1 overflow-y-auto">
-              <div className="flex flex-col items-center p-4 gap-4">
-                <AccessibilityPermissions />
-                <SecureInputWarning />
-                {renderSettingsContent(currentSection, setOnboardingPreview)}
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* Fixed footer at bottom */}
-        <Footer />
-      </div>
+        <SettingsConflictAlert />
+        <AccessibilityPermissions />
+        <SecureInputWarning />
+        {renderSettingsContent(currentSection, setOnboardingPreview)}
+      </SettingsWindowLayout>
     );
   }
 

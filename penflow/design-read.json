@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-09T19:35:00Z",
+  "source": "design-read-protocol.md",
+  "surfaces": [
+    "web"
+  ],
+  "status": "skipped",
+  "reason": "Audio settings is not a landing or showcase surface.",
+  "signals": {
+    "page_kind": "",
+    "audience": "",
+    "vibe_words": [],
+    "references": [],
+    "existing_assets": [],
+    "quiet_constraints": []
+  }
+}

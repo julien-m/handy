@@ -1,0 +1,27 @@
+
+
+Running 15 tests using 6 workers
+
+
+
+
+
+
+
+
+[1/15] [chromium] › tests/microphone-priority.spec.ts:127:3 › focus after each action (SC-003) › Remove moves focus to the next row, else the previous one, else Add
+[2/15] [chromium] › tests/microphone-priority.spec.ts:112:3 › focus after each action (SC-003) › a successful Retry marks the editor saved and moves focus to the title
+[3/15] [chromium] › tests/microphone-priority.spec.ts:174:3 › focus after each action (SC-003) › Reload moves focus to the section title
+[4/15] [chromium] › tests/microphone-priority.spec.ts:148:3 › focus after each action (SC-003) › a keyboard move keeps focus on the moved row's control
+[5/15] [chromium] › tests/microphone-priority.spec.ts:104:3 › focus after each action (SC-003) › Save keeps focus while busy and when it turns into Retry
+[6/15] [chromium] › tests/microphone-priority.spec.ts:164:3 › focus after each action (SC-003) › Discard moves focus to the section title
+[7/15] [chromium] › tests/microphone-priority.spec.ts:190:3 › focus after each action (SC-003) › Reload is inactive while a Save is in flight
+[8/15] [chromium] › tests/microphone-priority.spec.ts:220:3 › loading guard and failed listing › Add and Save are inactive until the settings are loaded
+[9/15] [chromium] › tests/microphone-priority.spec.ts:234:3 › loading guard and failed listing › a draft-only name shows Unknown when the device listing fails (FR-002)
+[10/15] [chromium] › tests/microphone-priority.spec.ts:262:1 › status polling: on open, every 5 s while visible, paused while hidden, cleared on unmount (AC-002)
+[11/15] [chromium] › tests/microphone-priority.spec.ts:353:5 › interrupted pointer drag › window blur cancels the drag without reordering
+[12/15] [chromium] › tests/microphone-priority.spec.ts:353:5 › interrupted pointer drag › page hidden cancels the drag without reordering
+[13/15] [chromium] › tests/microphone-priority.spec.ts:353:5 › interrupted pointer drag › lost pointer capture cancels the drag without reordering
+[14/15] [chromium] › tests/microphone-priority.spec.ts:353:5 › interrupted pointer drag › pointer cancel cancels the drag without reordering
+[15/15] [chromium] › tests/microphone-priority.spec.ts:361:3 › interrupted pointer drag › an uninterrupted drag still drops
+  15 passed (3.4s)

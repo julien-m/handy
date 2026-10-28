@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Accesso all'Accessibilità",
-        "description": "Necessario per digitare il testo trascritto nelle tue applicazioni."
+        "description": "Necessario per digitare il testo trascritto nelle tue applicazioni.",
+        "openSettings": "Apri Impostazioni di Sistema",
+        "retry": "Riprova",
+        "alreadyCheckedHint": "Se Handy è già selezionato, rimuovilo e aggiungilo di nuovo."
       },
       "grant": "Concedi Permesso",
       "granted": "Concesso",
@@ -202,9 +205,40 @@
           }
         },
         "errors": {
-          "restore": "Errore nel ripristino della scorciatoia originale",
-          "set": "Errore nella configurazione della scorciatoia: {{error}}",
-          "reset": "Errore nella reinizializzazione della scorciatoia al valore originale"
+          "set": "Errore nella configurazione della scorciatoia: {{error}}"
+        },
+        "list": {
+          "add": "Aggiungi scorciatoia",
+          "addLimit": "Fino a {{limit}} scorciatoie per azione",
+          "change": "Fai clic per registrare una nuova combinazione",
+          "remove": "Rimuovi questa scorciatoia",
+          "removeLast": "Ogni azione mantiene almeno una scorciatoia",
+          "reset": "Ripristina la scorciatoia predefinita",
+          "errors": {
+            "conflict": "Già usata da {{action}} ({{shortcut}})",
+            "overlap": "Attiverebbe anche {{action}} ({{shortcut}})",
+            "invalid": "Scorciatoia non valida: {{error}}",
+            "registration": "Il sistema ha rifiutato questa scorciatoia: {{error}}",
+            "generic": "Impossibile salvare la scorciatoia",
+            "conflictsUnavailable": "Impossibile verificare i conflitti tra scorciatoie"
+          },
+          "changeButton": "Modifica",
+          "discard": "Scarta questa scorciatoia",
+          "discardDraft": "Scarta",
+          "save": "Salva",
+          "unsaved": "Non salvato",
+          "lastHint": "Ogni azione mantiene almeno una scorciatoia. Modificala o reimpostala.",
+          "limitHint": "{{count}} scorciatoie su {{limit}}. Rimuovine una per aggiungerne un'altra.",
+          "draftConflict": "{{shortcut}} è già usata da {{action}}. Non è stato salvato nulla.",
+          "draftOverlap": "{{shortcut}} attiverebbe anche {{action}}. Non è stato salvato nulla.",
+          "legacyOverlap": "{{shortcut}} si sovrappone a {{action}}",
+          "legacyDuplicate": "{{shortcut}} è usata anche da {{action}}",
+          "legacyBody": "Continua a funzionare come prima dell'aggiornamento. Modificala per rimuovere questo avviso.",
+          "systemRefused": "{{system}} ha rifiutato {{shortcut}}",
+          "systemRefusedGeneric": "Il sistema ha rifiutato questa scorciatoia",
+          "systemRefusedBody": "Un'altra app potrebbe aver registrato questa combinazione. Scegline un'altra o riprova.",
+          "systemReason": "Messaggio di sistema: {{error}}",
+          "retry": "Riprova"
         }
       },
       "language": {
@@ -232,10 +266,66 @@
     "sound": {
       "title": "Suono",
       "microphone": {
-        "title": "Microfono",
-        "description": "Scegli il microfono preferito",
-        "placeholder": "Scegli microfono...",
-        "loading": "Caricamento..."
+        "placeholder": "Scegli microfono..."
+      },
+      "microphonePriority": {
+        "title": "Priorità dei microfoni",
+        "description": "Handy registra con il primo microfono disponibile in quest'ordine, poi con quello predefinito di sistema. I microfoni non disponibili mantengono la loro posizione.",
+        "emptyTitle": "Nessun microfono preferito",
+        "emptyBody": "Handy usa il microfono predefinito di sistema finché non ne aggiungi uno.",
+        "status": {
+          "available": "Disponibile",
+          "unavailable": "Non disponibile",
+          "ambiguous": "Ambiguo",
+          "unknown": "Sconosciuto"
+        },
+        "moveUp": "Sposta su {{name}}",
+        "moveDown": "Sposta giù {{name}}",
+        "remove": "Rimuovi {{name}}",
+        "addLabel": "Aggiungi microfono",
+        "addPlaceholder": "Aggiungi microfono…",
+        "noDevices": "Nessun microfono rilevato da aggiungere",
+        "duplicateChoice": "{{name}} è già nell'elenco.",
+        "refresh": "Aggiorna disponibilità",
+        "checked": "Verificato {{seconds}} s fa",
+        "refreshFailed": "Impossibile verificare i dispositivi",
+        "retry": "Riprova",
+        "inUse": {
+          "title": "In uso ora",
+          "description": "Il microfono con cui Handy sta registrando o quello usato nell'ultima registrazione. Può essere diverso dalla tua prima scelta.",
+          "notUsedYet": "Non ancora usato dall'avvio",
+          "systemDefault": "Microfono predefinito di sistema",
+          "unnamed": "Microfono senza nome",
+          "lastRecording": "Ultima registrazione · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "Prima scelta",
+          "fallback": "Riserva",
+          "fallbackUnavailable": "Riserva · {{name}} non disponibile",
+          "fallbackAmbiguous": "Riserva · {{name}} ambiguo",
+          "clamshell": "Microfono con coperchio chiuso",
+          "system_default": "Predefinito di sistema"
+        },
+        "clamshell": {
+          "title": "Microfono con coperchio chiuso",
+          "description": "Provato per primo quando il coperchio è chiuso. L'ordine di priorità resta invariato.",
+          "none": "Nessuno"
+        },
+        "draft": {
+          "discard": "Scarta",
+          "save": "Salva",
+          "saving": "Salvataggio…",
+          "saved": "Priorità dei microfoni salvata"
+        },
+        "conflict": {
+          "title": "Impostazioni modificate altrove",
+          "body": "L'ordine è stato modificato altrove. Ricarica per vederlo; le tue modifiche verranno scartate.",
+          "reload": "Ricarica"
+        },
+        "errors": {
+          "duplicate": "Ogni microfono può comparire una sola volta.",
+          "empty": "Il nome del microfono non può essere vuoto."
+        }
       },
       "channel": {
         "title": "Canale di ingresso",
@@ -323,13 +413,18 @@
         "description": "Scegli come viene inserito il testo. Diretto: simula l'input da tastiera. Nessuno: non incolla, aggiorna solo la cronologia/appunti.",
         "options": {
           "clipboard": "Appunti ({{modifier}}+V)",
+          "smartPaste": "Incolla intelligente",
           "clipboardCtrlShiftV": "Appunti (Ctrl+Shift+V)",
           "clipboardShiftInsert": "Appunti (Shift+Insert)",
           "direct": "Diretto",
           "none": "Nessuno",
-          "externalScript": "Script esterno"
+          "externalScript": "Script esterno",
+          "clipboardMac": "Appunti (⌘V)",
+          "smartPasteDescription": "Predefinito su macOS",
+          "noneDescription": "Solo cronologia e appunti"
         },
-        "externalScriptPlaceholder": "/percorso/del/tuo/script.sh"
+        "externalScriptPlaceholder": "/percorso/del/tuo/script.sh",
+        "descriptionSmart": "Incolla intelligente scrive direttamente nel campo, altrimenti incolla e ripristina gli appunti."
       },
       "typingTool": {
         "title": "Strumento di digitazione",
@@ -357,6 +452,20 @@
           "ctrlEnter": "Ctrl+Invio"
         }
       },
+      "automaticEnter": {
+        "title": "Invio automatico del tasto Invio",
+        "description": "Inviato una volta, solo dopo un inserimento riuscito.",
+        "keyLabel": "Tasto da premere",
+        "announced": "Invio automatico: {{value}}",
+        "note": "Sostituisce l'invio automatico. Nessun Invio dopo un inserimento non riuscito o non confermato, con il metodo di incolla Nessuno o se l'app ha perso il focus.",
+        "options": {
+          "never": "Mai",
+          "always": "Sempre",
+          "alwaysDescription": "Ogni inserimento riuscito",
+          "pinOnly": "Solo in modalità PIN",
+          "pinOnlyDescription": "Solo app fissate"
+        }
+      },
       "translateToEnglish": {
         "label": "Traduci in inglese",
         "description": "Traduci automaticamente in inglese la voce in altre lingue durante la trascrizione."
@@ -374,14 +483,6 @@
           "hour1": "Dopo 1 ora",
           "sec15": "Dopo 15 secondi (Debug)"
         }
-      },
-      "customWords": {
-        "title": "Parole personalizzate",
-        "description": "Aiuta i modelli supportati a riconoscere nomi e termini specialistici. La correzione approssimativa è attualmente limitata alle parole che usano le lettere A–Z e i numeri.",
-        "placeholder": "Aggiungi una parola",
-        "add": "Aggiungi",
-        "remove": "Rimuovi {{word}}",
-        "duplicate": "\"{{word}}\" esiste già"
       },
       "voiceActivityDetection": {
         "title": "Rilevamento dell'attività vocale",
@@ -407,6 +508,148 @@
           "simplified": "Semplificato",
           "traditional": "Tradizionale"
         }
+      },
+      "returnToApp": {
+        "title": "Torna all'app della dettatura",
+        "description": "Inserisce nell'app in cui è iniziata la dettatura, anche se nel frattempo cambi app.",
+        "unavailableUnreadable": "Non disponibile su questo sistema: Handy non riesce a leggere l'app in primo piano. Il testo va all'app in primo piano alla fine.",
+        "unavailablePlatform": "Non disponibile su questo sistema. Il testo va all'app in primo piano alla fine.",
+        "details": "Handy ricorda l'app in primo piano all'inizio della dettatura e torna a quella prima di inserire il testo. Se disattivato, il testo va all'app in primo piano al termine della dettatura.",
+        "detailsLabel": "Informazioni sul ritorno all'app della dettatura"
+      },
+      "noFieldBubble": {
+        "title": "Mostra la bolla quando nessun campo di testo è attivo",
+        "description": "Tiene il testo in una bolla invece di incollarlo nel vuoto."
+      }
+    },
+    "vocabulary": {
+      "group": "Vocabolario",
+      "title": "Vocabolario",
+      "description": "Nomi e termini che il modello deve riconoscere, se lo supporta. Le sostituzioni, invece, riscrivono il testo dopo il riconoscimento.",
+      "placeholder": "Aggiungi un termine",
+      "inputLabel": "Nuovo termine del vocabolario",
+      "add": "Aggiungi",
+      "addHint": "Scrivi un termine per aggiungerlo.",
+      "busy": "Attendi il completamento della modifica in corso.",
+      "paste": "Incolla un elenco…",
+      "count": "{{total}} su {{max}} termini",
+      "listLabel": "Termini del vocabolario",
+      "remove": "Rimuovi {{term}}",
+      "retry": "Riprova",
+      "loading": "Caricamento del vocabolario…",
+      "listFailed": "Impossibile leggere il vocabolario salvato. Non è stato modificato nulla; riprova per caricarlo.",
+      "empty": {
+        "title": "Ancora nessun termine",
+        "body": "Aggiungi nomi come Claude Code o OpenClaw, uno alla volta o incollando un elenco."
+      },
+      "flag": {
+        "empty": "Termine vuoto, non inviato. Rimuovilo.",
+        "too_long": "Più lungo di 100 caratteri, non inviato. Rimuovilo e aggiungi una versione più breve.",
+        "line_break": "Contiene un a capo, non inviato. Rimuovilo e aggiungilo di nuovo.",
+        "forbidden_character": "Contiene < > o \", non inviato. Rimuovilo e aggiungilo senza questi caratteri.",
+        "duplicate": "Uguale a un termine precedente, non inviato. Rimuovilo.",
+        "over_capacity": "Oltre il limite di 5000 termini, non inviato finché l'elenco non sarà più corto.",
+        "over_budget": "Non inviato: oltre il limite del modello."
+      },
+      "errors": {
+        "term_empty": "Inserisci un termine.",
+        "term_too_long": "Un termine può avere al massimo 100 caratteri.",
+        "term_line_break": "Un termine deve stare su una sola riga.",
+        "term_forbidden_character": "Rimuovi i caratteri < > o \" dal termine.",
+        "term_duplicate": "Ogni termine può comparire una sola volta, e questo è già nel vocabolario.",
+        "limit": "Il vocabolario contiene al massimo 5000 termini. Rimuovi un termine per aggiungerne un altro.",
+        "conflict": "Il vocabolario è cambiato nel frattempo ed è stato ricaricato. Riprova.",
+        "notFound": "Questo termine era già stato rimosso. Il vocabolario è stato ricaricato.",
+        "unknown": "Handy non ha potuto confermare la modifica. Il vocabolario è stato ricaricato; controllalo prima di riprovare.",
+        "committed": "Il vocabolario è stato salvato, ma Handy non è riuscito ad applicarlo subito. L'elenco è stato ricaricato.",
+        "saved": "Il vocabolario salvato non è cambiato."
+      },
+      "status": {
+        "loading": "Verifica del supporto del modello…",
+        "selectedModel": "il modello selezionato",
+        "used": {
+          "title": "Usato da {{model}} durante il riconoscimento",
+          "sent": "Termini inviati: {{sent}} su {{total}}.",
+          "sentOne": "Termini inviati: {{sent}} su 1."
+        },
+        "notSent": {
+          "over_budget": "Non inviati, oltre il limite del modello: {{terms}}.",
+          "invalid": "Non inviati, non validi: {{terms}}.",
+          "duplicate": "Non inviati, duplicati: {{terms}}.",
+          "over_capacity": "Non inviati, oltre i 5000 termini: {{terms}}.",
+          "more": "e altri {{hidden}}"
+        },
+        "noTermSent": {
+          "title": "Nessun termine inviato a {{model}}",
+          "empty_vocabulary": "Il vocabolario è vuoto. Aggiungi termini per usarli durante il riconoscimento.",
+          "invalid_terms_only": "Tutti i termini salvati sono non validi o duplicati. Rimuovi i termini segnalati e aggiungi quelli corretti.",
+          "over_budget": "Il primo termine supera il limite del modello, quindi non viene inviato alcun termine. Rimuovilo per inviare i termini successivi."
+        },
+        "notSupported": {
+          "title": "{{model}} non può usare il vocabolario durante il riconoscimento",
+          "body": "Si applica invece la correzione approssimativa dopo il riconoscimento. Scegli un modello Whisper per inviare i termini al riconoscitore."
+        },
+        "streaming": {
+          "title": "Non usato nello streaming in diretta",
+          "body": "{{model}} trascrive in diretta, senza inviare alcun contesto di riconoscimento. La correzione approssimativa si applica invece al testo finale."
+        },
+        "unknown": {
+          "title": "Supporto sconosciuto finché il modello non viene caricato",
+          "model_not_loaded": "Handy verifica cosa supporta {{model}} quando lo carica.",
+          "capability_query_unanswered": "{{model}} non ha risposto in tempo, ad esempio durante una dettatura. Handy verificherà di nuovo in seguito."
+        },
+        "budgetUnverified": {
+          "title": "Impossibile confermare il supporto del vocabolario per {{model}}",
+          "body": "Questo modello dichiara un contesto di riconoscimento, ma questa build non ha un limite documentato per esso. Nessun termine viene inviato; si applica invece la correzione approssimativa."
+        },
+        "failed": {
+          "title": "Impossibile leggere lo stato del vocabolario",
+          "body": "Il tuo vocabolario è salvato. Riprova per verificare cosa supporta il modello."
+        }
+      },
+      "pasteBox": {
+        "title": "Incolla termini",
+        "description": "Un termine per riga. I duplicati vengono saltati; le righe non valide vanno corrette prima di aggiungerle.",
+        "label": "Termini da incollare, uno per riga",
+        "previewTitle": "Anteprima",
+        "previewEmpty": "Incolla o scrivi un termine per riga per vedere cosa verrà aggiunto.",
+        "sameAs": "{{term}} — uguale a {{original}}",
+        "alreadyListed": "{{term}} — già nell'elenco",
+        "summary": {
+          "add": "Da aggiungere: {{n}}",
+          "duplicateOne": "1 duplicato",
+          "duplicateMany": "{{n}} duplicati",
+          "errorOne": "1 errore",
+          "errorMany": "{{n}} errori"
+        },
+        "kind": {
+          "add": "Aggiungi",
+          "duplicate": "Duplicato",
+          "error": "Errore"
+        },
+        "line": {
+          "empty": "Riga {{line}}: riga vuota, rimuovila",
+          "too_long": "Riga {{line}}: usa al massimo 100 caratteri",
+          "line_break": "Riga {{line}}: tieni il termine su una sola riga",
+          "forbidden_character": "Riga {{line}}: rimuovi i caratteri < > o \"",
+          "duplicate": "Riga {{line}}: uguale a un termine precedente",
+          "over_capacity": "Riga {{line}}: oltre il limite di 5000 termini"
+        },
+        "note": {
+          "empty": "Il tuo vocabolario non cambia finché non aggiungi i termini.",
+          "checking": "Verifica delle righe…",
+          "fixOne": "Correggi la riga {{lines}} per aggiungere i termini. Il tuo vocabolario non è cambiato.",
+          "fixMany": "Correggi le righe {{lines}} per aggiungere i termini. Il tuo vocabolario non è cambiato.",
+          "overCapacity": "Il vocabolario contiene al massimo 5000 termini. Accorcia l'elenco per aggiungerlo. Il tuo vocabolario non è cambiato.",
+          "nothingToAdd": "Tutte le righe sono già nel vocabolario.",
+          "ready": "I duplicati vengono saltati. Nulla viene salvato finché non aggiungi i termini."
+        },
+        "cancel": "Annulla",
+        "applyOne": "Aggiungi 1 termine",
+        "applyMany": "Aggiungi {{n}} termini",
+        "applyZero": "Aggiungi termini",
+        "applying": "Aggiunta in corso…",
+        "applied": "Termini aggiunti al vocabolario."
       }
     },
     "postProcessing": {
@@ -441,26 +684,128 @@
           "refreshModels": "Aggiorna modelli"
         }
       },
-      "prompts": {
-        "title": "Prompt",
-        "selectedPrompt": {
-          "title": "Prompt Selezionato",
-          "description": "Seleziona un template per migliorare le trascrizioni o creane uno nuovo. Usa ${output} nel prompt per fare riferimento alla trascrizione."
+      "promptLibrary": {
+        "processing": {
+          "title": "Post-elaborazione IA",
+          "enabledDescription": "Elabora le dettature con un prompt. Disattivata: nessuna dettatura viene elaborata.",
+          "defaultTitle": "Prompt predefinito",
+          "defaultDescription": "Usato dalla scorciatoia di dettatura IA. La dettatura semplice parte con Nessuno.",
+          "none": "Nessuno",
+          "invalidOption": "Non valido: modificalo prima di usarlo"
         },
-        "noPrompts": "Nessun prompt disponibile",
-        "selectPrompt": "Scegli un prompt",
-        "createNew": "Crea un nuovo prompt",
-        "promptLabel": "Etichetta del Prompt",
-        "promptLabelPlaceholder": "Inserisci il nome del prompt",
-        "promptInstructions": "Istruzioni del Prompt",
-        "promptInstructionsPlaceholder": "Scrivi le istruzioni da eseguire dopo la trascrizione. Esempio: Migliora la grammatica e la chiarezza per il seguente testo: ${output}",
-        "promptTip": "Suggerimento: Usa <code>${output}</code> per inserire il testo trascritto nel tuo prompt.",
-        "updatePrompt": "Aggiorna Prompt",
-        "deletePrompt": "Elimina Prompt",
-        "createPrompt": "Crea Prompt",
-        "cancel": "Annulla",
-        "selectToEdit": "Scegli un prompt qui sopra per visualizzare o modificare i dettagli.",
-        "createFirst": "Clicca 'Crea un nuovo prompt' qui sopra per creare il tuo primo prompt di post-elaborazione."
+        "list": {
+          "title": "Prompt",
+          "count": "{{count}} prompt su {{limit}}",
+          "full": "{{limit}} prompt su {{limit}}: eliminane uno per aggiungerne un altro",
+          "new": "Nuovo prompt",
+          "empty": "Ancora nessun prompt. Creane uno per elaborare le tue dettature.",
+          "loading": "Caricamento dei prompt…",
+          "loadFailed": "Impossibile caricare i prompt.",
+          "retry": "Riprova",
+          "edit": "Modifica {{name}}",
+          "defaultProvider": "Provider predefinito",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Nessuna scorciatoia",
+          "notReady": "Non pronto: {{reason}}",
+          "invalid": "Non valido: {{reason}}",
+          "reloadFailed": "Non è stato possibile aggiornare i prompt. Ciò che vedi potrebbe non essere aggiornato."
+        },
+        "issues": {
+          "name_empty": "nome mancante",
+          "name_too_long": "nome troppo lungo",
+          "name_duplicate": "nome duplicato",
+          "text_empty": "testo mancante",
+          "text_too_long": "testo troppo lungo",
+          "override_incomplete": "provider o modello mancante",
+          "unknown_provider": "provider sconosciuto"
+        },
+        "reasons": {
+          "provider_error": "il provider ha restituito un errore",
+          "empty_result": "il provider ha restituito un risultato vuoto",
+          "timeout": "nessuna risposta entro 30 secondi",
+          "provider_busy": "il provider è ancora occupato con un'altra richiesta",
+          "missing_endpoint": "endpoint mancante",
+          "missing_model": "modello mancante",
+          "missing_api_key": "chiave API mancante",
+          "provider_unavailable": "provider non disponibile su questo dispositivo",
+          "unknown_provider": "provider sconosciuto",
+          "invalid_prompt": "il prompt non è valido",
+          "prompt_missing": "il prompt non esiste più"
+        },
+        "editor": {
+          "editTitle": "Modifica prompt",
+          "newTitle": "Nuovo prompt",
+          "name": "Nome",
+          "namePlaceholder": "Nome del prompt",
+          "text": "Prompt",
+          "textPlaceholder": "Scrivi le istruzioni da applicare alla trascrizione. Esempio: Riduci la trascrizione all'essenziale. ${output}",
+          "textHint": "<code>${output}</code> viene sostituito dalla trascrizione.",
+          "fieldErrors": {
+            "name_empty": "Inserisci un nome (da 1 a 60 caratteri).",
+            "name_too_long": "Usa al massimo 60 caratteri.",
+            "name_duplicate": "Un altro prompt ha questo nome. I nomi devono essere unici.",
+            "text_empty": "Inserisci il testo del prompt.",
+            "text_too_long": "Usa al massimo 8.000 caratteri."
+          },
+          "provider": "Provider",
+          "defaultProviderOption": "Provider predefinito ({{provider}})",
+          "model": "Modello",
+          "modelPlaceholder": "Digita il nome di un modello",
+          "readyEndpoint": "Endpoint {{endpoint}} · Pronto",
+          "readyProvider": "{{provider}} · {{model}} · Pronto",
+          "notReadyTitle": "{{provider}} non è pronto: {{reason}}",
+          "notReadyBody": "Le dettature con questo prompt saltano il passaggio IA e mantengono il testo originale.",
+          "fix": {
+            "api_key": "Aggiungi chiave API",
+            "endpoint": "Imposta l'endpoint"
+          },
+          "shortcuts": "Scorciatoie (fino a {{limit}})",
+          "changedElsewhere": "Questo prompt è stato modificato altrove. Ricaricalo per vedere la modifica o salva per mantenere la tua versione.",
+          "reload": "Ricarica",
+          "deletedElsewhere": "Questo prompt è stato eliminato altrove e non può più essere salvato.",
+          "shortcutsSavedImmediately": "Le modifiche alle scorciatoie vengono salvate subito.",
+          "fixField": {
+            "api_key": "Chiave API di {{provider}}",
+            "endpoint": "Endpoint di {{provider}}",
+            "hint": "Salvato quando lasci il campo. Il provider predefinito non cambia."
+          }
+        },
+        "actions": {
+          "note": "Le modifiche si applicano alla dettatura successiva dopo il salvataggio.",
+          "fixFields": "Correggi i campi evidenziati per salvare.",
+          "delete": "Elimina prompt",
+          "cancel": "Annulla",
+          "save": "Salva",
+          "saving": "Salvataggio…",
+          "saved": "Prompt salvato."
+        },
+        "deleteDialog": {
+          "title": "Eliminare «{{name}}»?",
+          "shortcuts": "Le sue scorciatoie verranno rimosse: {{shortcuts}}.",
+          "default": "È il prompt predefinito: il predefinito diventa Nessuno.",
+          "body": "L'operazione non può essere annullata.",
+          "cancel": "Annulla",
+          "confirm": "Elimina",
+          "close": "Chiudi",
+          "deleted": "Prompt «{{name}}» eliminato.",
+          "deletedWithShortcuts": "Prompt «{{name}}» eliminato. Scorciatoie rimosse: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Test",
+          "sampleLabel": "Testo di esempio",
+          "samplePlaceholder": "Digita o incolla una trascrizione di esempio",
+          "run": "Esegui test",
+          "running": "Test in corso…",
+          "note": "Non viene inserito nulla e la cronologia non cambia.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} s",
+          "failedTitle": "Test non riuscito: {{reason}}",
+          "failedHint": "Controlla le impostazioni del provider, poi esegui di nuovo il test.",
+          "retry": "Esegui di nuovo",
+          "busy": "Un altro test è ancora in corso. Riprova quando sarà terminato.",
+          "skipped": "Inserisci un testo di esempio per provare il prompt.",
+          "outdated": "Questo risultato riguarda una versione precedente del prompt o dell’esempio. Esegui di nuovo il test."
+        },
+        "shortcutOwner": "il prompt «{{name}}»"
       }
     },
     "history": {
@@ -476,6 +821,7 @@
       "deleteError": "Errore nell'eliminazione dell'elemento. Riprova.",
       "retranscribe": "Ri-trascrivere",
       "retranscribeError": "Impossibile ri-trascrivere. Riprova.",
+      "noAudio": "Per questa voce non è stata salvata alcuna registrazione audio, quindi non può essere ritrascritta.",
       "transcribing": "Trascrizione in corso...",
       "transcriptionFailed": "Trascrizione fallita. Puoi ri-trascrivere usando l'icona di ripetizione."
     },
@@ -516,7 +862,8 @@
       "historyLimit": {
         "title": "Limite della Cronologia",
         "description": "Massimo numero di elementi da conservare nella cronologia",
-        "entries": "elementi"
+        "entries": "elementi",
+        "invalid": "Inserisci un numero intero da {{min}} a {{max}}."
       },
       "recordingRetention": {
         "title": "Eliminazione Automatica Registrazioni",
@@ -538,7 +885,8 @@
       },
       "postProcessingToggle": {
         "label": "Post-Elaborazione",
-        "description": "Abilita il miglioramento della trascrizione con IA"
+        "description": "Abilita il miglioramento della trascrizione con IA",
+        "shortcutRefused": "La post-elaborazione è attiva, ma il sistema ha rifiutato la scorciatoia {{shortcut}}. Modificala nelle impostazioni della post-elaborazione."
       },
       "muteWhileRecording": {
         "label": "Silenzia durante la registrazione",
@@ -551,7 +899,8 @@
       "keyboardImplementation": {
         "title": "Implementazione tastiera",
         "description": "Scegli il backend per le scorciatoie da tastiera.",
-        "bindingsReset": "Le scorciatoie da tastiera erano incompatibili e sono state ripristinate ai valori predefiniti"
+        "bindingsReset": "Alcune scorciatoie da tastiera erano incompatibili e sono state ripristinate al valore predefinito o rimosse",
+        "conflictsKept": "Alcune scorciatoie ora sono in conflitto con un'altra azione. Sono state mantenute e sono segnalate nelle impostazioni delle scorciatoie."
       },
       "paths": {
         "appData": "Dati App:",
@@ -645,6 +994,168 @@
         "label": "Mostra novità",
         "description": "Mostra le note di rilascio dopo gli aggiornamenti di Handy"
       }
+    },
+    "replacements": {
+      "group": "Sostituzioni",
+      "title": "Regole di sostituzione",
+      "description": "Riscrivi il testo riconosciuto con la tua grafia. Applicate dopo il riconoscimento, a differenza del Vocabolario.",
+      "loading": "Caricamento delle regole di sostituzione…",
+      "loadFailed": "Impossibile caricare le regole di sostituzione.",
+      "retry": "Riprova",
+      "views": {
+        "label": "Vista delle regole",
+        "list": "Elenco",
+        "text": "Testo"
+      },
+      "import": "Importa…",
+      "export": {
+        "button": "Esporta…",
+        "done": "Regole esportate in {{name}}.",
+        "notSynced": "Regole esportate in {{name}}, ma il disco non ha ancora confermato la scrittura.",
+        "symbolicLink": "{{name}} è un collegamento: scegli un altro file. Non è stato esportato nulla.",
+        "readOnly": "{{name}} è di sola lettura: scegli un altro file. Non è stato esportato nulla.",
+        "notWritten": "Impossibile scrivere {{name}}. Il file non è stato modificato."
+      },
+      "add": {
+        "recognized": "Testo riconosciuto",
+        "replacement": "Sostituzione",
+        "button": "Aggiungi regola",
+        "needsText": "Inserisci il testo riconosciuto e la sostituzione per aggiungere una regola."
+      },
+      "rule": {
+        "edit": "Modifica la regola {{recognized}}",
+        "done": "Termina la modifica della regola {{recognized}}",
+        "delete": "Elimina la regola {{recognized}}",
+        "recognized": "Testo riconosciuto della regola {{position}}",
+        "replacement": "Sostituzione della regola {{position}}"
+      },
+      "count": "{{count}} di {{max}} regole · senza distinzione tra maiuscole e minuscole, parole intere",
+      "empty": {
+        "title": "Ancora nessuna regola di sostituzione",
+        "body": "Aggiungi una regola o incolla righe come",
+        "paste": "Incolla le regole come testo"
+      },
+      "draft": {
+        "note": "Modifiche non salvate. Le dettature usano le regole salvate finché non salvi.",
+        "discard": "Scarta",
+        "save": "Salva",
+        "saving": "Salvataggio…",
+        "saved": "Regole di sostituzione salvate."
+      },
+      "commit": {
+        "invalid": "Alcune regole non sono valide. Correggi le righe evidenziate, poi riprova.",
+        "unchanged": "Le regole salvate non sono cambiate.",
+        "conflict": "Le regole sono state modificate altrove, ad esempio dalla riga di comando. Ricaricale per continuare.",
+        "reload": "Ricarica",
+        "reloadDiscards": "Ricaricando vengono mostrate le regole salvate e le modifiche non salvate vengono scartate."
+      },
+      "bulk": {
+        "editor": "Regole come testo",
+        "hint": "Una regola per riga: recognized;replacement. Funziona anche una tabulazione, per incollare da un foglio di calcolo. Le righe che iniziano con # vengono ignorate.",
+        "cancel": "Annulla",
+        "apply": "Applica",
+        "applying": "Applicazione…",
+        "applied": "Regole di sostituzione applicate.",
+        "fixLine": "Correggi la riga {{line}} per applicare. Le regole salvate non sono cambiate.",
+        "fixLines": "Correggi le {{count}} righe con errori per applicare. Le regole salvate non sono cambiate.",
+        "ready": "Applica sostituisce le regole salvate con questa anteprima.",
+        "noChanges": "Niente da applicare: il testo corrisponde alle regole salvate."
+      },
+      "preview": {
+        "title": "Anteprima",
+        "updating": "Aggiornamento dell'anteprima…",
+        "errorOne": "1 errore · Applica non disponibile",
+        "errorMany": "{{count}} errori · Applica non disponibile",
+        "changes": "{{adds}} da aggiungere · {{updates}} da aggiornare · {{deletes}} da eliminare",
+        "noChanges": "Nessuna modifica",
+        "omitted": "Righe non elencate: {{count}}",
+        "duplicateOf": "Stesso testo riconosciuto della riga {{lines}}",
+        "kinds": {
+          "add": "Aggiunta",
+          "update": "Aggiornamento",
+          "delete": "Eliminazione",
+          "unchanged": "Invariata",
+          "ignored": "Ignorata",
+          "error": "Errore"
+        },
+        "ignored": {
+          "header": "Riga di intestazione",
+          "blank": "Riga vuota",
+          "comment": "Commento"
+        }
+      },
+      "importDialog": {
+        "title": "Importa regole",
+        "close": "Chiudi",
+        "fileOne": "{{name}} · 1 riga · UTF-8",
+        "fileMany": "{{name}} · {{count}} righe · UTF-8",
+        "mode": "Modalità",
+        "merge": "Unisci: aggiorna le regole corrispondenti e aggiunge quelle nuove in fondo",
+        "replace": "Sostituisci: il file diventa l'intero insieme di regole",
+        "previewing": "Lettura del file…",
+        "updateOne": "1 aggiornamento",
+        "updateMany": "{{count}} aggiornamenti",
+        "addOne": "1 aggiunta",
+        "addMany": "{{count}} aggiunte",
+        "deleteOne": "1 eliminazione",
+        "deleteMany": "{{count}} eliminazioni",
+        "errorOne": "1 errore",
+        "errorMany": "{{count}} errori",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (aggiornata, mantiene la posizione {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (aggiunta in fondo)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (rimossa)",
+        "noChanges": "Questo file corrisponde alle regole salvate: niente da importare.",
+        "firstError": "Riga {{line}}: {{reason}}",
+        "cancel": "Annulla",
+        "apply": "Applica importazione",
+        "applying": "Importazione…",
+        "imported": "Regole importate."
+      },
+      "importRefusal": {
+        "encodingTitle": "Impossibile importare {{name}}: non è testo UTF-8",
+        "encodingBody": "Non è stato importato nulla da quel file. Esporta in testo semplice o CSV, poi importa di nuovo.",
+        "tooLargeTitle": "Impossibile importare {{name}}: supera 1 MB",
+        "tooLargeBody": "Non è stato importato nulla. Dividi il file in file più piccoli, poi importali uno alla volta.",
+        "unreadableTitle": "Impossibile leggere {{name}}",
+        "unreadableBody": "Non è stato importato nulla. Verifica che il file esista ancora e che Handy possa aprirlo.",
+        "dismiss": "Ignora"
+      },
+      "deleteDialog": {
+        "title": "Eliminare questa regola?",
+        "body": "{{recognized}} → {{replacement}} verrà rimossa dall'elenco. Salva per applicare la modifica.",
+        "cancel": "Annulla",
+        "confirm": "Elimina"
+      },
+      "switchDialog": {
+        "title": "Salva o scarta le modifiche",
+        "body": "L'elenco e il testo modificano le stesse regole. Prima salva o scarta le modifiche non salvate.",
+        "cancel": "Annulla",
+        "discard": "Scarta",
+        "save": "Salva"
+      },
+      "issues": {
+        "recognizedEmpty": "Inserisci il testo riconosciuto.",
+        "recognizedTooLong": "Il testo riconosciuto è limitato a 100 caratteri.",
+        "recognizedForbidden": "Il testo riconosciuto non può contenere un'interruzione di riga, una tabulazione o ;.",
+        "recognizedControl": "Il testo riconosciuto contiene un carattere di controllo invisibile.",
+        "recognizedComment": "Il testo riconosciuto non può iniziare con #.",
+        "duplicate": "Ogni testo riconosciuto può comparire una sola volta; questo è già definito.",
+        "replacementEmpty": "Inserisci la sostituzione.",
+        "replacementTooLong": "La sostituzione è limitata a 500 caratteri.",
+        "replacementForbidden": "La sostituzione non può contenere un'interruzione di riga o una tabulazione.",
+        "replacementControl": "La sostituzione contiene un carattere di controllo invisibile.",
+        "missingSeparator": "Separatore mancante: aggiungi ; e poi la sostituzione",
+        "tooManyRules": "Un insieme di regole contiene al massimo 1.000 regole.",
+        "invalidSavedRules": "Le regole salvate non sono valide. Ricaricale prima di importare.",
+        "unicodeUnavailable": "Al momento non è possibile verificare le regole. Riavvia Handy, poi riprova.",
+        "invalidRule": "Questa regola non è valida."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Modifiche non salvate",
+      "description": "Alcune regole di sostituzione non sono salvate. Resta per salvarle, oppure scartale ed esci.",
+      "stay": "Resta",
+      "discard": "Scarta ed esci"
     }
   },
   "footer": {
@@ -673,7 +1184,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy ha bisogno dei permessi di accessibilità per digitare il testo trascritto.",
-    "openSettings": "Apri Impostazioni di Sistema"
+    "openSettings": "Apri Impostazioni di Sistema",
+    "offTitle": "Il permesso di accessibilità è disattivato",
+    "smartPasteOff": "Incolla intelligente non può inserire né incollare. Le tue trascrizioni vengono conservate per il recupero."
   },
   "errors": {
     "loadDirectory": "Errore di caricamento cartella: {{error}}",
@@ -686,12 +1199,41 @@
     },
     "noInputDeviceTitle": "Nessun microfono trovato",
     "noInputDevice": "Non è stato rilevato alcun dispositivo di ingresso audio. Collega un microfono o delle cuffie e riprova.",
+    "inputLostTitle": "Registrazione interrotta",
+    "inputLost": "Il microfono è stato scollegato. L'audio registrato fino a quel momento viene trascritto.",
     "recordingFailed": "Impossibile avviare la registrazione: {{error}}",
     "modelLoadFailed": "Impossibile caricare il modello: {{model}}",
     "modelLoadFailedUnknown": "modello sconosciuto",
     "pasteFailedTitle": "Impossibile incollare il testo",
     "pasteFailed": "Non è stato possibile incollare il testo nell'applicazione attiva.",
-    "transcriptionFailedTitle": "Trascrizione non riuscita"
+    "pasteFailedNotSaved": "Non è stato possibile incollare il testo né salvarlo nella cronologia.",
+    "transcriptionFailedTitle": "Trascrizione non riuscita",
+    "settings": {
+      "committedNotApplied": "L'impostazione è stata salvata, ma non è stato possibile applicarla subito.",
+      "gpuDeviceRequired": "Seleziona un dispositivo GPU prima di scegliere l'acceleratore GPU.",
+      "outOfRange": "Questo valore è fuori dall'intervallo consentito.",
+      "validationFailed": "Questo valore non è accettato per questa impostazione.",
+      "revisionConflict": "Le impostazioni sono state modificate altrove. Ricarica e riprova.",
+      "unavailable": "Questa impostazione non può essere modificata ora. Riprova più tardi.",
+      "shortcutSessionBusy": "È in corso una dettatura. Riprova al termine.",
+      "persistenceFailed": "Impossibile salvare le impostazioni: non è stato possibile scrivere il file delle impostazioni. Non è stato modificato nulla.",
+      "generic": "Impossibile modificare l'impostazione.",
+      "readOnly": "Le impostazioni sono di sola lettura in questa sessione: il file delle impostazioni non può essere scritto in modo sicuro, quindi le modifiche non verranno salvate.",
+      "unsupportedPlatform": "Questa impostazione non è disponibile su questo sistema.",
+      "promptNameEmpty": "Inserisci un nome per il prompt.",
+      "promptNameTooLong": "Il nome del prompt deve avere al massimo 60 caratteri.",
+      "promptNameDuplicate": "Un altro prompt ha già questo nome. I nomi devono essere univoci.",
+      "promptTextEmpty": "Inserisci il testo del prompt.",
+      "promptTextTooLong": "Il testo del prompt deve avere al massimo 8.000 caratteri.",
+      "promptOverrideIncomplete": "Scegli un provider e un modello, oppure usa il provider predefinito.",
+      "promptUnknownProvider": "Questo provider non è disponibile.",
+      "promptNotUsable": "Questo prompt non è valido. Modificalo prima di usarlo.",
+      "limitExceeded": "È stato raggiunto il numero massimo.",
+      "conflictTitle": "Impostazioni modificate altrove",
+      "conflictBody": "La riga di comando o un'altra finestra ha salvato una versione più recente. Ricarica per vederla; la modifica non salvata viene scartata.",
+      "reload": "Ricarica",
+      "reloadFailed": "Impossibile ricaricare le impostazioni. Riprova."
+    }
   },
   "appLanguage": {
     "title": "Lingua Applicazione",
@@ -709,7 +1251,48 @@
   "overlay": {
     "transcribing": "Trascrizione...",
     "processing": "Elaborazione...",
-    "loadingModel": "Caricamento del modello..."
+    "loadingModel": "Caricamento del modello...",
+    "fallbackNotice": "L'elaborazione con l'IA non è riuscita. È stato usato il testo originale.",
+    "destination": {
+      "label": "Destinazione: {{name}}",
+      "pinnedLabel": "Destinazione: {{name}}, fissata",
+      "frontmostApp": "App in primo piano",
+      "remove": "Rimuovi destinazione",
+      "unknownApp": "L'app di destinazione",
+      "choiceFailed": "Impossibile cambiare la destinazione.",
+      "menu": {
+        "title": "Destinazione di questa dettatura",
+        "frontmostNow": "In primo piano ora",
+        "otherApps": "Altre app",
+        "frontmostAtEnd": "App in primo piano alla fine",
+        "loading": "Caricamento delle app…",
+        "failed": "Impossibile caricare l'elenco delle app.",
+        "pin": "Fissa {{name}}",
+        "unpin": "Rimuovi {{name}} dai fissati",
+        "thisDictationOnly": "Solo questa dettatura"
+      },
+      "refused": {
+        "stale": "La destinazione è cambiata nel frattempo; l'elenco è stato aggiornato.",
+        "frozen": "L'inserimento è iniziato; la destinazione non può più cambiare.",
+        "unavailable": "Questa app non è più disponibile; l'elenco è stato aggiornato."
+      }
+    },
+    "prompt": {
+      "label": "Prompt di questa dettatura: {{name}}",
+      "hint": "Passa il puntatore per vedere le opzioni",
+      "none": "Nessuno (nessuna elaborazione IA)",
+      "menuTitle": "Prompt di questa dettatura",
+      "note": "Vale solo per questa dettatura. Il predefinito resta {{name}}.",
+      "loading": "Caricamento dei prompt…",
+      "failed": "Impossibile caricare i prompt.",
+      "choiceFailed": "Impossibile cambiare il prompt.",
+      "refused": {
+        "sessionEnded": "La registrazione è terminata; il prompt non può più cambiare.",
+        "processingOff": "L'elaborazione IA è disattivata per questa dettatura.",
+        "promptMissing": "Questo prompt non esiste più.",
+        "promptNotUsable": "Questo prompt contiene errori; modificalo prima nelle impostazioni."
+      }
+    }
   },
   "whatsNew": {
     "title": "Novità in Handy v{{version}}"
@@ -724,5 +1307,45 @@
     "learnMore": "Come risolvere",
     "recorderBlocked": "Non è possibile registrare scorciatoie in questo momento: Secure Input di macOS sta bloccando gli eventi dei tasti. Risolvi prima l'avviso di Secure Input.",
     "dismiss": "Ignora"
+  },
+  "smartPaste": {
+    "handOver": "Testo inserito negli appunti per lo schermo remoto"
+  },
+  "recoveryBubble": {
+    "label": "Trascrizione conservata da Handy",
+    "previewLabel": "Trascrizione",
+    "reason": {
+      "appClosed": "{{app}} non è più aperta",
+      "appClosedUnnamed": "L'app non è più aperta",
+      "pinnedAppNotRunning": "{{app}} è fissata ma non aperta",
+      "pinnedAppNotRunningUnnamed": "L'app fissata non è aperta",
+      "activationFailed": "Impossibile portare {{app}} in primo piano",
+      "activationFailedUnnamed": "Impossibile portare l'app in primo piano",
+      "insertionFailed": "Inserimento non riuscito",
+      "noTextField": "Nessun campo di testo è attivo"
+    },
+    "explanation": {
+      "notInserted": "Handy non ha inserito nulla e non ha inviato alcun Invio.",
+      "mayHaveReached": "Parte del testo potrebbe essere arrivata all'app.",
+      "nothingSent": "Non è stato inviato nulla all'app.",
+      "lateRead": "L'app ha letto gli appunti in ritardo: il testo potrebbe essere stato incollato comunque. Controlla prima di copiare di nuovo.",
+      "historyKept": "La trascrizione è conservata nella Cronologia.",
+      "historyKeptFull": "La trascrizione completa è conservata nella Cronologia.",
+      "historyNotKept": "La trascrizione non è nella Cronologia.",
+      "openAppDrag": "Apri {{app}}, poi trascina o copia il testo.",
+      "openAppCopy": "Apri {{app}}, poi copia il testo.",
+      "openUnnamedDrag": "Apri l'app, poi trascina o copia il testo.",
+      "openUnnamedCopy": "Apri l'app, poi copia il testo.",
+      "focusFieldDrag": "Fai clic in un campo di testo, poi trascina o copia il testo.",
+      "focusFieldCopy": "Fai clic in un campo di testo, poi copia il testo.",
+      "noFieldSetting": "Puoi disattivare questo controllo in Impostazioni, Avanzate, Output."
+    },
+    "actions": {
+      "drag": "Trascina in un campo",
+      "copy": "Copia",
+      "why": "Perché?",
+      "hideDetails": "Nascondi dettagli",
+      "close": "Chiudi"
+    }
   }
 }

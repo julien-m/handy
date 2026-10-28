@@ -1,0 +1,31 @@
+{
+  "command": "spec-specify",
+  "created_at": "2026-10-12T17:17:59.957847+00:00",
+  "feature_slug": "005-custom-ai-prompts",
+  "files": [
+    {
+      "path": ".specs/features/005-custom-ai-prompts/changelog.md",
+      "sha256": "3dbe44abc9ac3674cfc9d2df9930a8821387b018f8ffcbccb285aff893f7fa12"
+    },
+    {
+      "path": ".specs/changelog.md",
+      "sha256": "7bb69cc41cb8f46cf11f48cc083dfc6644b094fe33a8c7f80258a456117102f3"
+    },
+    {
+      "path": ".specs/README.md",
+      "sha256": "e59cec081a2a8827d8401e642ec6f416548a6089a58260edede6f041c8d0db9b"
+    },
+    {
+      "path": ".specs/features/005-custom-ai-prompts/spec.md",
+      "sha256": "b0257e05de19a8ccab6d33293295604377d2a24a89c3597b9ce95ad91e0d8c99"
+    }
+  ],
+  "oracle": "livespec-finalize-evidence",
+  "oracle_version": "1",
+  "outcome": "applied",
+  "payload_hash": "e57cf592f9daaa8b46a65c79ca3ca57d455949b4fb6f5e794ae7226e28822da6",
+  "receipt_hash": "96157696bce319590640fff01e23b847cd15f5631b3ebaf515479b3484d7a552",
+  "schema_version": "1",
+  "verdict": "PASS",
+  "violations": []
+}

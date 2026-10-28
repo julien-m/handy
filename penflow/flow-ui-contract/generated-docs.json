@@ -1,0 +1,192 @@
+{
+  "contract": {
+    "path": "/Users/julienm/projects/handy/penflow/flow-ui-contract/contract.json",
+    "sha256": "3e90168c62be01d7b2d9e67b5d07f51b156fdd36f33abcc96b8a014dc46f9c2e"
+  },
+  "files": [
+    {
+      "path": "flows/custom-ai-prompts.md",
+      "sha256": "ee0743ad84ad9ebf5808830e6176bd611d1577e5f2bca217b614f1559518d65a"
+    },
+    {
+      "path": "flows/destination-application.md",
+      "sha256": "ed113a17b98fe29d81bcedcf5c9e6c3a3812de919847243e4b88e2426c535467"
+    },
+    {
+      "path": "flows/handy-reference.md",
+      "sha256": "39eee4ae0e8014deae00befdc43df5e3f69739519d68c9c0a1f505fd94789637"
+    },
+    {
+      "path": "flows/microphone-priority.md",
+      "sha256": "bf6dfcb26f98da4b10b35ffecfe77b18a065ffeeda5254eefaa1d0e7be669e51"
+    },
+    {
+      "path": "flows/multiple-dictation-shortcuts.md",
+      "sha256": "8d902dfb68a471ab4f911d5df1d9c583981867eeabe14649cb95c06d2d3b2058"
+    },
+    {
+      "path": "flows/pin-mode-and-enter-rule.md",
+      "sha256": "53df0cc79c215eea08c61366cbd544f32e18027362c855e097c1f2653b20b7fd"
+    },
+    {
+      "path": "flows/recognition-vocabulary.md",
+      "sha256": "1f63ffe7484d5836a8b45ebc9812cb589800814b9ff0b174ced80cf66d6d9318"
+    },
+    {
+      "path": "flows/recovery-bubble.md",
+      "sha256": "34a296f7a1ace6304db8bb77f6d4af7bd749da7ee3d157be13c55080c2d33c65"
+    },
+    {
+      "path": "flows/settings-cli.md",
+      "sha256": "977c3b433a4798563afe8267802ee3a62554ab0ff22ab92b74b224093112b33e"
+    },
+    {
+      "path": "flows/smart-paste.md",
+      "sha256": "e7bae516fee4c3ddefcfa60886e50a784fad21a7f98bf2166814e23a70e82f04"
+    },
+    {
+      "path": "flows/word-replacements.md",
+      "sha256": "d6463728f488cf09b15251436bb2d83cb6030e22c5ebf36b17b147cfecf9f6d9"
+    },
+    {
+      "path": "screens/handy-reference.md",
+      "sha256": "147e0d80996ea53dadcb23c0966b2e50d8aa937166a3b6bc93615fc1a28d6ed8"
+    },
+    {
+      "path": "screens/microphone-settings-empty.md",
+      "sha256": "441313414d7eb4c1e0e75ee1af2b89c2fc0723ea8be84906e3b1a67a4af2bd87"
+    },
+    {
+      "path": "screens/microphone-settings-error.md",
+      "sha256": "cd887438adc07e31035a9ac181185f3f72ea561d82e8a11f2d657edc6f75fe2b"
+    },
+    {
+      "path": "screens/microphone-settings.md",
+      "sha256": "d6c436294fa0c12a50c8a69c9eb57750bc47ab88630ee60f3c75fd2f4551033c"
+    },
+    {
+      "path": "screens/output-settings-enter-options.md",
+      "sha256": "c4935ca9f18b46c2fc815dddf19d43fee4bc19b4d0f65a3c3f261cdc639445c3"
+    },
+    {
+      "path": "screens/output-settings-paste-methods.md",
+      "sha256": "f57f5f0a13c0cbfd65487107a671e531d8c4e9b9bf6ac8bf044c9507ffe49d14"
+    },
+    {
+      "path": "screens/output-settings-unavailable.md",
+      "sha256": "5e11f9137cb5e4bacf856aed0d8dabb451a10461bdc6c1390415cfbbc5f38154"
+    },
+    {
+      "path": "screens/output-settings.md",
+      "sha256": "e952e3284629c052c0e391cadacc232bc4750af0ad29a4a6d3333f72e38cc7e4"
+    },
+    {
+      "path": "screens/prompt-settings-editor.md",
+      "sha256": "bb9c806f0ef54fe9ea3f8d47e1358d566d21fe32acb2544dcba8049555ce8a75"
+    },
+    {
+      "path": "screens/prompt-settings-invalid.md",
+      "sha256": "43decebf1822569d4bfff8d289b6e15a6e9c9f3148a1fbac9d1126b05a32d900"
+    },
+    {
+      "path": "screens/prompt-settings.md",
+      "sha256": "22c696d0b4d42d331fdaf87b20325fedd85177a9b417747806a5609b4b20f0fb"
+    },
+    {
+      "path": "screens/recording-indicator-ai-failed.md",
+      "sha256": "e3bd06bd7585b03a76e48c40bb2a616e3f53b66117bcceb492dae78519220d7b"
+    },
+    {
+      "path": "screens/recording-indicator-destination-menu.md",
+      "sha256": "3176ebdffc61b586f770f6c969374f4ecd00c58c249b88c9121b3e5184774293"
+    },
+    {
+      "path": "screens/recording-indicator-hand-over.md",
+      "sha256": "01f27f391e59b71daed351aa15c610413e50a7fd199e0fe2fdf50105ed078c36"
+    },
+    {
+      "path": "screens/recording-indicator-no-destination.md",
+      "sha256": "79fa826352a9adf7dd4539011a2ff33ff144b4720b5c1d2ca4ee59138d90ff29"
+    },
+    {
+      "path": "screens/recording-indicator-pinned.md",
+      "sha256": "283057797bf3c19757cfd0684b8fc8524a7dcbdd24052f90b4958aec89243d19"
+    },
+    {
+      "path": "screens/recording-indicator-prompt-menu.md",
+      "sha256": "61dd5a2238a9a33530775c366292c0da720d11e0ede983c642d014da584a5b3d"
+    },
+    {
+      "path": "screens/recording-indicator.md",
+      "sha256": "992a9969660e10fb59f971d6ba9922d2b0e538e353b2da3532460e354578f349"
+    },
+    {
+      "path": "screens/recovery-bubble-explanation.md",
+      "sha256": "3d486ef301ee908cb9a966928c4d5c9be491cf3fccce4ba350ef5e21bed78654"
+    },
+    {
+      "path": "screens/recovery-bubble-insertion-failed.md",
+      "sha256": "0865e189af504aeea4f066762cd4d30e1bcffc5cfeb2f50ebdfcab5273190e53"
+    },
+    {
+      "path": "screens/recovery-bubble-no-field.md",
+      "sha256": "53ad676033d97f98790657437234409665844674c0cbb55eebb74375e10ca8c9"
+    },
+    {
+      "path": "screens/recovery-bubble.md",
+      "sha256": "c8475f14c4d18aff743b116970b22f5663409d358c35ee63cbb9857e4e139e59"
+    },
+    {
+      "path": "screens/replacement-settings-bulk.md",
+      "sha256": "868f8f11b832ec570781bf5ce0aac4ed400ca66dd8c88d8e40b1cdcac1b5b368"
+    },
+    {
+      "path": "screens/replacement-settings-empty.md",
+      "sha256": "3f8f885bcc43c249b4fd74b9d797da9c70aff1e522c0724b65c9c4defaf93e94"
+    },
+    {
+      "path": "screens/replacement-settings-import.md",
+      "sha256": "94383a1db53b0ac63d41a2601dfb79cae6bf6cb7950d7c80893e5913605448bb"
+    },
+    {
+      "path": "screens/replacement-settings.md",
+      "sha256": "8b2545d153b329f31eed86ee6feb0837c3f43a7d08a26b3ad91afd7c7148e633"
+    },
+    {
+      "path": "screens/settings-write-errors.md",
+      "sha256": "86d79ed3b4162ebeeaea32abced7928cb2b111611d4869d7178380d795cd5cfc"
+    },
+    {
+      "path": "screens/shortcut-settings-conflict.md",
+      "sha256": "7c3143ce7b4ec6245cc1a191f6133831eea6d7ff8390c4a63d1f80d202a3457a"
+    },
+    {
+      "path": "screens/shortcut-settings-limit.md",
+      "sha256": "6a2c5bf73f0ed501bc6b816a09b976f322e5495f4a31ec9dc20586329121239d"
+    },
+    {
+      "path": "screens/shortcut-settings.md",
+      "sha256": "f1577ab76bda454bf03e0a8b18000e9ff1fa497bba8751915549256ff7253a35"
+    },
+    {
+      "path": "screens/vocabulary-settings-empty.md",
+      "sha256": "406afa2b9eafd9150d8b7dbf1a4b6ce55e3aecfd34ab7d400a8ce24b24417bf3"
+    },
+    {
+      "path": "screens/vocabulary-settings-paste.md",
+      "sha256": "27a1b53a9d39162c5283388f38d6819f0d97846ffcc73ba2e11bfc4a619674b9"
+    },
+    {
+      "path": "screens/vocabulary-settings-unsupported.md",
+      "sha256": "395228fdf0609bcc891b6aec4bd62c3df705033eb5684ee657ef3c1f545934a1"
+    },
+    {
+      "path": "screens/vocabulary-settings.md",
+      "sha256": "43a29e3c06ba4f8c631142cab200f5d8caff7ef1a252797358ff77fff0f32ccf"
+    }
+  ],
+  "generator": "penflow.flow-docs/1",
+  "kind": "penflow-generated-docs",
+  "status": "PASS",
+  "version": 1
+}

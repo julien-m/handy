@@ -1,0 +1,432 @@
+{
+  "schema_version": "1",
+  "policy_version": "078.1",
+  "context_hash": "0a925f37b23261225f46f0146d4d40ac0d7ddab4b6bb961d982c9d45ad921b49",
+  "source_hashes": {
+    ".specs/constitution.md": "f65acb99e00dfab5f8ce418aae1b5979265f2b2eb3c399666b09c4c2caf82067",
+    ".specs/features/011-dictation-field-return/spec.md": "e9a2249e3bf4146133cb722e4ccd4a584f627d1a17b84af55463e3b4b06edb9c",
+    ".specs/project.md": "cd935573446ed94fa43256de0a4d14b9474c4356fa66623f3c8c32a80572b699",
+    ".specs/stacks/_default.md": "4df92d16eef38a57c8c2bf1fff8425852b86a41e86c6b7c16423ec166ddfc0f8",
+    ".specs/testing/strategy.md": "bfe0dd480a9d3cf2575cba8407a984add02dcbdad2a17fcb4fc560def9058934"
+  },
+  "reviewer_model": "claude-opus-5-5",
+  "complete": true,
+  "ready": true,
+  "errors": [],
+  "conclusions": [
+    {
+      "requirement_id": "011-dictation-field-return:AC-001",
+      "disposition": "covered",
+      "rationale": "Start read is fully specified: AX attributes, shared 50 ms deadline, per-element timeouts, off start path, 010 rule, password/process/permission/deadline exclusions.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L207-L211",
+          "excerpt": "These reads share one deadline of 50 ms"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "011-dictation-field-return:AC-002",
+      "disposition": "ambiguous",
+      "rationale": "Steps, deadlines and change semantics are clear, but restoring the start range is unconditional even if the same input was edited during recording, which can overwrite new text.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L212-L216",
+          "excerpt": "(4) restores the remembered selection range"
+        },
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L283-L300",
+          "excerpt": "A draft is never overwritten."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "011-dictation-field-return:AC-003",
+      "disposition": "covered",
+      "rationale": "Pinned source, not-running pin, and drop rules (badge choice, removal, unpin) are explicit and consistent with Story 2 and the validated decision.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L217-L221",
+          "excerpt": "kept only while the dictation's destination is that same running instance"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "011-dictation-field-return:AC-004",
+      "disposition": "ambiguous",
+      "rationale": "Branches (a)/(b) are exhaustive, but whether 'no focused element' at step (1) or the guard is a noted value or an unreadable read is open; it decides the reload case.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L222-L226",
+          "excerpt": "the focused element could not be noted"
+        },
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L322-L339",
+          "excerpt": "Focused element unreadable before the attempt or at the guard"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "011-dictation-field-return:AC-005",
+      "disposition": "covered",
+      "rationale": "Verified input counts as editable for 010 and the 009 Enter foreground check is unchanged; testable via the Story 3 scenarios.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L227-L231",
+          "excerpt": "010's classification counts the element as editable"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "011-dictation-field-return:AC-006",
+      "disposition": "covered",
+      "rationale": "Gate closed, return off without pin, no destination, cancel and method none are each specified with no reads or use; no new setting or UI.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L232-L236",
+          "excerpt": "the reference remembered at the start is dropped and never used"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "011-dictation-field-return:AC-007",
+      "disposition": "covered",
+      "rationale": "Windows UIA definition, selection via TextPattern endpoints, bounded calls, change rule and pending release evidence are explicit; Linux excluded.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L237-L241",
+          "excerpt": "On Windows, the same behavior uses UI Automation"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "011-dictation-field-return:AC-008",
+      "disposition": "covered",
+      "rationale": "Held fields, lifetime, release points and the no-content/no-range logging rule are enumerated and testable (SC-004).",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L242-L246",
+          "excerpt": "Handy never reads, stores or logs the content of the remembered element"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "011-dictation-field-return:FR-001",
+      "disposition": "covered",
+      "rationale": "Matches AC-001: editable non-password element of the destination's process, range, 50 ms bound off the start path, no content.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L249-L253",
+          "excerpt": "Accessibility reads bounded to 50 ms off the recording start path"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "011-dictation-field-return:FR-002",
+      "disposition": "covered",
+      "rationale": "Ordered insertion steps match AC-002 and AC-005.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L254-L258",
+          "excerpt": "verify input and range at the pre-dispatch guard"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "011-dictation-field-return:FR-003",
+      "disposition": "covered",
+      "rationale": "Pinned read and keep-while-same-instance rule match AC-003.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L259-L263",
+          "excerpt": "keep it only while the dictation's destination stays that running instance"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "011-dictation-field-return:FR-004",
+      "disposition": "covered",
+      "rationale": "Fallback rule matches AC-004 and the validated fallback-after-partial-return decision.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L264-L268",
+          "excerpt": "insert through the existing 006/010 path only when Handy's attempt changed nothing"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "011-dictation-field-return:FR-005",
+      "disposition": "covered",
+      "rationale": "Gate, platform and no-new-setting limits match AC-006 and AC-007.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L269-L273",
+          "excerpt": "Limit the behavior to the gate-open build"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "011-dictation-field-return:SC-001",
+      "disposition": "covered",
+      "rationale": "Measurable 5/5 native runs per app with an explicit, reported fallback when Chromium does not expose the input.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L342-L345",
+          "excerpt": "in 5 of 5 runs for Notes and ChatGPT desktop"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "011-dictation-field-return:SC-002",
+      "disposition": "covered",
+      "rationale": "Fault list mirrors AC-004 branches with 100% thresholds and transcript preservation.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L346-L349",
+          "excerpt": "100% of the unchanged cases follow the 006/010 path"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "011-dictation-field-return:SC-003",
+      "disposition": "covered",
+      "rationale": "Zero reads and identical insertion with the gate closed is automatable.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L350-L353",
+          "excerpt": "automated tests observe zero focused-element reads"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "011-dictation-field-return:SC-004",
+      "disposition": "covered",
+      "rationale": "Sentinel text and sentinel range values checked in logs, events and CLI output.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L354-L357",
+          "excerpt": "neither value appears in captured logs (all levels), events or CLI output"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "011-dictation-field-return:SC-005",
+      "disposition": "covered",
+      "rationale": "Non-answering port test with 50 ms abandonment and non-blocking start path.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L358-L360",
+          "excerpt": "the recording start path completes without waiting for it"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    }
+  ],
+  "ambiguities": [
+    {
+      "requirement_id": "011-dictation-field-return:AC-002",
+      "decision_key": "range-restore-after-in-field-edit",
+      "question": "If the remembered input was edited during recording (user stayed or typed in it), should Handy still restore the start range, paste at the current caret, or fall back to the bubble?",
+      "critical": false,
+      "citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L212-L216",
+          "excerpt": "(4) restores the remembered selection range"
+        }
+      ],
+      "resolution": "",
+      "resolution_citations": []
+    },
+    {
+      "requirement_id": "011-dictation-field-return:AC-004",
+      "decision_key": "no-focused-element-at-note-or-guard",
+      "question": "Is an absent focused element (AX no value) at step (1) and at the guard a noted value that can match (branch a) or an unreadable focus (branch b)?",
+      "critical": false,
+      "citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L222-L226",
+          "excerpt": "the focused element could not be noted"
+        }
+      ],
+      "resolution": "",
+      "resolution_citations": []
+    }
+  ],
+  "extra_scope": [
+    {
+      "description": "Restoring the start caret/selection range and showing the bubble when the range is unreadable, even without an application switch.",
+      "justification": "Asked by validated decision caret-after-focus-restore.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L283-L300",
+          "excerpt": "After giving focus back it restores that range, verifies it, then pastes."
+        }
+      ],
+      "kind": "business"
+    },
+    {
+      "description": "Recovery bubble (not a paste) whenever the return attempt changed something or the range is unverified.",
+      "justification": "Asked by validated decision fallback-after-partial-return.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L283-L300",
+          "excerpt": "Handy does not paste and shows the 010 bubble with the transcript"
+        }
+      ],
+      "kind": "business"
+    },
+    {
+      "description": "Raising another window of the destination that holds the remembered input.",
+      "justification": "Part of the technical frame validated by Julien in Clarifications.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L283-L300",
+          "excerpt": "raise the window (`AXRaise` on `AXWindow`) if needed"
+        }
+      ],
+      "kind": "business"
+    },
+    {
+      "description": "Windows support through UI Automation.",
+      "justification": "Validated technical frame; pending release evidence per constitution.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L283-L300",
+          "excerpt": "Windows through UI Automation (`SetFocus`) as pending release evidence"
+        }
+      ],
+      "kind": "business"
+    },
+    {
+      "description": "Bounded deadlines (50/10 ms) and an off-start-path read.",
+      "justification": "Needed so AX/UIA calls never block recording start or the main-thread guard.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L207-L211",
+          "excerpt": "The recording starts without waiting for this read."
+        }
+      ],
+      "kind": "technical"
+    },
+    {
+      "description": "Noting the focused element before the attempt and tracking attempt facts.",
+      "justification": "Needed to decide the validated unchanged-attempt branch without reading content.",
+      "approved": true,
+      "citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L212-L216",
+          "excerpt": "(1) notes the application's focused element"
+        }
+      ],
+      "kind": "technical"
+    }
+  ],
+  "findings": [
+    {
+      "category": "consistency",
+      "severity": "warning",
+      "description": "AC-002 restores the start range unconditionally. If the user keeps typing in the same input during recording (no switch), a start selection of length > 0 now covers the new characters and the paste replaces them; a zero-length caret lands at a stale offset. This conflicts with 'A draft is never overwritten' and with today's paste-at-current-caret.",
+      "suggestion": "Specify the in-field-edit case: e.g. compare AXNumberOfCharacters (no content) or the current range at step (1) and, when changed, paste at the current caret or apply AC-004 (b).",
+      "citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L212-L216",
+          "excerpt": "(4) restores the remembered selection range"
+        },
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L322-L339",
+          "excerpt": "Draft in the input: the caret or selection of the start is restored"
+        }
+      ]
+    },
+    {
+      "category": "ambiguity",
+      "severity": "warning",
+      "description": "AC-004 (a) needs the element noted at step (1) to equal the one read at the guard, but an absent focused element (AX no value, likely after a Chromium page reload) is not classified as 'noted' or 'could not be noted'. The Story 3 reload test (insert as today) passes or shows the bubble depending on this.",
+      "suggestion": "State whether 'no focused element' at step (1) and at the guard is a comparable noted value (branch a) or an unreadable focus (branch b), and align the reload scenario.",
+      "citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L108-L170",
+          "excerpt": "Reload the Comet page during a dictation"
+        },
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L222-L226",
+          "excerpt": "the focused element could not be noted"
+        }
+      ]
+    },
+    {
+      "category": "feasibility",
+      "severity": "info",
+      "description": "AC-002 gives focus (step 2) before raising the window (step 3) and decides 'not the focused window' implicitly; AXRaise alone may not make the window main/key in every app, so the verification could fail in the second-window scenario (then bubble, safe).",
+      "suggestion": "Have the macOS native proof record the second-window outcome and, if needed, specify the AXFocusedWindow read and AXMain use.",
+      "citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L212-L216",
+          "excerpt": "(3) raises its window (`AXRaise` on its `AXWindow`)"
+        }
+      ]
+    },
+    {
+      "category": "testability",
+      "severity": "info",
+      "description": "AC-008 forbids held fields and range in history, but SC-004 only checks logs, events and CLI output.",
+      "suggestion": "Add history to the SC-004 sentinel checks.",
+      "citations": [
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L354-L357",
+          "excerpt": "never appears in logs, events or CLI output"
+        },
+        {
+          "section_id": ".specs/features/011-dictation-field-return/spec.md:L242-L246",
+          "excerpt": "appears in an event, the settings CLI, history or a log"
+        }
+      ]
+    }
+  ],
+  "confidence": 4,
+  "raw_results": [
+    "{\"batch_id\":\"batch-001\",\"reviewed_section_ids\":[\".specs/constitution.md:L1-L2\",\".specs/constitution.md:L3-L17\",\".specs/constitution.md:L18-L26\",\".specs/constitution.md:L27-L30\",\".specs/constitution.md:L31-L36\",\".specs/features/011-dictation-field-return/spec.md:L1-L9\",\".specs/features/011-dictation-field-return/spec.md:L10-L11\",\".specs/features/011-dictation-field-return/spec.md:L12-L20\",\".specs/features/011-dictation-field-return/spec.md:L21-L22\",\".specs/features/011-dictation-field-return/spec.md:L23-L66\",\".specs/features/011-dictation-field-return/spec.md:L67-L107\",\".specs/features/011-dictation-field-return/spec.md:L108-L170\",\".specs/features/011-dictation-field-return/spec.md:L171-L204\",\".specs/features/011-dictation-field-return/spec.md:L205-L206\",\".specs/features/011-dictation-field-return/spec.md:L207-L211\",\".specs/features/011-dictation-field-return/spec.md:L212-L216\",\".specs/features/011-dictation-field-return/spec.md:L217-L221\",\".specs/features/011-dictation-field-return/spec.md:L222-L226\",\".specs/features/011-dictation-field-return/spec.md:L227-L231\",\".specs/features/011-dictation-field-return/spec.md:L232-L236\",\".specs/features/011-dictation-field-return/spec.md:L237-L241\",\".specs/features/011-dictation-field-return/spec.md:L242-L246\",\".specs/features/011-dictation-field-return/spec.md:L247-L248\",\".specs/features/011-dictation-field-return/spec.md:L249-L253\",\".specs/features/011-dictation-field-return/spec.md:L254-L258\",\".specs/features/011-dictation-field-return/spec.md:L259-L263\",\".specs/features/011-dictation-field-return/spec.md:L264-L268\",\".specs/features/011-dictation-field-return/spec.md:L269-L273\",\".specs/features/011-dictation-field-return/spec.md:L274-L282\",\".specs/features/011-dictation-field-return/spec.md:L283-L300\",\".specs/features/011-dictation-field-return/spec.md:L301-L310\",\".specs/features/011-dictation-field-return/spec.md:L311-L317\",\".specs/features/011-dictation-field-return/spec.md:L318-L321\",\".specs/features/011-dictation-field-return/spec.md:L322-L339\",\".specs/features/011-dictation-field-return/spec.md:L340-L341\",\".specs/features/011-dictation-field-return/spec.md:L342-L345\",\".specs/features/011-dictation-field-return/spec.md:L346-L349\",\".specs/features/011-dictation-field-return/spec.md:L350-L353\",\".specs/features/011-dictation-field-return/spec.md:L354-L357\",\".specs/features/011-dictation-field-return/spec.md:L358-L360\",\".specs/project.md:L1-L2\",\".specs/project.md:L3-L7\",\".specs/project.md:L8-L16\",\".specs/project.md:L17-L20\",\".specs/project.md:L21-L24\",\".specs/project.md:L25-L28\",\".specs/project.md:L29-L36\",\".specs/stacks/_default.md:L1-L5\",\".specs/stacks/_default.md:L6-L7\",\".specs/stacks/_default.md:L8-L21\",\".specs/stacks/_default.md:L22-L31\",\".specs/testing/strategy.md:L1-L2\",\".specs/testing/strategy.md:L3-L6\",\".specs/testing/strategy.md:L7-L12\",\".specs/testing/strategy.md:L13-L16\"],\"conclusions\":[{\"requirement_id\":\"011-dictation-field-return:AC-001\",\"disposition\":\"covered\",\"rationale\":\"Start read is fully specified: AX attributes, shared 50 ms deadline, per-element timeouts, off start path, 010 rule, password/process/permission/deadline exclusions.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L207-L211\",\"excerpt\":\"These reads share one deadline of 50 ms\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:AC-002\",\"disposition\":\"ambiguous\",\"rationale\":\"Steps, deadlines and change semantics are clear, but restoring the start range is unconditional even if the same input was edited during recording, which can overwrite new text.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L212-L216\",\"excerpt\":\"(4) restores the remembered selection range\"},{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L283-L300\",\"excerpt\":\"A draft is never overwritten.\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:AC-003\",\"disposition\":\"covered\",\"rationale\":\"Pinned source, not-running pin, and drop rules (badge choice, removal, unpin) are explicit and consistent with Story 2 and the validated decision.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L217-L221\",\"excerpt\":\"kept only while the dictation's destination is that same running instance\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:AC-004\",\"disposition\":\"ambiguous\",\"rationale\":\"Branches (a)/(b) are exhaustive, but whether 'no focused element' at step (1) or the guard is a noted value or an unreadable read is open; it decides the reload case.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L222-L226\",\"excerpt\":\"the focused element could not be noted\"},{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L322-L339\",\"excerpt\":\"Focused element unreadable before the attempt or at the guard\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:AC-005\",\"disposition\":\"covered\",\"rationale\":\"Verified input counts as editable for 010 and the 009 Enter foreground check is unchanged; testable via the Story 3 scenarios.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L227-L231\",\"excerpt\":\"010's classification counts the element as editable\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:AC-006\",\"disposition\":\"covered\",\"rationale\":\"Gate closed, return off without pin, no destination, cancel and method none are each specified with no reads or use; no new setting or UI.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L232-L236\",\"excerpt\":\"the reference remembered at the start is dropped and never used\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:AC-007\",\"disposition\":\"covered\",\"rationale\":\"Windows UIA definition, selection via TextPattern endpoints, bounded calls, change rule and pending release evidence are explicit; Linux excluded.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L237-L241\",\"excerpt\":\"On Windows, the same behavior uses UI Automation\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:AC-008\",\"disposition\":\"covered\",\"rationale\":\"Held fields, lifetime, release points and the no-content/no-range logging rule are enumerated and testable (SC-004).\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L242-L246\",\"excerpt\":\"Handy never reads, stores or logs the content of the remembered element\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:FR-001\",\"disposition\":\"covered\",\"rationale\":\"Matches AC-001: editable non-password element of the destination's process, range, 50 ms bound off the start path, no content.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L249-L253\",\"excerpt\":\"Accessibility reads bounded to 50 ms off the recording start path\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:FR-002\",\"disposition\":\"covered\",\"rationale\":\"Ordered insertion steps match AC-002 and AC-005.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L254-L258\",\"excerpt\":\"verify input and range at the pre-dispatch guard\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:FR-003\",\"disposition\":\"covered\",\"rationale\":\"Pinned read and keep-while-same-instance rule match AC-003.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L259-L263\",\"excerpt\":\"keep it only while the dictation's destination stays that running instance\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:FR-004\",\"disposition\":\"covered\",\"rationale\":\"Fallback rule matches AC-004 and the validated fallback-after-partial-return decision.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L264-L268\",\"excerpt\":\"insert through the existing 006/010 path only when Handy's attempt changed nothing\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:FR-005\",\"disposition\":\"covered\",\"rationale\":\"Gate, platform and no-new-setting limits match AC-006 and AC-007.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L269-L273\",\"excerpt\":\"Limit the behavior to the gate-open build\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:SC-001\",\"disposition\":\"covered\",\"rationale\":\"Measurable 5/5 native runs per app with an explicit, reported fallback when Chromium does not expose the input.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L342-L345\",\"excerpt\":\"in 5 of 5 runs for Notes and ChatGPT desktop\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:SC-002\",\"disposition\":\"covered\",\"rationale\":\"Fault list mirrors AC-004 branches with 100% thresholds and transcript preservation.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L346-L349\",\"excerpt\":\"100% of the unchanged cases follow the 006/010 path\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:SC-003\",\"disposition\":\"covered\",\"rationale\":\"Zero reads and identical insertion with the gate closed is automatable.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L350-L353\",\"excerpt\":\"automated tests observe zero focused-element reads\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:SC-004\",\"disposition\":\"covered\",\"rationale\":\"Sentinel text and sentinel range values checked in logs, events and CLI output.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L354-L357\",\"excerpt\":\"neither value appears in captured logs (all levels), events or CLI output\"}],\"plan_citations\":[],\"searched_plan_sections\":[]},{\"requirement_id\":\"011-dictation-field-return:SC-005\",\"disposition\":\"covered\",\"rationale\":\"Non-answering port test with 50 ms abandonment and non-blocking start path.\",\"source_citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L358-L360\",\"excerpt\":\"the recording start path completes without waiting for it\"}],\"plan_citations\":[],\"searched_plan_sections\":[]}],\"ambiguities\":[{\"requirement_id\":\"011-dictation-field-return:AC-002\",\"decision_key\":\"range-restore-after-in-field-edit\",\"question\":\"If the remembered input was edited during recording (user stayed or typed in it), should Handy still restore the start range, paste at the current caret, or fall back to the bubble?\",\"critical\":false,\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L212-L216\",\"excerpt\":\"(4) restores the remembered selection range\"}]},{\"requirement_id\":\"011-dictation-field-return:AC-004\",\"decision_key\":\"no-focused-element-at-note-or-guard\",\"question\":\"Is an absent focused element (AX no value) at step (1) and at the guard a noted value that can match (branch a) or an unreadable focus (branch b)?\",\"critical\":false,\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L222-L226\",\"excerpt\":\"the focused element could not be noted\"}]}],\"extra_scope\":[{\"description\":\"Restoring the start caret/selection range and showing the bubble when the range is unreadable, even without an application switch.\",\"justification\":\"Asked by validated decision caret-after-focus-restore.\",\"approved\":true,\"kind\":\"business\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L283-L300\",\"excerpt\":\"After giving focus back it restores that range, verifies it, then pastes.\"}]},{\"description\":\"Recovery bubble (not a paste) whenever the return attempt changed something or the range is unverified.\",\"justification\":\"Asked by validated decision fallback-after-partial-return.\",\"approved\":true,\"kind\":\"business\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L283-L300\",\"excerpt\":\"Handy does not paste and shows the 010 bubble with the transcript\"}]},{\"description\":\"Raising another window of the destination that holds the remembered input.\",\"justification\":\"Part of the technical frame validated by Julien in Clarifications.\",\"approved\":true,\"kind\":\"business\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L283-L300\",\"excerpt\":\"raise the window (`AXRaise` on `AXWindow`) if needed\"}]},{\"description\":\"Windows support through UI Automation.\",\"justification\":\"Validated technical frame; pending release evidence per constitution.\",\"approved\":true,\"kind\":\"business\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L283-L300\",\"excerpt\":\"Windows through UI Automation (`SetFocus`) as pending release evidence\"}]},{\"description\":\"Bounded deadlines (50/10 ms) and an off-start-path read.\",\"justification\":\"Needed so AX/UIA calls never block recording start or the main-thread guard.\",\"approved\":true,\"kind\":\"technical\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L207-L211\",\"excerpt\":\"The recording starts without waiting for this read.\"}]},{\"description\":\"Noting the focused element before the attempt and tracking attempt facts.\",\"justification\":\"Needed to decide the validated unchanged-attempt branch without reading content.\",\"approved\":true,\"kind\":\"technical\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L212-L216\",\"excerpt\":\"(1) notes the application's focused element\"}]}],\"findings\":[{\"category\":\"consistency\",\"severity\":\"warning\",\"description\":\"AC-002 restores the start range unconditionally. If the user keeps typing in the same input during recording (no switch), a start selection of length > 0 now covers the new characters and the paste replaces them; a zero-length caret lands at a stale offset. This conflicts with 'A draft is never overwritten' and with today's paste-at-current-caret.\",\"suggestion\":\"Specify the in-field-edit case: e.g. compare AXNumberOfCharacters (no content) or the current range at step (1) and, when changed, paste at the current caret or apply AC-004 (b).\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L212-L216\",\"excerpt\":\"(4) restores the remembered selection range\"},{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L322-L339\",\"excerpt\":\"Draft in the input: the caret or selection of the start is restored\"}]},{\"category\":\"ambiguity\",\"severity\":\"warning\",\"description\":\"AC-004 (a) needs the element noted at step (1) to equal the one read at the guard, but an absent focused element (AX no value, likely after a Chromium page reload) is not classified as 'noted' or 'could not be noted'. The Story 3 reload test (insert as today) passes or shows the bubble depending on this.\",\"suggestion\":\"State whether 'no focused element' at step (1) and at the guard is a comparable noted value (branch a) or an unreadable focus (branch b), and align the reload scenario.\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L108-L170\",\"excerpt\":\"Reload the Comet page during a dictation\"},{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L222-L226\",\"excerpt\":\"the focused element could not be noted\"}]},{\"category\":\"feasibility\",\"severity\":\"info\",\"description\":\"AC-002 gives focus (step 2) before raising the window (step 3) and decides 'not the focused window' implicitly; AXRaise alone may not make the window main/key in every app, so the verification could fail in the second-window scenario (then bubble, safe).\",\"suggestion\":\"Have the macOS native proof record the second-window outcome and, if needed, specify the AXFocusedWindow read and AXMain use.\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L212-L216\",\"excerpt\":\"(3) raises its window (`AXRaise` on its `AXWindow`)\"}]},{\"category\":\"testability\",\"severity\":\"info\",\"description\":\"AC-008 forbids held fields and range in history, but SC-004 only checks logs, events and CLI output.\",\"suggestion\":\"Add history to the SC-004 sentinel checks.\",\"citations\":[{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L354-L357\",\"excerpt\":\"never appears in logs, events or CLI output\"},{\"section_id\":\".specs/features/011-dictation-field-return/spec.md:L242-L246\",\"excerpt\":\"appears in an event, the settings CLI, history or a log\"}]}],\"confidence\":4}"
+  ],
+  "synthesis": null,
+  "synthesis_transport_version": null
+}

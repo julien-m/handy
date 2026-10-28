@@ -1,0 +1,27 @@
+
+running 2 tests
+test settings_service::sequence::tests::routed_cli_and_ui_writes_of_a_prepared_key_reach_the_same_refusal ... FAILED
+test settings_service::sequence::tests::routed_prepared_write_checks_the_revision_before_preparing_and_skips_the_key_effect ... FAILED
+
+failures:
+
+---- settings_service::sequence::tests::routed_cli_and_ui_writes_of_a_prepared_key_reach_the_same_refusal stdout ----
+
+thread 'settings_service::sequence::tests::routed_cli_and_ui_writes_of_a_prepared_key_reach_the_same_refusal' (44203157) panicked at src/settings_service/sequence_tests.rs:405:9:
+assertion `left == right` failed: vad_backend
+  left: Object {"data": Object {"vad_backend": String("earshot")}, "ok": Bool(true), "revision": Number(2)}
+ right: Object {"error": Object {"code": String("unavailable"), "details": Object {"field": String("vad_backend")}, "message": String("Settings operation is unavailable.")}, "ok": Bool(false)}
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- settings_service::sequence::tests::routed_prepared_write_checks_the_revision_before_preparing_and_skips_the_key_effect stdout ----
+
+thread 'settings_service::sequence::tests::routed_prepared_write_checks_the_revision_before_preparing_and_skips_the_key_effect' (44203158) panicked at src/settings_service/sequence_tests.rs:448:5:
+assertion failed: !port.events().iter().any(|event| event == "effect:vad_backend")
+
+
+failures:
+    settings_service::sequence::tests::routed_cli_and_ui_writes_of_a_prepared_key_reach_the_same_refusal
+    settings_service::sequence::tests::routed_prepared_write_checks_the_revision_before_preparing_and_skips_the_key_effect
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 361 filtered out; finished in 0.22s
+

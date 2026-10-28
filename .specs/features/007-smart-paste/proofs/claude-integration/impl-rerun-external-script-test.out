@@ -1,0 +1,7 @@
+ 4:41  up 8 days, 17:38, 1 user, load averages: 126.78 89.31 93.38
+
+running 1 test
+test clipboard::tests::external_script_does_not_wait_for_inherited_stdio ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 424 filtered out; finished in 0.31s
+

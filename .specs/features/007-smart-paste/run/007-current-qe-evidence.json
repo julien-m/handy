@@ -1,0 +1,33 @@
+{
+  "qe_dimensions_considered": [
+    "Functional correctness",
+    "Regression risk",
+    "API/contract compatibility",
+    "Data/migration integrity",
+    "Security posture",
+    "Performance/scalability",
+    "Accessibility/UX",
+    "Observability/operability"
+  ],
+  "qe_gates_required": [
+    "Independent grounded plan review",
+    "Structural and Analyze progression",
+    "Bounded snapshot + guarded byte restoration P0",
+    "One-shot migration and 008 contract parity P0",
+    "Native mandatory app/layout and SC-005 release gates",
+    "Deferred shared Penflow design before UI implementation"
+  ],
+  "qe_expected_evidence": [
+    ".specs/features/007-smart-paste/plan.md",
+    ".specs/features/007-smart-paste/.reviews/plan.json",
+    "feature-local future proofs/native-compatibility.json, snapshot-comparison.json, callback-timings.json and native-observations.md",
+    "Rust/Bun/browser command transcripts and AC/SC assertion matrix"
+  ],
+  "qe_gaps_or_missing_evidence": [
+    "Application tests not executed in plan-only run",
+    "Native provider cache, helper bounds, privacy and race proof missing until Step 1/9",
+    "UI contract and mockup intentionally deferred; no Penflow certification",
+    "Local Playwright/TypeScript/ESLint/Prettier binaries absent"
+  ],
+  "qe_boundary_note": "QE defines risk and evidence sufficiency. Independent review judges plan, native security review judges helper/FFI/privacy; spec-test executes runtime proof; Penflow governs UI. No application code, commit or push authorized."
+}

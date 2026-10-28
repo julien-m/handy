@@ -1,0 +1,11 @@
+$ bun test src/overlay/indicator-models.test.ts src/overlay/menu-timer.test.ts src/overlay/pin-state.test.ts && bun test src/overlay/indicator-render.test.tsx src/overlay/indicator-gates-render.test.tsx
+
+ 36 pass
+ 0 fail
+ 84 expect() calls
+Ran 36 tests across 3 files. [136.00ms]
+
+ 21 pass
+ 0 fail
+ 133 expect() calls
+Ran 21 tests across 2 files. [154.00ms]

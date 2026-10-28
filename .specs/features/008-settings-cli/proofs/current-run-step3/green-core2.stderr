@@ -1,0 +1,58 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy/src-tauri)
+error[E0061]: this method takes 4 arguments but 2 arguments were supplied
+   --> tests/settings_transactions/transactions.rs:108:27
+    |
+108 |       let read = repository.commit_with_probe(
+    |  ___________________________^^^^^^^^^^^^^^^^^-
+109 | |         mutation("audio_feedback", if raw { "true" } else { "false" })?,
+110 | |         None,
+111 | |     )?;
+    | |_____- two arguments of type `&_` and `&_` are missing
+    |
+note: method defined here
+   --> src/settings_service/transaction.rs:23:12
+    |
+ 23 |     pub fn commit_with_probe(
+    |            ^^^^^^^^^^^^^^^^^
+help: provide the arguments
+    |
+108 |     let read = repository.commit_with_probe(
+109 |         mutation("audio_feedback", if raw { "true" } else { "false" })?,
+110 |         None,
+111 ~         /* probe */,
+112 +         /* observer */,
+113 ~     )?;
+    |
+
+error[E0061]: this method takes 4 arguments but 2 arguments were supplied
+   --> tests/settings_transactions/transactions.rs:114:27
+    |
+114 |       let read = repository.commit_with_probe(
+    |  ___________________________^^^^^^^^^^^^^^^^^-
+115 | |         mutation("audio_feedback", if raw { "false" } else { "true" })?,
+116 | |         None,
+117 | |     )?;
+    | |_____- two arguments of type `&_` and `&_` are missing
+    |
+note: method defined here
+   --> src/settings_service/transaction.rs:23:12
+    |
+ 23 |     pub fn commit_with_probe(
+    |            ^^^^^^^^^^^^^^^^^
+help: provide the arguments
+    |
+114 |     let read = repository.commit_with_probe(
+115 |         mutation("audio_feedback", if raw { "false" } else { "true" })?,
+116 |         None,
+117 ~         /* probe */,
+118 +         /* observer */,
+119 ~     )?;
+    |
+
+For more information about this error, try `rustc --explain E0061`.
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+error: could not compile `handy` (test "settings_transactions") due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...

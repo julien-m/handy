@@ -1,0 +1,35 @@
+{
+  "command": "spec-plan",
+  "created_at": "2026-10-13T04:01:25.443172+00:00",
+  "feature_slug": "001-microphone-priority",
+  "files": [
+    {
+      "path": ".specs/features/001-microphone-priority/changelog.md",
+      "sha256": "823d6e29cdcdd39bc92e825cd4d0d5ad51f230279512dad023ad4910fbdf360f"
+    },
+    {
+      "path": ".specs/changelog.md",
+      "sha256": "8995f238ff1d13624f701bf063a05aa7f818bc01d3a7bff5e4dd8e048c5ae350"
+    },
+    {
+      "path": ".specs/README.md",
+      "sha256": "ffae6cfa8a8b8293990aff239923d4b8c1c5e766e41fafc37765a415ab0312fa"
+    },
+    {
+      "path": ".specs/features/001-microphone-priority/spec.md",
+      "sha256": "e9d1a9c3e50516cf1e96a244302294a324254bfb5763fc74b7a2cef9aa583532"
+    },
+    {
+      "path": ".specs/roadmap.md",
+      "sha256": "a6f373fa171b025fc418e6484661b90c052ea6344c1f09c9ad2019480fd4555d"
+    }
+  ],
+  "oracle": "livespec-finalize-evidence",
+  "oracle_version": "1",
+  "outcome": "verified",
+  "payload_hash": "0d664cef153d04ef5751cb3991480c01aaa44dd66086bdecc401e2b1fe09c57a",
+  "receipt_hash": "04b210973a56e4daa3e118c81f9339f46943e3646f2051d55d03da7e516edbb6",
+  "schema_version": "1",
+  "verdict": "PASS",
+  "violations": []
+}

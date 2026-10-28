@@ -1,0 +1,16 @@
+
+running 2 tests
+test settings_service::atomic::tests::exhausted_temporary_names_fail_closed_without_deleting ... ok
+test settings_service::atomic::tests::occupied_temporary_names_are_skipped_without_modification ... FAILED
+
+failures:
+
+---- settings_service::atomic::tests::occupied_temporary_names_are_skipped_without_modification stdout ----
+Error: "temp creation failed"
+
+
+failures:
+    settings_service::atomic::tests::occupied_temporary_names_are_skipped_without_modification
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 302 filtered out; finished in 0.00s
+

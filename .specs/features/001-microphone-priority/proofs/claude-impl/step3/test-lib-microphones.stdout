@@ -1,0 +1,12 @@
+
+running 7 tests
+test microphones::catalog::tests::names_lists_each_present_name_once_in_enumeration_order ... ok
+test microphones::catalog::tests::each_configured_choice_gets_one_of_four_statuses_in_saved_order ... ok
+test microphones::catalog::tests::a_failed_or_partial_observation_never_proves_absence ... ok
+test microphones::priority::tests::the_legacy_selector_moves_its_choice_first_and_keeps_the_others ... ok
+test microphones::priority::tests::exact_names_are_kept_byte_for_byte_including_default ... ok
+test microphones::priority::tests::duplicate_and_blank_names_are_refused_per_position_without_echo ... ok
+test microphones::native::tests::slow_probes_are_abandoned_and_capped_until_they_end ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 555 filtered out; finished in 0.04s
+

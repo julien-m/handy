@@ -1,0 +1,4 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.69s
+     Running tests/microphone_reopen.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_reopen-8951d3b21ffd5da3)

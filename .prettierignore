@@ -19,3 +19,13 @@ src-tauri/src/catalog/catalog.json
 # Misc
 .DS_Store
 *.log
+
+# LiveSpec, Penflow and local investigation artifacts (not application code)
+.specs
+penflow
+.conventions
+.investigations
+.penflow-tmp
+.penflow-run
+.mockup-validation
+.livespec-backups

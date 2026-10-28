@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Bedienungshilfen-Zugriff",
-        "description": "Erforderlich, um transkribierten Text in deine Anwendungen einzugeben."
+        "description": "Erforderlich, um transkribierten Text in deine Anwendungen einzugeben.",
+        "openSettings": "Systemeinstellungen öffnen",
+        "retry": "Erneut versuchen",
+        "alreadyCheckedHint": "Wenn Handy bereits aktiviert ist, entfernen Sie es und fügen Sie es erneut hinzu."
       },
       "grant": "Berechtigung erteilen",
       "granted": "Erteilt",
@@ -202,9 +205,40 @@
           }
         },
         "errors": {
-          "restore": "Ursprüngliches Tastenkürzel konnte nicht wiederhergestellt werden",
-          "set": "Tastenkürzel konnte nicht gesetzt werden: {{error}}",
-          "reset": "Tastenkürzel konnte nicht auf Originalwert zurückgesetzt werden"
+          "set": "Tastenkürzel konnte nicht gesetzt werden: {{error}}"
+        },
+        "list": {
+          "add": "Tastenkürzel hinzufügen",
+          "addLimit": "Bis zu {{limit}} Tastenkürzel pro Aktion",
+          "change": "Klicken, um eine neue Kombination aufzunehmen",
+          "remove": "Dieses Tastenkürzel entfernen",
+          "removeLast": "Jede Aktion behält mindestens ein Tastenkürzel",
+          "reset": "Auf das Standard-Tastenkürzel zurücksetzen",
+          "errors": {
+            "conflict": "Bereits von {{action}} verwendet ({{shortcut}})",
+            "overlap": "Würde auch {{action}} auslösen ({{shortcut}})",
+            "invalid": "Ungültiges Tastenkürzel: {{error}}",
+            "registration": "Das System hat dieses Tastenkürzel abgelehnt: {{error}}",
+            "generic": "Das Tastenkürzel konnte nicht gespeichert werden",
+            "conflictsUnavailable": "Konflikte zwischen Tastenkürzeln konnten nicht geprüft werden"
+          },
+          "changeButton": "Ändern",
+          "discard": "Dieses Tastenkürzel verwerfen",
+          "discardDraft": "Verwerfen",
+          "save": "Speichern",
+          "unsaved": "Nicht gespeichert",
+          "lastHint": "Jede Aktion behält mindestens ein Tastenkürzel. Ändern oder setzen Sie es stattdessen zurück.",
+          "limitHint": "{{count}} von {{limit}} Tastenkürzeln. Entfernen Sie eines, um ein weiteres hinzuzufügen.",
+          "draftConflict": "{{shortcut}} wird bereits von {{action}} verwendet. Es wurde nichts gespeichert.",
+          "draftOverlap": "{{shortcut}} würde auch {{action}} auslösen. Es wurde nichts gespeichert.",
+          "legacyOverlap": "{{shortcut}} überschneidet sich mit {{action}}",
+          "legacyDuplicate": "{{shortcut}} wird auch von {{action}} verwendet",
+          "legacyBody": "Es funktioniert weiter wie vor dem Update. Ändern Sie es, um diese Warnung zu entfernen.",
+          "systemRefused": "{{system}} hat {{shortcut}} abgelehnt",
+          "systemRefusedGeneric": "Das System hat dieses Tastenkürzel abgelehnt",
+          "systemRefusedBody": "Möglicherweise hat eine andere App diese Kombination registriert. Wählen Sie eine andere oder versuchen Sie es erneut.",
+          "systemReason": "Systemmeldung: {{error}}",
+          "retry": "Erneut versuchen"
         }
       },
       "language": {
@@ -232,10 +266,66 @@
     "sound": {
       "title": "Ton",
       "microphone": {
-        "title": "Mikrofon",
-        "description": "Bevorzugtes Mikrofon auswählen",
-        "placeholder": "Mikrofon auswählen...",
-        "loading": "Wird geladen..."
+        "placeholder": "Mikrofon auswählen..."
+      },
+      "microphonePriority": {
+        "title": "Mikrofon-Priorität",
+        "description": "Handy nimmt mit dem ersten verfügbaren Mikrofon in dieser Reihenfolge auf, danach mit dem Systemstandard. Nicht verfügbare Mikrofone behalten ihren Platz.",
+        "emptyTitle": "Kein bevorzugtes Mikrofon",
+        "emptyBody": "Handy verwendet das Standardmikrofon des Systems, bis Sie eines hinzufügen.",
+        "status": {
+          "available": "Verfügbar",
+          "unavailable": "Nicht verfügbar",
+          "ambiguous": "Mehrdeutig",
+          "unknown": "Unbekannt"
+        },
+        "moveUp": "{{name}} nach oben verschieben",
+        "moveDown": "{{name}} nach unten verschieben",
+        "remove": "{{name}} entfernen",
+        "addLabel": "Mikrofon hinzufügen",
+        "addPlaceholder": "Mikrofon hinzufügen…",
+        "noDevices": "Kein Mikrofon zum Hinzufügen erkannt",
+        "duplicateChoice": "{{name}} ist bereits in der Liste.",
+        "refresh": "Verfügbarkeit aktualisieren",
+        "checked": "Vor {{seconds}} s geprüft",
+        "refreshFailed": "Geräte konnten nicht geprüft werden",
+        "retry": "Erneut versuchen",
+        "inUse": {
+          "title": "Aktuell verwendet",
+          "description": "Das Mikrofon, mit dem Handy gerade aufnimmt, oder das bei der letzten Aufnahme verwendete. Es kann von Ihrer ersten Wahl abweichen.",
+          "notUsedYet": "Seit dem Start noch nicht verwendet",
+          "systemDefault": "Standardmikrofon des Systems",
+          "unnamed": "Unbenanntes Mikrofon",
+          "lastRecording": "Letzte Aufnahme · {{reason}}"
+        },
+        "reason": {
+          "first_choice": "Erste Wahl",
+          "fallback": "Ersatz",
+          "fallbackUnavailable": "Ersatz · {{name}} nicht verfügbar",
+          "fallbackAmbiguous": "Ersatz · {{name}} mehrdeutig",
+          "clamshell": "Mikrofon bei geschlossenem Deckel",
+          "system_default": "Systemstandard"
+        },
+        "clamshell": {
+          "title": "Mikrofon bei geschlossenem Deckel",
+          "description": "Wird zuerst versucht, wenn der Deckel geschlossen ist. Ihre Prioritätsreihenfolge bleibt unverändert.",
+          "none": "Keines"
+        },
+        "draft": {
+          "discard": "Verwerfen",
+          "save": "Speichern",
+          "saving": "Wird gespeichert…",
+          "saved": "Mikrofon-Priorität gespeichert"
+        },
+        "conflict": {
+          "title": "Einstellungen an anderer Stelle geändert",
+          "body": "Die Reihenfolge wurde an anderer Stelle geändert. Laden Sie neu, um sie zu sehen; Ihre Änderungen werden verworfen.",
+          "reload": "Neu laden"
+        },
+        "errors": {
+          "duplicate": "Jedes Mikrofon darf nur einmal vorkommen.",
+          "empty": "Der Mikrofonname darf nicht leer sein."
+        }
       },
       "channel": {
         "title": "Eingangskanal",
@@ -323,13 +413,18 @@
         "description": "Wähle, wie Text eingefügt wird. Direkt: simuliert Tippen über Systemeingabe. Keine: überspringt Einfügen, aktualisiert nur Verlauf/Zwischenablage.",
         "options": {
           "clipboard": "Zwischenablage ({{modifier}}+V)",
+          "smartPaste": "Intelligentes Einfügen",
           "clipboardCtrlShiftV": "Zwischenablage (Strg+Umschalt+V)",
           "clipboardShiftInsert": "Zwischenablage (Umschalt+Einfg)",
           "direct": "Direkt",
           "none": "Keine",
-          "externalScript": "Externes Skript"
+          "externalScript": "Externes Skript",
+          "clipboardMac": "Zwischenablage (⌘V)",
+          "smartPasteDescription": "Standard unter macOS",
+          "noneDescription": "Nur Verlauf und Zwischenablage"
         },
-        "externalScriptPlaceholder": "/pfad/zu/ihrem/skript.sh"
+        "externalScriptPlaceholder": "/pfad/zu/ihrem/skript.sh",
+        "descriptionSmart": "Intelligentes Einfügen schreibt direkt ins Feld, sonst fügt es ein und stellt die Zwischenablage wieder her."
       },
       "typingTool": {
         "title": "Eingabetool",
@@ -357,6 +452,20 @@
           "ctrlEnter": "Ctrl+Enter"
         }
       },
+      "automaticEnter": {
+        "title": "Automatische Eingabetaste",
+        "description": "Einmal gesendet, nur nach erfolgreichem Einfügen.",
+        "keyLabel": "Zu drückende Taste",
+        "announced": "Automatische Eingabetaste: {{value}}",
+        "note": "Ersetzt Automatisch absenden. Keine Eingabetaste nach fehlgeschlagenem oder unbestätigtem Einfügen, mit Einfügemethode Keine oder wenn die App den Fokus verloren hat.",
+        "options": {
+          "never": "Nie",
+          "always": "Immer",
+          "alwaysDescription": "Jedes erfolgreiche Einfügen",
+          "pinOnly": "Nur im PIN-Modus",
+          "pinOnlyDescription": "Nur angeheftete Apps"
+        }
+      },
       "translateToEnglish": {
         "label": "Ins Englische übersetzen",
         "description": "Sprache aus anderen Sprachen automatisch während der Transkription ins Englische übersetzen."
@@ -374,14 +483,6 @@
           "hour1": "Nach 1 Stunde",
           "sec15": "Nach 15 Sekunden (Debug)"
         }
-      },
-      "customWords": {
-        "title": "Benutzerdefinierte Wörter",
-        "description": "Hilf unterstützten Modellen, Namen und Fachbegriffe zu erkennen. Die unscharfe Korrektur ist derzeit auf Wörter mit den Buchstaben A–Z und Zahlen beschränkt.",
-        "placeholder": "Wort hinzufügen",
-        "add": "Hinzufügen",
-        "remove": "{{word}} entfernen",
-        "duplicate": "\"{{word}}\" existiert bereits"
       },
       "voiceActivityDetection": {
         "title": "Sprachaktivitätserkennung (VAD)",
@@ -407,6 +508,148 @@
           "simplified": "Vereinfacht",
           "traditional": "Traditionell"
         }
+      },
+      "returnToApp": {
+        "title": "Zur App des Diktats zurückkehren",
+        "description": "In die App einfügen, in der das Diktat begann, auch wenn Sie zwischendurch die App wechseln.",
+        "unavailableUnreadable": "Auf diesem System nicht verfügbar: Handy kann die App im Vordergrund hier nicht erkennen. Der Text geht am Ende an die App im Vordergrund.",
+        "unavailablePlatform": "Auf diesem System nicht verfügbar. Der Text geht am Ende an die App im Vordergrund.",
+        "details": "Handy merkt sich beim Start eines Diktats die App im Vordergrund und wechselt vor dem Einfügen zu ihr zurück. Ist die Option aus, geht der Text an die App, die am Ende des Diktats im Vordergrund ist.",
+        "detailsLabel": "Über die Rückkehr zur App des Diktats"
+      },
+      "noFieldBubble": {
+        "title": "Blase anzeigen, wenn kein Textfeld ausgewählt ist",
+        "description": "Behält den Text in einer Blase, statt ihn ins Leere einzufügen."
+      }
+    },
+    "vocabulary": {
+      "group": "Vokabular",
+      "title": "Vokabular",
+      "description": "Namen und Begriffe, die das Modell erkennen soll, sofern es das unterstützt. Ersetzungen ändern den Text dagegen erst nach der Erkennung.",
+      "placeholder": "Begriff hinzufügen",
+      "inputLabel": "Neuer Vokabularbegriff",
+      "add": "Hinzufügen",
+      "addHint": "Gib einen Begriff ein, um ihn hinzuzufügen.",
+      "busy": "Warte, bis die aktuelle Änderung abgeschlossen ist.",
+      "paste": "Liste einfügen…",
+      "count": "{{total}} von {{max}} Begriffen",
+      "listLabel": "Vokabularbegriffe",
+      "remove": "{{term}} entfernen",
+      "retry": "Erneut versuchen",
+      "loading": "Vokabular wird geladen…",
+      "listFailed": "Das gespeicherte Vokabular konnte nicht gelesen werden. Es wurde nichts geändert; versuche es erneut, um es zu laden.",
+      "empty": {
+        "title": "Noch keine Begriffe",
+        "body": "Füge Namen wie Claude Code oder OpenClaw hinzu, einzeln oder als eingefügte Liste."
+      },
+      "flag": {
+        "empty": "Leerer Begriff, nicht gesendet. Entferne ihn.",
+        "too_long": "Länger als 100 Zeichen, nicht gesendet. Entferne ihn und füge eine kürzere Version hinzu.",
+        "line_break": "Enthält einen Zeilenumbruch, nicht gesendet. Entferne ihn und füge ihn erneut hinzu.",
+        "forbidden_character": "Enthält < > oder \", nicht gesendet. Entferne ihn und füge ihn ohne diese Zeichen hinzu.",
+        "duplicate": "Identisch mit einem früheren Begriff, nicht gesendet. Entferne ihn.",
+        "over_capacity": "Über dem Limit von 5.000 Begriffen, wird erst gesendet, wenn die Liste kürzer ist.",
+        "over_budget": "Nicht gesendet: über dem Modelllimit."
+      },
+      "errors": {
+        "term_empty": "Gib einen Begriff ein.",
+        "term_too_long": "Ein Begriff darf höchstens 100 Zeichen haben.",
+        "term_line_break": "Ein Begriff muss in eine Zeile passen.",
+        "term_forbidden_character": "Entferne die Zeichen < > oder \" aus dem Begriff.",
+        "term_duplicate": "Jeder Begriff darf nur einmal vorkommen, und dieser ist bereits im Vokabular.",
+        "limit": "Das Vokabular fasst höchstens 5.000 Begriffe. Entferne einen Begriff, um einen anderen hinzuzufügen.",
+        "conflict": "Das Vokabular wurde zwischenzeitlich geändert und neu geladen. Versuche es erneut.",
+        "notFound": "Dieser Begriff wurde bereits entfernt. Das Vokabular wurde neu geladen.",
+        "unknown": "Handy konnte die Änderung nicht bestätigen. Das Vokabular wurde neu geladen; prüfe es, bevor du es erneut versuchst.",
+        "committed": "Das Vokabular wurde gespeichert, aber Handy konnte es nicht sofort anwenden. Die Liste wurde neu geladen.",
+        "saved": "Dein gespeichertes Vokabular ist unverändert."
+      },
+      "status": {
+        "loading": "Unterstützung des Modells wird geprüft…",
+        "selectedModel": "das ausgewählte Modell",
+        "used": {
+          "title": "{{model}} nutzt das Vokabular bei der Erkennung",
+          "sent": "Gesendet: {{sent}} von {{total}} Begriffen.",
+          "sentOne": "Gesendet: {{sent}} von 1 Begriff."
+        },
+        "notSent": {
+          "over_budget": "Nicht gesendet, über dem Modelllimit: {{terms}}.",
+          "invalid": "Nicht gesendet, ungültig: {{terms}}.",
+          "duplicate": "Nicht gesendet, Duplikate: {{terms}}.",
+          "over_capacity": "Nicht gesendet, über 5.000 Begriffe hinaus: {{terms}}.",
+          "more": "und {{hidden}} weitere"
+        },
+        "noTermSent": {
+          "title": "{{model}} erhält keinen Begriff",
+          "empty_vocabulary": "Das Vokabular ist leer. Füge Begriffe hinzu, um sie bei der Erkennung zu nutzen.",
+          "invalid_terms_only": "Jeder gespeicherte Begriff ist ungültig oder ein Duplikat. Entferne die markierten Begriffe und füge korrigierte hinzu.",
+          "over_budget": "Der erste Begriff überschreitet das Modelllimit, daher wird kein Begriff gesendet. Entferne ihn, um die nachfolgenden Begriffe zu senden."
+        },
+        "notSupported": {
+          "title": "{{model}} kann das Vokabular bei der Erkennung nicht nutzen",
+          "body": "Stattdessen gilt die ungefähre Korrektur nach der Erkennung. Wähle ein Whisper-Modell, um Begriffe an die Erkennung zu senden."
+        },
+        "streaming": {
+          "title": "Beim Live-Streaming nicht genutzt",
+          "body": "{{model}} transkribiert live und sendet dabei keinen Erkennungskontext. Die ungefähre Korrektur gilt stattdessen für den endgültigen Text."
+        },
+        "unknown": {
+          "title": "Unterstützung unbekannt, bis das Modell geladen ist",
+          "model_not_loaded": "Handy prüft beim Laden, was {{model}} unterstützt.",
+          "capability_query_unanswered": "{{model}} hat nicht rechtzeitig geantwortet, zum Beispiel während eines Diktats. Handy prüft danach erneut."
+        },
+        "budgetUnverified": {
+          "title": "Vokabularunterstützung für {{model}} kann nicht bestätigt werden",
+          "body": "Dieses Modell gibt Erkennungskontext an, aber für diese Version ist kein Limit dafür dokumentiert. Es wird kein Begriff gesendet; stattdessen gilt die ungefähre Korrektur."
+        },
+        "failed": {
+          "title": "Vokabularstatus konnte nicht gelesen werden",
+          "body": "Dein Vokabular ist gespeichert. Versuche es erneut, um zu prüfen, was das Modell unterstützt."
+        }
+      },
+      "pasteBox": {
+        "title": "Begriffe einfügen",
+        "description": "Ein Begriff pro Zeile. Duplikate werden übersprungen; ungültige Zeilen müssen vor dem Hinzufügen korrigiert werden.",
+        "label": "Einzufügende Begriffe, einer pro Zeile",
+        "previewTitle": "Vorschau",
+        "previewEmpty": "Füge einen Begriff pro Zeile ein oder tippe ihn, um zu sehen, was hinzugefügt wird.",
+        "sameAs": "{{term}} — identisch mit {{original}}",
+        "alreadyListed": "{{term}} — bereits in der Liste",
+        "summary": {
+          "add": "Hinzuzufügen: {{n}}",
+          "duplicateOne": "1 Duplikat",
+          "duplicateMany": "Duplikate: {{n}}",
+          "errorOne": "1 Fehler",
+          "errorMany": "Fehler: {{n}}"
+        },
+        "kind": {
+          "add": "Hinzufügen",
+          "duplicate": "Duplikat",
+          "error": "Fehler"
+        },
+        "line": {
+          "empty": "Zeile {{line}}: leere Zeile, entferne sie",
+          "too_long": "Zeile {{line}}: höchstens 100 Zeichen verwenden",
+          "line_break": "Zeile {{line}}: Begriff in einer Zeile halten",
+          "forbidden_character": "Zeile {{line}}: Zeichen < > oder \" entfernen",
+          "duplicate": "Zeile {{line}}: identisch mit einem früheren Begriff",
+          "over_capacity": "Zeile {{line}}: über dem Limit von 5.000 Begriffen"
+        },
+        "note": {
+          "empty": "Dein Vokabular bleibt unverändert, bis du die Begriffe hinzufügst.",
+          "checking": "Zeilen werden geprüft…",
+          "fixOne": "Korrigiere Zeile {{lines}}, um die Begriffe hinzuzufügen. Dein Vokabular ist unverändert.",
+          "fixMany": "Korrigiere die Zeilen {{lines}}, um die Begriffe hinzuzufügen. Dein Vokabular ist unverändert.",
+          "overCapacity": "Das Vokabular fasst höchstens 5.000 Begriffe. Kürze die Liste, um sie hinzuzufügen. Dein Vokabular ist unverändert.",
+          "nothingToAdd": "Jede Zeile ist bereits im Vokabular.",
+          "ready": "Duplikate werden übersprungen. Nichts wird gespeichert, bis du die Begriffe hinzufügst."
+        },
+        "cancel": "Abbrechen",
+        "applyOne": "1 Begriff hinzufügen",
+        "applyMany": "{{n}} Begriffe hinzufügen",
+        "applyZero": "Begriffe hinzufügen",
+        "applying": "Wird hinzugefügt…",
+        "applied": "Begriffe zum Vokabular hinzugefügt."
       }
     },
     "postProcessing": {
@@ -441,26 +684,128 @@
           "refreshModels": "Modelle aktualisieren"
         }
       },
-      "prompts": {
-        "title": "Prompt",
-        "selectedPrompt": {
-          "title": "Ausgewählter Prompt",
-          "description": "Wähle eine Vorlage zur Verfeinerung von Transkriptionen oder erstelle eine neue. Verwende ${output} im Prompt-Text, um auf das erfasste Transkript zu verweisen."
+      "promptLibrary": {
+        "processing": {
+          "title": "KI-Nachbearbeitung",
+          "enabledDescription": "Diktate mit einem Prompt verarbeiten. Aus: Kein Diktat wird verarbeitet.",
+          "defaultTitle": "Standard-Prompt",
+          "defaultDescription": "Wird vom KI-Diktat-Tastenkürzel verwendet. Einfaches Diktat beginnt mit Keiner.",
+          "none": "Keiner",
+          "invalidOption": "Ungültig: vor der Verwendung bearbeiten"
         },
-        "noPrompts": "Keine Prompts verfügbar",
-        "selectPrompt": "Prompt auswählen",
-        "createNew": "Neuen Prompt erstellen",
-        "promptLabel": "Prompt-Name",
-        "promptLabelPlaceholder": "Prompt-Namen eingeben",
-        "promptInstructions": "Prompt-Anweisungen",
-        "promptInstructionsPlaceholder": "Schreibe die Anweisungen, die nach der Transkription ausgeführt werden sollen. Beispiel: Verbessere Grammatik und Klarheit für folgenden Text: ${output}",
-        "promptTip": "Tipp: Verwende <code>${output}</code>, um den transkribierten Text in deinen Prompt einzufügen.",
-        "updatePrompt": "Prompt aktualisieren",
-        "deletePrompt": "Prompt löschen",
-        "createPrompt": "Prompt erstellen",
-        "cancel": "Abbrechen",
-        "selectToEdit": "Wähle oben einen Prompt aus, um dessen Details anzuzeigen und zu bearbeiten.",
-        "createFirst": "Klicke oben auf 'Neuen Prompt erstellen', um deinen ersten Nachbearbeitungs-Prompt zu erstellen."
+        "list": {
+          "title": "Prompts",
+          "count": "{{count}} von {{limit}} Prompts",
+          "full": "{{limit}} von {{limit}} Prompts: Lösche einen, um einen weiteren hinzuzufügen",
+          "new": "Neuer Prompt",
+          "empty": "Noch keine Prompts. Erstelle einen, um deine Diktate zu verarbeiten.",
+          "loading": "Prompts werden geladen…",
+          "loadFailed": "Die Prompts konnten nicht geladen werden.",
+          "retry": "Erneut versuchen",
+          "edit": "{{name}} bearbeiten",
+          "defaultProvider": "Standardanbieter",
+          "providerModel": "{{provider}} · {{model}}",
+          "noShortcut": "Kein Tastenkürzel",
+          "notReady": "Nicht bereit: {{reason}}",
+          "invalid": "Ungültig: {{reason}}",
+          "reloadFailed": "Die Prompts konnten nicht aktualisiert werden. Die Anzeige ist möglicherweise veraltet."
+        },
+        "issues": {
+          "name_empty": "Name fehlt",
+          "name_too_long": "Name zu lang",
+          "name_duplicate": "doppelter Name",
+          "text_empty": "Text fehlt",
+          "text_too_long": "Text zu lang",
+          "override_incomplete": "Anbieter oder Modell fehlt",
+          "unknown_provider": "unbekannter Anbieter"
+        },
+        "reasons": {
+          "provider_error": "der Anbieter hat einen Fehler zurückgegeben",
+          "empty_result": "der Anbieter hat ein leeres Ergebnis zurückgegeben",
+          "timeout": "keine Antwort innerhalb von 30 Sekunden",
+          "provider_busy": "der Anbieter bearbeitet noch eine andere Anfrage",
+          "missing_endpoint": "Endpunkt fehlt",
+          "missing_model": "Modell fehlt",
+          "missing_api_key": "API-Schlüssel fehlt",
+          "provider_unavailable": "Anbieter auf diesem Gerät nicht verfügbar",
+          "unknown_provider": "unbekannter Anbieter",
+          "invalid_prompt": "der Prompt ist ungültig",
+          "prompt_missing": "der Prompt existiert nicht mehr"
+        },
+        "editor": {
+          "editTitle": "Prompt bearbeiten",
+          "newTitle": "Neuer Prompt",
+          "name": "Name",
+          "namePlaceholder": "Name des Prompts",
+          "text": "Prompt",
+          "textPlaceholder": "Schreibe die Anweisungen für das Transkript. Beispiel: Kürze das Transkript auf das Wesentliche. ${output}",
+          "textHint": "<code>${output}</code> wird durch das Transkript ersetzt.",
+          "fieldErrors": {
+            "name_empty": "Gib einen Namen ein (1–60 Zeichen).",
+            "name_too_long": "Verwende höchstens 60 Zeichen.",
+            "name_duplicate": "Ein anderer Prompt hat diesen Namen. Namen müssen eindeutig sein.",
+            "text_empty": "Gib den Text des Prompts ein.",
+            "text_too_long": "Verwende höchstens 8.000 Zeichen."
+          },
+          "provider": "Anbieter",
+          "defaultProviderOption": "Standardanbieter ({{provider}})",
+          "model": "Modell",
+          "modelPlaceholder": "Modellnamen eingeben",
+          "readyEndpoint": "Endpunkt {{endpoint}} · Bereit",
+          "readyProvider": "{{provider}} · {{model}} · Bereit",
+          "notReadyTitle": "{{provider}} ist nicht bereit: {{reason}}",
+          "notReadyBody": "Diktate mit diesem Prompt überspringen den KI-Schritt und behalten den Originaltext.",
+          "fix": {
+            "api_key": "API-Schlüssel hinzufügen",
+            "endpoint": "Endpunkt festlegen"
+          },
+          "shortcuts": "Tastenkürzel (bis zu {{limit}})",
+          "changedElsewhere": "Dieser Prompt wurde an anderer Stelle geändert. Lade ihn neu, um die Änderung zu sehen, oder speichere, um deine Version zu behalten.",
+          "reload": "Neu laden",
+          "deletedElsewhere": "Dieser Prompt wurde an anderer Stelle gelöscht und kann nicht mehr gespeichert werden.",
+          "shortcutsSavedImmediately": "Änderungen an Tastenkürzeln werden sofort gespeichert.",
+          "fixField": {
+            "api_key": "API-Schlüssel für {{provider}}",
+            "endpoint": "Endpunkt von {{provider}}",
+            "hint": "Wird beim Verlassen des Feldes gespeichert. Der Standardanbieter ändert sich nicht."
+          }
+        },
+        "actions": {
+          "note": "Änderungen gelten ab dem nächsten Diktat nach dem Speichern.",
+          "fixFields": "Korrigiere die markierten Felder, um zu speichern.",
+          "delete": "Prompt löschen",
+          "cancel": "Abbrechen",
+          "save": "Speichern",
+          "saving": "Wird gespeichert…",
+          "saved": "Prompt gespeichert."
+        },
+        "deleteDialog": {
+          "title": "„{{name}}“ löschen?",
+          "shortcuts": "Seine Tastenkürzel werden entfernt: {{shortcuts}}.",
+          "default": "Es ist der Standard-Prompt: Der Standard wird zu Keiner.",
+          "body": "Dies kann nicht rückgängig gemacht werden.",
+          "cancel": "Abbrechen",
+          "confirm": "Löschen",
+          "close": "Schließen",
+          "deleted": "Prompt „{{name}}“ gelöscht.",
+          "deletedWithShortcuts": "Prompt „{{name}}“ gelöscht. Entfernte Tastenkürzel: {{shortcuts}}."
+        },
+        "test": {
+          "title": "Test",
+          "sampleLabel": "Beispieltext",
+          "samplePlaceholder": "Beispieltranskript eingeben oder einfügen",
+          "run": "Test starten",
+          "running": "Test läuft…",
+          "note": "Es wird nichts eingefügt und der Verlauf bleibt unverändert.",
+          "meta": "{{model}} · {{provider}} · {{seconds}} s",
+          "failedTitle": "Test fehlgeschlagen: {{reason}}",
+          "failedHint": "Prüfe die Anbietereinstellungen und starte den Test erneut.",
+          "retry": "Erneut starten",
+          "busy": "Ein anderer Test läuft noch. Versuche es erneut, wenn er beendet ist.",
+          "skipped": "Gib einen Beispieltext ein, um den Prompt zu testen.",
+          "outdated": "Dieses Ergebnis gehört zu einer früheren Version des Prompts oder Beispiels. Starte den Test erneut."
+        },
+        "shortcutOwner": "den Prompt „{{name}}“"
       }
     },
     "history": {
@@ -476,6 +821,7 @@
       "deleteError": "Eintrag konnte nicht gelöscht werden. Bitte versuche es erneut.",
       "retranscribe": "Erneut transkribieren",
       "retranscribeError": "Erneute Transkription fehlgeschlagen. Bitte versuche es erneut.",
+      "noAudio": "Für diesen Eintrag wurde keine Audioaufnahme gespeichert, daher kann er nicht erneut transkribiert werden.",
       "transcribing": "Transkribiere...",
       "transcriptionFailed": "Transkription fehlgeschlagen. Du kannst über das Wiederholen-Symbol erneut transkribieren."
     },
@@ -516,7 +862,8 @@
       "historyLimit": {
         "title": "Verlaufslimit",
         "description": "Maximale Anzahl der Verlaufseinträge",
-        "entries": "Einträge"
+        "entries": "Einträge",
+        "invalid": "Geben Sie eine ganze Zahl von {{min}} bis {{max}} ein."
       },
       "recordingRetention": {
         "title": "Aufnahmen automatisch löschen",
@@ -538,7 +885,8 @@
       },
       "postProcessingToggle": {
         "label": "Nachbearbeitung",
-        "description": "KI-gestützte Textverfeinerung nach der Transkription aktivieren"
+        "description": "KI-gestützte Textverfeinerung nach der Transkription aktivieren",
+        "shortcutRefused": "Die Nachbearbeitung ist aktiviert, aber das System hat das Tastenkürzel {{shortcut}} abgelehnt. Ändere es in den Einstellungen der Nachbearbeitung."
       },
       "muteWhileRecording": {
         "label": "Während Aufnahme stummschalten",
@@ -551,7 +899,8 @@
       "keyboardImplementation": {
         "title": "Tastatur-Implementierung",
         "description": "Wähle das Backend für Tastaturkürzel.",
-        "bindingsReset": "Tastaturkürzel waren inkompatibel und wurden auf die Standardwerte zurückgesetzt"
+        "bindingsReset": "Einige Tastenkürzel waren inkompatibel und wurden auf ihren Standardwert zurückgesetzt oder entfernt",
+        "conflictsKept": "Einige Tastenkürzel kollidieren jetzt mit einer anderen Aktion. Sie wurden beibehalten und sind in den Tastenkürzel-Einstellungen markiert."
       },
       "paths": {
         "appData": "App-Daten:",
@@ -645,6 +994,168 @@
         "label": "Neuerungen anzeigen",
         "description": "Versionshinweise nach Handy-Updates anzeigen"
       }
+    },
+    "replacements": {
+      "group": "Ersetzungen",
+      "title": "Ersetzungsregeln",
+      "description": "Schreibe erkannten Text in deiner eigenen Schreibweise um. Wird anders als das Vokabular erst nach der Erkennung angewendet.",
+      "loading": "Ersetzungsregeln werden geladen…",
+      "loadFailed": "Die Ersetzungsregeln konnten nicht geladen werden.",
+      "retry": "Erneut versuchen",
+      "views": {
+        "label": "Regelansicht",
+        "list": "Liste",
+        "text": "Text"
+      },
+      "import": "Importieren…",
+      "export": {
+        "button": "Exportieren…",
+        "done": "Regeln nach {{name}} exportiert.",
+        "notSynced": "Regeln nach {{name}} exportiert, aber das Speichern auf dem Datenträger ist noch nicht bestätigt.",
+        "symbolicLink": "{{name}} ist ein Link: Wähle eine andere Datei. Es wurde nichts exportiert.",
+        "readOnly": "{{name}} ist schreibgeschützt: Wähle eine andere Datei. Es wurde nichts exportiert.",
+        "notWritten": "{{name}} konnte nicht geschrieben werden. Die Datei ist unverändert."
+      },
+      "add": {
+        "recognized": "Erkannter Text",
+        "replacement": "Ersetzung",
+        "button": "Regel hinzufügen",
+        "needsText": "Gib den erkannten Text und die Ersetzung ein, um eine Regel hinzuzufügen."
+      },
+      "rule": {
+        "edit": "Regel {{recognized}} bearbeiten",
+        "done": "Bearbeitung der Regel {{recognized}} beenden",
+        "delete": "Regel {{recognized}} löschen",
+        "recognized": "Erkannter Text der Regel {{position}}",
+        "replacement": "Ersetzung der Regel {{position}}"
+      },
+      "count": "{{count}} von {{max}} Regeln · ohne Beachtung der Groß-/Kleinschreibung, nur ganze Wörter",
+      "empty": {
+        "title": "Noch keine Ersetzungsregeln",
+        "body": "Füge eine Regel hinzu oder füge Zeilen ein wie",
+        "paste": "Regeln als Text einfügen"
+      },
+      "draft": {
+        "note": "Nicht gespeicherte Änderungen. Diktate verwenden die gespeicherten Regeln, bis du speicherst.",
+        "discard": "Verwerfen",
+        "save": "Speichern",
+        "saving": "Wird gespeichert…",
+        "saved": "Ersetzungsregeln gespeichert."
+      },
+      "commit": {
+        "invalid": "Einige Regeln sind ungültig. Korrigiere die markierten Zeilen und versuche es erneut.",
+        "unchanged": "Die gespeicherten Regeln sind unverändert.",
+        "conflict": "Die Regeln wurden an anderer Stelle geändert, zum Beispiel über die Befehlszeile. Lade sie neu, um fortzufahren.",
+        "reload": "Neu laden",
+        "reloadDiscards": "Beim Neuladen werden die gespeicherten Regeln angezeigt und deine nicht gespeicherten Änderungen verworfen."
+      },
+      "bulk": {
+        "editor": "Regeln als Text",
+        "hint": "Eine Regel pro Zeile: recognized;replacement. Ein Tabulator funktioniert auch beim Einfügen aus einer Tabelle. Zeilen, die mit # beginnen, werden ignoriert.",
+        "cancel": "Abbrechen",
+        "apply": "Anwenden",
+        "applying": "Wird angewendet…",
+        "applied": "Ersetzungsregeln angewendet.",
+        "fixLine": "Korrigiere Zeile {{line}}, um anzuwenden. Die gespeicherten Regeln sind unverändert.",
+        "fixLines": "Korrigiere die {{count}} fehlerhaften Zeilen, um anzuwenden. Die gespeicherten Regeln sind unverändert.",
+        "ready": "„Anwenden“ ersetzt die gespeicherten Regeln durch diese Vorschau.",
+        "noChanges": "Nichts anzuwenden: Der Text entspricht den gespeicherten Regeln."
+      },
+      "preview": {
+        "title": "Vorschau",
+        "updating": "Vorschau wird aktualisiert…",
+        "errorOne": "1 Fehler · Anwenden nicht möglich",
+        "errorMany": "{{count}} Fehler · Anwenden nicht möglich",
+        "changes": "Hinzufügen: {{adds}} · Aktualisieren: {{updates}} · Löschen: {{deletes}}",
+        "noChanges": "Keine Änderungen",
+        "omitted": "Nicht aufgeführte Zeilen: {{count}}",
+        "duplicateOf": "Gleicher erkannter Text wie in Zeile {{lines}}",
+        "kinds": {
+          "add": "Hinzufügen",
+          "update": "Aktualisieren",
+          "delete": "Löschen",
+          "unchanged": "Unverändert",
+          "ignored": "Ignoriert",
+          "error": "Fehler"
+        },
+        "ignored": {
+          "header": "Kopfzeile",
+          "blank": "Leerzeile",
+          "comment": "Kommentar"
+        }
+      },
+      "importDialog": {
+        "title": "Regeln importieren",
+        "close": "Schließen",
+        "fileOne": "{{name}} · 1 Zeile · UTF-8",
+        "fileMany": "{{name}} · {{count}} Zeilen · UTF-8",
+        "mode": "Modus",
+        "merge": "Zusammenführen: passende Regeln aktualisieren, neue am Ende hinzufügen",
+        "replace": "Ersetzen: Die Datei wird zum gesamten Regelsatz",
+        "previewing": "Datei wird gelesen…",
+        "updateOne": "1 Aktualisierung",
+        "updateMany": "{{count}} Aktualisierungen",
+        "addOne": "1 Hinzufügung",
+        "addMany": "{{count}} Hinzufügungen",
+        "deleteOne": "1 Löschung",
+        "deleteMany": "{{count}} Löschungen",
+        "errorOne": "1 Fehler",
+        "errorMany": "{{count}} Fehler",
+        "exampleUpdate": "{{recognized}} → {{replacement}} (Aktualisierung, behält Position {{position}})",
+        "exampleAdd": "{{recognized}} → {{replacement}} (am Ende hinzugefügt)",
+        "exampleDelete": "{{recognized}} → {{replacement}} (entfernt)",
+        "noChanges": "Diese Datei entspricht den gespeicherten Regeln: Es gibt nichts zu importieren.",
+        "firstError": "Zeile {{line}}: {{reason}}",
+        "cancel": "Abbrechen",
+        "apply": "Import anwenden",
+        "applying": "Wird importiert…",
+        "imported": "Regeln importiert."
+      },
+      "importRefusal": {
+        "encodingTitle": "{{name}} konnte nicht importiert werden: Es ist kein UTF-8-Text",
+        "encodingBody": "Aus dieser Datei wurde nichts importiert. Exportiere sie als reinen Text oder CSV und importiere sie dann erneut.",
+        "tooLargeTitle": "{{name}} konnte nicht importiert werden: Die Datei ist größer als 1 MB",
+        "tooLargeBody": "Es wurde nichts importiert. Teile die Datei in kleinere Dateien auf und importiere sie dann einzeln.",
+        "unreadableTitle": "{{name}} konnte nicht gelesen werden",
+        "unreadableBody": "Es wurde nichts importiert. Prüfe, ob die Datei noch existiert und Handy sie öffnen kann.",
+        "dismiss": "Ausblenden"
+      },
+      "deleteDialog": {
+        "title": "Diese Regel löschen?",
+        "body": "{{recognized}} → {{replacement}} wird aus der Liste entfernt. Speichere, um die Änderung anzuwenden.",
+        "cancel": "Abbrechen",
+        "confirm": "Löschen"
+      },
+      "switchDialog": {
+        "title": "Änderungen speichern oder verwerfen",
+        "body": "Liste und Text bearbeiten dieselben Regeln. Speichere oder verwirf zuerst deine nicht gespeicherten Änderungen.",
+        "cancel": "Abbrechen",
+        "discard": "Verwerfen",
+        "save": "Speichern"
+      },
+      "issues": {
+        "recognizedEmpty": "Gib den erkannten Text ein.",
+        "recognizedTooLong": "Der erkannte Text ist auf 100 Zeichen begrenzt.",
+        "recognizedForbidden": "Der erkannte Text darf keinen Zeilenumbruch, keinen Tabulator und kein ; enthalten.",
+        "recognizedControl": "Der erkannte Text enthält ein unsichtbares Steuerzeichen.",
+        "recognizedComment": "Der erkannte Text darf nicht mit # beginnen.",
+        "duplicate": "Jeder erkannte Text darf nur einmal vorkommen; dieser ist bereits definiert.",
+        "replacementEmpty": "Gib die Ersetzung ein.",
+        "replacementTooLong": "Die Ersetzung ist auf 500 Zeichen begrenzt.",
+        "replacementForbidden": "Die Ersetzung darf keinen Zeilenumbruch und keinen Tabulator enthalten.",
+        "replacementControl": "Die Ersetzung enthält ein unsichtbares Steuerzeichen.",
+        "missingSeparator": "Trennzeichen fehlt: Füge ; und dann die Ersetzung hinzu",
+        "tooManyRules": "Ein Regelsatz umfasst höchstens 1.000 Regeln.",
+        "invalidSavedRules": "Die gespeicherten Regeln sind ungültig. Lade sie vor dem Import neu.",
+        "unicodeUnavailable": "Die Regeln können gerade nicht geprüft werden. Starte Handy neu und versuche es dann erneut.",
+        "invalidRule": "Diese Regel ist ungültig."
+      }
+    },
+    "unsavedChanges": {
+      "title": "Nicht gespeicherte Änderungen",
+      "description": "Einige deiner Ersetzungsregeln sind nicht gespeichert. Bleib hier, um sie zu speichern, oder verwirf sie und verlasse die Seite.",
+      "stay": "Bleiben",
+      "discard": "Verwerfen und verlassen"
     }
   },
   "footer": {
@@ -673,7 +1184,9 @@
   },
   "accessibility": {
     "permissionsDescription": "Handy benötigt Bedienungshilfen-Berechtigungen, um transkribierten Text einzugeben.",
-    "openSettings": "Systemeinstellungen öffnen"
+    "openSettings": "Systemeinstellungen öffnen",
+    "offTitle": "Die Bedienungshilfen-Berechtigung ist deaktiviert",
+    "smartPasteOff": "Intelligentes Einfügen kann weder einfügen noch über die Zwischenablage einsetzen. Ihre Transkripte bleiben zur Wiederherstellung erhalten."
   },
   "errors": {
     "loadDirectory": "Fehler beim Laden des Verzeichnisses: {{error}}",
@@ -686,12 +1199,41 @@
     },
     "noInputDeviceTitle": "Kein Mikrofon gefunden",
     "noInputDevice": "Es wurde kein Audio-Eingabegerät erkannt. Bitte schließe ein Mikrofon oder Headset an und versuche es erneut.",
+    "inputLostTitle": "Aufnahme abgebrochen",
+    "inputLost": "Das Mikrofon wurde getrennt. Die bis dahin aufgenommene Audiospur wird transkribiert.",
     "recordingFailed": "Aufnahme konnte nicht gestartet werden: {{error}}",
     "modelLoadFailed": "Modell konnte nicht geladen werden: {{model}}",
     "modelLoadFailedUnknown": "unbekanntes Modell",
     "pasteFailedTitle": "Text konnte nicht eingefügt werden",
     "pasteFailed": "Der Text konnte nicht in die aktive Anwendung eingefügt werden.",
-    "transcriptionFailedTitle": "Transkription fehlgeschlagen"
+    "pasteFailedNotSaved": "Der Text konnte weder eingefügt noch im Verlauf gespeichert werden.",
+    "transcriptionFailedTitle": "Transkription fehlgeschlagen",
+    "settings": {
+      "committedNotApplied": "Die Einstellung wurde gespeichert, konnte aber nicht sofort angewendet werden.",
+      "gpuDeviceRequired": "Wählen Sie ein GPU-Gerät aus, bevor Sie den GPU-Beschleuniger wählen.",
+      "outOfRange": "Dieser Wert liegt außerhalb des zulässigen Bereichs.",
+      "validationFailed": "Dieser Wert ist für diese Einstellung nicht zulässig.",
+      "revisionConflict": "Die Einstellungen wurden an anderer Stelle geändert. Laden Sie neu und versuchen Sie es erneut.",
+      "unavailable": "Diese Einstellung kann gerade nicht geändert werden. Versuchen Sie es später erneut.",
+      "shortcutSessionBusy": "Ein Diktat läuft gerade. Versuche es erneut, wenn es beendet ist.",
+      "persistenceFailed": "Einstellungen konnten nicht gespeichert werden: Die Einstellungsdatei konnte nicht geschrieben werden. Es wurde nichts geändert.",
+      "generic": "Die Einstellung konnte nicht geändert werden.",
+      "readOnly": "Die Einstellungen sind in dieser Sitzung schreibgeschützt: Die Einstellungsdatei kann nicht sicher geschrieben werden, daher werden Änderungen nicht gespeichert.",
+      "unsupportedPlatform": "Diese Einstellung ist auf diesem System nicht verfügbar.",
+      "promptNameEmpty": "Gib einen Namen für den Prompt ein.",
+      "promptNameTooLong": "Der Name des Prompts darf höchstens 60 Zeichen lang sein.",
+      "promptNameDuplicate": "Ein anderer Prompt hat bereits diesen Namen. Namen müssen eindeutig sein.",
+      "promptTextEmpty": "Gib den Text des Prompts ein.",
+      "promptTextTooLong": "Der Text des Prompts darf höchstens 8.000 Zeichen lang sein.",
+      "promptOverrideIncomplete": "Wähle einen Anbieter und ein Modell oder verwende den Standardanbieter.",
+      "promptUnknownProvider": "Dieser Anbieter ist nicht verfügbar.",
+      "promptNotUsable": "Dieser Prompt ist ungültig. Bearbeite ihn, bevor du ihn verwendest.",
+      "limitExceeded": "Die Höchstzahl ist erreicht.",
+      "conflictTitle": "Einstellungen wurden an anderer Stelle geändert",
+      "conflictBody": "Die Befehlszeile oder ein anderes Fenster hat eine neuere Version gespeichert. Laden Sie neu, um sie zu sehen; Ihre ungespeicherte Änderung wird verworfen.",
+      "reload": "Neu laden",
+      "reloadFailed": "Die Einstellungen konnten nicht neu geladen werden. Versuchen Sie es erneut."
+    }
   },
   "appLanguage": {
     "title": "Anwendungssprache",
@@ -709,7 +1251,48 @@
   "overlay": {
     "transcribing": "Transkribiere...",
     "processing": "Verarbeite...",
-    "loadingModel": "Modell wird geladen..."
+    "loadingModel": "Modell wird geladen...",
+    "fallbackNotice": "Die KI-Verarbeitung ist fehlgeschlagen. Der Originaltext wurde verwendet.",
+    "destination": {
+      "label": "Ziel: {{name}}",
+      "pinnedLabel": "Ziel: {{name}}, angeheftet",
+      "frontmostApp": "App im Vordergrund",
+      "remove": "Ziel entfernen",
+      "unknownApp": "Die Ziel-App",
+      "choiceFailed": "Das Ziel konnte nicht geändert werden.",
+      "menu": {
+        "title": "Ziel dieses Diktats",
+        "frontmostNow": "Jetzt im Vordergrund",
+        "otherApps": "Andere Apps",
+        "frontmostAtEnd": "App im Vordergrund am Ende",
+        "loading": "Apps werden geladen…",
+        "failed": "Die App-Liste konnte nicht geladen werden.",
+        "pin": "{{name}} anheften",
+        "unpin": "{{name}} lösen",
+        "thisDictationOnly": "Nur dieses Diktat"
+      },
+      "refused": {
+        "stale": "Das Ziel hat sich inzwischen geändert; die Liste wurde aktualisiert.",
+        "frozen": "Das Einfügen hat begonnen; das Ziel kann nicht mehr geändert werden.",
+        "unavailable": "Diese App ist nicht mehr verfügbar; die Liste wurde aktualisiert."
+      }
+    },
+    "prompt": {
+      "label": "Prompt für dieses Diktat: {{name}}",
+      "hint": "Zum Anzeigen der Optionen darüberfahren",
+      "none": "Keiner (keine KI-Verarbeitung)",
+      "menuTitle": "Prompt für dieses Diktat",
+      "note": "Gilt nur für dieses Diktat. Standard bleibt {{name}}.",
+      "loading": "Prompts werden geladen…",
+      "failed": "Die Prompts konnten nicht geladen werden.",
+      "choiceFailed": "Der Prompt konnte nicht geändert werden.",
+      "refused": {
+        "sessionEnded": "Die Aufnahme ist beendet; der Prompt kann nicht mehr geändert werden.",
+        "processingOff": "Die KI-Verarbeitung ist für dieses Diktat aus.",
+        "promptMissing": "Dieser Prompt existiert nicht mehr.",
+        "promptNotUsable": "Dieser Prompt hat Fehler; bearbeite ihn zuerst in den Einstellungen."
+      }
+    }
   },
   "whatsNew": {
     "title": "Neu in Handy v{{version}}"
@@ -724,5 +1307,45 @@
     "learnMore": "So behebst du das",
     "recorderBlocked": "Tastenkürzel können gerade nicht aufgezeichnet werden — macOS Secure Input blockiert Tastenereignisse. Behebe zuerst die Secure-Input-Warnung.",
     "dismiss": "Ausblenden"
+  },
+  "smartPaste": {
+    "handOver": "Text für den entfernten Bildschirm in die Zwischenablage gelegt"
+  },
+  "recoveryBubble": {
+    "label": "Von Handy aufbewahrte Transkription",
+    "previewLabel": "Transkription",
+    "reason": {
+      "appClosed": "{{app}} ist nicht mehr geöffnet",
+      "appClosedUnnamed": "Die App ist nicht mehr geöffnet",
+      "pinnedAppNotRunning": "{{app}} ist angeheftet, aber nicht geöffnet",
+      "pinnedAppNotRunningUnnamed": "Die angeheftete App ist nicht geöffnet",
+      "activationFailed": "{{app}} konnte nicht in den Vordergrund geholt werden",
+      "activationFailedUnnamed": "Die App konnte nicht in den Vordergrund geholt werden",
+      "insertionFailed": "Einfügen fehlgeschlagen",
+      "noTextField": "Kein Textfeld ist ausgewählt"
+    },
+    "explanation": {
+      "notInserted": "Handy hat nichts eingefügt und keine Eingabetaste gesendet.",
+      "mayHaveReached": "Möglicherweise ist ein Teil des Textes in der App angekommen.",
+      "nothingSent": "An die App wurde nichts gesendet.",
+      "lateRead": "Die App hat die Zwischenablage verspätet gelesen: Der Text wurde möglicherweise doch eingefügt. Prüfe das, bevor du erneut kopierst.",
+      "historyKept": "Die Transkription bleibt im Verlauf gespeichert.",
+      "historyKeptFull": "Die vollständige Transkription bleibt im Verlauf gespeichert.",
+      "historyNotKept": "Die Transkription ist nicht im Verlauf.",
+      "openAppDrag": "Öffne {{app}} und ziehe oder kopiere dann den Text.",
+      "openAppCopy": "Öffne {{app}} und kopiere dann den Text.",
+      "openUnnamedDrag": "Öffne die App und ziehe oder kopiere dann den Text.",
+      "openUnnamedCopy": "Öffne die App und kopiere dann den Text.",
+      "focusFieldDrag": "Klicke in ein Textfeld und ziehe oder kopiere dann den Text.",
+      "focusFieldCopy": "Klicke in ein Textfeld und kopiere dann den Text.",
+      "noFieldSetting": "Du kannst diese Prüfung unter Einstellungen, Erweitert, Ausgabe ausschalten."
+    },
+    "actions": {
+      "drag": "In ein Feld ziehen",
+      "copy": "Kopieren",
+      "why": "Warum?",
+      "hideDetails": "Details ausblenden",
+      "close": "Schließen"
+    }
   }
 }

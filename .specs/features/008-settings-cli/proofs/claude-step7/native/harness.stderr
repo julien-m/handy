@@ -1,0 +1,18 @@
+PASS older: read and write refused with exit 5: exits 5,5
+PASS older: store untouched: store absent
+PASS older: older app not activated: ApplicationType UIElement -> UIElement
+PASS offline: 30 reads succeed: 30/30 ok
+PASS offline: every successful read <= 2000 ms (this machine, this build): max 20.2 ms, median 12.3 ms
+PASS offline: writes commit (start_hidden, show_tray_icon): {"data":{"start_hidden":true},"ok":true,"revision":1} {"data":{"show_tray_icon":true},"ok":true,"revision":1}
+PASS offline: no model or app data created by the CLI: settings.instance.lock, settings.lock, settings_store.json
+PASS app: started hidden without Dock icon (Accessory): ApplicationType UIElement
+PASS app: no visible main window: []
+PASS app: no settings read before the service is installed: log mentions it: false
+PASS live: 30 reads succeed: 30/30 ok
+PASS live: every successful read <= 2000 ms (this machine, this build): max 85.6 ms, median 10.9 ms
+PASS live: writes answered by the instance and read back: {"data":{"paste_delay_ms":120},"ok":true,"revision":2} {"data":{"auto_submit":true},"ok":true,"revision":3}
+PASS live: show_tray_icon routed writes ran the tray live effect in the app: app log "Tray visibility set to" false/true: 0,0 -> 1,1
+PASS live: CLI calls never showed the app (still Accessory): ApplicationType UIElement
+PASS restart: stale endpoint reclaimed, channel answers again: new pid 50611
+PASS restart: offline access returns once the app is gone: exit 0
+PASS cli: no CLI process registered as an application (the app itself is seen): 89 CLI runs, registered 0; app registration seen: true

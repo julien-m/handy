@@ -1,0 +1,1839 @@
+
+running 1060 tests
+test actions::tests::live_overlay_uses_streaming_states_only_for_streaming_models ... ok
+test audio_toolkit::audio::attempt::tests::a_publication_racing_the_timeout_is_accepted_not_abandoned ... ok
+test audio_toolkit::audio::attempt::tests::a_worker_exiting_at_the_timeout_is_never_counted_as_stalled ... ok
+test audio_toolkit::audio::attempt::tests::a_ready_handshake_returns_the_stream_result ... ok
+test audio_toolkit::audio::attempt::tests::a_worker_ending_without_handshake_is_lost ... ok
+test audio_toolkit::audio::attempt::tests::a_worker_error_is_reported_without_counting_a_stall ... ok
+test audio_toolkit::audio::recorder::loss_tests::stop_without_a_consumer_returns_the_salvaged_prefix ... ok
+test audio_toolkit::audio::recorder::tests::callback_partially_fills_ring_and_counts_dropped_audio ... ok
+test audio_toolkit::audio::recorder::tests::bounded_drain_leaves_remaining_samples_for_the_next_command_cycle ... ok
+test audio_toolkit::audio::recorder::tests::callback_downmixes_or_selects_multichannel_input ... ok
+test audio_toolkit::audio::recorder::tests::callback_forwards_boundary_block_then_stays_silent_until_resumed ... ok
+test audio_toolkit::audio::recorder::tests::callback_writes_mono_samples ... ok
+test audio_toolkit::audio::recorder::tests::detects_no_input_device ... ok
+test audio_toolkit::audio::recorder::tests::detects_permission_denied ... ok
+test audio_toolkit::audio::recorder::tests::detects_access_is_denied ... ok
+test audio_toolkit::audio::recorder::tests::detects_coreaudio_config_error ... ok
+test audio_toolkit::audio::recorder::tests::detects_windows_error_code ... ok
+test audio_toolkit::audio::recorder::tests::does_not_match_other_errors_for_no_device ... ok
+test audio_toolkit::audio::recorder::tests::does_not_match_unrelated_errors ... ok
+test audio_toolkit::audio::recorder::tests::idle_chunks_are_discarded_without_reaching_the_recording ... ok
+test audio_toolkit::audio::recorder::tests::ring_wraparound_preserves_both_read_slices_in_order ... ok
+test audio_toolkit::audio::recorder::opening_tests::a_failed_attempt_clears_the_cached_config ... ok
+test audio_toolkit::audio::recorder::tests::stream_error_requires_reopen ... ok
+test audio_toolkit::audio::recorder::tests::unopened_recorder_does_not_need_reopen ... ok
+test audio_toolkit::audio::recorder::tests::resampler_frame_size_follows_the_vad_backend ... ok
+test audio_toolkit::audio::recorder::loss_tests::a_lost_stream_returns_its_prefix_without_waiting_for_the_pause ... ok
+test audio_toolkit::audio::recorder::loss_tests::the_processed_prefix_survives_a_consumer_ending_without_stop ... ok
+test audio_toolkit::audio::recorder::tests::shutdown_is_processed_without_audio_samples ... ok
+test audio_toolkit::audio::resampler::tests::finish_does_not_leak_tail_into_next_session ... ok
+test audio_toolkit::audio::resampler::tests::finish_flushes_unaligned_tail ... ok
+test audio_toolkit::audio::resampler::tests::finish_flushes_resampler_delay ... ok
+test audio_toolkit::audio::recorder::tests::repeated_start_stop_cycles_resume_capture_without_leaking_samples ... ok
+test audio_toolkit::audio::resampler::tests::reset_passthrough_mode_clears_pending ... ok
+test audio_toolkit::audio::resampler::tests::finish_flushes_resampler_delay_44100 ... ok
+test audio_toolkit::lang_id::tests::fully_unmappable_metadata_fails_closed ... ok
+test audio_toolkit::lang_id::tests::normalizes_model_language_codes ... ok
+test audio_toolkit::lang_id::tests::detects_portuguese_sentence_containing_um ... ok
+test audio_toolkit::lang_id::tests::regional_allowlist_preserves_portuguese_detection ... ok
+test audio_toolkit::lang_id::tests::short_ambiguous_text_returns_none ... ok
+test audio_toolkit::lang_id::tests::parakeet_v3_language_list_still_detects ... ok
+test audio_toolkit::lang_id::tests::unmappable_codes_are_dropped_not_fatal ... ok
+test audio_toolkit::text::tests::ngrams_never_cross_a_protected_span ... ok
+test audio_toolkit::text::tests::protected_span_is_never_approximately_corrected ... ok
+test audio_toolkit::text::tests::seams_keep_original_whitespace_and_punctuation ... ok
+test audio_toolkit::lang_id::tests::missing_metadata_detects_unconstrained ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_exact_match ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_fuzzy_match ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_handles_unicode_punctuation ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_ngram_preserves_case ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_matches_ampersand_word ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_matches_spoken_ampersand_word ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_ngram_three_words ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_ngram_with_spaces_in_custom ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_prefers_longer_ngram ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_ngram_two_words ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_skips_cjk_fuzzy_matching ... ok
+test audio_toolkit::audio::resampler::tests::reset_clears_in_buf_and_pending ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_preserves_ampersand_word ... ok
+test audio_toolkit::text::tests::test_apply_custom_words_trailing_number_not_doubled ... ok
+test audio_toolkit::text::tests::test_empty_custom_words ... ok
+test audio_toolkit::text::tests::test_extract_punctuation ... ok
+test audio_toolkit::text::tests::test_extract_punctuation_uses_unicode_boundaries ... ok
+test audio_toolkit::text::tests::test_filter_custom_filler_words_empty_disables ... ok
+test audio_toolkit::text::tests::test_filter_custom_words_apply_without_language_evidence ... ok
+test audio_toolkit::text::tests::test_filter_custom_filler_words_override ... ok
+test audio_toolkit::audio::recorder::opening_tests::the_published_flag_is_the_one_the_opened_stream_reports_on ... ok
+test audio_toolkit::audio::attempt::tests::a_timed_out_attempt_is_abandoned_and_its_late_stream_dropped ... ok
+test audio_toolkit::text::tests::test_filter_combined ... ok
+test audio_toolkit::text::tests::test_filter_cleans_whitespace ... ok
+test audio_toolkit::text::tests::test_filter_english_removes_um ... ok
+test audio_toolkit::audio::resampler::tests::reset_clears_fft_overlap_buffers ... ok
+test audio_toolkit::text::tests::test_filter_filler_words ... ok
+test audio_toolkit::text::tests::test_filter_master_toggle_disables_custom_and_builtin_removal ... ok
+test audio_toolkit::audio::attempt::tests::the_stalled_open_cap_refuses_new_attempts_until_a_stall_ends ... ok
+test audio_toolkit::text::tests::test_filter_filler_words_with_punctuation ... ok
+test audio_toolkit::text::tests::test_filter_detected_evidence_unlocks_gated_fillers ... ok
+test audio_toolkit::text::tests::test_filter_language_code_with_region ... ok
+test audio_toolkit::text::tests::test_filter_filler_words_case_insensitive ... ok
+test audio_toolkit::text::tests::test_filter_portuguese_preserves_um ... ok
+test audio_toolkit::text::tests::test_filter_preserves_millimetre_unit ... ok
+test audio_toolkit::text::tests::test_filter_spanish_preserves_ha ... ok
+test audio_toolkit::text::tests::test_filter_preserves_valid_text ... ok
+test audio_toolkit::text::tests::test_filter_stutter_mixed_case ... ok
+test audio_toolkit::text::tests::test_filter_stutter_collapse ... ok
+test audio_toolkit::text::tests::test_filter_german_gated_fillers_require_evidence ... ok
+test audio_toolkit::text::tests::test_filter_stutter_longer_words ... ok
+test audio_toolkit::text::tests::test_preserve_case_pattern ... ok
+test audio_toolkit::text::tests::unprotected_text_uses_the_existing_correction_path ... ok
+test audio_toolkit::text::tests::test_filter_stutter_preserves_two_repetitions ... ok
+test audio_toolkit::vad::earshot::tests::clamps_resampler_overshoot_without_changing_output ... ok
+test audio_toolkit::vad::earshot::tests::rejects_non_finite_audio ... ok
+test audio_toolkit::vad::earshot::tests::rejects_wrong_frame_size ... ok
+test audio_toolkit::vad::earshot::tests::validates_threshold ... ok
+test audio_toolkit::vad::smoothed::tests::tail_report_counts_only_trailing_run ... ok
+test audio_toolkit::text::tests::test_filter_trims ... ok
+test audio_toolkit::vad::earshot::tests::silence_is_not_voice ... ok
+test audio_toolkit::vad::smoothed::tests::tail_report_counts_withheld_onset_tail ... ok
+test audio_toolkit::vad::tests::duration_profiles_preserve_silero_timings ... ok
+test audio_toolkit::vad::tests::duration_profiles_round_up_for_earshot_frames ... ok
+test automatic_enter::key_press::tests::a_press_that_cannot_be_scheduled_is_a_failure_without_key ... ok
+test audio_toolkit::text::tests::test_filter_stutter_short_words ... ok
+test automatic_enter::key_press::tests::a_frontmost_at_end_route_has_no_expectation_to_check ... ok
+test automatic_enter::key_press::tests::the_destination_still_in_front_on_the_input_thread_gets_one_key ... ok
+test audio_toolkit::text::tests::test_filter_unknown_language_does_not_remove_um ... ok
+test audio_toolkit::text::tests::test_filter_unknown_language_still_removes_universal_fillers ... ok
+test audio_toolkit::text::tests::test_filter_leading_filler_keeps_sentence_capital ... ok
+test automatic_enter::key_press::tests::a_switch_after_the_worker_check_cancels_the_key_on_the_input_thread ... ok
+test audio_toolkit::text::tests::test_filter_unknown_evidence_removes_universal_keeps_gated ... ok
+test automatic_enter::migration::tests::a_salvaged_store_still_migrates_from_the_raw_legacy_switch ... ok
+test automatic_enter::migration::tests::a_store_without_legacy_switch_migrates_to_never ... ok
+test automatic_enter::migration::tests::open_closed_open_keeps_the_stored_policy_authoritative ... ok
+test automatic_enter::migration::tests::a_stored_policy_wins_and_a_second_pass_is_a_no_op ... ok
+test automatic_enter::policy::tests::each_false_predicate_alone_suppresses_with_its_reason ... ok
+test automatic_enter::policy::tests::only_the_frontmost_at_end_route_skips_the_focus_check ... ok
+test automatic_enter::policy::tests::only_three_smart_paste_outcomes_are_successful_insertions ... ok
+test automatic_enter::policy::tests::pin_only_never_qualifies_a_captured_badge_or_frontmost_source ... ok
+test automatic_enter::migration::tests::an_invalid_or_null_stored_policy_becomes_never_without_legacy_remapping ... ok
+test automatic_enter::migration::tests::a_closed_gate_never_creates_or_reads_automatic_enter ... ok
+test automatic_enter::policy::tests::the_full_option_source_completion_matrix_matches_the_expected_count ... ok
+test automatic_enter::rendezvous::tests::a_chord_failure_after_an_early_read_never_fires ... ok
+test automatic_enter::rendezvous::tests::a_pre_injection_read_does_not_qualify ... ok
+test automatic_enter::rendezvous::tests::duplicate_reads_and_completions_fire_at_most_once ... ok
+test automatic_enter::rendezvous::tests::a_read_while_the_chord_is_held_waits_for_its_successful_completion ... ok
+test automatic_enter::rendezvous::tests::no_transfer_means_not_engaged ... ok
+test automatic_enter::rendezvous::tests::success_before_the_read_becomes_ready_when_the_read_arrives ... ok
+test automatic_enter::migration::tests::every_legacy_switch_and_key_maps_to_the_documented_policy_with_the_key_kept ... ok
+test automatic_enter::tests::a_closed_gate_reads_the_stored_auto_submit_exactly_as_dev ... ok
+test automatic_enter::tests::a_fresh_install_follows_the_gate_and_the_pause_is_dev_s_50_ms ... ok
+test automatic_enter::scan_tests::smart_paste_session_method_hands_its_outcome_to_the_authority ... ok
+test automatic_enter::tests::an_open_gate_reads_only_automatic_enter_without_a_session ... ok
+test automatic_enter::scan_tests::the_session_path_sends_no_legacy_enter ... ok
+test automatic_enter::transaction::flow_tests::a_failed_key_is_reported_and_never_sent_again ... ok
+test automatic_enter::transaction::flow_tests::after_insertion_maps_skipped_failed_and_smart_paste_reports ... ok
+test automatic_enter::transaction::flow_tests::a_reliable_transfer_hands_the_decision_to_its_rendezvous ... ok
+test automatic_enter::migration::tests::open_then_closed_reread_keeps_auto_submit_key_and_the_legacy_enter_decision ... ok
+test automatic_enter::transaction::flow_tests::never_and_pin_only_without_the_pin_source_suppress_before_any_claim ... ok
+test automatic_enter::transaction::flow_tests::return_off_with_a_pin_checks_focus_and_without_a_pin_does_not ... ok
+test automatic_enter::transaction::tests::a_cancellation_after_publication_makes_a_late_reliable_claim_stale ... ok
+test automatic_enter::transaction::tests::an_eligible_enter_is_pressed_once_50_to_100_ms_after_t0_with_the_frozen_key ... ok
+test automatic_enter::transaction::tests::focus_lost_during_the_pause_suppresses_and_never_retries ... ok
+test automatic_enter::transaction::flow_tests::concurrent_duplicate_completions_press_at_most_once ... ok
+test automatic_enter::transaction::tests::recovery_or_cancellation_before_the_claim_suppresses ... ok
+test automatic_enter::transaction::tests::the_frontmost_at_end_route_needs_no_focus_check ... ok
+test automatic_enter::transaction::tests::the_emitter_outcome_is_reported_as_is_and_gets_the_expected_destination ... ok
+test automatic_enter::transaction::tests::the_next_dictation_started_before_the_claim_makes_this_enter_stale ... ok
+test automatic_enter::transaction::tests::time_already_spent_after_t0_counts_toward_the_pause ... ok
+test autostart::macos::tests::launch_agent_path_matches_auto_launch_crate ... ok
+test autostart::macos::tests::sm_app_service_class_resolves ... ok
+test autostart::macos::tests::missing_launch_agent_is_a_no_op ... ok
+test autostart::macos::tests::removes_existing_launch_agent ... ok
+test catalog::tests::catalog_architectures_are_known_to_capability_probe ... ok
+test catalog::tests::catalog_parses_and_is_nonempty ... ok
+test catalog::tests::ids_are_unique ... ok
+test catalog::tests::pure_diarization_models_are_not_downloadable ... ok
+test catalog::tests::scores_are_normalised_0_to_1 ... ok
+test clipboard::tests::auto_submit_requires_setting_enabled ... ok
+test clipboard::tests::auto_submit_runs_for_active_paste_methods ... ok
+test clipboard::tests::auto_submit_skips_none_paste_method ... ok
+test clipboard::tests::clipboard_is_restored_before_key_injection_error_is_returned ... ok
+test catalog::tests::every_catalog_model_has_mirror_fallbacks_with_hashes ... ok
+test bindings_tests::committed_bindings_match_the_registry ... ok
+test audio_toolkit::audio::resampler::tests::reset_between_recordings_no_crosstalk ... ok
+test commands::replacements::tests::check_reports_shared_validator_issues_of_a_draft ... ok
+test chinese_script::tests::cantonese_uses_hong_kong_tables ... ok
+test commands::replacements::tests::refusals_reach_the_editor_as_the_shared_typed_settings_error ... ok
+test apple_intelligence::tests::test_availability ... ok
+test audio_toolkit::audio::recorder::opening_tests::an_abandoned_attempt_failing_late_leaves_the_opened_stream_healthy ... ok
+test commands::replacements::tests::the_ui_preview_lists_an_error_line_after_a_thousand_ignored_lines ... ok
+test commands::replacements::tests::save_refuses_an_invalid_draft_or_a_stale_revision_without_writing ... ok
+test commands::replacements::tests::apply_commits_the_previewed_import_at_its_revision ... ok
+test commands::replacements::tests::apply_refuses_a_preview_of_an_older_revision_before_building_the_edit ... ok
+test commands::replacements_files::tests::a_fifo_is_refused_without_blocking ... ok
+test commands::replacements_files::tests::a_directory_is_refused ... ok
+test commands::replacements_files::tests::a_missing_file_is_unreadable ... ok
+test commands::replacements_files::tests::a_file_that_is_not_utf8_is_refused_with_its_name ... ok
+test commands::replacements_files::tests::a_utf8_file_is_read_with_its_name ... ok
+test destination::bounded_worker::tests::a_call_answers_from_the_thread_state ... ok
+test commands::replacements_files::tests::export_refuses_a_symbolic_link_and_names_the_file ... ok
+test destination::bounded_worker::tests::a_state_that_cannot_be_created_stops_every_call ... ok
+test commands::replacements_files::tests::export_writes_the_canonical_rules_in_order ... ok
+test destination::delivery::tests::a_failed_destination_names_its_target_and_ids_are_unique ... ok
+test commands::replacements_files::tests::the_import_cap_is_inclusive ... ok
+test destination::delivery::tests::a_failed_worker_is_an_insertion_failure_whose_transcript_is_kept ... ok
+test destination::delivery::tests::a_failed_worker_of_a_cancelled_dictation_is_reported_cancelled ... ok
+test destination::delivery::tests::the_outcome_carries_the_actual_history_result_and_the_exact_method_kind ... ok
+test destination::field_check::tests::each_row_of_the_guard_table ... ok
+test destination::delivery::tests::the_insertion_settings_carry_the_trailing_space_to_the_recovery_slot ... ok
+test destination::field_check::tests::the_remembered_input_without_its_verified_range_is_never_unchanged ... ok
+test destination::field_check::tests::the_field_check_is_never_serialized_with_the_context ... ok
+test destination::insertion::tests::cases::a_closed_destination_inserts_nothing_anywhere_and_is_reported_app_closed ... ok
+test destination::field_check::tests::verified_and_unchanged_are_granted_only_by_their_exact_conditions ... ok
+test destination::insertion::tests::cases::a_method_error_after_dispatch_is_an_insertion_failure_to_recover ... ok
+test destination::insertion::tests::cases::a_recover_verdict_dispatches_nothing_and_no_enter_can_be_claimed ... ok
+test destination::insertion::tests::cases::a_stale_or_cancelled_request_never_activates ... ok
+test destination::insertion::tests::cases::a_switch_during_recording_activates_the_captured_app_before_dispatch ... ok
+test destination::insertion::tests::cases::a_switch_only_the_live_read_sees_during_the_delay_dispatches_nothing ... ok
+test destination::insertion::tests::cases::an_already_frontmost_destination_is_not_activated_but_still_rechecked ... ok
+test destination::insertion::tests::cases::an_insertion_delay_longer_than_the_deadline_is_preserved_with_a_fresh_guard ... ok
+test destination::insertion::tests::cases::cancellation_during_activation_stops_without_input ... ok
+test destination::insertion::tests::cases::destination_return_off_inserts_into_the_app_in_front_at_the_end ... ok
+test destination::insertion::tests::cases::focus_lost_during_the_insertion_delay_dispatches_nothing_and_never_reactivates ... ok
+test destination::insertion::tests::cases::handy_in_front_at_the_end_gives_a_context_without_target ... ok
+test destination::insertion::tests::cases::paste_method_none_activates_nothing_and_is_skipped ... ok
+test destination::insertion::tests::cases::the_activation_wait_trusts_the_live_read_not_the_cached_foreground ... ok
+test destination::macos::tests::a_read_is_unreadable_handy_or_another_application ... ok
+test destination::insertion::tests::cases::the_deadline_accepts_an_observation_at_999_and_1000_ms_and_refuses_1001 ... ok
+test destination::macos_field::tests::a_negative_cf_range_is_never_a_selection ... ok
+test destination::macos_focus::tests::only_a_successful_call_with_a_positive_pid_names_an_application ... ok
+test destination::manager::tests::a_failed_insertion_worker_freezes_the_dictation_and_asks_for_recovery ... ok
+test destination::manager::tests::a_failed_insertion_worker_of_a_cancelled_dictation_reports_no_source ... ok
+test destination::manager::tests::a_stale_choice_cannot_redirect_the_next_dictation ... ok
+test destination::manager::tests::a_tentative_capture_changes_nothing_until_committed ... ok
+test destination::manager::tests::an_accepted_start_captures_the_frontmost_app_and_switches_do_not_change_it ... ok
+test destination::manager::tests::cancellation_invalidates_the_generation_and_late_callbacks ... ok
+test destination::manager::tests::choosing_comet_changes_only_this_dictation_and_a_closed_app_is_refused ... ok
+test destination::manager::tests::handy_or_an_unreadable_foreground_capture_no_destination ... ok
+test destination::manager::tests::concurrent_enter_claims_and_recover_are_serialized_by_the_session_lock ... ok
+test destination::manager::tests::restart_and_pid_reuse_resolve_by_identity_and_fail_closed_when_ambiguous ... ok
+test destination::manager::tests::setting_off_or_platform_without_capability_reads_no_foreground ... ok
+test destination::manager::tests::the_cross_removes_the_destination_and_a_queued_click_after_freeze_is_refused ... ok
+test destination::manager::tests::the_menu_lists_frontmost_first_then_others_and_marks_the_current_one ... ok
+test destination::outcome::tests::every_007_kind_maps_to_its_status_reason_and_disposition ... ok
+test destination::outcome::tests::legacy_success_is_attempted_and_legacy_error_is_an_insertion_failure ... ok
+test destination::outcome::tests::the_wire_values_are_the_007_kind_names ... ok
+test destination::pin::route_tests::a_pinned_app_not_running_inserts_nothing_with_its_reason_and_keeps_the_pin ... ok
+test destination::pin::route_tests::a_pinned_dictation_activates_the_pin_even_with_return_off ... ok
+test destination::pin::route_tests::a_platform_without_destination_support_never_applies_a_pin ... ok
+test destination::pin::route_tests::a_running_pin_not_brought_forward_fails_with_activation_failed ... ok
+test destination::pin::route_tests::an_unreadable_foreground_with_a_pin_inserts_nowhere_with_activation_failed ... ok
+test destination::pin::route_tests::an_unreadable_foreground_without_a_pin_inserts_as_today ... ok
+test destination::pin::route_tests::another_app_chosen_in_the_badge_with_return_off_while_pinned_is_activated ... ok
+test destination::pin::route_tests::several_instances_resolve_the_pinned_one_else_the_only_one_else_fail_closed ... ok
+test destination::pin::tests::a_cli_pin_without_a_dictation_applies_from_the_next_one ... ok
+test destination::pin::tests::a_pin_or_unpin_from_the_cli_during_a_dictation_acts_like_the_badge ... ok
+test destination::pin::tests::a_pin_routes_this_and_every_following_dictation_whatever_is_in_front ... ok
+test destination::pin::tests::another_app_from_the_badge_changes_the_current_dictation_only ... ok
+test destination::pin::tests::cancellation_keeps_the_pin_and_pinning_needs_an_application_destination ... ok
+test destination::pin::tests::choosing_the_pinned_app_in_the_menu_returns_to_the_pinned_route ... ok
+test destination::pin::tests::the_cross_while_pinned_is_frontmost_at_end_for_this_dictation_only ... ok
+test destination::pin::tests::the_lookup_refuses_unknown_identities_names_and_handy_itself ... ok
+test destination::pin::tests::the_menu_marks_the_pinned_app_so_the_others_read_this_dictation_only ... ok
+test destination::pin::tests::unpin_before_freeze_restores_the_captured_app_even_after_a_badge_override ... ok
+test destination::pin::tests::unpin_or_repin_after_the_freeze_changes_only_the_next_dictations ... ok
+test destination::pin::tests::unpin_with_return_off_gives_the_frontmost_at_end_route ... ok
+test destination::presentation::tests::a_failure_shows_paste_error_only_without_consumer_or_when_unpresentable ... ok
+test destination::recovery::tests::a_later_dictation_supersedes_the_retained_transcript_and_old_references_expire ... ok
+test destination::recovery::tests::a_pending_presentation_is_handed_to_the_publisher_with_every_consumer_called ... ok
+test destination::presentation::tests::the_presentation_wait_maps_every_answer ... ok
+test destination::recovery::tests::a_reason_is_suppressed_only_after_a_consumer_acknowledges_presenting_it ... ok
+test destination::recovery::tests::an_answer_at_the_guard_boundary_is_never_lost ... ok
+test destination::recovery::tests::the_slot_keeps_the_exact_inserted_text_with_and_without_the_trailing_space ... ok
+test destination::recovery::tests::without_consumers_an_outcome_is_still_delivered_and_never_twice ... ok
+test destination::rollout::tests::a_closed_gate_declares_no_capability_and_opens_no_session_on_any_platform ... ok
+test destination::rollout::tests::an_open_gate_declares_destination_only_on_a_capable_platform ... ok
+test automatic_enter::scan_tests::only_the_automatic_enter_authority_claims_the_enter_press ... ok
+test automatic_enter::scan_tests::the_key_emitters_are_the_legacy_paths_and_the_authority_only ... ok
+test destination::rollout::tests::an_open_gate_offers_the_setting_even_where_it_is_unsupported ... ok
+test destination::rollout::tests::this_build_follows_the_destination_return_feature ... ok
+test destination::session::tests::a_choice_needs_the_exact_dictation_and_version_and_bumps_the_version ... ok
+test destination::session::tests::a_pin_shows_the_badge_with_return_off_but_never_unsupported_or_with_overlay_none ... ok
+test destination::session::tests::backward_and_stale_disposition_changes_are_refused_unchanged ... ok
+test destination::session::tests::badge_is_visible_only_when_on_supported_and_shown ... ok
+test destination::session::tests::choices_are_accepted_through_processing_and_refused_once_frozen ... ok
+test destination::session::tests::enter_is_claimed_once_on_insert_and_a_later_recover_does_not_revoke_it ... ok
+test destination::session::tests::every_allowed_disposition_transition_is_accepted ... ok
+test destination::session::tests::removal_is_frontmost_at_end_and_repeating_it_or_the_same_app_is_a_no_op ... ok
+test destination::uia_mapping::tests::a_password_or_read_only_input_is_never_remembered ... ok
+test destination::uia_mapping::tests::edit_or_document_with_a_value_or_text_pattern_is_a_text_input ... ok
+test dictation_output::tests::a_cancel_during_ai_writes_no_history_and_inserts_nothing ... ok
+test dictation_output::tests::an_empty_final_text_keeps_history_and_ends_without_insertion ... ok
+test dictation_output::tests::downstream_filler_removal_may_still_drop_a_replacement ... ok
+test dictation_output::tests::an_empty_rule_set_leaves_the_native_text_unchanged ... ok
+test destination::bounded_worker::tests::an_object_kept_by_an_expired_call_is_released_when_the_late_job_ends ... ok
+test dictation_output::tests::with_ai_its_input_and_the_history_text_hold_the_replacement ... ok
+test engine_supervisor::protocol::tests::clean_eof_is_none ... ok
+test engine_supervisor::protocol::tests::device_key_matches_legacy_format ... ok
+test engine_supervisor::protocol::tests::loaded_info_without_context_fields_reads_as_no_context ... ok
+test engine_supervisor::protocol::tests::context_preparation_round_trips_over_the_wire ... ok
+test engine_supervisor::protocol::tests::round_trips_message_with_pcm ... ok
+test engine_supervisor::protocol::tests::section_limit_is_inclusive_and_fits_the_length_prefix ... ok
+test engine_supervisor::protocol::tests::truncated_frame_is_an_error ... ok
+test engine_supervisor::supervisor::tests::cancel_during_finalize_is_cancelled ... ignored
+test engine_supervisor::supervisor::tests::cancel_during_hung_feed_is_cancelled ... ignored
+test engine_supervisor::supervisor::tests::cancel_kills_a_hung_run ... ignored
+test commands::replacements::tests::save_commits_the_whole_draft_once_and_keeps_existing_ids ... ok
+test engine_supervisor::supervisor::tests::cancel_stops_a_run ... ignored
+test engine_supervisor::supervisor::tests::cpu_only_worker_lists_no_gpu ... ignored
+test engine_supervisor::supervisor::tests::cpu_setting_uses_cpu_only_worker_and_probe_leaves_it_running ... ignored
+test engine_supervisor::supervisor::context::tests::without_a_loaded_model_no_context_is_prepared_and_no_worker_starts ... ok
+test engine_supervisor::supervisor::tests::crash_mid_stream_falls_back_to_batch ... ignored
+test engine_supervisor::supervisor::tests::gpu_backend_init_crash_uses_cpu_only_worker ... ignored
+test engine_supervisor::supervisor::tests::gpu_disallowed_host_never_registers_a_gpu_backend ... ignored
+test engine_supervisor::supervisor::tests::gpu_only_crash_recovers_on_cpu ... ignored
+test engine_supervisor::supervisor::tests::hung_finalize_is_killed_and_recovers ... ignored
+test engine_supervisor::supervisor::tests::hung_worker_exits_when_stdin_closes ... ignored
+test engine_supervisor::supervisor::tests::one_worker_at_a_time ... ignored
+test engine_supervisor::supervisor::tests::pinned_device_fails_loudly ... ignored
+test engine_supervisor::supervisor::tests::queued_unload_never_affects_a_later_load ... ignored
+test engine_supervisor::supervisor::tests::unload_reads_unloaded_at_once ... ignored
+test engine_supervisor::supervisor::unit_tests::deadlines_scale_with_the_audio_above_a_floor ... ok
+test headless_guard_tests::preserves_normal_exit_codes ... ok
+test headless_guard_tests::converts_worker_panics_to_runtime_failures ... ok
+test llm_client::tests::custom_provider_uses_top_level_reasoning_effort ... ok
+test destination::bounded_worker::tests::a_hung_call_expires_refuses_the_next_one_and_its_late_answer_is_dropped ... ok
+test llm_client::tests::deepseek_base_url_uses_thinking_disabled ... ok
+test llm_client::tests::default_reasoning_params_serialize_to_no_fields ... ok
+test llm_client::tests::error_source_chain_includes_all_nested_causes ... ok
+test llm_client::tests::invalid_log_urls_are_not_echoed ... ok
+test llm_client::tests::log_url_sanitization_removes_credentials_and_tokens ... ok
+test llm_client::tests::openrouter_uses_nested_reasoning_object ... ok
+test llm_client::tests::raw_error_url_is_not_reintroduced_without_a_source ... ok
+test llm_client::tests::decode_error_does_not_echo_response_values ... ok
+test llm_client::tests::reasoning_params_is_empty_tracks_all_fields ... ok
+test llm_client::tests::rejection_memo_is_keyed_by_base_url_and_model ... ok
+test llm_client::tests::requests_explicitly_disable_streaming ... ok
+test managers::gguf_meta::tests::empty_buffer_is_truncated_not_panic ... ok
+test managers::gguf_meta::tests::rejects_non_gguf ... ok
+test managers::gguf_meta::tests::parses_basic_kv ... ok
+test managers::gguf_meta::tests::reports_truncation_with_hint ... ok
+test managers::gguf_meta::tests::skips_unwanted_arrays_without_storing_them ... ok
+test managers::gguf_meta::tests::stops_after_wanted_keys_without_reading_later_large_arrays ... ok
+test dictation_output::tests::replacements_never_chain_and_approximate_correction_spares_their_spans ... ok
+test managers::history::tests::get_latest_entry_returns_none_when_empty ... ok
+test managers::history::tests::get_latest_completed_entry_skips_empty_entries ... ok
+test managers::history::tests::get_latest_entry_returns_newest_entry ... ok
+test managers::model::download::tests::http_416_short_of_expected_size_clears_partial ... ok
+test managers::model::download::tests::http_416_with_hash_finalizes_complete_partial ... ok
+test dictation_output::tests::without_ai_history_and_insertion_receive_the_replaced_text ... ok
+test managers::model::download::tests::http_416_with_wrong_hash_clears_partial ... ok
+test managers::model::download::tests::http_body_exceeding_expected_size_aborts_and_clears ... ok
+test managers::model::download::tests::http_416_without_trust_signals_clears_partial ... ok
+test managers::history::tests::latest_completed_entry_reads_a_text_only_row ... ok
+test managers::model::download::tests::http_conflicting_content_length_rejected_before_writing ... ok
+test managers::model::download::tests::http_fresh_download_completes_and_verifies ... ok
+test managers::model::download::tests::http_full_size_partial_verified_without_network ... ok
+test managers::model::download::tests::http_oversized_partial_restarts_clean ... ok
+test destination::recovery::tests::a_receipt_reports_the_answer_a_dropped_sender_or_the_guard_expiry ... ok
+test managers::model::download::tests::http_range_ignored_200_restarts_from_zero ... ok
+test managers::model::download::tests::http_resume_appends_with_valid_content_range ... ok
+test managers::model::download::tests::test_verify_sha256_fails_and_deletes_partial_on_mismatch ... ok
+test managers::model::download::tests::http_wrong_content_range_discards_partial ... ok
+test managers::model::download::tests::http_wrong_hash_after_download_clears_partial ... ok
+test managers::model::download::tests::test_verify_sha256_fails_and_deletes_partial_when_file_missing ... ok
+test managers::model::download::tests::test_verify_sha256_skipped_when_none ... ok
+test managers::model::tests::test_canonicalize_supported_languages_collapses_chinese_scripts ... ok
+test managers::model::tests::test_catalog_quant_rendering ... ok
+test managers::model::download::tests::test_verify_sha256_passes_on_correct_hash ... ok
+test managers::model::tests::test_discover_custom_models_nonexistent_dir ... ok
+test managers::model::tests::test_discover_custom_models_empty_dir ... ok
+test helpers::clamshell::tests::test_is_laptop ... ok
+test managers::model::tests::test_effective_language_falls_back_to_canonical_chinese ... ok
+test managers::model::tests::test_effective_language_prefers_exact_norwegian_code ... ok
+test managers::model::tests::test_effective_language_preserves_intent_across_model_code_variants ... ok
+test managers::model::tests::test_effective_language_resolves_bare_intent_to_concrete_locale ... ok
+test managers::model::tests::test_discover_catalog_alternate_quant_in_models_dir ... ok
+test managers::model::tests::test_discover_custom_transcribe_models ... ok
+test managers::model_capabilities::tests::known_arch_is_compatible_and_reads_caps ... ok
+test managers::model_capabilities::tests::unknown_arch_is_maybe_incompatible ... ok
+test helpers::clamshell::tests::test_clamshell_check ... ok
+test managers::transcription::tests::approximate_correction_skips_replaced_spans_only ... ok
+test managers::transcription::tests::auto_language_uses_single_language_model_as_evidence ... ok
+test managers::model::tests::test_hf_cached_path_falls_back_to_legacy_cache ... ok
+test managers::transcription::tests::emulated_x64_on_arm64_forces_every_transcribe_setting_to_cpu ... ok
+test managers::transcription::tests::auto_detected_chinese_text_is_converted ... ok
+test managers::model::tests::test_discover_hf_cache_models_filters_by_arch ... ok
+test managers::transcription::tests::model_detected_language_upgrades_unknown_evidence_only ... ok
+test managers::model::tests::test_hf_cached_path_prefers_active_cache ... ok
+test managers::transcription::tests::normal_hosts_preserve_every_transcribe_accelerator_setting ... ok
+test managers::transcription::tests::norwegian_alias_is_recorded_as_user_selected_evidence ... ok
+test managers::transcription::tests::optional_text_transform_falls_back_to_raw_text_after_panic ... ok
+test managers::transcription::tests::auto_language_without_detection_skips_gated_filler_removal ... ok
+test managers::transcription::tests::ignored_user_language_is_not_output_evidence ... ok
+test managers::transcription::tests::portuguese_transcription_does_not_use_english_ui_filler_words ... ok
+test managers::transcription::tests::transcribe_cpp_run_plan_requires_model_translation_support ... ok
+test managers::transcription::tests::transcribe_cpp_run_plan_skips_english_translation ... ok
+test managers::transcription::tests::transcribe_cpp_run_plan_translates_supported_non_english ... ok
+test managers::transcription::tests::later_filler_removal_still_applies_to_replacement_text ... ok
+test managers::transcription::tests::translated_output_is_treated_as_english ... ok
+test managers::transcription::tests::unapplied_transcribe_cpp_language_is_not_output_evidence ... ok
+test automatic_enter::key_press::tests::a_task_taken_just_in_time_reports_its_actual_outcome ... ok
+test managers::transcription::tests::unsupported_explicit_language_uses_model_fallback_as_evidence ... ok
+test managers::transcription::vocabulary::tests::approximate_correction_runs_once_only_when_no_context_reached_the_engine ... ok
+test microphones::catalog::tests::a_failed_or_partial_observation_never_proves_absence ... ok
+test microphones::catalog::tests::each_configured_choice_gets_one_of_four_statuses_in_saved_order ... ok
+test microphones::catalog::tests::names_lists_each_present_name_once_in_enumeration_order ... ok
+test microphones::effective::tests::a_recording_is_remembered_and_idle_openings_never_overwrite_it ... ok
+test microphones::effective::tests::the_current_choice_distinguishes_no_stream_from_the_system_default ... ok
+test managers::transcription::tests::replacements_apply_even_when_whisper_received_custom_words ... ok
+test managers::transcription::tests::unknown_evidence_with_portuguese_text_preserves_um ... ok
+test microphones::priority::tests::duplicate_and_blank_names_are_refused_per_position_without_echo ... ok
+test microphones::priority::tests::exact_names_are_kept_byte_for_byte_including_default ... ok
+test microphones::status::tests::a_failed_observation_reports_unknown_statuses_with_a_warning ... ok
+test microphones::status::tests::the_effective_input_is_reported_with_its_scope_and_reason ... ok
+test overlay::surface::tests::a_degenerate_monitor_scale_leaves_only_the_base ... ok
+test overlay::surface::tests::a_newer_hold_supersedes_the_release_of_an_older_one ... ok
+test overlay::surface::tests::a_notice_measured_after_the_hold_would_cover_the_bubble_until_it_is_stacked_again ... ok
+test overlay::surface::tests::a_small_windows_monitor_with_the_largest_text_scale_bounds_the_extent ... ok
+test overlay::surface::tests::an_explicit_release_ends_any_hold ... ok
+test overlay::surface::tests::extent_grows_the_base_and_never_shrinks_it ... ok
+test overlay::surface::tests::extent_is_clamped_and_non_finite_requests_are_ignored ... ok
+test overlay::surface::tests::hold_duration_is_capped_and_keeps_the_fade_grace ... ok
+test managers::transcription::tests::unknown_evidence_with_confident_text_detection_removes_gated_fillers ... ok
+test overlay::surface::tests::only_a_held_indicator_moves_the_bubble_when_its_extent_changes ... ok
+test overlay::surface::tests::session_marks_keep_the_last_form ... ok
+test overlay::surface::tests::the_base_size_of_each_form_is_kept_on_any_monitor ... ok
+test overlay::surface::tests::the_bubble_stacks_above_a_held_bottom_notice_and_below_a_held_top_one ... ok
+test overlay::surface::tests::the_monitor_scale_and_text_scale_both_shrink_the_room ... ok
+test overlay::surface::tests::without_room_on_its_side_the_bubble_takes_the_other_and_never_leaves_the_screen ... ok
+test overlay::tests::monitor_hit_test_uses_half_open_physical_bounds ... ok
+test paste_tx::tests::failed_injection_uses_short_timeout ... ok
+test paste_tx::tests::finishes_after_quiet_period_once_read ... ok
+test paste_tx::tests::finishes_on_timeout_without_receipt ... ok
+test paste_tx::tests::keeps_waiting_without_receipt_within_timeout ... ok
+test paste_tx::tests::ownership_loss_finishes_immediately ... ok
+test paste_tx::tests::pre_injection_receipt_does_not_count ... ok
+test paste_tx::tests::waits_through_quiet_period_after_recent_read ... ok
+test portable::tests::test_hugging_face_home_is_inside_portable_data ... ok
+test portable::tests::test_empty_file_does_not_enable_portable ... ok
+test portable::tests::test_legacy_empty_marker_without_data_dir_does_not_enable_portable ... ok
+test portable::tests::test_missing_file_does_not_enable_portable ... ok
+test portable::tests::test_magic_string_with_whitespace_enables_portable ... ok
+test portable::tests::test_valid_magic_string_enables_portable ... ok
+test portable::tests::test_wrong_content_does_not_enable_portable ... ok
+test prompts::formatting::tests::content_without_think_block_is_unchanged ... ok
+test prompts::formatting::tests::leading_think_block_is_stripped ... ok
+test prompts::formatting::tests::prompts_without_placeholder_are_sent_as_before ... ok
+test prompts::formatting::tests::structured_replies_use_the_field_or_the_whole_non_json_reply ... ok
+test prompts::library::tests::an_apple_intelligence_override_is_refused_without_the_capability ... ok
+test prompts::library::tests::an_override_needs_a_known_provider_and_a_model_and_clears_atomically ... ok
+test prompts::library::tests::create_stops_at_fifty_prompts ... ok
+test prompts::library::tests::create_trims_the_name_keeps_the_text_and_refuses_duplicates_ignoring_case ... ok
+test prompts::library::tests::deleting_another_prompt_keeps_the_default ... ok
+test prompts::dictation::tests::the_failure_notice_says_the_ai_failed_and_the_original_was_used_never_that_it_was_inserted ... ok
+test prompts::library::tests::generated_ids_are_unique_within_a_process ... ok
+test prompts::library::tests::deleting_the_default_prompt_resets_it_to_none_even_for_the_last_prompt ... ok
+test prompts::library::tests::names_count_unicode_characters_after_trimming ... ok
+test prompts::library::tests::legacy_issues_are_reported_and_kept_until_an_edit_repairs_them ... ok
+test prompts::library::tests::only_a_usable_prompt_can_become_the_default ... ok
+test prompts::library::tests::renaming_a_prompt_to_its_own_name_in_another_case_is_allowed ... ok
+test prompts::library::tests::texts_count_characters_and_refuse_whitespace_only ... ok
+test prompts::migration::tests::a_second_pass_adds_nothing ... ok
+test prompts::migration::tests::a_starter_present_by_name_in_any_case_is_not_added_again ... ok
+test prompts::migration::tests::an_over_full_legacy_library_is_kept_without_starters ... ok
+test prompts::migration::tests::starters_follow_existing_prompts_in_the_fixed_order ... ok
+test prompts::migration::tests::starters_stop_at_the_library_limit ... ok
+test prompts::output::tests::cancellation_is_carried_for_the_caller_to_insert_nothing ... ok
+test prompts::output::tests::a_failure_keeps_the_exact_transcript_and_records_prompt_and_reason ... ok
+test prompts::output::tests::processed_text_replaces_the_transcript ... ok
+test prompts::processing_http_tests::an_http_error_is_a_provider_error_without_its_body ... ok
+test managers::transcription::tests::replacements_apply_after_chinese_script_conversion ... ok
+test managers::transcription::tests::non_chinese_output_is_never_converted ... ok
+test prompts::processor::tests::a_completed_operation_returns_its_output ... ok
+test prompts::processor::tests::a_blank_transcript_is_skipped_without_any_request ... ok
+test prompts::processor::tests::a_prompt_that_is_not_ready_fails_without_any_request ... ok
+test prompts::processing_http_tests::an_override_sends_the_request_to_the_local_endpoint_with_its_model ... ok
+test prompts::processor::tests::a_structured_error_falls_back_to_the_legacy_request ... ok
+test prompts::processor::tests::a_structured_reply_is_processed_text ... ok
+test prompts::processor::tests::apple_intelligence_reports_unavailable_busy_or_its_text ... ok
+test commands::replacements::tests::preview_is_bounded_like_apply_and_counts_every_line ... ok
+test microphones::native::tests::slow_probes_are_abandoned_and_capped_until_they_end ... ok
+test prompts::processor::tests::failure_codes_are_stable_snake_case ... ok
+test prompts::processor::tests::a_pending_operation_stops_after_cancellation ... ok
+test prompts::provider::tests::an_override_wins_over_the_default_provider_model ... ok
+test prompts::provider::tests::apple_intelligence_follows_the_probe ... ok
+test prompts::provider::tests::no_readiness_or_debug_output_contains_the_key ... ok
+test prompts::provider::tests::the_default_remote_provider_needs_a_model_and_a_key ... ok
+test prompts::provider::tests::the_local_custom_override_needs_an_endpoint_and_a_model_but_no_key ... ok
+test prompts::provider::tests::unknown_and_invalid_prompts_are_not_ready ... ok
+test prompts::session::tests::a_choice_after_the_stop_is_refused_and_the_frozen_prompt_stays ... ok
+test prompts::session::tests::a_plain_dictation_can_pick_a_prompt_and_none_skips_processing ... ok
+test prompts::session::tests::a_stale_session_cannot_change_or_end_the_current_one ... ok
+test prompts::session::tests::an_indicator_choice_applies_to_this_dictation_only ... ok
+test prompts::session::tests::editing_or_deleting_a_captured_prompt_never_changes_it ... ok
+test prompts::session::tests::missing_or_invalid_prompts_cannot_be_chosen_and_a_dangling_default_is_a_failure ... ok
+test prompts::session::tests::only_deleting_a_prompt_with_shortcuts_changes_shortcuts_and_so_waits_for_the_dictation ... ok
+test prompts::session::tests::the_trigger_decides_the_starting_prompt ... ok
+test prompts::session::tests::with_ai_off_no_trigger_processes_and_the_menu_is_hidden ... ok
+test prompts::processor::tests::every_failure_class_is_a_failure_with_its_reason ... ok
+test prompts::test_run::tests::a_provider_error_is_a_typed_failure ... ok
+test prompts::test_run::tests::a_successful_test_reports_text_provider_model_and_duration ... ok
+test prompts::test_run::tests::an_invalid_draft_is_refused_before_any_request ... ok
+test recognition_vocabulary::budget::tests::budget_boundary_is_inclusive ... ok
+test recognition_vocabulary::budget::tests::empty_list_needs_no_tokenizer_and_failures_propagate ... ok
+test recognition_vocabulary::budget::tests::first_overflowing_term_stops_the_prefix ... ok
+test recognition_vocabulary::budget::tests::whisper_budget_is_the_documented_223_tokens ... ok
+test recognition_vocabulary::budget::tests::whole_list_within_budget_is_sent ... ok
+test recognition_vocabulary::capability::tests::generic_mechanisms_are_unverified_until_documented ... ok
+test recognition_vocabulary::capability::tests::whisper_needs_the_feature_and_the_accepted_extension ... ok
+test recognition_vocabulary::context::tests::nothing_fitting_sends_no_prompt ... ok
+test recognition_vocabulary::context::tests::unsupported_and_unverified_models_never_get_a_prompt ... ok
+test recognition_vocabulary::context::tests::whisper_prompt_carries_exactly_the_fitted_terms ... ok
+test recognition_vocabulary::edits::tests::add_appends_one_valid_unique_term ... ok
+test recognition_vocabulary::edits::tests::direct_duplicate_and_invalid_adds_fail_atomically ... ok
+test recognition_vocabulary::edits::tests::import_refuses_every_line_issue_and_never_saves_a_subset ... ok
+test recognition_vocabulary::edits::tests::occurrence_removal_is_bound_to_the_exact_saved_row ... ok
+test recognition_vocabulary::edits::tests::remove_only_changes_shrink_an_over_capacity_legacy_list ... ok
+test recognition_vocabulary::edits::tests::remove_takes_the_first_occurrence_by_key_or_is_not_found ... ok
+test recognition_vocabulary::edits::tests::the_501st_term_is_a_limit_refusal ... ok
+test recognition_vocabulary::edits::tests::ui_list_keeps_unchanged_legacy_rows_and_validates_new_ones ... ok
+test recognition_vocabulary::occurrences::tests::keys_find_the_first_occurrence ... ok
+test recognition_vocabulary::occurrences::tests::legacy_entries_are_flagged_without_being_changed ... ok
+test recognition_vocabulary::occurrences::tests::positions_beyond_the_capacity_are_excluded_not_deleted ... ok
+test microphones::priority::tests::a_long_list_is_checked_in_one_pass_and_refuses_only_the_repeated_position ... ok
+test recognition_vocabulary::preview::tests::empty_input_clears_on_replace_and_changes_nothing_on_merge ... ok
+test recognition_vocabulary::preview::tests::invalid_lines_are_reported_by_index_and_block_the_candidate ... ok
+test recognition_vocabulary::preview::tests::merge_keeps_saved_bytes_and_skips_saved_keys ... ok
+test recognition_vocabulary::preview::tests::pasted_duplicates_are_skipped_first_spelling_wins ... ok
+test recognition_vocabulary::status::tests::every_family_without_context_is_not_supported_and_sends_nothing ... ok
+test recognition_vocabulary::status::tests::streaming_never_uses_the_vocabulary_even_on_a_supporting_model ... ok
+test recognition_vocabulary::status::tests::supporting_model_with_nothing_to_send_reports_why ... ok
+test recognition_vocabulary::status::tests::terms_after_the_first_overflow_are_listed_as_over_budget ... ok
+test recognition_vocabulary::status::tests::undocumented_budget_is_a_technical_error_not_a_status ... ok
+test recognition_vocabulary::status::tests::unknown_has_a_distinct_reason_for_not_loaded_and_unanswered ... ok
+test recognition_vocabulary::status::tests::whisper_batch_uses_the_vocabulary_and_lists_what_reaches_the_engine ... ok
+test recognition_vocabulary::validation::tests::every_input_issue_has_a_closed_reason ... ok
+test recognition_vocabulary::validation::tests::keys_use_full_case_folding_without_normalization ... ok
+test recognition_vocabulary::validation::tests::length_counts_unicode_scalars_of_the_trimmed_text ... ok
+test recognition_vocabulary::preview::tests::capacity_is_checked_on_the_complete_candidate ... ok
+test recognition_vocabulary::validation::tests::separators_and_forbidden_characters_are_refused ... ok
+test recognition_vocabulary::validation::tests::unicode_tables_are_pinned_together ... ok
+test recognition_vocabulary::validation::tests::whitespace_is_trimmed_and_collapsed_without_changing_case ... ok
+test recovery::classifier::tests::a_missing_permission_answers_before_any_query ... ok
+test recovery::classifier::tests::a_known_non_text_focus_without_edit_affordance_is_not_editable ... ok
+test recovery::classifier::tests::a_text_role_with_a_settable_edit_attribute_is_editable ... ok
+test recovery::classifier::tests::an_unreadable_edit_attribute_is_a_doubt_never_a_proof ... ok
+test recovery::classifier::tests::chromium_and_electron_containers_are_undetermined ... ok
+test recovery::classifier::tests::each_query_timeout_is_the_remaining_budget_and_never_zero ... ok
+test recovery::classifier::tests::focus_in_another_process_is_undetermined_even_with_a_non_text_role ... ok
+test recovery::classifier::tests::no_focused_element_errors_secure_unknown_and_read_only_text_are_undetermined ... ok
+test recovery::classifier::tests::the_deadline_is_one_budget_of_fifty_milliseconds ... ok
+test recovery::decision::tests::a_reason_decided_before_insertion_never_shows_the_partial_insertion_detail ... ok
+test recovery::decision::tests::permission_missing_says_nothing_was_sent_and_the_windows_reliable_failure_may_have_reached ... ok
+test recovery::decision::tests::every_status_reason_outcome_and_platform_matches_the_spec_table ... ok
+test recovery::manager::tests::a_buffered_late_read_is_dropped_at_the_next_dictation_and_stale_ones_are_ignored ... ok
+test recovery::manager::tests::a_copy_with_a_stale_generation_is_refused ... ok
+test recovery::manager::tests::a_failed_drag_start_leaves_the_bubble_visible ... ok
+test recovery::manager::tests::a_late_read_before_admission_is_applied_when_its_outcome_arrives ... ok
+test recovery::manager::tests::a_late_read_updates_the_matching_bubble_in_place_once ... ok
+test recovery::manager::tests::a_new_dictation_closes_a_visible_bubble_at_once_and_its_late_actions_are_ignored ... ok
+test recovery::manager::tests::a_new_dictation_while_dragging_closes_for_good_and_ignores_the_late_drop ... ok
+test recovery::manager::tests::a_new_dictation_supersedes_a_bubble_not_yet_shown_and_releases_its_slot ... ok
+test recovery::manager::tests::a_refused_drag_shows_the_same_bubble_again_and_an_accepted_one_closes ... ok
+test recovery::manager::tests::after_the_guard_expired_the_late_answer_finds_no_waiter ... ok
+test recovery::manager::tests::an_unpresentable_bubble_is_discarded_and_reported_to_a_waiter_still_there ... ok
+test recovery::manager::tests::close_during_copy_closes_at_once_and_the_write_completion_is_ignored ... ok
+test recovery::manager::tests::copy_closes_on_success_and_keeps_the_bubble_unchanged_on_failure ... ok
+test recovery::manager::tests::duplicate_or_older_outcomes_are_not_admitted ... ok
+test recovery::manager::tests::presented_only_after_the_first_render_then_the_slot_is_released ... ok
+test recovery::manager::tests::the_setting_is_frozen_at_the_dictation_start_and_bound_to_that_dictation ... ok
+test recovery::manager::tests::there_is_no_timeout_the_bubble_stays_until_an_explicit_event ... ok
+test recovery::manager::tests::windows_and_linux_bubbles_offer_no_drag ... ok
+test recovery::setting::tests::closed_builds_drop_the_value_and_open_ones_fix_it_per_platform ... ok
+test recovery::setting::tests::this_build_follows_the_gate_and_the_platform ... ok
+test recovery::verdict::tests::macos_with_the_setting_on_classifies_the_named_destination ... ok
+test recovery::verdict::tests::only_not_editable_recovers ... ok
+test recovery::verdict::tests::other_platforms_the_setting_off_and_no_target_classify_nothing ... ok
+test recovery::verdict::tests::the_four_remote_view_destinations_are_never_classified ... ok
+test secure_input_shadow::tests::fn_and_unparseable_shortcuts_are_uncovered ... ok
+test secure_input_shadow::tests::each_shortcut_of_an_action_gets_its_own_shadow_identity ... ok
+test secure_input_shadow::tests::full_modifier_groups_are_covered_without_degradation ... ok
+test secure_input_shadow::tests::modifier_only_shortcuts_are_immune ... ok
+test secure_input_shadow::tests::mouse_based_shortcuts_are_immune ... ok
+test secure_input_shadow::tests::widened_shadow_keeps_the_original_identity ... ok
+test settings::tests::debug_output_redacts_api_keys ... ok
+test settings::tests::chinese_script_migration_only_carries_over_legacy_intents ... ok
+test settings::tests::default_overlay_style_is_live_when_overlay_defaults_on ... ok
+test settings::tests::default_settings_disable_auto_submit ... ok
+test settings::tests::empty_store_parses_with_defaults ... ok
+test settings::tests::gpu_device_migration_keeps_current_stable_selection ... ok
+test settings::tests::frozen_v0_9_store_parses_strictly_then_migrates_device_index ... ok
+test settings::tests::gpu_device_migration_maps_current_automatic_gpu_to_auto ... ok
+test settings::tests::gpu_device_migration_resets_legacy_positive_selection_to_auto ... ok
+test settings::tests::gpu_device_migration_maps_v1_automatic_gpu_to_auto ... ok
+test settings::tests::legacy_none_overlay_position_deserializes_to_bottom ... ok
+test settings::tests::overlay_migration_keeps_disabled_overlay_off ... ok
+test settings::tests::secret_map_debug_redacts_values ... ok
+test settings::tests::overlay_migration_promotes_enabled_overlay_to_live ... ok
+test settings::tests::shortcut_activation_defaults_to_hold_or_toggle_without_legacy_key ... ok
+test settings::tests::shortcut_activation_migration_maps_push_to_talk_false ... ok
+test settings::tests::shortcut_activation_migration_maps_push_to_talk_true ... ok
+test settings::tests::shortcut_activation_migration_respects_explicit_new_key ... ok
+test settings::tests::smart_paste_is_the_default_only_where_the_rollout_is_active ... ok
+test settings::tests::smart_paste_round_trips_as_a_persisted_paste_method ... ok
+test settings::tests::stored_binding_returns_the_requested_binding ... ok
+test settings::tests::unknown_stored_binding_returns_an_error ... ok
+test managers::model::download::tests::http_cancel_while_awaiting_headers ... ok
+test settings_service::atomic::tests::temp_is_discarded_only_for_failures_before_replacement ... ok
+test settings_service::cli::tests::only_the_settings_subcommand_position_selects_the_settings_contract ... ok
+test settings_service::atomic::tests::exhausted_temporary_names_fail_closed_without_deleting ... ok
+test settings_service::atomic::tests::occupied_temporary_names_are_skipped_without_modification ... ok
+test settings_service::domains::fixture_tests::file_input_is_read_by_path_and_a_missing_file_is_a_usage_error ... ok
+test settings_service::domains::fixture_tests::input_is_utf8_text_within_the_frame_bound ... ok
+test clipboard::tests::external_script_does_not_wait_for_inherited_stdio ... ok
+test settings_service::domains::fixture_tests::live_only_operations_need_a_running_instance ... ok
+test prompts::processor::tests::cancellation_wins_over_a_pending_reply ... ok
+test settings_service::domains::fixture_tests::export_prints_only_the_content_or_one_envelope_with_data_content ... ok
+test settings_service::domains::fixture_tests::stdin::non_utf8_stdin_is_refused_with_its_offset_before_any_change ... ok
+test settings_service::domains::fixture_tests::stdin::stdin_child ... ignored, child process of the stdin tests below
+test settings_service::domains::fixture_tests::invalid_import_is_refused_whole_with_exit_two_dry_run_or_not ... ok
+test settings_service::domains::fixture_tests::stdin::terminal_stdin_is_a_usage_error_without_waiting ... ok
+test settings_service::domains::live_fixture_tests::a_live_dry_run_does_not_act ... ok
+test settings_service::domains::live_fixture_tests::a_live_read_answers_at_the_revision_read_before_planning_without_writing ... ok
+test settings_service::domains::fixture_tests::valid_dry_run_previews_with_exit_zero_and_writes_nothing ... ok
+test settings_service::domains::live_fixture_tests::a_missing_manager_is_unavailable_and_writes_nothing ... ok
+test settings_service::domains::live_fixture_tests::a_platform_refusal_is_decided_by_the_plan_before_liveness ... ok
+test settings_service::domains::live_fixture_tests::offline_a_live_operation_is_the_live_only_refusal_and_never_runs ... ok
+test settings_service::domains::microphones::tests::a_dry_run_previews_without_writing ... ok
+test settings_service::domains::microphones::tests::list_is_refused_offline_and_without_an_audio_manager ... ok
+test settings_service::domains::microphones::tests::refused_orders_name_positions_and_write_nothing ... ok
+test settings_service::domains::fixture_tests::merge_then_replace_import_commit_atomically_once_each ... ok
+test prompts::test_run::tests::a_second_test_while_one_runs_is_busy_and_cancel_ends_the_first ... ok
+test settings_service::domains::prompts::tests::an_incomplete_or_unknown_override_is_refused ... ok
+test settings_service::domains::fixture_tests::edit_and_delete_aliases_resolve_to_update_and_remove ... ok
+test settings_service::domains::prompts::tests::apple_intelligence_override_off_apple_silicon_is_unsupported_platform ... ok
+test settings_service::domains::fixture_tests::stdin::piped_stdin_feeds_the_domain_input ... ok
+test settings_service::domains::prompts::tests::offline_list_is_the_live_only_refusal ... ok
+test settings_service::domains::prompts::tests::refusals_are_typed_and_never_echo_the_candidate ... ok
+test automatic_enter::key_press::tests::a_late_input_thread_never_presses_and_reports_late ... ok
+test settings_service::domains::live_fixture_tests::a_live_write_commits_through_the_context_at_the_next_revision ... ok
+test settings_service::domains::prompts::tests::a_dry_run_and_a_stale_revision_write_nothing ... ok
+test managers::model::download::tests::http_cancel_during_stalled_body_keeps_partial ... ok
+test settings_service::domains::prompts::tests::text_from_stdin_is_the_request_input ... ok
+test settings_service::domains::microphones::tests::set_priority_commits_the_complete_order_and_zero_names_empty_it ... ok
+test settings_service::domains::replacements::tests::dry_runs_preview_through_the_commit_validation_and_write_nothing ... ok
+test settings_service::domains::prompts::tests::the_live_list_reports_readiness_and_shortcuts_without_any_key ... ok
+test settings_service::domains::prompts::tests::an_override_is_set_then_cleared_atomically ... ok
+test settings_service::domains::replacements::tests::generic_set_names_the_replacements_domain ... ok
+test settings_service::domains::replacements::tests::a_duplicate_key_is_located_at_both_positions ... ok
+test settings_service::domains::replacements::tests::add_commits_one_revision_and_reports_the_trimmed_rule ... ok
+test settings_service::domains::replacements::tests::a_stale_expected_revision_is_a_conflict_without_writing ... ok
+test settings_service::domains::replacements::tests::import::an_import_with_control_or_bidi_characters_is_refused_without_echoing_them ... ok
+test settings_service::domains::replacements::tests::export_prints_the_exchange_content_and_list_one_tab_line_per_rule ... ok
+test prompts::processing_http_tests::a_server_slower_than_the_budget_is_abandoned ... ok
+test settings_service::domains::replacements::tests::import::import_input_is_bounded_at_one_million_bytes_inclusive ... ok
+test settings_service::domains::replacements::tests::import::import_dry_run_reports_line_statuses_and_writes_nothing ... ok
+test settings_service::domains::prompts::tests::create_returns_the_prompt_id_and_revision_and_the_aliases_reach_update_and_remove ... ok
+test settings_service::domains::replacements::tests::refusals_never_echo_rule_text ... ok
+test settings_service::domains::replacements::tests::transfer::hostile_staging_steps_are_refused_with_stable_codes ... ok
+test prompts::processor::tests::the_structured_attempt_and_the_legacy_fallback_share_one_budget ... ok
+test settings_service::domains::replacements::tests::import::import_commits_the_previewed_set_in_one_revision ... ok
+test settings_service::domains::replacements::tests::edit_and_delete_aliases_keep_the_id_then_remove_it ... ok
+test settings_service::domains::replacements::tests::import::invalid_imports_are_refused_whole_with_every_line_issue ... ok
+test settings_service::domains::replacements::tests::unknown_rule_ids_are_not_found_and_bad_usage_is_a_usage_error ... ok
+test settings_service::domains::replacements::tests::import::a_failed_durable_write_leaves_rules_store_and_revision_unchanged ... ok
+test settings_service::domains::shortcuts::tests::changes_need_a_running_instance_but_a_dry_run_previews_anywhere ... ok
+test settings_service::domains::replacements::tests::transfer::a_staged_import_commits_like_a_direct_one_and_only_once ... ok
+test settings_service::domains::shortcuts::tests::list_shows_every_action_without_writing ... ok
+test prompts::processor::tests::a_reply_inside_the_budget_is_kept_and_one_past_it_is_abandoned ... ok
+test settings_service::domains::replacements::tests::import::an_import_is_committed_only_at_the_revision_it_previewed ... ok
+test settings_service::domains::shortcuts::tests::unknown_action_is_not_found_without_echo ... ok
+test settings_service::domains::shortcuts::tests::add_commits_one_revision_and_a_duplicate_names_its_owner ... ok
+test settings_service::domains::vocabulary::tests::invalid_dry_run_is_the_same_refusal_and_writes_nothing ... ok
+test settings_service::domains::vocabulary::tests::malformed_calls_are_usage_errors ... ok
+test settings_service::effects::tests::a_debug_launch_keeps_trace_and_streaming_after_logging_changes ... ok
+test settings_service::effects::tests::every_declared_runtime_effect_is_applied_or_read_at_use ... ok
+test settings_service::domains::replacements::tests::transfer::read_settings_is_the_public_get_without_the_rules ... ok
+test settings_service::effects::tests::every_live_effect_key_is_a_descriptor_key ... ok
+test settings_service::domains::vocabulary::tests::status_is_live_only_and_needs_the_transcription_manager ... ok
+test settings_service::error_reason::tests::every_reason_has_its_own_message ... ok
+test settings_service::domains::shortcuts::tests::a_stale_expected_revision_changes_nothing ... ok
+test settings_service::domains::shortcuts::tests::reset_restores_the_single_default_and_a_no_op_keeps_the_revision ... ok
+test settings_service::domains::shortcuts::tests::limits_last_removal_and_unsupported_alternatives_are_refused ... ok
+test settings_service::ipc::tests::a_reply_larger_than_a_frame_becomes_a_typed_limit_for_the_same_request ... ok
+test settings_service::ipc::tests::a_request_for_another_store_or_a_malformed_frame_gets_a_fixed_refusal ... ok
+test settings_service::domains::vocabulary::tests::add_import_remove_and_export_share_one_revision_sequence ... ok
+test settings_service::ipc::tests::frames_round_trip_and_oversized_lengths_are_refused_before_allocation ... ok
+test settings_service::domains::shortcuts::tests::remove_finds_the_stored_entry_in_any_modifier_order_and_promotes_the_next ... ok
+test settings_service::ipc::server::tests::a_refused_peer_is_skipped_without_waiting ... ok
+test settings_service::ipc::tests::an_oversized_request_is_refused_before_sending_with_limit_exceeded ... ok
+test settings_service::ipc::tests::the_client_refuses_an_unexpected_server_owner_before_sending_any_byte ... ok
+test settings_service::live::tests::gpu_without_device_edit_is_refused_by_the_shared_rule ... ok
+test settings_service::ipc::tests::silence_or_a_reply_to_another_request_is_an_unknown_outcome ... ok
+test settings_service::ipc::server::tests::unix::a_removed_runtime_directory_is_published_again_and_close_stays_bounded ... ok
+test settings_service::live::tests::linux_free_session_bus_and_free_lease_allow_the_offline_write ... ok
+test settings_service::live::tests::linux_free_session_bus_never_bypasses_a_held_lease_or_a_bus_owner ... ok
+test settings_service::live::tests::noop_edit_keeps_revision_and_reports_no_change ... ok
+test settings_service::locator::tests::app_identifier_matches_the_tauri_bundle_identifier ... ok
+test settings_service::live::tests::refused_edit_changes_neither_disk_nor_published_snapshot ... ok
+test settings_service::normalization::tests::salvage_of_non_object_store_falls_back_to_defaults ... ok
+test settings_service::normalization::tests::salvage_drops_only_wrong_typed_fields ... ok
+test settings_service::normalization::tests::salvage_preserves_valid_fields_when_one_value_is_invalid ... ok
+test settings_service::normalization::tests::salvage_of_poisoned_bindings_keeps_other_fields ... ok
+test settings_service::platform_capability::tests::a_supported_or_absent_requirement_passes ... ok
+test settings_service::platform_capability::tests::an_unsupported_requirement_is_a_validation_refusal_with_its_reason ... ok
+test settings_service::platform_capability::tests::the_build_detects_focused_fields_exactly_on_macos_with_the_gate_open ... ok
+test settings_service::normalization::tests::salvage_tolerates_unknown_keys ... ok
+test settings_service::platform_capability::tests::the_build_supports_destination_exactly_on_macos_and_windows_with_the_gate_open ... ok
+test settings_service::platform_capability::tests::the_build_supports_apple_intelligence_exactly_on_apple_silicon ... ok
+test settings_service::platform_unix::tests::bind_rejects_regular_replacement_without_changing_permissions ... ok
+test settings_service::platform_unix::tests::bind_rejects_socket_replacement_with_matching_owner_and_mode ... ok
+test settings_service::platform_unix::tests::native_peer_identity_mismatch_never_returns_stream ... ok
+test settings_service::platform_unix::tests::same_user_peers_pass_the_current_user_check_on_both_ends ... ok
+test settings_service::raw_merge::tests::deleted_map_entry_is_removed_while_raw_only_entries_and_unknown_fields_survive ... ok
+test settings_service::raw_merge::tests::unchanged_fields_keep_their_raw_bytes ... ok
+test settings_service::render::tests::an_export_file_without_a_confirmed_sync_warns_on_stderr_in_both_modes ... ok
+test settings_service::render::tests::human_errors_print_the_detail_reason_and_items_on_stderr ... ok
+test settings_service::render::tests::json_mode_prints_exactly_one_envelope_line_and_errors_only_on_stderr ... ok
+test settings_service::render::tests::recovered_settings_warn_on_stderr_in_both_modes ... ok
+test settings_service::platform_unix::tests::concurrent_socket_binds_preserve_unrelated_file_creation_permissions ... ok
+test settings_service::live::tests::owned_edit_commits_once_publishes_and_reports_changed_keys ... ok
+test settings_service::route::tests::an_oversized_request_is_refused_before_any_route ... ok
+test settings_service::live::tests::instance_keeps_its_lease_until_it_is_dropped ... ok
+test settings_service::live::tests::offline_authority_is_refused_by_an_owner_and_commits_without_one ... ok
+test settings_service::replacements_transfer::tests::chunks_cover_the_input_in_order_within_the_escaped_bound ... ok
+test settings_service::sequence::tests::destination::the_ui_write_commits_once_notifies_and_a_no_op_keeps_the_revision ... ok
+test settings_service::sequence::tests::destination::without_the_capability_the_ui_receives_unsupported_platform_for_both_values ... ok
+test settings_service::sequence::tests::a_refused_edit_prepares_nothing ... ok
+test settings_service::sequence::tests::destination::an_invalid_ui_value_is_a_typed_refusal_and_writes_nothing ... ok
+test settings_service::sequence::tests::a_prepared_scalar_commits_its_extension_in_the_same_revision ... ok
+test settings_service::domains::replacements::tests::import::a_full_import_report_stays_far_below_one_reply_frame ... ok
+test settings_service::sequence::tests::failed_effect_after_commit_is_committed_with_revision_field_and_event ... ok
+test settings_service::sequence::tests::parity::routed_cli_and_ui_writes_of_a_prepared_key_reach_the_same_refusal ... ok
+test settings_service::sequence::tests::live_effects_run_before_the_ui_event_and_both_before_the_result ... ok
+test settings_service::sequence::tests::parity::routed_prepared_write_checks_the_revision_before_preparing_and_skips_the_key_effect ... ok
+test settings_service::sequence::tests::refused_prepared_edit_compensates_and_notifies_nothing ... ok
+test settings_service::sequence::tests::refused_commit_compensates_the_prepared_native_change ... ok
+test settings_service::sequence::tests::refused_preparation_leaves_disk_revision_native_and_ui_unchanged ... ok
+test settings_service::ui_value::tests::any_json_reaches_the_shared_validator ... ok
+test settings_service::ui_value::tests::bindings_keep_the_declared_type ... ok
+test shortcut::action_shortcuts::tests::add_appends_an_alternative_after_the_first_shortcut ... ok
+test shortcut::action_shortcuts::tests::cancel_does_not_accept_alternatives ... ok
+test shortcut::action_shortcuts::tests::cancel_shortcut_cannot_be_reused ... ok
+test shortcut::action_shortcuts::tests::conflicting_addition_names_the_owning_action ... ok
+test shortcut::action_shortcuts::tests::duplicate_within_the_action_is_refused ... ok
+test shortcut::action_shortcuts::tests::edit_kinds_deserialize_from_tagged_json ... ok
+test shortcut::action_shortcuts::tests::fifth_shortcut_is_refused_with_the_limit ... ok
+test shortcut::action_shortcuts::tests::fourth_shortcut_is_accepted ... ok
+test shortcut::action_shortcuts::tests::invalid_syntax_is_refused_before_the_conflict_check ... ok
+test shortcut::action_shortcuts::tests::last_shortcut_cannot_be_removed ... ok
+test shortcut::action_shortcuts::tests::legacy_conflict_survives_a_no_op_replace ... ok
+test shortcut::action_shortcuts::tests::removing_an_unknown_shortcut_is_not_found ... ok
+test shortcut::action_shortcuts::tests::removing_the_first_shortcut_promotes_the_next ... ok
+test shortcut::action_shortcuts::tests::replace_excludes_only_the_replaced_entry ... ok
+test shortcut::action_shortcuts::tests::reset_of_a_default_list_is_a_no_op ... ok
+test shortcut::action_shortcuts::tests::reset_refuses_a_default_owned_by_another_action ... ok
+test shortcut::action_shortcuts::tests::reset_restores_the_single_default ... ok
+test shortcut::action_shortcuts::tests::unrelated_legacy_conflict_does_not_block_an_addition ... ok
+test shortcut::bindings_change::tests::a_probe_refusal_is_returned_without_registering ... ok
+test shortcut::bindings_change::tests::a_probed_action_keeps_nothing_registered_and_needs_no_undo ... ok
+test shortcut::bindings_change::tests::a_refused_commit_restores_the_previous_registrations ... ok
+test shortcut::bindings_change::tests::an_added_shortcut_is_registered_before_the_commit ... ok
+test shortcut::bindings_change::tests::an_os_refusal_undoes_the_actions_prepared_before_it ... ok
+test shortcut::bindings_change::tests::only_actions_whose_list_changed_are_prepared ... ok
+test shortcut::conflicts::tests::cancel_and_disabled_actions_take_part_in_the_check ... ok
+test shortcut::conflicts::tests::distinct_combination_has_no_conflict ... ok
+test shortcut::conflicts::tests::duplicate_within_the_same_action_is_rejected ... ok
+test shortcut::conflicts::tests::excluded_entry_is_ignored_for_a_replacement ... ok
+test shortcut::conflicts::tests::invalid_candidate_reports_the_parser_error ... ok
+test shortcut::conflicts::tests::inventory_lists_alternatives_in_order ... ok
+test shortcut::conflicts::tests::modifier_aliases_normalize_to_the_same_family ... ok
+test shortcut::conflicts::tests::modifier_only_subset_overlaps_in_both_directions ... ok
+test shortcut::conflicts::tests::modifier_only_without_shared_family_is_accepted ... ok
+test shortcut::conflicts::tests::reordered_modifiers_conflict_with_the_owning_action ... ok
+test shortcut::conflicts::tests::side_specific_modifiers_collapse_for_comparison ... ok
+test shortcut::conflicts::tests::stored_conflicts_report_every_involved_entry ... ok
+test shortcut::edits::tests::a_check_accepts_a_free_shortcut_and_enforces_the_limit ... ok
+test shortcut::edits::tests::a_check_reports_a_conflict_and_saves_nothing ... ok
+test shortcut::edits::tests::an_unchanged_toggle_touches_no_registration ... ok
+test shortcut::edits::tests::cancel_is_not_probed_while_recording_or_on_linux ... ok
+test shortcut::edits::tests::cancel_outside_recording_is_probed_with_tauri ... ok
+test shortcut::edits::tests::disabled_post_processing_is_probed_with_tauri_only ... ok
+test shortcut::edits::tests::disabling_post_processing_hands_a_shared_slot_back ... ok
+test shortcut::edits::tests::enabling_post_processing_leaves_a_shared_slot_to_its_holder ... ok
+test shortcut::edits::tests::enabling_post_processing_succeeds_although_the_os_refuses_a_shortcut ... ok
+test shortcut::edits::tests::registered_actions_apply_the_delta ... ok
+test shortcut::identity::tests::every_shortcut_of_a_binding_gets_its_own_identity ... ok
+test shortcut::identity::tests::shadow_keeps_the_original_identity ... ok
+test shortcut::implementation_switch::tests::a_conflict_introduced_by_the_switch_is_reported_on_both_sides ... ok
+test shortcut::implementation_switch::tests::a_reset_default_owned_by_another_action_is_kept ... ok
+test shortcut::implementation_switch::tests::a_valid_list_is_unchanged ... ok
+test shortcut::implementation_switch::tests::an_alternative_equivalent_to_the_reset_default_is_merged ... ok
+test shortcut::implementation_switch::tests::conflicts_present_before_the_switch_are_not_reported_again ... ok
+test shortcut::implementation_switch::tests::plan_reports_repaired_actions_and_skips_inactive_ones ... ok
+test shortcut::implementation_switch::tests::unchanged_equivalent_entries_are_kept_as_inherited_conflicts ... ok
+test shortcut::implementation_switch::tests::unreadable_entries_are_reset_or_removed ... ok
+test shortcut::keyboard_switch::tests::repair_resets_what_the_destination_cannot_register_and_keeps_the_rest ... ok
+test shortcut::keyboard_switch::tests::static_registrations_follow_the_post_processing_switch ... ok
+test shortcut::keyboard_switch::tests::valid_lists_are_not_repaired_twice ... ok
+test shortcut::migration_tests::legacy_conflicts_are_loaded_unchanged_and_reported ... ok
+test shortcut::migration_tests::legacy_store_loads_each_shortcut_as_the_first_of_its_action ... ok
+test shortcut::migration_tests::loading_twice_is_idempotent ... ok
+test shortcut::migration_tests::older_reader_keeps_the_first_shortcut_and_ignores_alternatives ... ok
+test shortcut::migration_tests::other_actions_keep_their_stored_values ... ok
+test shortcut::migration_tests::single_shortcut_bindings_serialize_byte_identical_to_the_legacy_shape ... ok
+test shortcut::prompt_targets::shortcut_tests::a_prompt_may_lose_its_last_shortcut_and_reset_removes_them_all ... ok
+test shortcut::prompt_targets::shortcut_tests::a_prompt_takes_up_to_two_shortcuts_checked_against_every_other_shortcut ... ok
+test shortcut::prompt_targets::shortcut_tests::deleting_a_prompt_releases_its_shortcuts_and_a_refused_commit_restores_them ... ok
+test shortcut::prompt_targets::shortcut_tests::prompt_shortcuts_drive_a_post_processing_dictation ... ok
+test shortcut::prompt_targets::shortcut_tests::prompt_shortcuts_follow_the_post_processing_switch ... ok
+test shortcut::prompt_targets::tests::a_target_of_a_deleted_prompt_is_not_live ... ok
+test shortcut::prompt_targets::tests::a_target_without_shortcuts_has_no_entry ... ok
+test shortcut::prompt_targets::tests::prompt_targets_are_named_after_their_prompt_and_gated_like_post_processing ... ok
+test shortcut::prompt_targets::tests::removing_a_target_returns_its_shortcuts ... ok
+test shortcut::registration_delta::tests::a_failed_slot_release_does_not_register_the_survivor ... ok
+test shortcut::registration_delta::tests::a_later_refusal_unregisters_the_additions_already_made ... ok
+test shortcut::registration_delta::tests::a_refused_activation_keeps_the_accepted_shortcuts_and_reports_the_refusal ... ok
+test shortcut::registration_delta::tests::an_equivalent_replacement_reuses_the_released_slot ... ok
+test shortcut::registration_delta::tests::changing_an_inherited_conflict_keeps_the_other_action_registered ... ok
+test shortcut::registration_delta::tests::disabling_an_action_hands_its_shared_slot_back_to_the_other_action ... ok
+test shortcut::registration_delta::tests::enabling_an_action_leaves_a_slot_held_by_another_action_alone ... ok
+test shortcut::registration_delta::tests::handy_keys_registrations_never_share_a_slot ... ok
+test shortcut::registration_delta::tests::probe_checks_every_addition_and_leaves_nothing_registered ... ok
+test shortcut::registration_delta::tests::refused_addition_restores_the_previous_registrations ... ok
+test shortcut::registration_delta::tests::refused_change_of_an_inherited_conflict_leaves_the_shared_slot_alone ... ok
+test shortcut::registration_delta::tests::removing_a_duplicate_within_the_action_hands_the_slot_to_the_kept_one ... ok
+test shortcut::registration_delta::tests::removing_the_first_shortcut_keeps_the_promoted_registration ... ok
+test shortcut::registration_delta::tests::replace_releases_the_old_shortcut_and_registers_the_new ... ok
+test shortcut::registration_delta::tests::reset_to_a_default_already_listed_only_releases_the_others ... ok
+test shortcut::tauri_impl::tests::accepts_the_default_shortcuts ... ok
+test shortcut::tauri_impl::tests::aliases_share_one_native_registration ... ok
+test shortcut::tauri_impl::tests::rejects_side_specific_modifiers_the_parser_cannot_register ... ok
+test shortcut::tests::compound_shortcut_keys_parse_on_both_backends ... ok
+test smart_paste::actor::tests::a_read_stamped_before_the_no_read_deadline_but_delivered_after_it_still_counts ... ok
+test settings_service::domains::replacements::tests::transfer::pages_are_byte_bounded_and_cover_the_list_in_order ... ok
+test settings_service::sequence::tests::unapplied_effect_is_retried_before_the_next_write_and_on_resubmission ... ok
+test smart_paste::actor::tests::reads_stamped_after_the_deadline_wait_for_later ... ok
+test smart_paste::actor::tests::the_shutdown_allowance_covers_the_longest_insertion ... ok
+test smart_paste::actor::tests::shutdown_is_served_before_queued_insertions ... ok
+test smart_paste::actor::tests::without_a_grace_the_late_delivered_read_would_be_missed ... ok
+test smart_paste::clock::tests::manual_clock_never_goes_back ... ok
+test smart_paste::clock::tests::manual_clock_sleep_advances_virtual_time_only ... ok
+test smart_paste::destination_bridge::tests::a_named_006_target_gives_its_process_bundle_and_generation ... ok
+test smart_paste::destination_bridge::tests::an_unregistered_generation_fails_closed ... ok
+test smart_paste::destination_bridge::tests::dropping_a_replaced_registration_keeps_the_newer_check ... ok
+test smart_paste::destination_bridge::tests::each_generation_consults_its_own_check_until_unregistered ... ok
+test smart_paste::destination_bridge::tests::no_006_target_or_a_windows_identity_names_no_process_or_bundle ... ok
+test smart_paste::destination_bridge::tests::the_foreground_check_needs_the_same_process_in_front_and_no_cancellation ... ok
+test smart_paste::destination_bridge::tests::the_foreground_names_an_application_but_never_handy_or_an_unreadable_front ... ok
+test smart_paste::destination_bridge::tests::the_session_check_follows_006s_guard_and_refuses_another_application ... ok
+test smart_paste::direct::tests::inserts_at_the_caret_when_the_selection_is_empty ... ok
+test smart_paste::direct::tests::rejects_ranges_out_of_bounds_or_inside_a_surrogate_pair ... ok
+test smart_paste::direct::tests::replaces_the_selected_range_with_the_transcript ... ok
+test smart_paste::dispatch::tests::a_cancelled_dictation_never_reaches_the_actor ... ok
+test smart_paste::dispatch::tests::a_refused_submission_inserted_nothing_and_a_lost_reply_is_uncertain ... ok
+test smart_paste::dispatch::tests::each_gate_combination_has_one_route ... ok
+test smart_paste::dispatch::tests::inputs_follow_the_clipboard_handling_and_paste_delay_settings ... ok
+test smart_paste::dispatch::tests::every_kind_reaches_006_as_its_method_outcome_status_and_disposition ... ok
+test smart_paste::dispatch::tests::only_the_enter_eligible_kinds_submit_and_only_the_hand_over_shows_its_message ... ok
+test smart_paste::dispatch::tests::this_build_reports_both_gates ... ok
+test smart_paste::dispatch::tests::the_actor_gets_006s_target_and_the_guard_answers_only_while_it_runs ... ok
+test smart_paste::dispatch::tests::with_destination_return_the_activated_application_is_the_target ... ok
+test smart_paste::dispatch::tests::without_a_session_the_application_in_front_is_the_destination ... ok
+test smart_paste::exit_gate::tests::a_restart_is_never_held ... ok
+test smart_paste::exit_gate::tests::the_first_exit_settles_later_ones_wait_and_the_final_one_proceeds ... ok
+test smart_paste::ids::tests::transcript_counts_utf16_units_for_astral_characters ... ok
+test smart_paste::ids::tests::transcript_debug_never_contains_the_text ... ok
+test smart_paste::key_events::tests::empty_text_has_no_events ... ok
+test smart_paste::key_events::tests::long_text_is_split_into_event_sized_chunks ... ok
+test smart_paste::key_events::tests::surrogate_pairs_are_never_split ... ok
+test smart_paste::keyboard::tests::abc_us_and_input_methods_are_kept ... ok
+test smart_paste::keyboard::tests::non_us_layouts_are_switched ... ok
+test smart_paste::outcome::tests::every_kind_keeps_its_wire_value_as_the_006_method_outcome ... ok
+test smart_paste::outcome::tests::destination_maps_enter_eligible_kinds_to_attempts_and_failures_to_recovery ... ok
+test smart_paste::outcome::tests::hand_over_is_neither_success_nor_failure ... ok
+test smart_paste::outcome::tests::only_verified_insertion_claims_field_content ... ok
+test smart_paste::outcome::tests::only_verified_read_and_typed_are_enter_eligible ... ok
+test smart_paste::outcome::tests::recovery_covers_exactly_the_four_failures ... ok
+test smart_paste::outcome::tests::wire_values_are_snake_case ... ok
+test smart_paste::pasteboard_types::tests::appkit_conversions_and_legacy_names_are_derived ... ok
+test smart_paste::pasteboard_types::tests::concealed_and_transient_withhold_restoration_but_auto_generated_does_not ... ok
+test smart_paste::pasteboard_types::tests::declared_types_of_every_item_are_read_before_derived_ones ... ok
+test smart_paste::setting_policy::tests::a_hand_edited_beta_switch_is_turned_off_again_after_the_migration ... ok
+test smart_paste::setting_policy::tests::a_later_cmd_v_choice_survives_every_reload ... ok
+test smart_paste::setting_policy::tests::a_missing_or_malformed_marker_means_never_migrated ... ok
+test smart_paste::setting_policy::tests::allowed_paste_methods_list_smart_paste_only_when_active ... ok
+test settings_service::sequence::tests::unknown_outcome_that_landed_keeps_the_preparation_and_notifies_the_reread ... ok
+test smart_paste::setting_policy::tests::new_installations_default_to_smart_paste_only_when_active ... ok
+test smart_paste::setting_policy::tests::cmd_v_moves_to_smart_paste_whether_or_not_the_beta_switch_was_on ... ok
+test smart_paste::setting_policy::tests::smart_paste_is_active_only_on_macos_once_dictation_dispatches_it ... ok
+test smart_paste::setting_policy::tests::smart_paste_is_refused_wherever_it_is_not_active ... ok
+test smart_paste::setting_policy::tests::the_beta_switch_cannot_be_turned_back_on_once_smart_paste_is_active ... ok
+test smart_paste::settlement::tests::cancelled_keystroke_materializes_and_never_restores ... ok
+test smart_paste::setting_policy::tests::other_methods_are_kept_and_still_marked_with_the_beta_switch_dropped ... ok
+test smart_paste::settlement::tests::exit_restores_only_when_due_and_not_copy_mode ... ok
+test smart_paste::settlement::tests::lost_ownership_turns_every_write_into_no_write ... ok
+test smart_paste::settlement::tests::not_read_never_restores ... ok
+test smart_paste::setting_policy::tests::inactive_rollout_never_migrates_nor_drops_the_beta_switch ... ok
+test smart_paste::settlement::tests::quiet_reads_restore_unless_copy_mode ... ok
+test smart_paste::settlement::tests::second_dictation_snapshot_source_follows_ownership_and_retention ... ok
+test smart_paste::snapshot_helper::tests::a_second_inventory_or_an_end_without_inventory_is_malformed ... ok
+test smart_paste::snapshot_helper::tests::a_helper_stopping_mid_stream_keeps_completed_types ... ok
+test smart_paste::snapshot_helper::tests::a_stream_without_inventory_or_with_a_changed_source_is_rejected ... ok
+test smart_paste::snapshot_helper::tests::nonce_round_trips_through_its_hex_argument ... ok
+test smart_paste::snapshot_helper::tests::omitted_counts_reach_the_snapshot ... ok
+test smart_paste::snapshot_helper::tests::the_deadline_keeps_completed_types_and_times_out_the_rest ... ok
+test smart_paste::snapshot_helper::tests::two_requests_get_different_nonces ... ok
+test smart_paste::strategy::tests::jump_desktop_keeps_the_general_path_with_its_timings ... ok
+test smart_paste::strategy::tests::other_or_unknown_destinations_use_direct_then_clipboard ... ok
+test smart_paste::strategy::tests::remote_keyboards_use_unicode_typing ... ok
+test smart_paste::strategy::tests::screen_sharing_hands_the_clipboard_over_without_permission ... ok
+test smart_paste::timing::tests::jump_desktop_uses_its_slow_profile ... ok
+test smart_paste::timing::tests::other_and_unknown_destinations_use_the_default_profile ... ok
+test transcription_coordinator::input_lost_tests::a_loss_without_a_recording_changes_nothing ... ok
+test transcription_coordinator::input_lost_tests::a_lost_input_stops_once_and_the_later_release_is_a_no_op ... ok
+test transcription_coordinator::multi_shortcut_tests::external_toggle_flips_a_press_remembered_by_a_shortcut ... ok
+test transcription_coordinator::multi_shortcut_tests::failed_start_from_a_lets_b_start_a_new_session ... ok
+test transcription_coordinator::multi_shortcut_tests::hold_mode_busy_press_belongs_to_the_pressed_shortcut ... ok
+test transcription_coordinator::multi_shortcut_tests::hold_or_toggle_busy_tap_keeps_shortcut_ownership_until_the_drain ... ok
+test transcription_coordinator::multi_shortcut_tests::hold_or_toggle_held_phase_ignores_b ... ok
+test transcription_coordinator::multi_shortcut_tests::hold_or_toggle_locked_phase_stops_on_b ... ok
+test transcription_coordinator::multi_shortcut_tests::other_action_stays_ignored_while_a_records ... ok
+test transcription_coordinator::multi_shortcut_tests::push_to_talk_b_press_does_not_cancel_a_deferred_release ... ok
+test transcription_coordinator::multi_shortcut_tests::push_to_talk_ignores_b_while_a_is_held ... ok
+test transcription_coordinator::multi_shortcut_tests::simultaneous_presses_start_only_once ... ok
+test transcription_coordinator::multi_shortcut_tests::toggle_b_inside_the_debounce_window_is_dropped ... ok
+test transcription_coordinator::multi_shortcut_tests::toggle_b_stops_a_session_with_the_starting_metadata ... ok
+test transcription_coordinator::multi_shortcut_tests::toggle_presses_of_a_and_b_while_busy_net_to_no_op ... ok
+test transcription_coordinator::multi_shortcut_tests::toggle_remembered_press_belongs_to_the_action_for_hold_inputs ... ok
+test transcription_coordinator::quiescence::tests::a_key_down_during_the_lease_is_gated_and_its_release_ignored ... ok
+test transcription_coordinator::quiescence::tests::a_key_down_handled_before_the_request_refuses_the_lease ... ok
+test transcription_coordinator::quiescence::tests::an_idle_coordinator_grants_the_lease ... ok
+test transcription_coordinator::quiescence::tests::dropping_the_lease_reopens_the_gate ... ok
+test transcription_coordinator::quiescence::tests::every_session_state_refuses_the_lease ... ok
+test transcription_coordinator::quiescence::tests::external_triggers_pass_the_gate_and_input_resumes_after_release ... ok
+test transcription_coordinator::quiescence::tests::the_requester_receives_an_answer_given_on_another_thread ... ok
+test transcription_coordinator::tests::cancel_during_processing_drops_remembered_press ... ok
+test transcription_coordinator::tests::different_binding_does_not_replace_pending_press ... ok
+test transcription_coordinator::tests::drain_starts_the_pending_binding_not_a_later_one ... ok
+test transcription_coordinator::tests::external_edges_inside_debounce_window_are_not_dropped ... ok
+test transcription_coordinator::tests::failed_start_rolls_back_to_idle ... ok
+test transcription_coordinator::tests::genuine_release_after_grace_stops_recording_once ... ok
+test transcription_coordinator::tests::hold_modes_classify_busy_inputs_by_pending_state ... ok
+test transcription_coordinator::tests::hold_or_toggle_autorepeat_burst_is_one_long_hold ... ok
+test transcription_coordinator::tests::hold_or_toggle_autorepeat_burst_straddling_drain_measures_from_first_press ... ok
+test transcription_coordinator::tests::hold_or_toggle_cancel_clears_locked_session ... ok
+test transcription_coordinator::tests::hold_or_toggle_completed_hold_during_processing_nets_noop ... ok
+test transcription_coordinator::tests::hold_or_toggle_drain_inside_busy_release_grace_still_classifies_tap ... ok
+test transcription_coordinator::tests::hold_or_toggle_locked_session_ignores_release ... ok
+test transcription_coordinator::tests::hold_or_toggle_long_hold_stops_on_release ... ok
+test transcription_coordinator::tests::hold_or_toggle_press_while_held_is_ignored ... ok
+test transcription_coordinator::tests::hold_or_toggle_remembered_press_measures_hold_from_real_key_down ... ok
+test transcription_coordinator::tests::hold_or_toggle_tap_during_processing_queues_locked_start ... ok
+test transcription_coordinator::tests::hold_or_toggle_tap_locks_recording_until_next_press ... ok
+test transcription_coordinator::tests::hold_or_toggle_two_taps_during_processing_net_noop ... ok
+test transcription_coordinator::tests::keyboard_press_inside_debounce_window_is_still_dropped ... ok
+test transcription_coordinator::tests::press_during_processing_starts_after_drain ... ok
+test transcription_coordinator::tests::press_for_different_binding_than_pending_release_passes_through ... ok
+test transcription_coordinator::tests::press_matching_pending_release_cancels_without_recording_state ... ok
+test transcription_coordinator::tests::ptt_tap_inside_busy_window_nets_noop ... ok
+test transcription_coordinator::tests::push_to_talk_press_matching_pending_release_cancels_release ... ok
+test transcription_coordinator::tests::push_to_talk_release_while_recording_defers_release ... ok
+test transcription_coordinator::tests::push_to_talk_short_press_still_stops_on_release ... ok
+test transcription_coordinator::tests::second_toggle_press_during_processing_forgets_press ... ok
+test transcription_coordinator::tests::toggle_mode_ignores_release_and_stops_on_next_press ... ok
+test transcription_coordinator::tests::toggle_mode_press_and_release_pass_through ... ok
+test transcription_coordinator::tests::toggle_press_during_processing_remembers_start ... ok
+test transcription_coordinator::tests::toggle_press_stops_recording_started_as_hold ... ok
+test transcription_coordinator::tests::toggle_presses_alternate_remember_and_forget_while_busy ... ok
+test transcription_coordinator::tests::toggle_presses_during_processing_net_noop_after_drain ... ok
+test transcription_coordinator::tests::toggle_release_during_processing_is_ignored ... ok
+test transcription_coordinator::tests::x11_autorepeat_burst_does_not_toggle_recording ... ok
+test tray::tests::falls_back_to_raw_transcription ... ok
+test tray::tests::idle_and_busy_menus_differ ... ok
+test tray::tests::recording_and_transcribing_share_a_menu ... ok
+test tray::tests::tray_icon_resolution_failure_is_returned_instead_of_panicking ... ok
+test tray::tests::uses_post_processed_text_when_available ... ok
+test tray_i18n::tests::resolves_locale_fallbacks ... ok
+test utils::tests::arm64_native_machine_is_the_only_match ... ok
+test utils::tests::env_flag_enabled_false_for_falsy_or_unset ... ok
+test utils::tests::env_flag_enabled_true_for_truthy_values ... ok
+test tray::tests::tray_icon_returns_err_when_file_does_not_exist ... ok
+test word_replacements::dictation::tests::invalid_stored_rules_leave_text_unchanged ... ok
+test word_replacements::dictation::tests::keep_snapshots_separate_per_binding ... ok
+test word_replacements::dictation::tests::commit_after_recording_start_applies_from_the_next_dictation ... ok
+test transcription_coordinator::quiescence::tests::a_late_answer_never_grants_an_abandoned_request ... ok
+test word_replacements::exchange_file::tests::a_destination_the_user_cannot_write_is_refused_and_unchanged ... ok
+test word_replacements::exchange_file::tests::a_failed_write_keeps_the_destination_and_removes_the_temporary ... ok
+test smart_paste::actor::tests::an_idle_timer_first_takes_a_read_still_in_flight ... ok
+test word_replacements::exchange_file::tests::a_failed_directory_sync_after_the_rename_is_reported_as_not_synced ... ok
+test word_replacements::exchange_file::tests::a_symbolic_link_is_refused_and_nothing_is_written ... ok
+test word_replacements::exchange_tests::accept_crlf_bom_and_keep_original_line_numbers ... ok
+test word_replacements::exchange_tests::decode_bytes_with_cap_bom_and_utf8_offset ... ok
+test word_replacements::exchange_tests::keep_header_lookalikes_and_later_tab_headers_as_rules ... ok
+test word_replacements::exchange_tests::keep_later_semicolons_and_hashes_literal_in_replacement ... ok
+test word_replacements::exchange_tests::parse_spec_example_with_french_header ... ok
+test word_replacements::exchange_tests::recognize_header_case_insensitively_after_blank_and_comment_lines ... ok
+test word_replacements::exchange_file::tests::the_temporary_file_has_its_final_mode_before_any_byte_is_written ... ok
+test word_replacements::exchange_tests::recognize_header_fields_after_trimming_whatever_the_separator ... ok
+test word_replacements::exchange_tests::reject_standalone_carriage_return_inside_a_field ... ok
+test word_replacements::exchange_tests::recognize_tab_separated_header_copied_from_a_spreadsheet ... ok
+test word_replacements::exchange_tests::remove_only_the_initial_bom_once_across_decode_and_parse ... ok
+test word_replacements::exchange_tests::report_empty_fields_and_forbidden_tab_in_replacement ... ok
+test word_replacements::exchange_tests::report_missing_separator_with_line_number ... ok
+test word_replacements::exchange_tests::report_reader_failure_without_content ... ok
+test word_replacements::exchange_tests::round_trip_a_first_rule_that_looks_like_the_header ... ok
+test word_replacements::exchange_tests::serialize_canonical_header_and_order_with_lf ... ok
+test word_replacements::exchange_tests::split_tab_lines_on_first_tab_even_after_semicolon ... ok
+test word_replacements::exchange_tests::treat_csv_quotes_as_literal_text_and_empty_input_as_no_lines ... ok
+test word_replacements::matcher_tests::match_every_exact_fixture ... ok
+test word_replacements::matcher_tests::reject_invalid_rule_sets_at_compile_time ... ok
+test word_replacements::matcher_tests::report_rule_identity_and_matched_range ... ok
+test word_replacements::model::tests::allocate_distinct_uuid_v4_ids ... ok
+test word_replacements::exchange_file::tests::replace_an_existing_file_and_leave_no_temporary ... ok
+test word_replacements::model::tests::preserve_opaque_ids_and_order_through_json ... ok
+test word_replacements::matcher_tests::segments_cover_the_original_text_in_order ... ok
+test word_replacements::preview_tests::a_key_repeated_on_every_line_names_a_bounded_number_of_other_lines ... ok
+test word_replacements::preview_tests::exported_set_previews_as_noop_replace ... ok
+test word_replacements::preview_tests::an_error_line_after_the_listed_ignored_lines_is_still_listed ... ok
+test word_replacements::preview_tests::hash_exact_input_and_keep_saved_rules_untouched ... ok
+test word_replacements::preview_tests::invalid_line_blocks_apply_and_reports_missing_separator ... ok
+test word_replacements::preview_tests::merge_updates_in_place_and_appends_in_file_order ... ok
+test word_replacements::preview_tests::preview_pasted_block_with_header_as_two_additions ... ok
+test word_replacements::preview_tests::refuse_apply_against_an_invalid_saved_base ... ok
+test word_replacements::preview_tests::reject_colliding_allocated_ids_at_materialization ... ok
+test word_replacements::preview_tests::reordered_replace_is_not_a_noop ... ok
+test word_replacements::exchange_file::tests::an_existing_destination_keeps_its_permissions_and_a_new_one_is_private ... ok
+test word_replacements::preview_tests::report_both_duplicate_lines_in_one_block ... ok
+test word_replacements::preview_tests::replace_uses_input_order_reuses_ids_and_lists_deletions ... ok
+test word_replacements::published::tests::a_late_reader_of_an_older_revision_never_replaces_the_newest ... ok
+test word_replacements::published::tests::an_invalid_stored_set_disables_replacement_without_failing ... ok
+test word_replacements::published::tests::one_matcher_per_revision_is_shared_by_its_readers ... ok
+test word_replacements::service_tests::a_planned_import_reuses_its_set_on_unchanged_rules_and_recomputes_otherwise ... ok
+test word_replacements::service_tests::add_appends_a_trimmed_rule_with_the_given_identity ... ok
+test word_replacements::service_tests::add_refuses_a_folded_duplicate_key_for_both_participants ... ok
+test word_replacements::service_tests::add_refuses_the_rule_after_the_maximum ... ok
+test word_replacements::service_tests::add_reports_field_issues_at_the_new_position ... ok
+test word_replacements::service_tests::an_exhausted_identity_pool_is_refused_instead_of_inventing_an_identity ... ok
+test word_replacements::service_tests::import_merge_runs_twice_to_the_same_set_with_preallocated_ids ... ok
+test word_replacements::service_tests::import_replace_with_errors_returns_the_locating_preview ... ok
+test word_replacements::service_tests::remove_keeps_the_order_of_the_others_and_refuses_an_unknown_identity ... ok
+test word_replacements::service_tests::remove_repairs_a_damaged_set_one_rule_at_a_time ... ok
+test word_replacements::service_tests::stable_names_match_the_serialized_forms ... ok
+test word_replacements::service_tests::update_keeps_identity_and_position_and_may_change_the_key ... ok
+test word_replacements::service_tests::update_refuses_a_key_owned_by_another_rule_and_an_unknown_identity ... ok
+test word_replacements::preview_tests::rule_lines_past_the_rule_limit_are_counted_and_refused ... ok
+test word_replacements::tests::accept_empty_and_maximum_sets_reject_one_more ... ok
+test word_replacements::preview_tests::refuse_candidates_above_the_rule_limit ... ok
+test word_replacements::tests::preserve_accent_and_canonical_form_distinctions ... ok
+test word_replacements::tests::accept_scalar_limits_and_reject_empty_or_one_over_maximum ... ok
+test word_replacements::tests::default_legacy_settings_to_empty_replacements ... ok
+test word_replacements::tests::preserve_opaque_id_bytes_without_format_length_or_trim_limits ... ok
+test word_replacements::tests::preserve_stable_identity_and_order_after_trimming ... ok
+test word_replacements::tests::reject_control_and_bidi_formatting_characters_in_both_fields ... ok
+test word_replacements::tests::reject_duplicate_folded_recognized_keys ... ok
+test word_replacements::tests::reject_forbidden_characters_and_leading_comments ... ok
+test word_replacements::tests::reject_unicode_hard_line_breaks_in_both_fields ... ok
+test word_replacements::tests::trim_only_edges_and_preserve_valid_inner_replacement_bytes ... ok
+test word_replacements::tests::report_all_duplicate_participants_without_mutating_input ... ok
+test word_replacements::tests::validate_opaque_id_rejects_empty_without_changing_input ... ok
+test word_replacements::tests::validate_opaque_id_rejects_all_duplicate_participants ... ok
+test word_replacements::transfer::tests::foreign_and_expired_tokens_are_unknown ... ok
+test word_replacements::transfer::tests::missing_duplicated_or_reordered_chunks_never_complete ... ok
+test word_replacements::transfer::tests::ordered_chunks_are_taken_once_as_the_declared_input ... ok
+test word_replacements::unicode::tests::classify_pinned_combining_marks_as_word_characters ... ok
+test word_replacements::transfer::tests::inputs_and_the_process_capacity_are_bounded ... ok
+test word_replacements::unicode::tests::classify_pinned_join_controls_as_word_characters ... ok
+test word_replacements::unicode::tests::classify_pinned_supplementary_letters_decimal_digits_and_cjk ... ok
+test word_replacements::unicode::tests::fold_default_unicode_without_turkic_or_normalization ... ok
+test word_replacements::unicode::tests::reject_malformed_tables_without_panicking ... ok
+test word_replacements::unicode::tests::retain_complete_expansion_and_whitespace_source_boundaries ... ok
+test word_replacements::unicode::tests::verify_embedded_data_and_license_against_pinned_provenance ... ok
+test settings_service::ipc::server::tests::a_failing_listener_backs_off_instead_of_spinning ... ok
+test audio_toolkit::audio::recorder::tests::missing_callback_at_stop_marks_stream_for_rebuild_and_returns_samples ... ok
+test settings_service::ipc::server::tests::unix::a_runtime_directory_with_changed_permissions_does_not_spin ... ok
+test settings_service::sequence::tests::races::concurrent_prepared_writes_of_one_key_leave_native_state_equal_to_disk ... ok
+test settings_service::sequence::tests::races::concurrent_effect_writes_of_one_key_leave_native_state_equal_to_disk ... ok
+test word_replacements::preview_tests::a_million_blank_or_error_lines_list_a_bounded_number_of_rows ... ok
+test settings_service::sequence::tests::concurrent_manager_repair_and_user_selection_lose_no_update ... ok
+test settings_service::domains::prompts::tests::the_fifty_first_prompt_is_limit_exceeded ... ok
+test settings_service::ipc::server::tests::a_stuck_listener_never_blocks_close_beyond_its_bound ... ok
+
+test result: ok. 1043 passed; 0 failed; 17 ignored; 0 measured; 0 filtered out; finished in 2.89s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 4 tests
+test an_older_handy_running_never_gets_the_migration_written_behind_it ... ok
+test an_invalid_stored_policy_reads_as_never_and_never_enables_enter ... ok
+test a_store_written_by_an_open_build_keeps_both_values_in_either_build ... ok
+test every_switch_and_key_reads_as_documented_and_is_persisted_once ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.60s
+
+
+running 6 tests
+test with_an_older_handy_running_the_set_is_unavailable_and_writes_nothing ... ok
+test an_invalid_value_is_a_canonical_type_refusal_before_the_platform_check ... ok
+test offline_set_commits_once_and_a_no_op_keeps_the_revision ... ok
+test output_get_reads_the_plain_value_with_the_platform_default ... ok
+test without_the_capability_cli_domain_and_ui_validation_refuse_identically ... ok
+test a_set_routed_to_the_running_instance_is_committed_or_refused_by_it ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.31s
+
+
+running 12 tests
+test an_editable_input_is_remembered_with_its_range_and_nothing_else_is_read ... ok
+test an_editable_input_whose_range_cannot_be_read_is_remembered_without_it ... ok
+test a_missing_permission_makes_no_query_and_an_error_remembers_nothing ... ok
+test a_pinned_application_not_running_reads_nothing ... ok
+test a_pinned_application_in_the_background_has_its_input_read ... ok
+test each_query_carries_the_remaining_budget_and_none_is_sent_below_5_ms ... ok
+test a_deadline_before_the_verdict_misses_and_during_the_range_read_keeps_no_range ... ok
+test with_the_gate_closed_no_start_read_is_ever_spawned ... ok
+test return_off_without_pin_or_handy_in_front_reads_nothing ... ok
+test with_the_gate_closed_a_whole_dictation_reads_nothing_and_pastes_as_without_011 ... ok
+test a_password_field_another_process_or_a_doubt_remembers_nothing ... ok
+test a_read_answering_after_a_badge_choice_freeze_or_cancel_is_refused ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 7 tests
+test return_off_with_nothing_pinned_remembers_nothing_and_pastes_at_the_end ... ok
+test a_stale_freeze_never_takes_the_input_of_the_next_dictation ... ok
+test the_same_application_chosen_again_or_pinned_in_place_keeps_the_input ... ok
+test paste_method_none_releases_the_input_unused ... ok
+test another_application_from_the_badge_or_the_cross_releases_the_input ... ok
+test a_pin_of_another_application_or_an_unpin_to_another_instance_releases_it ... ok
+test a_cancellation_a_new_dictation_or_the_end_releases_the_input ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 5 tests
+test macos::capture_the_input_of_the_target_within_the_budget ... ignored, native: needs a logged-in session and Accessibility for the test runner
+test macos::the_006_foreground_read_is_unchanged_after_the_reads ... ignored, native: needs a logged-in session and Accessibility for the test runner
+test macos::the_verification_reads_of_a_remembered_input_fit_their_budget ... ignored, native: needs a logged-in session and Accessibility for the test runner
+test the_selection_range_has_no_debug_display_or_serialize ... ok
+test the_field_adapter_reads_no_content_and_never_the_system_wide_element ... ok
+
+test result: ok. 2 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test the_sentinel_range_never_reaches_a_log_or_an_event ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 7 tests
+test the_010_port_answers_the_field_decision_without_classifying ... ok
+test another_application_in_front_before_enter_still_gets_no_enter ... ok
+test a_diverted_return_recovers_without_any_010_query_and_sends_no_enter ... ok
+test the_bubble_says_insertion_failed_nothing_sent_on_every_platform ... ok
+test a_verified_input_inserts_without_any_010_query_and_enter_follows_009 ... ok
+test a_bubble_that_cannot_be_presented_gives_one_paste_error ... ok
+test an_unchanged_attempt_or_no_remembered_input_is_classified_by_010_as_delivered ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 10 tests
+test an_attempt_out_of_budget_stops_without_sending_and_pastes_nothing ... ok
+test the_destination_already_in_front_still_returns_to_its_input ... ok
+test an_input_in_another_window_has_its_window_raised_then_verified ... ok
+test a_cancellation_after_the_activation_never_moves_the_focus ... ok
+test an_input_gone_with_nothing_changed_inserts_as_without_011 ... ok
+test a_cancellation_during_the_attempt_and_006_refusals_keep_their_precedence ... ok
+test a_range_missing_at_the_start_makes_no_call_at_insertion_and_pastes_nothing ... ok
+test a_range_or_focus_changed_during_the_paste_delay_pastes_nothing ... ok
+test the_verified_input_receives_the_paste_at_its_restored_caret ... ok
+test every_attempt_that_may_have_changed_something_pastes_nothing ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 4 tests
+test running_applications_with_windows_are_listed_once_each_without_this_process ... ignored, native: needs a logged-in macOS desktop session
+test the_frontmost_application_is_pinned_by_identity_without_any_activation ... ignored, native: needs a logged-in macOS desktop session
+test the_frontmost_application_is_read_with_its_identity_within_the_capture_budget ... ignored, native: needs a logged-in macOS desktop session
+test the_live_focused_application_read_names_the_focused_application_within_the_budget ... ignored, native: needs a logged-in macOS desktop session and Accessibility for the runner
+
+test result: ok. 0 passed; 0 failed; 4 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 6 tests
+test rows_without_audio_never_remove_a_file_or_the_recordings_directory ... ok
+test a_failed_save_entry_is_reported_failed_and_writes_nothing ... ok
+test cancellation_before_the_write_is_not_saved_and_writes_nothing ... ok
+test a_saved_wav_gives_a_row_with_its_audio ... ok
+test a_failed_wav_still_saves_a_text_only_row_reported_saved ... ok
+test migration_keeps_rows_ids_saved_flags_and_the_id_counter ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+
+running 6 tests
+test b_s_own_enter_is_decided_by_b_only ... ok
+test the_key_is_attempted_50_to_100_ms_after_readiness ... ok
+test a_policy_change_after_insertion_entry_does_not_change_the_frozen_decision ... ok
+test dictation_b_started_before_a_is_claimed_suppresses_a_in_every_order ... ok
+test a_destination_route_needs_its_app_still_in_front_but_frontmost_at_end_does_not ... ok
+test the_option_route_completion_matrix_presses_exactly_the_expected_count ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 6 tests
+test a_chord_failure_after_an_early_read_suppresses_enter_despite_the_outer_ok ... ok
+test paste_method_none_and_a_failed_destination_never_send_enter ... ok
+test a_classic_success_is_decided_after_the_orchestrator_and_a_failure_is_not ... ok
+test a_recover_verdict_of_010_suppresses_enter ... ok
+test reliable_paste_sends_one_enter_in_either_order_and_none_without_a_read ... ok
+test all_eight_smart_paste_outcomes_give_the_expected_enter_count ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test the_final_focus_check_on_the_real_workspace_fits_the_100_ms_budget ... ignored, native: needs a logged-in macOS desktop session and Accessibility for the runner
+
+test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 8 tests
+test a_dry_run_previews_without_writing_and_help_lists_the_domain ... ok
+test set_priority_with_an_older_handy_running_is_unavailable_and_writes_nothing ... ok
+test list_without_a_running_handy_is_unavailable_with_empty_details ... ok
+test generic_set_of_either_microphone_key_names_the_microphones_domain ... ok
+test names_are_exact_including_spaces_and_a_leading_hyphen_after_the_separator ... ok
+test refused_orders_and_stale_revisions_write_nothing ... ok
+test set_priority_offline_commits_the_order_that_get_reads_back ... ok
+test a_running_instance_commits_set_priority_once_and_list_needs_its_audio_manager ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.07s
+
+
+running 4 tests
+test a_default_open_is_bounded_and_releases_the_device ... ignored, native: opens the default microphone (needs microphone permission)
+test a_timed_out_open_drops_its_late_stream_and_frees_the_device ... ignored, native: abandons a default open (needs microphone permission)
+test an_unplugged_microphone_ends_capture_with_its_prefix ... ignored, native, interactive: unplug the opened microphone when asked
+test enumeration_is_bounded_and_groups_same_named_devices ... ignored, native: enumerates the audio devices of this machine
+
+test result: ok. 0 passed; 0 failed; 4 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test a_reconnected_second_choice_reopens_a_default_stream_left_by_a_busy_first_choice ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 16 tests
+test a_closed_lid_with_an_empty_order_still_tries_the_override_first ... ok
+test a_closed_lid_tries_only_the_override_then_the_default ... ok
+test a_name_shared_by_two_devices_is_a_failed_attempt_never_an_arbitrary_match ... ok
+test a_failed_default_reports_the_error_after_the_configured_attempts ... ok
+test a_slow_enumeration_ends_by_four_seconds_and_keeps_the_default_slot ... ok
+test a_failed_enumeration_is_retried_once_then_choices_count_as_unresolved ... ok
+test a_reconnected_first_choice_is_preferred_at_the_next_opening ... ok
+test an_empty_order_opens_the_default_without_enumerating ... ok
+test slow_devices_get_full_attempts_and_the_default_starts_by_four_seconds ... ok
+test an_open_unknown_or_slow_lid_uses_the_saved_order ... ok
+test an_unplugged_first_choice_falls_back_to_the_next_without_an_open_call ... ok
+test the_default_is_attempted_only_after_every_configured_choice_failed ... ok
+test fast_failures_leave_room_for_every_choice ... ok
+test the_first_present_choice_opens_without_trying_the_others ... ok
+test the_preference_check_names_what_would_open_without_opening_it ... ok
+test without_an_override_the_lid_is_never_probed ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 5 tests
+test a_change_during_a_recording_waits_whatever_the_mode_or_stream ... ok
+test always_on_reopens_only_when_the_preferred_input_changed_or_was_lost ... ok
+test a_loss_ends_a_recording_and_recovers_an_idle_stream_once_per_user_action ... ok
+test on_demand_closes_a_warm_stream_and_resolves_at_the_next_recording ... ok
+test the_end_of_a_recording_applies_a_waiting_change_or_a_loss_in_always_on_only ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 8 tests
+test generic_set_of_either_microphone_key_is_refused_with_the_domain_reason ... ok
+test a_headless_read_migrates_in_memory_without_writing ... ok
+test invalid_or_stale_orders_change_nothing ... ok
+test a_failed_write_leaves_the_legacy_store_recoverable ... ok
+test a_legacy_name_becomes_the_only_choice_once_and_stays_for_a_downgrade ... ok
+test a_valid_complete_order_commits_once_and_a_repeat_is_a_no_op ... ok
+test an_explicit_list_wins_over_the_legacy_key_even_when_empty ... ok
+test null_absent_and_literal_default_legacy_values_migrate_exactly ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s
+
+
+running 8 tests
+test a_new_handy_process_starts_without_a_pin ... ok
+test paste_method_none_activates_nothing_even_when_pinned ... ok
+test a_running_pin_not_brought_forward_fails_with_activation_failed_and_stays ... ok
+test a_pinned_app_closed_then_reopened_fails_then_receives_the_text ... ok
+test a_cli_pin_during_a_dictation_changes_it_before_insertion_then_unpin_restores_it ... ok
+test a_pin_activates_with_return_off_and_unpin_then_inserts_at_the_frontmost_app ... ok
+test a_badge_choice_with_return_off_while_pinned_gets_its_enter_only_in_front ... ok
+test five_dictations_started_from_three_other_apps_all_reach_the_pinned_app ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+test with_an_older_handy_running_the_enter_setting_is_never_written_behind_it ... ok
+test closed_gate::destination_actions_are_a_usage_error_exactly_as_on_dev ... ok
+test closed_gate::automatic_enter_is_unknown_and_auto_submit_commits_as_on_dev ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.88s
+
+
+running 5 tests
+test text_dash_reads_the_prompt_from_stdin ... ok
+test routed_list_reports_readiness_and_never_the_key ... ok
+test offline_list_is_unavailable_but_the_library_stays_readable_without_keys ... ok
+test refusals_have_stable_codes_and_exits ... ok
+test offline_crud_with_aliases_returns_ids_and_revisions_without_any_key ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.01s
+
+
+running 3 tests
+test migration_six_keeps_every_row_and_adds_an_empty_processing_record ... ok
+test an_ai_failure_without_audio_keeps_the_raw_text_prompt_and_reason ... ok
+test an_ordinary_dictation_has_no_processing_record ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+running 4 tests
+test a_fresh_install_lists_the_historical_prompt_then_the_starters_without_a_default ... ok
+test a_deleted_starter_never_comes_back ... ok
+test a_full_library_gets_no_starter ... ok
+test upgrade_keeps_existing_prompts_and_selection_and_adds_the_starters_once ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.88s
+
+
+running 5 tests
+test copy_after_a_not_read_outcome_stays_and_nothing_is_ever_restored ... ok
+test copy_during_repeated_reads_of_an_earlier_dictation_wins_over_the_quiet_and_the_cap ... ok
+test copy_of_the_identical_transcript_before_the_quiet_period_wins_over_restoration ... ok
+test without_copy_the_same_scenario_restores_the_previous_clipboard ... ok
+test through_the_actor_copy_waits_behind_the_insertion_in_progress_and_still_wins ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.91s
+
+
+running 16 tests
+test an_expired_slot_reference_or_a_non_failure_admits_nothing ... ok
+test a_new_dictation_closes_a_bubble_shown_for_less_than_four_seconds ... ok
+test a_late_read_received_before_or_after_admission_updates_the_same_bubble ... ok
+test a_refused_drag_shows_the_same_bubble_again_and_an_accepted_one_closes ... ok
+test a_dictation_whose_recording_fails_to_start_keeps_the_bubble_and_its_text ... ok
+test the_explanation_input_says_kept_in_history_only_for_a_saved_history ... ok
+test copy_writes_the_full_transcript_and_closes_and_a_failure_keeps_the_bubble ... ok
+test a_surface_silent_until_the_hang_limit_is_destroyed_and_reported_once ... ok
+test consume_copies_the_transcript_presents_a_preview_and_holds_the_slot_until_rendered ... ok
+test a_new_dictation_before_the_render_supersedes_and_releases_the_slot ... ok
+test close_during_a_slow_copy_closes_at_once_and_the_completion_is_ignored ... ok
+test there_is_no_timeout_only_the_hang_check_which_is_moot_once_shown ... ok
+test the_transcript_never_enters_the_outcome_event_and_the_view_carries_a_bounded_preview ... ok
+test unpresentable_before_the_guard_is_left_to_006_and_after_it_toasts_from_010 ... ok
+test windows_and_linux_bubbles_have_no_drag_and_linux_recovers_only_insertion_failures ... ok
+test a_presentation_slower_than_the_guard_still_shows_the_bubble_without_paste_error ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+
+running 8 tests
+test macos::classify_the_front_application_within_the_budget ... ignored, native: needs a logged-in session and Accessibility for the test runner
+test macos::the_006_foreground_read_is_unchanged_after_a_classification ... ignored, native: needs a logged-in session and Accessibility for the test runner
+test the_classifier_adapter_never_uses_the_system_wide_element_or_a_zero_timeout ... ok
+test the_bubble_is_placed_again_after_a_held_extent_change_and_a_refused_drag ... ok
+test the_bubble_closes_only_after_the_recording_started ... ok
+test presenting_the_bubble_never_cuts_an_indicator_notice ... ok
+test the_projection_is_emitted_only_to_the_recovery_window_and_never_logged ... ok
+test only_the_recovery_window_listens_to_the_bubble_events ... ok
+
+test result: ok. 6 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+
+running 9 tests
+test the_closed_gate_installs_nothing_and_keeps_devs_paste_error_path ... ok
+test a_failed_history_save_is_never_presented_as_kept ... ok
+test the_registry_hands_a_receipt_only_when_010_takes_the_reason ... ok
+test the_frontmost_at_the_end_route_is_classified_on_macos_too ... ok
+test a_not_editable_focus_recovers_before_any_dispatch_with_its_typed_reason_and_no_enter ... ok
+test windows_and_linux_never_classify ... ok
+test the_setting_off_a_missing_permission_and_remote_views_make_no_accessibility_query ... ok
+test the_guard_reads_the_foreground_and_cancellation_again_after_an_insert_verdict ... ok
+test an_editable_or_undetermined_focus_inserts_as_usual ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test copy_and_drag_carry_the_paste_trailing_space_and_the_preview_never_shows_it ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test the_sentinel_reaches_only_the_bubble_window_and_the_copy_and_drag_payloads ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 4 tests
+test off_macos_the_value_reads_false_and_open_macos_keeps_the_choice ... ok
+test a_write_with_an_older_handy_running_writes_nothing ... ok
+test closed::a_value_stored_by_an_open_build_survives_an_unrelated_closed_write ... ok
+test closed::the_key_does_not_exist_for_any_command ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.87s
+
+
+running 20 tests
+test operations::an_empty_recognized_text_exits_two_with_a_stable_code_and_no_write ... ok
+test exchange::import_dry_run_previews_two_additions_and_leaves_the_rules_unchanged ... ok
+test operations::help_lists_every_replacement_action ... ok
+test exchange::import_files_are_bounded_at_one_million_bytes_and_must_exist ... ok
+test operations::generic_set_of_the_rules_names_the_replacements_domain ... ok
+test exchange::an_invalid_line_after_a_thousand_ignored_lines_is_located_by_import_and_dry_run ... ok
+test exchange::an_unwritable_export_destination_is_refused_and_left_unchanged ... ok
+test exchange::an_export_whose_directory_cannot_be_synced_succeeds_with_a_warning ... ok
+test operations::human_errors_go_to_stderr_with_the_item_locations ... ok
+test exchange::stdin_import_accepts_bom_and_crlf_and_refuses_non_utf8_with_its_offset ... ok
+test routed::with_an_older_handy_running_changes_are_unavailable_and_write_nothing ... ok
+test exchange::an_export_through_a_symbolic_link_or_to_a_read_only_file_is_refused ... ok
+test operations::add_then_edit_alias_keep_the_id_and_position ... ok
+test operations::delete_alias_removes_and_an_unknown_id_is_not_found ... ok
+test operations::a_stale_expected_revision_is_a_conflict_that_writes_nothing ... ok
+test routed::operations_routed_to_a_running_instance_are_committed_and_published_by_it ... ok
+test exchange::export_then_replace_import_reproduces_1_100_and_1000_rules ... ok
+test transfer::a_maximal_set_is_listed_and_exported_offline_and_from_a_running_instance ... ok
+test transfer::get_returns_a_maximal_set_offline_and_from_a_running_instance ... ok
+test transfer::an_import_larger_than_one_request_is_staged_offline_and_routed ... ok
+
+test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.21s
+
+
+running 5 tests
+test reject_invalid_utf8_file_with_byte_offset ... ok
+test merge_import_file_updates_in_place_and_appends ... ok
+test import_windows_file_with_bom_and_crlf ... ok
+test accept_files_up_to_the_cap_and_reject_one_byte_more ... ok
+test export_then_replace_import_reproduces_1_100_and_1000_rules ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+
+running 1 test
+test match_1000_rules_over_2000_scalars_within_budget ... ignored, release-only timing budget
+
+test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 7 tests
+test missing_capture_falls_back_to_current_settings ... ok
+test current_settings_are_not_read_when_a_capture_exists ... ok
+test stream_and_batch_fallback_share_one_compiled_matcher ... ok
+test usable_stream_text_skips_the_batch_run ... ok
+test cancelled_finalize_never_starts_a_batch_run ... ok
+test rules_captured_at_start_win_over_a_commit_during_recording ... ok
+test next_dictation_uses_the_rules_committed_before_it_started ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 5 tests
+test a_legacy_store_starts_without_rules_and_keeps_its_settings_and_revision ... ok
+test a_no_op_import_returns_the_current_revision_without_writing ... ok
+test rules_survive_a_restart_in_their_order ... ok
+test a_cli_commit_applies_from_the_next_dictation_not_the_current_one ... ok
+test the_stop_path_keeps_the_matcher_captured_at_recording_start ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s
+
+
+running 19 tests
+test contract::keys_describe_type_allowed_values_range_and_access ... ok
+test contract::help_lists_generic_operations_in_both_modes ... ok
+test contract::json_get_prints_one_envelope_with_revision_and_every_public_key ... ok
+test offline::unreadable_store_reads_defaults_with_a_stderr_warning_and_refuses_writes ... ok
+test offline::older_handy_holding_its_singleton_refuses_reads_and_writes_without_touching_the_store ... ok
+test contract::every_owned_error_code_has_its_documented_exit ... ok
+test contract::secrets_and_rejected_arguments_never_reach_stdout_or_stderr ... ok
+test offline::headless_read_never_creates_the_store_and_a_write_persists_one_revision ... ok
+test contract::human_output_is_readable_and_diagnostics_stay_on_stderr ... ok
+test contract::list_secret_and_read_only_keys_point_to_their_owner ... ok
+test contract::stale_expected_revision_reports_the_current_revision ... ok
+test offline::rejected_write_changes_nothing ... ok
+test routed::a_live_listener_on_the_endpoint_name_is_never_replaced ... ok
+test routed::the_running_instance_refuses_stale_and_invalid_writes_without_committing ... ok
+test offline::concurrent_cli_writers_lose_no_field ... ok
+test routed::the_running_instance_answers_reads_and_commits_writes_with_its_live_state ... ok
+test routed::a_stale_endpoint_name_is_reclaimed_under_the_lease_and_removed_at_close ... ok
+test offline::held_startup_lease_without_a_reachable_channel_refuses_and_never_writes_offline ... ok
+test routed::no_answer_within_five_seconds_is_an_unknown_outcome_resolved_by_a_new_read ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.07s
+
+
+running 8 tests
+test output_set_with_an_older_handy_running_is_unavailable_and_writes_nothing ... ok
+test invalid_output_dry_run_is_refused_with_exit_two_and_no_preview ... ok
+test help_lists_the_generic_operations_and_exactly_the_domains_of_this_build ... ok
+test output_get_reads_exactly_the_output_settings_without_creating_the_store ... ok
+test output_dry_run_previews_with_exit_zero_and_never_writes ... ok
+test stale_output_set_is_a_revision_conflict_reported_on_stderr ... ok
+test output_set_commits_through_the_shared_path ... ok
+test output_set_routed_to_a_running_instance_is_committed_by_the_instance ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.04s
+
+
+running 10 tests
+test read_only_startup::a_real_lease_conflict_is_the_only_startup_refusal ... ok
+test read_only_startup::hard_linked_store_starts_read_only_on_its_content ... ok
+test read_only_startup::linked_store_starts_read_only_on_its_target ... ok
+test read_only_startup::shared_lock_permissions_start_read_only_on_the_store_content ... ok
+test read_only_startup::unreadable_store_starts_read_only_on_defaults ... ok
+test instance_fences_offline_writers_and_a_restart_sees_their_later_commit ... ok
+test concurrent_ui_commits_lose_no_field_and_increment_once_each ... ok
+test device_selectors_store_null_for_the_default_and_literal_names_otherwise ... ok
+test ui_adapter_and_cli_store_the_same_value_or_refuse_with_the_same_error ... ok
+test generated_parity::every_settable_scalar_key_gets_the_same_decision_on_ui_and_cli ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.93s
+
+
+running 33 tests
+test cli_console::inherited_handles_and_redirections_never_attach_a_console ... ok
+test cli_console::detach_success_including_no_attached_console_is_accepted ... ok
+test cli_console::only_missing_handles_are_opened_on_the_parent_console ... ok
+test cli_console::detach_failure_retains_error_kind_and_safe_operation_context ... ok
+test cli_console::without_a_parent_console_nothing_is_reopened_and_the_error_is_reported ... ok
+test platform_unix::tests::same_user_peers_pass_the_current_user_check_on_both_ends ... ok
+test cli_console::historical_startup_and_recording_flags_remain_combinable ... ok
+test cli_console::settings_set_takes_an_expected_revision_and_a_trailing_json_flag ... ok
+test platform_unix::tests::bind_rejects_regular_replacement_without_changing_permissions ... ok
+test platform_unix::tests::native_peer_identity_mismatch_never_returns_stream ... ok
+test cli_console::settings_set_takes_a_negative_value_and_a_leading_json_flag ... ok
+test platform_unix::tests::bind_rejects_socket_replacement_with_matching_owner_and_mode ... ok
+test cli_console::historical_invocations_parse_without_a_subcommand ... ok
+test cli_console::historical_value_flags_keep_values_and_transcription_combinations ... ok
+test cli_console::historical_boolean_flags_keep_their_parser_values ... ok
+test unix::absent_probe_creates_nothing ... ok
+test windows::lease_backed_session_bus_absence_is_absence_and_errors_stay_refused ... ok
+test windows::rejected_pipe_authentication_never_returns_resource_and_closes_peer ... ok
+test windows::pipe_identity_rejects_injection_and_isolates_user_and_store ... ok
+test cli_console::parsed_gui_detaches_console_and_headless_keeps_it ... ok
+test windows::session_negative_alone_cannot_prove_other_sessions_absent ... ok
+test windows::uncertainty_does_not_authorize_offline_operation ... ok
+test windows::windows_missing_mutex_and_window_is_absence_and_probe_errors_stay_refused ... ok
+test windows::successful_pipe_authentication_precedes_resource_transfer ... ok
+test unix::a_listening_socket_name_is_never_reclaimed ... ok
+test unix::lock_and_file_refuse_hostile_aliases ... ok
+test unix::occupied_probe_never_notifies_or_modifies_store ... ok
+test unix::ambiguous_legacy_resources_fail_closed ... ok
+test unix::private_directory_refuses_permissions_alias_and_replacement ... ok
+test unix::close_retains_socket_and_releases_lock_by_lifetime ... ok
+test unix::stale_socket_name_is_reclaimed_only_with_lease_proof ... ok
+test platform_unix::tests::concurrent_socket_binds_preserve_unrelated_file_creation_permissions ... ok
+test unix::new_socket_authenticates_peer_and_refuses_replaced_path ... ok
+
+test result: ok. 33 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+
+running 43 tests
+test driver::repository_subprocess_fixture ... ignored, test-only subprocess entry point; executed by process/crash contracts with stdin barriers
+test locator::missing_ancestor_is_canonicalized_and_parent_traversal_is_refused ... ok
+test locator::installed_resolution_appends_identifier_store_without_creating_it ... ok
+test locator::same_user_symlink_chain_resolves_hop_by_hop_to_its_final_directory ... ok
+test locator::unreadable_or_non_utf8_legacy_marker_beside_data_selects_portable_like_startup ... ok
+test locator::portable_magic_and_legacy_markers_are_read_without_mutation ... ok
+test locator::symlink_loops_and_overlong_chains_are_refused ... ok
+test normalized_writes::store_without_settings_object_reads_as_a_fresh_install ... ok
+test normalized_writes::startup_on_unreadable_json_or_malformed_revision_recovers_read_only_with_lease ... ok
+test ownership::foreign_lease_noop_on_absent_store_is_unavailable ... ok
+test normalized_writes::overlay_position_write_on_legacy_hidden_overlay_keeps_overlay_style ... ok
+test ownership::passive_occupied_socket_refuses_without_connecting_or_deleting ... ok
+test normalized_writes::gpu_device_write_on_schema_one_store_survives_the_next_read ... ok
+test normalized_writes::chinese_script_write_on_legacy_language_intent_keeps_selected_language ... ok
+test faults::replaced_temporary_path_never_replaces_store_or_deletes_substitute ... ok
+test normalized_writes::normalized_write_changes_only_the_mutated_visible_field ... ok
+test ownership::native_owner_appearing_after_temp_sync_refuses_before_replace ... ok
+test normalized_writes::gpu_accelerator_without_device_is_refused_and_changes_nothing ... ok
+test faults::stable_lock_inode_survives_replacement_and_is_retained_after_release ... ok
+test reads::broken_json_read_recovers_defaults_without_overwriting ... ok
+test reads::missing_store_returns_defaults_without_creating_parent_or_store ... ok
+test substitution::ancestor_symlink_into_another_users_directory_is_refused ... ok
+test reads::salvage_keeps_valid_revision_valid_fields_and_store_bytes ... ok
+test substitution::parent_substituted_before_read_and_restored_before_replace_is_refused ... ok
+test ownership::startup_normalizes_once_preserves_raw_secrets_and_keeps_offline_fenced ... ok
+test substitution::store_file_symlink_is_refused_for_reads_and_writes ... ok
+test ownership::offline_noop_on_deleted_store_while_instance_runs_is_unavailable ... ok
+test substitution::store_and_locks_moved_into_a_substituted_parent_are_refused_by_parent_identity ... ok
+test transactions::prompt_mutation_revalidates_membership_against_the_locked_fresh_snapshot ... ok
+test transactions::corrupt_or_overflow_revision_and_broken_json_refuse_write ... ok
+test ownership::startup_merge_never_copies_unknown_fields_between_items_with_duplicate_ids ... ok
+test transactions::stale_compare_and_set_refuses_without_changing_bytes ... ok
+test transactions::refused_or_noop_commit_on_absent_store_creates_no_directory_or_lock ... ok
+test substitution::same_user_ancestor_symlink_resolves_to_its_canonical_directory ... ok
+test transactions::changed_patch_is_durable_increments_once_and_preserves_unknowns_and_secrets ... ok
+test transactions::semantic_noop_does_not_rewrite_or_increment_and_first_change_is_one ... ok
+test processes::barrier_started_startup_and_writer_respect_real_lease_ownership ... ok
+test ownership::lease_holding_instance_commits_while_offline_writers_stay_refused ... ok
+test normalized_writes::gpu_accelerator_with_device_is_reread_as_returned_and_device_cannot_be_cleared ... ok
+test faults::every_durable_fault_preserves_a_complete_generation_and_reports_uncertainty ... ok
+test processes::forced_process_termination_before_and_after_replace_preserves_complete_generations_and_releases_locks ... ok
+test processes::independent_raw_reader_observes_only_complete_old_or_new_generations ... ok
+test processes::overlapping_subprocess_writers_serialize_under_the_lock_and_preserve_disjoint_fields ... ok
+
+test result: ok. 42 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.91s
+
+
+running 25 tests
+test error_details::unsupported_platform_is_validation_failed_exit_two_with_reason_and_field ... ok
+test error_details::items_are_sorted_by_index_and_bounded_without_candidate_values ... ok
+test error_details::existing_errors_carry_neither_reason_nor_items ... ok
+test contracts::request_roundtrip_keeps_typed_operation_without_debug_or_secret_diagnostics ... ok
+test contracts::all_documented_error_codes_have_fixed_exits_and_object_details ... ok
+test contracts::valid_get_keys_set_domain_shapes_roundtrip_with_optional_nulls ... ok
+test request_contracts::every_operation_refuses_fields_owned_by_other_variants ... ok
+test inventory::independent_access_inventory_covers_9_readonly_1_secret_6_collections_51_scalars ... ok
+test request_contracts::unsupported_request_versions_and_extra_fields_are_rejected_safely ... ok
+test scalars::all_51_scalar_ports_accept_the_same_typed_values ... ok
+test scalars::cli_rejects_noncanonical_boolean_and_out_of_range_numbers ... ok
+test scalars::legacy_aliases_are_disk_only_and_build_policy_is_shared ... ok
+test scalars::every_nullable_scalar_preserves_strings_and_accepts_null_clear ... ok
+test scalars::numeric_boundaries_and_overflow_have_identical_safe_error_reasons ... ok
+test scalars::unknown_and_protected_keys_are_refused_without_echoing_input ... ok
+test contracts::operation_schema_requires_the_same_variant_fields_as_serde ... ok
+test request_contracts::request_schema_closes_each_operation_to_its_own_fields ... ok
+test error_details::schema_closes_reason_and_items ... ok
+test contracts::checked_schema_matches_the_actual_dto_generator ... ok
+test contracts::generated_schema_matches_wire_shapes_and_descriptor_inventory ... ok
+test inventory::every_actual_stored_field_has_exactly_one_descriptor ... ok
+test request_contracts::all_canonical_public_enums_and_required_keys_match_independent_inventory ... ok
+test contracts::explicit_projection_reports_secret_presence_without_any_raw_canary ... ok
+test request_contracts::public_schema_requires_all_fields_and_preserves_legacy_numeric_reads ... ok
+test inventory::independent_enum_inventory_accepts_every_current_canonical_variant ... ok
+
+test result: ok. 25 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+
+running 7 tests
+test no_webview_capability_grants_the_store_plugin ... ok
+test settings_service_is_installed_before_the_first_startup_reader ... ok
+test settings_file_name_is_only_spelled_by_the_service ... ok
+test only_the_settings_service_emits_settings_changed ... ok
+test frontend_never_opens_the_settings_store_directly ... ok
+test store_plugin_is_gone_and_settings_path_is_only_resolved_by_the_service ... ok
+test no_backend_code_writes_settings_outside_the_service ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.22s
+
+
+running 8 tests
+test an_older_handy_without_the_settings_channel_refuses_even_the_list ... ok
+test offline_changes_are_refused_but_a_dry_run_previews_them ... ok
+test help_lists_the_shortcut_actions_and_generic_set_points_to_them ... ok
+test offline_list_reads_without_creating_the_store ... ok
+test a_dictation_in_progress_refuses_the_change_with_shortcut_session_busy ... ok
+test last_removal_unknown_action_and_stale_revision_change_nothing ... ok
+test a_running_instance_commits_each_change_as_one_revision ... ok
+test conflicts_and_the_limit_are_refused_with_their_owner_and_limit ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.77s
+
+
+running 109 tests
+test smart_paste::chain::destination_lost_after_an_ax_write_is_uncertain_not_a_clean_failure ... ok
+test smart_paste::chain::no_named_target_skips_direct_insertion_and_pastes_from_the_clipboard ... ok
+test smart_paste::chain::layout_is_restored_even_when_the_chord_fails ... ok
+test smart_paste::chain::remote_keyboards_get_unicode_typing_without_the_clipboard ... ok
+test smart_paste::chain::jump_desktop_decides_not_read_after_3_seconds ... ok
+test smart_paste::chain::azerty_switches_to_abc_before_the_chord_and_restores_after_key_up ... ok
+test smart_paste::chain::the_v_key_is_resolved_after_the_layout_switch ... ok
+test smart_paste::chain::unchanged_field_falls_back_to_the_clipboard_paste ... ok
+test smart_paste::chain::screen_sharing_gets_a_hand_over_without_keystroke_or_permission ... ok
+test smart_paste::chain::unexpected_change_is_uncertain_and_never_pasted ... ok
+test smart_paste::chain::verified_direct_insertion_in_copy_mode_also_copies_plain_text ... ok
+test smart_paste::chain::unicode_typing_in_copy_mode_leaves_the_transcript_and_failure_is_reported ... ok
+test smart_paste::chain::verified_direct_insertion_leaves_the_clipboard_untouched ... ok
+test smart_paste::chain::write_applied_before_the_keystroke_cancels_the_chord ... ok
+test smart_paste::coordinator::after_an_external_copy_the_new_content_is_the_next_snapshot ... ok
+test smart_paste::chain::layout_is_restored_when_a_native_port_panics_during_the_chord ... ok
+test smart_paste::coordinator::a_copy_made_before_restoration_is_never_overwritten ... ok
+test smart_paste::chain::write_applied_during_the_snapshot_is_verified_without_publication ... ok
+test smart_paste::coordinator::after_not_read_neither_the_pre_first_snapshot_nor_the_first_transcript_returns ... ok
+test smart_paste::coordinator::copy_mode_not_read_keeps_plain_transcript_without_reviving_the_snapshot ... ok
+test smart_paste::coordinator::copy_mode_leaves_the_transcript_as_plain_text_instead_of_restoring ... ok
+test smart_paste::coordinator::destination_lost_before_the_keystroke_fails_without_keys_or_restore ... ok
+test smart_paste::coordinator::exit_before_quiet_materializes_and_after_quiet_restores ... ok
+test smart_paste::coordinator::failed_chord_is_terminal_and_restores_only_after_a_later_read ... ok
+test smart_paste::coordinator::failed_chord_without_read_never_restores_nor_reports_late_reads ... ok
+test smart_paste::coordinator::empty_clipboard_is_empty_again_after_restoration ... ok
+test smart_paste::coordinator::late_read_after_not_read_is_reported_once_without_restoring ... ok
+test smart_paste::coordinator::no_read_is_declared_at_800_ms_and_never_restores ... ok
+test smart_paste::coordinator::permission_missing_touches_nothing_even_in_copy_mode ... ok
+test smart_paste::coordinator::reads_of_a_superseded_item_never_affect_the_current_one ... ok
+test smart_paste::coordinator::read_during_the_chord_hold_counts_and_pre_key_reads_do_not ... ok
+test smart_paste::coordinator::probe_then_read_restores_after_the_second_read ... ok
+test smart_paste::coordinator::rich_clipboard_is_restored_exactly_300_ms_after_the_read ... ok
+test smart_paste::direct::a_read_timeout_after_the_write_does_not_hide_a_verified_insertion ... ok
+test smart_paste::coordinator::source_change_between_snapshot_and_publication_aborts_the_start ... ok
+test smart_paste::coordinator::second_dictation_carries_the_original_snapshot_without_intermediate_restore ... ok
+test smart_paste::direct::caret_inside_a_surrogate_pair_is_skipped ... ok
+test smart_paste::direct::an_unchanged_field_after_a_read_timeout_still_falls_back_with_the_guard ... ok
+test smart_paste::direct::element_of_another_process_is_skipped ... ok
+test smart_paste::coordinator::unsavable_or_failing_snapshot_refuses_to_start_and_keeps_the_clipboard ... ok
+test smart_paste::direct::every_call_is_bounded_and_the_attempt_fits_the_total_budget ... ok
+test smart_paste::direct::ignored_write_falls_back_after_the_full_window ... ok
+test smart_paste::direct::immediate_application_is_verified_with_one_write ... ok
+test smart_paste::direct::missing_focus_is_skipped ... ok
+test smart_paste::direct::late_application_boundary_is_the_last_read_of_the_window ... ok
+test smart_paste::direct::partial_change_is_uncertain_and_never_falls_back ... ok
+test smart_paste::direct::secure_field_is_skipped_without_writing ... ok
+test smart_paste::direct::selection_with_astral_characters_is_replaced_in_utf16 ... ok
+test smart_paste::direct::setter_status_is_ignored_in_both_directions ... ok
+test smart_paste::direct::slow_preparation_skips_before_writing ... ok
+test smart_paste::direct::transcript_equal_to_the_selection_is_a_verified_no_op ... ok
+test smart_paste::direct::unreadable_value_after_the_write_is_uncertain ... ok
+test smart_paste::direct::write_applied_after_the_window_is_caught_by_the_fallback_guard ... ok
+test smart_paste::keyboard::previous_source_is_restored_100_ms_after_the_last_key_up ... ok
+test smart_paste::keyboard::azerty_switches_to_abc_and_waits_50_ms ... ok
+test smart_paste::keyboard::restoration_failure_is_reported_not_swallowed ... ok
+test smart_paste::keyboard::unchanged_layout_needs_no_restoration ... ok
+test smart_paste::keyboard::unreadable_source_sends_the_chord_unchanged ... ok
+test smart_paste::keyboard::unselectable_layouts_and_input_methods_stay_unchanged ... ok
+test smart_paste::keyboard::us_is_used_only_when_abc_cannot_be_selected ... ok
+test smart_paste::lifecycle::continuous_reads_are_capped_8_s_after_the_first_read ... ok
+test smart_paste::lifecycle::exit_restoration_requires_quiet_or_cap ... ok
+test smart_paste::lifecycle::first_qualifying_read_is_latched_once ... ok
+test smart_paste::lifecycle::jump_desktop_no_read_boundary_is_3000_ms ... ok
+test smart_paste::lifecycle::jump_desktop_quiet_boundary_is_1500_ms ... ok
+test smart_paste::lifecycle::late_reads_after_not_read_are_reported_once_and_never_restore ... ok
+test smart_paste::lifecycle::no_read_is_declared_exactly_at_800_ms ... ok
+test smart_paste::lifecycle::probe_then_read_restores_after_the_second_read ... ok
+test smart_paste::lifecycle::read_at_key_down_instant_qualifies ... ok
+test smart_paste::lifecycle::read_stamped_after_the_deadline_declares_not_read_first ... ok
+test smart_paste::lifecycle::read_stamped_at_the_no_read_deadline_is_processed_before_the_timer ... ok
+test smart_paste::lifecycle::reads_after_settlement_are_ignored ... ok
+test smart_paste::lifecycle::reads_before_key_down_never_count ... ok
+test smart_paste::lifecycle::restoration_waits_exactly_300_ms_after_the_last_read ... ok
+test smart_paste::pipeline::another_application_in_front_at_the_keystroke_stops_the_paste_for_recovery ... ok
+test smart_paste::privacy::skipped_types_are_logged_by_name_without_their_content ... ok
+test smart_paste::restoration_policy::a_marked_type_that_could_not_be_saved_still_withholds_restoration ... ok
+test smart_paste::restoration_policy::auto_generated_content_alone_is_restored_normally ... ok
+test smart_paste::privacy::no_log_record_contains_user_content ... ok
+test smart_paste::restoration_policy::concealed_content_is_not_restored_on_exit_either ... ok
+test smart_paste::restoration_policy::copy_mode_makes_the_transcript_plain_at_not_read_so_late_reads_are_unseen ... ok
+test smart_paste::restoration_policy::with_the_appkit_cache_a_pre_key_read_hides_the_target_read ... ok
+test smart_paste::restoration_policy::the_snapshot_helper_is_prepared_before_direct_insertion ... ok
+test smart_paste::restoration_policy::concealed_or_transient_content_is_not_restored_and_the_transcript_stays ... ok
+test smart_paste::restoration_policy::with_the_appkit_cache_quiet_is_measured_from_the_first_read ... ok
+test smart_paste::snapshot::a_response_to_another_request_is_rejected ... ok
+test smart_paste::snapshot::concealed_or_transient_content_is_withheld_and_its_bytes_dropped ... ok
+test smart_paste::snapshot::data_frames_beyond_the_remaining_budget_are_refused ... ok
+test smart_paste::snapshot::empty_pasteboard_differs_from_a_nonempty_one_with_nothing_saved ... ok
+test smart_paste::snapshot::frames_round_trip_through_the_stream ... ok
+test smart_paste::snapshot::handy_own_transcript_snapshot_is_withheld ... ok
+test smart_paste::snapshot::items_and_types_keep_their_order_and_bytes ... ok
+test smart_paste::snapshot::omitted_counts_round_trip ... ok
+test smart_paste::snapshot::oversize_type_is_skipped_but_later_small_types_are_kept ... ok
+test smart_paste::snapshot::snapshot_debug_output_hides_clipboard_bytes ... ok
+test smart_paste::snapshot::types_left_out_by_the_helper_are_counted_and_keep_the_pasteboard_nonempty ... ok
+test smart_paste::snapshot::types_missing_after_the_helper_stopped_are_unreadable ... ok
+test smart_paste::snapshot::truncated_or_unknown_frames_are_malformed ... ok
+test smart_paste::snapshot::spec_bounds_are_50_mb_and_200_ms ... ok
+test smart_paste::snapshot::types_not_received_by_the_deadline_are_timed_out ... ok
+test smart_paste::snapshot::uninventoried_or_repeated_types_are_ignored ... ok
+test smart_paste::direct::unreadable_or_oversized_values_are_skipped ... ok
+test smart_paste::snapshot::byte_budget_boundary_is_exact_at_50_mb ... ok
+test smart_paste::pipeline::a_read_after_the_keystroke_is_an_attempt_006_keeps_for_enter ... ok
+test smart_paste::actor::shutdown_before_the_quiet_period_keeps_the_transcript ... ok
+test smart_paste::actor::dropping_the_actor_without_shutdown_still_settles ... ok
+test smart_paste::actor::actor_reports_the_read_and_restores_after_the_quiet_period ... ok
+test smart_paste::actor::queued_insertions_are_serialized_without_intermediate_restoration ... ok
+test smart_paste::actor::shutdown_during_an_insertion_lets_it_finish_and_drops_queued_ones ... ok
+
+test result: ok. 109 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.09s
+
+
+running 1 test
+test native_item_provider_characterizes_cache_and_services_reads_during_worker_hold ... ignored, Runs the native Swift/AppKit fixture with an isolated named pasteboard
+
+test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test production_ax_adapter_verifies_skips_and_detects_late_writes ... ignored, Launches offscreen synthetic AppKit fixtures and needs accessibility trust
+
+test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+smart_paste_native_keyboard: 1 ignored (opt-in: -- --ignored)
+smart_paste_native_pasteboard: 1 ignored (opt-in: -- --ignored)
+
+running 16 tests
+test cli::readable_refusal_goes_to_stderr_with_exit_two ... ok
+test validation::existing_methods_stay_valid_in_both_rollout_states ... ok
+test validation::smart_paste_gets_the_same_decision_from_the_ui_and_the_cli ... ok
+test validation::the_beta_switch_is_refused_on_both_ports_only_once_smart_paste_replaces_it ... ok
+test validation::the_migration_marker_is_read_only_everywhere ... ok
+test store::a_new_installation_defaults_to_smart_paste_only_when_active ... ok
+test store::read_only_reads_normalize_in_memory_without_writing_the_marker ... ok
+test store::a_later_cmd_v_choice_survives_every_reload ... ok
+test store::startup_moves_cmd_v_to_smart_paste_once_with_its_marker ... ok
+test store::startup_keeps_every_other_method ... ok
+test cli::output_set_of_the_beta_switch_follows_the_rollout ... ok
+test cli::keys_list_smart_paste_only_when_selectable_and_the_marker_as_read_only ... ok
+test cli::generic_set_and_output_set_give_the_same_answer ... ok
+test cli::output_dry_run_previews_or_refuses_smart_paste_and_never_writes ... ok
+test cli::offline_upgrade_reads_normalized_and_the_next_write_persists_the_migration ... ok
+test cli::output_set_smart_paste_commits_or_is_refused_by_the_rollout ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.02s
+
+
+running 6 tests
+test help_lists_the_six_operations ... ok
+test status_without_a_running_handy_is_unavailable_with_empty_details ... ok
+test file_import_merges_atomically_and_invalid_lines_refuse_everything ... ok
+test refusals_use_stable_codes_items_and_exits_without_echoing_terms ... ok
+test add_list_remove_with_revisions_and_both_json_placements ... ok
+test stdin_import_replaces_and_export_writes_the_terms_on_stdout ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s
+
+
+running 4 tests
+test stale_revision_is_refused_and_a_no_op_writes_nothing ... ok
+test deduplicated_paste_commits_once_and_invalid_paste_writes_nothing ... ok
+test removal_shrinks_an_over_capacity_legacy_list_one_occurrence_at_a_time ... ok
+test legacy_terms_order_and_threshold_survive_upgrade_and_unrelated_writes ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

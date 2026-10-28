@@ -1,0 +1,308 @@
+//! Tauri glue of smart paste (step 7): the actor thread owned by the app
+//! (started at setup when the rollout gate makes smart paste active, settled
+//! at a normal exit), the insertion method handed to 006, the insertion
+//! without a 006 session, and the outcome follow-ups: the Screen Sharing
+//! hand-over message, the automatic Enter (009's authority with a session,
+//! the legacy auto-submit without one) and the late-read diagnostic for the
+//! recovery bubble (the 010 hook). Events carry identifiers only, never the
+//! transcript.
+
+use std::sync::mpsc::{self, RecvTimeoutError};
+use std::sync::Arc;
+use std::time::Duration;
+
+use tauri::{AppHandle, Emitter, Manager};
+
+use super::actor::shutdown_allowance;
+use super::destination_bridge::DestinationChecks;
+use super::dispatch::{
+    follow_ups, insertion_route, ActorSlot, FollowUps, ForegroundInsertion, InsertionInputs,
+    InsertionRoute, SmartPasteMethod,
+};
+use super::exit_gate::{ExitDecision, ExitGate};
+use super::ids::Transcript;
+use super::outcome::{PasteDiagnostic, PasteOutcome};
+use super::pasteboard_port::PasteboardError;
+use super::request::DiagnosticSink;
+use super::setting_policy::Rollout;
+use crate::automatic_enter::policy::Completion;
+use crate::automatic_enter::transaction::EnterTransaction;
+use crate::destination::workspace::WorkspacePort;
+use crate::settings::{AppSettings, AutoSubmitKey};
+
+/// UI event: Screen Sharing received the transcript on the clipboard.
+pub const HAND_OVER_EVENT: &str = "smart-paste-hand-over";
+/// UI event for 010: a read arrived after "not read" (`PasteDiagnostic`).
+pub const LATE_READ_EVENT: &str = "smart-paste-late-read";
+/// Existing UI event of a failed insertion (toast); never carries the transcript.
+const PASTE_ERROR_EVENT: &str = "paste-error";
+/// Same settle as the classic path between the paste and the submit key.
+const AUTO_SUBMIT_SETTLE: Duration = Duration::from_millis(50);
+/// A responsive main thread runs one key press well within a second.
+const MAIN_THREAD_WAIT: Duration = Duration::from_secs(1);
+
+/// Payload of [`HAND_OVER_EVENT`].
+#[derive(Clone, Copy, Debug, serde::Serialize)]
+struct HandOverNotice {
+    dictation_id: u64,
+}
+
+/// The smart-paste services of a running app.
+pub struct SmartPasteRuntime {
+    slot: ActorSlot,
+    checks: Arc<DestinationChecks>,
+    workspace: Arc<dyn WorkspacePort>,
+    exit: ExitGate,
+}
+
+// @spec FR-006: Actor owned by the app, settled at exit — .specs/features/007-smart-paste/spec.md#fr-006
+/// Starts the actor when smart paste is active in this build (macOS, gate
+/// open). Side effects: one thread and one managed state; the pasteboard and
+/// the helper process are untouched until the first insertion.
+pub fn install(app: &AppHandle) {
+    if !Rollout::CURRENT.is_active() {
+        return;
+    }
+    let checks = Arc::new(DestinationChecks::default());
+    match spawn_actor(app, Arc::clone(&checks)) {
+        Ok(slot) => {
+            let workspace = crate::destination::native_workspace();
+            let exit = ExitGate::default();
+            app.manage(Arc::new(SmartPasteRuntime {
+                slot,
+                checks,
+                workspace,
+                exit,
+            }));
+        }
+        Err(error) => log::error!("Smart paste could not start: {error}"),
+    }
+}
+
+#[cfg(target_os = "macos")]
+fn spawn_actor(app: &AppHandle, checks: Arc<DestinationChecks>) -> std::io::Result<ActorSlot> {
+    let diagnostics = Box::new(FanOutDiagnostics {
+        event: EventDiagnostics(app.clone()),
+        app: app.clone(),
+    });
+    super::macos_ports::spawn_actor(checks, diagnostics).map(ActorSlot::new)
+}
+#[cfg(not(target_os = "macos"))]
+fn spawn_actor(app: &AppHandle, checks: Arc<DestinationChecks>) -> std::io::Result<ActorSlot> {
+    // Smart paste is a macOS method: `Rollout::is_active` keeps other platforms out.
+    let _ = (app, checks);
+    Err(std::io::ErrorKind::Unsupported.into())
+}
+
+fn runtime(app: &AppHandle) -> Option<Arc<SmartPasteRuntime>> {
+    app.try_state::<Arc<SmartPasteRuntime>>()
+        .map(|state| Arc::clone(state.inner()))
+}
+
+// @spec FR-004: Smart-paste Enter decided by 009's authority — .specs/features/009-pin-mode-and-enter-rule/spec.md#fr-004
+/// 006's insertion method for this dictation when smart paste applies
+/// (both gates open), with `settings` read once for the insertion. Its
+/// terminal outcome goes to 009's transaction `enter`, the only emitter of
+/// the dictation's Enter.
+pub fn session_method(
+    app: &AppHandle,
+    text: &str,
+    settings: &AppSettings,
+    enter: Arc<EnterTransaction>,
+) -> Option<SmartPasteMethod> {
+    let route = insertion_route(Rollout::CURRENT, true, settings.paste_method);
+    let runtime = runtime(app).filter(|_| route == InsertionRoute::SmartPasteInSession)?;
+    let final_text = crate::clipboard::with_trailing_space(text.to_owned(), settings);
+    let handle = app.clone();
+    Some(SmartPasteMethod {
+        submitter: Arc::new(runtime.slot.clone()),
+        checks: Arc::clone(&runtime.checks),
+        inputs: InsertionInputs::new(final_text, settings),
+        follow_up: Box::new(move |outcome, context| {
+            // `false`: the session path never uses the legacy auto-submit.
+            present_hand_over(&handle, follow_ups(outcome.kind, false), outcome);
+            // t0: the terminal outcome is published now (007's AX readback, read or typing done).
+            let completion = Completion::SmartPaste(outcome.kind.method_outcome());
+            enter.complete(completion, Some(context), std::time::Instant::now());
+        }),
+    })
+}
+
+/// Settings of a dictation without a 006 session when smart paste applies to it.
+pub fn foreground_settings(app: &AppHandle) -> Option<AppSettings> {
+    runtime(app)?;
+    let settings = crate::settings::get_settings(app);
+    let route = insertion_route(Rollout::CURRENT, false, settings.paste_method);
+    (route == InsertionRoute::SmartPasteAtForeground).then_some(settings)
+}
+
+// @spec FR-011: AX, clipboard, recovery ordering in dictation — .specs/features/007-smart-paste/spec.md#fr-011
+/// Inserts `text` into the application in front (destination-return gate
+/// closed), on a worker thread, then runs the follow-ups there.
+pub async fn insert_at_foreground(
+    app: &AppHandle,
+    text: String,
+    settings: AppSettings,
+    cancelled: Box<dyn Fn() -> bool + Send + Sync>,
+) {
+    let Some(runtime) = runtime(app) else { return };
+    let final_text = crate::clipboard::with_trailing_space(text, &settings);
+    let insertion = ForegroundInsertion {
+        submitter: Arc::new(runtime.slot.clone()),
+        checks: Arc::clone(&runtime.checks),
+        workspace: Arc::clone(&runtime.workspace),
+        inputs: InsertionInputs::new(final_text, &settings),
+    };
+    let handle = app.clone();
+    let joined = tauri::async_runtime::spawn_blocking(move || {
+        let outcome = insertion.insert(cancelled)?;
+        follow_without_session(&handle, &outcome, &settings);
+        Some(outcome)
+    })
+    .await;
+    if let Err(error) = joined {
+        log::error!("Smart paste worker failed: {error}");
+        // Best effort: without a listening window only the toast is lost; the error is logged.
+        let _ = app.emit(PASTE_ERROR_EVENT, ());
+    }
+}
+
+fn follow_without_session(app: &AppHandle, outcome: &PasteOutcome, settings: &AppSettings) {
+    // Gate closed: the stored `auto_submit`, as on `dev`; gate open: Automatic Enter (009).
+    let auto_submit = crate::automatic_enter::legacy_auto_submit(settings);
+    let follow = follow_ups(outcome.kind, auto_submit);
+    present_hand_over(app, follow, outcome);
+    if follow.failure_notice {
+        // 010 hook: until the recovery bubble exists, the classic failure toast (best effort,
+        // like the classic path: the outcome itself is logged by the coordinator).
+        let _ = app.emit(PASTE_ERROR_EVENT, ());
+    }
+    if follow.auto_submit {
+        submit_enter(app, settings.auto_submit_key);
+    }
+}
+
+/// AC-012 message for Screen Sharing: the recording indicator shows it (`src/overlay`), or the
+/// settings window as a toast when the overlay style is none.
+fn present_hand_over(app: &AppHandle, follow: FollowUps, outcome: &PasteOutcome) {
+    if !follow.hand_over_message {
+        return;
+    }
+    let notice = HandOverNotice {
+        dictation_id: outcome.dictation_id.0,
+    };
+    if let Err(error) = app.emit(HAND_OVER_EVENT, notice) {
+        log::warn!("Could not show the smart paste hand-over message: {error}");
+    }
+}
+
+/// Presses the automatic-submit key on the main thread (Enigo's home), after the settle.
+fn submit_enter(app: &AppHandle, key: AutoSubmitKey) {
+    std::thread::sleep(AUTO_SUBMIT_SETTLE);
+    let (sender, receiver) = mpsc::channel();
+    let handle = app.clone();
+    let scheduled = app.run_on_main_thread(move || {
+        // A dropped receiver means the worker stopped waiting; the key was still sent.
+        let _ = sender.send(crate::clipboard::send_auto_submit(&handle, key));
+    });
+    let result = scheduled.map_err(|error| error.to_string()).and_then(|()| {
+        let reply = receiver.recv_timeout(MAIN_THREAD_WAIT);
+        reply
+            .map_err(|error| error.to_string())
+            .and_then(|sent| sent)
+    });
+    if let Err(error) = result {
+        log::warn!("Smart paste inserted, but auto-submit failed: {error}");
+    }
+}
+
+/// Why 010's deliberate Copy through the actor did not complete.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum DeliberateCopyError {
+    /// The pasteboard refused the write.
+    Pasteboard(PasteboardError),
+    /// The actor stopped (or dropped the queued Copy at exit).
+    ActorStopped,
+    /// No answer within `shutdown_allowance(paste_delay)`; the write may still happen.
+    TimedOut,
+}
+
+// @spec AC-005: Copy through 007's actor when it runs — .specs/features/010-recovery-bubble/spec.md#ac-005
+/// 010's deliberate Copy through the actor, when smart paste runs it; `None` without the
+/// actor (the caller then uses `dev`'s clipboard write). Blocks the calling worker at most
+/// `shutdown_allowance(paste_delay)`, 007's bound on an insertion in progress.
+pub fn deliberate_copy(app: &AppHandle, text: &str) -> Option<Result<(), DeliberateCopyError>> {
+    let runtime = runtime(app)?;
+    let delay = Duration::from_millis(crate::settings::get_settings(app).paste_delay_ms);
+    let queued = runtime.slot.deliberate_copy(Transcript::new(text));
+    let Ok(reply) = queued else {
+        return Some(Err(DeliberateCopyError::ActorStopped));
+    };
+    Some(match reply.recv_timeout(shutdown_allowance(delay)) {
+        Ok(written) => written.map_err(DeliberateCopyError::Pasteboard),
+        Err(RecvTimeoutError::Timeout) => Err(DeliberateCopyError::TimedOut),
+        Err(RecvTimeoutError::Disconnected) => Err(DeliberateCopyError::ActorStopped),
+    })
+}
+
+/// A native listener of late reads, managed by 010 with the `destination-return` gate open.
+pub struct LateReadListener(pub Box<dyn Fn(&PasteDiagnostic) + Send + Sync>);
+
+/// The actor's single diagnostic sink: each diagnostic goes unchanged to the
+/// `smart-paste-late-read` event and to 010's native listener when one is installed.
+#[cfg(target_os = "macos")]
+struct FanOutDiagnostics {
+    event: EventDiagnostics,
+    app: AppHandle,
+}
+#[cfg(target_os = "macos")]
+impl DiagnosticSink for FanOutDiagnostics {
+    fn late_read(&mut self, diagnostic: PasteDiagnostic) {
+        self.event.late_read(diagnostic);
+        if let Some(listener) = self.app.try_state::<LateReadListener>() {
+            (listener.0)(&diagnostic);
+        }
+    }
+}
+
+/// 010 hook: late reads are published as an event with identifiers only.
+struct EventDiagnostics(AppHandle);
+impl DiagnosticSink for EventDiagnostics {
+    fn late_read(&mut self, diagnostic: PasteDiagnostic) {
+        log::info!(
+            "[smart-paste] dictation {}: read after not read",
+            diagnostic.dictation_id.0
+        );
+        if let Err(error) = self.0.emit(LATE_READ_EVENT, diagnostic) {
+            log::warn!("Could not publish the smart paste late read: {error}");
+        }
+    }
+}
+
+/// `RunEvent::ExitRequested`: hold the first normal exit while the actor
+/// settles off the main thread, then exit again (see `exit_gate`).
+pub fn settle_before_exit(app: &AppHandle, code: Option<i32>, api: &tauri::ExitRequestApi) {
+    let Some(runtime) = runtime(app) else { return };
+    let restart = code == Some(tauri::RESTART_EXIT_CODE);
+    match runtime.exit.on_exit_requested(restart) {
+        ExitDecision::Proceed => {}
+        ExitDecision::Hold => api.prevent_exit(),
+        ExitDecision::SettleThenExit => {
+            api.prevent_exit();
+            let app = app.clone();
+            // Not joined on purpose: the main loop must keep running for the settlement.
+            std::thread::spawn(move || settle_then_exit(&app, &runtime, code));
+        }
+    }
+}
+
+fn settle_then_exit(app: &AppHandle, runtime: &SmartPasteRuntime, code: Option<i32>) {
+    let delay = Duration::from_millis(crate::settings::get_settings(app).paste_delay_ms);
+    if let Some(mut actor) = runtime.slot.take() {
+        if let Err(error) = actor.shutdown(shutdown_allowance(delay)) {
+            log::warn!("Smart paste did not settle before exit: {error:?}");
+        }
+    }
+    runtime.exit.mark_settled();
+    app.exit(code.unwrap_or(0));
+}

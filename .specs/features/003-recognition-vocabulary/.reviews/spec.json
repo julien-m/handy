@@ -1,0 +1,304 @@
+{
+  "schema_version": "1",
+  "policy_version": "078.1",
+  "context_hash": "c5e679cf0acc02bff6de169a31461337f94deec9cf7556084cbef1d7fa557966",
+  "source_hashes": {
+    ".specs/constitution.md": "f65acb99e00dfab5f8ce418aae1b5979265f2b2eb3c399666b09c4c2caf82067",
+    ".specs/features/003-recognition-vocabulary/spec.md": "e50af3db2155e80ec14219abbdee6a57e431de61338b08647598520ab125567f",
+    ".specs/project.md": "cd935573446ed94fa43256de0a4d14b9474c4356fa66623f3c8c32a80572b699",
+    ".specs/stacks/_default.md": "4df92d16eef38a57c8c2bf1fff8425852b86a41e86c6b7c16423ec166ddfc0f8",
+    ".specs/testing/strategy.md": "bfe0dd480a9d3cf2575cba8407a984add02dcbdad2a17fcb4fc560def9058934"
+  },
+  "reviewer_model": "claude-opus-5-5",
+  "complete": true,
+  "ready": true,
+  "errors": [],
+  "conclusions": [
+    {
+      "requirement_id": "003-recognition-vocabulary:AC-001",
+      "disposition": "ambiguous",
+      "rationale": "Term validity, uniqueness key, no partial write and the 500-term cap are measurable for new input. How legacy stored lists that already hold duplicate keys or more than 500 terms are treated is not stated (the edge cases cover only terms that violate per-term limits), while AC-002 requires every stored term to be kept.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L171-L175",
+          "excerpt": "Terms are unique by their trimmed, whitespace-collapsed, case-folded key; duplicates and invalid terms are reported without a partial write. The vocabulary holds at most 500 terms."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "003-recognition-vocabulary:AC-002",
+      "disposition": "covered",
+      "rationale": "Reuse of custom words, order and threshold preservation and the naming/explanation are observable; SC-002 binds the migration.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L176-L180",
+          "excerpt": "upgrading keeps every stored term in order, and the existing approximate-correction threshold keeps its value"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "003-recognition-vocabulary:AC-003",
+      "disposition": "covered",
+      "rationale": "Exactly one of five statuses derived from declared capabilities, with the \"used only if a term reaches the engine\" rule; testable per engine family through SC-001.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L181-L185",
+          "excerpt": "No status says \"used\" when no context reaches the engine."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "003-recognition-vocabulary:AC-004",
+      "disposition": "covered",
+      "rationale": "Ordered terms within a documented budget and sent/not-sent reporting are deterministic once the plan fixes budgets.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L186-L190",
+          "excerpt": "Terms are sent in list order up to the model's documented context budget"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "003-recognition-vocabulary:AC-005",
+      "disposition": "covered",
+      "rationale": "No context for unsupported models and streaming; approximate correction as fallback and skipped when context was sent.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L191-L195",
+          "excerpt": "When context was sent, approximate correction is skipped, as today for Whisper."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "003-recognition-vocabulary:AC-006",
+      "disposition": "covered",
+      "rationale": "Next-recognition effect without reload and empty-vocabulary behavior are testable.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L196-L200",
+          "excerpt": "A vocabulary change applies from the next recognition without restarting the app or reloading the model."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "003-recognition-vocabulary:AC-007",
+      "disposition": "ambiguous",
+      "rationale": "Operations, shared validation, atomic commit and envelope are explicit. The status operation reports the selected model's support, which the spec derives from the loaded model; what it returns when Handy is not running (no loaded model) is not stated.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L201-L205",
+          "excerpt": "status (selected model, support, terms sent, terms not sent)"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "003-recognition-vocabulary:FR-001",
+      "disposition": "covered",
+      "rationale": "Maps to AC-001/002/006.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L293-L297",
+          "excerpt": "Persist an ordered, uniquely keyed vocabulary in the existing custom-words setting"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "003-recognition-vocabulary:FR-002",
+      "disposition": "covered",
+      "rationale": "Maps to AC-003/005.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L298-L302",
+          "excerpt": "expose one truthful status per model"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "003-recognition-vocabulary:FR-003",
+      "disposition": "covered",
+      "rationale": "Maps to AC-004.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L303-L307",
+          "excerpt": "within a documented per-mechanism budget, and record which terms were sent"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "003-recognition-vocabulary:FR-004",
+      "disposition": "covered",
+      "rationale": "Maps to AC-005/006.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L308-L312",
+          "excerpt": "Keep approximate correction as the fallback when no context is sent, and skip it when context was sent."
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "003-recognition-vocabulary:FR-005",
+      "disposition": "covered",
+      "rationale": "Maps to AC-007.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L313-L317",
+          "excerpt": "Expose vocabulary list, add, remove, import, export and status through the settings CLI"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "003-recognition-vocabulary:SC-001",
+      "disposition": "covered",
+      "rationale": "Automated per-family status and request assertions with a zero-false-used threshold.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L377-L380",
+          "excerpt": "zero cases show \"used\" without context in the request"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "003-recognition-vocabulary:SC-002",
+      "disposition": "covered",
+      "rationale": "100% term/order/threshold retention on upgrade.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L381-L384",
+          "excerpt": "keeps 100% of terms, their order and the correction threshold"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    },
+    {
+      "requirement_id": "003-recognition-vocabulary:SC-003",
+      "disposition": "covered",
+      "rationale": "One native sample on a supporting model with model id; qualitative and non-deterministic but bounded to one recorded sample.",
+      "source_citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L385-L387",
+          "excerpt": "the evidence is recorded with the model id"
+        }
+      ],
+      "plan_citations": [],
+      "searched_plan_sections": []
+    }
+  ],
+  "ambiguities": [
+    {
+      "requirement_id": "003-recognition-vocabulary:AC-001",
+      "decision_key": "legacy-duplicates-and-cap",
+      "question": "Legacy custom words may contain keys that are duplicates under the new case-folded rule, or more than 500 terms. Are they kept and flagged (like over-limit terms), merged, or refused on the next commit?",
+      "critical": false,
+      "citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L367-L374",
+          "excerpt": "Stored legacy terms that violate the new limits: kept as stored, flagged invalid in the UI, and excluded from context until edited."
+        }
+      ],
+      "resolution": "",
+      "resolution_citations": []
+    },
+    {
+      "requirement_id": "003-recognition-vocabulary:AC-007",
+      "decision_key": "offline-status",
+      "question": "What does the CLI status operation return when Handy is not running and no model is loaded: \"unknown until the model loads\", capabilities read from the model file, or unavailable/live-only?",
+      "critical": false,
+      "citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L143-L168",
+          "excerpt": "Then stdout reports the selected model, its context support, the terms sent and the terms not sent"
+        }
+      ],
+      "resolution": "",
+      "resolution_citations": []
+    }
+  ],
+  "extra_scope": [],
+  "findings": [
+    {
+      "category": "behavior",
+      "severity": "info",
+      "description": "With a partial budget, context is sent so approximate correction is skipped for the whole dictation, including terms that did not fit the budget; those terms then have no effect at all. This follows AC-005 literally and is visible through \"terms not sent\".",
+      "suggestion": "Keep, or decide in the plan whether unsent terms still go through approximate correction.",
+      "citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L191-L195",
+          "excerpt": "When context was sent, approximate correction is skipped, as today for Whisper."
+        }
+      ]
+    },
+    {
+      "category": "hygiene",
+      "severity": "info",
+      "description": "The Clarifications section contains a garbled decision bullet (empty requirement id, decision key made of the Penflow paragraph) produced by a clarification tool.",
+      "suggestion": "Clean through spec-refine; no behavior change.",
+      "citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L325-L337",
+          "excerpt": "- Decision `` / `placeholders:- Planned `flow_id: recognition-vocabulary`"
+        }
+      ]
+    },
+    {
+      "category": "consistency",
+      "severity": "info",
+      "description": "QE Analysis and Quality Engineering agree on Medium criticality and the P0 gates; Quality Engineering names the blast radius Shared and the primary risk UX then Regression, which matches the QE Analysis wording (misleading status, Whisper prompt regression).",
+      "suggestion": "No change.",
+      "citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L338-L347",
+          "excerpt": "**Criticality:** Medium; **Blast radius:** Recognition quality for every dictation"
+        },
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L348-L354",
+          "excerpt": "primary risk UX (misleading status), followed by Regression"
+        }
+      ]
+    },
+    {
+      "category": "testability",
+      "severity": "info",
+      "description": "Behavioral visual states (loading, error, success, idle, empty, invalid, valid, enabled, disabled) depend on the deferred program Penflow pass.",
+      "suggestion": "Keep as Penflow obligations.",
+      "citations": [
+        {
+          "section_id": ".specs/features/003-recognition-vocabulary/spec.md:L363-L366",
+          "excerpt": "No inspection READY or certification PASS is claimed."
+        }
+      ]
+    }
+  ],
+  "confidence": 4,
+  "raw_results": [
+    "{\n \"batch_id\": \"batch-001\",\n \"reviewed_section_ids\": [\n  \".specs/constitution.md:L1-L2\",\n  \".specs/constitution.md:L3-L17\",\n  \".specs/constitution.md:L18-L26\",\n  \".specs/constitution.md:L27-L30\",\n  \".specs/constitution.md:L31-L36\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L1-L9\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L10-L11\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L12-L20\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L21-L22\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L23-L57\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L58-L105\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L106-L142\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L143-L168\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L169-L170\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L171-L175\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L176-L180\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L181-L185\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L186-L190\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L191-L195\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L196-L200\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L201-L205\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L206-L209\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L210-L234\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L235-L255\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L256-L271\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L272-L290\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L291-L292\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L293-L297\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L298-L302\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L303-L307\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L308-L312\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L313-L317\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L318-L324\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L325-L337\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L338-L347\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L348-L354\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L355-L362\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L363-L366\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L367-L374\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L375-L376\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L377-L380\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L381-L384\",\n  \".specs/features/003-recognition-vocabulary/spec.md:L385-L387\",\n  \".specs/project.md:L1-L2\",\n  \".specs/project.md:L3-L7\",\n  \".specs/project.md:L8-L16\",\n  \".specs/project.md:L17-L20\",\n  \".specs/project.md:L21-L24\",\n  \".specs/project.md:L25-L28\",\n  \".specs/project.md:L29-L36\",\n  \".specs/stacks/_default.md:L1-L5\",\n  \".specs/stacks/_default.md:L6-L7\",\n  \".specs/stacks/_default.md:L8-L21\",\n  \".specs/stacks/_default.md:L22-L31\",\n  \".specs/testing/strategy.md:L1-L2\",\n  \".specs/testing/strategy.md:L3-L6\",\n  \".specs/testing/strategy.md:L7-L12\",\n  \".specs/testing/strategy.md:L13-L16\"\n ],\n \"conclusions\": [\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:AC-001\",\n   \"disposition\": \"ambiguous\",\n   \"rationale\": \"Term validity, uniqueness key, no partial write and the 500-term cap are measurable for new input. How legacy stored lists that already hold duplicate keys or more than 500 terms are treated is not stated (the edge cases cover only terms that violate per-term limits), while AC-002 requires every stored term to be kept.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L171-L175\",\n     \"excerpt\": \"Terms are unique by their trimmed, whitespace-collapsed, case-folded key; duplicates and invalid terms are reported without a partial write. The vocabulary holds at most 500 terms.\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:AC-002\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Reuse of custom words, order and threshold preservation and the naming/explanation are observable; SC-002 binds the migration.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L176-L180\",\n     \"excerpt\": \"upgrading keeps every stored term in order, and the existing approximate-correction threshold keeps its value\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:AC-003\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Exactly one of five statuses derived from declared capabilities, with the \\\"used only if a term reaches the engine\\\" rule; testable per engine family through SC-001.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L181-L185\",\n     \"excerpt\": \"No status says \\\"used\\\" when no context reaches the engine.\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:AC-004\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Ordered terms within a documented budget and sent/not-sent reporting are deterministic once the plan fixes budgets.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L186-L190\",\n     \"excerpt\": \"Terms are sent in list order up to the model's documented context budget\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:AC-005\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"No context for unsupported models and streaming; approximate correction as fallback and skipped when context was sent.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L191-L195\",\n     \"excerpt\": \"When context was sent, approximate correction is skipped, as today for Whisper.\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:AC-006\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Next-recognition effect without reload and empty-vocabulary behavior are testable.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L196-L200\",\n     \"excerpt\": \"A vocabulary change applies from the next recognition without restarting the app or reloading the model.\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:AC-007\",\n   \"disposition\": \"ambiguous\",\n   \"rationale\": \"Operations, shared validation, atomic commit and envelope are explicit. The status operation reports the selected model's support, which the spec derives from the loaded model; what it returns when Handy is not running (no loaded model) is not stated.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L201-L205\",\n     \"excerpt\": \"status (selected model, support, terms sent, terms not sent)\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:FR-001\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Maps to AC-001/002/006.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L293-L297\",\n     \"excerpt\": \"Persist an ordered, uniquely keyed vocabulary in the existing custom-words setting\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:FR-002\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Maps to AC-003/005.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L298-L302\",\n     \"excerpt\": \"expose one truthful status per model\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:FR-003\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Maps to AC-004.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L303-L307\",\n     \"excerpt\": \"within a documented per-mechanism budget, and record which terms were sent\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:FR-004\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Maps to AC-005/006.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L308-L312\",\n     \"excerpt\": \"Keep approximate correction as the fallback when no context is sent, and skip it when context was sent.\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:FR-005\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Maps to AC-007.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L313-L317\",\n     \"excerpt\": \"Expose vocabulary list, add, remove, import, export and status through the settings CLI\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:SC-001\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"Automated per-family status and request assertions with a zero-false-used threshold.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L377-L380\",\n     \"excerpt\": \"zero cases show \\\"used\\\" without context in the request\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:SC-002\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"100% term/order/threshold retention on upgrade.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L381-L384\",\n     \"excerpt\": \"keeps 100% of terms, their order and the correction threshold\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:SC-003\",\n   \"disposition\": \"covered\",\n   \"rationale\": \"One native sample on a supporting model with model id; qualitative and non-deterministic but bounded to one recorded sample.\",\n   \"source_citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L385-L387\",\n     \"excerpt\": \"the evidence is recorded with the model id\"\n    }\n   ]\n  }\n ],\n \"ambiguities\": [\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:AC-001\",\n   \"decision_key\": \"legacy-duplicates-and-cap\",\n   \"critical\": false,\n   \"question\": \"Legacy custom words may contain keys that are duplicates under the new case-folded rule, or more than 500 terms. Are they kept and flagged (like over-limit terms), merged, or refused on the next commit?\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L367-L374\",\n     \"excerpt\": \"Stored legacy terms that violate the new limits: kept as stored, flagged invalid in the UI, and excluded from context until edited.\"\n    }\n   ]\n  },\n  {\n   \"requirement_id\": \"003-recognition-vocabulary:AC-007\",\n   \"decision_key\": \"offline-status\",\n   \"critical\": false,\n   \"question\": \"What does the CLI status operation return when Handy is not running and no model is loaded: \\\"unknown until the model loads\\\", capabilities read from the model file, or unavailable/live-only?\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L143-L168\",\n     \"excerpt\": \"Then stdout reports the selected model, its context support, the terms sent and the terms not sent\"\n    }\n   ]\n  }\n ],\n \"extra_scope\": [],\n \"findings\": [\n  {\n   \"category\": \"behavior\",\n   \"severity\": \"info\",\n   \"description\": \"With a partial budget, context is sent so approximate correction is skipped for the whole dictation, including terms that did not fit the budget; those terms then have no effect at all. This follows AC-005 literally and is visible through \\\"terms not sent\\\".\",\n   \"suggestion\": \"Keep, or decide in the plan whether unsent terms still go through approximate correction.\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L191-L195\",\n     \"excerpt\": \"When context was sent, approximate correction is skipped, as today for Whisper.\"\n    }\n   ]\n  },\n  {\n   \"category\": \"hygiene\",\n   \"severity\": \"info\",\n   \"description\": \"The Clarifications section contains a garbled decision bullet (empty requirement id, decision key made of the Penflow paragraph) produced by a clarification tool.\",\n   \"suggestion\": \"Clean through spec-refine; no behavior change.\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L325-L337\",\n     \"excerpt\": \"- Decision `` / `placeholders:- Planned `flow_id: recognition-vocabulary`\"\n    }\n   ]\n  },\n  {\n   \"category\": \"consistency\",\n   \"severity\": \"info\",\n   \"description\": \"QE Analysis and Quality Engineering agree on Medium criticality and the P0 gates; Quality Engineering names the blast radius Shared and the primary risk UX then Regression, which matches the QE Analysis wording (misleading status, Whisper prompt regression).\",\n   \"suggestion\": \"No change.\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L338-L347\",\n     \"excerpt\": \"**Criticality:** Medium; **Blast radius:** Recognition quality for every dictation\"\n    },\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L348-L354\",\n     \"excerpt\": \"primary risk UX (misleading status), followed by Regression\"\n    }\n   ]\n  },\n  {\n   \"category\": \"testability\",\n   \"severity\": \"info\",\n   \"description\": \"Behavioral visual states (loading, error, success, idle, empty, invalid, valid, enabled, disabled) depend on the deferred program Penflow pass.\",\n   \"suggestion\": \"Keep as Penflow obligations.\",\n   \"citations\": [\n    {\n     \"section_id\": \".specs/features/003-recognition-vocabulary/spec.md:L363-L366\",\n     \"excerpt\": \"No inspection READY or certification PASS is claimed.\"\n    }\n   ]\n  }\n ],\n \"confidence\": 4\n}"
+  ],
+  "synthesis": null,
+  "synthesis_transport_version": null
+}

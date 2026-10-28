@@ -1,0 +1,13 @@
+{
+  "kind": "plan",
+  "rounds": [
+    {
+      "context_hash": "6b9af60da45ff754de81590e26abde918c266de16a6875a79e1456e419a219a8",
+      "ready": true
+    },
+    {
+      "context_hash": "63fa7e93868f3c420a64c219a89660f9af293b2244155f35b0ee23d70b9c0c6e",
+      "ready": true
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+[2026-10-13][19:51:35][handy_app_lib::settings_service::live][WARN] Settings store cannot be owned (Unavailable); settings are read-only
+[2026-10-13][19:51:35][handy_app_lib::settings_service::tauri_adapter][WARN] Settings store was salvaged or unreadable; recovered values are in use
+[2026-10-13][19:51:35][handy_app_lib::settings_service::live][WARN] Settings store cannot be owned (Unavailable); settings are read-only
+[2026-10-13][19:51:35][handy_app_lib::settings_service::tauri_adapter][WARN] Settings store was salvaged or unreadable; recovered values are in use
+[2026-10-13][19:51:35][handy_app_lib][INFO] Starting hidden with tray available: launching as Accessory (no Dock icon)
+[2026-10-13][19:51:35][handy_app_lib::settings_service::tauri_adapter][ERROR] Settings CLI endpoint could not start: Settings operation is unavailable.

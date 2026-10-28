@@ -1,0 +1,40 @@
+Feature 001 — delivery review correction round 2 (last round allowed), 2026-10-14
+Worktree: /Users/julienm/projects/handy-wt/001-microphone-priority, branch feature/001-microphone-priority, base HEAD 8872d0e4
+Environment for every cargo command: CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-001 (debug profile, no release build, no cargo clean)
+Working directory: the worktree root unless stated otherwise. Each check has <name>.stdout, <name>.stderr and <name>.exit here.
+
+Checks on the fixed tree (exact command -> exit code)
+- cargo test --manifest-path src-tauri/Cargo.toml --no-fail-fast -> 0  (cargo-test.*)
+    34 targets, 1281 passed, 0 failed, 28 ignored
+    (round 2 had 33 targets / 1283 passed: -4 failed_opens tests removed, +1 tests/microphone_reopen.rs, +1 priority_tests long-list test)
+- cargo clippy --manifest-path src-tauri/Cargo.toml --lib --bins -- -D warnings -> 0  (clippy-lib-bins.*)
+- cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -> 0  (clippy-all-targets.*)
+    4 lib-test warnings, the same 4 as round 1 (lib.rs items after a test module, engine_supervisor/supervisor.rs,
+    managers/gguf_meta.rs, portable.rs); none in a file of this round, none new
+- cargo fmt --manifest-path src-tauri/Cargo.toml --check -> 0  (cargo-fmt-check.*)
+- bun run lint -> 0  (bun-lint.*)
+- bun run format:check -> 0  (bun-format-check.*)
+- node_modules/.bin/tsc --noEmit -> 0  (tsc.*)
+- livespec conventions verify --feature repo --json -> 0, verdict PASS, baseline.new_count 0  (conventions-repo.*)
+
+Non-regression test of the blocking finding (AC-004)
+- GREEN, fixed tree: cargo test --manifest-path src-tauri/Cargo.toml --test microphone_reopen -> 0  (green-microphone-reopen.*)
+- RED, grace mechanism: git archive 8872d0e4 extracted to
+  scratchpad/dr001-fix2/red-copy (+ src-tauri/resources/models copied), the same test with the reopen decision taken by
+  failed_opens::keeps_stream after FailedOpens::record of the first resolution (red-grace-variant-test.rs.txt),
+  run from red-copy/src-tauri with: cargo test --test microphone_reopen -> 101  (red-grace-variant.*)
+  panic: "AirPods are back: the next start must reopen the default stream" (tests/microphone_reopen.rs:83)
+  The red run was done before any build of the fixed tree, so it did not replace the binaries used below.
+
+Stability on a frozen copy of the lib test binary (not the shared binary of .target-001)
+- Binary built by the full cargo test above: .target-001/debug/deps/handy_app_lib-6db0d6780b034a0a, copied at once to
+  scratchpad/dr001-fix2/frozen/lib-tests, sha256 b3f2fb668d143eacebd86d4bf93fee964e5e4cf472a2882dfa3b3544bc4a989a (both files).
+  Checked from its test list: 0 failed_opens test, the new priority test present, 41 audio_toolkit::audio tests, 15 microphones:: tests.
+- Script: stress.sh <binary> <filter> <out> = 8 parallel workers x 20 rounds of `<binary> <filter> --test-threads=8`, cwd src-tauri.
+- audio_toolkit::audio, pass 1 -> 160 runs, 159 exit 0, 1 exit 101  (stability-audio-8x20-pass1.txt, failure log
+  stability-audio-8x20-pass1-failure-w3-r2.log): recorder::tests::repeated_start_stop_cycles_resume_capture_without_leaking_samples,
+  "second capture ready: Timeout" (1 s recv_timeout, recorder/tests.rs:313, 64 test threads running at once).
+  That test file is identical to dev (upstream #1954) and this round does not touch the recorder.
+- audio_toolkit::audio, pass 2 (same frozen binary) -> 160 runs, 160 exit 0  (stability-audio-8x20-pass2.txt)
+- microphones:: -> 160 runs, 160 exit 0  (stability-microphones-8x20.txt)
+Commit of the fix: 359c7b04 (fix(001): always reopen on a reconnected higher microphone, check duplicates in one pass)

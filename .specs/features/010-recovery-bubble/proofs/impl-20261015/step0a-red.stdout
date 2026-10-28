@@ -1,0 +1,30 @@
+bun test v1.3.9 (cf6cdbbb)
+
+src/overlay/recovery-preview.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+error: Cannot find module './recovery-preview' from '/Users/julienm/projects/handy-wt/010-recovery-bubble/src/overlay/recovery-preview.test.ts'
+-------------------------------
+
+
+src/overlay/recovery-bubble-render.test.tsx:
+
+# Unhandled error between tests
+-------------------------------
+error: Cannot find module './recovery-bubble' from '/Users/julienm/projects/handy-wt/010-recovery-bubble/src/overlay/recovery-bubble-render.test.tsx'
+-------------------------------
+
+
+src/components/settings/recovery-bubble-toggle-state.test.ts:
+
+# Unhandled error between tests
+-------------------------------
+error: Cannot find module './recovery-bubble-toggle-state' from '/Users/julienm/projects/handy-wt/010-recovery-bubble/src/components/settings/recovery-bubble-toggle-state.test.ts'
+-------------------------------
+
+
+ 0 pass
+ 3 fail
+ 3 errors
+Ran 3 tests across 3 files. [31.00ms]

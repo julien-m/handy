@@ -1,0 +1,5 @@
+RED for Step 4 audit A M2 (startup panics on a store it cannot own) was produced by the auditor's
+probes (independent-audit-step4-a.md, M2: `start_owned` fails for a linked store, a hard link,
+mode 000 and a 0644 lock). The fix adds `LiveSettings::start_owned_or_read_only`; the four cases
+and the real lease conflict are covered by tests/settings_live.rs `read_only_startup::*`
+(cargo-test-settings-targets.stdout, settings_live 10 passed).

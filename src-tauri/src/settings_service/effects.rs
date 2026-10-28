@@ -1,0 +1,263 @@
+//! Live effects of committed settings, applied after the durable write and before the UI event,
+//! in the write order of `sequence`, for the settings UI and routed CLI commands alike.
+use super::live::LiveCommit;
+use crate::managers::audio::AudioRecordingManager;
+use crate::settings::AppSettings;
+use std::sync::{atomic::Ordering, Arc};
+use tauri::{AppHandle, Emitter, Manager};
+
+/// Cached or registered runtime state refreshed after a key changed.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum LiveEffect {
+    Theme,
+    OverlayPosition,
+    OverlayStyle,
+    Logging,
+    Autostart,
+    TrayMenu,
+    TrayVisibility,
+    TranscriptionReload,
+    TranscribeGpuRetry,
+    PostProcessShortcut,
+    KeyboardImplementation,
+    MicrophoneMode,
+    MicrophoneDevice,
+    MicrophoneChannel,
+    VadBackend,
+    HistoryCleanup,
+    /// Compile the committed replacement rules for the next dictation (feature 002).
+    Replacements,
+}
+
+/// Business rule per key; keys absent here are read at use time (paste, language, prompts,
+/// feedback sounds, shortcut activation...) and need no live effect.
+fn live_effect(key: &str) -> Option<LiveEffect> {
+    Some(match key {
+        "theme" => LiveEffect::Theme,
+        "overlay_position" => LiveEffect::OverlayPosition,
+        "overlay_style" => LiveEffect::OverlayStyle,
+        "debug_mode" | "log_level" => LiveEffect::Logging,
+        "autostart_enabled" => LiveEffect::Autostart,
+        "app_language" => LiveEffect::TrayMenu,
+        "show_tray_icon" => LiveEffect::TrayVisibility,
+        "transcribe_accelerator" | "transcribe_gpu_device" => LiveEffect::TranscribeGpuRetry,
+        "ort_accelerator" => LiveEffect::TranscriptionReload,
+        "post_process_enabled" => LiveEffect::PostProcessShortcut,
+        "keyboard_implementation" => LiveEffect::KeyboardImplementation,
+        "always_on_microphone" => LiveEffect::MicrophoneMode,
+        "microphone_priority" => LiveEffect::MicrophoneDevice,
+        "selected_channel" => LiveEffect::MicrophoneChannel,
+        "vad_backend" => LiveEffect::VadBackend,
+        "history_limit" | "recording_retention_period" => LiveEffect::HistoryCleanup,
+        "word_replacements" => LiveEffect::Replacements,
+        _ => return None,
+    })
+}
+
+/// Apply the live effect of every changed key except `skip` (effects a command prepared before
+/// committing). Every key runs even after a failure; the failing keys are returned in order.
+// @spec FR-003: Ordered live effects after the durable commit — .specs/features/008-settings-cli/spec.md#fr-003
+pub(crate) fn apply_changed(
+    app: &AppHandle,
+    commit: &LiveCommit,
+    skip: &[&str],
+) -> Result<(), Vec<&'static str>> {
+    let mut failed = Vec::new();
+    for key in commit.changed.iter().copied() {
+        // Early exit for this key only: its native change was prepared before the commit.
+        if skip.contains(&key) {
+            continue;
+        }
+        let Some(effect) = live_effect(key) else {
+            continue;
+        };
+        if let Err(detail) = apply_effect(app, effect, commit) {
+            log::error!("Live effect of setting '{key}' failed after commit: {detail}");
+            failed.push(key);
+        }
+    }
+    if failed.is_empty() {
+        Ok(())
+    } else {
+        Err(failed)
+    }
+}
+fn apply_effect(app: &AppHandle, effect: LiveEffect, commit: &LiveCommit) -> Result<(), String> {
+    let after = &commit.after;
+    match effect {
+        LiveEffect::Theme => apply_theme(app, after.theme),
+        LiveEffect::OverlayPosition => crate::utils::update_overlay_position(app),
+        LiveEffect::OverlayStyle => apply_overlay_style(app, after),
+        LiveEffect::Logging => apply_logging(after),
+        LiveEffect::Autostart => crate::autostart::apply_autostart(app, after.autostart_enabled),
+        LiveEffect::TrayMenu => crate::tray::update_tray_menu(app),
+        LiveEffect::TrayVisibility => apply_tray_visibility(app, after.show_tray_icon),
+        LiveEffect::TranscriptionReload => reload_transcription(app, false),
+        LiveEffect::TranscribeGpuRetry => reload_transcription(app, true),
+        LiveEffect::PostProcessShortcut => {
+            return crate::shortcut::apply_post_process_shortcut(
+                app,
+                &commit.before,
+                after.post_process_enabled,
+            )
+        }
+        LiveEffect::KeyboardImplementation => {
+            return crate::shortcut::switch_keyboard_implementation(app, &commit.before, after)
+        }
+        LiveEffect::HistoryCleanup => return cleanup_history(app),
+        LiveEffect::Replacements => publish_replacements(app, commit),
+        audio => return apply_audio(app, audio, after),
+    }
+    Ok(())
+}
+/// Compile the committed rules now, so the next dictation starts with them.
+fn publish_replacements(app: &AppHandle, commit: &LiveCommit) {
+    let rules = &commit.after.word_replacements;
+    crate::word_replacements::published::publish_committed(app, commit.revision.0, rules);
+}
+fn apply_audio(app: &AppHandle, effect: LiveEffect, after: &AppSettings) -> Result<(), String> {
+    use crate::managers::audio::MicrophoneMode;
+    let Some(manager) = app.try_state::<Arc<AudioRecordingManager>>() else {
+        // Before the audio manager exists the stored value is read when it starts.
+        return Ok(());
+    };
+    let applied = match effect {
+        LiveEffect::MicrophoneMode => manager.update_mode(if after.always_on_microphone {
+            MicrophoneMode::AlwaysOn
+        } else {
+            MicrophoneMode::OnDemand
+        }),
+        LiveEffect::MicrophoneDevice => manager.update_selected_device(),
+        LiveEffect::MicrophoneChannel => manager.update_selected_channel(after.selected_channel),
+        LiveEffect::VadBackend => manager.update_vad_backend(after.vad_backend),
+        _ => Ok(()),
+    };
+    applied.map_err(|error| error.to_string())
+}
+/// The audio path reads the enabled flag from a cache; the window may need re-centering.
+fn apply_overlay_style(app: &AppHandle, after: &AppSettings) {
+    crate::overlay::update_overlay_enabled_cache(
+        after.overlay_style != crate::settings::OverlayStyle::None,
+    );
+    crate::utils::update_overlay_position(app);
+}
+fn apply_theme(app: &AppHandle, theme: crate::settings::Theme) {
+    #[cfg(any(target_os = "windows", target_os = "macos"))]
+    crate::shortcut::apply_window_theme(app, theme);
+    // Other webviews (the recording overlay) re-apply the palette from this event; a webview
+    // that is not open yet reads the theme when it starts.
+    if let Err(error) = app.emit("theme-changed", theme) {
+        log::warn!("Could not notify webviews of the theme change: {error}");
+    }
+}
+/// Runtime logging state follows the stored settings, except during a `--debug` run.
+pub(super) fn apply_logging(after: &AppSettings) {
+    let (file_level, streaming) =
+        runtime_logging(after, crate::DEBUG_OVERRIDE.load(Ordering::Relaxed));
+    crate::FILE_LOG_LEVEL.store(file_level as u8, Ordering::Relaxed);
+    crate::WEBVIEW_LOG_STREAMING.store(streaming, Ordering::Relaxed);
+}
+/// File log level and webview streaming for `settings`. Business rule: a `--debug` launch keeps
+/// Trace and streaming for the whole run, whatever `debug_mode` or `log_level` become.
+pub(crate) fn runtime_logging(
+    settings: &AppSettings,
+    debug_launch: bool,
+) -> (log::LevelFilter, bool) {
+    if debug_launch {
+        return (log::LevelFilter::Trace, true);
+    }
+    let level: tauri_plugin_log::LogLevel = settings.log_level.into();
+    let level: log::Level = level.into();
+    (level.to_level_filter(), settings.debug_mode)
+}
+fn apply_tray_visibility(app: &AppHandle, visible: bool) {
+    // A headless run has no tray; the stored value applies at the next GUI start.
+    if app.try_state::<tauri::tray::TrayIcon>().is_some() {
+        crate::tray::set_tray_visibility(app, visible);
+    }
+}
+/// The next model use reloads with the new accelerators; a running transcription keeps its
+/// engine. A transcribe.cpp accelerator change also retries a GPU disabled by an earlier failure.
+fn reload_transcription(app: &AppHandle, retry_gpu: bool) {
+    use crate::managers::transcription::TranscriptionManager;
+    if let Some(manager) = app.try_state::<Arc<TranscriptionManager>>() {
+        manager.reload_model_on_next_use();
+        if retry_gpu {
+            manager.retry_transcribe_gpu("the transcribe.cpp accelerator settings changed");
+        }
+    }
+}
+fn cleanup_history(app: &AppHandle) -> Result<(), String> {
+    use crate::managers::history::HistoryManager;
+    match app.try_state::<Arc<HistoryManager>>() {
+        Some(manager) => manager
+            .cleanup_old_entries()
+            .map_err(|error| error.to_string()),
+        None => Ok(()),
+    }
+}
+#[cfg(test)]
+mod tests {
+    use super::live_effect;
+    use crate::settings_service::descriptor::{descriptors, RuntimeEffect};
+
+    /// Keys whose descriptor declares a runtime effect but whose value is read at use time.
+    const READ_AT_USE: &[&str] = &[
+        "shortcut_activation",
+        "hold_threshold_ms",
+        "audio_feedback",
+        "audio_feedback_volume",
+        "sound_theme",
+        "update_checks_enabled",
+        "clamshell_microphone",
+        "selected_output_device",
+        "model_unload_timeout",
+    ];
+    #[test]
+    fn every_declared_runtime_effect_is_applied_or_read_at_use() {
+        for entry in descriptors() {
+            let declared = entry.runtime_effect != RuntimeEffect::None;
+            let applied = live_effect(entry.key).is_some();
+            let read_at_use = READ_AT_USE.contains(&entry.key);
+            assert!(
+                applied || !declared || read_at_use,
+                "{} declares {:?} without a live effect",
+                entry.key,
+                entry.runtime_effect
+            );
+            assert!(!(applied && read_at_use), "{} listed twice", entry.key);
+        }
+    }
+    #[test]
+    fn a_debug_launch_keeps_trace_and_streaming_after_logging_changes() {
+        use super::runtime_logging;
+        let mut settings = crate::settings::get_default_settings();
+        settings.debug_mode = false;
+        settings.log_level = crate::settings::LogLevel::Warn;
+        assert_eq!(
+            runtime_logging(&settings, true),
+            (log::LevelFilter::Trace, true)
+        );
+        assert_eq!(
+            runtime_logging(&settings, false),
+            (log::LevelFilter::Warn, false)
+        );
+    }
+    #[test]
+    fn every_live_effect_key_is_a_descriptor_key() {
+        let keys = descriptors()
+            .iter()
+            .map(|entry| entry.key)
+            .collect::<Vec<_>>();
+        for key in [
+            "theme",
+            "keyboard_implementation",
+            "selected_channel",
+            "recording_retention_period",
+        ] {
+            assert!(keys.contains(&key) && live_effect(key).is_some());
+        }
+        assert!(live_effect("paste_method").is_none());
+        assert!(live_effect("not_a_setting").is_none());
+    }
+}

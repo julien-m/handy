@@ -1,0 +1,6 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/005-custom-ai-prompts/src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 19.80s
+     Running tests/prompt_cli.rs (/Users/julienm/projects/handy-wt/.target-005/debug/deps/prompt_cli-d2c20f0c35d3923a)
+     Running tests/prompt_library.rs (/Users/julienm/projects/handy-wt/.target-005/debug/deps/prompt_library-fde3820e30c2d7a7)

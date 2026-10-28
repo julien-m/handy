@@ -1,0 +1,11 @@
+warning: items after a test module
+   --> src/lib.rs:414:1
+warning: this boolean expression can be simplified
+    --> src/engine_supervisor/supervisor.rs:1551:15
+warning: this `repeat().take()` can be written more concisely
+   --> src/managers/gguf_meta.rs:484:21
+warning: items after a test module
+    --> src/managers/transcription.rs:2141:1
+warning: using `write!()` with a format string that ends in a single newline
+   --> src/portable.rs:185:9
+warning: `handy` (lib test) generated 5 warnings (run `cargo clippy --fix --lib -p handy --tests` to apply 5 suggestions)

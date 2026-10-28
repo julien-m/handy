@@ -1,0 +1,28 @@
+{
+  "command": "livespec conventions verify --feature repo --json",
+  "exit": 0,
+  "run_id": "20261014T033244Z",
+  "verdict": "PASS",
+  "blockers": 0,
+  "violations": 482,
+  "error_violations": [],
+  "baseline": {
+    "baselined_count": 654,
+    "new_count": 0,
+    "path": ".specs/conventions/baseline.json",
+    "resolved_count": 3528,
+    "sha256": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe"
+  },
+  "receipt_path": ".specs/conventions/runs/20261014T033244Z/receipt.json",
+  "receipt_sha256": "5de64bb6fbf0e2f5ed5d9f14f7fab52df42efd8fbc9a9fdbb38bdb5a4960af9a",
+  "stdout_bytes": 2063804,
+  "stdout_sha256": "818057250d23822b0c16e4f2859295e1035623c457c9110b031180fbeb4743ed",
+  "stderr": [
+    "livespec-shim-notice: dev mode executes the LiveSpec checkout /Users/julienm/projects/livespec"
+  ],
+  "run_directory": ".specs/conventions/runs/20261014T033244Z",
+  "run_files": [
+    "receipt.json"
+  ],
+  "note": "Final run, kept on disk until this commit because the repository pre-commit hook (livespec doctor) requires a current conventions receipt; moved to the Trash right after the commit. The first run of this step (PASS, same tree) is conventions-repo-run1-summary.json."
+}

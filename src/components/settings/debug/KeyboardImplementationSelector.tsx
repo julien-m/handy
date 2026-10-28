@@ -5,6 +5,7 @@ import { Dropdown, type DropdownOption } from "../../ui/Dropdown";
 import { useSettings } from "../../../hooks/useSettings";
 import { commands } from "@/bindings";
 import { toast } from "sonner";
+import { settingsErrorKey } from "@/stores/settings-errors";
 
 const KEYBOARD_IMPLEMENTATION_OPTIONS: DropdownOption[] = [
   { value: "tauri", label: "Tauri Global Shortcut" },
@@ -20,7 +21,8 @@ export const KeyboardImplementationSelector: React.FC<
   KeyboardImplementationSelectorProps
 > = ({ descriptionMode = "tooltip", grouped = false }) => {
   const { t } = useTranslation();
-  const { getSetting, isUpdating, refreshSettings } = useSettings();
+  const { getSetting, isUpdating, refreshSettings, clearRefusedShortcuts } =
+    useSettings();
   const currentImplementation =
     getSetting("keyboard_implementation") ?? "tauri";
 
@@ -35,15 +37,22 @@ export const KeyboardImplementationSelector: React.FC<
           "Failed to update keyboard implementation:",
           result.error,
         );
-        toast.error(String(result.error));
+        toast.error(t(settingsErrorKey(result.error)));
+        await refreshSettings();
         return;
       }
 
-      // If any bindings were reset due to incompatibility, notify the user
+      // If any shortcuts were reset or removed due to incompatibility,
+      // notify the user
       if (result.data.reset_bindings.length > 0) {
         toast.warning(t("settings.debug.keyboardImplementation.bindingsReset"));
       }
+      // Shortcuts that now conflict are kept and flagged in the lists
+      if (result.data.conflicts.length > 0) {
+        toast.warning(t("settings.debug.keyboardImplementation.conflictsKept"));
+      }
 
+      clearRefusedShortcuts();
       await refreshSettings();
     } catch (error) {
       console.error("Failed to update keyboard implementation:", error);

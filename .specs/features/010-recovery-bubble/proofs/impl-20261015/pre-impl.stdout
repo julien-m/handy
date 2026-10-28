@@ -1,0 +1,35 @@
+## Specification Analysis Report
+
+Semantic readiness: covered
+
+### Findings
+_No findings._
+
+### Structural Reference Coverage Matrix
+| Requirement Key | Has Plan Task? | Task IDs | Notes |
+|-----------------|----------------|----------|-------|
+| 010-recovery-bubble:AC-001 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 010-recovery-bubble:AC-002 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 010-recovery-bubble:AC-003 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 010-recovery-bubble:AC-006 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 010-recovery-bubble:AC-004 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 010-recovery-bubble:AC-005 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 010-recovery-bubble:AC-007 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 010-recovery-bubble:FR-001 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 010-recovery-bubble:FR-002 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 010-recovery-bubble:FR-003 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 010-recovery-bubble:FR-004 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 010-recovery-bubble:FR-005 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 010-recovery-bubble:AC-012 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 010-recovery-bubble:SC-001 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 010-recovery-bubble:SC-002 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 010-recovery-bubble:SC-003 | yes | plan.md | structural reference present; semantic compliance is separate |
+
+### Metrics
+- total_requirements: 16
+- covered_requirements: 16
+- coverage_percent: 100.0
+- critical_count: 0
+- high_count: 0
+- implementation_present: 0
+

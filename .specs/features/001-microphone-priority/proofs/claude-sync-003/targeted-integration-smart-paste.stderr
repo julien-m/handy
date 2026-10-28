@@ -1,0 +1,23 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy-wt/001-microphone-priority/src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 56.67s
+     Running tests/microphone_cli.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_cli-c0739a795936cfb0)
+     Running tests/microphone_native.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_native-e0bf71716475fc5d)
+     Running tests/microphone_resolution.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_resolution-e2ae6131479e2e62)
+     Running tests/microphone_sessions.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_sessions-7f01a6b77367350a)
+     Running tests/microphone_settings.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/microphone_settings-c529b994fc35893f)
+     Running tests/replacement_cli.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/replacement_cli-6cc0c5d7385ede80)
+     Running tests/replacement_exchange.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/replacement_exchange-1393b98eec98a8d8)
+     Running tests/replacement_performance.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/replacement_performance-a1c54ecd29a624eb)
+     Running tests/replacement_pipeline.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/replacement_pipeline-6b9153028a0f232f)
+     Running tests/replacement_transactions.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/replacement_transactions-e7a539a61a4ed186)
+     Running tests/settings_cli.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_cli-e70757b33518775c)
+     Running tests/settings_domains.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_domains-a09e2ab9ba56e7ae)
+     Running tests/settings_live.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_live-fb7113221cf5d8c9)
+     Running tests/settings_platform.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_platform-9b9443d5fd793590)
+     Running tests/settings_transactions.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_transactions-d21dc82046243f7f)
+     Running tests/settings_validation.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_validation-dcf915670a97a639)
+     Running tests/settings_writers.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/settings_writers-4fa5bbbb6fa510ec)
+     Running tests/vocabulary_cli.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/vocabulary_cli-d53e87fc5e7b4a40)
+     Running tests/vocabulary_transactions.rs (/Users/julienm/projects/handy-wt/.target-001/debug/deps/vocabulary_transactions-718f88674897049c)

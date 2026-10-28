@@ -674,7 +674,7 @@ mod tests {
     fn build_entry(transcription: &str, post_processed: Option<&str>) -> HistoryEntry {
         HistoryEntry {
             id: 1,
-            file_name: "handy-1.wav".to_string(),
+            file_name: Some("handy-1.wav".to_string()),
             timestamp: 0,
             saved: false,
             title: "Recording".to_string(),
@@ -682,6 +682,7 @@ mod tests {
             post_processed_text: post_processed.map(|text| text.to_string()),
             post_process_prompt: None,
             post_process_requested: false,
+            processing: Default::default(),
         }
     }
 

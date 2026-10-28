@@ -1,0 +1,47 @@
+## Specification Analysis Report
+
+Semantic readiness: covered
+
+### Findings
+| ID | Category | Severity | Location(s) | Summary | Recommendation |
+|----|----------|----------|-------------|---------|----------------|
+| AN-COVERAGE-8db38c23 | coverage | LOW | spec.md, plan.md | Requirement 007-smart-paste:AC-011 has no plan-task reference | Add a plan task that references AC-011, or cite it explicitly |
+| AN-COVERAGE-a0568093 | coverage | LOW | spec.md, plan.md | Requirement 007-smart-paste:AC-013 has no plan-task reference | Add a plan task that references AC-013, or cite it explicitly |
+| AN-COVERAGE-8d5cb6ca | coverage | LOW | spec.md, plan.md | Requirement 007-smart-paste:AC-015 has no plan-task reference | Add a plan task that references AC-015, or cite it explicitly |
+
+### Structural Reference Coverage Matrix
+| Requirement Key | Has Plan Task? | Task IDs | Notes |
+|-----------------|----------------|----------|-------|
+| 007-smart-paste:AC-001 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:AC-007 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:AC-008 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:AC-011 | no | — | no plan task references this requirement |
+| 007-smart-paste:AC-009 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:AC-010 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:AC-012 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:AC-013 | no | — | no plan task references this requirement |
+| 007-smart-paste:AC-014 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:AC-015 | no | — | no plan task references this requirement |
+| 007-smart-paste:AC-016 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:FR-001 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:FR-004 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:FR-005 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:FR-006 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:FR-007 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:FR-008 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:FR-009 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:FR-010 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:SC-001 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:SC-003 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:SC-004 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:SC-005 | yes | plan.md | structural reference present; semantic compliance is separate |
+| 007-smart-paste:SC-006 | yes | plan.md | structural reference present; semantic compliance is separate |
+
+### Metrics
+- total_requirements: 24
+- covered_requirements: 21
+- coverage_percent: 87.5
+- critical_count: 0
+- high_count: 0
+- implementation_present: 0
+

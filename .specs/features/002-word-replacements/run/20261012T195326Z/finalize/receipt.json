@@ -1,0 +1,35 @@
+{
+  "command": "spec-plan",
+  "created_at": "2026-10-12T19:53:26.731000+00:00",
+  "feature_slug": "002-word-replacements",
+  "files": [
+    {
+      "path": ".specs/features/002-word-replacements/changelog.md",
+      "sha256": "7df83e9c8dad35fea0d4fbe45369b62154a9e49555463ba4689769228c8f5961"
+    },
+    {
+      "path": ".specs/changelog.md",
+      "sha256": "9fd8065d9609b7a6c57a5628829c062b0368476f7bb20f120c8e7ff005e4a0bd"
+    },
+    {
+      "path": ".specs/README.md",
+      "sha256": "743d4406186f723a3e312548bf3993283e20a35bb742c465a19e1a270ea69420"
+    },
+    {
+      "path": ".specs/features/002-word-replacements/spec.md",
+      "sha256": "e17f41250062cb5d4079f8ff343d19824acc1e721446550cdf7f00cfe823f905"
+    },
+    {
+      "path": ".specs/roadmap.md",
+      "sha256": "a6f373fa171b025fc418e6484661b90c052ea6344c1f09c9ad2019480fd4555d"
+    }
+  ],
+  "oracle": "livespec-finalize-evidence",
+  "oracle_version": "1",
+  "outcome": "verified",
+  "payload_hash": "c7f92025ae955958f146bdcae0177c5152122a6f377fbb90aa56f0b51aa4ea2a",
+  "receipt_hash": "5811b6af0af82cde3028afdf78be6fdcfee711f4af3f104a249eaa013e6004df",
+  "schema_version": "1",
+  "verdict": "PASS",
+  "violations": []
+}

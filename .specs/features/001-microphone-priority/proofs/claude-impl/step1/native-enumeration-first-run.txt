@@ -1,0 +1,10 @@
+failures:
+
+failures:
+    enumeration_is_bounded_and_groups_same_named_devices
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 3 filtered out; finished in 900.61s
+
+error: test failed, to rerun pass `--test microphone_native`
+
+[exited with code 0]

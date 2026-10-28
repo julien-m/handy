@@ -1,0 +1,8 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy/src-tauri)
+cargo(60420) MallocStackLogging: can't turn off malloc stack logging because it was not enabled.
+cargo(60421) MallocStackLogging: can't turn off malloc stack logging because it was not enabled.
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3m 07s
+     Running tests/settings_writers.rs (target/debug/deps/settings_writers-f5fc67da74431819)
+error: test failed, to rerun pass `--test settings_writers`

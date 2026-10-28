@@ -1,0 +1,30 @@
+{
+  "observed_at": "2026-10-12T18:44:11.216170+00:00",
+  "retry_hypothesis": "Initial complete independent review found cancellation rollback conditioned on superseded ownership token; Analyze could not parse compressed AC-006/007 reference.",
+  "retry_evidence": {
+    "initial_review": ".specs/features/007-clipboard-recovery-window/run/plan-review-initial.json",
+    "initial_analyze": "/private/tmp/007-analyze-initial.txt",
+    "corrected_plan_sha256": "0fd4661fa32eddd5b2f22bb6e4075ba9b0c3df93e95ee08c6b9650c4f484ea33",
+    "prepared_review": "/private/tmp/007-plan-prepared-corrected.json",
+    "structural": "100/100; exact AC-007 added; current progression plan READY"
+  },
+  "retry_result": "PASS: independent complete+ready; Analyze14/14; progression implement READY",
+  "attempt": 1,
+  "review_budget_change": {
+    "reason": "Default60000 produced30 batches with full008 inspected context (120851 chars)",
+    "budget": 180000,
+    "actual_corrected_prompt_chars": 155061
+  },
+  "ledger_blocker": "MCP tool call requires approval, but approval policy is never",
+  "archive_retry": {
+    "retry_hypothesis": "Initial archive stdout was only progression and omitted real command summary; finalize receipt became stale after target changelog link correction.",
+    "retry_evidence": "Fresh receipt was rejected: finalize_receipt_valid:file_sha256_mismatch:.specs/changelog.md; another feature finalized after verification. Actual plan summary captured.",
+    "retry_result": "FAIL: shared changelog changed before goal proof",
+    "initial_archive": ".specs/.runs/spec-plan-2026-10-12T18-47-17.726252-29addfb4-policy2.json"
+  },
+  "archive_retry2": {
+    "retry_hypothesis": "Concurrent finalization changed shared changelog hash between verify and proof.",
+    "retry_evidence": "Run fresh verify, parse real receipt, immediately prove and archive sequentially; stop on rejected evidence.",
+    "retry_result": "PASS: fresh finalize proof accepted; archived outcome success; archive.run accepted; goal complete6/6"
+  }
+}

@@ -1,0 +1,63 @@
+    Updating crates.io index
+     Locking 11 packages to latest compatible versions
+      Adding windows-sys v0.60.2 (available: v0.61.2)
+   Compiling windows_x86_64_msvc v0.53.1
+    Checking windows-targets v0.53.5
+    Checking windows-sys v0.60.2
+    Checking handy-windows-step5-check v0.0.0 (/Users/julienm/projects/handy/.specs/features/008-settings-cli/proofs/claude-step5/windows-check)
+warning: method `limit` is never used
+ --> src/main.rs:8:16
+  |
+7 |         pub(crate) trait Duplex: Read + Write + Send {
+  |                          ------ method in this trait
+8 |             fn limit(&self, timeout: Duration) -> io::Result<()>;
+  |                ^^^^^
+  |
+  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `0` is never read
+  --> src/main.rs:11:23
+   |
+11 |             Connected(Box<dyn Duplex>),
+   |             --------- ^^^^^^^^^^^^^^^
+   |             |
+   |             field in this variant
+   |
+help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
+   |
+11 -             Connected(Box<dyn Duplex>),
+11 +             Connected(()),
+   |
+
+warning: enum `LegacyState` is never used
+  --> /Users/julienm/projects/handy/src-tauri/src/settings_service/instance_probe.rs:12:10
+   |
+12 | pub enum LegacyState {
+   |          ^^^^^^^^^^^
+
+warning: enum `ProbeScope` is never used
+  --> /Users/julienm/projects/handy/src-tauri/src/settings_service/instance_probe.rs:21:17
+   |
+21 | pub(crate) enum ProbeScope {
+   |                 ^^^^^^^^^^
+
+warning: function `classify_owner` is never used
+  --> /Users/julienm/projects/handy/src-tauri/src/settings_service/instance_probe.rs:63:15
+   |
+63 | pub(crate) fn classify_owner(owner: std::io::Result<bool>, scope: ProbeScope) -> LegacyState {
+   |               ^^^^^^^^^^^^^^
+
+warning: function `inspect_legacy_windows` is never used
+  --> /Users/julienm/projects/handy/src-tauri/src/settings_service/instance_probe.rs:74:15
+   |
+74 | pub(crate) fn inspect_legacy_windows() -> LegacyState {
+   |               ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `inspect_legacy_owner` is never used
+  --> /Users/julienm/projects/handy/src-tauri/src/settings_service/platform_windows.rs:77:19
+   |
+77 |     pub(crate) fn inspect_legacy_owner() -> LegacyState {
+   |                   ^^^^^^^^^^^^^^^^^^^^
+
+warning: `handy-windows-step5-check` (bin "handy-windows-step5-check") generated 7 warnings
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.81s

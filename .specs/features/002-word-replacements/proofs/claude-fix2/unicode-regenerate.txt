@@ -1,0 +1,43 @@
+$ python3 src-tauri/src/word_replacements/unicode_generate.py
+Tue Oct 13 15:52:55 UTC 2026
+EXIT=0
+
+$ git diff --stat -- src-tauri/src/word_replacements/unicode-*
+ src-tauri/src/word_replacements/unicode-data.txt     | 3 ++-
+ src-tauri/src/word_replacements/unicode-sources.json | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+$ git diff -U0 unicode-data.txt
+diff --git a/src-tauri/src/word_replacements/unicode-data.txt b/src-tauri/src/word_replacements/unicode-data.txt
+index c7db7fb..7c514d3 100644
+--- a/src-tauri/src/word_replacements/unicode-data.txt
++++ b/src-tauri/src/word_replacements/unicode-data.txt
+@@ -1 +1 @@
+-# Unicode 17.0.0; F=full C+F folding, W=White_Space, L=Letter/Nd, M=Mn/Mc/Me, K=CJK
++# Unicode 17.0.0; F=full C+F folding, W=White_Space, L=Letter/Nd, M=Mn/Mc/Me, J=Join_Control, K=CJK
+@@ -2659,0 +2660 @@ M;E0100;E01EF
++J;200C;200D
+$ git diff unicode-sources.json
+diff --git a/src-tauri/src/word_replacements/unicode-sources.json b/src-tauri/src/word_replacements/unicode-sources.json
+index ef2e3a5..d3c035f 100644
+--- a/src-tauri/src/word_replacements/unicode-sources.json
++++ b/src-tauri/src/word_replacements/unicode-sources.json
+@@ -22,7 +22,7 @@
+       "sha256": "ec2107e58825a1586acee8e0911ce18260394ac8b87e535ca325f1ccbeb06bc6"
+     }
+   ],
+-  "generated_sha256": "07a27a3661b4f8d02f51c01d5759c50df856a2dc2bf5f1db518d2104cfd2bf3f",
++  "generated_sha256": "f44ce76620d8309dd6b47aa22996b1a2a0ba78349be0550a076192bd87b541a9",
+   "license": {
+     "url": "https://www.unicode.org/license.txt",
+     "sha256": "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96"
+$ python3 src-tauri/src/word_replacements/unicode_generate.py   (after _property_tables refactor)
+Tue Oct 13 16:01:40 UTC 2026
+EXIT=0
+before:
+f44ce76620d8309dd6b47aa22996b1a2a0ba78349be0550a076192bd87b541a9  src-tauri/src/word_replacements/unicode-data.txt
+9beda915d25ebed415238850db5046d6f630622284ab80a6d604af776ab1d47b  src-tauri/src/word_replacements/unicode-sources.json
+e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96  src-tauri/src/word_replacements/unicode-license.txt
+after:
+f44ce76620d8309dd6b47aa22996b1a2a0ba78349be0550a076192bd87b541a9  src-tauri/src/word_replacements/unicode-data.txt
+9beda915d25ebed415238850db5046d6f630622284ab80a6d604af776ab1d47b  src-tauri/src/word_replacements/unicode-sources.json
+e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96  src-tauri/src/word_replacements/unicode-license.txt

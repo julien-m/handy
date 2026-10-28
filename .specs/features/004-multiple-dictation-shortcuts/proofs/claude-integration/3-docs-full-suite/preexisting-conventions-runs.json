@@ -1,0 +1,181 @@
+{
+  "note": "Untracked conventions run directories left by the earlier 004 runs of 2026-10-13 (their summaries are in proofs/claude*/). Inventoried here, then moved to the Trash so that the worktree keeps no untracked file except pipeline.md.",
+  "runs": [
+    {
+      "run_directory": ".specs/conventions/runs/20261013T145753Z",
+      "verdict": "BLOCKED",
+      "files": [
+        {
+          "file": "receipt.json",
+          "bytes": 868152,
+          "sha256": "ad847f5aa8607f2e60dd04c1ba4c88c9138975cf66c50fde11cfc0725c30a0b9"
+        }
+      ]
+    },
+    {
+      "run_directory": ".specs/conventions/runs/20261013T145851Z",
+      "verdict": "PASS",
+      "files": [
+        {
+          "file": "receipt.json",
+          "bytes": 1330270,
+          "sha256": "42be859f546bdce053301b6429ee01e0ac2b19782411d5ac3314119d4babe9df"
+        }
+      ]
+    },
+    {
+      "run_directory": ".specs/conventions/runs/20261013T151501Z",
+      "verdict": "FAIL",
+      "files": [
+        {
+          "file": "receipt.json",
+          "bytes": 1329506,
+          "sha256": "6a613d65287038115e7369039e8088ac2b3211179987905d0280e42094f9e6d2"
+        }
+      ]
+    },
+    {
+      "run_directory": ".specs/conventions/runs/20261013T151640Z",
+      "verdict": "PASS",
+      "files": [
+        {
+          "file": "receipt.json",
+          "bytes": 1327225,
+          "sha256": "269d3576b98a120c2fb46cad4f23c4ae64d215478045ea118400fac2fc4e56b8"
+        }
+      ]
+    },
+    {
+      "run_directory": ".specs/conventions/runs/20261013T152703Z",
+      "verdict": "PASS",
+      "files": [
+        {
+          "file": "receipt.json",
+          "bytes": 1326685,
+          "sha256": "8ab5f0672c080439f5e7983c32ddc91a23ddf69544e44c310ff7598465da2d03"
+        }
+      ]
+    },
+    {
+      "run_directory": ".specs/conventions/runs/20261013T153052Z",
+      "verdict": "PASS",
+      "files": [
+        {
+          "file": "receipt.json",
+          "bytes": 1326685,
+          "sha256": "706e1828632b5cada79d3dc484ba076ea9e3ed096add0d611acfc571bded7bae"
+        }
+      ]
+    },
+    {
+      "run_directory": ".specs/conventions/runs/20261013T153149Z",
+      "verdict": "PASS",
+      "files": [
+        {
+          "file": "receipt.json",
+          "bytes": 1326685,
+          "sha256": "65c8818ebf45955f824009f1e544c568b1ed617c82aee95b112bd447ef9027e3"
+        }
+      ]
+    },
+    {
+      "run_directory": ".specs/conventions/runs/20261013T153409Z",
+      "verdict": "PASS",
+      "files": [
+        {
+          "file": "receipt.json",
+          "bytes": 1326685,
+          "sha256": "9a79f29c59c0c374243d5f3432cc94be04ffd0a0c7d140674264ce16898498d2"
+        }
+      ]
+    },
+    {
+      "run_directory": ".specs/conventions/runs/20261013T155149Z",
+      "verdict": "PASS",
+      "files": [
+        {
+          "file": "receipt.json",
+          "bytes": 1326685,
+          "sha256": "fb0e8f9ffce6feb34a68611c26e46a43b18124b0d6d4fe9323879e0659630e40"
+        }
+      ]
+    },
+    {
+      "run_directory": ".specs/conventions/runs/20261013T160758Z",
+      "verdict": "PASS",
+      "files": [
+        {
+          "file": "receipt.json",
+          "bytes": 1327031,
+          "sha256": "2d9c540b2be0f8cc3fa052094ad0dde77ba7313a092c10279ad43718d89c5cc6"
+        }
+      ]
+    },
+    {
+      "run_directory": ".specs/conventions/runs/20261013T160900Z",
+      "verdict": "PASS",
+      "files": [
+        {
+          "file": "receipt.json",
+          "bytes": 1326147,
+          "sha256": "05a8458b14bbfb1d7c8eb321f857ff4347cfa4467e1a600366c830e374c8eca5"
+        }
+      ]
+    },
+    {
+      "run_directory": ".specs/conventions/runs/20261013T161342Z",
+      "verdict": "PASS",
+      "files": [
+        {
+          "file": "receipt.json",
+          "bytes": 1326147,
+          "sha256": "9cc6a2b38efac5287c9aff31e1b5ffb31ecfe813d84fd395f33a35b6599efe04"
+        }
+      ]
+    },
+    {
+      "run_directory": ".specs/conventions/runs/20261013T182016Z",
+      "verdict": "PASS",
+      "files": [
+        {
+          "file": "receipt.json",
+          "bytes": 1231583,
+          "sha256": "b3db5c90de146991519de5aed27afce8a1919d1464d1f4304bcb9b400f42baef"
+        }
+      ]
+    },
+    {
+      "run_directory": ".specs/conventions/runs/20261013T182105Z",
+      "verdict": "PASS",
+      "files": [
+        {
+          "file": "receipt.json",
+          "bytes": 1231322,
+          "sha256": "4d5cb8d941e5e7eb7dcfce83a3b1e0e596473d1d995aeefb057a6d65b983c78d"
+        }
+      ]
+    },
+    {
+      "run_directory": ".specs/conventions/runs/20261013T182322Z",
+      "verdict": "PASS",
+      "files": [
+        {
+          "file": "receipt.json",
+          "bytes": 1231323,
+          "sha256": "27c0d90a99cb8ec88e0da7a94881cf09739dfeea48b9b41d271076b5addd579a"
+        }
+      ]
+    },
+    {
+      "run_directory": ".specs/conventions/runs/20261013T184932Z",
+      "verdict": "PASS",
+      "files": [
+        {
+          "file": "receipt.json",
+          "bytes": 1231323,
+          "sha256": "b59651fd730325317a100d4091e84622987b1cc163742b5f6338ebf5ab38360d"
+        }
+      ]
+    }
+  ]
+}

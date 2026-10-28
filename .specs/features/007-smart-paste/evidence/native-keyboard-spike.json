@@ -1,0 +1,89 @@
+{
+  "binary_path": "/tmp/007-native-keyboard-spike",
+  "binary_sha256": "674bad85f2a455817b02739bd2f5c74841917fc93c920b55a2d332054b8ba3de",
+  "captured_at": "2026-10-13T14:01:53Z",
+  "command": [
+    "/tmp/007-native-keyboard-spike"
+  ],
+  "command_v_keycodes": [
+    9
+  ],
+  "compile_command": [
+    "xcrun",
+    "swiftc",
+    ".specs/features/007-smart-paste/evidence/probes/native-keyboard-spike.swift",
+    "-o",
+    "/tmp/007-native-keyboard-spike"
+  ],
+  "compile_exit_status": 0,
+  "compile_timeout_seconds": 90,
+  "current_input_source": {
+    "category": "TISCategoryKeyboardInputSource",
+    "id": "com.apple.keylayout.French",
+    "type": "TISTypeKeyboardLayout"
+  },
+  "current_layout": {
+    "category": "TISCategoryKeyboardInputSource",
+    "id": "com.apple.keylayout.French",
+    "type": "TISTypeKeyboardLayout"
+  },
+  "delivery_test": "pending",
+  "enabled_source_ids": [
+    "com.apple.keylayout.French",
+    "com.apple.CharacterPaletteIM",
+    "com.apple.inputmethod.ironwood",
+    "com.apple.PressAndHold"
+  ],
+  "events_posted": 0,
+  "execution_exit_status": 0,
+  "execution_timeout_seconds": 10,
+  "feature": "007-smart-paste",
+  "harness_sha256": "738a7a96e2a7ac51b991ac177d719a7e2e1bc4ed6fc226d3414151adbe0d9afa",
+  "installed_candidates": [
+    {
+      "enabled": false,
+      "id": "com.apple.keylayout.Dvorak",
+      "selectable": true
+    },
+    {
+      "enabled": false,
+      "id": "com.apple.keylayout.ABC",
+      "selectable": true
+    },
+    {
+      "enabled": false,
+      "id": "com.apple.keylayout.US",
+      "selectable": true
+    }
+  ],
+  "layout_changed": false,
+  "layout_restore_test": "pending",
+  "mode": "read_only_native_carbon_swift",
+  "observation_boundary": "Only inventory and current-layout Cmd+V resolution observed; no enable, selection or event posting occurred.",
+  "physical_keyboard_type": 110,
+  "platform": {
+    "build": "25F84",
+    "product": "macOS",
+    "version": "26.5.2"
+  },
+  "probe_sha256": "738a7a96e2a7ac51b991ac177d719a7e2e1bc4ed6fc226d3414151adbe0d9afa",
+  "probe_source": ".specs/features/007-smart-paste/evidence/probes/native-keyboard-spike.swift",
+  "selection_boundary": "Apple SDK TextInputSources.h requires enabled selectable sources for TISSelectInputSource. Disabled layouts are never enabled by this probe; selection, restoration and insertion remain pending.",
+  "selection_test": "pending",
+  "source_head": "967eb388047051ac70fb88ed98344383a9e9699f",
+  "timing_test": "pending",
+  "toolchain": "Apple Swift version 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101)\nTarget: arm64-apple-macosx26.0",
+  "worktree_diff_command": [
+    "git",
+    "diff",
+    "--no-index",
+    "--binary",
+    "/dev/null",
+    ".specs/features/007-smart-paste/evidence/probes/native-keyboard-spike.swift"
+  ],
+  "worktree_diff_exit_status": 1,
+  "worktree_diff_scope": [
+    ".specs/features/007-smart-paste/evidence/probes/native-keyboard-spike.swift"
+  ],
+  "worktree_diff_sha256": "1bdd7ea860ae8609a00d9f6cddcde4c4433e9fba91a0642351a76499f57b6c34"
+}

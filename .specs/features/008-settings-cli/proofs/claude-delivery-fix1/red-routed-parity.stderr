@@ -1,0 +1,15 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy/src-tauri)
+warning: unused import: `write_scalar_prepared`
+ --> src/settings_service/sequence_tests.rs:7:67
+  |
+7 |     commit_prepared, ordered, repair, write_edit, write_prepared, write_scalar_prepared,
+  |                                                                   ^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `handy` (lib test) generated 1 warning (run `cargo fix --lib -p handy --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 10.63s
+     Running unittests src/lib.rs (/Users/julienm/projects/handy-wt/.shared-target/debug/deps/handy_app_lib-7f5ac070b7e42d2e)
+error: test failed, to rerun pass `--lib`

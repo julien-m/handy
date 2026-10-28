@@ -4,15 +4,26 @@ import { GlobalShortcutInput } from "./GlobalShortcutInput";
 import { HandyKeysShortcutInput } from "./HandyKeysShortcutInput";
 
 interface ShortcutInputProps {
-  descriptionMode?: "inline" | "tooltip";
-  grouped?: boolean;
   shortcutId: string;
   disabled?: boolean;
+  /**
+   * Receives the recorded combination; the caller saves it (through the
+   * shortcut list's edit) and reports refusals.
+   */
+  onCapture: (shortcut: string) => Promise<void>;
+  /** The shortcut shown on the chip; null shows the add label. */
+  value?: string | null;
+  /** Accessible name and tooltip of the chip. */
+  label?: string;
+  /** Stable test identifier of the chip. */
+  testId?: string;
+  /** Instance id of a repeated chip (`shortcut-{keys}` of the Penflow contract). */
+  instanceId?: string;
 }
 
 /**
- * Wrapper component that selects the appropriate shortcut input implementation
- * based on the keyboard_implementation setting.
+ * Key chip of a shortcut recorder, using the implementation selected by the
+ * keyboard_implementation setting.
  *
  * - "tauri" (default): Uses GlobalShortcutInput with JS keyboard events
  * - "handy_keys": Uses HandyKeysShortcutInput with backend key events
