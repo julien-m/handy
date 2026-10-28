@@ -1,6 +1,6 @@
 /**
  * Rules of the recording indicator additions: destination badge and menu (006), prompt pill
- * and menu (005), notices (005, 007) and the window extent. Run with
+ * and menu (005), notices (001, 005, 007) and the window extent. Run with
  * `bun run test:indicator`.
  */
 import { describe, expect, test } from "bun:test";
@@ -28,9 +28,11 @@ import {
   aiFailureNotice,
   handOverNotice,
   holdRemaining,
+  inputLostNotice,
   liveNotices,
   nextExpiry,
   NOTICE_MIN_MS,
+  noticeFallsBackToToast,
 } from "./notice-model";
 import {
   compactShortcut,
@@ -318,5 +320,36 @@ describe("window extent", () => {
     expect(
       extentChanged({ width: 8, height: 8 }, { width: 8, height: 8 }),
     ).toBe(false);
+  });
+});
+
+describe("input-lost notice (001 FR-004, native session N1)", () => {
+  test("the cut-short notice lasts 4 s and says the captured audio is transcribed", () => {
+    const notice = inputLostNotice(250);
+    expect(notice.until).toBe(250 + NOTICE_MIN_MS);
+    expect(notice.testId).toBe("recording-indicator-input-lost-notice");
+    expect(notice.key).toBe("errors.inputLost");
+    expect(en.errors.inputLost).toContain("transcribed");
+    expect(en.errors.inputLost).not.toMatch(/success|succeeded|inserted/i);
+  });
+  test("it joins the other notices and holds the window for its 4 s", () => {
+    const notices = addNotice(
+      [aiFailureNotice(failure, 0)],
+      inputLostNotice(500),
+      500,
+    );
+    expect(notices.map((notice) => notice.kind)).toEqual([
+      "ai_failed",
+      "input_lost",
+    ]);
+    expect(holdRemaining(notices, 500)).toBe(NOTICE_MIN_MS);
+    const again = addNotice(notices, inputLostNotice(900), 900);
+    expect(again.filter((n) => n.kind === "input_lost").length).toBe(1);
+  });
+  test("only the overlay style none moves an indicator notice to a toast", () => {
+    expect(noticeFallsBackToToast("none")).toBe(true);
+    for (const style of ["minimal", "live", undefined] as const) {
+      expect(noticeFallsBackToToast(style)).toBe(false);
+    }
   });
 });

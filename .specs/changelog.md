@@ -5,6 +5,8 @@
 
 ---
 
+## 2026-10-28 — [Feature 001] Bugfix: the recording cut short by a lost microphone is a notice of the recording indicator (toast only with the overlay style none) — native session finding N1
+
 ## 2026-10-15 — [Feature 011] Implementation in progress: input focused at the dictation start remembered, given focus back, range restored and verified before the paste, behind destination-return (automated evidence in four feature combinations; macOS native proofs pending with Julien)
 <!-- finalize:spec-implement:2026-10-15:28770870 -->
 

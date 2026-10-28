@@ -1,14 +1,20 @@
 // Pure rules of the transient notices on the recording indicator: the AI failure of 005
-// (AC-005) and the Screen Sharing hand-over of 007 (AC-012). Each stays at least four seconds;
-// none ever claims that an insertion succeeded. The destination reason of 006 is presented by
-// 010's recovery bubble instead.
-import type { PromptProcessingFailed } from "@/bindings";
+// (AC-005), the Screen Sharing hand-over of 007 (AC-012) and the recording cut short by a lost
+// microphone of 001 (FR-004). Each stays at least four seconds; none ever claims that an
+// insertion succeeded. The destination reason of 006 is presented by 010's recovery bubble
+// instead.
+import type { OverlayStyle, PromptProcessingFailed } from "@/bindings";
 
 /** Minimum display time of every indicator notice (005 AC-005, 007 AC-012). */
 export const NOTICE_MIN_MS = 4000;
 
 /** Which feature raised a notice; a newer notice of the same kind replaces the older one. */
-export type NoticeKind = "ai_failed" | "hand_over";
+export type NoticeKind = "ai_failed" | "hand_over" | "input_lost";
+
+/** Recording error event of the backend (`managers::audio_priority`, `actions`). */
+export const RECORDING_ERROR_EVENT = "recording-error";
+/** `error_type` of the `recording-error` event of a recording cut short by a lost microphone. */
+export const INPUT_LOST_ERROR = "input_lost";
 
 /** One notice on the indicator. `appName` fills `{{app}}`; `null` names no application. */
 export interface OverlayNotice {
@@ -41,6 +47,26 @@ export const handOverNotice = (now: number): OverlayNotice => ({
   until: now + NOTICE_MIN_MS,
   testId: "recording-indicator-hand-over-notice",
 });
+
+// @spec FR-004: The user is told the recording was cut short — .specs/features/001-microphone-priority/spec.md#fr-004
+/** Notice of a recording cut short by a lost microphone (001): the captured audio is transcribed. */
+export const inputLostNotice = (now: number): OverlayNotice => ({
+  kind: "input_lost",
+  key: "errors.inputLost",
+  appName: null,
+  until: now + NOTICE_MIN_MS,
+  testId: "recording-indicator-input-lost-notice",
+});
+
+/**
+ * Whether the settings window shows an indicator notice as a toast: only when the overlay style
+ * is none (no indicator window). Otherwise the indicator alone shows it, never both.
+ * @param style overlay style of the settings, `undefined` before they load
+ * @returns true when the toast replaces the indicator notice
+ */
+export const noticeFallsBackToToast = (
+  style: OverlayStyle | undefined,
+): boolean => style === "none";
 
 /** Add `notice`, replacing an older notice of the same kind and dropping expired ones. */
 export const addNotice = (

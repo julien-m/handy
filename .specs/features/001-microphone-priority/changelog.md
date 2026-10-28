@@ -114,3 +114,12 @@
 - **Summary:** warnings of the UI delivery review round 3; proofs in [proofs/claude-hardening/summary.txt](proofs/claude-hardening/summary.txt)
 - **Author:** Claude Code (UI hardening pass)
 
+
+## 2026-10-28 — [Bugfix]: input-lost notice on the recording indicator (native session N1)
+
+- **Type:** Bugfix
+- **Spec modified:** No (FR-004 already requires that the user is told the recording was cut short)
+- **Code modified:** src-tauri/src/managers/audio_priority.rs, src/overlay/{notice-model.ts, use-overlay-notices.ts, indicator-screen.ts, overlay-notices.tsx, indicator.css}, src/lib/recording-error-toast.ts, src/hooks/use-overlay-none-notices.ts, their tests, package.json (`test:indicator`)
+- **AC impacted:** None (FR-004: the cut-short report is now visible with the settings window hidden)
+- **Summary:** finding N1 of Julien's native proof session of 2026-10-28: the cut-short report moves from the settings toast to a notice of the recording indicator (at least 4 s, window held), a toast only with the overlay style none, never both
+- **Author:** Claude Code (claude-opus-5-5)

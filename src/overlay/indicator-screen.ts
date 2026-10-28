@@ -1,4 +1,4 @@
-// Contract screen shown by the recording indicator (features 005, 006, 009). Every test id of the
+// Contract screen shown by the recording indicator (features 001, 005, 006, 009). Every test id of the
 // stack carries the prefix of the screen actually shown (`recording-indicator`, `-prompt-menu`,
 // `-destination-menu`, `-pinned`, `-no-destination`, or the screen of a notice shown alone in
 // `penflow/flow-ui-contract/contract.json`), so each test id is unique in the tree.
@@ -16,7 +16,8 @@ export type IndicatorScreen =
   | "recording-indicator-pinned"
   | "recording-indicator-no-destination"
   | "recording-indicator-ai-failed"
-  | "recording-indicator-hand-over";
+  | "recording-indicator-hand-over"
+  | "recording-indicator-input-lost";
 
 /** Indicator facts that choose the screen. */
 export interface IndicatorScreenInput {
@@ -36,6 +37,7 @@ export interface IndicatorScreenInput {
 const NOTICE_SCREENS: Record<OverlayNotice["kind"], IndicatorScreen> = {
   ai_failed: "recording-indicator-ai-failed",
   hand_over: "recording-indicator-hand-over",
+  input_lost: "recording-indicator-input-lost",
 };
 
 /**

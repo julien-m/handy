@@ -1,6 +1,7 @@
 /**
  * The recording indicator with the rollout gates closed (`destination-return`,
- * `smart-paste-dispatch`): no destination session, no notice. The rendered pill is compared with
+ * `smart-paste-dispatch`): no destination session, and no notice but the recording cut short by
+ * a lost microphone (001, native session N1). The rendered pill is compared with
  * the pill of `dev`, and the pill alone must fit the base window of its form (compact and Live).
  * Run with `bun run test:indicator`.
  */
@@ -14,6 +15,7 @@ import {
   render,
   session,
 } from "./indicator-test-fixtures";
+import { inputLostNotice } from "./notice-model";
 import { extentRequest } from "./use-overlay-extent";
 
 beforeAll(initIndicatorI18n);
@@ -125,6 +127,17 @@ describe("rollout gates closed (destination-return, smart-paste-dispatch)", () =
       expect(token.startsWith("--")).toBe(true);
       expect(overlayTokens.includes(`${token}:`)).toBe(false);
     }
+  });
+
+  test("the input-lost notice is the only addition, beside the unchanged pill", () => {
+    const html = render({ notices: [inputLostNotice(0)] });
+    expect(html).toContain(PILL);
+    expect([...html.matchAll(/class="snotice /g)].length).toBe(1);
+    expect(html).toContain(
+      'data-testid="recording-indicator-input-lost-notice"',
+    );
+    expect(html).not.toContain("recording-indicator-destination");
+    expect(html).not.toContain("recording-indicator-prompt");
   });
 
   test("a session with the setting off shows no badge either", () => {

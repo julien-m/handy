@@ -192,11 +192,23 @@ fn resolution_error(attempts: &[Attempt]) -> String {
     }
 }
 
-/// `recording-error` payload of a cut-short recording (same shape as the start errors).
+/// `recording-error` payload of a cut-short recording (same shape as the start errors). The
+/// recording indicator shows it as a notice (`src/overlay/notice-model.ts`, `INPUT_LOST_ERROR`);
+/// the settings window shows it as a toast only when the overlay style is none.
 #[derive(Clone, serde::Serialize)]
 struct CutShort {
     error_type: &'static str,
     detail: Option<String>,
+}
+
+impl CutShort {
+    /// Payload of a recording ended by the loss of its microphone.
+    const fn input_lost() -> Self {
+        Self {
+            error_type: "input_lost",
+            detail: None,
+        }
+    }
 }
 
 // @spec FR-004: Changes at the next opening, loss ends the take — .specs/features/001-microphone-priority/spec.md#fr-004
@@ -282,11 +294,10 @@ impl AudioRecordingManager {
     /// runs the normal stop (the captured prefix is transcribed).
     fn end_cut_short_recording(&self) {
         warn!("Microphone lost during a recording; ending it with the captured audio");
-        let event = CutShort {
-            error_type: "input_lost",
-            detail: None,
-        };
-        if let Err(error) = self.app_handle.emit("recording-error", event) {
+        if let Err(error) = self
+            .app_handle
+            .emit("recording-error", CutShort::input_lost())
+        {
             warn!("Could not report the cut-short recording: {error}");
         }
         if let Some(coordinator) = self
@@ -307,4 +318,19 @@ pub(super) fn report_input_lost(app: &AppHandle) {
             manager.input_lost();
         }
     });
+}
+
+#[cfg(test)]
+mod tests {
+    use super::CutShort;
+
+    // The indicator notice and the overlay-none toast both key on this exact payload.
+    #[test]
+    fn cut_short_payload_is_the_input_lost_recording_error() {
+        let payload = serde_json::to_value(CutShort::input_lost()).ok();
+        assert_eq!(
+            payload,
+            Some(serde_json::json!({ "error_type": "input_lost", "detail": null }))
+        );
+    }
 }

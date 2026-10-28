@@ -15,7 +15,11 @@ import {
   render,
   session,
 } from "./indicator-test-fixtures";
-import { aiFailureNotice, handOverNotice } from "./notice-model";
+import {
+  aiFailureNotice,
+  handOverNotice,
+  inputLostNotice,
+} from "./notice-model";
 
 beforeAll(initIndicatorI18n);
 
@@ -294,5 +298,29 @@ describe("notices (005, 007)", () => {
     expect(html).toContain(
       'data-testid="recording-indicator-hand-over-screen"',
     );
+  });
+});
+
+describe("input-lost notice (001, native session N1)", () => {
+  test("the cut-short notice shows next to the indicator with its test ID and text", () => {
+    const html = render({ notices: [inputLostNotice(0)] });
+    expect(html).toContain(
+      'data-testid="recording-indicator-input-lost-notice"',
+    );
+    expect(html).toContain('role="alert"');
+    expect(html).toContain(
+      "The microphone was disconnected. The audio recorded until then is being transcribed.",
+    );
+    expect(html).toContain('data-testid="recording-indicator-pill"');
+  });
+  test("shown alone after the dictation, it names its own screen", () => {
+    const html = render({
+      notices: [inputLostNotice(0)],
+      showIndicator: false,
+    });
+    expect(html).toContain(
+      'data-testid="recording-indicator-input-lost-screen"',
+    );
+    expect(html).not.toContain("recording-indicator-pill");
   });
 });
