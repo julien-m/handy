@@ -1,0 +1,44 @@
+Native session fixes, settings window UI — findings of Julien's native proof session of 2026-10-28
+Branch: fix/native-session-ui (from dev 8761d748), worktree /Users/julienm/projects/handy-wt/native-ui
+Date: 2026-10-28
+
+Commits (one per finding)
+- de84b53f N4  settings window scrolls only its content area (SettingsWindowLayout)
+- 6ed63f07 N8  explicit Save / Discard for the unsaved shortcut draft (004)
+- 2f0670bd N2, N3  compact sticky save bar, Reload in place of Save during a conflict (001)
+- bc599854 N6  refused-import alert under the Replacements title (002)
+- d78dc864 N5  keyboard focus given back after Done, Save, Discard and dialogs (002, 003, 005)
+- c370a969 N10 Permissions Required: Open System Settings, Try again, re-check on window focus
+
+Verifications on HEAD c370a969 (all exit 0)
+- bunx tsc --noEmit ............................. 0
+- bun run lint .................................. 0
+- bun run format:check (prettier + cargo fmt) ... 0
+- bun run check:translations .................... 0 (25 languages complete against en)
+- bun run build ................................. 0 (dist/ removed afterwards)
+- bun suites: test:keyboard, test:shortcut-list, test:settings-errors, test:settings-store,
+  test:microphone-priority, test:word-replacements, test:prompt-settings, test:indicator,
+  test:recovery-bubble, test:vocabulary, test:shortcut-states, test:output-settings,
+  test:onboarding ............................... 0 each (525 passing tests in total)
+  plus dropdown-aria, dropdown-navigation, portableInstaller, clipboard tests ... 0 each
+- bunx playwright test (all specs, port 1420) ... 0 (57 passed)
+- livespec conventions verify --feature repo --json > /dev/null ... 0 (verdict PASS)
+
+Rust: no Rust source changed, so cargo fmt --check is covered by format:check and clippy /
+cargo test were not rerun (another agent's cargo was running on the shared target). Only
+src-tauri/capabilities/default.json changed (N10): a scoped opener:allow-open-url for
+x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility; it is validated
+by the next native build, not by these checks.
+
+Not proven here (native window, pending with Julien)
+- N4 reproduced in WebKit only through the structural check (no absolutely positioned content
+  escapes the scrolling area); Playwright runs Chromium.
+- N10: the real System Settings pane and the macOS request are not observed (fake IPC).
+
+Test ids for the Penflow alignment
+- 004: <screen>-<action>-recording-discard is now the labelled Discard button under the list;
+  <screen>-<action>-add is the Save button during a draft; new <screen>-<action>-recording-unsaved.
+- 001: new <screen>-draft-reload (Reload in the save bar during a conflict); <screen>-draft-note
+  only for an error.
+- Window frame: new settings-window and settings-window-content.
+- Onboarding: new onboarding-accessibility-help, -open-settings, -retry.
