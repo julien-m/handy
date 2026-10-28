@@ -571,7 +571,8 @@
           "over_budget": "Nicht gesendet, über dem Modelllimit: {{terms}}.",
           "invalid": "Nicht gesendet, ungültig: {{terms}}.",
           "duplicate": "Nicht gesendet, Duplikate: {{terms}}.",
-          "over_capacity": "Nicht gesendet, über 5.000 Begriffe hinaus: {{terms}}."
+          "over_capacity": "Nicht gesendet, über 5.000 Begriffe hinaus: {{terms}}.",
+          "more": "und {{hidden}} weitere"
         },
         "noTermSent": {
           "title": "{{model}} erhält keinen Begriff",

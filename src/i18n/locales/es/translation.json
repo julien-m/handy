@@ -571,7 +571,8 @@
           "over_budget": "No enviados, superan el límite del modelo: {{terms}}.",
           "invalid": "No enviados, no válidos: {{terms}}.",
           "duplicate": "No enviados, duplicados: {{terms}}.",
-          "over_capacity": "No enviados, más allá de 5000 términos: {{terms}}."
+          "over_capacity": "No enviados, más allá de 5000 términos: {{terms}}.",
+          "more": "y {{hidden}} más"
         },
         "noTermSent": {
           "title": "{{model}} no recibe ningún término",

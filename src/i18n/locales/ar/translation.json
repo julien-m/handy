@@ -548,7 +548,8 @@
           "over_budget": "لم تُرسَل، تتجاوز حد النموذج: {{terms}}.",
           "invalid": "لم تُرسَل، غير صالحة: {{terms}}.",
           "duplicate": "لم تُرسَل، مكررة: {{terms}}.",
-          "over_capacity": "لم تُرسَل، بعد 5,000 مصطلح: {{terms}}."
+          "over_capacity": "لم تُرسَل، بعد 5,000 مصطلح: {{terms}}.",
+          "more": "و{{hidden}} أخرى"
         },
         "noTermSent": {
           "title": "لا يُرسَل أي مصطلح إلى {{model}}",

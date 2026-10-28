@@ -571,7 +571,8 @@
           "over_budget": "Không được gửi, vượt quá giới hạn của mô hình: {{terms}}.",
           "invalid": "Không được gửi, không hợp lệ: {{terms}}.",
           "duplicate": "Không được gửi, trùng lặp: {{terms}}.",
-          "over_capacity": "Không được gửi, vượt quá 5.000 thuật ngữ: {{terms}}."
+          "over_capacity": "Không được gửi, vượt quá 5.000 thuật ngữ: {{terms}}.",
+          "more": "và {{hidden}} thuật ngữ khác"
         },
         "noTermSent": {
           "title": "Không có thuật ngữ nào được gửi tới {{model}}",

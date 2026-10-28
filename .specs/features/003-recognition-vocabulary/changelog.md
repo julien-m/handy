@@ -82,3 +82,11 @@
 - **AC impacted:** AC-001 (limit 5,000 instead of 500, pending spec-refine), FR-004 (approximate correction about 21 ms per 96-word dictation with 5,000 terms, optimized test profile; 468 ms before)
 - **Summary:** finding N7 of Julien's native proof session of 2026-10-28: Julien's decision to hold 5,000 terms, applied to the service validation, UI count, CLI, messages and README; Whisper still sends only what fits its prompt budget
 - **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-28 — [Bugfix]: review of the native session fixes (N7)
+
+- **Type:** Bugfix
+- **Spec modified:** No (spec-refine 003 à faire : limite 5 000 termes, décision Julien 2026-10-28)
+- **Code modified:** src/components/settings/vocabulary/{vocabulary-status-model.ts, vocabulary-status.tsx, vocabulary-model.ts, vocabulary-terms.tsx, vocabulary-status-render.test.tsx (new)}, src/i18n/locales/*/translation.json (`status.notSent.more`), src-tauri/src/audio_toolkit/{text.rs, custom_word_index.rs, custom_word_index_tests.rs, custom_words_perf_tests.rs}, package.json (`test:vocabulary`)
+- **AC impacted:** AC-001 (status of a full vocabulary: 20 terms named per group, the rest counted; Latin digits in every locale), FR-004 (threshold overflow fixed; one index around 002 replacements, under 50 ms)
+- **Author:** Claude Code (claude-opus-5-5)

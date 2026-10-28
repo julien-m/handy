@@ -110,6 +110,9 @@ pub(super) fn bounded_levenshtein(
     limit: usize,
     row: &mut Vec<usize>,
 ) -> Option<usize> {
+    // A distance never exceeds the longer length: the cap is exact and keeps `limit + 1` and
+    // `line + limit` from overflowing.
+    let limit = limit.min(a.len().max(b.len()));
     if a.len().abs_diff(b.len()) > limit {
         return None;
     }
@@ -238,8 +241,11 @@ fn score_key(
     let weight = if phonetic { PHONETIC_WEIGHT } else { 1.0 };
     let bound = best.map_or(threshold, |found| found.score.min(threshold));
     // Largest distance whose score can still reach the bound, rounded up so that float rounding
-    // never drops a key; the exact comparison below decides.
-    let limit = (bound * max_len / weight).ceil() as usize;
+    // never drops a key; the exact comparison below decides. No distance exceeds the longer
+    // length, so the cap keeps the result exact and a huge threshold (a hand-edited store, 1e20)
+    // cannot overflow the bounded matrix.
+    let longer = candidate.len().max(key.key.len());
+    let limit = ((bound * max_len / weight).ceil() as usize).min(longer);
     let distance = bounded_levenshtein(candidate, &key.key, limit, row)?;
     let score = distance as f64 / max_len * weight;
     let beats_best = best

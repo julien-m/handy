@@ -1,15 +1,16 @@
 //! Performance of the approximate custom-word correction with a full vocabulary (feature 003,
 //! limit raised to 5,000 terms by Julien on 2026-10-28, native session finding N7): models that
 //! take no prompt (Parakeet, Moonshine, …) correct each dictation with every stored term, so
-//! one dictation of about 100 words must stay under 50 ms in an optimized build. The timing test
-//! is ignored by plain `cargo test`, whose unoptimized build is about 15 times slower and whose
+//! one dictation of about 100 words must stay under 50 ms in an optimized build, with or without
+//! 002 word replacements splitting it into protected spans. The timing tests
+//! are ignored by plain `cargo test`, whose unoptimized build is about 15 times slower and whose
 //! timings swing with the machine load; run it in the optimized test profile (no extra target
 //! directory):
 //! `cargo test --lib --config 'profile.test.package.handy.opt-level=3'
 //!  --config 'profile.test.package.handy.debug-assertions=false'
 //!  -- --ignored fuzzy_correction --nocapture`
 
-use super::apply_custom_words;
+use super::{apply_custom_words, apply_custom_words_outside_protected, TextSpan};
 use std::time::{Duration, Instant};
 
 /// Vocabulary size of the decision of 2026-10-28 (`recognition_vocabulary::validation::MAX_TERMS`).
@@ -99,18 +100,65 @@ pub(super) fn dictation(terms: &[String]) -> String {
     )
 }
 
-/// Median duration of `RUNS` corrections of `text` (one warm-up run first).
-fn median_correction_time(text: &str, terms: &[String]) -> Duration {
-    let _ = apply_custom_words(text, terms, THRESHOLD);
+/// Median duration of `RUNS` runs of `correct` (one warm-up run first).
+fn median_time(correct: impl Fn() -> String) -> Duration {
+    let _ = correct();
     let mut times: Vec<Duration> = (0..RUNS)
         .map(|_| {
             let start = Instant::now();
-            let _ = apply_custom_words(text, terms, THRESHOLD);
+            let _ = correct();
             start.elapsed()
         })
         .collect();
     times.sort();
     times[RUNS / 2]
+}
+
+/// Words of `text` as spans where every tenth word stands for the output of a 002 replacement
+/// (protected), the others grouped in unprotected spans that keep their separating spaces.
+pub(super) fn replaced_spans(text: &str) -> Vec<(String, bool)> {
+    let mut spans: Vec<(String, bool)> = Vec::new();
+    for (position, word) in text.split(' ').enumerate() {
+        let separator = if position == 0 { "" } else { " " };
+        if position % 10 == 5 {
+            spans.push((separator.to_owned(), false));
+            spans.push((word.to_owned(), true));
+        } else if let Some((last, false)) = spans.last_mut() {
+            last.push_str(separator);
+            last.push_str(word);
+        } else {
+            spans.push((format!("{separator}{word}"), false));
+        }
+    }
+    spans
+}
+
+/// Borrowed `TextSpan`s of `replaced_spans`.
+pub(super) fn as_text_spans(spans: &[(String, bool)]) -> Vec<TextSpan<'_>> {
+    spans
+        .iter()
+        .map(|(text, is_protected)| TextSpan {
+            text,
+            is_protected: *is_protected,
+        })
+        .collect()
+}
+
+fn report(path: &str, words: usize, median: Duration) {
+    eprintln!(
+        "fuzzy correction ({path}): {TERMS} terms, {words} words, median of {RUNS} runs {:.2} ms \
+         ({} build)",
+        median.as_secs_f64() * 1000.0,
+        if cfg!(debug_assertions) {
+            "debug"
+        } else {
+            "optimized"
+        }
+    );
+    assert!(
+        median < BUDGET,
+        "median {median:?} over {BUDGET:?} (an unoptimized build is expected to fail)"
+    );
 }
 
 #[test]
@@ -120,16 +168,18 @@ fn fuzzy_correction_of_a_full_vocabulary_stays_under_50_ms() {
     let text = dictation(&terms);
     let words = text.split_whitespace().count();
     assert!((90..=110).contains(&words), "dictation has {words} words");
-    let median = median_correction_time(&text, &terms);
-    let optimized = !cfg!(debug_assertions);
-    eprintln!(
-        "fuzzy correction: {} terms, {words} words, median of {RUNS} runs {:.2} ms ({} build)",
-        terms.len(),
-        median.as_secs_f64() * 1000.0,
-        if optimized { "optimized" } else { "debug" }
-    );
-    assert!(
-        median < BUDGET,
-        "median {median:?} over {BUDGET:?} (an unoptimized build is expected to fail)"
-    );
+    let median = median_time(|| apply_custom_words(&text, &terms, THRESHOLD));
+    report("plain text", words, median);
+}
+
+#[test]
+#[ignore = "timing budget of an optimized build: see the module documentation"]
+fn fuzzy_correction_around_word_replacements_stays_under_50_ms() {
+    let terms = vocabulary(TERMS, 20_261_028);
+    let text = dictation(&terms);
+    let owned = replaced_spans(&text);
+    let spans = as_text_spans(&owned);
+    assert!(spans.iter().filter(|span| span.is_protected).count() >= 9);
+    let median = median_time(|| apply_custom_words_outside_protected(&spans, &terms, THRESHOLD));
+    report("002 replacements", text.split_whitespace().count(), median);
 }

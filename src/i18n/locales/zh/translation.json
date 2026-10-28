@@ -571,7 +571,8 @@
           "over_budget": "未发送，超出模型限制：{{terms}}。",
           "invalid": "未发送，无效：{{terms}}。",
           "duplicate": "未发送，重复：{{terms}}。",
-          "over_capacity": "未发送，超出 5,000 个术语：{{terms}}。"
+          "over_capacity": "未发送，超出 5,000 个术语：{{terms}}。",
+          "more": "以及另外 {{hidden}} 个"
         },
         "noTermSent": {
           "title": "没有术语发送给 {{model}}",

@@ -571,7 +571,8 @@
           "over_budget": "未送信（モデルの上限超過）：{{terms}}。",
           "invalid": "未送信（無効）：{{terms}}。",
           "duplicate": "未送信（重複）：{{terms}}。",
-          "over_capacity": "未送信（5,000件超過）：{{terms}}。"
+          "over_capacity": "未送信（5,000件超過）：{{terms}}。",
+          "more": "ほか{{hidden}}件"
         },
         "noTermSent": {
           "title": "{{model}} に送信される用語はありません",

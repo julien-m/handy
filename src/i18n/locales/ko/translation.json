@@ -571,7 +571,8 @@
           "over_budget": "전송되지 않음, 모델 한도 초과: {{terms}}.",
           "invalid": "전송되지 않음, 유효하지 않음: {{terms}}.",
           "duplicate": "전송되지 않음, 중복: {{terms}}.",
-          "over_capacity": "전송되지 않음, 5,000개 초과: {{terms}}."
+          "over_capacity": "전송되지 않음, 5,000개 초과: {{terms}}.",
+          "more": "외 {{hidden}}개"
         },
         "noTermSent": {
           "title": "{{model}}에 전송되는 용어가 없습니다",

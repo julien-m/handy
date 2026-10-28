@@ -571,7 +571,8 @@
           "over_budget": "Tidak dikirim, melebihi batas model: {{terms}}.",
           "invalid": "Tidak dikirim, tidak valid: {{terms}}.",
           "duplicate": "Tidak dikirim, duplikat: {{terms}}.",
-          "over_capacity": "Tidak dikirim, melebihi 5.000 istilah: {{terms}}."
+          "over_capacity": "Tidak dikirim, melebihi 5.000 istilah: {{terms}}.",
+          "more": "dan {{hidden}} lainnya"
         },
         "noTermSent": {
           "title": "Tidak ada istilah yang dikirim ke {{model}}",

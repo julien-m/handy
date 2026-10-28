@@ -14,6 +14,7 @@ import {
   FOCUS_RING,
   removalFocusPosition,
   termInputState,
+  formatTermCount,
   VOCABULARY_MAX_TERMS,
   type RemovalTarget,
   type VocabularyScreen,
@@ -294,8 +295,8 @@ export const VocabularyAddRow: React.FC<AddRowProps> = (props) => {
 };
 
 /**
- * "N of 5,000 terms" under the list, the limit formatted for the interface language (as 002's
- * rule count).
+ * "N of 5,000 terms" under the list, the limit formatted for the interface language with Latin
+ * digits, as the limit messages.
  * @param props screen prefix and stored occurrence count
  */
 export const VocabularyCount: React.FC<{
@@ -307,7 +308,7 @@ export const VocabularyCount: React.FC<{
     <p className="text-xs text-mid-gray" data-testid={`${screen}-count`}>
       {t("settings.vocabulary.count", {
         total,
-        max: VOCABULARY_MAX_TERMS.toLocaleString(i18n.language),
+        max: formatTermCount(VOCABULARY_MAX_TERMS, i18n.language),
       })}
     </p>
   );

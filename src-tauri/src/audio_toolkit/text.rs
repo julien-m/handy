@@ -40,52 +40,31 @@ fn build_match_key(word: &str) -> String {
 /// # Returns
 /// The corrected text with custom words applied
 pub fn apply_custom_words(text: &str, custom_words: &[String], threshold: f64) -> String {
+    // Index the normalized comparison keys once per text (feature 003: up to 5,000 terms).
+    apply_custom_words_with(
+        text,
+        custom_words,
+        &CustomWordIndex::new(custom_words),
+        threshold,
+    )
+}
+
+/// `apply_custom_words` with an index of `custom_words` built by the caller, so text split in
+/// several pieces (around 002 replacements) indexes the vocabulary once.
+fn apply_custom_words_with(
+    text: &str,
+    custom_words: &[String],
+    index: &CustomWordIndex,
+    threshold: f64,
+) -> String {
     if custom_words.is_empty() {
         return text.to_string();
     }
-
-    // Index the normalized comparison keys once per text (feature 003: up to 5,000 terms).
-    let index = CustomWordIndex::new(custom_words);
-
     let words: Vec<&str> = text.split_whitespace().collect();
     let mut result = Vec::new();
     let mut i = 0;
-
     while i < words.len() {
-        let mut best_match: Option<(usize, &String, f64)> = None;
-
-        // Consider n-grams up to three words and choose the closest match. A
-        // longest-first match can consume a following ordinary word when both
-        // candidates happen to share a Soundex code (for example,
-        // "Charge B, che" matching "ChargeBee").
-        for n in (1..=3).rev() {
-            if i + n > words.len() {
-                continue;
-            }
-
-            let ngram_words = &words[i..i + n];
-            // Do not consume across a punctuation boundary. In
-            // "Charge B, che", the comma closes the candidate at "B,".
-            if ngram_words[..n.saturating_sub(1)]
-                .iter()
-                .any(|word| !extract_punctuation(word).1.is_empty())
-            {
-                continue;
-            }
-            let ngram = build_ngram(ngram_words);
-
-            if let Some((word_index, score)) = index.find_best(&ngram, threshold) {
-                let replacement = &custom_words[word_index];
-                let is_better = best_match
-                    .as_ref()
-                    .is_none_or(|(_, _, best_score)| score < *best_score);
-                if is_better {
-                    best_match = Some((n, replacement, score));
-                }
-            }
-        }
-
-        if let Some((n, replacement, _)) = best_match {
+        if let Some((n, replacement)) = best_ngram_at(&words, i, custom_words, index, threshold) {
             let ngram_words = &words[i..i + n];
             // Extract punctuation from first and last words of the n-gram.
             let (prefix, _) = extract_punctuation(ngram_words[0]);
@@ -101,8 +80,45 @@ pub fn apply_custom_words(text: &str, custom_words: &[String], threshold: f64) -
             i += 1;
         }
     }
-
     result.join(" ")
+}
+
+/// Length (1 to 3 words) and custom word of the closest n-gram starting at `words[start]`.
+fn best_ngram_at<'a>(
+    words: &[&str],
+    start: usize,
+    custom_words: &'a [String],
+    index: &CustomWordIndex,
+    threshold: f64,
+) -> Option<(usize, &'a String)> {
+    let mut best_match: Option<(usize, &String, f64)> = None;
+    // Consider n-grams up to three words and choose the closest match. A
+    // longest-first match can consume a following ordinary word when both
+    // candidates happen to share a Soundex code (for example,
+    // "Charge B, che" matching "ChargeBee").
+    for n in (1..=3).rev() {
+        if start + n > words.len() {
+            continue;
+        }
+        let ngram_words = &words[start..start + n];
+        // Do not consume across a punctuation boundary. In
+        // "Charge B, che", the comma closes the candidate at "B,".
+        if ngram_words[..n.saturating_sub(1)]
+            .iter()
+            .any(|word| !extract_punctuation(word).1.is_empty())
+        {
+            continue;
+        }
+        if let Some((word_index, score)) = index.find_best(&build_ngram(ngram_words), threshold) {
+            let is_better = best_match
+                .as_ref()
+                .is_none_or(|(_, _, best_score)| score < *best_score);
+            if is_better {
+                best_match = Some((n, &custom_words[word_index], score));
+            }
+        }
+    }
+    best_match.map(|(n, replacement, _)| (n, replacement))
 }
 
 /// A piece of text; protected pieces come from explicit word replacements.
@@ -127,19 +143,26 @@ pub fn apply_custom_words_outside_protected(
         let joined: String = spans.iter().map(|span| span.text).collect();
         return apply_custom_words(&joined, custom_words, threshold);
     }
+    // One index for every unprotected span (up to 5,000 terms, feature 003).
+    let index = CustomWordIndex::new(custom_words);
     spans
         .iter()
         .map(|span| {
             if span.is_protected {
                 span.text.to_string()
             } else {
-                correct_keeping_edge_whitespace(span.text, custom_words, threshold)
+                correct_keeping_edge_whitespace(span.text, custom_words, &index, threshold)
             }
         })
         .collect()
 }
 
-fn correct_keeping_edge_whitespace(text: &str, custom_words: &[String], threshold: f64) -> String {
+fn correct_keeping_edge_whitespace(
+    text: &str,
+    custom_words: &[String],
+    index: &CustomWordIndex,
+    threshold: f64,
+) -> String {
     let core_start = text.len() - text.trim_start().len();
     let core_end = text.trim_end().len();
     if core_start >= core_end {
@@ -150,7 +173,7 @@ fn correct_keeping_edge_whitespace(text: &str, custom_words: &[String], threshol
     format!(
         "{}{}{}",
         &text[..core_start],
-        apply_custom_words(&text[core_start..core_end], custom_words, threshold),
+        apply_custom_words_with(&text[core_start..core_end], custom_words, index, threshold),
         &text[core_end..]
     )
 }

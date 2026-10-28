@@ -571,7 +571,8 @@
           "over_budget": "पठाइएन, मोडेलको सीमाभन्दा बढी: {{terms}}।",
           "invalid": "पठाइएन, अमान्य: {{terms}}।",
           "duplicate": "पठाइएन, दोहोरिएका: {{terms}}।",
-          "over_capacity": "पठाइएन, 5,000 शब्दभन्दा बाहिर: {{terms}}।"
+          "over_capacity": "पठाइएन, 5,000 शब्दभन्दा बाहिर: {{terms}}।",
+          "more": "र थप {{hidden}}"
         },
         "noTermSent": {
           "title": "{{model}} लाई कुनै शब्द पठाइँदैन",

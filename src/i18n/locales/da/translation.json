@@ -571,7 +571,8 @@
           "over_budget": "Sendes ikke, over modellens grænse: {{terms}}.",
           "invalid": "Sendes ikke, ugyldige: {{terms}}.",
           "duplicate": "Sendes ikke, dubletter: {{terms}}.",
-          "over_capacity": "Sendes ikke, ud over 5.000 udtryk: {{terms}}."
+          "over_capacity": "Sendes ikke, ud over 5.000 udtryk: {{terms}}.",
+          "more": "og {{hidden}} mere"
         },
         "noTermSent": {
           "title": "Intet udtryk sendes til {{model}}",

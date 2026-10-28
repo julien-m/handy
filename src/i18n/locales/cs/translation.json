@@ -571,7 +571,8 @@
           "over_budget": "Neodesílá se, nad limitem modelu: {{terms}}.",
           "invalid": "Neodesílá se, neplatné: {{terms}}.",
           "duplicate": "Neodesílá se, duplicity: {{terms}}.",
-          "over_capacity": "Neodesílá se, za hranicí 5 000 termínů: {{terms}}."
+          "over_capacity": "Neodesílá se, za hranicí 5 000 termínů: {{terms}}.",
+          "more": "a ještě {{hidden}}"
         },
         "noTermSent": {
           "title": "{{model}} nedostává žádný termín",

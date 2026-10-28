@@ -18,6 +18,16 @@ export const FOCUS_RING =
 /** Mirrors `MAX_TERMS` (`recognition_vocabulary/validation.rs`); only used for the count label. */
 export const VOCABULARY_MAX_TERMS = 5000;
 
+/**
+ * A term count for the interface language, with Latin digits as every vocabulary message writes
+ * its numbers (Nepali would otherwise show « ५,००० » beside « 5,000 »).
+ * @param value count to show
+ * @param language i18next language code
+ * @returns the grouped number, for example « 5 000 » in French
+ */
+export const formatTermCount = (value: number, language: string): string =>
+  new Intl.NumberFormat(language, { numberingSystem: "latn" }).format(value);
+
 /** Test ID prefixes, one per approved mockup screen of the contract. */
 export const VOCABULARY_SCREENS = {
   default: "vocabulary-settings",

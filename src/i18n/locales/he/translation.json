@@ -571,7 +571,8 @@
           "over_budget": "לא נשלחו, חורגים ממגבלת המודל: {{terms}}.",
           "invalid": "לא נשלחו, לא תקינים: {{terms}}.",
           "duplicate": "לא נשלחו, כפולים: {{terms}}.",
-          "over_capacity": "לא נשלחו, מעבר ל-5,000 מונחים: {{terms}}."
+          "over_capacity": "לא נשלחו, מעבר ל-5,000 מונחים: {{terms}}.",
+          "more": "ועוד {{hidden}}"
         },
         "noTermSent": {
           "title": "{{model}} לא מקבל אף מונח",

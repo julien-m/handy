@@ -571,7 +571,8 @@
           "over_budget": "Gönderilmedi, model sınırını aşıyor: {{terms}}.",
           "invalid": "Gönderilmedi, geçersiz: {{terms}}.",
           "duplicate": "Gönderilmedi, yinelenen: {{terms}}.",
-          "over_capacity": "Gönderilmedi, 5.000 terimin ötesinde: {{terms}}."
+          "over_capacity": "Gönderilmedi, 5.000 terimin ötesinde: {{terms}}.",
+          "more": "ve {{hidden}} terim daha"
         },
         "noTermSent": {
           "title": "{{model}} modeline hiçbir terim gönderilmiyor",

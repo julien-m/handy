@@ -571,7 +571,8 @@
           "over_budget": "No s'envien, superen el límit del model: {{terms}}.",
           "invalid": "No s'envien, no vàlids: {{terms}}.",
           "duplicate": "No s'envien, duplicats: {{terms}}.",
-          "over_capacity": "No s'envien, més enllà de 5.000 termes: {{terms}}."
+          "over_capacity": "No s'envien, més enllà de 5.000 termes: {{terms}}.",
+          "more": "i {{hidden}} més"
         },
         "noTermSent": {
           "title": "No s'envia cap terme a {{model}}",

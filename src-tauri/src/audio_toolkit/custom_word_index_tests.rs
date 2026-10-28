@@ -2,7 +2,8 @@
 //! `natural` Soundex, strict `<` so the first best key wins), on realistic vocabularies and
 //! dictations, for several thresholds.
 
-use super::super::custom_words_perf_tests::{dictation, vocabulary};
+use super::super::custom_words_perf_tests::{as_text_spans, dictation, replaced_spans, vocabulary};
+use super::super::{apply_custom_words, apply_custom_words_outside_protected};
 use super::*;
 
 /// The scan of every key used before the index (feature 003 limit of 500), kept as reference.
@@ -136,4 +137,57 @@ fn ties_keep_the_first_custom_word_and_ampersand_keys_still_match() {
         index.find_best("randdlab", 0.18).map(|(word, _)| word),
         Some(2)
     );
+}
+
+#[test]
+fn a_huge_threshold_is_capped_and_matches_the_full_scan() {
+    let terms = vocabulary(300, 13);
+    let keys = match_keys(&terms);
+    let index = CustomWordIndex::new(&terms);
+    let candidates = ngram_candidates(&dictation(&terms));
+    // A hand-edited store can hold any number; the scan accepted every key below it.
+    for threshold in [1e20, f64::MAX, f64::INFINITY] {
+        for candidate in &candidates {
+            assert_eq!(
+                index.find_best(candidate, threshold),
+                reference_best_match(candidate, &keys, threshold),
+                "{candidate} at {threshold}"
+            );
+        }
+    }
+    let mut row = Vec::new();
+    assert_eq!(
+        bounded_levenshtein(b"kalo", b"zen", usize::MAX, &mut row),
+        Some(4)
+    );
+}
+
+#[test]
+fn spans_around_replacements_share_one_index_with_the_same_result() {
+    let terms = vocabulary(400, 17);
+    let text = dictation(&terms);
+    let owned = replaced_spans(&text);
+    // Former behavior: each unprotected span corrected on its own, edge whitespace kept.
+    let expected: String = owned
+        .iter()
+        .map(|(span, is_protected)| {
+            let core = span.trim();
+            if *is_protected || core.is_empty() {
+                return span.clone();
+            }
+            let start = span.len() - span.trim_start().len();
+            let end = span.trim_end().len();
+            format!(
+                "{}{}{}",
+                &span[..start],
+                apply_custom_words(core, &terms, 0.18),
+                &span[end..]
+            )
+        })
+        .collect();
+    assert_eq!(
+        apply_custom_words_outside_protected(&as_text_spans(&owned), &terms, 0.18),
+        expected
+    );
+    assert_ne!(expected, text, "the dictation names misheard terms");
 }
