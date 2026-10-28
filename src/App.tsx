@@ -19,6 +19,7 @@ import AccessibilityPermissions from "./components/AccessibilityPermissions";
 import { SettingsConflictAlert } from "./components/settings/settings-conflict-alert";
 import SecureInputWarning from "./components/SecureInputWarning";
 import Footer from "./components/footer";
+import { SettingsWindowLayout } from "./components/settings-window-layout";
 import Onboarding, { AccessibilityOnboarding } from "./components/onboarding";
 import {
   DebugSettings,
@@ -347,35 +348,30 @@ function App() {
     content = <Onboarding onModelSelected={handleModelSelected} />;
   } else {
     content = (
-      <div
-        dir={direction}
-        className="h-screen flex flex-col select-none cursor-default"
+      <SettingsWindowLayout
+        direction={direction}
+        banner={
+          <ErrorBoundary context="What's New">
+            <WhatsNewGate />
+          </ErrorBoundary>
+        }
+        sidebar={
+          <>
+            <Sidebar
+              activeSection={currentSection}
+              onSectionChange={sectionNavigation.request}
+            />
+            {sectionNavigation.dialog}
+          </>
+        }
+        footer={<Footer />}
+        scrollRef={settingsScrollRef}
       >
-        <ErrorBoundary context="What's New">
-          <WhatsNewGate />
-        </ErrorBoundary>
-        {/* Main content area that takes remaining space */}
-        <div className="flex-1 flex overflow-hidden">
-          <Sidebar
-            activeSection={currentSection}
-            onSectionChange={sectionNavigation.request}
-          />
-          {sectionNavigation.dialog}
-          {/* Scrollable content area */}
-          <div className="flex-1 flex flex-col overflow-hidden">
-            <div ref={settingsScrollRef} className="flex-1 overflow-y-auto">
-              <div className="flex flex-col items-center p-4 gap-4">
-                <SettingsConflictAlert />
-                <AccessibilityPermissions />
-                <SecureInputWarning />
-                {renderSettingsContent(currentSection, setOnboardingPreview)}
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* Fixed footer at bottom */}
-        <Footer />
-      </div>
+        <SettingsConflictAlert />
+        <AccessibilityPermissions />
+        <SecureInputWarning />
+        {renderSettingsContent(currentSection, setOnboardingPreview)}
+      </SettingsWindowLayout>
     );
   }
 
