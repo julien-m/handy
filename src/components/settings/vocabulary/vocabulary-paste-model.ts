@@ -172,7 +172,7 @@ export interface ApplyRetryBlock {
 /**
  * Whether a Retry of a failed Apply may send the commit again. The failure rereads the preview, so
  * Retry follows the same rule as Apply: an applicable, current preview that adds at least one
- * term. Otherwise nothing is sent and the note explains why (lines to fix, the 500-term limit, a
+ * term. Otherwise nothing is sent and the note explains why (lines to fix, the 5,000-term limit, a
  * preview still checking, or nothing left to add because the terms are already saved).
  * @param text current paste text
  * @param preview preview reread after the failure, or null

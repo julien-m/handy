@@ -543,7 +543,7 @@
         "line_break": "Berisi jeda baris, tidak dikirim. Hapus lalu tambahkan lagi.",
         "forbidden_character": "Berisi < > atau \", tidak dikirim. Hapus lalu tambahkan tanpa karakter tersebut.",
         "duplicate": "Sama dengan istilah sebelumnya, tidak dikirim. Hapus istilah ini.",
-        "over_capacity": "Melebihi batas 500 istilah, tidak dikirim sampai daftar lebih pendek.",
+        "over_capacity": "Melebihi batas 5.000 istilah, tidak dikirim sampai daftar lebih pendek.",
         "over_budget": "Tidak dikirim: melebihi batas model."
       },
       "errors": {
@@ -552,7 +552,7 @@
         "term_line_break": "Istilah harus muat dalam satu baris.",
         "term_forbidden_character": "Hapus karakter < > atau \" dari istilah.",
         "term_duplicate": "Setiap istilah hanya boleh muncul sekali, dan istilah ini sudah ada di kosakata.",
-        "limit": "Kosakata menampung maksimal 500 istilah. Hapus satu istilah untuk menambahkan yang lain.",
+        "limit": "Kosakata menampung maksimal 5.000 istilah. Hapus satu istilah untuk menambahkan yang lain.",
         "conflict": "Kosakata berubah sementara itu dan telah dimuat ulang. Coba lagi.",
         "notFound": "Istilah ini sudah dihapus. Kosakata telah dimuat ulang.",
         "unknown": "Handy tidak dapat memastikan perubahan. Kosakata telah dimuat ulang; periksa sebelum mencoba lagi.",
@@ -571,7 +571,7 @@
           "over_budget": "Tidak dikirim, melebihi batas model: {{terms}}.",
           "invalid": "Tidak dikirim, tidak valid: {{terms}}.",
           "duplicate": "Tidak dikirim, duplikat: {{terms}}.",
-          "over_capacity": "Tidak dikirim, melebihi 500 istilah: {{terms}}."
+          "over_capacity": "Tidak dikirim, melebihi 5.000 istilah: {{terms}}."
         },
         "noTermSent": {
           "title": "Tidak ada istilah yang dikirim ke {{model}}",
@@ -627,14 +627,14 @@
           "line_break": "Baris {{line}}: tulis istilah dalam satu baris",
           "forbidden_character": "Baris {{line}}: hapus karakter < > atau \"",
           "duplicate": "Baris {{line}}: sama dengan istilah sebelumnya",
-          "over_capacity": "Baris {{line}}: melebihi batas 500 istilah"
+          "over_capacity": "Baris {{line}}: melebihi batas 5.000 istilah"
         },
         "note": {
           "empty": "Kosakata Anda tidak berubah sampai Anda menambahkan istilah.",
           "checking": "Memeriksa baris…",
           "fixOne": "Perbaiki baris {{lines}} untuk menambahkan istilah. Kosakata Anda tidak berubah.",
           "fixMany": "Perbaiki baris {{lines}} untuk menambahkan istilah. Kosakata Anda tidak berubah.",
-          "overCapacity": "Kosakata menampung maksimal 500 istilah. Persingkat daftar untuk menambahkannya. Kosakata Anda tidak berubah.",
+          "overCapacity": "Kosakata menampung maksimal 5.000 istilah. Persingkat daftar untuk menambahkannya. Kosakata Anda tidak berubah.",
           "nothingToAdd": "Semua baris sudah ada di kosakata.",
           "ready": "Duplikat dilewati. Tidak ada yang disimpan sampai Anda menambahkan istilah."
         },

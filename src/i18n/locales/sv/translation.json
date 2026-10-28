@@ -543,7 +543,7 @@
         "line_break": "Innehåller en radbrytning, skickas inte. Ta bort den och lägg till den igen.",
         "forbidden_character": "Innehåller < > eller \", skickas inte. Ta bort den och lägg till den utan dessa tecken.",
         "duplicate": "Samma som en tidigare term, skickas inte. Ta bort den.",
-        "over_capacity": "Över gränsen på 500 termer, skickas inte förrän listan är kortare.",
+        "over_capacity": "Över gränsen på 5 000 termer, skickas inte förrän listan är kortare.",
         "over_budget": "Skickas inte: över modellens gräns."
       },
       "errors": {
@@ -552,7 +552,7 @@
         "term_line_break": "En term måste rymmas på en rad.",
         "term_forbidden_character": "Ta bort tecknen < > eller \" från termen.",
         "term_duplicate": "Varje term får förekomma en gång, och den här finns redan i vokabulären.",
-        "limit": "Vokabulären rymmer högst 500 termer. Ta bort en term för att lägga till en annan.",
+        "limit": "Vokabulären rymmer högst 5 000 termer. Ta bort en term för att lägga till en annan.",
         "conflict": "Vokabulären ändrades under tiden och har lästs in igen. Försök igen.",
         "notFound": "Den här termen var redan borttagen. Vokabulären har lästs in igen.",
         "unknown": "Handy kunde inte bekräfta ändringen. Vokabulären har lästs in igen; kontrollera den innan du försöker igen.",
@@ -571,7 +571,7 @@
           "over_budget": "Skickas inte, över modellens gräns: {{terms}}.",
           "invalid": "Skickas inte, ogiltiga: {{terms}}.",
           "duplicate": "Skickas inte, dubbletter: {{terms}}.",
-          "over_capacity": "Skickas inte, utöver 500 termer: {{terms}}."
+          "over_capacity": "Skickas inte, utöver 5 000 termer: {{terms}}."
         },
         "noTermSent": {
           "title": "Ingen term skickas till {{model}}",
@@ -627,14 +627,14 @@
           "line_break": "Rad {{line}}: håll termen på en rad",
           "forbidden_character": "Rad {{line}}: ta bort tecknen < > eller \"",
           "duplicate": "Rad {{line}}: samma som en tidigare term",
-          "over_capacity": "Rad {{line}}: över gränsen på 500 termer"
+          "over_capacity": "Rad {{line}}: över gränsen på 5 000 termer"
         },
         "note": {
           "empty": "Din vokabulär är oförändrad tills du lägger till termerna.",
           "checking": "Kontrollerar raderna…",
           "fixOne": "Rätta rad {{lines}} för att lägga till termerna. Din vokabulär är oförändrad.",
           "fixMany": "Rätta raderna {{lines}} för att lägga till termerna. Din vokabulär är oförändrad.",
-          "overCapacity": "Vokabulären rymmer högst 500 termer. Korta listan för att lägga till den. Din vokabulär är oförändrad.",
+          "overCapacity": "Vokabulären rymmer högst 5 000 termer. Korta listan för att lägga till den. Din vokabulär är oförändrad.",
           "nothingToAdd": "Alla rader finns redan i vokabulären.",
           "ready": "Dubbletter hoppas över. Inget sparas förrän du lägger till termerna."
         },

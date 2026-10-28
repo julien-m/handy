@@ -1,7 +1,9 @@
-use natural::phonetics::soundex;
+use custom_word_index::CustomWordIndex;
 use once_cell::sync::Lazy;
 use regex::Regex;
-use strsim::levenshtein;
+
+#[path = "custom_word_index.rs"]
+mod custom_word_index;
 
 /// Builds an n-gram string by cleaning and concatenating words
 ///
@@ -20,117 +22,6 @@ fn build_match_key(word: &str) -> String {
         .filter(|c| c.is_alphanumeric())
         .flat_map(|c| c.to_lowercase())
         .collect()
-}
-
-struct CustomWordMatchKey {
-    word_index: usize,
-    key: String,
-}
-
-fn build_custom_word_match_keys(word: &str, word_index: usize) -> Vec<CustomWordMatchKey> {
-    let primary_key = build_match_key(word);
-    let mut keys = Vec::with_capacity(2);
-
-    // The fallback matcher is intentionally limited to ASCII terms. Its
-    // whitespace tokenization and Soundex scoring are not suitable for CJK
-    // scripts. Unicode custom words remain available to models that accept
-    // them as native decode prompts; they are simply skipped by this fallback.
-    if is_supported_fuzzy_key(&primary_key) {
-        keys.push(CustomWordMatchKey {
-            word_index,
-            key: primary_key.clone(),
-        });
-    }
-
-    if word.contains('&') {
-        let expanded_key = build_match_key(&word.replace('&', " and "));
-        if is_supported_fuzzy_key(&expanded_key) && expanded_key != primary_key {
-            keys.push(CustomWordMatchKey {
-                word_index,
-                key: expanded_key,
-            });
-        }
-    }
-
-    keys
-}
-
-fn is_supported_fuzzy_key(key: &str) -> bool {
-    !key.is_empty() && key.chars().all(|c| c.is_ascii_alphanumeric())
-}
-
-fn supports_soundex(key: &str) -> bool {
-    !key.is_empty() && key.chars().all(|c| c.is_ascii_alphabetic())
-}
-
-/// Finds the best matching custom word for a candidate string
-///
-/// Uses Levenshtein distance and Soundex phonetic matching to find
-/// the best match above the given threshold.
-///
-/// # Arguments
-/// * `candidate` - The cleaned/lowercased candidate string to match
-/// * `custom_words` - Original custom words (for returning the replacement)
-/// * `custom_word_match_keys` - Normalized custom-word keys for comparison
-/// * `threshold` - Maximum similarity score to accept
-///
-/// # Returns
-/// The best matching custom word and its score, if any match was found
-fn find_best_match<'a>(
-    candidate: &str,
-    custom_words: &'a [String],
-    custom_word_match_keys: &[CustomWordMatchKey],
-    threshold: f64,
-) -> Option<(&'a String, f64)> {
-    if !is_supported_fuzzy_key(candidate) || candidate.chars().count() > 50 {
-        return None;
-    }
-
-    let mut best_match: Option<&String> = None;
-    let mut best_score = f64::MAX;
-
-    for custom_word_key in custom_word_match_keys {
-        // Skip if lengths are too different (optimization + prevents over-matching)
-        // Use percentage-based check: max 25% length difference (prevents n-grams from
-        // matching significantly shorter custom words, e.g., "openaigpt" vs "openai")
-        let candidate_len = candidate.chars().count();
-        let custom_word_len = custom_word_key.key.chars().count();
-        let len_diff = candidate_len.abs_diff(custom_word_len) as f64;
-        let max_len = candidate_len.max(custom_word_len) as f64;
-        let max_allowed_diff = (max_len * 0.25).max(2.0); // At least 2 chars difference allowed
-        if len_diff > max_allowed_diff {
-            continue;
-        }
-
-        // Calculate Levenshtein distance (normalized by length)
-        let levenshtein_dist = levenshtein(candidate, &custom_word_key.key);
-        let levenshtein_score = if max_len > 0.0 {
-            levenshtein_dist as f64 / max_len
-        } else {
-            1.0
-        };
-
-        // Soundex is an English/ASCII phonetic algorithm. Numeric terms can
-        // still use edit distance, but must not receive a phonetic boost.
-        let phonetic_match = supports_soundex(candidate)
-            && supports_soundex(&custom_word_key.key)
-            && soundex(candidate, &custom_word_key.key);
-
-        // Combine scores: favor phonetic matches, but also consider string similarity
-        let combined_score = if phonetic_match {
-            levenshtein_score * 0.3 // Give significant boost to phonetic matches
-        } else {
-            levenshtein_score
-        };
-
-        // Accept if the score is good enough (configurable threshold)
-        if combined_score < threshold && combined_score < best_score {
-            best_match = Some(&custom_words[custom_word_key.word_index]);
-            best_score = combined_score;
-        }
-    }
-
-    best_match.map(|m| (m, best_score))
 }
 
 /// Applies custom word corrections to transcribed text using fuzzy matching
@@ -153,12 +44,8 @@ pub fn apply_custom_words(text: &str, custom_words: &[String], threshold: f64) -
         return text.to_string();
     }
 
-    // Pre-compute normalized comparison keys to avoid repeated allocations.
-    let custom_word_match_keys: Vec<CustomWordMatchKey> = custom_words
-        .iter()
-        .enumerate()
-        .flat_map(|(index, word)| build_custom_word_match_keys(word, index))
-        .collect();
+    // Index the normalized comparison keys once per text (feature 003: up to 5,000 terms).
+    let index = CustomWordIndex::new(custom_words);
 
     let words: Vec<&str> = text.split_whitespace().collect();
     let mut result = Vec::new();
@@ -187,9 +74,8 @@ pub fn apply_custom_words(text: &str, custom_words: &[String], threshold: f64) -
             }
             let ngram = build_ngram(ngram_words);
 
-            if let Some((replacement, score)) =
-                find_best_match(&ngram, custom_words, &custom_word_match_keys, threshold)
-            {
+            if let Some((word_index, score)) = index.find_best(&ngram, threshold) {
+                let replacement = &custom_words[word_index];
                 let is_better = best_match
                     .as_ref()
                     .is_none_or(|(_, _, best_score)| score < *best_score);
@@ -984,3 +870,7 @@ mod tests {
         );
     }
 }
+
+#[cfg(test)]
+#[path = "custom_words_perf_tests.rs"]
+mod custom_words_perf_tests;

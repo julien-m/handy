@@ -143,7 +143,7 @@ pub use destination::DestinationArgs;
 #[derive(Args, Debug, Clone)]
 #[command(
     after_help = "TERM has 1 to 100 characters, no line break and none of < > \". Terms are \
-unique ignoring case and spacing; a list holds at most 500 terms. export prints one term per line \
+unique ignoring case and spacing; a list holds at most 5,000 terms. export prints one term per line \
 on stdout: redirect it to save a file. status needs a running Handy, which reports the model it \
 has loaded; without one it fails with unavailable (exit 5)."
 )]

@@ -543,7 +543,7 @@
         "line_break": "Chứa ký tự xuống dòng, không được gửi. Hãy xóa và thêm lại.",
         "forbidden_character": "Chứa < > hoặc \", không được gửi. Hãy xóa và thêm lại mà không có các ký tự này.",
         "duplicate": "Trùng với một thuật ngữ trước đó, không được gửi. Hãy xóa nó.",
-        "over_capacity": "Vượt quá giới hạn 500 thuật ngữ, không được gửi cho đến khi danh sách ngắn hơn.",
+        "over_capacity": "Vượt quá giới hạn 5.000 thuật ngữ, không được gửi cho đến khi danh sách ngắn hơn.",
         "over_budget": "Không được gửi: vượt quá giới hạn của mô hình."
       },
       "errors": {
@@ -552,7 +552,7 @@
         "term_line_break": "Một thuật ngữ phải nằm trên một dòng.",
         "term_forbidden_character": "Xóa các ký tự < > hoặc \" khỏi thuật ngữ.",
         "term_duplicate": "Mỗi thuật ngữ chỉ xuất hiện một lần, và thuật ngữ này đã có trong từ vựng.",
-        "limit": "Từ vựng chứa tối đa 500 thuật ngữ. Hãy xóa một thuật ngữ để thêm thuật ngữ khác.",
+        "limit": "Từ vựng chứa tối đa 5.000 thuật ngữ. Hãy xóa một thuật ngữ để thêm thuật ngữ khác.",
         "conflict": "Từ vựng đã thay đổi trong lúc đó và đã được tải lại. Hãy thử lại.",
         "notFound": "Thuật ngữ này đã bị xóa. Từ vựng đã được tải lại.",
         "unknown": "Handy không thể xác nhận thay đổi. Từ vựng đã được tải lại; hãy kiểm tra trước khi thử lại.",
@@ -571,7 +571,7 @@
           "over_budget": "Không được gửi, vượt quá giới hạn của mô hình: {{terms}}.",
           "invalid": "Không được gửi, không hợp lệ: {{terms}}.",
           "duplicate": "Không được gửi, trùng lặp: {{terms}}.",
-          "over_capacity": "Không được gửi, vượt quá 500 thuật ngữ: {{terms}}."
+          "over_capacity": "Không được gửi, vượt quá 5.000 thuật ngữ: {{terms}}."
         },
         "noTermSent": {
           "title": "Không có thuật ngữ nào được gửi tới {{model}}",
@@ -627,14 +627,14 @@
           "line_break": "Dòng {{line}}: giữ thuật ngữ trên một dòng",
           "forbidden_character": "Dòng {{line}}: xóa các ký tự < > hoặc \"",
           "duplicate": "Dòng {{line}}: trùng với một thuật ngữ trước đó",
-          "over_capacity": "Dòng {{line}}: vượt quá giới hạn 500 thuật ngữ"
+          "over_capacity": "Dòng {{line}}: vượt quá giới hạn 5.000 thuật ngữ"
         },
         "note": {
           "empty": "Từ vựng của bạn sẽ không thay đổi cho đến khi bạn thêm các thuật ngữ.",
           "checking": "Đang kiểm tra các dòng…",
           "fixOne": "Sửa dòng {{lines}} để thêm các thuật ngữ. Từ vựng của bạn không thay đổi.",
           "fixMany": "Sửa các dòng {{lines}} để thêm các thuật ngữ. Từ vựng của bạn không thay đổi.",
-          "overCapacity": "Từ vựng chứa tối đa 500 thuật ngữ. Hãy rút ngắn danh sách để thêm. Từ vựng của bạn không thay đổi.",
+          "overCapacity": "Từ vựng chứa tối đa 5.000 thuật ngữ. Hãy rút ngắn danh sách để thêm. Từ vựng của bạn không thay đổi.",
           "nothingToAdd": "Mọi dòng đều đã có trong từ vựng.",
           "ready": "Các mục trùng lặp sẽ bị bỏ qua. Không có gì được lưu cho đến khi bạn thêm các thuật ngữ."
         },

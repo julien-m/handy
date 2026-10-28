@@ -543,7 +543,7 @@
         "line_break": "Contiene un a capo, non inviato. Rimuovilo e aggiungilo di nuovo.",
         "forbidden_character": "Contiene < > o \", non inviato. Rimuovilo e aggiungilo senza questi caratteri.",
         "duplicate": "Uguale a un termine precedente, non inviato. Rimuovilo.",
-        "over_capacity": "Oltre il limite di 500 termini, non inviato finché l'elenco non sarà più corto.",
+        "over_capacity": "Oltre il limite di 5000 termini, non inviato finché l'elenco non sarà più corto.",
         "over_budget": "Non inviato: oltre il limite del modello."
       },
       "errors": {
@@ -552,7 +552,7 @@
         "term_line_break": "Un termine deve stare su una sola riga.",
         "term_forbidden_character": "Rimuovi i caratteri < > o \" dal termine.",
         "term_duplicate": "Ogni termine può comparire una sola volta, e questo è già nel vocabolario.",
-        "limit": "Il vocabolario contiene al massimo 500 termini. Rimuovi un termine per aggiungerne un altro.",
+        "limit": "Il vocabolario contiene al massimo 5000 termini. Rimuovi un termine per aggiungerne un altro.",
         "conflict": "Il vocabolario è cambiato nel frattempo ed è stato ricaricato. Riprova.",
         "notFound": "Questo termine era già stato rimosso. Il vocabolario è stato ricaricato.",
         "unknown": "Handy non ha potuto confermare la modifica. Il vocabolario è stato ricaricato; controllalo prima di riprovare.",
@@ -571,7 +571,7 @@
           "over_budget": "Non inviati, oltre il limite del modello: {{terms}}.",
           "invalid": "Non inviati, non validi: {{terms}}.",
           "duplicate": "Non inviati, duplicati: {{terms}}.",
-          "over_capacity": "Non inviati, oltre i 500 termini: {{terms}}."
+          "over_capacity": "Non inviati, oltre i 5000 termini: {{terms}}."
         },
         "noTermSent": {
           "title": "Nessun termine inviato a {{model}}",
@@ -627,14 +627,14 @@
           "line_break": "Riga {{line}}: tieni il termine su una sola riga",
           "forbidden_character": "Riga {{line}}: rimuovi i caratteri < > o \"",
           "duplicate": "Riga {{line}}: uguale a un termine precedente",
-          "over_capacity": "Riga {{line}}: oltre il limite di 500 termini"
+          "over_capacity": "Riga {{line}}: oltre il limite di 5000 termini"
         },
         "note": {
           "empty": "Il tuo vocabolario non cambia finché non aggiungi i termini.",
           "checking": "Verifica delle righe…",
           "fixOne": "Correggi la riga {{lines}} per aggiungere i termini. Il tuo vocabolario non è cambiato.",
           "fixMany": "Correggi le righe {{lines}} per aggiungere i termini. Il tuo vocabolario non è cambiato.",
-          "overCapacity": "Il vocabolario contiene al massimo 500 termini. Accorcia l'elenco per aggiungerlo. Il tuo vocabolario non è cambiato.",
+          "overCapacity": "Il vocabolario contiene al massimo 5000 termini. Accorcia l'elenco per aggiungerlo. Il tuo vocabolario non è cambiato.",
           "nothingToAdd": "Tutte le righe sono già nel vocabolario.",
           "ready": "I duplicati vengono saltati. Nulla viene salvato finché non aggiungi i termini."
         },

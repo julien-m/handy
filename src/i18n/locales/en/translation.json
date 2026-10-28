@@ -543,7 +543,7 @@
         "line_break": "Contains a line break, not sent. Remove it and add it again.",
         "forbidden_character": "Contains < > or \", not sent. Remove it and add it without these characters.",
         "duplicate": "Same as an earlier term, not sent. Remove it.",
-        "over_capacity": "Beyond the 500-term limit, not sent until the list is shorter.",
+        "over_capacity": "Beyond the 5,000-term limit, not sent until the list is shorter.",
         "over_budget": "Not sent: over the model limit."
       },
       "errors": {
@@ -552,7 +552,7 @@
         "term_line_break": "A term must fit on one line.",
         "term_forbidden_character": "Remove < > or \" characters from the term.",
         "term_duplicate": "Each term may appear once, and this one is already in the vocabulary.",
-        "limit": "The vocabulary holds at most 500 terms. Remove a term to add another.",
+        "limit": "The vocabulary holds at most 5,000 terms. Remove a term to add another.",
         "conflict": "The vocabulary changed in the meantime and was reloaded. Try again.",
         "notFound": "This term was already removed. The vocabulary was reloaded.",
         "unknown": "Handy couldn't confirm the change. The vocabulary was reloaded; check it before trying again.",
@@ -571,7 +571,7 @@
           "over_budget": "Not sent, over the model limit: {{terms}}.",
           "invalid": "Not sent, invalid: {{terms}}.",
           "duplicate": "Not sent, duplicates: {{terms}}.",
-          "over_capacity": "Not sent, beyond 500 terms: {{terms}}."
+          "over_capacity": "Not sent, beyond 5,000 terms: {{terms}}."
         },
         "noTermSent": {
           "title": "No term is sent to {{model}}",
@@ -627,14 +627,14 @@
           "line_break": "Line {{line}}: keep the term on one line",
           "forbidden_character": "Line {{line}}: remove < > or \" characters",
           "duplicate": "Line {{line}}: same as an earlier term",
-          "over_capacity": "Line {{line}}: over the 500-term limit"
+          "over_capacity": "Line {{line}}: over the 5,000-term limit"
         },
         "note": {
           "empty": "Your vocabulary is unchanged until you add the terms.",
           "checking": "Checking the lines…",
           "fixOne": "Fix line {{lines}} to add the terms. Your vocabulary is unchanged.",
           "fixMany": "Fix lines {{lines}} to add the terms. Your vocabulary is unchanged.",
-          "overCapacity": "The vocabulary holds at most 500 terms. Shorten the list to add it. Your vocabulary is unchanged.",
+          "overCapacity": "The vocabulary holds at most 5,000 terms. Shorten the list to add it. Your vocabulary is unchanged.",
           "nothingToAdd": "Every line is already in the vocabulary.",
           "ready": "Duplicates are skipped. Nothing is saved until you add the terms."
         },

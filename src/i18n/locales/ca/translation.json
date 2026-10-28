@@ -543,7 +543,7 @@
         "line_break": "Conté un salt de línia, no s'envia. Elimineu-lo i torneu-lo a afegir.",
         "forbidden_character": "Conté < > o \", no s'envia. Elimineu-lo i afegiu-lo sense aquests caràcters.",
         "duplicate": "Igual que un terme anterior, no s'envia. Elimineu-lo.",
-        "over_capacity": "Supera el límit de 500 termes, no s'envia fins que la llista sigui més curta.",
+        "over_capacity": "Supera el límit de 5.000 termes, no s'envia fins que la llista sigui més curta.",
         "over_budget": "No s'envia: supera el límit del model."
       },
       "errors": {
@@ -552,7 +552,7 @@
         "term_line_break": "Un terme ha de cabre en una sola línia.",
         "term_forbidden_character": "Traieu els caràcters < > o \" del terme.",
         "term_duplicate": "Cada terme només pot aparèixer una vegada, i aquest ja és al vocabulari.",
-        "limit": "El vocabulari admet com a màxim 500 termes. Elimineu-ne un per afegir-ne un altre.",
+        "limit": "El vocabulari admet com a màxim 5.000 termes. Elimineu-ne un per afegir-ne un altre.",
         "conflict": "El vocabulari ha canviat mentrestant i s'ha tornat a carregar. Torneu-ho a provar.",
         "notFound": "Aquest terme ja s'havia eliminat. S'ha tornat a carregar el vocabulari.",
         "unknown": "Handy no ha pogut confirmar el canvi. S'ha tornat a carregar el vocabulari; reviseu-lo abans de tornar-ho a provar.",
@@ -571,7 +571,7 @@
           "over_budget": "No s'envien, superen el límit del model: {{terms}}.",
           "invalid": "No s'envien, no vàlids: {{terms}}.",
           "duplicate": "No s'envien, duplicats: {{terms}}.",
-          "over_capacity": "No s'envien, més enllà de 500 termes: {{terms}}."
+          "over_capacity": "No s'envien, més enllà de 5.000 termes: {{terms}}."
         },
         "noTermSent": {
           "title": "No s'envia cap terme a {{model}}",
@@ -627,14 +627,14 @@
           "line_break": "Línia {{line}}: manteniu el terme en una sola línia",
           "forbidden_character": "Línia {{line}}: traieu els caràcters < > o \"",
           "duplicate": "Línia {{line}}: igual que un terme anterior",
-          "over_capacity": "Línia {{line}}: supera el límit de 500 termes"
+          "over_capacity": "Línia {{line}}: supera el límit de 5.000 termes"
         },
         "note": {
           "empty": "El vocabulari no canvia fins que afegiu els termes.",
           "checking": "S'estan comprovant les línies…",
           "fixOne": "Corregiu la línia {{lines}} per afegir els termes. El vocabulari no ha canviat.",
           "fixMany": "Corregiu les línies {{lines}} per afegir els termes. El vocabulari no ha canviat.",
-          "overCapacity": "El vocabulari admet com a màxim 500 termes. Escurceu la llista per afegir-la. El vocabulari no ha canviat.",
+          "overCapacity": "El vocabulari admet com a màxim 5.000 termes. Escurceu la llista per afegir-la. El vocabulari no ha canviat.",
           "nothingToAdd": "Totes les línies ja són al vocabulari.",
           "ready": "Els duplicats s'ometen. No es desa res fins que afegiu els termes."
         },

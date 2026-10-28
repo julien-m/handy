@@ -1,0 +1,52 @@
+Native session fixes — core (N1, N7) — branch fix/native-session-core, worktree /Users/julienm/projects/handy-wt/native-core
+Date: 2026-10-28. Author: Claude Code (claude-opus-5-5). Base: dev 8761d748.
+Findings: Julien's native proof session of 2026-10-28 (builds of fc362e37).
+
+N1 (001) — input-lost notice on the recording indicator — commit a776d3cf
+  The input_lost recording error is an indicator notice (inputLostNotice, >= 4 s, window held by
+  hold_overlay_for_notice, test id recording-indicator-input-lost-notice). The settings window
+  toasts it only with the overlay style none (showInputLostToast); never both. Text: existing
+  errors.inputLost (26 locales). Gates closed: the notice is the only addition.
+
+N7 (003) — vocabulary limit 5,000 terms — this commit
+  MAX_TERMS = 5_000 (settings service validation, UI count, CLI help, 5 messages x 26 locales,
+  README). Whisper unchanged (prompt budget, sent / not-sent status). spec.md not modified:
+  spec-refine 003 à faire : limite 5 000 termes (décision Julien 2026-10-28).
+  Approximate correction: CustomWordIndex (length groups, Soundex once per key, bounded banded
+  Levenshtein), identical results to the former full scan (equivalence tests vs strsim/natural).
+
+Performance (5,000 terms, 96-word dictation, threshold 0.18, median of 9 runs, Apple Silicon, shared machine)
+  Command: cargo test --lib --config 'profile.test.package.handy.opt-level=3'
+           --config 'profile.test.package.handy.debug-assertions=false' -- --ignored fuzzy_correction --nocapture
+  Before (full scan, optimized test profile, strsim and natural also at opt-level 3): 468.18 ms   (unoptimized: 2546 ms)
+  After  (index, optimized test profile):     20.81 / 20.87 / 20.47 ms over three runs — budget 50 ms: PASS
+  (measured on the final code; only two doc comments changed afterwards)
+  fuzzy correction: 5000 terms, 96 words, median of 9 runs 20.81 ms (optimized build)
+
+Verifications (exit codes; CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-009)
+  cargo fmt --check=0
+  cargo clippy --lib --bins -- -D warnings=0
+  cargo clippy --all-targets -- -D warnings=0
+  cargo test --lib=0 (the 18 ignored include the timing test; test result: ok. 1050 passed; 0 failed; 18 ignored; 0 measured; 0 filtered out; finished in 3.43s)
+  cargo test --lib --features destination-return,smart-paste-dispatch=0 (test result: ok. 1056 passed; 0 failed; 18 ignored; 0 measured; 0 filtered out; finished in 2.99s)
+  cargo test --test vocabulary_transactions=0 (test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.24s)
+  tsc --noEmit=0
+  bun run lint=0
+  bun run format:check=0
+  bun run check:translations=0
+  bun run build=0
+  bun run test:keyboard=0 (pass 0, fail 0, script assertions ok 1)
+  bun run test:shortcut-list=0 (pass 0, fail 0, script assertions ok 1)
+  bun run test:settings-errors=0 (pass 0, fail 0, script assertions ok 1)
+  bun run test:settings-store=0 (pass 12, fail 0, script assertions ok 0)
+  bun run test:microphone-priority=0 (pass 101, fail 0, script assertions ok 0)
+  bun run test:word-replacements=0 (pass 82, fail 0, script assertions ok 0)
+  bun run test:prompt-settings=0 (pass 66, fail 0, script assertions ok 0)
+  bun run test:indicator=0 (pass 67, fail 0, script assertions ok 0)
+  bun run test:recovery-bubble=0 (pass 18, fail 0, script assertions ok 0)
+  bun run test:vocabulary=0 (pass 55, fail 0, script assertions ok 0)
+  bun run test:shortcut-states=0 (pass 59, fail 0, script assertions ok 0)
+  bun run test:output-settings=0 (pass 61, fail 0, script assertions ok 0)
+  livespec conventions verify --feature repo --json=0 (verdict PASS new 0 baselined 525)
+  perf (optimized test profile, --ignored fuzzy_correction)=0
+  .specs/conventions/baseline.json unchanged (sha256 8d6d4f80…)

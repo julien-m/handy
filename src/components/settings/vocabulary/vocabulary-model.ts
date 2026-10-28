@@ -16,7 +16,7 @@ export const FOCUS_RING =
   "focus-visible:ring-1 focus-visible:ring-logo-primary";
 
 /** Mirrors `MAX_TERMS` (`recognition_vocabulary/validation.rs`); only used for the count label. */
-export const VOCABULARY_MAX_TERMS = 500;
+export const VOCABULARY_MAX_TERMS = 5000;
 
 /** Test ID prefixes, one per approved mockup screen of the contract. */
 export const VOCABULARY_SCREENS = {

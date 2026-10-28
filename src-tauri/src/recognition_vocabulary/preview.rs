@@ -193,16 +193,16 @@ mod tests {
 
     #[test]
     fn capacity_is_checked_on_the_complete_candidate() {
-        let full = (0..500)
+        let full = (0..MAX_TERMS)
             .map(|index| format!("t{index}"))
             .collect::<Vec<_>>();
         assert!(prepare_import(&full, "new", ImportMode::Merge).over_capacity);
         assert!(!prepare_import(&full, "t1", ImportMode::Merge).over_capacity);
-        let input = (0..501)
+        let input = (0..=MAX_TERMS)
             .map(|index| format!("n{index}\n"))
             .collect::<String>();
         assert!(prepare_import(&[], &input, ImportMode::Replace).over_capacity);
-        let exact = (0..500)
+        let exact = (0..MAX_TERMS)
             .map(|index| format!("n{index}\n"))
             .collect::<String>();
         assert!(!prepare_import(&[], &exact, ImportMode::Replace).over_capacity);

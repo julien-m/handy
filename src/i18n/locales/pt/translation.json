@@ -543,7 +543,7 @@
         "line_break": "Contém uma quebra de linha, não enviado. Remova-o e adicione-o novamente.",
         "forbidden_character": "Contém < > ou \", não enviado. Remova-o e adicione-o sem esses caracteres.",
         "duplicate": "Igual a um termo anterior, não enviado. Remova-o.",
-        "over_capacity": "Além do limite de 500 termos, não enviado até a lista ficar mais curta.",
+        "over_capacity": "Além do limite de 5.000 termos, não enviado até a lista ficar mais curta.",
         "over_budget": "Não enviado: acima do limite do modelo."
       },
       "errors": {
@@ -552,7 +552,7 @@
         "term_line_break": "Um termo deve caber em uma linha.",
         "term_forbidden_character": "Remova os caracteres < > ou \" do termo.",
         "term_duplicate": "Cada termo pode aparecer uma vez, e este já está no vocabulário.",
-        "limit": "O vocabulário comporta no máximo 500 termos. Remova um termo para adicionar outro.",
+        "limit": "O vocabulário comporta no máximo 5.000 termos. Remova um termo para adicionar outro.",
         "conflict": "O vocabulário mudou nesse meio-tempo e foi recarregado. Tente novamente.",
         "notFound": "Este termo já foi removido. O vocabulário foi recarregado.",
         "unknown": "O Handy não conseguiu confirmar a alteração. O vocabulário foi recarregado; verifique-o antes de tentar novamente.",
@@ -571,7 +571,7 @@
           "over_budget": "Não enviados, acima do limite do modelo: {{terms}}.",
           "invalid": "Não enviados, inválidos: {{terms}}.",
           "duplicate": "Não enviados, duplicados: {{terms}}.",
-          "over_capacity": "Não enviados, além de 500 termos: {{terms}}."
+          "over_capacity": "Não enviados, além de 5.000 termos: {{terms}}."
         },
         "noTermSent": {
           "title": "Nenhum termo é enviado para {{model}}",
@@ -627,14 +627,14 @@
           "line_break": "Linha {{line}}: mantenha o termo em uma linha",
           "forbidden_character": "Linha {{line}}: remova os caracteres < > ou \"",
           "duplicate": "Linha {{line}}: igual a um termo anterior",
-          "over_capacity": "Linha {{line}}: acima do limite de 500 termos"
+          "over_capacity": "Linha {{line}}: acima do limite de 5.000 termos"
         },
         "note": {
           "empty": "Seu vocabulário não muda até você adicionar os termos.",
           "checking": "Verificando as linhas…",
           "fixOne": "Corrija a linha {{lines}} para adicionar os termos. Seu vocabulário não foi alterado.",
           "fixMany": "Corrija as linhas {{lines}} para adicionar os termos. Seu vocabulário não foi alterado.",
-          "overCapacity": "O vocabulário comporta no máximo 500 termos. Encurte a lista para adicioná-la. Seu vocabulário não foi alterado.",
+          "overCapacity": "O vocabulário comporta no máximo 5.000 termos. Encurte a lista para adicioná-la. Seu vocabulário não foi alterado.",
           "nothingToAdd": "Todas as linhas já estão no vocabulário.",
           "ready": "Duplicados são ignorados. Nada é salvo até você adicionar os termos."
         },

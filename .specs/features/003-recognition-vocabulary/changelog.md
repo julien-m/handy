@@ -73,3 +73,12 @@
 - **Evidence:** [proofs/claude-hardening/summary.txt](proofs/claude-hardening/summary.txt)
 - **Author:** Claude Code (UI hardening pass)
 
+
+## 2026-10-28 — [Bugfix]: vocabulary limit raised to 5,000 terms, indexed approximate correction (native session N7)
+
+- **Type:** Bugfix
+- **Spec modified:** No — spec-refine 003 à faire : limite 5 000 termes (décision Julien 2026-10-28)
+- **Code modified:** src-tauri/src/recognition_vocabulary/{validation.rs, edits.rs, edits_tests.rs, preview.rs, occurrences.rs}, src-tauri/src/audio_toolkit/{text.rs, custom_word_index.rs (new), custom_word_index_tests.rs (new), custom_words_perf_tests.rs (new)}, src-tauri/src/cli.rs, src-tauri/Cargo.toml (`strsim`, `natural` moved to dev-dependencies), src-tauri/tests/vocabulary_transactions.rs, src/components/settings/vocabulary/{vocabulary-model.ts, vocabulary-terms.tsx, vocabulary-paste-model.ts, vocabulary-limit.test.ts (new)}, package.json (`test:vocabulary`), src/i18n/locales/*/translation.json (26 locales), README.md
+- **AC impacted:** AC-001 (limit 5,000 instead of 500, pending spec-refine), FR-004 (approximate correction about 21 ms per 96-word dictation with 5,000 terms, optimized test profile; 468 ms before)
+- **Summary:** finding N7 of Julien's native proof session of 2026-10-28: Julien's decision to hold 5,000 terms, applied to the service validation, UI count, CLI, messages and README; Whisper still sends only what fits its prompt budget
+- **Author:** Claude Code (claude-opus-5-5)
