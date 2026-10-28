@@ -126,29 +126,71 @@ pub fn run_insertion(
     check: Arc<dyn RequestCheck>,
 ) -> PasteOutcome {
     let _registration = checks.register(request.destination.generation, check);
-    let unknown = synthetic(&request, PasteOutcomeKind::Uncertain);
-    let refused = synthetic(&request, PasteOutcomeKind::InsertionFailed);
+    let identity = RequestIdentity::of(&request);
     let wait = shutdown_allowance(request.paste_delay);
     let Ok(receiver) = submitter.submit(request) else {
-        return refused;
+        return identity.missing_reply(MissingReply::Refused);
     };
     match receiver.recv_timeout(wait) {
         Ok(outcome) => outcome,
-        Err(RecvTimeoutError::Timeout | RecvTimeoutError::Disconnected) => unknown,
+        Err(RecvTimeoutError::Timeout) => identity.missing_reply(MissingReply::TimedOut(wait)),
+        Err(RecvTimeoutError::Disconnected) => identity.missing_reply(MissingReply::Dropped),
     }
 }
 
-fn synthetic(request: &InsertionRequest, kind: PasteOutcomeKind) -> PasteOutcome {
-    log::debug!(
-        "[smart-paste] dictation {}: no actor reply",
-        request.dictation_id.0
-    );
-    PasteOutcome {
-        dictation_id: request.dictation_id,
-        transaction_id: None,
-        destination_generation: request.destination.generation,
-        path: InsertionPath::NotAttempted,
-        kind,
+/// Why `run_insertion` has no outcome from the actor.
+#[derive(Clone, Copy, Debug)]
+enum MissingReply {
+    /// The actor had stopped: the request was never queued.
+    Refused,
+    /// No reply within the allowance.
+    TimedOut(Duration),
+    /// The actor dropped the reply channel.
+    Dropped,
+}
+
+/// What a synthetic outcome keeps of a request handed to the actor.
+#[derive(Clone, Copy)]
+struct RequestIdentity {
+    dictation_id: DictationId,
+    generation: DestinationGeneration,
+}
+
+impl RequestIdentity {
+    fn of(request: &InsertionRequest) -> Self {
+        Self {
+            dictation_id: request.dictation_id,
+            generation: request.destination.generation,
+        }
+    }
+
+    /// Logs the reason and builds the synthetic outcome: a refused request
+    /// inserted nothing, a missing reply cannot tell (see `run_insertion`).
+    /// Logged here only, so a reply that does arrive is never reported as
+    /// missing (N12: the old log ran before the request was even submitted).
+    fn missing_reply(self, reason: MissingReply) -> PasteOutcome {
+        let id = self.dictation_id.0;
+        let kind = match reason {
+            MissingReply::Refused => {
+                log::debug!("[smart-paste] dictation {id}: actor stopped, insertion refused");
+                PasteOutcomeKind::InsertionFailed
+            }
+            MissingReply::TimedOut(wait) => {
+                log::debug!("[smart-paste] dictation {id}: no actor reply within {wait:?}");
+                PasteOutcomeKind::Uncertain
+            }
+            MissingReply::Dropped => {
+                log::debug!("[smart-paste] dictation {id}: no actor reply (reply channel dropped)");
+                PasteOutcomeKind::Uncertain
+            }
+        };
+        PasteOutcome {
+            dictation_id: self.dictation_id,
+            transaction_id: None,
+            destination_generation: self.generation,
+            path: InsertionPath::NotAttempted,
+            kind,
+        }
     }
 }
 
@@ -284,3 +326,7 @@ pub fn insertion_route(rollout: Rollout, has_session: bool, method: PasteMethod)
 #[cfg(test)]
 #[path = "dispatch_tests.rs"]
 mod tests;
+
+#[cfg(test)]
+#[path = "dispatch_log_tests.rs"]
+mod log_tests;
