@@ -1,0 +1,43 @@
+[2026-10-28][18:20:43][handy_app_lib::actions][DEBUG] TranscribeAction::start called for binding: transcribe
+[2026-10-28][18:20:43][handy_app_lib::actions][DEBUG] TranscribeAction::start completed in 71.612459ms
+[2026-10-28][18:21:01][handy_app_lib::actions][DEBUG] TranscribeAction::stop called for binding: transcribe
+[2026-10-28][18:21:01][handy_app_lib::actions][DEBUG] TranscribeAction::stop completed in 1.270167ms
+[2026-10-28][18:21:01][handy_app_lib::automatic_enter::transaction][DEBUG] Automatic Enter of dictation 10: Suppressed(MethodFailed)
+[2026-10-28][18:21:02][handy_app_lib::destination::delivery][ERROR] Transcription not inserted (Some(ActivationFailed)); retained for recovery: true; history: Saved; reason: Unpresentable
+[2026-10-28][18:21:26][handy_app_lib::actions][DEBUG] TranscribeAction::start called for binding: transcribe
+[2026-10-28][18:21:26][handy_app_lib::actions][DEBUG] TranscribeAction::start completed in 87.968375ms
+[2026-10-28][18:21:38][handy_app_lib::destination::field_lifetime][DEBUG] field_return dropped(destination_changed)
+[2026-10-28][18:22:05][handy_app_lib::actions][DEBUG] TranscribeAction::stop called for binding: transcribe
+[2026-10-28][18:22:05][handy_app_lib::actions][DEBUG] TranscribeAction::stop completed in 733.875µs
+[2026-10-28][18:22:06][handy_app_lib::automatic_enter::transaction][DEBUG] Automatic Enter of dictation 11: Suppressed(MethodFailed)
+[2026-10-28][18:22:06][handy_app_lib::destination::delivery][ERROR] Transcription not inserted (Some(ActivationFailed)); retained for recovery: true; history: Saved; reason: Unpresentable
+[2026-10-28][18:22:11][handy_app_lib::actions][DEBUG] TranscribeAction::start called for binding: transcribe
+[2026-10-28][18:22:11][handy_app_lib::actions][DEBUG] TranscribeAction::start completed in 59.421ms
+[2026-10-28][18:22:17][handy_app_lib::actions][DEBUG] TranscribeAction::stop called for binding: transcribe
+[2026-10-28][18:22:17][handy_app_lib::actions][DEBUG] TranscribeAction::stop completed in 4.248292ms
+[2026-10-28][18:22:17][handy_app_lib::automatic_enter::transaction][DEBUG] Automatic Enter of dictation 12: Suppressed(MethodFailed)
+[2026-10-28][18:22:17][handy_app_lib::destination::delivery][ERROR] Transcription not inserted (Some(ActivationFailed)); retained for recovery: true; history: Saved; reason: Unpresentable
+[2026-10-28][18:22:24][handy_app_lib::actions][DEBUG] TranscribeAction::start called for binding: transcribe
+[2026-10-28][18:22:24][handy_app_lib::actions][DEBUG] TranscribeAction::start completed in 65.647625ms
+[2026-10-28][18:22:42][handy_app_lib::actions][DEBUG] TranscribeAction::stop called for binding: transcribe
+[2026-10-28][18:22:42][handy_app_lib::actions][DEBUG] TranscribeAction::stop completed in 1.3395ms
+[2026-10-28][18:22:43][handy_app_lib::automatic_enter::transaction][DEBUG] Automatic Enter of dictation 13: Suppressed(PolicyNever)
+[2026-10-28][18:22:43][handy_app_lib::destination::delivery][DEBUG] Insertion finished as InsertionAttempted in 345.009ms
+[2026-10-28][18:22:46][handy_app_lib::actions][DEBUG] TranscribeAction::start called for binding: transcribe
+[2026-10-28][18:22:46][handy_app_lib::actions][DEBUG] TranscribeAction::start completed in 78.038292ms
+[2026-10-28][18:22:50][handy_app_lib::actions][DEBUG] TranscribeAction::stop called for binding: transcribe
+[2026-10-28][18:22:50][handy_app_lib::actions][DEBUG] TranscribeAction::stop completed in 404.583µs
+[2026-10-28][18:22:50][handy_app_lib::automatic_enter::transaction][DEBUG] Automatic Enter of dictation 14: Suppressed(MethodFailed)
+[2026-10-28][18:22:50][handy_app_lib::destination::delivery][ERROR] Transcription not inserted (Some(ActivationFailed)); retained for recovery: true; history: Saved; reason: Unpresentable
+[2026-10-28][18:22:53][handy_app_lib::actions][DEBUG] TranscribeAction::start called for binding: transcribe
+[2026-10-28][18:22:53][handy_app_lib::actions][DEBUG] TranscribeAction::start completed in 47.043667ms
+[2026-10-28][18:22:56][handy_app_lib::actions][DEBUG] TranscribeAction::stop called for binding: transcribe
+[2026-10-28][18:22:56][handy_app_lib::actions][DEBUG] TranscribeAction::stop completed in 810.958µs
+[2026-10-28][18:22:56][handy_app_lib::automatic_enter::transaction][DEBUG] Automatic Enter of dictation 15: Suppressed(PolicyNever)
+[2026-10-28][18:22:56][handy_app_lib::destination::delivery][DEBUG] Insertion finished as InsertionAttempted in 328.694375ms
+[2026-10-28][18:22:57][handy_app_lib::actions][DEBUG] TranscribeAction::start called for binding: transcribe
+[2026-10-28][18:22:57][handy_app_lib::actions][DEBUG] TranscribeAction::start completed in 42.288834ms
+[2026-10-28][18:23:08][handy_app_lib::actions][DEBUG] TranscribeAction::stop called for binding: transcribe
+[2026-10-28][18:23:08][handy_app_lib::actions][DEBUG] TranscribeAction::stop completed in 1.694375ms
+[2026-10-28][18:23:08][handy_app_lib::automatic_enter::transaction][DEBUG] Automatic Enter of dictation 16: Suppressed(PolicyNever)
+[2026-10-28][18:23:08][handy_app_lib::destination::delivery][DEBUG] Insertion finished as InsertionAttempted in 339.250875ms

@@ -1,0 +1,46 @@
+macOS Version 26.5.2 (Build 25F84)
+AXIsProcessTrusted (inherited from the hosting app): true
+diag isActive: false; initial front: com.anthropic.claudefordesktop; TextEdit launched by diag: false
+
+[3/3] activate(options: []) main thread
+    returned true -> front in 10 ms [AX after: 266ms:pid88551]
+    returned true -> front in 11 ms [AX after: 48ms:pid88551]
+    returned true -> front in 10 ms [AX after: 40ms:pid88551]
+
+[3/3] activate(options: []) background thread
+    returned true -> front in 11 ms [AX after: 262ms:pid88551]
+    returned true -> front in 10 ms [AX after: 43ms:pid88551]
+    returned true -> front in 10 ms [AX after: 53ms:pid88551]
+
+[3/3] activate(options: .activateIgnoringOtherApps) main (deprecated)
+    returned true -> front in 10 ms [AX after: 64ms:pid88551]
+    returned true -> front in 11 ms [AX after: 48ms:pid88551]
+    returned true -> front in 10 ms [AX after: 55ms:pid88551]
+
+[3/3] activate(from: current, options: []) main (macOS 14 API)
+    returned true -> front in 11 ms [AX after: 33ms:pid88551]
+    returned true -> front in 10 ms [AX after: 47ms:pid88551]
+    returned true -> front in 10 ms [AX after: 73ms:pid88551]
+
+[3/3] NSApp.yieldActivation(to:) + activate() main
+    returned true -> front in 11 ms [AX after: 47ms:pid88551]
+    returned true -> front in 10 ms [AX after: 59ms:pid88551]
+    returned true -> front in 10 ms [AX after: 47ms:pid88551]
+
+[3/3] AX kAXFrontmostAttribute=true main thread
+    AXError 0 -> front in 10 ms [AX after: 54ms:pid88551]
+    AXError 0 -> front in 10 ms [AX after: 32ms:pid88551]
+    AXError 0 -> front in 11 ms [AX after: 80ms:pid88551]
+
+[3/3] AX kAXFrontmostAttribute=true background thread
+    AXError 0 -> front in 11 ms [AX after: 61ms:pid88551]
+    AXError 0 -> front in 10 ms [AX after: 46ms:pid88551]
+    AXError 0 -> front in 10 ms [AX after: 89ms:pid88551]
+
+[0/3] AXRaise first window only
+    AXError 0 -> NOT front after 1 s, front=com.apple.finder [AX after: 22ms:pid75551]
+    AXError 0 -> NOT front after 1 s, front=com.apple.finder [AX after: 0ms:pid75551]
+    AXError 0 -> NOT front after 1 s, front=com.apple.finder [AX after: 0ms:pid75551]
+
+target pid: 88551
+restored front: com.anthropic.claudefordesktop

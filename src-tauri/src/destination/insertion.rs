@@ -1,8 +1,11 @@
 //! Insertion orchestrator (worker thread): freeze the destination, skip activation for paste
-//! method "none", resolve the chosen application, request activation once, wait for it in front
-//! for at most 1 s by bounded sampling (never on the main thread), then hand the existing
-//! insertion method a `DispatchGuard` it calls after its configured delay. A failed destination
-//! never falls back to another application and is never retried.
+//! method "none", resolve the chosen application, run the activation chain (`activation`: the
+//! workspace request, then the accessibility request when the first is declined or has not
+//! brought it forward) while waiting for it in front for at most 1 s in all by bounded sampling
+//! (never on the main thread), then hand the existing insertion method a `DispatchGuard` it
+//! calls after its configured delay. A failed destination never falls back to another
+//! application and its guard is never retried.
+use super::activation::{ActivationChain, ActivationStrategy, ChainStep};
 use super::context::{
     ApplicationIdentity, DestinationContext, DestinationSource, RecoveryDisposition, RecoveryPort,
 };
@@ -131,7 +134,8 @@ impl Orchestrator {
             .map_err(|_| cancelled)
     }
     // @spec FR-004: No fallback when the destination is unavailable — .specs/features/006-destination-application/spec.md#fr-004
-    /// Resolve, request once, and wait for the destination in front within the deadline.
+    /// Resolve, run the activation chain, and wait for the destination in front within the
+    /// deadline.
     fn activate(
         &self,
         frozen: &FrozenDestination,
@@ -140,13 +144,16 @@ impl Orchestrator {
     ) -> Result<RunningApp, InsertionReport> {
         let app = self.resolve(destination)?;
         let started = self.clock.now();
-        let refused = !self.in_front(&app)
-            && self.manager.workspace.activate_once(&app) == ActivationRequest::Refused;
-        let waited = if refused {
-            WaitResult::TimedOut
-        } else {
-            self.wait_in_front(&app, started, cancelled)
-        };
+        let mut chain = ActivationChain::default();
+        let waited = self.wait_in_front(&app, started, cancelled, &mut chain);
+        if !chain.attempts().is_empty() {
+            // No identity or title: the strategies, the system's answers and their times only.
+            log::debug!(
+                "Destination activation {waited:?} after {:?}: {:?}",
+                self.clock.now().saturating_duration_since(started),
+                chain.attempts()
+            );
+        }
         match waited {
             WaitResult::InFront => Ok(app),
             WaitResult::Cancelled => Err(InsertionReport::ended(
@@ -172,11 +179,14 @@ impl Orchestrator {
     }
     /// Sample the foreground until `app` is in front, the dictation is cancelled, or more than
     /// `ACTIVATION_DEADLINE` has elapsed since `started` (an observation at exactly 1 s counts).
+    /// Between samples the chain sends its due requests; an application already in front gets
+    /// none, and a chain whose every request was declined ends the wait at once.
     fn wait_in_front(
         &self,
         app: &RunningApp,
         started: std::time::Instant,
         cancelled: &dyn Fn() -> bool,
+        chain: &mut ActivationChain,
     ) -> WaitResult {
         loop {
             if cancelled() {
@@ -190,8 +200,37 @@ impl Orchestrator {
             if elapsed >= ACTIVATION_DEADLINE {
                 return WaitResult::TimedOut;
             }
-            self.pause
-                .pause(SAMPLE_PERIOD.min(ACTIVATION_DEADLINE - elapsed));
+            if let Some(ended) = self.advance(app, chain, elapsed) {
+                return ended;
+            }
+        }
+    }
+    /// One step of the chain between two foreground samples: send the due request, or pause
+    /// until the next sample; `Some` ends the wait.
+    fn advance(
+        &self,
+        app: &RunningApp,
+        chain: &mut ActivationChain,
+        elapsed: Duration,
+    ) -> Option<WaitResult> {
+        match chain.step(elapsed) {
+            ChainStep::Request(strategy) => {
+                chain.record(strategy, self.request(app, strategy), elapsed);
+            }
+            // Nothing was accepted: no request is pending that could bring `app` forward.
+            ChainStep::Exhausted => return Some(WaitResult::TimedOut),
+            ChainStep::Wait => self
+                .pause
+                .pause(SAMPLE_PERIOD.min(ACTIVATION_DEADLINE - elapsed)),
+        }
+        None
+    }
+    /// One request of `strategy` for `app` (never another application).
+    fn request(&self, app: &RunningApp, strategy: ActivationStrategy) -> ActivationRequest {
+        let workspace = &self.manager.workspace;
+        match strategy {
+            ActivationStrategy::Workspace => workspace.activate_once(app),
+            ActivationStrategy::Accessibility => workspace.activate_by_accessibility(app),
         }
     }
     /// A destination or method failure: the disposition becomes `Recover` (or `Cancelled`).
@@ -288,6 +327,7 @@ fn refusal_report(refusal: GuardRefusal, source: DestinationSource) -> Insertion
     }
 }
 
+#[derive(Debug)]
 enum WaitResult {
     InFront,
     Cancelled,

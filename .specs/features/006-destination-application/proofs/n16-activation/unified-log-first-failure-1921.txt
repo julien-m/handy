@@ -1,0 +1,6 @@
+2026-10-28 19:21:01.594 E  handy[92705:2529de5] [com.apple.AppKit:Window] Warning: -[NSWindow makeKeyWindow] called on <RecordingOverlayPanel: 0xcae0ab980> windowNumber=12ff which returned NO from -[NSWindow canBecomeKeyWindow].
+2026-10-28 19:21:01.621 Df handy[92705:254dac6] [com.apple.coreaudio:as_client] SessionCore_macOS_Legacy.mm:131   --> setPlayState Stopped  Input {B8-84-11-32-03-77:input, 0x26}
+2026-10-28 19:21:01.628 Df handy[92705:254da44] [com.apple.coreaudio:as_client] SessionCore_macOS_Legacy.mm:131   --> setPlayState Stopped  Input {B8-84-11-32-03-77:input, 0x26}
+2026-10-28 19:21:01.909 E  handy[92705:2529de5] [com.apple.os_debug_log:] assertion failed: 25F84: libxpc.dylib + 101956 [C40FCAE8-7A17-3D82-87CB-3DA4802ADEF1]: 0x7d
+2026-10-28 19:21:01.911 Df handy[92705:2529de5] [com.apple.processmanager:front-35286506] PostHideProcess: pid=92705 processToShow=0x0-0x2 (ourselves)
+2026-10-28 19:21:01.923 E  handy[92705:2529de5] [com.apple.AppKit:Window] Warning: -[NSWindow makeKeyWindow] called on <TaoWindow: 0xcadac5e00> windowNumber=1339 which returned NO from -[NSWindow canBecomeKeyWindow].

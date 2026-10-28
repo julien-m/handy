@@ -176,3 +176,14 @@
 - **Why:** hardening review: functions over 30 lines and a test file over 400 lines.
 - **Tests:** test:indicator, test:output-settings; [proofs](proofs/claude-hardening-fix1/summary.txt)
 - **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-28 — [Bugfix]: Return to the dictation's app declined by macOS (native session N16)
+
+- **Type:** Bugfix
+- **Spec modified:** No (plan "Activation and insertion threading" and the local contract record the activation chain as a deviation)
+- **Code modified:** src-tauri/src/destination/activation.rs (new), insertion.rs, workspace.rs, macos.rs, macos_focus.rs, mod.rs, insertion_tests.rs, insertion_chain_cases.rs (new)
+- **AC impacted:** AC-002, AC-005 (FR-002, FR-004)
+- **Why:** a dictation started in Claude and stopped in another app was never inserted (`ActivationFailed`). The unified log shows no front switch to the destination and the failure within about 0.1 s of the transcript, not after the 1 s wait: `activateWithOptions:` answered NO and `Orchestrator::activate` turned that refusal into `activation_failed` at once. macOS 14+ cooperative activation declines this request from a background accessory app after a manual switch; a local diagnostic got it accepted after programmatic switches only.
+- **Fix:** an activation chain inside the same 1 s deadline: the workspace request, then `AXFrontmost` on the destination's application element when the first is declined or 300 ms after it was accepted without the destination in front; every request declined still fails at once. Same resolved instance only, no launch, guard unchanged; a debug log records each strategy, its answer and time.
+- **Tests:** destination::activation (5), destination::insertion::tests::chain_cases (7); [proofs](proofs/n16-activation/)
+- **Author:** Claude Code (claude-opus-5-5)

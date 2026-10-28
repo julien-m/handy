@@ -5,6 +5,8 @@
 
 ---
 
+## 2026-10-28 — [Feature 006] Bugfix N16: a declined return to the dictation's app falls back to the accessibility activation request within the same 1 s
+
 ## 2026-10-28 — [Feature 010] Bugfix N17: the recovery bubble is shown again (the panel stayed unregistered after `to_window`, `PanelNotFound`); a failed insertion without bubble is a notice of the recording indicator (toast only with the overlay style none)
 
 ## 2026-10-28 — [Feature 007] Bugfix N12: smart paste no longer aborts with CFRelease(NULL) when ABC/US cannot be selected; truthful "no actor reply" log

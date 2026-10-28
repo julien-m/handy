@@ -1,7 +1,8 @@
 //! Real orchestrator, manager and guard over fake workspace, clock and insertion method: the
 //! captured app is activated before dispatch, closed/late/lost destinations insert nothing and
 //! are never retried, the 1 s deadline boundaries, the preserved insertion delay, paste method
-//! "none", destination return off, cancellation and the 010 recovery verdict.
+//! "none", destination return off, cancellation, the 010 recovery verdict and the activation
+//! chain (N16: declined or ineffective workspace request, accessibility fallback).
 use super::*;
 use crate::destination::context::{DestinationContext, PreInsertionVerdict, RecoveryReason};
 use crate::destination::fake_workspace::{app, FakeClock, FakeWorkspace};
@@ -14,12 +15,27 @@ type TestResult = Result<(), Box<dyn std::error::Error>>;
 
 /// Workspace whose activation brings the target in front `delay` after the request; `live`,
 /// when set, is what the live read sees while the cached `frontmost` still shows the old app.
+/// `workspace_answer` is the system's answer to the workspace request (a declined one brings
+/// nothing forward); `accessibility` is the delay after which an accessibility request brings
+/// the target in front (`None`: that request is declined), and `accessibility_at` records when
+/// each one was sent.
 struct ScheduledWorkspace {
     inner: FakeWorkspace,
     clock: Arc<FakeClock>,
     delay: Option<Duration>,
     front_at: Mutex<Option<(std::time::Instant, RunningApp)>>,
     live: Mutex<Option<Foreground>>,
+    workspace_answer: Mutex<ActivationRequest>,
+    accessibility: Mutex<Option<Duration>>,
+    accessibility_at: Mutex<Vec<std::time::Instant>>,
+}
+impl ScheduledWorkspace {
+    /// `target` comes in front `delay` after now (`None`: never).
+    fn schedule(&self, target: &RunningApp, delay: Option<Duration>) {
+        if let (Some(delay), Ok(mut at)) = (delay, self.front_at.lock()) {
+            *at = Some((self.clock.now() + delay, target.clone()));
+        }
+    }
 }
 impl WorkspacePort for ScheduledWorkspace {
     fn frontmost_now(&self) -> Foreground {
@@ -45,10 +61,31 @@ impl WorkspacePort for ScheduledWorkspace {
             .lock()
             .map(|mut list| list.push(target.pid))
             .ok();
-        if let (Some(delay), Ok(mut at)) = (self.delay, self.front_at.lock()) {
-            *at = Some((self.clock.now() + delay, target.clone()));
+        let answer = *self
+            .workspace_answer
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        if answer == ActivationRequest::Sent {
+            self.schedule(target, self.delay);
         }
-        ActivationRequest::Sent
+        answer
+    }
+    fn activate_by_accessibility(&self, target: &RunningApp) -> ActivationRequest {
+        self.accessibility_at
+            .lock()
+            .map(|mut list| list.push(self.clock.now()))
+            .ok();
+        let accessibility = *self
+            .accessibility
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        match accessibility {
+            Some(delay) => {
+                self.schedule(target, Some(delay));
+                ActivationRequest::Sent
+            }
+            None => ActivationRequest::Refused,
+        }
     }
 }
 /// Insertion method double: runs `during_delay`, then the guard, and records each dispatch.
@@ -120,6 +157,9 @@ fn scheduled_workspace(clock: Arc<FakeClock>, delay: Option<Duration>) -> Schedu
         delay,
         front_at: Mutex::new(None),
         live: Mutex::new(None),
+        workspace_answer: Mutex::new(ActivationRequest::Sent),
+        accessibility: Mutex::new(None),
+        accessibility_at: Mutex::new(Vec::new()),
     }
 }
 fn fixture(delay: Option<Duration>, recovery: Arc<dyn RecoveryPort>) -> Fixture {
@@ -191,3 +231,5 @@ fn disposition(fixture: &Fixture) -> Option<RecoveryDisposition> {
 
 #[path = "insertion_cases.rs"]
 mod cases;
+#[path = "insertion_chain_cases.rs"]
+mod chain_cases;
