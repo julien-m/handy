@@ -5,6 +5,8 @@
 
 ---
 
+## 2026-10-28 — [Feature 007] Bugfix N12: smart paste no longer aborts with CFRelease(NULL) when ABC/US cannot be selected; truthful "no actor reply" log
+
 ## 2026-10-28 — [Bugfix, onboarding] Permission checks run one at a time (native session N10, review)
 
 The polling, Try again, the page `focus` event and the Tauri window focus event share one permission check at a time (`checkInFlightRef`), so a failure is counted once; the onboarding completes once and its completion timer is the only one, cleared on unmount. Code: `src/components/onboarding/AccessibilityOnboarding.tsx`; test: `tests/accessibility-onboarding.spec.ts` (overlapping checks: one check, one completion), which fails on the previous code.

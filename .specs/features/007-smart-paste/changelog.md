@@ -220,3 +220,14 @@ AppKit caching and delayed AX mutation counterexamples remain explicit: callback
 - **Why:** hardening review: the indicator test file exceeded 400 lines.
 - **Tests:** test:indicator; [proofs](proofs/claude-hardening-fix1/summary.txt)
 - **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-28 — [Bugfix]: Smart paste crash on a layout switch that cannot be selected (N12)
+
+- **Type:** Bugfix
+- **Spec modified:** No (AC-011 already requires Cmd+V without switching when neither ABC nor US can be selected)
+- **Code modified:** src-tauri/src/smart_paste/macos_cf.rs (`CfOwned` non-null by construction), src-tauri/src/smart_paste/dispatch.rs (missing-reply log), src-tauri/src/smart_paste/dispatch_log_tests.rs (new)
+- **AC impacted:** AC-011 (fallback now reachable), AC-012 (diagnostic only)
+- **Why:** `CfOwned::from_create_rule` built `Self(NULL)` eagerly through `then_some` and dropped it, calling `CFRelease(NULL)`; with only the French layout enabled, `TISCreateInputSourceList` returns NULL for ABC, which aborted Handy on the main thread. The `no actor reply` log was emitted before every submit.
+- **Tests:** macos_cf null/owned tests, dispatch log tests (fail before the fix); [proofs](proofs/n12-fix/summary.md)
+- **Author:** Claude Code (claude-opus-5-5)
+

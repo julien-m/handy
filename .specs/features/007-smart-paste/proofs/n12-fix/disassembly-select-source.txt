@@ -1,0 +1,89 @@
+# Binary: /Users/julienm/handy-tests/handy-all-gates.app/Contents/MacOS/handy (UUID 93817908-B789-3BBF-B942-518A865BCAC6, sha256 9aa82f8e…, matches crash-cfrelease-null.ips)
+# Command: objdump --macho -d --no-show-raw-insn <binary>, range 0x1002ed410-0x1002ed550 (= select_source_on_main inlined into its main-thread job)
+# Crash frames (image offsets): 0x2ed514 <- 0x2edf98 <- 0x2a7ef4 <- _dispatch_client_callout
+# 0x1002edf94: bl 0x1002ed410 (return address 0x2edf98 = frame 2)
+1002edf90:	add	x0, x19, #0x10
+1002edf94:	bl	0x1002ed410
+1002edf98:	mov	x20, x0
+
+1002ed410:	sub	sp, sp, #0x70
+1002ed414:	stp	x24, x23, [sp, #0x30]
+1002ed418:	stp	x22, x21, [sp, #0x40]
+1002ed41c:	stp	x20, x19, [sp, #0x50]
+1002ed420:	stp	x29, x30, [sp, #0x60]
+1002ed424:	add	x29, sp, #0x60
+1002ed428:	mov	x20, x0
+1002ed42c:	ldp	x19, x8, [x0, #0x8]
+1002ed430:	add	x8, x19, x8
+1002ed434:	stp	x19, x8, [sp, #0x18]
+1002ed438:	strh	wzr, [sp, #0x28]
+1002ed43c:	mov	x0, sp
+1002ed440:	add	x1, sp, #0x18
+1002ed444:	bl	0x100155650
+1002ed448:	ldp	x22, x2, [sp, #0x8]
+1002ed44c:	mov	x0, #0x0
+1002ed450:	mov	x1, x22
+1002ed454:	bl	0x101f0985c ; symbol stub for: _CFStringCreateWithCharacters
+1002ed458:	mov	x21, x0
+1002ed45c:	cbnz	x0, 0x1002ed464
+1002ed460:	bl	0x101f09778 ; symbol stub for: _CFRelease
+1002ed464:	ldr	x8, [sp]
+1002ed468:	cbz	x8, 0x1002ed474
+1002ed46c:	mov	x0, x22
+1002ed470:	bl	0x101f0ac9c ; symbol stub for: _free
+1002ed474:	cbz	x21, 0x1002ed4f8
+1002ed478:	adrp	x8, 9379 ; 0x102790000
+1002ed47c:	ldr	x8, [x8, #0x50] ; literal pool symbol address: _kTISPropertyInputSourceID
+1002ed480:	ldr	x8, [x8]
+1002ed484:	str	x8, [sp]
+1002ed488:	str	x21, [sp, #0x18]
+1002ed48c:	adrp	x4, 9379 ; 0x102790000
+1002ed490:	ldr	x4, [x4, #0x40] ; literal pool symbol address: _kCFTypeDictionaryKeyCallBacks
+1002ed494:	adrp	x5, 9379 ; 0x102790000
+1002ed498:	ldr	x5, [x5, #0x48] ; literal pool symbol address: _kCFTypeDictionaryValueCallBacks
+1002ed49c:	mov	w22, #0x1
+1002ed4a0:	mov	x1, sp
+1002ed4a4:	add	x2, sp, #0x18
+1002ed4a8:	mov	x0, #0x0
+1002ed4ac:	mov	w3, #0x1
+1002ed4b0:	bl	0x101f096e8 ; symbol stub for: _CFDictionaryCreate
+1002ed4b4:	cbz	x0, 0x1002ed518
+1002ed4b8:	mov	x24, x0
+1002ed4bc:	mov	w1, #0x0
+1002ed4c0:	bl	0x101f09d24 ; symbol stub for: _TISCreateInputSourceList
+1002ed4c4:	mov	x23, x0
+1002ed4c8:	cbz	x0, 0x1002ed508
+1002ed4cc:	mov	x0, x23
+1002ed4d0:	bl	0x101f096a0 ; symbol stub for: _CFArrayGetCount
+1002ed4d4:	cbz	x0, 0x1002ed508
+1002ed4d8:	mov	x0, x23
+1002ed4dc:	mov	x1, #0x0
+1002ed4e0:	bl	0x101f096ac ; symbol stub for: _CFArrayGetValueAtIndex
+1002ed4e4:	bl	0x101f09d3c ; symbol stub for: _TISSelectInputSource
+1002ed4e8:	cmp	w0, #0x0
+1002ed4ec:	mov	w8, #0x4
+1002ed4f0:	csinc	w22, w8, wzr, eq
+1002ed4f4:	b	0x1002ed50c
+1002ed4f8:	mov	w22, #0x1
+1002ed4fc:	ldr	x8, [x20]
+1002ed500:	cbnz	x8, 0x1002ed52c
+1002ed504:	b	0x1002ed534
+1002ed508:	mov	w22, #0x1
+1002ed50c:	mov	x0, x23
+1002ed510:	bl	0x101f09778 ; symbol stub for: _CFRelease
+1002ed514:	mov	x0, x24
+1002ed518:	bl	0x101f09778 ; symbol stub for: _CFRelease
+1002ed51c:	mov	x0, x21
+1002ed520:	bl	0x101f09778 ; symbol stub for: _CFRelease
+1002ed524:	ldr	x8, [x20]
+1002ed528:	cbz	x8, 0x1002ed534
+1002ed52c:	mov	x0, x19
+1002ed530:	bl	0x101f0ac9c ; symbol stub for: _free
+1002ed534:	mov	x0, x22
+1002ed538:	ldp	x29, x30, [sp, #0x60]
+1002ed53c:	ldp	x20, x19, [sp, #0x50]
+1002ed540:	ldp	x22, x21, [sp, #0x40]
+1002ed544:	ldp	x24, x23, [sp, #0x30]
+1002ed548:	add	sp, sp, #0x70
+1002ed54c:	ret
+1002ed550:	mov	x21, x0

@@ -2,7 +2,7 @@
 //! macOS smart-paste adapters (accessibility and Text Input Sources).
 
 use std::ffi::c_void;
-use std::ptr;
+use std::ptr::{self, NonNull};
 
 /// Untyped CoreFoundation reference.
 pub(crate) type CfTypeRef = *const c_void;
@@ -31,8 +31,9 @@ unsafe extern "C" {
     ) -> CfTypeRef;
 }
 
-/// Owned (+1) CoreFoundation reference, released on drop.
-pub(crate) struct CfOwned(CfTypeRef);
+/// Owned (+1) CoreFoundation reference, released on drop. Never null, so
+/// dropping it can never call `CFRelease(NULL)` (a process abort).
+pub(crate) struct CfOwned(NonNull<c_void>);
 
 // SAFETY: CoreFoundation retain/release are thread-safe; AX elements may be
 // messaged from any thread and other references are only used by their
@@ -41,8 +42,11 @@ unsafe impl Send for CfOwned {}
 
 impl CfOwned {
     /// Takes ownership of a reference obtained under the Create/Copy Rule.
+    /// A null result (nothing created or copied) is `None`.
     pub(crate) fn from_create_rule(reference: CfTypeRef) -> Option<Self> {
-        (!reference.is_null()).then_some(Self(reference))
+        // Built only from a non-null reference: an eager `then_some(Self(..))`
+        // dropped the unused null value and called `CFRelease(NULL)` (N12).
+        NonNull::new(reference.cast_mut()).map(Self)
     }
 
     /// Creates a CFString from UTF-16 code units.
@@ -61,15 +65,15 @@ impl CfOwned {
 
     /// Borrowed raw reference, valid while `self` lives.
     pub(crate) fn as_ptr(&self) -> CfTypeRef {
-        self.0
+        self.0.as_ptr().cast_const()
     }
 }
 
 impl Drop for CfOwned {
     fn drop(&mut self) {
-        // SAFETY: the reference was obtained under the Create/Copy Rule and
-        // is released exactly once here.
-        unsafe { CFRelease(self.0) };
+        // SAFETY: the non-null reference was obtained under the Create/Copy
+        // Rule and is released exactly once here.
+        unsafe { CFRelease(self.as_ptr()) };
     }
 }
 
@@ -109,4 +113,25 @@ pub(crate) fn string_units(value: CfTypeRef, max_units: usize) -> Result<Vec<u16
 pub(crate) fn type_id(value: CfTypeRef) -> usize {
     // SAFETY: callers pass live CF objects.
     unsafe { CFGetTypeID(value) }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn a_null_create_rule_result_is_none_and_never_released() {
+        // N12: TISCreateInputSourceList returns NULL when the requested
+        // layout is not enabled; adopting that NULL must not reach CFRelease.
+        assert!(CfOwned::from_create_rule(ptr::null()).is_none());
+    }
+
+    #[test]
+    fn an_owned_string_is_readable_and_released_once() {
+        let owned = CfOwned::from_text("Handy");
+        let text = owned.as_ref().map(|owned| {
+            string_units(owned.as_ptr(), 16).map(|units| String::from_utf16_lossy(&units))
+        });
+        assert_eq!(text, Some(Ok("Handy".to_string())));
+    }
 }
