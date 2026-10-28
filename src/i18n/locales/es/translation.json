@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Acceso de accesibilidad",
-        "description": "Necesario para escribir el texto transcrito en tus aplicaciones."
+        "description": "Necesario para escribir el texto transcrito en tus aplicaciones.",
+        "openSettings": "Abrir Ajustes del Sistema",
+        "retry": "Reintentar",
+        "alreadyCheckedHint": "Si Handy ya está marcado, quítalo y vuelve a añadirlo."
       },
       "grant": "Conceder permiso",
       "granted": "Concedido",

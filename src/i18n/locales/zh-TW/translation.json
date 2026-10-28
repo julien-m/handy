@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "輔助使用存取",
-        "description": "需要將轉錄文字輸入到您的應用程式中"
+        "description": "需要將轉錄文字輸入到您的應用程式中",
+        "openSettings": "打開系統設定",
+        "retry": "重試",
+        "alreadyCheckedHint": "如果 Handy 已勾選，請將其移除後重新加入。"
       },
       "grant": "授予權限",
       "granted": "已授予",

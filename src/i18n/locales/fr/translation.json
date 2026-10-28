@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Accès à l'accessibilité",
-        "description": "Nécessaire pour taper le texte transcrit dans vos applications."
+        "description": "Nécessaire pour taper le texte transcrit dans vos applications.",
+        "openSettings": "Ouvrir les Réglages Système",
+        "retry": "Réessayer",
+        "alreadyCheckedHint": "Si Handy est déjà coché, retirez-le puis ajoutez-le de nouveau."
       },
       "grant": "Accorder l'autorisation",
       "granted": "Accordé",

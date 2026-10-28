@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Tilgængelighedsadgang",
-        "description": "Påkrævet for at skrive den transskriberede tekst ind i dine programmer."
+        "description": "Påkrævet for at skrive den transskriberede tekst ind i dine programmer.",
+        "openSettings": "Åbn Systemindstillinger",
+        "retry": "Prøv igen",
+        "alreadyCheckedHint": "Hvis Handy allerede er markeret, så fjern den og tilføj den igen."
       },
       "grant": "Giv tilladelse",
       "granted": "Givet",

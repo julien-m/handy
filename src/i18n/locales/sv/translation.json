@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Hjälpmedelsåtkomst",
-        "description": "Krävs för att skriva transkriberad text i dina program."
+        "description": "Krävs för att skriva transkriberad text i dina program.",
+        "openSettings": "Öppna Systeminställningar",
+        "retry": "Försök igen",
+        "alreadyCheckedHint": "Om Handy redan är markerad tar du bort den och lägger till den igen."
       },
       "grant": "Bevilja behörighet",
       "granted": "Beviljad",

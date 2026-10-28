@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Accessibility Access",
-        "description": "Required to type transcribed text into your applications."
+        "description": "Required to type transcribed text into your applications.",
+        "openSettings": "Open System Settings",
+        "retry": "Try again",
+        "alreadyCheckedHint": "If Handy is already checked, remove it, then add it again."
       },
       "grant": "Grant Permission",
       "granted": "Granted",

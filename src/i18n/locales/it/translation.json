@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Accesso all'Accessibilità",
-        "description": "Necessario per digitare il testo trascritto nelle tue applicazioni."
+        "description": "Necessario per digitare il testo trascritto nelle tue applicazioni.",
+        "openSettings": "Apri Impostazioni di Sistema",
+        "retry": "Riprova",
+        "alreadyCheckedHint": "Se Handy è già selezionato, rimuovilo e aggiungilo di nuovo."
       },
       "grant": "Concedi Permesso",
       "granted": "Concesso",

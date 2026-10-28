@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Izin Aksesibilitas",
-        "description": "Diperlukan untuk mengetik teks hasil transkripsi ke aplikasi Anda."
+        "description": "Diperlukan untuk mengetik teks hasil transkripsi ke aplikasi Anda.",
+        "openSettings": "Buka Pengaturan Sistem",
+        "retry": "Coba lagi",
+        "alreadyCheckedHint": "Jika Handy sudah dicentang, hapus lalu tambahkan lagi."
       },
       "grant": "Berikan Izin",
       "granted": "Diizinkan",

@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Dostęp do dostępności",
-        "description": "Wymagany do wpisywania transkrybowanego tekstu w Twoich aplikacjach."
+        "description": "Wymagany do wpisywania transkrybowanego tekstu w Twoich aplikacjach.",
+        "openSettings": "Otwórz Ustawienia systemowe",
+        "retry": "Spróbuj ponownie",
+        "alreadyCheckedHint": "Jeśli Handy jest już zaznaczony, usuń go, a następnie dodaj ponownie."
       },
       "grant": "Przyznaj uprawnienie",
       "granted": "Przyznano",

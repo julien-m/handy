@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Přístup k usnadnění",
-        "description": "Potřebný pro psaní přepsaného textu do vašich aplikací."
+        "description": "Potřebný pro psaní přepsaného textu do vašich aplikací.",
+        "openSettings": "Otevřít Nastavení systému",
+        "retry": "Zkusit znovu",
+        "alreadyCheckedHint": "Pokud je Handy už zaškrtnutý, odeberte ho a pak ho přidejte znovu."
       },
       "grant": "Udělit oprávnění",
       "granted": "Uděleno",

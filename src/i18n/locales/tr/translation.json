@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Erişilebilirlik Erişimi",
-        "description": "Transkribe edilen metni uygulamalarınıza yazabilmek için gereklidir."
+        "description": "Transkribe edilen metni uygulamalarınıza yazabilmek için gereklidir.",
+        "openSettings": "Sistem Ayarları'nı aç",
+        "retry": "Tekrar dene",
+        "alreadyCheckedHint": "Handy zaten işaretliyse kaldırın ve yeniden ekleyin."
       },
       "grant": "İzin Ver",
       "granted": "Verildi",

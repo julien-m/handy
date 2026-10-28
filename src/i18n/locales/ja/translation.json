@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "アクセシビリティへのアクセス",
-        "description": "アプリに文字起こししたテキストを入力するために必要です。"
+        "description": "アプリに文字起こししたテキストを入力するために必要です。",
+        "openSettings": "システム設定を開く",
+        "retry": "再試行",
+        "alreadyCheckedHint": "Handy にすでにチェックが入っている場合は、削除してからもう一度追加してください。"
       },
       "grant": "権限を許可",
       "granted": "許可済み",

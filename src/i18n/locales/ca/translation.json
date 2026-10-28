@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Accés a l'accessibilitat",
-        "description": "Necessari per escriure el text transcrit a les aplicacions."
+        "description": "Necessari per escriure el text transcrit a les aplicacions.",
+        "openSettings": "Obre la Configuració del Sistema",
+        "retry": "Torna-ho a provar",
+        "alreadyCheckedHint": "Si Handy ja està marcat, elimineu-lo i torneu-lo a afegir."
       },
       "grant": "Concediu el permís",
       "granted": "Concedit",
