@@ -143,3 +143,12 @@
 - **Author:** Claude Code (UI hardening pass)
 - Key typed for one provider never saved for another; "Set the endpoint" no longer clears the custom model from the editor (the API group keeps its pre-005 reset); "Fix the highlighted fields" only when a field is highlighted; an empty-string `Alert` action counts as absent. Proofs: [summary](proofs/claude-hardening/summary.txt).
 
+
+## 2026-10-28 — [Bugfix]: Lost keyboard focus goes to the editor title (native session N5)
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** src/components/settings/post-processing/prompt-editor.tsx
+- **AC impacted:** none (keyboard focus)
+- **Why:** native session of 2026-10-28, finding N5 (seen in 002, same pattern checked here); N8 checked: the prompt shortcuts have no draft.
+- **Author:** Claude Code (claude-opus-5-5)

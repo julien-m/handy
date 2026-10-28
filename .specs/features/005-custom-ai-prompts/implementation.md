@@ -72,3 +72,7 @@ Decisions of Julien of 2026-10-17 (inventory 005-09, 005-11 and D1 for 005-12). 
 - **AI notice text (005-09):** verified unchanged, `overlay.fallbackNotice` is already « AI processing failed. The original text was used. »; nothing changed.
 - **Tests:** `prompt-settings-render.test.tsx` (both instance ids).
 - **D1 — indicator prompt menu (005-12):** while the prompt menu is open, the bar, the pill, the prompt, its shortcut and the destination badge carry `recording-indicator-prompt-menu-…` (screen chosen by [indicator-screen](../../../src/overlay/indicator-screen.ts)); details in the 006 and 009 implementation notes. Test: `indicator-render.test.tsx`.
+
+## Native session fixes (2026-10-28, branch `fix/native-session-ui`)
+
+- **N5 (keyboard focus, checked in 005).** The list already gives the focus back to the button of the closed editor; [the editor](../../../src/components/settings/post-processing/prompt-editor.tsx) now uses `useFocusRescue` of [focus-return](../../../src/components/ui/focus-return.ts) with its group title as the stable point, for a focus lost while the editor stays open. The prompt shortcuts ([editor](../../../src/components/settings/shortcut-list-editor.tsx)) add a capture at once, without the draft of 004, so N8 does not apply to them.

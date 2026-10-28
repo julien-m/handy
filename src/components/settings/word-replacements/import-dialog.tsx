@@ -21,14 +21,22 @@ import { CommitFailureNote } from "./commit-failure-note";
 
 const DIALOG_ID = `${SCREEN_IDS.import}-dialog`;
 
-export const ImportScreen: React.FC = () => {
+interface ImportScreenProps {
+  /** Takes the focus when the dialog closes and its trigger is gone (native session N5). */
+  returnFocusRef: React.RefObject<HTMLElement | null>;
+}
+
+/** The refused-file alert, shown under the section title (N6), and the import dialog. */
+export const ImportScreen: React.FC<ImportScreenProps> = ({
+  returnFocusRef,
+}) => {
   const refusal = useReplacementFiles((state) => state.refusal);
   const open = useReplacementFiles((state) => state.file !== null);
   if (refusal === null && !open) return null;
   return (
     <div data-testid={`${SCREEN_IDS.import}-screen`}>
       <ImportRefusalAlert />
-      <ImportDialog />
+      <ImportDialog returnFocusRef={returnFocusRef} />
     </div>
   );
 };
@@ -79,7 +87,7 @@ const DismissRefusalButton: React.FC = () => {
   );
 };
 
-const ImportDialog: React.FC = () => {
+const ImportDialog: React.FC<ImportScreenProps> = ({ returnFocusRef }) => {
   const { t } = useTranslation();
   const file = useReplacementFiles((state) => state.file);
   const busy = useReplacementFiles((state) => state.phase === "applying");
@@ -94,6 +102,7 @@ const ImportDialog: React.FC = () => {
       }}
       footer={<ImportActions />}
       testId={DIALOG_ID}
+      returnFocusRef={returnFocusRef}
     >
       <div className="space-y-4">
         {file && (

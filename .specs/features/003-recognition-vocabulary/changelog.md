@@ -73,3 +73,12 @@
 - **Evidence:** [proofs/claude-hardening/summary.txt](proofs/claude-hardening/summary.txt)
 - **Author:** Claude Code (UI hardening pass)
 
+
+## 2026-10-28 — [Bugfix]: Lost keyboard focus goes to the section title (native session N5)
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** src/components/settings/CustomWords.tsx
+- **AC impacted:** none (keyboard focus)
+- **Why:** native session of 2026-10-28, finding N5 (seen in 002, same pattern checked here).
+- **Author:** Claude Code (claude-opus-5-5)

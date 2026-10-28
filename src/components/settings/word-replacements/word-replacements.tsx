@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Button } from "../../ui/Button";
 import { SettingsGroup } from "../../ui/SettingsGroup";
+import { useFocusRescue } from "../../ui/focus-return";
 import {
   type EditorView,
   isListDirty,
@@ -35,15 +36,21 @@ export const WordReplacements: React.FC = () => {
   const view = useReplacementEditor((state) => state.view);
   const [adding, setAdding] = useState(false);
   const screen = useScreen(view, adding);
-  const { gate, dialog } = useDraftGate();
+  // Stable focus point after Save, Discard, an inline edit or a dialog (native session N5).
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const rescueRef = useFocusRescue(titleRef);
+  const { gate, dialog } = useDraftGate(titleRef);
   const actions = useEditorActions(gate);
   return (
-    <div className="space-y-6" data-testid={`${screen}-screen`}>
+    <div ref={rescueRef} className="space-y-6" data-testid={`${screen}-screen`}>
       <div data-testid={`${screen}-replacements`}>
-        <SettingsGroup title={t("settings.replacements.group")}>
+        <SettingsGroup
+          title={t("settings.replacements.group")}
+          titleRef={titleRef}
+        >
           <div className="p-4 space-y-3" data-testid={`${screen}-rules`}>
             {/* A refused import file belongs to this section: under its title (N6). */}
-            <ImportScreen />
+            <ImportScreen returnFocusRef={titleRef} />
             <RulesHeader screen={screen} view={view} {...actions} />
             <EditorBody
               screen={screen}

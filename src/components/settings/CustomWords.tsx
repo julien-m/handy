@@ -17,6 +17,7 @@ import type {
 } from "../../stores/vocabulary-store";
 import { getTranslatedModelName } from "../../lib/utils/modelTranslation";
 import { SettingsGroup } from "../ui/SettingsGroup";
+import { useFocusRescue } from "../ui/focus-return";
 import {
   isTermRefusal,
   listScreen,
@@ -305,10 +306,16 @@ export const CustomWords: React.FC = () => {
   const pasteId = useId();
   usePasteReturnFocus(state.pasteOpen, pasteId);
   const screen = vocabularyScreen(state);
+  // Stable focus point when the focused control leaves (native session N5).
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const rescueRef = useFocusRescue(titleRef);
   return (
-    <div className="space-y-6" data-testid={`${screen}-screen`}>
+    <div ref={rescueRef} className="space-y-6" data-testid={`${screen}-screen`}>
       <div data-testid={`${screen}-vocabulary`} data-state={state.phase}>
-        <SettingsGroup title={t("settings.vocabulary.group")}>
+        <SettingsGroup
+          title={t("settings.vocabulary.group")}
+          titleRef={titleRef}
+        >
           <div
             className="flex flex-col gap-3 px-4 py-2"
             data-testid={`${screen}-terms`}

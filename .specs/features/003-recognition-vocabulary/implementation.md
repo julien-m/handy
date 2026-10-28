@@ -169,3 +169,7 @@ The contract (`penflow/flow-ui-contract/contract.json`) will be updated later; i
   the paste screen in an `applied` state.
 - **Additive test IDs.** `<screen>-loading` and `<screen>-list-error` (list read) join `<screen>-error`
   (commit failure); none is a contract node.
+
+## Native session fixes (2026-10-28, branch `fix/native-session-ui`)
+
+- **N5 (keyboard focus, checked in 003).** The editor already gave the focus back after a removal and when the paste box closes; [the section](../../../src/components/settings/CustomWords.tsx) now also uses `useFocusRescue` of [focus-return](../../../src/components/ui/focus-return.ts): a focus lost because its control left (for example Apply or a failure's Retry) goes to the « Vocabulary » title (tabIndex -1, `preventScroll`). Mechanism tested in [the 002 spec](../../../tests/word-replacements-focus.spec.ts).

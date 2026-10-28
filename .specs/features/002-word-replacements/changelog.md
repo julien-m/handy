@@ -1,5 +1,13 @@
 # Changelog - 002-word-replacements
 
+## 2026-10-28 — [Bugfix]: Keyboard focus given back after Done, Save, Discard and dialogs (native session N5)
+
+- **Type:** Bugfix (finding N5 of the native proof session of 2026-10-28)
+- **Spec modified:** No
+- **Code modified:** src/components/ui/{focus-return.ts (new), Dialog.tsx, SettingsGroup.tsx}; src/components/settings/word-replacements/{word-replacements.tsx, rule-row.tsx, import-dialog.tsx, draft-gate.tsx}; same rescue in src/components/settings/CustomWords.tsx (003) and src/components/settings/post-processing/prompt-editor.tsx (005); tests/word-replacements-focus.spec.ts
+- **AC impacted:** none certified (keyboard focus)
+- **Author:** Claude Code (native session fixes)
+
 ## 2026-10-28 — [Bugfix]: The refused-import alert sits under the Replacements title (native session N6)
 
 - **Type:** Bugfix (finding N6 of the native proof session of 2026-10-28)

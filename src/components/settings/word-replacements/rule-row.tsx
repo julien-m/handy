@@ -4,10 +4,11 @@
  * when the edit started. While a Save is in flight the row is locked: its fields are read-only
  * and its buttons disabled, so nothing typed is overwritten by the saved rules.
  */
-import React, { useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { ArrowRight, Check, Pencil, Trash2 } from "lucide-react";
 import { Input } from "../../ui/Input";
+import { focusFirstAvailable, isFocusLost } from "../../ui/focus-return";
 import { useReplacementEditor } from "./editor-store";
 import { type DraftRule, type RuleField, SCREEN_IDS } from "./rules-model";
 
@@ -101,7 +102,12 @@ const useEditorKeys = ({
   });
   const edit = useReplacementEditor((state) => state.editRule);
   return (event) => {
-    if (event.key === "Enter") onEditing(false);
+    if (event.key === "Enter") {
+      // The focus moves to Edit as the field closes: without this, the same Enter would also
+      // activate Edit and reopen the row.
+      event.preventDefault();
+      onEditing(false);
+    }
     if (event.key !== "Escape") return;
     // Escape must not also close an enclosing dialog or leave the section.
     event.stopPropagation();
@@ -137,8 +143,29 @@ const RowField: React.FC<RowFieldProps> = (props) => {
   );
 };
 
+/**
+ * Gives the focus to Edit when the inline edit closes and its field, which had the focus, is gone
+ * (Enter, Escape, or Done clicked: WebKit does not focus a clicked button). Runs before the
+ * section's fallback to its title (native session finding N5).
+ * @param editing whether the row is being edited
+ * @param editButton the row's Edit / Done button
+ */
+const useFocusEditAfterEdit = (
+  editing: boolean,
+  editButton: React.RefObject<HTMLButtonElement | null>,
+): void => {
+  const wasEditing = useRef(editing);
+  useLayoutEffect(() => {
+    const closed = wasEditing.current && !editing;
+    wasEditing.current = editing;
+    if (closed && isFocusLost()) focusFirstAvailable([editButton.current]);
+  }, [editing, editButton]);
+};
+
 const RowActions: React.FC<RuleRowProps> = (props) => {
   const { t } = useTranslation();
+  const editButton = useRef<HTMLButtonElement>(null);
+  useFocusEditAfterEdit(props.editing, editButton);
   const recognized = props.rule.recognized;
   const editLabel = props.editing
     ? t("settings.replacements.rule.done", { recognized })
@@ -146,6 +173,7 @@ const RowActions: React.FC<RuleRowProps> = (props) => {
   return (
     <div className="flex items-center gap-1 shrink-0">
       <button
+        ref={editButton}
         type="button"
         className={ICON_BUTTON}
         aria-label={editLabel}
