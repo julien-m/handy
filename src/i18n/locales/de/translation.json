@@ -309,7 +309,6 @@
           "none": "Keines"
         },
         "draft": {
-          "note": "Ungespeicherte Änderungen. Bis Sie speichern, verwendet die nächste Aufnahme die gespeicherte Reihenfolge.",
           "discard": "Verwerfen",
           "save": "Speichern",
           "saving": "Wird gespeichert…",

@@ -309,7 +309,6 @@
           "none": "Nessuno"
         },
         "draft": {
-          "note": "Modifiche non salvate. Finché non salvi, la prossima registrazione usa l'ordine salvato.",
           "discard": "Scarta",
           "save": "Salva",
           "saving": "Salvataggio…",

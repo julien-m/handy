@@ -309,7 +309,6 @@
           "none": "Ingen"
         },
         "draft": {
-          "note": "Ikke-gemte ændringer. Indtil du gemmer, bruger næste optagelse den gemte rækkefølge.",
           "discard": "Kassér",
           "save": "Gem",
           "saving": "Gemmer…",

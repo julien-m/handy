@@ -309,7 +309,6 @@
           "none": "Geen"
         },
         "draft": {
-          "note": "Niet-opgeslagen wijzigingen. Tot je opslaat, gebruikt de volgende opname de opgeslagen volgorde.",
           "discard": "Negeren",
           "save": "Opslaan",
           "saving": "Opslaan…",

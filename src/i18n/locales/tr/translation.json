@@ -309,7 +309,6 @@
           "none": "Yok"
         },
         "draft": {
-          "note": "Kaydedilmemiş değişiklikler. Siz kaydedene kadar sonraki kayıt kayıtlı sırayı kullanır.",
           "discard": "Vazgeç",
           "save": "Kaydet",
           "saving": "Kaydediliyor…",

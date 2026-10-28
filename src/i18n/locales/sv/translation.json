@@ -309,7 +309,6 @@
           "none": "Ingen"
         },
         "draft": {
-          "note": "Osparade ändringar. Tills du sparar använder nästa inspelning den sparade ordningen.",
           "discard": "Förkasta",
           "save": "Spara",
           "saving": "Sparar…",

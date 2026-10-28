@@ -1,7 +1,7 @@
 // Microphone priority editor of the audio settings (feature 001), replacing the single microphone
 // selector. The editor state is shared by three places of the page: the conflict banner above the
-// Sound group, the rows inside it (priority, in use now, closed-lid) and the Unsaved changes bar
-// below it.
+// Sound group, the rows inside it (priority, in use now, closed-lid) and the compact save bar below
+// it, which stays at the bottom of the visible content while there is a change (N2, N3).
 import React, { createContext, useContext } from "react";
 import { ClamshellRow } from "./clamshell-row";
 import { ConflictAlert, DraftBar } from "./draft-feedback";
@@ -18,6 +18,8 @@ const EditorDraftBar: React.FC<{ editor: PriorityEditor }> = ({ editor }) => (
   <DraftBar
     visible={editor.dirty}
     phase={editor.draft.savePhase}
+    conflict={editor.draft.conflict}
+    onReload={() => void editor.reload()}
     error={editor.draft.saveError ?? orderError(editor.order)}
     saveEnabled={editor.saveEnabled}
     onDiscard={editor.discard}

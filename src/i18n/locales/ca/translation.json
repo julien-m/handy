@@ -309,7 +309,6 @@
           "none": "Cap"
         },
         "draft": {
-          "note": "Canvis sense desar. Fins que no deseu, el proper enregistrament fa servir l'ordre desat.",
           "discard": "Descarta",
           "save": "Desa",
           "saving": "S'està desant…",

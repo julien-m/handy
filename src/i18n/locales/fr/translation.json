@@ -309,7 +309,6 @@
           "none": "Aucun"
         },
         "draft": {
-          "note": "Modifications non enregistrées. Jusqu'à l'enregistrement, la prochaine dictée utilise l'ordre déjà enregistré.",
           "discard": "Abandonner",
           "save": "Enregistrer",
           "saving": "Enregistrement…",

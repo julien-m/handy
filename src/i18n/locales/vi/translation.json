@@ -309,7 +309,6 @@
           "none": "Không có"
         },
         "draft": {
-          "note": "Thay đổi chưa lưu. Cho đến khi bạn lưu, lần ghi âm tiếp theo dùng thứ tự đã lưu.",
           "discard": "Hủy bỏ",
           "save": "Lưu",
           "saving": "Đang lưu…",

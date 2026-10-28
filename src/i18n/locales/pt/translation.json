@@ -309,7 +309,6 @@
           "none": "Nenhum"
         },
         "draft": {
-          "note": "Alterações não salvas. Até você salvar, a próxima gravação usa a ordem salva.",
           "discard": "Descartar",
           "save": "Salvar",
           "saving": "Salvando…",

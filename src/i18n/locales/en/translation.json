@@ -309,7 +309,6 @@
           "none": "None"
         },
         "draft": {
-          "note": "Unsaved changes. The next recording uses the saved order until you save.",
           "discard": "Discard",
           "save": "Save",
           "saving": "Saving…",

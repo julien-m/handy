@@ -309,7 +309,6 @@
           "none": "Brak"
         },
         "draft": {
-          "note": "Niezapisane zmiany. Dopóki nie zapiszesz, następne nagranie użyje zapisanej kolejności.",
           "discard": "Odrzuć",
           "save": "Zapisz",
           "saving": "Zapisywanie…",

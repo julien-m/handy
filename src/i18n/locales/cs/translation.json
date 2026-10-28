@@ -309,7 +309,6 @@
           "none": "Žádný"
         },
         "draft": {
-          "note": "Neuložené změny. Dokud neuložíte, další nahrávání použije uložené pořadí.",
           "discard": "Zahodit",
           "save": "Uložit",
           "saving": "Ukládání…",

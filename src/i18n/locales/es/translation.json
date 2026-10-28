@@ -309,7 +309,6 @@
           "none": "Ninguno"
         },
         "draft": {
-          "note": "Cambios sin guardar. Hasta que guardes, la próxima grabación usará el orden guardado.",
           "discard": "Descartar",
           "save": "Guardar",
           "saving": "Guardando…",

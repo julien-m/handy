@@ -309,7 +309,6 @@
           "none": "Tidak ada"
         },
         "draft": {
-          "note": "Perubahan belum disimpan. Sampai Anda menyimpan, rekaman berikutnya memakai urutan yang tersimpan.",
           "discard": "Buang",
           "save": "Simpan",
           "saving": "Menyimpan…",

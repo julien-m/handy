@@ -1,7 +1,9 @@
 // Draft feedback of the microphone priority editor (feature 001, AC-007): the "settings changed
-// elsewhere" banner with Reload, and the Unsaved changes bar with Discard and Save. Save and Reload
-// are made inactive with aria-disabled rather than disabled, so a control that has focus keeps it
-// while a write runs and when Save turns into Retry (SC-003).
+// elsewhere" banner with Reload, and the compact save bar with Discard and Save, kept at the bottom
+// of the visible content while the draft differs from the saved order (native session findings N2
+// and N3). On a conflict the bar offers Reload in place of Save. Save and Reload are made inactive
+// with aria-disabled rather than disabled, so a control that has focus keeps it while a write runs
+// and when Save turns into Retry or Reload (SC-003).
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { AlertTriangle } from "lucide-react";
@@ -21,10 +23,13 @@ export interface ConflictAlertProps {
   onReload: () => void;
 }
 
-/** Props of the Unsaved changes bar. */
+/** Props of the save bar. */
 export interface DraftBarProps {
   visible: boolean;
   phase: SavePhase;
+  /** The order changed elsewhere: the bar offers Reload instead of Save. */
+  conflict: boolean;
+  onReload: () => void;
   /** Refusal of the last write, or why the draft cannot be saved. */
   error: TranslatedMessage | null;
   saveEnabled: boolean;
@@ -78,28 +83,69 @@ export const ConflictAlert: React.FC<ConflictAlertProps> = (props) => {
   );
 };
 
+/** What the primary control of the bar does, says and shows (contract state). */
+interface PrimaryControl {
+  label: string;
+  state: "loading" | "disabled" | "enabled";
+  testId: string;
+  isEnabled: boolean;
+  run: () => void;
+}
+
 /**
- * Label and visual state of the Save control.
+ * The bar's primary control: Reload during a conflict (the draft cannot be saved over a newer
+ * order), else Save, Retry after a failed write. A write in flight keeps it Saving… until it
+ * settles, even if a conflict is raised meanwhile, so the focused control does not change role
+ * under the user.
  * @param props bar props
- * @returns the label key and the contract state (loading, disabled or enabled)
+ * @param screen contract screen shown
+ * @returns its label key, contract state, test id and action
  */
-const saveControl = (props: DraftBarProps) => {
-  if (props.phase === "saving")
-    return { label: "draft.saving", state: "loading" };
-  const label = props.phase === "failed" ? "retry" : "draft.save";
-  return { label, state: props.saveEnabled ? "enabled" : "disabled" };
+const primaryControl = (
+  props: DraftBarProps,
+  screen: string,
+): PrimaryControl => {
+  if (props.phase === "saving") {
+    return {
+      label: "draft.saving",
+      state: "loading",
+      testId: `${screen}-save`,
+      isEnabled: false,
+      run: props.onSave,
+    };
+  }
+  if (props.conflict) {
+    return {
+      label: "conflict.reload",
+      state: "enabled",
+      testId: `${screen}-draft-reload`,
+      isEnabled: true,
+      run: props.onReload,
+    };
+  }
+  return {
+    label: props.phase === "failed" ? "retry" : "draft.save",
+    state: props.saveEnabled ? "enabled" : "disabled",
+    testId: `${screen}-save`,
+    isEnabled: props.saveEnabled,
+    run: props.onSave,
+  };
 };
 
-/** Discard and Save; Save is busy (and cannot dispatch again) while a write is in flight. */
+/**
+ * Discard and the primary control. The primary stays the same button when Save turns into Retry
+ * or Reload, so a focused control keeps the focus; it cannot dispatch again while a write runs.
+ */
 const DraftActions: React.FC<DraftBarProps> = (props) => {
   const { t } = useTranslation();
   const screen = useMicrophoneScreen();
-  const save = saveControl(props);
+  const primary = primaryControl(props, screen);
   const saving = props.phase === "saving";
   return (
     <div className="flex items-center gap-2 shrink-0">
       <Button
         variant="secondary"
+        size="sm"
         onClick={props.onDiscard}
         disabled={saving}
         data-testid={`${screen}-discard`}
@@ -108,41 +154,47 @@ const DraftActions: React.FC<DraftBarProps> = (props) => {
       </Button>
       <Button
         variant="primary"
+        size="sm"
         className={INACTIVE_CLASSES}
         onClick={() => {
-          if (props.saveEnabled) props.onSave();
+          if (primary.isEnabled) primary.run();
         }}
-        aria-disabled={!props.saveEnabled}
+        aria-disabled={!primary.isEnabled}
         aria-busy={saving}
-        data-state={save.state}
-        data-testid={`${screen}-save`}
+        data-state={primary.state}
+        data-testid={primary.testId}
       >
-        {t(`${PRIORITY_KEY_ROOT}.${save.label}`)}
+        {t(`${PRIORITY_KEY_ROOT}.${primary.label}`)}
       </Button>
     </div>
   );
 };
 
-/** Unsaved changes: the next recording keeps the saved order until Save succeeds. */
+/**
+ * Compact save bar, shown only while the draft differs from the saved order and kept at the
+ * bottom of the visible settings content (sticky in the scrolling area). It holds Discard and Save
+ * (Reload on a conflict); a refusal of the last write or an invalid draft is the only text it shows.
+ */
 export const DraftBar: React.FC<DraftBarProps> = (props) => {
   const { t } = useTranslation();
   const screen = useMicrophoneScreen();
   if (!props.visible) return null;
   return (
     <div
-      className="flex items-center justify-between gap-3 px-4 py-3 bg-background border border-mid-gray/20 rounded-lg"
+      className="sticky bottom-2 z-10 ms-auto flex w-fit max-w-full items-center gap-3 px-2 py-2 bg-background border border-mid-gray/20 rounded-lg shadow-lg"
       data-testid={`${screen}-draft`}
       data-state={props.phase === "failed" ? "error" : props.phase}
+      data-conflict={props.conflict || undefined}
     >
-      <p
-        role={props.error ? "alert" : undefined}
-        className={`text-sm ${props.error ? "text-red-400" : "text-mid-gray"}`}
-        data-testid={`${screen}-draft-note`}
-      >
-        {props.error
-          ? t(props.error.key, props.error.params)
-          : t(`${PRIORITY_KEY_ROOT}.draft.note`)}
-      </p>
+      {props.error && (
+        <p
+          role="alert"
+          className="ps-2 text-xs text-red-400"
+          data-testid={`${screen}-draft-note`}
+        >
+          {t(props.error.key, props.error.params)}
+        </p>
+      )}
       <DraftActions {...props} />
     </div>
   );
