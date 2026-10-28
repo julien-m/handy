@@ -5,6 +5,8 @@
 
 ---
 
+## 2026-10-28 — [Feature 007] Bugfix N12: smart paste no longer aborts with CFRelease(NULL) when ABC/US cannot be selected; truthful "no actor reply" log
+
 ## 2026-10-15 — [Feature 011] Implementation in progress: input focused at the dictation start remembered, given focus back, range restored and verified before the paste, behind destination-return (automated evidence in four feature combinations; macOS native proofs pending with Julien)
 <!-- finalize:spec-implement:2026-10-15:28770870 -->
 
