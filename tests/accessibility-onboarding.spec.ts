@@ -85,3 +85,26 @@ test("a permission granted elsewhere is seen when the window takes the focus bac
     .toBeGreaterThan(checks);
   await expect(page.getByText("All set!")).toBeVisible();
 });
+
+test("checks that overlap run once and complete the onboarding once", async ({
+  page,
+}) => {
+  await startWaiting(page);
+  await grantAccessibility(page);
+  const checks = (await backend(page)).accessibilityChecks;
+  // The page focus, the Tauri focus event and the polling can all ask at the same moment.
+  await page.evaluate(() => {
+    window.dispatchEvent(new Event("focus"));
+    window.dispatchEvent(new Event("focus"));
+    window.dispatchEvent(new Event("focus"));
+  });
+  await expect(page.getByText("All set!")).toBeVisible();
+  expect((await backend(page)).accessibilityChecks).toBe(checks + 1);
+  await page.clock.runFor(2_000);
+  const completions = await page.evaluate(
+    () =>
+      (window as unknown as { harness: { state: { completions: number } } })
+        .harness.state.completions,
+  );
+  expect(completions).toBe(1);
+});

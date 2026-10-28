@@ -8,12 +8,12 @@ import "@/i18n";
 import "@/App.css";
 import { AccessibilityOnboarding } from "@/components/onboarding";
 
-const state = { completed: false };
+const state = { completions: 0 };
 
 const element = document.getElementById("root");
 if (element !== null) {
   createRoot(element).render(
-    <AccessibilityOnboarding onComplete={() => (state.completed = true)} />,
+    <AccessibilityOnboarding onComplete={() => (state.completions += 1)} />,
   );
 }
 

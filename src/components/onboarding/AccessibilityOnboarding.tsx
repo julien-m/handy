@@ -60,6 +60,9 @@ const AccessibilityOnboarding: React.FC<AccessibilityOnboardingProps> = ({
   );
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const errorCountRef = useRef<number>(0);
+  // One permission check at a time: the polling, Try again and window focus share it (N10).
+  const checkInFlightRef = useRef(false);
+  const completingRef = useRef(false);
   const MAX_POLLING_ERRORS = 3;
 
   const isMacOS = permissionPlatform === "macos";
@@ -74,8 +77,13 @@ const AccessibilityOnboarding: React.FC<AccessibilityOnboardingProps> = ({
       ? permissions.microphone === "granted"
       : true;
 
+  // Runs once: the initial check, the polling and a focus check may all see the permissions
+  // granted, and a second run would leave an earlier timer that nothing cancels.
   const completeOnboarding = useCallback(async () => {
+    if (completingRef.current) return;
+    completingRef.current = true;
     await Promise.all([refreshAudioDevices(), refreshOutputDevices()]);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => onComplete(), 300);
   }, [onComplete, refreshAudioDevices, refreshOutputDevices]);
 
@@ -194,7 +202,10 @@ const AccessibilityOnboarding: React.FC<AccessibilityOnboardingProps> = ({
   // One check of the permissions still asked for: used by the polling after a click, by Try
   // again and when the window takes the focus back (N10).
   const checkPermissionsOnce = useCallback(async () => {
-    if (permissionPlatform === null) return;
+    // A check already running answers for this request too: two parallel checks would count
+    // one failure twice and complete the onboarding twice.
+    if (permissionPlatform === null || checkInFlightRef.current) return;
+    checkInFlightRef.current = true;
     try {
       if (permissionPlatform === "windows") {
         const microphoneGranted = await hasWindowsMicrophoneAccess();
@@ -252,6 +263,8 @@ const AccessibilityOnboarding: React.FC<AccessibilityOnboardingProps> = ({
         stopPolling();
         toast.error(t("onboarding.permissions.errors.checkFailed"));
       }
+    } finally {
+      checkInFlightRef.current = false;
     }
   }, [
     completeOnboarding,

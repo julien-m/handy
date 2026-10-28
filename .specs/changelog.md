@@ -5,6 +5,10 @@
 
 ---
 
+## 2026-10-28 — [Bugfix, onboarding] Permission checks run one at a time (native session N10, review)
+
+The polling, Try again, the page `focus` event and the Tauri window focus event share one permission check at a time (`checkInFlightRef`), so a failure is counted once; the onboarding completes once and its completion timer is the only one, cleared on unmount. Code: `src/components/onboarding/AccessibilityOnboarding.tsx`; test: `tests/accessibility-onboarding.spec.ts` (overlapping checks: one check, one completion), which fails on the previous code.
+
 ## 2026-10-28 — [Bugfix, 001/002/003/004/005] Settings window findings of the native session (N2, N3, N4, N5, N6, N8)
 
 Branch `fix/native-session-ui`: the window scrolls only its content (N4, transverse); explicit Save and Discard for an unsaved shortcut draft, Reset disabled meanwhile (N8, 004); compact sticky save bar with Reload during a conflict (N2, N3, 001); refused-import alert under the Replacements title (N6, 002); keyboard focus given back after Done, Save, Discard and dialogs (N5, 002, also 003 and 005). Verifications: [native-session-fixes-ui.txt](native-session-fixes-ui.txt).
