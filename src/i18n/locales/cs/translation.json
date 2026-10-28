@@ -548,7 +548,7 @@
         "line_break": "Obsahuje zalomení řádku, neodesílá se. Odeberte ho a přidejte ho znovu.",
         "forbidden_character": "Obsahuje < > nebo \", neodesílá se. Odeberte ho a přidejte ho bez těchto znaků.",
         "duplicate": "Stejný jako dřívější termín, neodesílá se. Odeberte ho.",
-        "over_capacity": "Za limitem 500 termínů, neodesílá se, dokud se seznam nezkrátí.",
+        "over_capacity": "Za limitem 5 000 termínů, neodesílá se, dokud se seznam nezkrátí.",
         "over_budget": "Neodesílá se: nad limitem modelu."
       },
       "errors": {
@@ -557,7 +557,7 @@
         "term_line_break": "Termín se musí vejít na jeden řádek.",
         "term_forbidden_character": "Odstraňte z termínu znaky < > nebo \".",
         "term_duplicate": "Každý termín se může objevit jen jednou a tento už ve slovníku je.",
-        "limit": "Slovník pojme nejvýše 500 termínů. Odeberte termín, abyste mohli přidat jiný.",
+        "limit": "Slovník pojme nejvýše 5 000 termínů. Odeberte termín, abyste mohli přidat jiný.",
         "conflict": "Slovník se mezitím změnil a byl znovu načten. Zkuste to znovu.",
         "notFound": "Tento termín už byl odebrán. Slovník byl znovu načten.",
         "unknown": "Handy nemohl potvrdit změnu. Slovník byl znovu načten; před dalším pokusem ho zkontrolujte.",
@@ -576,7 +576,8 @@
           "over_budget": "Neodesílá se, nad limitem modelu: {{terms}}.",
           "invalid": "Neodesílá se, neplatné: {{terms}}.",
           "duplicate": "Neodesílá se, duplicity: {{terms}}.",
-          "over_capacity": "Neodesílá se, za hranicí 500 termínů: {{terms}}."
+          "over_capacity": "Neodesílá se, za hranicí 5 000 termínů: {{terms}}.",
+          "more": "a ještě {{hidden}}"
         },
         "noTermSent": {
           "title": "{{model}} nedostává žádný termín",
@@ -632,14 +633,14 @@
           "line_break": "Řádek {{line}}: ponechte termín na jednom řádku",
           "forbidden_character": "Řádek {{line}}: odstraňte znaky < > nebo \"",
           "duplicate": "Řádek {{line}}: stejný jako dřívější termín",
-          "over_capacity": "Řádek {{line}}: nad limitem 500 termínů"
+          "over_capacity": "Řádek {{line}}: nad limitem 5 000 termínů"
         },
         "note": {
           "empty": "Váš slovník se nezmění, dokud termíny nepřidáte.",
           "checking": "Kontrola řádků…",
           "fixOne": "Opravte řádek {{lines}}, abyste mohli termíny přidat. Váš slovník je beze změny.",
           "fixMany": "Opravte řádky {{lines}}, abyste mohli termíny přidat. Váš slovník je beze změny.",
-          "overCapacity": "Slovník pojme nejvýše 500 termínů. Zkraťte seznam, abyste ho mohli přidat. Váš slovník je beze změny.",
+          "overCapacity": "Slovník pojme nejvýše 5 000 termínů. Zkraťte seznam, abyste ho mohli přidat. Váš slovník je beze změny.",
           "nothingToAdd": "Všechny řádky už ve slovníku jsou.",
           "ready": "Duplicity se přeskočí. Nic se neuloží, dokud termíny nepřidáte."
         },

@@ -123,10 +123,37 @@ export const notSentGroups = (
   const groups = new Map<NotSentGroupReason, string[]>();
   for (const term of excluded) {
     const reason = groupOf(term);
-    if (reason) groups.set(reason, [...(groups.get(reason) ?? []), term.term]);
+    if (!reason) continue;
+    const group = groups.get(reason);
+    // Appended in place: with Whisper about 4,950 of 5,000 terms can be left out.
+    if (group) group.push(term.term);
+    else groups.set(reason, [term.term]);
   }
   return GROUP_ORDER.filter((reason) => groups.has(reason)).map((reason) => ({
     reason,
     terms: groups.get(reason) ?? [],
   }));
 };
+
+/**
+ * Most terms named per not-sent group; the rest is counted ("and 4,930 more"), so a 5,000-term
+ * vocabulary over a Whisper budget never turns the status into a wall of text (native session
+ * N7 review). Twenty names fit a few lines of the status box.
+ */
+export const NOT_SENT_SHOWN = 20;
+
+/** Terms of a not-sent group as the status shows them. */
+export interface NotSentPreview {
+  shown: string[];
+  hidden: number;
+}
+
+/**
+ * The first `NOT_SENT_SHOWN` terms of a group, in list order, and how many are left out.
+ * @param group one group of `notSentGroups`
+ * @returns the named terms and the count of the others
+ */
+export const notSentPreview = (group: NotSentGroup): NotSentPreview => ({
+  shown: group.terms.slice(0, NOT_SENT_SHOWN),
+  hidden: Math.max(0, group.terms.length - NOT_SENT_SHOWN),
+});

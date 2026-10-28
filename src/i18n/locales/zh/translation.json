@@ -548,7 +548,7 @@
         "line_break": "包含换行符，未发送。请删除后重新添加。",
         "forbidden_character": "包含 < > 或 \"，未发送。请删除后去掉这些字符再添加。",
         "duplicate": "与前面的术语相同，未发送。请将其删除。",
-        "over_capacity": "超出 500 个术语的上限，在列表缩短前不会发送。",
+        "over_capacity": "超出 5,000 个术语的上限，在列表缩短前不会发送。",
         "over_budget": "未发送：超出模型限制。"
       },
       "errors": {
@@ -557,7 +557,7 @@
         "term_line_break": "术语必须在一行内。",
         "term_forbidden_character": "请从术语中删除 < > 或 \" 字符。",
         "term_duplicate": "每个术语只能出现一次，而此术语已在词汇表中。",
-        "limit": "词汇表最多容纳 500 个术语。请删除一个术语后再添加。",
+        "limit": "词汇表最多容纳 5,000 个术语。请删除一个术语后再添加。",
         "conflict": "词汇表在此期间已更改并重新加载。请重试。",
         "notFound": "此术语已被删除。词汇表已重新加载。",
         "unknown": "Handy 无法确认此更改。词汇表已重新加载；请先检查后再重试。",
@@ -576,7 +576,8 @@
           "over_budget": "未发送，超出模型限制：{{terms}}。",
           "invalid": "未发送，无效：{{terms}}。",
           "duplicate": "未发送，重复：{{terms}}。",
-          "over_capacity": "未发送，超出 500 个术语：{{terms}}。"
+          "over_capacity": "未发送，超出 5,000 个术语：{{terms}}。",
+          "more": "以及另外 {{hidden}} 个"
         },
         "noTermSent": {
           "title": "没有术语发送给 {{model}}",
@@ -632,14 +633,14 @@
           "line_break": "第 {{line}} 行：术语须保持在一行内",
           "forbidden_character": "第 {{line}} 行：请删除 < > 或 \" 字符",
           "duplicate": "第 {{line}} 行：与前面的术语相同",
-          "over_capacity": "第 {{line}} 行：超出 500 个术语的上限"
+          "over_capacity": "第 {{line}} 行：超出 5,000 个术语的上限"
         },
         "note": {
           "empty": "在您添加术语之前，词汇表不会更改。",
           "checking": "正在检查各行…",
           "fixOne": "修正第 {{lines}} 行即可添加术语。您的词汇表未更改。",
           "fixMany": "修正第 {{lines}} 行即可添加术语。您的词汇表未更改。",
-          "overCapacity": "词汇表最多容纳 500 个术语。请缩短列表后再添加。您的词汇表未更改。",
+          "overCapacity": "词汇表最多容纳 5,000 个术语。请缩短列表后再添加。您的词汇表未更改。",
           "nothingToAdd": "所有行都已在词汇表中。",
           "ready": "重复项将被跳过。在您添加术语之前不会保存任何内容。"
         },

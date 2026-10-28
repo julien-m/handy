@@ -108,14 +108,14 @@ mod tests {
 
     #[test]
     fn positions_beyond_the_capacity_are_excluded_not_deleted() {
-        let stored = (0..502)
+        let stored = (0..MAX_TERMS + 2)
             .map(|index| format!("term {index}"))
             .collect::<Vec<_>>();
         let occurrences = inspect(&stored);
-        assert_eq!(occurrences.len(), 502);
-        assert_eq!(occurrences[499].issue, None);
-        assert_eq!(occurrences[500].issue, Some(TermIssue::OverCapacity));
-        assert_eq!(eligible_terms(&stored).len(), 500);
+        assert_eq!(occurrences.len(), MAX_TERMS + 2);
+        assert_eq!(occurrences[MAX_TERMS - 1].issue, None);
+        assert_eq!(occurrences[MAX_TERMS].issue, Some(TermIssue::OverCapacity));
+        assert_eq!(eligible_terms(&stored).len(), MAX_TERMS);
     }
 
     #[test]

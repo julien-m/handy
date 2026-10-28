@@ -43,8 +43,8 @@ fn direct_duplicate_and_invalid_adds_fail_atomically() {
 }
 
 #[test]
-fn the_501st_term_is_a_limit_refusal() -> TestResult {
-    let full = (0..500)
+fn the_term_past_the_limit_is_a_limit_refusal() -> TestResult {
+    let full = (0..MAX_TERMS)
         .map(|index| format!("t{index}"))
         .collect::<Vec<_>>();
     let refused = VocabularyEdit::Add("one more".into()).apply_to(&full);
@@ -52,10 +52,10 @@ fn the_501st_term_is_a_limit_refusal() -> TestResult {
         refused.err().map(|error| error.code()),
         Some(SettingsErrorCode::LimitExceeded)
     );
-    let almost = &full[..499];
+    let almost = &full[..MAX_TERMS - 1];
     assert_eq!(
         VocabularyEdit::Add("last".into()).apply_to(almost)?.len(),
-        500
+        MAX_TERMS
     );
     Ok(())
 }
@@ -137,7 +137,7 @@ fn ui_list_keeps_unchanged_legacy_rows_and_validates_new_ones() -> TestResult {
 
 #[test]
 fn remove_only_changes_shrink_an_over_capacity_legacy_list() -> TestResult {
-    let legacy = (0..503)
+    let legacy = (0..MAX_TERMS + 3)
         .map(|index| format!("t{index}"))
         .collect::<Vec<_>>();
     let shrunk = legacy[1..].to_vec();

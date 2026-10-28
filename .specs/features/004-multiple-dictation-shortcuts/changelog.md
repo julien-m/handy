@@ -139,4 +139,13 @@
 - **AC impacted:** AC-001
 - **Why:** with Secure Input on, the draft opened blocked, "Add shortcut" disappeared and the keyboard focus had no way out.
 - **Tests:** shortcut-draft-model.test.ts (blocked draft), tests/shortcut-list-draft.spec.ts
+
+## 2026-10-28 — [Bugfix]: hold-or-toggle measures the hold at the key edges (native session N13)
+
+- **Type:** Bugfix
+- **Spec modified:** No (AC-003: the hold threshold now holds whatever the start duration)
+- **Code modified:** src-tauri/src/transcription_coordinator.rs, src-tauri/src/transcription_coordinator/{slow_start_tests.rs (new), input_lost_tests.rs, quiescence_tests.rs}, src-tauri/src/shortcut/{handler.rs, handy_keys.rs, tauri_impl.rs}
+- **AC impacted:** AC-003
+- **Why:** finding N13 of Julien's native session of 2026-10-28: a short tap stopped the dictation at once when the start took longer than the 300 ms threshold, because the key-up was measured when processed after the start
+- **Tests:** `slow_start_tests.rs` (injected clock: tap processed after a 400 ms start stays locked; late hold stops; queued auto-repeat cancels the release; busy tap locks)
 - **Author:** Claude Code (claude-opus-5-5)

@@ -548,7 +548,7 @@
         "line_break": "Indeholder et linjeskift, sendes ikke. Fjern det, og tilføj det igen.",
         "forbidden_character": "Indeholder < > eller \", sendes ikke. Fjern det, og tilføj det uden disse tegn.",
         "duplicate": "Samme som et tidligere udtryk, sendes ikke. Fjern det.",
-        "over_capacity": "Over grænsen på 500 udtryk, sendes ikke, før listen er kortere.",
+        "over_capacity": "Over grænsen på 5.000 udtryk, sendes ikke, før listen er kortere.",
         "over_budget": "Sendes ikke: over modellens grænse."
       },
       "errors": {
@@ -557,7 +557,7 @@
         "term_line_break": "Et udtryk skal kunne stå på én linje.",
         "term_forbidden_character": "Fjern tegnene < > eller \" fra udtrykket.",
         "term_duplicate": "Hvert udtryk må kun optræde én gang, og dette findes allerede i ordforrådet.",
-        "limit": "Ordforrådet kan højst rumme 500 udtryk. Fjern et udtryk for at tilføje et andet.",
+        "limit": "Ordforrådet kan højst rumme 5.000 udtryk. Fjern et udtryk for at tilføje et andet.",
         "conflict": "Ordforrådet blev ændret i mellemtiden og er genindlæst. Prøv igen.",
         "notFound": "Dette udtryk var allerede fjernet. Ordforrådet er genindlæst.",
         "unknown": "Handy kunne ikke bekræfte ændringen. Ordforrådet er genindlæst; tjek det, før du prøver igen.",
@@ -576,7 +576,8 @@
           "over_budget": "Sendes ikke, over modellens grænse: {{terms}}.",
           "invalid": "Sendes ikke, ugyldige: {{terms}}.",
           "duplicate": "Sendes ikke, dubletter: {{terms}}.",
-          "over_capacity": "Sendes ikke, ud over 500 udtryk: {{terms}}."
+          "over_capacity": "Sendes ikke, ud over 5.000 udtryk: {{terms}}.",
+          "more": "og {{hidden}} mere"
         },
         "noTermSent": {
           "title": "Intet udtryk sendes til {{model}}",
@@ -632,14 +633,14 @@
           "line_break": "Linje {{line}}: hold udtrykket på én linje",
           "forbidden_character": "Linje {{line}}: fjern tegnene < > eller \"",
           "duplicate": "Linje {{line}}: samme som et tidligere udtryk",
-          "over_capacity": "Linje {{line}}: over grænsen på 500 udtryk"
+          "over_capacity": "Linje {{line}}: over grænsen på 5.000 udtryk"
         },
         "note": {
           "empty": "Dit ordforråd er uændret, indtil du tilføjer udtrykkene.",
           "checking": "Tjekker linjerne…",
           "fixOne": "Ret linje {{lines}} for at tilføje udtrykkene. Dit ordforråd er uændret.",
           "fixMany": "Ret linjerne {{lines}} for at tilføje udtrykkene. Dit ordforråd er uændret.",
-          "overCapacity": "Ordforrådet kan højst rumme 500 udtryk. Gør listen kortere for at tilføje den. Dit ordforråd er uændret.",
+          "overCapacity": "Ordforrådet kan højst rumme 5.000 udtryk. Gør listen kortere for at tilføje den. Dit ordforråd er uændret.",
           "nothingToAdd": "Alle linjer findes allerede i ordforrådet.",
           "ready": "Dubletter springes over. Intet gemmes, før du tilføjer udtrykkene."
         },

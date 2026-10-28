@@ -88,7 +88,7 @@ fn add(current: &[String], raw: &str) -> Result<Vec<String>, SettingsError> {
     if current.iter().any(|saved| term_key(saved) == valid.key) {
         return Err(refused([(0, TermIssue::Duplicate)]));
     }
-    // Business rule: no addition while the list is full, legacy lists over 500 included.
+    // Business rule: no addition while the list is full, legacy lists over `MAX_TERMS` included.
     if current.len() >= MAX_TERMS {
         return Err(SettingsError::new(SettingsErrorCode::LimitExceeded));
     }

@@ -548,7 +548,7 @@
         "line_break": "Bevat een regeleinde, niet verzonden. Verwijder deze en voeg hem opnieuw toe.",
         "forbidden_character": "Bevat < > of \", niet verzonden. Verwijder deze en voeg hem toe zonder deze tekens.",
         "duplicate": "Gelijk aan een eerdere term, niet verzonden. Verwijder deze.",
-        "over_capacity": "Boven de limiet van 500 termen, niet verzonden tot de lijst korter is.",
+        "over_capacity": "Boven de limiet van 5.000 termen, niet verzonden tot de lijst korter is.",
         "over_budget": "Niet verzonden: boven de modellimiet."
       },
       "errors": {
@@ -557,7 +557,7 @@
         "term_line_break": "Een term moet op één regel passen.",
         "term_forbidden_character": "Verwijder de tekens < > of \" uit de term.",
         "term_duplicate": "Elke term mag één keer voorkomen, en deze staat al in het vocabulaire.",
-        "limit": "Het vocabulaire bevat maximaal 500 termen. Verwijder een term om een andere toe te voegen.",
+        "limit": "Het vocabulaire bevat maximaal 5.000 termen. Verwijder een term om een andere toe te voegen.",
         "conflict": "Het vocabulaire is intussen gewijzigd en opnieuw geladen. Probeer het opnieuw.",
         "notFound": "Deze term was al verwijderd. Het vocabulaire is opnieuw geladen.",
         "unknown": "Handy kon de wijziging niet bevestigen. Het vocabulaire is opnieuw geladen; controleer het voordat je het opnieuw probeert.",
@@ -576,7 +576,8 @@
           "over_budget": "Niet verzonden, boven de modellimiet: {{terms}}.",
           "invalid": "Niet verzonden, ongeldig: {{terms}}.",
           "duplicate": "Niet verzonden, dubbel: {{terms}}.",
-          "over_capacity": "Niet verzonden, voorbij 500 termen: {{terms}}."
+          "over_capacity": "Niet verzonden, voorbij 5.000 termen: {{terms}}.",
+          "more": "en nog {{hidden}}"
         },
         "noTermSent": {
           "title": "Er wordt geen term naar {{model}} verzonden",
@@ -632,14 +633,14 @@
           "line_break": "Regel {{line}}: houd de term op één regel",
           "forbidden_character": "Regel {{line}}: verwijder de tekens < > of \"",
           "duplicate": "Regel {{line}}: gelijk aan een eerdere term",
-          "over_capacity": "Regel {{line}}: boven de limiet van 500 termen"
+          "over_capacity": "Regel {{line}}: boven de limiet van 5.000 termen"
         },
         "note": {
           "empty": "Je vocabulaire blijft ongewijzigd totdat je de termen toevoegt.",
           "checking": "Regels controleren…",
           "fixOne": "Corrigeer regel {{lines}} om de termen toe te voegen. Je vocabulaire is ongewijzigd.",
           "fixMany": "Corrigeer regels {{lines}} om de termen toe te voegen. Je vocabulaire is ongewijzigd.",
-          "overCapacity": "Het vocabulaire bevat maximaal 500 termen. Maak de lijst korter om deze toe te voegen. Je vocabulaire is ongewijzigd.",
+          "overCapacity": "Het vocabulaire bevat maximaal 5.000 termen. Maak de lijst korter om deze toe te voegen. Je vocabulaire is ongewijzigd.",
           "nothingToAdd": "Elke regel staat al in het vocabulaire.",
           "ready": "Duplicaten worden overgeslagen. Er wordt niets opgeslagen totdat je de termen toevoegt."
         },

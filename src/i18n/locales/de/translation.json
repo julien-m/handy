@@ -548,7 +548,7 @@
         "line_break": "Enthält einen Zeilenumbruch, nicht gesendet. Entferne ihn und füge ihn erneut hinzu.",
         "forbidden_character": "Enthält < > oder \", nicht gesendet. Entferne ihn und füge ihn ohne diese Zeichen hinzu.",
         "duplicate": "Identisch mit einem früheren Begriff, nicht gesendet. Entferne ihn.",
-        "over_capacity": "Über dem Limit von 500 Begriffen, wird erst gesendet, wenn die Liste kürzer ist.",
+        "over_capacity": "Über dem Limit von 5.000 Begriffen, wird erst gesendet, wenn die Liste kürzer ist.",
         "over_budget": "Nicht gesendet: über dem Modelllimit."
       },
       "errors": {
@@ -557,7 +557,7 @@
         "term_line_break": "Ein Begriff muss in eine Zeile passen.",
         "term_forbidden_character": "Entferne die Zeichen < > oder \" aus dem Begriff.",
         "term_duplicate": "Jeder Begriff darf nur einmal vorkommen, und dieser ist bereits im Vokabular.",
-        "limit": "Das Vokabular fasst höchstens 500 Begriffe. Entferne einen Begriff, um einen anderen hinzuzufügen.",
+        "limit": "Das Vokabular fasst höchstens 5.000 Begriffe. Entferne einen Begriff, um einen anderen hinzuzufügen.",
         "conflict": "Das Vokabular wurde zwischenzeitlich geändert und neu geladen. Versuche es erneut.",
         "notFound": "Dieser Begriff wurde bereits entfernt. Das Vokabular wurde neu geladen.",
         "unknown": "Handy konnte die Änderung nicht bestätigen. Das Vokabular wurde neu geladen; prüfe es, bevor du es erneut versuchst.",
@@ -576,7 +576,8 @@
           "over_budget": "Nicht gesendet, über dem Modelllimit: {{terms}}.",
           "invalid": "Nicht gesendet, ungültig: {{terms}}.",
           "duplicate": "Nicht gesendet, Duplikate: {{terms}}.",
-          "over_capacity": "Nicht gesendet, über 500 Begriffe hinaus: {{terms}}."
+          "over_capacity": "Nicht gesendet, über 5.000 Begriffe hinaus: {{terms}}.",
+          "more": "und {{hidden}} weitere"
         },
         "noTermSent": {
           "title": "{{model}} erhält keinen Begriff",
@@ -632,14 +633,14 @@
           "line_break": "Zeile {{line}}: Begriff in einer Zeile halten",
           "forbidden_character": "Zeile {{line}}: Zeichen < > oder \" entfernen",
           "duplicate": "Zeile {{line}}: identisch mit einem früheren Begriff",
-          "over_capacity": "Zeile {{line}}: über dem Limit von 500 Begriffen"
+          "over_capacity": "Zeile {{line}}: über dem Limit von 5.000 Begriffen"
         },
         "note": {
           "empty": "Dein Vokabular bleibt unverändert, bis du die Begriffe hinzufügst.",
           "checking": "Zeilen werden geprüft…",
           "fixOne": "Korrigiere Zeile {{lines}}, um die Begriffe hinzuzufügen. Dein Vokabular ist unverändert.",
           "fixMany": "Korrigiere die Zeilen {{lines}}, um die Begriffe hinzuzufügen. Dein Vokabular ist unverändert.",
-          "overCapacity": "Das Vokabular fasst höchstens 500 Begriffe. Kürze die Liste, um sie hinzuzufügen. Dein Vokabular ist unverändert.",
+          "overCapacity": "Das Vokabular fasst höchstens 5.000 Begriffe. Kürze die Liste, um sie hinzuzufügen. Dein Vokabular ist unverändert.",
           "nothingToAdd": "Jede Zeile ist bereits im Vokabular.",
           "ready": "Duplikate werden übersprungen. Nichts wird gespeichert, bis du die Begriffe hinzufügst."
         },

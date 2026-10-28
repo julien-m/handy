@@ -9,10 +9,11 @@ import { Info } from "lucide-react";
 import type { SettingsCommandError, VocabularyStatusReport } from "@/bindings";
 import { Alert } from "../../ui/Alert";
 import type { StatusState } from "../../../stores/vocabulary-store";
-import type { VocabularyScreen } from "./vocabulary-model";
+import { formatTermCount, type VocabularyScreen } from "./vocabulary-model";
 import { RetryButton } from "./vocabulary-notices";
 import {
   notSentGroups,
+  notSentPreview,
   sentTotal,
   statusText,
   statusTone,
@@ -61,18 +62,21 @@ const useReportText = (
   report: VocabularyStatusReport,
   model: string,
 ): { title: string; body: string } => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const keys = statusText(report);
   const total = sentTotal(report);
   const sent = report.terms_sent.length;
   if (report.status !== "used_during_recognition") {
     return { title: t(keys.title, { model }), body: t(keys.body, { model }) };
   }
-  const notSent = notSentGroups(report.terms_not_sent).map((group) =>
-    t(`settings.vocabulary.status.notSent.${group.reason}`, {
-      terms: group.terms.join(", "),
-    }),
-  );
+  const notSent = notSentGroups(report.terms_not_sent).map((group) => {
+    const { shown, hidden } = notSentPreview(group);
+    const more = t("settings.vocabulary.status.notSent.more", {
+      hidden: formatTermCount(hidden, i18n.language),
+    });
+    const terms = shown.join(", ") + (hidden > 0 ? ` ${more}` : "");
+    return t(`settings.vocabulary.status.notSent.${group.reason}`, { terms });
+  });
   const body = [t(keys.body, { sent, total }), ...notSent].join(" ");
   return { title: t(keys.title, { model }), body };
 };

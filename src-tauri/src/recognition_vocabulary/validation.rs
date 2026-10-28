@@ -5,8 +5,11 @@ use crate::settings_service::errors::ErrorReason;
 use caseless::Caseless;
 use serde::Serialize;
 
-/// Most terms a vocabulary holds (spec AC-001).
-pub const MAX_TERMS: usize = 500;
+/// Most terms a vocabulary holds. Spec AC-001 says 500; Julien raised it to 5,000 on 2026-10-28
+/// (native session finding N7, `spec-refine` 003 pending). Whisper still receives only the terms
+/// that fit its prompt budget (`budget.rs`); the approximate correction of the other models
+/// stays under 50 ms per dictation at this size (`audio_toolkit/custom_words_perf_tests.rs`).
+pub const MAX_TERMS: usize = 5_000;
 /// Most Unicode scalar values of a trimmed term (spec AC-001).
 pub const MAX_TERM_CHARS: usize = 100;
 

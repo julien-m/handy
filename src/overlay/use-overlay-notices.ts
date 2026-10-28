@@ -1,5 +1,6 @@
-// Transient notices of the recording indicator: the AI failure (005 `prompt-processing-failed`)
-// and the Screen Sharing hand-over (007 `smart-paste-hand-over`). Each stays at least four
+// Transient notices of the recording indicator: the AI failure (005 `prompt-processing-failed`),
+// the Screen Sharing hand-over (007 `smart-paste-hand-over`) and the recording cut short by a
+// lost microphone (001 `recording-error` of type `input_lost`). Each stays at least four
 // seconds, and the overlay window is held up meanwhile even when the dictation already ended
 // (`hold_overlay_for_notice`). The destination reason of 006 (`insertion-outcome`, emitted only
 // with the `destination-return` gate open) is presented by 010's recovery bubble instead, so a
@@ -7,11 +8,15 @@
 import { listen } from "@tauri-apps/api/event";
 import { useEffect, useRef, useState } from "react";
 import { commands, events } from "@/bindings";
+import type { RecordingErrorEvent } from "@/lib/types/events";
 import {
   addNotice,
   aiFailureNotice,
   handOverNotice,
   holdRemaining,
+  INPUT_LOST_ERROR,
+  inputLostNotice,
+  RECORDING_ERROR_EVENT,
   liveNotices,
   nextExpiry,
   type OverlayNotice,
@@ -20,7 +25,8 @@ import {
 /** 007 hand-over event (`smart_paste::app::HAND_OVER_EVENT`). */
 export const HAND_OVER_EVENT = "smart-paste-hand-over";
 
-type Push = (build: (now: number) => OverlayNotice | null) => void;
+/** Adds the notice that `build` makes at the current time (none when it returns null). */
+export type Push = (build: (now: number) => OverlayNotice | null) => void;
 
 const holdWindow = (milliseconds: number) => {
   commands.holdOverlayForNotice(Math.ceil(milliseconds)).catch((error) => {
@@ -28,15 +34,27 @@ const holdWindow = (milliseconds: number) => {
   });
 };
 
+/**
+ * Subscribe to the backend events that raise an indicator notice (the effect body of
+ * `useOverlayNotices`, exported for its tests).
+ * @param push adds a notice
+ * @returns the pending unsubscriptions
+ */
+export const subscribeNoticeSources = (push: Push): Promise<() => void>[] => [
+  events.promptProcessingFailed.listen((event) =>
+    push((now) => aiFailureNotice(event.payload, now)),
+  ),
+  listen(HAND_OVER_EVENT, () => push(handOverNotice)),
+  // Only the cut-short recording is an indicator notice; start errors stay toasts.
+  listen<RecordingErrorEvent>(RECORDING_ERROR_EVENT, (event) => {
+    if (event.payload.error_type === INPUT_LOST_ERROR) push(inputLostNotice);
+  }),
+];
+
 // @spec FR-002: The bubble replaces the indicator's destination notice — .specs/features/010-recovery-bubble/spec.md#fr-002
 const useNoticeSources = (push: Push) => {
   useEffect(() => {
-    const stops = [
-      events.promptProcessingFailed.listen((event) =>
-        push((now) => aiFailureNotice(event.payload, now)),
-      ),
-      listen(HAND_OVER_EVENT, () => push(handOverNotice)),
-    ];
+    const stops = subscribeNoticeSources(push);
     return () => {
       stops.forEach((stop) => void stop.then((unlisten) => unlisten()));
     };

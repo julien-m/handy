@@ -548,7 +548,7 @@
         "line_break": "Satır sonu içeriyor, gönderilmedi. Kaldırıp yeniden ekleyin.",
         "forbidden_character": "< > veya \" içeriyor, gönderilmedi. Kaldırıp bu karakterler olmadan ekleyin.",
         "duplicate": "Önceki bir terimle aynı, gönderilmedi. Kaldırın.",
-        "over_capacity": "500 terim sınırının ötesinde, liste kısalana kadar gönderilmez.",
+        "over_capacity": "5.000 terim sınırının ötesinde, liste kısalana kadar gönderilmez.",
         "over_budget": "Gönderilmedi: model sınırını aşıyor."
       },
       "errors": {
@@ -557,7 +557,7 @@
         "term_line_break": "Bir terim tek satıra sığmalıdır.",
         "term_forbidden_character": "Terimden < > veya \" karakterlerini kaldırın.",
         "term_duplicate": "Her terim yalnızca bir kez yer alabilir ve bu terim zaten kelime dağarcığında.",
-        "limit": "Kelime dağarcığı en fazla 500 terim içerir. Yenisini eklemek için bir terimi kaldırın.",
+        "limit": "Kelime dağarcığı en fazla 5.000 terim içerir. Yenisini eklemek için bir terimi kaldırın.",
         "conflict": "Kelime dağarcığı bu arada değişti ve yeniden yüklendi. Tekrar deneyin.",
         "notFound": "Bu terim zaten kaldırılmış. Kelime dağarcığı yeniden yüklendi.",
         "unknown": "Handy değişikliği doğrulayamadı. Kelime dağarcığı yeniden yüklendi; tekrar denemeden önce kontrol edin.",
@@ -576,7 +576,8 @@
           "over_budget": "Gönderilmedi, model sınırını aşıyor: {{terms}}.",
           "invalid": "Gönderilmedi, geçersiz: {{terms}}.",
           "duplicate": "Gönderilmedi, yinelenen: {{terms}}.",
-          "over_capacity": "Gönderilmedi, 500 terimin ötesinde: {{terms}}."
+          "over_capacity": "Gönderilmedi, 5.000 terimin ötesinde: {{terms}}.",
+          "more": "ve {{hidden}} terim daha"
         },
         "noTermSent": {
           "title": "{{model}} modeline hiçbir terim gönderilmiyor",
@@ -632,14 +633,14 @@
           "line_break": "Satır {{line}}: terimi tek satırda tutun",
           "forbidden_character": "Satır {{line}}: < > veya \" karakterlerini kaldırın",
           "duplicate": "Satır {{line}}: önceki bir terimle aynı",
-          "over_capacity": "Satır {{line}}: 500 terim sınırını aşıyor"
+          "over_capacity": "Satır {{line}}: 5.000 terim sınırını aşıyor"
         },
         "note": {
           "empty": "Terimleri ekleyene kadar kelime dağarcığınız değişmez.",
           "checking": "Satırlar kontrol ediliyor…",
           "fixOne": "Terimleri eklemek için {{lines}}. satırı düzeltin. Kelime dağarcığınız değişmedi.",
           "fixMany": "Terimleri eklemek için şu satırları düzeltin: {{lines}}. Kelime dağarcığınız değişmedi.",
-          "overCapacity": "Kelime dağarcığı en fazla 500 terim içerir. Eklemek için listeyi kısaltın. Kelime dağarcığınız değişmedi.",
+          "overCapacity": "Kelime dağarcığı en fazla 5.000 terim içerir. Eklemek için listeyi kısaltın. Kelime dağarcığınız değişmedi.",
           "nothingToAdd": "Her satır zaten kelime dağarcığında.",
           "ready": "Yinelenenler atlanır. Terimleri ekleyene kadar hiçbir şey kaydedilmez."
         },

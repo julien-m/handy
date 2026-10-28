@@ -548,7 +548,7 @@
         "line_break": "Contiene un salto de línea, no se envía. Elimínalo y vuelve a agregarlo.",
         "forbidden_character": "Contiene < > o \", no se envía. Elimínalo y agrégalo sin estos caracteres.",
         "duplicate": "Igual que un término anterior, no se envía. Elimínalo.",
-        "over_capacity": "Supera el límite de 500 términos, no se envía hasta que la lista sea más corta.",
+        "over_capacity": "Supera el límite de 5000 términos, no se envía hasta que la lista sea más corta.",
         "over_budget": "No se envía: supera el límite del modelo."
       },
       "errors": {
@@ -557,7 +557,7 @@
         "term_line_break": "Un término debe caber en una sola línea.",
         "term_forbidden_character": "Quita los caracteres < > o \" del término.",
         "term_duplicate": "Cada término puede aparecer una sola vez, y este ya está en el vocabulario.",
-        "limit": "El vocabulario admite como máximo 500 términos. Elimina un término para agregar otro.",
+        "limit": "El vocabulario admite como máximo 5000 términos. Elimina un término para agregar otro.",
         "conflict": "El vocabulario cambió mientras tanto y se volvió a cargar. Inténtalo de nuevo.",
         "notFound": "Este término ya se había eliminado. El vocabulario se volvió a cargar.",
         "unknown": "Handy no pudo confirmar el cambio. El vocabulario se volvió a cargar; revísalo antes de intentarlo de nuevo.",
@@ -576,7 +576,8 @@
           "over_budget": "No enviados, superan el límite del modelo: {{terms}}.",
           "invalid": "No enviados, no válidos: {{terms}}.",
           "duplicate": "No enviados, duplicados: {{terms}}.",
-          "over_capacity": "No enviados, más allá de 500 términos: {{terms}}."
+          "over_capacity": "No enviados, más allá de 5000 términos: {{terms}}.",
+          "more": "y {{hidden}} más"
         },
         "noTermSent": {
           "title": "{{model}} no recibe ningún término",
@@ -632,14 +633,14 @@
           "line_break": "Línea {{line}}: mantén el término en una sola línea",
           "forbidden_character": "Línea {{line}}: quita los caracteres < > o \"",
           "duplicate": "Línea {{line}}: igual que un término anterior",
-          "over_capacity": "Línea {{line}}: supera el límite de 500 términos"
+          "over_capacity": "Línea {{line}}: supera el límite de 5000 términos"
         },
         "note": {
           "empty": "Tu vocabulario no cambia hasta que agregues los términos.",
           "checking": "Comprobando las líneas…",
           "fixOne": "Corrige la línea {{lines}} para agregar los términos. Tu vocabulario no ha cambiado.",
           "fixMany": "Corrige las líneas {{lines}} para agregar los términos. Tu vocabulario no ha cambiado.",
-          "overCapacity": "El vocabulario admite como máximo 500 términos. Acorta la lista para agregarla. Tu vocabulario no ha cambiado.",
+          "overCapacity": "El vocabulario admite como máximo 5000 términos. Acorta la lista para agregarla. Tu vocabulario no ha cambiado.",
           "nothingToAdd": "Todas las líneas ya están en el vocabulario.",
           "ready": "Los duplicados se omiten. No se guarda nada hasta que agregues los términos."
         },

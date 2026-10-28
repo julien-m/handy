@@ -548,7 +548,7 @@
         "line_break": "Zawiera podział wiersza, niewysłany. Usuń go i dodaj ponownie.",
         "forbidden_character": "Zawiera < > lub \", niewysłany. Usuń go i dodaj bez tych znaków.",
         "duplicate": "Taki sam jak wcześniejszy termin, niewysłany. Usuń go.",
-        "over_capacity": "Poza limitem 500 terminów, niewysyłany, dopóki lista nie będzie krótsza.",
+        "over_capacity": "Poza limitem 5000 terminów, niewysyłany, dopóki lista nie będzie krótsza.",
         "over_budget": "Niewysłany: przekracza limit modelu."
       },
       "errors": {
@@ -557,7 +557,7 @@
         "term_line_break": "Termin musi mieścić się w jednym wierszu.",
         "term_forbidden_character": "Usuń z terminu znaki < > lub \".",
         "term_duplicate": "Każdy termin może wystąpić tylko raz, a ten jest już w słownictwie.",
-        "limit": "Słownictwo może zawierać najwyżej 500 terminów. Usuń termin, aby dodać inny.",
+        "limit": "Słownictwo może zawierać najwyżej 5000 terminów. Usuń termin, aby dodać inny.",
         "conflict": "Słownictwo zmieniło się w międzyczasie i zostało wczytane ponownie. Spróbuj ponownie.",
         "notFound": "Ten termin został już usunięty. Słownictwo zostało wczytane ponownie.",
         "unknown": "Handy nie mógł potwierdzić zmiany. Słownictwo zostało wczytane ponownie; sprawdź je przed ponowną próbą.",
@@ -576,7 +576,8 @@
           "over_budget": "Niewysłane, przekraczają limit modelu: {{terms}}.",
           "invalid": "Niewysłane, nieprawidłowe: {{terms}}.",
           "duplicate": "Niewysłane, duplikaty: {{terms}}.",
-          "over_capacity": "Niewysłane, poza limitem 500 terminów: {{terms}}."
+          "over_capacity": "Niewysłane, poza limitem 5000 terminów: {{terms}}.",
+          "more": "i jeszcze {{hidden}}"
         },
         "noTermSent": {
           "title": "{{model}} nie otrzymuje żadnego terminu",
@@ -632,14 +633,14 @@
           "line_break": "Wiersz {{line}}: zachowaj termin w jednym wierszu",
           "forbidden_character": "Wiersz {{line}}: usuń znaki < > lub \"",
           "duplicate": "Wiersz {{line}}: taki sam jak wcześniejszy termin",
-          "over_capacity": "Wiersz {{line}}: poza limitem 500 terminów"
+          "over_capacity": "Wiersz {{line}}: poza limitem 5000 terminów"
         },
         "note": {
           "empty": "Twoje słownictwo pozostanie bez zmian, dopóki nie dodasz terminów.",
           "checking": "Sprawdzanie wierszy…",
           "fixOne": "Popraw wiersz {{lines}}, aby dodać terminy. Twoje słownictwo nie zostało zmienione.",
           "fixMany": "Popraw wiersze {{lines}}, aby dodać terminy. Twoje słownictwo nie zostało zmienione.",
-          "overCapacity": "Słownictwo może zawierać najwyżej 500 terminów. Skróć listę, aby ją dodać. Twoje słownictwo nie zostało zmienione.",
+          "overCapacity": "Słownictwo może zawierać najwyżej 5000 terminów. Skróć listę, aby ją dodać. Twoje słownictwo nie zostało zmienione.",
           "nothingToAdd": "Każdy wiersz jest już w słownictwie.",
           "ready": "Duplikaty są pomijane. Nic nie zostanie zapisane, dopóki nie dodasz terminów."
         },

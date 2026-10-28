@@ -2,7 +2,9 @@
 //! correction threshold survive the upgrade and unrelated writes (SC-002), refusals and stale
 //! revisions leave the file untouched, a bulk paste commits atomically once, and no-ops write
 //! nothing.
-use handy_app_lib::recognition_vocabulary::{edits::VocabularyEdit, preview::ImportMode};
+use handy_app_lib::recognition_vocabulary::{
+    edits::VocabularyEdit, preview::ImportMode, validation::MAX_TERMS,
+};
 use handy_app_lib::settings_service::{
     errors::{ErrorReason, SettingsErrorCode},
     live::LiveSettings,
@@ -56,7 +58,8 @@ fn legacy_words() -> Value {
         json!("  spaced  "),
         json!(""),
     ];
-    words.extend((0..498).map(|index| json!(format!("term {index}"))));
+    // Five legacy entries and `MAX_TERMS - 2` terms: three occurrences over the limit.
+    words.extend((0..MAX_TERMS - 2).map(|index| json!(format!("term {index}"))));
     Value::Array(words)
 }
 fn commit(
@@ -109,7 +112,7 @@ fn removal_shrinks_an_over_capacity_legacy_list_one_occurrence_at_a_time() -> Te
     let words = store.disk()?["settings"]["custom_words"].clone();
     assert_eq!(words[0], "Handy");
     assert_eq!(words[1], "<legacy>");
-    assert_eq!(words.as_array().map(Vec::len), Some(502));
+    assert_eq!(words.as_array().map(Vec::len), Some(MAX_TERMS + 2));
     Ok(())
 }
 

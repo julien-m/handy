@@ -14,6 +14,7 @@ fn key(mode: ShortcutActivation, is_pressed: bool, external: bool) -> InputEvent
         mode,
         hold_threshold: Duration::from_millis(300),
         external,
+        received_at: Instant::now(),
     }
 }
 
@@ -40,12 +41,17 @@ fn a_key_down_handled_before_the_request_refuses_the_lease() {
     let t0 = Instant::now();
     let (mut state, mut gate) = (CoordinatorState::new(), InputGate::default());
     let press = key(ShortcutActivation::PushToTalk, true, false);
-    let effect = dispatch(&mut state, &mut gate, Command::Input(press), t0);
+    let effect = dispatch(&mut state, &mut gate, Command::Input(press.at(t0)), t0);
     assert!(matches!(effect, Some(Effect::Start { .. })));
     assert!(!quiesce(&mut state, &mut gate, t0 + ms(1)));
     // The owner's release still ends the session: nothing was gated.
     let release = key(ShortcutActivation::PushToTalk, false, false);
-    dispatch(&mut state, &mut gate, Command::Input(release), t0 + ms(100));
+    dispatch(
+        &mut state,
+        &mut gate,
+        Command::Input(release.at(t0 + ms(100))),
+        t0 + ms(100),
+    );
     assert!(state.pending_release.is_some());
 }
 
@@ -56,14 +62,19 @@ fn a_key_down_during_the_lease_is_gated_and_its_release_ignored() {
     assert!(quiesce(&mut state, &mut gate, t0));
     let press = key(ShortcutActivation::PushToTalk, true, false);
     assert_eq!(
-        dispatch(&mut state, &mut gate, Command::Input(press), t0),
+        dispatch(&mut state, &mut gate, Command::Input(press.at(t0)), t0),
         None
     );
     assert!(state.is_quiescent());
     dispatch(&mut state, &mut gate, Command::Resume, t0 + ms(5));
     let release = key(ShortcutActivation::PushToTalk, false, false);
     assert_eq!(
-        dispatch(&mut state, &mut gate, Command::Input(release), t0 + ms(40)),
+        dispatch(
+            &mut state,
+            &mut gate,
+            Command::Input(release.at(t0 + ms(40))),
+            t0 + ms(40)
+        ),
         None
     );
     assert_eq!(state.stage, Stage::Idle);
@@ -75,7 +86,7 @@ fn external_triggers_pass_the_gate_and_input_resumes_after_release() {
     let (mut state, mut gate) = (CoordinatorState::new(), InputGate::default());
     assert!(quiesce(&mut state, &mut gate, t0));
     let external = key(ShortcutActivation::Toggle, true, true);
-    let effect = dispatch(&mut state, &mut gate, Command::Input(external), t0);
+    let effect = dispatch(&mut state, &mut gate, Command::Input(external.at(t0)), t0);
     assert!(matches!(effect, Some(Effect::Start { .. })));
     dispatch(&mut state, &mut gate, Command::Resume, t0 + ms(1));
     assert!(gate.admits(false));
@@ -91,7 +102,7 @@ fn every_session_state_refuses_the_lease() {
     let mut remembered = CoordinatorState::new();
     let toggle = key(ShortcutActivation::Toggle, true, false);
     remembered.stage = Stage::Processing;
-    remembered.on_input(toggle, t0);
+    remembered.feed(toggle, t0);
     remembered.stage = Stage::Idle;
     assert!(remembered.pending_press.is_some());
     assert!(!quiesce(&mut remembered, &mut gate, t0));

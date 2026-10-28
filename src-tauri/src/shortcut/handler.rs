@@ -5,13 +5,14 @@
 
 use log::warn;
 use std::sync::Arc;
+use std::time::Instant;
 use tauri::{AppHandle, Manager};
 
 use super::identity::ShortcutRegistration;
 use crate::actions::ACTION_MAP;
 use crate::managers::audio::AudioRecordingManager;
 use crate::settings::get_settings;
-use crate::transcription_coordinator::is_transcribe_binding;
+use crate::transcription_coordinator::{is_transcribe_binding, KeyEdge};
 use crate::TranscriptionCoordinator;
 
 /// Handle a shortcut event from either implementation.
@@ -27,17 +28,21 @@ use crate::TranscriptionCoordinator;
 /// * `registration` - The action and the shortcut of that action that fired
 /// * `hotkey_string` - The string representation of the hotkey
 /// * `is_pressed` - Whether this is a key press (true) or release (false)
+/// * `received_at` - When the backend received the edge; the coordinator
+///   measures hold durations between these instants (native session N13).
+///   Other actions run at once and do not use it.
 pub fn handle_shortcut_event(
     app: &AppHandle,
     registration: &ShortcutRegistration,
     hotkey_string: &str,
     is_pressed: bool,
+    received_at: Instant,
 ) {
     let binding_id = registration.action_id.as_str();
 
     // Transcribe bindings are handled by the coordinator.
     if is_transcribe_binding(binding_id) {
-        send_to_coordinator(app, registration, hotkey_string, is_pressed);
+        send_to_coordinator(app, registration, hotkey_string, is_pressed, received_at);
         return;
     }
 
@@ -78,17 +83,22 @@ fn send_to_coordinator(
     registration: &ShortcutRegistration,
     hotkey_string: &str,
     is_pressed: bool,
+    received_at: Instant,
 ) {
     let Some(coordinator) = app.try_state::<TranscriptionCoordinator>() else {
         warn!("TranscriptionCoordinator is not initialized");
         return;
     };
     let settings = get_settings(app);
-    coordinator.send_input(
-        &registration.action_id,
-        &registration.shortcut_id,
+    let edge = KeyEdge {
+        binding_id: &registration.action_id,
+        shortcut_id: &registration.shortcut_id,
         hotkey_string,
         is_pressed,
+        received_at,
+    };
+    coordinator.send_input(
+        edge,
         settings.shortcut_activation,
         std::time::Duration::from_millis(settings.hold_threshold_ms),
     );

@@ -548,7 +548,7 @@
         "line_break": "Contient un saut de ligne, non envoyé. Supprimez-le et ajoutez-le de nouveau.",
         "forbidden_character": "Contient < > ou \", non envoyé. Supprimez-le et ajoutez-le sans ces caractères.",
         "duplicate": "Identique à un terme précédent, non envoyé. Supprimez-le.",
-        "over_capacity": "Au-delà de la limite de 500 termes, non envoyé tant que la liste n’est pas plus courte.",
+        "over_capacity": "Au-delà de la limite de 5 000 termes, non envoyé tant que la liste n’est pas plus courte.",
         "over_budget": "Non envoyé : dépasse la limite du modèle."
       },
       "errors": {
@@ -557,7 +557,7 @@
         "term_line_break": "Un terme doit tenir sur une seule ligne.",
         "term_forbidden_character": "Retirez les caractères < > ou \" du terme.",
         "term_duplicate": "Chaque terme ne peut figurer qu’une fois, et celui-ci est déjà dans le vocabulaire.",
-        "limit": "Le vocabulaire contient au maximum 500 termes. Supprimez un terme pour en ajouter un autre.",
+        "limit": "Le vocabulaire contient au maximum 5 000 termes. Supprimez un terme pour en ajouter un autre.",
         "conflict": "Le vocabulaire a changé entre-temps et a été rechargé. Réessayez.",
         "notFound": "Ce terme a déjà été supprimé. Le vocabulaire a été rechargé.",
         "unknown": "Handy n’a pas pu confirmer la modification. Le vocabulaire a été rechargé ; vérifiez-le avant de réessayer.",
@@ -576,7 +576,8 @@
           "over_budget": "Non envoyés, au-delà de la limite du modèle : {{terms}}.",
           "invalid": "Non envoyés, non valides : {{terms}}.",
           "duplicate": "Non envoyés, doublons : {{terms}}.",
-          "over_capacity": "Non envoyés, au-delà de 500 termes : {{terms}}."
+          "over_capacity": "Non envoyés, au-delà de 5 000 termes : {{terms}}.",
+          "more": "et {{hidden}} de plus"
         },
         "noTermSent": {
           "title": "{{model}} ne reçoit aucun terme",
@@ -632,14 +633,14 @@
           "line_break": "Ligne {{line}} : gardez le terme sur une seule ligne",
           "forbidden_character": "Ligne {{line}} : retirez les caractères < > ou \"",
           "duplicate": "Ligne {{line}} : identique à un terme précédent",
-          "over_capacity": "Ligne {{line}} : au-delà de la limite de 500 termes"
+          "over_capacity": "Ligne {{line}} : au-delà de la limite de 5 000 termes"
         },
         "note": {
           "empty": "Votre vocabulaire reste inchangé tant que vous n’ajoutez pas les termes.",
           "checking": "Vérification des lignes…",
           "fixOne": "Corrigez la ligne {{lines}} pour ajouter les termes. Votre vocabulaire n’a pas changé.",
           "fixMany": "Corrigez les lignes {{lines}} pour ajouter les termes. Votre vocabulaire n’a pas changé.",
-          "overCapacity": "Le vocabulaire contient au maximum 500 termes. Raccourcissez la liste pour l’ajouter. Votre vocabulaire n’a pas changé.",
+          "overCapacity": "Le vocabulaire contient au maximum 5 000 termes. Raccourcissez la liste pour l’ajouter. Votre vocabulaire n’a pas changé.",
           "nothingToAdd": "Toutes les lignes figurent déjà dans le vocabulaire.",
           "ready": "Les doublons sont ignorés. Rien n’est enregistré tant que vous n’ajoutez pas les termes."
         },
