@@ -30,7 +30,14 @@ const commitCurrentView = (): Promise<boolean> =>
     ? useReplacementEditor.getState().save()
     : useReplacementText.getState().apply();
 
-export const useDraftGate = (): DraftGate => {
+/**
+ * Guard of the editor's transitions and its dialog.
+ * @param returnFocusRef takes the focus when the dialog closes and its trigger is gone (N5)
+ * @returns the guarded transition and the dialog element
+ */
+export const useDraftGate = (
+  returnFocusRef: React.RefObject<HTMLElement | null>,
+): DraftGate => {
   const [pending, setPending] = useState<PendingTransition | null>(null);
   const controller = useMemo(
     () =>
@@ -49,6 +56,7 @@ export const useDraftGate = (): DraftGate => {
       onCancel={controller.cancel}
       onDiscard={controller.discard}
       onSave={controller.save}
+      returnFocusRef={returnFocusRef}
     />
   );
   return { gate: controller.request, dialog };
@@ -59,6 +67,7 @@ interface SaveOrDiscardDialogProps {
   onCancel: () => void;
   onDiscard: () => void;
   onSave: () => Promise<void>;
+  returnFocusRef?: React.RefObject<HTMLElement | null>;
 }
 
 /** Whether the current view (list or text) can be saved or applied right now. */
@@ -81,6 +90,7 @@ const SaveOrDiscardDialog: React.FC<SaveOrDiscardDialogProps> = (props) => {
       title={t("settings.replacements.switchDialog.title")}
       closeLabel={t("settings.replacements.switchDialog.cancel")}
       dismissible={!busy}
+      returnFocusRef={props.returnFocusRef}
       onOpenChange={(open) => {
         if (!open) props.onCancel();
       }}
@@ -133,7 +143,10 @@ const FooterButton: React.FC<FooterButtonProps> = (props) => (
 
 /** Cancel, Discard and Save, all inactive while the commit runs. */
 const SaveOrDiscardFooter: React.FC<
-  Omit<SaveOrDiscardDialogProps, "open"> & { savable: boolean; busy: boolean }
+  Omit<SaveOrDiscardDialogProps, "open" | "returnFocusRef"> & {
+    savable: boolean;
+    busy: boolean;
+  }
 > = ({ onCancel, onDiscard, onSave, savable, busy }) => {
   const { t } = useTranslation();
   const label = (key: string) => t(`settings.replacements.switchDialog.${key}`);

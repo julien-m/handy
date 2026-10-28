@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Dostęp do dostępności",
-        "description": "Wymagany do wpisywania transkrybowanego tekstu w Twoich aplikacjach."
+        "description": "Wymagany do wpisywania transkrybowanego tekstu w Twoich aplikacjach.",
+        "openSettings": "Otwórz Ustawienia systemowe",
+        "retry": "Spróbuj ponownie",
+        "alreadyCheckedHint": "Jeśli Handy jest już zaznaczony, usuń go, a następnie dodaj ponownie."
       },
       "grant": "Przyznaj uprawnienie",
       "granted": "Przyznano",
@@ -221,6 +224,9 @@
           },
           "changeButton": "Zmień",
           "discard": "Odrzuć ten skrót",
+          "discardDraft": "Odrzuć",
+          "save": "Zapisz",
+          "unsaved": "Niezapisany",
           "lastHint": "Każda akcja zachowuje co najmniej jeden skrót. Zamiast tego zmień go lub przywróć.",
           "limitHint": "{{count}} z {{limit}} skrótów. Usuń jeden, aby dodać inny.",
           "draftConflict": "{{shortcut}} jest już używany przez {{action}}. Nic nie zostało zapisane.",
@@ -306,7 +312,6 @@
           "none": "Brak"
         },
         "draft": {
-          "note": "Niezapisane zmiany. Dopóki nie zapiszesz, następne nagranie użyje zapisanej kolejności.",
           "discard": "Odrzuć",
           "save": "Zapisz",
           "saving": "Zapisywanie…",

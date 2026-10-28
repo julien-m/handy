@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Acceso de accesibilidad",
-        "description": "Necesario para escribir el texto transcrito en tus aplicaciones."
+        "description": "Necesario para escribir el texto transcrito en tus aplicaciones.",
+        "openSettings": "Abrir Ajustes del Sistema",
+        "retry": "Reintentar",
+        "alreadyCheckedHint": "Si Handy ya está marcado, quítalo y vuelve a añadirlo."
       },
       "grant": "Conceder permiso",
       "granted": "Concedido",
@@ -221,6 +224,9 @@
           },
           "changeButton": "Cambiar",
           "discard": "Descartar este atajo",
+          "discardDraft": "Descartar",
+          "save": "Guardar",
+          "unsaved": "Sin guardar",
           "lastHint": "Cada acción conserva al menos un atajo. Cámbialo o restablécelo.",
           "limitHint": "{{count}} de {{limit}} atajos. Elimina uno para añadir otro.",
           "draftConflict": "{{shortcut}} ya lo usa {{action}}. No se guardó nada.",
@@ -306,7 +312,6 @@
           "none": "Ninguno"
         },
         "draft": {
-          "note": "Cambios sin guardar. Hasta que guardes, la próxima grabación usará el orden guardado.",
           "discard": "Descartar",
           "save": "Guardar",
           "saving": "Guardando…",

@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Accesso all'Accessibilità",
-        "description": "Necessario per digitare il testo trascritto nelle tue applicazioni."
+        "description": "Necessario per digitare il testo trascritto nelle tue applicazioni.",
+        "openSettings": "Apri Impostazioni di Sistema",
+        "retry": "Riprova",
+        "alreadyCheckedHint": "Se Handy è già selezionato, rimuovilo e aggiungilo di nuovo."
       },
       "grant": "Concedi Permesso",
       "granted": "Concesso",
@@ -221,6 +224,9 @@
           },
           "changeButton": "Modifica",
           "discard": "Scarta questa scorciatoia",
+          "discardDraft": "Scarta",
+          "save": "Salva",
+          "unsaved": "Non salvato",
           "lastHint": "Ogni azione mantiene almeno una scorciatoia. Modificala o reimpostala.",
           "limitHint": "{{count}} scorciatoie su {{limit}}. Rimuovine una per aggiungerne un'altra.",
           "draftConflict": "{{shortcut}} è già usata da {{action}}. Non è stato salvato nulla.",
@@ -306,7 +312,6 @@
           "none": "Nessuno"
         },
         "draft": {
-          "note": "Modifiche non salvate. Finché non salvi, la prossima registrazione usa l'ordine salvato.",
           "discard": "Scarta",
           "save": "Salva",
           "saving": "Salvataggio…",

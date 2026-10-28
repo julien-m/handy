@@ -1,5 +1,29 @@
 # Changelog - 002-word-replacements
 
+## 2026-10-28 — [Bugfix]: Keyboard focus given back after Done, Save, Discard and dialogs (native session N5)
+
+- **Type:** Bugfix (finding N5 of the native proof session of 2026-10-28)
+- **Spec modified:** No
+- **Code modified:** src/components/ui/{focus-return.ts (new), Dialog.tsx, SettingsGroup.tsx}; src/components/settings/word-replacements/{word-replacements.tsx, rule-row.tsx, import-dialog.tsx, draft-gate.tsx}; same rescue in src/components/settings/CustomWords.tsx (003) and src/components/settings/post-processing/prompt-editor.tsx (005); tests/word-replacements-focus.spec.ts
+- **AC impacted:** none certified (keyboard focus)
+- **Author:** Claude Code (native session fixes)
+
+## 2026-10-28 — [Bugfix]: The refused-import alert sits under the Replacements title (native session N6)
+
+- **Type:** Bugfix (finding N6 of the native proof session of 2026-10-28)
+- **Spec modified:** No
+- **Code modified:** src/components/settings/word-replacements/word-replacements.tsx; tests/word-replacements-focus.spec.ts and tests/harness/word-replacements{.html,.tsx,-fake.ts} (new)
+- **AC impacted:** AC-005 (import), presentation only
+- **Author:** Claude Code (native session fixes)
+
+## 2026-10-28 — [Bugfix]: The settings window scrolls only its content (native session N4)
+
+- **Type:** Bugfix (finding N4 of the native proof session of 2026-10-28, transverse, observed on the Advanced page)
+- **Spec modified:** No
+- **Code modified:** src/components/settings-window-layout.tsx (new), src/App.tsx; tests/settings-window.spec.ts and tests/harness/settings-window.{html,tsx} (new)
+- **AC impacted:** none (window frame)
+- **Author:** Claude Code (native session fixes)
+
 ## 2026-10-14 — [Bugfix]: UI hardening of the replacement editor (guard dialog during a commit, Input, late checks)
 
 - **Type:** Bugfix (warnings of the UI delivery review round 2 and its audit, both PASS)

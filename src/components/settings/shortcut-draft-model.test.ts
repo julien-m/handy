@@ -9,6 +9,7 @@ import {
   addControlState,
   canCommit,
   draftReducer,
+  listControls,
   recorderValidity,
 } from "./shortcut-draft-model";
 
@@ -179,5 +180,67 @@ describe("recorder refused to start (macOS Secure Input)", () => {
         failure: SECURE_INPUT,
       }),
     ).toEqual(CLOSED_DRAFT);
+  });
+});
+
+describe("controls under the list (native session N8)", () => {
+  test("without a draft: Add, Reset enabled, no Discard", () => {
+    expect(listControls(CLOSED_DRAFT, true, false)).toEqual({
+      mode: "add",
+      submit: "enabled",
+      canDiscard: false,
+      isBlocked: false,
+      isResetEnabled: true,
+    });
+  });
+
+  test("an empty draft: Save unavailable, Discard offered, Reset disabled", () => {
+    expect(listControls(run({ type: "open" }), true, false)).toEqual({
+      mode: "draft",
+      submit: "disabled",
+      canDiscard: true,
+      isBlocked: false,
+      isResetEnabled: false,
+    });
+  });
+
+  test("a valid draft can be saved, never reset", () => {
+    const controls = listControls(checked(null), true, false);
+    expect(controls.mode).toBe("draft");
+    expect(controls.submit).toBe("enabled");
+    expect(controls.isResetEnabled).toBe(false);
+  });
+
+  test("an invalid draft cannot be saved but can be discarded", () => {
+    const controls = listControls(checked(CONFLICT), true, false);
+    expect(controls.submit).toBe("disabled");
+    expect(controls.canDiscard).toBe(true);
+  });
+
+  test("a draft being saved shows Save loading and offers no Discard", () => {
+    const saving = draftReducer(checked(null), { type: "commit" });
+    expect(listControls(saving, true, false)).toEqual({
+      mode: "draft",
+      submit: "loading",
+      canDiscard: false,
+      isBlocked: false,
+      isResetEnabled: false,
+    });
+  });
+
+  test("another edit in progress disables Reset and Add", () => {
+    const controls = listControls(CLOSED_DRAFT, true, true);
+    expect(controls.submit).toBe("disabled");
+    expect(controls.isResetEnabled).toBe(false);
+  });
+
+  test("a recorder refused by the system is blocked, with Discard offered", () => {
+    const blocked = run(
+      { type: "open" },
+      { type: "startFailed", failure: { kind: "secure_input" } },
+    );
+    const controls = listControls(blocked, true, false);
+    expect(controls.isBlocked).toBe(true);
+    expect(controls.canDiscard).toBe(true);
   });
 });

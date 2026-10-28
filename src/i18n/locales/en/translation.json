@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Accessibility Access",
-        "description": "Required to type transcribed text into your applications."
+        "description": "Required to type transcribed text into your applications.",
+        "openSettings": "Open System Settings",
+        "retry": "Try again",
+        "alreadyCheckedHint": "If Handy is already checked, remove it, then add it again."
       },
       "grant": "Grant Permission",
       "granted": "Granted",
@@ -201,6 +204,9 @@
           },
           "changeButton": "Change",
           "discard": "Discard this shortcut",
+          "discardDraft": "Discard",
+          "save": "Save",
+          "unsaved": "Not saved",
           "lastHint": "Each action keeps at least one shortcut. Change or reset it instead.",
           "limitHint": "{{count}} of {{limit}} shortcuts. Remove one to add another.",
           "draftConflict": "{{shortcut}} is already used by {{action}}. Nothing was saved.",
@@ -306,7 +312,6 @@
           "none": "None"
         },
         "draft": {
-          "note": "Unsaved changes. The next recording uses the saved order until you save.",
           "discard": "Discard",
           "save": "Save",
           "saving": "Saving…",

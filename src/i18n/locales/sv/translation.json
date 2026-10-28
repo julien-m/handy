@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Hjälpmedelsåtkomst",
-        "description": "Krävs för att skriva transkriberad text i dina program."
+        "description": "Krävs för att skriva transkriberad text i dina program.",
+        "openSettings": "Öppna Systeminställningar",
+        "retry": "Försök igen",
+        "alreadyCheckedHint": "Om Handy redan är markerad tar du bort den och lägger till den igen."
       },
       "grant": "Bevilja behörighet",
       "granted": "Beviljad",
@@ -201,6 +204,9 @@
           },
           "changeButton": "Ändra",
           "discard": "Släng detta kortkommando",
+          "discardDraft": "Förkasta",
+          "save": "Spara",
+          "unsaved": "Inte sparad",
           "lastHint": "Varje åtgärd behåller minst ett kortkommando. Ändra eller återställ det i stället.",
           "limitHint": "{{count}} av {{limit}} kortkommandon. Ta bort ett för att lägga till ett annat.",
           "draftConflict": "{{shortcut}} används redan av {{action}}. Inget sparades.",
@@ -306,7 +312,6 @@
           "none": "Ingen"
         },
         "draft": {
-          "note": "Osparade ändringar. Tills du sparar använder nästa inspelning den sparade ordningen.",
           "discard": "Förkasta",
           "save": "Spara",
           "saving": "Sparar…",

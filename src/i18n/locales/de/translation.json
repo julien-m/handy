@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Bedienungshilfen-Zugriff",
-        "description": "Erforderlich, um transkribierten Text in deine Anwendungen einzugeben."
+        "description": "Erforderlich, um transkribierten Text in deine Anwendungen einzugeben.",
+        "openSettings": "Systemeinstellungen öffnen",
+        "retry": "Erneut versuchen",
+        "alreadyCheckedHint": "Wenn Handy bereits aktiviert ist, entfernen Sie es und fügen Sie es erneut hinzu."
       },
       "grant": "Berechtigung erteilen",
       "granted": "Erteilt",
@@ -221,6 +224,9 @@
           },
           "changeButton": "Ändern",
           "discard": "Dieses Tastenkürzel verwerfen",
+          "discardDraft": "Verwerfen",
+          "save": "Speichern",
+          "unsaved": "Nicht gespeichert",
           "lastHint": "Jede Aktion behält mindestens ein Tastenkürzel. Ändern oder setzen Sie es stattdessen zurück.",
           "limitHint": "{{count}} von {{limit}} Tastenkürzeln. Entfernen Sie eines, um ein weiteres hinzuzufügen.",
           "draftConflict": "{{shortcut}} wird bereits von {{action}} verwendet. Es wurde nichts gespeichert.",
@@ -306,7 +312,6 @@
           "none": "Keines"
         },
         "draft": {
-          "note": "Ungespeicherte Änderungen. Bis Sie speichern, verwendet die nächste Aufnahme die gespeicherte Reihenfolge.",
           "discard": "Verwerfen",
           "save": "Speichern",
           "saving": "Wird gespeichert…",

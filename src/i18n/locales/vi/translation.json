@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Quyền truy cập Trợ năng",
-        "description": "Cần thiết để nhập văn bản đã chuyển đổi vào các ứng dụng của bạn."
+        "description": "Cần thiết để nhập văn bản đã chuyển đổi vào các ứng dụng của bạn.",
+        "openSettings": "Mở Cài đặt hệ thống",
+        "retry": "Thử lại",
+        "alreadyCheckedHint": "Nếu Handy đã được chọn, hãy xóa rồi thêm lại."
       },
       "grant": "Cấp quyền",
       "granted": "Đã cấp",
@@ -221,6 +224,9 @@
           },
           "changeButton": "Thay đổi",
           "discard": "Bỏ phím tắt này",
+          "discardDraft": "Hủy bỏ",
+          "save": "Lưu",
+          "unsaved": "Chưa lưu",
           "lastHint": "Mỗi thao tác luôn giữ ít nhất một phím tắt. Hãy thay đổi hoặc đặt lại phím tắt đó.",
           "limitHint": "{{count}}/{{limit}} phím tắt. Hãy xóa một phím tắt để thêm phím khác.",
           "draftConflict": "{{shortcut}} đã được {{action}} sử dụng. Chưa có gì được lưu.",
@@ -306,7 +312,6 @@
           "none": "Không có"
         },
         "draft": {
-          "note": "Thay đổi chưa lưu. Cho đến khi bạn lưu, lần ghi âm tiếp theo dùng thứ tự đã lưu.",
           "discard": "Hủy bỏ",
           "save": "Lưu",
           "saving": "Đang lưu…",

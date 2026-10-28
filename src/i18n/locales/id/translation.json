@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Izin Aksesibilitas",
-        "description": "Diperlukan untuk mengetik teks hasil transkripsi ke aplikasi Anda."
+        "description": "Diperlukan untuk mengetik teks hasil transkripsi ke aplikasi Anda.",
+        "openSettings": "Buka Pengaturan Sistem",
+        "retry": "Coba lagi",
+        "alreadyCheckedHint": "Jika Handy sudah dicentang, hapus lalu tambahkan lagi."
       },
       "grant": "Berikan Izin",
       "granted": "Diizinkan",
@@ -201,6 +204,9 @@
           },
           "changeButton": "Ubah",
           "discard": "Buang pintasan ini",
+          "discardDraft": "Buang",
+          "save": "Simpan",
+          "unsaved": "Belum disimpan",
           "lastHint": "Setiap tindakan menyimpan setidaknya satu pintasan. Ubah atau atur ulang pintasan itu.",
           "limitHint": "{{count}} dari {{limit}} pintasan. Hapus satu untuk menambahkan yang lain.",
           "draftConflict": "{{shortcut}} sudah digunakan oleh {{action}}. Tidak ada yang disimpan.",
@@ -306,7 +312,6 @@
           "none": "Tidak ada"
         },
         "draft": {
-          "note": "Perubahan belum disimpan. Sampai Anda menyimpan, rekaman berikutnya memakai urutan yang tersimpan.",
           "discard": "Buang",
           "save": "Simpan",
           "saving": "Menyimpan…",

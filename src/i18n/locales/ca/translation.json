@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Accés a l'accessibilitat",
-        "description": "Necessari per escriure el text transcrit a les aplicacions."
+        "description": "Necessari per escriure el text transcrit a les aplicacions.",
+        "openSettings": "Obre la Configuració del Sistema",
+        "retry": "Torna-ho a provar",
+        "alreadyCheckedHint": "Si Handy ja està marcat, elimineu-lo i torneu-lo a afegir."
       },
       "grant": "Concediu el permís",
       "granted": "Concedit",
@@ -201,6 +204,9 @@
           },
           "changeButton": "Canvia",
           "discard": "Descarta aquesta drecera",
+          "discardDraft": "Descarta",
+          "save": "Desa",
+          "unsaved": "No desat",
           "lastHint": "Cada acció conserva almenys una drecera. Canvieu-la o restabliu-la.",
           "limitHint": "{{count}} de {{limit}} dreceres. Elimineu-ne una per afegir-ne una altra.",
           "draftConflict": "{{shortcut}} ja l'utilitza {{action}}. No s'ha desat res.",
@@ -306,7 +312,6 @@
           "none": "Cap"
         },
         "draft": {
-          "note": "Canvis sense desar. Fins que no deseu, el proper enregistrament fa servir l'ordre desat.",
           "discard": "Descarta",
           "save": "Desa",
           "saving": "S'està desant…",

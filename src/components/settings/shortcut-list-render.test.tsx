@@ -54,8 +54,11 @@ const { ShortcutList } = await import("./shortcut-list");
 const { LegacyConflictAlert, SystemRefusalAlert } = await import(
   "./shortcut-list-alerts"
 );
-const { DraftRow, ListMessages, ShortcutRow } = await import(
+const { AddRow, DraftRow, ListMessages, ShortcutRow } = await import(
   "./shortcut-list-rows"
+);
+const { CLOSED_DRAFT, draftReducer, listControls } = await import(
+  "./shortcut-draft-model"
 );
 const { actOnRecordRequest } = await import("./shortcut-chip");
 const {
@@ -251,7 +254,7 @@ describe("draft recorder", () => {
   });
   const ids = shortcutTestIds("transcribe");
 
-  test("an empty recorder shows the empty state without discard", () => {
+  test("an empty recorder shows the empty state, dashed, without the unsaved label", () => {
     const markup = renderToStaticMarkup(
       <DraftRow
         actionId="transcribe"
@@ -264,12 +267,49 @@ describe("draft recorder", () => {
       markup.includes('data-testid="shortcut-settings-dictation-recording"'),
     ).toBe(true);
     expect(markup.includes('data-validity="empty"')).toBe(true);
+    expect(markup.includes('data-draft="true"')).toBe(true);
+    expect(markup.includes("border-dashed")).toBe(true);
     expect(
-      markup.includes("shortcut-settings-dictation-recording-discard"),
+      markup.includes("shortcut-settings-dictation-recording-unsaved"),
     ).toBe(false);
   });
 
-  test("an invalid recording is marked invalid and can be discarded", () => {
+  test("a captured draft is dashed and labelled Not saved, unlike a stored shortcut", () => {
+    const markup = renderToStaticMarkup(
+      <DraftRow
+        actionId="transcribe"
+        ids={ids}
+        draft={draft("invalid", "command_right")}
+        busy={false}
+      />,
+    );
+    expect(
+      markup.includes(
+        'data-testid="shortcut-settings-dictation-recording-unsaved"',
+      ),
+    ).toBe(true);
+    expect(markup.includes("settings.general.shortcut.list.unsaved")).toBe(
+      true,
+    );
+    expect(markup.includes("border-dashed")).toBe(true);
+    const stored = renderToStaticMarkup(
+      <ShortcutRow
+        actionId="transcribe"
+        shortcut="command_right"
+        ids={ids}
+        hasRemove
+        canRemove
+        busy={false}
+        recordRequest={0}
+        onRequestHandled={() => undefined}
+        onEdit={noop}
+      />,
+    );
+    expect(stored.includes("border-dashed")).toBe(false);
+    expect(stored.includes("data-draft")).toBe(false);
+  });
+
+  test("an invalid recording is marked invalid", () => {
     const markup = renderToStaticMarkup(
       <DraftRow
         actionId="transcribe"
@@ -281,14 +321,9 @@ describe("draft recorder", () => {
     expect(markup.includes('data-validity="invalid"')).toBe(true);
     expect(markup.includes('aria-invalid="true"')).toBe(true);
     expect(markup.includes("border-red-500")).toBe(true);
-    expect(
-      markup.includes(
-        'data-testid="shortcut-settings-dictation-recording-discard"',
-      ),
-    ).toBe(true);
   });
 
-  test("a recorder the system refused to start stays empty and offers Discard", () => {
+  test("a recorder the system refused to start stays empty", () => {
     const markup = renderToStaticMarkup(
       <DraftRow
         actionId="transcribe"
@@ -300,11 +335,80 @@ describe("draft recorder", () => {
     expect(markup.includes('data-phase="blocked"')).toBe(true);
     expect(markup.includes('data-validity="empty"')).toBe(true);
     expect(markup.includes('data-state="idle"')).toBe(true);
+  });
+});
+
+describe("controls under the list during a draft (native session N8)", () => {
+  const ids = shortcutTestIds("transcribe");
+  const captured = draftReducer(
+    draftReducer(draftReducer(CLOSED_DRAFT, { type: "open" }), {
+      type: "captured",
+      shortcut: "command_right",
+    }),
+    { type: "checked", shortcut: "command_right", refusal: null },
+  );
+  const render = (state: typeof CLOSED_DRAFT) => {
+    const controls = listControls(state, true, false);
+    return renderToStaticMarkup(
+      <AddRow
+        ids={ids}
+        controls={controls}
+        isFull={false}
+        onAdd={() => undefined}
+        onSave={() => undefined}
+        onDiscard={() => undefined}
+        onReset={() => undefined}
+        resetDisabled={!controls.isResetEnabled}
+      />,
+    );
+  };
+
+  test("without a draft: Add shortcut, Reset enabled, no Save or Discard", () => {
+    const markup = render(CLOSED_DRAFT);
+    expect(markup.includes("settings.general.shortcut.list.add")).toBe(true);
+    expect(markup.includes("settings.general.shortcut.list.save")).toBe(false);
+    expect(
+      markup.includes("shortcut-settings-dictation-recording-discard"),
+    ).toBe(false);
+    expect(
+      /data-testid="shortcut-settings-dictation-reset"[^>]*disabled/.test(
+        markup,
+      ),
+    ).toBe(false);
+  });
+
+  test("a valid draft: Save and Discard replace Add, Reset is disabled", () => {
+    const markup = render(captured);
+    expect(markup.includes("settings.general.shortcut.list.add<")).toBe(false);
+    expect(
+      markup.includes(
+        'data-testid="shortcut-settings-dictation-add" data-state="enabled"',
+      ),
+    ).toBe(true);
+    expect(markup.includes("settings.general.shortcut.list.save")).toBe(true);
     expect(
       markup.includes(
         'data-testid="shortcut-settings-dictation-recording-discard"',
       ),
     ).toBe(true);
+    expect(markup.includes("settings.general.shortcut.list.discardDraft")).toBe(
+      true,
+    );
+    expect(
+      /<button[^>]*disabled=""[^>]*data-testid="shortcut-settings-dictation-reset"|data-testid="shortcut-settings-dictation-reset"[^>]*disabled=""/.test(
+        markup,
+      ),
+    ).toBe(true);
+  });
+
+  test("an empty draft: Save is unavailable until a valid combination", () => {
+    const markup = render(draftReducer(CLOSED_DRAFT, { type: "open" }));
+    expect(
+      markup.includes(
+        'data-testid="shortcut-settings-dictation-add" data-state="disabled"',
+      ),
+    ).toBe(true);
+    expect(markup.includes("settings.general.shortcut.list.save")).toBe(true);
   });
 });
 

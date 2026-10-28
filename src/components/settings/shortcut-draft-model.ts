@@ -3,7 +3,10 @@
 // saving, and only a valid draft can be added. The settings list renders the
 // recorder and the Add control from these states. A recorder the system
 // refuses to start (macOS Secure Input) leaves the draft "blocked": empty, with
-// the reason shown and Discard as a way out.
+// the reason shown and Discard as a way out. While a draft is open, Add gives
+// way to explicit Save and Discard buttons and Reset is unavailable, so a draft
+// is never mistaken for a saved shortcut nor cleared without a word (native
+// session finding N8).
 import type { ShortcutEditError } from "@/bindings";
 
 /**
@@ -210,4 +213,40 @@ export const addControlState = (
   return state.phase === "closed" || state.phase === "valid"
     ? "enabled"
     : "disabled";
+};
+
+/** Controls under a shortcut list (native session finding N8). */
+export interface ListControls {
+  /** `add` shows "Add shortcut"; `draft` shows Save and Discard instead. */
+  mode: "add" | "draft";
+  /** State of Add, or of Save during a draft: only a valid draft is saved. */
+  submit: AddControlState;
+  /** Discard is offered for an open draft, except while it is being saved. */
+  canDiscard: boolean;
+  /** The recorder could not start (Secure Input): Discard is the way out. */
+  isBlocked: boolean;
+  /** Reset never clears a draft: it waits until the draft is saved or discarded. */
+  isResetEnabled: boolean;
+}
+
+/**
+ * Controls under the list for the current draft.
+ * @param state Current draft.
+ * @param hasRoom Whether the action is below its shortcut limit.
+ * @param isBusy Whether another edit of the action is in progress.
+ * @returns Which buttons show and which are enabled.
+ */
+export const listControls = (
+  state: DraftState,
+  hasRoom: boolean,
+  isBusy: boolean,
+): ListControls => {
+  const isDraftOpen = state.phase !== "closed";
+  return {
+    mode: isDraftOpen ? "draft" : "add",
+    submit: addControlState(state, hasRoom, isBusy),
+    canDiscard: isDraftOpen && state.phase !== "committing",
+    isBlocked: state.phase === "blocked",
+    isResetEnabled: !isDraftOpen && !isBusy,
+  };
 };

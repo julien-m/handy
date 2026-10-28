@@ -17,6 +17,7 @@ import {
   editFromKeyboard,
   expectFocus,
   open,
+  anyScreen,
   order,
   row,
   startHeldSave,
@@ -141,14 +142,19 @@ test.describe("focus after each action (SC-003)", () => {
     await expect(
       page.getByTestId("microphone-settings-error-draft"),
     ).toBeVisible();
+    // The write in flight keeps the bar's control Saving… until it settles.
     await expect(save).toHaveAttribute(
       "data-testid",
       "microphone-settings-error-save",
     );
-    // The held write was sent at the old revision: it is refused, nothing is replaced.
+    // The held write was sent at the old revision: it is refused, nothing is replaced, and the
+    // bar now offers Reload in place of Save (native session N3).
     await page.evaluate(() => window.harness.releaseSave(null));
     await expect(reload).not.toHaveAttribute("aria-disabled", "true");
-    await expect(save).toHaveAttribute("aria-disabled", "true");
+    await expect(
+      page.getByTestId("microphone-settings-error-draft-reload"),
+    ).toBeVisible();
+    await expect(page.getByTestId(anyScreen("save"))).toHaveCount(0);
     expect(await order(page)).toEqual([MACBOOK, USB, STUDIO]);
     await page.keyboard.press("Enter");
     await expect(
@@ -158,7 +164,7 @@ test.describe("focus after each action (SC-003)", () => {
     expect(await order(page)).toEqual([STUDIO]);
   });
 
-  test("after a change saved elsewhere, Save stays inactive until Reload or Discard", async ({
+  test("after a change saved elsewhere, the bar offers Reload instead of Save until Reload or Discard", async ({
     page,
   }) => {
     await open(page);
@@ -173,16 +179,19 @@ test.describe("focus after each action (SC-003)", () => {
       page.getByTestId("microphone-settings-error-screen"),
     ).toBeVisible();
     await expect(page.getByTestId("microphone-settings-screen")).toHaveCount(0);
-    const save = page.getByTestId("microphone-settings-error-save");
-    await expect(save).toHaveAttribute("aria-disabled", "true");
-    await expect(save).toHaveAttribute("data-state", "disabled");
-    // Another edit keeps it inactive, and activating it writes nothing.
+    // The bar has no Save during the conflict: Discard and Reload only (native session N3).
+    const bar = page.getByTestId("microphone-settings-error-draft");
+    await expect(bar.getByRole("button")).toHaveText([
+      text.draft.discard,
+      text.conflict.reload,
+    ]);
+    await expect(page.getByTestId(anyScreen("save"))).toHaveCount(0);
+    // Another edit keeps the conflict, and nothing is written.
     await control(page, USB, "move-up").focus();
     await page.keyboard.press("Enter");
-    await expect(save).toHaveAttribute("aria-disabled", "true");
-    await save.focus();
-    await page.keyboard.press("Enter");
-    await save.click({ force: true });
+    await expect(
+      page.getByTestId("microphone-settings-error-draft-reload"),
+    ).toBeVisible();
     const calls = () => page.evaluate(() => window.harness.backend.saveCalls);
     expect((await calls()).length).toBe(0);
     // Discard ends the conflict: the order saved elsewhere is shown, nothing was written.
@@ -192,6 +201,20 @@ test.describe("focus after each action (SC-003)", () => {
     ).toBeHidden();
     expect(await order(page)).toEqual(["Dock"]);
     expect((await calls()).length).toBe(0);
+  });
+
+  test("Reload in the bar rereads the order and moves focus to the section title", async ({
+    page,
+  }) => {
+    await open(page);
+    await editFromKeyboard(page);
+    await page.evaluate(() => window.harness.commitElsewhere(["Dock"]));
+    const reload = page.getByTestId("microphone-settings-error-draft-reload");
+    await reload.focus();
+    await page.keyboard.press("Enter");
+    await expect(page.getByTestId(anyScreen("draft"))).toHaveCount(0);
+    await expectFocus(page, TITLE);
+    expect(await order(page)).toEqual(["Dock"]);
   });
 
   test("an unknown outcome that did commit is confirmed and focus moves to the title", async ({
@@ -304,5 +327,49 @@ test.describe("loading guard and failed listing", () => {
     await refresh.click();
     await expect(add).toBeEnabled();
     await expect(add).toHaveAccessibleName(text.addLabel);
+  });
+});
+
+test.describe("compact save bar (native session N2)", () => {
+  test("hidden without a change, then kept at the bottom of the scrolled settings content", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 900, height: 300 });
+    await open(page, "?inWindow");
+    await expect(page.getByTestId(anyScreen("draft"))).toHaveCount(0);
+    await editFromKeyboard(page);
+    const bar = page.getByTestId("microphone-settings-draft");
+    const content = page.getByTestId("settings-window-content");
+    // The editor is taller than the content area: without sticking, the bar would be out of view.
+    const overflow = await content.evaluate(
+      (element) => element.scrollHeight - element.clientHeight,
+    );
+    expect(overflow).toBeGreaterThan(100);
+    await expect(bar.getByRole("button")).toHaveText([
+      text.draft.discard,
+      text.draft.save,
+    ]);
+    const barSitsAtContentBottom = async (): Promise<void> => {
+      const area = await content.boundingBox();
+      const box = await bar.boundingBox();
+      expect(area).not.toBeNull();
+      expect(box).not.toBeNull();
+      const areaBottom = area!.y + area!.height;
+      const barBottom = box!.y + box!.height;
+      expect(barBottom).toBeLessThanOrEqual(areaBottom);
+      expect(barBottom).toBeGreaterThan(areaBottom - 40);
+    };
+    // Content scrolled to the top, then halfway: the bar stays at the bottom of the visible
+    // content, and only the content area scrolls, never the window.
+    for (const position of [0, Math.floor(overflow / 2)]) {
+      await content.evaluate((element, top) => {
+        element.scrollTop = top;
+      }, position);
+      await expect
+        .poll(() => content.evaluate((element) => element.scrollTop))
+        .toBe(position);
+      await barSitsAtContentBottom();
+    }
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
   });
 });

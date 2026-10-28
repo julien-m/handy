@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Přístup k usnadnění",
-        "description": "Potřebný pro psaní přepsaného textu do vašich aplikací."
+        "description": "Potřebný pro psaní přepsaného textu do vašich aplikací.",
+        "openSettings": "Otevřít Nastavení systému",
+        "retry": "Zkusit znovu",
+        "alreadyCheckedHint": "Pokud je Handy už zaškrtnutý, odeberte ho a pak ho přidejte znovu."
       },
       "grant": "Udělit oprávnění",
       "granted": "Uděleno",
@@ -221,6 +224,9 @@
           },
           "changeButton": "Změnit",
           "discard": "Zahodit tuto zkratku",
+          "discardDraft": "Zahodit",
+          "save": "Uložit",
+          "unsaved": "Neuloženo",
           "lastHint": "Každá akce si ponechává alespoň jednu zkratku. Místo toho ji změňte nebo obnovte.",
           "limitHint": "{{count}} z {{limit}} zkratek. Odeberte jednu, abyste mohli přidat další.",
           "draftConflict": "{{shortcut}} už používá {{action}}. Nic nebylo uloženo.",
@@ -306,7 +312,6 @@
           "none": "Žádný"
         },
         "draft": {
-          "note": "Neuložené změny. Dokud neuložíte, další nahrávání použije uložené pořadí.",
           "discard": "Zahodit",
           "save": "Uložit",
           "saving": "Ukládání…",

@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Erişilebilirlik Erişimi",
-        "description": "Transkribe edilen metni uygulamalarınıza yazabilmek için gereklidir."
+        "description": "Transkribe edilen metni uygulamalarınıza yazabilmek için gereklidir.",
+        "openSettings": "Sistem Ayarları'nı aç",
+        "retry": "Tekrar dene",
+        "alreadyCheckedHint": "Handy zaten işaretliyse kaldırın ve yeniden ekleyin."
       },
       "grant": "İzin Ver",
       "granted": "Verildi",
@@ -221,6 +224,9 @@
           },
           "changeButton": "Değiştir",
           "discard": "Bu kısayolu at",
+          "discardDraft": "Vazgeç",
+          "save": "Kaydet",
+          "unsaved": "Kaydedilmedi",
           "lastHint": "Her eylem en az bir kısayolu korur. Bunun yerine onu değiştirin veya sıfırlayın.",
           "limitHint": "{{count}}/{{limit}} kısayol. Başka bir tane eklemek için birini kaldırın.",
           "draftConflict": "{{shortcut}} zaten {{action}} tarafından kullanılıyor. Hiçbir şey kaydedilmedi.",
@@ -306,7 +312,6 @@
           "none": "Yok"
         },
         "draft": {
-          "note": "Kaydedilmemiş değişiklikler. Siz kaydedene kadar sonraki kayıt kayıtlı sırayı kullanır.",
           "discard": "Vazgeç",
           "save": "Kaydet",
           "saving": "Kaydediliyor…",

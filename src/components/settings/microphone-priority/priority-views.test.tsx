@@ -319,6 +319,8 @@ describe("draft feedback", () => {
     phase: "idle" as const,
     error: null,
     saveEnabled: true,
+    conflict: false,
+    onReload: noop,
     onDiscard: noop,
     onSave: noop,
   };
@@ -351,13 +353,38 @@ describe("draft feedback", () => {
     expect(reloads).toBe(0);
   });
 
-  test("Save enabled for a valid changed draft", () => {
+  test("Save enabled for a valid changed draft: a compact sticky bar, buttons only", () => {
     const markup = renderToStaticMarkup(<DraftBar {...bar} />);
-    for (const id of ["draft", "draft-note", "discard", "save"]) {
+    for (const id of ["draft", "discard", "save"]) {
       expect(has(markup, `data-testid="microphone-settings-${id}"`)).toBe(true);
     }
     expect(has(markup, 'data-state="enabled"')).toBe(true);
-    expect(has(markup, `${ROOT}.draft.note`)).toBe(true);
+    // No explanatory text: only Discard and Save (native session N2).
+    expect(has(markup, "microphone-settings-draft-note")).toBe(false);
+    expect(count(markup, "<button")).toBe(2);
+    expect(has(markup, "sticky bottom-2")).toBe(true);
+  });
+
+  test("a conflict offers Reload in place of Save (native session N3)", () => {
+    let reloads = 0;
+    let saves = 0;
+    const markup = renderToStaticMarkup(
+      <DraftBar
+        {...bar}
+        conflict
+        saveEnabled={false}
+        onReload={() => (reloads += 1)}
+        onSave={() => (saves += 1)}
+      />,
+    );
+    expect(has(markup, 'data-testid="microphone-settings-draft-reload"')).toBe(
+      true,
+    );
+    expect(has(markup, 'data-testid="microphone-settings-save"')).toBe(false);
+    expect(has(markup, `>${ROOT}.conflict.reload<`)).toBe(true);
+    expect(has(markup, 'data-conflict="true"')).toBe(true);
+    expect(count(markup, "<button")).toBe(2);
+    expect(reloads + saves).toBe(0);
   });
 
   test("Save busy while writing, cannot dispatch again", () => {
@@ -441,6 +468,8 @@ describe("contract screen shown", () => {
       <DraftBar
         visible
         phase="idle"
+        conflict={false}
+        onReload={noop}
         error={null}
         saveEnabled={false}
         onDiscard={noop}

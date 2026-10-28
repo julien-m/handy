@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Tilgængelighedsadgang",
-        "description": "Påkrævet for at skrive den transskriberede tekst ind i dine programmer."
+        "description": "Påkrævet for at skrive den transskriberede tekst ind i dine programmer.",
+        "openSettings": "Åbn Systemindstillinger",
+        "retry": "Prøv igen",
+        "alreadyCheckedHint": "Hvis Handy allerede er markeret, så fjern den og tilføj den igen."
       },
       "grant": "Giv tilladelse",
       "granted": "Givet",
@@ -201,6 +204,9 @@
           },
           "changeButton": "Skift",
           "discard": "Kassér denne genvej",
+          "discardDraft": "Kassér",
+          "save": "Gem",
+          "unsaved": "Ikke gemt",
           "lastHint": "Hver handling beholder mindst én genvej. Skift eller nulstil den i stedet.",
           "limitHint": "{{count}} af {{limit}} genveje. Fjern en for at tilføje en anden.",
           "draftConflict": "{{shortcut}} bruges allerede af {{action}}. Intet blev gemt.",
@@ -306,7 +312,6 @@
           "none": "Ingen"
         },
         "draft": {
-          "note": "Ikke-gemte ændringer. Indtil du gemmer, bruger næste optagelse den gemte rækkefølge.",
           "discard": "Kassér",
           "save": "Gem",
           "saving": "Gemmer…",

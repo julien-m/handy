@@ -120,3 +120,23 @@
 - **Why:** native session of 2026-10-28, finding N9, Julien's request: the modifier-only overlap now takes the registered side into account; a right-only modifier shortcut (`command_right`) no longer refuses `command_left+j`. A modifier without side still overlaps both sides; equality ignores sides as before.
 - **Tests:** conflicts.rs `side_specific_modifier_only_overlaps_only_on_its_side` (both directions), `tauri_modifiers_register_both_sides`; existing tests unchanged
 - **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-28 — [Bugfix]: Explicit Save and Discard for the "Add shortcut" draft (native session N8)
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** src/components/settings/{shortcut-draft-model.ts, shortcut-chip.tsx, shortcut-list.tsx, shortcut-list-rows.tsx, shortcut-list-feedback.ts}; keys `settings.general.shortcut.list.{save,discardDraft,unsaved}` in the 26 locales
+- **AC impacted:** AC-001 (adding records with the existing recorder)
+- **Why:** native session of 2026-10-28, finding N8: the captured draft looked like a saved shortcut and was added by clicking "Add shortcut" again, so Julien thought it was added and Reset cleared it. The draft chip is now dashed with a "Not saved" label; during a draft, Save (enabled only for a valid combination) and Discard replace "Add shortcut"; Reset is disabled while a draft is open; the focus returns to "Add shortcut" after Save or Discard. The prompt shortcuts of 005 (`ShortcutListEditor`) do not use the draft: a capture is added at once, so they are unchanged.
+- **Tests:** shortcut-draft-model.test.ts (`listControls`, 6), shortcut-list-render.test.tsx (draft look, Save/Discard/Reset, 4 new or updated)
+- **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-28 — [Bugfix]: Focus on Discard when the draft recorder is refused (native session N8, review)
+
+- **Type:** Bugfix (review of `fix/native-session-ui`)
+- **Spec modified:** No
+- **Code modified:** src/components/settings/{shortcut-draft-model.ts, shortcut-list-rows.tsx}; tests/shortcut-list-draft.spec.ts and its harness (new)
+- **AC impacted:** AC-001
+- **Why:** with Secure Input on, the draft opened blocked, "Add shortcut" disappeared and the keyboard focus had no way out.
+- **Tests:** shortcut-draft-model.test.ts (blocked draft), tests/shortcut-list-draft.spec.ts
+- **Author:** Claude Code (claude-opus-5-5)

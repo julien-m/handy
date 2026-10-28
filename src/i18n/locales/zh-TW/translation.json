@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "輔助使用存取",
-        "description": "需要將轉錄文字輸入到您的應用程式中"
+        "description": "需要將轉錄文字輸入到您的應用程式中",
+        "openSettings": "打開系統設定",
+        "retry": "重試",
+        "alreadyCheckedHint": "如果 Handy 已勾選，請將其移除後重新加入。"
       },
       "grant": "授予權限",
       "granted": "已授予",
@@ -201,6 +204,9 @@
           },
           "changeButton": "變更",
           "discard": "捨棄此快速鍵",
+          "discardDraft": "捨棄",
+          "save": "儲存",
+          "unsaved": "未儲存",
           "lastHint": "每個動作至少保留一個快速鍵。請改為變更或重設。",
           "limitHint": "已有 {{count}}/{{limit}} 個快速鍵。請先移除一個再新增。",
           "draftConflict": "{{shortcut}} 已被{{action}}使用。未儲存任何內容。",
@@ -306,7 +312,6 @@
           "none": "無"
         },
         "draft": {
-          "note": "有未儲存的變更。在您儲存之前，下次錄音會使用已儲存的順序。",
           "discard": "捨棄",
           "save": "儲存",
           "saving": "正在儲存…",

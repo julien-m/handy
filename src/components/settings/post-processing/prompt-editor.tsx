@@ -4,12 +4,13 @@
 // the editor opens. Editing a saved prompt is the
 // contract's `prompt-settings-editor` screen; a new prompt is its
 // `prompt-settings-invalid` screen (title "New prompt").
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import type { ListedPrompt, PromptLibraryView } from "@/bindings";
 import { Alert } from "../../ui/Alert";
 import { Button } from "../../ui/Button";
 import { SettingsGroup } from "../../ui/SettingsGroup";
+import { useFocusRescue } from "../../ui/focus-return";
 import { ShortcutListEditor } from "../shortcut-list-editor";
 import {
   MAX_SHORTCUTS_PER_PROMPT,
@@ -105,18 +106,20 @@ const PromptShortcuts: React.FC<{ testId: string; promptId: string }> = ({
 interface FormGroupProps extends PartProps {
   target: EditorTarget;
   libraryState: PromptLibraryState;
+  /** The group title, the editor's stable focus point. */
+  titleRef: React.Ref<HTMLHeadingElement>;
 }
 
 /** The "Edit prompt" / "New prompt" group. */
 const EditorFormGroup: React.FC<FormGroupProps> = (props) => {
-  const { testId, model, target, libraryState } = props;
+  const { testId, model, target, libraryState, titleRef } = props;
   const { t } = useTranslation();
   const title = t(
     `${KEY}.${target.mode === "edit" ? "editTitle" : "newTitle"}`,
   );
   return (
     <div data-testid={`${testId}-editor`}>
-      <SettingsGroup title={title}>
+      <SettingsGroup title={title} titleRef={titleRef}>
         <div className="p-4 space-y-4" data-testid={`${testId}-form`}>
           <LibraryReloadNotice testId={testId} state={libraryState} />
           <ExternalChangeNotice testId={testId} model={model} />
@@ -143,7 +146,7 @@ interface PromptEditorProps {
 
 /** Scrolls the editor into view once, from its top. */
 const useScrollToTop = () => {
-  const rootRef = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLDivElement | null>(null);
   // The page keeps the list's scroll position: show the editor from its top.
   useEffect(() => {
     rootRef.current?.scrollIntoView({ block: "start" });
@@ -181,10 +184,22 @@ export const PromptEditor: React.FC<PromptEditorProps> = (props) => {
   const testId = editorTestIdOf(target);
   const { model, test, saved, deletion, isDefault } = useEditorParts(props);
   const rootRef = useScrollToTop();
-  const formProps = { testId, model, target, libraryState };
+  // Stable focus point when the focused control leaves (native session N5).
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const rescueRef = useFocusRescue(titleRef);
+  // Stable: an inline ref would be called with null then the element on every render, which
+  // disconnects the rescue and forgets that the focus was in the editor.
+  const setRoot = useCallback(
+    (element: HTMLDivElement | null) => {
+      rootRef.current = element;
+      rescueRef(element);
+    },
+    [rootRef, rescueRef],
+  );
+  const formProps = { testId, model, target, libraryState, titleRef };
   return (
     <div
-      ref={rootRef}
+      ref={setRoot}
       className="max-w-3xl w-full mx-auto space-y-6"
       data-testid={`${testId}-screen`}
     >

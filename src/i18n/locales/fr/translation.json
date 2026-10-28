@@ -108,7 +108,10 @@
       },
       "accessibility": {
         "title": "Accès à l'accessibilité",
-        "description": "Nécessaire pour taper le texte transcrit dans vos applications."
+        "description": "Nécessaire pour taper le texte transcrit dans vos applications.",
+        "openSettings": "Ouvrir les Réglages Système",
+        "retry": "Réessayer",
+        "alreadyCheckedHint": "Si Handy est déjà coché, retirez-le puis ajoutez-le de nouveau."
       },
       "grant": "Accorder l'autorisation",
       "granted": "Accordé",
@@ -221,6 +224,9 @@
           },
           "changeButton": "Modifier",
           "discard": "Abandonner ce raccourci",
+          "discardDraft": "Abandonner",
+          "save": "Enregistrer",
+          "unsaved": "Non enregistré",
           "lastHint": "Chaque action garde au moins un raccourci. Modifiez-le ou réinitialisez-le plutôt.",
           "limitHint": "{{count}} raccourcis sur {{limit}}. Supprimez-en un pour en ajouter un autre.",
           "draftConflict": "{{shortcut}} est déjà utilisé par {{action}}. Rien n'a été enregistré.",
@@ -306,7 +312,6 @@
           "none": "Aucun"
         },
         "draft": {
-          "note": "Modifications non enregistrées. Jusqu'à l'enregistrement, la prochaine dictée utilise l'ordre déjà enregistré.",
           "discard": "Abandonner",
           "save": "Enregistrer",
           "saving": "Enregistrement…",

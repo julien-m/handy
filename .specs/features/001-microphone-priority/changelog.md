@@ -114,3 +114,13 @@
 - **Summary:** warnings of the UI delivery review round 3; proofs in [proofs/claude-hardening/summary.txt](proofs/claude-hardening/summary.txt)
 - **Author:** Claude Code (UI hardening pass)
 
+
+## 2026-10-28 — [Bugfix]: Compact sticky save bar with Reload during a conflict (native session N2, N3)
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** src/components/settings/microphone-priority/{draft-feedback.tsx, microphone-priority-settings.tsx}; key `settings.sound.microphonePriority.draft.note` removed from the 26 locales
+- **AC impacted:** AC-007 (conflict banner with Reload, busy Save, failed write retry)
+- **Why:** native session of 2026-10-28, findings N2 (the Unsaved changes bar sat off screen at the bottom of the Sound page) and N3 (the conflict banner at the top, Save at the bottom); Julien's decision: a compact bar kept at the bottom of the visible content while there is a change, with Discard and Save only, and Reload in place of Save during a conflict.
+- **Tests:** priority-views.test.tsx (2 updated or new), tests/microphone-priority.spec.ts (3 new or updated)
+- **Author:** Claude Code (claude-opus-5-5)

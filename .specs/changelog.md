@@ -5,6 +5,18 @@
 
 ---
 
+## 2026-10-28 — [Bugfix, onboarding] Permission checks run one at a time (native session N10, review)
+
+The polling, Try again, the page `focus` event and the Tauri window focus event share one permission check at a time (`checkInFlightRef`), so a failure is counted once; the onboarding completes once and its completion timer is the only one, cleared on unmount. Code: `src/components/onboarding/AccessibilityOnboarding.tsx`; test: `tests/accessibility-onboarding.spec.ts` (overlapping checks: one check, one completion), which fails on the previous code.
+
+## 2026-10-28 — [Bugfix, 001/002/003/004/005] Settings window findings of the native session (N2, N3, N4, N5, N6, N8)
+
+Branch `fix/native-session-ui`: the window scrolls only its content (N4, transverse); explicit Save and Discard for an unsaved shortcut draft, Reset disabled meanwhile (N8, 004); compact sticky save bar with Reload during a conflict (N2, N3, 001); refused-import alert under the Replacements title (N6, 002); keyboard focus given back after Done, Save, Discard and dialogs (N5, 002, also 003 and 005). Verifications: [native-session-fixes-ui.txt](native-session-fixes-ui.txt).
+
+## 2026-10-28 — [Bugfix, onboarding] « Permissions Required » no longer waits without a way out (native session N10)
+
+After five seconds of « Waiting… » for the accessibility permission, the screen offers « Open System Settings » (Privacy & Security › Accessibility, allowed by a scoped `opener:allow-open-url` in `src-tauri/capabilities/default.json`), « Try again » (asks macOS again) and the hint « If Handy is already checked, remove it, then add it again. » (26 locales); the permissions are checked again when the window takes the focus back. Code: `src/components/onboarding/{AccessibilityOnboarding.tsx, accessibility-waiting-help.tsx, use-window-focus-check.ts}`; tests: `accessibility-waiting-help.test.tsx` (`bun run test:onboarding`), `tests/accessibility-onboarding.spec.ts`. No feature spec covers onboarding; the real System Settings pane is not observed by these tests (native proof pending with Julien).
+
 ## 2026-10-15 — [Feature 011] Implementation in progress: input focused at the dictation start remembered, given focus back, range restored and verified before the paste, behind destination-return (automated evidence in four feature combinations; macOS native proofs pending with Julien)
 <!-- finalize:spec-implement:2026-10-15:28770870 -->
 
