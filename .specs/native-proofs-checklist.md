@@ -104,19 +104,19 @@ Réautoriser ensuite Accessibilité et Micro au Handy installé si macOS les a p
   - Étapes : lancer `bun scripts/microphone-native-proof.ts --platform macos --out .specs/features/001-microphone-priority/proofs/native-macos-harness --binary ~/handy-tests/handy-gates-closed.app/Contents/MacOS/handy --interactive`, depuis un terminal qui a l'accès Micro, et débrancher le micro par défaut quand on le demande.
   - Attendu : exit 0, chaque tentative ≤ 2 s, résolution ≤ 6 s, flux tardif libéré, boucle principale jamais gelée.
   - Couvre : AC-003, AC-004, FR-003. Preuve : `proofs/native-macos-harness/`.
-- [ ] **Repli et reconnexion.**
+- [x] **Repli et reconnexion.** _(2026-10-28, validé)_
   - Étapes : ordre A (USB ou AirPods) puis B (MacBook), Save, redémarrer Handy. Relire l'UI et `handy settings microphones list --json`. Débrancher A et dicter. Rebrancher A et dicter.
   - Attendu : ordre identique après redémarrage ; dictée sur B avec la raison « fallback », puis de nouveau sur A ; ordre et clamshell jamais modifiés.
   - Couvre : AC-001, AC-002, AC-004, SC-002. Preuve : `proofs/native-macos-fallback/`.
-- [ ] **Perte en cours de dictée.**
+- [x] **Perte en cours de dictée.** _(2026-10-28, validé ; voir native-session-findings N1)_
   - Étapes : parler, puis débrancher A au milieu de la phrase.
   - Attendu : la dictée s'arrête une seule fois, le début est transcrit, un seul toast « input lost » apparaît, et le relâchement de la touche n'a aucun effet.
   - Couvre : AC-004, FR-004. Preuve : `proofs/native-macos-loss/`.
-- [ ] **Mode always-on.**
+- [ ] **Mode always-on.** _(2026-10-28 : non utilisé par Julien, reporté)_
   - Étapes : changer la priorité hors dictée ; la changer pendant une dictée ; rebrancher A puis lancer une dictée.
   - Attendu : hors dictée, le flux se rouvre ; pendant une dictée, rien n'est interrompu et la réouverture a lieu à la fin ; avec A rebranché, le flux se rouvre sur A avant la capture. Relever les latences par démarrage.
   - Couvre : AC-003, AC-004. Preuve : `proofs/native-macos-always-on/`.
-- [ ] **Couvercle fermé.**
+- [ ] **Couvercle fermé.** _(2026-10-28 : reporté, pas de montage écran externe)_
   - Étapes : écran externe et capot réellement fermé, avec un override clamshell, puis sans override.
   - Attendu : avec override, le micro clamshell est utilisé (repli sur le défaut s'il est absent) ; sans override, le défaut système ; aucun réglage modifié.
   - Couvre : AC-005, SC-002. Preuve : `proofs/native-macos-clamshell/`.
@@ -124,11 +124,11 @@ Réautoriser ensuite Accessibilité et Micro au Handy installé si macOS les a p
   - Étapes : lancer `handy settings microphones list --json` app lancée, puis app quittée.
   - Attendu : app lancée, la commande renvoie l'ordre, la disponibilité, le micro effectif et sa raison ; app quittée, `unavailable`, exit 5, `details` vide.
   - Couvre : AC-008. Preuve : `proofs/native-macos-cli/`.
-- [ ] **Éditeur en vraie fenêtre (mode dev).**
+- [x] **Éditeur en vraie fenêtre (mode dev).** _(2026-10-28 : clavier et glisser validés ; barre hors écran → N2)_
   - Étapes : comparer les 3 états aux maquettes `.specs/design/screens/001-microphone-priority/`. Glisser une ligne à la souris dans la webview. Au clavier seul : ajouter, retirer, monter, descendre, Save, avec le focus jamais perdu. Provoquer une écriture refusée.
   - Attendu : rendu conforme aux maquettes et parcours clavier complet.
   - Couvre : AC-001, SC-003. Preuve : `proofs/native-macos-ui/`.
-- [ ] **Conflit.**
+- [x] **Conflit.** _(2026-10-28, validé)_
   - Étapes : ouvrir un brouillon, puis lancer `handy settings microphones set-priority "MacBook Pro Microphone"`.
   - Attendu : bannière « changed elsewhere » avec Save inactif (décision §3), puis Reload affiche l'ordre engagé et jette le brouillon.
   - Couvre : AC-007. Preuve : `proofs/native-macos-ui/`.
@@ -136,18 +136,18 @@ Réautoriser ensuite Accessibilité et Micro au Handy installé si macOS les a p
   - Étapes : fermer la fenêtre vers le tray, puis la rouvrir depuis le tray, depuis le Dock et par un second lancement. Minimiser.
   - Attendu : fenêtre cachée, `document.visibilityState` change dans le Web Inspector et les appels `get_microphone_status` cessent ; à la réouverture, une lecture immédiate puis une toutes les 5 s ; minimisée, le sondage est en pause.
   - Couvre : AC-002. Preuve : `proofs/native-macos-polling/`.
-- [ ] **Barre « Unsaved changes ».**
+- [x] **Barre « Unsaved changes ».** _(2026-10-28 : hors écran → N2, décision : barre compacte collante)_
   - Étapes : dans une fenêtre de 680×570, modifier l'ordre.
   - Attendu : la barre est visible sans défiler. Sinon, décision : la placer après la ligne closed-lid, ou la rendre sticky.
   - Couvre : AC-001. Preuve : `proofs/native-macos-ui/`.
 
 ### 002 — Remplacements de mots (`handy-gates-closed.app` ou mode dev)
 
-- [ ] **Éditeur comparé aux 4 maquettes** (`.specs/design/screens/002-word-replacements/`, écrans `replacement-settings`, `-empty`, `-bulk`, `-import`).
+- [x] **Éditeur comparé aux 4 maquettes** _(2026-10-28, Computer Use : liste, édition, suppression, garde, Texte ; focus → N5)_ (`.specs/design/screens/002-word-replacements/`, écrans `replacement-settings`, `-empty`, `-bulk`, `-import`).
   - Étapes : passer par la liste, l'ajout et la modification sur la ligne, la suppression avec confirmation, la barre Discard/Save, l'avertissement en quittant la section, le bouton List/Text et le bouton Import… (qui exigent Save ou Discard).
   - Attendu : chaque écran et chaque état sont conformes aux maquettes.
   - Couvre : AC-001, `has_dirty_state`. Preuve : `proofs/native-macos-ui/`.
-- [ ] **Dialogues natifs.**
+- [x] **Dialogues natifs.** _(2026-10-28, Computer Use ; alerte mal placée → N6)_
   - Étapes : Import… d'un fichier, Export des règles, puis Import d'un fichier illisible.
   - Attendu : le dialogue système s'ouvre et le fichier est lu ou écrit ; le fichier illisible affiche l'alerte « Couldn't read ».
   - Couvre : FR-003, AC-005. Preuve : `proofs/native-macos-files/`.
@@ -159,7 +159,7 @@ Réautoriser ensuite Accessibilité et Micro au Handy installé si macOS les a p
   - Étapes : Save depuis l'UI, quitter, relancer.
   - Attendu : mêmes règles, même ordre.
   - Couvre : AC-001. Preuve : `proofs/native-macos-ui/`.
-- [ ] **Dictée réelle.**
+- [x] **Dictée réelle.** _(2026-10-28 : remplacement appliqué ; modèle batch Parakeet seulement)_
   - Étapes : `handy settings replacements add "cloud code" "Claude Code"`, puis dicter « open cloud code now » avec un modèle batch, puis avec un modèle streaming. Modifier ensuite la règle pendant un enregistrement.
   - Attendu : « open Claude Code now » inséré et dans l'historique ; la dictée en cours garde l'ancienne règle, la suivante prend la nouvelle.
   - Couvre : AC-007, FR-005. Preuve : `proofs/native-macos-dictation/`.
@@ -181,6 +181,7 @@ Réautoriser ensuite Accessibilité et Micro au Handy installé si macOS les a p
   - Étapes : `handy settings vocabulary status --json` et le statut affiché dans l'UI, avec un modèle chargé, puis sans modèle chargé, puis avec un modèle sans support.
   - Attendu : les termes envoyés et non envoyés sont corrects, avec le bon statut.
   - Couvre : AC-003, AC-004, AC-007. Preuve : `proofs/native-macos-status/`.
+  - 2026-10-28 : cas « modèle sans support » (Parakeet) conforme, UI et CLI concordantes ; collage, doublon, erreurs et suppression conformes (`proofs/native-macos-status/observations.md`). Restent : Whisper chargé, aucun modèle chargé.
 - [ ] **Effet réel.**
   - Étapes : enregistrer un échantillon contenant « Claude Code », sans vocabulaire, puis avec le terme ajouté. Noter l'id du modèle. Le script prévu `scripts/vocabulary-native-proof.ts` n'existe pas, donc la preuve est manuelle.
   - Attendu : l'orthographe est correcte avec le vocabulaire.
@@ -221,10 +222,12 @@ Pour simuler un « raccourci pris par une autre app », l'assigner d'abord dans 
   - Étapes : `handy settings shortcuts add transcribe ctrl+option+d --json`, puis presser ce raccourci ; `remove` ; `handy settings set keyboard_implementation handy_keys --json`.
   - Attendu : `ok` avec la nouvelle révision, et la dictée démarre sans redémarrage ; après `remove`, le raccourci est inerte ; après le changement de backend, les deux raccourcis marchent encore.
   - Couvre : AC-006, FR-005. Preuve : `proofs/native-macos-cli/`.
+  - 2026-10-28 : ajout à chaud avec HandyKeys conforme (révision 22, enregistré sans redémarrage). Restent : presser le raccourci, `remove`, backend Tauri.
 - [ ] **Session occupée.**
   - Étapes : maintenir le raccourci push-to-talk, puis lancer `handy settings shortcuts add transcribe f13 --json` et basculer le post-processing dans les réglages.
   - Attendu : `unavailable` / `shortcut_session_busy`, store inchangé, et le relâchement arrête la dictée.
   - Couvre : FR-002, AC-006. Preuve : `proofs/native-macos-cli/`.
+  - 2026-10-28 : refus CLI `shortcut_session_busy` observé pendant une dictée toggle, store inchangé. Restent : le cas push-to-talk maintenu et la bascule du post-processing dans l'UI.
 - [ ] **Fenêtre de réglages.**
   - Étapes : comparer les états `shortcut-settings`, `-conflict` et `-limit` aux maquettes (`.specs/design/screens/004-multiple-dictation-shortcuts/`). Faire Tab pendant une capture HandyKeys. Provoquer un refus de l'OS au démarrage du recorder HandyKeys, puis cliquer Change.
   - Attendu : rendu conforme ; Tab pendant la capture rend le focus de la puce ; le brouillon n'est pas bloqué en enregistrement, Discard et Retry restent disponibles, et la demande Change ne se relance pas toute seule.
@@ -385,6 +388,7 @@ Suivre la procédure détaillée de `.specs/features/007-smart-paste/implementat
   - Étapes : saisir 1001, puis 12 suivi d'Entrée, puis 12 suivi d'un blur, enfin une perte de focus de la fenêtre.
   - Attendu : 1001 affiche « Enter a whole number from 0 to 1000. » et rien n'est envoyé ; 12 est envoyé une seule fois ; une valeur inchangée n'est pas renvoyée ; une perte de focus de la fenêtre n'enregistre rien. Vérifier aussi `hasFocus()` dans la webview.
   - Couvre : AC-004. Preuve : `proofs/native-macos-ui/`.
+  - 2026-10-28 : 1001, 12 + Entrée et blur conformes (`proofs/native-macos-ui/history-limit-observations.md`). Reste : perte de focus avec la fenêtre au premier plan et `hasFocus()`.
 - [ ] **Store illisible.**
   - Étapes : avec un HOME isolé (`HOME=$(mktemp -d)`, jamais le vrai store), suivre `.specs/features/008-settings-cli/proofs/claude-step7/native-read-only/procedure.txt`, en ouvrant cette fois la fenêtre.
   - Attendu : le toast traduit `errors.settings.readOnly` est visible ; la CLI renvoie exit 5 ; le store est intact.
@@ -446,6 +450,7 @@ Preuves natives en attente avec Julien : aucune n'est déclarée réussie. Harna
   - Étapes : `handy settings destination pin com.openai.chat --json`, `status --json`, `unpin --json` pendant et hors dictée ; `pin com.example.absent --json`.
   - Attendu : réponses `{pinned: …}` ; même effet que le badge sur la dictée en cours ; `not_found`/4 sans changement.
   - Couvre : AC-006. Preuve : `proofs/native-macos/cli/`.
+  - 2026-10-28 : hors dictée conforme (`proofs/native-macos/cli/observations-hors-dictee.md`). Reste : pendant une dictée.
 
 ### 010 — Bulle de récupération (`handy-gates-open.app`, et `handy-gates-closed.app` pour le verrou fermé)
 

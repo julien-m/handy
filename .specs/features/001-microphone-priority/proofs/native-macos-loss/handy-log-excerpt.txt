@@ -1,0 +1,76 @@
+[2026-10-28][14:58:05][handy_app_lib::shortcut::handy_keys][DEBUG] handy-keys event: binding=transcribe, hotkey=option_left+space, state=Pressed
+[2026-10-28][14:58:05][handy_app_lib::actions][DEBUG] TranscribeAction::start called for binding: transcribe
+[2026-10-28][14:58:05][handy_app_lib::actions][DEBUG] start-path pre-recording steps: model_kickoff=752.125µs tray=8.042541ms settings+stream_plan=11.292µs overlay=13µs
+[2026-10-28][14:58:05][handy_app_lib::actions][DEBUG] Microphone mode - always_on: false
+[2026-10-28][14:58:05][handy_app_lib::tray][DEBUG] tray apply: icon=resources/tray_recording.png menu=rebuilt busy=true took=15.628625ms
+[2026-10-28][14:58:05][enigo::platform::macos_impl][DEBUG] [93mlocation()[0m
+[2026-10-28][14:58:05][enigo::platform::macos_impl][DEBUG] [93mlocation()[0m
+[2026-10-28][14:58:05][handy_app_lib::overlay][DEBUG] overlay 'recording': placed and shown in 3.453042ms
+[2026-10-28][14:58:05][handy_app_lib::shortcut::handy_keys][DEBUG] handy-keys event: binding=transcribe, hotkey=option_left+space, state=Released
+[2026-10-28][14:58:05][enigo::platform::macos_impl][DEBUG] [93mlocation()[0m
+[2026-10-28][14:58:05][enigo::platform::macos_impl][DEBUG] [93mlocation()[0m
+[2026-10-28][14:58:05][handy_app_lib::audio_toolkit::audio::recorder::opening][DEBUG] mic worker init: fetch_config=43µs (cached=true)
+[2026-10-28][14:58:05][handy_app_lib::audio_toolkit::audio::recorder::opening][INFO] Using device: Ok("OpenDots 2 JM")
+[2026-10-28][14:58:05][handy_app_lib::audio_toolkit::audio::recorder::opening][INFO] Averaging all 1 input channels
+[2026-10-28][14:58:05][handy_app_lib::audio_toolkit::audio::recorder::opening][DEBUG] mic worker init: build_stream=52.803792ms play=292ns
+[2026-10-28][14:58:05][handy_app_lib::managers::audio::priority][INFO] Microphone resolved in 129.828916ms: failed attempts [], opened Some(FirstChoice)
+[2026-10-28][14:58:05][handy_app_lib::managers::audio][DEBUG] mic stream breakdown: vad_ensure=375ns resolve_and_open=129.868958ms
+[2026-10-28][14:58:05][handy_app_lib::managers::audio][INFO] Microphone stream initialized in 129.877208ms
+[2026-10-28][14:58:05][handy_app_lib::managers::audio][DEBUG] Recording requested for binding transcribe
+[2026-10-28][14:58:05][handy_app_lib::audio_toolkit::audio::recorder][DEBUG] Cmd::Start processed 6.833µs after send; capture begins with the next available samples
+[2026-10-28][14:58:05][handy_app_lib::actions][DEBUG] Recording request accepted in 129.901208ms; waiting for first microphone samples
+[2026-10-28][14:58:05][handy_app_lib::actions][DEBUG] TranscribeAction::start completed in 139ms
+[2026-10-28][14:58:05][handy_app_lib::shortcut::handy_keys][DEBUG] Registered handy-keys shortcut: cancel -> Hotkey { modifiers: Modifiers(0x0), key: Some(Escape) }
+[2026-10-28][14:58:05][handy_app_lib::transcription_coordinator][DEBUG] Tap (142.380083ms): recording locked on until the next press
+[2026-10-28][14:58:05][handy_app_lib::audio_toolkit::audio::recorder][DEBUG] first audio samples arrived 72.504125ms after stream start (20.0ms drained)
+[2026-10-28][14:58:05][handy_app_lib::audio_toolkit::audio::recorder][DEBUG] first captured samples (20.0ms) processed 72.384375ms after Cmd::Start
+[2026-10-28][14:58:05][handy_app_lib::actions][DEBUG] Microphone is receiving samples; recording is ready
+[2026-10-28][14:58:20][handy_app_lib::audio_toolkit::audio::recorder][ERROR] Microphone backend reported a stream error; it will be rebuilt
+[2026-10-28][14:58:20][handy_app_lib::managers::audio::priority][WARN] Microphone lost during a recording; ending it with the captured audio
+[2026-10-28][14:58:20][handy_app_lib::actions][DEBUG] TranscribeAction::stop called for binding: transcribe
+[2026-10-28][14:58:20][handy_app_lib::shortcut::handy_keys][DEBUG] Unregistered handy-keys shortcut: cancel
+[2026-10-28][14:58:20][handy_app_lib::actions][DEBUG] TranscribeAction::stop completed in 397.917µs
+[2026-10-28][14:58:20][handy_app_lib::actions][DEBUG] Starting async transcription task for binding: transcribe
+[2026-10-28][14:58:20][handy_app_lib::audio_toolkit::audio::recorder][WARN] Timed out waiting for the microphone callback to pause
+[2026-10-28][14:58:20][handy_app_lib::audio_toolkit::audio::recorder][DEBUG] VAD at stop: withheld tail 16 frames (~480ms, 0 voiced), in_speech=false, onset_counter=0, hangover_counter=0
+[2026-10-28][14:58:20][handy_app_lib::managers::audio][DEBUG] Microphone stream stopped
+[2026-10-28][14:58:20][handy_app_lib::actions][DEBUG] Recording stopped and samples retrieved in 970.542µs, sample count: 92160
+[2026-10-28][14:58:20][handy_app_lib::managers::transcription][DEBUG] Audio vector length: 92160
+[2026-10-28][14:58:20][handy_app_lib::managers::transcription][DEBUG] transcribe-cpp model 'handy-computer/parakeet-tdt-0.6b-v3-gguf/parakeet-tdt-0.6b-v3-Q8_0.gguf' on 'MTL0': initial_prompt=false, translate=false, languages=["bg", "hr", "cs", "da", "nl", "en", "et", "fi", "fr", "de", "el", "hu", "it", "lv", "lt", "mt", "pl", "pt", "ro", "ru", "sk", "sl", "es", "sv", "uk"]
+[2026-10-28][14:58:20][handy_app_lib::managers::transcription][DEBUG] transcribe-cpp run: task=Transcribe, language=Some("fr"), initial_prompt=false
+[2026-10-28][14:58:20][handy_app_lib::tray][DEBUG] tray apply: icon=resources/tray_transcribing.png menu=unchanged busy=true took=1.834125ms
+[2026-10-28][14:58:20][enigo::platform::macos_impl][DEBUG] [93mlocation()[0m
+[2026-10-28][14:58:20][enigo::platform::macos_impl][DEBUG] [93mlocation()[0m
+[2026-10-28][14:58:20][handy_app_lib::audio_toolkit::audio::utils][DEBUG] Saved WAV file: "/Users/julienm/Library/Application Support/com.pais.handy/recordings/handy-1793199500.wav"
+[2026-10-28][14:58:20][handy_app_lib::overlay][DEBUG] overlay 'transcribing': placed and shown in 465.584µs
+[2026-10-28][14:58:20][transcribe_worker][DEBUG] [transcribe_cpp] ggml_backend_sched_split_inputs_grow: increasing split inputs capacity from 30 to 60
+[2026-10-28][14:58:20][enigo::platform::macos_impl][DEBUG] [93mlocation()[0m
+[2026-10-28][14:58:20][enigo::platform::macos_impl][DEBUG] [93mlocation()[0m
+[2026-10-28][14:58:20][enigo::platform::macos_impl][DEBUG] [93mlocation()[0m
+[2026-10-28][14:58:20][enigo::platform::macos_impl][DEBUG] [93mlocation()[0m
+[2026-10-28][14:58:20][enigo::platform::macos_impl][DEBUG] [93mlocation()[0m
+[2026-10-28][14:58:20][enigo::platform::macos_impl][DEBUG] [93mlocation()[0m
+[2026-10-28][14:58:20][enigo::platform::macos_impl][DEBUG] [93mlocation()[0m
+[2026-10-28][14:58:20][enigo::platform::macos_impl][DEBUG] [93mlocation()[0m
+[2026-10-28][14:58:20][enigo::platform::macos_impl][DEBUG] [93mlocation()[0m
+[2026-10-28][14:58:20][enigo::platform::macos_impl][DEBUG] [93mlocation()[0m
+[2026-10-28][14:58:20][transcribe_worker][DEBUG] [transcribe_cpp] decoder: 31 iters, 27 tokens, T_enc=73  enc_proj=2.1 ms  pred=17.6 ms  joint=19.6 ms  conf=2.2 ms  total=41.6 ms  per_iter=1203 us
+[2026-10-28][14:58:20][handy_app_lib::managers::transcription][DEBUG] Output language evidence: UserSelected("fr")
+[2026-10-28][14:58:20][handy_app_lib::managers::transcription][INFO] Transcription completed in 0.24s for 5.76s of audio (23.55x real-time)
+[2026-10-28][14:58:20][handy_app_lib::managers::transcription][INFO] Transcription result: [REDACTED]
+[2026-10-28][14:58:20][handy_app_lib::actions][DEBUG] Transcription completed in 244.793917ms: '[REDACTED]'
+[2026-10-28][14:58:20][handy_app_lib::managers::history_store][DEBUG] Saved history entry with id 77
+[2026-10-28][14:58:20][handy_app_lib::clipboard][INFO] Using paste method: CtrlV, delay before: 60ms, delay after: 60ms
+[2026-10-28][14:58:20][handy_app_lib::input::macos][DEBUG] Resolved Cmd+V for the active macOS layout to keycode 9
+[2026-10-28][14:58:20][enigo::platform::macos_impl][DEBUG] [93mkey(key: Meta, direction: Press)[0m
+[2026-10-28][14:58:20][enigo::platform::macos_impl][DEBUG] [93mraw(keycode: 55, direction: Press)[0m
+[2026-10-28][14:58:20][enigo::platform::macos_impl][DEBUG] added the keycode 55 to the held keys
+[2026-10-28][14:58:20][enigo::platform::macos_impl][DEBUG] added the key Meta to the held keys
+[2026-10-28][14:58:20][enigo::platform::macos_impl][DEBUG] [93mkey(key: Other(9), direction: Click)[0m
+[2026-10-28][14:58:20][enigo::platform::macos_impl][DEBUG] [93mraw(keycode: 9, direction: Click)[0m
+[2026-10-28][14:58:20][enigo::platform::macos_impl][DEBUG] [93mkey(key: Meta, direction: Release)[0m
+[2026-10-28][14:58:20][enigo::platform::macos_impl][DEBUG] [93mraw(keycode: 55, direction: Release)[0m
+[2026-10-28][14:58:20][enigo::platform::macos_impl][DEBUG] removed the keycode 55 from the held keys
+[2026-10-28][14:58:20][enigo::platform::macos_impl][DEBUG] removed the key Meta from the held keys
+[2026-10-28][14:58:20][handy_app_lib::destination::delivery][DEBUG] Text pasted successfully in 227.510833ms
+[2026-10-28][14:58:20][handy_app_lib::tray][DEBUG] tray apply: icon=resources/tray_idle.png menu=rebuilt busy=false took=3.031125ms

@@ -1,0 +1,3 @@
+{"error":{"code":"validation_failed","details":{"field":"reliable_paste","issues":[{"field":"reliable_paste","reason":"On macOS, smart paste replaces the beta reliable paste."}]},"message":"Setting value failed validation."},"ok":false}
+Error: Setting value failed validation.
+  reliable_paste: On macOS, smart paste replaces the beta reliable paste.

@@ -1,0 +1,4 @@
+recognized;replacement
+CloudCode;Claude Code
+cloud code;Claude Code
+open claw;OpenClaw
