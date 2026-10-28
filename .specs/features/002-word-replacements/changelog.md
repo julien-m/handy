@@ -1,5 +1,13 @@
 # Changelog - 002-word-replacements
 
+## 2026-10-28 — [Bugfix]: The refused-import alert sits under the Replacements title (native session N6)
+
+- **Type:** Bugfix (finding N6 of the native proof session of 2026-10-28)
+- **Spec modified:** No
+- **Code modified:** src/components/settings/word-replacements/word-replacements.tsx; tests/word-replacements-focus.spec.ts and tests/harness/word-replacements{.html,.tsx,-fake.ts} (new)
+- **AC impacted:** AC-005 (import), presentation only
+- **Author:** Claude Code (native session fixes)
+
 ## 2026-10-28 — [Bugfix]: The settings window scrolls only its content (native session N4)
 
 - **Type:** Bugfix (finding N4 of the native proof session of 2026-10-28, transverse, observed on the Advanced page)

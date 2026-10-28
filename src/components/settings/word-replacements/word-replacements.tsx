@@ -39,10 +39,11 @@ export const WordReplacements: React.FC = () => {
   const actions = useEditorActions(gate);
   return (
     <div className="space-y-6" data-testid={`${screen}-screen`}>
-      <ImportScreen />
       <div data-testid={`${screen}-replacements`}>
         <SettingsGroup title={t("settings.replacements.group")}>
           <div className="p-4 space-y-3" data-testid={`${screen}-rules`}>
+            {/* A refused import file belongs to this section: under its title (N6). */}
+            <ImportScreen />
             <RulesHeader screen={screen} view={view} {...actions} />
             <EditorBody
               screen={screen}
