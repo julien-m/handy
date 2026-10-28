@@ -1,0 +1,25 @@
+$ bun test src/overlay/indicator-models.test.ts src/overlay/menu-timer.test.ts src/overlay/pin-state.test.ts && bun test src/overlay/indicator-render.test.tsx src/overlay/indicator-gates-render.test.tsx && bun test src/lib/recording-error-toast.test.ts && bun test src/overlay/notice-listeners.test.ts
+bun test v1.3.9 (cf6cdbbb)
+
+ 41 pass
+ 0 fail
+ 106 expect() calls
+Ran 41 tests across 3 files. [105.00ms]
+bun test v1.3.9 (cf6cdbbb)
+
+ 27 pass
+ 0 fail
+ 177 expect() calls
+Ran 27 tests across 2 files. [76.00ms]
+bun test v1.3.9 (cf6cdbbb)
+
+ 3 pass
+ 0 fail
+ 3 expect() calls
+Ran 3 tests across 1 file. [9.00ms]
+bun test v1.3.9 (cf6cdbbb)
+
+ 12 pass
+ 0 fail
+ 26 expect() calls
+Ran 12 tests across 1 file. [17.00ms]

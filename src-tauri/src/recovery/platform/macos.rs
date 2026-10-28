@@ -30,7 +30,11 @@ fn window_options<'a>(
 }
 
 // @spec AC-003: Nonactivating bubble accepting the first click — .specs/features/010-recovery-bubble/spec.md#ac-003
-/// Build the hidden panel; must run on the main thread.
+/// Build the hidden panel; must run on the main thread. The panel stays registered with
+/// `tauri-nspanel` (`show`, the drag and `set_dragging` look it up by label), so its webview
+/// window is read back with `get_webview_window`. Never `Panel::to_window`: that converts the
+/// panel back into a plain `NSWindow` and unregisters it, so every later lookup fails with
+/// `PanelNotFound` and the bubble is never shown (native session N17).
 pub(super) fn create_window(app: &AppHandle) -> Result<WebviewWindow, String> {
     let (width, height) = INITIAL_SIZE;
     let panel = PanelBuilder::<_, RecoveryBubblePanel>::new(app, RECOVERY_WINDOW)
@@ -52,8 +56,7 @@ pub(super) fn create_window(app: &AppHandle) -> Result<WebviewWindow, String> {
         .build()
         .map_err(|error| error.to_string())?;
     panel.hide();
-    panel
-        .to_window()
+    app.get_webview_window(RECOVERY_WINDOW)
         .ok_or_else(|| "recovery panel has no window".to_owned())
 }
 

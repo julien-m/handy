@@ -1,6 +1,7 @@
 // Notices of the recording indicator when the overlay style is "none" (no indicator window):
-// the AI step failure (005 AC-005), the Screen Sharing hand-over (007 AC-012) and the recording
-// cut short by a lost microphone (001 FR-004) fall back to a toast of the settings window, kept
+// the AI step failure (005 AC-005), the Screen Sharing hand-over (007 AC-012), the recording
+// cut short by a lost microphone (001 FR-004) and the failed insertion (`paste-error`, N17) fall
+// back to a toast of the settings window, kept
 // at least as long as on the indicator. With any other style the indicator shows them
 // (src/overlay/use-overlay-notices.ts) and no toast appears.
 import { listen } from "@tauri-apps/api/event";
@@ -14,6 +15,9 @@ import type { RecordingErrorEvent } from "@/lib/types/events";
 import {
   INPUT_LOST_ERROR,
   noticeFallsBackToToast,
+  PASTE_ERROR_EVENT,
+  type PasteErrorPayload,
+  pasteFailedKey,
   RECORDING_ERROR_EVENT,
 } from "@/overlay/notice-model";
 
@@ -45,6 +49,13 @@ export const subscribeNoneNotices = (
   listen<RecordingErrorEvent>(RECORDING_ERROR_EVENT, (event) => {
     if (event.payload.error_type !== INPUT_LOST_ERROR) return;
     if (indicatorHidden()) showInputLostToast(t);
+  }),
+  listen<PasteErrorPayload>(PASTE_ERROR_EVENT, (event) => {
+    if (!indicatorHidden()) return;
+    toast.error(t("errors.pasteFailedTitle"), {
+      description: t(pasteFailedKey(event.payload)),
+      duration: NOTICE_MIN_MS,
+    });
   }),
 ];
 

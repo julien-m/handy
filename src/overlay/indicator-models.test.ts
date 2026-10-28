@@ -33,6 +33,7 @@ import {
   nextExpiry,
   NOTICE_MIN_MS,
   noticeFallsBackToToast,
+  pasteFailedNotice,
 } from "./notice-model";
 import {
   compactShortcut,
@@ -351,5 +352,33 @@ describe("input-lost notice (001 FR-004, native session N1)", () => {
     for (const style of ["minimal", "live", undefined] as const) {
       expect(noticeFallsBackToToast(style)).toBe(false);
     }
+  });
+});
+
+describe("paste-failed notice (010 FR-002, native session N17)", () => {
+  test("a failed insertion without a bubble lasts 4 s and never claims a success", () => {
+    const notice = pasteFailedNotice({ history_saved: true }, 250);
+    expect(notice.until).toBe(250 + NOTICE_MIN_MS);
+    expect(notice.testId).toBe("recording-indicator-paste-failed-notice");
+    expect(notice.key).toBe("errors.pasteFailed");
+    expect(pasteFailedNotice({ history_saved: false }, 0).key).toBe(
+      "errors.pasteFailedNotSaved",
+    );
+    expect(pasteFailedNotice(null, 0).key).toBe("errors.pasteFailed");
+    expect(en.errors.pasteFailed).not.toMatch(/success|succeeded|inserted/i);
+  });
+  test("it joins the other notices, replaces an older one and holds the window", () => {
+    const notices = addNotice(
+      [inputLostNotice(0)],
+      pasteFailedNotice(null, 500),
+      500,
+    );
+    expect(notices.map((notice) => notice.kind)).toEqual([
+      "input_lost",
+      "paste_failed",
+    ]);
+    expect(holdRemaining(notices, 500)).toBe(NOTICE_MIN_MS);
+    const again = addNotice(notices, pasteFailedNotice(null, 900), 900);
+    expect(again.filter((n) => n.kind === "paste_failed").length).toBe(1);
   });
 });

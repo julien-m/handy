@@ -197,3 +197,32 @@ fn the_bubble_is_placed_again_after_a_held_extent_change_and_a_refused_drag() {
         "{again}"
     );
 }
+
+// @spec AC-003: Nonactivating bubble accepting the first click — .specs/features/010-recovery-bubble/spec.md#ac-003
+/// Native session N17: `tauri-nspanel`'s `Panel::to_window` is a conversion, not a getter. It
+/// unregisters the panel (`remove_webview_panel`) and turns it back into a plain `NSWindow`, so
+/// `show`, the drag and `set_dragging`, which look the panel up by label, failed with
+/// `PanelNotFound` and the bubble was never presented. The creation keeps the panel registered
+/// and reads its window back by label; every panel lookup uses the same label.
+#[test]
+fn the_recovery_panel_stays_registered_after_its_creation() {
+    let macos = include_str!("../src/recovery/platform/macos.rs");
+    let create = body(macos, "pub(super) fn create_window", "\n}");
+    assert!(!macos.contains(".to_window()"), "{create}");
+    let built = create.find(".build()");
+    let read_back = create.find("app.get_webview_window(RECOVERY_WINDOW)");
+    assert!(built.is_some() && read_back > built, "{create}");
+    for (name, source, end) in [
+        ("pub(super) fn show", macos, "\n}"),
+        ("pub(super) fn set_dragging", macos, "\n}"),
+        (
+            "fn content_view",
+            include_str!("../src/recovery/platform/macos_drag.rs"),
+            "\n}",
+        ),
+    ] {
+        let lookup = body(source, name, end);
+        assert!(lookup.contains("RECOVERY_WINDOW)"), "{name}: {lookup}");
+        assert!(lookup.contains("get_webview_panel("), "{name}: {lookup}");
+    }
+}

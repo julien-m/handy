@@ -32,8 +32,13 @@ mock.module("@/bindings", () => ({
     },
   },
 }));
+const descriptions: string[] = [];
+const recordError = (title: string, options?: { description?: string }) => {
+  toasts.push(title);
+  if (options?.description) descriptions.push(options.description);
+};
 mock.module("sonner", () => ({
-  toast: { error: record, warning: record, info: record },
+  toast: { error: recordError, warning: record, info: record },
 }));
 mock.module("@tauri-apps/plugin-os", () => ({ platform: () => "macos" }));
 
@@ -42,9 +47,12 @@ const { subscribeNoneNotices } = await import(
   "@/hooks/use-overlay-none-notices"
 );
 const { showRecordingErrorToast } = await import("@/lib/recording-error-toast");
-const { noticeFallsBackToToast, RECORDING_ERROR_EVENT } = await import(
-  "./notice-model"
-);
+const {
+  noticeFallsBackToToast,
+  PASTE_ERROR_EVENT,
+  pasteFailedNotice,
+  RECORDING_ERROR_EVENT,
+} = await import("./notice-model");
 // The keys stand in for their translations: only which report appears is checked.
 const t = ((key: string) => key) as unknown as TFunction;
 
@@ -70,6 +78,7 @@ const emit = (payload: RecordingErrorEvent) => {
 
 beforeEach(() => {
   toasts.length = 0;
+  descriptions.length = 0;
 });
 
 describe("recording-error listeners (001 FR-004, native session N1)", () => {
@@ -109,4 +118,47 @@ describe("recording-error listeners (001 FR-004, native session N1)", () => {
       ]);
     });
   }
+});
+
+/** Emit `paste-error` to every listener (the settings window has no listener of its own). */
+const emitPasteError = (payload: { history_saved: boolean } | null) => {
+  for (const handler of handlers.get(PASTE_ERROR_EVENT) ?? []) {
+    handler({ payload });
+  }
+};
+
+describe("paste-error listeners (010 FR-002, native session N17)", () => {
+  test("only the indicator and the overlay-none fallback listen to paste-error", () => {
+    wire("minimal");
+    expect(handlers.get(PASTE_ERROR_EVENT)?.length).toBe(2);
+  });
+
+  for (const style of ["minimal", "live"] as const) {
+    test(`${style}: a failed insertion is one indicator notice and no toast`, () => {
+      const notices = wire(style);
+      emitPasteError({ history_saved: true });
+      expect(notices).toEqual(["paste_failed"]);
+      expect(toasts).toEqual([]);
+    });
+  }
+
+  test("none: a failed insertion is one toast; the indicator window never shows", () => {
+    const notices = wire("none");
+    emitPasteError({ history_saved: false });
+    expect(toasts).toEqual(["errors.pasteFailedTitle"]);
+    expect(descriptions).toEqual(["errors.pasteFailedNotSaved"]);
+    // As for input_lost: `hold_overlay_for_notice` refuses to show the window with style none.
+    expect(notices).toEqual(["paste_failed"]);
+  });
+
+  test("the notice says whether the text is in history and lasts four seconds", () => {
+    const saved = pasteFailedNotice({ history_saved: true }, 1000);
+    expect(saved.key).toBe("errors.pasteFailed");
+    expect(saved.until).toBe(5000);
+    expect(saved.testId).toBe("recording-indicator-paste-failed-notice");
+    expect(pasteFailedNotice(null, 0).key).toBe("errors.pasteFailed");
+    expect(pasteFailedNotice({ history_saved: false }, 0).key).toBe(
+      "errors.pasteFailedNotSaved",
+    );
+  });
 });

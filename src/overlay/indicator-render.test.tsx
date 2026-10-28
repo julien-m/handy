@@ -19,6 +19,7 @@ import {
   aiFailureNotice,
   handOverNotice,
   inputLostNotice,
+  pasteFailedNotice,
 } from "./notice-model";
 
 beforeAll(initIndicatorI18n);
@@ -320,6 +321,32 @@ describe("input-lost notice (001, native session N1)", () => {
     });
     expect(html).toContain(
       'data-testid="recording-indicator-input-lost-screen"',
+    );
+    expect(html).not.toContain("recording-indicator-pill");
+  });
+});
+
+describe("paste-failed notice (010, native session N17)", () => {
+  test("a failed insertion without a bubble shows on the indicator with its test ID and text", () => {
+    const html = render({
+      notices: [pasteFailedNotice({ history_saved: false }, 0)],
+    });
+    expect(html).toContain(
+      'data-testid="recording-indicator-paste-failed-notice"',
+    );
+    expect(html).toContain('role="alert"');
+    expect(html).toContain("The text could not be pasted or saved to history.");
+  });
+  test("shown alone after the dictation, it names its own screen", () => {
+    const html = render({
+      notices: [pasteFailedNotice(null, 0)],
+      showIndicator: false,
+    });
+    expect(html).toContain(
+      'data-testid="recording-indicator-paste-failed-screen"',
+    );
+    expect(html).toContain(
+      "Text could not be pasted into the active application.",
     );
     expect(html).not.toContain("recording-indicator-pill");
   });
