@@ -1,4 +1,4 @@
-// Notices of the recording indicator: AI failure (005), Screen Sharing hand-over (007) and recording cut short by a lost microphone (001). Static cards without controls, announced to assistive technology.
+// Notices of the recording indicator: AI failure (005), Screen Sharing hand-over (007), recording cut short by a lost microphone (001) and failed insertion without a recovery bubble (N17). Static cards without controls, announced to assistive technology.
 import { AlertTriangle, Info } from "lucide-react";
 import type React from "react";
 import { useTranslation } from "react-i18next";

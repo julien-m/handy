@@ -1,6 +1,7 @@
 // Transient notices of the recording indicator: the AI failure (005 `prompt-processing-failed`),
-// the Screen Sharing hand-over (007 `smart-paste-hand-over`) and the recording cut short by a
-// lost microphone (001 `recording-error` of type `input_lost`). Each stays at least four
+// the Screen Sharing hand-over (007 `smart-paste-hand-over`), the recording cut short by a
+// lost microphone (001 `recording-error` of type `input_lost`) and the failed insertion that no
+// recovery bubble shows (`paste-error`, native session N17). Each stays at least four
 // seconds, and the overlay window is held up meanwhile even when the dictation already ended
 // (`hold_overlay_for_notice`). The destination reason of 006 (`insertion-outcome`, emitted only
 // with the `destination-return` gate open) is presented by 010's recovery bubble instead, so a
@@ -16,6 +17,9 @@ import {
   holdRemaining,
   INPUT_LOST_ERROR,
   inputLostNotice,
+  PASTE_ERROR_EVENT,
+  type PasteErrorPayload,
+  pasteFailedNotice,
   RECORDING_ERROR_EVENT,
   liveNotices,
   nextExpiry,
@@ -49,6 +53,10 @@ export const subscribeNoticeSources = (push: Push): Promise<() => void>[] => [
   listen<RecordingErrorEvent>(RECORDING_ERROR_EVENT, (event) => {
     if (event.payload.error_type === INPUT_LOST_ERROR) push(inputLostNotice);
   }),
+  // A failed insertion is never reserved to the settings window (N17).
+  listen<PasteErrorPayload>(PASTE_ERROR_EVENT, (event) =>
+    push((now) => pasteFailedNotice(event.payload, now)),
+  ),
 ];
 
 // @spec FR-002: The bubble replaces the indicator's destination notice — .specs/features/010-recovery-bubble/spec.md#fr-002

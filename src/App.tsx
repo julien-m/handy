@@ -157,26 +157,9 @@ function App() {
     };
   }, [t]);
 
-  // Listen for paste failures and show a localized toast; the technical detail is logged on
-  // the Rust side (`destination::delivery`, smart paste in `smart_paste::app`). A destination
-  // failure (006) says whether the transcript is in history; it never carries the transcript
-  // itself.
-  useEffect(() => {
-    const unlisten = listen<{ history_saved: boolean } | null>(
-      "paste-error",
-      (event) => {
-        const notSaved = event.payload?.history_saved === false;
-        toast.error(t("errors.pasteFailedTitle"), {
-          description: t(
-            notSaved ? "errors.pasteFailedNotSaved" : "errors.pasteFailed",
-          ),
-        });
-      },
-    );
-    return () => {
-      unlisten.then((fn) => fn());
-    };
-  }, [t]);
+  // Paste failures (`paste-error`) are reported on the recording indicator, or by a toast only
+  // when the overlay style is none (`useOverlayNoneNotices`): never reserved to this window,
+  // which may be closed (native session N17).
 
   // Listen for transcription failures and show a toast.
   // The payload is the backend error message (also logged to handy.log).

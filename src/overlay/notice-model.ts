@@ -1,18 +1,28 @@
 // Pure rules of the transient notices on the recording indicator: the AI failure of 005
-// (AC-005), the Screen Sharing hand-over of 007 (AC-012) and the recording cut short by a lost
-// microphone of 001 (FR-004). Each stays at least four seconds; none ever claims that an
-// insertion succeeded. The destination reason of 006 is presented by 010's recovery bubble
-// instead.
+// (AC-005), the Screen Sharing hand-over of 007 (AC-012), the recording cut short by a lost
+// microphone of 001 (FR-004) and the failed insertion (`paste-error`, native session N17). Each
+// stays at least four seconds; none ever claims that an insertion succeeded. The destination
+// reason of 006 is presented by 010's recovery bubble instead; `paste-error` is emitted only when
+// no bubble shows the failure, so a failure is reported once.
 import type { OverlayStyle, PromptProcessingFailed } from "@/bindings";
 
 /** Minimum display time of every indicator notice (005 AC-005, 007 AC-012). */
 export const NOTICE_MIN_MS = 4000;
 
 /** Which feature raised a notice; a newer notice of the same kind replaces the older one. */
-export type NoticeKind = "ai_failed" | "hand_over" | "input_lost";
+export type NoticeKind =
+  | "ai_failed"
+  | "hand_over"
+  | "input_lost"
+  | "paste_failed";
 
 /** Recording error event of the backend (`managers::audio_priority`, `actions`). */
 export const RECORDING_ERROR_EVENT = "recording-error";
+/** Failed insertion event of the backend (`destination::delivery`, `smart_paste::app`, 010). */
+export const PASTE_ERROR_EVENT = "paste-error";
+/** Payload of `paste-error`: whether the transcript is in history (`null` from the legacy paths). */
+export type PasteErrorPayload = { history_saved: boolean } | null;
+
 /** `error_type` of the `recording-error` event of a recording cut short by a lost microphone. */
 export const INPUT_LOST_ERROR = "input_lost";
 
@@ -57,6 +67,35 @@ export const inputLostNotice = (now: number): OverlayNotice => ({
   until: now + NOTICE_MIN_MS,
   testId: "recording-indicator-input-lost-notice",
 });
+
+// @spec FR-002: The bubble replaces paste-error, never both — .specs/features/010-recovery-bubble/spec.md#fr-002
+/**
+ * Notice of a failed insertion when no recovery bubble shows it (N17): never reserved to the
+ * settings window, which may be closed. Says when the text is not in history either.
+ * @param payload `paste-error` payload
+ * @param now current time (ms)
+ * @returns the notice
+ */
+export const pasteFailedNotice = (
+  payload: PasteErrorPayload,
+  now: number,
+): OverlayNotice => ({
+  kind: "paste_failed",
+  key: pasteFailedKey(payload),
+  appName: null,
+  until: now + NOTICE_MIN_MS,
+  testId: "recording-indicator-paste-failed-notice",
+});
+
+/**
+ * Message of a failed insertion: not saved to history either, or only not pasted.
+ * @param payload `paste-error` payload
+ * @returns the translation key
+ */
+export const pasteFailedKey = (payload: PasteErrorPayload): string =>
+  payload?.history_saved === false
+    ? "errors.pasteFailedNotSaved"
+    : "errors.pasteFailed";
 
 /**
  * Whether the settings window shows an indicator notice as a toast: only when the overlay style
