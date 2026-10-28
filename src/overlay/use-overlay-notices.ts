@@ -25,7 +25,8 @@ import {
 /** 007 hand-over event (`smart_paste::app::HAND_OVER_EVENT`). */
 export const HAND_OVER_EVENT = "smart-paste-hand-over";
 
-type Push = (build: (now: number) => OverlayNotice | null) => void;
+/** Adds the notice that `build` makes at the current time (none when it returns null). */
+export type Push = (build: (now: number) => OverlayNotice | null) => void;
 
 const holdWindow = (milliseconds: number) => {
   commands.holdOverlayForNotice(Math.ceil(milliseconds)).catch((error) => {
@@ -33,20 +34,27 @@ const holdWindow = (milliseconds: number) => {
   });
 };
 
+/**
+ * Subscribe to the backend events that raise an indicator notice (the effect body of
+ * `useOverlayNotices`, exported for its tests).
+ * @param push adds a notice
+ * @returns the pending unsubscriptions
+ */
+export const subscribeNoticeSources = (push: Push): Promise<() => void>[] => [
+  events.promptProcessingFailed.listen((event) =>
+    push((now) => aiFailureNotice(event.payload, now)),
+  ),
+  listen(HAND_OVER_EVENT, () => push(handOverNotice)),
+  // Only the cut-short recording is an indicator notice; start errors stay toasts.
+  listen<RecordingErrorEvent>(RECORDING_ERROR_EVENT, (event) => {
+    if (event.payload.error_type === INPUT_LOST_ERROR) push(inputLostNotice);
+  }),
+];
+
 // @spec FR-002: The bubble replaces the indicator's destination notice — .specs/features/010-recovery-bubble/spec.md#fr-002
 const useNoticeSources = (push: Push) => {
   useEffect(() => {
-    const stops = [
-      events.promptProcessingFailed.listen((event) =>
-        push((now) => aiFailureNotice(event.payload, now)),
-      ),
-      listen(HAND_OVER_EVENT, () => push(handOverNotice)),
-      // Only the cut-short recording is an indicator notice; start errors stay toasts.
-      listen<RecordingErrorEvent>(RECORDING_ERROR_EVENT, (event) => {
-        if (event.payload.error_type === INPUT_LOST_ERROR)
-          push(inputLostNotice);
-      }),
-    ];
+    const stops = subscribeNoticeSources(push);
     return () => {
       stops.forEach((stop) => void stop.then((unlisten) => unlisten()));
     };

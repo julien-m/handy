@@ -123,3 +123,12 @@
 - **AC impacted:** None (FR-004: the cut-short report is now visible with the settings window hidden)
 - **Summary:** finding N1 of Julien's native proof session of 2026-10-28: the cut-short report moves from the settings toast to a notice of the recording indicator (at least 4 s, window held), a toast only with the overlay style none, never both
 - **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-28 — [Test]: listener wiring of the input-lost notice (review of N1)
+
+- **Type:** Bugfix
+- **Spec modified:** No
+- **Code modified:** src/overlay/use-overlay-notices.ts, src/hooks/use-overlay-none-notices.ts (effect bodies exported), src/overlay/notice-listeners.test.ts (new), package.json (`test:indicator`)
+- **AC impacted:** None (FR-004: one report per cut-short recording, proved through the listeners)
+- **Summary:** Penflow contract screen `recording-indicator-input-lost` left as a follow-up (generated contract tied to the `.pen` canvas)
+- **Author:** Claude Code (claude-opus-5-5)
