@@ -5,6 +5,8 @@
 
 ---
 
+## 2026-10-28 — [Feature 004] Bugfix: hold-or-toggle measures the hold between the key edges received by the backend, so a tap behind a slow start stays locked — native session finding N13
+
 ## 2026-10-28 — [Feature 003] Bugfix: vocabulary limit raised to 5,000 terms (Julien's decision; spec-refine 003 pending) with an indexed approximate correction, 21 ms per dictation — native session finding N7
 
 ## 2026-10-28 — [Feature 001] Bugfix: the recording cut short by a lost microphone is a notice of the recording indicator (toast only with the overlay style none) — native session finding N1

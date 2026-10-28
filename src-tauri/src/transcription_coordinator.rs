@@ -182,6 +182,20 @@ enum Stage {
     Processing,
 }
 
+/// One keyboard edge of a transcribe shortcut, as its backend received it.
+pub struct KeyEdge<'a> {
+    /// The action of the shortcut.
+    pub binding_id: &'a str,
+    /// Which of the action's shortcuts fired (its stored text).
+    pub shortcut_id: &'a str,
+    /// Hotkey text passed on to the action.
+    pub hotkey_string: &'a str,
+    /// Key-down (true) or key-up (false).
+    pub is_pressed: bool,
+    /// When the backend received the edge (see [`InputEvent::received_at`]).
+    pub received_at: Instant,
+}
+
 /// A keyboard/signal edge for a transcribe binding.
 struct InputEvent {
     binding_id: String,
@@ -197,6 +211,11 @@ struct InputEvent {
     /// They fire on every edge by design and must never be debounced —
     /// dropping one desyncs toggle parity and wedges recording on.
     external: bool,
+    /// When the shortcut backend received the edge (HandyKeys thread, Tauri
+    /// global-shortcut callback). Hold durations and debounce are measured
+    /// between these instants, never at processing time: a release queued
+    /// behind a slow `start` (native session N13: 355 ms) is still a tap.
+    received_at: Instant,
 }
 
 impl InputEvent {
@@ -361,20 +380,20 @@ impl CoordinatorState {
         if self.absorb_release_edge(&input, hold_to_talk, now) {
             return None;
         }
-        if self.is_debounced(&input, now) {
+        if self.is_debounced(&input) {
             return None;
         }
         // A busy pipeline can't accept lifecycle changes now: classify the
         // input against any already-remembered press instead of dropping it
         // silently.
         if let Stage::Processing = self.stage {
-            self.on_busy_input(input, now);
+            self.on_busy_input(input);
             return None;
         }
         if input.is_pressed {
-            return self.on_press(input, now);
+            return self.on_press(input);
         }
-        self.on_release(input, hold_to_talk, now)
+        self.on_release(input, hold_to_talk)
     }
 
     /// Release-grace handling for the hold modes (#1539): defers a key-up of
@@ -412,8 +431,10 @@ impl CoordinatorState {
             hold_threshold: input.effective_hold_threshold(),
             binding_id: input.binding_id.clone(),
             shortcut_id: input.shortcut_id.clone(),
+            // The grace runs from processing, so a repeat press queued behind
+            // this release still cancels it; the hold ends at the key-up.
             deadline: now + RELEASE_GRACE,
-            released_at: now,
+            released_at: input.received_at,
         });
     }
 
@@ -422,22 +443,23 @@ impl CoordinatorState {
     /// deferred before this to absorb X11 auto-repeat. External triggers are
     /// exempt: each one is a deliberate edge from the user's own integration,
     /// and dropping it desyncs toggle parity.
-    fn is_debounced(&mut self, input: &InputEvent, now: Instant) -> bool {
+    fn is_debounced(&mut self, input: &InputEvent) -> bool {
         if !input.is_pressed || input.external {
             return false;
         }
+        let at = input.received_at;
         if self
             .last_press
-            .is_some_and(|t| now.duration_since(t) < DEBOUNCE)
+            .is_some_and(|t| at.saturating_duration_since(t) < DEBOUNCE)
         {
             debug!("Debounced press for '{}'", input.binding_id);
             return true;
         }
-        self.last_press = Some(now);
+        self.last_press = Some(at);
         false
     }
 
-    fn on_busy_input(&mut self, input: InputEvent, now: Instant) {
+    fn on_busy_input(&mut self, input: InputEvent) {
         // Only one press can be remembered. Once a shortcut has claimed it,
         // inputs it does not claim are ignored — the same rule as a different
         // binding pressed while recording — rather than silently replacing
@@ -453,7 +475,7 @@ impl CoordinatorState {
         }
         let remembered = self.pending_press.as_ref().map(|p| p.remembered());
         match classify_busy_input(input.is_pressed, input.mode, remembered) {
-            BusyAction::Remember => self.remember_press(input, now),
+            BusyAction::Remember => self.remember_press(input),
             BusyAction::Forget => {
                 debug!("Forgetting remembered press for '{}'", input.binding_id);
                 self.pending_press = None;
@@ -464,7 +486,7 @@ impl CoordinatorState {
         }
     }
 
-    fn remember_press(&mut self, input: InputEvent, now: Instant) {
+    fn remember_press(&mut self, input: InputEvent) {
         debug!(
             "Remembering press for '{}': pipeline busy",
             input.binding_id
@@ -477,11 +499,11 @@ impl CoordinatorState {
             binding_id: input.binding_id,
             shortcut_id: input.shortcut_id,
             hotkey_string: input.hotkey_string,
-            pressed_at: now,
+            pressed_at: input.received_at,
         });
     }
 
-    fn on_press(&mut self, input: InputEvent, now: Instant) -> Option<Effect> {
+    fn on_press(&mut self, input: InputEvent) -> Option<Effect> {
         match &self.stage {
             Stage::Idle => {
                 // Toggle never ends on a release: locked from the start.
@@ -490,7 +512,7 @@ impl CoordinatorState {
                     input.binding_id,
                     input.shortcut_id,
                     input.hotkey_string,
-                    now,
+                    input.received_at,
                     locked,
                 ))
             }
@@ -524,17 +546,12 @@ impl CoordinatorState {
     /// A release that was not deferred (one is already pending for this
     /// shortcut): resolve it immediately rather than dropping it. Only the
     /// release of the shortcut that started the session counts.
-    fn on_release(
-        &mut self,
-        input: InputEvent,
-        hold_to_talk: bool,
-        now: Instant,
-    ) -> Option<Effect> {
+    fn on_release(&mut self, input: InputEvent, hold_to_talk: bool) -> Option<Effect> {
         if !hold_to_talk || self.recording_owner() != Some(input.key()) {
             return None;
         }
         let threshold = input.effective_hold_threshold();
-        self.finish_hold(now, threshold)
+        self.finish_hold(input.received_at, threshold)
     }
 
     /// The `RELEASE_GRACE` window elapsed with no cancelling press arriving:
@@ -730,26 +747,23 @@ impl TranscriptionCoordinator {
         Self { tx }
     }
 
-    /// Send a keyboard input event for one shortcut of a transcribe binding.
-    /// `shortcut_id` names which of the action's shortcuts fired;
+    /// Send a keyboard input event for one shortcut of a transcribe binding;
     /// `hold_threshold` only matters for [`ShortcutActivation::HoldOrToggle`].
     pub fn send_input(
         &self,
-        binding_id: &str,
-        shortcut_id: &str,
-        hotkey_string: &str,
-        is_pressed: bool,
+        edge: KeyEdge<'_>,
         mode: ShortcutActivation,
         hold_threshold: Duration,
     ) {
         self.send(InputEvent {
-            binding_id: binding_id.to_string(),
-            shortcut_id: shortcut_id.to_string(),
-            hotkey_string: hotkey_string.to_string(),
-            is_pressed,
+            binding_id: edge.binding_id.to_string(),
+            shortcut_id: edge.shortcut_id.to_string(),
+            hotkey_string: edge.hotkey_string.to_string(),
+            is_pressed: edge.is_pressed,
             mode,
             hold_threshold,
             external: false,
+            received_at: edge.received_at,
         });
     }
 
@@ -764,6 +778,7 @@ impl TranscriptionCoordinator {
             mode: ShortcutActivation::Toggle,
             hold_threshold: Duration::ZERO,
             external: true,
+            received_at: Instant::now(),
         });
     }
 
@@ -938,8 +953,30 @@ fn stop(app: &AppHandle, binding_id: &str, hotkey_string: &str) {
 }
 
 #[cfg(test)]
+impl InputEvent {
+    /// The same edge, received by the shortcut backend at `received_at`.
+    fn at(mut self, received_at: Instant) -> Self {
+        self.received_at = received_at;
+        self
+    }
+}
+
+#[cfg(test)]
+impl CoordinatorState {
+    /// An edge received at `now` and processed at once (no queue behind a
+    /// slow start): the tests' clock drives both instants.
+    fn feed(&mut self, input: InputEvent, now: Instant) -> Option<Effect> {
+        self.on_input(input.at(now), now)
+    }
+}
+
+#[cfg(test)]
 #[path = "transcription_coordinator/input_lost_tests.rs"]
 mod input_lost_tests;
+
+#[cfg(test)]
+#[path = "transcription_coordinator/slow_start_tests.rs"]
+mod slow_start_tests;
 
 #[cfg(test)]
 mod tests {
@@ -1129,6 +1166,7 @@ mod tests {
             mode: ShortcutActivation::PushToTalk,
             hold_threshold: Duration::ZERO,
             external: false,
+            received_at: Instant::now(),
         }
     }
 
@@ -1146,9 +1184,7 @@ mod tests {
 
             let effect = match ev {
                 Ev::Grace => state.on_grace_expired(),
-                Ev::Press | Ev::Release => {
-                    state.on_input(ptt_input(matches!(ev, Ev::Press)), clock)
-                }
+                Ev::Press | Ev::Release => state.feed(ptt_input(matches!(ev, Ev::Press)), clock),
             };
             match effect {
                 Some(Effect::Start { .. }) => starts += 1,
@@ -1225,16 +1261,16 @@ mod tests {
         let mut state = CoordinatorState::new();
         let now = Instant::now();
 
-        let effect = state.on_input(ptt_input(true), now);
+        let effect = state.feed(ptt_input(true), now);
         assert!(matches!(effect, Some(Effect::Start { .. })));
 
-        let effect = state.on_input(ptt_input(false), now + Duration::from_millis(100));
+        let effect = state.feed(ptt_input(false), now + Duration::from_millis(100));
         assert!(effect.is_none(), "release should be deferred, not fired");
 
         let effect = state.on_grace_expired();
         assert!(matches!(effect, Some(Effect::Stop { .. })));
 
-        let effect = state.on_input(ptt_input(true), now + Duration::from_millis(200));
+        let effect = state.feed(ptt_input(true), now + Duration::from_millis(200));
         assert!(effect.is_none(), "busy pipeline must remember, not start");
 
         let effect = state.on_processing_finished();
@@ -1251,15 +1287,15 @@ mod tests {
         let mut state = CoordinatorState::new();
         let now = Instant::now();
 
-        let effect = state.on_input(ptt_input(true), now);
+        let effect = state.feed(ptt_input(true), now);
         assert!(matches!(effect, Some(Effect::Start { .. })));
-        let effect = state.on_input(ptt_input(false), now + Duration::from_millis(100));
+        let effect = state.feed(ptt_input(false), now + Duration::from_millis(100));
         assert!(effect.is_none());
         let effect = state.on_grace_expired();
         assert!(matches!(effect, Some(Effect::Stop { .. })));
 
         let toggle = |state: &mut CoordinatorState, at: Instant| {
-            state.on_input(
+            state.feed(
                 InputEvent {
                     binding_id: BINDING.to_string(),
                     shortcut_id: BINDING.to_string(),
@@ -1268,6 +1304,7 @@ mod tests {
                     mode: ShortcutActivation::Toggle,
                     hold_threshold: Duration::ZERO,
                     external: true,
+                    received_at: at,
                 },
                 at,
             )
@@ -1293,14 +1330,14 @@ mod tests {
         let mut state = CoordinatorState::new();
         let now = Instant::now();
 
-        let effect = state.on_input(ptt_input(true), now);
+        let effect = state.feed(ptt_input(true), now);
         assert!(matches!(effect, Some(Effect::Start { .. })));
-        let effect = state.on_input(ptt_input(false), now + Duration::from_millis(100));
+        let effect = state.feed(ptt_input(false), now + Duration::from_millis(100));
         assert!(effect.is_none());
         let effect = state.on_grace_expired();
         assert!(matches!(effect, Some(Effect::Stop { .. })));
 
-        let effect = state.on_input(ptt_input(true), now + Duration::from_millis(200));
+        let effect = state.feed(ptt_input(true), now + Duration::from_millis(200));
         assert!(effect.is_none());
 
         state.on_cancel(false);
@@ -1331,14 +1368,15 @@ mod tests {
             mode: ShortcutActivation::Toggle,
             hold_threshold: Duration::ZERO,
             external,
+            received_at: Instant::now(),
         }
     }
 
     /// Start and stop one toggle recording so the machine sits in `Processing`.
     fn drive_into_processing(state: &mut CoordinatorState, now: Instant) {
-        let effect = state.on_input(toggle_input(true), now);
+        let effect = state.feed(toggle_input(true), now);
         assert!(matches!(effect, Some(Effect::Start { .. })));
-        let effect = state.on_input(toggle_input(true), now + Duration::from_millis(100));
+        let effect = state.feed(toggle_input(true), now + Duration::from_millis(100));
         assert!(matches!(effect, Some(Effect::Stop { .. })));
         assert_eq!(state.stage, Stage::Processing);
     }
@@ -1356,11 +1394,11 @@ mod tests {
         drive_into_processing(&mut state, now);
 
         let at = |ms| now + Duration::from_millis(ms);
-        assert!(state.on_input(toggle_input(true), at(200)).is_none());
+        assert!(state.feed(toggle_input(true), at(200)).is_none());
         assert!(state
-            .on_input(toggle_input_for(OTHER_BINDING, true), at(300))
+            .feed(toggle_input_for(OTHER_BINDING, true), at(300))
             .is_none());
-        assert!(state.on_input(toggle_input(true), at(400)).is_none());
+        assert!(state.feed(toggle_input(true), at(400)).is_none());
 
         let effect = state.on_processing_finished();
         assert!(
@@ -1379,9 +1417,9 @@ mod tests {
         drive_into_processing(&mut state, now);
 
         let at = |ms| now + Duration::from_millis(ms);
-        assert!(state.on_input(toggle_input(true), at(200)).is_none());
+        assert!(state.feed(toggle_input(true), at(200)).is_none());
         assert!(state
-            .on_input(toggle_input_for(OTHER_BINDING, true), at(300))
+            .feed(toggle_input_for(OTHER_BINDING, true), at(300))
             .is_none());
 
         match state.on_processing_finished() {
@@ -1398,10 +1436,10 @@ mod tests {
         let mut state = CoordinatorState::new();
         let now = Instant::now();
 
-        let effect = state.on_input(toggle_input(true), now);
+        let effect = state.feed(toggle_input(true), now);
         assert!(matches!(effect, Some(Effect::Start { .. })));
 
-        let effect = state.on_input(toggle_input(true), now + Duration::from_millis(5));
+        let effect = state.feed(toggle_input(true), now + Duration::from_millis(5));
         assert!(
             matches!(effect, Some(Effect::Stop { .. })),
             "second external edge inside DEBOUNCE must stop the recording"
@@ -1416,10 +1454,10 @@ mod tests {
         let mut state = CoordinatorState::new();
         let now = Instant::now();
 
-        let effect = state.on_input(toggle_input(false), now);
+        let effect = state.feed(toggle_input(false), now);
         assert!(matches!(effect, Some(Effect::Start { .. })));
 
-        let effect = state.on_input(toggle_input(false), now + Duration::from_millis(5));
+        let effect = state.feed(toggle_input(false), now + Duration::from_millis(5));
         assert!(
             effect.is_none(),
             "keyboard repeat inside DEBOUNCE must be debounced"
@@ -1433,7 +1471,7 @@ mod tests {
     fn failed_start_rolls_back_to_idle() {
         let mut state = CoordinatorState::new();
 
-        let effect = state.on_input(ptt_input(true), Instant::now());
+        let effect = state.feed(ptt_input(true), Instant::now());
         assert!(matches!(effect, Some(Effect::Start { .. })));
 
         state.on_start_result(BINDING, false);
@@ -1457,6 +1495,7 @@ mod tests {
             mode,
             hold_threshold: HOLD_THRESHOLD,
             external: false,
+            received_at: Instant::now(),
         }
     }
 
@@ -1473,10 +1512,10 @@ mod tests {
         let t0 = Instant::now();
 
         assert!(matches!(
-            state.on_input(input(mode, true), t0),
+            state.feed(input(mode, true), t0),
             Some(Effect::Start { .. })
         ));
-        assert!(state.on_input(input(mode, false), t0 + ms(800)).is_none());
+        assert!(state.feed(input(mode, false), t0 + ms(800)).is_none());
         assert!(
             matches!(state.on_grace_expired(), Some(Effect::Stop { .. })),
             "an 800ms hold must stop when its release grace elapses"
@@ -1492,10 +1531,10 @@ mod tests {
         let t0 = Instant::now();
 
         assert!(matches!(
-            state.on_input(input(mode, true), t0),
+            state.feed(input(mode, true), t0),
             Some(Effect::Start { .. })
         ));
-        assert!(state.on_input(input(mode, false), t0 + ms(120)).is_none());
+        assert!(state.feed(input(mode, false), t0 + ms(120)).is_none());
         assert!(
             state.on_grace_expired().is_none(),
             "a 120ms tap must not stop recording"
@@ -1505,13 +1544,13 @@ mod tests {
 
         // Seconds later the user presses again to finish.
         assert!(matches!(
-            state.on_input(input(mode, true), t0 + ms(5000)),
+            state.feed(input(mode, true), t0 + ms(5000)),
             Some(Effect::Stop { .. })
         ));
         assert_eq!(state.stage, Stage::Processing);
         // The release of that stopping press lands in the busy window and is
         // ignored, so nothing is remembered for the drain.
-        assert!(state.on_input(input(mode, false), t0 + ms(5080)).is_none());
+        assert!(state.feed(input(mode, false), t0 + ms(5080)).is_none());
         assert!(state.on_processing_finished().is_none());
         assert_eq!(state.stage, Stage::Idle);
     }
@@ -1524,12 +1563,12 @@ mod tests {
         let mut state = CoordinatorState::new();
         let t0 = Instant::now();
 
-        state.on_input(input(mode, true), t0);
-        state.on_input(input(mode, false), t0 + ms(100));
+        state.feed(input(mode, true), t0);
+        state.feed(input(mode, false), t0 + ms(100));
         assert!(state.on_grace_expired().is_none());
         assert!(state.is_locked());
 
-        assert!(state.on_input(input(mode, false), t0 + ms(900)).is_none());
+        assert!(state.feed(input(mode, false), t0 + ms(900)).is_none());
         assert!(
             state.grace_deadline().is_none(),
             "no release may be deferred once locked"
@@ -1545,8 +1584,8 @@ mod tests {
         let mut state = CoordinatorState::new();
         let t0 = Instant::now();
 
-        state.on_input(input(mode, true), t0);
-        assert!(state.on_input(input(mode, true), t0 + ms(400)).is_none());
+        state.feed(input(mode, true), t0);
+        assert!(state.feed(input(mode, true), t0 + ms(400)).is_none());
         assert_eq!(state.stage, Stage::Recording(BINDING.to_string()));
         assert!(!state.is_locked());
     }
@@ -1562,15 +1601,15 @@ mod tests {
         let mut clock = t0;
 
         assert!(matches!(
-            state.on_input(input(mode, true), clock),
+            state.feed(input(mode, true), clock),
             Some(Effect::Start { .. })
         ));
         // ~600ms of auto-repeat pairs a few ms apart.
         for _ in 0..60 {
             clock += ms(5);
-            assert!(state.on_input(input(mode, false), clock).is_none());
+            assert!(state.feed(input(mode, false), clock).is_none());
             clock += ms(5);
-            assert!(state.on_input(input(mode, true), clock).is_none());
+            assert!(state.feed(input(mode, true), clock).is_none());
             assert!(
                 state.grace_deadline().is_none(),
                 "auto-repeat press must cancel the deferred release"
@@ -1579,7 +1618,7 @@ mod tests {
         assert!(!state.is_locked(), "no tap may be classified mid-burst");
 
         clock += ms(5);
-        assert!(state.on_input(input(mode, false), clock).is_none());
+        assert!(state.feed(input(mode, false), clock).is_none());
         assert!(
             matches!(state.on_grace_expired(), Some(Effect::Stop { .. })),
             "the genuine release after a ~600ms hold must stop recording"
@@ -1596,21 +1635,21 @@ mod tests {
         let t0 = Instant::now();
 
         // Previous session: hold, release, stop → Processing.
-        state.on_input(input(mode, true), t0);
-        state.on_input(input(mode, false), t0 + ms(800));
+        state.feed(input(mode, true), t0);
+        state.feed(input(mode, false), t0 + ms(800));
         assert!(matches!(
             state.on_grace_expired(),
             Some(Effect::Stop { .. })
         ));
 
         // Pressed again while busy; still held when the pipeline drains 700ms later.
-        assert!(state.on_input(input(mode, true), t0 + ms(1000)).is_none());
+        assert!(state.feed(input(mode, true), t0 + ms(1000)).is_none());
         assert!(matches!(
             state.on_processing_finished(),
             Some(Effect::Start { .. })
         ));
         // Released 100ms after recording began — but 800ms after key-down.
-        assert!(state.on_input(input(mode, false), t0 + ms(1800)).is_none());
+        assert!(state.feed(input(mode, false), t0 + ms(1800)).is_none());
         assert!(
             matches!(state.on_grace_expired(), Some(Effect::Stop { .. })),
             "held 800ms overall: must stop, not lock"
@@ -1626,18 +1665,18 @@ mod tests {
         let t0 = Instant::now();
 
         assert!(matches!(
-            state.on_input(input(mode, true), t0),
+            state.feed(input(mode, true), t0),
             Some(Effect::Start { .. })
         ));
         assert!(state.is_locked());
-        assert!(state.on_input(input(mode, false), t0 + ms(100)).is_none());
+        assert!(state.feed(input(mode, false), t0 + ms(100)).is_none());
         assert!(
             state.grace_deadline().is_none(),
             "toggle never defers releases"
         );
-        assert!(state.on_input(input(mode, false), t0 + ms(3000)).is_none());
+        assert!(state.feed(input(mode, false), t0 + ms(3000)).is_none());
         assert!(matches!(
-            state.on_input(input(mode, true), t0 + ms(4000)),
+            state.feed(input(mode, true), t0 + ms(4000)),
             Some(Effect::Stop { .. })
         ));
     }
@@ -1651,10 +1690,10 @@ mod tests {
         let t0 = Instant::now();
 
         assert!(matches!(
-            state.on_input(input(mode, true), t0),
+            state.feed(input(mode, true), t0),
             Some(Effect::Start { .. })
         ));
-        assert!(state.on_input(input(mode, false), t0 + ms(40)).is_none());
+        assert!(state.feed(input(mode, false), t0 + ms(40)).is_none());
         assert!(matches!(
             state.on_grace_expired(),
             Some(Effect::Stop { .. })
@@ -1669,8 +1708,8 @@ mod tests {
         let mut state = CoordinatorState::new();
         let t0 = Instant::now();
 
-        state.on_input(input(mode, true), t0);
-        state.on_input(input(mode, false), t0 + ms(100));
+        state.feed(input(mode, true), t0);
+        state.feed(input(mode, false), t0 + ms(100));
         assert!(state.on_grace_expired().is_none());
         assert!(state.is_locked());
 
@@ -1678,7 +1717,7 @@ mod tests {
         assert_eq!(state.stage, Stage::Idle);
         assert!(!state.is_locked());
         assert!(matches!(
-            state.on_input(input(mode, true), t0 + ms(2000)),
+            state.feed(input(mode, true), t0 + ms(2000)),
             Some(Effect::Start { .. })
         ));
     }
@@ -1690,10 +1729,10 @@ mod tests {
         let mut state = CoordinatorState::new();
         let t0 = Instant::now();
 
-        state.on_input(input(ShortcutActivation::HoldOrToggle, true), t0);
+        state.feed(input(ShortcutActivation::HoldOrToggle, true), t0);
         assert!(!state.is_locked());
         assert!(matches!(
-            state.on_input(input(ShortcutActivation::Toggle, true), t0 + ms(2000)),
+            state.feed(input(ShortcutActivation::Toggle, true), t0 + ms(2000)),
             Some(Effect::Stop { .. })
         ));
     }
@@ -1702,10 +1741,10 @@ mod tests {
     fn hold_or_toggle_into_processing(state: &mut CoordinatorState, t0: Instant) {
         let mode = ShortcutActivation::HoldOrToggle;
         assert!(matches!(
-            state.on_input(input(mode, true), t0),
+            state.feed(input(mode, true), t0),
             Some(Effect::Start { .. })
         ));
-        assert!(state.on_input(input(mode, false), t0 + ms(800)).is_none());
+        assert!(state.feed(input(mode, false), t0 + ms(800)).is_none());
         assert!(matches!(
             state.on_grace_expired(),
             Some(Effect::Stop { .. })
@@ -1720,8 +1759,8 @@ mod tests {
         let t0 = Instant::now();
         hold_or_toggle_into_processing(&mut state, t0);
 
-        assert!(state.on_input(input(mode, true), t0 + ms(1000)).is_none());
-        assert!(state.on_input(input(mode, false), t0 + ms(1100)).is_none());
+        assert!(state.feed(input(mode, true), t0 + ms(1000)).is_none());
+        assert!(state.feed(input(mode, false), t0 + ms(1100)).is_none());
         assert!(state.on_grace_expired().is_none());
         assert!(state.is_locked(), "a busy tap should queue a locked start");
         assert!(matches!(
@@ -1738,8 +1777,8 @@ mod tests {
         let t0 = Instant::now();
         hold_or_toggle_into_processing(&mut state, t0);
 
-        assert!(state.on_input(input(mode, true), t0 + ms(1000)).is_none());
-        assert!(state.on_input(input(mode, false), t0 + ms(1600)).is_none());
+        assert!(state.feed(input(mode, true), t0 + ms(1000)).is_none());
+        assert!(state.feed(input(mode, false), t0 + ms(1600)).is_none());
         assert!(state.on_grace_expired().is_none());
         assert!(!state.is_locked());
 
@@ -1757,17 +1796,17 @@ mod tests {
         let t0 = Instant::now();
         hold_or_toggle_into_processing(&mut state, t0);
 
-        assert!(state.on_input(input(mode, true), t0 + ms(1000)).is_none());
-        assert!(state.on_input(input(mode, false), t0 + ms(1100)).is_none());
+        assert!(state.feed(input(mode, true), t0 + ms(1000)).is_none());
+        assert!(state.feed(input(mode, false), t0 + ms(1100)).is_none());
         assert!(state.on_grace_expired().is_none());
         assert!(state.is_locked());
 
-        assert!(state.on_input(input(mode, true), t0 + ms(1500)).is_none());
+        assert!(state.feed(input(mode, true), t0 + ms(1500)).is_none());
         assert!(
             !state.is_locked(),
             "the second tap's press forgets the queued tap"
         );
-        assert!(state.on_input(input(mode, false), t0 + ms(1600)).is_none());
+        assert!(state.feed(input(mode, false), t0 + ms(1600)).is_none());
         assert!(state.grace_deadline().is_none());
 
         assert!(state.on_processing_finished().is_none());
@@ -1780,8 +1819,8 @@ mod tests {
         let t0 = Instant::now();
         hold_or_toggle_into_processing(&mut state, t0);
 
-        assert!(state.on_input(ptt_input(true), t0 + ms(1000)).is_none());
-        assert!(state.on_input(ptt_input(false), t0 + ms(1040)).is_none());
+        assert!(state.feed(ptt_input(true), t0 + ms(1000)).is_none());
+        assert!(state.feed(ptt_input(false), t0 + ms(1040)).is_none());
         assert!(state.on_grace_expired().is_none());
         assert!(state.on_processing_finished().is_none());
     }
@@ -1796,8 +1835,8 @@ mod tests {
         let t0 = Instant::now();
         hold_or_toggle_into_processing(&mut state, t0);
 
-        assert!(state.on_input(input(mode, true), t0 + ms(1000)).is_none());
-        assert!(state.on_input(input(mode, false), t0 + ms(1100)).is_none());
+        assert!(state.feed(input(mode, true), t0 + ms(1000)).is_none());
+        assert!(state.feed(input(mode, false), t0 + ms(1100)).is_none());
         assert!(matches!(
             state.on_processing_finished(),
             Some(Effect::Start { .. })
@@ -1820,12 +1859,12 @@ mod tests {
         hold_or_toggle_into_processing(&mut state, t0);
 
         let mut clock = t0 + ms(1000);
-        assert!(state.on_input(input(mode, true), clock).is_none());
+        assert!(state.feed(input(mode, true), clock).is_none());
         for _ in 0..30 {
             clock += ms(5);
-            assert!(state.on_input(input(mode, false), clock).is_none());
+            assert!(state.feed(input(mode, false), clock).is_none());
             clock += ms(5);
-            assert!(state.on_input(input(mode, true), clock).is_none());
+            assert!(state.feed(input(mode, true), clock).is_none());
             assert!(state.grace_deadline().is_none());
         }
 
@@ -1838,12 +1877,12 @@ mod tests {
 
         for _ in 0..10 {
             clock += ms(5);
-            assert!(state.on_input(input(mode, false), clock).is_none());
+            assert!(state.feed(input(mode, false), clock).is_none());
             clock += ms(5);
-            assert!(state.on_input(input(mode, true), clock).is_none());
+            assert!(state.feed(input(mode, true), clock).is_none());
         }
         assert_eq!(clock, t0 + ms(1400));
-        assert!(state.on_input(input(mode, false), clock).is_none());
+        assert!(state.feed(input(mode, false), clock).is_none());
         assert!(
             matches!(state.on_grace_expired(), Some(Effect::Stop { .. })),
             "held 400ms since the real key-down: must stop, not lock"
@@ -1872,6 +1911,7 @@ mod multi_shortcut_tests {
             mode,
             hold_threshold: HOLD_THRESHOLD,
             external: false,
+            received_at: Instant::now(),
         }
     }
 
@@ -1890,7 +1930,7 @@ mod multi_shortcut_tests {
     /// Starts a session with A in `mode` at `t0`.
     fn started_by_a(mode: ShortcutActivation, t0: Instant) -> CoordinatorState {
         let mut state = CoordinatorState::new();
-        let effect = state.on_input(key(mode, A, true), t0);
+        let effect = state.feed(key(mode, A, true), t0);
         assert!(is_start(&effect), "A must start the session");
         state
     }
@@ -1902,7 +1942,7 @@ mod multi_shortcut_tests {
         let t0 = Instant::now();
         let mut state = started_by_a(mode, t0);
 
-        let effect = state.on_input(key(mode, B, true), t0 + ms(500));
+        let effect = state.feed(key(mode, B, true), t0 + ms(500));
         assert_eq!(
             effect,
             Some(Effect::Stop {
@@ -1919,9 +1959,9 @@ mod multi_shortcut_tests {
         let t0 = Instant::now();
         let mut state = started_by_a(mode, t0);
 
-        assert!(state.on_input(key(mode, B, true), t0 + ms(29)).is_none());
+        assert!(state.feed(key(mode, B, true), t0 + ms(29)).is_none());
         assert_eq!(state.stage, Stage::Recording(ACTION.to_string()));
-        assert!(is_stop(&state.on_input(key(mode, B, true), t0 + ms(60))));
+        assert!(is_stop(&state.feed(key(mode, B, true), t0 + ms(60))));
     }
 
     #[test]
@@ -1929,7 +1969,7 @@ mod multi_shortcut_tests {
         let mode = ShortcutActivation::PushToTalk;
         let t0 = Instant::now();
         let mut state = started_by_a(mode, t0);
-        assert!(state.on_input(key(mode, B, true), t0 + ms(2)).is_none());
+        assert!(state.feed(key(mode, B, true), t0 + ms(2)).is_none());
         assert_eq!(state.stage, Stage::Recording(ACTION.to_string()));
     }
 
@@ -1940,12 +1980,12 @@ mod multi_shortcut_tests {
         let t0 = Instant::now();
         let mut state = started_by_a(mode, t0);
 
-        assert!(state.on_input(key(mode, B, true), t0 + ms(200)).is_none());
-        assert!(state.on_input(key(mode, B, false), t0 + ms(300)).is_none());
+        assert!(state.feed(key(mode, B, true), t0 + ms(200)).is_none());
+        assert!(state.feed(key(mode, B, false), t0 + ms(300)).is_none());
         assert!(state.grace_deadline().is_none(), "B release must not defer");
         assert_eq!(state.stage, Stage::Recording(ACTION.to_string()));
 
-        assert!(state.on_input(key(mode, A, false), t0 + ms(400)).is_none());
+        assert!(state.feed(key(mode, A, false), t0 + ms(400)).is_none());
         assert!(is_stop(&state.on_grace_expired()));
     }
 
@@ -1955,8 +1995,8 @@ mod multi_shortcut_tests {
         let t0 = Instant::now();
         let mut state = started_by_a(mode, t0);
 
-        assert!(state.on_input(key(mode, A, false), t0 + ms(400)).is_none());
-        assert!(state.on_input(key(mode, B, true), t0 + ms(420)).is_none());
+        assert!(state.feed(key(mode, A, false), t0 + ms(400)).is_none());
+        assert!(state.feed(key(mode, B, true), t0 + ms(420)).is_none());
         assert!(
             state.grace_deadline().is_some(),
             "A's release stays pending"
@@ -1970,11 +2010,11 @@ mod multi_shortcut_tests {
         let t0 = Instant::now();
         let mut state = started_by_a(mode, t0);
 
-        assert!(state.on_input(key(mode, B, true), t0 + ms(100)).is_none());
-        assert!(state.on_input(key(mode, B, false), t0 + ms(150)).is_none());
+        assert!(state.feed(key(mode, B, true), t0 + ms(100)).is_none());
+        assert!(state.feed(key(mode, B, false), t0 + ms(150)).is_none());
         assert!(!state.is_locked(), "B's short press is not A's tap");
 
-        assert!(state.on_input(key(mode, A, false), t0 + ms(800)).is_none());
+        assert!(state.feed(key(mode, A, false), t0 + ms(800)).is_none());
         assert!(is_stop(&state.on_grace_expired()));
     }
 
@@ -1984,11 +2024,11 @@ mod multi_shortcut_tests {
         let t0 = Instant::now();
         let mut state = started_by_a(mode, t0);
 
-        assert!(state.on_input(key(mode, A, false), t0 + ms(120)).is_none());
+        assert!(state.feed(key(mode, A, false), t0 + ms(120)).is_none());
         assert!(state.on_grace_expired().is_none());
         assert!(state.is_locked());
 
-        assert!(is_stop(&state.on_input(key(mode, B, true), t0 + ms(3000))));
+        assert!(is_stop(&state.feed(key(mode, B, true), t0 + ms(3000))));
     }
 
     #[test]
@@ -1996,10 +2036,10 @@ mod multi_shortcut_tests {
         let mode = ShortcutActivation::Toggle;
         let t0 = Instant::now();
         let mut state = started_by_a(mode, t0);
-        assert!(is_stop(&state.on_input(key(mode, A, true), t0 + ms(500))));
+        assert!(is_stop(&state.feed(key(mode, A, true), t0 + ms(500))));
 
-        assert!(state.on_input(key(mode, A, true), t0 + ms(600)).is_none());
-        assert!(state.on_input(key(mode, B, true), t0 + ms(700)).is_none());
+        assert!(state.feed(key(mode, A, true), t0 + ms(600)).is_none());
+        assert!(state.feed(key(mode, B, true), t0 + ms(700)).is_none());
         assert!(state.on_processing_finished().is_none());
         assert_eq!(state.stage, Stage::Idle);
     }
@@ -2009,17 +2049,17 @@ mod multi_shortcut_tests {
         let mode = ShortcutActivation::PushToTalk;
         let t0 = Instant::now();
         let mut state = started_by_a(mode, t0);
-        assert!(state.on_input(key(mode, A, false), t0 + ms(400)).is_none());
+        assert!(state.feed(key(mode, A, false), t0 + ms(400)).is_none());
         assert!(is_stop(&state.on_grace_expired()));
 
-        assert!(state.on_input(key(mode, A, true), t0 + ms(600)).is_none());
-        assert!(state.on_input(key(mode, B, true), t0 + ms(700)).is_none());
-        assert!(state.on_input(key(mode, B, false), t0 + ms(750)).is_none());
+        assert!(state.feed(key(mode, A, true), t0 + ms(600)).is_none());
+        assert!(state.feed(key(mode, B, true), t0 + ms(700)).is_none());
+        assert!(state.feed(key(mode, B, false), t0 + ms(750)).is_none());
         assert!(is_start(&state.on_processing_finished()));
 
-        assert!(state.on_input(key(mode, B, false), t0 + ms(900)).is_none());
+        assert!(state.feed(key(mode, B, false), t0 + ms(900)).is_none());
         assert_eq!(state.stage, Stage::Recording(ACTION.to_string()));
-        assert!(state.on_input(key(mode, A, false), t0 + ms(950)).is_none());
+        assert!(state.feed(key(mode, A, false), t0 + ms(950)).is_none());
         assert!(is_stop(&state.on_grace_expired()));
     }
 
@@ -2028,18 +2068,18 @@ mod multi_shortcut_tests {
         let mode = ShortcutActivation::HoldOrToggle;
         let t0 = Instant::now();
         let mut state = started_by_a(mode, t0);
-        assert!(state.on_input(key(mode, A, false), t0 + ms(800)).is_none());
+        assert!(state.feed(key(mode, A, false), t0 + ms(800)).is_none());
         assert!(is_stop(&state.on_grace_expired()));
 
-        assert!(state.on_input(key(mode, A, true), t0 + ms(1000)).is_none());
-        assert!(state.on_input(key(mode, A, false), t0 + ms(1100)).is_none());
+        assert!(state.feed(key(mode, A, true), t0 + ms(1000)).is_none());
+        assert!(state.feed(key(mode, A, false), t0 + ms(1100)).is_none());
         assert!(state.on_grace_expired().is_none());
         assert!(state.is_locked(), "A's busy tap is queued locked");
 
-        assert!(state.on_input(key(mode, B, true), t0 + ms(1200)).is_none());
+        assert!(state.feed(key(mode, B, true), t0 + ms(1200)).is_none());
         assert!(state.is_locked(), "B must not forget A's queued tap");
         assert!(is_start(&state.on_processing_finished()));
-        assert!(is_stop(&state.on_input(key(mode, B, true), t0 + ms(2000))));
+        assert!(is_stop(&state.feed(key(mode, B, true), t0 + ms(2000))));
     }
 
     fn external_toggle() -> InputEvent {
@@ -2053,7 +2093,7 @@ mod multi_shortcut_tests {
     fn busy_after_a(t0: Instant) -> CoordinatorState {
         let mode = ShortcutActivation::PushToTalk;
         let mut state = started_by_a(mode, t0);
-        assert!(state.on_input(key(mode, A, false), t0 + ms(400)).is_none());
+        assert!(state.feed(key(mode, A, false), t0 + ms(400)).is_none());
         assert!(is_stop(&state.on_grace_expired()));
         state
     }
@@ -2062,9 +2102,9 @@ mod multi_shortcut_tests {
     fn toggle_remembered_press_belongs_to_the_action_for_hold_inputs() {
         let t0 = Instant::now();
         let mut state = busy_after_a(t0);
-        assert!(state.on_input(external_toggle(), t0 + ms(500)).is_none());
+        assert!(state.feed(external_toggle(), t0 + ms(500)).is_none());
         let press = key(ShortcutActivation::PushToTalk, B, true);
-        assert!(state.on_input(press, t0 + ms(600)).is_none());
+        assert!(state.feed(press, t0 + ms(600)).is_none());
         assert!(
             state.on_processing_finished().is_none(),
             "B forgets the action-owned queued toggle"
@@ -2076,8 +2116,8 @@ mod multi_shortcut_tests {
         let t0 = Instant::now();
         let mut state = busy_after_a(t0);
         let press = key(ShortcutActivation::PushToTalk, A, true);
-        assert!(state.on_input(press, t0 + ms(500)).is_none());
-        assert!(state.on_input(external_toggle(), t0 + ms(510)).is_none());
+        assert!(state.feed(press, t0 + ms(500)).is_none());
+        assert!(state.feed(external_toggle(), t0 + ms(510)).is_none());
         assert!(
             state.on_processing_finished().is_none(),
             "an external toggle acts on the action, as before"
@@ -2091,7 +2131,7 @@ mod multi_shortcut_tests {
         let mut state = started_by_a(mode, t0);
         let mut other = key(mode, "option+shift+space", true);
         other.binding_id = "transcribe_with_post_process".to_string();
-        assert!(state.on_input(other, t0 + ms(500)).is_none());
+        assert!(state.feed(other, t0 + ms(500)).is_none());
         assert_eq!(state.stage, Stage::Recording(ACTION.to_string()));
     }
 
@@ -2102,6 +2142,6 @@ mod multi_shortcut_tests {
         let mut state = started_by_a(mode, t0);
         state.on_start_result(ACTION, false);
         assert_eq!(state.stage, Stage::Idle);
-        assert!(is_start(&state.on_input(key(mode, B, true), t0 + ms(100))));
+        assert!(is_start(&state.feed(key(mode, B, true), t0 + ms(100))));
     }
 }

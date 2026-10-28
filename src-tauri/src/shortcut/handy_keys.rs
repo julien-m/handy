@@ -182,13 +182,23 @@ impl HandyKeysState {
         app: &AppHandle,
     ) {
         while let Some(event) = manager.try_recv() {
+            // Stamped on receipt (HandyKeys events carry no time): this thread
+            // drains every 10 ms at most, while the coordinator may still be
+            // busy starting a recording (native session N13).
+            let received_at = std::time::Instant::now();
             if let Some(registration) = registered.by_hotkey.get(&event.id) {
                 debug!(
                     "handy-keys event: binding={}, hotkey={}, state={:?}",
                     registration.action_id, registration.accelerator, event.state
                 );
                 let is_pressed = event.state == HotkeyState::Pressed;
-                handle_shortcut_event(app, registration, &registration.accelerator, is_pressed);
+                handle_shortcut_event(
+                    app,
+                    registration,
+                    &registration.accelerator,
+                    is_pressed,
+                    received_at,
+                );
             }
         }
     }

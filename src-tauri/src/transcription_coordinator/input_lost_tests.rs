@@ -13,6 +13,7 @@ fn push_to_talk(is_pressed: bool) -> InputEvent {
         mode: ShortcutActivation::PushToTalk,
         hold_threshold: Duration::ZERO,
         external: false,
+        received_at: Instant::now(),
     }
 }
 
@@ -21,17 +22,17 @@ fn push_to_talk(is_pressed: bool) -> InputEvent {
 fn a_lost_input_stops_once_and_the_later_release_is_a_no_op() {
     let mut state = CoordinatorState::new();
     let now = Instant::now();
-    let started = state.on_input(push_to_talk(true), now);
+    let started = state.feed(push_to_talk(true), now);
     assert!(matches!(started, Some(Effect::Start { .. })));
     assert!(matches!(state.on_input_lost(), Some(Effect::Stop { .. })));
     assert_eq!(state.stage, Stage::Processing);
     assert_eq!(state.on_input_lost(), None, "exactly one stop");
     let later = now + Duration::from_millis(200);
-    assert_eq!(state.on_input(push_to_talk(false), later), None);
+    assert_eq!(state.feed(push_to_talk(false), later), None);
     assert_eq!(state.on_grace_expired(), None);
     assert_eq!(state.on_processing_finished(), None);
     assert_eq!(state.stage, Stage::Idle);
-    let next = state.on_input(push_to_talk(true), later + Duration::from_secs(1));
+    let next = state.feed(push_to_talk(true), later + Duration::from_secs(1));
     assert!(matches!(next, Some(Effect::Start { .. })));
 }
 #[test]

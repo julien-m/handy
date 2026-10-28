@@ -164,6 +164,8 @@ fn dispatch_event(
     shortcut: &Shortcut,
     state: ShortcutState,
 ) {
+    // Stamped on receipt in the global-shortcut callback (native session N13).
+    let received_at = std::time::Instant::now();
     let shortcut_string = shortcut.into_string();
     // Mirrors the handy-keys event log line; the distinct prefix makes it
     // possible to tell which backend fired a shortcut (e.g. when diagnosing
@@ -177,6 +179,7 @@ fn dispatch_event(
         registration,
         &shortcut_string,
         state == ShortcutState::Pressed,
+        received_at,
     );
 }
 

@@ -1,35 +1,53 @@
-Native session fixes — core (N1, N7) — branch fix/native-session-core, worktree /Users/julienm/projects/handy-wt/native-core
+Native session fixes — core (N1, N7, N13 and review) — branch fix/native-session-core, worktree /Users/julienm/projects/handy-wt/native-core
 Date: 2026-10-28. Author: Claude Code (claude-opus-5-5). Base: dev 8761d748.
 Findings: Julien's native proof session of 2026-10-28 (builds of fc362e37).
 
-N1 (001) — input-lost notice on the recording indicator — commit a776d3cf
-  The input_lost recording error is an indicator notice (inputLostNotice, >= 4 s, window held by
-  hold_overlay_for_notice, test id recording-indicator-input-lost-notice). The settings window
-  toasts it only with the overlay style none (showInputLostToast); never both. Text: existing
-  errors.inputLost (26 locales). Gates closed: the notice is the only addition.
+Commits
+  a776d3cf fix(001): input-lost notice on the recording indicator (N1)
+  6a38c184 fix(003): 5,000 vocabulary terms, indexed approximate correction (N7)
+  53b8e672 test(001): listener wiring of the input-lost notice (review of N1)
+  056ebf41 fix(003): not-sent list capped, Latin digits, huge threshold, one index around 002 replacements (review of N7)
+  (this commit) fix(004): hold-or-toggle measures the hold at the key edges (N13)
 
-N7 (003) — vocabulary limit 5,000 terms — this commit
-  MAX_TERMS = 5_000 (settings service validation, UI count, CLI help, 5 messages x 26 locales,
-  README). Whisper unchanged (prompt budget, sent / not-sent status). spec.md not modified:
-  spec-refine 003 à faire : limite 5 000 termes (décision Julien 2026-10-28).
-  Approximate correction: CustomWordIndex (length groups, Soundex once per key, bounded banded
-  Levenshtein), identical results to the former full scan (equivalence tests vs strsim/natural).
+N1 (001) — input_lost is an indicator notice (>= 4 s, window held by hold_overlay_for_notice,
+  test id recording-indicator-input-lost-notice); the settings window toasts it only with the
+  overlay style none; never both (proved through the listeners, notice-listeners.test.ts).
+  Text: existing errors.inputLost (26 locales). Gates closed: the notice is the only addition.
+  Follow-up: screen recording-indicator-input-lost not added to penflow/flow-ui-contract/contract.json
+  (generated with screens/*.md and generated-docs.json, mirrored by the trees tied to the .pen canvas;
+  Penflow CLI not installed, ui.pen being edited by Julien).
+
+N7 (003) — MAX_TERMS = 5_000 (service validation, UI count, CLI help, 5 messages x 26 locales,
+  README). Whisper unchanged. spec.md not modified: spec-refine 003 à faire : limite 5 000 termes
+  (décision Julien 2026-10-28). Review: not-sent groups built in place, 20 terms named per group then
+  « and N more » (new key status.notSent.more, 26 locales); counts with Latin digits (Nepali);
+  edit-distance limit capped at the longer length (1e20 / infinity thresholds, same results as the
+  former scan); one index shared by the spans around 002 replacements.
+
+N13 (004) — InputEvent.received_at stamped in the HandyKeys thread and the Tauri global-shortcut
+  callback (KeyEdge via handle_shortcut_event / send_input); press, release, remembered press and
+  debounce measured between received edges; RELEASE_GRACE deadline still from processing.
+  Regression: slow_start_tests.rs (injected clock; 100 ms tap processed after a 400 ms start stays
+  locked; late real hold stops; queued auto-repeat cancels the release; busy tap locks).
 
 Performance (5,000 terms, 96-word dictation, threshold 0.18, median of 9 runs, Apple Silicon, shared machine)
   Command: cargo test --lib --config 'profile.test.package.handy.opt-level=3'
            --config 'profile.test.package.handy.debug-assertions=false' -- --ignored fuzzy_correction --nocapture
-  Before (full scan, optimized test profile, strsim and natural also at opt-level 3): 468.18 ms   (unoptimized: 2546 ms)
-  After  (index, optimized test profile):     20.81 / 20.87 / 20.47 ms over three runs — budget 50 ms: PASS
-  (measured on the final code; only two doc comments changed afterwards)
-  fuzzy correction: 5000 terms, 96 words, median of 9 runs 20.81 ms (optimized build)
+  Before (full scan; strsim and natural also at opt-level 3): 468.18 ms   (unoptimized: 2546 ms)
+  After, plain text, run alone: 20.81 / 20.87 / 20.47 ms
+  After review, both timing tests run in parallel, three runs:
+    plain text 32.99 / 21.26 / 26.31 ms; around 002 replacements 23.58 / 16.68 / 19.64 ms — budget 50 ms: PASS
+  (text.rs and the index unchanged since; only a doc comment of the perf test module)
 
-Verifications (exit codes; CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-009)
+Verifications (exit codes; CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.target-009; 19 ignored include the two timing tests)
   cargo fmt --check=0
   cargo clippy --lib --bins -- -D warnings=0
   cargo clippy --all-targets -- -D warnings=0
-  cargo test --lib=0 (the 18 ignored include the timing test; test result: ok. 1050 passed; 0 failed; 18 ignored; 0 measured; 0 filtered out; finished in 3.43s)
-  cargo test --lib --features destination-return,smart-paste-dispatch=0 (test result: ok. 1056 passed; 0 failed; 18 ignored; 0 measured; 0 filtered out; finished in 2.99s)
-  cargo test --test vocabulary_transactions=0 (test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.24s)
+  cargo clippy --lib --bins --features destination-return,smart-paste-dispatch -- -D warnings=0
+  cargo clippy --all-targets --features destination-return,smart-paste-dispatch -- -D warnings=0
+  cargo test --lib=0 (test result: ok. 1056 passed; 0 failed; 19 ignored; 0 measured; 0 filtered out; finished in 3.67s)
+  cargo test --lib --features destination-return,smart-paste-dispatch=0 (test result: ok. 1062 passed; 0 failed; 19 ignored; 0 measured; 0 filtered out; finished in 3.06s)
+  cargo test --test vocabulary_transactions=0 (test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.14s)
   tsc --noEmit=0
   bun run lint=0
   bun run format:check=0
@@ -42,11 +60,11 @@ Verifications (exit codes; CARGO_TARGET_DIR=/Users/julienm/projects/handy-wt/.ta
   bun run test:microphone-priority=0 (pass 101, fail 0, script assertions ok 0)
   bun run test:word-replacements=0 (pass 82, fail 0, script assertions ok 0)
   bun run test:prompt-settings=0 (pass 66, fail 0, script assertions ok 0)
-  bun run test:indicator=0 (pass 67, fail 0, script assertions ok 0)
+  bun run test:indicator=0 (pass 74, fail 0, script assertions ok 0)
   bun run test:recovery-bubble=0 (pass 18, fail 0, script assertions ok 0)
-  bun run test:vocabulary=0 (pass 55, fail 0, script assertions ok 0)
+  bun run test:vocabulary=0 (pass 59, fail 0, script assertions ok 0)
   bun run test:shortcut-states=0 (pass 59, fail 0, script assertions ok 0)
   bun run test:output-settings=0 (pass 61, fail 0, script assertions ok 0)
-  livespec conventions verify --feature repo --json=0 (verdict PASS new 0 baselined 525)
+  livespec conventions verify --feature repo --json=0 (verdict PASS new 0 baselined 524)
   perf (optimized test profile, --ignored fuzzy_correction)=0
-  .specs/conventions/baseline.json unchanged (sha256 8d6d4f80…)
+  .specs/conventions/baseline.json unchanged

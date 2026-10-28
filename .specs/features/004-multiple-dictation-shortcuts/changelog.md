@@ -120,3 +120,13 @@
 - **Why:** native session of 2026-10-28, finding N9, Julien's request: the modifier-only overlap now takes the registered side into account; a right-only modifier shortcut (`command_right`) no longer refuses `command_left+j`. A modifier without side still overlaps both sides; equality ignores sides as before.
 - **Tests:** conflicts.rs `side_specific_modifier_only_overlaps_only_on_its_side` (both directions), `tauri_modifiers_register_both_sides`; existing tests unchanged
 - **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-28 — [Bugfix]: hold-or-toggle measures the hold at the key edges (native session N13)
+
+- **Type:** Bugfix
+- **Spec modified:** No (AC-003: the hold threshold now holds whatever the start duration)
+- **Code modified:** src-tauri/src/transcription_coordinator.rs, src-tauri/src/transcription_coordinator/{slow_start_tests.rs (new), input_lost_tests.rs, quiescence_tests.rs}, src-tauri/src/shortcut/{handler.rs, handy_keys.rs, tauri_impl.rs}
+- **AC impacted:** AC-003
+- **Why:** finding N13 of Julien's native session of 2026-10-28: a short tap stopped the dictation at once when the start took longer than the 300 ms threshold, because the key-up was measured when processed after the start
+- **Tests:** `slow_start_tests.rs` (injected clock: tap processed after a 400 ms start stays locked; late hold stops; queued auto-repeat cancels the release; busy tap locks)
+- **Author:** Claude Code (claude-opus-5-5)
