@@ -1,0 +1,4733 @@
+{
+  "verdict": "PASS",
+  "feature_slug": "repo",
+  "run_id": "20261028T184913Z",
+  "receipt_path": ".specs/conventions/runs/20261028T184913Z/receipt.json",
+  "baseline": {
+    "baselined_count": 524,
+    "new_count": 0,
+    "path": ".specs/conventions/baseline.json",
+    "resolved_count": 3658,
+    "sha256": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe"
+  },
+  "blockers": [],
+  "violations_total": 559,
+  "baselined_total": [
+    {
+      "fix_hint": "",
+      "line": 142,
+      "message": "healPeerDepBins has 84 lines > 60",
+      "path": ".nix/scripts/heal-peer-dep-bins.ts",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 92,
+      "message": "validateTranslations has 130 lines > 60",
+      "path": "scripts/check-translations.ts",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 180,
+      "message": "main has 98 lines > 60",
+      "path": "scripts/mirror_models.py",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 1,
+      "message": "580 lines > 500",
+      "path": "src-tauri/build.rs",
+      "rule_id": "builtin.max_file_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 61,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 62,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#error-handling",
+      "line": 67,
+      "message": "No panic in production Rust paths",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_panic",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#error-handling",
+      "line": 83,
+      "message": "No panic in production Rust paths",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_panic",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#error-handling",
+      "line": 92,
+      "message": "No panic in production Rust paths",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_panic",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#error-handling",
+      "line": 131,
+      "message": "No panic in production Rust paths",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_panic",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 142,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 143,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#error-handling",
+      "line": 145,
+      "message": "No panic in production Rust paths",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_panic",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 165,
+      "message": "stage_transcribe_runtime_libs has 97 lines > 60",
+      "path": "src-tauri/build.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 190,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 194,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#error-handling",
+      "line": 202,
+      "message": "No panic in production Rust paths",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_panic",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#error-handling",
+      "line": 250,
+      "message": "No panic in production Rust paths",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_panic",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#error-handling",
+      "line": 254,
+      "message": "No panic in production Rust paths",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_panic",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 284,
+      "message": "generate_tray_translations has 297 lines > 60",
+      "path": "src-tauri/build.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 289,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 297,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 303,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 303,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 308,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 309,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 317,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 317,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 355,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 371,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 385,
+      "message": "build_apple_intelligence_bridge has 172 lines > 60",
+      "path": "src-tauri/build.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 398,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 405,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 406,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#error-handling",
+      "line": 463,
+      "message": "No panic in production Rust paths",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_panic",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 468,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 469,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 480,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 490,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 511,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#error-handling",
+      "line": 519,
+      "message": "No panic in production Rust paths",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_panic",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 522,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 526,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 529,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#error-handling",
+      "line": 537,
+      "message": "No panic in production Rust paths",
+      "path": "src-tauri/build.rs",
+      "rule_id": "rust.no_panic",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 1,
+      "message": "630 lines > 500",
+      "path": "src-tauri/src/actions.rs",
+      "rule_id": "builtin.max_file_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 143,
+      "message": "start has 190 lines > 60",
+      "path": "src-tauri/src/actions.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 334,
+      "message": "stop has 210 lines > 60",
+      "path": "src-tauri/src/actions.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 1,
+      "message": "984 lines > 500",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder.rs",
+      "rule_id": "builtin.max_file_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 332,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 338,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 373,
+      "message": "write_input_to_ring has 63 lines > 60",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 396,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 566,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 589,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 660,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 721,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 817,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 843,
+      "message": "run_consumer has 133 lines > 60",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 18,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 24,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 59,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 96,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 98,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 109,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 125,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 139,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 167,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 180,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 190,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 207,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 211,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 223,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 236,
+      "message": "repeated_start_stop_cycles_resume_capture_without_leaking_samples has 112 lines > 60",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 249,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 272,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 276,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 281,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 287,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 298,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 307,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 311,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 316,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 320,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 337,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 345,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 346,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 368,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 372,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 374,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 378,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/recorder/tests.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 30,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/resampler.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 62,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/resampler.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 82,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/resampler.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 101,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/resampler.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 106,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/audio_toolkit/audio/resampler.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 86,
+      "message": "feed has 70 lines > 60",
+      "path": "src-tauri/src/audio_toolkit/audio/visualizer.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 176,
+      "message": "main has 149 lines > 60",
+      "path": "src-tauri/src/audio_toolkit/bin/cli.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 1,
+      "message": "899 lines > 500",
+      "path": "src-tauri/src/audio_toolkit/text.rs",
+      "rule_id": "builtin.max_file_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 282,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/audio_toolkit/text.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 409,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/audio_toolkit/text.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 80,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/audio_toolkit/vad/earshot.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 86,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/audio_toolkit/vad/earshot.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 101,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/audio_toolkit/vad/earshot.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 103,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/audio_toolkit/vad/earshot.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#error-handling",
+      "line": 105,
+      "message": "No panic in production Rust paths",
+      "path": "src-tauri/src/audio_toolkit/vad/earshot.rs",
+      "rule_id": "rust.no_panic",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 111,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/audio_toolkit/vad/earshot.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 55,
+      "message": "push_frame has 66 lines > 60",
+      "path": "src-tauri/src/audio_toolkit/vad/smoothed.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 214,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/audio_toolkit/vad/smoothed.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 228,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/audio_toolkit/vad/smoothed.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 233,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/audio_toolkit/vad/smoothed.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 141,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/autostart.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 143,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/autostart.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 151,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/autostart.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 118,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/catalog/mod.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 1,
+      "message": "1114 lines > 500",
+      "path": "src-tauri/src/clipboard.rs",
+      "rule_id": "builtin.max_file_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 59,
+      "message": "paste_via_clipboard has 67 lines > 60",
+      "path": "src-tauri/src/clipboard.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 171,
+      "message": "try_direct_typing_linux has 79 lines > 60",
+      "path": "src-tauri/src/clipboard.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 840,
+      "message": "paste_routed has 107 lines > 60",
+      "path": "src-tauri/src/clipboard.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 119,
+      "message": "switch_active_model has 61 lines > 60",
+      "path": "src-tauri/src/commands/models.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 147,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/engine_supervisor/protocol.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 264,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/protocol.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 272,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/protocol.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 272,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/protocol.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 355,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/protocol.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 1,
+      "message": "1992 lines > 500",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "builtin.max_file_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 358,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 839,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 925,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 1117,
+      "message": "spawn has 91 lines > 60",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1122,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1151,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1152,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1153,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#error-handling",
+      "line": 1506,
+      "message": "No panic in production Rust paths",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_panic",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1510,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1594,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1613,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1616,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1636,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1641,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1658,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1659,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1667,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1672,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1685,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1686,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1698,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1710,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1726,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1726,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1727,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1740,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1751,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1752,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1752,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1755,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1768,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1770,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1776,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1781,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1795,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1799,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1817,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1829,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1839,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1852,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#error-handling",
+      "line": 1857,
+      "message": "No panic in production Rust paths",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_panic",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1871,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1872,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1873,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1875,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1893,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1902,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1909,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1923,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1937,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1942,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1952,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1953,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1968,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1979,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/engine_supervisor/supervisor.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 35,
+      "message": "run has 132 lines > 60",
+      "path": "src-tauri/src/engine_supervisor/worker.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 271,
+      "message": "load has 63 lines > 60",
+      "path": "src-tauri/src/engine_supervisor/worker.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 74,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/helpers/clamshell.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 1,
+      "message": "1269 lines > 500",
+      "path": "src-tauri/src/lib.rs",
+      "rule_id": "builtin.max_file_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 210,
+      "message": "suppression directive `allow` exceeds budget 0",
+      "path": "src-tauri/src/lib.rs",
+      "rule_id": "builtin.suppression_directives",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 236,
+      "message": "initialize_core_logic has 184 lines > 60",
+      "path": "src-tauri/src/lib.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 246,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/lib.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 248,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/lib.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 252,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/lib.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 256,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/lib.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 296,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/lib.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 297,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/lib.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 336,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/lib.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 374,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/lib.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 482,
+      "message": "run_headless_transcription has 195 lines > 60",
+      "path": "src-tauri/src/lib.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 861,
+      "message": "run has 384 lines > 60",
+      "path": "src-tauri/src/lib.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 890,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/lib.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 904,
+      "message": "suppression directive `allow` exceeds budget 0",
+      "path": "src-tauri/src/lib.rs",
+      "rule_id": "builtin.suppression_directives",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 988,
+      "message": "suppression directive `allow` exceeds budget 0",
+      "path": "src-tauri/src/lib.rs",
+      "rule_id": "builtin.suppression_directives",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 989,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/lib.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1024,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/lib.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1027,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/lib.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 1,
+      "message": "712 lines > 500",
+      "path": "src-tauri/src/llm_client.rs",
+      "rule_id": "builtin.max_file_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 307,
+      "message": "send_chat_completion_with_schema has 134 lines > 60",
+      "path": "src-tauri/src/llm_client.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 444,
+      "message": "fetch_models has 63 lines > 60",
+      "path": "src-tauri/src/llm_client.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 556,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/llm_client.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 560,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/llm_client.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 561,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/llm_client.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 568,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/llm_client.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 570,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/llm_client.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 571,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/llm_client.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 614,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/llm_client.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 629,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/llm_client.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 1,
+      "message": "974 lines > 500",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "builtin.max_file_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 25,
+      "message": "set_mute has 88 lines > 60",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 264,
+      "message": "create_audio_recorder has 77 lines > 60",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 456,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 483,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 484,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 502,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 514,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 527,
+      "message": "start_microphone_stream has 88 lines > 60",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 528,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 534,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 554,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 560,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 563,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 577,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 592,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 617,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 623,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 630,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 632,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 634,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 647,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 663,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 695,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 715,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 721,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 748,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 762,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 770,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 775,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 778,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 804,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 812,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 817,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 822,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 850,
+      "message": "stop_recording has 82 lines > 60",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 852,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 887,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 900,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 901,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 945,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 952,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 956,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/audio.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 413,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/gguf_meta.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#error-handling",
+      "line": 445,
+      "message": "No panic in production Rust paths",
+      "path": "src-tauri/src/managers/gguf_meta.rs",
+      "rule_id": "rust.no_panic",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 468,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/gguf_meta.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 490,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/gguf_meta.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 1,
+      "message": "511 lines > 500",
+      "path": "src-tauri/src/managers/history.rs",
+      "rule_id": "builtin.max_file_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 408,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/managers/history.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 409,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/managers/history.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 432,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/managers/history.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 460,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/managers/history.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 470,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/managers/history.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 470,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/managers/history.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 485,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/managers/history.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 485,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/managers/history.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 1,
+      "message": "3190 lines > 500",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "builtin.max_file_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 444,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 468,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 479,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 498,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 533,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 538,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 554,
+      "message": "new has 629 lines > 60",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1186,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1260,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1270,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1289,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1315,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 1401,
+      "message": "update_download_status has 91 lines > 60",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1405,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1406,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1442,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1552,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 1628,
+      "message": "discover_custom_transcribe_models has 156 lines > 60",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 1799,
+      "message": "discover_hf_cache_models_in has 130 lines > 60",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 1948,
+      "message": "download_hf_model has 258 lines > 60",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1969,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1979,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2201,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 2248,
+      "message": "download_model has 197 lines > 60",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2250,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2285,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2294,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2333,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2370,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2409,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2426,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2433,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 2446,
+      "message": "delete_model has 133 lines > 60",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2450,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2510,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2565,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2586,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 2612,
+      "message": "get_model_path has 76 lines > 60",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2696,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2707,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2733,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2733,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2734,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2735,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2736,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2742,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2743,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2768,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2769,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 2870,
+      "message": "test_discover_custom_transcribe_models has 97 lines > 60",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2871,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2875,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2876,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2878,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2879,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2882,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2883,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2891,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2892,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2893,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2894,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2895,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2931,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2938,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2950,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2955,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2970,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 2976,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 2996,
+      "message": "test_catalog_quant_rendering has 71 lines > 60",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 3051,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 3071,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 3075,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 3079,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 3085,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 3087,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 3088,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 3093,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#error-handling",
+      "line": 3097,
+      "message": "No panic in production Rust paths",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_panic",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 3100,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 3138,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 3143,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 3148,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 3149,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 3150,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 3162,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 3163,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 3164,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 3175,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/managers/model.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 184,
+      "message": "download_http_resumable_with_events has 197 lines > 60",
+      "path": "src-tauri/src/managers/model/download.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 1,
+      "message": "579 lines > 500",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "builtin.max_file_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 17,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 19,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 20,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 39,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 71,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 120,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 121,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 123,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 162,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 165,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 177,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 196,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 198,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 200,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 212,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 230,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 232,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 257,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 259,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 261,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 281,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 283,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 285,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 302,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 304,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 329,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 331,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 352,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 354,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 370,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 372,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 374,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 397,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 399,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 401,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 413,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 428,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 459,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 485,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 506,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 507,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 509,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 513,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 524,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 543,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 544,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 546,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 553,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 563,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/model/download/tests.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 1,
+      "message": "2652 lines > 500",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "builtin.max_file_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 151,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 160,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 167,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 176,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 283,
+      "message": "new has 92 lines > 60",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 370,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 414,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 440,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 480,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 498,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 531,
+      "message": "load_model_with_device has 248 lines > 60",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 604,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 753,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 782,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 804,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 811,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 869,
+      "message": "run_stream_worker has 185 lines > 60",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 879,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 881,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1059,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 1136,
+      "message": "transcribe has 126 lines > 60",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1165,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1167,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 1269,
+      "message": "transcribe_cpp has 81 lines > 60",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 1352,
+      "message": "transcribe_onnx has 163 lines > 60",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#error-handling",
+      "line": 2258,
+      "message": "No panic in production Rust paths",
+      "path": "src-tauri/src/managers/transcription.rs",
+      "rule_id": "rust.no_panic",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 1,
+      "message": "880 lines > 500",
+      "path": "src-tauri/src/overlay.rs",
+      "rule_id": "builtin.max_file_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 470,
+      "message": "suppression directive `allow` exceeds budget 0",
+      "path": "src-tauri/src/overlay.rs",
+      "rule_id": "builtin.suppression_directives",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 129,
+      "message": "settle has 62 lines > 60",
+      "path": "src-tauri/src/paste_tx/macos.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 264,
+      "message": "run has 76 lines > 60",
+      "path": "src-tauri/src/paste_tx/macos.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 85,
+      "message": "suppression directive `allow` exceeds budget 0",
+      "path": "src-tauri/src/paste_tx/mod.rs",
+      "rule_id": "builtin.suppression_directives",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 1,
+      "message": "622 lines > 500",
+      "path": "src-tauri/src/paste_tx/windows.rs",
+      "rule_id": "builtin.max_file_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 235,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/paste_tx/windows.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 413,
+      "message": "on_timer has 72 lines > 60",
+      "path": "src-tauri/src/paste_tx/windows.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 463,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/paste_tx/windows.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 494,
+      "message": "pump_thread has 79 lines > 60",
+      "path": "src-tauri/src/paste_tx/windows.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 556,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/paste_tx/windows.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 557,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/paste_tx/windows.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 616,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/paste_tx/windows.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 146,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/portable.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 148,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/portable.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 149,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/portable.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 151,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/portable.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 157,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/portable.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 159,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/portable.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 161,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/portable.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 167,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/portable.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 169,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/portable.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 170,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/portable.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 172,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/portable.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 185,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/portable.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 187,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/portable.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 189,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/portable.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 195,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/portable.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 197,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/portable.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 198,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/portable.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 200,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/portable.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 1,
+      "message": "653 lines > 500",
+      "path": "src-tauri/src/secure_input.rs",
+      "rule_id": "builtin.max_file_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 229,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/secure_input.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 277,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/secure_input.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 278,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/secure_input.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 314,
+      "message": "start_monitor has 67 lines > 60",
+      "path": "src-tauri/src/secure_input.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 337,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/secure_input.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 338,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/secure_input.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 348,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/secure_input.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 349,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/secure_input.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 363,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/secure_input.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 394,
+      "message": "reconcile_fallback has 136 lines > 60",
+      "path": "src-tauri/src/secure_input.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 396,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/secure_input.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 399,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/secure_input.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 521,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/secure_input.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 1,
+      "message": "1846 lines > 500",
+      "path": "src-tauri/src/settings.rs",
+      "rule_id": "builtin.max_file_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 795,
+      "message": "default_post_process_providers has 90 lines > 60",
+      "path": "src-tauri/src/settings.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 1028,
+      "message": "get_default_settings has 127 lines > 60",
+      "path": "src-tauri/src/settings.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 1207,
+      "message": "apply_settings_migrations has 138 lines > 60",
+      "path": "src-tauri/src/settings.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1430,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/settings.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 1454,
+      "message": "frozen_v0_9_store_parses_strictly_then_migrates_device_index has 122 lines > 60",
+      "path": "src-tauri/src/settings.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1456,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/settings.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1550,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/settings.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1641,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/settings.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1641,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/settings.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1762,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/settings.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1782,
+      "message": "No unwrap in production Rust",
+      "path": "src-tauri/src/settings.rs",
+      "rule_id": "rust.no_unwrap",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 1,
+      "message": "588 lines > 500",
+      "path": "src-tauri/src/shortcut/handy_keys.rs",
+      "rule_id": "builtin.max_file_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 1,
+      "message": "1238 lines > 500",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "rule_id": "builtin.max_file_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 1210,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/shortcut/mod.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 38,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/signal_handle.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 41,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/signal_handle.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 1,
+      "message": "2147 lines > 500",
+      "path": "src-tauri/src/transcription_coordinator.rs",
+      "rule_id": "builtin.max_file_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#error-handling",
+      "line": 1427,
+      "message": "No panic in production Rust paths",
+      "path": "src-tauri/src/transcription_coordinator.rs",
+      "rule_id": "rust.no_panic",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 1,
+      "message": "745 lines > 500",
+      "path": "src-tauri/src/tray.rs",
+      "rule_id": "builtin.max_file_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 245,
+      "message": "sync_tray_with has 66 lines > 60",
+      "path": "src-tauri/src/tray.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 354,
+      "message": "apply_on_main has 82 lines > 60",
+      "path": "src-tauri/src/tray.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 458,
+      "message": "build_menu has 138 lines > 60",
+      "path": "src-tauri/src/tray.rs",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 720,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/tray.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/rust.md#type-system",
+      "line": 43,
+      "message": "No expect in production Rust",
+      "path": "src-tauri/src/tray_i18n.rs",
+      "rule_id": "rust.no_expect",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "",
+      "line": 1,
+      "message": "missing required file header",
+      "path": "src-tauri/swift/apple_intelligence.swift",
+      "rule_id": "builtin.file_header",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 54,
+      "message": "processTextWithSystemPrompt has 76 lines > 60",
+      "path": "src-tauri/swift/apple_intelligence.swift",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 1,
+      "message": "missing required file header",
+      "path": "src-tauri/swift/apple_intelligence_stub.swift",
+      "rule_id": "builtin.file_header",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 57,
+      "message": "App has 328 lines > 60",
+      "path": "src/App.tsx",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 35,
+      "message": "suppression directive `eslint-disable` exceeds budget 0",
+      "path": "src/components/footer/Footer.tsx",
+      "rule_id": "builtin.suppression_directives",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 50,
+      "message": "suppression directive `eslint-disable` exceeds budget 0",
+      "path": "src/components/settings/about/AboutSettings.tsx",
+      "rule_id": "builtin.suppression_directives",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 28,
+      "message": "suppression directive `eslint-disable` exceeds budget 0",
+      "path": "src/components/settings/debug/DebugPaths.tsx",
+      "rule_id": "builtin.suppression_directives",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 35,
+      "message": "suppression directive `eslint-disable` exceeds budget 0",
+      "path": "src/components/settings/debug/DebugPaths.tsx",
+      "rule_id": "builtin.suppression_directives",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 44,
+      "message": "suppression directive `eslint-disable` exceeds budget 0",
+      "path": "src/components/settings/debug/DebugPaths.tsx",
+      "rule_id": "builtin.suppression_directives",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 55,
+      "message": "suppression directive `eslint-disable` exceeds budget 0",
+      "path": "src/components/shared/ProgressBar.tsx",
+      "rule_id": "builtin.suppression_directives",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 71,
+      "message": "padding uses 10, outside token scale",
+      "path": "src/components/ui/Select.tsx",
+      "rule_id": "builtin.token_scale",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 72,
+      "message": "padding uses 6, outside token scale",
+      "path": "src/components/ui/Select.tsx",
+      "rule_id": "builtin.token_scale",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 19,
+      "message": "provides has 147 lines > 60",
+      "path": "src/lib/utils/keyboard.ts",
+      "rule_id": "builtin.max_function_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "",
+      "line": 1,
+      "message": "791 lines > 500",
+      "path": "src/stores/settingsStore.ts",
+      "rule_id": "builtin.max_file_lines",
+      "severity": "error",
+      "source": "builtin"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/javascript.md#typescript-specifics",
+      "line": 237,
+      "message": "No TypeScript as any assertions",
+      "path": "src/stores/settingsStore.ts",
+      "rule_id": "ts.no_as_any",
+      "severity": "error",
+      "source": "ast"
+    },
+    {
+      "fix_hint": "See ai-ressources/code-conventions/javascript.md#typescript-specifics",
+      "line": 457,
+      "message": "No TypeScript as any assertions",
+      "path": "src/stores/settingsStore.ts",
+      "rule_id": "ts.no_as_any",
+      "severity": "error",
+      "source": "ast"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+macOS Version 26.5.2 (Build 25F84)
+AXIsProcessTrusted (inherited from the hosting app): true
+diag isActive: false; initial front: com.anthropic.claudefordesktop; TextEdit launched by diag: false
+
+[3/3] activate(options: []) main thread
+    returned true -> front in 10 ms (AX pid unreadable)
+    returned true -> front in 10 ms (AX pid unreadable)
+    returned true -> front in 11 ms (AX pid unreadable)
+
+[3/3] activate(options: []) background thread
+    returned true -> front in 11 ms (AX pid unreadable)
+    returned true -> front in 10 ms (AX pid unreadable)
+    returned true -> front in 11 ms (AX pid unreadable)
+
+[3/3] activate(options: .activateIgnoringOtherApps) main (deprecated)
+    returned true -> front in 10 ms (AX pid unreadable)
+    returned true -> front in 11 ms (AX pid unreadable)
+    returned true -> front in 11 ms (AX pid unreadable)
+
+[3/3] activate(from: current, options: []) main (macOS 14 API)
+    returned true -> front in 10 ms (AX pid unreadable)
+    returned true -> front in 11 ms (AX pid unreadable)
+    returned true -> front in 11 ms (AX pid unreadable)
+
+[3/3] NSApp.yieldActivation(to:) + activate() main
+    returned true -> front in 10 ms (AX pid unreadable)
+    returned true -> front in 10 ms (AX pid unreadable)
+    returned true -> front in 10 ms (AX pid unreadable)
+
+[0/3] AX kAXFrontmostAttribute=true main thread
+    AXError 0 -> NOT front after 1 s, front=com.apple.finder (AX pid 75551)
+    AXError 0 -> NOT front after 1 s, front=com.apple.finder (AX pid 75551)
+    AXError 0 -> NOT front after 1 s, front=com.apple.finder (AX pid 75551)
+
+[0/3] AX kAXFrontmostAttribute=true background thread
+    AXError 0 -> NOT front after 1 s, front=com.apple.finder (AX pid 75551)
+    AXError 0 -> NOT front after 1 s, front=com.apple.finder (AX pid 75551)
+    AXError 0 -> NOT front after 1 s, front=com.apple.finder (AX pid 75551)
+
+[0/3] AXRaise first window only
+    AXError -25212 -> NOT front after 1 s, front=com.apple.finder (AX pid 75551)
+    AXError -25212 -> NOT front after 1 s, front=com.apple.finder (AX pid 75551)
+    AXError -25212 -> NOT front after 1 s, front=com.apple.finder (AX pid 75551)
+
+TextEdit pid: 78908
+restored front: com.anthropic.claudefordesktop
