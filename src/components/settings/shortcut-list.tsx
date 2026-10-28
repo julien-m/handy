@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import type { RefusedShortcut, ShortcutBinding } from "@/bindings";
 import { useSettings } from "../../hooks/useSettings";
 import { SettingContainer } from "../ui/SettingContainer";
-import { addControlState } from "./shortcut-draft-model";
+import { listControls } from "./shortcut-draft-model";
 import {
   type MessageNames,
   type ShortcutTestIds,
@@ -200,17 +200,18 @@ const ShortcutRows: React.FC<ListPartProps & { busy: boolean }> = ({
 };
 
 // @spec AC-001: Settings list with add and remove controls — .specs/features/004-multiple-dictation-shortcuts/spec.md#ac-001
-/** Right-hand column: shortcuts, draft, Add and Reset, hint and messages. */
+/**
+ * Right-hand column: shortcuts, draft, Add (Save and Discard during a draft)
+ * and Reset, hint and messages. Reset is disabled while a draft is open, so it
+ * never clears one silently (native session finding N8).
+ */
 const ShortcutColumn: React.FC<ListPartProps> = ({ list, single }) => {
   const { submitter, draft, ids } = list;
   const count = shortcutsOf(list.binding).length;
   const busy = submitter.feedback.state === "loading";
   const hasRoom = canAddShortcut(count);
-  const isDraftOpen = draft.state.phase !== "closed";
-  const reset = () => {
-    draft.discard();
-    void submitter.submit({ kind: "reset" });
-  };
+  const controls = single ? null : listControls(draft.state, hasRoom, busy);
+  const reset = () => void submitter.submit({ kind: "reset" });
   return (
     <div
       className="flex flex-col items-end gap-1"
@@ -229,11 +230,13 @@ const ShortcutColumn: React.FC<ListPartProps> = ({ list, single }) => {
       )}
       <AddRow
         ids={ids}
-        addState={single ? null : addControlState(draft.state, hasRoom, busy)}
+        controls={controls}
         isFull={!hasRoom}
-        onAdd={isDraftOpen ? () => void draft.commit() : draft.open}
+        onAdd={draft.open}
+        onSave={() => void draft.commit()}
+        onDiscard={draft.discard}
         onReset={reset}
-        resetDisabled={busy}
+        resetDisabled={controls ? !controls.isResetEnabled : busy}
       />
       {!single && (
         <ListHintText hint={listHint(count)} count={count} ids={ids} />

@@ -1,10 +1,11 @@
 // Rows of a shortcut list: each stored shortcut with its warnings and remove
-// control, the "Add shortcut" draft recorder, the Add and Reset controls,
-// and the hint and messages under them.
-import React from "react";
+// control, the "Add shortcut" draft recorder, the Add (or, during a draft,
+// Save and Discard) and Reset controls, and the hint and messages under them.
+import React, { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { AlertTriangle, X } from "lucide-react";
 import type { ShortcutEdit } from "@/bindings";
+import { Button } from "../ui/Button";
 import { ResetButton } from "../ui/ResetButton";
 import { ShortcutInput } from "./ShortcutInput";
 import {
@@ -14,7 +15,7 @@ import {
 } from "./shortcut-chip";
 import {
   type AddControlState,
-  type DraftState,
+  type ListControls,
   recorderValidity,
 } from "./shortcut-draft-model";
 import {
@@ -158,27 +159,33 @@ const draftControl = (draft: ShortcutDraft): ShortcutChipControl => ({
   recordRequest: draft.recordRequest,
   onRequestHandled: draft.recorder.requestHandled,
   validity: recorderValidity(draft.state),
+  isDraft: true,
   onRecordingChange: (isRecording) =>
     isRecording ? draft.recorder.started() : draft.stop(),
   onStartFailed: draft.recorder.startFailed,
 });
 
-/**
- * Whether the draft offers Discard: once something was recorded, and when
- * the recorder could not start (the only other exit is leaving the section).
- */
-const hasDiscard = ({ phase, shortcut }: DraftState): boolean =>
-  shortcut !== null || phase === "blocked";
-
 // @spec AC-001: Adding records with the existing recorder — .specs/features/004-multiple-dictation-shortcuts/spec.md#ac-001
-/** The recorder opened by Add: empty, then valid or invalid once checked. */
+/**
+ * The recorder opened by Add: empty, then valid or invalid once checked. Its
+ * dashed chip and the "Not saved" label set it apart from a stored shortcut
+ * until Save adds it (native session finding N8).
+ */
 export const DraftRow: React.FC<DraftRowProps> = (props) => {
   const { t } = useTranslation();
   const { ids, draft } = props;
   const { state } = draft;
   if (state.phase === "closed") return null;
   return (
-    <div className="flex items-center gap-1" data-phase={state.phase}>
+    <div className="flex items-center gap-2" data-phase={state.phase}>
+      {state.shortcut !== null && (
+        <span
+          className="text-xs italic text-mid-gray"
+          data-testid={ids.unsaved}
+        >
+          {t(`${LIST_KEY}.unsaved`)}
+        </span>
+      )}
       <ShortcutChipContext.Provider value={draftControl(draft)}>
         <ShortcutInput
           shortcutId={props.actionId}
@@ -189,14 +196,6 @@ export const DraftRow: React.FC<DraftRowProps> = (props) => {
           onCapture={draft.capture}
         />
       </ShortcutChipContext.Provider>
-      {hasDiscard(state) && (
-        <RowRemoveButton
-          label={t(`${LIST_KEY}.discard`)}
-          isEnabled={state.phase !== "committing"}
-          testId={ids.discard}
-          onClick={draft.discard}
-        />
-      )}
     </div>
   );
 };
@@ -204,40 +203,147 @@ export const DraftRow: React.FC<DraftRowProps> = (props) => {
 interface AddRowProps {
   ids: ShortcutTestIds;
   /** Null for an action that keeps a single shortcut (no Add). */
-  addState: AddControlState | null;
+  controls: ListControls | null;
   isFull: boolean;
   onAdd: () => void;
+  onSave: () => void;
+  onDiscard: () => void;
   onReset: () => void;
   resetDisabled: boolean;
 }
 
-/** "Add shortcut" (opens the draft, then adds it) and Reset. */
+interface ListButtonProps {
+  state: AddControlState;
+  testId: string;
+  title?: string;
+  onActivate: () => void;
+  children: React.ReactNode;
+}
+
+/** "Add shortcut" in Handy's chip look; a disabled one stays focusable to explain why. */
+const AddButton = React.forwardRef<HTMLButtonElement, ListButtonProps>(
+  function AddButton(props, ref) {
+    return (
+      <button
+        ref={ref}
+        type="button"
+        data-testid={props.testId}
+        data-state={props.state}
+        aria-disabled={props.state !== "enabled"}
+        aria-busy={props.state === "loading"}
+        title={props.title}
+        className={shortcutChipClass({
+          isRecording: false,
+          disabled: props.state !== "enabled",
+        })}
+        onClick={() => {
+          if (props.state === "enabled") props.onActivate();
+        }}
+      >
+        {props.children}
+      </button>
+    );
+  },
+);
+
+/**
+ * Gives the focus back to "Add shortcut" when Save or Discard, which had it,
+ * left with the draft; a focus the user moved elsewhere is left alone.
+ * @param mode Controls shown under the list.
+ * @param add The Add button.
+ */
+const useFocusAddAfterDraft = (
+  mode: ListControls["mode"] | undefined,
+  add: React.RefObject<HTMLButtonElement | null>,
+): void => {
+  const previous = useRef(mode);
+  useEffect(() => {
+    const closedDraft = previous.current === "draft" && mode === "add";
+    previous.current = mode;
+    const isFocusLost =
+      document.activeElement === null ||
+      document.activeElement === document.body;
+    if (closedDraft && isFocusLost) add.current?.focus({ preventScroll: true });
+  }, [mode, add]);
+};
+
+interface DraftButtonsProps {
+  ids: ShortcutTestIds;
+  controls: ListControls;
+  onSave: () => void;
+  onDiscard: () => void;
+}
+
+/** Save (only a valid draft) and Discard, shown instead of Add during a draft. */
+const DraftButtons: React.FC<DraftButtonsProps> = (props) => {
+  const { t } = useTranslation();
+  const { controls, ids } = props;
+  const canSave = controls.submit === "enabled";
+  return (
+    <>
+      <Button
+        variant="secondary"
+        size="sm"
+        data-testid={ids.discard}
+        aria-disabled={!controls.canDiscard}
+        title={t(`${LIST_KEY}.discard`)}
+        className={controls.canDiscard ? "" : "opacity-50 cursor-not-allowed"}
+        onClick={() => {
+          if (controls.canDiscard) props.onDiscard();
+        }}
+      >
+        {t(`${LIST_KEY}.discardDraft`)}
+      </Button>
+      <Button
+        variant="primary"
+        size="sm"
+        data-testid={ids.add}
+        data-state={controls.submit}
+        aria-disabled={!canSave}
+        aria-busy={controls.submit === "loading"}
+        className={canSave ? "" : "opacity-50 cursor-not-allowed"}
+        onClick={() => {
+          if (canSave) props.onSave();
+        }}
+      >
+        {t(`${LIST_KEY}.save`)}
+      </Button>
+    </>
+  );
+};
+
+/**
+ * "Add shortcut" and Reset; during a draft, Save and Discard replace Add and
+ * Reset waits (native session finding N8).
+ */
 export const AddRow: React.FC<AddRowProps> = (props) => {
   const { t } = useTranslation();
-  const { addState, ids } = props;
+  const { controls, ids } = props;
+  const addButton = useRef<HTMLButtonElement | null>(null);
+  useFocusAddAfterDraft(controls?.mode, addButton);
   const limitLabel = t(`${LIST_KEY}.addLimit`, {
     limit: MAX_SHORTCUTS_PER_ACTION,
   });
   return (
     <div className="flex items-center gap-1">
-      {addState !== null && (
-        <button
-          type="button"
-          data-testid={ids.add}
-          data-state={addState}
-          aria-disabled={addState !== "enabled"}
-          aria-busy={addState === "loading"}
+      {controls?.mode === "draft" && (
+        <DraftButtons
+          ids={ids}
+          controls={controls}
+          onSave={props.onSave}
+          onDiscard={props.onDiscard}
+        />
+      )}
+      {controls?.mode === "add" && (
+        <AddButton
+          ref={addButton}
+          state={controls.submit}
+          testId={ids.add}
           title={props.isFull ? limitLabel : undefined}
-          className={shortcutChipClass({
-            isRecording: false,
-            disabled: addState !== "enabled",
-          })}
-          onClick={() => {
-            if (addState === "enabled") props.onAdd();
-          }}
+          onActivate={props.onAdd}
         >
           {t(`${LIST_KEY}.add`)}
-        </button>
+        </AddButton>
       )}
       <ResetButton
         onClick={props.onReset}

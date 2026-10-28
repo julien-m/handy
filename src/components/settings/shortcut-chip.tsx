@@ -21,6 +21,8 @@ export interface ShortcutChipControl {
   onRequestHandled?: (request: number) => void;
   /** Validation state of a draft recorder, shown by its colors. */
   validity?: RecorderValidity;
+  /** The chip shows an unsaved draft: dashed border, unlike a stored shortcut. */
+  isDraft?: boolean;
   /** Told whenever recording starts or stops. */
   onRecordingChange?: (isRecording: boolean) => void;
   /** Told when the system refused to start recording, with the reason. */
@@ -84,6 +86,7 @@ interface ChipLook {
   isRecording: boolean;
   disabled: boolean;
   validity?: RecorderValidity;
+  isDraft?: boolean;
 }
 
 /**
@@ -95,6 +98,7 @@ export const shortcutChipClass = ({
   isRecording,
   disabled,
   validity,
+  isDraft = false,
 }: ChipLook): string => {
   const stateClass = isRecording
     ? "border-logo-primary bg-logo-primary/30"
@@ -104,7 +108,8 @@ export const shortcutChipClass = ({
   const interactiveClass = disabled
     ? "opacity-50 cursor-not-allowed"
     : "hover:bg-logo-primary/10 hover:border-logo-primary cursor-pointer";
-  return `px-2 py-1 text-sm font-semibold border rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-logo-primary ${stateClass} ${interactiveClass}`;
+  const borderStyle = isDraft ? "border-dashed" : "";
+  return `px-2 py-1 text-sm font-semibold border ${borderStyle} rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-logo-primary ${stateClass} ${interactiveClass}`;
 };
 
 interface ShortcutChipProps {
@@ -199,7 +204,7 @@ export const ShortcutChip: React.FC<ShortcutChipProps> = (props) => {
   const button = useRef<HTMLButtonElement | null>(null);
   const start = useStart(props, control, button);
   useListControl(control, isRecording, start);
-  const { validity } = control;
+  const { validity, isDraft } = control;
   return (
     <button
       type="button"
@@ -211,11 +216,17 @@ export const ShortcutChip: React.FC<ShortcutChipProps> = (props) => {
       data-instance-id={props.instanceId}
       data-state={isRecording ? "recording" : "idle"}
       data-validity={validity}
+      data-draft={isDraft || undefined}
       aria-label={label}
       aria-disabled={disabled}
       aria-invalid={validity === "invalid" || undefined}
       title={label}
-      className={shortcutChipClass({ isRecording, disabled, validity })}
+      className={shortcutChipClass({
+        isRecording,
+        disabled,
+        validity,
+        isDraft,
+      })}
       onClick={start}
       onBlur={() => isRecording && props.onLeave()}
     >

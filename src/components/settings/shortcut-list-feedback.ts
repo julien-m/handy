@@ -261,6 +261,7 @@ export const shortcutTestIds = (
     conflictIcon: `${base}-shortcut-conflict`,
     recording: `${base}-recording`,
     discard: `${base}-recording-discard`,
+    unsaved: `${base}-recording-unsaved`,
     add: `${base}-add`,
     reset: `${base}-reset`,
     last: `${base}-last`,
