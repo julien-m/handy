@@ -1,0 +1,11 @@
+N17 fix (branch fix/n17-recovery-panel from dev 2a9e4866), CARGO_TARGET_DIR=handy-wt/.target-n17
+red-before-fix.txt: tests/recovery_native.rs::the_recovery_panel_stays_registered_after_its_creation FAILS on the previous macos.rs (to_window)
+cargo fmt --check: 0 (fmt.txt)
+clippy --all-targets -D warnings, features destination-return,smart-paste-dispatch: 0 (clippy-features.txt)
+clippy --all-targets -D warnings, default: 0 (clippy-default.txt)
+cargo test --lib features: 1067 passed (test-lib-features.txt); default: 1061 passed (test-lib-default.txt)
+cargo test --test recovery_native (features): 7 passed, 2 ignored (native)
+tsc 0, lint 0, format:check 0, check:translations 0
+bun test:recovery-bubble 0, test:indicator 0, test:recovery-bubble-ui 10 passed
+livespec conventions verify --feature repo --json: PASS (conventions-repo.json)
+Native proof pending with Julien.
