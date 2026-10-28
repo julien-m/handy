@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { AlertTriangle, X } from "lucide-react";
 import type { ShortcutEdit } from "@/bindings";
 import { Button } from "../ui/Button";
+import { focusFirstAvailable, isFocusLost } from "../ui/focus-return";
 import { ResetButton } from "../ui/ResetButton";
 import { ShortcutInput } from "./ShortcutInput";
 import {
@@ -275,15 +276,43 @@ interface DraftButtonsProps {
 }
 
 /** Save (only a valid draft) and Discard, shown instead of Add during a draft. */
+/**
+ * Gives the focus to Discard when the recorder is refused (Secure Input) while the focus is on
+ * the page or on the draft chip, which cannot record: Discard is then the way out. When the draft
+ * opens and "Add shortcut", which had the focus, is gone before the chip takes it, a lost focus
+ * goes to Discard too.
+ * @param isBlocked whether the recorder could not start
+ * @param discard the Discard button
+ */
+const useFocusDiscardWhenStuck = (
+  isBlocked: boolean,
+  discard: React.RefObject<HTMLButtonElement | null>,
+): void => {
+  useEffect(() => {
+    // After the chip's own focus request has run: only a lost or stuck focus is moved.
+    const frame = requestAnimationFrame(() => {
+      const isOnDraftChip =
+        document.activeElement?.hasAttribute("data-draft") ?? false;
+      if (isFocusLost() || (isBlocked && isOnDraftChip)) {
+        focusFirstAvailable([discard.current]);
+      }
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [isBlocked, discard]);
+};
+
 const DraftButtons: React.FC<DraftButtonsProps> = (props) => {
   const { t } = useTranslation();
   const { controls, ids } = props;
   const canSave = controls.submit === "enabled";
+  const discardButton = useRef<HTMLButtonElement | null>(null);
+  useFocusDiscardWhenStuck(controls.isBlocked, discardButton);
   return (
     <>
       <Button
         variant="secondary"
         size="sm"
+        ref={discardButton}
         data-testid={ids.discard}
         aria-disabled={!controls.canDiscard}
         title={t(`${LIST_KEY}.discard`)}

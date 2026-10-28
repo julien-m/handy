@@ -189,6 +189,7 @@ describe("controls under the list (native session N8)", () => {
       mode: "add",
       submit: "enabled",
       canDiscard: false,
+      isBlocked: false,
       isResetEnabled: true,
     });
   });
@@ -198,6 +199,7 @@ describe("controls under the list (native session N8)", () => {
       mode: "draft",
       submit: "disabled",
       canDiscard: true,
+      isBlocked: false,
       isResetEnabled: false,
     });
   });
@@ -221,6 +223,7 @@ describe("controls under the list (native session N8)", () => {
       mode: "draft",
       submit: "loading",
       canDiscard: false,
+      isBlocked: false,
       isResetEnabled: false,
     });
   });
@@ -229,5 +232,15 @@ describe("controls under the list (native session N8)", () => {
     const controls = listControls(CLOSED_DRAFT, true, true);
     expect(controls.submit).toBe("disabled");
     expect(controls.isResetEnabled).toBe(false);
+  });
+
+  test("a recorder refused by the system is blocked, with Discard offered", () => {
+    const blocked = run(
+      { type: "open" },
+      { type: "startFailed", failure: { kind: "secure_input" } },
+    );
+    const controls = listControls(blocked, true, false);
+    expect(controls.isBlocked).toBe(true);
+    expect(controls.canDiscard).toBe(true);
   });
 });

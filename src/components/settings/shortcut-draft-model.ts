@@ -223,6 +223,8 @@ export interface ListControls {
   submit: AddControlState;
   /** Discard is offered for an open draft, except while it is being saved. */
   canDiscard: boolean;
+  /** The recorder could not start (Secure Input): Discard is the way out. */
+  isBlocked: boolean;
   /** Reset never clears a draft: it waits until the draft is saved or discarded. */
   isResetEnabled: boolean;
 }
@@ -244,6 +246,7 @@ export const listControls = (
     mode: isDraftOpen ? "draft" : "add",
     submit: addControlState(state, hasRoom, isBusy),
     canDiscard: isDraftOpen && state.phase !== "committing",
+    isBlocked: state.phase === "blocked",
     isResetEnabled: !isDraftOpen && !isBusy,
   };
 };

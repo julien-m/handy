@@ -130,3 +130,13 @@
 - **Why:** native session of 2026-10-28, finding N8: the captured draft looked like a saved shortcut and was added by clicking "Add shortcut" again, so Julien thought it was added and Reset cleared it. The draft chip is now dashed with a "Not saved" label; during a draft, Save (enabled only for a valid combination) and Discard replace "Add shortcut"; Reset is disabled while a draft is open; the focus returns to "Add shortcut" after Save or Discard. The prompt shortcuts of 005 (`ShortcutListEditor`) do not use the draft: a capture is added at once, so they are unchanged.
 - **Tests:** shortcut-draft-model.test.ts (`listControls`, 6), shortcut-list-render.test.tsx (draft look, Save/Discard/Reset, 4 new or updated)
 - **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-28 — [Bugfix]: Focus on Discard when the draft recorder is refused (native session N8, review)
+
+- **Type:** Bugfix (review of `fix/native-session-ui`)
+- **Spec modified:** No
+- **Code modified:** src/components/settings/{shortcut-draft-model.ts, shortcut-list-rows.tsx}; tests/shortcut-list-draft.spec.ts and its harness (new)
+- **AC impacted:** AC-001
+- **Why:** with Secure Input on, the draft opened blocked, "Add shortcut" disappeared and the keyboard focus had no way out.
+- **Tests:** shortcut-draft-model.test.ts (blocked draft), tests/shortcut-list-draft.spec.ts
+- **Author:** Claude Code (claude-opus-5-5)
