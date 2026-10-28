@@ -84,19 +84,30 @@ test("Discard gives the focus to the section title", async ({ page }) => {
   await expectTitleFocused(page);
 });
 
-test("the switch dialog closed by Discard gives the focus back", async ({
+test("the switch dialog closed by Discard gives the focus back to its trigger, the Text view switch", async ({
   page,
 }) => {
   await open(page);
   await editFirstRule(page);
   await page.keyboard.press("Enter");
-  await page.getByTestId("replacement-settings-view-text").focus();
+  const textView = page.getByTestId("replacement-settings-view-text");
+  await textView.focus();
+  // Marks the trigger element itself: its test id follows the screen, the element stays.
+  await textView.evaluate((element) =>
+    element.setAttribute("data-probe", "trigger"),
+  );
   await page.keyboard.press("Enter");
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();
   await dialog.getByRole("button", { name: "Discard", exact: true }).click();
   await expect(dialog).toBeHidden();
-  await expect.poll(() => focused(page)).not.toBe("body");
+  await expect
+    .poll(() =>
+      page.evaluate(() => document.activeElement?.getAttribute("data-probe")),
+    )
+    .toBe("trigger");
+  // The text view is now shown and the focused switch is its own.
+  expect(await focused(page)).toBe("replacement-settings-bulk-view-text");
 });
 
 test("a refused import file is announced under the Replacements title, inside its section", async ({

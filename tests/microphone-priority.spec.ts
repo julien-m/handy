@@ -331,29 +331,45 @@ test.describe("loading guard and failed listing", () => {
 });
 
 test.describe("compact save bar (native session N2)", () => {
-  test("hidden without a change, then kept in view at the bottom while there is one", async ({
+  test("hidden without a change, then kept at the bottom of the scrolled settings content", async ({
     page,
   }) => {
-    await page.setViewportSize({ width: 900, height: 240 });
-    await open(page);
+    await page.setViewportSize({ width: 900, height: 300 });
+    await open(page, "?inWindow");
     await expect(page.getByTestId(anyScreen("draft"))).toHaveCount(0);
     await editFromKeyboard(page);
     const bar = page.getByTestId("microphone-settings-draft");
-    // The editor is taller than the window: without sticking, the bar would be out of view.
-    const pageHeight = await page.evaluate(
-      () => document.documentElement.scrollHeight,
+    const content = page.getByTestId("settings-window-content");
+    // The editor is taller than the content area: without sticking, the bar would be out of view.
+    const overflow = await content.evaluate(
+      (element) => element.scrollHeight - element.clientHeight,
     );
-    expect(pageHeight).toBeGreaterThan(240 + 100);
-    await expect(bar).toBeInViewport();
+    expect(overflow).toBeGreaterThan(100);
     await expect(bar.getByRole("button")).toHaveText([
       text.draft.discard,
       text.draft.save,
     ]);
-    // Scrolled to the top, the bar still sits at the bottom of the visible area.
-    await page.evaluate(() => window.scrollTo(0, 0));
-    await expect(bar).toBeInViewport();
-    const box = await bar.boundingBox();
-    expect(box).not.toBeNull();
-    expect(box!.y + box!.height).toBeGreaterThan(240 - 40);
+    const barSitsAtContentBottom = async (): Promise<void> => {
+      const area = await content.boundingBox();
+      const box = await bar.boundingBox();
+      expect(area).not.toBeNull();
+      expect(box).not.toBeNull();
+      const areaBottom = area!.y + area!.height;
+      const barBottom = box!.y + box!.height;
+      expect(barBottom).toBeLessThanOrEqual(areaBottom);
+      expect(barBottom).toBeGreaterThan(areaBottom - 40);
+    };
+    // Content scrolled to the top, then halfway: the bar stays at the bottom of the visible
+    // content, and only the content area scrolls, never the window.
+    for (const position of [0, Math.floor(overflow / 2)]) {
+      await content.evaluate((element, top) => {
+        element.scrollTop = top;
+      }, position);
+      await expect
+        .poll(() => content.evaluate((element) => element.scrollTop))
+        .toBe(position);
+      await barSitsAtContentBottom();
+    }
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
   });
 });

@@ -1,7 +1,7 @@
 // Browser harness of the microphone priority editor (feature 001): the real editor, settings
 // store and status hook against the fake Tauri IPC of `fake-tauri.ts`, served by the Vite dev
 // server for `tests/microphone-priority.spec.ts`. Query flags: `holdSettings` keeps the settings
-// read pending (loading state).
+// read pending (loading state); `inWindow` mounts it in the settings window frame.
 import {
   backend,
   commit,
@@ -24,8 +24,9 @@ import {
   MicrophonePrioritySettings,
 } from "@/components/settings/microphone-priority/microphone-priority-settings";
 import { useSettingsStore } from "@/stores/settingsStore";
+import { SettingsWindowLayout } from "@/components/settings-window-layout";
 
-const Editor: React.FC = () => (
+const EditorBody: React.FC = () => (
   <div className="p-4 max-w-3xl">
     <MicrophonePrioritySettings>
       <div className="border border-mid-gray/20 rounded-lg">
@@ -34,6 +35,22 @@ const Editor: React.FC = () => (
     </MicrophonePrioritySettings>
   </div>
 );
+
+// `?inWindow`: inside the settings window frame, where only the content area scrolls.
+const isInWindow = new URLSearchParams(window.location.search).has("inWindow");
+
+const Editor: React.FC = () =>
+  isInWindow ? (
+    <SettingsWindowLayout
+      direction="ltr"
+      sidebar={<nav className="w-40 h-full border-e border-mid-gray/20" />}
+      footer={<footer className="p-2 border-t border-mid-gray/20" />}
+    >
+      <EditorBody />
+    </SettingsWindowLayout>
+  ) : (
+    <EditorBody />
+  );
 
 let root: Root | null = null;
 
