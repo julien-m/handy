@@ -4,6 +4,7 @@
 //! truthful outcome while keeping a failed transcript for the recovery features. Destination,
 //! insertion method and clipboard handling stay separate: this module only decides which
 //! application is activated. 011 adds the input focused at the start (`field*` modules).
+pub mod activation;
 pub mod app;
 #[cfg_attr(not(target_os = "windows"), allow(dead_code))]
 mod bounded_worker;

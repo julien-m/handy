@@ -5,6 +5,8 @@
 
 ---
 
+## 2026-10-28 — [Feature 006] Bugfix N16: a declined return to the dictation's app falls back to the accessibility activation request within the same 1 s
+
 ## 2026-10-28 — [Feature 007] Bugfix N12: smart paste no longer aborts with CFRelease(NULL) when ABC/US cannot be selected; truthful "no actor reply" log
 
 ## 2026-10-28 — [Bugfix, onboarding] Permission checks run one at a time (native session N10, review)

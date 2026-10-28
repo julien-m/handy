@@ -5,6 +5,15 @@
 //! (activation wait and pre-dispatch guard) reads the focused application live through
 //! Accessibility (`macos_focus`), because `NSWorkspace` values only change when this process's
 //! main run loop turns, which it does not during the paste delay on the main thread.
+//!
+//! Activation (N16, every macOS version, same order): `activate_once` is the
+//! `NSRunningApplication` request; `activate_by_accessibility` sets `AXFrontmost` on the
+//! application element. Since macOS 14, cooperative activation lets the system decline the first
+//! one from a background accessory app (`activateWithOptions:` answers NO and nothing comes
+//! forward): observed on macOS 26.5.2 after the user switched applications by hand, while the
+//! same request from a background process succeeded after programmatic switches. Calling it on
+//! the main thread changed nothing in the N16 diagnostic, so both run on the activation worker.
+//! `NSApp.yieldActivation(to:)` needs Handy to be the active app, which it is not here.
 use super::context::ApplicationIdentity;
 use super::workspace::{ActivationRequest, Foreground, RunningApp, WorkspacePort};
 use objc2::rc::{autoreleasepool, Retained};
@@ -138,9 +147,9 @@ impl WorkspacePort for MacWorkspace {
                 .collect()
         })
     }
-    // @spec FR-002: One activation request per insertion — .specs/features/006-destination-application/spec.md#fr-002
-    /// One activation request (no retry): the system brings the app's last active window,
-    /// switching Space if needed. Acceptance is not proof that it became frontmost.
+    // @spec FR-002: Workspace activation request — .specs/features/006-destination-application/spec.md#fr-002
+    /// One workspace activation request (no retry): the system brings the app's last active
+    /// window, switching Space if needed. Acceptance is not proof that it became frontmost.
     fn activate_once(&self, target: &RunningApp) -> ActivationRequest {
         autoreleasepool(|_| {
             let Ok(pid) = i32::try_from(target.pid) else {
@@ -154,6 +163,17 @@ impl WorkspacePort for MacWorkspace {
                 _ => ActivationRequest::Refused,
             }
         })
+    }
+    /// One `AXFrontmost` request on the application element (no retry); any `AXError`, a
+    /// missing Accessibility permission included, is a refusal.
+    fn activate_by_accessibility(&self, target: &RunningApp) -> ActivationRequest {
+        match super::macos_focus::request_frontmost(target.pid) {
+            Ok(()) => ActivationRequest::Sent,
+            Err(error) => {
+                log::debug!("Accessibility activation request refused: {error:?}");
+                ActivationRequest::Refused
+            }
+        }
     }
 }
 

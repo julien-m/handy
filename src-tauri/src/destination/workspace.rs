@@ -63,6 +63,13 @@ pub trait WorkspacePort: Send + Sync {
     fn instances(&self, identity: &ApplicationIdentity) -> Vec<RunningApp>;
     /// Ask the system once to bring `target` forward (its last active window).
     fn activate_once(&self, target: &RunningApp) -> ActivationRequest;
+    /// Ask once through the accessibility API to bring `target` forward, the second strategy of
+    /// the activation chain (`activation`). Adapters without such a route keep this default.
+    fn activate_by_accessibility(&self, target: &RunningApp) -> ActivationRequest {
+        // `target` is unused: this adapter has no accessibility activation route.
+        let _ = target;
+        ActivationRequest::Refused
+    }
 }
 
 /// Monotonic time of the activation deadline.
