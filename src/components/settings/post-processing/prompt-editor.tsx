@@ -4,7 +4,7 @@
 // the editor opens. Editing a saved prompt is the
 // contract's `prompt-settings-editor` screen; a new prompt is its
 // `prompt-settings-invalid` screen (title "New prompt").
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import type { ListedPrompt, PromptLibraryView } from "@/bindings";
 import { Alert } from "../../ui/Alert";
@@ -187,13 +187,19 @@ export const PromptEditor: React.FC<PromptEditorProps> = (props) => {
   // Stable focus point when the focused control leaves (native session N5).
   const titleRef = useRef<HTMLHeadingElement>(null);
   const rescueRef = useFocusRescue(titleRef);
+  // Stable: an inline ref would be called with null then the element on every render, which
+  // disconnects the rescue and forgets that the focus was in the editor.
+  const setRoot = useCallback(
+    (element: HTMLDivElement | null) => {
+      rootRef.current = element;
+      rescueRef(element);
+    },
+    [rootRef, rescueRef],
+  );
   const formProps = { testId, model, target, libraryState, titleRef };
   return (
     <div
-      ref={(element) => {
-        rootRef.current = element;
-        rescueRef(element);
-      }}
+      ref={setRoot}
       className="max-w-3xl w-full mx-auto space-y-6"
       data-testid={`${testId}-screen`}
     >

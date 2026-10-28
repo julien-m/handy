@@ -152,3 +152,12 @@
 - **AC impacted:** none (keyboard focus)
 - **Why:** native session of 2026-10-28, finding N5 (seen in 002, same pattern checked here); N8 checked: the prompt shortcuts have no draft.
 - **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-28 — [Bugfix]: Focus rescue of the prompt editor survives re-renders (native session N5, review)
+
+- **Type:** Bugfix (review of `fix/native-session-ui`)
+- **Spec modified:** No
+- **Code modified:** src/components/settings/post-processing/prompt-editor.tsx, src/components/ui/focus-return.ts; tests/prompt-editor-focus.spec.ts, tests/focus-rescue.spec.ts and their harnesses (new)
+- **AC impacted:** none (keyboard focus)
+- **Why:** the inline root ref reset the rescue on every render, so the title never took the focus back after Save.
+- **Author:** Claude Code (claude-opus-5-5)

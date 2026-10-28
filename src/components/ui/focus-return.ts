@@ -43,42 +43,60 @@ export const useFocusRescue = (
   fallback: RefObject<HTMLElement | null>,
 ): ((root: HTMLElement | null) => void) => {
   const cleanup = useRef<(() => void) | null>(null);
+  // Kept across detach/attach: a ref callback React calls again (null, then the same element)
+  // must not forget that the focus was in the section.
+  const memory = useRef<SectionFocus>({ root: null, hadFocus: false });
   useEffect(() => () => cleanup.current?.(), []);
   return useCallback(
     (root: HTMLElement | null) => {
       cleanup.current?.();
-      cleanup.current = root ? watchSection(root, fallback) : null;
+      cleanup.current = root
+        ? watchSection(root, fallback, memory.current)
+        : null;
     },
     [fallback],
   );
 };
 
+/** Whether the focus was last inside the watched section. */
+interface SectionFocus {
+  root: HTMLElement | null;
+  hadFocus: boolean;
+}
+
 /**
  * Strategy: remember whether the focus is inside the section (focusin), forget it when the user
  * moves it out (focusout to another element, or to nothing while the element is still there and
- * enabled), and after each DOM change of the section move a lost focus to the fallback.
+ * enabled), and after each DOM change of the section move a lost focus to the fallback. Watching
+ * the same root again keeps what was remembered and rescues a focus lost in between.
  */
 const watchSection = (
   root: HTMLElement,
   fallback: RefObject<HTMLElement | null>,
+  memory: SectionFocus,
 ): (() => void) => {
-  let hadFocus = root.contains(document.activeElement);
+  const isSameRoot = memory.root === root;
+  memory.root = root;
+  memory.hadFocus =
+    (isSameRoot && memory.hadFocus) || root.contains(document.activeElement);
   const rescue = () => {
-    if (hadFocus && isFocusLost()) focusFirstAvailable([fallback.current]);
+    if (memory.hadFocus && isFocusLost())
+      focusFirstAvailable([fallback.current]);
   };
   const onFocusIn = () => {
-    hadFocus = true;
+    memory.hadFocus = true;
   };
   const onFocusOut = (event: FocusEvent) => {
     const left = event.target as HTMLElement;
     if (event.relatedTarget instanceof Node) {
-      hadFocus = root.contains(event.relatedTarget);
+      memory.hadFocus = root.contains(event.relatedTarget);
       return;
     }
     // Focus went nowhere: a removed or disabled element is rescued, a click on an empty area
     // (the element is still there and enabled) is the user's choice.
     requestAnimationFrame(() => {
-      if (left.isConnected && !left.matches(":disabled")) hadFocus = false;
+      if (left.isConnected && !left.matches(":disabled"))
+        memory.hadFocus = false;
       else rescue();
     });
   };
@@ -91,6 +109,8 @@ const watchSection = (
   });
   root.addEventListener("focusin", onFocusIn);
   root.addEventListener("focusout", onFocusOut);
+  // A mutation while the section was detached went unobserved.
+  rescue();
   return () => {
     observer.disconnect();
     root.removeEventListener("focusin", onFocusIn);
