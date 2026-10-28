@@ -5166,7 +5166,7 @@
     "src-tauri/src/shortcut/action_shortcuts/tests.rs": "e42755fd3714bbd148559f104e10b65516c5a6262010b2b9b6590124ba7ef0d4",
     "src-tauri/src/shortcut/bindings_change.rs": "3df5add7a91b1e0423ed5b7dabb32f73d415eceada54ad7568a43412982a2765",
     "src-tauri/src/shortcut/bindings_change_tests.rs": "8a03fc3721c697f2fac99f4493676fcc1fee27d551ced9840e294b4d7d3c6073",
-    "src-tauri/src/shortcut/conflicts.rs": "667d9daec4768274233f900319b8ebcd2be8dba1f017aaa0c215fcb20d351988",
+    "src-tauri/src/shortcut/conflicts.rs": "ebf0513c5238fe8e579f42cf1ec7c517cf6359db2ed8b0f7708adf8ce81ad3cf",
     "src-tauri/src/shortcut/edits.rs": "8bfd08056f747b3b40269a68e09bccf4cba65744a374bf0d520a73cf9b3d84c9",
     "src-tauri/src/shortcut/edits/tests.rs": "5f9d75206b7bb47bdbcb1e899978174114b68d45adbd7deb1ad8b00ef5fe5735",
     "src-tauri/src/shortcut/fake_backend.rs": "b31fd8fda91907a2c43e1d5ef24554173c9dc812ffd384e6bce87db95c2b127e",

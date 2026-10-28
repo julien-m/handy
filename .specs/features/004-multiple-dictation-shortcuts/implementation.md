@@ -2,7 +2,7 @@
 feature: multiple-dictation-shortcuts
 title: Multiple Dictation Shortcuts Implementation
 spec_ref: spec.md
-updated: 2026-10-14
+updated: 2026-10-28
 ---
 
 # Implementation — Multiple Dictation Shortcuts
@@ -60,3 +60,7 @@ Decisions of Julien of 2026-10-17 (inventory D1 for 004-01 and 004-02, and 004-0
 - **D1 — prefix of the screen shown (004-01, 004-02):** every test id of the shortcut settings now carries the prefix of the contract screen actually shown, like 002 and 003, so each one is unique in the tree. Each list reports its state through [shortcut-screen](../../../src/components/settings/shortcut-screen.ts) (`useReportedShortcutScreen`, on the shared registry [page-screen](../../../src/components/settings/page-screen.ts)): an inline refusal, a system refusal or an inherited conflict selects `shortcut-settings-conflict`, a full list (4 of 4) selects `shortcut-settings-limit`, conflict first. [ShortcutScreenRoot](../../../src/components/settings/shortcut-screen-root.tsx) gathers them for the General page and renders `<screen>-screen` and `<screen>-general`; `shortcutTestIds(actionId, screen)` builds every list id from it (the conflict, legacy, change, os, os-retry and limit ids included), and the activation row reads it (`useShortcutScreen`). A list outside that page (the AI shortcut on the Post Process page) decides from its own state. The shared elements no longer keep the base ids on the conflict and limit screens.
 - **Instance id (004-08):** each stored shortcut chip carries `data-instance-id="shortcut-<keys>"` (`instance_id_template` `shortcut-{keys}`; the stored binding), through the new `instanceId` prop of `ShortcutInput`, the two recorders and `ShortcutChip` (`shortcutInstanceId` in [the list feedback](../../../src/components/settings/shortcut-list-feedback.ts)).
 - **Tests:** `shortcut-list-feedback.test.ts` (ids per screen, screen order, instance id) and `shortcut-list-render.test.tsx` (the full list renders the limit screen's ids and 4 instance ids; alerts under the conflict screen).
+
+## Side-aware modifier-only overlap (2026-10-28, branch `fix/004-side-overlap`)
+
+Native session of 2026-10-28, finding N9, at Julien's request: the modifier-only overlap rule of [the checker](../../../src-tauri/src/shortcut/conflicts.rs) now compares the sides HandyKeys actually registers (no side = both sides), so `command_right` overlaps `cmd+j` and `command_right+j` but not `command_left+j`, and `cmd` overlaps both sides. Equality (`Duplicate`) still ignores sides; the Tauri backend exposes no side (both). Tests: `side_specific_modifier_only_overlaps_only_on_its_side` (both directions), `tauri_modifiers_register_both_sides`. AC-004 in [spec](spec.md) is not refined yet (`spec-refine` 004 pending).

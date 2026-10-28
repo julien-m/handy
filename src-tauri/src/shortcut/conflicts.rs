@@ -4,7 +4,8 @@
 //! once 008 lands, prompt shortcuts from 005): a candidate combination is
 //! normalized with the active keyboard implementation's own parser, then
 //! compared with every configured shortcut of every action. Equal
-//! combinations and modifier-only overlaps are conflicts.
+//! combinations (sides ignored) and modifier-only overlaps (on a shared
+//! side) are conflicts.
 
 use serde::Serialize;
 use specta::Type;
@@ -12,19 +13,49 @@ use std::collections::HashMap;
 
 use crate::settings::{KeyboardImplementation, ShortcutBinding};
 
-/// Modifier families compared regardless of side (left/right) or alias
-/// (`option`/`alt`, `cmd`/`command`/`super`/`meta`).
+/// Modifier families compared regardless of alias
+/// (`option`/`alt`, `cmd`/`command`/`super`/`meta`); sides are kept apart
+/// in [`NormalizedCombination`] for the modifier-only overlap rule.
 const FAMILY_CTRL: u8 = 1;
 const FAMILY_ALT: u8 = 1 << 1;
 const FAMILY_SHIFT: u8 = 1 << 2;
 const FAMILY_META: u8 = 1 << 3;
 const FAMILY_FN: u8 = 1 << 4;
 
-/// Comparable form of a shortcut: its modifier families and its main key.
-#[derive(Debug, Clone, PartialEq, Eq)]
+/// Sides of one modifier family a shortcut actually registers.
+const SIDE_LEFT: u8 = 1;
+const SIDE_RIGHT: u8 = 1 << 1;
+/// A modifier without side (`cmd`, every Tauri modifier) fires on either.
+const SIDE_BOTH: u8 = SIDE_LEFT | SIDE_RIGHT;
+
+/// Families in bit order, used to index [`NormalizedCombination::sides`].
+const FAMILIES: [u8; 5] = [
+    FAMILY_CTRL,
+    FAMILY_ALT,
+    FAMILY_SHIFT,
+    FAMILY_META,
+    FAMILY_FN,
+];
+
+/// Comparable form of a shortcut: its modifier families, the sides each
+/// family registers, and its main key.
+///
+/// Equality (`==`, the `Duplicate` rule) ignores sides on purpose: left and
+/// right variants of a combination count as the same shortcut. Only the
+/// modifier-only overlap rule reads the sides.
+#[derive(Debug, Clone, Eq)]
 pub struct NormalizedCombination {
     modifiers: u8,
+    /// Side mask per family, in [`FAMILIES`] order; 0 when the family is
+    /// absent.
+    sides: [u8; FAMILIES.len()],
     key: Option<String>,
+}
+
+impl PartialEq for NormalizedCombination {
+    fn eq(&self, other: &Self) -> bool {
+        self.modifiers == other.modifiers && self.key == other.key
+    }
 }
 
 impl NormalizedCombination {
@@ -32,10 +63,35 @@ impl NormalizedCombination {
         self.key.is_none()
     }
 
-    /// Whether every modifier family of `self` is also held by `other`.
+    /// Whether `other` holds every modifier family of `self` on at least one
+    /// side `self` registers, so `self` fires whenever `other` is pressed.
     fn modifiers_within(&self, other: &NormalizedCombination) -> bool {
         self.modifiers & other.modifiers == self.modifiers
+            && self
+                .sides
+                .iter()
+                .zip(other.sides.iter())
+                .all(|(mine, theirs)| *mine == 0 || mine & theirs != 0)
     }
+}
+
+/// Builds the family set and side masks from `(family, left, right)` flags.
+fn families_and_sides(held: impl Iterator<Item = (u8, bool, bool)>) -> (u8, [u8; FAMILIES.len()]) {
+    let mut modifiers = 0;
+    let mut sides = [0; FAMILIES.len()];
+    for (family, left, right) in held {
+        let mask = match (left, right) {
+            (true, true) => SIDE_BOTH,
+            (true, false) => SIDE_LEFT,
+            (false, true) => SIDE_RIGHT,
+            (false, false) => continue,
+        };
+        modifiers |= family;
+        if let Some(index) = FAMILIES.iter().position(|f| *f == family) {
+            sides[index] |= mask;
+        }
+    }
+    (modifiers, sides)
 }
 
 /// One configured shortcut of one action.
@@ -99,12 +155,14 @@ fn normalize_tauri(raw: &str) -> Result<NormalizedCombination, String> {
         (Modifiers::SUPER | Modifiers::META, FAMILY_META),
         (Modifiers::FN, FAMILY_FN),
     ];
-    let modifiers = families
-        .iter()
-        .filter(|(flags, _)| shortcut.mods.intersects(*flags))
-        .fold(0, |acc, (_, family)| acc | family);
+    // The Tauri parser exposes no side: every held family fires on both.
+    let (modifiers, sides) = families_and_sides(families.iter().map(|(flags, family)| {
+        let held = shortcut.mods.intersects(*flags);
+        (*family, held, held)
+    }));
     Ok(NormalizedCombination {
         modifiers,
+        sides,
         key: Some(format!("{:?}", shortcut.key)),
     })
 }
@@ -114,21 +172,28 @@ fn normalize_handy_keys(raw: &str) -> Result<NormalizedCombination, String> {
     let hotkey = raw
         .parse::<Hotkey>()
         .map_err(|e| format!("Invalid shortcut for HandyKeys: {}", e))?;
-    // Lossy on purpose: left/right variants collapse to one family for
-    // comparison only; registration keeps the side-specific raw string.
+    // Families collapse left/right for equality (the `Duplicate` rule), but
+    // the side masks keep the sides HandyKeys actually registers: a bare
+    // `cmd` sets both sides, `command_right` only the right one, so a
+    // right-only modifier shortcut does not overlap `command_left+j`
+    // (native session 2026-10-28, finding N9). `Fn` has no side.
     let families = [
-        (Modifiers::CTRL, FAMILY_CTRL),
-        (Modifiers::OPT, FAMILY_ALT),
-        (Modifiers::SHIFT, FAMILY_SHIFT),
-        (Modifiers::CMD, FAMILY_META),
-        (Modifiers::FN, FAMILY_FN),
+        (Modifiers::CTRL_LEFT, Modifiers::CTRL_RIGHT, FAMILY_CTRL),
+        (Modifiers::OPT_LEFT, Modifiers::OPT_RIGHT, FAMILY_ALT),
+        (Modifiers::SHIFT_LEFT, Modifiers::SHIFT_RIGHT, FAMILY_SHIFT),
+        (Modifiers::CMD_LEFT, Modifiers::CMD_RIGHT, FAMILY_META),
+        (Modifiers::FN, Modifiers::FN, FAMILY_FN),
     ];
-    let modifiers = families
-        .iter()
-        .filter(|(flags, _)| hotkey.modifiers.intersects(*flags))
-        .fold(0, |acc, (_, family)| acc | family);
+    let (modifiers, sides) = families_and_sides(families.iter().map(|(left, right, family)| {
+        (
+            *family,
+            hotkey.modifiers.intersects(*left),
+            hotkey.modifiers.intersects(*right),
+        )
+    }));
     Ok(NormalizedCombination {
         modifiers,
+        sides,
         key: hotkey.key.map(|k| k.to_string().to_lowercase()),
     })
 }
@@ -158,7 +223,9 @@ fn conflict_between(a: &NormalizedCombination, b: &NormalizedCombination) -> Opt
         return Some(ConflictKind::Duplicate);
     }
     // Business rule: a modifier-only shortcut fires whenever its modifiers
-    // are held, so it also fires inside any combination containing them.
+    // are held on a side it registers, so it also fires inside any
+    // combination holding them on one of those sides (`command_right`
+    // overlaps `cmd+j` but not `command_left+j`).
     let overlaps = (a.is_modifier_only() && a.modifiers_within(b))
         || (b.is_modifier_only() && b.modifiers_within(a));
     overlaps.then_some(ConflictKind::ModifierOverlap)
@@ -329,6 +396,47 @@ mod tests {
             conflict.map(|c| c.kind),
             Some(ConflictKind::ModifierOverlap)
         );
+        Ok(())
+    }
+
+    #[test]
+    fn side_specific_modifier_only_overlaps_only_on_its_side() -> Result<(), String> {
+        // (modifier-only, combination, overlaps)
+        let cases = [
+            ("command_right", "cmd+j", true),
+            ("command_right", "command_right+j", true),
+            ("command_right", "command_left+j", false),
+            ("cmd", "command_left+j", true),
+            ("cmd", "command_right+j", true),
+        ];
+        for (modifier_only, combination, overlaps) in cases {
+            let expected = overlaps.then_some(ConflictKind::ModifierOverlap);
+            // Candidate is the modifier-only shortcut.
+            let inventory = [entry("transcribe", combination)];
+            let conflict = find_conflict(modifier_only, &inventory, None, HANDY_KEYS)?;
+            assert_eq!(
+                conflict.map(|c| c.kind),
+                expected,
+                "candidate {modifier_only} vs stored {combination}"
+            );
+            // Stored shortcut is the modifier-only one.
+            let inventory = [entry("transcribe", modifier_only)];
+            let conflict = find_conflict(combination, &inventory, None, HANDY_KEYS)?;
+            assert_eq!(
+                conflict.map(|c| c.kind),
+                expected,
+                "candidate {combination} vs stored {modifier_only}"
+            );
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn tauri_modifiers_register_both_sides() -> Result<(), String> {
+        let a = normalize_shortcut("super+j", TAURI)?;
+        let b = normalize_shortcut("command+k", TAURI)?;
+        assert!(a.sides.iter().all(|s| *s == 0 || *s == SIDE_BOTH));
+        assert!(b.sides.iter().all(|s| *s == 0 || *s == SIDE_BOTH));
         Ok(())
     }
 

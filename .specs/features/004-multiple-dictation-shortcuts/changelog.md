@@ -110,3 +110,13 @@
 - **Why:** delivery audit and review of the hardening: a start answered after the chip unmounted could leave shortcuts suspended; the one-shot request wiring had no test; orphan translation keys.
 - **Tests:** recorder-lifecycle.test.ts (6), shortcut-list-render.test.tsx (4 new); [proofs](proofs/claude-hardening-fix1/summary.txt)
 - **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-28 — [Bugfix]: Side-aware modifier-only overlap (native session N9)
+
+- **Type:** Bugfix
+- **Spec modified:** No (AC-004 refinement on modifier sides pending `spec-refine` 004)
+- **Code modified:** src-tauri/src/shortcut/conflicts.rs
+- **AC impacted:** AC-004
+- **Why:** native session of 2026-10-28, finding N9, Julien's request: the modifier-only overlap now takes the registered side into account; a right-only modifier shortcut (`command_right`) no longer refuses `command_left+j`. A modifier without side still overlaps both sides; equality ignores sides as before.
+- **Tests:** conflicts.rs `side_specific_modifier_only_overlaps_only_on_its_side` (both directions), `tauri_modifiers_register_both_sides`; existing tests unchanged
+- **Author:** Claude Code (claude-opus-5-5)
