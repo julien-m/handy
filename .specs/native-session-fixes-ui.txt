@@ -10,7 +10,19 @@ Commits (one per finding)
 - d78dc864 N5  keyboard focus given back after Done, Save, Discard and dialogs (002, 003, 005)
 - c370a969 N10 Permissions Required: Open System Settings, Try again, re-check on window focus
 
-Verifications on HEAD c370a969 (all exit 0)
+Review corrections (same branch)
+- e7ebf3be N5  prompt editor (005): stable root ref; useFocusRescue keeps its memory when the
+               same root is attached again; prompt-editor-focus.spec.ts and focus-rescue.spec.ts,
+               also with ?webkitFocus (no focusout on removal), which fail on the previous code
+- 6f9f5cdb N8  draft blocked by Secure Input: the focus goes to Discard (shortcut-list-draft.spec.ts,
+               HandyKeys harness; fails on the previous code)
+- 61dae921 N10 one permission check at a time (in-flight guard), onboarding completed once, its
+               timer cleared; overlapping-checks test fails on the previous code
+- f12108e7 tests: the switch dialog test checks that its trigger element gets the focus back;
+               the save bar test scrolls settings-window-content inside SettingsWindowLayout
+               (fails without the sticky class)
+
+Verifications on HEAD f12108e7 (all exit 0)
 - bunx tsc --noEmit ............................. 0
 - bun run lint .................................. 0
 - bun run format:check (prettier + cargo fmt) ... 0
@@ -19,9 +31,9 @@ Verifications on HEAD c370a969 (all exit 0)
 - bun suites: test:keyboard, test:shortcut-list, test:settings-errors, test:settings-store,
   test:microphone-priority, test:word-replacements, test:prompt-settings, test:indicator,
   test:recovery-bubble, test:vocabulary, test:shortcut-states, test:output-settings,
-  test:onboarding ............................... 0 each (525 passing tests in total)
+  test:onboarding ............................... 0 each (526 passing tests in total)
   plus dropdown-aria, dropdown-navigation, portableInstaller, clipboard tests ... 0 each
-- bunx playwright test (all specs, port 1420) ... 0 (57 passed)
+- bunx playwright test (all specs, port 1420) ... 0 (63 passed)
 - livespec conventions verify --feature repo --json > /dev/null ... 0 (verdict PASS)
 
 Rust: no Rust source changed, so cargo fmt --check is covered by format:check and clippy /
@@ -42,3 +54,4 @@ Test ids for the Penflow alignment
   only for an error.
 - Window frame: new settings-window and settings-window-content.
 - Onboarding: new onboarding-accessibility-help, -open-settings, -retry.
+- No new contract test id in the review corrections.
