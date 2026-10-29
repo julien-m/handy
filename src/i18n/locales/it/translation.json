@@ -542,7 +542,8 @@
       "textFormatting": {
         "smartSpacing": {
           "label": "Spaziatura intelligente",
-          "description": "Aggiunge gli spazi necessari dove la dettatura incontra il testo intorno al cursore, senza mai raddoppiare spazi o a capo già presenti. Nessuno spazio prima di , . ) ] o dopo ( [, né nelle lingue scritte senza spazi. Se attiva, decide lo spazio dopo la dettatura: «Aggiungi Spazio Finale» ne aggiunge uno solo alla fine di un campo. Se il campo non può essere letto, viene aggiunto solo uno spazio finale."
+          "description": "Aggiunge gli spazi necessari dove la dettatura incontra il testo intorno al cursore, senza mai raddoppiare spazi o a capo già presenti. Nessuno spazio prima di , . ) ] o dopo ( [, né nelle lingue scritte senza spazi. Se attiva, decide lo spazio dopo la dettatura: «Aggiungi Spazio Finale» ne aggiunge uno solo alla fine di un campo. Se il campo non può essere letto, viene aggiunto solo uno spazio finale.",
+          "descriptionLimited": "Aggiunge gli spazi necessari dove la dettatura incontra il testo intorno al cursore, senza mai raddoppiare spazi o a capo già presenti. Nessuno spazio prima di , . ) ] o dopo ( [, né nelle lingue scritte senza spazi. Se attiva, decide lo spazio dopo la dettatura: «Aggiungi Spazio Finale» ne aggiunge uno solo alla fine di un campo. Se il campo non può essere letto, viene aggiunto solo uno spazio finale. Su questo sistema il testo intorno al cursore non può essere letto, quindi viene aggiunto solo uno spazio dopo ogni dettatura."
         },
         "smartCapitalization": {
           "label": "Maiuscole intelligenti",

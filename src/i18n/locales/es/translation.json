@@ -542,7 +542,8 @@
       "textFormatting": {
         "smartSpacing": {
           "label": "Espaciado inteligente",
-          "description": "Añade los espacios necesarios donde el dictado se une al texto alrededor del cursor y nunca duplica un espacio o salto de línea existente. Ningún espacio antes de , . ) ] ni después de ( [, ni en idiomas que se escriben sin espacios. Activado, decide el espacio tras el dictado: «Agregar espacio final» solo añade uno al final de un campo. Si el campo no se puede leer, solo se añade un espacio al final."
+          "description": "Añade los espacios necesarios donde el dictado se une al texto alrededor del cursor y nunca duplica un espacio o salto de línea existente. Ningún espacio antes de , . ) ] ni después de ( [, ni en idiomas que se escriben sin espacios. Activado, decide el espacio tras el dictado: «Agregar espacio final» solo añade uno al final de un campo. Si el campo no se puede leer, solo se añade un espacio al final.",
+          "descriptionLimited": "Añade los espacios necesarios donde el dictado se une al texto alrededor del cursor y nunca duplica un espacio o salto de línea existente. Ningún espacio antes de , . ) ] ni después de ( [, ni en idiomas que se escriben sin espacios. Activado, decide el espacio tras el dictado: «Agregar espacio final» solo añade uno al final de un campo. Si el campo no se puede leer, solo se añade un espacio al final. En este sistema no se puede leer el texto alrededor del cursor, así que solo se añade un espacio después de cada dictado."
         },
         "smartCapitalization": {
           "label": "Mayúsculas inteligentes",

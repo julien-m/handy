@@ -542,7 +542,8 @@
       "textFormatting": {
         "smartSpacing": {
           "label": "Smart Spacing",
-          "description": "Adds the spaces needed where the dictation meets the text around the cursor and never doubles a space or line break already there. No space goes before , . ) ] or after ( [, nor in languages written without spaces. While on, it decides the space after the dictation: \"Append Trailing Space\" then only adds one at the end of a field. When the field cannot be read, only one space is added at the end."
+          "description": "Adds the spaces needed where the dictation meets the text around the cursor and never doubles a space or line break already there. No space goes before , . ) ] or after ( [, nor in languages written without spaces. While on, it decides the space after the dictation: \"Append Trailing Space\" then only adds one at the end of a field. When the field cannot be read, only one space is added at the end.",
+          "descriptionLimited": "Adds the spaces needed where the dictation meets the text around the cursor and never doubles a space or line break already there. No space goes before , . ) ] or after ( [, nor in languages written without spaces. While on, it decides the space after the dictation: \"Append Trailing Space\" then only adds one at the end of a field. When the field cannot be read, only one space is added at the end. On this system the text around the cursor cannot be read, so only one space is added after each dictation."
         },
         "smartCapitalization": {
           "label": "Smart Capitalization",

@@ -542,7 +542,8 @@
       "textFormatting": {
         "smartSpacing": {
           "label": "Espaiat intel·ligent",
-          "description": "Afegeix els espais necessaris on el dictat es troba amb el text al voltant del cursor i mai no duplica un espai o salt de línia existent. Cap espai abans de , . ) ] ni després de ( [, ni en llengües escrites sense espais. Activat, decideix l'espai després del dictat: «Afegiu un espai al final» només n'afegeix un al final d'un camp. Si el camp no es pot llegir, només s'afegeix un espai al final."
+          "description": "Afegeix els espais necessaris on el dictat es troba amb el text al voltant del cursor i mai no duplica un espai o salt de línia existent. Cap espai abans de , . ) ] ni després de ( [, ni en llengües escrites sense espais. Activat, decideix l'espai després del dictat: «Afegiu un espai al final» només n'afegeix un al final d'un camp. Si el camp no es pot llegir, només s'afegeix un espai al final.",
+          "descriptionLimited": "Afegeix els espais necessaris on el dictat es troba amb el text al voltant del cursor i mai no duplica un espai o salt de línia existent. Cap espai abans de , . ) ] ni després de ( [, ni en llengües escrites sense espais. Activat, decideix l'espai després del dictat: «Afegiu un espai al final» només n'afegeix un al final d'un camp. Si el camp no es pot llegir, només s'afegeix un espai al final. En aquest sistema no es pot llegir el text al voltant del cursor, així que només s'afegeix un espai després de cada dictat."
         },
         "smartCapitalization": {
           "label": "Majúscules intel·ligents",

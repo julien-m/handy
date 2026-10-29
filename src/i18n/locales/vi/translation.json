@@ -542,7 +542,8 @@
       "textFormatting": {
         "smartSpacing": {
           "label": "Khoảng cách thông minh",
-          "description": "Thêm các dấu cách cần thiết nơi nội dung đọc gặp văn bản quanh con trỏ, và không bao giờ nhân đôi dấu cách hay dòng mới đã có. Không thêm dấu cách trước , . ) ] hoặc sau ( [, cũng như trong các ngôn ngữ viết không có dấu cách. Khi bật, tính năng này quyết định dấu cách sau nội dung đọc: khi đó \"Thêm dấu cách cuối\" chỉ thêm ở cuối một trường. Nếu không đọc được trường, chỉ thêm một dấu cách ở cuối."
+          "description": "Thêm các dấu cách cần thiết nơi nội dung đọc gặp văn bản quanh con trỏ, và không bao giờ nhân đôi dấu cách hay dòng mới đã có. Không thêm dấu cách trước , . ) ] hoặc sau ( [, cũng như trong các ngôn ngữ viết không có dấu cách. Khi bật, tính năng này quyết định dấu cách sau nội dung đọc: khi đó \"Thêm dấu cách cuối\" chỉ thêm ở cuối một trường. Nếu không đọc được trường, chỉ thêm một dấu cách ở cuối.",
+          "descriptionLimited": "Thêm các dấu cách cần thiết nơi nội dung đọc gặp văn bản quanh con trỏ, và không bao giờ nhân đôi dấu cách hay dòng mới đã có. Không thêm dấu cách trước , . ) ] hoặc sau ( [, cũng như trong các ngôn ngữ viết không có dấu cách. Khi bật, tính năng này quyết định dấu cách sau nội dung đọc: khi đó \"Thêm dấu cách cuối\" chỉ thêm ở cuối một trường. Nếu không đọc được trường, chỉ thêm một dấu cách ở cuối. Trên hệ thống này không thể đọc văn bản quanh con trỏ, nên chỉ thêm một dấu cách sau mỗi lần đọc."
         },
         "smartCapitalization": {
           "label": "Viết hoa thông minh",

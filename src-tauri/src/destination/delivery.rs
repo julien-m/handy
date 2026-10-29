@@ -17,6 +17,7 @@ use super::presentation::{await_presentation, toast_needed, ReasonShown, PRESENT
 use super::recovery::{Delivery, FinalText, OutcomeRegistry, PresentationReceipt, RecoverySlot};
 use super::workspace::SystemClock;
 use crate::automatic_enter::transaction::EnterTransaction;
+use crate::smart_capitalization::PreparedText;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
 use tauri::{AppHandle, Emitter, Manager};
@@ -86,18 +87,23 @@ pub fn abandon(app: &AppHandle) {
 /// Insert `text` for `ticket` and publish its outcome, with the receipt of a recovery
 /// presentation when 010 took the reason; `None` only without a destination manager.
 /// The insertion settings are read once here and the same snapshot drives the activation route
-/// and the insertion method, so a concurrent settings change cannot split them. `decided` is
-/// true when smart spacing (017) already decided the end of `text`.
+/// and the insertion method, so a concurrent settings change cannot split them. `prepared` is
+/// the final preparation's result (015, 017): its `text` for the paste methods, its text
+/// before spacing for 013's addressed terminal.
 pub async fn deliver(
     app: AppHandle,
     ticket: DictationTicket,
-    (text, decided): (String, bool),
+    prepared: PreparedText,
     history: HistoryRecord,
     cancelled: Box<dyn Fn() -> bool + Send + Sync>,
 ) -> Option<(InsertionOutcome, Option<PresentationReceipt>)> {
     let manager = super::app::manager(&app)?;
-    let settings = method_settings(crate::settings::get_settings(&app), decided);
-    let text = FinalText::of(text, &settings);
+    let settings = method_settings(
+        crate::settings::get_settings(&app),
+        prepared.trailing_decided,
+    );
+    let addressed = prepared.for_addressed_terminal().to_owned();
+    let text = FinalText::of(prepared.text, &settings);
     let request = InsertionRequest {
         dictation_id: ticket.dictation_id,
         destination_generation: ticket.destination_generation,
@@ -106,9 +112,10 @@ pub async fn deliver(
     };
     let enter = crate::automatic_enter::app::transaction(&app, &manager, ticket, &settings);
     let method = insertion_method(&app, &text.text, settings, Arc::clone(&enter));
-    // 013: a remembered terminal is typed through its tool instead of the configured method.
+    // 013: a remembered terminal is typed through its tool instead of the configured method,
+    // without any smart spacing adjustment (017 AC-015).
     let runner = Arc::clone(&manager.default_inputs().runner);
-    let method = super::default_input::dispatch::AddressedMethod::new(method, &text.text, runner);
+    let method = super::default_input::dispatch::AddressedMethod::new(method, &addressed, runner);
     let worker_manager = Arc::clone(&manager);
     let recovery = super::app::recovery_port(&app);
     let joined = tauri::async_runtime::spawn_blocking(move || {
@@ -178,8 +185,9 @@ pub async fn insert_final_text(
     // 015 and 017: final preparation of the text every insertion path receives (smart
     // capitalization, then smart spacing), after the AI step and before activation.
     let prepared = crate::smart_capitalization::app::prepare(app, ticket, text, case_decided).await;
-    let (text, decided) = (prepared.text, prepared.trailing_decided);
     let Some(ticket) = ticket else {
+        // Without a session there is no 013 route: only the paste methods' text is used.
+        let (text, decided) = (prepared.text, prepared.trailing_decided);
         // Without a session, smart paste (007) inserts into the application in front itself.
         if let Some(settings) = crate::smart_paste::app::foreground_settings(app) {
             let settings = method_settings(settings, decided);
@@ -189,7 +197,7 @@ pub async fn insert_final_text(
         return paste_as_before(app, text, decided, cancelled);
     };
     let started = std::time::Instant::now();
-    match deliver(app.clone(), ticket, (text, decided), history, cancelled).await {
+    match deliver(app.clone(), ticket, prepared, history, cancelled).await {
         Some((outcome, receipt)) => {
             let presentation = await_presentation(receipt).await;
             report_outcome(app, &outcome, started.elapsed(), presentation);

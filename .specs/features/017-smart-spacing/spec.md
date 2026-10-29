@@ -145,6 +145,12 @@ Feature: Unavailable or non-text context
     And the focus is a terminal output, a password field or an unknown control
     When a transcription is inserted
     Then it is inserted exactly as with the option off
+
+  Scenario: Terminal addressed by 013 in the background
+    Given smart spacing is on
+    And the dictation is typed into a remembered cmux workspace while another app is in front
+    When the transcription "ls -la" is delivered
+    Then the terminal receives "ls -la", without the fallback space
 ```
 
 ```mermaid
@@ -218,7 +224,7 @@ flowchart TD
 
 ### AC-005
 
-**Criterion:** Trailing edge, when the text after the selection was read: the dictation's trailing horizontal whitespace is removed, then one space is added when the text after is non-empty and the junction rule asks for one; at the end of the field (nothing after the selection) one space is added only when `append_trailing_space` is on and the dictation does not end with a character after which the junction rule never puts a space (an opening mark, an opening quote, an eliding apostrophe after a letter, a hyphen or slash attached to a word) nor with a character of a script without spaces. Whenever smart spacing runs on a readable or unavailable context, it decides the end of the text and the insertion method adds no trailing space of its own, on every path (006 session, smart paste at the foreground, legacy paste, recovery slot), so the text never ends with two added spaces. 013's terminal route (`cmux send`) never adds a trailing space of its own and types the prepared text as is.
+**Criterion:** Trailing edge, when the text after the selection was read: the dictation's trailing horizontal whitespace is removed, then one space is added when the text after is non-empty and the junction rule asks for one; at the end of the field (nothing after the selection) one space is added only when `append_trailing_space` is on and the dictation does not end with a character after which the junction rule never puts a space (an opening mark, an opening quote, an eliding apostrophe after a letter, a hyphen or slash attached to a word) nor with a character of a script without spaces. Whenever smart spacing runs on a readable or unavailable context, it decides the end of the text and the insertion method adds no trailing space of its own, on every path (006 session, smart paste at the foreground, legacy paste, recovery slot), so the text never ends with two added spaces. 013's terminal route (`cmux send`) never adds a trailing space of its own and receives no spacing adjustment at all (AC-015).
 **Priority:** P1 | **Story:** Story 2
 
 ### AC-006
@@ -266,6 +272,16 @@ flowchart TD
 **Criterion:** The setting `smart_spacing` (boolean, output domain) is written only through the settings service with the shared validator: the settings UI, `handy settings set smart_spacing <bool>` and `handy settings output get|set smart_spacing`. In the UI it is the **first** row "␣ Smart spacing (i)" of the "Text formatting" section (icon `Space`, label, info button with the description, independent switch; test ids `<screen>-smart-spacing` and `<screen>-smart-spacing-toggle`), before smart capitalization and smart paragraphs. Its label and description exist in the 26 locales. A change applies from the next dictation.
 **Priority:** P2 | **Story:** Story 4
 
+### AC-015
+
+**Criterion:** A delivery through 013's addressed terminal route (the text typed by the addressing tool, `cmux send`, without a paste) receives no smart spacing adjustment, not even the AC-006 fallback final space, whatever application is in front and whatever the context read: the terminal receives the text as it is with smart spacing off (after smart capitalization, whose context is absent there). The paste methods of the same dictation keep the spaced text.
+**Priority:** P1 | **Story:** Story 3
+
+### AC-016
+
+**Criterion:** On a system without a context reader (Windows and Linux in this feature), the option's description says so: it is the macOS description followed by one sentence stating that the text around the cursor cannot be read there, so only one space is added after each dictation (key `settings.advanced.textFormatting.smartSpacing.descriptionLimited`, chosen by the system type as 016 does for its limitation), in the 26 locales. The fallback itself (AC-006) is kept on these systems.
+**Priority:** P2 | **Story:** Stories 3, 4
+
 ## Functional Requirements
 
 ### FR-001
@@ -285,13 +301,13 @@ flowchart TD
 
 ### FR-004
 
-**Requirement:** Run smart spacing in 015's preparation step after capitalization, and make every insertion path drop its own trailing space when smart spacing decided the end of the text (AC-005, AC-009).
-**AC References:** AC-005, AC-009
+**Requirement:** Run smart spacing in 015's preparation step after capitalization, make every paste path drop its own trailing space when smart spacing decided the end of the text, and give 013's addressed terminal the text before spacing (AC-005, AC-009, AC-015).
+**AC References:** AC-005, AC-009, AC-015
 
 ### FR-005
 
-**Requirement:** Expose `smart_spacing` through the settings service, the UI (first row of Text formatting) and the CLI, translated in every locale, with the new-install and upgrade defaults (AC-013, AC-014).
-**AC References:** AC-013, AC-014
+**Requirement:** Expose `smart_spacing` through the settings service, the UI (first row of Text formatting, description naming the fallback outside macOS) and the CLI, translated in every locale, with the new-install and upgrade defaults (AC-013, AC-014, AC-016).
+**AC References:** AC-013, AC-014, AC-016
 
 ## Key Entities
 
@@ -305,7 +321,8 @@ flowchart TD
 
 - Decision `017-smart-spacing:AC-005` / `trailing_space_articulation` (2026-10-29, agent): smart spacing **subsumes** `append_trailing_space` while it is on. It decides the trailing space itself and the method's own trailing space is turned off in that insertion's settings snapshot (`delivery::method_settings`), on every path, including the text the recovery slot retains as inserted. `append_trailing_space` keeps one meaning: "a space at the end of a field", used when the text after the selection is known to be empty. Reasons: a single decision point makes two final spaces impossible even if a setting changes during the insertion (the flag travels with the text, not with a later settings read); the user who asked for a trailing space to keep typing still gets it at the end of a field, where it matters; in the middle of text the junction rule is always better informed.
 - Decision `017-smart-spacing:AC-006` / `fallback_final_space` (2026-10-29, contract and S1): with an unavailable context, one final space, never a leading one, nothing else deduced; not added when the dictation already ends with whitespace, an opening mark or an unspaced script. This applies whether `append_trailing_space` is on or off (the contract's fallback).
-- Decision `017-smart-spacing:AC-010` / `not_text_steps_aside` (2026-10-29, agent): a focus that 010's rule proves not to be an editable text field (terminal output, password field, unknown role, unexpected affordance) is a third class, distinct from "unavailable": smart spacing changes nothing and the method keeps `append_trailing_space` as before. Reasons: a field proven to be a password must never receive an invented space; a terminal command line should behave exactly as without the option (the native protocol checks cmux unchanged); "unavailable" is reserved for not knowing anything, where the contract's fallback applies. **Accepted consequence (independent review W4):** an unavailable context cannot be classified, so the fallback space of AC-006 reaches whatever has the focus, a password field included, exactly as `append_trailing_space` already does when it is on. **Accepted consequence (review round 2, W1):** a dictation routed to a cmux terminal by 013 while another application is in front at the stop (or while cmux exposes no focused element) has an unavailable context, so one trailing space is typed into the terminal, where 013's route never added one before; cmux in front is `NotText` and unchanged. 015's capitalization is unchanged by this split (both classes are Absent for it).
+- Decision `017-smart-spacing:AC-010` / `not_text_steps_aside` (2026-10-29, agent): a focus that 010's rule proves not to be an editable text field (terminal output, password field, unknown role, unexpected affordance) is a third class, distinct from "unavailable": smart spacing changes nothing and the method keeps `append_trailing_space` as before. Reasons: a field proven to be a password must never receive an invented space; a terminal command line should behave exactly as without the option (the native protocol checks cmux unchanged); "unavailable" is reserved for not knowing anything, where the contract's fallback applies. **Accepted consequence (independent review W4):** an unavailable context cannot be classified, so the fallback space of AC-006 reaches whatever has the focus, a password field included, exactly as `append_trailing_space` already does when it is on. 015's capitalization is unchanged by this split (both classes are Absent for it).
+- Decision `017-smart-spacing:AC-015` / `addressed_terminal_unspaced` (2026-10-29, coordinator's decision for Julien after review round 2, W1): a delivery through 013's addressed terminal route is treated like the "not a text field" class, identical to the option off, whatever application is in front. The route is chosen by 013's guard at dispatch, after the preparation, and a background terminal cannot be classified by reading it; so the preparation keeps the text before spacing (`PreparedText::for_addressed_terminal`) and 013's `AddressedMethod` types that text, while the paste methods keep the spaced text. Smart capitalization is unchanged on that route (its context there is absent, so it keeps the case). Residual: if the terminal send fails, the recovery slot retains the paste text of that dictation (with the fallback space when the context was unavailable).
 - Decision `017-smart-spacing:AC-004` / `french_high_punctuation` (2026-10-29, agent): no space is invented before `; : ! ?` (or `»`) and none is removed. The field's own typography decides: a French text that already has a space (or a narrow no-break space) before "?" keeps it, an English one has none. Reasons: the language of the field is unknown at insertion, a wrong guess would add a space in English text, and the dictation's own spacing (often already French-style from the engine) is never rewritten.
 - Decision `017-smart-spacing:AC-003` / `elision_apostrophe` (2026-10-29, agent): an apostrophe right after a letter is an elision or contraction (`l'`, `d’`, `qu'`, `aujourd'`) and joins the next word. **Known limitation:** an English plural possessive (`users'` then `settings` gives `users'settings`) and a closing single quote right after a letter (`‘yes’` then a word) are taken for an elision and get no space; an opening single quote at the start of a dictation joins the word before. Both are rare in dictation; the field's own spaces still win.
 - Decision `017-smart-spacing:AC-003` / `attached_joiners` (2026-10-29, agent): a hyphen or slash attached to a word joins (`anti-` + `inflammatoire`, `celle` + `-ci`, `and/` + `or`); a spaced dash is a separator; `-5` after a word is a signed number and gets its space. A digit, `.` or `,`, then a digit is one number (`3.` + `5`). **Known limitation:** a list or a sentence that ends on a number before a dictation starting with a digit joins (`Steps 1,` + `2 and 3` gives `1,2 and 3`; `is 42.` + `2 people` gives `42.2 people`); a typed space avoids it.
@@ -314,7 +331,7 @@ flowchart TD
 - Decision `017-smart-spacing:AC-009` / `partial_context` (2026-10-29, agent): if the read before succeeds and the read after fails (unsupported length, error, spent budget), the leading edge is fitted and the end of the text gets the fallback of AC-006. If the read before fails, the whole context is unavailable.
 - Decision `017-smart-spacing:AC-001` / `engine_edge_spaces` (2026-10-29, agent): leading or trailing spaces a recognition engine left on the dictation are part of "the spaces at its two edges" and are dropped when that side is known, so they never pile up with the field's spaces; with an unavailable side they are kept (no deduction).
 - Decision `017-smart-spacing:AC-013` / `default_new_vs_upgrade` (2026-10-29, contract): on for a new installation, off when the key is absent from an existing store, with 015's migration pattern; an upgrade with the option off keeps the exact previous output.
-- Decision `017-smart-spacing:AC-006` / `macos_only_reader` (2026-10-29, inherited from 015): only macOS reads the context; on Windows and Linux every context is unavailable, so the option there only secures one final space (equivalent to `append_trailing_space` on, without ever doubling it). **Accepted consequence (independent review W4):** since the option is on for a new installation, a new Windows or Linux user gets one trailing space after each dictation although `append_trailing_space` defaults to off; it is the contract's fallback, and turning smart spacing off restores the previous output. Flagged to Julien as a product choice that can be revisited (limit the fallback to platforms with a reader). Recorded as pending release evidence, not claimed.
+- Decision `017-smart-spacing:AC-006` / `macos_only_reader` (2026-10-29, inherited from 015): only macOS reads the context; on Windows and Linux every context is unavailable, so the option there only secures one final space (equivalent to `append_trailing_space` on, without ever doubling it). **Accepted consequence (independent review W4):** since the option is on for a new installation, a new Windows or Linux user gets one trailing space after each dictation although `append_trailing_space` defaults to off; it is the contract's fallback, and turning smart spacing off restores the previous output. **Decided by the coordinator for Julien (2026-10-29):** the fallback is kept on these systems, and the option's description says so there (AC-016). Recorded as pending release evidence, not claimed.
 
 ## Provenance
 
@@ -340,6 +357,8 @@ Source kinds: **(1)** publicly documented behavior (S1 = Spokenly public documen
 | Reference examples (AC-011, AC-012) | (2) contract | T `reference_example_bonjour_demain`, `reference_example_bonjour_demain_with_both_steps`, `reference_example_je_souhaite_with_both_steps` |
 | Local processing, no network | (1) S1 (on-device); (2) contract | C no dependency added |
 | Setting via settings service, UI first row, CLI, 26 locales (AC-014) | (2) brief | T render test `smart spacing: space icon…`, order test; settings validation (74 keys, 56 scalars); `check:translations` |
+| 013's addressed terminal gets no spacing, not even the fallback (AC-015) | (2) coordinator's decision for Julien; (3) decision `addressed_terminal_unspaced` | T `an_addressed_terminal_gets_no_spacing_whatever_the_context`, `a_terminal_gets_no_smart_spacing_even_without_context` (013's real orchestrator and guard); U protocol row 16b |
+| Description names the fallback outside macOS (AC-016) | (2) coordinator's decision for Julien; (3) 016's platform description pattern | T render test `smart spacing names its fallback outside macOS`; `check:translations` |
 | New install on, upgrade off (AC-013) | (2) contract; (3) 015's migration pattern | T `fresh_install_enables_smart_spacing`, `upgrade_without_smart_spacing_key_disables_it`, `stored_smart_spacing_is_kept` |
 
 ## QE Analysis
@@ -366,7 +385,7 @@ Source kinds: **(1)** publicly documented behavior (S1 = Spokenly public documen
 - The selection ends beyond the field length reported: the side after is unknown (fallback).
 - The window after ends in the middle of a surrogate pair: only the first characters matter; the cut character becomes U+FFFD and is never examined.
 - A text typed in the field between the stop and the paste is not seen (015's `read_at_preparation`).
-- cmux or another terminal in front: its focus is not an editable text field by 010's rule (015's native protocol records cmux as not editable), so nothing changes (AC-010). If the dictation goes to a terminal that is **not** in front (013's addressed route to a background workspace), its context is unavailable and the AC-006 fallback adds one final space; a background destination cannot be classified without reading it.
+- cmux or another terminal in front: its focus is not an editable text field by 010's rule (015's native protocol records cmux as not editable), so nothing changes (AC-010). A dictation typed into a terminal by 013's addressed route (a background workspace included) gets no spacing either (AC-015), even though its context is unavailable.
 
 ## Success Criteria
 

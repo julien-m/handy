@@ -39,7 +39,11 @@ pub struct Preparation<'a> {
 /// The text an insertion receives after its final preparation.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct PreparedText {
+    /// The text every paste method inserts.
     pub text: String,
+    /// The text before smart spacing (capitalization applied): what 013's addressed terminal
+    /// route types instead of `text` (017 AC-015).
+    pub unspaced: String,
     /// Smart capitalization changed the first letter (logged as a flag only).
     pub case_changed: bool,
     /// Smart spacing decided the end of the text: the method adds no trailing space (017).
@@ -50,10 +54,21 @@ impl PreparedText {
     /// `text` as received: no step ran.
     pub fn unchanged(text: String) -> Self {
         Self {
+            unspaced: text.clone(),
             text,
             case_changed: false,
             trailing_decided: false,
         }
+    }
+
+    // @spec AC-015: Addressed terminal unspaced — .specs/features/017-smart-spacing/spec.md#ac-015
+    /// Business rule (017 AC-015): the text 013's terminal route types through its addressing
+    /// tool (`cmux send`, no paste). A terminal is not a text field, so it gets no spacing
+    /// adjustment at all, not even the fallback final space, whatever application is in front;
+    /// that route never adds a trailing space of its own, so this is the output with smart
+    /// spacing off.
+    pub fn for_addressed_terminal(&self) -> &str {
+        &self.unspaced
     }
 }
 
@@ -77,6 +92,7 @@ pub fn prepare_text(
     let case_changed = capitalized != text;
     let Some(inputs) = steps.spacing else {
         return PreparedText {
+            unspaced: capitalized.clone(),
             text: capitalized,
             case_changed,
             trailing_decided: false,
@@ -85,6 +101,7 @@ pub fn prepare_text(
     let spaced = space_junctions(&capitalized, context, inputs);
     PreparedText {
         text: spaced.text,
+        unspaced: capitalized,
         case_changed,
         trailing_decided: spaced.trailing_decided,
     }

@@ -112,6 +112,34 @@ fn capitalization_decides_before_the_space_is_added() {
     assert_eq!(prepared.text, " Now test it");
 }
 
+// @spec AC-015: Addressed terminal unspaced — .specs/features/017-smart-spacing/spec.md#ac-015
+#[test]
+fn an_addressed_terminal_gets_no_spacing_whatever_the_context() {
+    for context in [
+        InsertionContext::Unavailable,
+        field("Bonjour", "demain"),
+        InsertionContext::NotText,
+    ] {
+        let prepared = prepare_text(" ls -la ", &context, &BOTH);
+        assert_eq!(prepared.for_addressed_terminal(), " ls -la ", "{context:?}");
+    }
+    // The paste text of an unavailable context carries the fallback space; the terminal not.
+    let prepared = prepare_text("ls -la", &InsertionContext::Unavailable, &BOTH);
+    assert_eq!(prepared.text, "ls -la ");
+    assert_eq!(prepared.for_addressed_terminal(), "ls -la");
+    // Same output as with smart spacing off.
+    let off = Preparation {
+        spacing: None,
+        ..BOTH
+    };
+    let without = prepare_text("ls -la", &InsertionContext::Unavailable, &off);
+    assert_eq!(prepared.for_addressed_terminal(), without.text);
+    assert_eq!(
+        PreparedText::unchanged("ls".to_owned()).for_addressed_terminal(),
+        "ls"
+    );
+}
+
 #[test]
 fn not_a_text_field_is_left_to_the_method() {
     let prepared = prepare_text("ls -la", &InsertionContext::NotText, &BOTH);

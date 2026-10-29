@@ -19,8 +19,8 @@ Evidence kinds, kept apart: **transformation** (pure unit tests of the junction 
 | [FR-001: Pure junction rule](spec.md#fr-001) | `src-tauri/src/smart_spacing/junction.rs` | `@spec FR-001: Pure junction rule, AC-003: Junction rule` | ✅ Implemented | 2026-10-29 |
 | [FR-002: Edges fitted to the context](spec.md#fr-002) | `src-tauri/src/smart_spacing/mod.rs` | `@spec FR-002: Edges fitted to the context`, `@spec AC-002: Leading edge, AC-007: Empty field`, `@spec AC-005: Trailing edge`, `@spec AC-006: Unavailable context fallback` | ✅ Implemented | 2026-10-29 |
 | [FR-003: Reader extended after the selection](spec.md#fr-003) | `src-tauri/src/smart_capitalization/{reader.rs,macos.rs,context.rs}`, `src-tauri/src/destination/{field.rs,macos_field.rs,field_context.rs}` | `@spec FR-003: Reader extended after the selection, AC-009: Bounded read after the selection`, `@spec AC-010: Not a text field`, `@spec AC-009: Bounded read after the selection` (macOS `character_count`) | ✅ Implemented (native pending) | 2026-10-29 |
-| [FR-004: Same preparation step and read](spec.md#fr-004) | `src-tauri/src/smart_capitalization/{mod.rs,app.rs}`, `src-tauri/src/destination/delivery.rs` | `@spec AC-009: After capitalization, same context`, `@spec FR-004: Same preparation step and read`, `@spec AC-005: One trailing space, never two` | ✅ Implemented | 2026-10-29 |
-| [FR-005: Setting, UI row, CLI, i18n](spec.md#fr-005) | `src-tauri/src/settings.rs`, `src-tauri/src/settings_service/{descriptor_data.rs,public.rs,domains/output.rs}`, `src-tauri/src/shortcut/mod.rs`, `src-tauri/src/lib.rs`, `src/bindings.ts`, `src/stores/settingsStore.ts`, `src/components/settings/text-formatting/text-formatting-options.ts`, `src/i18n/locales/*/translation.json` (26) | `@spec FR-005: Settings UI write of smart spacing`, `@spec AC-013: New install on, upgrade off`, `@spec AC-014: First row of Text formatting` | ✅ Implemented | 2026-10-29 |
+| [FR-004: Same preparation step and read](spec.md#fr-004) | `src-tauri/src/smart_capitalization/{mod.rs,app.rs}`, `src-tauri/src/destination/delivery.rs` | `@spec AC-009: After capitalization, same context`, `@spec FR-004: Same preparation step and read`, `@spec AC-005: One trailing space, never two`, `@spec AC-015: Addressed terminal unspaced` (`PreparedText::for_addressed_terminal`, used by `deliver` for 013's `AddressedMethod`) | ✅ Implemented | 2026-10-29 |
+| [FR-005: Setting, UI row, CLI, i18n](spec.md#fr-005) | `src-tauri/src/settings.rs`, `src-tauri/src/settings_service/{descriptor_data.rs,public.rs,domains/output.rs}`, `src-tauri/src/shortcut/mod.rs`, `src-tauri/src/lib.rs`, `src/bindings.ts`, `src/stores/settingsStore.ts`, `src/components/settings/text-formatting/text-formatting-options.ts`, `src/i18n/locales/*/translation.json` (26) | `@spec FR-005: Settings UI write of smart spacing`, `@spec AC-013: New install on, upgrade off`, `@spec AC-014: First row of Text formatting`, `@spec AC-016: Fallback named outside macOS` | ✅ Implemented | 2026-10-29 |
 
 ## Acceptance Criteria Mapping
 
@@ -40,6 +40,8 @@ Evidence kinds, kept apart: **transformation** (pure unit tests of the junction 
 | AC-012 | `src-tauri/src/smart_capitalization/preparation_tests.rs` (`reference_example_je_souhaite_with_both_steps`) | ✅ |
 | AC-013 | `src-tauri/src/settings.rs` tests (`fresh_install_enables_smart_spacing`, `upgrade_without_smart_spacing_key_disables_it`, `stored_smart_spacing_is_kept`) | ✅ |
 | AC-014 | `src/components/settings/text-formatting/text-formatting-render.test.tsx` (order and smart spacing row), `src-tauri/tests/settings_validation/*` (74 keys, 56 scalars, 008 schema), `bun run check:translations` | ✅ |
+| AC-015 | `src-tauri/src/smart_capitalization/preparation_tests.rs` (`an_addressed_terminal_gets_no_spacing_whatever_the_context`), `src-tauri/src/destination/default_input/orchestrator_tests.rs` (`a_terminal_gets_no_smart_spacing_even_without_context`: 013's real orchestrator, guard and fake `cmux send`) | ✅ (native row 16b pending) |
+| AC-016 | `src/components/settings/text-formatting/text-formatting-render.test.tsx` (`smart spacing names its fallback outside macOS`), `bun run check:translations` | ✅ |
 
 ## Files Created/Modified
 
@@ -62,11 +64,12 @@ Recognition → script conversion → replacements (002) → custom-word correct
 | On | Field, side after read, text follows | smart spacing (junction rule) | one space or none; method adds nothing |
 | On | Field, side after read, end of the field | smart spacing (`append_trailing_space` as the preference) | one space if the option is on and the script is spaced; method adds nothing |
 | On | Unavailable, or side after unknown | smart spacing (fallback) | one space unless already present or unspaced; method adds nothing |
+| On | any, delivered by 013's addressed terminal (`cmux send`) | nobody (the route never adds one) | the text before spacing: as with smart spacing off |
 
 ## Gaps
 
 - Penflow: `penflow/ui.pen` and the `output-settings` mockup are not regenerated for the new first row; recorded, not claimed.
-- Windows and Linux readers are not built (inherited decision `macos_only_reader`): there, the option only adds the fallback final space; a new installation therefore gets one trailing space per dictation (flagged to Julien as a product choice).
+- Windows and Linux readers are not built (inherited decision `macos_only_reader`): there, the option only adds the fallback final space; a new installation therefore gets one trailing space per dictation (kept by the coordinator's decision; the description says so there, AC-016).
 - The goal-runner ceremony of `/spec-feature` (goal render/prove/archive, nested phase agents, LiveSpec spec-review receipts, Penflow forward chain) was not run in this autonomous pass, as for 015 and 016; `pipeline.md` records Specify only. Evidence: the command output in `progress.md` and the independent native review in `checks/2026-10-29-review.md`.
 
 ## Native proof protocol (macOS, pending Julien)
@@ -91,7 +94,7 @@ Build with both gates (`bun run tauri dev --features destination-return,smart-pa
 | 14 | Any app, smart spacing off | `Bonjour|demain` | "à tous" | on | `Bonjourà tous demain` (byte-for-byte as before 017; no read after the selection in the log) |
 | 15 | Accessibility permission removed | any field | "Hello" | off | `Hello ` (log `Unavailable`: one final space, no leading space) |
 | 16 | Destination return: start in TextEdit after `Bonjour|demain`, switch to Safari before stopping | — | "à tous" | off | inserted in TextEdit as `Bonjour à tous demain` (011's remembered selection read on both sides) |
-| 16b | 013 terminal route: a cmux workspace remembered as the default input, dictation ends while TextEdit is in front | — | "ls" | off | typed in cmux as `ls ` (log `Unavailable`: the fallback space; accepted consequence in the spec) |
+| 16b | 013 terminal route: a cmux workspace remembered as the default input, dictation ends while TextEdit is in front | — | "ls" | off | typed in cmux as `ls`, without the fallback space (AC-015), although the log shows `Unavailable` |
 | 17 | Fresh install vs upgrade | — | — | — | a new settings store has "␣ Smart spacing" on, first row of Text formatting; an existing store without the key shows it off |
 
 Note on row 10: when Chrome answers both reads the log shows `Field` with an `After`; when it does not answer `AXNumberOfCharacters` the log shows `Field` with `after: Absent` and the fallback final space still gives `Hello big world`. Only a fully `Unavailable` context (Chrome refusing `AXStringForRange`) gives `Hellobig world` (no leading space is deduced). Record the context kind.

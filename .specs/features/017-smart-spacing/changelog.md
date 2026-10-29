@@ -17,3 +17,13 @@ The spaces at the two edges of a dictation follow the text before and after the 
 - **Code modified:** `smart_capitalization/reader.rs` (an answer shorter than the window before the caret is not trusted), `smart_spacing/mod.rs` (an empty text that does not reach the field start keeps the leading edge), `reader_tests.rs`, `spacing_tests.rs`, `src/i18n/locales/da/translation.json` (quoted option name), 008 `settings-cli.md` (14 output settings, `paste_verification` listed)
 - **AC impacted:** AC-002, AC-005, AC-006, AC-009, AC-014
 - **Author:** Claude Code (claude-opus-5-5), from the native independent review in `checks/2026-10-29-review.md`
+
+## 2026-10-29 — [Bugfix]: Addressed terminal unspaced; fallback named outside macOS
+
+- **Type:** Bugfix
+- **Spec modified:** Yes (new AC-015 and AC-016; FR-004 and FR-005 references; Story 3 scenario; decisions `addressed_terminal_unspaced` (new), `not_text_steps_aside` and `macos_only_reader` updated; provenance; edge case)
+- **Code modified:** `smart_capitalization/mod.rs` (`PreparedText::unspaced`, `for_addressed_terminal`), `destination/delivery.rs` (`deliver` takes the `PreparedText`; 013's `AddressedMethod` types the text before spacing), `smart_capitalization/preparation_tests.rs`, `destination/default_input/orchestrator_tests.rs`, `text-formatting-options.ts` (`smartSpacingDescriptionKey`), its render test, 26 locales (`smartSpacing.descriptionLimited`), `README.md`
+- **AC impacted:** AC-005, AC-010, AC-015, AC-016
+- **Author:** Claude Code (claude-opus-5-5), from the coordinator's decisions for Julien on the two open points of review round 2
+
+A dictation typed by 013's addressing tool into a terminal (a background cmux workspace included) no longer receives the fallback final space: that route gets no spacing adjustment at all, as with the option off. On Windows and Linux the fallback is kept and the option's description now says it.

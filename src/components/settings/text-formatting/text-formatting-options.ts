@@ -5,6 +5,19 @@
 import { CaseSensitive, Pilcrow, Space, type LucideIcon } from "lucide-react";
 import { smartParagraphsDescriptionKey } from "../smart-paragraphs-state";
 
+// @spec AC-016: Fallback named outside macOS — .specs/features/017-smart-spacing/spec.md#ac-016
+/**
+ * Business rule (017 AC-016): only macOS reads the text around the cursor; elsewhere every
+ * context is unavailable and smart spacing only adds the fallback final space, which the
+ * description says there (same pattern as 016's limitation).
+ * @param osType value of `type()` from `@tauri-apps/plugin-os`
+ * @returns the translation key of the switch's description
+ */
+export const smartSpacingDescriptionKey = (osType: string): string =>
+  osType === "macos"
+    ? "settings.advanced.textFormatting.smartSpacing.description"
+    : "settings.advanced.textFormatting.smartSpacing.descriptionLimited";
+
 /** Boolean settings shown in the Text formatting section. */
 export type TextFormattingKey =
   | "smart_spacing"
@@ -36,8 +49,7 @@ export const TEXT_FORMATTING_OPTIONS: readonly TextFormattingOption[] = [
     key: "smart_spacing",
     icon: Space,
     labelKey: "settings.advanced.textFormatting.smartSpacing.label",
-    descriptionKey: () =>
-      "settings.advanced.textFormatting.smartSpacing.description",
+    descriptionKey: smartSpacingDescriptionKey,
     testId: "smart-spacing",
   },
   {

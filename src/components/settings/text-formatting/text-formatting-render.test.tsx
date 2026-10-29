@@ -141,6 +141,17 @@ describe("text formatting section (015)", () => {
     );
   });
 
+  // @spec AC-016: Fallback named outside macOS — .specs/features/017-smart-spacing/spec.md#ac-016
+  test("smart spacing names its fallback outside macOS (017)", () => {
+    const option = optionOf("smart_spacing");
+    for (const system of ["windows", "linux"]) {
+      expect(option.descriptionKey(system)).toBe(
+        "settings.advanced.textFormatting.smartSpacing.descriptionLimited",
+      );
+    }
+    expect(option.descriptionKey("macos")).not.toContain("Limited");
+  });
+
   test("smart paragraphs: pilcrow icon, label, off unless stored on (016)", () => {
     const option = optionOf("smart_paragraphs_enabled");
     stored = {};

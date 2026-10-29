@@ -542,7 +542,8 @@
       "textFormatting": {
         "smartSpacing": {
           "label": "Slimme spaties",
-          "description": "Voegt de nodige spaties toe waar het dictaat de tekst rond de cursor raakt, zonder ooit bestaande spaties of regeleinden te verdubbelen. Geen spatie vóór , . ) ] of na ( [, en niet in talen zonder spaties. Indien aan, bepaalt het de spatie na het dictaat: 'Spatie achteraan toevoegen' voegt er dan alleen een toe aan het einde van een veld. Als het veld niet gelezen kan worden, wordt alleen één spatie aan het einde toegevoegd."
+          "description": "Voegt de nodige spaties toe waar het dictaat de tekst rond de cursor raakt, zonder ooit bestaande spaties of regeleinden te verdubbelen. Geen spatie vóór , . ) ] of na ( [, en niet in talen zonder spaties. Indien aan, bepaalt het de spatie na het dictaat: 'Spatie achteraan toevoegen' voegt er dan alleen een toe aan het einde van een veld. Als het veld niet gelezen kan worden, wordt alleen één spatie aan het einde toegevoegd.",
+          "descriptionLimited": "Voegt de nodige spaties toe waar het dictaat de tekst rond de cursor raakt, zonder ooit bestaande spaties of regeleinden te verdubbelen. Geen spatie vóór , . ) ] of na ( [, en niet in talen zonder spaties. Indien aan, bepaalt het de spatie na het dictaat: 'Spatie achteraan toevoegen' voegt er dan alleen een toe aan het einde van een veld. Als het veld niet gelezen kan worden, wordt alleen één spatie aan het einde toegevoegd. Op dit systeem kan de tekst rond de cursor niet worden gelezen, dus wordt na elk dictaat alleen één spatie toegevoegd."
         },
         "smartCapitalization": {
           "label": "Slimme hoofdletters",
