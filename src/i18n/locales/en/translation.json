@@ -689,7 +689,7 @@
           "title": "AI post-processing",
           "enabledDescription": "Process dictations with a prompt. Off: no dictation is processed.",
           "defaultTitle": "Default prompt",
-          "defaultDescription": "Used by the AI dictation shortcut. Plain dictation starts with None.",
+          "defaultDescription": "Used by the AI dictation shortcut. Plain dictation starts with the last prompt you chose on the indicator, or None.",
           "none": "None",
           "invalidOption": "Invalid: edit it before using it"
         },
@@ -1286,6 +1286,7 @@
       "none": "None (no AI processing)",
       "menuTitle": "Prompt for this dictation",
       "note": "Applies to this dictation only. Default stays {{name}}.",
+      "noteRemembered": "Kept for your next plain dictations until you choose None.",
       "loading": "Loading prompts…",
       "failed": "The prompts could not be loaded.",
       "choiceFailed": "The prompt could not be changed.",

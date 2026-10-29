@@ -24,14 +24,32 @@ const emit = (event: string, payload: unknown): void => {
   }
 };
 
+// `?appleProvider`: Apple Intelligence is the default provider (native session of 2026-10-29),
+// for `tests/prompt-provider-row.spec.ts`.
+const appleProvider = new URLSearchParams(window.location.search).has(
+  "appleProvider",
+);
+const APPLE = "apple_intelligence";
+
 const settings = () => ({
   app_language: "en",
   bindings: {},
   microphone_priority: [],
   post_process_enabled: true,
-  post_process_providers: [],
-  post_process_provider_id: "",
-  post_process_models: {},
+  post_process_providers: appleProvider
+    ? [
+        {
+          id: APPLE,
+          label: "Apple Intelligence",
+          base_url: "apple-intelligence://local",
+          allow_base_url_edit: false,
+          models_endpoint: null,
+          supports_structured_output: true,
+        },
+      ]
+    : [],
+  post_process_provider_id: appleProvider ? APPLE : "",
+  post_process_models: appleProvider ? { [APPLE]: "Apple Intelligence" } : {},
   post_process_api_keys: {},
 });
 
@@ -85,6 +103,7 @@ const handlers: Record<string, Handler> = {
   check_custom_sounds: () => ({ start: false, stop: false }),
   is_update_checks_locked: () => false,
   get_prompt_library: library,
+  check_apple_intelligence_available: () => appleProvider,
   update_post_process_prompt: update,
   get_shortcut_conflicts: () => [],
   "plugin:os|locale": () => "en-US",

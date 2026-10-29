@@ -689,7 +689,7 @@
           "title": "Yapay zekâ ile son işlem",
           "enabledDescription": "Dikteleri bir istemle işle. Kapalı: hiçbir dikte işlenmez.",
           "defaultTitle": "Varsayılan istem",
-          "defaultDescription": "Yapay zekâ dikte kısayolu tarafından kullanılır. Düz dikte Hiçbiri ile başlar.",
+          "defaultDescription": "Yapay zekâ dikte kısayolu tarafından kullanılır. Düz dikte, göstergede son seçtiğiniz istemle veya Hiçbiri ile başlar.",
           "none": "Hiçbiri",
           "invalidOption": "Geçersiz: kullanmadan önce düzenleyin"
         },
@@ -1283,6 +1283,7 @@
       "none": "Yok (yapay zekâ işlemi yok)",
       "menuTitle": "Bu dikte için prompt",
       "note": "Yalnızca bu dikte için geçerli. Varsayılan {{name}} olarak kalır.",
+      "noteRemembered": "Hiçbiri'ni seçene kadar sonraki düz dikteleriniz için korunur.",
       "loading": "Promptlar yükleniyor…",
       "failed": "Promptlar yüklenemedi.",
       "choiceFailed": "Prompt değiştirilemedi.",

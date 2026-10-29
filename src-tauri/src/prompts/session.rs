@@ -1,7 +1,8 @@
-//! Prompt of the dictation in progress (005 FR-002, AC-003, AC-006): the trigger decides the
-//! starting prompt (plain dictation → None, post-processing shortcut → the default prompt, a
-//! prompt shortcut → that prompt), the indicator may change it while recording, and stopping
-//! freezes it for the AI step. The prompt and its provider are captured from one settings view
+//! Prompt of the dictation in progress (005 FR-002, FR-007, AC-003, AC-006, AC-009): the trigger
+//! decides the starting prompt (plain dictation → the prompt last chosen on the indicator during
+//! a plain dictation, or None; post-processing shortcut → the default prompt; a prompt shortcut →
+//! that prompt), the indicator may change it while recording, and stopping freezes it for the AI
+//! step and reports whether a plain dictation's choice must be remembered. The prompt and its provider are captured from one settings view
 //! when chosen, so a later edit or deletion never changes a captured prompt. Choice and stop are
 //! serialized by one mutex: a choice that arrives after the stop is refused, never applied to
 //! another session. The default prompt is never changed here.
@@ -45,6 +46,9 @@ pub struct DictationPromptView {
     pub prompt_name: Option<String>,
     /// False when AI post-processing is off: the menu is hidden and the prompt stays None.
     pub selectable: bool,
+    /// A plain dictation with processing on: a choice is kept for the next plain dictations
+    /// (FR-007); otherwise it applies to this dictation only.
+    pub remembered: bool,
 }
 
 /// Why a choice on the indicator was refused; nothing changed.
@@ -64,6 +68,10 @@ pub enum PromptChoiceRefusal {
 struct Session {
     id: u64,
     selectable: bool,
+    /// Started by the plain dictation shortcut: an indicator choice is remembered (FR-007).
+    plain: bool,
+    /// The user chose on the indicator during this session.
+    chosen: bool,
     choice: Option<ResolvedPrompt>,
     frozen: bool,
 }
@@ -74,8 +82,19 @@ impl Session {
             prompt_id: self.choice.as_ref().map(|prompt| prompt.id.clone()),
             prompt_name: self.choice.as_ref().map(|prompt| prompt.name.clone()),
             selectable: self.selectable && !self.frozen,
+            remembered: self.plain && self.selectable,
         }
     }
+}
+
+/// A session frozen at the stop.
+pub struct FrozenChoice {
+    pub session_id: u64,
+    /// Prompt of the dictation; `None` means no AI processing.
+    pub prompt: Option<ResolvedPrompt>,
+    /// A plain dictation whose prompt was chosen on the indicator: its frozen prompt is the
+    /// candidate to remember for the next plain dictations (FR-007).
+    pub chosen_on_plain: bool,
 }
 
 /// The dictation sessions of the process (at most one at a time).
@@ -111,10 +130,31 @@ fn starting_choice(settings: &AppSettings, trigger: &Trigger) -> Option<Resolved
         return None;
     }
     match trigger {
-        Trigger::Plain => None,
+        Trigger::Plain => remembered_prompt(settings),
         Trigger::PostProcess => default_prompt(settings),
         Trigger::Prompt(id) => Some(capture(settings, id)),
     }
+}
+
+// @spec FR-007: Plain dictation starts with the remembered prompt — .specs/features/005-custom-ai-prompts/spec.md#fr-007
+/// The prompt remembered for plain dictations, captured from `settings`; `None` when nothing is
+/// remembered or when the remembered prompt no longer exists or cannot be used.
+pub fn remembered_prompt(settings: &AppSettings) -> Option<ResolvedPrompt> {
+    let id = settings.plain_dictation_prompt_id.as_deref()?;
+    let prompt = library::find(settings, id)?;
+    library::is_usable(settings, prompt).then(|| capture(settings, id))
+}
+
+// @spec FR-007: Remember the indicator choice of a plain dictation — .specs/features/005-custom-ai-prompts/spec.md#fr-007
+/// New remembered prompt after the stop of a plain dictation whose prompt was chosen on the
+/// indicator: `Some(frozen)` when it differs from `stored` (`Some(None)` forgets it, after the
+/// user chose None), `None` when there is nothing to write.
+pub fn plain_memory_update(
+    chosen_on_plain: bool,
+    frozen: Option<&str>,
+    stored: Option<&str>,
+) -> Option<Option<String>> {
+    (chosen_on_plain && frozen != stored).then(|| frozen.map(str::to_owned))
 }
 
 /// The default prompt captured from `settings`, or `None` when the default is None.
@@ -135,6 +175,8 @@ impl PromptSessions {
         let session = Session {
             id: state.0,
             selectable: settings.post_process_enabled,
+            plain: *trigger == Trigger::Plain,
+            chosen: false,
             choice: starting_choice(settings, trigger),
             frozen: false,
         };
@@ -166,6 +208,7 @@ impl PromptSessions {
             None => None,
             Some(id) => Some(usable_capture(settings, id)?),
         };
+        session.chosen = true;
         Ok(session.view())
     }
 
@@ -178,12 +221,17 @@ impl PromptSessions {
         Some(session.choice.clone())
     }
 
-    /// Freeze the current session at the stop; its id and frozen prompt.
-    pub fn freeze_current(&self) -> Option<(u64, Option<ResolvedPrompt>)> {
+    /// Freeze the current session at the stop; its id, frozen prompt and whether a plain
+    /// dictation's choice is to be remembered (only with processing on: the menu was shown).
+    pub fn freeze_current(&self) -> Option<FrozenChoice> {
         let mut state = self.lock();
         let session = state.1.as_mut()?;
         session.frozen = true;
-        Some((session.id, session.choice.clone()))
+        Some(FrozenChoice {
+            session_id: session.id,
+            prompt: session.choice.clone(),
+            chosen_on_plain: session.plain && session.chosen && session.selectable,
+        })
     }
 
     /// End session `session_id` (processing finished or cancelled); a newer one is kept.
@@ -217,3 +265,7 @@ fn usable_capture(settings: &AppSettings, id: &str) -> Result<ResolvedPrompt, Pr
 #[cfg(test)]
 #[path = "session_tests.rs"]
 mod tests;
+
+#[cfg(test)]
+#[path = "session_memory_tests.rs"]
+mod memory_tests;

@@ -216,6 +216,7 @@ const view = (
   prompt_id: "min",
   prompt_name: "Minimal correction",
   selectable: true,
+  remembered: false,
   ...over,
 });
 

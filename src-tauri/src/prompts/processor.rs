@@ -97,6 +97,23 @@ pub struct ProcessingReport {
     pub duration: Duration,
 }
 
+// @spec FR-003: AI step duration logged without content — .specs/features/005-custom-ai-prompts/spec.md#fr-003
+/// Debug line of one AI step: provider, duration and outcome, never the transcript, the prompt
+/// or the reply (e.g. `AI processing apple_intelligence finished in 742ms (Applied)`).
+pub fn timing_summary(report: &ProcessingReport) -> String {
+    let outcome = match &report.outcome {
+        ProcessingOutcome::Processed(_) => "Applied".to_owned(),
+        ProcessingOutcome::Skipped => "Skipped".to_owned(),
+        ProcessingOutcome::Cancelled => "Cancelled".to_owned(),
+        ProcessingOutcome::Failed(reason) => format!("Failed: {}", reason.code()),
+    };
+    format!(
+        "AI processing {} finished in {}ms ({outcome})",
+        report.provider_id.as_deref().unwrap_or("none"),
+        report.duration.as_millis()
+    )
+}
+
 /// One chat completion request (OpenAI-compatible endpoints).
 pub struct ChatRequest<'a> {
     pub provider: &'a PostProcessProvider,

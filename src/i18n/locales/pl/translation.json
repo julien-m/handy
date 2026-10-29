@@ -689,7 +689,7 @@
           "title": "Przetwarzanie końcowe AI",
           "enabledDescription": "Przetwarzaj dyktowanie za pomocą promptu. Wyłączone: żadne dyktowanie nie jest przetwarzane.",
           "defaultTitle": "Domyślny prompt",
-          "defaultDescription": "Używany przez skrót dyktowania z AI. Zwykłe dyktowanie zaczyna się od opcji Brak.",
+          "defaultDescription": "Używany przez skrót dyktowania z AI. Zwykłe dyktowanie zaczyna się od ostatniego promptu wybranego we wskaźniku lub od opcji Brak.",
           "none": "Brak",
           "invalidOption": "Nieprawidłowy: edytuj go przed użyciem"
         },
@@ -1283,6 +1283,7 @@
       "none": "Brak (bez przetwarzania przez AI)",
       "menuTitle": "Prompt tego dyktowania",
       "note": "Dotyczy tylko tego dyktowania. Domyślnym pozostaje {{name}}.",
+      "noteRemembered": "Zostaje dla kolejnych zwykłych dyktowań, dopóki nie wybierzesz opcji Brak.",
       "loading": "Wczytywanie promptów…",
       "failed": "Nie udało się wczytać promptów.",
       "choiceFailed": "Nie udało się zmienić promptu.",

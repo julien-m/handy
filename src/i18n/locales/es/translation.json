@@ -689,7 +689,7 @@
           "title": "Posprocesamiento con IA",
           "enabledDescription": "Procesa los dictados con un prompt. Desactivado: no se procesa ningún dictado.",
           "defaultTitle": "Prompt predeterminado",
-          "defaultDescription": "Lo usa el atajo de dictado con IA. El dictado simple empieza con Ninguno.",
+          "defaultDescription": "Lo usa el atajo de dictado con IA. El dictado simple empieza con el último prompt elegido en el indicador, o con Ninguno.",
           "none": "Ninguno",
           "invalidOption": "No válido: edítalo antes de usarlo"
         },
@@ -1283,6 +1283,7 @@
       "none": "Ninguno (sin procesamiento con IA)",
       "menuTitle": "Prompt de este dictado",
       "note": "Solo se aplica a este dictado. El predeterminado sigue siendo {{name}}.",
+      "noteRemembered": "Se mantiene para tus próximos dictados simples hasta que elijas Ninguno.",
       "loading": "Cargando prompts…",
       "failed": "No se pudieron cargar los prompts.",
       "choiceFailed": "No se pudo cambiar el prompt.",

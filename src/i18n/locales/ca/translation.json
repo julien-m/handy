@@ -689,7 +689,7 @@
           "title": "Postprocessament amb IA",
           "enabledDescription": "Processa els dictats amb un prompt. Desactivat: no es processa cap dictat.",
           "defaultTitle": "Prompt per defecte",
-          "defaultDescription": "L'utilitza la drecera de dictat amb IA. El dictat simple comença amb Cap.",
+          "defaultDescription": "L'utilitza la drecera de dictat amb IA. El dictat simple comença amb l'últim prompt triat a l'indicador, o amb Cap.",
           "none": "Cap",
           "invalidOption": "No vàlid: edita'l abans de fer-lo servir"
         },
@@ -1286,6 +1286,7 @@
       "none": "Cap (sense processament amb IA)",
       "menuTitle": "Indicació d'aquest dictat",
       "note": "Només s'aplica a aquest dictat. La predeterminada continua sent {{name}}.",
+      "noteRemembered": "Es manté per als propers dictats simples fins que triïs Cap.",
       "loading": "S'estan carregant les indicacions…",
       "failed": "No s'han pogut carregar les indicacions.",
       "choiceFailed": "No s'ha pogut canviar la indicació.",

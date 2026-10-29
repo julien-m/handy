@@ -689,7 +689,7 @@
           "title": "AI 後處理",
           "enabledDescription": "使用提示詞處理聽寫內容。關閉：不處理任何聽寫。",
           "defaultTitle": "預設提示詞",
-          "defaultDescription": "由 AI 聽寫快速鍵使用。一般聽寫以「無」開始。",
+          "defaultDescription": "由 AI 聽寫快速鍵使用。一般聽寫以你在指示器中最後選擇的提示詞開始，或以「無」開始。",
           "none": "無",
           "invalidOption": "無效：請先編輯再使用"
         },
@@ -1283,6 +1283,7 @@
       "none": "無（不進行 AI 處理）",
       "menuTitle": "本次聽寫的提示詞",
       "note": "僅適用於本次聽寫。預設仍為 {{name}}。",
+      "noteRemembered": "在你選擇「無」之前，之後的一般聽寫都會沿用。",
       "loading": "正在載入提示詞…",
       "failed": "無法載入提示詞。",
       "choiceFailed": "無法變更提示詞。",

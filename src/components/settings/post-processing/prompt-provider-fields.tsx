@@ -167,7 +167,7 @@ export const PromptProviderFields: React.FC<{
   const controlProps = { testId, model, settings, readiness, appleAvailable };
   return (
     <div className="space-y-3">
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap items-end gap-4">
         <ProviderControl {...controlProps} />
         <ModelControl {...controlProps} />
       </div>
@@ -201,7 +201,7 @@ const LabeledControl: React.FC<LabeledControlProps> = ({
   label,
   children,
 }) => (
-  <div className="flex flex-col gap-2 flex-1 min-w-[200px]">
+  <div className="flex flex-col gap-2 flex-1 basis-0 min-w-[200px]">
     <span className="text-sm font-semibold" data-testid={testId}>
       {label}
     </span>

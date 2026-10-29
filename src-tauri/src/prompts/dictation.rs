@@ -3,10 +3,13 @@
 //! prompt, reports a failure for the indicator notice, and ends with the processing (or at a
 //! cancel). Insertion and history stay with the pipeline; this module only decides the text.
 use super::output::OutputDecision;
-use super::processor::{process, FailureReason, ResolvedPrompt, PROCESSING_BUDGET};
-use super::session::{default_prompt, DictationPromptView, PromptSessions, Trigger};
+use super::processor::{process, timing_summary, FailureReason, ResolvedPrompt, PROCESSING_BUDGET};
+use super::session::{
+    default_prompt, plain_memory_update, DictationPromptView, PromptSessions, Trigger,
+};
 use crate::managers::history_store::RetriedText;
 use crate::settings::AppSettings;
+use crate::settings_service::tauri_adapter as live_settings;
 use serde::Serialize;
 use specta::Type;
 use tauri::{AppHandle, Manager};
@@ -56,7 +59,8 @@ pub fn start_session(app: &AppHandle, settings: &AppSettings, binding_id: &str) 
     emit_changed(app, Some(view));
 }
 
-/// Freeze the current session at the stop (no session: no processing).
+/// Freeze the current session at the stop (no session: no processing). A plain dictation whose
+/// prompt was chosen on the indicator has that prompt remembered for the next plain dictations.
 pub fn freeze_session(app: &AppHandle) -> FrozenSession {
     let frozen = app
         .try_state::<PromptSessions>()
@@ -65,15 +69,37 @@ pub fn freeze_session(app: &AppHandle) -> FrozenSession {
         emit_changed(app, Some(view));
     }
     match frozen {
-        Some((id, prompt)) => FrozenSession {
-            session_id: Some(id),
-            prompt,
-        },
+        Some(frozen) => {
+            if frozen.chosen_on_plain {
+                remember_plain_choice(app, frozen.prompt.as_ref().map(|p| p.id.clone()));
+            }
+            FrozenSession {
+                session_id: Some(frozen.session_id),
+                prompt: frozen.prompt,
+            }
+        }
         None => FrozenSession {
             session_id: None,
             prompt: None,
         },
     }
+}
+
+// @spec FR-007: Remembered plain prompt persisted by the settings service — .specs/features/005-custom-ai-prompts/spec.md#fr-007
+/// Persist the prompt chosen during a plain dictation through the settings service, on the
+/// blocking pool (never on the caller's thread); nothing is written when it is already stored.
+fn remember_plain_choice(app: &AppHandle, chosen: Option<String>) {
+    let app = app.clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        let stored = live_settings::current(&app).plain_dictation_prompt_id;
+        let Some(update) = plain_memory_update(true, chosen.as_deref(), stored.as_deref()) else {
+            return;
+        };
+        let value = update.map_or(serde_json::Value::Null, serde_json::Value::String);
+        if let Err(error) = live_settings::set(&app, "plain_dictation_prompt_id", value) {
+            log::warn!("Could not remember the plain dictation prompt: {error:?}");
+        }
+    });
 }
 
 /// End session `session_id` when its processing is over.
@@ -104,6 +130,7 @@ pub async fn process_frozen(
     };
     let port = super::native::NativeProviders;
     let report = process(prompt, transcription, &port, PROCESSING_BUDGET, &|| false).await;
+    log::debug!("{}", timing_summary(&report));
     let decision = OutputDecision::after(transcription, prompt, report);
     if let Some(reason) = decision.failure {
         log::warn!(
@@ -165,5 +192,32 @@ mod tests {
             assert!(!notice.to_lowercase().contains(claim), "{claim}");
         }
         assert_eq!(super::FAILURE_NOTICE_MS, 4000);
+    }
+
+    // @spec FR-003: AI step duration logged without content — .specs/features/005-custom-ai-prompts/spec.md#fr-003
+    #[test]
+    fn the_ai_step_timing_line_names_provider_duration_and_outcome_but_no_text() {
+        use crate::prompts::processor::{
+            timing_summary, FailureReason, ProcessingOutcome, ProcessingReport,
+        };
+        use std::time::Duration;
+        let report = |outcome, provider: Option<&str>| ProcessingReport {
+            outcome,
+            provider_id: provider.map(str::to_owned),
+            model: Some("secret-model-text".into()),
+            duration: Duration::from_millis(742),
+        };
+        let applied = ProcessingOutcome::Processed("private dictated words".into());
+        let line = timing_summary(&report(applied, Some("apple_intelligence")));
+        assert_eq!(
+            line,
+            "AI processing apple_intelligence finished in 742ms (Applied)"
+        );
+        assert!(!line.contains("private") && !line.contains("secret"));
+        let failed = ProcessingOutcome::Failed(FailureReason::Timeout);
+        assert_eq!(
+            timing_summary(&report(failed, None)),
+            "AI processing none finished in 742ms (Failed: timeout)"
+        );
     }
 }

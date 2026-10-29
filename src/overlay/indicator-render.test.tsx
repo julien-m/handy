@@ -272,6 +272,16 @@ describe("prompt pill (005)", () => {
     );
     expect(html).not.toContain("recording-indicator-prompt-hint");
   });
+  // @spec AC-009: the menu of a plain dictation says the choice is kept — .specs/features/005-custom-ai-prompts/spec.md#ac-009
+  test("a plain dictation's menu says the choice is kept for the next plain dictations", () => {
+    const html = render({
+      prompt: prompt({ ...promptView, remembered: true }, true),
+    });
+    expect(html).toContain(
+      "Kept for your next plain dictations until you choose None.",
+    );
+    expect(html).not.toContain("Applies to this dictation only.");
+  });
 });
 
 describe("notices (005, 007)", () => {

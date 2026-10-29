@@ -689,7 +689,7 @@
           "title": "KI-Nachbearbeitung",
           "enabledDescription": "Diktate mit einem Prompt verarbeiten. Aus: Kein Diktat wird verarbeitet.",
           "defaultTitle": "Standard-Prompt",
-          "defaultDescription": "Wird vom KI-Diktat-Tastenkürzel verwendet. Einfaches Diktat beginnt mit Keiner.",
+          "defaultDescription": "Wird vom KI-Diktat-Tastenkürzel verwendet. Einfaches Diktat beginnt mit dem zuletzt in der Anzeige gewählten Prompt oder mit Keiner.",
           "none": "Keiner",
           "invalidOption": "Ungültig: vor der Verwendung bearbeiten"
         },
@@ -1283,6 +1283,7 @@
       "none": "Keiner (keine KI-Verarbeitung)",
       "menuTitle": "Prompt für dieses Diktat",
       "note": "Gilt nur für dieses Diktat. Standard bleibt {{name}}.",
+      "noteRemembered": "Bleibt für deine nächsten einfachen Diktate, bis du Keiner wählst.",
       "loading": "Prompts werden geladen…",
       "failed": "Die Prompts konnten nicht geladen werden.",
       "choiceFailed": "Der Prompt konnte nicht geändert werden.",

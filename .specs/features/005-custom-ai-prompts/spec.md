@@ -4,7 +4,7 @@ title: Custom AI Prompts
 priority: P1
 status: Planned
 created: 2026-10-12
-updated: 2026-10-14
+updated: 2026-10-29
 ---
 
 # Feature Spec: Custom AI Prompts
@@ -84,6 +84,15 @@ Feature: Prompt selection
     Given a dictation started with the plain dictation shortcut shows "None" on the indicator
     When the user chooses "Notes" on the indicator before the recording stops
     Then this dictation is processed with "Notes"
+  Scenario: A plain dictation remembers the chosen prompt
+    Given the user chose "Notes" on the indicator during a plain dictation that then stopped
+    When the user starts the next plain dictation
+    Then the indicator shows "Notes" and the dictation is processed with "Notes"
+    And the post-processing shortcut still starts with the default prompt
+  Scenario: Choosing None on a plain dictation forgets the prompt
+    Given plain dictations start with "Notes"
+    When the user chooses "None" on the indicator during a plain dictation that then stops
+    Then the next plain dictation starts with "None"
   Scenario: Choosing None skips processing
     Given a post-processing dictation is recording
     When the user chooses "None" on the indicator
@@ -93,15 +102,18 @@ Feature: Prompt selection
 ```mermaid
 flowchart TD
   A[Dictation starts] --> B{Started by}
-  B -- Plain shortcut --> C[Prompt for this dictation: None]
+  B -- Plain shortcut --> C[Prompt: remembered plain prompt, or None]
   B -- Post-processing shortcut --> D[Prompt: default prompt]
   B -- Prompt shortcut --> E[Prompt: that prompt]
   C --> F{User changes it on the indicator before stop?}
   D --> F
   E --> F
-  F -- Yes --> G[Use the chosen prompt for this dictation only]
+  F -- Yes --> G[Use the chosen prompt for this dictation]
   F -- No --> H[Keep the start prompt]
-  G --> I[Process or skip when None]
+  G --> R{Plain dictation stopped?}
+  R -- Yes --> M[Remember the choice for the next plain dictations]
+  R -- No --> I[Process or skip when None]
+  M --> I
   H --> I
 ```
 
@@ -248,12 +260,12 @@ flowchart TD
 
 ### AC-003
 
-**Criterion:** The existing "AI post-processing" switch keeps its meaning: when off, no dictation is processed, prompt shortcuts are unregistered and the indicator menu is hidden. When on, settings define one default prompt or "None". The plain dictation shortcut starts with "None", the post-processing shortcut with the default prompt, and a prompt shortcut with its prompt. While a dictation is recording, the indicator shows the prompt for this dictation and offers a menu listing "None" and every prompt; a choice applies to this dictation only and does not change the default. The menu opens within 200 ms without taking keyboard focus from the user's application, on every platform where the indicator is shown.
+**Criterion:** The existing "AI post-processing" switch keeps its meaning: when off, no dictation is processed, prompt shortcuts are unregistered and the indicator menu is hidden. When on, settings define one default prompt or "None". The plain dictation shortcut starts with the remembered plain prompt of AC-009 (or "None"), the post-processing shortcut with the default prompt, and a prompt shortcut with its prompt. While a dictation is recording, the indicator shows the prompt for this dictation and offers a menu listing "None" and every prompt; a choice applies to this dictation, never changes the default, and is remembered only for a plain dictation (AC-009). The menu opens within 200 ms without taking keyboard focus from the user's application, on every platform where the indicator is shown.
 **Priority:** P1 | **Story:** Story 2
 
 ### AC-004
 
-**Criterion:** Each prompt uses the default provider and model unless it defines a provider and model override. Providers are the existing ones, including the local custom OpenAI-compatible endpoint and, where available, Apple Intelligence. A prompt whose provider lacks a required endpoint, model or API key is shown as not ready with the missing item; processing with it skips the AI step.
+**Criterion:** Each prompt uses the default provider and model unless it defines a provider and model override. Providers are the existing ones, including the local custom OpenAI-compatible endpoint and, where available, Apple Intelligence. A prompt whose provider lacks a required endpoint, model or API key is shown as not ready with the missing item; processing with it skips the AI step. In the prompt editor, the provider and model controls share one row with the same height, border, radius and chevron, aligned bottoms and equal column widths; a long label is truncated inside its control.
 **Priority:** P1 | **Story:** Story 3
 
 ### AC-005
@@ -270,6 +282,11 @@ flowchart TD
 
 **Criterion:** The test panel runs a prompt on editable sample text (prefilled with the last transcript when one exists) and shows the result, provider, model and duration, or the error, within the 30-second limit. A test never inserts text into another application and never writes history.
 **Priority:** P2 | **Story:** Story 5
+
+### AC-009
+
+**Criterion:** When AI post-processing is on and the user chooses a prompt on the indicator during a plain dictation, that choice is remembered in the settings once the dictation stops, and every following plain dictation starts with it until the user chooses "None" on the indicator during a plain dictation. The post-processing shortcut keeps the default prompt and a prompt shortcut its prompt; choices made during their dictations are never remembered. A cancelled dictation remembers nothing. A plain dictation starts with "None" when post-processing is off or when the remembered prompt was deleted or cannot be used; deleting the remembered prompt forgets it. The indicator menu of a plain dictation says the choice is kept for the next plain dictations; the settings explain that plain dictation starts with the last prompt chosen on the indicator, or None.
+**Priority:** P1 | **Story:** Story 2
 
 ### AC-008
 
@@ -390,8 +407,13 @@ Feature: Commit a prompt
 
 ### FR-003
 
-**Requirement:** Run the AI step with the prompt's resolved provider and model, report provider readiness, and bound the whole step, including internal retries and fallback requests, to 30 seconds.
+**Requirement:** Run the AI step with the prompt's resolved provider and model, report provider readiness, and bound the whole step, including internal retries and fallback requests, to 30 seconds. Log each dictation's AI step at debug level with its provider, duration and outcome, never its text.
 **AC References:** AC-004, AC-005, AC-007
+
+### FR-007
+
+**Requirement:** Remember, through the settings service, the prompt chosen on the indicator during a plain dictation (or forget it when None is chosen), and start each plain dictation with the remembered prompt while post-processing is on and that prompt exists and is usable.
+**AC References:** AC-003, AC-009
 
 ### FR-004
 
@@ -415,6 +437,7 @@ Feature: Commit a prompt
 | Prompt | Named processing instruction | id, name, text, provider override, model override, shortcuts, starter flag |
 | Default prompt | Prompt used by the post-processing shortcut | prompt id or None |
 | Dictation prompt choice | Prompt for one dictation | trigger, chosen prompt id or None |
+| Remembered plain prompt | Starting prompt of plain dictations (`plain_dictation_prompt_id`) | prompt id or None |
 | Processing outcome | Result of the AI step | processed text or failure reason, provider, model, duration |
 
 ## Clarifications
@@ -425,12 +448,15 @@ Feature: Commit a prompt
 - Provider configuration (base URL, model, API key) stays in the existing settings UI; the CLI only sets per-prompt overrides.
 - `[ASSUMED]` A non-JSON reply in structured mode keeps today's behavior (the reply text is used); only errors, timeouts and empty results trigger the fallback.
 - `[ASSUMED]` 30-second limit for the whole AI step, 50 prompts, 60-character names, 8000-character texts, 0–2 shortcuts per prompt.
-- `[ASSUMED]` The indicator choice applies to the current dictation only; the default changes only in settings or the CLI.
+- ~~`[ASSUMED]` The indicator choice applies to the current dictation only; the default changes only in settings or the CLI.~~ Superseded on 2026-10-29 by the decision `plain-dictation-remembers-prompt` below: the default still changes only in settings or the CLI, but a plain dictation's choice is remembered.
 - Out of scope: scripts, launching applications, OCR and any other Spokenly action not listed in the Input.
 - Program context: specified in list order (001–010); the settings CLI foundation (008) ships first; shortcuts reuse the conflict checker of 004.
 
 - Decision `005-custom-ai-prompts:AC-005` / `fallback-notice-insertion-wording`: Decision 2026-10-14 (orchestrator, program review): when the AI step fails, the indicator states for at least 4 seconds that the AI step failed and that the original text was used for insertion. It never states that the insertion succeeded: the insertion result (attempted, verified, failed, recovery) belongs to 006, 007 and 010 and is reported by them. AC-005 and the Story 4 scenario are reworded accordingly; the history and cancellation rules are unchanged.
 <!-- livespec-clarification:{"requirement_id": "005-custom-ai-prompts:AC-005", "decision_key": "fallback-notice-insertion-wording", "evidence_hash": "4dfbe3403918eb2f60eb6d27a9bfdc05edaf353f03188422a88b66cd06a05897", "answer": "Decision 2026-10-14 (orchestrator, program review): when the AI step fails, the indicator states for at least 4 seconds that the AI step failed and that the original text was used for insertion. It never states that the insertion succeeded: the insertion result (attempted, verified, failed, recovery) belongs to 006, 007 and 010 and is reported by them. AC-005 and the Story 4 scenario are reworded accordingly; the history and cancellation rules are unchanged."} -->
+
+- Decision `005-custom-ai-prompts:AC-009` / `plain-dictation-remembers-prompt`: Decision 2026-10-29 (Julien, native session N23: "it does not keep it, I always get None; I have to click Improve Transcription by hand", translated): the prompt chosen on the indicator during a plain dictation is remembered in the settings (`plain_dictation_prompt_id`, written through the settings service at the stop) and starts the next plain dictations until None is chosen. The AI dictation shortcut keeps the default prompt; AI off, or a deleted or unusable remembered prompt, starts plain dictation on None. The memory is written at the stop (not at each click) so a cancelled dictation and a refused late choice change nothing and successive writes stay ordered.
+- Decision `005-custom-ai-prompts:AC-004` / `provider-model-row-alignment`: Decision 2026-10-29 (Julien, native session): in the prompt editor the "Provider" dropdown was lower and narrower than the "Model" combo (separator, larger chevron). The shared select takes the shared dropdown button's box (height, padding, radius, 1rem chevron, no separator), so every select of the app matches the dropdowns next to it.
 
 ## QE Analysis
 
@@ -465,6 +491,8 @@ Feature: Commit a prompt
 - Prompt text without `${output}`: the request is built exactly as today for the provider's mode (structured or legacy).
 - The indicator is hidden (overlay style none): prompt choice is available only through shortcuts and settings.
 - Dictation stops before the user picks in the menu: the prompt shown at stop time applies.
+- The remembered plain prompt is deleted or becomes invalid: the next plain dictation starts with "None"; a deletion also forgets it.
+- The user opens the menu of a plain dictation but chooses nothing: the remembered prompt is unchanged.
 - Provider override points to the custom provider while its base URL or model is empty: the prompt is shown as not ready.
 - Very long transcript: the request is still bounded by 30 seconds; on timeout the initial transcript is inserted.
 

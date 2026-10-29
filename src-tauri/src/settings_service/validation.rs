@@ -202,10 +202,12 @@ fn validate_context(
 ) -> Result<(), SettingsError> {
     let requirement = super::platform_capability::required_capability(entry.key);
     context.platform.check(requirement, Some(entry.key))?;
-    if entry.key == "post_process_selected_prompt_id"
-        && candidate
-            .as_str()
-            .is_some_and(|id| !context.prompt_ids.contains(&id))
+    if matches!(
+        entry.key,
+        "post_process_selected_prompt_id" | "plain_dictation_prompt_id"
+    ) && candidate
+        .as_str()
+        .is_some_and(|id| !context.prompt_ids.contains(&id))
     {
         return Err(SettingsError::validation(
             entry.key,

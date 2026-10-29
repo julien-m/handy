@@ -689,7 +689,7 @@
           "title": "Post-traitement IA",
           "enabledDescription": "Traite les dictées avec un prompt. Désactivé : aucune dictée n'est traitée.",
           "defaultTitle": "Prompt par défaut",
-          "defaultDescription": "Utilisé par le raccourci de dictée IA. La dictée simple démarre avec Aucun.",
+          "defaultDescription": "Utilisé par le raccourci de dictée IA. La dictée simple démarre avec le dernier prompt choisi dans l'indicateur, ou Aucun.",
           "none": "Aucun",
           "invalidOption": "Invalide : modifiez-le avant de l'utiliser"
         },
@@ -1283,6 +1283,7 @@
       "none": "Aucun (sans traitement IA)",
       "menuTitle": "Prompt de cette dictée",
       "note": "S'applique à cette dictée uniquement. Le prompt par défaut reste {{name}}.",
+      "noteRemembered": "Gardé pour vos prochaines dictées simples, jusqu'à ce que vous choisissiez Aucun.",
       "loading": "Chargement des prompts…",
       "failed": "Les prompts n'ont pas pu être chargés.",
       "choiceFailed": "Le prompt n'a pas pu être modifié.",

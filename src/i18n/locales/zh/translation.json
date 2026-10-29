@@ -689,7 +689,7 @@
           "title": "AI 后处理",
           "enabledDescription": "用提示词处理听写内容。关闭：不处理任何听写。",
           "defaultTitle": "默认提示词",
-          "defaultDescription": "由 AI 听写快捷键使用。普通听写以“无”开始。",
+          "defaultDescription": "由 AI 听写快捷键使用。普通听写以你在指示器中最后选择的提示词开始，或以“无”开始。",
           "none": "无",
           "invalidOption": "无效：请先编辑再使用"
         },
@@ -1283,6 +1283,7 @@
       "none": "无（不进行 AI 处理）",
       "menuTitle": "本次听写的提示词",
       "note": "仅适用于本次听写。默认仍为 {{name}}。",
+      "noteRemembered": "在你选择“无”之前，后续的普通听写都会沿用。",
       "loading": "正在加载提示词…",
       "failed": "无法加载提示词。",
       "choiceFailed": "无法更改提示词。",

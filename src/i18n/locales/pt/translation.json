@@ -689,7 +689,7 @@
           "title": "Pós-processamento com IA",
           "enabledDescription": "Processa os ditados com um prompt. Desativado: nenhum ditado é processado.",
           "defaultTitle": "Prompt padrão",
-          "defaultDescription": "Usado pelo atalho de ditado com IA. O ditado simples começa com Nenhum.",
+          "defaultDescription": "Usado pelo atalho de ditado com IA. O ditado simples começa com o último prompt escolhido no indicador, ou com Nenhum.",
           "none": "Nenhum",
           "invalidOption": "Inválido: edite-o antes de usá-lo"
         },
@@ -1283,6 +1283,7 @@
       "none": "Nenhum (sem processamento por IA)",
       "menuTitle": "Prompt deste ditado",
       "note": "Aplica-se só a este ditado. O predefinido continua a ser {{name}}.",
+      "noteRemembered": "Mantido para os próximos ditados simples até você escolher Nenhum.",
       "loading": "A carregar prompts…",
       "failed": "Não foi possível carregar os prompts.",
       "choiceFailed": "Não foi possível alterar o prompt.",
