@@ -215,6 +215,8 @@ impl ShortcutAction for TranscribeAction {
         // 010: freeze the no-text-field setting for this dictation (the bubble stays open
         // until the recording really starts, so a refused start loses nothing).
         crate::recovery::app::dictation_starting(app, &settings);
+        // 006 AC-009: this dictation's first placement follows the cursor again.
+        crate::overlay::begin_dictation_placement();
         match settings.overlay_style {
             OverlayStyle::Live if model_supports_streaming => utils::show_streaming_overlay(app),
             OverlayStyle::Live | OverlayStyle::Minimal => show_recording_overlay(app),

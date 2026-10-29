@@ -5,6 +5,8 @@
 
 ---
 
+## 2026-10-29 — [Feature 006] Bugfix N19: with a captured or pinned destination, the recording indicator (and the 010 bubble at its place) stays on the monitor of its first placement until the next dictation (AC-009)
+
 ## 2026-10-28 — [Feature 006] Bugfix N16: a declined return to the dictation's app falls back to the accessibility activation request within the same 1 s
 
 ## 2026-10-28 — [Feature 010] Bugfix N17: the recovery bubble is shown again (the panel stayed unregistered after `to_window`, `PanelNotFound`); a failed insertion without bubble is a notice of the recording indicator (toast only with the overlay style none)

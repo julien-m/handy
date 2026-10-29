@@ -35,7 +35,8 @@ pub(super) fn fit_to(
 }
 
 /// Size and position the overlay window for `width` × `height` (logical), flush to its edge and
-/// bounded by the monitor under the cursor (Windows bounds it in `place_windows_overlay`).
+/// bounded by its monitor: under the cursor, or the one held for a destination (006 AC-009;
+/// Windows bounds it in `place_windows_overlay`).
 pub(super) fn place_overlay(
     app_handle: &AppHandle,
     overlay_window: &tauri::webview::WebviewWindow,
@@ -44,10 +45,9 @@ pub(super) fn place_overlay(
 ) {
     #[cfg(not(target_os = "windows"))]
     {
-        let (width, height) = get_monitor_with_cursor(app_handle)
-            .map_or((width, height), |monitor| {
-                fit_to(&monitor, 1.0, (width, height))
-            });
+        let (width, height) = placement_monitor(app_handle).map_or((width, height), |monitor| {
+            fit_to(&monitor, 1.0, (width, height))
+        });
         place_logical(app_handle, overlay_window, width, height);
     }
     #[cfg(target_os = "windows")]
