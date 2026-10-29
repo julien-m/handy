@@ -1,13 +1,26 @@
-// Options of the "Text formatting" section of the Advanced settings page (015 smart
-// capitalization, 016 smart paragraphs; smart spacing comes in its own feature, as the first
-// row). Each option is one boolean setting with its own independent switch row: adding an
-// option is one entry here (and its setting key in the union), nothing else in the section
-// changes.
-import { CaseSensitive, Pilcrow, type LucideIcon } from "lucide-react";
+// Options of the "Text formatting" section of the Advanced settings page (017 smart spacing,
+// first; 015 smart capitalization; 016 smart paragraphs). Each option is one boolean setting
+// with its own independent switch row: adding an option is one entry here (and its setting key
+// in the union), nothing else in the section changes.
+import { CaseSensitive, Pilcrow, Space, type LucideIcon } from "lucide-react";
 import { smartParagraphsDescriptionKey } from "../smart-paragraphs-state";
+
+// @spec AC-016: Fallback named outside macOS — .specs/features/017-smart-spacing/spec.md#ac-016
+/**
+ * Business rule (017 AC-016): only macOS reads the text around the cursor; elsewhere every
+ * context is unavailable and smart spacing only adds the fallback final space, which the
+ * description says there (same pattern as 016's limitation).
+ * @param osType value of `type()` from `@tauri-apps/plugin-os`
+ * @returns the translation key of the switch's description
+ */
+export const smartSpacingDescriptionKey = (osType: string): string =>
+  osType === "macos"
+    ? "settings.advanced.textFormatting.smartSpacing.description"
+    : "settings.advanced.textFormatting.smartSpacing.descriptionLimited";
 
 /** Boolean settings shown in the Text formatting section. */
 export type TextFormattingKey =
+  | "smart_spacing"
   | "smart_capitalization"
   | "smart_paragraphs_enabled";
 
@@ -31,6 +44,14 @@ export interface TextFormattingOption {
 // @spec AC-008: Text formatting switch row — .specs/features/015-smart-capitalization/spec.md#ac-008
 /** The section's rows, in display order. */
 export const TEXT_FORMATTING_OPTIONS: readonly TextFormattingOption[] = [
+  // @spec AC-014: First row of Text formatting — .specs/features/017-smart-spacing/spec.md#ac-014
+  {
+    key: "smart_spacing",
+    icon: Space,
+    labelKey: "settings.advanced.textFormatting.smartSpacing.label",
+    descriptionKey: smartSpacingDescriptionKey,
+    testId: "smart-spacing",
+  },
   {
     key: "smart_capitalization",
     icon: CaseSensitive,

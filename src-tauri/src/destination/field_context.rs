@@ -1,13 +1,12 @@
-//! What smart capitalization (feature 015) may read of a dictation's destination before its
-//! insertion: the application the text goes to, and the text before the caret of the input 011
-//! remembered for it. The remembered element is read outside the manager lock (bounded by the
-//! caller's timeout) and put back while its dictation is current; nothing read is kept or logged.
+//! What the insertion's final preparation (015 smart capitalization, 017 smart spacing) may
+//! read of a dictation's destination before its insertion: the application the text goes to,
+//! and the input 011 remembered for it with its remembered selection. The remembered element is
+//! read outside the manager lock (bounded by the caller's deadline) and put back while its
+//! dictation is current; nothing read is kept or logged.
 use super::context::DictationId;
-use super::field::{RememberedField, SelectionRange};
+use super::field::{FieldNode, RememberedField, SelectionRange};
 use super::manager::DestinationManager;
 use super::session::Selection;
-use crate::recovery::classifier::AxQueryError;
-use std::time::Duration;
 
 /// Where the text of a dictation goes, as far as its context is concerned.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -19,9 +18,6 @@ pub enum InsertionTarget {
     /// The dictation is no longer current (cancelled, superseded): nothing is read.
     Stale,
 }
-
-/// The remembered input's answer: the units before its caret and the window they cover.
-pub type RememberedText = Result<(Vec<u16>, (usize, usize)), AxQueryError>;
 
 impl DestinationManager {
     /// The insertion target of dictation `dictation_id` at `generation`.
@@ -43,34 +39,21 @@ impl DestinationManager {
     }
 
     // @spec AC-007: Context of 011's remembered caret — .specs/features/015-smart-capitalization/spec.md#ac-007
-    /// The text before the remembered caret (selection start) of the input 011 remembered for
-    /// this dictation, read with `window` (caret → window start and length) and `timeout`;
-    /// `None` when no input is remembered for it. A remembered input without a readable range
-    /// answers an error, so the caller treats the context as absent.
+    /// Run `read` on the input 011 remembered for this dictation, with its remembered
+    /// selection (start and length, `None` without a readable offsets range); `None` when no
+    /// input is remembered for it. `read` must bound its own accessibility queries.
     ///
     /// Order matters: the input is moved out under the lock, read without it (an accessibility
     /// round trip must never stall the manager), then put back only while its dictation is
     /// still current and no other input took its place; otherwise it is released here.
-    pub fn read_remembered_before_caret(
+    pub fn with_remembered_input<R>(
         &self,
         (dictation_id, generation): (DictationId, u64),
-        window: fn(usize) -> (usize, usize),
-        timeout: Duration,
-    ) -> Option<RememberedText> {
+        read: impl FnOnce(&mut dyn FieldNode, Option<(usize, usize)>) -> R,
+    ) -> Option<R> {
         let mut field = self.take_remembered(dictation_id, generation)?;
-        let caret = field
-            .range
-            .as_ref()
-            .and_then(SelectionRange::as_offsets)
-            .map(|(location, _length)| location);
-        let answer = match caret.map(window) {
-            None => Err(AxQueryError::Unsupported),
-            Some((start, 0)) => Ok((Vec::new(), (start, 0))),
-            Some((start, length)) => field
-                .element
-                .text_in(start, length, timeout)
-                .map(|units| (units, (start, length))),
-        };
+        let range = field.range.as_ref().and_then(SelectionRange::as_offsets);
+        let answer = read(field.element.as_mut(), range);
         self.put_back(field);
         Some(answer)
     }

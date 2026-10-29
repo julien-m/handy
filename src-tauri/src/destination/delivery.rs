@@ -17,6 +17,7 @@ use super::presentation::{await_presentation, toast_needed, ReasonShown, PRESENT
 use super::recovery::{Delivery, FinalText, OutcomeRegistry, PresentationReceipt, RecoverySlot};
 use super::workspace::SystemClock;
 use crate::automatic_enter::transaction::EnterTransaction;
+use crate::smart_capitalization::PreparedText;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
 use tauri::{AppHandle, Emitter, Manager};
@@ -86,17 +87,23 @@ pub fn abandon(app: &AppHandle) {
 /// Insert `text` for `ticket` and publish its outcome, with the receipt of a recovery
 /// presentation when 010 took the reason; `None` only without a destination manager.
 /// The insertion settings are read once here and the same snapshot drives the activation route
-/// and the insertion method, so a concurrent settings change cannot split them.
+/// and the insertion method, so a concurrent settings change cannot split them. `prepared` is
+/// the final preparation's result (015, 017): its `text` for the paste methods, its text
+/// before spacing for 013's addressed terminal.
 pub async fn deliver(
     app: AppHandle,
     ticket: DictationTicket,
-    text: String,
+    prepared: PreparedText,
     history: HistoryRecord,
     cancelled: Box<dyn Fn() -> bool + Send + Sync>,
 ) -> Option<(InsertionOutcome, Option<PresentationReceipt>)> {
     let manager = super::app::manager(&app)?;
-    let settings = crate::settings::get_settings(&app);
-    let text = FinalText::of(text, &settings);
+    let settings = method_settings(
+        crate::settings::get_settings(&app),
+        prepared.trailing_decided,
+    );
+    let addressed = prepared.for_addressed_terminal().to_owned();
+    let text = FinalText::of(prepared.text, &settings);
     let request = InsertionRequest {
         dictation_id: ticket.dictation_id,
         destination_generation: ticket.destination_generation,
@@ -105,9 +112,10 @@ pub async fn deliver(
     };
     let enter = crate::automatic_enter::app::transaction(&app, &manager, ticket, &settings);
     let method = insertion_method(&app, &text.text, settings, Arc::clone(&enter));
-    // 013: a remembered terminal is typed through its tool instead of the configured method.
+    // 013: a remembered terminal is typed through its tool instead of the configured method,
+    // without any smart spacing adjustment (017 AC-015).
     let runner = Arc::clone(&manager.default_inputs().runner);
-    let method = super::default_input::dispatch::AddressedMethod::new(method, &text.text, runner);
+    let method = super::default_input::dispatch::AddressedMethod::new(method, &addressed, runner);
     let worker_manager = Arc::clone(&manager);
     let recovery = super::app::recovery_port(&app);
     let joined = tauri::async_runtime::spawn_blocking(move || {
@@ -174,19 +182,22 @@ pub async fn insert_final_text(
     case_decided: bool,
     cancelled: Box<dyn Fn() -> bool + Send + Sync>,
 ) {
-    // 015: final preparation of the text every insertion path receives (smart capitalization,
-    // then the future smart spacing), after the AI step and before activation.
-    let text = crate::smart_capitalization::app::prepare(app, ticket, text, case_decided).await;
+    // 015 and 017: final preparation of the text every insertion path receives (smart
+    // capitalization, then smart spacing), after the AI step and before activation.
+    let prepared = crate::smart_capitalization::app::prepare(app, ticket, text, case_decided).await;
     let Some(ticket) = ticket else {
+        // Without a session there is no 013 route: only the paste methods' text is used.
+        let (text, decided) = (prepared.text, prepared.trailing_decided);
         // Without a session, smart paste (007) inserts into the application in front itself.
         if let Some(settings) = crate::smart_paste::app::foreground_settings(app) {
+            let settings = method_settings(settings, decided);
             crate::smart_paste::app::insert_at_foreground(app, text, settings, cancelled).await;
             return end_indicator(app);
         }
-        return paste_as_before(app, text, cancelled);
+        return paste_as_before(app, text, decided, cancelled);
     };
     let started = std::time::Instant::now();
-    match deliver(app.clone(), ticket, text, history, cancelled).await {
+    match deliver(app.clone(), ticket, prepared, history, cancelled).await {
         Some((outcome, receipt)) => {
             let presentation = await_presentation(receipt).await;
             report_outcome(app, &outcome, started.elapsed(), presentation);
@@ -245,9 +256,28 @@ fn end_indicator(app: &AppHandle) {
     crate::utils::hide_recording_overlay(app);
     crate::tray::set_tray_state(app, crate::tray::TrayIconState::Idle);
 }
+// @spec AC-005: One trailing space, never two — .specs/features/017-smart-spacing/spec.md#ac-005
+/// The settings snapshot an insertion method uses: when smart spacing (017) already decided
+/// the end of the text (`decided`), the method's own `append_trailing_space` is off for this
+/// insertion, so the text never ends with two added spaces; otherwise unchanged.
+pub(crate) fn method_settings(
+    mut settings: crate::settings::AppSettings,
+    decided: bool,
+) -> crate::settings::AppSettings {
+    if decided {
+        settings.append_trailing_space = false;
+    }
+    settings
+}
 /// The insertion of `dev` before 006, unchanged: on the main thread, a cancellation check, the
 /// configured method with the settings read there, the `paste-error` toast, then the indicator.
-fn paste_as_before(app: &AppHandle, text: String, cancelled: Box<dyn Fn() -> bool + Send + Sync>) {
+/// With `decided` (017), the method adds no trailing space of its own.
+fn paste_as_before(
+    app: &AppHandle,
+    text: String,
+    decided: bool,
+    cancelled: Box<dyn Fn() -> bool + Send + Sync>,
+) {
     let handle = app.clone();
     let paste_time = std::time::Instant::now();
     let scheduled = app.run_on_main_thread(move || {
@@ -256,7 +286,10 @@ fn paste_as_before(app: &AppHandle, text: String, cancelled: Box<dyn Fn() -> boo
             return end_indicator(&handle);
         }
         // Gate open, the legacy emitters read only Automatic Enter (009 AC-004); identity closed.
-        let settings = crate::automatic_enter::legacy_view(crate::settings::get_settings(&handle));
+        let settings = crate::automatic_enter::legacy_view(method_settings(
+            crate::settings::get_settings(&handle),
+            decided,
+        ));
         match crate::utils::paste(text, handle.clone(), &settings, &|| Ok(())) {
             Ok(()) => log::debug!("Text pasted successfully in {:?}", paste_time.elapsed()),
             Err(error) => {

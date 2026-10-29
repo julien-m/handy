@@ -540,6 +540,11 @@
         "description": "Guarda el texto en una burbuja en lugar de pegarlo en ninguna parte."
       },
       "textFormatting": {
+        "smartSpacing": {
+          "label": "Espaciado inteligente",
+          "description": "Añade los espacios necesarios donde el dictado se une al texto alrededor del cursor y nunca duplica un espacio o salto de línea existente. Ningún espacio antes de , . ) ] ni después de ( [, ni en idiomas que se escriben sin espacios. Activado, decide el espacio tras el dictado: «Agregar espacio final» solo añade uno al final de un campo. Si el campo no se puede leer, solo se añade un espacio al final.",
+          "descriptionLimited": "Añade los espacios necesarios donde el dictado se une al texto alrededor del cursor y nunca duplica un espacio o salto de línea existente. Ningún espacio antes de , . ) ] ni después de ( [, ni en idiomas que se escriben sin espacios. Activado, decide el espacio tras el dictado: «Agregar espacio final» solo añade uno al final de un campo. Si el campo no se puede leer, solo se añade un espacio al final. En este sistema no se puede leer el texto alrededor del cursor, así que solo se añade un espacio después de cada dictado."
+        },
         "smartCapitalization": {
           "label": "Mayúsculas inteligentes",
           "description": "Adapta la primera letra de cada dictado al texto antes del cursor: mayúscula al empezar una frase, minúscula al continuarla. Se conservan las siglas, palabras como iPhone y tus palabras personalizadas. No cambia nada si no se puede leer el campo."

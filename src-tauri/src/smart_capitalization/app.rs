@@ -1,55 +1,87 @@
-//! Tauri glue of smart capitalization (feature 015): at the final preparation of an insertion,
-//! read the settings snapshot, read the destination context on a blocking worker (never on the
-//! async runtime or the main thread), and adapt the first letter. The context and the text never
-//! reach a log: only the decision kind and whether the text changed are logged.
-use super::reader::{context_from_units, read_frontmost, window_before, CaretPort, CONTEXT_BUDGET};
-use super::{decide, prepare_text, CaseInputs, CursorContext};
+//! Tauri glue of the insertion's final preparation (015 smart capitalization, 017 smart
+//! spacing): read the settings snapshot, read the destination context once on a blocking worker
+//! (never on the async runtime or the main thread), then run the steps. The context and the
+//! text never reach a log: only the decision and context kinds and flags are logged.
+use super::reader::{read_frontmost, read_remembered, CaretPort};
+use super::{decide, prepare_text, CaseInputs, InsertionContext, Preparation, PreparedText};
 use crate::destination::delivery::DictationTicket;
 use crate::destination::field_context::InsertionTarget;
 use crate::destination::manager::DestinationManager;
 use crate::destination::workspace::{Foreground, SystemClock, WorkspacePort};
 use crate::settings::AppSettings;
+use crate::smart_spacing::SpacingInputs;
 use std::sync::Arc;
 use tauri::AppHandle;
 
 // @spec FR-004: Final preparation on every insertion path — .specs/features/015-smart-capitalization/spec.md#fr-004
+// @spec FR-004: Same preparation step and read — .specs/features/017-smart-spacing/spec.md#fr-004
 /// `text` as it will be inserted for the dictation `ticket` (none without a 006 session):
-/// unchanged with the option off, for an AI-decided case or an empty text, and without any
-/// accessibility query in those cases.
+/// unchanged, without any accessibility query, when no step applies (both options off, or
+/// only capitalization on for an AI-decided case) or the text is empty.
 pub async fn prepare(
     app: &AppHandle,
     ticket: Option<DictationTicket>,
     text: String,
     case_decided: bool,
-) -> String {
+) -> PreparedText {
     let settings = crate::settings::get_settings(app);
-    if !settings.smart_capitalization || case_decided || text.is_empty() {
-        return text;
+    let capitalizes = settings.smart_capitalization && !case_decided;
+    if !(capitalizes || settings.smart_spacing) || text.is_empty() {
+        return PreparedText::unchanged(text);
     }
-    let context = read_on_worker(app, ticket).await;
+    let context = read_on_worker(app, ticket, settings.smart_spacing).await;
     let protected = protected_spellings(&settings);
-    let inputs = CaseInputs {
-        case_decided,
-        protected: &protected,
+    let steps = Preparation {
+        capitalization: capitalizes.then_some(CaseInputs {
+            case_decided,
+            protected: &protected,
+        }),
+        spacing: settings.smart_spacing.then_some(SpacingInputs {
+            space_at_field_end: settings.append_trailing_space,
+        }),
     };
-    let prepared = prepare_text(&text, &context, &inputs);
-    log::debug!(
-        "Smart capitalization: {:?}, first letter changed: {}",
-        decide(&context),
-        prepared != text
-    );
+    let prepared = prepare_text(&text, &context, &steps);
+    log_preparation(&context, &steps, &prepared, prepared.text != text);
     prepared
 }
 
+/// Log the steps that ran: kinds and flags only, never the field text or the transcript.
+fn log_preparation(
+    context: &InsertionContext,
+    steps: &Preparation<'_>,
+    prepared: &PreparedText,
+    text_changed: bool,
+) {
+    if steps.capitalization.is_some() {
+        log::debug!(
+            "Smart capitalization: {:?}, first letter changed: {}",
+            decide(context.before()),
+            prepared.case_changed
+        );
+    }
+    if steps.spacing.is_some() {
+        log::debug!(
+            "Smart spacing: {:?}, text changed: {text_changed}, trailing space decided: {}",
+            context,
+            prepared.trailing_decided
+        );
+    }
+}
+
 /// The dictation's context, read on a blocking worker (accessibility calls block up to the
-/// budget); a failed worker is Absent.
-async fn read_on_worker(app: &AppHandle, ticket: Option<DictationTicket>) -> CursorContext {
+/// budget); a failed worker is Unavailable.
+async fn read_on_worker(
+    app: &AppHandle,
+    ticket: Option<DictationTicket>,
+    with_after: bool,
+) -> InsertionContext {
     let manager = crate::destination::app::manager(app);
-    match tauri::async_runtime::spawn_blocking(move || read_context(manager, ticket)).await {
+    let read = move || read_context(manager, ticket, with_after);
+    match tauri::async_runtime::spawn_blocking(read).await {
         Ok(context) => context,
         Err(error) => {
-            log::warn!("Smart capitalization context read failed ({error}); text unchanged");
-            CursorContext::Absent
+            log::warn!("Insertion context read failed ({error}); no context used");
+            InsertionContext::Unavailable
         }
     }
 }
@@ -65,39 +97,48 @@ fn protected_spellings(settings: &AppSettings) -> Vec<String> {
 }
 
 // @spec AC-007: Context source — .specs/features/015-smart-capitalization/spec.md#ac-007
-/// The context of the dictation: 011's remembered caret when there is one; otherwise the
-/// frontmost application's focused element when the text goes there; otherwise Absent.
+/// The context of the dictation: 011's remembered input at its remembered selection when there
+/// is one; otherwise the frontmost application's focused element when the text goes there;
+/// otherwise Unavailable. The side after the selection is read only `with_after`.
 fn read_context(
     manager: Option<Arc<DestinationManager>>,
     ticket: Option<DictationTicket>,
-) -> CursorContext {
+    with_after: bool,
+) -> InsertionContext {
     let workspace = manager
         .as_ref()
         .map_or_else(crate::destination::native_workspace, |manager| {
             manager.workspace()
         });
     let (Some(manager), Some(ticket)) = (manager, ticket) else {
-        return read_front(workspace.as_ref(), None);
+        return read_front(workspace.as_ref(), None, with_after);
     };
     let key = (ticket.dictation_id, ticket.destination_generation);
-    if let Some(answer) = manager.read_remembered_before_caret(key, window_before, CONTEXT_BUDGET) {
-        return answer.map_or(CursorContext::Absent, |(units, window)| {
-            context_from_units(&units, window)
-        });
+    let remembered = manager.with_remembered_input(key, |node, range| {
+        read_remembered(node, range, &SystemClock, with_after)
+    });
+    if let Some(context) = remembered {
+        return context;
     }
     match manager.insertion_target(key.0, key.1) {
-        InsertionTarget::Stale => CursorContext::Absent,
-        InsertionTarget::Frontmost => read_front(workspace.as_ref(), None),
-        InsertionTarget::Application { pid } => read_front(workspace.as_ref(), Some(pid)),
+        InsertionTarget::Stale => InsertionContext::Unavailable,
+        InsertionTarget::Frontmost => read_front(workspace.as_ref(), None, with_after),
+        InsertionTarget::Application { pid } => {
+            read_front(workspace.as_ref(), Some(pid), with_after)
+        }
     }
 }
 
 /// The frontmost application's context, when it is the expected destination `expected` (any
-/// application when `None`); Handy itself or an unreadable foreground is Absent.
-fn read_front(workspace: &dyn WorkspacePort, expected: Option<u32>) -> CursorContext {
+/// application when `None`); Handy itself or an unreadable foreground is Unavailable.
+fn read_front(
+    workspace: &dyn WorkspacePort,
+    expected: Option<u32>,
+    with_after: bool,
+) -> InsertionContext {
     match readable_front(&workspace.frontmost_now(), expected) {
-        Some(pid) => read_frontmost(native_caret_port().as_mut(), pid, &SystemClock),
-        None => CursorContext::Absent,
+        Some(pid) => read_frontmost(native_caret_port().as_mut(), pid, &SystemClock, with_after),
+        None => InsertionContext::Unavailable,
     }
 }
 

@@ -122,6 +122,7 @@
             "mute_while_recording",
             "append_trailing_space",
             "smart_capitalization",
+            "smart_spacing",
             "destination_favorites",
             "destination_default_inputs",
             "return_to_dictation_app",
@@ -203,6 +204,7 @@
                   "mute_while_recording",
                   "append_trailing_space",
                   "smart_capitalization",
+                  "smart_spacing",
                   "destination_favorites",
                   "destination_default_inputs",
                   "return_to_dictation_app",
@@ -1108,6 +1110,9 @@
           "minimum": 0,
           "type": "integer"
         },
+        "smart_spacing": {
+          "type": "boolean"
+        },
         "sound_theme": {
           "enum": [
             "marimba",
@@ -1228,6 +1233,7 @@
         "mute_while_recording",
         "append_trailing_space",
         "smart_capitalization",
+        "smart_spacing",
         "destination_favorites",
         "destination_default_inputs",
         "return_to_dictation_app",
@@ -1877,6 +1883,17 @@
     {
       "allowed_values": [],
       "key": "smart_capitalization",
+      "nullable": false,
+      "owner_domain": "output",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [],
+      "key": "smart_spacing",
       "nullable": false,
       "owner_domain": "output",
       "range": null,

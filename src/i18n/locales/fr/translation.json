@@ -540,6 +540,11 @@
         "description": "Garde le texte dans une bulle au lieu de le coller dans le vide."
       },
       "textFormatting": {
+        "smartSpacing": {
+          "label": "Espacement intelligent",
+          "description": "Ajoute les espaces nécessaires là où la dictée rejoint le texte autour du curseur, sans jamais doubler une espace ou un retour à la ligne déjà présents. Aucune espace avant , . ) ] ni après ( [, ni dans les langues écrites sans espaces. Activé, il décide de l'espace après la dictée : « Ajouter une espace final » n'en ajoute alors qu'en fin de champ. Si le champ ne peut pas être lu, seule une espace finale est ajoutée.",
+          "descriptionLimited": "Ajoute les espaces nécessaires là où la dictée rejoint le texte autour du curseur, sans jamais doubler une espace ou un retour à la ligne déjà présents. Aucune espace avant , . ) ] ni après ( [, ni dans les langues écrites sans espaces. Activé, il décide de l'espace après la dictée : « Ajouter une espace final » n'en ajoute alors qu'en fin de champ. Si le champ ne peut pas être lu, seule une espace finale est ajoutée. Sur ce système, le texte autour du curseur ne peut pas être lu : seule une espace est ajoutée après chaque dictée."
+        },
         "smartCapitalization": {
           "label": "Majuscules intelligentes",
           "description": "Adapte la première lettre de chaque dictée au texte avant le curseur : majuscule en début de phrase, minuscule quand vous la continuez. Les sigles, les mots comme iPhone et vos mots personnalisés sont conservés. Rien ne change si le champ ne peut pas être lu."

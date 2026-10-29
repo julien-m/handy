@@ -540,6 +540,11 @@
         "description": "Behält den Text in einer Blase, statt ihn ins Leere einzufügen."
       },
       "textFormatting": {
+        "smartSpacing": {
+          "label": "Intelligente Leerzeichen",
+          "description": "Fügt die nötigen Leerzeichen dort ein, wo das Diktat auf den Text um den Cursor trifft, und verdoppelt nie vorhandene Leerzeichen oder Zeilenumbrüche. Kein Leerzeichen vor , . ) ] oder nach ( [ und keines in Sprachen ohne Leerzeichen. Wenn aktiv, entscheidet es über das Leerzeichen nach dem Diktat: „Leerzeichen anhängen“ fügt dann nur am Ende eines Feldes eines hinzu. Kann das Feld nicht gelesen werden, wird nur ein Leerzeichen am Ende angefügt.",
+          "descriptionLimited": "Fügt die nötigen Leerzeichen dort ein, wo das Diktat auf den Text um den Cursor trifft, und verdoppelt nie vorhandene Leerzeichen oder Zeilenumbrüche. Kein Leerzeichen vor , . ) ] oder nach ( [ und keines in Sprachen ohne Leerzeichen. Wenn aktiv, entscheidet es über das Leerzeichen nach dem Diktat: „Leerzeichen anhängen“ fügt dann nur am Ende eines Feldes eines hinzu. Kann das Feld nicht gelesen werden, wird nur ein Leerzeichen am Ende angefügt. Auf diesem System kann der Text um den Cursor nicht gelesen werden, daher wird nach jedem Diktat nur ein Leerzeichen angefügt."
+        },
         "smartCapitalization": {
           "label": "Intelligente Großschreibung",
           "description": "Passt den ersten Buchstaben jedes Diktats an den Text vor dem Cursor an: groß am Satzanfang, klein, wenn Sie einen Satz fortsetzen. Abkürzungen, Wörter wie iPhone und Ihre eigenen Wörter bleiben erhalten. Kann das Feld nicht gelesen werden, ändert sich nichts."

@@ -1,6 +1,7 @@
-//! Context source of smart capitalization (015, spec AC-007) on 006's real manager with 011's
-//! remembered input: the text before the remembered caret is read once, bounded, from that
-//! element; without a remembered input nothing is read from it; a stale dictation is Stale.
+//! Context source of smart capitalization (015, spec AC-007) and smart spacing (017, spec
+//! AC-009) on 006's real manager with 011's remembered input: the text around the remembered
+//! selection is read once, bounded, from that element; without a remembered input nothing is
+//! read from it; a stale dictation is Stale.
 #[path = "pin_enter/support.rs"]
 mod destination;
 #[path = "destination_field/fake.rs"]
@@ -8,23 +9,32 @@ mod fake;
 #[path = "destination_field/rig.rs"]
 mod rig;
 
-use handy_app_lib::destination::field_context::{InsertionTarget, RememberedText};
+use handy_app_lib::destination::field_context::InsertionTarget;
 use handy_app_lib::destination::snapshot::{DestinationSnapshot, MenuChoice};
-use handy_app_lib::smart_capitalization::reader::{
-    context_from_units, window_before, CONTEXT_BUDGET,
+use handy_app_lib::destination::workspace::SystemClock;
+use handy_app_lib::smart_capitalization::reader::read_remembered;
+use handy_app_lib::smart_capitalization::{
+    decide, AfterContext, CaseDecision, CursorContext, InsertionContext,
 };
-use handy_app_lib::smart_capitalization::{decide, CaseDecision, CursorContext};
 use rig::{FieldRig, CARET, INPUT};
 
 type TestResult = Result<(), Box<dyn std::error::Error>>;
 
-/// The remembered-caret read of `started`.
-fn read(field: &FieldRig, started: &DestinationSnapshot) -> Option<RememberedText> {
+/// The remembered-selection read of `started`, with the side after it `with_after`.
+fn read_around(
+    field: &FieldRig,
+    started: &DestinationSnapshot,
+    with_after: bool,
+) -> Option<InsertionContext> {
     let key = (started.dictation_id, started.destination_generation);
-    field
-        .rig
-        .manager
-        .read_remembered_before_caret(key, window_before, CONTEXT_BUDGET)
+    field.rig.manager.with_remembered_input(key, |node, range| {
+        read_remembered(node, range, &SystemClock, with_after)
+    })
+}
+
+/// The remembered-caret read of `started` for smart capitalization alone (015).
+fn read(field: &FieldRig, started: &DestinationSnapshot) -> Option<InsertionContext> {
+    read_around(field, started, false)
 }
 
 /// Whether 011's input of `started` still comes out of the insertion freeze.
@@ -69,30 +79,53 @@ fn remembered_caret_is_used() -> TestResult {
     // CARET is 12: the twelve units before it end with a comma.
     field.world.text(INPUT, "Hello world, here we go");
     let started = field.start(true);
-    let answer = read(&field, &started).ok_or("a remembered input")?;
-    let (units, window) = answer.map_err(|error| format!("{error:?}"))?;
-    assert_eq!(window, (0, CARET.0));
-    let context = context_from_units(&units, window);
-    assert_eq!(
-        context,
-        CursorContext::Before {
-            text: "Hello world,".to_owned(),
-            reaches_start: true,
-        }
-    );
-    assert_eq!(decide(&context), CaseDecision::Lower);
+    let context = read(&field, &started).ok_or("a remembered input")?;
+    let expected = CursorContext::Before {
+        text: "Hello world,".to_owned(),
+        reaches_start: true,
+    };
+    assert_eq!(context.before(), &expected);
+    assert_eq!(CARET.0, "Hello world,".encode_utf16().count());
+    assert_eq!(decide(context.before()), CaseDecision::Lower);
     assert_eq!(field.calls("text_in"), 1);
+    assert_eq!(field.calls("character_count"), 0, "smart spacing off");
     // The input was read outside the lock and put back: 011 still returns to it.
     assert!(kept(&field, &started)?);
     Ok(())
 }
 
+// @spec AC-009: Bounded read after the selection — .specs/features/017-smart-spacing/spec.md#ac-009
 #[test]
-fn an_element_without_a_bounded_read_is_an_error() -> TestResult {
+fn remembered_selection_is_read_on_both_sides_for_smart_spacing() -> TestResult {
+    let field = FieldRig::comet();
+    field.world.text(INPUT, "Hello world,here we go");
+    let started = field.start(true);
+    let context = read_around(&field, &started, true).ok_or("a remembered input")?;
+    assert_eq!(
+        context,
+        InsertionContext::Field {
+            before: CursorContext::Before {
+                text: "Hello world,".to_owned(),
+                reaches_start: true,
+            },
+            after: AfterContext::After {
+                text: "here we go".to_owned(),
+                reaches_end: true,
+            },
+        }
+    );
+    assert_eq!(field.calls("text_in"), 2);
+    assert_eq!(field.calls("character_count"), 1);
+    assert!(kept(&field, &started)?);
+    Ok(())
+}
+
+#[test]
+fn an_element_without_a_bounded_read_is_unavailable() -> TestResult {
     let field = FieldRig::comet();
     let started = field.start(true);
-    let answer = read(&field, &started).ok_or("a remembered input")?;
-    assert!(answer.is_err(), "the caller treats it as Absent");
+    let context = read_around(&field, &started, true).ok_or("a remembered input")?;
+    assert_eq!(context, InsertionContext::Unavailable);
     Ok(())
 }
 

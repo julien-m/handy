@@ -540,6 +540,11 @@
         "description": "Ponechá text v bublině místo vložení do prázdna."
       },
       "textFormatting": {
+        "smartSpacing": {
+          "label": "Chytré mezery",
+          "description": "Přidá potřebné mezery tam, kde se diktát stýká s textem kolem kurzoru, a nikdy nezdvojí existující mezery ani zalomení řádků. Žádná mezera před , . ) ] ani za ( [, ani v jazycích psaných bez mezer. Když je zapnuto, rozhoduje o mezeře za diktátem: „Přidat koncovou mezeru“ pak přidá mezeru jen na konci pole. Pokud pole nelze přečíst, přidá se jen jedna mezera na konec.",
+          "descriptionLimited": "Přidá potřebné mezery tam, kde se diktát stýká s textem kolem kurzoru, a nikdy nezdvojí existující mezery ani zalomení řádků. Žádná mezera před , . ) ] ani za ( [, ani v jazycích psaných bez mezer. Když je zapnuto, rozhoduje o mezeře za diktátem: „Přidat koncovou mezeru“ pak přidá mezeru jen na konci pole. Pokud pole nelze přečíst, přidá se jen jedna mezera na konec. V tomto systému nelze přečíst text kolem kurzoru, proto se za každý diktát přidá jen jedna mezera."
+        },
         "smartCapitalization": {
           "label": "Chytrá velká písmena",
           "description": "Přizpůsobí první písmeno každého diktátu textu před kurzorem: velké na začátku věty, malé při jejím pokračování. Zkratky, slova jako iPhone a vaše vlastní slova zůstávají beze změny. Pokud pole nelze přečíst, nic se nezmění."

@@ -232,6 +232,9 @@ const settingUpdaters: {
   // 015: read by the next insertion.
   smart_capitalization: (value) =>
     commands.changeSmartCapitalizationSetting(value as boolean),
+  // 017: read by the next insertion.
+  smart_spacing: (value) =>
+    commands.changeSmartSpacingSetting(value as boolean),
   // 006: refused with the typed reason `unsupported_platform` on a build without the destination
   // capability; the refusal is shown and the optimistic value rolled back like any other.
   return_to_dictation_app: (value) =>

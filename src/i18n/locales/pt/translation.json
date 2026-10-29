@@ -540,6 +540,11 @@
         "description": "Mantém o texto em uma bolha em vez de colá-lo no vazio."
       },
       "textFormatting": {
+        "smartSpacing": {
+          "label": "Espaçamento inteligente",
+          "description": "Adiciona os espaços necessários onde o ditado encontra o texto ao redor do cursor, sem nunca duplicar espaços ou quebras de linha já presentes. Nenhum espaço antes de , . ) ] ou depois de ( [, nem em idiomas escritos sem espaços. Ativado, decide o espaço após o ditado: \"Adicionar Espaço Final\" só acrescenta um no fim de um campo. Se o campo não puder ser lido, apenas um espaço final é adicionado.",
+          "descriptionLimited": "Adiciona os espaços necessários onde o ditado encontra o texto ao redor do cursor, sem nunca duplicar espaços ou quebras de linha já presentes. Nenhum espaço antes de , . ) ] ou depois de ( [, nem em idiomas escritos sem espaços. Ativado, decide o espaço após o ditado: \"Adicionar Espaço Final\" só acrescenta um no fim de um campo. Se o campo não puder ser lido, apenas um espaço final é adicionado. Neste sistema o texto ao redor do cursor não pode ser lido, então apenas um espaço é adicionado após cada ditado."
+        },
         "smartCapitalization": {
           "label": "Maiúsculas inteligentes",
           "description": "Adapta a primeira letra de cada ditado ao texto antes do cursor: maiúscula no início de uma frase, minúscula ao continuá-la. Siglas, palavras como iPhone e suas palavras personalizadas são mantidas. Nada muda se o campo não puder ser lido."

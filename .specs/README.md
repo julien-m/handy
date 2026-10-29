@@ -50,6 +50,7 @@
 | 014 | Keys During a Dictation | In Progress | 2026-10-29 | 2026-10-29 | [spec](features/014-in-dictation-keys/spec.md) |
 | 016 | Smart Paragraphs | In Progress | 2026-10-29 | 2026-10-29 | [spec](features/016-smart-paragraphs/spec.md) |
 | 015 | Smart Capitalization | In Progress | 2026-10-29 | 2026-10-29 | [spec](features/015-smart-capitalization/spec.md) |
+| 017 | Smart Spacing | In Progress | 2026-10-29 | 2026-10-29 | [spec](features/017-smart-spacing/spec.md) |
 <!-- readme:features:end -->
 
 
@@ -74,6 +75,7 @@
 <!-- readme:activity:start -->
 | Date | Type | Description |
 |---|---|---|
+| 2026-10-29 | Feature | [Feature 017] Smart spacing: spaces at the two edges of a dictation fitted to the text before and after the selection (bounded read extended from 015), punctuation and unspaced scripts respected, one final space without context, subsumes the trailing space option; on for new installs, off on upgrade (automated evidence; native proof pending) |
 | 2026-10-29 | Feature | [Feature 013] Default input per app: remember a field (accessibility fingerprint) or a cmux terminal from the badge menu; when the destination's active element is not a text field, Handy focuses the unique matching field or types through `cmux send`, else the recovery bubble (automated evidence; native proof pending) |
 | 2026-10-29 | Feature | [Feature 014] Keys during a dictation: Option left pressed alone sends the dictation in progress to the app in front at the end without unpinning (press again to undo), Control left pressed alone inserts it without the automatic Enter (`Suppressed(UserSkipped)`, indicator mark); one modifier key each, configurable in the shortcut settings and the CLI, observed only during a dictation (automated evidence; native proof pending) |
 | 2026-10-29 | Feature | [Feature 016] Smart paragraphs: long dictations split at sentence boundaries (45 words or 4 substantial sentences, blank line), local, off by default, NaturalLanguage on macOS and UAX #29 elsewhere; lists, code and line breaks kept (automated evidence; native proof pending) |

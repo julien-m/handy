@@ -214,6 +214,44 @@ fn a_terminal_is_typed_through_the_tool_instead_of_the_method() -> TestResult {
     Ok(())
 }
 
+// @spec AC-015: Addressed terminal unspaced — .specs/features/017-smart-spacing/spec.md#ac-015
+#[cfg(unix)]
+#[test]
+fn a_terminal_gets_no_smart_spacing_even_without_context() -> TestResult {
+    use crate::smart_capitalization::{prepare_text, InsertionContext, Preparation};
+    use crate::smart_spacing::SpacingInputs;
+    let tree = FakeTree::new(PID, vec![element("AXWindow", None, vec![])]);
+    tree.lock().focused = Some(0);
+    let runner = Arc::new(FakeRunner::with_workspace("roam-radar", "terminal"));
+    let (services, _bundle) = terminal_services(&tree, Arc::clone(&runner))?;
+    // Smart spacing on, the terminal in the background: the context is unavailable, so the
+    // paste text gets the fallback space; the addressed terminal must not.
+    let spacing = Preparation {
+        capitalization: None,
+        spacing: Some(SpacingInputs {
+            space_at_field_end: true,
+        }),
+    };
+    let prepared = prepare_text("ls -la", &InsertionContext::Unavailable, &spacing);
+    assert_eq!(prepared.text, "ls -la ");
+    let inner = Arc::new(Method::default());
+    let wrapper = AddressedMethod::new(
+        Box::new(Shared(Arc::clone(&inner))),
+        prepared.for_addressed_terminal(),
+        runner.clone(),
+    );
+    let report = dictate(&tree, services, &wrapper);
+    assert!(report.addressed);
+    let sends: Vec<_> = runner
+        .calls()
+        .into_iter()
+        .filter(|arguments| arguments.first().map(String::as_str) == Some("send"))
+        .collect();
+    assert_eq!(sends.len(), 1);
+    assert_eq!(sends[0].last().map(String::as_str), Some("ls -la"));
+    Ok(())
+}
+
 #[cfg(unix)]
 #[test]
 fn a_gone_terminal_types_nothing_and_names_its_reason() -> TestResult {

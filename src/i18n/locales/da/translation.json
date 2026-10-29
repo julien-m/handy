@@ -540,6 +540,11 @@
         "description": "Beholder teksten i en boble i stedet for at indsætte den i ingenting."
       },
       "textFormatting": {
+        "smartSpacing": {
+          "label": "Smart mellemrum",
+          "description": "Tilføjer de nødvendige mellemrum, hvor dikteringen møder teksten omkring markøren, og fordobler aldrig eksisterende mellemrum eller linjeskift. Intet mellemrum før , . ) ] eller efter ( [, og intet i sprog skrevet uden mellemrum. Når det er slået til, bestemmer det mellemrummet efter dikteringen: \"Tilføj efterfølgende mellemrum\" tilføjer så kun et i slutningen af et felt. Hvis feltet ikke kan læses, tilføjes kun ét mellemrum til sidst.",
+          "descriptionLimited": "Tilføjer de nødvendige mellemrum, hvor dikteringen møder teksten omkring markøren, og fordobler aldrig eksisterende mellemrum eller linjeskift. Intet mellemrum før , . ) ] eller efter ( [, og intet i sprog skrevet uden mellemrum. Når det er slået til, bestemmer det mellemrummet efter dikteringen: \"Tilføj efterfølgende mellemrum\" tilføjer så kun et i slutningen af et felt. Hvis feltet ikke kan læses, tilføjes kun ét mellemrum til sidst. På dette system kan teksten omkring markøren ikke læses, så der tilføjes kun ét mellemrum efter hver diktering."
+        },
         "smartCapitalization": {
           "label": "Smart brug af store bogstaver",
           "description": "Tilpasser det første bogstav i hver diktering til teksten før markøren: stort i starten af en sætning, lille når du fortsætter en. Forkortelser, ord som iPhone og dine egne ord bevares. Intet ændres, hvis feltet ikke kan læses."

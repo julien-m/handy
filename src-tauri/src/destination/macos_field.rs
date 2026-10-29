@@ -232,6 +232,9 @@ impl FieldNode for MacFieldNode {
             timeout,
         )
     }
+    fn character_count(&mut self, timeout: Duration) -> Result<usize, AxQueryError> {
+        crate::smart_capitalization::macos::character_count(self.element(), timeout)
+    }
 }
 
 #[cfg(test)]

@@ -540,6 +540,11 @@
         "description": "Giữ văn bản trong bong bóng thay vì dán vào chỗ trống."
       },
       "textFormatting": {
+        "smartSpacing": {
+          "label": "Khoảng cách thông minh",
+          "description": "Thêm các dấu cách cần thiết nơi nội dung đọc gặp văn bản quanh con trỏ, và không bao giờ nhân đôi dấu cách hay dòng mới đã có. Không thêm dấu cách trước , . ) ] hoặc sau ( [, cũng như trong các ngôn ngữ viết không có dấu cách. Khi bật, tính năng này quyết định dấu cách sau nội dung đọc: khi đó \"Thêm dấu cách cuối\" chỉ thêm ở cuối một trường. Nếu không đọc được trường, chỉ thêm một dấu cách ở cuối.",
+          "descriptionLimited": "Thêm các dấu cách cần thiết nơi nội dung đọc gặp văn bản quanh con trỏ, và không bao giờ nhân đôi dấu cách hay dòng mới đã có. Không thêm dấu cách trước , . ) ] hoặc sau ( [, cũng như trong các ngôn ngữ viết không có dấu cách. Khi bật, tính năng này quyết định dấu cách sau nội dung đọc: khi đó \"Thêm dấu cách cuối\" chỉ thêm ở cuối một trường. Nếu không đọc được trường, chỉ thêm một dấu cách ở cuối. Trên hệ thống này không thể đọc văn bản quanh con trỏ, nên chỉ thêm một dấu cách sau mỗi lần đọc."
+        },
         "smartCapitalization": {
           "label": "Viết hoa thông minh",
           "description": "Điều chỉnh chữ cái đầu tiên của mỗi lần đọc chính tả theo văn bản trước con trỏ: viết hoa ở đầu câu, viết thường khi bạn viết tiếp câu. Từ viết tắt, những từ như iPhone và từ tùy chỉnh của bạn được giữ nguyên. Không có gì thay đổi nếu không đọc được trường."

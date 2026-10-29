@@ -1,0 +1,49 @@
+{
+  "command": "livespec conventions verify --feature repo --json",
+  "exit_code": 0,
+  "verdict": "PASS",
+  "run_id": "20261029T185842Z",
+  "receipt_path": ".specs/conventions/runs/20261029T185842Z/receipt.json",
+  "feature_slug": "repo",
+  "blockers": 0,
+  "error_violations": 0,
+  "warning_violations": 922,
+  "baseline": {
+    "baselined_count": 4032,
+    "new_count": 0,
+    "resolved_count": 150,
+    "sha256": "8d6d4f804d67ec63ab419f4b66ce252489337562511896c1cec7e2cfe90899fe"
+  },
+  "warnings_in_017_files": [
+    {
+      "rule_id": "builtin.max_file_lines",
+      "path": "src-tauri/src/destination/delivery.rs",
+      "line": 1,
+      "message": "434 lines > 400"
+    },
+    {
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/destination/delivery.rs",
+      "line": 93,
+      "message": "deliver has 38 lines > 30"
+    },
+    {
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/destination/delivery.rs",
+      "line": 179,
+      "message": "insert_final_text has 36 lines > 30"
+    },
+    {
+      "rule_id": "builtin.max_function_lines",
+      "path": "src-tauri/src/destination/delivery.rs",
+      "line": 275,
+      "message": "paste_as_before has 32 lines > 30"
+    },
+    {
+      "rule_id": "builtin.max_file_lines",
+      "path": "src-tauri/src/smart_capitalization/reader_tests.rs",
+      "line": 1,
+      "message": "414 lines > 400"
+    }
+  ]
+}

@@ -80,6 +80,8 @@ fn boolean_cases() -> Vec<(&'static str, &'static str, serde_json::Value)> {
         "append_trailing_space",
         // 015: smart capitalization.
         "smart_capitalization",
+        // 017: smart spacing.
+        "smart_spacing",
         "return_to_dictation_app",
         "experimental_enabled",
         "lazy_stream_close",
@@ -167,7 +169,7 @@ fn string_cases() -> Vec<(&'static str, &'static str, serde_json::Value)> {
     .collect()
 }
 #[test]
-fn all_55_scalar_ports_accept_the_same_typed_values() -> Result<(), Box<dyn std::error::Error>> {
+fn all_56_scalar_ports_accept_the_same_typed_values() -> Result<(), Box<dyn std::error::Error>> {
     // Every capability, so a platform-bound key is accepted on every build of this test.
     let context = ValidationContext {
         prompt_ids: &["known"],
@@ -180,7 +182,7 @@ fn all_55_scalar_ports_accept_the_same_typed_values() -> Result<(), Box<dyn std:
     let cases = canonical_cases();
     assert_eq!(
         cases.len(),
-        55 + usize::from(cfg!(feature = "destination-return"))
+        56 + usize::from(cfg!(feature = "destination-return"))
     );
     for (key, raw, value) in cases {
         let cli = validate_cli(key, raw, &context)?;

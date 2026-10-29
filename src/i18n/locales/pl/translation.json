@@ -540,6 +540,11 @@
         "description": "Zachowuje tekst w dymku zamiast wklejać go w próżnię."
       },
       "textFormatting": {
+        "smartSpacing": {
+          "label": "Inteligentne odstępy",
+          "description": "Dodaje potrzebne spacje tam, gdzie dyktowany tekst styka się z tekstem wokół kursora, i nigdy nie podwaja istniejących spacji ani podziałów wierszy. Bez spacji przed , . ) ] ani po ( [, ani w językach pisanych bez spacji. Gdy włączone, decyduje o spacji po dyktowanym tekście: „Dodaj spację na końcu” dodaje ją wtedy tylko na końcu pola. Gdy pola nie da się odczytać, dodawana jest tylko jedna spacja na końcu.",
+          "descriptionLimited": "Dodaje potrzebne spacje tam, gdzie dyktowany tekst styka się z tekstem wokół kursora, i nigdy nie podwaja istniejących spacji ani podziałów wierszy. Bez spacji przed , . ) ] ani po ( [, ani w językach pisanych bez spacji. Gdy włączone, decyduje o spacji po dyktowanym tekście: „Dodaj spację na końcu” dodaje ją wtedy tylko na końcu pola. Gdy pola nie da się odczytać, dodawana jest tylko jedna spacja na końcu. W tym systemie nie można odczytać tekstu wokół kursora, więc po każdym dyktowaniu dodawana jest tylko jedna spacja."
+        },
         "smartCapitalization": {
           "label": "Inteligentne wielkie litery",
           "description": "Dopasowuje pierwszą literę każdego dyktowania do tekstu przed kursorem: wielka na początku zdania, mała przy jego kontynuacji. Skróty, słowa takie jak iPhone i Twoje własne słowa pozostają bez zmian. Jeśli pola nie da się odczytać, nic się nie zmienia."
