@@ -206,6 +206,19 @@ fn an_accepted_drop_wins_over_escape_and_escape_alone_dismisses() {
         }
     }
 }
+// @spec AC-004: Escape drops the slide back at once — .specs/features/010-recovery-bubble/spec.md#ac-004
+#[test]
+fn the_drag_image_slides_back_only_when_the_bubble_comes_back() {
+    for escape in [false, true] {
+        // A session that slides back ends with nothing dropped.
+        let comes_back = DragResult::of_session(false, escape) == DragResult::Released;
+        assert_eq!(
+            crate::recovery::types::drag_image_slides_back(escape),
+            comes_back,
+            "Escape {escape}"
+        );
+    }
+}
 #[test]
 fn escape_during_a_drag_closes_the_bubble_like_close_and_ignores_late_ends() -> TestResult {
     let manager = manager();

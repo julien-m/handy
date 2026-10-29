@@ -282,3 +282,14 @@
 - Julien: when dragging the bubble, Escape must cancel the action and the bubble must go away. macOS already cancels the drop on Escape (nothing inserted); Handy now tells Escape from a release without a target by watching Escape for the session only (global and local key-down monitors, plus the event ending the session), removed at the end of every session. Escape closes the bubble through Close's retirement (history untouched) with the log `Recovery bubble N: drag cancelled by Escape, dismissed`; a release without Escape keeps the bubble for another attempt; an accepted drop stays `drop accepted`.
 - Native proof pending with Julien: checklist item "Échap pendant un glisser ferme la bulle (N25)" in `.specs/native-proofs-checklist.md`.
 
+## 2026-10-29 — [Spec Update + Bugfix]: Escape closes the bubble without slide back or flash (native session N26)
+
+- **Type:** Spec Update + Bugfix
+- **Spec modified:** Yes (AC-004 criterion, Story 3 Escape scenario, Clarifications decision N26)
+- **Code modified:** `src-tauri/src/recovery/types.rs`, `src-tauri/src/recovery/platform/{mod.rs,macos_drag.rs,macos_escape.rs,panel_steps.rs}` (`macos_drag::watch_session` sets up the slide back and the watch), tests `src-tauri/src/recovery/manager_tests.rs`, `src-tauri/src/recovery/platform/panel_steps_tests.rs`
+- **AC impacted:** AC-004, FR-003
+- **Review:** this normative edit invalidates the semantic spec review cache (already stale since N24); refresh the independent spec review before the next readiness gate.
+- **Author:** Claude Code (spec-fix, claude-opus-5-5), branch `fix/n26-escape-no-flash` from `dev` `8127a54f`
+- Julien: Escape removes the bubble, but the bubble is seen going back to its origin and the small dialog shows again then disappears. Two causes: the session always asked AppKit to slide the drag image back on a cancellation (`setAnimatesToStartingPositionsOnCancelOrFail(true)`), and hiding made the panel opaque (`set_dragging(false)`, alpha 1) before ordering it out. The Escape monitors now turn the slide back off on the session as soon as they see Escape; hiding orders the panel out first and only then makes it opaque for the next bubble (`HIDE_STEPS`). A release without Escape keeps the slide back and the bubble's return.
+- Limit: an Escape seen only in the event that ends the session (consumed by the drag's tracking loop) arrives after the slide back; the bubble no longer flashes on that path but the slide back stays. The native proof records which path was seen.
+- Native proof pending with Julien: checklist item "Échap sans retour animé ni flash de la bulle (N26)" in `.specs/native-proofs-checklist.md`.

@@ -7,7 +7,7 @@
 use super::macos::set_dragging;
 use super::macos_escape::EscapeWatch;
 use super::DragEnded;
-use crate::recovery::types::{BubbleId, DragResult};
+use crate::recovery::types::{drag_image_slides_back, BubbleId, DragResult};
 use objc2::rc::Retained;
 use objc2::runtime::{NSObjectProtocol, ProtocolObject};
 use objc2::{define_class, msg_send, AnyThread, DefinedClass, MainThreadMarker, MainThreadOnly};
@@ -117,12 +117,19 @@ pub(super) fn begin(
         &event,
         ProtocolObject::from_ref(&*source),
     );
-    session.setAnimatesToStartingPositionsOnCancelOrFail(true);
-    // @spec AC-004: Escape during the drag is watched — .specs/features/010-recovery-bubble/spec.md#ac-004
-    source.ivars().escape.replace(Some(EscapeWatch::start(mtm)));
+    watch_session(mtm, &source, &session);
     ACTIVE_SOURCE.with(|active| active.replace(Some(source)));
     set_dragging(window, true);
     Ok(())
+}
+
+// @spec AC-004: Escape during the drag is watched — .specs/features/010-recovery-bubble/spec.md#ac-004
+/// Slide the image back on a release outside any target, and watch Escape for `session`: the
+/// watch turns the slide back off as soon as it sees Escape (N26).
+fn watch_session(mtm: MainThreadMarker, source: &RecoveryDragSource, session: &NSDraggingSession) {
+    session.setAnimatesToStartingPositionsOnCancelOrFail(drag_image_slides_back(false));
+    let watch = EscapeWatch::start(mtm, session);
+    source.ivars().escape.replace(Some(watch));
 }
 
 /// The left-button press or drag the session starts from (AppKit's current event).

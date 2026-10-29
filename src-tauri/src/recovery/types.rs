@@ -123,6 +123,16 @@ impl DragResult {
     }
 }
 
+/// Whether the drag image slides back to the bubble when the session ends with no drop: only a
+/// release outside any target (the bubble comes back for another attempt), never after Escape,
+/// which dismisses the bubble (native session N26).
+pub const fn drag_image_slides_back(escape_pressed: bool) -> bool {
+    matches!(
+        DragResult::of_session(false, escape_pressed),
+        DragResult::Released
+    )
+}
+
 /// The identity a late callback must match to act on a bubble.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct BubbleKey {
