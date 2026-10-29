@@ -364,6 +364,10 @@
         "label": "Giữ micro mở giữa các lần phiên âm",
         "description": "Giữ luồng micro mở trong 30 giây sau khi dừng ghi âm, giảm độ trễ khi phiên âm liên tiếp. Có thể làm giảm chất lượng âm thanh Bluetooth khi đang hoạt động."
       },
+      "pasteVerification": {
+        "label": "Kiểm tra thao tác dán",
+        "description": "Với dán thông minh, kiểm tra xem trường đang hoạt động có thay đổi sau khi dán không, nếu không thì dán thêm một lần, sau đó giữ văn bản trong bong bóng khôi phục thay vì nhấn Enter vào trường trống. Tính năng thử nghiệm."
+      },
       "acceleration": {
         "transcribe": {
           "title": "Tăng tốc Whisper",

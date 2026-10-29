@@ -130,6 +130,7 @@
             "paste_delay_ms",
             "paste_delay_after_ms",
             "reliable_paste",
+            "paste_verification",
             "smart_paste_migration_version",
             "typing_tool",
             "external_script_path",
@@ -205,6 +206,7 @@
                   "paste_delay_ms",
                   "paste_delay_after_ms",
                   "reliable_paste",
+                  "paste_verification",
                   "smart_paste_migration_version",
                   "typing_tool",
                   "external_script_path",
@@ -823,6 +825,9 @@
           ],
           "type": "string"
         },
+        "paste_verification": {
+          "type": "boolean"
+        },
         "post_process_api_keys": {
           "additionalProperties": {
             "additionalProperties": false,
@@ -1062,6 +1067,7 @@
         "paste_delay_ms",
         "paste_delay_after_ms",
         "reliable_paste",
+        "paste_verification",
         "smart_paste_migration_version",
         "typing_tool",
         "external_script_path",
@@ -1798,6 +1804,17 @@
     {
       "allowed_values": [],
       "key": "reliable_paste",
+      "nullable": false,
+      "owner_domain": "output",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [],
+      "key": "paste_verification",
       "nullable": false,
       "owner_domain": "output",
       "range": null,

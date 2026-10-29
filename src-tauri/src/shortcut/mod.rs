@@ -811,6 +811,16 @@ pub async fn change_reliable_paste_setting(
     live_settings::write(app, "reliable_paste", enabled).await
 }
 
+/// 007 AC-019 (experimental): paste verification after the smart-paste Cmd+V.
+#[tauri::command]
+#[specta::specta]
+pub async fn change_paste_verification_setting(
+    app: AppHandle,
+    enabled: UiValue<bool>,
+) -> SettingsResult {
+    live_settings::write(app, "paste_verification", enabled).await
+}
+
 #[tauri::command]
 #[specta::specta]
 pub async fn change_paste_method_setting(

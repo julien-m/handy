@@ -203,6 +203,9 @@ const settingUpdaters: {
     commands.changePasteDelayMsSetting(value as number),
   paste_delay_after_ms: (value) =>
     commands.changePasteDelayAfterMsSetting(value as number),
+  // 007 AC-019 (experimental): read by smart paste at each dictation.
+  paste_verification: (value) =>
+    commands.changePasteVerificationSetting(value as boolean),
   reliable_paste: (value) =>
     commands.changeReliablePasteSetting(value as boolean),
   paste_method: (value) => commands.changePasteMethodSetting(value as string),

@@ -5,6 +5,7 @@
 
 ---
 
+## 2026-10-29 — [Feature 007] Fix N11 (experimental): `paste_verification` (off by default) checks after the smart-paste Cmd+V that the focused field changed, sends Cmd+V once more under the clipboard ownership guard, and reports an unchanged field as `field_unchanged` (recovery bubble, no automatic Enter); unreadable fields keep the current behavior (AC-019, FR-012)
 ## 2026-10-29 — [Feature 010] Fix N26: after Escape during a drag of the recovery bubble the drag image no longer slides back and the bubble no longer flashes before closing (panel ordered out before it is made opaque again); a release without a target keeps the slide back (AC-004, FR-003)
 ## 2026-10-29 — [Feature 010] Fix N25: Escape during a drag of the recovery bubble cancels it (nothing inserted) and dismisses the bubble through Close's path, logged `drag cancelled by Escape, dismissed`; a release without a target still keeps the bubble; Escape watched for the session only (AC-004, FR-003)
 ## 2026-10-29 — [Feature 010] Fix N24: the whole recovery bubble (text, background, border) is the drag source, with the same native drag, payload and `drop accepted` log as the handle; Copy, Why? and Close stay clicks, a click without movement is not a drag, grab cursor over the surface (AC-004, FR-003)

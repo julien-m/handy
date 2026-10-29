@@ -19,7 +19,7 @@ use std::thread::JoinHandle;
 use std::time::{Duration, Instant};
 
 use super::clock::Clock;
-use super::coordinator::{SmartPasteCoordinator, SmartPastePorts};
+use super::coordinator::{verification_allowance, SmartPasteCoordinator, SmartPastePorts};
 use super::direct::TOTAL_DIRECT_BUDGET;
 use super::ids::Transcript;
 use super::key_events::CHORD_HOLD;
@@ -45,8 +45,9 @@ const SETTLEMENT_ALLOWANCE: Duration = Duration::from_secs(1);
 /// Longest a normal exit may wait in [`SmartPasteActor::shutdown`] with a
 /// responsive main thread: an insertion already running finishes first
 /// (direct insertion, snapshot, layout settle, `paste_delay`, chord hold,
-/// layout restore, the longest no-read decision and the read grace), then
-/// the pending transaction is settled with one main-thread write.
+/// layout restore, the longest no-read decision, the read grace and an
+/// experimental paste verification), then the pending transaction is
+/// settled with one main-thread write.
 pub fn shutdown_allowance(paste_delay: Duration) -> Duration {
     TOTAL_DIRECT_BUDGET
         + SNAPSHOT_DEADLINE
@@ -56,6 +57,7 @@ pub fn shutdown_allowance(paste_delay: Duration) -> Duration {
         + LAYOUT_RESTORE_DELAY
         + JUMP_NO_READ_DECISION
         + READ_DELIVERY_GRACE
+        + verification_allowance()
         + SETTLEMENT_ALLOWANCE
 }
 

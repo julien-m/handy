@@ -80,6 +80,8 @@ inventory! {
  "paste_delay_ms" => (Integer,false,range(10.0,5000.0),&[],false,false,"output",None);
  "paste_delay_after_ms" => (Integer,false,range(10.0,5000.0),&[],false,false,"output",None);
  "reliable_paste" => (Boolean,false,None,&[],false,false,"output",None);
+ // 007 AC-019 (experimental): read per dictation by smart paste, no live effect.
+ "paste_verification" => (Boolean,false,None,&[],false,false,"output",None);
  "smart_paste_migration_version" => (Integer,false,range(0.0,4294967295.0),&[],true,false,"output",None);
  "typing_tool" => (String,false,None,&["auto","wtype","kwtype","dotool","ydotool","xdotool"],false,false,"output",None);
  "external_script_path" => (String,true,None,&[],false,false,"output",None);

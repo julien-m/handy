@@ -7,6 +7,8 @@
 //! switches the layout, waits `paste_delay`, re-checks the destination and
 //! any late AX write, records the key-down instant, posts Cmd+V, restores the
 //! layout, then waits for the first qualifying read or the no-read deadline.
+//! With the experimental paste verification (AC-019) on, a read-observed
+//! paste is then checked against the focused field (see [`verify`]).
 //! The terminal outcome is returned once; the restoration lifecycle then
 //! continues through [`SmartPasteCoordinator::handle_read`],
 //! [`SmartPasteCoordinator::handle_deadline`] and
@@ -392,3 +394,7 @@ fn outcome(
 
 #[path = "coordinator_chord.rs"]
 mod chord;
+#[path = "coordinator_verify.rs"]
+mod verify;
+
+pub use verify::verification_allowance;

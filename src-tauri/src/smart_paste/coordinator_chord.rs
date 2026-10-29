@@ -1,4 +1,5 @@
 //! Keystroke, first-read wait and the pending lifecycle of the coordinator.
+//! The experimental paste verification (AC-019) wraps the first-read wait.
 
 use std::panic::{catch_unwind, resume_unwind, AssertUnwindSafe};
 
@@ -51,7 +52,10 @@ impl SmartPasteCoordinator {
             ));
             return outcome(request, Some(transaction), path, kind);
         };
-        self.post_chord(request, transaction, key, events)
+        // Taken last before the key-down, so the value compared after the
+        // read is the field as it was right before the paste (AC-019).
+        let probe = self.probe_field(request);
+        self.post_chord(request, transaction, key, probe, events)
     }
 
     fn post_chord(
@@ -59,6 +63,7 @@ impl SmartPasteCoordinator {
         request: &InsertionRequest,
         transaction: TransactionId,
         key: PasteKey,
+        probe: Option<verify::FieldProbe>,
         events: &mut dyn ReadEvents,
     ) -> PasteOutcome {
         // The keystroke instant is taken immediately before the first
@@ -79,7 +84,8 @@ impl SmartPasteCoordinator {
                 kind,
             );
         }
-        self.await_first_read(request, transaction, events)
+        let read = self.await_first_read(request, transaction, events);
+        self.verify_read(request, read, probe, key_down_at, events)
     }
 
     /// Reasons not to post the chord: the destination is gone or the
@@ -114,7 +120,7 @@ impl SmartPasteCoordinator {
     }
 
     /// Restores the layout switched for this chord, at most once.
-    fn restore_layout(&mut self, last_key_up: Instant) {
+    pub(super) fn restore_layout(&mut self, last_key_up: Instant) {
         let Some(switch) = self.layout_to_restore.take() else {
             return;
         };
@@ -184,7 +190,7 @@ impl SmartPasteCoordinator {
 
     /// Records a read of the current item; reads of older items never
     /// affect it. Emits the late-read diagnostic once after "not read".
-    fn record_pending_read(
+    pub(super) fn record_pending_read(
         &mut self,
         event: ReadEvent,
         reports_late_reads: bool,

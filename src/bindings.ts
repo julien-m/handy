@@ -205,6 +205,17 @@ async changeReliablePasteSetting(enabled: boolean) : Promise<Result<null, Settin
     else return { status: "error", error: e  as any };
 }
 },
+/**
+ * 007 AC-019 (experimental): paste verification after the smart-paste Cmd+V.
+ */
+async changePasteVerificationSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_paste_verification_setting", { enabled }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async changePasteMethodSetting(method: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_paste_method_setting", { method }) };
@@ -1554,6 +1565,12 @@ show_recovery_bubble_without_text_field?: boolean | null; app_language?: string;
  * fixed delay. See `paste_tx`. macOS and Windows only.
  */
 reliable_paste?: boolean; 
+/**
+ * Experimental paste verification (feature 007 AC-019, finding N11): with smart paste,
+ * check through accessibility that the focused field changed after Cmd+V, send Cmd+V once
+ * more if it did not, and hand an unchanged field to the recovery bubble. Off by default.
+ */
+paste_verification?: boolean; 
 /**
  * Internal marker of the one-time macOS migration to smart paste (feature 007, see
  * `smart_paste::setting_policy`); read-only on every settings surface. Stores missing it are

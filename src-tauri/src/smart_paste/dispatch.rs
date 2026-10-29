@@ -84,6 +84,8 @@ pub struct InsertionInputs {
     pub clipboard_policy: ClipboardPolicy,
     /// `paste_delay_ms`, applied before the keystroke.
     pub paste_delay: Duration,
+    /// `paste_verification` (experimental, AC-019).
+    pub verifies_paste: bool,
 }
 
 impl InsertionInputs {
@@ -96,6 +98,7 @@ impl InsertionInputs {
                 ClipboardHandling::CopyToClipboard => ClipboardPolicy::CopyToClipboard,
             },
             paste_delay: Duration::from_millis(settings.paste_delay_ms),
+            verifies_paste: settings.paste_verification,
         }
     }
 
@@ -110,6 +113,7 @@ impl InsertionInputs {
             destination,
             clipboard_policy: self.clipboard_policy,
             paste_delay: self.paste_delay,
+            verifies_paste: self.verifies_paste,
         }
     }
 }

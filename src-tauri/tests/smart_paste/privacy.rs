@@ -17,7 +17,8 @@ const CLIPBOARD_SENTINEL: &str = "SENTINEL-clipboard-55d0";
 
 struct CapturingLogger;
 
-fn records() -> &'static Mutex<Vec<String>> {
+/// Every record captured by this process's logger (shared by the tests).
+pub fn records() -> &'static Mutex<Vec<String>> {
     static RECORDS: OnceLock<Mutex<Vec<String>>> = OnceLock::new();
     RECORDS.get_or_init(|| Mutex::new(Vec::new()))
 }
@@ -38,7 +39,8 @@ impl log::Log for CapturingLogger {
     fn flush(&self) {}
 }
 
-fn install_logger() {
+/// Installs the capturing logger once for the whole test process.
+pub fn install_logger() {
     // Another test may have installed it first; one capturing logger is enough.
     if log::set_boxed_logger(Box::new(CapturingLogger)).is_ok() {
         log::set_max_level(log::LevelFilter::Trace);

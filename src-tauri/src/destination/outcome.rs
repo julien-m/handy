@@ -45,6 +45,8 @@ pub enum MethodOutcome {
     Typed,
     ClipboardHandedOver,
     InsertionFailed,
+    /// 007 AC-019 (experimental paste verification): read, but the field stayed unchanged.
+    FieldUnchanged,
 }
 /// History result of this dictation, from the actual `save_entry` result only (a WAV failure
 /// still saves a text-only row: `saved`).
@@ -100,9 +102,11 @@ pub fn map_method_result(result: &MethodResult) -> MethodMapping {
                 (InsertionAttempted, None, None)
             }
             Kind::ClipboardHandedOver => (ClipboardHandedOver, None, None),
-            Kind::NotRead | Kind::PermissionMissing | Kind::Uncertain | Kind::InsertionFailed => {
-                failed
-            }
+            Kind::NotRead
+            | Kind::PermissionMissing
+            | Kind::Uncertain
+            | Kind::InsertionFailed
+            | Kind::FieldUnchanged => failed,
         },
     }
 }

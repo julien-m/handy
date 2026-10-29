@@ -313,5 +313,6 @@ pub fn request(
         },
         clipboard_policy: policy,
         paste_delay: Duration::from_millis(60),
+        verifies_paste: false,
     }
 }

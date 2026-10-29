@@ -364,6 +364,10 @@
         "label": "Mantener micrófono abierto entre transcripciones",
         "description": "Mantiene el flujo del micrófono abierto durante 30 segundos después de detener la grabación, reduciendo la latencia en transcripciones consecutivas. Puede degradar la calidad del audio Bluetooth mientras está activo."
       },
+      "pasteVerification": {
+        "label": "Verificar el pegado",
+        "description": "Con el pegado inteligente, comprueba que el campo activo cambió tras pegar, vuelve a pegar una vez si no, y luego conserva el texto en la burbuja de recuperación en lugar de pulsar Intro en un campo vacío. Función de prueba."
+      },
       "acceleration": {
         "transcribe": {
           "title": "Aceleración de transcribe.cpp",

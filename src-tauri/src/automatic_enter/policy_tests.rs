@@ -12,7 +12,7 @@ const SOURCES: [Option<DestinationSource>; 5] = [
     Some(FrontmostAtEnd),
     Some(Pinned),
 ];
-const SMART: [MethodOutcome; 8] = [
+const SMART: [MethodOutcome; 9] = [
     MethodOutcome::InsertedVerified,
     MethodOutcome::ReadObserved,
     MethodOutcome::Typed,
@@ -21,6 +21,7 @@ const SMART: [MethodOutcome; 8] = [
     MethodOutcome::Uncertain,
     MethodOutcome::ClipboardHandedOver,
     MethodOutcome::InsertionFailed,
+    MethodOutcome::FieldUnchanged,
 ];
 
 fn completions() -> Vec<Completion> {
@@ -75,7 +76,7 @@ fn the_full_option_source_completion_matrix_matches_the_expected_count() {
             }
         }
     }
-    assert_eq!(cases, 3 * 5 * 12);
+    assert_eq!(cases, 3 * 5 * 13);
 }
 #[test]
 fn each_false_predicate_alone_suppresses_with_its_reason() {

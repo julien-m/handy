@@ -10,7 +10,7 @@ use crate::destination::outcome::{MethodOutcome, MethodResult};
 
 // @spec FR-008: Truthful outcome contract — .specs/features/007-smart-paste/spec.md#fr-008
 
-/// The eight terminal outcomes of AC-012 and AC-017.
+/// The nine terminal outcomes of AC-012, AC-017 and AC-019.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum PasteOutcomeKind {
@@ -32,6 +32,10 @@ pub enum PasteOutcomeKind {
     ClipboardHandedOver,
     /// Posting keys failed, or the transaction could not start.
     InsertionFailed,
+    /// Paste verification (AC-019, experimental): the target read the
+    /// transcript but the focused field value stayed unchanged, even after
+    /// the single repeated Cmd+V.
+    FieldUnchanged,
 }
 
 impl PasteOutcomeKind {
@@ -50,7 +54,11 @@ impl PasteOutcomeKind {
     pub fn requires_recovery(self) -> bool {
         matches!(
             self,
-            Self::NotRead | Self::PermissionMissing | Self::Uncertain | Self::InsertionFailed
+            Self::NotRead
+                | Self::PermissionMissing
+                | Self::Uncertain
+                | Self::InsertionFailed
+                | Self::FieldUnchanged
         )
     }
 
@@ -122,6 +130,7 @@ impl PasteOutcomeKind {
             Self::Typed => MethodOutcome::Typed,
             Self::ClipboardHandedOver => MethodOutcome::ClipboardHandedOver,
             Self::InsertionFailed => MethodOutcome::InsertionFailed,
+            Self::FieldUnchanged => MethodOutcome::FieldUnchanged,
         }
     }
 }
@@ -142,7 +151,7 @@ mod tests {
     use super::PasteOutcomeKind::*;
     use super::*;
 
-    const ALL: [PasteOutcomeKind; 8] = [
+    const ALL: [PasteOutcomeKind; 9] = [
         InsertedVerified,
         ReadObserved,
         NotRead,
@@ -151,6 +160,7 @@ mod tests {
         Typed,
         ClipboardHandedOver,
         InsertionFailed,
+        FieldUnchanged,
     ];
 
     #[test]
@@ -163,14 +173,20 @@ mod tests {
     }
 
     #[test]
-    fn recovery_covers_exactly_the_four_failures() {
+    fn recovery_covers_exactly_the_five_failures() {
         let failures: Vec<_> = ALL
             .into_iter()
             .filter(|kind| kind.requires_recovery())
             .collect();
         assert_eq!(
             failures,
-            vec![NotRead, PermissionMissing, Uncertain, InsertionFailed]
+            vec![
+                NotRead,
+                PermissionMissing,
+                Uncertain,
+                InsertionFailed,
+                FieldUnchanged
+            ]
         );
     }
 
@@ -244,6 +260,7 @@ mod tests {
                 "\"typed\"",
                 "\"clipboard_handed_over\"",
                 "\"insertion_failed\"",
+                "\"field_unchanged\"",
             ]
         );
         Ok(())

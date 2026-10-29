@@ -1,4 +1,4 @@
-//! The eight 007 result kinds and the legacy results map to status, reason and disposition
+//! The nine 007 result kinds and the legacy results map to status, reason and disposition
 //! exactly as the plan's outcome table says; no mapping claims a 006 field verification.
 use super::*;
 use DestinationFailure::InsertionFailed as Failure;
@@ -30,6 +30,7 @@ fn every_007_kind_maps_to_its_status_reason_and_disposition() {
             Kind::InsertionFailed,
             (Failed, Some(Failure), Some(Recover)),
         ),
+        (Kind::FieldUnchanged, (Failed, Some(Failure), Some(Recover))),
     ];
     for (kind, expected) in table {
         let result = detailed(kind);

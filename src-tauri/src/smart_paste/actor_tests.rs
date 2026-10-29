@@ -49,6 +49,7 @@ fn insert_message() -> ActorMessage {
         },
         clipboard_policy: ClipboardPolicy::DontModify,
         paste_delay: Duration::ZERO,
+        verifies_paste: false,
     };
     let (reply, _) = mpsc::channel();
     ActorMessage::Insert(Box::new(request), reply)

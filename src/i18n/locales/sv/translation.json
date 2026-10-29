@@ -364,6 +364,10 @@
         "label": "Håll mikrofonen öppen mellan transkriptioner",
         "description": "Håller mikrofonströmmen öppen i 30 sekunder efter att inspelningen avslutats, vilket minskar latensen för transkriptioner efter varandra. Kan försämra Bluetooth-ljudkvaliteten medan den är aktiv."
       },
+      "pasteVerification": {
+        "label": "Kontrollera inklistringen",
+        "description": "Med smart inklistring kontrolleras att det aktiva fältet ändrades efter inklistringen, klistrar in en gång till om det inte gjorde det och behåller sedan texten i återställningsbubblan i stället för att trycka Retur i ett tomt fält. Testfunktion."
+      },
       "acceleration": {
         "transcribe": {
           "title": "Whisper-acceleration",

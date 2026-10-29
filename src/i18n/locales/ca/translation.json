@@ -364,6 +364,10 @@
         "label": "Mantén el micròfon obert entre transcripcions",
         "description": "Manté el flux d'àudio del micròfon obert durant 30 segons després d'aturar l'enregistrament per reduir la latència entre transcripcions consecutives. Mentre és actiu, pot reduir la qualitat de l'àudio Bluetooth."
       },
+      "pasteVerification": {
+        "label": "Verifica l'enganxat",
+        "description": "Amb l'enganxat intel·ligent, comprova que el camp actiu ha canviat després d'enganxar, torna a enganxar una vegada si no, i després conserva el text a la bombolla de recuperació en lloc de prémer Retorn en un camp buit. Funció de prova."
+      },
       "acceleration": {
         "transcribe": {
           "title": "Acceleració del transcribe.cpp",

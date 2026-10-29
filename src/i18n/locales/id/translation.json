@@ -364,6 +364,10 @@
         "label": "Biarkan Mikrofon Tetap Aktif di Antara Transkripsi",
         "description": "Membiarkan aliran mikrofon tetap terbuka selama 30 detik setelah perekaman berhenti untuk mengurangi latensi pada transkripsi beruntun. Dapat menurunkan kualitas audio Bluetooth saat aktif."
       },
+      "pasteVerification": {
+        "label": "Verifikasi tempel",
+        "description": "Dengan tempel pintar, memeriksa apakah kolom aktif berubah setelah menempel, menempel sekali lagi jika tidak, lalu menyimpan teks di gelembung pemulihan alih-alih menekan Enter di kolom kosong. Fitur uji coba."
+      },
       "acceleration": {
         "transcribe": {
           "title": "Akselerasi transcribe.cpp",
