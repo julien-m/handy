@@ -165,3 +165,19 @@ Note N9 (correctif `fix/004-side-overlap`) : spec-refine 004 à faire : AC-004 c
 - **016, paragraphes intelligents** : activés. Six dictées courtes donnent `Smart paragraphs left the text unchanged: NoBreak`, comme attendu sous le seuil de 45 mots / 4 phrases. Une dictée longue reste à tester.
 - **016 validé en usage réel** : dictée d'environ 130 mots, découpée en 3 paragraphes de 4, 4 et 3 phrases, séparés par une ligne vide, sans phrase coupée (capture de Julien).
 - **014, Ctrl gauche « sans Entrée », validé** (2026-10-29, 19:27 heure locale) : dictée 19, `In-dictation key applied … Enter skipped true` puis `Automatic Enter of dictation 19: Suppressed(UserSkipped)`. Les dictées 16–18 et 20, sans Ctrl : `Sent`. La politique `always` est conservée.
+
+## 017 — espacement intelligent, essais automatiques (2026-10-29, build `1729247a`, TextEdit, `say` + `--toggle-transcription`)
+
+| Avant | Dictée | Résultat | Espacement |
+|---|---|---|---|
+| `Bonjour\|demain` | « à tous » | `Bonjour à tous. demain` | conforme : espace de chaque côté, minuscule (015) |
+| `Je souhaite\|` | « Vérifier ce point. » | `Je souhaite vérifier ce point. ` | conforme : un espace, espace final selon `append_trailing_space` |
+| `Bonjour\|, ça va` | « tout le monde » | `Bonjour tout le monde., ça va` | conforme : pas d'espace avant la virgule |
+
+- Log : `Smart spacing: Field { … }, text changed: true` et `[smart-paste] InsertedVerified` pour les trois essais.
+- cmux non essayé : son terminal actif était une session Claude Code de Julien.
+
+## N30 — Point final de Canary au milieu d'une phrase (transverse, faible)
+
+- Canary termine chaque dictée par un point, même insérée au milieu d'une phrase (`à tous. demain`), et même juste avant une ponctuation existante (`monde., ça va`).
+- Piste : quand le contexte après le curseur est lu, ne pas garder le point final de la dictée si ce qui suit est une ponctuation ou un mot en minuscule. Exigence produit à trancher, en extension de 017.
