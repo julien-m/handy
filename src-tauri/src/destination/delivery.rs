@@ -171,8 +171,12 @@ fn worker_failed(
 pub async fn insert_final_text(
     app: &AppHandle,
     (ticket, text, history): (Option<DictationTicket>, String, HistoryRecord),
+    case_decided: bool,
     cancelled: Box<dyn Fn() -> bool + Send + Sync>,
 ) {
+    // 015: final preparation of the text every insertion path receives (smart capitalization,
+    // then the future smart spacing), after the AI step and before activation.
+    let text = crate::smart_capitalization::app::prepare(app, ticket, text, case_decided).await;
     let Some(ticket) = ticket else {
         // Without a session, smart paste (007) inserts into the application in front itself.
         if let Some(settings) = crate::smart_paste::app::foreground_settings(app) {

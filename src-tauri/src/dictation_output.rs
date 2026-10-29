@@ -31,8 +31,14 @@ pub(crate) trait OutputPorts {
     /// End a dictation that has nothing to insert.
     fn abandon(&self);
     /// Hand `text` to insertion with the history result of its dictation, then end the
-    /// recording indicator.
-    fn insert(&self, text: String, history: Self::History) -> impl Future<Output = ()>;
+    /// recording indicator. `case_decided` is true when `text` is the AI result (005), whose
+    /// case smart capitalization (015) leaves as is.
+    fn insert(
+        &self,
+        text: String,
+        case_decided: bool,
+        history: Self::History,
+    ) -> impl Future<Output = ()>;
 }
 
 /// How the output stages of a dictation ended.
@@ -65,9 +71,12 @@ pub(crate) async fn deliver<P: OutputPorts>(ports: &P, native: String) -> Delive
         ports.abandon();
         return Delivery::NothingToInsert;
     }
+    // @spec AC-003: AI-decided case is kept — .specs/features/015-smart-capitalization/spec.md#ac-003
+    let case_decided =
+        processed.post_processed_text.as_deref() == Some(processed.final_text.as_str());
     // @spec AC-008: After AI and history, before insertion — .specs/features/016-smart-paragraphs/spec.md#ac-008
     let text = ports.arrange_paragraphs(processed.final_text);
-    ports.insert(text, history).await;
+    ports.insert(text, case_decided, history).await;
     Delivery::Inserted
 }
 

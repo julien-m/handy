@@ -362,7 +362,8 @@
         "output": "Output",
         "transcription": "Transcription",
         "history": "History",
-        "experimental": "Experimental"
+        "experimental": "Experimental",
+        "textFormatting": "Text Formatting"
       },
       "experimentalToggle": {
         "label": "Experimental Features",
@@ -537,6 +538,12 @@
       "noFieldBubble": {
         "title": "Show the bubble when no text field is focused",
         "description": "Keeps the text in a bubble instead of pasting into nothing."
+      },
+      "textFormatting": {
+        "smartCapitalization": {
+          "label": "Smart Capitalization",
+          "description": "Adapts the first letter of each dictation to the text before the cursor: a capital at the start of a sentence, lower case when you continue one. Acronyms, words like iPhone and your custom words are kept. Nothing changes when the field cannot be read."
+        }
       },
       "defaultInputs": {
         "title": "Remembered fields",

@@ -13,6 +13,8 @@ interface ToggleSwitchProps {
   tooltipPosition?: "top" | "bottom";
   /** Test identifier of the row; the switch gets `<testId>-toggle`. */
   testId?: string;
+  /** Small decorative icon before the label. */
+  icon?: React.ReactNode;
 }
 
 interface SwitchControlProps {
@@ -64,9 +66,11 @@ export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
   grouped = false,
   tooltipPosition = "top",
   testId,
+  icon,
 }) => {
   return (
     <SettingContainer
+      icon={icon}
       title={label}
       description={description}
       descriptionMode={descriptionMode}

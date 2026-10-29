@@ -138,6 +138,7 @@ handy settings output set auto_submit true --dry-run          # validate and pre
 handy settings output set automatic_enter pin_only   # builds with destination return: never, always or pin_only (replaces auto_submit)
 handy settings output set show_recovery_bubble_without_text_field false   # builds with destination return, macOS: insert even when no text field seems focused
 handy settings output set paste_verification true   # experimental, smart paste only: check the field changed after Cmd+V (one retry, then the recovery bubble)
+handy settings output set smart_capitalization false   # adapt the first letter to the text before the cursor (macOS; on for new installs)
 handy settings destination pin com.openai.chat       # builds with destination return: pin a running app (Handy must be running)
 handy settings destination status --json             # the pinned app, or null; `unpin` clears it
 handy settings destination favorite-add com.anthropic.claudefordesktop   # builds with destination return: star a running app in the badge menu

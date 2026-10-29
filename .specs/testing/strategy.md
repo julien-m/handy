@@ -9,7 +9,8 @@
 - `bun src/lib/utils/keyboard.test.ts`
 - `playwright test`
 - `playwright test --ui`
-- `cargo test --features destination-return,smart-paste-dispatch --test <suite>` (from `src-tauri/`), for example the 014 suites `src-tauri/tests/in_dictation_keys.rs` and `src-tauri/tests/shortcuts_cli.rs`
+- `cargo test --lib --features destination-return,smart-paste-dispatch` (Rust unit tests, `src-tauri/src`)
+- `cargo test --features destination-return,smart-paste-dispatch --test <suite>` (from `src-tauri/`; Rust integration suites in `src-tauri/tests`, one binary per file, for example the 014 suites `in_dictation_keys` and `shortcuts_cli`, `smart_capitalization_context` and `settings_domains`)
 
 ## Evidence Boundary
 

@@ -24,6 +24,7 @@
 - [x] **Default input per app** (013) — Julien's request of 2026-10-29: remember, per application, a default field (accessibility fingerprint) or a cmux terminal (addressing CLI in the bundle), used when the destination's active element is not a text field; settings list and CLI to forget. Depends on 006, 008, 009, 010, 011 and 012. → [013-default-input-per-app](features/013-default-input-per-app/spec.md)
 - [x] **Keys during a dictation** (014) — Julien's requests of 2026-10-29: during a dictation, Option left alone sends it to the app in front without unpinning, Control left alone inserts it without the automatic Enter. Depends on 004, 006 and 009. → [014-in-dictation-keys](features/014-in-dictation-keys/spec.md)
 - [x] **Smart paragraphs** (016) — Julien's request of 2026-10-29: long dictations split into paragraphs at sentence boundaries (45 words or 4 substantial sentences, blank line), local, off by default, lists, code and line breaks kept. Depends on 005 and 008. → [016-smart-paragraphs](features/016-smart-paragraphs/spec.md)
+- [x] **Smart capitalization** (015) — Julien's request and clean-room contract of 2026-10-29: the first letter of a dictation follows the text before the cursor (capital at a sentence start, lower case in continuation, unchanged when the field cannot be read); on for new installs, off on upgrade; first row of the "Text formatting" section. Depends on 002, 003, 005, 006, 010 and 011. → [015-smart-capitalization](features/015-smart-capitalization/spec.md)
 <!-- roadmap:mvp:end -->
 
 ## Post-MVP

@@ -64,8 +64,9 @@ impl SelectionRange {
 
 /// One accessibility element obtained by 011: the facts 010's rule needs, the selection range,
 /// focus and range writes, its window, and identity with another element. No method returns
-/// the element's value, selected text or title. Write timeouts answer `AxQueryError::Timeout`
-/// when the target did not answer in time (the write may still be applied later).
+/// the element's value, selected text or title; only `text_in` reads a bounded slice, for 015.
+/// Write timeouts answer `AxQueryError::Timeout` when the target did not answer in time (the
+/// write may still be applied later).
 pub trait FieldNode: FocusedElement + Send {
     /// `AXSelectedTextRange` (macOS) or the first `TextPattern` selection (Windows), bounded.
     fn read_range(&mut self, timeout: Duration) -> Result<SelectionRange, AxQueryError>;
@@ -84,6 +85,19 @@ pub trait FieldNode: FocusedElement + Send {
     fn same_as(&self, other: &dyn FieldNode) -> bool;
     /// The platform object, for `same_as` between two elements of one adapter.
     fn as_any(&self) -> &dyn Any;
+    /// Smart capitalization (015) only, with its option on: the `length` UTF-16 units starting
+    /// at `location` (`AXStringForRange`), bounded by `timeout`. The one read of content this
+    /// port allows; never logged or kept. Adapters without it answer `Unsupported`.
+    fn text_in(
+        &mut self,
+        location: usize,
+        length: usize,
+        timeout: Duration,
+    ) -> Result<Vec<u16>, AxQueryError> {
+        // Unused here: an adapter without a bounded text read has nothing to read.
+        let _ = (location, length, timeout);
+        Err(AxQueryError::Unsupported)
+    }
 }
 
 /// Accessibility of this process for 011, per application element (never system-wide).

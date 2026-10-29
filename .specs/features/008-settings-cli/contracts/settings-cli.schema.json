@@ -121,6 +121,7 @@
             "plain_dictation_prompt_id",
             "mute_while_recording",
             "append_trailing_space",
+            "smart_capitalization",
             "destination_favorites",
             "destination_default_inputs",
             "return_to_dictation_app",
@@ -201,6 +202,7 @@
                   "plain_dictation_prompt_id",
                   "mute_while_recording",
                   "append_trailing_space",
+                  "smart_capitalization",
                   "destination_favorites",
                   "destination_default_inputs",
                   "return_to_dictation_app",
@@ -1095,6 +1097,9 @@
         "show_whats_new_on_update": {
           "type": "boolean"
         },
+        "smart_capitalization": {
+          "type": "boolean"
+        },
         "smart_paragraphs_enabled": {
           "type": "boolean"
         },
@@ -1222,6 +1227,7 @@
         "plain_dictation_prompt_id",
         "mute_while_recording",
         "append_trailing_space",
+        "smart_capitalization",
         "destination_favorites",
         "destination_default_inputs",
         "return_to_dictation_app",
@@ -1860,6 +1866,17 @@
     {
       "allowed_values": [],
       "key": "append_trailing_space",
+      "nullable": false,
+      "owner_domain": "output",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [],
+      "key": "smart_capitalization",
       "nullable": false,
       "owner_domain": "output",
       "range": null,

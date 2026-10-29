@@ -362,7 +362,8 @@
         "output": "Sortie",
         "transcription": "Transcription",
         "history": "Historique",
-        "experimental": "Expérimental"
+        "experimental": "Expérimental",
+        "textFormatting": "Mise en forme du texte"
       },
       "experimentalToggle": {
         "label": "Fonctionnalités Expérimentales",
@@ -537,6 +538,12 @@
       "noFieldBubble": {
         "title": "Afficher la bulle quand aucun champ de texte n'est actif",
         "description": "Garde le texte dans une bulle au lieu de le coller dans le vide."
+      },
+      "textFormatting": {
+        "smartCapitalization": {
+          "label": "Majuscules intelligentes",
+          "description": "Adapte la première lettre de chaque dictée au texte avant le curseur : majuscule en début de phrase, minuscule quand vous la continuez. Les sigles, les mots comme iPhone et vos mots personnalisés sont conservés. Rien ne change si le champ ne peut pas être lu."
+        }
       },
       "defaultInputs": {
         "title": "Champs mémorisés",

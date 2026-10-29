@@ -362,7 +362,8 @@
         "output": "Output",
         "transcription": "Trascrizione",
         "history": "Cronologia",
-        "experimental": "Sperimentale"
+        "experimental": "Sperimentale",
+        "textFormatting": "Formattazione del testo"
       },
       "experimentalToggle": {
         "label": "Funzionalità Sperimentali",
@@ -537,6 +538,12 @@
       "noFieldBubble": {
         "title": "Mostra la bolla quando nessun campo di testo è attivo",
         "description": "Tiene il testo in una bolla invece di incollarlo nel vuoto."
+      },
+      "textFormatting": {
+        "smartCapitalization": {
+          "label": "Maiuscole intelligenti",
+          "description": "Adatta la prima lettera di ogni dettatura al testo prima del cursore: maiuscola a inizio frase, minuscola quando la continui. Sigle, parole come iPhone e le tue parole personalizzate restano invariate. Se il campo non è leggibile non cambia nulla."
+        }
       },
       "defaultInputs": {
         "title": "Campi ricordati",

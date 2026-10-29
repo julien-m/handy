@@ -362,7 +362,8 @@
         "output": "Ausgabe",
         "transcription": "Transkription",
         "history": "Verlauf",
-        "experimental": "Experimentell"
+        "experimental": "Experimentell",
+        "textFormatting": "Textformatierung"
       },
       "experimentalToggle": {
         "label": "Experimentelle Funktionen",
@@ -537,6 +538,12 @@
       "noFieldBubble": {
         "title": "Blase anzeigen, wenn kein Textfeld ausgewählt ist",
         "description": "Behält den Text in einer Blase, statt ihn ins Leere einzufügen."
+      },
+      "textFormatting": {
+        "smartCapitalization": {
+          "label": "Intelligente Großschreibung",
+          "description": "Passt den ersten Buchstaben jedes Diktats an den Text vor dem Cursor an: groß am Satzanfang, klein, wenn Sie einen Satz fortsetzen. Abkürzungen, Wörter wie iPhone und Ihre eigenen Wörter bleiben erhalten. Kann das Feld nicht gelesen werden, ändert sich nichts."
+        }
       },
       "defaultInputs": {
         "title": "Gemerkte Felder",

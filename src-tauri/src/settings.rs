@@ -575,6 +575,11 @@ pub struct AppSettings {
     pub mute_while_recording: bool,
     #[serde(default)]
     pub append_trailing_space: bool,
+    /// Smart capitalization (015): adapt the first letter of a dictation to the text before the
+    /// cursor. On for a new installation (`get_default_settings`); a store without the key is an
+    /// upgrade and reads off (field default and `apply_settings_migrations`).
+    #[serde(default)]
+    pub smart_capitalization: bool,
     /// Return to the application where the dictation started before inserting (006).
     #[serde(default = "default_return_to_dictation_app")]
     pub return_to_dictation_app: bool,
@@ -1193,6 +1198,7 @@ pub fn get_default_settings() -> AppSettings {
         plain_dictation_prompt_id: None,
         mute_while_recording: false,
         append_trailing_space: false,
+        smart_capitalization: true,
         return_to_dictation_app: default_return_to_dictation_app(),
         destination_favorites: Vec::new(),
         destination_default_inputs: Vec::new(),
@@ -1327,6 +1333,15 @@ pub(crate) fn apply_settings_migrations(
         if settings.chinese_script != ChineseScript::AsTranscribed {
             settings.selected_language = "zh".to_string();
         }
+        updated = true;
+    }
+
+    // @spec AC-010: New install on, upgrade off — .specs/features/015-smart-capitalization/spec.md#ac-010
+    // One-time smart capitalization migration (015): a store written before the key existed is
+    // an upgrade, which keeps the output the user had (off). Only fresh installs, which never
+    // run migrations, get it on. A stored value is kept.
+    if settings_value.get("smart_capitalization").is_none() {
+        settings.smart_capitalization = false;
         updated = true;
     }
 
@@ -1884,7 +1899,8 @@ mod tests {
             "transcribe_accelerator": "gpu",
             "transcribe_gpu_device": settings.transcribe_gpu_device,
             "smart_paste_migration_version": 1,
-            "automatic_enter": "never"
+            "automatic_enter": "never",
+            "smart_capitalization": true
         });
 
         assert!(!apply_settings_migrations(&mut settings, &raw));
@@ -1892,6 +1908,35 @@ mod tests {
             settings.transcribe_gpu_device.as_deref(),
             Some("[\"vulkan\",\"id\",\"0000:01:00.0\"]")
         );
+    }
+
+    // @spec AC-010: New install on, upgrade off — .specs/features/015-smart-capitalization/spec.md#ac-010
+    #[test]
+    fn fresh_install_enables_smart_capitalization() {
+        assert!(get_default_settings().smart_capitalization);
+    }
+
+    #[test]
+    fn upgrade_without_key_disables_it() {
+        let raw = serde_json::json!({ "selected_model": "small" });
+        let mut settings: AppSettings = serde_json::from_value(raw.clone()).expect("partial store");
+        assert!(!settings.smart_capitalization, "a missing key reads off");
+        settings.smart_capitalization = true;
+        apply_settings_migrations(&mut settings, &raw);
+        assert!(
+            !settings.smart_capitalization,
+            "the migration keeps the upgrade off"
+        );
+    }
+
+    #[test]
+    fn stored_value_is_kept() {
+        for stored in [true, false] {
+            let raw = serde_json::json!({ "smart_capitalization": stored });
+            let mut settings: AppSettings = serde_json::from_value(raw.clone()).expect("store");
+            apply_settings_migrations(&mut settings, &raw);
+            assert_eq!(settings.smart_capitalization, stored);
+        }
     }
 
     #[test]

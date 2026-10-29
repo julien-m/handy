@@ -1102,6 +1102,18 @@ pub async fn change_append_trailing_space_setting(
 
 #[tauri::command]
 #[specta::specta]
+// @spec FR-005: Settings UI write of smart capitalization — .specs/features/015-smart-capitalization/spec.md#fr-005
+/// Settings UI write of `smart_capitalization` (015), through the shared validator and one
+/// revisioned commit; the next insertion reads it.
+pub async fn change_smart_capitalization_setting(
+    app: AppHandle,
+    enabled: UiValue<bool>,
+) -> SettingsResult {
+    live_settings::write(app, "smart_capitalization", enabled).await
+}
+
+#[tauri::command]
+#[specta::specta]
 // @spec FR-006: Settings UI write of the destination setting — .specs/features/006-destination-application/spec.md#fr-006
 /// Settings UI write of `return_to_dictation_app`: the shared UI validator (a build without the
 /// destination capability refuses `true` and `false` with `validation_failed` and the typed reason

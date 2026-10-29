@@ -362,7 +362,8 @@
         "output": "Çıktı",
         "transcription": "Transkripsiyon",
         "history": "Geçmiş",
-        "experimental": "Deneysel"
+        "experimental": "Deneysel",
+        "textFormatting": "Metin biçimlendirme"
       },
       "experimentalToggle": {
         "label": "Deneysel Özellikler",
@@ -537,6 +538,12 @@
       "noFieldBubble": {
         "title": "Odaklanmış metin alanı yokken baloncuğu göster",
         "description": "Metni boşluğa yapıştırmak yerine bir baloncukta tutar."
+      },
+      "textFormatting": {
+        "smartCapitalization": {
+          "label": "Akıllı büyük harf",
+          "description": "Her dikte işleminin ilk harfini imleçten önceki metne uyarlar: cümle başında büyük, bir cümleyi sürdürürken küçük harf. Kısaltmalar, iPhone gibi sözcükler ve özel sözcükleriniz korunur. Alan okunamıyorsa hiçbir şey değişmez."
+        }
       },
       "defaultInputs": {
         "title": "Hatırlanan alanlar",

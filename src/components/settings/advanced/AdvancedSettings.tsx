@@ -32,6 +32,7 @@ import { SmartParagraphsToggle } from "../SmartParagraphsToggle";
 import { ChineseScriptSetting } from "../ChineseScript";
 import { VadBackendSelector } from "../VadBackendSelector";
 import { WordReplacements } from "../word-replacements/word-replacements";
+import { TextFormattingSection } from "../text-formatting/text-formatting-section";
 import { useScreenScope } from "../page-screen";
 import {
   OUTPUT_SCREENS,
@@ -98,6 +99,8 @@ export const AdvancedSettings: React.FC = () => {
             <SmartParagraphsToggle grouped={true} />
           </SettingsGroup>
         </div>
+
+        <TextFormattingSection />
 
         <SettingsGroup title={t("settings.advanced.groups.transcription")}>
           <VoiceActivityDetection descriptionMode="tooltip" grouped={true} />
