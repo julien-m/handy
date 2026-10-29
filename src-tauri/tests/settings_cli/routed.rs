@@ -21,17 +21,21 @@ fn the_running_instance_answers_reads_and_commits_writes_with_its_live_state() -
     let app = Portable::new()?;
     let (instance, endpoint) = serve(&app)?;
     let start = instance.snapshot().revision.0;
-    let set = app.run(&["settings", "set", "paste_method", "direct", "--json"])?;
-    let expected = json!({"ok": true, "revision": start + 1, "data": {"paste_method": "direct"}});
+    let method = super::contract::other_paste_method()?;
+    let set = app.run(&["settings", "set", "paste_method", method, "--json"])?;
+    let expected = json!({"ok": true, "revision": start + 1, "data": {"paste_method": method}});
     assert_eq!(set.envelope()?, expected);
     let public = serde_json::to_value(instance.snapshot().public_settings())?;
     assert_eq!(
         public["paste_method"],
-        json!("direct"),
+        json!(method),
         "published by the instance"
     );
     let get = app.run(&["settings", "get", "paste_method"])?;
-    assert_eq!((get.code, get.stdout.as_str()), (0, "direct\n"));
+    assert_eq!(
+        (get.code, get.stdout.as_str()),
+        (0, format!("{method}\n").as_str())
+    );
     endpoint.close();
     Ok(())
 }
@@ -88,7 +92,8 @@ fn no_answer_within_five_seconds_is_an_unknown_outcome_resolved_by_a_new_read() 
     let endpoint = ipc::serve(&app.store()?, Arc::new(Late(instance.clone())))?;
     let before = app.run(&["settings", "get", "paste_method"])?;
     let started = Instant::now();
-    let run = app.run(&["settings", "set", "paste_method", "direct", "--json"])?;
+    let method = super::contract::other_paste_method()?;
+    let run = app.run(&["settings", "set", "paste_method", method, "--json"])?;
     let elapsed = started.elapsed();
     assert_eq!(before.code, 0);
     let error = run.envelope()?["error"].clone();
@@ -104,7 +109,7 @@ fn no_answer_within_five_seconds_is_an_unknown_outcome_resolved_by_a_new_read() 
     let reread = app.run(&["settings", "get", "paste_method", "--json"])?;
     assert_eq!(
         reread.envelope()?["data"]["paste_method"],
-        json!("direct"),
+        json!(method),
         "the late commit is visible"
     );
     endpoint.close();

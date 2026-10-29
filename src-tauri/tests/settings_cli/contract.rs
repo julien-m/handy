@@ -4,16 +4,28 @@
 use super::harness::{Portable, TestResult};
 use serde_json::json;
 
-/// Default paste method of this build: smart paste is the macOS default only once dictation
-/// delivers through it (feature 007 rollout gate, Cargo feature `smart-paste-dispatch`).
-pub(super) fn default_paste_method() -> &'static str {
-    if cfg!(all(target_os = "macos", feature = "smart-paste-dispatch")) {
-        "smart_paste"
-    } else {
-        "ctrl_v"
-    }
+/// Default paste method of this build, read from the production defaults (a store that does
+/// not exist yet), so the platform default and the 007 rollout gate are never restated here.
+pub(super) fn default_paste_method() -> Result<String, Box<dyn std::error::Error>> {
+    let directory = tempfile::tempdir()?;
+    let absent = directory.path().join("absent").join("settings_store.json");
+    let snapshot = handy_app_lib::settings_service::store::SettingsRepository::new(absent)
+        .read_snapshot()?
+        .snapshot;
+    let public = serde_json::to_value(snapshot.public_settings())?;
+    Ok(public["paste_method"]
+        .as_str()
+        .ok_or("paste_method is not a string")?
+        .to_owned())
 }
-
+/// A valid paste method other than this build's default, so a write always changes the store.
+pub(super) fn other_paste_method() -> Result<&'static str, Box<dyn std::error::Error>> {
+    let default = default_paste_method()?;
+    Ok(["direct", "none", "ctrl_v"]
+        .into_iter()
+        .find(|method| *method != default)
+        .ok_or("no paste method other than the default")?)
+}
 #[test]
 fn json_get_prints_one_envelope_with_revision_and_every_public_key() -> TestResult {
     let app = Portable::new()?;
@@ -39,7 +51,10 @@ fn json_get_prints_one_envelope_with_revision_and_every_public_key() -> TestResu
     let one = app
         .run(&["settings", "get", "paste_method", "--json"])?
         .envelope()?;
-    assert_eq!(one["data"], json!({"paste_method": default_paste_method()}));
+    assert_eq!(
+        one["data"],
+        json!({"paste_method": default_paste_method()?})
+    );
     Ok(())
 }
 #[test]
@@ -48,12 +63,16 @@ fn human_output_is_readable_and_diagnostics_stay_on_stderr() -> TestResult {
     let get = app.run(&["settings", "get", "paste_method"])?;
     assert_eq!(
         (get.code, get.stdout.as_str(), get.stderr.as_str()),
-        (0, format!("{}\n", default_paste_method()).as_str(), "")
+        (0, format!("{}\n", default_paste_method()?).as_str(), "")
     );
-    let set = app.run(&["settings", "set", "paste_method", "direct"])?;
+    let method = other_paste_method()?;
+    let set = app.run(&["settings", "set", "paste_method", method])?;
     assert_eq!(
         (set.code, set.stdout.as_str()),
-        (0, "paste_method = direct (revision 1)\n")
+        (
+            0,
+            format!("paste_method = {method} (revision 1)\n").as_str()
+        )
     );
     let refused = app.run(&["settings", "set", "paste_method", "invalid_method"])?;
     assert_eq!((refused.code, refused.stdout.as_str()), (2, ""));
@@ -149,7 +168,7 @@ fn every_owned_error_code_has_its_documented_exit() -> TestResult {
 #[test]
 fn stale_expected_revision_reports_the_current_revision() -> TestResult {
     let app = Portable::new()?;
-    let first = app.run(&["settings", "set", "paste_method", "direct"])?;
+    let first = app.run(&["settings", "set", "paste_method", other_paste_method()?])?;
     assert_eq!(first.code, 0, "{}", first.stderr);
     let run = app.run(&[
         "settings",

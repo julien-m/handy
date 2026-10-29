@@ -32,7 +32,12 @@ fn headless_read_never_creates_the_store_and_a_write_persists_one_revision() -> 
 #[test]
 fn rejected_write_changes_nothing() -> TestResult {
     let app = Portable::new()?;
-    app.run(&["settings", "set", "paste_method", "direct"])?;
+    app.run(&[
+        "settings",
+        "set",
+        "paste_method",
+        super::contract::other_paste_method()?,
+    ])?;
     let before = app.store_bytes()?;
     for (key, value) in [
         ("paste_method", "invalid_method"),
@@ -49,7 +54,12 @@ fn rejected_write_changes_nothing() -> TestResult {
 fn older_handy_holding_its_singleton_refuses_reads_and_writes_without_touching_the_store(
 ) -> TestResult {
     let app = Portable::new()?;
-    app.run(&["settings", "set", "paste_method", "direct"])?;
+    app.run(&[
+        "settings",
+        "set",
+        "paste_method",
+        super::contract::other_paste_method()?,
+    ])?;
     let before = app.store_bytes()?;
     let _older = UnixListener::bind(app.legacy_socket())?;
     for args in [
@@ -76,12 +86,18 @@ fn unreadable_store_reads_defaults_with_a_stderr_warning_and_refuses_writes() ->
     let read = app.run(&["settings", "get", "paste_method", "--json"])?;
     assert_eq!(
         (read.code, &read.envelope()?["data"]["paste_method"]),
-        (0, &json!(super::contract::default_paste_method()))
+        (0, &json!(super::contract::default_paste_method()?))
     );
     assert!(read
         .stderr
         .contains("Warning: the settings store was recovered"));
-    let write = app.run(&["settings", "set", "paste_method", "direct", "--json"])?;
+    let write = app.run(&[
+        "settings",
+        "set",
+        "paste_method",
+        super::contract::other_paste_method()?,
+        "--json",
+    ])?;
     assert_eq!(
         (write.code, &write.envelope()?["error"]["code"]),
         (1, &json!("persistence_failed"))
@@ -127,7 +143,13 @@ fn held_startup_lease_without_a_reachable_channel_refuses_and_never_writes_offli
     let app = Portable::new()?;
     let instance = running_instance(&app)?;
     let before = app.store_bytes()?;
-    let run = app.run(&["settings", "set", "paste_method", "direct", "--json"])?;
+    let run = app.run(&[
+        "settings",
+        "set",
+        "paste_method",
+        super::contract::other_paste_method()?,
+        "--json",
+    ])?;
     assert_eq!(
         (run.code, &run.envelope()?["error"]["code"]),
         (5, &json!("unavailable"))
