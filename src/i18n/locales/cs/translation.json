@@ -504,6 +504,11 @@
         "title": "Odstranit výplňová slova",
         "description": "Odstraňuje běžná slova vyjadřující váhání z přepisů. Vypnutím je zachováte."
       },
+      "smartParagraphs": {
+        "title": "Chytré odstavce",
+        "description": "Rozdělí dlouhé diktáty na odstavce na koncích vět, oddělené prázdným řádkem. Seznamy, kód a existující zalomení řádků zůstanou zachovány. Běží na tomto počítači.",
+        "descriptionLimited": "Rozdělí dlouhé diktáty na odstavce na koncích vět, oddělené prázdným řádkem. Seznamy, kód a existující zalomení řádků zůstanou zachovány. Běží na tomto počítači. V tomto systému zůstávají čínské a japonské diktáty beze změny."
+      },
       "chineseScript": {
         "title": "Čínské písmo",
         "description": "Zapisuje přepisy v mandarínštině a kantonštině zjednodušenými nebo tradičními znaky. Ostatní jazyky zůstávají beze změny.",

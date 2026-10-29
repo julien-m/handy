@@ -17,6 +17,8 @@ use crate::word_replacements::{dictation::compile_for_dictation, model::Replacem
 struct Recorded {
     ai: Option<fn(&str) -> String>,
     cancel_during_ai: bool,
+    /// The dictation's `smart_paragraphs_enabled` (016).
+    paragraphs: bool,
     cancelled: Cell<bool>,
     ai_inputs: RefCell<Vec<String>>,
     history: RefCell<Vec<(String, Option<String>)>>,
@@ -41,6 +43,9 @@ impl OutputPorts for Recorded {
         let entry = (native, processed.post_processed_text.clone());
         self.history.borrow_mut().push(entry);
         self.history.borrow().len()
+    }
+    fn arrange_paragraphs(&self, text: String) -> String {
+        crate::smart_paragraphs::for_dictation(self.paragraphs, text)
     }
     fn abandon(&self) {
         self.abandoned.set(true);
@@ -154,4 +159,39 @@ fn an_empty_rule_set_leaves_the_native_text_unchanged() {
     let settings = AppSettings::default();
     let with_none = native("open cloud code now", &settings, &[]);
     assert_eq!(with_none, "open cloud code now");
+}
+
+/// A dictation long enough for two paragraphs (016): four substantial sentences, then one.
+const LONG: &str = "We reviewed the budget with finance today. Cloud spending grew faster than \
+    planned this quarter. New projects are frozen until March. Marketing presents a revised plan \
+    next week. Two engineering roles stay open for now.";
+
+fn rephrase(text: &str) -> String {
+    text.replace("today", "this morning")
+}
+
+// @spec AC-008: After AI and history, before insertion — .specs/features/016-smart-paragraphs/spec.md#ac-008
+#[test]
+fn smart_paragraphs_arrange_the_ai_text_after_history_and_before_insertion() {
+    let ports = Recorded {
+        ai: Some(rephrase),
+        paragraphs: true,
+        ..Default::default()
+    };
+    assert_eq!(run(&ports, LONG.to_owned()), Delivery::Inserted);
+    let rewritten = rephrase(LONG);
+    // History keeps the native and AI texts as they were; only insertion gets the paragraphs.
+    let history = [(LONG.to_owned(), Some(rewritten.clone()))];
+    assert_eq!(*ports.history.borrow(), history);
+    let (inserted, receipt) = ports.inserted.borrow()[0].clone();
+    assert_eq!(receipt, 1);
+    assert!(inserted.contains("next week.\n\nTwo"), "{inserted}");
+    assert_eq!(inserted.replace("\n\n", " "), rewritten);
+}
+
+#[test]
+fn with_smart_paragraphs_off_insertion_receives_the_final_text_unchanged() {
+    let ports = Recorded::default();
+    assert_eq!(run(&ports, LONG.to_owned()), Delivery::Inserted);
+    assert_eq!(*ports.inserted.borrow(), [(LONG.to_owned(), 1)]);
 }

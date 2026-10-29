@@ -630,6 +630,11 @@ pub struct AppSettings {
     /// in `apply_settings_migrations`.
     #[serde(default)]
     pub chinese_script: ChineseScript,
+    // @spec FR-006: Off by default, settings service — .specs/features/016-smart-paragraphs/spec.md#fr-006
+    /// Smart paragraphs (feature 016): split a long dictation into paragraphs before insertion.
+    /// Off by default, for new installs and for stores written before the feature.
+    #[serde(default)]
+    pub smart_paragraphs_enabled: bool,
     #[serde(default)]
     pub transcribe_accelerator: TranscribeAcceleratorSetting,
     #[serde(default)]
@@ -1179,6 +1184,7 @@ pub fn get_default_settings() -> AppSettings {
         filler_word_removal_enabled: default_filler_word_removal_enabled(),
         custom_filler_words: None,
         chinese_script: default_chinese_script(),
+        smart_paragraphs_enabled: false,
         transcribe_accelerator: TranscribeAcceleratorSetting::default(),
         ort_accelerator: OrtAcceleratorSetting::default(),
         transcribe_gpu_device: default_transcribe_gpu_device(),
@@ -1459,6 +1465,12 @@ mod tests {
         assert_eq!(result.unwrap_err(), "Binding with id 'unknown' not found");
     }
 
+    // @spec AC-009: Off for a fresh install — .specs/features/016-smart-paragraphs/spec.md#ac-009
+    #[test]
+    fn smart_paragraphs_are_off_on_a_fresh_install() {
+        assert!(!get_default_settings().smart_paragraphs_enabled);
+    }
+
     /// Every field must survive a partial store: a missing key must never fail
     /// the whole-settings parse (#1619). `json!({})` is the extreme case.
     #[test]
@@ -1472,6 +1484,8 @@ mod tests {
         assert_eq!(settings.hold_threshold_ms, default_hold_threshold_ms());
         assert!(!settings.audio_feedback);
         assert!(settings.filler_word_removal_enabled);
+        // 016: smart paragraphs stay off for a store written before the feature.
+        assert!(!settings.smart_paragraphs_enabled);
         // Bindings default to empty; the load path merges the real defaults in.
         assert!(settings.bindings.is_empty());
     }

@@ -504,6 +504,11 @@
         "title": "Ta bort utfyllnadsord",
         "description": "Tar bort vanliga tvekljud från transkriberingar. Stäng av för att behålla dem."
       },
+      "smartParagraphs": {
+        "title": "Smarta stycken",
+        "description": "Delar upp långa dikteringar i stycken vid meningsslut, åtskilda av en tom rad. Listor, kod och befintliga radbrytningar behålls. Körs på den här datorn.",
+        "descriptionLimited": "Delar upp långa dikteringar i stycken vid meningsslut, åtskilda av en tom rad. Listor, kod och befintliga radbrytningar behålls. Körs på den här datorn. På det här systemet lämnas kinesiska och japanska dikteringar oförändrade."
+      },
       "chineseScript": {
         "title": "Kinesisk skrift",
         "description": "Skriver mandarin- och kantonesiska transkriptioner med förenklade eller traditionella tecken. Andra språk lämnas oförändrade.",

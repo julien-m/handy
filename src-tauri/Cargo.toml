@@ -82,6 +82,9 @@ rustfft = "6.4.0"
 # "Straße" and "STRASSE" are one term. Pinned so the table version only changes on purpose.
 caseless = "=0.2.2"
 regex = "1"
+# UAX #29 sentence and word boundaries for smart paragraphs outside macOS (feature 016); the
+# version already resolved in Cargo.lock as a transitive dependency.
+unicode-segmentation = "1.12"
 # Text-based language ID (filler-word removal fallback); isolang bridges the
 # ISO 639-1 codes in model metadata to whatlang's 639-3 codes.
 whatlang = "0.16"

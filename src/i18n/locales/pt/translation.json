@@ -504,6 +504,11 @@
         "title": "Remover palavras de preenchimento",
         "description": "Remove hesitações comuns das transcrições. Desative para mantê-las."
       },
+      "smartParagraphs": {
+        "title": "Parágrafos inteligentes",
+        "description": "Divide ditados longos em parágrafos no fim das frases, separados por uma linha em branco. Listas, código e quebras de linha existentes são mantidos. Executa neste computador.",
+        "descriptionLimited": "Divide ditados longos em parágrafos no fim das frases, separados por uma linha em branco. Listas, código e quebras de linha existentes são mantidos. Executa neste computador. Neste sistema, ditados em chinês e japonês ficam inalterados."
+      },
       "chineseScript": {
         "title": "Escrita chinesa",
         "description": "Escreve as transcrições em mandarim e cantonês com caracteres simplificados ou tradicionais. Os outros idiomas não são alterados.",

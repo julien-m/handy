@@ -21,7 +21,8 @@ fn every_actual_stored_field_has_exactly_one_descriptor() -> Result<(), Box<dyn 
         .collect();
     // 010: `show_recovery_bubble_without_text_field` is stored and described with the gate open.
     // 005 N23 adds `plain_dictation_prompt_id`, 012 `destination_favorites` (every build).
-    let keys = 70 + usize::from(cfg!(feature = "destination-return"));
+    // 016 adds `smart_paragraphs_enabled`.
+    let keys = 71 + usize::from(cfg!(feature = "destination-return"));
     assert_eq!(actual.len(), keys);
     assert_eq!(descriptors().len(), keys);
     assert_eq!(actual, described);
@@ -52,7 +53,7 @@ const COLLECTIONS: [(&str, &str); 7] = [
 ];
 
 #[test]
-fn independent_access_inventory_covers_9_readonly_1_secret_7_collections_53_scalars(
+fn independent_access_inventory_covers_9_readonly_1_secret_7_collections_54_scalars(
 ) -> Result<(), Box<dyn std::error::Error>> {
     for key in READONLY {
         let entry = handy_app_lib::settings_service::descriptor::descriptor(key)
@@ -75,7 +76,7 @@ fn independent_access_inventory_covers_9_readonly_1_secret_7_collections_53_scal
         .collect();
     assert_eq!(
         scalar_keys.len(),
-        53 + usize::from(cfg!(feature = "destination-return"))
+        54 + usize::from(cfg!(feature = "destination-return"))
     );
     assert_eq!(scalar_keys, actual_scalars());
     Ok(())

@@ -124,6 +124,11 @@ impl OutputPorts for AppOutputPorts {
         dictation::notify_failure(&self.app, self.frozen.session_id, processed);
         history
     }
+    fn arrange_paragraphs(&self, text: String) -> String {
+        // 016: read once per dictation here, so a change applies from the next dictation.
+        let enabled = get_settings(&self.app).smart_paragraphs_enabled;
+        crate::smart_paragraphs::for_dictation(enabled, text)
+    }
     fn abandon(&self) {
         crate::destination::delivery::abandon(&self.app);
         utils::hide_recording_overlay(&self.app);

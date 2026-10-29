@@ -25,6 +25,8 @@ fn accepted_cases() -> Vec<(&'static str, Value, &'static str)> {
         ("keyboard_implementation", json!("handy_keys"), "handy_keys"),
         ("log_level", json!("warn"), "warn"),
         ("hold_threshold_ms", json!(250), "250"),
+        // 016: smart paragraphs, a boolean of the general domain.
+        ("smart_paragraphs_enabled", json!(true), "true"),
         ("paste_delay_ms", json!(4999), "4999"),
         ("audio_feedback", json!(true), "true"),
         (
@@ -54,6 +56,8 @@ fn refused_cases() -> Vec<(&'static str, Value, &'static str)> {
         ("keyboard_implementation", json!("rdev"), "rdev"),
         ("log_level", json!("verbose"), "verbose"),
         ("hold_threshold_ms", json!(99), "99"),
+        // 016: only booleans.
+        ("smart_paragraphs_enabled", json!("maybe"), "maybe"),
         ("history_limit", json!(1001), "1001"),
         ("audio_feedback_volume", json!(1.5), "1.5"),
         ("recording_retention_period", json!("forever"), "forever"),

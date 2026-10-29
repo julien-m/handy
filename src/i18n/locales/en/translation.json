@@ -504,6 +504,11 @@
         "title": "Remove Filler Words",
         "description": "Removes common hesitation words from transcriptions. Turn off to keep them."
       },
+      "smartParagraphs": {
+        "title": "Smart paragraphs",
+        "description": "Splits long dictations into paragraphs at sentence boundaries, separated by a blank line. Lists, code and existing line breaks are kept. Runs on this computer.",
+        "descriptionLimited": "Splits long dictations into paragraphs at sentence boundaries, separated by a blank line. Lists, code and existing line breaks are kept. Runs on this computer. On this system, Chinese and Japanese dictations are left unchanged."
+      },
       "chineseScript": {
         "title": "Chinese Script",
         "description": "Writes Mandarin and Cantonese transcriptions in Simplified or Traditional characters. Other languages are left unchanged.",

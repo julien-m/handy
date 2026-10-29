@@ -1152,6 +1152,18 @@ pub async fn change_filler_word_removal_enabled_setting(
     live_settings::write(app, "filler_word_removal_enabled", enabled).await
 }
 
+// @spec FR-006: Same validation as the CLI — .specs/features/016-smart-paragraphs/spec.md#fr-006
+/// Turn smart paragraphs (016) on or off through the settings service; the next dictation
+/// follows the stored value.
+#[tauri::command]
+#[specta::specta]
+pub async fn change_smart_paragraphs_enabled_setting(
+    app: AppHandle,
+    enabled: UiValue<bool>,
+) -> SettingsResult {
+    live_settings::write(app, "smart_paragraphs_enabled", enabled).await
+}
+
 #[tauri::command]
 #[specta::specta]
 pub async fn change_chinese_script_setting(

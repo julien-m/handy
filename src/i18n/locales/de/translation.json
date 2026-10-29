@@ -504,6 +504,11 @@
         "title": "Füllwörter entfernen",
         "description": "Entfernt häufige Verzögerungslaute aus Transkriptionen. Deaktivieren Sie diese Option, um sie beizubehalten."
       },
+      "smartParagraphs": {
+        "title": "Intelligente Absätze",
+        "description": "Teilt lange Diktate an Satzgrenzen in Absätze, getrennt durch eine Leerzeile. Listen, Code und vorhandene Zeilenumbrüche bleiben erhalten. Läuft auf diesem Computer.",
+        "descriptionLimited": "Teilt lange Diktate an Satzgrenzen in Absätze, getrennt durch eine Leerzeile. Listen, Code und vorhandene Zeilenumbrüche bleiben erhalten. Läuft auf diesem Computer. Auf diesem System bleiben chinesische und japanische Diktate unverändert."
+      },
       "chineseScript": {
         "title": "Chinesische Schrift",
         "description": "Schreibt Transkriptionen auf Mandarin und Kantonesisch in vereinfachten oder traditionellen Schriftzeichen. Andere Sprachen bleiben unverändert.",

@@ -504,6 +504,11 @@
         "title": "Eliminar muletillas",
         "description": "Elimina las muletillas más comunes de las transcripciones. Desactívalo para conservarlas."
       },
+      "smartParagraphs": {
+        "title": "Párrafos inteligentes",
+        "description": "Divide los dictados largos en párrafos al final de las frases, separados por una línea en blanco. Se conservan las listas, el código y los saltos de línea existentes. Se ejecuta en este equipo.",
+        "descriptionLimited": "Divide los dictados largos en párrafos al final de las frases, separados por una línea en blanco. Se conservan las listas, el código y los saltos de línea existentes. Se ejecuta en este equipo. En este sistema, los dictados en chino y japonés no se modifican."
+      },
       "chineseScript": {
         "title": "Escritura china",
         "description": "Escribe las transcripciones en mandarín y cantonés con caracteres simplificados o tradicionales. Los demás idiomas no se modifican.",
