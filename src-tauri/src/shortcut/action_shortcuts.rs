@@ -9,8 +9,9 @@
 use serde::{Deserialize, Serialize};
 use specta::Type;
 
-use super::conflicts::{find_conflict, InventoryEntry, ShortcutConflict};
+use super::conflicts::{find_conflict_of, InventoryEntry, ShortcutConflict};
 use super::prompt_targets::prompt_of;
+use crate::dictation_keys::is_dictation_key;
 use crate::prompts::types::MAX_PROMPT_SHORTCUTS;
 use crate::settings::{KeyboardImplementation, ShortcutBinding};
 use crate::settings_service::command_error::SettingsCommandError;
@@ -30,10 +31,13 @@ pub fn accepts_alternatives(action_id: &str) -> bool {
 }
 
 // @spec AC-006: 0-2 shortcuts per prompt — .specs/features/005-custom-ai-prompts/spec.md#ac-006
-/// Most shortcuts `action_id` may have: 2 for a prompt target (005), 4 otherwise.
+/// Most shortcuts `action_id` may have: 2 for a prompt target (005), 1 for a key read during a
+/// dictation (014), 4 otherwise.
 pub fn max_shortcuts(action_id: &str) -> usize {
     if prompt_of(action_id).is_some() {
         MAX_PROMPT_SHORTCUTS
+    } else if is_dictation_key(action_id) {
+        1
     } else {
         MAX_SHORTCUTS_PER_ACTION
     }
@@ -118,7 +122,9 @@ fn plan_add(
     shortcut: &str,
     context: &EditContext,
 ) -> Result<ShortcutBinding, ShortcutEditError> {
-    if !accepts_alternatives(&binding.id) {
+    // @spec FR-001: One key or none, so the CLI can change it — .specs/features/014-in-dictation-keys/spec.md#fr-001
+    // A key read during a dictation (014) holds one key or none: Add fills an empty list.
+    if !accepts_alternatives(&binding.id) && !is_dictation_key(&binding.id) {
         return Err(ShortcutEditError::AlternativesUnsupported);
     }
     let limit = max_shortcuts(&binding.id);
@@ -146,7 +152,8 @@ fn plan_remove(
         });
     };
     // A prompt target may have no shortcut (005); a dictation action keeps at least one.
-    if shortcuts.len() == 1 && prompt_of(&binding.id).is_none() {
+    // A key read during a dictation (014) may be removed too: the key is then off.
+    if shortcuts.len() == 1 && prompt_of(&binding.id).is_none() && !is_dictation_key(&binding.id) {
         return Err(ShortcutEditError::LastShortcut);
     }
     shortcuts.remove(index);
@@ -208,18 +215,37 @@ fn check_candidate(
     context: &EditContext,
 ) -> Result<(), ShortcutEditError> {
     let invalid = |message| ShortcutEditError::InvalidShortcut { message };
-    super::validate_shortcut_for_implementation(shortcut, context.implementation)
-        .map_err(invalid)?;
+    validate_syntax(action_id, shortcut, context.implementation).map_err(invalid)?;
     let remaining: Vec<InventoryEntry> = context
         .inventory
         .iter()
         .filter(|entry| !(entry.action_id == action_id && replaced.contains(&entry.shortcut)))
         .cloned()
         .collect();
-    match find_conflict(shortcut, &remaining, None, context.implementation) {
+    match find_conflict_of(
+        action_id,
+        shortcut,
+        &remaining,
+        None,
+        context.implementation,
+    ) {
         Ok(None) => Ok(()),
         Ok(Some(conflict)) => Err(ShortcutEditError::ShortcutConflict { conflict }),
         Err(message) => Err(invalid(message)),
+    }
+}
+
+/// Syntax check of `shortcut` for `action_id`: a key read during a dictation (014) is one
+/// modifier pressed alone, in HandyKeys syntax; any other shortcut follows `implementation`.
+fn validate_syntax(
+    action_id: &str,
+    shortcut: &str,
+    implementation: KeyboardImplementation,
+) -> Result<(), String> {
+    if is_dictation_key(action_id) {
+        crate::dictation_keys::parse_key(shortcut).map(|_| ())
+    } else {
+        super::validate_shortcut_for_implementation(shortcut, implementation)
     }
 }
 

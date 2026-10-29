@@ -182,6 +182,14 @@
           "transcribe_with_post_process": {
             "name": "Pintasan Pascaproses",
             "description": "Opsional: pintasan khusus yang selalu menerapkan pascaproses AI pada transkripsi Anda."
+          },
+          "retarget_to_active_app": {
+            "name": "Kirim ke aplikasi di depan",
+            "description": "Saat dikte, tekan tombol ini saja untuk mengirimnya ke aplikasi di depan pada akhir alih-alih ke aplikasi yang disematkan. Tekan lagi untuk membatalkan. Sematan tetap."
+          },
+          "skip_automatic_enter": {
+            "name": "Sisipkan tanpa Enter",
+            "description": "Saat dikte, tekan tombol ini saja untuk menyisipkan teks tanpa Enter otomatis. Tekan lagi untuk membatalkan."
           }
         },
         "errors": {
@@ -1338,6 +1346,9 @@
         "promptMissing": "Prompt ini sudah tidak ada.",
         "promptNotUsable": "Prompt ini bermasalah; edit dulu di pengaturan."
       }
+    },
+    "dictationKeys": {
+      "enterSkipped": "Enter otomatis mati untuk dikte ini"
     }
   },
   "secureInput": {

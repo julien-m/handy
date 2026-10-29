@@ -1125,6 +1125,10 @@ pub fn get_default_settings() -> AppSettings {
             additional_bindings: Vec::new(),
         },
     );
+    // @spec FR-001: In-dictation keys, left-hand defaults — .specs/features/014-in-dictation-keys/spec.md#fr-001
+    for binding in crate::dictation_keys::default_bindings() {
+        bindings.insert(binding.id.clone(), binding);
+    }
     bindings.insert(
         "cancel".to_string(),
         ShortcutBinding {

@@ -5,6 +5,7 @@
 import type React from "react";
 import type { OSType } from "@/lib/utils/keyboard";
 import { DestinationBadge } from "./destination-badge";
+import { EnterSkippedMark } from "./enter-skipped-mark";
 import { DestinationMenuPanel } from "./destination-menu";
 import { pinEntries } from "./pin-state";
 import { useDictationCount, useMenuTimer } from "./menu-timer";
@@ -56,7 +57,9 @@ interface IndicatorProps {
 const Indicator: React.FC<IndicatorProps> = (props) => {
   const { form, destination, children } = props;
   const { badge } = destination;
-  if (badge.kind === "hidden") {
+  // 014: « Insert without Enter » pressed during this dictation, shown in the badge's segment.
+  const enterSkipped = Boolean(destination.snapshot?.enter_skipped);
+  if (badge.kind === "hidden" && !enterSkipped) {
     return form === "compact" ? (
       <div className="ov-fade show">{children}</div>
     ) : (
@@ -67,12 +70,15 @@ const Indicator: React.FC<IndicatorProps> = (props) => {
   return (
     <div className={`sindicator with-dest ${form} ${fade}`}>
       <div className="sdest-segment">
-        <DestinationBadge
-          badge={badge}
-          menuOpen={destination.menu.status !== "closed"}
-          onToggleMenu={props.onToggleMenu}
-          onRemove={destination.remove}
-        />
+        {badge.kind !== "hidden" && (
+          <DestinationBadge
+            badge={badge}
+            menuOpen={destination.menu.status !== "closed"}
+            onToggleMenu={props.onToggleMenu}
+            onRemove={destination.remove}
+          />
+        )}
+        {enterSkipped && <EnterSkippedMark />}
       </div>
       {form === "compact" && <span className="sdivider" aria-hidden="true" />}
       {children}
@@ -257,7 +263,9 @@ export const useIndicatorExtras = (input: ExtrasInput) => {
     stack,
     /** Contract screen shown, for the test ids of the Handy pill rendered by the caller. */
     screen: stackScreen(stack),
-    withDestination: destination.badge.kind !== "hidden",
+    withDestination:
+      destination.badge.kind !== "hidden" ||
+      Boolean(destination.snapshot?.enter_skipped),
     hasNotices: notices.length > 0,
   };
 };

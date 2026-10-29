@@ -173,6 +173,32 @@ fn conflicts_and_the_limit_are_refused_with_their_owner_and_limit() -> TestResul
     Ok(())
 }
 
+// @spec AC-005: In-dictation keys from the CLI — .specs/features/014-in-dictation-keys/spec.md#ac-005
+#[test]
+fn an_in_dictation_key_is_changed_by_removing_then_adding_it() -> TestResult {
+    const ACTION: &str = "skip_automatic_enter";
+    let app = Portable::new()?;
+    let default = default_of(ACTION)?;
+    let (instance, endpoint) = serve(&app)?;
+    let start = instance.live.snapshot().revision.0;
+    let full = shortcuts(&app, &["add", ACTION, "shift_right"])?;
+    assert_eq!(error_of(&full)?["code"], "limit_exceeded");
+    let combination = shortcuts(&app, &["remove", ACTION, &default])?;
+    assert_eq!(combination.envelope()?["data"]["shortcuts"], json!([]));
+    let refused = shortcuts(&app, &["add", ACTION, "ctrl+c"])?;
+    assert_eq!(error_of(&refused)?["code"], "validation_failed");
+    let added = shortcuts(&app, &["add", ACTION, "shift_right"])?;
+    assert_eq!(
+        added.envelope()?["data"]["shortcuts"],
+        json!(["shift_right"])
+    );
+    let reset = shortcuts(&app, &["reset", ACTION])?;
+    assert_eq!(reset.envelope()?["data"]["shortcuts"], json!([default]));
+    assert_eq!(instance.live.snapshot().revision.0, start + 3);
+    endpoint.close();
+    Ok(())
+}
+
 #[test]
 fn last_removal_unknown_action_and_stale_revision_change_nothing() -> TestResult {
     let app = Portable::new()?;

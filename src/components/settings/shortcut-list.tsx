@@ -26,6 +26,7 @@ import {
   canAddShortcut,
   canRemoveShortcut,
   describeConflict,
+  limitsFor,
   refusalFor,
   shortcutsOf,
   storedConflictFor,
@@ -135,7 +136,8 @@ const listState = (
     legacyWarningsOf(stored.conflicts, actionId, names).length > 0;
   if (shown) return "shortcut-settings-conflict";
   const count = shortcutsOf(parts.binding).length;
-  const full = !single && listHint(count) === "limit";
+  const { max, min } = limitsFor(actionId);
+  const full = !single && listHint(count, max, min) === "limit";
   return full ? "shortcut-settings-limit" : null;
 };
 
@@ -186,7 +188,10 @@ const ShortcutRows: React.FC<ListPartProps & { busy: boolean }> = ({
           shortcut={shortcut}
           ids={list.ids}
           hasRemove={!single}
-          canRemove={canRemoveShortcut(shortcuts.length)}
+          canRemove={canRemoveShortcut(
+            shortcuts.length,
+            limitsFor(list.actionId),
+          )}
           busy={busy}
           conflict={conflictOf(list, shortcut)}
           refusal={refusalFor(list.refused, list.actionId, shortcut)}
@@ -209,7 +214,8 @@ const ShortcutColumn: React.FC<ListPartProps> = ({ list, single }) => {
   const { submitter, draft, ids } = list;
   const count = shortcutsOf(list.binding).length;
   const busy = submitter.feedback.state === "loading";
-  const hasRoom = canAddShortcut(count);
+  const limits = limitsFor(list.actionId);
+  const hasRoom = canAddShortcut(count, limits);
   const controls = single ? null : listControls(draft.state, hasRoom, busy);
   const reset = () => void submitter.submit({ kind: "reset" });
   return (
@@ -232,6 +238,7 @@ const ShortcutColumn: React.FC<ListPartProps> = ({ list, single }) => {
         ids={ids}
         controls={controls}
         isFull={!hasRoom}
+        limit={limits.max}
         onAdd={draft.open}
         onSave={() => void draft.commit()}
         onDiscard={draft.discard}
@@ -239,7 +246,11 @@ const ShortcutColumn: React.FC<ListPartProps> = ({ list, single }) => {
         resetDisabled={controls ? !controls.isResetEnabled : busy}
       />
       {!single && (
-        <ListHintText hint={listHint(count)} count={count} ids={ids} />
+        <ListHintText
+          hint={listHint(count, limits.max, limits.min)}
+          count={count}
+          ids={ids}
+        />
       )}
       <ListMessages
         ids={ids}

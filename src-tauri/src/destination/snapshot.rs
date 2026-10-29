@@ -43,6 +43,10 @@ pub struct DestinationSnapshot {
     /// The session pin, if an application is pinned (009); the badge menu offers Unpin then.
     pub pin: Option<PinView>,
     pub disposition: RecoveryDisposition,
+    /// « Insert without Enter » is on for this dictation (014); omitted when off.
+    // `default` comes last: specta derives TypeScript optionality from the last serde option.
+    #[serde(skip_serializing_if = "std::ops::Not::not", default)]
+    pub enter_skipped: bool,
 }
 impl From<&DestinationSession> for DestinationSnapshot {
     fn from(session: &DestinationSession) -> Self {
@@ -57,6 +61,7 @@ impl From<&DestinationSession> for DestinationSnapshot {
             source: session.selection.source(),
             pin: session.pin.clone(),
             disposition: session.disposition,
+            enter_skipped: session.keys.enter_skipped,
         }
     }
 }

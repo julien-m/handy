@@ -182,6 +182,14 @@
           "transcribe_with_post_process": {
             "name": "Sneltoets voor naverwerking",
             "description": "Optioneel: Een specifieke sneltoets die altijd AI-naverwerking toepast op je transcriptie."
+          },
+          "retarget_to_active_app": {
+            "name": "Naar app op voorgrond sturen",
+            "description": "Druk tijdens een dictaat alleen op deze toets om het naar de app op de voorgrond aan het einde te sturen in plaats van de vastgezette app. Druk opnieuw om dit ongedaan te maken. De vastgezette app blijft."
+          },
+          "skip_automatic_enter": {
+            "name": "Invoegen zonder Enter",
+            "description": "Druk tijdens een dictaat alleen op deze toets om de tekst zonder automatische Enter in te voegen. Druk opnieuw om dit ongedaan te maken."
           }
         },
         "errors": {
@@ -1338,6 +1346,9 @@
         "promptMissing": "Deze prompt bestaat niet meer.",
         "promptNotUsable": "Deze prompt bevat fouten; bewerk hem eerst in de instellingen."
       }
+    },
+    "dictationKeys": {
+      "enterSkipped": "Automatische Enter uit voor dit dictaat"
     }
   },
   "secureInput": {

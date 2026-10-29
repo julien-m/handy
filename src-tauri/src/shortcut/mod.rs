@@ -175,6 +175,8 @@ fn reconcile_cancel_shortcut(app: &AppHandle) {
 pub(crate) fn is_statically_registered(id: &str, settings: &settings::AppSettings) -> bool {
     match id {
         "cancel" => false,
+        // 014: read by the dictation's own observer, never registered with a backend.
+        _ if crate::dictation_keys::is_dictation_key(id) => false,
         _ if prompt_targets::is_post_process_gated(id) => settings.post_process_enabled,
         _ => true,
     }
@@ -369,7 +371,7 @@ pub async fn reset_binding(
 /// by the recording lifecycle.
 pub fn suspend_all_shortcuts(app: &AppHandle) {
     for (id, binding) in settings::get_bindings(app) {
-        if id == "cancel" {
+        if id == "cancel" || crate::dictation_keys::is_dictation_key(&id) {
             continue;
         }
         if let Err(e) = unregister_shortcut(app, binding) {

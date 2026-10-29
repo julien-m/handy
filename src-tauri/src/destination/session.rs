@@ -94,6 +94,8 @@ pub enum EnterRefusal {
     Stale,
     Disposition(RecoveryDisposition),
     AlreadyClaimed,
+    /// « Insert without Enter » was pressed during this dictation (014).
+    UserSkipped,
 }
 
 /// Destination state of one accepted dictation. `return_enabled` and `support` are frozen at
@@ -115,6 +117,8 @@ pub struct DestinationSession {
     pub captured_at: Instant,
     pub disposition: RecoveryDisposition,
     pub enter_claimed: bool,
+    /// The keys pressed during this dictation (014).
+    pub keys: super::dictation_toggles::KeyToggles,
 }
 
 impl DestinationSession {
@@ -207,6 +211,10 @@ impl DestinationSession {
         }
         if self.enter_claimed {
             return Err(EnterRefusal::AlreadyClaimed);
+        }
+        // @spec AC-003: Skipped Enter refused at the claim — .specs/features/014-in-dictation-keys/spec.md#ac-003
+        if self.keys.enter_skipped {
+            return Err(EnterRefusal::UserSkipped);
         }
         self.enter_claimed = true;
         Ok(EnterClaim {

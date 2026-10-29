@@ -182,6 +182,14 @@
           "transcribe_with_post_process": {
             "name": "Genvej til efterbehandling",
             "description": "Valgfrit: En dedikeret genvej, der altid anvender AI-efterbehandling på din transskription."
+          },
+          "retarget_to_active_app": {
+            "name": "Send til appen i forgrunden",
+            "description": "Tryk kun på denne tast under en diktering for at sende den til appen i forgrunden til sidst i stedet for den fastgjorte app. Tryk igen for at fortryde. Fastgørelsen bevares."
+          },
+          "skip_automatic_enter": {
+            "name": "Indsæt uden Enter",
+            "description": "Tryk kun på denne tast under en diktering for at indsætte teksten uden automatisk Enter. Tryk igen for at fortryde."
           }
         },
         "errors": {
@@ -1338,6 +1346,9 @@
         "promptMissing": "Denne prompt findes ikke længere.",
         "promptNotUsable": "Denne prompt har fejl; rediger den først i indstillingerne."
       }
+    },
+    "dictationKeys": {
+      "enterSkipped": "Automatisk Enter slået fra for denne diktering"
     }
   },
   "secureInput": {

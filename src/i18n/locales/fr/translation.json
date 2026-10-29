@@ -202,6 +202,14 @@
           "transcribe_with_post_process": {
             "name": "Raccourci de post-traitement",
             "description": "Facultatif : Un raccourci dédié qui applique toujours le post-traitement IA à votre transcription."
+          },
+          "retarget_to_active_app": {
+            "name": "Envoyer à l'app au premier plan",
+            "description": "Pendant une dictée, appuyez sur cette touche seule pour l'envoyer à l'app au premier plan à la fin au lieu de l'app épinglée. Appuyez de nouveau pour annuler. L'épingle reste."
+          },
+          "skip_automatic_enter": {
+            "name": "Insérer sans Entrée",
+            "description": "Pendant une dictée, appuyez sur cette touche seule pour insérer le texte sans l'Entrée automatique. Appuyez de nouveau pour annuler."
           }
         },
         "errors": {
@@ -1335,6 +1343,9 @@
         "promptMissing": "Ce prompt n'existe plus.",
         "promptNotUsable": "Ce prompt comporte des erreurs ; modifiez-le d'abord dans les réglages."
       }
+    },
+    "dictationKeys": {
+      "enterSkipped": "Entrée automatique désactivée pour cette dictée"
     }
   },
   "whatsNew": {

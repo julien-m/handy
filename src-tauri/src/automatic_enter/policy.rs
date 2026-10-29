@@ -49,6 +49,8 @@ pub enum Suppression {
     /// 013: typed into a remembered terminal; a key would go to that application's focused
     /// terminal, which may be another one (spec 013 decision `terminal_no_enter`).
     AddressedTerminal,
+    /// « Insert without Enter » was pressed during the dictation (014).
+    UserSkipped,
 }
 
 /// What the eligibility needs: the frozen policy, the source of the dispatched route (`None`

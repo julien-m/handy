@@ -15,6 +15,11 @@ export const MAX_SHORTCUTS_PER_ACTION = 4;
 export const PROMPT_TARGET_PREFIX = "prompt:";
 /** Mirrors the 0–2 shortcuts of a prompt target (005 AC-006). */
 export const MAX_SHORTCUTS_PER_PROMPT = 2;
+/** Mirrors the action ids of src-tauri/src/dictation_keys/mod.rs (014). */
+export const DICTATION_KEY_ACTIONS = [
+  "retarget_to_active_app",
+  "skip_automatic_enter",
+] as const;
 
 /** How many shortcuts an action keeps, and whether it has a default. */
 export interface ShortcutLimits {
@@ -37,6 +42,20 @@ export const PROMPT_SHORTCUT_LIMITS: ShortcutLimits = {
   min: 0,
   resettable: false,
 };
+// @spec FR-001: One key or none, with a default — .specs/features/014-in-dictation-keys/spec.md#fr-001
+/** Limits of a key used during a dictation (014): one key or none, and a default. */
+export const DICTATION_KEY_LIMITS: ShortcutLimits = {
+  max: 1,
+  min: 0,
+  resettable: true,
+};
+
+/**
+ * Whether an action is a key used during a dictation (014).
+ * @param actionId Action id.
+ */
+export const isDictationKey = (actionId: string): boolean =>
+  (DICTATION_KEY_ACTIONS as readonly string[]).includes(actionId);
 
 /**
  * Action id of the shortcuts of a prompt.
@@ -58,10 +77,11 @@ export const promptIdOf = (actionId: string): string | null =>
  * Limits of an action's shortcut list.
  * @param actionId Action id (a prompt target or a dictation action).
  */
-export const limitsFor = (actionId: string): ShortcutLimits =>
-  promptIdOf(actionId) === null
-    ? ACTION_SHORTCUT_LIMITS
-    : PROMPT_SHORTCUT_LIMITS;
+export const limitsFor = (actionId: string): ShortcutLimits => {
+  if (promptIdOf(actionId) !== null) return PROMPT_SHORTCUT_LIMITS;
+  if (isDictationKey(actionId)) return DICTATION_KEY_LIMITS;
+  return ACTION_SHORTCUT_LIMITS;
+};
 
 /** A translation key with its interpolation values. */
 export interface TranslatedMessage {

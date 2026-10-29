@@ -202,6 +202,14 @@
           "transcribe_with_post_process": {
             "name": "Tecla de post procesamiento",
             "description": "Opcional: Una tecla de acceso rápido dedicada que siempre aplica post procesamiento con IA a tu transcripción."
+          },
+          "retarget_to_active_app": {
+            "name": "Enviar a la app en primer plano",
+            "description": "Durante un dictado, pulsa solo esta tecla para enviarlo a la app en primer plano al final en lugar de la app fijada. Púlsala de nuevo para deshacer. La fijación se mantiene."
+          },
+          "skip_automatic_enter": {
+            "name": "Insertar sin Intro",
+            "description": "Durante un dictado, pulsa solo esta tecla para insertar el texto sin el Intro automático. Púlsala de nuevo para deshacer."
           }
         },
         "errors": {
@@ -1335,6 +1343,9 @@
         "promptMissing": "Este prompt ya no existe.",
         "promptNotUsable": "Este prompt tiene errores; edítalo primero en los ajustes."
       }
+    },
+    "dictationKeys": {
+      "enterSkipped": "Intro automático desactivado para este dictado"
     }
   },
   "whatsNew": {

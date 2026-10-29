@@ -1851,7 +1851,11 @@ source: DestinationSource;
 /**
  * The session pin, if an application is pinned (009); the badge menu offers Unpin then.
  */
-pin: PinView | null; disposition: RecoveryDisposition }
+pin: PinView | null; disposition: RecoveryDisposition; 
+/**
+ * « Insert without Enter » is on for this dictation (014); omitted when off.
+ */
+enter_skipped?: boolean }
 /**
  * Where the destination of a dictation comes from (009 adds `Pinned`).
  */

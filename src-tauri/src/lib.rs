@@ -11,6 +11,7 @@ pub mod cli;
 mod clipboard;
 mod commands;
 pub mod destination;
+pub mod dictation_keys;
 mod dictation_output;
 pub mod engine_supervisor;
 mod helpers;

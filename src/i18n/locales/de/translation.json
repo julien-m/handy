@@ -202,6 +202,14 @@
           "transcribe_with_post_process": {
             "name": "Nachbearbeitungs-Tastenkürzel",
             "description": "Optional: Ein dediziertes Tastenkürzel, das immer die KI-Nachbearbeitung auf deine Transkription anwendet."
+          },
+          "retarget_to_active_app": {
+            "name": "An App im Vordergrund senden",
+            "description": "Drücke diese Taste während eines Diktats allein, um es an die App im Vordergrund am Ende statt an die angeheftete App zu senden. Erneut drücken macht es rückgängig. Die Anheftung bleibt."
+          },
+          "skip_automatic_enter": {
+            "name": "Ohne Eingabetaste einfügen",
+            "description": "Drücke diese Taste während eines Diktats allein, um den Text ohne automatische Eingabetaste einzufügen. Erneut drücken macht es rückgängig."
           }
         },
         "errors": {
@@ -1335,6 +1343,9 @@
         "promptMissing": "Dieser Prompt existiert nicht mehr.",
         "promptNotUsable": "Dieser Prompt hat Fehler; bearbeite ihn zuerst in den Einstellungen."
       }
+    },
+    "dictationKeys": {
+      "enterSkipped": "Automatische Eingabetaste für dieses Diktat aus"
     }
   },
   "whatsNew": {

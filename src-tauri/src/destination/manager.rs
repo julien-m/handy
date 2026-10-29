@@ -133,6 +133,7 @@ impl DestinationManager {
             captured_at: capture.captured_at,
             disposition: RecoveryDisposition::Pending,
             enter_claimed: false,
+            keys: Default::default(),
         };
         let snapshot = DestinationSnapshot::from(&session);
         state.session = Some(session);

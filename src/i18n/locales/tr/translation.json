@@ -202,6 +202,14 @@
           "transcribe_with_post_process": {
             "name": "Son İşlem Kısayolu",
             "description": "İsteğe bağlı: Transkripsiyonunuza her zaman yapay zekâ ile son işlem uygulayan özel bir kısayol tuşu."
+          },
+          "retarget_to_active_app": {
+            "name": "Öndeki uygulamaya gönder",
+            "description": "Dikte sırasında yalnızca bu tuşa basarak sonunda sabitlenen uygulama yerine öndeki uygulamaya gönderin. Geri almak için tekrar basın. Sabitleme kalır."
+          },
+          "skip_automatic_enter": {
+            "name": "Enter olmadan ekle",
+            "description": "Dikte sırasında yalnızca bu tuşa basarak metni otomatik Enter olmadan ekleyin. Geri almak için tekrar basın."
           }
         },
         "errors": {
@@ -1335,6 +1343,9 @@
         "promptMissing": "Bu prompt artık yok.",
         "promptNotUsable": "Bu promptta hatalar var; önce ayarlarda düzenleyin."
       }
+    },
+    "dictationKeys": {
+      "enterSkipped": "Bu dikte için otomatik Enter kapalı"
     }
   },
   "whatsNew": {

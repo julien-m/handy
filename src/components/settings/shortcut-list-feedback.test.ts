@@ -127,6 +127,17 @@ describe("hints, titles and test ids", () => {
     expect(listHint(4)).toBe("limit");
   });
 
+  test("a one-key action (014) has no hint and its own test ids", () => {
+    expect(listHint(0, 1, 0)).toBeNull();
+    expect(listHint(1, 1, 0)).toBeNull();
+    expect(shortcutTestIds("retarget_to_active_app").container).toBe(
+      "shortcut-settings-active-app-key",
+    );
+    expect(shortcutTestIds("skip_automatic_enter").container).toBe(
+      "shortcut-settings-no-enter-key",
+    );
+  });
+
   test("a system refusal names the system and the shortcut", () => {
     expect(systemRefusalTitle("macos", "⌘ ⇧ 5")).toEqual({
       key: `${LIST_KEY}.systemRefused`,

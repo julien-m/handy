@@ -12,6 +12,7 @@ mod bounded_worker;
 pub mod context;
 pub mod default_input;
 pub mod delivery;
+pub mod dictation_toggles;
 #[cfg(test)]
 pub(crate) mod fake_workspace;
 mod favorite_toggle;

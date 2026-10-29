@@ -5,6 +5,7 @@
 
 ---
 
+## 2026-10-29 — [Feature 014] Keys during a dictation: Option left pressed alone sends the dictation in progress to the app in front at the end without unpinning (press again to undo), Control left pressed alone inserts it without the automatic Enter (`Suppressed(UserSkipped)`, indicator mark); one modifier key each, configurable in the shortcut settings and the CLI, observed only during a dictation (automated evidence; native proof pending)
 ## 2026-10-29 — [Feature 007] Bugfix N28: with `paste_verification` on, a terminal (cmux) no longer receives the transcript twice nor the recovery bubble: only web text (an element below an `AXWebArea`) is verified, any other element is `Unreadable` (`NotWebText`) with the behavior without verification, and a last read right before the repeated Cmd+V cancels it when the page pasted late (AC-019, FR-012)
 ## 2026-10-29 — [Feature 012] Fix N29: compact badge menu rows (smaller star, no "This dictation only" hint, 009 amended); names up to about 20 characters shown in full (1/1 gap closed)
 

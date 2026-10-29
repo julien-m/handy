@@ -198,7 +198,7 @@ impl EnterTransaction {
         self.settle(t0);
         let (id, generation) = (self.frozen.dictation_id, self.frozen.destination_generation);
         if let Err(refusal) = self.ports.claims.claim_enter(id, generation) {
-            return EnterResult::Suppressed(Suppression::Claim(refusal));
+            return EnterResult::Suppressed(suppression_of(refusal));
         }
         if context.is_some_and(|context| !self.still_in_front(context)) {
             return EnterResult::Suppressed(Suppression::FocusLost);
@@ -237,6 +237,15 @@ impl EnterTransaction {
     }
     fn lock(&self) -> std::sync::MutexGuard<'_, Token> {
         self.token.lock().unwrap_or_else(PoisonError::into_inner)
+    }
+}
+
+// @spec FR-004: Suppressed(UserSkipped) — .specs/features/014-in-dictation-keys/spec.md#fr-004
+/// Why a refused claim suppresses the Enter: « Insert without Enter » (014) has its own reason.
+fn suppression_of(refusal: EnterRefusal) -> Suppression {
+    match refusal {
+        EnterRefusal::UserSkipped => Suppression::UserSkipped,
+        other => Suppression::Claim(other),
     }
 }
 

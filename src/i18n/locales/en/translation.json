@@ -182,6 +182,14 @@
           "transcribe_with_post_process": {
             "name": "Post-Processing Hotkey",
             "description": "Optional: A dedicated hotkey that always applies AI post-processing to your transcription."
+          },
+          "retarget_to_active_app": {
+            "name": "Send to the App in Front",
+            "description": "During a dictation, press this key alone to send it to the app in front at the end instead of the pinned app. Press again to undo. The pin stays."
+          },
+          "skip_automatic_enter": {
+            "name": "Insert without Enter",
+            "description": "During a dictation, press this key alone to insert the text without the automatic Enter. Press again to undo."
           }
         },
         "errors": {
@@ -1338,6 +1346,9 @@
         "promptMissing": "This prompt no longer exists.",
         "promptNotUsable": "This prompt has issues; edit it in settings first."
       }
+    },
+    "dictationKeys": {
+      "enterSkipped": "Automatic Enter off for this dictation"
     }
   },
   "secureInput": {

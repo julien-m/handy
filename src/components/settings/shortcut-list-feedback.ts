@@ -202,9 +202,12 @@ export type ListHint = "last" | "limit" | null;
 export const listHint = (
   count: number,
   limit: number = MAX_SHORTCUTS_PER_ACTION,
+  min: number = 1,
 ): ListHint => {
+  // A one-key action (014) needs no hint: Change and Remove say it all.
+  if (limit <= 1) return null;
   if (count >= limit) return "limit";
-  if (count <= 1) return "last";
+  if (min > 0 && count <= min) return "last";
   return null;
 };
 
@@ -236,6 +239,8 @@ export const systemRefusalTitle = (
 const ACTION_SLUGS: Record<string, string> = {
   transcribe: "dictation",
   transcribe_with_post_process: "ai-dictation",
+  retarget_to_active_app: "active-app-key",
+  skip_automatic_enter: "no-enter-key",
   cancel: "cancel",
 };
 

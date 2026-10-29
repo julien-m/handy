@@ -182,6 +182,14 @@
           "transcribe_with_post_process": {
             "name": "後處理快捷鍵",
             "description": "可選：專用快捷鍵，使用時一律對轉錄結果套用 AI 後處理"
+          },
+          "retarget_to_active_app": {
+            "name": "傳送到前景應用程式",
+            "description": "聽寫時單獨按下此鍵，結束時將文字傳送到前景應用程式，而不是已釘選的應用程式。再按一次復原。釘選保持不變。"
+          },
+          "skip_automatic_enter": {
+            "name": "插入但不按 Enter",
+            "description": "聽寫時單獨按下此鍵，插入文字時不自動按 Enter。再按一次復原。"
           }
         },
         "errors": {
@@ -1335,6 +1343,9 @@
         "promptMissing": "此提示詞已不存在。",
         "promptNotUsable": "此提示詞有問題；請先在設定中編輯。"
       }
+    },
+    "dictationKeys": {
+      "enterSkipped": "本次聽寫已關閉自動 Enter"
     }
   },
   "whatsNew": {
