@@ -129,13 +129,13 @@ impl OutputPorts for AppOutputPorts {
         utils::hide_recording_overlay(&self.app);
         set_tray_state(&self.app, TrayIconState::Idle);
     }
-    async fn insert(&self, text: String, history: HistoryRecord) {
+    async fn insert(&self, text: String, case_decided: bool, history: HistoryRecord) {
         let cancelled = Box::new({
             let (recording, generation) = (Arc::clone(&self.recording), self.cancel_generation);
             move || recording.was_cancelled_since(generation)
         });
         let insertion = (self.destination_ticket, text, history);
-        insert_final_text(&self.app, insertion, cancelled).await;
+        insert_final_text(&self.app, insertion, case_decided, cancelled).await;
     }
 }
 

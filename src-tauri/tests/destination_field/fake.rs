@@ -5,7 +5,8 @@
 //! or to answer late for a while (an application brought forward a moment ago): a call whose
 //! timeout ends before the application answers spends its timeout and gets `Timeout`, and a
 //! write sent then is applied anyway, as the target does once it answers.
-//! No method can return an element's value, selected text or title: the port has none.
+//! No method can return an element's value, selected text or title, except `text_in` (015's
+//! bounded read), which answers only text a test scripted with `World::text`.
 #![allow(dead_code)]
 
 use super::destination::ManualClock;
@@ -54,6 +55,8 @@ struct State {
     after: Option<After>,
     calls: Vec<Call>,
     nodes_alive: i64,
+    /// Text of an element, for 015's `text_in` only (UTF-16).
+    texts: HashMap<u32, Vec<u16>>,
 }
 
 /// The scripted world shared by the port and its elements.
@@ -120,6 +123,12 @@ impl World {
     /// Run `effect` once, right after the next call named `op`.
     pub fn after(&self, op: &'static str, effect: impl FnOnce() + Send + 'static) {
         lock(&self.state).after = Some((op, Box::new(effect)));
+    }
+    /// Element `id` holds `text` (015: read only through `text_in`).
+    pub fn text(&self, id: u32, text: &str) {
+        lock(&self.state)
+            .texts
+            .insert(id, text.encode_utf16().collect());
     }
     /// Every call so far.
     pub fn calls(&self) -> Vec<Call> {
@@ -370,5 +379,18 @@ impl FieldNode for Node {
     }
     fn as_any(&self) -> &dyn Any {
         self
+    }
+    fn text_in(
+        &mut self,
+        location: usize,
+        length: usize,
+        timeout: Duration,
+    ) -> Result<Vec<u16>, AxQueryError> {
+        self.world.answer("text_in", self.id, timeout)?;
+        let state = lock(&self.world.state);
+        let text = state.texts.get(&self.id).ok_or(AxQueryError::Unsupported)?;
+        text.get(location..location + length)
+            .map(<[u16]>::to_vec)
+            .ok_or(AxQueryError::Failed)
     }
 }

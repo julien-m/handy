@@ -354,7 +354,8 @@
         "output": "Keluaran",
         "transcription": "Transkripsi",
         "history": "Riwayat",
-        "experimental": "Eksperimental"
+        "experimental": "Eksperimental",
+        "textFormatting": "Format teks"
       },
       "experimentalToggle": {
         "label": "Fitur Eksperimental",
@@ -524,6 +525,12 @@
       "noFieldBubble": {
         "title": "Tampilkan gelembung saat tidak ada kolom teks yang difokuskan",
         "description": "Menyimpan teks dalam gelembung alih-alih menempelkannya ke mana-mana."
+      },
+      "textFormatting": {
+        "smartCapitalization": {
+          "label": "Kapitalisasi cerdas",
+          "description": "Menyesuaikan huruf pertama setiap dikte dengan teks sebelum kursor: huruf kapital di awal kalimat, huruf kecil saat Anda melanjutkannya. Singkatan, kata seperti iPhone, dan kata kustom Anda tetap dipertahankan. Tidak ada yang berubah jika kolom tidak dapat dibaca."
+        }
       }
     },
     "vocabulary": {

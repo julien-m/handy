@@ -354,7 +354,8 @@
         "output": "Uitvoer",
         "transcription": "Transcriptie",
         "history": "Geschiedenis",
-        "experimental": "Experimenteel"
+        "experimental": "Experimenteel",
+        "textFormatting": "Tekstopmaak"
       },
       "experimentalToggle": {
         "label": "Experimentele functies",
@@ -524,6 +525,12 @@
       "noFieldBubble": {
         "title": "Toon de bubbel als er geen tekstveld actief is",
         "description": "Bewaart de tekst in een bubbel in plaats van hem nergens te plakken."
+      },
+      "textFormatting": {
+        "smartCapitalization": {
+          "label": "Slimme hoofdletters",
+          "description": "Past de eerste letter van elk dictaat aan de tekst vóór de cursor aan: een hoofdletter aan het begin van een zin, een kleine letter als je een zin voortzet. Afkortingen, woorden zoals iPhone en je eigen woorden blijven behouden. Als het veld niet leesbaar is, verandert er niets."
+        }
       }
     },
     "vocabulary": {

@@ -354,7 +354,8 @@
         "output": "Salida",
         "transcription": "Transcripción",
         "history": "Historial",
-        "experimental": "Experimental"
+        "experimental": "Experimental",
+        "textFormatting": "Formato del texto"
       },
       "experimentalToggle": {
         "label": "Funciones experimentales",
@@ -524,6 +525,12 @@
       "noFieldBubble": {
         "title": "Mostrar la burbuja cuando ningún campo de texto tiene el foco",
         "description": "Guarda el texto en una burbuja en lugar de pegarlo en ninguna parte."
+      },
+      "textFormatting": {
+        "smartCapitalization": {
+          "label": "Mayúsculas inteligentes",
+          "description": "Adapta la primera letra de cada dictado al texto antes del cursor: mayúscula al empezar una frase, minúscula al continuarla. Se conservan las siglas, palabras como iPhone y tus palabras personalizadas. No cambia nada si no se puede leer el campo."
+        }
       }
     },
     "vocabulary": {

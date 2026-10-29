@@ -354,7 +354,8 @@
         "output": "輸出",
         "transcription": "轉錄",
         "history": "歷史",
-        "experimental": "實驗性"
+        "experimental": "實驗性",
+        "textFormatting": "文字格式"
       },
       "experimentalToggle": {
         "label": "實驗性功能",
@@ -524,6 +525,12 @@
       "noFieldBubble": {
         "title": "沒有聚焦的文字欄位時顯示泡泡",
         "description": "將文字保留在泡泡中，而不是貼到空處。"
+      },
+      "textFormatting": {
+        "smartCapitalization": {
+          "label": "智慧大小寫",
+          "description": "依據游標前的文字調整每次聽寫的首字母：句首大寫，接續句子時小寫。縮寫、iPhone 之類的字詞以及你的自訂字詞會保持不變。無法讀取欄位時不做任何變更。"
+        }
       }
     },
     "vocabulary": {

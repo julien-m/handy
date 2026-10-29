@@ -354,7 +354,8 @@
         "output": "Sortida",
         "transcription": "Transcripció",
         "history": "Historial",
-        "experimental": "Experimental"
+        "experimental": "Experimental",
+        "textFormatting": "Format del text"
       },
       "experimentalToggle": {
         "label": "Funcions experimentals",
@@ -524,6 +525,12 @@
       "noFieldBubble": {
         "title": "Mostra la bombolla quan cap camp de text no té el focus",
         "description": "Guarda el text en una bombolla en lloc d'enganxar-lo enlloc."
+      },
+      "textFormatting": {
+        "smartCapitalization": {
+          "label": "Majúscules intel·ligents",
+          "description": "Adapta la primera lletra de cada dictat al text abans del cursor: majúscula a l'inici d'una frase, minúscula quan la continues. Es conserven les sigles, paraules com iPhone i les teves paraules personalitzades. No canvia res si no es pot llegir el camp."
+        }
       }
     },
     "vocabulary": {

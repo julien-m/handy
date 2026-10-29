@@ -18,6 +18,7 @@ pub mod field;
 pub mod field_attempt;
 pub mod field_capture;
 pub mod field_check;
+pub mod field_context;
 mod field_lifetime;
 pub mod field_range;
 pub mod guard;

@@ -121,8 +121,8 @@ impl MacFieldNode {
     }
 }
 
-/// The `CFRange` inside an `AXValue`, or `Failed` for any other value.
-fn cf_range(value: &CfOwned) -> Result<CfRange, AxQueryError> {
+/// The `CFRange` inside an `AXValue`, or `Failed` for any other value (also 015's caret).
+pub(crate) fn cf_range(value: &CfOwned) -> Result<CfRange, AxQueryError> {
     // SAFETY: AXValueGetTypeID takes no arguments; the value is a live CF object.
     let is_ax_value = type_id(value.as_ptr()) == unsafe { AXValueGetTypeID() };
     // SAFETY: AXValueGetType is only called on an AXValue.
@@ -219,6 +219,18 @@ impl FieldNode for MacFieldNode {
     }
     fn as_any(&self) -> &dyn Any {
         self
+    }
+    fn text_in(
+        &mut self,
+        location: usize,
+        length: usize,
+        timeout: Duration,
+    ) -> Result<Vec<u16>, AxQueryError> {
+        crate::smart_capitalization::macos::string_for_range(
+            self.element(),
+            (location, length),
+            timeout,
+        )
     }
 }
 

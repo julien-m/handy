@@ -354,7 +354,8 @@
         "output": "Utmatning",
         "transcription": "Transkription",
         "history": "Historik",
-        "experimental": "Experimentellt"
+        "experimental": "Experimentellt",
+        "textFormatting": "Textformatering"
       },
       "experimentalToggle": {
         "label": "Experimentella funktioner",
@@ -524,6 +525,12 @@
       "noFieldBubble": {
         "title": "Visa bubblan när inget textfält har fokus",
         "description": "Behåller texten i en bubbla i stället för att klistra in den i tomma intet."
+      },
+      "textFormatting": {
+        "smartCapitalization": {
+          "label": "Smarta versaler",
+          "description": "Anpassar första bokstaven i varje diktering till texten före markören: versal i början av en mening, gemen när du fortsätter en. Förkortningar, ord som iPhone och dina egna ord behålls. Inget ändras om fältet inte kan läsas."
+        }
       }
     },
     "vocabulary": {

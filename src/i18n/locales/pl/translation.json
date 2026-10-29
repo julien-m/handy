@@ -354,7 +354,8 @@
         "output": "Wyjście",
         "transcription": "Transkrypcja",
         "history": "Historia",
-        "experimental": "Eksperymentalne"
+        "experimental": "Eksperymentalne",
+        "textFormatting": "Formatowanie tekstu"
       },
       "experimentalToggle": {
         "label": "Funkcje Eksperymentalne",
@@ -524,6 +525,12 @@
       "noFieldBubble": {
         "title": "Pokazuj dymek, gdy żadne pole tekstowe nie jest aktywne",
         "description": "Zachowuje tekst w dymku zamiast wklejać go w próżnię."
+      },
+      "textFormatting": {
+        "smartCapitalization": {
+          "label": "Inteligentne wielkie litery",
+          "description": "Dopasowuje pierwszą literę każdego dyktowania do tekstu przed kursorem: wielka na początku zdania, mała przy jego kontynuacji. Skróty, słowa takie jak iPhone i Twoje własne słowa pozostają bez zmian. Jeśli pola nie da się odczytać, nic się nie zmienia."
+        }
       }
     },
     "vocabulary": {

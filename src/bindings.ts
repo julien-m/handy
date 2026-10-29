@@ -613,6 +613,18 @@ async changeAppendTrailingSpaceSetting(enabled: boolean) : Promise<Result<null, 
 }
 },
 /**
+ * Settings UI write of `smart_capitalization` (015), through the shared validator and one
+ * revisioned commit; the next insertion reads it.
+ */
+async changeSmartCapitalizationSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_smart_capitalization_setting", { enabled }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
  * Settings UI write of `return_to_dictation_app`: the shared UI validator (a build without the
  * destination capability refuses `true` and `false` with `validation_failed` and the typed reason
  * `unsupported_platform`), one durable commit, then `settings-changed`. The value is read when a
@@ -1558,6 +1570,12 @@ automatic_enter?: AutomaticEnterPolicy | null; post_process_enabled?: boolean; p
  * dictations start with it while AI post-processing is on; `None` starts them with None.
  */
 plain_dictation_prompt_id?: string | null; mute_while_recording?: boolean; append_trailing_space?: boolean; 
+/**
+ * Smart capitalization (015): adapt the first letter of a dictation to the text before the
+ * cursor. On for a new installation (`get_default_settings`); a store without the key is an
+ * upgrade and reads off (field default and `apply_settings_migrations`).
+ */
+smart_capitalization?: boolean; 
 /**
  * Return to the application where the dictation started before inserting (006).
  */

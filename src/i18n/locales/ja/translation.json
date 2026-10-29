@@ -354,7 +354,8 @@
         "output": "出力",
         "transcription": "文字起こし",
         "history": "履歴",
-        "experimental": "実験的"
+        "experimental": "実験的",
+        "textFormatting": "テキストの書式"
       },
       "experimentalToggle": {
         "label": "実験的な機能",
@@ -524,6 +525,12 @@
       "noFieldBubble": {
         "title": "テキストフィールドが選択されていないときにバブルを表示",
         "description": "何もない場所に貼り付ける代わりに、テキストをバブルに保持します。"
+      },
+      "textFormatting": {
+        "smartCapitalization": {
+          "label": "スマート大文字化",
+          "description": "各ディクテーションの最初の文字をカーソルの前のテキストに合わせます。文の先頭では大文字、文を続けるときは小文字にします。略語、iPhone のような語、カスタム単語はそのまま保持されます。フィールドを読み取れない場合は何も変更しません。"
+        }
       }
     },
     "vocabulary": {

@@ -23,6 +23,8 @@ struct Recorded {
     abandoned: Cell<bool>,
     /// Inserted text with the history receipt it was handed (the count of saved entries).
     inserted: RefCell<Vec<(String, usize)>>,
+    /// Whether each insertion was told its case was decided by the AI step (015).
+    case_decided: RefCell<Vec<bool>>,
 }
 impl OutputPorts for Recorded {
     type History = usize;
@@ -45,7 +47,8 @@ impl OutputPorts for Recorded {
     fn abandon(&self) {
         self.abandoned.set(true);
     }
-    async fn insert(&self, text: String, history: usize) {
+    async fn insert(&self, text: String, case_decided: bool, history: usize) {
+        self.case_decided.borrow_mut().push(case_decided);
         self.inserted.borrow_mut().push((text, history));
     }
 }
@@ -87,6 +90,11 @@ fn without_ai_history_and_insertion_receive_the_replaced_text() {
     let expected = "open Claude Code now".to_owned();
     assert_eq!(*ports.history.borrow(), [(expected.clone(), None)]);
     assert_eq!(*ports.inserted.borrow(), [(expected, 1)]);
+    assert_eq!(
+        *ports.case_decided.borrow(),
+        [false],
+        "015: the native case is not decided"
+    );
 }
 
 #[test]
@@ -103,6 +111,11 @@ fn with_ai_its_input_and_the_history_text_hold_the_replacement() {
     let history = [(native.to_owned(), Some(rewritten.to_owned()))];
     assert_eq!(*ports.history.borrow(), history);
     assert_eq!(*ports.inserted.borrow(), [(rewritten.to_owned(), 1)]);
+    assert_eq!(
+        *ports.case_decided.borrow(),
+        [true],
+        "015: the AI result keeps its case"
+    );
 }
 
 #[test]

@@ -16,6 +16,8 @@ interface SettingContainerProps {
   titleTestId?: string;
   /** Makes the title a programmatic focus target (tabIndex -1) with this `data-focus-key`. */
   titleFocusKey?: string;
+  /** Small decorative icon before the title (horizontal tooltip layout), hidden from assistive tech. */
+  icon?: React.ReactNode;
 }
 
 /**
@@ -33,6 +35,18 @@ const titleAttributes = (titleTestId?: string, titleFocusKey?: string) =>
         tabIndex: -1,
       };
 
+/**
+ * The row icon, decorative: the title names the setting.
+ * @param icon the icon, or undefined for none
+ * @returns the icon wrapper, or null
+ */
+const leadingIcon = (icon?: React.ReactNode) =>
+  icon === undefined ? null : (
+    <span className="text-mid-gray flex items-center" aria-hidden="true">
+      {icon}
+    </span>
+  );
+
 export const SettingContainer: React.FC<SettingContainerProps> = ({
   title,
   description,
@@ -45,6 +59,7 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
   testId,
   titleTestId,
   titleFocusKey,
+  icon,
 }) => {
   const titleProps = titleAttributes(
     titleTestId ?? (testId ? `${testId}-title` : undefined),
@@ -161,6 +176,7 @@ export const SettingContainer: React.FC<SettingContainerProps> = ({
       <div className={horizontalContainerClasses} data-testid={testId}>
         <div className="max-w-2/3">
           <div className="flex items-center gap-2">
+            {leadingIcon(icon)}
             <h3
               {...titleProps}
               className={`text-sm font-medium ${disabled ? "opacity-50" : ""}`}

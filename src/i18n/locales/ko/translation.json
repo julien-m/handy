@@ -354,7 +354,8 @@
         "output": "출력",
         "transcription": "전사",
         "history": "히스토리",
-        "experimental": "실험적"
+        "experimental": "실험적",
+        "textFormatting": "텍스트 서식"
       },
       "experimentalToggle": {
         "label": "실험적 기능",
@@ -524,6 +525,12 @@
       "noFieldBubble": {
         "title": "포커스된 텍스트 필드가 없을 때 말풍선 표시",
         "description": "아무 곳에나 붙여넣는 대신 텍스트를 말풍선에 보관합니다."
+      },
+      "textFormatting": {
+        "smartCapitalization": {
+          "label": "스마트 대문자",
+          "description": "각 받아쓰기의 첫 글자를 커서 앞의 텍스트에 맞춥니다. 문장 시작에서는 대문자로, 문장을 이어 쓸 때는 소문자로 바꿉니다. 약어, iPhone 같은 단어와 사용자 지정 단어는 그대로 유지됩니다. 필드를 읽을 수 없으면 아무것도 바뀌지 않습니다."
+        }
       }
     },
     "vocabulary": {

@@ -354,7 +354,8 @@
         "output": "Output",
         "transcription": "Transskription",
         "history": "Historik",
-        "experimental": "Eksperimentel"
+        "experimental": "Eksperimentel",
+        "textFormatting": "Tekstformatering"
       },
       "experimentalToggle": {
         "label": "Eksperimentelle funktioner",
@@ -524,6 +525,12 @@
       "noFieldBubble": {
         "title": "Vis boblen, når intet tekstfelt har fokus",
         "description": "Beholder teksten i en boble i stedet for at indsætte den i ingenting."
+      },
+      "textFormatting": {
+        "smartCapitalization": {
+          "label": "Smart brug af store bogstaver",
+          "description": "Tilpasser det første bogstav i hver diktering til teksten før markøren: stort i starten af en sætning, lille når du fortsætter en. Forkortelser, ord som iPhone og dine egne ord bevares. Intet ændres, hvis feltet ikke kan læses."
+        }
       }
     },
     "vocabulary": {

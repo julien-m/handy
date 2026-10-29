@@ -29,6 +29,7 @@
     "test:vocabulary": "bun test src/stores/vocabulary-store.test.ts src/components/settings/vocabulary/vocabulary-model.test.ts src/components/settings/vocabulary/vocabulary-limit.test.ts src/components/settings/vocabulary/vocabulary-notices.test.tsx src/hooks/use-vocabulary.test.ts src/components/settings/vocabulary/vocabulary-retry.test.ts && bun test src/components/settings/vocabulary/vocabulary-status-render.test.tsx",
     "test:shortcut-states": "bun test src/components/settings/shortcut-draft-model.test.ts src/components/settings/shortcut-list-feedback.test.ts src/components/settings/record-request-model.test.ts && bun test src/components/settings/recorder-lifecycle.test.ts && bun test src/components/settings/shortcut-list-render.test.tsx",
     "test:output-settings": "bun test src/components/settings/return-to-app-model.test.ts src/components/settings/history-limit-model.test.ts src/components/settings/paste-method-options.test.ts src/components/settings/automatic-enter-state.test.ts src/components/settings/recovery-bubble-toggle-state.test.ts src/components/settings/paste-verification-toggle-state.test.ts && bun test src/hooks/use-destination-support.test.ts && bun test src/components/settings/output-settings-render.test.tsx",
+    "test:text-formatting": "bun test src/components/settings/text-formatting",
     "test:onboarding": "bun test src/components/onboarding",
     "test:playwright": "playwright test",
     "test:playwright:ui": "playwright test --ui",

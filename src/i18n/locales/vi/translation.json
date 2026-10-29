@@ -354,7 +354,8 @@
         "output": "Đầu ra",
         "transcription": "Chuyển đổi",
         "history": "Lịch sử",
-        "experimental": "Thử nghiệm"
+        "experimental": "Thử nghiệm",
+        "textFormatting": "Định dạng văn bản"
       },
       "experimentalToggle": {
         "label": "Tính năng thử nghiệm",
@@ -524,6 +525,12 @@
       "noFieldBubble": {
         "title": "Hiển thị bong bóng khi không có ô văn bản nào được chọn",
         "description": "Giữ văn bản trong bong bóng thay vì dán vào chỗ trống."
+      },
+      "textFormatting": {
+        "smartCapitalization": {
+          "label": "Viết hoa thông minh",
+          "description": "Điều chỉnh chữ cái đầu tiên của mỗi lần đọc chính tả theo văn bản trước con trỏ: viết hoa ở đầu câu, viết thường khi bạn viết tiếp câu. Từ viết tắt, những từ như iPhone và từ tùy chỉnh của bạn được giữ nguyên. Không có gì thay đổi nếu không đọc được trường."
+        }
       }
     },
     "vocabulary": {

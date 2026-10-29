@@ -121,6 +121,7 @@
             "plain_dictation_prompt_id",
             "mute_while_recording",
             "append_trailing_space",
+            "smart_capitalization",
             "destination_favorites",
             "return_to_dictation_app",
             "app_language",
@@ -199,6 +200,7 @@
                   "plain_dictation_prompt_id",
                   "mute_while_recording",
                   "append_trailing_space",
+                  "smart_capitalization",
                   "destination_favorites",
                   "return_to_dictation_app",
                   "app_language",
@@ -980,6 +982,9 @@
         "show_whats_new_on_update": {
           "type": "boolean"
         },
+        "smart_capitalization": {
+          "type": "boolean"
+        },
         "smart_paste_migration_version": {
           "maximum": 18446744073709551615,
           "minimum": 0,
@@ -1104,6 +1109,7 @@
         "plain_dictation_prompt_id",
         "mute_while_recording",
         "append_trailing_space",
+        "smart_capitalization",
         "destination_favorites",
         "return_to_dictation_app",
         "app_language",
@@ -1740,6 +1746,17 @@
     {
       "allowed_values": [],
       "key": "append_trailing_space",
+      "nullable": false,
+      "owner_domain": "output",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "boolean"
+    },
+    {
+      "allowed_values": [],
+      "key": "smart_capitalization",
       "nullable": false,
       "owner_domain": "output",
       "range": null,

@@ -354,7 +354,8 @@
         "output": "输出",
         "transcription": "转录",
         "history": "历史",
-        "experimental": "实验性"
+        "experimental": "实验性",
+        "textFormatting": "文本格式"
       },
       "experimentalToggle": {
         "label": "实验性功能",
@@ -524,6 +525,12 @@
       "noFieldBubble": {
         "title": "没有聚焦的文本框时显示气泡",
         "description": "将文本保留在气泡中，而不是粘贴到空处。"
+      },
+      "textFormatting": {
+        "smartCapitalization": {
+          "label": "智能大小写",
+          "description": "根据光标前的文本调整每次听写的首字母：句首大写，接续句子时小写。缩写、iPhone 之类的词以及你的自定义词保持不变。无法读取字段时不做任何更改。"
+        }
       }
     },
     "vocabulary": {
