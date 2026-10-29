@@ -1525,10 +1525,9 @@ async exportWordReplacementsFile() : Promise<Result<ReplacementExportFile | null
 }
 },
 /**
- * Checks if the Mac is a laptop by detecting battery presence
- * 
- * This uses pmset to check for battery information.
- * Returns true if a battery is detected (laptop), false otherwise (desktop)
+ * Whether this computer is a laptop (macOS: a battery is reported by `pmset`; other
+ * platforms: always false). The doc comment is shared by every platform's definition because
+ * it is exported into `src/bindings.ts`, which must not depend on the build platform.
  */
 async isLaptop() : Promise<Result<boolean, string>> {
     try {
