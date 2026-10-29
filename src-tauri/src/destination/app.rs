@@ -5,7 +5,7 @@
 use super::manager::DestinationManager;
 use super::recovery::{OutcomeRegistry, RecoverySlot};
 use super::session::DestinationSupport;
-use super::snapshot::DestinationSnapshot;
+use super::snapshot::{DestinationSnapshot, SelectionView};
 use super::workspace::SystemClock;
 use crate::settings_service::platform_capability::PlatformCapabilities;
 use std::sync::Arc;
@@ -96,8 +96,13 @@ pub fn manager(app: &AppHandle) -> Option<Arc<DestinationManager>> {
     app.try_state::<Arc<DestinationManager>>()
         .map(|state| Arc::clone(state.inner()))
 }
-/// Tell the UI that the session changed.
+// @spec AC-009: Indicator stays on its start monitor — .specs/features/006-destination-application/spec.md#ac-009
+/// Tell the UI that the session changed. A dictation with a destination (captured, pinned or
+/// chosen from the badge) keeps the indicator on its monitor until the next dictation starts.
 pub fn emit_changed(app: &AppHandle, snapshot: &DestinationSnapshot) {
+    if matches!(snapshot.selection, SelectionView::Application { .. }) {
+        crate::overlay::hold_placement_for_destination();
+    }
     if let Err(error) = app.emit(DESTINATION_CHANGED, snapshot) {
         log::warn!("Could not notify the UI of a destination change: {error}");
     }

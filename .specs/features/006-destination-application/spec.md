@@ -240,6 +240,11 @@ flowchart TD
 **Criterion:** The settings CLI (008) reads and sets "Return to the dictation's application" with the same validation as the UI, including the unsupported-platform refusal. With `--json`, stdout contains only the JSON envelope.
 **Priority:** P2 | **Story:** Story 5
 
+### AC-009
+
+**Criterion:** Once the dictation has a destination (captured at the start, pinned as in 009, or chosen from the badge), the indicator stays on the monitor where it was placed until the next dictation starts: recording, the Live text growing, transcribing, the AI step, notices and the recovery bubble of 010 (shown at the indicator's place) never move to another monitor because the user switched to an application or moved the cursor there. If that monitor is disconnected, the indicator goes to the monitor under the cursor and stays there. A dictation without a destination (frontmost application at the end) keeps today's behavior: each placement uses the monitor under the cursor. The first placement of every dictation uses the monitor under the cursor, as today.
+**Priority:** P1 | **Story:** Story 2
+
 ## Behavioral AC
 
 Signals extracted: overlay, badge, dropdown, menu, select, popover, toggle, keyboard navigation. Official `detect_traits` returned has_dropdown, has_overlay, is_keyboard_navigable.
@@ -308,8 +313,8 @@ Feature: Keyboard access to destination settings
 
 ### FR-003
 
-**Requirement:** Show a destination badge with icon, name and accessible label next to the indicator, and a non-activating menu to change the destination for the current dictation.
-**AC References:** AC-003, AC-004
+**Requirement:** Show a destination badge with icon, name and accessible label next to the indicator, and a non-activating menu to change the destination for the current dictation; while the dictation has a destination, keep the indicator on the monitor where it was placed.
+**AC References:** AC-003, AC-004, AC-009
 
 ### FR-004
 
@@ -348,6 +353,7 @@ Feature: Keyboard access to destination settings
 - Pinning the destination across dictations is feature 009; the recovery bubble is 010; smart paste (007) is an insertion method that runs after this feature has activated the destination.
 - Program context: specified in list order (001–010); the settings CLI foundation (008) ships first.
 - Decision 2026-10-14 (Julien): a dictation whose audio recording (WAV) cannot be saved, whatever the cause and not only when the AI step fails, still gets a text-only history entry; losing the text is worse than losing the audio. AC-005 therefore no longer ties the history to today's audio-gated save. Story 4, SC-002, requirement IDs and the cancellation behavior are unchanged.
+- Decision 2026-10-29 (Julien, native report N19, macOS with three screens, Live style at the bottom, return on): "once it is pinned to the application, it must stay where the application is"; starting in Codex on the central screen then switching to the browser on the top screen moved the Live indicator up. A dictation with a destination now keeps the indicator on the monitor of its first placement until the next dictation (AC-009); without a destination the indicator still follows the cursor. Julien also validated on 2026-10-29 that unpinning or removing the destination during the dictation leaves the indicator where it is. Placing the indicator on the screen of the destination application's window (at the start, on a pin or on a badge choice) was considered and rejected the same day: an indicator that jumps to another screen when the user pins takes it away from where the user works, so it stays on the screen of its first placement.
 
 ## QE Analysis
 
@@ -384,6 +390,7 @@ Feature: Keyboard access to destination settings
 - Destination in full screen on another Space: activation switches to that Space before insertion.
 - Dictation cancelled: no activation and no insertion.
 - Same app chosen from the badge as captured: no change.
+- Several monitors: with a destination, switching to an application on another screen or moving the cursor there does not move the indicator (AC-009); a disconnected monitor sends it under the cursor.
 
 ## Success Criteria
 

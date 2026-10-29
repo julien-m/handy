@@ -6,6 +6,7 @@
 ---
 
 ## 2026-10-29 — [Feature 011] Bugfix N18: an application that answers late after its activation (Codex, Chrome pages) receives the paste in its remembered input instead of the recovery bubble; the guard verifies the state at dispatch
+## 2026-10-29 — [Feature 006] Bugfix N19: with a captured or pinned destination, the recording indicator (and the 010 bubble at its place) stays on the monitor of its first placement until the next dictation (AC-009)
 
 ## 2026-10-28 — [Feature 006] Bugfix N16: a declined return to the dictation's app falls back to the accessibility activation request within the same 1 s
 

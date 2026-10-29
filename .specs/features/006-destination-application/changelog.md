@@ -187,3 +187,14 @@
 - **Fix:** an activation chain inside the same 1 s deadline: the workspace request, then `AXFrontmost` on the destination's application element when the first is declined or 300 ms after it was accepted without the destination in front; every request declined still fails at once. Same resolved instance only, no launch, guard unchanged; a debug log records each strategy, its answer and time.
 - **Tests:** destination::activation (5), destination::insertion::tests::chain_cases (7); [proofs](proofs/n16-activation/)
 - **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-29 — [Bugfix]: The indicator stays on its monitor while the dictation has a destination (native session N19)
+
+- **Type:** Bugfix
+- **Spec modified:** Yes: AC-009 added (FR-003 references it), clarification of 2026-10-29, edge case "Several monitors"
+- **Code modified:** src-tauri/src/overlay_anchor.rs (new), overlay_anchor_tests.rs (new), overlay.rs, overlay_indicator.rs, actions.rs, destination/app.rs
+- **AC impacted:** AC-009 (FR-003); 009 pin and 010 bubble placement through it
+- **Why:** with three screens, a dictation started in Codex on the central screen moved its Live indicator to the top screen when Julien switched to the browser there. Every placement (`calculate_overlay_position`, `place_overlay` on each Live extent growth, `place_windows_overlay`, the 010 bubble through `indicator_place`) called `get_monitor_with_cursor`, so the indicator followed the cursor even when the destination was captured or pinned.
+- **Fix:** a per-dictation placement anchor: `begin_dictation_placement` at the start (first placement under the cursor, as before), `hold_placement_for_destination` when a session snapshot has an application selection (`emit_changed`: capture, pin, badge choice), and `placement_monitor` returns the held monitor while it is connected. Without a destination nothing is held and the cursor rule is unchanged; with the rollout gate closed no snapshot is emitted, so the build behaves as `dev`.
+- **Tests:** overlay::anchor (7 new); full lib suite 1086 passed with `destination-return,smart-paste-dispatch`
+- **Author:** Claude Code (claude-opus-5-5)

@@ -63,6 +63,12 @@ mod indicator;
 pub use indicator::{hold_overlay_for_notice, set_overlay_extent};
 use indicator::{place_overlay, reassert_after_show};
 
+// Monitor the indicator stays on while the dictation has a destination (006 AC-009).
+#[path = "overlay_anchor.rs"]
+mod anchor;
+use anchor::placement_monitor;
+pub use anchor::{begin_dictation_placement, hold_placement_for_destination};
+
 /// Overlay window size (logical) for a given UI state, grown to the extent the indicator asked
 /// for (prompt pill, destination badge, menus, notices).
 fn overlay_dimensions(state: &str) -> (f64, f64) {
@@ -260,7 +266,7 @@ fn calculate_overlay_position(
     width: f64,
     height: f64,
 ) -> Option<(f64, f64)> {
-    let monitor = get_monitor_with_cursor(app_handle)?;
+    let monitor = placement_monitor(app_handle)?;
     let scale = monitor.scale_factor();
     let monitor_x = monitor.position().x as f64 / scale;
     let monitor_y = monitor.position().y as f64 / scale;
@@ -383,8 +389,8 @@ fn place_windows_overlay(
 ) -> Result<(), String> {
     use windows::Win32::UI::WindowsAndMessaging::{SetWindowPos, SWP_NOACTIVATE, SWP_NOZORDER};
 
-    let monitor = get_monitor_with_cursor(app_handle)
-        .ok_or_else(|| "failed to determine the monitor containing the cursor".to_string())?;
+    let monitor = placement_monitor(app_handle)
+        .ok_or_else(|| "failed to determine the monitor of the overlay".to_string())?;
     let text_scale = windows_text_scale_factor();
     let (logical_width, logical_height) =
         indicator::fit_to(&monitor, text_scale, (logical_width, logical_height));
