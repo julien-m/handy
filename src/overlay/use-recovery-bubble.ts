@@ -7,7 +7,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { commands, type RecoveryBubbleView } from "@/bindings";
 import { syncLanguageFromSettings } from "@/i18n";
 import type { DragPointer } from "./recovery-bubble";
-import { dragStarts, type Point } from "./recovery-preview";
+import { dragStarts, type Point, pressMayDrag } from "./recovery-preview";
 
 /** Native event with the projection (`recovery::surface::VIEW_EVENT`). */
 export const VIEW_EVENT = "recovery-bubble-changed";
@@ -76,13 +76,15 @@ const useWindowSize = () => {
   return ref;
 };
 
-/** The drag gesture of the handle: past the threshold, ask the native side to drag. */
+/** The drag gesture of the bubble: a press off the controls that moves past the threshold
+ * asks the native side to drag; a press on Copy, Why? or Close never does. */
 const useDragGesture = (view: RecoveryBubbleView | null) => {
   const start = useRef<Point | null>(null);
   return useCallback(
     (pointer: DragPointer) => {
       if (pointer.kind !== "move") {
-        start.current = pointer.kind === "down" ? pointer.point : null;
+        const mayDrag = pointer.kind === "down" && pressMayDrag(pointer.origin);
+        start.current = mayDrag ? pointer.point : null;
         return;
       }
       if (

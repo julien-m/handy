@@ -1,5 +1,5 @@
 // Pure model of the recovery bubble (010): what the reason line and the explanation say for one
-// projection, and when a pointer gesture on the handle becomes a native drag. The projection
+// projection, and when a pointer gesture on the bubble becomes a native drag. The projection
 // comes from the native `RecoveryManager`; the full transcript never reaches this window.
 import type { RecoveryBubbleView } from "@/bindings";
 
@@ -36,7 +36,7 @@ const ICONS: Record<RecoveryBubbleView["reason"], ReasonIcon> = {
   no_text_field: "info",
 };
 
-/** Pixels the pointer moves on the handle, button held, before the native drag starts. */
+/** Pixels the pointer moves on the bubble, button held, before the native drag starts. */
 export const DRAG_THRESHOLD_PX = 3;
 
 // @spec AC-003: The reason in one sentence — .specs/features/010-recovery-bubble/spec.md#ac-003
@@ -105,7 +105,22 @@ export interface Point {
   y: number;
 }
 
-// @spec FR-003: Drag gesture on the handle — .specs/features/010-recovery-bubble/spec.md#fr-003
+/** Attribute naming the drag role of a bubble element; unmarked elements are the surface. */
+export const DRAG_ROLE_ATTRIBUTE = "data-drag-role";
+
+/** Where a press lands: the bubble surface, the drag handle, or another control. */
+export type DragOrigin = "surface" | "handle" | "control";
+
+/** The origin named by the closest `data-drag-role` value; none means the bubble surface. */
+export const dragOrigin = (role: string | null): DragOrigin =>
+  role === "handle" || role === "control" ? role : "surface";
+
+// @spec FR-003: Whole bubble drags, controls click — .specs/features/010-recovery-bubble/spec.md#fr-003
+/** True when a press at `origin` may become a drag: the surface or the handle, never a control. */
+export const pressMayDrag = (origin: DragOrigin): boolean =>
+  origin !== "control";
+
+// @spec FR-003: Drag gesture past the threshold — .specs/features/010-recovery-bubble/spec.md#fr-003
 /** True when the primary button is held and the pointer left the threshold around `start`. */
 export const dragStarts = (
   start: Point | null,

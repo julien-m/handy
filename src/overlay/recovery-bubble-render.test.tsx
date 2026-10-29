@@ -1,7 +1,8 @@
 /**
  * Markup of the recovery bubble (010) with the contract test IDs and accessible names: open
  * state with reason, preview, drag handle (macOS), Copy, Close and Why?; the explanation shown
- * ("Hide details", expanded); no drag handle without drag; the closed state renders nothing.
+ * ("Hide details", expanded); no drag handle without drag; the closed state renders nothing;
+ * with drag the whole bubble is the drag surface and Copy, Why? and Close stay plain clicks.
  * Run with `bun run test:recovery-bubble`.
  *
  * Behavioral patterns from: system/testing/ui-behavioral-taxonomy.md
@@ -148,6 +149,31 @@ describe("platform actions (has_drag_drop: drag-start, AC-006)", () => {
     expect(html).not.toContain("recovery-bubble-drag-handle");
     expect(html).toContain('data-testid="recovery-bubble-copy"');
     expect(html).toContain('data-testid="recovery-bubble-close"');
+  });
+
+  test("with drag the whole bubble is the drag surface (N24)", () => {
+    const html = render(view());
+    const bubble = html.match(/<section [^>]*>/)?.[0] ?? "";
+    expect(bubble).toContain('data-drag-surface="true"');
+  });
+
+  test("without drag the bubble is not a drag surface", () => {
+    expect(render(view({ can_drag: false }))).not.toContain(
+      "data-drag-surface",
+    );
+  });
+
+  test("every button but the handle is a control that stays a plain click", () => {
+    const html = render(view());
+    const buttons = html.match(/<button [^>]*>/g) ?? [];
+    const handles = buttons.filter((tag) => tag.includes("-drag-handle"));
+    const others = buttons.filter((tag) => !tag.includes("-drag-handle"));
+    expect(handles.length).toBe(1);
+    expect(handles[0]).toContain('data-drag-role="handle"');
+    expect(others.length > 0).toBe(true);
+    for (const tag of others) {
+      expect(tag).toContain('data-drag-role="control"');
+    }
   });
 });
 

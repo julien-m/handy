@@ -9,7 +9,13 @@
  */
 import { describe, expect, test } from "bun:test";
 import type { RecoveryBubbleView } from "@/bindings";
-import { bubbleTexts, dragStarts, DRAG_THRESHOLD_PX } from "./recovery-preview";
+import {
+  bubbleTexts,
+  dragOrigin,
+  dragStarts,
+  DRAG_THRESHOLD_PX,
+  pressMayDrag,
+} from "./recovery-preview";
 
 const view = (patch: Partial<RecoveryBubbleView> = {}): RecoveryBubbleView => ({
   bubble_id: 3,
@@ -124,5 +130,22 @@ describe("drag gesture (has_drag_drop: drag-start)", () => {
     expect(dragStarts(start, { x: 11, y: 11 }, 1)).toBe(false);
     expect(dragStarts(start, beyond, 0)).toBe(false);
     expect(dragStarts(null, beyond, 1)).toBe(false);
+  });
+
+  test("a press that stays within the threshold is a click, not a drag", () => {
+    const start = { x: 40, y: 20 };
+    const edge = { x: start.x + DRAG_THRESHOLD_PX, y: start.y };
+    expect(dragStarts(start, start, 1)).toBe(false);
+    expect(dragStarts(start, edge, 1)).toBe(false);
+  });
+
+  test("the whole bubble drags: surface and handle may drag, controls never (N24)", () => {
+    expect(dragOrigin(null)).toBe("surface");
+    expect(dragOrigin("handle")).toBe("handle");
+    expect(dragOrigin("control")).toBe("control");
+    expect(dragOrigin("unknown")).toBe("surface");
+    expect(pressMayDrag(dragOrigin(null))).toBe(true);
+    expect(pressMayDrag(dragOrigin("handle"))).toBe(true);
+    expect(pressMayDrag(dragOrigin("control"))).toBe(false);
   });
 });

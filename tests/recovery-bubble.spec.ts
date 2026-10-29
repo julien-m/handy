@@ -230,6 +230,56 @@ test("the drag starts past the threshold with the button held, never on a click"
   });
 });
 
+/** Press inside `testId` at its centre, move by a quarter of its width, then release. */
+const pressAndMove = async (page: Page, testId: string) => {
+  const box = await page.getByTestId(testId).boundingBox();
+  if (box === null) throw new Error(`no box for ${testId}`);
+  const centre = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+  await page.mouse.move(centre.x, centre.y);
+  await page.mouse.down();
+  await page.mouse.move(centre.x + box.width / 4, centre.y);
+  await page.mouse.up();
+};
+
+// @spec AC-004: The whole bubble is the drag source — .specs/features/010-recovery-bubble/spec.md#ac-004
+test("the whole bubble drags: the preview starts the drag, a click on it does not (N24)", async ({
+  page,
+}) => {
+  await open(page);
+  await page.getByTestId("recovery-bubble-preview").click();
+  expect(await calls(page, "recovery_bubble_begin_drag")).toHaveLength(0);
+  await pressAndMove(page, "recovery-bubble-preview");
+  expect((await calls(page, "recovery_bubble_begin_drag"))[0].args).toEqual({
+    bubbleId: 3,
+  });
+});
+
+// @spec AC-004: Copy, Why? and Close stay plain clicks — .specs/features/010-recovery-bubble/spec.md#ac-004
+test("a press on Copy, Why? or Close never starts the drag (N24)", async ({
+  page,
+}) => {
+  // Copy and Close end the bubble, so each control gets a fresh one.
+  for (const control of ["copy", "why", "close"]) {
+    await open(page);
+    await pressAndMove(page, `recovery-bubble-${control}`);
+    expect(await calls(page, "recovery_bubble_begin_drag")).toHaveLength(0);
+  }
+});
+
+// @spec AC-004: Grab cursor over the drag surface — .specs/features/010-recovery-bubble/spec.md#ac-004
+test("the cursor shows grab over the bubble and pointer over its controls (N24)", async ({
+  page,
+}) => {
+  await open(page);
+  const cursor = (testId: string) =>
+    page.getByTestId(testId).evaluate((node) => getComputedStyle(node).cursor);
+  expect(await cursor("recovery-bubble-bubble")).toBe("grab");
+  expect(await cursor("recovery-bubble-preview")).toBe("grab");
+  expect(await cursor("recovery-bubble-drag-handle")).toBe("grab");
+  expect(await cursor("recovery-bubble-copy")).toBe("pointer");
+  expect(await cursor("recovery-bubble-close")).toBe("pointer");
+});
+
 // @spec AC-006: No drag handle on Windows and Linux — .specs/features/010-recovery-bubble/spec.md#ac-006
 test("without drag the handle is absent and Copy, Why? and Close remain", async ({
   page,

@@ -484,6 +484,10 @@ Preuves natives en attente avec Julien : aucune n'est déclarée réussie. Harna
   - Étapes : glisser la bulle vers TextEdit, Notes, ChatGPT (champ vide) et Comet (champ de recherche) ; puis relâcher sur le bureau, et appuyer sur Échap pendant un glisser ; essayer avec Option et Cmd enfoncés ; démarrer une dictée pendant un glisser.
   - Attendu : la transcription complète dans TextEdit et Notes (obligatoire), résultat noté pour ChatGPT et Comet ; la bulle est cachée pendant le glisser, revient inchangée après un refus ou Échap (à côté de l'avis de l'indicateur si un avis le tient alors), se ferme après un dépôt accepté (log « drop accepted » sans texte) ; toujours une copie, quels que soient les modificateurs ; le presse-papiers général est inchangé ; une nouvelle dictée ferme la bulle pour de bon et le dépôt tardif ne la rouvre pas ; avec « espace final » actif, le texte déposé et celui de Copy finissent par l'espace comme une insertion, l'aperçu non.
   - Couvre : AC-004, FR-003, SC-002. Preuve : `proofs/native-macos/drag/`.
+- [ ] **Toute la bulle est la source du glisser (N24).**
+  - Étapes : saisir la bulle par le texte de l'aperçu, par le fond près de la raison et par la bordure, et la déposer dans TextEdit ; survoler le texte puis Copier ; cliquer sur l'aperçu sans bouger ; appuyer sur Copier, Pourquoi ? et × en bougeant légèrement.
+  - Attendu : chaque prise démarre le même glisser que le bouton « Glisser dans un champ » (transcription complète, log `Recovery bubble N: drop accepted`) ; le curseur est une main ouverte au survol de la surface et une main de lien sur les boutons ; un clic sans mouvement ne démarre rien ; Copier, Pourquoi ? et × gardent leur action et ne glissent jamais.
+  - Couvre : AC-004, FR-003. Preuve : `proofs/native-macos/drag/`.
 - [ ] **Copy contre la restauration du smart paste.**
   - Étapes : dictée A insérée par smart paste avec une restauration en attente ; dictée B qui ouvre une bulle ; Copy pendant la période calme ; attendre 9 s.
   - Attendu : la transcription de B reste dans le presse-papiers ; la bulle se ferme ; aucune restauration ne l'écrase.
