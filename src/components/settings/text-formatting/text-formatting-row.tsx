@@ -2,6 +2,7 @@
 // switch, written through the settings service; the next dictation uses the new value.
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { type } from "@tauri-apps/plugin-os";
 import { useSettings } from "../../../hooks/useSettings";
 import { ToggleSwitch } from "../../ui/ToggleSwitch";
 import { useOutputScreen } from "../output-screen";
@@ -26,7 +27,7 @@ export const TextFormattingRow: React.FC<TextFormattingRowProps> = ({
       onChange={(enabled) => void updateSetting(option.key, enabled)}
       isUpdating={isUpdating(option.key)}
       label={t(option.labelKey)}
-      description={t(option.descriptionKey)}
+      description={t(option.descriptionKey(type()))}
       descriptionMode="tooltip"
       grouped={true}
       testId={`${screen}-${option.testId}`}

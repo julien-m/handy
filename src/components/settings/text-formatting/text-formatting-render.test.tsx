@@ -1,7 +1,8 @@
 /**
- * Rendered Text formatting section (015): one independent switch row per option, with its icon,
- * its info button, the stored value and the screen-prefixed test ids. Run with
- * `bun run test:text-formatting`.
+ * Rendered Text formatting section (015, with the 016 smart paragraphs row): one independent
+ * switch row per option, in display order, with its icon, its info button, the stored value and
+ * the screen-prefixed test ids. Run with `bun run test:text-formatting` (also part of
+ * `bun run test:smart-paragraphs`).
  */
 import { describe, expect, mock, test } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -11,6 +12,8 @@ import type { OutputScreen } from "../output-screen";
 mock.module("react-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
+let osType = "macos";
+mock.module("@tauri-apps/plugin-os", () => ({ type: () => osType }));
 let stored: Record<string, unknown> = {};
 mock.module("../../../hooks/useSettings", () => ({
   useSettings: () => ({
@@ -24,6 +27,16 @@ const { TextFormattingSection } = await import("./text-formatting-section");
 const { TextFormattingRow } = await import("./text-formatting-row");
 const { TEXT_FORMATTING_OPTIONS } = await import("./text-formatting-options");
 const { OutputScreenContext } = await import("../output-screen");
+const { smartParagraphsDescriptionKey } = await import(
+  "../smart-paragraphs-state"
+);
+
+/** The option of `key`, failing the test when the section does not list it. */
+const optionOf = (key: string) => {
+  const option = TEXT_FORMATTING_OPTIONS.find((entry) => entry.key === key);
+  if (!option) throw new Error(`${key} is not a text formatting option`);
+  return option;
+};
 
 const renderIn = (screen: OutputScreen, node: ReactElement): string =>
   renderToStaticMarkup(
@@ -58,7 +71,7 @@ describe("text formatting section (015)", () => {
   });
 
   test("smart capitalization reflects the stored value", () => {
-    const option = TEXT_FORMATTING_OPTIONS[0];
+    const option = optionOf("smart_capitalization");
     stored = { smart_capitalization: true };
     const on = renderIn(
       "output-settings",
@@ -82,6 +95,58 @@ describe("text formatting section (015)", () => {
     expect(markup).toContain(
       'data-testid="settings-write-errors-smart-capitalization-toggle"',
     );
+  });
+
+  test("rows follow the planned order: capitalization, then paragraphs", () => {
+    stored = {};
+    const markup = renderIn("output-settings", <TextFormattingSection />);
+    const capitalization = markup.indexOf(
+      'data-testid="output-settings-smart-capitalization"',
+    );
+    const paragraphs = markup.indexOf(
+      'data-testid="output-settings-smart-paragraphs"',
+    );
+    expect(capitalization >= 0).toBe(true);
+    expect(paragraphs > capitalization).toBe(true);
+  });
+
+  test("smart paragraphs: pilcrow icon, label, off unless stored on (016)", () => {
+    const option = optionOf("smart_paragraphs_enabled");
+    stored = {};
+    const off = renderIn(
+      "output-settings",
+      <TextFormattingRow option={option} />,
+    );
+    expect(off).toContain("lucide-pilcrow");
+    expect(off).toContain("settings.advanced.smartParagraphs.title");
+    expect(switchOf(off, "output-settings-smart-paragraphs")).not.toContain(
+      "checked",
+    );
+    stored = { smart_paragraphs_enabled: true };
+    const on = renderIn(
+      "output-settings",
+      <TextFormattingRow option={option} />,
+    );
+    expect(switchOf(on, "output-settings-smart-paragraphs")).toContain(
+      "checked",
+    );
+  });
+
+  test("smart paragraphs describe the platform limitation outside macOS (016)", () => {
+    const option = optionOf("smart_paragraphs_enabled");
+    stored = {};
+    for (const system of ["macos", "windows", "linux"]) {
+      osType = system;
+      expect(option.descriptionKey(system)).toBe(
+        smartParagraphsDescriptionKey(system),
+      );
+      const markup = renderIn(
+        "output-settings",
+        <TextFormattingRow option={option} />,
+      );
+      expect(markup).toContain('aria-label="More information"');
+    }
+    osType = "macos";
   });
 
   test("keys are unique, so each row has its own switch", () => {

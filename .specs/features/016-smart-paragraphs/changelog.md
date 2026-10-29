@@ -1,5 +1,14 @@
 # Changelog - 016-smart-paragraphs
 
+## 2026-10-29 — [Refactor]: Smart paragraphs row moved into the Text formatting section
+
+- **Type:** Refactor (integration with 015)
+- **Spec modified:** Yes (AC-010, FR-007, decision `text_formatting_row`)
+- **Code modified:** `src/components/settings/text-formatting/text-formatting-options.ts` (new `smart_paragraphs_enabled` row with the `Pilcrow` icon), `src/components/settings/text-formatting/text-formatting-row.tsx` (platform-dependent description), `src/components/settings/advanced/AdvancedSettings.tsx` (provisional row removed); `SmartParagraphsToggle.tsx` and `smart-paragraphs-render.test.tsx` removed, their checks moved to `text-formatting-render.test.tsx`; `package.json` (`test:smart-paragraphs`)
+- **AC impacted:** AC-010, AC-007 (UI description)
+- **Author:** Claude Code (integration of 015, claude-opus-5-5)
+- Row order set by Julien: « ␣ Smart spacing » (to come), « Aa Smart capitalization », « ¶ Smart paragraphs ». Pipeline order after the merge: replacements and vocabulary, AI, paragraphs (016), capitalization (015, insertion preparation), insertion.
+
 ## 2026-10-29 — [Feature]: Smart paragraphs, local and off by default
 
 - **Type:** Feature

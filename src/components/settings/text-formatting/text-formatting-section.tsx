@@ -1,6 +1,6 @@
-// "Text formatting" section of the Advanced settings page (015): the options that adapt the
-// inserted text to the destination field, one independent switch row each, drawn from
-// `TEXT_FORMATTING_OPTIONS`.
+// "Text formatting" section of the Advanced settings page (015, with 016 smart paragraphs): the
+// options that adapt the inserted text to the destination field, one independent switch row
+// each, drawn from `TEXT_FORMATTING_OPTIONS`.
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { SettingsGroup } from "../../ui/SettingsGroup";

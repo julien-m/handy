@@ -240,7 +240,7 @@ flowchart LR
 **Given** a fresh install or an existing settings store without the key, **when** settings are read, **then** `smart_paragraphs_enabled` is `false`; the UI and `handy settings set smart_paragraphs_enabled <value>` go through the same settings-service validation (booleans only), and the value is read at each dictation's delivery, so a change applies from the next dictation.
 
 ### AC-010
-**Given** the settings window, **when** the user opens the Advanced settings, **then** a standalone row shows the ¶ icon, the translated label "Smart paragraphs", an information tooltip and an independent on/off switch, in every supported locale.
+**Given** the settings window, **when** the user opens the Advanced settings, **then** the "Text formatting" section (015) shows a row with the ¶ icon, the translated label "Smart paragraphs", an information tooltip and an independent on/off switch, after "Smart capitalization", in every supported locale.
 
 ## Functional Requirements
 
@@ -263,7 +263,7 @@ Apply the step in the dictation output stages after AI post-processing and the h
 Store `smart_paragraphs_enabled` (boolean, default `false`) in the settings service with the shared UI/CLI validation, and read it at each delivery. → AC-009
 
 ### FR-007
-Show a standalone settings row (icon, label, tooltip, switch) translated in all locales, with the platform limitation in the description outside macOS. → AC-010, AC-007
+Show a row (icon, label, tooltip, switch) of the "Text formatting" section, translated in all locales, with the platform limitation in the description outside macOS. → AC-010, AC-007
 
 ## Key Entities
 
@@ -290,7 +290,7 @@ Show a standalone settings row (icon, label, tooltip, switch) translated in all 
 | Replace only the whitespace at a break; keep all other characters | — | (3) Technical choice | AC-003 tests |
 | Pipeline position after AI, before 015 and insertion; history unchanged | Prompt | (2) Product requirement | `dictation_output` order test |
 | Setting through the settings service, same UI/CLI validation, all locales | AGENTS.md + prompt | (2) Product requirement | settings integration tests, `check:translations` |
-| Standalone row: icon, label, info, switch | Coordinator instruction | (2) Product requirement | render test |
+| Text formatting row: icon, label, info, switch | Coordinator instruction | (2) Product requirement | render test |
 
 ## Clarifications
 
@@ -303,6 +303,7 @@ Autonomous mode: no question was asked; each decision is recorded here with its 
 - Decision `016-smart-paragraphs:AC-008` / `after_ai_before_final_preparation` (2026-10-29, agent, kind 2): the step runs in `dictation_output::deliver`, after the history entry and before the insertion port, so 015's capitalization (final preparation in `destination::delivery`) sees the arranged text and history keeps the texts it already keeps. The recovery bubble shows the arranged text because it is what was going to be inserted.
 - Decision `016-smart-paragraphs:AC-009` / `general_domain` (2026-10-29, agent, kind 3): the key is owned by the `general` domain like `filler_word_removal_enabled`, so `handy settings set` validates it through the generic boolean descriptor; it is read once per dictation at delivery.
 - Decision `016-smart-paragraphs:AC-010` / `standalone_row_near_output` (2026-10-29, coordinator instruction): the row is a standalone component placed in Advanced > Output for now; the coordinator merges it into 015's text-formatting section at integration.
+- Decision `016-smart-paragraphs:AC-010` / `text_formatting_row` (2026-10-29, integration with 015, Julien's row order): the provisional standalone row is removed; smart paragraphs is the row « ¶ Smart paragraphs » of the "Text formatting" section, an entry of `TEXT_FORMATTING_OPTIONS` (lucide `Pilcrow` icon, platform-dependent description) after « Aa Smart capitalization »; « ␣ Smart spacing » will come first when its feature lands. Supersedes `standalone_row_near_output`.
 - Decision `016-smart-paragraphs:AC-002` / `trailing_short_paragraph` (2026-10-29, agent, kind 3): sentences remaining after the last break form the last paragraph even when short (for example a final "Thanks."); merging them back would contradict S2's rule that a paragraph closes at the boundary where a limit is reached.
 
 ## QE Analysis

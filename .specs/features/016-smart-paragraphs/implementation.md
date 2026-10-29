@@ -20,7 +20,7 @@ updated: 2026-10-29
 | [FR-004: NaturalLanguage on macOS, UAX #29 elsewhere](spec.md#fr-004) | `src-tauri/src/smart_paragraphs/segmenter.rs`, `src-tauri/src/smart_paragraphs/apple_segmenter.rs`, `src-tauri/src/smart_paragraphs/unicode_segmenter.rs` | `@spec FR-004: NaturalLanguage on macOS, UAX #29 elsewhere`, `@spec AC-007: CJK unchanged outside macOS` | ✅ Implemented (both segmenters tested on macOS; Windows/Linux builds not run here) | 2026-10-29 |
 | [FR-005: Step of the dictation output stages](spec.md#fr-005) | `src-tauri/src/smart_paragraphs/mod.rs`, `src-tauri/src/dictation_output.rs`, `src-tauri/src/actions.rs` | `@spec FR-005: Step of the dictation output stages`, `@spec AC-008: After AI and history, before insertion` | ✅ Implemented | 2026-10-29 |
 | [FR-006: Setting through the settings service](spec.md#fr-006) | `src-tauri/src/settings.rs`, `src-tauri/src/settings_service/descriptor_data.rs`, `src-tauri/src/settings_service/public.rs`, `src-tauri/src/shortcut/mod.rs`, `src-tauri/src/lib.rs` | `@spec FR-006: Off by default, settings service`, `@spec FR-006: Same validation as the CLI` | ✅ Implemented | 2026-10-29 |
-| [FR-007: Standalone translated row](spec.md#fr-007) | `src/components/settings/SmartParagraphsToggle.tsx`, `src/components/settings/smart-paragraphs-state.ts`, `src/components/settings/advanced/AdvancedSettings.tsx`, `src/i18n/locales/en/translation.json` (and the 25 other locales) | `@spec AC-010: Standalone row with icon, info, switch, FR-007: Translated row`, `@spec AC-007: Limitation shown outside macOS` | ✅ Implemented | 2026-10-29 |
+| [FR-007: Translated Text formatting row](spec.md#fr-007) | `src/components/settings/text-formatting/text-formatting-options.ts`, `src/components/settings/text-formatting/text-formatting-row.tsx`, `src/components/settings/smart-paragraphs-state.ts`, `src/i18n/locales/en/translation.json` (and the 25 other locales) | `@spec AC-010: Text formatting row, FR-007: Translated row`, `@spec AC-007: Limitation shown outside macOS` | ✅ Implemented | 2026-10-29 |
 
 ## Acceptance Criteria Mapping
 
@@ -35,7 +35,7 @@ updated: 2026-10-29
 | AC-007 | `src-tauri/src/smart_paragraphs/apple_segmenter_tests.rs`, `src-tauri/src/smart_paragraphs/unicode_segmenter_tests.rs`, `src-tauri/src/smart_paragraphs/arrange_tests.rs`, `src/components/settings/smart-paragraphs-state.test.ts` | ✅ automated (Windows/Linux runtime not exercised) |
 | AC-008 | `src-tauri/src/dictation_output_tests.rs` — tests `smart_paragraphs_arrange_the_ai_text_after_history_and_before_insertion`, `with_smart_paragraphs_off_insertion_receives_the_final_text_unchanged` | ✅ |
 | AC-009 | `src-tauri/src/settings.rs`, plus the cargo integration targets settings_live and settings_validation (scalars, contracts) — fresh-install default, old store default, UI/CLI parity accepted and refused, checked contract | ✅ |
-| AC-010 | `src/components/settings/smart-paragraphs-render.test.tsx` (and `bun run check:translations`) | ✅ automated (visual check in the app pending) |
+| AC-010 | `src/components/settings/text-formatting/text-formatting-render.test.tsx` (and `bun run check:translations`) | ✅ automated (visual check in the app pending) |
 
 ## Files Created/Modified
 
@@ -45,7 +45,7 @@ updated: 2026-10-29
 - `src-tauri/src/settings.rs`, `src-tauri/src/settings_service/descriptor_data.rs`, `src-tauri/src/settings_service/public.rs`, `src-tauri/src/shortcut/mod.rs`, `src-tauri/src/lib.rs` — setting, descriptor (`general`, boolean), public field, UI command.
 - `src-tauri/Cargo.toml`, `src-tauri/Cargo.lock` — direct dependency `unicode-segmentation` 1.12 (already locked as a transitive dependency).
 - `src-tauri/tests/settings_live.rs`, `src-tauri/tests/settings_validation/scalars.rs`, `src-tauri/tests/settings_validation/inventory.rs`, `src-tauri/tests/settings_validation/contracts.rs`, `src-tauri/tests/settings_validation/request_contracts.rs`, `.specs/features/008-settings-cli/contracts/settings-cli.schema.json` — new key in the inventories and the checked contract.
-- `src/bindings.ts` (regenerated), `src/stores/settingsStore.ts`, `src/components/settings/SmartParagraphsToggle.tsx`, `src/components/settings/smart-paragraphs-state.ts`, `src/components/settings/smart-paragraphs-state.test.ts`, `src/components/settings/smart-paragraphs-render.test.tsx`, `src/components/settings/advanced/AdvancedSettings.tsx`, the 26 `translation.json` files, `package.json` (`test:smart-paragraphs`).
+- `src/bindings.ts` (regenerated), `src/stores/settingsStore.ts`, `src/components/settings/text-formatting/text-formatting-options.ts`, `src/components/settings/text-formatting/text-formatting-row.tsx`, `src/components/settings/smart-paragraphs-state.ts`, `src/components/settings/smart-paragraphs-state.test.ts`, `src/components/settings/text-formatting/text-formatting-render.test.tsx`, `src/components/settings/advanced/AdvancedSettings.tsx`, the 26 `translation.json` files, `package.json` (`test:smart-paragraphs`).
 - `README.md` — "Smart paragraphs" section.
 
 ## Evidence levels

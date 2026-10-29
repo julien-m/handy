@@ -28,7 +28,6 @@ import { AccelerationSelector } from "../AccelerationSelector";
 import { LazyStreamClose } from "../LazyStreamClose";
 import { PasteVerificationToggle } from "../paste-verification-toggle";
 import { FillerWordRemoval } from "../FillerWordRemoval";
-import { SmartParagraphsToggle } from "../SmartParagraphsToggle";
 import { ChineseScriptSetting } from "../ChineseScript";
 import { VadBackendSelector } from "../VadBackendSelector";
 import { WordReplacements } from "../word-replacements/word-replacements";
@@ -96,7 +95,6 @@ export const AdvancedSettings: React.FC = () => {
               <AutoSubmit descriptionMode="tooltip" grouped={true} />
             )}
             <NoFieldBubbleToggle grouped={true} />
-            <SmartParagraphsToggle grouped={true} />
           </SettingsGroup>
         </div>
 
