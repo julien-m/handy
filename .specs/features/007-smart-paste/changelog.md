@@ -241,3 +241,14 @@ AppKit caching and delayed AX mutation counterexamples remain explicit: callback
 - **Tests:** verification unit table, smart_paste integration tests `verification.rs` (13 tests, setting off included), outcome/recovery/Enter matrices extended; [proofs](proofs/n11-verify/) (`final-*.out`, `front-*.out`, `probe-schema.out`, `conventions-repo.summary.json`)
 - **Remaining:** native proof in the Google page (`.specs/native-proofs-checklist.md`); classic Cmd+V not verified (no accessibility port or ownership guard)
 - **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-29 — [Bugfix]: Paste verification pasted twice in a terminal (N28)
+
+- **Type:** Bugfix
+- **Spec modified:** Yes (Story 7 independent test, Gherkin and flowchart, AC-019, FR-012, Key Entities, decision N28, QE, Edge Cases)
+- **Code modified:** src-tauri/src/smart_paste/verification.rs (web-text scope, retry gate, `UnreadableReason`), verification_tests.rs, coordinator_verify.rs (web-area probe, last read before the retry, reason log, allowance), coordinator_chord.rs, ax_port.rs (`is_in_web_area`, bounded `search_web_area`), macos_ax.rs (AXParent/AXRole walk); tests: tests/smart_paste/verification_web.rs (new), verification.rs, fakes.rs, rig.rs, smart_paste.rs
+- **AC impacted:** AC-019, FR-012
+- **Why:** N28: with `paste_verification` on, cmux received the transcript twice and then showed the recovery bubble (`Failed in 865ms`, `UnchangedAfterRetry`): the terminal's focused element has a readable value that does not reflect the paste, so "unchanged" proved nothing. Generic rule: only web text (element or ancestor with role `AXWebArea`, at most 48 parents and 100 ms) is verified; any other element is `Unreadable` (`NotWebText`) with the behavior without verification; a last read right before the repeated Cmd+V turns a late paste into `Verified` with nothing sent.
+- **Tests:** verification unit tests (web-text scope, retry gate, bounded ancestry walk), smart_paste integration tests `verification_web.rs` (not web text, failed search, limits, setting off, late paste)
+- **Remaining:** native proof in cmux, Claude Desktop and the Google page (`.specs/native-proofs-checklist.md`); native AppKit fields are no longer verified after Cmd+V (accepted, decision N28)
+- **Author:** Claude Code (claude-opus-5-5)

@@ -4,6 +4,7 @@
 use std::panic::{catch_unwind, resume_unwind, AssertUnwindSafe};
 
 use super::*;
+use crate::smart_paste::verification::UnreadableReason;
 
 impl SmartPasteCoordinator {
     /// Switches the layout, waits `paste_delay`, re-checks, posts Cmd+V and
@@ -63,7 +64,7 @@ impl SmartPasteCoordinator {
         request: &InsertionRequest,
         transaction: TransactionId,
         key: PasteKey,
-        probe: Option<verify::FieldProbe>,
+        probe: Result<verify::FieldProbe, UnreadableReason>,
         events: &mut dyn ReadEvents,
     ) -> PasteOutcome {
         // The keystroke instant is taken immediately before the first

@@ -353,16 +353,18 @@ Suivre la procédure détaillée de `.specs/features/007-smart-paste/implementat
     - première capture du helper : moins de 200 ms ;
     - Universal Clipboard : rien n'est reçu sur l'autre appareil (`currentHostOnly`).
   - Couvre : lignes « Exit », « Large Finder copy », « Helper start » et « Universal Clipboard » de `implementation.md`. Preuve : `proofs/native-macos-edge-cases/`.
-- [ ] **Vérification du collage (N11, expérimental, AC-019).**
-  - Étapes : Expérimental activé, `handy settings output set paste_verification true --json`, collage intelligent actif, `log_level` `debug`. Dans Chrome, champ « Posez une question » de Google en mode IA : 10 dictées avec Entrée automatique, puis 10 sans. Refaire 5 dictées dans TextEdit (champ lisible), 5 dans un champ mot de passe, puis copier un texte entre la lecture et la relance (si reproductible). Enfin `paste_verification false` et 5 dictées dans la page Google.
+- [ ] **Vérification du collage (N11 et N28, expérimental, AC-019).**
+  - Étapes : Expérimental activé, `handy settings output set paste_verification true --json`, collage intelligent actif, `log_level` `debug`. Dans Chrome, champ « Posez une question » de Google en mode IA : 10 dictées avec Entrée automatique, puis 10 sans. Refaire 5 dictées dans TextEdit (champ lisible), 10 dans cmux (terminal, 5 avec Entrée automatique, 5 sans), 5 dans Claude Desktop (Electron), 5 dans un champ mot de passe, puis copier un texte entre la lecture et la relance (si reproductible). Enfin `paste_verification false` et 5 dictées dans la page Google.
   - Attendu :
     - chaque dictée logue une ligne `[smart-paste] verify dictation N: Verified|RetriedVerified|Failed|Unreadable in Xms`, sans contenu ;
-    - page Google : le texte apparaît une seule fois dans le champ, ou bien `Failed` suivi de la bulle 010 avec la transcription et **aucune Entrée** sur un champ vide ; noter le nombre de `RetriedVerified` et tout double collage (risque accepté si la page colle après 300 ms) ;
-    - TextEdit : `Verified`, un seul Cmd+V ;
+    - page Google : le texte apparaît une seule fois dans le champ, ou bien `Failed` suivi de la bulle 010 avec la transcription et **aucune Entrée** sur un champ vide ; noter le nombre de `RetriedVerified` et tout double collage (un collage tardif vu par la dernière lecture avant la relance ne doit plus produire de doublon, N28) ;
+    - TextEdit : un seul Cmd+V ; `Unreadable` avec `unreadable: NotWebText` si le collage passe par Cmd+V (champ AppKit hors zone web, N28), ou aucune ligne si l'insertion directe AX a réussi ;
+    - cmux (terminal, N28) : le texte apparaît **une seule fois**, un seul Cmd+V, `verify dictation N: Unreadable` puis `verify dictation N unreadable: NotWebText`, **aucune bulle** 010, l'Entrée automatique suit ses règles habituelles ;
+    - Claude Desktop (Electron) : `Verified`, un seul Cmd+V ;
     - champ mot de passe : `Unreadable`, comportement inchangé ;
     - presse-papiers changé avant la relance : aucun second Cmd+V, `Failed`, la copie de l'utilisateur reste dans le presse-papiers ;
     - réglage désactivé : aucune ligne `verify dictation`, comportement de N11 inchangé.
-  - Couvre : AC-019, FR-012, décision N11 (« vérification après collage, en test »). Preuve : `proofs/native-macos-paste-verification/`.
+  - Couvre : AC-019, FR-012, décisions N11 (« vérification après collage, en test ») et N28 (terminal : aucun doublon, verdict Unreadable). Preuve : `proofs/native-macos-paste-verification/`.
 - [ ] **Entrée automatique.**
   - Étapes : `handy settings output set auto_submit true --json`, puis dicter dans les différents cas.
   - Attendu : Entrée est envoyée seulement après `inserted_verified`, `read_observed` ou `typed`, jamais après Screen Sharing ni après un échec.

@@ -1,6 +1,8 @@
 //! AC-019 decisions over every stage, observation and retry permit, the
-//! outcome each verdict reports, and the window budget at its boundaries.
+//! outcome each verdict reports, the window budget at its boundaries, and
+//! the N28 rules: only web text is verified, a late paste is never re-sent.
 use super::*;
+use crate::smart_paste::ax_port::{search_web_area, AxError};
 use FieldObservation::{Changed, Unchanged, Unreadable};
 use VerifyStage::{AfterRetry, First};
 
@@ -22,7 +24,7 @@ fn expected(stage: VerifyStage, observation: FieldObservation, permit: RetryPerm
     match (observation, stage, permit) {
         (Changed, First, _) => Done(VerifyVerdict::Verified),
         (Changed, AfterRetry, _) => Done(VerifyVerdict::RetriedVerified),
-        (Unreadable, _, _) => Done(VerifyVerdict::Unreadable),
+        (Unreadable, _, _) => Done(VerifyVerdict::Unreadable(UnreadableReason::ReadFailed)),
         (Unchanged, First, RetryPermit::Allowed) => Retry,
         (Unchanged, First, refused) => {
             Done(VerifyVerdict::Failed(VerifyFailure::RetryRefused(refused)))
@@ -80,7 +82,9 @@ fn only_a_failure_turns_read_observed_into_field_unchanged() {
     for verdict in [
         VerifyVerdict::Verified,
         VerifyVerdict::RetriedVerified,
-        VerifyVerdict::Unreadable,
+        VerifyVerdict::Unreadable(UnreadableReason::NoReadableField),
+        VerifyVerdict::Unreadable(UnreadableReason::NotWebText),
+        VerifyVerdict::Unreadable(UnreadableReason::ReadFailed),
     ] {
         assert_eq!(verdict.outcome_kind(), PasteOutcomeKind::ReadObserved);
     }
@@ -92,7 +96,7 @@ fn labels_match_the_debug_log_contract() {
         VerifyVerdict::Verified,
         VerifyVerdict::RetriedVerified,
         VerifyVerdict::Failed(VerifyFailure::RetryChordFailed),
-        VerifyVerdict::Unreadable,
+        VerifyVerdict::Unreadable(UnreadableReason::NotWebText),
     ]
     .map(VerifyVerdict::label);
     assert_eq!(
@@ -135,4 +139,69 @@ fn the_window_polls_at_the_interval_and_stops_at_its_end() {
         window.pause_before_next_read(start + VERIFY_WINDOW + poll),
         None
     );
+}
+
+#[test]
+fn only_an_element_proven_to_be_web_text_is_verified() {
+    assert_eq!(web_text_scope::<AxError>(Ok(true)), Ok(()));
+    let not_web = Err(UnreadableReason::NotWebText);
+    assert_eq!(web_text_scope::<AxError>(Ok(false)), not_web);
+    assert_eq!(web_text_scope(Err(AxError::Timeout)), not_web);
+    assert_eq!(web_text_scope(Err(AxError::NotTrusted)), not_web);
+}
+
+#[test]
+fn a_change_seen_right_before_the_retry_sends_nothing_and_verifies() {
+    assert_eq!(gate_retry(Unchanged), RetryGate::Send);
+    assert_eq!(
+        gate_retry(Changed),
+        RetryGate::Skip(VerifyVerdict::Verified)
+    );
+    let unreadable = VerifyVerdict::Unreadable(UnreadableReason::ReadFailed);
+    assert_eq!(gate_retry(Unreadable), RetryGate::Skip(unreadable));
+}
+
+/// Roles of a scripted ancestry, element first; `true` marks the web area.
+fn walk(roles: &[bool], max_depth: usize) -> (Result<bool, AxError>, Vec<usize>) {
+    let mut visited = Vec::new();
+    let found = search_web_area(max_depth, |depth| {
+        visited.push(depth);
+        Ok(roles.get(depth).copied())
+    });
+    (found, visited)
+}
+
+#[test]
+fn the_web_area_is_found_on_the_element_or_any_ancestor_within_the_depth() {
+    assert_eq!(walk(&[true], 4), (Ok(true), vec![0]));
+    assert_eq!(
+        walk(&[false, false, true, false], 4),
+        (Ok(true), vec![0, 1, 2])
+    );
+    assert_eq!(walk(&[false, false], 4), (Ok(false), vec![0, 1, 2]));
+}
+
+#[test]
+fn the_web_area_search_stops_at_its_depth_and_on_the_first_error() {
+    let deep = [vec![false; 6], vec![true]].concat();
+    assert_eq!(walk(&deep, 4), (Ok(false), vec![0, 1, 2, 3, 4]));
+    let mut visits = 0;
+    let found = search_web_area(4, |depth| {
+        visits += 1;
+        if depth == 1 {
+            Err(AxError::Timeout)
+        } else {
+            Ok(Some(false))
+        }
+    });
+    assert_eq!(found, Err(AxError::Timeout));
+    assert_eq!(visits, 2);
+}
+
+#[test]
+fn the_web_area_search_is_bounded() {
+    let limits = WEB_ANCESTRY_LIMITS;
+    assert!(limits.max_depth > 0);
+    assert!(limits.budget <= VERIFY_WINDOW);
+    assert!(limits.per_call <= limits.budget);
 }

@@ -256,7 +256,7 @@ flowchart TD
 **As a** Handy user, **I want** Handy to notice when a page received the paste but inserted nothing, **so that** automatic Enter never submits an empty field and my text stays recoverable.
 
 **Priority reason:** Finding N11 (2026-10-28/29): in Google's AI-mode field under Chrome, the page receives Cmd, V, the `paste` event with the right text and a non-cancelled `beforeinput insertFromPaste`, then inserts nothing in 30 to 75 % of dictations. "Read observed" is then a false success: no recovery bubble, and automatic Enter submits an empty field. Experimental and off by default while it is measured (decision N11 below).
-**Independent test:** With `paste_verification` on, dictate into a field whose page ignores the first paste, into one that ignores every paste, and into a field whose value cannot be read; inspect the number of Cmd+V, the outcome, Enter and recovery.
+**Independent test:** With `paste_verification` on, dictate into a field whose page ignores the first paste, into one that ignores every paste, into a field whose value cannot be read and into a terminal (not web text, N28); inspect the number of Cmd+V, the outcome, Enter and recovery.
 
 ```gherkin
 Feature: Paste verification after Cmd+V (experimental)
@@ -285,6 +285,17 @@ Feature: Paste verification after Cmd+V (experimental)
     Given paste verification is on and no readable, non-secure focused field of the destination exists
     When smart paste completes
     Then the outcome and effects are those of smart paste without verification
+  Scenario: Focused element is not web text (terminal)
+    Given paste verification is on and the focused element has a readable value
+    And neither it nor any ancestor within the search bounds is a web area
+    When smart paste completes
+    Then the verdict is "unreadable" with the cause "not web text"
+    And no second Cmd+V is sent, no recovery bubble is shown and automatic Enter follows its usual rules
+  Scenario: Page applies the paste after the window
+    Given paste verification is on and the field value is unchanged 300 ms after the read
+    And the retry is allowed
+    When a last read right before the repeated Cmd+V shows a changed value
+    Then no second Cmd+V is sent and the outcome stays "insertion attempted, read observed"
   Scenario: Setting off
     Given paste verification is off
     When smart paste completes
@@ -295,11 +306,15 @@ Feature: Paste verification after Cmd+V (experimental)
 flowchart TD
   A[Read observed after Cmd+V] --> B{Verification on and field readable?}
   B -- No --> C[Outcome: read observed, unchanged behavior]
-  B -- Yes --> D{Field changed within 300 ms?}
+  B -- Yes --> W{Field below a web area?}
+  W -- No --> C
+  W -- Yes --> D{Field changed within 300 ms?}
   D -- Yes --> E[Verified: read observed]
   D -- No --> F{Clipboard still holds the transcript and destination current?}
   F -- No --> G[Outcome: field unchanged; recovery; no Enter]
-  F -- Yes --> H[Cmd+V once more]
+  F -- Yes --> L{Last read: still unchanged?}
+  L -- No --> E
+  L -- Yes --> H[Cmd+V once more]
   H --> I{Field changed within 300 ms?}
   I -- Yes --> J[Retried and verified: read observed]
   I -- No --> G
@@ -361,7 +376,7 @@ AC-001 to AC-007 belonged to the retired clipboard recovery window scope and are
 
 ### AC-019
 
-**Criterion:** Experimental paste verification, setting `paste_verification` (boolean, off by default, shown in the Experimental section of the settings only while smart paste is the paste method, read and changed through the settings CLI with the same shared validation). When it is on and the clipboard paste produced "insertion attempted, read observed": if, right before the first Cmd+V, the destination process's focused element is not a password field and its value is readable through accessibility, smart paste keeps that value and polls the element every 20 ms for up to 300 ms after the read. A different value is a verified paste and the outcome stays "read observed". An unchanged value leads to exactly one more Cmd+V, sent only while this dictation's on-demand item still owns the clipboard (publication `changeCount` unchanged, nothing rewritten) and the destination is current, with the layout handling of AC-011; the element is then polled again for up to 300 ms, and a change keeps "read observed". When the value is still unchanged, or the retry is not allowed or cannot be posted, the outcome is "field unchanged": no automatic Enter (009), and the recovery bubble (010) offers the transcript as for an insertion failure that may have reached the application. A read error keeps "read observed" and never triggers a retry. Without a readable field, or with the setting off, the behavior is exactly that of smart paste without verification. Each verification logs at debug level `[smart-paste] verify dictation N: Verified|RetriedVerified|Failed|Unreadable in Xms` (X measured from the first key-down) and a failure logs its cause; no field value or transcript is ever logged.
+**Criterion:** Experimental paste verification, setting `paste_verification` (boolean, off by default, shown in the Experimental section of the settings only while smart paste is the paste method, read and changed through the settings CLI with the same shared validation). When it is on and the clipboard paste produced "insertion attempted, read observed": if, right before the first Cmd+V, the destination process's focused element is not a password field, is web text (the element or one of its ancestors has the accessibility role `AXWebArea`, as in Chrome and Safari pages and Electron apps, searched over at most 48 parents and 100 ms, roles only; decision N28) and its value is readable through accessibility, smart paste keeps that value and polls the element every 20 ms for up to 300 ms after the read. A different value is a verified paste and the outcome stays "read observed". An unchanged value leads to exactly one more Cmd+V, sent only while this dictation's on-demand item still owns the clipboard (publication `changeCount` unchanged, nothing rewritten), the destination is current and a last read of the value taken right before it is still unchanged (a changed value there is a verified paste and nothing is sent; a failed read sends nothing and is "unreadable"), with the layout handling of AC-011; the element is then polled again for up to 300 ms, and a change keeps "read observed". When the value is still unchanged, or the retry is not allowed or cannot be posted, the outcome is "field unchanged": no automatic Enter (009), and the recovery bubble (010) offers the transcript as for an insertion failure that may have reached the application. A read error keeps "read observed" and never triggers a retry. Without a readable field, for an element that is not web text (a terminal whose readable value does not follow the paste, N28), or with the setting off, the behavior is exactly that of smart paste without verification: no retry, no recovery bubble, automatic Enter under its usual rules. Each verification logs at debug level `[smart-paste] verify dictation N: Verified|RetriedVerified|Failed|Unreadable in Xms` (X measured from the first key-down); a failure logs its cause and an unreadable verdict its reason (`NoReadableField`, `NotWebText`, `ReadFailed`) at info level; no field value or transcript is ever logged.
 **Priority:** P2 | **Story:** Story 7
 
 ### AC-016
@@ -446,7 +461,7 @@ FR-001 to FR-004 belonged to the retired scope and are not reused.
 
 ### FR-012
 
-**Requirement:** Optionally verify, through the focused field's value, that a read-observed clipboard paste changed the field, retry it once under the clipboard ownership guard, and report an unchanged field as a recoverable failure.
+**Requirement:** Optionally verify, through the focused field's value, that a read-observed clipboard paste changed a web-text field (an element below an `AXWebArea`, decision N28), retry it once under the clipboard ownership guard and only after a last read still shows the field unchanged, and report an unchanged field as a recoverable failure; any other element keeps the behavior without verification.
 **AC References:** AC-019
 
 ## Key Entities
@@ -458,7 +473,7 @@ FR-001 to FR-004 belonged to the retired scope and are not reused.
 | Direct insertion attempt | Accessibility write before the clipboard | element role, value before, selected range, value after, verified flag |
 | Paste strategy | Chosen per destination | clipboard paste, Unicode typing, clipboard hand-over; restore and fallback delays |
 | Paste outcome | Result reported | inserted verified, read observed, not read, permission missing, uncertain, typed, clipboard handed over, insertion failed, field unchanged (AC-019) |
-| Paste verification | Experimental check after a read-observed Cmd+V (AC-019) | value before the paste (never logged), observation per window, retry permit, verdict (verified, retried and verified, failed with its cause, unreadable) |
+| Paste verification | Experimental check after a read-observed Cmd+V (AC-019) | value before the paste (never logged), web-text scope (N28), observation per window, retry permit, last read before the retry, verdict (verified, retried and verified, failed with its cause, unreadable with its reason) |
 
 ## Clarifications
 
@@ -482,6 +497,7 @@ FR-001 to FR-004 belonged to the retired scope and are not reused.
 <!-- livespec-clarification:{"requirement_id": "007-smart-paste:AC-009", "decision_key": "decision:ac-009:concealed-or-transient-content-not-restored", "evidence_hash": "a5432975c454211298925d5ad7e473f089411f64735971530ee67b3a8e592a3f", "answer": "User decision 2026-10-13 (Julien, relayed by the orchestrator after independent audit B, finding MAJOR-1): clipboard content marked `org.nspasteboard.ConcealedType` or `org.nspasteboard.TransientType` is not restored after a dictation. Other content is restored normally, always as current-host-only content (`currentHostOnly`). Reason: a dictation changes `changeCount`, so a password manager's automatic clearing no longer fires; restoring the secret would leave it on the clipboard indefinitely."} -->
 
 - Decision N11 (2026-10-29, Julien: « en mode test pour le moment »): after a read-observed Cmd+V, verify the paste through the focused field's value, retry Cmd+V once, then hand an unchanged field to the recovery bubble without automatic Enter (AC-019, FR-012). Experimental and off by default (`paste_verification`); measured rates before the fix in Google's AI-mode field under Chrome: smart paste at 60 ms 1/4 and 3/6, at 250 ms 4/6, at 1 s 5/6, classic Cmd+V 5/6, Cmd+V without a recent clipboard write 6/6 (`.specs/native-session-findings.md`, N11). The classic Cmd+V path is not verified: it has no accessibility port or clipboard ownership guard, so a retry could paste other content.
+- Decision N28 (2026-10-29, native finding in cmux): with `paste_verification` on, a terminal (cmux) received the transcript twice and then showed the recovery bubble (`verify dictation 4: Failed in 865ms`, `UnchangedAfterRetry`, `FieldUnchanged`; same for dictations 5 and 9), while Claude Desktop (Electron) and the Google page under Chrome logged `Verified in 105ms`. The terminal's focused element has a readable value that does not reflect the paste (or not within 300 ms), so an unchanged value proved nothing. Rule, generic and without any application list: the retry is allowed only for an element whose value is known to follow edits, i.e. web text (the element or an ancestor has the role `AXWebArea`, searched over at most 48 parents and 100 ms, roles only, nothing logged); any other element, or a search that times out, gives the verdict "unreadable" with the reason `NotWebText` and keeps the behavior without verification. As a safety belt, the value is read once more right before the repeated Cmd+V: a change there (late paste) is a verified paste and nothing is sent (AC-019, FR-012). Consequence accepted: native AppKit fields (TextEdit) are no longer verified after Cmd+V either; they normally take the verified direct insertion (AC-017) first, and no generic role was found that tells a terminal's readable element apart from an AppKit text view (both can expose a text area with a value).
 
 ## QE Analysis
 
@@ -490,7 +506,7 @@ FR-001 to FR-004 belonged to the retired scope and are not reused.
 - **P0 gates/evidence:** Fake-pasteboard tests for multi-type save/restore, first-read once, pre-keystroke reads ignored, 300/800 ms and 1.5/3 s timings, `changeCount` guard; strategy table tests by bundle identifier; input-source tests (layout vs input method, ABC then US fallback, restoration); outcome mapping tests feeding 009 and 010; migration tests from reliable paste.
 - **P1 gates/evidence:** AC-016 native checks per application and layout; clipboard-history manager check for the transient marker; CLI and UI selector checks.
 - **Non-functional expectations:** Restoration within 50 ms of its deadline; no transcript, clipboard content or field value read through accessibility logged at any level; input source always restored even when the paste fails.
-- **AC-019 (experimental):** P0 pure decision table (stage × observation × retry permit), window budget and log contract tests, coordinator tests with fakes (verified, retried, failed, clipboard taken over, destination lost, layout on retry, unreadable, password field, other process, not read, setting off); P1 native proof in Google's AI-mode field under Chrome (`.specs/native-proofs-checklist.md`). Risk: a page that applies the first paste after 300 ms receives the text twice; the native proof measures it.
+- **AC-019 (experimental):** P0 pure decision table (stage × observation × retry permit), window budget and log contract tests, coordinator tests with fakes (verified, retried, failed, clipboard taken over, destination lost, layout on retry, unreadable, password field, other process, not read, setting off, not web text, failed web-area search, late paste before the retry); P1 native proof in Google's AI-mode field under Chrome and in a terminal (`.specs/native-proofs-checklist.md`). Risk (N28): only a paste applied between the last read and the repeated Cmd+V can still arrive twice; the native proof measures it.
 - **Missing evidence:** All runtime evidence; mockup of the paste method selector deferred before `spec-ship`.
 - **Boundary:** QE defines risk and test sufficiency; the independent review judges requirements; Penflow governs UI design evidence; spec-test executes runtime proof.
 
@@ -514,7 +530,8 @@ FR-001 to FR-004 belonged to the retired scope and are not reused.
 - Password manager or other concealed or transient content on the clipboard (`org.nspasteboard.ConcealedType` or `org.nspasteboard.TransientType` on any saved item, including a type that could not be saved): it is never restored, its bytes are not kept, and the transcript stays instead, as current-host-only text with Handy's markers. Handy's own earlier transcript item carries these markers, so after "not read" a second dictation does not put the first transcript back either. Content marked only `org.nspasteboard.AutoGeneratedType` is restored normally.
 - Handy quits before restoration: the pending restoration runs before exit only when a read was observed and `changeCount` is unchanged; otherwise the transcript stays.
 
-- Paste verification on (AC-019) and the page applies the first paste more than 300 ms after the read: the repeated Cmd+V may insert the transcript twice; this is the accepted risk of the experimental setting, measured by its native proof.
+- Paste verification on (AC-019) and the page applies the first paste more than 300 ms after the read: the last read right before the repeated Cmd+V sees the change and nothing is sent (N28); only a paste applied in the instant between that read and the chord can still be inserted twice, the remaining accepted risk of the experimental setting, measured by its native proof.
+- Paste verification on (AC-019) and the focused element is a terminal or any element outside a web area (N28): its readable value may not follow the paste, so it is not verified: verdict "unreadable" (`NotWebText`), one Cmd+V only, no recovery bubble, automatic Enter under its usual rules.
 - Paste verification on and another copy replaces the clipboard between the read and the retry: no second Cmd+V and no clipboard write; the outcome is "field unchanged" and the recovery bubble keeps the transcript.
 
 ## Success Criteria

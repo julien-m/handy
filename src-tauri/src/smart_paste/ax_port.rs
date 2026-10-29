@@ -64,6 +64,46 @@ pub trait AxField: Send {
     fn selected_range(&mut self, timeout: Duration) -> Result<Utf16Range, AxError>;
     /// Sets `AXSelectedText`, replacing the selection or inserting at the caret.
     fn set_selected_text(&mut self, text: &[u16], timeout: Duration) -> Result<(), AxError>;
+    /// Whether the element or one of its ancestors has the role
+    /// [`WEB_AREA_ROLE`], searched within `limits` (see [`search_web_area`]).
+    fn is_in_web_area(&mut self, limits: AncestryLimits) -> Result<bool, AxError>;
+}
+
+/// Role of the root of a rendered web document (Chrome, Safari, Electron
+/// apps): a text field below it is web text whose `AXValue` follows edits.
+pub const WEB_AREA_ROLE: &str = "AXWebArea";
+
+/// Bounds of an ancestry search: each AX request has its own messaging
+/// timeout, the walk stops after `max_depth` parents and once `budget` is
+/// spent, so a deep or slow tree never delays the paste for long.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct AncestryLimits {
+    /// Messaging timeout of each AX request.
+    pub per_call: Duration,
+    /// Parents examined at most above the element itself.
+    pub max_depth: usize,
+    /// Total time the walk may take before it gives up.
+    pub budget: Duration,
+}
+
+/// Walks from the element (depth 0) to its ancestors. `visit(depth)` reads
+/// the element at `depth`: `Some(true)` when its role is the web area,
+/// `Some(false)` for another role, `None` once there is no parent left; an
+/// error (timeout, exhausted budget) aborts the walk. Reaching `max_depth`
+/// without a web area answers `false`: the element has not shown it is web
+/// text. Only roles are read, never a value.
+pub fn search_web_area(
+    max_depth: usize,
+    mut visit: impl FnMut(usize) -> Result<Option<bool>, AxError>,
+) -> Result<bool, AxError> {
+    for depth in 0..=max_depth {
+        match visit(depth)? {
+            Some(true) => return Ok(true),
+            Some(false) => {}
+            None => return Ok(false),
+        }
+    }
+    Ok(false)
 }
 
 /// Access to the accessibility API of the current process.
