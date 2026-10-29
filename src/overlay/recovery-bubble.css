@@ -150,8 +150,15 @@ body {
   height: 14px;
   color: var(--s-muted);
 }
-.rb-drag {
+.rb-drag,
+.rb-bubble[data-drag-surface="true"] {
   cursor: grab;
+}
+.rb-bubble[data-drag-surface="true"]:active {
+  cursor: grabbing;
+}
+.rb-bubble[data-drag-surface="true"] [data-drag-role="control"] {
+  cursor: pointer;
 }
 
 .rb-close:focus-visible,

@@ -259,3 +259,15 @@
 - Cause: `platform::macos::create_window` returned `panel.to_window()`. In `tauri-nspanel` v2.1 (`src/panel.rs`, `to_window`) this is a conversion, not a getter: it removes the panel from the plugin store (`remove_webview_panel`), sets the window class back to `NSWindow` and marks it released when closed. `show` then looked the panel up by label (`get_webview_panel`) and always got `PanelNotFound`, so every presentation failed (`Recovery window could not be shown: PanelNotFound`, then `Unpresentable`), in every build with the `destination-return` gate open. The creation now keeps the panel registered and reads its webview window back by label; `tests/recovery_native.rs` (`the_recovery_panel_stays_registered_after_its_creation`) fails on the previous code.
 - `paste-error` (no bubble took the failure: gate closed, bubble unpresentable, legacy and smart paste paths) is now a notice of the recording indicator held by `hold_overlay_for_notice`, like the 005/007/N1 notices, and a toast of the settings window only with the overlay style none. When the bubble is presented, `paste-error` is not emitted (`presentation::toast_needed`), so there is no double report. The indicator screen `recording-indicator-paste-failed` is not yet in the Penflow contract (generated from the `.pen` canvas), as for N1.
 - Native proof pending with Julien: release build with `--features destination-return,smart-paste-dispatch`, an `ActivationFailed` insertion shows the bubble beside the indicator without activating Handy, Copy works; a forced unpresentable bubble shows the indicator notice with the settings window closed.
+
+## 2026-10-29 — [Spec Update + Bugfix]: the whole bubble is the drag source (native session N24)
+
+- **Type:** Spec Update + Bugfix
+- **Spec modified:** Yes (Story 3 independent test and scenarios, AC-004, FR-003, Clarifications decision N24)
+- **Code modified:** `src/overlay/{recovery-bubble.tsx,recovery-preview.ts,use-recovery-bubble.ts,recovery-bubble.css}`, tests `src/overlay/{recovery-preview.test.ts,recovery-bubble-render.test.tsx}`, `tests/recovery-bubble.spec.ts`
+- **AC impacted:** AC-004, FR-003
+- **Review:** the semantic spec review cache was already stale before this edit (`livespec validate --progression implement` on `dev` `b258ed7e` returned `clarify_not_ready:stale_or_incomplete_spec_review`); this normative edit also invalidates it. Refresh the independent spec review before the next readiness gate.
+- **Author:** Claude Code (spec-fix, claude-opus-5-5), branch `fix/n24-drag-whole-bubble` from `dev` `b258ed7e`
+- Julien: grabbing exactly the "Drag into a field" button is impractical; grabbing the whole bubble is more instinctive. The pointer gesture moved from the handle to the bubble; Copy, Why? and Close are marked as controls and never arm it; the 3 px threshold keeps a click from being a drag; the grab cursor shows over the drag surface. The native path is unchanged, so the payload, receipts and `drop accepted` log are the handle's.
+- Native proof pending with Julien: checklist item "Toute la bulle est la source du glisser (N24)" in `.specs/native-proofs-checklist.md`.
+

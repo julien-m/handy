@@ -1,7 +1,8 @@
 // Recovery bubble (010): the transcript Handy kept when it could not insert it, shown in place
 // of the live indicator in its own nonactivating window. Reason, two-line preview, a late-read
 // warning, macOS drag handle, Copy, Close and the explanation; every control is a native button
-// for the pointer and assistive technologies (the window never takes keyboard focus).
+// for the pointer and assistive technologies (the window never takes keyboard focus). On macOS
+// the whole bubble is the drag source; its buttons other than the handle stay plain clicks.
 import { Copy, GripVertical, Info, TriangleAlert, X } from "lucide-react";
 import React, { useId } from "react";
 import { useTranslation } from "react-i18next";
@@ -9,6 +10,9 @@ import type { RecoveryBubbleView } from "@/bindings";
 import {
   bubbleTexts,
   type BubbleTexts,
+  DRAG_ROLE_ATTRIBUTE,
+  type DragOrigin,
+  dragOrigin,
   type Point,
   type ReasonIcon,
   type RecoveryScreen,
@@ -16,11 +20,12 @@ import {
 } from "./recovery-preview";
 import "./recovery-bubble.css";
 
-/** A pointer event on the drag handle, reduced to what the gesture needs. */
+/** A pointer event on the bubble, reduced to what the drag gesture needs. */
 export interface DragPointer {
   kind: "down" | "move" | "up";
   point: Point;
   buttons: number;
+  origin: DragOrigin;
 }
 
 interface RecoveryBubbleProps {
@@ -43,6 +48,18 @@ const ICONS: Record<ReasonIcon, typeof Info> = {
   info: Info,
 };
 
+/** Drag role marker of a control that must stay a plain click. */
+const CONTROL = { [DRAG_ROLE_ATTRIBUTE]: "control" };
+
+/** The drag role of the element under the pointer, read from its closest marker. */
+const originOf = (target: EventTarget): DragOrigin => {
+  const marked =
+    target instanceof Element
+      ? target.closest(`[${DRAG_ROLE_ATTRIBUTE}]`)
+      : null;
+  return dragOrigin(marked?.getAttribute(DRAG_ROLE_ATTRIBUTE) ?? null);
+};
+
 const pointer =
   (kind: DragPointer["kind"], send: (pointer: DragPointer) => void) =>
   (event: React.PointerEvent) =>
@@ -50,13 +67,27 @@ const pointer =
       kind,
       point: { x: event.clientX, y: event.clientY },
       buttons: event.buttons,
+      origin: originOf(event.target),
     });
 
+// @spec FR-003: Whole bubble is the drag source — .specs/features/010-recovery-bubble/spec.md#fr-003
+/** Pointer handlers making the whole bubble the drag source (macOS); none without drag. */
+const dragSurface = (
+  canDrag: boolean,
+  onDragPointer: (pointer: DragPointer) => void,
+) =>
+  canDrag
+    ? {
+        "data-drag-surface": "true",
+        onPointerDown: pointer("down", onDragPointer),
+        onPointerMove: pointer("move", onDragPointer),
+        onPointerUp: pointer("up", onDragPointer),
+      }
+    : {};
+
 // @spec FR-003: macOS drag handle of the bubble — .specs/features/010-recovery-bubble/spec.md#fr-003
-/** The drag handle: a pointer gesture past the threshold starts the native drag. */
-const DragHandle: React.FC<
-  Pick<RecoveryBubbleProps, "onDragPointer"> & ScreenProp
-> = ({ onDragPointer, screen }) => {
+/** The drag handle: the visible, named drag control; the bubble's gesture starts the drag. */
+const DragHandle: React.FC<ScreenProp> = ({ screen }) => {
   const { t } = useTranslation();
   return (
     <button
@@ -64,9 +95,7 @@ const DragHandle: React.FC<
       className="rb-pill rb-drag"
       data-testid={`${screen}-drag-handle`}
       data-semantic-id={`${screen}.drag-handle`}
-      onPointerDown={pointer("down", onDragPointer)}
-      onPointerMove={pointer("move", onDragPointer)}
-      onPointerUp={pointer("up", onDragPointer)}
+      {...{ [DRAG_ROLE_ATTRIBUTE]: "handle" }}
     >
       <GripVertical className="rb-pill-icon" aria-hidden="true" />
       {t("recoveryBubble.actions.drag")}
@@ -87,6 +116,7 @@ const CloseButton: React.FC<{ onClose: () => void } & ScreenProp> = ({
       data-testid={`${screen}-close`}
       data-semantic-id={`${screen}.close`}
       aria-label={t("recoveryBubble.actions.close")}
+      {...CONTROL}
       onClick={onClose}
     >
       <X className="rb-close-icon" aria-hidden="true" />
@@ -186,6 +216,7 @@ const CopyButton: React.FC<{ onCopy: () => void } & ScreenProp> = ({
       className="rb-pill rb-strong"
       data-testid={`${screen}-copy`}
       data-semantic-id={`${screen}.copy`}
+      {...CONTROL}
       onClick={onCopy}
     >
       <Copy className="rb-pill-icon" aria-hidden="true" />
@@ -217,6 +248,7 @@ const WhyButton: React.FC<WhyProps> = ({
       data-semantic-id={`${screen}.why`}
       aria-expanded={explained}
       aria-controls={explained ? controls : undefined}
+      {...CONTROL}
       onClick={onToggle}
     >
       {t(`recoveryBubble.actions.${label}`)}
@@ -241,6 +273,7 @@ export const RecoveryBubble: React.FC<RecoveryBubbleProps> = (props) => {
       data-state={explained ? "explained" : "open"}
       data-reason={view.reason}
       aria-label={t("recoveryBubble.label")}
+      {...dragSurface(view.can_drag, props.onDragPointer)}
     >
       <Header texts={texts} onClose={props.onClose} screen={screen} />
       <Preview view={view} screen={screen} />
@@ -249,9 +282,7 @@ export const RecoveryBubble: React.FC<RecoveryBubbleProps> = (props) => {
         <Explanation id={explanationId} texts={texts} screen={screen} />
       )}
       <div className="rb-row rb-actions">
-        {view.can_drag && (
-          <DragHandle onDragPointer={props.onDragPointer} screen={screen} />
-        )}
+        {view.can_drag && <DragHandle screen={screen} />}
         <CopyButton onCopy={props.onCopy} screen={screen} />
         <WhyButton
           screen={screen}

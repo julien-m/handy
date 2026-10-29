@@ -4,7 +4,7 @@ title: Recovery Bubble
 priority: P1
 status: In Progress
 created: 2026-10-12
-updated: 2026-10-15
+updated: 2026-10-29
 ---
 
 # Feature Spec: Recovery Bubble
@@ -103,7 +103,7 @@ flowchart TD
 **As a** Handy user, **I want to** drag the transcript from the bubble into any text field, **so that** I choose the exact place where it goes.
 
 **Priority reason:** Drag and drop is the requested recovery gesture.
-**Independent test:** Drag from the bubble into TextEdit, a ChatGPT field and a Comet field; then drag onto the desktop and release.
+**Independent test:** Drag from the bubble (its text, its background or its border, and the drag handle) into TextEdit, a ChatGPT field and a Comet field; then drag onto the desktop and release.
 
 ```gherkin
 Feature: Drag the transcript
@@ -120,6 +120,18 @@ Feature: Drag the transcript
     Given the user is dragging the transcript
     When the user releases over a place that refuses the drop
     Then the bubble reappears with the same transcript for another attempt
+  Scenario: The whole bubble is the drag source
+    Given the bubble shows a transcript on macOS
+    When the user presses on the transcript text, the background or the border and moves past the threshold
+    Then the same native drag starts as from the drag handle
+  Scenario: Controls stay clicks
+    Given the bubble is visible
+    When the user presses on Copy, Why? or Close
+    Then that control acts as a click and no drag starts
+  Scenario: A click is not a drag
+    Given the bubble is visible
+    When the user presses and releases on the bubble without moving past the threshold
+    Then no drag starts
 ```
 
 ```mermaid
@@ -218,7 +230,7 @@ flowchart TD
 
 ### AC-004
 
-**Criterion:** On macOS, dragging from the bubble starts a native drag session in copy mode carrying the full transcript as plain text with a preview image. The bubble is hidden while dragging. If the drop is refused or cancelled, the bubble reappears unchanged. If a drop is accepted, the bubble closes and the outcome is logged as "drop accepted" without the transcript, never as text verified in a field. Each bubble has its own identity: drag callbacks or actions belonging to a closed bubble are ignored, and a new dictation during a drag closes the bubble for good.
+**Criterion:** On macOS, dragging from the bubble starts a native drag session in copy mode carrying the full transcript as plain text with a preview image. The whole bubble is the drag source: its text, background and border as well as the drag handle start the same drag once the pointer, primary button held, moves past a small threshold; a press without that movement is not a drag. Copy, the explanation control and Close stay plain clicks and never start a drag. Over the drag source the pointer shows the grab cursor; the drag handle stays the named alternative for assistive technologies. The bubble is hidden while dragging. If the drop is refused or cancelled, the bubble reappears unchanged. If a drop is accepted, the bubble closes and the outcome is logged as "drop accepted" without the transcript, never as text verified in a field. Each bubble has its own identity: drag callbacks or actions belonging to a closed bubble are ignored, and a new dictation during a drag closes the bubble for good.
 **Priority:** P1 | **Story:** Story 3
 
 ### AC-005
@@ -315,7 +327,7 @@ Feature: Keyboard access to bubble actions
 
 ### FR-003
 
-**Requirement:** Provide a native macOS drag source carrying the full transcript in copy mode, hiding the bubble during the drag and restoring it on refusal.
+**Requirement:** Provide a native macOS drag source carrying the full transcript in copy mode, started from anywhere on the bubble except its Copy, explanation and Close controls, hiding the bubble during the drag and restoring it on refusal.
 **AC References:** AC-004
 
 ### FR-004
@@ -345,6 +357,7 @@ Feature: Keyboard access to bubble actions
 - `[ASSUMED]` The undetermined classification inserts as usual, to avoid false recoveries.
 - `[ASSUMED]` Drag is macOS only; Windows and Linux get Copy, Close and explanation.
 - Real behavior of drops into ChatGPT, Comet and other fields is unverified; the plan includes native checks.
+- Decision 2026-10-29 (Julien, native session N24; AC-004 and FR-003): grabbing only the "Drag into a field" button is impractical; the whole bubble (text, background, border) is the drag source, with the same payload, native path, receipts and log as the handle. Copy, Why? and Close stay plain clicks; a press without movement past the threshold is not a drag; the grab cursor shows over the drag source; the handle stays as the named control for assistive technologies.
 - Program context: specified in list order (001–010); depends on 006 (destination and outcomes), 007 (smart paste outcomes "not read", "permission missing" and "uncertain" count as insertion failure), 009 (Enter suppression) and 008 (CLI).
 
 - Decision `010-recovery-bubble:AC-003` / `pinned-running-activation-failure-reason`: 2026-10-14 (program orchestrator): "Could not bring <App> forward". A pinned application that is running but does not become frontmost within the 006 limit carries the reason `activation_failed`; "<App> is pinned but not open" is reserved for `pinned_app_not_running` (the pinned application is not running). These are the two reasons into which `.specs/features/009-pin-mode-and-enter-rule/spec.md` AC-003 splits "pinned app unavailable".

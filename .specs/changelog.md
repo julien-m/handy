@@ -5,6 +5,7 @@
 
 ---
 
+## 2026-10-29 — [Feature 010] Fix N24: the whole recovery bubble (text, background, border) is the drag source, with the same native drag, payload and `drop accepted` log as the handle; Copy, Why? and Close stay clicks, a click without movement is not a drag, grab cursor over the surface (AC-004, FR-003)
 ## 2026-10-29 — [Feature 003] Bugfix N22: approximate correction no longer turns « je ne le vois pas » into « je LiveSpec »; a sound-alike (Soundex) only weighs a spelling distance under twice the threshold (AC-008, FR-006)
 ## 2026-10-29 — [Feature 005] Bugfix N23: a prompt chosen on the indicator during a plain dictation is remembered (settings service, `plain_dictation_prompt_id`) and starts the next plain dictations until None is chosen (AC-009); the AI step logs provider, duration and outcome at debug level; the prompt editor's provider and model controls share one box
 ## 2026-10-29 — [Feature 011] Bugfix N18: an application that answers late after its activation (Codex, Chrome pages) receives the paste in its remembered input instead of the recovery bubble; the guard verifies the state at dispatch
