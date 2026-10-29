@@ -119,7 +119,10 @@ fn a_new_dictation_closes_a_visible_bubble_at_once_and_its_late_actions_are_igno
     assert_eq!(retired.release, None, "released when it was shown");
     assert!(manager.begin_copy(bubble, 11).is_none());
     assert!(manager.close(bubble).is_none());
-    assert_eq!(manager.drag_ended(bubble, true), DragEnd::Ignored);
+    assert_eq!(
+        manager.drag_ended(bubble, DragResult::Dropped),
+        DragEnd::Ignored
+    );
     Ok(())
 }
 #[test]
@@ -174,13 +177,59 @@ fn a_refused_drag_shows_the_same_bubble_again_and_an_accepted_one_closes() -> Te
     let bubble = visible(&manager, 1).ok_or("visible")?;
     let before = manager.view().ok_or("view")?;
     assert_eq!(manager.begin_drag(bubble).as_deref(), Some(TEXT));
-    assert_eq!(manager.drag_ended(bubble, false), DragEnd::Refused(before));
+    assert_eq!(
+        manager.drag_ended(bubble, DragResult::Released),
+        DragEnd::Refused(before)
+    );
     manager.begin_drag(bubble).ok_or("again")?;
     assert!(matches!(
-        manager.drag_ended(bubble, true),
+        manager.drag_ended(bubble, DragResult::Dropped),
         DragEnd::Accepted(_)
     ));
     assert_eq!(manager.view(), None);
+    Ok(())
+}
+// @spec AC-004: Escape cancels and dismisses the bubble — .specs/features/010-recovery-bubble/spec.md#ac-004
+#[test]
+fn an_accepted_drop_wins_over_escape_and_escape_alone_dismisses() {
+    for accepted in [false, true] {
+        for escape in [false, true] {
+            let result = DragResult::of_session(accepted, escape);
+            let expected = if accepted {
+                DragResult::Dropped
+            } else if escape {
+                DragResult::CancelledByEscape
+            } else {
+                DragResult::Released
+            };
+            assert_eq!(result, expected, "accepted {accepted}, Escape {escape}");
+        }
+    }
+}
+#[test]
+fn escape_during_a_drag_closes_the_bubble_like_close_and_ignores_late_ends() -> TestResult {
+    let manager = manager();
+    let bubble = visible(&manager, 1).ok_or("visible")?;
+    manager.begin_drag(bubble).ok_or("drag")?;
+    let DragEnd::Dismissed(retired) = manager.drag_ended(bubble, DragResult::CancelledByEscape)
+    else {
+        return Err("Escape dismisses");
+    };
+    // The same bubble closed with Close during its drag: Escape must retire it identically.
+    let twin = RecoveryManager::new(RecoveryPlatform::MacOs);
+    let twin_bubble = visible(&twin, 1).ok_or("twin visible")?;
+    twin.begin_drag(twin_bubble).ok_or("twin drag")?;
+    let closed = twin.close(twin_bubble).ok_or("closed")?;
+    assert_eq!(retired, closed);
+    assert_eq!(manager.view(), None);
+    for late in [
+        DragResult::Released,
+        DragResult::Dropped,
+        DragResult::CancelledByEscape,
+    ] {
+        assert_eq!(manager.drag_ended(bubble, late), DragEnd::Ignored);
+    }
+    assert!(manager.begin_copy(bubble, 11).is_none());
     Ok(())
 }
 #[test]
@@ -199,8 +248,14 @@ fn a_new_dictation_while_dragging_closes_for_good_and_ignores_the_late_drop() ->
     manager.begin_drag(first).ok_or("drag")?;
     manager.new_dictation().ok_or("closed")?;
     let second = visible(&manager, 2).ok_or("second")?;
-    assert_eq!(manager.drag_ended(first, false), DragEnd::Ignored);
-    assert_eq!(manager.drag_ended(first, true), DragEnd::Ignored);
+    assert_eq!(
+        manager.drag_ended(first, DragResult::Released),
+        DragEnd::Ignored
+    );
+    assert_eq!(
+        manager.drag_ended(first, DragResult::Dropped),
+        DragEnd::Ignored
+    );
     assert_eq!(manager.view().map(|view| view.bubble_id), Some(second));
     Ok(())
 }

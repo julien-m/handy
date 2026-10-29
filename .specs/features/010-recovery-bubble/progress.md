@@ -73,7 +73,7 @@ None is declared passed. Exact procedure: `.specs/native-proofs-checklist.md`, s
 3. Classification matrix (Finder list and desktop, Safari page without field, TextEdit, Notes, search field, unknown control; Comet, Chrome, ChatGPT, Slack and VS Code with a focused field, never a bubble; Spotlight over Finder and over TextEdit) and `recovery_native` (30 samples, none above 60 ms; 006's foreground read unchanged).
 4. Reasons before insertion with Automatic Enter Always (closed, pinned not running, not brought forward, no text field): texts, no Enter, no `paste-error`.
 5. Method failures: smart paste not read then late read, permission missing, classic failure.
-6. Native drag (SC-002): TextEdit and Notes full transcript, ChatGPT and Comet recorded; refusal and Escape; modifiers; new dictation during the drag. Since N24 (2026-10-29), also from the text, background and border of the bubble, with Copy, Why? and Close kept as clicks and the grab cursor.
+6. Native drag (SC-002): TextEdit and Notes full transcript, ChatGPT and Comet recorded; refusal and Escape; modifiers; new dictation during the drag. Since N24 (2026-10-29), also from the text, background and border of the bubble, with Copy, Why? and Close kept as clicks and the grab cursor. Since N25 (2026-10-29), Escape during a drag inserts nothing and closes the bubble (log `drag cancelled by Escape, dismissed`), while a release on the desktop without Escape keeps it for another attempt.
 7. Copy against a pending smart paste restoration.
 8. Lifetime: 60 s, screen lock, Close, new dictation after 1 s, a start that fails keeps the bubble.
 8b. The 005 and 007 notices keep their duration when the bubble appears, and both stay readable (bubble beside the indicator, top and bottom).

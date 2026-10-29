@@ -10,10 +10,12 @@ mod macos;
 pub mod macos_ax;
 #[cfg(target_os = "macos")]
 mod macos_drag;
+#[cfg(target_os = "macos")]
+mod macos_escape;
 #[cfg(target_os = "windows")]
 mod windows;
 
-use super::types::BubbleId;
+use super::types::{BubbleId, DragResult};
 use tauri::{AppHandle, WebviewWindow};
 
 /// Label of the recovery window.
@@ -23,8 +25,8 @@ pub const RECOVERY_PAGE: &str = "src/overlay/recovery.html";
 /// First size of the window (logical points) before the view reports its own.
 pub const INITIAL_SIZE: (f64, f64) = (430.0, 200.0);
 
-/// Callback of a drag end: the bubble and whether a target accepted the drop.
-pub type DragEnded = Box<dyn Fn(BubbleId, bool) + 'static>;
+/// Callback of a drag end: the bubble and how its session ended (drop, release, Escape).
+pub type DragEnded = Box<dyn Fn(BubbleId, DragResult) + 'static>;
 
 /// Create the hidden recovery window on the main thread.
 ///
@@ -78,7 +80,7 @@ pub fn begin_drag(
     }
 }
 
-/// Make the bubble visible again after a refused or cancelled drop.
+/// Make the bubble visible again after a release where no target took the drop.
 pub fn restore_after_drag(window: &WebviewWindow) {
     #[cfg(target_os = "macos")]
     macos::set_dragging(window, false);

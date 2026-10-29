@@ -1,7 +1,7 @@
 //! Privacy of the recovery bubble at run time (010 QE P0, delivery review): a dictation with
 //! a sentinel transcript goes through every bubble path of the service — consume through 006's
-//! registry, first render, late read, failed and successful Copy, refused drag and accepted
-//! drop, Close, a hung surface and its fallback toast, and a pre-insertion classification —
+//! registry, first render, late read, failed and successful Copy, refused drag, accepted
+//! drop and Escape, Close, a hung surface and its fallback toast, and a pre-insertion classification —
 //! with a capturing logger at trace level and the recording surface (the Tauri adapters are
 //! covered by the native checklist). The sentinel never reaches a log record, the outcome event or the toast; it only
 //! appears in the projection sent to the recovery window and in the Copy and drag payloads.
@@ -15,6 +15,7 @@ use handy_app_lib::destination::context::{
 use handy_app_lib::destination::outcome::MethodOutcome;
 use handy_app_lib::destination::recovery::{OutcomeConsumer, OutcomeRegistry};
 use handy_app_lib::recovery::ports::CopyError;
+use handy_app_lib::recovery::types::DragResult::{CancelledByEscape, Dropped, Released};
 use handy_app_lib::recovery::types::{RecoveryBubbleView, RecoveryPlatform};
 use std::sync::{Mutex, OnceLock, PoisonError};
 use support::{lock, Bench, SurfaceCall, TestResult};
@@ -69,7 +70,7 @@ fn refused_paths(bench: &Bench, view: &RecoveryBubbleView) {
         .copy(view.bubble_id, view.destination_generation);
     *lock(&bench.copier.answer) = Ok(());
     bench.service.begin_drag(view.bubble_id);
-    bench.service.drag_ended(view.bubble_id, false);
+    bench.service.drag_ended(view.bubble_id, Released);
     bench.service.close(view.bubble_id);
 }
 /// A bubble whose surface never answers: destroyed at the hang limit, toast fallback.
@@ -98,7 +99,7 @@ fn classification_path(bench: &Bench, dictation: u64) {
     let _ = bench.service.before_insertion(&context);
 }
 /// Every bubble path, one dictation each: refused actions and Close, a successful Copy, an
-/// accepted drop, a hung surface, then a classification.
+/// accepted drop, a drag cancelled by Escape, a hung surface, then a classification.
 fn run_every_path(bench: &Bench) -> Result<(), Box<dyn std::error::Error>> {
     let registry = OutcomeRegistry::default();
     registry.register(bench.service.clone());
@@ -110,9 +111,14 @@ fn run_every_path(bench: &Bench) -> Result<(), Box<dyn std::error::Error>> {
         .map_err(|error| format!("{error:?}"))?;
     let dropped = shown(bench, &registry, 3)?;
     bench.service.begin_drag(dropped.bubble_id);
-    bench.service.drag_ended(dropped.bubble_id, true);
-    hung_path(bench, 4)?;
-    classification_path(bench, 5);
+    bench.service.drag_ended(dropped.bubble_id, Dropped);
+    let escaped = shown(bench, &registry, 4)?;
+    bench.service.begin_drag(escaped.bubble_id);
+    bench
+        .service
+        .drag_ended(escaped.bubble_id, CancelledByEscape);
+    hung_path(bench, 5)?;
+    classification_path(bench, 6);
     Ok(())
 }
 /// The surface calls carry the sentinel only in the projection and the drag payload.
@@ -149,6 +155,7 @@ fn the_sentinel_reaches_only_the_bubble_window_and_the_copy_and_drag_payloads() 
         logs.iter().any(|line| line.contains("drop accepted")),
         "the paths logged, the accepted drop included"
     );
+    assert!(logs.iter().any(|line| line.contains("cancelled by Escape")));
     assert!(logs.iter().all(|line| !line.contains(SENTINEL)), "{logs:?}");
     assert_surface_calls(&bench);
     let written = lock(&bench.copier.written).clone();

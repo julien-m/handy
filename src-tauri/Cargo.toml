@@ -181,6 +181,8 @@ transcribe-cpp = { version = "0.3.1", default-features = false, features = ["met
 # Used by the receipt-sequenced ("reliable") paste path for lazy NSPasteboard
 # promises. Versions track what Tauri already pulls in.
 objc2 = "0.6"
+# Handlers of the recovery drag's Escape monitors (NSEvent block API).
+block2 = "0.6"
 objc2-foundation = "0.3"
 objc2-app-kit = "0.3"
 objc2-service-management = "0.3.2"

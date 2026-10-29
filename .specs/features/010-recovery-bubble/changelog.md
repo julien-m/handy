@@ -271,3 +271,14 @@
 - Julien: grabbing exactly the "Drag into a field" button is impractical; grabbing the whole bubble is more instinctive. The pointer gesture moved from the handle to the bubble; Copy, Why? and Close are marked as controls and never arm it; the 3 px threshold keeps a click from being a drag; the grab cursor shows over the drag surface. The native path is unchanged, so the payload, receipts and `drop accepted` log are the handle's.
 - Native proof pending with Julien: checklist item "Toute la bulle est la source du glisser (N24)" in `.specs/native-proofs-checklist.md`.
 
+## 2026-10-29 — [Spec Update + Bugfix]: Escape during a drag dismisses the bubble (native session N25)
+
+- **Type:** Spec Update + Bugfix
+- **Spec modified:** Yes (Story 3 independent test, scenario and state diagram, AC-004, FR-003, Clarifications decision N25; plan state diagram)
+- **Code modified:** `src-tauri/src/recovery/{types.rs,manager.rs,service.rs,surface.rs}`, `src-tauri/src/recovery/platform/{mod.rs,macos_drag.rs,macos_escape.rs}`, `src-tauri/Cargo.toml` (`block2`, already in the lock through `objc2-app-kit`), tests `src-tauri/src/recovery/manager_tests.rs`, `src-tauri/tests/{recovery_lifecycle.rs,recovery_payload.rs,recovery_privacy.rs}`
+- **AC impacted:** AC-004, FR-003
+- **Review:** this normative edit invalidates the semantic spec review cache (already stale since N24); refresh the independent spec review before the next readiness gate.
+- **Author:** Claude Code (spec-fix, claude-opus-5-5), branch `fix/n25-escape-cancels-drag` from `dev` `91422f7b`
+- Julien: when dragging the bubble, Escape must cancel the action and the bubble must go away. macOS already cancels the drop on Escape (nothing inserted); Handy now tells Escape from a release without a target by watching Escape for the session only (global and local key-down monitors, plus the event ending the session), removed at the end of every session. Escape closes the bubble through Close's retirement (history untouched) with the log `Recovery bubble N: drag cancelled by Escape, dismissed`; a release without Escape keeps the bubble for another attempt; an accepted drop stays `drop accepted`.
+- Native proof pending with Julien: checklist item "Échap pendant un glisser ferme la bulle (N25)" in `.specs/native-proofs-checklist.md`.
+

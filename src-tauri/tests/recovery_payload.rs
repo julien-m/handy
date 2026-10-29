@@ -6,6 +6,7 @@
 mod support;
 
 use handy_app_lib::destination::recovery::OutcomeConsumer;
+use handy_app_lib::recovery::types::DragResult::Released;
 use handy_app_lib::recovery::types::RecoveryPlatform;
 use support::{lock, Bench, SurfaceCall, TestResult};
 
@@ -31,7 +32,7 @@ fn copy_and_drag_carry_the_paste_trailing_space_and_the_preview_never_shows_it()
         bench.service.begin_drag(view.bubble_id);
         let begun = SurfaceCall::BeginDrag(view.bubble_id, inserted.clone());
         assert!(bench.surface.calls().contains(&begun), "drag payload");
-        bench.service.drag_ended(view.bubble_id, false);
+        bench.service.drag_ended(view.bubble_id, Released);
         let copied = bench
             .service
             .copy(view.bubble_id, view.destination_generation);

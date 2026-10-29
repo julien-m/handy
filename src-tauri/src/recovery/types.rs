@@ -99,6 +99,30 @@ pub enum Phase {
     Copying,
 }
 
+// @spec AC-004: Escape cancels and dismisses the bubble — .specs/features/010-recovery-bubble/spec.md#ac-004
+/// How a native drag session of the bubble ended (spec AC-004, native session N25).
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum DragResult {
+    /// A target accepted the drop: the bubble closes (`drop accepted`).
+    Dropped,
+    /// Released where no target took the text: the bubble reappears for another attempt.
+    Released,
+    /// The user pressed Escape and nothing took the text: the bubble closes like Close.
+    CancelledByEscape,
+}
+impl DragResult {
+    /// The result of a session that `accepted` a drop or not, with Escape pressed or not
+    /// during it. A drop a target accepted is never undone, so it wins over a late Escape;
+    /// Escape only turns a session that inserted nothing into a dismissal.
+    pub const fn of_session(accepted: bool, escape_pressed: bool) -> Self {
+        match (accepted, escape_pressed) {
+            (true, _) => Self::Dropped,
+            (false, true) => Self::CancelledByEscape,
+            (false, false) => Self::Released,
+        }
+    }
+}
+
 /// The identity a late callback must match to act on a bubble.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct BubbleKey {

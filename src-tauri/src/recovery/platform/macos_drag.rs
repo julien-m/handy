@@ -2,10 +2,12 @@
 //! `NSPasteboardItem`, a separate preview image, copy as the only operation whatever the
 //! modifier keys, the bubble hidden while dragging. The general pasteboard and 007's smart
 //! paste restoration are never touched. The source object is retained until its session ends;
-//! its end callback names the bubble, so the service ignores a closed bubble's late end.
+//! its end callback names the bubble, so the service ignores a closed bubble's late end, and
+//! tells a release outside any target from an Escape cancellation (N25, `macos_escape`).
 use super::macos::set_dragging;
+use super::macos_escape::EscapeWatch;
 use super::DragEnded;
-use crate::recovery::types::BubbleId;
+use crate::recovery::types::{BubbleId, DragResult};
 use objc2::rc::Retained;
 use objc2::runtime::{NSObjectProtocol, ProtocolObject};
 use objc2::{define_class, msg_send, AnyThread, DefinedClass, MainThreadMarker, MainThreadOnly};
@@ -29,6 +31,8 @@ const PREVIEW_CHARS: usize = 48;
 struct SourceIvars {
     bubble_id: BubbleId,
     ended: DragEnded,
+    /// Escape presses of this session, from its start to its end.
+    escape: RefCell<Option<EscapeWatch>>,
 }
 
 define_class!(
@@ -60,7 +64,13 @@ define_class!(
         #[unsafe(method(draggingSession:endedAtPoint:operation:))]
         fn ended(&self, _session: &NSDraggingSession, _point: NSPoint, operation: NSDragOperation) {
             let ivars = self.ivars();
-            (ivars.ended)(ivars.bubble_id, !operation.is_empty());
+            // Taking the watch removes its monitors, whatever the result.
+            let watch = ivars.escape.borrow_mut().take();
+            let escape = watch.is_some_and(|watch| watch.finish(self.mtm()));
+            (ivars.ended)(
+                ivars.bubble_id,
+                DragResult::of_session(!operation.is_empty(), escape),
+            );
             // Released at the end of this run-loop turn, never while AppKit ends the session.
             if let Some(source) = ACTIVE_SOURCE.with(|source| source.borrow_mut().take()) {
                 let _ = Retained::autorelease_ptr(source);
@@ -95,7 +105,12 @@ pub(super) fn begin(
     let view = content_view(window)?;
     let location = view.convertPoint_fromView(event.locationInWindow(), None);
     let item = dragging_item(mtm, transcript, location)?;
-    let source = RecoveryDragSource::new(mtm, SourceIvars { bubble_id, ended });
+    let ivars = SourceIvars {
+        bubble_id,
+        ended,
+        escape: RefCell::new(None),
+    };
+    let source = RecoveryDragSource::new(mtm, ivars);
     let items = NSArray::from_retained_slice(&[item]);
     let session = view.beginDraggingSessionWithItems_event_source(
         &items,
@@ -103,6 +118,8 @@ pub(super) fn begin(
         ProtocolObject::from_ref(&*source),
     );
     session.setAnimatesToStartingPositionsOnCancelOrFail(true);
+    // @spec AC-004: Escape during the drag is watched — .specs/features/010-recovery-bubble/spec.md#ac-004
+    source.ivars().escape.replace(Some(EscapeWatch::start(mtm)));
     ACTIVE_SOURCE.with(|active| active.replace(Some(source)));
     set_dragging(window, true);
     Ok(())
