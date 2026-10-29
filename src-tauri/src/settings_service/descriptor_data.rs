@@ -63,6 +63,8 @@ inventory! {
  "post_process_models" => (Object,false,None,&[],true,false,"general",None);
  "post_process_prompts" => (Array,false,None,&[],false,false,"prompts",None);
  "post_process_selected_prompt_id" => (String,true,None,&[],false,false,"general",None);
+ // 005 FR-007: remembered by the dictation stop; an id must name a library prompt.
+ "plain_dictation_prompt_id" => (String,true,None,&[],false,false,"general",None);
  "mute_while_recording" => (Boolean,false,None,&[],false,false,"general",None);
  "append_trailing_space" => (Boolean,false,None,&[],false,false,"output",None);
  "return_to_dictation_app" => (Boolean,false,None,&[],false,false,"output",None);

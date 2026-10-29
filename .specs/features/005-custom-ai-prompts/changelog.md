@@ -161,3 +161,13 @@
 - **AC impacted:** none (keyboard focus)
 - **Why:** the inline root ref reset the rescue on every render, so the title never took the focus back after Save.
 - **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-29 — [Bugfix]: Plain dictation remembers the indicator prompt; AI step timing; provider/model row (native session N23)
+
+- **Type:** Bugfix
+- **Spec modified:** Yes (Story 2 scenarios and flowchart, AC-003, AC-004, new AC-009, FR-003, new FR-007, Key Entities, Clarifications: decisions `plain-dictation-remembers-prompt` and `provider-model-row-alignment`, Edge Cases)
+- **Code modified:** `src-tauri/src/prompts/{session,dictation,processor,library}.rs`, `src-tauri/src/prompts/session_memory_tests.rs` (new), `src-tauri/src/settings.rs`, `src-tauri/src/settings_service/{descriptor_data,validation,public}.rs`, `src/bindings.ts`, `src/overlay/prompt-pill.tsx`, `src/components/ui/Select.tsx`, `src/components/settings/post-processing/prompt-provider-fields.tsx`, 26 locales (`settings…defaultDescription`, new `overlay.prompt.noteRemembered`), tests `src/overlay/indicator-*.ts(x)`, `tests/prompt-provider-row.spec.ts` (new), `tests/harness/prompt-editor-fake.ts`
+- **AC impacted:** AC-003, AC-004, AC-009 (new)
+- **Why:** native session N23: with Apple Intelligence and "Improve Transcriptions" as default, every plain dictation (Right Cmd, `transcribe`) started on "None" because `session::starting_choice` mapped `Trigger::Plain` to None by rule (AC-003); the indicator choice was per-dictation only. The plain choice is now kept in `plain_dictation_prompt_id` (settings service, written at the stop). The AI step now logs `AI processing <provider> finished in <ms>ms (<outcome>)` at debug level. In the prompt editor the shared `Select` (react-select) was 40px with a separator and a 20px chevron next to the 30.75px `Dropdown`; it now takes the dropdown's box.
+- **Tests:** `cargo test --lib` (memory_tests, timing line), `bun run test:indicator`, `bun run test:prompt-settings`, `playwright test tests/prompt-provider-row.spec.ts` (RED before: 10px height gap; GREEN after)
+- **Author:** Claude Code (claude-opus-5-5)

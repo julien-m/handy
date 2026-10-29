@@ -689,7 +689,7 @@
           "title": "Xử lý sau bằng AI",
           "enabledDescription": "Xử lý bản đọc chính tả bằng một prompt. Tắt: không bản đọc nào được xử lý.",
           "defaultTitle": "Prompt mặc định",
-          "defaultDescription": "Được phím tắt đọc chính tả AI sử dụng. Đọc chính tả thường bắt đầu với Không có.",
+          "defaultDescription": "Được phím tắt đọc chính tả AI sử dụng. Đọc chính tả thường bắt đầu với lời nhắc bạn chọn gần nhất trên chỉ báo, hoặc Không có.",
           "none": "Không có",
           "invalidOption": "Không hợp lệ: hãy chỉnh sửa trước khi dùng"
         },
@@ -1283,6 +1283,7 @@
       "none": "Không (không xử lý bằng AI)",
       "menuTitle": "Câu lệnh cho lần đọc này",
       "note": "Chỉ áp dụng cho lần đọc này. Mặc định vẫn là {{name}}.",
+      "noteRemembered": "Được giữ cho các lần đọc chính tả thường tiếp theo cho đến khi bạn chọn Không có.",
       "loading": "Đang tải câu lệnh…",
       "failed": "Không thể tải các câu lệnh.",
       "choiceFailed": "Không thể đổi câu lệnh.",

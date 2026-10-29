@@ -74,3 +74,7 @@ Branch `fix/ui-hardening-b`, from the warnings of the indicator delivery review 
 - **Gates closed:** the render test now compares the pill with the one of `dev` instead of freezing the new markup, and guards that the pill alone fits the base window of each form (see 006).
 - Not changed: the notice wording deviation and the overlay-none toast stay as recorded above (spec clarification pending).
 
+## Fix N23 — remembered plain prompt (2026-10-29)
+
+Branch `fix/n23-remember-prompt` from `dev`. Cause: `session::starting_choice` returned None for `Trigger::Plain` by rule (AC-003 "The plain dictation shortcut starts with None"), and an indicator choice lived only in the session. Now the stop freezes `FrozenChoice { chosen_on_plain }`; `dictation::remember_plain_choice` writes `plain_dictation_prompt_id` through `tauri_adapter::set` on the blocking pool when it differs; `starting_choice` reads it back (`remembered_prompt`: exists and usable, else None). The AI step logs `processor::timing_summary`. The shared `Select` takes the `Dropdown` box (provider/model row). Pending: native run with Julien (see implementation.md, AC-009 and AC-004).
+

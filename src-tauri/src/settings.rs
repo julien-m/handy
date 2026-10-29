@@ -567,6 +567,10 @@ pub struct AppSettings {
     pub post_process_prompts: Vec<LLMPrompt>,
     #[serde(default)]
     pub post_process_selected_prompt_id: Option<String>,
+    /// Prompt last chosen on the indicator during a plain dictation (005 FR-007): the next plain
+    /// dictations start with it while AI post-processing is on; `None` starts them with None.
+    #[serde(default)]
+    pub plain_dictation_prompt_id: Option<String>,
     #[serde(default)]
     pub mute_while_recording: bool,
     #[serde(default)]
@@ -1124,6 +1128,7 @@ pub fn get_default_settings() -> AppSettings {
         post_process_models: default_post_process_models(),
         post_process_prompts: default_post_process_prompts(),
         post_process_selected_prompt_id: None,
+        plain_dictation_prompt_id: None,
         mute_while_recording: false,
         append_trailing_space: false,
         return_to_dictation_app: default_return_to_dictation_app(),

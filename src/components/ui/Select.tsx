@@ -50,11 +50,24 @@ const focusBackground =
 const neutralBorder =
   "color-mix(in srgb, var(--color-mid-gray) 80%, transparent)";
 
+/**
+ * Box of the shared `Dropdown` button (`px-2 py-[5px] text-sm rounded-md`, 1px border): the
+ * select uses the same height, padding, radius and chevron size so both sit on one row
+ * (005 prompt editor: provider and model side by side).
+ */
+// Line height of `text-sm` (1.25rem) + 2 × 5px padding + 2 × 1px border, like the button.
+const CONTROL_HEIGHT = "calc(1.25rem + 12px)";
+// Text inset of the button (`px-2`): value container 4px + value margin 4px.
+const VALUE_INSET = 4;
+// Vertical room of the indicators, small enough to keep the control height.
+const INDICATOR_PADDING_BLOCK = 4;
+const INDICATOR_SIZE = "1rem"; // `w-4 h-4` chevron of the button
+
 const selectStyles: StylesConfig<SelectOption, false> = {
   control: (base, state) => ({
     ...base,
-    minHeight: 40,
-    borderRadius: 6,
+    minHeight: CONTROL_HEIGHT,
+    borderRadius: "0.375rem",
     borderColor: state.isFocused ? "var(--color-logo-primary)" : neutralBorder,
     boxShadow: state.isFocused ? "0 0 0 1px var(--color-logo-primary)" : "none",
     backgroundColor: state.isFocused ? focusBackground : baseBackground,
@@ -68,8 +81,9 @@ const selectStyles: StylesConfig<SelectOption, false> = {
   }),
   valueContainer: (base) => ({
     ...base,
-    paddingInline: 10,
-    paddingBlock: 6,
+    paddingInline: VALUE_INSET,
+    // No block padding: the input already brings 2 × (2px padding + 2px margin).
+    paddingBlock: "0px",
   }),
   input: (base) => ({
     ...base,
@@ -77,10 +91,16 @@ const selectStyles: StylesConfig<SelectOption, false> = {
   }),
   singleValue: (base) => ({
     ...base,
+    marginInline: VALUE_INSET,
+    fontWeight: 600,
     color: "var(--color-text)",
   }),
   dropdownIndicator: (base, state) => ({
     ...base,
+    // Chevron then the button's `px-2` right padding.
+    paddingBlock: INDICATOR_PADDING_BLOCK,
+    paddingInline: `${VALUE_INSET}px ${2 * VALUE_INSET}px`,
+    "& svg": { width: INDICATOR_SIZE, height: INDICATOR_SIZE },
     color: state.isFocused
       ? "var(--color-logo-primary)"
       : "color-mix(in srgb, var(--color-mid-gray) 80%, transparent)",
@@ -90,6 +110,9 @@ const selectStyles: StylesConfig<SelectOption, false> = {
   }),
   clearIndicator: (base) => ({
     ...base,
+    paddingBlock: INDICATOR_PADDING_BLOCK,
+    paddingInline: VALUE_INSET,
+    "& svg": { width: INDICATOR_SIZE, height: INDICATOR_SIZE },
     color: "color-mix(in srgb, var(--color-mid-gray) 80%, transparent)",
     ":hover": {
       color: "var(--color-logo-primary)",
@@ -117,6 +140,10 @@ const selectStyles: StylesConfig<SelectOption, false> = {
   }),
   placeholder: (base) => ({
     ...base,
+    marginInline: VALUE_INSET,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
     color: "color-mix(in srgb, var(--color-mid-gray) 65%, transparent)",
   }),
 };
@@ -163,6 +190,8 @@ export const Select: React.FC<SelectProps> = React.memo(
       onBlur,
       isClearable,
       styles: selectStyles,
+      // No separator: the button of `Dropdown` shows only its chevron.
+      components: { IndicatorSeparator: null },
       "aria-label": ariaLabel,
     };
 

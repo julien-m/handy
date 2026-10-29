@@ -689,7 +689,7 @@
           "title": "Post-elaborazione IA",
           "enabledDescription": "Elabora le dettature con un prompt. Disattivata: nessuna dettatura viene elaborata.",
           "defaultTitle": "Prompt predefinito",
-          "defaultDescription": "Usato dalla scorciatoia di dettatura IA. La dettatura semplice parte con Nessuno.",
+          "defaultDescription": "Usato dalla scorciatoia di dettatura IA. La dettatura semplice parte con l'ultimo prompt scelto nell'indicatore, o con Nessuno.",
           "none": "Nessuno",
           "invalidOption": "Non valido: modificalo prima di usarlo"
         },
@@ -1283,6 +1283,7 @@
       "none": "Nessuno (nessuna elaborazione IA)",
       "menuTitle": "Prompt di questa dettatura",
       "note": "Vale solo per questa dettatura. Il predefinito resta {{name}}.",
+      "noteRemembered": "Resta per le prossime dettature semplici finché non scegli Nessuno.",
       "loading": "Caricamento dei prompt…",
       "failed": "Impossibile caricare i prompt.",
       "choiceFailed": "Impossibile cambiare il prompt.",

@@ -188,6 +188,9 @@ pub fn remove(settings: &mut AppSettings, id: &str) -> Result<(), PromptError> {
     if settings.post_process_selected_prompt_id.as_deref() == Some(id) {
         settings.post_process_selected_prompt_id = None;
     }
+    if settings.plain_dictation_prompt_id.as_deref() == Some(id) {
+        settings.plain_dictation_prompt_id = None;
+    }
     Ok(())
 }
 

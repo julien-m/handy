@@ -1532,7 +1532,12 @@ word_replacements?: ReplacementRule[]; model_unload_timeout?: ModelUnloadTimeout
  * (fresh install `never`, upgrade from `auto_submit`); absent from a closed build, which
  * never writes it. An invalid stored value reads as absent (see `automatic_enter::migration`).
  */
-automatic_enter?: AutomaticEnterPolicy | null; post_process_enabled?: boolean; post_process_provider_id?: string; post_process_providers?: PostProcessProvider[]; post_process_api_keys?: SecretMap; post_process_models?: Partial<{ [key in string]: string }>; post_process_prompts?: LLMPrompt[]; post_process_selected_prompt_id?: string | null; mute_while_recording?: boolean; append_trailing_space?: boolean; 
+automatic_enter?: AutomaticEnterPolicy | null; post_process_enabled?: boolean; post_process_provider_id?: string; post_process_providers?: PostProcessProvider[]; post_process_api_keys?: SecretMap; post_process_models?: Partial<{ [key in string]: string }>; post_process_prompts?: LLMPrompt[]; post_process_selected_prompt_id?: string | null; 
+/**
+ * Prompt last chosen on the indicator during a plain dictation (005 FR-007): the next plain
+ * dictations start with it while AI post-processing is on; `None` starts them with None.
+ */
+plain_dictation_prompt_id?: string | null; mute_while_recording?: boolean; append_trailing_space?: boolean; 
 /**
  * Return to the application where the dictation started before inserting (006).
  */
@@ -1788,7 +1793,12 @@ prompt_id: string | null; prompt_name: string | null;
 /**
  * False when AI post-processing is off: the menu is hidden and the prompt stays None.
  */
-selectable: boolean }
+selectable: boolean; 
+/**
+ * A plain dictation with processing on: a choice is kept for the next plain dictations
+ * (FR-007); otherwise it applies to this dictation only.
+ */
+remembered: boolean }
 /**
  * Why the effective input was chosen.
  */

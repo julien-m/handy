@@ -102,6 +102,7 @@ export const promptView: DictationPromptView = {
   prompt_id: "min",
   prompt_name: "Minimal correction",
   selectable: true,
+  remembered: false,
 };
 export const prompt = (
   view: DictationPromptView | null,

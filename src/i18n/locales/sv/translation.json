@@ -689,7 +689,7 @@
           "title": "AI-efterbearbetning",
           "enabledDescription": "Bearbeta dikteringar med en prompt. Av: ingen diktering bearbetas.",
           "defaultTitle": "Standardprompt",
-          "defaultDescription": "Används av kortkommandot för AI-diktering. Vanlig diktering börjar med Ingen.",
+          "defaultDescription": "Används av kortkommandot för AI-diktering. Vanlig diktering börjar med den senaste prompten du valde i indikatorn, eller Ingen.",
           "none": "Ingen",
           "invalidOption": "Ogiltig: redigera den innan du använder den"
         },
@@ -1283,6 +1283,7 @@
       "none": "Ingen (ingen AI-bearbetning)",
       "menuTitle": "Prompt för den här dikteringen",
       "note": "Gäller bara den här dikteringen. Standard förblir {{name}}.",
+      "noteRemembered": "Behålls för dina nästa vanliga dikteringar tills du väljer Ingen.",
       "loading": "Läser in prompter…",
       "failed": "Prompterna kunde inte läsas in.",
       "choiceFailed": "Prompten kunde inte ändras.",

@@ -689,7 +689,7 @@
           "title": "Následné zpracování AI",
           "enabledDescription": "Zpracovávat diktáty pomocí promptu. Vypnuto: žádný diktát se nezpracovává.",
           "defaultTitle": "Výchozí prompt",
-          "defaultDescription": "Používá ho zkratka pro diktování s AI. Běžné diktování začíná s možností Žádný.",
+          "defaultDescription": "Používá ho zkratka pro diktování s AI. Běžné diktování začíná posledním promptem zvoleným v indikátoru, nebo možností Žádný.",
           "none": "Žádný",
           "invalidOption": "Neplatný: před použitím ho upravte"
         },
@@ -1283,6 +1283,7 @@
       "none": "Žádný (bez zpracování AI)",
       "menuTitle": "Prompt tohoto diktování",
       "note": "Platí jen pro toto diktování. Výchozí zůstává {{name}}.",
+      "noteRemembered": "Zůstane pro další běžná diktování, dokud nezvolíte Žádný.",
       "loading": "Načítání promptů…",
       "failed": "Prompty se nepodařilo načíst.",
       "choiceFailed": "Prompt se nepodařilo změnit.",

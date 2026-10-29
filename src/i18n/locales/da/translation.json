@@ -689,7 +689,7 @@
           "title": "AI-efterbehandling",
           "enabledDescription": "Behandl dikteringer med en prompt. Fra: ingen diktering behandles.",
           "defaultTitle": "Standardprompt",
-          "defaultDescription": "Bruges af genvejen til AI-diktering. Almindelig diktering starter med Ingen.",
+          "defaultDescription": "Bruges af genvejen til AI-diktering. Almindelig diktering starter med den sidste prompt, du valgte i indikatoren, eller Ingen.",
           "none": "Ingen",
           "invalidOption": "Ugyldig: rediger den, før du bruger den"
         },
@@ -1286,6 +1286,7 @@
       "none": "Ingen (ingen AI-behandling)",
       "menuTitle": "Prompt for denne diktering",
       "note": "Gælder kun denne diktering. Standarden forbliver {{name}}.",
+      "noteRemembered": "Beholdes til dine næste almindelige dikteringer, indtil du vælger Ingen.",
       "loading": "Indlæser prompts…",
       "failed": "Prompterne kunne ikke indlæses.",
       "choiceFailed": "Prompten kunne ikke ændres.",

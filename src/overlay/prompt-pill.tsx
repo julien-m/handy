@@ -90,8 +90,11 @@ const PromptRows: React.FC<{
           />
         ))}
       </div>
+      {/* @spec AC-009: a plain dictation's choice is kept — .specs/features/005-custom-ai-prompts/spec.md#ac-009 */}
       <p className="smenu-note" data-testid={`${menuId}-note`}>
-        {t("overlay.prompt.note", { name: defaultName })}
+        {view.remembered
+          ? t("overlay.prompt.noteRemembered")
+          : t("overlay.prompt.note", { name: defaultName })}
       </p>
     </>
   );

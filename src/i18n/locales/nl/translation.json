@@ -689,7 +689,7 @@
           "title": "AI-naverwerking",
           "enabledDescription": "Verwerk dictaten met een prompt. Uit: geen enkel dictaat wordt verwerkt.",
           "defaultTitle": "Standaardprompt",
-          "defaultDescription": "Gebruikt door de sneltoets voor AI-dictaat. Gewoon dictaat begint met Geen.",
+          "defaultDescription": "Gebruikt door de sneltoets voor AI-dictaat. Gewoon dictaat begint met de laatste prompt die je in de indicator koos, of met Geen.",
           "none": "Geen",
           "invalidOption": "Ongeldig: bewerk hem eerst"
         },
@@ -1286,6 +1286,7 @@
       "none": "Geen (geen AI-verwerking)",
       "menuTitle": "Prompt voor dit dictaat",
       "note": "Geldt alleen voor dit dictaat. De standaard blijft {{name}}.",
+      "noteRemembered": "Blijft bewaard voor je volgende gewone dictaten tot je Geen kiest.",
       "loading": "Prompts laden…",
       "failed": "De prompts konden niet worden geladen.",
       "choiceFailed": "De prompt kon niet worden gewijzigd.",

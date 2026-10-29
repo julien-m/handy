@@ -689,7 +689,7 @@
           "title": "Pascaproses AI",
           "enabledDescription": "Proses dikte dengan prompt. Nonaktif: tidak ada dikte yang diproses.",
           "defaultTitle": "Prompt bawaan",
-          "defaultDescription": "Digunakan oleh pintasan dikte AI. Dikte biasa dimulai dengan Tidak ada.",
+          "defaultDescription": "Digunakan oleh pintasan dikte AI. Dikte biasa dimulai dengan prompt terakhir yang Anda pilih di indikator, atau Tidak ada.",
           "none": "Tidak ada",
           "invalidOption": "Tidak valid: edit sebelum digunakan"
         },
@@ -1286,6 +1286,7 @@
       "none": "Tidak ada (tanpa pemrosesan AI)",
       "menuTitle": "Prompt untuk dikte ini",
       "note": "Hanya berlaku untuk dikte ini. Bawaan tetap {{name}}.",
+      "noteRemembered": "Disimpan untuk dikte biasa berikutnya sampai Anda memilih Tidak ada.",
       "loading": "Memuat prompt…",
       "failed": "Prompt tidak dapat dimuat.",
       "choiceFailed": "Prompt tidak dapat diubah.",
