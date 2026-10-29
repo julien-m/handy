@@ -16,6 +16,7 @@ pub mod engine_supervisor;
 mod helpers;
 mod input;
 mod llm_client;
+mod main_window_placement;
 mod managers;
 /// History storage (text-only rows included), public for the history integration tests.
 pub use managers::history_store;
@@ -125,6 +126,11 @@ fn show_main_window(app: &AppHandle) {
     if let Some(main_window) = app.get_webview_window("main") {
         if let Err(e) = main_window.unminimize() {
             log::error!("Failed to unminimize webview window: {}", e);
+        }
+        // Opening (not re-focusing an open window) always places it at the center of the
+        // primary monitor, so it never appears on whichever monitor it was last left on.
+        if !main_window.is_visible().unwrap_or(false) {
+            main_window_placement::center_on_primary_monitor(&main_window);
         }
         if let Err(e) = main_window.show() {
             log::error!("Failed to show webview window: {}", e);
