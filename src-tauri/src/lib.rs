@@ -1279,9 +1279,27 @@ mod bindings_tests {
         if std::env::var_os("HANDY_WRITE_BINDINGS").is_some() {
             std::fs::write(&committed, &generated)?;
         }
+        let committed = std::fs::read_to_string(committed)?;
+        // Name the first differing line, so a platform-dependent export is diagnosable from a
+        // CI log without the generated file.
+        let first_difference = committed
+            .lines()
+            .zip(generated.lines())
+            .enumerate()
+            .find(|(_, (left, right))| left != right)
+            .map(|(index, (left, right))| {
+                format!(
+                    "line {}: committed {left:?}, generated {right:?}",
+                    index + 1
+                )
+            })
+            .unwrap_or_else(|| {
+                let (left, right) = (committed.lines().count(), generated.lines().count());
+                format!("committed {left} lines, generated {right} lines")
+            });
         assert!(
-            std::fs::read_to_string(committed)? == generated,
-            "src/bindings.ts is stale: run with HANDY_WRITE_BINDINGS=1"
+            committed == generated,
+            "src/bindings.ts is stale ({first_difference}): run with HANDY_WRITE_BINDINGS=1"
         );
         Ok(())
     }
