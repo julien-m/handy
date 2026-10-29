@@ -1,6 +1,7 @@
 //! The index returns exactly what the original scan returned (every key, `strsim` Levenshtein,
 //! `natural` Soundex, strict `<` so the first best key wins), on realistic vocabularies and
-//! dictations, for several thresholds.
+//! dictations, for several thresholds. Since N22 both bound the Soundex weight to a normalized
+//! distance under twice the threshold (feature 003, AC-008).
 
 use super::super::custom_words_perf_tests::{as_text_spans, dictation, replaced_spans, vocabulary};
 use super::super::{apply_custom_words, apply_custom_words_outside_protected};
@@ -27,7 +28,13 @@ fn reference_best_match(
         let phonetic = supports_soundex(candidate)
             && supports_soundex(&key.key)
             && natural::phonetics::soundex(candidate, &key.key);
-        let combined = if phonetic { score * 0.3 } else { score };
+        // N22 (AC-008): the sound-alike weight holds only under twice the threshold.
+        let weight = if phonetic && score < threshold * 2.0 {
+            0.3
+        } else {
+            1.0
+        };
+        let combined = score * weight;
         if combined < threshold && best.is_none_or(|(_, found)| combined < found) {
             best = Some((key.word_index, combined));
         }
@@ -135,6 +142,31 @@ fn ties_keep_the_first_custom_word_and_ampersand_keys_still_match() {
     assert_eq!(index.find_best("kale", 0.5).map(|(word, _)| word), Some(0));
     assert_eq!(
         index.find_best("randdlab", 0.18).map(|(word, _)| word),
+        Some(2)
+    );
+}
+
+// @spec AC-008: Sound-alike alone never bridges a large gap — .specs/features/003-recognition-vocabulary/spec.md#ac-008
+#[test]
+fn a_sound_alike_key_needs_a_raw_distance_under_twice_the_threshold() {
+    let terms: Vec<String> = ["Claude Code", "LiveSpec", "Penflow"]
+        .map(String::from)
+        .to_vec();
+    let index = CustomWordIndex::new(&terms);
+    // N22: same Soundex as "livespec", raw distance 5/9 (0.56): no longer 0.167 < 0.18.
+    assert_eq!(index.find_best("levoispas", 0.18), None);
+    // Raw distance 3/8 (0.375) is just over twice 0.18: plain distance only, rejected.
+    assert_eq!(index.find_best("painflou", 0.18), None);
+    // Raw distance 2/10 (0.2) stays weighted: 0.06.
+    let found = index.find_best("cloudcode", 0.18);
+    assert_eq!(found.map(|(word, _)| word), Some(0));
+    assert!(
+        found.is_some_and(|(_, score)| (score - 0.06).abs() < 1e-9),
+        "{found:?}"
+    );
+    // A larger threshold widens the phonetic window with it: 0.375 < 2 × 0.3.
+    assert_eq!(
+        index.find_best("painflou", 0.3).map(|(word, _)| word),
         Some(2)
     );
 }

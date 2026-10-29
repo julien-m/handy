@@ -29,7 +29,8 @@ fn build_match_key(word: &str) -> String {
 /// This function corrects words in the input text by finding the best matches
 /// from a list of custom words using a combination of:
 /// - Levenshtein distance for string similarity
-/// - Soundex phonetic matching for pronunciation similarity
+/// - Soundex phonetic matching for pronunciation similarity, only for words whose letters are
+///   already within twice the threshold (a sound-alike never bridges a large spelling gap)
 /// - N-gram matching for multi-word speech artifacts (e.g., "Charge B" -> "ChargeBee")
 ///
 /// # Arguments
@@ -890,6 +891,57 @@ mod tests {
         assert_eq!(
             apply_custom_words_outside_protected(&[span(text, false)], &custom_words, 0.5),
             apply_custom_words(text, &custom_words, 0.5)
+        );
+    }
+
+    /// The vocabulary of the N22 report (2026-10-29), used with its threshold of 0.18.
+    fn n22_vocabulary() -> Vec<String> {
+        ["Claude Code", "OpenClaw", "LiveSpec", "Penflow"]
+            .map(String::from)
+            .to_vec()
+    }
+
+    // @spec AC-008: Sound-alike alone never bridges a large gap — .specs/features/003-recognition-vocabulary/spec.md#ac-008
+    #[test]
+    fn common_french_phrases_are_not_rewritten_into_custom_words() {
+        // "le vois pas" sounds like "LiveSpec" (Soundex L121) but 5 of its 9 letters differ.
+        for phrase in [
+            "je ne le vois pas",
+            "Je ne le vois pas.",
+            "il lave ce bac tous les soirs",
+            "il lave sept assiettes",
+            "un pain flou sur la photo",
+            "ajoute un clou de girofle",
+            "je le vois bien",
+        ] {
+            assert_eq!(
+                apply_custom_words(phrase, &n22_vocabulary(), 0.18),
+                phrase,
+                "{phrase}"
+            );
+        }
+    }
+
+    // @spec AC-008: Close sound-alikes are still corrected — .specs/features/003-recognition-vocabulary/spec.md#ac-008
+    #[test]
+    fn close_sound_alikes_are_still_corrected_at_the_default_threshold() {
+        for (heard, expected) in [
+            ("lance cloud code ici", "lance Claude Code ici"),
+            ("ouvre open claw", "ouvre OpenClaw"),
+            ("open clo marche", "OpenClaw marche"),
+            ("avec live spec", "avec LiveSpec"),
+            ("dans pen flow", "dans Penflow"),
+        ] {
+            assert_eq!(
+                apply_custom_words(heard, &n22_vocabulary(), 0.18),
+                expected,
+                "{heard}"
+            );
+        }
+        let charge_bee = vec!["ChargeBee".to_string()];
+        assert_eq!(
+            apply_custom_words("pay with Charge B today", &charge_bee, 0.18),
+            "pay with ChargeBee today"
         );
     }
 }
