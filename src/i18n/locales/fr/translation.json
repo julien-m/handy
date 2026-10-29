@@ -524,6 +524,18 @@
       "noFieldBubble": {
         "title": "Afficher la bulle quand aucun champ de texte n'est actif",
         "description": "Garde le texte dans une bulle au lieu de le coller dans le vide."
+      },
+      "defaultInputs": {
+        "title": "Champs mémorisés",
+        "description": "Où Handy colle pour une app quand son élément actif n'est pas un champ de texte. Mémorisez-en un depuis le menu du badge pendant une dictée.",
+        "field": "Champ : {{label}}",
+        "terminal": "Terminal : {{workspace}}",
+        "forget": "Oublier",
+        "forgetLabel": "Oublier l'entrée mémorisée de {{app}}",
+        "forgetAll": "Tout oublier",
+        "forgetAllLabel": "Oublier toutes les entrées mémorisées",
+        "empty": "Aucun champ mémorisé pour l'instant. Utilisez le menu du badge pendant une dictée.",
+        "failed": "Impossible d'oublier l'entrée mémorisée."
       }
     },
     "vocabulary": {
@@ -1277,7 +1289,26 @@
         "favorites": "Favoris",
         "addFavorite": "Ajouter {{name}} aux favoris",
         "removeFavorite": "Retirer {{name}} des favoris",
-        "notOpen": "Non ouverte"
+        "notOpen": "Non ouverte",
+        "rememberInput": {
+          "field": "Mémoriser ce champ pour {{app}}",
+          "fieldAgain": "Mémoriser de nouveau ce champ pour {{app}}",
+          "terminal": "Mémoriser ce terminal",
+          "terminalAgain": "Mémoriser de nouveau ce terminal",
+          "saved": {
+            "field": "Champ mémorisé pour {{app}}",
+            "terminal": "Terminal mémorisé pour {{app}}"
+          },
+          "refused": {
+            "notTextField": "Cliquez d'abord dans un champ de texte de l'app",
+            "passwordField": "Les champs de mot de passe ne sont jamais mémorisés",
+            "unrecognizable": "Ce champ n'a pas de nom que Handy pourrait reconnaître plus tard",
+            "terminalUnreadable": "Le terminal n'a pas pu être lu",
+            "full": "Vous pouvez mémoriser jusqu'à 20 entrées.",
+            "stale": "Cette dictée est terminée",
+            "failed": "Impossible d'enregistrer le champ"
+          }
+        }
       },
       "favoriteNotSaved": {
         "full": "Vous pouvez garder jusqu'à 10 favoris.",
@@ -1335,7 +1366,11 @@
       "activationFailed": "Impossible de mettre {{app}} au premier plan",
       "activationFailedUnnamed": "Impossible de mettre l'application au premier plan",
       "insertionFailed": "Échec de l'insertion",
-      "noTextField": "Aucun champ de texte n'est actif"
+      "noTextField": "Aucun champ de texte n'est actif",
+      "defaultFieldNotFound": "Le champ mémorisé de {{app}} est introuvable",
+      "defaultFieldNotFoundUnnamed": "Le champ mémorisé est introuvable",
+      "defaultTerminalGone": "Le terminal mémorisé de {{app}} n'existe plus",
+      "defaultTerminalGoneUnnamed": "Le terminal mémorisé n'existe plus"
     },
     "explanation": {
       "notInserted": "Handy n'a rien inséré et n'a envoyé aucune Entrée.",

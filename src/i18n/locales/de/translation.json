@@ -524,6 +524,18 @@
       "noFieldBubble": {
         "title": "Blase anzeigen, wenn kein Textfeld ausgewählt ist",
         "description": "Behält den Text in einer Blase, statt ihn ins Leere einzufügen."
+      },
+      "defaultInputs": {
+        "title": "Gemerkte Felder",
+        "description": "Wo Handy für eine App einfügt, wenn ihr aktives Element kein Textfeld ist. Merke dir eines während eines Diktats über das Badge-Menü.",
+        "field": "Feld: {{label}}",
+        "terminal": "Terminal: {{workspace}}",
+        "forget": "Vergessen",
+        "forgetLabel": "Gemerkte Eingabe von {{app}} vergessen",
+        "forgetAll": "Alle vergessen",
+        "forgetAllLabel": "Alle gemerkten Eingaben vergessen",
+        "empty": "Noch kein gemerktes Feld. Nutze das Badge-Menü während eines Diktats.",
+        "failed": "Die gemerkte Eingabe konnte nicht vergessen werden."
       }
     },
     "vocabulary": {
@@ -1277,7 +1289,26 @@
         "favorites": "Favoriten",
         "addFavorite": "{{name}} zu Favoriten hinzufügen",
         "removeFavorite": "{{name}} aus Favoriten entfernen",
-        "notOpen": "Nicht geöffnet"
+        "notOpen": "Nicht geöffnet",
+        "rememberInput": {
+          "field": "Dieses Feld für {{app}} merken",
+          "fieldAgain": "Dieses Feld erneut für {{app}} merken",
+          "terminal": "Dieses Terminal merken",
+          "terminalAgain": "Dieses Terminal erneut merken",
+          "saved": {
+            "field": "Feld für {{app}} gemerkt",
+            "terminal": "Terminal für {{app}} gemerkt"
+          },
+          "refused": {
+            "notTextField": "Klicke zuerst in ein Textfeld der App",
+            "passwordField": "Passwortfelder werden nie gemerkt",
+            "unrecognizable": "Dieses Feld hat keinen Namen, den Handy später wiedererkennen könnte",
+            "terminalUnreadable": "Das Terminal konnte nicht gelesen werden",
+            "full": "Du kannst bis zu 20 Eingaben merken.",
+            "stale": "Dieses Diktat ist beendet",
+            "failed": "Das Feld konnte nicht gespeichert werden"
+          }
+        }
       },
       "favoriteNotSaved": {
         "full": "Sie können bis zu 10 Favoriten behalten.",
@@ -1335,7 +1366,11 @@
       "activationFailed": "{{app}} konnte nicht in den Vordergrund geholt werden",
       "activationFailedUnnamed": "Die App konnte nicht in den Vordergrund geholt werden",
       "insertionFailed": "Einfügen fehlgeschlagen",
-      "noTextField": "Kein Textfeld ist ausgewählt"
+      "noTextField": "Kein Textfeld ist ausgewählt",
+      "defaultFieldNotFound": "Das gemerkte Feld von {{app}} wurde nicht gefunden",
+      "defaultFieldNotFoundUnnamed": "Das gemerkte Feld wurde nicht gefunden",
+      "defaultTerminalGone": "Das gemerkte Terminal von {{app}} existiert nicht mehr",
+      "defaultTerminalGoneUnnamed": "Das gemerkte Terminal existiert nicht mehr"
     },
     "explanation": {
       "notInserted": "Handy hat nichts eingefügt und keine Eingabetaste gesendet.",

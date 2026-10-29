@@ -9,7 +9,10 @@ executable path (Windows) of a running application. The pin lasts until unpin or
 quits and changes the current dictation like the badge menu. Needs a running Handy (else \
 unavailable, exit 5); unsupported on Linux (validation_failed, exit 2). Favorites (at most 10, \
 newest nearest the badge): favorite-add needs a running Handy and a running application; \
-favorite-remove works offline. Read them with handy settings get destination_favorites."
+favorite-remove works offline. Read them with handy settings get destination_favorites. \
+Remembered inputs (a field or a terminal per app, saved from the badge menu): read them with \
+handy settings get destination_default_inputs; default-input-remove and default-input-clear \
+work offline."
 )]
 pub struct DestinationArgs {
     #[command(subcommand)]
@@ -38,4 +41,11 @@ pub enum DestinationAction {
         /// Bundle identifier (macOS), AUMID or executable path (Windows)
         identifier: String,
     },
+    /// Forget the remembered input (field or terminal) of the application with this identifier
+    DefaultInputRemove {
+        /// Bundle identifier (macOS), AUMID or executable path (Windows)
+        identifier: String,
+    },
+    /// Forget every remembered input
+    DefaultInputClear,
 }

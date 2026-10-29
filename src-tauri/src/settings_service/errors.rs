@@ -112,6 +112,10 @@ pub enum ValidationReason {
     FavoritesFull,
     /// A favorite has a blank identity or name, a name too long, or repeats another (012).
     FavoriteInvalid,
+    /// More remembered inputs than kept (feature 013).
+    DefaultInputsFull,
+    /// A remembered input repeats an application or has an invalid name or target (013).
+    DefaultInputInvalid,
 }
 /// Refusal text of a generic write of a microphone key (feature 001).
 const MICROPHONES_DOMAIN_MESSAGE: &str =
@@ -148,7 +152,12 @@ impl ValidationReason {
             Self::ShortcutSessionBusy => "A dictation is in progress; retry when it ends.",
             Self::MicrophonesDomain => MICROPHONES_DOMAIN_MESSAGE,
             Self::DestinationDomain => {
-                "Use handy settings destination favorite-add or favorite-remove."
+                "Use handy settings destination favorite-add, favorite-remove, default-input-remove \
+                 or default-input-clear."
+            }
+            Self::DefaultInputsFull => "You can remember up to 20 inputs.",
+            Self::DefaultInputInvalid => {
+                "Each remembered input needs a unique application, a name and a valid target."
             }
             Self::FavoritesFull => "You can keep up to 10 favorite applications.",
             Self::FavoriteInvalid => {

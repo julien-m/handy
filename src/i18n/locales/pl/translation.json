@@ -524,6 +524,18 @@
       "noFieldBubble": {
         "title": "Pokazuj dymek, gdy żadne pole tekstowe nie jest aktywne",
         "description": "Zachowuje tekst w dymku zamiast wklejać go w próżnię."
+      },
+      "defaultInputs": {
+        "title": "Zapamiętane pola",
+        "description": "Gdzie Handy wkleja w aplikacji, gdy jej aktywny element nie jest polem tekstowym. Zapamiętaj je z menu plakietki podczas dyktowania.",
+        "field": "Pole: {{label}}",
+        "terminal": "Terminal: {{workspace}}",
+        "forget": "Zapomnij",
+        "forgetLabel": "Zapomnij zapamiętane pole aplikacji {{app}}",
+        "forgetAll": "Zapomnij wszystko",
+        "forgetAllLabel": "Zapomnij wszystkie zapamiętane pola",
+        "empty": "Brak zapamiętanych pól. Użyj menu plakietki podczas dyktowania.",
+        "failed": "Nie udało się zapomnieć zapamiętanego pola."
       }
     },
     "vocabulary": {
@@ -1277,7 +1289,26 @@
         "favorites": "Ulubione",
         "addFavorite": "Dodaj {{name}} do ulubionych",
         "removeFavorite": "Usuń {{name}} z ulubionych",
-        "notOpen": "Nieotwarta"
+        "notOpen": "Nieotwarta",
+        "rememberInput": {
+          "field": "Zapamiętaj to pole dla {{app}}",
+          "fieldAgain": "Zapamiętaj ponownie to pole dla {{app}}",
+          "terminal": "Zapamiętaj ten terminal",
+          "terminalAgain": "Zapamiętaj ponownie ten terminal",
+          "saved": {
+            "field": "Zapamiętano pole dla {{app}}",
+            "terminal": "Zapamiętano terminal dla {{app}}"
+          },
+          "refused": {
+            "notTextField": "Najpierw kliknij pole tekstowe w aplikacji",
+            "passwordField": "Pola haseł nigdy nie są zapamiętywane",
+            "unrecognizable": "To pole nie ma nazwy, którą Handy mógłby później rozpoznać",
+            "terminalUnreadable": "Nie udało się odczytać terminala",
+            "full": "Możesz zapamiętać do 20 pól.",
+            "stale": "To dyktowanie się zakończyło",
+            "failed": "Nie udało się zapisać pola"
+          }
+        }
       },
       "favoriteNotSaved": {
         "full": "Możesz mieć maksymalnie 10 ulubionych.",
@@ -1335,7 +1366,11 @@
       "activationFailed": "Nie udało się przenieść {{app}} na pierwszy plan",
       "activationFailedUnnamed": "Nie udało się przenieść aplikacji na pierwszy plan",
       "insertionFailed": "Wstawianie nie powiodło się",
-      "noTextField": "Żadne pole tekstowe nie jest aktywne"
+      "noTextField": "Żadne pole tekstowe nie jest aktywne",
+      "defaultFieldNotFound": "Nie znaleziono zapamiętanego pola aplikacji {{app}}",
+      "defaultFieldNotFoundUnnamed": "Nie znaleziono zapamiętanego pola",
+      "defaultTerminalGone": "Zapamiętany terminal aplikacji {{app}} już nie istnieje",
+      "defaultTerminalGoneUnnamed": "Zapamiętany terminal już nie istnieje"
     },
     "explanation": {
       "notInserted": "Handy niczego nie wstawił i nie wysłał klawisza Enter.",

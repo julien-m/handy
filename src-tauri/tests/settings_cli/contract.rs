@@ -178,15 +178,18 @@ const UI_ONLY: &str = "This setting is changed in the settings UI.";
 /// Keys generic `set` refuses, with the reason naming where they are changed.
 const MICROPHONES: &str =
     "Use handy settings microphones set-priority to change the microphone choices.";
-/// 012: the favorites point to the destination domain, which exists only with the gate open.
+/// 012 and 013: the favorites and remembered inputs point to the destination domain, which exists only with the gate open.
 const FAVORITES: &str = if cfg!(feature = "destination-return") {
-    "Use handy settings destination favorite-add or favorite-remove."
+    "Use handy settings destination favorite-add, favorite-remove, default-input-remove or \
+     default-input-clear."
 } else {
     UI_ONLY
 };
-const OWNED_ELSEWHERE: [(&str, &str); 8] = [
+const OWNED_ELSEWHERE: [(&str, &str); 9] = [
     ("selected_microphone", MICROPHONES),
     ("destination_favorites", FAVORITES),
+    // 013: the remembered inputs point to the same destination domain.
+    ("destination_default_inputs", FAVORITES),
     ("microphone_priority", MICROPHONES),
     (
         "bindings",

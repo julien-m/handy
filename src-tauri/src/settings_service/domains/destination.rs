@@ -6,7 +6,9 @@
 //! then the platform (Linux: `validation_failed`, `unsupported_platform`), then liveness, then the
 //! lookup (`not_found`, exit 4). A pin or unpin has the badge's effect on the current dictation.
 //! 012 adds `favorite-add <identifier>` (live) and `favorite-remove <identifier>` (a settings
-//! change, offline or routed): the only actions of this domain that write settings.
+//! change, offline or routed). 013 adds `default-input-remove <identifier>` and
+//! `default-input-clear`, settings changes too; these four are the actions that write settings.
+use super::destination_default_inputs;
 use super::destination_favorites::{remove_plan, FavoriteAddOperation};
 use super::live_operation::{managed_state, LiveAnswer, LiveCall, LiveContext, LiveOperation};
 use super::{Domain, DomainPlan, DomainRequest};
@@ -25,7 +27,15 @@ impl Domain for DestinationDomain {
         "destination"
     }
     fn actions(&self) -> &'static [&'static str] {
-        &["pin", "unpin", "status", "favorite-add", "favorite-remove"]
+        &[
+            "pin",
+            "unpin",
+            "status",
+            "favorite-add",
+            "favorite-remove",
+            "default-input-remove",
+            "default-input-clear",
+        ]
     }
     // @spec AC-006: destination pin, unpin and status — .specs/features/009-pin-mode-and-enter-rule/spec.md#ac-006
     // @spec AC-006: favorite-add and favorite-remove — .specs/features/012-destination-favorites/spec.md#ac-006
@@ -34,7 +44,7 @@ impl Domain for DestinationDomain {
         request: &DomainRequest<'_>,
         settings: &AppSettings,
     ) -> Result<DomainPlan, SettingsError> {
-        // The pin is native state, never a setting; only `favorite-remove` reads `settings`.
+        // The pin is native state, never a setting; only the removals read `settings`.
         let usage = || SettingsError::new(SettingsErrorCode::UsageError);
         let operation: Box<dyn LiveOperation> = match (request.action, request.arguments) {
             ("pin", [identifier]) => Box::new(PinOperation {
@@ -48,6 +58,14 @@ impl Domain for DestinationDomain {
             ("favorite-remove", [identifier]) => {
                 platform_check(request)?;
                 return remove_plan(identifier, settings);
+            }
+            ("default-input-remove", [identifier]) => {
+                platform_check(request)?;
+                return destination_default_inputs::remove_plan(identifier, settings);
+            }
+            ("default-input-clear", []) => {
+                platform_check(request)?;
+                return Ok(destination_default_inputs::clear_plan());
             }
             _ => return Err(usage()),
         };

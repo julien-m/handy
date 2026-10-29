@@ -501,6 +501,18 @@
       "noFieldBubble": {
         "title": "إظهار الفقاعة عند عدم تحديد أي حقل نص",
         "description": "يحتفظ بالنص في فقاعة بدلًا من لصقه في لا مكان."
+      },
+      "defaultInputs": {
+        "title": "الحقول المتذكَّرة",
+        "description": "المكان الذي يلصق فيه Handy في تطبيق عندما لا يكون عنصره النشط حقلًا نصيًا. تذكّر واحدًا من قائمة الشارة أثناء الإملاء.",
+        "field": "حقل: {{label}}",
+        "terminal": "طرفية: {{workspace}}",
+        "forget": "نسيان",
+        "forgetLabel": "نسيان الإدخال المتذكَّر لـ {{app}}",
+        "forgetAll": "نسيان الكل",
+        "forgetAllLabel": "نسيان كل الإدخالات المتذكَّرة",
+        "empty": "لا يوجد حقل متذكَّر بعد. استخدم قائمة الشارة أثناء الإملاء.",
+        "failed": "تعذّر نسيان الإدخال المتذكَّر."
       }
     },
     "vocabulary": {
@@ -1277,7 +1289,26 @@
         "favorites": "المفضلة",
         "addFavorite": "إضافة {{name}} إلى المفضلة",
         "removeFavorite": "إزالة {{name}} من المفضلة",
-        "notOpen": "غير مفتوح"
+        "notOpen": "غير مفتوح",
+        "rememberInput": {
+          "field": "تذكّر هذا الحقل لـ {{app}}",
+          "fieldAgain": "تذكّر هذا الحقل مجددًا لـ {{app}}",
+          "terminal": "تذكّر هذه الطرفية",
+          "terminalAgain": "تذكّر هذه الطرفية مجددًا",
+          "saved": {
+            "field": "تم تذكّر الحقل لـ {{app}}",
+            "terminal": "تم تذكّر الطرفية لـ {{app}}"
+          },
+          "refused": {
+            "notTextField": "انقر أولًا في حقل نصي في التطبيق",
+            "passwordField": "لا يتم تذكّر حقول كلمات المرور أبدًا",
+            "unrecognizable": "ليس لهذا الحقل اسم يمكن لـ Handy التعرف عليه لاحقًا",
+            "terminalUnreadable": "تعذّرت قراءة الطرفية",
+            "full": "يمكنك تذكّر ما يصل إلى 20 إدخالًا.",
+            "stale": "انتهى هذا الإملاء",
+            "failed": "تعذّر حفظ الحقل"
+          }
+        }
       },
       "favoriteNotSaved": {
         "full": "يمكنك الاحتفاظ بما يصل إلى 10 مفضلات.",
@@ -1335,7 +1366,11 @@
       "activationFailed": "تعذّر إحضار {{app}} إلى المقدمة",
       "activationFailedUnnamed": "تعذّر إحضار التطبيق إلى المقدمة",
       "insertionFailed": "فشل الإدراج",
-      "noTextField": "لا يوجد حقل نص محدد"
+      "noTextField": "لا يوجد حقل نص محدد",
+      "defaultFieldNotFound": "لم يُعثر على الحقل المتذكَّر لـ {{app}}",
+      "defaultFieldNotFoundUnnamed": "لم يُعثر على الحقل المتذكَّر",
+      "defaultTerminalGone": "الطرفية المتذكَّرة لـ {{app}} لم تعد موجودة",
+      "defaultTerminalGoneUnnamed": "الطرفية المتذكَّرة لم تعد موجودة"
     },
     "explanation": {
       "notInserted": "لم يُدرج Handy أي شيء ولم يرسل مفتاح الإدخال.",

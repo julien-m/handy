@@ -1,0 +1,14 @@
+01 exit=0 :: bun run lint
+02 exit=0 :: npx tsc --noEmit -p .
+03 exit=0 :: npx prettier --check src tests
+04 exit=0 :: bun run check:translations
+05 exit=0 :: bun run test:indicator
+06 exit=0 :: bun run test:output-settings
+07 exit=0 :: bun run test:recovery-bubble
+08 exit=0 :: bash /private/tmp/claude-501/-Users-julienm-projects-handy/6c63dd2f-66f1-4748-8d50-174f39c2881a/scratchpad/f013/cargo.sh fmt -- --check
+09 exit=0 :: bash /private/tmp/claude-501/-Users-julienm-projects-handy/6c63dd2f-66f1-4748-8d50-174f39c2881a/scratchpad/f013/cargo.sh clippy --all-targets --features destination-return,smart-paste-dispatch -- -D warnings
+10 exit=0 :: bash /private/tmp/claude-501/-Users-julienm-projects-handy/6c63dd2f-66f1-4748-8d50-174f39c2881a/scratchpad/f013/cargo.sh test --lib --features destination-return,smart-paste-dispatch
+11 exit=0 :: bash /private/tmp/claude-501/-Users-julienm-projects-handy/6c63dd2f-66f1-4748-8d50-174f39c2881a/scratchpad/f013/cargo.sh test --features destination-return,smart-paste-dispatch --test settings_validation --test settings_cli --test pin_enter_cli --test settings_domains
+10 detail :: test result: ok. 1192 passed; 0 failed; 19 ignored
+11 detail :: pin_enter_cli 7 passed, settings_cli 19 passed, settings_domains 8 passed, settings_validation 25 passed; 0 failed
+12 exit=0 :: livespec conventions verify --feature repo --json (PASS, run 20261029T171627Z)

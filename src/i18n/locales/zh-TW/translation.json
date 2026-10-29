@@ -524,6 +524,18 @@
       "noFieldBubble": {
         "title": "沒有聚焦的文字欄位時顯示泡泡",
         "description": "將文字保留在泡泡中，而不是貼到空處。"
+      },
+      "defaultInputs": {
+        "title": "已記住的欄位",
+        "description": "當應用程式的作用中元素不是文字欄位時 Handy 的貼上位置。在聽寫期間從徽章選單記住一個。",
+        "field": "欄位：{{label}}",
+        "terminal": "終端機：{{workspace}}",
+        "forget": "忘記",
+        "forgetLabel": "忘記 {{app}} 已記住的輸入位置",
+        "forgetAll": "全部忘記",
+        "forgetAllLabel": "忘記所有已記住的輸入位置",
+        "empty": "尚未記住任何欄位。請在聽寫期間使用徽章選單。",
+        "failed": "無法忘記已記住的輸入位置。"
       }
     },
     "vocabulary": {
@@ -1277,7 +1289,26 @@
         "favorites": "收藏",
         "addFavorite": "將 {{name}} 加入收藏",
         "removeFavorite": "將 {{name}} 移出收藏",
-        "notOpen": "未開啟"
+        "notOpen": "未開啟",
+        "rememberInput": {
+          "field": "記住 {{app}} 的此欄位",
+          "fieldAgain": "重新記住 {{app}} 的此欄位",
+          "terminal": "記住此終端機",
+          "terminalAgain": "重新記住此終端機",
+          "saved": {
+            "field": "已記住 {{app}} 的欄位",
+            "terminal": "已記住 {{app}} 的終端機"
+          },
+          "refused": {
+            "notTextField": "請先點選應用程式中的文字欄位",
+            "passwordField": "絕不記住密碼欄位",
+            "unrecognizable": "此欄位沒有 Handy 日後能辨識的名稱",
+            "terminalUnreadable": "無法讀取終端機",
+            "full": "最多可記住 20 個輸入位置。",
+            "stale": "本次聽寫已結束",
+            "failed": "無法儲存欄位"
+          }
+        }
       },
       "favoriteNotSaved": {
         "full": "最多可保留 10 個收藏。",
@@ -1335,7 +1366,11 @@
       "activationFailed": "無法將 {{app}} 移到最前面",
       "activationFailedUnnamed": "無法將該 App 移到最前面",
       "insertionFailed": "插入失敗",
-      "noTextField": "沒有聚焦的文字欄位"
+      "noTextField": "沒有聚焦的文字欄位",
+      "defaultFieldNotFound": "找不到 {{app}} 已記住的欄位",
+      "defaultFieldNotFoundUnnamed": "找不到已記住的欄位",
+      "defaultTerminalGone": "{{app}} 已記住的終端機已不存在",
+      "defaultTerminalGoneUnnamed": "已記住的終端機已不存在"
     },
     "explanation": {
       "notInserted": "Handy 沒有插入任何內容，也沒有送出 Enter。",

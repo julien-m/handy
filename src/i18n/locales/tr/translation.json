@@ -524,6 +524,18 @@
       "noFieldBubble": {
         "title": "Odaklanmış metin alanı yokken baloncuğu göster",
         "description": "Metni boşluğa yapıştırmak yerine bir baloncukta tutar."
+      },
+      "defaultInputs": {
+        "title": "Hatırlanan alanlar",
+        "description": "Etkin öğesi bir metin alanı olmadığında Handy'nin bir uygulamada yapıştırdığı yer. Dikte sırasında rozet menüsünden bir tane hatırlayın.",
+        "field": "Alan: {{label}}",
+        "terminal": "Terminal: {{workspace}}",
+        "forget": "Unut",
+        "forgetLabel": "{{app}} için hatırlanan girişi unut",
+        "forgetAll": "Tümünü unut",
+        "forgetAllLabel": "Hatırlanan tüm girişleri unut",
+        "empty": "Henüz hatırlanan alan yok. Dikte sırasında rozet menüsünü kullanın.",
+        "failed": "Hatırlanan giriş unutulamadı."
       }
     },
     "vocabulary": {
@@ -1277,7 +1289,26 @@
         "favorites": "Favoriler",
         "addFavorite": "{{name}} uygulamasını favorilere ekle",
         "removeFavorite": "{{name}} uygulamasını favorilerden kaldır",
-        "notOpen": "Açık değil"
+        "notOpen": "Açık değil",
+        "rememberInput": {
+          "field": "Bu alanı {{app}} için hatırla",
+          "fieldAgain": "Bu alanı {{app}} için yeniden hatırla",
+          "terminal": "Bu terminali hatırla",
+          "terminalAgain": "Bu terminali yeniden hatırla",
+          "saved": {
+            "field": "Alan {{app}} için hatırlandı",
+            "terminal": "Terminal {{app}} için hatırlandı"
+          },
+          "refused": {
+            "notTextField": "Önce uygulamanın bir metin alanına tıklayın",
+            "passwordField": "Parola alanları asla hatırlanmaz",
+            "unrecognizable": "Bu alanın Handy'nin daha sonra tanıyabileceği bir adı yok",
+            "terminalUnreadable": "Terminal okunamadı",
+            "full": "En fazla 20 giriş hatırlayabilirsiniz.",
+            "stale": "Bu dikte sona erdi",
+            "failed": "Alan kaydedilemedi"
+          }
+        }
       },
       "favoriteNotSaved": {
         "full": "En fazla 10 favori tutabilirsiniz.",
@@ -1335,7 +1366,11 @@
       "activationFailed": "{{app}} öne getirilemedi",
       "activationFailedUnnamed": "Uygulama öne getirilemedi",
       "insertionFailed": "Ekleme başarısız oldu",
-      "noTextField": "Odaklanmış metin alanı yok"
+      "noTextField": "Odaklanmış metin alanı yok",
+      "defaultFieldNotFound": "{{app}} için hatırlanan alan bulunamadı",
+      "defaultFieldNotFoundUnnamed": "Hatırlanan alan bulunamadı",
+      "defaultTerminalGone": "{{app}} için hatırlanan terminal artık yok",
+      "defaultTerminalGoneUnnamed": "Hatırlanan terminal artık yok"
     },
     "explanation": {
       "notInserted": "Handy hiçbir şey eklemedi ve Enter göndermedi.",

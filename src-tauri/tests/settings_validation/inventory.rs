@@ -21,7 +21,8 @@ fn every_actual_stored_field_has_exactly_one_descriptor() -> Result<(), Box<dyn 
         .collect();
     // 010: `show_recovery_bubble_without_text_field` is stored and described with the gate open.
     // 005 N23 adds `plain_dictation_prompt_id`, 012 `destination_favorites` (every build).
-    let keys = 70 + usize::from(cfg!(feature = "destination-return"));
+    // 013 adds `destination_default_inputs` (every build).
+    let keys = 71 + usize::from(cfg!(feature = "destination-return"));
     assert_eq!(actual.len(), keys);
     assert_eq!(descriptors().len(), keys);
     assert_eq!(actual, described);
@@ -40,7 +41,7 @@ const READONLY: [&str; 9] = [
     "post_process_providers",
     "post_process_models",
 ];
-const COLLECTIONS: [(&str, &str); 7] = [
+const COLLECTIONS: [(&str, &str); 8] = [
     ("bindings", "shortcuts"),
     ("microphone_priority", "microphones"),
     ("custom_words", "vocabulary"),
@@ -49,6 +50,8 @@ const COLLECTIONS: [(&str, &str); 7] = [
     ("word_replacements", "replacements"),
     // 012: favorite destination applications, owned by the destination domain.
     ("destination_favorites", "destination"),
+    // 013: remembered default inputs, owned by the destination domain.
+    ("destination_default_inputs", "destination"),
 ];
 
 #[test]

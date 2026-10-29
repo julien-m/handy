@@ -524,6 +524,18 @@
       "noFieldBubble": {
         "title": "Show the bubble when no text field is focused",
         "description": "Keeps the text in a bubble instead of pasting into nothing."
+      },
+      "defaultInputs": {
+        "title": "Remembered fields",
+        "description": "Where Handy pastes for an app when its active element is not a text field. Remember one from the badge menu during a dictation.",
+        "field": "Field: {{label}}",
+        "terminal": "Terminal: {{workspace}}",
+        "forget": "Forget",
+        "forgetLabel": "Forget the remembered input of {{app}}",
+        "forgetAll": "Forget all",
+        "forgetAllLabel": "Forget all remembered inputs",
+        "empty": "No remembered field yet. Use the badge menu during a dictation.",
+        "failed": "Could not forget the remembered input."
       }
     },
     "vocabulary": {
@@ -1280,7 +1292,26 @@
         "favorites": "Favorites",
         "addFavorite": "Add {{name}} to favorites",
         "removeFavorite": "Remove {{name}} from favorites",
-        "notOpen": "Not open"
+        "notOpen": "Not open",
+        "rememberInput": {
+          "field": "Remember this field for {{app}}",
+          "fieldAgain": "Remember this field again for {{app}}",
+          "terminal": "Remember this terminal",
+          "terminalAgain": "Remember this terminal again",
+          "saved": {
+            "field": "Field remembered for {{app}}",
+            "terminal": "Terminal remembered for {{app}}"
+          },
+          "refused": {
+            "notTextField": "Click in a text field of the app first",
+            "passwordField": "Password fields are never remembered",
+            "unrecognizable": "This field has no name Handy could recognize later",
+            "terminalUnreadable": "The terminal could not be read",
+            "full": "You can remember up to 20 inputs.",
+            "stale": "This dictation has ended",
+            "failed": "Could not save the field"
+          }
+        }
       },
       "favoriteNotSaved": {
         "full": "You can keep up to 10 favorites.",
@@ -1335,7 +1366,11 @@
       "activationFailed": "Could not bring {{app}} forward",
       "activationFailedUnnamed": "Could not bring the application forward",
       "insertionFailed": "Insertion failed",
-      "noTextField": "No text field is focused"
+      "noTextField": "No text field is focused",
+      "defaultFieldNotFound": "The remembered field of {{app}} was not found",
+      "defaultFieldNotFoundUnnamed": "The remembered field was not found",
+      "defaultTerminalGone": "The remembered terminal of {{app}} no longer exists",
+      "defaultTerminalGoneUnnamed": "The remembered terminal no longer exists"
     },
     "explanation": {
       "notInserted": "Handy didn't insert anything and sent no Enter.",

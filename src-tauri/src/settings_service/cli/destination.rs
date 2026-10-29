@@ -12,6 +12,10 @@ pub(super) fn destination_operation(action: &DestinationAction) -> SettingsOpera
         DestinationAction::FavoriteRemove { identifier } => {
             ("favorite-remove", vec![identifier.clone()])
         }
+        DestinationAction::DefaultInputRemove { identifier } => {
+            ("default-input-remove", vec![identifier.clone()])
+        }
+        DestinationAction::DefaultInputClear => ("default-input-clear", Vec::new()),
     };
     SettingsOperation::Domain {
         domain: "destination".to_owned(),

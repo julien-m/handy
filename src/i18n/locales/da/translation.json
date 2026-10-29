@@ -524,6 +524,18 @@
       "noFieldBubble": {
         "title": "Vis boblen, når intet tekstfelt har fokus",
         "description": "Beholder teksten i en boble i stedet for at indsætte den i ingenting."
+      },
+      "defaultInputs": {
+        "title": "Huskede felter",
+        "description": "Hvor Handy indsætter for en app, når dens aktive element ikke er et tekstfelt. Husk et fra badgemenuen under en diktering.",
+        "field": "Felt: {{label}}",
+        "terminal": "Terminal: {{workspace}}",
+        "forget": "Glem",
+        "forgetLabel": "Glem det huskede input for {{app}}",
+        "forgetAll": "Glem alle",
+        "forgetAllLabel": "Glem alle huskede input",
+        "empty": "Intet husket felt endnu. Brug badgemenuen under en diktering.",
+        "failed": "Det huskede input kunne ikke glemmes."
       }
     },
     "vocabulary": {
@@ -1280,7 +1292,26 @@
         "favorites": "Favoritter",
         "addFavorite": "Føj {{name}} til favoritter",
         "removeFavorite": "Fjern {{name}} fra favoritter",
-        "notOpen": "Ikke åben"
+        "notOpen": "Ikke åben",
+        "rememberInput": {
+          "field": "Husk dette felt til {{app}}",
+          "fieldAgain": "Husk dette felt igen til {{app}}",
+          "terminal": "Husk denne terminal",
+          "terminalAgain": "Husk denne terminal igen",
+          "saved": {
+            "field": "Felt husket til {{app}}",
+            "terminal": "Terminal husket til {{app}}"
+          },
+          "refused": {
+            "notTextField": "Klik først i et tekstfelt i appen",
+            "passwordField": "Adgangskodefelter huskes aldrig",
+            "unrecognizable": "Dette felt har intet navn, som Handy kan genkende senere",
+            "terminalUnreadable": "Terminalen kunne ikke læses",
+            "full": "Du kan huske op til 20 input.",
+            "stale": "Denne diktering er afsluttet",
+            "failed": "Feltet kunne ikke gemmes"
+          }
+        }
       },
       "favoriteNotSaved": {
         "full": "Du kan have op til 10 favoritter.",
@@ -1335,7 +1366,11 @@
       "activationFailed": "Kunne ikke hente {{app}} frem",
       "activationFailedUnnamed": "Kunne ikke hente appen frem",
       "insertionFailed": "Indsættelse mislykkedes",
-      "noTextField": "Intet tekstfelt har fokus"
+      "noTextField": "Intet tekstfelt har fokus",
+      "defaultFieldNotFound": "Det huskede felt for {{app}} blev ikke fundet",
+      "defaultFieldNotFoundUnnamed": "Det huskede felt blev ikke fundet",
+      "defaultTerminalGone": "Den huskede terminal for {{app}} findes ikke længere",
+      "defaultTerminalGoneUnnamed": "Den huskede terminal findes ikke længere"
     },
     "explanation": {
       "notInserted": "Handy indsatte intet og sendte ingen Enter.",

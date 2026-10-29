@@ -49,6 +49,16 @@ describe("reason line (AC-003)", () => {
       ],
       ["insertion_failed", "recoveryBubble.reason.insertionFailed", "error"],
       ["no_text_field", "recoveryBubble.reason.noTextField", "info"],
+      [
+        "default_field_not_found",
+        "recoveryBubble.reason.defaultFieldNotFound",
+        "info",
+      ],
+      [
+        "default_terminal_gone",
+        "recoveryBubble.reason.defaultTerminalGone",
+        "warning",
+      ],
     ];
     for (const [reason, key, icon] of cases) {
       const texts = bubbleTexts(view({ reason }));
@@ -61,6 +71,35 @@ describe("reason line (AC-003)", () => {
     const texts = bubbleTexts(view({ app_name: null }));
     expect(texts.reasonKey).toBe("recoveryBubble.reason.appClosedUnnamed");
     expect(texts.reasonValues).toEqual({});
+  });
+});
+
+describe("remembered input reasons (013 AC-006, AC-007)", () => {
+  test("named after the app, or the unnamed sentence without a name", () => {
+    for (const reason of [
+      "default_field_not_found",
+      "default_terminal_gone",
+    ] as const) {
+      const named = bubbleTexts(view({ reason }));
+      expect(named.reasonKey.endsWith("Unnamed")).toBe(false);
+      expect(named.reasonValues).toEqual({ app: "Notes" });
+      const unnamed = bubbleTexts(view({ reason, app_name: null }));
+      expect(unnamed.reasonKey).toBe(`${named.reasonKey}Unnamed`);
+      expect(unnamed.reasonValues).toEqual({});
+    }
+  });
+  test("a field not found advises clicking in the field; a gone terminal opening the app", () => {
+    expect(keys({ reason: "default_field_not_found" })).toEqual([
+      "recoveryBubble.explanation.notInserted",
+      "recoveryBubble.explanation.historyKept",
+      "recoveryBubble.explanation.focusFieldDrag",
+    ]);
+    expect(
+      keys({ reason: "default_field_not_found", can_drag: false }),
+    ).toContain("recoveryBubble.explanation.focusFieldCopy");
+    expect(keys({ reason: "default_terminal_gone" })).toContain(
+      "recoveryBubble.explanation.openAppDrag",
+    );
   });
 });
 

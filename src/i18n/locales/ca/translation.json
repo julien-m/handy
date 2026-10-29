@@ -524,6 +524,18 @@
       "noFieldBubble": {
         "title": "Mostra la bombolla quan cap camp de text no té el focus",
         "description": "Guarda el text en una bombolla en lloc d'enganxar-lo enlloc."
+      },
+      "defaultInputs": {
+        "title": "Camps recordats",
+        "description": "On enganxa Handy en una app quan el seu element actiu no és un camp de text. Recorda'n un des del menú de la insígnia durant un dictat.",
+        "field": "Camp: {{label}}",
+        "terminal": "Terminal: {{workspace}}",
+        "forget": "Oblida",
+        "forgetLabel": "Oblida l'entrada recordada de {{app}}",
+        "forgetAll": "Oblida-ho tot",
+        "forgetAllLabel": "Oblida totes les entrades recordades",
+        "empty": "Encara no hi ha cap camp recordat. Fes servir el menú de la insígnia durant un dictat.",
+        "failed": "No s'ha pogut oblidar l'entrada recordada."
       }
     },
     "vocabulary": {
@@ -1280,7 +1292,26 @@
         "favorites": "Preferits",
         "addFavorite": "Afegeix {{name}} als preferits",
         "removeFavorite": "Treu {{name}} dels preferits",
-        "notOpen": "No oberta"
+        "notOpen": "No oberta",
+        "rememberInput": {
+          "field": "Recorda aquest camp per a {{app}}",
+          "fieldAgain": "Recorda de nou aquest camp per a {{app}}",
+          "terminal": "Recorda aquest terminal",
+          "terminalAgain": "Recorda de nou aquest terminal",
+          "saved": {
+            "field": "Camp recordat per a {{app}}",
+            "terminal": "Terminal recordat per a {{app}}"
+          },
+          "refused": {
+            "notTextField": "Primer fes clic en un camp de text de l'app",
+            "passwordField": "Els camps de contrasenya no es recorden mai",
+            "unrecognizable": "Aquest camp no té cap nom que Handy pugui reconèixer més tard",
+            "terminalUnreadable": "No s'ha pogut llegir el terminal",
+            "full": "Pots recordar fins a 20 entrades.",
+            "stale": "Aquest dictat ha acabat",
+            "failed": "No s'ha pogut desar el camp"
+          }
+        }
       },
       "favoriteNotSaved": {
         "full": "Pots tenir fins a 10 preferits.",
@@ -1335,7 +1366,11 @@
       "activationFailed": "No s'ha pogut portar {{app}} al davant",
       "activationFailedUnnamed": "No s'ha pogut portar l'aplicació al davant",
       "insertionFailed": "Error en inserir",
-      "noTextField": "Cap camp de text no té el focus"
+      "noTextField": "Cap camp de text no té el focus",
+      "defaultFieldNotFound": "No s'ha trobat el camp recordat de {{app}}",
+      "defaultFieldNotFoundUnnamed": "No s'ha trobat el camp recordat",
+      "defaultTerminalGone": "El terminal recordat de {{app}} ja no existeix",
+      "defaultTerminalGoneUnnamed": "El terminal recordat ja no existeix"
     },
     "explanation": {
       "notInserted": "Handy no ha inserit res ni ha enviat cap Retorn.",

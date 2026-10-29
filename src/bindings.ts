@@ -879,6 +879,42 @@ async toggleDestinationFavorite(dictationId: DictationId, selectionVersion: numb
     return await TAURI_INVOKE("toggle_destination_favorite", { dictationId, selectionVersion, token });
 },
 /**
+ * The "Remember" entry of the badge menu for the destination of the exact dictation and
+ * version; `None` without an application destination or where the feature is not offered.
+ */
+async defaultInputOffer(dictationId: DictationId, selectionVersion: number) : Promise<RememberOffer | null> {
+    return await TAURI_INVOKE("default_input_offer", { dictationId, selectionVersion });
+},
+/**
+ * Remember the destination's focused field or terminal for its application; the destination,
+ * its version and the pin never change.
+ */
+async rememberDefaultInput(dictationId: DictationId, selectionVersion: number) : Promise<RememberAnswer> {
+    return await TAURI_INVOKE("remember_default_input", { dictationId, selectionVersion });
+},
+/**
+ * Settings window "Forget": forget the remembered input of `identity`.
+ */
+async forgetDefaultInput(identity: ApplicationIdentity) : Promise<Result<DefaultInput[], string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("forget_default_input", { identity }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Settings window "Forget all": forget every remembered input.
+ */
+async forgetAllDefaultInputs() : Promise<Result<DefaultInput[], string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("forget_all_default_inputs") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
  * Grow (or shrink back) the overlay window to `width` × `height` logical points, never below
  * the base size of the current indicator form; the window stays anchored to its screen edge.
  */
@@ -1492,6 +1528,15 @@ streamTextEvent: "stream-text-event"
 /** user-defined types **/
 
 /**
+ * A command-line tool that addresses the terminals of its application (spec decision
+ * `capability_by_bundle`): adding a type of application means adding a variant.
+ */
+export type AddressingTool = 
+/**
+ * cmux (Ghostty-based terminal): `Contents/Resources/bin/cmux`.
+ */
+"cmux"
+/**
  * The container-level `serde(default)` (backed by the `Default` impl below)
  * guarantees every field — including ones added in the future — falls back to
  * its `get_default_settings()` value when missing from a stored settings
@@ -1567,6 +1612,11 @@ return_to_dictation_app?: boolean;
  * through `destination::favorites` changes. Read leniently: unreadable entries are dropped.
  */
 destination_favorites?: FavoriteApp[]; 
+/**
+ * Remembered default input per application (013), at most one per identity; written only
+ * through `destination::default_input::model` changes. Read leniently like the favorites.
+ */
+destination_default_inputs?: DefaultInput[]; 
 /**
  * "Show the bubble when no text field is focused" (010): set in memory by the
  * normalization for this build (`recovery::setting`); absent with the `destination-return`
@@ -1694,7 +1744,15 @@ export type BubbleReason =
 /**
  * "No text field is focused".
  */
-"no_text_field"
+"no_text_field" | 
+/**
+ * 013: "The remembered field of <App> was not found".
+ */
+"default_field_not_found" | 
+/**
+ * 013: "The remembered terminal of <App> no longer exists".
+ */
+"default_terminal_gone"
 /**
  * Unit of a context budget.
  */
@@ -1762,6 +1820,18 @@ export type ContextMechanism =
  */
 "context_prompt"
 export type CustomSounds = { start: boolean; stop: boolean }
+/**
+ * The remembered input of one application.
+ */
+export type DefaultInput = { identity: ApplicationIdentity; display_name: string; target: DefaultTarget }
+/**
+ * Kind of remembered target the menu offers.
+ */
+export type DefaultInputKind = "field" | "terminal"
+/**
+ * Where Handy pastes for an application whose active element is not a text field.
+ */
+export type DefaultTarget = ({ kind: "field" } & FieldFingerprint) | ({ kind: "terminal" } & TerminalTarget)
 /**
  * Badge menu of one dictation: applications, then "Frontmost app at the end".
  */
@@ -2140,6 +2210,22 @@ export type Field = "id" | "recognized" | "replacement" | "rules" |
  * A whole exchange line, before it can be split into fields.
  */
 "line"
+/**
+ * Accessibility fingerprint of a text field: never its value, selected text or DOM classes.
+ */
+export type FieldFingerprint = { role: string; subrole: string | null; 
+/**
+ * `AXTitle`, else `AXDescription`.
+ */
+name: string | null; 
+/**
+ * `AXPlaceholderValue`.
+ */
+placeholder: string | null; 
+/**
+ * `AXDOMIdentifier`, only when it does not look generated.
+ */
+dom_id: string | null }
 /**
  * An issue in one input field before a rule has an ordered position.
  */
@@ -2619,6 +2705,50 @@ export type RecoveryDisposition = "pending" | "insert" | "recover" | "cancelled"
  */
 export type RefusedShortcut = { action_id: string; shortcut: string; reason: string }
 /**
+ * Answer of "Remember".
+ */
+export type RememberAnswer = { status: "saved"; value: RememberOffer } | { status: "refused"; value: RememberRefusal }
+/**
+ * The "Remember" entry of the badge menu.
+ */
+export type RememberOffer = { kind: DefaultInputKind; app_name: string; 
+/**
+ * The application already has a remembered input (the entry says "again").
+ */
+remembered: boolean }
+/**
+ * Why nothing was remembered; the list is unchanged.
+ */
+export type RememberRefusal = 
+/**
+ * Another dictation or version, or no application destination.
+ */
+"stale" | 
+/**
+ * The focused element is not an editable text field of the instance.
+ */
+"not_text_field" | 
+/**
+ * The focused element is a password field.
+ */
+"password_field" | 
+/**
+ * No name, placeholder or stable DOM id.
+ */
+"unrecognizable" | 
+/**
+ * The addressing tool did not answer usably.
+ */
+"terminal_unreadable" | 
+/**
+ * 20 applications already have an input.
+ */
+"full" | 
+/**
+ * The settings write failed.
+ */
+"failed"
+/**
  * A completed export of the saved rules.
  */
 export type ReplacementExportFile = { 
@@ -3002,6 +3132,11 @@ export type TermIssue =
  */
 "over_capacity"
 /**
+ * A terminal of an application with an addressing tool: the workspace UUID (spec decision
+ * `terminal_identity_workspace`), never a `workspace:N` reference.
+ */
+export type TerminalTarget = { tool: AddressingTool; workspace_id: string; workspace_name: string }
+/**
  * UI appearance mode. `System` follows the OS `prefers-color-scheme`; `Light`
  * and `Dark` force one of the two palettes Handy already ships.
  */
@@ -3095,7 +3230,15 @@ export type ValidationReason = "canonical_type" | "canonical_value" | "out_of_ra
 /**
  * A favorite has a blank identity or name, a name too long, or repeats another (012).
  */
-"favorite_invalid"
+"favorite_invalid" | 
+/**
+ * More remembered inputs than kept (feature 013).
+ */
+"default_inputs_full" | 
+/**
+ * A remembered input repeats an application or has an invalid name or target (013).
+ */
+"default_input_invalid"
 /**
  * How bulk input combines with the saved list. Exported to TypeScript under a vocabulary name:
  * word replacements (002) export their own `ImportMode`.

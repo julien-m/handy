@@ -11,6 +11,7 @@ import { PasteMethodSetting } from "../PasteMethod";
 import { TypingToolSetting } from "../TypingTool";
 import { ClipboardHandlingSetting } from "../ClipboardHandling";
 import { ReturnToAppSetting } from "../return-to-app-setting";
+import { DefaultInputsSetting } from "../default-inputs-setting";
 import { NoFieldBubbleToggle } from "../recovery-bubble-toggle";
 import { AutoSubmit } from "../AutoSubmit";
 import { AutomaticEnter } from "../automatic-enter";
@@ -86,6 +87,7 @@ export const AdvancedSettings: React.FC = () => {
               grouped={true}
             />
             <ReturnToAppSetting grouped={true} />
+            <DefaultInputsSetting grouped={true} />
             {automaticEnter ? (
               <AutomaticEnter grouped={true} />
             ) : (

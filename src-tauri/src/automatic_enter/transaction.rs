@@ -146,6 +146,7 @@ impl EnterTransaction {
         }
         let completion = match (&report.method_result, report.status) {
             (_, InsertionStatus::Skipped) => Completion::NoInsertion,
+            _ if report.addressed => Completion::AddressedTerminal,
             (Some(MethodResult::Legacy(result)), status) => Completion::Classic {
                 succeeded: result.is_ok() && status == InsertionStatus::InsertionAttempted,
             },

@@ -524,6 +524,18 @@
       "noFieldBubble": {
         "title": "Mostra la bolla quando nessun campo di testo è attivo",
         "description": "Tiene il testo in una bolla invece di incollarlo nel vuoto."
+      },
+      "defaultInputs": {
+        "title": "Campi ricordati",
+        "description": "Dove Handy incolla per un'app quando il suo elemento attivo non è un campo di testo. Ricordane uno dal menu del badge durante una dettatura.",
+        "field": "Campo: {{label}}",
+        "terminal": "Terminale: {{workspace}}",
+        "forget": "Dimentica",
+        "forgetLabel": "Dimentica l'input ricordato di {{app}}",
+        "forgetAll": "Dimentica tutto",
+        "forgetAllLabel": "Dimentica tutti gli input ricordati",
+        "empty": "Nessun campo ricordato. Usa il menu del badge durante una dettatura.",
+        "failed": "Impossibile dimenticare l'input ricordato."
       }
     },
     "vocabulary": {
@@ -1277,7 +1289,26 @@
         "favorites": "Preferiti",
         "addFavorite": "Aggiungi {{name}} ai preferiti",
         "removeFavorite": "Rimuovi {{name}} dai preferiti",
-        "notOpen": "Non aperta"
+        "notOpen": "Non aperta",
+        "rememberInput": {
+          "field": "Ricorda questo campo per {{app}}",
+          "fieldAgain": "Ricorda di nuovo questo campo per {{app}}",
+          "terminal": "Ricorda questo terminale",
+          "terminalAgain": "Ricorda di nuovo questo terminale",
+          "saved": {
+            "field": "Campo ricordato per {{app}}",
+            "terminal": "Terminale ricordato per {{app}}"
+          },
+          "refused": {
+            "notTextField": "Fai prima clic in un campo di testo dell'app",
+            "passwordField": "I campi password non vengono mai ricordati",
+            "unrecognizable": "Questo campo non ha un nome che Handy possa riconoscere in seguito",
+            "terminalUnreadable": "Impossibile leggere il terminale",
+            "full": "Puoi ricordare fino a 20 input.",
+            "stale": "Questa dettatura è terminata",
+            "failed": "Impossibile salvare il campo"
+          }
+        }
       },
       "favoriteNotSaved": {
         "full": "Puoi tenere fino a 10 preferiti.",
@@ -1335,7 +1366,11 @@
       "activationFailed": "Impossibile portare {{app}} in primo piano",
       "activationFailedUnnamed": "Impossibile portare l'app in primo piano",
       "insertionFailed": "Inserimento non riuscito",
-      "noTextField": "Nessun campo di testo è attivo"
+      "noTextField": "Nessun campo di testo è attivo",
+      "defaultFieldNotFound": "Il campo ricordato di {{app}} non è stato trovato",
+      "defaultFieldNotFoundUnnamed": "Il campo ricordato non è stato trovato",
+      "defaultTerminalGone": "Il terminale ricordato di {{app}} non esiste più",
+      "defaultTerminalGoneUnnamed": "Il terminale ricordato non esiste più"
     },
     "explanation": {
       "notInserted": "Handy non ha inserito nulla e non ha inviato alcun Invio.",

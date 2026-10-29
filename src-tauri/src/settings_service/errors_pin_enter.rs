@@ -24,6 +24,13 @@ impl SettingsError {
         error.message = "No running application matches.";
         error
     }
+    /// `destination default-input-remove` named no remembered input (013 AC-009): `not_found`,
+    /// exit 4; the list is unchanged.
+    pub fn no_default_input() -> Self {
+        let mut error = Self::new(SettingsErrorCode::NotFound);
+        error.message = "No remembered input matches.";
+        error
+    }
     /// `destination favorite-remove` named no favorite (012 AC-006): `not_found`, exit 4; the
     /// favorites are unchanged.
     pub fn no_favorite() -> Self {

@@ -524,6 +524,18 @@
       "noFieldBubble": {
         "title": "Zobrazit bublinu, když není aktivní žádné textové pole",
         "description": "Ponechá text v bublině místo vložení do prázdna."
+      },
+      "defaultInputs": {
+        "title": "Zapamatovaná pole",
+        "description": "Kam Handy vkládá do aplikace, když její aktivní prvek není textové pole. Zapamatujte si jedno z nabídky odznaku během diktování.",
+        "field": "Pole: {{label}}",
+        "terminal": "Terminál: {{workspace}}",
+        "forget": "Zapomenout",
+        "forgetLabel": "Zapomenout zapamatovaný vstup aplikace {{app}}",
+        "forgetAll": "Zapomenout vše",
+        "forgetAllLabel": "Zapomenout všechny zapamatované vstupy",
+        "empty": "Zatím žádné zapamatované pole. Použijte nabídku odznaku během diktování.",
+        "failed": "Zapamatovaný vstup nelze zapomenout."
       }
     },
     "vocabulary": {
@@ -1277,7 +1289,26 @@
         "favorites": "Oblíbené",
         "addFavorite": "Přidat {{name}} do oblíbených",
         "removeFavorite": "Odebrat {{name}} z oblíbených",
-        "notOpen": "Neotevřeno"
+        "notOpen": "Neotevřeno",
+        "rememberInput": {
+          "field": "Zapamatovat toto pole pro {{app}}",
+          "fieldAgain": "Znovu zapamatovat toto pole pro {{app}}",
+          "terminal": "Zapamatovat tento terminál",
+          "terminalAgain": "Znovu zapamatovat tento terminál",
+          "saved": {
+            "field": "Pole zapamatováno pro {{app}}",
+            "terminal": "Terminál zapamatován pro {{app}}"
+          },
+          "refused": {
+            "notTextField": "Nejprve klikněte do textového pole aplikace",
+            "passwordField": "Pole pro hesla se nikdy nezapamatují",
+            "unrecognizable": "Toto pole nemá název, který by Handy později rozpoznal",
+            "terminalUnreadable": "Terminál nelze přečíst",
+            "full": "Můžete si zapamatovat až 20 vstupů.",
+            "stale": "Toto diktování skončilo",
+            "failed": "Pole nelze uložit"
+          }
+        }
       },
       "favoriteNotSaved": {
         "full": "Můžete mít nejvýše 10 oblíbených.",
@@ -1335,7 +1366,11 @@
       "activationFailed": "{{app}} se nepodařilo přenést do popředí",
       "activationFailedUnnamed": "Aplikaci se nepodařilo přenést do popředí",
       "insertionFailed": "Vložení se nezdařilo",
-      "noTextField": "Žádné textové pole není aktivní"
+      "noTextField": "Žádné textové pole není aktivní",
+      "defaultFieldNotFound": "Zapamatované pole aplikace {{app}} nebylo nalezeno",
+      "defaultFieldNotFoundUnnamed": "Zapamatované pole nebylo nalezeno",
+      "defaultTerminalGone": "Zapamatovaný terminál aplikace {{app}} už neexistuje",
+      "defaultTerminalGoneUnnamed": "Zapamatovaný terminál už neexistuje"
     },
     "explanation": {
       "notInserted": "Handy nic nevložil a neodeslal žádný Enter.",
