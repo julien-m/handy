@@ -158,3 +158,10 @@ Note N9 (correctif `fix/004-side-overlap`) : spec-refine 004 à faire : AC-004 c
 - Build `9487b45d`, `paste_verification` actif. Dans cmux (terminal) : `verify dictation 4/5/9: Failed in ~850ms (UnchangedAfterRetry)` → second Cmd+V (doublon) puis bulle. Dans Claude Desktop et la page Google : `Verified in 105–151 ms`.
 - Cause : la valeur AX de l'élément du terminal ne reflète pas le collage. Handy conclut à tort à l'échec et renvoie Cmd+V.
 - Mesure immédiate : `paste_verification` coupé (rév. 58). Correctif en cours (`spec-fix` 007) : relance seulement pour un champ de texte web (ancêtre `AXWebArea`), relecture juste avant la relance, `Unreadable` sinon.
+
+## Validation 015 et 016 (2026-10-29, build `07b298ad`)
+
+- **015, majuscules intelligentes** : validées par Julien en usage réel (« la majuscule c'est vraiment pas mal, ça marche bien »). Log : `Smart capitalization: Keep` ×5 et `Capitalize` ×1, sans contenu journalisé.
+- **016, paragraphes intelligents** : activés. Six dictées courtes donnent `Smart paragraphs left the text unchanged: NoBreak`, comme attendu sous le seuil de 45 mots / 4 phrases. Une dictée longue reste à tester.
+- **016 validé en usage réel** : dictée d'environ 130 mots, découpée en 3 paragraphes de 4, 4 et 3 phrases, séparés par une ligne vide, sans phrase coupée (capture de Julien).
+- **014, Ctrl gauche « sans Entrée », validé** (2026-10-29, 19:27 heure locale) : dictée 19, `In-dictation key applied … Enter skipped true` puis `Automatic Enter of dictation 19: Suppressed(UserSkipped)`. Les dictées 16–18 et 20, sans Ctrl : `Sent`. La politique `always` est conservée.
