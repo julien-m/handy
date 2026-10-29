@@ -175,6 +175,8 @@ fn array_items_schema(key: &str) -> serde_json::Value {
                 "display_name":{"type":"string"}
             }
         }),
+        // 013: `{identity, display_name, target}`, target tagged by `kind`.
+        "destination_default_inputs" => default_input_schema(),
         _ => json!({"type":"string"}),
     }
 }
@@ -253,4 +255,29 @@ fn operation_request_schema() -> serde_json::Value {
         json!({"type":"object","additionalProperties":false,"required":required,"properties":properties})
     });
     json!({"oneOf":branches})
+}
+
+/// Item schema of `destination_default_inputs` (013): a field fingerprint or a terminal target.
+fn default_input_schema() -> serde_json::Value {
+    use serde_json::json;
+    let text = json!({"type":"string"});
+    let optional = json!({"type":["string","null"]});
+    json!({
+        "type":"object","additionalProperties":false,"required":["identity","display_name","target"],
+        "properties":{
+            "identity":{"type":"object","additionalProperties":false,"required":["kind","value"],
+                "properties":{"kind":{"enum":["bundle_id","aumid","executable_path"]},"value":text}},
+            "display_name":text,
+            "target":{"oneOf":[
+                {"type":"object","additionalProperties":false,
+                    "required":["kind","role","subrole","name","placeholder","dom_id"],
+                    "properties":{"kind":{"const":"field"},"role":text,"subrole":optional,
+                        "name":optional,"placeholder":optional,"dom_id":optional}},
+                {"type":"object","additionalProperties":false,
+                    "required":["kind","tool","workspace_id","workspace_name"],
+                    "properties":{"kind":{"const":"terminal"},"tool":{"enum":["cmux"]},
+                        "workspace_id":text,"workspace_name":text}}
+            ]}
+        }
+    })
 }

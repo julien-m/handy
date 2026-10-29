@@ -524,6 +524,18 @@
       "noFieldBubble": {
         "title": "Tampilkan gelembung saat tidak ada kolom teks yang difokuskan",
         "description": "Menyimpan teks dalam gelembung alih-alih menempelkannya ke mana-mana."
+      },
+      "defaultInputs": {
+        "title": "Kolom yang diingat",
+        "description": "Tempat Handy menempel untuk aplikasi saat elemen aktifnya bukan kolom teks. Ingat satu dari menu lencana selama dikte.",
+        "field": "Kolom: {{label}}",
+        "terminal": "Terminal: {{workspace}}",
+        "forget": "Lupakan",
+        "forgetLabel": "Lupakan input yang diingat untuk {{app}}",
+        "forgetAll": "Lupakan semua",
+        "forgetAllLabel": "Lupakan semua input yang diingat",
+        "empty": "Belum ada kolom yang diingat. Gunakan menu lencana selama dikte.",
+        "failed": "Tidak dapat melupakan input yang diingat."
       }
     },
     "vocabulary": {
@@ -1279,7 +1291,26 @@
         "favorites": "Favorit",
         "addFavorite": "Tambahkan {{name}} ke favorit",
         "removeFavorite": "Hapus {{name}} dari favorit",
-        "notOpen": "Tidak terbuka"
+        "notOpen": "Tidak terbuka",
+        "rememberInput": {
+          "field": "Ingat kolom ini untuk {{app}}",
+          "fieldAgain": "Ingat lagi kolom ini untuk {{app}}",
+          "terminal": "Ingat terminal ini",
+          "terminalAgain": "Ingat lagi terminal ini",
+          "saved": {
+            "field": "Kolom diingat untuk {{app}}",
+            "terminal": "Terminal diingat untuk {{app}}"
+          },
+          "refused": {
+            "notTextField": "Klik dulu di kolom teks aplikasi",
+            "passwordField": "Kolom kata sandi tidak pernah diingat",
+            "unrecognizable": "Kolom ini tidak punya nama yang bisa dikenali Handy nanti",
+            "terminalUnreadable": "Terminal tidak dapat dibaca",
+            "full": "Anda dapat mengingat hingga 20 input.",
+            "stale": "Dikte ini sudah berakhir",
+            "failed": "Tidak dapat menyimpan kolom"
+          }
+        }
       },
       "favoriteNotSaved": {
         "full": "Anda dapat menyimpan hingga 10 favorit.",
@@ -1334,7 +1365,11 @@
       "activationFailed": "Tidak dapat membawa {{app}} ke depan",
       "activationFailedUnnamed": "Tidak dapat membawa aplikasi ke depan",
       "insertionFailed": "Gagal menyisipkan",
-      "noTextField": "Tidak ada kolom teks yang difokuskan"
+      "noTextField": "Tidak ada kolom teks yang difokuskan",
+      "defaultFieldNotFound": "Kolom yang diingat untuk {{app}} tidak ditemukan",
+      "defaultFieldNotFoundUnnamed": "Kolom yang diingat tidak ditemukan",
+      "defaultTerminalGone": "Terminal yang diingat untuk {{app}} sudah tidak ada",
+      "defaultTerminalGoneUnnamed": "Terminal yang diingat sudah tidak ada"
     },
     "explanation": {
       "notInserted": "Handy tidak menyisipkan apa pun dan tidak mengirim Enter.",

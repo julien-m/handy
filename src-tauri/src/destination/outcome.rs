@@ -16,7 +16,7 @@ pub enum InsertionStatus {
     Cancelled,
 }
 /// Why the destination flow failed (009 adds `pinned_app_not_running`, 010 `no_text_field`,
-/// 011 `field_return_failed`).
+/// 011 `field_return_failed`, 013 `default_field_not_found` and `default_terminal_gone`).
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, specta::Type)]
 #[serde(rename_all = "snake_case")]
 pub enum DestinationFailure {
@@ -32,6 +32,10 @@ pub enum DestinationFailure {
     /// 011: the remembered input could not be verified and nothing was pasted (010 shows
     /// "Insertion failed" with "nothing was sent to the application"). Internal wire value.
     FieldReturnFailed,
+    /// 013: the remembered field was not found; nothing was dispatched (010 bubble reason).
+    DefaultFieldNotFound,
+    /// 013: the remembered terminal no longer exists; nothing was typed (010 bubble reason).
+    DefaultTerminalGone,
 }
 /// 007's `PasteOutcome.kind` wire values, carried unchanged.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, specta::Type)]

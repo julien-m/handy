@@ -10,6 +10,7 @@ import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import type { MenuChoice } from "@/bindings";
 import { keepFocus } from "./destination-badge";
+import { DefaultInputEntry } from "./default-input-entry";
 import { menuSections } from "./destination-model";
 import {
   AppRow,
@@ -172,6 +173,10 @@ const Footer: React.FC<{
       <FrontmostAtEnd
         current={menuSections(menu).frontmostAtEndCurrent}
         onChoose={onChoose}
+      />
+      <DefaultInputEntry
+        dictationId={menu.dictation_id}
+        selectionVersion={menu.selection_version}
       />
       {(pin || unpin) && <hr className="smenu-divider" />}
       {pin && <PinRow entry={pin} onClick={onPin} />}

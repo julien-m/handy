@@ -524,6 +524,18 @@
       "noFieldBubble": {
         "title": "Mostrar la burbuja cuando ningún campo de texto tiene el foco",
         "description": "Guarda el texto en una burbuja en lugar de pegarlo en ninguna parte."
+      },
+      "defaultInputs": {
+        "title": "Campos recordados",
+        "description": "Dónde pega Handy en una app cuando su elemento activo no es un campo de texto. Recuerda uno desde el menú de la insignia durante un dictado.",
+        "field": "Campo: {{label}}",
+        "terminal": "Terminal: {{workspace}}",
+        "forget": "Olvidar",
+        "forgetLabel": "Olvidar la entrada recordada de {{app}}",
+        "forgetAll": "Olvidar todo",
+        "forgetAllLabel": "Olvidar todas las entradas recordadas",
+        "empty": "Aún no hay ningún campo recordado. Usa el menú de la insignia durante un dictado.",
+        "failed": "No se pudo olvidar la entrada recordada."
       }
     },
     "vocabulary": {
@@ -1276,7 +1288,26 @@
         "favorites": "Favoritos",
         "addFavorite": "Añadir {{name}} a favoritos",
         "removeFavorite": "Quitar {{name}} de favoritos",
-        "notOpen": "No abierta"
+        "notOpen": "No abierta",
+        "rememberInput": {
+          "field": "Recordar este campo para {{app}}",
+          "fieldAgain": "Recordar de nuevo este campo para {{app}}",
+          "terminal": "Recordar este terminal",
+          "terminalAgain": "Recordar de nuevo este terminal",
+          "saved": {
+            "field": "Campo recordado para {{app}}",
+            "terminal": "Terminal recordado para {{app}}"
+          },
+          "refused": {
+            "notTextField": "Primero haz clic en un campo de texto de la app",
+            "passwordField": "Los campos de contraseña nunca se recuerdan",
+            "unrecognizable": "Este campo no tiene un nombre que Handy pueda reconocer después",
+            "terminalUnreadable": "No se pudo leer el terminal",
+            "full": "Puedes recordar hasta 20 entradas.",
+            "stale": "Este dictado ha terminado",
+            "failed": "No se pudo guardar el campo"
+          }
+        }
       },
       "favoriteNotSaved": {
         "full": "Puedes guardar hasta 10 favoritos.",
@@ -1334,7 +1365,11 @@
       "activationFailed": "No se pudo traer {{app}} al frente",
       "activationFailedUnnamed": "No se pudo traer la aplicación al frente",
       "insertionFailed": "Error al insertar",
-      "noTextField": "Ningún campo de texto tiene el foco"
+      "noTextField": "Ningún campo de texto tiene el foco",
+      "defaultFieldNotFound": "No se encontró el campo recordado de {{app}}",
+      "defaultFieldNotFoundUnnamed": "No se encontró el campo recordado",
+      "defaultTerminalGone": "El terminal recordado de {{app}} ya no existe",
+      "defaultTerminalGoneUnnamed": "El terminal recordado ya no existe"
     },
     "explanation": {
       "notInserted": "Handy no insertó nada ni envió ningún Intro.",

@@ -56,6 +56,11 @@ fn from_reason(reason: Option<DestinationFailure>) -> BubbleSpec {
         Some(DestinationFailure::PinnedAppNotRunning) => before(BubbleReason::PinnedAppNotRunning),
         Some(DestinationFailure::ActivationFailed) => before(BubbleReason::ActivationFailed),
         Some(DestinationFailure::NoTextField) => before(BubbleReason::NoTextField),
+        // @spec AC-006: Remembered target not found, nothing sent — .specs/features/013-default-input-per-app/spec.md#ac-006
+        Some(DestinationFailure::DefaultFieldNotFound) => {
+            before(BubbleReason::DefaultFieldNotFound)
+        }
+        Some(DestinationFailure::DefaultTerminalGone) => before(BubbleReason::DefaultTerminalGone),
         // @spec AC-004: Field return failed and nothing sent — .specs/features/011-dictation-field-return/spec.md#ac-004
         // 011: decided at the guard before any dispatch; 010's existing "Insertion failed" with
         // its explanation that nothing was sent to the application.

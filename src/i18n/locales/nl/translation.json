@@ -524,6 +524,18 @@
       "noFieldBubble": {
         "title": "Toon de bubbel als er geen tekstveld actief is",
         "description": "Bewaart de tekst in een bubbel in plaats van hem nergens te plakken."
+      },
+      "defaultInputs": {
+        "title": "Onthouden velden",
+        "description": "Waar Handy plakt voor een app als het actieve element geen tekstveld is. Onthoud er een via het badgemenu tijdens een dictaat.",
+        "field": "Veld: {{label}}",
+        "terminal": "Terminal: {{workspace}}",
+        "forget": "Vergeten",
+        "forgetLabel": "Onthouden invoer van {{app}} vergeten",
+        "forgetAll": "Alles vergeten",
+        "forgetAllLabel": "Alle onthouden invoer vergeten",
+        "empty": "Nog geen onthouden veld. Gebruik het badgemenu tijdens een dictaat.",
+        "failed": "Kan de onthouden invoer niet vergeten."
       }
     },
     "vocabulary": {
@@ -1279,7 +1291,26 @@
         "favorites": "Favorieten",
         "addFavorite": "{{name}} toevoegen aan favorieten",
         "removeFavorite": "{{name}} verwijderen uit favorieten",
-        "notOpen": "Niet geopend"
+        "notOpen": "Niet geopend",
+        "rememberInput": {
+          "field": "Dit veld onthouden voor {{app}}",
+          "fieldAgain": "Dit veld opnieuw onthouden voor {{app}}",
+          "terminal": "Deze terminal onthouden",
+          "terminalAgain": "Deze terminal opnieuw onthouden",
+          "saved": {
+            "field": "Veld onthouden voor {{app}}",
+            "terminal": "Terminal onthouden voor {{app}}"
+          },
+          "refused": {
+            "notTextField": "Klik eerst in een tekstveld van de app",
+            "passwordField": "Wachtwoordvelden worden nooit onthouden",
+            "unrecognizable": "Dit veld heeft geen naam die Handy later kan herkennen",
+            "terminalUnreadable": "De terminal kon niet worden gelezen",
+            "full": "Je kunt tot 20 invoervelden onthouden.",
+            "stale": "Dit dictaat is beëindigd",
+            "failed": "Kan het veld niet opslaan"
+          }
+        }
       },
       "favoriteNotSaved": {
         "full": "Je kunt maximaal 10 favorieten bewaren.",
@@ -1334,7 +1365,11 @@
       "activationFailed": "Kan {{app}} niet naar voren halen",
       "activationFailedUnnamed": "Kan de app niet naar voren halen",
       "insertionFailed": "Invoegen mislukt",
-      "noTextField": "Er is geen tekstveld actief"
+      "noTextField": "Er is geen tekstveld actief",
+      "defaultFieldNotFound": "Het onthouden veld van {{app}} is niet gevonden",
+      "defaultFieldNotFoundUnnamed": "Het onthouden veld is niet gevonden",
+      "defaultTerminalGone": "De onthouden terminal van {{app}} bestaat niet meer",
+      "defaultTerminalGoneUnnamed": "De onthouden terminal bestaat niet meer"
     },
     "explanation": {
       "notInserted": "Handy heeft niets ingevoegd en geen Enter verstuurd.",

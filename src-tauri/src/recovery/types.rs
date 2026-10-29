@@ -26,6 +26,10 @@ pub enum BubbleReason {
     InsertionFailed,
     /// "No text field is focused".
     NoTextField,
+    /// 013: "The remembered field of <App> was not found".
+    DefaultFieldNotFound,
+    /// 013: "The remembered terminal of <App> no longer exists".
+    DefaultTerminalGone,
 }
 
 /// What the explanation adds about input that may have been sent (spec AC-001).

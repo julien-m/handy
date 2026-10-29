@@ -27,6 +27,10 @@ const NAMED: Partial<Record<RecoveryBubbleView["reason"], string>> = {
   app_closed: "appClosed",
   pinned_app_not_running: "pinnedAppNotRunning",
   activation_failed: "activationFailed",
+  // @spec AC-006: Remembered field not found bubble — .specs/features/013-default-input-per-app/spec.md#ac-006
+  default_field_not_found: "defaultFieldNotFound",
+  // @spec AC-007: Remembered terminal gone bubble — .specs/features/013-default-input-per-app/spec.md#ac-007
+  default_terminal_gone: "defaultTerminalGone",
 };
 const ICONS: Record<RecoveryBubbleView["reason"], ReasonIcon> = {
   app_closed: "warning",
@@ -34,6 +38,8 @@ const ICONS: Record<RecoveryBubbleView["reason"], ReasonIcon> = {
   activation_failed: "warning",
   insertion_failed: "error",
   no_text_field: "info",
+  default_field_not_found: "info",
+  default_terminal_gone: "warning",
 };
 
 /** Pixels the pointer moves on the bubble, button held, before the native drag starts. */
@@ -65,6 +71,10 @@ const advice = (view: RecoveryBubbleView): ExplanationLine[] => {
   const ending = view.can_drag ? "Drag" : "Copy";
   if (view.reason === "no_text_field") {
     return [line(`focusField${ending}`), line("noFieldSetting")];
+  }
+  // A remembered field that was not found: the user clicks in the right field (013).
+  if (view.reason === "default_field_not_found") {
+    return [line(`focusField${ending}`)];
   }
   if (view.app_name === null) return [line(`openUnnamed${ending}`)];
   return [line(`openApp${ending}`, { app: view.app_name })];

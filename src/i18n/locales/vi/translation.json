@@ -524,6 +524,18 @@
       "noFieldBubble": {
         "title": "Hiển thị bong bóng khi không có ô văn bản nào được chọn",
         "description": "Giữ văn bản trong bong bóng thay vì dán vào chỗ trống."
+      },
+      "defaultInputs": {
+        "title": "Trường đã ghi nhớ",
+        "description": "Nơi Handy dán cho một ứng dụng khi phần tử đang hoạt động không phải là trường văn bản. Ghi nhớ một trường từ menu huy hiệu khi đọc chính tả.",
+        "field": "Trường: {{label}}",
+        "terminal": "Terminal: {{workspace}}",
+        "forget": "Quên",
+        "forgetLabel": "Quên ô nhập đã ghi nhớ của {{app}}",
+        "forgetAll": "Quên tất cả",
+        "forgetAllLabel": "Quên tất cả ô nhập đã ghi nhớ",
+        "empty": "Chưa có trường nào được ghi nhớ. Dùng menu huy hiệu khi đọc chính tả.",
+        "failed": "Không thể quên ô nhập đã ghi nhớ."
       }
     },
     "vocabulary": {
@@ -1276,7 +1288,26 @@
         "favorites": "Yêu thích",
         "addFavorite": "Thêm {{name}} vào yêu thích",
         "removeFavorite": "Xóa {{name}} khỏi yêu thích",
-        "notOpen": "Chưa mở"
+        "notOpen": "Chưa mở",
+        "rememberInput": {
+          "field": "Ghi nhớ trường này cho {{app}}",
+          "fieldAgain": "Ghi nhớ lại trường này cho {{app}}",
+          "terminal": "Ghi nhớ terminal này",
+          "terminalAgain": "Ghi nhớ lại terminal này",
+          "saved": {
+            "field": "Đã ghi nhớ trường cho {{app}}",
+            "terminal": "Đã ghi nhớ terminal cho {{app}}"
+          },
+          "refused": {
+            "notTextField": "Hãy nhấp vào một trường văn bản của ứng dụng trước",
+            "passwordField": "Trường mật khẩu không bao giờ được ghi nhớ",
+            "unrecognizable": "Trường này không có tên để Handy nhận ra sau này",
+            "terminalUnreadable": "Không thể đọc terminal",
+            "full": "Bạn có thể ghi nhớ tối đa 20 ô nhập.",
+            "stale": "Lần đọc chính tả này đã kết thúc",
+            "failed": "Không thể lưu trường"
+          }
+        }
       },
       "favoriteNotSaved": {
         "full": "Bạn có thể giữ tối đa 10 mục yêu thích.",
@@ -1334,7 +1365,11 @@
       "activationFailed": "Không thể đưa {{app}} lên trước",
       "activationFailedUnnamed": "Không thể đưa ứng dụng lên trước",
       "insertionFailed": "Chèn không thành công",
-      "noTextField": "Không có ô văn bản nào được chọn"
+      "noTextField": "Không có ô văn bản nào được chọn",
+      "defaultFieldNotFound": "Không tìm thấy trường đã ghi nhớ của {{app}}",
+      "defaultFieldNotFoundUnnamed": "Không tìm thấy trường đã ghi nhớ",
+      "defaultTerminalGone": "Terminal đã ghi nhớ của {{app}} không còn tồn tại",
+      "defaultTerminalGoneUnnamed": "Terminal đã ghi nhớ không còn tồn tại"
     },
     "explanation": {
       "notInserted": "Handy không chèn gì và không gửi phím Enter.",

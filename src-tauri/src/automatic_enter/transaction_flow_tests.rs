@@ -104,6 +104,7 @@ fn a_reliable_transfer_hands_the_decision_to_its_rendezvous() {
         target: None,
         source: DestinationSource::Captured,
         context: Some(Box::new(fixture.context.clone())),
+        addressed: false,
     };
     assert_eq!(
         enter.after_insertion(&report),
@@ -147,6 +148,7 @@ fn after_insertion_maps_skipped_failed_and_smart_paste_reports() {
             target: None,
             source: DestinationSource::Captured,
             context: Some(Box::new(fixture.context.clone())),
+            addressed: false,
         };
         assert_eq!(
             enter.after_insertion(&report),
@@ -154,4 +156,25 @@ fn after_insertion_maps_skipped_failed_and_smart_paste_reports() {
         );
         assert!(presses(&fixture).is_empty());
     }
+}
+
+// @spec AC-007: No automatic Enter after a terminal delivery — .specs/features/013-default-input-per-app/spec.md#ac-007
+#[test]
+fn a_terminal_delivery_never_presses_enter_even_when_always() {
+    let fixture = fixture(DestinationSource::Pinned, false);
+    let enter = transaction(&fixture, AutomaticEnterPolicy::Always, None);
+    let report = InsertionReport {
+        status: crate::destination::outcome::InsertionStatus::InsertionAttempted,
+        reason: None,
+        method_result: Some(MethodResult::Legacy(Ok(()))),
+        target: None,
+        source: DestinationSource::Pinned,
+        context: Some(Box::new(fixture.context.clone())),
+        addressed: true,
+    };
+    assert_eq!(
+        enter.after_insertion(&report),
+        Some(EnterResult::Suppressed(Suppression::AddressedTerminal))
+    );
+    assert!(presses(&fixture).is_empty());
 }

@@ -46,6 +46,7 @@
 | 010 | Recovery Bubble | In Progress | 2026-10-12 | 2026-10-15 | [spec](features/010-recovery-bubble/spec.md) |
 | 011 | Dictation Field Return | In Progress | 2026-10-15 | 2026-10-15 | [spec](features/011-dictation-field-return/spec.md) |
 | 012 | Destination Favorites | In Progress | 2026-10-29 | 2026-10-29 | [spec](features/012-destination-favorites/spec.md) |
+| 013 | Default Input per App | In Progress | 2026-10-29 | 2026-10-29 | [spec](features/013-default-input-per-app/spec.md) |
 <!-- readme:features:end -->
 
 
@@ -70,6 +71,7 @@
 <!-- readme:activity:start -->
 | Date | Type | Description |
 |---|---|---|
+| 2026-10-29 | Feature | [Feature 013] Default input per app: remember a field (accessibility fingerprint) or a cmux terminal from the badge menu; when the destination's active element is not a text field, Handy focuses the unique matching field or types through `cmux send`, else the recovery bubble (automated evidence; native proof pending) |
 | 2026-10-29 | Feature | [Feature 012] Destination favorites: a star on every app of the badge menu (settings service, at most 10, bottom-up nearest the badge, not-open favorites never launched) and 009's Pin/Unpin moved to a fixed footer (automated evidence; native proof pending) |
 | 2026-10-15 | Feature | [Feature 011] Implementation in progress: input focused at the dictation start remembered, given focus back, range restored and verified before the paste, behind destination-return (automated evidence in four feature combinations; macOS native proofs pending with Julien) |
 | 2026-10-15 | Feature | [Feature 010] Implementation in progress: recovery bubble, bounded field classification, deliberate Copy and the no-text-field setting behind destination-return (automated evidence in four feature combinations; macOS native proofs pending with Julien) |

@@ -582,6 +582,10 @@ pub struct AppSettings {
     /// through `destination::favorites` changes. Read leniently: unreadable entries are dropped.
     #[serde(default, deserialize_with = "deserialize_destination_favorites")]
     pub destination_favorites: Vec<crate::destination::favorites::FavoriteApp>,
+    /// Remembered default input per application (013), at most one per identity; written only
+    /// through `destination::default_input::model` changes. Read leniently like the favorites.
+    #[serde(default, deserialize_with = "deserialize_destination_default_inputs")]
+    pub destination_default_inputs: Vec<crate::destination::default_input::model::DefaultInput>,
     /// "Show the bubble when no text field is focused" (010): set in memory by the
     /// normalization for this build (`recovery::setting`); absent with the `destination-return`
     /// gate closed, which never writes it.
@@ -991,6 +995,26 @@ where
         .collect())
 }
 
+/// Lenient reading of `destination_default_inputs` (013), same rule as the favorites: a value that
+/// is not a list reads as empty and an unreadable entry is dropped; the next write stores the
+/// clean list.
+fn deserialize_destination_default_inputs<'de, D>(
+    deserializer: D,
+) -> Result<Vec<crate::destination::default_input::model::DefaultInput>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let value = Option::<serde_json::Value>::deserialize(deserializer)?;
+    let entries = match value {
+        Some(serde_json::Value::Array(entries)) => entries,
+        _ => return Ok(Vec::new()),
+    };
+    Ok(entries
+        .into_iter()
+        .filter_map(|entry| serde_json::from_value(entry).ok())
+        .collect())
+}
+
 fn default_typing_tool() -> TypingTool {
     TypingTool::Auto
 }
@@ -1162,6 +1186,7 @@ pub fn get_default_settings() -> AppSettings {
         append_trailing_space: false,
         return_to_dictation_app: default_return_to_dictation_app(),
         destination_favorites: Vec::new(),
+        destination_default_inputs: Vec::new(),
         show_recovery_bubble_without_text_field: crate::recovery::setting::fresh_value(),
         app_language: default_app_language(),
         theme: default_theme(),

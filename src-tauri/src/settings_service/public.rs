@@ -248,6 +248,7 @@ struct PublicCollections {
     custom_filler_words: Option<Vec<String>>,
     microphone_priority: Vec<String>,
     destination_favorites: Vec<crate::destination::favorites::FavoriteApp>,
+    destination_default_inputs: Vec<crate::destination::default_input::model::DefaultInput>,
     word_replacements: Vec<PublicReplacementRule>,
 }
 impl PublicCollections {
@@ -267,6 +268,7 @@ impl PublicCollections {
             custom_filler_words: settings.custom_filler_words.clone(),
             microphone_priority: settings.microphone_priority.clone(),
             destination_favorites: settings.destination_favorites.clone(),
+            destination_default_inputs: settings.destination_default_inputs.clone(),
             word_replacements: settings
                 .word_replacements
                 .iter()

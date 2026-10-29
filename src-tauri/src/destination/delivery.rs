@@ -105,10 +105,13 @@ pub async fn deliver(
     };
     let enter = crate::automatic_enter::app::transaction(&app, &manager, ticket, &settings);
     let method = insertion_method(&app, &text.text, settings, Arc::clone(&enter));
+    // 013: a remembered terminal is typed through its tool instead of the configured method.
+    let runner = Arc::clone(&manager.default_inputs().runner);
+    let method = super::default_input::dispatch::AddressedMethod::new(method, &text.text, runner);
     let worker_manager = Arc::clone(&manager);
     let recovery = super::app::recovery_port(&app);
     let joined = tauri::async_runtime::spawn_blocking(move || {
-        let report = orchestrator(worker_manager, recovery).deliver(request, method.as_ref());
+        let report = orchestrator(worker_manager, recovery).deliver(request, &method);
         // 009: the Enter of a legacy method is decided here, before the outcome is published.
         enter.after_insertion(&report);
         report
@@ -160,6 +163,7 @@ fn worker_failed(
         target: None,
         source: source.unwrap_or(DestinationSource::FrontmostAtEnd),
         context: None,
+        addressed: false,
     }
 }
 /// Insert the final text of a stopped dictation, then end the recording indicator: through its

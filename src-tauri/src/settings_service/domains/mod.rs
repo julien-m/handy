@@ -8,6 +8,8 @@
 #[cfg(feature = "destination-return")]
 pub mod destination;
 #[cfg(feature = "destination-return")]
+mod destination_default_inputs;
+#[cfg(feature = "destination-return")]
 mod destination_favorites;
 pub mod live_operation;
 pub mod microphones;

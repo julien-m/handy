@@ -524,6 +524,18 @@
       "noFieldBubble": {
         "title": "没有聚焦的文本框时显示气泡",
         "description": "将文本保留在气泡中，而不是粘贴到空处。"
+      },
+      "defaultInputs": {
+        "title": "已记住的字段",
+        "description": "当应用的活动元素不是文本字段时 Handy 的粘贴位置。在听写期间从徽标菜单中记住一个。",
+        "field": "字段：{{label}}",
+        "terminal": "终端：{{workspace}}",
+        "forget": "忘记",
+        "forgetLabel": "忘记 {{app}} 已记住的输入位置",
+        "forgetAll": "全部忘记",
+        "forgetAllLabel": "忘记所有已记住的输入位置",
+        "empty": "尚未记住任何字段。请在听写期间使用徽标菜单。",
+        "failed": "无法忘记已记住的输入位置。"
       }
     },
     "vocabulary": {
@@ -1276,7 +1288,26 @@
         "favorites": "收藏",
         "addFavorite": "将 {{name}} 加入收藏",
         "removeFavorite": "将 {{name}} 移出收藏",
-        "notOpen": "未打开"
+        "notOpen": "未打开",
+        "rememberInput": {
+          "field": "记住 {{app}} 的此字段",
+          "fieldAgain": "重新记住 {{app}} 的此字段",
+          "terminal": "记住此终端",
+          "terminalAgain": "重新记住此终端",
+          "saved": {
+            "field": "已记住 {{app}} 的字段",
+            "terminal": "已记住 {{app}} 的终端"
+          },
+          "refused": {
+            "notTextField": "请先点击应用中的文本字段",
+            "passwordField": "从不记住密码字段",
+            "unrecognizable": "此字段没有 Handy 以后能识别的名称",
+            "terminalUnreadable": "无法读取终端",
+            "full": "最多可记住 20 个输入位置。",
+            "stale": "本次听写已结束",
+            "failed": "无法保存字段"
+          }
+        }
       },
       "favoriteNotSaved": {
         "full": "最多可保留 10 个收藏。",
@@ -1334,7 +1365,11 @@
       "activationFailed": "无法将 {{app}} 置于前台",
       "activationFailedUnnamed": "无法将该应用置于前台",
       "insertionFailed": "插入失败",
-      "noTextField": "没有聚焦的文本框"
+      "noTextField": "没有聚焦的文本框",
+      "defaultFieldNotFound": "未找到 {{app}} 已记住的字段",
+      "defaultFieldNotFoundUnnamed": "未找到已记住的字段",
+      "defaultTerminalGone": "{{app}} 已记住的终端已不存在",
+      "defaultTerminalGoneUnnamed": "已记住的终端已不存在"
     },
     "explanation": {
       "notInserted": "Handy 没有插入任何内容，也没有发送回车键。",

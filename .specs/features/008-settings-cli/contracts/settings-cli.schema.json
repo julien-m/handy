@@ -122,6 +122,7 @@
             "mute_while_recording",
             "append_trailing_space",
             "destination_favorites",
+            "destination_default_inputs",
             "return_to_dictation_app",
             "app_language",
             "theme",
@@ -200,6 +201,7 @@
                   "mute_while_recording",
                   "append_trailing_space",
                   "destination_favorites",
+                  "destination_default_inputs",
                   "return_to_dictation_app",
                   "app_language",
                   "theme",
@@ -711,6 +713,117 @@
         "debug_mode": {
           "type": "boolean"
         },
+        "destination_default_inputs": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "display_name": {
+                "type": "string"
+              },
+              "identity": {
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "bundle_id",
+                      "aumid",
+                      "executable_path"
+                    ]
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "value"
+                ],
+                "type": "object"
+              },
+              "target": {
+                "oneOf": [
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "dom_id": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "kind": {
+                        "const": "field"
+                      },
+                      "name": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "placeholder": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "role": {
+                        "type": "string"
+                      },
+                      "subrole": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "role",
+                      "subrole",
+                      "name",
+                      "placeholder",
+                      "dom_id"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "terminal"
+                      },
+                      "tool": {
+                        "enum": [
+                          "cmux"
+                        ]
+                      },
+                      "workspace_id": {
+                        "type": "string"
+                      },
+                      "workspace_name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "tool",
+                      "workspace_id",
+                      "workspace_name"
+                    ],
+                    "type": "object"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "identity",
+              "display_name",
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
         "destination_favorites": {
           "items": {
             "additionalProperties": false,
@@ -1105,6 +1218,7 @@
         "mute_while_recording",
         "append_trailing_space",
         "destination_favorites",
+        "destination_default_inputs",
         "return_to_dictation_app",
         "app_language",
         "theme",
@@ -1751,6 +1865,17 @@
     {
       "allowed_values": [],
       "key": "destination_favorites",
+      "nullable": false,
+      "owner_domain": "destination",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "array"
+    },
+    {
+      "allowed_values": [],
+      "key": "destination_default_inputs",
       "nullable": false,
       "owner_domain": "destination",
       "range": null,

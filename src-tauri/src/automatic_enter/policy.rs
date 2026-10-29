@@ -19,6 +19,8 @@ pub enum Completion {
     ReliableConfirmed,
     /// Paste method "none": nothing was inserted.
     NoInsertion,
+    /// 013: the text was typed into a remembered terminal through its addressing tool.
+    AddressedTerminal,
 }
 
 /// Why no Enter press was attempted for a dictation.
@@ -44,6 +46,9 @@ pub enum Suppression {
     AlreadyDecided,
     /// The input thread could not press the key within its bound; it was not pressed.
     KeyLate,
+    /// 013: typed into a remembered terminal; a key would go to that application's focused
+    /// terminal, which may be another one (spec 013 decision `terminal_no_enter`).
+    AddressedTerminal,
 }
 
 /// What the eligibility needs: the frozen policy, the source of the dispatched route (`None`
@@ -78,6 +83,8 @@ fn completion_succeeded(completion: Completion) -> Result<(), Suppression> {
     use MethodOutcome::{InsertedVerified, ReadObserved, Typed};
     match completion {
         Completion::NoInsertion => Err(Suppression::PasteMethodNone),
+        // @spec AC-007: No automatic Enter after a terminal delivery — .specs/features/013-default-input-per-app/spec.md#ac-007
+        Completion::AddressedTerminal => Err(Suppression::AddressedTerminal),
         Completion::Classic { succeeded: false } => Err(Suppression::MethodFailed),
         Completion::Classic { succeeded: true } | Completion::ReliableConfirmed => Ok(()),
         Completion::SmartPaste(InsertedVerified | ReadObserved | Typed) => Ok(()),

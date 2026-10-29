@@ -10,7 +10,7 @@ const STATUSES: [InsertionStatus; 5] = [
     InsertionStatus::Skipped,
     InsertionStatus::Cancelled,
 ];
-const REASONS: [Option<Failure>; 7] = [
+const REASONS: [Option<Failure>; 9] = [
     None,
     Some(Failure::AppClosed),
     Some(Failure::ActivationFailed),
@@ -18,6 +18,8 @@ const REASONS: [Option<Failure>; 7] = [
     Some(Failure::PinnedAppNotRunning),
     Some(Failure::NoTextField),
     Some(Failure::FieldReturnFailed),
+    Some(Failure::DefaultFieldNotFound),
+    Some(Failure::DefaultTerminalGone),
 ];
 const KINDS: [Option<Kind>; 10] = [
     None,
@@ -73,6 +75,9 @@ fn row_of(kind: Option<Kind>, reason: Option<Failure>) -> Option<(BubbleReason, 
         (None, Some(Failure::PinnedAppNotRunning)) => (R::PinnedAppNotRunning, D::NotInserted),
         (None, Some(Failure::ActivationFailed)) => (R::ActivationFailed, D::NotInserted),
         (None, Some(Failure::NoTextField)) => (R::NoTextField, D::NotInserted),
+        // 013: a remembered target that was not found is decided before any dispatch.
+        (None, Some(Failure::DefaultFieldNotFound)) => (R::DefaultFieldNotFound, D::NotInserted),
+        (None, Some(Failure::DefaultTerminalGone)) => (R::DefaultTerminalGone, D::NotInserted),
         (None, Some(Failure::InsertionFailed) | None) => (R::InsertionFailed, D::MayHaveReached),
     })
 }
@@ -97,7 +102,7 @@ fn every_status_reason_outcome_and_platform_matches_the_spec_table() {
             }
         }
     }
-    assert_eq!(cases, 5 * 7 * 10 * 3);
+    assert_eq!(cases, 5 * 9 * 10 * 3);
 }
 
 // @spec AC-001: Reasons and the partial-insertion detail — .specs/features/010-recovery-bubble/spec.md#ac-001

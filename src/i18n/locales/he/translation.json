@@ -524,6 +524,18 @@
       "noFieldBubble": {
         "title": "הצגת הבועה כשאין שדה טקסט בפוקוס",
         "description": "שומר את הטקסט בבועה במקום להדביק אותו לשום מקום."
+      },
+      "defaultInputs": {
+        "title": "שדות שנזכרו",
+        "description": "היכן Handy מדביק עבור אפליקציה כשהרכיב הפעיל שלה אינו שדה טקסט. אפשר לזכור אחד מתפריט התג במהלך הכתבה.",
+        "field": "שדה: {{label}}",
+        "terminal": "מסוף: {{workspace}}",
+        "forget": "לשכוח",
+        "forgetLabel": "לשכוח את הקלט שנזכר עבור {{app}}",
+        "forgetAll": "לשכוח הכול",
+        "forgetAllLabel": "לשכוח את כל הקלטים שנזכרו",
+        "empty": "עדיין אין שדה שנזכר. השתמשו בתפריט התג במהלך הכתבה.",
+        "failed": "לא ניתן היה לשכוח את הקלט שנזכר."
       }
     },
     "vocabulary": {
@@ -1276,7 +1288,26 @@
         "favorites": "מועדפים",
         "addFavorite": "הוספת {{name}} למועדפים",
         "removeFavorite": "הסרת {{name}} מהמועדפים",
-        "notOpen": "לא פתוח"
+        "notOpen": "לא פתוח",
+        "rememberInput": {
+          "field": "לזכור את השדה הזה עבור {{app}}",
+          "fieldAgain": "לזכור שוב את השדה הזה עבור {{app}}",
+          "terminal": "לזכור את המסוף הזה",
+          "terminalAgain": "לזכור שוב את המסוף הזה",
+          "saved": {
+            "field": "השדה נזכר עבור {{app}}",
+            "terminal": "המסוף נזכר עבור {{app}}"
+          },
+          "refused": {
+            "notTextField": "קודם יש ללחוץ בשדה טקסט של האפליקציה",
+            "passwordField": "שדות סיסמה לעולם אינם נזכרים",
+            "unrecognizable": "לשדה הזה אין שם ש-Handy יוכל לזהות מאוחר יותר",
+            "terminalUnreadable": "לא ניתן היה לקרוא את המסוף",
+            "full": "אפשר לזכור עד 20 קלטים.",
+            "stale": "ההכתבה הזו הסתיימה",
+            "failed": "לא ניתן היה לשמור את השדה"
+          }
+        }
       },
       "favoriteNotSaved": {
         "full": "אפשר לשמור עד 10 מועדפים.",
@@ -1334,7 +1365,11 @@
       "activationFailed": "לא ניתן היה להביא את {{app}} לחזית",
       "activationFailedUnnamed": "לא ניתן היה להביא את האפליקציה לחזית",
       "insertionFailed": "ההוספה נכשלה",
-      "noTextField": "אין שדה טקסט בפוקוס"
+      "noTextField": "אין שדה טקסט בפוקוס",
+      "defaultFieldNotFound": "השדה שנזכר עבור {{app}} לא נמצא",
+      "defaultFieldNotFoundUnnamed": "השדה שנזכר לא נמצא",
+      "defaultTerminalGone": "המסוף שנזכר עבור {{app}} כבר לא קיים",
+      "defaultTerminalGoneUnnamed": "המסוף שנזכר כבר לא קיים"
     },
     "explanation": {
       "notInserted": "Handy לא הוסיף דבר ולא שלח Enter.",

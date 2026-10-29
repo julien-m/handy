@@ -9,6 +9,8 @@ use super::activation::{ActivationChain, ActivationStrategy, ChainStep};
 use super::context::{
     ApplicationIdentity, DestinationContext, DestinationSource, RecoveryDisposition, RecoveryPort,
 };
+use super::default_input;
+use super::default_input::route::DefaultRoute;
 use super::field::RememberedField;
 use super::field_attempt;
 use super::guard::{DispatchGuard, GuardRefusal};
@@ -60,6 +62,8 @@ pub struct InsertionReport {
     /// activated instance), read by 009's Enter authority; `None` when nothing was dispatched.
     /// Boxed so the report (also an early-return error value) stays small.
     pub context: Option<Box<DestinationContext>>,
+    /// 013: the text was typed through an addressing tool (009 then presses no Enter).
+    pub addressed: bool,
 }
 impl InsertionReport {
     fn ended(
@@ -75,6 +79,7 @@ impl InsertionReport {
             target,
             source,
             context,
+            addressed: false,
         }
     }
 }
@@ -104,11 +109,21 @@ impl Orchestrator {
         let cancelled: &dyn Fn() -> bool = &*request.cancelled;
         let route = (target.as_ref(), cancelled);
         let field = field_attempt::begin(access, (clock, self.pause.as_ref()), field, route);
+        // 013: a remembered default input, only when 011 has no attempt for this dictation.
+        let default = match field {
+            Some(_) => DefaultRoute::Unchanged,
+            None => default_input::route::prepare(
+                &self.manager.default_inputs(),
+                target.as_ref(),
+                cancelled,
+                (self.clock.as_ref(), self.pause.as_ref()),
+            ),
+        };
         let manager = Arc::clone(&self.manager);
         let recovery = Arc::clone(&self.recovery);
         let guard =
             DispatchGuard::new(manager, recovery, frozen.clone(), target, request.cancelled);
-        let guard = Arc::new(guard.with_field(field));
+        let guard = Arc::new(guard.with_field(field).with_default(default));
         let result = method.dispatch(Arc::clone(&guard));
         self.conclude(&frozen, &guard, result, request.paste_method_none)
     }
@@ -264,6 +279,7 @@ impl Orchestrator {
         };
         let report = InsertionReport {
             context: context.map(Box::new),
+            addressed: guard.addressed(),
             ..report
         };
         if guard.refusal().is_some() || report.reason.is_some() {
@@ -291,6 +307,7 @@ fn method_report(
         target,
         source,
         context: context.map(Box::new),
+        addressed: false,
     }
 }
 
@@ -324,6 +341,13 @@ fn refusal_report(refusal: GuardRefusal, source: DestinationSource) -> Insertion
         // 011 AC-004 (b): nothing was pasted; 010 shows "Insertion failed", nothing sent.
         GuardRefusal::RecoverInstead(super::context::RecoveryReason::FieldReturnFailed) => {
             failed(DestinationFailure::FieldReturnFailed)
+        }
+        // 013 AC-006, AC-007: nothing was dispatched; 010 names the remembered target.
+        GuardRefusal::RecoverInstead(super::context::RecoveryReason::DefaultFieldNotFound) => {
+            failed(DestinationFailure::DefaultFieldNotFound)
+        }
+        GuardRefusal::RecoverInstead(super::context::RecoveryReason::DefaultTerminalGone) => {
+            failed(DestinationFailure::DefaultTerminalGone)
         }
     }
 }

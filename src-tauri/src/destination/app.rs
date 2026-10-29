@@ -26,7 +26,13 @@ pub fn install(app: &AppHandle) {
         Arc::new(SystemClock),
         PlatformCapabilities::current(),
     );
-    let manager = Arc::new(manager.with_field_access(super::native_field_access()));
+    let settings_app = app.clone();
+    let inputs: super::default_input::services::InputsSource =
+        Box::new(move || crate::settings::get_settings(&settings_app).destination_default_inputs);
+    let manager = manager
+        .with_field_access(super::native_field_access())
+        .with_default_inputs(super::default_input::native_services(inputs));
+    let manager = Arc::new(manager);
     app.manage(Arc::clone(&manager));
     app.manage(Arc::new(RecoverySlot::default()));
     app.manage(Arc::new(OutcomeRegistry::default()));

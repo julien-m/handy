@@ -97,6 +97,11 @@ pub enum RecoveryReason {
     /// 011: the input remembered at the start could not be verified after an attempt that may
     /// have changed something, or its range is missing or unverified: paste nothing.
     FieldReturnFailed,
+    /// 013: the remembered field of the destination was not found (none, several, incomplete
+    /// search, or a focus that could not be verified): paste nothing.
+    DefaultFieldNotFound,
+    /// 013: the remembered terminal no longer exists: type nothing.
+    DefaultTerminalGone,
 }
 
 /// Answer of the optional 010 pre-insertion check.

@@ -524,6 +524,18 @@
       "noFieldBubble": {
         "title": "Visa bubblan när inget textfält har fokus",
         "description": "Behåller texten i en bubbla i stället för att klistra in den i tomma intet."
+      },
+      "defaultInputs": {
+        "title": "Ihågkomna fält",
+        "description": "Var Handy klistrar in för en app när dess aktiva element inte är ett textfält. Kom ihåg ett från märkesmenyn under en diktering.",
+        "field": "Fält: {{label}}",
+        "terminal": "Terminal: {{workspace}}",
+        "forget": "Glöm",
+        "forgetLabel": "Glöm den ihågkomna inmatningen för {{app}}",
+        "forgetAll": "Glöm alla",
+        "forgetAllLabel": "Glöm alla ihågkomna inmatningar",
+        "empty": "Inget ihågkommet fält än. Använd märkesmenyn under en diktering.",
+        "failed": "Det gick inte att glömma den ihågkomna inmatningen."
       }
     },
     "vocabulary": {
@@ -1276,7 +1288,26 @@
         "favorites": "Favoriter",
         "addFavorite": "Lägg till {{name}} i favoriter",
         "removeFavorite": "Ta bort {{name}} från favoriter",
-        "notOpen": "Inte öppen"
+        "notOpen": "Inte öppen",
+        "rememberInput": {
+          "field": "Kom ihåg det här fältet för {{app}}",
+          "fieldAgain": "Kom ihåg det här fältet igen för {{app}}",
+          "terminal": "Kom ihåg den här terminalen",
+          "terminalAgain": "Kom ihåg den här terminalen igen",
+          "saved": {
+            "field": "Fält ihågkommet för {{app}}",
+            "terminal": "Terminal ihågkommen för {{app}}"
+          },
+          "refused": {
+            "notTextField": "Klicka först i ett textfält i appen",
+            "passwordField": "Lösenordsfält kommer aldrig ihåg",
+            "unrecognizable": "Fältet har inget namn som Handy kan känna igen senare",
+            "terminalUnreadable": "Terminalen kunde inte läsas",
+            "full": "Du kan komma ihåg upp till 20 inmatningar.",
+            "stale": "Den här dikteringen har avslutats",
+            "failed": "Det gick inte att spara fältet"
+          }
+        }
       },
       "favoriteNotSaved": {
         "full": "Du kan ha upp till 10 favoriter.",
@@ -1334,7 +1365,11 @@
       "activationFailed": "Det gick inte att ta fram {{app}}",
       "activationFailedUnnamed": "Det gick inte att ta fram appen",
       "insertionFailed": "Infogningen misslyckades",
-      "noTextField": "Inget textfält har fokus"
+      "noTextField": "Inget textfält har fokus",
+      "defaultFieldNotFound": "Det ihågkomna fältet för {{app}} hittades inte",
+      "defaultFieldNotFoundUnnamed": "Det ihågkomna fältet hittades inte",
+      "defaultTerminalGone": "Den ihågkomna terminalen för {{app}} finns inte längre",
+      "defaultTerminalGoneUnnamed": "Den ihågkomna terminalen finns inte längre"
     },
     "explanation": {
       "notInserted": "Handy infogade ingenting och skickade ingen Retur.",

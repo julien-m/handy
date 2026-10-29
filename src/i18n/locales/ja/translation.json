@@ -524,6 +524,18 @@
       "noFieldBubble": {
         "title": "テキストフィールドが選択されていないときにバブルを表示",
         "description": "何もない場所に貼り付ける代わりに、テキストをバブルに保持します。"
+      },
+      "defaultInputs": {
+        "title": "記憶したフィールド",
+        "description": "アプリのアクティブな要素がテキストフィールドでないときに Handy が貼り付ける場所です。ディクテーション中にバッジメニューから記憶できます。",
+        "field": "フィールド: {{label}}",
+        "terminal": "ターミナル: {{workspace}}",
+        "forget": "削除",
+        "forgetLabel": "{{app}} の記憶した入力先を削除",
+        "forgetAll": "すべて削除",
+        "forgetAllLabel": "記憶したすべての入力先を削除",
+        "empty": "記憶したフィールドはまだありません。ディクテーション中にバッジメニューを使ってください。",
+        "failed": "記憶した入力先を削除できませんでした。"
       }
     },
     "vocabulary": {
@@ -1276,7 +1288,26 @@
         "favorites": "お気に入り",
         "addFavorite": "{{name}} をお気に入りに追加",
         "removeFavorite": "{{name}} をお気に入りから削除",
-        "notOpen": "未起動"
+        "notOpen": "未起動",
+        "rememberInput": {
+          "field": "{{app}} のこのフィールドを記憶",
+          "fieldAgain": "{{app}} のこのフィールドを再度記憶",
+          "terminal": "このターミナルを記憶",
+          "terminalAgain": "このターミナルを再度記憶",
+          "saved": {
+            "field": "{{app}} のフィールドを記憶しました",
+            "terminal": "{{app}} のターミナルを記憶しました"
+          },
+          "refused": {
+            "notTextField": "先にアプリのテキストフィールドをクリックしてください",
+            "passwordField": "パスワードフィールドは記憶されません",
+            "unrecognizable": "このフィールドには Handy が後で認識できる名前がありません",
+            "terminalUnreadable": "ターミナルを読み取れませんでした",
+            "full": "記憶できる入力先は最大 20 件です。",
+            "stale": "このディクテーションは終了しました",
+            "failed": "フィールドを保存できませんでした"
+          }
+        }
       },
       "favoriteNotSaved": {
         "full": "お気に入りは最大 10 個までです。",
@@ -1334,7 +1365,11 @@
       "activationFailed": "{{app}} を前面に出せませんでした",
       "activationFailedUnnamed": "アプリを前面に出せませんでした",
       "insertionFailed": "挿入に失敗しました",
-      "noTextField": "テキストフィールドが選択されていません"
+      "noTextField": "テキストフィールドが選択されていません",
+      "defaultFieldNotFound": "{{app}} の記憶したフィールドが見つかりません",
+      "defaultFieldNotFoundUnnamed": "記憶したフィールドが見つかりません",
+      "defaultTerminalGone": "{{app}} の記憶したターミナルはもう存在しません",
+      "defaultTerminalGoneUnnamed": "記憶したターミナルはもう存在しません"
     },
     "explanation": {
       "notInserted": "Handy は何も挿入せず、Enter も送信していません。",

@@ -59,6 +59,8 @@ pub struct DestinationManager {
     platform: PlatformCapabilities,
     /// 011's field port (unsupported until `with_field_access`).
     pub(super) field_access: Arc<dyn super::field::FieldAccess>,
+    /// 013's ports (nothing remembered until `with_default_inputs`).
+    pub(super) default_inputs: Arc<super::default_input::services::DefaultInputServices>,
 }
 
 impl DestinationManager {
@@ -74,6 +76,7 @@ impl DestinationManager {
             clock,
             platform,
             field_access: Arc::new(super::field::UnsupportedFieldAccess),
+            default_inputs: Arc::new(super::default_input::services::DefaultInputServices::none()),
         }
     }
     /// Session state, recovered after a poisoning panic (the state stays consistent per call).

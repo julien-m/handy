@@ -8,10 +8,13 @@ use super::context::{
     DestinationContext, DestinationSource, PreInsertionVerdict, RecoveryDisposition, RecoveryPort,
     RecoveryReason, ResolvedTarget,
 };
+use super::default_input::route::{DefaultKind, DefaultRoute};
+use super::default_input::terminal::ResolvedTerminal;
 use super::field_attempt::FieldReturn;
 use super::field_check::FieldCheck;
 use super::manager::{DestinationManager, FrozenDestination};
 use super::workspace::{Foreground, RunningApp};
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex, PoisonError};
 
 /// Why the guard refused; no input was dispatched.
@@ -50,6 +53,10 @@ pub struct DispatchGuard {
     state: Mutex<GuardState>,
     /// 011's attempt, verified once by the first pass then released.
     field: Mutex<Option<FieldReturn>>,
+    /// 013's route, decided by the orchestrator before the method runs.
+    default: Mutex<DefaultRoute>,
+    /// 013: the text was typed through an addressing tool (no automatic Enter follows).
+    addressed: AtomicBool,
 }
 
 impl DispatchGuard {
@@ -69,7 +76,30 @@ impl DispatchGuard {
             cancelled,
             state: Mutex::new(GuardState::default()),
             field: Mutex::new(None),
+            default: Mutex::new(DefaultRoute::Unchanged),
+            addressed: AtomicBool::new(false),
         }
+    }
+    #[must_use]
+    /// The same guard applying 013's `route` at its first pass (`Unchanged`: as delivered).
+    pub fn with_default(self, route: DefaultRoute) -> Self {
+        *self.default.lock().unwrap_or_else(PoisonError::into_inner) = route;
+        self
+    }
+    /// The terminal 013 types into instead of the configured method, if that is the route.
+    pub fn terminal_route(&self) -> Option<ResolvedTerminal> {
+        match &*self.default.lock().unwrap_or_else(PoisonError::into_inner) {
+            DefaultRoute::Terminal(terminal) => Some(terminal.clone()),
+            _ => None,
+        }
+    }
+    /// Record that the text is typed through an addressing tool (013), before the first call.
+    pub fn mark_addressed(&self) {
+        self.addressed.store(true, Ordering::SeqCst);
+    }
+    /// True once the text was handed to an addressing tool (013): 009 presses no Enter.
+    pub fn addressed(&self) -> bool {
+        self.addressed.load(Ordering::SeqCst)
     }
     #[must_use]
     /// The same guard verifying 011's `field` attempt at its first pass (none: as delivered).
@@ -205,6 +235,9 @@ impl DispatchGuard {
     /// the recovery port answers (010's answers the same, without any accessibility query);
     /// otherwise the port decides from the context, where a verified input counts as editable.
     fn verdict(&self, context: &DestinationContext) -> PreInsertionVerdict {
+        if let Some(verdict) = self.default_verdict() {
+            return verdict;
+        }
         match context.field {
             FieldCheck::Diverted(_) => {
                 PreInsertionVerdict::Recover(RecoveryReason::FieldReturnFailed)
@@ -212,6 +245,22 @@ impl DispatchGuard {
             FieldCheck::Absent | FieldCheck::Verified | FieldCheck::Unchanged(_) => {
                 self.recovery.before_insertion(context)
             }
+        }
+    }
+    // @spec AC-007: Terminal skips 010; unavailable never pastes — .specs/features/013-default-input-per-app/spec.md#ac-007
+    /// Business rule (spec 013 AC-006, AC-007): a remembered target that was not found never
+    /// dispatches and keeps its own reason; a terminal delivery types through its tool, so 010's
+    /// field check (which reads the application's focused element) does not apply to it.
+    fn default_verdict(&self) -> Option<PreInsertionVerdict> {
+        match &*self.default.lock().unwrap_or_else(PoisonError::into_inner) {
+            DefaultRoute::Unavailable(DefaultKind::Field) => Some(PreInsertionVerdict::Recover(
+                RecoveryReason::DefaultFieldNotFound,
+            )),
+            DefaultRoute::Unavailable(DefaultKind::Terminal) => Some(PreInsertionVerdict::Recover(
+                RecoveryReason::DefaultTerminalGone,
+            )),
+            DefaultRoute::Terminal(_) => Some(PreInsertionVerdict::Insert),
+            DefaultRoute::Unchanged | DefaultRoute::Focused => None,
         }
     }
 }

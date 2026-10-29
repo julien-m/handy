@@ -70,6 +70,9 @@ inventory! {
  // 012: favorite destination applications, changed by the badge star and the destination domain;
  // listed before `return_to_dictation_app`, which 010's key follows directly when its gate is open.
  "destination_favorites" => (Array,false,None,&[],false,false,"destination",None);
+ // 013: remembered default input per application, changed by the badge, the settings window and
+ // the destination domain.
+ "destination_default_inputs" => (Array,false,None,&[],false,false,"destination",None);
  "return_to_dictation_app" => (Boolean,false,None,&[],false,false,"output",None);
  // 010 (gate `destination-return` open): read at dictation start, refused off macOS.
  #[cfg(feature = "destination-return")]

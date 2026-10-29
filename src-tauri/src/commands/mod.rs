@@ -1,4 +1,5 @@
 pub mod audio;
+pub mod default_input;
 pub mod destination;
 pub mod history;
 pub mod models;
