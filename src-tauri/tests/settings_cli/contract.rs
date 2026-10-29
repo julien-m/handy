@@ -168,13 +168,22 @@ fn every_owned_error_code_has_its_documented_exit() -> TestResult {
 #[test]
 fn stale_expected_revision_reports_the_current_revision() -> TestResult {
     let app = Portable::new()?;
-    let first = app.run(&["settings", "set", "paste_method", other_paste_method()?])?;
+    // Two distinct values, both other than the default, so each write is a real change.
+    let default = default_paste_method()?;
+    let mut changes = ["direct", "none", "ctrl_v"]
+        .into_iter()
+        .filter(|method| *method != default);
+    let (first_method, second_method) = (
+        changes.next().ok_or("no first change")?,
+        changes.next().ok_or("no second change")?,
+    );
+    let first = app.run(&["settings", "set", "paste_method", first_method])?;
     assert_eq!(first.code, 0, "{}", first.stderr);
     let run = app.run(&[
         "settings",
         "set",
         "paste_method",
-        "none",
+        second_method,
         "--expected-revision",
         "0",
         "--json",
@@ -185,7 +194,7 @@ fn stale_expected_revision_reports_the_current_revision() -> TestResult {
         "settings",
         "set",
         "paste_method",
-        "none",
+        second_method,
         "--expected-revision",
         "1",
         "--json",
