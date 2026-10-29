@@ -1,75 +1,29 @@
 //! Scripted accessibility world for the 011 tests: applications with a focused element and a
 //! focused window, elements with the facts of 010's rule, a selection range and scripted write
 //! answers, and a log of every call with the timeout it carried. A call advances the manual
-//! clock by `cost`; the port can be made to block until released (a port that never answers).
+//! clock by `cost`; the port can be made to block until released (a port that never answers),
+//! or to answer late for a while (an application brought forward a moment ago): a call whose
+//! timeout ends before the application answers spends its timeout and gets `Timeout`, and a
+//! write sent then is applied anyway, as the target does once it answers.
 //! No method can return an element's value, selected text or title: the port has none.
 #![allow(dead_code)]
 
 use super::destination::ManualClock;
+#[path = "element.rs"]
+mod element;
+use element::late;
+pub use element::{Element, Write};
 use handy_app_lib::destination::field::{FieldAccess, FieldNode, SelectionRange};
+use handy_app_lib::destination::workspace::Clock;
 use handy_app_lib::recovery::classifier::{AxQueryError, EditAttribute, FocusedElement};
 use std::any::Any;
 use std::collections::HashMap;
 use std::sync::mpsc::Receiver;
 use std::sync::{Arc, Mutex, MutexGuard, PoisonError};
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 fn lock<T>(mutex: &Mutex<T>) -> MutexGuard<'_, T> {
     mutex.lock().unwrap_or_else(PoisonError::into_inner)
-}
-
-/// How a scripted element answers a focus or range write.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum Write {
-    /// Answered and applied.
-    Apply,
-    /// Refused at once (element gone, not focusable).
-    Refuse,
-    /// No answer in time (`kAXErrorCannotComplete`), not applied.
-    Unanswered,
-    /// No answer in time, but the target applies it anyway.
-    UnansweredApplied,
-}
-
-/// One scripted element.
-#[derive(Clone, Debug)]
-pub struct Element {
-    pub pid: u32,
-    pub role: &'static str,
-    pub subrole: Option<&'static str>,
-    pub settable: bool,
-    pub range: Result<(usize, usize), AxQueryError>,
-    pub window: Option<u32>,
-    pub focus: Write,
-    pub select: Write,
-    pub raise_works: bool,
-    /// Where an applied focus write really lands (a background tab: another element).
-    pub focus_lands_on: Option<u32>,
-}
-impl Element {
-    /// An editable text area of `pid` in window `window`, caret at `range`.
-    pub fn input(pid: u32, window: u32, range: (usize, usize)) -> Self {
-        Self {
-            pid,
-            role: "AXTextArea",
-            subrole: None,
-            settable: true,
-            range: Ok(range),
-            window: Some(window),
-            focus: Write::Apply,
-            select: Write::Apply,
-            raise_works: true,
-            focus_lands_on: None,
-        }
-    }
-    /// A non-editable element of `role` (a list, a button…) of `pid`.
-    pub fn control(pid: u32, role: &'static str) -> Self {
-        Self {
-            settable: false,
-            role,
-            ..Self::input(pid, 0, (0, 0))
-        }
-    }
 }
 
 /// One accessibility call and the timeout it carried.
@@ -90,6 +44,12 @@ struct State {
     focused_window: HashMap<u32, Result<u32, AxQueryError>>,
     elements: HashMap<u32, Element>,
     cost: Duration,
+    /// The next call starts a period of this length during which nothing answers.
+    late_for: Option<Duration>,
+    /// Range writes applied but not yet visible: element, visible from, range.
+    pending_ranges: Vec<(u32, Instant, (usize, usize))>,
+    /// Nothing answers before this instant.
+    answers_from: Option<Instant>,
     blocker: Option<Receiver<()>>,
     after: Option<After>,
     calls: Vec<Call>,
@@ -145,8 +105,13 @@ impl World {
     }
     /// The current range of element `id`.
     pub fn range(&self, id: u32) -> Option<(usize, usize)> {
+        self.flush_ranges();
         let state = lock(&self.state);
         state.elements.get(&id).and_then(|e| e.range.ok())
+    }
+    /// From the next call on, the application answers nothing for `delay` (N18).
+    pub fn answers_late(&self, delay: Duration) {
+        lock(&self.state).late_for = Some(delay);
     }
     /// Block every call until `release` is dropped or sent to.
     pub fn block_until(&self, release: Receiver<()>) {
@@ -168,21 +133,50 @@ impl World {
     pub fn alive(&self) -> i64 {
         lock(&self.state).nodes_alive
     }
-    fn call(&self, op: &'static str, element: Option<u32>, timeout: Duration) {
+    /// Record one call and spend its time; `false` when it got no answer within `timeout`.
+    fn call(&self, op: &'static str, element: Option<u32>, timeout: Duration) -> bool {
         let blocker = lock(&self.state).blocker.take();
         if let Some(blocker) = blocker {
             let _ = blocker.recv();
         }
-        let cost = {
-            let mut state = lock(&self.state);
-            state.calls.push(Call {
-                op,
-                element,
-                timeout,
-            });
-            state.cost
-        };
-        self.clock.advance(cost);
+        let (cost, wait) = self.record(Call {
+            op,
+            element,
+            timeout,
+        });
+        // Without a late period the scripted cost never exceeds a timeout (as before N18).
+        let answered = wait.is_zero() || wait + cost <= timeout;
+        self.clock
+            .advance(if answered { wait + cost } else { timeout });
+        self.run_after(op);
+        answered
+    }
+    /// A read: `Timeout` when it got no answer in time.
+    fn answer(
+        &self,
+        op: &'static str,
+        element: u32,
+        timeout: Duration,
+    ) -> Result<(), AxQueryError> {
+        self.call(op, Some(element), timeout)
+            .then_some(())
+            .ok_or(AxQueryError::Timeout)
+    }
+    /// Log `call`; its cost and how long until the application answers.
+    fn record(&self, call: Call) -> (Duration, Duration) {
+        let now = self.clock.now();
+        let mut state = lock(&self.state);
+        state.calls.push(call);
+        if let Some(delay) = state.late_for.take() {
+            state.answers_from = Some(now + delay);
+        }
+        let wait = state
+            .answers_from
+            .map_or(Duration::ZERO, |from| from.saturating_duration_since(now));
+        (state.cost, wait)
+    }
+    /// The effect registered for `op`, once.
+    fn run_after(&self, op: &'static str) {
         let effect = {
             let mut state = lock(&self.state);
             match state.after.take() {
@@ -203,6 +197,18 @@ impl World {
             id,
             world: Arc::clone(self),
         })
+    }
+    /// Range writes whose lag has passed become visible.
+    fn flush_ranges(&self) {
+        let now = self.clock.now();
+        let mut state = lock(&self.state);
+        let pending = std::mem::take(&mut state.pending_ranges);
+        for (id, from, range) in pending {
+            match state.elements.get_mut(&id) {
+                Some(element) if from <= now => element.range = Ok(range),
+                _ => state.pending_ranges.push((id, from, range)),
+            }
+        }
     }
     fn get(&self, id: u32) -> Result<Element, AxQueryError> {
         lock(&self.state)
@@ -241,7 +247,9 @@ impl FieldAccess for Access {
         pid: u32,
         timeout: Duration,
     ) -> Result<Box<dyn FieldNode>, AxQueryError> {
-        self.0.call("focused_element", None, timeout);
+        if !self.0.call("focused_element", None, timeout) {
+            return Err(AxQueryError::Timeout);
+        }
         let focused = lock(&self.0.state).focused.get(&pid).copied();
         let id = focused.unwrap_or(Err(AxQueryError::NoValue))?;
         Ok(self.0.node(id))
@@ -251,7 +259,9 @@ impl FieldAccess for Access {
         pid: u32,
         timeout: Duration,
     ) -> Result<Box<dyn FieldNode>, AxQueryError> {
-        self.0.call("focused_window", None, timeout);
+        if !self.0.call("focused_window", None, timeout) {
+            return Err(AxQueryError::Timeout);
+        }
         let focused = lock(&self.0.state).focused_window.get(&pid).copied();
         let id = focused.unwrap_or(Err(AxQueryError::NoValue))?;
         Ok(self.0.node(id))
@@ -273,11 +283,11 @@ impl FocusedElement for Node {
         Ok(self.world.get(self.id)?.pid)
     }
     fn role(&mut self, timeout: Duration) -> Result<String, AxQueryError> {
-        self.world.call("role", Some(self.id), timeout);
+        self.world.answer("role", self.id, timeout)?;
         Ok(self.world.get(self.id)?.role.to_owned())
     }
     fn subrole(&mut self, timeout: Duration) -> Result<Option<String>, AxQueryError> {
-        self.world.call("subrole", Some(self.id), timeout);
+        self.world.answer("subrole", self.id, timeout)?;
         Ok(self.world.get(self.id)?.subrole.map(str::to_owned))
     }
     fn is_settable(
@@ -285,13 +295,14 @@ impl FocusedElement for Node {
         _attribute: EditAttribute,
         timeout: Duration,
     ) -> Result<bool, AxQueryError> {
-        self.world.call("is_settable", Some(self.id), timeout);
+        self.world.answer("is_settable", self.id, timeout)?;
         Ok(self.world.get(self.id)?.settable)
     }
 }
 impl FieldNode for Node {
     fn read_range(&mut self, timeout: Duration) -> Result<SelectionRange, AxQueryError> {
-        self.world.call("read_range", Some(self.id), timeout);
+        self.world.answer("read_range", self.id, timeout)?;
+        self.world.flush_ranges();
         let (location, length) = self.world.get(self.id)?.range?;
         Ok(SelectionRange::offsets(location, length))
     }
@@ -300,29 +311,35 @@ impl FieldNode for Node {
         range: &SelectionRange,
         timeout: Duration,
     ) -> Result<bool, AxQueryError> {
-        self.world.call("range_is", Some(self.id), timeout);
+        self.world.answer("range_is", self.id, timeout)?;
+        self.world.flush_ranges();
         Ok(self.world.get(self.id)?.range? == range.as_offsets().ok_or(AxQueryError::Failed)?)
     }
     fn focus(&mut self, timeout: Duration) -> Result<(), AxQueryError> {
-        self.world.call("focus", Some(self.id), timeout);
+        let answered = self.world.call("focus", Some(self.id), timeout);
         let element = self.world.get(self.id)?;
         let (id, lands) = (self.id, element.focus_lands_on.unwrap_or(self.id));
-        self.world.write(id, element.focus, |state, pid| {
+        let answer = late(answered, element.focus);
+        self.world.write(id, answer, |state, pid| {
             state.focused.insert(pid, Ok(lands));
         })
     }
     fn select(&mut self, range: &SelectionRange, timeout: Duration) -> Result<(), AxQueryError> {
-        self.world.call("select", Some(self.id), timeout);
-        let answer = self.world.get(self.id)?.select;
-        let (id, offsets) = (self.id, range.as_offsets());
+        let answered = self.world.call("select", Some(self.id), timeout);
+        let element = self.world.get(self.id)?;
+        let answer = late(answered, element.select);
+        let offsets = element.select_lands_at.or(range.as_offsets());
+        let (id, visible_from) = (self.id, self.world.clock.now() + element.select_lag);
         self.world.write(id, answer, |state, _| {
-            if let (Some(element), Some(offsets)) = (state.elements.get_mut(&id), offsets) {
-                element.range = Ok(offsets);
+            if let Some(offsets) = offsets {
+                state.pending_ranges.push((id, visible_from, offsets));
             }
-        })
+        })?;
+        self.world.flush_ranges();
+        Ok(())
     }
     fn window(&mut self, timeout: Duration) -> Result<Option<Box<dyn FieldNode>>, AxQueryError> {
-        self.world.call("window", Some(self.id), timeout);
+        self.world.answer("window", self.id, timeout)?;
         let window = self
             .world
             .get(self.id)?
@@ -331,7 +348,7 @@ impl FieldNode for Node {
         Ok(Some(self.world.node(window)))
     }
     fn raise(&mut self, timeout: Duration) -> Result<(), AxQueryError> {
-        self.world.call("raise", Some(self.id), timeout);
+        let answered = self.world.call("raise", Some(self.id), timeout);
         let element = self.world.get(self.id)?;
         if !element.raise_works {
             return Err(AxQueryError::Failed);
@@ -339,7 +356,11 @@ impl FieldNode for Node {
         lock(&self.world.state)
             .focused_window
             .insert(element.pid, Ok(self.id));
-        Ok(())
+        if answered {
+            Ok(())
+        } else {
+            Err(AxQueryError::Timeout)
+        }
     }
     fn same_as(&self, other: &dyn FieldNode) -> bool {
         other

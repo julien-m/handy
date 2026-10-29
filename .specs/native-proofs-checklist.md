@@ -521,6 +521,10 @@ Preuves natives en attente avec Julien : aucune n'est déclarée réussie. Harna
   - Étapes : Comet (page ChatGPT, même onglet), Notes et ChatGPT desktop : un brouillon avec la sentinelle, curseur au milieu ; dicter ; passer à une autre app ; arrêter. Refaire avec une sélection non vide avant le départ.
   - Attendu : le texte complet au curseur, brouillon intact (ou remplacement de la sélection faite avant le départ) ; 5/5 par app ; noter si donner le focus sélectionne tout ou déplace le curseur avant la restauration de la plage.
   - Couvre : AC-001, AC-002, FR-001, FR-002, SC-001. Preuve : `proofs/native-macos/caret/`.
+- [ ] **N18 — App lente après activation (Codex, champ Google dans Chrome, Comet).**
+  - Étapes : build signée avec `destination-return,smart-paste-dispatch`, log debug ; dicter depuis le champ de Codex, puis depuis le champ de recherche Google dans Chrome, curseur seul puis sélection non vide ; passer à une autre app ; arrêter. 5 essais par app.
+  - Attendu : le texte au curseur du champ mémorisé (ou à un curseur déplacé dans ce même champ), jamais sur une sélection non vérifiée ni dans un autre champ ; ligne `field_return Verified (stage …, ax_error …, settled … in N reads, guard_range …, note …)`. Relever pour chaque échec le stage, l'erreur AX et `guard_range`.
+  - Couvre : AC-002, AC-004, FR-004 (décision `verified-at-guard`). Preuve : `proofs/native-macos/n18-late-app/`.
 - [ ] **Deuxième fenêtre.**
   - Étapes : Notes avec deux fenêtres ; dicter depuis l'éditeur de la fenêtre A ; amener la fenêtre B ; arrêter.
   - Attendu : la fenêtre A est levée et le texte arrive dans son éditeur ; sinon la bulle, jamais un collage dans la fenêtre B ; noter si le focus survit à `AXRaise` (un ordre inversé est remonté à Julien, jamais changé en silence).
@@ -629,6 +633,7 @@ Preuves natives en attente avec Julien : aucune n'est déclarée réussie. Harna
   - un élément focalisé absent (`AXFocusedUIElement` sans valeur) à la note de l'étape (1) est traité comme « non noté » : bulle, jamais branche (a) (ambiguïté AC-004 de la revue r3, choix sûr du plan) ;
   - la plage du départ est restaurée même si l'utilisateur a tapé dans le même champ pendant l'enregistrement (ambiguïté AC-002 de la revue r3 ; avertissement de la revue de livraison, tour 1) : à trancher après l'item « Frappe dans le même champ ». Proposition de la revue : retenir aussi le nombre de caractères du champ au départ (une longueur seule, jamais le contenu, par exemple `AXNumberOfCharacters`) et passer en AC-004 (b) à la garde s'il a changé, au moins quand la sélection du départ n'était pas vide ; cela demande d'amender AC-008 (champs retenus) par `/spec-refine`. Comportement actuel inchangé en attendant ;
   - Windows : une app épinglée qui n'est pas au premier plan au départ ne mémorise rien (UI Automation n'expose que le focus système ; avertissement de la revue de plan sur AC-003, repris par la revue de livraison, tour 1). Proposition de la revue : acter cette exception Windows d'AC-003 dans AC-007 (ou AC-003) par `/spec-refine`, ou lire le focus du processus épinglé autrement ; l'item natif Windows reste. Comportement actuel inchangé en attendant ;
+  - N18 (décision `verified-at-guard`) : un curseur déplacé ailleurs dans le champ mémorisé reçoit le collage (aucune sélection, rien d'écrasé) ; note de l'étape (1) bornée à 300 ms ; à valider par Julien ;
   - les documents 006 et 010 sont à réaligner sur les deltas listés dans `implementation.md` de la 011 (`/spec-refine 006-destination-application plan`, `/spec-refine 010-recovery-bubble plan`).
 - [ ] **008 :**
   - store illisible : lecture seule à chaque lancement, onboarding répété, aucune voie de sortie documentée ;

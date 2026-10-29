@@ -106,7 +106,10 @@ fn a_diverted_return_recovers_without_any_010_query_and_sends_no_enter() {
     let focus = Focus::role("AXTextArea", PID);
     let bench = Bench::with_focus(RecoveryPlatform::MacOs, focus.clone());
     let spy = PasteSpy::new(&field.world);
-    let report = dictate(&field, &bench, &spy, |_| {});
+    // The range write refused and a selection made meanwhile: not verifiable at the guard.
+    let report = dictate(&field, &bench, &spy, |field| {
+        field.world.edit(INPUT, |input| input.range = Ok((0, 3)));
+    });
     assert!(spy.pasted().is_empty());
     assert_eq!(report.reason, Some(DestinationFailure::FieldReturnFailed));
     assert_eq!(focus.queries(), 0);

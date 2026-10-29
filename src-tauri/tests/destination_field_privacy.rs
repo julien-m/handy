@@ -67,10 +67,13 @@ fn dictate(script: impl FnOnce(&FieldRig)) -> Option<DestinationFailure> {
 /// A verified return, a diverted one, an unchanged one, then a release by a cancellation.
 fn run_every_path() {
     assert_eq!(dictate(|_| {}), None, "verified");
+    // A refused range write with the selection moved meanwhile: diverted (N18 verifies the
+    // state at dispatch, so the selection must differ for this path).
     let refused = dictate(|field| {
-        field
-            .world
-            .edit(INPUT, |input| input.select = Write::Refuse)
+        field.world.edit(INPUT, |input| {
+            input.select = Write::Refuse;
+            input.range = Ok((0, 0));
+        })
     });
     assert_eq!(refused, Some(DestinationFailure::FieldReturnFailed));
     dictate(|field| {
