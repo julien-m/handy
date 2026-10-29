@@ -1,5 +1,15 @@
 # Changelog — 017-smart-spacing
 
+## 2026-10-29 — [Spec Update]: Final period inside a sentence (N30)
+
+- **Type:** Spec Update
+- **Spec modified:** Yes (new AC-017 and FR-006; AC-001 and AC-016 amended; Story 1 scenarios and flowchart; decision `n30_trailing_period`; provenance row; QE gates; edge cases)
+- **Code modified:** `src-tauri/src/smart_spacing/{final_period.rs,final_period_tests.rs}` (new), `src-tauri/src/smart_spacing/{mod.rs,spacing_tests.rs}`, `src-tauri/src/smart_capitalization/preparation_tests.rs`, 26 locales (`smartSpacing.description`), `README.md`, `.specs/native-proofs-checklist.md`
+- **AC impacted:** AC-001, AC-005, AC-016, AC-017
+- **Author:** Claude Code (claude-opus-5-5), `/spec-fix` from Julien's requirement after native finding N30
+
+Recognition engines such as Canary end every dictation with a period, which cut sentences when the dictation was inserted inside one ("Bonjour à tous. demain"). With smart spacing on and the text after the selection read, a single sentence period is now dropped when what follows starts with a continuation or ending mark or a lower-case letter; abbreviations, ellipses, `?`, `!`, `。`, a capital, a line break, the field end, an unknown side after, a non-text focus and 013's addressed terminal keep it. The existing test `punctuation_on_the_dictation_side` now covers both a capital (period kept) and a lower-case word (period dropped).
+
 ## 2026-10-29 — [Feature]: Smart spacing
 
 - **Type:** Feature

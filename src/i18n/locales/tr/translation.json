@@ -542,7 +542,7 @@
       "textFormatting": {
         "smartSpacing": {
           "label": "Akıllı Boşluk",
-          "description": "Dikte edilen metnin imleç çevresindeki metinle birleştiği yerlere gereken boşlukları ekler ve var olan boşlukları ya da satır sonlarını asla ikiye katlamaz. , . ) ] öncesinde veya ( [ sonrasında boşluk eklenmez, boşluksuz yazılan dillerde de eklenmez. Açıkken dikteden sonraki boşluğa o karar verir: \"Sonuna Boşluk Ekle\" o zaman yalnızca bir alanın sonunda boşluk ekler. Alan okunamazsa sona yalnızca bir boşluk eklenir.",
+          "description": "Dikte edilen metnin imleç çevresindeki metinle birleştiği yerlere gereken boşlukları ekler ve var olan boşlukları ya da satır sonlarını asla ikiye katlamaz. , . ) ] öncesinde veya ( [ sonrasında boşluk eklenmez, boşluksuz yazılan dillerde de eklenmez. Açıkken dikteden sonraki boşluğa o karar verir: \"Sonuna Boşluk Ekle\" o zaman yalnızca bir alanın sonunda boşluk ekler. Alan okunamazsa sona yalnızca bir boşluk eklenir. İmleçten sonraki metin cümleyi sürdürüyorsa, dikte edilen metnin sonundaki nokta kaldırılır.",
           "descriptionLimited": "Dikte edilen metnin imleç çevresindeki metinle birleştiği yerlere gereken boşlukları ekler ve var olan boşlukları ya da satır sonlarını asla ikiye katlamaz. , . ) ] öncesinde veya ( [ sonrasında boşluk eklenmez, boşluksuz yazılan dillerde de eklenmez. Açıkken dikteden sonraki boşluğa o karar verir: \"Sonuna Boşluk Ekle\" o zaman yalnızca bir alanın sonunda boşluk ekler. Alan okunamazsa sona yalnızca bir boşluk eklenir. Bu sistemde imleç çevresindeki metin okunamaz, bu yüzden her dikteden sonra yalnızca bir boşluk eklenir."
         },
         "smartCapitalization": {
