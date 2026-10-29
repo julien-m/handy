@@ -1273,7 +1273,6 @@
         "failed": "Nie udało się wczytać listy aplikacji.",
         "pin": "Przypnij {{name}}",
         "unpin": "Odepnij {{name}}",
-        "thisDictationOnly": "Tylko to dyktowanie",
         "favorites": "Ulubione",
         "addFavorite": "Dodaj {{name}} do ulubionych",
         "removeFavorite": "Usuń {{name}} z ulubionych",

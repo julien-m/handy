@@ -1276,7 +1276,6 @@
         "failed": "The app list could not be loaded.",
         "pin": "Pin {{name}}",
         "unpin": "Unpin {{name}}",
-        "thisDictationOnly": "This dictation only",
         "favorites": "Favorites",
         "addFavorite": "Add {{name}} to favorites",
         "removeFavorite": "Remove {{name}} from favorites",

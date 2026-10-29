@@ -7,9 +7,9 @@ import type { BadgeView } from "./destination-model";
 
 /**
  * Test ids of the pin entries under the contract screen shown: Pin is
- * `recording-indicator-destination-menu-menu-pin` (nothing pinned yet), Unpin, the badge's pin
- * mark and the "This dictation only" hint are `recording-indicator-pinned-…` (an application is
- * pinned).
+ * `recording-indicator-destination-menu-menu-pin` (nothing pinned yet), Unpin and the badge's
+ * pin mark are `recording-indicator-pinned-…` (an application is pinned). The other applications
+ * carry no "This dictation only" hint since 2026-10-29 (N29, 009 decision `no_dictation_only_hint`).
  * @param screen test-id prefix of the screen shown
  * @returns the test id of each pin element
  */
@@ -18,8 +18,6 @@ export const pinTestIds = (screen: string) => ({
   unpin: `${screen}-menu-unpin`,
   /** Pin mark of the badge; derived from the contract's `recording-indicator-pinned` screen. */
   mark: `${screen}-destination-mark`,
-  /** "This dictation only" hint of the other applications while pinned; derived as well. */
-  hint: `${screen}-menu-hint`,
 });
 
 /** One pin entry of the badge menu. */

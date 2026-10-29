@@ -15,3 +15,4 @@ Final verification: `proofs/final/summary.txt` (10 commands, all exit 0) and `pr
 | 7 | Done | `tests/harness/destination-menu.*`, `tests/destination-favorites.spec.ts` | Playwright (4 new + existing pin and recovery specs) | 20 passed | 2026-10-29 |
 | 8 | Done | 012 spec/plan/implementation/changelog, 009 spec amended, README, roadmap, changelogs | `livespec conventions verify --feature repo --json` | PASS | 2026-10-29 |
 | 9 | Pending (Julien) | — | Native macOS checklist in `implementation.md` | Not run | 2026-10-29 |
+| N29 fix | Done | `src/overlay/*`, 26 locales, harness, `tests/destination-favorites.spec.ts` | `bun run test:indicator`, `bun run lint`, `tsc`, `check:translations`, Playwright `destination-favorites` + `pin-enter-ui` | Pass (8 Playwright) | 2026-10-29 |

@@ -1273,7 +1273,6 @@
         "failed": "無法載入 App 列表。",
         "pin": "釘選 {{name}}",
         "unpin": "取消釘選 {{name}}",
-        "thisDictationOnly": "僅限本次聽寫",
         "favorites": "收藏",
         "addFavorite": "將 {{name}} 加入收藏",
         "removeFavorite": "將 {{name}} 移出收藏",

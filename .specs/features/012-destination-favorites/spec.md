@@ -189,7 +189,7 @@ flowchart TD
 
 ### AC-001
 
-**Criterion:** Each application row of the 006 badge menu (running applications and favorites that are not running) has a star toggle button on its right. Clicking the star adds the application to the favorites or removes it from them; it never changes the destination of the dictation, never changes the selection version and never closes the menu. Clicking the rest of the row keeps the 006 behavior (destination of this dictation only). The star icon is a star (filled when the application is a favorite); the words "pin" and "épingler" are never used for favorites.
+**Criterion:** Each application row of the 006 badge menu (running applications and favorites that are not running) has a star toggle button on its right. Clicking the star adds the application to the favorites or removes it from them; it never changes the destination of the dictation, never changes the selection version and never closes the menu. Clicking the rest of the row keeps the 006 behavior (destination of this dictation only). The star icon is a star (filled when the application is a favorite); the words "pin" and "épingler" are never used for favorites. The row is compact: the star is a small button with a narrow gap, no hint is shown next to a running application (no "This dictation only", 009 decision `no_dictation_only_hint`), and the name takes all the room left so an application name of up to about 20 characters is shown in full at the menu's width; a longer name is truncated with an ellipsis only when it cannot fit.
 **Priority:** P1 | **Story:** Story 1
 
 ### AC-002
@@ -260,6 +260,7 @@ flowchart TD
 - Decision `012-destination-favorites:AC-005` / `star_accessible_name` (2026-10-29, agent): the accessible name includes the application name ("Add Claude to favorites") so that each of the many stars of the menu is distinguishable; the request's "Ajouter aux favoris" / "Retirer des favoris" are the French base of these labels.
 - Decision `012-destination-favorites:AC-003` / `top_placement` (2026-10-29, agent): with the overlay placed at the top of the screen, the menu keeps the same internal order (it then opens below the indicator, so the footer is the farthest part); reversing the menu for that placement is left out of this feature.
 - Decision `012-destination-favorites:AC-001` / `toggle_stays_open` (2026-10-29, agent): after a toggle the menu is re-ordered at once (the row moves into or out of the favorites section) with the same tokens, without a new read of the running applications.
+- Decision `012-destination-favorites:AC-001` / `compact_row` (2026-10-29, Julien's native finding N29 relayed by the coordinator): with the star and the "This dictation only" hint, the application names were cut to two or three letters ("Rai…", "Go…") and the menu was unusable. Julien: « Avec l'étoile, ça prend trop de place, je ne vois plus les textes. Et il y a marqué "cette dictée seulement" : ça, tu me l'enlèves. » The hint is removed (amends 009, decision `no_dictation_only_hint`), the star is smaller (24 px button, 14 px glyph) with a narrower gap, and the name takes the remaining width, truncated only when needed. The star stays visible on every row (no hover-only reveal), so it remains discoverable for pointer and keyboard users.
 
 ## QE Analysis
 

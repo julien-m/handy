@@ -1273,7 +1273,6 @@
         "failed": "Không thể tải danh sách ứng dụng.",
         "pin": "Ghim {{name}}",
         "unpin": "Bỏ ghim {{name}}",
-        "thisDictationOnly": "Chỉ lần đọc chép này",
         "favorites": "Yêu thích",
         "addFavorite": "Thêm {{name}} vào yêu thích",
         "removeFavorite": "Xóa {{name}} khỏi yêu thích",

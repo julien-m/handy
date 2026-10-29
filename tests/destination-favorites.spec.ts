@@ -1,11 +1,13 @@
 // LiveSpec traceability: @spec(AC-001) @spec(AC-003) @spec(AC-004) @spec(AC-005)
+// 009 decision no_dictation_only_hint and 012 decision compact_row (N29, 2026-10-29).
 /**
  * Destination menu with favorites (012) and the fixed footer (009 AC-001 as amended on
  * 2026-10-29) in headless Chromium: the real menu component and overlay CSS from
  * `tests/harness/destination-menu.tsx`, with many running applications in a short page. Pin,
  * Unpin, "Frontmost app at the end" and the favorites stay visible without scrolling; a star
  * toggles without choosing or closing; the star is a named, pressed toggle reachable with Tab
- * that keeps focus after a keyboard toggle. Not a native window proof.
+ * that keeps focus after a keyboard toggle; realistic application names are shown in full beside
+ * the star (compact row, no "This dictation only" hint). Not a native window proof.
  * Run with `bunx playwright test tests/destination-favorites.spec.ts`.
  */
 import { expect, test, type Locator, type Page } from "@playwright/test";
@@ -123,4 +125,55 @@ test("Tab reaches the star after its row and Enter keeps focus on it", async ({
   await expect(moved).toHaveAttribute("aria-pressed", "true");
   await expect(moved).toBeFocused();
   expect((await recorded(page)).choices).toEqual([]);
+});
+
+/** Realistic application names of Julien's N29 capture. */
+const REAL_NAMES = [
+  "Raindrop.io",
+  "Google Chrome",
+  "Stream Deck Guardian",
+  "Free Download Manager",
+];
+/** Names up to about 20 characters must be shown in full. */
+const READABLE_LENGTH = 21;
+
+// @spec AC-001: Compact row, full app name readable — .specs/features/012-destination-favorites/spec.md#ac-001
+test("realistic app names are shown in full beside the star, with no hint", async ({
+  page,
+}) => {
+  await page.setViewportSize(SHORT_PAGE);
+  const names = encodeURIComponent(REAL_NAMES.join(","));
+  await page.goto(`${HARNESS}?apps=${REAL_NAMES.length + 2}&names=${names}`);
+  const menu = page.getByTestId(MENU);
+  await expect(menu).toBeVisible();
+  // The production width of the menu, read from the overlay stylesheet, not restated here.
+  const widths = await menu.evaluate((element) => ({
+    rendered: element.getBoundingClientRect().width,
+    token: getComputedStyle(element).getPropertyValue("--ov-menu-w").trim(),
+  }));
+  expect(`${widths.rendered}px`).toBe(widths.token);
+  await expect(menu).not.toContainText("This dictation only");
+  const rows = page.locator(
+    `[data-testid="${MENU}-app"], [data-testid="${MENU}-favorite"]`,
+  );
+  for (const name of REAL_NAMES.filter((n) => n.length <= READABLE_LENGTH)) {
+    const row = rows.filter({
+      has: page.locator(".smenu-name", { hasText: name }),
+    });
+    await expect(row).toHaveCount(1);
+    const label = row.locator(".smenu-name");
+    await expect(label).toHaveText(name);
+    const fit = await label.evaluate((element) => ({
+      scroll: element.scrollWidth,
+      client: element.clientWidth,
+    }));
+    expect(fit.client).toBeGreaterThan(0);
+    expect(fit.scroll, `${name} is truncated`).toBeLessThanOrEqual(fit.client);
+    // The star stays a visible, named toggle button with its pressed state.
+    const star = row.locator("xpath=following-sibling::button[1]");
+    await expect(star).toBeVisible();
+    await expect(star).toHaveAttribute("aria-pressed", /^(true|false)$/);
+    const starName = (await star.getAttribute("aria-label")) ?? "";
+    expect(starName).toContain(name);
+  }
 });

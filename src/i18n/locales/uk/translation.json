@@ -1273,7 +1273,6 @@
         "failed": "Не вдалося завантажити список застосунків.",
         "pin": "Закріпити {{name}}",
         "unpin": "Відкріпити {{name}}",
-        "thisDictationOnly": "Лише цей диктант",
         "favorites": "Обране",
         "addFavorite": "Додати {{name}} до обраного",
         "removeFavorite": "Вилучити {{name}} з обраного",

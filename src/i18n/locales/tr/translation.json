@@ -1273,7 +1273,6 @@
         "failed": "Uygulama listesi yüklenemedi.",
         "pin": "{{name}} uygulamasını sabitle",
         "unpin": "{{name}} sabitlemesini kaldır",
-        "thisDictationOnly": "Yalnızca bu dikte",
         "favorites": "Favoriler",
         "addFavorite": "{{name}} uygulamasını favorilere ekle",
         "removeFavorite": "{{name}} uygulamasını favorilerden kaldır",

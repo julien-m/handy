@@ -29,8 +29,6 @@ interface DestinationMenuProps {
   onChoose: (choice: MenuChoice) => void;
   /** Pin entries of 009, listed in the fixed footer. */
   pinEntries?: PinEntry[];
-  /** An application is pinned: the other applications are "This dictation only". */
-  pinActive?: boolean;
   onPin?: () => void;
   onUnpin?: () => void;
   /** Star or unstar a menu entry (012). */
@@ -63,7 +61,6 @@ const PinRow: React.FC<{ entry: PinEntry; onClick: () => void }> = ({
 };
 
 interface RowHandlers {
-  pinActive: boolean;
   onChoose: (choice: MenuChoice) => void;
   onToggleFavorite: (token: number, keyboard: boolean) => void;
 }
@@ -210,7 +207,6 @@ export const DestinationMenuPanel: React.FC<DestinationMenuProps> = ({
   feedbackKey,
   onChoose,
   pinEntries = [],
-  pinActive = false,
   onPin = () => undefined,
   onUnpin = () => undefined,
   onToggleFavorite = () => undefined,
@@ -219,7 +215,6 @@ export const DestinationMenuPanel: React.FC<DestinationMenuProps> = ({
   const menuId = useMenuId();
   const { panel, remember } = useStarFocus(menu);
   const handlers: RowHandlers = {
-    pinActive,
     onChoose,
     onToggleFavorite: (token, keyboard) => {
       remember(token, keyboard);

@@ -1273,7 +1273,6 @@
         "failed": "Impossibile caricare l'elenco delle app.",
         "pin": "Fissa {{name}}",
         "unpin": "Rimuovi {{name}} dai fissati",
-        "thisDictationOnly": "Solo questa dettatura",
         "favorites": "Preferiti",
         "addFavorite": "Aggiungi {{name}} ai preferiti",
         "removeFavorite": "Rimuovi {{name}} dai preferiti",

@@ -1273,7 +1273,6 @@
         "failed": "La liste des apps n'a pas pu être chargée.",
         "pin": "Épingler {{name}}",
         "unpin": "Désépingler {{name}}",
-        "thisDictationOnly": "Cette dictée seulement",
         "favorites": "Favoris",
         "addFavorite": "Ajouter {{name}} aux favoris",
         "removeFavorite": "Retirer {{name}} des favoris",

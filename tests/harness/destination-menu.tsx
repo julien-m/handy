@@ -2,8 +2,9 @@
 // the overlay styles, at the bottom of the page like the indicator at the bottom of the screen,
 // for `tests/destination-favorites.spec.ts`. The star toggle is answered here as the backend
 // would (the row moves into or out of the favorites, tokens unchanged); choices are recorded.
-// `?apps=<n>` sets the number of running applications. A headless check of the real React
-// code and CSS, not a native window proof.
+// `?apps=<n>` sets the number of running applications; `?names=<a>,<b>` names the first ones
+// after the frontmost app (realistic names for the width check). A headless check of the real
+// React code and CSS, not a native window proof.
 import { StrictMode, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "@/i18n";
@@ -21,12 +22,17 @@ import "@/overlay/indicator.css";
 
 const params = new URLSearchParams(window.location.search);
 const runningCount = Number(params.get("apps") ?? "20");
+const givenNames = (params.get("names") ?? "").split(",").filter(Boolean);
+
+/** Display name of the running application at `index` (0 is the frontmost, Comet). */
+const nameAt = (index: number): string =>
+  index === 0 ? "Comet" : (givenNames[index - 1] ?? `Sample app ${index + 1}`);
 
 /** Running applications (the first is frontmost), then a favorite that is not running. */
 const rows: MenuEntry[] = [
   ...Array.from({ length: runningCount }, (_, index) => ({
     token: index + 1,
-    display_name: index === 0 ? "Comet" : `Sample app ${index + 1}`,
+    display_name: nameAt(index),
     icon_ref: null,
     current: index === 1,
     frontmost: index === 0,
@@ -58,7 +64,7 @@ const snapshot: DestinationSnapshot = {
   support: { state: "supported" },
   selection: {
     kind: "application",
-    display_name: "Sample app 2",
+    display_name: nameAt(1),
     icon_ref: null,
   },
   source: "badge",
@@ -112,7 +118,6 @@ const Harness = () => {
             feedbackKey={null}
             onChoose={(choice) => record.choices.push(choice)}
             pinEntries={pinEntries(snapshot, menu)}
-            pinActive
             onToggleFavorite={toggle}
           />
         </IndicatorScreenContext.Provider>
