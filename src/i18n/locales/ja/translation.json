@@ -202,6 +202,14 @@
           "transcribe_with_post_process": {
             "name": "後処理のショートカット",
             "description": "文字起こしに常に AI 後処理を適用するキーボードショートカット。 (任意)"
+          },
+          "retarget_to_active_app": {
+            "name": "前面のアプリに送る",
+            "description": "音声入力中にこのキーだけを押すと、ピン留めしたアプリではなく最後に前面にあるアプリへ送ります。もう一度押すと元に戻ります。ピン留めは残ります。"
+          },
+          "skip_automatic_enter": {
+            "name": "Enter なしで挿入",
+            "description": "音声入力中にこのキーだけを押すと、自動 Enter なしでテキストを挿入します。もう一度押すと元に戻ります。"
           }
         },
         "errors": {
@@ -1305,6 +1313,9 @@
         "promptMissing": "このプロンプトはもう存在しません。",
         "promptNotUsable": "このプロンプトには問題があります。先に設定で編集してください。"
       }
+    },
+    "dictationKeys": {
+      "enterSkipped": "この音声入力の自動 Enter はオフ"
     }
   },
   "whatsNew": {

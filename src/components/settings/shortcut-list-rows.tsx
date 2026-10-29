@@ -206,6 +206,8 @@ interface AddRowProps {
   /** Null for an action that keeps a single shortcut (no Add). */
   controls: ListControls | null;
   isFull: boolean;
+  /** Most shortcuts of the action (4 by default; 1 for a key used during a dictation). */
+  limit?: number;
   onAdd: () => void;
   onSave: () => void;
   onDiscard: () => void;
@@ -351,7 +353,7 @@ export const AddRow: React.FC<AddRowProps> = (props) => {
   const addButton = useRef<HTMLButtonElement | null>(null);
   useFocusAddAfterDraft(controls?.mode, addButton);
   const limitLabel = t(`${LIST_KEY}.addLimit`, {
-    limit: MAX_SHORTCUTS_PER_ACTION,
+    limit: props.limit ?? MAX_SHORTCUTS_PER_ACTION,
   });
   return (
     <div className="flex items-center gap-1">

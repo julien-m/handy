@@ -233,6 +233,10 @@ pub(crate) fn preparation_for(
     if state.is_statically_registered {
         return Preparation::ApplyDelta;
     }
+    // 014: a key read during a dictation is never registered, so there is nothing to check.
+    if crate::dictation_keys::is_dictation_key(action_id) {
+        return Preparation::Nothing;
+    }
     let can_probe = match action_id {
         "cancel" => state.has_dynamic_cancel && !state.is_cancel_registered,
         _ => true,

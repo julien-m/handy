@@ -202,6 +202,14 @@
           "transcribe_with_post_process": {
             "name": "后处理快捷键",
             "description": "可选：一个专用快捷键，始终对您的转录应用 AI 后处理。"
+          },
+          "retarget_to_active_app": {
+            "name": "发送到前台应用",
+            "description": "听写时单独按下此键，结束时将文本发送到前台应用，而不是已固定的应用。再按一次撤销。固定保持不变。"
+          },
+          "skip_automatic_enter": {
+            "name": "插入但不按回车",
+            "description": "听写时单独按下此键，插入文本时不自动按回车。再按一次撤销。"
           }
         },
         "errors": {
@@ -1305,6 +1313,9 @@
         "promptMissing": "此提示词已不存在。",
         "promptNotUsable": "此提示词有问题；请先在设置中编辑。"
       }
+    },
+    "dictationKeys": {
+      "enterSkipped": "本次听写已关闭自动回车"
     }
   },
   "whatsNew": {

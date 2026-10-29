@@ -27,6 +27,7 @@ fn session() -> DestinationSession {
         captured_at: Instant::now(),
         disposition: Pending,
         enter_claimed: false,
+        keys: Default::default(),
     }
 }
 const ID: DictationId = DictationId(1);

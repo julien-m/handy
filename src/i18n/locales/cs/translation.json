@@ -202,6 +202,14 @@
           "transcribe_with_post_process": {
             "name": "Klávesa pro následné zpracování",
             "description": "Volitelné: Vyhrazená klávesová zkratka, která vždy použije AI následné zpracování na váš přepis."
+          },
+          "retarget_to_active_app": {
+            "name": "Odeslat do aplikace v popředí",
+            "description": "Během diktování stiskněte samotnou tuto klávesu a text půjde na konci do aplikace v popředí místo připnuté. Dalším stiskem to vrátíte. Připnutí zůstává."
+          },
+          "skip_automatic_enter": {
+            "name": "Vložit bez Enteru",
+            "description": "Během diktování stiskněte samotnou tuto klávesu a text se vloží bez automatického Enteru. Dalším stiskem to vrátíte."
           }
         },
         "errors": {
@@ -1305,6 +1313,9 @@
         "promptMissing": "Tento prompt už neexistuje.",
         "promptNotUsable": "Tento prompt obsahuje chyby; nejprve ho upravte v nastavení."
       }
+    },
+    "dictationKeys": {
+      "enterSkipped": "Automatický Enter pro toto diktování vypnut"
     }
   },
   "whatsNew": {

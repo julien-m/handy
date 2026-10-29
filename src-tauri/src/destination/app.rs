@@ -53,7 +53,8 @@ pub fn capture_at_start(app: &AppHandle, return_enabled: bool) -> Option<Pending
 impl PendingCapture {
     /// The recording started: commit the session, start 011's read of the destination's focused
     /// input on its own worker (never waited for), and tell the UI (support too, if it changed).
-    pub fn commit(self, app: &AppHandle) {
+    /// Returns the committed snapshot (014 starts the dictation's key observer with it).
+    pub fn commit(self, app: &AppHandle) -> DestinationSnapshot {
         let previous = self.manager.support();
         let snapshot = self.manager.commit_start(self.capture);
         let (id, generation) = (snapshot.dictation_id, snapshot.destination_generation);
@@ -67,6 +68,7 @@ impl PendingCapture {
             emit_support(app, snapshot.support);
         }
         emit_changed(app, &snapshot);
+        snapshot
     }
 }
 /// The pre-insertion check of 010, managed only when the recovery bubble is installed.

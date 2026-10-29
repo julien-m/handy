@@ -44,6 +44,8 @@ pub enum Suppression {
     AlreadyDecided,
     /// The input thread could not press the key within its bound; it was not pressed.
     KeyLate,
+    /// « Insert without Enter » was pressed during the dictation (014).
+    UserSkipped,
 }
 
 /// What the eligibility needs: the frozen policy, the source of the dispatched route (`None`

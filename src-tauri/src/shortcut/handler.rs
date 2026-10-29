@@ -39,6 +39,8 @@ pub fn handle_shortcut_event(
     received_at: Instant,
 ) {
     let binding_id = registration.action_id.as_str();
+    // 014: a key pressed alone during a dictation is no longer alone once a shortcut fired.
+    crate::dictation_keys::watcher::note_shortcut_event();
 
     // Transcribe bindings are handled by the coordinator.
     if is_transcribe_binding(binding_id) {

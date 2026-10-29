@@ -182,6 +182,14 @@
           "transcribe_with_post_process": {
             "name": "Snabbkommando för efterbearbetning",
             "description": "Valfritt: En dedikerad snabbknapp som alltid tillämpar AI-efterbearbetning på din transkription."
+          },
+          "retarget_to_active_app": {
+            "name": "Skicka till appen i förgrunden",
+            "description": "Tryck bara på den här tangenten under ett diktat för att skicka det till appen i förgrunden i slutet i stället för den fästa appen. Tryck igen för att ångra. Fästet finns kvar."
+          },
+          "skip_automatic_enter": {
+            "name": "Infoga utan Retur",
+            "description": "Tryck bara på den här tangenten under ett diktat för att infoga texten utan automatisk Retur. Tryck igen för att ångra."
           }
         },
         "errors": {
@@ -1305,6 +1313,9 @@
         "promptMissing": "Den här prompten finns inte längre.",
         "promptNotUsable": "Den här prompten har fel; redigera den först i inställningarna."
       }
+    },
+    "dictationKeys": {
+      "enterSkipped": "Automatisk Retur av för det här diktatet"
     }
   },
   "whatsNew": {

@@ -245,7 +245,13 @@ impl ShortcutAction for TranscribeAction {
                 self.rules_at_start
                     .capture(&binding_id, current_matcher(app));
                 if let Some(destination) = destination {
-                    destination.commit(app);
+                    let started = destination.commit(app);
+                    // @spec FR-005: Keys read from start to insertion — .specs/features/014-in-dictation-keys/spec.md#fr-005
+                    crate::dictation_keys::watcher::start(
+                        app,
+                        started.dictation_id,
+                        started.destination_generation,
+                    );
                 }
                 // 010: the recording started, so the recovery bubble closes now.
                 crate::recovery::app::dictation_started(app);

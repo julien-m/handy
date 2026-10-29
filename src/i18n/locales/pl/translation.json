@@ -202,6 +202,14 @@
           "transcribe_with_post_process": {
             "name": "Skrót postprocessingu",
             "description": "Opcjonalnie: Dedykowany skrót klawiszowy, który zawsze stosuje postprocessing AI do transkrypcji."
+          },
+          "retarget_to_active_app": {
+            "name": "Wyślij do aplikacji na pierwszym planie",
+            "description": "Podczas dyktowania naciśnij sam ten klawisz, aby wysłać tekst do aplikacji na pierwszym planie na końcu zamiast do przypiętej. Naciśnij ponownie, aby cofnąć. Przypięcie zostaje."
+          },
+          "skip_automatic_enter": {
+            "name": "Wstaw bez Entera",
+            "description": "Podczas dyktowania naciśnij sam ten klawisz, aby wstawić tekst bez automatycznego Entera. Naciśnij ponownie, aby cofnąć."
           }
         },
         "errors": {
@@ -1305,6 +1313,9 @@
         "promptMissing": "Ten prompt już nie istnieje.",
         "promptNotUsable": "Ten prompt zawiera błędy; najpierw go popraw w ustawieniach."
       }
+    },
+    "dictationKeys": {
+      "enterSkipped": "Automatyczny Enter wyłączony dla tego dyktowania"
     }
   },
   "whatsNew": {

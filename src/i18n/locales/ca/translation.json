@@ -182,6 +182,14 @@
           "transcribe_with_post_process": {
             "name": "Drecera de postprocessament",
             "description": "Opcional: una drecera específica que sempre aplica postprocessament amb IA a la transcripció."
+          },
+          "retarget_to_active_app": {
+            "name": "Envia a l'app en primer pla",
+            "description": "Durant un dictat, premeu només aquesta tecla per enviar-lo a l'app en primer pla al final en lloc de l'app fixada. Torneu-la a prémer per desfer. La fixació es manté."
+          },
+          "skip_automatic_enter": {
+            "name": "Insereix sense Retorn",
+            "description": "Durant un dictat, premeu només aquesta tecla per inserir el text sense el Retorn automàtic. Torneu-la a prémer per desfer."
           }
         },
         "errors": {
@@ -1308,6 +1316,9 @@
         "promptMissing": "Aquesta indicació ja no existeix.",
         "promptNotUsable": "Aquesta indicació té errors; edita-la primer a la configuració."
       }
+    },
+    "dictationKeys": {
+      "enterSkipped": "Retorn automàtic desactivat per a aquest dictat"
     }
   },
   "secureInput": {

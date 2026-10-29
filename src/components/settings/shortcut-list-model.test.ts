@@ -7,6 +7,8 @@ import type {
   StoredShortcutConflict,
 } from "@/bindings";
 import {
+  DICTATION_KEY_ACTIONS,
+  DICTATION_KEY_LIMITS,
   MAX_SHORTCUTS_PER_ACTION,
   PROMPT_SHORTCUT_LIMITS,
   canAddShortcut,
@@ -209,5 +211,14 @@ assert.deepEqual(
   describeEditError({ code: "limit_exceeded", limit: 2 }, actionName),
   { key: "settings.general.shortcut.list.addLimit", params: { limit: 2 } },
 );
+
+// @spec FR-001: Keys used during a dictation hold one key or none — .specs/features/014-in-dictation-keys/spec.md#fr-001
+for (const actionId of DICTATION_KEY_ACTIONS) {
+  assert.deepEqual(limitsFor(actionId), DICTATION_KEY_LIMITS);
+}
+assert.equal(canAddShortcut(0, DICTATION_KEY_LIMITS), true);
+assert.equal(canAddShortcut(1, DICTATION_KEY_LIMITS), false);
+assert.equal(canRemoveShortcut(1, DICTATION_KEY_LIMITS), true);
+assert.equal(DICTATION_KEY_LIMITS.resettable, true);
 
 console.log("shortcut-list-model: all assertions passed");

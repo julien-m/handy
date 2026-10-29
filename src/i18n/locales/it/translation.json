@@ -202,6 +202,14 @@
           "transcribe_with_post_process": {
             "name": "Tasto di post-elaborazione",
             "description": "Facoltativo: Un tasto di scelta rapida dedicato che applica sempre la post-elaborazione IA alla trascrizione."
+          },
+          "retarget_to_active_app": {
+            "name": "Invia all'app in primo piano",
+            "description": "Durante una dettatura, premi solo questo tasto per inviarla all'app in primo piano alla fine invece che all'app fissata. Premi di nuovo per annullare. L'app fissata resta."
+          },
+          "skip_automatic_enter": {
+            "name": "Inserisci senza Invio",
+            "description": "Durante una dettatura, premi solo questo tasto per inserire il testo senza l'Invio automatico. Premi di nuovo per annullare."
           }
         },
         "errors": {
@@ -1305,6 +1313,9 @@
         "promptMissing": "Questo prompt non esiste più.",
         "promptNotUsable": "Questo prompt contiene errori; modificalo prima nelle impostazioni."
       }
+    },
+    "dictationKeys": {
+      "enterSkipped": "Invio automatico disattivato per questa dettatura"
     }
   },
   "whatsNew": {

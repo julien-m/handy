@@ -202,6 +202,14 @@
           "transcribe_with_post_process": {
             "name": "Phím tắt xử lý sau",
             "description": "Tùy chọn: Phím tắt chuyên dụng luôn áp dụng xử lý sau bằng AI cho bản chuyển đổi của bạn."
+          },
+          "retarget_to_active_app": {
+            "name": "Gửi tới ứng dụng phía trước",
+            "description": "Khi đang đọc chính tả, chỉ nhấn phím này để gửi tới ứng dụng phía trước lúc kết thúc thay vì ứng dụng đã ghim. Nhấn lại để hủy. Ứng dụng đã ghim vẫn giữ."
+          },
+          "skip_automatic_enter": {
+            "name": "Chèn không có Enter",
+            "description": "Khi đang đọc chính tả, chỉ nhấn phím này để chèn văn bản mà không có Enter tự động. Nhấn lại để hủy."
           }
         },
         "errors": {
@@ -1305,6 +1313,9 @@
         "promptMissing": "Câu lệnh này không còn tồn tại.",
         "promptNotUsable": "Câu lệnh này có lỗi; hãy sửa nó trong cài đặt trước."
       }
+    },
+    "dictationKeys": {
+      "enterSkipped": "Đã tắt Enter tự động cho lần đọc này"
     }
   },
   "whatsNew": {
