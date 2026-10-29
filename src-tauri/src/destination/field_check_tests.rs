@@ -1,16 +1,18 @@
 //! The guard table of 011 (spec AC-004, plan "Attempt after activation, decision at the
 //! guard"), every row and every combination: `Verified` only for the remembered input focused
-//! with its range after a restored attempt; `Unchanged` only for the noted element still
-//! focused with no window raised and no write unanswered; `Diverted` otherwise.
+//! with its range verified at the guard, wherever an attempt made stopped (N18);
+//! `Unchanged` only for the noted element still focused with no window raised and no write
+//! unanswered; `Diverted` otherwise.
 use super::*;
 
-const STAGES: [AttemptStage; 8] = [
+const STAGES: [AttemptStage; 9] = [
     AttemptStage::Restored,
     AttemptStage::RangeMissing,
     AttemptStage::NotNoted,
     AttemptStage::FocusRefused,
     AttemptStage::WriteUnanswered,
     AttemptStage::RaiseFailed,
+    AttemptStage::RaiseUnanswered,
     AttemptStage::RangeNotRestored,
     AttemptStage::BudgetSpent,
 ];
@@ -37,8 +39,11 @@ const fn changed(stage: AttemptStage) -> FieldCheck {
 }
 const NOT_VERIFIED: FieldCheck = FieldCheck::Diverted(Divergence::RangeNotVerified);
 /// The rows of the plan's guard table, first match (stage, raised, unsettled, seen, decision).
-const ROWS: [Row; 11] = {
-    use AttemptStage::{FocusRefused, NotNoted, RangeMissing, Restored, WriteUnanswered};
+const ROWS: [Row; 18] = {
+    use AttemptStage::{
+        BudgetSpent, FocusRefused, NotNoted, RaiseFailed, RaiseUnanswered, RangeMissing,
+        RangeNotRestored, Restored, WriteUnanswered,
+    };
     [
         (
             RangeMissing,
@@ -69,7 +74,13 @@ const ROWS: [Row; 11] = {
             FieldCheck::Verified,
         ),
         (Restored, false, false, remembered(false), NOT_VERIFIED),
-        (FocusRefused, false, false, remembered(true), NOT_VERIFIED),
+        (
+            FocusRefused,
+            false,
+            false,
+            remembered(true),
+            FieldCheck::Verified,
+        ),
         (
             FocusRefused,
             false,
@@ -99,9 +110,60 @@ const ROWS: [Row; 11] = {
             Some(FocusAtGuard::Other),
             changed(Restored),
         ),
+        // N18: the remembered input focused with its range verified, wherever the attempt stopped.
+        (
+            WriteUnanswered,
+            false,
+            true,
+            remembered(true),
+            FieldCheck::Verified,
+        ),
+        (
+            BudgetSpent,
+            false,
+            false,
+            remembered(true),
+            FieldCheck::Verified,
+        ),
+        (
+            RaiseUnanswered,
+            true,
+            false,
+            remembered(true),
+            FieldCheck::Verified,
+        ),
+        (
+            WriteUnanswered,
+            false,
+            true,
+            remembered(false),
+            NOT_VERIFIED,
+        ),
+        (
+            RangeNotRestored,
+            false,
+            false,
+            remembered(true),
+            FieldCheck::Verified,
+        ),
+        (
+            RaiseFailed,
+            true,
+            false,
+            remembered(true),
+            FieldCheck::Verified,
+        ),
+        (
+            RangeNotRestored,
+            false,
+            false,
+            remembered(false),
+            NOT_VERIFIED,
+        ),
     ]
 };
 
+// @spec AC-004: Guard table, verified at dispatch (N18) — .specs/features/011-dictation-field-return/spec.md#ac-004
 #[test]
 fn each_row_of_the_guard_table() {
     for (stage, raised, unsettled, seen, expected) in ROWS {
@@ -121,8 +183,6 @@ fn verified_and_unchanged_are_granted_only_by_their_exact_conditions() {
                     let attempted =
                         !matches!(stage, AttemptStage::RangeMissing | AttemptStage::NotNoted);
                     let verified = attempted
-                        && stage == AttemptStage::Restored
-                        && !unsettled
                         && seen
                             == Some(FocusAtGuard::Remembered {
                                 range_verified: true,

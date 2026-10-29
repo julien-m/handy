@@ -19,9 +19,10 @@ use handy_app_lib::destination::field_attempt::AttemptStage;
 use handy_app_lib::destination::field_check::FieldCheck;
 use handy_app_lib::destination::insertion::InsertionReport;
 use handy_app_lib::destination::outcome::{DestinationFailure, InsertionStatus};
+use handy_app_lib::destination::workspace::Foreground;
 use handy_app_lib::recovery::classifier::AxQueryError;
 use rig::{FieldRig, PasteSpy, CARET, INPUT, OTHER, WINDOW};
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -165,31 +166,46 @@ const FAULTS: [Fault; 9] = [
     fault("focus write unanswered", Noted::Other, |input| {
         input.focus = Write::Unanswered;
     }),
+    // The caret moved during the recording: a late write leaves the range unverified (N18).
     fault(
-        "focus write unanswered but applied",
+        "focus write unanswered but applied, caret moved",
         Noted::Other,
         |input| {
             input.focus = Write::UnansweredApplied;
+            input.range = Ok((0, 3));
         },
     ),
-    fault("range write unanswered", Noted::Input, |input| {
-        input.select = Write::Unanswered;
-    }),
     fault(
-        "input already focused when noted, range refused",
+        "range write unanswered, caret moved",
+        Noted::Input,
+        |input| {
+            input.select = Write::Unanswered;
+            input.range = Ok((0, 3));
+        },
+    ),
+    // A refusal changed nothing: the selection at the guard decides, here a moved selection.
+    fault(
+        "input already focused when noted, range refused, selection moved",
         Noted::Input,
         |input| {
             input.select = Write::Refuse;
+            input.range = Ok((0, 3));
         },
     ),
-    fault("window raised then range refused", Noted::Input, |input| {
-        input.window = Some(SECOND_WINDOW);
-        input.select = Write::Refuse;
-    }),
+    fault(
+        "window raised then range refused, selection moved",
+        Noted::Input,
+        |input| {
+            input.window = Some(SECOND_WINDOW);
+            input.select = Write::Refuse;
+            input.range = Ok((0, 3));
+        },
+    ),
     Fault {
         raise_refused: true,
-        ..fault("raise refused", Noted::Input, |input| {
+        ..fault("raise refused, selection moved", Noted::Input, |input| {
             input.window = Some(SECOND_WINDOW);
+            input.range = Ok((0, 3));
         })
     },
     fault("focused element not noted", Noted::Missing, |_| {}),
@@ -233,10 +249,15 @@ fn an_attempt_out_of_budget_stops_without_sending_and_pastes_nothing() {
         .world
         .edit(INPUT, |input| input.window = Some(SECOND_WINDOW));
     let spy = PasteSpy::new(&field.world);
-    // 20 ms per call: note, focus and window fit the 50 ms budget, the focused window does not.
+    // 25 ms per call: the note has its own budget, then focus and window spend the 50 ms of
+    // the writes and the focused window is not sent. The caret moved during the recording, so
+    // the guard cannot verify the range the attempt had no time to restore.
     let report = dictate(
         &field,
-        |field| field.world.cost(Duration::from_millis(20)),
+        |field| {
+            field.world.cost(Duration::from_millis(25));
+            field.world.edit(INPUT, |input| input.range = Ok((0, 3)));
+        },
         &spy,
     );
     assert_diverted(&field, &report, &spy);
@@ -267,8 +288,9 @@ fn a_range_missing_at_the_start_makes_no_call_at_insertion_and_pastes_nothing() 
 fn a_range_or_focus_changed_during_the_paste_delay_pastes_nothing() {
     type Effect = fn(&Arc<fake::World>);
     let effects: [(&str, Effect); 3] = [
-        ("range normalized", |world| {
-            world.edit(INPUT, |input| input.range = Ok((0, 0)))
+        // A caret moved elsewhere in the input is accepted (N18); a selection never is.
+        ("selection appeared", |world| {
+            world.edit(INPUT, |input| input.range = Ok((0, 3)))
         }),
         ("focus unreadable", |world| {
             world.focus(PID, Err(AxQueryError::Failed))
@@ -309,32 +331,45 @@ fn a_cancellation_during_the_attempt_and_006_refusals_keep_their_precedence() {
     let spy = PasteSpy::new(&field.world).during_delay(move || rig.bring(notes()));
     let report = dictate(&field, |_| {}, &spy);
     assert_eq!(report.reason, Some(DestinationFailure::ActivationFailed));
-    assert_eq!(field.calls("range_is"), 0);
+    // The start read and the note only: the guard refused before any field verification.
+    assert_eq!(field.calls("focused_element"), 2);
     assert_eq!(field.world.alive(), 0);
+}
+/// A cancellation flag that turns on from the second read made with Comet in front: the
+/// activation wait's last sample sees it in front uncancelled, the attempt's own read is
+/// cancelled, whatever number of samples the activation chain takes (N16). Counts the reads
+/// made with Comet in front.
+fn cancelled_after_activation(
+    field: &FieldRig,
+    in_front: &Arc<AtomicUsize>,
+) -> Box<dyn Fn() -> bool + Send + Sync> {
+    let (front_reads, workspace) = (Arc::clone(in_front), Arc::clone(&field.rig.workspace));
+    let comet = destination::comet();
+    Box::new(move || {
+        let front = workspace.foreground.lock().map(|front| front.clone());
+        let comet_in_front =
+            matches!(front, Ok(Foreground::Application(app)) if app.pid == comet.pid);
+        comet_in_front && front_reads.fetch_add(1, Ordering::SeqCst) >= 1
+    })
 }
 #[test]
 fn a_cancellation_after_the_activation_never_moves_the_focus() {
     let field = remembered();
     let started = field.start(true);
     field.rig.workspace.bring(notes());
-    // Read once at the freeze, once in the activation wait, then cancelled before the attempt.
-    let reads = Arc::new(std::sync::atomic::AtomicUsize::new(0));
+    let in_front = Arc::new(AtomicUsize::new(0));
     let spy = PasteSpy::new(&field.world);
     field.rig.manager.mark_processing();
-    let counter = Arc::clone(&reads);
     let request = handy_app_lib::destination::insertion::InsertionRequest {
         dictation_id: started.dictation_id,
         destination_generation: started.destination_generation,
         paste_method_none: false,
-        cancelled: Box::new(move || counter.fetch_add(1, Ordering::SeqCst) >= 2),
+        cancelled: cancelled_after_activation(&field, &in_front),
     };
     let report = field.rig.orchestrator().deliver(request, &spy);
     assert_eq!(report.status, InsertionStatus::Cancelled);
-    let seen = reads.load(Ordering::SeqCst);
-    assert!(
-        seen >= 4,
-        "cancelled at the attempt, then seen by the guard ({seen})"
-    );
+    let reads = in_front.load(Ordering::SeqCst);
+    assert_eq!(reads, 3, "in front: wait sample, attempt, guard");
     assert_eq!(
         field.calls("focus"),
         0,

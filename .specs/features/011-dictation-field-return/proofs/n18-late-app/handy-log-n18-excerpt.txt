@@ -1,0 +1,16 @@
+# N18 — excerpt of ~/Library/Logs/com.pais.handy/handy.log (macOS 26.5, signed build with
+# destination-return,smart-paste-dispatch), read on 2026-10-29 before the log was rotated by a
+# relaunch; lines copied verbatim from that read. The 04:06:23 line was reported by the
+# coordinator (log rotated before it could be read here).
+[2026-10-29][03:54:14][handy_app_lib::destination::insertion][DEBUG] Destination activation InFront after 92.45575ms: [ActivationAttempt { strategy: Workspace, request: Sent, at: 84ns }]
+[2026-10-29][03:54:14][handy_app_lib::destination::field_check][DEBUG] field_return Diverted(Attempt(NotNoted)) (attempt 51.93975ms, verify 0ns)
+[2026-10-29][03:54:40][handy_app_lib::destination::insertion][DEBUG] Destination activation InFront after 64.879084ms: [ActivationAttempt { strategy: Workspace, request: Sent, at: 125ns }]
+[2026-10-29][03:54:40][handy_app_lib::destination::field_check][DEBUG] field_return Verified (attempt 10.517167ms, verify 108.042µs)
+[2026-10-29][03:56:00][handy_app_lib::destination::insertion][DEBUG] Destination activation InFront after 38.448042ms: [ActivationAttempt { strategy: Workspace, request: Sent, at: 84ns }]
+[2026-10-29][03:56:00][handy_app_lib::destination::field_check][DEBUG] field_return Diverted(Attempt(NotNoted)) (attempt 55.029ms, verify 0ns)
+[2026-10-29][03:57:14][handy_app_lib::destination::insertion][DEBUG] Destination activation InFront after 21.518375ms: [ActivationAttempt { strategy: Workspace, request: Sent, at: 0ns }]
+[2026-10-29][03:57:14][handy_app_lib::destination::field_check][DEBUG] field_return Diverted(RangeNotVerified) (attempt 50.3915ms, verify 72.75µs)
+[2026-10-29][03:57:30][handy_app_lib::destination::insertion][DEBUG] Destination activation InFront after 18.036125ms: [ActivationAttempt { strategy: Workspace, request: Sent, at: 0ns }]
+[2026-10-29][03:57:30][handy_app_lib::destination::field_check][DEBUG] field_return Diverted(RangeNotVerified) (attempt 48.513917ms, verify 125µs)
+[2026-10-29][04:05:14][handy_app_lib::destination::field_capture][DEBUG] field_return not_remembered(BudgetSpent) in 54.789209ms
+# reported: [04:06:23] field_return Diverted(RangeNotVerified) (attempt 1.63975ms, verify 265µs)

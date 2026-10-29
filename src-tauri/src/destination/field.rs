@@ -13,7 +13,12 @@ use std::time::{Duration, Instant};
 
 /// One deadline for every read made at the start (spec AC-001: 010's classification budget).
 pub const FIELD_CAPTURE_BUDGET: Duration = Duration::from_millis(50);
-/// One deadline for the note, focus, window and range steps at insertion (spec AC-002).
+/// Deadline of the note at insertion (spec AC-002 step 1), a read that changes nothing: a
+/// Chromium or Electron application brought forward a moment ago may take longer than 50 ms to
+/// answer its first accessibility request, so the note waits for it up to this bound (N18).
+pub const FIELD_NOTE_BUDGET: Duration = Duration::from_millis(300);
+/// One deadline for the focus, window and range steps at insertion, started once the note has
+/// answered (spec AC-002 steps 2 to 4).
 pub const FIELD_RESTORE_BUDGET: Duration = Duration::from_millis(50);
 /// One deadline for the verification inside the pre-dispatch guard (spec AC-002 step 5).
 pub const FIELD_VERIFY_BUDGET: Duration = Duration::from_millis(10);

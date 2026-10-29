@@ -10,6 +10,7 @@ use super::context::{
     ApplicationIdentity, DestinationContext, DestinationSource, RecoveryDisposition, RecoveryPort,
 };
 use super::field::RememberedField;
+use super::field_attempt;
 use super::guard::{DispatchGuard, GuardRefusal};
 use super::manager::{DestinationManager, FrozenDestination};
 use super::outcome::{map_method_result, DestinationFailure, InsertionStatus, MethodResult};
@@ -102,7 +103,7 @@ impl Orchestrator {
         let clock = Arc::clone(&self.clock);
         let cancelled: &dyn Fn() -> bool = &*request.cancelled;
         let route = (target.as_ref(), cancelled);
-        let field = super::field_attempt::begin(access, clock, field, route);
+        let field = field_attempt::begin(access, (clock, self.pause.as_ref()), field, route);
         let manager = Arc::clone(&self.manager);
         let recovery = Arc::clone(&self.recovery);
         let guard =

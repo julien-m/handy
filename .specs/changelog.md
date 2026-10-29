@@ -5,6 +5,8 @@
 
 ---
 
+## 2026-10-29 — [Feature 011] Bugfix N18: an application that answers late after its activation (Codex, Chrome pages) receives the paste in its remembered input instead of the recovery bubble; the guard verifies the state at dispatch
+
 ## 2026-10-28 — [Feature 006] Bugfix N16: a declined return to the dictation's app falls back to the accessibility activation request within the same 1 s
 
 ## 2026-10-28 — [Feature 010] Bugfix N17: the recovery bubble is shown again (the panel stayed unregistered after `to_window`, `PanelNotFound`); a failed insertion without bubble is a notice of the recording indicator (toast only with the overlay style none)

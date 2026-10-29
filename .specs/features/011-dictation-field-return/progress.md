@@ -39,3 +39,8 @@ None is declared passed. Exact procedure: `.specs/native-proofs-checklist.md`, s
 10. Sentinel draft absent from the log and the CLI output (SC-004).
 
 Release evidence (never a gate): Windows Notepad and a browser field with UI Automation, a field without `TextPattern` (bubble), a pinned application in the background (nothing remembered); `cargo test --features destination-return` on Windows (checklist section 5).
+
+## Fix checkpoint — N18 (2026-10-29, spec-fix, branch `fix/n18-field-return-budget`)
+
+- Note of step (1) under `FIELD_NOTE_BUDGET` 300 ms; writes' 50 ms start once it answered; range read back every 5 ms until it settles; guard verifies the state at dispatch for every attempt made (exact range, or a caret elsewhere when a caret was remembered); stage `RaiseUnanswered`; debug line with stage, AX error, `RangeSeen` comparisons and note time.
+- Native proof pending: checklist §2 section 011, item "N18 — App lente après activation"; Julien's validation of the caret tolerance and of 300 ms (checklist §3).
