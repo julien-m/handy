@@ -21,7 +21,8 @@ fn explicit_projection_reports_secret_presence_without_any_raw_canary(
     );
     let rendered = serde_json::to_string(&public)?;
     assert!(!rendered.contains("CANARY_"));
-    assert_eq!(public.as_object().ok_or("public object")?.len(), 67);
+    // 005 N23 adds `plain_dictation_prompt_id`, 012 `destination_favorites`.
+    assert_eq!(public.as_object().ok_or("public object")?.len(), 69);
     let envelope = serde_json::to_value(SettingsEnvelope::success(
         snapshot.revision,
         snapshot.public_settings(),
@@ -105,7 +106,8 @@ fn generated_schema_matches_wire_shapes_and_descriptor_inventory(
             .ok_or("schema properties")?
             .len(),
         // 010 adds `show_recovery_bubble_without_text_field` with the gate open.
-        67 + usize::from(cfg!(feature = "destination-return"))
+        // 005 N23 adds `plain_dictation_prompt_id`, 012 `destination_favorites` (every build).
+        69 + usize::from(cfg!(feature = "destination-return"))
     );
     assert_eq!(
         schema["$defs"]["success"]["properties"]["ok"]["const"],

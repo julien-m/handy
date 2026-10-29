@@ -12,7 +12,7 @@ pub struct DictationId(pub u64);
 
 /// Stable application identity: bundle identifier on macOS; application user model ID on
 /// Windows when available, otherwise the canonical executable path.
-#[derive(Clone, Debug, Eq, PartialEq, Hash, Serialize, specta::Type)]
+#[derive(Clone, Debug, Eq, PartialEq, Hash, Serialize, Deserialize, specta::Type)]
 #[serde(tag = "kind", content = "value", rename_all = "snake_case")]
 pub enum ApplicationIdentity {
     BundleId(String),

@@ -1,6 +1,7 @@
 // Pure rules of the session pin on the recording indicator (009): which Pin/Unpin entries the
-// badge menu lists above the application list, and the badge's accessible name with the pin
-// mark. No Tauri access here; the actions live in `use-destination.ts`.
+// badge menu lists in its fixed footer (nearest the badge, decision of 2026-10-29), and the
+// badge's accessible name with the pin mark. No Tauri access here; the actions live in
+// `use-destination.ts`.
 import type { DestinationMenu, DestinationSnapshot } from "@/bindings";
 import type { BadgeView } from "./destination-model";
 
@@ -33,10 +34,10 @@ const CHOICE_PHASES = new Set(["recording", "processing"]);
 
 // @spec AC-001: Pin <destination> and Unpin in the badge menu — .specs/features/009-pin-mode-and-enter-rule/spec.md#ac-001
 /**
- * Pin entries of the badge menu: "Pin <destination>" (listed above the application list) when
- * the current destination is an application that is not the pinned one, "Unpin <pinned app>"
- * (listed at the bottom, as in the mockup) when an application is pinned; nothing once
- * insertion began.
+ * Pin entries of the badge menu, both listed in its fixed footer, nearest the badge and never
+ * scrolled out of view (009 AC-001 as amended on 2026-10-29): "Pin <destination>" when the
+ * current destination is an application that is not the pinned one, "Unpin <pinned app>" when
+ * an application is pinned; nothing once insertion began.
  * @param snapshot Session snapshot of the badge.
  * @param menu The open menu (it must belong to the same dictation).
  */

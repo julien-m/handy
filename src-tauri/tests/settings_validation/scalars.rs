@@ -150,6 +150,7 @@ fn string_cases() -> Vec<(&'static str, &'static str, serde_json::Value)> {
         ("selected_output_device", "  Output  "),
         ("selected_language", "auto"),
         ("post_process_selected_prompt_id", "known"),
+        ("plain_dictation_prompt_id", "known"),
         ("app_language", "fr-FR"),
         ("external_script_path", "  /tmp/script  "),
         ("transcribe_gpu_device", "  opaque selector  "),
@@ -159,7 +160,7 @@ fn string_cases() -> Vec<(&'static str, &'static str, serde_json::Value)> {
     .collect()
 }
 #[test]
-fn all_51_scalar_ports_accept_the_same_typed_values() -> Result<(), Box<dyn std::error::Error>> {
+fn all_52_scalar_ports_accept_the_same_typed_values() -> Result<(), Box<dyn std::error::Error>> {
     // Every capability, so a platform-bound key is accepted on every build of this test.
     let context = ValidationContext {
         prompt_ids: &["known"],
@@ -172,7 +173,8 @@ fn all_51_scalar_ports_accept_the_same_typed_values() -> Result<(), Box<dyn std:
     let cases = canonical_cases();
     assert_eq!(
         cases.len(),
-        51 + usize::from(cfg!(feature = "destination-return"))
+        // 005 N23 adds `plain_dictation_prompt_id`.
+        52 + usize::from(cfg!(feature = "destination-return"))
     );
     for (key, raw, value) in cases {
         let cli = validate_cli(key, raw, &context)?;

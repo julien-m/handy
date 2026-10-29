@@ -118,8 +118,10 @@
             "post_process_models",
             "post_process_prompts",
             "post_process_selected_prompt_id",
+            "plain_dictation_prompt_id",
             "mute_while_recording",
             "append_trailing_space",
+            "destination_favorites",
             "return_to_dictation_app",
             "app_language",
             "theme",
@@ -193,8 +195,10 @@
                   "post_process_models",
                   "post_process_prompts",
                   "post_process_selected_prompt_id",
+                  "plain_dictation_prompt_id",
                   "mute_while_recording",
                   "append_trailing_space",
+                  "destination_favorites",
                   "return_to_dictation_app",
                   "app_language",
                   "theme",
@@ -705,6 +709,42 @@
         "debug_mode": {
           "type": "boolean"
         },
+        "destination_favorites": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "display_name": {
+                "type": "string"
+              },
+              "identity": {
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "bundle_id",
+                      "aumid",
+                      "executable_path"
+                    ]
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "value"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "identity",
+              "display_name"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
         "experimental_enabled": {
           "type": "boolean"
         },
@@ -822,6 +862,12 @@
             "external_script"
           ],
           "type": "string"
+        },
+        "plain_dictation_prompt_id": {
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "post_process_api_keys": {
           "additionalProperties": {
@@ -1050,8 +1096,10 @@
         "post_process_models",
         "post_process_prompts",
         "post_process_selected_prompt_id",
+        "plain_dictation_prompt_id",
         "mute_while_recording",
         "append_trailing_space",
+        "destination_favorites",
         "return_to_dictation_app",
         "app_language",
         "theme",
@@ -1663,6 +1711,17 @@
     },
     {
       "allowed_values": [],
+      "key": "plain_dictation_prompt_id",
+      "nullable": true,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [],
       "key": "mute_while_recording",
       "nullable": false,
       "owner_domain": "general",
@@ -1682,6 +1741,17 @@
       "runtime_effect": "none",
       "secret": false,
       "value_type": "boolean"
+    },
+    {
+      "allowed_values": [],
+      "key": "destination_favorites",
+      "nullable": false,
+      "owner_domain": "destination",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "array"
     },
     {
       "allowed_values": [],

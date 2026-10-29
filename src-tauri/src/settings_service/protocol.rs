@@ -166,6 +166,15 @@ fn array_items_schema(key: &str) -> serde_json::Value {
         "post_process_providers" => json!({"$ref":"#/$defs/provider"}),
         "post_process_prompts" => json!({"$ref":"#/$defs/prompt"}),
         "word_replacements" => json!({"$ref":"#/$defs/replacement_rule"}),
+        // 012: `{identity: {kind, value}, display_name}`, 006's stable identity.
+        "destination_favorites" => json!({
+            "type":"object","additionalProperties":false,"required":["identity","display_name"],
+            "properties":{
+                "identity":{"type":"object","additionalProperties":false,"required":["kind","value"],
+                    "properties":{"kind":{"enum":["bundle_id","aumid","executable_path"]},"value":{"type":"string"}}},
+                "display_name":{"type":"string"}
+            }
+        }),
         _ => json!({"type":"string"}),
     }
 }

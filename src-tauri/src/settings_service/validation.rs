@@ -115,6 +115,11 @@ fn collection_reason(entry: &super::descriptor::SettingDescriptor) -> Validation
         "prompts" => ValidationReason::PromptsDomain,
         "microphones" => ValidationReason::MicrophonesDomain,
         "replacements" => ValidationReason::ReplacementsDomain,
+        // 012: the favorites change through the destination domain, which exists only with the
+        // `destination-return` gate open; a closed build points to nothing it lacks.
+        "destination" if cfg!(feature = "destination-return") => {
+            ValidationReason::DestinationDomain
+        }
         _ => ValidationReason::UiOnly,
     }
 }

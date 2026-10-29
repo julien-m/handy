@@ -1269,7 +1269,15 @@
         "failed": "Uygulama listesi yüklenemedi.",
         "pin": "{{name}} uygulamasını sabitle",
         "unpin": "{{name}} sabitlemesini kaldır",
-        "thisDictationOnly": "Yalnızca bu dikte"
+        "thisDictationOnly": "Yalnızca bu dikte",
+        "favorites": "Favoriler",
+        "addFavorite": "{{name}} uygulamasını favorilere ekle",
+        "removeFavorite": "{{name}} uygulamasını favorilerden kaldır",
+        "notOpen": "Açık değil"
+      },
+      "favoriteNotSaved": {
+        "full": "En fazla 10 favori tutabilirsiniz.",
+        "failed": "Favoriler kaydedilemedi."
       },
       "refused": {
         "stale": "Hedef bu arada değişti; liste yenilendi.",

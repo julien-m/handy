@@ -133,6 +133,8 @@ const menu: DestinationMenu = {
       current: true,
       frontmost: false,
       pinned: false,
+      favorite: false,
+      running: true,
     },
     {
       token: 1,
@@ -141,6 +143,8 @@ const menu: DestinationMenu = {
       current: false,
       frontmost: true,
       pinned: false,
+      favorite: false,
+      running: true,
     },
   ],
 };

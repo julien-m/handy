@@ -28,8 +28,9 @@ fn json_get_prints_one_envelope_with_revision_and_every_public_key() -> TestResu
             (run.code, &envelope["ok"], &envelope["revision"]),
             (0, &json!(true), &json!(0))
         );
-        // 010 adds `show_recovery_bubble_without_text_field` with the gate open.
-        let keys = 67 + usize::from(cfg!(feature = "destination-return"));
+        // 010 adds `show_recovery_bubble_without_text_field` with the gate open; 005 N23 adds
+        // `plain_dictation_prompt_id` and 012 `destination_favorites` in every build.
+        let keys = 69 + usize::from(cfg!(feature = "destination-return"));
         assert_eq!(
             envelope["data"].as_object().map(|data| data.len()),
             Some(keys)
@@ -177,8 +178,15 @@ const UI_ONLY: &str = "This setting is changed in the settings UI.";
 /// Keys generic `set` refuses, with the reason naming where they are changed.
 const MICROPHONES: &str =
     "Use handy settings microphones set-priority to change the microphone choices.";
-const OWNED_ELSEWHERE: [(&str, &str); 7] = [
+/// 012: the favorites point to the destination domain, which exists only with the gate open.
+const FAVORITES: &str = if cfg!(feature = "destination-return") {
+    "Use handy settings destination favorite-add or favorite-remove."
+} else {
+    UI_ONLY
+};
+const OWNED_ELSEWHERE: [(&str, &str); 8] = [
     ("selected_microphone", MICROPHONES),
+    ("destination_favorites", FAVORITES),
     ("microphone_priority", MICROPHONES),
     (
         "bindings",

@@ -1269,7 +1269,15 @@
         "failed": "Não foi possível carregar a lista de apps.",
         "pin": "Fixar {{name}}",
         "unpin": "Desafixar {{name}}",
-        "thisDictationOnly": "Só este ditado"
+        "thisDictationOnly": "Só este ditado",
+        "favorites": "Favoritos",
+        "addFavorite": "Adicionar {{name}} aos favoritos",
+        "removeFavorite": "Remover {{name}} dos favoritos",
+        "notOpen": "Não aberto"
+      },
+      "favoriteNotSaved": {
+        "full": "Você pode manter até 10 favoritos.",
+        "failed": "Não foi possível salvar os favoritos."
       },
       "refused": {
         "stale": "O destino mudou entretanto; a lista foi atualizada.",

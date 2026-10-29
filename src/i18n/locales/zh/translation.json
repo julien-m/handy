@@ -1269,7 +1269,15 @@
         "failed": "无法加载应用列表。",
         "pin": "固定 {{name}}",
         "unpin": "取消固定 {{name}}",
-        "thisDictationOnly": "仅限本次听写"
+        "thisDictationOnly": "仅限本次听写",
+        "favorites": "收藏",
+        "addFavorite": "将 {{name}} 加入收藏",
+        "removeFavorite": "将 {{name}} 移出收藏",
+        "notOpen": "未打开"
+      },
+      "favoriteNotSaved": {
+        "full": "最多可保留 10 个收藏。",
+        "failed": "无法保存收藏。"
       },
       "refused": {
         "stale": "目标在此期间已更改；列表已刷新。",

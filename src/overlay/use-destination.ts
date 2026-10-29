@@ -1,7 +1,8 @@
 // Destination session of the recording indicator (feature 006): follows `destination-changed`,
 // opens the pointer-operated menu and applies badge choices through the delivered commands
 // (`destination_menu`, `choose_destination`, `remove_destination`) and the pin entries of 009
-// (`pin_destination`, `unpin_destination`). Without a session (rollout gate
+// (`pin_destination`, `unpin_destination`) and the favorite star of 012
+// (`toggle_destination_favorite`, saved through the settings service). Without a session (rollout gate
 // `destination-return` closed) the snapshot stays `null` and nothing is shown.
 import { listen } from "@tauri-apps/api/event";
 import {
@@ -16,10 +17,12 @@ import {
   type ChoiceAnswer,
   type DestinationMenu,
   type DestinationSnapshot,
+  type FavoriteAnswer,
   type MenuChoice,
 } from "@/bindings";
 import {
   badgeView,
+  favoriteNotSavedKey,
   menuMatches,
   newerSnapshot,
   refusalKey,
@@ -52,6 +55,8 @@ export interface DestinationControls {
   pin: () => void;
   /** Unpin the pinned application (009). */
   unpin: () => void;
+  /** Star or unstar the application of a menu entry (012); the menu stays open. */
+  toggleFavorite: (token: number) => void;
 }
 
 /** State setters shared by the menu loader and the choice settlement. */
@@ -154,6 +159,35 @@ const settleChoice = async (
   }
 };
 
+// @spec AC-001: Star keeps the menu open, destination unchanged — .specs/features/012-destination-favorites/spec.md#ac-001
+/**
+ * Apply a star answer (012): the re-ordered menu replaces the open one (it stays open); a
+ * settings refusal keeps the menu and explains it; a session refusal is explained and, unless
+ * insertion began, the menu is listed again.
+ */
+const settleFavorite = async (
+  known: DestinationSnapshot,
+  pending: Promise<FavoriteAnswer>,
+  ports: MenuPorts,
+): Promise<void> => {
+  try {
+    const answer = await pending;
+    if (answer.status === "menu") {
+      ports.setKey(null);
+      return ports.setMenu({ status: "open", menu: answer.value });
+    }
+    if (answer.status === "not_saved") {
+      return ports.setKey(favoriteNotSavedKey(answer.value));
+    }
+    ports.setKey(refusalKey(answer.value));
+    if (answer.value === "frozen") return ports.setMenu(CLOSED);
+    await loadMenuOf(await refreshed(known, ports), ports, false);
+  } catch (error) {
+    console.warn("Favorite toggle failed", error);
+    ports.setKey("overlay.destination.favoriteNotSaved.failed");
+  }
+};
+
 const useChoices = (
   snapshot: DestinationSnapshot | null,
   canChange: boolean,
@@ -187,7 +221,16 @@ const useChoices = (
     const pending = commands.unpinDestination(id, version);
     void settleChoice(snapshot, pending, ports, true);
   }, [snapshot, canChange, ports]);
-  return { choose, remove, pin, unpin };
+  const toggleFavorite = useCallback(
+    (token: number) => {
+      if (!snapshot || !canChange) return;
+      const { dictation_id: id, selection_version: version } = snapshot;
+      const pending = commands.toggleDestinationFavorite(id, version, token);
+      void settleFavorite(snapshot, pending, ports);
+    },
+    [snapshot, canChange, ports],
+  );
+  return { choose, remove, pin, unpin, toggleFavorite };
 };
 
 /**
@@ -229,7 +272,11 @@ export const useDestination = (shown: boolean): DestinationControls => {
   const [ports] = useState<MenuPorts>(() => ({ accept, setMenu, setKey }));
   const badge = badgeView(snapshot);
   const canChange = badge.kind !== "hidden" && badge.canChange;
-  const { choose, remove, pin, unpin } = useChoices(snapshot, canChange, ports);
+  const { choose, remove, pin, unpin, toggleFavorite } = useChoices(
+    snapshot,
+    canChange,
+    ports,
+  );
   const controls = useMenuControls(menu, snapshot, canChange, shown, ports);
   return {
     snapshot,
@@ -241,5 +288,6 @@ export const useDestination = (shown: boolean): DestinationControls => {
     remove,
     pin,
     unpin,
+    toggleFavorite,
   };
 };

@@ -12,6 +12,8 @@ pub mod context;
 pub mod delivery;
 #[cfg(test)]
 pub(crate) mod fake_workspace;
+mod favorite_toggle;
+pub mod favorites;
 pub mod field;
 pub mod field_attempt;
 pub mod field_capture;
@@ -29,6 +31,7 @@ pub mod macos_field;
 pub mod macos_focus;
 pub mod manager;
 mod menu;
+pub mod menu_order;
 pub mod outcome;
 pub mod pin;
 pub mod presentation;

@@ -2,7 +2,7 @@
 
 > Specification registry for Handy. All artifacts produced by LiveSpec are indexed here.
 >
-> Last updated: 2026-10-15
+> Last updated: 2026-10-29
 
 ---
 
@@ -45,6 +45,7 @@
 | 009 | PIN Mode and Enter Rule | In Progress | 2026-10-12 | 2026-10-15 | [spec](features/009-pin-mode-and-enter-rule/spec.md) |
 | 010 | Recovery Bubble | In Progress | 2026-10-12 | 2026-10-15 | [spec](features/010-recovery-bubble/spec.md) |
 | 011 | Dictation Field Return | In Progress | 2026-10-15 | 2026-10-15 | [spec](features/011-dictation-field-return/spec.md) |
+| 012 | Destination Favorites | In Progress | 2026-10-29 | 2026-10-29 | [spec](features/012-destination-favorites/spec.md) |
 <!-- readme:features:end -->
 
 
@@ -69,6 +70,7 @@
 <!-- readme:activity:start -->
 | Date | Type | Description |
 |---|---|---|
+| 2026-10-29 | Feature | [Feature 012] Destination favorites: a star on every app of the badge menu (settings service, at most 10, bottom-up nearest the badge, not-open favorites never launched) and 009's Pin/Unpin moved to a fixed footer (automated evidence; native proof pending) |
 | 2026-10-15 | Feature | [Feature 011] Implementation in progress: input focused at the dictation start remembered, given focus back, range restored and verified before the paste, behind destination-return (automated evidence in four feature combinations; macOS native proofs pending with Julien) |
 | 2026-10-15 | Feature | [Feature 010] Implementation in progress: recovery bubble, bounded field classification, deliberate Copy and the no-text-field setting behind destination-return (automated evidence in four feature combinations; macOS native proofs pending with Julien) |
 | 2026-10-15 | Feature | [Feature 009] Implementation in progress: session pin, single Automatic Enter authority and destination CLI behind destination-return (automated evidence in four feature combinations; macOS native proofs pending with Julien) |
@@ -78,7 +80,6 @@
 | 2026-10-14 | Feature | [Feature 010] Plan refined: permission_missing aligned on the spec (no keystroke sent, so no possible-partial-insertion detail) |
 | 2026-10-14 | Feature | [Feature 010] Spec refined: focus in another process inserts (Key Entities), history claim conditional on a successful save, no 'some text' detail for permission_missing, destination-return gate recorded, a new dictation closes the bubble even before 4 s |
 | 2026-10-14 | Feature | [Feature 009] Spec refined: AC-003 reasons split into pinned_app_not_running and activation_failed, destination-return gate recorded; plan keeps dev's 50 ms pause before Enter |
-| 2026-10-14 | Feature | [Feature 010] Plan refined: round 4 review ingested, 010 behind 006's destination-return gate (closed build keeps dev's paste-error), before_insertion synchronous in the first guard check with a ~50 ms AX budget, names aligned on delivered 006/007 |
 <!-- readme:activity:end -->
 
 ---

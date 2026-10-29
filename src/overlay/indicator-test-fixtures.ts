@@ -73,6 +73,7 @@ export const destination = (
   remove: noop,
   pin: noop,
   unpin: noop,
+  toggleFavorite: noop,
 });
 
 export const library: PromptLibraryView = {

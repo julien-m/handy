@@ -1269,7 +1269,15 @@
         "failed": "Seznam aplikací se nepodařilo načíst.",
         "pin": "Připnout {{name}}",
         "unpin": "Odepnout {{name}}",
-        "thisDictationOnly": "Jen tento diktát"
+        "thisDictationOnly": "Jen tento diktát",
+        "favorites": "Oblíbené",
+        "addFavorite": "Přidat {{name}} do oblíbených",
+        "removeFavorite": "Odebrat {{name}} z oblíbených",
+        "notOpen": "Neotevřeno"
+      },
+      "favoriteNotSaved": {
+        "full": "Můžete mít nejvýše 10 oblíbených.",
+        "failed": "Oblíbené se nepodařilo uložit."
       },
       "refused": {
         "stale": "Cíl se mezitím změnil; seznam byl obnoven.",

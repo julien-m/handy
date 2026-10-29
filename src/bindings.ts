@@ -828,7 +828,8 @@ async destinationSupport() : Promise<DestinationSupport | null> {
     return await TAURI_INVOKE("destination_support");
 },
 /**
- * Badge menu of the exact dictation and version (frontmost first, then windowed apps).
+ * Badge menu of the exact dictation and version (frontmost first, then windowed apps, then
+ * the saved favorites of 012).
  */
 async destinationMenu(dictationId: DictationId, selectionVersion: number) : Promise<MenuAnswer> {
     return await TAURI_INVOKE("destination_menu", { dictationId, selectionVersion });
@@ -857,6 +858,14 @@ async pinDestination(dictationId: DictationId, selectionVersion: number) : Promi
  */
 async unpinDestination(dictationId: DictationId, selectionVersion: number) : Promise<ChoiceAnswer> {
     return await TAURI_INVOKE("unpin_destination", { dictationId, selectionVersion });
+},
+/**
+ * Badge star (012): add the application behind `token` to the favorites, or remove it, through
+ * the settings service, then answer the same menu re-ordered. The destination, its selection
+ * version and the pin never change; the menu stays open.
+ */
+async toggleDestinationFavorite(dictationId: DictationId, selectionVersion: number, token: number) : Promise<FavoriteAnswer> {
+    return await TAURI_INVOKE("toggle_destination_favorite", { dictationId, selectionVersion, token });
 },
 /**
  * Grow (or shrink back) the overlay window to `width` × `height` logical points, never below
@@ -1543,6 +1552,11 @@ plain_dictation_prompt_id?: string | null; mute_while_recording?: boolean; appen
  */
 return_to_dictation_app?: boolean; 
 /**
+ * Favorite destination applications of the badge menu (012), oldest first; written only
+ * through `destination::favorites` changes. Read leniently: unreadable entries are dropped.
+ */
+destination_favorites?: FavoriteApp[]; 
+/**
  * "Show the bubble when no text field is focused" (010): set in memory by the
  * normalization for this build (`recovery::setting`); absent with the `destination-return`
  * gate closed, which never writes it.
@@ -1581,6 +1595,11 @@ vad_backend?: VadBackend;
  * `overlay_position` (position `none` → style `None`).
  */
 overlay_style?: OverlayStyle }
+/**
+ * Stable application identity: bundle identifier on macOS; application user model ID on
+ * Windows when available, otherwise the canonical executable path.
+ */
+export type ApplicationIdentity = { kind: "bundle_id"; value: string } | { kind: "aumid"; value: string } | { kind: "executable_path"; value: string }
 export type AudioDevice = { index: string; name: string; is_default: boolean }
 export type AutoSubmitKey = "enter" | "ctrl_enter" | "cmd_enter"
 /**
@@ -2083,6 +2102,20 @@ export type FailureReason =
  */
 "provider_busy" | "missing_endpoint" | "missing_model" | "missing_api_key" | "provider_unavailable" | "unknown_provider" | "invalid_prompt" | "prompt_missing"
 /**
+ * Answer of a star toggle (012): the re-ordered menu (same tokens), the session refusal
+ * (stale, frozen, unknown token), or the settings refusal.
+ */
+export type FavoriteAnswer = { status: "menu"; value: DestinationMenu } | { status: "refused"; value: SelectionRefusal } | { status: "not_saved"; value: FavoriteNotSaved }
+/**
+ * One favorite application: its 006 identity and the name shown while it is not running.
+ */
+export type FavoriteApp = { identity: ApplicationIdentity; display_name: string }
+/**
+ * Why a star toggle was not saved (012): the favorites are full, or the settings service
+ * refused or failed the write. The favorites and the session are unchanged.
+ */
+export type FavoriteNotSaved = "full" | "failed"
+/**
  * Stable field identifier translated at UI/CLI boundaries.
  */
 export type Field = "id" | "recognized" | "replacement" | "rules" | 
@@ -2246,7 +2279,15 @@ frontmost: boolean;
  * The application of the session pin (009); the others are "This dictation only" while
  * an application is pinned.
  */
-pinned: boolean }
+pinned: boolean; 
+/**
+ * A favorite application (012), listed in the favorites section near the badge.
+ */
+favorite: boolean; 
+/**
+ * False only for a favorite with no running instance: shown "Not open", never chosen.
+ */
+running: boolean }
 /**
  * One status read.
  */
@@ -3024,7 +3065,20 @@ export type ValidationReason = "canonical_type" | "canonical_value" | "out_of_ra
 /**
  * The microphone choices change only through the microphones domain (feature 001).
  */
-"microphones_domain"
+"microphones_domain" | 
+/**
+ * The favorite applications change only through the destination domain or the badge star
+ * (feature 012).
+ */
+"destination_domain" | 
+/**
+ * More favorite applications than the menu keeps (feature 012).
+ */
+"favorites_full" | 
+/**
+ * A favorite has a blank identity or name, a name too long, or repeats another (012).
+ */
+"favorite_invalid"
 /**
  * How bulk input combines with the saved list. Exported to TypeScript under a vocabulary name:
  * word replacements (002) export their own `ImportMode`.

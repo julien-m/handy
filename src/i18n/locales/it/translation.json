@@ -1269,7 +1269,15 @@
         "failed": "Impossibile caricare l'elenco delle app.",
         "pin": "Fissa {{name}}",
         "unpin": "Rimuovi {{name}} dai fissati",
-        "thisDictationOnly": "Solo questa dettatura"
+        "thisDictationOnly": "Solo questa dettatura",
+        "favorites": "Preferiti",
+        "addFavorite": "Aggiungi {{name}} ai preferiti",
+        "removeFavorite": "Rimuovi {{name}} dai preferiti",
+        "notOpen": "Non aperta"
+      },
+      "favoriteNotSaved": {
+        "full": "Puoi tenere fino a 10 preferiti.",
+        "failed": "Impossibile salvare i preferiti."
       },
       "refused": {
         "stale": "La destinazione è cambiata nel frattempo; l'elenco è stato aggiornato.",

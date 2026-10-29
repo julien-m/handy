@@ -1272,7 +1272,15 @@
         "failed": "De lijst met apps kon niet worden geladen.",
         "pin": "{{name}} vastzetten",
         "unpin": "{{name}} losmaken",
-        "thisDictationOnly": "Alleen dit dictaat"
+        "thisDictationOnly": "Alleen dit dictaat",
+        "favorites": "Favorieten",
+        "addFavorite": "{{name}} toevoegen aan favorieten",
+        "removeFavorite": "{{name}} verwijderen uit favorieten",
+        "notOpen": "Niet geopend"
+      },
+      "favoriteNotSaved": {
+        "full": "Je kunt maximaal 10 favorieten bewaren.",
+        "failed": "De favorieten konden niet worden opgeslagen."
       },
       "refused": {
         "stale": "De bestemming is intussen gewijzigd; de lijst is vernieuwd.",

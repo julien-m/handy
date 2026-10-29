@@ -139,6 +139,7 @@ const MenuItems: React.FC<StackPartProps> = ({ props, menus }) => {
           pinActive={Boolean(destination.snapshot?.pin)}
           onPin={destination.pin}
           onUnpin={destination.unpin}
+          onToggleFavorite={destination.toggleFavorite}
         />
       )}
       {showPrompt && view && (

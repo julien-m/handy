@@ -8,7 +8,7 @@ use super::session::{
     EnterRefusal, Selection, SelectionRefusal, SessionPhase, SupportReason,
 };
 use super::snapshot::{DestinationMenu, DestinationSnapshot, MenuChoice};
-use super::workspace::{Clock, Foreground, RunningApp, WorkspacePort};
+use super::workspace::{Clock, Foreground, WorkspacePort};
 use crate::settings_service::platform_capability::{PlatformCapabilities, PlatformCapability};
 use std::sync::{Arc, Mutex, MutexGuard, PoisonError};
 use std::time::{Duration, Instant};
@@ -38,7 +38,8 @@ pub(super) struct ManagerState {
     pub(super) last_dictation: u64,
     pub(super) generation: u64,
     pub(super) session: Option<DestinationSession>,
-    pub(super) menu: Vec<(u64, RunningApp)>,
+    /// Rows of the open badge menu by token (012: a favorite not running has no process).
+    pub(super) menu: Vec<(u64, super::menu_order::MenuTarget)>,
     pub(super) next_token: u64,
     pub(super) support: Option<DestinationSupport>,
     /// Session pin of 009 (RAM only, ends with the process).
@@ -335,7 +336,7 @@ impl DestinationManager {
         }
         session.claim_enter(dictation_id, generation)
     }
-    /// Current menu of the exact dictation/version; see `menu::build`.
+    /// Current menu of the exact dictation/version without favorites; see `menu::open`.
     ///
     /// # Errors
     /// `Stale` or `Frozen`.
@@ -344,7 +345,7 @@ impl DestinationManager {
         dictation_id: DictationId,
         version: u64,
     ) -> Result<DestinationMenu, SelectionRefusal> {
-        super::menu::open(self, dictation_id, version)
+        super::menu::open(self, dictation_id, version, &[])
     }
     /// Apply a badge choice; see `menu::choose`.
     ///

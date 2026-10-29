@@ -215,3 +215,12 @@
 - Native macOS proofs (required before Implemented) and the Windows, Linux and older-binary release evidence are listed in `progress.md` and `.specs/native-proofs-checklist.md` (section 009); none is claimed.
 
 <!-- finalize:spec-implement:2026-10-15:851e4c61 -->
+
+## 2026-10-29 — [Spec Update]: Pin and Unpin moved to the fixed footer of the badge menu (with 012)
+
+- **Type:** Spec Update
+- **Spec modified:** Yes (sections: Behavioral AC `has_dropdown`, Clarifications: decision `pin_entries_in_fixed_footer`)
+- **Code modified:** `src/overlay/destination-menu.tsx` (fixed footer), `src/overlay/pin-state.ts` (comments), `src/overlay/indicator-render.test.tsx`, `src/overlay/pin-state.test.ts`, `tests/destination-favorites.spec.ts`
+- **AC impacted:** AC-001 (placement only; which entries are offered and what they do is unchanged)
+- **Author:** Claude Code (spec-feature 012, claude-opus-5-5)
+- Julien's native finding (2026-10-29): no "Pin" entry was visible, because it sat above a long application list in a menu that opens upwards from the badge. "Pin <destination>" and "Unpin <app>" now close the menu in a fixed footer after "Frontmost app at the end", nearest the badge and never scrolled out of view; a Playwright test with 20 applications in a 600-pixel-high page checks it.

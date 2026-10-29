@@ -305,6 +305,54 @@
   border: 0;
   border-top: 1px solid var(--s-border);
 }
+/* 012: an application row and its favorite star side by side; the favorites and the footer
+   (Frontmost app at the end, Pin, Unpin) never shrink, only the running apps scroll. */
+.smenu-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.smenu-row .smenu-item {
+  flex: 1;
+  min-width: 0;
+}
+.smenu-favorites,
+.smenu-footer {
+  flex: none;
+}
+.smenu-star {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--s-muted);
+  cursor: pointer;
+}
+.smenu-star:hover {
+  background: var(--s-hair);
+  color: var(--s-text);
+}
+.smenu-star:focus-visible,
+.smenu-item:focus-visible {
+  outline: 2px solid var(--s-accent);
+  outline-offset: -2px;
+}
+.smenu-star-glyph {
+  width: 16px;
+  height: 16px;
+}
+.smenu-star.on {
+  color: var(--s-accent);
+}
+.smenu-star.on .smenu-star-glyph {
+  fill: currentColor;
+}
 .smenu-note,
 .smenu-status,
 .smenu-feedback {
