@@ -118,6 +118,7 @@
             "post_process_models",
             "post_process_prompts",
             "post_process_selected_prompt_id",
+            "plain_dictation_prompt_id",
             "mute_while_recording",
             "append_trailing_space",
             "return_to_dictation_app",
@@ -194,6 +195,7 @@
                   "post_process_models",
                   "post_process_prompts",
                   "post_process_selected_prompt_id",
+                  "plain_dictation_prompt_id",
                   "mute_while_recording",
                   "append_trailing_space",
                   "return_to_dictation_app",
@@ -873,6 +875,12 @@
             "null"
           ]
         },
+        "plain_dictation_prompt_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "recording_retention_period": {
           "enum": [
             "never",
@@ -1055,6 +1063,7 @@
         "post_process_models",
         "post_process_prompts",
         "post_process_selected_prompt_id",
+        "plain_dictation_prompt_id",
         "mute_while_recording",
         "append_trailing_space",
         "return_to_dictation_app",
@@ -1659,6 +1668,17 @@
     {
       "allowed_values": [],
       "key": "post_process_selected_prompt_id",
+      "nullable": true,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "string"
+    },
+    {
+      "allowed_values": [],
+      "key": "plain_dictation_prompt_id",
       "nullable": true,
       "owner_domain": "general",
       "range": null,

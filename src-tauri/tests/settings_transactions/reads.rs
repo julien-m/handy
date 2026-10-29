@@ -15,8 +15,8 @@ fn missing_store_returns_defaults_without_creating_parent_or_store(
             .as_object()
             .ok_or("object")?
             .len(),
-        // 010 adds `show_recovery_bubble_without_text_field` with the gate open.
-        68 + usize::from(cfg!(feature = "destination-return"))
+        // Every key of this build's descriptor inventory (the gated 010 key only when open).
+        handy_app_lib::settings_service::descriptor::descriptors().len()
     );
     assert!(!path.parent().ok_or("parent")?.exists());
     Ok(())

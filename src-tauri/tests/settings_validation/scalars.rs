@@ -152,6 +152,8 @@ fn string_cases() -> Vec<(&'static str, &'static str, serde_json::Value)> {
         ("selected_output_device", "  Output  "),
         ("selected_language", "auto"),
         ("post_process_selected_prompt_id", "known"),
+        // 005 AC-009: prompt remembered for plain dictations.
+        ("plain_dictation_prompt_id", "known"),
         ("app_language", "fr-FR"),
         ("external_script_path", "  /tmp/script  "),
         ("transcribe_gpu_device", "  opaque selector  "),
@@ -161,7 +163,7 @@ fn string_cases() -> Vec<(&'static str, &'static str, serde_json::Value)> {
     .collect()
 }
 #[test]
-fn all_52_scalar_ports_accept_the_same_typed_values() -> Result<(), Box<dyn std::error::Error>> {
+fn all_53_scalar_ports_accept_the_same_typed_values() -> Result<(), Box<dyn std::error::Error>> {
     // Every capability, so a platform-bound key is accepted on every build of this test.
     let context = ValidationContext {
         prompt_ids: &["known"],
@@ -174,7 +176,7 @@ fn all_52_scalar_ports_accept_the_same_typed_values() -> Result<(), Box<dyn std:
     let cases = canonical_cases();
     assert_eq!(
         cases.len(),
-        52 + usize::from(cfg!(feature = "destination-return"))
+        53 + usize::from(cfg!(feature = "destination-return"))
     );
     for (key, raw, value) in cases {
         let cli = validate_cli(key, raw, &context)?;
@@ -207,6 +209,7 @@ fn every_nullable_scalar_preserves_strings_and_accepts_null_clear(
         "clamshell_microphone",
         "selected_output_device",
         "post_process_selected_prompt_id",
+        "plain_dictation_prompt_id",
         "external_script_path",
         "transcribe_gpu_device",
     ] {
@@ -231,12 +234,15 @@ fn every_nullable_scalar_preserves_strings_and_accepts_null_clear(
         }
     }
     assert!(validate_ui("transcribe_gpu_device", json!(7), &context).is_err());
-    assert!(validate_ui(
+    for key in [
         "post_process_selected_prompt_id",
-        json!("missing"),
-        &context
-    )
-    .is_err());
+        "plain_dictation_prompt_id",
+    ] {
+        assert!(
+            validate_ui(key, json!("missing"), &context).is_err(),
+            "{key}"
+        );
+    }
     Ok(())
 }
 #[test]
