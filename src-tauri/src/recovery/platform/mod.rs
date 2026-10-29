@@ -12,10 +12,12 @@ pub mod macos_ax;
 mod macos_drag;
 #[cfg(target_os = "macos")]
 mod macos_escape;
+mod panel_steps;
 #[cfg(target_os = "windows")]
 mod windows;
 
 use super::types::{BubbleId, DragResult};
+use panel_steps::{PanelStep, HIDE_STEPS, RESTORE_STEPS};
 use tauri::{AppHandle, WebviewWindow};
 
 /// Label of the recovery window.
@@ -52,12 +54,27 @@ pub fn show(window: &WebviewWindow) -> Result<(), String> {
     return window.show().map_err(|error| error.to_string());
 }
 
-/// Hide the window; on macOS also undo the drag's invisibility for the next bubble.
+/// Hide the window; on macOS also undo the drag's invisibility for the next bubble, once the
+/// window is off the screen (`HIDE_STEPS`, N26).
 pub fn hide(window: &WebviewWindow) {
-    #[cfg(target_os = "macos")]
-    macos::set_dragging(window, false);
-    if let Err(error) = window.hide() {
-        log::warn!("Could not hide the recovery bubble: {error}");
+    apply_steps(window, &HIDE_STEPS);
+}
+
+/// Run `steps` in order on the main thread.
+fn apply_steps(window: &WebviewWindow, steps: &[PanelStep]) {
+    for step in steps {
+        match step {
+            PanelStep::OrderOut => {
+                if let Err(error) = window.hide() {
+                    log::warn!("Could not hide the recovery bubble: {error}");
+                }
+            }
+            #[cfg(target_os = "macos")]
+            PanelStep::Reveal => macos::set_dragging(window, false),
+            // No drag elsewhere, so nothing was made invisible.
+            #[cfg(not(target_os = "macos"))]
+            PanelStep::Reveal => {}
+        }
     }
 }
 
@@ -82,10 +99,7 @@ pub fn begin_drag(
 
 /// Make the bubble visible again after a release where no target took the drop.
 pub fn restore_after_drag(window: &WebviewWindow) {
-    #[cfg(target_os = "macos")]
-    macos::set_dragging(window, false);
-    #[cfg(not(target_os = "macos"))]
-    let _ = window;
+    apply_steps(window, &RESTORE_STEPS);
 }
 
 /// The accessibility port of this platform (macOS only; elsewhere no classification runs).
