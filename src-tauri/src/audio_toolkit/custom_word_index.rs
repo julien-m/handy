@@ -12,6 +12,10 @@ use super::build_match_key;
 
 /// Phonetic matches weigh their normalized edit distance by this factor (original scoring).
 const PHONETIC_WEIGHT: f64 = 0.3;
+/// A phonetic match keeps its weight only while its normalized edit distance stays under this
+/// multiple of the threshold: Soundex keeps a first letter and three consonant classes, so on its
+/// own it would let "le vois pas" (5 of 9 letters differ) pass for "LiveSpec" (N22).
+const PHONETIC_MAX_DISTANCE_FACTOR: f64 = 2.0;
 /// Candidates longer than this are never corrected (original guard against long n-grams).
 const MAX_CANDIDATE_CHARS: usize = 50;
 
@@ -192,7 +196,8 @@ impl CustomWordIndex {
     }
 
     /// Custom word closest to `candidate` (a match key) with a score under `threshold`, and the
-    /// score: the normalized edit distance, weighted by 0.3 when both sound alike (Soundex).
+    /// score: the normalized edit distance, weighted by 0.3 when both sound alike (Soundex) and
+    /// that distance is under twice the threshold.
     pub(super) fn find_best(&self, candidate: &str, threshold: f64) -> Option<(usize, f64)> {
         if !is_supported_fuzzy_key(candidate) || candidate.len() > MAX_CANDIDATE_CHARS {
             return None;
@@ -228,6 +233,41 @@ fn within_length_rule(candidate_len: usize, key_len: usize) -> bool {
     candidate_len.abs_diff(key_len) as f64 <= (max_len * 0.25).max(2.0)
 }
 
+// @spec FR-006: Bounded phonetic weighting — .specs/features/003-recognition-vocabulary/spec.md#fr-006
+/// Score of a key at `distance`: the normalized distance, weighted by `PHONETIC_WEIGHT` when the
+/// key sounds alike and that distance is under `PHONETIC_MAX_DISTANCE_FACTOR` × `threshold`.
+fn combined_score(distance: usize, max_len: f64, phonetic: bool, threshold: f64) -> f64 {
+    let normalized = distance as f64 / max_len;
+    let weighted = phonetic && normalized < threshold * PHONETIC_MAX_DISTANCE_FACTOR;
+    if weighted {
+        distance as f64 / max_len * PHONETIC_WEIGHT
+    } else {
+        normalized
+    }
+}
+
+/// Largest distance whose score can still get under `bound`, rounded up so that float rounding
+/// never drops a key (the exact score decides). No distance exceeds the longer length, so the cap
+/// keeps the result exact and a huge threshold (a hand-edited store, 1e20) cannot overflow the
+/// bounded matrix.
+fn distance_limit(
+    bound: f64,
+    threshold: f64,
+    phonetic: bool,
+    max_len: f64,
+    longer: usize,
+) -> usize {
+    let plain = bound * max_len;
+    let reach = if phonetic {
+        let weighted = (bound * max_len / PHONETIC_WEIGHT)
+            .min(threshold * PHONETIC_MAX_DISTANCE_FACTOR * max_len);
+        plain.max(weighted)
+    } else {
+        plain
+    };
+    (reach.ceil() as usize).min(longer)
+}
+
 /// Score of `key` when it beats `best` (or ties it with an earlier rank) and the threshold.
 fn score_key(
     candidate: &[u8],
@@ -237,17 +277,12 @@ fn score_key(
     best: Option<Best>,
     row: &mut Vec<usize>,
 ) -> Option<f64> {
-    let max_len = candidate.len().max(key.key.len()) as f64;
-    let weight = if phonetic { PHONETIC_WEIGHT } else { 1.0 };
-    let bound = best.map_or(threshold, |found| found.score.min(threshold));
-    // Largest distance whose score can still reach the bound, rounded up so that float rounding
-    // never drops a key; the exact comparison below decides. No distance exceeds the longer
-    // length, so the cap keeps the result exact and a huge threshold (a hand-edited store, 1e20)
-    // cannot overflow the bounded matrix.
     let longer = candidate.len().max(key.key.len());
-    let limit = ((bound * max_len / weight).ceil() as usize).min(longer);
+    let max_len = longer as f64;
+    let bound = best.map_or(threshold, |found| found.score.min(threshold));
+    let limit = distance_limit(bound, threshold, phonetic, max_len, longer);
     let distance = bounded_levenshtein(candidate, &key.key, limit, row)?;
-    let score = distance as f64 / max_len * weight;
+    let score = combined_score(distance, max_len, phonetic, threshold);
     let beats_best = best
         .is_none_or(|found| score < found.score || (score == found.score && key.rank < found.rank));
     (score < threshold && beats_best).then_some(score)

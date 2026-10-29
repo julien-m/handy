@@ -4,7 +4,7 @@ title: Recognition Vocabulary
 priority: P1
 status: Planned
 created: 2026-10-12
-updated: 2026-10-13
+updated: 2026-10-29
 ---
 
 # Feature Spec: Recognition Vocabulary
@@ -127,16 +127,29 @@ Feature: Vocabulary as recognition context
     When a dictation is transcribed
     Then no context is sent to the engine
     And approximate correction applies to the recognized text
+  Scenario: Approximate correction fixes a close sound-alike
+    Given the vocabulary is "Claude Code", "OpenClaw", "LiveSpec", "Penflow"
+    And the correction threshold is 0.18
+    When the recognized text is "lance cloud code ici"
+    Then the inserted text is "lance Claude Code ici"
+  Scenario: Approximate correction leaves an ordinary phrase that only sounds alike
+    Given the vocabulary is "Claude Code", "OpenClaw", "LiveSpec", "Penflow"
+    And the correction threshold is 0.18
+    When the recognized text is "je ne le vois pas"
+    Then the inserted text is "je ne le vois pas"
 ```
 
 ```mermaid
 flowchart TD
   A[Dictation ready for recognition] --> B{Model supports context in this mode?}
   B -- No --> C[Recognize without context]
-  C --> D[Approximate correction with vocabulary]
+  C --> D{Words spelled within the threshold, or sounding alike within twice the threshold?}
+  D -- Yes --> D1[Replace them with the vocabulary term]
+  D -- No --> D2[Keep the recognized words]
   B -- Yes --> E[Take terms in list order within budget]
   E --> F[Recognize with context]
-  D --> G[Continue text pipeline]
+  D1 --> G[Continue text pipeline]
+  D2 --> G
   F --> G
 ```
 
@@ -202,6 +215,11 @@ flowchart TD
 
 **Criterion:** The settings CLI (008) offers vocabulary list, add, remove, import (merge or replace, file or stdin, dry run), export (one term per line) and status (selected model, support, terms sent, terms not sent), sharing UI validation and atomic commit. With `--json`, stdout contains only the JSON envelope; errors use stable codes and exit codes.
 **Priority:** P2 | **Story:** Story 4
+
+### AC-008
+
+**Criterion:** Approximate correction replaces one to three recognized words with a vocabulary term only when their letters (lowercase, without spaces or punctuation) are close to the term's: the edit distance divided by the longer length is under the correction threshold, or the words sound alike (same Soundex code) and that normalized distance is under twice the threshold, in which case it counts for 0.3 of its value. With the vocabulary "Claude Code", "OpenClaw", "LiveSpec", "Penflow" and the threshold 0.18, "je ne le vois pas" stays unchanged (raw distance 5/9 from "LiveSpec") while "cloud code" becomes "Claude Code" (2/10) and "Charge B" becomes "ChargeBee" (2/9).
+**Priority:** P1 | **Story:** Story 3
 
 ## Behavioral AC
 
@@ -315,6 +333,11 @@ Feature: Commit vocabulary
 **Requirement:** Expose vocabulary list, add, remove, import, export and status through the settings CLI with JSON output and stable error codes.
 **AC References:** AC-007
 
+### FR-006
+
+**Requirement:** Bound the phonetic weighting of approximate correction: a sound-alike match counts for 0.3 of its normalized edit distance only while that distance stays under twice the correction threshold; beyond it, the plain normalized distance applies.
+**AC References:** AC-008
+
 ## Key Entities
 
 | Entity | Description | Key fields |
@@ -329,6 +352,7 @@ Feature: Commit vocabulary
 - `[ASSUMED]` The existing custom-words list becomes the vocabulary (no second list). The current approximate-correction behavior is retained and labelled truthfully rather than removed.
 - `[ASSUMED]` Limits: 500 terms of 100 characters. The context budget per mechanism is set in the plan from engine documentation (for example Whisper's prompt token limit) and shown to the user as terms sent / not sent.
 - `[ASSUMED]` The characters `<`, `>` and `"` stay forbidden, as in today's input sanitizing; the apostrophe becomes allowed for names such as "O'Neil".
+- Decision 2026-10-29 (native finding N22, Julien): dictating "je ne le vois pas" with "LiveSpec" in the vocabulary inserted "je LiveSpec". The three words "le vois pas" give the key "levoispas", with the Soundex code of "livespec"; the 0.3 phonetic weight brought a raw distance of 5/9 (0.56) under the 0.18 threshold. A sound-alike may now at most double the tolerated raw distance (AC-008, FR-006). This amends the plan's "keep the existing algorithm" constraint for the phonetic weighting only; the threshold, the length rule, the n-gram sizes and the tie-break are unchanged.
 - Passing the vocabulary to AI post-processing is not part of this feature; custom prompts are feature 005.
 - Program context: specified in list order (001–010); the settings CLI foundation (008) ships first.
 
@@ -370,6 +394,7 @@ Feature: Commit vocabulary
 - Granite model whose GGUF does not declare vocabulary support: status "not supported".
 - Vocabulary with only terms longer than the remaining budget: those terms are listed as not sent; the earlier terms are still sent.
 - Translation to English enabled: context support is evaluated for the translate task the model runs.
+- Ordinary multi-word phrases sharing a term's Soundex code ("le vois pas" for "LiveSpec", "pain flou" for "Penflow", "clou de girofle" for "Claude Code"): left unchanged unless their letters are within twice the threshold of the term (AC-008).
 - Stored legacy terms that violate the new limits: kept as stored, flagged invalid in the UI, and excluded from context until edited.
 
 ## Success Criteria

@@ -1,0 +1,10 @@
+N22 fix (branch fix/n22-custom-word-false-positive from dev 58c83cbd), CARGO_TARGET_DIR=<worktree>/.target-n22 (cleaned after), nice -n 19, CARGO_BUILD_JOBS=3
+red-before-fix.txt: cargo test --lib -- audio_toolkit:: on the former scoring: 113 passed, 2 FAILED
+  common_french_phrases_are_not_rewritten_into_custom_words: "je ne LiveSpec" instead of "je ne le vois pas"
+  a_sound_alike_key_needs_a_raw_distance_under_twice_the_threshold: find_best("levoispas", 0.18) = Some((1, 0.1666))
+cargo fmt: 0 (fmt.txt)
+cargo clippy --all-targets -- -D warnings: 0 (clippy-all-targets.txt)
+cargo test --lib -- audio_toolkit:: dictation_output managers::transcription recognition_vocabulary: 185 passed, 0 failed, 2 ignored (test-targeted.txt)
+cargo test --lib: 1085 passed, 0 failed, 19 ignored (test-lib.txt)
+livespec conventions verify --feature repo --json: PASS (conventions-repo.json)
+Not run: the ignored optimized timing tests (custom_words_perf_tests); native dictation with Parakeet pending with Julien.
