@@ -98,3 +98,14 @@
 - **Code modified:** src/components/settings/vocabulary/{vocabulary-status-model.ts, vocabulary-status.tsx, vocabulary-model.ts, vocabulary-terms.tsx, vocabulary-status-render.test.tsx (new)}, src/i18n/locales/*/translation.json (`status.notSent.more`), src-tauri/src/audio_toolkit/{text.rs, custom_word_index.rs, custom_word_index_tests.rs, custom_words_perf_tests.rs}, package.json (`test:vocabulary`)
 - **AC impacted:** AC-001 (status of a full vocabulary: 20 terms named per group, the rest counted; Latin digits in every locale), FR-004 (threshold overflow fixed; one index around 002 replacements, under 50 ms)
 - **Author:** Claude Code (claude-opus-5-5)
+
+## 2026-10-29 — [Bugfix]: a sound-alike no longer turns an ordinary phrase into a vocabulary term (native finding N22)
+
+- **Type:** Bugfix
+- **Spec modified:** Yes (sections: Story 3 Gherkin and flowchart, AC-008 and FR-006 added, Clarifications decision of 2026-10-29, Edge Cases, frontmatter `updated`)
+- **Code modified:** src-tauri/src/audio_toolkit/{custom_word_index.rs, custom_word_index_tests.rs, text.rs}
+- **AC impacted:** AC-008 (new), FR-004 (approximate correction fallback, unchanged routing)
+- **Gaps closed:** N22 — « je ne le vois pas » became « je LiveSpec » (Soundex weight 0.3 on a raw distance of 5/9)
+- **Remaining:** native dictation with Parakeet, with Julien
+- **Author:** Claude Code (spec-fix, claude-opus-5-5)
+
