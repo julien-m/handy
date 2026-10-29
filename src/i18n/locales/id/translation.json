@@ -542,7 +542,7 @@
       "textFormatting": {
         "smartSpacing": {
           "label": "Spasi Cerdas",
-          "description": "Menambahkan spasi yang diperlukan di tempat dikte bertemu teks di sekitar kursor, dan tidak pernah menggandakan spasi atau baris baru yang sudah ada. Tanpa spasi sebelum , . ) ] atau sesudah ( [, juga tidak dalam bahasa yang ditulis tanpa spasi. Saat aktif, fitur ini menentukan spasi setelah dikte: \"Tambahkan Spasi di Akhir\" lalu hanya menambahkannya di akhir kolom. Jika kolom tidak dapat dibaca, hanya satu spasi ditambahkan di akhir.",
+          "description": "Menambahkan spasi yang diperlukan di tempat dikte bertemu teks di sekitar kursor, dan tidak pernah menggandakan spasi atau baris baru yang sudah ada. Tanpa spasi sebelum , . ) ] atau sesudah ( [, juga tidak dalam bahasa yang ditulis tanpa spasi. Saat aktif, fitur ini menentukan spasi setelah dikte: \"Tambahkan Spasi di Akhir\" lalu hanya menambahkannya di akhir kolom. Jika kolom tidak dapat dibaca, hanya satu spasi ditambahkan di akhir. Jika teks setelah kursor melanjutkan kalimat, titik di akhir dikte dihapus.",
           "descriptionLimited": "Menambahkan spasi yang diperlukan di tempat dikte bertemu teks di sekitar kursor, dan tidak pernah menggandakan spasi atau baris baru yang sudah ada. Tanpa spasi sebelum , . ) ] atau sesudah ( [, juga tidak dalam bahasa yang ditulis tanpa spasi. Saat aktif, fitur ini menentukan spasi setelah dikte: \"Tambahkan Spasi di Akhir\" lalu hanya menambahkannya di akhir kolom. Jika kolom tidak dapat dibaca, hanya satu spasi ditambahkan di akhir. Di sistem ini teks di sekitar kursor tidak dapat dibaca, jadi hanya satu spasi yang ditambahkan setelah setiap dikte."
         },
         "smartCapitalization": {

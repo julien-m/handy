@@ -542,7 +542,7 @@
       "textFormatting": {
         "smartSpacing": {
           "label": "Espaçamento inteligente",
-          "description": "Adiciona os espaços necessários onde o ditado encontra o texto ao redor do cursor, sem nunca duplicar espaços ou quebras de linha já presentes. Nenhum espaço antes de , . ) ] ou depois de ( [, nem em idiomas escritos sem espaços. Ativado, decide o espaço após o ditado: \"Adicionar Espaço Final\" só acrescenta um no fim de um campo. Se o campo não puder ser lido, apenas um espaço final é adicionado.",
+          "description": "Adiciona os espaços necessários onde o ditado encontra o texto ao redor do cursor, sem nunca duplicar espaços ou quebras de linha já presentes. Nenhum espaço antes de , . ) ] ou depois de ( [, nem em idiomas escritos sem espaços. Ativado, decide o espaço após o ditado: \"Adicionar Espaço Final\" só acrescenta um no fim de um campo. Se o campo não puder ser lido, apenas um espaço final é adicionado. Se o texto após o cursor continuar a frase, o ponto final do ditado é removido.",
           "descriptionLimited": "Adiciona os espaços necessários onde o ditado encontra o texto ao redor do cursor, sem nunca duplicar espaços ou quebras de linha já presentes. Nenhum espaço antes de , . ) ] ou depois de ( [, nem em idiomas escritos sem espaços. Ativado, decide o espaço após o ditado: \"Adicionar Espaço Final\" só acrescenta um no fim de um campo. Se o campo não puder ser lido, apenas um espaço final é adicionado. Neste sistema o texto ao redor do cursor não pode ser lido, então apenas um espaço é adicionado após cada ditado."
         },
         "smartCapitalization": {

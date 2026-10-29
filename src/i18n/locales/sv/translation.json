@@ -542,7 +542,7 @@
       "textFormatting": {
         "smartSpacing": {
           "label": "Smart mellanrum",
-          "description": "Lägger till de mellanslag som behövs där dikteringen möter texten runt markören och dubblerar aldrig befintliga mellanslag eller radbrytningar. Inget mellanslag före , . ) ] eller efter ( [, och inget i språk som skrivs utan mellanslag. När det är på avgör det mellanslaget efter dikteringen: \"Lägg till avslutande mellanslag\" lägger då bara till ett i slutet av ett fält. Om fältet inte kan läsas läggs bara ett mellanslag till i slutet.",
+          "description": "Lägger till de mellanslag som behövs där dikteringen möter texten runt markören och dubblerar aldrig befintliga mellanslag eller radbrytningar. Inget mellanslag före , . ) ] eller efter ( [, och inget i språk som skrivs utan mellanslag. När det är på avgör det mellanslaget efter dikteringen: \"Lägg till avslutande mellanslag\" lägger då bara till ett i slutet av ett fält. Om fältet inte kan läsas läggs bara ett mellanslag till i slutet. Om texten efter markören fortsätter meningen tas dikteringens slutpunkt bort.",
           "descriptionLimited": "Lägger till de mellanslag som behövs där dikteringen möter texten runt markören och dubblerar aldrig befintliga mellanslag eller radbrytningar. Inget mellanslag före , . ) ] eller efter ( [, och inget i språk som skrivs utan mellanslag. När det är på avgör det mellanslaget efter dikteringen: \"Lägg till avslutande mellanslag\" lägger då bara till ett i slutet av ett fält. Om fältet inte kan läsas läggs bara ett mellanslag till i slutet. På det här systemet kan texten runt markören inte läsas, så bara ett mellanslag läggs till efter varje diktering."
         },
         "smartCapitalization": {

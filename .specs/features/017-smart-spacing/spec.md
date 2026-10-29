@@ -55,6 +55,18 @@ Feature: Spaces at the junctions
     And "tout le monde" is selected in "Bonjour tout le monde demain"
     When the transcription "à tous" is inserted
     Then the field reads "Bonjour à tous demain"
+
+  Scenario: Final period of the engine inside a sentence (N30)
+    Given smart spacing is on
+    And the text before the cursor ends with "Bonjour" and the text after it starts with ", ça va"
+    When the transcription "tout le monde." is inserted
+    Then the field reads "Bonjour tout le monde, ça va"
+
+  Scenario: Final period kept before a new sentence
+    Given smart spacing is on
+    And the text before the cursor ends with "Bonjour" and the text after it starts with "Demain"
+    When the transcription "à tous." is inserted
+    Then the field reads "Bonjour à tous. Demain"
 ```
 
 ```mermaid
@@ -66,7 +78,10 @@ flowchart TD
     C -- Unavailable --> F[Edges untouched, one final space if suitable]
     C -- Field read --> D[Leading edge from the text before]
     D --> E{Text after read?}
-    E -- Yes --> G[Trailing edge from the text after]
+    E -- Yes --> P{Sentence goes on after and dictation ends with a sentence period?}
+    P -- Yes --> Q[Drop the final period]
+    P -- No --> G[Trailing edge from the text after]
+    Q --> G
     E -- No --> F2[One final space if suitable]
     G --> I[Insert, method adds no trailing space]
     F --> I
@@ -204,7 +219,7 @@ flowchart TD
 
 ### AC-001
 
-**Criterion:** With `smart_spacing` off, the text and the method's trailing space are byte-for-byte those of the build before this feature, and the side after the selection is never read. With it on, only horizontal whitespace at the two edges of the dictation may change (removed, or one U+0020 space added); every other character, including the dictation's line breaks, inner spaces and punctuation, is unchanged.
+**Criterion:** With `smart_spacing` off, the text and the method's trailing space are byte-for-byte those of the build before this feature, and the side after the selection is never read. With it on, only horizontal whitespace at the two edges of the dictation may change (removed, or one U+0020 space added), plus the single final period that AC-017 drops when the text after the selection continues the sentence; every other character, including the dictation's line breaks, inner spaces and other punctuation, is unchanged.
 **Priority:** P1 | **Story:** Stories 1, 2
 
 ### AC-002
@@ -279,8 +294,13 @@ flowchart TD
 
 ### AC-016
 
-**Criterion:** On a system without a context reader (Windows and Linux in this feature), the option's description says so: it is the macOS description followed by one sentence stating that the text around the cursor cannot be read there, so only one space is added after each dictation (key `settings.advanced.textFormatting.smartSpacing.descriptionLimited`, chosen by the system type as 016 does for its limitation), in the 26 locales. The fallback itself (AC-006) is kept on these systems.
+**Criterion:** On a system without a context reader (Windows and Linux in this feature), the option's description says so: it is the macOS description followed by one sentence stating that the text around the cursor cannot be read there, so only one space is added after each dictation (key `settings.advanced.textFormatting.smartSpacing.descriptionLimited`, chosen by the system type as 016 does for its limitation), in the 26 locales. The fallback itself (AC-006) is kept on these systems. The sentence about the final period (AC-017) is in the macOS description only: without a reader the text after the selection is never known, so the period is never dropped there and the limited description does not announce it.
 **Priority:** P2 | **Story:** Stories 3, 4
+
+### AC-017
+
+**Criterion:** Final period inside a sentence (finding N30). With smart spacing on and the text after the selection read and non-empty, the dictation's final period (U+002E, after removing its trailing horizontal whitespace) is dropped when both hold: (a) the text after, past horizontal spaces, starts with a continuation or ending mark (`, . ; : ! ? ) ] }`, a closing quote `” ’ » ›`, or a straight `"` not followed by a letter or digit) or with a lower-case letter (Unicode lower case); (b) the period closes a sentence: the character before it is a letter or digit, and the last word (the run of non-whitespace before it, opening marks ignored) is neither a single letter (`M.`, initials), nor a word with an inner period (`U.S.`, `e.g.`, `3.5.`), nor a listed abbreviation (`etc cf vs env ex mme mmes mlle mlles mm mr mrs ms dr pr prof st jr sr inc ltd fig vol approx`, any case). Nothing is dropped when the text after is absent or unknown (unavailable or partial context), empty at the end of the field, made only of spaces, or starts with a line break, an upper-case or uncased letter, a digit or any other character; nor when the option is off, the focus is not a text field (AC-010), the delivery is 013's addressed terminal (AC-015), or the dictation ends with `…`, `...`, `?`, `!`, `。`, `．` or no period. Only that one character is removed; the trailing edge (AC-005) is then decided on the text without it. Reference examples: "Bonjour|demain" + "à tous." gives "Bonjour à tous demain"; "Bonjour|, ça va" + "tout le monde." gives "Bonjour tout le monde, ça va".
+**Priority:** P2 | **Story:** Story 1
 
 ## Functional Requirements
 
@@ -309,6 +329,11 @@ flowchart TD
 **Requirement:** Expose `smart_spacing` through the settings service, the UI (first row of Text formatting, description naming the fallback outside macOS) and the CLI, translated in every locale, with the new-install and upgrade defaults (AC-013, AC-014, AC-016).
 **AC References:** AC-013, AC-014, AC-016
 
+### FR-006
+
+**Requirement:** Provide a pure rule that drops a dictation's final sentence period when the text read after the selection continues the sentence, applied in smart spacing's trailing edge before the junction rule, and announce it in the macOS description of the option in every locale (AC-001, AC-016, AC-017).
+**AC References:** AC-001, AC-016, AC-017
+
 ## Key Entities
 
 - **InsertionContext** — `Unavailable`, `NotText`, or `Field { before, after }`: 015's `CursorContext` before the selection (at most 64 UTF-16 units) and the `AfterContext` after it. Lives only during the preparation.
@@ -330,6 +355,7 @@ flowchart TD
 - Decision `017-smart-spacing:AC-009` / `after_window_16` (2026-10-29, agent): 16 UTF-16 units after the selection are enough for the first character and the next one (the rule looks at two), a surrogate pair and combining marks; the field length is read first with `AXNumberOfCharacters` so the range never goes beyond the field (many applications refuse such a range), and it tells whether the end of the field is reached. Both queries fit in 015's 50 ms budget, after the read before, which keeps priority. Assumption (macOS documents ranges in UTF-16 units): `AXNumberOfCharacters` counts the same units as `AXSelectedTextRange`. An application that counts less and lands exactly on the selection end makes the side after look like the field end (no junction space, the end-of-field rule instead); a count below the selection end is refused (side after unknown). A selection whose length is not a valid number is refused as a whole (Unavailable), like any invalid answer.
 - Decision `017-smart-spacing:AC-009` / `partial_context` (2026-10-29, agent): if the read before succeeds and the read after fails (unsupported length, error, spent budget), the leading edge is fitted and the end of the text gets the fallback of AC-006. If the read before fails, the whole context is unavailable.
 - Decision `017-smart-spacing:AC-001` / `engine_edge_spaces` (2026-10-29, agent): leading or trailing spaces a recognition engine left on the dictation are part of "the spaces at its two edges" and are dropped when that side is known, so they never pile up with the field's spaces; with an unavailable side they are kept (no deduction).
+- Decision `017-smart-spacing:AC-017` / `n30_trailing_period` (2026-10-29, product requirement from Julien after native finding N30; rule and exclusions designed independently by the agent): recognition engines such as Canary end every dictation with a period, which cuts a sentence when the dictation is inserted inside it ("Bonjour à tous. demain", "Bonjour tout le monde., ça va"). Smart spacing, which already reads the text after the selection, drops that single period when what follows continues the sentence. Choices: (1) it lives in smart spacing's trailing edge, not in a separate option, because it needs the same read after the selection and the same classes (option off, not a text field, addressed terminal and unknown side all keep the text); (2) it runs after 015's capitalization, which decides from the text before only, so the two never disagree; then the junction rule decides the space on the text without the period; (3) prudence over recall: a single letter, an inner period or a short list of common French and English abbreviations keep the period (a kept period costs one keystroke, a removed abbreviation period changes a word); a capital after, a digit, a line break, an uncased script or the field end keep it too (a new sentence or an unknown continuation); (4) only U+002E: `…`, `?`, `!` carry meaning, and the CJK `。` and full-width `．` are not concerned (CJK text has no case to show a continuation, and its full stop is a deliberate choice of the engine for that script). **Known limitations:** an abbreviation outside the list (`av.`, `apr.`, `chap.`, `no.`) loses its period before a lower-case word; a sentence ending on an abbreviation keeps its period even when a lower-case word follows; a lower-case word starting the next sentence (rare, often a typo) drops the period.
 - Decision `017-smart-spacing:AC-013` / `default_new_vs_upgrade` (2026-10-29, contract): on for a new installation, off when the key is absent from an existing store, with 015's migration pattern; an upgrade with the option off keeps the exact previous output.
 - Decision `017-smart-spacing:AC-006` / `macos_only_reader` (2026-10-29, inherited from 015): only macOS reads the context; on Windows and Linux every context is unavailable, so the option there only secures one final space (equivalent to `append_trailing_space` on, without ever doubling it). **Accepted consequence (independent review W4):** since the option is on for a new installation, a new Windows or Linux user gets one trailing space after each dictation although `append_trailing_space` defaults to off; it is the contract's fallback, and turning smart spacing off restores the previous output. **Decided by the coordinator for Julien (2026-10-29):** the fallback is kept on these systems, and the option's description says so there (AC-016). Recorded as pending release evidence, not claimed.
 
@@ -359,13 +385,14 @@ Source kinds: **(1)** publicly documented behavior (S1 = Spokenly public documen
 | Setting via settings service, UI first row, CLI, 26 locales (AC-014) | (2) brief | T render test `smart spacing: space icon…`, order test; settings validation (74 keys, 56 scalars); `check:translations` |
 | 013's addressed terminal gets no spacing, not even the fallback (AC-015) | (2) coordinator's decision for Julien; (3) decision `addressed_terminal_unspaced` | T `an_addressed_terminal_gets_no_spacing_whatever_the_context`, `a_terminal_gets_no_smart_spacing_even_without_context` (013's real orchestrator and guard); U protocol row 16b |
 | Description names the fallback outside macOS (AC-016) | (2) coordinator's decision for Julien; (3) 016's platform description pattern | T render test `smart spacing names its fallback outside macOS`; `check:translations` |
+| Final period dropped inside a sentence, prudent exclusions (AC-017, FR-006) | (2) Julien's requirement after native finding N30 (2026-10-29); (3) decision `n30_trailing_period` (marks, lower case, abbreviation rule, `。` excluded) | T `n30_final_period_before_a_lower_case_word_is_dropped`, `n30_final_period_before_a_comma_is_dropped`, `n30_new_sentence_line_or_field_end_keep_the_period`, `n30_abbreviation_and_ellipsis_keep_their_mark`, `n30_cjk_full_stop_is_not_concerned`, `n30_unknown_side_after_keeps_the_period`, `n30_final_period_follows_capitalization_and_the_option`, `n30_addressed_terminal_keeps_the_final_period`, `final_period_tests.rs`; U protocol rows 18 to 21 (pending) |
 | New install on, upgrade off (AC-013) | (2) contract; (3) 015's migration pattern | T `fresh_install_enables_smart_spacing`, `upgrade_without_smart_spacing_key_disables_it`, `stored_smart_spacing_is_kept` |
 
 ## QE Analysis
 
 - **Criticality:** Medium-high; **Blast radius:** the two edges of every dictation with the option on (on by default for new installations); nothing when off. **Primary risks:** a merged word or a doubled space (the defect it fixes, reversed); a space invented in a terminal, a password field or an unspaced language; two final spaces with `append_trailing_space`; reading field content (privacy); a slower insertion.
 - **Dimensions:** functional correctness (junction table, edges, classes), Unicode (scripts, surrogates, combining marks), privacy (no content in logs, events, history; no password field), latency (one 50 ms budget shared with 015), regression of insertion paths (006/007/010/011/013), settings contract (UI, CLI, validation, defaults), i18n.
-- **P0 gates/evidence:** pure unit tests of the junction rule and the edges (empty, short, start, middle, end, selection, unavailable, partial, empty field, spaces, punctuation, line breaks, Unicode, French, CJK, Thai, Korean); reader tests with a scripted port (after window, field end, unknown length, spent budget, not a text field, password never read); the remembered-input integration test; the method-settings test (never two spaces); settings tests (defaults, migration, counters, 008 contract); `cargo fmt`, `cargo clippy --all-targets --features destination-return,smart-paste-dispatch`, `cargo test --lib` with those features; `bun run lint`, `tsc`, `check:translations`, `test:text-formatting`, `test:output-settings`.
+- **P0 gates/evidence:** pure unit tests of the junction rule and the edges (empty, short, start, middle, end, selection, unavailable, partial, empty field, spaces, punctuation, line breaks, Unicode, French, CJK, Thai, Korean; final period inside a sentence and its exclusions); reader tests with a scripted port (after window, field end, unknown length, spent budget, not a text field, password never read); the remembered-input integration test; the method-settings test (never two spaces); settings tests (defaults, migration, counters, 008 contract); `cargo fmt`, `cargo clippy --all-targets --features destination-return,smart-paste-dispatch`, `cargo test --lib` with those features; `bun run lint`, `tsc`, `check:translations`, `test:text-formatting`, `test:output-settings`.
 - **P1 gates/evidence:** native macOS proof by Julien (TextEdit, Chrome, Codex, cmux unchanged) following the protocol in `implementation.md`.
 - **Non-functional expectations:** no added latency beyond 015's 50 ms budget (the read after shares it); no field content in any log.
 - **Missing evidence:** native macOS proof (pending, protocol provided); Windows and Linux readers (unavailable by design); Penflow mockup not regenerated for one row.
@@ -382,6 +409,8 @@ Source kinds: **(1)** publicly documented behavior (S1 = Spokenly public documen
 - The dictation is only whitespace: unchanged, and the method's trailing space applies as before.
 - The dictation starts or ends with a line break: no space is added on that side; spaces before a leading line break are removed only when the side before is known.
 - The caret is inside a word ("hel|lo"): both sides are letters, so the dictation gets a space on each side.
+- The dictation ends with a period and a lower-case word or a comma follows the selection: the period is dropped (AC-017); with a capital, a line break or nothing after it, it stays.
+- The dictation is only a period ("."): nothing precedes it, so it is not a sentence period and stays.
 - The selection ends beyond the field length reported: the side after is unknown (fallback).
 - The window after ends in the middle of a surrogate pair: only the first characters matter; the cut character becomes U+FFFD and is never examined.
 - A text typed in the field between the stop and the paste is not seen (015's `read_at_preparation`).

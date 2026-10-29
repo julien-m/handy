@@ -590,6 +590,15 @@ Preuves natives en attente avec Julien : aucune n'est déclarée réussie. Harna
   - Attendu : la sentinelle du brouillon n'apparaît ni dans le log ni dans la sortie CLI ; aucune clé de réglage nouvelle.
   - Couvre : AC-008, SC-004. Preuve : `proofs/native-macos/privacy/`.
 
+### 017 — Espacement intelligent (`handy-gates-open.app` ou mode dev avec les deux verrous)
+
+Protocole complet (lignes 1 à 17) dans `.specs/features/017-smart-spacing/implementation.md`, « Native proof protocol ». Accessibilité accordée, « ␣ Espacement intelligent » et « Aa Majuscules intelligentes » actifs, log debug. Aucune preuve n'est déclarée réussie.
+
+- [ ] **N30 — Point final de la dictée au milieu d'une phrase (TextEdit, modèle Canary).**
+  - Étapes : dans TextEdit, curseur dans `Bonjour|demain`, dicter « à tous » ; puis curseur dans `Bonjour|, ça va`, dicter « tout le monde » ; puis curseur dans `Bonjour|Demain`, dicter « à tous » ; puis curseur en fin de champ après `Bonjour`, dicter « à tous » ; refaire le premier essai avec l'espacement intelligent désactivé, puis dans cmux (route 013 adressée).
+  - Attendu : `Bonjour à tous demain` et `Bonjour tout le monde, ça va` (point final retiré) ; `Bonjour à tous. Demain` et `Bonjour à tous.` (point gardé devant une majuscule et en fin de champ) ; option désactivée : sortie d'avant la 017, point gardé et aucune espace ajoutée ; cmux : le point de Canary est gardé. Log : seulement le genre de contexte et les drapeaux, jamais le texte.
+  - Couvre : AC-017 (décision `n30_trailing_period`), protocole lignes 18 à 21. Preuve : `.specs/features/017-smart-spacing/proofs/native-macos/n30/`.
+
 ### UI en vraie fenêtre (transverse)
 
 - [ ] **Indicateur** (`handy-gates-open.app`).

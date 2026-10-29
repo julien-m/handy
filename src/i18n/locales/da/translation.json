@@ -542,7 +542,7 @@
       "textFormatting": {
         "smartSpacing": {
           "label": "Smart mellemrum",
-          "description": "Tilføjer de nødvendige mellemrum, hvor dikteringen møder teksten omkring markøren, og fordobler aldrig eksisterende mellemrum eller linjeskift. Intet mellemrum før , . ) ] eller efter ( [, og intet i sprog skrevet uden mellemrum. Når det er slået til, bestemmer det mellemrummet efter dikteringen: \"Tilføj efterfølgende mellemrum\" tilføjer så kun et i slutningen af et felt. Hvis feltet ikke kan læses, tilføjes kun ét mellemrum til sidst.",
+          "description": "Tilføjer de nødvendige mellemrum, hvor dikteringen møder teksten omkring markøren, og fordobler aldrig eksisterende mellemrum eller linjeskift. Intet mellemrum før , . ) ] eller efter ( [, og intet i sprog skrevet uden mellemrum. Når det er slået til, bestemmer det mellemrummet efter dikteringen: \"Tilføj efterfølgende mellemrum\" tilføjer så kun et i slutningen af et felt. Hvis feltet ikke kan læses, tilføjes kun ét mellemrum til sidst. Hvis teksten efter markøren fortsætter sætningen, fjernes dikteringens afsluttende punktum.",
           "descriptionLimited": "Tilføjer de nødvendige mellemrum, hvor dikteringen møder teksten omkring markøren, og fordobler aldrig eksisterende mellemrum eller linjeskift. Intet mellemrum før , . ) ] eller efter ( [, og intet i sprog skrevet uden mellemrum. Når det er slået til, bestemmer det mellemrummet efter dikteringen: \"Tilføj efterfølgende mellemrum\" tilføjer så kun et i slutningen af et felt. Hvis feltet ikke kan læses, tilføjes kun ét mellemrum til sidst. På dette system kan teksten omkring markøren ikke læses, så der tilføjes kun ét mellemrum efter hver diktering."
         },
         "smartCapitalization": {

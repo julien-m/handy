@@ -145,3 +145,29 @@ fn not_a_text_field_is_left_to_the_method() {
     let prepared = prepare_text("ls -la", &InsertionContext::NotText, &BOTH);
     assert_eq!(prepared, PreparedText::unchanged("ls -la".to_owned()));
 }
+
+// @spec AC-017: Final period, option and route — .specs/features/017-smart-spacing/spec.md#ac-017
+#[test]
+fn n30_final_period_follows_capitalization_and_the_option() {
+    let context = field("Bonjour", ", ça va");
+    let prepared = prepare_text("Tout le monde.", &context, &BOTH);
+    assert_eq!(
+        format!("Bonjour{}, ça va", prepared.text),
+        "Bonjour tout le monde, ça va"
+    );
+    let spacing_off = Preparation {
+        spacing: None,
+        ..BOTH
+    };
+    assert_eq!(
+        prepare_text("Tout le monde.", &context, &spacing_off).text,
+        "tout le monde."
+    );
+}
+
+#[test]
+fn n30_addressed_terminal_keeps_the_final_period() {
+    let prepared = prepare_text("ls.", &field("x", "y"), &BOTH);
+    assert_eq!(prepared.text, " ls ");
+    assert_eq!(prepared.for_addressed_terminal(), "ls.");
+}

@@ -122,8 +122,14 @@ fn punctuation_on_the_field_side() {
 
 #[test]
 fn punctuation_on_the_dictation_side() {
+    // A capital after keeps the final period (AC-017); a lower-case word drops it.
+    let new_sentence = field("Bonjour", true, "Demain", true);
+    assert_eq!(
+        spaced(", à tous.", &new_sentence, NO_END_SPACE),
+        ", à tous. "
+    );
     let context = field("Bonjour", true, "demain", true);
-    assert_eq!(spaced(", à tous.", &context, NO_END_SPACE), ", à tous. ");
+    assert_eq!(spaced(", à tous.", &context, NO_END_SPACE), ", à tous ");
     assert_eq!(spaced("(à tous)", &context, NO_END_SPACE), " (à tous) ");
 }
 
@@ -286,4 +292,83 @@ fn the_trailing_space_is_decided_once() {
         let text = spaced("word", &context, END_SPACE);
         assert!(!text.ends_with("  "), "{context:?}: {text:?}");
     }
+}
+
+/// The field after inserting `text` at the selection of the read field `before|after`.
+fn inserted(before: &str, text: &str, after: &str) -> String {
+    let context = field(before, true, after, true);
+    format!("{before}{}{after}", spaced(text, &context, NO_END_SPACE))
+}
+
+// @spec AC-017: Final period inside a sentence — .specs/features/017-smart-spacing/spec.md#ac-017
+#[test]
+fn n30_final_period_before_a_lower_case_word_is_dropped() {
+    assert_eq!(
+        inserted("Bonjour", "à tous.", "demain"),
+        "Bonjour à tous demain"
+    );
+}
+
+#[test]
+fn n30_final_period_before_a_comma_is_dropped() {
+    assert_eq!(
+        inserted("Bonjour", "tout le monde.", ", ça va"),
+        "Bonjour tout le monde, ça va"
+    );
+}
+
+#[test]
+fn n30_engine_spaces_after_the_period_do_not_hide_it() {
+    assert_eq!(
+        inserted("Bonjour ", " à tous. ", " demain"),
+        "Bonjour à tous demain"
+    );
+}
+
+#[test]
+fn n30_new_sentence_line_or_field_end_keep_the_period() {
+    assert_eq!(
+        inserted("Bonjour", "à tous.", "Demain"),
+        "Bonjour à tous. Demain"
+    );
+    assert_eq!(
+        inserted("Bonjour", "à tous.", "\ndemain"),
+        "Bonjour à tous.\ndemain"
+    );
+    assert_eq!(inserted("Bonjour", "à tous.", ""), "Bonjour à tous.");
+}
+
+#[test]
+fn n30_abbreviation_and_ellipsis_keep_their_mark() {
+    assert_eq!(
+        inserted("Des fruits", "pommes, etc.", ", ça va"),
+        "Des fruits pommes, etc., ça va"
+    );
+    assert_eq!(
+        inserted("Bonjour", "à tous…", "demain"),
+        "Bonjour à tous… demain"
+    );
+    assert_eq!(
+        inserted("Bonjour", "chez M.", "demain"),
+        "Bonjour chez M. demain"
+    );
+}
+
+#[test]
+fn n30_cjk_full_stop_is_not_concerned() {
+    assert_eq!(inserted("你好", "世界。", "，好"), "你好世界。，好");
+}
+
+#[test]
+fn n30_unknown_side_after_keeps_the_period() {
+    let partial = before_only("Bonjour");
+    assert_eq!(spaced("à tous.", &partial, END_SPACE), " à tous. ");
+    let unread_end = field("Bonjour", true, "", false);
+    assert_eq!(spaced("à tous.", &unread_end, END_SPACE), " à tous. ");
+    assert_eq!(
+        spaced("à tous.", &InsertionContext::Unavailable, END_SPACE),
+        "à tous. "
+    );
+    let result = space_junctions("à tous.", &InsertionContext::NotText, END_SPACE);
+    assert_eq!(result.text, "à tous.");
 }
