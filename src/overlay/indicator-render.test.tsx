@@ -186,7 +186,8 @@ describe("pinned destination (009)", () => {
       'data-testid="recording-indicator-pinned-destination"',
     );
   });
-  test("the open menu lists Unpin at the bottom and marks the other apps", () => {
+  // 009 decision no_dictation_only_hint (N29, 2026-10-29): no "This dictation only" hint.
+  test("the open menu lists Unpin at the bottom and adds no hint to the other apps", () => {
     const html = render({
       destination: destination(pinnedSession(), { status: "open", menu }),
     });
@@ -214,9 +215,8 @@ describe("pinned destination (009)", () => {
     }
     expect(html).not.toContain("recording-indicator-destination-menu-menu");
     expect(html).not.toContain("recording-indicator-pinned-menu-pin");
-    expect(html).toContain(
-      'data-testid="recording-indicator-pinned-menu-hint">This dictation only<',
-    );
+    expect(html).not.toContain("recording-indicator-pinned-menu-hint");
+    expect(html).not.toContain("This dictation only");
   });
   // 009 AC-001 as amended on 2026-10-29 (012): Pin sits in the fixed footer, nearest the badge.
   test("nothing pinned: Pin <destination> is listed in the footer, below the apps", () => {

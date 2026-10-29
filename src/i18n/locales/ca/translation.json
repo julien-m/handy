@@ -1276,7 +1276,6 @@
         "failed": "No s'ha pogut carregar la llista d'apps.",
         "pin": "Fixa {{name}}",
         "unpin": "Deixa de fixar {{name}}",
-        "thisDictationOnly": "Només aquest dictat",
         "favorites": "Preferits",
         "addFavorite": "Afegeix {{name}} als preferits",
         "removeFavorite": "Treu {{name}} dels preferits",

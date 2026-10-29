@@ -1276,7 +1276,6 @@
         "failed": "Listen over apps kunne ikke indlæses.",
         "pin": "Fastgør {{name}}",
         "unpin": "Frigør {{name}}",
-        "thisDictationOnly": "Kun denne diktering",
         "favorites": "Favoritter",
         "addFavorite": "Føj {{name}} til favoritter",
         "removeFavorite": "Fjern {{name}} fra favoritter",

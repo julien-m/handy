@@ -6,6 +6,8 @@
 ---
 
 ## 2026-10-29 — [Feature 007] Bugfix N28: with `paste_verification` on, a terminal (cmux) no longer receives the transcript twice nor the recovery bubble: only web text (an element below an `AXWebArea`) is verified, any other element is `Unreadable` (`NotWebText`) with the behavior without verification, and a last read right before the repeated Cmd+V cancels it when the page pasted late (AC-019, FR-012)
+## 2026-10-29 — [Feature 012] Fix N29: compact badge menu rows (smaller star, no "This dictation only" hint, 009 amended); names up to about 20 characters shown in full (1/1 gap closed)
+
 ## 2026-10-29 — [Feature 007] Fix N11 (experimental): `paste_verification` (off by default) checks after the smart-paste Cmd+V that the focused field changed, sends Cmd+V once more under the clipboard ownership guard, and reports an unchanged field as `field_unchanged` (recovery bubble, no automatic Enter); unreadable fields keep the current behavior (AC-019, FR-012)
 ## 2026-10-29 — [Feature 012] Destination favorites: a star toggle on every app row of the badge menu saves favorites through the settings service (`destination_favorites`, at most 10, CLI `destination favorite-add|favorite-remove`), listed bottom-up just above "Frontmost app at the end"; a favorite that is not running stays listed "Not open" and is never launched; 009's Pin and Unpin moved to a fixed footer, always visible (AC-001 to AC-006, automated evidence; native proof pending)
 ## 2026-10-29 — [Feature 010] Fix N26: after Escape during a drag of the recovery bubble the drag image no longer slides back and the bubble no longer flashes before closing (panel ordered out before it is made opaque again); a release without a target keeps the slide back (AC-004, FR-003)

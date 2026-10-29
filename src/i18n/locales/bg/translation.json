@@ -1273,7 +1273,6 @@
         "failed": "Списъкът с приложения не можа да бъде зареден.",
         "pin": "Закачи {{name}}",
         "unpin": "Откачи {{name}}",
-        "thisDictationOnly": "Само тази диктовка",
         "favorites": "Любими",
         "addFavorite": "Добави {{name}} към любими",
         "removeFavorite": "Премахни {{name}} от любими",

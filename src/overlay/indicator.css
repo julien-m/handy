@@ -281,7 +281,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* "This dictation only" on the other apps while one is pinned (009 mockup). */
+/* "Not open" on a favorite that is not running (012). */
 .smenu-hint {
   margin-inline-start: auto;
   font-size: 12px;
@@ -306,23 +306,26 @@
   border-top: 1px solid var(--s-border);
 }
 /* 012: an application row and its favorite star side by side; the favorites and the footer
-   (Frontmost app at the end, Pin, Unpin) never shrink, only the running apps scroll. */
+   (Frontmost app at the end, Pin, Unpin) never shrink, only the running apps scroll. The row is
+   compact (N29, 2026-10-29): small star, narrow gaps, the name takes the room left. */
 .smenu-row {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
 }
 .smenu-row .smenu-item {
   flex: 1;
   min-width: 0;
+  gap: 8px;
+  padding-inline-end: 6px;
 }
 .smenu-favorites,
 .smenu-footer {
   flex: none;
 }
 .smenu-star {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   flex: none;
   display: flex;
   align-items: center;
@@ -344,8 +347,8 @@
   outline-offset: -2px;
 }
 .smenu-star-glyph {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
 }
 .smenu-star.on {
   color: var(--s-accent);

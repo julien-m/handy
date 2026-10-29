@@ -1273,7 +1273,6 @@
         "failed": "No se pudo cargar la lista de apps.",
         "pin": "Fijar {{name}}",
         "unpin": "Dejar de fijar {{name}}",
-        "thisDictationOnly": "Solo este dictado",
         "favorites": "Favoritos",
         "addFavorite": "Añadir {{name}} a favoritos",
         "removeFavorite": "Quitar {{name}} de favoritos",

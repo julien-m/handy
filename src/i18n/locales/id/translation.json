@@ -1276,7 +1276,6 @@
         "failed": "Daftar aplikasi tidak dapat dimuat.",
         "pin": "Sematkan {{name}}",
         "unpin": "Lepas sematan {{name}}",
-        "thisDictationOnly": "Hanya dikte ini",
         "favorites": "Favorit",
         "addFavorite": "Tambahkan {{name}} ke favorit",
         "removeFavorite": "Hapus {{name}} dari favorit",

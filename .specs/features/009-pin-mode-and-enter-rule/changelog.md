@@ -1,5 +1,13 @@
 # Changelog - 009-pin-mode-and-enter-rule
 
+## 2026-10-29 — [Spec Update]: "This dictation only" hint removed from the badge menu (N29, with 012)
+
+- **Type:** Spec Update
+- **Spec modified:** Yes (decision `no_dictation_only_hint`; AC-002 behavior unchanged)
+- **Code modified:** `src/overlay/{destination-menu-rows.tsx,destination-menu.tsx,indicator-stack.tsx,pin-state.ts}`, 26 locales
+- **AC impacted:** AC-002 (presentation only)
+- **Author:** spec-fix 012 (Claude Code, claude-opus-5-5)
+
 ## 2026-10-12 — [Spec Update]: Feature specification created
 
 - **Type:** Spec Update

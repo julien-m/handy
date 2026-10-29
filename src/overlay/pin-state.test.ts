@@ -98,6 +98,12 @@ describe("pin entries in the badge menu (has_dropdown)", () => {
     expect(pinTestIds("recording-indicator-pinned").unpin).toBe(
       "recording-indicator-pinned-menu-unpin",
     );
+    // 009 decision no_dictation_only_hint (2026-10-29): no hint test id any more.
+    expect(Object.keys(pinTestIds("recording-indicator-pinned"))).toEqual([
+      "pin",
+      "unpin",
+      "mark",
+    ]);
     // 009-01: Pin is offered while nothing is pinned, on the destination menu screen.
     expect(pinTestIds("recording-indicator-destination-menu").pin).toBe(
       "recording-indicator-destination-menu-menu-pin",

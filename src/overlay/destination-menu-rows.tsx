@@ -1,14 +1,14 @@
 // Rows of the destination menu (features 006, 009, 012): an application row (icon, name, the
-// "This dictation only" hint of 009, the "Not open" hint of a favorite that is not running, the
-// current check) followed by its favorite star, a sibling toggle button, so a star click never
-// chooses the row. Pointer presses never take keyboard focus from the user's application.
+// "Not open" hint of a favorite that is not running, the current check) followed by its compact
+// favorite star, a sibling toggle button, so a star click never chooses the row. The name takes
+// the room left and is truncated only when it cannot fit (decision of 2026-10-29: no "This
+// dictation only" hint). Pointer presses never take keyboard focus from the user's application.
 import { Check, Star } from "lucide-react";
 import type React from "react";
 import { useTranslation } from "react-i18next";
 import type { MenuChoice, MenuEntry } from "@/bindings";
 import { AppIcon, keepFocus } from "./destination-badge";
 import { favoriteLabelKey } from "./destination-model";
-import { pinTestIds } from "./pin-state";
 import { useIndicatorScreen } from "./indicator-screen";
 
 /**
@@ -19,17 +19,6 @@ export const useMenuId = (): string => `${useIndicatorScreen()}-menu`;
 
 /** Data attribute naming the token of a star, used to give it focus back after a toggle. */
 export const STAR_TOKEN_ATTRIBUTE = "data-favorite-token";
-
-/** "This dictation only" (009): this choice does not move the pin. */
-const DictationOnlyHint: React.FC = () => {
-  const { t } = useTranslation();
-  const screen = useIndicatorScreen();
-  return (
-    <span className="smenu-hint" data-testid={pinTestIds(screen).hint}>
-      {t("overlay.destination.menu.thisDictationOnly")}
-    </span>
-  );
-};
 
 /** "Not open" (012): a favorite with no running instance, never launched. */
 const NotOpenHint: React.FC = () => {
@@ -74,15 +63,15 @@ const FavoriteStar: React.FC<{
 export interface AppRowProps {
   entry: MenuEntry;
   testId: string;
-  pinActive: boolean;
   onChoose: (choice: MenuChoice) => void;
   onToggleFavorite: (token: number, keyboard: boolean) => void;
 }
 
 // @spec AC-004: Favorite not open is shown dimmed, not choosable — .specs/features/012-destination-favorites/spec.md#ac-004
-/** One application row and its star. */
+// @spec AC-001: Compact row, full app name readable — .specs/features/012-destination-favorites/spec.md#ac-005
+/** One application row and its star; the name is never pushed aside by a hint (2026-10-29). */
 export const AppRow: React.FC<AppRowProps> = (props) => {
-  const { entry, testId, pinActive, onChoose } = props;
+  const { entry, testId, onChoose } = props;
   return (
     <div className="smenu-row" role="none">
       <button
@@ -99,7 +88,6 @@ export const AppRow: React.FC<AppRowProps> = (props) => {
         <AppIcon name={entry.display_name} iconRef={entry.icon_ref} />
         <span className="smenu-name">{entry.display_name}</span>
         {!entry.running && <NotOpenHint />}
-        {entry.running && pinActive && !entry.pinned && <DictationOnlyHint />}
         {entry.current && <Check className="smenu-check" aria-hidden="true" />}
       </button>
       <FavoriteStar entry={entry} onToggle={props.onToggleFavorite} />

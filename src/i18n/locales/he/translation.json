@@ -1273,7 +1273,6 @@
         "failed": "לא ניתן היה לטעון את רשימת האפליקציות.",
         "pin": "הצמד את {{name}}",
         "unpin": "בטל הצמדה של {{name}}",
-        "thisDictationOnly": "רק ההכתבה הזו",
         "favorites": "מועדפים",
         "addFavorite": "הוספת {{name}} למועדפים",
         "removeFavorite": "הסרת {{name}} מהמועדפים",

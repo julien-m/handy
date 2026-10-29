@@ -1273,7 +1273,6 @@
         "failed": "Seznam aplikací se nepodařilo načíst.",
         "pin": "Připnout {{name}}",
         "unpin": "Odepnout {{name}}",
-        "thisDictationOnly": "Jen tento diktát",
         "favorites": "Oblíbené",
         "addFavorite": "Přidat {{name}} do oblíbených",
         "removeFavorite": "Odebrat {{name}} z oblíbených",

@@ -1276,7 +1276,6 @@
         "failed": "De lijst met apps kon niet worden geladen.",
         "pin": "{{name}} vastzetten",
         "unpin": "{{name}} losmaken",
-        "thisDictationOnly": "Alleen dit dictaat",
         "favorites": "Favorieten",
         "addFavorite": "{{name}} toevoegen aan favorieten",
         "removeFavorite": "{{name}} verwijderen uit favorieten",

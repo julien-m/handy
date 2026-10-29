@@ -1,5 +1,15 @@
 # Changelog - 012-destination-favorites
 
+## 2026-10-29 — [Bugfix]: N29 compact badge menu rows, no "This dictation only" hint (1 gap closed, visual)
+
+- **Type:** Bug Fix
+- **Spec modified:** Yes (AC-001 precision and decision `compact_row`; 009 decision `no_dictation_only_hint`)
+- **Code modified:** `src/overlay/{destination-menu-rows.tsx,destination-menu.tsx,indicator-stack.tsx,pin-state.ts,indicator.css}`, 26 locales (key `overlay.destination.menu.thisDictationOnly` removed), `tests/harness/destination-menu.tsx` (`?names=`), `tests/destination-favorites.spec.ts`, `src/overlay/{indicator-render.test.tsx,pin-state.test.ts}`
+- **Gaps closed:** N29 (application names cut to 2 or 3 letters beside the star and the hint)
+- **Remaining:** Penflow contract still lists the hint node (recorded in `implementation.md`); native check by Julien
+- **Author:** spec-fix (Claude Code, claude-opus-5-5)
+- Julien's native finding N29: « Avec l'étoile, ça prend trop de place, je ne vois plus les textes. Et il y a marqué "cette dictée seulement" : ça, tu me l'enlèves. »
+
 ## 2026-10-29 — [Feature]: Destination favorites with a star in the badge menu; Pin and Unpin in a fixed footer
 
 - **Type:** Feature

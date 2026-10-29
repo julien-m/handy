@@ -1273,7 +1273,6 @@
         "failed": "تعذّر تحميل قائمة التطبيقات.",
         "pin": "تثبيت {{name}}",
         "unpin": "إلغاء تثبيت {{name}}",
-        "thisDictationOnly": "هذا الإملاء فقط",
         "favorites": "المفضلة",
         "addFavorite": "إضافة {{name}} إلى المفضلة",
         "removeFavorite": "إزالة {{name}} من المفضلة",

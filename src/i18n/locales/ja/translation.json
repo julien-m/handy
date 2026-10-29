@@ -1273,7 +1273,6 @@
         "failed": "アプリの一覧を読み込めませんでした。",
         "pin": "{{name}} をピン留め",
         "unpin": "{{name}} のピン留めを解除",
-        "thisDictationOnly": "この音声入力のみ",
         "favorites": "お気に入り",
         "addFavorite": "{{name}} をお気に入りに追加",
         "removeFavorite": "{{name}} をお気に入りから削除",
