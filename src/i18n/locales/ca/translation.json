@@ -1276,7 +1276,15 @@
         "failed": "No s'ha pogut carregar la llista d'apps.",
         "pin": "Fixa {{name}}",
         "unpin": "Deixa de fixar {{name}}",
-        "thisDictationOnly": "Només aquest dictat"
+        "thisDictationOnly": "Només aquest dictat",
+        "favorites": "Preferits",
+        "addFavorite": "Afegeix {{name}} als preferits",
+        "removeFavorite": "Treu {{name}} dels preferits",
+        "notOpen": "No oberta"
+      },
+      "favoriteNotSaved": {
+        "full": "Pots tenir fins a 10 preferits.",
+        "failed": "No s'han pogut desar els preferits."
       },
       "refused": {
         "stale": "La destinació ha canviat mentrestant; s'ha actualitzat la llista.",

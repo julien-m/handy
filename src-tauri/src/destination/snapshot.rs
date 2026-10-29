@@ -74,6 +74,10 @@ pub struct MenuEntry {
     /// The application of the session pin (009); the others are "This dictation only" while
     /// an application is pinned.
     pub pinned: bool,
+    /// A favorite application (012), listed in the favorites section near the badge.
+    pub favorite: bool,
+    /// False only for a favorite with no running instance: shown "Not open", never chosen.
+    pub running: bool,
 }
 /// Badge menu of one dictation: applications, then "Frontmost app at the end".
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, specta::Type)]
@@ -99,6 +103,25 @@ pub enum MenuAnswer {
 pub enum ChoiceAnswer {
     Chosen(DestinationSnapshot),
     Refused(super::session::SelectionRefusal),
+}
+
+/// Why a star toggle was not saved (012): the favorites are full, or the settings service
+/// refused or failed the write. The favorites and the session are unchanged.
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, specta::Type)]
+#[serde(rename_all = "snake_case")]
+pub enum FavoriteNotSaved {
+    Full,
+    Failed,
+}
+
+/// Answer of a star toggle (012): the re-ordered menu (same tokens), the session refusal
+/// (stale, frozen, unknown token), or the settings refusal.
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, specta::Type)]
+#[serde(tag = "status", content = "value", rename_all = "snake_case")]
+pub enum FavoriteAnswer {
+    Menu(DestinationMenu),
+    Refused(super::session::SelectionRefusal),
+    NotSaved(FavoriteNotSaved),
 }
 
 /// A badge choice: an entry token of the current menu, or "Frontmost app at the end" (the cross).

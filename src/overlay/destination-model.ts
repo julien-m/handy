@@ -4,6 +4,7 @@
 import type {
   DestinationMenu,
   DestinationSnapshot,
+  FavoriteNotSaved,
   MenuEntry,
   SelectionRefusal,
   SessionPhase,
@@ -22,10 +23,12 @@ export type BadgeView =
       pinned: boolean;
     };
 
-/** Destination menu split as the mockup lists it. */
+/** Destination menu split as the mockup lists it, from top to bottom (012: favorites last). */
 export interface MenuSections {
   frontmost: MenuEntry | null;
   others: MenuEntry[];
+  /** Favorites in stored order: the last one is the most recent, nearest the badge. */
+  favorites: MenuEntry[];
   frontmostAtEndCurrent: boolean;
 }
 
@@ -102,12 +105,29 @@ export const newerSnapshot = (
   return incoming;
 };
 
-/** Split the menu: application frontmost now first, then the other windowed applications. */
+// @spec AC-003: Favorites in their own section, listed once — .specs/features/012-destination-favorites/spec.md#ac-003
+/**
+ * Split the menu: the application frontmost now, then the other windowed applications, then
+ * the favorites (012) in the backend's order. A favorite is listed only among the favorites,
+ * even when it is frontmost.
+ */
 export const menuSections = (menu: DestinationMenu): MenuSections => ({
-  frontmost: menu.entries.find((entry) => entry.frontmost) ?? null,
-  others: menu.entries.filter((entry) => !entry.frontmost),
+  frontmost:
+    menu.entries.find((entry) => entry.frontmost && !entry.favorite) ?? null,
+  others: menu.entries.filter((entry) => !entry.frontmost && !entry.favorite),
+  favorites: menu.entries.filter((entry) => entry.favorite),
   frontmostAtEndCurrent: menu.frontmost_at_end_current,
 });
+
+/** Translation key of a star toggle's accessible name (012): add or remove `{{name}}`. */
+export const favoriteLabelKey = (entry: MenuEntry): string =>
+  entry.favorite
+    ? "overlay.destination.menu.removeFavorite"
+    : "overlay.destination.menu.addFavorite";
+
+/** Translation key explaining a star toggle that was not saved (012). */
+export const favoriteNotSavedKey = (reason: FavoriteNotSaved): string =>
+  `overlay.destination.favoriteNotSaved.${reason}`;
 
 /** True when `menu` still belongs to the session of `snapshot` at its current version. */
 export const menuMatches = (

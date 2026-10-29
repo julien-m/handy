@@ -778,6 +778,7 @@ macro_rules! handy_commands {
             commands::destination::remove_destination,
             commands::destination::pin_destination,
             commands::destination::unpin_destination,
+            commands::destination::toggle_destination_favorite,
             commands::overlay::set_overlay_extent,
             commands::overlay::hold_overlay_for_notice,
             commands::recovery::recovery_bubble_view,

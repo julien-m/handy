@@ -1273,7 +1273,15 @@
         "failed": "アプリの一覧を読み込めませんでした。",
         "pin": "{{name}} をピン留め",
         "unpin": "{{name}} のピン留めを解除",
-        "thisDictationOnly": "この音声入力のみ"
+        "thisDictationOnly": "この音声入力のみ",
+        "favorites": "お気に入り",
+        "addFavorite": "{{name}} をお気に入りに追加",
+        "removeFavorite": "{{name}} をお気に入りから削除",
+        "notOpen": "未起動"
+      },
+      "favoriteNotSaved": {
+        "full": "お気に入りは最大 10 個までです。",
+        "failed": "お気に入りを保存できませんでした。"
       },
       "refused": {
         "stale": "その間に挿入先が変わりました。一覧を更新しました。",

@@ -1273,7 +1273,15 @@
         "failed": "Die App-Liste konnte nicht geladen werden.",
         "pin": "{{name}} anheften",
         "unpin": "{{name}} lösen",
-        "thisDictationOnly": "Nur dieses Diktat"
+        "thisDictationOnly": "Nur dieses Diktat",
+        "favorites": "Favoriten",
+        "addFavorite": "{{name}} zu Favoriten hinzufügen",
+        "removeFavorite": "{{name}} aus Favoriten entfernen",
+        "notOpen": "Nicht geöffnet"
+      },
+      "favoriteNotSaved": {
+        "full": "Sie können bis zu 10 Favoriten behalten.",
+        "failed": "Die Favoriten konnten nicht gespeichert werden."
       },
       "refused": {
         "stale": "Das Ziel hat sich inzwischen geändert; die Liste wurde aktualisiert.",

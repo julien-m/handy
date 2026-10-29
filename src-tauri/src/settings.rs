@@ -578,6 +578,10 @@ pub struct AppSettings {
     /// Return to the application where the dictation started before inserting (006).
     #[serde(default = "default_return_to_dictation_app")]
     pub return_to_dictation_app: bool,
+    /// Favorite destination applications of the badge menu (012), oldest first; written only
+    /// through `destination::favorites` changes. Read leniently: unreadable entries are dropped.
+    #[serde(default, deserialize_with = "deserialize_destination_favorites")]
+    pub destination_favorites: Vec<crate::destination::favorites::FavoriteApp>,
     /// "Show the bubble when no text field is focused" (010): set in memory by the
     /// normalization for this build (`recovery::setting`); absent with the `destination-return`
     /// gate closed, which never writes it.
@@ -967,6 +971,26 @@ where
     Ok(value.and_then(|value| serde_json::from_value(value).ok()))
 }
 
+/// Lenient reading of `destination_favorites` (012): a value that is not a list reads as no
+/// favorite and an unreadable entry is dropped, so one bad entry never fails the whole store.
+/// What is dropped is only the unreadable part; the next favorite write stores the clean list.
+fn deserialize_destination_favorites<'de, D>(
+    deserializer: D,
+) -> Result<Vec<crate::destination::favorites::FavoriteApp>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let value = Option::<serde_json::Value>::deserialize(deserializer)?;
+    let entries = match value {
+        Some(serde_json::Value::Array(entries)) => entries,
+        _ => return Ok(Vec::new()),
+    };
+    Ok(entries
+        .into_iter()
+        .filter_map(|entry| serde_json::from_value(entry).ok())
+        .collect())
+}
+
 fn default_typing_tool() -> TypingTool {
     TypingTool::Auto
 }
@@ -1137,6 +1161,7 @@ pub fn get_default_settings() -> AppSettings {
         mute_while_recording: false,
         append_trailing_space: false,
         return_to_dictation_app: default_return_to_dictation_app(),
+        destination_favorites: Vec::new(),
         show_recovery_bubble_without_text_field: crate::recovery::setting::fresh_value(),
         app_language: default_app_language(),
         theme: default_theme(),

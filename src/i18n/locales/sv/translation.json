@@ -1273,7 +1273,15 @@
         "failed": "Listan över appar kunde inte läsas in.",
         "pin": "Fäst {{name}}",
         "unpin": "Lossa {{name}}",
-        "thisDictationOnly": "Bara den här dikteringen"
+        "thisDictationOnly": "Bara den här dikteringen",
+        "favorites": "Favoriter",
+        "addFavorite": "Lägg till {{name}} i favoriter",
+        "removeFavorite": "Ta bort {{name}} från favoriter",
+        "notOpen": "Inte öppen"
+      },
+      "favoriteNotSaved": {
+        "full": "Du kan ha upp till 10 favoriter.",
+        "failed": "Favoriterna kunde inte sparas."
       },
       "refused": {
         "stale": "Målet ändrades under tiden; listan har uppdaterats.",

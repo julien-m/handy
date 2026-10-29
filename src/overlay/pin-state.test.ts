@@ -45,6 +45,8 @@ const menu: DestinationMenu = {
       current: true,
       frontmost: true,
       pinned: false,
+      favorite: false,
+      running: true,
     },
   ],
   frontmost_at_end_current: false,
@@ -64,7 +66,7 @@ const translate = (key: string, values?: Record<string, string>): string => {
 };
 
 describe("pin entries in the badge menu (has_dropdown)", () => {
-  test("nothing pinned: 'Pin <destination>' is listed above the application list", () => {
+  test("nothing pinned: 'Pin <destination>' is offered (listed in the fixed footer)", () => {
     const entries = pinEntries(snapshot(), menu);
     expect(entries).toEqual([
       {

@@ -5,6 +5,9 @@
 //! persist the pin. Precedence, identical offline and routed: usage (clap and the framework),
 //! then the platform (Linux: `validation_failed`, `unsupported_platform`), then liveness, then the
 //! lookup (`not_found`, exit 4). A pin or unpin has the badge's effect on the current dictation.
+//! 012 adds `favorite-add <identifier>` (live) and `favorite-remove <identifier>` (a settings
+//! change, offline or routed): the only actions of this domain that write settings.
+use super::destination_favorites::{remove_plan, FavoriteAddOperation};
 use super::live_operation::{managed_state, LiveAnswer, LiveCall, LiveContext, LiveOperation};
 use super::{Domain, DomainPlan, DomainRequest};
 use crate::destination::manager::DestinationManager;
@@ -22,15 +25,16 @@ impl Domain for DestinationDomain {
         "destination"
     }
     fn actions(&self) -> &'static [&'static str] {
-        &["pin", "unpin", "status"]
+        &["pin", "unpin", "status", "favorite-add", "favorite-remove"]
     }
     // @spec AC-006: destination pin, unpin and status — .specs/features/009-pin-mode-and-enter-rule/spec.md#ac-006
+    // @spec AC-006: favorite-add and favorite-remove — .specs/features/012-destination-favorites/spec.md#ac-006
     fn plan(
         &self,
         request: &DomainRequest<'_>,
-        _settings: &AppSettings,
+        settings: &AppSettings,
     ) -> Result<DomainPlan, SettingsError> {
-        // `_settings` is unused: the pin is native state, never a setting.
+        // The pin is native state, never a setting; only `favorite-remove` reads `settings`.
         let usage = || SettingsError::new(SettingsErrorCode::UsageError);
         let operation: Box<dyn LiveOperation> = match (request.action, request.arguments) {
             ("pin", [identifier]) => Box::new(PinOperation {
@@ -38,13 +42,25 @@ impl Domain for DestinationDomain {
             }),
             ("unpin", []) => Box::new(UnpinOperation),
             ("status", []) => Box::new(StatusOperation),
+            ("favorite-add", [identifier]) => Box::new(FavoriteAddOperation {
+                identifier: identifier.clone(),
+            }),
+            ("favorite-remove", [identifier]) => {
+                platform_check(request)?;
+                return remove_plan(identifier, settings);
+            }
             _ => return Err(usage()),
         };
-        request
-            .platform
-            .check(Some(PlatformCapability::Destination), None)?;
+        platform_check(request)?;
         Ok(DomainPlan::Live(operation))
     }
+}
+
+/// The Linux refusal of every destination action (after usage, before liveness).
+fn platform_check(request: &DomainRequest<'_>) -> Result<(), SettingsError> {
+    request
+        .platform
+        .check(Some(PlatformCapability::Destination), None)
 }
 
 /// `pin <identifier>`, run inside the instance.

@@ -1,5 +1,6 @@
-//! Refusals added by 009 (PIN mode and Enter rule) to the settings errors: the application lookup
-//! of `destination pin` and the message of an invalid Automatic Enter value.
+//! Refusals added by 009 (PIN mode and Enter rule) and 012 (favorites) to the settings errors:
+//! the application lookup of `destination pin`, the favorite lookup of
+//! `destination favorite-remove` and the message of an invalid Automatic Enter value.
 use super::{SettingsError, SettingsErrorCode, ValidationReason};
 
 // @spec AC-006: Invalid Automatic Enter lists the values — .specs/features/009-pin-mode-and-enter-rule/spec.md#ac-006
@@ -21,6 +22,13 @@ impl SettingsError {
     pub fn no_running_application() -> Self {
         let mut error = Self::new(SettingsErrorCode::NotFound);
         error.message = "No running application matches.";
+        error
+    }
+    /// `destination favorite-remove` named no favorite (012 AC-006): `not_found`, exit 4; the
+    /// favorites are unchanged.
+    pub fn no_favorite() -> Self {
+        let mut error = Self::new(SettingsErrorCode::NotFound);
+        error.message = "No favorite application matches.";
         error
     }
 }

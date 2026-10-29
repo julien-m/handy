@@ -1273,7 +1273,15 @@
         "failed": "Nie udało się wczytać listy aplikacji.",
         "pin": "Przypnij {{name}}",
         "unpin": "Odepnij {{name}}",
-        "thisDictationOnly": "Tylko to dyktowanie"
+        "thisDictationOnly": "Tylko to dyktowanie",
+        "favorites": "Ulubione",
+        "addFavorite": "Dodaj {{name}} do ulubionych",
+        "removeFavorite": "Usuń {{name}} z ulubionych",
+        "notOpen": "Nieotwarta"
+      },
+      "favoriteNotSaved": {
+        "full": "Możesz mieć maksymalnie 10 ulubionych.",
+        "failed": "Nie udało się zapisać ulubionych."
       },
       "refused": {
         "stale": "Cel zmienił się w międzyczasie; lista została odświeżona.",

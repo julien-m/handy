@@ -7,6 +7,8 @@
 //! `destination` (009); later features add their domain to `production`.
 #[cfg(feature = "destination-return")]
 pub mod destination;
+#[cfg(feature = "destination-return")]
+mod destination_favorites;
 pub mod live_operation;
 pub mod microphones;
 pub mod output;

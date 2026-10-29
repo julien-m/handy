@@ -88,6 +88,11 @@ impl PinState {
 
 // @spec FR-001: Session pin, current and next dictations — .specs/features/009-pin-mode-and-enter-rule/spec.md#fr-001
 impl DestinationManager {
+    /// The running application (Handy excluded) whose stable identity value is `identifier`,
+    /// read outside the session lock; also used by 012's `destination favorite-add`.
+    pub fn running_application_named(&self, identifier: &str) -> Option<RunningApp> {
+        running_application(self, identifier)
+    }
     /// The pinned application, if any.
     pub fn pinned(&self) -> Option<PinnedApp> {
         self.lock().pin.as_ref().map(PinState::pinned_app)

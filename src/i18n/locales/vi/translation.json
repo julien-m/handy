@@ -1273,7 +1273,15 @@
         "failed": "Không thể tải danh sách ứng dụng.",
         "pin": "Ghim {{name}}",
         "unpin": "Bỏ ghim {{name}}",
-        "thisDictationOnly": "Chỉ lần đọc chép này"
+        "thisDictationOnly": "Chỉ lần đọc chép này",
+        "favorites": "Yêu thích",
+        "addFavorite": "Thêm {{name}} vào yêu thích",
+        "removeFavorite": "Xóa {{name}} khỏi yêu thích",
+        "notOpen": "Chưa mở"
+      },
+      "favoriteNotSaved": {
+        "full": "Bạn có thể giữ tối đa 10 mục yêu thích.",
+        "failed": "Không thể lưu mục yêu thích."
       },
       "refused": {
         "stale": "Đích đã thay đổi trong lúc đó; danh sách đã được làm mới.",

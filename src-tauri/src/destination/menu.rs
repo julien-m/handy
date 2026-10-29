@@ -2,16 +2,21 @@
 //! (Handy excluded), then other running applications with windows, deduplicated, then
 //! "Frontmost app at the end". Entries are opaque tokens valid for this dictation only; a
 //! choice is accepted only for the exact dictation and `selection_version`, before insertion,
-//! and only while the chosen application is still running.
+//! and only while the chosen application is still running. 012 lists the favorites last
+//! (`menu_order`), including those that are not running, which are never launched.
 use super::context::{DestinationSource, DictationId};
+use super::favorites::FavoriteApp;
 use super::manager::{DestinationManager, ManagerState};
+use super::menu_order::{order_menu, MenuTarget};
 use super::session::{Destination, Selection, SelectionRefusal};
 use super::snapshot::{DestinationMenu, DestinationSnapshot, MenuChoice, MenuEntry};
 use super::workspace::{resolve_instance, Foreground, Resolution, RunningApp};
 
 // @spec FR-003: Menu lists frontmost first, then windowed apps — .specs/features/006-destination-application/spec.md#fr-003
-/// Open the menu of `dictation_id` at `version`. Native reads run outside the session lock;
-/// the session is checked again before the tokens are stored.
+// @spec FR-002: Favorites last, nearest the badge — .specs/features/012-destination-favorites/spec.md#fr-002
+/// Open the menu of `dictation_id` at `version`, with the saved `favorites` (012) listed last.
+/// Native reads run outside the session lock; the session is checked again before the tokens
+/// are stored.
 ///
 /// # Errors
 /// `Stale` for another dictation or version, `Frozen` once insertion has begun.
@@ -19,64 +24,32 @@ pub(super) fn open(
     manager: &DestinationManager,
     dictation_id: DictationId,
     version: u64,
+    favorites: &[FavoriteApp],
 ) -> Result<DestinationMenu, SelectionRefusal> {
-    let current = check(manager, dictation_id, version)?;
+    still_open(&manager.lock(), dictation_id, version)?;
     let frontmost = front_application(manager.workspace.frontmost());
-    let apps = ordered_apps(frontmost.clone(), manager.workspace.running_windowed_apps());
+    let running = manager.workspace.running_windowed_apps();
+    let rows = order_menu(frontmost, running, favorites);
     let mut state = manager.lock();
-    let still_open = state.session.as_ref().is_some_and(|session| {
-        session.dictation_id == dictation_id && session.selection_version == version
-    });
-    if !still_open {
-        return Err(SelectionRefusal::Stale);
-    }
-    let pinned = state.pin.as_ref().map(|pin| pin.identity.clone());
-    let marks = Marks {
-        current: &current,
-        frontmost: frontmost.as_ref(),
-        pinned: pinned.as_ref(),
-    };
-    let entries = store_entries(&mut state, apps, &marks);
-    let frontmost_at_end_current = current == Selection::FrontmostAtEnd;
-    Ok(DestinationMenu {
-        dictation_id,
-        selection_version: version,
-        entries,
-        frontmost_at_end_current,
-    })
-}
-
-/// What marks a menu entry: the current selection, the frontmost application and the pin.
-struct Marks<'a> {
-    current: &'a Selection,
-    frontmost: Option<&'a RunningApp>,
-    pinned: Option<&'a super::context::ApplicationIdentity>,
-}
-
-/// Replace the menu tokens with fresh ones for `apps` and describe each entry.
-fn store_entries(
-    state: &mut ManagerState,
-    apps: Vec<RunningApp>,
-    marks: &Marks<'_>,
-) -> Vec<MenuEntry> {
+    let current = still_open(&state, dictation_id, version)?;
     state.menu.clear();
-    apps.into_iter()
-        .map(|app| {
-            state.next_token += 1;
-            let token = state.next_token;
-            let described = entry(token, &app, marks);
-            state.menu.push((token, app));
-            described
-        })
-        .collect()
+    for row in rows {
+        state.next_token += 1;
+        let token = state.next_token;
+        state.menu.push((token, row));
+    }
+    Ok(describe(&state, dictation_id, version, &current))
 }
-/// The current selection of the exact, still-open session.
-fn check(
-    manager: &DestinationManager,
+
+/// The selection of the exact session, while it still accepts choices.
+///
+/// # Errors
+/// `Stale` for another dictation or version, `Frozen` once insertion has begun.
+pub(super) fn still_open(
+    state: &ManagerState,
     dictation_id: DictationId,
     version: u64,
 ) -> Result<Selection, SelectionRefusal> {
-    let state = manager.lock();
     let session = state.session.as_ref().ok_or(SelectionRefusal::Stale)?;
     if session.dictation_id != dictation_id || session.selection_version != version {
         return Err(SelectionRefusal::Stale);
@@ -87,6 +60,37 @@ fn check(
     Ok(session.selection.clone())
 }
 
+/// The menu described from the rows stored in `state`, in their order.
+pub(super) fn describe(
+    state: &ManagerState,
+    dictation_id: DictationId,
+    version: u64,
+    current: &Selection,
+) -> DestinationMenu {
+    let pinned = state.pin.as_ref().map(|pin| pin.identity.clone());
+    let marks = Marks {
+        current,
+        pinned: pinned.as_ref(),
+    };
+    let entries = state
+        .menu
+        .iter()
+        .map(|(token, row)| entry(*token, row, &marks))
+        .collect();
+    DestinationMenu {
+        dictation_id,
+        selection_version: version,
+        entries,
+        frontmost_at_end_current: *current == Selection::FrontmostAtEnd,
+    }
+}
+
+/// What marks a menu entry besides its row: the current selection and the pin.
+struct Marks<'a> {
+    current: &'a Selection,
+    pinned: Option<&'a super::context::ApplicationIdentity>,
+}
+
 /// The application in front, unless it is Handy or unreadable.
 fn front_application(foreground: Foreground) -> Option<RunningApp> {
     match foreground {
@@ -94,29 +98,19 @@ fn front_application(foreground: Foreground) -> Option<RunningApp> {
         Foreground::Handy | Foreground::Unreadable => None,
     }
 }
-/// Frontmost first, then the others without duplicating its identity.
-fn ordered_apps(frontmost: Option<RunningApp>, running: Vec<RunningApp>) -> Vec<RunningApp> {
-    let mut apps = frontmost.into_iter().collect::<Vec<_>>();
-    for app in running {
-        if !apps.iter().any(|known| known.identity == app.identity) {
-            apps.push(app);
-        }
-    }
-    apps
-}
 
-fn entry(token: u64, app: &RunningApp, marks: &Marks<'_>) -> MenuEntry {
+fn entry(token: u64, row: &MenuTarget, marks: &Marks<'_>) -> MenuEntry {
     let is_current = matches!(marks.current, Selection::Application(chosen)
-        if chosen.identity == app.identity);
+        if chosen.identity == row.identity);
     MenuEntry {
         token,
-        display_name: app.display_name.clone(),
-        icon_ref: app.icon_ref.clone(),
+        display_name: row.display_name.clone(),
+        icon_ref: row.icon_ref.clone(),
         current: is_current,
-        frontmost: marks
-            .frontmost
-            .is_some_and(|front| front.identity == app.identity),
-        pinned: marks.pinned == Some(&app.identity),
+        frontmost: row.frontmost,
+        pinned: marks.pinned == Some(&row.identity),
+        favorite: row.favorite,
+        running: row.pid.is_some(),
     }
 }
 
@@ -133,7 +127,7 @@ pub(super) fn choose(
     version: u64,
     choice: MenuChoice,
 ) -> Result<DestinationSnapshot, SelectionRefusal> {
-    check(manager, dictation_id, version)?;
+    still_open(&manager.lock(), dictation_id, version)?;
     let selection = match choice {
         MenuChoice::FrontmostAtEnd => Selection::FrontmostAtEnd,
         MenuChoice::Application(token) => chosen_application(manager, token)?,
@@ -162,20 +156,25 @@ fn back_to_pin(state: &ManagerState, selection: Selection) -> Selection {
     }
 }
 
-/// The still-running application behind `token`, as a badge destination.
+// @spec AC-004: A favorite not open is never launched — .specs/features/012-destination-favorites/spec.md#ac-004
+/// The still-running application behind `token`, as a badge destination. A favorite listed as
+/// not running is resolved like any other row: accepted only if exactly one instance of its
+/// identity runs now; nothing is ever launched.
 fn chosen_application(
     manager: &DestinationManager,
     token: u64,
 ) -> Result<Selection, SelectionRefusal> {
-    let app = manager
+    let row = manager
         .lock()
         .menu
         .iter()
         .find(|(known, _)| *known == token)
-        .map(|(_, app)| app.clone())
+        .map(|(_, row)| row.clone())
         .ok_or(SelectionRefusal::Unavailable)?;
-    let instances = manager.workspace.instances(&app.identity);
-    match resolve_instance(&app.identity, app.pid, &instances) {
+    let instances = manager.workspace.instances(&row.identity);
+    // Without a listed process, 0 matches no instance: only a single running one is accepted.
+    let listed_pid = row.pid.unwrap_or(0);
+    match resolve_instance(&row.identity, listed_pid, &instances) {
         Resolution::Running(running) => Ok(Selection::Application(Destination {
             identity: running.identity,
             display_name: running.display_name,

@@ -5,7 +5,7 @@
 use super::*;
 use crate::destination::context::{ApplicationIdentity, DestinationSource, RecoveryDisposition};
 use crate::destination::fake_workspace::{app, FakeClock, FakeWorkspace};
-use crate::destination::workspace::{resolve_instance, Resolution};
+use crate::destination::workspace::{resolve_instance, Resolution, RunningApp};
 type TestResult = Result<(), Box<dyn std::error::Error>>;
 
 fn manager(

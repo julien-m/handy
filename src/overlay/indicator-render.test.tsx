@@ -73,6 +73,8 @@ describe("destination badge (006)", () => {
           current: false,
           frontmost: true,
           pinned: false,
+          favorite: false,
+          running: true,
         },
         {
           token: 2,
@@ -81,6 +83,8 @@ describe("destination badge (006)", () => {
           current: true,
           frontmost: false,
           pinned: false,
+          favorite: false,
+          running: true,
         },
       ],
     };
@@ -163,6 +167,8 @@ describe("pinned destination (009)", () => {
         current: false,
         frontmost: true,
         pinned: false,
+        favorite: false,
+        running: true,
       },
     ],
   };
@@ -212,7 +218,8 @@ describe("pinned destination (009)", () => {
       'data-testid="recording-indicator-pinned-menu-hint">This dictation only<',
     );
   });
-  test("nothing pinned: Pin <destination> is listed above the application list", () => {
+  // 009 AC-001 as amended on 2026-10-29 (012): Pin sits in the fixed footer, nearest the badge.
+  test("nothing pinned: Pin <destination> is listed in the footer, below the apps", () => {
     const html = render({
       destination: destination(session(chatgpt), { status: "open", menu }),
     });
@@ -222,7 +229,11 @@ describe("pinned destination (009)", () => {
     );
     expect(pin > -1).toBe(true);
     expect(html).toContain(">Pin ChatGPT<");
-    expect(pin).toBeLessThan(html.indexOf(">Comet<"));
+    const end = html.indexOf(
+      'data-testid="recording-indicator-destination-menu-menu-frontmost-at-end"',
+    );
+    expect(html.indexOf(">Comet<")).toBeLessThan(end);
+    expect(end).toBeLessThan(pin);
     expect(html).not.toContain("recording-indicator-pinned");
   });
 });

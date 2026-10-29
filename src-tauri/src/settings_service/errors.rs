@@ -105,6 +105,13 @@ pub enum ValidationReason {
     PromptNotUsable,
     /// The microphone choices change only through the microphones domain (feature 001).
     MicrophonesDomain,
+    /// The favorite applications change only through the destination domain or the badge star
+    /// (feature 012).
+    DestinationDomain,
+    /// More favorite applications than the menu keeps (feature 012).
+    FavoritesFull,
+    /// A favorite has a blank identity or name, a name too long, or repeats another (012).
+    FavoriteInvalid,
 }
 /// Refusal text of a generic write of a microphone key (feature 001).
 const MICROPHONES_DOMAIN_MESSAGE: &str =
@@ -140,6 +147,13 @@ impl ValidationReason {
             Self::UnsupportedPlatform => "This setting is not supported on this platform.",
             Self::ShortcutSessionBusy => "A dictation is in progress; retry when it ends.",
             Self::MicrophonesDomain => MICROPHONES_DOMAIN_MESSAGE,
+            Self::DestinationDomain => {
+                "Use handy settings destination favorite-add or favorite-remove."
+            }
+            Self::FavoritesFull => "You can keep up to 10 favorite applications.",
+            Self::FavoriteInvalid => {
+                "Each favorite needs a unique identity and a name of at most 100 characters."
+            }
             other => other.prompt_message(),
         }
     }

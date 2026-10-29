@@ -1273,7 +1273,15 @@
         "failed": "앱 목록을 불러올 수 없습니다.",
         "pin": "{{name}} 고정",
         "unpin": "{{name}} 고정 해제",
-        "thisDictationOnly": "이번 받아쓰기만"
+        "thisDictationOnly": "이번 받아쓰기만",
+        "favorites": "즐겨찾기",
+        "addFavorite": "{{name}}을(를) 즐겨찾기에 추가",
+        "removeFavorite": "{{name}}을(를) 즐겨찾기에서 제거",
+        "notOpen": "열려 있지 않음"
+      },
+      "favoriteNotSaved": {
+        "full": "즐겨찾기는 최대 10개까지 둘 수 있습니다.",
+        "failed": "즐겨찾기를 저장하지 못했습니다."
       },
       "refused": {
         "stale": "그사이 대상이 바뀌어 목록을 새로 고쳤습니다.",

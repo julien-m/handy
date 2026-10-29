@@ -1276,7 +1276,15 @@
         "failed": "Daftar aplikasi tidak dapat dimuat.",
         "pin": "Sematkan {{name}}",
         "unpin": "Lepas sematan {{name}}",
-        "thisDictationOnly": "Hanya dikte ini"
+        "thisDictationOnly": "Hanya dikte ini",
+        "favorites": "Favorit",
+        "addFavorite": "Tambahkan {{name}} ke favorit",
+        "removeFavorite": "Hapus {{name}} dari favorit",
+        "notOpen": "Tidak terbuka"
+      },
+      "favoriteNotSaved": {
+        "full": "Anda dapat menyimpan hingga 10 favorit.",
+        "failed": "Favorit tidak dapat disimpan."
       },
       "refused": {
         "stale": "Tujuan berubah sementara itu; daftar telah diperbarui.",

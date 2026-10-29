@@ -1276,7 +1276,15 @@
         "failed": "ऐप सूची लोड नहीं हो सकी।",
         "pin": "{{name}} पिन करें",
         "unpin": "{{name}} अनपिन करें",
-        "thisDictationOnly": "केवल यह डिक्टेशन"
+        "thisDictationOnly": "केवल यह डिक्टेशन",
+        "favorites": "पसंदीदा",
+        "addFavorite": "{{name}} को पसंदीदा में जोड़ें",
+        "removeFavorite": "{{name}} को पसंदीदा से हटाएँ",
+        "notOpen": "खुला नहीं"
+      },
+      "favoriteNotSaved": {
+        "full": "आप अधिकतम 10 पसंदीदा रख सकते हैं।",
+        "failed": "पसंदीदा सहेजे नहीं जा सके।"
       },
       "refused": {
         "stale": "इस बीच गंतव्य बदल गया; सूची रीफ़्रेश कर दी गई।",

@@ -1273,7 +1273,15 @@
         "failed": "לא ניתן היה לטעון את רשימת האפליקציות.",
         "pin": "הצמד את {{name}}",
         "unpin": "בטל הצמדה של {{name}}",
-        "thisDictationOnly": "רק ההכתבה הזו"
+        "thisDictationOnly": "רק ההכתבה הזו",
+        "favorites": "מועדפים",
+        "addFavorite": "הוספת {{name}} למועדפים",
+        "removeFavorite": "הסרת {{name}} מהמועדפים",
+        "notOpen": "לא פתוח"
+      },
+      "favoriteNotSaved": {
+        "full": "אפשר לשמור עד 10 מועדפים.",
+        "failed": "לא ניתן היה לשמור את המועדפים."
       },
       "refused": {
         "stale": "היעד השתנה בינתיים; הרשימה רועננה.",

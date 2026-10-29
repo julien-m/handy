@@ -1276,7 +1276,15 @@
         "failed": "The app list could not be loaded.",
         "pin": "Pin {{name}}",
         "unpin": "Unpin {{name}}",
-        "thisDictationOnly": "This dictation only"
+        "thisDictationOnly": "This dictation only",
+        "favorites": "Favorites",
+        "addFavorite": "Add {{name}} to favorites",
+        "removeFavorite": "Remove {{name}} from favorites",
+        "notOpen": "Not open"
+      },
+      "favoriteNotSaved": {
+        "full": "You can keep up to 10 favorites.",
+        "failed": "The favorites could not be saved."
       },
       "refused": {
         "stale": "The destination changed meanwhile; the list was refreshed.",

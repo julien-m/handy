@@ -20,7 +20,8 @@ fn every_actual_stored_field_has_exactly_one_descriptor() -> Result<(), Box<dyn 
         .map(|entry| entry.key.to_owned())
         .collect();
     // 010: `show_recovery_bubble_without_text_field` is stored and described with the gate open.
-    let keys = 69 + usize::from(cfg!(feature = "destination-return"));
+    // 005 N23 adds `plain_dictation_prompt_id`, 012 `destination_favorites` (every build).
+    let keys = 70 + usize::from(cfg!(feature = "destination-return"));
     assert_eq!(actual.len(), keys);
     assert_eq!(descriptors().len(), keys);
     assert_eq!(actual, described);
@@ -39,17 +40,19 @@ const READONLY: [&str; 9] = [
     "post_process_providers",
     "post_process_models",
 ];
-const COLLECTIONS: [(&str, &str); 6] = [
+const COLLECTIONS: [(&str, &str); 7] = [
     ("bindings", "shortcuts"),
     ("microphone_priority", "microphones"),
     ("custom_words", "vocabulary"),
     ("custom_filler_words", "vocabulary"),
     ("post_process_prompts", "prompts"),
     ("word_replacements", "replacements"),
+    // 012: favorite destination applications, owned by the destination domain.
+    ("destination_favorites", "destination"),
 ];
 
 #[test]
-fn independent_access_inventory_covers_9_readonly_1_secret_6_collections_53_scalars(
+fn independent_access_inventory_covers_9_readonly_1_secret_7_collections_53_scalars(
 ) -> Result<(), Box<dyn std::error::Error>> {
     for key in READONLY {
         let entry = handy_app_lib::settings_service::descriptor::descriptor(key)

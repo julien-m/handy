@@ -1276,7 +1276,15 @@
         "failed": "Listen over apps kunne ikke indlæses.",
         "pin": "Fastgør {{name}}",
         "unpin": "Frigør {{name}}",
-        "thisDictationOnly": "Kun denne diktering"
+        "thisDictationOnly": "Kun denne diktering",
+        "favorites": "Favoritter",
+        "addFavorite": "Føj {{name}} til favoritter",
+        "removeFavorite": "Fjern {{name}} fra favoritter",
+        "notOpen": "Ikke åben"
+      },
+      "favoriteNotSaved": {
+        "full": "Du kan have op til 10 favoritter.",
+        "failed": "Favoritterne kunne ikke gemmes."
       },
       "refused": {
         "stale": "Destinationen er ændret i mellemtiden; listen er opdateret.",

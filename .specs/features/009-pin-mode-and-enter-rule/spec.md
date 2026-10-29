@@ -4,7 +4,7 @@ title: PIN Mode and Enter Rule
 priority: P1
 status: In Progress
 created: 2026-10-12
-updated: 2026-10-15
+updated: 2026-10-29
 ---
 
 # Feature Spec: PIN Mode and Enter Rule
@@ -273,7 +273,8 @@ Feature: Pin entries in the badge menu
   Scenario: Pin entry shown
     Given nothing is pinned and the badge menu is open
     When the user reads the menu
-    Then "Pin <destination>" is listed above the application list
+    Then "Pin <destination>" is listed in the fixed footer of the menu, nearest the badge
+    And it stays visible without scrolling, below the favorites (012) and "Frontmost app at the end"
   Scenario: Automatic Enter selector
     Given the output settings are open
     When the user opens the Automatic Enter selector
@@ -370,6 +371,8 @@ Feature: Keyboard access to Automatic Enter
 
 - Decision `009-pin-mode-and-enter-rule:AC-006` / `cli_pin_identifier_format`: Precision of 2026-10-15 derived from feature 006, recorded by the orchestrator agent while applying the round 6 review (not a new product choice and not a decision of Julien): the identifier is the stable application identity that 006 records, the bundle identifier on macOS and, on Windows, the application user model ID or, for an application without one, its executable path. `destination pin` and `destination status` return that identity with its kind (`bundle_id`, `aumid` or `executable_path`) and the application's display name.
 <!-- livespec-clarification:{"requirement_id": "009-pin-mode-and-enter-rule:AC-006", "decision_key": "cli_pin_identifier_format", "evidence_hash": "694f99da054f6223927050dd3c588186681a97172257d478f5cf6e0f5c43bf59", "answer": "Precision of 2026-10-15 derived from feature 006, recorded by the orchestrator agent while applying the round 6 review (not a new product choice and not a decision of Julien): the identifier is the stable application identity that 006 records, the bundle identifier on macOS and, on Windows, the application user model ID or, for an application without one, its executable path. `destination pin` and `destination status` return that identity with its kind (`bundle_id`, `aumid` or `executable_path`) and the application's display name."} -->
+
+- Decision `009-pin-mode-and-enter-rule:AC-001` / `pin_entries_in_fixed_footer`: 2026-10-29, from Julien's native finding relayed by the coordinator and applied with feature 012 (`.specs/features/012-destination-favorites/spec.md`): "Pin <destination>" was listed above the application list, and the menu opens upwards from the badge at the bottom of the screen, so with about twenty open applications Julien could not see it. "Pin <destination>" and "Unpin <app>" now sit in a fixed footer of the badge menu with "Frontmost app at the end", nearest the badge (top to bottom: "Frontmost app at the end", "Pin <destination>", "Unpin <app>"), always visible without scrolling; the application list above them scrolls and 012's favorites sit between the list and the footer. AC-001's behavior (which entries are offered and what pinning does) is unchanged; only their place in the menu changes.
 
 ## QE Analysis
 

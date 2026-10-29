@@ -8,6 +8,10 @@ pub(super) fn destination_operation(action: &DestinationAction) -> SettingsOpera
         DestinationAction::Pin { identifier } => ("pin", vec![identifier.clone()]),
         DestinationAction::Unpin => ("unpin", Vec::new()),
         DestinationAction::Status => ("status", Vec::new()),
+        DestinationAction::FavoriteAdd { identifier } => ("favorite-add", vec![identifier.clone()]),
+        DestinationAction::FavoriteRemove { identifier } => {
+            ("favorite-remove", vec![identifier.clone()])
+        }
     };
     SettingsOperation::Domain {
         domain: "destination".to_owned(),
