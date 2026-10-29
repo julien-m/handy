@@ -540,6 +540,10 @@
         "description": "Bewaart de tekst in een bubbel in plaats van hem nergens te plakken."
       },
       "textFormatting": {
+        "smartSpacing": {
+          "label": "Slimme spaties",
+          "description": "Voegt de nodige spaties toe waar het dictaat de tekst rond de cursor raakt, zonder ooit bestaande spaties of regeleinden te verdubbelen. Geen spatie vóór , . ) ] of na ( [, en niet in talen zonder spaties. Indien aan, bepaalt het de spatie na het dictaat: 'Spatie achteraan toevoegen' voegt er dan alleen een toe aan het einde van een veld. Als het veld niet gelezen kan worden, wordt alleen één spatie aan het einde toegevoegd."
+        },
         "smartCapitalization": {
           "label": "Slimme hoofdletters",
           "description": "Past de eerste letter van elk dictaat aan de tekst vóór de cursor aan: een hoofdletter aan het begin van een zin, een kleine letter als je een zin voortzet. Afkortingen, woorden zoals iPhone en je eigen woorden blijven behouden. Als het veld niet leesbaar is, verandert er niets."

@@ -540,6 +540,10 @@
         "description": "Behåller texten i en bubbla i stället för att klistra in den i tomma intet."
       },
       "textFormatting": {
+        "smartSpacing": {
+          "label": "Smart mellanrum",
+          "description": "Lägger till de mellanslag som behövs där dikteringen möter texten runt markören och dubblerar aldrig befintliga mellanslag eller radbrytningar. Inget mellanslag före , . ) ] eller efter ( [, och inget i språk som skrivs utan mellanslag. När det är på avgör det mellanslaget efter dikteringen: \"Lägg till avslutande mellanslag\" lägger då bara till ett i slutet av ett fält. Om fältet inte kan läsas läggs bara ett mellanslag till i slutet."
+        },
         "smartCapitalization": {
           "label": "Smarta versaler",
           "description": "Anpassar första bokstaven i varje diktering till texten före markören: versal i början av en mening, gemen när du fortsätter en. Förkortningar, ord som iPhone och dina egna ord behålls. Inget ändras om fältet inte kan läsas."

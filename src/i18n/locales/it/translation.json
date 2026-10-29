@@ -540,6 +540,10 @@
         "description": "Tiene il testo in una bolla invece di incollarlo nel vuoto."
       },
       "textFormatting": {
+        "smartSpacing": {
+          "label": "Spaziatura intelligente",
+          "description": "Aggiunge gli spazi necessari dove la dettatura incontra il testo intorno al cursore, senza mai raddoppiare spazi o a capo già presenti. Nessuno spazio prima di , . ) ] o dopo ( [, né nelle lingue scritte senza spazi. Se attiva, decide lo spazio dopo la dettatura: «Aggiungi Spazio Finale» ne aggiunge uno solo alla fine di un campo. Se il campo non può essere letto, viene aggiunto solo uno spazio finale."
+        },
         "smartCapitalization": {
           "label": "Maiuscole intelligenti",
           "description": "Adatta la prima lettera di ogni dettatura al testo prima del cursore: maiuscola a inizio frase, minuscola quando la continui. Sigle, parole come iPhone e le tue parole personalizzate restano invariate. Se il campo non è leggibile non cambia nulla."

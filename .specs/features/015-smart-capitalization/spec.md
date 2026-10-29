@@ -223,7 +223,7 @@ flowchart TD
 
 ### AC-006
 
-**Criterion:** The context is read once per dictation, at the final preparation of the insertion (after AI post-processing, before the 006 activation and before the insertion method), on a worker thread, within a single 50 ms budget (010's classification budget); each accessibility query's timeout is the remaining budget. It reads at most 64 UTF-16 units before the caret with `AXStringForRange`, never `AXValue`, never a password field, and never the system-wide element. The context is never logged, never stored, never sent in an event and dropped after the decision; logs carry only the decision kind.
+**Criterion:** The context is read once per dictation, at the final preparation of the insertion (after AI post-processing, before the 006 activation and before the insertion method), on a worker thread, within a single 50 ms budget (010's classification budget); each accessibility query's timeout is the remaining budget. It reads at most 64 UTF-16 units before the caret with `AXStringForRange`, never `AXValue`, never a password field, and never the system-wide element. The context is never logged, never stored, never sent in an event and dropped after the decision; logs carry only the decision kind. Extended by [017 AC-009](../017-smart-spacing/spec.md#ac-009): with smart spacing on, the same read also takes the field length and at most 16 units after the selection, within the same budget; an answer shorter than the window asked before the caret is not trusted (Absent).
 **Priority:** P1 | **Story:** Story 3
 
 ### AC-007
@@ -238,7 +238,7 @@ flowchart TD
 
 ### AC-009
 
-**Criterion:** The transformation runs in the final preparation of the insertion, after replacements (002), custom-word correction (003), filler removal, normalization and AI post-processing (005), on every insertion path (006 session, smart paste at the foreground, legacy paste). History keeps the native and AI texts unchanged; a retained transcript for recovery (010) is the adapted text. A documented extension point after the capitalization step is reserved for a future "smart spacing" step, which will run after it.
+**Criterion:** The transformation runs in the final preparation of the insertion, after replacements (002), custom-word correction (003), filler removal, normalization and AI post-processing (005), on every insertion path (006 session, smart paste at the foreground, legacy paste). History keeps the native and AI texts unchanged; a retained transcript for recovery (010) is the adapted text. A documented extension point after the capitalization step is reserved for a future "smart spacing" step, which will run after it (now used by [017 Smart Spacing](../017-smart-spacing/spec.md#ac-009)).
 **Priority:** P2 | **Story:** Stories 1, 2
 
 ### AC-010

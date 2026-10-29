@@ -3,24 +3,59 @@
 //! the system-wide element; it sets the messaging timeout right before each request (never 0).
 //! It reads `AXSelectedTextRange` and the bounded parameterized attribute `AXStringForRange`,
 //! never `AXValue`; the caller has classified the element editable (not a password field) by
-//! 010's rule before any text is read. Nothing read here is logged.
-use super::reader::{CaretElement, CaretPort};
+//! 010's rule before any text is read. Smart spacing (017) adds `AXNumberOfCharacters`, a
+//! length, so the bounded read after the selection never asks beyond the field's end.
+//! Nothing read here is logged.
+use super::reader::{CaretElement, CaretPort, FieldText};
 use crate::recovery::classifier::{AxQueryError, FocusedElement};
 use crate::recovery::platform::macos_ax::{
     attribute, ax_element, ax_result, copy_attribute, set_timeout, MacFocusedElement,
 };
-use crate::smart_paste::macos_cf::{string_units, CfIndex, CfOwned, CfRange, CfTypeRef};
+use crate::smart_paste::macos_cf::{string_units, type_id, CfIndex, CfOwned, CfRange, CfTypeRef};
 use std::ffi::c_void;
 use std::ptr;
 use std::time::Duration;
 
 /// `kAXValueCFRangeType` (AXValue.h).
 const AX_VALUE_CF_RANGE: u32 = 4;
-/// `kAXStringForRangeParameterizedAttribute` and `kAXSelectedTextRangeAttribute` are `CFSTR`
-/// macros in the SDK, so not linkable symbols.
+/// `kCFNumberSInt64Type` (CFNumber.h).
+const CF_NUMBER_SINT64: CfIndex = 4;
+/// `kAXStringForRangeParameterizedAttribute`, `kAXSelectedTextRangeAttribute` and
+/// `kAXNumberOfCharactersAttribute` are `CFSTR` macros in the SDK, so not linkable symbols.
 const STRING_FOR_RANGE: &str = "AXStringForRange";
 const SELECTED_TEXT_RANGE: &str = "AXSelectedTextRange";
+const NUMBER_OF_CHARACTERS: &str = "AXNumberOfCharacters";
 const FOCUSED_UI_ELEMENT: &str = "AXFocusedUIElement";
+
+#[link(name = "CoreFoundation", kind = "framework")]
+unsafe extern "C" {
+    fn CFNumberGetTypeID() -> usize;
+    fn CFNumberGetValue(number: CfTypeRef, number_type: CfIndex, value: *mut c_void) -> u8;
+}
+
+// @spec AC-009: Bounded read after the selection — .specs/features/017-smart-spacing/spec.md#ac-009
+/// The length of `element`'s text in UTF-16 units (`AXNumberOfCharacters`), with `timeout`
+/// set on `element` first; any other answer than a non-negative number is `Failed`.
+pub(crate) fn character_count(element: &CfOwned, timeout: Duration) -> Result<usize, AxQueryError> {
+    let value = copy_attribute(element, NUMBER_OF_CHARACTERS, timeout)?;
+    // SAFETY: CFNumberGetTypeID takes no arguments; the value is a live CF object.
+    if type_id(value.as_ptr()) != unsafe { CFNumberGetTypeID() } {
+        return Err(AxQueryError::Failed);
+    }
+    let mut count: i64 = 0;
+    // SAFETY: the value is a CFNumber; `count` is an i64-sized out buffer for SInt64.
+    let read = unsafe {
+        CFNumberGetValue(
+            value.as_ptr(),
+            CF_NUMBER_SINT64,
+            (&raw mut count).cast::<c_void>(),
+        )
+    };
+    if read == 0 {
+        return Err(AxQueryError::Failed);
+    }
+    usize::try_from(count).map_err(|_| AxQueryError::Failed)
+}
 
 #[link(name = "ApplicationServices", kind = "framework")]
 unsafe extern "C" {
@@ -101,10 +136,18 @@ impl CaretElement for MacCaretElement {
     fn facts(&mut self) -> &mut dyn FocusedElement {
         &mut self.inner
     }
-    fn selection_start(&mut self, timeout: Duration) -> Result<usize, AxQueryError> {
+}
+
+impl FieldText for MacCaretElement {
+    fn selection(&mut self, timeout: Duration) -> Result<(usize, usize), AxQueryError> {
         let value = copy_attribute(&self.inner.element, SELECTED_TEXT_RANGE, timeout)?;
         let range = crate::destination::macos_field::cf_range(&value)?;
-        usize::try_from(range.location).map_err(|_| AxQueryError::Failed)
+        let start = usize::try_from(range.location).map_err(|_| AxQueryError::Failed)?;
+        let length = usize::try_from(range.length).map_err(|_| AxQueryError::Failed)?;
+        Ok((start, length))
+    }
+    fn character_count(&mut self, timeout: Duration) -> Result<usize, AxQueryError> {
+        character_count(&self.inner.element, timeout)
     }
     fn text_in(
         &mut self,

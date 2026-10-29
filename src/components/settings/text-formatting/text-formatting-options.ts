@@ -1,13 +1,13 @@
-// Options of the "Text formatting" section of the Advanced settings page (015 smart
-// capitalization, 016 smart paragraphs; smart spacing comes in its own feature, as the first
-// row). Each option is one boolean setting with its own independent switch row: adding an
-// option is one entry here (and its setting key in the union), nothing else in the section
-// changes.
-import { CaseSensitive, Pilcrow, type LucideIcon } from "lucide-react";
+// Options of the "Text formatting" section of the Advanced settings page (017 smart spacing,
+// first; 015 smart capitalization; 016 smart paragraphs). Each option is one boolean setting
+// with its own independent switch row: adding an option is one entry here (and its setting key
+// in the union), nothing else in the section changes.
+import { CaseSensitive, Pilcrow, Space, type LucideIcon } from "lucide-react";
 import { smartParagraphsDescriptionKey } from "../smart-paragraphs-state";
 
 /** Boolean settings shown in the Text formatting section. */
 export type TextFormattingKey =
+  | "smart_spacing"
   | "smart_capitalization"
   | "smart_paragraphs_enabled";
 
@@ -31,6 +31,15 @@ export interface TextFormattingOption {
 // @spec AC-008: Text formatting switch row — .specs/features/015-smart-capitalization/spec.md#ac-008
 /** The section's rows, in display order. */
 export const TEXT_FORMATTING_OPTIONS: readonly TextFormattingOption[] = [
+  // @spec AC-014: First row of Text formatting — .specs/features/017-smart-spacing/spec.md#ac-014
+  {
+    key: "smart_spacing",
+    icon: Space,
+    labelKey: "settings.advanced.textFormatting.smartSpacing.label",
+    descriptionKey: () =>
+      "settings.advanced.textFormatting.smartSpacing.description",
+    testId: "smart-spacing",
+  },
   {
     key: "smart_capitalization",
     icon: CaseSensitive,

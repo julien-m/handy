@@ -23,8 +23,8 @@ fn explicit_projection_reports_secret_presence_without_any_raw_canary(
     assert!(!rendered.contains("CANARY_"));
     // 005 N23 adds `plain_dictation_prompt_id`, 012 `destination_favorites`.
     // 013 adds `destination_default_inputs`, 015 `smart_capitalization`, 016
-    // `smart_paragraphs_enabled`.
-    assert_eq!(public.as_object().ok_or("public object")?.len(), 73);
+    // `smart_paragraphs_enabled`, 017 `smart_spacing`.
+    assert_eq!(public.as_object().ok_or("public object")?.len(), 74);
     let envelope = serde_json::to_value(SettingsEnvelope::success(
         snapshot.revision,
         snapshot.public_settings(),
@@ -111,8 +111,8 @@ fn generated_schema_matches_wire_shapes_and_descriptor_inventory(
         // `paste_verification` in every build.
         // 013 adds `destination_default_inputs` in every build.
         // `paste_verification` in every build; 015 adds `smart_capitalization`, 016
-        // `smart_paragraphs_enabled`.
-        73 + usize::from(cfg!(feature = "destination-return"))
+        // `smart_paragraphs_enabled`, 017 `smart_spacing`.
+        74 + usize::from(cfg!(feature = "destination-return"))
     );
     assert_eq!(
         schema["$defs"]["success"]["properties"]["ok"]["const"],

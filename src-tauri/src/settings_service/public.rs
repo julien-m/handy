@@ -130,6 +130,7 @@ struct PublicAdvanced {
     mute_while_recording: bool,
     append_trailing_space: bool,
     smart_capitalization: bool,
+    smart_spacing: bool,
     return_to_dictation_app: bool,
     /// 010: a boolean on every platform with the gate open, absent with it closed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -167,6 +168,7 @@ impl PublicAdvanced {
             mute_while_recording: settings.mute_while_recording,
             append_trailing_space: settings.append_trailing_space,
             smart_capitalization: settings.smart_capitalization,
+            smart_spacing: settings.smart_spacing,
             return_to_dictation_app: settings.return_to_dictation_app,
             show_recovery_bubble_without_text_field: settings
                 .show_recovery_bubble_without_text_field,

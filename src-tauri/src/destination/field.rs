@@ -64,7 +64,7 @@ impl SelectionRange {
 
 /// One accessibility element obtained by 011: the facts 010's rule needs, the selection range,
 /// focus and range writes, its window, and identity with another element. No method returns
-/// the element's value, selected text or title; only `text_in` reads a bounded slice, for 015.
+/// the element's value, selected text or title; only `text_in` reads a bounded slice, for 015 and 017.
 /// Write timeouts answer `AxQueryError::Timeout` when the target did not answer in time (the
 /// write may still be applied later).
 pub trait FieldNode: FocusedElement + Send {
@@ -85,9 +85,10 @@ pub trait FieldNode: FocusedElement + Send {
     fn same_as(&self, other: &dyn FieldNode) -> bool;
     /// The platform object, for `same_as` between two elements of one adapter.
     fn as_any(&self) -> &dyn Any;
-    /// Smart capitalization (015) only, with its option on: the `length` UTF-16 units starting
-    /// at `location` (`AXStringForRange`), bounded by `timeout`. The one read of content this
-    /// port allows; never logged or kept. Adapters without it answer `Unsupported`.
+    /// Smart capitalization (015) and smart spacing (017) only, with an option on: the
+    /// `length` UTF-16 units starting at `location` (`AXStringForRange`), bounded by `timeout`.
+    /// The one read of content this port allows; never logged or kept. Adapters without it
+    /// answer `Unsupported`.
     fn text_in(
         &mut self,
         location: usize,
@@ -96,6 +97,15 @@ pub trait FieldNode: FocusedElement + Send {
     ) -> Result<Vec<u16>, AxQueryError> {
         // Unused here: an adapter without a bounded text read has nothing to read.
         let _ = (location, length, timeout);
+        Err(AxQueryError::Unsupported)
+    }
+    /// Smart spacing (017) only, with its option on: the length of the element's text in
+    /// UTF-16 units (`AXNumberOfCharacters`), bounded by `timeout`, so the read after the
+    /// selection stays inside the field. A length, never content. Adapters without it answer
+    /// `Unsupported` (the side after the selection is then unknown).
+    fn character_count(&mut self, timeout: Duration) -> Result<usize, AxQueryError> {
+        // Unused here: an adapter without a length read has nothing to ask.
+        let _ = timeout;
         Err(AxQueryError::Unsupported)
     }
 }

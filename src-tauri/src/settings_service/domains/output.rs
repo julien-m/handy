@@ -8,7 +8,7 @@
 //! elsewhere with `validation_failed` (exit 2) before any write, dry runs included. Feature
 //! 010 adds `show_recovery_bubble_without_text_field` with the gate open (refused off macOS).
 //! 007 AC-019 adds the experimental boolean `paste_verification` (smart paste only); 015 adds
-//! the boolean `smart_capitalization`.
+//! the boolean `smart_capitalization`; 017 adds the boolean `smart_spacing`.
 use super::{ChangeKind, Domain, DomainChange, DomainPlan, DomainRequest};
 use crate::settings::AppSettings;
 use crate::settings_service::{
@@ -26,23 +26,6 @@ const ENTER_KEY: &str = "automatic_enter";
 /// Output settings of this build, in help order (010 adds its no-text-field key when the
 /// `destination-return` gate is open).
 #[cfg(not(feature = "destination-return"))]
-pub const OUTPUT_KEYS: [&str; 13] = [
-    "paste_method",
-    "clipboard_handling",
-    ENTER_KEY,
-    "auto_submit_key",
-    "paste_delay_ms",
-    "paste_delay_after_ms",
-    "reliable_paste",
-    "paste_verification",
-    "typing_tool",
-    "external_script_path",
-    "append_trailing_space",
-    "smart_capitalization",
-    "return_to_dictation_app",
-];
-/// Output settings of this build, in help order.
-#[cfg(feature = "destination-return")]
 pub const OUTPUT_KEYS: [&str; 14] = [
     "paste_method",
     "clipboard_handling",
@@ -56,6 +39,25 @@ pub const OUTPUT_KEYS: [&str; 14] = [
     "external_script_path",
     "append_trailing_space",
     "smart_capitalization",
+    "smart_spacing",
+    "return_to_dictation_app",
+];
+/// Output settings of this build, in help order.
+#[cfg(feature = "destination-return")]
+pub const OUTPUT_KEYS: [&str; 15] = [
+    "paste_method",
+    "clipboard_handling",
+    ENTER_KEY,
+    "auto_submit_key",
+    "paste_delay_ms",
+    "paste_delay_after_ms",
+    "reliable_paste",
+    "paste_verification",
+    "typing_tool",
+    "external_script_path",
+    "append_trailing_space",
+    "smart_capitalization",
+    "smart_spacing",
     "return_to_dictation_app",
     "show_recovery_bubble_without_text_field",
 ];

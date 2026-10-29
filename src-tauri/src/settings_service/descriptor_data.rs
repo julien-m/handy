@@ -69,6 +69,8 @@ inventory! {
  "append_trailing_space" => (Boolean,false,None,&[],false,false,"output",None);
  // 015: smart capitalization, read at each insertion (no live effect).
  "smart_capitalization" => (Boolean,false,None,&[],false,false,"output",None);
+ // 017: smart spacing, read at each insertion (no live effect).
+ "smart_spacing" => (Boolean,false,None,&[],false,false,"output",None);
  // 012: favorite destination applications, changed by the badge star and the destination domain;
  // listed before `return_to_dictation_app`, which 010's key follows directly when its gate is open.
  "destination_favorites" => (Array,false,None,&[],false,false,"destination",None);

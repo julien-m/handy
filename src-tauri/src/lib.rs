@@ -39,6 +39,7 @@ mod signal_handle;
 pub mod smart_capitalization;
 mod smart_paragraphs;
 pub mod smart_paste;
+pub mod smart_spacing;
 mod transcription_coordinator;
 mod tray;
 mod tray_i18n;
@@ -751,6 +752,7 @@ macro_rules! handy_commands {
             shortcut::change_mute_while_recording_setting,
             shortcut::change_append_trailing_space_setting,
             shortcut::change_smart_capitalization_setting,
+            shortcut::change_smart_spacing_setting,
             shortcut::change_return_to_dictation_app_setting,
             shortcut::change_lazy_stream_close_setting,
             shortcut::change_vad_enabled_setting,

@@ -43,7 +43,7 @@ Status: In Progress (automated evidence complete; macOS native proof pending wit
 
 ## Pipeline position (AC-009)
 
-Recognition → script conversion → replacements (002) → custom-word correction (003) → fillers → normalization → AI post-processing (005) → history (native and AI texts, unchanged) → **final preparation (`insert_final_text`): smart capitalization, then the reserved smart spacing slot (`smart_capitalization::prepare_text`)** → 006 session / smart paste / legacy paste (trailing space appended by the method as before).
+Recognition → script conversion → replacements (002) → custom-word correction (003) → fillers → normalization → AI post-processing (005) → history (native and AI texts, unchanged) → **final preparation (`insert_final_text`): smart capitalization, then smart spacing (017, in the reserved slot of `smart_capitalization::prepare_text`)** → 006 session / smart paste / legacy paste (trailing space appended by the method as before, unless 017 decided it). Since 017 the reader returns an `InsertionContext` (`Unavailable`, `NotText` or `Field { before, after }`); capitalization uses `before()`, unchanged.
 
 ## Gaps
 

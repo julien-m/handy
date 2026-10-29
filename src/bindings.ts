@@ -625,6 +625,18 @@ async changeSmartCapitalizationSetting(enabled: boolean) : Promise<Result<null, 
 }
 },
 /**
+ * Settings UI write of `smart_spacing` (017), through the shared validator and one revisioned
+ * commit; the next insertion reads it.
+ */
+async changeSmartSpacingSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_smart_spacing_setting", { enabled }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
  * Settings UI write of `return_to_dictation_app`: the shared UI validator (a build without the
  * destination capability refuses `true` and `false` with `validation_failed` and the typed reason
  * `unsupported_platform`), one durable commit, then `settings-changed`. The value is read when a
@@ -1633,6 +1645,13 @@ plain_dictation_prompt_id?: string | null; mute_while_recording?: boolean; appen
  * upgrade and reads off (field default and `apply_settings_migrations`).
  */
 smart_capitalization?: boolean; 
+/**
+ * Smart spacing (017): fit the spaces at the two edges of a dictation to the text around
+ * the selection, and decide its trailing space instead of `append_trailing_space`. On for a
+ * new installation (`get_default_settings`); a store without the key is an upgrade and
+ * reads off (field default and `apply_settings_migrations`).
+ */
+smart_spacing?: boolean; 
 /**
  * Return to the application where the dictation started before inserting (006).
  */

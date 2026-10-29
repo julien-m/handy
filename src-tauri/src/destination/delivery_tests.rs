@@ -125,6 +125,27 @@ fn a_failed_worker_of_a_cancelled_dictation_is_reported_cancelled() {
         (InsertionStatus::Cancelled, None)
     );
 }
+// @spec AC-005: One trailing space, never two — .specs/features/017-smart-spacing/spec.md#ac-005
+#[test]
+fn a_trailing_space_decided_by_smart_spacing_turns_the_method_space_off() {
+    for (append_trailing_space, decided) in [(true, true), (true, false), (false, true)] {
+        let mut settings = crate::settings::get_default_settings();
+        settings.append_trailing_space = append_trailing_space;
+        let method = method_settings(settings.clone(), decided);
+        assert_eq!(
+            method.append_trailing_space,
+            append_trailing_space && !decided
+        );
+        // Everything else of the snapshot is kept.
+        assert_eq!(method.paste_method, settings.paste_method);
+        // What the method inserts after smart spacing ended the text with one space.
+        let inserted = crate::clipboard::with_trailing_space("word ".to_owned(), &method);
+        if decided {
+            assert_eq!(inserted, "word ");
+        }
+    }
+}
+
 // @spec AC-003: Copy and drag carry exactly the inserted text — .specs/features/010-recovery-bubble/spec.md#ac-003
 #[test]
 fn the_insertion_settings_carry_the_trailing_space_to_the_recovery_slot() {

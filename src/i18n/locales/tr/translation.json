@@ -540,6 +540,10 @@
         "description": "Metni boşluğa yapıştırmak yerine bir baloncukta tutar."
       },
       "textFormatting": {
+        "smartSpacing": {
+          "label": "Akıllı Boşluk",
+          "description": "Dikte edilen metnin imleç çevresindeki metinle birleştiği yerlere gereken boşlukları ekler ve var olan boşlukları ya da satır sonlarını asla ikiye katlamaz. , . ) ] öncesinde veya ( [ sonrasında boşluk eklenmez, boşluksuz yazılan dillerde de eklenmez. Açıkken dikteden sonraki boşluğa o karar verir: \"Sonuna Boşluk Ekle\" o zaman yalnızca bir alanın sonunda boşluk ekler. Alan okunamazsa sona yalnızca bir boşluk eklenir."
+        },
         "smartCapitalization": {
           "label": "Akıllı büyük harf",
           "description": "Her dikte işleminin ilk harfini imleçten önceki metne uyarlar: cümle başında büyük, bir cümleyi sürdürürken küçük harf. Kısaltmalar, iPhone gibi sözcükler ve özel sözcükleriniz korunur. Alan okunamıyorsa hiçbir şey değişmez."

@@ -1,5 +1,6 @@
 /**
- * Rendered Text formatting section (015, with the 016 smart paragraphs row): one independent
+ * Rendered Text formatting section (015, with the 016 smart paragraphs row and the 017 smart
+ * spacing row first): one independent
  * switch row per option, in display order, with its icon, its info button, the stored value and
  * the screen-prefixed test ids. Run with `bun run test:text-formatting` (also part of
  * `bun run test:smart-paragraphs`).
@@ -97,17 +98,47 @@ describe("text formatting section (015)", () => {
     );
   });
 
-  test("rows follow the planned order: capitalization, then paragraphs", () => {
+  // @spec AC-014: First row of Text formatting — .specs/features/017-smart-spacing/spec.md#ac-014
+  test("rows follow the planned order: spacing, capitalization, then paragraphs", () => {
     stored = {};
     const markup = renderIn("output-settings", <TextFormattingSection />);
+    const spacing = markup.indexOf(
+      'data-testid="output-settings-smart-spacing"',
+    );
     const capitalization = markup.indexOf(
       'data-testid="output-settings-smart-capitalization"',
     );
     const paragraphs = markup.indexOf(
       'data-testid="output-settings-smart-paragraphs"',
     );
-    expect(capitalization >= 0).toBe(true);
+    expect(spacing >= 0).toBe(true);
+    expect(capitalization > spacing).toBe(true);
     expect(paragraphs > capitalization).toBe(true);
+    expect(TEXT_FORMATTING_OPTIONS[0]?.key).toBe("smart_spacing");
+  });
+
+  test("smart spacing: space icon, label, info and the stored value (017)", () => {
+    const option = optionOf("smart_spacing");
+    stored = { smart_spacing: true };
+    const on = renderIn(
+      "output-settings",
+      <TextFormattingRow option={option} />,
+    );
+    expect(on).toContain("lucide-space");
+    expect(on).toContain("settings.advanced.textFormatting.smartSpacing.label");
+    expect(on).toContain('aria-label="More information"');
+    expect(switchOf(on, "output-settings-smart-spacing")).toContain("checked");
+    stored = { smart_spacing: false };
+    const off = renderIn(
+      "output-settings",
+      <TextFormattingRow option={option} />,
+    );
+    expect(switchOf(off, "output-settings-smart-spacing")).not.toContain(
+      "checked",
+    );
+    expect(option.descriptionKey("macos")).toBe(
+      "settings.advanced.textFormatting.smartSpacing.description",
+    );
   });
 
   test("smart paragraphs: pilcrow icon, label, off unless stored on (016)", () => {

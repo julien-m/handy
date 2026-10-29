@@ -6,7 +6,8 @@
 //! timeout ends before the application answers spends its timeout and gets `Timeout`, and a
 //! write sent then is applied anyway, as the target does once it answers.
 //! No method can return an element's value, selected text or title, except `text_in` (015's
-//! bounded read), which answers only text a test scripted with `World::text`.
+//! bounded read), which answers only text a test scripted with `World::text`; 017's
+//! `character_count` answers only that text's length.
 #![allow(dead_code)]
 
 use super::destination::ManualClock;
@@ -392,5 +393,11 @@ impl FieldNode for Node {
         text.get(location..location + length)
             .map(<[u16]>::to_vec)
             .ok_or(AxQueryError::Failed)
+    }
+    fn character_count(&mut self, timeout: Duration) -> Result<usize, AxQueryError> {
+        self.world.answer("character_count", self.id, timeout)?;
+        let state = lock(&self.world.state);
+        let text = state.texts.get(&self.id).ok_or(AxQueryError::Unsupported)?;
+        Ok(text.len())
     }
 }

@@ -540,6 +540,10 @@
         "description": "Menyimpan teks dalam gelembung alih-alih menempelkannya ke mana-mana."
       },
       "textFormatting": {
+        "smartSpacing": {
+          "label": "Spasi Cerdas",
+          "description": "Menambahkan spasi yang diperlukan di tempat dikte bertemu teks di sekitar kursor, dan tidak pernah menggandakan spasi atau baris baru yang sudah ada. Tanpa spasi sebelum , . ) ] atau sesudah ( [, juga tidak dalam bahasa yang ditulis tanpa spasi. Saat aktif, fitur ini menentukan spasi setelah dikte: \"Tambahkan Spasi di Akhir\" lalu hanya menambahkannya di akhir kolom. Jika kolom tidak dapat dibaca, hanya satu spasi ditambahkan di akhir."
+        },
         "smartCapitalization": {
           "label": "Kapitalisasi cerdas",
           "description": "Menyesuaikan huruf pertama setiap dikte dengan teks sebelum kursor: huruf kapital di awal kalimat, huruf kecil saat Anda melanjutkannya. Singkatan, kata seperti iPhone, dan kata kustom Anda tetap dipertahankan. Tidak ada yang berubah jika kolom tidak dapat dibaca."

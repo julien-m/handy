@@ -580,6 +580,12 @@ pub struct AppSettings {
     /// upgrade and reads off (field default and `apply_settings_migrations`).
     #[serde(default)]
     pub smart_capitalization: bool,
+    /// Smart spacing (017): fit the spaces at the two edges of a dictation to the text around
+    /// the selection, and decide its trailing space instead of `append_trailing_space`. On for a
+    /// new installation (`get_default_settings`); a store without the key is an upgrade and
+    /// reads off (field default and `apply_settings_migrations`).
+    #[serde(default)]
+    pub smart_spacing: bool,
     /// Return to the application where the dictation started before inserting (006).
     #[serde(default = "default_return_to_dictation_app")]
     pub return_to_dictation_app: bool,
@@ -1199,6 +1205,7 @@ pub fn get_default_settings() -> AppSettings {
         mute_while_recording: false,
         append_trailing_space: false,
         smart_capitalization: true,
+        smart_spacing: true,
         return_to_dictation_app: default_return_to_dictation_app(),
         destination_favorites: Vec::new(),
         destination_default_inputs: Vec::new(),
@@ -1342,6 +1349,16 @@ pub(crate) fn apply_settings_migrations(
     // run migrations, get it on. A stored value is kept.
     if settings_value.get("smart_capitalization").is_none() {
         settings.smart_capitalization = false;
+        updated = true;
+    }
+
+    // @spec AC-013: New install on, upgrade off — .specs/features/017-smart-spacing/spec.md#ac-013
+    // One-time smart spacing migration (017), same rule as 015: a store written before the key
+    // existed is an upgrade, which keeps the spacing the user had (off, so the method's
+    // `append_trailing_space` still decides). Only fresh installs get it on. A stored value is
+    // kept.
+    if settings_value.get("smart_spacing").is_none() {
+        settings.smart_spacing = false;
         updated = true;
     }
 
@@ -1900,7 +1917,8 @@ mod tests {
             "transcribe_gpu_device": settings.transcribe_gpu_device,
             "smart_paste_migration_version": 1,
             "automatic_enter": "never",
-            "smart_capitalization": true
+            "smart_capitalization": true,
+            "smart_spacing": true
         });
 
         assert!(!apply_settings_migrations(&mut settings, &raw));
@@ -1936,6 +1954,36 @@ mod tests {
             let mut settings: AppSettings = serde_json::from_value(raw.clone()).expect("store");
             apply_settings_migrations(&mut settings, &raw);
             assert_eq!(settings.smart_capitalization, stored);
+        }
+    }
+
+    // @spec AC-013: New install on, upgrade off — .specs/features/017-smart-spacing/spec.md#ac-013
+    #[test]
+    fn fresh_install_enables_smart_spacing() {
+        assert!(get_default_settings().smart_spacing);
+    }
+
+    #[test]
+    fn upgrade_without_smart_spacing_key_disables_it() {
+        let raw = serde_json::json!({ "selected_model": "small", "smart_capitalization": true });
+        let mut settings: AppSettings = serde_json::from_value(raw.clone()).expect("partial store");
+        assert!(!settings.smart_spacing, "a missing key reads off");
+        settings.smart_spacing = true;
+        apply_settings_migrations(&mut settings, &raw);
+        assert!(
+            !settings.smart_spacing,
+            "the migration keeps the upgrade off"
+        );
+        assert!(settings.smart_capitalization, "015's stored value is kept");
+    }
+
+    #[test]
+    fn stored_smart_spacing_is_kept() {
+        for stored in [true, false] {
+            let raw = serde_json::json!({ "smart_spacing": stored });
+            let mut settings: AppSettings = serde_json::from_value(raw.clone()).expect("store");
+            apply_settings_migrations(&mut settings, &raw);
+            assert_eq!(settings.smart_spacing, stored);
         }
     }
 

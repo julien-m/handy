@@ -540,6 +540,10 @@
         "description": "Guarda el text en una bombolla en lloc d'enganxar-lo enlloc."
       },
       "textFormatting": {
+        "smartSpacing": {
+          "label": "Espaiat intel·ligent",
+          "description": "Afegeix els espais necessaris on el dictat es troba amb el text al voltant del cursor i mai no duplica un espai o salt de línia existent. Cap espai abans de , . ) ] ni després de ( [, ni en llengües escrites sense espais. Activat, decideix l'espai després del dictat: «Afegiu un espai al final» només n'afegeix un al final d'un camp. Si el camp no es pot llegir, només s'afegeix un espai al final."
+        },
         "smartCapitalization": {
           "label": "Majúscules intel·ligents",
           "description": "Adapta la primera lletra de cada dictat al text abans del cursor: majúscula a l'inici d'una frase, minúscula quan la continues. Es conserven les sigles, paraules com iPhone i les teves paraules personalitzades. No canvia res si no es pot llegir el camp."
