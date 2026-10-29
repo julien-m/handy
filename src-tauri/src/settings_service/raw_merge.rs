@@ -54,11 +54,62 @@ fn merge_change(raw: &mut Value, key: &str, before: Option<&Value>, after: Optio
                 merge_change(target, &child, old.get(&child), new.get(&child));
             }
         }
+        (Some(Value::Array(old)), Some(Value::Array(new)))
+            if old != new && unique_ids(old) && unique_ids(new) =>
+        {
+            let target = object.entry(key).or_insert(Value::Null);
+            merge_changed_items(target, old, new);
+        }
         (old, Some(new)) if old != Some(new) => {
             merge_preserved(object.entry(key).or_insert(Value::Null), new);
         }
         _ => {}
     }
+}
+/// Diff strategy for id-matched arrays: each typed item is diffed against its typed previous
+/// version (same `id`) on top of its stored item, so a field the item lost (an optional field
+/// cleared to `None` and no longer serialized) is removed while unknown stored fields survive.
+/// A raw array that cannot be matched by id falls back to `merge_preserved`.
+fn merge_changed_items(raw: &mut Value, old: &[Value], new: &[Value]) {
+    let previous = match raw {
+        Value::Array(items) if unique_ids(items) => std::mem::take(items),
+        _ => return merge_preserved(raw, &Value::Array(new.to_vec())),
+    };
+    let by_id = |items: &[Value], id: Option<&Value>| {
+        items.iter().find(|item| item.get("id") == id).cloned()
+    };
+    *raw = Value::Array(
+        new.iter()
+            .map(|item| {
+                let stored = by_id(&previous, item.get("id"));
+                match (stored, by_id(old, item.get("id"))) {
+                    (Some(Value::Object(stored)), Some(Value::Object(before))) => {
+                        let mut stored = Value::Object(stored);
+                        let after = item.as_object().cloned().unwrap_or_default();
+                        let keys = before
+                            .keys()
+                            .chain(after.keys())
+                            .cloned()
+                            .collect::<Vec<_>>();
+                        for child in keys {
+                            merge_change(
+                                &mut stored,
+                                &child,
+                                before.get(&child),
+                                after.get(&child),
+                            );
+                        }
+                        stored
+                    }
+                    (stored, _) => {
+                        let mut stored = stored.unwrap_or(Value::Null);
+                        merge_preserved(&mut stored, item);
+                        stored
+                    }
+                }
+            })
+            .collect(),
+    );
 }
 /// Merge strategy: typed values always win; objects recurse key by key so unknown keys survive.
 /// Arrays keep unknown item fields only when typed and stored items are matched by a unique,
@@ -132,6 +183,38 @@ mod tests {
                     "raw_only": {"unknown": "CANARY_RAW"}
                 },
                 "post_process_models": {"openai": "new"}
+            })
+        );
+    }
+    #[test]
+    fn a_field_cleared_in_a_matched_array_item_is_removed_while_unknown_fields_survive() {
+        let mut payload = json!({
+            "post_process_prompts": [
+                {"id": "p1", "name": "A", "provider_override": "groq", "unknown": "CANARY_ITEM"},
+                {"id": "p2", "name": "B"}
+            ]
+        });
+        let before = json!({
+            "post_process_prompts": [
+                {"id": "p1", "name": "A", "provider_override": "groq"},
+                {"id": "p2", "name": "B"}
+            ]
+        });
+        // Clearing the override: the typed item no longer serializes the field.
+        let after = json!({
+            "post_process_prompts": [
+                {"id": "p1", "name": "A"},
+                {"id": "p2", "name": "B2"}
+            ]
+        });
+        apply_changed_fields(&mut payload, &before, &after);
+        assert_eq!(
+            payload,
+            json!({
+                "post_process_prompts": [
+                    {"id": "p1", "name": "A", "unknown": "CANARY_ITEM"},
+                    {"id": "p2", "name": "B2"}
+                ]
             })
         );
     }
