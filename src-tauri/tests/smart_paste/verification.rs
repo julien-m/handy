@@ -1,7 +1,8 @@
 //! Experimental paste verification (AC-019, finding N11) through the
 //! production coordinator: a page that receives the paste but inserts
 //! nothing, the single retry under the clipboard ownership guard, the
-//! unreadable field and the setting off (behavior unchanged).
+//! unreadable field and the setting off (behavior unchanged). The N28 web
+//! text rule and the last read before the retry are in `verification_web`.
 
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, PoisonError};
@@ -18,12 +19,12 @@ use super::rig::{request, Content, Rig, ScriptedReads};
 // @spec AC-019: Verified paste, retry, failure, unreadable — .specs/features/007-smart-paste/spec.md#ac-019
 
 const CHROME: Option<&str> = Some("com.google.Chrome");
-const TRANSCRIPT: &str = "hello world";
+pub const TRANSCRIPT: &str = "hello world";
 const FRENCH_LAYOUT_ID: &str = "com.apple.keylayout.French";
 
 /// A focused field of the destination (pid 7) that ignores the direct AX
 /// write, like the Google page of N11, so smart paste falls back to Cmd+V.
-fn page_field(rig: &mut Rig) -> ScriptedField {
+pub fn page_field(rig: &mut Rig) -> ScriptedField {
     let caret = Utf16Range {
         location: 0,
         length: 0,
@@ -36,7 +37,7 @@ fn page_field(rig: &mut Rig) -> ScriptedField {
 
 /// The page inserts the transcript on the `nth` Cmd+V only (1-based);
 /// `None`: it never inserts anything.
-fn page_inserts_on(rig: &Rig, field: &ScriptedField, nth: Option<usize>) {
+pub fn page_inserts_on(rig: &Rig, field: &ScriptedField, nth: Option<usize>) {
     let chords = Arc::new(AtomicUsize::new(0));
     let field = field.clone();
     rig.keys.state().on_chord = Some(Arc::new(move || {
@@ -51,7 +52,8 @@ fn insert(rig: &Rig, verifies_paste: bool, offsets: &[i64]) -> PasteOutcome {
     insert_dictation(rig, 1, verifies_paste, offsets)
 }
 
-fn insert_dictation(rig: &Rig, id: u64, verifies_paste: bool, offsets: &[i64]) -> PasteOutcome {
+/// Inserts the transcript as dictation `id` into the Chrome destination.
+pub fn insert_dictation(rig: &Rig, id: u64, verifies_paste: bool, offsets: &[i64]) -> PasteOutcome {
     let mut coordinator = rig.coordinator();
     let mut reads = ScriptedReads::new(rig, offsets);
     let mut request = request(id, TRANSCRIPT, CHROME, DontModify);
@@ -59,7 +61,8 @@ fn insert_dictation(rig: &Rig, id: u64, verifies_paste: bool, offsets: &[i64]) -
     coordinator.insert(&request, &mut reads)
 }
 
-fn chords(rig: &Rig) -> usize {
+/// Number of Cmd+V chords posted so far.
+pub fn chords(rig: &Rig) -> usize {
     rig.keys.state().chords.len()
 }
 
@@ -221,7 +224,7 @@ fn with_the_setting_off_the_outcome_and_effects_are_unchanged() {
 
 /// The `verify dictation <id>` lines logged so far (the logger is shared by
 /// the whole test process, so each case uses its own dictation id).
-fn verify_logs(id: u64) -> Vec<String> {
+pub fn verify_logs(id: u64) -> Vec<String> {
     let marker = format!("verify dictation {id}");
     super::privacy::records()
         .lock()
@@ -255,10 +258,19 @@ fn each_verdict_is_logged_once_with_its_duration_and_no_content() {
             "{logs:?}"
         );
     }
+}
+
+#[test]
+fn an_unreadable_verdict_is_logged_with_its_reason_and_off_logs_nothing() {
+    super::privacy::install_logger();
     insert_dictation(&Rig::new(), 44, true, &[20]);
     let unreadable = verify_logs(44);
-    assert_eq!(unreadable.len(), 1, "{unreadable:?}");
+    assert_eq!(unreadable.len(), 2, "{unreadable:?}");
     assert!(unreadable[0].contains(": Unreadable in "), "{unreadable:?}");
+    assert!(
+        unreadable[1].ends_with("unreadable: NoReadableField"),
+        "{unreadable:?}"
+    );
     insert_dictation(&Rig::new(), 45, false, &[20]);
     assert!(verify_logs(45).is_empty());
 }

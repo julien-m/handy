@@ -7,9 +7,11 @@
 
 use std::ffi::c_void;
 use std::ptr;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
-use super::ax_port::{AxError, AxField, AxTextPort, Utf16Range};
+use super::ax_port::{
+    search_web_area, AncestryLimits, AxError, AxField, AxTextPort, Utf16Range, WEB_AREA_ROLE,
+};
 use super::macos_cf::{string_units, type_id, CfOwned, CfRange, CfStringError, CfTypeRef};
 
 // AXError codes from HIServices/AXError.h.
@@ -132,11 +134,31 @@ pub struct MacAxField {
 
 impl MacAxField {
     fn attribute_is(&self, name: &str, expected: &str, timeout: Duration) -> Result<bool, AxError> {
-        let value = copy_attribute(&self.element, name, timeout)?;
-        let text = string_utf16(&value, expected.len())
-            .map(|units| String::from_utf16_lossy(&units))
-            .unwrap_or_default();
-        Ok(text == expected)
+        attribute_is(&self.element, name, expected, timeout)
+    }
+}
+
+/// Whether the string attribute `name` of `element` equals `expected`; a
+/// longer or non-string value is a mismatch and is never copied whole.
+fn attribute_is(
+    element: &CfOwned,
+    name: &str,
+    expected: &str,
+    timeout: Duration,
+) -> Result<bool, AxError> {
+    let value = copy_attribute(element, name, timeout)?;
+    let text = string_utf16(&value, expected.len())
+        .map(|units| String::from_utf16_lossy(&units))
+        .unwrap_or_default();
+    Ok(text == expected)
+}
+
+/// Role check of one element of the ancestry walk: an element without a
+/// role is simply not the web area.
+fn is_web_area(element: &CfOwned, timeout: Duration) -> Result<bool, AxError> {
+    match attribute_is(element, "AXRole", WEB_AREA_ROLE, timeout) {
+        Err(AxError::NoValue | AxError::Unsupported) => Ok(false),
+        other => other,
     }
 }
 
@@ -185,6 +207,26 @@ impl AxField for MacAxField {
         // SAFETY: element, attribute and value are live CF objects.
         ax_result(unsafe {
             AXUIElementSetAttributeValue(self.element.as_ptr(), attribute.as_ptr(), value.as_ptr())
+        })
+    }
+
+    fn is_in_web_area(&mut self, limits: AncestryLimits) -> Result<bool, AxError> {
+        let deadline = Instant::now() + limits.budget;
+        let origin = &self.element;
+        let mut ancestor: Option<CfOwned> = None;
+        search_web_area(limits.max_depth, |depth| {
+            if Instant::now() >= deadline {
+                return Err(AxError::Timeout);
+            }
+            if depth > 0 {
+                let child = ancestor.as_ref().unwrap_or(origin);
+                match copy_attribute(child, "AXParent", limits.per_call) {
+                    Ok(parent) => ancestor = Some(parent),
+                    Err(AxError::NoValue | AxError::Unsupported) => return Ok(None),
+                    Err(error) => return Err(error),
+                }
+            }
+            is_web_area(ancestor.as_ref().unwrap_or(origin), limits.per_call).map(Some)
         })
     }
 }

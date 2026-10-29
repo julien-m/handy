@@ -4,7 +4,9 @@
 use std::sync::{Arc, Mutex, MutexGuard, PoisonError};
 use std::time::{Duration, Instant};
 
-use handy_app_lib::smart_paste::ax_port::{AxError, AxField, AxTextPort, Utf16Range};
+use handy_app_lib::smart_paste::ax_port::{
+    AncestryLimits, AxError, AxField, AxTextPort, Utf16Range,
+};
 use handy_app_lib::smart_paste::clock::{Clock, ManualClock};
 use handy_app_lib::smart_paste::direct::expected_value;
 use handy_app_lib::smart_paste::keyboard::{
@@ -36,6 +38,10 @@ pub struct FieldState {
     /// Reads after the write that time out once each before reads succeed
     /// again, as a busy application would.
     pub transient_read_errors: usize,
+    /// Answer of the web-area search (N28): web text by default.
+    pub web_area: Result<bool, AxError>,
+    /// Limits of every web-area search received.
+    pub ancestry_searches: Vec<AncestryLimits>,
     pub call_cost: Duration,
     pub writes: usize,
     pub timeouts: Vec<Duration>,
@@ -62,6 +68,8 @@ impl ScriptedField {
             value_error: None,
             fail_reads_after_write: false,
             transient_read_errors: 0,
+            web_area: Ok(true),
+            ancestry_searches: Vec::new(),
             call_cost: Duration::ZERO,
             writes: 0,
             timeouts: Vec::new(),
@@ -154,6 +162,12 @@ impl AxField for ScriptedField {
             state.pending = Some((now + delay, applied));
         }
         state.setter_result
+    }
+
+    fn is_in_web_area(&mut self, limits: AncestryLimits) -> Result<bool, AxError> {
+        let mut state = self.begin_call(Some(limits.per_call));
+        state.ancestry_searches.push(limits);
+        state.web_area
     }
 }
 

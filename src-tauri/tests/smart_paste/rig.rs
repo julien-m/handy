@@ -101,14 +101,20 @@ impl KeyEventPort for FakeKeys {
     }
 }
 
+/// Hook run on every destination check, as a page doing work meanwhile.
+pub type CheckHook = Arc<dyn Fn() + Send + Sync>;
+
 /// Destination guard answering from a script (default: still current).
-#[derive(Debug, Clone, Default)]
+#[derive(Clone, Default)]
 pub struct FakeDestination {
     pub answers: Arc<Mutex<VecDeque<bool>>>,
+    pub on_check: Arc<Mutex<Option<CheckHook>>>,
 }
 
 impl DestinationGuard for FakeDestination {
     fn is_current(&mut self, _destination: &DestinationContext) -> bool {
+        let hook = lock(&self.on_check).clone();
+        hook.iter().for_each(|on_check| on_check());
         lock(&self.answers).pop_front().unwrap_or(true)
     }
 }

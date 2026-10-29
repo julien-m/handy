@@ -16,4 +16,5 @@ mod smart_paste {
     pub mod rig;
     pub mod snapshot;
     pub mod verification;
+    pub mod verification_web;
 }

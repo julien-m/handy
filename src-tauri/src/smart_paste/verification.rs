@@ -9,11 +9,21 @@
 //! still owns the transcript; still no change is a failure handed to the
 //! recovery bubble. A field that cannot be read keeps the current behavior.
 //!
+//! Finding N28: a terminal (cmux) exposes a readable focused element whose
+//! value does not follow the paste, so an unchanged value proved nothing and
+//! the retry pasted the transcript twice. Only web text is verified: an
+//! element below an `AXWebArea` (Chrome and Safari pages, Electron apps),
+//! whose value the engine keeps in sync with edits. Any other element is
+//! "unreadable" and keeps the current behavior. Right before the retry the
+//! value is read once more, so a late paste is never sent twice.
+//!
 //! This module only decides; the coordinator performs every native effect.
 //! Field values are compared, never logged.
 
 use std::time::{Duration, Instant};
 
+use super::ax_port::AncestryLimits;
+use super::direct::PER_CALL_TIMEOUT;
 use super::outcome::PasteOutcomeKind;
 
 // @spec FR-012: Paste verification decisions — .specs/features/007-smart-paste/spec.md#fr-012
@@ -25,6 +35,39 @@ pub const VERIFY_WINDOW: Duration = Duration::from_millis(300);
 /// Pause between two reads of the field: fifteen reads per window at most,
 /// enough to see a page update without flooding it with AX requests.
 pub const VERIFY_POLL_INTERVAL: Duration = Duration::from_millis(20);
+
+/// Bounds of the web-area search (N28). A text input in a busy page sits
+/// a few dozen levels below its `AXWebArea`; 48 parents and 100 ms cover it
+/// while keeping a slow tree from delaying the first Cmd+V for long.
+pub const WEB_ANCESTRY_LIMITS: AncestryLimits = AncestryLimits {
+    per_call: PER_CALL_TIMEOUT,
+    max_depth: 48,
+    budget: Duration::from_millis(100),
+};
+
+/// Why the verification did not apply (logged with the `Unreadable`
+/// verdict, never with any content).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum UnreadableReason {
+    /// No focused element of the destination with a readable value, or a
+    /// password field.
+    NoReadableField,
+    /// The element is not web text: its value is not known to follow a
+    /// paste (terminals, N28), so an unchanged value proves nothing.
+    NotWebText,
+    /// A read of the value failed during the verification.
+    ReadFailed,
+}
+
+/// Business rule (N28): only web text is verified. `web_ancestry` is the
+/// result of the bounded web-area search; a timeout or an exhausted budget
+/// is no proof, so it is treated like an element outside any web area.
+pub fn web_text_scope<E>(web_ancestry: Result<bool, E>) -> Result<(), UnreadableReason> {
+    match web_ancestry {
+        Ok(true) => Ok(()),
+        Ok(false) | Err(_) => Err(UnreadableReason::NotWebText),
+    }
+}
 
 /// What one read of the focused field showed, compared with the value read
 /// right before the first Cmd+V.
@@ -91,8 +134,8 @@ pub enum VerifyVerdict {
     RetriedVerified,
     /// The field stayed unchanged.
     Failed(VerifyFailure),
-    /// No readable field: the verification did not apply.
-    Unreadable,
+    /// The verification did not apply, for the given reason.
+    Unreadable(UnreadableReason),
 }
 
 impl VerifyVerdict {
@@ -101,7 +144,7 @@ impl VerifyVerdict {
     pub fn outcome_kind(self) -> PasteOutcomeKind {
         match self {
             Self::Failed(_) => PasteOutcomeKind::FieldUnchanged,
-            Self::Verified | Self::RetriedVerified | Self::Unreadable => {
+            Self::Verified | Self::RetriedVerified | Self::Unreadable(_) => {
                 PasteOutcomeKind::ReadObserved
             }
         }
@@ -113,7 +156,7 @@ impl VerifyVerdict {
             Self::Verified => "Verified",
             Self::RetriedVerified => "RetriedVerified",
             Self::Failed(_) => "Failed",
-            Self::Unreadable => "Unreadable",
+            Self::Unreadable(_) => "Unreadable",
         }
     }
 }
@@ -142,7 +185,9 @@ pub fn next_step(
         (VerifyStage::AfterRetry, FieldObservation::Changed) => {
             done(VerifyVerdict::RetriedVerified)
         }
-        (_, FieldObservation::Unreadable) => done(VerifyVerdict::Unreadable),
+        (_, FieldObservation::Unreadable) => {
+            done(VerifyVerdict::Unreadable(UnreadableReason::ReadFailed))
+        }
         (VerifyStage::AfterRetry, FieldObservation::Unchanged) => {
             done(VerifyVerdict::Failed(VerifyFailure::UnchangedAfterRetry))
         }
@@ -150,6 +195,30 @@ pub fn next_step(
             RetryPermit::Allowed => VerifyStep::Retry,
             refused => done(VerifyVerdict::Failed(VerifyFailure::RetryRefused(refused))),
         },
+    }
+}
+
+/// What to do with the single retry, given one last read of the field taken
+/// right before the repeated Cmd+V.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum RetryGate {
+    /// Still unchanged: send the repeated Cmd+V.
+    Send,
+    /// No second Cmd+V: the verification ends with this verdict.
+    Skip(VerifyVerdict),
+}
+
+/// Business rule (N28): a page that applied the paste after the window must
+/// not receive it twice. A change seen by the last read is a verified paste;
+/// a failed read gives no proof that the field is still empty, so nothing
+/// is sent and the current behavior is kept.
+pub fn gate_retry(last_read: FieldObservation) -> RetryGate {
+    match last_read {
+        FieldObservation::Unchanged => RetryGate::Send,
+        FieldObservation::Changed => RetryGate::Skip(VerifyVerdict::Verified),
+        FieldObservation::Unreadable => {
+            RetryGate::Skip(VerifyVerdict::Unreadable(UnreadableReason::ReadFailed))
+        }
     }
 }
 
