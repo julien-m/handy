@@ -181,3 +181,4 @@ Note N9 (correctif `fix/004-side-overlap`) : spec-refine 004 à faire : AC-004 c
 
 - Canary termine chaque dictée par un point, même insérée au milieu d'une phrase (`à tous. demain`), et même juste avant une ponctuation existante (`monde., ça va`).
 - Piste : quand le contexte après le curseur est lu, ne pas garder le point final de la dictée si ce qui suit est une ponctuation ou un mot en minuscule. Exigence produit à trancher, en extension de 017.
+- **N30 validé en natif** (build `83bc6062`, TextEdit) : `Bonjour|, ça va` + « tout le monde » donne `Bonjour tout le monde, ça va`, sans point parasite. Deux autres dictées insérées devant la virgule donnent `… à tous, ça va`, là aussi sans point. Le cas « avant un mot en minuscule » n'a pas pu être rejoué : la fenêtre TextEdit est devenue instable pour Computer Use (`cgWindowNotFound`) ; il est couvert par les tests unitaires `n30_*`.
