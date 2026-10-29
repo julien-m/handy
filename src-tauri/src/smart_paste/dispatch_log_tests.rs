@@ -89,6 +89,7 @@ fn insert_with(actor: &Actor) -> (PasteOutcomeKind, Vec<String>) {
             destination,
             clipboard_policy: ClipboardPolicy::DontModify,
             paste_delay: Duration::ZERO,
+            verifies_paste: false,
         };
         run_insertion(actor, &checks, request, Arc::new(Always)).kind
     })

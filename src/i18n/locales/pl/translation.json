@@ -364,6 +364,10 @@
         "label": "Pozostaw mikrofon otwarty między transkrypcjami",
         "description": "Utrzymuje strumień mikrofonu otwarty przez 30 sekund po zatrzymaniu nagrywania, zmniejszając opóźnienie przy kolejnych transkrypcjach. Może pogorszyć jakość dźwięku Bluetooth."
       },
+      "pasteVerification": {
+        "label": "Sprawdzaj wklejanie",
+        "description": "Przy inteligentnym wklejaniu sprawdza, czy aktywne pole zmieniło się po wklejeniu, w przeciwnym razie wkleja jeszcze raz, a potem zachowuje tekst w dymku odzyskiwania zamiast naciskać Enter w pustym polu. Funkcja testowa."
+      },
       "acceleration": {
         "transcribe": {
           "title": "Akceleracja Whisper",

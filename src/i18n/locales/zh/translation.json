@@ -364,6 +364,10 @@
         "label": "在转录之间保持麦克风开启",
         "description": "录音停止后保持麦克风流开启30秒，减少连续转录时的延迟。激活时可能会降低蓝牙音频质量。"
       },
+      "pasteVerification": {
+        "label": "验证粘贴",
+        "description": "使用智能粘贴时，检查粘贴后当前字段是否发生变化；若未变化则再粘贴一次，之后将文本保留在恢复气泡中，而不是在空字段中按回车。测试功能。"
+      },
       "acceleration": {
         "transcribe": {
           "title": "Whisper 加速",

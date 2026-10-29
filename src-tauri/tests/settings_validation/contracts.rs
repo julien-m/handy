@@ -21,7 +21,7 @@ fn explicit_projection_reports_secret_presence_without_any_raw_canary(
     );
     let rendered = serde_json::to_string(&public)?;
     assert!(!rendered.contains("CANARY_"));
-    assert_eq!(public.as_object().ok_or("public object")?.len(), 67);
+    assert_eq!(public.as_object().ok_or("public object")?.len(), 68);
     let envelope = serde_json::to_value(SettingsEnvelope::success(
         snapshot.revision,
         snapshot.public_settings(),
@@ -104,8 +104,9 @@ fn generated_schema_matches_wire_shapes_and_descriptor_inventory(
             .as_object()
             .ok_or("schema properties")?
             .len(),
-        // 010 adds `show_recovery_bubble_without_text_field` with the gate open.
-        67 + usize::from(cfg!(feature = "destination-return"))
+        // 010 adds `show_recovery_bubble_without_text_field` with the gate open; 007 AC-019 adds
+        // `paste_verification` in every build.
+        68 + usize::from(cfg!(feature = "destination-return"))
     );
     assert_eq!(
         schema["$defs"]["success"]["properties"]["ok"]["const"],

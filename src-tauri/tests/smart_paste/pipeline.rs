@@ -156,6 +156,7 @@ fn method(slot: &ActorSlot, checks: &Arc<DestinationChecks>) -> SmartPasteMethod
             transcript: Transcript::new("hello world"),
             clipboard_policy: ClipboardPolicy::DontModify,
             paste_delay: Duration::from_millis(20),
+            verifies_paste: false,
         },
         follow_up: Box::new(|_, _| {}),
     }

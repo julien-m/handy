@@ -16,7 +16,7 @@ fn missing_store_returns_defaults_without_creating_parent_or_store(
             .ok_or("object")?
             .len(),
         // 010 adds `show_recovery_bubble_without_text_field` with the gate open.
-        67 + usize::from(cfg!(feature = "destination-return"))
+        68 + usize::from(cfg!(feature = "destination-return"))
     );
     assert!(!path.parent().ok_or("parent")?.exists());
     Ok(())

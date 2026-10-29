@@ -83,6 +83,8 @@ fn boolean_cases() -> Vec<(&'static str, &'static str, serde_json::Value)> {
         "lazy_stream_close",
         "show_tray_icon",
         "reliable_paste",
+        // 007 AC-019: experimental paste verification.
+        "paste_verification",
         "filler_word_removal_enabled",
         "vad_enabled",
     ]
@@ -159,7 +161,7 @@ fn string_cases() -> Vec<(&'static str, &'static str, serde_json::Value)> {
     .collect()
 }
 #[test]
-fn all_51_scalar_ports_accept_the_same_typed_values() -> Result<(), Box<dyn std::error::Error>> {
+fn all_52_scalar_ports_accept_the_same_typed_values() -> Result<(), Box<dyn std::error::Error>> {
     // Every capability, so a platform-bound key is accepted on every build of this test.
     let context = ValidationContext {
         prompt_ids: &["known"],
@@ -172,7 +174,7 @@ fn all_51_scalar_ports_accept_the_same_typed_values() -> Result<(), Box<dyn std:
     let cases = canonical_cases();
     assert_eq!(
         cases.len(),
-        51 + usize::from(cfg!(feature = "destination-return"))
+        52 + usize::from(cfg!(feature = "destination-return"))
     );
     for (key, raw, value) in cases {
         let cli = validate_cli(key, raw, &context)?;

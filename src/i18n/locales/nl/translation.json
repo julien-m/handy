@@ -364,6 +364,10 @@
         "label": "Microfoon openhouden tussen transcripties",
         "description": "Houdt de microfoonstream tot 30 seconden open nadat een opname stopt. Dit vermindert de vertraging bij opeenvolgende opnames, maar kan de Bluetooth-audiokwaliteit tijdelijk verminderen."
       },
+      "pasteVerification": {
+        "label": "Plakken controleren",
+        "description": "Controleert bij slim plakken of het actieve veld na het plakken is veranderd, plakt anders nog één keer en bewaart de tekst daarna in de herstelballon in plaats van Enter te drukken in een leeg veld. Testfunctie."
+      },
       "acceleration": {
         "transcribe": {
           "title": "transcribe.cpp-versnelling",

@@ -15,4 +15,5 @@ mod smart_paste {
     pub mod restoration_policy;
     pub mod rig;
     pub mod snapshot;
+    pub mod verification;
 }

@@ -364,6 +364,10 @@
         "label": "Transkripsiyonlar Arasında Mikrofonu Açık Tut",
         "description": "Kayıt durdurulduktan sonra mikrofon akışını 30 saniye açık tutar, ardışık transkripsiyonlarda gecikmeyi azaltır. Etkinken Bluetooth ses kalitesini düşürebilir."
       },
+      "pasteVerification": {
+        "label": "Yapıştırmayı doğrula",
+        "description": "Akıllı yapıştırmada, yapıştırmadan sonra etkin alanın değiştiğini denetler, değişmediyse bir kez daha yapıştırır, ardından boş bir alanda Enter'a basmak yerine metni kurtarma balonunda tutar. Test özelliği."
+      },
       "acceleration": {
         "transcribe": {
           "title": "transcribe.cpp Hızlandırması",

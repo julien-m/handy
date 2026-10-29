@@ -364,6 +364,10 @@
         "label": "Mikrofon zwischen Transkriptionen offen halten",
         "description": "Hält den Mikrofon-Stream nach dem Aufnahmestopp 30 Sekunden lang offen, um die Latenz bei aufeinanderfolgenden Transkriptionen zu verringern. Kann die Bluetooth-Audioqualität beeinträchtigen."
       },
+      "pasteVerification": {
+        "label": "Einfügen überprüfen",
+        "description": "Prüft beim intelligenten Einfügen, ob sich das aktive Feld nach dem Einfügen geändert hat, fügt sonst ein zweites Mal ein und behält den Text dann in der Wiederherstellungsblase, statt in einem leeren Feld die Eingabetaste zu drücken. Testfunktion."
+      },
       "acceleration": {
         "transcribe": {
           "title": "Whisper-Beschleunigung",

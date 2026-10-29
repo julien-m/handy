@@ -1,0 +1,5 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+    Checking handy v0.9.8 (/Users/julienm/projects/handy/.claude/worktrees/agent-a2549fc9dad5d9998/src-tauri)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 12.43s
+EXIT 0

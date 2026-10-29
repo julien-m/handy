@@ -364,6 +364,10 @@
         "label": "Manter microfone aberto entre transcrições",
         "description": "Mantém o fluxo do microfone aberto por 30 segundos após parar a gravação, reduzindo a latência em transcrições consecutivas. Pode degradar a qualidade do áudio Bluetooth enquanto ativo."
       },
+      "pasteVerification": {
+        "label": "Verificar a colagem",
+        "description": "Com a colagem inteligente, verifica se o campo ativo mudou após colar, cola mais uma vez se não mudou e, em seguida, mantém o texto na bolha de recuperação em vez de pressionar Enter num campo vazio. Funcionalidade de teste."
+      },
       "acceleration": {
         "transcribe": {
           "title": "Aceleração Whisper",

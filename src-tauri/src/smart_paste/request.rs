@@ -36,6 +36,9 @@ pub struct InsertionRequest {
     pub clipboard_policy: ClipboardPolicy,
     /// Existing delay before the paste keystroke (`paste_delay_ms`).
     pub paste_delay: Duration,
+    /// Experimental paste verification (`paste_verification`, AC-019): after a
+    /// read-observed Cmd+V, check that the focused field changed.
+    pub verifies_paste: bool,
 }
 
 /// Revalidates the destination before AX writes and key posting (006).

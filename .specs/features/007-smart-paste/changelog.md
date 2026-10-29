@@ -231,3 +231,13 @@ AppKit caching and delayed AX mutation counterexamples remain explicit: callback
 - **Tests:** macos_cf null/owned tests, dispatch log tests (fail before the fix); [proofs](proofs/n12-fix/summary.md)
 - **Author:** Claude Code (claude-opus-5-5)
 
+## 2026-10-29 — [Bugfix]: Experimental paste verification after Cmd+V (N11)
+
+- **Type:** Bugfix
+- **Spec modified:** Yes (Story 7, AC-019, FR-012, AC-018 recovery list, Key Entities, decision N11, QE, Edge Cases)
+- **Code modified:** src-tauri/src/smart_paste/verification.rs and verification_tests.rs (new, pure decisions), coordinator_verify.rs (new, native side), coordinator.rs, coordinator_chord.rs, request.rs, dispatch.rs, actor.rs, outcome.rs, mod.rs; src-tauri/src/destination/outcome.rs and src-tauri/src/recovery/decision.rs (`field_unchanged`); setting `paste_verification` in settings.rs, settings_service (public, descriptor, output domain), shortcut/mod.rs, lib.rs, bindings.ts, settingsStore.ts, the Experimental toggle (paste-verification-toggle*.ts(x), AdvancedSettings.tsx) and 26 locales; README; 008 contract schema and its count tests
+- **AC impacted:** AC-019 (new), AC-018 (recovery list), AC-012 (outcome set extended by `field_unchanged`, success set unchanged)
+- **Why:** N11: in Google's AI-mode field under Chrome the page receives the paste and inserts nothing in 30 to 75 % of dictations, yet `read_observed` counted as a success, so no bubble appeared and automatic Enter submitted an empty field. Julien's decision: verify, retry once, then recover, "en mode test pour le moment".
+- **Tests:** verification unit table, smart_paste integration tests `verification.rs` (13 tests, setting off included), outcome/recovery/Enter matrices extended; [proofs](proofs/n11-verify/) (`final-*.out`, `front-*.out`, `probe-schema.out`, `conventions-repo.summary.json`)
+- **Remaining:** native proof in the Google page (`.specs/native-proofs-checklist.md`); classic Cmd+V not verified (no accessibility port or ownership guard)
+- **Author:** Claude Code (claude-opus-5-5)

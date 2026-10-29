@@ -604,6 +604,11 @@ pub struct AppSettings {
     /// fixed delay. See `paste_tx`. macOS and Windows only.
     #[serde(default)]
     pub reliable_paste: bool,
+    /// Experimental paste verification (feature 007 AC-019, finding N11): with smart paste,
+    /// check through accessibility that the focused field changed after Cmd+V, send Cmd+V once
+    /// more if it did not, and hand an unchanged field to the recovery bubble. Off by default.
+    #[serde(default)]
+    pub paste_verification: bool,
     /// Internal marker of the one-time macOS migration to smart paste (feature 007, see
     /// `smart_paste::setting_policy`); read-only on every settings surface. Stores missing it are
     /// treated as never migrated.
@@ -1142,6 +1147,7 @@ pub fn get_default_settings() -> AppSettings {
         paste_delay_ms: default_paste_delay_ms(),
         paste_delay_after_ms: default_paste_delay_after_ms(),
         reliable_paste: false,
+        paste_verification: false,
         smart_paste_migration_version: default_smart_paste_migration_version(),
         typing_tool: default_typing_tool(),
         external_script_path: None,

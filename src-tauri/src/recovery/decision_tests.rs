@@ -19,7 +19,7 @@ const REASONS: [Option<Failure>; 7] = [
     Some(Failure::NoTextField),
     Some(Failure::FieldReturnFailed),
 ];
-const KINDS: [Option<Kind>; 9] = [
+const KINDS: [Option<Kind>; 10] = [
     None,
     Some(Kind::InsertedVerified),
     Some(Kind::ReadObserved),
@@ -29,6 +29,7 @@ const KINDS: [Option<Kind>; 9] = [
     Some(Kind::Typed),
     Some(Kind::ClipboardHandedOver),
     Some(Kind::InsertionFailed),
+    Some(Kind::FieldUnchanged),
 ];
 const PLATFORMS: [RecoveryPlatform; 3] = [
     RecoveryPlatform::MacOs,
@@ -60,9 +61,10 @@ fn row_of(kind: Option<Kind>, reason: Option<Failure>) -> Option<(BubbleReason, 
     use BubbleReason as R;
     use ReasonDetail as D;
     Some(match (kind, reason) {
-        (Some(Kind::NotRead | Kind::Uncertain | Kind::InsertionFailed), _) => {
-            (R::InsertionFailed, D::MayHaveReached)
-        }
+        (
+            Some(Kind::NotRead | Kind::Uncertain | Kind::InsertionFailed | Kind::FieldUnchanged),
+            _,
+        ) => (R::InsertionFailed, D::MayHaveReached),
         (Some(Kind::PermissionMissing), _) | (None, Some(Failure::FieldReturnFailed)) => {
             (R::InsertionFailed, D::NothingSent)
         }
@@ -95,7 +97,7 @@ fn every_status_reason_outcome_and_platform_matches_the_spec_table() {
             }
         }
     }
-    assert_eq!(cases, 5 * 7 * 9 * 3);
+    assert_eq!(cases, 5 * 7 * 10 * 3);
 }
 
 // @spec AC-001: Reasons and the partial-insertion detail — .specs/features/010-recovery-bubble/spec.md#ac-001

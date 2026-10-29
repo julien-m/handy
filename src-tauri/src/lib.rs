@@ -709,6 +709,7 @@ macro_rules! handy_commands {
             shortcut::change_paste_delay_ms_setting,
             shortcut::change_paste_delay_after_ms_setting,
             shortcut::change_reliable_paste_setting,
+            shortcut::change_paste_verification_setting,
             shortcut::change_paste_method_setting,
             shortcut::get_available_typing_tools,
             shortcut::is_smart_paste_available,

@@ -17,7 +17,7 @@ use crate::smart_paste::request::DestinationGuard;
 use std::sync::atomic::AtomicBool;
 use std::sync::mpsc;
 
-const ALL: [PasteOutcomeKind; 8] = [
+const ALL: [PasteOutcomeKind; 9] = [
     PasteOutcomeKind::InsertedVerified,
     PasteOutcomeKind::ReadObserved,
     PasteOutcomeKind::NotRead,
@@ -26,6 +26,7 @@ const ALL: [PasteOutcomeKind; 8] = [
     PasteOutcomeKind::Typed,
     PasteOutcomeKind::ClipboardHandedOver,
     PasteOutcomeKind::InsertionFailed,
+    PasteOutcomeKind::FieldUnchanged,
 ];
 
 /// What the fake actor saw: the request and whether its destination was
@@ -93,6 +94,7 @@ fn inputs() -> InsertionInputs {
         transcript: Transcript::new("hello "),
         clipboard_policy: ClipboardPolicy::DontModify,
         paste_delay: Duration::from_millis(60),
+        verifies_paste: false,
     }
 }
 /// A dictation started in TextEdit (`return_enabled`), Safari in front at the end.

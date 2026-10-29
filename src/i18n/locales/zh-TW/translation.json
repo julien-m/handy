@@ -364,6 +364,10 @@
         "label": "在轉錄之間保持麥克風開啟",
         "description": "錄音停止後保持麥克風串流開啟30秒，減少連續轉錄時的延遲。啟用時可能會降低藍牙音訊品質。"
       },
+      "pasteVerification": {
+        "label": "驗證貼上",
+        "description": "使用智慧貼上時，檢查貼上後目前欄位是否有變化；若沒有變化則再貼上一次，之後將文字保留在復原氣泡中，而不是在空白欄位中按 Enter。測試功能。"
+      },
       "acceleration": {
         "transcribe": {
           "title": "Whisper 加速",

@@ -17,6 +17,7 @@
 //!   [`key_events`], and the macOS adapters in `macos_keyboard`;
 //! - the serialized insertion chain and clipboard lifecycle:
 //!   [`coordinator`] with its [`request`] ports, owned by one [`actor`] thread;
+//! - experimental paste verification after Cmd+V (AC-019): [`verification`];
 //! - the paste-method setting (availability, macOS default, migration from
 //!   the beta reliable paste, shared refusals): [`setting_policy`];
 //! - dictation wiring (step 7): [`destination_bridge`] (006 context and
@@ -70,5 +71,6 @@ pub mod snapshot_helper;
 pub mod snapshot_protocol;
 pub mod strategy;
 pub mod timing;
+pub mod verification;
 #[cfg(target_os = "macos")]
 mod warm_helper;

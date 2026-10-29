@@ -25,9 +25,11 @@ pub fn decide_recovery(
 /// Smart paste terminal outcomes (007 wire values) that recover.
 fn from_method(kind: MethodOutcome) -> Option<BubbleSpec> {
     let detail = match kind {
-        MethodOutcome::NotRead | MethodOutcome::Uncertain | MethodOutcome::InsertionFailed => {
-            ReasonDetail::MayHaveReached
-        }
+        // 007 AC-019: two Cmd+V reached the application even though the field did not change.
+        MethodOutcome::NotRead
+        | MethodOutcome::Uncertain
+        | MethodOutcome::InsertionFailed
+        | MethodOutcome::FieldUnchanged => ReasonDetail::MayHaveReached,
         // 007 checks the permission before any keystroke or clipboard change.
         MethodOutcome::PermissionMissing => ReasonDetail::NothingSent,
         MethodOutcome::InsertedVerified

@@ -53,6 +53,7 @@ fn smart_paste(kind: PasteOutcomeKind, enter: Arc<EnterTransaction>) -> SmartPas
             transcript: Transcript::new("safe test phrase"),
             clipboard_policy: ClipboardPolicy::DontModify,
             paste_delay: Duration::from_millis(10),
+            verifies_paste: false,
         },
         follow_up: Box::new(move |outcome, context| {
             let completion = Completion::SmartPaste(outcome.kind.method_outcome());
