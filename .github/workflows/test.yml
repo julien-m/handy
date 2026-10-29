@@ -5,16 +5,19 @@ on:
     branches: [main]
     paths:
       - "src-tauri/**"
-  pull_request:
-    paths:
-      - "src-tauri/**"
+  workflow_call:
+
+permissions:
+  contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: test-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   rust-tests:
+    # Allow apt setup and a cold Tauri/Vulkan/transcribe-cpp native build.
+    timeout-minutes: 30
     runs-on: ubuntu-24.04
     # The rollout gates (006 `destination-return`, 007 `smart-paste-dispatch`) change what is
     # compiled: every combination runs the whole suite (010 Step 7).
@@ -27,7 +30,7 @@ jobs:
           - "destination-return"
           - "destination-return,smart-paste-dispatch"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Install system dependencies
         run: |
@@ -38,13 +41,13 @@ jobs:
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev libasound2-dev libssl-dev libgtk-layer-shell-dev \
             libvulkan-dev glslc spirv-headers
 
-      - uses: swatinem/rust-cache@v2
+      - uses: swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
         with:
           workspaces: "./src-tauri -> target"
 
       - name: Run Rust tests
         working-directory: src-tauri
-        run: cargo test ${{ matrix.features && format('--features {0}', matrix.features) || '' }}
+        run: cargo test --locked ${{ matrix.features && format('--features {0}', matrix.features) || '' }}
 
   # The gate-open Windows adapters (recovery window, destination return) must compile on
   # Windows; running their tests needs a Windows machine and stays pending release evidence.
