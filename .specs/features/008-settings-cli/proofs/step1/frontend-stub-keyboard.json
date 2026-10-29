@@ -1,0 +1,11 @@
+{
+  "command": [
+    "bun",
+    "run",
+    "test:keyboard"
+  ],
+  "exit_code": 0,
+  "duration_seconds": 0.04,
+  "stdout": ".specs/features/008-settings-cli/proofs/step1/frontend-stub-keyboard.out",
+  "stderr": ".specs/features/008-settings-cli/proofs/step1/frontend-stub-keyboard.err"
+}

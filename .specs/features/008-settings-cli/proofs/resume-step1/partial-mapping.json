@@ -1,0 +1,19 @@
+{
+  "schema_version": "1",
+  "feature": "008-settings-cli",
+  "reviewer_model": "gpt-6.1-sol",
+  "review_max_chars": 160000,
+  "review_receipt_path": ".specs/features/008-settings-cli/.reviews/execution-step1.json",
+  "bindings": [
+    {
+      "requirement_id": "008-settings-cli:AC-005",
+      "test_id": "unix::occupied_probe_never_notifies_or_modifies_store",
+      "expected": "passed",
+      "assertion_path": "src-tauri/tests/settings_platform.rs",
+      "start_line": 56,
+      "end_line": 56,
+      "source_sha256": "d858b8d71de7288864464b7dd33b09e964a04b9a0b1c4d56b1d32273ba1dde70",
+      "justification": "Step 1 partial primitive observation only: passive occupied probe preserves raw injected store bytes. This assertion does not establish complete CLI/live/offline/timeout AC-005 behavior, which remains pending implementation."
+    }
+  ]
+}

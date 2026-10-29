@@ -1,0 +1,18 @@
+{
+  "reviewer_model": "gpt-6.1-sol",
+  "commands": [
+    {
+      "command": "livespec test --feature 008-settings-cli --acceptance-mapping .specs/features/008-settings-cli/proofs/current-run-step1/acceptance-mapping.json --prepare-mapping-review",
+      "exit_code": 0,
+      "stdout_path": ".specs/features/008-settings-cli/proofs/current-run-step1/mapping-prepared.json",
+      "stderr_observed": "livespec-shim-notice: dev mode executes the LiveSpec checkout /Users/julienm/projects/livespec\n"
+    },
+    {
+      "command": "livespec test --feature 008-settings-cli --acceptance-mapping .specs/features/008-settings-cli/proofs/current-run-step1/acceptance-mapping.json --ingest-mapping-review .specs/features/008-settings-cli/proofs/current-run-step1/mapping-review-bundle.json",
+      "exit_code": 1,
+      "stdout_path": ".specs/features/008-settings-cli/proofs/current-run-step1/mapping-ingest.json",
+      "stderr_observed": "livespec-shim-notice: dev mode executes the LiveSpec checkout /Users/julienm/projects/livespec\n"
+    }
+  ],
+  "note": "Exit codes and stderr recorded from actual exec tool results; stdout preserved by direct redirection. No execution capture attempted with the not-ready mapping."
+}

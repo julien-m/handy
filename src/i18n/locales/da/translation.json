@@ -512,6 +512,11 @@
         "title": "Fjern fyldord",
         "description": "Fjerner almindelige tøveord fra transskriptioner. Slå fra for at beholde dem."
       },
+      "smartParagraphs": {
+        "title": "Smarte afsnit",
+        "description": "Deler lange dikteringer op i afsnit ved sætningsslut, adskilt af en tom linje. Lister, kode og eksisterende linjeskift bevares. Kører på denne computer.",
+        "descriptionLimited": "Deler lange dikteringer op i afsnit ved sætningsslut, adskilt af en tom linje. Lister, kode og eksisterende linjeskift bevares. Kører på denne computer. På dette system forbliver kinesiske og japanske dikteringer uændrede."
+      },
       "chineseScript": {
         "title": "Kinesisk skrift",
         "description": "Skriver mandarin- og kantonesisk-transskriptioner med forenklede eller traditionelle tegn. Andre sprog ændres ikke.",

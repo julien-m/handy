@@ -671,6 +671,18 @@ async changeChineseScriptSetting(script: ChineseScript) : Promise<Result<null, S
     else return { status: "error", error: e  as any };
 }
 },
+/**
+ * Turn smart paragraphs (016) on or off through the settings service; the next dictation
+ * follows the stored value.
+ */
+async changeSmartParagraphsEnabledSetting(enabled: boolean) : Promise<Result<null, SettingsCommandError>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("change_smart_paragraphs_enabled_setting", { enabled }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async changeAppLanguageSetting(language: string) : Promise<Result<null, SettingsCommandError>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("change_app_language_setting", { language }) };
@@ -1645,7 +1657,12 @@ smart_paste_migration_version?: number; typing_tool?: TypingTool; external_scrip
  * Fresh installs default from the OS locale; existing stores are migrated
  * in `apply_settings_migrations`.
  */
-chinese_script?: ChineseScript; transcribe_accelerator?: TranscribeAcceleratorSetting; ort_accelerator?: OrtAcceleratorSetting; 
+chinese_script?: ChineseScript; 
+/**
+ * Smart paragraphs (feature 016): split a long dictation into paragraphs before insertion.
+ * Off by default, for new installs and for stores written before the feature.
+ */
+smart_paragraphs_enabled?: boolean; transcribe_accelerator?: TranscribeAcceleratorSetting; ort_accelerator?: OrtAcceleratorSetting; 
 /**
  * Stable transcribe.cpp device selector. This is derived from the backend's
  * `device_id` when available (or its name for backends such as Metal),

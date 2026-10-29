@@ -1,0 +1,24 @@
+{
+  "restored": [
+    {
+      "path": "src-tauri/src/settings_service/platform_unix.rs",
+      "expected": "7abf2bc65bce82a8cd5eca68131f29494315a24c350307c6c9dbe144bc2742af",
+      "actual": "7abf2bc65bce82a8cd5eca68131f29494315a24c350307c6c9dbe144bc2742af",
+      "matches": true
+    },
+    {
+      "path": "src-tauri/src/settings_service/platform_unix/socket.rs",
+      "expected": "ad0320ade96edbeb2f9a48ec0b3aac3b529bdcd89c6cd158fabcc67153edad03",
+      "actual": "ad0320ade96edbeb2f9a48ec0b3aac3b529bdcd89c6cd158fabcc67153edad03",
+      "matches": true
+    }
+  ],
+  "deleted": [
+    "src-tauri/src/settings_service/platform_unix/bootstrap.rs",
+    "src-tauri/examples/settings_socket_bootstrap.rs",
+    "src-tauri/examples/settings_socket_bootstrap/socket_cases.rs",
+    "src-tauri/examples/settings_socket_bootstrap/guard_cases.rs"
+  ],
+  "summary_unchanged": true,
+  "scope": "Only worker incomplete bootstrap construction; earlier refactor/anchors/proofs retained"
+}

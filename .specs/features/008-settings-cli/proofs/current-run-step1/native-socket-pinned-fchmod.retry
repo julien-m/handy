@@ -1,0 +1,1 @@
+retry_hypothesis="Darwin default tempfile pathname exceeded AF_UNIX bound" retry_evidence="attempt1.stderr AF_UNIX path too long; short private /tmp/hpfd-* execution exit0; all socket-pin opens return EOPNOTSUPP102" retry_result="PASS"

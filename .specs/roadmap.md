@@ -23,6 +23,7 @@
 - [x] **Destination favorites** (012) — Julien's request of 2026-10-29: a star on each app of the badge menu keeps favorites (settings service), listed bottom-up nearest the badge, not-open ones never launched; 009's Pin/Unpin moved to a fixed footer. Depends on 006, 008 and 009. → [012-destination-favorites](features/012-destination-favorites/spec.md)
 - [x] **Default input per app** (013) — Julien's request of 2026-10-29: remember, per application, a default field (accessibility fingerprint) or a cmux terminal (addressing CLI in the bundle), used when the destination's active element is not a text field; settings list and CLI to forget. Depends on 006, 008, 009, 010, 011 and 012. → [013-default-input-per-app](features/013-default-input-per-app/spec.md)
 - [x] **Keys during a dictation** (014) — Julien's requests of 2026-10-29: during a dictation, Option left alone sends it to the app in front without unpinning, Control left alone inserts it without the automatic Enter. Depends on 004, 006 and 009. → [014-in-dictation-keys](features/014-in-dictation-keys/spec.md)
+- [x] **Smart paragraphs** (016) — Julien's request of 2026-10-29: long dictations split into paragraphs at sentence boundaries (45 words or 4 substantial sentences, blank line), local, off by default, lists, code and line breaks kept. Depends on 005 and 008. → [016-smart-paragraphs](features/016-smart-paragraphs/spec.md)
 <!-- roadmap:mvp:end -->
 
 ## Post-MVP

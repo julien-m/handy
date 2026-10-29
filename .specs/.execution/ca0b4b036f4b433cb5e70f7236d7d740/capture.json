@@ -1,0 +1,42 @@
+{
+  "schema_version": "1",
+  "acceptance_evidence_policy": "2",
+  "scope_policy_version": "078.1",
+  "invocation": "ca0b4b036f4b433cb5e70f7236d7d740",
+  "directory_identity": [
+    16777233,
+    209949529
+  ],
+  "project_root": "/Users/julienm/projects/handy",
+  "feature": "008-settings-cli",
+  "argv": [
+    "cargo",
+    "test",
+    "--manifest-path",
+    "src-tauri/Cargo.toml",
+    "--test",
+    "settings_platform"
+  ],
+  "runner_provenance": {},
+  "assertion_trace_sha256": null,
+  "started_ns": 1791871248713866000,
+  "finished_ns": 1791871249874212000,
+  "exit_code": 0,
+  "before": {},
+  "after": {},
+  "raw_before": {},
+  "raw_after": {},
+  "report_adapter": "junit",
+  "report_sha256": null,
+  "report_identity": null,
+  "stdout_sha256": "b38da072c4f167bf2ae2f0cc4020e8f138ac3f2c2183bc51e272c63ae0ed93e0",
+  "stderr_sha256": "47189e71e9f7e66accb76ce5251ef5effbc4258d8162eaf35f99217044839121",
+  "acceptance_mapping": ".specs/features/008-settings-cli/proofs/resume-step1/partial-mapping.json",
+  "gaps": [
+    "Unsupported runner: structured reports alone cannot certify execution",
+    "Execution input scope unavailable: '/Users/julienm/projects/livespec/.agent-sync/rules/livespec/commands.md' is not in the subpath of '/Users/julienm/projects/handy'",
+    "Execution input scope unavailable: '/Users/julienm/projects/livespec/.agent-sync/rules/livespec/commands.md' is not in the subpath of '/Users/julienm/projects/handy'",
+    "Missing or unstable fresh report: [Errno 2] No such file or directory: 'runner-report'",
+    "Missing actual assertion execution trace: [Errno 2] No such file or directory: 'runner-assertions'"
+  ]
+}

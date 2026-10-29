@@ -140,6 +140,7 @@
             "filler_word_removal_enabled",
             "custom_filler_words",
             "chinese_script",
+            "smart_paragraphs_enabled",
             "transcribe_accelerator",
             "ort_accelerator",
             "transcribe_gpu_device",
@@ -219,6 +220,7 @@
                   "filler_word_removal_enabled",
                   "custom_filler_words",
                   "chinese_script",
+                  "smart_paragraphs_enabled",
                   "transcribe_accelerator",
                   "ort_accelerator",
                   "transcribe_gpu_device",
@@ -1093,6 +1095,9 @@
         "show_whats_new_on_update": {
           "type": "boolean"
         },
+        "smart_paragraphs_enabled": {
+          "type": "boolean"
+        },
         "smart_paste_migration_version": {
           "maximum": 18446744073709551615,
           "minimum": 0,
@@ -1236,6 +1241,7 @@
         "filler_word_removal_enabled",
         "custom_filler_words",
         "chinese_script",
+        "smart_paragraphs_enabled",
         "transcribe_accelerator",
         "ort_accelerator",
         "transcribe_gpu_device",
@@ -2097,6 +2103,17 @@
       "runtime_effect": "none",
       "secret": false,
       "value_type": "string"
+    },
+    {
+      "allowed_values": [],
+      "key": "smart_paragraphs_enabled",
+      "nullable": false,
+      "owner_domain": "general",
+      "range": null,
+      "read_only": false,
+      "runtime_effect": "none",
+      "secret": false,
+      "value_type": "boolean"
     },
     {
       "allowed_values": [

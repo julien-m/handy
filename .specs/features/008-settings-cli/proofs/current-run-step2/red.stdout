@@ -1,0 +1,35 @@
+
+running 4 tests
+test scalars::unknown_and_protected_keys_are_refused_without_echoing_input ... FAILED
+test scalars::cli_rejects_noncanonical_boolean_and_out_of_range_numbers ... FAILED
+test inventory::every_actual_stored_field_has_exactly_one_descriptor ... FAILED
+test contracts::explicit_projection_reports_secret_presence_without_any_raw_canary ... ok
+
+failures:
+
+---- scalars::unknown_and_protected_keys_are_refused_without_echoing_input stdout ----
+
+thread 'scalars::unknown_and_protected_keys_are_refused_without_echoing_input' (39287426) panicked at tests/settings_validation/scalars.rs:39:10:
+unknown key must fail
+
+---- scalars::cli_rejects_noncanonical_boolean_and_out_of_range_numbers stdout ----
+
+thread 'scalars::cli_rejects_noncanonical_boolean_and_out_of_range_numbers' (39287425) panicked at tests/settings_validation/scalars.rs:25:14:
+invalid canonical input must fail
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- inventory::every_actual_stored_field_has_exactly_one_descriptor stdout ----
+
+thread 'inventory::every_actual_stored_field_has_exactly_one_descriptor' (39287424) panicked at tests/settings_validation/inventory.rs:17:5:
+assertion `left == right` failed
+  left: 0
+ right: 63
+
+
+failures:
+    inventory::every_actual_stored_field_has_exactly_one_descriptor
+    scalars::cli_rejects_noncanonical_boolean_and_out_of_range_numbers
+    scalars::unknown_and_protected_keys_are_refused_without_echoing_input
+
+test result: FAILED. 1 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+

@@ -1,0 +1,13 @@
+$ bun test src/components/settings/smart-paragraphs-state.test.ts && bun test src/components/settings/smart-paragraphs-render.test.tsx
+bun test v1.3.9 (cf6cdbbb)
+
+ 2 pass
+ 0 fail
+ 3 expect() calls
+Ran 2 tests across 1 file. [96.00ms]
+bun test v1.3.9 (cf6cdbbb)
+
+ 3 pass
+ 0 fail
+ 9 expect() calls
+Ran 3 tests across 1 file. [76.00ms]

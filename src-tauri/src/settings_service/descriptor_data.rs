@@ -94,6 +94,8 @@ inventory! {
  "filler_word_removal_enabled" => (Boolean,false,None,&[],false,false,"general",None);
  "custom_filler_words" => (Array,true,None,&[],false,false,"vocabulary",None);
  "chinese_script" => (String,false,None,&["as_transcribed","simplified","traditional"],false,false,"general",None);
+ // 016: smart paragraphs, read at each dictation's delivery, no live effect.
+ "smart_paragraphs_enabled" => (Boolean,false,None,&[],false,false,"general",None);
  "transcribe_accelerator" => (String,false,None,&["auto","cpu","gpu"],false,false,"general",Model);
  "ort_accelerator" => (String,false,None,&["auto","cpu","cuda","directml","rocm"],false,false,"general",Model);
  "transcribe_gpu_device" => (String,true,None,&[],false,false,"general",Model);

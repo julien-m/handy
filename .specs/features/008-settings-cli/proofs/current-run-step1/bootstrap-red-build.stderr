@@ -1,0 +1,40 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy/src-tauri)
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `platform_unix`
+  --> examples/settings_socket_bootstrap/socket_cases.rs:49:5
+   |
+49 |     platform_unix::verify_peer(&server)?;
+   |     ^^^^^^^^^^^^^ use of unresolved module or unlinked crate `platform_unix`
+   |
+   = help: if you wanted to use a crate named `platform_unix`, use `cargo add platform_unix` to add it to your `Cargo.toml`
+help: consider importing this module
+   |
+ 3 + use crate::platform_unix;
+   |
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `platform_unix`
+  --> examples/settings_socket_bootstrap/socket_cases.rs:50:13
+   |
+50 |     assert!(platform_unix::verify_peer_uid(&server, current_uid().wrapping_add(1)).is_err());
+   |             ^^^^^^^^^^^^^ use of unresolved module or unlinked crate `platform_unix`
+   |
+   = help: if you wanted to use a crate named `platform_unix`, use `cargo add platform_unix` to add it to your `Cargo.toml`
+help: consider importing this module
+   |
+ 3 + use crate::platform_unix;
+   |
+
+warning: unused imports: `verify_peer_uid` and `verify_peer`
+  --> examples/../src/settings_service/platform_unix.rs:13:25
+   |
+13 | pub(crate) use socket::{verify_peer, verify_peer_uid, PrivateSocket};
+   |                         ^^^^^^^^^^^  ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+For more information about this error, try `rustc --explain E0433`.
+warning: `handy` (example "settings_socket_bootstrap") generated 1 warning
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+error: could not compile `handy` (example "settings_socket_bootstrap") due to 2 previous errors; 1 warning emitted

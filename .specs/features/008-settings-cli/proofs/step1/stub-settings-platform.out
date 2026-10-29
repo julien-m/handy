@@ -1,0 +1,24 @@
+
+running 19 tests
+test absent_probe_creates_nothing ... ok
+test malformed_settings_and_internal_worker_frames_are_rejected_without_echo ... ok
+test directory_replacement_prevents_new_reservation ... ok
+test official_startup_and_control_flags_are_preserved_without_argv_zero ... ok
+test handoff::interrupted_record_write_blocks_recovery_instead_of_looking_empty ... ok
+test handoff::spool_refuses_competing_owner_and_preserves_pending_after_reopen ... ok
+test occupied_probe_does_not_connect_or_remove_legacy_socket ... ok
+test handoff::forged_spool_alias_and_invalid_argv_are_rejected ... ok
+test handoff::incomplete_stream_times_out_without_a_pending_invocation ... ok
+test handoff::replaced_lock_refuses_original_owner_reads_and_writes ... ok
+test private_directory_rejects_shared_permissions_and_aliases ... ok
+test handoff::forged_zero_pid_and_missing_ordered_record_fail_closed ... ok
+test handoff::spawn_unknown_survives_reopen_and_never_permits_blind_retry ... ok
+test reservation_cleanup_removes_only_its_owned_socket ... ok
+test reservation_excludes_second_bind_and_preserves_replacement_resource ... ok
+test stale_socket_symlink_regular_file_and_foreign_owner_fail_closed ... ok
+test handoff::spawn_receipt_records_caller_observed_subprocess_pid_without_delivery_claim ... ok
+test handoff::real_socket_capture_is_durable_ordered_and_distinct ... ok
+test handoff::streaming_visit_stops_on_consumer_backpressure_without_losing_records ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.20s
+

@@ -512,6 +512,11 @@
         "title": "Opvulwoorden verwijderen",
         "description": "Verwijdert veelvoorkomende aarzelwoorden uit transcripties. Schakel dit uit om ze te behouden."
       },
+      "smartParagraphs": {
+        "title": "Slimme alinea's",
+        "description": "Verdeelt lange dictaten in alinea's aan het einde van zinnen, gescheiden door een lege regel. Lijsten, code en bestaande regeleinden blijven behouden. Werkt op deze computer.",
+        "descriptionLimited": "Verdeelt lange dictaten in alinea's aan het einde van zinnen, gescheiden door een lege regel. Lijsten, code en bestaande regeleinden blijven behouden. Werkt op deze computer. Op dit systeem blijven Chinese en Japanse dictaten ongewijzigd."
+      },
       "chineseScript": {
         "title": "Chinees schrift",
         "description": "Schrijft Mandarijn- en Kantonese transcripties in vereenvoudigde of traditionele karakters. Andere talen blijven ongewijzigd.",

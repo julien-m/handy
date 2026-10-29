@@ -512,6 +512,11 @@
         "title": "Rimuovi le parole riempitive",
         "description": "Rimuove le parole di esitazione più comuni dalle trascrizioni. Disattiva per mantenerle."
       },
+      "smartParagraphs": {
+        "title": "Paragrafi intelligenti",
+        "description": "Divide le dettature lunghe in paragrafi alla fine delle frasi, separati da una riga vuota. Elenchi, codice e a capo esistenti vengono mantenuti. Elaborazione su questo computer.",
+        "descriptionLimited": "Divide le dettature lunghe in paragrafi alla fine delle frasi, separati da una riga vuota. Elenchi, codice e a capo esistenti vengono mantenuti. Elaborazione su questo computer. Su questo sistema, le dettature in cinese e giapponese restano invariate."
+      },
       "chineseScript": {
         "title": "Scrittura cinese",
         "description": "Scrive le trascrizioni in mandarino e cantonese con caratteri semplificati o tradizionali. Le altre lingue restano invariate.",

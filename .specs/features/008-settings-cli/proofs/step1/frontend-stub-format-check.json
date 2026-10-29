@@ -1,0 +1,11 @@
+{
+  "command": [
+    "bun",
+    "run",
+    "format:check"
+  ],
+  "exit_code": 0,
+  "duration_seconds": 2.15,
+  "stdout": ".specs/features/008-settings-cli/proofs/step1/frontend-stub-format-check.out",
+  "stderr": ".specs/features/008-settings-cli/proofs/step1/frontend-stub-format-check.err"
+}

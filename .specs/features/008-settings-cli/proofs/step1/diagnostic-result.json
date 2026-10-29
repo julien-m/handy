@@ -1,0 +1,64 @@
+{
+  "compile_command": [
+    "rustc",
+    "--edition=2021",
+    "--test",
+    "src-tauri/tests/settings_platform.rs",
+    "-L",
+    "dependency=src-tauri/target/debug/deps",
+    "-o",
+    "/private/tmp/handy-008-startup-spike/settings-platform-diagnostic",
+    "--extern",
+    "clap=src-tauri/target/debug/deps/libclap-df40930e3a9e744b.rlib",
+    "--extern",
+    "serde=src-tauri/target/debug/deps/libserde-47fdac8f4da926b9.rlib",
+    "--extern",
+    "serde_json=src-tauri/target/debug/deps/libserde_json-6243d31f78961453.rlib",
+    "--extern",
+    "libc=src-tauri/target/debug/deps/liblibc-cc16ca306fadf7b1.rlib",
+    "--extern",
+    "tempfile=src-tauri/target/debug/deps/libtempfile-2385a2b6f9a1881d.rlib"
+  ],
+  "clippy_command": [
+    "clippy-driver",
+    "--edition=2021",
+    "--test",
+    "src-tauri/tests/settings_platform.rs",
+    "-L",
+    "dependency=src-tauri/target/debug/deps",
+    "-o",
+    "/private/tmp/handy-008-startup-spike/settings-platform-clippy-diagnostic",
+    "--extern",
+    "clap=src-tauri/target/debug/deps/libclap-df40930e3a9e744b.rlib",
+    "--extern",
+    "serde=src-tauri/target/debug/deps/libserde-47fdac8f4da926b9.rlib",
+    "--extern",
+    "serde_json=src-tauri/target/debug/deps/libserde_json-6243d31f78961453.rlib",
+    "--extern",
+    "libc=src-tauri/target/debug/deps/liblibc-cc16ca306fadf7b1.rlib",
+    "--extern",
+    "tempfile=src-tauri/target/debug/deps/libtempfile-2385a2b6f9a1881d.rlib",
+    "-D",
+    "warnings"
+  ],
+  "compile_statuses": {
+    "rustc-final": 0,
+    "clippy-final": 0
+  },
+  "command": [
+    "/private/tmp/handy-008-startup-spike/settings-platform-diagnostic",
+    "--nocapture"
+  ],
+  "exit_code": 0,
+  "os": "macOS-26.5.2-arm64-arm-64bit-Mach-O",
+  "binary_sha256": "42ef0a6e15b2d2434e6429989ab92a4ecfb098bb160dff53a6e64991b2aff060",
+  "source_sha256": {
+    "src-tauri/tests/settings_platform.rs": "85dc1c4e34d78c00fc9d9f8d7b505d556c8e3f45b45fa61fdeacfcc3c3741eb5",
+    "src-tauri/tests/settings_platform/handoff.rs": "cf2019b3bf2b9a88a9563a90f5a0aa1df16b36aed419a85b70766344a7729bf0",
+    "src-tauri/src/settings_service/instance_probe.rs": "3157586e4f4f985f5607a169dfdadd6fb803b8c31cfcfe96b5d88efce165faab",
+    "src-tauri/src/settings_service/legacy_invocation.rs": "f31d800c07157079fbcd9dd26f88dbb730ff6865ae2feb20abe85a0248cc4975",
+    "src-tauri/src/settings_service/offline_guard.rs": "7229e8257940b1f5879be620852cbcc795a7bae05814d21f54aec1e92663ef44",
+    "src-tauri/src/settings_service/platform_unix.rs": "c7817450bbf850599db7171e70b6234969f634eebea295641e613b2bd74b9345"
+  },
+  "coverage": "isolated macOS primitives only; not Cargo/app/native acceptance"
+}

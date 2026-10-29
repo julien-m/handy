@@ -1,0 +1,54 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy/src-tauri)
+error[E0425]: cannot find function `unavailable` in this scope
+  --> tests/../src/settings_service/platform_unix/tests.rs:53:57
+   |
+53 |     let _lock = SOCKET_CREATION_MASK.lock().map_err(|_| unavailable())?;
+   |                                                         ^^^^^^^^^^^ not found in this scope
+   |
+help: consider importing this function
+   |
+ 3 + use crate::platform_unix::resources::unavailable;
+   |
+
+error[E0425]: cannot find function `unavailable` in this scope
+  --> tests/../src/settings_service/platform_unix/tests.rs:60:57
+   |
+60 |     let _lock = SOCKET_CREATION_MASK.lock().map_err(|_| unavailable())?;
+   |                                                         ^^^^^^^^^^^ not found in this scope
+   |
+help: consider importing this function
+   |
+ 3 + use crate::platform_unix::resources::unavailable;
+   |
+
+error[E0599]: no method named `mode` found for struct `Metadata` in the current scope
+  --> tests/../src/settings_service/platform_unix/tests.rs:25:45
+   |
+25 |     assert_eq!(fs::symlink_metadata(&path)?.mode() & 0o777, 0o640);
+   |                                             ^^^^
+   |
+   = note: `Metadata` implements similarly named trait `std::os::darwin::fs::MetadataExt`, but not `std::os::unix::fs::MetadataExt`
+help: there is a method `st_mode` with a similar name
+   |
+25 |     assert_eq!(fs::symlink_metadata(&path)?.st_mode() & 0o777, 0o640);
+   |                                             +++
+
+error[E0599]: no method named `mode` found for struct `Metadata` in the current scope
+  --> tests/../src/settings_service/platform_unix/tests.rs:41:71
+   |
+41 |         fs::symlink_metadata(directory.path().join("settings.sock"))?.mode() & 0o777,
+   |                                                                       ^^^^
+   |
+   = note: `Metadata` implements similarly named trait `std::os::darwin::fs::MetadataExt`, but not `std::os::unix::fs::MetadataExt`
+help: there is a method `st_mode` with a similar name
+   |
+41 |         fs::symlink_metadata(directory.path().join("settings.sock"))?.st_mode() & 0o777,
+   |                                                                       +++
+
+Some errors have detailed explanations: E0425, E0599.
+For more information about an error, try `rustc --explain E0425`.
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+error: could not compile `handy` (test "settings_platform") due to 4 previous errors

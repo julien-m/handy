@@ -1,0 +1,44 @@
+{
+  "test_suites": [
+    {
+      "passed": 286,
+      "failed": 0,
+      "ignored": 16
+    },
+    {
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "passed": 19,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0
+    }
+  ],
+  "total_passed": 305,
+  "total_failed": 0,
+  "total_ignored": 16,
+  "modified_files": [
+    "src-tauri/tests/settings_platform.rs",
+    "src-tauri/tests/settings_platform/handoff.rs"
+  ],
+  "file_sha256": {
+    "src-tauri/tests/settings_platform.rs": "3aaab6d530b05cd10bdbbd9c9f85179835b857329bb8c798a271dd166f52140b",
+    "src-tauri/tests/settings_platform/handoff.rs": "48b577448353f597aa8c45697afaa2ba2a449445cf8b4f302c71b1a6e3b16f05"
+  },
+  "production_wiring": "unchanged: isolated integration harness modules only",
+  "pending_native_evidence": [
+    "Windows same-executable console and native reservation mechanisms",
+    "Linux DBus ownership and legacy adapter",
+    "old Handy binary startup exclusion and callback delivery",
+    "two OS users access-denial observations",
+    "GUI/tray/model absence in production settings invocations",
+    "Apple M1 release read latency"
+  ]
+}

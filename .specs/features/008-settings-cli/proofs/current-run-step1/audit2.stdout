@@ -1,0 +1,49 @@
+1. `src-tauri/src/settings_service/platform_unix/socket.rs:16`
+   - rule / convention / check: General §8 Concurrency / §15 implicit global dependencies
+   - severity: major
+   - what is wrong: Socket creation temporarily changes the process-wide `umask`, so unrelated threads can create files with unexpectedly restrictive permissions despite the module-local mutex.
+   - proposed fix: Replace the process-wide `umask` mechanism with an OS-specific safe socket-permission routine, or enforce and document that binding occurs before any threads start; move the `umask` restoration test into an isolated subprocess.
+
+2. `src-tauri/src/settings_service/platform_unix/socket.rs:72`
+   - rule / convention / check: General §7 Error Handling / §29 cleanup ownership
+   - severity: major
+   - what is wrong: Any failure after `UnixListener::bind` can leave the newly created socket pathname behind, preventing subsequent binds.
+   - proposed fix: Introduce an armed creation guard immediately after binding that records the created inode and unlinks it on error only when the current pathname still matches that inode; disarm it after constructing `PrivateSocket`.
+
+3. `src-tauri/src/cli.rs:67`
+   - rule / convention / check: General §16 Separation of Responsibilities / single source of truth
+   - severity: major
+   - what is wrong: Console dispatch is implemented independently here and in `platform_windows::should_detach_console`, while production uses only this version and tests can therefore validate a predicate that production ignores.
+   - proposed fix: Keep one shared dispatch predicate or enum in `console_windows.rs`/`platform_windows.rs`, have `main.rs` call it, and delete the duplicate implementation and duplicate tests.
+
+4. `.specs/README.md:71`
+   - rule / convention / check: spec-implement Phase 8.5 — regenerate Recent Activity
+   - severity: major
+   - what is wrong: Recent Activity omits newer Step 1 audit/correction entries added to `.specs/changelog.md`, so the registry summary is stale.
+   - proposed fix: Put the global changelog entries in newest-first order, then regenerate exactly the latest ten entries between the activity markers.
+
+5. `src-tauri/src/settings_service/platform_windows.rs:13`
+   - rule / convention / check: General §14 Magic Values / §25 arbitrary thresholds
+   - severity: minor
+   - what is wrong: Limits and buffer sizes such as `192` and `65536` are repeated without named constants explaining their source and trade-offs.
+   - proposed fix: Introduce documented constants such as `MAX_SID_TEXT_UNITS`, `TOKEN_BUFFER_BYTES`, and `PIPE_BUFFER_BYTES`, and use them in validation, token parsing, and pipe creation.
+
+6. `src-tauri/src/settings_service/platform_windows.rs:157`
+   - rule / convention / check: General §6 Functions — 20–30 lines maximum
+   - severity: minor
+   - what is wrong: `PrivatePipe::create` combines SID resolution, name construction, security-descriptor creation, pipe creation, allocation cleanup, and handle ownership in one oversized function.
+   - proposed fix: Extract `create_security_descriptor`, `create_pipe_handle`, and handle-to-`File` conversion helpers, leaving `create` as orchestration only.
+
+7. `src-tauri/src/settings_service/platform_unix/resources.rs:89`
+   - rule / convention / check: General §27 Keep Comments Synchronized
+   - severity: nit
+   - what is wrong: `PrivateDirectory::sync` claims it synchronizes after a record rename, but its current caller uses it after lock-file creation.
+   - proposed fix: Replace the comment with `/// Sync directory entries after creating or replacing an owned resource.`
+
+Summary: 0 blockers, 4 major, 2 minor, 1 nit.
+⚙ Audit: stack detected — TypeScript + ESLint
+⚙ Audit: no checks found (no ~/.check/ or .check/)
+⚙ Audit: 25 file(s) in scope — .specs/README.md, .specs/changelog.md, .specs/conventions-gates.yaml, .specs/features/008-settings-cli/.reviews/plan.json, .specs/features/008-settings-cli/.reviews/spec.json, .specs/features/008-settings-cli/changelog.md, .specs/features/008-settings-cli/pipeline.md, .specs/features/008-settings-cli/plan.md, .specs/features/008-settings-cli/spec.md, src-tauri/Cargo.lock, src-tauri/Cargo.toml, src-tauri/src/cli.rs, src-tauri/src/main.rs, src-tauri/src/settings_service/console_windows.rs, src-tauri/src/settings_service/instance_probe.rs, src-tauri/src/settings_service/platform_unix.rs, src-tauri/src/settings_service/platform_unix/resources.rs, src-tauri/src/settings_service/platform_unix/socket.rs, src-tauri/src/settings_service/platform_unix/startup_fence.rs, src-tauri/src/settings_service/platform_unix/tests.rs, src-tauri/src/settings_service/platform_windows.rs, src-tauri/tests/settings_platform.rs, src-tauri/tests/settings_platform/cli_console.rs, src-tauri/tests/settings_platform/unix.rs, src-tauri/tests/settings_platform/windows.rs
+⚙ Audit: conventions loaded (33712 chars)
+⚙ Audit: intent loaded (769 chars)
+✅ Audit: done (read-only — caller decides which findings to fix)

@@ -512,6 +512,11 @@
         "title": "Dolgu Sözcüklerini Kaldır",
         "description": "Transkripsiyonlardaki yaygın duraksama sözcüklerini kaldırır. Bunları korumak için kapatın."
       },
+      "smartParagraphs": {
+        "title": "Akıllı paragraflar",
+        "description": "Uzun dikteleri cümle sonlarında boş bir satırla ayrılmış paragraflara böler. Listeler, kod ve mevcut satır sonları korunur. Bu bilgisayarda çalışır.",
+        "descriptionLimited": "Uzun dikteleri cümle sonlarında boş bir satırla ayrılmış paragraflara böler. Listeler, kod ve mevcut satır sonları korunur. Bu bilgisayarda çalışır. Bu sistemde Çince ve Japonca dikteler değiştirilmez."
+      },
       "chineseScript": {
         "title": "Çince yazı",
         "description": "Mandarin ve Kantonca transkripsiyonları Basitleştirilmiş veya Geleneksel karakterlerle yazar. Diğer diller değiştirilmez.",

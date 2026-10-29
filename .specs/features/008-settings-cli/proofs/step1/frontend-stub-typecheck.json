@@ -1,0 +1,12 @@
+{
+  "command": [
+    "bunx",
+    "--no-install",
+    "tsc",
+    "--noEmit"
+  ],
+  "exit_code": 0,
+  "duration_seconds": 2.19,
+  "stdout": ".specs/features/008-settings-cli/proofs/step1/frontend-stub-typecheck.out",
+  "stderr": ".specs/features/008-settings-cli/proofs/step1/frontend-stub-typecheck.err"
+}

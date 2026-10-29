@@ -1,0 +1,11 @@
+01 exit=0 :: bun run lint
+02 exit=0 :: npx tsc --noEmit -p .
+03 exit=0 :: npx prettier --check src tests README.md package.json
+04 exit=0 :: bun run check:translations
+05 exit=0 :: bun run test:smart-paragraphs
+06 exit=0 :: bun run test:settings-store
+07 exit=0 :: bun run test:output-settings
+08 exit=0 :: bash /private/tmp/claude-501/-Users-julienm-projects-handy/6c63dd2f-66f1-4748-8d50-174f39c2881a/scratchpad/sp016/cargo.sh fmt -- --check
+09 exit=0 :: bash /private/tmp/claude-501/-Users-julienm-projects-handy/6c63dd2f-66f1-4748-8d50-174f39c2881a/scratchpad/sp016/cargo.sh clippy --all-targets --features destination-return,smart-paste-dispatch
+10 exit=0 :: bash /private/tmp/claude-501/-Users-julienm-projects-handy/6c63dd2f-66f1-4748-8d50-174f39c2881a/scratchpad/sp016/cargo.sh test --lib --features destination-return,smart-paste-dispatch
+11 exit=0 :: bash /private/tmp/claude-501/-Users-julienm-projects-handy/6c63dd2f-66f1-4748-8d50-174f39c2881a/scratchpad/sp016/cargo.sh test --features destination-return,smart-paste-dispatch --test settings_validation --test settings_live --test settings_domains --test settings_cli

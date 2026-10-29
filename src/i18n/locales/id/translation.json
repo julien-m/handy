@@ -512,6 +512,11 @@
         "title": "Hapus Kata Pengisi",
         "description": "Menghapus kata pengisi umum dari transkripsi. Nonaktifkan untuk mempertahankannya."
       },
+      "smartParagraphs": {
+        "title": "Paragraf cerdas",
+        "description": "Membagi dikte panjang menjadi paragraf di akhir kalimat, dipisahkan oleh satu baris kosong. Daftar, kode, dan baris baru yang ada tetap dipertahankan. Berjalan di komputer ini.",
+        "descriptionLimited": "Membagi dikte panjang menjadi paragraf di akhir kalimat, dipisahkan oleh satu baris kosong. Daftar, kode, dan baris baru yang ada tetap dipertahankan. Berjalan di komputer ini. Di sistem ini, dikte berbahasa Tionghoa dan Jepang tidak diubah."
+      },
       "chineseScript": {
         "title": "Aksara Tionghoa",
         "description": "Menulis transkripsi Mandarin dan Kanton dengan aksara Sederhana atau Tradisional. Bahasa lain tidak diubah.",

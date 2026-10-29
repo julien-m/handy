@@ -1,0 +1,9 @@
+
+running 4 tests
+test scalars::cli_rejects_noncanonical_boolean_and_out_of_range_numbers ... ok
+test scalars::unknown_and_protected_keys_are_refused_without_echoing_input ... ok
+test inventory::every_actual_stored_field_has_exactly_one_descriptor ... ok
+test contracts::explicit_projection_reports_secret_presence_without_any_raw_canary ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+

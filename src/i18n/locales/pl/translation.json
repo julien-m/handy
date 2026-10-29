@@ -512,6 +512,11 @@
         "title": "Usuń wyrazy wypełniające",
         "description": "Usuwa typowe słowa wyrażające wahanie z transkrypcji. Wyłącz, aby je zachować."
       },
+      "smartParagraphs": {
+        "title": "Inteligentne akapity",
+        "description": "Dzieli długie dyktowania na akapity na końcach zdań, oddzielone pustym wierszem. Listy, kod i istniejące podziały wierszy są zachowywane. Działa na tym komputerze.",
+        "descriptionLimited": "Dzieli długie dyktowania na akapity na końcach zdań, oddzielone pustym wierszem. Listy, kod i istniejące podziały wierszy są zachowywane. Działa na tym komputerze. W tym systemie dyktowania po chińsku i japońsku pozostają bez zmian."
+      },
       "chineseScript": {
         "title": "Pismo chińskie",
         "description": "Zapisuje transkrypcje w języku mandaryńskim i kantońskim znakami uproszczonymi lub tradycyjnymi. Inne języki pozostają bez zmian.",

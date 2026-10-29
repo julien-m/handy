@@ -512,6 +512,11 @@
         "title": "Elimina les falques",
         "description": "Elimina les expressions de vacil·lació habituals de les transcripcions. Desactiveu aquesta opció per conservar-les."
       },
+      "smartParagraphs": {
+        "title": "Paràgrafs intel·ligents",
+        "description": "Divideix els dictats llargs en paràgrafs al final de les frases, separats per una línia en blanc. Es conserven les llistes, el codi i els salts de línia existents. S'executa en aquest ordinador.",
+        "descriptionLimited": "Divideix els dictats llargs en paràgrafs al final de les frases, separats per una línia en blanc. Es conserven les llistes, el codi i els salts de línia existents. S'executa en aquest ordinador. En aquest sistema, els dictats en xinès i japonès no es modifiquen."
+      },
       "chineseScript": {
         "title": "Escriptura xinesa",
         "description": "Escriu les transcripcions en mandarí i cantonès amb caràcters simplificats o tradicionals. Els altres idiomes no es modifiquen.",

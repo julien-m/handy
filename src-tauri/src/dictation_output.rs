@@ -25,6 +25,9 @@ pub(crate) trait OutputPorts {
     /// Record the history entry (with its audio, or text-only when the WAV was not saved): the
     /// native text and the optional AI result; returns what actually happened.
     fn save_history(&self, native: String, processed: &ProcessedTranscription) -> Self::History;
+    /// The final text arranged into paragraphs when this dictation's smart paragraphs are on
+    /// (016), or `text` unchanged.
+    fn arrange_paragraphs(&self, text: String) -> String;
     /// End a dictation that has nothing to insert.
     fn abandon(&self);
     /// Hand `text` to insertion with the history result of its dictation, then end the
@@ -48,7 +51,8 @@ pub(crate) enum Delivery {
 ///
 /// Order matters: AI post-processing first (it may be cancelled), then the history entry, so a
 /// dictation keeps its entry even when insertion fails and insertion reports the actual history
-/// result (006), then insertion.
+/// result (006), then smart paragraphs (016: after replacements, vocabulary and AI, so history
+/// keeps the unarranged texts; before the insertion's final preparation, 015), then insertion.
 pub(crate) async fn deliver<P: OutputPorts>(ports: &P, native: String) -> Delivery {
     let Some(processed) = ports.post_process(&native).await else {
         return Delivery::Cancelled;
@@ -61,7 +65,9 @@ pub(crate) async fn deliver<P: OutputPorts>(ports: &P, native: String) -> Delive
         ports.abandon();
         return Delivery::NothingToInsert;
     }
-    ports.insert(processed.final_text, history).await;
+    // @spec AC-008: After AI and history, before insertion — .specs/features/016-smart-paragraphs/spec.md#ac-008
+    let text = ports.arrange_paragraphs(processed.final_text);
+    ports.insert(text, history).await;
     Delivery::Inserted
 }
 

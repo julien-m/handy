@@ -36,6 +36,7 @@ mod settings;
 pub mod settings_service;
 mod shortcut;
 mod signal_handle;
+mod smart_paragraphs;
 pub mod smart_paste;
 mod transcription_coordinator;
 mod tray;
@@ -754,6 +755,7 @@ macro_rules! handy_commands {
             shortcut::change_vad_backend_setting,
             shortcut::change_filler_word_removal_enabled_setting,
             shortcut::change_chinese_script_setting,
+            shortcut::change_smart_paragraphs_enabled_setting,
             shortcut::change_app_language_setting,
             shortcut::change_update_checks_setting,
             shortcut::change_show_whats_new_on_update_setting,

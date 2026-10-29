@@ -1,0 +1,17 @@
+{
+  "command": [
+    "bun",
+    "run",
+    "format:check"
+  ],
+  "environment": {
+    "HANDY_FORCE_AI_STUB": "1"
+  },
+  "retry_hypothesis": "Final documentary mutations can introduce formatting regressions.",
+  "retry_evidence": "Parent reports fresh official-finalize/documenter mutations to progress, implementation, log, changelog and README.",
+  "exit_code": 0,
+  "duration_seconds": 1.77,
+  "stdout": ".specs/features/008-settings-cli/proofs/step1/frontend-stub-format-final.out",
+  "stderr": ".specs/features/008-settings-cli/proofs/step1/frontend-stub-format-final.err",
+  "retry_result": "PASS"
+}

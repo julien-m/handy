@@ -2587,6 +2587,7 @@ dependencies = [
  "tokio",
  "transcribe-cpp",
  "transcribe-rs",
+ "unicode-segmentation",
  "uuid",
  "vad-rs",
  "webview2-com",

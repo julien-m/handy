@@ -1,0 +1,90 @@
+warning: handy@0.9.8: Building with Apple Intelligence support.
+warning: handy@0.9.8: Generated tray translations: 26 languages, 8 fields
+   Compiling handy v0.9.8 (/Users/julienm/projects/handy/.claude/worktrees/agent-aa60c1a9378fd5aa9/src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 44.43s
+     Running tests/settings_cli.rs (target/debug/deps/settings_cli-2faafd0841f8c267)
+
+running 19 tests
+test contract::keys_describe_type_allowed_values_range_and_access ... ok
+test contract::help_lists_generic_operations_in_both_modes ... ok
+test contract::human_output_is_readable_and_diagnostics_stay_on_stderr ... ok
+test routed::a_live_listener_on_the_endpoint_name_is_never_replaced ... ok
+test contract::stale_expected_revision_reports_the_current_revision ... ok
+test offline::older_handy_holding_its_singleton_refuses_reads_and_writes_without_touching_the_store ... ok
+test contract::json_get_prints_one_envelope_with_revision_and_every_public_key ... ok
+test offline::headless_read_never_creates_the_store_and_a_write_persists_one_revision ... ok
+test contract::every_owned_error_code_has_its_documented_exit ... ok
+test contract::secrets_and_rejected_arguments_never_reach_stdout_or_stderr ... ok
+test offline::unreadable_store_reads_defaults_with_a_stderr_warning_and_refuses_writes ... ok
+test offline::rejected_write_changes_nothing ... ok
+test contract::list_secret_and_read_only_keys_point_to_their_owner ... ok
+test offline::concurrent_cli_writers_lose_no_field ... ok
+test routed::the_running_instance_refuses_stale_and_invalid_writes_without_committing ... ok
+test routed::the_running_instance_answers_reads_and_commits_writes_with_its_live_state ... ok
+test routed::a_stale_endpoint_name_is_reclaimed_under_the_lease_and_removed_at_close ... ok
+test offline::held_startup_lease_without_a_reachable_channel_refuses_and_never_writes_offline ... ok
+test routed::no_answer_within_five_seconds_is_an_unknown_outcome_resolved_by_a_new_read ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 11.92s
+
+     Running tests/settings_domains.rs (target/debug/deps/settings_domains-dce318ba89ff3e0f)
+
+running 8 tests
+test output_set_with_an_older_handy_running_is_unavailable_and_writes_nothing ... ok
+test invalid_output_dry_run_is_refused_with_exit_two_and_no_preview ... ok
+test help_lists_the_generic_operations_and_exactly_the_domains_of_this_build ... ok
+test output_get_reads_exactly_the_output_settings_without_creating_the_store ... ok
+test stale_output_set_is_a_revision_conflict_reported_on_stderr ... ok
+test output_set_commits_through_the_shared_path ... ok
+test output_dry_run_previews_with_exit_zero_and_never_writes ... ok
+test output_set_routed_to_a_running_instance_is_committed_by_the_instance ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.02s
+
+     Running tests/settings_live.rs (target/debug/deps/settings_live-369c8a37385dd4e0)
+
+running 10 tests
+test read_only_startup::a_real_lease_conflict_is_the_only_startup_refusal ... ok
+test read_only_startup::shared_lock_permissions_start_read_only_on_the_store_content ... ok
+test read_only_startup::hard_linked_store_starts_read_only_on_its_content ... ok
+test read_only_startup::linked_store_starts_read_only_on_its_target ... ok
+test instance_fences_offline_writers_and_a_restart_sees_their_later_commit ... ok
+test read_only_startup::unreadable_store_starts_read_only_on_defaults ... ok
+test concurrent_ui_commits_lose_no_field_and_increment_once_each ... ok
+test device_selectors_store_null_for_the_default_and_literal_names_otherwise ... ok
+test ui_adapter_and_cli_store_the_same_value_or_refuse_with_the_same_error ... ok
+test generated_parity::every_settable_scalar_key_gets_the_same_decision_on_ui_and_cli ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.22s
+
+     Running tests/settings_validation.rs (target/debug/deps/settings_validation-820350f294841f5b)
+
+running 25 tests
+test contracts::all_documented_error_codes_have_fixed_exits_and_object_details ... ok
+test error_details::unsupported_platform_is_validation_failed_exit_two_with_reason_and_field ... ok
+test error_details::items_are_sorted_by_index_and_bounded_without_candidate_values ... ok
+test error_details::existing_errors_carry_neither_reason_nor_items ... ok
+test contracts::valid_get_keys_set_domain_shapes_roundtrip_with_optional_nulls ... ok
+test inventory::independent_access_inventory_covers_9_readonly_1_secret_7_collections_54_scalars ... ok
+test contracts::request_roundtrip_keeps_typed_operation_without_debug_or_secret_diagnostics ... ok
+test request_contracts::every_operation_refuses_fields_owned_by_other_variants ... ok
+test request_contracts::unsupported_request_versions_and_extra_fields_are_rejected_safely ... ok
+test scalars::all_54_scalar_ports_accept_the_same_typed_values ... ok
+test error_details::schema_closes_reason_and_items ... ok
+test scalars::cli_rejects_noncanonical_boolean_and_out_of_range_numbers ... ok
+test scalars::every_nullable_scalar_preserves_strings_and_accepts_null_clear ... ok
+test scalars::legacy_aliases_are_disk_only_and_build_policy_is_shared ... ok
+test scalars::numeric_boundaries_and_overflow_have_identical_safe_error_reasons ... ok
+test scalars::unknown_and_protected_keys_are_refused_without_echoing_input ... ok
+test contracts::operation_schema_requires_the_same_variant_fields_as_serde ... ok
+test request_contracts::request_schema_closes_each_operation_to_its_own_fields ... ok
+test contracts::checked_schema_matches_the_actual_dto_generator ... ok
+test contracts::generated_schema_matches_wire_shapes_and_descriptor_inventory ... ok
+test inventory::every_actual_stored_field_has_exactly_one_descriptor ... ok
+test contracts::explicit_projection_reports_secret_presence_without_any_raw_canary ... ok
+test request_contracts::all_canonical_public_enums_and_required_keys_match_independent_inventory ... ok
+test request_contracts::public_schema_requires_all_fields_and_preserves_legacy_numeric_reads ... ok
+test inventory::independent_enum_inventory_accepts_every_current_canonical_variant ... ok
+
+test result: ok. 25 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+

@@ -512,6 +512,11 @@
         "title": "Loại bỏ từ đệm",
         "description": "Loại bỏ các từ ngập ngừng phổ biến khỏi bản chép lời. Tắt để giữ lại các từ này."
       },
+      "smartParagraphs": {
+        "title": "Đoạn văn thông minh",
+        "description": "Chia các bản đọc chính tả dài thành đoạn văn tại cuối câu, ngăn cách bằng một dòng trống. Danh sách, mã và các dấu xuống dòng có sẵn được giữ nguyên. Xử lý trên máy tính này.",
+        "descriptionLimited": "Chia các bản đọc chính tả dài thành đoạn văn tại cuối câu, ngăn cách bằng một dòng trống. Danh sách, mã và các dấu xuống dòng có sẵn được giữ nguyên. Xử lý trên máy tính này. Trên hệ thống này, bản đọc tiếng Trung và tiếng Nhật được giữ nguyên."
+      },
       "chineseScript": {
         "title": "Chữ Hán giản thể/phồn thể",
         "description": "Ghi bản chép tiếng Quan Thoại và tiếng Quảng Đông bằng chữ Giản thể hoặc Phồn thể. Các ngôn ngữ khác không bị thay đổi.",

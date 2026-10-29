@@ -1,0 +1,51 @@
+{
+  "reviewer_model": "gpt-6.1-sol",
+  "scope": "008-settings-cli plan Step 1 only",
+  "source_sha256": {
+    "src-tauri/src/main.rs": "f895f9ced17a4f6d2d81ae486ff4a479f9ee8b10a577ff8b6e011ce1f3cc85a5",
+    "src-tauri/src/cli.rs": "df76015f57a16c6574e4c15865e1181240e1e50683a4de97a8993c43a0406559",
+    "src-tauri/src/settings_service/console_windows.rs": "defe2c8555168d61f90a174240fc686f3d961088ad0afbb0bda29aaa8d0c237f",
+    "src-tauri/src/settings_service/instance_probe.rs": "ac7acd7161763c89d751eb8103f2f14979870529616adba954d41e5cf5d653c4",
+    "src-tauri/src/settings_service/platform_unix.rs": "1cf23cdecf64cf844523fd0e732324269687f49256af7dd2b217c2bb524b9177",
+    "src-tauri/src/settings_service/platform_windows.rs": "b9f574f2982198507a1864fe8184faad495fba3f5d22ca1e54fa08d51c71e45a",
+    "src-tauri/tests/settings_platform.rs": "0ecd891f88595efa1192532d2d6ad5511f244c80ce4910cd5742d1dea4d811b9"
+  },
+  "code_quality_verdict": "PASS within Step 1 partial implementation scope",
+  "source_blocking_findings": [],
+  "validation_observed": {
+    "green2.exit": 0,
+    "green2.tests_passed": 20,
+    "green2.tests_failed": 0,
+    "green2.apple_intelligence": "support",
+    "clippy2.exit": 0,
+    "clippy2.apple_intelligence": "support",
+    "typecheck.exit": 0,
+    "lint.exit": 0,
+    "format.exit": 0
+  },
+  "acceptance_verdict": {
+    "complete": true,
+    "ready": false,
+    "certified_acs": [],
+    "reason": "Whole AC-005 cannot be covered by two passive-probe primitive assertions; official mapping ingest returned exit 1 with errors empty and missing AC-005 conclusion."
+  },
+  "review_notes": [
+    "main.rs retains one Windows console-subsystem executable; existing worker returns before parsing and FreeConsole; parsed headless flags retain handles; GUI detachment errors stop startup with safe diagnostics. Settings-specific dispatch remains intentionally unwired in Step 1.",
+    "Unix legacy inspection is metadata-only and leaves occupied/stale sockets alone; negative session scope stays Uncertain; all errors fail closed. Linux ownership query calls only the DBus daemon, not the app callback.",
+    "Private Unix resources pin directory/file identities, check owner and restrictive mode, reject aliases and replacement, and authenticate real connected peer UID. Explicit close retains the socket path and refuses replacement; no unsafe stat/unlink cleanup claims. StartupFence owns a stable nonblocking file lock by lifetime.",
+    "Windows pipe validates SID/hash, protects DACL to current logon SID, requests first-instance creation and remote rejection, and verifies process token SID before data use. FFI has aligned bounded token buffer and owned cleanup for handles/LocalAlloc resources. Windows native compilation/runtime not observed on this machine.",
+    "FreeConsole success without attached console and preservation of other attached processes match current Microsoft API documentation. Native console-flash observation remains pending release evidence; no rollback of the approved console design requested.",
+    "Missing full CLI/live IPC/timeout/all-writer behavior is expected until later steps and is not reported as a Step 1 source defect. It prevents whole-AC certification."
+  ],
+  "external_primary_sources": [
+    "https://learn.microsoft.com/en-us/windows/console/freeconsole",
+    "https://learn.microsoft.com/en-us/windows/win32/api/securitybaseapi/nf-securitybaseapi-gettokeninformation"
+  ],
+  "pending_release_evidence": [
+    "Windows native compile/PE subsystem and cmd/PowerShell/GUI console behavior",
+    "Linux native DBus/socket behavior",
+    "Real older Handy refusal and absence of activation/callback",
+    "Real second-user/session private endpoint denial"
+  ],
+  "macos_evidence_limits": "Step 1 real socket/UID/lock tests observed through worker transcript. Full macOS settings/new-app/native acceptance remains Step 7; no Implemented claim."
+}

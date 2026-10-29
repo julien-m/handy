@@ -1,0 +1,11 @@
+{
+  "command": [
+    "bun",
+    "run",
+    "lint"
+  ],
+  "exit_code": 0,
+  "duration_seconds": 1.18,
+  "stdout": ".specs/features/008-settings-cli/proofs/step1/frontend-stub-lint.out",
+  "stderr": ".specs/features/008-settings-cli/proofs/step1/frontend-stub-lint.err"
+}

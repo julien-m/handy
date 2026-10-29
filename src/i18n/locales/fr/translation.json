@@ -512,6 +512,11 @@
         "title": "Supprimer les mots de remplissage",
         "description": "Supprime les hésitations courantes des transcriptions. Désactivez cette option pour les conserver."
       },
+      "smartParagraphs": {
+        "title": "Paragraphes intelligents",
+        "description": "Découpe les longues dictées en paragraphes aux fins de phrase, séparés par une ligne vide. Les listes, le code et les retours à la ligne existants sont conservés. Traitement sur cet ordinateur.",
+        "descriptionLimited": "Découpe les longues dictées en paragraphes aux fins de phrase, séparés par une ligne vide. Les listes, le code et les retours à la ligne existants sont conservés. Traitement sur cet ordinateur. Sur ce système, les dictées en chinois et en japonais restent inchangées."
+      },
       "chineseScript": {
         "title": "Écriture chinoise",
         "description": "Écrit les transcriptions en mandarin et en cantonais en caractères simplifiés ou traditionnels. Les autres langues ne sont pas modifiées.",

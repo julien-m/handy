@@ -1,0 +1,1 @@
+{"execution_receipt_path": "/Users/julienm/projects/handy/.specs/.execution/c314d2c976f8427aafe6b3d95bc2a93b/receipt.json", "valid": false, "certified_acs": [], "gaps": ["Invalid execution evidence: [Errno 2] No such file or directory: '/Users/julienm/projects/handy/src-tauri/tests/settings_platform/handoff.rs'"], "executed_tests": [], "acceptance_result_count": 0}
