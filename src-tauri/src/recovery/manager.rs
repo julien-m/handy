@@ -3,7 +3,7 @@
 //! clipboard and slot effects. Every action names the exact bubble; a closed bubble's identity
 //! is never reused, so a late callback of a closed bubble cannot affect a newer one.
 use super::instance::{Admission, Instance};
-use super::types::{BubbleId, BubbleKey, Phase, RecoveryBubbleView, RecoveryPlatform};
+use super::types::{BubbleId, BubbleKey, DragResult, Phase, RecoveryBubbleView, RecoveryPlatform};
 use crate::destination::context::DictationId;
 use crate::destination::outcome::{HistoryStatus, TranscriptRef};
 use crate::destination::recovery::{PresentationReceipt, PresentationResult};
@@ -43,8 +43,10 @@ pub enum CopyEnd {
 #[derive(Debug, Eq, PartialEq)]
 pub enum DragEnd {
     Accepted(Retired),
-    /// Refused or cancelled: show the same bubble again.
+    /// Released where no target took the text: show the same bubble again.
     Refused(RecoveryBubbleView),
+    /// Cancelled by Escape: the bubble closes like Close, history untouched (N25).
+    Dismissed(Retired),
     Ignored,
 }
 /// Outcome of a late-read diagnostic.
@@ -259,18 +261,23 @@ impl RecoveryManager {
         instance.phase = Phase::Visible;
         true
     }
-    /// The drag of `bubble_id` ended, accepted or not.
-    pub fn drag_ended(&self, bubble_id: BubbleId, accepted: bool) -> DragEnd {
+    /// The drag of `bubble_id` ended with `result`: a drop or an Escape closes the bubble,
+    /// a release without a target shows it again.
+    pub fn drag_ended(&self, bubble_id: BubbleId, result: DragResult) -> DragEnd {
         let mut state = self.lock();
         let Some(instance) = current_in(&mut state, bubble_id, &[Phase::Dragging]) else {
             return DragEnd::Ignored;
         };
-        if !accepted {
-            instance.phase = Phase::Visible;
-            return DragEnd::Refused(instance.view(self.platform));
-        }
-        retire(&mut state, PresentationResult::Superseded)
-            .map_or(DragEnd::Ignored, DragEnd::Accepted)
+        // Escape is a deliberate dismissal (N25): the same retirement as Close.
+        let closed = match result {
+            DragResult::Released => {
+                instance.phase = Phase::Visible;
+                return DragEnd::Refused(instance.view(self.platform));
+            }
+            DragResult::Dropped => DragEnd::Accepted,
+            DragResult::CancelledByEscape => DragEnd::Dismissed,
+        };
+        retire(&mut state, PresentationResult::Superseded).map_or(DragEnd::Ignored, closed)
     }
 
     /// 007 saw a read after "not read" for `dictation_id`/`transaction_id`.

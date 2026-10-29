@@ -466,8 +466,9 @@ stateDiagram-v2
   Presenting --> Visible: surface reports first render (Presented, slot released)
   Presenting --> Closed: confirmed Unpresentable (paste-error) or new dictation (Superseded)
   Visible --> Dragging: macOS native drag started, hide
-  Dragging --> Visible: refused or cancelled, identity current
+  Dragging --> Visible: released without an accepting target, identity current
   Dragging --> Closed: accepted copy operation
+  Dragging --> Closed: Escape pressed during the session (N25), Close's retirement
   Visible --> Copying: valid deliberate Copy admitted
   Copying --> Visible: write failed, logged without text, bubble unchanged
   Copying --> Closed: clipboard success, identity current

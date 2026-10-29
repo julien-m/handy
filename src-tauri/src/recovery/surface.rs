@@ -110,9 +110,9 @@ fn drag_on_main(app: &AppHandle, bubble_id: BubbleId, transcript: &str) {
         return service.drag_failed(bubble_id);
     };
     let handle = app.clone();
-    let ended = Box::new(move |bubble, accepted| {
+    let ended = Box::new(move |bubble, result| {
         if let Some(service) = self::service(&handle) {
-            service.drag_ended(bubble, accepted);
+            service.drag_ended(bubble, result);
         }
     });
     if let Err(error) = platform::begin_drag(&window, bubble_id, transcript, ended) {

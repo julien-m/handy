@@ -103,7 +103,7 @@ flowchart TD
 **As a** Handy user, **I want to** drag the transcript from the bubble into any text field, **so that** I choose the exact place where it goes.
 
 **Priority reason:** Drag and drop is the requested recovery gesture.
-**Independent test:** Drag from the bubble (its text, its background or its border, and the drag handle) into TextEdit, a ChatGPT field and a Comet field; then drag onto the desktop and release.
+**Independent test:** Drag from the bubble (its text, its background or its border, and the drag handle) into TextEdit, a ChatGPT field and a Comet field; then drag onto the desktop and release; then press Escape during a drag.
 
 ```gherkin
 Feature: Drag the transcript
@@ -120,6 +120,11 @@ Feature: Drag the transcript
     Given the user is dragging the transcript
     When the user releases over a place that refuses the drop
     Then the bubble reappears with the same transcript for another attempt
+  Scenario: Escape cancels the drag and dismisses the bubble
+    Given the user is dragging the transcript
+    When the user presses Escape before releasing
+    Then nothing is inserted anywhere
+    And the bubble closes as with Close, the transcript staying in history as before
   Scenario: The whole bubble is the drag source
     Given the bubble shows a transcript on macOS
     When the user presses on the transcript text, the background or the border and moves past the threshold
@@ -138,8 +143,9 @@ Feature: Drag the transcript
 stateDiagram-v2
   [*] --> Visible
   Visible --> Dragging: drag starts, bubble hidden
-  Dragging --> Visible: drop refused or cancelled, bubble shown again
+  Dragging --> Visible: released where no target accepts, bubble shown again
   Dragging --> Closed: drop accepted
+  Dragging --> Closed: Escape cancels the drag, bubble dismissed
   Visible --> Closed: copy or close
   Visible --> Closed: new dictation starts
   Closed --> [*]
@@ -230,7 +236,7 @@ flowchart TD
 
 ### AC-004
 
-**Criterion:** On macOS, dragging from the bubble starts a native drag session in copy mode carrying the full transcript as plain text with a preview image. The whole bubble is the drag source: its text, background and border as well as the drag handle start the same drag once the pointer, primary button held, moves past a small threshold; a press without that movement is not a drag. Copy, the explanation control and Close stay plain clicks and never start a drag. Over the drag source the pointer shows the grab cursor; the drag handle stays the named alternative for assistive technologies. The bubble is hidden while dragging. If the drop is refused or cancelled, the bubble reappears unchanged. If a drop is accepted, the bubble closes and the outcome is logged as "drop accepted" without the transcript, never as text verified in a field. Each bubble has its own identity: drag callbacks or actions belonging to a closed bubble are ignored, and a new dictation during a drag closes the bubble for good.
+**Criterion:** On macOS, dragging from the bubble starts a native drag session in copy mode carrying the full transcript as plain text with a preview image. The whole bubble is the drag source: its text, background and border as well as the drag handle start the same drag once the pointer, primary button held, moves past a small threshold; a press without that movement is not a drag. Copy, the explanation control and Close stay plain clicks and never start a drag. Over the drag source the pointer shows the grab cursor; the drag handle stays the named alternative for assistive technologies. The bubble is hidden while dragging. If the user releases where no target accepts the drop, the bubble reappears unchanged for another attempt. If the user presses Escape during the drag, the drag is cancelled, nothing is inserted, and the bubble closes as with Close (history untouched), logged as "drag cancelled by Escape, dismissed" without the transcript; a drop a target already accepted is never treated as cancelled. If a drop is accepted, the bubble closes and the outcome is logged as "drop accepted" without the transcript, never as text verified in a field. Each bubble has its own identity: drag callbacks or actions belonging to a closed bubble are ignored, and a new dictation during a drag closes the bubble for good.
 **Priority:** P1 | **Story:** Story 3
 
 ### AC-005
@@ -327,7 +333,7 @@ Feature: Keyboard access to bubble actions
 
 ### FR-003
 
-**Requirement:** Provide a native macOS drag source carrying the full transcript in copy mode, started from anywhere on the bubble except its Copy, explanation and Close controls, hiding the bubble during the drag and restoring it on refusal.
+**Requirement:** Provide a native macOS drag source carrying the full transcript in copy mode, started from anywhere on the bubble except its Copy, explanation and Close controls, hiding the bubble during the drag, restoring it after a release without an accepting target and closing it when Escape cancels the drag.
 **AC References:** AC-004
 
 ### FR-004
@@ -358,6 +364,7 @@ Feature: Keyboard access to bubble actions
 - `[ASSUMED]` Drag is macOS only; Windows and Linux get Copy, Close and explanation.
 - Real behavior of drops into ChatGPT, Comet and other fields is unverified; the plan includes native checks.
 - Decision 2026-10-29 (Julien, native session N24; AC-004 and FR-003): grabbing only the "Drag into a field" button is impractical; the whole bubble (text, background, border) is the drag source, with the same payload, native path, receipts and log as the handle. Copy, Why? and Close stay plain clicks; a press without movement past the threshold is not a drag; the grab cursor shows over the drag source; the handle stays as the named control for assistive technologies.
+- Decision 2026-10-29 (Julien, native session N25; AC-004 and FR-003): pressing Escape during a drag cancels it (macOS inserts nothing) and the bubble must go away: it closes through Close's path, the transcript staying in history as before, logged `Recovery bubble N: drag cancelled by Escape, dismissed`. A release without an accepting target and without Escape keeps the earlier behavior: the bubble reappears for another attempt. AppKit reports both as the same empty operation, so Handy watches Escape key presses for the duration of the session only (global and local key-down monitors, plus the event that ends the session) and removes the watch when the session ends; a drop already accepted wins over a late Escape.
 - Program context: specified in list order (001–010); depends on 006 (destination and outcomes), 007 (smart paste outcomes "not read", "permission missing" and "uncertain" count as insertion failure), 009 (Enter suppression) and 008 (CLI).
 
 - Decision `010-recovery-bubble:AC-003` / `pinned-running-activation-failure-reason`: 2026-10-14 (program orchestrator): "Could not bring <App> forward". A pinned application that is running but does not become frontmost within the 006 limit carries the reason `activation_failed`; "<App> is pinned but not open" is reserved for `pinned_app_not_running` (the pinned application is not running). These are the two reasons into which `.specs/features/009-pin-mode-and-enter-rule/spec.md` AC-003 splits "pinned app unavailable".

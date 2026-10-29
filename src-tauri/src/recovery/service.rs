@@ -9,7 +9,7 @@ use super::ports::{
     CopyError, CopyPort, FallbackPort, RecoverySurfacePort, RetainedText, SessionFacts, TimerPort,
     TranscriptSource,
 };
-use super::types::{BubbleId, BubbleSpec, RecoveryBubbleView, RecoveryPlatform};
+use super::types::{BubbleId, BubbleSpec, DragResult, RecoveryBubbleView, RecoveryPlatform};
 use super::verdict::{classification_target, verdict_of};
 use crate::destination::context::{
     DestinationContext, DictationId, PreInsertionVerdict, RecoveryPort, RecoveryReason,
@@ -152,11 +152,20 @@ impl RecoveryService {
             log::warn!("Recovery drag could not start for bubble {}", bubble_id.0);
         }
     }
-    /// The drag of `bubble_id` ended; an accepted drop proves protocol acceptance only.
-    pub fn drag_ended(&self, bubble_id: BubbleId, accepted: bool) {
-        match self.manager.drag_ended(bubble_id, accepted) {
+    // @spec AC-004: Escape during a drag dismisses the bubble — .specs/features/010-recovery-bubble/spec.md#ac-004
+    /// The drag of `bubble_id` ended with `result`; an accepted drop proves protocol acceptance
+    /// only. Escape closes the bubble through Close's retirement (history untouched).
+    pub fn drag_ended(&self, bubble_id: BubbleId, result: DragResult) {
+        match self.manager.drag_ended(bubble_id, result) {
             DragEnd::Accepted(retired) => {
                 log::info!("Recovery bubble {}: drop accepted", bubble_id.0);
+                self.retire(retired);
+            }
+            DragEnd::Dismissed(retired) => {
+                log::info!(
+                    "Recovery bubble {}: drag cancelled by Escape, dismissed",
+                    bubble_id.0
+                );
                 self.retire(retired);
             }
             DragEnd::Refused(view) => self.ports.surface.show_again(view),

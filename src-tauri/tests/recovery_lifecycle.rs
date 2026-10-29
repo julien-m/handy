@@ -13,6 +13,7 @@ use handy_app_lib::destination::recovery::{
 };
 use handy_app_lib::recovery::ports::CopyError;
 use handy_app_lib::recovery::service::PRESENTATION_HANG_LIMIT;
+use handy_app_lib::recovery::types::DragResult::{CancelledByEscape, Dropped, Released};
 use handy_app_lib::recovery::types::{
     BubbleReason, HistoryNote, ReasonDetail, RecoveryBubbleView, RecoveryPlatform,
     PREVIEW_MAX_CHARS,
@@ -226,7 +227,7 @@ fn a_refused_drag_shows_the_same_bubble_again_and_an_accepted_one_closes() -> Te
     bench.service.begin_drag(view.bubble_id);
     let begun = SurfaceCall::BeginDrag(view.bubble_id, PHRASE.to_owned());
     assert!(bench.surface.calls().contains(&begun), "full payload");
-    bench.service.drag_ended(view.bubble_id, false);
+    bench.service.drag_ended(view.bubble_id, Released);
     assert!(bench
         .surface
         .calls()
@@ -239,15 +240,35 @@ fn a_refused_drag_shows_the_same_bubble_again_and_an_accepted_one_closes() -> Te
         "a failed start stays visible"
     );
     bench.service.begin_drag(view.bubble_id);
-    bench.service.drag_ended(view.bubble_id, true);
+    bench.service.drag_ended(view.bubble_id, Dropped);
     assert_eq!(bench.service.view(), None);
-    bench.service.drag_ended(view.bubble_id, false);
+    bench.service.drag_ended(view.bubble_id, Released);
     assert!(!bench
         .surface
         .calls()
         .iter()
         .skip_while(|call| **call != SurfaceCall::Hide)
         .any(|call| matches!(call, SurfaceCall::ShowAgain(_))));
+    Ok(())
+}
+// @spec AC-004: Escape during a drag dismisses the bubble — .specs/features/010-recovery-bubble/spec.md#ac-004
+#[test]
+fn escape_during_a_drag_hides_the_bubble_like_close_and_never_shows_it_again() -> TestResult {
+    let dragging = || -> Result<_, Box<dyn std::error::Error>> {
+        let bench = Bench::new(RecoveryPlatform::MacOs);
+        let bubble = consume(&bench, 1, None)?.1.bubble_id;
+        bench.service.rendered(bubble);
+        bench.service.begin_drag(bubble);
+        Ok((bench, bubble))
+    };
+    let ((escaped, bubble), (closed, closed_bubble)) = (dragging()?, dragging()?);
+    escaped.service.drag_ended(bubble, CancelledByEscape);
+    closed.service.close(closed_bubble);
+    escaped.service.drag_ended(bubble, Released);
+    assert_eq!(escaped.service.view(), None, "dismissed");
+    // Close's surface calls and slot release; the late end showed nothing again.
+    assert_eq!(escaped.surface.calls(), closed.surface.calls());
+    assert_eq!(escaped.released(), closed.released());
     Ok(())
 }
 #[test]
